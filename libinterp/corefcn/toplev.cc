@@ -539,11 +539,6 @@ main_loop (void)
 
   // The big loop.
 
-  unwind_protect frame;
-
-  // octave_parser constructor sets this for us.
-  frame.protect_var (LEXER);
-
   octave_lexer *lxr = ((interactive || forced_interactive)
                        ? new octave_lexer ()
                        : new octave_lexer (stdin));
@@ -555,8 +550,6 @@ main_loop (void)
     {
       try
         {
-          unwind_protect inner_frame;
-
           reset_error_handler ();
 
           parser.reset ();

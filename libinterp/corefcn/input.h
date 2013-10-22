@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 
 class octave_value;
+class octave_base_lexer;
 
 extern OCTINTERP_API FILE *get_input_from_stdin (void);
 
@@ -86,9 +87,13 @@ public:
 
   friend class octave_input_reader;
 
-  octave_base_reader (void) : count (1), pflag (0) { }
+  octave_base_reader (octave_base_lexer *lxr)
+    : count (1), pflag (0), lexer (lxr)
+  { }
 
-  octave_base_reader (const octave_base_reader&) : count (1) { }
+  octave_base_reader (const octave_base_reader& x)
+    : count (1), pflag (x.pflag), lexer (x.lexer)
+  { }
 
   virtual ~octave_base_reader (void) { }
 
@@ -113,11 +118,19 @@ public:
 
   std::string octave_gets (bool& eof);
 
+  virtual bool reading_fcn_file (void) const;
+
+  virtual bool reading_classdef_file (void) const;
+
+  virtual bool reading_script_file (void) const;
+
 private:
 
   int count;
 
   int pflag;
+
+  octave_base_lexer *lexer;
 
   void do_input_echo (const std::string&) const;
 
@@ -129,7 +142,9 @@ octave_terminal_reader : public octave_base_reader
 {
 public:
 
-  octave_terminal_reader (void) : octave_base_reader () { }
+  octave_terminal_reader (octave_base_lexer *lxr = 0)
+    : octave_base_reader (lxr)
+  { }
 
   std::string get_input (bool& eof);
 
@@ -145,8 +160,8 @@ octave_file_reader : public octave_base_reader
 {
 public:
 
-  octave_file_reader (FILE *f_arg)
-    : octave_base_reader (), file (f_arg) { }
+  octave_file_reader (FILE *f_arg, octave_base_lexer *lxr = 0)
+    : octave_base_reader (lxr), file (f_arg) { }
 
   std::string get_input (bool& eof);
 
@@ -164,8 +179,9 @@ octave_eval_string_reader : public octave_base_reader
 {
 public:
 
-  octave_eval_string_reader (const std::string& str)
-    : octave_base_reader (), eval_string (str)
+  octave_eval_string_reader (const std::string& str,
+                             octave_base_lexer *lxr = 0)
+    : octave_base_reader (lxr), eval_string (str)
   { }
 
   std::string get_input (bool& eof);
@@ -183,16 +199,16 @@ class
 octave_input_reader
 {
 public:
-  octave_input_reader (void)
-    : rep (new octave_terminal_reader ())
+  octave_input_reader (octave_base_lexer *lxr = 0)
+    : rep (new octave_terminal_reader (lxr))
   { }
 
-  octave_input_reader (FILE *file)
-    : rep (new octave_file_reader (file))
+  octave_input_reader (FILE *file, octave_base_lexer *lxr = 0)
+    : rep (new octave_file_reader (file, lxr))
   { }
 
-  octave_input_reader (const std::string& str)
-    : rep (new octave_eval_string_reader (str))
+  octave_input_reader (const std::string& str, octave_base_lexer *lxr = 0)
+    : rep (new octave_eval_string_reader (str, lxr))
   { }
 
   octave_input_reader (const octave_input_reader& ir)

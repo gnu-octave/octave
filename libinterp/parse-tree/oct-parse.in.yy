@@ -1644,11 +1644,6 @@ octave_base_parser::~octave_base_parser (void)
   delete &lexer;
 }
 
-void octave_base_parser::init (void)
-{
-  LEXER = &lexer;
-}
-
 void
 octave_base_parser::reset (void)
 {
@@ -3424,8 +3419,6 @@ void
 octave_push_parser::init (void)
 {
   parser_state = yypstate_new ();
-
-  octave_base_parser::init ();
 }
 
 // Parse input from INPUT.  Pass TRUE for EOF if the end of INPUT should
@@ -4241,11 +4234,6 @@ eval_string (const std::string& eval_str, bool silent,
 {
   octave_value_list retval;
 
-  unwind_protect frame;
-
-  // octave_base_parser constructor sets this for us.
-  frame.protect_var (LEXER);
-
   octave_parser parser (eval_str);
 
   do
@@ -4253,9 +4241,6 @@ eval_string (const std::string& eval_str, bool silent,
       parser.reset ();
 
       parse_status = parser.run ();
-
-      // Unmark forced variables.
-      frame.run (1);
 
       if (parse_status == 0)
         {

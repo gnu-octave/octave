@@ -682,9 +682,6 @@ public:
 
   int show_token (int tok);
 
-  // For unwind protect.
-  static void cleanup (octave_base_lexer *lexer) { delete lexer; }
-
 protected:
 
   std::stack<int> start_state_stack;
@@ -702,15 +699,15 @@ octave_lexer : public octave_base_lexer
 public:
 
   octave_lexer (void)
-    : octave_base_lexer (), input_reader ()
+    : octave_base_lexer (), input_reader (this)
   { }
 
   octave_lexer (FILE *file)
-    : octave_base_lexer (), input_reader (file)
+    : octave_base_lexer (), input_reader (file, this)
   { }
 
   octave_lexer (const std::string& eval_string)
-    : octave_base_lexer (), input_reader (eval_string)
+    : octave_base_lexer (), input_reader (eval_string, this)
   { }
 
   void reset (void)

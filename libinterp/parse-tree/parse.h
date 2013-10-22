@@ -138,13 +138,9 @@ public:
       curr_class_name (), function_scopes (), primary_fcn_ptr (0),
       subfunction_names (), stmt_list (0),
       lexer (lxr)
-  {
-    init ();
-  }
+  { }
 
   ~octave_base_parser (void);
-
-  void init (void);
 
   void reset (void);
 

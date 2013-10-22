@@ -1392,12 +1392,20 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 void
 opengl_renderer::draw_axes (const axes::properties& props)
 {
+  static double floatmax = std::numeric_limits<float>::max ();
+
   double x_min = props.get_x_min ();
   double x_max = props.get_x_max ();
   double y_min = props.get_y_min ();
   double y_max = props.get_y_max ();
   double z_min = props.get_z_min ();
   double z_max = props.get_z_max ();
+
+  if (x_max > floatmax || y_max > floatmax || z_max > floatmax)
+  {
+    warning ("gl-render: data limits greater than float capacity");
+    return;
+  }
 
   setup_opengl_transformation (props);
 

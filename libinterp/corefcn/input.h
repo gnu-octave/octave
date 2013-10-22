@@ -124,6 +124,12 @@ public:
 
   virtual bool reading_script_file (void) const;
 
+  virtual bool input_from_terminal (void) const { return false; }
+
+  virtual bool input_from_file (void) const { return false; }
+
+  virtual bool input_from_eval_string (void) const { return false; }
+
 private:
 
   int count;
@@ -150,6 +156,8 @@ public:
 
   std::string input_source (void) const { return in_src; }
 
+  bool input_from_terminal (void) const { return true; }
+
 private:
 
   static const std::string in_src;
@@ -166,6 +174,8 @@ public:
   std::string get_input (bool& eof);
 
   std::string input_source (void) const { return in_src; }
+
+  bool input_from_file (void) const { return true; }
 
 private:
 
@@ -187,6 +197,8 @@ public:
   std::string get_input (bool& eof);
 
   std::string input_source (void) const { return in_src; }
+
+  bool input_from_eval_string (void) const { return true; }
 
 private:
 
@@ -252,6 +264,21 @@ public:
   std::string input_source (void) const
   {
     return rep->input_source ();
+  }
+
+  bool input_from_terminal (void) const
+  {
+    return rep->input_from_terminal ();
+  }
+
+  bool input_from_file (void) const
+  {
+    return rep->input_from_file ();
+  }
+
+  bool input_from_eval_string (void) const
+  {
+    return rep->input_from_eval_string ();
   }
 
 private:

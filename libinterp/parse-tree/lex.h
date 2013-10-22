@@ -732,17 +732,17 @@ public:
 
   bool input_from_terminal (void) const
   {
-    return input_source () == "terminal";
+    return input_reader.input_from_terminal ();
   }
 
   bool input_from_file (void) const
   {
-    return input_source () == "file";
+    return input_reader.input_from_file ();
   }
 
   bool input_from_eval_string (void) const
   {
-    return input_source () == "eval_string";
+    return input_reader.input_from_eval_string ();
   }
 
   int fill_flex_buffer (char *buf, unsigned int max_size);

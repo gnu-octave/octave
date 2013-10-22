@@ -53,6 +53,8 @@ function h = surface (varargin)
 
   if (isempty (hax))
     hax = gca ();
+  else
+    hax = hax(1);
   endif
   
   [htmp, bad_usage] = __surface__ (hax, varargin{:});

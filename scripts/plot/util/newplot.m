@@ -91,12 +91,19 @@ function hax = newplot (hsave = [])
   if (! isempty (hsave))
     ## Find the first valid axes 
     ca = ancestor (hsave, "axes", "toplevel"); 
+    if (iscell (ca))
+      ca = [ca{:}];
+    endif
     ca = ca(find (ca, 1));
+    hsave(hsave == ca) = [];
     ## Next, find the figure associated with any axis found
     if (! isempty (ca))
       cf = ancestor (ca, "figure", "toplevel");
     else
       cf = ancestor (hsave, "figure", "toplevel"); 
+      if (iscell (cf))
+        cf = [cf{:}];
+      endif
       cf = cf(find (cf, 1));
     endif
   endif
@@ -159,7 +166,18 @@ function hax = newplot (hsave = [])
     case "add"
       ## Default case.  Doesn't require action.
     case "replacechildren"
-      delete (get (ca, "children"));
+      if (! deleteall && ca != hsave)
+        ## preserve hsave and its parents, uncles, ...
+        kids = allchild (ca);
+        hkid = hsave;
+        while (! any (hkid == kids))
+          hkid = get (hkid, "parent");
+        endwhile
+        kids(kids == hkid) = [];
+        delete (kids);
+      else
+        delete (get (ca, "children"));
+      endif
     case "replace"
       if (! deleteall && ca != hsave)
         ## preserve hsave and its parents, uncles, ...
@@ -223,7 +241,7 @@ endfunction
 %!   ## kids are preserved for hggroups
 %!   kids = get (hg1, "children");
 %!   newplot (hg1); 
-%!   assert (get (hg1, "children"), kids));
+%!   assert (get (hg1, "children"), kids);
 %! 
 %!   ## preserve objects
 %!   newplot (li1);

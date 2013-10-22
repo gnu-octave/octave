@@ -28,7 +28,6 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   h = [];
   parent = find (strcmpi (varargin, "parent"), 1);
   
-
   ## Look for a scalar which is a graphics handle but not the
   ## Root Figure (0) or an ordinary figure (integer).
   if (numel (varargin) > 0 && numel (varargin{1}) == 1
@@ -50,7 +49,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
         varargin(parent:parent+1) = [];
       else
         ## 'parent' property for some other type like hggroup
-        h = htmp;
+        h = [ancestor(htmp, "axes"), htmp];
       endif
     else
       error ("%s: expecting parent value to be axes handle", caller);

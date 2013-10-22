@@ -596,6 +596,7 @@ parser::global_search (const QString& text, int max_founds)
               line_start = node_text.lastIndexOf ("\n", pos);
               line_end = node_text.indexOf ("\n", pos);
               QString line = node_text.mid (line_start, line_end - line_start).trimmed ();
+              pos += re.matchedLength ();
 
               if (founds == 0)
                 {
@@ -612,8 +613,6 @@ parser::global_search (const QString& text, int max_founds)
               results.append ("<br>\n");
 
               founds++;
-
-              pos += re.matchedLength ();
             }
         }
       io->close ();

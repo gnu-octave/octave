@@ -59,13 +59,17 @@ function h = rectangle (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("rectangle", varargin{:});
 
+  if (isempty (hax))
+    hax = gca ();
+  else
+    hax = hax(1);
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect
-    hax = newplot (hax);
-
     htmp = __rectangle__ (hax, varargin{:});
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -85,6 +89,7 @@ function hg = __rectangle__ (hax, varargin)
   curv2 = [0, 0];
   ec = [0, 0, 0];
   fc = "none";
+  parent = [];
 
   while (iarg < length (varargin))
     arg = varargin{iarg};
@@ -109,6 +114,9 @@ function hg = __rectangle__ (hax, varargin)
         varargin(iarg:iarg+1) = [];
       elseif (strcmpi (arg, "facecolor"))
         fc = varargin{iarg+1};
+        varargin(iarg:iarg+1) = [];
+      elseif (strcmpi (arg, "parent"))
+        parent = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];
       else
         iarg ++;
@@ -145,7 +153,11 @@ function hg = __rectangle__ (hax, varargin)
          pos(2) + pos(4) + cy, pos(2) + c(2)];
   endif
 
-  hg = hggroup ();
+  if (! isempty (parent))
+    hg = hggroup ("parent", parent);
+  else
+    hg = hggroup ("parent", hax);
+  endif
 
   h = patch ("xdata", x(:), "ydata", y(:), "facecolor", fc, "edgecolor", ec,
              "parent", hg, varargin{:});

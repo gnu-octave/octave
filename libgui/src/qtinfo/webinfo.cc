@@ -106,10 +106,14 @@ webinfo::set_info_path (const QString& info_path)
 void
 webinfo::load_node (const QString& node_name)
 {
+  // no XREF in the tabs
+  QString tab_text = node_name;
+  tab_text.replace("XREF","");
+
   //Check if node has been already opened.
   for (int i = 0;i < _tab_bar->count (); i++)
     {
-      if (node_name == _tab_bar->tabText (i))
+      if (tab_text == _tab_bar->tabText (i))
         {
           _tab_bar->setCurrentIndex (i);
           return;
@@ -118,7 +122,7 @@ webinfo::load_node (const QString& node_name)
 
   QString text = _parser.search_node (node_name);
   int i = _parser.is_ref (node_name);
-  _text_browser = addNewTab (node_name);
+  _text_browser = addNewTab (tab_text);
   _text_browser->setHtml (_parser.node_text_to_html (text, i - 1, "anchor"));
 
   if (i != -1)

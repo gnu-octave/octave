@@ -295,17 +295,59 @@ file_editor::request_open_file (const QString& openFileName, int line,
               else
                 {
                   delete fileEditorTab;
-                  // Create a NonModal message about error.
-                  QMessageBox *msgBox
-                    = new QMessageBox (QMessageBox::Critical,
-                                       tr ("Octave Editor"),
-                                       tr ("Could not open file %1 for read:\n%2.").
-                                       arg (openFileName).arg (result),
-                                       QMessageBox::Ok, this);
 
-                  msgBox->setWindowModality (Qt::NonModal);
-                  msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                  msgBox->show ();
+                  if (QFile::exists (openFileName))
+                    {
+                      // File not readable: create a NonModal message about error.
+                      QMessageBox *msgBox
+                        = new QMessageBox (QMessageBox::Critical,
+                                   tr ("Octave Editor"),
+                                   tr ("Could not open file\n%1\nfor read: %2.").
+                                   arg (openFileName).arg (result),
+                                   QMessageBox::Ok, this);
+
+                      msgBox->setWindowModality (Qt::NonModal);
+                      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                      msgBox->show ();
+                    }
+                  else
+                    {
+                      // File does not exist
+                      QMessageBox *msgBox
+                        = new QMessageBox (QMessageBox::Question,
+                           tr ("Octave Editor"),
+                           tr ("File\n%1\ndoes not exist. "
+                               "Do you want to create it?").arg (openFileName),
+                           QMessageBox::Yes | QMessageBox::No, this);
+
+                      // msgBox->setWindowModality (Qt::Modal);
+                      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                      int answer = msgBox->exec ();
+
+                      if (answer == QMessageBox::Yes)
+                        {
+                          // create the file and call the editor again
+                          QFile file (openFileName);
+                          if (!file.open (QIODevice::WriteOnly))
+                            {
+                              // error opening the file
+                              msgBox = new QMessageBox (QMessageBox::Critical,
+                                   tr ("Octave Editor"),
+                                   tr ("Could not open file\n%1\nfor write: %2.").
+                                   arg (openFileName).arg (file.errorString ()),
+                                   QMessageBox::Ok, this);
+
+                              msgBox->setWindowModality (Qt::NonModal);
+                              msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                              msgBox->show ();
+                            }
+                          else
+                            {
+                              file.close ();
+                              request_open_file (openFileName);
+                            }
+                        }
+                    }
                 }
             }
 

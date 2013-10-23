@@ -710,6 +710,19 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="editor_create_new file">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Create non existing files without prompting</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>

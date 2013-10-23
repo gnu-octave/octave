@@ -119,6 +119,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width",2).toInt ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
+  ui->editor_create_new_file->setChecked (settings->value ("editor/create_new_file",false).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
   ui->showFileSize->setChecked (settings->value ("filesdockwidget/showFileSize",false).toBool());
@@ -443,6 +444,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/tab_width", ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
+  settings->setValue ("editor/create_new_file", ui->editor_create_new_file->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
   settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont().family());
   settings->setValue ("filesdockwidget/showFileSize", ui->showFileSize->isChecked ());

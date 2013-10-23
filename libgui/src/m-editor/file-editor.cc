@@ -312,17 +312,24 @@ file_editor::request_open_file (const QString& openFileName, int line,
                     }
                   else
                     {
-                      // File does not exist
-                      QMessageBox *msgBox
-                        = new QMessageBox (QMessageBox::Question,
-                           tr ("Octave Editor"),
-                           tr ("File\n%1\ndoes not exist. "
-                               "Do you want to create it?").arg (openFileName),
-                           QMessageBox::Yes | QMessageBox::No, this);
+                      // File does not exist, should it be crated?
+                      QMessageBox *msgBox;
+                      int answer;
+                      if (settings->value ("editor/create_new_file",false).toBool ())
+                        {
+                          answer = QMessageBox::Yes;
+                        }
+                      else
+                        {
+                           msgBox = new QMessageBox (QMessageBox::Question,
+                               tr ("Octave Editor"),
+                               tr ("File\n%1\ndoes not exist. "
+                                   "Do you want to create it?").arg (openFileName),
+                               QMessageBox::Yes | QMessageBox::No, this);
 
-                      // msgBox->setWindowModality (Qt::Modal);
-                      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                      int answer = msgBox->exec ();
+                          msgBox->setAttribute (Qt::WA_DeleteOnClose);
+                          answer = msgBox->exec ();
+                        }
 
                       if (answer == QMessageBox::Yes)
                         {

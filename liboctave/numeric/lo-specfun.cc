@@ -379,7 +379,7 @@ xgamma (double x)
 #else
       F77_XFCN (xdgamma, XDGAMMA, (x, result));
 #endif
-      if (xisinf (result) && ((int)floor (x) % 2))
+      if (xisinf (result) && (static_cast<int> (gnulib::floor (x)) % 2))
         result = -octave_Inf;
     }
 
@@ -450,7 +450,7 @@ xgamma (float x)
 #else
       F77_XFCN (xgamma, XGAMMA, (x, result));
 #endif
-      if (xisinf (result) && ((int)floor (x) % 2))
+      if (xisinf (result) && (static_cast<int> (gnulib::floor (x)) % 2))
         result = -octave_Float_Inf;
     }
 

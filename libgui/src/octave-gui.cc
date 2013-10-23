@@ -49,6 +49,29 @@ along with Octave; see the file COPYING.  If not, see
 #include "main-window.h"
 #include "octave-gui.h"
 
+
+// custom message handler for filtering some messages from qt
+void message_handler (QtMsgType type, const char *msg)
+ {
+     switch (type) {
+     case QtDebugMsg:
+         if (strcmp(msg,"QFileSystemWatcher: skipping native engine") > 0)
+           break;
+         fprintf(stderr, "Debug: %s\n", msg);
+         break;
+     case QtWarningMsg:
+         fprintf(stderr, "Warning: %s\n", msg);
+         break;
+     case QtCriticalMsg:
+         fprintf(stderr, "Critical: %s\n", msg);
+         break;
+     case QtFatalMsg:
+         fprintf(stderr, "Fatal: %s\n", msg);
+         abort();
+     }
+ }
+
+
 // Dissociate from the controlling terminal, if any.
 
 static void
@@ -95,6 +118,8 @@ octave_start_gui (int argc, char *argv[], bool fork)
 {
   if (fork)
     dissociate_terminal ();
+
+  qInstallMsgHandler(message_handler);
 
   QApplication application (argc, argv);
 

@@ -69,6 +69,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
     directory.append ("/");
 
   _file_name = directory;
+  _file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
   _edit_area = new octave_qscintilla (this);
   // Connect signal for command execution to a slot of this tab which in turn

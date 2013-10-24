@@ -425,7 +425,13 @@ function print (varargin)
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))
-      for n = 1:numel (props)
+      ## Restore figure position and units first
+      for n = 2:-1:1
+        if (ishandle (props(n).h))
+          set (props(n).h, props(n).name, props(n).value{1});
+        endif
+      endfor
+      for n = numel (props):-1:3
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif

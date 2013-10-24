@@ -879,7 +879,7 @@ will cause @code{nargout} to return 2 inside the function\n\
 In the second usage,\n\
 \n\
 @example\n\
-nargout (@@histc) \% or nargout ('histc')\n\
+nargout (@@histc) \% or nargout (\"histc\")\n\
 @end example\n\
 \n\
 @noindent\n\

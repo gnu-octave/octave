@@ -529,7 +529,7 @@ derivatives.\n\
 \n\
 @example\n\
 @group\n\
- K   Function   Scale factor (if 'opt' is supplied)\n\
+ K   Function   Scale factor (if \"opt\" is supplied)\n\
 ---  --------   ---------------------------------------\n\
  0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
  1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\

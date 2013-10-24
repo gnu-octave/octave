@@ -173,7 +173,7 @@ function retval = isOctave
   persistent cacheval;  % speeds up repeated calls
 
   if isempty (cacheval)
-    cacheval = (exist ('OCTAVE_VERSION', 'builtin') > 0);
+    cacheval = (exist ("OCTAVE_VERSION", "builtin") > 0);
   end
 
   retval = cacheval;
@@ -253,11 +253,11 @@ runtime using the @code{javaaddpath} and @code{javarmpath} functions.
 Example:
 
 @example
-octave> base_path = 'C:/Octave/java_files';
+octave> base_path = "C:/Octave/java_files";
 
 octave> % add two JARchives to the dynamic classpath
-octave> javaaddpath ([base_path, '/someclasses.jar']);
-octave> javaaddpath ([base_path, '/moreclasses.jar']);
+octave> javaaddpath ([base_path, "/someclasses.jar"]);
+octave> javaaddpath ([base_path, "/moreclasses.jar"]);
 
 octave> % check the dynamic classpath
 octave> p = javaclasspath;
@@ -267,7 +267,7 @@ octave> disp (p@{2@});
 C:/Octave/java_files/moreclasses.jar
 
 octave> % remove the first element from the classpath
-octave> javarmpath ([base_path, '/someclasses.jar']);
+octave> javarmpath ([base_path, "/someclasses.jar"]);
 octave> p = javaclasspath;
 octave> disp (p@{1@});
 C:/Octave/java_files/moreclasses.jar
@@ -287,8 +287,8 @@ to the Java search path.
 @example
 @group
 % contents of .octaverc:
-addpath ('~/octave');
-javaaddpath ('~/octave/myclasses.jar');
+addpath ("~/octave");
+javaaddpath ("~/octave/myclasses.jar");
 @end group
 @end example
 
@@ -305,7 +305,7 @@ The function @code{javaObject} can be used to create Java objects..
 Example:
 
 @example
-Passenger = javaObject ('package.FirstClass', row, seat);
+Passenger = javaObject ("package.FirstClass", row, seat);
 @end example
 
 @c ------------------------------------------------------------------------
@@ -377,7 +377,7 @@ or in Octave:
 
 @example
 @group
-octave> javaMethod ('getProperty', 'java.lang.System', 'MyProperty');
+octave> javaMethod ("getProperty", "java.lang.System", "MyProperty");
 ans = 12.34
 @end group
 @end example

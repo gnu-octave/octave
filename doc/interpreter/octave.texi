@@ -795,6 +795,7 @@ Creating Packages
 * The DESCRIPTION File::
 * The INDEX File::
 * PKG_ADD and PKG_DEL Directives::
+* Missing Components::
 
 External Code Interface
 

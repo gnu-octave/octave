@@ -2556,6 +2556,7 @@ an unknown identifier is requested.\n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
+@seealso{missing_component_hook}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);
@@ -2632,6 +2633,7 @@ The hook function is expected to be of the form\n\
 Octave will call @var{fcn} with the name of the function that requires the\n\
 component and a string describing the missing component.  The hook function\n\
 should return an error message to be displayed.\n\
+@seealso{missing_function_hook}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);

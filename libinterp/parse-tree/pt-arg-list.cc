@@ -127,7 +127,26 @@ static int index_position = 0;
 static int num_indices = 0;
 
 DEFCONSTFUN (end, , ,
-  "internal function")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} end\n\
+The magic index @qcode{\"end\"} refers to the last valid entry in an indexing\n\
+operation.\n\
+\n\
+Example:\n\
+\n\
+@example\n\
+@group\n\
+@var{x} = [ 1 2 3 \n\
+      4 5 6 ];\n\
+@var{x}(1,end)\n\
+    @result{} 3\n\
+@var{x}(end,1)\n\
+    @result{} 4\n\
+@var{x}(end,end)\n\
+    @result{} 6\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value retval;
 

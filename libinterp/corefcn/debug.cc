@@ -1235,7 +1235,7 @@ Display or return current debugging function stack information.\n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
 \n\
 Although accepted, the argument @var{-completenames} is silently ignored.\n\
-Octave always returns absolute file names. The arguments @var{n} and\n\
+Octave always returns absolute file names.  The arguments @var{n} and\n\
 @var{-completenames} can be both specified in any order.\n\
 \n\
 The optional return argument @var{stack} is a struct array with the\n\

@@ -57,7 +57,7 @@ void message_handler (QtMsgType type, const char *msg)
    switch (type)
      {
      case QtDebugMsg:
-       if (strcmp (msg, "QFileSystemWatcher: skipping native engine") == 0)
+       if (strncmp (msg, "QFileSystemWatcher: skipping native engine",42) != 0)
          std::cerr << "Debug: " << msg << std::endl;
        break;
 

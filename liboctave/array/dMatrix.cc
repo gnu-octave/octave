@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague, a.s.
 

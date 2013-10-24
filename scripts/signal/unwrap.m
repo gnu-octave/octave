@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Bill Lash
+## Copyright (C) 2000-2013 Bill Lash
 ##
 ## This file is part of Octave.
 ##

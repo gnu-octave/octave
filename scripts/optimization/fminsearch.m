@@ -1,5 +1,5 @@
 ## Copyright (C) 2003,2012 Andy Adler
-## Copyright (C) 2002 N.J.Higham
+## Copyright (C) 2002, 2013 N.J.Higham
 ##
 ## This file is part of Octave.
 ##
@@ -116,7 +116,7 @@ endfunction
 ##    and Applied Mathematics, Philadelphia, PA, 1999.
 
 ## From Matrix Toolbox
-## Copyright (C) 2002 N.J.Higham
+## Copyright (C) 2002, 2013 N.J.Higham
 ## www.maths.man.ac.uk/~higham/mctoolbox
 ##
 ## Modifications for Octave by A.Adler 2003

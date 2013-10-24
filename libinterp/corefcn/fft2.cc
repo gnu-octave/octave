@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2012 David Bateman
+Copyright (C) 1997-2013 David Bateman
 Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.

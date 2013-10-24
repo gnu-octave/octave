@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2012 Ben Sapp
+Copyright (C) 2001-2013 Ben Sapp
 
 This file is part of Octave.
 

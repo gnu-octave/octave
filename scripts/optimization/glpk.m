@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Nicolo' Giorgetti
+## Copyright (C) 2005-2013 Nicolo' Giorgetti
 ## Copyright (C) 2013 Sébastien Villemot <sebastien@debian.org>
 ##
 ## This file is part of Octave.

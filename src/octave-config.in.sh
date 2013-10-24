@@ -2,7 +2,7 @@
 ##
 ## octave-config - reports some configuration values for Octave
 ##
-## Copyright (C) 2001-2012 John W. Eaton
+## Copyright (C) 2001-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

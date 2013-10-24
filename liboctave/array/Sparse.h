@@ -1,7 +1,7 @@
 // Template sparse classes
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 

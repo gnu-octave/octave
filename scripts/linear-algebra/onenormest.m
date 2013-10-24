@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 Regents of the University of California
+## Copyright (C) 2007-2013 Regents of the University of California
 ##
 ## This file is part of Octave.
 ##

@@ -1,7 +1,7 @@
 /*
     This source file was part of Konsole, a terminal emulator.
 
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
+    Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 

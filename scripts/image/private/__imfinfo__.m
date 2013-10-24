@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Soren Hauberg
+## Copyright (C) 2008-2013 Soren Hauberg
 ## Copyright (C) 2013 Carnë Draug
 ##
 ## This file is part of Octave.

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Ben Abbott and Jaroslav Hajek
+## Copyright (C) 2008-2013 Ben Abbott and Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##

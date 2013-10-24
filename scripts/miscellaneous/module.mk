@@ -6,11 +6,11 @@ miscellaneous_PRIVATE_FCN_FILES = \
 
 miscellaneous_FCN_FILES = \
   miscellaneous/ans.m \
-  miscellaneous/bincoeff.m \
   miscellaneous/bug_report.m \
   miscellaneous/bunzip2.m \
   miscellaneous/bzip2.m \
   miscellaneous/cast.m \
+  miscellaneous/colon.m \
   miscellaneous/citation.m \
   miscellaneous/comma.m \
   miscellaneous/compare_versions.m \
@@ -28,6 +28,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
   miscellaneous/fullfile.m \
+  miscellaneous/genvarname.m \
   miscellaneous/getappdata.m \
   miscellaneous/getfield.m \
   miscellaneous/gunzip.m \

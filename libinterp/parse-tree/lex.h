@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -501,8 +501,50 @@ public:
     bool eof;
   };
 
+  // Collect comment text.
+
+  class
+  comment_buffer
+  {
+  public:
+
+    comment_buffer (void) : comment_list (0) { }
+
+    ~comment_buffer (void) { delete comment_list; }
+
+    void append (const std::string& s, octave_comment_elt::comment_type t)
+    {
+      if (! comment_list)
+        comment_list = new octave_comment_list ();
+
+      comment_list->append (s, t);
+    }
+
+    // Caller is expected to delete the returned value.
+
+    octave_comment_list *get_comment (void)
+    {
+      octave_comment_list *retval = comment_list;
+
+      comment_list = 0;
+
+      return retval;
+    }
+
+    void reset (void)
+    {
+      delete comment_list;
+
+      comment_list = 0;
+    }
+
+  private:
+
+    octave_comment_list *comment_list;
+  };
+
   octave_base_lexer (void)
-    : lexical_feedback (), scanner (0), input_buf ()
+    : lexical_feedback (), scanner (0), input_buf (), comment_buf ()
   {
     init ();
   }
@@ -553,6 +595,8 @@ public:
 
   void finish_comment (octave_comment_elt::comment_type typ);
 
+  octave_comment_list *get_comment (void) { return comment_buf.get_comment (); }
+
   int handle_close_bracket (int bracket_type);
 
   bool looks_like_command_arg (void);
@@ -590,6 +634,9 @@ public:
 
   // Object that reads and buffers input.
   input_buffer input_buf;
+
+  // Object that collects comment text.
+  comment_buffer comment_buf;
 
   virtual void increment_promptflag (void) = 0;
 
@@ -643,9 +690,6 @@ public:
 
   int show_token (int tok);
 
-  // For unwind protect.
-  static void cleanup (octave_base_lexer *lexer) { delete lexer; }
-
 protected:
 
   std::stack<int> start_state_stack;
@@ -663,15 +707,15 @@ octave_lexer : public octave_base_lexer
 public:
 
   octave_lexer (void)
-    : octave_base_lexer (), input_reader ()
+    : octave_base_lexer (), input_reader (this)
   { }
 
   octave_lexer (FILE *file)
-    : octave_base_lexer (), input_reader (file)
+    : octave_base_lexer (), input_reader (file, this)
   { }
 
   octave_lexer (const std::string& eval_string)
-    : octave_base_lexer (), input_reader (eval_string)
+    : octave_base_lexer (), input_reader (eval_string, this)
   { }
 
   void reset (void)
@@ -696,17 +740,17 @@ public:
 
   bool input_from_terminal (void) const
   {
-    return input_source () == "terminal";
+    return input_reader.input_from_terminal ();
   }
 
   bool input_from_file (void) const
   {
-    return input_source () == "file";
+    return input_reader.input_from_file ();
   }
 
   bool input_from_eval_string (void) const
   {
-    return input_source () == "eval_string";
+    return input_reader.input_from_eval_string ();
   }
 
   int fill_flex_buffer (char *buf, unsigned int max_size);

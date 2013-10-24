@@ -1,7 +1,7 @@
 // Template sparse array class
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -301,8 +301,6 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     (*current_liboctave_error_handler)
       ("sparse: column index %d out of bound %d", r.extent (nc), nc);
 
-  rep = new typename Sparse<T>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
-
   dimensions = dim_vector (nr, nc);
 
   octave_idx_type n = a.numel (), rl = r.length (nr), cl = c.length (nc);
@@ -317,6 +315,9 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
 
   if ((rl != 1 && rl != n) || (cl != 1 && cl != n))
     (*current_liboctave_error_handler) ("sparse: dimension mismatch");
+
+  // Only create rep after input validation to avoid memory leak.
+  rep = new typename Sparse<T>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
 
   if (rl <= 1 && cl <= 1)
     {

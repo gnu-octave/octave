@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Michael Goffioul
+Copyright (C) 2008-2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -1392,12 +1392,21 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 void
 opengl_renderer::draw_axes (const axes::properties& props)
 {
+  static double floatmax = std::numeric_limits<float>::max ();
+
   double x_min = props.get_x_min ();
   double x_max = props.get_x_max ();
   double y_min = props.get_y_min ();
   double y_max = props.get_y_max ();
   double z_min = props.get_z_min ();
   double z_max = props.get_z_max ();
+
+  if (x_max > floatmax || y_max > floatmax || z_max > floatmax
+      || x_min < -floatmax || y_min < -floatmax || z_min < -floatmax)
+  {
+    warning ("gl-render: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
+    return;
+  }
 
   setup_opengl_transformation (props);
 
@@ -2548,6 +2557,12 @@ opengl_renderer::draw_image (const image::properties& props)
 
   const ColumnVector p0 = xform.transform (x(0), y(0), 0);
   const ColumnVector p1 = xform.transform (x(1), y(1), 0);
+
+  if (xisnan (p0(0)) || xisnan (p0(1)) || xisnan (p1(0)) || xisnan (p1(1)))
+    {
+      warning ("gl-render: image x,y data too large to draw");
+      return;
+    }
 
   // image pixel size in screen pixel units
   float pix_dx, pix_dy;

@@ -1,7 +1,7 @@
 // RowVector manipulations.
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -160,7 +160,7 @@ FloatComplexRowVector::fill (float val, octave_idx_type c1, octave_idx_type c2)
       return *this;
     }
 
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   if (c2 >= c1)
     {
@@ -184,7 +184,7 @@ FloatComplexRowVector::fill (const FloatComplex& val, octave_idx_type c1, octave
       return *this;
     }
 
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   if (c2 >= c1)
     {
@@ -242,7 +242,7 @@ conj (const FloatComplexRowVector& a)
 FloatComplexRowVector
 FloatComplexRowVector::extract (octave_idx_type c1, octave_idx_type c2) const
 {
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   octave_idx_type new_c = c2 - c1 + 1;
 

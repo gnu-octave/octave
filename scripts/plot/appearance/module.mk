@@ -12,6 +12,7 @@ plot_appearance_FCN_FILES = \
   plot/appearance/caxis.m \
   plot/appearance/clabel.m \
   plot/appearance/daspect.m \
+  plot/appearance/datetick.m \
   plot/appearance/diffuse.m \
   plot/appearance/grid.m \
   plot/appearance/gtext.m \

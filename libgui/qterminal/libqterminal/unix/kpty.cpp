@@ -1,7 +1,7 @@
 /*
 
    This file is part of the KDE libraries
-   Copyright (C) 2002 Waldo Bastian <bastian@kde.org>
+   Copyright (C) 2002, 2013 Waldo Bastian <bastian@kde.org>
    Copyright (C) 2002-2003,2007 Oswald Buddenhagen <ossi@kde.org>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008

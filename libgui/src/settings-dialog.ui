@@ -32,9 +32,9 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
-     <widget class="QWidget" name="tab_4">
+     <widget class="QWidget" name="tab_general">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -190,7 +190,7 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab_editor">
       <attribute name="title">
        <string>Editor</string>
       </attribute>
@@ -203,7 +203,7 @@
          <item>
           <layout class="QGridLayout" name="editor_common_settings_grid">
            <property name="spacing">
-            <number>-1</number>
+            <number>6</number>
            </property>
            <item row="2" column="0">
             <widget class="QCheckBox" name="editor_ws_checkbox">
@@ -710,6 +710,19 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="editor_create_new file">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Create non existing files without prompting</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>
@@ -783,7 +796,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_6">
+     <widget class="QWidget" name="tab_editor_styles">
       <attribute name="title">
        <string>Editor Styles</string>
       </attribute>
@@ -826,7 +839,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tabs_editor_styles">
+         <widget class="QTabWidget" name="tabs_editor_lexers">
           <property name="maximumSize">
            <size>
             <width>676</width>
@@ -838,7 +851,7 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_5">
+     <widget class="QWidget" name="tab_terminal">
       <attribute name="title">
        <string>Terminal</string>
       </attribute>
@@ -1012,7 +1025,7 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tab_file_browser">
       <attribute name="title">
        <string>File Browser</string>
       </attribute>
@@ -1139,7 +1152,7 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="tab_network">
       <attribute name="title">
        <string>Network</string>
       </attribute>

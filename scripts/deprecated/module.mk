@@ -6,12 +6,13 @@ deprecated_FCN_FILES = \
   deprecated/corrcoef.m \
   deprecated/cut.m \
   deprecated/default_save_options.m \
-  deprecated/java_debug.m \
   deprecated/error_text.m \
   deprecated/gen_doc_cache.m \
+  deprecated/interp1q.m \
   deprecated/isequalwithequalnans.m \
   deprecated/isstr.m \
   deprecated/java_convert_matrix.m \
+  deprecated/java_debug.m \
   deprecated/java_get.m \
   deprecated/java_invoke.m \
   deprecated/java_new.m \

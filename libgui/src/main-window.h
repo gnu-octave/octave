@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -115,7 +115,7 @@ public slots:
   void open_agora_page (void);
   void open_contribute_page (void);
   void open_developer_page (void);
-  void process_settings_dialog_request (void);
+  void process_settings_dialog_request (const QString& desired_tab = QString ());
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
   void prepare_to_exit (void);

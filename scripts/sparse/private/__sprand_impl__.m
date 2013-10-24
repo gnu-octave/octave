@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 Paul Kienzle
+## Copyright (C) 2004-2013 Paul Kienzle
 ## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
@@ -70,6 +70,7 @@ function S = __sprand_impl__ (varargin)
     k = min (length (idx), k);
     j = floor ((idx(1:k) - 1) / m);
     i = idx(1:k) - j * m;
+    j++;
   else
     idx = randperm (mn, k);
     [i, j] = ind2sub ([m, n], idx);

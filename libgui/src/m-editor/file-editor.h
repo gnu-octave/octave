@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -98,6 +98,7 @@ signals:
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
                                    int line = -1);
   void fetab_set_focus (const QWidget* ID);
+  void request_settings_dialog (const QString&);
 
 public slots:
   void focus (void);
@@ -173,6 +174,8 @@ private slots:
   void request_open_file (const QString& fileName, int line = -1,
                           bool debug_pointer = false,
                           bool breakpoint_marker = false, bool insert = true);
+  void request_preferences (bool);
+  void request_styles_preferences (bool);
 
 private:
 
@@ -221,6 +224,9 @@ private:
 
   QAction *_redo_action;
   QAction *_undo_action;
+
+  QAction *_preferences_action;
+  QAction *_styles_preferences_action;
 
   QTabWidget *_tab_widget;
 

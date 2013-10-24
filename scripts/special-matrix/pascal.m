@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Peter Ekberg
+## Copyright (C) 1999-2013 Peter Ekberg
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.

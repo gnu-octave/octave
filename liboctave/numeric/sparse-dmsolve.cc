@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 David Bateman
+Copyright (C) 2006-2013 David Bateman
 
 This file is part of Octave.
 
@@ -133,8 +133,8 @@ dmsolve_extract (const MArray<T> &m, const octave_idx_type *,
 {
   r2 -= 1;
   c2 -= 1;
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   octave_idx_type new_r = r2 - r1 + 1;
   octave_idx_type new_c = c2 - c1 + 1;

@@ -1,8 +1,8 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
-Copyright (C) 2011-2012 John P. Swensen
+Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2013 John P. Swensen
 
 This file is part of Octave.
 

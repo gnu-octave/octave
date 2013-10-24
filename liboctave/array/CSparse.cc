@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -258,19 +258,26 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseComplexMatrix result;
   dim_vector dv = dims ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
 
-  if (dv.numel () == 0 || dim >= dv.length ())
-    return result;
+
+  if (dim >= dv.length ())
+    {
+      idx_arg.resize (dim_vector (nr, nc), 0);
+      return *this;
+    }
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
 
-  octave_idx_type nr = dv(0);
-  octave_idx_type nc = dv(1);
-
   if (dim == 0)
     {
-      idx_arg.clear (1, nc);
+      idx_arg.resize (dim_vector (nr == 0 ? 0 : 1, nc), 0);
+
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseComplexMatrix (nr == 0 ? 0 : 1, nc);
+
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -330,28 +337,24 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (dim_vector (nr, 1), 0);
+      idx_arg.resize (dim_vector (nr, nc == 0 ? 0 : 1), 0);
 
-      for (octave_idx_type i = cidx (0); i < cidx (1); i++)
-        idx_arg.elem (ridx (i)) = -1;
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseComplexMatrix (nr, nc == 0 ? 0 : 1);
+
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, found, nr);
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        found [i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            if (idx_arg.elem (i) != -1)
-              continue;
-            bool found = false;
-            for (octave_idx_type k = cidx (j); k < cidx (j+1); k++)
-              if (ridx (k) == i)
-                {
-                  found = true;
-                  break;
-                }
-
-            if (!found)
-              idx_arg.elem (i) = j;
-
-          }
+        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+          if (found [ridx (i)] == -j)
+            found [ridx (i)] = -j - 1;
+      
+      for (octave_idx_type i = 0; i < nr; i++)
+        if (found [i] > -nc && found [i] < 0)
+          idx_arg.elem (i) = -found [i];
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -413,19 +416,25 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseComplexMatrix result;
   dim_vector dv = dims ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
 
-  if (dv.numel () == 0 || dim >= dv.length ())
-    return result;
+  if (dim >= dv.length ())
+    {
+      idx_arg.resize (dim_vector (nr, nc), 0);
+      return *this;
+    }
 
   if (dim < 0)
     dim = dv.first_non_singleton ();
 
-  octave_idx_type nr = dv(0);
-  octave_idx_type nc = dv(1);
-
   if (dim == 0)
     {
-      idx_arg.clear (1, nc);
+      idx_arg.resize (dim_vector (nr == 0 ? 0 : 1, nc), 0);
+
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseComplexMatrix (nr == 0 ? 0 : 1, nc);
+
       octave_idx_type nel = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -485,28 +494,24 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
     }
   else
     {
-      idx_arg.resize (dim_vector (nr, 1), 0);
+      idx_arg.resize (dim_vector (nr, nc == 0 ? 0 : 1), 0);
 
-      for (octave_idx_type i = cidx (0); i < cidx (1); i++)
-        idx_arg.elem (ridx (i)) = -1;
+      if (nr == 0 || nc == 0 || dim >= dv.length ())
+        return SparseComplexMatrix (nr, nc == 0 ? 0 : 1);
+
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, found, nr);
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        found [i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          {
-            if (idx_arg.elem (i) != -1)
-              continue;
-            bool found = false;
-            for (octave_idx_type k = cidx (j); k < cidx (j+1); k++)
-              if (ridx (k) == i)
-                {
-                  found = true;
-                  break;
-                }
-
-            if (!found)
-              idx_arg.elem (i) = j;
-
-          }
+        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+          if (found [ridx (i)] == -j)
+            found [ridx (i)] = -j - 1;
+      
+      for (octave_idx_type i = 0; i < nr; i++)
+        if (found [i] > -nc && found [i] < 0)
+          idx_arg.elem (i) = -found [i];
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -555,6 +560,21 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 
   return result;
 }
+
+/*
+
+%!assert (max (max (speye (65536) * 1i)), sparse (1i)) 
+%!assert (min (min (speye (65536) * 1i)), sparse (0)) 
+%!assert (size (max (sparse (8, 0), [], 1)), [1, 0]) 
+%!assert (size (max (sparse (8, 0), [], 2)), [8, 0]) 
+%!assert (size (max (sparse (0, 8), [], 1)), [0, 8]) 
+%!assert (size (max (sparse (0, 8), [], 2)), [0, 1]) 
+%!assert (size (min (sparse (8, 0), [], 1)), [1, 0]) 
+%!assert (size (min (sparse (8, 0), [], 2)), [8, 0]) 
+%!assert (size (min (sparse (0, 8), [], 1)), [0, 8]) 
+%!assert (size (min (sparse (0, 8), [], 2)), [0, 1]) 
+
+*/
 
 ComplexRowVector
 SparseComplexMatrix::row (octave_idx_type i) const

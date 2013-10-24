@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 Kurt Hornik
+@c Copyright (C) 1996-2013 Kurt Hornik
 @c
 @c This file is part of Octave.
 @c

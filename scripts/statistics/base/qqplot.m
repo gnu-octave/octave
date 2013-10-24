@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x})
+## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{y})
 ## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist})
-## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist}, @var{params})
+## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{y}, @var{params})
 ## @deftypefnx {Function File} {} qqplot (@dots{})
 ## Perform a QQ-plot (quantile plot).
 ##
@@ -31,6 +32,9 @@
 ##
 ## If the sample comes from F, except for a transformation of location
 ## and scale, the pairs will approximately follow a straight line.
+##
+## If the second argument is a vector @var{y} the empirical CDF of @var{y}
+## is used as @var{dist}.
 ##
 ## The default for @var{dist} is the standard normal distribution.  The
 ## optional argument @var{params} contains a list of parameters of
@@ -52,7 +56,7 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Perform a QQ-plot (quantile plot)
 
-function [q, s] = qqplot (x, dist, varargin)
+function [qout, sout] = qqplot (x, dist, varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -65,8 +69,10 @@ function [q, s] = qqplot (x, dist, varargin)
   if (nargin == 1)
     f = @stdnormal_inv;
   else
-    if (   exist (invname = sprintf ("%sinv", dist))
-        || exist (invname = sprintf ("%s_inv", dist)))
+    if (isnumeric (dist))
+      f = @(y) empirical_inv (y, dist);
+    elseif (ischar (dist) && (exist (invname = [dist "inv"])
+                              || exist (invname = [dist "%s_inv"])))
       f = str2func (invname);
     else
       error ("qqplot: no inverse CDF found for distribution DIST");
@@ -77,24 +83,32 @@ function [q, s] = qqplot (x, dist, varargin)
   n = length (x);
   t = ((1 : n)' - .5) / n;
   if (nargin <= 2)
-    q = feval (f, t);
+    q = f (t);
     q_label = func2str (f);
   else
-    q = feval (f, t, varargin{:});
-    if (nargin > 3)
-      tmp = sprintf (", %g", varargin{2:end});
+    q = f (t, varargin{:});
+    if (nargin == 3)
+      q_label = sprintf ("%s with parameter %g", func2str (f), varargin{1});
     else
-      tmp = "";
+      q_label = sprintf ("%s with parameters %g", func2str (f), varargin{1});
+      param_str = sprintf (", %g", varargin{2:end});
+      q_label = [q_label param_str]; 
     endif
-    q_label = sprintf ("%s with parameter(s) %g%s",
-                        func2str (f),        varargin{1}, tmp);
   endif
 
   if (nargout == 0)
     plot (q, s);
+    q_label = strrep (q_label, '_inv', '\_inv');
+    if (q_label(1) == '@')
+      q_label = q_label(6:end);  # Strip "@(y) " from anon. function
+    endif
     xlabel (q_label);
     ylabel ("sample points");
+  else
+    qout = q;
+    sout = s;
   endif
 
 endfunction
+
 

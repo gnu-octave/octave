@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 John W. Eaton
+## Copyright (C) 2005-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -91,12 +91,19 @@ function hax = newplot (hsave = [])
   if (! isempty (hsave))
     ## Find the first valid axes 
     ca = ancestor (hsave, "axes", "toplevel"); 
+    if (iscell (ca))
+      ca = [ca{:}];
+    endif
     ca = ca(find (ca, 1));
+    hsave(hsave == ca) = [];
     ## Next, find the figure associated with any axis found
     if (! isempty (ca))
       cf = ancestor (ca, "figure", "toplevel");
     else
       cf = ancestor (hsave, "figure", "toplevel"); 
+      if (iscell (cf))
+        cf = [cf{:}];
+      endif
       cf = cf(find (cf, 1));
     endif
   endif
@@ -138,8 +145,10 @@ function hax = newplot (hsave = [])
 
   if (isempty (ca))
     ca = gca ();
+    deleteall = true;
   else
     set (cf, "currentaxes", ca);
+    deleteall = false;
   endif
 
   ## FIXME: Is this necessary anymore?
@@ -157,10 +166,32 @@ function hax = newplot (hsave = [])
     case "add"
       ## Default case.  Doesn't require action.
     case "replacechildren"
-      delete (get (ca, "children"));
+      if (! deleteall && ca != hsave)
+        ## preserve hsave and its parents, uncles, ...
+        kids = allchild (ca);
+        hkid = hsave;
+        while (! any (hkid == kids))
+          hkid = get (hkid, "parent");
+        endwhile
+        kids(kids == hkid) = [];
+        delete (kids);
+      else
+        delete (get (ca, "children"));
+      endif
     case "replace"
-      __go_axes_init__ (ca, "replace");
-      __request_drawnow__ ();
+      if (! deleteall && ca != hsave)
+        ## preserve hsave and its parents, uncles, ...
+        kids = allchild (ca);
+        hkid = hsave;
+        while (! any (hkid == kids))
+          hkid = get (hkid, "parent");
+        endwhile
+        kids(kids == hkid) = [];
+        delete (kids);
+      else
+        __go_axes_init__ (ca, "replace");
+        __request_drawnow__ ();
+      endif
       ## FIXME: The code above should perform the following:
       ###########################
       ## delete (allchild (ca));
@@ -188,6 +219,37 @@ endfunction
 %!   hax = newplot ();
 %!   assert (hax, gca);
 %!   assert (isempty (get (gca, "children")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   hold on;
+%!   hg1 = hggroup ();
+%!   hg2 = hggroup ("parent", hg1);
+%!   li0 = line (1:10, 1:10);
+%!   li1 = line (1:10, -1:-1:-10, "parent", hg1);
+%!   li2 = line (1:10, sin (1:10), "parent", hg2);
+%!   hold off;
+%!   newplot (hg2);
+%!   assert (ishandle (li0), false);
+%!   assert (get (hax, "children"), hg1);
+%! 
+%!   ## kids are preserved for hggroups
+%!   kids = get (hg1, "children");
+%!   newplot (hg1); 
+%!   assert (get (hg1, "children"), kids);
+%! 
+%!   ## preserve objects
+%!   newplot (li1);
+%!   assert (ishandle (li1));
+%! 
+%!   ## kids are deleted for axes
+%!   newplot (hax);  
+%!   assert (isempty (get (hax, "children")));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

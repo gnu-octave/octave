@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 1992-2012 John W. Eaton
+Copyright (C) 1992-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_RELEASE_DATE %OCTAVE_RELEASE_DATE%
 
 #define OCTAVE_COPYRIGHT %OCTAVE_COPYRIGHT%
+
+#include <string>
 
 extern std::string octave_www_statement (bool html = false);
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDir>
 #include <QFileInfo>
 #include <QVector>
+#include <QHash>
 
 #ifdef HAVE_QSCINTILLA
 #include <QScrollArea>
@@ -50,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexerdiff.h>
 #endif
 
-settings_dialog::settings_dialog (QWidget *p):
+settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   QDialog (p), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
@@ -118,6 +119,7 @@ settings_dialog::settings_dialog (QWidget *p):
   ui->editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width",2).toInt ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
   ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
+  ui->editor_create_new_file->setChecked (settings->value ("editor/create_new_file",false).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
   ui->showFileSize->setChecked (settings->value ("filesdockwidget/showFileSize",false).toBool());
@@ -194,7 +196,18 @@ settings_dialog::settings_dialog (QWidget *p):
   delete lexer;
 #endif
 
-  ui->tabWidget->setCurrentIndex (settings->value("settings/last_tab",0).toInt ());
+  // which tab is the desired one?
+  if (desired_tab.isEmpty ())
+    ui->tabWidget->setCurrentIndex (settings->value("settings/last_tab",0).toInt ());
+  else
+    {
+      QHash <QString, QWidget*> tab_hash;
+      tab_hash["editor"] = ui->tab_editor;
+      tab_hash["editor_styles"] = ui->tab_editor_styles;
+      ui->tabWidget->setCurrentIndex (ui->tabWidget->indexOf (tab_hash.value (desired_tab)));
+    }
+
+
 }
 
 settings_dialog::~settings_dialog ()
@@ -303,9 +316,9 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   scroll_area_contents->setObjectName (QString (lexer->language ())+"_styles");
   scroll_area_contents->setLayout (style_grid);
   scroll_area->setWidget (scroll_area_contents);
-  ui->tabs_editor_styles->addTab (scroll_area,lexer->language ());
+  ui->tabs_editor_lexers->addTab (scroll_area,lexer->language ());
 
-  ui->tabs_editor_styles->setCurrentIndex (
+  ui->tabs_editor_lexers->setCurrentIndex (
           settings->value("settings/last_editor_styles_tab",0).toInt ());
 }
 #endif  
@@ -431,6 +444,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("editor/tab_width", ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
+  settings->setValue ("editor/create_new_file", ui->editor_create_new_file->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
   settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont().family());
   settings->setValue ("filesdockwidget/showFileSize", ui->showFileSize->isChecked ());
@@ -499,7 +513,7 @@ settings_dialog::write_changed_settings ()
 void
 settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
 {
-  QWidget *tab = ui->tabs_editor_styles->
+  QWidget *tab = ui->tabs_editor_lexers->
             findChild <QWidget *>(QString (lexer->language ())+"_styles");
   int styles[MaxLexerStyles];  // array for saving valid styles (enum is not continuous)
   int max_style = get_valid_lexer_styles (lexer, styles);
@@ -575,7 +589,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
   lexer->writeSettings (*settings);
 
   settings->setValue (
-    "settings/last_editor_styles_tab",ui->tabs_editor_styles->currentIndex ());
+    "settings/last_editor_styles_tab",ui->tabs_editor_lexers->currentIndex ());
 }
 #endif
 

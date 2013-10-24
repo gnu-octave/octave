@@ -6,6 +6,9 @@ EXTRA_DIST += \
 
 octave_gui_ICONS = \
   src/icons/arrow_right.png \
+  src/icons/arrow_left.png \
+  src/icons/arrow_up.png \
+  src/icons/arrow_down.png \
   src/icons/artsbuilderexecute.png \
   src/icons/bookmark.png \
   src/icons/bp_next.png \

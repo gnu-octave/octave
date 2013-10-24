@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Martin Hepperle
+## Copyright (C) 2010, 2013 Martin Hepperle
 ##
 ## This file is part of Octave.
 ##
@@ -17,35 +17,35 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{h} =} helpdlg (@var{msg})
-## @deftypefnx {Function File} {@var{h} =} helpdlg (@var{msg}, @var{title})
-## Display @var{msg} in a help dialog box.
+## @deftypefn  {Function File} {@var{h} =} errordlg (@var{msg})
+## @deftypefnx {Function File} {@var{h} =} errordlg (@var{msg}, @var{title})
+## Display @var{msg} using an error dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
-## set the dialog caption.  The default title is @qcode{"Help Dialog"}.
+## set the dialog caption.  The default title is @qcode{"Error Dialog"}.
 ##
 ## The return value is always 1.
-## @seealso{errordlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
+## @seealso{helpdlg, inputdlg, listdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
-function retval = helpdlg (msg, title = "Help Dialog")
+function retval = errordlg (msg, title = "Error Dialog")
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  retval = message_dialog ("helpdlg", msg, title, "help");
+  retval = message_dialog ("errdlg", msg, title, "error");
 
 endfunction
 
 
 %!demo
-%! disp ('- test helpdlg with a help message only.');
-%! helpdlg ("Below, you should see 3 lines:\nline #1\nline #2, and\nline #3.");
+%! disp ('- test errordlg with prompt only.');
+%! errordlg ('Oops, an expected error occured');
 
 %!demo
-%! disp ('- test helpdlg with help message and caption.');
-%! helpdlg ('You should see a single line.','A help dialog');
+%! disp ('- test errordlg with prompt and caption.');
+%! errordlg ('Oops another error','This is a very long and informative caption');
 

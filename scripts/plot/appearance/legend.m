@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 David Bateman
+## Copyright (C) 2010-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -160,7 +160,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (isscalar (kids))
       kids = get (kids, "children")(:);
     else
-      kids = flipud ([get(kids, "children"){:}](:));
+      kids = flipud (vertcat (get (kids, "children"){:}));
     endif
   endif
   nargs = numel (varargin);
@@ -879,8 +879,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                            "facecolor", facecolor, "edgecolor", edgecolor,
                            "cdata", cdata, "userdata", hplots(k));
                 hobjects(end+1) = p1;
+                ## Copy clim from axes so that colors work out.
+                set (hlegend, "clim", get (ca(1), "clim"));
               endif
               ## FIXME: Probably need listeners, as for line objects
+              ##        Changing clim, for example, won't update colors
 
             case "surface"
               facecolor = get (hplots(k), "facecolor");

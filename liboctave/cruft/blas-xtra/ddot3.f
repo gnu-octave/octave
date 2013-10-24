@@ -1,4 +1,4 @@
-c Copyright (C) 2009-2012  VZLU Prague, a.s., Czech Republic
+c Copyright (C) 2009-2013  VZLU Prague, a.s., Czech Republic
 c
 c Author: Jaroslav Hajek <highegg@gmail.com>
 c

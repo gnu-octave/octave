@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -1056,8 +1056,9 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 %! assert (gamma (x), v, sqrt (eps ("single")));
 
 %!test
-%! x = [-1, 0, 1, Inf];
-%! v = [Inf, Inf, 1, Inf];
+%! ## Test exceptional values
+%! x = [-Inf, -1, -0, 0, 1, Inf, NaN];
+%! v = [NaN, NaN, -Inf, Inf, 1, Inf, NaN];
 %! assert (gamma (x), v);
 %! assert (gamma (single (x)), single (v));
 

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012 Jacob Dawid
+Copyright (C) 2012-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -280,7 +280,14 @@ replace_links (QString& text)
       QString type     = re.cap (1);
       QString note     = re.cap (3);
       QString url_link = re.cap (4);
-      QString link     = re.cap (4);
+      QString link     = re.cap (4) + re.cap(5);
+      QString spaces = QString("");
+      QRegExp re_linebreak ("\n([ ]*)([^ ]*)([ ]*)");
+      if (re_linebreak.indexIn (link,0) != -1)
+        {
+          link.replace (re_linebreak,"&nbsp;"+re_linebreak.cap (2)+"\n");   // prevent line breaks in links
+          spaces = re_linebreak.cap (1);
+        }
 
       if (url_link.isEmpty ())
         {
@@ -297,13 +304,13 @@ replace_links (QString& text)
       QString href;
       if (type=="\n*")
         {
-          href="\n<img src=':/actions/icons/bookmark.png'/>";
+          href="\n<img src=':/actions/icons/bookmark.png' width=10/>";
         }
       else
         {
-          href="<img src=':/actions/icons/bookmark.png'/>";
+          href="<img src=':/actions/icons/bookmark.png' width=10/>";
         }
-      href += re.cap (2) + "<a href='" + url_link + "'>" + note + ":" + link + re.cap (5) + "</a>";
+      href += re.cap(2) + "<a href='" + url_link + "'>" + note + ":" + link + "</a>" + spaces;
       f = re.matchedLength ();
       text.replace (i,f,href);
       i += href.size ();
@@ -318,7 +325,7 @@ replace_colons (QString& text)
   while ( (i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
-      QString bold = "<b>`" + t + "</b>'";
+      QString bold = "<font style=\"color:Blue;font-weight:bold\">" + t + "</font>";
 
       f = re.matchedLength ();
       text.replace (i,f,bold);
@@ -333,8 +340,8 @@ info_to_html (QString& text)
   text.replace ("<", "&lt;");
   text.replace (">", "&gt;");
 
-  text.replace ("\n* Menu:", "\n<b>Menu:</b>");
-  text.replace ("*See also:*", "<b>See also:</b>");
+  text.replace ("\n* Menu:", "\n<font style=\"text-decoration:underline;font-weight:bold\">Menu:</font>");
+  text.replace ("See also:", "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
   replace_colons (text);
   replace_links (text);
 }
@@ -362,7 +369,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       info_to_html (text2);
 
       text = text1 + "<a name='" + anchor
-                   + "'/><img src=':/actions/icons/redled.png'><br>&nbsp;"
+                   + "'/><img src=':/actions/icons/arrow_down.png'><br>&nbsp;"
                    + text2;
     }
   else
@@ -373,10 +380,10 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
     }
 
   QString navigationLinks = QString (
-        "<img src=':/actions/icons/arrow_right.png'/> <b>Section:</b> %1<br>"
-        "<b>Previous Section:</b> <a href='%2'>%3</a><br>"
-        "<b>Next Section:</b> <a href='%4'>%5</a><br>"
-        "<b>Up:</b> <a href='%6'>%7</a><br>\n"
+        "<b>Section:</b> %1<br>"
+        "<img src=':/actions/icons/arrow_left.png'/> <b>Previous Section:</b> <a href='%2'>%3</a><br>"
+        "<img src=':/actions/icons/arrow_right.png'/> <b>Next Section:</b> <a href='%4'>%5</a><br>"
+        "<img src=':/actions/icons/arrow_up.png'/> <b>Up:</b> <a href='%6'>%7</a><br>\n"
         )
       .arg (nodeName)
       .arg (QString (QUrl::toPercentEncoding (nodePrev, "", "'")))
@@ -387,7 +394,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       .arg (nodeUp);
 
 
-  text.prepend ("<hr>\n<pre>");
+  text.prepend ("<hr>\n<pre style=\"font-family:monospace\">");
   text.append ("</pre>\n<hr><hr>\n");
   text.prepend (navigationLinks);
   text.append (navigationLinks);
@@ -589,11 +596,12 @@ parser::global_search (const QString& text, int max_founds)
               line_start = node_text.lastIndexOf ("\n", pos);
               line_end = node_text.indexOf ("\n", pos);
               QString line = node_text.mid (line_start, line_end - line_start).trimmed ();
+              pos += re.matchedLength ();
 
               if (founds == 0)
                 {
                   results.append(
-                        "<br>\n<img src=':/actions/icons/bookmark.png'> <a href='"
+                        "<br>\n<img src=':/actions/icons/bookmark.png' width=10> <a href='"
                         + QString(QUrl::toPercentEncoding(node,"","'")) +
                         "'>");
                   results.append (node);
@@ -605,8 +613,6 @@ parser::global_search (const QString& text, int max_founds)
               results.append ("<br>\n");
 
               founds++;
-
-              pos += re.matchedLength ();
             }
         }
       io->close ();

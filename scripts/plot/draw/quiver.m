@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -35,13 +35,13 @@
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 0
-## disables all scaling.  The default value is 1.
+## disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## drawn rather than arrows.  If the argument @qcode{"filled"} is given then the
-## markers are filled.
+## drawn rather than arrows.  If the argument @qcode{"filled"} is given then
+## the markers are filled.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
@@ -49,6 +49,8 @@
 ## The optional return value @var{h} is a graphics handle to a quiver object.
 ## A quiver object regroups the components of the quiver plot (body, arrow,
 ## and marker), and allows them to be changed together.
+##
+## Example:
 ##
 ## @example
 ## @group
@@ -61,29 +63,29 @@
 ## @seealso{quiver3, compass, feather, plot}
 ## @end deftypefn
 
-function retval = quiver (varargin)
+function h = quiver (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("quiver", varargin{:});
 
   if (nargin < 2)
     print_usage ();
-  else
+  endif
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
   endif
-    unwind_protect
-      hax = newplot (hax);
-      htmp = __quiver__ (hax, false, varargin{:});
-    unwind_protect_cleanup
+  unwind_protect
+    hax = newplot (hax);
+    htmp = __quiver__ (hax, false, varargin{:});
+  unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
     endif
-    end_unwind_protect
-  endif
+  end_unwind_protect
 
   if (nargout > 0)
-    retval = htmp;
+    h = htmp;
   endif
 
 endfunction
@@ -93,14 +95,15 @@ endfunction
 %! clf;
 %! [x,y] = meshgrid (1:2:20);
 %! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
-%! set (h, 'maxheadsize', 0.33);
+%! title ('quiver plot')
 
 %!demo
 %! clf;
-%! axis ('equal');
 %! x = linspace (0, 3, 80);
 %! y = sin (2*pi*x);
 %! theta = 2*pi*x + pi/2;
-%! quiver (x, y, sin (theta)/10, cos (theta)/10);
+%! quiver (x, y, sin (theta)/10, cos (theta)/10, 0.4);
+%! axis equal tight;
 %! hold on; plot (x,y,'r'); hold off;
+%! title ('quiver() with scaled arrows');
 

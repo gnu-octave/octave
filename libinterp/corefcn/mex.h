@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2012 Paul Kienzle
+Copyright (C) 2001-2013 Paul Kienzle
 
 This file is part of Octave.
 

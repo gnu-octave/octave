@@ -7,11 +7,18 @@ gui_PRIVATE_FCN_FILES = \
   gui/private/__uigetdir_fltk__.m \
   gui/private/__uigetfile_fltk__.m \
   gui/private/__uiobject_split_args__.m \
-  gui/private/__uiputfile_fltk__.m
+  gui/private/__uiputfile_fltk__.m \
+  gui/private/message_dialog.m
 
 gui_FCN_FILES = \
+  gui/errordlg.m \
   gui/guidata.m \
   gui/guihandles.m \
+  gui/helpdlg.m \
+  gui/inputdlg.m \
+  gui/listdlg.m \
+  gui/msgbox.m \
+  gui/questdlg.m \
   gui/uicontextmenu.m \
   gui/uicontrol.m \
   gui/uigetdir.m \
@@ -26,6 +33,7 @@ gui_FCN_FILES = \
   gui/uiwait.m \
   gui/waitbar.m \
   gui/waitforbuttonpress.m \
+  gui/warndlg.m \
   $(gui_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(gui_FCN_FILES)

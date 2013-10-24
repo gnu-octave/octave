@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 Carnë Draug
-Copyright (C) 2002-2012 Andy Adler
+Copyright (C) 2002-2013 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
 Copyright (C) 2010 David Grundberg
 
@@ -652,8 +652,9 @@ read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
     }
   catch (Magick::ErrorCoder& e)
     {
-      // FIXME: there's a WarningCoder and ErrorCoder. Shouldn't this
-      // exception cause an error?
+      // XXX: why is this error being caught as a warning? It has always
+      //      been like this (function was added the first time to the
+      //      Octave Forge image package with cset d756a7b6d533)
       warning ("Magick++ coder error: %s", e.what ());
     }
   catch (Magick::Exception& e)
@@ -1447,9 +1448,22 @@ This is a private internal function not intended for direct use.\n\
     idx = 0;
 
   Magick::Image img;
-  img.subImage (idx);
-  img.subRange (1);
-  img.ping (filename);
+  img.subImage (idx); // start ping from this image (in case of multi-page)
+  img.subRange (1);   // ping only one of them
+  try
+    {
+      img.ping (filename);
+    }
+  catch (Magick::Warning& w)
+    {
+      warning ("Magick++ warning: %s", w.what ());
+    }
+  catch (Magick::Exception& e)
+    {
+      error ("Magick++ exception: %s", e.what ());
+      return retval;
+    }
+
   static const char *fields[] = {"rows", "columns", "format", 0};
   octave_scalar_map ping = octave_scalar_map (string_vector (fields));
   ping.setfield ("rows",    octave_value (img.rows ()));

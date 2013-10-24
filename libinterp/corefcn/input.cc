@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -147,7 +147,7 @@ set_default_prompts (void)
 void
 octave_base_reader::do_input_echo (const std::string& input_string) const
 {
-  int do_echo = (LEXER && LEXER->reading_script_file) ?
+  int do_echo = reading_script_file () ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
       : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
 
@@ -293,6 +293,24 @@ octave_base_reader::octave_gets (bool& eof)
     octave_link::post_input_event ();
 
   return retval;
+}
+
+bool
+octave_base_reader::reading_fcn_file (void) const
+{
+  return lexer ? lexer->reading_fcn_file : false;
+}
+
+bool
+octave_base_reader::reading_classdef_file (void) const
+{
+  return lexer ? lexer->reading_classdef_file : false;
+}
+
+bool
+octave_base_reader::reading_script_file (void) const
+{
+  return lexer ? lexer->reading_script_file : false;
 }
 
 // Fix things up so that input can come from the standard input.  This
@@ -553,18 +571,11 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
-  if (! (interactive || forced_interactive)
-      || (LEXER && (LEXER->reading_fcn_file
-                    || LEXER->reading_classdef_file
-                    || LEXER->reading_script_file
-                    || LEXER->input_from_eval_string ())))
+  if (! (interactive || forced_interactive))
     {
       frame.protect_var (forced_interactive);
       forced_interactive = true;
     }
-
-  // octave_parser constructor sets this for us.
-  frame.protect_var (LEXER);
 
   octave_parser curr_parser;
 

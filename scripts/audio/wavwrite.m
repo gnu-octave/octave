@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Michael Zeising
+## Copyright (C) 2005-2013 Michael Zeising
 ##
 ## This file is part of Octave.
 ##

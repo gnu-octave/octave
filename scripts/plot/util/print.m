@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -314,7 +314,7 @@ function print (varargin)
     props(1).value = {get(opts.figure, "units")};
     set (opts.figure, "units", "pixels");
 
-    ## graphics toolkit tranlates figure position to eps bbox in points
+    ## graphics toolkit translates figure position to eps bbox (points)
     fpos = get (opts.figure, "position");
     props(2).h = opts.figure;
     props(2).name = "position";
@@ -322,9 +322,9 @@ function print (varargin)
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos);
 
-    ## Set figure background to none. This is done both for
-    ## consistency with Matlab and to elliminate the visible
-    ## box along the figure's perimeter.
+    ## Set figure background to none.
+    ## This is done both for consistency with Matlab and to eliminate
+    ## the visible box along the figure's perimeter.
     props(3).h = opts.figure;
     props(3).name = "color";
     props(3).value{1} = get (props(3).h, props(3).name);
@@ -405,7 +405,12 @@ function print (varargin)
           ## This is done to work around the bbox being whole numbers.
           fontsize = fontsize * opts.scalefontsize;
         endif
-        set (h(ishandle (h)), "fontsize", fontsize);
+        ## FIXME: legend child objects need to be acted on first.
+        ##        or legend fontsize callback will destroy them.
+        hlist = h(ishandle (h));
+        haxes = strcmp (get (hlist, "type"), "axes");
+        set (hlist(! haxes), "fontsize", fontsize);
+        set (hlist(haxes), "fontsize", fontsize);
       endif
     endif
 
@@ -420,7 +425,7 @@ function print (varargin)
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))
-      for n = numel (props):-1:1
+      for n = 1:numel (props)
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif

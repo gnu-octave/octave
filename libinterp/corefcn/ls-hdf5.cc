@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -580,7 +580,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 // and error.
 std::string
 read_hdf5_data (std::istream& is, const std::string& /* filename */,
-                bool& global, octave_value& tc, std::string& doc)
+                bool& global, octave_value& tc, std::string& doc, 
+                const string_vector& argv, int argv_idx, int argc)
 {
   std::string retval;
 
@@ -599,6 +600,37 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 #endif
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
+
+  // For large datasets and out-of-core functionality,
+  // check if only parts of the data is requested
+  bool load_named_vars = argv_idx < argc;
+  while (load_named_vars && hs.current_item < static_cast<int> (num_obj))
+    {
+      std::vector<char> var_name;
+      bool found = false;
+      size_t len = 0;
+
+      len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, 0, 0);
+      var_name.resize (len+1);
+      H5Gget_objname_by_idx( hs.file_id, hs.current_item, &var_name[0], len+1);
+
+      for (int i = argv_idx; i < argc; i++)
+        {
+          glob_match pattern (argv[i]);
+          if (pattern.match (std::string (&var_name[0])))
+            {
+              found = true;
+              break;
+            }
+        }
+
+      if (found)
+        break;
+
+      hs.current_item++;
+    }
+
+
   if (hs.current_item < static_cast<int> (num_obj))
     H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
                                     hdf5_read_next_data, &d);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -152,13 +152,9 @@ public:
       curr_class_name (), curr_package_name (), function_scopes (),
       primary_fcn_ptr (0), subfunction_names (), classdef_object (0),
       stmt_list (0), lexer (lxr)
-  {
-    init ();
-  }
+  { }
 
   ~octave_base_parser (void);
-
-  void init (void);
 
   void reset (void);
 
@@ -381,6 +377,10 @@ public:
   // Set the print flag for a statement based on the separator type.
   tree_statement_list *
   set_stmt_print_flag (tree_statement_list *, char, bool);
+
+  // Finish building a statement.
+  template <class T>
+  tree_statement *make_statement (T *arg);
 
   // Create a statement list.
   tree_statement_list *make_statement_list (tree_statement *stmt);

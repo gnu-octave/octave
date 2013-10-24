@@ -113,6 +113,15 @@ news_dock_widget::display_news (const QString& news)
 }
 
 void
+news_dock_widget::copyClipboard ()
+{
+  if (browser->hasFocus ())
+    {
+      browser->copy ();
+    }
+}
+
+void
 news_reader::process (void)
 {
   // Run this part in a separate thread so Octave can continue to run

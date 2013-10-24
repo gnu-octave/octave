@@ -1,5 +1,5 @@
 ## Copyright (C) 2013 Julien Bect
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -148,9 +148,10 @@ endfunction
 %!assert (skewness (single ([1:5 10])), single (1.0513283), eps ("single"))
 %!assert (skewness (single ([1 2]), 0), single (NaN))
 
-## Verify no "division-by-zero" warnings
+## Verify no "divide-by-zero" warnings
 %!test
 %! wstate = warning ("query", "Octave:divide-by-zero");
+%! warning ("on", "Octave:divide-by-zero");
 %! unwind_protect
 %!   lastwarn ("");  # clear last warning
 %!   skewness (1);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -644,6 +644,18 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->xunput (yytext[0]);
 
     curr_lexer->finish_comment (octave_comment_elt::full_line);  
+
+    curr_lexer->pop_start_state ();
+  }
+
+%{
+// End of a block of full-line comments.
+%}
+
+<LINE_COMMENT_START><<EOF>> {
+    curr_lexer->lexer_debug ("<LINE_COMMENT_START><<EOF>>");
+
+    curr_lexer->finish_comment (octave_comment_elt::full_line);
 
     curr_lexer->pop_start_state ();
   }
@@ -2039,6 +2051,8 @@ octave_base_lexer::reset (void)
     yyrestart (stdin, scanner);
 
   lexical_feedback::reset ();
+
+  comment_buf.reset ();
 }
 
 void
@@ -2539,7 +2553,7 @@ octave_base_lexer::finish_comment (octave_comment_elt::comment_type typ)
   if (copyright)
     typ = octave_comment_elt::copyright;
 
-  octave_comment_buffer::append (comment_text, typ);
+  comment_buf.append (comment_text, typ);
 
   comment_text = "";
 

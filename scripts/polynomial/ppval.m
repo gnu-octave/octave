@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -74,9 +74,10 @@ function yi = ppval (pp, xi)
   dx = shiftdim (dx, ndv - 1);
 
   ## Use Horner scheme.
-  yi = Pidx;
   if (k > 1)
     yi = shiftdim (reshape (Pidx(1,:), dimvec), ndv - 1);
+  else
+    yi = shiftdim (reshape (Pidx, dimvec), ndv - 1);
   endif
 
   for i = 2 : k;

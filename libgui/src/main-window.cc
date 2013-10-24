@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -251,7 +251,9 @@ main_window::open_online_documentation_page (void)
 void
 main_window::display_release_notes (void)
 {
-  display_url_in_window (QUrl ("file://" OCTAVE_OCTETCDIR "/NEWS"));
+  std::string news_file = "file://" + Voct_etc_dir + "/NEWS";
+
+  display_url_in_window (QUrl (QString::fromStdString (news_file)));
 }
 
 void
@@ -304,9 +306,9 @@ main_window::open_developer_page (void)
 }
 
 void
-main_window::process_settings_dialog_request (void)
+main_window::process_settings_dialog_request (const QString& desired_tab)
 {
-  settings_dialog *settingsDialog = new settings_dialog (this);
+  settings_dialog *settingsDialog = new settings_dialog (this, desired_tab);
   int change_settings = settingsDialog->exec ();
   if (change_settings == QDialog::Accepted)
     {
@@ -631,7 +633,7 @@ main_window::set_window_layout (QSettings *settings)
             widget->make_widget (false); // no docking, just reparent
 
           // restore geometry
-          QVariant val = settings->value (name);
+          QVariant val = settings->value ("DockWidgets/" + name);
           widget->restoreGeometry (val.toByteArray ());
 
           // make widget visible if desired
@@ -1478,7 +1480,7 @@ main_window::construct_news_menu (QMenuBar *p)
            this, SLOT (display_release_notes ()));
 
   connect (current_news_action, SIGNAL (triggered ()),
-           news_window, SLOT (show ()));
+           news_window, SLOT (focus ()));
 }
 
 void

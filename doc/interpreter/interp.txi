@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2012 John W. Eaton
+@c Copyright (C) 2007-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -81,12 +81,6 @@ step function}
 interpolation methods for a step function}
 @end float
 @end ifnotinfo
-
-A simplified version of @code{interp1} that performs only linear
-interpolation is available in @code{interp1q}.  This argument is slightly
-faster than @code{interp1} as to performs little error checking.
-
-@DOCSTRING(interp1q)
 
 Fourier interpolation, is a resampling technique where a signal is
 converted to the frequency domain, padded with zeros and then

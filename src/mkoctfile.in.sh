@@ -3,7 +3,7 @@
 ## mkoctfile -- create a .oct file suitable for dynamic linking by
 ## Octave.
 ##
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ## Copyright (C) 2012 Carnë Draug
 ## Copyright (C) 2013 Adam H Aitkenhead
 ##

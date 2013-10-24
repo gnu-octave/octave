@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -180,7 +180,8 @@ load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d);
 
 extern OCTINTERP_API std::string
 read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
-                octave_value& tc, std::string& doc);
+                octave_value& tc, std::string& doc,								
+                const string_vector& argv, int argv_idx, int argc);
 
 extern OCTINTERP_API bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,

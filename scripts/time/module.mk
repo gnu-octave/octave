@@ -9,7 +9,6 @@ time_FCN_FILES = \
   time/date.m \
   time/datenum.m \
   time/datestr.m \
-  time/datetick.m \
   time/datevec.m \
   time/eomday.m \
   time/etime.m \

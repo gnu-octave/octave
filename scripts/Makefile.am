@@ -1,6 +1,6 @@
 # Makefile for Octave's scripts directory
 #
-# Copyright (C) 1993-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -75,7 +75,6 @@ include statistics/tests/module.mk
 include strings/module.mk
 include testfun/module.mk
 include time/module.mk
-include ui/module.mk
 
 nobase_fcnfile_DATA = $(FCN_FILES) $(GEN_FCN_FILES) $(JAR_FILES)
 

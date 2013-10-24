@@ -124,6 +124,11 @@ static void yyerror (octave_base_parser& parser, const char *s);
 
 // Bison declarations.
 
+// The grammar currently has 14 shift/reduce conflicts.  Ensure that
+// we notice if that number changes.
+
+%expect 14
+
 // Don't add spaces around the = here; it causes some versions of
 // bison to fail to properly recognize the directive.
 

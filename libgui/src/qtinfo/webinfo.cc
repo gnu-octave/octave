@@ -49,7 +49,8 @@ webinfo::webinfo (QWidget *p)
   setLayout (vbox_layout);
 
   QHBoxLayout *hbox_layout = new QHBoxLayout ();
-  hbox_layout->setMargin (2);
+  hbox_layout->setMargin (0);
+  hbox_layout->setSpacing (0);
   vbox_layout->addLayout (hbox_layout);
 
   _tab_bar = new QTabBar (this);
@@ -60,12 +61,10 @@ webinfo::webinfo (QWidget *p)
   hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);
-  _zoom_in_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _zoom_in_button->setIcon (QIcon (":/actions/icons/zoom-in.png"));
   hbox_layout->addWidget (_zoom_in_button);
 
   _zoom_out_button = new QToolButton (this);
-  _zoom_out_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _zoom_out_button->setIcon (QIcon (":/actions/icons/zoom-out.png"));
   hbox_layout->addWidget (_zoom_out_button);
 

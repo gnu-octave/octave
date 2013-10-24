@@ -1,22 +1,11 @@
 <pre>
-Summary of important user-visible changes for version 4.0:
----------------------------------------------------------
-
- ** A new GUI is now available with Octave.
-
- ** Warning states may now be set temporarily, until the end of the
-    current function, using the syntax
-
-      warning STATE ID "local"
-
-    in which STATE may be "on", "off", or "error".  Changes to warning
-    states that are set locally affect the current function and all
-    functions called from the current scope.  The previous warning state
-    is restored on return from the current function.  The "local"
-    option is ignored if used in the top-level workspace.
-
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
+
+ ** A GUI is now available with Octave and is the default when starting
+    an interactive session.  The original command line interface is also
+    available and can be entered by using the "--no-gui" option when
+    invoking Octave.
 
  ** Octave now uses OpenGL graphics by default with FLTK widgets.  If
     OpenGL libraries or FLTK widgets are not available when Octave is
@@ -110,6 +99,17 @@ Summary of important user-visible changes for version 3.8:
     When classdef-style classes are added to Octave, the exception-id
     will become an MException object.
 
+ ** Warning states may now be set temporarily, until the end of the
+    current function, using the syntax
+
+      warning STATE ID "local"
+
+    in which STATE may be "on", "off", or "error".  Changes to warning
+    states that are set locally affect the current function and all
+    functions called from the current scope.  The previous warning state
+    is restored on return from the current function.  The "local"
+    option is ignored if used in the top-level workspace.
+
  ** Warning IDs renamed:
 
     Octave:array-as-scalar => Octave:array-to-scalar
@@ -158,7 +158,7 @@ Summary of important user-visible changes for version 3.8:
     \sl          slanted     \slOblique Text     slanted font
     \rm          normal      \bfBold\rmNormal    normal font
     {}           group       {\bf Bold}Normal    group objects
-                             e^{i*\pi} = -1      complex example
+                             e^{i*\pi} = -1      group objects
 
  ** The m-files in the plot directory have been overhauled.
 
@@ -305,12 +305,12 @@ Summary of important user-visible changes for version 3.8:
       copyobj                    history_save     rgbplot
       dawson                     imformats        save_default_options
       dblist                     importdata       shrinkfaces
-      debug_jit                  isaxes           splinefit
-      desktop                    iscolormap       stemleaf
-      doc_cache_create           isequaln         strjoin
-      ellipj                     jit_debug        struct2hdl
-      ellipke                    jit_enable       tetramesh
-      erfcinv                    jit_startcnt     waterfall
+      desktop                    isaxes           splinefit
+      doc_cache_create           iscolormap       stemleaf
+      ellipj                     isequaln         strjoin
+      ellipke                    jit_debug        struct2hdl
+      erfcinv                    jit_enable       tetramesh
+                                 jit_startcnt     waterfall
 
  ** Deprecated functions.
 

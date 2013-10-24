@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "lex.h"
+#include "load-save.h"
 #include "octave-link.h"
 #include "oct-conf.h"
 #include "oct-conf-features.h"
@@ -692,6 +693,8 @@ do_octave_atexit (void)
       OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
       OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+
+      OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
 
       OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 

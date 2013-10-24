@@ -1268,6 +1268,22 @@ write_header (std::ostream& os, load_save_format format)
     }
 }
 
+void
+octave_prepare_hdf5 (void)
+{
+#ifdef HAVE_HDF5
+  H5dont_atexit ();
+#endif
+}
+
+void
+octave_finalize_hdf5 (void)
+{
+#ifdef HAVE_HDF5
+  H5close ();
+#endif
+}
+
 static void
 save_vars (const string_vector& argv, int argv_idx, int argc,
            std::ostream& os, load_save_format fmt,

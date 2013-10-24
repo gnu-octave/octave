@@ -92,4 +92,8 @@ do_save (std::ostream& os, const symbol_table::symbol_record& sr,
 extern void
 write_header (std::ostream& os, load_save_format format);
 
+extern void octave_prepare_hdf5 (void);
+
+extern void octave_finalize_hdf5 (void);
+
 #endif

@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
+#include "load-save.h"
 #include "octave.h"
 #include "oct-conf.h"
 #include "oct-hist.h"
@@ -957,6 +958,8 @@ octave_execute_interpreter (void)
 {
   if (! inhibit_startup_message)
     std::cout << octave_startup_message () << "\n" << std::endl;
+
+  octave_prepare_hdf5 ();
 
   execute_startup_files ();
 

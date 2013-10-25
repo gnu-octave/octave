@@ -244,7 +244,7 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funktion b&amp;earbeiten</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -264,22 +264,22 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+49"/>
         <source>Run &amp;Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Markierter Quellcode au&amp;sführen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Hilfe</translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hilfe zu Schlüsselwort</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dokumentation zu Schlüsselwort</translation>
     </message>
     <message>
         <location line="-147"/>
@@ -291,21 +291,29 @@ ist im Editor bereits geöffnet</translation>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei
+%1
+konnte nicht zum Lesen geöffnet werden:
+%2.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei
+%1
+existiert nicht. Soll sie erzeugt werden?</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei
+%1
+konnte nicht zum Schreiben geöffnet werden:
+%2.</translation>
     </message>
     <message>
         <location line="+549"/>
@@ -330,12 +338,12 @@ for write: %2.</source>
     <message>
         <location line="+22"/>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Einstellungen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Styles Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stil-Einstellungen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1001,7 +1009,7 @@ zu: </translation>
     <message>
         <location line="-809"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Versionshinweise zu Octave</translation>
     </message>
     <message>
         <location line="+157"/>
@@ -1071,7 +1079,7 @@ zu: </translation>
     <message>
         <location line="+12"/>
         <source>Show News Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenster mit Neuigkeiten anzeigen</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1081,7 +1089,7 @@ zu: </translation>
     <message>
         <location line="+12"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuigkeiten</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1121,17 +1129,17 @@ zu: </translation>
     <message>
         <location line="+12"/>
         <source>&amp;News</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neuigkeiten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Versionshinweise</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuigkeiten der Gemeinschaft</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1230,7 +1238,7 @@ zu: </translation>
     <message>
         <location filename="../src/news-dock-widget.cc" line="+44"/>
         <source>Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuigkeiten der Gemeinschaft</translation>
     </message>
 </context>
 <context>
@@ -1257,22 +1265,22 @@ zu: </translation>
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+127"/>
         <source>Help on</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe zu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation zu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Editieren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Run Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Markierter Quellcode au&amp;sführen</translation>
     </message>
 </context>
 <context>
@@ -1413,7 +1421,7 @@ zu: </translation>
     <message>
         <location line="+13"/>
         <source>Create non existing files without prompting</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht existente Dateien ohne Nachfrage erzeugen</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1689,12 +1697,12 @@ zu: </translation>
     <message>
         <location line="+5"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die grafische Nutzerschnittstelle von Octave wird offenbar das erste Mal gestartet. Ein Klick auf &apos;Beenden&apos; erstellt eine Standard-Konfigurationsdatei und startet Octave GUI.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The configuration file is stored in %1. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Konfigurationsdatei wird in %1 gespeichert. Wenn diese Datei existiert, erscheint dieser Dialog beim nächsten Start von Octave nicht mehr.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -1710,7 +1718,18 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Für mehr Informationen über Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Besuchen Sie &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Holen Sie sich die Dokumentation online als &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; oder &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-Dokument&lt;/li&gt;
+&lt;li&gt;Öffnen Sie den Dokumentations-Browser von Octave GUI im Hilfe-Menü&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+20"/>

@@ -244,7 +244,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editer Fonction</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -264,22 +264,22 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+49"/>
         <source>Run &amp;Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter la &amp;Selection</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Aide</translation>
+        <translation>&amp;Aide</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide sur le mot de clés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentation sur le mot de clés</translation>
     </message>
     <message>
         <location line="-147"/>
@@ -291,21 +291,27 @@ est déjà ouvert dans l&apos;éditeur</translation>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier
+%1 
+pour lecture : %2.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier
+%1
+n&apos;existe pas. Voulez-vous le créer.</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier
+%1 
+pour écrire : %2.</translation>
     </message>
     <message>
         <location line="+549"/>
@@ -330,12 +336,12 @@ for write: %2.</source>
     <message>
         <location line="+22"/>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Préférences</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Styles Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Préférences de &amp;Style</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1006,7 +1012,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="-809"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notes de la version d&apos;Octave</translation>
     </message>
     <message>
         <location line="+157"/>
@@ -1076,7 +1082,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+12"/>
         <source>Show News Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher Fenêtre des Nouvelles</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1086,7 +1092,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+12"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelles</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1126,17 +1132,17 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+12"/>
         <source>&amp;News</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nouvelles</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notes de la version</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelles de la Communauté</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1235,7 +1241,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/news-dock-widget.cc" line="+44"/>
         <source>Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelles de la Communauté</translation>
     </message>
 </context>
 <context>
@@ -1262,22 +1268,22 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+127"/>
         <source>Help on</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide sur</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentation sur</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Run Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exécuter la Selection</translation>
     </message>
 </context>
 <context>
@@ -1423,7 +1429,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+13"/>
         <source>Create non existing files without prompting</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer des fichiers non existants sans demander</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1694,12 +1700,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="+5"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il semble que vous exécutez l&apos;interface graphique d&apos;Octave pour la première fois sur cet ordinateur. Cliquez sur &apos;Fin&apos; pour écrire un fichier de configuration et lancez l&apos;interface graphique d&apos;Octave.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The configuration file is stored in %1. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de configuration est stockée dans % 1. Si ce fichier existe, vous ne verrez pas cette boîte de dialogue lorsque d&apos;Octave recommence.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -1715,7 +1721,20 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Pour plus d'information sur d&apos;Octave :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visiter &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Obtenir le documentation en ligne comme &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document&lt;/li&gt;
+
+;/a&gt;-document&lt;/li&gt;
+&lt;li&gt;Ouvrir le navigateur de documentation de l'interface graphique d'Octave avec le menu d'aide.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+20"/>

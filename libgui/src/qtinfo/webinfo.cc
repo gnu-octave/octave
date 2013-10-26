@@ -134,7 +134,10 @@ void
 webinfo::link_clicked (const QUrl & link)
 {
   QString node = link.toString ();
-  load_node (node);
+  if (node.at (0) != '#')
+    load_node (node);
+  else
+    _text_browser->scrollToAnchor (node);
 }
 
 void

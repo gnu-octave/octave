@@ -272,7 +272,7 @@ parser::get_node_prev (const QString& text)
 static void
 replace_links (QString& text)
 {
-  QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.])");
+  QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.]+)");
   int i = 0, f;
 
   while ( (i = re.indexIn (text,i)) != -1)
@@ -280,13 +280,16 @@ replace_links (QString& text)
       QString type     = re.cap (1);
       QString note     = re.cap (3);
       QString url_link = re.cap (4);
-      QString link     = re.cap (4) + re.cap(5);
-      QString spaces = QString("");
-      QRegExp re_linebreak ("\n([ ]*)([^ ]*)([ ]*)");
-      if (re_linebreak.indexIn (link,0) != -1)
+      QString link     = re.cap (4);
+      QString term     = re.cap (5);
+
+      QRegExp regexp_link = QRegExp("([\\s]*)XREF([^\\s]*)");
+      if (regexp_link.indexIn (link) != -1)
         {
-          link.replace (re_linebreak,"&nbsp;"+re_linebreak.cap (2)+"\n");   // prevent line breaks in links
-          spaces = re_linebreak.cap (1);
+          int ix = regexp_link.cap (1).indexOf ("\n");
+          if (ix  != -1)
+            term = term + "\n"
+                   + QString (regexp_link.cap (1).size () - ix -1,' ');
         }
 
       if (url_link.isEmpty ())
@@ -310,7 +313,14 @@ replace_links (QString& text)
         {
           href="<img src=':/actions/icons/bookmark.png' width=10/>";
         }
-      href += re.cap(2) + "<a href='" + url_link + "'>" + note + ":" + link + "</a>" + spaces;
+
+      term.replace(":","");
+      note.replace(":","");
+
+      if (note == "fig")
+        url_link.prepend("#");
+
+      href +=  "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
       f = re.matchedLength ();
       text.replace (i,f,href);
       i += href.size ();
@@ -325,7 +335,7 @@ replace_colons (QString& text)
   while ( (i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
-      QString bold = "<font style=\"color:Blue;font-weight:bold\">" + t + "</font>";
+      QString bold = "<font style=\"color:#00AA00;font-weight:bold\">" + t + "</font>";
 
       f = re.matchedLength ();
       text.replace (i,f,bold);
@@ -340,7 +350,7 @@ info_to_html (QString& text)
   text.replace ("<", "&lt;");
   text.replace (">", "&gt;");
 
-  text.replace ("\n* Menu:", "\n<font style=\"text-decoration:underline;font-weight:bold\">Menu:</font>");
+  text.replace ("\n* Menu:", "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
   text.replace ("See also:", "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
   replace_colons (text);
   replace_links (text);
@@ -380,7 +390,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
     }
 
   QString navigationLinks = QString (
-        "<b>Section:</b> %1<br>"
+        "<b>Section:</b> <font style=\"color:DarkRed\">%1</font><br>"
         "<img src=':/actions/icons/arrow_left.png'/> <b>Previous Section:</b> <a href='%2'>%3</a><br>"
         "<img src=':/actions/icons/arrow_right.png'/> <b>Next Section:</b> <a href='%4'>%5</a><br>"
         "<img src=':/actions/icons/arrow_up.png'/> <b>Up:</b> <a href='%6'>%7</a><br>\n"
@@ -392,7 +402,6 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       .arg (nodeNext)
       .arg (QString (QUrl::toPercentEncoding (nodeUp, "", "'")))
       .arg (nodeUp);
-
 
   text.prepend ("<hr>\n<pre style=\"font-family:monospace\">");
   text.append ("</pre>\n<hr><hr>\n");

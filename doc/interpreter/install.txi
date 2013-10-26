@@ -45,7 +45,7 @@ derived file.
 @cindex installing Octave
 
 The procedure for installing Octave from source on a Unix-like system is
-described below.  Building on other platforms will follow similar
+described next.  Building on other platforms will follow similar
 steps.  Note that this description applies to Octave releases.  Building
 the development sources from the Mercurial archive requires additional
 steps as described in @ref{Building the Development Sources}.
@@ -514,8 +514,9 @@ make CFLAGS=-O CXXFLAGS=-O LDFLAGS=
 instead of just @command{make}.
 
 @item
-If you encounter errors while compiling Octave, first check the list of
-known problems below to see if there is a workaround or solution for
+If you encounter errors while compiling Octave, first
+@xref{Installation Problems} for a list of
+known problems and if there is a workaround or solution for
 your problem.  If not,
 @ifclear INSTALLONLY
 @pxref{Trouble},

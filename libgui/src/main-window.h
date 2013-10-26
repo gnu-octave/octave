@@ -222,8 +222,6 @@ private:
 
   void construct_tool_bar (void);
 
-  void display_url_in_window (const QUrl& url);
-
   void establish_octave_link (void);
 
   void save_workspace_callback (const std::string& file);

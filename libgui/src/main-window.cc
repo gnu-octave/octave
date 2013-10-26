@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QIcon>
+#include <QTextStream>
 
 #include <utility>
 
@@ -251,18 +252,31 @@ main_window::open_online_documentation_page (void)
 void
 main_window::display_release_notes (void)
 {
-  std::string news_file = "file://" + Voct_etc_dir + "/NEWS";
+  std::string news_file = Voct_etc_dir + "/NEWS";
 
-  display_url_in_window (QUrl (QString::fromStdString (news_file)));
-}
+  QString news;
 
-void
-main_window::display_url_in_window (const QUrl& url)
-{
+  QFile *file = new QFile (QString::fromStdString (news_file));
+  if (file->open (QFile::ReadOnly))
+    {
+      QTextStream *stream = new QTextStream (file);
+      news = stream->readAll ();
+      if (! news.isEmpty ())
+        {
+          news.prepend ("<pre>");
+          news.append ("</pre>");
+        }
+      else
+        news = tr ("The release notes file is empty.");
+    }
+  else
+    news = tr ("The release notes file cannot be read.");
+
+
   QWidget *w = new QWidget;
 
   QTextBrowser *browser = new QTextBrowser (w);
-  browser->setSource (url);
+  browser->setText (news);
 
   QVBoxLayout *vlayout = new QVBoxLayout;
   vlayout->addWidget (browser);

@@ -267,10 +267,12 @@ main_window::display_release_notes (void)
           news.append ("</pre>");
         }
       else
-        news = tr ("The release notes file is empty.");
+        news = (tr ("The release notes file '%1' is empty.")
+                . arg (QString::fromStdString (news_file)));
     }
   else
-    news = tr ("The release notes file cannot be read.");
+    news = (tr ("The release notes file '%1' cannot be read.")
+            . arg (QString::fromStdString (news_file)));
 
 
   QWidget *w = new QWidget;

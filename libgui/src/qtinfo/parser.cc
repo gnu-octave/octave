@@ -280,22 +280,33 @@ replace_links (QString& text)
       QString type     = re.cap (1);
       QString note     = re.cap (3);
       QString url_link = re.cap (4);
-      QString link     = re.cap (4);
       QString term     = re.cap (5);
-
-      QRegExp regexp_link = QRegExp("([\\s]*)XREF([^\\s]*)");
-      if (regexp_link.indexIn (link) != -1)
-        {
-          int ix = regexp_link.cap (1).indexOf ("\n");
-          if (ix  != -1)
-            term = term + "\n"
-                   + QString (regexp_link.cap (1).size () - ix -1,' ');
-        }
 
       if (url_link.isEmpty ())
         {
           url_link = note;
         }
+
+      term.replace(":","");
+      note.replace(":","");
+      note.replace (QRegExp ("`([^']+)'"),"\\1");   // no extra format in links
+
+      QRegExp re_break ("(\n[ ]*)");
+
+      if (note == "fig" || note == "tab")
+        url_link.prepend("#");
+
+      QString href;
+      if (type == "\n*")
+        href="\n";
+
+      if (re_break.indexIn (url_link) != -1)
+        term += re_break.cap (1);
+      else if (re_break.indexIn (re.cap (2)) != -1)
+        href = re_break.cap (1) + " ";
+      else if (re_break.indexIn (note) != -1)
+        term += re_break.cap (1);
+      note.replace(re_break,"&nbsp;");
 
       url_link = url_link.trimmed ();
       url_link.replace ("\n"," ");
@@ -304,22 +315,7 @@ replace_links (QString& text)
       url_link.replace ("</b>","");
       url_link = QUrl::toPercentEncoding (url_link, "", "'");
 
-      QString href;
-      if (type=="\n*")
-        {
-          href="\n<img src=':/actions/icons/bookmark.png' width=10/>";
-        }
-      else
-        {
-          href="<img src=':/actions/icons/bookmark.png' width=10/>";
-        }
-
-      term.replace(":","");
-      note.replace(":","");
-
-      if (note == "fig")
-        url_link.prepend("#");
-
+      href += "<img src=':/actions/icons/bookmark.png' width=10/>";
       href +=  "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
       f = re.matchedLength ();
       text.replace (i,f,href);
@@ -335,7 +331,7 @@ replace_colons (QString& text)
   while ( (i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
-      QString bold = "<font style=\"color:#00AA00;font-weight:bold\">" + t + "</font>";
+      QString bold = "<font style=\"color:SteelBlue;font-weight:bold\">" + t + "</font>";
 
       f = re.matchedLength ();
       text.replace (i,f,bold);
@@ -352,8 +348,8 @@ info_to_html (QString& text)
 
   text.replace ("\n* Menu:", "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
   text.replace ("See also:", "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
-  replace_colons (text);
   replace_links (text);
+  replace_colons (text);
 }
 
 QString

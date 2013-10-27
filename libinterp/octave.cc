@@ -128,10 +128,6 @@ static bool verbose_flag = false;
 // (--force-gui)
 static bool force_gui_option = false;
 
-// If TRUE don't fork when starting the GUI.
-// (--no-fork)
-static bool no_fork_option = false;
-
 // If TRUE don't start the GUI.
 // (--no-gui)
 static bool no_gui_option = false;
@@ -647,10 +643,6 @@ octave_process_command_line (int argc, char **argv)
           forced_line_editing = true;
           break;
 
-        case NO_FORK_OPTION:
-          no_fork_option = true;
-          break;
-
         case NO_GUI_OPTION:
           no_gui_option = true;
           break;
@@ -936,26 +928,6 @@ octave_starting_gui (void)
 {
   start_gui = check_starting_gui ();
   return start_gui;
-}
-
-int
-octave_fork_gui (void)
-{
-  bool have_ctty = false;
-
-#if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
-
-#if defined (HAVE_CTERMID)
-  const char *ctty = ctermid (0);
-#else
-  const char *ctty = "/dev/tty";
-#endif
-
-  have_ctty = gnulib::open (ctty, O_RDWR, 0) > 0;
-
-#endif
-
-  return (have_ctty && ! no_fork_option);
 }
 
 DEFUN (isguirunning, args, ,

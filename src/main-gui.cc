@@ -20,10 +20,25 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_gui_h)
-#define octave_octave_gui_h 1
-
-extern OCTGUI_API int octave_start_gui (int argc, char **argv,
-                                        bool start_gui = true);
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#include "defaults.h"
+#include "octave.h"
+#include "octave-gui.h"
+#include "sysdep.h"
+
+int
+main (int argc, char **argv)
+{
+  octave_process_command_line (argc, argv);
+
+  sysdep_init ();
+
+  install_defaults ();
+
+  bool start_gui = octave_starting_gui ();
+
+  return octave_start_gui (argc, argv, start_gui);
+}

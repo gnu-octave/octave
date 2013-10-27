@@ -24,8 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QTextCodec>
+#include <QThread>
 #include <QTranslator>
 
 #include <iostream>
@@ -42,12 +43,44 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-syscalls.h"
 #include "syswait.h"
 
+#include "octave.h"
 #include "sighandlers.h"
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
 #include "main-window.h"
 #include "octave-gui.h"
+
+// Allow the Octave interpreter to start as in CLI mode with a
+// QApplication context so that it can use Qt for things like plotting
+// and UI widgets.
+
+class octave_cli_thread : public QThread
+{
+public:
+
+  octave_cli_thread (int argc, char **argv)
+    : m_argc (argc), m_argv (argv), m_result (0) { }
+
+  int result (void) const { return m_result; }
+
+protected:
+
+  void run (void)
+  {
+    octave_initialize_interpreter (m_argc, m_argv, 0);
+
+    m_result = octave_execute_interpreter ();
+
+    QApplication::exit (m_result);
+  }
+
+private:
+
+  int m_argc;
+  char** m_argv;
+  int m_result;
+};
 
 
 // Custom message handler for filtering some messages from Qt.
@@ -78,104 +111,75 @@ void message_handler (QtMsgType type, const char *msg)
      }
  }
 
-
-// Dissociate from the controlling terminal, if any.
-
-static void
-dissociate_terminal (void)
-{
-#if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
- 
-  pid_t pid = fork ();
-
-  if (pid < 0)
-    {
-      std::cerr << "fork failed!" << std::endl;;
-      exit (1);
-    }
-  else if (pid == 0)
-    {
-      // Child.
-
-      if (setsid () < 0)
-        {
-          std::cerr << "setsid error" << std::endl;
-          exit (1);
-        }
-    }
-  else
-    {
-      // Parent
-
-      install_gui_driver_signal_handlers (pid);
-
-      int status;
-
-      waitpid (pid, &status, 0);
-
-      exit (octave_wait::ifexited (status)
-            ? octave_wait::exitstatus (status) : 127);
-    }
-
-#endif
-}
+// If START_GUI is false, we still set up the QApplication so that we
+// can use Qt widgets for plot windows.
 
 int
-octave_start_gui (int argc, char *argv[], bool fork)
+octave_start_gui (int argc, char *argv[], bool start_gui)
 {
-  if (fork)
-    dissociate_terminal ();
-
   qInstallMsgHandler (message_handler);
 
   QApplication application (argc, argv);
 
-  // Set the codec for all strings
-  QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-
-  // install translators for the gui and qt text
-  QTranslator gui_tr, qt_tr, qsci_tr;
-  resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
-  application.installTranslator (&qt_tr);
-  application.installTranslator (&qsci_tr);
-  application.installTranslator (&gui_tr);
-
-  while (true)
+  if (start_gui)
     {
-      if (resource_manager::is_first_run ())
+      // Set the codec for all strings
+      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+
+      // install translators for the gui and qt text
+      QTranslator gui_tr, qt_tr, qsci_tr;
+      resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
+      application.installTranslator (&qt_tr);
+      application.installTranslator (&qsci_tr);
+      application.installTranslator (&gui_tr);
+
+      while (true)
         {
-          welcome_wizard welcomeWizard;
-          welcomeWizard.exec ();
-          resource_manager::reload_settings ();
-        }
-      else
-        {
-          // update network-settings
-          resource_manager::update_network_settings ();
+          if (resource_manager::is_first_run ())
+            {
+              welcome_wizard welcomeWizard;
+              welcomeWizard.exec ();
+              resource_manager::reload_settings ();
+            }
+          else
+            {
+              // update network-settings
+              resource_manager::update_network_settings ();
 
 #if ! defined (__WIN32__) || defined (__CYGWIN__)
-          // If we were started from a launcher, TERM might not be
-          // defined, but we provide a terminal with xterm
-          // capabilities.
+              // If we were started from a launcher, TERM might not be
+              // defined, but we provide a terminal with xterm
+              // capabilities.
 
-          std::string term = octave_env::getenv ("TERM");
+              std::string term = octave_env::getenv ("TERM");
 
-          if (term.empty ())
-            octave_env::putenv ("TERM", "xterm");
+              if (term.empty ())
+                octave_env::putenv ("TERM", "xterm");
 #else
-          std::string term = octave_env::getenv ("TERM");
+              std::string term = octave_env::getenv ("TERM");
 
-          if (term.empty ())
-            octave_env::putenv ("TERM", "cygwin");
+              if (term.empty ())
+                octave_env::putenv ("TERM", "cygwin");
 #endif
 
-          // create main window, read settings, and show window
-          main_window w;
-          w.read_settings ();  // get widget settings and window layout
-          w.focus_command_window ();
-          w.connect_visibility_changed (); // connect signals for changes in
-                                           // visibility not before w is shown
-          return application.exec ();
+              // create main window, read settings, and show window
+              main_window w;
+              w.read_settings ();  // get widget settings and window layout
+              w.focus_command_window ();
+              w.connect_visibility_changed (); // connect signals for changes in
+              // visibility not before w is shown
+              return application.exec ();
+            }
         }
+    }
+  else
+    {
+      octave_cli_thread main_thread (argc, argv);
+
+      application.setQuitOnLastWindowClosed (false);
+
+      main_thread.start ();
+
+      return application.exec ();
     }
 }

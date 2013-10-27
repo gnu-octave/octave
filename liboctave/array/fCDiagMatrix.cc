@@ -76,7 +76,8 @@ FloatComplexDiagMatrix::fill (const FloatComplex& val)
 }
 
 FloatComplexDiagMatrix&
-FloatComplexDiagMatrix::fill (float val, octave_idx_type beg, octave_idx_type end)
+FloatComplexDiagMatrix::fill (float val,
+                              octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -91,7 +92,8 @@ FloatComplexDiagMatrix::fill (float val, octave_idx_type beg, octave_idx_type en
 }
 
 FloatComplexDiagMatrix&
-FloatComplexDiagMatrix::fill (const FloatComplex& val, octave_idx_type beg, octave_idx_type end)
+FloatComplexDiagMatrix::fill (const FloatComplex& val,
+                              octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -186,7 +188,8 @@ FloatComplexDiagMatrix::fill (const FloatColumnVector& a, octave_idx_type beg)
 }
 
 FloatComplexDiagMatrix&
-FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a, octave_idx_type beg)
+FloatComplexDiagMatrix::fill (const FloatComplexColumnVector& a,
+                              octave_idx_type beg)
 {
   octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
@@ -218,7 +221,8 @@ FloatComplexDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 }
 
 FloatComplexDiagMatrix&
-FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a, octave_idx_type beg)
+FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a,
+                              octave_idx_type beg)
 {
   octave_idx_type a_len = a.length ();
   if (beg < 0 || beg + a_len >= length ())
@@ -242,13 +246,15 @@ FloatComplexDiagMatrix::abs (void) const
 FloatComplexDiagMatrix
 conj (const FloatComplexDiagMatrix& a)
 {
-  return FloatComplexDiagMatrix (conj (a.extract_diag ()), a.rows (), a.columns ());
+  return FloatComplexDiagMatrix (conj (a.extract_diag ()), a.rows (),
+                                 a.columns ());
 }
 
 // resize is the destructive analog for this one
 
 FloatComplexMatrix
-FloatComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+FloatComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                                 octave_idx_type r2, octave_idx_type c2) const
 {
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
@@ -426,7 +432,7 @@ FloatComplexDiagMatrix::operator += (const FloatDiagMatrix& a)
   if (r == 0 || c == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
+  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
   mx_inline_add2 (length (), d, a.data ());
   return *this;

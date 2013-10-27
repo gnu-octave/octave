@@ -49,16 +49,17 @@ public:
                    bool udiag = false);
 
   SparseComplexLU (const SparseComplexLU& a)
-    : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a) { }
+    : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a)
+  { }
 
   SparseComplexLU& operator = (const SparseComplexLU& a)
-    {
-      if (this != &a)
-        sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
-          :: operator = (a);
+  {
+    if (this != &a)
+      sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
+                     :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~SparseComplexLU (void) { }
 };

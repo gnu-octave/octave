@@ -84,8 +84,7 @@ boolMatrix::diag (octave_idx_type k) const
   return Array<bool>::diag (k);
 }
 
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
+// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 boolMatrix::all (int dim) const

@@ -39,27 +39,27 @@ public:
 
   CHOL (const Matrix& a, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      init (a, calc_cond);
-    }
+  {
+    init (a, calc_cond);
+  }
 
   CHOL (const Matrix& a, octave_idx_type& info, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      info = init (a, calc_cond);
-    }
+  {
+    info = init (a, calc_cond);
+  }
 
   CHOL (const CHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   CHOL& operator = (const CHOL& a)
-    {
-      if (this != &a)
-        {
-          chol_mat = a.chol_mat;
-          xrcond = a.xrcond;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        chol_mat = a.chol_mat;
+        xrcond = a.xrcond;
+      }
+    return *this;
+  }
 
   Matrix chol_matrix (void) const { return chol_mat; }
 

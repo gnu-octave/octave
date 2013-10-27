@@ -32,11 +32,11 @@ class
 OCTAVE_API
 ComplexRowVector : public MArray<Complex>
 {
-friend class ComplexColumnVector;
+  friend class ComplexColumnVector;
 
 public:
 
- ComplexRowVector (void) : MArray<Complex> (dim_vector (1, 0)) { }
+  ComplexRowVector (void) : MArray<Complex> (dim_vector (1, 0)) { }
 
   explicit ComplexRowVector (octave_idx_type n)
     : MArray<Complex> (dim_vector (1, n)) { }
@@ -57,10 +57,10 @@ public:
   explicit ComplexRowVector (const RowVector& a) : MArray<Complex> (a) { }
 
   ComplexRowVector& operator = (const ComplexRowVector& a)
-    {
-      MArray<Complex>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<Complex>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const ComplexRowVector& a) const;
   bool operator != (const ComplexRowVector& a) const;
@@ -73,7 +73,8 @@ public:
   ComplexRowVector& fill (double val);
   ComplexRowVector& fill (const Complex& val);
   ComplexRowVector& fill (double val, octave_idx_type c1, octave_idx_type c2);
-  ComplexRowVector& fill (const Complex& val, octave_idx_type c1, octave_idx_type c2);
+  ComplexRowVector& fill (const Complex& val,
+                          octave_idx_type c1, octave_idx_type c2);
 
   ComplexRowVector append (const RowVector& a) const;
   ComplexRowVector append (const ComplexRowVector& a) const;
@@ -109,7 +110,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const ComplexRowVector& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const ComplexRowVector& a);
   friend std::istream& operator >> (std::istream& is, ComplexRowVector& a);
 
   void resize (octave_idx_type n, const Complex& rfv = Complex (0))
@@ -118,19 +120,22 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<Complex>::clear (1, n); }
+  { Array<Complex>::clear (1, n); }
 
 };
 
 // row vector by column vector -> scalar
 
-Complex OCTAVE_API operator * (const ComplexRowVector& a, const ColumnVector& b);
+Complex OCTAVE_API operator * (const ComplexRowVector& a,
+                               const ColumnVector& b);
 
-Complex OCTAVE_API operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
+Complex OCTAVE_API operator * (const ComplexRowVector& a,
+                               const ComplexColumnVector& b);
 
 // other operations
 
-OCTAVE_API ComplexRowVector linspace (const Complex& x1, const Complex& x2, octave_idx_type n);
+OCTAVE_API ComplexRowVector linspace (const Complex& x1, const Complex& x2,
+                                      octave_idx_type n);
 
 MARRAY_FORWARD_DEFS (MArray, ComplexRowVector, Complex)
 

@@ -75,15 +75,17 @@ ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
 
       // workspace query.
       Complex clwork;
-      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, &clwork, -1, rwork, info));
+      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 &clwork, -1, rwork, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = clwork.real ();
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
-      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, work, lwork, rwork, info));
+      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 work, lwork, rwork, info));
     }
   else
     for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;

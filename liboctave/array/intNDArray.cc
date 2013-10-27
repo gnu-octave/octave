@@ -76,7 +76,7 @@ intNDArray<T>::diag (octave_idx_type m, octave_idx_type n) const
   return MArray<T>::diag (m, n);
 }
 
-// FIXME -- this is not quite the right thing.
+// FIXME: this is not quite the right thing.
 
 template <class T>
 boolNDArray
@@ -95,8 +95,8 @@ intNDArray<T>::any (int dim) const
 template <class T>
 void
 intNDArray<T>::increment_index (Array<octave_idx_type>& ra_idx,
-                               const dim_vector& dimensions,
-                               int start_dimension)
+                                const dim_vector& dimensions,
+                                int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
@@ -111,7 +111,8 @@ intNDArray<T>::compute_index (Array<octave_idx_type>& ra_idx,
 
 template <class T>
 intNDArray<T>
-intNDArray<T>::concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx)
+intNDArray<T>::concat (const intNDArray<T>& rb,
+                       const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -120,7 +121,8 @@ intNDArray<T>::concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra
 
 template <class T>
 intNDArray<T>&
-intNDArray<T>::insert (const intNDArray<T>& a, octave_idx_type r, octave_idx_type c)
+intNDArray<T>::insert (const intNDArray<T>& a, octave_idx_type r,
+                       octave_idx_type c)
 {
   Array<T>::insert (a, r, c);
   return *this;
@@ -128,7 +130,8 @@ intNDArray<T>::insert (const intNDArray<T>& a, octave_idx_type r, octave_idx_typ
 
 template <class T>
 intNDArray<T>&
-intNDArray<T>::insert (const intNDArray<T>& a, const Array<octave_idx_type>& ra_idx)
+intNDArray<T>::insert (const intNDArray<T>& a,
+                       const Array<octave_idx_type>& ra_idx)
 {
   Array<T>::insert (a, ra_idx);
   return *this;
@@ -169,12 +172,12 @@ operator >> (std::istream& is, intNDArray<T>& a)
         }
     }
 
- done:
+done:
 
   return is;
 }
 
-// FIXME -- should abs and signum just be mapper functions?
+// FIXME: should abs and signum just be mapper functions?
 
 template <class T>
 intNDArray<T>

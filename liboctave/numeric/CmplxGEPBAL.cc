@@ -60,13 +60,14 @@ extern "C"
 
 octave_idx_type
 ComplexGEPBALANCE::init (const ComplexMatrix& a, const ComplexMatrix& b,
-                  const std::string& balance_job)
+                         const std::string& balance_job)
 {
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
     {
-      (*current_liboctave_error_handler) ("ComplexGEPBALANCE requires square matrix");
+      (*current_liboctave_error_handler)
+        ("ComplexGEPBALANCE requires square matrix");
       return -1;
     }
 

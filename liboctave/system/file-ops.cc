@@ -356,10 +356,10 @@ std::string
 file_ops::concat (const std::string& dir, const std::string& file)
 {
   return dir.empty ()
-    ? file
-    : (is_dir_sep (dir[dir.length ()-1])
-       ? dir + file
-       : dir + dir_sep_char () + file);
+         ? file
+         : (is_dir_sep (dir[dir.length ()-1])
+            ? dir + file
+            : dir + dir_sep_char () + file);
 }
 
 
@@ -420,7 +420,7 @@ octave_link (const std::string& old_name, const std::string& new_name)
 
 int
 octave_link (const std::string& old_name,
-                const std::string& new_name, std::string& msg)
+             const std::string& new_name, std::string& msg)
 {
   msg = std::string ();
 
@@ -443,7 +443,7 @@ octave_symlink (const std::string& old_name, const std::string& new_name)
 
 int
 octave_symlink (const std::string& old_name,
-                   const std::string& new_name, std::string& msg)
+                const std::string& new_name, std::string& msg)
 {
   msg = std::string ();
 
@@ -466,7 +466,7 @@ octave_readlink (const std::string& path, std::string& result)
 
 int
 octave_readlink (const std::string& path, std::string& result,
-                    std::string& msg)
+                 std::string& msg)
 {
   int status = -1;
 
@@ -497,7 +497,7 @@ octave_rename (const std::string& from, const std::string& to)
 
 int
 octave_rename (const std::string& from, const std::string& to,
-                  std::string& msg)
+               std::string& msg)
 {
   int status = -1;
 
@@ -786,7 +786,7 @@ extern int errno;
 
 #else
 
-  // FIXME -- provide replacement here...
+  // FIXME: provide replacement here...
   retval = name;
 
 #endif

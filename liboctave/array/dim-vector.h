@@ -221,10 +221,10 @@ public:
 private:
 
   static octave_idx_type *nil_rep (void)
-    {
-      static dim_vector zv (0, 0);
-      return zv.rep;
-    }
+  {
+    static dim_vector zv (0, 0);
+    return zv.rep;
+  }
 
 public:
 
@@ -237,8 +237,7 @@ public:
   { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
 
   // FIXME: Should be private, but required by array constructor for jit
-  explicit dim_vector (octave_idx_type *r)
-    : rep (r) { }
+  explicit dim_vector (octave_idx_type *r) : rep (r) { }
 
   static dim_vector alloc (int n)
   {
@@ -393,102 +392,102 @@ public:
   dim_vector redim (int n) const;
 
   dim_vector as_column (void) const
-    {
-      if (length () == 2 && elem (1) == 1)
-        return *this;
-      else
-        return dim_vector (numel (), 1);
-    }
+  {
+    if (length () == 2 && elem (1) == 1)
+      return *this;
+    else
+      return dim_vector (numel (), 1);
+  }
 
   dim_vector as_row (void) const
-    {
-      if (length () == 2 && elem (0) == 1)
-        return *this;
-      else
-        return dim_vector (1, numel ());
-    }
+  {
+    if (length () == 2 && elem (0) == 1)
+      return *this;
+    else
+      return dim_vector (1, numel ());
+  }
 
   bool is_vector (void) const
-    {
-      return (length () == 2 && (elem (0) == 1 || elem (1) == 1));
-    }
+  {
+    return (length () == 2 && (elem (0) == 1 || elem (1) == 1));
+  }
 
   int first_non_singleton (int def = 0) const
-    {
-      for (int i = 0; i < length (); i++)
-        {
-          if (elem (i) != 1)
-            return i;
-        }
+  {
+    for (int i = 0; i < length (); i++)
+      {
+        if (elem (i) != 1)
+          return i;
+      }
 
-      return def;
-    }
+    return def;
+  }
 
   // Compute a linear index from an index tuple.
 
   octave_idx_type compute_index (const octave_idx_type *idx) const
-    {
-      octave_idx_type k = 0;
-      for (int i = length () - 1; i >= 0; i--)
-        k = k * rep[i] + idx[i];
+  {
+    octave_idx_type k = 0;
+    for (int i = length () - 1; i >= 0; i--)
+      k = k * rep[i] + idx[i];
 
-      return k;
-    }
+    return k;
+  }
 
   // Ditto, but the tuple may be incomplete (nidx < length ()).
 
   octave_idx_type compute_index (const octave_idx_type *idx, int nidx) const
-    {
-      octave_idx_type k = 0;
-      for (int i = nidx - 1; i >= 0; i--)
-        k = k * rep[i] + idx[i];
+  {
+    octave_idx_type k = 0;
+    for (int i = nidx - 1; i >= 0; i--)
+      k = k * rep[i] + idx[i];
 
-      return k;
-    }
+    return k;
+  }
 
   // Increment a multi-dimensional index tuple, optionally starting
   // from an offset position and return the index of the last index
   // position that was changed, or length () if just cycled over.
 
   int increment_index (octave_idx_type *idx, int start = 0) const
-    {
-      int i;
-      for (i = start; i < length (); i++)
-        {
-          if (++(*idx) == rep[i])
-            *idx++ = 0;
-          else
-            break;
-        }
-      return i;
-    }
+  {
+    int i;
+    for (i = start; i < length (); i++)
+      {
+        if (++(*idx) == rep[i])
+          *idx++ = 0;
+        else
+          break;
+      }
+    return i;
+  }
 
   // Return cumulative dimensions.
 
   dim_vector cumulative (void) const
-    {
-      int nd = length ();
-      dim_vector retval = alloc (nd);
+  {
+    int nd = length ();
+    dim_vector retval = alloc (nd);
 
-      octave_idx_type k = 1;
-      for (int i = 0; i < nd; i++)
-        retval.rep[i] = k *= rep[i];
+    octave_idx_type k = 1;
+    for (int i = 0; i < nd; i++)
+      retval.rep[i] = k *= rep[i];
 
-      return retval;
-    }
+    return retval;
+  }
 
   // Compute a linear index from an index tuple.  Dimensions are
   // required to be cumulative.
 
   octave_idx_type cum_compute_index (const octave_idx_type *idx) const
-    {
-      octave_idx_type k = idx[0];
+  {
+    octave_idx_type k = idx[0];
 
-      for (int i = 1; i < length (); i++)
-        k += rep[i-1] * idx[i];
+    for (int i = 1; i < length (); i++)
+      k += rep[i-1] * idx[i];
 
-      return k;
-    }
+    return k;
+  }
 
 
   friend bool operator == (const dim_vector& a, const dim_vector& b);

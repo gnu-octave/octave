@@ -65,14 +65,15 @@ public:
   NDArray (const charNDArray&);
 
   // For jit support only
-  NDArray (double *sdata, octave_idx_type slen, octave_idx_type *adims, void *arep)
+  NDArray (double *sdata, octave_idx_type slen, octave_idx_type *adims,
+           void *arep)
     : MArray<double> (sdata, slen, adims, arep) { }
 
   NDArray& operator = (const NDArray& a)
-    {
-      MArray<double>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<double>::operator = (a);
+    return *this;
+  }
 
   // unary operations
 
@@ -89,7 +90,7 @@ public:
   bool all_integers (void) const;
   bool too_large_for_float (void) const;
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
@@ -101,8 +102,10 @@ public:
   NDArray xsum (int dim = -1) const;
   NDArray sumsq (int dim = -1) const;
   NDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
-  ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
-  charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  ComplexNDArray concat (const ComplexNDArray& rb,
+                         const Array<octave_idx_type>& ra_idx);
+  charNDArray concat (const charNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx);
 
   NDArray max (int dim = -1) const;
   NDArray max (Array<octave_idx_type>& index, int dim = -1) const;
@@ -147,11 +150,12 @@ public:
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const NDArray& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const NDArray& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, NDArray& a);
 
   NDArray diag (octave_idx_type k = 0) const;
@@ -159,10 +163,10 @@ public:
   NDArray diag (octave_idx_type m, octave_idx_type n) const;
 
   NDArray& changesign (void)
-    {
-      MArray<double>::changesign ();
-      return *this;
-    }
+  {
+    MArray<double>::changesign ();
+    return *this;
+  }
 
 };
 

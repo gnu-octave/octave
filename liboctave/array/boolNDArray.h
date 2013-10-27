@@ -54,10 +54,10 @@ public:
   boolNDArray (const Array<bool>& a) : Array<bool> (a) { }
 
   boolNDArray& operator = (const boolNDArray& a)
-    {
-      Array<bool>::operator = (a);
-      return *this;
-    }
+  {
+    Array<bool>::operator = (a);
+    return *this;
+  }
 
   // unary operations
 
@@ -67,7 +67,7 @@ public:
 
   bool any_element_is_nan (void) const { return false; }
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
@@ -75,10 +75,13 @@ public:
   NDArray sum (int dim = -1) const;
   NDArray cumsum (int dim = -1) const;
 
-  boolNDArray concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  boolNDArray concat (const boolNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx);
 
-  boolNDArray& insert (const boolNDArray& a, octave_idx_type r, octave_idx_type c);
-  boolNDArray& insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx);
+  boolNDArray& insert (const boolNDArray& a, octave_idx_type r,
+                       octave_idx_type c);
+  boolNDArray& insert (const boolNDArray& a,
+                       const Array<octave_idx_type>& ra_idx);
 
   boolMatrix matrix_value (void) const;
 
@@ -89,7 +92,7 @@ public:
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
   // i/o
 

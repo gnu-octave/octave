@@ -42,7 +42,8 @@ public:
 
   Array3 (void) : Array<T> (dim_vector (0, 0, 0)) { }
 
-  Array3 (octave_idx_type r, octave_idx_type c, octave_idx_type p) : Array<T> (dim_vector (r, c, p)) { }
+  Array3 (octave_idx_type r, octave_idx_type c,
+          octave_idx_type p) : Array<T> (dim_vector (r, c, p)) { }
 
   Array3 (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
     : Array<T> (dim_vector (r, c, p), val) { }
@@ -50,37 +51,39 @@ public:
   Array3 (const Array3<T>& a)
     : Array<T> (a, a.dims ()) { }
 
-  Array3 (const Array<T>& a, octave_idx_type r, octave_idx_type c, octave_idx_type p)
+  Array3 (const Array<T>& a, octave_idx_type r, octave_idx_type c,
+          octave_idx_type p)
     : Array<T> (a, dim_vector (r, c, p)) { }
 
   ~Array3 (void) { }
 
   Array3<T>& operator = (const Array3<T>& a)
-    {
-      if (this != &a)
-        Array<T>::operator = (a);
+  {
+    if (this != &a)
+      Array<T>::operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p)
-    { Array<T>::resize (dim_vector (r, c, p)); }
+  { Array<T>::resize (dim_vector (r, c, p)); }
 
-  void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
-    { Array<T>::resize (dim_vector (r, c, p), val); }
+  void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p,
+               const T& val)
+  { Array<T>::resize (dim_vector (r, c, p), val); }
 
   Array3<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    {
-      Array<T> tmp = Array<T>::sort (dim, mode);
-      return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());
-    }
+  {
+    Array<T> tmp = Array<T>::sort (dim, mode);
+    return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());
+  }
 
   Array3<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-                 sortmode mode = ASCENDING) const
-    {
-      Array<T> tmp = Array<T>::sort (sidx, dim, mode);
-      return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());
-    }
+                  sortmode mode = ASCENDING) const
+  {
+    Array<T> tmp = Array<T>::sort (sidx, dim, mode);
+    return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());
+  }
 };
 
 // If we're with GNU C++, issue a warning.

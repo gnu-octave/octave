@@ -36,7 +36,8 @@ INSTANTIATE_ARRAY_SORT (char);
 
 INSTANTIATE_ARRAY (char, OCTAVE_API);
 
-template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<char>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&,
+                                               const Array<char>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

@@ -32,8 +32,8 @@ class
 OCTAVE_API
 ComplexColumnVector : public MArray<Complex>
 {
-friend class ComplexMatrix;
-friend class ComplexRowVector;
+  friend class ComplexMatrix;
+  friend class ComplexRowVector;
 
 public:
 
@@ -59,10 +59,10 @@ public:
   explicit ComplexColumnVector (const ColumnVector& a);
 
   ComplexColumnVector& operator = (const ComplexColumnVector& a)
-    {
-      MArray<Complex>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<Complex>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const ComplexColumnVector& a) const;
   bool operator != (const ComplexColumnVector& a) const;
@@ -74,8 +74,10 @@ public:
 
   ComplexColumnVector& fill (double val);
   ComplexColumnVector& fill (const Complex& val);
-  ComplexColumnVector& fill (double val, octave_idx_type r1, octave_idx_type r2);
-  ComplexColumnVector& fill (const Complex& val, octave_idx_type r1, octave_idx_type r2);
+  ComplexColumnVector& fill (double val,
+                             octave_idx_type r1, octave_idx_type r2);
+  ComplexColumnVector& fill (const Complex& val,
+                             octave_idx_type r1, octave_idx_type r2);
 
   ComplexColumnVector stack (const ColumnVector& a) const;
   ComplexColumnVector stack (const ComplexColumnVector& a) const;
@@ -99,26 +101,26 @@ public:
   // matrix by column vector -> column vector operations
 
   friend OCTAVE_API ComplexColumnVector operator * (const ComplexMatrix& a,
-                                         const ColumnVector& b);
+                                                    const ColumnVector& b);
 
   friend OCTAVE_API ComplexColumnVector operator * (const ComplexMatrix& a,
-                                         const ComplexColumnVector& b);
+                                                    const ComplexColumnVector& b);
 
   // matrix by column vector -> column vector operations
 
   friend OCTAVE_API ComplexColumnVector operator * (const Matrix& a,
-                                         const ComplexColumnVector& b);
+                                                    const ComplexColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
   friend OCTAVE_API ComplexColumnVector operator * (const DiagMatrix& a,
-                                         const ComplexColumnVector& b);
+                                                    const ComplexColumnVector& b);
 
   friend OCTAVE_API ComplexColumnVector operator * (const ComplexDiagMatrix& a,
-                                         const ColumnVector& b);
+                                                    const ColumnVector& b);
 
   friend OCTAVE_API ComplexColumnVector operator * (const ComplexDiagMatrix& a,
-                                         const ComplexColumnVector& b);
+                                                    const ComplexColumnVector& b);
 
   // other operations
 
@@ -129,8 +131,10 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexColumnVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const ComplexColumnVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is,
+                                               ComplexColumnVector& a);
 
   void resize (octave_idx_type n, const Complex& rfv = Complex (0))
   {
@@ -138,7 +142,7 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<Complex>::clear (n, 1); }
+  { Array<Complex>::clear (n, 1); }
 
 };
 

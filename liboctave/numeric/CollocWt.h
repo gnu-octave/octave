@@ -54,7 +54,7 @@ public:
 
   CollocWt (octave_idx_type nc, double a, double b, octave_idx_type il,
             octave_idx_type ir,
-                      double ll, double rr)
+            double ll, double rr)
     : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
       Alpha (a), Beta (b), r (), q (), A (), B (), initialized (false) { }
 
@@ -65,77 +65,77 @@ public:
       initialized (a.initialized) { }
 
   CollocWt& operator = (const CollocWt& a)
-    {
-      if (this != &a)
-        {
-          n = a.n;
-          inc_left = a.inc_left;
-          inc_right = a.inc_right;
-          lb = a.lb;
-          rb = a.rb;
-          r = a.r;
-          q = a.q;
-          A = a.A;
-          B = a.B;
-          initialized = a.initialized;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        n = a.n;
+        inc_left = a.inc_left;
+        inc_right = a.inc_right;
+        lb = a.lb;
+        rb = a.rb;
+        r = a.r;
+        q = a.q;
+        A = a.A;
+        B = a.B;
+        initialized = a.initialized;
+      }
+    return *this;
+  }
 
   ~CollocWt (void) { }
 
   CollocWt& resize (octave_idx_type nc)
-    {
-      n = nc;
-      initialized = false;
-      return *this;
-    }
+  {
+    n = nc;
+    initialized = false;
+    return *this;
+  }
 
   CollocWt& add_left (void)
-    {
-      inc_left = 1;
-      initialized = false;
-      return *this;
-    }
+  {
+    inc_left = 1;
+    initialized = false;
+    return *this;
+  }
 
   CollocWt& delete_left (void)
-    {
-      inc_left = 0;
-      initialized = false;
-      return *this;
-    }
+  {
+    inc_left = 0;
+    initialized = false;
+    return *this;
+  }
 
   CollocWt& set_left (double val);
 
   CollocWt& add_right (void)
-    {
-      inc_right = 1;
-      initialized = false;
-      return *this;
-    }
+  {
+    inc_right = 1;
+    initialized = false;
+    return *this;
+  }
 
   CollocWt& delete_right (void)
-    {
-      inc_right = 0;
-      initialized = false;
-      return *this;
-    }
+  {
+    inc_right = 0;
+    initialized = false;
+    return *this;
+  }
 
   CollocWt& set_right (double val);
 
   CollocWt& set_alpha (double val)
-    {
-      Alpha = val;
-      initialized = false;
-      return *this;
-    }
+  {
+    Alpha = val;
+    initialized = false;
+    return *this;
+  }
 
   CollocWt& set_beta (double val)
-    {
-      Beta = val;
-      initialized = false;
-      return *this;
-    }
+  {
+    Beta = val;
+    initialized = false;
+    return *this;
+  }
 
   octave_idx_type ncol (void) const { return n; }
 

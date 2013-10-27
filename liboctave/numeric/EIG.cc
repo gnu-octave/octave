@@ -791,7 +791,8 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
 }
 
 octave_idx_type
-EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
+EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
+                     bool calc_ev)
 {
   octave_idx_type n = a.rows ();
   octave_idx_type nb = b.rows ();

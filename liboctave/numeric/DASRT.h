@@ -43,15 +43,15 @@ public:
     : x (r.x), xdot (r.xdot), t (r.t) { }
 
   DASRT_result& operator = (const DASRT_result& r)
-    {
-      if (this != &r)
-        {
-          x = r.x;
-          xdot = r.xdot;
-          t = r.t;
-        }
-      return *this;
-    }
+  {
+    if (this != &r)
+      {
+        x = r.x;
+        xdot = r.xdot;
+        t = r.t;
+      }
+    return *this;
+  }
 
   ~DASRT_result (void) { }
 
@@ -76,20 +76,20 @@ public:
     : DAERT (), DASRT_options (), initialized (false),
       liw (0), lrw (0), ng (0), info (), iwork (), jroot (), rwork (),
       abs_tol (), rel_tol ()
-    { }
+  { }
 
   DASRT (const ColumnVector& s, double tm, DAERTFunc& f)
     : DAERT (s, tm, f), DASRT_options (), initialized (false),
       liw (0), lrw (0), ng (0), info (), iwork (), jroot (), rwork (),
       abs_tol (), rel_tol ()
-    { }
+  { }
 
   DASRT (const ColumnVector& s, const ColumnVector& deriv,
          double tm, DAERTFunc& f)
     : DAERT (s, deriv, tm, f), DASRT_options (), initialized (false),
       liw (0), lrw (0), ng (0), info (), iwork (), jroot (), rwork (),
       abs_tol (), rel_tol ()
-    { }
+  { }
 
   ~DASRT (void) { }
 

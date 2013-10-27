@@ -178,8 +178,10 @@ extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);
 
-extern OCTAVE_API FloatComplex xmin (const FloatComplex& x, const FloatComplex& y);
-extern OCTAVE_API FloatComplex xmax (const FloatComplex& x, const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmin (const FloatComplex& x,
+                                     const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmax (const FloatComplex& x,
+                                     const FloatComplex& y);
 
 // These map reals to Complex.
 

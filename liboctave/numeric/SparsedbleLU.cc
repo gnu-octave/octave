@@ -74,7 +74,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
       tmp = octave_sparse_params::get_key ("sym_tol");
       if (!xisnan (tmp))
-          Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
+        Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
     }
 
   // Set whether we are allowed to modify Q or not
@@ -99,12 +99,12 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
   Matrix Info (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
   int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 0,
-                                     &Symbolic, control, info);
+                                          &Symbolic, control, info);
 
   if (status < 0)
     {
       (*current_liboctave_error_handler)
-            ("SparseLU::SparseLU symbolic factorization failed");
+        ("SparseLU::SparseLU symbolic factorization failed");
 
       UMFPACK_DNAME (report_status) (control, status);
       UMFPACK_DNAME (report_info) (control, info);
@@ -117,7 +117,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
       void *Numeric;
       status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
-                                   &Numeric, control, info) ;
+                                        &Numeric, control, info) ;
       UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
       cond = Info (UMFPACK_RCOND);
@@ -138,7 +138,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
           octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
           status = UMFPACK_DNAME (get_lunz) (&lnz, &unz, &ignore1,
-                                        &ignore2, &ignore3, Numeric) ;
+                                             &ignore2, &ignore3, Numeric) ;
 
           if (status < 0)
             {
@@ -191,9 +191,9 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
               octave_idx_type do_recip;
               status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj, Ltx,
-                                               Up, Uj, Ux, p, q, 0,
-                                               &do_recip, Rx,
-                                               Numeric) ;
+                                                    Up, Uj, Ux, p, q, 0,
+                                                    &do_recip, Rx,
+                                                    Numeric) ;
 
               UMFPACK_DNAME (free_numeric) (&Numeric) ;
 
@@ -213,11 +213,11 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
                       Rx[i] = 1.0 / Rx[i];
 
                   UMFPACK_DNAME (report_matrix) (nr, n_inner,
-                                            Lfact.cidx (), Lfact.ridx (),
-                                            Lfact.data (), 1, control);
+                                                 Lfact.cidx (), Lfact.ridx (),
+                                                 Lfact.data (), 1, control);
                   UMFPACK_DNAME (report_matrix) (n_inner, nc,
-                                            Ufact.cidx (), Ufact.ridx (),
-                                            Ufact.data (), 1, control);
+                                                 Ufact.cidx (), Ufact.ridx (),
+                                                 Ufact.data (), 1, control);
                   UMFPACK_DNAME (report_perm) (nr, p, control);
                   UMFPACK_DNAME (report_perm) (nc, q, control);
                 }
@@ -299,7 +299,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       const double *Ax = a.data ();
 
       UMFPACK_DNAME (report_matrix) (nr, nc, Ap, Ai, Ax, 1,
-                                                     control);
+                                     control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
@@ -307,15 +307,17 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       int status;
 
       // Null loop so that qinit is imediately deallocated when not needed
-      do {
-        OCTAVE_LOCAL_BUFFER (octave_idx_type, qinit, nc);
+      do
+        {
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, qinit, nc);
 
-        for (octave_idx_type i = 0; i < nc; i++)
-          qinit[i] = static_cast<octave_idx_type> (Qinit (i));
+          for (octave_idx_type i = 0; i < nc; i++)
+            qinit[i] = static_cast<octave_idx_type> (Qinit (i));
 
-        status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax,
-                                       qinit, &Symbolic, control, info);
-      } while (0);
+          status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax,
+                                              qinit, &Symbolic, control, info);
+        }
+      while (0);
 
       if (status < 0)
         {
@@ -333,7 +335,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 
           void *Numeric;
           status = UMFPACK_DNAME (numeric) (Ap, Ai, Ax, Symbolic,
-                                       &Numeric, control, info) ;
+                                            &Numeric, control, info) ;
           UMFPACK_DNAME (free_symbolic) (&Symbolic) ;
 
           cond = Info (UMFPACK_RCOND);
@@ -353,8 +355,9 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
               UMFPACK_DNAME (report_numeric) (Numeric, control);
 
               octave_idx_type lnz, unz, ignore1, ignore2, ignore3;
-              status = UMFPACK_DNAME (get_lunz) (&lnz, &unz, &ignore1, &ignore2,
-                                                 &ignore3, Numeric) ;
+              status = UMFPACK_DNAME (get_lunz) (&lnz, &unz,
+                                                 &ignore1, &ignore2, &ignore3,
+                                                 Numeric) ;
 
               if (status < 0)
                 {
@@ -407,9 +410,9 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 
                   octave_idx_type do_recip;
                   status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj,
-                                                   Ltx, Up, Uj, Ux, p, q,
-                                                   0, &do_recip,
-                                                   Rx, Numeric) ;
+                                                        Ltx, Up, Uj, Ux, p, q,
+                                                        0, &do_recip,
+                                                        Rx, Numeric) ;
 
                   UMFPACK_DNAME (free_numeric) (&Numeric) ;
 
@@ -429,15 +432,15 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
                           Rx[i] = 1.0 / Rx[i];
 
                       UMFPACK_DNAME (report_matrix) (nr, n_inner,
-                                                Lfact.cidx (),
-                                                Lfact.ridx (),
-                                                Lfact.data (),
-                                                1, control);
+                                                     Lfact.cidx (),
+                                                     Lfact.ridx (),
+                                                     Lfact.data (),
+                                                     1, control);
                       UMFPACK_DNAME (report_matrix) (n_inner, nc,
-                                                Ufact.cidx (),
-                                                Ufact.ridx (),
-                                                Ufact.data (),
-                                                1, control);
+                                                     Ufact.cidx (),
+                                                     Ufact.ridx (),
+                                                     Ufact.data (),
+                                                     1, control);
                       UMFPACK_DNAME (report_perm) (nr, p, control);
                       UMFPACK_DNAME (report_perm) (nc, q, control);
                     }

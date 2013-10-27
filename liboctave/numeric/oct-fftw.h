@@ -67,9 +67,9 @@ public:
     static fftw_plan dummy;
 
     return instance_ok ()
-      ? instance->do_create_plan (dir, rank, dims, howmany, stride,
-                                  dist, in, out)
-      : dummy;
+           ? instance->do_create_plan (dir, rank, dims, howmany, stride,
+                                       dist, in, out)
+           : dummy;
   }
 
   static fftw_plan
@@ -80,8 +80,9 @@ public:
     static fftw_plan dummy;
 
     return instance_ok ()
-      ? instance->do_create_plan (rank, dims, howmany, stride, dist, in, out)
-      : dummy;
+           ? instance->do_create_plan (rank, dims, howmany, stride, dist,
+                                       in, out)
+           : dummy;
   }
 
   static FftwMethod method (void)
@@ -145,7 +146,7 @@ private:
 
   FftwMethod meth;
 
-  // FIXME -- perhaps this should be split into two classes?
+  // FIXME: perhaps this should be split into two classes?
 
   // Plan for fft and ifft of complex values
   fftw_plan plan[2];
@@ -227,9 +228,9 @@ public:
     static fftwf_plan dummy;
 
     return instance_ok ()
-      ? instance->do_create_plan (dir, rank, dims, howmany, stride,
-                                  dist, in, out)
-      : dummy;
+           ? instance->do_create_plan (dir, rank, dims, howmany, stride,
+                                       dist, in, out)
+           : dummy;
   }
 
   static fftwf_plan
@@ -240,8 +241,9 @@ public:
     static fftwf_plan dummy;
 
     return instance_ok ()
-      ? instance->do_create_plan (rank, dims, howmany, stride, dist, in, out)
-      : dummy;
+           ? instance->do_create_plan (rank, dims, howmany, stride, dist,
+                                       in, out)
+           : dummy;
   }
 
   static FftwMethod method (void)
@@ -305,7 +307,7 @@ private:
 
   FftwMethod meth;
 
-  // FIXME -- perhaps this should be split into two classes?
+  // FIXME: perhaps this should be split into two classes?
 
   // Plan for fft and ifft of complex values
   fftwf_plan plan[2];
@@ -361,11 +363,14 @@ octave_fftw
 public:
 
   static int fft (const double *in, Complex *out, size_t npts,
-                  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+                  size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
   static int fft (const Complex *in, Complex *out, size_t npts,
-                  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+                  size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
   static int ifft (const Complex *in, Complex *out, size_t npts,
-                   size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+                   size_t nsamples = 1, octave_idx_type stride = 1,
+                   octave_idx_type dist = -1);
 
   static int fftNd (const double*, Complex*, const int, const dim_vector &);
   static int fftNd (const Complex*, Complex*, const int,
@@ -374,11 +379,14 @@ public:
                      const dim_vector &);
 
   static int fft (const float *in, FloatComplex *out, size_t npts,
-                  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+                  size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
   static int fft (const FloatComplex *in, FloatComplex *out, size_t npts,
-                  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+                  size_t nsamples = 1, octave_idx_type stride = 1,
+                  octave_idx_type dist = -1);
   static int ifft (const FloatComplex *in, FloatComplex *out, size_t npts,
-                   size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+                   size_t nsamples = 1, octave_idx_type stride = 1,
+                   octave_idx_type dist = -1);
 
   static int fftNd (const float*, FloatComplex*, const int, const dim_vector &);
   static int fftNd (const FloatComplex*, FloatComplex*, const int,

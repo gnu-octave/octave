@@ -247,7 +247,7 @@ octave_is_NaN_or_NA (const Complex& x)
 
 // (complex, complex) -> complex mappers.
 
-// FIXME -- need to handle NA too?
+// FIXME: need to handle NA too?
 
 Complex
 xmin (const Complex& x, const Complex& y)
@@ -457,7 +457,8 @@ atan (const FloatComplex& x)
 FloatComplex
 atanh (const FloatComplex& x)
 {
-  return log ((static_cast<float>(1.0) + x) / (static_cast<float>(1.0) - x)) / static_cast<float>(2.0);
+  return log ((static_cast<float>(1.0) + x) / (static_cast<float>
+              (1.0) - x)) / static_cast<float>(2.0);
 }
 
 // complex -> bool mappers.
@@ -476,7 +477,7 @@ octave_is_NaN_or_NA (const FloatComplex& x)
 
 // (complex, complex) -> complex mappers.
 
-// FIXME -- need to handle NA too?
+// FIXME: need to handle NA too?
 
 FloatComplex
 xmin (const FloatComplex& x, const FloatComplex& y)
@@ -535,7 +536,8 @@ rc_atanh (double x)
 FloatComplex
 rc_atanh (float x)
 {
-  return fabsf (x) > 1.0f ? atanh (FloatComplex (x)) : FloatComplex (atanhf (x));
+  return fabsf (x) > 1.0f ? atanh (FloatComplex (x))
+                          : FloatComplex (atanhf (x));
 }
 
 Complex
@@ -577,7 +579,8 @@ FloatComplex
 rc_log10 (float x)
 {
   const float pil10 = 1.36437635384184134748f; // = pi / log(10)
-  return x < 0.0f ? FloatComplex (log10 (-x), pil10) : FloatComplex (log10f (x));
+  return x < 0.0f ? FloatComplex (log10 (-x), pil10)
+                  : FloatComplex (log10f (x));
 }
 
 Complex

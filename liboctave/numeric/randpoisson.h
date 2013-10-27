@@ -33,7 +33,8 @@ extern OCTAVE_API double oct_randp (double L);
 extern OCTAVE_API void oct_fill_randp (double L, octave_idx_type n, double *p);
 
 extern OCTAVE_API float oct_float_randp (float L);
-extern OCTAVE_API void oct_fill_float_randp (float L, octave_idx_type n, float *p);
+extern OCTAVE_API void oct_fill_float_randp (float L, octave_idx_type n,
+                                             float *p);
 
 #ifdef  __cplusplus
 }

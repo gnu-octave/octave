@@ -41,14 +41,14 @@ public:
     : base_diff_eqn (a), ODEFunc (a) { }
 
   ODE& operator = (const ODE& a)
-    {
-      if (this != &a)
-        {
-          base_diff_eqn::operator = (a);
-          ODEFunc::operator = (a);
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        base_diff_eqn::operator = (a);
+        ODEFunc::operator = (a);
+      }
+    return *this;
+  }
 
   virtual ~ODE (void) { }
 
@@ -71,44 +71,44 @@ public:
 
   // Integrate to t from current point.
   virtual ColumnVector integrate (double tt)
-    { return do_integrate (tt); }
+  { return do_integrate (tt); }
 
   // Set new x0, t0 and integrate to t.
   virtual ColumnVector integrate (const ColumnVector& x0, double t0, double tt)
-    {
-      initialize (x0, t0);
-      return do_integrate (tt);
-    }
+  {
+    initialize (x0, t0);
+    return do_integrate (tt);
+  }
 
   // Integrate from current point and return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& tt)
-    { return do_integrate (tt); }
+  { return do_integrate (tt); }
 
   // Set new x0, t0 and integrate to return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& x0, double t0,
                             const ColumnVector& tt)
-    {
-      initialize (x0, t0);
-      return do_integrate (tt);
-    }
+  {
+    initialize (x0, t0);
+    return do_integrate (tt);
+  }
 
   // Integrate from current point and return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& tt,
                             const ColumnVector& ttcrit)
-    { return do_integrate (tt, ttcrit); }
+  { return do_integrate (tt, ttcrit); }
 
   // Set new x0, t0 and integrate to return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& x0, double t0,
                             const ColumnVector& tt,
                             const ColumnVector& ttcrit)
-    {
-      initialize (x0, t0);
-      return do_integrate (tt, ttcrit);
-    }
+  {
+    initialize (x0, t0);
+    return do_integrate (tt, ttcrit);
+  }
 };
 
 #endif

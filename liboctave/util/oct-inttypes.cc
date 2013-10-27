@@ -193,7 +193,7 @@ octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
 
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
-  // FIXME -- can we do something faster if we HAVE_FAST_INT_OPS?
+  // FIXME: can we do something faster if we HAVE_FAST_INT_OPS?
 
   uint64_t usx = octave_int_abs (x), usy = octave_int_abs (y);
   bool positive = (x < 0) == (y < 0);
@@ -349,11 +349,12 @@ DOUBLE_INT_BINOP_DECL (-, int64)
 // NOTE:
 // Emulated mixed multiplications are tricky due to possible precision loss.
 // Here, after sorting out common cases for speed, we follow the strategy
-// of converting the double number into the form sign * 64-bit integer* 2**exponent,
-// multiply the 64-bit integers to get a 128-bit number, split that number into 32-bit words
-// and form 4 double-valued summands (none of which loases precision), then convert these
-// into integers and sum them. Though it is not immediately obvious, this should work
-// even w.r.t. rounding (none of the summands lose precision).
+// of converting the double number into the form sign * 64-bit integer *
+// 2**exponent, multiply the 64-bit integers to get a 128-bit number, split that
+// number into 32-bit words and form 4 double-valued summands (none of which
+// loses precision), then convert these into integers and sum them. Though it is
+// not immediately obvious, this should work even w.r.t. rounding (none of the
+// summands lose precision).
 
 // Multiplies two unsigned 64-bit ints to get a 128-bit number represented
 // as four 32-bit words.
@@ -384,14 +385,14 @@ dblesplit (double x, bool& sign, uint64_t& mtis, int& exp)
   mtis = static_cast<uint64_t> (ldexp (x, 52));
 }
 
-// Gets a double number from a 32-bit unsigned integer mantissa, exponent and sign.
+// Gets a double number from a
+// 32-bit unsigned integer mantissa, exponent, and sign.
 static double
 dbleget (bool sign, uint32_t mtis, int exp)
 {
   double x = ldexp (static_cast<double> (mtis), exp);
   return sign ? -x : x;
 }
-
 
 INT_DOUBLE_BINOP_DECL (*, uint64)
 {

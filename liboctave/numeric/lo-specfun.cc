@@ -623,7 +623,7 @@ log1p (double x)
 
   if (ax < 0.2)
     {
-      // use approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
+      // approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
       double u = x / (2 + x), t = 1, s = 0;
       for (int i = 2; i < 12; i += 2)
         s += (t *= u*u) / (i+1);
@@ -682,7 +682,7 @@ log1pf (float x)
 
   if (ax < 0.2)
     {
-      // use approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
+      // approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
       float u = x / (2 + x), t = 1, s = 0;
       for (int i = 2; i < 12; i += 2)
         s += (t *= u*u) / (i+1);
@@ -707,7 +707,7 @@ log1p (const FloatComplex& x)
     {
       float u = 2*r + r*r + i*i;
       retval = FloatComplex (log1p (u / (1+sqrt (u+1))),
-                        atan2 (1 + r, i));
+                             atan2 (1 + r, i));
     }
   else
     retval = std::log (FloatComplex (1) + x);
@@ -954,7 +954,7 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
       if (ierr == 0 || ierr == 3)
         {
           Complex tmp2 = (2.0 / M_PI) * sin (M_PI * alpha)
-            * zbesk (z, alpha, kode, ierr);
+                         * zbesk (z, alpha, kode, ierr);
 
           if (kode == 2)
             {
@@ -1212,7 +1212,7 @@ do_bessel (dptr f, const char *, double alpha, const ComplexNDArray& x,
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-      retval(i) = f (x(i), alpha, (scaled ? 2 : 1), ierr(i));
+    retval(i) = f (x(i), alpha, (scaled ? 2 : 1), ierr(i));
 
   return retval;
 }
@@ -1259,7 +1259,8 @@ do_bessel (dptr f, const char *fn, const NDArray& alpha,
 
 static inline ComplexMatrix
 do_bessel (dptr f, const char *, const RowVector& alpha,
-           const ComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr)
+           const ComplexColumnVector& x, bool scaled,
+           Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = x.length ();
   octave_idx_type nc = alpha.length ();
@@ -1386,8 +1387,10 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr);
 static inline FloatComplex
 bessel_return_value (const FloatComplex& val, octave_idx_type ierr)
 {
-  static const FloatComplex inf_val = FloatComplex (octave_Float_Inf, octave_Float_Inf);
-  static const FloatComplex nan_val = FloatComplex (octave_Float_NaN, octave_Float_NaN);
+  static const FloatComplex inf_val = FloatComplex (octave_Float_Inf,
+                                                    octave_Float_Inf);
+  static const FloatComplex nan_val = FloatComplex (octave_Float_NaN,
+                                                    octave_Float_NaN);
 
   FloatComplex retval;
 
@@ -1453,11 +1456,13 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
     {
       alpha = -alpha;
 
-      FloatComplex tmp = cosf (static_cast<float> (M_PI) * alpha) * cbesj (z, alpha, kode, ierr);
+      FloatComplex tmp = cosf (static_cast<float> (M_PI) * alpha)
+                         * cbesj (z, alpha, kode, ierr);
 
       if (ierr == 0 || ierr == 3)
         {
-          tmp -= sinf (static_cast<float> (M_PI) * alpha) * cbesy (z, alpha, kode, ierr);
+          tmp -= sinf (static_cast<float> (M_PI) * alpha)
+                 * cbesy (z, alpha, kode, ierr);
 
           retval = bessel_return_value (tmp, ierr);
         }
@@ -1516,11 +1521,13 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
     {
       alpha = -alpha;
 
-      FloatComplex tmp = cosf (static_cast<float> (M_PI) * alpha) * cbesy (z, alpha, kode, ierr);
+      FloatComplex tmp = cosf (static_cast<float> (M_PI) * alpha)
+                         * cbesy (z, alpha, kode, ierr);
 
       if (ierr == 0 || ierr == 3)
         {
-          tmp += sinf (static_cast<float> (M_PI) * alpha) * cbesj (z, alpha, kode, ierr);
+          tmp += sinf (static_cast<float> (M_PI) * alpha)
+                 * cbesj (z, alpha, kode, ierr);
 
           retval = bessel_return_value (tmp, ierr);
         }
@@ -1563,8 +1570,9 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       if (ierr == 0 || ierr == 3)
         {
-          FloatComplex tmp2 = static_cast<float> (2.0 / M_PI) * sinf (static_cast<float> (M_PI) * alpha)
-            * cbesk (z, alpha, kode, ierr);
+          FloatComplex tmp2 = static_cast<float> (2.0 / M_PI)
+                              * sinf (static_cast<float> (M_PI) * alpha)
+                              * cbesk (z, alpha, kode, ierr);
 
           if (kode == 2)
             {
@@ -1667,7 +1675,8 @@ cbesh1 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       static const FloatComplex eye = FloatComplex (0.0, 1.0);
 
-      FloatComplex tmp = exp (static_cast<float> (M_PI) * alpha * eye) * cbesh1 (z, alpha, kode, ierr);
+      FloatComplex tmp = exp (static_cast<float> (M_PI) * alpha * eye)
+                         * cbesh1 (z, alpha, kode, ierr);
 
       retval = bessel_return_value (tmp, ierr);
     }
@@ -1709,7 +1718,8 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
       static const FloatComplex eye = FloatComplex (0.0, 1.0);
 
-      FloatComplex tmp = exp (-static_cast<float> (M_PI) * alpha * eye) * cbesh2 (z, alpha, kode, ierr);
+      FloatComplex tmp = exp (-static_cast<float> (M_PI) * alpha * eye)
+                         * cbesh2 (z, alpha, kode, ierr);
 
       retval = bessel_return_value (tmp, ierr);
     }
@@ -1717,7 +1727,8 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
   return retval;
 }
 
-typedef FloatComplex (*fptr) (const FloatComplex&, float, int, octave_idx_type&);
+typedef FloatComplex (*fptr) (const FloatComplex&, float, int,
+                              octave_idx_type&);
 
 static inline FloatComplex
 do_bessel (fptr f, const char *, float alpha, const FloatComplex& x,
@@ -1749,7 +1760,8 @@ do_bessel (fptr f, const char *, float alpha, const FloatComplexMatrix& x,
 }
 
 static inline FloatComplexMatrix
-do_bessel (fptr f, const char *, const FloatMatrix& alpha, const FloatComplex& x,
+do_bessel (fptr f, const char *, const FloatMatrix& alpha,
+           const FloatComplex& x,
            bool scaled, Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = alpha.rows ();
@@ -1768,7 +1780,8 @@ do_bessel (fptr f, const char *, const FloatMatrix& alpha, const FloatComplex& x
 
 static inline FloatComplexMatrix
 do_bessel (fptr f, const char *fn, const FloatMatrix& alpha,
-           const FloatComplexMatrix& x, bool scaled, Array<octave_idx_type>& ierr)
+           const FloatComplexMatrix& x, bool scaled,
+           Array<octave_idx_type>& ierr)
 {
   FloatComplexMatrix retval;
 
@@ -1809,14 +1822,14 @@ do_bessel (fptr f, const char *, float alpha, const FloatComplexNDArray& x,
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-      retval(i) = f (x(i), alpha, (scaled ? 2 : 1), ierr(i));
+    retval(i) = f (x(i), alpha, (scaled ? 2 : 1), ierr(i));
 
   return retval;
 }
 
 static inline FloatComplexNDArray
-do_bessel (fptr f, const char *, const FloatNDArray& alpha, const FloatComplex& x,
-           bool scaled, Array<octave_idx_type>& ierr)
+do_bessel (fptr f, const char *, const FloatNDArray& alpha,
+           const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr)
 {
   dim_vector dv = alpha.dims ();
   octave_idx_type nel = dv.numel ();
@@ -1832,7 +1845,8 @@ do_bessel (fptr f, const char *, const FloatNDArray& alpha, const FloatComplex& 
 
 static inline FloatComplexNDArray
 do_bessel (fptr f, const char *fn, const FloatNDArray& alpha,
-           const FloatComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr)
+           const FloatComplexNDArray& x, bool scaled,
+           Array<octave_idx_type>& ierr)
 {
   dim_vector dv = x.dims ();
   FloatComplexNDArray retval;
@@ -1856,7 +1870,8 @@ do_bessel (fptr f, const char *fn, const FloatNDArray& alpha,
 
 static inline FloatComplexMatrix
 do_bessel (fptr f, const char *, const FloatRowVector& alpha,
-           const FloatComplexColumnVector& x, bool scaled, Array<octave_idx_type>& ierr)
+           const FloatComplexColumnVector& x, bool scaled,
+           Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = x.length ();
   octave_idx_type nc = alpha.length ();
@@ -2029,7 +2044,8 @@ biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 }
 
 ComplexMatrix
-airy (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+airy (const ComplexMatrix& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = z.rows ();
   octave_idx_type nc = z.cols ();
@@ -2046,7 +2062,8 @@ airy (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& i
 }
 
 ComplexMatrix
-biry (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+biry (const ComplexMatrix& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = z.rows ();
   octave_idx_type nc = z.cols ();
@@ -2063,7 +2080,8 @@ biry (const ComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& i
 }
 
 ComplexNDArray
-airy (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+airy (const ComplexNDArray& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -2078,7 +2096,8 @@ airy (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& 
 }
 
 ComplexNDArray
-biry (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+biry (const ComplexNDArray& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -2141,7 +2160,8 @@ biry (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 
   if (! scaled)
     {
-      FloatComplex expz = exp (std::abs (real (static_cast<float> (2.0 / 3.0) * z * sqrt (z))));
+      FloatComplex expz = exp (std::abs (real (static_cast<float> (2.0 / 3.0)
+                          * z * sqrt (z))));
 
       float rexpz = real (expz);
       float iexpz = imag (expz);
@@ -2159,7 +2179,8 @@ biry (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 }
 
 FloatComplexMatrix
-airy (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+airy (const FloatComplexMatrix& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = z.rows ();
   octave_idx_type nc = z.cols ();
@@ -2176,7 +2197,8 @@ airy (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_typ
 }
 
 FloatComplexMatrix
-biry (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+biry (const FloatComplexMatrix& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   octave_idx_type nr = z.rows ();
   octave_idx_type nc = z.cols ();
@@ -2193,7 +2215,8 @@ biry (const FloatComplexMatrix& z, bool deriv, bool scaled, Array<octave_idx_typ
 }
 
 FloatComplexNDArray
-airy (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+airy (const FloatComplexNDArray& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -2208,7 +2231,8 @@ airy (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_ty
 }
 
 FloatComplexNDArray
-biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr)
+biry (const FloatComplexNDArray& z, bool deriv, bool scaled,
+      Array<octave_idx_type>& ierr)
 {
   dim_vector dv = z.dims ();
   octave_idx_type nel = dv.numel ();
@@ -2231,8 +2255,8 @@ gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
   std::string d3_str = d3.str ();
 
   (*current_liboctave_error_handler)
-  ("betainc: nonconformant arguments (x is %s, a is %s, b is %s)",
-   d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
+    ("betainc: nonconformant arguments (x is %s, a is %s, b is %s)",
+     d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
 }
 
 static void
@@ -2244,8 +2268,8 @@ gripe_betaincinv_nonconformant (const dim_vector& d1, const dim_vector& d2,
   std::string d3_str = d3.str ();
 
   (*current_liboctave_error_handler)
-  ("betaincinv: nonconformant arguments (x is %s, a is %s, b is %s)",
-   d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
+    ("betaincinv: nonconformant arguments (x is %s, a is %s, b is %s)",
+     d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
 }
 
 double
@@ -2544,7 +2568,7 @@ betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b)
   return retval;
 }
 
-// FIXME -- there is still room for improvement here...
+// FIXME: there is still room for improvement here...
 
 double
 gammainc (double x, double a, bool& err)
@@ -2588,7 +2612,7 @@ gammainc (double x, const Matrix& a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2615,7 +2639,7 @@ gammainc (const Matrix& x, double a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2654,7 +2678,7 @@ gammainc (const Matrix& x, const Matrix& a)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
 
- done:
+done:
 
   return retval;
 }
@@ -2680,7 +2704,7 @@ gammainc (double x, const NDArray& a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2706,7 +2730,7 @@ gammainc (const NDArray& x, double a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2746,7 +2770,7 @@ gammainc (const NDArray& x, const NDArray& a)
          x_str.c_str (), a_str. c_str ());
     }
 
- done:
+done:
 
   return retval;
 }
@@ -2793,7 +2817,7 @@ gammainc (float x, const FloatMatrix& a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2820,7 +2844,7 @@ gammainc (const FloatMatrix& x, float a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2859,7 +2883,7 @@ gammainc (const FloatMatrix& x, const FloatMatrix& a)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
 
- done:
+done:
 
   return retval;
 }
@@ -2885,7 +2909,7 @@ gammainc (float x, const FloatNDArray& a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2911,7 +2935,7 @@ gammainc (const FloatNDArray& x, float a)
 
   retval = result;
 
- done:
+done:
 
   return retval;
 }
@@ -2951,7 +2975,7 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
          x_str.c_str (), a_str.c_str ());
     }
 
- done:
+done:
 
   return retval;
 }
@@ -2966,7 +2990,8 @@ Complex rc_log1p (double x)
 FloatComplex rc_log1p (float x)
 {
   const float pi = 3.14159265358979323846f;
-  return x < -1.0f ? FloatComplex (logf (-(1.0f + x)), pi) : FloatComplex (log1pf (x));
+  return x < -1.0f ? FloatComplex (logf (-(1.0f + x)), pi)
+                   : FloatComplex (log1pf (x));
 }
 
 // This algorithm is due to P. J. Acklam.
@@ -2980,20 +3005,28 @@ static double do_erfinv (double x, bool refine)
 {
   // Coefficients of rational approximation.
   static const double a[] =
-    { -2.806989788730439e+01,  1.562324844726888e+02,
-      -1.951109208597547e+02,  9.783370457507161e+01,
-      -2.168328665628878e+01,  1.772453852905383e+00 };
+  {
+    -2.806989788730439e+01,  1.562324844726888e+02,
+    -1.951109208597547e+02,  9.783370457507161e+01,
+    -2.168328665628878e+01,  1.772453852905383e+00
+  };
   static const double b[] =
-    { -5.447609879822406e+01,  1.615858368580409e+02,
-      -1.556989798598866e+02,  6.680131188771972e+01,
-      -1.328068155288572e+01 };
+  {
+    -5.447609879822406e+01,  1.615858368580409e+02,
+    -1.556989798598866e+02,  6.680131188771972e+01,
+    -1.328068155288572e+01
+  };
   static const double c[] =
-    { -5.504751339936943e-03, -2.279687217114118e-01,
-      -1.697592457770869e+00, -1.802933168781950e+00,
-       3.093354679843505e+00,  2.077595676404383e+00 };
+  {
+    -5.504751339936943e-03, -2.279687217114118e-01,
+    -1.697592457770869e+00, -1.802933168781950e+00,
+    3.093354679843505e+00,  2.077595676404383e+00
+  };
   static const double d[] =
-    {  7.784695709041462e-03,  3.224671290700398e-01,
-       2.445134137142996e+00,  3.754408661907416e+00 };
+  {
+    7.784695709041462e-03,  3.224671290700398e-01,
+    2.445134137142996e+00,  3.754408661907416e+00
+  };
 
   static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
   static const double pbreak = 0.95150;
@@ -3049,20 +3082,28 @@ static double do_erfcinv (double x, bool refine)
 {
   // Coefficients of rational approximation.
   static const double a[] =
-    { -2.806989788730439e+01,  1.562324844726888e+02,
-      -1.951109208597547e+02,  9.783370457507161e+01,
-      -2.168328665628878e+01,  1.772453852905383e+00 };
+  {
+    -2.806989788730439e+01,  1.562324844726888e+02,
+    -1.951109208597547e+02,  9.783370457507161e+01,
+    -2.168328665628878e+01,  1.772453852905383e+00
+  };
   static const double b[] =
-    { -5.447609879822406e+01,  1.615858368580409e+02,
-      -1.556989798598866e+02,  6.680131188771972e+01,
-      -1.328068155288572e+01 };
+  {
+    -5.447609879822406e+01,  1.615858368580409e+02,
+    -1.556989798598866e+02,  6.680131188771972e+01,
+    -1.328068155288572e+01
+  };
   static const double c[] =
-    { -5.504751339936943e-03, -2.279687217114118e-01,
-      -1.697592457770869e+00, -1.802933168781950e+00,
-       3.093354679843505e+00,  2.077595676404383e+00 };
+  {
+    -5.504751339936943e-03, -2.279687217114118e-01,
+    -1.697592457770869e+00, -1.802933168781950e+00,
+    3.093354679843505e+00,  2.077595676404383e+00
+  };
   static const double d[] =
-    {  7.784695709041462e-03,  3.224671290700398e-01,
-       2.445134137142996e+00,  3.754408661907416e+00 };
+  {
+    7.784695709041462e-03,  3.224671290700398e-01,
+    2.445134137142996e+00,  3.754408661907416e+00
+  };
 
   static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
   static const double pbreak_lo = 0.04850;  // 1-pbreak
@@ -3201,7 +3242,7 @@ betain (double x, double p, double q, double beta, bool& err)
       if (temp <= acu && temp <= acu * value)
         {
           value = value * exp (pp * log (xx)
-          + (qq - 1.0) * log (cx) - beta) / pp;
+                               + (qq - 1.0) * log (cx) - beta) / pp;
 
           if (indx)
             {
@@ -3559,7 +3600,8 @@ betaincinv (const Array<double>& x, const Array<double>& a, double b)
 }
 
 Array<double>
-betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b)
+betaincinv (const Array<double>& x, const Array<double>& a,
+            const Array<double>& b)
 {
   Array<double> retval;
   dim_vector dv = x.dims ();
@@ -3653,7 +3695,8 @@ ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
 }
 
 void
-ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn, double& err)
+ellipj (const Complex& u, double m, Complex& sn, Complex& cn, Complex& dn,
+        double& err)
 {
   double m1 = 1 - m, ss1, cc1, dd1;
 

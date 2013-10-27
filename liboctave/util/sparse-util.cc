@@ -97,7 +97,8 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
           if (c[j] > nnz)
             {
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: cidx[%d] = %d exceeds number of nonzero elements", j, c[j]+1);
+                ("invalid sparse matrix: cidx[%d] = %d exceeds number of nonzero elements",
+                 j, c[j]+1);
               return false;
             }
 

@@ -69,16 +69,16 @@ public:
   ~DiagArray2 (void) { }
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
-    {
-      if (this != &a)
-        {
-          Array<T>::operator = (a);
-          d1 = a.d1;
-          d2 = a.d2;
-        }
+  {
+    if (this != &a)
+      {
+        Array<T>::operator = (a);
+        d1 = a.d1;
+        d2 = a.d2;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   octave_idx_type dim1 (void) const { return d1; }
   octave_idx_type dim2 (void) const { return d2; }
@@ -108,63 +108,63 @@ public:
   // to off-diagonal elements.
 
   T elem (octave_idx_type r, octave_idx_type c) const
-    {
-      return (r == c) ? Array<T>::elem (r) : T (0);
-    }
+  {
+    return (r == c) ? Array<T>::elem (r) : T (0);
+  }
 
   T& elem (octave_idx_type r, octave_idx_type c)
-    {
-      static T zero (0);
-      return (r == c) ? Array<T>::elem (r) : zero;
-    }
+  {
+    static T zero (0);
+    return (r == c) ? Array<T>::elem (r) : zero;
+  }
 
   T dgelem (octave_idx_type i) const
-    { return Array<T>::elem (i); }
+  { return Array<T>::elem (i); }
 
   T& dgelem (octave_idx_type i)
-    { return Array<T>::elem (i); }
+  { return Array<T>::elem (i); }
 
   T checkelem (octave_idx_type r, octave_idx_type c) const
-    {
-      return check_idx (r, c) ? elem (r, c) : T (0);
-    }
+  {
+    return check_idx (r, c) ? elem (r, c) : T (0);
+  }
 
   T operator () (octave_idx_type r, octave_idx_type c) const
-    {
+  {
 #if defined (BOUNDS_CHECKING)
-      return checkelem (r, c);
+    return checkelem (r, c);
 #else
-      return elem (r, c);
+    return elem (r, c);
 #endif
-    }
+  }
 
   T& checkelem (octave_idx_type r, octave_idx_type c)
-    {
-      static T zero (0);
-      return check_idx (r, c) ? elem (r, c) : zero;
-    }
+  {
+    static T zero (0);
+    return check_idx (r, c) ? elem (r, c) : zero;
+  }
 
   T& operator () (octave_idx_type r, octave_idx_type c)
-    {
+  {
 #if defined (BOUNDS_CHECKING)
-      return checkelem (r, c);
+    return checkelem (r, c);
 #else
-      return elem (r, c);
+    return elem (r, c);
 #endif
-    }
+  }
 
   // No checking.
 
   T xelem (octave_idx_type r, octave_idx_type c) const
-    {
-      return (r == c) ? Array<T>::xelem (r) : T (0);
-    }
+  {
+    return (r == c) ? Array<T>::xelem (r) : T (0);
+  }
 
   T& dgxelem (octave_idx_type i)
-    { return Array<T>::xelem (i); }
+  { return Array<T>::xelem (i); }
 
   T dgxelem (octave_idx_type i) const
-    { return Array<T>::xelem (i); }
+  { return Array<T>::xelem (i); }
 
   void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
   void resize (octave_idx_type n, octave_idx_type m)
@@ -184,7 +184,7 @@ public:
   T *fortran_vec (void) { return Array<T>::fortran_vec (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
-    { Array<T>::print_info (os, prefix); }
+  { Array<T>::print_info (os, prefix); }
 
 private:
 

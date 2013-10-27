@@ -45,17 +45,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-regexp.h"
 #include "str-vec.h"
 
-// Define the maximum number of retries for a pattern that possibly
-// results in an infinite recursion.
+// Define the maximum number of retries for a pattern
+// that possibly results in an infinite recursion.
 #define PCRE_MATCHLIMIT_MAX 10
 
-// FIXME -- should this be configurable?
+// FIXME: should this be configurable?
 #define MAXLOOKBEHIND 10
 
 static bool lookbehind_warned = false;
 
-// FIXME -- don't bother collecting and composing return values the user
-// doesn't want.
+// FIXME: don't bother collecting and composing return values
+//        the user doesn't want.
 
 void
 regexp::free (void)
@@ -181,7 +181,7 @@ regexp::compile_internal (void)
                       lookbehind_warned = true;
                       (*current_liboctave_warning_handler)
                         ("%s: arbitrary length lookbehind patterns are only supported up to length %d",
-                               who.c_str (), MAXLOOKBEHIND);
+                         who.c_str (), MAXLOOKBEHIND);
                     }
 
                   buf << pattern.substr (pos, new_pos - pos) << "(";
@@ -266,7 +266,7 @@ regexp::match (const std::string& buffer)
       // Index of subpattern in first two bytes MSB first of name.
       // Extract index.
       nidx[i] = (static_cast<int> (nametable[i*nameentrysize])) << 8
-        | static_cast<int> (nametable[i*nameentrysize+1]);
+                | static_cast<int> (nametable[i*nameentrysize+1]);
     }
 
   while (true)
@@ -372,13 +372,13 @@ regexp::match (const std::string& buffer)
                       if (namecount > 0)
                         {
                           // FIXME: Should probably do this with a map()
-                          // rather than a linear search.  However,
-                          // the number of captured, named expressions
-                          // is usually pretty small (< 4)
+                          //        rather than a linear search.  However,
+                          //        the number of captured, named expressions
+                          //        is usually pretty small (< 4)
                           for (int j = 0; j < namecount; j++)
                             {
                               if (nidx[j] == i)
-                                { 
+                                {
                                   named_tokens(named_idx(j)) =
                                     std::string (*(listptr+i-pos_offset));
                                   break;
@@ -402,13 +402,13 @@ regexp::match (const std::string& buffer)
           lst.push_back (new_elem);
 
           if (ovector[1] <= ovector[0])
-          {
-            // Zero length match.  Skip to next char.
-            idx = ovector[0] + 1;
-            if (idx <= buffer.length ())
-              continue;
-          }
-          else 
+            {
+              // Zero length match.  Skip to next char.
+              idx = ovector[0] + 1;
+              if (idx <= buffer.length ())
+                continue;
+            }
+          else
             idx = ovector[1];
 
           if (options.once () || idx >= buffer.length ())
@@ -444,10 +444,10 @@ regexp::is_match (const string_vector& buffer)
 
 // Declare rep_token_t used in processing replacement string
 typedef struct
-  {
-    size_t pos;
-    int num;
-  } rep_token_t;
+{
+  size_t pos;
+  int num;
+} rep_token_t;
 
 
 std::string

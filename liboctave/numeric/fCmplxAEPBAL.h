@@ -33,11 +33,13 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatComplexAEPBALANCE : public base_aepbal<FloatComplexMatrix, FloatColumnVector>
+FloatComplexAEPBALANCE
+  : public base_aepbal<FloatComplexMatrix, FloatColumnVector>
 {
 public:
 
-  FloatComplexAEPBALANCE (void) : base_aepbal<FloatComplexMatrix, FloatColumnVector> () { }
+  FloatComplexAEPBALANCE (void)
+    : base_aepbal<FloatComplexMatrix, FloatColumnVector> () { }
 
   FloatComplexAEPBALANCE (const FloatComplexMatrix& a, bool noperm = false,
                           bool noscal = false);

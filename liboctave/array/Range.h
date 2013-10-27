@@ -32,7 +32,7 @@ class
 OCTAVE_API
 Range
 {
- public:
+public:
 
   Range (void)
     : rng_base (0), rng_limit (0), rng_inc (0), rng_nelem (0), cache (1, 0) { }
@@ -53,10 +53,10 @@ Range
   Range (double b, double i, octave_idx_type n)
     : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
       rng_nelem (n), cache ()
-    {
-      if (! xfinite (b) || ! xfinite (i))
-        rng_nelem = -2;
-    }
+  {
+    if (! xfinite (b) || ! xfinite (i))
+      rng_nelem = -2;
+  }
 
   double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
@@ -117,7 +117,8 @@ Range
       }
   }
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const Range& r);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const Range& r);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, Range& r);
 
   friend OCTAVE_API Range operator - (const Range& r);
@@ -130,7 +131,7 @@ Range
 
   void print_range (void);
 
- private:
+private:
 
   double rng_base;
   double rng_limit;

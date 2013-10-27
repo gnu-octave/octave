@@ -37,8 +37,7 @@ typedef float (*float_integrand_fcn) (float x);
 
 #endif
 
-// FIXME -- would be nice to not have to have this global
-// variable.
+// FIXME: would be nice to not have to have this global variable.
 // Nonzero means an error occurred in the calculation of the integrand
 // function, and the user wants us to quit.
 extern OCTAVE_API int quad_integration_error;
@@ -49,7 +48,7 @@ class
 OCTAVE_API
 Quad : public Quad_options
 {
- public:
+public:
 
   Quad (integrand_fcn fcn)
     : Quad_options (), f (fcn), ff () { }
@@ -60,60 +59,64 @@ Quad : public Quad_options
   virtual ~Quad (void) { }
 
   virtual double integrate (void)
-    {
-      octave_idx_type ier, neval;
-      double abserr;
-      return do_integrate (ier, neval, abserr);
-    }
+  {
+    octave_idx_type ier, neval;
+    double abserr;
+    return do_integrate (ier, neval, abserr);
+  }
 
   virtual float float_integrate (void)
-    {
-      octave_idx_type ier, neval;
-      float abserr;
-      return do_integrate (ier, neval, abserr);
-    }
+  {
+    octave_idx_type ier, neval;
+    float abserr;
+    return do_integrate (ier, neval, abserr);
+  }
 
   virtual double integrate (octave_idx_type& ier)
-    {
-      octave_idx_type neval;
-      double abserr;
-      return do_integrate (ier, neval, abserr);
-    }
+  {
+    octave_idx_type neval;
+    double abserr;
+    return do_integrate (ier, neval, abserr);
+  }
 
   virtual float float_integrate (octave_idx_type& ier)
-    {
-      octave_idx_type neval;
-      float abserr;
-      return do_integrate (ier, neval, abserr);
-    }
+  {
+    octave_idx_type neval;
+    float abserr;
+    return do_integrate (ier, neval, abserr);
+  }
 
   virtual double integrate (octave_idx_type& ier, octave_idx_type& neval)
-    {
-      double abserr;
-      return do_integrate (ier, neval, abserr);
-    }
+  {
+    double abserr;
+    return do_integrate (ier, neval, abserr);
+  }
 
   virtual float float_integrate (octave_idx_type& ier, octave_idx_type& neval)
-    {
-      float abserr;
-      return do_integrate (ier, neval, abserr);
-    }
+  {
+    float abserr;
+    return do_integrate (ier, neval, abserr);
+  }
 
-  virtual double integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
-    {
-      return do_integrate (ier, neval, abserr);
-    }
+  virtual double integrate (octave_idx_type& ier, octave_idx_type& neval,
+                            double& abserr)
+  {
+    return do_integrate (ier, neval, abserr);
+  }
 
-  virtual float float_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
-    {
-      return do_integrate (ier, neval, abserr);
-    }
+  virtual float float_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                                 float& abserr)
+  {
+    return do_integrate (ier, neval, abserr);
+  }
 
-  virtual double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr) = 0;
+  virtual double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                               double& abserr) = 0;
 
-  virtual float do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr) = 0;
+  virtual float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                              float& abserr) = 0;
 
- protected:
+protected:
 
   integrand_fcn f;
   float_integrand_fcn ff;
@@ -123,7 +126,7 @@ class
 OCTAVE_API
 DefQuad : public Quad
 {
- public:
+public:
 
   DefQuad (integrand_fcn fcn)
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0), singularities () { }
@@ -142,11 +145,13 @@ DefQuad : public Quad
 
   ~DefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr);
+  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                       double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr);
+  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                      float& abserr);
 
- private:
+private:
 
   double lower_limit;
   double upper_limit;
@@ -158,7 +163,7 @@ class
 OCTAVE_API
 IndefQuad : public Quad
 {
- public:
+public:
 
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
@@ -170,11 +175,13 @@ IndefQuad : public Quad
 
   ~IndefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr);
+  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                       double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr);
+  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                      float& abserr);
 
- private:
+private:
 
   double bound;
   IntegralType type;
@@ -185,7 +192,7 @@ class
 OCTAVE_API
 FloatDefQuad : public Quad
 {
- public:
+public:
 
   FloatDefQuad (float_integrand_fcn fcn)
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0), singularities () { }
@@ -194,7 +201,7 @@ FloatDefQuad : public Quad
     : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
 
   FloatDefQuad (float_integrand_fcn fcn, float ll, float ul,
-           const FloatColumnVector& sing)
+                const FloatColumnVector& sing)
     : Quad (fcn), lower_limit (ll), upper_limit (ul),
       singularities (sing) { }
 
@@ -204,11 +211,13 @@ FloatDefQuad : public Quad
 
   ~FloatDefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr);
+  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                       double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr);
+  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                      float& abserr);
 
- private:
+private:
 
   float lower_limit;
   float upper_limit;
@@ -220,7 +229,7 @@ class
 OCTAVE_API
 FloatIndefQuad : public Quad
 {
- public:
+public:
 
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
@@ -232,11 +241,13 @@ FloatIndefQuad : public Quad
 
   ~FloatIndefQuad (void) { }
 
-  double do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr);
+  double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                       double& abserr);
 
-  float do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr);
+  float do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                      float& abserr);
 
- private:
+private:
 
   float bound;
   IntegralType type;

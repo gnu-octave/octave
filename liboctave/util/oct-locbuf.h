@@ -36,10 +36,10 @@ class octave_local_buffer
 public:
   octave_local_buffer (size_t size)
     : data (0)
-    {
-      if (size)
-        data = new T [size];
-    }
+  {
+    if (size)
+      data = new T [size];
+  }
   ~octave_local_buffer (void) { delete [] data; }
   operator T *() const { return data; }
 
@@ -143,7 +143,7 @@ class octave_local_buffer<T *> : private octave_chunk_buffer
 public:
   octave_local_buffer (size_t size)
     : octave_chunk_buffer (size * sizeof (T *))
-    { }
+  { }
 
   operator T **() const { return reinterpret_cast<T **> (this->data ()); }
 };
@@ -154,7 +154,7 @@ class octave_local_buffer<const T *> : private octave_chunk_buffer
 public:
   octave_local_buffer (size_t size)
     : octave_chunk_buffer (size * sizeof (const T *))
-    { }
+  { }
 
   operator const T **() const
   {

@@ -46,12 +46,12 @@ public:
     : base_lu <ComplexMatrix> (l, u, p) { }
 
   ComplexLU& operator = (const ComplexLU& a)
-    {
-      if (this != &a)
-        base_lu <ComplexMatrix> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <ComplexMatrix> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~ComplexLU (void) { }
 

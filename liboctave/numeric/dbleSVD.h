@@ -35,51 +35,51 @@ SVD
 public:
 
   enum type
-    {
-      std,
-      economy,
-      sigma_only
-    };
+  {
+    std,
+    economy,
+    sigma_only
+  };
 
   enum driver
-    {
-      GESVD,
-      GESDD
-    };
+  {
+    GESVD,
+    GESDD
+  };
 
   SVD (void) : type_computed (), sigma (), left_sm (), right_sm () { }
 
   SVD (const Matrix& a,
        type svd_type = SVD::std, driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
-    {
-      init (a, svd_type, svd_driver);
-    }
+  {
+    init (a, svd_type, svd_driver);
+  }
 
   SVD (const Matrix& a, octave_idx_type& info,
        type svd_type = SVD::std, driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
-    {
-      info = init (a, svd_type, svd_driver);
-    }
+  {
+    info = init (a, svd_type, svd_driver);
+  }
 
   SVD (const SVD& a)
     : type_computed (a.type_computed), sigma (a.sigma),
       left_sm (a.left_sm), right_sm (a.right_sm)
-    { }
+  { }
 
   SVD& operator = (const SVD& a)
-    {
-      if (this != &a)
-        {
-          type_computed = a.type_computed;
-          sigma = a.sigma;
-          left_sm = a.left_sm;
-          right_sm = a.right_sm;
-        }
+  {
+    if (this != &a)
+      {
+        type_computed = a.type_computed;
+        sigma = a.sigma;
+        left_sm = a.left_sm;
+        right_sm = a.right_sm;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~SVD (void) { }
 

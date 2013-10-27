@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 #include "oct-locbuf.h"
 
-// FIXME There is a large code duplication here
+// FIXME: There is a large code duplication here
 
 MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
@@ -308,10 +308,10 @@ MatrixType::MatrixType (const SparseMatrix &a)
       if (!singular)
         {
           bandden = double (nnz) /
-            (double (ncols) * (double (lower_band) +
-                               double (upper_band)) -
-             0.5 * double (upper_band + 1) * double (upper_band) -
-             0.5 * double (lower_band + 1) * double (lower_band));
+                    (double (ncols) * (double (lower_band) +
+                                       double (upper_band)) -
+                     0.5 * double (upper_band + 1) * double (upper_band) -
+                     0.5 * double (lower_band + 1) * double (lower_band));
 
           if (nrows == ncols && sp_bandden != 1. && bandden > sp_bandden)
             {
@@ -343,8 +343,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
           // Search for a permuted triangular matrix, and test if
           // permutation is singular
 
-          // FIXME
-          // Perhaps this should be based on a dmperm algorithm
+          // FIXME: Perhaps this should be based on a dmperm algorithm?
           bool found = false;
 
           nperm = ncols;
@@ -398,7 +397,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
 
               for (octave_idx_type j = 0; j < ncols; j++)
                 for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-                    perm[a.ridx (i)] = j;
+                  perm[a.ridx (i)] = j;
 
               found = true;
               for (octave_idx_type i = 0; i < nm; i++)
@@ -447,10 +446,9 @@ MatrixType::MatrixType (const SparseMatrix &a)
             }
         }
 
-      // FIXME
-      // Disable lower under-determined and upper over-determined problems
-      // as being detected, and force to treat as singular. As this seems
-      // to cause issues
+      // FIXME: Disable lower under-determined and upper over-determined
+      //        problems as being detected, and force to treat as singular
+      //        as this seems to cause issues.
       if (((typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
            && nrows > ncols) ||
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
@@ -629,10 +627,10 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
       if (!singular)
         {
           bandden = double (nnz) /
-            (double (ncols) * (double (lower_band) +
-                               double (upper_band)) -
-             0.5 * double (upper_band + 1) * double (upper_band) -
-             0.5 * double (lower_band + 1) * double (lower_band));
+                    (double (ncols) * (double (lower_band) +
+                                       double (upper_band)) -
+                     0.5 * double (upper_band + 1) * double (upper_band) -
+                     0.5 * double (lower_band + 1) * double (lower_band));
 
           if (nrows == ncols && sp_bandden != 1. && bandden > sp_bandden)
             {
@@ -664,8 +662,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
           // Search for a permuted triangular matrix, and test if
           // permutation is singular
 
-          // FIXME
-          // Perhaps this should be based on a dmperm algorithm
+          // FIXME: Perhaps this should be based on a dmperm algorithm?
           bool found = false;
 
           nperm = ncols;
@@ -719,7 +716,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 
               for (octave_idx_type j = 0; j < ncols; j++)
                 for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-                    perm[a.ridx (i)] = j;
+                  perm[a.ridx (i)] = j;
 
               found = true;
               for (octave_idx_type i = 0; i < nm; i++)
@@ -768,10 +765,9 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
             }
         }
 
-      // FIXME
-      // Disable lower under-determined and upper over-determined problems
-      // as being detected, and force to treat as singular. As this seems
-      // to cause issues
+      // FIXME: Disable lower under-determined and upper over-determined
+      //        problems as being detected, and force to treat as singular
+      //        as this seems to cause issues.
       if (((typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
            && nrows > ncols) ||
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
@@ -943,8 +939,8 @@ MatrixType::operator = (const MatrixType& a)
 int
 MatrixType::type (bool quiet)
 {
-  if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden ()))
+  if (typ != MatrixType::Unknown
+      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (!quiet &&
           octave_sparse_params::get_key ("spumoni") != 0.)
@@ -967,8 +963,8 @@ MatrixType::type (bool quiet)
 int
 MatrixType::type (const SparseMatrix &a)
 {
-  if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden ()))
+  if (typ != MatrixType::Unknown
+      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
         (*current_liboctave_warning_handler)
@@ -1000,8 +996,8 @@ MatrixType::type (const SparseMatrix &a)
 int
 MatrixType::type (const SparseComplexMatrix &a)
 {
-  if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden ()))
+  if (typ != MatrixType::Unknown
+      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
         (*current_liboctave_warning_handler)
@@ -1222,7 +1218,8 @@ MatrixType::mark_as_unsymmetric (void)
 }
 
 void
-MatrixType::mark_as_permuted (const octave_idx_type np, const octave_idx_type *p)
+MatrixType::mark_as_permuted (const octave_idx_type np,
+                              const octave_idx_type *p)
 {
   nperm = np;
   perm = new octave_idx_type [nperm];

@@ -64,7 +64,7 @@ select_dig (const FloatComplex& a)
 
 octave_idx_type
 FloatComplexSCHUR::init (const FloatComplexMatrix& a, const std::string& ord,
-                    bool calc_unitary)
+                         bool calc_unitary)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();

@@ -67,7 +67,7 @@ base_url_transfer::mget_directory (const std::string& directory,
         {
           ok = false;
           errmsg = "__ftp_mget__: can not create directory '"
-            + target + sep + directory + "': " + msg;
+                   + target + sep + directory + "': " + msg;
           return;
         }
     }
@@ -167,7 +167,7 @@ base_url_transfer::mput_directory (const std::string& base,
                 {
                   ok = false;
                   errmsg = "__ftp__mput: file '" + realfile
-                    + "' does not exist";
+                           + "' does not exist";
                   break;
                 }
 
@@ -188,7 +188,7 @@ base_url_transfer::mput_directory (const std::string& base,
                     {
                       ok = false;
                       errmsg = "__ftp_mput__: unable to open file '"
-                        + realfile + "'";
+                               + realfile + "'";
                       break;
                     }
 
@@ -207,7 +207,7 @@ base_url_transfer::mput_directory (const std::string& base,
         {
           ok = false;
           errmsg = "__ftp_mput__: can not read the directory '"
-            + realdir + "'";
+                   + realdir + "'";
         }
     }
 

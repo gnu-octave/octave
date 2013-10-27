@@ -39,7 +39,7 @@ struct _idxadds_helper
   T val;
   _idxadds_helper (T *a, T v) : array (a), val (v) { }
   void operator () (octave_idx_type i)
-    { array[i] += val; }
+  { array[i] += val; }
 };
 
 template <class T>
@@ -49,7 +49,7 @@ struct _idxadda_helper
   const T *vals;
   _idxadda_helper (T *a, const T *v) : array (a), vals (v) { }
   void operator () (octave_idx_type i)
-    { array[i] += *vals++; }
+  { array[i] += *vals++; }
 };
 
 template <class T>
@@ -88,14 +88,15 @@ MArray<T>::idx_add (const idx_vector& idx, const MArray<T>& vals)
   idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
 }
 
-template <class T, T op (typename ref_param<T>::type, typename ref_param<T>::type)>
+template <class T, T op (typename ref_param<T>::type,
+                         typename ref_param<T>::type)>
 struct _idxbinop_helper
 {
   T *array;
   const T *vals;
   _idxbinop_helper (T *a, const T *v) : array (a), vals (v) { }
   void operator () (octave_idx_type i)
-    { array[i] = op (array[i], *vals++); }
+  { array[i] = op (array[i], *vals++); }
 };
 
 template <class T>
@@ -113,7 +114,8 @@ MArray<T>::idx_min (const idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.length ());
-  idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (), vals.data ()));
+  idx.loop (len, _idxbinop_helper<T, xmin> (this->fortran_vec (),
+                                            vals.data ()));
 }
 
 template <class T>
@@ -131,13 +133,15 @@ MArray<T>::idx_max (const idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.length ());
-  idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (), vals.data ()));
+  idx.loop (len, _idxbinop_helper<T, xmax> (this->fortran_vec (),
+                                            vals.data ()));
 }
 
 #include <iostream>
 
 template <class T>
-void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals, int dim)
+void MArray<T>::idx_add_nd (const idx_vector& idx, const MArray<T>& vals,
+                            int dim)
 {
   int nd = std::max (this->ndims (), vals.ndims ());
   if (dim < 0)

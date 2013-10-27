@@ -38,32 +38,32 @@ public:
 
   SCHUR (const Matrix& a, const std::string& ord, bool calc_unitary = true)
     : schur_mat (), unitary_mat (), selector (0)
-    {
-      init (a, ord, calc_unitary);
-    }
+  {
+    init (a, ord, calc_unitary);
+  }
 
   SCHUR (const Matrix& a, const std::string& ord, int& info,
          bool calc_unitary = true)
     : schur_mat (), unitary_mat (), selector (0)
-    {
-      info = init (a, ord, calc_unitary);
-    }
+  {
+    info = init (a, ord, calc_unitary);
+  }
 
   SCHUR (const SCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat), selector (0)
-    { }
+  { }
 
   SCHUR (const Matrix& s, const Matrix& u);
 
   SCHUR& operator = (const SCHUR& a)
-    {
-      if (this != &a)
-        {
-          schur_mat = a.schur_mat;
-          unitary_mat = a.unitary_mat;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        schur_mat = a.schur_mat;
+        unitary_mat = a.unitary_mat;
+      }
+    return *this;
+  }
 
   ~SCHUR (void) { }
 
@@ -82,7 +82,8 @@ private:
 
   select_function selector;
 
-  octave_idx_type init (const Matrix& a, const std::string& ord, bool calc_unitary);
+  octave_idx_type init (const Matrix& a, const std::string& ord,
+                        bool calc_unitary);
 };
 
 #endif

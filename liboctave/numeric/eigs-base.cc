@@ -155,9 +155,11 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
-                           const octave_idx_type&, const octave_idx_type&, const Complex&,
-                           const Complex*, const octave_idx_type&, const Complex*,
-                           const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
+                           const octave_idx_type&, const octave_idx_type&,
+                           const Complex&, const Complex*,
+                           const octave_idx_type&, const Complex*,
+                           const octave_idx_type&, const Complex&, Complex*,
+                           const octave_idx_type&
                            F77_CHAR_ARG_LEN_DECL);
 
 }
@@ -179,7 +181,7 @@ lusolve (const ComplexMatrix&, const ComplexMatrix&, ComplexMatrix&);
 
 static ComplexMatrix
 ltsolve (const SparseComplexMatrix&, const ColumnVector&,
-                const ComplexMatrix&);
+         const ComplexMatrix&);
 
 static Matrix
 ltsolve (const SparseMatrix&, const ColumnVector&, const Matrix&,);
@@ -307,7 +309,7 @@ vector_product (const Matrix& m, const double *x, double *y)
 
 static bool
 vector_product (const SparseComplexMatrix& m, const Complex* x,
-                        Complex* y)
+                Complex* y)
 {
   octave_idx_type nc = m.cols ();
 
@@ -446,11 +448,11 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
               tmp.xcidx (n) = n;
 
               AminusSigmaB = AminusSigmaB - sigma * tmp *
-                b.transpose () * b * tmp.transpose ();
+                             b.transpose () * b * tmp.transpose ();
             }
           else
             AminusSigmaB = AminusSigmaB - sigma *
-              b.transpose () * b;
+                           b.transpose () * b;
         }
       else
         AminusSigmaB = AminusSigmaB - sigma * b;
@@ -459,17 +461,17 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
     {
       SparseMatrix sigmat (n, n, n);
 
-          // Create sigma * speye (n,n)
-          sigmat.xcidx (0) = 0;
-          for (octave_idx_type i = 0; i < n; i++)
-            {
-              sigmat.xdata (i) = sigma;
-              sigmat.xridx (i) = i;
-              sigmat.xcidx (i+1) = i + 1;
-            }
-
-          AminusSigmaB = AminusSigmaB - sigmat;
+      // Create sigma * speye (n,n)
+      sigmat.xcidx (0) = 0;
+      for (octave_idx_type i = 0; i < n; i++)
+        {
+          sigmat.xdata (i) = sigma;
+          sigmat.xridx (i) = i;
+          sigmat.xcidx (i+1) = i + 1;
         }
+
+      AminusSigmaB = AminusSigmaB - sigmat;
+    }
 
   SparseLU fact (AminusSigmaB);
 
@@ -621,7 +623,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
               tmp.xcidx (n) = n;
 
               AminusSigmaB = AminusSigmaB - tmp * b.hermitian () * b *
-                tmp.transpose () * sigma;
+                             tmp.transpose () * sigma;
             }
           else
             AminusSigmaB = AminusSigmaB - sigma * b.hermitian () * b;
@@ -956,8 +958,8 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -1140,7 +1142,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1-1).\n"
-             "      Use 'eig (full (A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -1249,8 +1251,8 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -1460,7 +1462,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig (full (A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -1550,8 +1552,8 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -1870,8 +1872,8 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -1927,7 +1929,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
-  // FIXME -- initialize eig_vec2 to zero; apparently dneupd can skip
+  // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
   // Found with valgrind and
   //
@@ -2114,7 +2116,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig (full (A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -2212,8 +2214,8 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -2313,7 +2315,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
-  // FIXME -- initialize eig_vec2 to zero; apparently dneupd can skip
+  // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
   // Found with valgrind and
   //
@@ -2477,7 +2479,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig (full (A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -2568,8 +2570,8 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -2625,7 +2627,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   Array<octave_idx_type> s (dim_vector (p, 1));
   octave_idx_type *sel = s.fortran_vec ();
 
-  // FIXME -- initialize eig_vec2 to zero; apparently dneupd can skip
+  // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
   // Found with valgrind and
   //
@@ -2939,8 +2941,8 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -3134,7 +3136,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig (full (A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -3233,8 +3235,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }
@@ -3451,7 +3453,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig (full (A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -3542,8 +3544,8 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
           if (iter++)
             {
               os << "Iteration " << iter - 1 <<
-                ": a few Ritz values of the " << p << "-by-" <<
-                p << " matrix\n";
+                 ": a few Ritz values of the " << p << "-by-" <<
+                 p << " matrix\n";
               for (int i = 0 ; i < k; i++)
                 os << "    " << workl[iptr(5)+i-1] << "\n";
             }

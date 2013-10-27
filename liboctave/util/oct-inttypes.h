@@ -35,10 +35,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 inline long double xround (long double x) { return roundl (x); }
-inline long double xisnan (long double x) { return xisnan (static_cast<double> (x)); }
+inline long double xisnan (long double x)
+{ return xisnan (static_cast<double> (x)); }
 #endif
 
-// FIXME -- we define this by our own because some compilers, such as
+// FIXME: we define this by our own because some compilers, such as
 // MSVC, do not provide std::abs (int64_t) and std::abs (uint64_t).  In
 // the future, it should go away in favor of std::abs.
 template <class T>
@@ -106,38 +107,38 @@ class octave_int_cmp_op
   // size.
   template <class T1, class T2>
   class prom
-    {
-      // Promote to int?
-      static const bool pint = (sizeof (T1) < sizeof (int)
-                                && sizeof (T2) < sizeof (int));
-      static const bool t1sig = std::numeric_limits<T1>::is_signed;
-      static const bool t2sig = std::numeric_limits<T2>::is_signed;
-      static const bool psig =
-        (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
-      static const int psize =
-        (pint ? sizeof (int) : (sizeof (T2) > sizeof (T1)
-                                ? sizeof (T2) : sizeof (T1)));
-    public:
-      typedef typename query_integer_type<psize, psig>::type type;
-    };
+  {
+    // Promote to int?
+    static const bool pint = (sizeof (T1) < sizeof (int)
+                              && sizeof (T2) < sizeof (int));
+    static const bool t1sig = std::numeric_limits<T1>::is_signed;
+    static const bool t2sig = std::numeric_limits<T2>::is_signed;
+    static const bool psig =
+      (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
+    static const int psize =
+      (pint ? sizeof (int) : (sizeof (T2) > sizeof (T1)
+                              ? sizeof (T2) : sizeof (T1)));
+  public:
+    typedef typename query_integer_type<psize, psig>::type type;
+  };
 
   // Implements comparisons between two types of equal size but
   // possibly different signedness.
   template<class xop, int size>
   class uiop
-    {
-      typedef typename query_integer_type<size, false>::type utype;
-      typedef typename query_integer_type<size, true>::type stype;
-    public:
-      static bool op (utype x, utype y)
-        { return xop::op (x, y); }
-      static bool op (stype x, stype y)
-        { return xop::op (x, y); }
-      static bool op (stype x, utype y)
-        { return (x < 0) ? xop::ltval : xop::op (static_cast<utype> (x), y); }
-      static bool op (utype x, stype y)
-        { return (y < 0) ? xop::gtval : xop::op (x, static_cast<utype> (y)); }
-    };
+  {
+    typedef typename query_integer_type<size, false>::type utype;
+    typedef typename query_integer_type<size, true>::type stype;
+  public:
+    static bool op (utype x, utype y)
+    { return xop::op (x, y); }
+    static bool op (stype x, stype y)
+    { return xop::op (x, y); }
+    static bool op (stype x, utype y)
+    { return (x < 0) ? xop::ltval : xop::op (static_cast<utype> (x), y); }
+    static bool op (utype x, stype y)
+    { return (y < 0) ? xop::gtval : xop::op (x, static_cast<utype> (y)); }
+  };
 
 public:
   REGISTER_OCTAVE_CMP_OP (lt, <);
@@ -153,12 +154,12 @@ public:
   template<class xop, class T1, class T2>
   static bool
   op (T1 x, T2 y)
-    {
-      typedef typename prom<T1, T2>::type PT1;
-      typedef typename prom<T2, T1>::type PT2;
-      return uiop<xop, sizeof (PT1)>::op (static_cast<PT1> (x),
-                                          static_cast<PT2> (y));
-    }
+  {
+    typedef typename prom<T1, T2>::type PT1;
+    typedef typename prom<T2, T1>::type PT2;
+    return uiop<xop, sizeof (PT1)>::op (static_cast<PT1> (x),
+                                        static_cast<PT2> (y));
+  }
 
 public:
 
@@ -166,14 +167,15 @@ public:
   template <class xop, class T>
   static bool
   mop (T x, double y)
-    { return xop::op (static_cast<double> (x), y); }
+  { return xop::op (static_cast<double> (x), y); }
 
   template <class xop, class T>
   static bool
   mop (double x, T y)
-    { return xop::op (x, static_cast<double> (y)); }
+  { return xop::op (x, static_cast<double> (y)); }
 
-  // Typecasting to doubles won't work properly for 64-bit integers - they lose precision.
+  // Typecasting to doubles won't work properly for 64-bit integers --
+  // they lose precision.
   // If we have long doubles, use them...
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 #define DEFINE_LONG_DOUBLE_CMP_OP(T1, T2) \
@@ -224,36 +226,36 @@ public:
   template <class S>
   static T
   truncate_int (const S& value)
-    {
-      // An exhaustive test whether the max and/or min check can be omitted.
-      static const bool t_is_signed = std::numeric_limits<T>::is_signed;
-      static const bool s_is_signed = std::numeric_limits<S>::is_signed;
-      static const int t_size = sizeof (T), s_size = sizeof (S);
-      static const bool omit_chk_min =
-        (! s_is_signed || (t_is_signed && t_size >= s_size));
-      static const bool omit_chk_max =
-        (t_size > s_size || (t_size == s_size
-         && (! t_is_signed || s_is_signed)));
-      // If the check can be omitted, substitute constant false relation.
-      typedef octave_int_cmp_op::cf cf;
-      typedef octave_int_cmp_op::lt lt;
-      typedef octave_int_cmp_op::gt gt;
-      typedef typename if_then_else<omit_chk_min, cf, lt>::result chk_min;
-      typedef typename if_then_else<omit_chk_max, cf, gt>::result chk_max;
+  {
+    // An exhaustive test whether the max and/or min check can be omitted.
+    static const bool t_is_signed = std::numeric_limits<T>::is_signed;
+    static const bool s_is_signed = std::numeric_limits<S>::is_signed;
+    static const int t_size = sizeof (T), s_size = sizeof (S);
+    static const bool omit_chk_min =
+      (! s_is_signed || (t_is_signed && t_size >= s_size));
+    static const bool omit_chk_max =
+      (t_size > s_size || (t_size == s_size
+                           && (! t_is_signed || s_is_signed)));
+    // If the check can be omitted, substitute constant false relation.
+    typedef octave_int_cmp_op::cf cf;
+    typedef octave_int_cmp_op::lt lt;
+    typedef octave_int_cmp_op::gt gt;
+    typedef typename if_then_else<omit_chk_min, cf, lt>::result chk_min;
+    typedef typename if_then_else<omit_chk_max, cf, gt>::result chk_max;
 
-      // Efficiency of the following depends on inlining and dead code
-      // elimination, but that should be a piece of cake for most compilers.
-      if (chk_min::op (value, static_cast<S> (min_val ())))
-        {
-          return min_val ();
-        }
-      else if (chk_max::op (value, static_cast<S> (max_val ())))
-        {
-          return max_val ();
-        }
-      else
-        return static_cast<T> (value);
-    }
+    // Efficiency of the following depends on inlining and dead code
+    // elimination, but that should be a piece of cake for most compilers.
+    if (chk_min::op (value, static_cast<S> (min_val ())))
+      {
+        return min_val ();
+      }
+    else if (chk_max::op (value, static_cast<S> (max_val ())))
+      {
+        return max_val ();
+      }
+    else
+      return static_cast<T> (value);
+  }
 
 private:
 
@@ -261,42 +263,44 @@ private:
   template <class S>
   static S
   compute_threshold (S val, T orig_val)
-    {
-      val = xround (val); // Fool optimizations (maybe redundant)
-      // If val is even, but orig_val is odd, we're one unit off.
-      if (orig_val % 2 && val / 2 == xround (val / 2))
-        // FIXME -- is this always correct?
-        val *= (static_cast<S>(1) - (std::numeric_limits<S>::epsilon () / 2));
-      return val;
-    }
+  {
+    val = xround (val); // Fool optimizations (maybe redundant)
+    // If val is even, but orig_val is odd, we're one unit off.
+    if (orig_val % 2 && val / 2 == xround (val / 2))
+      // FIXME: is this always correct?
+      val *= (static_cast<S>(1) - (std::numeric_limits<S>::epsilon () / 2));
+    return val;
+  }
 
 public:
   // Convert a real number (check NaN and non-int).
   template <class S>
   static T
   convert_real (const S& value)
-    {
-      // Compute proper thresholds.
-      static const S thmin = compute_threshold (static_cast<S> (min_val ()), min_val ());
-      static const S thmax = compute_threshold (static_cast<S> (max_val ()), max_val ());
-      if (xisnan (value))
-        {
-          return static_cast<T> (0);
-        }
-      else if (value < thmin)
-        {
-          return min_val ();
-        }
-      else if (value > thmax)
-        {
-          return max_val ();
-        }
-      else
-        {
-          S rvalue = xround (value);
-          return static_cast<T> (rvalue);
-        }
-    }
+  {
+    // Compute proper thresholds.
+    static const S thmin = compute_threshold (static_cast<S> (min_val ()),
+                           min_val ());
+    static const S thmax = compute_threshold (static_cast<S> (max_val ()),
+                           max_val ());
+    if (xisnan (value))
+      {
+        return static_cast<T> (0);
+      }
+    else if (value < thmin)
+      {
+        return min_val ();
+      }
+    else if (value > thmax)
+      {
+        return max_val ();
+      }
+    else
+      {
+        S rvalue = xround (value);
+        return static_cast<T> (rvalue);
+      }
+  }
 };
 
 // Saturated (homogeneous) integer arithmetics. The signed and unsigned
@@ -330,75 +334,75 @@ public:
 
   static T
   minus (T)
-    {
-      return static_cast<T> (0);
-    }
+  {
+    return static_cast<T> (0);
+  }
 
   // the overflow behaviour for unsigned integers is guaranteed by C/C++,
   // so the following should always work.
   static T
   add (T x, T y)
-    {
-      T u = x + y;
-      if (u < x)
-        {
-          u = octave_int_base<T>::max_val ();
-        }
-      return u;
-    }
+  {
+    T u = x + y;
+    if (u < x)
+      {
+        u = octave_int_base<T>::max_val ();
+      }
+    return u;
+  }
 
   static T
   sub (T x, T y)
-    {
-      T u = x - y;
-      if (u > x)
-        {
-          u = 0;
-        }
-      return u;
-    }
+  {
+    T u = x - y;
+    if (u > x)
+      {
+        u = 0;
+      }
+    return u;
+  }
 
   // Multiplication is done using promotion to wider integer type. If there is
   // no suitable promotion type, this operation *MUST* be specialized.
   static T
   mul (T x, T y)
-    {
-      // Promotion type for multiplication (if exists).
-      typedef typename query_integer_type<2*sizeof (T), false>::type mptype;
-      return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
-                                               * static_cast<mptype> (y));
-    }
+  {
+    // Promotion type for multiplication (if exists).
+    typedef typename query_integer_type<2*sizeof (T), false>::type mptype;
+    return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
+           * static_cast<mptype> (y));
+  }
 
   // Division with rounding to nearest. Note that / and % are probably
   // computed by a single instruction.
   static T
   div (T x, T y)
-    {
-      if (y != 0)
-        {
-          T z = x / y, w = x % y;
-          if (w >= y-w) z += 1;
-          return z;
-        }
-      else
-        {
-          return x ? octave_int_base<T>::max_val () : 0;
-        }
-    }
+  {
+    if (y != 0)
+      {
+        T z = x / y, w = x % y;
+        if (w >= y-w) z += 1;
+        return z;
+      }
+    else
+      {
+        return x ? octave_int_base<T>::max_val () : 0;
+      }
+  }
 
   // Remainder.
   static T
   rem (T x, T y)
-    {
-      return y != 0 ? x % y : 0;
-    }
+  {
+    return y != 0 ? x % y : 0;
+  }
 
   // Modulus. Note the weird y = 0 case for Matlab compatibility.
   static T
   mod (T x, T y)
-    {
-      return y != 0 ? x % y : x;
-    }
+  {
+    return y != 0 ? x % y : x;
+  }
 };
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
@@ -437,8 +441,8 @@ octave_int_arith_base<uint64_t, false>::mul (uint64_t, uint64_t);
 //
 // The above conditions are satisfied by most modern platforms. If
 // HAVE_FAST_INT_OPS is defined, bit tricks and wraparound arithmetics are used
-// to avoid conditional jumps as much as possible, thus being friendly to modern
-// pipeline processor architectures.
+// to avoid conditional jumps as much as possible, thus being friendly to
+// modern pipeline processor architectures.
 // Otherwise, we fall back to a bullet-proof code that only uses assumptions
 // guaranteed by the standard.
 
@@ -452,53 +456,53 @@ public:
   // Returns 1 for negative number, 0 otherwise.
   static T
   __signbit (T x)
-    {
+  {
 #ifdef HAVE_FAST_INT_OPS
-      return static_cast<UT> (x) >> std::numeric_limits<T>::digits;
+    return static_cast<UT> (x) >> std::numeric_limits<T>::digits;
 #else
-      return (x < 0) ? 1 : 0;
+    return (x < 0) ? 1 : 0;
 #endif
-    }
+  }
 
   static T
   abs (T x)
-    {
+  {
 #ifdef HAVE_FAST_INT_OPS
-      // This is close to how GCC does std::abs, but we can't just use std::abs,
-      // because its behaviour for INT_MIN is undefined and the compiler could
-      // discard the following test.
-      T m = x >> std::numeric_limits<T>::digits;
-      T y = (x ^ m) - m;
-      if (y < 0)
-        {
-          y = octave_int_base<T>::max_val ();
-        }
-      return y;
+    // This is close to how GCC does std::abs, but we can't just use std::abs,
+    // because its behaviour for INT_MIN is undefined and the compiler could
+    // discard the following test.
+    T m = x >> std::numeric_limits<T>::digits;
+    T y = (x ^ m) - m;
+    if (y < 0)
+      {
+        y = octave_int_base<T>::max_val ();
+      }
+    return y;
 #else
-      // -INT_MAX is safe because C++ actually allows only three implementations
-      // of integers: sign & magnitude, ones complement and twos complement.
-      // The first test will, with modest optimizations, evaluate at compile
-      // time, and maybe eliminate the branch completely.
-      T y;
-      if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
-          && x == octave_int_base<T>::min_val ())
-        {
-          y = octave_int_base<T>::max_val ();
-        }
-      else
-        y = (x < 0) ? -x : x;
-      return y;
+    // -INT_MAX is safe because C++ actually allows only three implementations
+    // of integers: sign & magnitude, ones complement and twos complement.
+    // The first test will, with modest optimizations, evaluate at compile
+    // time, and maybe eliminate the branch completely.
+    T y;
+    if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
+        && x == octave_int_base<T>::min_val ())
+      {
+        y = octave_int_base<T>::max_val ();
+      }
+    else
+      y = (x < 0) ? -x : x;
+    return y;
 #endif
-    }
+  }
 
   static T
   signum (T x)
-    {
-      // With modest optimizations, this will compile without a jump.
-      return ((x > 0) ? 1 : 0) - __signbit (x);
-    }
+  {
+    // With modest optimizations, this will compile without a jump.
+    return ((x > 0) ? 1 : 0) - __signbit (x);
+  }
 
-  // FIXME -- we do not have an authority what signed shifts should
+  // FIXME: we do not have an authority what signed shifts should
   // exactly do, so we define them the easy way. Note that Matlab does
   // not define signed shifts.
 
@@ -511,181 +515,182 @@ public:
   // Minus has problems similar to abs.
   static T
   minus (T x)
-    {
+  {
 #ifdef HAVE_FAST_INT_OPS
-      T y = -x;
-      if (y == octave_int_base<T>::min_val ())
-        {
-          --y;
-        }
-      return y;
+    T y = -x;
+    if (y == octave_int_base<T>::min_val ())
+      {
+        --y;
+      }
+    return y;
 #else
-      T y;
-      if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
-          && x == octave_int_base<T>::min_val ())
-        {
-          y = octave_int_base<T>::max_val ();
-        }
-      else
-        y = -x;
-      return y;
+    T y;
+    if (octave_int_base<T>::min_val () < -octave_int_base<T>::max_val ()
+        && x == octave_int_base<T>::min_val ())
+      {
+        y = octave_int_base<T>::max_val ();
+      }
+    else
+      y = -x;
+    return y;
 #endif
-    }
+  }
 
   static T
   add (T x, T y)
-    {
+  {
 #ifdef HAVE_FAST_INT_OPS
     // The typecasts do nothing, but they are here to prevent an optimizing
     // compiler from interfering. Also, the signed operations on small types
     // actually return int.
-      T u = static_cast<UT> (x) + static_cast<UT> (y);
-      T ux = u ^ x, uy = u ^ y;
-      if ((ux & uy) < 0)
-        {
-          u = octave_int_base<T>::max_val () + __signbit (~u);
-        }
-      return u;
+    T u = static_cast<UT> (x) + static_cast<UT> (y);
+    T ux = u ^ x, uy = u ^ y;
+    if ((ux & uy) < 0)
+      {
+        u = octave_int_base<T>::max_val () + __signbit (~u);
+      }
+    return u;
 #else
-      // We shall carefully avoid anything that may overflow.
-      T u;
-      if (y < 0)
-        {
-          if (x < octave_int_base<T>::min_val () - y)
-            {
-              u = octave_int_base<T>::min_val ();
-            }
-          else
-            u = x + y;
-        }
-      else
-        {
-          if (x > octave_int_base<T>::max_val () - y)
-            {
-              u = octave_int_base<T>::max_val ();
-            }
-          else
-            u = x + y;
-        }
+    // We shall carefully avoid anything that may overflow.
+    T u;
+    if (y < 0)
+      {
+        if (x < octave_int_base<T>::min_val () - y)
+          {
+            u = octave_int_base<T>::min_val ();
+          }
+        else
+          u = x + y;
+      }
+    else
+      {
+        if (x > octave_int_base<T>::max_val () - y)
+          {
+            u = octave_int_base<T>::max_val ();
+          }
+        else
+          u = x + y;
+      }
 
-      return u;
+    return u;
 #endif
-    }
+  }
 
   // This is very similar to addition.
   static T
   sub (T x, T y)
-    {
+  {
 #ifdef HAVE_FAST_INT_OPS
     // The typecasts do nothing, but they are here to prevent an optimizing
     // compiler from interfering. Also, the signed operations on small types
     // actually return int.
-      T u = static_cast<UT> (x) - static_cast<UT> (y);
-      T ux = u ^ x, uy = u ^ ~y;
-      if ((ux & uy) < 0)
-        {
-          u = octave_int_base<T>::max_val () + __signbit (~u);
-        }
-      return u;
+    T u = static_cast<UT> (x) - static_cast<UT> (y);
+    T ux = u ^ x, uy = u ^ ~y;
+    if ((ux & uy) < 0)
+      {
+        u = octave_int_base<T>::max_val () + __signbit (~u);
+      }
+    return u;
 #else
-      // We shall carefully avoid anything that may overflow.
-      T u;
-      if (y < 0)
-        {
-          if (x > octave_int_base<T>::max_val () + y)
-            {
-              u = octave_int_base<T>::max_val ();
-            }
-          else
-            u = x - y;
-        }
-      else
-        {
-          if (x < octave_int_base<T>::min_val () + y)
-            {
-              u = octave_int_base<T>::min_val ();
-            }
-          else
-            u = x - y;
-        }
+    // We shall carefully avoid anything that may overflow.
+    T u;
+    if (y < 0)
+      {
+        if (x > octave_int_base<T>::max_val () + y)
+          {
+            u = octave_int_base<T>::max_val ();
+          }
+        else
+          u = x - y;
+      }
+    else
+      {
+        if (x < octave_int_base<T>::min_val () + y)
+          {
+            u = octave_int_base<T>::min_val ();
+          }
+        else
+          u = x - y;
+      }
 
-      return u;
+    return u;
 #endif
-    }
+  }
 
   // Multiplication is done using promotion to wider integer type. If there is
   // no suitable promotion type, this operation *MUST* be specialized.
   static T
   mul (T x, T y)
-    {
-      // Promotion type for multiplication (if exists).
-      typedef typename query_integer_type<2*sizeof (T), true>::type mptype;
-      return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
-                                               * static_cast<mptype> (y));
-    }
+  {
+    // Promotion type for multiplication (if exists).
+    typedef typename query_integer_type<2*sizeof (T), true>::type mptype;
+    return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
+           * static_cast<mptype> (y));
+  }
 
   // Division.
   static T
   div (T x, T y)
-    {
-      T z;
-      if (y == 0)
-        {
-          if (x < 0)
-            z = octave_int_base<T>::min_val ();
-          else if (x != 0)
+  {
+    T z;
+    if (y == 0)
+      {
+        if (x < 0)
+          z = octave_int_base<T>::min_val ();
+        else if (x != 0)
+          z = octave_int_base<T>::max_val ();
+        else
+          z = 0;
+      }
+    else if (y < 0)
+      {
+        // This is a special case that overflows as well.
+        if (y == -1 && x == octave_int_base<T>::min_val ())
+          {
             z = octave_int_base<T>::max_val ();
-          else
-            z = 0;
-        }
-      else if (y < 0)
-        {
-          // This is a special case that overflows as well.
-          if (y == -1 && x == octave_int_base<T>::min_val ())
-            {
-              z = octave_int_base<T>::max_val ();
-            }
-          else
-            {
-              z = x / y;
-              T w = -octave_int_abs (x % y); // Can't overflow, but std::abs (x) can!
-              if (w <= y - w)
-                z -= 1 - (__signbit (x) << 1);
-            }
-        }
-      else
-        {
-          z = x / y;
-          // FIXME -- this is a workaround due to MSVC's absence of
-          // std::abs (int64_t).  The call to octave_int_abs can't
-          // overflow, but std::abs (x) can!
-          T w = octave_int_abs (x % y);
+          }
+        else
+          {
+            z = x / y;
+            // Can't overflow, but std::abs (x) can!
+            T w = -octave_int_abs (x % y);
+            if (w <= y - w)
+              z -= 1 - (__signbit (x) << 1);
+          }
+      }
+    else
+      {
+        z = x / y;
+        // FIXME: this is a workaround due to MSVC's absence of
+        // std::abs (int64_t).  The call to octave_int_abs can't
+        // overflow, but std::abs (x) can!
+        T w = octave_int_abs (x % y);
 
-          if (w >= y - w)
-            z += 1 - (__signbit (x) << 1);
-        }
-      return z;
-    }
+        if (w >= y - w)
+          z += 1 - (__signbit (x) << 1);
+      }
+    return z;
+  }
 
   // Remainder.
   static T
   rem (T x, T y)
-    {
-      return y != 0 ? x % y : 0;
-    }
+  {
+    return y != 0 ? x % y : 0;
+  }
 
   // Modulus. Note the weird y = 0 case for Matlab compatibility.
   static T
   mod (T x, T y)
-    {
-      if (y != 0)
-        {
-          T r = x % y;
-          return ((r < 0) != (y < 0)) ? r + y : r;
-        }
-      else
-        return x;
-    }
+  {
+    if (y != 0)
+      {
+        T r = x % y;
+        return ((r < 0) != (y < 0)) ? r + y : r;
+      }
+    else
+      return x;
+  }
 };
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
@@ -695,9 +700,9 @@ inline int64_t
 octave_int_arith_base<int64_t, true>:: mul (int64_t x, int64_t y)
 {
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
-  // NOTE: We could maybe do it with a single branch if HAVE_FAST_INT_OPS, but it
-  // would require one more runtime conversion, so the question is whether it would
-  // really be faster.
+  // NOTE: We could maybe do it with a single branch if HAVE_FAST_INT_OPS,
+  // but it would require one more runtime conversion, so the question is
+  // whether it would really be faster.
   if (p > static_cast<long double> (octave_int_base<int64_t>::max_val ()))
     {
       return octave_int_base<int64_t>::max_val ();
@@ -720,7 +725,7 @@ octave_int_arith_base<int64_t, true>::mul (int64_t, int64_t);
 template<class T>
 class octave_int_arith
  : public octave_int_arith_base<T, std::numeric_limits<T>::is_signed>
-{};
+{ };
 
 template <class T>
 class
@@ -783,7 +788,7 @@ public:
 
   octave_int<T>
   operator + () const
-    { return *this; }
+  { return *this; }
 
   // unary operators & mappers
 #define OCTAVE_INT_UN_OP(OPNAME,NAME) \
@@ -857,7 +862,7 @@ inline bool
 xisnan (const octave_int<T>&)
 { return false; }
 
-// FIXME -- can/should any of these be inline?
+// FIXME: can/should any of these be inline?
 
 template <class T>
 extern OCTAVE_API octave_int<T>

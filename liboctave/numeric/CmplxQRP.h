@@ -42,14 +42,14 @@ public:
   ComplexQRP (const ComplexQRP& a) : ComplexQR (a), p (a.p) { }
 
   ComplexQRP& operator = (const ComplexQRP& a)
-    {
-      if (this != &a)
-        {
-          ComplexQR::operator = (a);
-          p = a.p;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        ComplexQR::operator = (a);
+        p = a.p;
+      }
+    return *this;
+  }
 
   ~ComplexQRP (void) { }
 

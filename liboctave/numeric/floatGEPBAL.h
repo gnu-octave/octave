@@ -36,29 +36,29 @@ public:
 
   FloatGEPBALANCE (void)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
-    { }
+  { }
   FloatGEPBALANCE (const FloatMatrix& a, const FloatMatrix& b,
                    const std::string& balance_job)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
-    {
-      init (a, b, balance_job);
-    }
+  {
+    init (a, b, balance_job);
+  }
 
   FloatGEPBALANCE (const FloatGEPBALANCE& a)
     : balanced_mat (a.balanced_mat), balanced_mat2 (a.balanced_mat2),
       balancing_mat (a.balancing_mat), balancing_mat2 (a.balancing_mat2) { }
 
   FloatGEPBALANCE& operator = (const FloatGEPBALANCE& a)
-    {
-      if (this != &a)
-        {
-          balanced_mat = a.balanced_mat;
-          balanced_mat2 = a.balanced_mat2;
-          balancing_mat = a.balancing_mat;
-          balancing_mat2 = a.balancing_mat2;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        balanced_mat = a.balanced_mat;
+        balanced_mat2 = a.balanced_mat2;
+        balancing_mat = a.balancing_mat;
+        balancing_mat2 = a.balancing_mat2;
+      }
+    return *this;
+  }
 
   ~FloatGEPBALANCE (void) { }
 

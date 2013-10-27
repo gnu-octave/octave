@@ -51,10 +51,10 @@ public:
   FloatRowVector (const Array<float>& a) : MArray<float> (a.as_row ()) { }
 
   FloatRowVector& operator = (const FloatRowVector& a)
-    {
-      MArray<float>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<float>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const FloatRowVector& a) const;
   bool operator != (const FloatRowVector& a) const;
@@ -81,7 +81,8 @@ public:
 
   // row vector by matrix -> row vector
 
-  friend OCTAVE_API FloatRowVector operator * (const FloatRowVector& a, const FloatMatrix& b);
+  friend OCTAVE_API FloatRowVector operator * (const FloatRowVector& a,
+                                               const FloatMatrix& b);
 
   // other operations
 
@@ -90,8 +91,10 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatRowVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatRowVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const FloatRowVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is,
+                                               FloatRowVector& a);
 
   void resize (octave_idx_type n, const float& rfv = 0)
   {
@@ -99,15 +102,17 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<float>::clear (1, n); }
+  { Array<float>::clear (1, n); }
 
 };
 
 // row vector by column vector -> scalar
 
-float OCTAVE_API operator * (const FloatRowVector& a, const FloatColumnVector& b);
+float OCTAVE_API operator * (const FloatRowVector& a,
+                             const FloatColumnVector& b);
 
-Complex OCTAVE_API operator * (const FloatRowVector& a, const ComplexColumnVector& b);
+Complex OCTAVE_API operator * (const FloatRowVector& a,
+                               const ComplexColumnVector& b);
 
 // other operations
 

@@ -39,36 +39,36 @@ protected:
     sparse_base_chol_rep (void)
       : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
         perms (), cond (0)
-      { }
+    { }
 
     sparse_base_chol_rep (const chol_type& a, bool natural, bool force)
       : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
         perms (), cond (0)
-      {
-        init (a, natural, force);
-      }
+    {
+      init (a, natural, force);
+    }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info,
                           bool natural, bool force)
       : count (1), Lsparse (0), Common (), is_pd (false), minor_p (0),
         perms (), cond (0)
-      {
-        info = init (a, natural, force);
-      }
+    {
+      info = init (a, natural, force);
+    }
 
     ~sparse_base_chol_rep (void)
-      {
-        if (is_pd)
-          CHOLMOD_NAME (free_sparse) (&Lsparse, &Common);
-      }
+    {
+      if (is_pd)
+        CHOLMOD_NAME (free_sparse) (&Lsparse, &Common);
+    }
 
     cholmod_sparse * L (void) const { return Lsparse; }
 
     octave_idx_type P (void) const
-      {
-        return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ?
-                0 : minor_p + 1);
-      }
+    {
+      return (minor_p == static_cast<octave_idx_type>(Lsparse->ncol) ?
+              0 : minor_p + 1);
+    }
 
     ColumnVector perm (void) const { return perms + 1; }
 
@@ -112,16 +112,16 @@ protected:
 
     sparse_base_chol_rep (const chol_type& a, bool natural, bool force)
       : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-      {
-        init (a, natural, force);
-      }
+    {
+      init (a, natural, force);
+    }
 
     sparse_base_chol_rep (const chol_type& a, octave_idx_type& info,
                           bool natural, bool force)
       : count (1), is_pd (false), minor_p (0), perms (), cond (0)
-      {
-        info = init (a, natural, force);
-      }
+    {
+      info = init (a, natural, force);
+    }
 
     ~sparse_base_chol_rep (void) { }
 
@@ -156,49 +156,53 @@ protected:
   };
 #endif
 
- private:
+private:
   sparse_base_chol_rep *rep;
 
 public:
 
   sparse_base_chol (void)
     : rep (new typename
-           sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep ())
-    { }
+           sparse_base_chol<chol_type, chol_elt, p_type>
+           ::sparse_base_chol_rep ())
+  { }
 
   sparse_base_chol (const chol_type& a, bool natural, bool force)
     : rep (new typename
-           sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep (a, natural, force))
-    { }
+           sparse_base_chol<chol_type, chol_elt, p_type>
+           ::sparse_base_chol_rep (a, natural, force))
+  { }
 
   sparse_base_chol (const chol_type& a, octave_idx_type& info,
                     bool natural, bool force)
-    : rep (new typename sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep (a, info, natural, force))
-    { }
+    : rep (new typename
+           sparse_base_chol<chol_type, chol_elt, p_type>
+           ::sparse_base_chol_rep (a, info, natural, force))
+  { }
 
   sparse_base_chol (const sparse_base_chol<chol_type, chol_elt, p_type>& a)
     : rep (a.rep)
-    { rep->count++; }
+  { rep->count++; }
 
   virtual ~sparse_base_chol (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   sparse_base_chol& operator = (const sparse_base_chol& a)
-    {
-      if (this != &a)
-        {
-          if (--rep->count == 0)
-            delete rep;
+  {
+    if (this != &a)
+      {
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = a.rep;
-          rep->count++;
-        }
+        rep = a.rep;
+        rep->count++;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   chol_type L (void) const;
 
@@ -211,7 +215,7 @@ public:
   p_type Q (void) const { return rep->Q (); }
 
   bool is_positive_definite (void) const
-    { return rep->is_positive_definite (); }
+  { return rep->is_positive_definite (); }
 
   double rcond (void) const { return rep->rcond (); }
 

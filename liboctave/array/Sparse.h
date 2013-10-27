@@ -73,39 +73,39 @@ protected:
 
     SparseRep (void)
       : d (0), r (0), c (new octave_idx_type [1]), nzmx (0), nrows (0),
-      ncols (0), count (1)
-      {
-        c[0] = 0;
-      }
+        ncols (0), count (1)
+    {
+      c[0] = 0;
+    }
 
     SparseRep (octave_idx_type n)
       : d (0), r (0), c (new octave_idx_type [n+1]), nzmx (0), nrows (n),
-      ncols (n), count (1)
-      {
-        for (octave_idx_type i = 0; i < n + 1; i++)
-          c[i] = 0;
-      }
+        ncols (n), count (1)
+    {
+      for (octave_idx_type i = 0; i < n + 1; i++)
+        c[i] = 0;
+    }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz = 0)
       : d (nz > 0 ? new T [nz] : 0),
-      r (nz > 0 ? new octave_idx_type [nz] : 0),
-      c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
-      ncols (nc), count (1)
-      {
-        for (octave_idx_type i = 0; i < nc + 1; i++)
-          c[i] = 0;
-      }
+        r (nz > 0 ? new octave_idx_type [nz] : 0),
+        c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
+        ncols (nc), count (1)
+    {
+      for (octave_idx_type i = 0; i < nc + 1; i++)
+        c[i] = 0;
+    }
 
     SparseRep (const SparseRep& a)
       : d (new T [a.nzmx]), r (new octave_idx_type [a.nzmx]),
-      c (new octave_idx_type [a.ncols + 1]),
-      nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
-      {
-        octave_idx_type nz = a.nnz ();
-        copy_or_memcpy (nz, a.d, d);
-        copy_or_memcpy (nz, a.r, r);
-        copy_or_memcpy (ncols + 1, a.c, c);
-      }
+        c (new octave_idx_type [a.ncols + 1]),
+        nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
+    {
+      octave_idx_type nz = a.nnz ();
+      copy_or_memcpy (nz, a.d, d);
+      copy_or_memcpy (nz, a.r, r);
+      copy_or_memcpy (ncols + 1, a.c, c);
+    }
 
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
 
@@ -207,8 +207,9 @@ public:
   // Type conversion case. Preserves capacity ().
   template <class U>
   Sparse (const Sparse<U>& a)
-    : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols, a.rep->nzmx)),
-      dimensions (a.dimensions)
+    : rep (new typename Sparse<T>::SparseRep (a.rep->nrows, a.rep->ncols,
+           a.rep->nzmx)),
+    dimensions (a.dimensions)
   {
     octave_idx_type nz = a.nnz ();
     std::copy (a.rep->d, a.rep->d + nz, rep->d);
@@ -321,7 +322,7 @@ public:
   T xelem (const Array<octave_idx_type>& ra_idx) const
   { return xelem (compute_index (ra_idx)); }
 
-  // FIXME -- would be nice to fix this so that we don't
+  // FIXME: would be nice to fix this so that we don't
   // unnecessarily force a copy, but that is not so easy, and I see no
   // clean way to do it.
 
@@ -510,7 +511,7 @@ public:
   T& xdata (octave_idx_type i) { return rep->data (i); }
 
   T data (octave_idx_type i) const { return rep->data (i); }
-  // FIXME -- shouldn't this be returning const T*?
+  // FIXME: shouldn't this be returning const T*?
   T* data (void) const { return rep->d; }
 
   octave_idx_type* ridx (void) { make_unique (); return rep->r; }
@@ -523,7 +524,7 @@ public:
   octave_idx_type& xridx (octave_idx_type i) { return rep->ridx (i); }
 
   octave_idx_type ridx (octave_idx_type i) const { return rep->cridx (i); }
-  // FIXME -- shouldn't this be returning const octave_idx_type*?
+  // FIXME: shouldn't this be returning const octave_idx_type*?
   octave_idx_type* ridx (void) const { return rep->r; }
 
   octave_idx_type* cidx (void) { make_unique (); return rep->c; }
@@ -536,7 +537,7 @@ public:
   octave_idx_type& xcidx (octave_idx_type i) { return rep->cidx (i); }
 
   octave_idx_type cidx (octave_idx_type i) const { return rep->ccidx (i); }
-  // FIXME -- shouldn't this be returning const octave_idx_type*?
+  // FIXME: shouldn't this be returning const octave_idx_type*?
   octave_idx_type* cidx (void) const { return rep->c; }
 
   octave_idx_type ndims (void) const { return dimensions.length (); }
@@ -631,7 +632,7 @@ public:
           for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
             {
               octave_quit ();
-              /* Use data instead of elem for better performance.  */
+              /* Use data instead of elem for better performance. */
               result.data (ridx (i) + j * nr) = fcn (data (i));
             }
 
@@ -766,7 +767,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
         a.cidx (j+1) = ii;
     }
 
- done:
+done:
 
   return is;
 }

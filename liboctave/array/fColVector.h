@@ -54,10 +54,10 @@ public:
     : MArray<float> (a.as_column ()) { }
 
   FloatColumnVector& operator = (const FloatColumnVector& a)
-    {
-      MArray<float>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<float>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const FloatColumnVector& a) const;
   bool operator != (const FloatColumnVector& a) const;
@@ -84,11 +84,13 @@ public:
 
   // matrix by column vector -> column vector operations
 
-  friend OCTAVE_API FloatColumnVector operator * (const FloatMatrix& a, const FloatColumnVector& b);
+  friend OCTAVE_API FloatColumnVector operator * (const FloatMatrix& a,
+                                                  const FloatColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
-  friend OCTAVE_API FloatColumnVector operator * (const FloatDiagMatrix& a, const FloatColumnVector& b);
+  friend OCTAVE_API FloatColumnVector operator * (const FloatDiagMatrix& a,
+                                                  const FloatColumnVector& b);
 
   // other operations
 
@@ -99,8 +101,10 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatColumnVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatColumnVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const FloatColumnVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is,
+                                               FloatColumnVector& a);
 
   void resize (octave_idx_type n, const float& rfv = 0)
   {
@@ -108,7 +112,7 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<float>::clear (n, 1); }
+  { Array<float>::clear (n, 1); }
 
 };
 

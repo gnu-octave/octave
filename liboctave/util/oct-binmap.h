@@ -340,7 +340,8 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, R), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -355,7 +356,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (T, R))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, R), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -372,7 +374,8 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, R))
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, const R&), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -387,7 +390,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, const R&))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, const R&), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -404,7 +408,8 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, const R&))
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, R), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -419,7 +424,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, R))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, R), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -436,7 +442,8 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, R))
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, const R&), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -451,7 +458,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (T, const R&))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, const R&), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>

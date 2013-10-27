@@ -36,7 +36,7 @@ class
 OCTAVE_API
 charMatrix : public Array<char>
 {
-friend class ComplexMatrix;
+  friend class ComplexMatrix;
 
 public:
 
@@ -65,10 +65,10 @@ public:
   charMatrix (const string_vector& s, char fill_value = '\0');
 
   charMatrix& operator = (const charMatrix& a)
-    {
-      Array<char>::operator = (a);
-      return *this;
-    }
+  {
+    Array<char>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const charMatrix& a) const;
   bool operator != (const charMatrix& a) const;
@@ -78,13 +78,15 @@ public:
   // destructive insert/delete/reorder operations
 
   charMatrix& insert (const char *s, octave_idx_type r, octave_idx_type c);
-  charMatrix& insert (const charMatrix& a, octave_idx_type r, octave_idx_type c);
+  charMatrix& insert (const charMatrix& a,
+                      octave_idx_type r, octave_idx_type c);
 
   std::string row_as_string (octave_idx_type, bool strip_ws = false) const;
 
   // resize is the destructive equivalent for this one
 
-  charMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+  charMatrix extract (octave_idx_type r1, octave_idx_type c1,
+                      octave_idx_type r2, octave_idx_type c2) const;
 
   void resize (octave_idx_type nr, octave_idx_type nc, char rfv = 0)
   {

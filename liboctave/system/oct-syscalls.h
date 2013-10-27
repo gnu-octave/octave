@@ -63,8 +63,10 @@ octave_syscalls
   static int kill (pid_t, int, std::string&);
 
   static pid_t popen2 (const std::string&, const string_vector&, bool, int *);
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *, std::string&);
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *, std::string&, bool &interactive);
+  static pid_t popen2 (const std::string&, const string_vector&, bool, int *,
+                       std::string&);
+  static pid_t popen2 (const std::string&, const string_vector&, bool, int *,
+                       std::string&, bool &interactive);
 };
 
 #endif

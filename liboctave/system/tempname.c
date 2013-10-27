@@ -179,7 +179,7 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
                letters[(*idx / ((sizeof (letters) - 1) *
                                 (sizeof (letters) - 1)))
                        % (sizeof (letters) - 1)]
-               );
+              );
 
       if (! buf || strlen (buf) != (int) len)
         return NULL;

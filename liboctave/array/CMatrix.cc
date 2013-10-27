@@ -300,8 +300,7 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
-// FIXME -- could we use a templated mixed-type copy function
-// here?
+// FIXME: could we use a templated mixed-type copy function here?
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
   : MArray<Complex> (a)
@@ -410,7 +409,8 @@ ComplexMatrix::insert (const RowVector& a, octave_idx_type r, octave_idx_type c)
 }
 
 ComplexMatrix&
-ComplexMatrix::insert (const ColumnVector& a, octave_idx_type r, octave_idx_type c)
+ComplexMatrix::insert (const ColumnVector& a,
+                       octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type a_len = a.length ();
 
@@ -432,7 +432,8 @@ ComplexMatrix::insert (const ColumnVector& a, octave_idx_type r, octave_idx_type
 }
 
 ComplexMatrix&
-ComplexMatrix::insert (const DiagMatrix& a, octave_idx_type r, octave_idx_type c)
+ComplexMatrix::insert (const DiagMatrix& a,
+                       octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -459,14 +460,16 @@ ComplexMatrix::insert (const DiagMatrix& a, octave_idx_type r, octave_idx_type c
 }
 
 ComplexMatrix&
-ComplexMatrix::insert (const ComplexMatrix& a, octave_idx_type r, octave_idx_type c)
+ComplexMatrix::insert (const ComplexMatrix& a,
+                       octave_idx_type r, octave_idx_type c)
 {
   Array<Complex>::insert (a, r, c);
   return *this;
 }
 
 ComplexMatrix&
-ComplexMatrix::insert (const ComplexRowVector& a, octave_idx_type r, octave_idx_type c)
+ComplexMatrix::insert (const ComplexRowVector& a,
+                       octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type a_len = a.length ();
   if (r < 0 || r >= rows () || c < 0 || c + a_len > cols ())
@@ -482,7 +485,8 @@ ComplexMatrix::insert (const ComplexRowVector& a, octave_idx_type r, octave_idx_
 }
 
 ComplexMatrix&
-ComplexMatrix::insert (const ComplexColumnVector& a, octave_idx_type r, octave_idx_type c)
+ComplexMatrix::insert (const ComplexColumnVector& a,
+                       octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type a_len = a.length ();
 
@@ -504,7 +508,8 @@ ComplexMatrix::insert (const ComplexColumnVector& a, octave_idx_type r, octave_i
 }
 
 ComplexMatrix&
-ComplexMatrix::insert (const ComplexDiagMatrix& a, octave_idx_type r, octave_idx_type c)
+ComplexMatrix::insert (const ComplexDiagMatrix& a,
+                       octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -567,7 +572,8 @@ ComplexMatrix::fill (const Complex& val)
 }
 
 ComplexMatrix&
-ComplexMatrix::fill (double val, octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
+ComplexMatrix::fill (double val, octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2)
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -595,7 +601,8 @@ ComplexMatrix::fill (double val, octave_idx_type r1, octave_idx_type c1, octave_
 }
 
 ComplexMatrix&
-ComplexMatrix::fill (const Complex& val, octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
+ComplexMatrix::fill (const Complex& val, octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2)
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -927,7 +934,8 @@ conj (const ComplexMatrix& a)
 // resize is the destructive equivalent for this one
 
 ComplexMatrix
-ComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+ComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                        octave_idx_type r2, octave_idx_type c2) const
 {
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
@@ -936,7 +944,8 @@ ComplexMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type 
 }
 
 ComplexMatrix
-ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const
+ComplexMatrix::extract_n (octave_idx_type r1, octave_idx_type c1,
+                          octave_idx_type nr, octave_idx_type nc) const
 {
   return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
 }
@@ -1089,7 +1098,8 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       // Calculate the norm of the matrix, for later use.
       double anorm;
       if (calc_cond)
-        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
+        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
+                .max ();
 
       F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -1558,7 +1568,8 @@ ComplexMatrix::determinant (octave_idx_type& info) const
 }
 
 ComplexDET
-ComplexMatrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) const
+ComplexMatrix::determinant (octave_idx_type& info, double& rcon,
+                            int calc_cond) const
 {
   MatrixType mattype (*this);
   return determinant (mattype, info, rcon, calc_cond);
@@ -1796,7 +1807,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               Complex *tmp_data = atmp.fortran_vec ();
 
               anorm = atmp.abs().sum().
-                row(static_cast<octave_idx_type>(0)).max();
+                      row(static_cast<octave_idx_type>(0)).max();
 
               F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1839,7 +1850,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
 
               if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
-                  row(static_cast<octave_idx_type>(0)).max ();
+                        row(static_cast<octave_idx_type>(0)).max ();
 
               Array<Complex> z (dim_vector (2 * nc, 1));
               Complex *pz = z.fortran_vec ();
@@ -2096,7 +2107,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
     {
       volatile int typ = mattype.type ();
 
-     // Calculate the norm of the matrix, for later use.
+      // Calculate the norm of the matrix, for later use.
       double anorm = -1.;
 
       if (typ == MatrixType::Hermitian)
@@ -2191,7 +2202,8 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           // Calculate the norm of the matrix, for later use.
           if (anorm < 0.)
-            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
+            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0))
+                    .max ();
 
           F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -2334,9 +2346,11 @@ ComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     retval = ltsolve (mattype, b, info, rcon, sing_handler, false, transt);
   else if (transt == blas_trans)
-    return transpose ().solve (mattype, b, info, rcon, sing_handler, singular_fallback);
+    return transpose ().solve (mattype, b, info, rcon, sing_handler,
+                               singular_fallback);
   else if (transt == blas_conj_trans)
-    retval = hermitian ().solve (mattype, b, info, rcon, sing_handler, singular_fallback);
+    retval = hermitian ().solve (mattype, b, info, rcon, sing_handler,
+                                 singular_fallback);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, info, rcon, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
@@ -2381,7 +2395,8 @@ ComplexMatrix::solve (MatrixType &typ, const ColumnVector& b,
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ColumnVector& b,
                       octave_idx_type& info, double& rcon,
-                      solve_singularity_handler sing_handler, blas_trans_type transt) const
+                      solve_singularity_handler sing_handler,
+                      blas_trans_type transt) const
 {
   return solve (typ, ComplexColumnVector (b), info, rcon, sing_handler, transt);
 }
@@ -2412,7 +2427,8 @@ ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b,
                       octave_idx_type& info, double& rcon,
-                      solve_singularity_handler sing_handler, blas_trans_type transt) const
+                      solve_singularity_handler sing_handler,
+                      blas_trans_type transt) const
 {
 
   ComplexMatrix tmp (b);
@@ -2436,14 +2452,16 @@ ComplexMatrix::solve (const Matrix& b, octave_idx_type& info) const
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const Matrix& b, octave_idx_type& info, double& rcon) const
+ComplexMatrix::solve (const Matrix& b, octave_idx_type& info,
+                      double& rcon) const
 {
   return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b, octave_idx_type& info, double& rcon,
-                      solve_singularity_handler sing_handler, blas_trans_type transt) const
+                      solve_singularity_handler sing_handler,
+                      blas_trans_type transt) const
 {
   ComplexMatrix tmp (b);
   return solve (tmp, info, rcon, sing_handler, transt);
@@ -2465,14 +2483,17 @@ ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info) const
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon) const
+ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info,
+                      double& rcon) const
 {
   return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon,
-                      solve_singularity_handler sing_handler, blas_trans_type transt) const
+ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info,
+                      double& rcon,
+                      solve_singularity_handler sing_handler,
+                      blas_trans_type transt) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, info, rcon, sing_handler, true, transt);
@@ -2503,7 +2524,8 @@ ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info,
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info,
                       double& rcon,
-                      solve_singularity_handler sing_handler, blas_trans_type transt) const
+                      solve_singularity_handler sing_handler,
+                      blas_trans_type transt) const
 {
   return solve (ComplexColumnVector (b), info, rcon, sing_handler, transt);
 }
@@ -2533,7 +2555,8 @@ ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
                       double& rcon,
-                      solve_singularity_handler sing_handler, blas_trans_type transt) const
+                      solve_singularity_handler sing_handler,
+                      blas_trans_type transt) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, info, rcon, sing_handler, transt);
@@ -2670,8 +2693,9 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
         nlvl = 0;
 
       octave_idx_type lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
-        + 3*smlsiz*nrhs + std::max ((smlsiz+1)*(smlsiz+1),
-                                    n*(1+nrhs) + 2*nrhs);
+                               + 3*smlsiz*nrhs
+                               + std::max ((smlsiz+1)*(smlsiz+1),
+                                           n*(1+nrhs) + 2*nrhs);
       if (lrwork < 1)
         lrwork = 1;
       Array<double> rwork (dim_vector (lrwork, 1));
@@ -2778,7 +2802,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b) const
 }
 
 ComplexColumnVector
-ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info) const
+ComplexMatrix::lssolve (const ComplexColumnVector& b,
+                        octave_idx_type& info) const
 {
   octave_idx_type rank;
   double rcon;
@@ -2860,7 +2885,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
         nlvl = 0;
 
       octave_idx_type lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
-        + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
+                               + 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
       if (lrwork < 1)
         lrwork = 1;
       Array<double> rwork (dim_vector (lrwork, 1));
@@ -3172,8 +3197,7 @@ ComplexMatrix::too_large_for_float (void) const
   return test_any (xtoo_large_for_float);
 }
 
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
+// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 ComplexMatrix::all (int dim) const
@@ -3319,7 +3343,8 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 
               if (! xisnan (tmp_min))
                 {
-                  abs_min = real_only ? std::real (tmp_min) : std::abs (tmp_min);
+                  abs_min = real_only ? std::real (tmp_min)
+                                      : std::abs (tmp_min);
                   break;
                 }
             }
@@ -3393,7 +3418,8 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 
               if (! xisnan (tmp_max))
                 {
-                  abs_max = real_only ? std::real (tmp_max) : std::abs (tmp_max);
+                  abs_max = real_only ? std::real (tmp_max)
+                                      : std::abs (tmp_max);
                   break;
                 }
             }
@@ -3467,7 +3493,8 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 
               if (! xisnan (tmp_min))
                 {
-                  abs_min = real_only ? std::real (tmp_min) : std::abs (tmp_min);
+                  abs_min = real_only ? std::real (tmp_min)
+                                      : std::abs (tmp_min);
                   break;
                 }
             }
@@ -3541,7 +3568,8 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
               if (! xisnan (tmp_max))
                 {
-                  abs_max = real_only ? std::real (tmp_max) : std::abs (tmp_max);
+                  abs_max = real_only ? std::real (tmp_max)
+                                      : std::abs (tmp_max);
                   break;
                 }
             }
@@ -3645,8 +3673,7 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 {
   ComplexMatrix retval;
 
-  // FIXME -- need to check that a, b, and c are all the same
-  // size.
+  // FIXME: need to check that a, b, and c are all the same size.
 
   // Compute Schur decompositions
 
@@ -3663,8 +3690,7 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   ComplexMatrix cx = ua.hermitian () * c * ub;
 
-  // Solve the sylvester equation, back-transform, and return the
-  // solution.
+  // Solve the sylvester equation, back-transform, and return the solution.
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type b_nr = b.rows ();
@@ -3683,7 +3709,7 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
-  // FIXME -- check info?
+  // FIXME: check info?
 
   retval = -ua * cx * ub.hermitian ();
 
@@ -3764,7 +3790,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
         {
           octave_idx_type lda = a.rows ();
 
-          // FIXME -- looking at the reference BLAS, it appears that it
+          // FIXME: looking at the reference BLAS, it appears that it
           // should not be necessary to initialize the output matrix if
           // BETA is 0 in the call to ZHERK, but ATLAS appears to
           // use the result matrix before zeroing the elements.
@@ -3812,13 +3838,16 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
             {
               if (cja == cjb)
                 {
-                  F77_FUNC (xzdotu, XZDOTU) (a_nc, a.data (), 1, b.data (), 1, *c);
+                  F77_FUNC (xzdotu, XZDOTU) (a_nc, a.data (), 1, b.data (), 1,
+                                             *c);
                   if (cja) *c = std::conj (*c);
                 }
               else if (cja)
-                  F77_FUNC (xzdotc, XZDOTC) (a_nc, a.data (), 1, b.data (), 1, *c);
+                F77_FUNC (xzdotc, XZDOTC) (a_nc, a.data (), 1, b.data (), 1,
+                                           *c);
               else
-                  F77_FUNC (xzdotc, XZDOTC) (a_nc, b.data (), 1, a.data (), 1, *c);
+                F77_FUNC (xzdotc, XZDOTC) (a_nc, b.data (), 1, a.data (), 1,
+                                           *c);
             }
           else if (b_nc == 1 && ! cjb)
             {
@@ -3859,8 +3888,7 @@ operator * (const ComplexMatrix& a, const ComplexMatrix& b)
   return xgemm (a, b);
 }
 
-// FIXME -- it would be nice to share code among the min/max
-// functions below.
+// FIXME: it would be nice to share code among the min/max functions below.
 
 #define EMPTY_RETURN_CHECK(T) \
   if (nr == 0 || nc == 0) \
@@ -4055,7 +4083,8 @@ ComplexMatrix linspace (const ComplexColumnVector& x1,
   octave_idx_type m = x1.length ();
 
   if (x2.length () != m)
-    (*current_liboctave_error_handler) ("linspace: vectors must be of equal length");
+    (*current_liboctave_error_handler)
+      ("linspace: vectors must be of equal length");
 
   NoAlias<ComplexMatrix> retval;
 

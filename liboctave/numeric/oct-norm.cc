@@ -341,9 +341,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
     }
 }
 
-// Complex version. Higham's paper does not deal with complex case, so we use a simple
-// extension. First, guess the magnitudes as in real version, then try to rotate lambda
-// to improve further.
+// Complex version. Higham's paper does not deal with complex case, so we use a
+// simple extension. First, guess the magnitudes as in real version, then try
+// to rotate lambda to improve further.
 template <class ColVectorT, class R>
 static void
 higham_subp (const ColVectorT& y, const ColVectorT& col,
@@ -460,8 +460,9 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
 
 static const char *p_less1_gripe = "xnorm: p must be at least 1";
 
-// Static constant to control the maximum number of iterations. 100 seems to be a good value.
-// Eventually, we can provide a means to change this constant from Octave.
+// Static constant to control the maximum number of iterations.  100 seems to
+// be a good value.  Eventually, we can provide a means to change this
+// constant from Octave.
 static int max_norm_iter = 100;
 
 // version with SVD for dense matrices

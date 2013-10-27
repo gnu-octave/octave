@@ -59,18 +59,19 @@ public:
   charNDArray (const Array<char>& a) : Array<char> (a) { }
 
   charNDArray& operator = (const charNDArray& a)
-    {
-      Array<char>::operator = (a);
-      return *this;
-    }
+  {
+    Array<char>::operator = (a);
+    return *this;
+  }
 
   bool any_element_is_nan (void) const { return false; }
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  charNDArray concat (const charNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx);
   charNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   charNDArray max (int dim = -1) const;
@@ -78,8 +79,10 @@ public:
   charNDArray min (int dim = -1) const;
   charNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  charNDArray& insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);
-  charNDArray& insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
+  charNDArray& insert (const charNDArray& a,
+                       octave_idx_type r, octave_idx_type c);
+  charNDArray& insert (const charNDArray& a,
+                       const Array<octave_idx_type>& ra_idx);
 
   charMatrix matrix_value (void) const;
 
@@ -90,7 +93,7 @@ public:
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
   // i/o
 

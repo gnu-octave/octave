@@ -167,7 +167,8 @@ charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const
 }
 
 charMatrix
-charMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+charMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2) const
 {
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
@@ -190,8 +191,7 @@ charMatrix::diag (octave_idx_type k) const
   return Array<char>::diag (k);
 }
 
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
+// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 charMatrix::all (int dim) const

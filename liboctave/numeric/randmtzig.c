@@ -195,18 +195,19 @@ static int inittf = 1;
 void
 oct_init_by_int (uint32_t s)
 {
-    int j;
-    state[0] = s & 0xffffffffUL;
-    for (j = 1; j < MT_N; j++) {
-        state[j] = (1812433253UL * (state[j-1] ^ (state[j-1] >> 30)) + j);
-        /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
-        /* In the previous versions, MSBs of the seed affect   */
-        /* only MSBs of the array state[].                        */
-        /* 2002/01/09 modified by Makoto Matsumoto             */
-        state[j] &= 0xffffffffUL;  /* for >32 bit machines */
+  int j;
+  state[0] = s & 0xffffffffUL;
+  for (j = 1; j < MT_N; j++)
+    {
+      state[j] = (1812433253UL * (state[j-1] ^ (state[j-1] >> 30)) + j);
+      /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
+      /* In the previous versions, MSBs of the seed affect   */
+      /* only MSBs of the array state[].                        */
+      /* 2002/01/09 modified by Makoto Matsumoto             */
+      state[j] &= 0xffffffffUL;  /* for >32 bit machines */
     }
-    left = 1;
-    initf = 1;
+  left = 1;
+  initf = 1;
 }
 
 /* initialize by an array with array-length */
@@ -223,7 +224,7 @@ oct_init_by_array (uint32_t *init_key, int key_length)
   for (; k; k--)
     {
       state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1664525UL))
-        + init_key[j] + j; /* non linear */
+                 + init_key[j] + j; /* non linear */
       state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
       j++;
@@ -238,7 +239,7 @@ oct_init_by_array (uint32_t *init_key, int key_length)
   for (k = MT_N - 1; k; k--)
     {
       state[i] = (state[i] ^ ((state[i-1] ^ (state[i-1] >> 30)) * 1566083941UL))
-        - i; /* non linear */
+                 - i; /* non linear */
       state[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
       i++;
       if (i >= MT_N)
@@ -256,38 +257,38 @@ oct_init_by_array (uint32_t *init_key, int key_length)
 void
 oct_init_by_entropy (void)
 {
-    uint32_t entropy[MT_N];
-    int n = 0;
+  uint32_t entropy[MT_N];
+  int n = 0;
 
-    /* Look for entropy in /dev/urandom */
-    FILE* urandom = fopen ("/dev/urandom", "rb");
-    if (urandom)
-      {
-        while (n < MT_N)
-          {
-            unsigned char word[4];
-            if (fread (word, 4, 1, urandom) != 1)
-              break;
-            entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+((uint32_t)word[3]<<24);
-          }
-        fclose (urandom);
-      }
+  /* Look for entropy in /dev/urandom */
+  FILE* urandom = fopen ("/dev/urandom", "rb");
+  if (urandom)
+    {
+      while (n < MT_N)
+        {
+          unsigned char word[4];
+          if (fread (word, 4, 1, urandom) != 1)
+            break;
+          entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+((uint32_t)word[3]<<24);
+        }
+      fclose (urandom);
+    }
 
-    /* If there isn't enough entropy, gather some from various sources */
-    if (n < MT_N)
-      entropy[n++] = time (NULL); /* Current time in seconds */
-    if (n < MT_N)
-      entropy[n++] = clock ();    /* CPU time used (usec) */
+  /* If there isn't enough entropy, gather some from various sources */
+  if (n < MT_N)
+    entropy[n++] = time (NULL); /* Current time in seconds */
+  if (n < MT_N)
+    entropy[n++] = clock ();    /* CPU time used (usec) */
 #ifdef HAVE_GETTIMEOFDAY
-    if (n < MT_N)
-      {
-        struct timeval tv;
-        if (gettimeofday (&tv, NULL) != -1)
-          entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
-      }
+  if (n < MT_N)
+    {
+      struct timeval tv;
+      if (gettimeofday (&tv, NULL) != -1)
+        entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
+    }
 #endif
-    /* Send all the entropy into the initial state vector */
-    oct_init_by_array (entropy,n);
+  /* Send all the entropy into the initial state vector */
+  oct_init_by_array (entropy,n);
 }
 
 void

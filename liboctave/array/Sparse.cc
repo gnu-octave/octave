@@ -245,9 +245,9 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
 
   // Work in unsigned long long to avoid overflow issues with numel
   unsigned long long a_nel = static_cast<unsigned long long>(a.rows ()) *
-    static_cast<unsigned long long>(a.cols ());
+                             static_cast<unsigned long long>(a.cols ());
   unsigned long long dv_nel = static_cast<unsigned long long>(dv (0)) *
-    static_cast<unsigned long long>(dv (1));
+                              static_cast<unsigned long long>(dv (1));
 
   if (a_nel != dv_nel)
     (*current_liboctave_error_handler)
@@ -737,7 +737,8 @@ Sparse<T>::range_error (const char *fcn, octave_idx_type n)
 
 template <class T>
 T
-Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j) const
+Sparse<T>::range_error (const char *fcn, octave_idx_type i,
+                        octave_idx_type j) const
 {
   (*current_liboctave_error_handler)
     ("%s (%d, %d): range error", fcn, i, j);
@@ -756,7 +757,8 @@ Sparse<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j)
 
 template <class T>
 T
-Sparse<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const
+Sparse<T>::range_error (const char *fcn,
+                        const Array<octave_idx_type>& ra_idx) const
 {
   std::ostringstream buf;
 
@@ -972,7 +974,8 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
       rep->c = new_cidx;
 
       if (c > rep->ncols)
-        fill_or_memset (c - rep->ncols, rep->c[rep->ncols], rep->c + rep->ncols + 1);
+        fill_or_memset (c - rep->ncols, rep->c[rep->ncols],
+                        rep->c + rep->ncols + 1);
     }
 
   rep->ncols = dimensions(1) = c;
@@ -1184,7 +1187,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           for (octave_idx_type i = 0; i < nz; i++)
             {
               octave_idx_type r = tmp.ridx (i);
-              for (;j < sl && sj[j] < r; j++) ;
+              for (; j < sl && sj[j] < r; j++) ;
               if (j == sl || sj[j] > r)
                 {
                   data_new[nz_new] = tmp.data (i);
@@ -1205,13 +1208,16 @@ Sparse<T>::delete_elements (const idx_vector& idx)
       if (idx.is_cont_range (nc, lb, ub))
         {
           const Sparse<T> tmp = *this;
-          octave_idx_type lbi = tmp.cidx (lb), ubi = tmp.cidx (ub), new_nz = nz - (ubi - lbi);
+          octave_idx_type lbi = tmp.cidx (lb);
+          octave_idx_type ubi = tmp.cidx (ub);
+          octave_idx_type new_nz = nz - (ubi - lbi);
           *this = Sparse<T> (1, nc - (ub - lb), new_nz);
           copy_or_memcpy (lbi, tmp.data (), data ());
           copy_or_memcpy (nz - ubi, tmp.data () + ubi, xdata () + lbi);
           fill_or_memset (new_nz, static_cast<octave_idx_type> (0), ridx ());
           copy_or_memcpy (lb, tmp.cidx () + 1, cidx () + 1);
-          mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1, ubi - lbi);
+          mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1,
+                         ubi - lbi);
         }
       else
         *this = index (idx.complement (nc));
@@ -1260,8 +1266,9 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
           else
             {
               const Sparse<T> tmp = *this;
-              octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub),
-                new_nz = nz - (ubi - lbi);
+              octave_idx_type lbi = tmp.cidx(lb);
+              octave_idx_type ubi = tmp.cidx(ub);
+              octave_idx_type new_nz = nz - (ubi - lbi);
 
               *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
               copy_or_memcpy (lbi, tmp.data (), data ());
@@ -1532,7 +1539,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           octave_idx_type lbi = cidx (lb), ubi = cidx (ub), new_nz = ubi - lbi;
           retval = Sparse<T> (1, ub - lb, new_nz);
           copy_or_memcpy (new_nz, data () + lbi, retval.data ());
-          fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
+          fill_or_memset (new_nz, static_cast<octave_idx_type> (0),
+                          retval.ridx ());
           mx_inline_sub (ub - lb + 1, retval.cidx (), cidx () + lb, lbi);
         }
       else
@@ -1549,11 +1557,12 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
       else
         {
           // Indexing a non-vector sparse matrix by linear indexing.
-          // I suppose this is rare (and it may easily overflow), so let's take the easy way,
-          // and reshape first to column vector, which is already handled above.
+          // I suppose this is rare (and it may easily overflow), so let's take
+          // the easy way, and reshape first to column vector, which is already
+          // handled above.
           retval = index (idx_vector::colon).index (idx);
-          // In this case we're supposed to always inherit the shape, but column(row) doesn't do
-          // it, so we'll do it instead.
+          // In this case we're supposed to always inherit the shape, but
+          // column(row) doesn't do it, so we'll do it instead.
           if (idx_dims(0) == 1 && idx_dims(1) != 1)
             retval = retval.transpose ();
         }
@@ -1564,7 +1573,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
 template <class T>
 Sparse<T>
-Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_ok) const
+Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j,
+                  bool resize_ok) const
 {
   Sparse<T> retval;
 
@@ -1596,8 +1606,8 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
     }
   else if (nr == 1 && nc == 1)
     {
-      // Scalars stored as sparse matrices occupy more memory than 
-      // a scalar, so let's just convert the matrix to full, index, 
+      // Scalars stored as sparse matrices occupy more memory than
+      // a scalar, so let's just convert the matrix to full, index,
       // and sparsify the result.
 
       retval = Sparse<T> (array_value ().index (idx_i, idx_j));
@@ -1633,7 +1643,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_idx_type ljj = cidx (idx_j(j));
-              octave_idx_type lj = retval.xcidx (j), nzj = retval.xcidx (j+1) - lj;
+              octave_idx_type lj = retval.xcidx (j);
+              octave_idx_type nzj = retval.xcidx (j+1) - lj;
+
               copy_or_memcpy (nzj, data () + ljj, retval.data () + lj);
               copy_or_memcpy (nzj, ridx () + ljj, retval.ridx () + lj);
             }
@@ -1656,7 +1668,10 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       for (octave_idx_type j = 0; j < m; j++)
         {
           octave_quit ();
-          octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
+          octave_idx_type jj = idx_j(j);
+          octave_idx_type lj = cidx (jj);
+          octave_idx_type nzj = cidx (jj+1) - cidx (jj);
+
           // Scalar index - just a binary lookup.
           octave_idx_type i = lblookup (ridx () + lj, nzj, ii);
           if (i < nzj && ridx (i+lj) == ii)
@@ -1689,8 +1704,11 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       for (octave_idx_type j = 0; j < m; j++)
         {
           octave_quit ();
-          octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
+          octave_idx_type jj = idx_j(j);
+          octave_idx_type lj = cidx (jj);
+          octave_idx_type nzj = cidx (jj+1) - cidx (jj);
           octave_idx_type lij, uij;
+
           // Lookup indices.
           li[j] = lij = lblookup (ridx () + lj, nzj, lb) + lj;
           ui[j] = uij = lblookup (ridx () + lj, nzj, ub) + lj;
@@ -1712,7 +1730,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
     }
   else if (idx_i.is_permutation (nr))
     {
-      // The columns preserve their length, we just need to renumber and sort them.
+      // The columns preserve their length, just need to renumber and sort them.
       // Count new nonzero elements.
       retval = Sparse<T> (nr, m);
       for (octave_idx_type j = 0; j < m; j++)
@@ -1731,7 +1749,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_quit ();
-              octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
+              octave_idx_type jj = idx_j(j);
+              octave_idx_type lj = cidx (jj);
+              octave_idx_type nzj = cidx (jj+1) - cidx (jj);
               octave_idx_type li = retval.xcidx (j), uj = lj + nzj - 1;
               for (octave_idx_type i = 0; i < nzj; i++)
                 {
@@ -1753,7 +1773,9 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_quit ();
-              octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
+              octave_idx_type jj = idx_j(j);
+              octave_idx_type lj = cidx (jj);
+              octave_idx_type nzj = cidx (jj+1) - cidx (jj);
               octave_idx_type li = retval.xcidx (j);
               // Scatter the column, transform indices.
               for (octave_idx_type i = 0; i < nzj; i++)
@@ -1846,8 +1868,10 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   if (new_nz > nz)
                     {
                       // Make room first.
-                      std::copy_backward (data () + ui, data () + nz, data () + nz + rnz);
-                      std::copy_backward (ridx () + ui, ridx () + nz, ridx () + nz + rnz);
+                      std::copy_backward (data () + ui, data () + nz,
+                                          data () + nz + rnz);
+                      std::copy_backward (ridx () + ui, ridx () + nz,
+                                          ridx () + nz + rnz);
                     }
 
                   // Copy data and adjust indices from rhs.
@@ -1870,8 +1894,10 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   mx_inline_add (rnz, ridx () + li, rhs.ridx (), lb);
 
                   // ...tail
-                  copy_or_memcpy (nz - ui, tmp.data () + ui, data () + li + rnz);
-                  copy_or_memcpy (nz - ui, tmp.ridx () + ui, ridx () + li + rnz);
+                  copy_or_memcpy (nz - ui, tmp.data () + ui,
+                                  data () + li + rnz);
+                  copy_or_memcpy (nz - ui, tmp.ridx () + ui,
+                                  ridx () + li + rnz);
                 }
 
               cidx (1) = new_nz;
@@ -1953,7 +1979,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
   octave_idx_type n = rhs.rows ();
   octave_idx_type m = rhs.columns ();
 
-  // FIXME -- this should probably be written more like the
+  // FIXME: this should probably be written more like the
   // Array<T>::assign function...
 
   bool orig_zero_by_zero = (nr == 0 && nc == 0);
@@ -2033,7 +2059,8 @@ Sparse<T>::assign (const idx_vector& idx_i,
                   // Copy data and indices from rhs.
                   copy_or_memcpy (rnz, rhs.data (), data () + li);
                   copy_or_memcpy (rnz, rhs.ridx (), ridx () + li);
-                  mx_inline_add (ub - lb, cidx () + lb + 1, rhs.cidx () + 1, li);
+                  mx_inline_add (ub - lb, cidx () + lb + 1, rhs.cidx () + 1,
+                                 li);
 
                   assert (nnz () == new_nz);
                 }
@@ -2052,12 +2079,16 @@ Sparse<T>::assign (const idx_vector& idx_i,
                   // new stuff...
                   copy_or_memcpy (rnz, rhs.data (), data () + li);
                   copy_or_memcpy (rnz, rhs.ridx (), ridx () + li);
-                  mx_inline_add (ub - lb, cidx () + lb + 1, rhs.cidx () + 1, li);
+                  mx_inline_add (ub - lb, cidx () + lb + 1, rhs.cidx () + 1,
+                                 li);
 
                   // ...tail.
-                  copy_or_memcpy (nz - ui, tmp.data () + ui, data () + li + rnz);
-                  copy_or_memcpy (nz - ui, tmp.ridx () + ui, ridx () + li + rnz);
-                  mx_inline_add (nc - ub, cidx () + ub + 1, tmp.cidx () + ub + 1, new_nz - nz);
+                  copy_or_memcpy (nz - ui, tmp.data () + ui,
+                                  data () + li + rnz);
+                  copy_or_memcpy (nz - ui, tmp.ridx () + ui,
+                                  ridx () + li + rnz);
+                  mx_inline_add (nc - ub, cidx () + ub + 1,
+                                 tmp.cidx () + ub + 1, new_nz - nz);
 
                   assert (nnz () == new_nz);
                 }
@@ -2065,7 +2096,8 @@ Sparse<T>::assign (const idx_vector& idx_i,
           else if (idx_j.is_range () && idx_j.increment () == -1)
             {
               // It's s(:,u:-1:l) = r. Reverse the assignment.
-              assign (idx_i, idx_j.sorted (), rhs.index (idx_i, idx_vector (m - 1, 0, -1)));
+              assign (idx_i, idx_j.sorted (),
+                      rhs.index (idx_i, idx_vector (m - 1, 0, -1)));
             }
           else if (idx_j.is_permutation (nc))
             {
@@ -2118,7 +2150,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
         }
       else if (nc == 1 && idx_j.is_colon_equiv (nc) && idx_i.is_vector ())
         {
-          // It's actually vector indexing. The 1D assign is specialized for that.
+          // It's just vector indexing.  The 1D assign is specialized for that.
           assign (idx_i, rhs);
         }
       else if (idx_j.is_colon ())
@@ -2237,7 +2269,7 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
     }
 
   if (dim > 0)
-      m = m.transpose ();
+    m = m.transpose ();
 
   return m;
 }
@@ -2558,8 +2590,8 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
     {
     case 0:
       {
-        // sparse vertcat. This is not efficiently handled by assignment, so
-        // we'll do it directly.
+        // sparse vertcat.  This is not efficiently handled by assignment,
+        // so we'll do it directly.
         octave_idx_type l = 0;
         for (octave_idx_type j = 0; j < dv(1); j++)
           {
@@ -2600,7 +2632,8 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
               continue;
 
             octave_idx_type u = l + sparse_list[i].columns ();
-            retval.assign (idx_vector::colon, idx_vector (l, u), sparse_list[i]);
+            retval.assign (idx_vector::colon, idx_vector (l, u),
+                           sparse_list[i]);
             l = u;
           }
 

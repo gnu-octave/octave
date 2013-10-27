@@ -55,7 +55,7 @@ SparseBoolMatrix::operator == (const SparseBoolMatrix& a) const
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
     if (cidx (i) != a.cidx (i))
-        return false;
+      return false;
 
   for (octave_idx_type i = 0; i < nz; i++)
     if (data (i) != a.data (i) || ridx (i) != a.ridx (i))
@@ -71,21 +71,24 @@ SparseBoolMatrix::operator != (const SparseBoolMatrix& a) const
 }
 
 SparseBoolMatrix&
-SparseBoolMatrix::insert (const SparseBoolMatrix& a, octave_idx_type r, octave_idx_type c)
+SparseBoolMatrix::insert (const SparseBoolMatrix& a,
+                          octave_idx_type r, octave_idx_type c)
 {
   Sparse<bool>::insert (a, r, c);
   return *this;
 }
 
 SparseBoolMatrix&
-SparseBoolMatrix::insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx)
+SparseBoolMatrix::insert (const SparseBoolMatrix& a,
+                          const Array<octave_idx_type>& indx)
 {
   Sparse<bool>::insert (a, indx);
   return *this;
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::concat (const SparseBoolMatrix& rb, const Array<octave_idx_type>& ra_idx)
+SparseBoolMatrix::concat (const SparseBoolMatrix& rb,
+                          const Array<octave_idx_type>& ra_idx)
 {
   // Don't use numel to avoid all possiblity of an overflow
   if (rb.rows () > 0 && rb.cols () > 0)
@@ -128,8 +131,7 @@ SparseBoolMatrix::operator ! (void) const
 
 // other operations
 
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
+// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 SparseBoolMatrix
 SparseBoolMatrix::all (int dim) const
@@ -256,14 +258,14 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
 {
   octave_idx_type nc = a.cols ();
 
-   // add one to the printed indices to go from
-   //  zero-based to one-based arrays
-   for (octave_idx_type j = 0; j < nc; j++)
-     {
-       octave_quit ();
-       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-         os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
-     }
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_quit ();
+      for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+        os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
+    }
 
   return os;
 }
@@ -289,7 +291,8 @@ SparseBoolMatrix::index (const idx_vector& i, bool resize_ok) const
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const
+SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j,
+                         bool resize_ok) const
 {
   return Sparse<bool>::index (i, j, resize_ok);
 }

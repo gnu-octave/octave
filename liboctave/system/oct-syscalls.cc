@@ -299,7 +299,7 @@ octave_syscalls::kill (pid_t pid, int sig, std::string& msg)
 
 pid_t
 octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
-    bool sync_mode, int *fildes)
+                         bool sync_mode, int *fildes)
 {
   std::string msg;
   bool interactive = false;
@@ -308,7 +308,7 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
 
 pid_t
 octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
-    bool sync_mode, int *fildes, std::string& msg)
+                         bool sync_mode, int *fildes, std::string& msg)
 {
   bool interactive = false;
   return popen2 (cmd, args, sync_mode, fildes, msg, interactive);
@@ -316,7 +316,8 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
 
 pid_t
 octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
-    bool sync_mode, int *fildes, std::string& msg, bool &interactive)
+                         bool sync_mode, int *fildes, std::string& msg,
+                         bool &interactive)
 {
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
   return ::octave_popen2 (cmd, args, sync_mode, fildes, msg);
@@ -367,7 +368,8 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
               gnulib::close (child_stdout[1]);
 
 #if defined (F_SETFL) && defined (O_NONBLOCK)
-              if (! sync_mode && octave_fcntl (child_stdout[0], F_SETFL, O_NONBLOCK, msg) < 0)
+              if (! sync_mode && octave_fcntl (child_stdout[0], F_SETFL,
+                                               O_NONBLOCK, msg) < 0)
                 msg = "popen2: error setting file mode -- " + msg;
               else
 #endif

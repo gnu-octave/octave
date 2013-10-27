@@ -50,13 +50,15 @@ public:
 
   void init (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
-  void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+  void update (const FloatComplexColumnVector& u,
+               const FloatComplexColumnVector& v);
 
   void update (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 
   void insert_col (const FloatComplexColumnVector& u, octave_idx_type j);
 
-  void insert_col (const FloatComplexMatrix& u, const Array<octave_idx_type>& j);
+  void insert_col (const FloatComplexMatrix& u,
+                   const Array<octave_idx_type>& j);
 
   void delete_col (octave_idx_type j);
 

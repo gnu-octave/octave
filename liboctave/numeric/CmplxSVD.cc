@@ -80,7 +80,8 @@ ComplexSVD::right_singular_matrix (void) const
 }
 
 octave_idx_type
-ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type, SVD::driver svd_driver)
+ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type,
+                  SVD::driver svd_driver)
 {
   octave_idx_type info;
 

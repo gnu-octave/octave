@@ -44,12 +44,12 @@ public:
     : base_lu <FloatMatrix> (l, u, p) { }
 
   FloatLU& operator = (const FloatLU& a)
-    {
-      if (this != &a)
-        base_lu <FloatMatrix> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <FloatMatrix> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~FloatLU (void) { }
 

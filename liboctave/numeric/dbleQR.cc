@@ -121,13 +121,15 @@ QR::init (const Matrix& a, qr_type_t qr_type)
     {
       // workspace query.
       double rlwork;
-      F77_XFCN (dgeqrf, DGEQRF, (m, n, afact.fortran_vec (), m, tau, &rlwork, -1, info));
+      F77_XFCN (dgeqrf, DGEQRF, (m, n, afact.fortran_vec (), m, tau,
+                                 &rlwork, -1, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = rlwork;
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (double, work, lwork);
-      F77_XFCN (dgeqrf, DGEQRF, (m, n, afact.fortran_vec (), m, tau, work, lwork, info));
+      F77_XFCN (dgeqrf, DGEQRF, (m, n, afact.fortran_vec (), m, tau,
+                                 work, lwork, info));
     }
 
   form (n, afact, tau, qr_type);
@@ -164,7 +166,7 @@ void QR::form (octave_idx_type n, Matrix& afact,
               octave_idx_type i = 0;
               for (; i <= j; i++)
                 r.xelem (i, j) = afact.xelem (i, j);
-              for (;i < k; i++)
+              for (; i < k; i++)
                 r.xelem (i, j) = 0;
             }
           afact = Matrix (); // optimize memory
@@ -214,7 +216,8 @@ QR::update (const ColumnVector& u, const ColumnVector& v)
     {
       ColumnVector utmp = u, vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
-      F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
+      F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (),
+                                 m, r.fortran_vec (), k,
                                  utmp.fortran_vec (), vtmp.fortran_vec (), w));
     }
   else
@@ -234,8 +237,10 @@ QR::update (const Matrix& u, const Matrix& v)
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           ColumnVector utmp = u.column (i), vtmp = v.column (i);
-          F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
-                                     utmp.fortran_vec (), vtmp.fortran_vec (), w));
+          F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (),
+                                     m, r.fortran_vec (), k,
+                                     utmp.fortran_vec (), vtmp.fortran_vec (),
+                                     w));
         }
     }
   else
@@ -372,7 +377,8 @@ QR::delete_col (const Array<octave_idx_type>& j)
           octave_idx_type ii = i;
           F77_XFCN (dqrdec, DQRDEC, (m, n - ii, k == m ? k : k - ii,
                                      q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(ii) + 1, w));
+                                     r.fortran_vec (), r.rows (),
+                                     js(ii) + 1, w));
         }
       if (k < m)
         {
@@ -490,7 +496,7 @@ QR::update (const Matrix& u, const Matrix& v)
 
 static
 Matrix insert_col (const Matrix& a, octave_idx_type i,
-                        const ColumnVector& x)
+                   const ColumnVector& x)
 {
   Matrix retval (a.rows (), a.columns () + 1);
   retval.assign (idx_vector::colon, idx_vector (0, i),
@@ -503,7 +509,7 @@ Matrix insert_col (const Matrix& a, octave_idx_type i,
 
 static
 Matrix insert_row (const Matrix& a, octave_idx_type i,
-                        const RowVector& x)
+                   const RowVector& x)
 {
   Matrix retval (a.rows () + 1, a.columns ());
   retval.assign (idx_vector (0, i), idx_vector::colon,
@@ -532,7 +538,7 @@ Matrix delete_row (const Matrix& a, octave_idx_type i)
 
 static
 Matrix shift_cols (const Matrix& a,
-                        octave_idx_type i, octave_idx_type j)
+                   octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = a.columns ();
   Array<octave_idx_type> p (n);

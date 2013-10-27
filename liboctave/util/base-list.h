@@ -82,10 +82,12 @@ public:
   const_iterator end (void) const { return const_iterator (lst.end ()); }
 
   reverse_iterator rbegin (void) { return reverse_iterator (lst.rbegin ()); }
-  const_reverse_iterator rbegin (void) const { return const_reverse_iterator (lst.rbegin ()); }
+  const_reverse_iterator rbegin (void) const
+  { return const_reverse_iterator (lst.rbegin ()); }
 
   reverse_iterator rend (void) { return reverse_iterator (lst.rend ()); }
-  const_reverse_iterator rend (void) const { return const_reverse_iterator (lst.rend ()); }
+  const_reverse_iterator rend (void) const
+  { return const_reverse_iterator (lst.rend ()); }
 
   elt_type& front (void) { return lst.front (); }
   elt_type& back (void) { return lst.back (); }
@@ -111,13 +113,13 @@ protected:
   octave_base_list (const octave_base_list& bl) : lst (bl.lst) { }
 
   octave_base_list& operator = (const octave_base_list& bl)
-    {
-      if (this != &bl)
-        {
-          lst = bl.lst;
-        }
-      return *this;
-    }
+  {
+    if (this != &bl)
+      {
+        lst = bl.lst;
+      }
+    return *this;
+  }
 
   ~octave_base_list (void) { }
 

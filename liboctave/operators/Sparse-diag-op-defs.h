@@ -40,30 +40,30 @@ RT do_mul_dm_sm (const DM& d, const SM& a)
       return RT ();
     }
   else
-   {
-     RT r (nr, a_nc, a.nnz ());
+    {
+      RT r (nr, a_nc, a.nnz ());
 
-     octave_idx_type l = 0;
+      octave_idx_type l = 0;
 
-     for (octave_idx_type j = 0; j < a_nc; j++)
-       {
-         r.xcidx (j) = l;
-         const octave_idx_type colend = a.cidx (j+1);
-         for (octave_idx_type k = a.cidx (j); k < colend; k++)
-           {
-             const octave_idx_type i = a.ridx (k);
-             if (i >= nr) break;
-             r.xdata (l) = d.dgelem (i) * a.data (k);
-             r.xridx (l) = i;
-             l++;
-           }
-       }
+      for (octave_idx_type j = 0; j < a_nc; j++)
+        {
+          r.xcidx (j) = l;
+          const octave_idx_type colend = a.cidx (j+1);
+          for (octave_idx_type k = a.cidx (j); k < colend; k++)
+            {
+              const octave_idx_type i = a.ridx (k);
+              if (i >= nr) break;
+              r.xdata (l) = d.dgelem (i) * a.data (k);
+              r.xridx (l) = i;
+              l++;
+            }
+        }
 
-     r.xcidx (a_nc) = l;
+      r.xcidx (a_nc) = l;
 
-     r.maybe_compress (true);
-     return r;
-   }
+      r.maybe_compress (true);
+      return r;
+    }
 }
 
 template <typename RT, typename SM, typename DM>
@@ -81,28 +81,28 @@ RT do_mul_sm_dm (const SM& a, const DM& d)
       return RT ();
     }
   else
-   {
+    {
 
-     const octave_idx_type mnc = nc < a_nc ? nc: a_nc;
-     RT r (a_nr, nc, a.cidx (mnc));
+      const octave_idx_type mnc = nc < a_nc ? nc: a_nc;
+      RT r (a_nr, nc, a.cidx (mnc));
 
-     for (octave_idx_type j = 0; j < mnc; ++j)
-       {
-         const typename DM::element_type s = d.dgelem (j);
-         const octave_idx_type colend = a.cidx (j+1);
-         r.xcidx (j) = a.cidx (j);
-         for (octave_idx_type k = a.cidx (j); k < colend; ++k)
-           {
-             r.xdata (k) = s * a.data (k);
-             r.xridx (k) = a.ridx (k);
-           }
-       }
-     for (octave_idx_type j = mnc; j <= nc; ++j)
-       r.xcidx (j) = a.cidx (mnc);
+      for (octave_idx_type j = 0; j < mnc; ++j)
+        {
+          const typename DM::element_type s = d.dgelem (j);
+          const octave_idx_type colend = a.cidx (j+1);
+          r.xcidx (j) = a.cidx (j);
+          for (octave_idx_type k = a.cidx (j); k < colend; ++k)
+            {
+              r.xdata (k) = s * a.data (k);
+              r.xridx (k) = a.ridx (k);
+            }
+        }
+      for (octave_idx_type j = mnc; j <= nc; ++j)
+        r.xcidx (j) = a.cidx (mnc);
 
-     r.maybe_compress (true);
-     return r;
-   }
+      r.maybe_compress (true);
+      return r;
+    }
 }
 
 // FIXME: functors such as this should be gathered somewhere

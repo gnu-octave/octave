@@ -39,7 +39,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include "lo-utils.h"
 #include "str-vec.h"
 
-// FIXME -- isn't there some STL trick that could be used to make this
+// FIXME: isn't there some STL trick that could be used to make this
 // work for all STL containers of std::string objects?
 
 string_vector::string_vector (const std::list<std::string>& lst)

@@ -119,13 +119,15 @@ FloatQR::init (const FloatMatrix& a, qr_type_t qr_type)
     {
       // workspace query.
       float rlwork;
-      F77_XFCN (sgeqrf, SGEQRF, (m, n, afact.fortran_vec (), m, tau, &rlwork, -1, info));
+      F77_XFCN (sgeqrf, SGEQRF, (m, n, afact.fortran_vec (), m, tau,
+                                 &rlwork, -1, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = rlwork;
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (float, work, lwork);
-      F77_XFCN (sgeqrf, SGEQRF, (m, n, afact.fortran_vec (), m, tau, work, lwork, info));
+      F77_XFCN (sgeqrf, SGEQRF, (m, n, afact.fortran_vec (), m, tau,
+                                 work, lwork, info));
     }
 
   form (n, afact, tau, qr_type);
@@ -162,7 +164,7 @@ void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
               octave_idx_type i = 0;
               for (; i <= j; i++)
                 r.xelem (i, j) = afact.xelem (i, j);
-              for (;i < k; i++)
+              for (; i < k; i++)
                 r.xelem (i, j) = 0;
             }
           afact = FloatMatrix (); // optimize memory
@@ -212,7 +214,8 @@ FloatQR::update (const FloatColumnVector& u, const FloatColumnVector& v)
     {
       FloatColumnVector utmp = u, vtmp = v;
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
-      F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
+      F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (),
+                                 m, r.fortran_vec (), k,
                                  utmp.fortran_vec (), vtmp.fortran_vec (), w));
     }
   else
@@ -232,8 +235,10 @@ FloatQR::update (const FloatMatrix& u, const FloatMatrix& v)
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           FloatColumnVector utmp = u.column (i), vtmp = v.column (i);
-          F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (), m, r.fortran_vec (), k,
-                                     utmp.fortran_vec (), vtmp.fortran_vec (), w));
+          F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (),
+                                     m, r.fortran_vec (), k,
+                                     utmp.fortran_vec (), vtmp.fortran_vec (),
+                                     w));
         }
     }
   else
@@ -370,7 +375,8 @@ FloatQR::delete_col (const Array<octave_idx_type>& j)
           octave_idx_type ii = i;
           F77_XFCN (sqrdec, SQRDEC, (m, n - ii, k == m ? k : k - ii,
                                      q.fortran_vec (), q.rows (),
-                                     r.fortran_vec (), r.rows (), js(ii) + 1, w));
+                                     r.fortran_vec (), r.rows (),
+                                     js(ii) + 1, w));
         }
       if (k < m)
         {

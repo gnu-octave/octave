@@ -95,23 +95,23 @@ public:
   SparseComplexQR (const SparseComplexQR& a) : rep (a.rep) { rep->count++; }
 
   ~SparseComplexQR (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   SparseComplexQR& operator = (const SparseComplexQR& a)
-    {
-      if (this != &a)
-        {
-          if (--rep->count == 0)
-            delete rep;
+  {
+    if (this != &a)
+      {
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = a.rep;
-          rep->count++;
-        }
-      return *this;
-    }
+        rep = a.rep;
+        rep->count++;
+      }
+    return *this;
+  }
 
   bool ok (void) const { return rep->ok (); }
 
@@ -122,7 +122,7 @@ public:
   ColumnVector P (void) const { return rep->P (); }
 
   SparseComplexMatrix R (const bool econ = false) const
-    { return rep->R(econ); }
+  { return rep->R(econ); }
 
   ComplexMatrix C (const ComplexMatrix &b) const { return rep->C(b); }
 

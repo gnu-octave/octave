@@ -91,7 +91,8 @@ ComplexDiagMatrix::fill (double val, octave_idx_type beg, octave_idx_type end)
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const Complex& val, octave_idx_type beg, octave_idx_type end)
+ComplexDiagMatrix::fill (const Complex& val,
+                         octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -248,7 +249,8 @@ conj (const ComplexDiagMatrix& a)
 // resize is the destructive analog for this one
 
 ComplexMatrix
-ComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+ComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                            octave_idx_type r2, octave_idx_type c2) const
 {
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }

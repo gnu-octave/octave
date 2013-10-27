@@ -39,7 +39,7 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
   if (retval)
     {
       octave_idx_type len = this->length (), i = 0;
-      for (;i < len; i++)
+      for (; i < len; i++)
         if (DiagArray2<T>::elem (i, i) != val) break;
       retval = i == len;
     }
@@ -70,7 +70,8 @@ template <class T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
-  return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul), a.d1, a.d2);
+  return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul),
+                                                   a.d1, a.d2);
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -102,5 +103,6 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus), a.d1, a.d2);
+  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus),
+                         a.d1, a.d2);
 }

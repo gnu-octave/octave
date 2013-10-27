@@ -60,8 +60,7 @@ nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 }
 
 Array<FloatComplex>::compare_fcn_type
-safe_comparator (sortmode mode, const Array<FloatComplex>& a,
-                     bool allow_chk)
+safe_comparator (sortmode mode, const Array<FloatComplex>& a, bool allow_chk)
 {
   Array<FloatComplex>::compare_fcn_type result = 0;
 
@@ -93,7 +92,8 @@ INSTANTIATE_ARRAY_SORT (FloatComplex);
 
 INSTANTIATE_ARRAY (FloatComplex, OCTAVE_API);
 
-template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<FloatComplex>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&,
+                                               const Array<FloatComplex>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

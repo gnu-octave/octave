@@ -97,23 +97,23 @@ public:
   SparseQR (const SparseQR& a) : rep (a.rep) { rep->count++; }
 
   ~SparseQR (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   SparseQR& operator = (const SparseQR& a)
-    {
-      if (this != &a)
-        {
-          if (--rep->count == 0)
-            delete rep;
+  {
+    if (this != &a)
+      {
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = a.rep;
-          rep->count++;
-        }
-      return *this;
-    }
+        rep = a.rep;
+        rep->count++;
+      }
+    return *this;
+  }
 
   bool ok (void) const { return rep->ok (); }
 
@@ -133,7 +133,7 @@ public:
                          octave_idx_type &info);
 
   friend SparseMatrix qrsolve (const SparseMatrix &a, const SparseMatrix &b,
-                         octave_idx_type &info);
+                               octave_idx_type &info);
 
   friend ComplexMatrix qrsolve (const SparseMatrix &a, const ComplexMatrix &b,
                                 octave_idx_type &info);

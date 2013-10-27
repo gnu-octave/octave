@@ -41,7 +41,8 @@ public:
 
   ComplexDiagMatrix (void) : MDiagArray2<Complex> () { }
 
-  ComplexDiagMatrix (octave_idx_type r, octave_idx_type c) : MDiagArray2<Complex> (r, c) { }
+  ComplexDiagMatrix (octave_idx_type r, octave_idx_type c)
+    : MDiagArray2<Complex> (r, c) { }
 
   ComplexDiagMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
     : MDiagArray2<Complex> (r, c, val) { }
@@ -52,7 +53,8 @@ public:
   explicit ComplexDiagMatrix (const Array<double>& a)
     : MDiagArray2<Complex> (Array<Complex> (a)) { }
 
-  ComplexDiagMatrix (const Array<Complex>& a, octave_idx_type r, octave_idx_type c)
+  ComplexDiagMatrix (const Array<Complex>& a, octave_idx_type r,
+                     octave_idx_type c)
     : MDiagArray2<Complex> (a, r, c) { }
 
   explicit ComplexDiagMatrix (const DiagMatrix& a);
@@ -68,18 +70,20 @@ public:
     : MDiagArray2<Complex> (a) { }
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
-    {
-      MDiagArray2<Complex>::operator = (a);
-      return *this;
-    }
+  {
+    MDiagArray2<Complex>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const ComplexDiagMatrix& a) const;
   bool operator != (const ComplexDiagMatrix& a) const;
 
   ComplexDiagMatrix& fill (double val);
   ComplexDiagMatrix& fill (const Complex& val);
-  ComplexDiagMatrix& fill (double val, octave_idx_type beg, octave_idx_type end);
-  ComplexDiagMatrix& fill (const Complex& val, octave_idx_type beg, octave_idx_type end);
+  ComplexDiagMatrix& fill (double val,
+                           octave_idx_type beg, octave_idx_type end);
+  ComplexDiagMatrix& fill (const Complex& val,
+                           octave_idx_type beg, octave_idx_type end);
   ComplexDiagMatrix& fill (const ColumnVector& a);
   ComplexDiagMatrix& fill (const ComplexColumnVector& a);
   ComplexDiagMatrix& fill (const RowVector& a);
@@ -89,15 +93,18 @@ public:
   ComplexDiagMatrix& fill (const RowVector& a, octave_idx_type beg);
   ComplexDiagMatrix& fill (const ComplexRowVector& a, octave_idx_type beg);
 
-  ComplexDiagMatrix hermitian (void) const { return MDiagArray2<Complex>::hermitian (std::conj); }
-  ComplexDiagMatrix transpose (void) const { return MDiagArray2<Complex>::transpose (); }
+  ComplexDiagMatrix hermitian (void) const
+  { return MDiagArray2<Complex>::hermitian (std::conj); }
+  ComplexDiagMatrix transpose (void) const
+  { return MDiagArray2<Complex>::transpose (); }
   DiagMatrix abs (void) const;
 
   friend OCTAVE_API ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
   // resize is the destructive analog for this one
 
-  ComplexMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+  ComplexMatrix extract (octave_idx_type r1, octave_idx_type c1,
+                         octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i
 
@@ -121,14 +128,15 @@ public:
   // other operations
 
   ComplexColumnVector extract_diag (octave_idx_type k = 0) const
-    { return MDiagArray2<Complex>::extract_diag (k); }
+  { return MDiagArray2<Complex>::extract_diag (k); }
 
   ComplexDET determinant (void) const;
   double rcond (void) const;
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const ComplexDiagMatrix& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const ComplexDiagMatrix& a);
 
 };
 

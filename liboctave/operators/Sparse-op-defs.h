@@ -667,7 +667,7 @@ along with Octave; see the file COPYING.  If not, see
     else \
       { \
  \
-        /* FIXME Kludge... Always double/Complex, so Complex () */ \
+        /* FIXME: Kludge... Always double/Complex, so Complex () */ \
         r = R (m1_nr, m1_nc, (Complex () OP Complex ())); \
         \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
@@ -717,8 +717,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Note that SM ./ SM needs to take into account the NaN and Inf values
 // implied by the division by zero.
-// FIXME Are the NaNs double(NaN) or Complex(NaN,Nan) in the complex
-// case?
+// FIXME: Are the NaNs double(NaN) or Complex(NaN,Nan) in the complex case?
 #define SPARSE_SMSM_BIN_OPS(R1, R2, M1, M2)  \
   SPARSE_SMSM_BIN_OP_1 (R1, operator +,  +, M1, M2) \
   SPARSE_SMSM_BIN_OP_1 (R1, operator -,  -, M1, M2) \
@@ -737,9 +736,8 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
   SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
-// FIXME -- this macro duplicatest the bodies of the template
-// functions defined in the SPARSE_SSM_CMP_OP and SPARSE_SMS_CMP_OP
-// macros.
+// FIXME: this macro duplicates the bodies of the template functions
+// defined in the SPARSE_SSM_CMP_OP and SPARSE_SMS_CMP_OP macros.
 
 #define SPARSE_SMSM_CMP_OP(F, OP, M1, Z1, C1, M2, Z2, C2)       \
   SparseBoolMatrix \
@@ -921,9 +919,8 @@ along with Octave; see the file COPYING.  If not, see
   SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
   SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
 
-// FIXME -- this macro duplicatest the bodies of the template
-// functions defined in the SPARSE_SSM_BOOL_OP and SPARSE_SMS_BOOL_OP
-// macros.
+// FIXME: this macro duplicates the bodies of the template functions
+// defined in the SPARSE_SSM_BOOL_OP and SPARSE_SMS_BOOL_OP macros.
 
 #define SPARSE_SMSM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
@@ -1150,7 +1147,7 @@ along with Octave; see the file COPYING.  If not, see
     return r; \
   }
 
-// FIXME Pass a specific ZERO value
+// FIXME: Pass a specific ZERO value
 #define SPARSE_MSM_BIN_OPS(R1, R2, M1, M2) \
   SPARSE_MSM_BIN_OP_1 (R1, operator +,  +, M1, M2) \
   SPARSE_MSM_BIN_OP_1 (R1, operator -,  -, M1, M2) \
@@ -1810,8 +1807,7 @@ along with Octave; see the file COPYING.  If not, see
 
 
 // Don't break from this loop if the test succeeds because
-// we are looping over the rows and not the columns in the inner
-// loop.
+// we are looping over the rows and not the columns in the inner loop.
 #define SPARSE_ANY_ALL_OP_ROW_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \
     tmp[ridx (i)] = TEST_TRUE_VAL; \

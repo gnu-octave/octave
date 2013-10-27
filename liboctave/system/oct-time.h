@@ -236,7 +236,7 @@ public:
   std::string strftime (const std::string& fmt) const;
 
   std::string asctime (void) const
-    { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
+  { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
 
 protected:
 

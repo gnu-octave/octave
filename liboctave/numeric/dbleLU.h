@@ -42,12 +42,12 @@ public:
     : base_lu <Matrix> (l, u, p) { }
 
   LU& operator = (const LU& a)
-    {
-      if (this != &a)
-        base_lu <Matrix> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <Matrix> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~LU (void) { }
 

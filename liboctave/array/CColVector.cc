@@ -53,7 +53,7 @@ extern "C"
 // Complex Column Vector class
 
 ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
-   : MArray<Complex> (a)
+  : MArray<Complex> (a)
 {
 }
 
@@ -176,7 +176,8 @@ ComplexColumnVector::fill (double val, octave_idx_type r1, octave_idx_type r2)
 }
 
 ComplexColumnVector&
-ComplexColumnVector::fill (const Complex& val, octave_idx_type r1, octave_idx_type r2)
+ComplexColumnVector::fill (const Complex& val,
+                           octave_idx_type r1, octave_idx_type r2)
 {
   octave_idx_type len = length ();
 

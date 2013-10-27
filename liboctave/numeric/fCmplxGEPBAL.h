@@ -37,32 +37,32 @@ public:
 
   FloatComplexGEPBALANCE (void)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
-    { }
+  { }
 
   FloatComplexGEPBALANCE (const FloatComplexMatrix& a,
                           const FloatComplexMatrix& b,
                           const std::string& balance_job)
     : balanced_mat (), balanced_mat2 (), balancing_mat (), balancing_mat2 ()
-    {
-      init (a, b, balance_job);
-    }
+  {
+    init (a, b, balance_job);
+  }
 
   FloatComplexGEPBALANCE (const FloatComplexGEPBALANCE& a)
     : balanced_mat (a.balanced_mat), balanced_mat2 (a.balanced_mat2),
       balancing_mat (a.balancing_mat), balancing_mat2 (a.balancing_mat2)
-    { }
+  { }
 
   FloatComplexGEPBALANCE& operator = (const FloatComplexGEPBALANCE& a)
-    {
-      if (this != &a)
-        {
-          balanced_mat = a.balanced_mat;
-          balanced_mat2 = a.balanced_mat2;
-          balancing_mat = a.balancing_mat;
-          balancing_mat2 = a.balancing_mat2;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        balanced_mat = a.balanced_mat;
+        balanced_mat2 = a.balanced_mat2;
+        balancing_mat = a.balancing_mat;
+        balancing_mat2 = a.balancing_mat2;
+      }
+    return *this;
+  }
 
   ~FloatComplexGEPBALANCE (void) { }
 
@@ -74,7 +74,8 @@ public:
 
   FloatMatrix balancing_matrix2 (void) const { return balancing_mat2; }
 
-  friend std::ostream& operator << (std::ostream& os, const FloatComplexGEPBALANCE& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FloatComplexGEPBALANCE& a);
 
 private:
 
@@ -83,7 +84,8 @@ private:
   FloatMatrix balancing_mat;
   FloatMatrix balancing_mat2;
 
-  octave_idx_type init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+  octave_idx_type init (const FloatComplexMatrix& a,
+                        const FloatComplexMatrix& b,
                         const std::string& balance_job);
 };
 

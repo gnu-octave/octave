@@ -48,13 +48,13 @@ public:
     : sparse_base_lu <SparseMatrix, double, SparseMatrix, double> (a) { }
 
   SparseLU& operator = (const SparseLU& a)
-    {
-      if (this != &a)
-        sparse_base_lu <SparseMatrix, double, SparseMatrix, double>
-          :: operator = (a);
+  {
+    if (this != &a)
+      sparse_base_lu <SparseMatrix, double, SparseMatrix, double>
+      :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~SparseLU (void) { }
 };

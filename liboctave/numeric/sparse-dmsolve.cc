@@ -38,10 +38,10 @@ along with Octave; see the file COPYING.  If not, see
 template <class T>
 static MSparse<T>
 dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
-                const octave_idx_type *Q, octave_idx_type rst,
-                octave_idx_type rend, octave_idx_type cst,
-                octave_idx_type cend, octave_idx_type maxnz = -1,
-                bool lazy = false)
+                 const octave_idx_type *Q, octave_idx_type rst,
+                 octave_idx_type rend, octave_idx_type cst,
+                 octave_idx_type cend, octave_idx_type maxnz = -1,
+                 bool lazy = false)
 {
   octave_idx_type nr = rend - rst, nc = cend - cst;
   maxnz = (maxnz < 0 ? A.nnz () : maxnz);
@@ -111,17 +111,17 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static MSparse<double>
 dmsolve_extract (const MSparse<double> &A, const octave_idx_type *Pinv,
-                const octave_idx_type *Q, octave_idx_type rst,
-                octave_idx_type rend, octave_idx_type cst,
-                octave_idx_type cend, octave_idx_type maxnz,
-                bool lazy);
+                 const octave_idx_type *Q, octave_idx_type rst,
+                 octave_idx_type rend, octave_idx_type cst,
+                 octave_idx_type cend, octave_idx_type maxnz,
+                 bool lazy);
 
 static MSparse<Complex>
 dmsolve_extract (const MSparse<Complex> &A, const octave_idx_type *Pinv,
-                const octave_idx_type *Q, octave_idx_type rst,
-                octave_idx_type rend, octave_idx_type cst,
-                octave_idx_type cend, octave_idx_type maxnz,
-                bool lazy);
+                 const octave_idx_type *Q, octave_idx_type rst,
+                 octave_idx_type rend, octave_idx_type cst,
+                 octave_idx_type cend, octave_idx_type maxnz,
+                 bool lazy);
 #endif
 
 template <class T>
@@ -165,7 +165,7 @@ dmsolve_extract (const MArray<Complex> &m, const octave_idx_type *,
 template <class T>
 static void
 dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
-               octave_idx_type r, octave_idx_type c)
+                octave_idx_type r, octave_idx_type c)
 {
   T *ax = a.fortran_vec ();
   const T *bx = b.fortran_vec ();
@@ -187,17 +187,17 @@ dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
 dmsolve_insert (MArray<double> &a, const MArray<double> &b,
-               const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
+                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 
 static void
 dmsolve_insert (MArray<Complex> &a, const MArray<Complex> &b,
-               const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
+                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 #endif
 
 template <class T>
 static void
 dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
-               octave_idx_type r, octave_idx_type c)
+                octave_idx_type r, octave_idx_type c)
 {
   octave_idx_type b_rows = b.rows ();
   octave_idx_type b_cols = b.cols ();
@@ -274,11 +274,11 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static void
 dmsolve_insert (MSparse<double> &a, const SparseMatrix &b,
-               const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
+                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 
 static void
 dmsolve_insert (MSparse<Complex> &a, const MSparse<Complex> &b,
-               const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
+                const octave_idx_type *Q, octave_idx_type r, octave_idx_type c);
 #endif
 
 template <class T, class RT>

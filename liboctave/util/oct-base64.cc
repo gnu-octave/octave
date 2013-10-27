@@ -33,11 +33,11 @@ along with Octave; see the file COPYING.  If not, see
 
 bool
 octave_base64_encode (const char *inc, const size_t inlen, char **out)
-{  
+{
   bool ret = false;
 
   size_t outlen = base64_encode_alloc (inc, inlen, out);
-  
+
   if (! out)
     {
       if (outlen == 0 && inlen != 0)

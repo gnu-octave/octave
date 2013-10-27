@@ -60,7 +60,7 @@ octave_throw_interrupt_exception (void)
 void
 octave_throw_execution_exception (void)
 {
-  // FIXME -- would a hook function be useful here?
+  // FIXME: would a hook function be useful here?
 
   octave_exception_state = octave_exec_exception;
 

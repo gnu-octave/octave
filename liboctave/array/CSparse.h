@@ -53,12 +53,14 @@ public:
 
   SparseComplexMatrix (void) : MSparse<Complex> () { }
 
-  SparseComplexMatrix (octave_idx_type r, octave_idx_type c) : MSparse<Complex> (r, c) { }
+  SparseComplexMatrix (octave_idx_type r,
+                       octave_idx_type c) : MSparse<Complex> (r, c) { }
 
-  SparseComplexMatrix (const dim_vector& dv, octave_idx_type nz = 0) :
-    MSparse<Complex> (dv, nz) { }
+  SparseComplexMatrix (const dim_vector& dv, octave_idx_type nz = 0)
+    : MSparse<Complex> (dv, nz) { }
 
-  explicit SparseComplexMatrix (octave_idx_type r, octave_idx_type c, Complex val)
+  explicit SparseComplexMatrix (octave_idx_type r, octave_idx_type c,
+                                Complex val)
     : MSparse<Complex> (r, c, val) { }
 
   SparseComplexMatrix (octave_idx_type r, octave_idx_type c, double val)
@@ -92,14 +94,15 @@ public:
 
   explicit SparseComplexMatrix (const ComplexDiagMatrix& a);
 
-  SparseComplexMatrix (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz)
+  SparseComplexMatrix (octave_idx_type r, octave_idx_type c,
+                       octave_idx_type num_nz)
     : MSparse<Complex> (r, c, num_nz) { }
 
   SparseComplexMatrix& operator = (const SparseComplexMatrix& a)
-    {
-      MSparse<Complex>::operator = (a);
-      return *this;
-    }
+  {
+    MSparse<Complex>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const SparseComplexMatrix& a) const;
   bool operator != (const SparseComplexMatrix& a) const;
@@ -111,10 +114,14 @@ public:
   SparseComplexMatrix min (int dim = -1) const;
   SparseComplexMatrix min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  SparseComplexMatrix& insert (const SparseComplexMatrix& a, octave_idx_type r, octave_idx_type c);
-  SparseComplexMatrix& insert (const SparseMatrix& a, octave_idx_type r, octave_idx_type c);
-  SparseComplexMatrix& insert (const SparseComplexMatrix& a, const Array<octave_idx_type>& indx);
-  SparseComplexMatrix& insert (const SparseMatrix& a, const Array<octave_idx_type>& indx);
+  SparseComplexMatrix& insert (const SparseComplexMatrix& a,
+                               octave_idx_type r, octave_idx_type c);
+  SparseComplexMatrix& insert (const SparseMatrix& a,
+                               octave_idx_type r, octave_idx_type c);
+  SparseComplexMatrix& insert (const SparseComplexMatrix& a,
+                               const Array<octave_idx_type>& indx);
+  SparseComplexMatrix& insert (const SparseMatrix& a,
+                               const Array<octave_idx_type>& indx);
 
   SparseComplexMatrix concat (const SparseComplexMatrix& rb,
                               const Array<octave_idx_type>& ra_idx);
@@ -125,7 +132,7 @@ public:
 
   SparseComplexMatrix hermitian (void) const;  // complex conjugate transpose
   SparseComplexMatrix transpose (void) const
-    { return MSparse<Complex>::transpose (); }
+  { return MSparse<Complex>::transpose (); }
 
   friend SparseComplexMatrix conj (const SparseComplexMatrix& a);
 
@@ -156,134 +163,137 @@ public:
   ComplexDET determinant (void) const;
   ComplexDET determinant (octave_idx_type& info) const;
   ComplexDET determinant (octave_idx_type& info, double& rcond,
-                                int calc_cond = 1) const;
+                          int calc_cond = 1) const;
 
 private:
   // Diagonal matrix solvers
   ComplexMatrix dsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
-                double& rcond, solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                        double& rcond, solve_singularity_handler sing_handler,
+                        bool calc_cond = false) const;
 
   ComplexMatrix dsolve (MatrixType &typ, const ComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                        octave_idx_type& info, double& rcond,
+                        solve_singularity_handler sing_handler,
+                        bool calc_cond = false) const;
 
   SparseComplexMatrix dsolve (MatrixType &typ, const SparseMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                              octave_idx_type& info, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond = false) const;
 
   SparseComplexMatrix dsolve (MatrixType &typ, const SparseComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                              octave_idx_type& info, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond = false) const;
 
   // Upper triangular matrix solvers
-  ComplexMatrix utsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
-                double& rcond, solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+  ComplexMatrix utsolve (MatrixType &typ, const Matrix& b,
+                         octave_idx_type& info, double& rcond,
+                         solve_singularity_handler sing_handler,
+                         bool calc_cond = false) const;
 
   ComplexMatrix utsolve (MatrixType &typ, const ComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                         octave_idx_type& info, double& rcond,
+                         solve_singularity_handler sing_handler,
+                         bool calc_cond = false) const;
 
   SparseComplexMatrix utsolve (MatrixType &typ, const SparseMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                               octave_idx_type& info, double& rcond,
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond = false) const;
 
   SparseComplexMatrix utsolve (MatrixType &typ, const SparseComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                               octave_idx_type& info, double& rcond,
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond = false) const;
 
   // Lower triangular matrix solvers
   ComplexMatrix ltsolve (MatrixType &typ, const Matrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                         octave_idx_type& info, double& rcond,
+                         solve_singularity_handler sing_handler,
+                         bool calc_cond = false) const;
 
   ComplexMatrix ltsolve (MatrixType &typ, const ComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                         octave_idx_type& info, double& rcond,
+                         solve_singularity_handler sing_handler,
+                         bool calc_cond = false) const;
 
   SparseComplexMatrix ltsolve (MatrixType &typ, const SparseMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                               octave_idx_type& info, double& rcond,
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond = false) const;
 
   SparseComplexMatrix ltsolve (MatrixType &typ, const SparseComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                               octave_idx_type& info, double& rcond,
+                               solve_singularity_handler sing_handler,
+                               bool calc_cond = false) const;
 
   // Tridiagonal matrix solvers
   ComplexMatrix trisolve (MatrixType &typ, const Matrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                          octave_idx_type& info, double& rcond,
+                          solve_singularity_handler sing_handler,
+                          bool calc_cond = false) const;
 
   ComplexMatrix trisolve (MatrixType &typ, const ComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                          octave_idx_type& info, double& rcond,
+                          solve_singularity_handler sing_handler,
+                          bool calc_cond = false) const;
 
   SparseComplexMatrix trisolve (MatrixType &typ, const SparseMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                                octave_idx_type& info, double& rcond,
+                                solve_singularity_handler sing_handler,
+                                bool calc_cond = false) const;
 
   SparseComplexMatrix trisolve (MatrixType &typ, const SparseComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                                octave_idx_type& info, double& rcond,
+                                solve_singularity_handler sing_handler,
+                                bool calc_cond = false) const;
 
   // Banded matrix solvers (umfpack/cholesky)
-  ComplexMatrix bsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
-                double& rcond, solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+  ComplexMatrix bsolve (MatrixType &typ, const Matrix& b,
+                        octave_idx_type& info, double& rcond,
+                        solve_singularity_handler sing_handler,
+                        bool calc_cond = false) const;
 
   ComplexMatrix bsolve (MatrixType &typ, const ComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                        octave_idx_type& info, double& rcond,
+                        solve_singularity_handler sing_handler,
+                        bool calc_cond = false) const;
 
   SparseComplexMatrix bsolve (MatrixType &typ, const SparseMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                              octave_idx_type& info, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond = false) const;
 
   SparseComplexMatrix bsolve (MatrixType &typ, const SparseComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                              octave_idx_type& info, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond = false) const;
 
   // Full matrix solvers (umfpack/cholesky)
   void * factorize (octave_idx_type& err, double &rcond, Matrix &Control,
-                Matrix &Info, solve_singularity_handler sing_handler,
-                bool calc_cond) const;
+                    Matrix &Info, solve_singularity_handler sing_handler,
+                    bool calc_cond) const;
 
-  ComplexMatrix fsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
-                double& rcond, solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+  ComplexMatrix fsolve (MatrixType &typ, const Matrix& b,
+                        octave_idx_type& info, double& rcond,
+                        solve_singularity_handler sing_handler,
+                        bool calc_cond = false) const;
 
   ComplexMatrix fsolve (MatrixType &typ, const ComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                        octave_idx_type& info, double& rcond,
+                        solve_singularity_handler sing_handler,
+                        bool calc_cond = false) const;
 
   SparseComplexMatrix fsolve (MatrixType &typ, const SparseMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                              octave_idx_type& info, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond = false) const;
 
   SparseComplexMatrix fsolve (MatrixType &typ, const SparseComplexMatrix& b,
-                octave_idx_type& info, double& rcond,
-                solve_singularity_handler sing_handler,
-                bool calc_cond = false) const;
+                              octave_idx_type& info, double& rcond,
+                              solve_singularity_handler sing_handler,
+                              bool calc_cond = false) const;
 
 public:
   // Generic interface to solver with no probing of type
@@ -359,10 +369,12 @@ public:
   ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info,
                        double& rcond) const;
   ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info,
-                       double& rcond, solve_singularity_handler sing_handler) const;
+                       double& rcond,
+                       solve_singularity_handler sing_handler) const;
 
   SparseComplexMatrix solve (const SparseMatrix& b) const;
-  SparseComplexMatrix solve (const SparseMatrix& b, octave_idx_type& info) const;
+  SparseComplexMatrix solve (const SparseMatrix& b,
+                             octave_idx_type& info) const;
   SparseComplexMatrix solve (const SparseMatrix& b, octave_idx_type& info,
                              double& rcond) const;
   SparseComplexMatrix solve (const SparseMatrix& b, octave_idx_type& info,
@@ -379,7 +391,8 @@ public:
                              solve_singularity_handler sing_handler) const;
 
   ComplexColumnVector solve (const ColumnVector& b) const;
-  ComplexColumnVector solve (const ColumnVector& b, octave_idx_type& info) const;
+  ComplexColumnVector solve (const ColumnVector& b,
+                             octave_idx_type& info) const;
   ComplexColumnVector solve (const ColumnVector& b, octave_idx_type& info,
                              double& rcond) const;
   ComplexColumnVector solve (const ColumnVector& b, octave_idx_type& info,
@@ -389,10 +402,10 @@ public:
   ComplexColumnVector solve (const ComplexColumnVector& b) const;
   ComplexColumnVector solve (const ComplexColumnVector& b,
                              octave_idx_type& info) const;
-  ComplexColumnVector solve (const ComplexColumnVector& b, octave_idx_type& info,
-                             double& rcond) const;
-  ComplexColumnVector solve (const ComplexColumnVector& b, octave_idx_type& info,
-                             double& rcond,
+  ComplexColumnVector solve (const ComplexColumnVector& b,
+                             octave_idx_type& info, double& rcond) const;
+  ComplexColumnVector solve (const ComplexColumnVector& b,
+                             octave_idx_type& info, double& rcond,
                              solve_singularity_handler sing_handler) const;
 
   SparseComplexMatrix squeeze (void) const;
@@ -426,62 +439,80 @@ public:
 
   // i/o
   friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                    const SparseComplexMatrix& a);
+                                               const SparseComplexMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is,
-                                    SparseComplexMatrix& a);
+                                               SparseComplexMatrix& a);
 };
 
 extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&,
-                                       const SparseComplexMatrix&);
+                                                  const SparseComplexMatrix&);
 extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&,
-                                       const SparseMatrix&);
+                                                  const SparseMatrix&);
 extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&,
-                                       const SparseComplexMatrix&);
+                                                  const SparseComplexMatrix&);
 
 extern OCTAVE_API ComplexMatrix operator * (const Matrix&,
-                                       const SparseComplexMatrix&);
+                                            const SparseComplexMatrix&);
 extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&,
-                                       const SparseMatrix&);
+                                            const SparseMatrix&);
 extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&,
-                                       const SparseComplexMatrix&);
+                                            const SparseComplexMatrix&);
 extern OCTAVE_API ComplexMatrix mul_trans (const ComplexMatrix&,
-                                       const SparseComplexMatrix&);
+                                           const SparseComplexMatrix&);
 extern OCTAVE_API ComplexMatrix mul_herm (const ComplexMatrix&,
-                                       const SparseComplexMatrix&);
+                                          const SparseComplexMatrix&);
 
 extern OCTAVE_API ComplexMatrix operator * (const SparseMatrix&,
-                                       const ComplexMatrix&);
+                                            const ComplexMatrix&);
 extern OCTAVE_API ComplexMatrix operator * (const SparseComplexMatrix&,
-                                       const Matrix&);
+                                            const Matrix&);
 extern OCTAVE_API ComplexMatrix operator * (const SparseComplexMatrix&,
-                                       const ComplexMatrix&);
+                                            const ComplexMatrix&);
 extern OCTAVE_API ComplexMatrix trans_mul (const SparseComplexMatrix&,
-                                       const ComplexMatrix&);
+                                           const ComplexMatrix&);
 extern OCTAVE_API ComplexMatrix herm_mul (const SparseComplexMatrix&,
-                                       const ComplexMatrix&);
+                                          const ComplexMatrix&);
 
-extern OCTAVE_API SparseComplexMatrix operator * (const DiagMatrix&, const SparseComplexMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, const DiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const DiagMatrix&,
+                                                  const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&,
+                                                  const DiagMatrix&);
 
-extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&, const SparseMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&, const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&,
+                                                  const SparseMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&,
+                                                  const ComplexDiagMatrix&);
 
-extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&, const SparseComplexMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const ComplexDiagMatrix&,
+                                                  const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&,
+                                                  const ComplexDiagMatrix&);
 
-extern OCTAVE_API SparseComplexMatrix operator + (const ComplexDiagMatrix&, const SparseMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator + (const DiagMatrix&, const SparseComplexMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator + (const ComplexDiagMatrix&, const SparseComplexMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator + (const SparseMatrix&, const ComplexDiagMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator + (const SparseComplexMatrix&, const DiagMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator + (const SparseComplexMatrix&, const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const ComplexDiagMatrix&,
+                                                  const SparseMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const DiagMatrix&,
+                                                  const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const ComplexDiagMatrix&,
+                                                  const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const SparseMatrix&,
+                                                  const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const SparseComplexMatrix&,
+                                                  const DiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator + (const SparseComplexMatrix&,
+                                                  const ComplexDiagMatrix&);
 
-extern OCTAVE_API SparseComplexMatrix operator - (const ComplexDiagMatrix&, const SparseMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator - (const DiagMatrix&, const SparseComplexMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator - (const ComplexDiagMatrix&, const SparseComplexMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator - (const SparseMatrix&, const ComplexDiagMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator - (const SparseComplexMatrix&, const DiagMatrix&);
-extern OCTAVE_API SparseComplexMatrix operator - (const SparseComplexMatrix&, const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const ComplexDiagMatrix&,
+                                                  const SparseMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const DiagMatrix&,
+                                                  const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const ComplexDiagMatrix&,
+                                                  const SparseComplexMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const SparseMatrix&,
+                                                  const ComplexDiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const SparseComplexMatrix&,
+                                                  const DiagMatrix&);
+extern OCTAVE_API SparseComplexMatrix operator - (const SparseComplexMatrix&,
+                                                  const ComplexDiagMatrix&);
 
 extern OCTAVE_API SparseComplexMatrix operator * (const PermMatrix&,
                                                   const SparseComplexMatrix&);
@@ -489,18 +520,18 @@ extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&,
                                                   const PermMatrix&);
 
 extern OCTAVE_API SparseComplexMatrix min (const Complex& c,
-                                const SparseComplexMatrix& m);
+                                           const SparseComplexMatrix& m);
 extern OCTAVE_API SparseComplexMatrix min (const SparseComplexMatrix& m,
-                                const Complex& c);
+                                           const Complex& c);
 extern OCTAVE_API SparseComplexMatrix min (const SparseComplexMatrix& a,
-                                const SparseComplexMatrix& b);
+                                           const SparseComplexMatrix& b);
 
 extern OCTAVE_API SparseComplexMatrix max (const Complex& c,
-                                const SparseComplexMatrix& m);
+                                           const SparseComplexMatrix& m);
 extern OCTAVE_API SparseComplexMatrix max (const SparseComplexMatrix& m,
-                                const Complex& c);
+                                           const Complex& c);
 extern OCTAVE_API SparseComplexMatrix max (const SparseComplexMatrix& a,
-                                const SparseComplexMatrix& b);
+                                           const SparseComplexMatrix& b);
 
 SPARSE_SMS_CMP_OP_DECLS (SparseComplexMatrix, Complex, OCTAVE_API)
 SPARSE_SMS_BOOL_OP_DECLS (SparseComplexMatrix, Complex, OCTAVE_API)

@@ -137,7 +137,7 @@ gripe_invalid_index (void)
 #endif
 }
 
-// FIXME -- the following is a common error message to resize,
+// FIXME: the following is a common error message to resize,
 // regardless of whether it's called from assign or elsewhere.  It
 // seems OK to me, but eventually the gripe can be specialized.
 // Anyway, propagating various error messages into procedure is, IMHO,

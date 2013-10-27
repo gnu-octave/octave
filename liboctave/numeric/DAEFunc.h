@@ -56,35 +56,35 @@ public:
     : fun (a.fun), jac (a.jac), reset (a.reset) { }
 
   DAEFunc& operator = (const DAEFunc& a)
-    {
-      if (this != &a)
-        {
-          fun = a.fun;
-          jac = a.jac;
-          reset = a.reset;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        fun = a.fun;
+        jac = a.jac;
+        reset = a.reset;
+      }
+    return *this;
+  }
 
   virtual ~DAEFunc (void) { }
 
   DAERHSFunc function (void) const { return fun; }
 
   DAEFunc& set_function (DAERHSFunc f)
-    {
-      fun = f;
-      reset = true;
-      return *this;
-    }
+  {
+    fun = f;
+    reset = true;
+    return *this;
+  }
 
   DAEJacFunc jacobian_function (void) const { return jac; }
 
   DAEFunc& set_jacobian_function (DAEJacFunc j)
-    {
-      jac = j;
-      reset = true;
-      return *this;
-    }
+  {
+    jac = j;
+    reset = true;
+    return *this;
+  }
 
 protected:
 

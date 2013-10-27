@@ -224,7 +224,7 @@ gnu_readline::gnu_readline ()
     quoting_function (0), dequoting_function (0),
     char_is_quoted_function (0), user_accept_line_function (0)
 {
-  // FIXME -- need interface to rl_add_defun, rl_initialize, and
+  // FIXME: need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
 
   std::string term = octave_env::getenv ("TERM");
@@ -1060,7 +1060,7 @@ FILE *
 command_editor::get_input_stream (void)
 {
   return (instance_ok ())
-    ? instance->do_get_input_stream () : 0;
+         ? instance->do_get_input_stream () : 0;
 }
 
 void
@@ -1074,7 +1074,7 @@ FILE *
 command_editor::get_output_stream (void)
 {
   return (instance_ok ())
-    ? instance->do_get_output_stream () : 0;
+         ? instance->do_get_output_stream () : 0;
 }
 
 void
@@ -1088,14 +1088,14 @@ int
 command_editor::terminal_rows (void)
 {
   return (instance_ok ())
-    ? instance->do_terminal_rows () : -1;
+         ? instance->do_terminal_rows () : -1;
 }
 
 int
 command_editor::terminal_cols (void)
 {
   return (instance_ok ())
-    ? instance->do_terminal_cols () : -1;
+         ? instance->do_terminal_cols () : -1;
 }
 
 void
@@ -1116,14 +1116,14 @@ std::string
 command_editor::decode_prompt_string (const std::string& s)
 {
   return (instance_ok ())
-    ? instance->do_decode_prompt_string (s) : std::string ();
+         ? instance->do_decode_prompt_string (s) : std::string ();
 }
 
 int
 command_editor::current_command_number (void)
 {
   return (instance_ok ())
-    ? instance->command_number : 0;
+         ? instance->command_number : 0;
 }
 
 void
@@ -1235,42 +1235,42 @@ command_editor::completion_fcn
 command_editor::get_completion_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_completion_function () : 0;
+         ? instance->do_get_completion_function () : 0;
 }
 
 command_editor::quoting_fcn
 command_editor::get_quoting_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_quoting_function () : 0;
+         ? instance->do_get_quoting_function () : 0;
 }
 
 command_editor::dequoting_fcn
 command_editor::get_dequoting_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_dequoting_function () : 0;
+         ? instance->do_get_dequoting_function () : 0;
 }
 
 command_editor::char_is_quoted_fcn
 command_editor::get_char_is_quoted_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_char_is_quoted_function () : 0;
+         ? instance->do_get_char_is_quoted_function () : 0;
 }
 
 command_editor::user_accept_line_fcn
 command_editor::get_user_accept_line_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_user_accept_line_function () : 0;
+         ? instance->do_get_user_accept_line_function () : 0;
 }
 
 string_vector
 command_editor::generate_filename_completions (const std::string& text)
 {
   return (instance_ok ())
-    ? instance->do_generate_filename_completions (text) : string_vector ();
+         ? instance->do_generate_filename_completions (text) : string_vector ();
 }
 
 std::string
@@ -1436,14 +1436,14 @@ bool
 command_editor::filename_completion_desired (bool arg)
 {
   return (instance_ok ())
-    ? instance->do_filename_completion_desired (arg) : false;
+         ? instance->do_filename_completion_desired (arg) : false;
 }
 
 bool
 command_editor::filename_quoting_desired (bool arg)
 {
   return (instance_ok ())
-    ? instance->do_filename_quoting_desired (arg) : false;
+         ? instance->do_filename_quoting_desired (arg) : false;
 }
 
 bool

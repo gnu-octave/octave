@@ -248,7 +248,7 @@ octave_read_fp_value (std::istream& is)
 {
   T val = 0.0;
 
-  // FIXME -- resetting stream position is likely to fail unless we are
+  // FIXME: resetting stream position is likely to fail unless we are
   // reading from a file.
   std::ios::streampos pos = is.tellg ();
 

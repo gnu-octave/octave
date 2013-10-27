@@ -42,15 +42,15 @@ public:
   FloatQRP (const FloatQRP& a) : FloatQR (a), p (a.p) { }
 
   FloatQRP& operator = (const FloatQRP& a)
-    {
-      if (this != &a)
-        {
-          FloatQR::operator = (a);
-          p = a.p;
-        }
+  {
+    if (this != &a)
+      {
+        FloatQR::operator = (a);
+        p = a.p;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~FloatQRP (void) { }
 

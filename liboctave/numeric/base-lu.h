@@ -46,15 +46,15 @@ public:
            const PermMatrix& p);
 
   base_lu& operator = (const base_lu& a)
-    {
-      if (this != &a)
-        {
-          a_fact = a.a_fact;
-          l_fact = a.l_fact;
-          ipvt = a.ipvt;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        a_fact = a.a_fact;
+        l_fact = a.l_fact;
+        ipvt = a.ipvt;
+      }
+    return *this;
+  }
 
   virtual ~base_lu (void) { }
 

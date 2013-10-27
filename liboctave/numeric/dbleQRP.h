@@ -42,15 +42,15 @@ public:
   QRP (const QRP& a) : QR (a), p (a.p) { }
 
   QRP& operator = (const QRP& a)
-    {
-      if (this != &a)
-        {
-          QR::operator = (a);
-          p = a.p;
-        }
+  {
+    if (this != &a)
+      {
+        QR::operator = (a);
+        p = a.p;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~QRP (void) { }
 

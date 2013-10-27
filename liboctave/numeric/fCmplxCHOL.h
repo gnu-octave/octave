@@ -39,30 +39,30 @@ public:
 
   FloatComplexCHOL (const FloatComplexMatrix& a, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      init (a, calc_cond);
-    }
+  {
+    init (a, calc_cond);
+  }
 
   FloatComplexCHOL (const FloatComplexMatrix& a, octave_idx_type& info,
                     bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      info = init (a, calc_cond);
-    }
+  {
+    info = init (a, calc_cond);
+  }
 
   FloatComplexCHOL (const FloatComplexCHOL& a)
     : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   FloatComplexCHOL& operator = (const FloatComplexCHOL& a)
-    {
-      if (this != &a)
-        {
-          chol_mat = a.chol_mat;
-          xrcond = a.xrcond;
-        }
+  {
+    if (this != &a)
+      {
+        chol_mat = a.chol_mat;
+        xrcond = a.xrcond;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   FloatComplexMatrix chol_matrix (void) const { return chol_mat; }
 

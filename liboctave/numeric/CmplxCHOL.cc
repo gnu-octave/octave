@@ -338,7 +338,8 @@ ComplexCHOL::downdate (const ComplexColumnVector& u)
       else
         {
           info = init (chol_mat.hermitian () * chol_mat
-                       - ComplexMatrix (u) * ComplexMatrix (u).hermitian (), false);
+                       - ComplexMatrix (u) * ComplexMatrix (u).hermitian (),
+                       false);
           if (info) info = 1;
         }
     }

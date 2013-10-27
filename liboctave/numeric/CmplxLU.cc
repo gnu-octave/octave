@@ -85,7 +85,8 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
 #ifdef HAVE_QRUPDATE_LUU
 
-void ComplexLU::update (const ComplexColumnVector& u, const ComplexColumnVector& v)
+void ComplexLU::update (const ComplexColumnVector& u,
+                        const ComplexColumnVector& v)
 {
   if (packed ())
     unpack ();
@@ -124,7 +125,8 @@ void ComplexLU::update (const ComplexMatrix& u, const ComplexMatrix& v)
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
-          F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+          F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (),
+                                     m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec ()));
         }
     }
@@ -132,7 +134,8 @@ void ComplexLU::update (const ComplexMatrix& u, const ComplexMatrix& v)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 }
 
-void ComplexLU::update_piv (const ComplexColumnVector& u, const ComplexColumnVector& v)
+void ComplexLU::update_piv (const ComplexColumnVector& u,
+                            const ComplexColumnVector& v)
 {
   if (packed ())
     unpack ();
@@ -149,8 +152,10 @@ void ComplexLU::update_piv (const ComplexColumnVector& u, const ComplexColumnVec
       ComplexColumnVector utmp = u, vtmp = v;
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                                   ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+      F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (),
+                                   m, r.fortran_vec (), k,
+                                   ipvt.fortran_vec (),
+                                   utmp.data (), vtmp.data (), w));
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
   else
@@ -176,8 +181,10 @@ void ComplexLU::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
           ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
-          F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                                       ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+          F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (),
+                                       m, r.fortran_vec (), k,
+                                       ipvt.fortran_vec (),
+                                       utmp.data (), vtmp.data (), w));
         }
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
@@ -189,22 +196,27 @@ void ComplexLU::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
 
 void ComplexLU::update (const ComplexColumnVector&, const ComplexColumnVector&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
 void ComplexLU::update (const ComplexMatrix&, const ComplexMatrix&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
-void ComplexLU::update_piv (const ComplexColumnVector&, const ComplexColumnVector&)
+void ComplexLU::update_piv (const ComplexColumnVector&,
+                            const ComplexColumnVector&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
 void ComplexLU::update_piv (const ComplexMatrix&, const ComplexMatrix&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
 #endif

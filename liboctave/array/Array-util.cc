@@ -247,7 +247,7 @@ conv_to_array (const idx_vector *tmp, const octave_idx_type len)
   Array<idx_vector> retval (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
-      retval(i) = tmp[i];
+    retval(i) = tmp[i];
 
   return retval;
 }
@@ -403,8 +403,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   for (octave_idx_type i = 0; i < idx; i++)
     increment_index (retval, dims);
 
-  // FIXME -- the solution using increment_index is not
-  // efficient.
+  // FIXME: the solution using increment_index is not efficient.
 
 #if 0
   octave_idx_type var = 1;
@@ -432,7 +431,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
   bool all_colons = true;
   for (int i = 0; i < ial; i++)
     {
-      // FIXME -- should we check for length() instead?
+      // FIXME: should we check for length() instead?
       scalar[i] = ia(i).is_scalar ();
       colon[i] = ia(i).is_colon ();
       if (! scalar[i]) nonsc++;

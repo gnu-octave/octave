@@ -49,14 +49,14 @@ public:
   base_qr (const base_qr& a) : q (a.q), r (a.r) { }
 
   base_qr& operator = (const base_qr& a)
-    {
-      if (this != &a)
-        {
-          q = a.q;
-          r = a.r;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        q = a.q;
+        r = a.r;
+      }
+    return *this;
+  }
 
   virtual ~base_qr (void) { }
 

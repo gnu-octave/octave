@@ -46,20 +46,22 @@ public:
     : base_lu <FloatComplexMatrix> (l, u, p) { }
 
   FloatComplexLU& operator = (const FloatComplexLU& a)
-    {
-      if (this != &a)
-        base_lu <FloatComplexMatrix> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <FloatComplexMatrix> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~FloatComplexLU (void) { }
 
-  void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+  void update (const FloatComplexColumnVector& u,
+               const FloatComplexColumnVector& v);
 
   void update (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 
-  void update_piv (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+  void update_piv (const FloatComplexColumnVector& u,
+                   const FloatComplexColumnVector& v);
 
   void update_piv (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 };

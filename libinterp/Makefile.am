@@ -120,6 +120,7 @@ nodist_octinclude_HEADERS = \
   corefcn/defaults.h \
   corefcn/graphics.h \
   oct-conf.h \
+  options-usage.h \
   version.h
 
 DIST_SRC = \

@@ -89,6 +89,79 @@
     </message>
 </context>
 <context>
+    <name>QsciLexerBash</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Parameter expansion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QsciLexerBatch</name>
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
@@ -1503,12 +1576,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+162"/>
+        <location filename="../src/main-window.cc" line="+163"/>
         <source>Load Workspace</source>
         <translation type="unfinished">Загрузіць прастору зменных</translation>
     </message>
     <message>
-        <location line="+420"/>
+        <location line="+435"/>
         <location line="+847"/>
         <source>About Octave</source>
         <translation type="unfinished">Пра Octave</translation>
@@ -1574,13 +1647,23 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1011"/>
-        <location line="+931"/>
+        <location line="-1026"/>
+        <location line="+946"/>
         <source>Save Workspace As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-809"/>
+        <location line="-826"/>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Octave Release Notes</source>
         <translation type="unfinished"></translation>
     </message>

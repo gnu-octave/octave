@@ -89,6 +89,79 @@
     </message>
 </context>
 <context>
+    <name>QsciLexerBash</name>
+    <message>
+        <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
+        <source>Default</source>
+        <translation type="unfinished">Standaardtekst</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error</source>
+        <translation type="unfinished">Fout</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment</source>
+        <translation type="unfinished">Commentaar</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number</source>
+        <translation type="unfinished">Getal</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Keyword</source>
+        <translation type="unfinished">Trefwoord</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Operator</source>
+        <translation type="unfinished">Operator</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Identifier</source>
+        <translation type="unfinished">Identifier</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Scalar</source>
+        <translation type="unfinished">Skalair getal</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Parameter expansion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Backticks</source>
+        <translation type="unfinished">Backticks</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Here document delimiter</source>
+        <translation type="unfinished">Here document  scheidingsteken</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Single-quoted here document</source>
+        <translation type="unfinished">Here document tussen aanhalingstekens</translation>
+    </message>
+</context>
+<context>
     <name>QsciLexerBatch</name>
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
@@ -884,7 +957,7 @@ is reeds geopend in de editor</translation>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation >Kon bestand
+        <translation>Kon bestand
 %1
 niet openen om in te lezen: %2.</translation>
     </message>
@@ -1525,12 +1598,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+162"/>
+        <location filename="../src/main-window.cc" line="+163"/>
         <source>Load Workspace</source>
         <translation>Werkruimte laden</translation>
     </message>
     <message>
-        <location line="+420"/>
+        <location line="+435"/>
         <location line="+847"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
@@ -1596,13 +1669,23 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Plakken</translation>
     </message>
     <message>
-        <location line="-1011"/>
-        <location line="+931"/>
+        <location line="-1026"/>
+        <location line="+946"/>
         <source>Save Workspace As</source>
         <translation>Bewaar werkruimte als ...</translation>
     </message>
     <message>
-        <location line="-809"/>
+        <location line="-826"/>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Octave Release Notes</source>
         <translation>Octave Release Notes</translation>
     </message>
@@ -2292,7 +2375,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="+5"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI.</source>
-        <translation>Kennelijk gebruik je Octave's grafische interface voor het eerst. Klik op Finish, dan wordt er een standaard configuratiebestand aangemaakt en daarna de Octave GUI gestart.</translation>
+        <translation>Kennelijk gebruik je Octave&apos;s grafische interface voor het eerst. Klik op Finish, dan wordt er een standaard configuratiebestand aangemaakt en daarna de Octave GUI gestart.</translation>
     </message>
     <message>
         <location line="+3"/>

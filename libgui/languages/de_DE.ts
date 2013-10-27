@@ -930,12 +930,12 @@ zu: </translation>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+162"/>
+        <location filename="../src/main-window.cc" line="+163"/>
         <source>Load Workspace</source>
         <translation>Lade Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="+420"/>
+        <location line="+435"/>
         <location line="+847"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
@@ -1001,13 +1001,23 @@ zu: </translation>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="-1011"/>
-        <location line="+931"/>
+        <location line="-1026"/>
+        <location line="+946"/>
         <source>Save Workspace As</source>
         <translation>Arbeitsumgebung speichern als</translation>
     </message>
     <message>
-        <location line="-809"/>
+        <location line="-826"/>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
+        <translation>Die Datei &apos;%1&apos; mit Versionshinweisen ist leer.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
+        <translation>Die Datei &apos;%1&apos; mit Versionshinweisen kann nicht gelesen werden.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Octave Release Notes</source>
         <translation>Versionshinweise zu Octave</translation>
     </message>

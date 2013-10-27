@@ -921,12 +921,12 @@ para:</translation>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+162"/>
+        <location filename="../src/main-window.cc" line="+163"/>
         <source>Load Workspace</source>
         <translation>Carregar ambiente de trabalho</translation>
     </message>
     <message>
-        <location line="+420"/>
+        <location line="+435"/>
         <location line="+847"/>
         <source>About Octave</source>
         <translation>Sobre o Octave</translation>
@@ -992,13 +992,23 @@ para:</translation>
         <translation>Colar</translation>
     </message>
     <message>
-        <location line="-1011"/>
-        <location line="+931"/>
+        <location line="-1026"/>
+        <location line="+946"/>
         <source>Save Workspace As</source>
         <translation>Salvar Ambiente de Trabalho como</translation>
     </message>
     <message>
-        <location line="-809"/>
+        <location line="-826"/>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Octave Release Notes</source>
         <translation type="unfinished"></translation>
     </message>

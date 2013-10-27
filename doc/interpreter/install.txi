@@ -515,14 +515,14 @@ instead of just @command{make}.
 
 @item
 If you encounter errors while compiling Octave, first
-@xref{Installation Problems} for a list of
+see @ref{Installation Problems} for a list of
 known problems and if there is a workaround or solution for
-your problem.  If not,
+your problem.  If not, see
 @ifclear INSTALLONLY
-@pxref{Trouble},
+@ref{Trouble}
 @end ifclear
 @ifset INSTALLONLY
-see the file BUGS
+the file BUGS
 @end ifset
 for information about how to report bugs.
 

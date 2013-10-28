@@ -2,6 +2,7 @@
 #include <octave/oct.h>
 #include <octave/octave.h>
 #include <octave/parse.h>
+#include <octave/toplev.h>
 
 int
 main (void)
@@ -29,6 +30,6 @@ main (void)
               << std::endl;
   else
     std::cout << "invalid\n";
-
-  return 0;
+  
+  clean_up_and_exit (0);
 }

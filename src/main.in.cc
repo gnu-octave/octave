@@ -39,19 +39,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/signal.h>
-#include <fcntl.h>
+// From gnulib, so OK for Windows too.
 #include <unistd.h>
 
-#ifndef OCTAVE_BINDIR
-#define OCTAVE_BINDIR %OCTAVE_BINDIR%
-#endif
+#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
-#ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_PREFIX%
-#endif
+#include <sys/types.h>
+#include <signal.h>
+#include <fcntl.h>
+
+// This is a liboctave header, but it doesn't include any other Octave
+// headers or declare any functions that are defined in liboctave.
+#include "syswait.h"
 
 typedef void sig_handler (int);
 
@@ -230,6 +229,16 @@ have_controlling_terminal (void)
   return retval;
 }
 
+#endif
+
+#ifndef OCTAVE_BINDIR
+#define OCTAVE_BINDIR %OCTAVE_BINDIR%
+#endif
+
+#ifndef OCTAVE_PREFIX
+#define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#endif
+
 // Find the directory where the octave binary is supposed to be
 // installed.
 
@@ -324,12 +333,6 @@ main (int argc, char **argv)
   bool start_gui = true;
   bool cli_only = false;
 
-#if defined (__WIN32__) || defined (__CYGWIN__)
-  bool no_fork_required = true;
-#else
-  bool no_fork_required = false;
-#endif
-
   std::string octave_bindir = get_octave_bindir ();
 
   std::string file = octave_bindir + dir_sep_char + "octave-gui";
@@ -369,8 +372,13 @@ main (int argc, char **argv)
 
   new_argv[k] = 0;
 
-  if (cli_only || no_fork_required
-      || (! start_gui && ! have_controlling_terminal ()))
+#if defined (__WIN32__) || defined (__CYGWIN__)
+
+  retval = octave_exec (file, new_argv);
+
+#else
+
+  if (cli_only || (! start_gui && ! have_controlling_terminal ()))
     {
       retval = octave_exec (file, new_argv);
     }
@@ -408,7 +416,7 @@ main (int argc, char **argv)
 
           while (1)
             {
-              waitpid (gui_pid, &status, 0);
+              WAITPID (gui_pid, &status, 0);
 
               if (WIFEXITED (status))
                 {
@@ -419,6 +427,8 @@ main (int argc, char **argv)
             }
         }
     }
+
+#endif
 
   return retval;
 }

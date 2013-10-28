@@ -69,6 +69,14 @@ octave_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_LINK_OPTS)
 
+if AMCOND_BUILD_GUI
+  OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_GUI
+endif
+
+octave_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  $(OCTAVE_CPPFLGAS)
+
 octave_cli_SOURCES = main-cli.cc
 
 octave_cli_LDADD = \

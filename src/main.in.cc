@@ -42,6 +42,66 @@ along with Octave; see the file COPYING.  If not, see
 // From gnulib, so OK for Windows too.
 #include <unistd.h>
 
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+#define WIN32_LEAN_AND_MEAN
+#include <tlhelp32.h>
+
+static std::string
+w32_get_octave_home (void)
+{
+  std::string retval;
+
+  std::string bin_dir;
+
+  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
+#ifdef TH32CS_SNAPMODULE32
+                                       | TH32CS_SNAPMODULE32
+#endif
+                                       , 0);
+
+  if (h != INVALID_HANDLE_VALUE)
+    {
+      MODULEENTRY32 mod_info;
+
+      ZeroMemory (&mod_info, sizeof (mod_info));
+      mod_info.dwSize = sizeof (mod_info);
+
+      if (Module32First (h, &mod_info))
+        {
+          do
+            {
+              std::string mod_name (mod_info.szModule);
+
+              if (mod_name.find ("octave") != std::string::npos)
+                {
+                  bin_dir = mod_info.szExePath;
+
+                  if (bin_dir[bin_dir.length () - 1] != '\\')
+                    bin_dir.append (1, '\\');
+
+                  break;
+                }
+            }
+          while (Module32Next (h, &mod_info));
+       }
+
+      CloseHandle (h);
+    }
+
+  if (! bin_dir.empty ())
+    {
+      size_t pos = bin_dir.rfind ("\\bin\\");
+
+      if (pos != std::string::npos)
+        retval = bin_dir.substr (0, pos);
+    }
+
+  return retval;
+}
+
+#endif
+
 #if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
 #include <sys/types.h>
@@ -261,6 +321,11 @@ static std::string
 get_octave_home (void)
 {
   std::string oh = octave_getenv ("OCTAVE_HOME");
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+  if (oh.empty ())
+    oh = w32_get_octave_home ();
+#endif
 
   return oh.empty () ? std::string (OCTAVE_PREFIX) : oh;
 }

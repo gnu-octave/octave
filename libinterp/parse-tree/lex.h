@@ -49,47 +49,37 @@ public:
   {
   public:
 
-    symbol_table_context (void)
-      : frame_stack (), init_scope (symbol_table::current_scope ())
-    {
-      push (init_scope);
-    }
+    symbol_table_context (void) : frame_stack () { }
 
     void clear (void)
     {
       while (! frame_stack.empty ())
         frame_stack.pop ();
-
-      push (init_scope);
     }
 
     bool empty (void) const { return frame_stack.empty (); }
 
     void pop (void)
     {
+      if (empty ())
+        panic_impossible ();
+
       frame_stack.pop ();
     }
 
-    void push (symbol_table::scope_id scope)
+    void push (symbol_table::scope_id scope = symbol_table::current_scope ())
     {
       frame_stack.push (scope);
     }
 
-    void push (void)
-    {
-      push (symbol_table::current_scope ());
-    }
-
     symbol_table::scope_id curr_scope (void) const
     {
-      return frame_stack.top ();
+      return empty () ? symbol_table::current_scope () : frame_stack.top ();
     }
 
   private:
 
     std::stack<symbol_table::scope_id> frame_stack;
-
-    symbol_table::scope_id init_scope;
   };
 
   // Track nesting of square brackets, curly braces, and parentheses.

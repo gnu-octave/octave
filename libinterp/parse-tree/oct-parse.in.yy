@@ -2074,9 +2074,6 @@ octave_base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
 
   symbol_table::scope_id fcn_scope = lexer.symtab_context.curr_scope ();
 
-  if (lexer.symtab_context.empty ())
-    panic_impossible ();
-
   lexer.symtab_context.pop ();
 
   stmt->set_print_flag (false);
@@ -2990,9 +2987,6 @@ octave_base_parser::finish_function (tree_parameter_list *ret_list,
 void
 octave_base_parser::recover_from_parsing_function (void)
 {
-  if (lexer.symtab_context.empty ())
-    panic_impossible ();
-
   lexer.symtab_context.pop ();
 
   if (lexer.reading_fcn_file && curr_fcn_depth == 1

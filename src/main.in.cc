@@ -84,7 +84,7 @@ w32_get_octave_home (void)
                 }
             }
           while (Module32Next (h, &mod_info));
-       }
+        }
 
       CloseHandle (h);
     }

@@ -52,13 +52,13 @@ public:
   octave_class (void)
     : octave_base_value (), map (), c_name (),
       parent_list (), obsolete_copies (0)
-    { }
+  { }
 
   octave_class (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist)
     : octave_base_value (), map (m), c_name (id),
       parent_list (plist), obsolete_copies (0)
-    { }
+  { }
 
   octave_class (const octave_map& m, const std::string& id,
                 const octave_value_list& parents);
@@ -86,10 +86,10 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -134,18 +134,18 @@ public:
   size_t nparents (void) const { return parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    {
-      octave_class retval = octave_class (*this);
-      retval.map = retval.map_value ().reshape (new_dims);
-      return octave_value (new octave_class (retval));
-    }
+  {
+    octave_class retval = octave_class (*this);
+    retval.map = retval.map_value ().reshape (new_dims);
+    return octave_value (new octave_class (retval));
+  }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    {
-      octave_class retval = octave_class (*this);
-      retval.map.resize (dv);
-      return octave_value (new octave_class (retval));
-    }
+  {
+    octave_class retval = octave_class (*this);
+    retval.map.resize (dv);
+    return octave_value (new octave_class (retval));
+  }
 
   bool is_defined (void) const { return true; }
 
@@ -158,10 +158,10 @@ public:
   string_vector map_keys (void) const;
 
   std::list<std::string> parent_class_name_list (void) const
-    { return parent_list; }
+  { return parent_list; }
 
   string_vector parent_class_names (void) const
-    { return string_vector (parent_list); }
+  { return string_vector (parent_list); }
 
   octave_base_value *find_parent_class (const std::string&);
 
@@ -278,8 +278,10 @@ public:
   // A map from class names to lists of fields.
   static std::map<std::string, exemplar_info> exemplar_map;
 
-  typedef std::map<std::string, exemplar_info>::iterator exemplar_iterator;
-  typedef std::map<std::string, exemplar_info>::const_iterator exemplar_const_iterator;
+  typedef std::map<std::string, exemplar_info>::iterator
+    exemplar_iterator;
+  typedef std::map<std::string, exemplar_info>::const_iterator
+    exemplar_const_iterator;
 };
 
 #endif

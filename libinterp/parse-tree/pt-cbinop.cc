@@ -127,7 +127,8 @@ simplify_ldiv_op (tree_expression *&a, tree_expression *&)
 // Possibly contract and/or with negation.
 
 static octave_value::compound_binary_op
-simplify_and_or_op (tree_expression *&a, tree_expression *&b, octave_value::binary_op op)
+simplify_and_or_op (tree_expression *&a, tree_expression *&b,
+                    octave_value::binary_op op)
 {
   octave_value::compound_binary_op retop
     = octave_value::unknown_compound_binary_op;
@@ -185,8 +186,10 @@ maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
     }
 
   tree_binary_expression *ret = (ct == octave_value::unknown_compound_binary_op)
-    ? new tree_binary_expression (a, b, l, c, t)
-    : new tree_compound_binary_expression (a, b, l, c, t, ca, cb, ct);
+                                ? new tree_binary_expression (a, b, l, c, t)
+                                : new tree_compound_binary_expression (a, b, l,
+                                                                       c, t, ca,
+                                                                       cb, ct);
 
   return ret;
 }

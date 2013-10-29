@@ -208,8 +208,7 @@ xpow (const Matrix& a, double b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               Matrix atmp;
               if (btmp < 0)
@@ -473,8 +472,7 @@ xpow (const ComplexMatrix& a, double b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               ComplexMatrix atmp;
               if (btmp < 0)
@@ -621,8 +619,7 @@ xpow (const DiagMatrix& a, const Complex& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //
@@ -1103,8 +1100,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //
@@ -1658,8 +1654,7 @@ xpow (const FloatMatrix& a, float b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               FloatMatrix atmp;
               if (btmp < 0)
@@ -1745,7 +1740,8 @@ xpow (const FloatDiagMatrix& a, float b)
         {
           FloatComplexDiagMatrix r (nr, nc);
           for (octave_idx_type i = 0; i < nc; i++)
-            r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)), b);
+            r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)),
+                                                                b);
           retval = r;
         }
     }
@@ -1911,8 +1907,7 @@ xpow (const FloatComplexMatrix& a, float b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               FloatComplexMatrix atmp;
               if (btmp < 0)
@@ -2058,8 +2053,7 @@ xpow (const FloatDiagMatrix& a, const FloatComplex& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //
@@ -2456,8 +2450,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //

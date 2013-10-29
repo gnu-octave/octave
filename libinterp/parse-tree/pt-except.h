@@ -40,8 +40,8 @@ tree_try_catch_command : public tree_command
 public:
 
   tree_try_catch_command (int l = -1, int c = -1)
-    : tree_command (l, c), try_code (0), catch_code (0), expr_id (0), lead_comm (0),
-      mid_comm (0), trail_comm (0) { }
+    : tree_command (l, c), try_code (0), catch_code (0), expr_id (0),
+      lead_comm (0), mid_comm (0), trail_comm (0) { }
 
   tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
                           tree_identifier *id,

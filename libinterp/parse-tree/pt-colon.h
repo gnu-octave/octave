@@ -55,20 +55,20 @@ public:
       op_increment (inc), save_base (false) { }
 
   ~tree_colon_expression (void)
-    {
-      if (! save_base)
-        delete op_base;
+  {
+    if (! save_base)
+      delete op_base;
 
-      delete op_limit;
-      delete op_increment;
-    }
+    delete op_limit;
+    delete op_increment;
+  }
 
   bool has_magic_end (void) const
-    {
-      return ((op_base && op_base->has_magic_end ())
-              || (op_limit && op_limit->has_magic_end ())
-              || (op_increment && op_increment->has_magic_end ()));
-    }
+  {
+    return ((op_base && op_base->has_magic_end ())
+            || (op_limit && op_limit->has_magic_end ())
+            || (op_increment && op_increment->has_magic_end ()));
+  }
 
   void preserve_base (void) { save_base = true; }
 

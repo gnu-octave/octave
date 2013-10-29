@@ -76,8 +76,10 @@ public:
 
   ~octave_sparse_bool_matrix (void) { }
 
-  octave_base_value *clone (void) const { return new octave_sparse_bool_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_sparse_bool_matrix (); }
+  octave_base_value *clone (void) const
+  { return new octave_sparse_bool_matrix (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_sparse_bool_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
@@ -85,7 +87,7 @@ public:
 
   // FIXME Adapt idx_vector to allow sparse logical indexing without overflow!!
   idx_vector index_vector (void) const
-    { return idx_vector (matrix); }
+  { return idx_vector (matrix); }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }
 
@@ -100,7 +102,7 @@ public:
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 
@@ -123,7 +125,7 @@ public:
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
   SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
-    { return matrix; }
+  { return matrix; }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
@@ -142,10 +144,10 @@ public:
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const
-    {
-      octave_sparse_matrix m (sparse_matrix_value ());
-      return m.map (umap);
-    }
+  {
+    octave_sparse_matrix m (sparse_matrix_value ());
+    return m.map (umap);
+  }
 
 protected:
 

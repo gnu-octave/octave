@@ -232,7 +232,7 @@ octave_user_function::~octave_user_function (void)
   delete jit_info;
 #endif
 
-  // FIXME -- this is really playing with fire.
+  // FIXME: this is really playing with fire.
   symbol_table::erase_scope (local_scope);
 }
 
@@ -423,7 +423,8 @@ octave_user_function::subsref (const std::string& type,
 octave_value_list
 octave_user_function::subsref (const std::string& type,
                                const std::list<octave_value_list>& idx,
-                               int nargout, const std::list<octave_lvalue>* lvalue_list)
+                               int nargout,
+                               const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -450,7 +451,7 @@ octave_user_function::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_builtin::subsref.
 
@@ -691,7 +692,8 @@ octave_user_function::print_code_function_trailer (void)
 void
 octave_user_function::bind_automatic_vars
   (const string_vector& arg_names, int nargin, int nargout,
-   const octave_value_list& va_args, const std::list<octave_lvalue> *lvalue_list)
+   const octave_value_list& va_args,
+   const std::list<octave_lvalue> *lvalue_list)
 {
   if (! arg_names.empty ())
     {
@@ -700,7 +702,8 @@ octave_user_function::bind_automatic_vars
       // which might be redefined in a function.  Keep the old argn name
       // for backward compatibility of functions that use it directly.
 
-      symbol_table::force_assign ("argn", charMatrix (arg_names, Vstring_fill_char));
+      symbol_table::force_assign ("argn",
+                                  charMatrix (arg_names, Vstring_fill_char));
       symbol_table::force_assign (".argn.", Cell (arg_names));
 
       symbol_table::mark_hidden (".argn.");
@@ -741,8 +744,8 @@ octave_user_function::bind_automatic_vars
           // Only assign the hidden variable if black holes actually present.
           Matrix bh (1, nbh);
           octave_idx_type k = 0, l = 0;
-          for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-               p != lvalue_list->end (); p++)
+          for (std::list<octave_lvalue>::const_iterator
+               p = lvalue_list->begin (); p != lvalue_list->end (); p++)
             {
               if (p->is_black_hole ())
                 bh(l++) = k+1;
@@ -784,7 +787,7 @@ octave_user_function::restore_warning_states (void)
 }
 
 DEFUN (nargin, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargin ()\n\
 @deftypefnx {Built-in Function} {} nargin (@var{fcn})\n\
 Within a function, return the number of arguments passed to the function.\n\
@@ -829,7 +832,8 @@ This feature does not work on builtin functions.\n\
             }
           else
             {
-              // Matlab gives up for histc, so maybe it's ok we give up somtimes too.
+              // Matlab gives up for histc,
+              // so maybe it's ok that that we give up somtimes too?
               error ("nargin: nargin information not available for builtin functions");
             }
         }
@@ -850,7 +854,7 @@ This feature does not work on builtin functions.\n\
 }
 
 DEFUN (nargout, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargout ()\n\
 @deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
 Within a function, return the number of values the caller expects to\n\
@@ -940,7 +944,7 @@ At the top level, @code{nargout} with no argument is undefined.\n\
           if (fcn)
             {
               tree_parameter_list *ret_list = fcn->return_list ();
-          
+
               retval = ret_list ? ret_list->length () : 0;
 
               if (fcn->takes_var_return ())
@@ -948,9 +952,10 @@ At the top level, @code{nargout} with no argument is undefined.\n\
             }
           else
             {
-              // JWE said this information is not available (currently, 2011-03-10)
+              // JWE said this information is not available (2011-03-10)
               // without making intrusive changes to Octave.
-              // Matlab gives up for histc, so maybe it's ok we give up somtimes too.
+              // Matlab gives up for histc,
+              // so maybe it's ok that we give up somtimes too?
               error ("nargout: nargout information not available for builtin functions.");
             }
         }
@@ -976,7 +981,7 @@ At the top level, @code{nargout} with no argument is undefined.\n\
 }
 
 DEFUN (optimize_subsasgn_calls, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
@@ -1013,7 +1018,7 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 }
 
 DEFUN (isargout, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isargout (@var{k})\n\
 Within a function, return a logical value indicating whether the argument\n\
 @var{k} will be assigned on output to a variable.  If the result is false,\n\
@@ -1060,7 +1065,9 @@ element-by-element and a logical array is returned.  At the top level,\n\
               if (! error_state)
                 {
                   boolNDArray r (ka.dims ());
-                  for (octave_idx_type i = 0; i < ka.numel () && ! error_state; i++)
+                  for (octave_idx_type i = 0;
+                       i < ka.numel () && ! error_state;
+                       i++)
                     r(i) = isargout1 (nargout1, ignored, ka(i));
 
                   retval = r;

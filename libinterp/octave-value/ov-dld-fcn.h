@@ -69,12 +69,12 @@ public:
   bool is_dld_function (void) const { return true; }
 
   static octave_dld_function* create (octave_builtin::fcn ff,
-      const octave_shlib& shl,
-      const std::string& nm = std::string (),
-      const std::string& ds = std::string ());
+                                      const octave_shlib& shl,
+                                      const std::string& nm = std::string (),
+                                      const std::string& ds = std::string ());
 
   octave_shlib get_shlib (void) const
-    { return sh_lib; }
+  { return sh_lib; }
 
 private:
 

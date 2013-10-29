@@ -53,7 +53,7 @@ size_t DisplayBitsPerPixel (CGDirectDisplayID display)
     return 32;
   else if (CFStringCompare (pixelEncoding, CFSTR (IO16BitDirectPixels), 0) == 0)
     return 16;
-  else 
+  else
     return 8;
 }
 #endif

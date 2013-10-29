@@ -210,7 +210,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
                   c = is.peek ();
                 }
               else
-                is.setstate (std::ios::failbit); // indicate that read has failed.
+                is.setstate (std::ios::failbit); // indicate read has failed.
             }
           else if (is_imag_unit (c))
             {
@@ -294,7 +294,7 @@ str2double1 (const std::string& str_arg)
 }
 
 DEFUN (str2double, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} str2double (@var{s})\n\
 Convert a string to a real or complex number.\n\
 \n\
@@ -366,15 +366,15 @@ risk of using @code{eval} on unknown data.\n\
       const Cell cell = args(0).cell_value ();
 
       if (! error_state)
-      {
-        ComplexNDArray output (cell.dims (), octave_NaN);
-        for (octave_idx_type i = 0; i < cell.numel (); i++)
         {
-          if (cell(i).is_string ())
-            output(i) = str2double1 (cell(i).string_value ());
+          ComplexNDArray output (cell.dims (), octave_NaN);
+          for (octave_idx_type i = 0; i < cell.numel (); i++)
+            {
+              if (cell(i).is_string ())
+                output(i) = str2double1 (cell(i).string_value ());
+            }
+          retval = output;
         }
-        retval = output;
-      }
     }
   else
     retval = Matrix (1, 1, octave_NaN);

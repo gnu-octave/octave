@@ -132,7 +132,7 @@ DEFCONV (sparse_matrix_conv, complex, sparse_matrix)
   CAST_CONV_ARG (const octave_complex&);
 
   return new octave_sparse_matrix
-    (SparseMatrix (v.matrix_value ()));
+         (SparseMatrix (v.matrix_value ()));
 }
 
 void

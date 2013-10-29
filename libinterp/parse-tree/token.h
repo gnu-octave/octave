@@ -33,34 +33,34 @@ token
 public:
 
   enum token_type
-    {
-      generic_token,
-      keyword_token,
-      string_token,
-      double_token,
-      ettype_token,
-      sym_rec_token,
-      scls_rec_token,
-      meta_rec_token
-    };
+  {
+    generic_token,
+    keyword_token,
+    string_token,
+    double_token,
+    ettype_token,
+    sym_rec_token,
+    scls_rec_token,
+    meta_rec_token
+  };
 
   enum end_tok_type
-    {
-      simple_end,
-      classdef_end,
-      enumeration_end,
-      events_end,
-      for_end,
-      function_end,
-      if_end,
-      methods_end,
-      parfor_end,
-      properties_end,
-      switch_end,
-      while_end,
-      try_catch_end,
-      unwind_protect_end
-    };
+  {
+    simple_end,
+    classdef_end,
+    enumeration_end,
+    events_end,
+    for_end,
+    function_end,
+    if_end,
+    methods_end,
+    parfor_end,
+    properties_end,
+    switch_end,
+    while_end,
+    try_catch_end,
+    unwind_protect_end
+  };
 
   token (int tv, int l = -1, int c = -1);
   token (int tv, bool is_keyword, int l = -1, int c = -1);
@@ -130,23 +130,23 @@ private:
   int tok_val;
   token_type type_tag;
   union
+  {
+    std::string *str;
+    double num;
+    end_tok_type et;
+    symbol_table::symbol_record *sr;
+    struct
     {
-      std::string *str;
-      double num;
-      end_tok_type et;
-      symbol_table::symbol_record *sr;
-      struct
-        {
-          symbol_table::symbol_record *mr;
-          symbol_table::symbol_record *cr;
-          symbol_table::symbol_record *pr;
-        } sc;
-      struct
-        {
-          symbol_table::symbol_record *cr;
-          symbol_table::symbol_record *pr;
-        } mc;
-    };
+      symbol_table::symbol_record *mr;
+      symbol_table::symbol_record *cr;
+      symbol_table::symbol_record *pr;
+    } sc;
+    struct
+    {
+      symbol_table::symbol_record *cr;
+      symbol_table::symbol_record *pr;
+    } mc;
+  };
   std::string orig_text;
 };
 

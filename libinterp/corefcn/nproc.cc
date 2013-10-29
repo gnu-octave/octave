@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "nproc.h"
 
 DEFUN (nproc, args, nargout,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nproc ()\n\
 @deftypefnx {Built-in Function} {} nproc (@var{query})\n\
 Return the current number of available processors.\n\

@@ -24,26 +24,26 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_ls_mat5_h 1
 
 enum mat5_data_type
-  {
-    miINT8 = 1,                 // 8 bit signed
-    miUINT8,                    // 8 bit unsigned
-    miINT16,                    // 16 bit signed
-    miUINT16,                   // 16 bit unsigned
-    miINT32,                    // 32 bit signed
-    miUINT32,                   // 32 bit unsigned
-    miSINGLE,                   // IEEE 754 single precision float
-    miRESERVE1,
-    miDOUBLE,                   // IEEE 754 double precision float
-    miRESERVE2,
-    miRESERVE3,
-    miINT64,                    // 64 bit signed
-    miUINT64,                   // 64 bit unsigned
-    miMATRIX,                   // MATLAB array
-    miCOMPRESSED,               // Compressed data
-    miUTF8,                     // Unicode UTF-8 Encoded Character Data
-    miUTF16,                    // Unicode UTF-16 Encoded Character Data
-    miUTF32                     // Unicode UTF-32 Encoded Character Data
-  };
+{
+  miINT8 = 1,                 // 8 bit signed
+  miUINT8,                    // 8 bit unsigned
+  miINT16,                    // 16 bit signed
+  miUINT16,                   // 16 bit unsigned
+  miINT32,                    // 32 bit signed
+  miUINT32,                   // 32 bit unsigned
+  miSINGLE,                   // IEEE 754 single precision float
+  miRESERVE1,
+  miDOUBLE,                   // IEEE 754 double precision float
+  miRESERVE2,
+  miRESERVE3,
+  miINT64,                    // 64 bit signed
+  miUINT64,                   // 64 bit unsigned
+  miMATRIX,                   // MATLAB array
+  miCOMPRESSED,               // Compressed data
+  miUTF8,                     // Unicode UTF-8 Encoded Character Data
+  miUTF16,                    // Unicode UTF-16 Encoded Character Data
+  miUTF32                     // Unicode UTF-32 Encoded Character Data
+};
 
 extern int
 read_mat5_binary_file_header (std::istream& is, bool& swap,

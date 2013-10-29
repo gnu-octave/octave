@@ -63,7 +63,7 @@ public:
     : octave_base_value (), matrix (m.matrix),
       typ (m.typ ? new MatrixType (*m.typ) : 0),
       idx_cache (m.idx_cache ? new idx_vector (*m.idx_cache) : 0)
-    { }
+  { }
 
   ~octave_base_matrix (void) { clear_cached_info (); }
 
@@ -80,7 +80,7 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
-    { return subsref (type, idx); }
+  { return subsref (type, idx); }
 
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,
@@ -90,7 +90,7 @@ public:
                             bool resize_ok = false);
 
   octave_value_list do_multi_index_op (int, const octave_value_list& idx)
-    { return do_index_op (idx); }
+  { return do_index_op (idx); }
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
@@ -107,10 +107,10 @@ public:
   octave_idx_type nnz (void) const { return matrix.nnz (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return MT (matrix.reshape (new_dims)); }
+  { return MT (matrix.reshape (new_dims)); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return MT (matrix.permute (vec, inv)); }
+  { return MT (matrix.permute (vec, inv)); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -121,25 +121,25 @@ public:
   MatrixType matrix_type (const MatrixType& _typ) const;
 
   octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k)); }
+  { return octave_value (matrix.diag (k)); }
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const
-    { return octave_value (matrix.diag (m, n)); }
+  { return octave_value (matrix.diag (m, n)); }
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (dim, mode)); }
+  { return octave_value (matrix.sort (dim, mode)); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (sidx, dim, mode)); }
+  { return octave_value (matrix.sort (sidx, dim, mode)); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return matrix.is_sorted (mode); }
+  { return matrix.is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
-    { return matrix.sort_rows_idx (mode); }
+  { return matrix.sort_rows_idx (mode); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-    { return matrix.is_sorted_rows (mode); }
+  { return matrix.is_sorted_rows (mode); }
 
   bool is_matrix_type (void) const { return true; }
 
@@ -158,15 +158,15 @@ public:
   void print_info (std::ostream& os, const std::string& prefix) const;
 
   MT& matrix_ref (void)
-    {
-      clear_cached_info ();
-      return matrix;
-    }
+  {
+    clear_cached_info ();
+    return matrix;
+  }
 
   const MT& matrix_ref (void) const
-    {
-      return matrix;
-    }
+  {
+    return matrix;
+  }
 
   octave_value
   fast_elem_extract (octave_idx_type n) const;
@@ -179,17 +179,17 @@ protected:
   MT matrix;
 
   idx_vector set_idx_cache (const idx_vector& idx) const
-    {
-      delete idx_cache;
-      idx_cache = idx ? new idx_vector (idx) : 0;
-      return idx;
-    }
+  {
+    delete idx_cache;
+    idx_cache = idx ? new idx_vector (idx) : 0;
+    return idx;
+  }
 
   void clear_cached_info (void) const
-    {
-      delete typ; typ = 0;
-      delete idx_cache; idx_cache = 0;
-    }
+  {
+    delete typ; typ = 0;
+    delete idx_cache; idx_cache = 0;
+  }
 
   mutable MatrixType *typ;
   mutable idx_vector *idx_cache;

@@ -75,18 +75,18 @@ public:
   virtual symbol_table::scope_id scope (void) { return -1; }
 
   virtual octave_time time_parsed (void) const
-    { return octave_time (static_cast<time_t> (0)); }
+  { return octave_time (static_cast<time_t> (0)); }
 
   virtual octave_time time_checked (void) const
-    { return octave_time (static_cast<time_t> (0)); }
+  { return octave_time (static_cast<time_t> (0)); }
 
   virtual bool is_subfunction (void) const { return false; }
 
   virtual bool is_class_constructor (const std::string& = std::string ()) const
-    { return false; }
+  { return false; }
 
   virtual bool is_class_method (const std::string& = std::string ()) const
-    { return false; }
+  { return false; }
 
   virtual bool takes_varargs (void) const { return false; }
 
@@ -106,11 +106,11 @@ public:
   bool is_private_function (void) const { return private_function; }
 
   bool is_private_function_of_class (const std::string& nm) const
-    { return private_function && xdispatch_class == nm; }
+  { return private_function && xdispatch_class == nm; }
 
   virtual bool
   is_anonymous_function_of_class (const std::string& = std::string ()) const
-    { return false; }
+  { return false; }
 
   std::string dir_name (void) const { return my_dir_name; }
 

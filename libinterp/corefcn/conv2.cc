@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
 DEFUN (conv2, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} conv2 (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {} conv2 (@var{v1}, @var{v2}, @var{m})\n\
 @deftypefnx {Built-in Function} {} conv2 (@dots{}, @var{shape})\n\
@@ -72,8 +72,8 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 
   if (nargin < 2)
     {
-     print_usage ();
-     return retval;
+      print_usage ();
+      return retval;
     }
   else if (nargin == 3)
     {
@@ -109,7 +109,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 
   if (separable)
     {
-     // If user requests separable, check first two params are vectors
+      // If user requests separable, check first two params are vectors
 
       if (! (1 == args(0).rows () || 1 == args(0).columns ())
           || ! (1 == args(1).rows () || 1 == args(1).columns ()))
@@ -291,7 +291,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 */
 
 DEFUN (convn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} convn (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
 Return the n-D convolution of @var{A} and @var{B}.  The size of the result\n\
@@ -323,8 +323,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 
   if (nargin < 2 || nargin > 3)
     {
-     print_usage ();
-     return retval;
+      print_usage ();
+      return retval;
     }
   else if (nargin == 3)
     {

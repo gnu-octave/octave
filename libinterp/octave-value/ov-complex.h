@@ -70,7 +70,7 @@ public:
   // (for A previously undefined), A will be empty instead of a 1x1
   // object.
   octave_base_value *empty_clone (void) const
-    { return new octave_complex_matrix (); }
+  { return new octave_complex_matrix (); }
 
   type_conv_info numeric_demotion_function (void) const;
 
@@ -82,18 +82,17 @@ public:
   // Use this to give a more specific error message
   idx_vector index_vector (void) const
   {
-    error (
-           "attempted to use a complex scalar as an index\n"
+    error ("attempted to use a complex scalar as an index\n"
            "       (forgot to initialize i or j?)");
     return idx_vector ();
   }
 
   octave_value any (int = 0) const
-    {
-      return (scalar != Complex (0, 0)
-              && ! (lo_ieee_isnan (std::real (scalar))
-                    || lo_ieee_isnan (std::imag (scalar))));
-    }
+  {
+    return (scalar != Complex (0, 0)
+            && ! (lo_ieee_isnan (std::real (scalar))
+                  || lo_ieee_isnan (std::imag (scalar))));
+  }
 
   builtin_type_t builtin_type (void) const { return btyp_complex; }
 
@@ -110,10 +109,10 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   float float_scalar_value (bool frc_str_conv = false) const
-    { return float_value (frc_str_conv); }
+  { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 
@@ -124,10 +123,10 @@ public:
   FloatNDArray float_array_value (bool = false) const;
 
   SparseMatrix sparse_matrix_value (bool = false) const
-    { return SparseMatrix (matrix_value ()); }
+  { return SparseMatrix (matrix_value ()); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-    { return SparseComplexMatrix (complex_matrix_value ()); }
+  { return SparseComplexMatrix (complex_matrix_value ()); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -187,11 +186,11 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    {
-      // Yes, for compatibility, we drop the imaginary part here.
-      return os.write (array_value (true), block_size, output_type,
-                       skip, flt_fmt);
-    }
+  {
+    // Yes, for compatibility, we drop the imaginary part here.
+    return os.write (array_value (true), block_size, output_type,
+                     skip, flt_fmt);
+  }
 
   mxArray *as_mxArray (void) const;
 

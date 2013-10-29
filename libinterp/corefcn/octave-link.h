@@ -163,10 +163,10 @@ public:
                const std::string& cancel_string)
   {
     return enabled ()
-      ? instance->do_list_dialog (list, mode, width, height,
-                                  initial_value, name, prompt,
-                                  ok_string, cancel_string)
-      : std::pair<std::list<int>, int> ();
+           ? instance->do_list_dialog (list, mode, width, height,
+                                       initial_value, name, prompt,
+                                       ok_string, cancel_string)
+           : std::pair<std::list<int>, int> ();
   }
 
   static std::list<std::string>
@@ -177,8 +177,8 @@ public:
                 const std::list<std::string>& defaults)
   {
     return enabled ()
-      ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
-      : std::list<std::string> ();
+           ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
+           : std::list<std::string> ();
   }
 
   typedef std::list<std::pair<std::string, std::string> > filter_list;
@@ -189,8 +189,9 @@ public:
                const std::string& multimode)
   {
     return enabled ()
-      ? instance->do_file_dialog (filter, title, filename, dirname, multimode)
-      : std::list<std::string> ();
+           ? instance->do_file_dialog (filter, title, filename, dirname,
+                                       multimode)
+           : std::list<std::string> ();
   }
 
 
@@ -199,7 +200,8 @@ public:
                                         bool addpath_option)
   {
     return enabled ()
-      ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option) : 0;
+           ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option)
+           : 0;
   }
 
   static void change_directory (const std::string& dir)
@@ -311,7 +313,7 @@ public:
   show_preferences ()
   {
     if (enabled ())
-      { 
+      {
         instance->do_show_preferences ();
         return true;
       }
@@ -319,17 +321,17 @@ public:
       return false;
   }
 
-  static bool 
+  static bool
   show_doc (const std::string & file)
   {
     if (enabled ())
-      { 
+      {
         instance->do_show_doc (file);
         return true;
       }
     else
       return false;
- 
+
   }
 
 private:

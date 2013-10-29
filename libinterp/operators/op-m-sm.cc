@@ -112,7 +112,7 @@ DEFBINOP (el_ldiv, matrix, sparse_matrix)
   CAST_BINOP_ARGS (const octave_matrix&, const octave_sparse_matrix&);
 
   return octave_value
-    (quotient (v2.sparse_matrix_value (), v1.matrix_value ()));
+         (quotient (v2.sparse_matrix_value (), v1.matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, matrix, sparse_matrix, mx_el_and)

@@ -150,7 +150,9 @@ CONVDECL (complex_to_float_complex)
 {
   CAST_CONV_ARG (const octave_complex&);
 
-  return new octave_float_complex_matrix (FloatComplexMatrix (1, 1, static_cast<FloatComplex>(v.complex_value ())));
+  return new octave_float_complex_matrix (FloatComplexMatrix (1, 1,
+                                          static_cast<FloatComplex>
+                                            (v.complex_value ())));
 }
 
 void
@@ -188,9 +190,11 @@ install_cs_cs_ops (void)
 
   INSTALL_ASSIGNCONV (octave_complex, octave_complex, octave_complex_matrix);
 
-  INSTALL_ASSIGNCONV (octave_complex, octave_null_matrix, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_complex, octave_null_matrix,
+                      octave_complex_matrix);
   INSTALL_ASSIGNCONV (octave_complex, octave_null_str, octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_complex, octave_null_sq_str, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_complex, octave_null_sq_str,
+                      octave_complex_matrix);
 
   INSTALL_CONVOP (octave_complex, octave_float_complex_matrix,
                   complex_to_float_complex);

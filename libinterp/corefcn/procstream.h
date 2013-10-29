@@ -45,7 +45,7 @@ public:
   ~procstreambase (void) { close (); }
 
   void open (const std::string& name, int mode)
-    { open (name.c_str (), mode); }
+  { open (name.c_str (), mode); }
 
   void open (const char *name, int mode);
 
@@ -86,10 +86,10 @@ public:
   ~iprocstream (void) { }
 
   void open (const std::string& name, int mode = std::ios::in)
-    { procstreambase::open (name, mode); }
+  { procstreambase::open (name, mode); }
 
   void open (const char *name, int mode = std::ios::in)
-    { procstreambase::open (name, mode); }
+  { procstreambase::open (name, mode); }
 
 private:
 
@@ -116,10 +116,10 @@ public:
   ~oprocstream (void) { }
 
   void open (const std::string& name, int mode = std::ios::out)
-    { procstreambase::open (name, mode); }
+  { procstreambase::open (name, mode); }
 
   void open (const char *name, int mode = std::ios::out)
-    { procstreambase::open (name, mode); }
+  { procstreambase::open (name, mode); }
 
 private:
 
@@ -146,10 +146,10 @@ public:
   ~procstream (void) { }
 
   void open (const std::string& name, int mode)
-    { procstreambase::open (name, mode); }
+  { procstreambase::open (name, mode); }
 
   void open (const char *name, int mode)
-    { procstreambase::open (name, mode); }
+  { procstreambase::open (name, mode); }
 
 private:
 

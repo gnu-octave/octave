@@ -74,7 +74,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int8_scalar,
                                      "int8 scalar", "int8");
 
 DEFUN (int8, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} int8 (@var{x})\n\
 Convert @var{x} to 8-bit integer type.\n\
 @end deftypefn")

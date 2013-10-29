@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 
 DEFUN (spparms, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} { } spparms ()\n\
 @deftypefnx {Built-in Function} {@var{vals} =} spparms ()\n\
 @deftypefnx {Built-in Function} {[@var{keys}, @var{vals}] =} spparms ()\n\

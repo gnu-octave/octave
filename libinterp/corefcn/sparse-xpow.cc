@@ -216,7 +216,7 @@ xpow (const SparseComplexMatrix& a, double b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
+// FIXME: these functions need to be fixed so that things
 // like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
@@ -342,7 +342,7 @@ elem_xpow (const SparseMatrix& a, double b)
         {
           ComplexMatrix result (nr, nc, Complex (std::pow (0.0, b)));
 
-          // FIXME -- avoid apparent GNU libm bug by
+          // FIXME: avoid apparent GNU libm bug by
           // converting A and B to complex instead of just A.
           Complex btmp (b);
 
@@ -380,7 +380,7 @@ elem_xpow (const SparseMatrix& a, double b)
         {
           octave_quit ();
 
-          // FIXME -- avoid apparent GNU libm bug by
+          // FIXME: avoid apparent GNU libm bug by
           // converting A and B to complex instead of just A.
 
           Complex atmp (a.data (i));
@@ -757,7 +757,8 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
           octave_quit ();
-          result.xelem (a.ridx (i), j) = std::pow (a.data (i), b(a.ridx (i), j));
+          result.xelem (a.ridx (i), j) = std::pow (a.data (i),
+                                                   b(a.ridx (i), j));
         }
     }
   result.maybe_compress (true);

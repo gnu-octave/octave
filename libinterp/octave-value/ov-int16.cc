@@ -74,7 +74,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int16_scalar,
                                      "int16 scalar", "int16");
 
 DEFUN (int16, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} int16 (@var{x})\n\
 Convert @var{x} to 16-bit integer type.\n\
 @end deftypefn")

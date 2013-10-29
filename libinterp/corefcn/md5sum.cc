@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-md5.h"
 
 DEFUN (md5sum, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} md5sum (@var{file})\n\
 @deftypefnx {Built-in Function} {} md5sum (@var{str}, @var{opt})\n\
 Calculate the MD5 sum of the file @var{file}.  If the second parameter\n\

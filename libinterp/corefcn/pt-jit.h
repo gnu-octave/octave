@@ -365,7 +365,7 @@ public:
   llvm::Module *get_module (void) const { return module; }
 
   void optimize (llvm::Function *fn);
- private:
+private:
   tree_jit (void);
 
   static tree_jit& instance (void);

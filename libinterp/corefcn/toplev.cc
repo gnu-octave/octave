@@ -198,7 +198,8 @@ octave_call_stack::do_caller_user_code_column (void) const
 }
 
 size_t
-octave_call_stack::do_num_user_code_frames (octave_idx_type& curr_user_frame) const
+octave_call_stack::do_num_user_code_frames
+  (octave_idx_type& curr_user_frame) const
 {
   size_t retval = 0;
 
@@ -265,7 +266,8 @@ octave_call_stack::do_caller_user_code (size_t nskip) const
 // Use static fields for the best efficiency.
 // NOTE: C++0x will allow these two to be merged into one.
 static const char *bt_fieldnames[] = { "file", "name", "line",
-    "column", "scope", "context", 0 };
+                                       "column", "scope", "context", 0
+                                     };
 static const octave_fields bt_fields (bt_fieldnames);
 
 octave_map
@@ -614,16 +616,14 @@ main_loop (void)
       catch (octave_execution_exception)
         {
           recover_from_exception ();
-          std::cerr
-            << "error: unhandled execution exception -- trying to return to prompt"
-            << std::endl;
+          std::cerr << "error: unhandled execution exception -- trying to return to prompt"
+                    << std::endl;
         }
       catch (std::bad_alloc)
         {
           recover_from_exception ();
-          std::cerr
-            << "error: out of memory -- trying to return to prompt"
-            << std::endl;
+          std::cerr << "error: out of memory -- trying to return to prompt"
+                    << std::endl;
         }
     }
   while (retval == 0);
@@ -674,7 +674,7 @@ do_octave_atexit (void)
 
       OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
-      // FIXME -- is this needed?  Can it cause any trouble?
+      // FIXME: is this needed?  Can it cause any trouble?
       OCTAVE_SAFE_CALL (raw_mode, (0));
 
       OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
@@ -755,7 +755,7 @@ clean_up_and_exit (int retval, bool safe_to_return)
 }
 
 DEFUN (quit, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} exit (@var{status})\n\
 @deftypefnx {Built-in Function} {} quit (@var{status})\n\
 Exit the current Octave session.  If the optional integer value\n\
@@ -799,7 +799,7 @@ Octave's exit status.  The default value is zero.\n\
 DEFALIAS (exit, quit);
 
 DEFUN (warranty, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warranty ()\n\
 Describe the conditions for copying and distributing Octave.\n\
 @end deftypefn")
@@ -905,7 +905,7 @@ run_command_and_return_output (const std::string& cmd_str)
 enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} system (\"@var{string}\")\n\
 @deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output})\n\
 @deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
@@ -1019,7 +1019,7 @@ command shell that is started to run the command.\n\
 
           if (type == et_async)
             {
-              // FIXME -- maybe this should go in sysdep.cc?
+              // FIXME: maybe this should go in sysdep.cc?
 #ifdef HAVE_FORK
               pid_t pid = fork ();
 
@@ -1027,7 +1027,7 @@ command shell that is started to run the command.\n\
                 error ("system: fork failed -- can't create child process");
               else if (pid == 0)
                 {
-                  // FIXME -- should probably replace this
+                  // FIXME: should probably replace this
                   // call with something portable.
 
                   execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
@@ -1122,7 +1122,7 @@ octave_remove_atexit_function (const std::string& fname)
 
 
 DEFUN (atexit, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} atexit (@var{fcn})\n\
 @deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
 Register a function to be called when Octave exits.  For example,\n\
@@ -1202,7 +1202,7 @@ multiple times.\n\
 }
 
 DEFUN (octave_config_info, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} octave_config_info ()\n\
 @deftypefnx {Built-in Function} {} octave_config_info (@var{option})\n\
 Return a structure containing configuration and installation\n\
@@ -1232,186 +1232,186 @@ specified option.\n\
   };
 
   static const conf_info_struct conf_info[] =
-    {
-      { false, "ALL_CFLAGS", OCTAVE_CONF_ALL_CFLAGS },
-      { false, "ALL_CXXFLAGS", OCTAVE_CONF_ALL_CXXFLAGS },
-      { false, "ALL_FFLAGS", OCTAVE_CONF_ALL_FFLAGS },
-      { false, "ALL_LDFLAGS", OCTAVE_CONF_ALL_LDFLAGS },
-      { false, "AMD_CPPFLAGS", OCTAVE_CONF_AMD_CPPFLAGS },
-      { false, "AMD_LDFLAGS", OCTAVE_CONF_AMD_LDFLAGS },
-      { false, "AMD_LIBS", OCTAVE_CONF_AMD_LIBS },
-      { false, "AR", OCTAVE_CONF_AR },
-      { false, "ARFLAGS", OCTAVE_CONF_ARFLAGS },
-      { false, "ARPACK_CPPFLAGS", OCTAVE_CONF_ARPACK_CPPFLAGS },
-      { false, "ARPACK_LDFLAGS", OCTAVE_CONF_ARPACK_LDFLAGS },
-      { false, "ARPACK_LIBS", OCTAVE_CONF_ARPACK_LIBS },
-      { false, "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS },
-      { false, "CAMD_CPPFLAGS", OCTAVE_CONF_CAMD_CPPFLAGS },
-      { false, "CAMD_LDFLAGS", OCTAVE_CONF_CAMD_LDFLAGS },
-      { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
-      { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
-      { false, "CC", OCTAVE_CONF_CC },
-      // FIXME: CC_VERSION is deprecated.  Remove in version 3.12
-      { false, "CC_VERSION", OCTAVE_CONF_CC_VERSION },
-      { false, "CCOLAMD_CPPFLAGS", OCTAVE_CONF_CCOLAMD_CPPFLAGS },
-      { false, "CCOLAMD_LDFLAGS", OCTAVE_CONF_CCOLAMD_LDFLAGS },
-      { false, "CCOLAMD_LIBS", OCTAVE_CONF_CCOLAMD_LIBS },
-      { false, "CFLAGS", OCTAVE_CONF_CFLAGS },
-      { false, "CHOLMOD_CPPFLAGS", OCTAVE_CONF_CHOLMOD_CPPFLAGS },
-      { false, "CHOLMOD_LDFLAGS", OCTAVE_CONF_CHOLMOD_LDFLAGS },
-      { false, "CHOLMOD_LIBS", OCTAVE_CONF_CHOLMOD_LIBS },
-      { false, "COLAMD_CPPFLAGS", OCTAVE_CONF_COLAMD_CPPFLAGS },
-      { false, "COLAMD_LDFLAGS", OCTAVE_CONF_COLAMD_LDFLAGS },
-      { false, "COLAMD_LIBS", OCTAVE_CONF_COLAMD_LIBS },
-      { false, "CPICFLAG", OCTAVE_CONF_CPICFLAG },
-      { false, "CPPFLAGS", OCTAVE_CONF_CPPFLAGS },
-      { false, "CURL_CPPFLAGS", OCTAVE_CONF_CURL_CPPFLAGS },
-      { false, "CURL_LDFLAGS", OCTAVE_CONF_CURL_LDFLAGS },
-      { false, "CURL_LIBS", OCTAVE_CONF_CURL_LIBS },
-      { false, "CXSPARSE_CPPFLAGS", OCTAVE_CONF_CXSPARSE_CPPFLAGS },
-      { false, "CXSPARSE_LDFLAGS", OCTAVE_CONF_CXSPARSE_LDFLAGS },
-      { false, "CXSPARSE_LIBS", OCTAVE_CONF_CXSPARSE_LIBS },
-      { false, "CXX", OCTAVE_CONF_CXX },
-      { false, "CXXCPP", OCTAVE_CONF_CXXCPP },
-      { false, "CXXFLAGS", OCTAVE_CONF_CXXFLAGS },
-      { false, "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG },
-      // FIXME: CXX_VERSION is deprecated.  Remove in version 3.12
-      { false, "CXX_VERSION", OCTAVE_CONF_CXX_VERSION },
-      { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
-      { false, "DEFS", OCTAVE_CONF_DEFS },
-      { false, "DL_LD", OCTAVE_CONF_DL_LD },
-      { false, "DL_LDFLAGS", OCTAVE_CONF_DL_LDFLAGS },
-      { false, "DL_LIBS", OCTAVE_CONF_DL_LIBS },
-      { false, "GCC_VERSION", OCTAVE_CONF_GCC_VERSION },
-      { false, "GXX_VERSION", OCTAVE_CONF_GXX_VERSION },
-      { false, "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING },
-      { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
-      { false, "F77", OCTAVE_CONF_F77 },
-      { false, "F77_FLOAT_STORE_FLAG", OCTAVE_CONF_F77_FLOAT_STORE_FLAG },
-      { false, "F77_INTEGER_8_FLAG", OCTAVE_CONF_F77_INTEGER_8_FLAG },
-      { false, "FC", OCTAVE_CONF_FC },
-      { false, "FFLAGS", OCTAVE_CONF_FFLAGS },
-      { false, "FFTW3_CPPFLAGS", OCTAVE_CONF_FFTW3_CPPFLAGS },
-      { false, "FFTW3_LDFLAGS", OCTAVE_CONF_FFTW3_LDFLAGS },
-      { false, "FFTW3_LIBS", OCTAVE_CONF_FFTW3_LIBS },
-      { false, "FFTW3F_CPPFLAGS", OCTAVE_CONF_FFTW3F_CPPFLAGS },
-      { false, "FFTW3F_LDFLAGS", OCTAVE_CONF_FFTW3F_LDFLAGS },
-      { false, "FFTW3F_LIBS", OCTAVE_CONF_FFTW3F_LIBS },
-      { false, "FLIBS", OCTAVE_CONF_FLIBS },
-      { false, "FPICFLAG", OCTAVE_CONF_FPICFLAG },
-      { false, "FT2_CFLAGS", OCTAVE_CONF_FT2_CFLAGS },
-      { false, "FT2_LIBS", OCTAVE_CONF_FT2_LIBS },
-      { false, "GLPK_CPPFLAGS", OCTAVE_CONF_GLPK_CPPFLAGS },
-      { false, "GLPK_LDFLAGS", OCTAVE_CONF_GLPK_LDFLAGS },
-      { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
-      { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
-      { false, "GRAPHICS_CFLAGS", OCTAVE_CONF_GRAPHICS_CFLAGS },
-      { false, "GRAPHICS_LIBS", OCTAVE_CONF_GRAPHICS_LIBS },
-      { false, "HDF5_CPPFLAGS", OCTAVE_CONF_HDF5_CPPFLAGS },
-      { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
-      { false, "HDF5_LIBS", OCTAVE_CONF_HDF5_LIBS },
-      { false, "LAPACK_LIBS", OCTAVE_CONF_LAPACK_LIBS },
-      { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },
-      { false, "LD_CXX", OCTAVE_CONF_LD_CXX },
-      { false, "LD_STATIC_FLAG", OCTAVE_CONF_LD_STATIC_FLAG },
-      { false, "LEX", OCTAVE_CONF_LEX },
-      { false, "LEXLIB", OCTAVE_CONF_LEXLIB },
-      { false, "LFLAGS", OCTAVE_CONF_LFLAGS },
-      { false, "LIBEXT", OCTAVE_CONF_LIBEXT },
-      { false, "LIBFLAGS", OCTAVE_CONF_LIBFLAGS },
-      { false, "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE },
-      { false, "LIBOCTINTERP", OCTAVE_CONF_LIBOCTINTERP },
-      { false, "LIBS", OCTAVE_CONF_LIBS },
-      { false, "LLVM_CPPFLAGS", OCTAVE_CONF_LLVM_CPPFLAGS },
-      { false, "LLVM_LDFLAGS", OCTAVE_CONF_LLVM_LDFLAGS },
-      { false, "LLVM_LIBS", OCTAVE_CONF_LLVM_LIBS },
-      { false, "LN_S", OCTAVE_CONF_LN_S },
-      { false, "MAGICK_CPPFLAGS", OCTAVE_CONF_MAGICK_CPPFLAGS },
-      { false, "MAGICK_LDFLAGS", OCTAVE_CONF_MAGICK_LDFLAGS },
-      { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
-      { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
-      { false, "OCTAVE_LINK_DEPS", OCTAVE_CONF_OCTAVE_LINK_DEPS },
-      { false, "OCTAVE_LINK_OPTS", OCTAVE_CONF_OCTAVE_LINK_OPTS },
-      { false, "OCT_LINK_DEPS", OCTAVE_CONF_OCT_LINK_DEPS },
-      { false, "OCT_LINK_OPTS", OCTAVE_CONF_OCT_LINK_OPTS },
-      { false, "OPENGL_LIBS", OCTAVE_CONF_OPENGL_LIBS },
-      { false, "PTHREAD_CFLAGS", OCTAVE_CONF_PTHREAD_CFLAGS },
-      { false, "PTHREAD_LIBS", OCTAVE_CONF_PTHREAD_LIBS },
-      { false, "QHULL_CPPFLAGS", OCTAVE_CONF_QHULL_CPPFLAGS },
-      { false, "QHULL_LDFLAGS", OCTAVE_CONF_QHULL_LDFLAGS },
-      { false, "QHULL_LIBS", OCTAVE_CONF_QHULL_LIBS },
-      { false, "QRUPDATE_CPPFLAGS", OCTAVE_CONF_QRUPDATE_CPPFLAGS },
-      { false, "QRUPDATE_LDFLAGS", OCTAVE_CONF_QRUPDATE_LDFLAGS },
-      { false, "QRUPDATE_LIBS", OCTAVE_CONF_QRUPDATE_LIBS },
-      { false, "QT_CPPFLAGS", OCTAVE_CONF_QT_CPPFLAGS },
-      { false, "QT_LDFLAGS", OCTAVE_CONF_QT_LDFLAGS },
-      { false, "QT_LIBS", OCTAVE_CONF_QT_LIBS },
-      { false, "RANLIB", OCTAVE_CONF_RANLIB },
-      { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
-      { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },
-      { false, "REGEX_LIBS", OCTAVE_CONF_REGEX_LIBS },
-      { false, "SED", OCTAVE_CONF_SED },
-      { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
-      { false, "SHLEXT", OCTAVE_CONF_SHLEXT },
-      { false, "SHLEXT_VER", OCTAVE_CONF_SHLEXT_VER },
-      { false, "SH_LD", OCTAVE_CONF_SH_LD },
-      { false, "SH_LDFLAGS", OCTAVE_CONF_SH_LDFLAGS },
-      { false, "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS },
-      { false, "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS },
-      { false, "TERM_LIBS", OCTAVE_CONF_TERM_LIBS },
-      { false, "UMFPACK_CPPFLAGS", OCTAVE_CONF_UMFPACK_CPPFLAGS },
-      { false, "UMFPACK_LDFLAGS", OCTAVE_CONF_UMFPACK_LDFLAGS },
-      { false, "UMFPACK_LIBS", OCTAVE_CONF_UMFPACK_LIBS },
-      { false, "USE_64_BIT_IDX_T", OCTAVE_CONF_USE_64_BIT_IDX_T },
-      { false, "WARN_CFLAGS", OCTAVE_CONF_WARN_CFLAGS },
-      { false, "WARN_CXXFLAGS", OCTAVE_CONF_WARN_CXXFLAGS },
-      { false, "X11_INCFLAGS", OCTAVE_CONF_X11_INCFLAGS },
-      { false, "X11_LIBS", OCTAVE_CONF_X11_LIBS },
-      { false, "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS },
-      { false, "XTRA_CXXFLAGS", OCTAVE_CONF_XTRA_CXXFLAGS },
-      { false, "YACC", OCTAVE_CONF_YACC },
-      { false, "YFLAGS", OCTAVE_CONF_YFLAGS },
-      { false, "Z_CPPFLAGS", OCTAVE_CONF_Z_CPPFLAGS },
-      { false, "Z_LDFLAGS", OCTAVE_CONF_Z_LDFLAGS },
-      { false, "Z_LIBS", OCTAVE_CONF_Z_LIBS },
-      { false, "api_version", OCTAVE_API_VERSION },
-      { true, "archlibdir", OCTAVE_ARCHLIBDIR },
-      { true, "bindir", OCTAVE_BINDIR },
-      { false, "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
-      { false, "config_opts", OCTAVE_CONF_config_opts },
-      { true, "datadir", OCTAVE_DATADIR },
-      { true, "datarootdir", OCTAVE_DATAROOTDIR },
-      { true, "exec_prefix", OCTAVE_EXEC_PREFIX },
-      { true, "fcnfiledir", OCTAVE_FCNFILEDIR },
-      { true, "imagedir", OCTAVE_IMAGEDIR },
-      { true, "includedir", OCTAVE_INCLUDEDIR },
-      { true, "infodir", OCTAVE_INFODIR },
-      { true, "infofile", OCTAVE_INFOFILE },
-      { true, "libdir", OCTAVE_LIBDIR },
-      { true, "libexecdir", OCTAVE_LIBEXECDIR },
-      { true, "localapiarchlibdir", OCTAVE_LOCALAPIARCHLIBDIR },
-      { true, "localapifcnfiledir", OCTAVE_LOCALAPIFCNFILEDIR },
-      { true, "localapioctfiledir", OCTAVE_LOCALAPIOCTFILEDIR },
-      { true, "localarchlibdir", OCTAVE_LOCALARCHLIBDIR },
-      { true, "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR },
-      { true, "localoctfiledir", OCTAVE_LOCALOCTFILEDIR },
-      { true, "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR },
-      { true, "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR },
-      { true, "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR },
-      { true, "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR },
-      { true, "man1dir", OCTAVE_MAN1DIR },
-      { false, "man1ext", OCTAVE_MAN1EXT },
-      { true, "mandir", OCTAVE_MANDIR },
-      { true, "octfiledir", OCTAVE_OCTFILEDIR },
-      { true, "octetcdir", OCTAVE_OCTETCDIR },
-      { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
-      { true, "octlibdir", OCTAVE_OCTLIBDIR },
-      { true, "octtestsdir", OCTAVE_OCTTESTSDIR },
-      { true, "prefix", OCTAVE_PREFIX },
-      { true, "startupfiledir", OCTAVE_STARTUPFILEDIR },
-      { false, "version", OCTAVE_VERSION },
-      { false, 0, 0 }
-    };
+  {
+    { false, "ALL_CFLAGS", OCTAVE_CONF_ALL_CFLAGS },
+    { false, "ALL_CXXFLAGS", OCTAVE_CONF_ALL_CXXFLAGS },
+    { false, "ALL_FFLAGS", OCTAVE_CONF_ALL_FFLAGS },
+    { false, "ALL_LDFLAGS", OCTAVE_CONF_ALL_LDFLAGS },
+    { false, "AMD_CPPFLAGS", OCTAVE_CONF_AMD_CPPFLAGS },
+    { false, "AMD_LDFLAGS", OCTAVE_CONF_AMD_LDFLAGS },
+    { false, "AMD_LIBS", OCTAVE_CONF_AMD_LIBS },
+    { false, "AR", OCTAVE_CONF_AR },
+    { false, "ARFLAGS", OCTAVE_CONF_ARFLAGS },
+    { false, "ARPACK_CPPFLAGS", OCTAVE_CONF_ARPACK_CPPFLAGS },
+    { false, "ARPACK_LDFLAGS", OCTAVE_CONF_ARPACK_LDFLAGS },
+    { false, "ARPACK_LIBS", OCTAVE_CONF_ARPACK_LIBS },
+    { false, "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS },
+    { false, "CAMD_CPPFLAGS", OCTAVE_CONF_CAMD_CPPFLAGS },
+    { false, "CAMD_LDFLAGS", OCTAVE_CONF_CAMD_LDFLAGS },
+    { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
+    { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
+    { false, "CC", OCTAVE_CONF_CC },
+    // FIXME: CC_VERSION is deprecated.  Remove in version 3.12
+    { false, "CC_VERSION", OCTAVE_CONF_CC_VERSION },
+    { false, "CCOLAMD_CPPFLAGS", OCTAVE_CONF_CCOLAMD_CPPFLAGS },
+    { false, "CCOLAMD_LDFLAGS", OCTAVE_CONF_CCOLAMD_LDFLAGS },
+    { false, "CCOLAMD_LIBS", OCTAVE_CONF_CCOLAMD_LIBS },
+    { false, "CFLAGS", OCTAVE_CONF_CFLAGS },
+    { false, "CHOLMOD_CPPFLAGS", OCTAVE_CONF_CHOLMOD_CPPFLAGS },
+    { false, "CHOLMOD_LDFLAGS", OCTAVE_CONF_CHOLMOD_LDFLAGS },
+    { false, "CHOLMOD_LIBS", OCTAVE_CONF_CHOLMOD_LIBS },
+    { false, "COLAMD_CPPFLAGS", OCTAVE_CONF_COLAMD_CPPFLAGS },
+    { false, "COLAMD_LDFLAGS", OCTAVE_CONF_COLAMD_LDFLAGS },
+    { false, "COLAMD_LIBS", OCTAVE_CONF_COLAMD_LIBS },
+    { false, "CPICFLAG", OCTAVE_CONF_CPICFLAG },
+    { false, "CPPFLAGS", OCTAVE_CONF_CPPFLAGS },
+    { false, "CURL_CPPFLAGS", OCTAVE_CONF_CURL_CPPFLAGS },
+    { false, "CURL_LDFLAGS", OCTAVE_CONF_CURL_LDFLAGS },
+    { false, "CURL_LIBS", OCTAVE_CONF_CURL_LIBS },
+    { false, "CXSPARSE_CPPFLAGS", OCTAVE_CONF_CXSPARSE_CPPFLAGS },
+    { false, "CXSPARSE_LDFLAGS", OCTAVE_CONF_CXSPARSE_LDFLAGS },
+    { false, "CXSPARSE_LIBS", OCTAVE_CONF_CXSPARSE_LIBS },
+    { false, "CXX", OCTAVE_CONF_CXX },
+    { false, "CXXCPP", OCTAVE_CONF_CXXCPP },
+    { false, "CXXFLAGS", OCTAVE_CONF_CXXFLAGS },
+    { false, "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG },
+    // FIXME: CXX_VERSION is deprecated.  Remove in version 3.12
+    { false, "CXX_VERSION", OCTAVE_CONF_CXX_VERSION },
+    { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
+    { false, "DEFS", OCTAVE_CONF_DEFS },
+    { false, "DL_LD", OCTAVE_CONF_DL_LD },
+    { false, "DL_LDFLAGS", OCTAVE_CONF_DL_LDFLAGS },
+    { false, "DL_LIBS", OCTAVE_CONF_DL_LIBS },
+    { false, "GCC_VERSION", OCTAVE_CONF_GCC_VERSION },
+    { false, "GXX_VERSION", OCTAVE_CONF_GXX_VERSION },
+    { false, "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING },
+    { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
+    { false, "F77", OCTAVE_CONF_F77 },
+    { false, "F77_FLOAT_STORE_FLAG", OCTAVE_CONF_F77_FLOAT_STORE_FLAG },
+    { false, "F77_INTEGER_8_FLAG", OCTAVE_CONF_F77_INTEGER_8_FLAG },
+    { false, "FC", OCTAVE_CONF_FC },
+    { false, "FFLAGS", OCTAVE_CONF_FFLAGS },
+    { false, "FFTW3_CPPFLAGS", OCTAVE_CONF_FFTW3_CPPFLAGS },
+    { false, "FFTW3_LDFLAGS", OCTAVE_CONF_FFTW3_LDFLAGS },
+    { false, "FFTW3_LIBS", OCTAVE_CONF_FFTW3_LIBS },
+    { false, "FFTW3F_CPPFLAGS", OCTAVE_CONF_FFTW3F_CPPFLAGS },
+    { false, "FFTW3F_LDFLAGS", OCTAVE_CONF_FFTW3F_LDFLAGS },
+    { false, "FFTW3F_LIBS", OCTAVE_CONF_FFTW3F_LIBS },
+    { false, "FLIBS", OCTAVE_CONF_FLIBS },
+    { false, "FPICFLAG", OCTAVE_CONF_FPICFLAG },
+    { false, "FT2_CFLAGS", OCTAVE_CONF_FT2_CFLAGS },
+    { false, "FT2_LIBS", OCTAVE_CONF_FT2_LIBS },
+    { false, "GLPK_CPPFLAGS", OCTAVE_CONF_GLPK_CPPFLAGS },
+    { false, "GLPK_LDFLAGS", OCTAVE_CONF_GLPK_LDFLAGS },
+    { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
+    { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
+    { false, "GRAPHICS_CFLAGS", OCTAVE_CONF_GRAPHICS_CFLAGS },
+    { false, "GRAPHICS_LIBS", OCTAVE_CONF_GRAPHICS_LIBS },
+    { false, "HDF5_CPPFLAGS", OCTAVE_CONF_HDF5_CPPFLAGS },
+    { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
+    { false, "HDF5_LIBS", OCTAVE_CONF_HDF5_LIBS },
+    { false, "LAPACK_LIBS", OCTAVE_CONF_LAPACK_LIBS },
+    { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },
+    { false, "LD_CXX", OCTAVE_CONF_LD_CXX },
+    { false, "LD_STATIC_FLAG", OCTAVE_CONF_LD_STATIC_FLAG },
+    { false, "LEX", OCTAVE_CONF_LEX },
+    { false, "LEXLIB", OCTAVE_CONF_LEXLIB },
+    { false, "LFLAGS", OCTAVE_CONF_LFLAGS },
+    { false, "LIBEXT", OCTAVE_CONF_LIBEXT },
+    { false, "LIBFLAGS", OCTAVE_CONF_LIBFLAGS },
+    { false, "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE },
+    { false, "LIBOCTINTERP", OCTAVE_CONF_LIBOCTINTERP },
+    { false, "LIBS", OCTAVE_CONF_LIBS },
+    { false, "LLVM_CPPFLAGS", OCTAVE_CONF_LLVM_CPPFLAGS },
+    { false, "LLVM_LDFLAGS", OCTAVE_CONF_LLVM_LDFLAGS },
+    { false, "LLVM_LIBS", OCTAVE_CONF_LLVM_LIBS },
+    { false, "LN_S", OCTAVE_CONF_LN_S },
+    { false, "MAGICK_CPPFLAGS", OCTAVE_CONF_MAGICK_CPPFLAGS },
+    { false, "MAGICK_LDFLAGS", OCTAVE_CONF_MAGICK_LDFLAGS },
+    { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
+    { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
+    { false, "OCTAVE_LINK_DEPS", OCTAVE_CONF_OCTAVE_LINK_DEPS },
+    { false, "OCTAVE_LINK_OPTS", OCTAVE_CONF_OCTAVE_LINK_OPTS },
+    { false, "OCT_LINK_DEPS", OCTAVE_CONF_OCT_LINK_DEPS },
+    { false, "OCT_LINK_OPTS", OCTAVE_CONF_OCT_LINK_OPTS },
+    { false, "OPENGL_LIBS", OCTAVE_CONF_OPENGL_LIBS },
+    { false, "PTHREAD_CFLAGS", OCTAVE_CONF_PTHREAD_CFLAGS },
+    { false, "PTHREAD_LIBS", OCTAVE_CONF_PTHREAD_LIBS },
+    { false, "QHULL_CPPFLAGS", OCTAVE_CONF_QHULL_CPPFLAGS },
+    { false, "QHULL_LDFLAGS", OCTAVE_CONF_QHULL_LDFLAGS },
+    { false, "QHULL_LIBS", OCTAVE_CONF_QHULL_LIBS },
+    { false, "QRUPDATE_CPPFLAGS", OCTAVE_CONF_QRUPDATE_CPPFLAGS },
+    { false, "QRUPDATE_LDFLAGS", OCTAVE_CONF_QRUPDATE_LDFLAGS },
+    { false, "QRUPDATE_LIBS", OCTAVE_CONF_QRUPDATE_LIBS },
+    { false, "QT_CPPFLAGS", OCTAVE_CONF_QT_CPPFLAGS },
+    { false, "QT_LDFLAGS", OCTAVE_CONF_QT_LDFLAGS },
+    { false, "QT_LIBS", OCTAVE_CONF_QT_LIBS },
+    { false, "RANLIB", OCTAVE_CONF_RANLIB },
+    { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
+    { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },
+    { false, "REGEX_LIBS", OCTAVE_CONF_REGEX_LIBS },
+    { false, "SED", OCTAVE_CONF_SED },
+    { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
+    { false, "SHLEXT", OCTAVE_CONF_SHLEXT },
+    { false, "SHLEXT_VER", OCTAVE_CONF_SHLEXT_VER },
+    { false, "SH_LD", OCTAVE_CONF_SH_LD },
+    { false, "SH_LDFLAGS", OCTAVE_CONF_SH_LDFLAGS },
+    { false, "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS },
+    { false, "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS },
+    { false, "TERM_LIBS", OCTAVE_CONF_TERM_LIBS },
+    { false, "UMFPACK_CPPFLAGS", OCTAVE_CONF_UMFPACK_CPPFLAGS },
+    { false, "UMFPACK_LDFLAGS", OCTAVE_CONF_UMFPACK_LDFLAGS },
+    { false, "UMFPACK_LIBS", OCTAVE_CONF_UMFPACK_LIBS },
+    { false, "USE_64_BIT_IDX_T", OCTAVE_CONF_USE_64_BIT_IDX_T },
+    { false, "WARN_CFLAGS", OCTAVE_CONF_WARN_CFLAGS },
+    { false, "WARN_CXXFLAGS", OCTAVE_CONF_WARN_CXXFLAGS },
+    { false, "X11_INCFLAGS", OCTAVE_CONF_X11_INCFLAGS },
+    { false, "X11_LIBS", OCTAVE_CONF_X11_LIBS },
+    { false, "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS },
+    { false, "XTRA_CXXFLAGS", OCTAVE_CONF_XTRA_CXXFLAGS },
+    { false, "YACC", OCTAVE_CONF_YACC },
+    { false, "YFLAGS", OCTAVE_CONF_YFLAGS },
+    { false, "Z_CPPFLAGS", OCTAVE_CONF_Z_CPPFLAGS },
+    { false, "Z_LDFLAGS", OCTAVE_CONF_Z_LDFLAGS },
+    { false, "Z_LIBS", OCTAVE_CONF_Z_LIBS },
+    { false, "api_version", OCTAVE_API_VERSION },
+    { true, "archlibdir", OCTAVE_ARCHLIBDIR },
+    { true, "bindir", OCTAVE_BINDIR },
+    { false, "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
+    { false, "config_opts", OCTAVE_CONF_config_opts },
+    { true, "datadir", OCTAVE_DATADIR },
+    { true, "datarootdir", OCTAVE_DATAROOTDIR },
+    { true, "exec_prefix", OCTAVE_EXEC_PREFIX },
+    { true, "fcnfiledir", OCTAVE_FCNFILEDIR },
+    { true, "imagedir", OCTAVE_IMAGEDIR },
+    { true, "includedir", OCTAVE_INCLUDEDIR },
+    { true, "infodir", OCTAVE_INFODIR },
+    { true, "infofile", OCTAVE_INFOFILE },
+    { true, "libdir", OCTAVE_LIBDIR },
+    { true, "libexecdir", OCTAVE_LIBEXECDIR },
+    { true, "localapiarchlibdir", OCTAVE_LOCALAPIARCHLIBDIR },
+    { true, "localapifcnfiledir", OCTAVE_LOCALAPIFCNFILEDIR },
+    { true, "localapioctfiledir", OCTAVE_LOCALAPIOCTFILEDIR },
+    { true, "localarchlibdir", OCTAVE_LOCALARCHLIBDIR },
+    { true, "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR },
+    { true, "localoctfiledir", OCTAVE_LOCALOCTFILEDIR },
+    { true, "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR },
+    { true, "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR },
+    { true, "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR },
+    { true, "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR },
+    { true, "man1dir", OCTAVE_MAN1DIR },
+    { false, "man1ext", OCTAVE_MAN1EXT },
+    { true, "mandir", OCTAVE_MANDIR },
+    { true, "octfiledir", OCTAVE_OCTFILEDIR },
+    { true, "octetcdir", OCTAVE_OCTETCDIR },
+    { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
+    { true, "octlibdir", OCTAVE_OCTLIBDIR },
+    { true, "octtestsdir", OCTAVE_OCTTESTSDIR },
+    { true, "prefix", OCTAVE_PREFIX },
+    { true, "startupfiledir", OCTAVE_STARTUPFILEDIR },
+    { false, "version", OCTAVE_VERSION },
+    { false, 0, 0 }
+  };
 
   if (! initialized)
     {

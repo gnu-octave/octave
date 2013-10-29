@@ -517,7 +517,7 @@ std::ostream&
 operator<< (std::ostream& os, const jit_range& rng)
 {
   return os << "Range[" << rng.base << ", " << rng.limit << ", " << rng.inc
-            << ", " << rng.nelem << "]";
+         << ", " << rng.nelem << "]";
 }
 
 // -------------------- jit_matrix --------------------
@@ -526,8 +526,8 @@ std::ostream&
 operator<< (std::ostream& os, const jit_matrix& mat)
 {
   return os << "Matrix[" << mat.ref_count << ", " << mat.slice_data << ", "
-            << mat.slice_len << ", " << mat.dimensions << ", "
-            << mat.array << "]";
+         << mat.slice_len << ", " << mat.dimensions << ", "
+         << mat.array << "]";
 }
 
 // -------------------- jit_type --------------------
@@ -718,7 +718,7 @@ jit_function::call (llvm::IRBuilderD& builder,
 #ifdef CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
       llvm::AttrBuilder attr_builder;
       attr_builder.addAttribute(llvm::Attributes::StructRet);
-      llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder); 
+      llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);
       callinst->addAttribute (1, attrs);
 #else
       callinst->addAttribute (1, llvm::Attribute::StructRet);
@@ -814,7 +814,7 @@ jit_operation::~jit_operation (void)
 
 void
 jit_operation::add_overload (const jit_function& func,
-                            const std::vector<jit_type*>& args)
+                             const std::vector<jit_type*>& args)
 {
   if (args.size () >= overloads.size ())
     overloads.resize (args.size () + 1);
@@ -1637,8 +1637,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateBr (done);
 
     builder.SetInsertPoint (normal);
-    llvm::Value *len = builder.CreateExtractValue (mat,
-                                                   llvm::ArrayRef<unsigned> (2));
+    llvm::Value *len
+      = builder.CreateExtractValue (mat, llvm::ArrayRef<unsigned> (2));
     cond = builder.CreateICmpSGT (int_idx, len);
 
 
@@ -1722,8 +1722,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateBr (done);
 
     builder.SetInsertPoint (success);
-    llvm::Value *data = builder.CreateExtractValue (mat,
-                                                    llvm::ArrayRef<unsigned> (1));
+    llvm::Value *data
+      = builder.CreateExtractValue (mat, llvm::ArrayRef<unsigned> (1));
     llvm::Value *gep = builder.CreateInBoundsGEP (data, int_idx);
     builder.CreateStore (value, gep);
     builder.CreateBr (done);
@@ -1923,7 +1923,8 @@ jit_typeinfo::add_print (jit_type *ty, void *fptr)
 {
   std::stringstream name;
   name << "octave_jit_print_" << ty->name ();
-  jit_function fn = create_external (engine, fptr, name.str (), 0, intN (8), ty);
+  jit_function fn = create_external (engine, fptr, name.str (),
+                                     0, intN (8), ty);
   print_fn.add_overload (fn);
 }
 
@@ -2245,7 +2246,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
       octave_builtin *builtin
         = dynamic_cast<octave_builtin *> (ov.internal_rep ());
       return builtin && builtin->to_jit () ? builtin->to_jit ()
-        : unknown_function;
+                                           : unknown_function;
     }
 
   if (ov.is_range ())

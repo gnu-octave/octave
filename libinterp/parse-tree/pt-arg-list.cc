@@ -127,7 +127,7 @@ static int index_position = 0;
 static int num_indices = 0;
 
 DEFCONSTFUN (end, , ,
-  "-*- texinfo -*-\n\
+             "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} end\n\
 The magic index @qcode{\"end\"} refers to the last valid entry in an indexing\n\
 operation.\n\
@@ -314,7 +314,7 @@ tree_argument_list::variable_names (void) const
       if (elt->is_identifier ())
         {
           tree_identifier *id = dynamic_cast<tree_identifier *> (elt);
-      
+
           retval.push_back (id->name ());
         }
       else if (elt->is_index_expression ())

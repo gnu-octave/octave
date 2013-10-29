@@ -82,17 +82,17 @@ DEFBINOP (ldiv, float_scalar, float_complex_matrix)
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, mx_el_lt)
+                    float_complex_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, mx_el_le)
+                    float_complex_array, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, mx_el_eq)
+                    float_complex_array, mx_el_eq)
 DEFNDCMPLXCMPOP_FN (ge, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, mx_el_ge)
+                    float_complex_array, mx_el_ge)
 DEFNDCMPLXCMPOP_FN (gt, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, mx_el_gt)
+                    float_complex_array, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, float_scalar, float_complex_matrix, float_scalar,
-               float_complex_array, mx_el_ne)
+                    float_complex_array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_scalar, float_complex_matrix, float_scalar,
                float_complex_array, *)
@@ -132,7 +132,8 @@ DEFCONV (float_complex_matrix_conv, float_scalar, float_complex_matrix)
 {
   CAST_CONV_ARG (const octave_float_scalar&);
 
-  return new octave_float_complex_matrix (FloatComplexMatrix (v.float_matrix_value ()));
+  return new octave_float_complex_matrix (FloatComplexMatrix
+                                            (v.float_matrix_value ()));
 }
 
 void

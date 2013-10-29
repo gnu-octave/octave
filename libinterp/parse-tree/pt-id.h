@@ -156,12 +156,12 @@ public:
   bool is_black_hole (void) { return true; }
 
   tree_black_hole *dup (void) const
-    { return new tree_black_hole; }
+  { return new tree_black_hole; }
 
   octave_lvalue lvalue (void)
-    {
-      return octave_lvalue (); // black hole lvalue
-    }
+  {
+    return octave_lvalue (); // black hole lvalue
+  }
 };
 
 #endif

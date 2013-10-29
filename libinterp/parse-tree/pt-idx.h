@@ -85,7 +85,8 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  octave_value_list rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
+  octave_value_list rvalue (int nargout,
+                            const std::list<octave_lvalue> *lvalue_list);
 
   octave_lvalue lvalue (void);
 

@@ -518,8 +518,7 @@ tree_checker::visit_try_catch_command (tree_try_catch_command& cmd)
 }
 
 void
-tree_checker::visit_unwind_protect_command
-  (tree_unwind_protect_command& cmd)
+tree_checker::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   tree_statement_list *unwind_protect_code = cmd.body ();
 

@@ -337,15 +337,15 @@ profile_data_accumulator::get_flat (void) const
   else
     {
       static const char *fn[] =
-        {
-          "FunctionName",
-          "TotalTime",
-          "NumCalls",
-          "IsRecursive",
-          "Parents",
-          "Children",
-          0
-        };
+      {
+        "FunctionName",
+        "TotalTime",
+        "NumCalls",
+        "IsRecursive",
+        "Parents",
+        "Children",
+        0
+      };
 
       static octave_map m (dim_vector (0, 1), string_vector (fn));
 
@@ -365,13 +365,13 @@ profile_data_accumulator::get_hierarchical (void) const
   else
     {
       static const char *fn[] =
-        {
-          "Index",
-          "SelfTime",
-          "NumCalls",
-          "Children",
-          0
-        };
+      {
+        "Index",
+        "SelfTime",
+        "NumCalls",
+        "Children",
+        0
+      };
 
       static octave_map m (dim_vector (0, 1), string_vector (fn));
 
@@ -386,7 +386,7 @@ profile_data_accumulator::query_time (void) const
 {
   octave_time now;
 
-  // FIXME -- is this volatile declaration really needed?
+  // FIXME: is this volatile declaration really needed?
   // See bug #34210 for additional details.
   volatile double dnow = now.double_value ();
 
@@ -407,7 +407,7 @@ profile_data_accumulator profiler;
 
 // Enable or disable the profiler data collection.
 DEFUN (__profiler_enable__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} __profiler_enable ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -433,7 +433,7 @@ Undocumented internal function.\n\
 
 // Clear all collected profiling data.
 DEFUN (__profiler_reset__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} __profiler_reset ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -451,7 +451,7 @@ Undocumented internal function.\n\
 
 // Query the timings collected by the profiler.
 DEFUN (__profiler_data__, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} __profiler_data ()\n\
 Undocumented internal function.\n\
 @end deftypefn")

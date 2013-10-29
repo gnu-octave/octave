@@ -224,7 +224,7 @@ octave_range::char_array_value (bool) const
 octave_value
 octave_range::all (int dim) const
 {
-  // FIXME -- this is a potential waste of memory.
+  // FIXME: this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
@@ -234,7 +234,7 @@ octave_range::all (int dim) const
 octave_value
 octave_range::any (int dim) const
 {
-  // FIXME -- this is a potential waste of memory.
+  // FIXME: this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
@@ -244,9 +244,10 @@ octave_range::any (int dim) const
 octave_value
 octave_range::diag (octave_idx_type k) const
 {
-  return (k == 0
-          ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
-          : octave_value (range.diag (k)));
+  return
+    (k == 0
+       ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
+       : octave_value (range.diag (k)));
 }
 
 octave_value
@@ -264,7 +265,7 @@ octave_range::is_true (void) const
 
   if (range.nelem () != 0)
     {
-      // FIXME -- this is a potential waste of memory.
+      // FIXME: this is a potential waste of memory.
 
       Matrix m ((range.matrix_value () . all ()) . all ());
 
@@ -391,7 +392,7 @@ std::string
 octave_range::short_disp (void) const
 {
   std::ostringstream buf;
-  
+
   octave_idx_type len = range.nelem ();
 
   if (len == 0)
@@ -679,7 +680,7 @@ octave_range::as_mxArray (void) const
 }
 
 DEFUN (allow_noninteger_range_as_index, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\

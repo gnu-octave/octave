@@ -291,8 +291,7 @@ generate_struct_completions (const std::string& text,
   return names;
 }
 
-// FIXME -- this will have to be much smarter to work
-// "correctly".
+// FIXME: this will have to be much smarter to work "correctly".
 
 bool
 looks_like_struct (const std::string& text)
@@ -353,7 +352,7 @@ do_isglobal (const octave_value_list& args)
 }
 
 DEFUN (isglobal, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isglobal (@var{name})\n\
 Return true if @var{name} is a globally visible variable.\n\
 For example:\n\
@@ -518,7 +517,7 @@ unique_symbol_name (const std::string& basename)
 }
 
 DEFUN (exist, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
 Return 1 if the name exists as a variable, 2 if the name is an\n\
 absolute file name, an ordinary file in Octave's @code{path}, or (after\n\
@@ -951,13 +950,17 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
           switch (param.modifier)
             {
             case 'l':
-              os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
+              os << std::setiosflags (std::ios::left)
+                 << std::setw (param.parameter_length);
+              param_buf << std::setiosflags (std::ios::left)
+                        << std::setw (param.parameter_length);
               break;
 
             case 'r':
-              os << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
+              os << std::setiosflags (std::ios::right)
+                 << std::setw (param.parameter_length);
+              param_buf << std::setiosflags (std::ios::right)
+                        << std::setw (param.parameter_length);
               break;
 
             case 'c':
@@ -971,8 +974,10 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
               break;
 
             default:
-              os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
+              os << std::setiosflags (std::ios::left)
+                 << std::setw (param.parameter_length);
+              param_buf << std::setiosflags (std::ios::left)
+                        << std::setw (param.parameter_length);
             }
 
           if (param.command == 's' && param.modifier == 'c')
@@ -990,11 +995,13 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
                      << std::setiosflags (std::ios::left)
                      << std::setw (b) << ""
                      << std::resetiosflags (std::ios::left);
-                  param_buf << std::setiosflags (std::ios::left) << std::setw (a)
-                     << "" << std::resetiosflags (std::ios::left) << param.line
-                     << std::setiosflags (std::ios::left)
-                     << std::setw (b) << ""
-                     << std::resetiosflags (std::ios::left);
+                  param_buf << std::setiosflags (std::ios::left)
+                            << std::setw (a)
+                            << "" << std::resetiosflags (std::ios::left)
+                            << param.line
+                            << std::setiosflags (std::ios::left)
+                            << std::setw (b) << ""
+                            << std::resetiosflags (std::ios::left);
                 }
             }
           else
@@ -1019,7 +1026,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   os << param_buf.str ();
 }
 
-// FIXME -- This is a bit of a kluge.  We'd like to just use val.dims()
+// FIXME: This is a bit of a kluge.  We'd like to just use val.dims()
 // and if val is an object, expect that dims will call size if it is
 // overloaded by a user-defined method.  But there are currently some
 // unresolved const issues that prevent that solution from working.
@@ -1088,10 +1095,10 @@ private:
                   if (param.command == 's')
                     {
                       int front = param.first_parameter_length
-                        - dims_str.find ('x');
+                                  - dims_str.find ('x');
                       int back = param.parameter_length
-                        - dims_str.length ()
-                        - front;
+                                 - dims_str.length ()
+                                 - front;
                       front = (front > 0) ? front : 0;
                       back = (back > 0) ? back : 0;
 
@@ -1408,7 +1415,7 @@ public:
 
             idx += cmd.length ();
 
-            // FIXME -- use iostream functions instead of sscanf!
+            // FIXME: use iostream functions instead of sscanf!
 
             if (cmd.find_first_of ("crl") != 1)
               items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d;",
@@ -1583,7 +1590,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
               if (! error_state)
                 {
                   std::string newmsg = std::string ("Variables in the file ") +
-                    nm + ":\n\n";
+                                       nm + ":\n\n";
 
                   retval =  do_who (i, argv, return_list, verbose, newmsg);
                 }
@@ -1629,8 +1636,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
             ? symbol_table::regexp_global_variables (pat)
             : symbol_table::regexp_variables (pat);
 
-          for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
-               p != tmp.end (); p++)
+          for (std::list<symbol_table::symbol_record>::const_iterator
+               p = tmp.begin (); p != tmp.end (); p++)
             {
               if (p->is_variable ())
                 {
@@ -1684,8 +1691,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
                 ? symbol_table::glob_global_variables (pat)
                 : symbol_table::glob_variables (pat);
 
-              for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
-                   p != tmp.end (); p++)
+              for (std::list<symbol_table::symbol_record>::const_iterator
+                   p = tmp.begin (); p != tmp.end (); p++)
                 {
                   if (p->is_variable ())
                     {
@@ -1739,7 +1746,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 }
 
 DEFUN (who, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} who\n\
 @deftypefnx {Command} {} who pattern @dots{}\n\
 @deftypefnx {Command} {} who option pattern @dots{}\n\
@@ -1789,7 +1796,7 @@ matching the given patterns.\n\
 }
 
 DEFUN (whos, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} whos\n\
 @deftypefnx {Command} {} whos pattern @dots{}\n\
 @deftypefnx {Command} {} whos option pattern @dots{}\n\
@@ -1946,7 +1953,7 @@ mislocked (const std::string& nm)
 }
 
 DEFUN (mlock, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mlock ()\n\
 Lock the current function into memory so that it can't be cleared.\n\
 @seealso{munlock, mislocked, persistent}\n\
@@ -1970,7 +1977,7 @@ Lock the current function into memory so that it can't be cleared.\n\
 }
 
 DEFUN (munlock, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} munlock ()\n\
 @deftypefnx {Built-in Function} {} munlock (@var{fcn})\n\
 Unlock the named function @var{fcn}.  If no function is named\n\
@@ -2006,7 +2013,7 @@ then unlock the current function.\n\
 
 
 DEFUN (mislocked, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mislocked ()\n\
 @deftypefnx {Built-in Function} {} mislocked (@var{fcn})\n\
 Return true if the named function @var{fcn} is locked.  If no function is\n\
@@ -2195,7 +2202,7 @@ do_clear_symbols (const string_vector& argv, int argc, int idx,
     {
       if (exclusive)
         {
-          // FIXME -- is this really what we want, or do we
+          // FIXME: is this really what we want, or do we
           // somehow want to only clear the functions that are not
           // shadowed by local variables?  It seems that would be a
           // bit harder to do.
@@ -2263,7 +2270,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
   while (0)
 
 DEFUN (clear, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Command} {} clear [options] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\
 pattern may contain the following special characters:\n\
@@ -2468,7 +2475,7 @@ without the dash as well.\n\
 }
 
 DEFUN (whos_line_format, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
@@ -2546,7 +2553,7 @@ The original variable value is restored when exiting the function.\n\
 static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
@@ -2586,7 +2593,7 @@ void maybe_missing_function_hook (const std::string& name)
 }
 
 DEFUN (__varval__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __varval__ (@var{name})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2611,7 +2618,7 @@ Undocumented internal function.\n\
 static std::string Vmissing_component_hook;
 
 DEFUN (missing_component_hook, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_component_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} missing_component_hook (@var{new_val}, \"local\")\n\

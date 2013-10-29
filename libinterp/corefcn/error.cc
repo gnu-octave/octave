@@ -164,9 +164,9 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   output_buf << std::endl;
 
-  // FIXME -- we really want to capture the message before it
-  // has all the formatting goop attached to it.  We probably also
-  // want just the message, not the traceback information.
+  // FIXME: we really want to capture the message before it has all the
+  //        formatting goop attached to it.  We probably also want just the
+  //        message, not the traceback information.
 
   std::string msg_string = output_buf.str ();
 
@@ -197,9 +197,9 @@ verror (bool save_last_error, std::ostream& os,
   if (! buffer_error_messages)
     flush_octave_stdout ();
 
-  // FIXME -- we really want to capture the message before it
-  // has all the formatting goop attached to it.  We probably also
-  // want just the message, not the traceback information.
+  // FIXME: we really want to capture the message before it has all the
+  //        formatting goop attached to it.  We probably also want just the
+  //        message, not the traceback information.
 
   std::ostringstream output_buf;
 
@@ -231,7 +231,7 @@ verror (bool save_last_error, std::ostream& os,
             {
               cfn += ':';
               if (cfn.length () > base_msg.length ()
-                 || base_msg.compare (0, cfn.length (), cfn) != 0)
+                  || base_msg.compare (0, cfn.length (), cfn) != 0)
                 {
                   msg_string += cfn + ' ';
                 }
@@ -827,7 +827,7 @@ handle_message (error_fun f, const char *id, const char *msg,
 }
 
 DEFUN (rethrow, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rethrow (@var{err})\n\
 Reissue a previous error as defined by @var{err}.  @var{err} is a structure\n\
 that must contain at least the @qcode{\"message\"} and @qcode{\"identifier\"}\n\
@@ -895,9 +895,8 @@ returned from @code{lasterror}.\n\
                 rethrow_error (id.c_str (), "%s", tmp_msg);
               delete [] tmp_msg;
 
-              // FIXME -- is this the right thing to do for
-              // Vlast_error_stack?  Should it be saved and restored
-              // with unwind_protect?
+              // FIXME: is this the right thing to do for Vlast_error_stack?
+              //        Should it be saved and restored with unwind_protect?
 
               Vlast_error_stack = err_stack;
 
@@ -924,7 +923,8 @@ returned from @code{lasterror}.\n\
                                 pr_where_1 ("error: called from '%s' near line %d, column %d",
                                             nm.c_str (), l, c);
                               else
-                                pr_where_1 ("error: called from '%d' near line %d", nm.c_str (), l);
+                                pr_where_1 ("error: called from '%d' near line %d",
+                                            nm.c_str (), l);
                             }
                         }
                     }
@@ -938,7 +938,8 @@ returned from @code{lasterror}.\n\
                                 pr_where_1 ("error: in file %s near line %d, column %d",
                                             file.c_str (), l, c);
                               else
-                                pr_where_1 ("error: in file %s near line %d", file.c_str (), l);
+                                pr_where_1 ("error: in file %s near line %d",
+                                            file.c_str (), l);
                             }
                         }
                       else
@@ -949,7 +950,8 @@ returned from @code{lasterror}.\n\
                                 pr_where_1 ("error: called from '%s' in file %s near line %d, column %d",
                                             nm.c_str (), file.c_str (), l, c);
                               else
-                                pr_where_1 ("error: called from '%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
+                                pr_where_1 ("error: called from '%d' in file %s near line %d",
+                                            nm.c_str (), file.c_str (), l);
                             }
                         }
                     }
@@ -1005,7 +1007,7 @@ maybe_extract_message_id (const std::string& caller,
                 }
               else
                 nargs(0) = "call to " + caller
-                  + " with message identifier requires message";
+                           + " with message identifier requires message";
             }
         }
     }
@@ -1014,7 +1016,7 @@ maybe_extract_message_id (const std::string& caller,
 }
 
 DEFUN (error, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} error (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} error (@var{id}, @var{template}, @dots{})\n\
 Format the optional arguments under the control of the template string\n\
@@ -1132,7 +1134,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
               octave_value c = m.getfield ("message");
 
               if (c.is_string ())
-                 nargs(0) = c.string_value ();
+                nargs(0) = c.string_value ();
             }
 
           if (m.contains ("identifier"))
@@ -1140,12 +1142,12 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
               octave_value c = m.getfield ("identifier");
 
               if (c.is_string ())
-                 id = c.string_value ();
+                id = c.string_value ();
             }
 
-          // FIXME -- also need to handle "stack" field in error
-          // structure, but that will require some more significant
-          // surgery on handle_message, error_with_id, etc.
+          // FIXME: also need to handle "stack" field in error structure,
+          //        but that will require some more significant surgery on
+          //        handle_message, error_with_id, etc.
         }
       else
         {
@@ -1216,7 +1218,7 @@ warning_query (const std::string& id_arg)
 }
 
 DEFUN (warning, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
@@ -1307,8 +1309,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
 
                   octave_value curr_state = val.contents ("state");
 
-                  // FIXME -- this might be better with a dictionary
-                  // object.
+                  // FIXME: this might be better with a dictionary object.
 
                   octave_value curr_warning_states
                     = symbol_table::varval (".saved_warning_states.",
@@ -1373,7 +1374,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   // handle the current setting.
                   argc--;
                 }
-                  
+
               if (arg2 == "all")
                 {
                   octave_map tmp;
@@ -1479,9 +1480,9 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                         {
                           if (ident(i).string_value () == arg2)
                             {
-                              // FIXME -- if state for "all" is
-                              // same as arg1, we can simply remove the
-                              // item from the list.
+                              // FIXME: if state for "all" is  same as arg1,
+                              //        we can simply remove the item
+                              //        from the list.
 
                               state(i) = arg1;
                               warning_options.assign ("state", state);
@@ -1492,8 +1493,8 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
 
                       if (! found)
                         {
-                          // FIXME -- if state for "all" is
-                          // same as arg1, we don't need to do anything.
+                          // FIXME: if state for "all" is same as arg1,
+                          //        we don't need to do anything.
 
                           ident.resize (dim_vector (1, nel+1));
                           state.resize (dim_vector (1, nel+1));
@@ -1646,7 +1647,7 @@ initialize_default_warning_state (void)
 }
 
 DEFUN (lasterror, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
 @deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror (\"reset\")\n\
@@ -1748,7 +1749,7 @@ fields are set to their default values.\n\
 
               if (! error_state && new_err.contains ("stack"))
                 {
-                  new_err_stack = 
+                  new_err_stack =
                     new_err.getfield ("stack").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
@@ -1817,7 +1818,7 @@ fields are set to their default values.\n\
 }
 
 DEFUN (lasterr, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{msg}, @var{msgid}] =} lasterr ()\n\
 @deftypefnx {Built-in Function} {} lasterr (@var{msg})\n\
 @deftypefnx {Built-in Function} {} lasterr (@var{msg}, @var{msgid})\n\
@@ -1868,7 +1869,7 @@ also set the last message identifier.\n\
 }
 
 DEFUN (lastwarn, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn ()\n\
 @deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
 @deftypefnx {Built-in Function} {} lastwarn (@var{msg}, @var{msgid})\n\
@@ -1915,7 +1916,7 @@ also set the last message identifier.\n\
 }
 
 DEFUN (usage, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} usage (@var{msg})\n\
 Print the message @var{msg}, prefixed by the string @samp{usage: }, and\n\
 set Octave's internal error state such that control will return to the\n\
@@ -1949,7 +1950,7 @@ to check for the proper number of arguments.\n\
 }
 
 DEFUN (beep_on_error, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} beep_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} beep_on_error (@var{new_val}, \"local\")\n\
@@ -1965,7 +1966,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (debug_on_error, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} debug_on_error (@var{new_val}, \"local\")\n\
@@ -1984,7 +1985,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (debug_on_warning, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_warning ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} debug_on_warning (@var{new_val}, \"local\")\n\

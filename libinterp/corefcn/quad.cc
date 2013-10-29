@@ -173,7 +173,7 @@ quad_float_user_function (float x)
   while (0)
 
 DEFUN (quad, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
 @deftypefnx {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
 @deftypefnx {Built-in Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
@@ -259,7 +259,8 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
             QUAD_ABORT1 ("expecting third argument to be a scalar");
 
           int indefinite = 0;
-          FloatIndefQuad::IntegralType indef_type = FloatIndefQuad::doubly_infinite;
+          FloatIndefQuad::IntegralType indef_type
+            = FloatIndefQuad::doubly_infinite;
           float bound = 0.0;
           if (xisinf (a) && xisinf (b))
             {

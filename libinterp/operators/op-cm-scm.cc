@@ -110,8 +110,8 @@ DEFBINOP (el_pow, complex_matrix, sparse_complex_matrix)
                    const octave_sparse_complex_matrix&);
 
   return octave_value
-    (elem_xpow (SparseComplexMatrix (v1.complex_matrix_value ()),
-                v2.sparse_complex_matrix_value ()));
+         (elem_xpow (SparseComplexMatrix (v1.complex_matrix_value ()),
+                     v2.sparse_complex_matrix_value ()));
 }
 
 DEFBINOP (el_ldiv, sparse_complex_matrix, matrix)
@@ -140,7 +140,7 @@ DEFCONV (sparse_complex_matrix_conv, complex_matrix,
 {
   CAST_CONV_ARG (const octave_complex_matrix&);
   return new octave_sparse_complex_matrix
-    (SparseComplexMatrix (v.complex_matrix_value ()));
+         (SparseComplexMatrix (v.complex_matrix_value ()));
 }
 
 DEFNDASSIGNOP_FN (assign, complex_matrix, sparse_complex_matrix,

@@ -49,7 +49,7 @@ public:
     : tree_command (l, c), expr (0), list (0), lead_comm (0),
       trail_comm (0)
 #ifdef HAVE_LLVM
-    , compiled (0)
+      , compiled (0)
 #endif
   { }
 
@@ -60,7 +60,7 @@ public:
     : tree_command (l, c), expr (e), list (0), lead_comm (lc),
       trail_comm (tc)
 #ifdef HAVE_LLVM
-    , compiled (0)
+      , compiled (0)
 #endif
   { }
 
@@ -71,7 +71,7 @@ public:
     : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
       trail_comm (tc)
 #ifdef HAVE_LLVM
-    , compiled (0)
+      , compiled (0)
 #endif
   { }
 
@@ -180,7 +180,7 @@ public:
     : tree_command (l, c), parallel (false), lhs (0), expr (0),
       maxproc (0), list (0), lead_comm (0), trail_comm (0)
 #ifdef HAVE_LLVM
-    , compiled (0)
+      , compiled (0)
 #endif
   { }
 
@@ -195,7 +195,7 @@ public:
       expr (re), maxproc (maxproc_arg), list (lst),
       lead_comm (lc), trail_comm (tc)
 #ifdef HAVE_LLVM
-    , compiled (0)
+      , compiled (0)
 #endif
   { }
 

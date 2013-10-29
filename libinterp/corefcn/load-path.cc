@@ -77,7 +77,8 @@ load_path::dir_info::update (void)
 
                   const dir_info& di = p->second;
 
-                  if (fs.mtime () + fs.time_resolution () > di.dir_time_last_checked)
+                  if (fs.mtime () + fs.time_resolution ()
+                       > di.dir_time_last_checked)
                     initialize ();
                   else
                     *this = di;
@@ -129,7 +130,7 @@ load_path::dir_info::initialize (void)
         {
           std::string abs_name = octave_env::make_absolute (dir_name);
 
-          // FIXME -- nothing is ever removed from this cache of
+          // FIXME: nothing is ever removed from this cache of
           // directory information, so there could be some resource
           // problems.  Perhaps it should be pruned from time to time.
 
@@ -308,8 +309,7 @@ load_path::instance_ok (void)
   return retval;
 }
 
-// FIXME -- maybe we should also maintain a map to speed up this
-// method of access.
+// FIXME: maybe we should also maintain a map to speed up this method of access.
 
 load_path::const_dir_info_list_iterator
 load_path::find_dir_info (const std::string& dir_arg) const
@@ -444,8 +444,7 @@ load_path::move_method_map (const std::string& dir_name, bool at_end)
           else
             {
               for (file_info_list_iterator p = file_info_list.begin ();
-               p != file_info_list.end ();
-               p++)
+                   p != file_info_list.end (); p++)
                 {
                   if (p->dir_name == full_dir_name)
                     {
@@ -722,7 +721,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
         }
     }
 
-  // FIXME -- is there a better way to do this?
+  // FIXME: is there a better way to do this?
 
   i = find_dir_info (".");
 
@@ -801,14 +800,13 @@ load_path::remove_method_map (const std::string& dir)
           else
             {
               for (file_info_list_iterator p = file_info_list.begin ();
-               p != file_info_list.end ();
-               p++)
+                   p != file_info_list.end (); p++)
                 {
                   if (p->dir_name == full_dir_name)
                     {
                       file_info_list.erase (p);
 
-                      // FIXME -- if there are no other elements, we
+                      // FIXME: if there are no other elements, we
                       // should remove this element of fm but calling
                       // erase here would invalidate the iterator q.
 
@@ -1379,7 +1377,7 @@ load_path::do_find_first_of (const string_vector& flist) const
         }
     }
 
- done:
+done:
 
   if (! dir_name.empty ())
     retval = file_ops::concat (dir_name, file_name);
@@ -1436,8 +1434,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
   rel_flist.resize (rel_flen);
 
   for (const_dir_info_list_iterator p = dir_info_list.begin ();
-       p != dir_info_list.end ();
-       p++)
+       p != dir_info_list.end (); p++)
     {
       string_vector all_files = p->all_files;
 
@@ -1448,8 +1445,8 @@ load_path::do_find_all_first_of (const string_vector& flist) const
           for (octave_idx_type j = 0; j < rel_flen; j++)
             {
               if (all_files[i] == rel_flist[j])
-                retlist.push_back
-                  (file_ops::concat (p->dir_name, rel_flist[j]));
+                retlist.push_back (file_ops::concat (p->dir_name,
+                                                     rel_flist[j]));
             }
         }
     }
@@ -1645,9 +1642,8 @@ load_path::do_display (std::ostream& os) const
 
       if (! method_file_map.empty ())
         {
-          for (dir_info::const_method_file_map_iterator p = method_file_map.begin ();
-               p != method_file_map.end ();
-               p++)
+          for (dir_info::const_method_file_map_iterator
+               p = method_file_map.begin (); p != method_file_map.end (); p++)
             {
               os << "\n*** methods in " << i->dir_name
                  << "/@" << p->first << ":\n\n";
@@ -1730,7 +1726,9 @@ load_path::do_display (std::ostream& os) const
 static bool
 in_path_list (const std::string& path_list, const std::string& path)
 {
-  size_t ps = path.size (), pls = path_list.size (), pos = path_list.find (path);
+  size_t ps = path.size ();
+  size_t pls = path_list.size ();
+  size_t pos = path_list.find (path);
   char psc = dir_path::path_sep_char ();
   while (pos != std::string::npos)
     {
@@ -1802,7 +1800,7 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
                 {
                   file_info& old = file_info_list.front ();
 
-                  // FIXME -- do we need to be more careful about the
+                  // FIXME: do we need to be more careful about the
                   // way we look for old.dir_name in sys_path to avoid
                   // partial matches?
 
@@ -1904,7 +1902,7 @@ load_path::add_to_method_map (const dir_info& di, bool at_end) const
             }
           else
             {
-              // FIXME -- is this possible?
+              // FIXME: is this possible?
 
               file_info& fi = *p2;
 
@@ -1996,7 +1994,7 @@ execute_pkg_del (const std::string& dir)
 }
 
 DEFUN (genpath, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
 @deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
@@ -2047,7 +2045,7 @@ rehash_internal (void)
 {
   load_path::update ();
 
-  // FIXME -- maybe we should rename this variable since it is being
+  // FIXME: maybe we should rename this variable since it is being
   // used for more than keeping track of the prompt time.
 
   // This will force updated functions to be found.
@@ -2055,7 +2053,7 @@ rehash_internal (void)
 }
 
 DEFUN (rehash, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rehash ()\n\
 Reinitialize Octave's load path directory cache.\n\
 @end deftypefn")
@@ -2068,7 +2066,7 @@ Reinitialize Octave's load path directory cache.\n\
 }
 
 DEFUN (command_line_path, , ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} command_line_path (@dots{})\n\
 Return the command line path variable.\n\
 \n\
@@ -2079,7 +2077,7 @@ Return the command line path variable.\n\
 }
 
 DEFUN (restoredefaultpath, , ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\
 Restore Octave's path to its initial state at startup.\n\
 \n\
@@ -2097,7 +2095,7 @@ Restore Octave's path to its initial state at startup.\n\
 // ~/.octaverc file
 
 DEFUN (__pathorig__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} __pathorig__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2106,7 +2104,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (path, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} path (@dots{})\n\
 Modify or display Octave's load path.\n\
 \n\
@@ -2148,7 +2146,8 @@ No checks are made for duplicate elements.\n\
         retval = load_path::path ();
       else if (argc == 1 && nargout == 0)
         {
-          octave_stdout << "\nOctave's search path contains the following directories:\n\n";
+          octave_stdout <<
+                        "\nOctave's search path contains the following directories:\n\n";
 
           string_vector dirs = load_path::dirs ();
 
@@ -2162,7 +2161,7 @@ No checks are made for duplicate elements.\n\
 }
 
 DEFUN (addpath, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
 Add named directories to the function search path.  If\n\
@@ -2278,7 +2277,7 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 }
 
 DEFUN (rmpath, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rmpath (@var{dir1}, @dots{})\n\
 Remove @var{dir1}, @dots{} from the current function search path.\n\
 \n\

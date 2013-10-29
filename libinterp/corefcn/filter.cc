@@ -49,7 +49,8 @@ extern MArray<float>
 filter (MArray<float>&, MArray<float>&, MArray<float>&, int dim);
 
 extern MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int dim);
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
+        int dim);
 #endif
 
 template <class T>
@@ -169,7 +170,9 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
           psi += si_offset;
 
-          for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+          for (octave_idx_type i = 0, idx = x_offset;
+               i < x_len;
+               i++, idx += x_stride)
             {
               py[idx] = psi[0] + pb[0] * px[idx];
 
@@ -202,7 +205,9 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
           psi += si_offset;
 
-          for (octave_idx_type i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+          for (octave_idx_type i = 0, idx = x_offset;
+               i < x_len;
+               i++, idx += x_stride)
             {
               py[idx] = psi[0] + pb[0] * px[idx];
 
@@ -264,12 +269,11 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
       if (dim == x_dims.length ())
         dim = 0;
     }
-  else
-    if (dim < 0 || dim > x_dims.length ())
-      {
-        error ("filter: DIM must be a valid dimension");
-        return MArray<T> ();
-      }
+  else if (dim < 0 || dim > x_dims.length ())
+    {
+      error ("filter: DIM must be a valid dimension");
+      return MArray<T> ();
+    }
 
   octave_idx_type a_len = a.length ();
   octave_idx_type b_len = b.length ();
@@ -286,7 +290,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 }
 
 DEFUN (filter, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {y =} filter (@var{b}, @var{a}, @var{x})\n\
 @deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
 @deftypefnx {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
@@ -658,7 +662,8 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
         MArray<FloatComplex>&, int dim);
 
 template MArray<FloatComplex>
-filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int dim);
+filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
+        int dim);
 
 /*
 %!shared a, b, x, r

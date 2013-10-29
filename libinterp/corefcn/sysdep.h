@@ -52,6 +52,7 @@ extern void MINGW_signal_cleanup (void);
 #define MINGW_SIGNAL_CLEANUP() do { } while (0)
 #endif
 
-extern OCTINTERP_API bool same_file_internal (const std::string&, const std::string&);
+extern OCTINTERP_API bool same_file_internal (const std::string&,
+                                              const std::string&);
 
 #endif

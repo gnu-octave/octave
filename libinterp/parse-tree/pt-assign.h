@@ -143,7 +143,8 @@ public:
 
   void accept (tree_walker& tw);
 
-  octave_value::assign_op op_type (void) const { return octave_value::op_asn_eq; }
+  octave_value::assign_op op_type (void) const
+  { return octave_value::op_asn_eq; }
 
 private:
 

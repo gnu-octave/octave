@@ -37,7 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "utils.h"
 
-// This allows safe indexing with char. In C++, char may be (and often is) signed!
+// This allows safe indexing with char.
+// In C++, char may be (and often is) signed!
 #define ORD(ch) static_cast<unsigned char>(ch)
 #define TABSIZE (std::numeric_limits<unsigned char>::max () + 1)
 
@@ -50,10 +51,10 @@ qs_preprocess (const Array<char>& needle,
   const char *x = needle.data ();
   octave_idx_type m = needle.numel ();
 
-   for (octave_idx_type i = 0; i < TABSIZE; i++)
-      table[i] = m + 1;
-   for (octave_idx_type i = 0; i < m; i++)
-      table[ORD(x[i])] = m - i;
+  for (octave_idx_type i = 0; i < TABSIZE; i++)
+    table[i] = m + 1;
+  for (octave_idx_type i = 0; i < m; i++)
+    table[ORD(x[i])] = m - i;
 }
 
 
@@ -146,7 +147,7 @@ qs_search (const Array<char>& needle,
 }
 
 DEFUN (strfind, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{idx} =} strfind (@var{str}, @var{pattern})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} strfind (@var{cellstr}, @var{pattern})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} strfind (@dots{}, \"overlaps\", @var{val})\n\
@@ -216,7 +217,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
           qs_preprocess (needle, table);
 
           if (argstr.is_string ())
-            retval = octave_value (qs_search (needle, argstr.char_array_value (),
+            retval = octave_value (qs_search (needle,
+                                              argstr.char_array_value (),
                                               table, overlaps),
                                    true, true);
           else if (argstr.is_cell ())
@@ -229,9 +231,11 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
                 {
                   octave_value argse = argsc(i);
                   if (argse.is_string ())
-                    retc(i) = octave_value (qs_search (needle, argse.char_array_value (),
-                                                       table, overlaps),
-                                            true, true);
+                    retc(i)
+                      = octave_value (qs_search (needle,
+                                                 argse.char_array_value (),
+                                                 table, overlaps),
+                                      true, true);
                   else
                     {
                       error ("strfind: each element of CELLSTR must be a string");
@@ -329,7 +333,7 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 }
 
 DEFUN (strrep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{newstr} =} strrep (@var{str}, @var{ptn}, @var{rep})\n\
 @deftypefnx {Built-in Function} {@var{newstr} =} strrep (@var{cellstr}, @var{ptn}, @var{rep})\n\
 @deftypefnx {Built-in Function} {@var{newstr} =} strrep (@dots{}, \"overlaps\", @var{val})\n\
@@ -386,7 +390,8 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
           qs_preprocess (pat, table);
 
           if (argstr.is_string ())
-            retval = qs_replace (argstr.char_array_value (), pat, rep, table, overlaps);
+            retval = qs_replace (argstr.char_array_value (), pat, rep,
+                                 table, overlaps);
           else if (argstr.is_cell ())
             {
               const Cell argsc = argstr.cell_value ();
@@ -397,7 +402,8 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
                 {
                   octave_value argse = argsc(i);
                   if (argse.is_string ())
-                    retc(i) = qs_replace (argse.char_array_value (), pat, rep, table, overlaps);
+                    retc(i) = qs_replace (argse.char_array_value (), pat, rep,
+                                          table, overlaps);
                   else
                     {
                       error ("strrep: each element of S must be a string");

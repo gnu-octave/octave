@@ -34,7 +34,7 @@ octave_warranty_statement (const std::string& extra_info = std::string ())
 {
   return "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or\n\
 FITNESS FOR A PARTICULAR PURPOSE."
-    + extra_info;
+         + extra_info;
 }
 
 static std::string
@@ -47,7 +47,7 @@ std::string
 octave_www_statement (bool html)
 {
   return "Additional information about Octave is available at "
-    + format_url (html, "http://www.octave.org.");
+         + format_url (html, "http://www.octave.org.");
 }
 
 std::string
@@ -55,14 +55,14 @@ octave_contrib_statement (bool html)
 {
   return "Please contribute if you find this software useful.\n\
 For more information, visit "
-    + format_url (html, "http://www.octave.org/get-involved.html");
+         + format_url (html, "http://www.octave.org/get-involved.html");
 }
 
 std::string
 octave_bugs_statement (bool html)
 {
   return "Read " + format_url (html, "http://www.octave.org/bugs.html")
-    + " to learn how to submit bug reports.";
+         + " to learn how to submit bug reports.";
 }
 
 std::string
@@ -83,12 +83,12 @@ octave_name_version_copyright_copying_and_warranty
   std::string sep = html ? "\n</p>\n<p>\n" : "\n\n";
 
   return octave_name_version_and_copyright ()
-    + br
-    + "This is free software; see the source code for copying conditions."
-    + br
-    + octave_warranty_statement (extra_info)
-    + sep
-    + "Octave was configured for \"" OCTAVE_CANONICAL_HOST_TYPE "\".";
+         + br
+         + "This is free software; see the source code for copying conditions."
+         + br
+         + octave_warranty_statement (extra_info)
+         + sep
+         + "Octave was configured for \"" OCTAVE_CANONICAL_HOST_TYPE "\".";
 }
 
 std::string
@@ -103,13 +103,13 @@ octave_name_version_copyright_copying_warranty_and_bugs
     msg = "<p>\n";
 
   msg += octave_name_version_copyright_copying_and_warranty (html, extra_info)
-    + sep
-    + octave_www_statement (html)
-    + sep
-    + octave_contrib_statement (html)
-    + sep
-    + octave_bugs_statement (html)
-    + (html ? "\n</p>" : "");
+         + sep
+         + octave_www_statement (html)
+         + sep
+         + octave_contrib_statement (html)
+         + sep
+         + octave_bugs_statement (html)
+         + (html ? "\n</p>" : "");
 
   return msg;
 }

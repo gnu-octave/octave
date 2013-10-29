@@ -32,8 +32,7 @@ glps_renderer : public opengl_renderer
 {
 public:
   glps_renderer (FILE *_fp, const std::string& _term)
-    : opengl_renderer () , fp (_fp), term (_term),
-    fontsize (), fontname () { }
+    : opengl_renderer () , fp (_fp), term (_term), fontsize (), fontname () { }
 
   ~glps_renderer (void) { }
 
@@ -44,7 +43,6 @@ protected:
   Matrix render_text (const std::string& txt,
                       double x, double y, double z,
                       int halign, int valign, double rotation = 0.0);
-
 
   void set_font (const base_properties& props);
 

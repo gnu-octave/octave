@@ -78,17 +78,17 @@ DEFBINOP (ldiv, float_matrix, float_complex)
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_matrix, float_complex, float_array,
-               float_complex, mx_el_lt)
+                    float_complex, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_matrix, float_complex, float_array,
-               float_complex, mx_el_le)
+                    float_complex, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, float_matrix, float_complex, float_array,
-               float_complex, mx_el_eq)
+                    float_complex, mx_el_eq)
 DEFNDCMPLXCMPOP_FN (ge, float_matrix, float_complex, float_array,
-               float_complex, mx_el_ge)
+                    float_complex, mx_el_ge)
 DEFNDCMPLXCMPOP_FN (gt, float_matrix, float_complex, float_array,
-               float_complex, mx_el_gt)
+                    float_complex, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, float_matrix, float_complex, float_array,
-               float_complex, mx_el_ne)
+                    float_complex, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_matrix, float_complex, float_array,
                float_complex, *)
@@ -147,7 +147,8 @@ install_fm_fcs_ops (void)
   INSTALL_BINOP (op_el_mul, octave_float_matrix, octave_float_complex, el_mul);
   INSTALL_BINOP (op_el_div, octave_float_matrix, octave_float_complex, el_div);
   INSTALL_BINOP (op_el_pow, octave_float_matrix, octave_float_complex, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_matrix, octave_float_complex, el_ldiv);
+  INSTALL_BINOP (op_el_ldiv, octave_float_matrix, octave_float_complex,
+                 el_ldiv);
   INSTALL_BINOP (op_el_and, octave_float_matrix, octave_float_complex, el_and);
   INSTALL_BINOP (op_el_or, octave_float_matrix, octave_float_complex, el_or);
 

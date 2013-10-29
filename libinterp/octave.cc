@@ -191,7 +191,7 @@ intern_argv (int argc, char **argv)
 }
 
 DEFUN (__version_info__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -861,14 +861,14 @@ octave_execute_interpreter (void)
     {
       command_editor::blink_matching_paren (false);
 
-      // FIXME -- is this the right thing to do?
+      // FIXME: is this the right thing to do?
 
       Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
     }
 
   if (octave_embedded)
     {
-      // FIXME -- do we need to do any cleanup here before
+      // FIXME: do we need to do any cleanup here before
       // returning?  If we don't, what will happen to Octave functions
       // that have been registered to execute with atexit, for example?
 
@@ -931,7 +931,7 @@ octave_starting_gui (void)
 }
 
 DEFUN (isguirunning, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isguirunning ()\n\
 Return true if Octave is running in GUI mode and false otherwise.\n\
 @end deftypefn")
@@ -952,7 +952,7 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 */
 
 DEFUN (argv, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} argv ()\n\
 Return the command line arguments passed to Octave.  For example,\n\
 if you invoked Octave using the command\n\
@@ -986,7 +986,7 @@ for an example of how to create an executable Octave script.\n\
 */
 
 DEFUN (program_invocation_name, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_invocation_name ()\n\
 Return the name that was typed at the shell prompt to run Octave.\n\
 \n\
@@ -1013,7 +1013,7 @@ how to create an executable Octave script.\n\
 */
 
 DEFUN (program_name, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_name ()\n\
 Return the last component of the value returned by\n\
 @code{program_invocation_name}.\n\

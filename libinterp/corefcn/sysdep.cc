@@ -139,7 +139,7 @@ w32_set_octave_home (void)
                 }
             }
           while (Module32Next (h, &mod_info));
-       }
+        }
 
       CloseHandle (h);
     }
@@ -159,7 +159,7 @@ w32_set_quiet_shutdown (void)
   // Let the user close the console window or shutdown without the
   // pesky dialog.
   //
-  // FIXME -- should this be user configurable?
+  // FIXME: should this be user configurable?
   SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
 }
 
@@ -528,7 +528,7 @@ get_P_tmpdir (void)
 }
 
 DEFUN (clc, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} clc ()\n\
 @deftypefnx {Built-in Function} {} home ()\n\
 Clear the terminal screen and move the cursor to the upper left corner.\n\
@@ -544,7 +544,7 @@ Clear the terminal screen and move the cursor to the upper left corner.\n\
 DEFALIAS (home, clc);
 
 DEFUN (getenv, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} getenv (@var{var})\n\
 Return the value of the environment variable @var{var}.  For example,\n\
 \n\
@@ -574,7 +574,7 @@ returns a string containing the value of your path.\n\
 }
 
 DEFUN (putenv, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} putenv (@var{var}, @var{value})\n\
 @deftypefnx {Built-in Function} {} setenv (@var{var}, @var{value})\n\
 Set the value of the environment variable @var{var} to @var{value}.\n\
@@ -616,10 +616,10 @@ DEFALIAS (setenv, putenv);
 %! assert (getenv ("dummy_variable_that_cannot_matter"), "foobar");
 */
 
-// FIXME -- perhaps kbhit should also be able to print a prompt?
+// FIXME: perhaps kbhit should also be able to print a prompt?
 
 DEFUN (kbhit, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} kbhit ()\n\
 @deftypefnx {Built-in Function} {} kbhit (1)\n\
 Read a single keystroke from the keyboard.  If called with an\n\
@@ -645,7 +645,7 @@ returning the empty string if no key is available.\n\
 {
   octave_value retval;
 
-  // FIXME -- add timeout and default value args?
+  // FIXME: add timeout and default value args?
 
   if (interactive || forced_interactive)
     {
@@ -665,7 +665,7 @@ returning the empty string if no key is available.\n\
 }
 
 DEFUN (pause, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} pause (@var{seconds})\n\
 Suspend the execution of the program.  If invoked without any arguments,\n\
 Octave waits until you type a character.  With a numeric argument, it\n\
@@ -732,7 +732,7 @@ clc;\n\
 */
 
 DEFUN (sleep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
 Suspend the execution of the program for the given number of seconds.\n\
 @end deftypefn")
@@ -769,7 +769,7 @@ Suspend the execution of the program for the given number of seconds.\n\
 */
 
 DEFUN (usleep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} usleep (@var{microseconds})\n\
 Suspend the execution of the program for the given number of\n\
 microseconds.  On systems where it is not possible to sleep for periods\n\
@@ -812,11 +812,11 @@ of time less than one second, @code{usleep} will pause the execution for\n\
 %!error (usleep (1, 2))
 */
 
-// FIXME -- maybe this should only return 1 if IEEE floating
+// FIXME: maybe this should only return 1 if IEEE floating
 // point functions really work.
 
 DEFUN (isieee, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isieee ()\n\
 Return true if your computer @emph{claims} to conform to the IEEE standard\n\
 for floating point calculations.  No actual tests are performed.\n\
@@ -833,7 +833,7 @@ for floating point calculations.  No actual tests are performed.\n\
 */
 
 DEFUN (native_float_format, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} native_float_format ()\n\
 Return the native floating point format as a string\n\
 @end deftypefn")
@@ -848,7 +848,7 @@ Return the native floating point format as a string\n\
 */
 
 DEFUN (tilde_expand, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} tilde_expand (@var{string})\n\
 Perform tilde expansion on @var{string}.  If @var{string} begins with a\n\
 tilde character, (@samp{~}), all of the characters preceding the first\n\

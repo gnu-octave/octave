@@ -88,7 +88,7 @@ tree_fcn_handle::accept (tree_walker& tw)
 octave_value
 tree_anon_fcn_handle::rvalue1 (int)
 {
-  // FIXME -- should CMD_LIST be limited to a single expression?
+  // FIXME: should CMD_LIST be limited to a single expression?
   // I think that is what Matlab does.
 
   tree_parameter_list *param_list = parameter_list ();
@@ -112,7 +112,7 @@ tree_anon_fcn_handle::rvalue1 (int)
 
   if (curr_fcn)
     {
-      // FIXME -- maybe it would be better to just stash curr_fcn
+      // FIXME: maybe it would be better to just stash curr_fcn
       // instead of individual bits of info about it?
 
       uf->stash_parent_fcn_name (curr_fcn->name ());

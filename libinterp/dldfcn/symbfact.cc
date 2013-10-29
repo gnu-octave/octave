@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN_DLD (symbfact, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{S})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
@@ -355,7 +355,7 @@ factorization as determined by @var{typ}.\n\
       retval(0) = tmp;
     }
 
- symbfact_error:
+symbfact_error:
 #else
   error ("symbfact: not available in this version of Octave");
 #endif

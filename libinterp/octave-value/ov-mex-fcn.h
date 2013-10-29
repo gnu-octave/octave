@@ -54,10 +54,10 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -87,7 +87,7 @@ public:
   void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
 
   octave_shlib get_shlib (void) const
-    { return sh_lib; }
+  { return sh_lib; }
 
 private:
 

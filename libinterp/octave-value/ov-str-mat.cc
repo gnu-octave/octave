@@ -57,7 +57,8 @@ DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_sq_str);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string", "char");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string",
+                                     "char");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
@@ -129,8 +130,9 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
           idx_vec(i) = idx(i).index_vector ();
 
         if (! error_state)
-          retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-                                 type);
+          retval =
+            octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+                          type);
       }
       break;
     }
@@ -261,7 +263,8 @@ octave_char_matrix_str::cellstr_value (void) const
 }
 
 void
-octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+octave_char_matrix_str::print_raw (std::ostream& os,
+                                   bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
                          current_print_indent_level (), true);
@@ -371,8 +374,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
           if (elements >= 0)
             {
-              // FIXME -- need to be able to get max length
-              // before doing anything.
+              // FIXME: need to be able to get max length before doing anything.
 
               charMatrix chm (elements, 0);
               int max_len = 0;
@@ -694,7 +696,8 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               // to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
               H5Tset_size (st_id, slen+1);
-              if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
+              if (H5Dread (data_hid, st_id, H5S_ALL,
+                           H5S_ALL, H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
                   H5Tclose (type_hid);
@@ -738,7 +741,8 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               hid_t st_id = H5Tcopy (H5T_C_S1);
               H5Tset_size (st_id, slen+1);
 
-              if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
+              if (H5Dread (data_hid, st_id, H5S_ALL,
+                           H5S_ALL, H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
                   H5Tclose (type_hid);

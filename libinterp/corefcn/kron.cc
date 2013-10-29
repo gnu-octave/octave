@@ -88,7 +88,8 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
     for (octave_idx_type jb = 0; jb < ncb; jb++)
       {
         octave_quit ();
-        mx_inline_mul (nrb, &c.xelem (ja*nrb, ja*ncb + jb), a.dgelem (ja), b.data () + nrb*jb);
+        mx_inline_mul (nrb, &c.xelem (ja*nrb, ja*ncb + jb), a.dgelem (ja),
+                       b.data () + nrb*jb);
       }
 
   return c;

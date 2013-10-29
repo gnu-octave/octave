@@ -25,7 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 static
 octave_value
-octave_type_conv_body (const octave_value &arg, const std::string& name, int t_result)
+octave_type_conv_body (const octave_value &arg, const std::string& name,
+                       int t_result)
 {
   int t_arg = arg.type_id ();
   octave_value retval;

@@ -79,7 +79,7 @@ octave_change_to_directory (const std::string& newdir)
     {
       Vlast_chdir_time.stamp ();
 
-      // FIXME -- should these actions be handled as a list of functions
+      // FIXME: should these actions be handled as a list of functions
       // to call so users can add their own chdir handlers?
 
       load_path::update ();
@@ -93,7 +93,7 @@ octave_change_to_directory (const std::string& newdir)
 }
 
 DEFUN (cd, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} cd @var{dir}\n\
 @deftypefnx {Command} {} cd\n\
 @deftypefnx {Built-in Function} {@var{old_dir} =} cd @var{dir}\n\
@@ -155,7 +155,7 @@ present working directory rather than changing to the user's home directory.\n\
 DEFALIAS (chdir, cd);
 
 DEFUN (pwd, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} pwd ()\n\
 @deftypefnx {Built-in Function} {@var{dir} =} pwd ()\n\
 Return the current working directory.\n\
@@ -166,7 +166,7 @@ Return the current working directory.\n\
 }
 
 DEFUN (readdir, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{files} =} readdir (@var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
 Return the names of files in the directory @var{dir} as a cell array of\n\
@@ -217,7 +217,7 @@ system-dependent error message.\n\
 //        OTOH, that might cause trouble with compatibility later...
 
 DEFUNX ("mkdir", Fmkdir, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mkdir @var{dir}\n\
 @deftypefnx {Built-in Function} {} mkdir (@var{parent}, @var{dir})\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@dots{})\n\
@@ -304,7 +304,7 @@ identifier.\n\
 }
 
 DEFUNX ("rmdir", Frmdir, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rmdir @var{dir}\n\
 @deftypefnx {Built-in Function} {} rmdir (@var{dir}, \"s\")\n\
 @deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@dots{})\n\
@@ -379,7 +379,7 @@ recursively remove all subdirectories as well.\n\
 }
 
 DEFUNX ("link", Flink, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} link @var{old} @var{new}\n\
 @deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
 Create a new link (also known as a hard link) to an existing file.\n\
@@ -426,7 +426,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("symlink", Fsymlink, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} symlink @var{old} @var{new}\n\
 @deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
 Create a symbolic link @var{new} which contains the string @var{old}.\n\
@@ -473,7 +473,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("readlink", Freadlink, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} readlink @var{symlink}\n\
 @deftypefnx {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
 Read the value of the symbolic link @var{symlink}.\n\
@@ -517,7 +517,7 @@ error message.\n\
 }
 
 DEFUNX ("rename", Frename, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rename @var{old} @var{new}\n\
 @deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
 Change the name of file @var{old} to @var{new}.\n\
@@ -564,7 +564,7 @@ system-dependent error message.\n\
 }
 
 DEFUN (glob, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
 Given an array of pattern strings (as a char array or a cell array) in\n\
 @var{pattern}, return a cell array of file names that match any of\n\
@@ -665,7 +665,7 @@ glob (\"file[12]\")\n\
 */
 
 DEFUNX ("fnmatch", Ffnmatch, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return true or false for each element of @var{string} that matches any of\n\
 the elements of the string array @var{pattern}, using the rules of\n\
@@ -703,7 +703,7 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 }
 
 DEFUN (filesep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} filesep ()\n\
 @deftypefnx {Built-in Function} {} filesep (\"all\")\n\
 Return the system-dependent character used to separate directory names.\n\
@@ -740,7 +740,7 @@ It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 }
 
 DEFUN (pathsep, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} pathsep ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} pathsep (@var{new_val})\n\
 Query or set the character used to separate directories in a path.\n\
@@ -785,7 +785,7 @@ Query or set the character used to separate directories in a path.\n\
 }
 
 DEFUN (confirm_recursive_rmdir, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\

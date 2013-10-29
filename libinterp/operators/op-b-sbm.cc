@@ -91,5 +91,6 @@ install_b_sbm_ops (void)
   INSTALL_ASSIGNCONV (octave_bool, octave_sparse_bool_matrix,
                       octave_bool_matrix);
 
-  INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix, sparse_bool_matrix_conv);
+  INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix,
+                   sparse_bool_matrix_conv);
 }

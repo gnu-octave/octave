@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (ccolamd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} ccolamd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{S}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{S}, @var{knobs}, @var{cmember})\n\
@@ -188,7 +188,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
               if (knobs[CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(2): " << User_knobs(1)
                               << ", rows with > max (16,"
-                              << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[CCOLAMD_DENSE_ROW]
+                              << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(2): " << User_knobs(1)
@@ -281,7 +282,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
             error ("ccolamd: CMEMBER must be of length equal to #cols of A");
           else
             // Order the columns (destroys A)
-            if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
+            if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p,
+                                   knobs, stats, cmember))
               {
                 CCOLAMD_NAME (_report) (stats) ;
                 error ("ccolamd: internal error!");
@@ -336,7 +338,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 }
 
 DEFUN_DLD (csymamd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} csymamd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs}, @var{cmember})\n\
@@ -428,13 +430,15 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
           // print knob settings if spumoni is set
           if (spumoni)
             {
-              octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION << "."
-                            <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE << "\n";
+              octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION
+                            << "." << CCOLAMD_SUB_VERSION
+                            << ", " << CCOLAMD_DATE << "\n";
 
               if (knobs[CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs(0)
                               << ", rows/cols with > max (16,"
-                              << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[CCOLAMD_DENSE_ROW]
+                              << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(1): " << User_knobs(0)
@@ -511,14 +515,13 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
           if (cslen != n_col)
             error ("csymamd: CMEMBER must be of length equal to #cols of A");
-          else
-            if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                                  &calloc, &free, cmember, -1))
-              {
-                CSYMAMD_NAME (_report) (stats) ;
-                error ("csymamd: internal error!") ;
-                return retval;
-              }
+          else if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+                                     &calloc, &free, cmember, -1))
+            {
+              CSYMAMD_NAME (_report) (stats) ;
+              error ("csymamd: internal error!") ;
+              return retval;
+            }
         }
       else
         {

@@ -1460,7 +1460,8 @@ octave_value::assign (assign_op op, const octave_value& rhs)
           try
             {
               f (*rep, octave_value_list (), *rhs.rep);
-              maybe_mutate (); // Usually unnecessary, but may be needed (complex arrays).
+              // Usually unnecessary, but may be needed (complex arrays).
+              maybe_mutate ();
             }
           catch (octave_execution_exception)
             {
@@ -1843,8 +1844,9 @@ FloatComplexColumnVector
 octave_value::float_complex_column_vector_value (bool force_string_conv,
                                                  bool frc_vec_conv) const
 {
-  return FloatComplexColumnVector (float_complex_vector_value (force_string_conv,
-                                                               frc_vec_conv));
+  return
+    FloatComplexColumnVector (float_complex_vector_value (force_string_conv,
+                                                          frc_vec_conv));
 }
 
 FloatRowVector
@@ -1971,7 +1973,7 @@ do_binary_op (octave_value::binary_op op,
     }
   else
     {
-      // FIXME -- we need to handle overloading operators for built-in
+      // FIXME: we need to handle overloading operators for built-in
       // classes (double, char, int8, etc.)
 
       octave_value_typeinfo::binary_op_fcn f
@@ -1991,17 +1993,21 @@ do_binary_op (octave_value::binary_op op,
       else
         {
           octave_value tv1;
-          octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf1 =
+            v1.numeric_conversion_function ();
 
           octave_value tv2;
-          octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf2 =
+            v2.numeric_conversion_function ();
 
           // Try biased (one-sided) conversions first.
           if (cf2.type_id () >= 0 &&
               octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
             cf1 = 0;
-          else if (cf1.type_id () >= 0 &&
-                   octave_value_typeinfo::lookup_binary_op (op, cf1.type_id (), t2))
+          else if (cf1.type_id () >= 0
+                   && octave_value_typeinfo::lookup_binary_op (op,
+                                                               cf1.type_id (),
+                                                               t2))
             cf2 = 0;
 
           if (cf1)
@@ -2053,10 +2059,13 @@ do_binary_op (octave_value::binary_op op,
 
               // Try biased (one-sided) conversions first.
               if (cf2.type_id () >= 0
-                  && octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
+                  && octave_value_typeinfo::lookup_binary_op (op, t1,
+                                                              cf2.type_id ()))
                 cf1 = 0;
-              else if (cf1.type_id () >= 0
-                       && octave_value_typeinfo::lookup_binary_op (op, cf1.type_id (), t2))
+              else if (cf1.type_id () >= 0 &&
+                       octave_value_typeinfo::lookup_binary_op (op,
+                                                                cf1.type_id (),
+                                                                t2))
                 cf2 = 0;
 
               if (cf1)
@@ -2070,7 +2079,8 @@ do_binary_op (octave_value::binary_op op,
                     }
                   else
                     {
-                      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+                      gripe_binary_op_conv
+                        (octave_value::binary_op_as_string (op));
                       return retval;
                     }
                 }
@@ -2086,7 +2096,8 @@ do_binary_op (octave_value::binary_op op,
                     }
                   else
                     {
-                      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+                      gripe_binary_op_conv
+                        (octave_value::binary_op_as_string (op));
                       return retval;
                     }
                 }
@@ -2392,7 +2403,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
     }
   else
     {
-      // FIXME -- we need to handle overloading operators for built-in
+      // FIXME: we need to handle overloading operators for built-in
       // classes (double, char, int8, etc.)
 
       octave_value_typeinfo::unary_op_fcn f
@@ -2529,7 +2540,8 @@ octave_value::do_non_const_unary_op (unary_op op)
                   (octave_value::unary_op_as_string (op), type_name ());
             }
           else
-            gripe_unary_op (octave_value::unary_op_as_string (op), type_name ());
+            gripe_unary_op (octave_value::unary_op_as_string (op),
+                            type_name ());
         }
     }
   else
@@ -2569,7 +2581,7 @@ octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
     do_non_const_unary_op (op);
   else
     {
-      // FIXME -- only do the following stuff if we can't find a
+      // FIXME: only do the following stuff if we can't find a
       // specific function to call to handle the op= operation for the
       // types we have.
 
@@ -2778,7 +2790,7 @@ install_types (void)
 }
 
 DEFUN (sizeof, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizeof (@var{val})\n\
 Return the size of @var{val} in bytes.\n\
 @seealso{whos}\n\
@@ -2874,11 +2886,12 @@ decode_subscripts (const char* name, const octave_value& arg,
         }
     }
   else
-    error ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
+    error ("%s: second argument must be a structure with fields 'type' and 'subs'",
+           name);
 }
 
 DEFUN (subsref, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} subsref (@var{val}, @var{idx})\n\
 Perform the subscripted element selection operation according to\n\
 the subscript specified by @var{idx}.\n\
@@ -2941,7 +2954,7 @@ and @samp{subs}, return @var{val}.\n\
 }
 
 DEFUN (subsasgn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
 Perform the subscripted assignment operation according to\n\
 the subscript specified by @var{idx}.\n\
@@ -3076,7 +3089,7 @@ and @samp{subs}, return @var{rhs}.\n\
 */
 
 DEFUN (is_sq_string, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_sq_string (@var{x})\n\
 Return true if @var{x} is a single-quoted character string.\n\
 @seealso{is_dq_string, ischar}\n\
@@ -3103,7 +3116,7 @@ Return true if @var{x} is a single-quoted character string.\n\
 */
 
 DEFUN (is_dq_string, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_dq_string (@var{x})\n\
 Return true if @var{x} is a double-quoted character string.\n\
 @seealso{is_sq_string, ischar}\n\

@@ -95,12 +95,16 @@ DEFNDBINOP_FN (el_or_not,  bool_matrix, bool_matrix, bool_array, bool_array,
 DEFNDCATOP_FN (bm_bm, bool_matrix, bool_matrix, bool_array, bool_array, concat)
 DEFNDCATOP_FN (bm_m, bool_matrix, matrix, array, array, concat)
 DEFNDCATOP_FN (m_bm, matrix, bool_matrix, array, array, concat)
-DEFNDCATOP_FN (bm_fm, bool_matrix, float_matrix, float_array, float_array, concat)
-DEFNDCATOP_FN (fm_bm, float_matrix, bool_matrix, float_array, float_array, concat)
+DEFNDCATOP_FN (bm_fm, bool_matrix, float_matrix, float_array, float_array,
+               concat)
+DEFNDCATOP_FN (fm_bm, float_matrix, bool_matrix, float_array, float_array,
+               concat)
 
 DEFNDASSIGNOP_FN (assign, bool_matrix, bool_matrix, bool_array, assign)
-DEFNDASSIGNOP_FNOP (assign_and, bool_matrix, bool_matrix, bool_array, mx_el_and_assign)
-DEFNDASSIGNOP_FNOP (assign_or, bool_matrix, bool_matrix, bool_array, mx_el_or_assign)
+DEFNDASSIGNOP_FNOP (assign_and, bool_matrix, bool_matrix, bool_array,
+                    mx_el_and_assign)
+DEFNDASSIGNOP_FNOP (assign_or, bool_matrix, bool_matrix, bool_array,
+                    mx_el_or_assign)
 
 DEFNULLASSIGNOP_FN (null_assign, bool_matrix, delete_elements)
 
@@ -111,8 +115,8 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 {
   octave_bool_matrix& v1 = dynamic_cast<octave_bool_matrix&> (a1);
 
-  // FIXME -- perhaps add a warning for this conversion if the values
-  // are not all 0 or 1?
+  // FIXME: perhaps add a warning for this conversion
+  //        if the values are not all 0 or 1?
 
   boolNDArray v2 = a2.bool_array_value (true);
 
@@ -141,10 +145,14 @@ install_bm_bm_ops (void)
 
   INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_bool_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_bool_matrix, el_or);
-  INSTALL_BINOP (op_el_not_and, octave_bool_matrix, octave_bool_matrix, el_not_and);
-  INSTALL_BINOP (op_el_not_or, octave_bool_matrix, octave_bool_matrix, el_not_or);
-  INSTALL_BINOP (op_el_and_not, octave_bool_matrix, octave_bool_matrix, el_and_not);
-  INSTALL_BINOP (op_el_or_not, octave_bool_matrix, octave_bool_matrix, el_or_not);
+  INSTALL_BINOP (op_el_not_and, octave_bool_matrix, octave_bool_matrix,
+                 el_not_and);
+  INSTALL_BINOP (op_el_not_or, octave_bool_matrix, octave_bool_matrix,
+                 el_not_or);
+  INSTALL_BINOP (op_el_and_not, octave_bool_matrix, octave_bool_matrix,
+                 el_and_not);
+  INSTALL_BINOP (op_el_or_not, octave_bool_matrix, octave_bool_matrix,
+                 el_or_not);
 
   INSTALL_CATOP (octave_bool_matrix, octave_bool_matrix, bm_bm);
   INSTALL_CATOP (octave_bool_matrix, octave_matrix, bm_m);
@@ -157,28 +165,46 @@ install_bm_bm_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool_matrix, assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_char_matrix_str, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_char_matrix_sq_str, conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_char_matrix_str,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_char_matrix_sq_str,
+                    conv_and_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_range, conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_range,
+                    conv_and_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_sparse_matrix, conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_sparse_matrix,
+                    conv_and_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int8_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int16_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int32_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int64_matrix, conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int8_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int16_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int32_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int64_matrix,
+                    conv_and_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint8_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint16_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint32_matrix, conv_and_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint64_matrix, conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint8_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint16_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint32_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_uint64_matrix,
+                    conv_and_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_null_sq_str,
+                    null_assign);
 
-  INSTALL_ASSIGNOP (op_el_and_eq, octave_bool_matrix, octave_bool_matrix, assign_and);
-  INSTALL_ASSIGNOP (op_el_or_eq, octave_bool_matrix, octave_bool_matrix, assign_or);
+  INSTALL_ASSIGNOP (op_el_and_eq, octave_bool_matrix, octave_bool_matrix,
+                    assign_and);
+  INSTALL_ASSIGNOP (op_el_or_eq, octave_bool_matrix, octave_bool_matrix,
+                    assign_or);
 }

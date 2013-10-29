@@ -125,7 +125,7 @@ DEFBINOP (el_ldiv, sparse_complex_matrix, complex)
                    const octave_complex&);
 
   return octave_value
-    (x_el_div (v2.complex_value (), v1.sparse_complex_matrix_value ()));
+         (x_el_div (v2.complex_value (), v1.sparse_complex_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_complex_matrix, complex, mx_el_and)
@@ -136,7 +136,7 @@ DEFCATOP (scm_cs, sparse_complex_matrix, complex)
   CAST_BINOP_ARGS (octave_sparse_complex_matrix&, const octave_complex&);
   SparseComplexMatrix tmp (1, 1, v2.complex_value ());
   return octave_value
-    (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
+         (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
 }
 
 DEFASSIGNOP (assign, sparse_complex_matrix, complex)

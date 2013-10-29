@@ -58,7 +58,7 @@ mark_upper_triangular (const Matrix& a)
 }
 
 DEFUN (schur, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{S} =} schur (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"real\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
@@ -294,7 +294,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 */
 
 DEFUN (rsf2csf, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
 Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
 upper triangular Schur@tie{}form @var{T}.\n\

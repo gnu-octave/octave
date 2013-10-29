@@ -230,7 +230,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
           octave_idx_type dimZ = n - rank;
 
-          // FIXME -- still remain to handle the case of
+          // FIXME: still remain to handle the case of
           // non-full rank active set matrix.
 
           // Computing the Y matrix (orthogonal to Z)
@@ -480,7 +480,7 @@ qp (const Matrix& H, const ColumnVector& q,
 }
 
 DEFUN (__qp__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})\n\
 Undocumented internal function.\n\
 @end deftypefn")

@@ -146,22 +146,23 @@ public:
     : fw (w), ex (e), prec (p), fmt (f), up (0), sp (0) { }
 
   float_format (const float_format& ff)
-    : fw (ff.fw), ex (ff.ex), prec (ff.prec), fmt (ff.fmt), up (ff.up), sp (ff.sp) { }
+    : fw (ff.fw), ex (ff.ex), prec (ff.prec), fmt (ff.fmt), up (ff.up),
+      sp (ff.sp) { }
 
   float_format& operator = (const float_format& ff)
-    {
-      if (&ff != this)
-        {
-          fw = ff.fw;
-          ex = ff.ex;
-          prec = ff.prec;
-          fmt = ff.fmt;
-          up = ff.up;
-          sp = ff.sp;
-        }
+  {
+    if (&ff != this)
+      {
+        fw = ff.fw;
+        ex = ff.ex;
+        prec = ff.prec;
+        fmt = ff.fmt;
+        up = ff.up;
+        sp = ff.sp;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~float_format (void) { }
 
@@ -177,7 +178,7 @@ public:
   float_format& width (int w) { fw = w; return *this; }
 
   float_format& trailing_zeros (bool tz = true)
-    { sp = tz ? std::ios::showpoint : 0; return *this; }
+  { sp = tz ? std::ios::showpoint : 0; return *this; }
 
   friend std::ostream& operator << (std::ostream& os,
                                     const pr_engineering_float& pef);
@@ -387,7 +388,8 @@ rational_approx (double val, int len)
           double nextd = d;
 
           // Have we converged to 1/intmax ?
-          if (m > 100 || fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
+          if (m > 100
+              || fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
             {
               lastn = n;
               lastd = d;
@@ -428,7 +430,7 @@ rational_approx (double val, int len)
           std::ostringstream buf;
           buf.flags (std::ios::fixed);
           buf << std::setprecision (0) << static_cast<int>(lastn)
-               << "/" << static_cast<int>(lastd);
+              << "/" << static_cast<int>(lastd);
           s = buf.str ();
         }
     }
@@ -537,8 +539,7 @@ pr_min_internal (const Matrix& m)
   return result;
 }
 
-// FIXME -- it would be nice to share more code among these
-// functions,..
+// FIXME: it would be nice to share more code among these functions,..
 
 static void
 set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
@@ -652,8 +653,7 @@ set_format (double d, int& fw)
 
   double d_abs = d < 0.0 ? -d : d;
 
-  int digits = (inf_or_nan || d_abs == 0.0)
-    ? 0 : num_digits (d_abs);
+  int digits = (inf_or_nan || d_abs == 0.0) ? 0 : num_digits (d_abs);
 
   set_real_format (digits, inf_or_nan, int_only, fw);
 }
@@ -812,8 +812,8 @@ set_format (const Matrix& m, int& fw, double& scale)
 
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0
-    : std::pow (10.0, calc_scale_exp (x_max - 1));
+  scale = (x_max == 0 || int_or_inf_or_nan)
+            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
@@ -1228,8 +1228,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
-  scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0
-    : std::pow (10.0, calc_scale_exp (x_max - 1));
+  scale = (x_max == 0 || int_or_inf_or_nan)
+            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
                              int_or_inf_or_nan, r_fw, i_fw);
@@ -1384,8 +1384,8 @@ set_format (const Range& r, int& fw, double& scale)
 
   int x_min = min_abs == 0.0 ? 0 : num_digits (min_abs);
 
-  scale = (x_max == 0 || all_ints) ? 1.0
-    : std::pow (10.0, calc_scale_exp (x_max - 1));
+  scale = (x_max == 0 || all_ints)
+            ? 1.0 : std::pow (10.0, calc_scale_exp (x_max - 1));
 
   set_range_format (x_max, x_min, all_ints, fw);
 }
@@ -1445,8 +1445,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 {
   if (fmt)
     {
-      // Unless explicitly asked for, always print in big-endian
-      // format for hex and bit formats.
+      // Unless explicitly asked for, always print in big-endian format
+      // for hex and bit formats.
       //
       //   {bit,hex}_format == 1: print big-endian
       //   {bit,hex}_format == 2: print native
@@ -1456,10 +1456,9 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           equiv tmp;
           tmp.d = d;
 
-          // Unless explicitly asked for, always print in big-endian
-          // format.
+          // Unless explicitly asked for, always print in big-endian format.
 
-          // FIXME -- will bad things happen if we are
+          // FIXME: will bad things happen if we are
           // interrupted before resetting the format flags and fill
           // character?
 
@@ -1600,7 +1599,8 @@ pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
 }
 
 static void
-print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc, bool pr_as_read_syntax)
+print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
+                    bool pr_as_read_syntax)
 {
   assert (nr == 0 || nc == 0);
 
@@ -1939,7 +1939,7 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
               col += inc;
 
               if (col >= nc)
-                  os << " ]";
+                os << " ]";
               else
                 os << " ...\n";
             }
@@ -1956,11 +1956,11 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
           // kluge. Get the true width of a number.
           int zero_fw;
 
-            {
-              std::ostringstream tmp_oss;
-              pr_float (tmp_oss, 0.0, fw, scale);
-              zero_fw = tmp_oss.str ().length ();
-            }
+          {
+            std::ostringstream tmp_oss;
+            pr_float (tmp_oss, 0.0, fw, scale);
+            zero_fw = tmp_oss.str ().length ();
+          }
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
@@ -2133,7 +2133,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
   octave_idx_type nr = cm.rows ();
   octave_idx_type nc = cm.columns ();
 
- if (nr == 0 || nc == 0)
+  if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
@@ -2269,7 +2269,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
   octave_idx_type nr = cm.rows ();
   octave_idx_type nc = cm.columns ();
 
- if (nr == 0 || nc == 0)
+  if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
@@ -2355,7 +2355,7 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
               col += inc;
 
               if (col >= nc)
-                  os << " ]";
+                os << " ]";
               else
                 os << " ...\n";
             }
@@ -2372,11 +2372,11 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
           // kluge. Get the true width of a number.
           int zero_fw;
 
-            {
-              std::ostringstream tmp_oss;
-              pr_complex (tmp_oss, Complex (0.0), r_fw, i_fw, scale);
-              zero_fw = tmp_oss.str ().length ();
-            }
+          {
+            std::ostringstream tmp_oss;
+            pr_complex (tmp_oss, Complex (0.0), r_fw, i_fw, scale);
+            zero_fw = tmp_oss.str ().length ();
+          }
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
@@ -2502,7 +2502,7 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
               col += inc;
 
               if (col >= nc)
-                  os << " ]";
+                os << " ]";
               else
                 os << " ...\n";
             }
@@ -2556,8 +2556,8 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
       break;
 
     default:
-      print_nd_array <ComplexNDArray, Complex,
-                      ComplexMatrix> (os, nda, pr_as_read_syntax);
+      print_nd_array <ComplexNDArray, Complex, ComplexMatrix>
+                      (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2568,7 +2568,7 @@ octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
   octave_print_internal (os, double (d), pr_as_read_syntax);
 }
 
-// FIXME -- write single precision versions of the printing functions.
+// FIXME: write single precision versions of the printing functions.
 
 void
 octave_print_internal (std::ostream& os, float d, bool pr_as_read_syntax)
@@ -2608,21 +2608,24 @@ void
 octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, ComplexMatrix (cm), pr_as_read_syntax, extra_indent);
+  octave_print_internal (os, ComplexMatrix (cm), pr_as_read_syntax,
+                         extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplexDiagMatrix& cm,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, ComplexDiagMatrix (cm), pr_as_read_syntax, extra_indent);
+  octave_print_internal (os, ComplexDiagMatrix (cm), pr_as_read_syntax,
+                         extra_indent);
 }
 
 void
 octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
                        bool pr_as_read_syntax, int extra_indent)
 {
-  octave_print_internal (os, ComplexNDArray (nda), pr_as_read_syntax, extra_indent);
+  octave_print_internal (os, ComplexNDArray (nda), pr_as_read_syntax,
+                         extra_indent);
 }
 
 void
@@ -2828,8 +2831,8 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
       break;
 
     default:
-      print_nd_array <charNDArray, char,
-                      charMatrix> (os, nda, pr_as_read_syntax);
+      print_nd_array <charNDArray, char, charMatrix> (os, nda,
+                                                      pr_as_read_syntax);
       break;
     }
 }
@@ -2847,7 +2850,7 @@ void
 octave_print_internal (std::ostream& os, const Array<std::string>& nda,
                        bool pr_as_read_syntax, int /* extra_indent */)
 {
-  // FIXME -- this mostly duplicates the code in the print_nd_array<>
+  // FIXME: this mostly duplicates the code in the print_nd_array<>
   // function. Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
@@ -2905,8 +2908,8 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
 
           Array<std::string> page (nda.index (idx), dim_vector (nr, nc));
 
-          // FIXME -- need to do some more work to put these
-          // in neatly aligned columns...
+          // FIXME: need to do some more work to put these
+          //        in neatly aligned columns...
 
           octave_idx_type n_rows = page.rows ();
           octave_idx_type n_cols = page.cols ();
@@ -3019,11 +3022,11 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
 }
 
-// FIXME -- all this mess with abs is an attempt to avoid seeing
+// FIXME: all this mess with abs is an attempt to avoid seeing
 //
 //   warning: comparison of unsigned expression < 0 is always false
 //
-// from GCC.  Isn't there a better way
+// from GCC.  Isn't there a better way?
 
 template <class T>
 /* static */ inline T
@@ -3118,7 +3121,7 @@ template <class T>
 octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                                 bool pr_as_read_syntax, int extra_indent)
 {
-  // FIXME -- this mostly duplicates the code in the print_nd_array<>
+  // FIXME: this mostly duplicates the code in the print_nd_array<>
   // function. Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
@@ -3224,14 +3227,15 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
           for (octave_idx_type i = 0; i < dims.numel (); i++)
             {
-              int new_digits = static_cast<int>
-                (gnulib::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
+              int new_digits
+                = static_cast<int>
+                  (gnulib::floor (log10 (double (abs (nda(i).value ()))) + 1.0));
 
               if (new_digits > digits)
                 digits = new_digits;
 
               if (! isneg)
-              isneg = (abs (nda(i).value ()) != nda(i).value ());
+                isneg = (abs (nda(i).value ()) != nda(i).value ());
             }
 
           fw = digits + isneg;
@@ -3363,7 +3367,7 @@ octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 }
 
 DEFUN (rats, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rats (@var{x}, @var{len})\n\
 Convert @var{x} into a rational approximation represented as a string.\n\
 You can convert the string back into a matrix as follows:\n\
@@ -3443,7 +3447,7 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
 }
 
 DEFUN (disp, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} disp (@var{x})\n\
 Display the value of @var{x}.  For example:\n\
 \n\
@@ -3487,7 +3491,7 @@ returns the formatted output in a string.\n\
 }
 
 DEFUN (fdisp, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fdisp (@var{fid}, @var{x})\n\
 Display the value of @var{x} on the stream @var{fid}.  For example:\n\
 \n\
@@ -3759,7 +3763,7 @@ set_format_style (int argc, const string_vector& argv)
 }
 
 DEFUN (format, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} format\n\
 @deftypefnx {Command} {} format options\n\
 Reset or specify the format of the output produced by @code{disp} and\n\
@@ -3943,7 +3947,7 @@ to produce a more readable output with less data per page.  (default).\n\
 }
 
 DEFUN (fixed_point_format, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} fixed_point_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} fixed_point_format (@var{new_val}, \"local\")\n\
@@ -3982,7 +3986,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (print_empty_dimensions, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
@@ -4011,7 +4015,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (split_long_rows, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} split_long_rows ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} split_long_rows (@var{new_val}, \"local\")\n\
@@ -4049,7 +4053,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (output_max_field_width, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} output_max_field_width ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} output_max_field_width (@var{new_val}, \"local\")\n\
@@ -4067,7 +4071,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (output_precision, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} output_precision ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} output_precision (@var{new_val}, \"local\")\n\

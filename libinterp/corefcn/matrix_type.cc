@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 
 DEFUN (matrix_type, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{type} =} matrix_type (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{type} =} matrix_type (@var{A}, \"nocompute\")\n\
 @deftypefnx {Built-in Function} {@var{A} =} matrix_type (@var{A}, @var{type})\n\
@@ -124,7 +124,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
   else
     {
       bool autocomp = true;
-      if (nargin == 2 && args(1).is_string () && args(1).string_value () == "nocompute")
+      if (nargin == 2 && args(1).is_string ()
+          && args(1).string_value () == "nocompute")
         {
           nargin = 1;
           autocomp = false;
@@ -214,7 +215,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
               // Ok, we're changing the matrix type
               std::string str_typ = args(1).string_value ();
 
-              // FIXME -- why do I have to explicitly call the constructor?
+              // FIXME: why do I have to explicitly call the constructor?
               MatrixType mattyp = MatrixType ();
 
               octave_idx_type nl = 0;
@@ -236,7 +237,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                     mattyp.mark_as_upper_triangular ();
                   else if (str_typ == "lower")
                     mattyp.mark_as_lower_triangular ();
-                  else if (str_typ == "banded" || str_typ == "banded positive definite")
+                  else if (str_typ == "banded"
+                           || str_typ == "banded positive definite")
                     {
                       if (nargin != 4)
                         error ("matrix_type: banded matrix type requires 4 arguments");
@@ -275,7 +277,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 
                   if (! error_state)
                     {
-                      if (nargin == 3 && (str_typ == "upper" || str_typ == "lower"))
+                      if (nargin == 3
+                          && (str_typ == "upper" || str_typ == "lower"))
                         {
                           const ColumnVector perm =
                             ColumnVector (args (2).vector_value ());
@@ -294,7 +297,9 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                   OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
                                   for (octave_idx_type i = 0; i < len; i++)
-                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+                                    p[i] = static_cast<octave_idx_type>
+                                           (perm (i))
+                                           - 1;
 
                                   if (str_typ == "upper")
                                     mattyp.mark_as_permuted (len, p);
@@ -303,8 +308,9 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                 }
                             }
                         }
-                      else if (nargin != 2 && str_typ != "banded positive definite" &&
-                               str_typ != "banded")
+                      else if (nargin != 2
+                               && str_typ != "banded positive definite"
+                               && str_typ != "banded")
                         error ("matrix_type: Invalid number of arguments");
 
                       if (! error_state)
@@ -315,8 +321,9 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                               octave_value (args(0).sparse_complex_matrix_value (),
                                             mattyp);
                           else
-                            retval = octave_value (args(0).sparse_matrix_value (),
-                                                   mattyp);
+                            retval
+                              = octave_value (args(0).sparse_matrix_value (),
+                                              mattyp);
                         }
                     }
                 }
@@ -336,7 +343,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                     {
                       if (args(0).is_single_type ())
                         {
-                          FloatComplexMatrix m = args(0).float_complex_matrix_value ();
+                          FloatComplexMatrix m;
+                          m = args(0).float_complex_matrix_value ();
                           if (!error_state)
                             {
                               mattyp = MatrixType (m);
@@ -410,7 +418,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
               // Ok, we're changing the matrix type
               std::string str_typ = args(1).string_value ();
 
-              // FIXME -- why do I have to explicitly call the constructor?
+              // FIXME: why do I have to explicitly call the constructor?
               MatrixType mattyp = MatrixType (MatrixType::Unknown, true);
 
               if (error_state)
@@ -437,7 +445,8 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                   else if (str_typ == "unknown")
                     mattyp.invalidate_type ();
                   else
-                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str ());
+                    error ("matrix_type: Unknown matrix type %s",
+                           str_typ.c_str ());
 
                   if (! error_state)
                     {
@@ -461,7 +470,9 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                   OCTAVE_LOCAL_BUFFER (octave_idx_type, p, len);
 
                                   for (octave_idx_type i = 0; i < len; i++)
-                                    p[i] = static_cast<octave_idx_type> (perm (i)) - 1;
+                                    p[i] = static_cast<octave_idx_type>
+                                           (perm (i))
+                                           - 1;
 
                                   if (str_typ == "upper")
                                     mattyp.mark_as_permuted (len, p);
@@ -480,23 +491,23 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                             {
                               if (args(0).is_complex_type ())
                                 retval = octave_value
-                                  (args(0).float_complex_matrix_value (),
-                                   mattyp);
+                                         (args(0).float_complex_matrix_value (),
+                                          mattyp);
                               else
                                 retval = octave_value
-                                  (args(0).float_matrix_value (),
-                                   mattyp);
+                                         (args(0).float_matrix_value (),
+                                          mattyp);
                             }
                           else
                             {
                               if (args(0).is_complex_type ())
                                 retval = octave_value
-                                  (args(0).complex_matrix_value (),
-                                   mattyp);
+                                         (args(0).complex_matrix_value (),
+                                          mattyp);
                               else
                                 retval = octave_value
-                                  (args(0).matrix_value (),
-                                   mattyp);
+                                         (args(0).matrix_value (),
+                                          mattyp);
                             }
                         }
                     }

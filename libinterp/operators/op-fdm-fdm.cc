@@ -54,7 +54,8 @@ DEFBINOP_OP (mul, float_diag_matrix, float_diag_matrix, *)
 
 DEFBINOP (div, float_diag_matrix, float_diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_diag_matrix&, const octave_float_diag_matrix&);
+  CAST_BINOP_ARGS (const octave_float_diag_matrix&,
+                   const octave_float_diag_matrix&);
 
   return xdiv (v1.float_diag_matrix_value (),
                v2.float_diag_matrix_value ());
@@ -62,7 +63,8 @@ DEFBINOP (div, float_diag_matrix, float_diag_matrix)
 
 DEFBINOP (ldiv, float_diag_matrix, float_diag_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_diag_matrix&, const octave_float_diag_matrix&);
+  CAST_BINOP_ARGS (const octave_float_diag_matrix&,
+                   const octave_float_diag_matrix&);
 
   return xleftdiv (v1.float_diag_matrix_value (),
                    v2.float_diag_matrix_value ());
@@ -90,14 +92,23 @@ install_fdm_fdm_ops (void)
   INSTALL_UNOP (op_transpose, octave_float_diag_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_float_diag_matrix, transpose);
 
-  INSTALL_BINOP (op_add, octave_float_diag_matrix, octave_float_diag_matrix, add);
-  INSTALL_BINOP (op_sub, octave_float_diag_matrix, octave_float_diag_matrix, sub);
-  INSTALL_BINOP (op_mul, octave_float_diag_matrix, octave_float_diag_matrix, mul);
-  INSTALL_BINOP (op_div, octave_float_diag_matrix, octave_float_diag_matrix, div);
-  INSTALL_BINOP (op_ldiv, octave_float_diag_matrix, octave_float_diag_matrix, ldiv);
+  INSTALL_BINOP (op_add, octave_float_diag_matrix, octave_float_diag_matrix,
+                 add);
+  INSTALL_BINOP (op_sub, octave_float_diag_matrix, octave_float_diag_matrix,
+                 sub);
+  INSTALL_BINOP (op_mul, octave_float_diag_matrix, octave_float_diag_matrix,
+                 mul);
+  INSTALL_BINOP (op_div, octave_float_diag_matrix, octave_float_diag_matrix,
+                 div);
+  INSTALL_BINOP (op_ldiv, octave_float_diag_matrix, octave_float_diag_matrix,
+                 ldiv);
 
-  INSTALL_CONVOP (octave_float_diag_matrix, octave_float_matrix, float_diag_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_float_diag_matrix, octave_diag_matrix, float_diag_matrix_to_diag_matrix);
-  INSTALL_ASSIGNCONV (octave_float_diag_matrix, octave_float_matrix, octave_float_matrix);
-  INSTALL_WIDENOP (octave_float_diag_matrix, octave_float_matrix, float_diag_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_float_diag_matrix, octave_float_matrix,
+                  float_diag_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_float_diag_matrix, octave_diag_matrix,
+                  float_diag_matrix_to_diag_matrix);
+  INSTALL_ASSIGNCONV (octave_float_diag_matrix, octave_float_matrix,
+                      octave_float_matrix);
+  INSTALL_WIDENOP (octave_float_diag_matrix, octave_float_matrix,
+                   float_diag_matrix_to_float_matrix);
 }

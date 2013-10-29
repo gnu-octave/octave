@@ -68,20 +68,21 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_scalar::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_scalar::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_numeric_demotion_function,
+            octave_float_scalar::static_type_id ());
 }
 
 octave_value
 octave_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
+  // FIXME: this doesn't solve the problem of
   //
   //   a = 1; a([1,1], [1,1], [1,1])
   //
   // and similar constructions.  Hmm...
 
-  // FIXME -- using this constructor avoids narrowing the
+  // FIXME: using this constructor avoids narrowing the
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
@@ -132,7 +133,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 
       if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
-          // FIXME -- is there something better we could do?
+          // FIXME: is there something better we could do?
 
           ival = 0;
 

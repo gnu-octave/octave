@@ -77,12 +77,18 @@ DEFUNOP (transpose, char_matrix_str)
       } \
   }
 
-DEFCHARNDBINOP_FN (lt, <, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_lt)
-DEFCHARNDBINOP_FN (le, <=, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_le)
-DEFCHARNDBINOP_FN (eq, ==, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_eq)
-DEFCHARNDBINOP_FN (ge, >=, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_ge)
-DEFCHARNDBINOP_FN (gt, >, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_gt)
-DEFCHARNDBINOP_FN (ne, !=, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_ne)
+DEFCHARNDBINOP_FN (lt, <, char_matrix_str, char_matrix_str, char_array,
+                   char_array, mx_el_lt)
+DEFCHARNDBINOP_FN (le, <=, char_matrix_str, char_matrix_str, char_array,
+                   char_array, mx_el_le)
+DEFCHARNDBINOP_FN (eq, ==, char_matrix_str, char_matrix_str, char_array,
+                   char_array, mx_el_eq)
+DEFCHARNDBINOP_FN (ge, >=, char_matrix_str, char_matrix_str, char_array,
+                   char_array, mx_el_ge)
+DEFCHARNDBINOP_FN (gt, >, char_matrix_str, char_matrix_str, char_array,
+                   char_array, mx_el_gt)
+DEFCHARNDBINOP_FN (ne, !=, char_matrix_str, char_matrix_str, char_array,
+                   char_array, mx_el_ne)
 
 DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 {
@@ -108,48 +114,66 @@ install_str_str_ops (void)
   INSTALL_BINOP (op_lt, octave_char_matrix_str, octave_char_matrix_str, lt);
   INSTALL_BINOP (op_lt, octave_char_matrix_str, octave_char_matrix_sq_str, lt);
   INSTALL_BINOP (op_lt, octave_char_matrix_sq_str, octave_char_matrix_str, lt);
-  INSTALL_BINOP (op_lt, octave_char_matrix_sq_str, octave_char_matrix_sq_str, lt);
+  INSTALL_BINOP (op_lt, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                 lt);
 
   INSTALL_BINOP (op_le, octave_char_matrix_str, octave_char_matrix_str, le);
   INSTALL_BINOP (op_le, octave_char_matrix_str, octave_char_matrix_sq_str, le);
   INSTALL_BINOP (op_le, octave_char_matrix_sq_str, octave_char_matrix_str, le);
-  INSTALL_BINOP (op_le, octave_char_matrix_sq_str, octave_char_matrix_sq_str, le);
+  INSTALL_BINOP (op_le, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                 le);
 
   INSTALL_BINOP (op_eq, octave_char_matrix_str, octave_char_matrix_str, eq);
   INSTALL_BINOP (op_eq, octave_char_matrix_str, octave_char_matrix_sq_str, eq);
   INSTALL_BINOP (op_eq, octave_char_matrix_sq_str, octave_char_matrix_str, eq);
-  INSTALL_BINOP (op_eq, octave_char_matrix_sq_str, octave_char_matrix_sq_str, eq);
+  INSTALL_BINOP (op_eq, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                 eq);
 
   INSTALL_BINOP (op_ge, octave_char_matrix_str, octave_char_matrix_str, ge);
   INSTALL_BINOP (op_ge, octave_char_matrix_str, octave_char_matrix_sq_str, ge);
   INSTALL_BINOP (op_ge, octave_char_matrix_sq_str, octave_char_matrix_str, ge);
-  INSTALL_BINOP (op_ge, octave_char_matrix_sq_str, octave_char_matrix_sq_str, ge);
+  INSTALL_BINOP (op_ge, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                 ge);
 
   INSTALL_BINOP (op_gt, octave_char_matrix_str, octave_char_matrix_str, gt);
   INSTALL_BINOP (op_gt, octave_char_matrix_str, octave_char_matrix_sq_str, gt);
   INSTALL_BINOP (op_gt, octave_char_matrix_sq_str, octave_char_matrix_str, gt);
-  INSTALL_BINOP (op_gt, octave_char_matrix_sq_str, octave_char_matrix_sq_str, gt);
+  INSTALL_BINOP (op_gt, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                 gt);
 
   INSTALL_BINOP (op_ne, octave_char_matrix_str, octave_char_matrix_str, ne);
   INSTALL_BINOP (op_ne, octave_char_matrix_str, octave_char_matrix_sq_str, ne);
   INSTALL_BINOP (op_ne, octave_char_matrix_sq_str, octave_char_matrix_str, ne);
-  INSTALL_BINOP (op_ne, octave_char_matrix_sq_str, octave_char_matrix_sq_str, ne);
+  INSTALL_BINOP (op_ne, octave_char_matrix_sq_str, octave_char_matrix_sq_str,
+                 ne);
 
   INSTALL_CATOP (octave_char_matrix_str, octave_char_matrix_str, str_str);
   INSTALL_CATOP (octave_char_matrix_str, octave_char_matrix_sq_str, str_str);
   INSTALL_CATOP (octave_char_matrix_sq_str, octave_char_matrix_str, str_str);
   INSTALL_CATOP (octave_char_matrix_sq_str, octave_char_matrix_sq_str, str_str);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_char_matrix_str, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_char_matrix_sq_str, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_char_matrix_str, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_char_matrix_sq_str, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_char_matrix_str,
+                    assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str,
+                    octave_char_matrix_sq_str,
+                    assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str,
+                    octave_char_matrix_str,
+                    assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str,
+                    octave_char_matrix_sq_str, assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_sq_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_null_sq_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_null_sq_str,
+                    null_assign);
 
 }

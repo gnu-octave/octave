@@ -71,10 +71,11 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 
       while (state == GL2PS_OVERFLOW)
         {
-          // For LaTeX output the fltk print process uses two drawnow() commands.
-          // The first one is for the pdf/ps/eps graph to be included.  The print_cmd
-          // is saved as old_print_cmd.  Then the second drawnow() outputs the tex-file
-          // and the graphic filename to be included is extracted from old_print_cmd.
+          // For LaTeX output the fltk print process uses 2 drawnow() commands.
+          // The first one is for the pdf/ps/eps graph to be included.  The
+          // print_cmd is saved as old_print_cmd.  Then the second drawnow()
+          // outputs the tex-file and the graphic filename to be included is
+          // extracted from old_print_cmd.
           std::string include_graph;
           std::size_t found_redirect = old_print_cmd.find (">");
           if (found_redirect != std::string::npos)
@@ -85,7 +86,8 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           if (n_begin != std::string::npos)
             {
               std::size_t n_end = include_graph.find_last_not_of (" ");
-              include_graph = include_graph.substr (n_begin, n_end - n_begin + 1);
+              include_graph = include_graph.substr (n_begin,
+                                                    n_end - n_begin + 1);
             }
           else
             include_graph = "foobar-inc";
@@ -183,7 +185,7 @@ glps_renderer::set_font (const base_properties& props)
   else
     fontname = "Helvetica";
 
-  // FIXME -- add support for bold and italic
+  // FIXME: add support for bold and italic
 }
 
 template <typename T>

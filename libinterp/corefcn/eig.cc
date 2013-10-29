@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (eig, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{lambda} =} eig (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{lambda} =} eig (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\

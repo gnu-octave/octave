@@ -75,7 +75,8 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
               if (xisnan (val(i,0)))
                 error ("%s: SIZE has invalid NaN entries", fcn);
               else if (NINTbig (val(i,0)) < 0)
-                error ("%s: all dimensions in SIZE must be greater than zero", fcn);
+                error ("%s: all dimensions in SIZE must be greater than zero",
+                       fcn);
               else
                 {
                   dims(i) = NINTbig(val(i,0));
@@ -150,7 +151,7 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 }
 
 DEFUN (fftn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} fftn (@var{A})\n\
 @deftypefnx {Built-in Function} {} fftn (@var{A}, @var{size})\n\
 Compute the N-dimensional discrete Fourier transform of @var{A} using\n\
@@ -169,7 +170,7 @@ is resized and padded with zeros.\n\
 }
 
 DEFUN (ifftn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} ifftn (@var{A})\n\
 @deftypefnx {Built-in Function} {} ifftn (@var{A}, @var{size})\n\
 Compute the inverse N-dimensional discrete Fourier transform of @var{A}\n\

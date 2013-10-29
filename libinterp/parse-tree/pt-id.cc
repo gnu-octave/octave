@@ -136,7 +136,7 @@ tree_identifier::dup (symbol_table::scope_id sc,
   // The new tree_identifier object contains a symbol_record
   // entry from the duplicated scope.
 
-  // FIXME -- is this the best way?
+  // FIXME: is this the best way?
   symbol_table::symbol_record new_sym
     = symbol_table::find_symbol (name (), sc);
 

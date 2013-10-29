@@ -99,7 +99,8 @@ public:
                                   std::string& dir_name)
   {
     return instance_ok ()
-      ? instance->do_find_method (class_name, meth, dir_name) : std::string ();
+           ? instance->do_find_method (class_name, meth, dir_name)
+           : std::string ();
   }
 
   static std::string find_method (const std::string& class_name,
@@ -112,19 +113,19 @@ public:
   static std::list<std::string> methods (const std::string& class_name)
   {
     return instance_ok ()
-      ? instance->do_methods (class_name) : std::list<std::string> ();
+           ? instance->do_methods (class_name) : std::list<std::string> ();
   }
 
   static std::list<std::string> overloads (const std::string& meth)
   {
     return instance_ok ()
-      ? instance->do_overloads (meth) : std::list<std::string> ();
+           ? instance->do_overloads (meth) : std::list<std::string> ();
   }
 
   static std::string find_fcn (const std::string& fcn, std::string& dir_name)
   {
     return instance_ok ()
-      ? instance->do_find_fcn (fcn, dir_name) : std::string ();
+           ? instance->do_find_fcn (fcn, dir_name) : std::string ();
   }
 
   static std::string find_fcn (const std::string& fcn)
@@ -137,7 +138,7 @@ public:
                                        const std::string& fcn)
   {
     return instance_ok ()
-      ? instance->do_find_private_fcn (dir, fcn) : std::string ();
+           ? instance->do_find_private_fcn (dir, fcn) : std::string ();
   }
 
   static std::string find_fcn_file (const std::string& fcn)
@@ -145,7 +146,7 @@ public:
     std::string dir_name;
 
     return instance_ok () ?
-      instance->do_find_fcn (fcn, dir_name, M_FILE) : std::string ();
+           instance->do_find_fcn (fcn, dir_name, M_FILE) : std::string ();
   }
 
   static std::string find_oct_file (const std::string& fcn)
@@ -153,7 +154,7 @@ public:
     std::string dir_name;
 
     return instance_ok () ?
-      instance->do_find_fcn (fcn, dir_name, OCT_FILE) : std::string ();
+           instance->do_find_fcn (fcn, dir_name, OCT_FILE) : std::string ();
   }
 
   static std::string find_mex_file (const std::string& fcn)
@@ -161,37 +162,37 @@ public:
     std::string dir_name;
 
     return instance_ok () ?
-      instance->do_find_fcn (fcn, dir_name, MEX_FILE) : std::string ();
+           instance->do_find_fcn (fcn, dir_name, MEX_FILE) : std::string ();
   }
 
   static std::string find_file (const std::string& file)
   {
     return instance_ok ()
-      ? instance->do_find_file (file) : std::string ();
+           ? instance->do_find_file (file) : std::string ();
   }
 
   static std::string find_dir (const std::string& dir)
   {
     return instance_ok ()
-      ? instance->do_find_dir (dir) : std::string ();
+           ? instance->do_find_dir (dir) : std::string ();
   }
 
   static string_vector find_matching_dirs (const std::string& dir)
   {
     return instance_ok ()
-      ? instance->do_find_matching_dirs (dir) : string_vector ();
+           ? instance->do_find_matching_dirs (dir) : string_vector ();
   }
 
   static std::string find_first_of (const string_vector& files)
   {
     return instance_ok () ?
-      instance->do_find_first_of (files) : std::string ();
+           instance->do_find_first_of (files) : std::string ();
   }
 
   static string_vector find_all_first_of (const string_vector& files)
   {
     return instance_ok () ?
-      instance->do_find_all_first_of (files) : string_vector ();
+           instance->do_find_all_first_of (files) : string_vector ();
   }
 
   static string_vector dirs (void)
@@ -202,13 +203,13 @@ public:
   static std::list<std::string> dir_list (void)
   {
     return instance_ok ()
-      ? instance->do_dir_list () : std::list<std::string> ();
+           ? instance->do_dir_list () : std::list<std::string> ();
   }
 
   static string_vector files (const std::string& dir, bool omit_exts = false)
   {
     return instance_ok ()
-      ? instance->do_files (dir, omit_exts) : string_vector ();
+           ? instance->do_files (dir, omit_exts) : string_vector ();
   }
 
   static string_vector fcn_names (void)
@@ -241,7 +242,8 @@ public:
 
   static std::string get_command_line_path (void)
   {
-    return instance_ok () ? instance->do_get_command_line_path () : std::string ();
+    return instance_ok () ? instance->do_get_command_line_path ()
+                          : std::string ();
   }
 
   static std::string system_path (void)
@@ -302,7 +304,7 @@ private:
       : dir_name (), abs_dir_name (), is_relative (false),
         dir_mtime (), dir_time_last_checked (),
         all_files (), fcn_files (), private_file_map (), method_file_map ()
-      { }
+    { }
 
     dir_info (const std::string& d)
       : dir_name (d), abs_dir_name (), is_relative (false),
@@ -428,7 +430,8 @@ private:
   typedef fcn_map_type::iterator fcn_map_iterator;
 
   // <DIR_NAME, <FCN_NAME, TYPE>>
-  typedef std::map<std::string, dir_info::fcn_file_map_type> private_fcn_map_type;
+  typedef std::map<std::string, dir_info::fcn_file_map_type>
+    private_fcn_map_type;
 
   typedef private_fcn_map_type::const_iterator const_private_fcn_map_iterator;
   typedef private_fcn_map_type::iterator private_fcn_map_iterator;
@@ -553,7 +556,8 @@ private:
 
   std::string do_system_path (void) const { return sys_path; }
 
-  std::string do_get_command_line_path (void) const { return command_line_path; }
+  std::string do_get_command_line_path (void) const
+  { return command_line_path; }
 
   void add_to_fcn_map (const dir_info& di, bool at_end) const;
 

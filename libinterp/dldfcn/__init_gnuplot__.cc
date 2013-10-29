@@ -48,83 +48,83 @@ class gnuplot_graphics_toolkit : public base_graphics_toolkit
 {
 public:
   gnuplot_graphics_toolkit (void)
-      : base_graphics_toolkit ("gnuplot") { }
+    : base_graphics_toolkit ("gnuplot") { }
 
   ~gnuplot_graphics_toolkit (void) { }
 
   bool is_valid (void) const { return true; }
 
   bool initialize (const graphics_object& go)
-    {
-      return go.isa ("figure");
-    }
+  {
+    return go.isa ("figure");
+  }
 
   void finalize (const graphics_object& go)
-    {
-      if (go.isa ("figure"))
-        {
-          const figure::properties& props =
-              dynamic_cast<const figure::properties&> (go.get_properties ());
+  {
+    if (go.isa ("figure"))
+      {
+        const figure::properties& props =
+          dynamic_cast<const figure::properties&> (go.get_properties ());
 
-          send_quit (props.get___plot_stream__ ());
-        }
-    }
+        send_quit (props.get___plot_stream__ ());
+      }
+  }
 
   void update (const graphics_object& go, int id)
-    {
-      if (go.isa ("figure"))
-        {
-          graphics_object obj (go);
+  {
+    if (go.isa ("figure"))
+      {
+        graphics_object obj (go);
 
-          figure::properties& props =
-              dynamic_cast<figure::properties&> (obj.get_properties ());
+        figure::properties& props =
+          dynamic_cast<figure::properties&> (obj.get_properties ());
 
-          switch (id)
-            {
-            case base_properties::ID_VISIBLE:
-              if (! props.is_visible ())
-                {
-                  send_quit (props.get___plot_stream__ ());
-                  props.set___plot_stream__ (Matrix ());
-                  props.set___enhanced__ (false);
-                }
-              break;
-            }
-        }
-    }
+        switch (id)
+          {
+          case base_properties::ID_VISIBLE:
+            if (! props.is_visible ())
+              {
+                send_quit (props.get___plot_stream__ ());
+                props.set___plot_stream__ (Matrix ());
+                props.set___enhanced__ (false);
+              }
+            break;
+          }
+      }
+  }
 
   void redraw_figure (const graphics_object& go) const
-    {
-      octave_value_list args;
-      args(0) = go.get_handle ().as_octave_value ();
-      feval ("__gnuplot_drawnow__", args);
-    }
+  {
+    octave_value_list args;
+    args(0) = go.get_handle ().as_octave_value ();
+    feval ("__gnuplot_drawnow__", args);
+  }
 
   void print_figure (const graphics_object& go, const std::string& term,
                      const std::string& file, bool mono,
                      const std::string& debug_file) const
-    {
-      octave_value_list args;
-      if (! debug_file.empty ())
-        args(4) = debug_file;
-      args(3) = mono;
-      args(2) = file;
-      args(1) = term;
-      args(0) = go.get_handle ().as_octave_value ();
-      feval ("__gnuplot_drawnow__", args);
-    }
+  {
+    octave_value_list args;
+    if (! debug_file.empty ())
+      args(4) = debug_file;
+    args(3) = mono;
+    args(2) = file;
+    args(1) = term;
+    args(0) = go.get_handle ().as_octave_value ();
+    feval ("__gnuplot_drawnow__", args);
+  }
 
   Matrix get_canvas_size (const graphics_handle&) const
-    {
-      Matrix sz (1, 2, 0.0);
-      return sz;
-    }
+  {
+    Matrix sz (1, 2, 0.0);
+    return sz;
+  }
 
   double get_screen_resolution (void) const
-    { return 72.0; }
+  { return 72.0; }
 
   Matrix get_screen_size (void) const
-    { return Matrix (1, 2, 0.0); }
+  { return Matrix (1, 2, 0.0); }
 
   void close (void)
   {
@@ -141,29 +141,29 @@ public:
 private:
 
   void send_quit (const octave_value& pstream) const
-    {
-      if (! pstream.is_empty ())
-        {
-          octave_value_list args;
-          Matrix fids = pstream.matrix_value ();
+  {
+    if (! pstream.is_empty ())
+      {
+        octave_value_list args;
+        Matrix fids = pstream.matrix_value ();
 
-          if (! error_state)
-            {
-              Ffputs (ovl (fids(0), "\nquit;\n"));
+        if (! error_state)
+          {
+            Ffputs (ovl (fids(0), "\nquit;\n"));
 
-              Ffflush (ovl (fids(0)));
-              Fpclose (ovl (fids(0)));
+            Ffflush (ovl (fids(0)));
+            Fpclose (ovl (fids(0)));
 
-              if (fids.numel () > 1)
-                {
-                  Fpclose (ovl (fids(1)));
+            if (fids.numel () > 1)
+              {
+                Fpclose (ovl (fids(1)));
 
-                  if (fids.numel () > 2)
-                    Fwaitpid (ovl (fids(2)));
-                }
-            }
-        }
-    }
+                if (fids.numel () > 2)
+                  Fwaitpid (ovl (fids(2)));
+              }
+          }
+      }
+  }
 };
 
 // Initialize the fltk graphics toolkit.

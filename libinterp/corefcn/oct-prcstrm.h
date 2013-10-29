@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-stdstrm.h"
 
-// FIXME -- why don't these classes use iprocstream and
-// oprocstream, which in turn use the octave_procbuf class?
+// FIXME: why don't these classes use iprocstream and oprocstream,
+//        which in turn use the octave_procbuf class?
 
 class
 octave_iprocstream : public octave_stdiostream

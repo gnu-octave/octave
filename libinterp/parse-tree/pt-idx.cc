@@ -285,7 +285,8 @@ tree_index_expression::rvalue (int nargout)
 }
 
 octave_value_list
-tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list)
+tree_index_expression::rvalue (int nargout,
+                               const std::list<octave_lvalue> *lvalue_list)
 {
   octave_value_list retval;
 
@@ -394,7 +395,8 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
               break;
 
             case '.':
-              idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
+              idx.push_back (octave_value (get_struct_index (p_arg_nm,
+                                                             p_dyn_field)));
               break;
 
             default:

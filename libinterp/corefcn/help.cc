@@ -788,7 +788,7 @@ const static map_type operators_map (operators, operators + size (operators));
 const static map_type keywords_map (keywords, keywords + size (keywords));
 const static string_vector keyword_names = names (keywords_map);
 
-// FIXME -- It's not likely that this does the right thing now.
+// FIXME: It's not likely that this does the right thing now.
 
 string_vector
 make_name_list (void)
@@ -845,9 +845,10 @@ looks_like_html (const std::string& msg)
 {
   const size_t p1 = msg.find ('\n');
   std::string t = msg.substr (0, p1);
-  const size_t p2 = t.find ("<html"); // FIXME: this comparison should be case-insensitive
+  // FIXME: this comparison should be case-insensitive
+  const size_t p2 = t.find ("<html");
 
-   return (p2 != std::string::npos);
+  return (p2 != std::string::npos);
 }
 
 static bool
@@ -889,7 +890,7 @@ raw_help_from_symbol_table (const std::string& nm, std::string& h,
 
           if (w.empty ())
             w = fcn->is_user_function ()
-              ? "command-line function" : "built-in function";
+                ? "command-line function" : "built-in function";
         }
     }
 
@@ -936,7 +937,7 @@ raw_help (const std::string& nm, bool& symbol_found)
 }
 
 DEFUN (built_in_docstrings_file, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} built_in_docstrings_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} built_in_docstrings_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} built_in_docstrings_file (@var{new_val}, \"local\")\n\
@@ -981,7 +982,7 @@ install_built_in_docstrings (void)
           return;
         }
 
-      // FIXME -- eliminate fixed buffer size.
+      // FIXME: eliminate fixed buffer size.
       size_t bufsize = 100000;
 
       OCTAVE_LOCAL_BUFFER (char, buf, bufsize);
@@ -1130,7 +1131,7 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 }
 
 DEFUN (get_help_text_from_file, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
 Return the raw help text from the file @var{fname}.\n\
 \n\
@@ -1168,7 +1169,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 // operators.
 
 DEFUN (__operators__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} __operators__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1180,7 +1181,7 @@ Undocumented internal function.\n\
 // keywords.
 
 DEFUN (__keywords__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} __keywords__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1192,7 +1193,7 @@ Undocumented internal function.\n\
 // functions.
 
 DEFUN (__builtins__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} __builtins__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1233,7 +1234,7 @@ do_which (const std::string& name, std::string& type)
                 }
               else
                 type = val.is_user_script ()
-                  ? std::string ("script") : std::string ("function");
+                       ? std::string ("script") : std::string ("function");
             }
         }
       else
@@ -1271,7 +1272,7 @@ do_which (const std::string& name)
 }
 
 DEFUN (__which__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __which__ (@var{name}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1318,7 +1319,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
-// FIXME -- Are we sure this function always does the right thing?
+// FIXME: Are we sure this function always does the right thing?
 inline bool
 file_is_in_dir (const std::string filename, const std::string dir)
 {
@@ -1326,7 +1327,8 @@ file_is_in_dir (const std::string filename, const std::string dir)
     {
       const int dir_len = dir.size ();
       const int filename_len = filename.size ();
-      const int max_allowed_seps = file_ops::is_dir_sep (dir[dir_len-1]) ? 0 : 1;
+      const int max_allowed_seps = file_ops::is_dir_sep (dir[dir_len-1]) ? 0
+                                                                         : 1;
 
       int num_seps = 0;
       for (int i = dir_len; i < filename_len; i++)
@@ -1344,7 +1346,7 @@ file_is_in_dir (const std::string filename, const std::string dir)
 // the current path.
 
 DEFUN (__list_functions__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {@var{retval} =} __list_functions__ ()\n\
 @deftypefnx {Function File} {@var{retval} =} __list_functions__ (@var{directory})\n\
 Undocumented internal function.\n\
@@ -1384,7 +1386,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (doc_cache_file, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
@@ -1408,7 +1410,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (texi_macros_file, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} texi_macros_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} texi_macros_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} texi_macros_file (@var{new_val}, \"local\")\n\
@@ -1432,7 +1434,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (info_file, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
@@ -1454,7 +1456,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (info_program, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
@@ -1478,7 +1480,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (makeinfo_program, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
@@ -1496,7 +1498,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (suppress_verbose_help_message, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\

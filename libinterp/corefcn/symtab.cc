@@ -55,7 +55,8 @@ std::map<std::string, octave_value> symbol_table::global_table;
 
 std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
-std::map<std::string, std::set<std::string> > symbol_table::class_precedence_table;
+std::map<std::string, std::set<std::string> >
+  symbol_table::class_precedence_table;
 
 std::map<std::string, std::list<std::string> > symbol_table::parent_map;
 
@@ -83,13 +84,13 @@ symbol_table::symbol_record::symbol_record_rep::active_context (void) const
 {
   octave_user_function *fcn = curr_fcn;
 
-  // FIXME -- If active_context () == -1, then it does not make much
+  // FIXME: If active_context () == -1, then it does not make much
   // sense to use this symbol_record. This means an attempt at accessing
   // a variable from a function that has not been called yet is
   // happening. This should be cleared up when an implementing closures.
 
   return fcn && fcn->active_context () != static_cast<context_id> (-1)
-    ? fcn->active_context () : xcurrent_context;
+         ? fcn->active_context () : xcurrent_context;
 }
 
 void
@@ -155,7 +156,7 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
 // elements, we also check if the working directory has changed
 // since the last time the function was loaded/parsed).
 //
-// FIXME -- perhaps this should be done for all loaded functions when
+// FIXME: perhaps this should be done for all loaded functions when
 // the prompt is printed or the directory has changed, and then we
 // would not check for it when finding symbol definitions.
 
@@ -191,7 +192,7 @@ out_of_date_check (octave_value& function,
 
   if (fcn)
     {
-      // FIXME -- we need to handle subfunctions properly here.
+      // FIXME: we need to handle subfunctions properly here.
 
       if (! fcn->is_subfunction ())
         {
@@ -218,10 +219,10 @@ out_of_date_check (octave_value& function,
                     {
                       int nm_len = nm.length ();
 
-                      if (octave_env::absolute_pathname (nm)
-                          && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
-                                              || nm.substr (nm_len-4) == ".mex"))
-                              || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
+                      if (octave_env::absolute_pathname (nm) &&
+                          ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
+                                           || nm.substr (nm_len-4) == ".mex"))
+                            || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
                         file = nm;
                       else
                         {
@@ -243,7 +244,8 @@ out_of_date_check (octave_value& function,
 
                                   while (it != plist.end ())
                                     {
-                                      file = load_path::find_method (*it, nm, dir_name);
+                                      file = load_path::find_method (*it, nm,
+                                                                     dir_name);
                                       if (! file.empty ())
                                         break;
 
@@ -451,7 +453,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 }
 
 void
-symbol_table::fcn_info::fcn_info_rep:: mark_subfunction_in_scope_as_private
+symbol_table::fcn_info::fcn_info_rep::mark_subfunction_in_scope_as_private
   (scope_id scope, const std::string& class_name)
 {
   scope_val_iterator p = subfunctions.find (scope);
@@ -518,8 +520,10 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types]
            || (btyp_isarray (ityp)
                && (! btyp_isarray (jtyp)
                    || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
-                   || ((ityp == btyp_double || ityp == btyp_complex || ityp == btyp_char)
-                       && (jtyp == btyp_float || jtyp == btyp_float_complex)))));
+                   || ((ityp == btyp_double || ityp == btyp_complex
+                        || ityp == btyp_char)
+                       && (jtyp == btyp_float
+                           || jtyp == btyp_float_complex)))));
 
         sup_table[i][j] = use_j ? jtyp : ityp;
       }
@@ -646,7 +650,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
           scope_val_iterator r = subfunctions.find (scope);
           if (r != subfunctions.end ())
             {
-              // FIXME -- out-of-date check here.
+              // FIXME: out-of-date check here.
 
               return r->second;
             }
@@ -898,7 +902,7 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
       scope_val_iterator r = subfunctions.find (scope);
       if (r != subfunctions.end ())
         {
-          // FIXME -- out-of-date check here.
+          // FIXME: out-of-date check here.
 
           return r->second;
         }
@@ -914,7 +918,8 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 }
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::find_method (const std::string& dispatch_type)
+symbol_table::fcn_info::fcn_info_rep::find_method
+  (const std::string& dispatch_type)
 {
   octave_value retval;
 
@@ -1059,8 +1064,8 @@ fcn_file_name (const octave_value& fcn)
 }
 
 void
-symbol_table::fcn_info::fcn_info_rep::dump
-  (std::ostream& os, const std::string& prefix) const
+symbol_table::fcn_info::fcn_info_rep::dump (std::ostream& os,
+                                            const std::string& prefix) const
 {
   os << prefix << name
      << " ["
@@ -1145,8 +1150,8 @@ symbol_table::find (const std::string& name,
   symbol_table *inst = get_instance (xcurrent_scope);
 
   return inst
-    ? inst->do_find (name, args, skip_variables, local_funcs)
-    : octave_value ();
+         ? inst->do_find (name, args, skip_variables, local_funcs)
+         : octave_value ();
 }
 
 octave_value
@@ -1231,7 +1236,8 @@ symbol_table::dump (std::ostream& os, scope_id scope)
             {
               os << "  subfunctions defined in this scope:\n";
 
-              for (std::map<std::string, octave_value>::const_iterator p = sfuns.begin ();
+              for (std::map<std::string,
+                   octave_value>::const_iterator p = sfuns.begin ();
                    p != sfuns.end (); p++)
                 os << "    " << p->first << "\n";
 
@@ -1283,7 +1289,7 @@ void
 symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
                                                const std::string& dir_name)
 {
-  // FIXME -- is this the best way to do this?  Maybe it would be
+  // FIXME: is this the best way to do this?  Maybe it would be
   // better if we had a map from scope to list of subfunctions
   // stored with the function.  Do we?
 
@@ -1522,7 +1528,7 @@ symbol_table::do_update_nest (void)
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave checks\n\
@@ -1603,7 +1609,7 @@ need to recompiled.\n\
 */
 
 DEFUN (__current_scope__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{scope}, @var{context}]} __dump_symtab_info__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1617,7 +1623,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__dump_symtab_info__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __dump_symtab_info__ ()\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (@var{scope})\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"scopes\")\n\
@@ -1657,8 +1663,8 @@ Undocumented internal function.\n\
 
               octave_idx_type k = 0;
 
-              for (std::list<symbol_table::scope_id>::const_iterator p = lst.begin ();
-                   p != lst.end (); p++)
+              for (std::list<symbol_table::scope_id>::const_iterator
+                   p = lst.begin (); p != lst.end (); p++)
                 v.xelem (k++) = *p;
 
               retval = v;
@@ -1688,7 +1694,7 @@ Undocumented internal function.\n\
 
 #if 0
 
-// FIXME -- should we have functions like this in Octave?
+// FIXME: should we have functions like this in Octave?
 
 DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 {

@@ -130,7 +130,7 @@ DEFCONV (sparse_complex_matrix_conv, complex, sparse_complex_matrix)
   CAST_CONV_ARG (const octave_complex&);
 
   return new octave_sparse_complex_matrix
-    (SparseComplexMatrix (v.complex_matrix_value ()));
+         (SparseComplexMatrix (v.complex_matrix_value ()));
 }
 
 void

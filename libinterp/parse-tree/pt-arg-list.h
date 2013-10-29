@@ -47,11 +47,11 @@ public:
 
   tree_argument_list (void)
     : list_includes_magic_end (false), list_includes_magic_tilde (false),
-    simple_assign_lhs (false) { }
+      simple_assign_lhs (false) { }
 
   tree_argument_list (tree_expression *t)
     : list_includes_magic_end (false), list_includes_magic_tilde (false),
-    simple_assign_lhs (false)
+      simple_assign_lhs (false)
   { append (t); }
 
   ~tree_argument_list (void);
@@ -59,15 +59,15 @@ public:
   bool has_magic_end (void) const;
 
   bool has_magic_tilde (void) const
-    { return list_includes_magic_tilde; }
+  { return list_includes_magic_tilde; }
 
   tree_expression *remove_front (void)
-    {
-      iterator p = begin ();
-      tree_expression *retval = *p;
-      erase (p);
-      return retval;
-    }
+  {
+    iterator p = begin ();
+    tree_expression *retval = *p;
+    erase (p);
+    return retval;
+  }
 
   void append (const element_type& s);
 

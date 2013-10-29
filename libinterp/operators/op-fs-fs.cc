@@ -127,7 +127,8 @@ DEFBINOP (el_ldiv, float_scalar, float_scalar)
 DEFSCALARBOOLOP_OP (el_and, float_scalar, float_scalar, &&)
 DEFSCALARBOOLOP_OP (el_or, float_scalar, float_scalar, ||)
 
-DEFNDCATOP_FN (fs_fs, float_scalar, float_scalar, float_array, float_array, concat)
+DEFNDCATOP_FN (fs_fs, float_scalar, float_scalar, float_array, float_array,
+               concat)
 DEFNDCATOP_FN (s_fs, scalar, float_scalar, float_array, float_array, concat)
 DEFNDCATOP_FN (fs_s, float_scalar, scalar, float_array, float_array, concat)
 
@@ -135,7 +136,8 @@ CONVDECL (float_to_scalar)
 {
   CAST_CONV_ARG (const octave_float_scalar&);
 
-  return new octave_matrix (Matrix (1, 1, static_cast<double>(v.float_value ())));
+  return new octave_matrix (Matrix (1, 1,
+                                    static_cast<double>(v.float_value ())));
 }
 
 void
@@ -173,12 +175,16 @@ install_fs_fs_ops (void)
   INSTALL_CATOP (octave_scalar, octave_float_scalar, s_fs);
   INSTALL_CATOP (octave_float_scalar, octave_scalar, fs_s);
 
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_scalar, octave_float_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_scalar,
+                      octave_float_matrix);
   INSTALL_ASSIGNCONV (octave_scalar, octave_float_scalar, octave_matrix);
 
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_matrix, octave_float_matrix);
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_str, octave_float_matrix);
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_sq_str, octave_float_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_matrix,
+                      octave_float_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_str,
+                      octave_float_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_null_sq_str,
+                      octave_float_matrix);
 
   INSTALL_CONVOP (octave_float_scalar, octave_matrix, float_to_scalar);
 }

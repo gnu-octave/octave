@@ -274,11 +274,11 @@ get_file_format (std::istream& file, const std::string& filename)
                   file.clear ();
                   file.seekg (0, std::ios::beg);
 
-                  // FIXME -- looks_like_mat_ascii_file does not check to see
-                  // whether the file contains numbers.  It just skips comments and
-                  // checks for the same number of words on each line.  We may need
-                  // a better check here.  The best way to do that might be just
-                  // to try to read the file and see if it works.
+                  // FIXME: looks_like_mat_ascii_file does not check to see
+                  // whether the file contains numbers.  It just skips comments
+                  // and checks for the same number of words on each line.  We
+                  // may need a better check here.  The best way to do that
+                  // might be just to try to read the file and see if it works.
 
                   if (looks_like_mat_ascii_file (file, filename))
                     retval = LS_MAT_ASCII;
@@ -555,7 +555,7 @@ is_octave_data_file (const std::string& fname)
 }
 
 DEFUN (load, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} load file\n\
 @deftypefnx {Command} {} load options file\n\
 @deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
@@ -840,7 +840,8 @@ Force Octave to assume the file is in Octave's text format.\n\
                   else if (format == LS_MAT5_BINARY
                            || format == LS_MAT7_BINARY)
                     {
-                      if (read_mat5_binary_file_header (file, swap, false, orig_fname) < 0)
+                      if (read_mat5_binary_file_header (file, swap, false,
+                                                        orig_fname) < 0)
                         {
                           if (file) file.close ();
                           return retval;
@@ -874,7 +875,8 @@ Force Octave to assume the file is in Octave's text format.\n\
                   else if (format == LS_MAT5_BINARY
                            || format == LS_MAT7_BINARY)
                     {
-                      if (read_mat5_binary_file_header (file, swap, false, orig_fname) < 0)
+                      if (read_mat5_binary_file_header (file, swap, false,
+                                                        orig_fname) < 0)
                         {
                           if (file) file.close ();
                           return retval;
@@ -1039,7 +1041,8 @@ save_vars (std::ostream& os, const std::string& pattern,
 
   size_t saved = 0;
 
-  typedef std::list<symbol_table::symbol_record>::const_iterator const_vars_iterator;
+  typedef std::list<symbol_table::symbol_record>::const_iterator
+    const_vars_iterator;
 
   for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
     {
@@ -1261,7 +1264,7 @@ write_header (std::ostream& os, load_save_format format)
               os << comment_string << "\n";
           }
       }
-    break;
+      break;
 
     default:
       break;
@@ -1362,7 +1365,8 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
   double save_mem_size = 0;
 
-  typedef std::list<symbol_table::symbol_record>::const_iterator const_vars_iterator;
+  typedef std::list<symbol_table::symbol_record>::const_iterator
+    const_vars_iterator;
 
   for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
     {
@@ -1376,7 +1380,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
           double val_size = val.byte_size () / 1024;
 
-          // FIXME -- maybe we should try to throw out the largest first...
+          // FIXME: maybe we should try to throw out the largest first...
 
           if (Voctave_core_file_limit < 0
               || save_mem_size + val_size < Voctave_core_file_limit)
@@ -1399,7 +1403,7 @@ dump_octave_core (void)
 {
   if (Vcrash_dumps_octave_core)
     {
-      // FIXME -- should choose better file name?
+      // FIXME: should choose better file name?
 
       const char *fname = Voctave_core_file_name.c_str ();
 
@@ -1485,7 +1489,7 @@ dump_octave_core (void)
 }
 
 DEFUN (save, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} save file\n\
 @deftypefnx {Command} {} save options file\n\
 @deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
@@ -1669,8 +1673,8 @@ the file @file{data} in Octave's binary format.\n\
           if (append)
             warning ("save: ignoring -append option for output to stdout");
 
-          // FIXME -- should things intended for the screen end up
-          // in a octave_value (string)?
+          // FIXME: should things intended for the screen
+          //        end up in an octave_value (string)?
 
           save_vars (argv, i, argc, octave_stdout, format,
                      save_as_floats, true);
@@ -1727,12 +1731,12 @@ the file @file{data} in Octave's binary format.\n\
                          save_as_floats, write_header_info);
 
               hdf5_file.close ();
-          }
-        else
-          {
-            gripe_file_open ("save", fname);
-            return retval;
-          }
+            }
+          else
+            {
+              gripe_file_open ("save", fname);
+              return retval;
+            }
         }
       else
 #endif /* HAVE_HDF5 */
@@ -1786,7 +1790,7 @@ the file @file{data} in Octave's binary format.\n\
 }
 
 DEFUN (crash_dumps_octave_core, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
@@ -1804,7 +1808,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (save_default_options, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} save_default_options ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} save_default_options (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} save_default_options (@var{new_val}, \"local\")\n\
@@ -1823,7 +1827,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (octave_core_file_limit, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} octave_core_file_limit (@var{new_val}, \"local\")\n\
@@ -1846,7 +1850,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (octave_core_file_name, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
@@ -1864,7 +1868,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (octave_core_file_options, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} octave_core_file_options (@var{new_val}, \"local\")\n\
@@ -1884,7 +1888,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (save_header_format_string, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} save_header_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} save_header_format_string (@var{new_val}, \"local\")\n\

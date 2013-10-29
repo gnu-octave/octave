@@ -61,7 +61,7 @@ get_chol_l (const CHOLT& fact)
 }
 
 DEFUN_DLD (chol, args, nargout,
-"-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{R} =} chol (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{R}, @var{p}] =} chol (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
@@ -161,9 +161,9 @@ sparse matrices.\n\
             vecout = true;
           else if (tmp.compare ("lower") == 0)
             // FIXME currently the option "lower" is handled by transposing the
-            //  matrix, factorizing it with the lapack function DPOTRF ('U', ...)
-            //  and finally transposing the factor. It would be more efficient to use
-            //  DPOTRF ('L', ...) in this case.
+            //  matrix, factorizing it with the lapack function
+            //  DPOTRF ('U', ...) and finally transposing the factor.  It would
+            //  be more efficient to use DPOTRF ('L', ...) in this case.
             LLt = true;
           else if (tmp.compare ("upper") == 0)
             LLt = false;
@@ -319,10 +319,10 @@ sparse matrices.\n\
               if (! error_state)
                 {
                   octave_idx_type info;
-                  
+
                   CHOL fact;
                   if (LLt)
-                     fact = CHOL (m.transpose (), info);
+                    fact = CHOL (m.transpose (), info);
                   else
                     fact = CHOL (m, info);
 
@@ -345,7 +345,7 @@ sparse matrices.\n\
               if (! error_state)
                 {
                   octave_idx_type info;
-                  
+
                   ComplexCHOL fact;
                   if (LLt)
                     fact = ComplexCHOL (m.transpose (), info);
@@ -383,7 +383,7 @@ sparse matrices.\n\
 */
 
 DEFUN_DLD (cholinv, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cholinv (@var{A})\n\
 Use the Cholesky@tie{}factorization to compute the inverse of the\n\
 symmetric positive definite matrix @var{A}.\n\
@@ -530,7 +530,7 @@ symmetric positive definite matrix @var{A}.\n\
 */
 
 DEFUN_DLD (chol2inv, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} chol2inv (@var{U})\n\
 Invert a symmetric, positive definite square matrix from its Cholesky\n\
 decomposition, @var{U}.  Note that @var{U} should be an upper-triangular\n\
@@ -622,7 +622,7 @@ using @code{inv}.\n\
 }
 
 DEFUN_DLD (cholupdate, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
 Update or downdate a Cholesky@tie{}factorization.  Given an upper triangular\n\
 matrix @var{R} and a column vector @var{u}, attempt to determine another\n\
@@ -700,7 +700,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
                   {
                     // complex case
                     FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                    FloatComplexColumnVector u = argu.float_complex_column_vector_value ();
+                    FloatComplexColumnVector u =
+                      argu.float_complex_column_vector_value ();
 
                     FloatComplexCHOL fact;
                     fact.set (R);
@@ -830,7 +831,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 */
 
 DEFUN_DLD (cholinsert, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{R1} =} cholinsert (@var{R}, @var{j}, @var{u})\n\
 @deftypefnx {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
@@ -895,7 +896,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
                     {
                       // complex case
                       FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                      FloatComplexColumnVector u = argu.float_complex_column_vector_value ();
+                      FloatComplexColumnVector u =
+                        argu.float_complex_column_vector_value ();
 
                       FloatComplexCHOL fact;
                       fact.set (R);
@@ -922,7 +924,8 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
                     {
                       // complex case
                       ComplexMatrix R = argr.complex_matrix_value ();
-                      ComplexColumnVector u = argu.complex_column_vector_value ();
+                      ComplexColumnVector u =
+                        argu.complex_column_vector_value ();
 
                       ComplexCHOL fact;
                       fact.set (R);
@@ -1071,7 +1074,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!     -3, -2, -1,  0];
 %!
 %! ca = a + i*b;
-%!   
+%!
 %! cca  = chol (ca);
 %!
 %! ccal  = chol (ca, "lower");
@@ -1091,7 +1094,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 */
 
 DEFUN_DLD (choldelete, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
@@ -1224,7 +1227,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 */
 
 DEFUN_DLD (cholshift, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian\n\
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper\n\
@@ -1251,7 +1254,8 @@ triangular, return the Cholesky@tie{}factorization of\n\
   octave_value argi = args(1);
   octave_value argj = args(2);
 
-  if (argr.is_numeric_type () && argi.is_real_scalar () && argj.is_real_scalar ())
+  if (argr.is_numeric_type ()
+      && argi.is_real_scalar () && argj.is_real_scalar ())
     {
       octave_idx_type n = argr.rows ();
       octave_idx_type i = argi.scalar_value ();
@@ -1359,7 +1363,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
 
 %!test
 %! R = chol (single (A));
-%! 
+%!
 %! i = 1;  j = 3;  p = [1:i-1, shift(i:j,-1), j+1:4];
 %! R1 = cholshift (R, i, j);
 %!

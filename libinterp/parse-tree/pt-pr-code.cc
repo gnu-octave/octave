@@ -1037,8 +1037,7 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
 }
 
 void
-tree_print_code::visit_unwind_protect_command
-  (tree_unwind_protect_command& cmd)
+tree_print_code::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   print_comment_list (cmd.leading_comment ());
 

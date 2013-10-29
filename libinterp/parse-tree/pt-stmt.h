@@ -138,14 +138,14 @@ public:
       script_body (false) { append (s); }
 
   ~tree_statement_list (void)
-    {
-      while (! empty ())
-        {
-          iterator p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
+  {
+    while (! empty ())
+      {
+        iterator p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
 
   void mark_as_function_body (void) { function_body = true; }
 

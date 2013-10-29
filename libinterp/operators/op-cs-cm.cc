@@ -68,16 +68,24 @@ DEFBINOP (ldiv, complex, complex_matrix)
   return octave_value (v2.complex_array_value () / d);
 }
 
-DEFNDCMPLXCMPOP_FN (lt, complex, complex_matrix, complex, complex_array, mx_el_lt)
-DEFNDCMPLXCMPOP_FN (le, complex, complex_matrix, complex, complex_array, mx_el_le)
-DEFNDCMPLXCMPOP_FN (eq, complex, complex_matrix, complex, complex_array, mx_el_eq)
-DEFNDCMPLXCMPOP_FN (ge, complex, complex_matrix, complex, complex_array, mx_el_ge)
-DEFNDCMPLXCMPOP_FN (gt, complex, complex_matrix, complex, complex_array, mx_el_gt)
-DEFNDCMPLXCMPOP_FN (ne, complex, complex_matrix, complex, complex_array, mx_el_ne)
+DEFNDCMPLXCMPOP_FN (lt, complex, complex_matrix, complex, complex_array,
+                    mx_el_lt)
+DEFNDCMPLXCMPOP_FN (le, complex, complex_matrix, complex, complex_array,
+                    mx_el_le)
+DEFNDCMPLXCMPOP_FN (eq, complex, complex_matrix, complex, complex_array,
+                    mx_el_eq)
+DEFNDCMPLXCMPOP_FN (ge, complex, complex_matrix, complex, complex_array,
+                    mx_el_ge)
+DEFNDCMPLXCMPOP_FN (gt, complex, complex_matrix, complex, complex_array,
+                    mx_el_gt)
+DEFNDCMPLXCMPOP_FN (ne, complex, complex_matrix, complex, complex_array,
+                    mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, complex, complex_matrix, complex, complex_array, *)
-DEFNDBINOP_FN (el_div, complex, complex_matrix, complex, complex_array, x_el_div)
-DEFNDBINOP_FN (el_pow, complex, complex_matrix, complex, complex_array, elem_xpow)
+DEFNDBINOP_FN (el_div, complex, complex_matrix, complex, complex_array,
+               x_el_div)
+DEFNDBINOP_FN (el_pow, complex, complex_matrix, complex, complex_array,
+               elem_xpow)
 
 DEFBINOP (el_ldiv, complex, complex_matrix)
 {
@@ -91,10 +99,13 @@ DEFBINOP (el_ldiv, complex, complex_matrix)
   return octave_value (v2.complex_array_value () / d);
 }
 
-DEFNDBINOP_FN (el_and, complex, complex_matrix, complex, complex_array, mx_el_and)
-DEFNDBINOP_FN (el_or,  complex, complex_matrix, complex, complex_array, mx_el_or)
+DEFNDBINOP_FN (el_and, complex, complex_matrix, complex, complex_array,
+               mx_el_and)
+DEFNDBINOP_FN (el_or,  complex, complex_matrix, complex, complex_array,
+               mx_el_or)
 
-DEFNDCATOP_FN (cs_cm, complex, complex_matrix, complex_array, complex_array, concat)
+DEFNDCATOP_FN (cs_cm, complex, complex_matrix, complex_array, complex_array,
+               concat)
 
 DEFCONV (complex_matrix_conv, complex, complex_matrix)
 {
@@ -127,7 +138,8 @@ install_cs_cm_ops (void)
 
   INSTALL_CATOP (octave_complex, octave_complex_matrix, cs_cm);
 
-  INSTALL_ASSIGNCONV (octave_complex, octave_complex_matrix, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_complex, octave_complex_matrix,
+                      octave_complex_matrix);
 
   INSTALL_WIDENOP (octave_complex, octave_complex_matrix, complex_matrix_conv);
 }

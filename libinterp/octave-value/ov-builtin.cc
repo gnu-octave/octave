@@ -50,7 +50,8 @@ octave_builtin::subsref (const std::string& type,
 octave_value_list
 octave_builtin::subsref (const std::string& type,
                          const std::list<octave_value_list>& idx,
-                         int nargout, const std::list<octave_lvalue>* lvalue_list)
+                         int nargout,
+                         const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -77,11 +78,11 @@ octave_builtin::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
   //
-  // FIXME -- Note that if a function call returns multiple
+  // FIXME: Note that if a function call returns multiple
   // values, and there is further indexing to perform, then we are
   // ignoring all but the first value.  Is this really what we want to
   // do?  If it is not, then what should happen for stat("file").size,
@@ -130,7 +131,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
           retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.
-          // FIXME -- perhaps true builtins should be allowed?
+          // FIXME: perhaps true builtins should be allowed?
           retval.make_storable_values ();
           // Fix the case of a single undefined value.
           // This happens when a compiled function uses

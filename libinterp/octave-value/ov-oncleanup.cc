@@ -137,7 +137,8 @@ octave_oncleanup::load_ascii (std::istream& /* is */)
 }
 
 bool
-octave_oncleanup::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
+octave_oncleanup::save_binary (std::ostream& /* os */,
+                               bool& /* save_as_floats */)
 {
   warn_save_load ();
   return true;
@@ -185,7 +186,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 DEFUN (onCleanup, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{c} =} onCleanup (@var{action})\n\
 Create a special object that executes a given function upon destruction.\n\
 If the object is copied to multiple variables (or cell or struct array\n\

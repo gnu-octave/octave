@@ -79,7 +79,8 @@ CONVDECL (bool_matrix_to_double_matrix)
 {
   CAST_CONV_ARG (const octave_sparse_bool_matrix&);
 
-  return new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
+  return new octave_sparse_matrix (SparseMatrix
+                                    (v.sparse_bool_matrix_value ()));
 }
 
 void

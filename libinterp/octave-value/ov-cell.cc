@@ -77,7 +77,8 @@ octave_base_matrix<Cell>::assign (const octave_value_list& idx, const Cell& rhs)
 
 template <>
 void
-octave_base_matrix<Cell>::assign (const octave_value_list& idx, octave_value rhs)
+octave_base_matrix<Cell>::assign (const octave_value_list& idx,
+                                  octave_value rhs)
 {
   // FIXME: Really?
   if (rhs.is_cell ())
@@ -93,8 +94,8 @@ octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
   matrix.delete_elements (idx);
 }
 
-// FIXME: this list of specializations is becoming so long that we should really ask
-// whether octave_cell should inherit from octave_base_matrix at all.
+// FIXME: this list of specializations is becoming so long that we should
+// really ask whether octave_cell should inherit from octave_base_matrix at all.
 
 template <>
 octave_value
@@ -174,7 +175,7 @@ octave_cell::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
 
@@ -226,7 +227,7 @@ octave_cell::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
 
@@ -317,7 +318,7 @@ octave_cell::subsasgn (const std::string& type,
                         tmp.make_unique (); // probably a no-op.
                       }
                     else
-                      // optimization: ignore the copy still stored inside our array.
+                      // optimization: ignore copy still stored inside array.
                       tmp.make_unique (1);
 
                     if (! error_state)
@@ -358,11 +359,10 @@ octave_cell::subsasgn (const std::string& type,
 
             if (t_rhs.is_cell ())
               octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
+            else if (t_rhs.is_null_value ())
+              octave_base_matrix<Cell>::delete_elements (i);
             else
-              if (t_rhs.is_null_value ())
-                octave_base_matrix<Cell>::delete_elements (i);
-              else
-                octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+              octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
             if (! error_state)
               {
@@ -394,9 +394,11 @@ octave_cell::subsasgn (const std::string& type,
 
                 octave_base_matrix<Cell>::assign (idxf, tmp_cell);
               }
-            else if (idxf.all_scalars () || do_index_op (idxf, true).numel () == 1)
+            else if (idxf.all_scalars ()
+                     || do_index_op (idxf, true).numel () == 1)
               // Regularize a null matrix if stored into a cell.
-              octave_base_matrix<Cell>::assign (idxf, Cell (t_rhs.storable_value ()));
+              octave_base_matrix<Cell>::assign (idxf,
+                                                Cell (t_rhs.storable_value ()));
             else if (! error_state)
               gripe_nonbraced_cs_list_assignment ();
 
@@ -1132,7 +1134,8 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       std::ostringstream buf;
-      int digits = static_cast<int> (gnulib::floor (::log10 (static_cast<double> (nel)) + 1.0));
+      int digits = static_cast<int> (gnulib::floor (::log10 (static_cast<double>
+                                     (nel)) + 1.0));
       buf << "_" << std::setw (digits) << std::setfill ('0') << i;
       std::string s = buf.str ();
 
@@ -1257,7 +1260,7 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
 #endif
 
 DEFUN (iscell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscell (@var{x})\n\
 Return true if @var{x} is a cell array object.\n\
 @seealso{ismatrix, isstruct, iscellstr, isa}\n\
@@ -1274,7 +1277,7 @@ Return true if @var{x} is a cell array object.\n\
 }
 
 DEFUN (cell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cell (@var{n})\n\
 @deftypefnx {Built-in Function} {} cell (@var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} cell (@var{m}, @var{n}, @var{k}, @dots{})\n\
@@ -1334,7 +1337,7 @@ the given dimensions.\n\
 }
 
 DEFUN (iscellstr, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscellstr (@var{cell})\n\
 Return true if every element of the cell array @var{cell} is a\n\
 character string.\n\
@@ -1357,7 +1360,7 @@ character string.\n\
 // declaration) and so we don't have to use feval to call it.
 
 DEFUN (cellstr, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cellstr (@var{string})\n\
 Create a new cell array object from the elements of the string\n\
 array @var{string}.\n\
@@ -1390,7 +1393,7 @@ array @var{string}.\n\
 }
 
 DEFUN (struct2cell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} struct2cell (@var{S})\n\
 Create a new cell array from the objects stored in the struct object.\n\
 If @var{f} is the number of fields in the structure, the resulting\n\
@@ -1443,9 +1446,9 @@ c(2,1,:)(:)\n\
 
           dim_vector result_dv;
           if (m_dv (m_dv.length () - 1) == 1)
-              result_dv.resize (m_dv.length ());
+            result_dv.resize (m_dv.length ());
           else
-              result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
+            result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
 
           result_dv(0) = num_fields;
 

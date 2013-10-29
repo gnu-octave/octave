@@ -60,16 +60,16 @@ DEFUNOP (transpose, sparse_complex_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_complex_matrix&);
   return octave_value
-    (v.sparse_complex_matrix_value ().transpose (),
-     v.matrix_type ().transpose ());
+         (v.sparse_complex_matrix_value ().transpose (),
+          v.matrix_type ().transpose ());
 }
 
 DEFUNOP (hermitian, sparse_complex_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_complex_matrix&);
   return octave_value
-    (v.sparse_complex_matrix_value ().hermitian (),
-     v.matrix_type ().transpose ());
+         (v.sparse_complex_matrix_value ().hermitian (),
+          v.matrix_type ().transpose ());
 }
 
 #if 0

@@ -54,7 +54,8 @@ void
 install_str_m_ops (void)
 {
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_matrix, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_matrix, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_matrix,
+                    assign);
 
   INSTALL_CATOP (octave_char_matrix_str, octave_matrix, str_m);
   INSTALL_CATOP (octave_char_matrix_sq_str, octave_matrix, str_m);

@@ -42,23 +42,23 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool-sparse.h"
 
 DEFUN (issparse, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} issparse (@var{x})\n\
 Return true if @var{x} is a sparse matrix.\n\
 @seealso{ismatrix}\n\
 @end deftypefn")
 {
-   if (args.length () != 1)
-     {
-       print_usage ();
-       return octave_value ();
-     }
-   else
-     return octave_value (args(0).is_sparse_type ());
+  if (args.length () != 1)
+    {
+      print_usage ();
+      return octave_value ();
+    }
+  else
+    return octave_value (args(0).is_sparse_type ());
 }
 
 DEFUN (sparse, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{s} =} sparse (@var{a})\n\
 @deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
 @deftypefnx {Built-in Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
@@ -103,113 +103,113 @@ to have a common size.\n\
 @seealso{full, accumarray}\n\
 @end deftypefn")
 {
-   octave_value retval;
-   int nargin = args.length ();
+  octave_value retval;
+  int nargin = args.length ();
 
-   // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
-   unwind_protect frame;
-   frame.protect_var (Vsparse_auto_mutate);
-   Vsparse_auto_mutate = false;
+  // Temporarily disable sparse_auto_mutate if set (it's obsolete anyway).
+  unwind_protect frame;
+  frame.protect_var (Vsparse_auto_mutate);
+  Vsparse_auto_mutate = false;
 
-   if (nargin == 1)
-     {
-       octave_value arg = args (0);
-       if (arg.is_bool_type ())
-         retval = arg.sparse_bool_matrix_value ();
-       else if (arg.is_complex_type ())
-         retval = arg.sparse_complex_matrix_value ();
-       else if (arg.is_numeric_type ())
-         retval = arg.sparse_matrix_value ();
-       else
-         gripe_wrong_type_arg ("sparse", arg);
-     }
-   else if (nargin == 2)
-     {
-       octave_idx_type m = 0, n = 0;
-       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-         {
-           m = args(0).idx_type_value ();
-           n = args(1).idx_type_value ();
-         }
-       else
-         error ("sparse: dimensions M,N must be scalar");
+  if (nargin == 1)
+    {
+      octave_value arg = args (0);
+      if (arg.is_bool_type ())
+        retval = arg.sparse_bool_matrix_value ();
+      else if (arg.is_complex_type ())
+        retval = arg.sparse_complex_matrix_value ();
+      else if (arg.is_numeric_type ())
+        retval = arg.sparse_matrix_value ();
+      else
+        gripe_wrong_type_arg ("sparse", arg);
+    }
+  else if (nargin == 2)
+    {
+      octave_idx_type m = 0, n = 0;
+      if (args(0).is_scalar_type () && args(1).is_scalar_type ())
+        {
+          m = args(0).idx_type_value ();
+          n = args(1).idx_type_value ();
+        }
+      else
+        error ("sparse: dimensions M,N must be scalar");
 
-       if (! error_state)
-         {
-           if (m >= 0 && n >= 0)
-             retval = SparseMatrix (m, n);
-           else
-             error ("sparse: dimensions M,N must be positive or zero");
-         }
-     }
-   else if (nargin >= 3)
-     {
-       bool summation = true;
-       if (nargin > 3 && args(nargin-1).is_string ())
-         {
-           std::string opt = args(nargin-1).string_value ();
-           if (opt == "unique")
-             summation = false;
-           else if (opt == "sum" || opt == "summation")
-             summation = true;
-           else
-             error ("sparse: invalid option: %s", opt.c_str ());
+      if (! error_state)
+        {
+          if (m >= 0 && n >= 0)
+            retval = SparseMatrix (m, n);
+          else
+            error ("sparse: dimensions M,N must be positive or zero");
+        }
+    }
+  else if (nargin >= 3)
+    {
+      bool summation = true;
+      if (nargin > 3 && args(nargin-1).is_string ())
+        {
+          std::string opt = args(nargin-1).string_value ();
+          if (opt == "unique")
+            summation = false;
+          else if (opt == "sum" || opt == "summation")
+            summation = true;
+          else
+            error ("sparse: invalid option: %s", opt.c_str ());
 
-           nargin -= 1;
-         }
+          nargin -= 1;
+        }
 
-       if (! error_state)
-         {
-           octave_idx_type m = -1, n = -1, nzmax = -1;
-           if (nargin == 6)
-             {
-               nzmax = args(5).idx_type_value ();
-               nargin --;
-             }
+      if (! error_state)
+        {
+          octave_idx_type m = -1, n = -1, nzmax = -1;
+          if (nargin == 6)
+            {
+              nzmax = args(5).idx_type_value ();
+              nargin --;
+            }
 
-           if (nargin == 5)
-             {
-               if (args(3).is_scalar_type () && args(4).is_scalar_type ())
-                 {
-                   m = args(3).idx_type_value ();
-                   n = args(4).idx_type_value ();
-                 }
-               else
-                 error ("sparse: expecting scalar dimensions");
+          if (nargin == 5)
+            {
+              if (args(3).is_scalar_type () && args(4).is_scalar_type ())
+                {
+                  m = args(3).idx_type_value ();
+                  n = args(4).idx_type_value ();
+                }
+              else
+                error ("sparse: expecting scalar dimensions");
 
 
-               if (! error_state && (m < 0 || n < 0))
-                 error ("sparse: dimensions must be non-negative");
-             }
-           else if (nargin != 3)
-             print_usage ();
+              if (! error_state && (m < 0 || n < 0))
+                error ("sparse: dimensions must be non-negative");
+            }
+          else if (nargin != 3)
+            print_usage ();
 
-           if (! error_state)
-             {
-               idx_vector i = args(0).index_vector ();
-               idx_vector j = args(1).index_vector ();
+          if (! error_state)
+            {
+              idx_vector i = args(0).index_vector ();
+              idx_vector j = args(1).index_vector ();
 
-               if (args(2).is_bool_type ())
-                 retval = SparseBoolMatrix (args(2).bool_array_value (), i, j,
-                                            m, n, summation, nzmax);
-               else if (args(2).is_complex_type ())
-                 retval = SparseComplexMatrix (args(2).complex_array_value (),
-                                               i, j, m, n, summation, nzmax);
-               else if (args(2).is_numeric_type ())
-                 retval = SparseMatrix (args(2).array_value (), i, j,
-                                        m, n, summation, nzmax);
-               else
-                 gripe_wrong_type_arg ("sparse", args(2));
-             }
+              if (args(2).is_bool_type ())
+                retval = SparseBoolMatrix (args(2).bool_array_value (), i, j,
+                                           m, n, summation, nzmax);
+              else if (args(2).is_complex_type ())
+                retval = SparseComplexMatrix (args(2).complex_array_value (),
+                                              i, j, m, n, summation, nzmax);
+              else if (args(2).is_numeric_type ())
+                retval = SparseMatrix (args(2).array_value (), i, j,
+                                       m, n, summation, nzmax);
+              else
+                gripe_wrong_type_arg ("sparse", args(2));
+            }
 
-         }
-     }
+        }
+    }
 
-   return retval;
+  return retval;
 }
 
 DEFUN (spalloc, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{s} =} spalloc (@var{m}, @var{n}, @var{nz})\n\
 Create an @var{m}-by-@var{n} sparse matrix with pre-allocated space for at\n\
 most @var{nz} nonzero elements.  This is useful for building the matrix\n\
@@ -245,25 +245,25 @@ the function @code{nzmax}.\n\
 @seealso{nzmax, sparse}\n\
 @end deftypefn")
 {
-   octave_value retval;
-   int nargin = args.length ();
+  octave_value retval;
+  int nargin = args.length ();
 
-   if (nargin == 2 || nargin == 3)
-     {
-       octave_idx_type m = args(0).idx_type_value ();
-       octave_idx_type n = args(1).idx_type_value ();
-       octave_idx_type nz = 0;
-       if (nargin == 3)
-         nz = args(2).idx_type_value ();
-       if (error_state)
-         ;
-       else if (m >= 0 && n >= 0 && nz >= 0)
-         retval = SparseMatrix (dim_vector (m, n), nz);
-       else
-         error ("spalloc: M,N,NZ must be non-negative");
-     }
-   else
-     print_usage ();
+  if (nargin == 2 || nargin == 3)
+    {
+      octave_idx_type m = args(0).idx_type_value ();
+      octave_idx_type n = args(1).idx_type_value ();
+      octave_idx_type nz = 0;
+      if (nargin == 3)
+        nz = args(2).idx_type_value ();
+      if (error_state)
+        ;
+      else if (m >= 0 && n >= 0 && nz >= 0)
+        retval = SparseMatrix (dim_vector (m, n), nz);
+      else
+        error ("spalloc: M,N,NZ must be non-negative");
+    }
+  else
+    print_usage ();
 
-   return retval;
+  return retval;
 }

@@ -45,7 +45,8 @@ extern OCTINTERP_API void
 gripe_nonconformant (void);
 
 extern OCTINTERP_API void
-gripe_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2);
+gripe_nonconformant (octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2);
 
 extern OCTINTERP_API void
 gripe_empty_arg (const char *name, bool is_error);

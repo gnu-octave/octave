@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-sparse.h"
 
 DEFUN (luinc, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
@@ -217,11 +217,13 @@ values of @var{p} @var{q} as vector values.\n\
                           {
                             SparseMatrix P = fact.Pr ();
                             SparseMatrix L = P.transpose () * fact.L ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (L, MatrixType
-                                                      (MatrixType::Permuted_Lower,
-                                                       sm_nr, fact.row_perm ()));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (L, MatrixType
+                                                   (MatrixType::Permuted_Lower,
+                                                    sm_nr, fact.row_perm ()));
                           }
                       }
                       break;
@@ -237,10 +239,12 @@ values of @var{p} @var{q} as vector values.\n\
                               retval(2) = fact.Pr_vec ();
                             else
                               retval(2) = fact.Pr_mat ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;
@@ -263,10 +267,12 @@ values of @var{p} @var{q} as vector values.\n\
                                 retval(3) = fact.Pc_mat ();
                                 retval(2) = fact.Pr_mat ();
                               }
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;
@@ -300,11 +306,13 @@ values of @var{p} @var{q} as vector values.\n\
                           {
                             SparseMatrix P = fact.Pr ();
                             SparseComplexMatrix L = P.transpose () * fact.L ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (L, MatrixType
-                                                      (MatrixType::Permuted_Lower,
-                                                       sm_nr, fact.row_perm ()));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (L, MatrixType
+                                                  (MatrixType::Permuted_Lower,
+                                                   sm_nr, fact.row_perm ()));
                           }
                       }
                       break;
@@ -320,10 +328,12 @@ values of @var{p} @var{q} as vector values.\n\
                               retval(2) = fact.Pr_vec ();
                             else
                               retval(2) = fact.Pr_mat ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;
@@ -346,10 +356,12 @@ values of @var{p} @var{q} as vector values.\n\
                                 retval(3) = fact.Pc_mat ();
                                 retval(2) = fact.Pr_mat ();
                               }
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;

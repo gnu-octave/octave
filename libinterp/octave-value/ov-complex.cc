@@ -66,8 +66,9 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_complex::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_complex::static_type_id ());
+  return
+    octave_base_value::type_conv_info (default_numeric_demotion_function,
+                                       octave_float_complex::static_type_id ());
 }
 
 octave_base_value *
@@ -86,13 +87,13 @@ octave_complex::try_narrowing_conversion (void)
 octave_value
 octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
+  // FIXME: this doesn't solve the problem of
   //
   //   a = i; a([1,1], [1,1], [1,1])
   //
   // and similar constructions.  Hmm...
 
-  // FIXME -- using this constructor avoids narrowing the
+  // FIXME: using this constructor avoids narrowing the
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
@@ -218,7 +219,8 @@ octave_complex::complex_array_value (bool /* force_conversion */) const
 FloatComplexNDArray
 octave_complex::float_complex_array_value (bool /* force_conversion */) const
 {
-  return FloatComplexNDArray (dim_vector (1, 1), static_cast<FloatComplex> (scalar));
+  return FloatComplexNDArray (dim_vector (1, 1),
+                              static_cast<FloatComplex> (scalar));
 }
 
 octave_value

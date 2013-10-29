@@ -108,7 +108,7 @@ along with Octave; see the file COPYING.  If not, see
   return retval
 
 DEFUN (all, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} all (@var{x})\n\
 @deftypefnx {Built-in Function} {} all (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if all elements of the vector\n\
@@ -155,7 +155,7 @@ If the optional argument @var{dim} is supplied, work along dimension\n\
 */
 
 DEFUN (any, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} any (@var{x})\n\
 @deftypefnx {Built-in Function} {} any (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if any element of the vector\n\
@@ -211,7 +211,7 @@ any (eye (2, 4), 2)\n\
 // These mapping functions may also be useful in other places, eh?
 
 DEFUN (atan2, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
 Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
 and @var{x}.  Signal an error if @var{y} and @var{x} do not match in size\n\
@@ -351,7 +351,7 @@ do_hypot (const octave_value& x, const octave_value& y)
 }
 
 DEFUN (hypot, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} hypot (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} hypot (@var{x}, @var{y}, @var{z}, @dots{})\n\
 Compute the element-by-element square root of the sum of the squares of\n\
@@ -414,7 +414,7 @@ map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 }
 
 DEFUN (log2, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} log2 (@var{x})\n\
 @deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})\n\
 Compute the base-2 logarithm of each element of @var{x}.\n\
@@ -449,7 +449,7 @@ $x = 0$, $f = e = 0$.\n\
             {
               FloatNDArray f;
               FloatNDArray x = args(0).float_array_value ();
-              // FIXME -- should E be an int value?
+              // FIXME: should E be an int value?
               FloatMatrix e;
               map_2_xlog2 (x, f, e);
               retval(1) = e;
@@ -459,7 +459,7 @@ $x = 0$, $f = e = 0$.\n\
             {
               FloatComplexNDArray f;
               FloatComplexNDArray x = args(0).float_complex_array_value ();
-              // FIXME -- should E be an int value?
+              // FIXME: should E be an int value?
               FloatNDArray e;
               map_2_xlog2 (x, f, e);
               retval(1) = e;
@@ -470,7 +470,7 @@ $x = 0$, $f = e = 0$.\n\
         {
           NDArray f;
           NDArray x = args(0).array_value ();
-          // FIXME -- should E be an int value?
+          // FIXME: should E be an int value?
           Matrix e;
           map_2_xlog2 (x, f, e);
           retval(1) = e;
@@ -480,7 +480,7 @@ $x = 0$, $f = e = 0$.\n\
         {
           ComplexNDArray f;
           ComplexNDArray x = args(0).complex_array_value ();
-          // FIXME -- should E be an int value?
+          // FIXME: should E be an int value?
           NDArray e;
           map_2_xlog2 (x, f, e);
           retval(1) = e;
@@ -514,7 +514,7 @@ $x = 0$, $f = e = 0$.\n\
 */
 
 DEFUN (rem, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} rem (@var{x}, @var{y})\n\
 @deftypefnx {Mapping Function} {} fmod (@var{x}, @var{y})\n\
 Return the remainder of the division @code{@var{x} / @var{y}}, computed\n\
@@ -577,7 +577,8 @@ agree, or if either of the arguments is complex.\n\
             }
           else
             error ("rem: cannot combine %s and %d",
-                   args(0).class_name ().c_str (), args(1).class_name ().c_str ());
+                   args(0).class_name ().c_str (),
+                   args(1).class_name ().c_str ());
         }
       else if (args(0).is_single_type () || args(1).is_single_type ())
         {
@@ -643,7 +644,7 @@ agree, or if either of the arguments is complex.\n\
 DEFALIAS (fmod, rem)
 
 DEFUN (mod, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} mod (@var{x}, @var{y})\n\
 Compute the modulo of @var{x} and @var{y}.  Conceptually this is given by\n\
 \n\
@@ -710,7 +711,8 @@ either of the arguments is complex.\n\
             }
           else
             error ("mod: cannot combine %s and %d",
-                   args(0).class_name ().c_str (), args(1).class_name ().c_str ());
+                   args(0).class_name ().c_str (),
+                   args(1).class_name ().c_str ());
         }
       else if (args(0).is_single_type () || args(1).is_single_type ())
         {
@@ -793,7 +795,7 @@ either of the arguments is complex.\n\
 %!assert (mod (2.1, 0.2), 0.1, eps)
 */
 
-// FIXME: Need to convert the reduction functions of this file for single precision
+// FIXME: Need to convert reduction functions of this file for single precision
 
 #define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \
   (arg.is_ ## TYPE ## _type ()) \
@@ -852,7 +854,8 @@ either of the arguments is complex.\n\
                     } \
                   else \
                     { \
-                      SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
+                      SparseComplexMatrix tmp \
+                        = arg.sparse_complex_matrix_value (); \
                       \
                       if (! error_state) \
                         retval = tmp.FCN (dim); \
@@ -1024,7 +1027,8 @@ either of the arguments is complex.\n\
                     } \
                   else if (arg.is_single_type ()) \
                     { \
-                      FloatComplexNDArray tmp = arg.float_complex_array_value (); \
+                      FloatComplexNDArray tmp \
+                        = arg.float_complex_array_value (); \
  \
                       if (! error_state) \
                         retval = tmp.FCN (dim); \
@@ -1053,7 +1057,7 @@ either of the arguments is complex.\n\
   return retval
 
 DEFUN (cumprod, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cumprod (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumprod (@var{x}, @var{dim})\n\
 Cumulative product of elements along dimension @var{dim}.  If\n\
@@ -1086,7 +1090,7 @@ Cumulative product of elements along dimension @var{dim}.  If\n\
 */
 
 DEFUN (cumsum, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cumsum (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, \"native\")\n\
@@ -1235,7 +1239,7 @@ See @code{sum} for an explanation of the optional parameters\n\
 */
 
 DEFUN (diag, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{M} =} diag (@var{v})\n\
 @deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{k})\n\
 @deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{m}, @var{n})\n\
@@ -1366,7 +1370,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 */
 
 DEFUN (prod, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} prod (@var{x})\n\
 @deftypefnx {Built-in Function} {} prod (@var{x}, @var{dim})\n\
 Product of elements along dimension @var{dim}.  If @var{dim} is\n\
@@ -1658,7 +1662,7 @@ do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
       retval = octave_value (new octave_class (m, cname, parents));
     }
 
- done:
+done:
   return retval;
 }
 
@@ -1709,7 +1713,8 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
             all_dq_strings_p = false;
           if (all_real_p && ! args(i).is_real_type ())
             all_real_p = false;
-          if (all_cmplx_p && ! (args(i).is_complex_type () || args(i).is_real_type ()))
+          if (all_cmplx_p && ! (args(i).is_complex_type ()
+              || args(i).is_real_type ()))
             all_cmplx_p = false;
           if (!any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
@@ -1798,7 +1803,8 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           dim_vector  dv = args(0).dims ();
 
           // Default concatenation.
-          bool (dim_vector::*concat_rule) (const dim_vector&, int) = &dim_vector::concat;
+          bool (dim_vector::*concat_rule) (const dim_vector&, int)
+            = &dim_vector::concat;
 
           if (dim == -1 || dim == -2)
             {
@@ -2081,7 +2087,7 @@ new matrices.  For example:\n\
 */
 
 DEFUN (vertcat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
 Return the vertical concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 1.\n\
@@ -2105,7 +2111,7 @@ new matrices.  For example:\n\
 */
 
 DEFUN (cat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
 Return the concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
@@ -2175,7 +2181,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 /*
 %!function ret = __testcat (t1, t2, tr, cmplx)
 %!  assert (cat (1, cast ([], t1), cast ([], t2)), cast ([], tr));
-%! 
+%!
 %!  assert (cat (1, cast (1, t1), cast (2, t2)), cast ([1; 2], tr));
 %!  assert (cat (1, cast (1, t1), cast ([2; 3], t2)), cast ([1; 2; 3], tr));
 %!  assert (cat (1, cast ([1; 2], t1), cast (3, t2)), cast ([1; 2; 3], tr));
@@ -2184,7 +2190,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!  assert (cat (2, cast (1, t1), cast ([2, 3], t2)), cast ([1, 2, 3], tr));
 %!  assert (cat (2, cast ([1, 2], t1), cast (3, t2)), cast ([1, 2, 3], tr));
 %!  assert (cat (2, cast ([1, 2], t1), cast ([3, 4], t2)), cast ([1, 2, 3, 4], tr));
-%! 
+%!
 %!  assert ([cast(1, t1); cast(2, t2)], cast ([1; 2], tr));
 %!  assert ([cast(1, t1); cast([2; 3], t2)], cast ([1; 2; 3], tr));
 %!  assert ([cast([1; 2], t1); cast(3, t2)], cast ([1; 2; 3], tr));
@@ -2193,7 +2199,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!  assert ([cast(1, t1), cast([2, 3], t2)], cast ([1, 2, 3], tr));
 %!  assert ([cast([1, 2], t1), cast(3, t2)], cast ([1, 2, 3], tr));
 %!  assert ([cast([1, 2], t1), cast([3, 4], t2)], cast ([1, 2, 3, 4], tr));
-%! 
+%!
 %!  if (nargin == 3 || cmplx)
 %!    assert (cat (1, cast (1i, t1), cast (2, t2)), cast ([1i; 2], tr));
 %!    assert (cat (1, cast (1i, t1), cast ([2; 3], t2)), cast ([1i; 2; 3], tr));
@@ -2203,7 +2209,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!    assert (cat (2, cast (1i, t1), cast ([2, 3], t2)), cast ([1i, 2, 3], tr));
 %!    assert (cat (2, cast ([1i, 2], t1), cast (3, t2)), cast ([1i, 2, 3], tr));
 %!    assert (cat (2, cast ([1i, 2], t1), cast ([3, 4], t2)), cast ([1i, 2, 3, 4], tr));
-%! 
+%!
 %!    assert ([cast(1i, t1); cast(2, t2)], cast ([1i; 2], tr));
 %!    assert ([cast(1i, t1); cast([2; 3], t2)], cast ([1i; 2; 3], tr));
 %!    assert ([cast([1i; 2], t1); cast(3, t2)], cast ([1i; 2; 3], tr));
@@ -2212,7 +2218,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!    assert ([cast(1i, t1), cast([2, 3], t2)], cast ([1i, 2, 3], tr));
 %!    assert ([cast([1i, 2], t1), cast(3, t2)], cast ([1i, 2, 3], tr));
 %!    assert ([cast([1i, 2], t1), cast([3, 4], t2)], cast ([1i, 2, 3, 4], tr));
-%! 
+%!
 %!    assert (cat (1, cast (1, t1), cast (2i, t2)), cast ([1; 2i], tr));
 %!    assert (cat (1, cast (1, t1), cast ([2i; 3], t2)), cast ([1; 2i; 3], tr));
 %!    assert (cat (1, cast ([1; 2], t1), cast (3i, t2)), cast ([1; 2; 3i], tr));
@@ -2221,7 +2227,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!    assert (cat (2, cast (1, t1), cast ([2i, 3], t2)), cast ([1, 2i, 3], tr));
 %!    assert (cat (2, cast ([1, 2], t1), cast (3i, t2)), cast ([1, 2, 3i], tr));
 %!    assert (cat (2, cast ([1, 2], t1), cast ([3i, 4], t2)), cast ([1, 2, 3i, 4], tr));
-%! 
+%!
 %!    assert ([cast(1, t1); cast(2i, t2)], cast ([1; 2i], tr));
 %!    assert ([cast(1, t1); cast([2i; 3], t2)], cast ([1; 2i; 3], tr));
 %!    assert ([cast([1; 2], t1); cast(3i, t2)], cast ([1; 2; 3i], tr));
@@ -2230,7 +2236,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!    assert ([cast(1, t1), cast([2i, 3], t2)], cast ([1, 2i, 3], tr));
 %!    assert ([cast([1, 2], t1), cast(3i, t2)], cast ([1, 2, 3i], tr));
 %!    assert ([cast([1, 2], t1), cast([3i, 4], t2)], cast ([1, 2, 3i, 4], tr));
-%! 
+%!
 %!    assert (cat (1, cast (1i, t1), cast (2i, t2)), cast ([1i; 2i], tr));
 %!    assert (cat (1, cast (1i, t1), cast ([2i; 3], t2)), cast ([1i; 2i; 3], tr));
 %!    assert (cat (1, cast ([1i; 2], t1), cast (3i, t2)), cast ([1i; 2; 3i], tr));
@@ -2239,7 +2245,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!    assert (cat (2, cast (1i, t1), cast ([2i, 3], t2)), cast ([1i, 2i, 3], tr));
 %!    assert (cat (2, cast ([1i, 2], t1), cast (3i, t2)), cast ([1i, 2, 3i], tr));
 %!    assert (cat (2, cast ([1i, 2], t1), cast ([3i, 4], t2)), cast ([1i, 2, 3i, 4], tr));
-%! 
+%!
 %!    assert ([cast(1i, t1); cast(2i, t2)], cast ([1i; 2i], tr));
 %!    assert ([cast(1i, t1); cast([2i; 3], t2)], cast ([1i; 2i; 3], tr));
 %!    assert ([cast([1i; 2], t1); cast(3i, t2)], cast ([1i; 2; 3i], tr));
@@ -2324,7 +2330,7 @@ do_permute (const octave_value_list& args, bool inv)
     {
       Array<int> vec = args(1).int_vector_value ();
 
-      // FIXME -- maybe we should create an idx_vector object
+      // FIXME: maybe we should create an idx_vector object
       // here and pass that to permute?
 
       int n = vec.length ();
@@ -2344,7 +2350,7 @@ do_permute (const octave_value_list& args, bool inv)
 }
 
 DEFUN (permute, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} permute (@var{A}, @var{perm})\n\
 Return the generalized transpose for an N-D array object @var{A}.\n\
 The permutation vector @var{perm} must contain the elements\n\
@@ -2356,7 +2362,7 @@ The permutation vector @var{perm} must contain the elements\n\
 }
 
 DEFUN (ipermute, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ipermute (@var{A}, @var{iperm})\n\
 The inverse of the @code{permute} function.  The expression\n\
 \n\
@@ -2373,7 +2379,7 @@ returns the original array @var{A}.\n\
 }
 
 DEFUN (length, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} length (@var{a})\n\
 Return the length of the object @var{a}.\n\
 \n\
@@ -2395,7 +2401,7 @@ with @sc{matlab}).\n\
 }
 
 DEFUN (ndims, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ndims (@var{a})\n\
 Return the number of dimensions of @var{a}.\n\
 For any array, the result will always be larger than or equal to 2.\n\
@@ -2421,7 +2427,7 @@ ndims (ones (4, 1, 2, 1))\n\
 }
 
 DEFUN (numel, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} numel (@var{a})\n\
 @deftypefnx {Built-in Function} {} numel (@var{a}, @var{idx1}, @var{idx2}, @dots{})\n\
 Return the number of elements in the object @var{a}.\n\
@@ -2468,7 +2474,7 @@ indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 }
 
 DEFUN (size, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} size (@var{a})\n\
 @deftypefnx {Built-in Function} {} size (@var{a}, @var{dim})\n\
 Return the number of rows and columns of @var{a}.\n\
@@ -2559,7 +2565,7 @@ returns the number of columns in the given matrix.\n\
 }
 
 DEFUN (size_equal, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b}, @dots{})\n\
 Return true if the dimensions of all arguments agree.\n\
 Trailing singleton dimensions are ignored.\n\
@@ -2593,7 +2599,7 @@ Called with a single or no argument, size_equal returns true.\n\
 }
 
 DEFUN (nnz, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{scalar} =} nnz (@var{a})\n\
 Return the number of non zero elements in @var{a}.\n\
 @seealso{sparse, nzmax}\n\
@@ -2610,7 +2616,7 @@ Return the number of non zero elements in @var{a}.\n\
 }
 
 DEFUN (nzmax, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{scalar} =} nzmax (@var{SM})\n\
 Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
 Note that Octave tends to crop unused memory at the first opportunity\n\
@@ -2631,7 +2637,7 @@ but in general they will give the same result.\n\
 }
 
 DEFUN (rows, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rows (@var{a})\n\
 Return the number of rows of @var{a}.\n\
 @seealso{columns, size, length, numel, isscalar, isvector, ismatrix}\n\
@@ -2648,7 +2654,7 @@ Return the number of rows of @var{a}.\n\
 }
 
 DEFUN (columns, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} columns (@var{a})\n\
 Return the number of columns of @var{a}.\n\
 @seealso{rows, size, length, numel, isscalar, isvector, ismatrix}\n\
@@ -2665,7 +2671,7 @@ Return the number of columns of @var{a}.\n\
 }
 
 DEFUN (sum, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} sum (@var{x})\n\
 @deftypefnx {Built-in Function} {} sum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"native\")\n\
@@ -2795,7 +2801,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
             MAKE_INT_BRANCH (uint32);
             MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-            // GAGME: Accursed Matlab compatibility...
+              // GAGME: Accursed Matlab compatibility...
             case btyp_char:
               if (isextra)
                 retval = arg.array_value (true).xsum (dim);
@@ -2890,7 +2896,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 */
 
 DEFUN (sumsq, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} sumsq (@var{x})\n\
 @deftypefnx {Built-in Function} {} sumsq (@var{x}, @var{dim})\n\
 Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
@@ -2929,7 +2935,7 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 */
 
 DEFUN (islogical, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} islogical (@var{x})\n\
 @deftypefnx {Built-in Function} {} isbool (@var{x})\n\
 Return true if @var{x} is a logical object.\n\
@@ -2963,7 +2969,7 @@ DEFALIAS (isbool, islogical);
 */
 
 DEFUN (isinteger, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isinteger (@var{x})\n\
 Return true if @var{x} is an integer object (int8, uint8, int16, etc.).\n\
 Note that @w{@code{isinteger (14)}} is false because numeric constants in\n\
@@ -2982,7 +2988,7 @@ Octave are double precision floating point values.\n\
 }
 
 DEFUN (iscomplex, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscomplex (@var{x})\n\
 Return true if @var{x} is a complex-valued numeric object.\n\
 @seealso{isreal, isnumeric, islogical, ischar, isfloat, isa}\n\
@@ -2999,7 +3005,7 @@ Return true if @var{x} is a complex-valued numeric object.\n\
 }
 
 DEFUN (isfloat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isfloat (@var{x})\n\
 Return true if @var{x} is a floating-point numeric object.\n\
 Objects of class double or single are floating-point objects.\n\
@@ -3016,11 +3022,11 @@ Objects of class double or single are floating-point objects.\n\
   return retval;
 }
 
-// FIXME -- perhaps this should be implemented with an
+// FIXME: perhaps this should be implemented with an
 // octave_value member function?
 
 DEFUN (complex, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} complex (@var{x})\n\
 @deftypefnx {Built-in Function} {} complex (@var{re}, @var{im})\n\
 Return a complex result from real arguments.  With 1 real argument @var{x},\n\
@@ -3138,7 +3144,9 @@ complex ([1, 2], [3, 4])\n\
                     result = SparseComplexMatrix (re_val);
                   else
                     {
-                      result = SparseComplexMatrix (re_val.rows (), re_val.cols (), Complex (0, im_val (0)));
+                      result = SparseComplexMatrix (re_val.rows (),
+                                                    re_val.cols (),
+                                                    Complex (0, im_val (0)));
                       octave_idx_type nr = re_val.rows ();
                       octave_idx_type nc = re_val.cols ();
 
@@ -3158,9 +3166,11 @@ complex ([1, 2], [3, 4])\n\
                 {
                   if (re_val.dims () == im_val.dims ())
                     {
-                      SparseComplexMatrix result = SparseComplexMatrix (re_val)
-                        + Complex (0, 1) * SparseComplexMatrix (im_val);
-                      retval = octave_value (new octave_sparse_complex_matrix (result));
+                      SparseComplexMatrix result;
+                      result = SparseComplexMatrix (re_val)
+                               + Complex (0, 1) * SparseComplexMatrix (im_val);
+                      retval = octave_value (
+                                 new octave_sparse_complex_matrix (result));
                     }
                   else
                     error ("complex: dimension mismatch");
@@ -3178,7 +3188,9 @@ complex ([1, 2], [3, 4])\n\
                   float im_val = im.double_value ();
 
                   if (! error_state)
-                    retval = octave_value (new octave_float_complex (FloatComplex (re_val, im_val)));
+                    retval = octave_value (
+                               new octave_float_complex (FloatComplex (re_val,
+                                                                       im_val)));
                 }
               else
                 {
@@ -3186,12 +3198,14 @@ complex ([1, 2], [3, 4])\n\
 
                   if (! error_state)
                     {
-                      FloatComplexNDArray result (im_val.dims (), FloatComplex ());
+                      FloatComplexNDArray result (im_val.dims (),
+                                                  FloatComplex ());
 
                       for (octave_idx_type i = 0; i < im_val.numel (); i++)
                         result.xelem (i) = FloatComplex (re_val, im_val(i));
 
-                      retval = octave_value (new octave_float_complex_matrix (result));
+                      retval = octave_value (
+                                 new octave_float_complex_matrix (result));
                     }
                 }
             }
@@ -3205,12 +3219,14 @@ complex ([1, 2], [3, 4])\n\
 
                   if (! error_state)
                     {
-                      FloatComplexNDArray result (re_val.dims (), FloatComplex ());
+                      FloatComplexNDArray result (re_val.dims (),
+                                                  FloatComplex ());
 
                       for (octave_idx_type i = 0; i < re_val.numel (); i++)
                         result.xelem (i) = FloatComplex (re_val(i), im_val);
 
-                      retval = octave_value (new octave_float_complex_matrix (result));
+                      retval = octave_value (
+                                 new octave_float_complex_matrix (result));
                     }
                 }
               else
@@ -3221,12 +3237,15 @@ complex ([1, 2], [3, 4])\n\
                     {
                       if (re_val.dims () == im_val.dims ())
                         {
-                          FloatComplexNDArray result (re_val.dims (), FloatComplex ());
+                          FloatComplexNDArray result (re_val.dims (),
+                                                      FloatComplex ());
 
                           for (octave_idx_type i = 0; i < re_val.numel (); i++)
-                            result.xelem (i) = FloatComplex (re_val(i), im_val(i));
+                            result.xelem (i) = FloatComplex (re_val(i),
+                                                             im_val(i));
 
-                          retval = octave_value (new octave_float_complex_matrix (result));
+                          retval = octave_value (
+                                     new octave_float_complex_matrix (result));
                         }
                       else
                         error ("complex: dimension mismatch");
@@ -3243,7 +3262,8 @@ complex ([1, 2], [3, 4])\n\
               double im_val = im.double_value ();
 
               if (! error_state)
-                retval = octave_value (new octave_complex (Complex (re_val, im_val)));
+                retval = octave_value (new octave_complex (Complex (re_val,
+                                                                    im_val)));
             }
           else
             {
@@ -3291,7 +3311,8 @@ complex ([1, 2], [3, 4])\n\
                       for (octave_idx_type i = 0; i < re_val.numel (); i++)
                         result.xelem (i) = Complex (re_val(i), im_val(i));
 
-                      retval = octave_value (new octave_complex_matrix (result));
+                      retval = octave_value (
+                                 new octave_complex_matrix (result));
                     }
                   else
                     error ("complex: dimension mismatch");
@@ -3309,7 +3330,7 @@ complex ([1, 2], [3, 4])\n\
 }
 
 DEFUN (isreal, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isreal (@var{x})\n\
 Return true if @var{x} is a non-complex matrix or scalar.\n\
 For compatibility with @sc{matlab}, this includes logical and character\n\
@@ -3328,7 +3349,7 @@ matrices.\n\
 }
 
 DEFUN (isempty, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isempty (@var{a})\n\
 Return true if @var{a} is an empty matrix (any one of its dimensions is\n\
 zero).  Otherwise, return false.\n\
@@ -3351,7 +3372,7 @@ zero).  Otherwise, return false.\n\
 */
 
 DEFUN (isnumeric, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
 Return true if @var{x} is a numeric object, i.e., an integer, real, or\n\
 complex array.  Logical and character arrays are not considered to be\n\
@@ -3386,7 +3407,7 @@ numeric.\n\
 */
 
 DEFUN (ismatrix, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
 Return true if @var{a} is a numeric, logical, or character matrix.\n\
 Scalars (1x1 matrices) and vectors (@nospell{1xN} or @nospell{Nx1} matrices)\n\
@@ -3401,7 +3422,9 @@ will return true for these objects as well.\n\
     {
       octave_value arg = args(0);
 
-      retval = arg.is_matrix_type () || arg.is_scalar_type () || arg.is_range ();
+      retval = arg.is_matrix_type ()
+               || arg.is_scalar_type ()
+               || arg.is_range ();
     }
   else
     print_usage ();
@@ -3488,7 +3511,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
       check_dimensions (dims, fcn);
 
-      // FIXME -- perhaps this should be made extensible by
+      // FIXME: perhaps this should be made extensible by
       // using the class name to lookup a function to call to create
       // the new value.
 
@@ -3783,7 +3806,8 @@ fill_matrix (const octave_value_list& args, const Complex& val,
           switch (dt)
             {
             case oct_data_conv::dt_single:
-              retval = FloatComplexNDArray (dims, static_cast<FloatComplex> (val));
+              retval = FloatComplexNDArray (dims,
+                                            static_cast<FloatComplex> (val));
               break;
 
             case oct_data_conv::dt_double:
@@ -3853,7 +3877,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 }
 
 DEFUN (ones, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} ones (@var{n})\n\
 @deftypefnx {Built-in Function} {} ones (@var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} ones (@var{m}, @var{n}, @var{k}, @dots{})\n\
@@ -3902,7 +3926,7 @@ val = ones (m,n, \"uint8\")\n\
 */
 
 DEFUN (zeros, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} zeros (@var{n})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})\n\
@@ -3944,7 +3968,7 @@ val = zeros (m,n, \"uint8\")\n\
 */
 
 DEFUN (Inf, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @c List other form of function in documentation index\n\
 @findex inf\n\
 \n\
@@ -4001,7 +4025,7 @@ DEFALIAS (inf, Inf);
 */
 
 DEFUN (NaN, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @c List other form of function in documentation index\n\
 @findex nan\n\
 \n\
@@ -4060,7 +4084,7 @@ DEFALIAS (nan, NaN);
 */
 
 DEFUN (e, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} e\n\
 @deftypefnx {Built-in Function} {} e (@var{n})\n\
 @deftypefnx {Built-in Function} {} e (@var{n}, @var{m})\n\
@@ -4095,7 +4119,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 }
 
 DEFUN (eps, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} eps\n\
 @deftypefnx {Built-in Function} {} eps (@var{x})\n\
 @deftypefnx {Built-in Function} {} eps (@var{n}, @var{m})\n\
@@ -4136,16 +4160,16 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
           Array<float> x = args(0).float_array_value ();
 
           if (! error_state)
-            {              
+            {
               Array<float> epsval (x.dims ());
-              
+
               for (octave_idx_type i = 0; i < x.numel (); i++)
                 {
                   float val = ::fabsf (x(i));
                   if (xisnan (val) || xisinf (val))
                     epsval(i) = lo_ieee_nan_value ();
                   else if (val < std::numeric_limits<float>::min ())
-                    epsval(i) = powf (2.0, -149e0);                  
+                    epsval(i) = powf (2.0, -149e0);
                   else
                     {
                       int expon;
@@ -4201,7 +4225,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 %!assert (eps (realmin/16), 2^(-1074))
 %!assert (eps (Inf), NaN)
 %!assert (eps (NaN), NaN)
-%!assert (eps ([1/2 1 2 realmax 0 realmin/2 realmin/16 Inf NaN]), 
+%!assert (eps ([1/2 1 2 realmax 0 realmin/2 realmin/16 Inf NaN]),
 %!             [2^(-53) 2^(-52) 2^(-51) 2^971 2^(-1074) 2^(-1074) 2^(-1074) NaN NaN])
 %!assert (eps (single (1/2)), single (2^(-24)))
 %!assert (eps (single (1)), single (2^(-23)))
@@ -4212,13 +4236,13 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 %!assert (eps (realmin ("single")/16), single (2^(-149)))
 %!assert (eps (single (Inf)), single (NaN))
 %!assert (eps (single (NaN)), single (NaN))
-%!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])), 
+%!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])),
 %!             single ([2^(-24) 2^(-23) 2^(-22) 2^104 2^(-149) 2^(-149) 2^(-149) NaN NaN]))
 
 */
 
 DEFUN (pi, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} pi\n\
 @deftypefnx {Built-in Function} {} pi (@var{n})\n\
 @deftypefnx {Built-in Function} {} pi (@var{n}, @var{m})\n\
@@ -4260,7 +4284,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 }
 
 DEFUN (realmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} realmax\n\
 @deftypefnx {Built-in Function} {} realmax (@var{n})\n\
 @deftypefnx {Built-in Function} {} realmax (@var{n}, @var{m})\n\
@@ -4294,7 +4318,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 }
 
 DEFUN (realmin, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} realmin\n\
 @deftypefnx {Built-in Function} {} realmin (@var{n})\n\
 @deftypefnx {Built-in Function} {} realmin (@var{n}, @var{m})\n\
@@ -4328,7 +4352,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 }
 
 DEFUN (I, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @c List other forms of function in documentation index\n\
 @findex i\n\
 @findex j\n\
@@ -4369,7 +4393,7 @@ DEFALIAS (J, I);
 DEFALIAS (j, I);
 
 DEFUN (NA, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} NA\n\
 @deftypefnx {Built-in Function} {} NA (@var{n})\n\
 @deftypefnx {Built-in Function} {} NA (@var{n}, @var{m})\n\
@@ -4401,7 +4425,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
 */
 
 DEFUN (false, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} false (@var{x})\n\
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} false (@var{n}, @var{m}, @var{k}, @dots{})\n\
@@ -4417,7 +4441,7 @@ given dimensions.\n\
 }
 
 DEFUN (true, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} true (@var{x})\n\
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} true (@var{n}, @var{m}, @var{k}, @dots{})\n\
@@ -4484,7 +4508,7 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 {
   octave_value retval;
 
-  // FIXME -- perhaps this should be made extensible by using
+  // FIXME: perhaps this should be made extensible by using
   // the class name to lookup a function to call to create the new
   // value.
 
@@ -4548,7 +4572,7 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 #undef INT_EYE_MATRIX
 
 DEFUN (eye, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} eye (@var{n})\n\
 @deftypefnx {Built-in Function} {} eye (@var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} eye ([@var{m} @var{n}])\n\
@@ -4705,7 +4729,7 @@ do_linspace (const octave_value& base, const octave_value& limit,
 }
 
 DEFUN (linspace, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} linspace (@var{base}, @var{limit})\n\
 @deftypefnx {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
 Return a row vector with @var{n} linearly spaced elements between\n\
@@ -4794,11 +4818,11 @@ if fewer than two values are requested.\n\
 %!error linspace (1, 2, 3, 4)
 */
 
-// FIXME -- should accept dimensions as separate args for N-d
+// FIXME: should accept dimensions as separate args for N-d
 // arrays as well as 1-d and 2-d arrays.
 
 DEFUN (resize, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} resize (@var{x}, @var{m})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n}, @dots{})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, [@var{m} @var{n} @dots{}])\n\
@@ -4885,10 +4909,10 @@ Resizing an object to fewer dimensions is not possible.\n\
   return retval;
 }
 
-// FIXME -- should use octave_idx_type for dimensions.
+// FIXME: should use octave_idx_type for dimensions.
 
 DEFUN (reshape, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} reshape (@var{A}, @var{m}, @var{n}, @dots{})\n\
 @deftypefnx {Built-in Function} {} reshape (@var{A}, [@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} reshape (@var{A}, @dots{}, [], @dots{})\n\
@@ -4988,7 +5012,8 @@ the unspecified dimension.\n\
               octave_idx_type size_empty_dim = a_nel / nel;
 
               if (a_nel != size_empty_dim * nel)
-                error ("reshape: SIZE is not divisible by the product of known dimensions (= %d)", nel);
+                error ("reshape: SIZE is not divisible by the product of known dimensions (= %d)",
+                       nel);
               else
                 new_dims(empty_dim-1) = size_empty_dim;
             }
@@ -5026,7 +5051,7 @@ the unspecified dimension.\n\
 */
 
 DEFUN (vec, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{v} =} vec (@var{x})\n\
 @deftypefnx {Built-in Function} {@var{v} =} vec (@var{x}, @var{dim})\n\
 Return the vector obtained by stacking the columns of the matrix @var{x}\n\
@@ -5092,7 +5117,7 @@ This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
 */
 
 DEFUN (squeeze, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\
 Remove singleton dimensions from @var{x} and return the result.\n\
 Note that for compatibility with @sc{matlab}, all objects have\n\
@@ -5111,7 +5136,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 }
 
 DEFUN (full, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{FM} =} full (@var{SM})\n\
 Return a full storage matrix from a sparse, diagonal, permutation matrix\n\
 or a range.\n\
@@ -5131,7 +5156,7 @@ or a range.\n\
 // Compute various norms of the vector X.
 
 DEFUN (norm, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} norm (@var{A})\n\
 @deftypefnx {Built-in Function} {} norm (@var{A}, @var{p})\n\
 @deftypefnx {Built-in Function} {} norm (@var{A}, @var{p}, @var{opt})\n\
@@ -5340,7 +5365,7 @@ compute the norms of each column and return a row vector.\n\
 
 %!test
 %! ## Test for norm returning NaN on sparse matrix (bug #30631)
-%! A = sparse (2,2); 
+%! A = sparse (2,2);
 %! A(2,1) = 1;
 %! assert (norm (A), 1);
 */
@@ -5359,7 +5384,7 @@ unary_op_defun_body (octave_value::unary_op op,
 }
 
 DEFUN (not, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} not (@var{x})\n\
 Return the logical NOT of @var{x}.  This function is equivalent to\n\
 @code{! x}.\n\
@@ -5370,7 +5395,7 @@ Return the logical NOT of @var{x}.  This function is equivalent to\n\
 }
 
 DEFUN (uplus, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
 This function and @w{@tcode{+ x}} are equivalent.\n\
 @seealso{uminus, plus, minus}\n\
@@ -5380,7 +5405,7 @@ This function and @w{@tcode{+ x}} are equivalent.\n\
 }
 
 DEFUN (uminus, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
 This function and @w{@tcode{- x}} are equivalent.\n\
 @seealso{uplus, minus}\n\
@@ -5390,7 +5415,7 @@ This function and @w{@tcode{- x}} are equivalent.\n\
 }
 
 DEFUN (transpose, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
 Return the transpose of @var{x}.\n\
 This function and @tcode{x.'} are equivalent.\n\
@@ -5421,7 +5446,7 @@ This function and @tcode{x.'} are equivalent.\n\
 */
 
 DEFUN (ctranspose, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
 Return the complex conjugate transpose of @var{x}.\n\
 This function and @tcode{x'} are equivalent.\n\
@@ -5483,19 +5508,19 @@ binary_assoc_op_defun_body (octave_value::binary_op op,
       break;
     case 2:
       retval = do_binary_op (op, args(0), args(1));
-     break;
+      break;
     default:
-     retval = do_binary_op (op, args(0), args(1));
-     for (int i = 2; i < nargin; i++)
-       retval.assign (aop, args(i));
-     break;
+      retval = do_binary_op (op, args(0), args(1));
+      for (int i = 2; i < nargin; i++)
+        retval.assign (aop, args(i));
+      break;
     }
 
   return retval;
 }
 
 DEFUN (plus, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
 This function and @w{@tcode{x + y}} are equivalent.\n\
@@ -5515,7 +5540,7 @@ At least one argument is required.\n\
 }
 
 DEFUN (minus, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
 This function and @w{@tcode{x - y}} are equivalent.\n\
 @seealso{plus, uminus}\n\
@@ -5525,7 +5550,7 @@ This function and @w{@tcode{x - y}} are equivalent.\n\
 }
 
 DEFUN (mtimes, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
@@ -5546,7 +5571,7 @@ At least one argument is required.\n\
 }
 
 DEFUN (mrdivide, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
 This function and @w{@tcode{x / y}} are equivalent.\n\
@@ -5557,7 +5582,7 @@ This function and @w{@tcode{x / y}} are equivalent.\n\
 }
 
 DEFUN (mpower, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
 This function and @w{@tcode{x ^ y}} are equivalent.\n\
@@ -5568,7 +5593,7 @@ This function and @w{@tcode{x ^ y}} are equivalent.\n\
 }
 
 DEFUN (mldivide, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
 This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.\n\
@@ -5579,7 +5604,7 @@ This function and @w{@tcode{x @xbackslashchar{} y}} are equivalent.\n\
 }
 
 DEFUN (lt, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} lt (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x < y}}.\n\
 @seealso{le, eq, ge, gt, ne}\n\
@@ -5589,7 +5614,7 @@ This function is equivalent to @w{@code{x < y}}.\n\
 }
 
 DEFUN (le, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} le (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x <= y}}.\n\
 @seealso{eq, ge, gt, ne, lt}\n\
@@ -5599,7 +5624,7 @@ This function is equivalent to @w{@code{x <= y}}.\n\
 }
 
 DEFUN (eq, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eq (@var{x}, @var{y})\n\
 Return true if the two inputs are equal.\n\
 This function is equivalent to @w{@code{x == y}}.\n\
@@ -5610,7 +5635,7 @@ This function is equivalent to @w{@code{x == y}}.\n\
 }
 
 DEFUN (ge, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ge (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x >= y}}.\n\
 @seealso{le, eq, gt, ne, lt}\n\
@@ -5620,7 +5645,7 @@ This function is equivalent to @w{@code{x >= y}}.\n\
 }
 
 DEFUN (gt, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} gt (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x > y}}.\n\
 @seealso{le, eq, ge, ne, lt}\n\
@@ -5630,7 +5655,7 @@ This function is equivalent to @w{@code{x > y}}.\n\
 }
 
 DEFUN (ne, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ne (@var{x}, @var{y})\n\
 Return true if the two inputs are not equal.\n\
 This function is equivalent to @w{@code{x != y}}.\n\
@@ -5641,7 +5666,7 @@ This function is equivalent to @w{@code{x != y}}.\n\
 }
 
 DEFUN (times, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
@@ -5662,7 +5687,7 @@ At least one argument is required.\n\
 }
 
 DEFUN (rdivide, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
 This function and @w{@tcode{x ./ y}} are equivalent.\n\
@@ -5673,7 +5698,7 @@ This function and @w{@tcode{x ./ y}} are equivalent.\n\
 }
 
 DEFUN (power, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
 @var{y} power.  If several complex results are possible,\n\
@@ -5689,7 +5714,7 @@ This function and @w{@tcode{x .^ y}} are equivalent.\n\
 }
 
 DEFUN (ldivide, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
 This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
@@ -5700,7 +5725,7 @@ This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
 }
 
 DEFUN (and, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} and (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} and (@var{x1}, @var{x2}, @dots{})\n\
 Return the logical AND of @var{x} and @var{y}.\n\
@@ -5721,7 +5746,7 @@ At least one argument is required.\n\
 }
 
 DEFUN (or, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} or (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} or (@var{x1}, @var{x2}, @dots{})\n\
 Return the logical OR of @var{x} and @var{y}.\n\
@@ -5744,7 +5769,7 @@ At least one argument is required.\n\
 static double tic_toc_timestamp = -1.0;
 
 DEFUN (tic, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} tic ()\n\
 @deftypefnx {Built-in Function} {@var{id} =} tic ()\n\
 @deftypefnx {Built-in Function} {} toc ()\n\
@@ -5813,7 +5838,7 @@ doing nothing at all.\n\
 }
 
 DEFUN (toc, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} toc ()\n\
 @deftypefnx {Built-in Function} {} toc (@var{id})\n\
 @deftypefnx {Built-in Function} {@var{val} =} toc (@dots{})\n\
@@ -5840,9 +5865,10 @@ DEFUN (toc, args, nargout,
 
               start_time
                 = (static_cast<double> (val / CLOCKS_PER_SEC)
-                   + static_cast<double> (val % CLOCKS_PER_SEC) / CLOCKS_PER_SEC);
+                   + static_cast<double> (val % CLOCKS_PER_SEC)
+                   / CLOCKS_PER_SEC);
 
-              // FIXME -- should we also check to see whether the start
+              // FIXME: should we also check to see whether the start
               // time is after the beginning of this Octave session?
             }
           else
@@ -5878,7 +5904,7 @@ DEFUN (toc, args, nargout,
 */
 
 DEFUN (cputime, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{total}, @var{user}, @var{system}] =} cputime ();\n\
 Return the CPU time used by your Octave session.  The first output is\n\
 the total time spent executing your process and is equal to the sum of\n\
@@ -5907,10 +5933,10 @@ CPU time used is nonzero.\n\
   getrusage (RUSAGE_SELF, &ru);
 
   usr = static_cast<double> (ru.ru_utime.tv_sec) +
-    static_cast<double> (ru.ru_utime.tv_usec) * 1e-6;
+        static_cast<double> (ru.ru_utime.tv_usec) * 1e-6;
 
   sys = static_cast<double> (ru.ru_stime.tv_sec) +
-    static_cast<double> (ru.ru_stime.tv_usec) * 1e-6;
+        static_cast<double> (ru.ru_stime.tv_usec) * 1e-6;
 
 #else
 
@@ -5927,14 +5953,14 @@ CPU time used is nonzero.\n\
   seconds = ticks / CLOCKS_PER_SEC;
 
   usr = static_cast<double> (seconds) + static_cast<double>(fraction) /
-    static_cast<double>(CLOCKS_PER_SEC);
+        static_cast<double>(CLOCKS_PER_SEC);
 
   ticks = t.tms_stime + t.tms_cstime;
   fraction = ticks % CLOCKS_PER_SEC;
   seconds = ticks / CLOCKS_PER_SEC;
 
   sys = static_cast<double> (seconds) + static_cast<double>(fraction) /
-    static_cast<double>(CLOCKS_PER_SEC);
+        static_cast<double>(CLOCKS_PER_SEC);
 
 #endif
 
@@ -5946,7 +5972,7 @@ CPU time used is nonzero.\n\
 }
 
 DEFUN (sort, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
 @deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
@@ -6095,7 +6121,7 @@ ordered lists.\n\
       Array<octave_idx_type> sidx;
 
       retval(0) = arg.sort (sidx, dim, smode);
-      retval(1) = idx_vector (sidx, dv(dim)); // No checking, the extent is known.
+      retval(1) = idx_vector (sidx, dv(dim)); // No checking, extent is known.
     }
   else
     retval(0) = arg.sort (dim, smode);
@@ -6285,7 +6311,7 @@ ordered lists.\n\
 // This function does not yet support sparse matrices.
 
 DEFUN (__sort_rows_idx__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __sort_rows_idx__ (@var{a}, @var{mode})\n\
 Undocumented internal function.\n\
 @end deftypefn\n")
@@ -6334,9 +6360,9 @@ Undocumented internal function.\n\
 static sortmode
 get_sort_mode_option (const octave_value& arg, const char *argn)
 {
-  // FIXME -- we initialize to UNSORTED here to avoid a GCC warning
+  // FIXME: we initialize to UNSORTED here to avoid a GCC warning
   // about possibly using sortmode uninitialized.
-  // FIXME -- shouldn't these modes be scoped inside a class?
+  // FIXME: shouldn't these modes be scoped inside a class?
   sortmode smode = UNSORTED;
 
   std::string mode = arg.string_value ();
@@ -6356,7 +6382,7 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
 }
 
 DEFUN (issorted, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} issorted (@var{a})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, \"rows\", @var{mode})\n\
@@ -6467,7 +6493,7 @@ This function does not support sparse matrices.\n\
 */
 
 DEFUN (nth_element, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nth_element (@var{x}, @var{n})\n\
 @deftypefnx {Built-in Function} {} nth_element (@var{x}, @var{n}, @var{dim})\n\
 Select the n-th smallest element of a vector, using the ordering defined by\n\
@@ -6575,7 +6601,7 @@ do_accumarray_sum (const idx_vector& idx, const NDT& vals,
 }
 
 DEFUN (__accumarray_sum__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __accumarray_sum__ (@var{idx}, @var{vals}, @var{n})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -6602,14 +6628,18 @@ Undocumented internal function.\n\
           if (vals.is_single_type ())
             {
               if (vals.is_complex_type ())
-                retval = do_accumarray_sum (idx, vals.float_complex_array_value (), n);
+                retval = do_accumarray_sum (idx, 
+                                            vals.float_complex_array_value (),
+                                            n);
               else
                 retval = do_accumarray_sum (idx, vals.float_array_value (), n);
             }
           else if (vals.is_numeric_type () || vals.is_bool_type ())
             {
               if (vals.is_complex_type ())
-                retval = do_accumarray_sum (idx, vals.complex_array_value (), n);
+                retval = do_accumarray_sum (idx,
+                                            vals.complex_array_value (),
+                                            n);
               else
                 retval = do_accumarray_sum (idx, vals.array_value (), n);
             }
@@ -6676,20 +6706,23 @@ do_accumarray_minmax_fun (const octave_value_list& args,
                                              zero.double_value ());
               break;
             case btyp_float:
-              retval = do_accumarray_minmax (idx, vals.float_array_value (), n, ismin,
-                                             zero.float_value ());
+              retval = do_accumarray_minmax (idx, vals.float_array_value (), n,
+                                             ismin, zero.float_value ());
               break;
             case btyp_complex:
-              retval = do_accumarray_minmax (idx, vals.complex_array_value (), n, ismin,
-                                             zero.complex_value ());
+              retval = do_accumarray_minmax (idx, vals.complex_array_value (),
+                                             n, ismin, zero.complex_value ());
               break;
             case btyp_float_complex:
-              retval = do_accumarray_minmax (idx, vals.float_complex_array_value (), n, ismin,
+              retval = do_accumarray_minmax (idx,
+                                             vals.float_complex_array_value (),
+                                             n, ismin,
                                              zero.float_complex_value ());
               break;
 #define MAKE_INT_BRANCH(X) \
             case btyp_ ## X: \
-              retval = do_accumarray_minmax (idx, vals.X ## _array_value (), n, ismin, \
+              retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
+                                             n, ismin, \
                                              zero.X ## _scalar_value ()); \
               break
 
@@ -6718,7 +6751,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 }
 
 DEFUN (__accumarray_min__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __accumarray_min__ (@var{idx}, @var{vals}, @var{zero}, @var{n})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -6727,7 +6760,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__accumarray_max__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __accumarray_max__ (@var{idx}, @var{vals}, @var{zero}, @var{n})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -6766,7 +6799,7 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
 }
 
 DEFUN (__accumdim_sum__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __accumdim_sum__ (@var{idx}, @var{vals}, @var{dim}, @var{n})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -6791,14 +6824,18 @@ Undocumented internal function.\n\
           if (vals.is_single_type ())
             {
               if (vals.is_complex_type ())
-                retval = do_accumdim_sum (idx, vals.float_complex_array_value (), dim, n);
+                retval = do_accumdim_sum (idx,
+                                          vals.float_complex_array_value (),
+                                          dim, n);
               else
-                retval = do_accumdim_sum (idx, vals.float_array_value (), dim, n);
+                retval = do_accumdim_sum (idx, vals.float_array_value (),
+                                          dim, n);
             }
           else if (vals.is_numeric_type () || vals.is_bool_type ())
             {
               if (vals.is_complex_type ())
-                retval = do_accumdim_sum (idx, vals.complex_array_value (), dim, n);
+                retval = do_accumdim_sum (idx, vals.complex_array_value (),
+                                          dim, n);
               else
                 retval = do_accumdim_sum (idx, vals.array_value (), dim, n);
             }
@@ -6877,7 +6914,7 @@ do_merge (const Array<bool>& mask,
     }
 
 DEFUN (merge, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} merge (@var{mask}, @var{tval}, @var{fval})\n\
 @deftypefnx {Built-in Function} {} ifelse (@var{mask}, @var{tval}, @var{fval})\n\
 Merge elements of @var{true_val} and @var{false_val}, depending on the\n\
@@ -6990,7 +7027,8 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
       while (order > 0 && k > 0)
         {
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
-          retval = SparseT (retval.index (col1, sl1)) - SparseT (retval.index (col2, sl2));
+          retval = SparseT (retval.index (col1, sl1))
+                 - SparseT (retval.index (col2, sl2));
           assert (retval.columns () == k-1);
           order--;
           k--;
@@ -7002,7 +7040,8 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
       while (order > 0 && k > 0)
         {
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
-          retval = SparseT (retval.index (sl1, col1)) - SparseT (retval.index (sl2, col2));
+          retval = SparseT (retval.index (sl1, col1))
+                 - SparseT (retval.index (sl2, col2));
           assert (retval.rows () == k-1);
           order--;
           k--;
@@ -7077,7 +7116,8 @@ do_diff (const octave_value& array, octave_idx_type order,
   else if (array.is_sparse_type ())
     {
       if (array.is_complex_type ())
-        retval = do_sparse_diff (array.sparse_complex_matrix_value (), order, dim);
+        retval = do_sparse_diff (array.sparse_complex_matrix_value (),
+                                 order, dim);
       else
         retval = do_sparse_diff (array.sparse_matrix_value (), order, dim);
     }
@@ -7100,7 +7140,7 @@ do_diff (const octave_value& array, octave_idx_type order,
 }
 
 DEFUN (diff, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} diff (@var{x})\n\
 @deftypefnx {Built-in Function} {} diff (@var{x}, @var{k})\n\
 @deftypefnx {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
@@ -7217,7 +7257,7 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 }
 
 DEFUN (repelems, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} repelems (@var{x}, @var{r})\n\
 Construct a vector of repeated elements from @var{x}.  @var{r}\n\
 is a 2x@var{N} integer matrix specifying which elements to repeat and\n\
@@ -7311,7 +7351,7 @@ endfor\n\
 }
 
 DEFUN (base64_encode, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{s} =} base64_encode (@var{x})\n\
 Encode a double matrix or array @var{x} into the base64 format string\n\
 @var{s}.\n\
@@ -7324,12 +7364,12 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 
   if (nargin != 1)
     print_usage ();
-  else 
+  else
     {
-      if (! args(0).is_numeric_type ()) 
+      if (! args(0).is_numeric_type ())
         error ("base64_encode: encoding is supported only for numeric arrays");
-      else if (args(0).is_complex_type () 
-          || args(0).is_sparse_type ())
+      else if (args(0).is_complex_type ()
+               || args(0).is_sparse_type ())
         error ("base64_encode: encoding complex or sparse data is not supported");
       else if (args(0).is_integer_type ())
         {
@@ -7367,33 +7407,33 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
         {
           const Array<float> in = args(0).float_array_value ();
           size_t inlen;
-          inlen = in.numel () * sizeof (float) / sizeof (char); 
+          inlen = in.numel () * sizeof (float) / sizeof (char);
           const char*  inc;
-          inc = reinterpret_cast<const char*> (in.data ());  
+          inc = reinterpret_cast<const char*> (in.data ());
           char* out;
-          if (! error_state 
-              && octave_base64_encode (inc, inlen, &out))
-            {
-              retval(0) = octave_value (out);
-              ::free (out);
-            }
-        }                 
-      else
-        {
-          const Array<double> in = args(0).array_value ();
-          size_t inlen;
-          inlen = in.numel () * sizeof (double) / sizeof (char); 
-          const char*  inc;
-          inc = reinterpret_cast<const char*> (in.data ());   
-          char* out;
-          if (! error_state 
+          if (! error_state
               && octave_base64_encode (inc, inlen, &out))
             {
               retval(0) = octave_value (out);
               ::free (out);
             }
         }
-    }  
+      else
+        {
+          const Array<double> in = args(0).array_value ();
+          size_t inlen;
+          inlen = in.numel () * sizeof (double) / sizeof (char);
+          const char*  inc;
+          inc = reinterpret_cast<const char*> (in.data ());
+          char* out;
+          if (! error_state
+              && octave_base64_encode (inc, inlen, &out))
+            {
+              retval(0) = octave_value (out);
+              ::free (out);
+            }
+        }
+    }
   return retval;
 }
 
@@ -7413,7 +7453,7 @@ Encode a double matrix or array @var{x} into the base64 format string\n\
 */
 
 DEFUN (base64_decode, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} base64_decode (@var{s})\n\
 @deftypefnx {Built-in Function} {@var{x} =} base64_decode (@var{s}, @var{dims})\n\
 Decode the double matrix or array @var{x} from the base64 encoded string\n\
@@ -7455,19 +7495,19 @@ containing the dimensions of the decoded array.\n\
             res = res.reshape (dims);
 
           retval = res;
-        }        
+        }
     }
 
-  return retval; 
+  return retval;
 }
 
 /*
 %!assert (base64_decode (base64_encode (pi)), pi)
 %!
-%!test 
+%!test
 %! in   = randn (10);
 %! outv = base64_decode (base64_encode (in));
-%! outm = base64_decode (base64_encode (in), size (in)); 
+%! outm = base64_decode (base64_encode (in), size (in));
 %! assert (outv, in(:).');
 %! assert (outm, in);
 

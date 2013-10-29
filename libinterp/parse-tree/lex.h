@@ -99,12 +99,12 @@ public:
   private:
 
     enum bracket_type
-      {
-        BRACKET = 1,
-        BRACE = 2,
-        PAREN = 3,
-        ANON_FCN_BODY = 4
-      };
+    {
+      BRACKET = 1,
+      BRACE = 2,
+      PAREN = 3,
+      ANON_FCN_BODY = 4
+    };
 
   public:
 
@@ -262,14 +262,14 @@ public:
 
     token_cache& operator = (const token_cache&);
   };
-  
+
   lexical_feedback (void)
     : end_of_input (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
       looking_at_initializer_expression (false),
       looking_at_matrix_or_assign_lhs (false),
-      looking_for_object_index (false), 
+      looking_for_object_index (false),
       looking_at_indirect_ref (false), parsing_class_method (false),
       maybe_classdef_get_set_method (false), parsing_classdef (false),
       quote_is_transpose (false), force_script (false),

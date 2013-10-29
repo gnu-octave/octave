@@ -35,7 +35,7 @@ class tree_decl_command;
 class
 tree_breakpoint : public tree_walker
 {
- public:
+public:
 
   enum action { set = 1, clear = 2, list = 3 };
 
@@ -136,7 +136,7 @@ tree_breakpoint : public tree_walker
 
   int get_line (void) { return found ? line : 0; }
 
- private:
+private:
 
   void do_decl_command (tree_decl_command&);
 

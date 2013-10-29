@@ -510,13 +510,14 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
   octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0)
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp)
+      >= 0)
     {
       retval = true;
 
       boolNDArray btmp (dv);
       for (octave_idx_type i = 0; i < nel; i++)
-          btmp.elem (i) = htmp[i];
+        btmp.elem (i) = htmp[i];
 
       matrix = btmp;
     }
@@ -546,7 +547,7 @@ octave_bool_matrix::as_mxArray (void) const
 }
 
 DEFUN (logical, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} logical (@var{x})\n\
 Convert @var{x} to logical type.\n\
 @seealso{double, single, char}\n\

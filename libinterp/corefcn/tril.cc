@@ -91,7 +91,8 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
     {
       octave_idx_type j1 = std::min (std::max (zero, k), nc);
       octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
-      octave_idx_type n = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
+      octave_idx_type n
+        = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
       Array<T> r (dim_vector (n, 1));
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
@@ -229,13 +230,15 @@ do_trilu (const std::string& name,
               break;
             case btyp_complex:
               if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower, pack);
+                retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
+                                   pack);
               else
                 retval = do_trilu (arg.complex_array_value (), k, lower, pack);
               break;
             case btyp_bool:
               if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower, pack);
+                retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
+                                   pack);
               else
                 retval = do_trilu (arg.bool_array_value (), k, lower, pack);
               break;
@@ -340,7 +343,7 @@ do_trilu (const std::string& name,
 }
 
 DEFUN (tril, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {} tril (@var{A})\n\
 @deftypefnx {Function File} {} tril (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} tril (@var{A}, @var{k}, @var{pack})\n\
@@ -396,7 +399,7 @@ above other.\n\
 }
 
 DEFUN (triu, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {} triu (@var{A})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
@@ -418,7 +421,7 @@ See the documentation for the @code{tril} function (@pxref{tril}).\n\
 %! lm3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 10, 0, 0];
 %! lm4 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
 %!
-%! assert (tril (a, -4), lm4); 
+%! assert (tril (a, -4), lm4);
 %! assert (tril (a, -3), lm3);
 %! assert (tril (a, -2), lm2);
 %! assert (tril (a, -1), lm1);

@@ -333,7 +333,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 }
 
 DEFUN (find, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{idx} =} find (@var{x})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} find (@var{x}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\

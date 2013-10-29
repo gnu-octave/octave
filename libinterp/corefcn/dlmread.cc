@@ -41,7 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-static const octave_idx_type idx_max =  std::numeric_limits<octave_idx_type>::max ();
+static const octave_idx_type idx_max =
+  std::numeric_limits<octave_idx_type>::max ();
 
 static bool
 read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)
@@ -156,7 +157,7 @@ parse_range_spec (const octave_value& range_spec,
 }
 
 DEFUN (dlmread, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{data} =} dlmread (@var{file})\n\
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
@@ -196,7 +197,7 @@ fill empty fields.  The default is zero.\n\
     {
       empty_value = args(nargin-1).double_value ();
       if (error_state)
-         return retval;
+        return retval;
       nargin -= 2;
     }
 
@@ -214,7 +215,7 @@ fill empty fields.  The default is zero.\n\
       // File name.
       std::string fname (args(0).string_value ());
       if (error_state)
-         return retval;
+        return retval;
 
       std::string tname = file_ops::tilde_expand (fname);
 
@@ -233,7 +234,7 @@ fill empty fields.  The default is zero.\n\
       octave_stream is = octave_stream_list::lookup (args(0), "dlmread");
 
       if (error_state)
-         return retval;
+        return retval;
 
       input = is.input_stream ();
 

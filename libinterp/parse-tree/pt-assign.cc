@@ -48,7 +48,8 @@ along with Octave; see the file COPYING.  If not, see
 tree_simple_assignment::tree_simple_assignment
   (tree_expression *le, tree_expression *re,
    bool plhs, int l, int c, octave_value::assign_op t)
-    : tree_expression (l, c), lhs (le), rhs (re), preserve (plhs), etype (t) { }
+ : tree_expression (l, c), lhs (le), rhs (re), preserve (plhs), etype (t)
+{ }
 
 tree_simple_assignment::~tree_simple_assignment (void)
 {
@@ -178,7 +179,8 @@ tree_simple_assignment::accept (tree_walker& tw)
 tree_multi_assignment::tree_multi_assignment
   (tree_argument_list *lst, tree_expression *r,
    bool plhs, int l, int c)
-    : tree_expression (l, c), lhs (lst), rhs (r), preserve (plhs) { }
+  : tree_expression (l, c), lhs (lst), rhs (r), preserve (plhs)
+{ }
 
 tree_multi_assignment::~tree_multi_assignment (void)
 {
@@ -201,7 +203,7 @@ tree_multi_assignment::rvalue1 (int nargout)
   return retval;
 }
 
-// FIXME -- this works, but it would look a little better if
+// FIXME: this works, but it would look a little better if
 // it were broken up into a couple of separate functions.
 
 octave_value_list
@@ -228,8 +230,10 @@ tree_multi_assignment::rvalue (int)
 
       // The following trick is used to keep rhs_val constant.
       const octave_value_list rhs_val1 = rhs->rvalue (n_out, &lvalue_list);
-      const octave_value_list rhs_val = (rhs_val1.length () == 1 && rhs_val1(0).is_cs_list ()
-                                         ? rhs_val1(0).list_value () : rhs_val1);
+      const octave_value_list rhs_val = (rhs_val1.length () == 1
+                                         && rhs_val1(0).is_cs_list ()
+                                         ? rhs_val1(0).list_value ()
+                                         : rhs_val1);
 
       if (error_state)
         return retval;
@@ -261,7 +265,8 @@ tree_multi_assignment::rvalue (int)
                   // This won't do a copy.
                   octave_value_list ovl  = rhs_val.slice (k, nel);
 
-                  ult.assign (octave_value::op_asn_eq, octave_value (ovl, true));
+                  ult.assign (octave_value::op_asn_eq,
+                              octave_value (ovl, true));
 
                   if (! error_state)
                     {

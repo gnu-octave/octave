@@ -28,10 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-str-mat.h"
 
 // Design rationale:
-// The constructors are hidden. There is only one null matrix (or null string) object,
-// that can have shallow copies. Cloning the object returns just a normal empty matrix,
-// so all the shallow copies are, in fact, read-only. This conveniently ensures that any
-// attempt to fiddle with the null matrix destroys its special status.
+// The constructors are hidden.  There is only one null matrix (or null string)
+// object, that can have shallow copies.  Cloning the object returns just a
+// normal empty matrix, so all the shallow copies are, in fact, read-only. This
+// conveniently ensures that any attempt to fiddle with the null matrix
+// destroys its special status.
 
 // The special [] value.
 

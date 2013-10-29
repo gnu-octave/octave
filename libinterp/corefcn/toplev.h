@@ -107,11 +107,13 @@ public:
   typedef std::deque<call_stack_elt>::iterator iterator;
   typedef std::deque<call_stack_elt>::const_iterator const_iterator;
 
-  typedef std::deque<call_stack_elt>::reverse_iterator reverse_iterator;
-  typedef std::deque<call_stack_elt>::const_reverse_iterator const_reverse_iterator;
+  typedef std::deque<call_stack_elt>::reverse_iterator
+    reverse_iterator;
+  typedef std::deque<call_stack_elt>::const_reverse_iterator
+    const_reverse_iterator;
 
   static void create_instance (void);
-  
+
   static bool instance_ok (void)
   {
     bool retval = true;
@@ -178,7 +180,7 @@ public:
   static size_t num_user_code_frames (octave_idx_type& curr_user_frame)
   {
     return instance_ok ()
-      ? instance->do_num_user_code_frames (curr_user_frame) : 0;
+           ? instance->do_num_user_code_frames (curr_user_frame) : 0;
   }
 
   static symbol_table::scope_id current_scope (void)
@@ -252,7 +254,7 @@ public:
   static bool goto_frame_relative (int n, bool verbose = false)
   {
     return instance_ok ()
-      ? instance->do_goto_frame_relative (n, verbose) : false;
+           ? instance->do_goto_frame_relative (n, verbose) : false;
   }
 
   static void goto_caller_frame (void)
@@ -270,7 +272,7 @@ public:
   static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame)
   {
     return instance_ok ()
-      ? instance->do_backtrace (nskip, curr_user_frame) : octave_map ();
+           ? instance->do_backtrace (nskip, curr_user_frame) : octave_map ();
   }
 
   static octave_map empty_backtrace (void);
@@ -326,13 +328,13 @@ private:
   symbol_table::scope_id do_current_scope (void) const
   {
     return curr_frame > 0 && curr_frame < cs.size ()
-      ? cs[curr_frame].scope : 0;
+           ? cs[curr_frame].scope : 0;
   }
 
   symbol_table::context_id do_current_context (void) const
   {
     return curr_frame > 0 && curr_frame < cs.size ()
-      ? cs[curr_frame].context : 0;
+           ? cs[curr_frame].context : 0;
   }
 
   octave_function *do_element (size_t n)

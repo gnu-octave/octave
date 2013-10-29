@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-perm.h"
 
 DEFUN (pinv, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} pinv (@var{x})\n\
 @deftypefnx {Built-in Function} {} pinv (@var{x}, @var{tol})\n\
 Return the pseudoinverse of @var{x}.  Singular values less than\n\

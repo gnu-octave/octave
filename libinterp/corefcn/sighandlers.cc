@@ -872,7 +872,7 @@ OCL_REP::wait (void)
 }
 
 DEFUN (SIG, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} SIG ()\n\
 Return a structure containing Unix signal names and their defined values.\n\
 @end deftypefn")
@@ -899,7 +899,7 @@ Return a structure containing Unix signal names and their defined values.\n\
 */
 
 DEFUN (debug_on_interrupt, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} debug_on_interrupt (@var{new_val}, \"local\")\n\
@@ -930,7 +930,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
@@ -959,7 +959,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\

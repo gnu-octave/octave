@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (balance, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{AA} =} balance (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{AA} =} balance (@var{A}, @var{opt})\n\
 @deftypefnx {Built-in Function} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
@@ -110,11 +110,11 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       return retval;
     }
 
-  bool isfloat = args(0).is_single_type () ||
-    (! AEPcase && args(1).is_single_type ());
+  bool isfloat = args(0).is_single_type ()
+                 || (! AEPcase && args(1).is_single_type ());
 
-  bool complex_case = (args(0).is_complex_type () ||
-                       (! AEPcase && args(1).is_complex_type ()));
+  bool complex_case = args(0).is_complex_type ()
+                      || (! AEPcase && args(1).is_complex_type ());
 
   // Extract argument 1 parameter for both AEP and GEP.
   Matrix aa;

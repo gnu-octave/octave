@@ -89,7 +89,7 @@ public:
                const octave_value& fill_val = Matrix ());
 
   Cell reshape (const dim_vector& new_dims) const
-    { return Array<octave_value>::reshape (new_dims); }
+  { return Array<octave_value>::reshape (new_dims); }
 
   octave_idx_type nnz (void) const;
 
@@ -145,6 +145,6 @@ private:
 
 template<>
 inline Cell octave_value_extract<Cell> (const octave_value& v)
-  { return v.cell_value (); }
+{ return v.cell_value (); }
 
 #endif

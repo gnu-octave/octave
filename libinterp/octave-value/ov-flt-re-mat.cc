@@ -72,7 +72,8 @@ template class octave_base_matrix<FloatNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_float_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix", "single");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
+                                     "single");
 
 octave_base_value *
 octave_float_matrix::try_narrowing_conversion (void)
@@ -305,8 +306,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 
           if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
             {
-              // FIXME -- is there something
-              // better we could do?
+              // FIXME: is there something better we could do?
 
               ival = 0;
 
@@ -469,7 +469,7 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
 
   FloatNDArray m = float_array_value ();
   save_type st = LS_FLOAT;
-  if (d.numel () > 8192) // FIXME -- make this configurable.
+  if (d.numel () > 8192) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -484,7 +484,7 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_float_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                  oct_mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -525,7 +525,8 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
 
       FloatNDArray m(dv);
       float *re = m.fortran_vec ();
-      read_floats (is, re, static_cast<save_type> (tmp), dv.numel (), swap, fmt);
+      read_floats (is, re, static_cast<save_type> (tmp), dv.numel (),
+                   swap, fmt);
       if (error_state || ! is)
         return false;
       matrix = m;
@@ -622,7 +623,7 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
   if (empty > 0)
     matrix.resize (dv);
   if (empty)
-      return (empty > 0);
+    return (empty > 0);
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -678,7 +679,7 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
 void
 octave_float_matrix::print_raw (std::ostream& os,
-                          bool pr_as_read_syntax) const
+                                bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
                          current_print_indent_level ());
@@ -816,7 +817,7 @@ octave_float_matrix::map (unary_mapper_t umap) const
 }
 
 DEFUN (single, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} single (@var{x})\n\
 Convert @var{x} to single precision type.\n\
 @seealso{double}\n\
@@ -832,11 +833,13 @@ Convert @var{x} to single precision type.\n\
         {
           if (args(0).is_complex_type ())
             {
-              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_diag_matrix, octave_float_complex);
+              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_diag_matrix,
+                                      octave_float_complex);
             }
           else
             {
-              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_diag_matrix, octave_float_scalar);
+              OCTAVE_TYPE_CONV_BODY3 (single, octave_float_diag_matrix,
+                                      octave_float_scalar);
             }
         }
       else if (args(0).is_sparse_type ())
@@ -845,11 +848,13 @@ Convert @var{x} to single precision type.\n\
         }
       else if (args(0).is_complex_type ())
         {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_matrix, octave_float_complex);
+          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_complex_matrix,
+                                  octave_float_complex);
         }
       else
         {
-          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_matrix, octave_float_scalar);
+          OCTAVE_TYPE_CONV_BODY3 (single, octave_float_matrix,
+                                  octave_float_scalar);
         }
     }
   else

@@ -80,8 +80,8 @@ public:
 
   virtual octave_value_list rvalue (int nargout);
 
-  virtual octave_value_list rvalue (int nargout,
-                                    const std::list<octave_lvalue> *lvalue_list);
+  virtual octave_value_list
+  rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
 
   virtual octave_lvalue lvalue (void);
 
@@ -103,29 +103,29 @@ public:
   virtual void mark_braindead_shortcircuit (const std::string&) { }
 
   tree_expression *mark_in_parens (void)
-    {
-      num_parens++;
-      return this;
-    }
+  {
+    num_parens++;
+    return this;
+  }
 
   tree_expression *mark_postfix_indexed (void)
-    {
-      postfix_indexed = true;
-      return this;
-    }
+  {
+    postfix_indexed = true;
+    return this;
+  }
 
   tree_expression *set_print_flag (bool print)
-    {
-      print_flag = print;
-      return this;
-    }
+  {
+    print_flag = print;
+    return this;
+  }
 
   virtual void copy_base (const tree_expression& e)
-    {
-      num_parens = e.num_parens;
-      postfix_indexed = e.postfix_indexed;
-      print_flag = e.print_flag;
-    }
+  {
+    num_parens = e.num_parens;
+    postfix_indexed = e.postfix_indexed;
+    print_flag = e.print_flag;
+  }
 
 protected:
 

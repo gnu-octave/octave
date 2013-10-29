@@ -93,8 +93,7 @@ public:
 
   static curl_handle get_handle (void)
   {
-    return instance_ok ()
-      ? instance->do_get_handle () : curl_handle ();
+    return instance_ok () ? instance->do_get_handle () : curl_handle ();
   }
 
   static void free (const curl_handle& h)
@@ -110,8 +109,8 @@ public:
 
   static curl_handle lookup (const octave_value& val)
   {
-    return val.is_real_scalar ()
-      ? lookup (val.double_value ()) : curl_handle ();
+    return val.is_real_scalar () ? lookup (val.double_value ())
+                                 : curl_handle ();
   }
 
   static url_transfer get_object (double val)
@@ -135,7 +134,8 @@ public:
                                        std::ostream& os)
   {
     return instance_ok ()
-      ? instance->do_make_curl_handle (host, user, passwd, os) : curl_handle ();
+             ? instance->do_make_curl_handle (host, user, passwd, os)
+             : curl_handle ();
   }
 
   static Matrix handle_list (void)
@@ -273,7 +273,8 @@ ch_manager::do_free (const curl_handle& h)
           handle_map.erase (p);
 
           if (h.value () < 0)
-            handle_free_list.insert (std::ceil (h.value ()) - make_handle_fraction ());
+            handle_free_list.insert
+             (std::ceil (h.value ()) - make_handle_fraction ());
         }
       else
         error ("ch_manager::free: invalid object %g", h.value ());
@@ -283,7 +284,7 @@ ch_manager::do_free (const curl_handle& h)
 ch_manager *ch_manager::instance = 0;
 
 DEFUN (urlwrite, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} urlwrite (@var{url}, @var{localfile})\n\
 @deftypefnx {Loadable Function} {@var{f} =} urlwrite (@var{url}, @var{localfile})\n\
 @deftypefnx {Loadable Function} {[@var{f}, @var{success}] =} urlwrite (@var{url}, @var{localfile})\n\
@@ -442,7 +443,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 }
 
 DEFUN (urlread, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{s} =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread (@var{url})\n\
@@ -559,7 +560,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 }
 
 DEFUN (__ftp__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{handle} =} __ftp__ (@var{host})\n\
 @deftypefnx {Loadable Function} {@var{handle} =} __ftp__ (@var{host}, @var{username}, @var{password})\n\
 Undocumented internal function\n\
@@ -601,7 +602,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_pwd__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_pwd__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -629,7 +630,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_cwd__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_cwd__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -667,7 +668,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_dir__, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_dir__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -748,7 +749,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_ascii__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_ascii__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -776,7 +777,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_binary__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_binary__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -804,7 +805,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_close__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_close__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -832,7 +833,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mode__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_mode__ (@var{handle})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -860,7 +861,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_delete__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_delete__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -895,7 +896,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_rmdir__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_rmdir__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -930,7 +931,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mkdir__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_mkdir__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -965,7 +966,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_rename__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_rename__ (@var{handle}, @var{path})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -1001,7 +1002,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mput__, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_mput__ (@var{handle}, @var{files})\n\
 Undocumented internal function\n\
 @end deftypefn")
@@ -1092,7 +1093,7 @@ Undocumented internal function\n\
 }
 
 DEFUN (__ftp_mget__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __ftp_mget__ (@var{handle}, @var{files})\n\
 Undocumented internal function\n\
 @end deftypefn")

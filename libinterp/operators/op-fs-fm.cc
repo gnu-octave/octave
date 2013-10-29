@@ -79,7 +79,7 @@ DEFNDBINOP_FN (eq, float_scalar, float_matrix, float_scalar,
 DEFNDBINOP_FN (ge, float_scalar, float_matrix, float_scalar,
                float_array, mx_el_ge)
 DEFNDBINOP_FN (gt, float_scalar, float_matrix, float_scalar,
-float_array, mx_el_gt)
+               float_array, mx_el_gt)
 DEFNDBINOP_FN (ne, float_scalar, float_matrix, float_scalar,
                float_array, mx_el_ne)
 
@@ -147,7 +147,8 @@ install_fs_fm_ops (void)
   INSTALL_CATOP (octave_scalar, octave_float_matrix, s_fm);
   INSTALL_CATOP (octave_float_scalar, octave_matrix, fs_m);
 
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_matrix, octave_float_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_matrix,
+                      octave_float_matrix);
   INSTALL_ASSIGNCONV (octave_scalar, octave_float_matrix, octave_matrix);
 
   INSTALL_WIDENOP (octave_float_scalar, octave_float_matrix, matrix_conv);

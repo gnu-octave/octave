@@ -85,7 +85,8 @@ extern OCTINTERP_API std::string lookup_autoload (const std::string& nm);
 
 extern OCTINTERP_API string_vector autoloaded_functions (void);
 
-extern OCTINTERP_API string_vector reverse_lookup_autoload (const std::string& nm);
+extern OCTINTERP_API string_vector
+reverse_lookup_autoload (const std::string& nm);
 
 extern OCTINTERP_API octave_function *
 load_fcn_from_file (const std::string& file_name,
@@ -122,7 +123,7 @@ eval_string (const std::string&, bool silent, int& parse_status);
 extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
 // Global access to currently active lexer.
-// FIXME -- to be removed after more parser+lexer refactoring.
+// FIXME: to be removed after more parser+lexer refactoring.
 extern octave_base_lexer *LEXER;
 
 class

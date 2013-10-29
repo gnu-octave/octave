@@ -292,9 +292,9 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       *time = (clock () - t_start) / CLOCKS_PER_SEC;
     }
 
-   glp_delete_prob (lp);
+  glp_delete_prob (lp);
 
-   return errnum;
+  return errnum;
 }
 
 #endif
@@ -352,7 +352,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   while (0)
 
 DEFUN_DLD (__glpk__, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{values}] =} __glpk__ (@var{args})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -481,15 +481,15 @@ Undocumented internal function.\n\
   //-- LB argument, default: Free
   Array<int> freeLB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
-     {
-       if (xisinf (lb[i]))
-         {
-           freeLB(i) = 1;
-           lb[i] = -octave_Inf;
-         }
-       else
-         freeLB(i) = 0;
-     }
+    {
+      if (xisinf (lb[i]))
+        {
+          freeLB(i) = 1;
+          lb[i] = -octave_Inf;
+        }
+      else
+        freeLB(i) = 0;
+    }
 
   //-- 5th Input. An array of at least length numcols containing the upper
   //--            bound on each of the variables.
@@ -724,9 +724,9 @@ Undocumented internal function.\n\
     errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
                    cn.fortran_vec (), a.fortran_vec (), b, ctype,
                    freeLB.fortran_vec (), lb, freeUB.fortran_vec (), ub,
-                   vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale, &par,
-                   xmin.fortran_vec (), &fmin, &status, lambda.fortran_vec (),
-                   redcosts.fortran_vec (), &time);
+                   vartype.fortran_vec (), isMIP, lpsolver, save_pb, scale,
+                   &par, xmin.fortran_vec (), &fmin, &status,
+                   lambda.fortran_vec (), redcosts.fortran_vec (), &time);
 
   octave_scalar_map extra;
 

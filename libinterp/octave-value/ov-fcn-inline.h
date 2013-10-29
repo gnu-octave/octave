@@ -54,8 +54,10 @@ public:
 
   ~octave_fcn_inline (void) { }
 
-  octave_base_value *clone (void) const { return new octave_fcn_inline (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_fcn_inline (); }
+  octave_base_value *clone (void) const
+  { return new octave_fcn_inline (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_fcn_inline (); }
 
   bool is_inline_function (void) const { return true; }
 

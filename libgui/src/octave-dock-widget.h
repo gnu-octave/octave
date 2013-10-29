@@ -58,7 +58,7 @@ protected:
     QDockWidget::closeEvent (e);
   }
 
-  QWidget * focusWidget();
+  QWidget * focusWidget ();
 
 public slots:
 

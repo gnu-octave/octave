@@ -86,30 +86,30 @@ private:
 // Custom message handler for filtering some messages from Qt.
 
 void message_handler (QtMsgType type, const char *msg)
- {
-   switch (type)
-     {
-     case QtDebugMsg:
-       if (strncmp (msg, "QFileSystemWatcher: skipping native engine",42) != 0)
-         std::cerr << "Debug: " << msg << std::endl;
-       break;
+{
+  switch (type)
+    {
+    case QtDebugMsg:
+      if (strncmp (msg, "QFileSystemWatcher: skipping native engine",42) != 0)
+        std::cerr << "Debug: " << msg << std::endl;
+      break;
 
-     case QtWarningMsg:
-       std::cerr << "Warning: " << msg << std::endl;
-       break;
+    case QtWarningMsg:
+      std::cerr << "Warning: " << msg << std::endl;
+      break;
 
-     case QtCriticalMsg:
-       std::cerr << "Critical: " << msg << std::endl;
-       break;
+    case QtCriticalMsg:
+      std::cerr << "Critical: " << msg << std::endl;
+      break;
 
-     case QtFatalMsg:
-       std::cerr << "Fatal: " << msg << std::endl;
-       abort ();
+    case QtFatalMsg:
+      std::cerr << "Fatal: " << msg << std::endl;
+      abort ();
 
-     default:
-       break;
-     }
- }
+    default:
+      break;
+    }
+}
 
 // If START_GUI is false, we still set up the QApplication so that we
 // can use Qt widgets for plot windows.
@@ -124,7 +124,7 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
   if (start_gui)
     {
       // Set the codec for all strings
-      QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+      QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
       // install translators for the gui and qt text
       QTranslator gui_tr, qt_tr, qsci_tr;
@@ -166,8 +166,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
               main_window w;
               w.read_settings ();  // get widget settings and window layout
               w.focus_command_window ();
-              w.connect_visibility_changed (); // connect signals for changes in
-              // visibility not before w is shown
+              w.connect_visibility_changed (); // connect signals for changes
+                                               // in visibility not before w
+                                               // is shown
               return application.exec ();
             }
         }

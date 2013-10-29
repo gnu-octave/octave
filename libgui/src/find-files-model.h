@@ -34,16 +34,16 @@ class find_files_model : public QAbstractListModel
   Q_OBJECT
 
 public:
-  find_files_model(QObject *p=0);
+  find_files_model (QObject *p=0);
   ~find_files_model ();
 
-  void clear();
+  void clear ();
 
-  void addFile(const QFileInfo &info);
+  void addFile (const QFileInfo &info);
 
-  int rowCount(const QModelIndex & p=QModelIndex()) const;
+  int rowCount (const QModelIndex & p=QModelIndex ()) const;
 
-  int columnCount(const QModelIndex & p=QModelIndex()) const;
+  int columnCount (const QModelIndex & p=QModelIndex ()) const;
 
   QVariant data (const QModelIndex& idx, int role) const;
 

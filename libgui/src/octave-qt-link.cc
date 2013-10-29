@@ -114,7 +114,7 @@ octave_qt_link::do_question_dialog (const std::string& msg,
   uiwidget_creator.wait ();
 
   // The GUI has sent a signal and the process has been awakened.
-  return uiwidget_creator.get_dialog_button().toStdString ();
+  return uiwidget_creator.get_dialog_button ().toStdString ();
 }
 
 static QStringList
@@ -153,10 +153,10 @@ make_filter_list (const octave_link::filter_list& lst)
       name.replace (QRegExp ("\\(.*\\)"), "");
       ext.replace (";", " ");
 
-      if (name.length() == 0)
+      if (name.length () == 0)
         {
           // No name field.  Build one from the extensions.
-          name = ext.toUpper() + " Files";
+          name = ext.toUpper () + " Files";
         }
 
       retval.append (name + " (" + ext + ")");
@@ -250,7 +250,8 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
     retval.push_back (it->toStdString ());
 
   retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
-  retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
+  retval.push_back ((QString ("%1").arg (
+                       uiwidget_creator.get_dialog_result ())).toStdString ());
 
   return retval;
 }
@@ -267,8 +268,8 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 
   QString msg
     = (addpath_option
-       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg(qfile).arg(qdir)
-       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg(qfile).arg(qdir));
+       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
 
   QString title = tr ("Change Directory or Add Directory to Load Path");
 
@@ -402,7 +403,8 @@ void
 octave_qt_link::do_update_breakpoint (bool insert,
                                       const std::string& file, int line)
 {
-  emit update_breakpoint_marker_signal (insert, QString::fromStdString (file), line);
+  emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
+                                        line);
 }
 
 void

@@ -76,15 +76,18 @@ webinfo::webinfo (QWidget *p)
 
   _search_line_edit = new QLineEdit(this);
 #ifdef HAVE_SETPLACEHOLDERTEXT
-  _search_line_edit->setPlaceholderText (tr ("Type here and press \'Return\' to search"));
+  _search_line_edit->setPlaceholderText (
+    tr ("Type here and press \'Return\' to search"));
 #endif
   hbox_layout->addWidget (_search_line_edit);
 
   _search_check_box = new QCheckBox (tr ("Global search"));
   hbox_layout->addWidget (_search_check_box);
 
-  connect (_tab_bar, SIGNAL (tabCloseRequested (int)), this, SLOT (close_tab (int)));
-  connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
+  connect (_tab_bar, SIGNAL (tabCloseRequested (int)), this,
+           SLOT (close_tab (int)));
+  connect (_tab_bar, SIGNAL (currentChanged (int)), this,
+           SLOT (current_tab_changed (int)));
   connect (_zoom_in_button, SIGNAL (clicked ()), this, SLOT (zoom_in ()));
   connect (_zoom_out_button, SIGNAL (clicked ()), this, SLOT (zoom_out ()));
   connect (_search_line_edit, SIGNAL (returnPressed ()), this, SLOT (search ()));
@@ -110,7 +113,7 @@ webinfo::load_node (const QString& node_name)
   tab_text.replace("XREF","");
 
   //Check if node has been already opened.
-  for (int i = 0;i < _tab_bar->count (); i++)
+  for (int i = 0; i < _tab_bar->count (); i++)
     {
       if (tab_text == _tab_bar->tabText (i))
         {
@@ -161,8 +164,10 @@ webinfo::addNewTab (const QString& name)
   _text_browser->setOpenLinks (false);
   _text_browser->show ();
 
-  connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this, SLOT (link_clicked (const QUrl &)) );
-  disconnect(_tab_bar, SIGNAL (currentChanged(int)), this, SLOT (current_tab_changed (int)));
+  connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this,
+           SLOT (link_clicked (const QUrl &)) );
+  disconnect(_tab_bar, SIGNAL (currentChanged(int)), this,
+             SLOT (current_tab_changed (int)));
 
   int ns = _stacked_widget->addWidget (_text_browser);
   _stacked_widget->setCurrentIndex (ns);
@@ -173,7 +178,8 @@ webinfo::addNewTab (const QString& name)
   tab_data.setValue (static_cast<void*> (_text_browser));
   _tab_bar->setTabData (nt, tab_data);
 
-  connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
+  connect (_tab_bar, SIGNAL (currentChanged (int)), this,
+           SLOT (current_tab_changed (int)));
 
   if (_text_browser->font () != _font_web)
     {
@@ -207,11 +213,11 @@ webinfo::load_ref (const QString &ref_name)
   else
     {
       // not found
-     load_node("Top");
+      load_node("Top");
     }
 
-   if (_text_browser)
-     _text_browser->setFocus(); 
+  if (_text_browser)
+    _text_browser->setFocus();
 }
 
 void
@@ -267,7 +273,7 @@ webinfo::pasteClipboard ()
     {
       QClipboard *clipboard = QApplication::clipboard ();
       QString str =  clipboard->text ();
-      if (str.length () > 0) 
+      if (str.length () > 0)
         _search_line_edit->insert (str);
     }
 }

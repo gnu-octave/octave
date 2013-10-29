@@ -85,7 +85,7 @@ public:
                    const std::list<std::string>& defaults);
 
   std::list<std::string>
-  do_file_dialog (const filter_list& filter, const std::string& title, 
+  do_file_dialog (const filter_list& filter, const std::string& title,
                   const std::string &filename, const std::string &pathname,
                   const std::string& multimode);
 

@@ -115,7 +115,8 @@ public slots:
   void open_agora_page (void);
   void open_contribute_page (void);
   void open_developer_page (void);
-  void process_settings_dialog_request (const QString& desired_tab = QString ());
+  void process_settings_dialog_request (const QString& desired_tab
+                                                         = QString ());
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
   void prepare_to_exit (void);
@@ -128,8 +129,8 @@ public slots:
   void change_directory_up (void);
   void accept_directory_line_edit (void);
 
-  void execute_command_in_terminal(const QString& dir);
-  void run_file_in_terminal(const QFileInfo& info);
+  void execute_command_in_terminal (const QString& dir);
+  void run_file_in_terminal (const QFileInfo& info);
 
   void handle_new_figure_request (void);
 
@@ -173,16 +174,16 @@ public slots:
                                   const QFloatList&, const QFloatList&,
                                   const QStringList&);
 
-  void handle_create_filedialog (const QStringList &filters, 
-                                 const QString& title, const QString& filename, 
+  void handle_create_filedialog (const QStringList &filters,
+                                 const QString& title, const QString& filename,
                                  const QString &dirname,
                                  const QString& multimode);
 
   void handle_show_doc (const QString &file);
 
-  // find files dialog 
-  void find_files(const QString &startdir=QDir::currentPath());
-  void find_files_finished(int);
+  // find files dialog
+  void find_files (const QString &startdir=QDir::currentPath ());
+  void find_files_finished (int);
 
   // setting global shortcuts
   void set_global_shortcuts (bool enable);

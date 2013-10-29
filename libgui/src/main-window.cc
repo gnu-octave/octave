@@ -103,7 +103,7 @@ main_window::~main_window (void)
   delete history_window;
   delete status_bar;
   delete _workspace_model;
-  if (find_files_dlg) 
+  if (find_files_dlg)
     {
       delete find_files_dlg;
       find_files_dlg = 0;
@@ -147,7 +147,8 @@ void
 main_window::handle_save_workspace_request (void)
 {
   QString file =
-    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0, QFileDialog::DontUseNativeDialog);
+    QFileDialog::getSaveFileName (this, tr ("Save Workspace As"), ".", 0, 0,
+                                  QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::save_workspace_callback,
@@ -160,7 +161,8 @@ main_window::handle_load_workspace_request (const QString& file_arg)
   QString file = file_arg;
 
   if (file.isEmpty ())
-    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".", 0, 0, QFileDialog::DontUseNativeDialog);
+    file = QFileDialog::getOpenFileName (this, tr ("Load Workspace"), ".", 0, 0,
+                                         QFileDialog::DontUseNativeDialog);
 
   if (! file.isEmpty ())
     octave_link::post_event (this, &main_window::load_workspace_callback,
@@ -233,7 +235,7 @@ main_window::queue_command (QString command)
   _cmd_queue->append (command);   // queue command
   _cmd_queue_mutex.unlock ();
 
-  if (_cmd_processing.tryAcquire ())   // if callback is not processing, post event
+  if (_cmd_processing.tryAcquire ())  // if callback not processing, post event
     octave_link::post_event (this, &main_window::execute_command_callback);
 }
 
@@ -347,27 +349,30 @@ main_window::notice_settings (const QSettings *settings)
     = settings->value ("DockWidgets/widget_icon_set", "NONE").toString ();
 
   static struct
-    {
-      QString name;
-      QString path;
-    }
+  {
+    QString name;
+    QString path;
+  }
 
   widget_icon_data[] =
-    { // array of possible icon sets (name, path (complete for NONE))
-      // the first entry here is the default!
-      {"NONE",    ":/actions/icons/logo.png"},
-      {"GRAPHIC", ":/actions/icons/graphic_logo_"},
-      {"LETTER",  ":/actions/icons/letter_logo_"},
-      {"", ""} // end marker has empty name
-    };
+  {
+    // array of possible icon sets (name, path (complete for NONE))
+    // the first entry here is the default!
+    {"NONE",    ":/actions/icons/logo.png"},
+    {"GRAPHIC", ":/actions/icons/graphic_logo_"},
+    {"LETTER",  ":/actions/icons/letter_logo_"},
+    {"", ""} // end marker has empty name
+  };
 
   int count = 0;
   int icon_set_found = 0; // default
 
   while (!widget_icon_data[count].name.isEmpty ())
-    { // while not end of data
+    {
+      // while not end of data
       if (widget_icon_data[count].name == icon_set)
-        { // data of desired icon set found
+        {
+          // data of desired icon set found
           icon_set_found = count;
           break;
         }
@@ -387,10 +392,10 @@ main_window::notice_settings (const QSettings *settings)
         }
     }
   if (widget_icon_data[icon_set_found].name != "NONE")
-     _release_notes_icon = widget_icon_data[icon_set_found].path
-                           + "ReleaseWidget.png";
+    _release_notes_icon = widget_icon_data[icon_set_found].path
+                          + "ReleaseWidget.png";
   else
-     _release_notes_icon = ":/actions/icons/logo.png";
+    _release_notes_icon = ":/actions/icons/logo.png";
 
   int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
@@ -441,11 +446,12 @@ void
 main_window::browse_for_directory (void)
 {
   QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"), 0, QFileDialog::DontUseNativeDialog);
+    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"), 0,
+                                         QFileDialog::DontUseNativeDialog);
 
   set_current_working_directory (dir);
 
-  // FIXME -- on Windows systems, the command window freezes after the
+  // FIXME: on Windows systems, the command window freezes after the
   // previous actions.  Forcing the focus appears to unstick it.
 
   focus_command_window ();
@@ -457,7 +463,7 @@ main_window::set_current_working_directory (const QString& dir)
   // Change to dir if it is an existing directory.
 
   QString xdir = dir.isEmpty () ? "." : dir;
-    
+
   QFileInfo fileInfo (xdir);
 
   if (fileInfo.exists () && fileInfo.isDir ())
@@ -613,14 +619,15 @@ main_window::read_settings (void)
 
   if (!settings)
     {
-      qDebug("Error: QSettings pointer from resource manager is NULL.");
+      qDebug ("Error: QSettings pointer from resource manager is NULL.");
       return;
     }
 
   set_window_layout (settings);
 
   // restore the list of the last directories
-  QStringList curr_dirs = settings->value ("MainWindow/current_directory_list").toStringList ();
+  QStringList curr_dirs
+    = settings->value ("MainWindow/current_directory_list").toStringList ();
   for (int i=0; i < curr_dirs.size (); i++)
     {
       _current_directory_combo_box->addItem (curr_dirs.at (i));
@@ -671,7 +678,7 @@ main_window::set_window_layout (QSettings *settings)
 
   // show floating widgets after main win to ensure "Octave" in central menu
   foreach (octave_dock_widget *widget, float_and_visible)
-     widget->setVisible (true);
+    widget->setVisible (true);
 
 }
 
@@ -681,7 +688,7 @@ main_window::write_settings (void)
   QSettings *settings = resource_manager::get_settings ();
   if (!settings)
     {
-      qDebug("Error: QSettings pointer from resource manager is NULL.");
+      qDebug ("Error: QSettings pointer from resource manager is NULL.");
       return;
     }
 
@@ -716,9 +723,9 @@ main_window::copyClipboard (void)
       if (edit && edit->hasSelectedText ())
         {
           QClipboard *clipboard = QApplication::clipboard ();
-          clipboard->setText (edit->selectedText ()); 
+          clipboard->setText (edit->selectedText ());
         }
-    } 
+    }
   else
     emit copyClipboard_signal ();
 }
@@ -733,9 +740,9 @@ main_window::pasteClipboard (void)
       QString str =  clipboard->text ();
       if (edit && str.length () > 0)
         {
-          edit->insert (str); 
+          edit->insert (str);
         }
-    } 
+    }
   else
     emit pasteClipboard_signal ();
 }
@@ -778,12 +785,14 @@ main_window::connect_uiwidget_links ()
                                        const QStringList&)),
            this,
            SLOT (handle_create_inputlayout (const QStringList&, const QString&,
-                                            const QFloatList&, const QFloatList&,
+                                            const QFloatList&,
+                                            const QFloatList&,
                                             const QStringList&)));
 
   connect (&uiwidget_creator,
            SIGNAL (create_filedialog (const QStringList &,const QString&,
-                                      const QString&, const QString&, const QString&)),
+                                      const QString&, const QString&,
+                                      const QString&)),
            this,
            SLOT (handle_create_filedialog (const QStringList &, const QString&,
                                            const QString&, const QString&,
@@ -846,8 +855,8 @@ main_window::handle_create_inputlayout (const QStringList& prompt,
 
 void
 main_window::handle_create_filedialog (const QStringList& filters,
-                                       const QString& title, 
-                                       const QString& filename, 
+                                       const QString& title,
+                                       const QString& filename,
                                        const QString& dirname,
                                        const QString& multimode)
 {
@@ -921,8 +930,8 @@ main_window::construct (void)
   addDockWidget (Qt::LeftDockWidgetArea, workspace_window);
   addDockWidget (Qt::LeftDockWidgetArea, history_window);
 
-  int win_x = QApplication::desktop()->width();
-  int win_y = QApplication::desktop()->height();
+  int win_x = QApplication::desktop ()->width ();
+  int win_y = QApplication::desktop ()->height ();
 
   if (win_x > 960)
     win_x = 960;
@@ -950,7 +959,9 @@ main_window::construct (void)
   connect (this,
            SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
            editor_window,
-           SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
+           SLOT (handle_update_breakpoint_marker_request (bool,
+                                                          const QString&,
+                                                          int)));
 #endif
 
   QDir curr_dir;
@@ -1035,7 +1046,8 @@ main_window::construct_octave_qt_link (void)
   connect (_octave_qt_link,
            SIGNAL (update_breakpoint_marker_signal (bool, const QString&, int)),
            this,
-           SLOT (handle_update_breakpoint_marker_request (bool, const QString&, int)));
+           SLOT (handle_update_breakpoint_marker_request (bool, const QString&,
+                                                          int)));
 
   connect (_octave_qt_link,
            SIGNAL (show_doc_signal (const QString &)),
@@ -1190,12 +1202,12 @@ main_window::construct_edit_menu (QMenuBar *p)
     = edit_menu->addAction (tr ("Clear Command Window"));
 
   QAction *clear_command_history
-    = edit_menu->addAction(tr ("Clear Command History"));
+    = edit_menu->addAction (tr ("Clear Command History"));
 
   QAction *clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
 
-  connect (_find_files_action, SIGNAL (triggered()),
+  connect (_find_files_action, SIGNAL (triggered ()),
            this, SLOT (find_files ()));
 
   connect (clear_command_window_action, SIGNAL (triggered ()),
@@ -1236,17 +1248,20 @@ main_window::construct_debug_menu (QMenuBar *p)
   _debug_menu = p->addMenu (tr ("De&bug"));
 
   _debug_step_over = construct_debug_menu_item
-    (":/actions/icons/db_step.png", tr ("Step"), Qt::Key_F10);
+                       (":/actions/icons/db_step.png", tr ("Step"),
+                        Qt::Key_F10);
 
   _debug_step_into = construct_debug_menu_item
-    (":/actions/icons/db_step_in.png", tr ("Step in"), Qt::Key_F11);
+                       (":/actions/icons/db_step_in.png", tr ("Step in"),
+                        Qt::Key_F11);
 
   _debug_step_out = construct_debug_menu_item
-    (":/actions/icons/db_step_out.png", tr ("Step out"),
-     Qt::ShiftModifier + Qt::Key_F11);
+                      (":/actions/icons/db_step_out.png", tr ("Step out"),
+                       Qt::ShiftModifier + Qt::Key_F11);
 
   _debug_continue = construct_debug_menu_item
-    (":/actions/icons/db_cont.png", tr ("Continue"), Qt::Key_F5);
+                      (":/actions/icons/db_cont.png", tr ("Continue"),
+                       Qt::Key_F5);
 
   _debug_menu->addSeparator ();
 #ifdef HAVE_QSCINTILLA
@@ -1254,8 +1269,8 @@ main_window::construct_debug_menu (QMenuBar *p)
 #endif
 
   _debug_quit = construct_debug_menu_item
-    (":/actions/icons/db_stop.png", tr ("Exit Debug Mode"),
-     Qt::ShiftModifier + Qt::Key_F5);
+                (":/actions/icons/db_stop.png", tr ("Exit Debug Mode"),
+                 Qt::ShiftModifier + Qt::Key_F5);
 
   connect (_debug_step_over, SIGNAL (triggered ()),
            this, SLOT (debug_step_over ()));
@@ -1296,48 +1311,62 @@ main_window::construct_window_menu (QMenuBar *p)
   QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
   QAction *show_command_window_action = construct_window_menu_item
-    (window_menu, tr ("Show Command Window"), true, ctrl_shift + Qt::Key_0);
+                                        (window_menu,
+                                         tr ("Show Command Window"), true,
+                                         ctrl_shift + Qt::Key_0);
 
   QAction *show_history_action = construct_window_menu_item
-    (window_menu, tr ("Show Command History"), true, ctrl_shift + Qt::Key_1);
+                                 (window_menu, tr ("Show Command History"),
+                                  true, ctrl_shift + Qt::Key_1);
 
   QAction *show_file_browser_action =  construct_window_menu_item
-    (window_menu, tr ("Show File Browser"), true, ctrl_shift + Qt::Key_2);
+                                       (window_menu, tr ("Show File Browser"),
+                                        true, ctrl_shift + Qt::Key_2);
 
   QAction *show_workspace_action = construct_window_menu_item
-    (window_menu, tr ("Show Workspace"), true, ctrl_shift + Qt::Key_3);
+                                   (window_menu, tr ("Show Workspace"), true,
+                                    ctrl_shift + Qt::Key_3);
 
   QAction *show_editor_action = construct_window_menu_item
-    (window_menu, tr ("Show Editor"), true, ctrl_shift + Qt::Key_4);
+                                (window_menu, tr ("Show Editor"), true,
+                                 ctrl_shift + Qt::Key_4);
 
   QAction *show_documentation_action = construct_window_menu_item
-    (window_menu, tr ("Show Documentation"), true, ctrl_shift + Qt::Key_5);
+                                       (window_menu, tr ("Show Documentation"),
+                                        true, ctrl_shift + Qt::Key_5);
 
   QAction *show_news_action = construct_window_menu_item
-    (window_menu, tr ("Show News Window"), true, ctrl_shift + Qt::Key_6);
+                              (window_menu, tr ("Show News Window"), true,
+                               ctrl_shift + Qt::Key_6);
 
   window_menu->addSeparator ();
 
   QAction *command_window_action = construct_window_menu_item
-    (window_menu, tr ("Command Window"), false, ctrl + Qt::Key_0);
+                                   (window_menu, tr ("Command Window"), false,
+                                    ctrl + Qt::Key_0);
 
   QAction *history_action = construct_window_menu_item
-    (window_menu, tr ("Command History"), false, ctrl + Qt::Key_1);
+                            (window_menu, tr ("Command History"), false,
+                             ctrl + Qt::Key_1);
 
   QAction *file_browser_action = construct_window_menu_item
-    (window_menu, tr ("File Browser"), false, ctrl + Qt::Key_2);
+                                 (window_menu, tr ("File Browser"), false,
+                                  ctrl + Qt::Key_2);
 
   QAction *workspace_action = construct_window_menu_item
-    (window_menu, tr ("Workspace"), false, ctrl + Qt::Key_3);
+                              (window_menu, tr ("Workspace"), false,
+                               ctrl + Qt::Key_3);
 
   QAction *editor_action = construct_window_menu_item
-    (window_menu, tr ("Editor"), false, ctrl + Qt::Key_4);
+                           (window_menu, tr ("Editor"), false,
+                            ctrl + Qt::Key_4);
 
   QAction *documentation_action = construct_window_menu_item
-    (window_menu, tr ("Documentation"), false, ctrl + Qt::Key_5);
+                                  (window_menu, tr ("Documentation"), false,
+                                   ctrl + Qt::Key_5);
 
   QAction *news_action = construct_window_menu_item
-    (window_menu, tr ("News"), false, ctrl + Qt::Key_6);
+                         (window_menu, tr ("News"), false, ctrl + Qt::Key_6);
 
   window_menu->addSeparator ();
 
@@ -1519,29 +1548,30 @@ main_window::construct_tool_bar (void)
   _current_directory_combo_box = new QComboBox (this);
   _current_directory_combo_box->setFixedWidth (current_directory_width);
   _current_directory_combo_box->setEditable (true);
-  _current_directory_combo_box->setInsertPolicy(QComboBox::NoInsert);
+  _current_directory_combo_box->setInsertPolicy (QComboBox::NoInsert);
   _current_directory_combo_box->setToolTip (tr ("Enter directory name"));
-  _current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
+  _current_directory_combo_box->setMaxVisibleItems (
+    current_directory_max_visible);
   _current_directory_combo_box->setMaxCount (current_directory_max_count);
-  QSizePolicy sizePol(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  _current_directory_combo_box->setSizePolicy(sizePol);
+  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
+  _current_directory_combo_box->setSizePolicy (sizePol);
 
   // addWidget takes ownership of the objects so there is no
   // need to delete these upon destroying this main_window.
   _main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
   _main_tool_bar->addWidget (_current_directory_combo_box);
   QAction *current_dir_up = _main_tool_bar->addAction (
-                                          QIcon (":/actions/icons/up.png"),
-                                          tr ("One directory up"));
+                              QIcon (":/actions/icons/up.png"),
+                              tr ("One directory up"));
   QAction *current_dir_search = _main_tool_bar->addAction (
-                                          QIcon (":/actions/icons/search.png"),
-                                          tr ("Browse directories"));
+                                  QIcon (":/actions/icons/search.png"),
+                                  tr ("Browse directories"));
 
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this, SLOT (set_current_working_directory (QString)));
 
-  connect (_current_directory_combo_box->lineEdit(), SIGNAL (returnPressed ()),
-            this, SLOT (accept_directory_line_edit ()));
+  connect (_current_directory_combo_box->lineEdit (), SIGNAL (returnPressed ()),
+           this, SLOT (accept_directory_line_edit ()));
 
   connect (current_dir_search, SIGNAL (triggered ()),
            this, SLOT (browse_for_directory ()));
@@ -1579,7 +1609,7 @@ main_window::rename_variable_callback (const main_window::name_pair& names)
   /* bool status = */ symbol_table::rename (names.first, names.second);
 
   // if (status)
-    octave_link::set_workspace (true, symbol_table::workspace_info ());
+  octave_link::set_workspace (true, symbol_table::workspace_info ());
 
   //  else
   //    ; // we need an octave_link action that runs a GUI error option.
@@ -1624,7 +1654,7 @@ main_window::execute_command_callback ()
       _cmd_queue_mutex.lock (); // critical path
       std::string command = _cmd_queue->takeFirst ().toStdString ();
       if (_cmd_queue->isEmpty ())
-        _cmd_processing.release ();  // command queue empty, processing will stop
+        _cmd_processing.release ();  // cmd queue empty, processing will stop
       else
         repost = true;          // not empty, repost at end
       _cmd_queue_mutex.unlock ();
@@ -1709,7 +1739,7 @@ main_window::exit_callback (void)
 }
 
 void
-main_window::find_files(const QString &start_dir)
+main_window::find_files (const QString &start_dir)
 {
 
   if (! find_files_dlg)
@@ -1719,11 +1749,12 @@ main_window::find_files(const QString &start_dir)
       connect (find_files_dlg, SIGNAL (finished (int)),
                this, SLOT (find_files_finished (int)));
 
-      connect (find_files_dlg, SIGNAL (dir_selected(const QString &)),
-               file_browser_window, SLOT(set_current_directory(const QString&)));
+      connect (find_files_dlg, SIGNAL (dir_selected (const QString &)),
+               file_browser_window,
+               SLOT (set_current_directory (const QString&)));
 
-      connect (find_files_dlg, SIGNAL (file_selected(const QString &)),
-               this, SLOT(open_file(const QString &)));
+      connect (find_files_dlg, SIGNAL (file_selected (const QString &)),
+               this, SLOT (open_file (const QString &)));
 
       find_files_dlg->setWindowModality (Qt::NonModal);
     }
@@ -1733,14 +1764,14 @@ main_window::find_files(const QString &start_dir)
       find_files_dlg->show ();
     }
 
-  find_files_dlg->set_search_dir(start_dir);
+  find_files_dlg->set_search_dir (start_dir);
 
   find_files_dlg->activateWindow ();
 
 }
 
-void 
-main_window::find_files_finished(int)
+void
+main_window::find_files_finished (int)
 {
 
 }
@@ -1756,7 +1787,9 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       _exit_action->setShortcut (QKeySequence::Quit);
 
-      _find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_F);
+      _find_files_action->setShortcut (Qt::ControlModifier
+                                       + Qt::ShiftModifier
+                                       + Qt::Key_F);
 
     }
   else

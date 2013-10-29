@@ -39,14 +39,15 @@ along with Octave; see the file COPYING.  If not, see
  * If you make a queue with info files, position will be the number of bytes
  * from begining to node position.</p>
  * <p>
- * But is not so easy. There is headers, and qtinfo must not take these headers into account.
+ * But is not so easy. There is headers, and qtinfo must not take these
+ * headers into account.
  * </p>
  * <p>
  * This class also translates info files to html.
  * </p>
  */
 class parser
-    : public QObject
+  : public QObject
 {
   Q_OBJECT
 
@@ -59,13 +60,13 @@ public:
 
   QString find_ref (const QString &name);
 
-  /** Checks if this node is reference. If node is reference, it will be returned its position
-    * in text, else  it will be returned -1.
+  /** Checks if this node is reference. If node is reference, it will be
+   *  returned its position in text, else it will be returned -1.
     */
   int is_ref (const QString& node);
 
-  /**Translates text of node to Html. If anchorPos is not -1, then anchor is inserted in that
-    * position.
+  /** Translates text of node to Html. If anchorPos is not -1, then anchor is
+   *  inserted in that position.
     */
   QString node_text_to_html (const QString& text, int anchorPos = -1,
                              const QString& anchor = QString ());

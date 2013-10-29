@@ -118,7 +118,7 @@ workspace_model::headerData (int section, Qt::Orientation orientation,
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     return _columnNames[section];
   else
-    return QVariant();
+    return QVariant ();
 }
 
 QVariant
@@ -131,7 +131,8 @@ workspace_model::data (const QModelIndex& idx, int role) const
       if (role == Qt::BackgroundColorRole)
         {
           QString class_chars = resource_manager::storage_class_chars ();
-          int actual_class = class_chars.indexOf (_scopes[idx.row()].toAscii ());
+          int actual_class
+            = class_chars.indexOf (_scopes[idx.row ()].toAscii ());
           if (actual_class >= 0)
             return QVariant (_storage_class_colors.at (actual_class));
           else
@@ -146,36 +147,39 @@ workspace_model::data (const QModelIndex& idx, int role) const
             {
             case 0:
               if (role == Qt::ToolTipRole)
-                retval = QVariant (tr ("Right click to copy, rename, or display"));
+                retval
+                  = QVariant (tr ("Right click to copy, rename, or display"));
               else
-                retval = QVariant (_symbols[idx.row()]);
+                retval = QVariant (_symbols[idx.row ()]);
               break;
 
             case 1:
-              retval = QVariant (_class_names[idx.row()]);
+              retval = QVariant (_class_names[idx.row ()]);
               break;
 
             case 2:
-              retval = QVariant (_dimensions[idx.row()]);
+              retval = QVariant (_dimensions[idx.row ()]);
               break;
 
             case 3:
-              retval = QVariant (_values[idx.row()]);
+              retval = QVariant (_values[idx.row ()]);
               break;
 
             case 4:
               retval = QVariant ();
               QString class_chars = resource_manager::storage_class_chars ();
-              int actual_class = class_chars.indexOf (_scopes[idx.row()].toAscii ());
+              int actual_class
+                = class_chars.indexOf (_scopes[idx.row ()].toAscii ());
               if (actual_class >= 0)
                 {
-                  QStringList class_names = resource_manager::storage_class_names ();
+                  QStringList class_names
+                    = resource_manager::storage_class_names ();
                   retval = QVariant (class_names.at (actual_class));
                 }
               break;
 
-          }
-      }
+            }
+        }
     }
 
   return retval;
@@ -189,7 +193,7 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 
   if (idx.column () == 0 && role == Qt::EditRole)
     {
-      QString qold_name = _symbols[idx.row()];
+      QString qold_name = _symbols[idx.row ()];
 
       QString qnew_name = value.toString ();
 
@@ -250,7 +254,7 @@ workspace_model::clear_data (void)
 void
 workspace_model::update_table (void)
 {
-  beginResetModel();
+  beginResetModel ();
 
   // Nothing to do except tell the world to recalc.
 
@@ -262,14 +266,16 @@ workspace_model::update_table (void)
 void
 workspace_model::notice_settings (const QSettings *settings)
 {
-  QList<QColor> default_colors = resource_manager::storage_class_default_colors ();
+  QList<QColor> default_colors =
+    resource_manager::storage_class_default_colors ();
   QString class_chars = resource_manager::storage_class_chars ();
 
   for (int i = 0; i < class_chars.length (); i++)
     {
       QVariant default_var = default_colors.at (i);
-      QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
-                                             default_var).value<QColor> ();
+      QColor setting_color = settings->value ("workspaceview/color_"
+                                              + class_chars.mid (i,1),
+                                              default_var).value<QColor> ();
       _storage_class_colors.replace (i,setting_color);
     }
 }

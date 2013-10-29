@@ -69,7 +69,7 @@ protected slots:
 
   void handle_model_changed (void);
 
-  void copyClipboard();
+  void copyClipboard ();
 
 private:
 

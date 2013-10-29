@@ -40,7 +40,8 @@ namespace Ui
 class settings_dialog:public QDialog
 {
   Q_OBJECT public:
-  explicit settings_dialog (QWidget * parent, const QString& desired_tab = QString ());
+  explicit settings_dialog (QWidget * parent,
+                            const QString& desired_tab = QString ());
   ~settings_dialog ();
   void write_changed_settings ();
 
@@ -59,7 +60,7 @@ private:
 
   void read_terminal_colors (QSettings *settings);
   void write_terminal_colors (QSettings *settings);
-  
+
   color_picker *_editor_current_line_color;
 };
 

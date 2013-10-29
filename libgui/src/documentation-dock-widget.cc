@@ -37,8 +37,8 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
   _webinfo = new webinfo (this);
   setWidget (_webinfo);
 
-  connect (p, SIGNAL(show_doc_signal(const QString &)),
-   this, SLOT(showDoc(const QString &)));
+  connect (p, SIGNAL (show_doc_signal (const QString &)),
+           this, SLOT (showDoc (const QString &)));
 }
 
 void

@@ -153,11 +153,11 @@ private slots:
 private:
 
   enum editor_markers
-    {
-      bookmark,
-      breakpoint,
-      debugger_position
-    };
+  {
+    bookmark,
+    breakpoint,
+    debugger_position
+  };
 
   struct bp_info
   {

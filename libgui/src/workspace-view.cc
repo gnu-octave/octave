@@ -67,13 +67,14 @@ workspace_view::workspace_view (QWidget *p)
   QSettings *settings = resource_manager::get_settings ();
 
   // Initialize column order and width of the workspace
-  
-  view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+
+  view->horizontalHeader ()->restoreState (
+    settings->value ("workspaceview/column_state").toByteArray ());
 
   // Connect signals and slots.
 
   connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT(contextmenu_requested (const QPoint&)));
+           this, SLOT (contextmenu_requested (const QPoint&)));
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
@@ -84,8 +85,8 @@ workspace_view::~workspace_view (void)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  settings->setValue("workspaceview/column_state",
-                     view->horizontalHeader ()->saveState ());
+  settings->setValue ("workspaceview/column_state",
+                      view->horizontalHeader ()->saveState ());
 
   settings->sync ();
 }
@@ -112,12 +113,12 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
   QAbstractItemModel *m = view->model ();
 
   // if it isnt Local, Glocal etc, allow the ctx menu
-  if (index.isValid() && index.column () == 0)
+  if (index.isValid () && index.column () == 0)
     {
-      index = index.sibling (index.row(), 0);
+      index = index.sibling (index.row (), 0);
 
       QMap<int, QVariant> item_data = m->itemData (index);
-  
+
       QString var_name = item_data[0].toString ();
 
       menu.addAction (tr ("Copy"), this,
@@ -136,13 +137,13 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
 
       menu.addSeparator ();
 
-      menu.addAction ("disp(" + var_name + ")", this,
+      menu.addAction ("disp (" + var_name + ")", this,
                       SLOT (handle_contextmenu_disp ()));
 
-      menu.addAction ("plot(" + var_name + ")", this,
+      menu.addAction ("plot (" + var_name + ")", this,
                       SLOT (handle_contextmenu_plot ()));
 
-      menu.addAction ("stem(" + var_name + ")", this,
+      menu.addAction ("stem (" + var_name + ")", this,
                       SLOT (handle_contextmenu_stem ()));
 
       menu.exec (view->mapToGlobal (qpos));
@@ -156,12 +157,12 @@ workspace_view::handle_contextmenu_copy (void)
 
   if (index.isValid ())
     {
-      index = index.sibling(index.row(), 0);
+      index = index.sibling (index.row (), 0);
 
       QAbstractItemModel *m = view->model ();
 
       QMap<int, QVariant> item_data = m->itemData (index);
-  
+
       QString var_name = item_data[0].toString ();
 
       QClipboard *clipboard = QApplication::clipboard ();
@@ -177,12 +178,12 @@ workspace_view::handle_contextmenu_rename (void)
 
   if (index.isValid ())
     {
-      index = index.sibling(index.row(), 0);
+      index = index.sibling (index.row (), 0);
 
       QAbstractItemModel *m = view->model ();
 
       QMap<int, QVariant> item_data = m->itemData (index);
-  
+
       QString var_name = item_data[0].toString ();
 
       QInputDialog* inputDialog = new QInputDialog ();
@@ -225,12 +226,12 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 
   if (index.isValid ())
     {
-      index = index.sibling(index.row(), 0);
+      index = index.sibling (index.row (), 0);
 
       QAbstractItemModel *m = view->model ();
 
       QMap<int, QVariant> item_data = m->itemData (index);
-  
+
       QString var_name = item_data[0].toString ();
 
       emit command_requested (cmdname + " (" + var_name + ");");
@@ -256,13 +257,14 @@ workspace_view::notice_settings (const QSettings *settings)
   _model->notice_settings (settings); // update colors of model first
 
   QString tool_tip;
-  tool_tip  =  QString (tr ("View the variables in the active workspace.<br>"));
-  tool_tip +=  QString (tr ("Colors for the storage class:"));
+  tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
+  tool_tip += QString (tr ("Colors for the storage class:"));
   for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
     {
-      tool_tip +=  QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
-               .arg (_model->storage_class_color (i).name ())
-               .arg (resource_manager::storage_class_names ().at (i));
+      tool_tip +=
+        QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
+        .arg (_model->storage_class_color (i).name ())
+        .arg (resource_manager::storage_class_names ().at (i));
     }
   setToolTip (tool_tip);
 }

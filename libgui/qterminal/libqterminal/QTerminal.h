@@ -56,11 +56,11 @@ public:
   virtual QString selectedText () = 0;
 
   enum CursorType
-    {
-      UnderlineCursor,
-      BlockCursor,
-      IBeamCursor
-    };
+  {
+    UnderlineCursor,
+    BlockCursor,
+    IBeamCursor
+  };
 
   virtual void setCursorType (CursorType type, bool blinking)
   {
@@ -96,7 +96,7 @@ public slots:
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (selectedText().length() > 0);
-    
+
     _contextMenu->move (mapToGlobal (at));
     _contextMenu->show ();
   }
@@ -112,12 +112,12 @@ protected:
     _contextMenu = new QMenu (this);
 
     _copy_action = _contextMenu->addAction (
-                             QIcon (":/actions/icons/editcopy.png"),
-                             tr ("Copy"), this, SLOT (copyClipboard ()));
+                     QIcon (":/actions/icons/editcopy.png"),
+                     tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                            QIcon (":/actions/icons/editpaste.png"),
-                            tr ("Paste"), this, SLOT (pasteClipboard ()));
+                      QIcon (":/actions/icons/editpaste.png"),
+                      tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 
@@ -142,9 +142,9 @@ protected:
 
 private:
 
-    QMenu *_contextMenu;
-    QAction * _copy_action;
-    QAction * _paste_action;
+  QMenu *_contextMenu;
+  QAction * _copy_action;
+  QAction * _paste_action;
 };
 
 #endif // QTERMINAL_H

@@ -104,8 +104,8 @@ public:
 
   const QStringList *get_string_list (void) { return string_list; }
 
-  bool signal_filedialog (const QStringList& filters, const QString& title, 
-                          const QString& filename, const QString& dirname, 
+  bool signal_filedialog (const QStringList& filters, const QString& title,
+                          const QString& filename, const QString& dirname,
                           const QString &multimode)
   {
     emit create_filedialog (filters, title, filename, dirname, multimode);
@@ -252,7 +252,7 @@ class FileDialog : public QFileDialog
 public:
 
   explicit FileDialog (const QStringList& filters,
-                       const QString& title, const QString& filename, 
+                       const QString& title, const QString& filename,
                        const QString& dirname, const QString& multimode);
 
 signals:

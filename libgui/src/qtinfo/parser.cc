@@ -166,7 +166,7 @@ parser::search_node (const QString& node, QIODevice *io)
   while (!io->atEnd ())
     {
       QString text = get_next_node (io);
-      if(node == get_node_name (text))
+      if (node == get_node_name (text))
         {
           return text;
         }
@@ -187,12 +187,14 @@ parser::get_next_node (QIODevice *io)
     {
       io->getChar (&c);
       if (c)
-        { // first char is not equal 0
+        {
+          // first char is not equal 0
           io->ungetChar (c);
           line = io->readLine ();
         }
       else
-        { // 0 was read -> image -> text length changes
+        {
+          // 0 was read -> image -> text length changes
           line_buffer = io->readLine ();  // image tag that is not needed
           line = io->readLine ();         // firsts line of text message
           for (i=1; i<line_buffer.size ()+6; i++)  // correct the size
@@ -233,7 +235,7 @@ parser_node (const QString& text, const QString& node_name)
 {
   QString firstLine = get_first_line (text);
   QStringList nodes = firstLine.split (",");
-  for (int i = 0;i < nodes.size (); i++)
+  for (int i = 0; i < nodes.size (); i++)
     {
       QString node = nodes.at (i).trimmed ();
 
@@ -331,7 +333,8 @@ replace_colons (QString& text)
   while ( (i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
-      QString bold = "<font style=\"color:SteelBlue;font-weight:bold\">" + t + "</font>";
+      QString bold = "<font style=\"color:SteelBlue;font-weight:bold\">" + t +
+                     "</font>";
 
       f = re.matchedLength ();
       text.replace (i,f,bold);
@@ -346,8 +349,10 @@ info_to_html (QString& text)
   text.replace ("<", "&lt;");
   text.replace (">", "&gt;");
 
-  text.replace ("\n* Menu:", "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
-  text.replace ("See also:", "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
+  text.replace ("\n* Menu:",
+                "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
+  text.replace ("See also:",
+                "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
   replace_links (text);
   replace_colons (text);
 }
@@ -375,8 +380,8 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       info_to_html (text2);
 
       text = text1 + "<a name='" + anchor
-                   + "'/><img src=':/actions/icons/arrow_down.png'><br>&nbsp;"
-                   + text2;
+             + "'/><img src=':/actions/icons/arrow_down.png'><br>&nbsp;"
+             + text2;
     }
   else
     {
@@ -417,7 +422,7 @@ parser::parse_info_map ()
   QRegExp re_files ("([^:]+): (\\d+)\n");
   int foundCount = 0;
 
-  for(int i = 0; i < _info_files.size (); i++)
+  for (int i = 0; i < _info_files.size (); i++)
     {
       QFileInfo fileInfo = _info_files.at (i);
 
@@ -437,7 +442,8 @@ parser::parse_info_map ()
               int pos = 0;
               QString last_node;
 
-              while ((pos = re.indexIn (nodeText, pos)) != -1) {
+              while ((pos = re.indexIn (nodeText, pos)) != -1)
+                {
                   QString type = re.cap (1);
                   QString node = re.cap (2);
                   int index = re.cap (3).toInt ();
@@ -465,12 +471,13 @@ parser::parse_info_map ()
               foundCount++;
               int pos = 0;
 
-              while ( (pos = re_files.indexIn (nodeText, pos)) != -1) {
+              while ( (pos = re_files.indexIn (nodeText, pos)) != -1)
+                {
                   QString fileCap = re_files.cap (1).trimmed ();
                   int index = re_files.cap (2).toInt ();
 
                   info_file_item item;
-                  for (int j = 0;j < _info_files.size (); j++)
+                  for (int j = 0; j < _info_files.size (); j++)
                     {
                       QFileInfo info = _info_files.at (j);
                       if (info.fileName ().startsWith (fileCap))
@@ -586,7 +593,8 @@ parser::global_search (const QString& text, int max_founds)
           int pos = 0;
           int founds = 0;
 
-          for (; founds < words.size () && node_text.indexOf (words.at (founds)) >= 0; founds++)
+          for (; founds < words.size ()
+                 && node_text.indexOf (words.at (founds)) >= 0; founds++)
             { }
 
           if (founds<words.size ())
@@ -595,20 +603,22 @@ parser::global_search (const QString& text, int max_founds)
             }
           founds = 0;
 
-          while ( (pos = re.indexIn (node_text, pos)) != -1 && founds < max_founds)
+          while ((pos = re.indexIn (node_text, pos)) != -1
+                 && founds < max_founds)
             {
               int line_start, line_end;
               line_start = node_text.lastIndexOf ("\n", pos);
               line_end = node_text.indexOf ("\n", pos);
-              QString line = node_text.mid (line_start, line_end - line_start).trimmed ();
+              QString line = node_text.mid (line_start,
+                                            line_end - line_start).trimmed ();
               pos += re.matchedLength ();
 
               if (founds == 0)
                 {
                   results.append(
-                        "<br>\n<img src=':/actions/icons/bookmark.png' width=10> <a href='"
-                        + QString(QUrl::toPercentEncoding(node,"","'")) +
-                        "'>");
+                    "<br>\n<img src=':/actions/icons/bookmark.png' width=10> <a href='"
+                    + QString(QUrl::toPercentEncoding(node,"","'")) +
+                    "'>");
                   results.append (node);
                   results.append ("</a><br>\n");
                 }
@@ -628,13 +638,13 @@ parser::global_search (const QString& text, int max_founds)
   return results;
 }
 
-QString 
+QString
 parser::find_ref (const QString &ref_name)
 {
   QString text = "";
 
   QHash<QString,node_position>::iterator it;
-  for (it=_ref_map.begin ();it!=_ref_map.end ();++it)
+  for (it=_ref_map.begin (); it!=_ref_map.end (); ++it)
     {
       QString k = it.key ();
       node_position p = it.value ();

@@ -52,22 +52,22 @@ private:
 class news_reader : public QObject
 {
   Q_OBJECT
- 
+
 public:
 
   news_reader (const QString& xbase_url, const QString& xpage)
     : QObject (), base_url (xbase_url), page (xpage) { }
- 
+
 public slots:
 
-    void process (void);
- 
+  void process (void);
+
 signals:
 
   void display_news_signal (const QString& news);
 
   void finished (void);
- 
+
 private:
 
   QString base_url;

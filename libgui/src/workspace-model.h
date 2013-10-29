@@ -64,7 +64,8 @@ public:
 
   bool is_top_level (void) const { return _top_level; }
 
-  QColor storage_class_color (int s_class) { return _storage_class_colors.at (s_class); }
+  QColor storage_class_color (int s_class)
+  { return _storage_class_colors.at (s_class); }
 
 public slots:
 

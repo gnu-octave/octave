@@ -56,13 +56,14 @@ welcome_wizard::welcome_wizard (QWidget *p)
   ft.setPointSize (20);
   title->setFont (ft);
 
-  QLabel *msg_1 = new QLabel (tr ("You seem to be using the Octave graphical interface for the first  time on this computer.  Click 'Finish' to write a configuration file  and launch Octave GUI."));
+  QLabel *msg_1 = new QLabel (
+    tr ("You seem to be using the Octave graphical interface for the first  time on this computer.  Click 'Finish' to write a configuration file  and launch Octave GUI."));
   msg_1->setWordWrap (true);
 
   QString msg_2_text = QString (tr ("The configuration file is stored in %1. "
                                     "If that file exists, you will not see this "
                                     "dialog when Octave starts again.").
-                                    arg (resource_manager::get_settings_file ()));
+                                arg (resource_manager::get_settings_file ()));
   QLabel *msg_2 = new QLabel (msg_2_text);
   msg_2->setWordWrap (true);
 

@@ -993,12 +993,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="-826"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo de las notas de versión %1 está vacío.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo de las notas de versión %1 no puede ser leído.</translation>
     </message>
     <message>
         <location line="+13"/>

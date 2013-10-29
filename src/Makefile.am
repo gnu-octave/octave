@@ -75,7 +75,7 @@ endif
 
 octave_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(OCTAVE_CPPFLGAS)
+  $(OCTAVE_CPPFLAGS)
 
 octave_cli_SOURCES = main-cli.cc
 

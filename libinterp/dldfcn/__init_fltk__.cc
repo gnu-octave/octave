@@ -180,6 +180,7 @@ private:
 
     if (print_mode)
       {
+#ifdef HAVE_GL2PS_H
         FILE *fp = octave_popen (print_cmd.c_str (), "w");
         glps_renderer rend (fp, print_term);
 
@@ -187,6 +188,11 @@ private:
 
         octave_pclose (fp);
         print_mode = false;
+#else
+        print_mode = false;
+        error ("fltk: printing not available without gl2ps library");
+        return;
+#endif
       }
     else
       {

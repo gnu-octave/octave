@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if defined (HAVE_OPENGL)
+#ifdef HAVE_GL2PS_H
 
 #include <cstdio>
 

@@ -1190,6 +1190,15 @@ fi
 AC_SUBST(GRAPHICS_CFLAGS)
 AC_SUBST(GRAPHICS_LIBS)
 
+## Check for gl2ps which is required for printing with OpenGL graphics
+if test $native_graphics = yes; then
+  AC_CHECK_HEADERS([gl2ps.h],
+    [GL2PS_LIBS="-lgl2ps"],
+    [AC_MSG_WARN([gl2ps library not found.  OpenGL printing is disabled.])])
+fi
+
+AC_SUBST(GL2PS_LIBS)
+
 ### Start determination of shared vs. static libraries
 
 ## Use -static if compiling on Alpha OSF/1 1.3 systems.

@@ -1,7 +1,6 @@
 EXTRA_DIST += \
   corefcn/module.mk \
   corefcn/defaults.in.h \
-  corefcn/gl2ps.c \
   corefcn/graphics.in.h \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.in.cc \
@@ -60,7 +59,6 @@ COREFCN_INC = \
   corefcn/file-io.h \
   corefcn/gl-render.h \
   corefcn/gl2ps-renderer.h \
-  corefcn/gl2ps.h \
   corefcn/gripes.h \
   corefcn/help.h \
   corefcn/hook-fcn.h \
@@ -130,8 +128,7 @@ TEX_PARSER_SRC = \
 C_COREFCN_SRC = \
   corefcn/cutils.c \
   corefcn/matherr.c \
-  corefcn/siglist.c \
-  corefcn/xgl2ps.c
+  corefcn/siglist.c
 
 COREFCN_SRC = \
   corefcn/Cell.cc \

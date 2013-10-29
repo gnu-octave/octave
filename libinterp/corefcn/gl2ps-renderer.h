@@ -23,8 +23,10 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (gl2ps_renderer_h)
 #define gl2ps_renderer_h 1
 
+#ifdef HAVE_GL2PS_H
+
 #include "gl-render.h"
-#include "gl2ps.h"
+#include <gl2ps.h>
 
 class
 OCTINTERP_API
@@ -81,5 +83,7 @@ private:
   double fontsize;
   std::string fontname;
 };
+
+#endif  // HAVE_GL2PS_H
 
 #endif

@@ -16,6 +16,12 @@ Summary of important user-visible changes for version 3.8:
     Adding this command to your ~/.octaverc file will set the default
     for each session.
 
+ ** Printing or saving figures with OpenGL graphics requires the
+    gl2ps library which is no longer distributed with Octave.  The
+    software is widely available in most package managers.  If a
+    pre-compiled package does not exist for your system, you can find
+    the current sources at http://www.geuz.org/gl2ps/.
+
  ** Octave now supports nested functions with scoping rules that are
     compatible with Matlab.  A nested function is one declared and defined
     within the body of another function.  The nested function is only

@@ -15,6 +15,7 @@ LIBOCTINTERP_LINK_DEPS += \
   $(OPENGL_LIBS) \
   $(X11_LIBS) \
   $(CARBON_LIBS) \
+  $(GL2PS_LIBS) \
   $(LLVM_LIBS) \
   $(JAVA_LIBS) \
   $(LAPACK_LIBS)

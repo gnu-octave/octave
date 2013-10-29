@@ -12,7 +12,7 @@ mexFunction (int nlhs, mxArray* plhs[],
 
   n = mxGetNumberOfElements (prhs[0]);
   n = (n > nlhs ? nlhs : n);
-  
+
   for (i = 0; i < n; i++)
     plhs[i] = mxDuplicateArray (mxGetCell (prhs[0], i));
 }

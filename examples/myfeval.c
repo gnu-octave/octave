@@ -10,7 +10,7 @@ mexFunction (int nlhs, mxArray* plhs[],
 
   mexPrintf ("I have %d inputs and %d outputs\n", nrhs, nlhs);
 
-  if (nrhs < 1 || ! mxIsString (prhs[0])) 
+  if (nrhs < 1 || ! mxIsString (prhs[0]))
     mexErrMsgTxt ("ARG1 must be a function name");
 
   str = mxArrayToString (prhs[0]);

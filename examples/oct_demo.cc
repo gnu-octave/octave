@@ -51,7 +51,7 @@
 // from gcc about an unused function parameter.
 
 DEFUN_DLD (oct_demo, args, ,
-  "[...] = oct_demo (...)\n\
+           "[...] = oct_demo (...)\n\
 \n\
 Print a greeting followed by the values of all the arguments passed.\n\
 Return all arguments in reverse order.")

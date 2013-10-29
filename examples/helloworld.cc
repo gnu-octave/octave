@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 
 DEFUN_DLD (helloworld, args, nargout,
-  "Hello World Help String")
+           "Hello World Help String")
 {
   int nargin = args.length ();
 

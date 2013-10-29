@@ -11,5 +11,5 @@ mexFunction (int nlhs, mxArray *plhs[],
   if (strcmp (nm, "myfunc") == 0)
     mexPrintf ("This is the principal function\n", nm);
 
-  return; 
+  return;
 }

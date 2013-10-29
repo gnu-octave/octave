@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 
 static bool Vdebug_jit = false;
 
-static bool Vjit_enable = true;
+static bool Vjit_enable = false;
 
 static int Vjit_startcnt = 1000;
 

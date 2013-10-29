@@ -718,12 +718,12 @@ fi
 
  ### Check for the LLVM library
 
-build_jit=no
+build_jit=yes
 AC_ARG_ENABLE([jit],
   [AS_HELP_STRING([--enable-jit],
     [(EXPERIMENTAL) enable JIT compiler])],
-  [if test "$enableval" = yes; then
-     build_jit=yes
+  [if test "$enableval" = no; then
+     build_jit=no
    fi],
   [])
 

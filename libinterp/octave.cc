@@ -639,6 +639,10 @@ octave_process_command_line (int argc, char **argv)
           Fdebug_jit (octave_value (true));
           break;
 
+        case JIT_COMPILER_OPTION:
+          Fjit_enable (octave_value (true));
+          break;
+
         case LINE_EDITING_OPTION:
           forced_line_editing = true;
           break;
@@ -653,10 +657,6 @@ octave_process_command_line (int argc, char **argv)
 
         case NO_INIT_PATH_OPTION:
           set_initial_path = false;
-          break;
-
-        case NO_JIT_COMPILER_OPTION:
-          Fjit_enable (octave_value (false));
           break;
 
         case NO_LINE_EDITING_OPTION:

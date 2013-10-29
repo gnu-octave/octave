@@ -33,8 +33,8 @@ static const char *usage_string =
        [--echo-commands] [--eval CODE] [--exec-path path]\n\
        [--force-gui] [--help] [--image-path path]\n\
        [--info-file file] [--info-program prog] [--interactive]\n\
-       [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
-       [--no-init-path] [--no-jit-compiler] [--no-line-editing]\n\
+       [--jit-compiler] [--line-editing] [--no-gui] [--no-history]\n\
+       [--no-init-file] [--no-init-path] [--no-line-editing]\n\
        [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
        [--path path] [--persist] [--silent] [--traditional]\n\
        [--verbose] [--version] [file]";
@@ -55,11 +55,11 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define INFO_FILE_OPTION 7
 #define INFO_PROG_OPTION 8
 #define DEBUG_JIT_OPTION 9
-#define LINE_EDITING_OPTION 10
-#define NO_GUI_OPTION 11
-#define NO_INIT_FILE_OPTION 12
-#define NO_INIT_PATH_OPTION 13
-#define NO_JIT_COMPILER_OPTION 14
+#define JIT_COMPILER_OPTION 10
+#define LINE_EDITING_OPTION 11
+#define NO_GUI_OPTION 12
+#define NO_INIT_FILE_OPTION 13
+#define NO_INIT_PATH_OPTION 14
 #define NO_LINE_EDITING_OPTION 15
 #define NO_SITE_FILE_OPTION 16
 #define PERSIST_OPTION 17
@@ -80,12 +80,12 @@ struct option long_opts[] = {
   { "info-file",                required_argument, 0, INFO_FILE_OPTION },
   { "info-program",             required_argument, 0, INFO_PROG_OPTION },
   { "interactive",              no_argument,       0, 'i' },
+  { "jit-compiler",             no_argument,       0, JIT_COMPILER_OPTION },
   { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
   { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
   { "no-history",               no_argument,       0, 'H' },
   { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
   { "no-init-path",             no_argument,       0, NO_INIT_PATH_OPTION },
-  { "no-jit-compiler",          no_argument,       0, NO_JIT_COMPILER_OPTION },
   { "no-line-editing",          no_argument,       0, NO_LINE_EDITING_OPTION },
   { "no-site-file",             no_argument,       0, NO_SITE_FILE_OPTION },
   { "no-window-system",         no_argument,       0, 'W' },
@@ -126,12 +126,12 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
+  --jit-compiler          Enable the JIT compiler.\n\
   --line-editing          Force readline use for command-line editing.\n\
   --no-gui                Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\
-  --no-jit-compiler       Disable the JIT compiler.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
   --no-window-system, -W  Disable window system, including graphics.\n\

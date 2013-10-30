@@ -57,7 +57,7 @@ welcome_wizard::welcome_wizard (QWidget *p)
   title->setFont (ft);
 
   QLabel *msg_1 = new QLabel (
-    tr ("You seem to be using the Octave graphical interface for the first  time on this computer.  Click 'Finish' to write a configuration file  and launch Octave GUI."));
+    tr ("You seem to be using the Octave graphical interface for the first time on this computer.  Click 'Finish' to write a configuration file and launch Octave."));
   msg_1->setWordWrap (true);
 
   QString msg_2_text = QString (tr ("The configuration file is stored in %1. "

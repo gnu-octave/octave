@@ -398,7 +398,7 @@ main (int argc, char **argv)
 
 #if defined (HAVE_OCTAVE_GUI)
   bool start_gui = true;
-  bool cli_only = false;
+  bool gui_libs = true;
 #endif
 
   std::string octave_bindir = get_octave_bindir ();
@@ -427,7 +427,7 @@ main (int argc, char **argv)
           // on as that option is not recognized by Octave.
 
 #if defined (HAVE_OCTAVE_GUI)
-          cli_only = true;
+          gui_libs = false;
 #endif
           file = octave_bindir + dir_sep_char + "octave-cli";
         }
@@ -456,11 +456,7 @@ main (int argc, char **argv)
 
 #else
 
-  if (cli_only || (! start_gui && ! have_controlling_terminal ()))
-    {
-      retval = octave_exec (file, new_argv);
-    }
-  else
+  if (gui_libs && start_gui && have_controlling_terminal ())
     {
       install_signal_handlers ();
 
@@ -505,6 +501,8 @@ main (int argc, char **argv)
             }
         }
     }
+  else
+    retval = octave_exec (file, new_argv);
 
 #endif
 

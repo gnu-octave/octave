@@ -40,7 +40,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 // From gnulib, so OK for Windows too.
+#include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
+
+// This is a liboctave header, but it doesn't include any other Octave
+// headers or declare any functions that are defined in liboctave.
+#include "syswait.h"
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
@@ -102,16 +108,9 @@ w32_get_octave_home (void)
 
 #endif
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) && ! defined (__CYGWIN__))
+#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
-#include <sys/types.h>
 #include <signal.h>
-#include <fcntl.h>
-
-// This is a liboctave header, but it doesn't include any other Octave
-// headers or declare any functions that are defined in liboctave.
-#include "syswait.h"
 
 typedef void sig_handler (int);
 
@@ -142,9 +141,12 @@ octave_set_signal_handler (int sig, sig_handler *handler)
   return oact.sa_handler;
 }
 
+#endif
+
 static void
 install_signal_handlers (void)
 {
+#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
 #ifdef SIGINT
   octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
@@ -261,14 +263,16 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
 #endif
 
+#endif
 }
+
 
 static bool
 have_controlling_terminal (void)
 {
   int retval = false;
 
-#if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
+#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
 #if defined (HAVE_CTERMID)
   const char *ctty = ctermid (0);
@@ -289,8 +293,6 @@ have_controlling_terminal (void)
 
   return retval;
 }
-
-#endif
 
 #ifndef OCTAVE_BINDIR
 #define OCTAVE_BINDIR %OCTAVE_BINDIR%

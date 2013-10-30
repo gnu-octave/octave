@@ -455,7 +455,7 @@ if [ -n "$f77files" ]; then
       $dbg $cmd
       eval $cmd
     else
-      echo "mkoctfile: no way to compile Fortran file $f" 1>&2
+      echo "mkoctfile.sh: no way to compile Fortran file $f" 1>&2
     fi
   done
 fi
@@ -478,7 +478,7 @@ if [ -n "$cfiles" ]; then
       $dbg $cmd
       eval $cmd
     else
-      echo "mkoctfile: no way to compile C++ file $f" 1>&2
+      echo "mkoctfile.sh: no way to compile C++ file $f" 1>&2
     fi
   done
 fi
@@ -511,7 +511,7 @@ if [ -n "$ccfiles" ]; then
       $dbg $cmd
       eval $cmd
     else
-      echo "mkoctfile: no way to compile C++ file $f" 1>&2
+      echo "mkoctfile.sh: no way to compile C++ file $f" 1>&2
     fi
   done
 fi
@@ -540,7 +540,7 @@ if $link && [ -n "$objfiles" ]; then
       $dbg $cmd
       eval $cmd
     else
-      echo "mkoctfile: no way to link stand-alone executable file" 1>&2
+      echo "mkoctfile.sh: no way to link stand-alone executable file" 1>&2
       exit 1
     fi
   else

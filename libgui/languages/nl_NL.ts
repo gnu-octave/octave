@@ -93,72 +93,72 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
         <source>Default</source>
-        <translation type="unfinished">Standaardtekst</translation>
+        <translation>Standaardtekst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished">Commentaar</translation>
+        <translation>Commentaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished">Getal</translation>
+        <translation>Getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished">Trefwoord</translation>
+        <translation>Trefwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst tussen dubbele aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst tussen aanhalingstekens</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished">Operator</translation>
+        <translation>Operator</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished">Identifier</translation>
+        <translation>Identifier</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished">Skalair getal</translation>
+        <translation>Skalair getal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Geëxpandeerde parameter</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished">Backticks</translation>
+        <translation>Backticks</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished">Here document  scheidingsteken</translation>
+        <translation>Here document  scheidingsteken</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished">Here document tussen aanhalingstekens</translation>
+        <translation>Here document tussen aanhalingstekens</translation>
     </message>
 </context>
 <context>
@@ -1677,12 +1677,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="-826"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand met Release Notes &apos;%1&apos; is leeg.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand met Rlease Notes  &apos;%1&apos; kan nit worden gelezen.</translation>
     </message>
     <message>
         <location line="+13"/>

@@ -252,8 +252,6 @@ An overview of the directory layout of Octave's source files:
 
       m-editor       source files for the m-file editor
 
-      octave-adapter link between Octave and GUI
-
       qtinfo         source files for the Qt texinfo browser
 
 

@@ -263,10 +263,10 @@ install_signal_handlers (void)
 
 }
 
-static int
+static bool
 have_controlling_terminal (void)
 {
-  int retval = 0;
+  int retval = false;
 
 #if ! (defined (__WIN32__) || defined (__APPLE__)) || defined (__CYGWIN__)
 
@@ -282,7 +282,7 @@ have_controlling_terminal (void)
     {
       gnulib::close (fd);
 
-      retval = 1;
+      retval = true;
     }
 
 #endif

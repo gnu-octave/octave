@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cassert>
+#include <clocale>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -704,6 +705,9 @@ octave_process_command_line (int argc, char **argv)
 void
 octave_initialize_interpreter (int argc, char **argv, int embedded)
 {
+  // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
+  setlocale (LC_NUMERIC, "C");
+
   octave_embedded = embedded;
 
   octave_env::set_program_name (argv[0]);

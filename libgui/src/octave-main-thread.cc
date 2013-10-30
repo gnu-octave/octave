@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <clocale>
 #include <string>
 
 #include "builtin-defun-decls.h"
@@ -39,9 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 void
 octave_main_thread::run (void)
 {
-  // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
-  setlocale (LC_NUMERIC, "C");
-
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
 

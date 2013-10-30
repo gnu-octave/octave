@@ -168,7 +168,39 @@ public:
 
   mxArray *as_mxArray (void) const
   {
-    return val.as_mxArray ();
+    mxArray *retval = val.as_mxArray ();
+
+    // RETVAL is assumed to be an mxArray_matlab object.  Should we
+    // assert that condition here?
+
+    if (retval)
+      {
+        // Preserve cached values of class name and dimensions in case
+        // they will be used after we mutate.
+
+        // set_class_name will handle deleting class name that comes
+        // from as_mxArray conversion function.
+
+        if (class_name)
+          {
+            retval->set_class_name (class_name);
+
+            class_name = 0;
+          }
+
+        if (dims)
+          {
+            mwSize *xdims = retval->get_dimensions ();
+
+            mxFree (xdims);
+
+            retval->set_dimensions (dims, ndims);
+
+            dims = 0;
+          }
+      }
+
+    return retval;
   }
 
   ~mxArray_octave_value (void)
@@ -526,7 +558,7 @@ public:
     mutate_flag = true;
   }
 
-  mxArray *mutate (void) const { return val.as_mxArray (); }
+  mxArray *mutate (void) const { return as_mxArray (); }
 
   octave_value as_octave_value (void) const { return val; }
 
@@ -2737,8 +2769,8 @@ mxSetN (mxArray *ptr, mwSize n)
 void
 mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
 {
-  ptr->set_dimensions (static_cast<mwSize *> (
-                         maybe_unmark (const_cast<mwSize *> (dims))),
+  ptr->set_dimensions (static_cast<mwSize *>
+                       (maybe_unmark (const_cast<mwSize *> (dims))),
                        ndims);
 }
 

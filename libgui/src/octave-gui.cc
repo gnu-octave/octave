@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QApplication>
+#include <QCoreApplication>
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
@@ -72,7 +73,7 @@ protected:
 
     m_result = octave_execute_interpreter ();
 
-    QApplication::exit (m_result);
+    QCoreApplication::exit (m_result);
   }
 
 private:
@@ -119,10 +120,10 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 {
   qInstallMsgHandler (message_handler);
 
-  QApplication application (argc, argv);
-
   if (start_gui)
     {
+      QApplication application (argc, argv);
+
       // Set the codec for all strings
       QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
@@ -175,9 +176,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
     }
   else
     {
-      octave_cli_thread main_thread (argc, argv);
+      QCoreApplication application (argc, argv);
 
-      application.setQuitOnLastWindowClosed (false);
+      octave_cli_thread main_thread (argc, argv);
 
       main_thread.start ();
 

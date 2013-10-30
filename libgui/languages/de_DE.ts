@@ -274,12 +274,12 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation>&amp;Hilfe zu Schlüsselwort</translation>
+        <translation>&amp;Hilfe zum Schlüsselwort</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation>&amp;Dokumentation zu Schlüsselwort</translation>
+        <translation>&amp;Dokumentation zum Schlüsselwort</translation>
     </message>
     <message>
         <location line="-147"/>
@@ -333,7 +333,7 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+39"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editieren</translation>
+        <translation>&amp;Barbeiten</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -1285,7 +1285,7 @@ zu: </translation>
     <message>
         <location line="+2"/>
         <source>Edit</source>
-        <translation>Editieren</translation>
+        <translation>Bearbeite</translation>
     </message>
     <message>
         <location line="+5"/>

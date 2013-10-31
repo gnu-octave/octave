@@ -953,9 +953,9 @@ PKG_CHECK_EXISTS([$magick++], [
   ## packages add extra flags that are useful when building
   ## Graphics/ImageMagick++ extentions.  These extra flags break the
   ## Octave build. 
+  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
   MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
   MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
-  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
 
   warn_magick="$magick++ library fails tests.  The imread function for reading image files will not be fully functional."
 
@@ -1072,25 +1072,24 @@ if test -n "$OPENGL_LIBS"; then
 
   PKG_CHECK_MODULES([FT2], [freetype2], [
     min_ft2_version=9.03
-    AC_MSG_CHECKING([for FreeType -- version >= $min_ft2_version])
+    AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
     $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
     ac_status=$?
     if test $ac_status = 0; then
       AC_MSG_RESULT(yes)
       AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
-      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"
       save_LIBS="$LIBS"
       LIBS="$FT2_LIBS $LIBS"
       AC_CHECK_FUNCS([FT_Reference_Face])
       LIBS="$save_LIBS"
     else
       AC_MSG_RESULT(no)
-      warn_freetype="FreeType library not found.  Native graphics will be disabled."
+      warn_freetype="FreeType library >= 9.03 not found.  Native graphics will be disabled."
     fi])
 
   if test -n "$warn_freetype"; then
-    OCTAVE_CONFIGURE_WARNING([warn_freetype])
     native_graphics=no
+    OCTAVE_CONFIGURE_WARNING([warn_freetype])
   fi
 
   ## Check for fontconfig library
@@ -1100,7 +1099,6 @@ if test -n "$OPENGL_LIBS"; then
     PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
       [have_fontconfig=yes
        OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
-       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
        AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present.])],
       [have_fontconfig=no
        warn_fontconfig="Fontconfig library not found.  Native graphics will be disabled."])

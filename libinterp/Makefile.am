@@ -237,7 +237,8 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## FIXME -- Shouldn't the build stop if CPP fails here?
 %.df: %.cc
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(FT2_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) \
+		$(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@

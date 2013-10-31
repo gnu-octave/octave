@@ -317,7 +317,10 @@ noinst_LTLIBRARIES += \
   corefcn/libtex_parser.la
 
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
-corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
+corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) \
+                                 $(FFTW_XCPPFLAGS) \
+                                 $(FT2_CPPFLAGS) \
+                                 $(FONTCONFIG_CPPFLAGS)
 
 corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)
 corefcn_libtex_parser_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

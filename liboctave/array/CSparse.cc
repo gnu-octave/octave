@@ -345,16 +345,16 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
       OCTAVE_LOCAL_BUFFER (octave_idx_type, found, nr);
 
       for (octave_idx_type i = 0; i < nr; i++)
-        found [i] = 0;
+        found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-          if (found [ridx (i)] == -j)
-            found [ridx (i)] = -j - 1;
+          if (found[ridx (i)] == -j)
+            found[ridx (i)] = -j - 1;
 
       for (octave_idx_type i = 0; i < nr; i++)
-        if (found [i] > -nc && found [i] < 0)
-          idx_arg.elem (i) = -found [i];
+        if (found[i] > -nc && found[i] < 0)
+          idx_arg.elem (i) = -found[i];
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
@@ -502,16 +502,16 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
       OCTAVE_LOCAL_BUFFER (octave_idx_type, found, nr);
 
       for (octave_idx_type i = 0; i < nr; i++)
-        found [i] = 0;
+        found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
         for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-          if (found [ridx (i)] == -j)
-            found [ridx (i)] = -j - 1;
+          if (found[ridx (i)] == -j)
+            found[ridx (i)] = -j - 1;
 
       for (octave_idx_type i = 0; i < nr; i++)
-        if (found [i] > -nc && found [i] < 0)
-          idx_arg.elem (i) = -found [i];
+        if (found[i] > -nc && found[i] < 0)
+          idx_arg.elem (i) = -found[i];
 
       for (octave_idx_type j = 0; j < nc; j++)
         {

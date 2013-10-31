@@ -1245,7 +1245,7 @@ using std::unordered_map;
 %!assert (length (randperm (20,10)), 10)
 
 ## Test biggish N (bug #39378)
-%!assert (length (randperm(30000^2, 100000)), 100000);
+%!assert (length (randperm (30000^2, 100000)), 100000)
 
 %!test
 %! rand ("seed", 0);

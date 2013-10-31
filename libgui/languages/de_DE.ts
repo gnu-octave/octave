@@ -264,7 +264,7 @@ ist im Editor bereits geöffnet</translation>
     <message>
         <location line="+49"/>
         <source>Run &amp;Selection</source>
-        <translation>Markierter Quellcode au&amp;sführen</translation>
+        <translation>Markierten Quellcode au&amp;sführen</translation>
     </message>
     <message>
         <location line="+5"/>

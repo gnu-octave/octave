@@ -333,7 +333,7 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+39"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Barbeiten</translation>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -983,7 +983,7 @@ zu: </translation>
     <message>
         <location line="+52"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editieren</translation>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
         <location line="+5"/>

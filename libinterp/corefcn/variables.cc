@@ -940,6 +940,8 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   std::list<whos_parameter>::iterator i = params.begin ();
   std::ostringstream param_buf;
 
+  octave_preserve_stream_state stream_state (os);
+
   while (i != params.end ())
     {
       whos_parameter param = *i;
@@ -1070,6 +1072,8 @@ private:
       std::string dims_str = get_dims_str (varval);
 
       std::list<whos_parameter>::const_iterator i = params.begin ();
+
+      octave_preserve_stream_state stream_state (os);
 
       while (i != params.end ())
         {

@@ -1434,3 +1434,11 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
 
   return retval;
 }
+
+octave_preserve_stream_state::~octave_preserve_stream_state (void)
+{
+  stream.flags (oflags);
+  stream.precision (oprecision);
+  stream.width (owidth);
+  stream.fill (ofill);
+}

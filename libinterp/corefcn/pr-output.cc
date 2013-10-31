@@ -283,15 +283,16 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_engineering_float& pef)
 {
+  octave_preserve_stream_state stream_state (os);
+
   if (pef.f.fw >= 0)
     os << std::setw (pef.f.fw - pef.f.ex);
 
   if (pef.f.prec >= 0)
     os << std::setprecision (pef.f.prec);
 
-  std::ios::fmtflags oflags =
-    os.flags (static_cast<std::ios::fmtflags>
-              (pef.f.fmt | pef.f.up | pef.f.sp));
+  os.flags (static_cast<std::ios::fmtflags>
+            (pef.f.fmt | pef.f.up | pef.f.sp));
 
   os << pef.mantissa ();
 
@@ -304,10 +305,7 @@ operator << (std::ostream& os, const pr_engineering_float& pef)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (pef.f.ex - 2) << std::setfill ('0') << ex
-     << std::setfill (' ');
-
-  os.flags (oflags);
+  os << std::setw (pef.f.ex - 2) << std::setfill ('0') << ex;
 
   return os;
 }
@@ -328,19 +326,18 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_formatted_float& pff)
 {
+  octave_preserve_stream_state stream_state (os);
+
   if (pff.f.fw >= 0)
     os << std::setw (pff.f.fw);
 
   if (pff.f.prec >= 0)
     os << std::setprecision (pff.f.prec);
 
-  std::ios::fmtflags oflags =
-    os.flags (static_cast<std::ios::fmtflags>
-              (pff.f.fmt | pff.f.up | pff.f.sp));
+  os.flags (static_cast<std::ios::fmtflags>
+            (pff.f.fmt | pff.f.up | pff.f.sp));
 
   os << pff.val;
-
-  os.flags (oflags);
 
   return os;
 }
@@ -454,22 +451,21 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_rational_float& prf)
 {
+  octave_preserve_stream_state stream_state (os);
+
   int fw = (rat_string_len > 0 ? rat_string_len : prf.f.fw);
   std::string s = rational_approx (prf.val, fw);
 
   if (fw >= 0)
     os << std::setw (fw);
 
-  std::ios::fmtflags oflags =
-    os.flags (static_cast<std::ios::fmtflags>
-              (prf.f.fmt | prf.f.up | prf.f.sp));
+  os.flags (static_cast<std::ios::fmtflags>
+            (prf.f.fmt | prf.f.up | prf.f.sp));
 
   if (fw > 0 && s.length () > static_cast<unsigned int>(fw))
     os << "*";
   else
     os << s;
-
-  os.flags (oflags);
 
   return os;
 }
@@ -1453,6 +1449,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 
       if (hex_format)
         {
+          octave_preserve_stream_state stream_state (os);
+
           equiv tmp;
           tmp.d = d;
 
@@ -1465,10 +1463,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
           oct_mach_info::float_format flt_fmt =
             oct_mach_info::native_float_format ();
 
-          char ofill = os.fill ('0');
-
-          std::ios::fmtflags oflags
-            = os.flags (std::ios::right | std::ios::hex);
+          os.fill ('0');
+          os.flags (std::ios::right | std::ios::hex);
 
           if (hex_format > 1
               || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian)
@@ -1481,9 +1477,6 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
               for (int i = sizeof (double) - 1; i >= 0; i--)
                 os << std::setw (2) << static_cast<int> (tmp.i[i]);
             }
-
-          os.fill (ofill);
-          os.setf (oflags);
         }
       else if (bit_format)
         {
@@ -1514,6 +1507,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         }
       else if (octave_is_NA (d))
         {
+          octave_preserve_stream_state stream_state (os);
+
           if (fw > 0)
             os << std::setw (fw) << "NA";
           else
@@ -1523,6 +1518,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         os << pr_rational_float (*fmt, d);
       else if (xisinf (d))
         {
+          octave_preserve_stream_state stream_state (os);
+
           const char *s;
           if (d < 0.0)
             s = "-Inf";
@@ -1536,6 +1533,8 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
         }
       else if (xisnan (d))
         {
+          octave_preserve_stream_state stream_state (os);
+
           if (fw > 0)
             os << std::setw (fw) << "NaN";
           else
@@ -1642,11 +1641,12 @@ pr_scale_header (std::ostream& os, double scale)
 {
   if (Vfixed_point_format && ! print_g && scale != 1.0)
     {
+      octave_preserve_stream_state stream_state (os);
+
       os << "  "
          << std::setw (8) << std::setprecision (1)
          << std::setiosflags (std::ios::scientific|std::ios::left)
          << scale
-         << std::resetiosflags (std::ios::scientific|std::ios::left)
          << " *\n";
 
       if (! Vcompact_format)
@@ -1660,6 +1660,8 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
 {
   if (total_width > max_width && Vsplit_long_rows)
     {
+      octave_preserve_stream_state stream_state (os);
+
       if (col != 0)
         {
           if (Vcompact_format)
@@ -1818,6 +1820,8 @@ octave_print_internal (std::ostream& os, const Matrix& m,
         }
       else
         {
+          octave_preserve_stream_state stream_state (os);
+
           pr_scale_header (os, scale);
 
           for (octave_idx_type col = 0; col < nc; col += inc)
@@ -1947,6 +1951,8 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
         }
       else
         {
+          octave_preserve_stream_state stream_state (os);
+
           os << "Diagonal Matrix\n";
           if (! Vcompact_format)
             os << "\n";
@@ -2232,6 +2238,8 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
         }
       else
         {
+          octave_preserve_stream_state stream_state (os);
+
           pr_scale_header (os, scale);
 
           for (octave_idx_type col = 0; col < nc; col += inc)
@@ -2363,6 +2371,8 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
         }
       else
         {
+          octave_preserve_stream_state stream_state (os);
+
           os << "Diagonal Matrix\n";
           if (! Vcompact_format)
             os << "\n";
@@ -2511,6 +2521,8 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
         }
       else
         {
+          octave_preserve_stream_state stream_state (os);
+
           os << "Permutation Matrix\n";
           if (! Vcompact_format)
             os << "\n";
@@ -2677,6 +2689,8 @@ octave_print_internal (std::ostream& os, const Range& r,
         }
       else
         {
+          octave_preserve_stream_state stream_state (os);
+
           int column_width = fw + 2;
           octave_idx_type total_width = num_elem * column_width;
           octave_idx_type max_width = command_editor::terminal_cols ();
@@ -2972,10 +2986,9 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 
   if (hex_format)
     {
-      char ofill = os.fill ('0');
+      octave_preserve_stream_state stream_state (os);
 
-      std::ios::fmtflags oflags
-        = os.flags (std::ios::right | std::ios::hex);
+      os.flags (std::ios::right | std::ios::hex);
 
       if (hex_format > 1 || oct_mach_info::words_big_endian ())
         {
@@ -2987,9 +3000,6 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
           for (int i = sz - 1; i >= 0; i--)
             os << std::setw (2) << static_cast<int> (tmpi[i]);
         }
-
-      os.fill (ofill);
-      os.setf (oflags);
     }
   else if (bit_format)
     {
@@ -3014,6 +3024,8 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
   else
     {
+      octave_preserve_stream_state stream_state (os);
+
       os << std::setw (fw)
          << typename octave_print_conv<T>::print_conv_type (d);
 
@@ -3308,6 +3320,8 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
             }
           else
             {
+              octave_preserve_stream_state stream_state (os);
+
               octave_idx_type n_rows = page.rows ();
               octave_idx_type n_cols = page.cols ();
 

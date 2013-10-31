@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "boolSparse.h"
 #include "ov-base-sparse.h"
 #include "pager.h"
+#include "utils.h"
 
 template <class T>
 octave_value
@@ -306,6 +307,8 @@ void
 octave_base_sparse<T>::print_raw (std::ostream& os,
                                   bool pr_as_read_syntax) const
 {
+  octave_preserve_stream_state stream_state (os);
+
   octave_idx_type nr = matrix.rows ();
   octave_idx_type nc = matrix.cols ();
   octave_idx_type nz = nnz ();

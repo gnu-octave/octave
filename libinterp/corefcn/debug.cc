@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "toplev.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "variables.h"
 
 #include "debug.h"
@@ -1166,6 +1167,8 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
           if (nframes_to_display > 0)
             {
+              octave_preserve_stream_state stream_state (os);
+
               os << "stopped in:\n\n";
 
               Cell names = stk.contents ("name");

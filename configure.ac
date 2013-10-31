@@ -2458,9 +2458,9 @@ do
     break
   fi
 
-  ## At this point Win32/MSVC systems have enough configuration data.  We
-  ## assume that all appropriate variables (e.g. INCLUDE and LIB) already have
-  ## the required paths to compile and link against JDK.
+  ## At this point Win32 systems have enough configuration data.
+  ## We assume that all appropriate variables (e.g. INCLUDE and LIB) already
+  ## contain the required paths to compile and link against JDK.
   case $host_os in
     msdosmsvc)
       build_java=yes
@@ -2469,14 +2469,20 @@ do
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
-    mingw*)
-      if test $have_msvc = yes; then
-        build_java=yes
-        JAVA_LIBS=-ladvapi32
-        AC_DEFINE(HAVE_JAVA, 1,
-          [Define to 1 if Java is available and is at least version 1.5])
-        break
+    mingw* | cygwin*)
+      build_java=yes
+      JAVA_LIBS=-ladvapi32
+      if test $have_msvc = no; then
+        if test -n "$JAVA_CPPFLAGS"; then
+          JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
+        else
+          JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+        fi
+        LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
       fi
+      AC_DEFINE(HAVE_JAVA, 1,
+        [Define to 1 if Java is available and is at least version 1.5])
+      break
     ;;
   esac
 
@@ -2484,9 +2490,6 @@ do
   case $host_os in
     darwin*)
       jvmlib=libjvm.dylib
-    ;;
-    mingw* | cygwin*)
-      jvmlib=jvm.dll
     ;;
     *)
       jvmlib=libjvm.so
@@ -2568,15 +2571,6 @@ do
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I/System/Library/Frameworks/JavaVM.framework/Home/include -I/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Headers -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
       fi
       JAVA_LIBS="-framework JavaVM"
-    ;;
-    mingw* | cygwin*)
-      if test -n "$JAVA_CPPFLAGS"; then
-        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
-      else
-        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
-      fi
-      JAVA_LIBS=-ladvapi32
-      LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
     ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then

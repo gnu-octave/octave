@@ -102,7 +102,8 @@ w32_get_octave_home (void)
 
 #endif
 
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
+#if (defined (HAVE_OCTAVE_GUI) \
+     && ! defined (__WIN32__) || defined (__CYGWIN__))
 
 #include <signal.h>
 #include <fcntl.h>
@@ -398,7 +399,13 @@ main (int argc, char **argv)
 
   std::string octave_bindir = get_octave_bindir ();
 
-  std::string file = octave_bindir + dir_sep_char + "octave-gui";
+  std::string file = octave_bindir + dir_sep_char;
+
+#if defined (HAVE_OCTAVE_GUI)
+  file += "octave-gui";
+#else
+  file += "octave-cli";
+#endif
 
   char **new_argv = new char * [argc + 1];
 
@@ -415,7 +422,8 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
+#if (defined (HAVE_OCTAVE_GUI) \
+     && ! defined (__WIN32__) || defined (__CYGWIN__))
           gui_libs = false;
 #endif
           file = octave_bindir + dir_sep_char + "octave-cli";
@@ -428,7 +436,8 @@ main (int argc, char **argv)
           // if the --no-gui option is given, we may be asked to do some
           // plotting or ui* calls.
 
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
+#if (defined (HAVE_OCTAVE_GUI) \
+     && ! defined (__WIN32__) || defined (__CYGWIN__))
           start_gui = false;
 #endif
           new_argv[k++] = argv[i];
@@ -439,7 +448,8 @@ main (int argc, char **argv)
 
   new_argv[k] = 0;
 
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
+#if (defined (HAVE_OCTAVE_GUI) \
+     && ! defined (__WIN32__) || defined (__CYGWIN__))
 
   if (gui_libs && start_gui && have_controlling_terminal ())
     {

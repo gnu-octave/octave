@@ -39,14 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
-// From gnulib, so OK for Windows too.
 #include <sys/types.h>
 #include <unistd.h>
-#include <fcntl.h>
-
-// This is a liboctave header, but it doesn't include any other Octave
-// headers or declare any functions that are defined in liboctave.
-#include "syswait.h"
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
@@ -108,9 +102,14 @@ w32_get_octave_home (void)
 
 #endif
 
-#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
 
 #include <signal.h>
+#include <fcntl.h>
+
+// This is a liboctave header, but it doesn't include any other Octave
+// headers or declare any functions that are defined in liboctave.
+#include "syswait.h"
 
 typedef void sig_handler (int);
 
@@ -141,12 +140,9 @@ octave_set_signal_handler (int sig, sig_handler *handler)
   return oact.sa_handler;
 }
 
-#endif
-
 static void
 install_signal_handlers (void)
 {
-#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
 #ifdef SIGINT
   octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
@@ -263,16 +259,12 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
 #endif
 
-#endif
 }
-
 
 static bool
 have_controlling_terminal (void)
 {
   int retval = false;
-
-#if ! defined (__WIN32__) && ! defined (__CYGWIN__)
 
 #if defined (HAVE_CTERMID)
   const char *ctty = ctermid (0);
@@ -289,10 +281,10 @@ have_controlling_terminal (void)
       retval = true;
     }
 
-#endif
-
   return retval;
 }
+
+#endif
 
 #ifndef OCTAVE_BINDIR
 #define OCTAVE_BINDIR %OCTAVE_BINDIR%
@@ -398,18 +390,15 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
-#if defined (HAVE_OCTAVE_GUI)
+#if (defined (HAVE_OCTAVE_GUI) \
+     && (! defined (__WIN32__) || defined (__CYGWIN__)))
   bool start_gui = true;
   bool gui_libs = true;
-#else
-  bool start_gui = false;
-  bool gui_libs = false;
 #endif
 
   std::string octave_bindir = get_octave_bindir ();
 
-  std::string file = octave_bindir + dir_sep_char
-    + (gui_libs ? "octave-gui" : "octave-cli");
+  std::string file = octave_bindir + dir_sep_char + "octave-gui";
 
   char **new_argv = new char * [argc + 1];
 
@@ -426,7 +415,9 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
           gui_libs = false;
+#endif
           file = octave_bindir + dir_sep_char + "octave-cli";
         }
       else if (! strcmp (argv[i], "--no-gui"))
@@ -437,7 +428,9 @@ main (int argc, char **argv)
           // if the --no-gui option is given, we may be asked to do some
           // plotting or ui* calls.
 
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
           start_gui = false;
+#endif
           new_argv[k++] = argv[i];
         }
       else
@@ -445,6 +438,8 @@ main (int argc, char **argv)
     }
 
   new_argv[k] = 0;
+
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
 
   if (gui_libs && start_gui && have_controlling_terminal ())
     {
@@ -493,6 +488,12 @@ main (int argc, char **argv)
     }
   else
     retval = octave_exec (file, new_argv);
+
+#else
+
+  retval = octave_exec (file, new_argv);
+
+#endif
 
   return retval;
 }

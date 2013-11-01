@@ -1156,7 +1156,7 @@ tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
 
   indent ();
 
-  os << "until";
+  os << "until ";
 
   tree_expression *expr = cmd.condition ();
 

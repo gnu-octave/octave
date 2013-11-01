@@ -166,9 +166,33 @@ workspace_model::data (const QModelIndex& idx, int role) const
               break;
 
             case 4:
-              retval = QVariant (_complex_flags[idx.row ()] ? "complex" : "");
-              break;
+              {
+                QString sclass;
 
+                QString class_chars = resource_manager::storage_class_chars ();
+
+                int actual_class
+                  = class_chars.indexOf (_scopes[idx.row ()].toAscii ());
+
+                if (actual_class >= 0)
+                  {
+                    QStringList class_names
+                      = resource_manager::storage_class_names ();
+
+                    sclass = class_names.at (actual_class);
+                  }
+
+                if (_complex_flags[idx.row ()])
+                  {
+                    if (sclass.isEmpty ())
+                      sclass = tr ("complex");
+                    else
+                      sclass += ", " + tr ("complex");
+                  }
+
+                retval = QVariant (sclass);
+              }
+              break;
             }
         }
     }

@@ -664,7 +664,7 @@ OCTAVE_CHECK_LIB(qhull, QHull,
 
 ### Check for PCRE regex library.
 
-REGEX_LIBS=
+PCRE_LIBS=
 
 pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
 
@@ -687,18 +687,19 @@ AC_CACHE_CHECK([whether pcre.h defines the macros we need],
     ac_cv_pcre_h_macros_present=yes, ac_cv_pcre_h_macros_present=no)])
 
 if test $ac_cv_pcre_h_macros_present = yes; then
-  ## check for pcre-config, and if so, set XTRA_CXXFLAGS appropriately
+  ## check for pcre-config, and if so, get build variables
   AC_CHECK_PROG(HAVE_PCRE_CONFIG, pcre-config, [yes], [no])
   if test $HAVE_PCRE_CONFIG = yes; then
-    XTRA_CXXFLAGS="$XTRA_CXXFLAGS `pcre-config --cflags`"
-    REGEX_LIBS=`pcre-config --libs`
+    PCRE_CPPFLAGS=`pcre-config --cflags`
+    PCRE_LIBS=`pcre-config --libs`
   else
-    REGEX_LIBS="-lpcre"
+    PCRE_LIBS="-lpcre"
   fi
   save_LIBS="$LIBS"
-  LIBS="$REGEX_LIBS $LIBS"
+  LIBS="$PCRE_LIBS $LIBS"
   AC_CHECK_FUNCS([pcre_compile],
-    [AC_SUBST(REGEX_LIBS)],
+    [AC_SUBST(PCRE_CPPFLAGS)
+     AC_SUBST(PCRE_LIBS)],
     [AC_MSG_ERROR([$pcre_fail_msg])])
   LIBS="$save_LIBS"
 else
@@ -2852,6 +2853,8 @@ Octave is now configured for $canonical_host_type
   Magick++ LDFLAGS:            $MAGICK_LDFLAGS
   Magick++ libraries:          $MAGICK_LIBS
   OPENGL libraries:            $OPENGL_LIBS
+  PCRE CPPFLAGS:               $PCRE_CPPFLAGS
+  PCRE libraries:              $PCRE_LIBS
   PTHREAD flags:               $PTHREAD_CFLAGS
   PTHREAD libraries:           $PTHREAD_LIBS
   QHULL CPPFLAGS:              $QHULL_CPPFLAGS
@@ -2864,7 +2867,6 @@ Octave is now configured for $canonical_host_type
   Qt LDFLAGS:                  $QT_LDFLAGS
   Qt libraries:                $QT_LIBS
   READLINE libraries:          $READLINE_LIBS
-  REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS
   UMFPACK CPPFLAGS:            $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:             $UMFPACK_LDFLAGS

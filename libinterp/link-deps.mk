@@ -11,7 +11,6 @@ LIBOCTINTERP_LINK_DEPS += \
   $(HDF5_LIBS) \
   $(Z_LIBS) \
   $(FFTW_XLIBS) \
-  $(REGEX_LIBS) \
   $(OPENGL_LIBS) \
   $(X11_LIBS) \
   $(CARBON_LIBS) \

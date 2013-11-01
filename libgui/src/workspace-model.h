@@ -33,6 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QColor>
 #include <QSettings>
 
+// Defined for purposes of sending QList<int> as part of signal.
+typedef QList<int> QIntList;
+
 class workspace_model
   : public QAbstractTableModel
 {
@@ -74,7 +77,8 @@ public slots:
                       const QStringList& symbols,
                       const QStringList& class_names,
                       const QStringList& dimensions,
-                      const QStringList& values);
+                      const QStringList& values,
+                      const QIntList& complex_flags);
 
   void clear_workspace (void);
 
@@ -97,6 +101,7 @@ private:
   QStringList _class_names;
   QStringList _dimensions;
   QStringList _values;
+  QIntList _complex_flags;
 
   QStringList _columnNames;
 

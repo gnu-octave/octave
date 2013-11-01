@@ -987,12 +987,12 @@ main_window::construct_octave_qt_link (void)
            SIGNAL (set_workspace_signal
                    (bool, const QString&, const QStringList&,
                     const QStringList&, const QStringList&,
-                    const QStringList&)),
+                    const QStringList&, const QIntList&)),
            _workspace_model,
            SLOT (set_workspace
                  (bool, const QString&, const QStringList&,
                   const QStringList&, const QStringList&,
-                  const QStringList&)));
+                  const QStringList&, const QIntList&)));
 
   connect (_octave_qt_link, SIGNAL (clear_workspace_signal ()),
            _workspace_model, SLOT (clear_workspace ()));

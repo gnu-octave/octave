@@ -325,6 +325,7 @@ octave_qt_link::do_set_workspace (bool top_level,
   QStringList class_names;
   QStringList dimensions;
   QStringList values;
+  QIntList complex_flags;
 
   for (std::list<workspace_element>::const_iterator it = ws.begin ();
        it != ws.end (); it++)
@@ -334,10 +335,11 @@ octave_qt_link::do_set_workspace (bool top_level,
       class_names.append (QString::fromStdString (it->class_name ()));
       dimensions.append (QString::fromStdString (it->dimension ()));
       values.append (QString::fromStdString (it->value ()));
+      complex_flags.append (it->complex_flag ());
     }
 
   emit set_workspace_signal (top_level, scopes, symbols, class_names,
-                             dimensions, values);
+                             dimensions, values, complex_flags);
 }
 
 void

@@ -1419,7 +1419,8 @@ symbol_table::do_workspace_info (void) const
                 storage = 'i';
 
               workspace_element elt (storage, nm, val.class_name (),
-                                     val.short_disp (), dv.str ());
+                                     val.short_disp (), dv.str (),
+                                     val.is_complex_type ());
 
               retval.push_back (elt);
             }

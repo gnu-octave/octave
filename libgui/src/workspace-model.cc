@@ -166,16 +166,7 @@ workspace_model::data (const QModelIndex& idx, int role) const
               break;
 
             case 4:
-              retval = QVariant ();
-              QString class_chars = resource_manager::storage_class_chars ();
-              int actual_class
-                = class_chars.indexOf (_scopes[idx.row ()].toAscii ());
-              if (actual_class >= 0)
-                {
-                  QStringList class_names
-                    = resource_manager::storage_class_names ();
-                  retval = QVariant (class_names.at (actual_class));
-                }
+              retval = QVariant (_complex_flags[idx.row ()] ? "complex" : "");
               break;
 
             }
@@ -217,7 +208,8 @@ workspace_model::set_workspace (bool top_level,
                                 const QStringList& symbols,
                                 const QStringList& class_names,
                                 const QStringList& dimensions,
-                                const QStringList& values)
+                                const QStringList& values,
+                                const QIntList& complex_flags)
 {
   _top_level = top_level;
   _scopes = scopes;
@@ -225,6 +217,7 @@ workspace_model::set_workspace (bool top_level,
   _class_names = class_names;
   _dimensions = dimensions;
   _values = values;
+  _complex_flags = complex_flags;
 
   update_table ();
 
@@ -249,6 +242,7 @@ workspace_model::clear_data (void)
   _class_names = QStringList ();
   _dimensions = QStringList ();
   _values = QStringList ();
+  _complex_flags = QIntList ();
 }
 
 void

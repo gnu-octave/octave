@@ -35,6 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 #include "octave-main-thread.h"
 
+// Defined for purposes of sending QList<int> as part of signal.
+typedef QList<int> QIntList;
+
 // \class OctaveLink
 // \brief Provides threadsafe access to octave.
 // \author Jacob Dawid
@@ -153,7 +156,8 @@ signals:
                              const QStringList& symbols,
                              const QStringList& class_names,
                              const QStringList& dimensions,
-                             const QStringList& values);
+                             const QStringList& values,
+                             const QIntList& complex_flags);
 
   void clear_workspace_signal (void);
 

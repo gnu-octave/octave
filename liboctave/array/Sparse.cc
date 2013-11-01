@@ -205,7 +205,7 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
 {
   if (val != T ())
     {
-      rep = new typename Sparse<T>::SparseRep (nr, nc, nr*nc);
+      rep = new typename Sparse<T>::SparseRep (nr, nc, dimensions.safe_numel ());
 
       octave_idx_type ii = 0;
       xcidx (0) = 0;

@@ -772,9 +772,7 @@ if test $build_jit = yes; then
     CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
     CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
     AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
-      warn_llvm=
-      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
+    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [warn_llvm=""])
 
     have_function_h=no
     AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h],

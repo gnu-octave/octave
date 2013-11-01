@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_guifcn_dialog_h)
-#define octave_guifcn_dialog_h 1
+#if !defined (octave_dialog_h)
+#define octave_dialog_h 1
 
 #include <QMutex>
 #include <QWaitCondition>

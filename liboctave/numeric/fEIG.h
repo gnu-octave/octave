@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_float_EIG_h)
-#define octave_float_EIG_h 1
+#if !defined (octave_fEIG_h)
+#define octave_fEIG_h 1
 
 #include <iosfwd>
 

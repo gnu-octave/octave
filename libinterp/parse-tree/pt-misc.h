@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_misc_h)
-#define octave_tree_misc_h 1
+#if !defined (octave_pt_misc_h)
+#define octave_pt_misc_h 1
 
 class Cell;
 

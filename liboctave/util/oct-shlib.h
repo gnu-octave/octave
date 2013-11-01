@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_shlib_h)
-#define octave_shlib_h 1
+#if !defined (octave_oct_shlib_h)
+#define octave_oct_shlib_h 1
 
 #include <string>
 #include <map>

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_uint32_h)
-#define octave_uint32_h 1
+#if !defined (octave_ov_uint32_h)
+#define octave_ov_uint32_h 1
 
 #define OCTAVE_INT_T octave_uint32
 

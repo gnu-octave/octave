@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
-#if !defined (bsxfun_h)
-#define bsxfun_h 1
+#if !defined (octave_bsxfun_h)
+#define octave_bsxfun_h 1
 
 #include <algorithm>
 

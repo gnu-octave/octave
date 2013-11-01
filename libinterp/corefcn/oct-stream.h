@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_stream_h)
-#define octave_octave_stream_h 1
+#if !defined (octave_oct_stream_h)
+#define octave_oct_stream_h 1
 
 class Matrix;
 class string_vector;

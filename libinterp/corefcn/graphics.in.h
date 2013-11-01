@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (graphics_h)
-#define graphics_h 1
+#if !defined (octave_graphics_h)
+#define octave_graphics_h 1
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

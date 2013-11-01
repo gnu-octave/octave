@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexCHOL_h)
-#define octave_FloatComplexCHOL_h 1
+#if !defined (octave_fCmplxCHOL_h)
+#define octave_fCmplxCHOL_h 1
 
 #include <iosfwd>
 

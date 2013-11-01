@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_HESS_h)
-#define octave_HESS_h 1
+#if !defined (octave_dbleHESS_h)
+#define octave_dbleHESS_h 1
 
 #include <iosfwd>
 

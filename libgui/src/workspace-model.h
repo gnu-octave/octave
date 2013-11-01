@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (workspace_model_h)
-#define workspace_model_h 1
+#if !defined (octave_workspace_model_h)
+#define octave_workspace_model_h 1
 
 #include <QAbstractTableModel>
 #include <QVector>

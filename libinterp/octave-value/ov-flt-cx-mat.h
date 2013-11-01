@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_float_complex_matrix_h)
-#define octave_float_complex_matrix_h 1
+#if !defined (octave_ov_flt_cx_mat_h)
+#define octave_ov_flt_cx_mat_h 1
 
 #include <cstdlib>
 

@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_op_defs_h)
-#define octave_sparse_op_defs_h 1
+#if !defined (octave_Sparse_op_defs_h)
+#define octave_Sparse_op_defs_h 1
 
 #include "Array-util.h"
 #include "mx-ops.h"

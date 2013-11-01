@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatSCHUR_h)
-#define octave_FloatSCHUR_h 1
+#if !defined (octave_floatSCHUR_h)
+#define octave_floatSCHUR_h 1
 
 #include <iosfwd>
 #include <string>

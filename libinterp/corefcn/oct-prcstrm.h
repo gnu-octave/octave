@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_procstream_h)
-#define octave_octave_procstream_h 1
+#if !defined (octave_oct_prcstrm_h)
+#define octave_oct_prcstrm_h 1
 
 #include "oct-stdstrm.h"
 

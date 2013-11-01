@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lazy_idx_h)
-#define octave_lazy_idx_h 1
+#if !defined (octave_ov_lazy_idx_h)
+#define octave_ov_lazy_idx_h 1
 
 #include "ov-re-mat.h"
 

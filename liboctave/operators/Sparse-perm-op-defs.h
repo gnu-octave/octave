@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_perm_op_defs_h)
-#define octave_sparse_perm_op_defs_h 1
+#if !defined (octave_Sparse_perm_op_defs_h)
+#define octave_Sparse_perm_op_defs_h 1
 
 // Matrix multiplication
 
@@ -169,4 +169,4 @@ SM octinternal_do_mul_sm_pm (const SM& a, const PermMatrix& p)
     return octinternal_do_mul_sm_colpm (a, p.pvec ().data ());
 }
 
-#endif // octave_sparse_perm_op_defs_h
+#endif // octave_Sparse_perm_op_defs_h

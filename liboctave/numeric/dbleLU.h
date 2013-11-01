@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_LU_h)
-#define octave_LU_h 1
+#if !defined (octave_dbleLU_h)
+#define octave_dbleLU_h 1
 
 #include "base-lu.h"
 #include "dMatrix.h"

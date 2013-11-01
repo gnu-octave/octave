@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fcn_inline_h)
-#define octave_fcn_inline_h 1
+#if !defined (octave_ov_fcn_inline_h)
+#define octave_ov_fcn_inline_h 1
 
 #include <iosfwd>
 #include <string>

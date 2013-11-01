@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_select_h)
-#define octave_tree_select_h 1
+#if !defined (octave_pt_select_h)
+#define octave_pt_select_h 1
 
 class expression;
 class tree_statement_list;

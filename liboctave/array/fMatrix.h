@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatMatrix_int_h)
-#define octave_FloatMatrix_int_h 1
+#if !defined (octave_fMatrix_h)
+#define octave_fMatrix_h 1
 
 #include "MArray.h"
 #include "MDiagArray2.h"

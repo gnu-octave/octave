@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_int_matrix_h)
-#define octave_base_int_matrix_h 1
+#if !defined (octave_ov_base_int_h)
+#define octave_ov_base_int_h 1
 
 #include <cstdlib>
 

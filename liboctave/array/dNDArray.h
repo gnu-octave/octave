@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_NDArray_h)
-#define octave_NDArray_h 1
+#if !defined (octave_dNDArray_h)
+#define octave_dNDArray_h 1
 
 #include "MArray.h"
 #include "dMatrix.h"

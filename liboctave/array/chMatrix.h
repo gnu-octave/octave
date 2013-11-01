@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_chMatrix_int_h)
-#define octave_chMatrix_int_h 1
+#if !defined (octave_chMatrix_h)
+#define octave_chMatrix_h 1
 
 #include <string>
 

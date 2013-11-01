@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_diag_op_defs_h)
-#define octave_sparse_diag_op_defs_h 1
+#if !defined (octave_Sparse_diag_op_defs_h)
+#define octave_Sparse_diag_op_defs_h 1
 
 // Matrix multiplication
 
@@ -233,4 +233,4 @@ RT do_sub_sm_dm (const SM& a, const DM& d)
                                    std::negate<typename DM::element_type> ());
 }
 
-#endif // octave_sparse_diag_op_defs_h
+#endif // octave_Sparse_diag_op_defs_h

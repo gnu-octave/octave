@@ -19,8 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-#if !defined (find_files_dialog_h)
-#define find_files_dialog_h
+#if !defined (octave_find_files_dialog_h)
+#define octave_find_files_dialog_h
 
 #include <QDialog>
 #include <QModelIndex>
@@ -75,5 +75,5 @@ private:
   QStatusBar * _status_bar;
 };
 
-#endif // find_files_dialog_h
+#endif // octave_find_files_dialog_h
 

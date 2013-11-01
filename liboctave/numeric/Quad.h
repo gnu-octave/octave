@@ -29,13 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "fColVector.h"
 #include "lo-math.h"
 
-#if !defined (octave_Quad_typedefs)
-#define octave_Quad_typedefs 1
-
 typedef double (*integrand_fcn) (double x);
 typedef float (*float_integrand_fcn) (float x);
-
-#endif
 
 // FIXME: would be nice to not have to have this global variable.
 // Nonzero means an error occurred in the calculation of the integrand

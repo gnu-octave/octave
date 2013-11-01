@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (gl_render_h)
-#define gl_render_h 1
+#if !defined (octave_gl_render_h)
+#define octave_gl_render_h 1
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN

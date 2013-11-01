@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_regexp_match_h)
-#define octave_liboctave_regexp_match_h 1
+#if !defined (octave_lo_regexp_h)
+#define octave_lo_regexp_h 1
 
 #include <list>
 #include <sstream>

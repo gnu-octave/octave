@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexSVD_h)
-#define octave_ComplexSVD_h 1
+#if !defined (octave_CmplxSVD_h)
+#define octave_CmplxSVD_h 1
 
 #include <iosfwd>
 

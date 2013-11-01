@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (sparse_cmplx_QR_h)
-#define sparse_cmplx_QR_h 1
+#if !defined (octave_SparseCmplxQR_h)
+#define octave_SparseCmplxQR_h 1
 
 #include <iosfwd>
 

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_QRP_h)
-#define octave_QRP_h 1
+#if !defined (octave_dbleQRP_h)
+#define octave_dbleQRP_h 1
 
 #include <iosfwd>
 

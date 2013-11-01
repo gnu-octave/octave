@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_RowVector_h)
-#define octave_RowVector_h 1
+#if !defined (octave_dRowVector_h)
+#define octave_dRowVector_h 1
 
 #include "MArray.h"
 

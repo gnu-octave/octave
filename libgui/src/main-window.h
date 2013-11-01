@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (main_window_h)
-#define main_window_h 1
+#if !defined (octave_main_window_h)
+#define octave_main_window_h 1
 
 // Qt includes
 #include <QtGui/QMainWindow>

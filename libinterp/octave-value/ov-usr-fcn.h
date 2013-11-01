@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_user_function_h)
-#define octave_user_function_h 1
+#if !defined (octave_ov_usr_fcn_h)
+#define octave_ov_usr_fcn_h 1
 
 #include <ctime>
 

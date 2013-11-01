@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_range_h)
-#define octave_range_h 1
+#if !defined (octave_ov_range_h)
+#define octave_ov_range_h 1
 
 #include <cstdlib>
 

@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexColumnVector_h)
-#define octave_FloatComplexColumnVector_h 1
+#if !defined (octave_fCColVector_h)
+#define octave_fCColVector_h 1
 
 #include "MArray.h"
 

@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_class_h)
-#define octave_class_h 1
+#if !defined (octave_ov_class_h)
+#define octave_ov_class_h 1
 
 #include <cstdlib>
 

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_refcount_h)
-#define octave_refcount_h 1
+#if !defined (octave_oct_refcount_h)
+#define octave_oct_refcount_h 1
 
 #ifndef OCTAVE_CONFIG_INCLUDED
 # error "The file <octave/config.h> must be included before oct-refcount.h."

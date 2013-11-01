@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_SCHUR_h)
-#define octave_SCHUR_h 1
+#if !defined (octave_dbleSCHUR_h)
+#define octave_dbleSCHUR_h 1
 
 #include <iosfwd>
 #include <string>

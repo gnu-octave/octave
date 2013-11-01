@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_time_h)
-#define octave_time_h 1
+#if !defined (octave_oct_time_h)
+#define octave_oct_time_h 1
 
 #include <ctime>
 #include <string>

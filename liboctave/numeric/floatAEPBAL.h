@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatAEPBALANCE_h)
-#define octave_FloatAEPBALANCE_h 1
+#if !defined (octave_floatAEPBAL_h)
+#define octave_floatAEPBAL_h 1
 
 #include <iosfwd>
 #include <string>

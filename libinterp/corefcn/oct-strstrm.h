@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_strstream_h)
-#define octave_octave_strstream_h 1
+#if !defined (octave_oct_strstrm_h)
+#define octave_oct_strstrm_h 1
 
 #include <string>
 #include <sstream>

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_null_matrix_h)
-#define octave_null_matrix_h 1
+#if !defined (octave_ov_null_mat_h)
+#define octave_ov_null_mat_h 1
 
 #include "ov.h"
 #include "ov-re-mat.h"

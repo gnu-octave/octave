@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_float_diag_matrix_h)
-#define octave_float_diag_matrix_h 1
+#if !defined (octave_ov_flt_re_diag_h)
+#define octave_ov_flt_re_diag_h 1
 
 #include "ov-base.h"
 #include "ov-base-diag.h"

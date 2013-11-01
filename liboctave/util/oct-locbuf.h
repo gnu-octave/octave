@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_local_buffer_h)
-#define octave_local_buffer_h 1
+#if !defined (octave_oct_locbuf_h)
+#define octave_oct_locbuf_h 1
 
 #include <cstddef>
 #include "oct-cmplx.h"

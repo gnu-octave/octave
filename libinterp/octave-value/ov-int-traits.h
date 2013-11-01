@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_value_int_traits_h)
-#define octave_value_int_traits_h 1
+#if !defined (octave_ov_int_traits_h)
+#define octave_ov_int_traits_h 1
 
 #include "ov-int8.h"
 #include "ov-int16.h"

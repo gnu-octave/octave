@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexGEPBALANCE_h)
-#define octave_FloatComplexGEPBALANCE_h 1
+#if !defined (octave_fCmplxGEPBAL_h)
+#define octave_fCmplxGEPBAL_h 1
 
 #include <iosfwd>
 #include <string>

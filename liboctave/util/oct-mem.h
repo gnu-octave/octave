@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_memory_h)
-#define octave_memory_h 1
+#if !defined (octave_oct_mem_h)
+#define octave_oct_mem_h 1
 
 #include <cstddef>
 #include <cstring>
@@ -157,4 +157,4 @@ DEFINE_POD_NEW_DELETE (octave_uint16)
 DEFINE_POD_NEW_DELETE (octave_uint32)
 DEFINE_POD_NEW_DELETE (octave_uint64)
 
-#endif /* octave_memory_h */
+#endif /* octave_oct_mem_h */

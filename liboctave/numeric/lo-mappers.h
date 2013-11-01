@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_mappers_h)
-#define octave_liboctave_mappers_h 1
+#if !defined (octave_lo_mappers_h)
+#define octave_lo_mappers_h 1
 
 #include <limits>
 

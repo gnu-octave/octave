@@ -26,9 +26,9 @@
 #include <iostream>
 
 // Qt
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QClipboard>
+#include <QAction>
+#include <QApplication>
+#include <QClipboard>
 #include <QtCore/QString>
 
 #include <QtCore/QSharedData>

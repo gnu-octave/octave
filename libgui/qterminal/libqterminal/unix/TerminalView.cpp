@@ -27,20 +27,20 @@
 #include "unix/TerminalView.h"
 
 // Qt
-#include <QtGui/QApplication>
-#include <QtGui/QBoxLayout>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QApplication>
+#include <QBoxLayout>
+#include <QClipboard>
+#include <QKeyEvent>
 #include <QtCore/QEvent>
 #include <QtCore/QTime>
 #include <QtCore/QFile>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-#include <QtGui/QScrollBar>
-#include <QtGui/QStyle>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLayout>
+#include <QPainter>
+#include <QPixmap>
+#include <QScrollBar>
+#include <QStyle>
 #include <QtCore>
 #include <QtGui>
 

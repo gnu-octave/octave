@@ -26,7 +26,7 @@
 #define CHARACTERCOLOR_H
 
 // Qt
-#include <QtGui/QColor>
+#include <QColor>
 
 /** 
  * An entry in a terminal display's color palette. 

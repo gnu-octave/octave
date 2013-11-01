@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_main_window_h 1
 
 // Qt includes
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QThread>
 #include <QTabWidget>
 #include <QMdiArea>

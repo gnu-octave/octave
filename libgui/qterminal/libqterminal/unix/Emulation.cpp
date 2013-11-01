@@ -33,10 +33,10 @@
 #include <unistd.h>
 
 // Qt
-#include <QtGui/QApplication>
-#include <QtGui/QClipboard>
+#include <QApplication>
+#include <QClipboard>
 #include <QtCore/QHash>
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include <QtCore/QRegExp>
 #include <QtCore/QTextStream>
 #include <QtCore/QThread>

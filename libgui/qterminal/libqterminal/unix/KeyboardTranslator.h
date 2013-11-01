@@ -27,7 +27,7 @@
 // Qt
 #include <QtCore/QHash>
 #include <QtCore/QList>
-#include <QtGui/QKeySequence>
+#include <QKeySequence>
 #include <QtCore/QMetaType>
 #include <QtCore/QVarLengthArray>
 #include <QtCore>

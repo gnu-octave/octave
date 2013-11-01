@@ -40,7 +40,7 @@
 
 // Qt
 #include <QtCore/QEvent>
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include <QtCore/QByteRef>
 
 // Konsole

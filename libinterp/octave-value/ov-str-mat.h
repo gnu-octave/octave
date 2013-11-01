@@ -142,6 +142,8 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  std::string short_disp (void) const;
+
   bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);

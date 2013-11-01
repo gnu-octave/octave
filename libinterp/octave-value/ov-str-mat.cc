@@ -270,6 +270,25 @@ octave_char_matrix_str::print_raw (std::ostream& os,
                          current_print_indent_level (), true);
 }
 
+std::string
+octave_char_matrix_str::short_disp (void) const
+{
+  std::string retval;
+
+  if (matrix.ndims () == 2 && numel () > 0)
+    {
+      retval = string_value ();
+
+      // FIXME -- should this be configurable?
+
+      if (retval.length () > 100)
+        retval = retval.substr (0, 100);
+    }
+
+  return retval;
+}
+
+
 bool
 octave_char_matrix_str::save_ascii (std::ostream& os)
 {

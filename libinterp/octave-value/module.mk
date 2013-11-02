@@ -127,6 +127,22 @@ OCTAVE_VALUE_SRC = \
   $(OV_INTTYPE_SRC) \
   $(OV_SPARSE_SRC)
 
+OV_JAVA_DF = \
+  octave-value/ov.df \
+  octave-value/ov-class.df \
+  octave-value/ov-java.df \
+  octave-value/ov-typeinfo.df
+
+## Special rules for Java .df files so that not all .df files are built with
+## JAVA_CPPFLAGS
+$(OV_JAVA_DF) : octave-value/%.df : octave-value/%.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
+
 noinst_LTLIBRARIES += octave-value/liboctave-value.la
 
 octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)

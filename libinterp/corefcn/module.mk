@@ -261,11 +261,27 @@ COREFCN_SRC = \
   $(JIT_SRC) \
   $(C_COREFCN_SRC)
 
+COREFCN_FT2_DF = \
+  corefcn/graphics.df \
+  corefcn/gl-render.df \
+  corefcn/toplev.df \
+  corefcn/txt-eng-ft.df
+
 ## FIXME: Automake does not support per-object rules.
 ##        These rules could be emulated by creating a new convenience
 ##        library and using per-library rules.  Or we can just live
 ##        without the rule since there haven't been any problems. (09/18/2012)
 #display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+
+## Special rules for FreeType .df files so that not all .df files are built
+## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
+$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
 
 ## Special rules for sources which must be built before rest of compilation.
 

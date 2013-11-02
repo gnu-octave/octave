@@ -9588,7 +9588,7 @@ gtk_manager::gtk_manager (void)
   : dtk (), available_toolkits (), loaded_toolkits ()
 {
 #if defined (HAVE_FLTK)
-  dtk = "fltk";
+  dtk = display_info::display_available () ? "fltk" : "gnuplot";
 #else
   dtk = "gnuplot";
 #endif

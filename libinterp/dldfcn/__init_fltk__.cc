@@ -29,7 +29,7 @@ To initialize:
 
 */
 
-// PKG_ADD: if (__have_fltk__ ()) register_graphics_toolkit ("fltk"); endif
+// PKG_ADD: if (__have_fltk__ () && have_window_system ()) register_graphics_toolkit ("fltk"); endif
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

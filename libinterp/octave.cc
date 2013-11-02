@@ -891,8 +891,17 @@ octave_execute_interpreter (void)
 static bool
 check_starting_gui (void)
 {
-  if (no_window_system || ! display_info::display_available ())
+  if (no_window_system)
     return false;
+
+  std::string err_msg;
+  if (! display_info::display_available (err_msg))
+    {
+      if (! (inhibit_startup_message || err_msg.empty ()))
+        warning (err_msg.c_str ());
+
+      return false;
+    }
 
   if (force_gui_option)
     return true;

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_display_h)
 #define octave_display_h 1
 
+#include <string>
+
 class Matrix;
 
 class display_info
@@ -30,7 +32,8 @@ class display_info
 protected:
 
   display_info (bool query = true)
-    : ht (1), wd (1), dp (0), rx (72), ry (72), dpy_avail (false)
+    : ht (1), wd (1), dp (0), rx (72), ry (72), dpy_avail (false),
+      err_msg ()
   {
     init (query);
   }
@@ -64,7 +67,13 @@ public:
 
   static bool display_available (void)
   {
-    return instance_ok () ? instance->do_display_available () : false;
+    std::string msg;
+    return instance_ok () ? instance->do_display_available (msg) : false;
+  }
+
+  static bool display_available (std::string& msg)
+  {
+    return instance_ok () ? instance->do_display_available (msg) : false;
   }
 
   // To disable querying the window system for defaults, this function
@@ -91,6 +100,8 @@ private:
 
   bool dpy_avail;
 
+  std::string err_msg;
+
   int do_height (void) const { return ht; }
   int do_width (void) const { return wd; }
   int do_depth (void) const { return dp; }
@@ -98,7 +109,12 @@ private:
   double do_x_dpi (void) const { return rx; }
   double do_y_dpi (void) const { return ry; }
 
-  bool do_display_available (void) const { return dpy_avail; }
+  bool do_display_available (std::string& msg) const
+  {
+    msg = err_msg;
+
+    return dpy_avail;
+  }
 
   void init (bool query = true);
 

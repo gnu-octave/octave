@@ -44,22 +44,22 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.cc" line="+64"/>
         <source>foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>plano de frente</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>background</source>
-        <translation type="unfinished"></translation>
+        <translation>plano de fundo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>selection</source>
-        <translation type="unfinished"></translation>
+        <translation>seleçao</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>cursor</translation>
     </message>
 </context>
 <context>
@@ -67,17 +67,17 @@
     <message>
         <location filename="../qterminal/libqterminal/QTerminal.h" line="+116"/>
         <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Colar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpar Tudo</translation>
     </message>
 </context>
 <context>
@@ -85,7 +85,7 @@
     <message>
         <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1527"/>
         <source>copied selection to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>selecao copiada para a prancheta</translation>
     </message>
 </context>
 <context>
@@ -182,7 +182,7 @@ is already open in the editor</source>
     <message>
         <location line="+5"/>
         <source>Paste</source>
-        <translation>Co&amp;lar</translation>
+        <translation>Colar</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -242,7 +242,7 @@ is already open in the editor</source>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editar Função</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -252,7 +252,7 @@ is already open in the editor</source>
     <message>
         <location line="+4"/>
         <source>Close All</source>
-        <translation>Fechar &amp;Todos</translation>
+        <translation>Fechar Todos</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -262,48 +262,54 @@ is already open in the editor</source>
     <message>
         <location line="+49"/>
         <source>Run &amp;Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Roda &amp;Seleção</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Ajuda</translation>
+        <translation>&amp;Ajuda</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajuda na Palavra-chave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Documentação na Palavra-chave</translation>
     </message>
     <message>
         <location line="-147"/>
         <source>&amp;Find and Replace</source>
-        <translation>Procurar e Substituir</translation>
+        <translation>&amp;Procurar e Substituir</translation>
     </message>
     <message>
         <location line="-584"/>
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível abrir aquivo
+%1
+para leitura: %2.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo
+%1
+não existe. Deseja criá-lo?</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível abrir arquivo
+%1
+para escrita: %2.</translation>
     </message>
     <message>
         <location line="+549"/>
@@ -313,7 +319,7 @@ for write: %2.</source>
     <message>
         <location line="+2"/>
         <source>Go&amp;to Line</source>
-        <translation>Vá para Linha</translation>
+        <translation>Vá para &amp;Linha</translation>
     </message>
     <message>
         <location line="+53"/>
@@ -328,12 +334,12 @@ for write: %2.</source>
     <message>
         <location line="+22"/>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Preferências</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Styles Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferências de &amp;Estilo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1000,17 +1006,17 @@ para:</translation>
     <message>
         <location line="-826"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>O arquivo de anotações da versão &apos;%1&apos; está vazio.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>O arquivo de anotações da versão &apos;%1&apos; não pode ser lido.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Anotações da Versão do Octave</translation>
     </message>
     <message>
         <location line="+157"/>
@@ -1020,7 +1026,7 @@ para:</translation>
     <message>
         <location line="+736"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpar Prancheta</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1080,7 +1086,7 @@ para:</translation>
     <message>
         <location line="+12"/>
         <source>Show News Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar Janela de Notícias</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1090,7 +1096,7 @@ para:</translation>
     <message>
         <location line="+12"/>
         <source>News</source>
-        <translation type="unfinished"></translation>
+        <translation>Notícias</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1100,22 +1106,22 @@ para:</translation>
     <message>
         <location line="+86"/>
         <source>Octave Packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Pacotes do Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Share Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartilhar o Código</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Contribuir com o Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished"></translation>
+        <translation>Recursos para Desenvolvedores</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1130,17 +1136,17 @@ para:</translation>
     <message>
         <location line="+12"/>
         <source>&amp;News</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Notícias</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Anotações da Versão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Notícias da Comunidade</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1239,7 +1245,7 @@ para:</translation>
     <message>
         <location filename="../src/news-dock-widget.cc" line="+44"/>
         <source>Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Notícias da Comunidade</translation>
     </message>
 </context>
 <context>
@@ -1266,22 +1272,22 @@ para:</translation>
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+127"/>
         <source>Help on</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda em</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentação em</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Run Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Executar Seleção</translation>
     </message>
 </context>
 <context>
@@ -1427,7 +1433,7 @@ para:</translation>
     <message>
         <location line="+13"/>
         <source>Create non existing files without prompting</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1624,17 +1630,17 @@ para:</translation>
     <message>
         <location line="-279"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor IBeam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor em Bloco</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor Sublinhado</translation>
     </message>
     <message>
         <location line="+140"/>
@@ -1698,12 +1704,12 @@ para:</translation>
     <message>
         <location line="+5"/>
         <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parece que você está a interface gráfica do Octave pela primeira vez neste computador. Clique &apos;Finalizar&apos; para escrever o arquivo de configuração e iniciar o Octave.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The configuration file is stored in %1. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation type="unfinished"></translation>
+        <translation>O arquivo de configuração é armazenado em %1. Se o arquivo existir, você não verá este diálogo quando o Octave reiniciar.</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -1719,7 +1725,18 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Para mais informações sobre o Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visite &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Veja a documentação online em document &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Abra a documentação do Octave no menu de ajuda&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+20"/>

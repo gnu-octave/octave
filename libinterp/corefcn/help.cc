@@ -1253,6 +1253,8 @@ do_which (const std::string& name, std::string& type)
         file = load_path::find_file (name.substr (0, name.size () - 1));
       else
         file = load_path::find_file (name);
+
+      file = octave_env::make_absolute (file);
     }
 
 

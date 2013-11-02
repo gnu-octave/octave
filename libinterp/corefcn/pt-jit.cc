@@ -166,7 +166,7 @@ jit_convert::jit_convert (octave_user_function& fcn,
       if (expr)
         {
           jit_variable *retvar = get_variable ("#return");
-          jit_value *retval;
+          jit_value *retval = 0;
           try
             {
               retval = visit (expr);

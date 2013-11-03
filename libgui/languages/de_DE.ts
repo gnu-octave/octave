@@ -1119,7 +1119,7 @@ zu: </translation>
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation>Bei Octave mitwirken</translation>
+        <translation>Zu Octave beitragen</translation>
     </message>
     <message>
         <location line="+3"/>

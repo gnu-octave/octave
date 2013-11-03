@@ -129,6 +129,11 @@ all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 check: all
 	$(MAKE) -C test check
 
+if AMCOND_HAVE_LLVM
+check-jit: all
+	$(MAKE) -C test check-jit
+endif
+
 run-octave: run-octave.in Makefile
 	@$(do_subst_script_vals)
 	chmod a+rx "$@"

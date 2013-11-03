@@ -71,6 +71,11 @@ all-local: .gdbinit
 check: sparse.tst bc-overload-tests.stamp
 	$(top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
 
+if AMCOND_HAVE_LLVM
+check-jit: sparse.tst bc-overload-tests.stamp
+	$(top_builddir)/run-octave $(RUN_OCTAVE_OPTIONS) --jit-compiler --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
+endif
+
 sparse.tst: build-sparse-tests.sh
 	$(srcdir)/build-sparse-tests.sh
 

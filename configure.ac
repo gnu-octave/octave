@@ -866,6 +866,9 @@ if test $build_jit = yes; then
     LDFLAGS="$save_LDFLAGS"
   fi
 
+  AM_CONDITIONAL([AMCOND_HAVE_LLVM],
+    [test -z "$warn_llvm"])
+
   if test -z "$warn_llvm"; then
     AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
   else

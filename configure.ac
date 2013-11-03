@@ -2622,10 +2622,12 @@ AC_ARG_ENABLE([gui],
   [if test "$enableval" = no; then build_gui=no; fi], [])
 
 if test $build_gui = yes; then
+
+  warn_gui=""
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
-    [AC_MSG_WARN([Qt libraries not found -- disabling GUI])
+    [warn_gui="Qt libraries not found -- disabling GUI"
      build_gui=no])
 
   if test $build_gui = yes; then
@@ -2636,7 +2638,7 @@ if test $build_gui = yes; then
 
     ## Check for Qt4
     if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-      AC_MSG_WARN([Qt >= 4.0.0 not found -- disabling GUI])
+      warn_gui="Qt >= 4.0.0 not found -- disabling GUI"
       build_gui=no
     fi
   fi
@@ -2650,7 +2652,7 @@ if test $build_gui = yes; then
       AC_DEFINE(HAVE_QT, 1, 
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
     else
-      AC_MSG_WARN([Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI])
+      warn_gui="Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI"
       build_gui=no
     fi
   fi
@@ -2658,7 +2660,7 @@ if test $build_gui = yes; then
   if test $build_gui = yes; then
     OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
     if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
-      AC_MSG_WARN([QAbstractItemModel::beginResetModel() not found -- disabling GUI])
+      warn_gui="QAbstractItemModel::beginResetModel() not found -- disabling GUI"
       build_gui=no
     fi
   fi
@@ -2691,7 +2693,8 @@ if test $build_gui = yes; then
       AC_LANG_POP([C++])
     ])
     if test $octave_cv_lib_qscintilla = no; then
-      AC_MSG_WARN([Qscintilla library not found -- disabling built-in GUI editor])
+      warn_gui_editor="Qscintilla library not found -- disabling built-in GUI editor"
+      OCTAVE_CONFIGURE_WARNING([warn_gui_editor])
     else
       ## Let's assume Qscintilla library is at the same location as
       ## other regular Qt libraries.
@@ -2709,14 +2712,14 @@ if test $build_gui = yes; then
     fi
 
     AC_CHECK_FUNCS([setlocale], [],
-      [AC_MSG_WARN([setlocale not found -- disabling GUI])
+      [warn_gui="setlocale not found -- disabling GUI"
        build_gui=no])
 
     if test $build_gui = yes; then
       case $host_os in
         mingw* | msdosmsvc*)
           AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
-            [AC_MSG_WARN([setvbuf not found -- disabling GUI])
+            [warn_gui="setvbuf not found -- disabling GUI"
              build_gui=no])
           ;;
         *)
@@ -2729,6 +2732,10 @@ if test $build_gui = yes; then
           ;;
       esac
     fi
+  fi
+
+  if test -n "$warn_gui"; then
+    OCTAVE_CONFIGURE_WARNING([warn_gui])
   fi
 fi
 

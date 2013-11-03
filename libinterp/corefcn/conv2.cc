@@ -417,32 +417,34 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 %! a = rand (10, 10, 10);
 %! b = rand (3, 3, 3);
 %! c = convn (a, b, "full");
-%!assert (convn (a, b, "same"), c(2:11,2:11,2:11));
-%!assert (convn (a, b, "valid"), c(3:10,3:10,3:10));
+%!assert (convn (a, b, "same"), c(2:11,2:11,2:11))
+%!assert (convn (a, b, "valid"), c(3:10,3:10,3:10))
 %!
+%!test
 %! ## test 3D by 2D
 %! a = rand (10, 10, 10);
 %! b = rand (3, 3);
 %! c = convn (a, b, "full");
-%!assert (convn (a, b, "same"), c(2:11,2:11,:));
-%!assert (convn (a, b, "valid"), c(3:10,3:10,:));
+%!assert (convn (a, b, "same"), c(2:11,2:11,:))
+%!assert (convn (a, b, "valid"), c(3:10,3:10,:))
 %!
+%!test
 %! ## test 2D by 3D
 %! a = rand (10, 10);
 %! b = rand (3, 3, 3);
 %! c = convn (a, b, "full");
-%!assert (convn (a, b, "same"), c(2:11,2:11,2));
-%!assert (convn (a, b, "valid"), c(3:10,3:10,3:2)); # a 7x7x0 matrix
+%!assert (convn (a, b, "same"), c(2:11,2:11,2))
+%!assert (convn (a, b, "valid"), c(3:10,3:10,3:2))  # a 7x7x0 matrix
 %!
-%! ## test multiple different number of dimensions, with odd
-%! ## and even numbers
+%!test
+%! ## test multiple different number of dimensions, with odd and even numbers
 %! a = rand (10, 15, 7, 8, 10);
 %! b = rand (4, 3, 2, 3);
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(3:12,2:16,2:8,2:9,:))
-%!assert (convn (a, b, "valid"), c(4:10,3:15,2:7,3:8,:));
+%!assert (convn (a, b, "valid"), c(4:10,3:15,2:7,3:8,:))
 
-%!shared a, b, c
+%!test
 %! a = reshape (floor (magic (16) /10), [4 8 4 2]);
 %! b = reshape (magic (6), [4 3 3]);
 %! c = zeros (7, 10, 6, 2);
@@ -542,18 +544,18 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 %!    925  1976  2363  1971  1636  1600  1844  2239  1664   626
 %!    372  1133  1558  1687  1570  1401  1243  1122   883   264
 %!     60   270   556   857  1024   870   569   282    66     0];
-%!assert (convn(a, b, "full"), c);
-%!assert (convn(a, b, "same"), c(3:6,2:9,2:5,:));
-%!assert (convn(a, b, "valid"), c(4,3:8,3:4,:));
+%!assert (convn(a, b, "full"), c)
+%!assert (convn(a, b, "same"), c(3:6,2:9,2:5,:))
+%!assert (convn(a, b, "valid"), c(4,3:8,3:4,:))
 
 ## test correct class
-%!assert (class (convn (rand(5), rand(3))), "double");
-%!assert (class (convn (rand(5, "single"), rand(3))), "single");
-%!assert (class (convn (rand(5), rand(3, "single"))), "single");
-%!assert (class (convn (true (5), rand(3))), "double");
-%!assert (class (convn (true (5), rand(3, "single"))), "single");
-%!assert (class (convn (ones(5, "uint8"), rand(3))), "double");
-%!assert (class (convn (rand (3, "single"), ones(5, "uint8"))), "single");
+%!assert (class (convn (rand(5), rand(3))), "double")
+%!assert (class (convn (rand(5, "single"), rand(3))), "single")
+%!assert (class (convn (rand(5), rand(3, "single"))), "single")
+%!assert (class (convn (true (5), rand(3))), "double")
+%!assert (class (convn (true (5), rand(3, "single"))), "single")
+%!assert (class (convn (ones(5, "uint8"), rand(3))), "double")
+%!assert (class (convn (rand (3, "single"), ones(5, "uint8"))), "single")
 
 %!error convn ()
 %!error convn (1)

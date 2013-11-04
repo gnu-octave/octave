@@ -1104,7 +1104,15 @@ endfunction
 %!   assert (max (abs ((A - d1(i)*eye (n))*v1(:,i))), 0, 1e-11);
 %! endfor
 
+%!test
+%! A = 2 * diag (ones (10, 1)) - diag (ones (9, 1), 1) - diag (ones (9, 1), -1);
+%! B = diag (ones (10, 1));
+%! reseig = eig (A, B);
+%! [~, idx] = sort (abs (reseig), "ascend");
+%! assert (eigs (A, B, 10, 0), reseig (idx))
+
 %!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]);
 %!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]);
 %!assert (eigs (diag (1:5), 3, "be"), [1;4;5]);
+
 

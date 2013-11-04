@@ -136,7 +136,7 @@ xexp2 (double x)
 double
 xlog2 (double x, int& exp)
 {
-  return frexp (x, &exp);
+  return gnulib::frexp (x, &exp);
 }
 
 Complex
@@ -365,7 +365,7 @@ xexp2 (float x)
 float
 xlog2 (float x, int& exp)
 {
-  return frexpf (x, &exp);
+  return gnulib::frexpf (x, &exp);
 }
 
 FloatComplex

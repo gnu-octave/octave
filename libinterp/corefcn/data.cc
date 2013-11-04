@@ -4173,7 +4173,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                   else
                     {
                       int expon;
-                      frexpf (val, &expon);
+                      gnulib::frexpf (val, &expon);
                       epsval(i) = std::pow (static_cast <float> (2.0),
                                             static_cast <float> (expon - 24));
                     }
@@ -4199,7 +4199,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                   else
                     {
                       int expon;
-                      frexp (val, &expon);
+                      gnulib::frexp (val, &expon);
                       epsval(i) = std::pow (static_cast <double> (2.0),
                                             static_cast <double> (expon - 53));
                     }

@@ -51,7 +51,6 @@ function [filename, ext, cmap, options] = imwrite_filename (varargin)
       rem (length (varargin) - filename_idx, 2) != 0 &&
       ischar (varargin{filename_idx + 1}))
     ext = varargin{filename_idx + 1};
-    filename = [filename "." ext];
     options_idx++;
   else
     [~, ~, ext] = fileparts (filename);

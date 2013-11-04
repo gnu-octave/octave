@@ -2380,6 +2380,7 @@ JAR=
 JAVA_LIBS=
 
 ## Fake loop so that "break" can be used to skip code blocks.
+warn_java=""
 while test $build_java = yes
 do
   ## Unset build_java.  Variable is set only if all configuration tests pass.
@@ -2387,8 +2388,8 @@ do
 
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
-    AC_MSG_WARN([JAVA_HOME environment variable not initialized.])
-    AC_MSG_WARN([Auto-detection will proceed but is unreliable.])
+    warn_java_home="JAVA_HOME environment variable not initialized. Auto-detection will proceed but is unreliable."
+    OCTAVE_CONFIGURE_WARNING([warn_java_home])
   fi
 
   ## Search for a viable Java executable.
@@ -2400,7 +2401,7 @@ do
   AC_PATH_PROG(JAVA, java, [], [$JAVA_PATH])
 
   if test -z "$JAVA"; then
-    AC_MSG_WARN([No Java executable found.  Octave will not be able to call Java methods.])   
+    warn_java="No Java executable found.  Octave will not be able to call Java methods."
     break
   fi
 
@@ -2453,7 +2454,7 @@ do
   if test $java_major -ge 1 && test $java_minor -ge 5; then
     :  # Version is ok.  Do nothing.
   else
-    AC_MSG_WARN([Java version is too old (< 1.5).  Octave will not be able to call Java methods.])
+    warn_java="Java version is too old (< 1.5).  Octave will not be able to call Java methods."
     break
   fi
 
@@ -2548,7 +2549,7 @@ do
 
   if test -z "$JAVA_LDPATH"; then
     AC_MSG_RESULT([not found])
-    AC_MSG_WARN([Library $jvmlib not found.  Octave will not be able to call Java methods.])
+    warn_java="Library $jvmlib not found.  Octave will not be able to call Java methods."
     break
   else
     AC_MSG_RESULT([$JAVA_LDPATH])
@@ -2590,7 +2591,7 @@ do
     AC_MSG_RESULT([$dir])
   else
     AC_MSG_RESULT([not found])
-    AC_MSG_WARN([Include file <jni.h> not found.  Octave will not be able to call Java methods.])
+    warn_java="Include file <jni.h> not found.  Octave will not be able to call Java methods."
     break
   fi
 
@@ -2600,6 +2601,9 @@ do
     [Define to 1 if Java is available and is at least version 1.5])
   break
 done
+if test -n "$warn_java"; then
+  OCTAVE_CONFIGURE_WARNING([warn_java])
+fi
 
 AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = yes])
 AC_SUBST(JAVA)

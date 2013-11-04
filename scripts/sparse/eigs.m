@@ -282,54 +282,57 @@ function out = select (args, k, sigma, real_valued, symmetric)
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "descend");
         else
-          error ("sigma = \"la\" requires real symmetric problem");
+          error ('sigma = "la" requires real symmetric problem');
         endif
 
       case "sa"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ("sigma = \"sa\" requires real symmetric problem");
+          error ('sigma = "sa" requires real symmetric problem');
         endif
 
       case "be"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ("sigma = \"be\" requires real symmetric problem");
+          error ('sigma = "be" requires real symmetric problem');
         endif
 
       case "lr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "descend");
         else
-          error ("sigma = \"lr\" requires complex or unsymmetric problem");
+          error ('sigma = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
-          error ("sigma = \"sr\" requires complex or unsymmetric problem");
+          error ('sigma = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
-          error ("sigma = \"li\" requires complex or unsymmetric problem");
+          error ('sigma = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
-          error ("sigma = \"si\" requires complex or unsymmetric problem");
+          error ('sigma = "si" requires complex or unsymmetric problem');
         endif
 
       otherwise
         error ("unrecognized value for sigma: %s", sigma);
     endswitch
+  else
+    ## numeric sigma, find k closest values
+    [~, idx] = sort (abs (d - sigma));
   endif
 
   d = d(idx);
@@ -338,7 +341,7 @@ function out = select (args, k, sigma, real_valued, symmetric)
 
   k = min (k, n);
 
-  if (strcmp (sigma, 'be'))
+  if (strcmp (sigma, "be"))
     tmp = k / 2;
     n1 = floor (tmp);
     n2 = n - ceil (tmp) + 1;

@@ -553,9 +553,9 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
     }
   else if (bank_format)
     {
-      fw = digits < 0 ? 4 : digits + 3;
-      if (inf_or_nan && fw < 4)
-        fw = 4;
+      fw = digits < 0 ? 5 : digits + 4;
+      if (inf_or_nan && fw < 5)
+        fw = 5;
       rd = 2;
     }
   else if (hex_format)
@@ -679,9 +679,9 @@ set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
   else if (bank_format)
     {
       int digits = x_max > x_min ? x_max : x_min;
-      fw = digits <= 0 ? 4 : digits + 3;
-      if (inf_or_nan && fw < 4)
-        fw = 4;
+      fw = digits <= 0 ? 5 : digits + 4;
+      if (inf_or_nan && fw < 5)
+        fw = 5;
       rd = 2;
     }
   else if (hex_format)
@@ -843,9 +843,9 @@ set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
     {
       int digits = r_x;
       i_fw = 0;
-      r_fw = digits <= 0 ? 4 : digits + 3;
-      if (inf_or_nan && r_fw < 4)
-        r_fw = 4;
+      r_fw = digits <= 0 ? 5 : digits + 4;
+      if (inf_or_nan && r_fw < 5)
+        r_fw = 5;
       rd = 2;
     }
   else if (hex_format)
@@ -1043,9 +1043,9 @@ set_complex_matrix_format (int x_max, int x_min, int r_x_max,
     {
       int digits = r_x_max > r_x_min ? r_x_max : r_x_min;
       i_fw = 0;
-      r_fw = digits <= 0 ? 4 : digits + 3;
-      if (inf_or_nan && r_fw < 4)
-        r_fw = 4;
+      r_fw = digits <= 0 ? 5 : digits + 4;
+      if (inf_or_nan && r_fw < 5)
+        r_fw = 5;
       rd = 2;
     }
   else if (hex_format)

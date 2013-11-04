@@ -94,6 +94,19 @@ function __imwrite__ (img, varargin)
     elseif (ndims (img) != 2 && ndims (img) != 4)
       error ("imwrite: indexed image must have 2 or 4 dimensions (found %i)", ndims (img));
     endif
+
+    ## Fill in the colormap as required with rgb (0, 0, 0) (bug #33615)
+    nColors = rows (map);
+    if (any (strcmp (class (img), {"uint8", "uint16", "logical"})))
+      required_colors = max (img(:)) +1;
+    else
+      required_colors = max (img(:));
+    endif
+    if (nColors < required_colors)
+      warning ("imwrite: MAP has not enough colors. Filling with black");
+      map(nColors+1:required_colors,:) = 0;
+    endif
+
     ## If the image is floating point, then we convert it to integer (makes
     ## it easier in __magick_write__ since it only handles integers. Also,
     ## if it's floating point, it has an offset of 1

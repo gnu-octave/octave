@@ -46,6 +46,8 @@ static bool Vjit_enable = false;
 
 static int Vjit_startcnt = 1000;
 
+static int Vjit_failure_count = 0;
+
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 #include <llvm/Analysis/Verifier.h>
@@ -2129,6 +2131,8 @@ jit_function_info::jit_function_info (tree_jit& tjit,
             std::cout << "jit fail: " << e.what () << std::endl;
         }
 
+      Vjit_failure_count++;
+
       wrapper.erase ();
       raw_fn.erase ();
     }
@@ -2285,6 +2289,9 @@ jit_info::compile (tree_jit& tjit, tree& tee, jit_type *for_bounds)
           if (e.known ())
             std::cout << "jit fail: " << e.what () << std::endl;
         }
+
+      Vjit_failure_count++;
+
     }
 
   if (llvm_function)
@@ -2319,6 +2326,29 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 }
 
 #endif
+
+
+DEFUN (jit_failure_count, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} jit_failure_count ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} jit_failure_count (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} jit_failure_count (@var{new_val}, \"local\")\n\
+Query or set the internal variable that counts the number of\n\
+JIT fail exceptions for Octave's JIT compiler.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.  \n\
+The original variable value is restored when exiting the function.\n\
+@seealso{jit_enable, jit_startcnt, debug_jit}\n\
+@end deftypefn")
+{
+#if defined (HAVE_LLVM)
+  return SET_INTERNAL_VARIABLE (jit_failure_count);
+#else
+  warning ("jit_failure_count: JIT compiling not available in this version of Octave");
+  return octave_value ();
+#endif
+}
 
 DEFUN (debug_jit, args, nargout,
        "-*- texinfo -*-\n\

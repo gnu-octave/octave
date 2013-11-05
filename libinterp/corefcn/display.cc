@@ -34,15 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <X11/Xlib.h>
 #endif
 
-// X11/Xlib defines this and it conflicts with the Complex typedef in
-// oct-cmplx.h.
-#ifdef Complex
-#undef Complex
-#endif
-
 #include "singleton-cleanup.h"
 
-#include "defun.h"
 #include "display.h"
 #include "error.h"
 
@@ -192,14 +185,4 @@ display_info::instance_ok (bool query)
     }
 
   return retval;
-}
-
-DEFUN (have_window_system, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} have_window_system ()\n\
-Return true if Octave a window system is available (X11, Windows,\n\
-or Apple OS X) and false otherwise.\n\
-@end deftypefn")
-{
-  return octave_value (display_info::display_available ());
 }

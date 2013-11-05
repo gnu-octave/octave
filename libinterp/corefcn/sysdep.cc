@@ -71,6 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Cell.h"
 #include "builtins.h"
 #include "defun.h"
+#include "display.h"
 #include "error.h"
 #include "input.h"
 #include "oct-obj.h"
@@ -906,3 +907,17 @@ tilde_expand (\"~/bin\")\n\
 %! assert (tilde_expand ("/foo/bar"), "/foo/bar");
 %! assert (tilde_expand ("foo/bar"), "foo/bar");
 */
+
+// This function really belongs in display.cc, but including defun.h in
+// that file results in conflicts with symbols from headers that are
+// needed for X11 and Carbon functions.
+
+DEFUN (have_window_system, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} have_window_system ()\n\
+Return true if Octave a window system is available (X11, Windows,\n\
+or Apple OS X) and false otherwise.\n\
+@end deftypefn")
+{
+  return octave_value (display_info::display_available ());
+}

@@ -42,6 +42,7 @@ function __imwrite__ (img, varargin)
 
   ## set default for options
   options = struct ("writemode", "overwrite",
+                    "disposalmethod", {repmat({"doNotSpecify"}, 1, size (img, 4))},
                     "quality",   75,
                     "delaytime", ones (1, size (img, 4)) *500, # 0.5 seconds
                     "loopcount", 0, ## this is actually Inf
@@ -81,6 +82,30 @@ function __imwrite__ (img, varargin)
         endif
         if (any (options.delaytime(:) < 0) || any (options.delaytime(:) > 65535))
           error ("imwrite: value for %s must be between 0 and 655.35 seconds",
+                 param_list{idx});
+        endif
+
+      case "disposalmethod"
+        options.disposalmethod = param_list{idx+1};
+        if (! ischar (options.disposalmethod) &&
+            ! iscellstr (options.disposalmethod))
+          error ("imwrite: value for %s must be a string or cell array of strings",
+                 param_list{idx});
+        elseif (! iscell (options.disposalmethod))
+          options.disposalmethod = {options.disposalmethod};
+        endif
+        options.disposalmethod = tolower (options.disposalmethod);
+        matches = ismember (options.disposalmethod,
+                            {"donotspecify", "leaveinplace", "restorebg", "restoreprevious"});
+        if (any (! matches))
+          error ("imwrite: unknow method %s for option %s",
+                 options.disposalmethod{find (! matches, 1)},
+                 param_list{idx});
+        endif
+        if (isscalar (options.disposalmethod))
+          options.disposalmethod = repmat (options.disposalmethod, 1, size (img, 4));
+        elseif (numel (options.disposalmethod) != size (img, 4))
+          error ("imwrite: if value %s is a cell array must have same length as number of frames",
                  param_list{idx});
         endif
 

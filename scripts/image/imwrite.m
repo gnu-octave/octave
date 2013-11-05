@@ -54,6 +54,13 @@
 ## equal to the number of frames in @var{im}.  The value is in seconds, must
 ## be between 0 and 655.35, and defaults to 0.5.
 ##
+## @item DisposalMethod
+## For formats that accept animations (such as GIF), controls what happens
+## to a frame before drawing the next one.  Its value can be one of the
+## following strings: "doNotSpecify" (default); "leaveInPlace"; "restoreBG";
+## and "restorePrevious", or a cell array of those string with length equal
+## to the number of frames in @var{img}.
+##
 ## @item LoopCount
 ## For formats that accept animations (such as GIF), controls how many times
 ## the sequence is repeated.  A value of Inf means an infinite loop (default),

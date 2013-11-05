@@ -1254,6 +1254,49 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   return;
 }
 
+// Meant to be shared with both imfinfo and imwrite.
+static std::map<octave_idx_type, std::string>
+init_disposal_methods ()
+{
+  //  GIF Specifications:
+  //
+  // Disposal Method - Indicates the way in which the graphic is to
+  //                    be treated after being displayed.
+  //
+  //  0 -   No disposal specified. The decoder is
+  //        not required to take any action.
+  //  1 -   Do not dispose. The graphic is to be left
+  //        in place.
+  //  2 -   Restore to background color. The area used by the
+  //        graphic must be restored to the background color.
+  //  3 -   Restore to previous. The decoder is required to
+  //        restore the area overwritten by the graphic with
+  //        what was there prior to rendering the graphic.
+  //  4-7 - To be defined.
+  static std::map<octave_idx_type, std::string> methods;
+  if (methods.empty ())
+    {
+      methods[0] = "doNotSpecify";
+      methods[1] = "leaveInPlace";
+      methods[2] = "restoreBG";
+      methods[3] = "restorePrevious";
+    }
+  return methods;
+}
+static std::map<std::string, octave_idx_type>
+init_reverse_disposal_methods ()
+{
+  static std::map<std::string, octave_idx_type> methods;
+  if (methods.empty ())
+    {
+      methods["donotspecify"]     = 0;
+      methods["leaveinplace"]     = 1;
+      methods["restorebg"]        = 2;
+      methods["restoreprevious"]  = 3;
+    }
+  return methods;
+}
+
 void static
 write_file (const std::string& filename,
             const std::string& ext,
@@ -1384,16 +1427,20 @@ use @code{imwrite}.\n\
           return retval;
         }
     }
+  static std::map<std::string, octave_idx_type> disposal_methods
+    = init_reverse_disposal_methods ();
 
   const octave_idx_type nFrames = imvec.size ();
 
   const octave_idx_type quality = options.getfield ("quality").int_value ();
-  for (octave_idx_type i = 0; i < nFrames; i++)
-    imvec[i].quality (quality);
-
   const ColumnVector delaytime = options.getfield ("delaytime").column_vector_value ();
+  const Array<std::string> disposalmethod = options.getfield ("disposalmethod").cellstr_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
-    imvec[i].animationDelay (delaytime(i));
+    {
+      imvec[i].quality (quality);
+      imvec[i].animationDelay (delaytime(i));
+      imvec[i].gifDisposeMethod (disposal_methods[disposalmethod(i)]);
+    }
 
   // If writemode is set to append, read the image and append to it. Even
   // if set to append, make sure that something was read at all.
@@ -1411,31 +1458,31 @@ use @code{imwrite}.\n\
         }
     }
 
-      // FIXME - LoopCount or animationIterations
-      //  How it should work:
-      //
-      // This value is only set for the first image in the sequence. Trying
-      // to set this value with the append mode should have no effect, the
-      // value used with the first image is the one that counts (that would
-      // also be Matlab compatible). Thus, the right way to do this would be
-      // to have an else block on the condition above, and set this only
-      // when creating a new file. Since Matlab does not interpret a 4D
-      // matrix as sequence of images to write, its users need to use a for
-      // loop and set LoopCount only on the first iteration (it actually
-      // throws warnings otherwise)
-      //
-      //  Why is this not done the right way:
-      //
-      // When GM saves a single image, it discards the value if there is only
-      // a single image and sets it to "no loop".  Since our default is an
-      // infinite loop, if the user tries to do it the Matlab way (setting
-      // LoopCount only on the first image) that value will go nowhere.
-      // See https://sourceforge.net/p/graphicsmagick/bugs/248/
-      // Because of this, we document to set LoopCount on every iteration
-      // (in Matlab will cause a lot of warnings), or pass a 4D matrix with
-      // all frames (won't work in Matlab at all).
-      // Note that this only needs to be set on the first frame
-      imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());
+  // FIXME - LoopCount or animationIterations
+  //  How it should work:
+  //
+  // This value is only set for the first image in the sequence. Trying
+  // to set this value with the append mode should have no effect, the
+  // value used with the first image is the one that counts (that would
+  // also be Matlab compatible). Thus, the right way to do this would be
+  // to have an else block on the condition above, and set this only
+  // when creating a new file. Since Matlab does not interpret a 4D
+  // matrix as sequence of images to write, its users need to use a for
+  // loop and set LoopCount only on the first iteration (it actually
+  // throws warnings otherwise)
+  //
+  //  Why is this not done the right way:
+  //
+  // When GM saves a single image, it discards the value if there is only
+  // a single image and sets it to "no loop".  Since our default is an
+  // infinite loop, if the user tries to do it the Matlab way (setting
+  // LoopCount only on the first image) that value will go nowhere.
+  // See https://sourceforge.net/p/graphicsmagick/bugs/248/
+  // Because of this, we document to set LoopCount on every iteration
+  // (in Matlab will cause a lot of warnings), or pass a 4D matrix with
+  // all frames (won't work in Matlab at all).
+  // Note that this only needs to be set on the first frame
+  imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());
 
   write_file (filename, ext, imvec);
   if (error_state)
@@ -1606,36 +1653,6 @@ magick_to_octave_value (const Magick::ResolutionType& magick)
     default:
       return octave_value ("undefined");
     }
-}
-
-// Meant to be shared with both imfinfo and imwrite.
-static std::map<octave_idx_type, std::string>
-init_disposal_methods ()
-{
-  //  GIF Specifications:
-  //
-  // Disposal Method - Indicates the way in which the graphic is to
-  //                    be treated after being displayed.
-  //
-  //  0 -   No disposal specified. The decoder is
-  //        not required to take any action.
-  //  1 -   Do not dispose. The graphic is to be left
-  //        in place.
-  //  2 -   Restore to background color. The area used by the
-  //        graphic must be restored to the background color.
-  //  3 -   Restore to previous. The decoder is required to
-  //        restore the area overwritten by the graphic with
-  //        what was there prior to rendering the graphic.
-  //  4-7 - To be defined.
-  static std::map<octave_idx_type, std::string> methods;
-  if (methods.empty ())
-    {
-      methods[0] = "doNotSpecify";
-      methods[1] = "leaveInPlace";
-      methods[2] = "restoreBG";
-      methods[3] = "restorePrevious";
-    }
-  return methods;
 }
 
 static bool

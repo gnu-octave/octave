@@ -43,6 +43,7 @@ function __imwrite__ (img, varargin)
   ## set default for options
   options = struct ("writemode", "overwrite",
                     "quality",   75,
+                    "delaytime", ones (1, size (img, 4)) *500, # 0.5 seconds
                     "loopcount", 0, ## this is actually Inf
                     "alpha",     cast ([], class (img)));
 
@@ -65,23 +66,23 @@ function __imwrite__ (img, varargin)
                  param_list{idx});
         endif
 
-      case "writemode",
-        options.writemode = param_list{idx+1};
-        if (! ischar (options.writemode)
-            || ! any (strcmpi (options.writemode, {"append", "overwrite"})))
-          error ('imwrite: value for %s option must be "append" or "overwrite"',
+      case "delaytime"
+        options.delaytime = param_list{idx+1};
+        if (! isnumeric (options.delaytime))
+          error ("imwrite: value for %s option must be numeric",
                  param_list{idx});
         endif
-        options.writemode = tolower (options.writemode);
-
-      case "quality",
-        options.quality = param_list{idx+1};
-        if (! isnumeric (options.quality) || ! isscalar (options.quality)
-            || options.quality < 0 || options.quality > 100)
-          error ("imwrite: value for %s option must be a scalar between 0 and 100",
+        options.delaytime *= 100; # convert to 1/100ths of second
+        if (isscalar (options.delaytime))
+          options.delaytime(1:size (img, 4)) = options.delaytime;
+        elseif (size (img, 4) != numel (options.delaytime))
+          error ("imwrite: value for %s must either be a scalar or the number of frames",
                  param_list{idx});
         endif
-        options.quality = round (options.quality);
+        if (any (options.delaytime(:) < 0) || any (options.delaytime(:) > 65535))
+          error ("imwrite: value for %s must be between 0 and 655.35 seconds",
+                 param_list{idx});
+        endif
 
       case "loopcount"
         options.loopcount = param_list{idx+1};
@@ -106,6 +107,24 @@ function __imwrite__ (img, varargin)
           options.loopcount++;
         endif
         options.loopcount = floor (options.loopcount);
+
+      case "quality",
+        options.quality = param_list{idx+1};
+        if (! isnumeric (options.quality) || ! isscalar (options.quality)
+            || options.quality < 0 || options.quality > 100)
+          error ("imwrite: value for %s option must be a scalar between 0 and 100",
+                 param_list{idx});
+        endif
+        options.quality = round (options.quality);
+
+      case "writemode",
+        options.writemode = param_list{idx+1};
+        if (! ischar (options.writemode)
+            || ! any (strcmpi (options.writemode, {"append", "overwrite"})))
+          error ('imwrite: value for %s option must be "append" or "overwrite"',
+                 param_list{idx});
+        endif
+        options.writemode = tolower (options.writemode);
 
       otherwise
         error ("imwrite: invalid PARAMETER `%s'", param_list{idx});

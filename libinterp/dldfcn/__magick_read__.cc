@@ -1387,10 +1387,13 @@ use @code{imwrite}.\n\
 
   const octave_idx_type nFrames = imvec.size ();
 
-  // FIXME What happens when we try to set with formats that do not support it?
   const octave_idx_type quality = options.getfield ("quality").int_value ();
   for (octave_idx_type i = 0; i < nFrames; i++)
     imvec[i].quality (quality);
+
+  const ColumnVector delaytime = options.getfield ("delaytime").column_vector_value ();
+  for (octave_idx_type i = 0; i < nFrames; i++)
+    imvec[i].animationDelay (delaytime(i));
 
   // If writemode is set to append, read the image and append to it. Even
   // if set to append, make sure that something was read at all.

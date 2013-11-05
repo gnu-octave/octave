@@ -47,6 +47,13 @@
 ## dimension must be a singleton.  By default, image will be completely
 ## opaque.
 ##
+## @item DelayTime
+## For formats that accept animations (such as GIF), controls for how long a
+## frame is displayed until it moves to the next one. The value must be scalar
+## (which will applied to all frames in @var{img}), or a vector of length
+## equal to the number of frames in @var{im}.  The value is in seconds, must
+## be between 0 and 655.35, and defaults to 0.5.
+##
 ## @item LoopCount
 ## For formats that accept animations (such as GIF), controls how many times
 ## the sequence is repeated.  A value of Inf means an infinite loop (default),

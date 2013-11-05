@@ -1230,10 +1230,10 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
   // int topLeftX = (_contentWidth - _usedColumns * _fontWidth) / 2;
   int topLeftX = 0;
 
-  int leftUpperX = qMin(_usedColumns-1, qMax(0, qRound((rect.left()   - topLeftX - _leftMargin ) / _fontWidth)));
-  int leftUpperY = qMin(_usedLines-1,  qMax(0, qRound((rect.top()    - topLeftY - _topMargin  ) / _fontHeight)));
-  int rightLowerX = qMin(_usedColumns-1, qMax(0, qRound((rect.right()  - topLeftX - _leftMargin ) / _fontWidth)));
-  int rightLowerY = qMin(_usedLines-1,  qMax(0, qRound((rect.bottom() - topLeftY - _topMargin  ) / _fontHeight)));
+  int leftUpperX = qMin(_usedColumns-1, qMax(0, qFloor((rect.left()   - topLeftX - _leftMargin ) / _fontWidth)));
+  int leftUpperY = qMin(_usedLines-1,  qMax(0, qFloor((rect.top()    - topLeftY - _topMargin  ) / _fontHeight)));
+  int rightLowerX = qMin(_usedColumns-1, qMax(0, qFloor((rect.right()  - topLeftX - _leftMargin ) / _fontWidth)));
+  int rightLowerY = qMin(_usedLines-1,  qMax(0, qFloor((rect.bottom() - topLeftY - _topMargin  ) / _fontHeight)));
 
   const int bufferSize = _usedColumns;
   QChar *disstrU = new QChar[bufferSize];
@@ -2533,11 +2533,11 @@ void TerminalView::calcGeometry()
   if (!_isFixedSize)
     {
       // ensure that display is always at least one column wide
-      _columns = qMax(1,qRound(_contentWidth / _fontWidth));
+      _columns = qMax(1,qFloor(_contentWidth / _fontWidth));
       _usedColumns = qMin(_usedColumns,_columns);
 
       // ensure that display is always at least one line high
-      _lines = qMax(1, qRound(_contentHeight / _fontHeight));
+      _lines = qMax(1, qFloor(_contentHeight / _fontHeight));
       _usedLines = qMin(_usedLines,_lines);
     }
 }

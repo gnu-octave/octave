@@ -452,7 +452,8 @@ tm_row_const::tm_row_const_rep::cellify (void)
                 }
               else if (! dv.hvcat (this_elt_dv, 1))
                 {
-                  eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+                  eval_error ("horizontal dimensions mismatch",
+                              dv, this_elt_dv);
                   break;
                 }
             }
@@ -747,7 +748,7 @@ single_type_concat (Array<T>& result,
           octave_idx_type i = 0;
           for (tm_row_const::iterator q = row.begin ();
                q != row.end () && ! error_state; q++)
-             result(i++) = octave_value_extract<T> (*q);
+            result(i++) = octave_value_extract<T> (*q);
 
           return;
         }
@@ -1368,7 +1369,7 @@ tree_matrix::accept (tree_walker& tw)
 */
 
 DEFUN (string_fill_char, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} string_fill_char ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} string_fill_char (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} string_fill_char (@var{new_val}, \"local\")\n\

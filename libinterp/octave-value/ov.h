@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_value_h)
-#define octave_value_h 1
+#if !defined (octave_ov_h)
+#define octave_ov_h 1
 
 #include <cstdlib>
 
@@ -165,11 +165,11 @@ public:
   enum magic_colon { magic_colon_t };
 
   octave_value (void)
-    {
-      static octave_base_value nil_rep;
-      rep = &nil_rep;
-      rep->count++;
-    }
+  {
+    static octave_base_value nil_rep;
+    rep = &nil_rep;
+    rep->count++;
+  }
 
   octave_value (short int i);
   octave_value (unsigned short int i);
@@ -178,7 +178,7 @@ public:
   octave_value (long int i);
   octave_value (unsigned long int i);
 
-  // FIXME -- these are kluges.  They turn into doubles
+  // FIXME: these are kluges.  They turn into doubles
   // internally, which will break for very large values.  We just use
   // them to store things like 64-bit ino_t, etc, and hope that those
   // values are never actually larger than can be represented exactly
@@ -215,7 +215,8 @@ public:
   octave_value (const Complex& C);
   octave_value (const FloatComplex& C);
   octave_value (const ComplexMatrix& m, const MatrixType& t = MatrixType ());
-  octave_value (const FloatComplexMatrix& m, const MatrixType& t = MatrixType ());
+  octave_value (const FloatComplexMatrix& m,
+                const MatrixType& t = MatrixType ());
   octave_value (const ComplexNDArray& cnda);
   octave_value (const FloatComplexNDArray& cnda);
   octave_value (const Array<Complex>& m);
@@ -296,17 +297,17 @@ public:
   // Copy constructor.
 
   octave_value (const octave_value& a)
-    {
-      rep = a.rep;
-      rep->count++;
-    }
+  {
+    rep = a.rep;
+    rep->count++;
+  }
 
   // This should only be called for derived types.
 
   octave_base_value *clone (void) const;
 
   octave_base_value *empty_clone (void) const
-    { return rep->empty_clone (); }
+  { return rep->empty_clone (); }
 
   // Delete the representation of this constant if the count drops to
   // zero.
@@ -318,88 +319,88 @@ public:
   }
 
   void make_unique (void)
-    {
-      if (rep->count > 1)
-        {
-          octave_base_value *r = rep->unique_clone ();
+  {
+    if (rep->count > 1)
+      {
+        octave_base_value *r = rep->unique_clone ();
 
-          if (--rep->count == 0)
-            delete rep;
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = r;
-        }
-    }
+        rep = r;
+      }
+  }
 
   // This uniquifies the value if it is referenced by more than a certain
   // number of shallow copies. This is useful for optimizations where we
   // know a certain copy, typically within a cell array, to be obsolete.
   void make_unique (int obsolete_copies)
-    {
-      if (rep->count > obsolete_copies + 1)
-        {
-          octave_base_value *r = rep->unique_clone ();
+  {
+    if (rep->count > obsolete_copies + 1)
+      {
+        octave_base_value *r = rep->unique_clone ();
 
-          if (--rep->count == 0)
-            delete rep;
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = r;
-        }
-    }
+        rep = r;
+      }
+  }
 
   // Simple assignment.
 
   octave_value& operator = (const octave_value& a)
-    {
-      if (rep != a.rep)
-        {
-          if (--rep->count == 0)
-            delete rep;
+  {
+    if (rep != a.rep)
+      {
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = a.rep;
-          rep->count++;
-        }
+        rep = a.rep;
+        rep->count++;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   octave_idx_type get_count (void) const { return rep->count; }
 
   octave_base_value::type_conv_info numeric_conversion_function (void) const
-    { return rep->numeric_conversion_function (); }
+  { return rep->numeric_conversion_function (); }
 
   octave_base_value::type_conv_info numeric_demotion_function (void) const
-    { return rep->numeric_demotion_function (); }
+  { return rep->numeric_demotion_function (); }
 
   void maybe_mutate (void);
 
   octave_value squeeze (void) const
-    { return rep->squeeze (); }
+  { return rep->squeeze (); }
 
   // The result of full().
   octave_value full_value (void) const
-    { return rep->full_value (); }
+  { return rep->full_value (); }
 
   octave_base_value *try_narrowing_conversion (void)
-    { return rep->try_narrowing_conversion (); }
+  { return rep->try_narrowing_conversion (); }
 
   // Close to dims (), but can be overloaded for classes.
   Matrix size (void)
-    { return rep->size (); }
+  { return rep->size (); }
 
   octave_idx_type numel (const octave_value_list& idx)
-    { return rep->numel (idx); }
+  { return rep->numel (idx); }
 
   octave_value single_subsref (const std::string& type,
                                const octave_value_list& idx);
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    { return rep->subsref (type, idx); }
+  { return rep->subsref (type, idx); }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx,
                         bool auto_add)
-    { return rep->subsref (type, idx, auto_add); }
+  { return rep->subsref (type, idx, auto_add); }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -431,7 +432,7 @@ public:
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
-    { return rep->do_index_op (idx, resize_ok); }
+  { return rep->do_index_op (idx, resize_ok); }
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);
@@ -441,26 +442,26 @@ public:
                      const std::list<octave_lvalue> *lvalue_list);
 
   octave_value subsasgn (const std::string& type,
-                                 const std::list<octave_value_list>& idx,
-                                 const octave_value& rhs);
+                         const std::list<octave_value_list>& idx,
+                         const octave_value& rhs);
 
   octave_value undef_subsasgn (const std::string& type,
                                const std::list<octave_value_list>& idx,
                                const octave_value& rhs);
 
   octave_value& assign (assign_op op, const std::string& type,
-                       const std::list<octave_value_list>& idx,
-                       const octave_value& rhs);
+                        const std::list<octave_value_list>& idx,
+                        const octave_value& rhs);
 
   octave_value& assign (assign_op, const octave_value& rhs);
 
   idx_vector index_vector (void) const
-    { return rep->index_vector (); }
+  { return rep->index_vector (); }
 
   // Size.
 
   dim_vector dims (void) const
-    { return rep->dims (); }
+  { return rep->dims (); }
 
   octave_idx_type rows (void) const { return rep->rows (); }
 
@@ -473,13 +474,13 @@ public:
   bool all_zero_dims (void) const { return dims ().all_zero (); }
 
   octave_idx_type numel (void) const
-    { return rep->numel (); }
+  { return rep->numel (); }
 
   octave_idx_type capacity (void) const
-    { return rep->capacity (); }
+  { return rep->capacity (); }
 
   size_t byte_size (void) const
-    { return rep->byte_size (); }
+  { return rep->byte_size (); }
 
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
@@ -488,16 +489,16 @@ public:
   octave_idx_type nfields (void) const { return rep->nfields (); }
 
   octave_value reshape (const dim_vector& dv) const
-    { return rep->reshape (dv); }
+  { return rep->reshape (dv); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return rep->permute (vec, inv); }
+  { return rep->permute (vec, inv); }
 
   octave_value ipermute (const Array<int>& vec) const
-    { return rep->permute (vec, true); }
+  { return rep->permute (vec, true); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
-    { return rep->resize (dv, fill);}
+  { return rep->resize (dv, fill);}
 
   MatrixType matrix_type (void) const
   { return rep->matrix_type (); }
@@ -510,155 +511,155 @@ public:
   // ! is_defined().
 
   bool is_defined (void) const
-    { return rep->is_defined (); }
+  { return rep->is_defined (); }
 
   bool is_undefined (void) const
-    { return ! is_defined (); }
+  { return ! is_defined (); }
 
   bool is_empty (void) const
-    { return rep->is_empty (); }
+  { return rep->is_empty (); }
 
   bool is_cell (void) const
-    { return rep->is_cell (); }
+  { return rep->is_cell (); }
 
   bool is_cellstr (void) const
-    { return rep->is_cellstr (); }
+  { return rep->is_cellstr (); }
 
   bool is_real_scalar (void) const
-    { return rep->is_real_scalar (); }
+  { return rep->is_real_scalar (); }
 
   bool is_real_matrix (void) const
-    { return rep->is_real_matrix (); }
+  { return rep->is_real_matrix (); }
 
   bool is_complex_scalar (void) const
-    { return rep->is_complex_scalar (); }
+  { return rep->is_complex_scalar (); }
 
   bool is_complex_matrix (void) const
-    { return rep->is_complex_matrix (); }
+  { return rep->is_complex_matrix (); }
 
   bool is_bool_scalar (void) const
-    { return rep->is_bool_scalar (); }
+  { return rep->is_bool_scalar (); }
 
   bool is_bool_matrix (void) const
-    { return rep->is_bool_matrix (); }
+  { return rep->is_bool_matrix (); }
 
   bool is_char_matrix (void) const
-    { return rep->is_char_matrix (); }
+  { return rep->is_char_matrix (); }
 
   bool is_diag_matrix (void) const
-    { return rep->is_diag_matrix (); }
+  { return rep->is_diag_matrix (); }
 
   bool is_perm_matrix (void) const
-    { return rep->is_perm_matrix (); }
+  { return rep->is_perm_matrix (); }
 
   bool is_string (void) const
-    { return rep->is_string (); }
+  { return rep->is_string (); }
 
   bool is_sq_string (void) const
-    { return rep->is_sq_string (); }
+  { return rep->is_sq_string (); }
 
   bool is_dq_string (void) const
-    { return rep->is_string () && ! rep->is_sq_string (); }
+  { return rep->is_string () && ! rep->is_sq_string (); }
 
   bool is_range (void) const
-    { return rep->is_range (); }
+  { return rep->is_range (); }
 
   bool is_map (void) const
-    { return rep->is_map (); }
+  { return rep->is_map (); }
 
   bool is_object (void) const
-    { return rep->is_object (); }
+  { return rep->is_object (); }
 
   bool is_java (void) const
-    { return rep->is_java (); }
+  { return rep->is_java (); }
 
   bool is_cs_list (void) const
-    { return rep->is_cs_list (); }
+  { return rep->is_cs_list (); }
 
   bool is_magic_colon (void) const
-    { return rep->is_magic_colon (); }
+  { return rep->is_magic_colon (); }
 
   bool is_null_value (void) const
-    { return rep->is_null_value (); }
+  { return rep->is_null_value (); }
 
   // Are any or all of the elements in this constant nonzero?
 
   octave_value all (int dim = 0) const
-    { return rep->all (dim); }
+  { return rep->all (dim); }
 
   octave_value any (int dim = 0) const
-    { return rep->any (dim); }
+  { return rep->any (dim); }
 
   builtin_type_t builtin_type (void) const
-    { return rep->builtin_type (); }
+  { return rep->builtin_type (); }
 
   // Floating point types.
 
   bool is_double_type (void) const
-    { return rep->is_double_type (); }
+  { return rep->is_double_type (); }
 
   bool is_single_type (void) const
-    { return rep->is_single_type (); }
+  { return rep->is_single_type (); }
 
   bool is_float_type (void) const
-    { return rep->is_float_type (); }
+  { return rep->is_float_type (); }
 
   // Integer types.
 
   bool is_int8_type (void) const
-    { return rep->is_int8_type (); }
+  { return rep->is_int8_type (); }
 
   bool is_int16_type (void) const
-    { return rep->is_int16_type (); }
+  { return rep->is_int16_type (); }
 
   bool is_int32_type (void) const
-    { return rep->is_int32_type (); }
+  { return rep->is_int32_type (); }
 
   bool is_int64_type (void) const
-   { return rep->is_int64_type (); }
+  { return rep->is_int64_type (); }
 
   bool is_uint8_type (void) const
-    { return rep->is_uint8_type (); }
+  { return rep->is_uint8_type (); }
 
   bool is_uint16_type (void) const
-    { return rep->is_uint16_type (); }
+  { return rep->is_uint16_type (); }
 
   bool is_uint32_type (void) const
-    { return rep->is_uint32_type (); }
+  { return rep->is_uint32_type (); }
 
   bool is_uint64_type (void) const
-    { return rep->is_uint64_type (); }
+  { return rep->is_uint64_type (); }
 
   // Other type stuff.
 
   bool is_bool_type (void) const
-    { return rep->is_bool_type (); }
+  { return rep->is_bool_type (); }
 
   bool is_integer_type (void) const
-    { return rep->is_integer_type (); }
+  { return rep->is_integer_type (); }
 
   bool is_real_type (void) const
-    { return rep->is_real_type (); }
+  { return rep->is_real_type (); }
 
   bool is_complex_type (void) const
-    { return rep->is_complex_type (); }
+  { return rep->is_complex_type (); }
 
   bool is_scalar_type (void) const
-    { return rep->is_scalar_type (); }
+  { return rep->is_scalar_type (); }
 
   bool is_matrix_type (void) const
-    { return rep->is_matrix_type (); }
+  { return rep->is_matrix_type (); }
 
   bool is_numeric_type (void) const
-    { return rep->is_numeric_type (); }
+  { return rep->is_numeric_type (); }
 
   bool is_sparse_type (void) const
-    { return rep->is_sparse_type (); }
+  { return rep->is_sparse_type (); }
 
   // Does this constant correspond to a truth value?
 
   bool is_true (void) const
-    { return rep->is_true (); }
+  { return rep->is_true (); }
 
   // Do two constants match (in a switch statement)?
 
@@ -667,40 +668,40 @@ public:
   // Are the dimensions of this constant zero by zero?
 
   bool is_zero_by_zero (void) const
-    { return (rows () == 0 && columns () == 0); }
+  { return (rows () == 0 && columns () == 0); }
 
   bool is_constant (void) const
-    { return rep->is_constant (); }
+  { return rep->is_constant (); }
 
   bool is_function_handle (void) const
-    { return rep->is_function_handle (); }
+  { return rep->is_function_handle (); }
 
   bool is_anonymous_function (void) const
-    { return rep->is_anonymous_function (); }
+  { return rep->is_anonymous_function (); }
 
   bool is_inline_function (void) const
-    { return rep->is_inline_function (); }
+  { return rep->is_inline_function (); }
 
   bool is_function (void) const
-    { return rep->is_function (); }
+  { return rep->is_function (); }
 
   bool is_user_script (void) const
-    { return rep->is_user_script (); }
+  { return rep->is_user_script (); }
 
   bool is_user_function (void) const
-    { return rep->is_user_function (); }
+  { return rep->is_user_function (); }
 
   bool is_user_code (void) const
-    { return rep->is_user_code (); }
+  { return rep->is_user_code (); }
 
   bool is_builtin_function (void) const
-    { return rep->is_builtin_function (); }
+  { return rep->is_builtin_function (); }
 
   bool is_dld_function (void) const
-    { return rep->is_dld_function (); }
+  { return rep->is_dld_function (); }
 
   bool is_mex_function (void) const
-    { return rep->is_mex_function (); }
+  { return rep->is_mex_function (); }
 
   void erase_subfunctions (void) { rep->erase_subfunctions (); }
 
@@ -710,203 +711,207 @@ public:
 
   short int
   short_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->short_value (req_int, frc_str_conv); }
+  { return rep->short_value (req_int, frc_str_conv); }
 
   unsigned short int
   ushort_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->ushort_value (req_int, frc_str_conv); }
+  { return rep->ushort_value (req_int, frc_str_conv); }
 
   int int_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->int_value (req_int, frc_str_conv); }
+  { return rep->int_value (req_int, frc_str_conv); }
 
   unsigned int
   uint_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->uint_value (req_int, frc_str_conv); }
+  { return rep->uint_value (req_int, frc_str_conv); }
 
   int nint_value (bool frc_str_conv = false) const
-    { return rep->nint_value (frc_str_conv); }
+  { return rep->nint_value (frc_str_conv); }
 
   long int
   long_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->long_value (req_int, frc_str_conv); }
+  { return rep->long_value (req_int, frc_str_conv); }
 
   unsigned long int
   ulong_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->ulong_value (req_int, frc_str_conv); }
+  { return rep->ulong_value (req_int, frc_str_conv); }
 
   int64_t
   int64_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->int64_value (req_int, frc_str_conv); }
+  { return rep->int64_value (req_int, frc_str_conv); }
 
   uint64_t
   uint64_value (bool req_int = false, bool frc_str_conv = false) const
-    { return rep->uint64_value (req_int, frc_str_conv); }
+  { return rep->uint64_value (req_int, frc_str_conv); }
 
   octave_idx_type
   idx_type_value (bool req_int = false, bool frc_str_conv = false) const;
 
   double double_value (bool frc_str_conv = false) const
-    { return rep->double_value (frc_str_conv); }
+  { return rep->double_value (frc_str_conv); }
 
   float float_value (bool frc_str_conv = false) const
-    { return rep->float_value (frc_str_conv); }
+  { return rep->float_value (frc_str_conv); }
 
   double scalar_value (bool frc_str_conv = false) const
-    { return rep->scalar_value (frc_str_conv); }
+  { return rep->scalar_value (frc_str_conv); }
 
   float float_scalar_value (bool frc_str_conv = false) const
-    { return rep->float_scalar_value (frc_str_conv); }
+  { return rep->float_scalar_value (frc_str_conv); }
 
   Cell cell_value (void) const;
 
   Matrix matrix_value (bool frc_str_conv = false) const
-    { return rep->matrix_value (frc_str_conv); }
+  { return rep->matrix_value (frc_str_conv); }
 
   FloatMatrix float_matrix_value (bool frc_str_conv = false) const
-    { return rep->float_matrix_value (frc_str_conv); }
+  { return rep->float_matrix_value (frc_str_conv); }
 
   NDArray array_value (bool frc_str_conv = false) const
-    { return rep->array_value (frc_str_conv); }
+  { return rep->array_value (frc_str_conv); }
 
   FloatNDArray float_array_value (bool frc_str_conv = false) const
-    { return rep->float_array_value (frc_str_conv); }
+  { return rep->float_array_value (frc_str_conv); }
 
   Complex complex_value (bool frc_str_conv = false) const
-    { return rep->complex_value (frc_str_conv); }
+  { return rep->complex_value (frc_str_conv); }
 
   FloatComplex float_complex_value (bool frc_str_conv = false) const
-    { return rep->float_complex_value (frc_str_conv); }
+  { return rep->float_complex_value (frc_str_conv); }
 
   ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const
-    { return rep->complex_matrix_value (frc_str_conv); }
+  { return rep->complex_matrix_value (frc_str_conv); }
 
-  FloatComplexMatrix float_complex_matrix_value (bool frc_str_conv = false) const
-    { return rep->float_complex_matrix_value (frc_str_conv); }
+  FloatComplexMatrix
+  float_complex_matrix_value (bool frc_str_conv = false) const
+  { return rep->float_complex_matrix_value (frc_str_conv); }
 
   ComplexNDArray complex_array_value (bool frc_str_conv = false) const
-    { return rep->complex_array_value (frc_str_conv); }
+  { return rep->complex_array_value (frc_str_conv); }
 
-  FloatComplexNDArray float_complex_array_value (bool frc_str_conv = false) const
-    { return rep->float_complex_array_value (frc_str_conv); }
+  FloatComplexNDArray
+  float_complex_array_value (bool frc_str_conv = false) const
+  { return rep->float_complex_array_value (frc_str_conv); }
 
   bool bool_value (bool warn = false) const
-    { return rep->bool_value (warn); }
+  { return rep->bool_value (warn); }
 
   boolMatrix bool_matrix_value (bool warn = false) const
-    { return rep->bool_matrix_value (warn); }
+  { return rep->bool_matrix_value (warn); }
 
   boolNDArray bool_array_value (bool warn = false) const
-    { return rep->bool_array_value (warn); }
+  { return rep->bool_array_value (warn); }
 
   charMatrix char_matrix_value (bool frc_str_conv = false) const
-    { return rep->char_matrix_value (frc_str_conv); }
+  { return rep->char_matrix_value (frc_str_conv); }
 
   charNDArray char_array_value (bool frc_str_conv = false) const
-    { return rep->char_array_value (frc_str_conv); }
+  { return rep->char_array_value (frc_str_conv); }
 
   SparseMatrix sparse_matrix_value (bool frc_str_conv = false) const
-    { return rep->sparse_matrix_value (frc_str_conv); }
+  { return rep->sparse_matrix_value (frc_str_conv); }
 
-  SparseComplexMatrix sparse_complex_matrix_value (bool frc_str_conv = false) const
-    { return rep->sparse_complex_matrix_value (frc_str_conv); }
+  SparseComplexMatrix
+  sparse_complex_matrix_value (bool frc_str_conv = false) const
+  { return rep->sparse_complex_matrix_value (frc_str_conv); }
 
   SparseBoolMatrix sparse_bool_matrix_value (bool warn = false) const
-    { return rep->sparse_bool_matrix_value (warn); }
+  { return rep->sparse_bool_matrix_value (warn); }
 
   DiagMatrix diag_matrix_value (bool force = false) const
-    { return rep->diag_matrix_value (force); }
+  { return rep->diag_matrix_value (force); }
 
   FloatDiagMatrix float_diag_matrix_value (bool force = false) const
-    { return rep->float_diag_matrix_value (force); }
+  { return rep->float_diag_matrix_value (force); }
 
   ComplexDiagMatrix complex_diag_matrix_value (bool force = false) const
-    { return rep->complex_diag_matrix_value (force); }
+  { return rep->complex_diag_matrix_value (force); }
 
-  FloatComplexDiagMatrix float_complex_diag_matrix_value (bool force = false) const
-    { return rep->float_complex_diag_matrix_value (force); }
+  FloatComplexDiagMatrix
+  float_complex_diag_matrix_value (bool force = false) const
+  { return rep->float_complex_diag_matrix_value (force); }
 
   PermMatrix perm_matrix_value (void) const
-    { return rep->perm_matrix_value (); }
+  { return rep->perm_matrix_value (); }
 
   octave_int8 int8_scalar_value (void) const
-    { return rep->int8_scalar_value (); }
+  { return rep->int8_scalar_value (); }
 
   octave_int16 int16_scalar_value (void) const
-    { return rep->int16_scalar_value (); }
+  { return rep->int16_scalar_value (); }
 
   octave_int32 int32_scalar_value (void) const
-    { return rep->int32_scalar_value (); }
+  { return rep->int32_scalar_value (); }
 
   octave_int64 int64_scalar_value (void) const
-    { return rep->int64_scalar_value (); }
+  { return rep->int64_scalar_value (); }
 
   octave_uint8 uint8_scalar_value (void) const
-    { return rep->uint8_scalar_value (); }
+  { return rep->uint8_scalar_value (); }
 
   octave_uint16 uint16_scalar_value (void) const
-    { return rep->uint16_scalar_value (); }
+  { return rep->uint16_scalar_value (); }
 
   octave_uint32 uint32_scalar_value (void) const
-    { return rep->uint32_scalar_value (); }
+  { return rep->uint32_scalar_value (); }
 
   octave_uint64 uint64_scalar_value (void) const
-    { return rep->uint64_scalar_value (); }
+  { return rep->uint64_scalar_value (); }
 
   int8NDArray int8_array_value (void) const
-    { return rep->int8_array_value (); }
+  { return rep->int8_array_value (); }
 
   int16NDArray int16_array_value (void) const
-    { return rep->int16_array_value (); }
+  { return rep->int16_array_value (); }
 
   int32NDArray int32_array_value (void) const
-    { return rep->int32_array_value (); }
+  { return rep->int32_array_value (); }
 
   int64NDArray int64_array_value (void) const
-    { return rep->int64_array_value (); }
+  { return rep->int64_array_value (); }
 
   uint8NDArray uint8_array_value (void) const
-    { return rep->uint8_array_value (); }
+  { return rep->uint8_array_value (); }
 
   uint16NDArray uint16_array_value (void) const
-    { return rep->uint16_array_value (); }
+  { return rep->uint16_array_value (); }
 
   uint32NDArray uint32_array_value (void) const
-    { return rep->uint32_array_value (); }
+  { return rep->uint32_array_value (); }
 
   uint64NDArray uint64_array_value (void) const
-    { return rep->uint64_array_value (); }
+  { return rep->uint64_array_value (); }
 
   string_vector all_strings (bool pad = false) const
-    { return rep->all_strings (pad); }
+  { return rep->all_strings (pad); }
 
   std::string string_value (bool force = false) const
-    { return rep->string_value (force); }
+  { return rep->string_value (force); }
 
   Array<std::string> cellstr_value (void) const
-    { return rep->cellstr_value (); }
+  { return rep->cellstr_value (); }
 
   Range range_value (void) const
-    { return rep->range_value (); }
+  { return rep->range_value (); }
 
   octave_map map_value (void) const;
 
   octave_scalar_map scalar_map_value (void) const;
 
   string_vector map_keys (void) const
-    { return rep->map_keys (); }
+  { return rep->map_keys (); }
 
   size_t nparents (void) const
-    { return rep->nparents (); }
+  { return rep->nparents (); }
 
   std::list<std::string> parent_class_name_list (void) const
-    { return rep->parent_class_name_list (); }
+  { return rep->parent_class_name_list (); }
 
   string_vector parent_class_names (void) const
-    { return rep->parent_class_names (); }
+  { return rep->parent_class_names (); }
 
   octave_base_value *
   find_parent_class (const std::string& parent_class_name)
-    { return rep->find_parent_class (parent_class_name); }
+  { return rep->find_parent_class (parent_class_name); }
 
   octave_function *function_value (bool silent = false) const;
 
@@ -923,11 +928,11 @@ public:
   octave_value_list list_value (void) const;
 
   ColumnVector column_vector_value (bool frc_str_conv = false,
-                             bool frc_vec_conv = false) const;
+                                    bool frc_vec_conv = false) const;
 
   ComplexColumnVector
   complex_column_vector_value (bool frc_str_conv = false,
-                        bool frc_vec_conv = false) const;
+                               bool frc_vec_conv = false) const;
 
   RowVector row_vector_value (bool frc_str_conv = false,
                               bool frc_vec_conv = false) const;
@@ -938,18 +943,18 @@ public:
 
 
   FloatColumnVector float_column_vector_value (bool frc_str_conv = false,
-                             bool frc_vec_conv = false) const;
+                                               bool frc_vec_conv = false) const;
 
   FloatComplexColumnVector
   float_complex_column_vector_value (bool frc_str_conv = false,
-                        bool frc_vec_conv = false) const;
+                                     bool frc_vec_conv = false) const;
 
   FloatRowVector float_row_vector_value (bool frc_str_conv = false,
-                              bool frc_vec_conv = false) const;
+                                         bool frc_vec_conv = false) const;
 
   FloatComplexRowVector
   float_complex_row_vector_value (bool frc_str_conv = false,
-                            bool frc_vec_conv = false) const;
+                                  bool frc_vec_conv = false) const;
 
 
 
@@ -970,15 +975,16 @@ public:
                                        bool frc_vec_conv = false) const;
 
   Array<float> float_vector_value (bool frc_str_conv = false,
-                              bool frc_vec_conv = false) const;
+                                   bool frc_vec_conv = false) const;
 
-  Array<FloatComplex> float_complex_vector_value (bool frc_str_conv = false,
-                                       bool frc_vec_conv = false) const;
+  Array<FloatComplex>
+  float_complex_vector_value (bool frc_str_conv = false,
+                              bool frc_vec_conv = false) const;
 
   // Possibly economize a lazy-indexed value.
 
   void maybe_economize (void)
-    { rep->maybe_economize (); }
+  { rep->maybe_economize (); }
 
   // The following two hook conversions are called on any octave_value prior to
   // storing it to a "permanent" location, like a named variable, a cell or a
@@ -997,27 +1003,26 @@ public:
 
   octave_value convert_to_str (bool pad = false, bool force = false,
                                char type = '\'') const
-    { return rep->convert_to_str (pad, force, type); }
+  { return rep->convert_to_str (pad, force, type); }
 
   octave_value
   convert_to_str_internal (bool pad, bool force, char type) const
-    { return rep->convert_to_str_internal (pad, force, type); }
+  { return rep->convert_to_str_internal (pad, force, type); }
 
   void convert_to_row_or_column_vector (void)
-    { rep->convert_to_row_or_column_vector (); }
+  { rep->convert_to_row_or_column_vector (); }
 
   bool print_as_scalar (void) const
-    { return rep->print_as_scalar (); }
+  { return rep->print_as_scalar (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const
-    { rep->print (os, pr_as_read_syntax); }
+  { rep->print (os, pr_as_read_syntax); }
 
-  void print_raw (std::ostream& os,
-                          bool pr_as_read_syntax = false) const
-    { rep->print_raw (os, pr_as_read_syntax); }
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
+  { rep->print_raw (os, pr_as_read_syntax); }
 
   bool print_name_tag (std::ostream& os, const std::string& name) const
-    { return rep->print_name_tag (os, name); }
+  { return rep->print_name_tag (os, name); }
 
   void print_with_name (std::ostream& os, const std::string& name) const
   { rep->print_with_name (os, name, true); }
@@ -1033,54 +1038,54 @@ public:
   // Unary and binary operations.
 
   friend OCTINTERP_API octave_value do_unary_op (unary_op op,
-                                   const octave_value& a);
+                                                 const octave_value& a);
 
   octave_value& do_non_const_unary_op (unary_op op);
 
   octave_value& do_non_const_unary_op (unary_op op, const std::string& type,
-                                      const std::list<octave_value_list>& idx);
+                                       const std::list<octave_value_list>& idx);
 
   friend OCTINTERP_API octave_value do_binary_op (binary_op op,
-                                    const octave_value& a,
-                                    const octave_value& b);
+                                                  const octave_value& a,
+                                                  const octave_value& b);
 
   friend OCTINTERP_API octave_value do_binary_op (compound_binary_op op,
                                                   const octave_value& a,
                                                   const octave_value& b);
 
   friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
-                                 const octave_value& b,
-                                 const Array<octave_idx_type>& ra_idx);
+                                               const octave_value& b,
+                                               const Array<octave_idx_type>& ra_idx);
 
   const octave_base_value& get_rep (void) const { return *rep; }
 
   bool is_copy_of (const octave_value &val) const { return rep == val.rep; }
 
   void print_info (std::ostream& os,
-                           const std::string& prefix = std::string ()) const;
+                   const std::string& prefix = std::string ()) const;
 
   bool save_ascii (std::ostream& os) { return rep->save_ascii (os); }
 
   bool load_ascii (std::istream& is) { return rep->load_ascii (is); }
 
   bool save_binary (std::ostream& os, bool& save_as_floats)
-    { return rep->save_binary (os, save_as_floats); }
+  { return rep->save_binary (os, save_as_floats); }
 
   bool load_binary (std::istream& is, bool swap,
-                            oct_mach_info::float_format fmt)
-    { return rep->load_binary (is, swap, fmt); }
+                    oct_mach_info::float_format fmt)
+  { return rep->load_binary (is, swap, fmt); }
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
-    { return rep->save_hdf5 (loc_id, name, save_as_floats); }
+  { return rep->save_hdf5 (loc_id, name, save_as_floats); }
 
   bool load_hdf5 (hid_t loc_id, const char *name)
-    { return rep->load_hdf5 (loc_id, name); }
+  { return rep->load_hdf5 (loc_id, name); }
 #endif
 
   int write (octave_stream& os, int block_size,
-                     oct_data_conv::data_type output_type, int skip,
-                     oct_mach_info::float_format flt_fmt) const;
+             oct_data_conv::data_type output_type, int skip,
+             oct_mach_info::float_format flt_fmt) const;
 
   octave_base_value *internal_rep (void) const { return rep; }
 
@@ -1095,25 +1100,25 @@ public:
   mxArray *as_mxArray (void) const { return rep->as_mxArray (); }
 
   octave_value diag (octave_idx_type k = 0) const
-    { return rep->diag (k); }
+  { return rep->diag (k); }
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const
-    { return rep->diag (m, n); }
+  { return rep->diag (m, n); }
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return rep->sort (dim, mode); }
+  { return rep->sort (dim, mode); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-                 sortmode mode = ASCENDING) const
-    { return rep->sort (sidx, dim, mode); }
+                     sortmode mode = ASCENDING) const
+  { return rep->sort (sidx, dim, mode); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return rep->is_sorted (mode); }
+  { return rep->is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
-    { return rep->sort_rows_idx (mode); }
+  { return rep->sort_rows_idx (mode); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-    { return rep->is_sorted_rows (mode); }
+  { return rep->is_sorted_rows (mode); }
 
   void lock (void) { rep->lock (); }
 
@@ -1195,23 +1200,23 @@ public:
 #undef MAPPER_FORWARD
 
   octave_value map (octave_base_value::unary_mapper_t umap) const
-    { return rep->map (umap); }
+  { return rep->map (umap); }
 
   // Extract the n-th element, aka val(n). Result is undefined if val is not an
   // array type or n is out of range. Never error.
   octave_value
   fast_elem_extract (octave_idx_type n) const
-    { return rep->fast_elem_extract (n); }
+  { return rep->fast_elem_extract (n); }
 
   // Assign the n-th element, aka val(n) = x. Returns false if val is not an
   // array type, x is not a matching scalar type, or n is out of range.
   // Never error.
   virtual bool
   fast_elem_insert (octave_idx_type n, const octave_value& x)
-    {
-      make_unique ();
-      return rep->fast_elem_insert (n, x);
-    }
+  {
+    make_unique ();
+    return rep->fast_elem_insert (n, x);
+  }
 
 protected:
 
@@ -1341,7 +1346,7 @@ extern OCTINTERP_API void install_types (void);
 // Templated value extractors.
 template<class Value>
 inline Value octave_value_extract (const octave_value&)
-  { assert (false); }
+{ assert (false); }
 
 #define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX) \
 template<> \

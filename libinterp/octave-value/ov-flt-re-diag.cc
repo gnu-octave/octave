@@ -103,7 +103,8 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
       return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
     case umap_sqrt:
       {
-        FloatComplexColumnVector tmp = matrix.extract_diag ().map<FloatComplex> (rc_sqrt);
+        FloatComplexColumnVector tmp = matrix.extract_diag ().map<FloatComplex>
+                                       (rc_sqrt);
         FloatComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;
@@ -124,7 +125,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
 
   FloatMatrix m = FloatMatrix (matrix.extract_diag ());
   save_type st = LS_FLOAT;
-  if (matrix.length () > 8192) // FIXME -- make this configurable.
+  if (matrix.length () > 8192) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -139,7 +140,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
 
 bool
 octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                       oct_mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;

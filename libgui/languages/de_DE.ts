@@ -104,26 +104,21 @@
 <context>
     <name>file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+300"/>
-        <location line="+49"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+304"/>
+        <location line="+21"/>
+        <location line="+17"/>
+        <location line="+57"/>
         <location line="+28"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-199"/>
+        <location line="-249"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="+123"/>
-        <source>Could not open file %1 for read:
-%2.</source>
-        <translation>Kann die Datei &lt;b&gt;%1&lt;/b&gt; nicht zum Lesen öffnen:
-%2.</translation>
-    </message>
-    <message>
-        <location line="+49"/>
+        <location line="+222"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -137,12 +132,12 @@ ist im Editor bereits geöffnet</translation>
         <translation>Der zugehörige Editor-Reiter ist nicht mehr vorhanden und wurde wahrscheinlich geschlossen.</translation>
     </message>
     <message>
-        <location line="+205"/>
+        <location line="+228"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location line="+160"/>
+        <location line="+173"/>
         <source>&amp;New File</source>
         <translation>&amp;Neue Datei</translation>
     </message>
@@ -182,12 +177,12 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Paste</source>
         <translation>Einfügen</translation>
     </message>
@@ -237,7 +232,7 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Kommentieren</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>&amp;Uncomment</source>
         <translation>Kommentar &amp;entfernen</translation>
     </message>
@@ -247,7 +242,12 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Zuletzt bearbeitete Dateien</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+9"/>
+        <source>&amp;Edit Function</source>
+        <translation>Funktion b&amp;earbeiten</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>&amp;Close</source>
         <translation>S&amp;chließen</translation>
     </message>
@@ -262,12 +262,61 @@ ist im Editor bereits geöffnet</translation>
         <translation>Andere Dokumente schließen</translation>
     </message>
     <message>
-        <location line="-85"/>
+        <location line="+49"/>
+        <source>Run &amp;Selection</source>
+        <translation>Markierten Quellcode au&amp;sführen</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Help on Keyword</source>
+        <translation>&amp;Hilfe zum Schlüsselwort</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Documentation on Keyword</source>
+        <translation>&amp;Dokumentation zum Schlüsselwort</translation>
+    </message>
+    <message>
+        <location line="-147"/>
         <source>&amp;Find and Replace</source>
         <translation>&amp;Suchen und Ersetzen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-584"/>
+        <source>Could not open file
+%1
+for read: %2.</source>
+        <translation>Die Datei
+%1
+konnte nicht zum Lesen geöffnet werden:
+%2.</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>File
+%1
+does not exist. Do you want to create it?</source>
+        <translation>Die Datei
+%1
+existiert nicht. Soll sie erzeugt werden?</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Could not open file
+%1
+for write: %2.</source>
+        <translation>Die Datei
+%1
+konnte nicht zum Schreiben geöffnet werden:
+%2.</translation>
+    </message>
+    <message>
+        <location line="+549"/>
         <source>Save File And Run</source>
         <translation>Datei speichern und ausführen</translation>
     </message>
@@ -282,12 +331,22 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+39"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editieren</translation>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
+        <source>&amp;Preferences</source>
+        <translation>&amp;Einstellungen</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Styles Preferences</source>
+        <translation>&amp;Stil-Einstellungen</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>&amp;Debug</source>
         <translation>&amp;Debuggen</translation>
     </message>
@@ -300,7 +359,7 @@ ist im Editor bereits geöffnet</translation>
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+726"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+755"/>
         <source>Goto line</source>
         <translation>Gehe zu Zeile</translation>
     </message>
@@ -326,15 +385,15 @@ ist im Editor bereits geöffnet</translation>
     </message>
     <message>
         <location line="+4"/>
-        <location line="+114"/>
-        <location line="+109"/>
+        <location line="+129"/>
+        <location line="+115"/>
         <location line="+66"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-310"/>
+        <location line="-331"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -345,7 +404,7 @@ soll geschlossen werden, wurde aber verändert.
 %2</translation>
     </message>
     <message>
-        <location line="+189"/>
+        <location line="+210"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;All Files (*)</translation>
     </message>
@@ -375,14 +434,14 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</translation>
     </message>
     <message>
-        <location line="-197"/>
+        <location line="-203"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Die Datei %1  konnte nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
-        <location line="+175"/>
+        <location line="+181"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Die Datei %1 wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?</translation>
     </message>
@@ -871,18 +930,18 @@ zu: </translation>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+160"/>
+        <location filename="../src/main-window.cc" line="+163"/>
         <source>Load Workspace</source>
         <translation>Lade Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="+388"/>
-        <location line="+835"/>
+        <location line="+435"/>
+        <location line="+847"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-354"/>
+        <location line="-369"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
@@ -924,7 +983,7 @@ zu: </translation>
     <message>
         <location line="+52"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editieren</translation>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -942,18 +1001,33 @@ zu: </translation>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="-982"/>
-        <location line="+902"/>
+        <location line="-1026"/>
+        <location line="+946"/>
         <source>Save Workspace As</source>
         <translation>Arbeitsumgebung speichern als</translation>
     </message>
     <message>
-        <location line="-655"/>
+        <location line="-826"/>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
+        <translation>Die Datei &apos;%1&apos; mit Versionshinweisen ist leer.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
+        <translation>Die Datei &apos;%1&apos; mit Versionshinweisen kann nicht gelesen werden.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Octave Release Notes</source>
+        <translation>Versionshinweise zu Octave</translation>
+    </message>
+    <message>
+        <location line="+157"/>
         <source>Set working directory</source>
         <translation>Arbeitsverzeichnis setzen</translation>
     </message>
     <message>
-        <location line="+739"/>
+        <location line="+736"/>
         <source>Clear Clipboard</source>
         <translation>Zwischenablage leeren</translation>
     </message>
@@ -1013,17 +1087,27 @@ zu: </translation>
         <translation>Dateibrowser anzeigen</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+12"/>
+        <source>Show News Window</source>
+        <translation>Fenster mit Neuigkeiten anzeigen</translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>File Browser</source>
         <translation>Dateibrowser</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+12"/>
+        <source>News</source>
+        <translation>Neuigkeiten</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Reset Default Window Layout</source>
         <translation>Fensterlayout auf Grundeinstellung zurücksetzen</translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+86"/>
         <source>Octave Packages</source>
         <translation>Octave Pakete</translation>
     </message>
@@ -1035,7 +1119,7 @@ zu: </translation>
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation>Bei Octave mitwirken</translation>
+        <translation>Zu Octave beitragen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1051,6 +1135,21 @@ zu: </translation>
         <location line="+3"/>
         <source>Online</source>
         <translation>Im Internet</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>&amp;News</source>
+        <translation>&amp;Neuigkeiten</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Release Notes</source>
+        <translation>Versionshinweise</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Community News</source>
+        <translation>Neuigkeiten der Gemeinschaft</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -1073,7 +1172,7 @@ zu: </translation>
         <translation>Verzeichnis suchen</translation>
     </message>
     <message>
-        <location line="-412"/>
+        <location line="-445"/>
         <source>Load workspace</source>
         <translation>Arbeitsumgebung laden</translation>
     </message>
@@ -1108,7 +1207,7 @@ zu: </translation>
         <translation>Dokumentation anzeigen</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <source>Command Window</source>
         <translation>Befehlsfenster</translation>
     </message>
@@ -1129,7 +1228,7 @@ zu: </translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+120"/>
+        <location line="+132"/>
         <source>Documentation</source>
         <translation>Dokumentation</translation>
     </message>
@@ -1145,20 +1244,28 @@ zu: </translation>
     </message>
 </context>
 <context>
+    <name>news_dock_widget</name>
+    <message>
+        <location filename="../src/news-dock-widget.cc" line="+44"/>
+        <source>Community News</source>
+        <translation>Neuigkeiten der Gemeinschaft</translation>
+    </message>
+</context>
+<context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+52"/>
-        <location line="+129"/>
+        <location filename="../src/octave-dock-widget.cc" line="+56"/>
+        <location line="+159"/>
         <source>Undock widget</source>
         <translation>Fenster lösen</translation>
     </message>
     <message>
-        <location line="-119"/>
+        <location line="-149"/>
         <source>Hide widget</source>
         <translation>Fenster verbergen</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+104"/>
         <source>Dock widget</source>
         <translation>Fenster andocken</translation>
     </message>
@@ -1166,9 +1273,24 @@ zu: </translation>
 <context>
     <name>octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+85"/>
-        <source>help</source>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+127"/>
+        <source>Help on</source>
         <translation>Hilfe zu</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Documentation on</source>
+        <translation>Dokumentation zu</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Edit</source>
+        <translation>Bearbeite</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Run Selection</source>
+        <translation>Markierter Quellcode au&amp;sführen</translation>
     </message>
 </context>
 <context>
@@ -1307,6 +1429,11 @@ zu: </translation>
         <translation>Editor Dateien der letzten Sitzung wiederherstellen</translation>
     </message>
     <message>
+        <location line="+13"/>
+        <source>Create non existing files without prompting</source>
+        <translation>Nicht existente Dateien ohne Nachfrage erzeugen</translation>
+    </message>
+    <message>
         <location line="+47"/>
         <source>Use custom file editor</source>
         <translation>Externen Editor verwenden</translation>
@@ -1342,7 +1469,7 @@ zu: </translation>
         <translation>Schriftart</translation>
     </message>
     <message>
-        <location line="-744"/>
+        <location line="-757"/>
         <source>Show line numbers</source>
         <translation>Zeilennummern anzeigen</translation>
     </message>
@@ -1367,7 +1494,7 @@ zu: </translation>
         <translation>Grafische Icons</translation>
     </message>
     <message>
-        <location line="+620"/>
+        <location line="+633"/>
         <source>emacs</source>
         <translation>emacs</translation>
     </message>
@@ -1457,7 +1584,7 @@ zu: </translation>
         <translation>HTTP Proxy</translation>
     </message>
     <message>
-        <location line="-1107"/>
+        <location line="-1120"/>
         <source>Icon set for dock widgets</source>
         <translation>Icons der Unterfenster</translation>
     </message>
@@ -1472,7 +1599,7 @@ zu: </translation>
         <translation>Icongröße</translation>
     </message>
     <message>
-        <location line="+1098"/>
+        <location line="+1111"/>
         <source>Socks5Proxy</source>
         <translation>Socks5Proxy</translation>
     </message>
@@ -1497,14 +1624,14 @@ zu: </translation>
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+69"/>
+        <location filename="../src/settings-dialog.cc" line="+70"/>
         <location line="+4"/>
-        <location line="+334"/>
+        <location line="+346"/>
         <source>System setting</source>
         <translation>Systemeinstellung</translation>
     </message>
     <message>
-        <location line="-268"/>
+        <location line="-279"/>
         <source>IBeam Cursor</source>
         <translation>IBeam-Cursor</translation>
     </message>
@@ -1519,7 +1646,7 @@ zu: </translation>
         <translation>Unterstrichener Cursor</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+140"/>
         <source>Difference to the default size</source>
         <translation>Differenz zur Standardgröße</translation>
     </message>
@@ -1555,7 +1682,7 @@ zu: </translation>
 <context>
     <name>webinfo</name>
     <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+80"/>
+        <location filename="../src/qtinfo/webinfo.cc" line="+79"/>
         <source>Type here and press &apos;Return&apos; to search</source>
         <translation>Suchbegriff eingeben und mit &apos;Enter&apos; die Suche starten</translation>
     </message>
@@ -1568,44 +1695,54 @@ zu: </translation>
 <context>
     <name>welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.ui" line="+29"/>
+        <location filename="../src/welcome-wizard.cc" line="+40"/>
         <source>Welcome to GNU Octave</source>
         <translation>Willkommen zu GNU Octave</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI. </source>
-        <translation>Die grafische Nutzerschnittstelle von Octave wird offenbar das erste Mal gestartet. Ein Klick auf &apos;Beenden&apos; erstellt eine Standard-Konfigurationsdatei und startet Octave GUI.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>The configuration file is stored in __%1__. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation>Die Konfigurationsdatei wid in __%1__ gespeichert. Wenn diese Datei existiert, erscheint dieser Dialog beim nächsten Start von Octave nicht mehr.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;For more information about Octave,&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;visit &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt;
-&lt;li&gt; get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document, or&lt;/li&gt;
-&lt;li&gt;open the documentation browser of Octave GUI with the help menu.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Weitere Informationsquellen zu Octave:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Homepage &lt;a href=&quot;http://octave.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://octave.org&lt;/span&gt;&lt;/a&gt;,&lt;/li&gt;
-&lt;li&gt; Online-Dokumentation als &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;html&lt;/span&gt;&lt;/a&gt;- oder &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-Dokument&lt;/li&gt;
-&lt;li&gt;Dokumentations-Browser von Octave GUI im Hilfe-Menü&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="-27"/>
+        <location line="+14"/>
         <source>Welcome to Octave!</source>
         <translation>Willkommen zu Octave!</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+5"/>
+        <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI.</source>
+        <translation>Die grafische Nutzerschnittstelle von Octave wird offenbar das erste Mal gestartet. Ein Klick auf &apos;Beenden&apos; erstellt eine Standard-Konfigurationsdatei und startet Octave GUI.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>The configuration file is stored in %1. If that file exists, you will not see this dialog when Octave starts again.</source>
+        <translation>Die Konfigurationsdatei wird in %1 gespeichert. Wenn diese Datei existiert, erscheint dieser Dialog beim nächsten Start von Octave nicht mehr.</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;For more information about Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document&lt;/li&gt;
+&lt;li&gt;Open the documentation browser of Octave GUI with the help menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Für mehr Informationen über Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Besuchen Sie &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Holen Sie sich die Dokumentation online als &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt; oder &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-Dokument&lt;/li&gt;
+&lt;li&gt;Öffnen Sie den Dokumentations-Browser von Octave GUI im Hilfe-Menü&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+20"/>
         <source>Finish</source>
         <translation>Beenden</translation>
     </message>

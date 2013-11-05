@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (oct_sparse_h)
-#define oct_sparse_h 1
+#if !defined (octave_oct_sparse_h)
+#define octave_oct_sparse_h 1
 
 #if defined (HAVE_SUITESPARSE_AMD_H)
 #include <suitesparse/amd.h>

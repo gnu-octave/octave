@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-locbuf.h"
 
-// FIXME -- Maybe we should querying for available physical memory?
+// FIXME: Maybe we should querying for available physical memory?
 
 #ifndef OCTAVE_LOCBUF_CHUNKSIZE_MB
 #define OCTAVE_LOCBUF_CHUNKSIZE_MB 32
@@ -112,8 +112,8 @@ octave_chunk_buffer::~octave_chunk_buffer (void)
           chunk = cnk;
           top = dat;
 
-          // FIXME -- the following calcuation of remaining data will
-          // only work if each chunk has the same chunk_size.
+          // FIXME: the following calcuation of remaining data will
+          //        only work if each chunk has the same chunk_size.
 
           left = chunk_size - (dat - cnk);
         }

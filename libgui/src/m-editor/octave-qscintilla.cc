@@ -34,14 +34,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-tab.h"
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
-    : QsciScintilla (p)
+  : QsciScintilla (p)
 { }
 
 octave_qscintilla::~octave_qscintilla ()
 { }
 
 void
-octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos)
+octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos,
+                                              QPoint *local_pos)
 {
   long position = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
   long point_x  = SendScintilla
@@ -99,16 +100,18 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
   QPoint global_pos, local_pos;
 
   if (e->reason () == QContextMenuEvent::Mouse)
-    { // context menu by mouse
+    {
+      // context menu by mouse
       global_pos = e->globalPos ();            // global mouse position
       local_pos  = e->pos ();                  // local mouse position
     }
   else
-    { // context menu by keyboard or other: get point of text cursor
+    {
+      // context menu by keyboard or other: get point of text cursor
       get_global_textcursor_pos (&global_pos, &local_pos);
       QRect editor_rect = geometry ();      // editor rect mapped to global
       editor_rect.moveTopLeft
-              (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
+      (parentWidget ()->mapToGlobal (editor_rect.topLeft ()));
       if (!editor_rect.contains (global_pos))  // is cursor outside editor?
         global_pos = editor_rect.topLeft ();   // yes, take top left corner
     }
@@ -125,11 +128,12 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
       if (!_word_at_cursor.isEmpty ())
         {
           context_menu->addAction (tr ("Help on") + " " + _word_at_cursor,
-                                  this, SLOT (contextmenu_help (bool)));
-          context_menu->addAction (tr ("Documentation on") + " " + _word_at_cursor,
-                                  this, SLOT (contextmenu_doc (bool)));
+                                   this, SLOT (contextmenu_help (bool)));
+          context_menu->addAction (tr ("Documentation on")
+                                   + " " + _word_at_cursor,
+                                   this, SLOT (contextmenu_doc (bool)));
           context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
-                                  this, SLOT (contextmenu_edit (bool)));
+                                   this, SLOT (contextmenu_edit (bool)));
         }
       context_menu->addSeparator ();   // separator before custom entries
       if (hasSelectedText ())
@@ -176,7 +180,8 @@ octave_qscintilla::contextmenu_edit (bool)
 void
 octave_qscintilla::contextmenu_run (bool)
 {
-  QStringList commands = selectedText ().split (QRegExp("[\r\n]"),QString::SkipEmptyParts);
+  QStringList commands = selectedText ().split (QRegExp("[\r\n]"),
+                                                QString::SkipEmptyParts);
   for (int i = 0; i < commands.size (); i++ )
     emit execute_command_in_terminal_signal (commands.at (i));
 }

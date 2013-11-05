@@ -166,7 +166,8 @@ private:
 
         vm_args.nOptions = java_opts.size ();
         vm_args.options = new JavaVMOption [vm_args.nOptions];
-        for (std::list<std::string>::const_iterator it = java_opts.begin (); it != java_opts.end (); ++it)
+        for (std::list<std::string>::const_iterator it = java_opts.begin ();
+             it != java_opts.end (); ++it)
           {
             if (Vdebug_java)
               std::cout << *it << std::endl;
@@ -197,7 +198,8 @@ read_registry_string (const std::string& key, const std::string& value)
       if (! RegQueryValueEx (hkey, value.c_str (), 0, 0, 0, &len))
         {
           retval.resize (len);
-          if (RegQueryValueEx (hkey, value.c_str (), 0, 0, (LPBYTE)&retval[0], &len))
+          if (RegQueryValueEx (hkey, value.c_str (), 0, 0,
+                               (LPBYTE)&retval[0], &len))
             retval = "";
           else if (retval[len-1] == '\0')
             retval.resize (--len);
@@ -245,7 +247,8 @@ set_dll_directory (const std::string& dir = "")
   if (! dllfcn && first)
     {
       HINSTANCE hKernel32 = GetModuleHandle ("kernel32");
-      dllfcn = reinterpret_cast<dllfcn_t> (GetProcAddress (hKernel32, "SetDllDirectoryA"));
+      dllfcn = reinterpret_cast<dllfcn_t> (GetProcAddress (hKernel32,
+                                           "SetDllDirectoryA"));
       first = false;
     }
 
@@ -508,8 +511,10 @@ initialize_jvm (void)
 
 #endif
 
-  JNI_CreateJavaVM_t create_vm = reinterpret_cast<JNI_CreateJavaVM_t> (lib.search ("JNI_CreateJavaVM"));
-  JNI_GetCreatedJavaVMs_t get_vm = reinterpret_cast<JNI_GetCreatedJavaVMs_t> (lib.search ("JNI_GetCreatedJavaVMs"));
+  JNI_CreateJavaVM_t create_vm =
+    reinterpret_cast<JNI_CreateJavaVM_t> (lib.search ("JNI_CreateJavaVM"));
+  JNI_GetCreatedJavaVMs_t get_vm =
+    reinterpret_cast<JNI_GetCreatedJavaVMs_t> (lib.search ("JNI_GetCreatedJavaVMs"));
 
   if (!create_vm)
     throw std::string ("unable to find JNI_CreateJavaVM in ") + jvm_lib_path;
@@ -540,7 +545,8 @@ initialize_jvm (void)
           vm_args.version = JNI_VERSION_1_2;
           vm_args.name = const_cast<char *> ("octave");
           vm_args.group = NULL;
-          if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env), &vm_args) < 0)
+          if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env),
+                                        &vm_args) < 0)
             throw std::string ("JVM internal error, unable to attach octave to existing JVM");
           break;
 
@@ -635,7 +641,8 @@ jstring_to_string (JNIEnv* jni_env, jobject obj)
       if (cls)
         {
           if (jni_env->IsInstanceOf (obj, cls))
-            retval = jstring_to_string (jni_env, reinterpret_cast<jstring> (obj));
+            retval = jstring_to_string (jni_env,
+                                        reinterpret_cast<jstring> (obj));
         }
     }
 
@@ -671,8 +678,10 @@ check_exception (JNIEnv* jni_env)
       jni_env->ExceptionClear ();
 
       jclass_ref jcls (jni_env, jni_env->GetObjectClass (ex));
-      jmethodID mID = jni_env->GetMethodID (jcls, "toString", "()Ljava/lang/String;");
-      jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->CallObjectMethod (ex, mID)));
+      jmethodID mID = jni_env->GetMethodID (jcls, "toString",
+                                            "()Ljava/lang/String;");
+      jstring_ref js (jni_env,
+                      reinterpret_cast<jstring> (jni_env->CallObjectMethod (ex, mID)));
       std::string msg = jstring_to_string (jni_env, js);
 
       error ("[java] %s", msg.c_str ());
@@ -699,7 +708,8 @@ find_octave_class (JNIEnv *jni_env, const char *name)
         {
           if (class_loader.empty ())
             {
-              jclass_ref syscls (jni_env, jni_env->FindClass ("java/lang/System"));
+              jclass_ref syscls (jni_env,
+                                 jni_env->FindClass ("java/lang/System"));
               jmethodID mID = jni_env->GetStaticMethodID (syscls, "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
               jstring_ref js (jni_env, jni_env->NewStringUTF ("octave.class.loader"));
               js = reinterpret_cast<jstring> (jni_env->CallStaticObjectMethod (syscls, mID, jstring (js)));
@@ -1148,7 +1158,8 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
 
                   for (int r = 0; r < rows; r++)
                     {
-                      jdoubleArray_ref row (jni_env, reinterpret_cast<jdoubleArray> (jni_env->GetObjectArrayElement (jarr, r)));
+                      jdoubleArray_ref row (jni_env,
+                                            reinterpret_cast<jdoubleArray> (jni_env->GetObjectArrayElement (jarr, r)));
 
                       if (m.length () == 0)
                         {
@@ -1176,7 +1187,8 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
 
               for (int i = 0; i < len; i++)
                 {
-                  jstring_ref js (jni_env, reinterpret_cast<jstring> (jni_env->GetObjectArrayElement (jarr, i)));
+                  jstring_ref js (jni_env,
+                                  reinterpret_cast<jstring> (jni_env->GetObjectArrayElement (jarr, i)));
                   m(i) = jstring_to_string (jni_env, js);
                 }
 
@@ -1286,16 +1298,19 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
         {
           NDArray m = val.array_value ();
           jdoubleArray_ref dv (jni_env, jni_env->NewDoubleArray (m.length ()));
-          jni_env->SetDoubleArrayRegion (jdoubleArray (dv), 0, m.length (), m.fortran_vec ());
+          jni_env->SetDoubleArrayRegion (jdoubleArray (dv), 0, m.length (),
+                                         m.fortran_vec ());
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([D[I)V");
-          jobj = jni_env->NewObject (jclass (mcls), mID, jdoubleArray (dv), jintArray (iv));
+          jobj = jni_env->NewObject (jclass (mcls), mID, jdoubleArray (dv),
+                                     jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
         }
       else if (val.is_int8_type ())
         {
           int8NDArray m = val.int8_array_value ();
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.length ()));
-          jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.length (), reinterpret_cast <jbyte *> (m.fortran_vec ()));
+          jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.length (),
+                                       reinterpret_cast <jbyte *> (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
           jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
@@ -1304,7 +1319,8 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
         {
           uint8NDArray m = val.uint8_array_value ();
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.length ()));
-          jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.length (), reinterpret_cast<jbyte *> (m.fortran_vec ()));
+          jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.length (),
+                                       reinterpret_cast<jbyte *> (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
           jobj = jni_env->NewObject (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
@@ -1313,7 +1329,8 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
         {
           int32NDArray m = val.int32_array_value ();
           jintArray_ref v (jni_env, jni_env->NewIntArray (m.length ()));
-          jni_env->SetIntArrayRegion (jintArray (v), 0, m.length (), reinterpret_cast<jint *> (m.fortran_vec ()));
+          jni_env->SetIntArrayRegion (jintArray (v), 0, m.length (),
+                                      reinterpret_cast<jint *> (m.fortran_vec ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([I[I)V");
           jobj = jni_env->NewObject (jclass (mcls), mID, jintArray (v), jintArray (iv));
           jcls = jni_env->GetObjectClass (jobj);
@@ -1331,7 +1348,8 @@ unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj,
       jobjectArray array = jni_env->NewObjectArray (cellStr.length (), scls, 0);
       for (int i = 0; i < cellStr.length (); i++)
         {
-          jstring_ref jstr (jni_env, jni_env->NewStringUTF (cellStr(i).string_value().c_str ()));
+          jstring_ref jstr (jni_env,
+                            jni_env->NewStringUTF (cellStr(i).string_value().c_str ()));
           jni_env->SetObjectArrayElement (array, i, jstr);
         }
       jobj = array;
@@ -1560,7 +1578,7 @@ void
 octave_java::register_type (void)
 {
   t_id = octave_value_typeinfo::register_type
-    (octave_java::t_name, "<unknown>", octave_value (new octave_java ()));
+         (octave_java::t_name, "<unknown>", octave_value (new octave_java ()));
 }
 
 dim_vector
@@ -1645,76 +1663,76 @@ octave_java::subsasgn (const std::string& type,
 
   switch (type[0])
     {
-      case '.':
-        if (type.length () == 1)
-          {
-            // field assignment
-            octave_value_list ovl;
-            count++;
-            ovl(0) = octave_value (this);
-            ovl(1) = (idx.front ())(0);
-            ovl(2) = rhs;
-            feval ("__java_set__", ovl, 0);
-            if (! error_state)
-              {
-                count++;
-                retval = octave_value (this);
-              }
-          }
-        else if (type.length () > 2 && type[1] == '(')
-          {
-            std::list<octave_value_list> new_idx;
-            std::list<octave_value_list>::const_iterator it = idx.begin ();
-            new_idx.push_back (*it++);
-            new_idx.push_back (*it++);
-            octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);
-            if (! error_state)
-              {
-                std::list<octave_value_list> next_idx (idx);
-                next_idx.erase (next_idx.begin ());
-                next_idx.erase (next_idx.begin ());
-                u(0).subsasgn (type.substr (2), next_idx, rhs);
-                if (! error_state)
-                  {
-                    count++;
-                    retval = octave_value (this);
-                  }
-              }
-          }
-        else if (type[1] == '.')
-          {
-            octave_value_list u = subsref (type.substr (0, 1), idx, 1);
-            if (! error_state)
-              {
-                std::list<octave_value_list> next_idx (idx);
-                next_idx.erase (next_idx.begin ());
-                u(0).subsasgn (type.substr (1), next_idx, rhs);
-                if (! error_state)
-                  {
-                    count++;
-                    retval = octave_value (this);
-                  }
-              }
-          }
-        else
-          error ("invalid indexing/assignment on Java object");
-        break;
+    case '.':
+      if (type.length () == 1)
+        {
+          // field assignment
+          octave_value_list ovl;
+          count++;
+          ovl(0) = octave_value (this);
+          ovl(1) = (idx.front ())(0);
+          ovl(2) = rhs;
+          feval ("__java_set__", ovl, 0);
+          if (! error_state)
+            {
+              count++;
+              retval = octave_value (this);
+            }
+        }
+      else if (type.length () > 2 && type[1] == '(')
+        {
+          std::list<octave_value_list> new_idx;
+          std::list<octave_value_list>::const_iterator it = idx.begin ();
+          new_idx.push_back (*it++);
+          new_idx.push_back (*it++);
+          octave_value_list u = subsref (type.substr (0, 2), new_idx, 1);
+          if (! error_state)
+            {
+              std::list<octave_value_list> next_idx (idx);
+              next_idx.erase (next_idx.begin ());
+              next_idx.erase (next_idx.begin ());
+              u(0).subsasgn (type.substr (2), next_idx, rhs);
+              if (! error_state)
+                {
+                  count++;
+                  retval = octave_value (this);
+                }
+            }
+        }
+      else if (type[1] == '.')
+        {
+          octave_value_list u = subsref (type.substr (0, 1), idx, 1);
+          if (! error_state)
+            {
+              std::list<octave_value_list> next_idx (idx);
+              next_idx.erase (next_idx.begin ());
+              u(0).subsasgn (type.substr (1), next_idx, rhs);
+              if (! error_state)
+                {
+                  count++;
+                  retval = octave_value (this);
+                }
+            }
+        }
+      else
+        error ("invalid indexing/assignment on Java object");
+      break;
 
-      case '(':
-        if (current_env)
-          {
-            set_array_elements (current_env, to_java (), idx.front (), rhs);
-            if (! error_state)
-              {
-                count++;
-                retval = octave_value (this);
-              }
-          }
-        break;
+    case '(':
+      if (current_env)
+        {
+          set_array_elements (current_env, to_java (), idx.front (), rhs);
+          if (! error_state)
+            {
+              count++;
+              retval = octave_value (this);
+            }
+        }
+      break;
 
-      default:
-        error ("Java object cannot be indexed with %c", type[0]);
-        break;
+    default:
+      error ("Java object cannot be indexed with %c", type[0]);
+      break;
     }
 
   return retval;
@@ -1757,7 +1775,7 @@ octave_java::print_raw (std::ostream& os, bool) const
 
 octave_value
 octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
-                             const octave_value_list& args)
+                            const octave_value_list& args)
 {
   octave_value retval;
 
@@ -1786,9 +1804,9 @@ octave_java::do_javaMethod (JNIEnv* jni_env, const std::string& name,
 
 octave_value
 octave_java:: do_javaMethod (JNIEnv* jni_env,
-                              const std::string& class_name,
-                              const std::string& name,
-                              const octave_value_list& args)
+                             const std::string& class_name,
+                             const std::string& name,
+                             const octave_value_list& args)
 {
   octave_value retval;
 
@@ -1818,7 +1836,7 @@ octave_java:: do_javaMethod (JNIEnv* jni_env,
 
 octave_value
 octave_java::do_javaObject (JNIEnv* jni_env, const std::string& name,
-                             const octave_value_list& args)
+                            const octave_value_list& args)
 {
   octave_value retval;
 
@@ -1959,7 +1977,7 @@ octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name,
 // documentation strings are always available, even when functions are not.
 
 DEFUN (__java_init__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} java_init ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
 Function will directly call initialize_java() to create an instance of a JVM.\n\
@@ -1984,7 +2002,7 @@ Function will directly call initialize_java() to create an instance of a JVM.\n\
 }
 
 DEFUN (__java_exit__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} java_exit ()\n\
 Internal function used @strong{only} when debugging Java interface.\n\
 Function will directly call terminate_jvm() to destroy the current JVM\n\
@@ -2001,7 +2019,7 @@ instance.\n\
 }
 
 DEFUN (javaObject, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{jobj} =} javaObject (@var{classname})\n\
 @deftypefnx {Built-in Function} {@var{jobj} =} javaObject (@var{classname}, @var{arg1}, @dots{})\n\
 Create a Java object of class @var{classsname}, by calling the class\n\
@@ -2062,7 +2080,7 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 */
 
 DEFUN (javaMethod, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj})\n\
 @deftypefnx {Built-in Function} {@var{ret} =} javaMethod (@var{methodname}, @var{obj}, @var{arg1}, @dots{})\n\
 Invoke the method @var{methodname} on the Java object @var{obj} with the\n\
@@ -2137,7 +2155,7 @@ equivalent\n\
 */
 
 DEFUN (__java_get__, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} __java_get__ (@var{obj}, @var{name})\n\
 Get the value of the field @var{name} of the Java object @var{obj}.  For\n\
 static fields, @var{obj} can be a string representing the fully qualified\n\
@@ -2199,7 +2217,7 @@ equivalent\n\
 }
 
 DEFUN (__java_set__, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{obj} =} __java_set__ (@var{obj}, @var{name}, @var{val})\n\
 Set the value of the field @var{name} of the Java object @var{obj} to\n\
 @var{val}.  For static fields, @var{obj} can be a string representing the\n\
@@ -2261,7 +2279,7 @@ equivalent\n\
 }
 
 DEFUN (java2mat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} java2mat (@var{javaobj})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2297,7 +2315,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (java_matrix_autoconversion, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} java_matrix_autoconversion ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} java_matrix_autoconversion (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} java_matrix_autoconversion (@var{new_val}, \"local\")\n\
@@ -2319,7 +2337,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (java_unsigned_autoconversion, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} java_unsigned_autoconversion ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} java_unsigned_autoconversion (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} java_unsigned_autoconversion (@var{new_val}, \"local\")\n\
@@ -2343,7 +2361,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (debug_java, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_java ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_java (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} debug_java (@var{new_val}, \"local\")\n\
@@ -2366,9 +2384,9 @@ The original variable value is restored when exiting the function.\n\
 }
 
 // Outside of #ifdef HAVE_JAVA because it is desirable to be able to
-// test for the presence of a Java object without having Java installed. 
+// test for the presence of a Java object without having Java installed.
 DEFUN (isjava, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isjava (@var{x})\n\
 Return true if @var{x} is a Java object.\n\
 @seealso{class, typeinfo, isa, javaObject}\n\

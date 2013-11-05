@@ -46,13 +46,13 @@
 ## @item @qcode{"displayrange"}
 ## @var{value1} is the display range as described above.
 ## 
-## @item "xdata"
+## @item @qcode{"xdata"}
 ## If @var{value1} is a two element vector, it must contain horizontal axis
 ## limits in the form [xmin xmax]; Otherwise @var{value1} must be a
 ## vector and only the first and last elements will be used for xmin and
 ## xmax respectively.
 ## 
-## @item "ydata"
+## @item @qcode{"ydata"}
 ## If @var{value1} is a two element vector, it must contain vertical axis
 ## limits in the form [ymin ymax]; Otherwise @var{value1} must be a
 ## vector and only the first and last elements will be used for ymin and

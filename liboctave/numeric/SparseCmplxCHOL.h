@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_complex_CHOL_h)
-#define octave_sparse_complex_CHOL_h 1
+#if !defined (octave_SparseCmplxCHOL_h)
+#define octave_SparseCmplxCHOL_h 1
 
 #include "sparse-base-chol.h"
 #include "dSparse.h"
@@ -30,66 +30,78 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-SparseComplexCHOL :
-  public sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix>
+SparseComplexCHOL
+  : public sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix>
 {
 public:
 
-  SparseComplexCHOL (void) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> () { }
+  SparseComplexCHOL (void)
+    : sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> () { }
 
   SparseComplexCHOL (const SparseComplexMatrix& a, bool natural = true,
-                     bool force = false) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a, natural, force) { }
+                     bool force = false)
+    : sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>
+       (a, natural, force) { }
 
   SparseComplexCHOL (const SparseComplexMatrix& a, octave_idx_type& info,
-                     bool natural = true, bool force = false) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a, info, natural, force) { }
+                     bool natural = true, bool force = false)
+    : sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>
+       (a, info, natural, force) { }
 
-  SparseComplexCHOL (const SparseComplexCHOL& a) :
-    sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a) { }
+  SparseComplexCHOL (const SparseComplexCHOL& a)
+    : sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix> (a) { }
 
   ~SparseComplexCHOL (void) { }
 
   SparseComplexCHOL& operator = (const SparseComplexCHOL& a)
-    {
-      if (this != &a)
-        sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix> ::
-          operator = (a);
+  {
+    if (this != &a)
+      sparse_base_chol <SparseComplexMatrix, Complex, SparseMatrix> ::
+      operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   SparseComplexMatrix chol_matrix (void) const { return R (); }
 
   SparseComplexMatrix L (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: L (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>:: L ();
+  }
 
   SparseComplexMatrix R (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: R (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>:: R ();
+  }
 
   octave_idx_type P (void) const
-   { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: P (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>:: P ();
+  }
 
   ColumnVector perm (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: perm (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex,
+                            SparseMatrix>:: perm ();
+  }
 
   SparseMatrix Q (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: Q (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex, SparseMatrix>:: Q ();
+  }
 
   double rcond (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: rcond (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex,
+                            SparseMatrix>:: rcond ();
+  }
 
   // Compute the inverse of a matrix using the Cholesky factorization.
   SparseComplexMatrix inverse (void) const
-    { return sparse_base_chol<SparseComplexMatrix, Complex,
-        SparseMatrix>:: inverse (); }
+  {
+    return sparse_base_chol<SparseComplexMatrix, Complex,
+                            SparseMatrix>:: inverse ();
+  }
 };
 
 SparseComplexMatrix OCTAVE_API chol2inv (const SparseComplexMatrix& r);

@@ -305,11 +305,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
       break;
     }
 
- done:
+done:
 
   return retval;
 
- gen_matrix:
+gen_matrix:
 
   dims.chop_trailing_singletons ();
 
@@ -364,7 +364,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 }
 
 DEFUN (rand, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rand (@var{n})\n\
 @deftypefnx {Built-in Function} {} rand (@var{n}, @var{m}, @dots{})\n\
 @deftypefnx {Built-in Function} {} rand ([@var{n} @var{m} @dots{}])\n\
@@ -463,7 +463,7 @@ classes.\n\
   return retval;
 }
 
-// FIXME -- The old generator (selected when "seed" is set) will not
+// FIXME: The old generator (selected when "seed" is set) will not
 // work properly if compiled to use 64-bit integers.
 
 /*
@@ -551,7 +551,7 @@ classes.\n\
 static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN (randn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randn (@var{n})\n\
 @deftypefnx {Built-in Function} {} randn (@var{n}, @var{m}, @dots{})\n\
 @deftypefnx {Built-in Function} {} randn ([@var{n} @var{m} @dots{}])\n\
@@ -623,7 +623,7 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (rande, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rande (@var{n})\n\
 @deftypefnx {Built-in Function} {} rande (@var{n}, @var{m}, @dots{})\n\
 @deftypefnx {Built-in Function} {} rande ([@var{n} @var{m} @dots{}])\n\
@@ -696,7 +696,7 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (randg, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randg (@var{n})\n\
 @deftypefnx {Built-in Function} {} randg (@var{n}, @var{m}, @dots{})\n\
 @deftypefnx {Built-in Function} {} randg ([@var{n} @var{m} @dots{}])\n\
@@ -968,7 +968,7 @@ classes.\n\
 */
 
 DEFUN (randp, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randp (@var{l}, @var{n})\n\
 @deftypefnx {Built-in Function} {} randp (@var{l}, @var{n}, @var{m}, @dots{})\n\
 @deftypefnx {Built-in Function} {} randp (@var{l}, [@var{n} @var{m} @dots{}])\n\
@@ -1116,7 +1116,7 @@ classes.\n\
 */
 
 DEFUN (randperm, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randperm (@var{n})\n\
 @deftypefnx {Built-in Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
@@ -1171,7 +1171,7 @@ using std::unordered_map;
             {
               idx = Array<octave_idx_type> (dim_vector (1, idx_len));
             }
-          catch(std::bad_alloc)
+          catch (std::bad_alloc)
             {
               // Looks like n is too big and short_shuffle is false.
               // Let's try again, but this time with the alternative.
@@ -1194,7 +1194,7 @@ using std::unordered_map;
               for (octave_idx_type i = 0; i < m; i++)
                 {
                   octave_idx_type k = i +
-                    gnulib::floor (rvec[i] * (n - i));
+                                      gnulib::floor (rvec[i] * (n - i));
 
                   //For shuffling first m entries, no need to use extra
                   //storage
@@ -1218,7 +1218,7 @@ using std::unordered_map;
               for (octave_idx_type i = 0; i < m; i++)
                 {
                   octave_idx_type k = i +
-                    gnulib::floor (rvec[i] * (n - i));
+                                      gnulib::floor (rvec[i] * (n - i));
                   std::swap (ivec[i], ivec[k]);
                 }
             }
@@ -1245,7 +1245,7 @@ using std::unordered_map;
 %!assert (length (randperm (20,10)), 10)
 
 ## Test biggish N (bug #39378)
-%!assert (length (randperm(30000^2, 100000)), 100000);
+%!assert (length (randperm (30000^2, 100000)), 100000)
 
 %!test
 %! rand ("seed", 0);

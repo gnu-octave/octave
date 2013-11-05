@@ -47,7 +47,7 @@ protected:
 
 public:
 
-  MArray (void) : Array<T> () {}
+  MArray (void) : Array<T> () { }
 
   explicit MArray (octave_idx_type n) GCC_ATTR_DEPRECATED
     : Array<T> (dim_vector (n, 1)) { }
@@ -69,28 +69,28 @@ public:
   ~MArray (void) { }
 
   MArray<T>& operator = (const MArray<T>& a)
-    {
-      Array<T>::operator = (a);
-      return *this;
-    }
+  {
+    Array<T>::operator = (a);
+    return *this;
+  }
 
   MArray<T> reshape (const dim_vector& new_dims) const
-    { return Array<T>::reshape (new_dims); }
+  { return Array<T>::reshape (new_dims); }
 
   MArray<T> permute (const Array<octave_idx_type>& vec,
-                      bool inv = false) const
-    { return Array<T>::permute (vec, inv); }
+                     bool inv = false) const
+  { return Array<T>::permute (vec, inv); }
 
   MArray<T> ipermute (const Array<octave_idx_type>& vec) const
-    { return Array<T>::ipermute (vec); }
+  { return Array<T>::ipermute (vec); }
 
   MArray squeeze (void) const { return Array<T>::squeeze (); }
 
   MArray<T> transpose (void) const
-    { return Array<T>::transpose (); }
+  { return Array<T>::transpose (); }
 
   MArray<T> hermitian (T (*fcn) (const T&) = 0) const
-    { return Array<T>::hermitian (fcn); }
+  { return Array<T>::hermitian (fcn); }
 
   // Performs indexed accumulative addition.
 

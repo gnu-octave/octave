@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 
 DEFUN (abs, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} abs (@var{z})\n\
 Compute the magnitude of @var{z}, defined as\n\
 @tex\n\
@@ -84,7 +84,7 @@ abs (3 + 4i)\n\
 */
 
 DEFUN (acos, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acos (@var{x})\n\
 Compute the inverse cosine in radians for each element of @var{x}.\n\
 @seealso{cos, acosd}\n\
@@ -119,7 +119,7 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 */
 
 DEFUN (acosh, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acosh (@var{x})\n\
 Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 @seealso{cosh}\n\
@@ -150,7 +150,7 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 */
 
 DEFUN (angle, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} angle (@var{z})\n\
 See arg.\n\
 @end deftypefn")
@@ -165,7 +165,7 @@ See arg.\n\
 }
 
 DEFUN (arg, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
 Compute the argument of @var{z}, defined as,\n\
@@ -220,7 +220,7 @@ arg (3 + 4i)\n\
 */
 
 DEFUN (asin, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asin (@var{x})\n\
 Compute the inverse sine in radians for each element of @var{x}.\n\
 @seealso{sin, asind}\n\
@@ -248,7 +248,7 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 */
 
 DEFUN (asinh, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asinh (@var{x})\n\
 Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 @seealso{sinh}\n\
@@ -279,7 +279,7 @@ Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 */
 
 DEFUN (atan, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan (@var{x})\n\
 Compute the inverse tangent in radians for each element of @var{x}.\n\
 @seealso{tan, atand}\n\
@@ -314,7 +314,7 @@ Compute the inverse tangent in radians for each element of @var{x}.\n\
 */
 
 DEFUN (atanh, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atanh (@var{x})\n\
 Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 @seealso{tanh}\n\
@@ -345,7 +345,7 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 */
 
 DEFUN (cbrt, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cbrt (@var{x})\n\
 Compute the real cube root of each element of @var{x}.\n\
 Unlike @code{@var{x}^(1/3)}, the result will be negative if @var{x} is\n\
@@ -377,7 +377,7 @@ negative.\n\
 */
 
 DEFUN (ceil, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\
 Return the smallest integer not less than @var{x}.  This is equivalent to\n\
 rounding towards positive infinity.  If @var{x} is\n\
@@ -419,7 +419,7 @@ ceil ([-2.7, 2.7])\n\
 */
 
 DEFUN (conj, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} conj (@var{z})\n\
 Return the complex conjugate of @var{z}, defined as\n\
 @tex\n\
@@ -458,7 +458,7 @@ $\\bar{z} = x - iy$.\n\
 */
 
 DEFUN (cos, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cos (@var{x})\n\
 Compute the cosine for each element of @var{x} in radians.\n\
 @seealso{acos, cosd, cosh}\n\
@@ -495,7 +495,7 @@ Compute the cosine for each element of @var{x} in radians.\n\
 */
 
 DEFUN (cosh, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cosh (@var{x})\n\
 Compute the hyperbolic cosine for each element of @var{x}.\n\
 @seealso{acosh, sinh, tanh}\n\
@@ -526,7 +526,7 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 */
 
 DEFUN (erf, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erf (@var{z})\n\
 Compute the error function,\n\
 @tex\n\
@@ -596,7 +596,7 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 */
 
 DEFUN (erfinv, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfinv (@var{x})\n\
 Compute the inverse error function, i.e., @var{y} such that\n\
 \n\
@@ -634,7 +634,7 @@ erf (@var{y}) == @var{x}\n\
 */
 
 DEFUN (erfcinv, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfcinv (@var{x})\n\
 Compute the inverse complementary error function, i.e., @var{y} such that\n\
 \n\
@@ -672,7 +672,7 @@ erfc (@var{y}) == @var{x}\n\
 */
 
 DEFUN (erfc, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
 Compute the complementary error function,\n\
 @tex\n\
@@ -703,7 +703,7 @@ $1 - {\\rm erf} (z)$.\n\
 */
 
 DEFUN (erfcx, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfcx (@var{z})\n\
 Compute the scaled complementary error function,\n\
 @tex\n\
@@ -746,7 +746,7 @@ exp (z^2) * erfc (z)\n\
 */
 
 DEFUN (erfi, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfi (@var{z})\n\
 Compute the imaginary error function,\n\
 @tex\n\
@@ -784,7 +784,7 @@ $$\n\
 */
 
 DEFUN (dawson, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} dawson (@var{z})\n\
 Compute the Dawson (scaled imaginary error) function,\n\
 @tex\n\
@@ -824,7 +824,7 @@ $$\n\
 */
 
 DEFUN (exp, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
 Compute\n\
 @tex\n\
@@ -861,7 +861,7 @@ exponential, see @ref{Linear Algebra}.\n\
 */
 
 DEFUN (expm1, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} expm1 (@var{x})\n\
 Compute\n\
 @tex\n\
@@ -894,7 +894,7 @@ accurately in the neighborhood of zero.\n\
 */
 
 DEFUN (isfinite, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} isfinite (@var{x})\n\
 @deftypefnx {Mapping Function} {} finite (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
@@ -933,7 +933,7 @@ finite ([13, Inf, NA, NaN])\n\
 */
 
 DEFUN (fix, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fix (@var{x})\n\
 Truncate fractional portion of @var{x} and return the integer portion.  This\n\
 is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
@@ -968,7 +968,7 @@ fix ([-2.7, 2.7])\n\
 */
 
 DEFUN (floor, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} floor (@var{x})\n\
 Return the largest integer not greater than @var{x}.  This is equivalent to\n\
 rounding towards negative infinity.  If @var{x} is\n\
@@ -1003,7 +1003,7 @@ floor ([-2.7, 2.7])\n\
 */
 
 DEFUN (gamma, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gamma (@var{z})\n\
 Compute the Gamma function,\n\
 @tex\n\
@@ -1067,7 +1067,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 */
 
 DEFUN (imag, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} imag (@var{z})\n\
 Return the imaginary part of @var{z} as a real number.\n\
 @seealso{real, conj}\n\
@@ -1098,7 +1098,7 @@ Return the imaginary part of @var{z} as a real number.\n\
 */
 
 DEFUNX ("isalnum", Fisalnum, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalnum (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 letters or digits and false where they are not.  This is equivalent to\n\
@@ -1129,7 +1129,7 @@ letters or digits and false where they are not.  This is equivalent to\n\
 */
 
 DEFUNX ("isalpha", Fisalpha, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalpha (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 letters and false where they are not.  This is equivalent to\n\
@@ -1159,7 +1159,7 @@ letters and false where they are not.  This is equivalent to\n\
 */
 
 DEFUNX ("isascii", Fisascii, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isascii (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 ASCII characters (in the range 0 to 127 decimal) and false where they are\n\
@@ -1186,7 +1186,7 @@ not.\n\
 */
 
 DEFUNX ("iscntrl", Fiscntrl, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} iscntrl (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 control characters and false where they are not.\n\
@@ -1215,7 +1215,7 @@ control characters and false where they are not.\n\
 */
 
 DEFUNX ("isdigit", Fisdigit, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isdigit (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 decimal digits (0-9) and false where they are not.\n\
@@ -1243,7 +1243,7 @@ decimal digits (0-9) and false where they are not.\n\
 */
 
 DEFUN (isinf, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 are infinite and false where they are not.\n\
@@ -1285,7 +1285,7 @@ isinf ([13, Inf, NA, NaN])\n\
 */
 
 DEFUNX ("isgraph", Fisgraph, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isgraph (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 printable characters (but not the space character) and false where they are\n\
@@ -1314,7 +1314,7 @@ not.\n\
 */
 
 DEFUNX ("islower", Fislower, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} islower (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 lowercase letters and false where they are not.\n\
@@ -1342,7 +1342,7 @@ lowercase letters and false where they are not.\n\
 */
 
 DEFUN (isna, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 NA (missing) values and false where they are not.\n\
@@ -1384,7 +1384,7 @@ isna ([13, Inf, NA, NaN])\n\
 */
 
 DEFUN (isnan, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 NaN values and false where they are not.\n\
@@ -1426,7 +1426,7 @@ isnan ([13, Inf, NA, NaN])\n\
 */
 
 DEFUNX ("isprint", Fisprint, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isprint (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 printable characters (including the space character) and false where they\n\
@@ -1455,7 +1455,7 @@ are not.\n\
 */
 
 DEFUNX ("ispunct", Fispunct, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ispunct (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 punctuation characters and false where they are not.\n\
@@ -1486,7 +1486,7 @@ punctuation characters and false where they are not.\n\
 */
 
 DEFUNX ("isspace", Fisspace, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isspace (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 whitespace characters (space, formfeed, newline, carriage return, tab, and\n\
@@ -1515,7 +1515,7 @@ vertical tab) and false where they are not.\n\
 */
 
 DEFUNX ("isupper", Fisupper, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isupper (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 uppercase letters and false where they are not.\n\
@@ -1543,7 +1543,7 @@ uppercase letters and false where they are not.\n\
 */
 
 DEFUNX ("isxdigit", Fisxdigit, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isxdigit (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
 hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
@@ -1573,7 +1573,7 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 */
 
 DEFUN (lgamma, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} lgamma (@var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
 Return the natural logarithm of the gamma function of @var{x}.\n\
@@ -1619,7 +1619,7 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 */
 
 DEFUN (log, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm,\n\
 @tex\n\
@@ -1654,7 +1654,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 */
 
 DEFUN (log10, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm of each element of @var{x}.\n\
 @seealso{log, log2, logspace, exp}\n\
@@ -1678,7 +1678,7 @@ Compute the base-10 logarithm of each element of @var{x}.\n\
 */
 
 DEFUN (log1p, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log1p (@var{x})\n\
 Compute\n\
 @tex\n\
@@ -1709,7 +1709,7 @@ accurately in the neighborhood of zero.\n\
 */
 
 DEFUN (real, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
 Return the real part of @var{z}.\n\
 @seealso{imag, conj}\n\
@@ -1740,7 +1740,7 @@ Return the real part of @var{z}.\n\
 */
 
 DEFUN (round, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 @code{round (real (@var{x})) + round (imag (@var{x})) * I}.  If there\n\
@@ -1786,7 +1786,7 @@ round ([-2.7, 2.7])\n\
 */
 
 DEFUN (roundb, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} roundb (@var{x})\n\
 Return the integer nearest to @var{x}.  If there are two nearest\n\
 integers, return the even one (banker's rounding).  If @var{x} is complex,\n\
@@ -1827,7 +1827,7 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 */
 
 DEFUN (sign, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sign (@var{x})\n\
 Compute the @dfn{signum} function, which is defined as\n\
 @tex\n\
@@ -1881,7 +1881,7 @@ whether zero is signed, use the @code{signbit} function.\n\
 */
 
 DEFUNX ("signbit", Fsignbit, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} signbit (@var{x})\n\
 Return logical true if the value of @var{x} has its sign bit set.\n\
 Otherwise return logical false.  This behavior is consistent with the other\n\
@@ -1895,9 +1895,11 @@ but @code{signbit (-0.0)} will return a nonzero value.\n\
 @end deftypefn")
 {
   octave_value retval;
-  if (args.length () == 1) {
-    retval = args(0).xsignbit ();
-    retval = (retval != 0); }
+  if (args.length () == 1)
+    {
+      retval = args(0).xsignbit ();
+      retval = (retval != 0);
+    }
   else
     print_usage ();
 
@@ -1920,7 +1922,7 @@ but @code{signbit (-0.0)} will return a nonzero value.\n\
 */
 
 DEFUN (sin, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
 Compute the sine for each element of @var{x} in radians.\n\
 @seealso{asin, sind, sinh}\n\
@@ -1955,7 +1957,7 @@ Compute the sine for each element of @var{x} in radians.\n\
 */
 
 DEFUN (sinh, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
 Compute the hyperbolic sine for each element of @var{x}.\n\
 @seealso{asinh, cosh, tanh}\n\
@@ -1986,7 +1988,7 @@ Compute the hyperbolic sine for each element of @var{x}.\n\
 */
 
 DEFUN (sqrt, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
 Compute the square root of each element of @var{x}.  If @var{x} is negative,\n\
 a complex result is returned.  To compute the matrix square root, see\n\
@@ -2019,7 +2021,7 @@ a complex result is returned.  To compute the matrix square root, see\n\
 */
 
 DEFUN (tan, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
 Compute the tangent for each element of @var{x} in radians.\n\
 @seealso{atan, tand, tanh}\n\
@@ -2054,7 +2056,7 @@ Compute the tangent for each element of @var{x} in radians.\n\
 */
 
 DEFUN (tanh, args, ,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tanh (@var{x})\n\
 Compute hyperbolic tangent for each element of @var{x}.\n\
 @seealso{atanh, sinh, cosh}\n\
@@ -2085,7 +2087,7 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 */
 
 DEFUNX ("toascii", Ftoascii, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} toascii (@var{s})\n\
 Return ASCII representation of @var{s} in a matrix.  For example:\n\
 \n\
@@ -2121,7 +2123,7 @@ toascii (\"ASCII\")\n\
 */
 
 DEFUNX ("tolower", Ftolower, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} tolower (@var{s})\n\
 @deftypefnx {Mapping Function} {} lower (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each uppercase\n\
@@ -2172,7 +2174,7 @@ DEFALIAS (lower, tolower);
 */
 
 DEFUNX ("toupper", Ftoupper, args, ,
-    "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} toupper (@var{s})\n\
 @deftypefnx {Mapping Function} {} upper (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each lowercase\n\

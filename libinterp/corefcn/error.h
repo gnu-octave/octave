@@ -37,7 +37,9 @@ extern OCTINTERP_API void reset_error_handler (void);
 
 extern OCTINTERP_API int warning_enabled (const std::string& id);
 
-extern OCTINTERP_API void vmessage (const char *name, const char *fmt, va_list args);
+extern OCTINTERP_API void
+vmessage (const char *name, const char *fmt, va_list args);
+
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
 extern OCTINTERP_API void vusage (const char *fmt, va_list args);
@@ -56,7 +58,8 @@ extern OCTINTERP_API void vparse_error (const char *fmt, va_list args);
 extern OCTINTERP_API void parse_error (const char *fmt, ...);
 
 extern OCTINTERP_API void
-vmessage_with_id (const char *id, const char *name, const char *fmt, va_list args);
+vmessage_with_id (const char *id, const char *name,
+                  const char *fmt, va_list args);
 
 extern OCTINTERP_API void
 message_with_id (const char *id, const char *name, const char *fmt, ...);

@@ -331,10 +331,10 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
       data = d;
 
       if (err)
-      {
-        delete [] data;
-        gripe_invalid_index ();
-      }
+        {
+          delete [] data;
+          gripe_invalid_index ();
+        }
     }
 }
 
@@ -443,7 +443,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
         for (octave_idx_type i = bnda.cidx(j); i < bnda.cidx(j+1); i++)
           if (bnda.data (i))
             d[k++] = j * nr + bnda.ridx (i);
- 
+
       data = d;
 
       ext = d[k-1] + 1;
@@ -496,7 +496,8 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
 
       if (uniq)
         {
-          octave_idx_type new_len = std::unique (new_data, new_data + len) - new_data;
+          octave_idx_type new_len = std::unique (new_data, new_data + len)
+                                    - new_data;
           new_rep->len = new_len;
           if (new_rep->orig_dims.length () == 2 && new_rep->orig_dims(0) == 1)
             new_rep->orig_dims = dim_vector (1, new_len);
@@ -1096,7 +1097,7 @@ idx_vector::copy_data (octave_idx_type *data) const
           if (mask[i])
             data[j++] = i;
       }
-    break;
+      break;
 
     default:
       assert (false);
@@ -1152,7 +1153,7 @@ idx_vector::is_permutation (octave_idx_type n) const
         {
           octave_idx_type k = xelem (i);
           if (left[k])
-              left[k] = false;
+            left[k] = false;
           else
             {
               retval = false;

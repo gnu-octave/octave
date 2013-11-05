@@ -55,18 +55,19 @@ template class octave_base_scalar<float>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_float_scalar);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_scalar, "float scalar", "single");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_scalar, "float scalar",
+                                     "single");
 
 octave_value
 octave_float_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
+  // FIXME: this doesn't solve the problem of
   //
   //   a = 1; a([1,1], [1,1], [1,1])
   //
   // and similar constructions.  Hmm...
 
-  // FIXME -- using this constructor avoids narrowing the
+  // FIXME: using this constructor avoids narrowing the
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
@@ -117,7 +118,7 @@ octave_float_scalar::convert_to_str_internal (bool, bool, char type) const
 
       if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
-          // FIXME -- is there something better we could do?
+          // FIXME: is there something better we could do?
 
           ival = 0;
 
@@ -168,7 +169,7 @@ octave_float_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_float_scalar::load_binary (std::istream& is, bool swap,
-                            oct_mach_info::float_format fmt)
+                                  oct_mach_info::float_format fmt)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -187,7 +188,7 @@ octave_float_scalar::load_binary (std::istream& is, bool swap,
 
 bool
 octave_float_scalar::save_hdf5 (hid_t loc_id, const char *name,
-                          bool /* save_as_floats */)
+                                bool /* save_as_floats */)
 {
   hsize_t dimens[3];
   hid_t space_hid = -1, data_hid = -1;
@@ -331,7 +332,8 @@ octave_float_scalar::map (unary_mapper_t umap) const
 }
 
 bool
-octave_float_scalar::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+octave_float_scalar::fast_elem_insert_self (void *where,
+                                            builtin_type_t btyp) const
 {
 
   // Support inline real->complex conversion.

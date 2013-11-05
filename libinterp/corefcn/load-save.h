@@ -34,18 +34,18 @@ class octave_value;
 // FIXME: maybe MAT5 and MAT7 should be options to MAT_BINARY.
 // Similarly, save_as_floats may be an option for LS_BINARY, LS_HDF5 etc.
 enum load_save_format_type
-  {
-    LS_ASCII,
-    LS_BINARY,
-    LS_MAT_ASCII,
-    LS_MAT_BINARY,
-    LS_MAT5_BINARY,
-    LS_MAT7_BINARY,
+{
+  LS_ASCII,
+  LS_BINARY,
+  LS_MAT_ASCII,
+  LS_MAT_BINARY,
+  LS_MAT5_BINARY,
+  LS_MAT7_BINARY,
 #ifdef HAVE_HDF5
-    LS_HDF5,
+  LS_HDF5,
 #endif /* HAVE_HDF5 */
-    LS_UNKNOWN
-  };
+  LS_UNKNOWN
+};
 
 enum load_save_format_options
 {
@@ -66,7 +66,7 @@ public:
                     load_save_format_options o = LS_NO_OPTION)
     : type (t), opts (o) { }
   operator int (void) const
-    { return type; }
+  { return type; }
   int type, opts;
 };
 
@@ -91,5 +91,9 @@ do_save (std::ostream& os, const symbol_table::symbol_record& sr,
 
 extern void
 write_header (std::ostream& os, load_save_format format);
+
+extern void octave_prepare_hdf5 (void);
+
+extern void octave_finalize_hdf5 (void);
 
 #endif

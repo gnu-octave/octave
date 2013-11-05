@@ -45,7 +45,7 @@ octave_allocator::alloc (size_t size)
   return tmp;
 }
 
-// FIXME -- if we free the last item on the list, shouldn't we
+// FIXME: if we free the last item on the list, shouldn't we
 // also free the underlying character array used for storage?
 
 void

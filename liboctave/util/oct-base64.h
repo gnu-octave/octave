@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base64_h)
-#define octave_base64_h 1
+#if !defined (octave_oct_base64_h)
+#define octave_oct_base64_h 1
 
 #include <string>
 

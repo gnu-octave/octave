@@ -174,7 +174,8 @@ ComplexRowVector::fill (double val, octave_idx_type c1, octave_idx_type c2)
 }
 
 ComplexRowVector&
-ComplexRowVector::fill (const Complex& val, octave_idx_type c1, octave_idx_type c2)
+ComplexRowVector::fill (const Complex& val,
+                        octave_idx_type c1, octave_idx_type c2)
 {
   octave_idx_type len = length ();
 

@@ -262,7 +262,7 @@ public:
               = symbol_table::global_table.find (name);
 
             return (p == symbol_table::global_table.end ())
-              ? symbol_table::global_table[name] : p->second;
+                   ? symbol_table::global_table[name] : p->second;
           }
         else if (is_persistent ())
           {
@@ -428,7 +428,7 @@ public:
 
             assign (symbol_table::persistent_varval (name));
           }
-        // FIXME -- this causes trouble with recursive calls.
+        // FIXME: this causes trouble with recursive calls.
         // else
         //   error ("unable to declare existing variable persistent");
       }
@@ -737,10 +737,12 @@ public:
 
     typedef std::map<std::string, std::string> dispatch_map_type;
 
-    typedef std::map<scope_id, octave_value>::const_iterator scope_val_const_iterator;
+    typedef std::map<scope_id, octave_value>::const_iterator
+      scope_val_const_iterator;
     typedef std::map<scope_id, octave_value>::iterator scope_val_iterator;
 
-    typedef std::map<std::string, octave_value>::const_iterator str_val_const_iterator;
+    typedef std::map<std::string, octave_value>::const_iterator
+      str_val_const_iterator;
     typedef std::map<std::string, octave_value>::iterator str_val_iterator;
 
     typedef dispatch_map_type::const_iterator dispatch_map_const_iterator;
@@ -791,7 +793,8 @@ public:
         return function_on_path.is_defined ();
       }
 
-      octave_value find_function (const octave_value_list& args, bool local_funcs)
+      octave_value find_function (const octave_value_list& args,
+                                  bool local_funcs)
       {
         return find (args, local_funcs);
       }
@@ -818,8 +821,8 @@ public:
         scope_val_const_iterator p = subfunctions.find (scope);
 
         return p == subfunctions.end ()
-          ? std::pair<std::string, octave_value> ()
-          : std::pair<std::string, octave_value> (name, p->second);
+               ? std::pair<std::string, octave_value> ()
+               : std::pair<std::string, octave_value> (name, p->second);
       }
 
       void erase_subfunction (scope_id scope)
@@ -1052,7 +1055,8 @@ public:
       return rep->is_user_function_defined ();
     }
 
-    octave_value find_function (const octave_value_list& args = octave_value_list (),
+    octave_value find_function (const octave_value_list& args
+                                  = octave_value_list (),
                                 bool local_funcs = true)
     {
       return rep->find_function (args, local_funcs);
@@ -1134,7 +1138,8 @@ public:
       rep->print_dispatch (os);
     }
 
-    std::string help_for_dispatch (void) const { return rep->help_for_dispatch (); }
+    std::string help_for_dispatch (void) const
+    { return rep->help_for_dispatch (); }
 
     dispatch_map_type get_dispatch (void) const
     {
@@ -1230,8 +1235,7 @@ public:
 
   static void erase_subfunctions_in_scope (scope_id scope)
   {
-    for (fcn_table_iterator q = fcn_table.begin ();
-         q != fcn_table.end (); q++)
+    for (fcn_table_iterator q = fcn_table.begin (); q != fcn_table.end (); q++)
       q->second.erase_subfunction (scope);
   }
 
@@ -1239,8 +1243,7 @@ public:
   mark_subfunctions_in_scope_as_private (scope_id scope,
                                          const std::string& class_name)
   {
-    for (fcn_table_iterator q = fcn_table.begin ();
-         q != fcn_table.end (); q++)
+    for (fcn_table_iterator q = fcn_table.begin (); q != fcn_table.end (); q++)
       q->second.mark_subfunction_in_scope_as_private (scope, class_name);
   }
 
@@ -1520,7 +1523,7 @@ public:
     fcn_table_const_iterator p = fcn_table.find (name);
 
     return (p != fcn_table.end ())
-      ? p->second.find_built_in_function () : octave_value ();
+           ? p->second.find_built_in_function () : octave_value ();
   }
 
   static octave_value
@@ -1529,7 +1532,7 @@ public:
     fcn_table_iterator p = fcn_table.find (name);
 
     return (p != fcn_table.end ())
-      ? p->second.find_autoload () : octave_value ();
+           ? p->second.find_autoload () : octave_value ();
   }
 
   static octave_value
@@ -1542,7 +1545,7 @@ public:
     fcn_table_iterator p = fcn_table.find (name);
 
     return (p != fcn_table.end ())
-      ? p->second.find_user_function () : octave_value ();
+           ? p->second.find_user_function () : octave_value ();
   }
 
   static void install_cmdline_function (const std::string& name,
@@ -1709,7 +1712,7 @@ public:
 
   static void clear_symbol (const std::string& name)
   {
-    // FIXME -- are we supposed to do both here?
+    // FIXME: are we supposed to do both here?
 
     clear_variable (name);
     clear_function (name);
@@ -1752,7 +1755,7 @@ public:
 
   static void clear_symbol_pattern (const std::string& pat)
   {
-    // FIXME -- are we supposed to do both here?
+    // FIXME: are we supposed to do both here?
 
     clear_variable_pattern (pat);
     clear_function_pattern (pat);
@@ -1768,7 +1771,7 @@ public:
 
         finfo.clear_user_function ();
       }
-    // FIXME -- is this necessary, or even useful?
+    // FIXME: is this necessary, or even useful?
     // else
     //   error ("clear: no such function '%s'", name.c_str ());
   }
@@ -1959,8 +1962,8 @@ public:
     symbol_table *inst = get_instance (scope);
 
     return inst
-      ? inst->do_all_variables (context, defined_only, exclude)
-      : std::list<symbol_record> ();
+           ? inst->do_all_variables (context, defined_only, exclude)
+           : std::list<symbol_record> ();
   }
 
   static std::list<symbol_record> glob (const std::string& pattern)
@@ -2006,7 +2009,7 @@ public:
         // may be handled the same way.
 
         if (pat.match (p->first))
-          retval.push_back (symbol_record (xglobal_scope, 
+          retval.push_back (symbol_record (xglobal_scope,
                                            p->first, p->second,
                                            symbol_record::global));
       }
@@ -2181,7 +2184,7 @@ public:
     symbol_table *inst = get_instance (xcurrent_scope);
 
     return inst
-      ? inst->do_workspace_info () : std::list<workspace_element> ();
+           ? inst->do_workspace_info () : std::list<workspace_element> ();
   }
 
   static void dump (std::ostream& os, scope_id scope = xcurrent_scope);
@@ -2264,7 +2267,7 @@ public:
       {
         // Search for parents of parents and append them to the list.
 
-        // FIXME -- should we worry about a circular inheritance graph?
+        // FIXME: should we worry about a circular inheritance graph?
 
         std::list<std::string> parents = parent_classes (*lit);
 
@@ -2276,23 +2279,23 @@ public:
   }
 
   static octave_user_function *get_curr_fcn (scope_id scope = xcurrent_scope)
-    {
-      symbol_table *inst = get_instance (scope);
-      return inst->curr_fcn;
-    }
+  {
+    symbol_table *inst = get_instance (scope);
+    return inst->curr_fcn;
+  }
 
   static void set_curr_fcn (octave_user_function *curr_fcn,
                             scope_id scope = xcurrent_scope)
-    {
-      assert (scope != xtop_scope && scope != xglobal_scope);
-      symbol_table *inst = get_instance (scope);
-      // FIXME: normally, functions should not usurp each other's scope.
-      // If for any incredible reason this is needed, call
-      // set_user_function (0, scope) first. This may cause problems with
-      // nested functions, as the curr_fcn of symbol_records must be updated.
-      assert (inst->curr_fcn == 0 || curr_fcn == 0);
-      inst->curr_fcn = curr_fcn;
-    }
+  {
+    assert (scope != xtop_scope && scope != xglobal_scope);
+    symbol_table *inst = get_instance (scope);
+    // FIXME: normally, functions should not usurp each other's scope.
+    // If for any incredible reason this is needed, call
+    // set_user_function (0, scope) first. This may cause problems with
+    // nested functions, as the curr_fcn of symbol_records must be updated.
+    assert (inst->curr_fcn == 0 || curr_fcn == 0);
+    inst->curr_fcn = curr_fcn;
+  }
 
   static void cleanup (void);
 
@@ -2304,21 +2307,31 @@ private:
 
   symbol_table& operator = (const symbol_table&);
 
-  typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;
-  typedef std::map<std::string, symbol_record>::iterator table_iterator;
+  typedef std::map<std::string, symbol_record>::const_iterator
+    table_const_iterator;
+  typedef std::map<std::string, symbol_record>::iterator
+    table_iterator;
 
-  typedef std::map<std::string, octave_value>::const_iterator global_table_const_iterator;
-  typedef std::map<std::string, octave_value>::iterator global_table_iterator;
+  typedef std::map<std::string, octave_value>::const_iterator
+    global_table_const_iterator;
+  typedef std::map<std::string, octave_value>::iterator
+    global_table_iterator;
 
-  typedef std::map<std::string, octave_value>::const_iterator persistent_table_const_iterator;
-  typedef std::map<std::string, octave_value>::iterator persistent_table_iterator;
+  typedef std::map<std::string, octave_value>::const_iterator
+    persistent_table_const_iterator;
+  typedef std::map<std::string, octave_value>::iterator
+    persistent_table_iterator;
 
-  typedef std::map<scope_id, symbol_table*>::const_iterator all_instances_const_iterator;
-  typedef std::map<scope_id, symbol_table*>::iterator all_instances_iterator;
+  typedef std::map<scope_id, symbol_table*>::const_iterator
+    all_instances_const_iterator;
+  typedef std::map<scope_id, symbol_table*>::iterator
+    all_instances_iterator;
 
-  typedef std::map<std::string, fcn_info>::const_iterator fcn_table_const_iterator;
-  typedef std::map<std::string, fcn_info>::iterator fcn_table_iterator;
-  
+  typedef std::map<std::string, fcn_info>::const_iterator
+    fcn_table_const_iterator;
+  typedef std::map<std::string, fcn_info>::iterator
+    fcn_table_iterator;
+
   // The scope of this symbol table.
   scope_id my_scope;
 
@@ -2361,14 +2374,18 @@ private:
   // precedence.
   static std::map<std::string, std::set<std::string> > class_precedence_table;
 
-  typedef std::map<std::string, std::set<std::string> >::const_iterator class_precedence_table_const_iterator;
-  typedef std::map<std::string, std::set<std::string> >::iterator class_precedence_table_iterator;
+  typedef std::map<std::string, std::set<std::string> >::const_iterator
+    class_precedence_table_const_iterator;
+  typedef std::map<std::string, std::set<std::string> >::iterator
+    class_precedence_table_iterator;
 
   // Map from class names to parent class names.
   static std::map<std::string, std::list<std::string> > parent_map;
 
-  typedef std::map<std::string, std::list<std::string> >::const_iterator const_parent_map_iterator;
-  typedef std::map<std::string, std::list<std::string> >::iterator parent_map_iterator;
+  typedef std::map<std::string, std::list<std::string> >::const_iterator
+    const_parent_map_iterator;
+  typedef std::map<std::string, std::list<std::string> >::iterator
+    parent_map_iterator;
 
   static const scope_id xglobal_scope;
   static const scope_id xtop_scope;
@@ -2380,8 +2397,9 @@ private:
   static const context_id xdefault_context = static_cast<context_id> (-1);
 
   symbol_table (scope_id scope)
-    : my_scope (scope), table_name (), table (), nest_children (), nest_parent (0),
-    curr_fcn (0), static_workspace (false), persistent_table () { }
+    : my_scope (scope), table_name (), table (), nest_children (),
+      nest_parent (0), curr_fcn (0), static_workspace (false),
+      persistent_table () { }
 
   ~symbol_table (void) { }
 
@@ -2459,7 +2477,8 @@ private:
   do_dup_scope (symbol_table& new_symbol_table) const
   {
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
-      new_symbol_table.insert_symbol_record (p->second.dup (new_symbol_table.my_scope));
+      new_symbol_table.insert_symbol_record (p->second.dup (new_symbol_table
+                                                            .my_scope));
   }
 
   symbol_record do_find_symbol (const std::string& name)
@@ -2498,10 +2517,10 @@ private:
   }
 
   static fcn_info *get_fcn_info (const std::string& name)
-    {
-      fcn_table_iterator p = fcn_table.find (name);
-      return p != fcn_table.end () ? &p->second : 0;
-    }
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+    return p != fcn_table.end () ? &p->second : 0;
+  }
 
   octave_value
   do_find (const std::string& name, const octave_value_list& args,
@@ -2586,8 +2605,7 @@ private:
     return (p != table.end ()) ? p->second.varval (context) : octave_value ();
   }
 
-  void do_persistent_assign (const std::string& name,
-                             const octave_value& value)
+  void do_persistent_assign (const std::string& name, const octave_value& value)
   {
     persistent_table_iterator p = persistent_table.find (name);
 
@@ -2604,7 +2622,7 @@ private:
     persistent_table_iterator p = persistent_table.find (name);
 
     return (p == persistent_table.end ())
-      ? persistent_table[name] : p->second;
+           ? persistent_table[name] : p->second;
   }
 
   octave_value do_persistent_varval (const std::string& name)

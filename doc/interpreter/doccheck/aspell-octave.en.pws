@@ -409,6 +409,7 @@ Hadamard
 Haddad
 HandleVisibility
 Hankel
+hanning
 Hanning
 hardcode
 hardcoding
@@ -429,6 +430,7 @@ HH
 Higham
 Hindmarsh
 Hindmarsh's
+histc
 Hodel
 holomorphic
 Horner's
@@ -1167,6 +1169,7 @@ wspace
 xb
 xc
 xcorr
+xdata
 xdigit
 xerrorbar
 xerrorbars
@@ -1176,6 +1179,7 @@ xGELSD
 xGETRF
 xGTSV
 xl
+xmax
 xmin
 xPBTRF
 xPOTRF
@@ -1193,6 +1197,8 @@ ydata
 yerrorbar
 yerrorbars
 ylim
+ymax
+ymin
 yy
 YY
 yyyy

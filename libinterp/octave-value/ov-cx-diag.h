@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_complex_diag_matrix_h)
-#define octave_complex_diag_matrix_h 1
+#if !defined (octave_ov_cx_diag_h)
+#define octave_ov_cx_diag_h 1
 
 #include "ov-base.h"
 #include "ov-base-diag.h"
@@ -48,8 +48,10 @@ public:
 
   ~octave_complex_diag_matrix (void) { }
 
-  octave_base_value *clone (void) const { return new octave_complex_diag_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_complex_diag_matrix (); }
+  octave_base_value *clone (void) const
+  { return new octave_complex_diag_matrix (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_complex_diag_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 

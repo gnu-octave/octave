@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexHESS_h)
-#define octave_ComplexHESS_h 1
+#if !defined (octave_CmplxHESS_h)
+#define octave_CmplxHESS_h 1
 
 #include <iosfwd>
 
@@ -37,37 +37,37 @@ public:
 
   ComplexHESS (const ComplexMatrix& a)
     : hess_mat (), unitary_hess_mat ()
-    {
-      init (a);
-    }
+  {
+    init (a);
+  }
 
   ComplexHESS (const ComplexMatrix& a, octave_idx_type& info)
     : hess_mat (), unitary_hess_mat ()
-    {
-      info = init (a);
-    }
+  {
+    info = init (a);
+  }
 
   ComplexHESS (const ComplexHESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
 
   ComplexHESS& operator = (const ComplexHESS& a)
-    {
-      if (this != &a)
-        {
-          hess_mat = a.hess_mat;
-          unitary_hess_mat = a.unitary_hess_mat;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        hess_mat = a.hess_mat;
+        unitary_hess_mat = a.unitary_hess_mat;
+      }
+    return *this;
+  }
 
   ~ComplexHESS (void) { }
 
   ComplexMatrix hess_matrix (void) const { return hess_mat; }
 
   ComplexMatrix unitary_hess_matrix (void) const
-    {
-      return unitary_hess_mat;
-    }
+  {
+    return unitary_hess_mat;
+  }
 
   friend std::ostream& operator << (std::ostream& os, const ComplexHESS& a);
 

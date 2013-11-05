@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 // Qt
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QtCore/QByteRef>
 #include <QtCore/QDir>
 #include <QtCore/QFile>

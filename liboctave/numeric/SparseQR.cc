@@ -693,7 +693,8 @@ qrsolve (const SparseMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
 }
 
 SparseComplexMatrix
-qrsolve (const SparseMatrix&a, const SparseComplexMatrix &b, octave_idx_type &info)
+qrsolve (const SparseMatrix&a, const SparseComplexMatrix &b,
+         octave_idx_type &info)
 {
   info = -1;
 #ifdef HAVE_CXSPARSE

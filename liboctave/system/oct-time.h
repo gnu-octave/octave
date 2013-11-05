@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_time_h)
-#define octave_time_h 1
+#if !defined (octave_oct_time_h)
+#define octave_oct_time_h 1
 
 #include <ctime>
 #include <string>
@@ -236,7 +236,7 @@ public:
   std::string strftime (const std::string& fmt) const;
 
   std::string asctime (void) const
-    { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
+  { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
 
 protected:
 

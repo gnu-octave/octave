@@ -77,7 +77,7 @@ bool
 valid_identifier (const char *s)
 {
   if (! s || ! (isalpha (*s) || *s == '_' || *s == '$'))
-     return false;
+    return false;
 
   while (*++s != '\0')
     if (! (isalnum (*s) || *s == '_' || *s == '$'))
@@ -93,7 +93,7 @@ valid_identifier (const std::string& s)
 }
 
 DEFUN (isvarname, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isvarname (@var{name})\n\
 Return true if @var{name} is a valid variable name.\n\
 @seealso{iskeyword, exist, who}\n\
@@ -151,7 +151,8 @@ almost_match (const std::string& std, const std::string& s, int min_match_len,
 // Ugh.
 
 int
-keyword_almost_match (const char * const *std, int *min_len, const std::string& s,
+keyword_almost_match (const char * const *std, int *min_len,
+                      const std::string& s,
                       int min_toks_to_match, int max_toks)
 {
   int status = 0;
@@ -229,7 +230,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
         goto done;
     }
 
- done:
+done:
 
   delete [] kw;
   delete [] to_match;
@@ -287,7 +288,7 @@ make_absolute (const string_vector& sv)
 }
 
 DEFUN (file_in_loadpath, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} file_in_loadpath (@var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
@@ -316,7 +317,8 @@ name in the path.  If no files are found, return an empty cell array.\n\
       if (! error_state && names.length () > 0)
         {
           if (nargin == 1)
-            retval = octave_env::make_absolute (load_path::find_first_of (names));
+            retval =
+              octave_env::make_absolute (load_path::find_first_of (names));
           else if (nargin == 2)
             {
               std::string opt = args(1).string_value ();
@@ -356,7 +358,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 */
 
 DEFUN (file_in_path, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name of @var{file} if it can be found in\n\
@@ -650,7 +652,7 @@ do_string_escapes (const std::string& s)
 }
 
 DEFUN (do_string_escapes, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} do_string_escapes (@var{string})\n\
 Convert special characters in @var{string} to their escaped forms.\n\
 @end deftypefn")
@@ -748,7 +750,7 @@ undo_string_escapes (const std::string& s)
 }
 
 DEFUN (undo_string_escapes, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} undo_string_escapes (@var{s})\n\
 Convert special characters in strings back to their escaped forms.  For\n\
 example, the expression\n\
@@ -809,7 +811,7 @@ representation.\n\
 */
 
 DEFUN (is_absolute_filename, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_absolute_filename (@var{file})\n\
 Return true if @var{file} is an absolute filename.\n\
 @seealso{is_rooted_relative_filename, make_absolute_filename, isdir}\n\
@@ -834,7 +836,7 @@ Return true if @var{file} is an absolute filename.\n\
 */
 
 DEFUN (is_rooted_relative_filename, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_rooted_relative_filename (@var{file})\n\
 Return true if @var{file} is a rooted-relative filename.\n\
 @seealso{is_absolute_filename, make_absolute_filename, isdir}\n\
@@ -859,7 +861,7 @@ Return true if @var{file} is a rooted-relative filename.\n\
 */
 
 DEFUN (make_absolute_filename, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} make_absolute_filename (@var{file})\n\
 Return the full name of @var{file} beginning from the root of the file\n\
 system.  No check is done for the existence of @var{file}.\n\
@@ -891,7 +893,7 @@ system.  No check is done for the existence of @var{file}.\n\
 */
 
 DEFUN (find_dir_in_path, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})\n\
 @deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.  The\n\
@@ -939,7 +941,7 @@ containing all name matches rather than just the first.\n\
 */
 
 DEFUNX ("errno", Ferrno, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{err} =} errno ()\n\
 @deftypefnx {Built-in Function} {@var{err} =} errno (@var{val})\n\
 @deftypefnx {Built-in Function} {@var{err} =} errno (@var{name})\n\
@@ -998,7 +1000,7 @@ if @var{name} is not found.\n\
 */
 
 DEFUN (errno_list, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} errno_list ()\n\
 Return a structure containing the system-dependent errno values.\n\
 @end deftypefn")
@@ -1280,7 +1282,7 @@ octave_sleep (double seconds)
 }
 
 DEFUN (isindex, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} isindex (@var{ind})\n\
 @deftypefnx {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
 Return true if @var{ind} is a valid index.  Valid indices are\n\
@@ -1431,4 +1433,12 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
     retval = tmp(0);
 
   return retval;
+}
+
+octave_preserve_stream_state::~octave_preserve_stream_state (void)
+{
+  stream.flags (oflags);
+  stream.precision (oprecision);
+  stream.width (owidth);
+  stream.fill (ofill);
 }

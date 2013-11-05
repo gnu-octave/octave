@@ -31,7 +31,7 @@ class file_editor_interface : public octave_dock_widget
 {
   Q_OBJECT
 
-  public:
+public:
   file_editor_interface (QWidget *p)
     : octave_dock_widget (p)
   {

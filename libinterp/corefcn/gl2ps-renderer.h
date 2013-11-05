@@ -20,11 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (gl2ps_renderer_h)
-#define gl2ps_renderer_h 1
+#if !defined (octave_gl2ps_renderer_h)
+#define octave_gl2ps_renderer_h 1
+
+#ifdef HAVE_GL2PS_H
 
 #include "gl-render.h"
-#include "gl2ps.h"
+#include <gl2ps.h>
 
 class
 OCTINTERP_API
@@ -32,8 +34,7 @@ glps_renderer : public opengl_renderer
 {
 public:
   glps_renderer (FILE *_fp, const std::string& _term)
-    : opengl_renderer () , fp (_fp), term (_term),
-    fontsize (), fontname () { }
+    : opengl_renderer () , fp (_fp), term (_term), fontsize (), fontname () { }
 
   ~glps_renderer (void) { }
 
@@ -44,7 +45,6 @@ protected:
   Matrix render_text (const std::string& txt,
                       double x, double y, double z,
                       int halign, int valign, double rotation = 0.0);
-
 
   void set_font (const base_properties& props);
 
@@ -83,5 +83,7 @@ private:
   double fontsize;
   std::string fontname;
 };
+
+#endif  // HAVE_GL2PS_H
 
 #endif

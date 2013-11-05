@@ -269,8 +269,7 @@ Matrix::Matrix (const PermMatrix& a)
       elem (i, ia(i)) = 1.0;
 }
 
-// FIXME -- could we use a templated mixed-type copy function
-// here?
+// FIXME: could we use a templated mixed-type copy function here?
 
 Matrix::Matrix (const boolMatrix& a)
   : MArray<double> (a)
@@ -413,7 +412,8 @@ Matrix::fill (double val)
 }
 
 Matrix&
-Matrix::fill (double val, octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
+Matrix::fill (double val, octave_idx_type r1, octave_idx_type c1,
+              octave_idx_type r2, octave_idx_type c2)
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -601,7 +601,8 @@ imag (const ComplexMatrix& a)
 }
 
 Matrix
-Matrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+Matrix::extract (octave_idx_type r1, octave_idx_type c1,
+                 octave_idx_type r2, octave_idx_type c2) const
 {
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }
@@ -610,7 +611,8 @@ Matrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, oct
 }
 
 Matrix
-Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const
+Matrix::extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr,
+                   octave_idx_type nc) const
 {
   return index (idx_vector (r1, r1 + nr), idx_vector (c1, c1 + nc));
 }
@@ -763,7 +765,8 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond)
-        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
+        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0))
+                .max ();
 
       F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -1464,7 +1467,7 @@ Matrix::rcond (MatrixType &mattype) const
               double *tmp_data = atmp.fortran_vec ();
 
               anorm = atmp.abs().sum().
-                row(static_cast<octave_idx_type>(0)).max();
+                      row(static_cast<octave_idx_type>(0)).max();
 
               F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1505,7 +1508,7 @@ Matrix::rcond (MatrixType &mattype) const
 
               if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
-                  row(static_cast<octave_idx_type>(0)).max ();
+                        row(static_cast<octave_idx_type>(0)).max ();
 
               Array<double> z (dim_vector (4 * nc, 1));
               double *pz = z.fortran_vec ();
@@ -1541,8 +1544,8 @@ Matrix::rcond (MatrixType &mattype) const
 
 Matrix
 Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
-                double& rcon, solve_singularity_handler sing_handler,
-                bool calc_cond, blas_trans_type transt) const
+                 double& rcon, solve_singularity_handler sing_handler,
+                 bool calc_cond, blas_trans_type transt) const
 {
   Matrix retval;
 
@@ -1641,8 +1644,8 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
 Matrix
 Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
-                double& rcon, solve_singularity_handler sing_handler,
-                bool calc_cond, blas_trans_type transt) const
+                 double& rcon, solve_singularity_handler sing_handler,
+                 bool calc_cond, blas_trans_type transt) const
 {
   Matrix retval;
 
@@ -1758,7 +1761,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
     {
       volatile int typ = mattype.type ();
 
-     // Calculate the norm of the matrix, for later use.
+      // Calculate the norm of the matrix, for later use.
       double anorm = -1.;
 
       if (typ == MatrixType::Hermitian)
@@ -1846,7 +1849,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
 
-          if(anorm < 0.)
+          if (anorm < 0.)
             anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
 
           Array<double> z (dim_vector (4 * nc, 1));
@@ -1963,7 +1966,8 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     retval = ltsolve (mattype, b, info, rcon, sing_handler, false, transt);
   else if (transt == blas_trans || transt == blas_conj_trans)
-    return transpose ().solve (mattype, b, info, rcon, sing_handler, singular_fallback);
+    return transpose ().solve (mattype, b, info, rcon, sing_handler,
+                               singular_fallback);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
     retval = fsolve (mattype, b, info, rcon, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
@@ -1992,7 +1996,7 @@ Matrix::solve (MatrixType &typ, const ComplexMatrix& b) const
 
 ComplexMatrix
 Matrix::solve (MatrixType &typ, const ComplexMatrix& b,
-  octave_idx_type& info) const
+               octave_idx_type& info) const
 {
   double rcon;
   return solve (typ, b, info, rcon, 0);
@@ -2066,7 +2070,8 @@ Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
 
 ColumnVector
 Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
-               double& rcon, solve_singularity_handler sing_handler, blas_trans_type transt) const
+               double& rcon, solve_singularity_handler sing_handler,
+               blas_trans_type transt) const
 {
   Matrix tmp (b);
   tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
@@ -2099,7 +2104,8 @@ Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 ComplexColumnVector
 Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
                octave_idx_type& info, double& rcon,
-               solve_singularity_handler sing_handler, blas_trans_type transt) const
+               solve_singularity_handler sing_handler,
+               blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (typ, b, info, rcon, sing_handler, transt);
@@ -2128,7 +2134,8 @@ Matrix::solve (const Matrix& b, octave_idx_type& info, double& rcon) const
 
 Matrix
 Matrix::solve (const Matrix& b, octave_idx_type& info,
-               double& rcon, solve_singularity_handler sing_handler, blas_trans_type transt) const
+               double& rcon, solve_singularity_handler sing_handler,
+               blas_trans_type transt) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, info, rcon, sing_handler, true, transt);
@@ -2149,7 +2156,8 @@ Matrix::solve (const ComplexMatrix& b, octave_idx_type& info) const
 }
 
 ComplexMatrix
-Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon) const
+Matrix::solve (const ComplexMatrix& b, octave_idx_type& info,
+               double& rcon) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcon);
@@ -2157,7 +2165,8 @@ Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon) cons
 
 ComplexMatrix
 Matrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon,
-               solve_singularity_handler sing_handler, blas_trans_type transt) const
+               solve_singularity_handler sing_handler,
+               blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcon, sing_handler, transt);
@@ -2185,7 +2194,8 @@ Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcon) const
 
 ColumnVector
 Matrix::solve (const ColumnVector& b, octave_idx_type& info, double& rcon,
-               solve_singularity_handler sing_handler, blas_trans_type transt) const
+               solve_singularity_handler sing_handler,
+               blas_trans_type transt) const
 {
   MatrixType mattype (*this);
   return solve (mattype, b, info, rcon, sing_handler, transt);
@@ -2206,15 +2216,18 @@ Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info) const
 }
 
 ComplexColumnVector
-Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcon) const
+Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
+               double& rcon) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcon);
 }
 
 ComplexColumnVector
-Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcon,
-               solve_singularity_handler sing_handler, blas_trans_type transt) const
+Matrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
+               double& rcon,
+               solve_singularity_handler sing_handler,
+               blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcon, sing_handler, transt);
@@ -2734,8 +2747,7 @@ Matrix::too_large_for_float (void) const
   return test_any (xtoo_large_for_float);
 }
 
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
+// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 Matrix::all (int dim) const
@@ -3063,7 +3075,7 @@ operator >> (std::istream& is, Matrix& a)
           }
     }
 
- done:
+done:
 
   return is;
 }
@@ -3090,8 +3102,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 {
   Matrix retval;
 
-  // FIXME -- need to check that a, b, and c are all the same
-  // size.
+  // FIXME: need to check that a, b, and c are all the same size.
 
   // Compute Schur decompositions.
 
@@ -3108,8 +3119,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
   Matrix cx = ua.transpose () * c * ub;
 
-  // Solve the sylvester equation, back-transform, and return the
-  // solution.
+  // Solve the sylvester equation, back-transform, and return the solution.
 
   octave_idx_type a_nr = a.rows ();
   octave_idx_type b_nr = b.rows ();
@@ -3129,7 +3139,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
                              F77_CHAR_ARG_LEN (1)));
 
 
-  // FIXME -- check info?
+  // FIXME: check info?
 
   retval = -ua*cx*ub.transpose ();
 
@@ -3261,8 +3271,7 @@ operator * (const Matrix& a, const Matrix& b)
   return xgemm (a, b);
 }
 
-// FIXME -- it would be nice to share code among the min/max
-// functions below.
+// FIXME: it would be nice to share code among the min/max functions below.
 
 #define EMPTY_RETURN_CHECK(T) \
   if (nr == 0 || nc == 0) \
@@ -3412,7 +3421,8 @@ Matrix linspace (const ColumnVector& x1,
   octave_idx_type m = x1.length ();
 
   if (x2.length () != m)
-    (*current_liboctave_error_handler) ("linspace: vectors must be of equal length");
+    (*current_liboctave_error_handler)
+      ("linspace: vectors must be of equal length");
 
   NoAlias<Matrix> retval;
 

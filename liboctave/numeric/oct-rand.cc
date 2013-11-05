@@ -782,7 +782,7 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
 #define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (a, x)
-                MAKE_RAND (len);
+              MAKE_RAND (len);
 #undef RAND_FUNC
             }
         }
@@ -872,7 +872,7 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (da + 1, tmp);
 #define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (da, x)
-                MAKE_RAND (len);
+              MAKE_RAND (len);
 #undef RAND_FUNC
             }
         }

@@ -46,7 +46,8 @@ QUIWidgetCreator uiwidget_creator;
 
 QUIWidgetCreator::QUIWidgetCreator (void)
   : QObject (), dialog_result (-1), dialog_button (),
-    string_list (new QStringList ()), list_index (new QIntList ()), path_name (new QString ())
+    string_list (new QStringList ()), list_index (new QIntList ()),
+    path_name (new QString ())
 { }
 
 
@@ -264,7 +265,7 @@ ListDialog::ListDialog (const QStringList& list, const QString& mode,
   mainLayout->addLayout (buttonsLayout);
   setLayout (mainLayout);
   if (fixed_layout)
-    layout()->setSizeConstraint (QLayout::SetFixedSize);
+    layout ()->setSizeConstraint (QLayout::SetFixedSize);
 
   // If empty, make blank rather than use default OS behavior.
   setWindowTitle (title.isEmpty () ? " " : title);
@@ -330,64 +331,64 @@ InputDialog::InputDialog (const QStringList& prompt, const QString& title,
 #define LINE_EDIT_FOLLOWS_PROMPT 0
 
 #if LINE_EDIT_FOLLOWS_PROMPT
-    // Prompt on left followed by input on right.
-    QGridLayout *promptInputLayout = new QGridLayout;
+  // Prompt on left followed by input on right.
+  QGridLayout *promptInputLayout = new QGridLayout;
 #else
-    // Prompt aligned above input.
-    QVBoxLayout *promptInputLayout = new QVBoxLayout;
+  // Prompt aligned above input.
+  QVBoxLayout *promptInputLayout = new QVBoxLayout;
 #endif
-    int N_gridrows = prompt.size ();
-    for (int i = 0; i < N_gridrows; i++)
-      {
-        QLabel *label = new QLabel (prompt.at (i));
-        QLineEdit *line_edit = new QLineEdit (defaults.at (i));
-        if (nr.at (i) > 0)
-          {
-            QSize qsize = line_edit->sizeHint ();
-            int intval = qsize.height () * nr.at (i);
-            line_edit->setFixedHeight (intval);
-            if (nc.at (i) > 0)
-              {
-                intval = qsize.height () * nc.at (i) / 2;
-                line_edit->setFixedWidth (intval);
-              }
-          }
-        input_line << line_edit;
+  int N_gridrows = prompt.size ();
+  for (int i = 0; i < N_gridrows; i++)
+    {
+      QLabel *label = new QLabel (prompt.at (i));
+      QLineEdit *line_edit = new QLineEdit (defaults.at (i));
+      if (nr.at (i) > 0)
+        {
+          QSize qsize = line_edit->sizeHint ();
+          int intval = qsize.height () * nr.at (i);
+          line_edit->setFixedHeight (intval);
+          if (nc.at (i) > 0)
+            {
+              intval = qsize.height () * nc.at (i) / 2;
+              line_edit->setFixedWidth (intval);
+            }
+        }
+      input_line << line_edit;
 #if LINE_EDIT_FOLLOWS_PROMPT
-        promptInputLayout->addWidget (label, i + 1, 0);
-        promptInputLayout->addWidget (line_edit, i + 1, 1);
+      promptInputLayout->addWidget (label, i + 1, 0);
+      promptInputLayout->addWidget (line_edit, i + 1, 1);
 #else
-        promptInputLayout->addWidget (label);
-        promptInputLayout->addWidget (line_edit);
+      promptInputLayout->addWidget (label);
+      promptInputLayout->addWidget (line_edit);
 #endif
-      }
+    }
 #undef LINE_EDIT_FOLLOWS_PROMPT
 
-    QPushButton *buttonOk = new QPushButton("OK");
-    QPushButton *buttonCancel = new QPushButton("Cancel");
-    QHBoxLayout *buttonsLayout = new QHBoxLayout;
-    buttonsLayout->addStretch (1);
-    buttonsLayout->addWidget (buttonOk);
-    buttonsLayout->addWidget (buttonCancel);
+  QPushButton *buttonOk = new QPushButton ("OK");
+  QPushButton *buttonCancel = new QPushButton ("Cancel");
+  QHBoxLayout *buttonsLayout = new QHBoxLayout;
+  buttonsLayout->addStretch (1);
+  buttonsLayout->addWidget (buttonOk);
+  buttonsLayout->addWidget (buttonCancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addLayout (promptInputLayout);
-    mainLayout->addSpacing (12);
-    mainLayout->addLayout (buttonsLayout);
-    setLayout (mainLayout);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addLayout (promptInputLayout);
+  mainLayout->addSpacing (12);
+  mainLayout->addLayout (buttonsLayout);
+  setLayout (mainLayout);
 
-    // If empty, make blank rather than use default OS behavior.
-    setWindowTitle (title.isEmpty () ? " " : title);
+  // If empty, make blank rather than use default OS behavior.
+  setWindowTitle (title.isEmpty () ? " " : title);
 
-    connect (buttonOk, SIGNAL (clicked ()),
-             this, SLOT (buttonOk_clicked ()));
+  connect (buttonOk, SIGNAL (clicked ()),
+           this, SLOT (buttonOk_clicked ()));
 
-    connect (buttonCancel, SIGNAL (clicked ()),
-             this, SLOT (buttonCancel_clicked ()));
+  connect (buttonCancel, SIGNAL (clicked ()),
+           this, SLOT (buttonCancel_clicked ()));
 
-    connect (this, SIGNAL (finish_input (const QStringList&, int)),
-             &uiwidget_creator,
-             SLOT (input_finished (const QStringList&, int)));
+  connect (this, SIGNAL (finish_input (const QStringList&, int)),
+           &uiwidget_creator,
+           SLOT (input_finished (const QStringList&, int)));
 }
 
 
@@ -413,7 +414,7 @@ InputDialog::buttonCancel_clicked (void)
   done (QDialog::Rejected);
 }
 
-  
+
 void
 InputDialog::reject (void)
 {
@@ -423,7 +424,7 @@ InputDialog::reject (void)
 FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
                         const QString& filename, const QString& dirname,
                         const QString& multimode)
-  : QFileDialog()
+  : QFileDialog ()
 {
   // Create a NonModal message.
   setWindowModality (Qt::NonModal);
@@ -438,10 +439,10 @@ FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
     }
   else if (multimode == "create") // uiputfile
     {
-      setFileMode (QFileDialog::AnyFile); 
+      setFileMode (QFileDialog::AnyFile);
       setAcceptMode (QFileDialog::AcceptSave);
       setOption (QFileDialog::DontConfirmOverwrite, false);
-      setConfirmOverwrite(true);
+      setConfirmOverwrite (true);
     }
   else if (multimode == "dir")    // uigetdir
     {
@@ -459,7 +460,7 @@ FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
   setNameFilters (name_filters);
 
   selectFile (filename);
-  
+
   connect (this,
            SIGNAL (finish_input (const QStringList&, const QString&, int)),
            &uiwidget_creator,
@@ -476,7 +477,7 @@ FileDialog::reject (void)
 
 }
 
-void FileDialog::accept(void)
+void FileDialog::accept (void)
 {
   QStringList string_result;
   QString path;
@@ -495,7 +496,7 @@ void FileDialog::accept(void)
 
   QStringList name_filters = nameFilters ();
   idx = name_filters.indexOf (selectedNameFilter ()) + 1;
-  
+
   // send the selected info
   emit finish_input (string_result, path, idx);
   done (QDialog::Accepted);

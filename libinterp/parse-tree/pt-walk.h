@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_walker_h)
-#define octave_tree_walker_h 1
+#if !defined (octave_pt_walk_h)
+#define octave_pt_walk_h 1
 
 class tree_anon_fcn_handle;
 class tree_argument_list;

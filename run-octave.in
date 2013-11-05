@@ -78,6 +78,7 @@ if [ $# -gt 0 ]; then
   fi
 fi
 
+OCTAVE_BINDIR="$builddir/src" \
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings" \
 OCTAVE_LOCALE_DIR="$builddir/libgui/languages" \

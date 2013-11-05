@@ -36,22 +36,46 @@ AM_CFLAGS += $(WARN_CFLAGS)
 AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
 EXTRA_DIST = \
+  main.in.cc \
   mkoctfile.in.cc \
   mkoctfile.in.sh \
   octave-config.in.cc \
   octave-config.in.sh
 
-DISTCLEANFILES =
+DISTCLEANFILES = \
+  main.cc
 
 OCTAVE_BINARIES = \
   octave \
   octave-cli
+
+if AMCOND_BUILD_GUI
+  OCTAVE_BINARIES += octave-gui
+endif
 
 OCTAVE_CORE_LIBS = \
   $(top_builddir)/libinterp/liboctinterp.la \
   $(top_builddir)/liboctave/liboctave.la
 
 include ../libgui/link-deps.mk
+
+nodist_octave_SOURCES = main.cc
+
+octave_LDADD = \
+  $(top_builddir)/libgnu/libgnu.la \
+  $(GNULIB_LINK_DEPS)
+
+octave_LDFLAGS = \
+  $(NO_UNDEFINED_LDFLAG) \
+  $(OCTAVE_LINK_OPTS)
+
+if AMCOND_BUILD_GUI
+  OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_GUI
+endif
+
+octave_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  $(OCTAVE_CPPFLAGS)
 
 octave_cli_SOURCES = main-cli.cc
 
@@ -64,25 +88,21 @@ octave_cli_LDFLAGS = \
   $(OCTAVE_LINK_OPTS)
 
 if AMCOND_BUILD_GUI
-  octave_SOURCES = main.cc
+  octave_gui_SOURCES = main-gui.cc
   OCTAVE_GUI_LIBS = $(top_builddir)/libgui/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
-else
-  octave_SOURCES = main-cli.cc
-  OCTAVE_GUI_LIBS =
-  OCTAVE_GUI_CPPFLAGS =
 endif
 
-octave_CPPFLAGS = \
+octave_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(OCTAVE_GUI_CPPFLAGS)
 
-octave_LDADD = \
+octave_gui_LDADD = \
   $(OCTAVE_GUI_LIBS) \
   $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_GUI_LINK_DEPS)
 
-octave_LDFLAGS = \
+octave_gui_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_GUI_LINK_OPTS)
 
@@ -130,6 +150,12 @@ mkoctfile: mkoctfile.in.sh Makefile
 	@$(do_subst_config_vals)
 	chmod a+rx $@
 endif
+
+## main.cc must depend on Makefile.  Calling configure may change
+## default/config values.  However, calling configure will also 
+## regenerate the Makefiles from Makefile.am and trigger the rules below.
+main.cc: main.in.cc Makefile
+	@$(do_subst_default_vals)
 
 install-exec-hook: make-version-links
 

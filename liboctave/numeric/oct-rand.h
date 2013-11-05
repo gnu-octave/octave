@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_rand_h)
-#define octave_rand_h 1
+#if !defined (octave_oct_rand_h)
+#define octave_oct_rand_h 1
 
 #include <map>
 #include <string>
@@ -144,15 +144,15 @@ public:
 
   // Return an array of numbers from the sequence.
   static Array<double> vector (octave_idx_type n, double a = 1.0)
-   {
-     return instance_ok () ? instance->do_vector (n, a) : Array<double> ();
-   }
+  {
+    return instance_ok () ? instance->do_vector (n, a) : Array<double> ();
+  }
 
   // Return an array of numbers from the sequence.
   static Array<float> float_vector (octave_idx_type n, float a = 1.0)
-   {
-     return instance_ok () ? instance->do_float_vector (n, a) : Array<float> ();
-   }
+  {
+    return instance_ok () ? instance->do_float_vector (n, a) : Array<float> ();
+  }
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
@@ -166,7 +166,8 @@ public:
   // filled in column major order.
   static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
   {
-    return instance_ok () ? instance->do_float_nd_array (dims, a) : FloatNDArray ();
+    return instance_ok () ? instance->do_float_nd_array (dims, a)
+                          : FloatNDArray ();
   }
 
 private:

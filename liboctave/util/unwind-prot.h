@@ -119,19 +119,19 @@ public:
   unwind_protect_safe (void) : unwind_protect () { }
 
   ~unwind_protect_safe (void)
-    {
-      while (! empty ())
-        {
-          try
-            {
-              run_first ();
-            }
-          catch (...) // Yes, the black hole. Remember we're in a dtor.
-            {
-              gripe_exception ();
-            }
-        }
-    }
+  {
+    while (! empty ())
+      {
+        try
+          {
+            run_first ();
+          }
+        catch (...) // Yes, the black hole. Remember we're in a dtor.
+          {
+            gripe_exception ();
+          }
+      }
+  }
 
 private:
 

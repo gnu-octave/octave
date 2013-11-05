@@ -89,7 +89,7 @@ private:
   CRITICAL_SECTION cs;
 };
 
-static DWORD octave_thread_id = 0; 
+static DWORD octave_thread_id = 0;
 
 void
 octave_thread::init (void)

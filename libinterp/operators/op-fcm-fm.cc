@@ -43,14 +43,17 @@ along with Octave; see the file COPYING.  If not, see
 
 // complex matrix by matrix ops.
 
-DEFNDBINOP_OP (add, float_complex_matrix, float_matrix, float_complex_array, float_array, +)
-DEFNDBINOP_OP (sub, float_complex_matrix, float_matrix, float_complex_array, float_array, -)
+DEFNDBINOP_OP (add, float_complex_matrix, float_matrix, float_complex_array,
+               float_array, +)
+DEFNDBINOP_OP (sub, float_complex_matrix, float_matrix, float_complex_array,
+               float_array, -)
 
 DEFBINOP_OP (mul, float_complex_matrix, float_matrix, *)
 
 DEFBINOP (mul_trans, float_complex_matrix, float_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_matrix&);
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&,
+                   const octave_float_matrix&);
 
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
   FloatMatrix m2 = v2.float_matrix_value ();
@@ -93,17 +96,17 @@ DEFBINOP (ldiv, float_complex_matrix, float_matrix)
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_complex_matrix, float_matrix,
-               float_complex_array, float_array, mx_el_lt)
+                    float_complex_array, float_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_complex_matrix, float_matrix,
-               float_complex_array, float_array, mx_el_le)
+                    float_complex_array, float_array, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, float_complex_matrix, float_matrix,
-               float_complex_array, float_array, mx_el_eq)
+                    float_complex_array, float_array, mx_el_eq)
 DEFNDCMPLXCMPOP_FN (ge, float_complex_matrix, float_matrix,
-               float_complex_array, float_array, mx_el_ge)
+                    float_complex_array, float_array, mx_el_ge)
 DEFNDCMPLXCMPOP_FN (gt, float_complex_matrix, float_matrix,
-               float_complex_array, float_array, mx_el_gt)
+                    float_complex_array, float_array, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, float_complex_matrix, float_matrix,
-               float_complex_array, float_array, mx_el_ne)
+                    float_complex_array, float_array, mx_el_ne)
 
 DEFNDBINOP_FN (el_mul, float_complex_matrix, float_matrix,
                float_complex_array, float_array, product)

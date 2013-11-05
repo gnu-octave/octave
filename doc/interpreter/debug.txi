@@ -306,7 +306,7 @@ profile on;
 foo;
 profile off;
 
-data = profile ('info');
+data = profile ("info");
 profshow (data, 10);
 @end group
 @end example
@@ -386,7 +386,7 @@ profile on;
 bar (20);
 profile off;
 
-profshow (profile ('info'));
+profshow (profile ("info"));
 @end group
 @end example
 
@@ -424,7 +424,7 @@ profile resume;
 foo;
 profile off;
 
-profshow (profile ('info'), 10);
+profshow (profile ("info"), 10);
 @end group
 @end example
 

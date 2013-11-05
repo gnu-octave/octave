@@ -156,6 +156,10 @@ Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
 to run Octave within Emacs, @pxref{Emacs Octave Support}.
 
+@item --jit-compiler
+@cindex @code{--jit-compiler}
+Enable the JIT compiler used for accelerating loops.
+
 @item --line-editing
 @cindex @code{--line-editing}
 Force readline use for command-line editing.
@@ -179,10 +183,6 @@ Don't read the initialization files @file{~/.octaverc} and @file{.octaverc}.
 @cindex @code{--no-init-path}
 Don't initialize the search path for function files to include default 
 locations.
-
-@item --no-jit-compiler
-@cindex @code{--no-jit-compiler}
-Disable the JIT compiler used for accelerating loops.
 
 @item --no-line-editing
 @cindex @code{--no-line-editing}

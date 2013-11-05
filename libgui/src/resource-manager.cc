@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QFile>
 #include <QDir>
 #include <QNetworkProxy>
- #include <QLibraryInfo>
+#include <QLibraryInfo>
 
 #include "error.h"
 #include "file-ops.h"
@@ -89,24 +89,25 @@ resource_manager::config_translators (QTranslator *qt_tr,
 {
   bool loaded;
 
-  QString qt_trans_dir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+  QString qt_trans_dir
+    = QLibraryInfo::location (QLibraryInfo::TranslationsPath);
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME -- what should happen if settings is 0?
+  // FIXME: what should happen if settings is 0?
 
   // get the locale from the settings
   QString language = settings->value ("language","SYSTEM").toString ();
   if (language == "SYSTEM")
-      language = QLocale::system().name();    // get system wide locale
+    language = QLocale::system ().name ();    // get system wide locale
 
   // load the translator file for qt strings
-  loaded = qt_tr->load("qt_" + language, qt_trans_dir);
+  loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
   if (!loaded) // try lower case
-    qt_tr->load("qt_" + language.toLower (), qt_trans_dir);
+    qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
 
   // load the translator file for qscintilla settings
-  loaded = qsci_tr->load("qscintilla_" + language, qt_trans_dir);
+  loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
   if (!loaded) // try lower case
-    qsci_tr->load("qscintilla_" + language.toLower (), qt_trans_dir);
+    qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
 
   // load the translator file for gui strings
   gui_tr->load (language, get_gui_translation_dir ());
@@ -178,7 +179,7 @@ resource_manager::do_reload_settings (void)
 
   if (!QFile::exists (settings_file))
     {
-      QDir("/").mkpath (settings_path);
+      QDir ("/").mkpath (settings_path);
       QFile::copy (default_qt_settings_file (), settings_file);
       first_run = true;
     }
@@ -227,7 +228,7 @@ resource_manager::do_update_network_settings (void)
   QNetworkProxy::setApplicationProxy (proxy);
 }
 
-QStringList 
+QStringList
 resource_manager::storage_class_names (void)
 {
   return workspace_model::storage_class_names ();
@@ -239,7 +240,7 @@ resource_manager::storage_class_default_colors (void)
   return workspace_model::storage_class_default_colors ();
 }
 
-QStringList 
+QStringList
 resource_manager::terminal_color_names (void)
 {
   return QTerminal::color_names ();

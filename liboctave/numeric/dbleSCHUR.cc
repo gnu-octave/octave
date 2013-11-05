@@ -51,7 +51,7 @@ extern "C"
 static octave_idx_type
 select_ana (const double& a, const double&)
 {
-   return (a < 0.0);
+  return (a < 0.0);
 }
 
 static octave_idx_type

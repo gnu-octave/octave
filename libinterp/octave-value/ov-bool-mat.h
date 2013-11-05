@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_bool_matrix_h)
-#define octave_bool_matrix_h 1
+#if !defined (octave_ov_bool_mat_h)
+#define octave_ov_bool_mat_h 1
 
 #include <cstdlib>
 
@@ -69,24 +69,27 @@ public:
 
   octave_bool_matrix (const boolNDArray& bm, const idx_vector& cache)
     : octave_base_matrix<boolNDArray> (bm)
-    {
-      set_idx_cache (cache);
-    }
+  {
+    set_idx_cache (cache);
+  }
 
   octave_bool_matrix (const octave_bool_matrix& bm)
     : octave_base_matrix<boolNDArray> (bm) { }
 
   ~octave_bool_matrix (void) { }
 
-  octave_base_value *clone (void) const { return new octave_bool_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_bool_matrix (); }
+  octave_base_value *clone (void) const
+  { return new octave_bool_matrix (*this); }
+
+  octave_base_value *empty_clone (void) const
+  { return new octave_bool_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
   octave_base_value *try_narrowing_conversion (void);
 
   idx_vector index_vector (void) const
-    { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   builtin_type_t builtin_type (void) const { return btyp_bool; }
 
@@ -127,35 +130,35 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-    { return Matrix (matrix.matrix_value ()); }
+  { return Matrix (matrix.matrix_value ()); }
 
   FloatMatrix float_matrix_value (bool = false) const
-    { return FloatMatrix (matrix.matrix_value ()); }
+  { return FloatMatrix (matrix.matrix_value ()); }
 
   NDArray array_value (bool = false) const
-    { return NDArray (matrix); }
+  { return NDArray (matrix); }
 
   FloatNDArray float_array_value (bool = false) const
-    { return FloatNDArray (matrix); }
+  { return FloatNDArray (matrix); }
 
   Complex complex_value (bool = false) const;
 
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return ComplexMatrix (matrix.matrix_value ( )); }
+  { return ComplexMatrix (matrix.matrix_value ( )); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-    { return FloatComplexMatrix (matrix.matrix_value ( )); }
+  { return FloatComplexMatrix (matrix.matrix_value ( )); }
 
   ComplexNDArray complex_array_value (bool = false) const
-    { return ComplexNDArray (matrix); }
+  { return ComplexNDArray (matrix); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-    { return FloatComplexNDArray (matrix); }
+  { return FloatComplexNDArray (matrix); }
 
   charNDArray
   char_array_value (bool = false) const
@@ -171,10 +174,10 @@ public:
   }
 
   boolMatrix bool_matrix_value (bool = false) const
-    { return matrix.matrix_value (); }
+  { return matrix.matrix_value (); }
 
   boolNDArray bool_array_value (bool = false) const
-    { return matrix; }
+  { return matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const
   { return SparseMatrix (Matrix (matrix.matrix_value ())); }
@@ -210,7 +213,7 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
+  { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
@@ -220,10 +223,10 @@ public:
 
   // Mapper functions are converted to double for treatment
   octave_value map (unary_mapper_t umap) const
-    {
-      octave_matrix m (array_value ());
-      return m.map (umap);
-    }
+  {
+    octave_matrix m (array_value ());
+    return m.map (umap);
+  }
 
 protected:
 

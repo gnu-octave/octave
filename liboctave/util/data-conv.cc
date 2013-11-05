@@ -359,10 +359,9 @@ oct_data_conv::string_to_data_type (const std::string& str)
 }
 
 void
-oct_data_conv::string_to_data_type
-  (const std::string& str, int& block_size,
-   oct_data_conv::data_type& input_type,
-   oct_data_conv::data_type& output_type)
+oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
+                                    oct_data_conv::data_type& input_type,
+                                    oct_data_conv::data_type& output_type)
 {
   block_size = 1;
   input_type = dt_uchar;
@@ -440,9 +439,8 @@ oct_data_conv::string_to_data_type
 }
 
 void
-oct_data_conv::string_to_data_type
-  (const std::string& str, int& block_size,
-   oct_data_conv::data_type& output_type)
+oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
+                                    oct_data_conv::data_type& output_type)
 {
   block_size = 1;
   output_type = dt_double;
@@ -632,9 +630,9 @@ gripe_unrecognized_float_fmt (void)
 // Currently, we only handle conversions for the IEEE types.  To fix
 // that, make more of the following routines work.
 
-// FIXME -- assumes sizeof (Complex) == 8
-// FIXME -- assumes sizeof (double) == 8
-// FIXME -- assumes sizeof (float) == 4
+// FIXME: assumes sizeof (Complex) == 8
+// FIXME: assumes sizeof (double) == 8
+// FIXME: assumes sizeof (float) == 4
 
 static void
 IEEE_big_double_to_IEEE_little_double (void *d, octave_idx_type len)

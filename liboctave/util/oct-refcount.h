@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_refcount_h)
-#define octave_refcount_h 1
+#if !defined (octave_oct_refcount_h)
+#define octave_oct_refcount_h 1
 
 #ifndef OCTAVE_CONFIG_INCLUDED
 # error "The file <octave/config.h> must be included before oct-refcount.h."
@@ -54,38 +54,38 @@ class octave_refcount
 public:
   typedef T count_type;
 
-  octave_refcount(count_type initial_count) : count(initial_count) {}
+  octave_refcount(count_type initial_count) : count(initial_count) { }
 
   // Increment/Decrement. int is postfix.
   count_type operator++(void)
-    {
-      return OCTREFCOUNT_ATOMIC_INCREMENT (&count);
-    }
+  {
+    return OCTREFCOUNT_ATOMIC_INCREMENT (&count);
+  }
 
   count_type operator++(int)
-    {
-      return OCTREFCOUNT_ATOMIC_INCREMENT_POST (&count);
-    }
+  {
+    return OCTREFCOUNT_ATOMIC_INCREMENT_POST (&count);
+  }
 
   count_type operator--(void)
-    {
-      return OCTREFCOUNT_ATOMIC_DECREMENT (&count);
-    }
+  {
+    return OCTREFCOUNT_ATOMIC_DECREMENT (&count);
+  }
 
   count_type operator--(int)
-    {
-      return OCTREFCOUNT_ATOMIC_DECREMENT_POST (&count);
-    }
+  {
+    return OCTREFCOUNT_ATOMIC_DECREMENT_POST (&count);
+  }
 
   operator count_type (void) const
-    {
-      return static_cast<count_type const volatile&> (count);
-    }
+  {
+    return static_cast<count_type const volatile&> (count);
+  }
 
   count_type *get (void)
-    {
-      return &count;
-    }
+  {
+    return &count;
+  }
 
 private:
   count_type count;

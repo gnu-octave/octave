@@ -634,7 +634,7 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 }
 
 DEFUNX ("inline", Finline, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} inline (@var{str})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
@@ -806,7 +806,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                       std::string s = args(i).string_value ();
                       fargs(i-1) = s;
                     }
-                    else
+                  else
                     {
                       error ("inline: expecting string arguments");
                       return retval;
@@ -843,7 +843,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
 */
 
 DEFUN (formula, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} formula (@var{fun})\n\
 Return a character string representing the inline function @var{fun}.\n\
 Note that @code{char (@var{fun})} is equivalent to\n\
@@ -881,7 +881,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 */
 
 DEFUN (argnames, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} argnames (@var{fun})\n\
 Return a cell array of character strings containing the names of\n\
 the arguments of the inline function @var{fun}.\n\
@@ -928,7 +928,7 @@ the arguments of the inline function @var{fun}.\n\
 */
 
 DEFUN (vectorize, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
 Create a vectorized version of the inline function @var{fun}\n\
 by replacing all occurrences of @code{*}, @code{/}, etc., with\n\

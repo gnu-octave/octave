@@ -47,35 +47,35 @@ public:
     : fun (a.fun), jac (a.jac), reset (true) { }
 
   ODEFunc& operator = (const ODEFunc& a)
-    {
-      if (this != &a)
-        {
-          fun = a.fun;
-          jac = a.jac;
-          reset = a.reset;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        fun = a.fun;
+        jac = a.jac;
+        reset = a.reset;
+      }
+    return *this;
+  }
 
   virtual ~ODEFunc (void) { }
 
   ODERHSFunc function (void) const { return fun; }
 
   ODEFunc& set_function (ODERHSFunc f)
-    {
-      fun = f;
-      reset = true;
-      return *this;
-    }
+  {
+    fun = f;
+    reset = true;
+    return *this;
+  }
 
   ODEJacFunc jacobian_function (void) const { return jac; }
 
   ODEFunc& set_jacobian_function (ODEJacFunc j)
-    {
-      jac = j;
-      reset = true;
-      return *this;
-    }
+  {
+    jac = j;
+    reset = true;
+    return *this;
+  }
 
 protected:
 

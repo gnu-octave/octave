@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 
 octave_dock_widget::octave_dock_widget (QWidget *p)
-    : QDockWidget (p)
+  : QDockWidget (p)
 {
 
   _parent = static_cast<QMainWindow *> (p);     // store main window
@@ -58,8 +58,8 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (change_floating (bool)));
   QToolButton *dock_button = new QToolButton (this);
   dock_button->setDefaultAction (_dock_action);
-  dock_button->setFocusPolicy(Qt::NoFocus);
-  dock_button->setIconSize(QSize(12,12));
+  dock_button->setFocusPolicy (Qt::NoFocus);
+  dock_button->setIconSize (QSize (12,12));
 
   QAction *close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this );
@@ -68,8 +68,8 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (change_visibility (bool)));
   QToolButton *close_button = new QToolButton (this);
   close_button->setDefaultAction (close_action);
-  close_button->setFocusPolicy(Qt::NoFocus);
-  close_button->setIconSize(QSize(12,12));
+  close_button->setFocusPolicy (Qt::NoFocus);
+  close_button->setIconSize (QSize (12,12));
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);
@@ -95,8 +95,10 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 #endif
 
   // copy & paste handling
-  connect (p, SIGNAL (copyClipboard_signal ()), this, SLOT (copyClipboard ()));
-  connect (p, SIGNAL (pasteClipboard_signal()), this, SLOT (pasteClipboard ()));
+  connect (p, SIGNAL (copyClipboard_signal ()),
+           this, SLOT (copyClipboard ()));
+  connect (p, SIGNAL (pasteClipboard_signal ()),
+           this, SLOT (pasteClipboard ()));
 }
 
 octave_dock_widget::~octave_dock_widget ()
@@ -110,7 +112,8 @@ octave_dock_widget::~octave_dock_widget ()
   settings->beginGroup ("DockWidgets");
 
   if (!parent ())
-    { // widget is floating (windows), save actual floating geometry
+    {
+      // widget is floating (windows), save actual floating geometry
       floating = true;
       settings->setValue (name+"_floating_geometry", saveGeometry ());
     }
@@ -141,7 +144,7 @@ octave_dock_widget::set_title (const QString& title)
 {
 #if defined (Q_OS_WIN32)
   QHBoxLayout* h_layout =
-      static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
+    static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
   h_layout->insertWidget (0,label);
 #endif
@@ -170,8 +173,8 @@ octave_dock_widget::make_window ()
   _dock_action->setToolTip (tr ("Dock widget"));
 
   // restore the last geometry when floating
-  restoreGeometry (settings->value
-          ("DockWidgets/" + objectName ()+"_floating_geometry").toByteArray ());
+  restoreGeometry (settings->value ("DockWidgets/" + objectName ()
+                                    + "_floating_geometry").toByteArray ());
 
 #else
 
@@ -198,12 +201,14 @@ octave_dock_widget::make_widget (bool dock)
   settings->sync ();
 
   if (dock)
-    { // add widget to last saved docking area (dock=true is default)
+    {
+      // add widget to last saved docking area (dock=true is default)
       int area = settings->value ("DockWidgets/" + objectName () + "_dock_area",
-                                   Qt::TopDockWidgetArea).toInt ();
+                                  Qt::TopDockWidgetArea).toInt ();
       _parent->addDockWidget (static_cast<Qt::DockWidgetArea> (area), this);
 
-      // FIXME: restoreGeometry is ignored for docked widgets and its child widget
+      // FIXME: restoreGeometry is ignored for docked widgets
+      //        and its child widget
       // restoreGeometry (settings->value
       //        ("DockWidgets/" + objectName ()).toByteArray ());
     }
@@ -225,9 +230,9 @@ octave_dock_widget::make_widget (bool dock)
 // slot for (un)dock action
 void
 octave_dock_widget::change_floating (bool floating)
- {
+{
 #if defined (Q_OS_WIN32)
-   if (parent())
+  if (parent ())
 #else
   if (floating)
 #endif
@@ -251,7 +256,7 @@ octave_dock_widget::change_visibility (bool)
 QWidget *
 octave_dock_widget::focusWidget ()
 {
-    QWidget * w = QApplication::focusWidget ();
-    if(w && w->focusProxy ()) w = w->focusProxy ();
-    return w;
+  QWidget * w = QApplication::focusWidget ();
+  if (w && w->focusProxy ()) w = w->focusProxy ();
+  return w;
 }

@@ -1053,21 +1053,21 @@ void mx_inline_diff (const T *v, T *r, octave_idx_type n,
         }
       break;
     default:
-        {
-          OCTAVE_LOCAL_BUFFER (T, buf, n-1);
+      {
+        OCTAVE_LOCAL_BUFFER (T, buf, n-1);
 
-          for (octave_idx_type i = 0; i < n-1; i++)
-            buf[i] = v[i+1] - v[i];
+        for (octave_idx_type i = 0; i < n-1; i++)
+          buf[i] = v[i+1] - v[i];
 
-          for (octave_idx_type o = 2; o <= order; o++)
-            {
-              for (octave_idx_type i = 0; i < n-o; i++)
-                buf[i] = buf[i+1] - buf[i];
-            }
+        for (octave_idx_type o = 2; o <= order; o++)
+          {
+            for (octave_idx_type i = 0; i < n-o; i++)
+              buf[i] = buf[i+1] - buf[i];
+          }
 
-          for (octave_idx_type i = 0; i < n-order; i++)
-            r[i] = buf[i];
-        }
+        for (octave_idx_type i = 0; i < n-order; i++)
+          r[i] = buf[i];
+      }
     }
 }
 
@@ -1090,24 +1090,24 @@ void mx_inline_diff (const T *v, T *r,
         }
       break;
     default:
-        {
-          OCTAVE_LOCAL_BUFFER (T, buf, n-1);
+      {
+        OCTAVE_LOCAL_BUFFER (T, buf, n-1);
 
-          for (octave_idx_type j = 0; j < m; j++)
-            {
-              for (octave_idx_type i = 0; i < n-1; i++)
-                buf[i] = v[i*m+j+m] - v[i*m+j];
+        for (octave_idx_type j = 0; j < m; j++)
+          {
+            for (octave_idx_type i = 0; i < n-1; i++)
+              buf[i] = v[i*m+j+m] - v[i*m+j];
 
-              for (octave_idx_type o = 2; o <= order; o++)
-                {
-                  for (octave_idx_type i = 0; i < n-o; i++)
-                    buf[i] = buf[i+1] - buf[i];
-                }
+            for (octave_idx_type o = 2; o <= order; o++)
+              {
+                for (octave_idx_type i = 0; i < n-o; i++)
+                  buf[i] = buf[i+1] - buf[i];
+              }
 
-              for (octave_idx_type i = 0; i < n-order; i++)
-                r[i*m+j] = buf[i];
-            }
-        }
+            for (octave_idx_type i = 0; i < n-order; i++)
+              r[i*m+j] = buf[i];
+          }
+      }
     }
 }
 

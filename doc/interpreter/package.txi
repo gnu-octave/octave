@@ -309,6 +309,7 @@ external scripts, etc., called by functions within the package.
 * The DESCRIPTION File::
 * The INDEX File::
 * PKG_ADD and PKG_DEL Directives::
+* Missing Components::
 @end menu
 
 @node The DESCRIPTION File
@@ -575,3 +576,13 @@ command that should be placed in the @w{@code{PKG_ADD}} file.
 @w{@code{PKG_ADD}} keyword is replaced with @w{@code{PKG_DEL}} and the commands
 get added to the @w{@code{PKG_DEL}} file.
 
+@node Missing Components
+@subsection Missing Components
+
+If a package relies on a component, such as another Octave package, that may
+not be present it may be useful to install a function which informs users what
+to do when a particular component is missing.  The function must be written by
+the package maintainer and registered with Octave using
+@code{missing_component_hook}.
+
+@DOCSTRING(missing_component_hook)

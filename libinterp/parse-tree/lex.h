@@ -49,47 +49,37 @@ public:
   {
   public:
 
-    symbol_table_context (void)
-      : frame_stack (), init_scope (symbol_table::current_scope ())
-    {
-      push (init_scope);
-    }
+    symbol_table_context (void) : frame_stack () { }
 
     void clear (void)
     {
       while (! frame_stack.empty ())
         frame_stack.pop ();
-
-      push (init_scope);
     }
 
     bool empty (void) const { return frame_stack.empty (); }
 
     void pop (void)
     {
+      if (empty ())
+        panic_impossible ();
+
       frame_stack.pop ();
     }
 
-    void push (symbol_table::scope_id scope)
+    void push (symbol_table::scope_id scope = symbol_table::current_scope ())
     {
       frame_stack.push (scope);
     }
 
-    void push (void)
-    {
-      push (symbol_table::current_scope ());
-    }
-
     symbol_table::scope_id curr_scope (void) const
     {
-      return frame_stack.top ();
+      return empty () ? symbol_table::current_scope () : frame_stack.top ();
     }
 
   private:
 
     std::stack<symbol_table::scope_id> frame_stack;
-
-    symbol_table::scope_id init_scope;
   };
 
   // Track nesting of square brackets, curly braces, and parentheses.
@@ -99,12 +89,12 @@ public:
   private:
 
     enum bracket_type
-      {
-        BRACKET = 1,
-        BRACE = 2,
-        PAREN = 3,
-        ANON_FCN_BODY = 4
-      };
+    {
+      BRACKET = 1,
+      BRACE = 2,
+      PAREN = 3,
+      ANON_FCN_BODY = 4
+    };
 
   public:
 
@@ -262,14 +252,14 @@ public:
 
     token_cache& operator = (const token_cache&);
   };
-  
+
   lexical_feedback (void)
     : end_of_input (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
       looking_at_initializer_expression (false),
       looking_at_matrix_or_assign_lhs (false),
-      looking_for_object_index (false), 
+      looking_for_object_index (false),
       looking_at_indirect_ref (false), parsing_class_method (false),
       parsing_classdef (false), maybe_classdef_get_set_method (false),
       parsing_classdef_get_method (false),

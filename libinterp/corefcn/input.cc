@@ -147,9 +147,9 @@ set_default_prompts (void)
 void
 octave_base_reader::do_input_echo (const std::string& input_string) const
 {
-  int do_echo = reading_script_file () ?
-    (Vecho_executing_commands & ECHO_SCRIPTS)
-      : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
+  int do_echo = reading_script_file ()
+    ? (Vecho_executing_commands & ECHO_SCRIPTS)
+    : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
 
   if (do_echo)
     {
@@ -324,7 +324,7 @@ get_input_from_stdin (void)
   return command_editor::get_input_stream ();
 }
 
-// FIXME -- make this generate file names when appropriate.
+// FIXME: make this generate file names when appropriate.
 
 static string_vector
 generate_possible_completions (const std::string& text, std::string& prefix,
@@ -436,8 +436,8 @@ generate_completion (const std::string& text, int state)
               else
                 retval = name;
 
-              // FIXME -- looks_like_struct is broken for now,
-              // so it always returns false.
+              // FIXME: looks_like_struct is broken for now,
+              //        so it always returns false.
 
               if (matches == 1 && looks_like_struct (retval))
                 {
@@ -475,7 +475,7 @@ initialize_command_input (void)
 
   command_editor::set_name ("Octave");
 
-  // FIXME -- this needs to include a comma too, but that
+  // FIXME: this needs to include a comma too, but that
   // causes trouble for the new struct element completion code.
 
   static const char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
@@ -536,7 +536,7 @@ get_debug_input (const std::string& prompt)
         }
       else
         {
-          // FIXME -- we should come up with a clean way to detect
+          // FIXME: we should come up with a clean way to detect
           // that we are stopped on the no-op command that marks the
           // end of a function or script.
 
@@ -702,7 +702,7 @@ get_user_input (const octave_value_list& args, int nargout)
 
       if (read_as_string)
         {
-          // FIXME -- fix gnu_readline and octave_gets instead!
+          // FIXME: fix gnu_readline and octave_gets instead!
           if (input_buf.length () == 1 && input_buf[0] == '\n')
             retval(0) = "";
           else
@@ -725,7 +725,7 @@ get_user_input (const octave_value_list& args, int nargout)
 }
 
 DEFUN (input, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{ans} =} input (@var{prompt})\n\
 @deftypefnx {Built-in Function} {@var{ans} =} input (@var{prompt}, \"s\")\n\
 Print a prompt and wait for user input.  For example,\n\
@@ -794,7 +794,7 @@ octave_yes_or_no (const std::string& prompt)
 }
 
 DEFUN (yes_or_no, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
 Ask the user a yes-or-no question.  Return logical true if the answer is yes\n\
 or false if the answer is no.  Takes one argument, @var{prompt}, which is\n\
@@ -853,7 +853,7 @@ do_keyboard (const octave_value_list& args)
   frame.add_fcn (octave_call_stack::restore_frame,
                  octave_call_stack::current_frame ());
 
-  // FIXME -- probably we just want to print one line, not the
+  // FIXME: probably we just want to print one line, not the
   // entire statement, which might span many lines...
   //
   // tree_print_code tpc (octave_stdout);
@@ -872,7 +872,7 @@ do_keyboard (const octave_value_list& args)
 }
 
 DEFUN (keyboard, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} keyboard ()\n\
 @deftypefnx {Built-in Function} {} keyboard (\"@var{prompt}\")\n\
 This function is normally used for simple debugging.  When the\n\
@@ -915,7 +915,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
 }
 
 DEFUN (echo, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Command} {} echo options\n\
 Control whether commands are displayed as they are executed.  Valid\n\
 options are:\n\
@@ -999,7 +999,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 }
 
 DEFUN (completion_matches, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} completion_matches (@var{hint})\n\
 Generate possible completions given @var{hint}.\n\
 \n\
@@ -1075,7 +1075,7 @@ a feature, not a bug.\n\
 }
 
 DEFUN (readline_read_init_file, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} readline_read_init_file (@var{file})\n\
 Read the readline library initialization file @var{file}.  If\n\
 @var{file} is omitted, read the default initialization file (normally\n\
@@ -1106,7 +1106,7 @@ for details.\n\
 }
 
 DEFUN (readline_re_read_init_file, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} readline_re_read_init_file ()\n\
 Re-read the last readline library initialization file that was read.\n\
 @xref{Readline Init File, , , readline, GNU Readline Library},\n\
@@ -1136,7 +1136,7 @@ internal_input_event_hook_fcn (void)
 }
 
 DEFUN (add_input_event_hook, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn})\n\
 @deftypefnx {Built-in Function} {@var{id} =} add_input_event_hook (@var{fcn}, @var{data})\n\
 Add the named function or function handle @var{fcn} to the list of functions\n\
@@ -1187,7 +1187,7 @@ the list of input hook functions.\n\
 }
 
 DEFUN (remove_input_event_hook, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} remove_input_event_hook (@var{name})\n\
 @deftypefnx {Built-in Function} {} remove_input_event_hook (@var{fcn_id})\n\
 Remove the named function or function handle with the given identifier\n\
@@ -1230,7 +1230,7 @@ for input.\n\
 }
 
 DEFUN (PS1, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS1 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PS1 (@var{new_val}, \"local\")\n\
@@ -1270,7 +1270,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (PS2, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS2 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PS2 (@var{new_val}, \"local\")\n\
@@ -1291,7 +1291,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (PS4, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS4 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PS4 (@var{new_val}, \"local\")\n\
@@ -1310,7 +1310,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (completion_append_char, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} completion_append_char ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} completion_append_char (@var{new_val}, \"local\")\n\
@@ -1327,7 +1327,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (echo_executing_commands, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} echo_executing_commands (@var{new_val}, \"local\")\n\
@@ -1360,7 +1360,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (__request_drawnow__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __request_drawnow__ ()\n\
 @deftypefnx {Built-in Function} {} __request_drawnow__ (@var{flag})\n\
 Undocumented internal function.\n\
@@ -1381,7 +1381,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__gud_mode__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __gud_mode__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1401,7 +1401,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (filemarker, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\

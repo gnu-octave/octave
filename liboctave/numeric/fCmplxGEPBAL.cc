@@ -58,14 +58,16 @@ extern "C"
 }
 
 octave_idx_type
-FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
-                  const std::string& balance_job)
+FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a,
+                              const FloatComplexMatrix& b,
+                              const std::string& balance_job)
 {
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
     {
-      (*current_liboctave_error_handler) ("FloatComplexGEPBALANCE requires square matrix");
+      (*current_liboctave_error_handler)
+        ("FloatComplexGEPBALANCE requires square matrix");
       return -1;
     }
 

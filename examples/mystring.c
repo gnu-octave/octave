@@ -9,8 +9,8 @@ mexFunction (int nlhs, mxArray *plhs[],
   mwIndex i, j;
   mxChar *pi, *po;
 
-  if (nrhs != 1 || ! mxIsChar (prhs[0]) || 
-      mxGetNumberOfDimensions (prhs[0]) > 2)
+  if (nrhs != 1 || ! mxIsChar (prhs[0])
+      || mxGetNumberOfDimensions (prhs[0]) > 2)
     mexErrMsgTxt ("ARG1 must be a char matrix");
 
   m = mxGetM (prhs[0]);

@@ -575,7 +575,8 @@ octave_map::resize (const dim_vector& dv, bool fill)
 }
 
 void
-octave_map::do_cat (int dim, octave_idx_type n, const octave_scalar_map *map_list,
+octave_map::do_cat (int dim, octave_idx_type n,
+                    const octave_scalar_map *map_list,
                     octave_map& retval)
 {
   octave_idx_type nf = retval.nfields ();
@@ -616,8 +617,10 @@ octave_map::do_cat (int dim, octave_idx_type n, const octave_map *map_list,
 }
 
 // This is just a wrapper.
-void permute_to_correct_order1 (const octave_scalar_map& ref, const octave_scalar_map& src,
-                                octave_scalar_map& dest, Array<octave_idx_type>& perm)
+void permute_to_correct_order1 (const octave_scalar_map& ref,
+                                const octave_scalar_map& src,
+                                octave_scalar_map& dest,
+                                Array<octave_idx_type>& perm)
 {
   dest = src.orderfields (ref, perm);
 }
@@ -627,9 +630,9 @@ void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
                                 octave_map& dest, Array<octave_idx_type>& perm)
 {
   if (src.nfields () == 0 && src.is_empty ())
-     dest = octave_map (src.dims (), ref.keys ());
+    dest = octave_map (src.dims (), ref.keys ());
   else
-     dest = src.orderfields (ref, perm);
+    dest = src.orderfields (ref, perm);
 }
 
 template <class map>
@@ -645,9 +648,10 @@ permute_to_correct_order (octave_idx_type n, octave_idx_type nf,
   for (octave_idx_type i = 0; i < n; i++)
     {
       if (i == idx)
-         continue;
+        continue;
 
-      permute_to_correct_order1 (map_list[idx], map_list[i], new_map_list[i], perm);
+      permute_to_correct_order1 (map_list[idx], map_list[i], new_map_list[i],
+                                 perm);
 
       if (error_state)
         {
@@ -1578,7 +1582,7 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
         }
     }
 
- done:
+done:
   return retval;
 }
 

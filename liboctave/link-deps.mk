@@ -25,7 +25,7 @@ LIBOCTAVE_LINK_DEPS = \
   $(READLINE_LIBS) \
   $(TERM_LIBS) \
   $(LIBGLOB) \
-  $(REGEX_LIBS) \
+  $(PCRE_LIBS) \
   $(DL_LIBS) \
   $(PTHREAD_LIBS) \
   $(FLIBS) \

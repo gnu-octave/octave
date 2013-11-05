@@ -272,7 +272,8 @@ xdiv (const SparseComplexMatrix& a, const SparseMatrix& b, MatrixType &typ)
 
 // -*- 8 -*-
 SparseComplexMatrix
-xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b, MatrixType &typ)
+xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
+      MatrixType &typ)
 {
   if (! mx_div_conform (a, b))
     return SparseComplexMatrix ();
@@ -627,7 +628,8 @@ xleftdiv (const ComplexDiagMatrix& d, const SparseMatrix& a,  MatrixType&)
 
 // -*- 12 -*-
 SparseComplexMatrix
-xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,  MatrixType&)
+xleftdiv (const ComplexDiagMatrix& d, const SparseComplexMatrix& a,
+          MatrixType&)
 {
   return do_leftdiv_dm_sm<SparseComplexMatrix> (d, a);
 }

@@ -51,7 +51,8 @@ template class OCTINTERP_API octave_base_sparse<SparseMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix", "double");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix",
+                                     "double");
 
 idx_vector
 octave_sparse_matrix::index_vector (void) const
@@ -118,7 +119,7 @@ octave_sparse_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
+  // FIXME: maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
       if (numel () > 1)
@@ -223,32 +224,32 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 
             double d = matrix.data (i);
 
-              if (xisnan (d))
-                {
-                  gripe_nan_to_character_conversion ();
-                  return retval;
-                }
-              else
-                {
-                  int ival = NINT (d);
+            if (xisnan (d))
+              {
+                gripe_nan_to_character_conversion ();
+                return retval;
+              }
+            else
+              {
+                int ival = NINT (d);
 
-                  if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-                    {
-                      // FIXME -- is there something
-                      // better we could do?
+                if (ival < 0
+                    || ival > std::numeric_limits<unsigned char>::max ())
+                  {
+                    // FIXME: is there something better we could do?
 
-                      ival = 0;
+                    ival = 0;
 
-                      if (! warned)
-                        {
-                          ::warning ("range error for conversion to character value");
-                          warned = true;
-                        }
-                    }
+                    if (! warned)
+                      {
+                        ::warning ("range error for conversion to character value");
+                        warned = true;
+                      }
+                  }
 
-                  chm (matrix.ridx (i) + j * nr) =
-                    static_cast<char> (ival);
-                }
+                chm (matrix.ridx (i) + j * nr) =
+                  static_cast<char> (ival);
+              }
           }
 
       retval = octave_value (chm, type);
@@ -296,7 +297,7 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (matrix.nnz () > 8192) // FIXME -- make this configurable.
+  else if (matrix.nnz () > 8192) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))
@@ -305,21 +306,21 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
 
   // add one to the printed indices to go from
   // zero-based to one-based arrays
-   for (int i = 0; i < nc+1; i++)
-     {
-       octave_quit ();
-       itmp = matrix.cidx (i);
-       os.write (reinterpret_cast<char *> (&itmp), 4);
-     }
+  for (int i = 0; i < nc+1; i++)
+    {
+      octave_quit ();
+      itmp = matrix.cidx (i);
+      os.write (reinterpret_cast<char *> (&itmp), 4);
+    }
 
-   for (int i = 0; i < nz; i++)
-     {
-       octave_quit ();
-       itmp = matrix.ridx (i);
-       os.write (reinterpret_cast<char *> (&itmp), 4);
-     }
+  for (int i = 0; i < nz; i++)
+    {
+      octave_quit ();
+      itmp = matrix.ridx (i);
+      os.write (reinterpret_cast<char *> (&itmp), 4);
+    }
 
-   write_doubles (os, matrix.data (), st, nz);
+  write_doubles (os, matrix.data (), st, nz);
 
   return true;
 }
@@ -337,10 +338,11 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<4> (&tmp);
 
-  if (tmp != -2) {
-    error ("load: only 2-D sparse matrices are supported");
-    return false;
-  }
+  if (tmp != -2)
+    {
+      error ("load: only 2-D sparse matrices are supported");
+      return false;
+    }
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
     return false;
@@ -411,7 +413,8 @@ octave_sparse_matrix::save_hdf5 (hid_t loc_id, const char *name,
   matrix.maybe_compress ();
 
 #if HAVE_HDF5_18
-  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT,
+                               H5P_DEFAULT);
 #else
   hid_t group_hid = H5Gcreate (loc_id, name, 0);
 #endif

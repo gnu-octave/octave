@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_all_h)
-#define octave_tree_all_h 1
+#if !defined (octave_pt_all_h)
+#define octave_pt_all_h 1
 
 #include "pt.h"
 #include "pt-arg-list.h"

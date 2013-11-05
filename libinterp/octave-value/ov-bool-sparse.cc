@@ -51,14 +51,16 @@ template class OCTINTERP_API octave_base_sparse<SparseBoolMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse_bool_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix, "sparse bool matrix", "logical");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_bool_matrix,
+                                     "sparse bool matrix", "logical");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
 {
   CAST_CONV_ARG (const octave_sparse_bool_matrix&);
 
-  return new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
+  return
+    new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
 }
 
 octave_base_value::type_conv_info
@@ -272,10 +274,11 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<4> (&tmp);
 
-  if (tmp != -2) {
-    error ("load: only 2-D sparse matrices are supported");
-    return false;
-  }
+  if (tmp != -2)
+    {
+      error ("load: only 2-D sparse matrices are supported");
+      return false;
+    }
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
     return false;
@@ -347,7 +350,8 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 #if HAVE_HDF5_18
-  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT,
+                               H5P_DEFAULT);
 #else
   hid_t group_hid = H5Gcreate (loc_id, name, 0);
 #endif
@@ -381,7 +385,8 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
     }
 
   tmp = m.rows ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &tmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL,
+                     H5S_ALL, H5P_DEFAULT, &tmp) >= 0;
   H5Dclose (data_hid);
   if (!retval)
     {
@@ -579,7 +584,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nr) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nr)
+      < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -603,7 +609,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nc) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nc)
+      < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -627,7 +634,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nz) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nz)
+      < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -671,7 +679,8 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   octave_idx_type *itmp = m.xcidx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp)
+      < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);

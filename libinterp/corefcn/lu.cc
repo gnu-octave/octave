@@ -62,7 +62,7 @@ get_lu_u (const base_lu<MT>& fact)
 }
 
 DEFUN (lu, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} lu (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} lu (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} lu (@var{S})\n\
@@ -235,9 +235,9 @@ information.\n\
                     retval(1) = octave_value (fact.U (),
                                               MatrixType (MatrixType::Upper));
 
-                    retval(0) = octave_value (L,
-                        MatrixType (MatrixType::Permuted_Lower,
-                                    nr, fact.row_perm ()));
+                    retval(0)
+                      = octave_value (L, MatrixType (MatrixType::Permuted_Lower,
+                                                     nr, fact.row_perm ()));
                   }
               }
               break;
@@ -305,9 +305,9 @@ information.\n\
                     retval(1) = octave_value (fact.U (),
                                               MatrixType (MatrixType::Upper));
 
-                    retval(0) = octave_value (L,
-                        MatrixType (MatrixType::Permuted_Lower,
-                                    nr, fact.row_perm ()));
+                    retval(0)
+                      = octave_value (L, MatrixType (MatrixType::Permuted_Lower,
+                                                     nr, fact.row_perm ()));
                   }
               }
               break;
@@ -590,12 +590,12 @@ bool check_lu_dims (const octave_value& l, const octave_value& u,
 {
   octave_idx_type m = l.rows (), k = u.rows (), n = u.columns ();
   return ((l.ndims () == 2 && u.ndims () == 2 && k == l.columns ())
-            && k == std::min (m, n) &&
-            (p.is_undefined () || p.rows () == m));
+          && k == std::min (m, n) &&
+          (p.is_undefined () || p.rows () == m));
 }
 
 DEFUN (luupdate, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}] =} luupdate (@var{L}, @var{U}, @var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}] =} luupdate (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 Given an LU@tie{}factorization of a real or complex matrix\n\

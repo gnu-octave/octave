@@ -167,9 +167,9 @@ extern int signbit (double);
 int
 __lo_ieee_signbit (double x)
 {
-/* In the following definitions, only check x < 0 explicitly to avoid
-   a function call when it looks like signbit or copysign are actually
-   functions.  */
+  /* In the following definitions, only check x < 0 explicitly to avoid
+     a function call when it looks like signbit or copysign are actually
+     functions.  */
 
 #if defined (signbit)
   return signbit (x);
@@ -261,9 +261,9 @@ extern int signbit (float);
 int
 __lo_ieee_float_signbit (float x)
 {
-/* In the following definitions, only check x < 0 explicitly to avoid
-   a function call when it looks like signbit or copysign are actually
-   functions.  */
+  /* In the following definitions, only check x < 0 explicitly to avoid
+     a function call when it looks like signbit or copysign are actually
+     functions.  */
 
 #if defined (signbit)
   return signbit (x);

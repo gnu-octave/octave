@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (inv, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} inv (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inv (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.  Return an estimate\n\
@@ -232,12 +232,12 @@ of a sparse matrix if possible.\n\
 %!error <argument must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
 */
 
-// FIXME -- this should really be done with an alias, but
+// FIXME: this should really be done with an alias, but
 // alias_builtin() won't do the right thing if we are actually using
 // dynamic linking.
 
 DEFUN (inverse, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} inverse (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inverse (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.\n\

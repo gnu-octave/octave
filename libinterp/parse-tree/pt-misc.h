@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_misc_h)
-#define octave_tree_misc_h 1
+#if !defined (octave_pt_misc_h)
+#define octave_pt_misc_h 1
 
 class Cell;
 
@@ -48,10 +48,10 @@ tree_parameter_list : public octave_base_list<tree_decl_elt *>
 public:
 
   enum in_or_out
-    {
-      in = 1,
-      out = 2
-    };
+  {
+    in = 1,
+    out = 2
+  };
 
   tree_parameter_list (void)
     : marked_for_varargs (0) { }
@@ -83,7 +83,8 @@ public:
 
   std::list<std::string> variable_names (void) const;
 
-  octave_value_list convert_to_const_vector (int nargout, const Cell& varargout);
+  octave_value_list convert_to_const_vector (int nargout,
+                                             const Cell& varargout);
 
   tree_parameter_list *dup (symbol_table::scope_id scope,
                             symbol_table::context_id context) const;

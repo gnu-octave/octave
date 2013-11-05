@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_DiagMatrix_h)
-#define octave_DiagMatrix_h 1
+#if !defined (octave_dDiagMatrix_h)
+#define octave_dDiagMatrix_h 1
 
 #include "MDiagArray2.h"
 
@@ -35,16 +35,18 @@ class
 OCTAVE_API
 DiagMatrix : public MDiagArray2<double>
 {
-friend class SVD;
-friend class ComplexSVD;
+  friend class SVD;
+  friend class ComplexSVD;
 
 public:
 
   DiagMatrix (void) : MDiagArray2<double> () { }
 
-  DiagMatrix (octave_idx_type r, octave_idx_type c) : MDiagArray2<double> (r, c) { }
+  DiagMatrix (octave_idx_type r, octave_idx_type c)
+    : MDiagArray2<double> (r, c) { }
 
-  DiagMatrix (octave_idx_type r, octave_idx_type c, double val) : MDiagArray2<double> (r, c, val) { }
+  DiagMatrix (octave_idx_type r, octave_idx_type c, double val)
+    : MDiagArray2<double> (r, c, val) { }
 
   DiagMatrix (const DiagMatrix& a) : MDiagArray2<double> (a) { }
 
@@ -59,10 +61,10 @@ public:
     : MDiagArray2<double> (a, r, c) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
-    {
-      MDiagArray2<double>::operator = (a);
-      return *this;
-    }
+  {
+    MDiagArray2<double>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const DiagMatrix& a) const;
   bool operator != (const DiagMatrix& a) const;
@@ -74,7 +76,8 @@ public:
   DiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
   DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
 
-  DiagMatrix transpose (void) const { return MDiagArray2<double>::transpose (); }
+  DiagMatrix transpose (void) const
+  { return MDiagArray2<double>::transpose (); }
   DiagMatrix abs (void) const;
 
   friend OCTAVE_API DiagMatrix real (const ComplexDiagMatrix& a);
@@ -82,7 +85,8 @@ public:
 
   // resize is the destructive analog for this one
 
-  Matrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+  Matrix extract (octave_idx_type r1, octave_idx_type c1,
+                  octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i.
 
@@ -99,14 +103,15 @@ public:
   // other operations
 
   ColumnVector extract_diag (octave_idx_type k = 0) const
-    { return MDiagArray2<double>::extract_diag (k); }
+  { return MDiagArray2<double>::extract_diag (k); }
 
   DET determinant (void) const;
   double rcond (void) const;
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const DiagMatrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const DiagMatrix& a);
 
 };
 

@@ -309,9 +309,15 @@ endfunction
 %!assert (datestr (testtime,11), "05")
 %!assert (datestr (testtime,12), "Dec05")
 %!assert (datestr (testtime,13), "02:33:17")
-%!assert (datestr (testtime,14), " 2:33:17 AM")
+## Mac OS X interprets %p parameter to strftime as lower case am/pm indicator.
+## Accomodate this, although no other UNIX-based OS does this.
+%!test
+%! obs = toupper (datestr (testtime,14));
+%! assert (obs, " 2:33:17 AM");
 %!assert (datestr (testtime,15), "02:33")
-%!assert (datestr (testtime,16), " 2:33 AM")
+%!test
+%! obs = toupper (datestr (testtime,16));
+%! assert (obs, " 2:33 AM");
 %!assert (datestr (testtime,17), "Q4-05")
 %!assert (datestr (testtime,18), "Q4")
 %!assert (datestr (testtime,19), "18/12")

@@ -187,11 +187,11 @@ initialize (void)
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
-    + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
   string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
-    + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
@@ -212,55 +212,65 @@ initialize (void)
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
   vars["XTRA_CFLAGS"] = get_variable ("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
-  vars["XTRA_CXXFLAGS"] = get_variable ("XTRA_CXXFLAGS", %OCTAVE_CONF_XTRA_CXXFLAGS%);
+  vars["XTRA_CXXFLAGS"] = get_variable ("XTRA_CXXFLAGS",
+                                        %OCTAVE_CONF_XTRA_CXXFLAGS%);
 
   vars["AR"] = get_variable ("AR", %OCTAVE_CONF_MKOCTFILE_AR%);
   vars["RANLIB"] = get_variable ("RANLIB", %OCTAVE_CONF_MKOCTFILE_RANLIB%);
 
-  vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS", %OCTAVE_CONF_DEPEND_FLAGS%);
-  vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN", %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
+  vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS",
+                                       %OCTAVE_CONF_DEPEND_FLAGS%);
+  vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN",
+                                       %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
 
   vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_MKOCTFILE_DL_LD%);
-  vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS", %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
+  vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
+                                     %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
-  vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
+  vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG",
+                                        %OCTAVE_CONF_RDYNAMIC_FLAG%);
   vars["LIBOCTAVE"] = "-loctave";
   vars["LIBOCTINTERP"] = "-loctinterp";
   vars["READLINE_LIBS"] = "-lreadline";
   vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
-  vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS", %OCTAVE_CONF_FFTW3_LDFLAGS%);
+  vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS",
+                                        %OCTAVE_CONF_FFTW3_LDFLAGS%);
   vars["FFTW3_LIBS"] = get_variable ("FFTW3_LIBS", %OCTAVE_CONF_FFTW3_LIBS%);
-  vars["FFTW3F_LDFLAGS"] = get_variable ("FFTW3F_LDFLAGS", %OCTAVE_CONF_FFTW3F_LDFLAGS%);
+  vars["FFTW3F_LDFLAGS"] = get_variable ("FFTW3F_LDFLAGS",
+                                         %OCTAVE_CONF_FFTW3F_LDFLAGS%);
   vars["FFTW3F_LIBS"] = get_variable ("FFTW3F_LIBS", %OCTAVE_CONF_FFTW3F_LIBS%);
   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
-  vars["OCTAVE_LINK_DEPS"] = get_variable ("FLIBS", %OCTAVE_CONF_OCTAVE_LINK_DEPS%);
+  vars["OCTAVE_LINK_DEPS"] = get_variable ("FLIBS",
+                                           %OCTAVE_CONF_OCTAVE_LINK_DEPS%);
   vars["OCT_LINK_DEPS"] = get_variable ("FLIBS", %OCTAVE_CONF_OCT_LINK_DEPS%);
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
 
   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
-  vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
+  vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
+                                         %OCTAVE_CONF_LD_STATIC_FLAG%);
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);
-  vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG", %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
+  vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
+                                            %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
 
   vars["ALL_FFLAGS"] = vars["FFLAGS"] + " " + vars["F77_INTEGER8_FLAG"];
 
-  vars["ALL_CFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CFLAGS"]
-    + " " + vars["CFLAGS"];
+  vars["ALL_CFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CFLAGS"] + " "
+                       + vars["CFLAGS"];
 
-  vars["ALL_CXXFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CXXFLAGS"]
-    + " " + vars["CXXFLAGS"];
+  vars["ALL_CXXFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CXXFLAGS"] + " "
+                         + vars["CXXFLAGS"];
 
-  vars["ALL_LDFLAGS"] = vars["LD_STATIC_FLAG"] + " " + vars["CPICFLAG"]
-    + " " + vars["LDFLAGS"];
+  vars["ALL_LDFLAGS"] = vars["LD_STATIC_FLAG"] + " " + vars["CPICFLAG"] + " "
+                        + vars["LDFLAGS"];
 
-  vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"]
-    + " " + vars["SPECIAL_MATH_LIB"];
+  vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"] + " "
+                        + vars["SPECIAL_MATH_LIB"];
 
-  vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"]
-    + " " + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
+  vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"] + " "
+                      + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
 }
 
 static string usage_msg = "usage: mkoctfile [options] file ...";
@@ -611,8 +621,8 @@ main (int argc, char **argv)
 
           unlink (dfile.c_str ());
           string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
-            + vars["CPPFLAGS"] + " " + vars["ALL_CFLAGS"] + " "
-            + incflags  + " " + defs + " " + quote_path (f);
+                       + vars["CPPFLAGS"] + " " + vars["ALL_CFLAGS"] + " "
+                       + incflags  + " " + defs + " " + quote_path (f);
 
           FILE *fd = popen (cmd.c_str (), "r");
           ofstream fo (dfile.c_str ());
@@ -623,8 +633,11 @@ main (int argc, char **argv)
               if ((pos = line.rfind (".o:")) != string::npos)
                 {
                   size_t spos = line.rfind ('/', pos);
-                  string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
-                  fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos) << endl;
+                  string ofile =
+                    (spos == string::npos ? line.substr (0, pos+2)
+                                          : line.substr (spos+1, pos-spos+1));
+                  fo << "pic/" << ofile << " " << ofile << " "
+                     << dfile << line.substr (pos) << endl;
                 }
               else
                 fo << line << endl;
@@ -639,8 +652,8 @@ main (int argc, char **argv)
 
           unlink (dfile.c_str ());
           string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
-            + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " "
-            + incflags  + " " + defs + " " + quote_path (f);
+                       + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " "
+                       + incflags  + " " + defs + " " + quote_path (f);
 
           FILE *fd = popen (cmd.c_str (), "r");
           ofstream fo (dfile.c_str ());
@@ -651,8 +664,11 @@ main (int argc, char **argv)
               if ((pos = line.rfind (".o:")) != string::npos)
                 {
                   size_t spos = line.rfind ('/', pos);
-                  string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
-                  fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos+2) << endl;
+                  string ofile =
+                    (spos == string::npos ? line.substr (0, pos+2)
+                                          : line.substr (spos+1, pos-spos+1));
+                  fo << "pic/" << ofile << " " << ofile << " "
+                     << dfile << line.substr (pos+2) << endl;
                 }
               else
                 fo << line << endl;
@@ -681,8 +697,8 @@ main (int argc, char **argv)
             o = b + ".o";
           objfiles += (" " + o);
           string cmd = vars["F77"] + " -c " + vars["FPICFLAG"] + " "
-            + vars["ALL_FFLAGS"] + " " + incflags + " " + defs + " "
-            + pass_on_options + " " + f + " -o " + o;
+                       + vars["ALL_FFLAGS"] + " " + incflags + " " + defs + " "
+                       + pass_on_options + " " + f + " -o " + o;
           result = run_command (cmd);
         }
       else
@@ -709,9 +725,9 @@ main (int argc, char **argv)
             o = b + ".o";
           objfiles += (" " + o);
           string cmd = vars["CC"] + " -c " + vars["CPPFLAGS"] + " "
-            + vars["CPICFLAG"] + " " + vars["ALL_CFLAGS"] + " "
-            + pass_on_options + " " + incflags + " " + defs + " "
-            + quote_path (f) + " -o " + quote_path (o);
+                       + vars["CPICFLAG"] + " " + vars["ALL_CFLAGS"] + " "
+                       + pass_on_options + " " + incflags + " " + defs + " "
+                       + quote_path (f) + " -o " + quote_path (o);
           result = run_command (cmd);
         }
       else
@@ -738,9 +754,9 @@ main (int argc, char **argv)
             o = b + ".o";
           objfiles += (" " + o);
           string cmd = vars["CXX"] + " -c " + vars["CPPFLAGS"] + " "
-            + vars["CXXPICFLAG"] + " " + vars["ALL_CXXFLAGS"] + " "
-            + pass_on_options + " " + incflags + " " + defs + " "
-            + quote_path (f) + " -o " + quote_path (o);
+                       + vars["CXXPICFLAG"] + " " + vars["ALL_CXXFLAGS"] + " "
+                       + pass_on_options + " " + incflags + " " + defs + " "
+                       + quote_path (f) + " -o " + quote_path (o);
           result = run_command (cmd);
         }
       else
@@ -757,13 +773,14 @@ main (int argc, char **argv)
           if (!vars["LD_CXX"].empty ())
             {
               string cmd = vars["LD_CXX"] + " " + vars["CPPFLAGS"] + " "
-                + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"]
-                + " " + vars["ALL_LDFLAGS"] + " " +  pass_on_options
-                + " " + output_option + " " + objfiles + " " + libfiles
-                + " " + ldflags + " " + vars["LFLAGS"]
-                + " -loctinterp -loctave "
-                + " " + vars["OCT_LINK_OPTS"]
-                + " " + vars["OCTAVE_LINK_DEPS"];
+                           + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"]
+                           + " " + vars["ALL_LDFLAGS"] + " "
+                           + pass_on_options + " " + output_option + " "
+                           + objfiles + " " + libfiles + " "
+                           + ldflags + " " + vars["LFLAGS"]
+                           + " -loctinterp -loctave "
+                           + " " + vars["OCT_LINK_OPTS"]
+                           + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
             }
           else
@@ -776,10 +793,11 @@ main (int argc, char **argv)
       else
         {
           string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
-            + pass_on_options + " -o " + octfile + " " + objfiles + " "
-            + libfiles + " " + ldflags + " " + vars["LFLAGS"]
-            + " -loctinterp -loctave "
-            + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
+                       + pass_on_options + " -o " + octfile + " "
+                       + objfiles + " " + libfiles + " "
+                       + ldflags + " " + vars["LFLAGS"]
+                       + " -loctinterp -loctave "
+                       + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
           result = run_command (cmd);
         }
 

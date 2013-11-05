@@ -164,7 +164,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
         }
 
       // Find stop edge.
-      // FIXME -- perhaps this should use a while loop?
+      // FIXME: perhaps this should use a while loop?
       for (unsigned int k = 1; k <= 4; k++)
         {
           if (start_edge == 0 || start_edge == 2)
@@ -298,7 +298,7 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 }
 
 DEFUN (__contourc__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})\n\
 Undocumented internal function.\n\
 @end deftypefn")

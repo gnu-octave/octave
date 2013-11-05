@@ -54,7 +54,7 @@ boolNDArray::invert (void)
   return *this;
 }
 
-// FIXME -- this is not quite the right thing.
+// FIXME: this is not quite the right thing.
 
 boolNDArray
 boolNDArray::all (int dim) const
@@ -84,7 +84,8 @@ boolNDArray::cumsum (int dim) const
 }
 
 boolNDArray
-boolNDArray::concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx)
+boolNDArray::concat (const boolNDArray& rb,
+                     const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);

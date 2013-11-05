@@ -7,14 +7,15 @@ mexFunction (int nlhs, mxArray* plhs[],
   mwSize n;
   mwIndex i;
   double *vri, *vro;
-  
+
   if (nrhs != 1 || ! mxIsNumeric (prhs[0]))
     mexErrMsgTxt ("ARG1 must be a matrix");
 
   n = mxGetNumberOfElements (prhs[0]);
-  plhs[0] = mxCreateNumericArray 
-    (mxGetNumberOfDimensions (prhs[0]), mxGetDimensions (prhs[0]),
-     mxGetClassID (prhs[0]), mxIsComplex (prhs[0]));
+  plhs[0] = mxCreateNumericArray (mxGetNumberOfDimensions (prhs[0]),
+                                  mxGetDimensions (prhs[0]),
+                                  mxGetClassID (prhs[0]),
+                                  mxIsComplex (prhs[0]));
   vri = mxGetPr (prhs[0]);
   vro = mxGetPr (plhs[0]);
 

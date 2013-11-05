@@ -98,7 +98,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 {
   octave_sparse_bool_matrix& v1 = dynamic_cast<octave_sparse_bool_matrix&> (a1);
 
-  // FIXME -- perhaps add a warning for this conversion if the values
+  // FIXME: perhaps add a warning for this conversion if the values
   // are not all 0 or 1?
 
   SparseBoolMatrix v2 (a2.bool_array_value ());

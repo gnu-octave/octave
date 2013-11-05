@@ -28,7 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 #include "defun.h"
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_null_matrix, "null_matrix", "double");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_null_matrix, "null_matrix",
+                                     "double");
 
 const octave_value octave_null_matrix::instance (new octave_null_matrix ());
 
@@ -44,8 +45,9 @@ default_null_matrix_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_null_matrix::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_null_matrix_numeric_conversion_function,
-                                            octave_matrix::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_null_matrix_numeric_conversion_function,
+            octave_matrix::static_type_id ());
 }
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_null_str, "null_string", "char");
@@ -64,11 +66,13 @@ default_null_str_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_null_str::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_null_str_numeric_conversion_function,
-                                            octave_char_matrix_str::static_type_id ());
+  return octave_base_value::type_conv_info
+          (default_null_str_numeric_conversion_function,
+           octave_char_matrix_str::static_type_id ());
 }
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_null_sq_str, "null_sq_string", "char");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_null_sq_str, "null_sq_string",
+                                     "char");
 
 const octave_value octave_null_sq_str::instance (new octave_null_sq_str ());
 
@@ -84,12 +88,13 @@ default_null_sq_str_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_null_sq_str::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_null_sq_str_numeric_conversion_function,
-                                            octave_char_matrix_sq_str::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_null_sq_str_numeric_conversion_function,
+            octave_char_matrix_sq_str::static_type_id ());
 }
 
 DEFUN (isnull, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isnull (@var{x})\n\
 Return true if @var{x} is a special null matrix, string, or single quoted\n\
 string.  Indexed assignment with such a value on the right-hand side should\n\

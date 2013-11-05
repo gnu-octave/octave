@@ -60,7 +60,7 @@ Range::matrix_value (void) const
         {
           // The first element must always be *exactly* the base.
           // E.g, -0 would otherwise become +0 in the loop (-0 + 0*increment).
-          cache(0) = b; 
+          cache(0) = b;
           for (octave_idx_type i = 1; i < rng_nelem; i++)
             cache(i) = b + i * increment;
         }
@@ -88,7 +88,7 @@ Range::checkelem (octave_idx_type i) const
 
   if (i == 0)
     return rng_base;
-  else if (i < rng_nelem - 1) 
+  else if (i < rng_nelem - 1)
     return rng_base + i * rng_inc;
   else
     {
@@ -109,7 +109,7 @@ Range::elem (octave_idx_type i) const
 #else
   if (i == 0)
     return rng_base;
-  else if (i < rng_nelem - 1) 
+  else if (i < rng_nelem - 1)
     return rng_base + i * rng_inc;
   else
     {
@@ -126,27 +126,27 @@ Range::elem (octave_idx_type i) const
 // Helper class used solely for idx_vector.loop () function call
 class __rangeidx_helper
 {
- public:
+public:
   __rangeidx_helper (double *a, double b, double i, double l, octave_idx_type n)
     : array (a), base (b), inc (i), limit (l), nmax (n-1) { }
 
   void operator () (octave_idx_type i)
-    {
-      if (i == 0)
-        *array++ = base;
-      else if (i < nmax) 
-        *array++ = base + i * inc;
-      else
-        {
-          double end = base + i * inc;
-          if ((inc > 0 && end >= limit) || (inc < 0 && end <= limit))
-            *array++ = limit;
-          else
-            *array++ = end;
-        }
-    }
+  {
+    if (i == 0)
+      *array++ = base;
+    else if (i < nmax)
+      *array++ = base + i * inc;
+    else
+      {
+        double end = base + i * inc;
+        if ((inc > 0 && end >= limit) || (inc < 0 && end <= limit))
+          *array++ = limit;
+        else
+          *array++ = end;
+      }
+  }
 
- private:
+private:
 
   double *array, base, inc, limit;
   octave_idx_type nmax;
@@ -514,7 +514,8 @@ tceil (double x, double ct)
 }
 
 static inline bool
-teq (double u, double v, double ct = 3.0 * std::numeric_limits<double>::epsilon ())
+teq (double u, double v,
+     double ct = 3.0 * std::numeric_limits<double>::epsilon ())
 {
   double tu = fabs (u);
   double tv = fabs (v);
@@ -539,7 +540,8 @@ Range::nelem_internal (void) const
 
       double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 
-      octave_idx_type n_elt = (tmp > 0.0 ? static_cast<octave_idx_type> (tmp) : 0);
+      octave_idx_type n_elt = (tmp > 0.0 ? static_cast<octave_idx_type> (tmp)
+                                         : 0);
 
       // If the final element that we would compute for the range is
       // equal to the limit of the range, or is an adjacent floating
@@ -560,7 +562,8 @@ Range::nelem_internal (void) const
             n_elt++;
         }
 
-      retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1) ? n_elt : -1;
+      retval = (n_elt < std::numeric_limits<octave_idx_type>::max () - 1)
+               ? n_elt : -1;
     }
 
   return retval;

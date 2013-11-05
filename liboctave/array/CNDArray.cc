@@ -111,7 +111,7 @@ ComplexNDArray::ifourier (int dim) const
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
     octave_fftw::ifft (in + k * stride * n, out + k * stride * n,
-                      n, howmany, stride, dist);
+                       n, howmany, stride, dist);
 
   return retval;
 }
@@ -293,7 +293,7 @@ ComplexNDArray::ifourier (int dim) const
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i] /
-              static_cast<double> (npts);
+                                                   static_cast<double> (npts);
         }
     }
 
@@ -386,8 +386,8 @@ ComplexNDArray::ifourier2d (void) const
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l] /
-                  static_cast<double> (npts);
+                retval((l + k*npts)*stride + j*dist) =
+                  prow[l] / static_cast<double> (npts);
             }
         }
 
@@ -481,8 +481,8 @@ ComplexNDArray::ifourierNd (void) const
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l] /
-                  static_cast<double> (npts);
+                retval((l + k*npts)*stride + j*dist) =
+                  prow[l] / static_cast<double> (npts);
             }
         }
 
@@ -505,7 +505,7 @@ ComplexNDArray::operator ! (void) const
   return do_mx_unary_op<bool, Complex> (*this, mx_inline_not);
 }
 
-// FIXME -- this is not quite the right thing.
+// FIXME: this is not quite the right thing.
 
 bool
 ComplexNDArray::any_element_is_nan (void) const
@@ -642,7 +642,8 @@ ComplexNDArray::diff (octave_idx_type order, int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx)
+ComplexNDArray::concat (const ComplexNDArray& rb,
+                        const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -798,14 +799,16 @@ ComplexNDArray::insert (const NDArray& a, octave_idx_type r, octave_idx_type c)
 }
 
 ComplexNDArray&
-ComplexNDArray::insert (const ComplexNDArray& a, octave_idx_type r, octave_idx_type c)
+ComplexNDArray::insert (const ComplexNDArray& a,
+                        octave_idx_type r, octave_idx_type c)
 {
   Array<Complex>::insert (a, r, c);
   return *this;
 }
 
 ComplexNDArray&
-ComplexNDArray::insert (const ComplexNDArray& a, const Array<octave_idx_type>& ra_idx)
+ComplexNDArray::insert (const ComplexNDArray& a,
+                        const Array<octave_idx_type>& ra_idx)
 {
   Array<Complex>::insert (a, ra_idx);
   return *this;
@@ -817,7 +820,7 @@ ComplexNDArray::matrix_value (void) const
   ComplexMatrix retval;
 
   if (ndims () == 2)
-      retval = ComplexMatrix (Array<Complex> (*this));
+    retval = ComplexMatrix (Array<Complex> (*this));
   else
     (*current_liboctave_error_handler)
       ("invalid conversion of ComplexNDArray to ComplexMatrix");
@@ -876,16 +879,16 @@ operator >> (std::istream& is, ComplexNDArray& a)
     {
       Complex tmp;
       for (octave_idx_type i = 0; i < nel; i++)
-          {
-            tmp = octave_read_value<Complex> (is);
-            if (is)
-              a.elem (i) = tmp;
-            else
-              goto done;
-          }
+        {
+          tmp = octave_read_value<Complex> (is);
+          if (is)
+            a.elem (i) = tmp;
+          else
+            goto done;
+        }
     }
 
- done:
+done:
 
   return is;
 }

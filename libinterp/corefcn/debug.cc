@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "toplev.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "variables.h"
 
 #include "debug.h"
@@ -360,8 +361,7 @@ bp_table::do_remove_breakpoint_1 (octave_user_code *fcn,
 
   tree_statement_list *cmds = fcn->body ();
 
-  // FIXME -- move the operation on cmds to the
-  // tree_statement_list class?
+  // FIXME: move the operation on cmds to the tree_statement_list class?
 
   if (cmds)
     {
@@ -557,8 +557,8 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
             {
               tree_statement_list *cmds = f->body ();
 
-              // FIXME -- move the operation on cmds to the
-              // tree_statement_list class?
+              // FIXME: move the operation on cmds to the
+              //        tree_statement_list class?
               if (cmds)
                 {
                   octave_value_list bkpts = cmds->list_breakpoints ();
@@ -607,7 +607,7 @@ intmap_to_ov (const bp_table::intmap& line)
 }
 
 DEFUN (dbstop, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
@@ -652,7 +652,7 @@ next executable line.\n\
 }
 
 DEFUN (dbclear, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} dbclear (\"@var{func}\")\n\
 @deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
 @deftypefnx {Built-in Function} {} dbclear (@var{line}, @dots{})\n\
@@ -691,7 +691,7 @@ If the requested line is not a breakpoint no action is performed.\n\
 }
 
 DEFUN (dbstatus, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} dbstatus ()\n\
 @deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus ()\n\
 @deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
@@ -745,14 +745,14 @@ A line number, or vector of line numbers, with a breakpoint.\n\
     }
   else
     {
-       octave_user_code *dbg_fcn = get_user_code ();
-       if (dbg_fcn)
-         {
-           symbol_name = dbg_fcn->name ();
-           fcn_list(0) = symbol_name;
-         }
+      octave_user_code *dbg_fcn = get_user_code ();
+      if (dbg_fcn)
+        {
+          symbol_name = dbg_fcn->name ();
+          fcn_list(0) = symbol_name;
+        }
 
-       bp_list = bp_table::get_breakpoint_list (fcn_list);
+      bp_list = bp_table::get_breakpoint_list (fcn_list);
     }
 
   if (nargout == 0)
@@ -807,7 +807,7 @@ A line number, or vector of line numbers, with a breakpoint.\n\
 }
 
 DEFUN (dbwhere, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbwhere\n\
 In debugging mode, report the current file and line number where\n\
 execution is stopped.\n\
@@ -904,7 +904,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 }
 
 DEFUN (dbtype, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} dbtype\n\
 @deftypefnx {Command} {} dbtype @var{lineno}\n\
 @deftypefnx {Command} {} dbtype @var{startl:endl}\n\
@@ -952,7 +952,7 @@ numbers.\n\
             size_t ind = arg.find (':');
 
             if (ind != std::string::npos)  // (dbtype start:end)
-              {  
+              {
                 dbg_fcn = get_user_code ();
 
                 if (dbg_fcn)
@@ -1037,7 +1037,7 @@ numbers.\n\
 }
 
 DEFUN (dblist, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} dblist\n\
 @deftypefnx {Command} {} dblist @var{n}\n\
 In debugging mode, list @var{n} lines of the function being debugged\n\
@@ -1167,6 +1167,8 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
           if (nframes_to_display > 0)
             {
+              octave_preserve_stream_state stream_state (os);
+
               os << "stopped in:\n\n";
 
               Cell names = stk.contents ("name");
@@ -1226,7 +1228,7 @@ show_octave_dbstack (void)
 }
 
 DEFUN (dbstack, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} dbstack\n\
 @deftypefnx {Command} {} dbstack @var{n}\n\
 @deftypefnx {Command} {} dbstack @var{-completenames}\n\
@@ -1235,7 +1237,7 @@ Display or return current debugging function stack information.\n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
 \n\
 Although accepted, the argument @var{-completenames} is silently ignored.\n\
-Octave always returns absolute file names. The arguments @var{n} and\n\
+Octave always returns absolute file names.  The arguments @var{n} and\n\
 @var{-completenames} can be both specified in any order.\n\
 \n\
 The optional return argument @var{stack} is a struct array with the\n\
@@ -1299,7 +1301,7 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 }
 
 DEFUN (dbup, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} dbup\n\
 @deftypefnx {Built-in Function} {} dbup (@var{n})\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
@@ -1315,7 +1317,7 @@ If @var{n} is omitted, move up one frame.\n\
 }
 
 DEFUN (dbdown, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} dbdown\n\
 @deftypefnx {Built-in Function} {} dbdown (@var{n})\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
@@ -1331,7 +1333,7 @@ If @var{n} is omitted, move down one frame.\n\
 }
 
 DEFUN (dbstep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} dbstep\n\
 @deftypefnx {Command} {} dbstep @var{n}\n\
 @deftypefnx {Command} {} dbstep in\n\
@@ -1410,7 +1412,7 @@ execution to continue until the current function returns.\n\
 DEFALIAS (dbnext, dbstep);
 
 DEFUN (dbcont, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbcont\n\
 Leave command-line debugging mode and continue code execution normally.\n\
 @seealso{dbstep, dbquit}\n\
@@ -1434,7 +1436,7 @@ Leave command-line debugging mode and continue code execution normally.\n\
 }
 
 DEFUN (dbquit, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbquit\n\
 Quit debugging mode immediately without further code execution and\n\
 return to the Octave prompt.\n\
@@ -1461,7 +1463,7 @@ return to the Octave prompt.\n\
 }
 
 DEFUN (isdebugmode, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isdebugmode ()\n\
 Return true if in debugging mode, otherwise false.\n\
 @seealso{dbwhere, dbstack, dbstatus}\n\

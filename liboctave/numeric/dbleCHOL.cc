@@ -342,7 +342,7 @@ CHOL::downdate (const ColumnVector& u)
       else
         {
           info = init (chol_mat.transpose () * chol_mat
-                - Matrix (u) * Matrix (u).transpose (), false);
+                       - Matrix (u) * Matrix (u).transpose (), false);
           if (info) info = 1;
         }
     }

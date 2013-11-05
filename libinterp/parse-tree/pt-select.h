@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_select_h)
-#define octave_tree_select_h 1
+#if !defined (octave_pt_select_h)
+#define octave_pt_select_h 1
 
 class expression;
 class tree_statement_list;
@@ -95,14 +95,14 @@ public:
   tree_if_command_list (tree_if_clause *t) { append (t); }
 
   ~tree_if_command_list (void)
-    {
-      while (! empty ())
-        {
-          iterator p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
+  {
+    while (! empty ())
+      {
+        iterator p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
 
   tree_if_command_list *dup (symbol_table::scope_id scope,
                              symbol_table::context_id context) const;
@@ -225,14 +225,14 @@ public:
   tree_switch_case_list (tree_switch_case *t) { append (t); }
 
   ~tree_switch_case_list (void)
-    {
-      while (! empty ())
-        {
-          iterator p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
+  {
+    while (! empty ())
+      {
+        iterator p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
 
   tree_switch_case_list *dup (symbol_table::scope_id scope,
                               symbol_table::context_id context) const;

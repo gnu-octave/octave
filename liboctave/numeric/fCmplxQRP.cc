@@ -43,7 +43,8 @@ extern "C"
 
 // It would be best to share some of this code with FloatComplexQR class...
 
-FloatComplexQRP::FloatComplexQRP (const FloatComplexMatrix& a, qr_type_t qr_type)
+FloatComplexQRP::FloatComplexQRP (const FloatComplexMatrix& a,
+                                  qr_type_t qr_type)
   : FloatComplexQR (), p ()
 {
   init (a, qr_type);
@@ -74,15 +75,17 @@ FloatComplexQRP::init (const FloatComplexMatrix& a, qr_type_t qr_type)
 
       // workspace query.
       FloatComplex clwork;
-      F77_XFCN (cgeqp3, CGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, &clwork, -1, rwork, info));
+      F77_XFCN (cgeqp3, CGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 &clwork, -1, rwork, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = clwork.real ();
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
-      F77_XFCN (cgeqp3, CGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, work, lwork, rwork, info));
+      F77_XFCN (cgeqp3, CGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 work, lwork, rwork, info));
     }
   else
     for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;

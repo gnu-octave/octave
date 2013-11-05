@@ -56,15 +56,15 @@ public:
     : txt (oc.txt), typ (oc.typ) { }
 
   octave_comment_elt& operator = (const octave_comment_elt& oc)
-    {
-      if (this != &oc)
-        {
-          txt = oc.txt;
-          typ = oc.typ;
-        }
+  {
+    if (this != &oc)
+      {
+        txt = oc.txt;
+        typ = oc.typ;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   std::string text (void) const { return txt; }
 
@@ -89,11 +89,11 @@ public:
   octave_comment_list (void) { }
 
   void append (const octave_comment_elt& elt)
-    { octave_base_list<octave_comment_elt>::append (elt); }
+  { octave_base_list<octave_comment_elt>::append (elt); }
 
   void append (const std::string& s,
                octave_comment_elt::comment_type t = octave_comment_elt::unknown)
-    { append (octave_comment_elt (s, t)); }
+  { append (octave_comment_elt (s, t)); }
 
   octave_comment_list *dup (void) const;
 };

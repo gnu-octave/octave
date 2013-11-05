@@ -53,7 +53,7 @@ extern "C"
 // FloatComplex Column Vector class
 
 FloatComplexColumnVector::FloatComplexColumnVector (const FloatColumnVector& a)
-   : MArray<FloatComplex> (a)
+  : MArray<FloatComplex> (a)
 {
 }
 
@@ -97,7 +97,8 @@ FloatComplexColumnVector::insert (const FloatColumnVector& a, octave_idx_type r)
 }
 
 FloatComplexColumnVector&
-FloatComplexColumnVector::insert (const FloatComplexColumnVector& a, octave_idx_type r)
+FloatComplexColumnVector::insert (const FloatComplexColumnVector& a,
+                                  octave_idx_type r)
 {
   octave_idx_type a_len = a.length ();
 
@@ -152,7 +153,8 @@ FloatComplexColumnVector::fill (const FloatComplex& val)
 }
 
 FloatComplexColumnVector&
-FloatComplexColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r2)
+FloatComplexColumnVector::fill (float val,
+                                octave_idx_type r1, octave_idx_type r2)
 {
   octave_idx_type len = length ();
 
@@ -176,7 +178,8 @@ FloatComplexColumnVector::fill (float val, octave_idx_type r1, octave_idx_type r
 }
 
 FloatComplexColumnVector&
-FloatComplexColumnVector::fill (const FloatComplex& val, octave_idx_type r1, octave_idx_type r2)
+FloatComplexColumnVector::fill (const FloatComplex& val,
+                                octave_idx_type r1, octave_idx_type r2)
 {
   octave_idx_type len = length ();
 
@@ -263,7 +266,8 @@ FloatComplexColumnVector::extract (octave_idx_type r1, octave_idx_type r2) const
 }
 
 FloatComplexColumnVector
-FloatComplexColumnVector::extract_n (octave_idx_type r1, octave_idx_type n) const
+FloatComplexColumnVector::extract_n (octave_idx_type r1,
+                                     octave_idx_type n) const
 {
   FloatComplexColumnVector result (n);
 
@@ -291,7 +295,7 @@ FloatComplexColumnVector::operator += (const FloatColumnVector& a)
   if (len == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
+  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
   mx_inline_add2 (len, d, a.data ());
   return *this;
@@ -313,7 +317,7 @@ FloatComplexColumnVector::operator -= (const FloatColumnVector& a)
   if (len == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
+  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
   mx_inline_sub2 (len, d, a.data ());
   return *this;

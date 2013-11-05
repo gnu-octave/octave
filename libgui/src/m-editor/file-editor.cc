@@ -75,7 +75,10 @@ file_editor::~file_editor (void)
   settings->sync ();
 
   for (int index = _tab_widget->count ()-1; index >= 0; index--)
-    emit fetab_close_request (_tab_widget->widget (index),true); // true: app closing
+    {
+      // true: app closing
+      emit fetab_close_request (_tab_widget->widget (index), true);
+    }
 
   if (_mru_file_menu)
     delete _mru_file_menu;
@@ -213,7 +216,7 @@ file_editor::find_tab_widget (const QString& file) const
     }
 
   return retval;
-}    
+}
 
 void
 file_editor::request_open_file (const QString& openFileName, int line,
@@ -298,13 +301,14 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
                   if (QFile::exists (openFileName))
                     {
-                      // File not readable: create a NonModal message about error.
+                      // File not readable:
+                      // create a NonModal message about error.
                       QMessageBox *msgBox
                         = new QMessageBox (QMessageBox::Critical,
-                                   tr ("Octave Editor"),
-                                   tr ("Could not open file\n%1\nfor read: %2.").
-                                   arg (openFileName).arg (result),
-                                   QMessageBox::Ok, this);
+                                           tr ("Octave Editor"),
+                                           tr ("Could not open file\n%1\nfor read: %2.").
+                                           arg (openFileName).arg (result),
+                                           QMessageBox::Ok, this);
 
                       msgBox->setWindowModality (Qt::NonModal);
                       msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -315,17 +319,19 @@ file_editor::request_open_file (const QString& openFileName, int line,
                       // File does not exist, should it be crated?
                       QMessageBox *msgBox;
                       int answer;
-                      if (settings->value ("editor/create_new_file",false).toBool ())
+                      if (settings->value ("editor/create_new_file",
+                                           false).toBool ())
                         {
                           answer = QMessageBox::Yes;
                         }
                       else
                         {
-                           msgBox = new QMessageBox (QMessageBox::Question,
-                               tr ("Octave Editor"),
-                               tr ("File\n%1\ndoes not exist. "
-                                   "Do you want to create it?").arg (openFileName),
-                               QMessageBox::Yes | QMessageBox::No, this);
+                          msgBox = new QMessageBox (QMessageBox::Question,
+                                                    tr ("Octave Editor"),
+                                                    tr ("File\n%1\ndoes not exist. "
+                                                        "Do you want to create it?").arg (openFileName),
+                                                    QMessageBox::Yes
+                                                    | QMessageBox::No, this);
 
                           msgBox->setAttribute (Qt::WA_DeleteOnClose);
                           answer = msgBox->exec ();
@@ -339,10 +345,10 @@ file_editor::request_open_file (const QString& openFileName, int line,
                             {
                               // error opening the file
                               msgBox = new QMessageBox (QMessageBox::Critical,
-                                   tr ("Octave Editor"),
-                                   tr ("Could not open file\n%1\nfor write: %2.").
-                                   arg (openFileName).arg (file.errorString ()),
-                                   QMessageBox::Ok, this);
+                                                        tr ("Octave Editor"),
+                                                        tr ("Could not open file\n%1\nfor write: %2.").
+                                                        arg (openFileName).arg (file.errorString ()),
+                                                        QMessageBox::Ok, this);
 
                               msgBox->setWindowModality (Qt::NonModal);
                               msgBox->setAttribute (Qt::WA_DeleteOnClose);
@@ -376,7 +382,8 @@ file_editor::request_mru_open_file (QAction *action)
 
 
 void
-file_editor::check_conflict_save (const QString& saveFileName, bool remove_on_success)
+file_editor::check_conflict_save (const QString& saveFileName,
+                                  bool remove_on_success)
 {
   // Have all file editor tabs signal what their file names are.
   editor_tab_map.clear ();
@@ -542,13 +549,13 @@ file_editor::request_save_file (void)
 void
 file_editor::request_save_file_as (void)
 {
-   emit fetab_save_file_as (_tab_widget->currentWidget ());
+  emit fetab_save_file_as (_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_print_file (void)
 {
-   emit fetab_print_file (_tab_widget->currentWidget ());
+  emit fetab_print_file (_tab_widget->currentWidget ());
 }
 
 
@@ -654,26 +661,26 @@ file_editor::mru_menu_update (void)
   for (int i = 0; i < num_files; ++i)
     {
       QString text = tr ("&%1 %2").
-          arg ((i+1) % int (MaxMRUFiles)).arg (_mru_files.at (i));
+                     arg ((i+1) % int (MaxMRUFiles)).arg (_mru_files.at (i));
       _mru_file_actions[i]->setText (text);
       _mru_file_actions[i]->setData (_mru_files.at (i));
       _mru_file_actions[i]->setVisible (true);
     }
 
-    // hide unused mru-menu entries
-    for (int j = num_files; j < MaxMRUFiles; ++j)
-      _mru_file_actions[j]->setVisible (false);
+  // hide unused mru-menu entries
+  for (int j = num_files; j < MaxMRUFiles; ++j)
+    _mru_file_actions[j]->setVisible (false);
 
-    // delete entries in string-list beyond MaxMRUFiles
-    while (_mru_files.size () > MaxMRUFiles)
-      _mru_files.removeLast ();
+  // delete entries in string-list beyond MaxMRUFiles
+  while (_mru_files.size () > MaxMRUFiles)
+    _mru_files.removeLast ();
 
-    // save actual mru-list in settings
-    QSettings *settings = resource_manager::get_settings ();
+  // save actual mru-list in settings
+  QSettings *settings = resource_manager::get_settings ();
 
-    // FIXME -- what should happen if settings is 0?
-    settings->setValue ("editor/mru_file_list", _mru_files);
-    settings->sync ();
+  // FIXME: what should happen if settings is 0?
+  settings->setValue ("editor/mru_file_list", _mru_files);
+  settings->sync ();
 }
 
 void
@@ -747,7 +754,7 @@ file_editor::handle_tab_remove_request (void)
             }
         }
     }
-    check_actions ();
+  check_actions ();
 }
 
 void
@@ -817,7 +824,7 @@ file_editor::construct (void)
 {
   QWidget *editor_widget = new QWidget (this);
 
-  // FIXME -- what was the intended purpose of this unused variable?
+  // FIXME: what was the intended purpose of this unused variable?
   // QStyle *editor_style = QApplication::style ();
 
   _menu_bar = new QMenuBar (editor_widget);
@@ -832,26 +839,26 @@ file_editor::construct (void)
                                       tr ("&Open File"), _tool_bar);
 
   _save_action = new QAction (QIcon (":/actions/icons/filesave.png"),
-                                      tr ("&Save File"), _tool_bar);
+                              tr ("&Save File"), _tool_bar);
 
   _save_as_action = new QAction (QIcon (":/actions/icons/filesaveas.png"),
-                                tr ("Save File &As"), _tool_bar);
+                                 tr ("Save File &As"), _tool_bar);
 
   _print_action = new QAction ( QIcon (":/actions/icons/fileprint.png"),
                                 tr ("Print"), _tool_bar);
 
   _undo_action = new QAction (QIcon (":/actions/icons/undo.png"),
-                                      tr ("&Undo"), _tool_bar);
+                              tr ("&Undo"), _tool_bar);
 
   _redo_action = new QAction (QIcon (":/actions/icons/redo.png"),
-                                      tr ("&Redo"), _tool_bar);
+                              tr ("&Redo"), _tool_bar);
 
   _copy_action = new QAction (QIcon (":/actions/icons/editcopy.png"),
                               tr ("&Copy"), _tool_bar);
   _copy_action->setEnabled (false);
 
   _cut_action = new QAction (QIcon (":/actions/icons/editcut.png"),
-                              tr ("Cu&t"), _tool_bar);
+                             tr ("Cu&t"), _tool_bar);
   _cut_action->setEnabled (false);
 
   _paste_action
@@ -860,7 +867,8 @@ file_editor::construct (void)
 
   _next_bookmark_action = new QAction (tr ("&Next Bookmark"), _tool_bar);
 
-  _previous_bookmark_action = new QAction (tr ("Pre&vious Bookmark"), _tool_bar);
+  _previous_bookmark_action = new QAction (tr ("Pre&vious Bookmark"),
+                                           _tool_bar);
 
   _toggle_bookmark_action = new QAction (tr ("Toggle &Bookmark"), _tool_bar);
 
@@ -886,7 +894,7 @@ file_editor::construct (void)
     = new QAction (tr ("&Uncomment"), _tool_bar);
 
   _find_action = new QAction (QIcon (":/actions/icons/search.png"),
-                                      tr ("&Find and Replace"), _tool_bar);
+                              tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
                              tr ("Save File And Run"), _tool_bar);
@@ -895,12 +903,12 @@ file_editor::construct (void)
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME -- what should happen if settings is 0?
+  // FIXME: what should happen if settings is 0?
   _mru_files = settings->value ("editor/mru_file_list").toStringList ();
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
-       _mru_file_actions[i] = new QAction (this);
-       _mru_file_actions[i]->setVisible (false);
+      _mru_file_actions[i] = new QAction (this);
+      _mru_file_actions[i]->setVisible (false);
     }
 
   // some actions are disabled from the beginning
@@ -963,19 +971,19 @@ file_editor::construct (void)
 
   fileMenu->addSeparator ();
   _close_action =
-      fileMenu->addAction (QIcon::fromTheme("window-close",
-                                  QIcon (":/actions/icons/fileclose.png")),
-                       tr ("&Close"), this, SLOT (request_close_file (bool)));
+    fileMenu->addAction (QIcon::fromTheme("window-close",
+                                          QIcon (":/actions/icons/fileclose.png")),
+                         tr ("&Close"), this, SLOT (request_close_file (bool)));
   _close_all_action =
-      fileMenu->addAction (QIcon::fromTheme("window-close",
-                                      QIcon (":/actions/icons/fileclose.png")),
-                       tr ("Close All"),
-                       this, SLOT (request_close_all_files (bool)));
-  _close_others_action = 
-  fileMenu->addAction (QIcon::fromTheme("window-close",
-                                      QIcon (":/actions/icons/fileclose.png")),
-                       tr ("Close Other Files"),
-                       this, SLOT (request_close_other_files (bool)));
+    fileMenu->addAction (QIcon::fromTheme("window-close",
+                                          QIcon (":/actions/icons/fileclose.png")),
+                         tr ("Close All"),
+                         this, SLOT (request_close_all_files (bool)));
+  _close_others_action =
+    fileMenu->addAction (QIcon::fromTheme("window-close",
+                                          QIcon (":/actions/icons/fileclose.png")),
+                         tr ("Close Other Files"),
+                         this, SLOT (request_close_other_files (bool)));
 
   fileMenu->addSeparator ();
   fileMenu->addAction (_print_action);
@@ -1004,11 +1012,13 @@ file_editor::construct (void)
   editMenu->addAction (_goto_line_action);
   editMenu->addSeparator ();
   _preferences_action =
-     editMenu->addAction (QIcon (":/actions/icons/configure.png"),
-       tr ("&Preferences"), this, SLOT (request_preferences (bool)));
+    editMenu->addAction (QIcon (":/actions/icons/configure.png"),
+                         tr ("&Preferences"),
+                         this, SLOT (request_preferences (bool)));
   _styles_preferences_action =
     editMenu->addAction (QIcon (":/actions/icons/configure.png"),
-      tr ("&Styles Preferences"), this, SLOT (request_styles_preferences (bool)));
+                         tr ("&Styles Preferences"),
+                         this, SLOT (request_styles_preferences (bool)));
   _menu_bar->addMenu (editMenu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
@@ -1024,7 +1034,7 @@ file_editor::construct (void)
   _run_menu->addAction (_run_action);
   _context_run_action =
     _run_menu->addAction (QIcon (), tr ("Run &Selection"),
-                           this, SLOT (request_context_run (bool)));
+                          this, SLOT (request_context_run (bool)));
   _context_run_action->setEnabled (false);
   _menu_bar->addMenu (_run_menu);
 
@@ -1051,7 +1061,8 @@ file_editor::construct (void)
 
   // signals
   connect (this, SIGNAL (request_settings_dialog (const QString&)),
-           main_win (), SLOT (process_settings_dialog_request (const QString&)));
+           main_win (),
+           SLOT (process_settings_dialog_request (const QString&)));
 
   connect (main_win (), SIGNAL (new_file_signal (const QString&)),
            this, SLOT (request_new_file (const QString&)));
@@ -1147,13 +1158,14 @@ file_editor::construct (void)
   if (settings->value ("editor/restoreSession", true).toBool ())
     {
       QStringList sessionFileNames
-        = settings->value ("editor/savedSessionTabs", QStringList ()).toStringList ();
+        = settings->value ("editor/savedSessionTabs",
+                           QStringList ()).toStringList ();
 
       for (int n = 0; n < sessionFileNames.count (); ++n)
         request_open_file (sessionFileNames.at (n));
     }
 
-    check_actions ();
+  check_actions ();
 }
 
 void
@@ -1183,7 +1195,7 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
            main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
-  
+
   connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
            main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
@@ -1300,20 +1312,20 @@ file_editor::copyClipboard ()
 {
   QWidget * foc_w = focusWidget ();
 
-  if(foc_w && foc_w->inherits ("octave_qscintilla"))
-  {
-    request_copy ();
-  }
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_copy ();
+    }
 }
 void
 file_editor::pasteClipboard ()
 {
   QWidget * foc_w = focusWidget ();
 
-  if(foc_w && foc_w->inherits ("octave_qscintilla"))
-  {
-    request_paste ();
-  }
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_paste ();
+    }
 }
 
 void
@@ -1322,7 +1334,9 @@ file_editor::set_shortcuts (bool set)
   if (set)
     {
       _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_R);
-      _uncomment_selection_action->setShortcut (Qt::SHIFT + Qt::ControlModifier + Qt::Key_R);
+      _uncomment_selection_action->setShortcut (Qt::SHIFT
+                                                + Qt::ControlModifier
+                                                + Qt::Key_R);
 
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);

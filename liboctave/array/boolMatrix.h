@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_boolMatrix_int_h)
-#define octave_boolMatrix_int_h 1
+#if !defined (octave_boolMatrix_h)
+#define octave_boolMatrix_h 1
 
 #include "Array.h"
 
@@ -52,10 +52,10 @@ public:
   boolMatrix (const boolMatrix& a) : Array<bool> (a) { }
 
   boolMatrix& operator = (const boolMatrix& a)
-    {
-      Array<bool>::operator = (a);
-      return *this;
-    }
+  {
+    Array<bool>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const boolMatrix& a) const;
   bool operator != (const boolMatrix& a) const;
@@ -64,7 +64,8 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  boolMatrix& insert (const boolMatrix& a, octave_idx_type r, octave_idx_type c);
+  boolMatrix& insert (const boolMatrix& a,
+                      octave_idx_type r, octave_idx_type c);
 
   // unary operations
 

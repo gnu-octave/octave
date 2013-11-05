@@ -129,7 +129,8 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
   octave_base_value *retval = 0;
 
   if (this->matrix.nelem () == 1)
-    retval = new typename octave_value_int_traits<T>::scalar_type (this->matrix (0));
+    retval = new typename octave_value_int_traits<T>::scalar_type
+               (this->matrix (0));
 
   return retval;
 }
@@ -163,7 +164,7 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
       if (octave_base_int_helper<val_type, is_signed,
           can_be_larger_than_uchar_max>::char_value_out_of_range (ival))
         {
-          // FIXME -- is there something better we could do?
+          // FIXME: is there something better we could do?
 
           ival = 0;
 
@@ -256,7 +257,8 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
-  os.write (reinterpret_cast<const char *> (this->matrix.data ()), this->byte_size ());
+  os.write (reinterpret_cast<const char *> (this->matrix.data ()),
+            this->byte_size ());
 
   return true;
 }
@@ -388,7 +390,7 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
   if (empty > 0)
     this->matrix.resize (dv);
   if (empty)
-      return (empty > 0);
+    return (empty > 0);
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -469,7 +471,7 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
   if (octave_base_int_helper<val_type, is_signed,
       can_be_larger_than_uchar_max>::char_value_out_of_range (ival))
     {
-      // FIXME -- is there something better we could do?
+      // FIXME: is there something better we could do?
 
       ival = 0;
 

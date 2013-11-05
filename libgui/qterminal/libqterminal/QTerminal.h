@@ -5,18 +5,19 @@ Copyright (C) 2012-2013 Jacob Dawid.
 
 This file is part of QTerminal.
 
-Foobar is free software: you can redistribute it and/or modify
+This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-QTerminal is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -56,11 +57,11 @@ public:
   virtual QString selectedText () = 0;
 
   enum CursorType
-    {
-      UnderlineCursor,
-      BlockCursor,
-      IBeamCursor
-    };
+  {
+    UnderlineCursor,
+    BlockCursor,
+    IBeamCursor
+  };
 
   virtual void setCursorType (CursorType type, bool blinking)
   {
@@ -96,7 +97,7 @@ public slots:
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (selectedText().length() > 0);
-    
+
     _contextMenu->move (mapToGlobal (at));
     _contextMenu->show ();
   }
@@ -112,12 +113,12 @@ protected:
     _contextMenu = new QMenu (this);
 
     _copy_action = _contextMenu->addAction (
-                             QIcon (":/actions/icons/editcopy.png"),
-                             tr ("Copy"), this, SLOT (copyClipboard ()));
+                     QIcon (":/actions/icons/editcopy.png"),
+                     tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                            QIcon (":/actions/icons/editpaste.png"),
-                            tr ("Paste"), this, SLOT (pasteClipboard ()));
+                      QIcon (":/actions/icons/editpaste.png"),
+                      tr ("Paste"), this, SLOT (pasteClipboard ()));
 
     _contextMenu->addSeparator ();
 
@@ -142,9 +143,9 @@ protected:
 
 private:
 
-    QMenu *_contextMenu;
-    QAction * _copy_action;
-    QAction * _paste_action;
+  QMenu *_contextMenu;
+  QAction * _copy_action;
+  QAction * _paste_action;
 };
 
 #endif // QTERMINAL_H

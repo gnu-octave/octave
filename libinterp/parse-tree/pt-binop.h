@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_binop_h)
-#define octave_tree_binop_h 1
+#if !defined (octave_pt_binop_h)
+#define octave_pt_binop_h 1
 
 #include <string>
 
@@ -56,37 +56,36 @@ public:
       eligible_for_braindead_shortcircuit (false) { }
 
   ~tree_binary_expression (void)
-    {
-      delete op_lhs;
-      delete op_rhs;
-    }
+  {
+    delete op_lhs;
+    delete op_rhs;
+  }
 
   void mark_braindead_shortcircuit (const std::string& file)
-    {
-      if (etype == octave_value::op_el_and
-          || etype == octave_value::op_el_or)
-        {
-          if (file.empty ())
-            warning_with_id ("Octave:possible-matlab-short-circuit-operator",
-                             "possible Matlab-style short-circuit operator at line %d, column %d",
-                             line (), column ());
-          else
-            warning_with_id ("Octave:possible-matlab-short-circuit-operator",
-                             "%s: possible Matlab-style short-circuit operator at line %d, column %d",
-                             file.c_str (), line (), column ());
+  {
+    if (etype == octave_value::op_el_and || etype == octave_value::op_el_or)
+      {
+        if (file.empty ())
+          warning_with_id ("Octave:possible-matlab-short-circuit-operator",
+                           "possible Matlab-style short-circuit operator at line %d, column %d",
+                           line (), column ());
+        else
+          warning_with_id ("Octave:possible-matlab-short-circuit-operator",
+                           "%s: possible Matlab-style short-circuit operator at line %d, column %d",
+                           file.c_str (), line (), column ());
 
-          eligible_for_braindead_shortcircuit = true;
+        eligible_for_braindead_shortcircuit = true;
 
-          op_lhs->mark_braindead_shortcircuit (file);
-          op_rhs->mark_braindead_shortcircuit (file);
-        }
-    }
+        op_lhs->mark_braindead_shortcircuit (file);
+        op_rhs->mark_braindead_shortcircuit (file);
+      }
+  }
 
   bool has_magic_end (void) const
-    {
-      return ((op_lhs && op_lhs->has_magic_end ())
-              || (op_rhs && op_rhs->has_magic_end ()));
-    }
+  {
+    return ((op_lhs && op_lhs->has_magic_end ())
+            || (op_rhs && op_rhs->has_magic_end ()));
+  }
 
   bool is_binary_expression (void) const { return true; }
 
@@ -138,11 +137,11 @@ tree_boolean_expression : public tree_binary_expression
 public:
 
   enum type
-    {
-      unknown,
-      bool_and,
-      bool_or
-    };
+  {
+    unknown,
+    bool_and,
+    bool_or
+  };
 
   tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (l, c), etype (t) { }

@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (workspace_view_h)
-#define workspace_view_h 1
+#if !defined (octave_workspace_view_h)
+#define octave_workspace_view_h 1
 
 #include <QItemDelegate>
 #include <QTableView>
@@ -69,7 +69,7 @@ protected slots:
 
   void handle_model_changed (void);
 
-  void copyClipboard();
+  void copyClipboard ();
 
 private:
 

@@ -79,33 +79,54 @@ DEFFLTCONVFN (float_scalar_to_float_matrix, scalar, array)
 void
 install_float_conv_ops (void)
 {
-  INSTALL_CONVOP (octave_int8_matrix, octave_float_matrix, int8_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_int16_matrix, octave_float_matrix, int16_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_int32_matrix, octave_float_matrix, int32_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_int64_matrix, octave_float_matrix, int64_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_int8_matrix, octave_float_matrix,
+                  int8_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_int16_matrix, octave_float_matrix,
+                  int16_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_int32_matrix, octave_float_matrix,
+                  int32_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_int64_matrix, octave_float_matrix,
+                  int64_matrix_to_float_matrix);
 
-  INSTALL_CONVOP (octave_uint8_matrix, octave_float_matrix, uint8_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_uint16_matrix, octave_float_matrix, uint16_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_uint32_matrix, octave_float_matrix, uint32_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_uint64_matrix, octave_float_matrix, uint64_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_uint8_matrix, octave_float_matrix,
+                  uint8_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_uint16_matrix, octave_float_matrix,
+                  uint16_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_uint32_matrix, octave_float_matrix,
+                  uint32_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_uint64_matrix, octave_float_matrix,
+                  uint64_matrix_to_float_matrix);
 
-  INSTALL_CONVOP (octave_int8_scalar, octave_float_matrix, int8_scalar_to_float_matrix);
-  INSTALL_CONVOP (octave_int16_scalar, octave_float_matrix, int16_scalar_to_float_matrix);
-  INSTALL_CONVOP (octave_int32_scalar, octave_float_matrix, int32_scalar_to_float_matrix);
-  INSTALL_CONVOP (octave_int64_scalar, octave_float_matrix, int64_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_int8_scalar, octave_float_matrix,
+                  int8_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_int16_scalar, octave_float_matrix,
+                  int16_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_int32_scalar, octave_float_matrix,
+                  int32_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_int64_scalar, octave_float_matrix,
+                  int64_scalar_to_float_matrix);
 
-  INSTALL_CONVOP (octave_uint8_scalar, octave_float_matrix, uint8_scalar_to_float_matrix);
-  INSTALL_CONVOP (octave_uint16_scalar, octave_float_matrix, uint16_scalar_to_float_matrix);
-  INSTALL_CONVOP (octave_uint32_scalar, octave_float_matrix, uint32_scalar_to_float_matrix);
-  INSTALL_CONVOP (octave_uint64_scalar, octave_float_matrix, uint64_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_uint8_scalar, octave_float_matrix,
+                  uint8_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_uint16_scalar, octave_float_matrix,
+                  uint16_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_uint32_scalar, octave_float_matrix,
+                  uint32_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_uint64_scalar, octave_float_matrix,
+                  uint64_scalar_to_float_matrix);
 
-  INSTALL_CONVOP (octave_bool_matrix, octave_float_matrix, bool_matrix_to_float_matrix);
-  INSTALL_CONVOP (octave_bool, octave_float_matrix, bool_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_bool_matrix, octave_float_matrix,
+                  bool_matrix_to_float_matrix);
+  INSTALL_CONVOP (octave_bool, octave_float_matrix,
+                  bool_scalar_to_float_matrix);
 
   INSTALL_CONVOP (octave_range, octave_float_matrix, range_to_float_matrix);
 
-  INSTALL_CONVOP (octave_char_matrix_str, octave_float_matrix, char_matrix_str_to_float_matrix);
-  INSTALL_CONVOP (octave_char_matrix_sq_str, octave_float_matrix, char_matrix_sq_str_to_float_matrix);
+  INSTALL_CONVOP (octave_char_matrix_str, octave_float_matrix,
+                  char_matrix_str_to_float_matrix);
+  INSTALL_CONVOP (octave_char_matrix_sq_str, octave_float_matrix,
+                  char_matrix_sq_str_to_float_matrix);
 
-  INSTALL_CONVOP (octave_scalar, octave_float_matrix, float_scalar_to_float_matrix);
+  INSTALL_CONVOP (octave_scalar, octave_float_matrix,
+                  float_scalar_to_float_matrix);
 }

@@ -178,16 +178,16 @@ SVD::init (const Matrix& a, SVD::type svd_type, SVD::driver svd_driver)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, 8*min_mn);
 
       F77_XFCN (dgesdd, DGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork, iwork, info
+                                 m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,
+                                 work.fortran_vec (), lwork, iwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
       lwork = static_cast<octave_idx_type> (work(0));
       work.resize (dim_vector (lwork, 1));
 
       F77_XFCN (dgesdd, DGESDD, (F77_CONST_CHAR_ARG2 (&jobz, 1),
-                                 m, n, tmp_data, m1, s_vec, u, m1, vt,
-                                 nrow_vt1, work.fortran_vec (), lwork, iwork, info
+                                 m, n, tmp_data, m1, s_vec, u, m1, vt, nrow_vt1,
+                                 work.fortran_vec (), lwork, iwork, info
                                  F77_CHAR_ARG_LEN (1)));
 
     }

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_value_typeinfo_h)
-#define octave_value_typeinfo_h 1
+#if !defined (octave_ov_typeinfo_h)
+#define octave_ov_typeinfo_h 1
 
 #include <string>
 
@@ -301,7 +301,8 @@ private:
 
   binary_class_op_fcn do_lookup_binary_class_op (octave_value::compound_binary_op);
 
-  binary_op_fcn do_lookup_binary_op (octave_value::compound_binary_op, int, int);
+  binary_op_fcn do_lookup_binary_op (octave_value::compound_binary_op,
+                                     int, int);
 
   cat_op_fcn do_lookup_cat_op (int, int);
 

@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ColumnVector_h)
-#define octave_ColumnVector_h 1
+#if !defined (octave_dColVector_h)
+#define octave_dColVector_h 1
 
 #include "MArray.h"
 
@@ -51,10 +51,10 @@ public:
   ColumnVector (const Array<double>& a) : MArray<double> (a.as_column ()) { }
 
   ColumnVector& operator = (const ColumnVector& a)
-    {
-      MArray<double>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<double>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const ColumnVector& a) const;
   bool operator != (const ColumnVector& a) const;
@@ -81,11 +81,13 @@ public:
 
   // matrix by column vector -> column vector operations
 
-  friend OCTAVE_API ColumnVector operator * (const Matrix& a, const ColumnVector& b);
+  friend OCTAVE_API ColumnVector operator * (const Matrix& a,
+                                             const ColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
-  friend OCTAVE_API ColumnVector operator * (const DiagMatrix& a, const ColumnVector& b);
+  friend OCTAVE_API ColumnVector operator * (const DiagMatrix& a,
+                                             const ColumnVector& b);
 
   // other operations
 
@@ -96,8 +98,10 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ColumnVector& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, ColumnVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const ColumnVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is,
+                                               ColumnVector& a);
 
   void resize (octave_idx_type n, const double& rfv = 0)
   {
@@ -105,7 +109,7 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<double>::clear (n, 1); }
+  { Array<double>::clear (n, 1); }
 
 };
 

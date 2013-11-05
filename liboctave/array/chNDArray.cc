@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun-defs.cc"
 
-// FIXME -- this is not quite the right thing.
+// FIXME: this is not quite the right thing.
 
 boolNDArray
 charNDArray::all (int dim) const
@@ -49,7 +49,8 @@ charNDArray::any (int dim) const
 }
 
 charNDArray
-charNDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
+charNDArray::concat (const charNDArray& rb,
+                     const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -80,8 +81,7 @@ charNDArray::concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx)
           octave_idx_type ival = NINTbig (d);
 
           if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-            // FIXME -- is there something
-            // better we could do? Should we warn the user?
+            // FIXME: is there something better to do? Should we warn the user?
             ival = 0;
 
           tmp.elem (i) = static_cast<char>(ival);
@@ -166,43 +166,47 @@ charNDArray::diag (octave_idx_type m, octave_idx_type n) const
 charNDArray
 min (char d, const charNDArray& m)
 {
-  return do_sm_binary_op<charNDArray::element_type, char, charNDArray::element_type>
-           (d, m, mx_inline_xmin);
+  return do_sm_binary_op<charNDArray::element_type, char,
+                         charNDArray::element_type> (d, m, mx_inline_xmin);
 }
 
 charNDArray
 min (const charNDArray& m, char d)
 {
-  return do_ms_binary_op<charNDArray::element_type, charNDArray::element_type, char>
-           (m, d, mx_inline_xmin);
+  return do_ms_binary_op<charNDArray::element_type, charNDArray::element_type,
+                         char> (m, d, mx_inline_xmin);
 }
 
 charNDArray
 min (const charNDArray& a, const charNDArray& b)
 {
-  return do_mm_binary_op<charNDArray::element_type, charNDArray::element_type, charNDArray::element_type>
-           (a, b, mx_inline_xmin, mx_inline_xmin, mx_inline_xmin, "min");
+  return do_mm_binary_op<charNDArray::element_type, charNDArray::element_type,
+                         charNDArray::element_type> (a, b, mx_inline_xmin,
+                                                     mx_inline_xmin,
+                                                     mx_inline_xmin, "min");
 }
 
 charNDArray
 max (char d, const charNDArray& m)
 {
-  return do_sm_binary_op<charNDArray::element_type, char, charNDArray::element_type>
-           (d, m, mx_inline_xmax);
+  return do_sm_binary_op<charNDArray::element_type, char,
+                         charNDArray::element_type> (d, m, mx_inline_xmax);
 }
 
 charNDArray
 max (const charNDArray& m, char d)
 {
-  return do_ms_binary_op<charNDArray::element_type, charNDArray::element_type, char>
-           (m, d, mx_inline_xmax);
+  return do_ms_binary_op<charNDArray::element_type, charNDArray::element_type,
+                         char> (m, d, mx_inline_xmax);
 }
 
 charNDArray
 max (const charNDArray& a, const charNDArray& b)
 {
-  return do_mm_binary_op<charNDArray::element_type, charNDArray::element_type, charNDArray::element_type>
-           (a, b, mx_inline_xmax, mx_inline_xmax, mx_inline_xmax, "max");
+  return do_mm_binary_op<charNDArray::element_type, charNDArray::element_type,
+                         charNDArray::element_type> (a, b, mx_inline_xmax,
+                                                     mx_inline_xmax,
+                                                     mx_inline_xmax, "max");
 }
 
 NDS_CMP_OPS (charNDArray, char)

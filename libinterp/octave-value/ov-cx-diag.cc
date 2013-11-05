@@ -52,8 +52,9 @@ default_numeric_conversion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_complex_diag_matrix::numeric_conversion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_conversion_function,
-                                            octave_complex_matrix::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_numeric_conversion_function,
+            octave_complex_matrix::static_type_id ());
 }
 
 static octave_base_value *
@@ -61,14 +62,16 @@ default_numeric_demotion_function (const octave_base_value& a)
 {
   CAST_CONV_ARG (const octave_complex_diag_matrix&);
 
-  return new octave_float_complex_diag_matrix (v.float_complex_diag_matrix_value ());
+  return new octave_float_complex_diag_matrix
+               (v.float_complex_diag_matrix_value ());
 }
 
 octave_base_value::type_conv_info
 octave_complex_diag_matrix::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_complex_diag_matrix::static_type_id ());
+  return
+    octave_base_value::type_conv_info (default_numeric_demotion_function,
+                                       octave_float_complex_diag_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -149,7 +152,8 @@ octave_complex_diag_matrix::map (unary_mapper_t umap) const
       return ::imag (matrix);
     case umap_sqrt:
       {
-        ComplexColumnVector tmp = matrix.extract_diag ().map<Complex> (std::sqrt);
+        ComplexColumnVector tmp =
+          matrix.extract_diag ().map<Complex> (std::sqrt);
         ComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;
@@ -179,7 +183,7 @@ octave_complex_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (matrix.length () > 4096) // FIXME -- make this configurable.
+  else if (matrix.length () > 4096) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -187,14 +191,15 @@ octave_complex_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
     }
 
   const Complex *mtmp = m.data ();
-  write_doubles (os, reinterpret_cast<const double *> (mtmp), st, 2 * m.numel ());
+  write_doubles (os, reinterpret_cast<const double *> (mtmp), st,
+                 2 * m.numel ());
 
   return true;
 }
 
 bool
 octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                         oct_mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;

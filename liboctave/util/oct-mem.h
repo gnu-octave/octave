@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_memory_h)
-#define octave_memory_h 1
+#if !defined (octave_oct_mem_h)
+#define octave_oct_mem_h 1
 
 #include <cstddef>
 #include <cstring>
@@ -43,7 +43,8 @@ inline size_t safe_size_comp (size_t n, size_t size)
   return n * size;
 }
 
-// Unaliased copy. This boils down to memcpy, even for octave_int and complex types.
+// Unaliased copy. This boils down to memcpy, even for octave_int and
+// complex types.
 
 template <class T>
 inline void copy_or_memcpy (size_t n, const T *src, T *dest)
@@ -79,7 +80,8 @@ inline void fill_or_memset (size_t n, const T& value, T *dest)
 template <class T>
 inline bool helper_is_zero_mem (const T& value)
 {
-  typedef typename query_integer_type<sizeof (T), false>::type IT; // get integer type of the same size.
+  // get integer type of the same size.
+  typedef typename query_integer_type<sizeof (T), false>::type IT;
   return *(reinterpret_cast<const IT *>(&value)) == 0;
 }
 
@@ -120,13 +122,14 @@ DEFINE_POD_FILL (FloatComplex)
 template <class T>
 DEFINE_POD_FILL (octave_int<T>)
 
-// Uninitialized allocation. Will not initialize memory for complex and octave_int.
+// Uninitialized allocation.
+// Will not initialize memory for complex and octave_int.
 // Memory allocated by octave_new should be freed by octave_delete.
 template <class T>
 inline T *no_ctor_new (size_t n)
 {
-  // Some systems let us allocate > 2GB memory even though size_t, which is either
-  // buggy or completely cuckoo, so let's check here to stay safe.
+  // Some systems let us allocate > 2GB memory even though size_t, which is
+  // either buggy or completely cuckoo, so let's check here to stay safe.
   safe_size_comp (n, sizeof (T));
   return new T [n];
 }
@@ -154,4 +157,4 @@ DEFINE_POD_NEW_DELETE (octave_uint16)
 DEFINE_POD_NEW_DELETE (octave_uint32)
 DEFINE_POD_NEW_DELETE (octave_uint64)
 
-#endif /* octave_memory_h */
+#endif /* octave_oct_mem_h */

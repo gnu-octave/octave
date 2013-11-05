@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_QRP_h)
-#define octave_QRP_h 1
+#if !defined (octave_dbleQRP_h)
+#define octave_dbleQRP_h 1
 
 #include <iosfwd>
 
@@ -42,15 +42,15 @@ public:
   QRP (const QRP& a) : QR (a), p (a.p) { }
 
   QRP& operator = (const QRP& a)
-    {
-      if (this != &a)
-        {
-          QR::operator = (a);
-          p = a.p;
-        }
+  {
+    if (this != &a)
+      {
+        QR::operator = (a);
+        p = a.p;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~QRP (void) { }
 

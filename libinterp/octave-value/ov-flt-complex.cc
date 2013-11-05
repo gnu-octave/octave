@@ -71,13 +71,13 @@ octave_float_complex::try_narrowing_conversion (void)
 octave_value
 octave_float_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
+  // FIXME: this doesn't solve the problem of
   //
   //   a = i; a([1,1], [1,1], [1,1])
   //
   // and similar constructions.  Hmm...
 
-  // FIXME -- using this constructor avoids narrowing the
+  // FIXME: using this constructor avoids narrowing the
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
@@ -232,7 +232,9 @@ octave_float_complex::resize (const dim_vector& dv, bool fill) const
 octave_value
 octave_float_complex::diag (octave_idx_type m, octave_idx_type n) const
 {
-  return FloatComplexDiagMatrix (Array<FloatComplex> (dim_vector (1, 1), scalar), m, n);
+  return
+    FloatComplexDiagMatrix (Array<FloatComplex> (dim_vector (1, 1), scalar),
+                            m, n);
 }
 
 bool
@@ -275,7 +277,7 @@ octave_float_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)
 
 bool
 octave_float_complex::load_binary (std::istream& is, bool swap,
-                             oct_mach_info::float_format fmt)
+                                   oct_mach_info::float_format fmt)
 {
   char tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 1))
@@ -283,7 +285,7 @@ octave_float_complex::load_binary (std::istream& is, bool swap,
 
   FloatComplex ctmp;
   read_floats (is, reinterpret_cast<float *> (&ctmp),
-                static_cast<save_type> (tmp), 2, swap, fmt);
+               static_cast<save_type> (tmp), 2, swap, fmt);
   if (error_state || ! is)
     return false;
 
@@ -295,7 +297,7 @@ octave_float_complex::load_binary (std::istream& is, bool swap,
 
 bool
 octave_float_complex::save_hdf5 (hid_t loc_id, const char *name,
-                           bool /* save_as_floats */)
+                                 bool /* save_as_floats */)
 {
   hsize_t dimens[3];
   hid_t space_hid = -1, type_hid = -1, data_hid = -1;

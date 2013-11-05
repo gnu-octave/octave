@@ -29,6 +29,6 @@ mexFunction (int nlhs, mxArray* plhs[],
     }
 
   // WARNING!! Can't do this in MATLAB!  Must copy variable first.
-  mxSetName (prhs[1], str);  
+  mxSetName (prhs[1], str);
   mexPutArray (prhs[1], "caller");
 }

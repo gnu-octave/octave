@@ -179,7 +179,8 @@ octave_base_scalar<ST>::short_disp (void) const
 
 template <class ST>
 bool
-octave_base_scalar<ST>::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+octave_base_scalar<ST>::fast_elem_insert_self (void *where,
+                                               builtin_type_t btyp) const
 {
 
   // Don't use builtin_type () here to avoid an extra VM call.

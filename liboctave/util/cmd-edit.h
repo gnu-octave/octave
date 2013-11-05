@@ -222,11 +222,11 @@ protected:
   virtual void do_set_name (const std::string&) { }
 
   std::string do_readline (const std::string& prompt)
-    {
-      bool eof;
+  {
+    bool eof;
 
-      return do_readline (prompt, eof);
-    }
+    return do_readline (prompt, eof);
+  }
 
   virtual std::string do_readline (const std::string&, bool&) = 0;
 
@@ -284,11 +284,14 @@ protected:
 
   virtual dequoting_fcn do_get_dequoting_function (void) const { return 0; }
 
-  virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const { return 0; }
+  virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const
+  { return 0; }
 
-  virtual user_accept_line_fcn do_get_user_accept_line_function (void) const { return 0; }
+  virtual user_accept_line_fcn do_get_user_accept_line_function (void) const
+  { return 0; }
 
-  virtual string_vector do_generate_filename_completions (const std::string& text) = 0;
+  virtual string_vector
+  do_generate_filename_completions (const std::string& text) = 0;
 
   virtual std::string do_get_line_buffer (void) const = 0;
 

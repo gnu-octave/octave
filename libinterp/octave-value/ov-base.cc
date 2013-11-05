@@ -408,7 +408,8 @@ octave_base_value::print_raw (std::ostream&, bool) const
 }
 
 bool
-octave_base_value::print_name_tag (std::ostream& os, const std::string& name) const
+octave_base_value::print_name_tag (std::ostream& os,
+                                   const std::string& name) const
 {
   bool retval = false;
 
@@ -546,7 +547,8 @@ FloatMatrix
 octave_base_value::float_matrix_value (bool) const
 {
   FloatMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::float_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -580,7 +582,8 @@ octave_base_value::float_complex_value (bool) const
 {
   float tmp = lo_ieee_float_nan_value ();
   FloatComplex retval (tmp, tmp);
-  gripe_wrong_type_arg ("octave_base_value::float_complex_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_complex_value()",
+                        type_name ());
   return retval;
 }
 
@@ -672,7 +675,8 @@ SparseMatrix
 octave_base_value::sparse_matrix_value (bool) const
 {
   SparseMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::sparse_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sparse_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -680,7 +684,8 @@ SparseComplexMatrix
 octave_base_value::sparse_complex_matrix_value (bool) const
 {
   SparseComplexMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::sparse_complex_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sparse_complex_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -688,7 +693,8 @@ SparseBoolMatrix
 octave_base_value::sparse_bool_matrix_value (bool) const
 {
   SparseBoolMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::sparse_bool_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sparse_bool_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -704,7 +710,8 @@ FloatDiagMatrix
 octave_base_value::float_diag_matrix_value (bool) const
 {
   FloatDiagMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::float_diag_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_diag_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -712,7 +719,8 @@ ComplexDiagMatrix
 octave_base_value::complex_diag_matrix_value (bool) const
 {
   ComplexDiagMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::complex_diag_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::complex_diag_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -720,7 +728,8 @@ FloatComplexDiagMatrix
 octave_base_value::float_complex_diag_matrix_value (bool) const
 {
   FloatComplexDiagMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::float_complex_diag_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_complex_diag_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -1177,69 +1186,69 @@ const char *
 octave_base_value::get_umap_name (unary_mapper_t umap)
 {
   static const char *names[num_unary_mappers] =
-    {
-      "abs",
-      "acos",
-      "acosh",
-      "angle",
-      "arg",
-      "asin",
-      "asinh",
-      "atan",
-      "atanh",
-      "cbrt",
-      "ceil",
-      "conj",
-      "cos",
-      "cosh",
-      "erf",
-      "erfinv",
-      "erfcinv",
-      "erfc",
-      "erfcx",
-      "erfi",
-      "dawson",
-      "exp",
-      "expm1",
-      "finite",
-      "fix",
-      "floor",
-      "gamma",
-      "imag",
-      "isinf",
-      "isna",
-      "isnan",
-      "lgamma",
-      "log",
-      "log2",
-      "log10",
-      "log1p",
-      "real",
-      "round",
-      "roundb",
-      "signum",
-      "sin",
-      "sinh",
-      "sqrt",
-      "tan",
-      "tanh",
-      "isalnum",
-      "isalpha",
-      "isascii",
-      "iscntrl",
-      "isdigit",
-      "isgraph",
-      "islower",
-      "isprint",
-      "ispunct",
-      "isspace",
-      "isupper",
-      "isxdigit",
-      "signbit",
-      "toascii",
-      "tolower",
-      "toupper"
-    };
+  {
+    "abs",
+    "acos",
+    "acosh",
+    "angle",
+    "arg",
+    "asin",
+    "asinh",
+    "atan",
+    "atanh",
+    "cbrt",
+    "ceil",
+    "conj",
+    "cos",
+    "cosh",
+    "erf",
+    "erfinv",
+    "erfcinv",
+    "erfc",
+    "erfcx",
+    "erfi",
+    "dawson",
+    "exp",
+    "expm1",
+    "finite",
+    "fix",
+    "floor",
+    "gamma",
+    "imag",
+    "isinf",
+    "isna",
+    "isnan",
+    "lgamma",
+    "log",
+    "log2",
+    "log10",
+    "log1p",
+    "real",
+    "round",
+    "roundb",
+    "signum",
+    "sin",
+    "sinh",
+    "sqrt",
+    "tan",
+    "tanh",
+    "isalnum",
+    "isalpha",
+    "isascii",
+    "iscntrl",
+    "isdigit",
+    "isgraph",
+    "islower",
+    "isprint",
+    "ispunct",
+    "isspace",
+    "isupper",
+    "isxdigit",
+    "signbit",
+    "toascii",
+    "tolower",
+    "toupper"
+  };
 
   if (umap < 0 || umap >= num_unary_mappers)
     return "unknown";
@@ -1376,7 +1385,8 @@ octave_base_value::numeric_assign (const std::string& type,
           // Try biased (one-sided) conversions first.
           if (cf_rhs.type_id () >= 0
               && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
-                                                           t_lhs, cf_rhs.type_id ())
+                                                           t_lhs,
+                                                           cf_rhs.type_id ())
                   || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs,
                                                                      cf_rhs.type_id ()) >= 0))
             cf_this = 0;
@@ -1427,7 +1437,8 @@ octave_base_value::numeric_assign (const std::string& type,
               done = (! error_state);
             }
           else
-            gripe_no_conversion (octave_value::assign_op_as_string (octave_value::op_asn_eq),
+            gripe_no_conversion (octave_value::assign_op_as_string
+                                   (octave_value::op_asn_eq),
                                  type_name (), rhs.type_name ());
         }
     }
@@ -1457,7 +1468,7 @@ octave_base_value::indent (std::ostream& os) const
 
   if (beginning_of_line)
     {
-      // FIXME -- do we need this?
+      // FIXME: do we need this?
       // os << prefix;
 
       for (int i = 0; i < curr_print_indent_level; i++)
@@ -1531,19 +1542,22 @@ install_base_type_conversions (void)
   INSTALL_ASSIGNCONV (octave_base_value, octave_scalar, octave_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_matrix, octave_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_complex, octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_complex_matrix, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_base_value, octave_complex_matrix,
+                      octave_complex_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_range, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_char_matrix_str, octave_char_matrix_str);
+  INSTALL_ASSIGNCONV (octave_base_value, octave_char_matrix_str,
+                      octave_char_matrix_str);
   INSTALL_ASSIGNCONV (octave_base_value, octave_cell, octave_cell);
 
   INSTALL_WIDENOP (octave_base_value, octave_matrix, matrix_conv);
-  INSTALL_WIDENOP (octave_base_value, octave_complex_matrix, complex_matrix_conv);
+  INSTALL_WIDENOP (octave_base_value, octave_complex_matrix,
+                   complex_matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
 }
 
 DEFUN (sparse_auto_mutate, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\

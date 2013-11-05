@@ -577,137 +577,6 @@ install_signal_handlers (void)
 
 }
 
-static pid_t gui_pid = 0;
-
-static void
-gui_driver_sig_handler (int sig)
-{
-  if (gui_pid > 0)
-    octave_syscalls::kill (gui_pid, sig);
-}
-
-void
-install_gui_driver_signal_handlers (pid_t pid)
-{
-  gui_pid = pid;
-
-#ifdef SIGINT
-  octave_set_signal_handler (SIGINT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGBREAK
-  octave_set_signal_handler (SIGBREAK, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGABRT
-  octave_set_signal_handler (SIGABRT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGALRM
-  octave_set_signal_handler (SIGALRM, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGBUS
-  octave_set_signal_handler (SIGBUS, gui_driver_sig_handler);
-#endif
-
-  // SIGCHLD
-  // SIGCLD
-  // SIGCONT
-
-#ifdef SIGEMT
-  octave_set_signal_handler (SIGEMT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGFPE
-  octave_set_signal_handler (SIGFPE, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGHUP
-  octave_set_signal_handler (SIGHUP, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGILL
-  octave_set_signal_handler (SIGILL, gui_driver_sig_handler);
-#endif
-
-  // SIGINFO
-  // SIGINT
-
-#ifdef SIGIOT
-  octave_set_signal_handler (SIGIOT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGLOST
-  octave_set_signal_handler (SIGLOST, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGPIPE
-  octave_set_signal_handler (SIGPIPE, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGPOLL
-  octave_set_signal_handler (SIGPOLL, gui_driver_sig_handler);
-#endif
-
-  // SIGPROF
-  // SIGPWR
-
-#ifdef SIGQUIT
-  octave_set_signal_handler (SIGQUIT, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGSEGV
-  octave_set_signal_handler (SIGSEGV, gui_driver_sig_handler);
-#endif
-
-  // SIGSTOP
-
-#ifdef SIGSYS
-  octave_set_signal_handler (SIGSYS, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGTERM
-  octave_set_signal_handler (SIGTERM, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGTRAP
-  octave_set_signal_handler (SIGTRAP, gui_driver_sig_handler);
-#endif
-
-  // SIGTSTP
-  // SIGTTIN
-  // SIGTTOU
-  // SIGURG
-
-#ifdef SIGUSR1
-  octave_set_signal_handler (SIGUSR1, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGUSR2
-  octave_set_signal_handler (SIGUSR2, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGVTALRM
-  octave_set_signal_handler (SIGVTALRM, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGIO
-  octave_set_signal_handler (SIGIO, gui_driver_sig_handler);
-#endif
-
-  // SIGWINCH
-
-#ifdef SIGXCPU
-  octave_set_signal_handler (SIGXCPU, gui_driver_sig_handler);
-#endif
-
-#ifdef SIGXFSZ
-  octave_set_signal_handler (SIGXFSZ, gui_driver_sig_handler);
-#endif
-
-}
-
 static octave_scalar_map
 make_sig_struct (void)
 {
@@ -1003,7 +872,7 @@ OCL_REP::wait (void)
 }
 
 DEFUN (SIG, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} SIG ()\n\
 Return a structure containing Unix signal names and their defined values.\n\
 @end deftypefn")
@@ -1030,7 +899,7 @@ Return a structure containing Unix signal names and their defined values.\n\
 */
 
 DEFUN (debug_on_interrupt, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} debug_on_interrupt (@var{new_val}, \"local\")\n\
@@ -1061,7 +930,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
@@ -1090,7 +959,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\

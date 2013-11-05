@@ -35,30 +35,30 @@ public:
 
   base_det (T c = 1, int e = 0)
     : c2 (), e2 ()
-    {
-      c2 = xlog2 (c, e2);
-      e2 += e;
-    }
+  {
+    c2 = xlog2 (c, e2);
+    e2 += e;
+  }
 
   base_det (T c, double e, double b)
     : c2 (), e2 ()
-    {
-      e *= xlog2 (b);
-      e2 = e;
-      c *= xexp2 (e - e2);
-      int f;
-      c2 = xlog2 (c, f);
-      e2 += f;
-    }
+  {
+    e *= xlog2 (b);
+    e2 = e;
+    c *= xexp2 (e - e2);
+    int f;
+    c2 = xlog2 (c, f);
+    e2 += f;
+  }
 
   base_det (const base_det& a) : c2 (a.c2), e2 (a.e2) { }
 
   base_det& operator = (const base_det& a)
-    {
-      c2 = a.c2;
-      e2 = a.e2;
-      return *this;
-    }
+  {
+    c2 = a.c2;
+    e2 = a.e2;
+    return *this;
+  }
 
   T coef (void) const { return c2; }
   int exp (void) const { return e2; }
@@ -69,11 +69,11 @@ public:
   base_det square () const { return base_det (c2*c2, e2+e2); }
 
   void operator *= (T t)
-    {
-      int e;
-      c2 *= xlog2 (t, e);
-      e2 += e;
-    }
+  {
+    int e;
+    c2 *= xlog2 (t, e);
+    e2 += e;
+  }
 
 private:
 

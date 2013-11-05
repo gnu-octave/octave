@@ -49,7 +49,7 @@ do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 }
 
 DEFUN (mgorth, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{y}, @var{h}] =} mgorth (@var{x}, @var{v})\n\
 Orthogonalize a given column vector @var{x} with respect to a set of\n\
 orthonormal vectors comprising the columns of @var{v}\n\
@@ -71,10 +71,10 @@ On exit, @var{y} is a unit vector such that:\n\
   int nargin = args.length ();
 
   if (nargin != 2 || nargout > 2)
-  {
-    print_usage ();
-    return retval;
-  }
+    {
+      print_usage ();
+      return retval;
+    }
 
   octave_value arg_x = args(0);
   octave_value arg_v = args(1);
@@ -97,7 +97,8 @@ On exit, @var{y} is a unit vector such that:\n\
     {
       if (iscomplex)
         {
-          FloatComplexColumnVector x = arg_x.float_complex_column_vector_value ();
+          FloatComplexColumnVector x
+            = arg_x.float_complex_column_vector_value ();
           FloatComplexMatrix V = arg_v.float_complex_matrix_value ();
           FloatComplexRowVector h;
           do_mgorth (x, V, h);

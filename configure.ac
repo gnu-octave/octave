@@ -664,7 +664,7 @@ OCTAVE_CHECK_LIB(qhull, QHull,
 
 ### Check for PCRE regex library.
 
-REGEX_LIBS=
+PCRE_LIBS=
 
 pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
 
@@ -687,18 +687,19 @@ AC_CACHE_CHECK([whether pcre.h defines the macros we need],
     ac_cv_pcre_h_macros_present=yes, ac_cv_pcre_h_macros_present=no)])
 
 if test $ac_cv_pcre_h_macros_present = yes; then
-  ## check for pcre-config, and if so, set XTRA_CXXFLAGS appropriately
+  ## check for pcre-config, and if so, get build variables
   AC_CHECK_PROG(HAVE_PCRE_CONFIG, pcre-config, [yes], [no])
   if test $HAVE_PCRE_CONFIG = yes; then
-    XTRA_CXXFLAGS="$XTRA_CXXFLAGS `pcre-config --cflags`"
-    REGEX_LIBS=`pcre-config --libs`
+    PCRE_CPPFLAGS=`pcre-config --cflags`
+    PCRE_LIBS=`pcre-config --libs`
   else
-    REGEX_LIBS="-lpcre"
+    PCRE_LIBS="-lpcre"
   fi
   save_LIBS="$LIBS"
-  LIBS="$REGEX_LIBS $LIBS"
+  LIBS="$PCRE_LIBS $LIBS"
   AC_CHECK_FUNCS([pcre_compile],
-    [AC_SUBST(REGEX_LIBS)],
+    [AC_SUBST(PCRE_CPPFLAGS)
+     AC_SUBST(PCRE_LIBS)],
     [AC_MSG_ERROR([$pcre_fail_msg])])
   LIBS="$save_LIBS"
 else
@@ -718,12 +719,12 @@ fi
 
  ### Check for the LLVM library
 
-build_jit=no
+build_jit=yes
 AC_ARG_ENABLE([jit],
   [AS_HELP_STRING([--enable-jit],
     [(EXPERIMENTAL) enable JIT compiler])],
-  [if test "$enableval" = yes; then
-     build_jit=yes
+  [if test "$enableval" = no; then
+     build_jit=no
    fi],
   [])
 
@@ -772,9 +773,7 @@ if test $build_jit = yes; then
     CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
     CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
     AC_LANG_PUSH(C++)
-    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [
-      warn_llvm=
-      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"])
+    AC_CHECK_HEADER([llvm/Support/TargetSelect.h], [warn_llvm=""])
 
     have_function_h=no
     AC_CHECK_HEADERS([llvm/IR/Function.h llvm/Function.h],
@@ -953,9 +952,9 @@ PKG_CHECK_EXISTS([$magick++], [
   ## packages add extra flags that are useful when building
   ## Graphics/ImageMagick++ extentions.  These extra flags break the
   ## Octave build. 
+  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
   MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
   MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
-  MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
 
   warn_magick="$magick++ library fails tests.  The imread function for reading image files will not be fully functional."
 
@@ -1072,25 +1071,24 @@ if test -n "$OPENGL_LIBS"; then
 
   PKG_CHECK_MODULES([FT2], [freetype2], [
     min_ft2_version=9.03
-    AC_MSG_CHECKING([for FreeType -- version >= $min_ft2_version])
+    AC_MSG_CHECKING([for FreeType2 version >= $min_ft2_version])
     $PKG_CONFIG freetype2 --atleast-version=$min_ft2_version
     ac_status=$?
     if test $ac_status = 0; then
       AC_MSG_RESULT(yes)
       AC_DEFINE(HAVE_FREETYPE, 1, [Define to 1 if you have Freetype library.])
-      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"
       save_LIBS="$LIBS"
       LIBS="$FT2_LIBS $LIBS"
       AC_CHECK_FUNCS([FT_Reference_Face])
       LIBS="$save_LIBS"
     else
       AC_MSG_RESULT(no)
-      warn_freetype="FreeType library not found.  Native graphics will be disabled."
+      warn_freetype="FreeType library >= 9.03 not found.  Native graphics will be disabled."
     fi])
 
   if test -n "$warn_freetype"; then
-    OCTAVE_CONFIGURE_WARNING([warn_freetype])
     native_graphics=no
+    OCTAVE_CONFIGURE_WARNING([warn_freetype])
   fi
 
   ## Check for fontconfig library
@@ -1100,7 +1098,6 @@ if test -n "$OPENGL_LIBS"; then
     PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
       [have_fontconfig=yes
        OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
-       XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FONTCONFIG_CFLAGS"
        AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present.])],
       [have_fontconfig=no
        warn_fontconfig="Fontconfig library not found.  Native graphics will be disabled."])
@@ -1189,6 +1186,15 @@ fi
 
 AC_SUBST(GRAPHICS_CFLAGS)
 AC_SUBST(GRAPHICS_LIBS)
+
+## Check for gl2ps which is required for printing with OpenGL graphics
+if test $native_graphics = yes; then
+  AC_CHECK_HEADERS([gl2ps.h],
+    [GL2PS_LIBS="-lgl2ps"],
+    [AC_MSG_WARN([gl2ps library not found.  OpenGL printing is disabled.])])
+fi
+
+AC_SUBST(GL2PS_LIBS)
 
 ### Start determination of shared vs. static libraries
 
@@ -1904,13 +1910,13 @@ AC_SUBST(LIBOCTAVE)
 
 if test "$cross_compiling" = yes && test -n "$ac_tool_prefix"; then
   CROSS_TOOL_PREFIX="$ac_tool_prefix"
-  MKOCTFILE_AR='$(shell echo $(AR) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_CC='$(shell echo $(CC) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_CXX='$(shell echo $(CXX) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_DL_LD='$(shell echo $(DL_LD) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_F77='$(shell echo $(F77) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_LD_CXX='$(shell echo $(LD_CXX) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
-  MKOCTFILE_RANLIB='$(shell echo $(RANLIB) | $SED "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_AR='$(shell echo $(AR) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_CC='$(shell echo $(CC) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_CXX='$(shell echo $(CXX) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_DL_LD='$(shell echo $(DL_LD) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_F77='$(shell echo $(F77) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_LD_CXX='$(shell echo $(LD_CXX) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
+  MKOCTFILE_RANLIB='$(shell echo $(RANLIB) | $(SED) "s,$(CROSS_TOOL_PREFIX),,")'
 else
   MKOCTFILE_AR="$AR"
   MKOCTFILE_CC="$CC"
@@ -2374,6 +2380,7 @@ JAR=
 JAVA_LIBS=
 
 ## Fake loop so that "break" can be used to skip code blocks.
+warn_java=""
 while test $build_java = yes
 do
   ## Unset build_java.  Variable is set only if all configuration tests pass.
@@ -2381,8 +2388,8 @@ do
 
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
-    AC_MSG_WARN([JAVA_HOME environment variable not initialized.])
-    AC_MSG_WARN([Auto-detection will proceed but is unreliable.])
+    warn_java_home="JAVA_HOME environment variable not initialized. Auto-detection will proceed but is unreliable."
+    OCTAVE_CONFIGURE_WARNING([warn_java_home])
   fi
 
   ## Search for a viable Java executable.
@@ -2394,7 +2401,7 @@ do
   AC_PATH_PROG(JAVA, java, [], [$JAVA_PATH])
 
   if test -z "$JAVA"; then
-    AC_MSG_WARN([No Java executable found.  Octave will not be able to call Java methods.])   
+    warn_java="No Java executable found.  Octave will not be able to call Java methods."
     break
   fi
 
@@ -2447,13 +2454,13 @@ do
   if test $java_major -ge 1 && test $java_minor -ge 5; then
     :  # Version is ok.  Do nothing.
   else
-    AC_MSG_WARN([Java version is too old (< 1.5).  Octave will not be able to call Java methods.])
+    warn_java="Java version is too old (< 1.5).  Octave will not be able to call Java methods."
     break
   fi
 
-  ## At this point Win32/MSVC systems have enough configuration data.  We
-  ## assume that all appropriate variables (e.g. INCLUDE and LIB) already have
-  ## the required paths to compile and link against JDK.
+  ## At this point Win32 systems have enough configuration data.
+  ## We assume that all appropriate variables (e.g. INCLUDE and LIB) already
+  ## contain the required paths to compile and link against JDK.
   case $host_os in
     msdosmsvc)
       build_java=yes
@@ -2462,14 +2469,20 @@ do
         [Define to 1 if Java is available and is at least version 1.5])
       break
     ;;
-    mingw*)
-      if test $have_msvc = yes; then
-        build_java=yes
-        JAVA_LIBS=-ladvapi32
-        AC_DEFINE(HAVE_JAVA, 1,
-          [Define to 1 if Java is available and is at least version 1.5])
-        break
+    mingw* | cygwin*)
+      build_java=yes
+      JAVA_LIBS=-ladvapi32
+      if test $have_msvc = no; then
+        if test -n "$JAVA_CPPFLAGS"; then
+          JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
+        else
+          JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
+        fi
+        LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
       fi
+      AC_DEFINE(HAVE_JAVA, 1,
+        [Define to 1 if Java is available and is at least version 1.5])
+      break
     ;;
   esac
 
@@ -2477,9 +2490,6 @@ do
   case $host_os in
     darwin*)
       jvmlib=libjvm.dylib
-    ;;
-    mingw* | cygwin*)
-      jvmlib=jvm.dll
     ;;
     *)
       jvmlib=libjvm.so
@@ -2539,7 +2549,7 @@ do
 
   if test -z "$JAVA_LDPATH"; then
     AC_MSG_RESULT([not found])
-    AC_MSG_WARN([Library $jvmlib not found.  Octave will not be able to call Java methods.])
+    warn_java="Library $jvmlib not found.  Octave will not be able to call Java methods."
     break
   else
     AC_MSG_RESULT([$JAVA_LDPATH])
@@ -2562,15 +2572,6 @@ do
       fi
       JAVA_LIBS="-framework JavaVM"
     ;;
-    mingw* | cygwin*)
-      if test -n "$JAVA_CPPFLAGS"; then
-        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
-      else
-        JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
-      fi
-      JAVA_LIBS=-ladvapi32
-      LDFLAGS="$LDFLAGS -Wl,--export-all-symbols"
-    ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then
         JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/linux"
@@ -2590,7 +2591,7 @@ do
     AC_MSG_RESULT([$dir])
   else
     AC_MSG_RESULT([not found])
-    AC_MSG_WARN([Include file <jni.h> not found.  Octave will not be able to call Java methods.])
+    warn_java="Include file <jni.h> not found.  Octave will not be able to call Java methods."
     break
   fi
 
@@ -2600,6 +2601,9 @@ do
     [Define to 1 if Java is available and is at least version 1.5])
   break
 done
+if test -n "$warn_java"; then
+  OCTAVE_CONFIGURE_WARNING([warn_java])
+fi
 
 AM_CONDITIONAL([AMCOND_HAVE_JAVA], [test $build_java = yes])
 AC_SUBST(JAVA)
@@ -2622,10 +2626,12 @@ AC_ARG_ENABLE([gui],
   [if test "$enableval" = no; then build_gui=no; fi], [])
 
 if test $build_gui = yes; then
+
+  warn_gui=""
   ## Check for Qt libraries
   PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
     [],
-    [AC_MSG_WARN([Qt libraries not found -- disabling GUI])
+    [warn_gui="Qt libraries not found -- disabling GUI"
      build_gui=no])
 
   if test $build_gui = yes; then
@@ -2636,7 +2642,7 @@ if test $build_gui = yes; then
 
     ## Check for Qt4
     if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
-      AC_MSG_WARN([Qt >= 4.0.0 not found -- disabling GUI])
+      warn_gui="Qt >= 4.0.0 not found -- disabling GUI"
       build_gui=no
     fi
   fi
@@ -2650,7 +2656,7 @@ if test $build_gui = yes; then
       AC_DEFINE(HAVE_QT, 1, 
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
     else
-      AC_MSG_WARN([Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI])
+      warn_gui="Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI"
       build_gui=no
     fi
   fi
@@ -2658,7 +2664,7 @@ if test $build_gui = yes; then
   if test $build_gui = yes; then
     OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL
     if test $octave_cv_func_qabstractitemmodel_beginresetmodel = no; then
-      AC_MSG_WARN([QAbstractItemModel::beginResetModel() not found -- disabling GUI])
+      warn_gui="QAbstractItemModel::beginResetModel() not found -- disabling GUI"
       build_gui=no
     fi
   fi
@@ -2691,7 +2697,8 @@ if test $build_gui = yes; then
       AC_LANG_POP([C++])
     ])
     if test $octave_cv_lib_qscintilla = no; then
-      AC_MSG_WARN([Qscintilla library not found -- disabling built-in GUI editor])
+      warn_gui_editor="Qscintilla library not found -- disabling built-in GUI editor"
+      OCTAVE_CONFIGURE_WARNING([warn_gui_editor])
     else
       ## Let's assume Qscintilla library is at the same location as
       ## other regular Qt libraries.
@@ -2709,14 +2716,14 @@ if test $build_gui = yes; then
     fi
 
     AC_CHECK_FUNCS([setlocale], [],
-      [AC_MSG_WARN([setlocale not found -- disabling GUI])
+      [warn_gui="setlocale not found -- disabling GUI"
        build_gui=no])
 
     if test $build_gui = yes; then
       case $host_os in
         mingw* | msdosmsvc*)
           AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
-            [AC_MSG_WARN([setvbuf not found -- disabling GUI])
+            [warn_gui="setvbuf not found -- disabling GUI"
              build_gui=no])
           ;;
         *)
@@ -2729,6 +2736,10 @@ if test $build_gui = yes; then
           ;;
       esac
     fi
+  fi
+
+  if test -n "$warn_gui"; then
+    OCTAVE_CONFIGURE_WARNING([warn_gui])
   fi
 fi
 
@@ -2853,6 +2864,8 @@ Octave is now configured for $canonical_host_type
   Magick++ LDFLAGS:            $MAGICK_LDFLAGS
   Magick++ libraries:          $MAGICK_LIBS
   OPENGL libraries:            $OPENGL_LIBS
+  PCRE CPPFLAGS:               $PCRE_CPPFLAGS
+  PCRE libraries:              $PCRE_LIBS
   PTHREAD flags:               $PTHREAD_CFLAGS
   PTHREAD libraries:           $PTHREAD_LIBS
   QHULL CPPFLAGS:              $QHULL_CPPFLAGS
@@ -2865,7 +2878,6 @@ Octave is now configured for $canonical_host_type
   Qt LDFLAGS:                  $QT_LDFLAGS
   Qt libraries:                $QT_LIBS
   READLINE libraries:          $READLINE_LIBS
-  REGEX libraries:             $REGEX_LIBS
   TERM libraries:              $TERM_LIBS
   UMFPACK CPPFLAGS:            $UMFPACK_CPPFLAGS
   UMFPACK LDFLAGS:             $UMFPACK_LDFLAGS

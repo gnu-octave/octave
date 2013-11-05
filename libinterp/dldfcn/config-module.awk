@@ -66,7 +66,7 @@ BEGIN {
       {
         printf ("dldfcn/%s.df: CPPFLAGS += %s\n",
                 basename, cppflags[i]);
-        printf ("dldfcn_%s_la_CPPFLAGS = $(AM_CPPFLAGS) %s\n",
+        printf ("dldfcn_%s_la_CPPFLAGS = %s $(AM_CPPFLAGS)\n",
                 basename, cppflags[i]);
       }
     printf ("dldfcn_%s_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED_LDFLAG) %s $(OCT_LINK_OPTS)\n",

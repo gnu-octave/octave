@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dock_widget_h)
-#define octave_dock_widget_h 1
+#if !defined (octave_octave_dock_widget_h)
+#define octave_octave_dock_widget_h 1
 
 #include <QDockWidget>
 #include <QSettings>
@@ -58,7 +58,7 @@ protected:
     QDockWidget::closeEvent (e);
   }
 
-  QWidget * focusWidget();
+  QWidget * focusWidget ();
 
 public slots:
 

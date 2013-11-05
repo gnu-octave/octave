@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lvalue_h)
-#define octave_lvalue_h 1
+#if !defined (octave_oct_lvalue_h)
+#define octave_oct_lvalue_h 1
 
 class octave_value;
 class octave_value_list;
@@ -47,17 +47,17 @@ public:
   { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
-    {
-      if (this != &vr)
-        {
-          sym = vr.sym;
-          type = vr.type;
-          idx = vr.idx;
-          nel = vr.nel;
-        }
+  {
+    if (this != &vr)
+      {
+        sym = vr.sym;
+        type = vr.type;
+        idx = vr.idx;
+        nel = vr.nel;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~octave_lvalue (void) { }
 

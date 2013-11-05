@@ -105,7 +105,7 @@ xpow (double a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       EIG b_eig (b);
@@ -156,7 +156,7 @@ xpow (double a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       EIG b_eig (b);
@@ -195,7 +195,7 @@ xpow (const Matrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       if (static_cast<int> (b) == b)
@@ -208,8 +208,7 @@ xpow (const Matrix& a, double b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               Matrix atmp;
               if (btmp < 0)
@@ -281,7 +280,7 @@ xpow (const DiagMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       if (static_cast<int> (b) == b)
@@ -325,7 +324,7 @@ xpow (const Matrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       EIG a_eig (a);
@@ -373,7 +372,7 @@ xpow (const Complex& a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       EIG b_eig (b);
@@ -421,7 +420,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       EIG b_eig (b);
@@ -460,7 +459,7 @@ xpow (const ComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       if (static_cast<int> (b) == b)
@@ -473,8 +472,7 @@ xpow (const ComplexMatrix& a, double b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               ComplexMatrix atmp;
               if (btmp < 0)
@@ -546,7 +544,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       EIG a_eig (a);
@@ -580,7 +578,7 @@ xpow (const ComplexDiagMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       ComplexDiagMatrix r (nr, nc);
@@ -621,8 +619,7 @@ xpow (const DiagMatrix& a, const Complex& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //
@@ -1103,8 +1100,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //
@@ -1554,7 +1550,7 @@ xpow (float a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatEIG b_eig (b);
@@ -1606,7 +1602,7 @@ xpow (float a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatEIG b_eig (b);
@@ -1645,7 +1641,7 @@ xpow (const FloatMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1658,8 +1654,7 @@ xpow (const FloatMatrix& a, float b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               FloatMatrix atmp;
               if (btmp < 0)
@@ -1731,7 +1726,7 @@ xpow (const FloatDiagMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1745,7 +1740,8 @@ xpow (const FloatDiagMatrix& a, float b)
         {
           FloatComplexDiagMatrix r (nr, nc);
           for (octave_idx_type i = 0; i < nc; i++)
-            r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)), b);
+            r.dgelem (i) = std::pow (static_cast<FloatComplex> (a.dgelem (i)),
+                                                                b);
           retval = r;
         }
     }
@@ -1763,7 +1759,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatEIG a_eig (a);
@@ -1811,7 +1807,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatEIG b_eig (b);
@@ -1859,7 +1855,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be a square matrix");
+    error ("for x^A, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatEIG b_eig (b);
@@ -1898,7 +1894,7 @@ xpow (const FloatComplexMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1911,8 +1907,7 @@ xpow (const FloatComplexMatrix& a, float b)
           else
             {
               // Too much copying?
-              // FIXME -- we shouldn't do this if the exponent is
-              // large...
+              // FIXME: we shouldn't do this if the exponent is large...
 
               FloatComplexMatrix atmp;
               if (btmp < 0)
@@ -1984,7 +1979,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatEIG a_eig (a);
@@ -2018,7 +2013,7 @@ xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be a square matrix");
+    error ("for A^b, A must be a square matrix. Use .^ for elementwise power.");
   else
     {
       FloatComplexDiagMatrix r (nr, nc);
@@ -2058,8 +2053,7 @@ xpow (const FloatDiagMatrix& a, const FloatComplex& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //
@@ -2456,8 +2450,7 @@ elem_xpow (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
 //
 //   * -> not needed.
 
-// FIXME -- these functions need to be fixed so that things
-// like
+// FIXME: these functions need to be fixed so that things like
 //
 //   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
 //

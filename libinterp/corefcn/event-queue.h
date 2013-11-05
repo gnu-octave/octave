@@ -99,19 +99,19 @@ public:
   event_queue_safe (void) : event_queue () { }
 
   ~event_queue_safe (void)
-    {
-      while (! empty ())
-        {
-          try
-            {
-              run_first ();
-            }
-          catch (...) // Yes, the black hole. Remember we're in a dtor.
-            {
-              gripe_exception ();
-            }
-        }
-    }
+  {
+    while (! empty ())
+      {
+        try
+          {
+            run_first ();
+          }
+        catch (...) // Yes, the black hole. Remember we're in a dtor.
+          {
+            gripe_exception ();
+          }
+      }
+  }
 
 private:
 

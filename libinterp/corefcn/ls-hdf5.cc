@@ -248,8 +248,11 @@ herr_t
 hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 {
   hdf5_callback_data *d = static_cast <hdf5_callback_data *> (dv);
-  hid_t type_id = -1, type_class_id = -1, data_id = -1, subgroup_id = -1,
-    space_id = -1;
+  hid_t type_id = -1;
+  hid_t type_class_id = -1;
+  hid_t data_id = -1;
+  hid_t subgroup_id = -1;
+  hid_t space_id = -1;;
 
   H5G_stat_t info;
   herr_t retval = 0;
@@ -544,7 +547,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
                name);
     }
 
- done:
+done:
   if (retval < 0)
     error ("load: error while reading hdf5 item %s", name);
 
@@ -580,7 +583,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 // and error.
 std::string
 read_hdf5_data (std::istream& is, const std::string& /* filename */,
-                bool& global, octave_value& tc, std::string& doc, 
+                bool& global, octave_value& tc, std::string& doc,
                 const string_vector& argv, int argv_idx, int argc)
 {
   std::string retval;
@@ -874,7 +877,8 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 
   std::string t = val.type_name ();
 #if HAVE_HDF5_18
-  data_id = H5Gcreate (loc_id, name.c_str (), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  data_id = H5Gcreate (loc_id, name.c_str (), H5P_DEFAULT, H5P_DEFAULT,
+                       H5P_DEFAULT);
 #else
   data_id = H5Gcreate (loc_id, name.c_str (), 0);
 #endif
@@ -916,7 +920,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   if (retval)
     retval = hdf5_add_attr (data_id, "OCTAVE_NEW_FORMAT") >= 0;
 
- error_cleanup:
+error_cleanup:
 
   if (data_type_id >= 0)
     H5Dclose (data_type_id);

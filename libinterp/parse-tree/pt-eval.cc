@@ -252,11 +252,11 @@ tree_decl_elt::eval (void)
       octave_value init_val = expr->rvalue1 ();
 
       if (! error_state)
-       {
-         ult.assign (octave_value::op_asn_eq, init_val);
+        {
+          ult.assign (octave_value::op_asn_eq, init_val);
 
-         retval = true;
-       }
+          retval = true;
+        }
     }
 
   return retval;
@@ -300,7 +300,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
-  // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
+  // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
 
   unwind_protect frame;
@@ -711,8 +711,8 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           if (! Vdebugging)
             octave_call_stack::set_location (stmt.line (), stmt.column ());
 
-          // FIXME -- we need to distinguish functions from scripts to
-          // get this right.
+          // FIXME: we need to distinguish functions from scripts
+          //        to get this right.
           if ((statement_context == script
                && ((Vecho_executing_commands & ECHO_SCRIPTS)
                    || (Vecho_executing_commands & ECHO_FUNCTIONS)))
@@ -730,12 +730,12 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               if (debug_mode)
                 do_breakpoint (expr->is_breakpoint ());
 
-              // FIXME -- maybe all of this should be packaged in
+              // FIXME: maybe all of this should be packaged in
               // one virtual function that returns a flag saying whether
               // or not the expression will take care of binding ans and
               // printing the result.
 
-              // FIXME -- it seems that we should just have to
+              // FIXME: it seems that we should just have to
               // call expr->rvalue1 () and that should take care of
               // everything, binding ans as necessary?
 
@@ -766,7 +766,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
         }
       catch (std::bad_alloc)
         {
-          // FIXME -- We want to use error_with_id here so that we set
+          // FIXME: We want to use error_with_id here so that we set
           // the error state, give users control over this error
           // message, and so that we set the error_state appropriately
           // so we'll get stack trace info when appropriate.  But
@@ -994,7 +994,7 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   // The unwind_protects are popped off the stack in the reverse of
   // the order they are pushed on.
 
-  // FIXME -- these statements say that if we see a break or
+  // FIXME: these statements say that if we see a break or
   // return statement in the cleanup block, that we want to use the
   // new value of the breaking or returning flag instead of restoring
   // the previous value.  Is that the right thing to do?  I think so.
@@ -1257,7 +1257,7 @@ tree_evaluator::do_keyboard (const octave_value_list& args) const
 }
 
 DEFUN (max_recursion_depth, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} max_recursion_depth (@var{new_val}, \"local\")\n\
@@ -1286,7 +1286,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (silent_functions, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} silent_functions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} silent_functions (@var{new_val}, \"local\")\n\

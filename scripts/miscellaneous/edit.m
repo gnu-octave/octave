@@ -44,14 +44,14 @@
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
 ## @code{@var{name}.cc} in the path and try to modify it, otherwise it will
-## create a new @file{.cc} file in the current directory. If @var{name} happens
+## create a new @file{.cc} file in the current directory.  If @var{name} happens
 ## to be an m-file or interpreter defined function, then the text of that
 ## function will be inserted into the .cc file as a comment.
 ##
 ## @item
 ## If @file{@var{name}.ext} is on your path then it will be edited, otherwise
 ## the editor will be started with @file{@var{name}.ext} in the current
-## directory as the filename. If @file{@var{name}.ext} is not modifiable,
+## directory as the filename.  If @file{@var{name}.ext} is not modifiable,
 ## it will be copied to @env{HOME} before editing.
 ##
 ## @strong{Warning:} You may need to clear @var{name} before the new definition

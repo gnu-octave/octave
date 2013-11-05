@@ -93,7 +93,7 @@ public:
 
   bool is_binary (void) const { return !ascii_mode; }
 
-  virtual void cwd (const std::string& /* path */) { } 
+  virtual void cwd (const std::string& /* path */) { }
 
   virtual void del (const std::string& /* file */) { }
 

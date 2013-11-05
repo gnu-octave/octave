@@ -60,7 +60,7 @@ close_fcn (FILE *f)
 }
 
 DEFUN_DLD (__voronoi__, args, ,
-        "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
 @deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts}, @var{options})\n\
 @deftypefnx {Loadable Function} {@var{C}, @var{F}, @var{Inf_Pts} =} __voronoi__ (@dots{})\n\
@@ -150,7 +150,7 @@ Undocumented internal function.\n\
 
   int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
                                ismalloc, cmd_str, outfile, errfile);
-  if (! exitcode) 
+  if (! exitcode)
     {
       // Calling findgood_all provides the number of Voronoi vertices
       // (sets qh num_good).
@@ -218,7 +218,7 @@ Undocumented internal function.\n\
       // of the at_inf and C arrays so that they always contain at least
       // as many elements as the given points array.
 
-      // FIXME -- is it possible (or does it make sense) for
+      // FIXME: is it possible (or does it make sense) for
       // num_voronoi_regions to ever be larger than num_points?
 
       octave_idx_type nr = (num_points > num_voronoi_regions

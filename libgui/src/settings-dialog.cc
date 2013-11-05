@@ -57,7 +57,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->setupUi (this);
 
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME -- what should happen if settings is 0?
+  // FIXME: what should happen if settings is 0?
 
   // look for available language files and the actual settings
   QString qm_dir_name = resource_manager::get_gui_translation_dir ();
@@ -65,32 +65,37 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
                                                  QDir::Files | QDir::Readable,
                                                  QDir::Name);
-  for (int i = 0; i < qm_files.length (); i++)    // insert available languages
+  for (int i = 0; i < qm_files.length (); i++)   // insert available languages
     ui->comboBox_language->addItem (qm_files.at (i).baseName ());
-  ui->comboBox_language->insertItem (0,tr("System setting")); // System at beginning
-  ui->comboBox_language->insertSeparator (1);         // separator after System
+  // System at beginning
+  ui->comboBox_language->insertItem (0,tr ("System setting"));
+  ui->comboBox_language->insertSeparator (1);    // separator after System
   QString language = settings->value ("language","SYSTEM").toString ();
   if (language == "SYSTEM")
-    language = tr("System setting");
+    language = tr ("System setting");
   int selected = ui->comboBox_language->findText (language);
   if (selected >= 0)
     ui->comboBox_language->setCurrentIndex (selected);
   else
     ui->comboBox_language->setCurrentIndex (0);  // System is default
 
-  ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",24).toInt ());
+  ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",
+                                                    24).toInt ());
 
   // which icon has to be selected
   QString widget_icon_set =
-      settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
+    settings->value ("DockWidgets/widget_icon_set","NONE").toString ();
   ui->general_icon_octave-> setChecked (true);  // the default (if invalid set)
   ui->general_icon_octave-> setChecked (widget_icon_set == "NONE");
   ui->general_icon_graphic-> setChecked (widget_icon_set == "GRAPHIC");
   ui->general_icon_letter-> setChecked (widget_icon_set == "LETTER");
 
-  ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",false).toBool ());
-  ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
-  ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
+  ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",
+                                                        false).toBool ());
+  ui->customFileEditor->setText (
+    settings->value ("customFileEditor").toString ());
+  ui->editor_showLineNumbers->setChecked (
+    settings->value ("editor/showLineNumbers",true).toBool () );
 
   QVariant default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
@@ -101,43 +106,73 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   _editor_current_line_color->setEnabled (false);
   connect (ui->editor_highlightCurrentLine, SIGNAL (toggled (bool)),
            _editor_current_line_color, SLOT (setEnabled (bool)));
-  ui->editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine",true).toBool () );
+  ui->editor_highlightCurrentLine->setChecked (
+    settings->value ("editor/highlightCurrentLine",true).toBool () );
 
-  ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
-  ui->editor_spinbox_ac_threshold->setValue (settings->value ("editor/codeCompletion_threshold",2).toInt ());
-  ui->editor_checkbox_ac_keywords->setChecked (settings->value ("editor/codeCompletion_keywords",true).toBool ());
-  ui->editor_checkbox_ac_document->setChecked (settings->value ("editor/codeCompletion_document",false).toBool ());
-  ui->editor_checkbox_ac_case->setChecked (settings->value ("editor/codeCompletion_case",true).toBool ());
-  ui->editor_checkbox_ac_replace->setChecked (settings->value ("editor/codeCompletion_replace",false).toBool ());
-  ui->editor_ws_checkbox->setChecked (settings->value ("editor/show_white_space",false).toBool ());
-  ui->editor_ws_indent_checkbox->setChecked (settings->value ("editor/show_white_space_indent",false).toBool ());
-  ui->editor_auto_ind_checkbox->setChecked (settings->value ("editor/auto_indent",true).toBool ());
-  ui->editor_tab_ind_checkbox->setChecked (settings->value ("editor/tab_indents_line",false).toBool ());
-  ui->editor_bs_unind_checkbox->setChecked (settings->value ("editor/backspace_unindents_line",false).toBool ());
-  ui->editor_ind_guides_checkbox->setChecked (settings->value ("editor/show_indent_guides",false).toBool ());
-  ui->editor_ind_width_spinbox->setValue (settings->value ("editor/indent_width",2).toInt ());
-  ui->editor_tab_width_spinbox->setValue (settings->value ("editor/tab_width",2).toInt ());
-  ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",false).toBool ());
-  ui->editor_restoreSession->setChecked (settings->value ("editor/restoreSession",true).toBool ());
-  ui->editor_create_new_file->setChecked (settings->value ("editor/create_new_file",false).toBool ());
-  ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier New").toString()) );
-  ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());
-  ui->showFileSize->setChecked (settings->value ("filesdockwidget/showFileSize",false).toBool());
-  ui->showFileType->setChecked (settings->value ("filesdockwidget/showFileType",false).toBool());
-  ui->showLastModified->setChecked (settings->value ("filesdockwidget/showLastModified",false).toBool());
-  ui->showHiddenFiles->setChecked (settings->value ("filesdockwidget/showHiddenFiles",false).toBool());
-  ui->useAlternatingRowColors->setChecked (settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool());
-  ui->sync_octave_directory->setChecked (settings->value ("filesdockwidget/sync_octave_directory",true).toBool());
-  ui->useProxyServer->setChecked (settings->value ("useProxyServer",false).toBool ());
+  ui->editor_codeCompletion->setChecked (
+    settings->value ("editor/codeCompletion", true).toBool () );
+  ui->editor_spinbox_ac_threshold->setValue (
+    settings->value ("editor/codeCompletion_threshold",2).toInt ());
+  ui->editor_checkbox_ac_keywords->setChecked (
+    settings->value ("editor/codeCompletion_keywords",true).toBool ());
+  ui->editor_checkbox_ac_document->setChecked (
+    settings->value ("editor/codeCompletion_document",false).toBool ());
+  ui->editor_checkbox_ac_case->setChecked (
+    settings->value ("editor/codeCompletion_case",true).toBool ());
+  ui->editor_checkbox_ac_replace->setChecked (
+    settings->value ("editor/codeCompletion_replace",false).toBool ());
+  ui->editor_ws_checkbox->setChecked (
+    settings->value ("editor/show_white_space", false).toBool ());
+  ui->editor_ws_indent_checkbox->setChecked (
+    settings->value ("editor/show_white_space_indent",false).toBool ());
+  ui->editor_auto_ind_checkbox->setChecked (
+    settings->value ("editor/auto_indent", true).toBool ());
+  ui->editor_tab_ind_checkbox->setChecked (
+    settings->value ("editor/tab_indents_line",false).toBool ());
+  ui->editor_bs_unind_checkbox->setChecked (
+    settings->value ("editor/backspace_unindents_line",false).toBool ());
+  ui->editor_ind_guides_checkbox->setChecked (
+    settings->value ("editor/show_indent_guides",false).toBool ());
+  ui->editor_ind_width_spinbox->setValue (
+    settings->value ("editor/indent_width", 2).toInt ());
+  ui->editor_tab_width_spinbox->setValue (
+    settings->value ("editor/tab_width", 2).toInt ());
+  ui->editor_longWindowTitle->setChecked (
+    settings->value ("editor/longWindowTitle",false).toBool ());
+  ui->editor_restoreSession->setChecked (
+    settings->value ("editor/restoreSession", true).toBool ());
+  ui->editor_create_new_file->setChecked (
+    settings->value ("editor/create_new_file",false).toBool ());
+  ui->terminal_fontName->setCurrentFont (QFont (
+    settings->value ("terminal/fontName","Courier New").toString ()) );
+  ui->terminal_fontSize->setValue (
+    settings->value ("terminal/fontSize", 10).toInt ());
+  ui->showFileSize->setChecked (
+    settings->value ("filesdockwidget/showFileSize", false).toBool ());
+  ui->showFileType->setChecked (
+    settings->value ("filesdockwidget/showFileType", false).toBool ());
+  ui->showLastModified->setChecked (
+    settings->value ("filesdockwidget/showLastModified",false).toBool ());
+  ui->showHiddenFiles->setChecked (
+    settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
+  ui->useAlternatingRowColors->setChecked (
+    settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
+  ui->sync_octave_directory->setChecked (
+    settings->value ("filesdockwidget/sync_octave_directory",true).toBool ());
+  ui->useProxyServer->setChecked (
+    settings->value ("useProxyServer", false).toBool ());
   ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
-  ui->terminal_cursorBlinking->setChecked (settings->value ("terminal/cursorBlinking",true).toBool ());
-  ui->terminal_cursorUseForegroundColor->setChecked (settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
+  ui->terminal_cursorBlinking->setChecked (
+    settings->value ("terminal/cursorBlinking",true).toBool ());
+  ui->terminal_cursorUseForegroundColor->setChecked (
+    settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
 
-  QString cursorType = settings->value ("terminal/cursorType","ibeam").toString ();
+  QString cursorType
+    = settings->value ("terminal/cursorType", "ibeam").toString ();
 
   QStringList items;
-  items << QString("0") << QString("1") << QString("2");
-  ui->terminal_cursorType->addItems(items);
+  items << QString ("0") << QString ("1") << QString ("2");
+  ui->terminal_cursorType->addItems (items);
   ui->terminal_cursorType->setItemText (0, tr ("IBeam Cursor"));
   ui->terminal_cursorType->setItemText (1, tr ("Block Cursor"));
   ui->terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
@@ -151,7 +186,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   int currentIndex = 0;
   QString proxyTypeString = settings->value ("proxyType").toString ();
-  while ( (currentIndex < ui->proxyType->count ()) && (ui->proxyType->currentText () != proxyTypeString))
+  while ( (currentIndex < ui->proxyType->count ())
+          && (ui->proxyType->currentText () != proxyTypeString))
     {
       currentIndex++;
       ui->proxyType->setCurrentIndex (currentIndex);
@@ -198,13 +234,15 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // which tab is the desired one?
   if (desired_tab.isEmpty ())
-    ui->tabWidget->setCurrentIndex (settings->value("settings/last_tab",0).toInt ());
+    ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
+                                    0).toInt ());
   else
     {
       QHash <QString, QWidget*> tab_hash;
       tab_hash["editor"] = ui->tab_editor;
       tab_hash["editor_styles"] = ui->tab_editor_styles;
-      ui->tabWidget->setCurrentIndex (ui->tabWidget->indexOf (tab_hash.value (desired_tab)));
+      ui->tabWidget->setCurrentIndex (
+        ui->tabWidget->indexOf (tab_hash.value (desired_tab)));
     }
 
 
@@ -224,7 +262,7 @@ settings_dialog::get_valid_lexer_styles (QsciLexer *lexer, int styles[])
   int actual_style = 0;
   while (actual_style < MaxStyleNumber && max_style < MaxLexerStyles)
     {
-      if ((lexer->description(actual_style)) != "")  // valid style
+      if ((lexer->description (actual_style)) != "")  // valid style
         styles[max_style++] = actual_style;
       actual_style++;
     }
@@ -235,7 +273,8 @@ void
 settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
 {
   lexer->readSettings (*settings);
-  int styles[MaxLexerStyles];  // array for saving valid styles (enum is not continuous)
+  int styles[MaxLexerStyles];  // array for saving valid styles
+                               // (enum is not continuous)
   int max_style = get_valid_lexer_styles (lexer, styles);
   QGridLayout *style_grid = new QGridLayout ();
   QVector<QLabel*> description (max_style);
@@ -285,17 +324,17 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
             bg_color[i] = new color_picker (dummy_color);
           else
             bg_color[i] = new color_picker (lexer->paper (styles[i]));
-            bg_color[i]->setToolTip
-                  (tr ("Background color, pink (255,0,255) means default"));
+          bg_color[i]->setToolTip
+          (tr ("Background color, pink (255,0,255) means default"));
         }
-      attrib_font[0+3*i] = new QCheckBox (tr("b"));
-      attrib_font[1+3*i] = new QCheckBox (tr("i"));
-      attrib_font[2+3*i] = new QCheckBox (tr("u"));
-      attrib_font[0+3*i]->setChecked(Qt::Checked && actual_font.bold ());
+      attrib_font[0+3*i] = new QCheckBox (tr ("b"));
+      attrib_font[1+3*i] = new QCheckBox (tr ("i"));
+      attrib_font[2+3*i] = new QCheckBox (tr ("u"));
+      attrib_font[0+3*i]->setChecked (Qt::Checked && actual_font.bold ());
       attrib_font[0+3*i]->setObjectName (actual_name+"_bold");
-      attrib_font[1+3*i]->setChecked(Qt::Checked && actual_font.italic ());
+      attrib_font[1+3*i]->setChecked (Qt::Checked && actual_font.italic ());
       attrib_font[1+3*i]->setObjectName (actual_name+"_italic");
-      attrib_font[2+3*i]->setChecked(Qt::Checked && actual_font.underline ());
+      attrib_font[2+3*i]->setChecked (Qt::Checked && actual_font.underline ());
       attrib_font[2+3*i]->setObjectName (actual_name+"_underline");
       color[i] = new color_picker (lexer->color (styles[i]));
       color[i]->setObjectName (actual_name+"_color");
@@ -319,15 +358,16 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
   ui->tabs_editor_lexers->addTab (scroll_area,lexer->language ());
 
   ui->tabs_editor_lexers->setCurrentIndex (
-          settings->value("settings/last_editor_styles_tab",0).toInt ());
+    settings->value ("settings/last_editor_styles_tab",0).toInt ());
 }
-#endif  
+#endif
 
 void
 settings_dialog::read_workspace_colors (QSettings *settings)
 {
 
-  QList<QColor> default_colors = resource_manager::storage_class_default_colors ();
+  QList<QColor> default_colors =
+    resource_manager::storage_class_default_colors ();
   QStringList class_names = resource_manager::storage_class_names ();
   QString class_chars = resource_manager::storage_class_chars ();
   int nr_of_classes = class_chars.length ();
@@ -343,7 +383,8 @@ settings_dialog::read_workspace_colors (QSettings *settings)
       description[i] = new QLabel ("    " + class_names.at (i));
       description[i]->setAlignment (Qt::AlignRight);
       QVariant default_var = default_colors.at (i);
-      QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
+      QColor setting_color = settings->value ("workspaceview/color_"
+                                              + class_chars.mid (i,1),
                                               default_var).value<QColor> ();
       color[i] = new color_picker (setting_color);
       color[i]->setObjectName ("color_"+class_chars.mid (i, 1));
@@ -382,7 +423,8 @@ settings_dialog::read_terminal_colors (QSettings *settings)
       description[i] = new QLabel ("    " + class_names.at (i));
       description[i]->setAlignment (Qt::AlignRight);
       QVariant default_var = default_colors.at (i);
-      QColor setting_color = settings->value ("terminal/color_"+class_chars.mid (i,1),
+      QColor setting_color = settings->value ("terminal/color_"
+                                              + class_chars.mid (i,1),
                                               default_var).value<QColor> ();
       color[i] = new color_picker (setting_color);
       color[i]->setObjectName ("terminal_color_"+class_chars.mid (i, 1));
@@ -405,7 +447,7 @@ void
 settings_dialog::write_changed_settings ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME -- what should happen if settings is 0?
+  // FIXME: what should happen if settings is 0?
 
   // the icon set
   QString widget_icon_set = "NONE";
@@ -417,50 +459,80 @@ settings_dialog::write_changed_settings ()
 
   // language
   QString language = ui->comboBox_language->currentText ();
-  if (language == tr("System setting"))
+  if (language == tr ("System setting"))
     language = "SYSTEM";
   settings->setValue ("language", language);
 
   // other settings
   settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
-  settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
+  settings->setValue ("useCustomFileEditor",
+                      ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
-  settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
-  settings->setValue ("editor/highlightCurrentLine", ui->editor_highlightCurrentLine->isChecked ());
-  settings->setValue ("editor/highlight_current_line_color",_editor_current_line_color->color ());
-  settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
-  settings->setValue ("editor/codeCompletion_threshold", ui->editor_spinbox_ac_threshold->value ());
-  settings->setValue ("editor/codeCompletion_keywords", ui->editor_checkbox_ac_keywords->isChecked ());
-  settings->setValue ("editor/codeCompletion_document", ui->editor_checkbox_ac_document->isChecked ());
-  settings->setValue ("editor/codeCompletion_case", ui->editor_checkbox_ac_case->isChecked ());
-  settings->setValue ("editor/codeCompletion_replace", ui->editor_checkbox_ac_replace->isChecked ());
-  settings->setValue ("editor/show_white_space", ui->editor_ws_checkbox->isChecked ());
-  settings->setValue ("editor/show_white_space_indent", ui->editor_ws_indent_checkbox->isChecked ());
-  settings->setValue ("editor/auto_indent", ui->editor_auto_ind_checkbox->isChecked ());
-  settings->setValue ("editor/tab_indents_line", ui->editor_tab_ind_checkbox->isChecked ());
-  settings->setValue ("editor/backspace_unindents_line", ui->editor_bs_unind_checkbox->isChecked ());
-  settings->setValue ("editor/show_indent_guides", ui->editor_ind_guides_checkbox->isChecked ());
-  settings->setValue ("editor/indent_width", ui->editor_ind_width_spinbox->value ());
-  settings->setValue ("editor/tab_width", ui->editor_tab_width_spinbox->value ());
-  settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
-  settings->setValue ("editor/restoreSession", ui->editor_restoreSession->isChecked ());
-  settings->setValue ("editor/create_new_file", ui->editor_create_new_file->isChecked ());
-  settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value());
-  settings->setValue ("terminal/fontName", ui->terminal_fontName->currentFont().family());
-  settings->setValue ("filesdockwidget/showFileSize", ui->showFileSize->isChecked ());
-  settings->setValue ("filesdockwidget/showFileType", ui->showFileType->isChecked ());
-  settings->setValue ("filesdockwidget/showLastModified", ui->showLastModified->isChecked ());
-  settings->setValue ("filesdockwidget/showHiddenFiles", ui->showHiddenFiles->isChecked ());
-  settings->setValue ("filesdockwidget/useAlternatingRowColors", ui->useAlternatingRowColors->isChecked ());
-  settings->setValue ("filesdockwidget/sync_octave_directory", ui->sync_octave_directory->isChecked ());
+  settings->setValue ("editor/showLineNumbers",
+                      ui->editor_showLineNumbers->isChecked ());
+  settings->setValue ("editor/highlightCurrentLine",
+                      ui->editor_highlightCurrentLine->isChecked ());
+  settings->setValue ("editor/highlight_current_line_color",
+                      _editor_current_line_color->color ());
+  settings->setValue ("editor/codeCompletion",
+                      ui->editor_codeCompletion->isChecked ());
+  settings->setValue ("editor/codeCompletion_threshold",
+                      ui->editor_spinbox_ac_threshold->value ());
+  settings->setValue ("editor/codeCompletion_keywords",
+                      ui->editor_checkbox_ac_keywords->isChecked ());
+  settings->setValue ("editor/codeCompletion_document",
+                      ui->editor_checkbox_ac_document->isChecked ());
+  settings->setValue ("editor/codeCompletion_case",
+                      ui->editor_checkbox_ac_case->isChecked ());
+  settings->setValue ("editor/codeCompletion_replace",
+                      ui->editor_checkbox_ac_replace->isChecked ());
+  settings->setValue ("editor/show_white_space",
+                      ui->editor_ws_checkbox->isChecked ());
+  settings->setValue ("editor/show_white_space_indent",
+                      ui->editor_ws_indent_checkbox->isChecked ());
+  settings->setValue ("editor/auto_indent",
+                      ui->editor_auto_ind_checkbox->isChecked ());
+  settings->setValue ("editor/tab_indents_line",
+                      ui->editor_tab_ind_checkbox->isChecked ());
+  settings->setValue ("editor/backspace_unindents_line",
+                      ui->editor_bs_unind_checkbox->isChecked ());
+  settings->setValue ("editor/show_indent_guides",
+                      ui->editor_ind_guides_checkbox->isChecked ());
+  settings->setValue ("editor/indent_width",
+                      ui->editor_ind_width_spinbox->value ());
+  settings->setValue ("editor/tab_width",
+                      ui->editor_tab_width_spinbox->value ());
+  settings->setValue ("editor/longWindowTitle",
+                      ui->editor_longWindowTitle->isChecked ());
+  settings->setValue ("editor/restoreSession",
+                      ui->editor_restoreSession->isChecked ());
+  settings->setValue ("editor/create_new_file",
+                      ui->editor_create_new_file->isChecked ());
+  settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value ());
+  settings->setValue ("terminal/fontName",
+                      ui->terminal_fontName->currentFont ().family ());
+  settings->setValue ("filesdockwidget/showFileSize",
+                      ui->showFileSize->isChecked ());
+  settings->setValue ("filesdockwidget/showFileType",
+                      ui->showFileType->isChecked ());
+  settings->setValue ("filesdockwidget/showLastModified",
+                      ui->showLastModified->isChecked ());
+  settings->setValue ("filesdockwidget/showHiddenFiles",
+                      ui->showHiddenFiles->isChecked ());
+  settings->setValue ("filesdockwidget/useAlternatingRowColors",
+                      ui->useAlternatingRowColors->isChecked ());
+  settings->setValue ("filesdockwidget/sync_octave_directory",
+                      ui->sync_octave_directory->isChecked ());
   settings->setValue ("useProxyServer", ui->useProxyServer->isChecked ());
   settings->setValue ("proxyType", ui->proxyType->currentText ());
   settings->setValue ("proxyHostName", ui->proxyHostName->text ());
   settings->setValue ("proxyPort", ui->proxyPort->text ());
   settings->setValue ("proxyUserName", ui->proxyUserName->text ());
   settings->setValue ("proxyPassword", ui->proxyPassword->text ());
-  settings->setValue ("terminal/cursorBlinking", ui->terminal_cursorBlinking->isChecked ());
-  settings->setValue ("terminal/cursorUseForegroundColor", ui->terminal_cursorUseForegroundColor->isChecked ());
+  settings->setValue ("terminal/cursorBlinking",
+                      ui->terminal_cursorBlinking->isChecked ());
+  settings->setValue ("terminal/cursorUseForegroundColor",
+                      ui->terminal_cursorUseForegroundColor->isChecked ());
 
   // the cursor
   QString cursorType;
@@ -506,7 +578,7 @@ settings_dialog::write_changed_settings ()
 
   write_terminal_colors (settings);
 
-  settings->setValue("settings/last_tab",ui->tabWidget->currentIndex ());
+  settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
 }
 
 #ifdef HAVE_QSCINTILLA
@@ -514,8 +586,9 @@ void
 settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
 {
   QWidget *tab = ui->tabs_editor_lexers->
-            findChild <QWidget *>(QString (lexer->language ())+"_styles");
-  int styles[MaxLexerStyles];  // array for saving valid styles (enum is not continuous)
+                 findChild <QWidget *>(QString (lexer->language ())+"_styles");
+  int styles[MaxLexerStyles];  // array for saving valid styles
+                               // (enum is not continuous)
   int max_style = get_valid_lexer_styles (lexer, styles);
   QFontComboBox *select_font;
   QSpinBox *font_size;
@@ -543,9 +616,8 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
           new_font = select_font->currentFont ();
           if (styles[i] == 0)
             default_font = new_font;
-          else
-            if (select_font->currentText () == lexer->description (0))
-              new_font = default_font;
+          else if (select_font->currentText () == lexer->description (0))
+            new_font = default_font;
         }
       if (font_size)
         {
@@ -603,7 +675,7 @@ settings_dialog::write_workspace_colors (QSettings *settings)
   for (int i = 0; i < class_chars.length (); i++)
     {
       color = ui->workspace_colors_box->findChild <color_picker *>(
-                            "color_"+class_chars.mid (i,1));
+                "color_"+class_chars.mid (i,1));
       if (color)
         settings->setValue ("workspaceview/color_"+class_chars.mid (i,1),
                             color->color ());
@@ -620,7 +692,7 @@ settings_dialog::write_terminal_colors (QSettings *settings)
   for (int i = 0; i < class_chars.length (); i++)
     {
       color = ui->terminal_colors_box->findChild <color_picker *>(
-                            "terminal_color_"+class_chars.mid (i,1));
+                "terminal_color_"+class_chars.mid (i,1));
       if (color)
         settings->setValue ("terminal/color_"+class_chars.mid (i,1),
                             color->color ());

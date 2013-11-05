@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fcn_inline_h)
-#define octave_fcn_inline_h 1
+#if !defined (octave_ov_fcn_inline_h)
+#define octave_ov_fcn_inline_h 1
 
 #include <iosfwd>
 #include <string>
@@ -54,8 +54,10 @@ public:
 
   ~octave_fcn_inline (void) { }
 
-  octave_base_value *clone (void) const { return new octave_fcn_inline (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_fcn_inline (); }
+  octave_base_value *clone (void) const
+  { return new octave_fcn_inline (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_fcn_inline (); }
 
   bool is_inline_function (void) const { return true; }
 

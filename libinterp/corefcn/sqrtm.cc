@@ -200,7 +200,7 @@ do_sqrtm (const octave_value& arg)
 }
 
 DEFUN (sqrtm, args, nargout,
- "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{s} =} sqrtm (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})\n\
 Compute the matrix square root of the square matrix @var{A}.\n\
@@ -242,7 +242,8 @@ Mathematics, Manchester, England, January 1999.\n\
     // sqrtm of a diagonal matrix is just sqrt.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
-    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR> (arg);
+    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR>
+                 (arg);
   else if (arg.is_numeric_type ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
 

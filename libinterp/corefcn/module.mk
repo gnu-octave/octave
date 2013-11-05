@@ -1,7 +1,6 @@
 EXTRA_DIST += \
   corefcn/module.mk \
   corefcn/defaults.in.h \
-  corefcn/gl2ps.c \
   corefcn/graphics.in.h \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.in.cc \
@@ -60,7 +59,6 @@ COREFCN_INC = \
   corefcn/file-io.h \
   corefcn/gl-render.h \
   corefcn/gl2ps-renderer.h \
-  corefcn/gl2ps.h \
   corefcn/gripes.h \
   corefcn/help.h \
   corefcn/hook-fcn.h \
@@ -130,8 +128,7 @@ TEX_PARSER_SRC = \
 C_COREFCN_SRC = \
   corefcn/cutils.c \
   corefcn/matherr.c \
-  corefcn/siglist.c \
-  corefcn/xgl2ps.c
+  corefcn/siglist.c
 
 COREFCN_SRC = \
   corefcn/Cell.cc \
@@ -264,11 +261,27 @@ COREFCN_SRC = \
   $(JIT_SRC) \
   $(C_COREFCN_SRC)
 
+COREFCN_FT2_DF = \
+  corefcn/graphics.df \
+  corefcn/gl-render.df \
+  corefcn/toplev.df \
+  corefcn/txt-eng-ft.df
+
 ## FIXME: Automake does not support per-object rules.
 ##        These rules could be emulated by creating a new convenience
 ##        library and using per-library rules.  Or we can just live
 ##        without the rule since there haven't been any problems. (09/18/2012)
 #display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+
+## Special rules for FreeType .df files so that not all .df files are built
+## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
+$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
 
 ## Special rules for sources which must be built before rest of compilation.
 
@@ -320,7 +333,12 @@ noinst_LTLIBRARIES += \
   corefcn/libtex_parser.la
 
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
-corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
+corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) \
+                                 $(FFTW_XCPPFLAGS) \
+                                 $(FONTCONFIG_CPPFLAGS) \
+                                 $(FT2_CPPFLAGS) \
+                                 $(LLVM_CPPFLAGS)
+corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)
 corefcn_libtex_parser_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

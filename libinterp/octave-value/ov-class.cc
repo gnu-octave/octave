@@ -67,7 +67,8 @@ void
 octave_class::register_type (void)
 {
   t_id = octave_value_typeinfo::register_type
-    (octave_class::t_name, "<unknown>", octave_value (new octave_class ()));
+         (octave_class::t_name, "<unknown>",
+          octave_value (new octave_class ()));
 }
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
@@ -173,7 +174,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 
                   else if (nel == p_nel)
                     {
-                      // FIXME -- is there a better way to do this?
+                      // FIXME: is there a better way to do this?
 
                       // The parent class object has the same number of
                       // elements as the map we are using to create the
@@ -402,7 +403,7 @@ called_from_builtin (void)
 {
   octave_function *fcn = octave_call_stack::caller ();
 
-  // FIXME -- we probably need a better check here, or some other
+  // FIXME: we probably need a better check here, or some other
   // mechanism to avoid overloaded functions when builtin is used.
   // For example, what if someone overloads the builtin function?
   // Also, are there other places where using builtin is not properly
@@ -426,7 +427,8 @@ octave_class::size (void)
       octave_value_list args (1, octave_value (this));
 
       octave_value_list lv = feval (meth.function_value (), args, 1);
-      if (lv.length () > 0 && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
+      if (lv.length () > 0
+          && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
         retval = lv(0).matrix_value ();
       else
         error ("@%s/size: invalid return value", class_name ().c_str ());
@@ -488,7 +490,7 @@ octave_class::subsref (const std::string& type,
 
   if (in_class_method () || called_from_builtin ())
     {
-      // FIXME -- this block of code is the same as the body of
+      // FIXME: this block of code is the same as the body of
       // octave_struct::subsref.  Maybe it could be shared instead of
       // duplicated.
 
@@ -509,7 +511,8 @@ octave_class::subsref (const std::string& type,
                   {
                     Cell t = tmp.index (idx.front ());
 
-                    retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+                    retval(0) = (t.length () == 1) ? t(0)
+                                                   : octave_value (t, true);
 
                     // We handled two index elements, so tell
                     // next_subsref to skip both of them.
@@ -542,7 +545,7 @@ octave_class::subsref (const std::string& type,
           panic_impossible ();
         }
 
-      // FIXME -- perhaps there should be an
+      // FIXME: perhaps there should be an
       // octave_value_list::next_subsref member function?  See also
       // octave_user_function::subsref.
 
@@ -704,7 +707,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           else
             tmp = feval (meth.function_value (), args);
 
-          // FIXME -- should the subsasgn method be able to return
+          // FIXME: should the subsasgn method be able to return
           // more than one value?
 
           if (tmp.length () > 1)
@@ -744,7 +747,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       return retval;
     }
 
-  // FIXME -- this block of code is the same as the body of
+  // FIXME: this block of code is the same as the body of
   // octave_struct::subsasgn.  Maybe it could be shared instead of
   // duplicated.
 
@@ -842,7 +845,7 @@ octave_class::subsasgn_common (const octave_value& obj,
                         tmp.make_unique (); // probably a no-op.
                       }
                     else
-                      // optimization: ignore the copy still stored inside our map.
+                      // optimization: ignore copy still stored inside our map.
                       tmp.make_unique (1);
 
                     if (! error_state)
@@ -1491,7 +1494,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_class::load_binary (std::istream& is, bool swap,
-                            oct_mach_info::float_format fmt)
+                           oct_mach_info::float_format fmt)
 {
   bool success = true;
 
@@ -1617,11 +1620,12 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
                          H5P_DEFAULT);
 #endif
   if (class_hid < 0 || H5Dwrite (class_hid, type_hid, H5S_ALL, H5S_ALL,
-                                    H5P_DEFAULT, c_name.c_str ()) < 0)
+                                 H5P_DEFAULT, c_name.c_str ()) < 0)
     goto error_cleanup;
 
 #if HAVE_HDF5_18
-  data_hid = H5Gcreate (group_hid, "value", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  data_hid = H5Gcreate (group_hid, "value", H5P_DEFAULT, H5P_DEFAULT,
+                        H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (group_hid, "value", 0);
 #endif
@@ -1655,7 +1659,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       i++;
     }
 
- error_cleanup:
+error_cleanup:
 
   if (data_hid > 0)
     H5Gclose (data_hid);
@@ -1806,7 +1810,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
         }
     }
 
- error_cleanup:
+error_cleanup:
   if (data_hid > 0)
     H5Dclose (data_hid);
 
@@ -1921,7 +1925,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 }
 
 DEFUN (class, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {@var{classname} =} class (@var{obj})\n\
 @deftypefnx {Function File} {} class (@var{s}, @var{id})\n\
 @deftypefnx {Function File} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
@@ -2013,7 +2017,7 @@ derived.\n\
 */
 
 DEFUN (__isa_parent__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __isa_parent__ (@var{class}, @var{name})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2040,7 +2044,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__parent_classes__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __parent_classes__ (@var{x})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2061,7 +2065,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (isobject, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isobject (@var{x})\n\
 Return true if @var{x} is a class object.\n\
 @seealso{class, typeinfo, isa, ismethod}\n\
@@ -2078,7 +2082,7 @@ Return true if @var{x} is a class object.\n\
 }
 
 DEFUN (ismethod, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismethod (@var{x}, @var{method})\n\
 Return true if @var{x} is a class object and the string @var{method}\n\
 is a method of this class.\n\
@@ -2120,7 +2124,7 @@ is a method of this class.\n\
 }
 
 DEFUN (__methods__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __methods__ (@var{x})\n\
 @deftypefnx {Built-in Function} {} __methods__ (\"classname\")\n\
 Internal function.\n\
@@ -2178,7 +2182,7 @@ is_built_in_class (const std::string& cn)
 }
 
 DEFUN (superiorto, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} superiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a higher precedence than @var{class_name}.\n\
@@ -2200,8 +2204,8 @@ This function may only be called from a class constructor.\n\
       std::string inf_class = args(i).string_value ();
       if (error_state)
         {
-              error ("superiorto: expecting argument to be class name");
-              break;
+          error ("superiorto: expecting argument to be class name");
+          break;
         }
 
       // User defined classes always have higher precedence
@@ -2222,7 +2226,7 @@ This function may only be called from a class constructor.\n\
 }
 
 DEFUN (inferiorto, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} inferiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a lower precedence than @var{class_name}.\n\

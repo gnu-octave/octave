@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_decl_h)
-#define octave_tree_decl_h 1
+#if !defined (octave_pt_decl_h)
+#define octave_pt_decl_h 1
 
 class tree_expression;
 class tree_identifier;
@@ -118,14 +118,14 @@ public:
   tree_decl_init_list (tree_decl_elt *t) { append (t); }
 
   ~tree_decl_init_list (void)
-    {
-      while (! empty ())
-        {
-          iterator p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
+  {
+    while (! empty ())
+      {
+        iterator p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
 
   tree_decl_init_list *dup (symbol_table::scope_id scope,
                             symbol_table::context_id context) const;

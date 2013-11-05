@@ -158,7 +158,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _find_next_button->setDefault (true);
   _find_result_available = false;
 
-  // move to dialog to side of the parent if there is room on the desktop to do so.
+  // move dialog to side of the parent if there is room on the desktop to do so.
   QWidget * desktop = QApplication::desktop ();
   int xp = p->x () + p->frameGeometry ().width ();
   int yp=  p->y ();
@@ -215,9 +215,11 @@ find_dialog::find (bool forward)
   bool do_forward = true;
 
   if (_find_result_available)
-    { // we found a match last time, cursor is at the end of the match
+    {
+      // we found a match last time, cursor is at the end of the match
       if (!forward)
-        {  // backward: go back one position or we will find the same again
+        {
+          // backward: go back one position or we will find the same again
           do_forward = false;
           _edit_area->getCursorPosition (&line,&col);
           if (col > 0)
@@ -237,18 +239,19 @@ find_dialog::find (bool forward)
 
   if (_edit_area)
     {
-      _find_result_available = _edit_area->findFirst (_search_line_edit->text (),
-                                                      _regex_check_box->isChecked (),
-                                                      _case_check_box->isChecked (),
-                                                      _whole_words_check_box->isChecked (),
-                                                      do_wrap,
-                                                      do_forward,
-                                                      line,col,
-                                                      true
+      _find_result_available
+        = _edit_area->findFirst (_search_line_edit->text (),
+                                _regex_check_box->isChecked (),
+                                _case_check_box->isChecked (),
+                                _whole_words_check_box->isChecked (),
+                                do_wrap,
+                                do_forward,
+                                line,col,
+                                true
 #ifdef HAVE_QSCI_VERSION_2_6_0
-                                                      , true
+                                , true
 #endif
-                                                      );
+                                );
     }
   if (_find_result_available)
     _from_start_check_box->setChecked (0);
@@ -284,7 +287,8 @@ find_dialog::replace_all ()
     {
       cs = Qt::CaseInsensitive;
     }
-  strDiff = QString::compare(_search_line_edit->text(),_replace_line_edit->text(),cs);
+  strDiff = QString::compare (_search_line_edit->text(),
+                              _replace_line_edit->text(), cs);
 
   // replace all if strings are different
   if (_edit_area && strDiff )
@@ -307,7 +311,7 @@ find_dialog::replace_all ()
 void
 find_dialog::no_matches_message ()
 {
- 	QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
+  QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
                        tr ("No more matches found"), QMessageBox::Ok, this);
   msg_box.exec ();
 }

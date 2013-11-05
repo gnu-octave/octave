@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 
 DEFUN_DLD (fftw, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{method} =} fftw (\"planner\")\n\
 @deftypefnx {Loadable Function} {} fftw (\"planner\", @var{method})\n\
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw (\"dwisdom\")\n\
@@ -151,7 +151,8 @@ used per default.\n\
                   if (args(1).is_string ())
                     {
                       // Use STL function to convert to lower case
-                      std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
+                      std::transform (arg0.begin (), arg0.end (), arg0.begin (),
+                                      tolower);
                       std::string arg1 = args(1).string_value ();
                       if (!error_state)
                         {
@@ -235,7 +236,8 @@ used per default.\n\
                   if (args(1).is_string ())
                     {
                       // Use STL function to convert to lower case
-                      std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
+                      std::transform (arg0.begin (), arg0.end (), arg0.begin (),
+                                      tolower);
                       std::string arg1 = args(1).string_value ();
                       if (!error_state)
                         {
@@ -268,7 +270,8 @@ used per default.\n\
                   if (args(1).is_string ())
                     {
                       // Use STL function to convert to lower case
-                      std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
+                      std::transform (arg0.begin (), arg0.end (), arg0.begin (),
+                                      tolower);
                       std::string arg1 = args(1).string_value ();
                       if (!error_state)
                         {
@@ -320,7 +323,7 @@ used per default.\n\
                     error ("setting threads needs one integer argument.");
                 }
               else //threads getter
-#if defined (HAVE_FFTW3_THREADS)              
+#if defined (HAVE_FFTW3_THREADS)
                 retval = octave_value (octave_fftw_planner::threads());
 #else
                 retval = 1;

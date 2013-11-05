@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 DEFUN_DLD (__dsearchn__, args, ,
-        "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})\n\
 Undocumented internal function.\n\
 @end deftypefn")

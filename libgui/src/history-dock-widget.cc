@@ -63,16 +63,20 @@ history_dock_widget::construct ()
   _history_list_view->setModel (&_sort_filter_proxy_model);
   _history_list_view->setAlternatingRowColors (true);
   _history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
-  _history_list_view->setStatusTip (tr ("Doubleclick a command to transfer it to the terminal."));
+  _history_list_view->setStatusTip (
+    tr ("Doubleclick a command to transfer it to the terminal."));
   _history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
-  _history_list_view->setContextMenuPolicy(Qt::CustomContextMenu);
-  connect(_history_list_view, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(ctxMenu(const QPoint &)));
+  _history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
+  connect (_history_list_view,
+           SIGNAL (customContextMenuRequested (const QPoint &)), this,
+           SLOT (ctxMenu (const QPoint &)));
 
   _filter_line_edit = new QLineEdit (this);
-  _filter_line_edit->setStatusTip (tr ("Enter text to filter the command history."));
+  _filter_line_edit->setStatusTip (
+    tr ("Enter text to filter the command history."));
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
 
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("Command History"));
   setWidget (new QWidget ());
 
@@ -91,43 +95,46 @@ history_dock_widget::construct ()
   setFocusProxy (_filter_line_edit);
 }
 
-void history_dock_widget::ctxMenu(const QPoint &xpos) {
-    QMenu menu(this);
-    menu.addAction(tr("Copy"), this, SLOT(handle_contextmenu_copy(bool)));
-    menu.addAction(tr("Evaluate"), this, SLOT(handle_contextmenu_evaluate(bool)));
-    menu.addAction(tr("Create script"), this, SLOT(handle_contextmenu_create_script(bool)));
-    menu.exec(_history_list_view->mapToGlobal(xpos));
+void history_dock_widget::ctxMenu (const QPoint &xpos)
+{
+  QMenu menu (this);
+  menu.addAction (tr ("Copy"), this, SLOT (handle_contextmenu_copy (bool)));
+  menu.addAction (tr ("Evaluate"), this,
+                  SLOT (handle_contextmenu_evaluate (bool)));
+  menu.addAction (tr ("Create script"), this,
+                  SLOT (handle_contextmenu_create_script (bool)));
+  menu.exec (_history_list_view->mapToGlobal (xpos));
 }
 
-void history_dock_widget::handle_contextmenu_copy(bool)
+void history_dock_widget::handle_contextmenu_copy (bool)
 {
   QString text;
-  QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
-  QModelIndexList rows = selectionModel->selectedRows();
+  QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
+  QModelIndexList rows = selectionModel->selectedRows ();
   QModelIndexList::iterator it;
   bool prev_valid_row = false;
-  for (it = rows.begin(); it != rows.end(); it++)
+  for (it = rows.begin (); it != rows.end (); it++)
     {
-      if ((*it).isValid())
+      if ((*it).isValid ())
         {
           if (prev_valid_row)
             text += "\n";
-          text += (*it).data().toString();
+          text += (*it).data ().toString ();
           prev_valid_row = true;
         }
     }
-  QApplication::clipboard()->setText(text);
+  QApplication::clipboard ()->setText (text);
 }
 
-void history_dock_widget::handle_contextmenu_evaluate(bool)
+void history_dock_widget::handle_contextmenu_evaluate (bool)
 {
-  QItemSelectionModel *selectionModel = _history_list_view->selectionModel();
-  QModelIndexList rows = selectionModel->selectedRows();
+  QItemSelectionModel *selectionModel = _history_list_view->selectionModel ();
+  QModelIndexList rows = selectionModel->selectedRows ();
   QModelIndexList::iterator it;
-  for (it = rows.begin() ; it != rows.end(); it++)
+  for (it = rows.begin () ; it != rows.end (); it++)
     {
-      if ((*it).isValid())
-        emit command_double_clicked ((*it).data().toString());
+      if ((*it).isValid ())
+        emit command_double_clicked ((*it).data ().toString ());
     }
 }
 
@@ -145,7 +152,7 @@ history_dock_widget::handle_contextmenu_create_script (bool)
         {
           if (prev_valid_row)
             text += "\n";
-          text += (*it).data().toString();
+          text += (*it).data ().toString ();
           prev_valid_row = true;
         }
     }
@@ -158,7 +165,7 @@ history_dock_widget::handle_contextmenu_create_script (bool)
 void
 history_dock_widget::handle_double_click (QModelIndex modelIndex)
 {
-  emit command_double_clicked (modelIndex.data().toString());
+  emit command_double_clicked (modelIndex.data ().toString ());
 }
 
 void
@@ -194,9 +201,9 @@ history_dock_widget::clear_history (void)
 void
 history_dock_widget::copyClipboard ()
 {
-  if(_history_list_view->hasFocus())
-    handle_contextmenu_copy(true);
-  if(_filter_line_edit->hasFocus () && _filter_line_edit->hasSelectedText ())
+  if (_history_list_view->hasFocus ())
+    handle_contextmenu_copy (true);
+  if (_filter_line_edit->hasFocus () && _filter_line_edit->hasSelectedText ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
       clipboard->setText ( _filter_line_edit->selectedText ());
@@ -206,11 +213,11 @@ history_dock_widget::copyClipboard ()
 void
 history_dock_widget::pasteClipboard ()
 {
-  if(_filter_line_edit->hasFocus ())
+  if (_filter_line_edit->hasFocus ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
       QString str =  clipboard->text ();
-      if (str.length() > 0)
+      if (str.length () > 0)
         _filter_line_edit->insert (str);
     }
 }

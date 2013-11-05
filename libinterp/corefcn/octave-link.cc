@@ -103,7 +103,7 @@ octave_link::do_discard_events (void)
 }
 
 DEFUN (__octave_link_enabled__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_enabled__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -112,7 +112,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_edit_file__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_edit_file__ (@var{file})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -137,7 +137,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_message_dialog__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_message_dialog__ (@var{dlg}, @var{msg}, @var{title})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -164,7 +164,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_question_dialog__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_question_dialog__ (@var{msg}, @var{title}, @var{btn1}, @var{btn2}, @var{btn3}, @var{default})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -184,7 +184,8 @@ Undocumented internal function.\n\
         {
           flush_octave_stdout ();
 
-          retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3, btndef);
+          retval = octave_link::question_dialog (msg, title, btn1, btn2, btn3,
+                                                 btndef);
         }
       else
         error ("invalid arguments");
@@ -194,7 +195,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_file_dialog__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_file_dialog__ (@var{filterlist}, @var{title}, @var{filename}, @var{size} @var{multiselect}, @var{pathname})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -274,7 +275,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_list_dialog__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_list_dialog__ (@var{list}, @var{mode}, @var{size}, @var{intial}, @var{name}, @var{prompt}, @var{ok_string}, @var{cancel_string})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -342,7 +343,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_input_dialog__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_input_dialog__ (@var{prompt}, @var{title}, @var{rowscols}, @var{defaults})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -404,7 +405,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_show_preferences__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_show_preferences__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -417,7 +418,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__octave_link_show_doc__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __octave_link_show_doc__ ( @var{filename} )\n\
 Undocumented internal function.\n\
 @end deftypefn")

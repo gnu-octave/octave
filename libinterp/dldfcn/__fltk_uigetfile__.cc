@@ -45,7 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 
 DEFUN_DLD (__fltk_uigetfile__, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __fltk_uigetfile__ (@dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")

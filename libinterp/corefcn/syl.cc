@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (syl, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{x} =} syl (@var{A}, @var{B}, @var{C})\n\
 Solve the Sylvester equation\n\
 @tex\n\
@@ -85,8 +85,8 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   int arg_b_is_empty = empty_arg ("syl", b_nr, b_nc);
   int arg_c_is_empty = empty_arg ("syl", c_nr, c_nc);
 
-  bool isfloat = arg_a.is_single_type () || arg_b.is_single_type () ||
-    arg_c.is_single_type ();
+  bool isfloat = arg_a.is_single_type () || arg_b.is_single_type ()
+                 || arg_c.is_single_type ();
 
   if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
     if (isfloat)

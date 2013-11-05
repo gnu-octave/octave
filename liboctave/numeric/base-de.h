@@ -48,29 +48,29 @@ public:
   virtual ~base_diff_eqn (void) { }
 
   base_diff_eqn& operator = (const base_diff_eqn& a)
-    {
-      if (this != &a)
-        {
-          x = a.x;
-          t = a.t;
-          stop_time = a.stop_time;
-          stop_time_set = a.stop_time_set;
-          restart = a.restart;
-          integration_error = a.integration_error;
-          istate = a.istate;
-        }
+  {
+    if (this != &a)
+      {
+        x = a.x;
+        t = a.t;
+        stop_time = a.stop_time;
+        stop_time_set = a.stop_time_set;
+        restart = a.restart;
+        integration_error = a.integration_error;
+        istate = a.istate;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   void initialize (const ColumnVector& x0, double t0)
-    {
-      x = x0;
-      t = t0;
-      integration_error = false;
-      istate = 0;
-      force_restart ();
-    }
+  {
+    x = x0;
+    t = t0;
+    integration_error = false;
+    istate = 0;
+    force_restart ();
+  }
 
   octave_idx_type size (void) const { return x.capacity (); }
 
@@ -79,17 +79,17 @@ public:
   double time (void) const { return t; }
 
   void set_stop_time (double tt)
-    {
-      stop_time_set = true;
-      stop_time = tt;
-      force_restart ();
-    }
+  {
+    stop_time_set = true;
+    stop_time = tt;
+    force_restart ();
+  }
 
   void clear_stop_time (void)
-    {
-      stop_time_set = false;
-      force_restart ();
-    }
+  {
+    stop_time_set = false;
+    force_restart ();
+  }
 
   virtual void force_restart (void) { restart = true; }
 

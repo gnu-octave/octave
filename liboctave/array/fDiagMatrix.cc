@@ -157,7 +157,8 @@ imag (const FloatComplexDiagMatrix& a)
 }
 
 FloatMatrix
-FloatDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+FloatDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                          octave_idx_type r2, octave_idx_type c2) const
 {
   if (r1 > r2) { std::swap (r1, r2); }
   if (c1 > c2) { std::swap (c1, c2); }

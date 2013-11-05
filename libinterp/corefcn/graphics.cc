@@ -137,7 +137,7 @@ jet_colormap (void)
 {
   Matrix cmap (64, 3, 0.0);
 
-  // Produce X in the same manner as linspace so that 
+  // Produce X in the same manner as linspace so that
   // jet_colormap and jet.m produce *exactly* the same result.
   double delta = 1.0 / 63.0;
 
@@ -451,7 +451,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
 
       double f = 0.0;
 
-      // FIXME -- this assumes the system font is Helvetica 10pt
+      // FIXME: this assumes the system font is Helvetica 10pt
       //          (for which "x" requires 6x12 pixels at 74.951 pixels/inch)
       f = 12.0 * res / 74.951;
 
@@ -579,7 +579,7 @@ convert_text_position (const Matrix& pos, const text::properties& props,
   if (ax.valid_object ())
     {
       const axes::properties& ax_props =
-          dynamic_cast<const axes::properties&> (ax.get_properties ());
+        dynamic_cast<const axes::properties&> (ax.get_properties ());
       graphics_xform ax_xform = ax_props.get_transform ();
       bool is_rectangle = (pos.numel () == 4);
       Matrix ax_bbox = ax_props.get_boundingbox (true),
@@ -620,10 +620,13 @@ convert_text_position (const Matrix& pos, const text::properties& props,
             {
               if (is_rectangle)
                 {
-                  ColumnVector v1 = ax_xform.untransform (retval(0) + ax_bbox(0) - 1,
-                                                          ax_bbox(1) + ax_bbox(3)  - retval(1) + 1),
-                               v2 = ax_xform.untransform (retval(0) + retval(2) + ax_bbox(0) - 1,
-                                                          ax_bbox(1) + ax_bbox(3)  - (retval(1) + retval(3)) + 1);
+                  ColumnVector v1, v2;
+                  v1 = ax_xform.untransform (
+                         retval(0)  + ax_bbox(0) - 1,
+                         ax_bbox(1) + ax_bbox(3) - retval(1) + 1);
+                  v2 = ax_xform.untransform (
+                         retval(0)  + retval(2)  + ax_bbox(0) - 1,
+                         ax_bbox(1) + ax_bbox(3) - (retval(1) + retval(3)) + 1);
 
                   retval.resize (1, 4);
 
@@ -634,8 +637,10 @@ convert_text_position (const Matrix& pos, const text::properties& props,
                 }
               else
                 {
-                  ColumnVector v = ax_xform.untransform (retval(0) + ax_bbox(0) - 1,
-                                                         ax_bbox(1) + ax_bbox(3)  - retval(1) + 1);
+                  ColumnVector v;
+                  v = ax_xform.untransform (
+                        retval(0)  + ax_bbox(0) - 1,
+                        ax_bbox(1) + ax_bbox(3) - retval(1) + 1);
 
                   retval.resize (1, 3);
 
@@ -658,7 +663,8 @@ screen_size_pixels (void)
 {
   graphics_object obj = gh_manager::get_object (0);
   Matrix sz = obj.get ("screensize").matrix_value ();
-  return convert_position (sz, obj.get ("units").string_value (), "pixels", sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
+  return convert_position (sz, obj.get ("units").string_value (), "pixels",
+                           sz.extract_n (0, 2, 1, 2)).extract_n (0, 2, 1, 2);
 }
 
 static void
@@ -1120,7 +1126,7 @@ color_property::do_set (const octave_value& val)
         }
       else
         error ("invalid value for color property \"%s\"",
-           get_name ().c_str ());
+               get_name ().c_str ());
     }
   else if (val.is_numeric_type ())
     {
@@ -1141,7 +1147,7 @@ color_property::do_set (const octave_value& val)
         }
       else
         error ("invalid value for color property \"%s\"",
-           get_name ().c_str ());
+               get_name ().c_str ());
     }
   else
     error ("invalid value for color property \"%s\"",
@@ -1320,21 +1326,29 @@ array_property::get_data_limits (void)
       if (data.is_integer_type ())
         {
           if (data.is_int8_type ())
-            get_array_limits (data.int8_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.int8_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_uint8_type ())
-            get_array_limits (data.uint8_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.uint8_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_int16_type ())
-            get_array_limits (data.int16_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.int16_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_uint16_type ())
-            get_array_limits (data.uint16_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.uint16_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_int32_type ())
-            get_array_limits (data.int32_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.int32_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_uint32_type ())
-            get_array_limits (data.uint32_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.uint32_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_int64_type ())
-            get_array_limits (data.int64_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.int64_array_value (),
+                              xmin, xmax, xminp, xmaxp);
           else if (data.is_uint64_type ())
-            get_array_limits (data.uint64_array_value (), xmin, xmax, xminp, xmaxp);
+            get_array_limits (data.uint64_array_value (),
+                              xmin, xmax, xminp, xmaxp);
         }
       else
         get_array_limits (data.array_value (), xmin, xmax, xminp, xmaxp);
@@ -1497,8 +1511,8 @@ property::create (const std::string& name, const graphics_handle& h,
     }
   else if (type.compare ("any"))
     {
-      octave_value val =
-          (args.length () > 0 ? args(0) : octave_value (Matrix ()));
+      octave_value val = args.length () > 0 ? args(0)
+                                            : octave_value (Matrix ());
 
       retval = property (new any_property (name, h, val));
     }
@@ -1554,8 +1568,8 @@ property::create (const std::string& name, const graphics_handle& h,
         {
           retval.set (args(0));
 
-          // FIXME -- additional argument could define constraints,
-          // but is this really useful?
+          // FIXME: additional argument could define constraints,
+          //        but is this really useful?
         }
     }
   else if (type.compare ("color"))
@@ -1588,12 +1602,12 @@ property::create (const std::string& name, const graphics_handle& h,
           graphics_object go;
 
           std::map<caseless_str, graphics_object>::const_iterator it =
-              dprop_obj_map.find (go_name);
+            dprop_obj_map.find (go_name);
 
           if (it == dprop_obj_map.end ())
             {
               base_graphics_object *bgo =
-                  make_graphics_object_from_type (go_name);
+                make_graphics_object_from_type (go_name);
 
               if (bgo)
                 {
@@ -1750,12 +1764,13 @@ property_list::set (const caseless_str& name, const octave_value& val)
 
       if (offset > 0)
         {
-          // FIXME -- should we validate property names and values here?
+          // FIXME: should we validate property names and values here?
 
           std::string pname = name.substr (offset);
 
           std::transform (pfx.begin (), pfx.end (), pfx.begin (), tolower);
-          std::transform (pname.begin (), pname.end (), pname.begin (), tolower);
+          std::transform (pname.begin (), pname.end (), pname.begin (),
+                          tolower);
 
           bool has_property = false;
           if (pfx == "axes")
@@ -1891,7 +1906,8 @@ property_list::lookup (const caseless_str& name) const
           std::string pname = name.substr (offset);
 
           std::transform (pfx.begin (), pfx.end (), pfx.begin (), tolower);
-          std::transform (pname.begin (), pname.end (), pname.begin (), tolower);
+          std::transform (pname.begin (), pname.end (), pname.begin (),
+                          tolower);
 
           plist_map_const_iterator p = find (pfx);
 
@@ -1983,7 +1999,7 @@ graphics_object::set (const Array<std::string>& names,
   if (names.numel () != values.columns ())
     {
       error ("set: number of names must match number of value columns (%d != %d)",
-            names.numel (), values.columns ());
+             names.numel (), values.columns ());
     }
 
   octave_idx_type k = names.columns ();
@@ -2055,7 +2071,7 @@ graphics_object::set (const octave_map& m)
       caseless_str name  = m.keys ()[p];
 
       octave_value val = octave_value (m.contents (name).elem (m.numel () - 1));
-      
+
       set_value_or_default (name, val);
 
       if (error_state)
@@ -2176,7 +2192,7 @@ graphics_object::set_value_or_default (const caseless_str& name,
         }
       else
         {
-          // Matlab specifically uses "\default" to escape string setting 
+          // Matlab specifically uses "\default" to escape string setting
           if (tval.compare ("\\default") == 0)
             rep->set (name, "default");
           else if (tval.compare ("\\factory") == 0)
@@ -2293,7 +2309,8 @@ gh_manager::do_free (const graphics_handle& h)
               handle_map.erase (p);
 
               if (h.value () < 0)
-                handle_free_list.insert (std::ceil (h.value ()) - make_handle_fraction ());
+                handle_free_list.insert
+                  (std::ceil (h.value ()) - make_handle_fraction ());
             }
           else
             error ("graphics_handle::free: invalid object %g", h.value ());
@@ -2487,7 +2504,7 @@ force_close_figure (const graphics_handle& handle)
 void
 gh_manager::do_close_all_figures (void)
 {
-  // FIXME -- should we process or discard pending events?
+  // FIXME: should we process or discard pending events?
 
   event_queue.clear ();
 
@@ -2659,7 +2676,8 @@ base_properties::get_dynamic (const caseless_str& name) const
 {
   octave_value retval;
 
-  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.find (name);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
+    all_props.find (name);
 
   if (it != all_props.end ())
     retval = it->second.get ();
@@ -2674,8 +2692,8 @@ base_properties::get_dynamic (bool all) const
 {
   octave_scalar_map m;
 
-  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.begin ();
-       it != all_props.end (); ++it)
+  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator
+       it = all_props.begin (); it != all_props.end (); ++it)
     if (all || ! it->second.is_hidden ())
       m.assign (it->second.get_name (), it->second.get ());
 
@@ -2703,7 +2721,8 @@ void
 base_properties::set_dynamic (const caseless_str& pname,
                               const octave_value& val)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::iterator it = all_props.find (pname);
+  std::map<caseless_str, property, cmp_caseless_str>::iterator it =
+    all_props.find (pname);
 
   if (it != all_props.end ())
     it->second.set (val);
@@ -2721,7 +2740,8 @@ base_properties::set_dynamic (const caseless_str& pname,
 property
 base_properties::get_property_dynamic (const caseless_str& name)
 {
-  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it = all_props.find (name);
+  std::map<caseless_str, property, cmp_caseless_str>::const_iterator it =
+    all_props.find (name);
 
   if (it == all_props.end ())
     {
@@ -2911,7 +2931,7 @@ base_graphics_object::remove_all_listeners (void)
 
   for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
     {
-      // FIXME -- there has to be a better way.  I think we want to
+      // FIXME: there has to be a better way.  I think we want to
       // ask whether it is OK to delete the listener for the given
       // property.  How can we know in advance that it will be OK?
 
@@ -3723,49 +3743,71 @@ figure::properties::update_papersize (void)
         typ = "uslegal";
       else if (std::abs (sz(0) - 11.0) + std::abs (sz(1) - 17.0) < tol)
         typ = "tabloid";
-      else if (std::abs (sz(0) - 841.0 * mm2in) + std::abs (sz(1) - 1198.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 841.0 * mm2in)
+               + std::abs (sz(1) - 1198.0 * mm2in) < tol)
         typ = "a0";
-      else if (std::abs (sz(0) - 594.0 * mm2in) + std::abs (sz(1) - 841.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 594.0 * mm2in)
+               + std::abs (sz(1) - 841.0 * mm2in) < tol)
         typ = "a1";
-      else if (std::abs (sz(0) - 420.0 * mm2in) + std::abs (sz(1) - 594.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 420.0 * mm2in)
+               + std::abs (sz(1) - 594.0 * mm2in) < tol)
         typ = "a2";
-      else if (std::abs (sz(0) - 297.0 * mm2in) + std::abs (sz(1) - 420.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 297.0 * mm2in)
+               + std::abs (sz(1) - 420.0 * mm2in) < tol)
         typ = "a3";
-      else if (std::abs (sz(0) - 210.0 * mm2in) + std::abs (sz(1) - 297.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 210.0 * mm2in)
+               + std::abs (sz(1) - 297.0 * mm2in) < tol)
         typ = "a4";
-      else if (std::abs (sz(0) - 148.0 * mm2in) + std::abs (sz(1) - 210.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 148.0 * mm2in)
+               + std::abs (sz(1) - 210.0 * mm2in) < tol)
         typ = "a5";
-      else if (std::abs (sz(0) - 1029.0 * mm2in) + std::abs (sz(1) - 1456.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 1029.0 * mm2in)
+               + std::abs (sz(1) - 1456.0 * mm2in) < tol)
         typ = "b0";
-      else if (std::abs (sz(0) - 728.0 * mm2in) + std::abs (sz(1) - 1028.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 728.0 * mm2in)
+               + std::abs (sz(1) - 1028.0 * mm2in) < tol)
         typ = "b1";
-      else if (std::abs (sz(0) - 514.0 * mm2in) + std::abs (sz(1) - 728.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 514.0 * mm2in)
+               + std::abs (sz(1) - 728.0 * mm2in) < tol)
         typ = "b2";
-      else if (std::abs (sz(0) - 364.0 * mm2in) + std::abs (sz(1) - 514.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 364.0 * mm2in)
+               + std::abs (sz(1) - 514.0 * mm2in) < tol)
         typ = "b3";
-      else if (std::abs (sz(0) - 257.0 * mm2in) + std::abs (sz(1) - 364.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 257.0 * mm2in)
+               + std::abs (sz(1) - 364.0 * mm2in) < tol)
         typ = "b4";
-      else if (std::abs (sz(0) - 182.0 * mm2in) + std::abs (sz(1) - 257.0 * mm2in) < tol)
+      else if (std::abs (sz(0) - 182.0 * mm2in)
+               + std::abs (sz(1) - 257.0 * mm2in) < tol)
         typ = "b5";
-      else if (std::abs (sz(0) - 9.0)  + std::abs (sz(1) - 12.0) < tol)
+      else if (std::abs (sz(0) - 9.0) 
+               + std::abs (sz(1) - 12.0) < tol)
         typ = "arch-a";
-      else if (std::abs (sz(0) - 12.0) + std::abs (sz(1) - 18.0) < tol)
+      else if (std::abs (sz(0) - 12.0)
+               + std::abs (sz(1) - 18.0) < tol)
         typ = "arch-b";
-      else if (std::abs (sz(0) - 18.0) + std::abs (sz(1) - 24.0) < tol)
+      else if (std::abs (sz(0) - 18.0)
+               + std::abs (sz(1) - 24.0) < tol)
         typ = "arch-c";
-      else if (std::abs (sz(0) - 24.0) + std::abs (sz(1) - 36.0) < tol)
+      else if (std::abs (sz(0) - 24.0)
+               + std::abs (sz(1) - 36.0) < tol)
         typ = "arch-d";
-      else if (std::abs (sz(0) - 36.0) + std::abs (sz(1) - 48.0) < tol)
+      else if (std::abs (sz(0) - 36.0)
+               + std::abs (sz(1) - 48.0) < tol)
         typ = "arch-e";
-      else if (std::abs (sz(0) - 8.5)  + std::abs (sz(1) - 11.0) < tol)
+      else if (std::abs (sz(0) - 8.5) 
+               + std::abs (sz(1) - 11.0) < tol)
         typ = "a";
-      else if (std::abs (sz(0) - 11.0) + std::abs (sz(1) - 17.0) < tol)
+      else if (std::abs (sz(0) - 11.0)
+               + std::abs (sz(1) - 17.0) < tol)
         typ = "b";
-      else if (std::abs (sz(0) - 17.0) + std::abs (sz(1) - 22.0) < tol)
+      else if (std::abs (sz(0) - 17.0)
+               + std::abs (sz(1) - 22.0) < tol)
         typ = "c";
-      else if (std::abs (sz(0) - 22.0) + std::abs (sz(1) - 34.0) < tol)
+      else if (std::abs (sz(0) - 22.0)
+               + std::abs (sz(1) - 34.0) < tol)
         typ = "d";
-      else if (std::abs (sz(0) - 34.0) + std::abs (sz(1) - 43.0) < tol)
+      else if (std::abs (sz(0) - 34.0)
+               + std::abs (sz(1) - 43.0) < tol)
         typ = "e";
       // Call papertype.set rather than set_papertype to avoid loops between
       // update_papersize and update_papertype
@@ -4446,7 +4488,7 @@ axes::properties::delete_text_child (handle_property& hp)
       base_properties::remove_child (h);
     }
 
-  // FIXME -- is it necessary to check whether the axes object is
+  // FIXME: is it necessary to check whether the axes object is
   // being deleted now?  I think this function is only called when an
   // individual child object is delete and not when the parent axes
   // object is deleted.
@@ -4590,15 +4632,17 @@ cross (const ColumnVector& v1, const ColumnVector& v2)
 inline Matrix
 unit_cube (void)
 {
-  static double data[32] = {
-      0,0,0,1,
-      1,0,0,1,
-      0,1,0,1,
-      0,0,1,1,
-      1,1,0,1,
-      1,0,1,1,
-      0,1,1,1,
-      1,1,1,1};
+  static double data[32] =
+  {
+    0,0,0,1,
+    1,0,0,1,
+    0,1,0,1,
+    0,0,1,1,
+    1,1,0,1,
+    1,0,1,1,
+    0,1,1,1,
+    1,1,1,1
+  };
   Matrix m (4, 8);
   memcpy (m.fortran_vec (), data, sizeof (double)*32);
   return m;
@@ -4759,7 +4803,7 @@ axes::properties::update_camera (void)
     {
       double af;
 
-      // FIXME -- was this really needed?  When compared to Matlab, it
+      // FIXME: was this really needed?  When compared to Matlab, it
       // does not seem to be required. Need investigation with concrete
       // graphics toolkit to see results visually.
       if (false && dowarp)
@@ -4964,33 +5008,33 @@ axes::properties::update_axes_layout (void)
   y2Dright = false;
   layer2Dtop = false;
   if (xstate == AXE_HORZ_DIR && ystate == AXE_VERT_DIR)
-  {
-    if (xaxislocation_is ("top"))
     {
-      double tmp = yPlane;
-      yPlane = yPlaneN;
-      yPlaneN = tmp;
-      x2Dtop = true;
+      if (xaxislocation_is ("top"))
+        {
+          double tmp = yPlane;
+          yPlane = yPlaneN;
+          yPlaneN = tmp;
+          x2Dtop = true;
+        }
+      ypTick = yPlaneN;
+      ypTickN = yPlane;
+      if (yaxislocation_is ("right"))
+        {
+          double tmp = xPlane;
+          xPlane = xPlaneN;
+          xPlaneN = tmp;
+          y2Dright = true;
+        }
+      xpTick = xPlaneN;
+      xpTickN = xPlane;
+      if (layer_is ("top"))
+        {
+          zpTick = zPlaneN;
+          layer2Dtop = true;
+        }
+      else
+        zpTick = zPlane;
     }
-    ypTick = yPlaneN;
-    ypTickN = yPlane;
-    if (yaxislocation_is ("right"))
-    {
-      double tmp = xPlane;
-      xPlane = xPlaneN;
-      xPlaneN = tmp;
-      y2Dright = true;
-    }
-    xpTick = xPlaneN;
-    xpTickN = xPlane;
-    if (layer_is ("top"))
-      {
-        zpTick = zPlaneN;
-        layer2Dtop = true;
-      }
-    else
-      zpTick = zPlane;
-  }
 
   Matrix viewmat = get_view ().matrix_value ();
   nearhoriz = std::abs (viewmat(1)) <= 5;
@@ -5055,8 +5099,9 @@ axes::properties::update_xlabel_position (void)
   if (updating_xlabel_position)
     return;
 
-  text::properties& xlabel_props = reinterpret_cast<text::properties&>
-    (gh_manager::get_object (get_xlabel ()).get_properties ());
+  text::properties& xlabel_props
+    = reinterpret_cast<text::properties&>
+        (gh_manager::get_object (get_xlabel ()).get_properties ());
 
   bool is_empty = xlabel_props.get_string ().is_empty ();
 
@@ -5108,19 +5153,19 @@ axes::properties::update_xlabel_position (void)
 
       switch (xstate)
         {
-          case AXE_ANY_DIR:
-            p(0) += (xyzSym ? wmax : -wmax);
-            p(1) += hmax;
-            break;
+        case AXE_ANY_DIR:
+          p(0) += (xyzSym ? wmax : -wmax);
+          p(1) += hmax;
+          break;
 
-          case AXE_VERT_DIR:
-            p(0) -= wmax;
-            angle = 90;
-            break;
+        case AXE_VERT_DIR:
+          p(0) -= wmax;
+          angle = 90;
+          break;
 
-          case AXE_HORZ_DIR:
-            p(1) += (x2Dtop ? -hmax : hmax);
-            break;
+        case AXE_HORZ_DIR:
+          p(1) += (x2Dtop ? -hmax : hmax);
+          break;
         }
 
       if (xlabel_props.positionmode_is ("auto"))
@@ -5146,8 +5191,9 @@ axes::properties::update_ylabel_position (void)
   if (updating_ylabel_position)
     return;
 
-  text::properties& ylabel_props = reinterpret_cast<text::properties&>
-    (gh_manager::get_object (get_ylabel ()).get_properties ());
+  text::properties& ylabel_props
+    = reinterpret_cast<text::properties&>
+        (gh_manager::get_object (get_ylabel ()).get_properties ());
 
   bool is_empty = ylabel_props.get_string ().is_empty ();
 
@@ -5208,19 +5254,19 @@ axes::properties::update_ylabel_position (void)
 
       switch (ystate)
         {
-          case AXE_ANY_DIR:
-            p(0) += (!xyzSym ? wmax : -wmax);
-            p(1) += hmax;
-            break;
+        case AXE_ANY_DIR:
+          p(0) += (!xyzSym ? wmax : -wmax);
+          p(1) += hmax;
+          break;
 
-          case AXE_VERT_DIR:
-            p(0) += (y2Dright ? wmax : -wmax);
-            angle = 90;
-            break;
+        case AXE_VERT_DIR:
+          p(0) += (y2Dright ? wmax : -wmax);
+          angle = 90;
+          break;
 
-          case AXE_HORZ_DIR:
-            p(1) += hmax;
-            break;
+        case AXE_HORZ_DIR:
+          p(1) += hmax;
+          break;
         }
 
       if (ylabel_props.positionmode_is ("auto"))
@@ -5246,8 +5292,9 @@ axes::properties::update_zlabel_position (void)
   if (updating_zlabel_position)
     return;
 
-  text::properties& zlabel_props = reinterpret_cast<text::properties&>
-    (gh_manager::get_object (get_zlabel ()).get_properties ());
+  text::properties& zlabel_props
+    = reinterpret_cast<text::properties&>
+        (gh_manager::get_object (get_zlabel ()).get_properties ());
 
   bool camAuto = cameraupvectormode_is ("auto");
   bool is_empty = zlabel_props.get_string ().is_empty ();
@@ -5312,28 +5359,28 @@ axes::properties::update_zlabel_position (void)
 
       switch (zstate)
         {
-          case AXE_ANY_DIR:
-            if (camAuto)
-              {
-                p(0) -= wmax;
-                angle = 90;
-              }
+        case AXE_ANY_DIR:
+          if (camAuto)
+            {
+              p(0) -= wmax;
+              angle = 90;
+            }
 
-            // FIXME -- what's the correct offset?
-            //
-            //   p[0] += (!xySym ? wmax : -wmax);
-            //   p[1] += (zSign ? hmax : -hmax);
+          // FIXME: what's the correct offset?
+          //
+          //   p[0] += (!xySym ? wmax : -wmax);
+          //   p[1] += (zSign ? hmax : -hmax);
 
-            break;
+          break;
 
-          case AXE_VERT_DIR:
-            p(0) -= wmax;
-            angle = 90;
-            break;
+        case AXE_VERT_DIR:
+          p(0) -= wmax;
+          angle = 90;
+          break;
 
-          case AXE_HORZ_DIR:
-            p(1) += hmax;
-            break;
+        case AXE_HORZ_DIR:
+          p(1) += hmax;
+          break;
         }
 
       if (zlabel_props.positionmode_is ("auto"))
@@ -5359,8 +5406,9 @@ axes::properties::update_title_position (void)
   if (updating_title_position)
     return;
 
-  text::properties& title_props = reinterpret_cast<text::properties&>
-    (gh_manager::get_object (get_title ()).get_properties ());
+  text::properties& title_props
+    = reinterpret_cast<text::properties&>
+        (gh_manager::get_object (get_title ()).get_properties ());
 
   unwind_protect frame;
   frame.protect_var (updating_title_position);
@@ -5413,15 +5461,15 @@ static void
 normalized_aspectratios (Matrix& aspectratios, const Matrix& scalefactors,
                          double xlength, double ylength, double zlength)
 {
-      double xval = xlength/scalefactors(0);
-      double yval = ylength/scalefactors(1);
-      double zval = zlength/scalefactors(2);
+  double xval = xlength/scalefactors(0);
+  double yval = ylength/scalefactors(1);
+  double zval = zlength/scalefactors(2);
 
-      double minval = xmin (xmin (xval, yval), zval);
+  double minval = xmin (xmin (xval, yval), zval);
 
-      aspectratios(0) = xval/minval;
-      aspectratios(1) = yval/minval;
-      aspectratios(2) = zval/minval;
+  aspectratios(0) = xval/minval;
+  aspectratios(1) = yval/minval;
+  aspectratios(2) = zval/minval;
 }
 
 static void
@@ -5579,9 +5627,8 @@ Matrix
 axes::properties::get_boundingbox (bool internal,
                                    const Matrix& parent_pix_size) const
 {
-  Matrix pos = (internal ?
-                  get_position ().matrix_value ()
-                  : get_outerposition ().matrix_value ());
+  Matrix pos = internal ? get_position ().matrix_value ()
+                        : get_outerposition ().matrix_value ();
   Matrix parent_size (parent_pix_size);
 
   if (parent_size.numel () == 0)
@@ -5641,8 +5688,9 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
           else if (i == 3)
             text_handle = get_zlabel ();
 
-          text::properties& text_props = reinterpret_cast<text::properties&>
-            (gh_manager::get_object (text_handle).get_properties ());
+          text::properties& text_props
+            = reinterpret_cast<text::properties&>
+                (gh_manager::get_object (text_handle).get_properties ());
 
           Matrix text_pos = text_props.get_data_position ();
           text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
@@ -5663,20 +5711,22 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
                 {
                   double text_rotation = text_props.get_rotation ();
                   if (text_rotation == 0. || text_rotation == 180.)
-                      ignore_horizontal = true;
+                    ignore_horizontal = true;
                   else if (text_rotation == 90. || text_rotation == 270.)
-                      ignore_vertical = true;
+                    ignore_vertical = true;
                 }
 
               if (! ignore_horizontal)
                 {
                   ext(0) = std::min (ext(0), text_pos(0)+text_ext(0));
-                  ext(2) = std::max (ext(2), text_pos(0)+text_ext(0)+text_ext(2));
+                  ext(2) = std::max (ext(2),
+                                     text_pos(0)+text_ext(0)+text_ext(2));
                 }
 
               if (! ignore_vertical)
                 {
-                  ext(1) = std::min (ext(1), text_pos(1)-text_ext(1)-text_ext(3));
+                  ext(1) = std::min (ext(1),
+                                     text_pos(1)-text_ext(1)-text_ext(3));
                   ext(3) = std::max (ext(3), text_pos(1)-text_ext(1));
                 }
             }
@@ -5724,7 +5774,7 @@ convert_ticklabel_string (const octave_value& val)
           // Split string with delimiter '|'
           while (std::getline (iss, tmpstr, '|'))
             sv.append (tmpstr);
-          
+
           // If string ends with '|' Matlab appends a null string
           if (*valstr.rbegin () == '|')
             sv.append (std::string (""));
@@ -5813,7 +5863,7 @@ convert_linestyleorder_string (const octave_value& val)
           // Split string with delimiter '|'
           while (std::getline (iss, tmpstr, '|'))
             sv.append (tmpstr);
-          
+
           // If string ends with '|' Matlab appends a null string
           if (*valstr.rbegin () == '|')
             sv.append (std::string (""));
@@ -5856,12 +5906,25 @@ void
 axes::properties::update_units (const caseless_str& old_units)
 {
   graphics_object obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bb = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+  Matrix parent_bb
+    = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
   caseless_str new_units = get_units ();
-  position.set (octave_value (convert_position (get_position ().matrix_value (), old_units, new_units, parent_bb)), false);
-  outerposition.set (octave_value (convert_position (get_outerposition ().matrix_value (), old_units, new_units, parent_bb)), false);
-  tightinset.set (octave_value (convert_position (get_tightinset ().matrix_value (), old_units, new_units, parent_bb)), false);
-  looseinset.set (octave_value (convert_position (get_looseinset ().matrix_value (), old_units, new_units, parent_bb)), false);
+  position.set (octave_value (convert_position (get_position ().matrix_value (),
+                                                old_units, new_units,
+                                                parent_bb)),
+                                                false);
+  outerposition.set (octave_value (convert_position (get_outerposition ().matrix_value (),
+                                                old_units, new_units,
+                                                parent_bb)),
+                                                false);
+  tightinset.set (octave_value (convert_position (get_tightinset ().matrix_value (),
+                                                old_units, new_units,
+                                                parent_bb)),
+                                                false);
+  looseinset.set (octave_value (convert_position (get_looseinset ().matrix_value (),
+                                                old_units, new_units,
+                                                parent_bb)),
+                                                false);
 }
 
 void
@@ -5960,8 +6023,8 @@ axes::get_default (const caseless_str& name) const
   return retval;
 }
 
-// FIXME -- remove.
-// FIXME -- maybe this should go into array_property class?
+// FIXME: remove.
+// FIXME: maybe this should go into array_property class?
 /*
 static void
 check_limit_vals (double& min_val, double& max_val,
@@ -6035,7 +6098,7 @@ magform (double x, double& a, int& b)
 
 // A translation from Tom Holoryd's python code at
 // http://kurage.nimh.nih.gov/tomh/tics.py
-// FIXME -- add log ticks
+// FIXME: add log ticks
 
 double
 axes::properties::calc_tick_sep (double lo, double hi)
@@ -6107,8 +6170,9 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               warning ("axis: omitting non-positive data in log plot");
               min_val = min_pos;
             }
-          // FIXME -- maybe this test should also be relative?
-          if (std::abs (min_val - max_val) < sqrt (std::numeric_limits<double>::epsilon ()))
+          // FIXME: maybe this test should also be relative?
+          if (std::abs (min_val - max_val)
+              < sqrt (std::numeric_limits<double>::epsilon ()))
             {
               // Widen range when too small
               if (min_val >= 0)
@@ -6143,7 +6207,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               max_val = 1;
             }
           // FIXME -- maybe this test should also be relative?
-          else if (std::abs (min_val - max_val) < sqrt (std::numeric_limits<double>::epsilon ()))
+          else if (std::abs (min_val - max_val)
+                   < sqrt (std::numeric_limits<double>::epsilon ()))
             {
               min_val -= 0.1 * std::abs (min_val);
               max_val += 0.1 * std::abs (max_val);
@@ -6172,7 +6237,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                                        array_property& mticks,
                                        bool limmode_is_auto, bool is_logscale)
 {
-  // FIXME -- add log ticks and lims
+  // FIXME: add log ticks and lims
 
   if (lims.get ().is_empty ())
     return;
@@ -6904,7 +6969,8 @@ axes::properties::zoom_about_point (double x, double y, double factor,
 }
 
 void
-axes::properties::zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_stack)
+axes::properties::zoom (const Matrix& xl, const Matrix& yl,
+                        bool push_to_zoom_stack)
 {
   if (push_to_zoom_stack)
     {
@@ -7334,28 +7400,32 @@ surface::properties::update_normals (void)
               double& nz = n(j, i, 2);
 
               if ((j > 0) && (i > 0))
-                  // upper left quadrangle
-                  cross_product (x(j1,i-1)-x(j2,i), y(j-1,i1)-y(j,i2), z(j-1,i-1)-z(j,i),
-                                 x(j2,i-1)-x(j1,i), y(j,i1)-y(j-1,i2), z(j,i-1)-z(j-1,i),
-                                 nx, ny, nz);
+                // upper left quadrangle
+                cross_product
+                  (x(j1,i-1)-x(j2,i), y(j-1,i1)-y(j,i2), z(j-1,i-1)-z(j,i),
+                   x(j2,i-1)-x(j1,i), y(j,i1)-y(j-1,i2), z(j,i-1)-z(j-1,i),
+                   nx, ny, nz);
 
               if ((j > 0) && (i < (p -1)))
-                  // upper right quadrangle
-                  cross_product (x(j1,i+1)-x(j2,i), y(j-1,i3)-y(j,i2), z(j-1,i+1)-z(j,i),
-                                 x(j1,i)-x(j2,i+1), y(j-1,i2)-y(j,i3), z(j-1,i)-z(j,i+1),
-                                 nx, ny, nz);
+                // upper right quadrangle
+                cross_product
+                  (x(j1,i+1)-x(j2,i), y(j-1,i3)-y(j,i2), z(j-1,i+1)-z(j,i),
+                   x(j1,i)-x(j2,i+1), y(j-1,i2)-y(j,i3), z(j-1,i)-z(j,i+1),
+                   nx, ny, nz);
 
               if ((j < (q - 1)) && (i > 0))
-                  // lower left quadrangle
-                  cross_product (x(j2,i-1)-x(j3,i), y(j,i1)-y(j+1,i2), z(j,i-1)-z(j+1,i),
-                                 x(j3,i-1)-x(j2,i), y(j+1,i1)-y(j,i2), z(j+1,i-1)-z(j,i),
-                                 nx, ny, nz);
+                // lower left quadrangle
+                cross_product
+                  (x(j2,i-1)-x(j3,i), y(j,i1)-y(j+1,i2), z(j,i-1)-z(j+1,i),
+                   x(j3,i-1)-x(j2,i), y(j+1,i1)-y(j,i2), z(j+1,i-1)-z(j,i),
+                   nx, ny, nz);
 
               if ((j < (q - 1)) && (i < (p -1)))
-                  // lower right quadrangle
-                  cross_product (x(j3,i)-x(j2,i+1), y(j+1,i2)-y(j,i3), z(j+1,i)-z(j,i+1),
-                                 x(j3,i+1)-x(j2,i), y(j+1,i3)-y(j,i2), z(j+1,i+1)-z(j,i),
-                                 nx, ny, nz);
+                // lower right quadrangle
+                cross_product
+                  (x(j3,i)-x(j2,i+1), y(j+1,i2)-y(j,i3), z(j+1,i)-z(j,i+1),
+                   x(j3,i+1)-x(j2,i), y(j+1,i3)-y(j,i2), z(j+1,i+1)-z(j,i),
+                   nx, ny, nz);
 
               double d = -std::max (std::max (fabs (nx), fabs (ny)), fabs (nz));
 
@@ -7756,7 +7826,7 @@ uipanel::properties::get_boundingbox (bool internal,
       graphics_object obj = gh_manager::get_object (get_parent ());
 
       parent_size =
-       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+        obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
     }
 
   pos = convert_position (pos, get_units (), "pixels", parent_size);
@@ -8031,12 +8101,12 @@ public:
       callback (cb), callback_data (data) { }
 
   void execute (void)
-    {
-      if (callback.is_defined ())
-        gh_manager::execute_callback (handle, callback, callback_data);
-      else
-        gh_manager::execute_callback (handle, callback_name, callback_data);
-    }
+  {
+    if (callback.is_defined ())
+      gh_manager::execute_callback (handle, callback, callback_data);
+    else
+      gh_manager::execute_callback (handle, callback_name, callback_data);
+  }
 
 private:
   callback_event (void)
@@ -8059,9 +8129,9 @@ public:
   { }
 
   void execute (void)
-    {
-      function (function_data);
-    }
+  {
+    function (function_data);
+  }
 
 private:
 
@@ -8089,19 +8159,19 @@ public:
       property_value (value), notify_toolkit (do_notify_toolkit) { }
 
   void execute (void)
-    {
-      gh_manager::auto_lock guard;
+  {
+    gh_manager::auto_lock guard;
 
-      graphics_object go = gh_manager::get_object (handle);
+    graphics_object go = gh_manager::get_object (handle);
 
-      if (go)
-        {
-          property p = go.get_properties ().get_property (property_name);
+    if (go)
+      {
+        property p = go.get_properties ().get_property (property_name);
 
-          if (p.ok ())
-            p.set (property_value, true, notify_toolkit);
-        }
-    }
+        if (p.ok ())
+          p.set (property_value, true, notify_toolkit);
+      }
+  }
 
 private:
   set_event (void)
@@ -8168,7 +8238,7 @@ xset_gcbo (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (0);
   root_figure::properties& props =
-      dynamic_cast<root_figure::properties&> (go.get_properties ());
+    dynamic_cast<root_figure::properties&> (go.get_properties ());
 
   props.set_callbackobject (h.as_octave_value ());
 }
@@ -8294,23 +8364,25 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
           const graphics_object& current = callback_objects.front ();
 
           if (current.get_properties ().is_interruptible ())
-            do_post_event (graphics_event::create_callback_event (h, name, data));
+            do_post_event (graphics_event::create_callback_event (h, name,
+                                                                  data));
           else
             {
               caseless_str busy_action (go.get_properties ().get_busyaction ());
 
               if (busy_action.compare ("queue"))
-                do_post_event (graphics_event::create_callback_event (h, name, data));
+                do_post_event (graphics_event::create_callback_event (h, name,
+                                                                      data));
               else
                 {
                   caseless_str cname (name);
 
-                  if (cname.compare ("deletefcn")
-                      || cname.compare ("createfcn")
+                  if (cname.compare ("deletefcn") || cname.compare ("createfcn")
                       || (go.isa ("figure")
                           && (cname.compare ("closerequestfcn")
                               || cname.compare ("resizefcn"))))
-                    do_post_event (graphics_event::create_callback_event (h, name, data));
+                    do_post_event (
+                      graphics_event::create_callback_event (h, name, data));
                 }
             }
         }
@@ -8446,7 +8518,7 @@ root_figure::init_factory_properties (void)
 // ---------------------------------------------------------------------
 
 DEFUN (ishandle, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ishandle (@var{h})\n\
 Return true if @var{h} is a graphics handle and false otherwise.\n\
 \n\
@@ -8506,7 +8578,7 @@ is_handle_visible (const octave_value& val)
 }
 
 DEFUN (__is_handle_visible__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} __is_handle_visible__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -8522,7 +8594,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (reset, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
 Remove any defaults set for the handle @var{h}.  The default figure\n\
 properties of @qcode{\"position\"}, @qcode{\"units\"},\n\
@@ -8552,7 +8624,7 @@ properties of @qcode{\"position\"} and @qcode{\"units\"} are not reset.\n\
 }
 
 DEFUN (set, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{properties}, @var{values})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{pv})\n\
@@ -8625,7 +8697,7 @@ the dimensions of @var{pv}.\n\
                       else
                         {
                           error ("set: number of graphics handles must match number of value rows (%d != %d)",
-                                hcv.length (), args(2).cell_value ().rows ());
+                                 hcv.length (), args(2).cell_value ().rows ());
                           break;
 
                         }
@@ -8661,7 +8733,7 @@ the dimensions of @var{pv}.\n\
                 break;
 
               request_drawnow = true;
-           }
+            }
 
           if (! error_state && request_drawnow)
             Vdrawnow_requested = true;
@@ -8691,7 +8763,7 @@ get_graphics_object_type (const double val)
 }
 
 DEFUN (get, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} get (@var{h})\n\
 @deftypefnx {Built-in Function} {@var{val} =} get (@var{h}, @var{p})\n\
 Return the value of the named property @var{p} from the graphics handle\n\
@@ -8768,7 +8840,9 @@ values or lists respectively.\n\
 
                           if (obj)
                             {
-                              for (octave_idx_type m = 0; ! error_state && m < plen; m++)
+                              for (octave_idx_type m = 0;
+                                   ! error_state && m < plen;
+                                   m++)
                                 {
                                   caseless_str property = plist(m);
 
@@ -8866,7 +8940,7 @@ values or lists respectively.\n\
 // property values or lists respectively.
 
 DEFUN (__get__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __get__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -8994,7 +9068,7 @@ make_graphics_object (const std::string& go_name,
 }
 
 DEFUN (__go_figure__, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_figure__ (@var{fignum})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9113,7 +9187,7 @@ calc_dimensions (const graphics_object& go)
   if (go.isa ("surface"))
     nd = 3;
   else if ((go.isa ("line") || go.isa ("patch"))
-            && ! go.get ("zdata").is_empty ())
+           && ! go.get ("zdata").is_empty ())
     nd = 3;
   else
     {
@@ -9140,7 +9214,7 @@ calc_dimensions (const graphics_object& go)
 }
 
 DEFUN (__calc_dimensions__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __calc_dimensions__ (@var{axes})\n\
 Internal function.  Determine the number of dimensions in a graphics\n\
 object, whether 2 or 3.\n\
@@ -9166,7 +9240,7 @@ object, whether 2 or 3.\n\
 }
 
 DEFUN (__go_axes__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_axes__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9175,7 +9249,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_line__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_line__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9184,7 +9258,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_text__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_text__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9193,7 +9267,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_image__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_image__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9202,7 +9276,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_surface__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_surface__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9211,7 +9285,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_patch__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_patch__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9220,7 +9294,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_hggroup__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_hggroup__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9229,7 +9303,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uimenu__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uimenu__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9238,7 +9312,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uicontrol__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uicontrol__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9247,7 +9321,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uipanel__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uipanel__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9256,7 +9330,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uicontextmenu__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uicontextmenu__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9265,7 +9339,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uitoolbar__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uitoolbar__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9274,7 +9348,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uipushtool__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uipushtool__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9283,7 +9357,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_uitoggletool__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_uitoggletool__ (@var{parent})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9292,7 +9366,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_delete__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_delete__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9337,7 +9411,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_axes_init__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_axes_init__ (@var{h}, @var{mode})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9376,7 +9450,8 @@ Undocumented internal function.\n\
 
               h = gh_manager::lookup (val);
               if (! h.ok ())
-                error ("__go_axes_init__: axis deleted during initialization (= %g)", val);
+                error ("__go_axes_init__: axis deleted during initialization (= %g)",
+                       val);
             }
           else
             error ("__go_axes_init__: invalid graphics object (= %g)", val);
@@ -9391,7 +9466,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_handles__, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_handles__ (@var{show_hidden})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9407,7 +9482,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_figure_handles__, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_figure_handles__ (@var{show_hidden})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -9423,7 +9498,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__go_execute_callback__, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name})\n\
 @deftypefnx {Built-in Function} {} __go_execute_callback__ (@var{h}, @var{name}, @var{param})\n\
 Undocumented internal function.\n\
@@ -9469,7 +9544,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__image_pixel_size__, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{px}, @var{py}} __image_pixel_size__ (@var{h})\n\
 Internal function: returns the pixel size of the image in normalized units.\n\
 @end deftypefn")
@@ -9513,7 +9588,7 @@ gtk_manager::gtk_manager (void)
   : dtk (), available_toolkits (), loaded_toolkits ()
 {
 #if defined (HAVE_FLTK)
-  dtk = "fltk";
+  dtk = display_info::display_available () ? "fltk" : "gnuplot";
 #else
   dtk = "gnuplot";
 #endif
@@ -9564,7 +9639,7 @@ gtk_manager::do_get_toolkit (void) const
 }
 
 DEFUN (available_graphics_toolkits, , ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_graphics_toolkits ()\n\
 Return a cell array of registered graphics toolkits.\n\
 @seealso{graphics_toolkit, register_graphics_toolkit}\n\
@@ -9576,7 +9651,7 @@ Return a cell array of registered graphics toolkits.\n\
 }
 
 DEFUN (register_graphics_toolkit, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} register_graphics_toolkit (@var{toolkit})\n\
 List @var{toolkit} as an available graphics toolkit.\n\
 @seealso{available_graphics_toolkits}\n\
@@ -9602,7 +9677,7 @@ List @var{toolkit} as an available graphics toolkit.\n\
 }
 
 DEFUN (loaded_graphics_toolkits, , ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} loaded_graphics_toolkits ()\n\
 Return a cell array of the currently loaded graphics toolkits.\n\
 @seealso{available_graphics_toolkits}\n\
@@ -9614,7 +9689,7 @@ Return a cell array of the currently loaded graphics toolkits.\n\
 }
 
 DEFUN (drawnow, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} drawnow ()\n\
 @deftypefnx {Built-in Function} {} drawnow (\"expose\")\n\
 @deftypefnx {Built-in Function} {} drawnow (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
@@ -9650,7 +9725,8 @@ undocumented.\n\
               if (h.ok () && h != 0)
                 {
                   graphics_object go = gh_manager::get_object (h);
-                  figure::properties& fprops = dynamic_cast <figure::properties&> (go.get_properties ());
+                  figure::properties& fprops
+                    = dynamic_cast <figure::properties&> (go.get_properties ());
 
                   if (fprops.is_modified ())
                     {
@@ -9745,8 +9821,8 @@ undocumented.\n\
 
                               gh_manager::unlock ();
 
-                              go.get_toolkit ()
-                                .print_figure (go, term, file, mono, debug_file);
+                              go.get_toolkit ().print_figure (go, term, file,
+                                                              mono, debug_file);
 
                               gh_manager::lock ();
                             }
@@ -9775,7 +9851,7 @@ undocumented.\n\
 }
 
 DEFUN (addlistener, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
 Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
 object @var{h}.  Property listeners are executed (in order of registration)\n\
@@ -9854,7 +9930,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 }
 
 DEFUN (dellistener, args, ,
-   "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} dellistener (@var{h}, @var{prop}, @var{fcn})\n\
 Remove the registration of @var{fcn} as a listener for the property\n\
 @var{prop} of the graphics object @var{h}.  The function @var{fcn} must\n\
@@ -9901,14 +9977,17 @@ dellistener (gcf, \"position\", c);\n\
                   graphics_object go = gh_manager::get_object (gh);
 
                   if (args.length () == 2)
-                    go.delete_property_listener (pname, octave_value (), POSTSET);
+                    go.delete_property_listener (pname, octave_value (),
+                                                 POSTSET);
                   else
                     {
                       caseless_str persistent = args(2).string_value ();
                       if (persistent.compare ("persistent"))
                         {
-                          go.delete_property_listener (pname, octave_value (), PERSISTENT);
-                          go.delete_property_listener (pname, octave_value (), POSTSET);
+                          go.delete_property_listener (pname, octave_value (),
+                                                       PERSISTENT);
+                          go.delete_property_listener (pname, octave_value (),
+                                                       POSTSET);
                         }
                       else
                         go.delete_property_listener (pname, args(2), POSTSET);
@@ -9931,7 +10010,7 @@ dellistener (gcf, \"position\", c);\n\
 }
 
 DEFUN (addproperty, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type})\n\
 @deftypefnx {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, @var{arg}, @dots{})\n\
 Create a new property named @var{name} in graphics object @var{h}.\n\
@@ -10144,11 +10223,11 @@ do_cleanup_waitfor_listener (const octave_value& listener,
 
                   if (go.get_properties ().has_property (pname))
                     {
-                      go.get_properties ()
-                        .delete_listener (pname, listener, mode);
+                      go.get_properties ().delete_listener (pname, listener,
+                                                            mode);
                       if (mode == POSTSET)
-                        go.get_properties ()
-                          .delete_listener (pname, listener, PERSISTENT);
+                        go.get_properties ().delete_listener (pname, listener,
+                                                              PERSISTENT);
                     }
                 }
             }
@@ -10221,7 +10300,7 @@ waitfor_del_listener (const octave_value_list& args, int)
 }
 
 DEFUN (waitfor, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} waitfor (@var{h})\n\
 @deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop})\n\
 @deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
@@ -10408,7 +10487,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
               if (args.length () > (timeout_index + 1))
                 {
                   timeout = static_cast<int>
-                    (args(timeout_index + 1).scalar_value ());
+                            (args(timeout_index + 1).scalar_value ());
 
                   if (! error_state)
                     {

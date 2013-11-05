@@ -97,8 +97,8 @@ private slots:
   void contextmenu_findfiles (bool);
 
   /* popdown menu options */
-  void popdownmenu_newfile(bool);
-  void popdownmenu_newdir(bool);
+  void popdownmenu_newfile (bool);
+  void popdownmenu_newdir (bool);
   void popdownmenu_search_dir (bool);
   void popdownmenu_findfiles (bool);
   void popdownmenu_home (bool);
@@ -125,10 +125,10 @@ signals:
   void find_files_signal (const QString &startdir);
 
 private:
-  void process_new_file(const QString &parent_name);
-  void process_new_dir(const QString &parent_name);
-  void process_set_current_dir(const QString &parent_name);
-  void process_find_files(const QString &dir_name);
+  void process_new_file (const QString &parent_name);
+  void process_new_dir (const QString &parent_name);
+  void process_set_current_dir (const QString &parent_name);
+  void process_find_files (const QString &dir_name);
 
   /** set a new directory or open a file **/
   void display_directory (const QString& dir, bool set_octave_dir = true);

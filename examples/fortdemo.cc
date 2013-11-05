@@ -5,8 +5,7 @@ extern "C"
 {
   F77_RET_T
   F77_FUNC (fortsub, FORTSUB)
-        (const int&, double*, F77_CHAR_ARG_DECL
-         F77_CHAR_ARG_LEN_DECL);
+    (const int&, double*, F77_CHAR_ARG_DECL F77_CHAR_ARG_LEN_DECL);
 }
 
 DEFUN_DLD (fortdemo, args, , "Fortran Demo")
@@ -25,8 +24,8 @@ DEFUN_DLD (fortdemo, args, , "Fortran Demo")
           octave_idx_type na = a.numel ();
           OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
-          F77_XFCN (fortsub, FORTSUB, (na, av, ctmp
-                    F77_CHAR_ARG_LEN (128)));
+          F77_XFCN (fortsub, FORTSUB,
+                    (na, av, ctmp F77_CHAR_ARG_LEN (128)));
 
           retval(1) = std::string (ctmp);
           retval(0) = a;

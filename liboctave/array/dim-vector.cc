@@ -29,10 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 
-// The maximum allowed value for a dimension extent. This will normally be a tiny bit
-// off the maximum value of octave_idx_type.
-// Currently 1 is subtracted to allow safe conversion of any 2D Array into Sparse,
-// but this offset may change in the future.
+// The maximum allowed value for a dimension extent. This will normally be a
+// tiny bit off the maximum value of octave_idx_type.
+// Currently 1 is subtracted to allow safe conversion of any 2D Array into
+// Sparse, but this offset may change in the future.
 octave_idx_type
 dim_vector::dim_max (void)
 {

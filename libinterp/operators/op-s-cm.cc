@@ -135,8 +135,10 @@ install_s_cm_ops (void)
 
   INSTALL_CATOP (octave_scalar, octave_complex_matrix, s_cm);
 
-  INSTALL_ASSIGNCONV (octave_scalar, octave_complex_matrix, octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_float_scalar, octave_complex_matrix, octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_scalar, octave_complex_matrix,
+                      octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_complex_matrix,
+                      octave_float_complex_matrix);
 
   INSTALL_WIDENOP (octave_scalar, octave_complex_matrix, complex_matrix_conv);
 }

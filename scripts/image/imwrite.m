@@ -47,6 +47,28 @@
 ## dimension must be a singleton.  By default, image will be completely
 ## opaque.
 ##
+## @item DelayTime
+## For formats that accept animations (such as GIF), controls for how long a
+## frame is displayed until it moves to the next one. The value must be scalar
+## (which will applied to all frames in @var{img}), or a vector of length
+## equal to the number of frames in @var{im}.  The value is in seconds, must
+## be between 0 and 655.35, and defaults to 0.5.
+##
+## @item DisposalMethod
+## For formats that accept animations (such as GIF), controls what happens
+## to a frame before drawing the next one.  Its value can be one of the
+## following strings: "doNotSpecify" (default); "leaveInPlace"; "restoreBG";
+## and "restorePrevious", or a cell array of those string with length equal
+## to the number of frames in @var{img}.
+##
+## @item LoopCount
+## For formats that accept animations (such as GIF), controls how many times
+## the sequence is repeated.  A value of Inf means an infinite loop (default),
+## a value of 0 or 1 that the sequence is played only once (loops zero times),
+## while a value of 2 or above loops that number of times (looping twice means
+## it plays the complete sequence 3 times).  This option is ignored when there
+## is only a single image at the end of writing the file.
+##
 ## @item Quality
 ## Set the quality of the compression.  The value should be an
 ## integer between 0 and 100, with larger values indicating higher visual

@@ -42,7 +42,10 @@ function __imwrite__ (img, varargin)
 
   ## set default for options
   options = struct ("writemode", "overwrite",
+                    "disposalmethod", {repmat({"doNotSpecify"}, 1, size (img, 4))},
                     "quality",   75,
+                    "delaytime", ones (1, size (img, 4)) *500, # 0.5 seconds
+                    "loopcount", 0, ## this is actually Inf
                     "alpha",     cast ([], class (img)));
 
   for idx = 1:2:numel (param_list)
@@ -64,14 +67,71 @@ function __imwrite__ (img, varargin)
                  param_list{idx});
         endif
 
-      case "writemode",
-        options.writemode = param_list{idx+1};
-        if (! ischar (options.writemode)
-            || ! any (strcmpi (options.writemode, {"append", "overwrite"})))
-          error ('imwrite: value for %s option must be "append" or "overwrite"',
+      case "delaytime"
+        options.delaytime = param_list{idx+1};
+        if (! isnumeric (options.delaytime))
+          error ("imwrite: value for %s option must be numeric",
                  param_list{idx});
         endif
-        options.writemode = tolower (options.writemode);
+        options.delaytime *= 100; # convert to 1/100ths of second
+        if (isscalar (options.delaytime))
+          options.delaytime(1:size (img, 4)) = options.delaytime;
+        elseif (size (img, 4) != numel (options.delaytime))
+          error ("imwrite: value for %s must either be a scalar or the number of frames",
+                 param_list{idx});
+        endif
+        if (any (options.delaytime(:) < 0) || any (options.delaytime(:) > 65535))
+          error ("imwrite: value for %s must be between 0 and 655.35 seconds",
+                 param_list{idx});
+        endif
+
+      case "disposalmethod"
+        options.disposalmethod = param_list{idx+1};
+        if (! ischar (options.disposalmethod) &&
+            ! iscellstr (options.disposalmethod))
+          error ("imwrite: value for %s must be a string or cell array of strings",
+                 param_list{idx});
+        elseif (! iscell (options.disposalmethod))
+          options.disposalmethod = {options.disposalmethod};
+        endif
+        options.disposalmethod = tolower (options.disposalmethod);
+        matches = ismember (options.disposalmethod,
+                            {"donotspecify", "leaveinplace", "restorebg", "restoreprevious"});
+        if (any (! matches))
+          error ("imwrite: unknow method %s for option %s",
+                 options.disposalmethod{find (! matches, 1)},
+                 param_list{idx});
+        endif
+        if (isscalar (options.disposalmethod))
+          options.disposalmethod = repmat (options.disposalmethod, 1, size (img, 4));
+        elseif (numel (options.disposalmethod) != size (img, 4))
+          error ("imwrite: if value %s is a cell array must have same length as number of frames",
+                 param_list{idx});
+        endif
+
+      case "loopcount"
+        options.loopcount = param_list{idx+1};
+        if (! isscalar (options.loopcount) || ! isnumeric (options.loopcount)
+            || (! isinf (options.loopcount) && (options.loopcount < 0 ||
+                                                options.loopcount > 65535)))
+          error ("imwrite: value for %s must be Inf or between 0 and 65535",
+                 param_list{idx});
+        endif
+        ## Graphics Magick is a bit weird here. A value of 0 will be an
+        ## infinite loop, a value of 1, will really be no loop, while a
+        ## value of 2 or more will be that number of loops (checked
+        ## with GNOME image viewer). This means that there is no way
+        ## to make it loop only once. See
+        ## https://sourceforge.net/p/graphicsmagick/bugs/249/
+        ## There is also the problem of setting this when there is only
+        ## a single frame. See
+        ## https://sourceforge.net/p/graphicsmagick/bugs/248/
+        if (isinf (options.loopcount))
+          options.loopcount = 0;
+        elseif (options.loopcount == 0 || options.loopcount == 1)
+          options.loopcount++;
+        endif
+        options.loopcount = floor (options.loopcount);
 
       case "quality",
         options.quality = param_list{idx+1};
@@ -82,8 +142,17 @@ function __imwrite__ (img, varargin)
         endif
         options.quality = round (options.quality);
 
+      case "writemode",
+        options.writemode = param_list{idx+1};
+        if (! ischar (options.writemode)
+            || ! any (strcmpi (options.writemode, {"append", "overwrite"})))
+          error ('imwrite: value for %s option must be "append" or "overwrite"',
+                 param_list{idx});
+        endif
+        options.writemode = tolower (options.writemode);
+
       otherwise
-        error ("imwrite: invalid PARAMETER `%s'", varargin{idx});
+        error ("imwrite: invalid PARAMETER `%s'", param_list{idx});
 
     endswitch
   endfor
@@ -94,6 +163,19 @@ function __imwrite__ (img, varargin)
     elseif (ndims (img) != 2 && ndims (img) != 4)
       error ("imwrite: indexed image must have 2 or 4 dimensions (found %i)", ndims (img));
     endif
+
+    ## Fill in the colormap as required with rgb (0, 0, 0) (bug #33615)
+    nColors = rows (map);
+    if (any (strcmp (class (img), {"uint8", "uint16", "logical"})))
+      required_colors = max (img(:)) +1;
+    else
+      required_colors = max (img(:));
+    endif
+    if (nColors < required_colors)
+      warning ("imwrite: MAP has not enough colors. Filling with black");
+      map(nColors+1:required_colors,:) = 0;
+    endif
+
     ## If the image is floating point, then we convert it to integer (makes
     ## it easier in __magick_write__ since it only handles integers. Also,
     ## if it's floating point, it has an offset of 1

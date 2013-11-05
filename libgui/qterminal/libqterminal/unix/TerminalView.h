@@ -25,9 +25,9 @@
 #define TERMINALVIEW_H
 
 // Qt
-#include <QtGui/QColor>
+#include <QColor>
 #include <QtCore/QPointer>
-#include <QtGui/QWidget>
+#include <QWidget>
 
 // Konsole
 #include "unix/Filter.h"

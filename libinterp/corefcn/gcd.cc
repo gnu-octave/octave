@@ -433,7 +433,7 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
 }
 
 DEFUN (gcd, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{g} =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 @deftypefnx {Built-in Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @var{a2}, @dots{})\n\
 \n\

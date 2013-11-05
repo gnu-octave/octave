@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (amd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} amd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} amd (@var{S}, @var{opts})\n\
 \n\
@@ -162,8 +162,8 @@ The author of the code itself is Timothy A. Davis\n\
               Matrix xinfo (AMD_INFO, 1);
               double *Info = xinfo.fortran_vec ();
 
-              // FIXME -- how can we manage the memory allocation of
-              // amd in a cleaner manner?
+              // FIXME: how can we manage the memory allocation of amd
+              //        in a cleaner manner?
               amd_malloc = malloc;
               amd_free = free;
               amd_calloc = calloc;

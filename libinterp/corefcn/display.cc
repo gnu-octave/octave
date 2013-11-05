@@ -53,7 +53,7 @@ size_t DisplayBitsPerPixel (CGDirectDisplayID display)
     return 32;
   else if (CFStringCompare (pixelEncoding, CFSTR (IO16BitDirectPixels), 0) == 0)
     return 16;
-  else 
+  else
     return 8;
 }
 #endif
@@ -83,7 +83,7 @@ display_info::init (bool query)
           dpy_avail = true;
         }
       else
-        warning ("no graphical display found");
+        err_msg = "no graphical display found";
 
 #elif defined (HAVE_FRAMEWORK_CARBON)
 
@@ -115,7 +115,7 @@ display_info::init (bool query)
           dpy_avail = true;
         }
       else
-        warning ("no graphical display found");
+        err_msg = "no graphical display found";
 
 #elif defined (HAVE_X_WINDOWS)
 
@@ -145,20 +145,20 @@ display_info::init (bool query)
                   ry = ht * 25.4 / ht_mm;
                 }
               else
-                warning ("X11 display has no default screen");
+                err_msg = "X11 display has no default screen";
 
               XCloseDisplay (display);
 
               dpy_avail = true;
             }
           else
-            warning ("unable to open X11 DISPLAY");
+            err_msg = "unable to open X11 DISPLAY";
         }
       else
-        warning ("X11 DISPLAY environment variable not set");
+        err_msg = "X11 DISPLAY environment variable not set";
 #else
 
-      warning ("no graphical display found");
+      err_msg = "no graphical display found";
 
 #endif
     }

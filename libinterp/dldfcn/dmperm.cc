@@ -132,7 +132,7 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
 #endif
 
 DEFUN_DLD (dmperm, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} dmperm (@var{S})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{S}] =} dmperm (@var{S})\n\
 \n\
@@ -188,7 +188,7 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 */
 
 DEFUN_DLD (sprank, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} sprank (@var{S})\n\
 @cindex structural rank\n\
 \n\

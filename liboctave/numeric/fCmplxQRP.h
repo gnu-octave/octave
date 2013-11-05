@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexQRP_h)
-#define octave_FloatComplexQRP_h 1
+#if !defined (octave_fCmplxQRP_h)
+#define octave_fCmplxQRP_h 1
 
 #include <iosfwd>
 
@@ -42,14 +42,14 @@ public:
   FloatComplexQRP (const FloatComplexQRP& a) : FloatComplexQR (a), p (a.p) { }
 
   FloatComplexQRP& operator = (const FloatComplexQRP& a)
-    {
-      if (this != &a)
-        {
-          FloatComplexQR::operator = (a);
-          p = a.p;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        FloatComplexQR::operator = (a);
+        p = a.p;
+      }
+    return *this;
+  }
 
   ~FloatComplexQRP (void) { }
 

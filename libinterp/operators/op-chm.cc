@@ -54,8 +54,8 @@ DEFCATOP (chm_s, char_matrix, scalar)
   gripe_implicit_conversion ("Octave:num-to-str",
                              v2.type_name (), v1.type_name ());
 
-  return octave_value (v1.char_array_value (). concat(v2.array_value (),
-                               ra_idx));
+  return octave_value (v1.char_array_value (). concat (v2.array_value (),
+                       ra_idx));
 }
 
 DEFCATOP (chm_m, char_matrix, matrix)
@@ -66,7 +66,7 @@ DEFCATOP (chm_m, char_matrix, matrix)
                              v2.type_name (), v1.type_name ());
 
   return octave_value (v1.char_array_value (). concat (v2.array_value (),
-                               ra_idx));
+                       ra_idx));
 }
 
 DEFCATOP (s_chm, scalar, char_matrix)
@@ -77,7 +77,7 @@ DEFCATOP (s_chm, scalar, char_matrix)
                              v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (),
-                               ra_idx));
+                       ra_idx));
 }
 
 DEFCATOP (m_chm, matrix, char_matrix)
@@ -88,7 +88,7 @@ DEFCATOP (m_chm, matrix, char_matrix)
                              v1.type_name (), v2.type_name ());
 
   return octave_value (v1.array_value (). concat (v2.char_array_value (),
-                               ra_idx));
+                       ra_idx));
 }
 
 void

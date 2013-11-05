@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatNDArray_h)
-#define octave_FloatNDArray_h 1
+#if !defined (octave_fNDArray_h)
+#define octave_fNDArray_h 1
 
 #include "MArray.h"
 #include "fMatrix.h"
@@ -62,10 +62,10 @@ public:
   FloatNDArray (const charNDArray&);
 
   FloatNDArray& operator = (const FloatNDArray& a)
-    {
-      MArray<float>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<float>::operator = (a);
+    return *this;
+  }
 
   // unary operations
 
@@ -82,7 +82,7 @@ public:
   bool all_integers (void) const;
   bool too_large_for_float (void) const;
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
@@ -91,11 +91,14 @@ public:
   FloatNDArray cumsum (int dim = -1) const;
   FloatNDArray prod (int dim = -1) const;
   FloatNDArray sum (int dim = -1) const;
-       NDArray dsum (int dim = -1) const;
+  NDArray dsum (int dim = -1) const;
   FloatNDArray sumsq (int dim = -1) const;
-  FloatNDArray concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx);
-  FloatComplexNDArray concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
-  charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  FloatNDArray concat (const FloatNDArray& rb,
+                       const Array<octave_idx_type>& ra_idx);
+  FloatComplexNDArray concat (const FloatComplexNDArray& rb,
+                              const Array<octave_idx_type>& ra_idx);
+  charNDArray concat (const charNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx);
 
   FloatNDArray max (int dim = -1) const;
   FloatNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
@@ -109,8 +112,10 @@ public:
 
   FloatNDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
-  FloatNDArray& insert (const FloatNDArray& a, octave_idx_type r, octave_idx_type c);
-  FloatNDArray& insert (const FloatNDArray& a, const Array<octave_idx_type>& ra_idx);
+  FloatNDArray& insert (const FloatNDArray& a,
+                        octave_idx_type r, octave_idx_type c);
+  FloatNDArray& insert (const FloatNDArray& a,
+                        const Array<octave_idx_type>& ra_idx);
 
   FloatNDArray abs (void) const;
   boolNDArray isnan (void) const;
@@ -140,11 +145,12 @@ public:
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatNDArray& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const FloatNDArray& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatNDArray& a);
 
   FloatNDArray diag (octave_idx_type k = 0) const;
@@ -152,10 +158,10 @@ public:
   FloatNDArray diag (octave_idx_type m, octave_idx_type n) const;
 
   FloatNDArray& changesign (void)
-    {
-      MArray<float>::changesign ();
-      return *this;
-    }
+  {
+    MArray<float>::changesign ();
+    return *this;
+  }
 
 };
 

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_float_complex_h)
-#define octave_float_complex_h 1
+#if !defined (octave_ov_flt_complex_h)
+#define octave_ov_flt_complex_h 1
 
 #include <cstdlib>
 
@@ -63,14 +63,15 @@ public:
 
   ~octave_float_complex (void) { }
 
-  octave_base_value *clone (void) const { return new octave_float_complex (*this); }
+  octave_base_value *clone (void) const
+  { return new octave_float_complex (*this); }
 
   // We return an octave_float_complex_matrix object here instead of an
   // octave_float_complex object so that in expressions like A(2,2,2) = 2
   // (for A previously undefined), A will be empty instead of a 1x1
   // object.
   octave_base_value *empty_clone (void) const
-    { return new octave_float_complex_matrix (); }
+  { return new octave_float_complex_matrix (); }
 
   octave_base_value *try_narrowing_conversion (void);
 
@@ -78,11 +79,11 @@ public:
                             bool resize_ok = false);
 
   octave_value any (int = 0) const
-    {
-      return (scalar != FloatComplex (0, 0)
-              && ! (lo_ieee_isnan (std::real (scalar))
-                    || lo_ieee_isnan (std::imag (scalar))));
-    }
+  {
+    return (scalar != FloatComplex (0, 0)
+            && ! (lo_ieee_isnan (std::real (scalar))
+                  || lo_ieee_isnan (std::imag (scalar))));
+  }
 
   builtin_type_t builtin_type (void) const { return btyp_float_complex; }
 
@@ -99,10 +100,10 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   float float_scalar_value (bool frc_str_conv = false) const
-    { return float_value (frc_str_conv); }
+  { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 
@@ -113,10 +114,10 @@ public:
   FloatNDArray float_array_value (bool = false) const;
 
   SparseMatrix sparse_matrix_value (bool = false) const
-    { return SparseMatrix (matrix_value ()); }
+  { return SparseMatrix (matrix_value ()); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-    { return SparseComplexMatrix (complex_matrix_value ()); }
+  { return SparseComplexMatrix (complex_matrix_value ()); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -176,11 +177,11 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    {
-      // Yes, for compatibility, we drop the imaginary part here.
-      return os.write (array_value (true), block_size, output_type,
-                       skip, flt_fmt);
-    }
+  {
+    // Yes, for compatibility, we drop the imaginary part here.
+    return os.write (array_value (true), block_size, output_type,
+                     skip, flt_fmt);
+  }
 
   mxArray *as_mxArray (void) const;
 

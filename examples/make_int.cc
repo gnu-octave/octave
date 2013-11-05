@@ -72,10 +72,10 @@ public:
   bool is_numeric_type (void) const { return true; }
 
   bool valid_as_scalar_index (void) const
-    { return scalar == 1; }
+  { return scalar == 1; }
 
   bool valid_as_zero_index (void) const
-    { return scalar == 0; }
+  { return scalar == 0; }
 
   bool is_true (void) const { return (scalar != 0); }
 
@@ -88,7 +88,7 @@ public:
   Complex complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return  ComplexMatrix (1, 1, Complex (scalar)); }
+  { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
   octave_value gnot (void) const { return octave_value ((double) ! scalar); }
 
@@ -231,7 +231,7 @@ DEFBINOP_OP (el_and, integer, integer, &&)
 DEFBINOP_OP (el_or, integer, integer, ||)
 
 DEFUN_DLD (make_int, args, ,
-  "int_val = make_int (val)\n\
+           "int_val = make_int (val)\n\
 \n\
 Creates an integer variable from VAL.")
 {
@@ -243,7 +243,7 @@ Creates an integer variable from VAL.")
       mlock ();
 
       octave_stdout << "installing integer type at type-id = "
-           << octave_integer::static_type_id () << "\n";
+                    << octave_integer::static_type_id () << "\n";
 
       INSTALL_UNOP (op_not, octave_integer, gnot);
       INSTALL_UNOP (op_uminus, octave_integer, uminus);
@@ -289,7 +289,7 @@ Creates an integer variable from VAL.")
 }
 
 DEFUN_DLD (doit, args, ,
-  "doit (I)")
+           "doit (I)")
 {
   octave_value_list retval;
 

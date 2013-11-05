@@ -57,10 +57,10 @@ signals:
 private slots:
 
   void handle_double_click (QModelIndex modelIndex);
-  void handle_contextmenu_copy(bool flag);
-  void handle_contextmenu_evaluate(bool flag);
-  void handle_contextmenu_create_script(bool flag);
-  void ctxMenu(const QPoint &pos);
+  void handle_contextmenu_copy (bool flag);
+  void handle_contextmenu_evaluate (bool flag);
+  void handle_contextmenu_create_script (bool flag);
+  void ctxMenu (const QPoint &pos);
 
   void copyClipboard ();
   void pasteClipboard ();

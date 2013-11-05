@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_errno_h)
-#define octave_errno_h 1
+#if !defined (octave_oct_errno_h)
+#define octave_oct_errno_h 1
 
 #include <cerrno>
 #include <map>

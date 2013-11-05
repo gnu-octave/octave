@@ -259,7 +259,8 @@ Returns -1 in case of error.
 template <class T>
 template <class Comp>
 octave_idx_type
-octave_sort<T>::count_run (T *lo, octave_idx_type nel, bool& descending, Comp comp)
+octave_sort<T>::count_run (T *lo, octave_idx_type nel, bool& descending,
+                           Comp comp)
 {
   octave_idx_type n;
   T *hi = lo + nel;
@@ -318,7 +319,8 @@ Returns -1 on error.  See listsort.txt for info on the method.
 template <class T>
 template <class Comp>
 octave_idx_type
-octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint,
+octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n,
+                             octave_idx_type hint,
                              Comp comp)
 {
   octave_idx_type ofs;
@@ -412,7 +414,8 @@ written as one routine with yet another "left or right?" flag.
 template <class T>
 template <class Comp>
 octave_idx_type
-octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint,
+octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n,
+                              octave_idx_type hint,
                               Comp comp)
 {
   octave_idx_type ofs;
@@ -691,15 +694,15 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na,
       ms->min_gallop = min_gallop;
     }
 
- Succeed:
+Succeed:
   result = 0;
 
- Fail:
+Fail:
   if (na)
     std::copy (pa, pa + na, dest);
   return result;
 
- CopyB:
+CopyB:
   /* The last element of pa belongs at the end of the merge. */
   std::copy (pb, pb + nb, dest);
   dest[nb] = *pa;
@@ -827,10 +830,10 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
       ms->min_gallop = min_gallop;
     }
 
- Succeed:
+Succeed:
   result = 0;
 
- Fail:
+Fail:
   if (na)
     {
       std::copy (pa, pa + na, dest);
@@ -838,7 +841,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type *ipa, octave_idx_type na,
     }
   return result;
 
- CopyB:
+CopyB:
   /* The last element of pa belongs at the end of the merge. */
   std::copy (pb, pb + nb, dest);
   std::copy (ipb, ipb + nb, idest);
@@ -1416,7 +1419,8 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
           /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
-              const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
+              const octave_idx_type force = nremaining <= minrun ? nremaining
+                                                                 : minrun;
               binarysort (data + lo, force, n, comp);
               n = force;
             }
@@ -1478,7 +1482,8 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
           /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
-              const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
+              const octave_idx_type force = nremaining <= minrun ? nremaining
+                                                                 : minrun;
               binarysort (data + lo, idx + lo, force, n, comp);
               n = force;
             }
@@ -1514,10 +1519,10 @@ octave_sort<T>::sort (T *data, octave_idx_type nel)
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       sort (data, nel, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      sort (data, nel, compare);
+      if (compare)
+        sort (data, nel, compare);
 }
 
 template <class T>
@@ -1532,10 +1537,10 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel)
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       sort (data, idx, nel, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      sort (data, idx, nel, compare);
+      if (compare)
+        sort (data, idx, nel, compare);
 }
 
 template <class T> template <class Comp>
@@ -1571,10 +1576,10 @@ octave_sort<T>::is_sorted (const T *data, octave_idx_type nel)
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       retval = is_sorted (data, nel, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      retval = is_sorted (data, nel, compare);
+      if (compare)
+        retval = is_sorted (data, nel, compare);
 
   return retval;
 }
@@ -1659,10 +1664,10 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       sort_rows (data, idx, rows, cols, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      sort_rows (data, idx, rows, cols, compare);
+      if (compare)
+        sort_rows (data, idx, rows, cols, compare);
 }
 
 template <class T> template <class Comp>
@@ -1695,7 +1700,7 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
               if (comp (*lst, *lo))
                 {
                   if (lo > lst + 1)
-                      runs.push (run_t (lst + rows, lo - lst));
+                    runs.push (run_t (lst + rows, lo - lst));
                   lst = lo;
                 }
               else if (comp (*lo, *lst))
@@ -1736,10 +1741,10 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       retval = is_sorted_rows (data, rows, cols, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      retval = is_sorted_rows (data, rows, cols, compare);
+      if (compare)
+        retval = is_sorted_rows (data, rows, cols, compare);
 
   return retval;
 }
@@ -1780,10 +1785,10 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       retval = lookup (data, nel, value, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      retval = lookup (data, nel, value, std::ptr_fun (compare));
+      if (compare)
+        retval = lookup (data, nel, value, std::ptr_fun (compare));
 
   return retval;
 }
@@ -1815,10 +1820,10 @@ octave_sort<T>::lookup (const T *data, octave_idx_type nel,
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       lookup (data, nel, values, nvalues, idx, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      lookup (data, nel, values, nvalues, idx, std::ptr_fun (compare));
+      if (compare)
+        lookup (data, nel, values, nvalues, idx, std::ptr_fun (compare));
 }
 
 template <class T> template <class Comp>
@@ -1887,10 +1892,11 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       lookup_sorted (data, nel, values, nvalues, idx, rev, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      lookup_sorted (data, nel, values, nvalues, idx, rev, std::ptr_fun (compare));
+      if (compare)
+        lookup_sorted (data, nel, values, nvalues, idx, rev,
+                       std::ptr_fun (compare));
 }
 
 template <class T> template <class Comp>
@@ -1934,10 +1940,10 @@ octave_sort<T>::nth_element (T *data, octave_idx_type nel,
 #ifdef INLINE_DESCENDING_SORT
     if (compare == descending_compare)
       nth_element (data, nel, lo, up, std::greater<T> ());
-  else
+    else
 #endif
-    if (compare)
-      nth_element (data, nel, lo, up, std::ptr_fun (compare));
+      if (compare)
+        nth_element (data, nel, lo, up, std::ptr_fun (compare));
 }
 
 template <class T>

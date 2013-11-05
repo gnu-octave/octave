@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_eval_h)
-#define octave_tree_eval_h 1
+#if !defined (octave_pt_eval_h)
+#define octave_pt_eval_h 1
 
 #include <stack>
 #include <string>

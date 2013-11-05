@@ -46,8 +46,8 @@ public:
 
   MSparse (octave_idx_type n, octave_idx_type m) : Sparse<T> (n, m) { }
 
-  MSparse (const dim_vector& dv, octave_idx_type nz = 0) :
-    Sparse<T> (dv, nz) { }
+  MSparse (const dim_vector& dv, octave_idx_type nz = 0)
+    : Sparse<T> (dv, nz) { }
 
   MSparse (const MSparse<T>& a) : Sparse<T> (a) { }
 
@@ -63,19 +63,21 @@ public:
            bool sum_terms = true, octave_idx_type nzm = -1)
     : Sparse<T> (a, r, c, nr, nc, sum_terms, nzm) { }
 
-  explicit MSparse (octave_idx_type r, octave_idx_type c, T val) : Sparse<T> (r, c, val) { }
+  explicit MSparse (octave_idx_type r, octave_idx_type c, T val)
+    : Sparse<T> (r, c, val) { }
 
   explicit MSparse (const PermMatrix& a) : Sparse<T>(a) { }
 
-  MSparse (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz) : Sparse<T> (r, c, num_nz) { }
+  MSparse (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz)
+    : Sparse<T> (r, c, num_nz) { }
 
   ~MSparse (void) { }
 
   MSparse<T>& operator = (const MSparse<T>& a)
-    {
-      Sparse<T>::operator = (a);
-      return *this;
-    }
+  {
+    Sparse<T>::operator = (a);
+    return *this;
+  }
 
   MSparse<T>& insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   {
@@ -94,14 +96,13 @@ public:
   MSparse<T> squeeze (void) const { return Sparse<T>::squeeze (); }
 
   MSparse<T> reshape (const dim_vector& new_dims) const
-    { return Sparse<T>::reshape (new_dims); }
+  { return Sparse<T>::reshape (new_dims); }
 
   MSparse<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const
-    { return Sparse<T>::permute (vec, inv); }
+  { return Sparse<T>::permute (vec, inv); }
 
   MSparse<T> ipermute (const Array<octave_idx_type>& vec) const
-    { return Sparse<T>::ipermute (vec); }
-
+  { return Sparse<T>::ipermute (vec); }
 
   MSparse<T> diag (octave_idx_type k = 0) const
   {

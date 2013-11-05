@@ -43,17 +43,17 @@ public:
     : base_diff_alg_eqn (xx, xxdot, tt), DAEFunc (f) { }
 
   DAE (const DAE& a)
-    : base_diff_alg_eqn (a), DAEFunc (a){ }
+    : base_diff_alg_eqn (a), DAEFunc (a) { }
 
   DAE& operator = (const DAE& a)
-    {
-      if (this != &a)
-        {
-          base_diff_alg_eqn::operator = (a);
-          DAEFunc::operator = (a);
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        base_diff_alg_eqn::operator = (a);
+        DAEFunc::operator = (a);
+      }
+    return *this;
+  }
 
   virtual ~DAE (void) { }
 };

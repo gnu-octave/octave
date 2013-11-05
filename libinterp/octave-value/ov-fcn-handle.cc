@@ -96,7 +96,8 @@ octave_fcn_handle::subsref (const std::string& type,
 octave_value_list
 octave_fcn_handle::subsref (const std::string& type,
                             const std::list<octave_value_list>& idx,
-                            int nargout, const std::list<octave_lvalue>* lvalue_list)
+                            int nargout,
+                            const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -123,7 +124,7 @@ octave_fcn_handle::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_builtin::subsref.
 
@@ -210,7 +211,8 @@ octave_fcn_handle::do_multi_index_op (int nargout,
       else if (fcn.is_defined ())
         retval = fcn.do_multi_index_op (nargout, args, lvalue_list);
       else
-        error ("%s: no method for class %s", nm.c_str (), dispatch_type.c_str ());
+        error ("%s: no method for class %s",
+               nm.c_str (), dispatch_type.c_str ());
     }
   else
     {
@@ -235,9 +237,11 @@ octave_fcn_handle::is_equal_to (const octave_fcn_handle& h) const
       for (int i = 0; i < btyp_num_types && retval; i++)
         retval = builtin_overloads[i].is_copy_of (h.builtin_overloads[i]);
 
-      str_ov_map::const_iterator iter = overloads.begin (), hiter = h.overloads.begin ();
+      str_ov_map::const_iterator iter = overloads.begin ();
+      str_ov_map::const_iterator hiter = h.overloads.begin ();
       for (; iter != overloads.end () && retval; iter++, hiter++)
-        retval = (iter->first == hiter->first) && (iter->second.is_copy_of (hiter->second));
+        retval = (iter->first == hiter->first)
+                 && (iter->second.is_copy_of (hiter->second));
     }
 
   return retval;
@@ -256,7 +260,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
     {
       // First check if just replacing matlabroot is enough
       std::string str = OCTAVE_EXEC_PREFIX +
-        fpath.substr (octaveroot.length ());
+                        fpath.substr (octaveroot.length ());
       file_stat fs (str);
 
       if (fs.exists ())
@@ -372,8 +376,8 @@ octave_fcn_handle::save_ascii (std::ostream& os)
         {
           os << "# length: " << varlen << "\n";
 
-          for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-               p != vars.end (); p++)
+          for (std::list<symbol_table::symbol_record>::const_iterator
+               p = vars.begin (); p != vars.end (); p++)
             {
               if (! save_ascii_data (os, p->varval (0), p->name (), false, 0))
                 return os;
@@ -547,8 +551,8 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       if (varlen > 0)
         {
-          for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-               p != vars.end (); p++)
+          for (std::list<symbol_table::symbol_record>::const_iterator
+               p = vars.begin (); p != vars.end (); p++)
             {
               if (! save_binary_data (os, p->varval (0), p->name (),
                                       "", 0, save_as_floats))
@@ -696,7 +700,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
         }
 
       success = set_fcn (octaveroot, fpath);
-     }
+    }
 
   return success;
 }
@@ -824,7 +828,8 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
           else
             retval = false;
 #if HAVE_HDF5_18
-          data_hid = H5Gcreate (group_hid, "symbol table", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+          data_hid = H5Gcreate (group_hid, "symbol table",
+                                H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else
           data_hid = H5Gcreate (group_hid, "symbol table", 0);
 #endif
@@ -836,8 +841,8 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
               return false;
             }
 
-          for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-               p != vars.end (); p++)
+          for (std::list<symbol_table::symbol_record>::const_iterator
+               p = vars.begin (); p != vars.end (); p++)
             {
               if (! add_hdf5_data (data_hid, p->varval (0), p->name (),
                                    "", false, save_as_floats))
@@ -1432,7 +1437,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
   // Bow to the god of compatibility.
 
-  // FIXME -- it seems ugly to put this here, but there is no single
+  // FIXME: it seems ugly to put this here, but there is no single
   // function in the parser that converts from the operator name to
   // the corresponding function name.  At least try to do it without N
   // string compares.
@@ -1653,7 +1658,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 */
 
 DEFUN (functions, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} functions (@var{fcn_handle})\n\
 Return a struct containing information about the function handle\n\
 @var{fcn_handle}.\n\
@@ -1719,8 +1724,8 @@ Return a struct containing information about the function handle\n\
                   if (varlen > 0)
                     {
                       octave_scalar_map ws;
-                      for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-                           p != vars.end (); p++)
+                      for (std::list<symbol_table::symbol_record>::const_iterator
+                           p = vars.begin (); p != vars.end (); p++)
                         {
                           ws.assign (p->name (), p->varval (0));
                         }
@@ -1751,7 +1756,7 @@ Return a struct containing information about the function handle\n\
 }
 
 DEFUN (func2str, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} func2str (@var{fcn_handle})\n\
 Return a string containing the name of the function referenced by\n\
 the function handle @var{fcn_handle}.\n\
@@ -1788,7 +1793,7 @@ the function handle @var{fcn_handle}.\n\
 }
 
 DEFUN (str2func, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} str2func (@var{fcn_name})\n\
 @deftypefnx {Built-in Function} {} str2func (@var{fcn_name}, \"global\")\n\
 Return a function handle constructed from the string @var{fcn_name}.\n\
@@ -1831,7 +1836,7 @@ functions are ignored in the lookup.\n\
 */
 
 DEFUN (is_function_handle, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_function_handle (@var{x})\n\
 Return true if @var{x} is a function handle.\n\
 @seealso{isa, typeinfo, class}\n\
@@ -1866,8 +1871,8 @@ octave_fcn_binder::octave_fcn_binder (const octave_value& f,
                                       const octave_value_list& templ,
                                       const std::vector<int>& mask,
                                       int exp_nargin)
-: octave_fcn_handle (f), root_handle (root), arg_template (templ),
-  arg_mask (mask), expected_nargin (exp_nargin)
+  : octave_fcn_handle (f), root_handle (root), arg_template (templ),
+    arg_mask (mask), expected_nargin (exp_nargin)
 {
 }
 
@@ -1890,7 +1895,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
       && ! (param_list && param_list->takes_varargs ()))
     {
       // It's an index expression.
-      tree_index_expression *idx_expr = dynamic_cast<tree_index_expression *> (body_expr);
+      tree_index_expression *idx_expr = dynamic_cast<tree_index_expression *>
+                                        (body_expr);
       tree_expression *head_expr = idx_expr->expression ();
       std::list<tree_argument_list *> arg_lists = idx_expr->arg_lists ();
       std::string type_tags = idx_expr->type_tags ();
@@ -1901,7 +1907,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
           assert (arg_lists.size () == 1);
 
           // It's a single index expression: a(x,y,....)
-          tree_identifier *head_id = dynamic_cast<tree_identifier *> (head_expr);
+          tree_identifier *head_id =
+            dynamic_cast<tree_identifier *> (head_expr);
           tree_argument_list *arg_list = arg_lists.front ();
 
           // Build a map of input params to their position.
@@ -1916,7 +1923,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                   tree_decl_elt *elt = *it;
                   tree_identifier *id = elt ? elt->ident () : 0;
                   if (id && ! id->is_black_hole ())
-                     arginmap[id->name ()] = npar;
+                    arginmap[id->name ()] = npar;
                 }
             }
 
@@ -1927,7 +1934,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
               octave_value_list arg_template (nargs);
               std::vector<int> arg_mask (nargs);
 
-              // Verify that each argument is either a named param, a constant, or a defined identifier.
+              // Verify that each argument is either a named param, a constant,
+              // or a defined identifier.
               int iarg = 0;
               for (tree_argument_list::iterator it = arg_list->begin ();
                    it != arg_list->end (); ++it, ++iarg)
@@ -1940,7 +1948,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                     }
                   else if (elt && elt->is_identifier ())
                     {
-                      tree_identifier *elt_id = dynamic_cast<tree_identifier *> (elt);
+                      tree_identifier *elt_id =
+                        dynamic_cast<tree_identifier *> (elt);
                       if (arginmap.find (elt_id->name ()) != arginmap.end ())
                         {
                           arg_mask[iarg] = arginmap[elt_id->name ()];
@@ -1969,7 +1978,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                 {
                   // If the head is a value, use it as root.
                   if (head_id->is_defined ())
-                     root_val = head_id->rvalue1 ();
+                    root_val = head_id->rvalue1 ();
                   else
                     {
                       // It's a name.
@@ -1977,7 +1986,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
                       // Function handles can't handle legacy dispatch, so
                       // we make sure it's not defined.
                       if (symbol_table::get_dispatch (head_name).size () > 0)
-                         bad = true;
+                        bad = true;
                       else
                         {
                           // Simulate try/catch.
@@ -1986,7 +1995,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
 
                           root_val = make_fcn_handle (head_name);
                           if (error_state)
-                             bad = true;
+                            bad = true;
                         }
                     }
                 }
@@ -2006,7 +2015,7 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
     }
 
   if (! retval)
-     retval = new octave_fcn_handle (f, octave_fcn_handle::anonymous);
+    retval = new octave_fcn_handle (f, octave_fcn_handle::anonymous);
 
   return retval;
 }
@@ -2031,16 +2040,16 @@ octave_fcn_binder::do_multi_index_op (int nargout,
         {
           int j = arg_mask[i];
           if (j >= 0)
-             arg_template(i) = args(j); // May force a copy...
+            arg_template(i) = args(j); // May force a copy...
         }
 
-      // Make a shallow copy of arg_template, to ensure consistency throughout the following
-      // call even if we happen to get back here.
+      // Make a shallow copy of arg_template, to ensure consistency throughout
+      // the following call even if we happen to get back here.
       octave_value_list tmp (arg_template);
       retval = root_handle.do_multi_index_op (nargout, tmp, lvalue_list);
     }
   else
-     retval = octave_fcn_handle::do_multi_index_op (nargout, args, lvalue_list);
+    retval = octave_fcn_handle::do_multi_index_op (nargout, args, lvalue_list);
 
   return retval;
 }

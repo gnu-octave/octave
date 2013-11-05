@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_float_EIG_h)
-#define octave_float_EIG_h 1
+#if !defined (octave_fEIG_h)
+#define octave_fEIG_h 1
 
 #include <iosfwd>
 
@@ -33,8 +33,8 @@ class
 OCTAVE_API
 FloatEIG
 {
-friend class FloatMatrix;
-friend class FloatComplexMatrix;
+  friend class FloatMatrix;
+  friend class FloatComplexMatrix;
 
 public:
 
@@ -98,14 +98,14 @@ public:
   FloatEIG (const FloatEIG& a) : lambda (a.lambda), v (a.v) { }
 
   FloatEIG& operator = (const FloatEIG& a)
-    {
-      if (this != &a)
-        {
-          lambda = a.lambda;
-          v = a.v;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        lambda = a.lambda;
+        v = a.v;
+      }
+    return *this;
+  }
 
   ~FloatEIG (void) { }
 
@@ -121,14 +121,20 @@ private:
   FloatComplexMatrix v;
 
   octave_idx_type init (const FloatMatrix& a, bool calc_eigenvectors);
-  octave_idx_type init (const FloatMatrix& a, const FloatMatrix& b, bool calc_eigenvectors);
+  octave_idx_type init (const FloatMatrix& a, const FloatMatrix& b,
+                        bool calc_eigenvectors);
   octave_idx_type init (const FloatComplexMatrix& a, bool calc_eigenvectors);
-  octave_idx_type init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_eigenvectors);
+  octave_idx_type init (const FloatComplexMatrix& a,
+                        const FloatComplexMatrix& b, bool calc_eigenvectors);
 
   octave_idx_type symmetric_init (const FloatMatrix& a, bool calc_eigenvectors);
-  octave_idx_type symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_eigenvectors);
-  octave_idx_type hermitian_init (const FloatComplexMatrix& a, bool calc_eigenvectors);
-  octave_idx_type hermitian_init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_eigenvectors);
+  octave_idx_type symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
+                                  bool calc_eigenvectors);
+  octave_idx_type hermitian_init (const FloatComplexMatrix& a,
+                                  bool calc_eigenvectors);
+  octave_idx_type hermitian_init (const FloatComplexMatrix& a,
+                                  const FloatComplexMatrix& b,
+                                  bool calc_eigenvectors);
 };
 
 #endif

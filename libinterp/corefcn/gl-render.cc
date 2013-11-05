@@ -62,16 +62,16 @@ protected:
         count (1) { }
 
     ~texture_rep (void)
-      {
-        if (valid)
-          glDeleteTextures (1, &id);
-      }
+    {
+      if (valid)
+        glDeleteTextures (1, &id);
+    }
 
     void bind (int mode) const
-      { if (valid) glBindTexture (mode, id); }
+    { if (valid) glBindTexture (mode, id); }
 
     void tex_coord (double q, double r) const
-      { if (valid) glTexCoord2d (q*tx, r*ty); }
+    { if (valid) glTexCoord2d (q*tx, r*ty); }
 
     GLuint id;
     int w, h;
@@ -91,37 +91,37 @@ public:
 
   opengl_texture (const opengl_texture& tx)
     : rep (tx.rep)
-    {
-      rep->count++;
-    }
+  {
+    rep->count++;
+  }
 
   ~opengl_texture (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   opengl_texture& operator = (const opengl_texture& tx)
-    {
-      if (--rep->count == 0)
-        delete rep;
+  {
+    if (--rep->count == 0)
+      delete rep;
 
-      rep = tx.rep;
-      rep->count++;
+    rep = tx.rep;
+    rep->count++;
 
-      return *this;
-    }
+    return *this;
+  }
 
   static opengl_texture create (const octave_value& data);
 
   void bind (int mode = GL_TEXTURE_2D) const
-    { rep->bind (mode); }
+  { rep->bind (mode); }
 
   void tex_coord (double q, double r) const
-    { rep->tex_coord (q, r); }
+  { rep->tex_coord (q, r); }
 
   bool is_valid (void) const
-    { return rep->valid; }
+  { return rep->valid; }
 };
 
 static int
@@ -232,27 +232,27 @@ public:
   opengl_tesselator (void) : glu_tess (0), fill () { init (); }
 
   virtual ~opengl_tesselator (void)
-    { if (glu_tess) gluDeleteTess (glu_tess); }
+  { if (glu_tess) gluDeleteTess (glu_tess); }
 
   void begin_polygon (bool filled = true)
-    {
-      gluTessProperty (glu_tess, GLU_TESS_BOUNDARY_ONLY,
-                       (filled ? GL_FALSE : GL_TRUE));
-      fill = filled;
-      gluTessBeginPolygon (glu_tess, this);
-    }
+  {
+    gluTessProperty (glu_tess, GLU_TESS_BOUNDARY_ONLY,
+                     (filled ? GL_FALSE : GL_TRUE));
+    fill = filled;
+    gluTessBeginPolygon (glu_tess, this);
+  }
 
   void end_polygon (void) const
-    { gluTessEndPolygon (glu_tess); }
+  { gluTessEndPolygon (glu_tess); }
 
   void begin_contour (void) const
-    { gluTessBeginContour (glu_tess); }
+  { gluTessBeginContour (glu_tess); }
 
   void end_contour (void) const
-    { gluTessEndContour (glu_tess); }
+  { gluTessEndContour (glu_tess); }
 
   void add_vertex (double *loc, void *data) const
-    { gluTessVertex (glu_tess, loc, data); }
+  { gluTessVertex (glu_tess, loc, data); }
 
 protected:
   virtual void begin (GLenum /*type*/) { }
@@ -267,47 +267,47 @@ protected:
   virtual void edge_flag (GLboolean /*flag*/) { }
 
   virtual void error (GLenum err)
-    { ::error ("OpenGL tesselation error (%d)", err); }
+  { ::error ("OpenGL tesselation error (%d)", err); }
 
   virtual void init (void)
-    {
-      glu_tess = gluNewTess ();
+  {
+    glu_tess = gluNewTess ();
 
-      gluTessCallback (glu_tess, GLU_TESS_BEGIN_DATA,
-                       reinterpret_cast<fcn> (tess_begin));
-      gluTessCallback (glu_tess, GLU_TESS_END_DATA,
-                       reinterpret_cast<fcn> (tess_end));
-      gluTessCallback (glu_tess, GLU_TESS_VERTEX_DATA,
-                       reinterpret_cast<fcn> (tess_vertex));
-      gluTessCallback (glu_tess, GLU_TESS_COMBINE_DATA,
-                       reinterpret_cast<fcn> (tess_combine));
-      gluTessCallback (glu_tess, GLU_TESS_EDGE_FLAG_DATA,
-                       reinterpret_cast<fcn> (tess_edge_flag));
-      gluTessCallback (glu_tess, GLU_TESS_ERROR_DATA,
-                       reinterpret_cast<fcn> (tess_error));
-    }
+    gluTessCallback (glu_tess, GLU_TESS_BEGIN_DATA,
+                     reinterpret_cast<fcn> (tess_begin));
+    gluTessCallback (glu_tess, GLU_TESS_END_DATA,
+                     reinterpret_cast<fcn> (tess_end));
+    gluTessCallback (glu_tess, GLU_TESS_VERTEX_DATA,
+                     reinterpret_cast<fcn> (tess_vertex));
+    gluTessCallback (glu_tess, GLU_TESS_COMBINE_DATA,
+                     reinterpret_cast<fcn> (tess_combine));
+    gluTessCallback (glu_tess, GLU_TESS_EDGE_FLAG_DATA,
+                     reinterpret_cast<fcn> (tess_edge_flag));
+    gluTessCallback (glu_tess, GLU_TESS_ERROR_DATA,
+                     reinterpret_cast<fcn> (tess_error));
+  }
 
   bool is_filled (void) const { return fill; }
 
 private:
   static void CALLBACK tess_begin (GLenum type, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->begin (type); }
+  { reinterpret_cast<opengl_tesselator *> (t)->begin (type); }
 
   static void CALLBACK tess_end (void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->end (); }
+  { reinterpret_cast<opengl_tesselator *> (t)->end (); }
 
   static void CALLBACK tess_vertex (void *v, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->vertex (v); }
+  { reinterpret_cast<opengl_tesselator *> (t)->vertex (v); }
 
   static void CALLBACK tess_combine (GLdouble c[3], void *v[4], GLfloat w[4],
                                      void **out,  void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->combine (c, v, w, out); }
+  { reinterpret_cast<opengl_tesselator *> (t)->combine (c, v, w, out); }
 
   static void CALLBACK tess_edge_flag (GLboolean flag, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->edge_flag (flag); }
+  { reinterpret_cast<opengl_tesselator *> (t)->edge_flag (flag); }
 
   static void CALLBACK tess_error (GLenum err, void *t)
-    { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
+  { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
 
 private:
 
@@ -355,43 +355,43 @@ private:
   vertex_data_rep *rep;
 
   vertex_data_rep *nil_rep (void) const
-    {
-      static vertex_data_rep *nr = new vertex_data_rep ();
+  {
+    static vertex_data_rep *nr = new vertex_data_rep ();
 
-      return nr;
-    }
+    return nr;
+  }
 
 public:
   vertex_data (void) : rep (nil_rep ())
-    { rep->count++; }
+  { rep->count++; }
 
   vertex_data (const vertex_data& v) : rep (v.rep)
-    { rep->count++; }
+  { rep->count++; }
 
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
                double a, float as, float ds, float ss, float se)
     : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
-    { }
+  { }
 
   vertex_data (vertex_data_rep *new_rep)
     : rep (new_rep) { }
 
   ~vertex_data (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   vertex_data& operator = (const vertex_data& v)
-    {
-      if (--rep->count == 0)
-        delete rep;
+  {
+    if (--rep->count == 0)
+      delete rep;
 
-      rep = v.rep;
-      rep->count++;
+    rep = v.rep;
+    rep->count++;
 
-      return *this;
-    }
+    return *this;
+  }
 
   vertex_data_rep *get_rep (void) const { return rep; }
 };
@@ -408,118 +408,118 @@ public:
 
 protected:
   void begin (GLenum type)
-    {
-      //printf ("patch_tesselator::begin (%d)\n", type);
-      first = true;
+  {
+    //printf ("patch_tesselator::begin (%d)\n", type);
+    first = true;
 
-      if (color_mode == 2 || light_mode == 2)
-        glShadeModel (GL_SMOOTH);
-      else
-        glShadeModel (GL_FLAT);
+    if (color_mode == 2 || light_mode == 2)
+      glShadeModel (GL_SMOOTH);
+    else
+      glShadeModel (GL_FLAT);
 
-      if (is_filled ())
-        renderer->set_polygon_offset (true, 1+index);
+    if (is_filled ())
+      renderer->set_polygon_offset (true, 1+index);
 
-      glBegin (type);
-    }
+    glBegin (type);
+  }
 
   void end (void)
-    {
-      //printf ("patch_tesselator::end\n");
-      glEnd ();
-      renderer->set_polygon_offset (false);
-    }
+  {
+    //printf ("patch_tesselator::end\n");
+    glEnd ();
+    renderer->set_polygon_offset (false);
+  }
 
   void vertex (void *data)
-    {
-      vertex_data::vertex_data_rep *v
-          = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
-      //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
+  {
+    vertex_data::vertex_data_rep *v
+      = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
+    //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
-      // FIXME: why did I need to keep the first vertex of the face
-      // in JHandles? I think it's related to the fact that the
-      // tessellation process might re-order the vertices, such that
-      // the first one you get here might not be the first one of the face;
-      // but I can't figure out the actual reason.
-      if (color_mode > 0 && (first || color_mode == 2))
-        {
-          Matrix col = v->color;
+    // FIXME: why did I need to keep the first vertex of the face
+    // in JHandles? I think it's related to the fact that the
+    // tessellation process might re-order the vertices, such that
+    // the first one you get here might not be the first one of the face;
+    // but I can't figure out the actual reason.
+    if (color_mode > 0 && (first || color_mode == 2))
+      {
+        Matrix col = v->color;
 
-          if (col.numel () == 3)
-            {
-              glColor3dv (col.data ());
-              if (light_mode > 0)
-                {
-                  float buf[4] = { 0, 0, 0, 1 };
+        if (col.numel () == 3)
+          {
+            glColor3dv (col.data ());
+            if (light_mode > 0)
+              {
+                float buf[4] = { 0, 0, 0, 1 };
 
-                  for (int k = 0; k < 3; k++)
-                    buf[k] = (v->ambient * col(k));
-                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+                for (int k = 0; k < 3; k++)
+                  buf[k] = (v->ambient * col(k));
+                glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
 
-                  for (int k = 0; k < 3; k++)
-                    buf[k] = (v->diffuse * col(k));
-                  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
-                }
-            }
-        }
+                for (int k = 0; k < 3; k++)
+                  buf[k] = (v->diffuse * col(k));
+                glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+              }
+          }
+      }
 
-      if (light_mode > 0 && (first || light_mode == 2))
-        glNormal3dv (v->normal.data ());
+    if (light_mode > 0 && (first || light_mode == 2))
+      glNormal3dv (v->normal.data ());
 
-      glVertex3dv (v->coords.data ());
+    glVertex3dv (v->coords.data ());
 
-      first = false;
-    }
+    first = false;
+  }
 
   void combine (GLdouble xyz[3], void *data[4], GLfloat w[4],
                 void **out_data)
-    {
-      //printf ("patch_tesselator::combine\n");
+  {
+    //printf ("patch_tesselator::combine\n");
 
-      vertex_data::vertex_data_rep *v[4];
-      int vmax = 4;
+    vertex_data::vertex_data_rep *v[4];
+    int vmax = 4;
 
-      for (int i = 0; i < 4; i++)
-        {
-          v[i] = reinterpret_cast<vertex_data::vertex_data_rep *> (data[i]);
+    for (int i = 0; i < 4; i++)
+      {
+        v[i] = reinterpret_cast<vertex_data::vertex_data_rep *> (data[i]);
 
-          if (vmax == 4 && ! v[i])
-            vmax = i;
-        }
+        if (vmax == 4 && ! v[i])
+          vmax = i;
+      }
 
-      Matrix vv (1, 3, 0.0);
-      Matrix cc;
-      Matrix nn (1, 3, 0.0);
-      double aa = 0.0;
+    Matrix vv (1, 3, 0.0);
+    Matrix cc;
+    Matrix nn (1, 3, 0.0);
+    double aa = 0.0;
 
-      vv(0) = xyz[0];
-      vv(1) = xyz[1];
-      vv(2) = xyz[2];
+    vv(0) = xyz[0];
+    vv(1) = xyz[1];
+    vv(2) = xyz[2];
 
-      if (v[0]->color.numel ())
-        {
-          cc.resize (1, 3, 0.0);
-          for (int ic = 0; ic < 3; ic++)
-            for (int iv = 0; iv < vmax; iv++)
-              cc(ic) += (w[iv] * v[iv]->color (ic));
-        }
+    if (v[0]->color.numel ())
+      {
+        cc.resize (1, 3, 0.0);
+        for (int ic = 0; ic < 3; ic++)
+          for (int iv = 0; iv < vmax; iv++)
+            cc(ic) += (w[iv] * v[iv]->color (ic));
+      }
 
-      if (v[0]->normal.numel () > 0)
-        {
-          for (int in = 0; in < 3; in++)
-            for (int iv = 0; iv < vmax; iv++)
-              nn(in) += (w[iv] * v[iv]->normal (in));
-        }
+    if (v[0]->normal.numel () > 0)
+      {
+        for (int in = 0; in < 3; in++)
+          for (int iv = 0; iv < vmax; iv++)
+            nn(in) += (w[iv] * v[iv]->normal (in));
+      }
 
-      for (int iv = 0; iv < vmax; iv++)
-        aa += (w[iv] * v[iv]->alpha);
+    for (int iv = 0; iv < vmax; iv++)
+      aa += (w[iv] * v[iv]->alpha);
 
-      vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
-                         v[0]->specular, v[0]->specular_exp);
-      tmp_vdata.push_back (new_v);
+    vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
+                       v[0]->specular, v[0]->specular_exp);
+    tmp_vdata.push_back (new_v);
 
-      *out_data = new_v.get_rep ();
-    }
+    *out_data = new_v.get_rep ();
+  }
 
 private:
 
@@ -600,7 +600,7 @@ opengl_renderer::draw_uipanel (const uipanel::properties& props,
   const figure::properties& figProps =
     dynamic_cast<const figure::properties&> (fig.get_properties ());
 
-  // Initialize OpenGL context 
+  // Initialize OpenGL context
 
   init_gl_context (figProps.is___enhanced__ (),
                    props.get_backgroundcolor_rgb ());
@@ -996,7 +996,8 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       std::string gridstyle = props.get_gridlinestyle ();
       std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
-      bool do_xminorgrid = (props.is_xminorgrid () && (minorgridstyle != "none"));
+      bool do_xminorgrid = (props.is_xminorgrid ()
+                            && (minorgridstyle != "none"));
       bool do_xminortick = props.is_xminortick ();
       Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
       Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
@@ -1103,7 +1104,8 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       std::string gridstyle = props.get_gridlinestyle ();
       std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
-      bool do_yminorgrid = (props.is_yminorgrid () && (minorgridstyle != "none"));
+      bool do_yminorgrid = (props.is_yminorgrid ()
+                            && (minorgridstyle != "none"));
       bool do_yminortick = props.is_yminortick ();
       Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
       Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
@@ -1201,7 +1203,8 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       std::string gridstyle = props.get_gridlinestyle ();
       std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
-      bool do_zminorgrid = (props.is_zminorgrid () && (minorgridstyle != "none"));
+      bool do_zminorgrid = (props.is_zminorgrid ()
+                            && (minorgridstyle != "none"));
       bool do_zminortick = props.is_zminortick ();
       Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
       Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
@@ -1403,10 +1406,10 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   if (x_max > floatmax || y_max > floatmax || z_max > floatmax
       || x_min < -floatmax || y_min < -floatmax || z_min < -floatmax)
-  {
-    warning ("gl-render: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
-    return;
-  }
+    {
+      warning ("gl-render: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
+      return;
+    }
 
   setup_opengl_transformation (props);
 
@@ -1436,7 +1439,9 @@ opengl_renderer::draw_line (const line::properties& props)
   Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
 
   bool has_z = (z.numel () > 0);
-  int n = static_cast<int> (std::min (std::min (x.numel (), y.numel ()), (has_z ? z.numel () : std::numeric_limits<int>::max ())));
+  int n = static_cast<int> (std::min (std::min (x.numel (), y.numel ()),
+                                      (has_z ? z.numel ()
+                                             : std::numeric_limits<int>::max ())));
   octave_uint8 clip_mask = (props.is_clipping () ? 0x7F : 0x40), clip_ok (0x40);
 
   std::vector<octave_uint8> clip (n);
@@ -1584,7 +1589,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
   int ea_mode = (props.edgealpha_is_double () ? 0 :
                  (props.edgealpha_is ("flat") ? 1 : 2));
 
-  Matrix fcolor = (fc_mode == 3 ? Matrix (1, 3, 1.0) : props.get_facecolor_rgb ());
+  Matrix fcolor = (fc_mode == 3 ? Matrix (1, 3, 1.0)
+                                : props.get_facecolor_rgb ());
   Matrix ecolor = props.get_edgecolor_rgb ();
 
   float as = props.get_ambientstrength ();
@@ -1705,7 +1711,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
                   // Vertex 1
                   if (fc_mode == 3)
-                    tex.tex_coord (double (i-1) / (zc-1), double (j-1) / (zr-1));
+                    tex.tex_coord (double (i-1) / (zc-1),
+                                   double (j-1) / (zr-1));
                   else if (fc_mode > 0)
                     {
                       // FIXME: is there a smarter way to do this?
@@ -1729,7 +1736,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       d = sqrt (n(j-1,i-1,0) * n(j-1,i-1,0)
                                 + n(j-1,i-1,1) * n(j-1,i-1,1)
                                 + n(j-1,i-1,2) * n(j-1,i-1,2));
-                      glNormal3d (n(j-1,i-1,0)/d, n(j-1,i-1,1)/d, n(j-1,i-1,2)/d);
+                      glNormal3d (n(j-1,i-1,0)/d,
+                                  n(j-1,i-1,1)/d,
+                                  n(j-1,i-1,2)/d);
                     }
                   glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
@@ -2276,7 +2285,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
           }
 
         vdata[i+j*fr] =
-            vertex_data (vv, cc, nn, aa, as, ds, ss, se);
+          vertex_data (vv, cc, nn, aa, as, ds, ss, se);
       }
 
   if (fl_mode > 0 || el_mode > 0)
@@ -2387,7 +2396,8 @@ opengl_renderer::draw_patch (const patch::properties &props)
                     {
                       if (! clip(int (f(i,j) - 1)))
                         {
-                          vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
+                          vertex_data::vertex_data_rep *vv
+                            = vdata[i+j*fr].get_rep ();
                           const Matrix m = vv->coords;
                           if (! flag)
                             {
@@ -2413,7 +2423,8 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
                   for (int j = 0; j < count_f(i); j++)
                     {
-                      vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
+                      vertex_data::vertex_data_rep *vv
+                        = vdata[i+j*fr].get_rep ();
                       tess.add_vertex (vv->coords.fortran_vec (), vv);
                     }
 
@@ -2434,8 +2445,9 @@ opengl_renderer::draw_patch (const patch::properties &props)
         }
     }
 
-  if (! props.marker_is ("none") &&
-      ! (props.markeredgecolor_is ("none") && props.markerfacecolor_is ("none")))
+  if (! props.marker_is ("none")
+      && ! (props.markeredgecolor_is ("none")
+            && props.markerfacecolor_is ("none")))
     {
       bool do_edge = ! props.markeredgecolor_is ("none");
       bool do_face = ! props.markerfacecolor_is ("none");
@@ -2455,11 +2467,11 @@ opengl_renderer::draw_patch (const patch::properties &props)
               // Single color specifications, we can simplify a little bit
 
               if (mfcolor.numel () == 0
-                   && ! props.markerfacecolor_is ("none"))
+                  && ! props.markerfacecolor_is ("none"))
                 mfcolor = mc;
 
               if (mecolor.numel () == 0
-                   && ! props.markeredgecolor_is ("none"))
+                  && ! props.markeredgecolor_is ("none"))
                 mecolor = mc;
             }
           else
@@ -2467,7 +2479,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
               if (c.numel () == 0)
                 c = props.get_color_data ().matrix_value ();
               has_markerfacecolor = ((c.numel () > 0)
-                                    && (c.rows () == f.rows ()));
+                                     && (c.rows () == f.rows ()));
             }
         }
 
@@ -2494,9 +2506,9 @@ opengl_renderer::draw_patch (const patch::properties &props)
               }
 
             Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor)
-                         : Matrix ());
+                                 : Matrix ());
             Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor)
-                         : Matrix ());
+                                 : Matrix ());
 
             draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
           }
@@ -2621,7 +2633,7 @@ opengl_renderer::draw_image (const image::properties& props)
     {
       GLfloat vp[4];
       glGetFloatv (GL_VIEWPORT, vp);
-      // FIXME -- actually add the code to do it!
+      // FIXME: actually add the code to do it!
 
     }
 
@@ -3069,8 +3081,8 @@ opengl_renderer::text_to_pixels (const std::string& txt,
 
 Matrix
 opengl_renderer::render_text (const std::string& txt,
-                            double x, double y, double z,
-                            int halign, int valign, double rotation)
+                              double x, double y, double z,
+                              int halign, int valign, double rotation)
 {
 #if HAVE_FREETYPE
   if (txt.empty ())

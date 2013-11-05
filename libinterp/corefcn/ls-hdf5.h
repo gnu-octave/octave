@@ -49,52 +49,52 @@ public:
 
   hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0)
     : file_id (-1), current_item (-1)
-    {
-      if (mode & std::ios::in)
-        file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
-      else if (mode & std::ios::out)
-        {
-          if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-            file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
-          else
-            file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT,
-                                 H5P_DEFAULT);
-        }
-      if (file_id < 0)
-        std::ios::setstate (std::ios::badbit);
+  {
+    if (mode & std::ios::in)
+      file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
+    else if (mode & std::ios::out)
+      {
+        if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
+          file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
+        else
+          file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT,
+                               H5P_DEFAULT);
+      }
+    if (file_id < 0)
+      std::ios::setstate (std::ios::badbit);
 
-      current_item = 0;
-    }
+    current_item = 0;
+  }
 
   void close ()
-    {
-      if (file_id >= 0)
-        {
-          if (H5Fclose (file_id) < 0)
-            std::ios::setstate (std::ios::badbit);
-          file_id = -1;
-        }
-    }
+  {
+    if (file_id >= 0)
+      {
+        if (H5Fclose (file_id) < 0)
+          std::ios::setstate (std::ios::badbit);
+        file_id = -1;
+      }
+  }
 
   void open (const char *name, int mode, int)
-    {
-      clear ();
+  {
+    clear ();
 
-      if (mode & std::ios::in)
-        file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
-      else if (mode & std::ios::out)
-        {
-          if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
-            file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
-          else
-            file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT,
-                                 H5P_DEFAULT);
-        }
-      if (file_id < 0)
-        std::ios::setstate (std::ios::badbit);
+    if (mode & std::ios::in)
+      file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
+    else if (mode & std::ios::out)
+      {
+        if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
+          file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
+        else
+          file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT,
+                               H5P_DEFAULT);
+      }
+    if (file_id < 0)
+      std::ios::setstate (std::ios::badbit);
 
-      current_item = 0;
-    }
+    current_item = 0;
+  }
 };
 
 // input and output streams, subclassing istream and ostream
@@ -112,7 +112,7 @@ public:
 
   void open (const char *name, int mode = std::ios::in|std::ios::binary,
              int prot = 0)
-    { hdf5_fstreambase::open (name, mode, prot); }
+  { hdf5_fstreambase::open (name, mode, prot); }
 };
 
 class hdf5_ofstream : public hdf5_fstreambase, public std::ostream
@@ -127,7 +127,7 @@ public:
 
   void open (const char *name, int mode = std::ios::out|std::ios::binary,
              int prot = 0)
-    { hdf5_fstreambase::open (name, mode, prot); }
+  { hdf5_fstreambase::open (name, mode, prot); }
 };
 
 // Callback data structure for passing data to hdf5_read_next_data, below.
@@ -180,7 +180,7 @@ load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d);
 
 extern OCTINTERP_API std::string
 read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
-                octave_value& tc, std::string& doc,								
+                octave_value& tc, std::string& doc,
                 const string_vector& argv, int argv_idx, int argc);
 
 extern OCTINTERP_API bool

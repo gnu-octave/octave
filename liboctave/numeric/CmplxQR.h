@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexQR_h)
-#define octave_ComplexQR_h 1
+#if !defined (octave_CmplxQR_h)
+#define octave_CmplxQR_h 1
 
 #include <iosfwd>
 

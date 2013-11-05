@@ -104,7 +104,7 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
 }
 
 DEFUN (dot, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
 Compute the dot product of two vectors.  If @var{x} and @var{y}\n\
 are matrices, calculate the dot products along the first\n\
@@ -170,7 +170,8 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       FloatComplexNDArray z(dimz);
                       if (! error_state)
-                        F77_XFCN (cdotc3, CDOTC3, (m, n, k, x.data (), y.data (),
+                        F77_XFCN (cdotc3, CDOTC3, (m, n, k,
+                                                   x.data (), y.data (),
                                                    z.fortran_vec ()));
                       retval = z;
                     }
@@ -181,7 +182,8 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       ComplexNDArray z(dimz);
                       if (! error_state)
-                        F77_XFCN (zdotc3, ZDOTC3, (m, n, k, x.data (), y.data (),
+                        F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
+                                                   x.data (), y.data (),
                                                    z.fortran_vec ()));
                       retval = z;
                     }
@@ -263,7 +265,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 */
 
 DEFUN (blkmm, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} blkmm (@var{A}, @var{B})\n\
 Compute products of matrix blocks.  The blocks are given as\n\
 2-dimensional subarrays of the arrays @var{A}, @var{B}.\n\
@@ -317,7 +319,8 @@ endfor\n\
                   FloatComplexNDArray y = argy.float_complex_array_value ();
                   FloatComplexNDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (cmatm3, CMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -327,7 +330,8 @@ endfor\n\
                   ComplexNDArray y = argy.complex_array_value ();
                   ComplexNDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (zmatm3, ZMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -340,7 +344,8 @@ endfor\n\
                   FloatNDArray y = argy.float_array_value ();
                   FloatNDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (smatm3, SMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (smatm3, SMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -350,7 +355,8 @@ endfor\n\
                   NDArray y = argy.array_value ();
                   NDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (dmatm3, DMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }

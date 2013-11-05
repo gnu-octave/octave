@@ -198,7 +198,7 @@ file_editor_tab::set_file_name (const QString& fileName)
 
 void
 file_editor_tab::handle_margin_clicked (int margin, int line,
-                                       Qt::KeyboardModifiers state)
+                                        Qt::KeyboardModifiers state)
 {
   if (margin == 1)
     {
@@ -268,8 +268,9 @@ file_editor_tab::update_lexer ()
           lexer = new QsciLexerDiff ();
         }
       else if (_file_name.isEmpty ()
-                || _file_name.at (_file_name.count () - 1) == '/')
-        { // new, no yet named file: let us assume it is octave
+               || _file_name.at (_file_name.count () - 1) == '/')
+        {
+          // new, no yet named file: let us assume it is octave
 #if defined (HAVE_LEXER_OCTAVE)
           lexer = new QsciLexerOctave ();
 #elif defined (HAVE_LEXER_MATLAB)
@@ -279,7 +280,8 @@ file_editor_tab::update_lexer ()
 #endif
         }
       else
-        { // other or no extension
+        {
+          // other or no extension
           lexer = new QsciLexerBash ();
         }
     }
@@ -290,12 +292,13 @@ file_editor_tab::update_lexer ()
       // get path to prepared api info
       QDesktopServices desktopServices;
       QString prep_apis_path
-          = desktopServices.storageLocation (QDesktopServices::HomeLocation)
-            + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
+        = desktopServices.storageLocation (QDesktopServices::HomeLocation)
+          + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
       _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
 
       if (!_lexer_apis->loadPrepared (_prep_apis_file))
-        { // no prepared info loaded, prepare and save if possible
+        {
+          // no prepared info loaded, prepare and save if possible
 
           // create raw apis info
           QString keyword;
@@ -313,7 +316,8 @@ file_editor_tab::update_lexer ()
           disconnect (_lexer_apis, SIGNAL (apiPreparationFinished ()), 0, 0);
           // check whether path for prepared info exists or can be created
           if (QDir("/").mkpath (prep_apis_path))
-            { // path exists, apis info can be saved there
+            {
+              // path exists, apis info can be saved there
               connect (_lexer_apis, SIGNAL (apiPreparationFinished ()),
                        this, SLOT (save_apis_info ()));
             }
@@ -721,7 +725,7 @@ file_editor_tab::find (const QWidget *ID)
 
   if (!_find_dialog)
     {
-      _find_dialog = new find_dialog (_edit_area, 
+      _find_dialog = new find_dialog (_edit_area,
                                       qobject_cast<QWidget *> (sender ()));
       connect (_find_dialog, SIGNAL (finished (int)),
                this, SLOT (handle_find_dialog_finished (int)));
@@ -795,7 +799,8 @@ file_editor_tab::do_comment_selected_text (bool comment)
             }
         }
       //set selection on (un)commented section
-      _edit_area->setSelection (lineFrom, 0, lineTo, _edit_area->text (lineTo).length ());
+      _edit_area->setSelection (lineFrom, 0, lineTo,
+                                _edit_area->text (lineTo).length ());
     }
   else
     {
@@ -863,7 +868,7 @@ file_editor_tab::check_file_modified ()
       QString available_actions;
 
       if (_app_closing)
-          available_actions = tr ("Do you want to save or discard the changes?");
+        available_actions = tr ("Do you want to save or discard the changes?");
       else
         {
           buttons = buttons | QMessageBox::Cancel;  // cancel is allowed
@@ -900,7 +905,7 @@ file_editor_tab::check_file_modified ()
       // Nothing was modified, just remove from editor.
       emit tab_remove_request ();
     }
- 
+
   return decision;
 }
 
@@ -972,7 +977,7 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
   // should be performed.
   if (saveFileName.isEmpty ()
       || saveFileName.at (saveFileName.count () - 1) == '/')
-     {
+    {
       save_file_as (remove_on_success);
       return;
     }
@@ -1240,9 +1245,9 @@ file_editor_tab::notice_settings (const QSettings *settings)
   if (settings->value ("editor/codeCompletion", true).toBool ())  // auto compl.
     {
       bool match_keywords = settings->value
-        ("editor/codeCompletion_keywords",true).toBool ();
+                            ("editor/codeCompletion_keywords",true).toBool ();
       bool match_document = settings->value
-        ("editor/codeCompletion_document",true).toBool ();
+                            ("editor/codeCompletion_document",true).toBool ();
 
       QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
       if (match_keywords)
@@ -1250,9 +1255,8 @@ file_editor_tab::notice_settings (const QSettings *settings)
           source = QsciScintilla::AcsAll;
         else
           source = QsciScintilla::AcsAPIs;
-      else
-        if (match_document)
-          source = QsciScintilla::AcsDocument;
+      else if (match_document)
+        source = QsciScintilla::AcsDocument;
       _edit_area->setAutoCompletionSource (source);
 
       _edit_area->setAutoCompletionReplaceWord

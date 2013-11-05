@@ -294,17 +294,20 @@ do_minmax_body (const octave_value_list& args,
                   {
                     retval(0) = range.min ();
                     if (nargout > 1)
-                      retval(1) = static_cast<double> (range.inc () < 0 ? range.nelem () : 1);
+                      retval(1) = static_cast<double>
+                                  (range.inc () < 0 ? range.nelem () : 1);
                   }
                 else
                   {
                     retval(0) = range.max ();
                     if (nargout > 1)
-                      retval(1) = static_cast<double> (range.inc () >= 0 ? range.nelem () : 1);
+                      retval(1) = static_cast<double>
+                                  (range.inc () >= 0 ? range.nelem () : 1);
                   }
               }
             else if (arg.is_sparse_type ())
-              retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim, ismin);
+              retval = do_minmax_red_op<SparseMatrix> (arg, nargout, dim,
+                                                       ismin);
             else
               retval = do_minmax_red_op<NDArray> (arg, nargout, dim, ismin);
             break;
@@ -312,16 +315,19 @@ do_minmax_body (const octave_value_list& args,
         case btyp_complex:
           {
             if (arg.is_sparse_type ())
-              retval = do_minmax_red_op<SparseComplexMatrix> (arg, nargout, dim, ismin);
+              retval = do_minmax_red_op<SparseComplexMatrix> (arg, nargout, dim,
+                                                              ismin);
             else
-              retval = do_minmax_red_op<ComplexNDArray> (arg, nargout, dim, ismin);
+              retval = do_minmax_red_op<ComplexNDArray> (arg, nargout, dim,
+                                                         ismin);
             break;
           }
         case btyp_float:
           retval = do_minmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
           break;
         case btyp_float_complex:
-          retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim, ismin);
+          retval = do_minmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
+                                                          ismin);
           break;
         case btyp_char:
           retval = do_minmax_red_op<charNDArray> (arg, nargout, dim, ismin);
@@ -344,7 +350,7 @@ do_minmax_body (const octave_value_list& args,
           break;
         default:
           gripe_wrong_type_arg (func, arg);
-      }
+        }
     }
   else if (nargin == 2)
     {
@@ -373,7 +379,8 @@ do_minmax_body (const octave_value_list& args,
             if ((argx.is_sparse_type ()
                  && (argy.is_sparse_type () || argy.is_scalar_type ()))
                 || (argy.is_sparse_type () && argx.is_scalar_type ()))
-              retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy, ismin);
+              retval = do_minmax_bin_op<SparseComplexMatrix> (argx, argy,
+                                                              ismin);
             else
               retval = do_minmax_bin_op<ComplexNDArray> (argx, argy, ismin);
             break;
@@ -412,7 +419,7 @@ do_minmax_body (const octave_value_list& args,
 }
 
 DEFUN (min, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} min (@var{x})\n\
 @deftypefnx {Built-in Function} {} min (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} min (@var{x}, [], @var{dim})\n\
@@ -487,7 +494,7 @@ minimum value(s).  Thus,\n\
 */
 
 DEFUN (max, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} max (@var{x})\n\
 @deftypefnx {Built-in Function} {} max (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} max (@var{x}, [], @var{dim})\n\
@@ -620,17 +627,20 @@ do_cumminmax_body (const octave_value_list& args,
           retval = do_cumminmax_red_op<NDArray> (arg, nargout, dim, ismin);
           break;
         case btyp_complex:
-          retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim, ismin);
+          retval = do_cumminmax_red_op<ComplexNDArray> (arg, nargout, dim,
+                                                        ismin);
           break;
         case btyp_float:
           retval = do_cumminmax_red_op<FloatNDArray> (arg, nargout, dim, ismin);
           break;
         case btyp_float_complex:
-          retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim, ismin);
+          retval = do_cumminmax_red_op<FloatComplexNDArray> (arg, nargout, dim,
+                                                             ismin);
           break;
 #define MAKE_INT_BRANCH(X) \
         case btyp_ ## X: \
-          retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, ismin); \
+          retval = do_cumminmax_red_op<X ## NDArray> (arg, nargout, dim, \
+                                                      ismin); \
           break;
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
@@ -643,14 +653,15 @@ do_cumminmax_body (const octave_value_list& args,
 #undef MAKE_INT_BRANCH
         case btyp_bool:
           {
-            retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim, ismin);
+            retval = do_cumminmax_red_op<int8NDArray> (arg, nargout, dim,
+                                                       ismin);
             if (retval.length () > 0)
               retval(0) = retval(0).bool_array_value ();
             break;
           }
         default:
           gripe_wrong_type_arg (func, arg);
-      }
+        }
     }
   else
     print_usage ();
@@ -659,7 +670,7 @@ do_cumminmax_body (const octave_value_list& args,
 }
 
 DEFUN (cummin, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cummin (@var{x})\n\
 @deftypefnx {Built-in Function} {} cummin (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummin (@var{x})\n\
@@ -713,7 +724,7 @@ iw = 1  2  2  4  4  6\n\
 */
 
 DEFUN (cummax, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cummax (@var{x})\n\
 @deftypefnx {Built-in Function} {} cummax (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {[@var{w}, @var{iw}] =} cummax (@dots{})\n\

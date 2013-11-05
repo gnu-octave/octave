@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_value_h)
-#define octave_base_value_h 1
+#if !defined (octave_ov_base_h)
+#define octave_ov_base_h 1
 
 #include <cstdlib>
 
@@ -97,7 +97,7 @@ inline bool btyp_isfloat (builtin_type_t btyp)
 inline bool btyp_isarray (builtin_type_t btyp)
 { return btyp <= btyp_char; }
 
-// Compute a numeric type for a possibly mixed-type operation, using these rules:
+// Compute numeric type for a possible mixed-type operation, using these rules:
 // bool -> double
 // single + double -> single
 // real + complex -> complex
@@ -188,12 +188,13 @@ public:
   class type_conv_info
   {
   public:
-    type_conv_info (type_conv_fcn f = 0, int t = -1) : _fcn (f), _type_id (t) { }
+    type_conv_info (type_conv_fcn f = 0, int t = -1)
+      : _fcn (f), _type_id (t) { }
 
     operator type_conv_fcn (void) const { return _fcn; }
 
     octave_base_value * operator () (const octave_base_value &v) const
-      { return (*_fcn) (v); }
+    { return (*_fcn) (v); }
 
     int type_id (void) const { return _type_id; }
 
@@ -226,11 +227,11 @@ public:
 
   virtual type_conv_info
   numeric_conversion_function (void) const
-    { return type_conv_info (); }
+  { return type_conv_info (); }
 
   virtual type_conv_info
   numeric_demotion_function (void) const
-    { return type_conv_info (); }
+  { return type_conv_info (); }
 
   virtual octave_value squeeze (void) const;
 
@@ -291,21 +292,21 @@ public:
   virtual dim_vector dims (void) const { return dim_vector (); }
 
   octave_idx_type rows (void) const
-    {
-      const dim_vector dv = dims ();
+  {
+    const dim_vector dv = dims ();
 
-      return dv(0);
-    }
+    return dv(0);
+  }
 
   octave_idx_type columns (void) const
-    {
-      const dim_vector dv = dims ();
+  {
+    const dim_vector dv = dims ();
 
-      return dv(1);
-    }
+    return dv(1);
+  }
 
   virtual int ndims (void) const
-    { return dims ().length (); }
+  { return dims ().length (); }
 
   virtual octave_idx_type numel (void) const { return dims ().numel (); }
 
@@ -470,10 +471,10 @@ public:
   virtual float float_value (bool = false) const;
 
   virtual double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   virtual float float_scalar_value (bool frc_str_conv = false) const
-    { return float_value (frc_str_conv); }
+  { return float_value (frc_str_conv); }
 
   virtual Cell cell_value (void) const;
 
@@ -519,7 +520,8 @@ public:
 
   virtual ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
 
-  virtual FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
+  virtual FloatComplexDiagMatrix
+  float_complex_diag_matrix_value (bool = false) const;
 
   virtual PermMatrix perm_matrix_value (void) const;
 
@@ -576,10 +578,10 @@ public:
   virtual string_vector parent_class_names (void) const;
 
   virtual octave_base_value *find_parent_class (const std::string&)
-    { return 0; }
+  { return 0; }
 
   virtual octave_base_value *unique_parent_class (const std::string&)
-    { return 0; }
+  { return 0; }
 
   virtual octave_function *function_value (bool silent = false);
 
@@ -677,71 +679,71 @@ public:
 
   // Standard mappers. Register new ones here.
   enum unary_mapper_t
-    {
-      umap_abs,
-      umap_acos,
-      umap_acosh,
-      umap_angle,
-      umap_arg,
-      umap_asin,
-      umap_asinh,
-      umap_atan,
-      umap_atanh,
-      umap_cbrt,
-      umap_ceil,
-      umap_conj,
-      umap_cos,
-      umap_cosh,
-      umap_erf,
-      umap_erfinv,
-      umap_erfcinv,
-      umap_erfc,
-      umap_erfcx,
-      umap_erfi,
-      umap_dawson,
-      umap_exp,
-      umap_expm1,
-      umap_finite,
-      umap_fix,
-      umap_floor,
-      umap_gamma,
-      umap_imag,
-      umap_isinf,
-      umap_isna,
-      umap_isnan,
-      umap_lgamma,
-      umap_log,
-      umap_log2,
-      umap_log10,
-      umap_log1p,
-      umap_real,
-      umap_round,
-      umap_roundb,
-      umap_signum,
-      umap_sin,
-      umap_sinh,
-      umap_sqrt,
-      umap_tan,
-      umap_tanh,
-      umap_xisalnum,
-      umap_xisalpha,
-      umap_xisascii,
-      umap_xiscntrl,
-      umap_xisdigit,
-      umap_xisgraph,
-      umap_xislower,
-      umap_xisprint,
-      umap_xispunct,
-      umap_xisspace,
-      umap_xisupper,
-      umap_xisxdigit,
-      umap_xsignbit,
-      umap_xtoascii,
-      umap_xtolower,
-      umap_xtoupper,
-      umap_unknown,
-      num_unary_mappers = umap_unknown
-    };
+  {
+    umap_abs,
+    umap_acos,
+    umap_acosh,
+    umap_angle,
+    umap_arg,
+    umap_asin,
+    umap_asinh,
+    umap_atan,
+    umap_atanh,
+    umap_cbrt,
+    umap_ceil,
+    umap_conj,
+    umap_cos,
+    umap_cosh,
+    umap_erf,
+    umap_erfinv,
+    umap_erfcinv,
+    umap_erfc,
+    umap_erfcx,
+    umap_erfi,
+    umap_dawson,
+    umap_exp,
+    umap_expm1,
+    umap_finite,
+    umap_fix,
+    umap_floor,
+    umap_gamma,
+    umap_imag,
+    umap_isinf,
+    umap_isna,
+    umap_isnan,
+    umap_lgamma,
+    umap_log,
+    umap_log2,
+    umap_log10,
+    umap_log1p,
+    umap_real,
+    umap_round,
+    umap_roundb,
+    umap_signum,
+    umap_sin,
+    umap_sinh,
+    umap_sqrt,
+    umap_tan,
+    umap_tanh,
+    umap_xisalnum,
+    umap_xisalpha,
+    umap_xisascii,
+    umap_xiscntrl,
+    umap_xisdigit,
+    umap_xisgraph,
+    umap_xislower,
+    umap_xisprint,
+    umap_xispunct,
+    umap_xisspace,
+    umap_xisupper,
+    umap_xisxdigit,
+    umap_xsignbit,
+    umap_xtoascii,
+    umap_xtolower,
+    umap_xtoupper,
+    umap_unknown,
+    num_unary_mappers = umap_unknown
+  };
 
   virtual octave_value map (unary_mapper_t) const;
 
@@ -789,16 +791,16 @@ protected:
                                const octave_value& rhs);
 
   void reset_indent_level (void) const
-    { curr_print_indent_level = 0; }
+  { curr_print_indent_level = 0; }
 
   void increment_indent_level (void) const
-    { curr_print_indent_level += 2; }
+  { curr_print_indent_level += 2; }
 
   void decrement_indent_level (void) const
-    { curr_print_indent_level -= 2; }
+  { curr_print_indent_level -= 2; }
 
   int current_print_indent_level (void) const
-    { return curr_print_indent_level; }
+  { return curr_print_indent_level; }
 
   void indent (std::ostream& os) const;
 

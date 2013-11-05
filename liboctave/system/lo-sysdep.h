@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_sysdep_h)
-#define octave_liboctave_sysdep_h 1
+#if !defined (octave_lo_sysdep_h)
+#define octave_lo_sysdep_h 1
 
 #include <string>
 
@@ -34,7 +34,7 @@ extern int octave_chdir (const std::string&);
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 extern pid_t octave_popen2 (const std::string&, const string_vector&,
-    bool, int *, std::string&);
+                            bool, int *, std::string&);
 #endif
 
 #endif

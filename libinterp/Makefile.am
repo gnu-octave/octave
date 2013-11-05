@@ -109,6 +109,7 @@ octinclude_HEADERS = \
   builtins.h \
   builtin-defun-decls.h \
   octave.h \
+  options-usage.h \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
   $(PARSER_INC) \
@@ -227,19 +228,15 @@ DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 ## Rule to build a DEF file from a .cc file
-##
-## FIXME -- This rule should be fixed to avoid using special
-## flags like JAVA_CPPFLAGS for every file.  How could it be written
-## so that it uses octave_value_liboctave_value_la_CPPFLAGS when
-## generating the octave-value/*.df files?
-## 
-## FIXME -- Shouldn't the build stop if CPP fails here?
+## See also module.mk files for overrides when speciall CPPFLAGS are needed.
+## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
 %.df: %.cc
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
-	mv $@-t $@
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
 
 ## Rules to build test files
 

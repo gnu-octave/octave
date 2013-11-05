@@ -112,7 +112,8 @@ DEFBINOP (trans_ldiv, matrix, matrix)
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
   MatrixType typ = v1.matrix_type ();
 
-  Matrix ret = xleftdiv (v1.matrix_value (), v2.matrix_value (), typ, blas_trans);
+  Matrix ret = xleftdiv (v1.matrix_value (), v2.matrix_value (),
+                         typ, blas_trans);
 
   v1.matrix_type (typ);
   return ret;

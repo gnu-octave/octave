@@ -599,7 +599,8 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
 }
 
 octave_idx_type
-FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
+FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
+                          bool calc_ev)
 {
   octave_idx_type n = a.rows ();
   octave_idx_type nb = b.rows ();
@@ -674,7 +675,8 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b, bool calc_
 }
 
 octave_idx_type
-FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_ev)
+FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+                bool calc_ev)
 {
   if (a.any_element_is_inf_or_nan () || b.any_element_is_inf_or_nan ())
     {
@@ -786,7 +788,8 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool c
 }
 
 octave_idx_type
-FloatEIG::hermitian_init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool calc_ev)
+FloatEIG::hermitian_init (const FloatComplexMatrix& a,
+                          const FloatComplexMatrix& b, bool calc_ev)
 {
   octave_idx_type n = a.rows ();
   octave_idx_type nb = b.rows ();

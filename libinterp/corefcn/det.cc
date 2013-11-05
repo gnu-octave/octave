@@ -48,7 +48,7 @@ along with Octave; see the file COPYING.  If not, see
    dynamic_cast<const CLASS *> (&arg.get_rep ()) : 0
 
 DEFUN (det, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} det (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{d}, @var{rcond}] =} det (@var{A})\n\
 Compute the determinant of @var{A}.\n\
@@ -106,13 +106,15 @@ For that, use any of the condition number functions: @code{cond},\n\
         {
           if (isfloat)
             {
-              retval(0) = arg.float_complex_diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.float_complex_diag_matrix_value ()
+                          .determinant ().value ();
               if (nargout > 1)
                 retval(1) = arg.float_complex_diag_matrix_value ().rcond ();
             }
           else
             {
-              retval(0) = arg.complex_diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.complex_diag_matrix_value ()
+                          .determinant ().value ();
               if (nargout > 1)
                 retval(1) = arg.complex_diag_matrix_value ().rcond ();
             }
@@ -121,7 +123,8 @@ For that, use any of the condition number functions: @code{cond},\n\
         {
           if (isfloat)
             {
-              retval(0) = arg.float_diag_matrix_value ().determinant ().value ();
+              retval(0) = arg.float_diag_matrix_value ()
+                          .determinant ().value ();
               if (nargout > 1)
                 retval(1) = arg.float_diag_matrix_value ().rcond ();
             }
@@ -200,7 +203,8 @@ For that, use any of the condition number functions: @code{cond},\n\
               if (! error_state)
                 {
                   MAYBE_CAST (rep, octave_matrix);
-                  MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+                  MatrixType mtype = rep ? rep -> matrix_type ()
+                                         : MatrixType ();
                   DET det = m.determinant (mtype, info, rcond);
                   retval(1) = rcond;
                   retval(0) = info == -1 ? 0.0 : det.value ();
@@ -230,7 +234,8 @@ For that, use any of the condition number functions: @code{cond},\n\
               if (! error_state)
                 {
                   MAYBE_CAST (rep, octave_complex_matrix);
-                  MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
+                  MatrixType mtype = rep ? rep -> matrix_type () 
+                                         : MatrixType ();
                   ComplexDET det = m.determinant (mtype, info, rcond);
                   retval(1) = rcond;
                   retval(0) = info == -1 ? Complex (0.0) : det.value ();

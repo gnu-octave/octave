@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_handle_h)
-#define octave_handle_h 1
+#if !defined (octave_oct_handle_h)
+#define octave_oct_handle_h 1
 
 #include "dMatrix.h"
 #include "lo-ieee.h"

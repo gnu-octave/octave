@@ -33,8 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 static integrand_fcn user_fcn;
 static float_integrand_fcn float_user_fcn;
 
-// FIXME -- would be nice to not have to have this global
-// variable.
+// FIXME: would be nice to not have to have this global variable.
 // Nonzero means an error occurred in the calculation of the integrand
 // function, and the user wants us to quit.
 int quad_integration_error = 0;
@@ -124,7 +123,8 @@ float_user_function (float *x, int& ierr, float *result)
 }
 
 double
-DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
+DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                       double& abserr)
 {
   octave_idx_type npts = singularities.capacity () + 2;
   double *points = singularities.fortran_vec ();
@@ -160,7 +160,8 @@ DefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 }
 
 double
-IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
+IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                         double& abserr)
 {
   double result = 0.0;
 
@@ -220,7 +221,8 @@ FloatDefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 }
 
 float
-FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                            float& abserr)
 {
   octave_idx_type npts = singularities.capacity () + 2;
   float *points = singularities.fortran_vec ();
@@ -256,7 +258,8 @@ FloatIndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 }
 
 float
-FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
+                              float& abserr)
 {
   float result = 0.0;
 

@@ -53,7 +53,7 @@ extern "C"
 
 FloatComplexAEPBALANCE::FloatComplexAEPBALANCE (const FloatComplexMatrix& a,
                                                 bool noperm, bool noscal)
- : base_aepbal<FloatComplexMatrix, FloatColumnVector> ()
+  : base_aepbal<FloatComplexMatrix, FloatColumnVector> ()
 {
   octave_idx_type n = a.cols ();
 

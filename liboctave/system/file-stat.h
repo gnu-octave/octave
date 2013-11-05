@@ -75,8 +75,8 @@ public:
   }
 
   // The minimum difference in file time stamp values.
-  // FIXME -- this value should come from the filesystem itself.  How
-  // can we get that info?
+  // FIXME: This value should come from the filesystem itself.
+  //        How can we get that info?
   octave_time time_resolution (void) const
   {
     static octave_time resolution (1.0);

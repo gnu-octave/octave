@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
-#include <cerrno>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -88,12 +87,26 @@ strsave (const char *s)
   return tmp;
 }
 
+// This function was adapted from xputenv from Karl Berry's kpathsearch
+// library.
+
+// FIXME -- make this do the right thing if we don't have a
+// SMART_PUTENV.
+
 void
 octave_putenv (const std::string& name, const std::string& value)
 {
-  if (gnulib::setenv (name.c_str (), value.c_str (), true) < 0)
-    (*current_liboctave_error_handler) ("putenv: %s",
-                                        gnulib::strerror (errno));
+  int new_len = name.length () + value.length () + 2;
+
+  char *new_item = static_cast<char*> (gnulib::malloc (new_len));
+
+  sprintf (new_item, "%s=%s", name.c_str (), value.c_str ());
+
+  // As far as I can see there's no way to distinguish between the
+  // various errors; putenv doesn't have errno values.
+
+  if (gnulib::putenv (new_item) < 0)
+    (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 }
 
 std::string
@@ -248,7 +261,7 @@ octave_read_fp_value (std::istream& is)
 {
   T val = 0.0;
 
-  // FIXME -- resetting stream position is likely to fail unless we are
+  // FIXME: resetting stream position is likely to fail unless we are
   // reading from a file.
   std::ios::streampos pos = is.tellg ();
 

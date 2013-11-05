@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_char_matrix_str_h)
-#define octave_char_matrix_str_h 1
+#if !defined (octave_ov_str_mat_h)
+#define octave_ov_str_mat_h 1
 
 #include <cstdlib>
 
@@ -84,28 +84,30 @@ public:
 
   ~octave_char_matrix_str (void) { }
 
-  octave_base_value *clone (void) const { return new octave_char_matrix_str (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_char_matrix_str (); }
+  octave_base_value *clone (void) const
+  { return new octave_char_matrix_str (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_char_matrix_str (); }
 
   type_conv_info numeric_conversion_function (void) const;
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
-    { return do_index_op_internal (idx, resize_ok); }
+  { return do_index_op_internal (idx, resize_ok); }
 
   octave_value squeeze (void) const
-    { return octave_value (charNDArray (matrix.squeeze ())); }
+  { return octave_value (charNDArray (matrix.squeeze ())); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return octave_value (charNDArray (matrix.reshape (new_dims))); }
+  { return octave_value (charNDArray (matrix.reshape (new_dims))); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return octave_value (charNDArray (matrix.permute (vec, inv))); }
+  { return octave_value (charNDArray (matrix.permute (vec, inv))); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k)); }
+  { return octave_value (matrix.diag (k)); }
 
   bool is_string (void) const { return true; }
 
@@ -130,15 +132,17 @@ public:
   Array<std::string> cellstr_value (void) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (dim, mode)); }
+  { return octave_value (matrix.sort (dim, mode)); }
 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (sidx, dim, mode)); }
+  { return octave_value (matrix.sort (sidx, dim, mode)); }
 
   bool print_as_scalar (void) const { return (rows () <= 1); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
+  std::string short_disp (void) const;
 
   bool save_ascii (std::ostream& os);
 
@@ -158,7 +162,7 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
+  { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
 protected:
 
@@ -211,41 +215,43 @@ public:
 
   ~octave_char_matrix_sq_str (void) { }
 
-  octave_base_value *clone (void) const { return new octave_char_matrix_sq_str (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_char_matrix_sq_str (); }
+  octave_base_value *clone (void) const
+  { return new octave_char_matrix_sq_str (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_char_matrix_sq_str (); }
 
   octave_value squeeze (void) const
-    { return octave_value (charNDArray (matrix.squeeze ()), '\''); }
+  { return octave_value (charNDArray (matrix.squeeze ()), '\''); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return octave_value (charNDArray (matrix.reshape (new_dims)), '\''); }
+  { return octave_value (charNDArray (matrix.reshape (new_dims)), '\''); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return octave_value (charNDArray (matrix.permute (vec, inv)), '\''); }
+  { return octave_value (charNDArray (matrix.permute (vec, inv)), '\''); }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    {
-      charNDArray retval (matrix);
-      retval.resize (dv);
-      return octave_value (retval, '\'');
-    }
+  {
+    charNDArray retval (matrix);
+    retval.resize (dv);
+    return octave_value (retval, '\'');
+  }
 
   octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k), '\''); }
+  { return octave_value (matrix.diag (k), '\''); }
 
   bool is_sq_string (void) const { return true; }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
-    { return do_index_op_internal (idx, resize_ok, '\''); }
+  { return do_index_op_internal (idx, resize_ok, '\''); }
 
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (dim, mode), '\''); }
+  { return octave_value (matrix.sort (dim, mode), '\''); }
 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (sidx, dim, mode), '\''); }
+  { return octave_value (matrix.sort (sidx, dim, mode), '\''); }
 
 private:
 

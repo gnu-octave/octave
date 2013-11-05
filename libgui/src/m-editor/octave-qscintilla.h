@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#if !defined (octave_qscintilla_h)
-#define octave_qscintilla_h 1
+#if !defined (octave_octave_qscintilla_h)
+#define octave_octave_qscintilla_h 1
 
 #include <Qsci/qsciscintilla.h>
 #include <QMenu>

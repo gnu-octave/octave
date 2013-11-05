@@ -112,8 +112,8 @@ get_size (double d, const std::string& who)
 }
 
 static void
-get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc, bool& one_elt_size_spec,
-          const std::string& who)
+get_size (const Array<double>& size, octave_idx_type& nr, octave_idx_type& nc,
+          bool& one_elt_size_spec, const std::string& who)
 {
   nr = -1;
   nc = -1;
@@ -284,7 +284,8 @@ expand_char_class (const std::string& s)
       unsigned char c = s[i++];
 
       if (c == '-' && i > 1 && i < len
-          && static_cast<unsigned char> (s[i-2]) <= static_cast<unsigned char> (s[i]))
+          && (   static_cast<unsigned char> (s[i-2])
+              <= static_cast<unsigned char> (s[i])))
         {
           // Add all characters from the range except the first (we
           // already added it below).
@@ -477,7 +478,7 @@ scanf_format_list::finish_conversion (const std::string& s, size_t& i,
     {
       if (beg_idx != std::string::npos && end_idx != std::string::npos)
         char_class = expand_char_class (s.substr (beg_idx,
-                                                  end_idx - beg_idx + 1));
+                                        end_idx - beg_idx + 1));
 
       add_elt_to_list (width, discard, type, modifier, num_elts, char_class);
     }
@@ -699,9 +700,10 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
 }
 
 void
-printf_format_list::process_conversion
-  (const std::string& s, size_t& i, size_t n, int& args, std::string& flags,
-   int& fw, int& prec, char& modifier, char& type, octave_idx_type& num_elts)
+printf_format_list::process_conversion (const std::string& s, size_t& i,
+                                        size_t n, int& args, std::string& flags,
+                                        int& fw, int& prec, char& modifier,
+                                        char& type, octave_idx_type& num_elts)
 {
   args = 0;
   flags = "";
@@ -802,10 +804,10 @@ printf_format_list::process_conversion
 }
 
 void
-printf_format_list::finish_conversion
-  (const std::string& s, size_t& i, int args, const std::string& flags,
-   int fw, int prec, char modifier, char& type, octave_idx_type& num_elts)
-
+printf_format_list::finish_conversion (const std::string& s, size_t& i,
+                                       int args, const std::string& flags,
+                                       int fw, int prec, char modifier,
+                                       char& type, octave_idx_type& num_elts)
 {
   switch (s[i])
     {
@@ -1017,13 +1019,15 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 }
 
 std::string
-octave_base_stream::getl (octave_idx_type max_len, bool& err, const std::string& who)
+octave_base_stream::getl (octave_idx_type max_len, bool& err,
+                          const std::string& who)
 {
   return do_gets (max_len, err, true, who);
 }
 
 std::string
-octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string& who)
+octave_base_stream::gets (octave_idx_type max_len, bool& err,
+                          const std::string& who)
 {
   return do_gets (max_len, err, false, who);
 }
@@ -1067,7 +1071,7 @@ octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
 
       // Maybe eat the following \n if \r was just met.
       if (c == '\r' && is.peek () == '\n')
-       is.get ();
+        is.get ();
 
       if (is.bad ())
         {
@@ -1227,8 +1231,8 @@ template <class T>
 void
 do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
                T valptr, Matrix& mval, double *data, octave_idx_type& idx,
-               octave_idx_type& conversion_count, octave_idx_type nr, octave_idx_type max_size,
-               bool discard)
+               octave_idx_type& conversion_count, octave_idx_type nr,
+               octave_idx_type max_size, bool discard)
 {
   OCTAVE_SCAN (is, fmt, valptr);
 
@@ -1256,7 +1260,8 @@ do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
-               Matrix&, double*, octave_idx_type&, octave_idx_type&, octave_idx_type, octave_idx_type, bool);
+               Matrix&, double*, octave_idx_type&, octave_idx_type&,
+               octave_idx_type, octave_idx_type, bool);
 
 #define DO_WHITESPACE_CONVERSION() \
   do \
@@ -1473,8 +1478,10 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 
 octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
-                              octave_idx_type nr, octave_idx_type nc, bool one_elt_size_spec,
-                              octave_idx_type& conversion_count, const std::string& who)
+                              octave_idx_type nr, octave_idx_type nc,
+                              bool one_elt_size_spec,
+                              octave_idx_type& conversion_count,
+                              const std::string& who)
 {
   octave_value retval = Matrix ();
 
@@ -1804,7 +1811,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
                   if (is.rdstate () & std::ios::failbit)
                     is.clear (is.rdstate () & (~std::ios::failbit));
 
-                  // FIXME -- is this the right thing to do?
+                  // FIXME: is this the right thing to do?
 
                   if (interactive && name () == "stdin")
                     {
@@ -1860,7 +1867,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 octave_value
 octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
-                           octave_idx_type& conversion_count, const std::string& who)
+                           octave_idx_type& conversion_count,
+                           const std::string& who)
 {
   octave_value retval = Matrix ();
 
@@ -1876,16 +1884,16 @@ octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
         ::error ("%s: invalid format specified", who.c_str ());
       else
         {
-        octave_idx_type nr = -1;
-        octave_idx_type nc = -1;
+          octave_idx_type nr = -1;
+          octave_idx_type nc = -1;
 
-        bool one_elt_size_spec;
+          bool one_elt_size_spec;
 
-        get_size (size, nr, nc, one_elt_size_spec, who);
+          get_size (size, nr, nc, one_elt_size_spec, who);
 
-        if (! error_state)
-          retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec,
-                             conversion_count, who);
+          if (! error_state)
+            retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec,
+                               conversion_count, who);
         }
     }
   else
@@ -2028,7 +2036,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
         {
           error ("%s: read error", who.c_str ());
 
-          // FIXME -- is this the right thing to do?
+          // FIXME: is this the right thing to do?
 
           if (interactive && name () == "stdin")
             {
@@ -2460,7 +2468,8 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                           tfmt.replace ((i1 = tfmt.rfind (elt->type)),
                                         1, 1, 's');
 
-                          if ((i2 = tfmt.rfind ('.')) != std::string::npos && i2 < i1)
+                          if ((i2 = tfmt.rfind ('.')) != std::string::npos
+                              && i2 < i1)
                             {
                               tfmt.erase (i2, i1-i2);
                               if (elt->prec < 0)
@@ -2499,9 +2508,8 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
                             case 'f': case 'e': case 'E':
                             case 'g': case 'G':
-                              retval
-                                += do_printf_conv (os, fmt, nsa, sa_1, sa_2,
-                                                   val, who);
+                              retval += do_printf_conv (os, fmt, nsa,
+                                                        sa_1, sa_2, val, who);
                               break;
 
                             default:
@@ -2573,7 +2581,7 @@ octave_base_stream::puts (const std::string& s, const std::string& who)
 
       if (os)
         {
-          // FIXME -- why does this seem to be necessary?
+          // FIXME: why does this seem to be necessary?
           // Without it, output from a loop like
           //
           //   for i = 1:100, fputs (stdout, "foo\n"); endfor
@@ -2759,7 +2767,8 @@ octave_stream::skipl (off_t count, bool& err, const std::string& who)
 }
 
 off_t
-octave_stream::skipl (const octave_value& tc_count, bool& err, const std::string& who)
+octave_stream::skipl (const octave_value& tc_count, bool& err,
+                      const std::string& who)
 {
   off_t retval = -1;
 
@@ -2866,8 +2875,7 @@ octave_stream::seek (const octave_value& tc_offset,
 {
   int retval = -1;
 
-  // FIXME -- should we have octave_value methods that handle off_t
-  // explicitly?
+  // FIXME: should we have octave_value methods that handle off_t explicitly?
   octave_int64 val = tc_offset.int64_scalar_value ();
   off_t xoffset = val.value ();
 
@@ -3146,7 +3154,7 @@ octave_stream::finalize_read (std::list<void *>& input_buf_list,
         ("read: invalid type specification");
       break;
     }
-  
+
 
   return retval;
 }
@@ -3167,9 +3175,9 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
   if (stream_ok ())
     {
-      // FIXME -- we may eventually want to make this extensible.
+      // FIXME: we may eventually want to make this extensible.
 
-      // FIXME -- we need a better way to ensure that this
+      // FIXME: we need a better way to ensure that this
       // numbering stays consistent with the order of the elements in the
       // data_type enum in the oct_data_conv class.
 
@@ -3180,7 +3188,8 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
       if (! error_state)
         {
 
-          octave_idx_type elts_to_read = std::numeric_limits<octave_idx_type>::max ();
+          octave_idx_type elts_to_read
+            = std::numeric_limits<octave_idx_type>::max ();
 
           if (one_elt_size_spec)
             {
@@ -3209,7 +3218,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                 nr = nc = 0;
             }
 
-          // FIXME -- ensure that this does not overflow.
+          // FIXME: ensure that this does not overflow.
 
           elts_to_read = nr * nc;
 
@@ -3227,13 +3236,15 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
           else
             input_buf_elts = block_size;
 
-          octave_idx_type input_elt_size = oct_data_conv::data_type_size (input_type);
+          octave_idx_type input_elt_size
+            = oct_data_conv::data_type_size (input_type);
 
           octave_idx_type input_buf_size = input_buf_elts * input_elt_size;
 
           assert (input_buf_size >= 0);
 
-          // Must also work and return correct type object for 0 elements to read.
+          // Must also work and return correct type object
+          // for 0 elements to read.
 
           std::istream *isp = input_stream ();
 
@@ -3245,7 +3256,8 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
               octave_idx_type elts_read = 0;
 
-              while (is && ! is.eof () && (read_to_eof || elts_read < elts_to_read))
+              while (is && ! is.eof ()
+                     && (read_to_eof || elts_read < elts_to_read))
                 {
                   char *input_buf = new char [input_buf_size];
 
@@ -3291,8 +3303,8 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
 octave_idx_type
 octave_stream::write (const octave_value& data, octave_idx_type block_size,
-                      oct_data_conv::data_type output_type, octave_idx_type skip,
-                      oct_mach_info::float_format flt_fmt)
+                      oct_data_conv::data_type output_type,
+                      octave_idx_type skip, oct_mach_info::float_format flt_fmt)
 {
   octave_idx_type retval = -1;
 
@@ -3304,7 +3316,7 @@ octave_stream::write (const octave_value& data, octave_idx_type block_size,
             flt_fmt = float_format ();
 
           octave_idx_type status = data.write (*this, block_size, output_type,
-                                   skip, flt_fmt);
+                                               skip, flt_fmt);
 
           if (status < 0)
             error ("fwrite: write error");
@@ -3484,7 +3496,7 @@ octave_stream::skip_bytes (size_t skip)
         {
           seek (0, SEEK_END);
 
-          // FIXME -- probably should try to write larger blocks...
+          // FIXME: probably should try to write larger blocks...
 
           unsigned char zero = 0;
           for (size_t j = 0; j < skip - remaining; j++)
@@ -3507,14 +3519,12 @@ octave_stream::write (const Array<T>& data, octave_idx_type block_size,
                       octave_idx_type skip,
                       oct_mach_info::float_format flt_fmt)
 {
-  bool swap
-    = ((oct_mach_info::words_big_endian ()
-        && flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian)
-       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+  bool swap = ((oct_mach_info::words_big_endian ()
+                && flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian)
+               || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
-  bool do_data_conversion
-    = (swap || ! is_equivalent_type<T> (output_type) 
-       || flt_fmt != oct_mach_info::float_format ());
+  bool do_data_conversion = (swap || ! is_equivalent_type<T> (output_type)
+                             || flt_fmt != oct_mach_info::float_format ());
 
   octave_idx_type nel = data.numel ();
 
@@ -3720,7 +3730,7 @@ octave_stream::puts (const std::string& s, const std::string& who)
   return retval;
 }
 
-// FIXME -- maybe this should work for string arrays too.
+// FIXME: maybe this should work for string arrays too.
 
 int
 octave_stream::puts (const octave_value& tc_s, const std::string& who)
@@ -3919,7 +3929,7 @@ octave_value
 octave_stream_list::open_file_numbers (void)
 {
   return (instance_ok ())
-    ? instance->do_open_file_numbers () : octave_value ();
+         ? instance->do_open_file_numbers () : octave_value ();
 }
 
 int

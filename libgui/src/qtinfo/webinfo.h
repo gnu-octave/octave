@@ -40,8 +40,8 @@ public:
   webinfo (QWidget *parent = 0);
   void set_info_path (const QString& info_path);
   void load_node (const QString& node_name);
- 
-  void load_ref (const QString &ref_name); 
+
+  void load_ref (const QString &ref_name);
 
 public slots:
   void link_clicked (const QUrl& link);

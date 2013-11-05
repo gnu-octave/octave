@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 DEFUN (givens, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{g} =} givens (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
 @tex\n\

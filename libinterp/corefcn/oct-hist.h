@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_hist_h)
-#define octave_octave_hist_h 1
+#if !defined (octave_oct_hist_h)
+#define octave_oct_hist_h 1
 
 #include <string>
 

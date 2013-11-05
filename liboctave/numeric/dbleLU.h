@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_LU_h)
-#define octave_LU_h 1
+#if !defined (octave_dbleLU_h)
+#define octave_dbleLU_h 1
 
 #include "base-lu.h"
 #include "dMatrix.h"
@@ -42,12 +42,12 @@ public:
     : base_lu <Matrix> (l, u, p) { }
 
   LU& operator = (const LU& a)
-    {
-      if (this != &a)
-        base_lu <Matrix> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <Matrix> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~LU (void) { }
 

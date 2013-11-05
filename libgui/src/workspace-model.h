@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (workspace_model_h)
-#define workspace_model_h 1
+#if !defined (octave_workspace_model_h)
+#define octave_workspace_model_h 1
 
 #include <QAbstractTableModel>
 #include <QVector>
@@ -32,6 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QColor>
 #include <QSettings>
+
+// Defined for purposes of sending QList<int> as part of signal.
+typedef QList<int> QIntList;
 
 class workspace_model
   : public QAbstractTableModel
@@ -64,7 +67,8 @@ public:
 
   bool is_top_level (void) const { return _top_level; }
 
-  QColor storage_class_color (int s_class) { return _storage_class_colors.at (s_class); }
+  QColor storage_class_color (int s_class)
+  { return _storage_class_colors.at (s_class); }
 
 public slots:
 
@@ -73,7 +77,8 @@ public slots:
                       const QStringList& symbols,
                       const QStringList& class_names,
                       const QStringList& dimensions,
-                      const QStringList& values);
+                      const QStringList& values,
+                      const QIntList& complex_flags);
 
   void clear_workspace (void);
 
@@ -96,6 +101,7 @@ private:
   QStringList _class_names;
   QStringList _dimensions;
   QStringList _values;
+  QIntList _complex_flags;
 
   QStringList _columnNames;
 

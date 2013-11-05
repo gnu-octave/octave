@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_matrix_h)
-#define octave_matrix_h 1
+#if !defined (octave_ov_re_mat_h)
+#define octave_ov_re_mat_h 1
 
 #include <cstdlib>
 
@@ -83,17 +83,17 @@ public:
   octave_matrix (const Array<octave_idx_type>& idx,
                  bool zero_based = false, bool cache_index = false)
     : octave_base_matrix<NDArray> (NDArray (idx, zero_based))
-    {
-      // Auto-create cache to speed up subsequent indexing.
-      if (zero_based && cache_index)
-        set_idx_cache (idx_vector (idx));
-    }
+  {
+    // Auto-create cache to speed up subsequent indexing.
+    if (zero_based && cache_index)
+      set_idx_cache (idx_vector (idx));
+  }
 
   octave_matrix (const NDArray& nda, const idx_vector& cache)
     : octave_base_matrix<NDArray> (nda)
-    {
-      set_idx_cache (cache);
-    }
+  {
+    set_idx_cache (cache);
+  }
 
   ~octave_matrix (void) { }
 
@@ -105,7 +105,7 @@ public:
   octave_base_value *try_narrowing_conversion (void);
 
   idx_vector index_vector (void) const
-    { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -146,7 +146,7 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 
@@ -223,7 +223,7 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
+  { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.

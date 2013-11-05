@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 // execution, either explicitly or when the container goes out of
 // scope.
 
-// FIXME -- is there a better name for this class?
+// FIXME: is there a better name for this class?
 
 class
 action_container

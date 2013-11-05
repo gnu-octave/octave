@@ -67,15 +67,15 @@ public:
   ~octave_value_list (void) { }
 
   octave_value_list& operator = (const octave_value_list& obj)
-    {
-      if (this != &obj)
-        {
-          data = obj.data;
-          names = obj.names;
-        }
+  {
+    if (this != &obj)
+      {
+        data = obj.data;
+        names = obj.names;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   Array<octave_value> array_value (void) const { return data; }
 
@@ -106,13 +106,14 @@ public:
 
   octave_value_list
   slice (octave_idx_type offset, octave_idx_type len, bool tags = false) const
-    {
-      octave_value_list retval (data.linear_slice (offset, offset + len));
-      if (tags && len > 0 && names.length () > 0)
-        retval.names = names.linear_slice (offset, std::min (len, names.length ()));
+  {
+    octave_value_list retval (data.linear_slice (offset, offset + len));
+    if (tags && len > 0 && names.length () > 0)
+      retval.names = names.linear_slice (offset,
+                                         std::min (len, names.length ()));
 
-      return retval;
-    }
+    return retval;
+  }
 
   octave_value_list
   splice (octave_idx_type offset, octave_idx_type len,
@@ -135,14 +136,14 @@ public:
   void make_storable_values (void);
 
   octave_value& xelem (octave_idx_type i)
-    {
-      return data.xelem (i);
-    }
+  {
+    return data.xelem (i);
+  }
 
   void clear (void)
-    {
-      data.clear ();
-    }
+  {
+    data.clear ();
+  }
 
 private:
 
@@ -153,15 +154,15 @@ private:
   string_vector names;
 
   octave_value& elem (octave_idx_type n)
-    {
-      if (n >= length ())
-        resize (n + 1);
+  {
+    if (n >= length ())
+      resize (n + 1);
 
-      return data(n);
-    }
+    return data(n);
+  }
 
   const octave_value& elem (octave_idx_type n) const
-    { return data(n); }
+  { return data(n); }
 
   DECLARE_OCTAVE_ALLOCATOR
 };

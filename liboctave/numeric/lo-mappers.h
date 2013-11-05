@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_mappers_h)
-#define octave_liboctave_mappers_h 1
+#if !defined (octave_lo_mappers_h)
+#define octave_lo_mappers_h 1
 
 #include <limits>
 
@@ -178,8 +178,10 @@ extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);
 
-extern OCTAVE_API FloatComplex xmin (const FloatComplex& x, const FloatComplex& y);
-extern OCTAVE_API FloatComplex xmax (const FloatComplex& x, const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmin (const FloatComplex& x,
+                                     const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmax (const FloatComplex& x,
+                                     const FloatComplex& y);
 
 // These map reals to Complex.
 

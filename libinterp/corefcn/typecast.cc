@@ -89,7 +89,7 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
 
 
 DEFUN (typecast, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} typecast (@var{x}, @var{class})\n\
 Return a new array @var{y} resulting from interpreting the data of\n\
 @var{x} in memory as data of the numeric class @var{class}.  Both the class\n\
@@ -150,53 +150,69 @@ typecast (@var{x}, \"uint8\")\n\
       octave_value array = args(0);
 
       if (array.is_bool_type ())
-        get_data_and_bytesize (array.bool_array_value (), data, byte_size, old_dims, frame);
+        get_data_and_bytesize (array.bool_array_value (), data, byte_size,
+                               old_dims, frame);
       else if (array.is_string ())
-        get_data_and_bytesize (array.char_array_value (), data, byte_size, old_dims, frame);
+        get_data_and_bytesize (array.char_array_value (), data, byte_size,
+                               old_dims, frame);
       else if (array.is_integer_type ())
         {
           if (array.is_int8_type ())
-            get_data_and_bytesize (array.int8_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.int8_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_int16_type ())
-            get_data_and_bytesize (array.int16_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.int16_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_int32_type ())
-            get_data_and_bytesize (array.int32_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.int32_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_int64_type ())
-            get_data_and_bytesize (array.int64_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.int64_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_uint8_type ())
-            get_data_and_bytesize (array.uint8_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.uint8_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_uint16_type ())
-            get_data_and_bytesize (array.uint16_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.uint16_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_uint32_type ())
-            get_data_and_bytesize (array.uint32_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.uint32_array_value (), data, byte_size,
+                                   old_dims, frame);
           else if (array.is_uint64_type ())
-            get_data_and_bytesize (array.uint64_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.uint64_array_value (), data, byte_size,
+                                   old_dims, frame);
           else
             assert (0);
         }
       else if (array.is_complex_type ())
         {
           if (array.is_single_type ())
-            get_data_and_bytesize (array.float_complex_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.float_complex_array_value (), data,
+                                   byte_size, old_dims, frame);
           else
-            get_data_and_bytesize (array.complex_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.complex_array_value (), data,
+                                   byte_size, old_dims, frame);
         }
       else if (array.is_real_type ())
         {
           if (array.is_single_type ())
-            get_data_and_bytesize (array.float_array_value (), data, byte_size, old_dims, frame);
+            get_data_and_bytesize (array.float_array_value (), data, byte_size,
+                                   old_dims, frame);
           else
-            get_data_and_bytesize (array.array_value (), data, byte_size, old_dims, frame);
-        }
+            get_data_and_bytesize (array.array_value (), data, byte_size,
+                                   old_dims, frame); }
       else
-        error ("typecast: invalid input class: %s", array.class_name ().c_str ());
+        error ("typecast: invalid input class: %s",
+                                                array.class_name ().c_str ());
 
       std::string numclass = args(1).string_value ();
 
       if (error_state || numclass.size () == 0)
         ;
       else if (numclass == "char")
-        retval = octave_value (reinterpret_copy<charNDArray> (data, byte_size, old_dims), array.is_dq_string () ? '"' : '\'');
+        retval = octave_value (reinterpret_copy<charNDArray>
+                   (data, byte_size, old_dims), array.is_dq_string () ? '"'
+                                                                      : '\'');
       else if (numclass[0] == 'i')
         {
           if (numclass == "int8")
@@ -213,18 +229,22 @@ typecast (@var{x}, \"uint8\")\n\
           if (numclass == "uint8")
             retval = reinterpret_copy<uint8NDArray> (data, byte_size, old_dims);
           else if (numclass == "uint16")
-            retval = reinterpret_copy<uint16NDArray> (data, byte_size, old_dims);
+            retval = reinterpret_copy<uint16NDArray> (data, byte_size,
+                                                      old_dims);
           else if (numclass == "uint32")
-            retval = reinterpret_copy<uint32NDArray> (data, byte_size, old_dims);
+            retval = reinterpret_copy<uint32NDArray> (data, byte_size,
+                                                      old_dims);
           else if (numclass == "uint64")
-            retval = reinterpret_copy<uint64NDArray> (data, byte_size, old_dims);
+            retval = reinterpret_copy<uint64NDArray> (data, byte_size,
+                                                      old_dims);
         }
       else if (numclass == "single")
         retval = reinterpret_copy<FloatNDArray> (data, byte_size, old_dims);
       else if (numclass == "double")
         retval = reinterpret_copy<NDArray> (data, byte_size, old_dims);
       else if (numclass == "single complex")
-        retval = reinterpret_copy<FloatComplexNDArray> (data, byte_size, old_dims);
+        retval = reinterpret_copy<FloatComplexNDArray> (data, byte_size,
+                                                        old_dims);
       else if (numclass == "double complex")
         retval = reinterpret_copy<ComplexNDArray> (data, byte_size, old_dims);
 
@@ -242,7 +262,8 @@ ArrayType
 do_bitpack (const boolNDArray& bitp)
 {
   typedef typename ArrayType::element_type T;
-  octave_idx_type n = bitp.numel () / (sizeof (T) * std::numeric_limits<unsigned char>::digits);
+  octave_idx_type n
+    = bitp.numel () / (sizeof (T) * std::numeric_limits<unsigned char>::digits);
 
   if (n * static_cast<int> (sizeof (T)) * std::numeric_limits<unsigned char>::digits == bitp.numel ())
     {
@@ -274,7 +295,7 @@ do_bitpack (const boolNDArray& bitp)
 }
 
 DEFUN (bitpack, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} bitpack (@var{x}, @var{class})\n\
 Return a new array @var{y} resulting from interpreting an array\n\
 @var{x} as raw bit patterns for data of the numeric class @var{class}.\n\
@@ -361,7 +382,8 @@ boolNDArray
 do_bitunpack (const ArrayType& array)
 {
   typedef typename ArrayType::element_type T;
-  octave_idx_type n = array.numel () * sizeof (T) * std::numeric_limits<unsigned char>::digits;
+  octave_idx_type n = array.numel () * sizeof (T)
+                      * std::numeric_limits<unsigned char>::digits;
 
   boolNDArray retval (get_vec_dims (array.dims (), n));
 
@@ -383,7 +405,7 @@ do_bitunpack (const ArrayType& array)
 }
 
 DEFUN (bitunpack, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} bitunpack (@var{x})\n\
 Return an array @var{y} corresponding to the raw bit patterns of\n\
 @var{x}.  @var{x} must belong to one of the built-in numeric classes:\n\
@@ -411,7 +433,8 @@ column vector.\n\
 {
   octave_value retval;
 
-  if (args.length () == 1 && (args(0).is_numeric_type () || args(0).is_string ()))
+  if (args.length () == 1
+      && (args(0).is_numeric_type () || args(0).is_string ()))
     {
       octave_value array = args(0);
 
@@ -453,7 +476,8 @@ column vector.\n\
             retval = do_bitunpack (array.array_value ());
         }
       else
-        error ("bitunpack: invalid input class: %s", array.class_name ().c_str ());
+        error ("bitunpack: invalid input class: %s",
+                                                 array.class_name ().c_str ());
     }
   else
     print_usage ();

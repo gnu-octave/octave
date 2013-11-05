@@ -146,7 +146,7 @@ Undocumented internal function.\n\
           return retval;
         }
 
-      int exitcode = qh_new_qhull (dim, n, pt_array, 
+      int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);
       if (! exitcode)
         {

@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_expr_h)
-#define octave_tree_expr_h 1
+#if !defined (octave_pt_exp_h)
+#define octave_pt_exp_h 1
 
 #include <string>
 #include <list>
@@ -80,8 +80,8 @@ public:
 
   virtual octave_value_list rvalue (int nargout);
 
-  virtual octave_value_list rvalue (int nargout,
-                                    const std::list<octave_lvalue> *lvalue_list);
+  virtual octave_value_list
+  rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list);
 
   virtual octave_lvalue lvalue (void);
 
@@ -105,29 +105,29 @@ public:
   virtual void mark_braindead_shortcircuit (const std::string&) { }
 
   tree_expression *mark_in_parens (void)
-    {
-      num_parens++;
-      return this;
-    }
+  {
+    num_parens++;
+    return this;
+  }
 
   tree_expression *set_postfix_index (char type)
-    {
-      postfix_index_type = type;
-      return this;
-    }
+  {
+    postfix_index_type = type;
+    return this;
+  }
 
   tree_expression *set_print_flag (bool print)
-    {
-      print_flag = print;
-      return this;
-    }
+  {
+    print_flag = print;
+    return this;
+  }
 
   virtual void copy_base (const tree_expression& e)
-    {
-      num_parens = e.num_parens;
-      postfix_index_type = e.postfix_index_type;
-      print_flag = e.print_flag;
-    }
+  {
+    num_parens = e.num_parens;
+    postfix_index_type = e.postfix_index_type;
+    print_flag = e.print_flag;
+  }
 
 protected:
 

@@ -225,7 +225,10 @@ extern OCTINTERP_API std::string subst_octave_home (const std::string&);
 
 extern OCTINTERP_API void install_defaults (void);
 
-extern OCTINTERP_API void set_exec_path (const std::string& path = std::string ());
-extern OCTINTERP_API void set_image_path (const std::string& path = std::string ());
+extern OCTINTERP_API void
+set_exec_path (const std::string& path = std::string ());
+
+extern OCTINTERP_API void
+set_image_path (const std::string& path = std::string ());
 
 #endif

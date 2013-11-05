@@ -46,7 +46,8 @@ public:
 
   MDiagArray2 (octave_idx_type r, octave_idx_type c) : DiagArray2<T> (r, c) { }
 
-  MDiagArray2 (octave_idx_type r, octave_idx_type c, const T& val) : DiagArray2<T> (r, c, val) { }
+  MDiagArray2 (octave_idx_type r, octave_idx_type c, const T& val)
+    : DiagArray2<T> (r, c, val) { }
 
   MDiagArray2 (const MDiagArray2<T>& a) : DiagArray2<T> (a) { }
 
@@ -63,38 +64,39 @@ public:
   ~MDiagArray2 (void) { }
 
   MDiagArray2<T>& operator = (const MDiagArray2<T>& a)
-    {
-      DiagArray2<T>::operator = (a);
-      return *this;
-    }
+  {
+    DiagArray2<T>::operator = (a);
+    return *this;
+  }
 
   MArray<T> array_value () const
-    {
-      return DiagArray2<T>::array_value ();
-    }
+  {
+    return DiagArray2<T>::array_value ();
+  }
 
   octave_idx_type nnz (void) const
-    {
-      octave_idx_type retval = 0;
+  {
+    octave_idx_type retval = 0;
 
-      const T *d = this->data ();
+    const T *d = this->data ();
 
-      octave_idx_type nel = this->length ();
+    octave_idx_type nel = this->length ();
 
-      for (octave_idx_type i = 0; i < nel; i++)
-        {
-          if (d[i] != T ())
-            retval++;
-        }
+    for (octave_idx_type i = 0; i < nel; i++)
+      {
+        if (d[i] != T ())
+          retval++;
+      }
 
-      return retval;
-    }
+    return retval;
+  }
 
   MArray<T> diag (octave_idx_type k = 0) const
-    { return DiagArray2<T>::extract_diag (k); }
+  { return DiagArray2<T>::extract_diag (k); }
 
   MDiagArray2<T> transpose (void) const { return DiagArray2<T>::transpose (); }
-  MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const { return DiagArray2<T>::hermitian (fcn); }
+  MDiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const
+  { return DiagArray2<T>::hermitian (fcn); }
 
   bool is_multiple_of_identity (T val) const;
 

@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
-#if !defined (bsxfun_h)
-#define bsxfun_h 1
+#if !defined (octave_bsxfun_h)
+#define octave_bsxfun_h 1
 
 #include <algorithm>
 
@@ -45,7 +45,8 @@ is_valid_bsxfun (const std::string& name, const dim_vector& dx,
     }
 
   (*current_liboctave_warning_with_id_handler)
-    ("Octave:broadcast", "%s: automatic broadcasting operation applied", name.c_str ());
+    ("Octave:broadcast", "%s: automatic broadcasting operation applied",
+     name.c_str ());
 
   return true;
 }
@@ -72,7 +73,8 @@ is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
     }
 
   (*current_liboctave_warning_with_id_handler)
-    ("Octave:broadcast", "%s: automatic broadcasting operation applied", name.c_str ());
+    ("Octave:broadcast", "%s: automatic broadcasting operation applied",
+     name.c_str ());
 
   return true;
 }

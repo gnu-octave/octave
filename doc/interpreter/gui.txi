@@ -68,9 +68,13 @@ These functions do not implement a GUI element but are useful when developing
 programs that do.  @strong{Warning:} The functions @code{uiwait},
 @code{uiresume}, and @code{waitfor} are only available for the FLTK tooolkit.
 
+@DOCSTRING(desktop)
+
 @DOCSTRING(guidata)
 
 @DOCSTRING(guihandles)
+
+@DOCSTRING(isguirunning)
 
 @DOCSTRING(uiwait)
 

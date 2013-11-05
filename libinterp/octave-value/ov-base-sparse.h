@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_sparse_h)
-#define octave_base_sparse_h 1
+#if !defined (octave_ov_base_sparse_h)
+#define octave_ov_base_sparse_h 1
 
 #include <cstdlib>
 
@@ -47,28 +47,28 @@ template <class T>
 class
 octave_base_sparse : public octave_base_value
 {
- public:
+public:
 
   octave_base_sparse (void)
     : octave_base_value (), matrix (), typ (MatrixType ())
   { }
 
-  octave_base_sparse (const T& a) : octave_base_value (), matrix (a),
-                                    typ (MatrixType ())
+  octave_base_sparse (const T& a)
+    : octave_base_value (), matrix (a), typ (MatrixType ())
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
-  octave_base_sparse (const T& a, const MatrixType& t) : octave_base_value (),
-                                matrix (a), typ (t)
+  octave_base_sparse (const T& a, const MatrixType& t)
+    : octave_base_value (), matrix (a), typ (t)
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));
   }
 
-  octave_base_sparse (const octave_base_sparse& a) :
-    octave_base_value (), matrix (a.matrix), typ (a.typ) { }
+  octave_base_sparse (const octave_base_sparse& a)
+    : octave_base_value (), matrix (a.matrix), typ (a.typ) { }
 
   ~octave_base_sparse (void) { }
 
@@ -89,7 +89,7 @@ octave_base_sparse : public octave_base_value
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
-    { return subsref (type, idx); }
+  { return subsref (type, idx); }
 
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,
@@ -105,10 +105,10 @@ octave_base_sparse : public octave_base_value
                             bool resize_ok = false);
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return T (matrix.reshape (new_dims)); }
+  { return T (matrix.reshape (new_dims)); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return T (matrix.permute (vec, inv)); }
+  { return T (matrix.permute (vec, inv)); }
 
   octave_value resize (const dim_vector& dv, bool = false) const;
 
@@ -116,20 +116,20 @@ octave_base_sparse : public octave_base_value
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
   octave_value diag (octave_idx_type k = 0) const
-    { return octave_value (matrix.diag (k)); }
+  { return octave_value (matrix.diag (k)); }
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (dim, mode)); }
+  { return octave_value (matrix.sort (dim, mode)); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-    { return octave_value (matrix.sort (sidx, dim, mode)); }
+  { return octave_value (matrix.sort (sidx, dim, mode)); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return full_value ().is_sorted (mode); }
+  { return full_value ().is_sorted (mode); }
 
   MatrixType matrix_type (void) const { return typ; }
   MatrixType matrix_type (const MatrixType& _typ) const
-    { MatrixType ret = typ; typ = _typ; return ret; }
+  { MatrixType ret = typ; typ = _typ; return ret; }
 
   bool is_matrix_type (void) const { return true; }
 

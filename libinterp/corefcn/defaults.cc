@@ -252,14 +252,14 @@ set_exec_path (const std::string& path_arg)
 
   if (tpath.empty ())
     tpath = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
-      + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
-      + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
-      + Varch_lib_dir + dir_path::path_sep_str ()
-      + Vbin_dir;
+            + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
+            + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
+            + Varch_lib_dir + dir_path::path_sep_str ()
+            + Vbin_dir;
 
   VEXEC_PATH = tpath;
 
-  // FIXME -- should we really be modifying PATH in the environment?
+  // FIXME: should we really be modifying PATH in the environment?
   // The way things are now, Octave will ignore directories set in the
   // PATH with calls like
   //
@@ -371,7 +371,8 @@ set_local_site_defaults_file (void)
 
   if (lsf.empty ())
     {
-      Vlocal_site_defaults_file = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+      Vlocal_site_defaults_file
+        = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
       Vlocal_site_defaults_file.append ("/octaverc");
     }
   else
@@ -466,7 +467,7 @@ install_defaults (void)
 }
 
 DEFUN (EDITOR, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
@@ -499,7 +500,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (EXEC_PATH, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
@@ -537,7 +538,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (IMAGE_PATH, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
@@ -567,7 +568,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (OCTAVE_HOME, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
 Return the name of the top-level Octave installation directory.\n\
 \n\
@@ -590,7 +591,7 @@ Return the name of the top-level Octave installation directory.\n\
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
 Return the version number of Octave, as a string.\n\
 @end deftypefn")

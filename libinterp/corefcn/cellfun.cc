@@ -70,13 +70,15 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
                  octave_value& error_handler)
 {
   octave_value_list tmp;
-  try {
-    tmp = func.do_multi_index_op (nargout, inputlist);
-  }
-  catch (octave_execution_exception) {
-    if (error_handler.is_defined ())
-      error_state = 1;
-  }
+  try
+    {
+      tmp = func.do_multi_index_op (nargout, inputlist);
+    }
+  catch (octave_execution_exception)
+    {
+      if (error_handler.is_defined ())
+        error_state = 1;
+    }
 
   if (error_state)
     {
@@ -85,7 +87,9 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           octave_scalar_map msg;
           msg.assign ("identifier", last_error_id ());
           msg.assign ("message", last_error_message ());
-          msg.assign ("index", static_cast<double> (count + static_cast<octave_idx_type>(1)));
+          msg.assign ("index",
+                      static_cast<double> (count
+                                           + static_cast<octave_idx_type>(1)));
 
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
@@ -264,7 +268,7 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
 }
 
 DEFUN (cellfun, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cellfun (@var{name}, @var{C})\n\
 @deftypefnx {Built-in Function} {} cellfun (\"size\", @var{C}, @var{k})\n\
 @deftypefnx {Built-in Function} {} cellfun (\"isclass\", @var{C}, @var{class})\n\
@@ -1038,7 +1042,7 @@ v = cellfun (@@det, a); # faster\n\
 // handle the nargout = 0 case.
 
 DEFUN (arrayfun, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {} arrayfun (@var{func}, @var{A})\n\
 @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A})\n\
 @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})\n\
@@ -1156,7 +1160,7 @@ arrayfun (@@str2num, [1234],\n\
 
   if (nargin < 2)
     {
-      error_with_id ("Octave:invalid-fun-call", 
+      error_with_id ("Octave:invalid-fun-call",
                      "arrayfun: function requires at least 2 arguments");
       print_usage ();
       return retval;
@@ -1230,7 +1234,7 @@ arrayfun (@@str2num, [1234],\n\
 
       bool uniform_output = true;
       octave_value error_handler;
-      
+
       get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
       if (error_state)
@@ -1268,7 +1272,7 @@ arrayfun (@@str2num, [1234],\n\
                 {
                   if (mask[i] && inputs[i].dims () != fdims)
                     {
-                      error_with_id ("Octave:invalid-input-arg", 
+                      error_with_id ("Octave:invalid-input-arg",
                                      "arrayfun: dimensions mismatch");
                       return retval;
                     }
@@ -1316,7 +1320,7 @@ arrayfun (@@str2num, [1234],\n\
 
               if (nargout > 0 && tmp.length () < nargout)
                 {
-                  error_with_id ("Octave:invalid-fun-call", 
+                  error_with_id ("Octave:invalid-fun-call",
                                  "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
@@ -1429,7 +1433,7 @@ arrayfun (@@str2num, [1234],\n\
 
               if (nargout > 0 && tmp.length () < nargout)
                 {
-                  error_with_id ("Octave:invalid-fun-call", 
+                  error_with_id ("Octave:invalid-fun-call",
                                  "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
@@ -1461,7 +1465,7 @@ arrayfun (@@str2num, [1234],\n\
         }
     }
   else
-    error_with_id ("Octave:invalid-fun-call", 
+    error_with_id ("Octave:invalid-fun-call",
                    "arrayfun: argument NAME must be a string or function handle");
 
   return retval;
@@ -1776,7 +1780,7 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
     }
 }
 
-// FIXME -- this is a mess, but if a size method for the object exists,
+// FIXME: this is a mess, but if a size method for the object exists,
 // we have to call it to get the size of the object instead of using the
 // internal dims method.
 
@@ -1802,7 +1806,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 {
   Cell retval;
 
-  // FIXME -- this copy is only needed because the octave_value::size
+  // FIXME: this copy is only needed because the octave_value::size
   // method is not const.
   octave_value array = obj;
 
@@ -1838,7 +1842,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 }
 
 DEFUN (num2cell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} num2cell (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
 Convert the numeric matrix @var{A} to a cell array.  If @var{dim} is\n\
@@ -2167,7 +2171,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 }
 
 DEFUN (mat2cell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
 @deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
@@ -2247,7 +2251,8 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
         case btyp_complex:
           {
             if (sparse)
-              retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d, nargin-1);
+              retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d,
+                                       nargin-1);
             else
               retval = do_mat2cell (a.complex_array_value (), d, nargin - 1);
             break;
@@ -2337,7 +2342,7 @@ do_cellslices_nda (const NDA& array,
 }
 
 DEFUN (cellslices, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
 Given an array @var{x}, this function produces a cell array of slices from\n\
 the array determined by the index vectors @var{lb}, @var{ub}, for lower and\n\
@@ -2385,41 +2390,55 @@ slicing is done along the first non-singleton dimension.\n\
                 {
                   // specialize for some dense arrays.
                   if (x.is_bool_type ())
-                    retcell = do_cellslices_nda (x.bool_array_value (), lb, ub, dim);
+                    retcell = do_cellslices_nda (x.bool_array_value (),
+                                                 lb, ub, dim);
                   else if (x.is_char_matrix ())
-                    retcell = do_cellslices_nda (x.char_array_value (), lb, ub, dim);
+                    retcell = do_cellslices_nda (x.char_array_value (),
+                                                 lb, ub, dim);
                   else if (x.is_integer_type ())
                     {
                       if (x.is_int8_type ())
-                        retcell = do_cellslices_nda (x.int8_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int8_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_int16_type ())
-                        retcell = do_cellslices_nda (x.int16_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int16_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_int32_type ())
-                        retcell = do_cellslices_nda (x.int32_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int32_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_int64_type ())
-                        retcell = do_cellslices_nda (x.int64_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int64_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint8_type ())
-                        retcell = do_cellslices_nda (x.uint8_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint8_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint16_type ())
-                        retcell = do_cellslices_nda (x.uint16_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint16_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint32_type ())
-                        retcell = do_cellslices_nda (x.uint32_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint32_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint64_type ())
-                        retcell = do_cellslices_nda (x.uint64_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint64_array_value (),
+                                                     lb, ub, dim);
                     }
                   else if (x.is_complex_type ())
                     {
                       if (x.is_single_type ())
-                        retcell = do_cellslices_nda (x.float_complex_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.float_complex_array_value (),
+                                                     lb, ub, dim);
                       else
-                        retcell = do_cellslices_nda (x.complex_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.complex_array_value (),
+                                                     lb, ub, dim);
                     }
                   else
                     {
                       if (x.is_single_type ())
-                        retcell = do_cellslices_nda (x.float_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.float_array_value (),
+                                                     lb, ub, dim);
                       else
-                        retcell = do_cellslices_nda (x.array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.array_value (),
+                                                     lb, ub, dim);
                     }
                 }
               else
@@ -2458,7 +2477,7 @@ slicing is done along the first non-singleton dimension.\n\
 */
 
 DEFUN (cellindexmat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
 Given a cell array of matrices @var{x}, this function computes\n\
 \n\

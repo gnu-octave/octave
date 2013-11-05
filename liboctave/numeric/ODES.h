@@ -46,17 +46,17 @@ public:
     : base_diff_eqn (a), ODESFunc (a), xdot (a.xdot), theta (a.theta) { }
 
   ODES& operator = (const ODES& a)
-    {
-      if (this != &a)
-        {
-          base_diff_eqn::operator = (a);
-          ODESFunc::operator = (a);
+  {
+    if (this != &a)
+      {
+        base_diff_eqn::operator = (a);
+        ODESFunc::operator = (a);
 
-          xdot = a.xdot;
-          theta = a.theta;
-        }
-      return *this;
-    }
+        xdot = a.xdot;
+        theta = a.theta;
+      }
+    return *this;
+  }
 
   ~ODES (void) { }
 

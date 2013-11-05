@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (hess, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{H} =} hess (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{P}, @var{H}] =} hess (@var{A})\n\
 @cindex Hessenberg decomposition\n\
@@ -95,7 +95,7 @@ Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
     {
       if (arg.is_real_type ())
         {
-         FloatMatrix tmp = arg.float_matrix_value ();
+          FloatMatrix tmp = arg.float_matrix_value ();
 
           if (! error_state)
             {

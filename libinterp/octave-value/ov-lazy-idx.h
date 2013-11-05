@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_lazy_idx_h)
-#define octave_lazy_idx_h 1
+#if !defined (octave_ov_lazy_idx_h)
+#define octave_ov_lazy_idx_h 1
 
 #include "ov-re-mat.h"
 
@@ -45,7 +45,8 @@ public:
 
   ~octave_lazy_index (void) { }
 
-  octave_base_value *clone (void) const { return new octave_lazy_index (*this); }
+  octave_base_value *clone (void) const
+  { return new octave_lazy_index (*this); }
   octave_base_value *empty_clone (void) const { return new octave_matrix (); }
 
   type_conv_info numeric_conversion_function (void) const;
@@ -59,7 +60,7 @@ public:
   octave_value full_value (void) const { return make_value (); }
 
   idx_vector index_vector (void) const
-    { return index; }
+  { return index; }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -73,15 +74,15 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    { return make_value ().subsref (type, idx); }
+  { return make_value ().subsref (type, idx); }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
-    { return subsref (type, idx); }
+  { return subsref (type, idx); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
-    { return make_value ().do_index_op (idx, resize_ok); }
+  { return make_value ().do_index_op (idx, resize_ok); }
 
   dim_vector dims (void) const { return index.orig_dimensions (); }
 
@@ -94,14 +95,14 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const;
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
-    { return make_value ().resize (dv, fill); }
+  { return make_value ().resize (dv, fill); }
 
   octave_value all (int dim = 0) const { return make_value ().all (dim); }
   octave_value any (int dim = 0) const { return make_value ().any (dim); }
 
   MatrixType matrix_type (void) const { return make_value ().matrix_type (); }
   MatrixType matrix_type (const MatrixType& _typ) const
-    { return make_value ().matrix_type (_typ); }
+  { return make_value ().matrix_type (_typ); }
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
@@ -123,16 +124,16 @@ public:
   bool is_constant (void) const { return true; }
 
   bool is_true (void) const
-    { return make_value ().is_true (); }
+  { return make_value ().is_true (); }
 
   bool print_as_scalar (void) const
-    { return make_value ().print_as_scalar (); }
+  { return make_value ().print_as_scalar (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const
-    { make_value ().print (os, pr_as_read_syntax); }
+  { make_value ().print (os, pr_as_read_syntax); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
-    { make_value ().print_info (os, prefix); }
+  { make_value ().print_info (os, prefix); }
 
 #define FORWARD_VALUE_QUERY(TYPE,NAME) \
   TYPE \
@@ -186,13 +187,13 @@ public:
   FORWARD_VALUE_QUERY1 (SparseComplexMatrix, sparse_complex_matrix_value)
 
   octave_value diag (octave_idx_type k = 0) const
-    { return make_value ().diag (k); }
+  { return make_value ().diag (k); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const
-    { return make_value ().convert_to_str_internal (pad, force, type); }
+  { return make_value ().convert_to_str_internal (pad, force, type); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
-    { return make_value ().print_raw (os, pr_as_read_syntax); }
+  { return make_value ().print_raw (os, pr_as_read_syntax); }
 
   bool save_ascii (std::ostream& os);
 
@@ -208,40 +209,41 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    { return make_value ().write (os, block_size, output_type, skip, flt_fmt); }
+  { return make_value ().write (os, block_size, output_type, skip, flt_fmt); }
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const
-    { return make_value ().mex_get_data (); }
+  { return make_value ().mex_get_data (); }
 
   mxArray *as_mxArray (void) const
-    { return make_value ().as_mxArray (); }
+  { return make_value ().as_mxArray (); }
 
   octave_value map (unary_mapper_t umap) const
-    { return make_value ().map (umap); }
+  { return make_value ().map (umap); }
 
 private:
   const octave_value& make_value (void) const
-    {
-      if (value.is_undefined ())
-        value = octave_value (index, false);
+  {
+    if (value.is_undefined ())
+      value = octave_value (index, false);
 
-      return value;
-    }
+    return value;
+  }
 
   octave_value& make_value (void)
-    {
-      if (value.is_undefined ())
-        value = octave_value (index, false);
+  {
+    if (value.is_undefined ())
+      value = octave_value (index, false);
 
-      return value;
-    }
+    return value;
+  }
 
   idx_vector index;
   mutable octave_value value;
 
-  static octave_base_value *numeric_conversion_function (const octave_base_value&);
+  static octave_base_value *
+  numeric_conversion_function (const octave_base_value&);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

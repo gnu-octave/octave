@@ -144,7 +144,8 @@ protected:
 
   virtual std::string do_histcontrol (void) const { return std::string (); }
 
-  virtual void do_initialize (bool, const std::string&, int, const std::string&);
+  virtual void do_initialize (bool, const std::string&, int,
+                              const std::string&);
 
   virtual bool do_is_initialized (void) const;
 

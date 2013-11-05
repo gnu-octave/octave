@@ -32,6 +32,7 @@ TRANSLATIONS = \
   languages/fr_FR.ts \
   languages/nl_NL.ts \
   languages/pt_BR.ts \
+  languages/pt_PT.ts \
   languages/ru_RU.ts \
   languages/uk_UA.ts
 

@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 
 static bool Vdebug_jit = false;
 
-static bool Vjit_enable = true;
+static bool Vjit_enable = false;
 
 static int Vjit_startcnt = 1000;
 
@@ -108,7 +108,7 @@ jit_convert::jit_convert (tree &tee, jit_type *for_bounds)
       visit (tee);
     }
   catch (const jit_break_exception&)
-    {}
+    { }
 
   // breaks must have been handled by the top level loop
   assert (breaks.empty ());
@@ -170,7 +170,7 @@ jit_convert::jit_convert (octave_user_function& fcn,
               retval = visit (expr);
             }
           catch (const jit_break_exception&)
-            {}
+            { }
 
           if (breaks.size () || continues.size ())
             throw jit_fail_exception ("break/continue not supported in "
@@ -264,9 +264,11 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
       jit_block *short_cont = factory.create<jit_block> ("short_cont");
 
       if (is_and)
-        block->append (factory.create<jit_cond_branch> (lhsv, short_cont, short_early));
+        block->append (factory.create<jit_cond_branch> (lhsv, short_cont,
+                                                        short_early));
       else
-        block->append (factory.create<jit_cond_branch> (lhsv, short_early, short_cont));
+        block->append (factory.create<jit_cond_branch> (lhsv, short_early,
+                                                        short_cont));
 
       block = short_early;
 
@@ -321,8 +323,8 @@ jit_convert::visit_colon_expression (tree_colon_expression& expr)
   else
     increment = factory.create<jit_const_scalar> (1);
 
-  result = block->append (factory.create<jit_call> (jit_typeinfo::make_range, base,
-                                            limit, increment));
+  result = block->append (factory.create<jit_call> (jit_typeinfo::make_range,
+                                                    base, limit, increment));
 }
 
 void
@@ -581,7 +583,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           jit_call *check = create_checked (&jit_typeinfo::logically_true,
                                             cond);
           jit_block *body = factory.create<jit_block> (i == 0 ? "if_body"
-                                                       : "ifelse_body");
+                                                              : "ifelse_body");
           blocks.push_back (body);
 
           jit_instruction *br = factory.create<jit_cond_branch> (check, body,
@@ -599,8 +601,8 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           ++num_incomming;
           block->append (factory.create<jit_branch> (tail));
         }
-      catch(const jit_break_exception&)
-        {}
+      catch (const jit_break_exception&)
+        { }
 
       current_breaks.splice (current_breaks.end (), breaks);
       current_continues.splice (current_continues.end (), continues);
@@ -786,7 +788,8 @@ jit_convert::visit_statement (tree_statement& stmt)
           // FIXME: ugly hack, we need to come up with a way to pass
           // nargout to visit_identifier
           const jit_operation& fn = jit_typeinfo::print_value ();
-          jit_const_string *name = factory.create<jit_const_string> (expr->name ());
+          jit_const_string *name = factory.create<jit_const_string>
+                                    (expr->name ());
           block->append (factory.create<jit_call> (fn, name, expr_result));
         }
     }
@@ -1052,7 +1055,7 @@ jit_convert::resolve (tree_index_expression& exp, jit_value *extra_arg,
     call_args[call_args.size () - 1] = extra_arg;
 
   const jit_operation& fres = lhs ? jit_typeinfo::paren_subsasgn ()
-    : jit_typeinfo::paren_subsref ();
+                                  : jit_typeinfo::paren_subsref ();
 
   return create_checked (fres, call_args);
 }
@@ -1142,8 +1145,9 @@ jit_convert_llvm::convert_loop (llvm::Module *module,
   // argument is an array of octave_base_value*, or octave_base_value**
   llvm::Type *arg_type = any->to_llvm (); // this is octave_base_value*
   arg_type = arg_type->getPointerTo ();
-  llvm::FunctionType *ft = llvm::FunctionType::get (llvm::Type::getVoidTy (context),
-                                                    arg_type, false);
+  llvm::FunctionType *ft;
+  ft = llvm::FunctionType::get (llvm::Type::getVoidTy (context), arg_type,
+                                false);
   function = llvm::Function::Create (ft, llvm::Function::ExternalLinkage,
                                      "foobar", module);
 
@@ -1160,7 +1164,8 @@ jit_convert_llvm::convert_loop (llvm::Module *module,
         }
 
       convert (blocks, constants);
-    } catch (const jit_fail_exception& e)
+    }
+  catch (const jit_fail_exception& e)
     {
       function->eraseFromParent ();
       throw;
@@ -1206,7 +1211,8 @@ jit_convert_llvm::convert_function (llvm::Module *module,
         }
 
       convert (blocks, constants);
-    } catch (const jit_fail_exception& e)
+    }
+  catch (const jit_fail_exception& e)
     {
       function->eraseFromParent ();
       throw;
@@ -1473,7 +1479,7 @@ jit_convert_llvm::visit (jit_magic_end& me)
 // -------------------- jit_infer --------------------
 jit_infer::jit_infer (jit_factory& afactory, jit_block_list& ablocks,
                       const variable_map& avmap)
-  : blocks (ablocks), factory (afactory), vmap (avmap) {}
+  : blocks (ablocks), factory (afactory), vmap (avmap) { }
 
 void
 jit_infer::infer (void)
@@ -1528,8 +1534,8 @@ jit_infer::append_users_term (jit_terminator *term)
       if (term->alive (i))
         {
           jit_block *succ = term->successor (i);
-          for (jit_block::iterator iter = succ->begin (); iter != succ->end ()
-                 && isa<jit_phi> (*iter); ++iter)
+          for (jit_block::iterator iter = succ->begin ();
+               iter != succ->end () && isa<jit_phi> (*iter); ++iter)
             push_worklist (*iter);
 
           jit_terminator *sterm = succ->terminator ();
@@ -1569,7 +1575,7 @@ jit_infer::construct_ssa (void)
               if (! added_phi.count (dblock))
                 {
                   jit_phi *phi = factory.create<jit_phi> (iter->second,
-                                                  dblock->use_count ());
+                                                          dblock->use_count ());
                   dblock->prepend (phi);
                   added_phi.insert (dblock);
                 }
@@ -1606,8 +1612,8 @@ jit_infer::do_construct_ssa (jit_block& ablock, size_t avisit_count)
     {
       jit_block *finish = ablock.successor (i);
 
-      for (jit_block::iterator iter = finish->begin (); iter != finish->end ()
-             && isa<jit_phi> (*iter);)
+      for (jit_block::iterator iter = finish->begin ();
+           iter != finish->end () && isa<jit_phi> (*iter);)
         {
           jit_phi *phi = static_cast<jit_phi *> (*iter);
           jit_variable *var = phi->dest ();
@@ -1666,8 +1672,8 @@ jit_infer::remove_dead ()
       jit_block *b = *biter;
       if (b->alive ())
         {
-          for (jit_block::iterator iter = b->begin (); iter != b->end ()
-                 && isa<jit_phi> (*iter);)
+          for (jit_block::iterator iter = b->begin ();
+               iter != b->end () && isa<jit_phi> (*iter);)
             {
               jit_phi *phi = static_cast<jit_phi *> (*iter);
               if (phi->prune ())
@@ -1781,8 +1787,8 @@ jit_infer::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
   if (! temp.size () || ! isa<jit_error_check> (ablock.terminator ()))
     return;
 
-  // FIXME: If we support try/catch or unwind_protect final_block may not be the
-  // destination
+  // FIXME: If we support try/catch or unwind_protect final_block
+  //        may not be the destination
   jit_block *split = ablock.maybe_split (factory, blocks, final_block ());
   jit_terminator *term = split->terminator ();
   for (std::set<jit_value *>::const_iterator iter = temp.begin ();
@@ -1803,8 +1809,8 @@ jit_infer::simplify_phi (void)
        ++biter)
     {
       jit_block &ablock = **biter;
-      for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ()
-             && isa<jit_phi> (*iter); ++iter)
+      for (jit_block::iterator iter = ablock.begin ();
+           iter != ablock.end () && isa<jit_phi> (*iter); ++iter)
         simplify_phi (*static_cast<jit_phi *> (*iter));
     }
 }
@@ -1960,14 +1966,14 @@ tree_jit::do_execute (octave_user_function& fcn, const octave_value_list& args,
     return false;
 
   jit_function_info *info = fcn.get_info ();
-    if (! info || ! info->match (args))
-      {
-        delete info;
-        info = new jit_function_info (*this, fcn, args);
-        fcn.stash_info (info);
-      }
+  if (! info || ! info->match (args))
+    {
+      delete info;
+      info = new jit_function_info (*this, fcn, args);
+      fcn.stash_info (info);
+    }
 
-    return info->execute (args, retval);
+  return info->execute (args, retval);
 }
 
 bool
@@ -1977,7 +1983,7 @@ tree_jit::enabled (void)
   // are about to run. However, we can't figure this out in O(1) time, so we
   // conservatively check for the existence of any breakpoints.
   return Vjit_enable && ! bp_table::have_breakpoints ()
-    && ! Vdebug_on_interrupt && ! Vdebug_on_error;
+         && ! Vdebug_on_interrupt && ! Vdebug_on_error;
 }
 
 size_t
@@ -2309,13 +2315,13 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 {
   vmap::const_iterator iter = extra_vars.find (vname);
   return iter == extra_vars.end () ? symbol_table::varval (vname)
-    : *iter->second;
+                                   : *iter->second;
 }
 
 #endif
 
 DEFUN (debug_jit, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_jit ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_jit (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} debug_jit (@var{new_val}, \"local\")\n\
@@ -2337,7 +2343,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (jit_enable, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_enable ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_enable (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} jit_enable (@var{new_val}, \"local\")\n\
@@ -2358,7 +2364,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (jit_startcnt, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_startcnt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} jit_startcnt (@var{new_val}, \"local\")\n\

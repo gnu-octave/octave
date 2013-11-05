@@ -151,14 +151,14 @@ do_regexp_rep_string_escapes (const std::string& s)
               break;
 
 #if 0
-// FIXME -- to be complete, we need to handle \oN, \o{N}, \xN, and
+// FIXME: to be complete, we need to handle \oN, \o{N}, \xN, and
 // \x{N}.  Hex digits may be upper or lower case.  Brackets are
 // optional, so \x5Bz is the same as \x{5B}z.
 
             case 'o': // octal number
             case 'x': // hex number
 #endif
- 
+
             default:  // pass escape sequence through
               retval[i] = '\\';
               retval[++i] = s[j];
@@ -585,7 +585,7 @@ octcellregexp (const octave_value_list &args, int nargout,
 }
 
 DEFUN (regexp, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 Regular expression string matching.  Search for @var{pat} in @var{str} and\n\
@@ -1066,7 +1066,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 */
 
 DEFUN (regexpi, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 \n\
@@ -1278,7 +1278,7 @@ octregexprep (const octave_value_list &args, const std::string &who)
 }
 
 DEFUN (regexprep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr})\n\
 @deftypefnx {Built-in Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr}, \"@var{opt1}\", @dots{})\n\
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
@@ -1390,8 +1390,8 @@ quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
             }
 
           if (!error_state)
-            retval = args(0).is_cell ()
-              ? octave_value (ret) : octave_value (ret(0));
+            retval = args(0).is_cell () ? octave_value (ret)
+                                        : octave_value (ret(0));
         }
     }
   else

@@ -47,50 +47,50 @@ public:
   PermMatrix (const idx_vector& idx, bool colp = false, octave_idx_type n = 0);
 
   octave_idx_type dim1 (void) const
-    { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::length (); }
   octave_idx_type dim2 (void) const
-    { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::length (); }
 
   octave_idx_type rows (void) const { return dim1 (); }
   octave_idx_type cols (void) const { return dim2 (); }
   octave_idx_type columns (void) const { return dim2 (); }
 
   octave_idx_type perm_length (void) const
-    { return Array<octave_idx_type>::length (); }
+  { return Array<octave_idx_type>::length (); }
   // FIXME: a dangerous ambiguity?
   octave_idx_type length (void) const
-    { return perm_length (); }
+  { return perm_length (); }
   octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
   octave_idx_type numel (void) const { return nelem (); }
 
   size_t byte_size (void) const
-    { return Array<octave_idx_type>::byte_size (); }
+  { return Array<octave_idx_type>::byte_size (); }
 
   dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }
 
   Array<octave_idx_type> pvec (void) const
-    { return *this; }
+  { return *this; }
 
   octave_idx_type
   elem (octave_idx_type i, octave_idx_type j) const
-    {
-      return (_colp
-              ? ((Array<octave_idx_type>::elem (j) == i) ? 1 : 0)
+  {
+    return (_colp
+            ? ((Array<octave_idx_type>::elem (j) == i) ? 1 : 0)
               : ((Array<octave_idx_type>::elem (i) == j) ? 1 : 0));
-    }
+  }
 
   octave_idx_type
   checkelem (octave_idx_type i, octave_idx_type j) const;
 
   octave_idx_type
   operator () (octave_idx_type i, octave_idx_type j) const
-    {
+  {
 #if defined (BOUNDS_CHECKING)
-      return checkelem (i, j);
+    return checkelem (i, j);
 #else
-      return elem (i, j);
+    return elem (i, j);
 #endif
-    }
+  }
 
   // These are, in fact, super-fast.
   PermMatrix transpose (void) const;
@@ -105,19 +105,20 @@ public:
   bool is_col_perm (void) const { return _colp; }
   bool is_row_perm (void) const { return !_colp; }
 
-  friend OCTAVE_API PermMatrix operator *(const PermMatrix& a, const PermMatrix& b);
+  friend OCTAVE_API PermMatrix operator *(const PermMatrix& a,
+                                          const PermMatrix& b);
 
   const octave_idx_type *data (void) const
-    { return Array<octave_idx_type>::data (); }
+  { return Array<octave_idx_type>::data (); }
 
   const octave_idx_type *fortran_vec (void) const
-    { return Array<octave_idx_type>::fortran_vec (); }
+  { return Array<octave_idx_type>::fortran_vec (); }
 
   octave_idx_type *fortran_vec (void)
-    { return Array<octave_idx_type>::fortran_vec (); }
+  { return Array<octave_idx_type>::fortran_vec (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
-    { Array<octave_idx_type>::print_info (os, prefix); }
+  { Array<octave_idx_type>::print_info (os, prefix); }
 
   static PermMatrix eye (octave_idx_type n);
 

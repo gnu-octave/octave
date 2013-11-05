@@ -48,26 +48,26 @@ along with Octave; see the file COPYING.  If not, see
 #include <functional>
 
 #if !defined (HAVE_CXX_BITWISE_OP_TEMPLATES)
-namespace std 
+namespace std
 {
   template <typename T>
-  struct bit_and 
+  struct bit_and
   {
-  public: 
+  public:
     T operator() (const T & op1, const T & op2) const { return (op1 & op2); }
   };
 
   template <typename T>
-  struct bit_or 
+  struct bit_or
   {
-  public: 
+  public:
     T operator() (const T & op1, const T & op2) const { return (op1 | op2); }
   };
 
   template <typename T>
-  struct bit_xor 
+  struct bit_xor
   {
-  public: 
+  public:
     T operator() (const T & op1, const T & op2) const { return (op1 ^ op2); }
   };
 }
@@ -345,7 +345,7 @@ bitop (const std::string& fname, const octave_value_list& args)
 }
 
 DEFUN (bitand, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of non-negative integers.\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
@@ -356,7 +356,7 @@ Return the bitwise AND of non-negative integers.\n\
 }
 
 DEFUN (bitor, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
 Return the bitwise OR of non-negative integers.\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
@@ -367,7 +367,7 @@ Return the bitwise OR of non-negative integers.\n\
 }
 
 DEFUN (bitxor, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
 Return the bitwise XOR of non-negative integers.\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
@@ -496,7 +496,7 @@ bitshift (float a, int n, int64_t mask)
   while (0)
 
 DEFUN (bitshift, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
 Return a @var{k} bit shift of @var{n}-digit unsigned\n\
@@ -543,7 +543,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         {
           if (nargin == 3)
             {
-              // FIXME -- for compatibility, we should accept an array
+              // FIXME: for compatibility, we should accept an array
               // or a scalar as the third argument.
               if (args(2).numel () > 1)
                 error ("bitshift: N must be a scalar integer");
@@ -583,27 +583,32 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         DO_SBITSHIFT (int64, nbits < 64 ? nbits : 64);
       else if (cname == "double")
         {
-          static const int bits_in_mantissa = std::numeric_limits<double>::digits;
+          static const int bits_in_mantissa
+            = std::numeric_limits<double>::digits;
+
           nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
           int64_t mask = max_mantissa_value<double> ();
           if (nbits < bits_in_mantissa)
             mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = sizeof (double) * std::numeric_limits<unsigned char>::digits;
+          int bits_in_type = sizeof (double)
+                             * std::numeric_limits<unsigned char>::digits;
           NDArray m = m_arg.array_value ();
           DO_BITSHIFT ( );
         }
       else if (cname == "single")
         {
-          static const int bits_in_mantissa = std::numeric_limits<float>::digits;
+          static const int bits_in_mantissa
+            = std::numeric_limits<float>::digits;
           nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
           int64_t mask = max_mantissa_value<float> ();
           if (nbits < bits_in_mantissa)
             mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = sizeof (float) * std::numeric_limits<unsigned char>::digits;
+          int bits_in_type = sizeof (float)
+                             * std::numeric_limits<unsigned char>::digits;
           FloatNDArray m = m_arg.float_array_value ();
           DO_BITSHIFT (Float);
         }
@@ -617,7 +622,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 }
 
 DEFUN (bitmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} bitmax ()\n\
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
@@ -652,7 +657,7 @@ valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
 }
 
 DEFUN (flintmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} flintmax ()\n\
 @deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
@@ -687,7 +692,7 @@ floating point value.  The default class is @qcode{\"double\"}, but\n\
 }
 
 DEFUN (intmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmax (@var{type})\n\
 Return the largest integer that can be represented in an integer type.\n\
 The variable @var{type} can be\n\
@@ -757,7 +762,7 @@ The default for @var{type} is @code{uint32}.\n\
 }
 
 DEFUN (intmin, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmin (@var{type})\n\
 Return the smallest integer that can be represented in an integer type.\n\
 The variable @var{type} can be\n\
@@ -827,7 +832,7 @@ The default for @var{type} is @code{uint32}.\n\
 }
 
 DEFUN (sizemax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizemax ()\n\
 Return the largest value allowed for the size of an array.\n\
 If Octave is compiled with 64-bit indexing, the result is of class int64,\n\

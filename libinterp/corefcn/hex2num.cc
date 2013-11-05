@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (hex2num, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{n} =} hex2num (@var{s})\n\
 @deftypefnx {Built-in Function} {@var{n} =} hex2num (@var{s}, @var{class})\n\
 Typecast the 16 character hexadecimal character string to an IEEE 754\n\
@@ -197,7 +197,7 @@ hex2num ([\"402df854\"; \"41200000\"], \"single\")\n\
 */
 
 DEFUN (num2hex, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{s} =} num2hex (@var{n})\n\
 Typecast a double or single precision number or vector to a 8 or 16\n\
 character hexadecimal string of the IEEE 754 representation of the number.\n\
@@ -257,7 +257,7 @@ num2hex (single ([-1, 1, e, Inf]))\n\
               for (octave_idx_type j = 0; j < nchars; j++)
                 {
                   unsigned char ch =
-                    static_cast<char> (num.ival >> ((nchars - 1 - j) * 4) & 0xF);
+                    static_cast<char>(num.ival >> ((nchars - 1 - j) * 4) & 0xF);
                   if (ch >= 10)
                     ch += 'a' - 10;
                   else
@@ -294,7 +294,7 @@ num2hex (single ([-1, 1, e, Inf]))\n\
               for (octave_idx_type j = 0; j < nchars; j++)
                 {
                   unsigned char ch =
-                    static_cast<char> (num.ival >> ((nchars - 1 - j) * 4) & 0xF);
+                    static_cast<char>(num.ival >> ((nchars - 1 - j) * 4) & 0xF);
                   if (ch >= 10)
                     ch += 'a' - 10;
                   else

@@ -156,9 +156,8 @@ gnu_history::do_process_histcontrol (const std::string& control_arg)
 std::string
 gnu_history::do_histcontrol (void) const
 {
-  // FIXME -- instead of reconstructing this value, should we just save
-  // the string we were given when constructing the command_history
-  // object?
+  // FIXME: instead of reconstructing this value, should we just save
+  // the string we were given when constructing the command_history object?
 
   std::string retval;
 
@@ -192,7 +191,7 @@ gnu_history::do_add (const std::string& s)
       if (s.empty ()
           || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
         return false;
-     
+
       // Strip newline before adding to list
       std::string stmp = s;
       int stmp_len = stmp.length ();
@@ -289,7 +288,7 @@ gnu_history::do_goto_mark (void)
 
   mark = 0;
 
-  // FIXME -- for operate_and_get_next.
+  // FIXME: for operate_and_get_next.
   command_editor::remove_startup_hook (command_history::goto_mark);
 
   return 0;
@@ -545,7 +544,7 @@ std::string
 command_history::file (void)
 {
   return (instance_ok ())
-    ? instance->do_file () : std::string ();
+         ? instance->do_file () : std::string ();
 }
 
 void
@@ -559,7 +558,7 @@ std::string
 command_history::histcontrol (void)
 {
   return (instance_ok ())
-    ? instance->do_histcontrol () : std::string ();
+         ? instance->do_histcontrol () : std::string ();
 }
 
 void
@@ -573,7 +572,7 @@ int
 command_history::size (void)
 {
   return (instance_ok ())
-    ? instance->do_size () : 0;
+         ? instance->do_size () : 0;
 }
 
 void
@@ -587,7 +586,7 @@ bool
 command_history::ignoring_entries (void)
 {
   return (instance_ok ())
-    ? instance->do_ignoring_entries () : false;
+         ? instance->do_ignoring_entries () : false;
 }
 
 bool
@@ -616,35 +615,35 @@ int
 command_history::where (void)
 {
   return (instance_ok ())
-    ? instance->do_where () : 0;
+         ? instance->do_where () : 0;
 }
 
 int
 command_history::length (void)
 {
   return (instance_ok ())
-    ? instance->do_length () : 0;
+         ? instance->do_length () : 0;
 }
 
 int
 command_history::max_input_history (void)
 {
   return (instance_ok ())
-    ? instance->do_max_input_history () : 0;
+         ? instance->do_max_input_history () : 0;
 }
 
 int
 command_history::base (void)
 {
   return (instance_ok ())
-    ? instance->do_base () : 0;
+         ? instance->do_base () : 0;
 }
 
 int
 command_history::current_number (void)
 {
   return (instance_ok ())
-    ? instance->do_current_number () : 0;
+         ? instance->do_current_number () : 0;
 }
 
 void
@@ -658,14 +657,14 @@ int
 command_history::unstifle (void)
 {
   return (instance_ok ())
-    ? instance->do_unstifle () : 0;
+         ? instance->do_unstifle () : 0;
 }
 
 int
 command_history::is_stifled (void)
 {
   return (instance_ok ())
-    ? instance->do_is_stifled () : 0;
+         ? instance->do_is_stifled () : 0;
 }
 
 void
@@ -679,7 +678,7 @@ int
 command_history::goto_mark (void)
 {
   return (instance_ok ())
-    ? instance->do_goto_mark () : 0;
+         ? instance->do_goto_mark () : 0;
 }
 
 void
@@ -734,14 +733,14 @@ string_vector
 command_history::list (int limit, bool number_lines)
 {
   return (instance_ok ())
-    ? instance->do_list (limit, number_lines) : string_vector ();
+         ? instance->do_list (limit, number_lines) : string_vector ();
 }
 
 std::string
 command_history::get_entry (int n)
 {
   return (instance_ok ())
-    ? instance->do_get_entry (n) : std::string ();
+         ? instance->do_get_entry (n) : std::string ();
 }
 
 void

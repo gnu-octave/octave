@@ -412,7 +412,7 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
 
 // An implementation of the Cuthill-McKee algorithm.
 DEFUN_DLD (symrcm, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} symrcm (@var{S})\n\
 Return the symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
 @var{p} is a permutation vector such that\n\

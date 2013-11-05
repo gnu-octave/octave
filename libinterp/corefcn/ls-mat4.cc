@@ -171,7 +171,7 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 
   return 0;
 
- data_read_error:
+data_read_error:
   return -1;
 }
 
@@ -358,7 +358,8 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             for (octave_idx_type i = 0; i < nr - 1; i++)
               c.xelem (i) = dtmp[i] - 1;
             nc_new = dtmp[nr - 1];
-            read_mat_binary_data (is, data.fortran_vec (), prec, nr - 1, swap, flt_fmt);
+            read_mat_binary_data (is, data.fortran_vec (), prec, nr - 1,
+                                  swap, flt_fmt);
             read_mat_binary_data (is, dtmp, prec, 1, swap, flt_fmt);
 
             SparseMatrix sm = SparseMatrix (data, r, c, nr_new, nc_new);
@@ -406,10 +407,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
           tc = tc.convert_to_str (false, true, '\'');
       }
 
-      return retval;
-    }
+    return retval;
+  }
 
- data_read_error:
+data_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
   return retval;
 }

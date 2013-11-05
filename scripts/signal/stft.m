@@ -43,7 +43,7 @@
 ##
 ## The window names can be passed as strings or by the @var{win_type} number.
 ##
-## The following defaults are used for unspecifed arguments:
+## The following defaults are used for unspecified arguments:
 ## @var{win_size} = 80, @var{inc} = 24, @var{num_coef} = 64, and
 ## @var{win_type} = 1.
 ##

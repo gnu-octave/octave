@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_complex_LU_h)
-#define octave_sparse_complex_LU_h 1
+#if !defined (octave_SparseCmplxLU_h)
+#define octave_SparseCmplxLU_h 1
 
 #include "sparse-base-lu.h"
 #include "dSparse.h"
@@ -49,16 +49,17 @@ public:
                    bool udiag = false);
 
   SparseComplexLU (const SparseComplexLU& a)
-    : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a) { }
+    : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> (a)
+  { }
 
   SparseComplexLU& operator = (const SparseComplexLU& a)
-    {
-      if (this != &a)
-        sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
-          :: operator = (a);
+  {
+    if (this != &a)
+      sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
+                     :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~SparseComplexLU (void) { }
 };

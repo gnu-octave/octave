@@ -58,7 +58,7 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
         for (octave_idx_type i = 0; i < a.numel (); i++)
           {
             double val = static_cast<double>
-              (pa[i] + static_cast<octave_idx_type> (1));
+                         (pa[i] + static_cast<octave_idx_type> (1));
             if (val <= 0)
               ptmp[i] = nan_val;
             else
@@ -79,7 +79,7 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
       if (zero_based)
         for (octave_idx_type i = 0; i < a.numel (); i++)
           ptmp[i] = static_cast<double>
-            (pa[i] + static_cast<octave_idx_type> (1));
+                    (pa[i] + static_cast<octave_idx_type> (1));
       else
         for (octave_idx_type i = 0; i < a.numel (); i++)
           ptmp[i] = static_cast<double> (pa[i]);
@@ -152,7 +152,7 @@ NDArray::ifourier (int dim) const
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
     octave_fftw::ifft (out + k * stride * n, out + k * stride * n,
-                      n, howmany, stride, dist);
+                       n, howmany, stride, dist);
 
   return retval;
 }
@@ -334,7 +334,7 @@ NDArray::ifourier (int dim) const
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i] /
-              static_cast<double> (npts);
+                                                   static_cast<double> (npts);
         }
     }
 
@@ -427,8 +427,8 @@ NDArray::ifourier2d (void) const
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l] /
-                  static_cast<double> (npts);
+                retval((l + k*npts)*stride + j*dist) =
+                  prow[l] / static_cast<double> (npts);
             }
         }
 
@@ -522,8 +522,8 @@ NDArray::ifourierNd (void) const
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l] /
-                  static_cast<double> (npts);
+                retval((l + k*npts)*stride + j*dist) =
+                  prow[l] / static_cast<double> (npts);
             }
         }
 
@@ -635,7 +635,7 @@ NDArray::too_large_for_float (void) const
   return test_any (xtoo_large_for_float);
 }
 
-// FIXME -- this is not quite the right thing.
+// FIXME: this is not quite the right thing.
 
 boolNDArray
 NDArray::all (int dim) const
@@ -777,8 +777,7 @@ NDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
           octave_idx_type ival = NINTbig (d);
 
           if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-            // FIXME -- is there something
-            // better we could do? Should we warn the user?
+            // FIXME: is there something better to do? Should we warn the user?
             ival = 0;
 
           retval.elem (i) = static_cast<char>(ival);
@@ -848,7 +847,7 @@ NDArray::matrix_value (void) const
   Matrix retval;
 
   if (ndims () == 2)
-      retval = Matrix (Array<double> (*this));
+    retval = Matrix (Array<double> (*this));
   else
     (*current_liboctave_error_handler)
       ("invalid conversion of NDArray to Matrix");
@@ -907,16 +906,16 @@ operator >> (std::istream& is, NDArray& a)
     {
       double tmp;
       for (octave_idx_type i = 0; i < nel; i++)
-          {
-            tmp = octave_read_value<double> (is);
-            if (is)
-              a.elem (i) = tmp;
-            else
-              goto done;
-          }
+        {
+          tmp = octave_read_value<double> (is);
+          if (is)
+            a.elem (i) = tmp;
+          else
+            goto done;
+        }
     }
 
- done:
+done:
 
   return is;
 }

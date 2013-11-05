@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (file_editor_tab_h)
-#define file_editor_tab_h 1
+#if !defined (octave_file_editor_tab_h)
+#define octave_file_editor_tab_h 1
 
 #include <QWidget>
 #include <QCloseEvent>
@@ -153,11 +153,11 @@ private slots:
 private:
 
   enum editor_markers
-    {
-      bookmark,
-      breakpoint,
-      debugger_position
-    };
+  {
+    bookmark,
+    breakpoint,
+    debugger_position
+  };
 
   struct bp_info
   {

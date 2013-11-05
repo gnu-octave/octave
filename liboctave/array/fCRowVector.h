@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexRowVector_h)
-#define octave_FloatComplexRowVector_h 1
+#if !defined (octave_fCRowVector_h)
+#define octave_fCRowVector_h 1
 
 #include "MArray.h"
 #include "fRowVector.h"
@@ -32,7 +32,7 @@ class
 OCTAVE_API
 FloatComplexRowVector : public MArray<FloatComplex>
 {
-friend class FloatComplexColumnVector;
+  friend class FloatComplexColumnVector;
 
 public:
 
@@ -61,10 +61,10 @@ public:
     : MArray<FloatComplex> (a) { }
 
   FloatComplexRowVector& operator = (const FloatComplexRowVector& a)
-    {
-      MArray<FloatComplex>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<FloatComplex>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const FloatComplexRowVector& a) const;
   bool operator != (const FloatComplexRowVector& a) const;
@@ -72,12 +72,15 @@ public:
   // destructive insert/delete/reorder operations
 
   FloatComplexRowVector& insert (const FloatRowVector& a, octave_idx_type c);
-  FloatComplexRowVector& insert (const FloatComplexRowVector& a, octave_idx_type c);
+  FloatComplexRowVector& insert (const FloatComplexRowVector& a,
+                                 octave_idx_type c);
 
   FloatComplexRowVector& fill (float val);
   FloatComplexRowVector& fill (const FloatComplex& val);
-  FloatComplexRowVector& fill (float val, octave_idx_type c1, octave_idx_type c2);
-  FloatComplexRowVector& fill (const FloatComplex& val, octave_idx_type c1, octave_idx_type c2);
+  FloatComplexRowVector& fill (float val,
+                               octave_idx_type c1, octave_idx_type c2);
+  FloatComplexRowVector& fill (const FloatComplex& val,
+                               octave_idx_type c1, octave_idx_type c2);
 
   FloatComplexRowVector append (const FloatRowVector& a) const;
   FloatComplexRowVector append (const FloatComplexRowVector& a) const;
@@ -101,10 +104,10 @@ public:
   // row vector by matrix -> row vector
 
   friend FloatComplexRowVector operator * (const FloatComplexRowVector& a,
-                                      const FloatComplexMatrix& b);
+      const FloatComplexMatrix& b);
 
   friend FloatComplexRowVector operator * (const FloatRowVector& a,
-                                      const FloatComplexMatrix& b);
+      const FloatComplexMatrix& b);
 
   // other operations
 
@@ -113,8 +116,10 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const FloatComplexRowVector& a);
-  friend std::istream& operator >> (std::istream& is, FloatComplexRowVector& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FloatComplexRowVector& a);
+  friend std::istream& operator >> (std::istream& is,
+                                    FloatComplexRowVector& a);
 
   void resize (octave_idx_type n, const FloatComplex& rfv = FloatComplex (0))
   {
@@ -122,19 +127,22 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<FloatComplex>::clear (1, n); }
+  { Array<FloatComplex>::clear (1, n); }
 
 };
 
 // row vector by column vector -> scalar
 
-FloatComplex OCTAVE_API operator * (const FloatComplexRowVector& a, const ColumnVector& b);
+FloatComplex OCTAVE_API operator * (const FloatComplexRowVector& a,
+                                    const ColumnVector& b);
 
-FloatComplex OCTAVE_API operator * (const FloatComplexRowVector& a, const FloatComplexColumnVector& b);
+FloatComplex OCTAVE_API operator * (const FloatComplexRowVector& a,
+                                    const FloatComplexColumnVector& b);
 
 // other operations
 
-OCTAVE_API FloatComplexRowVector linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n);
+OCTAVE_API FloatComplexRowVector linspace (const FloatComplex& x1,
+    const FloatComplex& x2, octave_idx_type n);
 
 MARRAY_FORWARD_DEFS (MArray, FloatComplexRowVector, FloatComplex)
 

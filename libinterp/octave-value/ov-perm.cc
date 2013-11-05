@@ -251,7 +251,8 @@ octave_perm_matrix::index_vector (void) const
 }
 
 octave_value
-octave_perm_matrix::convert_to_str_internal (bool pad, bool force, char type) const
+octave_perm_matrix::convert_to_str_internal (bool pad, bool force,
+                                             char type) const
 {
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
@@ -319,7 +320,8 @@ octave_perm_matrix::save_binary (std::ostream& os, bool&)
   bool colp = matrix.is_col_perm ();
   os.write (reinterpret_cast<char *> (&sz), 4);
   os.write (reinterpret_cast<char *> (&colp), 1);
-  os.write (reinterpret_cast<const char *> (matrix.data ()), matrix.byte_size ());
+  os.write (reinterpret_cast<const char *> (matrix.data ()),
+                                            matrix.byte_size ());
 
   return true;
 }
@@ -395,15 +397,15 @@ octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax) const
 
 int
 octave_perm_matrix::write (octave_stream& os, int block_size,
-                                oct_data_conv::data_type output_type, int skip,
-                                oct_mach_info::float_format flt_fmt) const
+                           oct_data_conv::data_type output_type, int skip,
+                           oct_mach_info::float_format flt_fmt) const
 {
   return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
 }
 
 void
 octave_perm_matrix::print_info (std::ostream& os,
-                                    const std::string& prefix) const
+                                const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
 }
@@ -413,7 +415,7 @@ octave_value
 octave_perm_matrix::to_dense (void) const
 {
   if (! dense_cache.is_defined ())
-      dense_cache = Matrix (matrix);
+    dense_cache = Matrix (matrix);
 
   return dense_cache;
 }

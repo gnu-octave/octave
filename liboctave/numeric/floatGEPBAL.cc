@@ -60,13 +60,14 @@ extern "C"
 
 octave_idx_type
 FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
-                  const std::string& balance_job)
+                       const std::string& balance_job)
 {
   octave_idx_type n = a.cols ();
 
   if (a.rows () != n)
     {
-      (*current_liboctave_error_handler) ("FloatGEPBALANCE requires square matrix");
+      (*current_liboctave_error_handler)
+        ("FloatGEPBALANCE requires square matrix");
       return -1;
     }
 

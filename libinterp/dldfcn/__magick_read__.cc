@@ -1408,6 +1408,32 @@ use @code{imwrite}.\n\
         }
     }
 
+      // FIXME - LoopCount or animationIterations
+      //  How it should work:
+      //
+      // This value is only set for the first image in the sequence. Trying
+      // to set this value with the append mode should have no effect, the
+      // value used with the first image is the one that counts (that would
+      // also be Matlab compatible). Thus, the right way to do this would be
+      // to have an else block on the condition above, and set this only
+      // when creating a new file. Since Matlab does not interpret a 4D
+      // matrix as sequence of images to write, its users need to use a for
+      // loop and set LoopCount only on the first iteration (it actually
+      // throws warnings otherwise)
+      //
+      //  Why is this not done the right way:
+      //
+      // When GM saves a single image, it discards the value if there is only
+      // a single image and sets it to "no loop".  Since our default is an
+      // infinite loop, if the user tries to do it the Matlab way (setting
+      // LoopCount only on the first image) that value will go nowhere.
+      // See https://sourceforge.net/p/graphicsmagick/bugs/248/
+      // Because of this, we document to set LoopCount on every iteration
+      // (in Matlab will cause a lot of warnings), or pass a 4D matrix with
+      // all frames (won't work in Matlab at all).
+      // Note that this only needs to be set on the first frame
+      imvec[0].animationIterations (options.getfield ("loopcount").uint_value ());
+
   write_file (filename, ext, imvec);
   if (error_state)
     return retval;

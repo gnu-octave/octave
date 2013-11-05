@@ -43,6 +43,7 @@ function __imwrite__ (img, varargin)
   ## set default for options
   options = struct ("writemode", "overwrite",
                     "quality",   75,
+                    "loopcount", 0, ## this is actually Inf
                     "alpha",     cast ([], class (img)));
 
   for idx = 1:2:numel (param_list)
@@ -82,8 +83,32 @@ function __imwrite__ (img, varargin)
         endif
         options.quality = round (options.quality);
 
+      case "loopcount"
+        options.loopcount = param_list{idx+1};
+        if (! isscalar (options.loopcount) || ! isnumeric (options.loopcount)
+            || (! isinf (options.loopcount) && (options.loopcount < 0 ||
+                                                options.loopcount > 65535)))
+          error ("imwrite: value for %s must be Inf or between 0 and 65535",
+                 param_list{idx});
+        endif
+        ## Graphics Magick is a bit weird here. A value of 0 will be an
+        ## infinite loop, a value of 1, will really be no loop, while a
+        ## value of 2 or more will be that number of loops (checked
+        ## with GNOME image viewer). This means that there is no way
+        ## to make it loop only once. See
+        ## https://sourceforge.net/p/graphicsmagick/bugs/249/
+        ## There is also the problem of setting this when there is only
+        ## a single frame. See
+        ## https://sourceforge.net/p/graphicsmagick/bugs/248/
+        if (isinf (options.loopcount))
+          options.loopcount = 0;
+        elseif (options.loopcount == 0 || options.loopcount == 1)
+          options.loopcount++;
+        endif
+        options.loopcount = floor (options.loopcount);
+
       otherwise
-        error ("imwrite: invalid PARAMETER `%s'", varargin{idx});
+        error ("imwrite: invalid PARAMETER `%s'", param_list{idx});
 
     endswitch
   endfor

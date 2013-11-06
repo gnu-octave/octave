@@ -337,6 +337,7 @@ corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) \
                                  $(FFTW_XCPPFLAGS) \
                                  $(FONTCONFIG_CPPFLAGS) \
                                  $(FT2_CPPFLAGS) \
+                                 $(HDF5_CPPFLAGS) \
                                  $(LLVM_CPPFLAGS)
 corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
 

@@ -69,8 +69,8 @@ function h = __errplot__ (fstr, hax, varargin)
     args = __add_datasource__ ("__errplot__", hg,
                                {"x", "y", "l", "u", "xl", "xu"});
 
-    hl = [(__line__ (hg, "color", lc, "linestyle", ls, "marker", mk)),
-          (__line__ (hg, "color", lc, "linestyle", "-", "marker", "none"))];
+    hl = [(__line__ (hg, "color", lc, "linestyle", "-", "marker", "none")),
+          (__line__ (hg, "color", lc, "linestyle", ls, "marker", mk))];
 
     switch (numel (varargin))
       case 2
@@ -158,16 +158,16 @@ function h = __errplot__ (fstr, hax, varargin)
     addproperty ("xudata", hg, "data", xudata(:));
     addproperty ("format", hg, "string", ifmt);
 
-    addproperty ("color", hg, "linecolor", get (hl(1), "color"));
-    addproperty ("linestyle", hg, "linelinestyle", get (hl(1), "linestyle"));
-    addproperty ("linewidth", hg, "linelinewidth", get (hl(1), "linewidth"));
-    addproperty ("marker", hg, "linemarker", get (hl(1), "marker"));
+    addproperty ("color", hg, "linecolor", get (hl(2), "color"));
+    addproperty ("linestyle", hg, "linelinestyle", get (hl(2), "linestyle"));
+    addproperty ("linewidth", hg, "linelinewidth", get (hl(2), "linewidth"));
+    addproperty ("marker", hg, "linemarker", get (hl(2), "marker"));
     addproperty ("markeredgecolor", hg, "linemarkerfacecolor",
-                 get (hl(1), "markeredgecolor"));
+                 get (hl(2), "markeredgecolor"));
     addproperty ("markerfacecolor", hg, "linemarkerfacecolor",
-                 get (hl(1), "markerfacecolor"));
+                 get (hl(2), "markerfacecolor"));
     addproperty ("markersize", hg, "linemarkersize",
-                 get (hl(1), "markersize"));
+                 get (hl(2), "markersize"));
 
     ## Matlab property, although Octave does not implement it.
     addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
@@ -309,7 +309,7 @@ endfunction
 function update_props (hg, ~, hl)
   set (hl, "color", get (hg, "color"),
            "linewidth", get (hg, "linewidth"));
-  set (hl(1), "linestyle", get (hg, "linestyle"),
+  set (hl(2), "linestyle", get (hg, "linestyle"),
               "marker", get (hg, "marker"),
               "markeredgecolor", get (hg, "markeredgecolor"),
               "markerfacecolor", get (hg, "markerfacecolor"),
@@ -320,7 +320,7 @@ function update_data (hg, ~, hl)
 
   if (strcmp (get (hg, "type"), "axes"))
     hax = hg;
-    hg = ancestor (hl(1), "hggroup");
+    hg = ancestor (hl(2), "hggroup");
   else
     hax = ancestor (hg, "axes");
   endif
@@ -335,15 +335,15 @@ function update_data (hg, ~, hl)
   xudata = get (hg, "xudata");
   ifmt = get (hg, "format");
 
-  set (hl(1), "xdata", xdata);
-  set (hl(1), "ydata", ydata);
+  set (hl(2), "xdata", xdata);
+  set (hl(2), "ydata", ydata);
 
   [errorbar_xdata, errorbar_ydata] = ...
           errorbar_data (xdata, ydata, ldata, udata, xldata, xudata, ...
                          ifmt, xscale, yscale);
 
-  set (hl(2), "xdata", errorbar_xdata);
-  set (hl(2), "ydata", errorbar_ydata);
+  set (hl(1), "xdata", errorbar_xdata);
+  set (hl(1), "ydata", errorbar_ydata);
 
 endfunction
 

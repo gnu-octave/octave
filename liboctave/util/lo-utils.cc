@@ -90,8 +90,7 @@ strsave (const char *s)
 // This function was adapted from xputenv from Karl Berry's kpathsearch
 // library.
 
-// FIXME -- make this do the right thing if we don't have a
-// SMART_PUTENV.
+// FIXME: make this do the right thing if we don't have a SMART_PUTENV.
 
 void
 octave_putenv (const std::string& name, const std::string& value)

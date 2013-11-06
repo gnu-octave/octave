@@ -821,7 +821,7 @@ public:
   {
     if (!uimenu->is_visible ())
       {
-        // FIXME - Toolbar and menubar do not update
+        // FIXME: Toolbar and menubar do not update
         uimenu->show ();
         mark_modified ();
       }
@@ -831,7 +831,7 @@ public:
   {
     if (uimenu->is_visible ())
       {
-        // FIXME - Toolbar and menubar do not update
+        // FIXME: Toolbar and menubar do not update
         uimenu->hide ();
         mark_modified ();
       }
@@ -1219,7 +1219,7 @@ private:
 
   void draw (void)
   {
-    // FIXME - Toolbar and menubar do not update properly
+    // FIXME: Toolbar and menubar do not update properly
     Matrix pos = fp.get_boundingbox (true);
     int canvas_h = pos(3);
     int canvas_w = pos(2);
@@ -2050,7 +2050,7 @@ public:
 
         input_event_hook_fcn_id = octave_value_list ();
 
-        // FIXME ???
+        // FIXME: ???
         Fl::wait (fltk_maxtime);
       }
   }

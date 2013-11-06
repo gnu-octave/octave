@@ -398,7 +398,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           // What integer type do we really have..
           std::string int_typ;
 #ifdef HAVE_H5T_GET_NATIVE_TYPE
-          // FIXME test this code and activated with an autoconf
+          // FIXME: test this code and activated with an autoconf
           // test!! It is also incorrect for 64-bit indexing!!
 
           switch (H5Tget_native_type (type_id, H5T_DIR_ASCEND))

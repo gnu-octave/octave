@@ -1563,7 +1563,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
     {
       if (argv[i] == "-file")
         {
-          // FIXME. This is an inefficient manner to implement this as the
+          // FIXME: This is an inefficient manner to implement this as the
           // variables are loaded in to a temporary context and then treated.
           // It would be better to refecat symbol_info_list to not store the
           // symbol records and then use it in load-save.cc (do_load) to

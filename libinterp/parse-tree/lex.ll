@@ -371,7 +371,7 @@ ANY_INCLUDING_NL (.|{NL})
 // It's also a pain in the ass to decide whether to insert a comma
 // after seeing a ']' character...
 
-// FIXME -- we need to handle block comments here.
+// FIXME: we need to handle block comments here.
 %}
 
 <MATRIX_START>\] {
@@ -388,7 +388,7 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
-// FIXME -- we need to handle block comments here.
+// FIXME: we need to handle block comments here.
 %}
 
 <MATRIX_START>\} {

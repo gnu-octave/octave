@@ -517,7 +517,7 @@ bitshift (eye (3), 1)\n\
 \n\
 bitshift (10, [-2, -1, 0, 1, 2])\n\
 @result{} 2   5  10  20  40\n\
-@c FIXME -- restore this example when third arg is allowed to be an array.\n\
+@c FIXME: restore this example when third arg is allowed to be an array.\n\
 @c\n\
 @c\n\
 @c bitshift ([1, 10], 2, [3,4])\n\

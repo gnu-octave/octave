@@ -3130,7 +3130,7 @@ figure::properties::set_integerhandle (const octave_value& val)
     }
 }
 
-// FIXME This should update monitorpositions and pointerlocation, but
+// FIXME: This should update monitorpositions and pointerlocation, but
 // as these properties are yet used, and so it doesn't matter that they
 // aren't set yet.
 void
@@ -6206,7 +6206,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               min_val = -1;
               max_val = 1;
             }
-          // FIXME -- maybe this test should also be relative?
+          // FIXME: maybe this test should also be relative?
           else if (std::abs (min_val - max_val)
                    < sqrt (std::numeric_limits<double>::epsilon ()))
             {
@@ -6246,7 +6246,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   double hi = (lims.get ().matrix_value ()) (1);
   bool is_negative = lo < 0 && hi < 0;
   double tmp;
-  // FIXME should this be checked for somewhere else? (i.e. set{x,y,z}lim)
+  // FIXME: should this be checked for somewhere else? (i.e. set{x,y,z}lim)
   if (hi < lo)
     {
       tmp = hi;
@@ -6273,7 +6273,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   if (is_logscale && ! (xisinf (hi) || xisinf (lo)))
     {
-      // FIXME - what if (hi-lo) < tick_sep?
+      // FIXME: what if (hi-lo) < tick_sep?
       //         ex: loglog ([1 1.1])
       tick_sep = std::max (tick_sep, 1.);
       tick_sep = std::ceil (tick_sep);

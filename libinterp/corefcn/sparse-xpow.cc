@@ -325,9 +325,9 @@ elem_xpow (double a, const SparseComplexMatrix& b)
 octave_value
 elem_xpow (const SparseMatrix& a, double b)
 {
-  // FIXME What should a .^ 0 give?? Matlab gives a
+  // FIXME: What should a .^ 0 give?  Matlab gives a
   // sparse matrix with same structure as a, which is strictly
-  // incorrect. Keep compatiability.
+  // incorrect. Keep compatibility.
 
   octave_value retval;
 

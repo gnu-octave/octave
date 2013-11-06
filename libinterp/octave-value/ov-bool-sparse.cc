@@ -144,7 +144,7 @@ octave_sparse_bool_matrix::convert_to_str_internal (bool pad, bool force,
   return tmp.convert_to_str (pad, force, type);
 }
 
-// FIXME These are inefficient ways of creating full matrices
+// FIXME: These are inefficient ways of creating full matrices
 
 Matrix
 octave_sparse_bool_matrix::matrix_value (bool) const

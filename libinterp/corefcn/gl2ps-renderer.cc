@@ -157,8 +157,8 @@ glps_renderer::render_text (const std::string& txt,
   gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize,
                 alignment_to_mode (ha, va), rotation);
 
-  // FIXME? -- we have no way of getting a bounding box from gl2ps, so
-  // we use freetype
+  // FIXME?
+  // We have no way of getting a bounding box from gl2ps, so we use freetype.
   Matrix bbox;
   uint8NDArray pixels;
   text_to_pixels (txt, pixels, bbox, 0, 0, rotation);

@@ -437,7 +437,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
         }
 
       // Structurally non-singular blocks
-      // FIXME Should use fine Dulmange-Mendelsohn decomposition here.
+      // FIXME: Should use fine Dulmange-Mendelsohn decomposition here.
       if (dm->rr[1] < dm->rr[2] && dm->cc[2] < dm->cc[3] && !info)
         {
           ST m = dmsolve_extract (a, pinv, q, dm->rr[1], dm->rr[2],

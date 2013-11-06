@@ -235,7 +235,7 @@ octave_char_matrix_str::string_value (bool) const
     {
       charMatrix chm = matrix.matrix_value ();
 
-      retval = chm.row_as_string (0);  // FIXME???
+      retval = chm.row_as_string (0);  // FIXME?
     }
   else
     error ("invalid conversion of charNDArray to string");
@@ -279,7 +279,7 @@ octave_char_matrix_str::short_disp (void) const
     {
       retval = string_value ();
 
-      // FIXME -- should this be configurable?
+      // FIXME: should this be configurable?
 
       if (retval.length () > 100)
         retval = retval.substr (0, 100);

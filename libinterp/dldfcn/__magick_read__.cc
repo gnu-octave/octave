@@ -1458,7 +1458,7 @@ use @code{imwrite}.\n\
         }
     }
 
-  // FIXME - LoopCount or animationIterations
+  // FIXME: LoopCount or animationIterations
   //  How it should work:
   //
   // This value is only set for the first image in the sequence. Trying

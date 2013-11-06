@@ -1055,7 +1055,7 @@ Undocumented internal function\n\
                     }
                   else
                     {
-                      // FIXME Does ascii mode need to be flagged here?
+                      // FIXME: Does ascii mode need to be flagged here?
                       std::ifstream ifile (file.c_str (), std::ios::in |
                                            std::ios::binary);
 

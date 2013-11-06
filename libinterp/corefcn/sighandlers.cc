@@ -223,7 +223,7 @@ octave_set_signal_handler (int sig, sig_handler *handler,
 #if defined (SIGALRM)
   else
 #endif
-  // FIXME -- Do we also need to explicitly disable SA_RESTART?
+  // FIXME: Do we also need to explicitly disable SA_RESTART?
   if (restart_syscalls)
     act.sa_flags |= SA_RESTART;
 #endif

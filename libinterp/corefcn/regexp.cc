@@ -78,10 +78,10 @@ do_regexp_ptn_string_escapes (const std::string& s)
               break;
 
 #if 0
-// FIXME : To be complete, we need to handle \oN, \o{N}.
-//         The PCRE library already handles \N where N
-//         is an octal number.  New code needs to merely
-//         replace \oN or \o{N} with \N.
+// FIXME: To be complete, we need to handle \oN, \o{N}.
+//        The PCRE library already handles \N where N
+//        is an octal number.  New code needs to merely
+//        replace \oN or \o{N} with \N.
             case 'o': // octal number
 #endif
 

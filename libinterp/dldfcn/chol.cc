@@ -160,8 +160,8 @@ sparse matrices.\n\
           if (tmp.compare ("vector") == 0)
             vecout = true;
           else if (tmp.compare ("lower") == 0)
-            // FIXME currently the option "lower" is handled by transposing the
-            //  matrix, factorizing it with the lapack function
+            // FIXME: currently the option "lower" is handled by transposing
+            //  the matrix, factorizing it with the lapack function
             //  DPOTRF ('U', ...) and finally transposing the factor.  It would
             //  be more efficient to use DPOTRF ('L', ...) in this case.
             LLt = true;

@@ -75,7 +75,7 @@ compatible dimensions.\n\
       octave_value a_arg = args(1);
       octave_value b_arg = args(2);
 
-      // FIXME Can we make a template version of the duplicated code below
+      // FIXME: Can we make a template version of the duplicated code below
       if (x_arg.is_single_type () || a_arg.is_single_type () ||
           b_arg.is_single_type ())
         {

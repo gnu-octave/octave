@@ -766,10 +766,10 @@ Force Octave to assume the file is in Octave's text format.\n\
 #endif /* HAVE_HDF5 */
       if (format != LS_UNKNOWN)
         {
-          // FIXME -- if we have already seen EOF on a
-          // previous call, how do we fix up the state of std::cin so
-          // that we can get additional input?  I'm afraid that we
-          // can't fix this using std::cin only.
+          // FIXME: if we have already seen EOF on a previous call,
+          // how do we fix up the state of std::cin so that we can get
+          // additional input?  I'm afraid that we can't fix this
+          // using std::cin only.
 
           retval = do_load (std::cin, orig_fname, format, flt_fmt,
                             list_only, swap, verbose, argv, i, argc,
@@ -1713,7 +1713,7 @@ the file @file{data} in Octave's binary format.\n\
 #ifdef HAVE_HDF5
       if (format == LS_HDF5)
         {
-          // FIXME. It should be possible to append to HDF5 files.
+          // FIXME: It should be possible to append to HDF5 files.
           if (append)
             {
               error ("save: appending to HDF5 files is not implemented");

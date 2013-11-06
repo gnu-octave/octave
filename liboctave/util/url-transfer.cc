@@ -180,7 +180,7 @@ base_url_transfer::mput_directory (const std::string& base,
                 }
               else
                 {
-                  // FIXME Does ascii mode need to be flagged here?
+                  // FIXME: Does ascii mode need to be flagged here?
                   std::ifstream ifile (realfile.c_str (), std::ios::in |
                                        std::ios::binary);
 

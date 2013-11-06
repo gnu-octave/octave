@@ -118,11 +118,13 @@ typedef void sig_handler (int);
 
 static pid_t gui_pid = 0;
 
+static int caught_signal = -1;
+
 static void
 gui_driver_sig_handler (int sig)
 {
   if (gui_pid > 0)
-    kill (gui_pid, sig);
+    caught_signal = sig;
 }
 
 static sig_handler *
@@ -483,14 +485,27 @@ main (int argc, char **argv)
 
           int status;
 
-          while (1)
+          while (true)
             {
               WAITPID (gui_pid, &status, 0);
 
-              if (WIFEXITED (status))
+              if (caught_signal > 0)
                 {
-                  retval = WIFEXITED (status) ? WEXITSTATUS (status) : 127;
+                  int sig = caught_signal;
 
+                  caught_signal = -1;
+
+                  kill (gui_pid, sig);
+                }
+              else if (WIFEXITED (status))
+                {
+                  retval = WEXITSTATUS (status);
+                  break;
+                }
+              else if (WIFSIGNALLED (status))
+                {
+                  std::cerr << "octave exited with signal "
+                            << WTERMSIG (status) << std::endl;
                   break;
                 }
             }

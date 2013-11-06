@@ -192,84 +192,152 @@ function h = subplot (varargin)
 
     ## FIXME: At the moment we force gnuplot to use the aligned mode
     ##        which will set "activepositionproperty" to "position".
-    ##        Τhis can yield to text overlap between labels and titles
-    ##        see bug #31610
+    ##        This can yield to text overlap between labels and titles.
+    ##        See bug #31610.
     if (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
       align_axes = true;
     endif
 
+    ## Oh, the things we do for Matlab compatibility.  Using the "position"
+    ## argument changes things so much that it became clearer to replicate
+    ## large chunks of code rather than have lots of if/else statements.
     if (! have_position)
+      ## Normal case where subplot indices have been given
       pos = subplot_position (rows, cols, index, "position");
       outerpos = subplot_position (rows, cols, index, "outerposition");
       box = [pos(1:2), pos(1:2)+pos(3:4)];
       outerbox = [outerpos(1:2), outerpos(1:2)+outerpos(3:4)];
       looseinset = [box(1:2)-outerbox(1:2), outerbox(3:4)-box(3:4)];
+
       if (align_axes)
         activepositionproperty = "position";
       else
         activepositionproperty = "outerposition";
       endif
-    endif
 
-    set (cf, "nextplot", "add");
+      set (cf, "nextplot", "add");
 
-    found = false;
-    kids = get (cf, "children");
-    for child = kids(:)'
-      ## Check whether this child is still valid; this might not be the
-      ## case anymore due to the deletion of previous children (due to
-      ## "deletefcn" callback or for legends/colorbars that are deleted
-      ## with their corresponding axes).
-      if (! ishandle (child))
-        continue;
-      endif
-      if (strcmp (get (child, "type"), "axes"))
-        ## Skip legend and colorbar objects.
-        if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
+      found = false;
+      kids = get (cf, "children");
+      for child = kids(:)'
+        ## Check whether this child is still valid; this might not be the
+        ## case anymore due to the deletion of previous children (due to
+        ## "deletefcn" callback or for legends/colorbars that are deleted
+        ## with their corresponding axes).
+        if (! ishandle (child))
           continue;
         endif
-        objpos = get (child, "outerposition");
-        if (all (abs (objpos - outerpos) < eps) && ! replace_axes)
-          ## If the new axes are in exactly the same position
-          ## as an existing axes object, use the existing axes.
-          found = true;
-          hsubplot = child;
-        else
-          ## If the new axes overlap an old axes object, delete the old axes.
-          if (align_axes)
-            objpos = get (child, "position");
+        if (strcmp (get (child, "type"), "axes"))
+          ## Skip legend and colorbar objects.
+          if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
+            continue;
           endif
-          x0 = pos(1);
-          x1 = x0 + pos(3);
-          y0 = pos(2);
-          y1 = y0 + pos(4);
-          objx0 = objpos(1);
-          objx1 = objx0 + objpos(3);
-          objy0 = objpos(2);
-          objy1 = objy0 + objpos(4);
-          if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
-            delete (child);
+          objpos = get (child, "outerposition");
+          if (all (abs (objpos - outerpos) < eps) && ! replace_axes)
+            ## If the new axes are in exactly the same position
+            ## as an existing axes object, use the existing axes.
+            found = true;
+            hsubplot = child;
+          else
+            ## If the new axes overlap an old axes object, delete the old axes.
+            if (align_axes)
+              objpos = get (child, "position");
+            endif
+            x0 = pos(1);
+            x1 = x0 + pos(3);
+            y0 = pos(2);
+            y1 = y0 + pos(4);
+            objx0 = objpos(1);
+            objx1 = objx0 + objpos(3);
+            objy0 = objpos(2);
+            objy1 = objy0 + objpos(4);
+            if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
+              delete (child);
+            endif
           endif
         endif
-      endif
-    endfor
+      endfor
 
-    if (found)
-      ## Switch to existing subplot
-      set (cf, "currentaxes", hsubplot);
-    else
-      hsubplot = axes ("box", "off",
-                       "position", pos,
-                       "looseinset", looseinset,
-                       "activepositionproperty", activepositionproperty,
-                       varargin{:});
-      addproperty ("subplot_align", hsubplot, "boolean", true);
-      addlistener (hsubplot, "position", @subplot_align);
-      if (! align_axes)
-        set (hsubplot, "subplot_align", false)
-        subplot_align (hsubplot)
+      if (found)
+        ## Switch to existing subplot
+        set (cf, "currentaxes", hsubplot);
+      else
+        hsubplot = axes ("box", "off",
+                         "position", pos,
+                         "looseinset", looseinset,
+                         "activepositionproperty", activepositionproperty,
+                         varargin{:});
+        addproperty ("subplot_align", hsubplot, "boolean", true);
+        addlistener (hsubplot, "position", @subplot_align);
+        if (! align_axes)
+          set (hsubplot, "subplot_align", false)
+          subplot_align (hsubplot)
+        endif
       endif
-    endif
+    else
+      ## "position" attribute given
+      if (align_axes)
+        activepositionproperty = "position";
+      else
+        activepositionproperty = "outerposition";
+      endif
+
+      set (cf, "nextplot", "add");
+
+      found = false;
+      kids = get (cf, "children");
+      for child = kids(:)'
+        ## Check whether this child is still valid; this might not be the
+        ## case anymore due to the deletion of previous children (due to
+        ## "deletefcn" callback or for legends/colorbars that are deleted
+        ## with their corresponding axes).
+        if (! ishandle (child))
+          continue;
+        endif
+        if (strcmp (get (child, "type"), "axes"))
+          ## Skip legend and colorbar objects.
+          if (any (strcmp (get (child, "tag"), {"legend", "colorbar"})))
+            continue;
+          endif
+          objpos = get (child, "position");
+          if (all (abs (objpos - pos) < eps) && ! replace_axes)
+            ## If the new axes are in exactly the same position
+            ## as an existing axes object, use the existing axes.
+            found = true;
+            hsubplot = child;
+          else
+            ## If the new axes overlap an old axes object, delete the old axes.
+            x0 = pos(1);
+            x1 = x0 + pos(3);
+            y0 = pos(2);
+            y1 = y0 + pos(4);
+            objx0 = objpos(1);
+            objx1 = objx0 + objpos(3);
+            objy0 = objpos(2);
+            objy1 = objy0 + objpos(4);
+            if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
+              delete (child);
+            endif
+          endif
+        endif
+      endfor
+
+      if (found)
+        ## Switch to existing subplot
+        set (cf, "currentaxes", hsubplot);
+      else
+        hsubplot = axes ("box", "off",
+                         "position", pos,
+                         "activepositionproperty", activepositionproperty,
+                         varargin{:});
+        addproperty ("subplot_align", hsubplot, "boolean", true);
+        addlistener (hsubplot, "position", @subplot_align);
+        if (! align_axes)
+          set (hsubplot, "subplot_align", false)
+          subplot_align (hsubplot)
+        endif
+      endif
+    endif  # ! have_position
 
   unwind_protect_cleanup
     set (0, "defaultaxesunits", axesunits);

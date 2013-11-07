@@ -1699,13 +1699,19 @@ pr_plus_format (std::ostream& os, const T& val)
 }
 
 void
-octave_print_internal (std::ostream& os, double d,
-                       bool /* pr_as_read_syntax */)
+octave_print_internal (std::ostream&, char, bool)
 {
-  if (plus_format)
-    {
-      pr_plus_format (os, d);
-    }
+  panic_impossible ();
+}
+
+void
+octave_print_internal (std::ostream& os, double d,
+                       bool pr_as_read_syntax)
+{
+  if (pr_as_read_syntax)
+    os << d;
+  else if (plus_format)
+    pr_plus_format (os, d);
   else
     {
       set_format (d);
@@ -3376,6 +3382,13 @@ PRINT_INT_ARRAY_INTERNAL (octave_uint64)
 
 void
 octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
+{
+  panic_impossible ();
+}
+
+void
+octave_print_internal (std::ostream&, const octave_value&,
+                       bool pr_as_read_syntax)
 {
   panic_impossible ();
 }

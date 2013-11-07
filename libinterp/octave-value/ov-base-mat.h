@@ -157,6 +157,8 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
+  std::string short_disp (void) const;
+
   MT& matrix_ref (void)
   {
     clear_cached_info ();

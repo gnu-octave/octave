@@ -78,6 +78,7 @@ main_window::main_window (QWidget *p)
     editor_window (create_default_editor (this)),
     workspace_window (new workspace_view (this)),
     find_files_dlg (0),
+    release_notes_window (0),
     _octave_main_thread (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
@@ -107,6 +108,11 @@ main_window::~main_window (void)
     {
       delete find_files_dlg;
       find_files_dlg = 0;
+    }
+  if (release_notes_window)
+    {
+      delete release_notes_window;
+      release_notes_window = 0;
     }
   delete _octave_main_thread;
   delete _octave_qt_link;
@@ -254,43 +260,51 @@ main_window::open_online_documentation_page (void)
 void
 main_window::display_release_notes (void)
 {
-  std::string news_file = Voct_etc_dir + "/NEWS";
-
-  QString news;
-
-  QFile *file = new QFile (QString::fromStdString (news_file));
-  if (file->open (QFile::ReadOnly))
+  if (! release_notes_window)
     {
-      QTextStream *stream = new QTextStream (file);
-      news = stream->readAll ();
-      if (! news.isEmpty ())
+      std::string news_file = Voct_etc_dir + "/NEWS";
+
+      QString news;
+
+      QFile *file = new QFile (QString::fromStdString (news_file));
+      if (file->open (QFile::ReadOnly))
         {
-          news.prepend ("<pre>");
-          news.append ("</pre>");
+          QTextStream *stream = new QTextStream (file);
+          news = stream->readAll ();
+          if (! news.isEmpty ())
+            {
+              news.prepend ("<pre>");
+              news.append ("</pre>");
+            }
+          else
+            news = (tr ("The release notes file '%1' is empty.")
+                    . arg (QString::fromStdString (news_file)));
         }
       else
-        news = (tr ("The release notes file '%1' is empty.")
+        news = (tr ("The release notes file '%1' cannot be read.")
                 . arg (QString::fromStdString (news_file)));
+
+
+      release_notes_window = new QWidget;
+
+      QTextBrowser *browser = new QTextBrowser (release_notes_window);
+      browser->setText (news);
+
+      QVBoxLayout *vlayout = new QVBoxLayout;
+      vlayout->addWidget (browser);
+
+      release_notes_window->setLayout (vlayout);
+      release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
+      release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
     }
-  else
-    news = (tr ("The release notes file '%1' cannot be read.")
-            . arg (QString::fromStdString (news_file)));
 
+  if (! release_notes_window->isVisible ())
+    release_notes_window->show ();
+  else if (release_notes_window->isMinimized ())
+    release_notes_window->showNormal ();
 
-  QWidget *w = new QWidget;
-
-  QTextBrowser *browser = new QTextBrowser (w);
-  browser->setText (news);
-
-  QVBoxLayout *vlayout = new QVBoxLayout;
-  vlayout->addWidget (browser);
-
-  w->setLayout (vlayout);
-  w->setWindowTitle (tr ("Octave Release Notes"));
-  w->setWindowIcon (QIcon (_release_notes_icon));
-  w->show ();
-  w->raise ();
-  w->activateWindow ();
+  release_notes_window->raise ();
+  release_notes_window->activateWindow ();
 }
 
 void

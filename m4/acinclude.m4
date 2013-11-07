@@ -2118,20 +2118,22 @@ return v[3] == 207089 ? 0 : 1;
         4.8.2)
         ;;
         *)
-          warn_stl_algo_h="UNEXPECTED: found stl_algo.h broken in $GXX_VERSION"
+          octave_cv_broken_stl_algo_h=no
+          warn_stl_algo_h="UNEXPECTED: found nth_element broken in $GXX_VERSION.  Refusing to fix except for g++ 4.8.2."
           OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
         ;;
       esac
     else
       case "$GXX_VERSION" in
         4.8.2)
-          warn_stl_algo_h="UNEXPECTED: found stl_algo.h working in g++ $GXX_VERSION -- has it been patched on your system?"
+          warn_stl_algo_h="UNEXPECTED: found nth_element working in g++ 4.8.2.  Has it been patched on your system?"
           OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
         ;;
       esac
     fi
   else
-    warn_stl_algo_h="UNEXPECTED: nth_element test failed (expected only for g++ 4.8.2)"
+    octave_cv_broken_stl_algo_h=no
+    warn_stl_algo_h="UNEXPECTED: nth_element test failed.  Refusing to fix except for g++ 4.8.2."
     OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
   fi
 ])

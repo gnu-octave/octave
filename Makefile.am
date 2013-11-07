@@ -95,6 +95,8 @@ BUILT_SOURCES = run-octave
 
 if AMCOND_HAVE_BROKEN_STL_ALGO_H
   BUILT_SOURCES += bits/stl_algo.h
+else
+  BUILT_SOURCES += nonexistent-file
 endif
 
 noinst_SCRIPTS = run-octave
@@ -136,6 +138,13 @@ run-octave: run-octave.in Makefile
 bits/stl_algo.h: build-aux/stl_algo.h-fixed
 	$(MKDIR_P) bits
 	$(INSTALL_HEADER) $< $@
+
+## If we aren't trying to fix stl_algo.h, then try to ensure that
+## there isn't a stray copy sitting in the build tree.
+
+nonexistent-file:
+	rm -f bits/stl_algo.h
+.PHONY: nonexistent-file
 
 .gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)

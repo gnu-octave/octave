@@ -173,7 +173,7 @@ std::string
 octave_base_scalar<ST>::short_disp (void) const
 {
   std::ostringstream buf;
-  octave_print_internal (buf, scalar);
+  octave_print_internal (buf, scalar, true);
   return buf.str ();
 }
 

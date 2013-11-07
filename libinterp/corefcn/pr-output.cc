@@ -2122,12 +2122,12 @@ pr_plus_format<> (std::ostream& os, const Complex& c)
 
 void
 octave_print_internal (std::ostream& os, const Complex& c,
-                       bool /* pr_as_read_syntax */)
+                       bool pr_as_read_syntax)
 {
-  if (plus_format)
-    {
-      pr_plus_format (os, c);
-    }
+  if (pr_as_read_syntax)
+    os << c;
+  else if (plus_format)
+    pr_plus_format (os, c);
   else
     {
       set_format (c);

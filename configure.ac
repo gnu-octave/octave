@@ -351,11 +351,27 @@ if test "$GCC" = yes; then
 
   GCC_VERSION=$gcc_version
 fi
-AC_SUBST(CC_VERSION)
+AC_SUBST(GCC_VERSION)
 
 ## FIXME: CC_VERSION is deprecated and should be removed in Octave version 3.12
-CC_VERSION=$gcc_version
-AC_SUBST(GCC_VERSION)
+CC_VERSION=$GCC_VERSION
+AC_SUBST(CC_VERSION)
+
+### Also check g++ version number, it might be different from the
+## gcc version number.
+
+GXX_VERSION=
+if test "$GXX" = yes; then
+  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g++ version" | \
+    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+
+  AX_COMPARE_VERSION([$gxx_version], [lt], [3],
+    [warn_gxx_version="g++ version $gxx_version is likely to cause problems"
+     OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
+
+  GXX_VERSION=$gxx_version
+fi
+AC_SUBST(GXX_VERSION)
 
 ### Determine the compiler flag necessary to create dependencies
 

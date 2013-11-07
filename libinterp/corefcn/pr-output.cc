@@ -520,7 +520,7 @@ pr_min_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (xfinite (val))
+        if (! xfinite (val))
           continue;
 
         all_inf_or_nan = false;

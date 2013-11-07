@@ -342,6 +342,7 @@ gl_EARLY
 
 GCC_VERSION=
 if test "$GCC" = yes; then
+  AC_MSG_CHECKING([C compiler version number])
   gcc_version=`$CC -v 2>&1 | $GREP "^.*gcc version" | \
     $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
@@ -350,6 +351,7 @@ if test "$GCC" = yes; then
      OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
 
   GCC_VERSION=$gcc_version
+  AC_MSG_RESULT([$GCC_VERSION])
 fi
 AC_SUBST(GCC_VERSION)
 
@@ -362,7 +364,8 @@ AC_SUBST(CC_VERSION)
 
 GXX_VERSION=
 if test "$GXX" = yes; then
-  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g++ version" | \
+  AC_MSG_CHECKING([C++ compiler version number])
+  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
     $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
   AX_COMPARE_VERSION([$gxx_version], [lt], [3],
@@ -370,8 +373,13 @@ if test "$GXX" = yes; then
      OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
 
   GXX_VERSION=$gxx_version
+  AC_MSG_RESULT([$GXX_VERSION])
 fi
 AC_SUBST(GXX_VERSION)
+
+OCTAVE_CHECK_BROKEN_STL_ALGO_H
+AM_CONDITIONAL([AMCOND_HAVE_BROKEN_STL_ALGO_H],
+  [test $octave_cv_broken_stl_algo_h = yes])
 
 ### Determine the compiler flag necessary to create dependencies
 

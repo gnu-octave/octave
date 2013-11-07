@@ -44,6 +44,7 @@ EXTRA_DIST = \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \
   build-aux/OctJavaQry.class \
+  build-aux/stl_algo.h-fixed \
   etc/NEWS.1 \
   etc/NEWS.2 \
   etc/NEWS.3 \
@@ -92,6 +93,10 @@ endif
 
 BUILT_SOURCES = run-octave
 
+if AMCOND_HAVE_BROKEN_STL_ALGO_H
+  BUILT_SOURCES += bits/stl_algo.h
+endif
+
 noinst_SCRIPTS = run-octave
 
 INFO_FILES = \
@@ -127,6 +132,10 @@ check: all
 run-octave: run-octave.in Makefile
 	@$(do_subst_script_vals)
 	chmod a+rx "$@"
+
+bits/stl_algo.h: build-aux/stl_algo.h-fixed
+	$(MKDIR_P) bits
+	$(INSTALL_HEADER) $< $@
 
 .gdbinit: etc/gdbinit
 	@$(gdbinit_install_rule)

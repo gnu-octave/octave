@@ -53,7 +53,7 @@ endfunction
 %! unwind_protect
 %!   l = line;
 %!   kids = allchild (hf);
-%!   assert (get (kids, "type"), {"axes"; "uimenu"; "uimenu"; "uimenu"});
+%!   assert (get (kids, "type"), {"axes"; "uimenu"; "uimenu"});
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);

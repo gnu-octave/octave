@@ -54,10 +54,6 @@ function __add_default_menu__ (fig)
         uimenu (gm, "label", "Rotate+Zoom", "callback", @guimode_cb);
         uimenu (gm, "label", "None", "callback", @guimode_cb);
 
-    __h = uimenu (fig, "label", "&Help", "handlevisibility", "off",
-                       "tag", "__default_menu__");
-      uimenu (__h, "label", "A&bout", "enable", "off");
-
     ## FIXME: This drawnow () must occur after at least one menu item has
     ##        been defined to avoid sizing issues in new figures.
     ##        This may lead to flicker.  The real fix must be in the C++ code. 

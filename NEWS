@@ -272,6 +272,10 @@ Summary of important user-visible changes for version 3.8:
 
                "excess kurtosis" = kurtosis (x) - 3
 
+ ** The moment function has changed definition to be compatible with 
+    Matlab.  It now returns the central moment instead of the raw moment.
+    The old behavior can be had by passing the type argument "r" for raw.
+
  ** The default name of the Octave crash dump file is now 
     "octave-workspace" instead of "octave-core".  The exact name can
     always be customized with the octave_core_file_name function.

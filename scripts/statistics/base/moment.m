@@ -22,7 +22,55 @@
 ## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{dim})
 ## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{type}, @var{dim})
 ## @deftypefnx {Function File} {} moment (@var{x}, @var{p}, @var{dim}, @var{type})
-## Compute the @var{p}-th moment of the vector @var{x} about zero.
+## Compute the @var{p}-th central moment of the vector @var{x}.
+##
+## @tex
+## $$
+## {\sum_{i=1}^N (x_i - \bar{x})^p \over N}
+## $$
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+## 1/N SUM_i (x(i) - mean(x))^p
+## @end group
+## @end example
+##
+## @end ifnottex
+## 
+## If @var{x} is a matrix, return the row vector containing the @var{p}-th
+## central moment of each column.
+##
+## The optional string @var{type} specifies the type of moment to be computed.
+## Valid options are:
+##
+## @table @asis
+## @item @qcode{"c"}
+##   Central Moment (default). 
+##
+## @item  @qcode{"a"}
+## @itemx @qcode{"ac"}
+##   Absolute Central Moment.  The moment about the mean ignoring sign
+## defined as
+## @tex
+## $$
+## {\sum_{i=1}^N {\left| x_i - \bar{x} \right|}^p \over N}
+## $$
+## @end tex
+## @ifnottex
+##
+## @example
+## @group
+## 1/N SUM_i (abs (x(i) - mean(x)))^p
+## @end group
+## @end example
+##
+## @end ifnottex
+##
+## @item @qcode{"r"}
+##   Raw Moment.  The moment about zero defined as 
+## 
 ## @tex
 ## $$
 ## {\rm moment} (x) = { \sum_{i=1}^N {x_i}^p \over N }
@@ -38,32 +86,8 @@
 ##
 ## @end ifnottex
 ##
-## If @var{x} is a matrix, return the row vector containing the
-## @var{p}-th moment of each column.
-##
-## The optional string @var{type} specifies the type of moment to be computed.
-## Valid options are:
-##
-## @table @asis
-## @item @qcode{"c"}
-##   Central Moment.  The moment about the mean defined as
-## @tex
-## $$
-## {\sum_{i=1}^N (x_i - \bar{x})^p \over N}
-## $$
-## @end tex
-## @ifnottex
-##
-## @example
-## @group
-## 1/N SUM_i (x(i) - mean(x))^p
-## @end group
-## @end example
-##
-## @end ifnottex
-##
-## @item @qcode{"a"}
-##   Absolute Moment.  The moment about zero ignoring sign defined as
+## @item @qcode{"ar"}
+##   Absolute Raw Moment.  The moment about zero ignoring sign defined as
 ## @tex
 ## $$
 ## {\sum_{i=1}^N {\left| x_i \right|}^p \over N}
@@ -78,25 +102,7 @@
 ## @end example
 ##
 ## @end ifnottex
-##
-## @item @qcode{"ac"}
-##   Absolute Central Moment.  Defined as
-## @tex
-## $$
-## {\sum_{i=1}^N {\left| x_i - \bar{x} \right|}^p \over N}
-## $$
-## @end tex
-## @ifnottex
-##
-## @example
-## @group
-## 1/N SUM_i ( abs (x(i) - mean(x)) )^p
-## @end group
-## @end example
-##
-## @end ifnottex
 ## @end table
-##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## If both @var{type} and @var{dim} are given they may appear in any order.
@@ -115,7 +121,7 @@ function m = moment (x, p, opt1, opt2)
     print_usage ();
   endif
 
-  if (!(isnumeric (x) || islogical (x)) || isempty (x))
+  if (! (isnumeric (x) || islogical (x)) || isempty (x))
     error ("moment: X must be a non-empty numeric matrix or vector");
   endif
 
@@ -162,7 +168,7 @@ function m = moment (x, p, opt1, opt2)
 
   n = sz(dim);
 
-  if (any (type == "c"))
+  if (! any (type == "r"))
     x = center (x, dim);
   endif
   if (any (type == "a"))
@@ -176,24 +182,25 @@ endfunction
 
 %!test
 %! x = rand (10);
-%! assert (moment (x,1), mean (x), 1e1*eps);
-%! assert (moment (x,2), meansq (x), 1e1*eps);
-%! assert (moment (x,1,2), mean (x,2), 1e1*eps);
-%! assert (moment (x,1,"c"), mean (center (x)), 1e1*eps);
-%! assert (moment (x,1,"a"), mean (abs (x)), 1e1*eps);
+%! assert (moment (x,1), mean (center (x)));
+%! assert (moment (x,2), meansq (center (x)));
+%! assert (moment (x,1,2), mean (center (x, 2), 2));
+%! assert (moment (x,1,"a"), mean (abs (center (x))));
+%! assert (moment (x,1,"r"), mean (x));
+%! assert (moment (x,1,"ar"), mean (abs (x)));
 
-%!assert (moment (single ([1 2 3]), 1), single (2))
+%!assert (moment (single ([1 2 3]), 1, "r"), single (2))
 
 %% Test input validation
 %!error moment ()
 %!error moment (1)
 %!error moment (1, 2, 3, 4, 5)
-%!error moment (['A'; 'B'], 2)
-%!error moment (ones (2,0,3), 2)
-%!error moment (1, true)
-%!error moment (1, ones (2,2))
-%!error moment (1, 2, 3, 4)
-%!error moment (1, 2, ones (2,2))
-%!error moment (1, 2, 1.5)
-%!error moment (1, 2, 4)
+%!error <X must be a non-empty numeric matrix> moment (['A'; 'B'], 2)
+%!error <X must be a non-empty numeric matrix> moment (ones (2,0,3), 2)
+%!error <P must be a numeric scalar> moment (1, true)
+%!error <P must be a numeric scalar> moment (1, ones (2,2))
+%!error <expecting TYPE to be a string> moment (1, 2, 3, 4)
+%!error <DIM must be an integer and a valid dimension> moment (1, 2, ones (2,2))
+%!error <DIM must be an integer and a valid dimension> moment (1, 2, 1.5)
+%!error <DIM must be an integer and a valid dimension> moment (1, 2, 4)
 

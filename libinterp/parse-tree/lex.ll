@@ -596,7 +596,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     if (full_line_comment)
       {
-        if (yytext[i++] == '{')
+        if (num_comment_chars == 1 && yytext[i++] == '{')
           {
             bool looks_like_block_comment = true;
 

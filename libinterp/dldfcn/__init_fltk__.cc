@@ -74,6 +74,7 @@ To initialize:
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 
+#include "display.h"
 #include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
@@ -2090,7 +2091,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK
-  if (! toolkit_loaded)
+  if (! display_info::display_available ())
+    error ("__init_fltk__: no graphics DISPLAY available");
+  else if (! toolkit_loaded)
     {
       mlock ();
 

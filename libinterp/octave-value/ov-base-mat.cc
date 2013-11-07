@@ -494,6 +494,8 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
       if (nel <= max_elts)
         os << "]";
     }
+  else
+    os << "...";
 }
 
 template <class MT>

@@ -157,7 +157,7 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
-  std::string short_disp (void) const;
+  void short_disp (std::ostream& os) const;
 
   MT& matrix_ref (void)
   {

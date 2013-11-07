@@ -388,29 +388,25 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
   return retval;
 }
 
-std::string
-octave_range::short_disp (void) const
+void
+octave_range::short_disp (std::ostream& os) const
 {
-  std::ostringstream buf;
-
   octave_idx_type len = range.nelem ();
 
   if (len == 0)
-    buf << "[]";
+    os << "[]";
   else
     {
-      buf << range.base () << ":";
+      os << range.base () << ":";
 
       if (len > 1)
         {
           if (range.inc () != 1)
-            buf << range.inc () << ":";
+            os << range.inc () << ":";
 
-          buf << range.limit ();
+          os << range.limit ();
         }
     }
-
-  return buf.str ();
 }
 
 // Skip white space and comments on stream IS.

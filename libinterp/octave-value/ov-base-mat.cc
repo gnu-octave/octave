@@ -450,13 +450,11 @@ octave_base_matrix<MT>::print_info (std::ostream& os,
 }
 
 template <class MT>
-std::string
-octave_base_matrix<MT>::short_disp (void) const
+void
+octave_base_matrix<MT>::short_disp (std::ostream& os) const
 {
-  std::ostringstream buf;
-
   if (matrix.is_empty ())
-    buf << "[]";
+    os << "[]";
   else if (matrix.ndims () == 2)
     {
       // FIXME: should this be configurable?
@@ -468,32 +466,34 @@ octave_base_matrix<MT>::short_disp (void) const
       octave_idx_type nr = matrix.rows ();
       octave_idx_type nc = matrix.columns ();
 
-      buf << "[";
+      os << "[";
 
       for (octave_idx_type i = 0; i < nr; i++)
         {
           for (octave_idx_type j = 0; j < nc; j++)
             {
-              octave_print_internal (buf, matrix(j*nr+i), true);
+              std::ostringstream buf;
+              octave_print_internal (buf, matrix(j*nr+i));
+              std::string tmp = buf.str ();
+              size_t pos = tmp.find_first_not_of (" ");
+              os << tmp.substr (pos);
 
               if (++elts >= max_elts)
                 goto done;
 
               if (j < nc - 1)
-                buf << ", ";
+                os << ", ";
             }
 
           if (i < nr - 1 && elts < max_elts)
-            buf << "; ";
+            os << "; ";
         }
 
     done:
 
       if (nel <= max_elts)
-        buf << "]";
+        os << "]";
     }
-
-  return buf.str ();
 }
 
 template <class MT>

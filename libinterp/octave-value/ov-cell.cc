@@ -750,10 +750,10 @@ octave_cell::print_raw (std::ostream& os, bool) const
     }
 }
 
-std::string
-octave_cell::short_disp (void) const
+void
+octave_cell::short_disp (std::ostream& os) const
 {
-  return matrix.is_empty () ? "{}" : "";
+  os << matrix.is_empty () ? "{}" : "...";
 }
 
 #define CELL_ELT_TAG "<cell-element>"

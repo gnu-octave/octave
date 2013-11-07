@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <sstream>
+
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-env.h"
@@ -1418,8 +1420,12 @@ symbol_table::do_workspace_info (void) const
               else if (sr.is_inherited ())
                 storage = 'i';
 
+              std::ostringstream buf;
+              val.short_disp (buf);
+              std::string short_disp_str = buf.str ();
+
               workspace_element elt (storage, nm, val.class_name (),
-                                     val.short_disp (), dv.str (),
+                                     short_disp_str, dv.str (),
                                      val.is_complex_type ());
 
               retval.push_back (elt);

@@ -1004,7 +1004,16 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           addlistener (hlegend, "textcolor", @updatelegendtext);
           ## Properties which could change size of box, such as fontsize,
           ## require legend to be redrawn.
-          addlistener (hlegend, "fontsize", @updatelegend);
+          ## FIXME: fontsize is changed by print.m function during the
+          ##        production of a plot for output.  This screws things up
+          ##        because legend tries to return the axes size to what it
+          ##        was when the figure was created, versus what it is now
+          ##        when the figure is being printed.  Temporary hack is
+          ##        good enough for generating the Octave manual which still
+          ##        relies on gnuplot for generating images.  See bug #40333.
+          if (! gnuplot)
+            addlistener (hlegend, "fontsize", @updatelegend);
+          endif
           addlistener (hlegend, "fontunits", @updatelegend);
           addlistener (hlegend, "interpreter", @updatelegend);
           addlistener (hlegend, "location", @updatelegend);

@@ -2115,7 +2115,7 @@ return v[3] == 207089 ? 0 : 1;
   if test "$GXX" = yes; then
     if test $octave_cv_broken_stl_algo_h = yes; then
       case "$GXX_VERSION" in
-        4.8.2)
+        4.8.[012])
         ;;
         *)
           octave_cv_broken_stl_algo_h=no

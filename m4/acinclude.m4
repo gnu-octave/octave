@@ -2115,11 +2115,11 @@ return v[3] == 207089 ? 0 : 1;
   if test "$GXX" = yes; then
     if test $octave_cv_broken_stl_algo_h = yes; then
       case "$GXX_VERSION" in
-        4.8.[012])
+        4.8.[[012]])
         ;;
         *)
           octave_cv_broken_stl_algo_h=no
-          warn_stl_algo_h="UNEXPECTED: found nth_element broken in $GXX_VERSION.  Refusing to fix except for g++ 4.8.2."
+          warn_stl_algo_h="UNEXPECTED: found nth_element broken in g++ $GXX_VERSION.  Refusing to fix except for g++ 4.8.0, 4.8.1, or 4.8.2.  You appear to have g++ $GXX_VERSION."
           OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
         ;;
       esac

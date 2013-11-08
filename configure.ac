@@ -381,6 +381,11 @@ OCTAVE_CHECK_BROKEN_STL_ALGO_H
 AM_CONDITIONAL([AMCOND_HAVE_BROKEN_STL_ALGO_H],
   [test $octave_cv_broken_stl_algo_h = yes])
 
+if test $octave_cv_broken_stl_algo_h = yes; then
+  warn_stl_algo_h="Found nth_element broken in g++ $GXX_VERSION.  Attempting to repair by using local patched version of bits/stl_algo.h."
+  OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+fi
+
 ### Determine the compiler flag necessary to create dependencies
 
 ## Assume GCC.

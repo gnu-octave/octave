@@ -132,6 +132,19 @@ Undocumented internal function.\n\
       else
         error ("expecting file name as argument");
     }
+  else if (args.length () == 2)
+    {
+      std::string file = args(0).string_value ();
+
+      if (! error_state)
+        {
+          flush_octave_stdout ();
+
+          retval = octave_link::prompt_new_edit_file (file);
+        }
+      else
+        error ("expecting file name as first argument");
+    }
 
   return retval;
 }

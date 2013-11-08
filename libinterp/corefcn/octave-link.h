@@ -136,6 +136,12 @@ public:
     return enabled () ? instance->do_edit_file (file) : false;
   }
 
+  static bool
+  prompt_new_edit_file (const std::string& file)
+  {
+    return enabled () ? instance->do_prompt_new_edit_file (file) : false;
+  }
+
   static int
   message_dialog (const std::string& dlg, const std::string& msg,
                   const std::string& title)
@@ -385,6 +391,7 @@ protected:
   virtual bool do_exit (int status) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;
+  virtual bool do_prompt_new_edit_file (const std::string& file) = 0;
 
   virtual int
   do_message_dialog (const std::string& dlg, const std::string& msg,

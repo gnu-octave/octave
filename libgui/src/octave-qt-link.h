@@ -61,6 +61,7 @@ public:
   bool do_exit (int status);
 
   bool do_edit_file (const std::string& file);
+  bool do_prompt_new_edit_file (const std::string& file);
 
   int do_message_dialog (const std::string& dlg, const std::string& msg,
                          const std::string& title);

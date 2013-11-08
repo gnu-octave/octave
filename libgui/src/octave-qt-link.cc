@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QStringList>
+#include <QDialog>
+#include <QDir>
 
 #include "str-vec.h"
 #include "dialog.h"
@@ -38,6 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 #include "octave-qt-link.h"
+
+#include "resource-manager.h"
 
 octave_qt_link::octave_qt_link (octave_main_thread *mt)
   : octave_link (), main_thread (mt)
@@ -65,6 +69,34 @@ octave_qt_link::do_edit_file (const std::string& file)
   emit edit_file_signal (QString::fromStdString (file));
 
   return true;
+}
+
+bool
+octave_qt_link::do_prompt_new_edit_file (const std::string& file)
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings->value ("editor/create_new_file",false).toBool ())
+    return true;
+
+  QFileInfo file_info (QString::fromStdString (file));
+  QStringList btn;
+  QStringList role;
+  role << "AcceptRole" << "AcceptRole";
+  btn << tr ("Yes") << tr ("No");
+
+  uiwidget_creator.signal_dialog (
+    tr ("File\n%1\ndoes not exist. Do you want to create it?").
+    arg (QDir::currentPath () + QDir::separator ()
+         + QString::fromStdString (file)),
+    tr ("Octave Editor"), "quest", btn, tr ("Yes"), role );
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.wait ();
+  // The GUI has sent a signal and the process has been awakened.
+  QString answer = uiwidget_creator.get_dialog_button ();
+
+  return (answer == tr ("Yes"));
 }
 
 int

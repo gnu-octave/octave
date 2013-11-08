@@ -353,14 +353,30 @@ function ret = edit (varargin)
       endif
     endif
 
-    ## If editing a new file that is neither an m-file or an oct-file,
+    ## If editing a new file, prompt for creation if gui is running
+    if (isguirunning ())
+      if (! __octave_link_edit_file__ (file,"prompt"));
+        return;
+      endif
+    endif
+
+    ## If editing a new file that is neither an m-file nor an oct-file,
     ## just edit it.
+    ## If in gui-mode, create it before or editor would prompt again.
     fileandpath = file;
     idx = rindex (file, ".");
     name = file(1:idx-1);
     ext = file(idx+1:end);
     if (! any (strcmp (ext, {"cc", "m"})))
-      ## Some unknown file.  Just open it up.
+      ## Some unknown file.  Create and open it or just open it.
+      if (isguirunning ())
+        ## Write the initial file (if there is anything to write)
+        fid = fopen (fileandpath, "wt");
+        if (fid < 0)
+          error ("edit: could not create %s", fileandpath);
+        endif
+        fclose (fid);
+      endif
       do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
       return;
     endif

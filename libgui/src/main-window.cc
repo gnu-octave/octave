@@ -294,6 +294,10 @@ main_window::display_release_notes (void)
       vlayout->addWidget (browser);
 
       release_notes_window->setLayout (vlayout);
+      browser->document()->adjustSize ();
+      QSize doc_size = browser->document()->size().toSize ();
+      doc_size.rwidth () += 45;
+      release_notes_window->resize (doc_size);
       release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
       release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
     }

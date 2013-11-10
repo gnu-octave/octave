@@ -52,7 +52,7 @@ function __add_default_menu__ (fig)
       gm = uimenu (__e, "label", "GUI &Mode");
         uimenu (gm, "label", "Pan+Zoom", "callback", @guimode_cb);
         uimenu (gm, "label", "Rotate+Zoom", "callback", @guimode_cb);
-        uimenu (gm, "label", "None", "callback", @guimode_cb);
+        uimenu (gm, "label", "None+Zoom", "callback", @guimode_cb);
 
     ## FIXME: This drawnow () must occur after at least one menu item has
     ##        been defined to avoid sizing issues in new figures.

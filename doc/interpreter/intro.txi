@@ -21,10 +21,15 @@
 @cindex introduction
 
 GNU Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient interactive command line 
-interface for solving linear and nonlinear problems numerically, and 
-for performing other numerical experiments.  It may also be used as a 
-batch-oriented language for data processing.
+computations.  It is typically used for such problems as solving 
+linear and nonlinear equations, numerical linear algebra, statistical
+analysis, and for performing other numerical experiments.  It may also
+be used as a batch-oriented language for automated data processing.
+
+Until recently GNU Octave provided a command-line interface with
+graphical results displayed in separate windows.  The current version
+(version 3.8, released in late 2013) also provides, by default, a
+graphical user interface.
 
 GNU Octave is freely redistributable software.  You may redistribute 
 it and/or modify it under the terms of the GNU General Public License
@@ -46,10 +51,13 @@ This document corresponds to Octave version @value{VERSION}.
 @node Running Octave
 @section Running Octave
 
-On most systems, Octave is started with the shell command 
-@samp{octave}.  Octave displays an initial message and then a prompt
-indicating it is ready to accept input.  You can begin typing Octave
-commands immediately afterward.
+On most systems, Octave is started with the shell command @samp{octave}.
+This, by default, starts the graphical user interface (GUI).  The central
+window in the GUI is the Octave command-line interface.  Octave displays
+an initial message and then a prompt indicating it is ready to accept
+input.  If you have chosen the traditional command-line interface only
+the command prompt appears.  In any case, you can immediately begin
+typing Octave commands. 
 
 If you get into trouble, you can usually interrupt Octave by typing
 @kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets

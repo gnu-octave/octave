@@ -180,14 +180,14 @@ function m = moment (x, p, opt1, opt2)
 endfunction
 
 
-%!test
+%!shared x
 %! x = rand (10);
-%! assert (moment (x,1), mean (center (x)));
-%! assert (moment (x,2), meansq (center (x)));
-%! assert (moment (x,1,2), mean (center (x, 2), 2));
-%! assert (moment (x,1,"a"), mean (abs (center (x))));
-%! assert (moment (x,1,"r"), mean (x));
-%! assert (moment (x,1,"ar"), mean (abs (x)));
+%!assert (moment (x,1), mean (center (x)), eps)
+%!assert (moment (x,2), meansq (center (x)), eps)
+%!assert (moment (x,1,2), mean (center (x, 2), 2), eps)
+%!assert (moment (x,1,"a"), mean (abs (center (x))), eps)
+%!assert (moment (x,1,"r"), mean (x), eps)
+%!assert (moment (x,1,"ar"), mean (abs (x)), eps)
 
 %!assert (moment (single ([1 2 3]), 1, "r"), single (2))
 

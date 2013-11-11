@@ -96,10 +96,10 @@ static string
 get_variable (const char *name, const string& defval)
 {
   const char *val = getenv (name);
-  if (val == NULL || val[0] == '\0')
-    return defval;
-  else
+  if (val && *val)
     return string (val);
+  else
+    return defval;
 }
 
 static string

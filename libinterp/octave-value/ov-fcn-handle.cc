@@ -1884,8 +1884,8 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
   octave_user_function *usr_fcn = f.user_function_value (false);
   tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
 
-  tree_statement_list *cmd_list = NULL;
-  tree_expression *body_expr = NULL;
+  tree_statement_list *cmd_list = 0;
+  tree_expression *body_expr = 0;
 
   if (usr_fcn)
     {

@@ -663,7 +663,7 @@ ft_render::visit (text_element_string& e)
               if (r != 0)
                 ::warning ("ft_render: failed to decode string `%s' with "
                            "locale `%s'", str.c_str (),
-                           std::setlocale (LC_CTYPE, NULL));
+                           std::setlocale (LC_CTYPE, 0));
               break;
             }
         }

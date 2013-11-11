@@ -665,21 +665,23 @@ main_window::set_window_layout (QSettings *settings)
 
       if (! name.isEmpty ())
         {
-          // If floating, make window from widget.
           bool floating = settings->value
               ("DockWidgets/" + name + "Floating", false).toBool ();
+          bool visible = settings->value
+              ("DockWidgets/" + name + "Visible", true).toBool ();
+
+#if defined (Q_OS_WIN32)
+          // If floating, make window from widget.
           if (floating)
             widget->make_window ();
           else if (! widget->parent ())  // should not be floating but is
             widget->make_widget (false); // no docking, just reparent
-
+#else
           // restore geometry
           QVariant val = settings->value ("DockWidgets/" + name);
           widget->restoreGeometry (val.toByteArray ());
-
+#endif
           // make widget visible if desired
-          bool visible = settings->value
-              ("DockWidgets/" + name + "Visible", true).toBool ();
           if (floating && visible)              // floating and visible
             float_and_visible.append (widget);  // not show before main win
           else
@@ -696,7 +698,12 @@ main_window::set_window_layout (QSettings *settings)
 
   // show floating widgets after main win to ensure "Octave" in central menu
   foreach (octave_dock_widget *widget, float_and_visible)
-    widget->setVisible (true);
+    {
+#if not defined (Q_OS_WIN32)
+      widget->make_window ();
+#endif
+      widget->setVisible (true);
+    }
 
 }
 

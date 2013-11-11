@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QTextStream>
 #include <QProcess>
+#include <QInputDialog>
 
 #include "octave-link.h"
 #include "utils.h"
@@ -151,22 +152,39 @@ file_editor::request_new_script (const QString& commands)
 }
 
 void
-file_editor::request_new_function (const QString& commands)
+file_editor::request_new_function (bool)
 {
-  QString text = commands;
+  bool ok;
+  // get the name of the new function
+  QString new_name  = QInputDialog::getText (this, tr ("New Function"),
+                      tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
+  if (ok && new_name.length () > 0)
+    {
+      // append suffix if it not already exists
+      if (new_name.rightRef (2) != ".m")
+        new_name.append (".m");
+      // check whether new files are created without prompt
+      QSettings *settings = resource_manager::get_settings ();
+      if (! settings->value ("editor/create_new_file",false).toBool ())
+        {
+          // no, so enable this settings and wait for end of new file loading
+          settings->setValue ("editor/create_new_file",true);
+          connect (this, SIGNAL (file_loaded_signal ()),
+                   this, SLOT (restore_create_file_setting ()));
+        }
+      // start the edit command
+      emit execute_command_in_terminal_signal ("edit " + new_name);
+    }
+}
 
-  if (text.isEmpty ())
-    text = "## Copyright (C)\n"
-      "\n"
-      "## -*- texinfo -*-\n"
-      "## @deftypefn {Function File} {[outputs] =} unamed_function (inputs)\n"
-      "## @end deftypefn\n"
-      "\n"
-      "function [outputs] = unnamed_function (inputs)\n"
-      "\n"
-      "endfunction\n";
-
-  request_new_file (text);
+void
+file_editor::restore_create_file_setting ()
+{
+  // restore the new files creation setting
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("editor/create_new_file",false);
+  disconnect (this, SIGNAL (file_loaded_signal ()),
+              this, SLOT (restore_create_file_setting ()));
 }
 
 void
@@ -319,8 +337,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                       // File does not exist, should it be crated?
                       QMessageBox *msgBox;
                       int answer;
-                      if (settings->value ("editor/create_new_file",
-                                           false).toBool ())
+                      if (settings->value ("editor/create_new_file", false).toBool ())
                         {
                           answer = QMessageBox::Yes;
                         }
@@ -366,6 +383,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
           // really show editor and the current editor tab
           set_focus ();
+          emit file_loaded_signal ();
         }
     }
 }
@@ -959,6 +977,8 @@ file_editor::construct (void)
     _mru_file_menu->addAction (_mru_file_actions[i]);
 
   fileMenu->addAction (new_action);
+  fileMenu->addAction (QIcon (), tr ("New &Function"),
+                      this, SLOT (request_new_function (bool)));
   fileMenu->addAction (open_action);
   fileMenu->addMenu (_mru_file_menu);
   fileMenu->addSeparator ();
@@ -1149,6 +1169,9 @@ file_editor::construct (void)
 
   connect (_tab_widget, SIGNAL (currentChanged (int)),
            this, SLOT (active_tab_changed (int)));
+
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
   resize (500, 400);
   setWindowIcon (QIcon (":/actions/icons/logo.png"));

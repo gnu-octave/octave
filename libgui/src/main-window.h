@@ -303,6 +303,7 @@ private:
   QAction *_debug_quit;
 
   QAction *_new_script_action;
+  QAction *_new_function_action;
   QAction *_open_action;
 
   QAction *_copy_action;

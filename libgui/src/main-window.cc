@@ -1171,8 +1171,9 @@ main_window::construct_new_menu (QMenu *p)
                            tr ("Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  QAction *new_function_action = new_menu->addAction (tr ("Function"));
-  new_function_action->setEnabled (true);
+  _new_function_action = new_menu->addAction (tr ("Function"));
+  _new_function_action->setEnabled (true);
+  _new_function_action->setShortcutContext (Qt::ApplicationShortcut);
 
   QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
   new_figure_action->setEnabled (true);
@@ -1181,7 +1182,7 @@ main_window::construct_new_menu (QMenu *p)
   connect (_new_script_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_script ()));
 
-  connect (new_function_action, SIGNAL (triggered ()),
+  connect (_new_function_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_function ()));
 #endif
 
@@ -1809,6 +1810,9 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       _open_action->setShortcut (QKeySequence::Open);
       _new_script_action->setShortcut (QKeySequence::New);
+      _new_function_action->setShortcut (Qt::ControlModifier
+                                       + Qt::ShiftModifier
+                                       + Qt::Key_N);
 
       _exit_action->setShortcut (QKeySequence::Quit);
 
@@ -1824,6 +1828,7 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       _open_action->setShortcut (no_key);
       _new_script_action->setShortcut (no_key);
+      _new_function_action->setShortcut (no_key);
 
       _exit_action->setShortcut (no_key);
 

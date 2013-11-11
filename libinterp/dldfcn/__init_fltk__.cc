@@ -337,7 +337,7 @@ public:
         else
           {
             // End of submenu? Pop back one level.
-            if (m->label ())
+            if (! m->label ())
               {
                 std::size_t idx = menupath.find_last_of ("/");
                 if (idx != std::string::npos)

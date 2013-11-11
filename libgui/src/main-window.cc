@@ -1130,7 +1130,7 @@ main_window::construct_file_menu (QMenuBar *p)
   file_menu->addSeparator ();
 
   QAction *load_workspace_action
-    = file_menu->addAction (tr ("Load workspace"));
+    = file_menu->addAction (tr ("Load Workspace"));
 
   QAction *save_workspace_action
     = file_menu->addAction (tr ("Save Workspace As"));
@@ -1281,11 +1281,11 @@ main_window::construct_debug_menu (QMenuBar *p)
                         Qt::Key_F10);
 
   _debug_step_into = construct_debug_menu_item
-                       (":/actions/icons/db_step_in.png", tr ("Step in"),
+                       (":/actions/icons/db_step_in.png", tr ("Step In"),
                         Qt::Key_F11);
 
   _debug_step_out = construct_debug_menu_item
-                      (":/actions/icons/db_step_out.png", tr ("Step out"),
+                      (":/actions/icons/db_step_out.png", tr ("Step Out"),
                        Qt::ShiftModifier + Qt::Key_F11);
 
   _debug_continue = construct_debug_menu_item

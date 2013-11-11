@@ -208,7 +208,7 @@
            <item row="2" column="0">
             <widget class="QCheckBox" name="editor_ws_checkbox">
              <property name="text">
-              <string>Show white space</string>
+              <string>Show whitespace</string>
              </property>
             </widget>
            </item>
@@ -235,7 +235,7 @@
               <bool>false</bool>
              </property>
              <property name="text">
-              <string>Do not show white spaces used for indentation</string>
+              <string>Do not show whitespace used for indentation</string>
              </property>
             </widget>
            </item>
@@ -525,7 +525,7 @@
                 <bool>false</bool>
                </property>
                <property name="text">
-                <string>Characters before list with suggestions is displayed</string>
+                <string># of characters typed before completion list displayed</string>
                </property>
               </widget>
              </item>
@@ -719,7 +719,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Create non existing files without prompting</string>
+              <string>Create nonexistent files without prompting</string>
              </property>
             </widget>
            </item>
@@ -776,7 +776,7 @@
               <bool>false</bool>
              </property>
              <property name="text">
-              <string>Command  line (%f=file, %l=line):</string>
+              <string>command line (%f=file, %l=line):</string>
              </property>
             </widget>
            </item>
@@ -822,7 +822,7 @@
            <enum>QFrame::NoFrame</enum>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as difference to the default size), font decoration (bold, italic, underline), textcolor and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
@@ -898,7 +898,7 @@
         <item>
          <widget class="QCheckBox" name="terminal_cursorUseForegroundColor">
           <property name="text">
-           <string>Use Foreground Color</string>
+           <string>Use foreground color</string>
           </property>
          </widget>
         </item>
@@ -1061,7 +1061,7 @@
        <item>
         <widget class="QCheckBox" name="sync_octave_directory">
          <property name="text">
-          <string>Synchronize octave directory with the file browser</string>
+          <string>Synchronize Octave working directory with file browser</string>
          </property>
         </widget>
        </item>
@@ -1209,7 +1209,7 @@
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Proxy Type:</string>
+            <string>Proxy type:</string>
            </property>
           </widget>
          </item>

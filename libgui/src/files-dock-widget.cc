@@ -165,7 +165,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _file_tree_view->setSortingEnabled (true);
   _file_tree_view->setAlternatingRowColors (true);
   _file_tree_view->setAnimated (true);
-  _file_tree_view->setToolTip (tr ("Doubleclick a file to open it"));
+  _file_tree_view->setToolTip (tr ("Double-click a file to open it"));
 
   // get sort column and order as well as cloumn state (order and width)
   QSettings *settings = resource_manager::get_settings ();

@@ -915,16 +915,16 @@ file_editor::construct (void)
 
   QAction *next_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_next.png"),
-                   tr ("&Next breakpoint"), _tool_bar);
+                   tr ("&Next Breakpoint"), _tool_bar);
   QAction *previous_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_prev.png"),
-                   tr ("Pre&vious breakpoint"), _tool_bar);
+                   tr ("Pre&vious Breakpoint"), _tool_bar);
   QAction *toggle_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_toggle.png"),
-                   tr ("Toggle &breakpoint"), _tool_bar);
+                   tr ("Toggle &Breakpoint"), _tool_bar);
   QAction *remove_all_breakpoints_action
     = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
-                   tr ("&Remove All breakpoints"), _tool_bar);
+                   tr ("&Remove All Breakpoints"), _tool_bar);
 
   _comment_selection_action
     = new QAction (tr ("&Comment"), _tool_bar);
@@ -935,7 +935,7 @@ file_editor::construct (void)
                               tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
-                             tr ("Save File And Run"), _tool_bar);
+                             tr ("Save File and Run"), _tool_bar);
 
   _goto_line_action = new QAction (tr ("Go&to Line"), _tool_bar);
 

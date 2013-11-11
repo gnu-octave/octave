@@ -64,7 +64,7 @@ history_dock_widget::construct ()
   _history_list_view->setAlternatingRowColors (true);
   _history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
   _history_list_view->setStatusTip (
-    tr ("Doubleclick a command to transfer it to the terminal."));
+    tr ("Double-click a command to transfer it to the terminal."));
   _history_list_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
   _history_list_view->setContextMenuPolicy (Qt::CustomContextMenu);
   connect (_history_list_view,

@@ -61,8 +61,8 @@ welcome_wizard::welcome_wizard (QWidget *p)
   msg_1->setWordWrap (true);
 
   QString msg_2_text = QString (tr ("The configuration file is stored in %1. "
-                                    "If that file exists, you will not see this "
-                                    "dialog when Octave starts again.").
+                                    "If that file exists, you will not see "
+                                    "this dialog again when Octave starts.").
                                 arg (resource_manager::get_settings_file ()));
   QLabel *msg_2 = new QLabel (msg_2_text);
   msg_2->setWordWrap (true);
@@ -91,8 +91,8 @@ welcome_wizard::welcome_wizard (QWidget *p)
          "<p>For more information about Octave:</p>\n"
          "<ul>\n"
          "<li>Visit <a href=\"http://octave.org\">http://octave.org</a></li>\n"
-         "<li>Get the documentation online as <a href=\"http://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"http://www.gnu.org/software/octave/octave.pdf\">pdf</span></a>-document</li>\n"
-         "<li>Open the documentation browser of Octave GUI with the help menu</li>\n"
+         "<li>Get the documentation online in <a href=\"http://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a> or <a href=\"http://www.gnu.org/software/octave/octave.pdf\">pdf</span></a> format</li>\n"
+         "<li>Open the documentation browser from the help menu</li>\n"
          "</ul>\n"
          "</body></html>"),
      this);

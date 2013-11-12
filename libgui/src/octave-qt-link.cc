@@ -45,12 +45,12 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_qt_link::octave_qt_link (void)
   : octave_link (), main_thread (new QThread ()),
-    octave_interpreter (new octave_main_thread ())
+    command_interpreter (new octave_interpreter ())
 {
   connect (this, SIGNAL (execute_interpreter_signal (void)),
-           octave_interpreter, SLOT (execute_interpreter (void)));
+           command_interpreter, SLOT (execute (void)));
 
-  octave_interpreter->moveToThread (main_thread);
+  command_interpreter->moveToThread (main_thread);
 
   main_thread->start ();
 }

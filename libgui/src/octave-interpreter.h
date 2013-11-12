@@ -21,25 +21,26 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#ifndef octave_interpreter_h
+#define octave_interpreter_h 1
 
-#include <string>
+#include <QObject>
 
-#include "builtin-defun-decls.h"
-#include "octave.h"
-#include "ov-builtin.h"
-#include "ov-fcn-handle.h"
-
-#include "octave-main-thread.h"
-#include "octave-link.h"
-
-void
-octave_main_thread::execute_interpreter (void)
+class octave_interpreter : public QObject
 {
-  octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
-                                 octave_embedded);
+  Q_OBJECT
 
-  octave_execute_interpreter ();
-}
+public:
+
+  // An object to manage the Octave interpreter.
+
+  octave_interpreter (void) : QObject () { }
+
+public slots:
+
+  // Initialize and execute the octave interpreter.
+
+  void execute (void);
+};
+
+#endif

@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QThread>
 
 #include "octave-link.h"
-#include "octave-main-thread.h"
+#include "octave-interpreter.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -144,8 +144,7 @@ private:
   // Thread running octave_main.
   QThread *main_thread;
 
-  // Octave interpreter (misnamed class)
-  octave_main_thread *octave_interpreter;
+  octave_interpreter *command_interpreter;
 
 signals:
 

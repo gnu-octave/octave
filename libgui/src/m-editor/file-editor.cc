@@ -132,6 +132,11 @@ file_editor::handle_exit_debug_mode (void)
 void
 file_editor::request_new_file (const QString& commands)
 {
+  // Custom editor? If yes, we can only call the editor without passing
+  // some initial contents and even without being sure a new file is opened
+  if (call_custom_editor ())
+    return;
+
   // New file isn't a file_editor_tab function since the file
   // editor tab has yet to be created and there is no object to
   // pass a signal to.  Hence, functionality is here.
@@ -236,23 +241,36 @@ file_editor::find_tab_widget (const QString& file) const
   return retval;
 }
 
+bool
+file_editor::call_custom_editor (const QString& file_name, int line)
+{
+  // Check if the user wants to use a custom file editor.
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings->value ("useCustomFileEditor").toBool ())
+    {
+      QString editor = settings->value ("customFileEditor").toString ();
+      editor.replace ("%f", file_name);
+      editor.replace ("%l", QString::number (line));
+
+      QProcess::startDetached (editor);
+
+      if (line < 0 && ! file_name.isEmpty ())
+        handle_mru_add_file (QFileInfo (file_name).canonicalFilePath ());
+
+      return true;
+    }
+
+  return false;
+}
+
 void
 file_editor::request_open_file (const QString& openFileName, int line,
                                 bool debug_pointer,
                                 bool breakpoint_marker, bool insert)
 {
-  // Check if the user wants to use a custom file editor.
-  QSettings *settings = resource_manager::get_settings ();
-  if (settings->value ("useCustomFileEditor").toBool ())
-    {
-      QString editor = settings->value ("customFileEditor").toString ();
-      editor.replace ("%f", openFileName);
-      editor.replace ("%l", QString::number (line));
-      QProcess::startDetached (editor);
-      if (line < 0)
-        handle_mru_add_file (QDir::cleanPath (openFileName));
-      return;
-    }
+  if (call_custom_editor (openFileName, line))
+    return;   // custom editor called
 
   if (openFileName.isEmpty ())
     {
@@ -337,6 +355,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                       // File does not exist, should it be crated?
                       QMessageBox *msgBox;
                       int answer;
+                      QSettings *settings = resource_manager::get_settings ();
                       if (settings->value ("editor/create_new_file", false).toBool ())
                         {
                           answer = QMessageBox::Yes;

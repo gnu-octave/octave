@@ -788,6 +788,7 @@ file_editor::handle_tab_remove_request (void)
             {
               _tab_widget->removeTab (i);
               delete fileEditorTab;
+              break;
             }
         }
     }

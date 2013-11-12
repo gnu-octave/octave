@@ -184,6 +184,10 @@ signals:
   void show_preferences_signal (void);
 
   void show_doc_signal (const QString &file);
+
+public slots:
+
+  void terminal_interrupt (void);
 };
 
 #endif

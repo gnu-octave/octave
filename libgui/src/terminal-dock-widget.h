@@ -41,6 +41,14 @@ public:
 
   void focus (void);
 
+signals:
+
+  void interrupt_signal (void);
+
+protected slots:
+
+  void terminal_interrupt (void);
+
 private:
 
   QTerminal *terminal;

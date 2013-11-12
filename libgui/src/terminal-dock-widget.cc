@@ -38,6 +38,9 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   set_title (tr ("Command Window"));
 
   setWidget (terminal);
+
+  connect (terminal, SIGNAL (interrupt_signal (void)),
+           this, SLOT (terminal_interrupt ()));
 }
 
 bool
@@ -58,4 +61,10 @@ terminal_dock_widget::focus (void)
   w->setFocus ();
   w->activateWindow ();
   w->raise ();
+}
+
+void
+terminal_dock_widget::terminal_interrupt (void)
+{
+  emit interrupt_signal ();
 }

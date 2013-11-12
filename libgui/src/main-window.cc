@@ -1080,6 +1080,9 @@ main_window::construct_octave_qt_link (void)
            SLOT (handle_rename_variable_request (const QString&,
                                                  const QString&)));
 
+  connect (command_window, SIGNAL (interrupt_signal (void)),
+           _octave_qt_link, SLOT (terminal_interrupt (void)));
+
   _octave_qt_link->execute_interpreter ();
 
   octave_link::connect_link (_octave_qt_link);

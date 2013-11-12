@@ -46,6 +46,9 @@ void QUnixTerminalImpl::initialize()
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));
 
+    connect (m_terminalView, SIGNAL (interrupt_signal (void)),
+             this, SLOT (terminal_interrupt ()));
+
 #ifdef Q_OS_MAC
     QFont font = QFont("Monaco");
     font.setStyleHint(QFont::TypeWriter);

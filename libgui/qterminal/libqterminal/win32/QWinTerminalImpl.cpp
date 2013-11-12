@@ -1518,9 +1518,7 @@ void QWinTerminalImpl::copyClipboard (void)
   QString selection = d->getSelection ();
 
   if (selection.isEmpty ())
-    {
-      ::raise (SIGINT);
-    }
+    terminal_interrupt ();
   else
     {
       clipboard->setText (selection);

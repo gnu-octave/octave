@@ -41,6 +41,8 @@ public slots:
   // Initialize and execute the octave interpreter.
 
   void execute (void);
+
+  void interrupt (void);
 };
 
 #endif

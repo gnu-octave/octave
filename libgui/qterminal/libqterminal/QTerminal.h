@@ -85,6 +85,8 @@ signals:
 
   void report_status_message (const QString&);
 
+  void interrupt_signal (void);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -103,6 +105,8 @@ public slots:
   }
 
   void notice_settings (const QSettings *settings);
+
+  void terminal_interrupt (void) { emit interrupt_signal (); }
 
 protected:
 

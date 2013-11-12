@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
+#include <signal.h>
+
 #include "octave.h"
 
 #include "octave-interpreter.h"
@@ -38,4 +40,10 @@ octave_interpreter::execute (void)
                                  octave_embedded);
 
   octave_execute_interpreter ();
+}
+
+void
+octave_interpreter::interrupt (void)
+{
+  ::raise (SIGINT);
 }

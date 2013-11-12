@@ -327,8 +327,6 @@ private:
   // release notes window
   QWidget * release_notes_window;
 
-  octave_main_thread *_octave_main_thread;
-
   octave_qt_link *_octave_qt_link;
 
   QClipboard *_clipboard;

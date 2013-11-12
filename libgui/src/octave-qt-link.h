@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QThread>
 
 #include "octave-link.h"
 #include "octave-main-thread.h"
@@ -52,7 +53,7 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (octave_main_thread *mt);
+  octave_qt_link (void);
 
   ~octave_qt_link (void);
 
@@ -128,6 +129,7 @@ public:
   void do_show_preferences (void);
 
   void do_show_doc (const std::string& file);
+
 private:
 
   // No copying!
@@ -140,9 +142,14 @@ private:
   void do_delete_debugger_pointer (const std::string& file, int line);
 
   // Thread running octave_main.
-  octave_main_thread *main_thread;
+  QThread *main_thread;
+
+  // Octave interpreter (misnamed class)
+  octave_main_thread *octave_interpreter;
 
 signals:
+
+  void execute_interpreter_signal (void);
 
   void exit_signal (int status);
 

@@ -90,6 +90,7 @@ octave_gui_MOC += \
   src/moc-files-dock-widget.cc \
   src/moc-history-dock-widget.cc \
   src/moc-main-window.cc \
+  src/moc-octave-main-thread.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
   src/moc-news-dock-widget.cc \

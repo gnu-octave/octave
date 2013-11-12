@@ -24,26 +24,29 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef OCTAVEMAINTHREAD_H
 #define OCTAVEMAINTHREAD_H
 
-#include <QThread>
+#include <QObject>
 
 /**
   * \class octave_main
   * \brief This class represents a thread just running octave_main.
   * \author Jacob Dawid
   */
-class octave_main_thread : public QThread
+class octave_main_thread : public QObject
 {
+  Q_OBJECT
+
 public:
+
   // Create a new thread for running the octave interpreter.
-  octave_main_thread (void) : QThread () { }
+
+  octave_main_thread (void) : QObject () { }
+
+public slots:
 
   // Start the thread and initialize and execute the octave
   // interpreter.
-  void execute_interpreter (void);
 
-protected:
-  // Avoid exec.  Run the octave interpreter in the new thread.
-  void run (void);
+  void execute_interpreter (void);
 };
 
 #endif // OCTAVEMAINTHREAD_H

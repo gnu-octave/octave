@@ -79,7 +79,6 @@ main_window::main_window (QWidget *p)
     workspace_window (new workspace_view (this)),
     find_files_dlg (0),
     release_notes_window (0),
-    _octave_main_thread (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
     _cmd_queue (new QStringList ()),  // no command pending
@@ -114,7 +113,6 @@ main_window::~main_window (void)
       delete release_notes_window;
       release_notes_window = 0;
     }
-  delete _octave_main_thread;
   delete _octave_qt_link;
   delete _cmd_queue;
 }
@@ -1001,9 +999,7 @@ main_window::construct (void)
 void
 main_window::construct_octave_qt_link (void)
 {
-  _octave_main_thread = new octave_main_thread ();
-
-  _octave_qt_link = new octave_qt_link (_octave_main_thread);
+  _octave_qt_link = new octave_qt_link ();
 
   connect (_octave_qt_link, SIGNAL (exit_signal (int)),
            this, SLOT (exit (int)));

@@ -36,16 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-link.h"
 
 void
-octave_main_thread::run (void)
+octave_main_thread::execute_interpreter (void)
 {
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
 
   octave_execute_interpreter ();
-}
-
-void
-octave_main_thread::execute_interpreter (void)
-{
-  start ();
 }

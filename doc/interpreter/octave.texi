@@ -109,7 +109,7 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011 John W. Eaton.
+2007, 2011, 2013 John W. Eaton.
 
 This is the third edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.

@@ -4953,6 +4953,12 @@ the unspecified dimension.\n\
     {
       Array<octave_idx_type> new_size = args(1).octave_idx_type_vector_value ();
 
+      if (new_size.length () < 2)
+        {
+          error ("reshape: SIZE must have 2 or more dimensions");
+          return retval;
+        }
+
       new_dims = dim_vector::alloc (new_size.length ());
 
       for (octave_idx_type i = 0; i < new_size.length (); i++)
@@ -5044,10 +5050,15 @@ the unspecified dimension.\n\
 
 %!test
 %! s.a = 1;
-%! fail ("reshape (s, 2, 3)");
+%! fail ("reshape (s, 2, 3)", "can't reshape 1x1 array to 2x3 array");
 
 %!error reshape ()
 %!error reshape (1, 2, 3, 4)
+%!error <SIZE must have 2 or more dimensions> reshape (1:3, 3)
+%!error <SIZE must be non-negative> reshape (1:3, [3 -1])
+%!error <only a single dimension can be unknown> reshape (1:3, 1,[],[],3)
+%!error <SIZE must be non-negative> reshape (1:3, 3, -1)
+%!error <SIZE is not divisible> reshape (1:3, 3, [], 2)
 */
 
 DEFUN (vec, args, ,

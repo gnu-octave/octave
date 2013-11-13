@@ -86,7 +86,7 @@
 ##
 ## @end ifnottex
 ##
-## @item @qcode{"ar"}
+## @item @nospell{@qcode{"ar"}}
 ##   Absolute Raw Moment.  The moment about zero ignoring sign defined as
 ## @tex
 ## $$

@@ -21,6 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QApplication>
 #include <QToolBar>
 #include <QToolButton>

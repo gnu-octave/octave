@@ -20,9 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include "find-files-dialog.h"
-#include "find-files-model.h"
-#include "resource-manager.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -40,6 +41,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDirIterator>
 #include <QTextStream>
 #include <QGroupBox>
+
+#include "find-files-dialog.h"
+#include "find-files-model.h"
+#include "resource-manager.h"
 
 find_files_dialog::find_files_dialog (QWidget * p)
   : QDialog (p)

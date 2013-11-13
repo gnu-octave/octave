@@ -20,9 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include "find-files-model.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QFileIconProvider>
 #include <QtAlgorithms>
+
+#include "find-files-model.h"
 
 class find_file_less_than
 {

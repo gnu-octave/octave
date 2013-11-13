@@ -133,6 +133,7 @@ noinst_HEADERS += \
   src/qtinfo/webinfo.h \
   src/resource-manager.h \
   src/settings-dialog.h \
+  src/thread-manager.h \
   src/news-dock-widget.h \
   src/terminal-dock-widget.h \
   src/color-picker.h \
@@ -160,6 +161,7 @@ src_libgui_src_la_SOURCES = \
   src/qtinfo/webinfo.cc \
   src/resource-manager.cc \
   src/settings-dialog.cc \
+  src/thread-manager.cc \
   src/news-dock-widget.cc \
   src/terminal-dock-widget.cc \
   src/color-picker.cc \

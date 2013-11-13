@@ -36,6 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 void
 octave_interpreter::execute (void)
 {
+  thread_manager.register_current_thread ();
+
+  octave_thread_manager::unblock_interrupt_signal ();
+
   octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
                                  octave_embedded);
 
@@ -45,5 +49,5 @@ octave_interpreter::execute (void)
 void
 octave_interpreter::interrupt (void)
 {
-  ::raise (SIGINT);
+  thread_manager.interrupt ();
 }

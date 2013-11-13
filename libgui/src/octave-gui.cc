@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "main-window.h"
 #include "octave-gui.h"
+#include "thread-manager.h"
 
 // Allow the Octave interpreter to start as in CLI mode with a
 // QApplication context so that it can use Qt for things like plotting
@@ -118,6 +119,8 @@ void message_handler (QtMsgType type, const char *msg)
 int
 octave_start_gui (int argc, char *argv[], bool start_gui)
 {
+  octave_thread_manager::block_interrupt_signal ();
+
   qInstallMsgHandler (message_handler);
 
   if (start_gui)

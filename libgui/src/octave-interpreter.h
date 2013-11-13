@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QObject>
 
+#include "thread-manager.h"
+
 class octave_interpreter : public QObject
 {
   Q_OBJECT
@@ -34,7 +36,7 @@ public:
 
   // An object to manage the Octave interpreter.
 
-  octave_interpreter (void) : QObject () { }
+  octave_interpreter (void) : QObject (), thread_manager () { }
 
 public slots:
 
@@ -43,6 +45,10 @@ public slots:
   void execute (void);
 
   void interrupt (void);
+
+private:
+
+  octave_thread_manager thread_manager;
 };
 
 #endif

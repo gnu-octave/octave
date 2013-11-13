@@ -80,7 +80,7 @@ function varargout = __imread__ (filename, varargin)
 
   ## Check key/value options.
   indexes = cellfun ("isclass", varargin, "char");
-  indexes(indexes) &= ismember (varargin(indexes), {"frames", "index"});
+  indexes(indexes) &= ismember (tolower (varargin(indexes)), {"frames", "index"});
   indexes = find (indexes);
   if (indexes)
     options.index = varargin{indexes+1};

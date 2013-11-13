@@ -770,19 +770,21 @@ use @code{imread}.\n\
   // time we decode the image because that's done in many different places,
   // to cover the different types of images which would lead to a lot of
   // copy and paste.
-  const unsigned int nRows = imvec[frameidx(0)].rows ();
-  const unsigned int nCols = imvec[frameidx(0)].columns ();
-  for (octave_idx_type frame = 0; frame < nFrames; frame++)
-    {
-      if (nRows != imvec[frameidx(frame)].rows () ||
-          nCols != imvec[frameidx(frame)].columns ())
-        {
-          error ("imread: all frames must have the same size but frame %i is different",
-                 frameidx(frame) +1);
-          error_state = 1;
-        }
-    }
-
+  {
+    const unsigned int nRows = imvec[frameidx(0)].rows ();
+    const unsigned int nCols = imvec[frameidx(0)].columns ();
+    const octave_idx_type n = frameidx.nelem ();
+    for (octave_idx_type frame = 0; frame < n; frame++)
+      {
+        if (nRows != imvec[frameidx(frame)].rows () ||
+            nCols != imvec[frameidx(frame)].columns ())
+          {
+            error ("imread: all frames must have the same size but frame %i is different",
+                   frameidx(frame) +1);
+            return output;
+          }
+      }
+  }
 
   const octave_idx_type depth = get_depth (imvec[frameidx(0)]);
   if (is_indexed (imvec[frameidx(0)]))

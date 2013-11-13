@@ -47,9 +47,13 @@
 ## @end table
 ##
 ## If @var{directory} is a filename, rather than a directory, then return
-## information about the named file.  @var{directory} may be a list of
-## directories specified either by name or with wildcard characters (like *
-## and ?) which will be expanded with @code{glob}.
+## information about the named file.  @var{directory} may also be a list rather
+## than a single directory or file.
+##
+## @var{directory} is subject to shell expansion if it contains any wildcard
+## characters @samp{*}, @samp{?}, @samp{[]}.  If you want to find a
+## literal example of a wildcard character you must escape it using the
+## backslash operator @samp{\}.
 ##
 ## Note that for symbolic links, @code{dir} returns information about
 ## the file that the symbolic link points to rather than the link itself.

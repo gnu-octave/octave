@@ -424,12 +424,23 @@ CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 
 ### When compiling math for x87, problems may arise in some code comparing
-### floating-point intermediate results.
-### Generally, it helps to store the result in a local volatile variable,
-### but it also degrades performance.
+### floating-point intermediate results.  The root cause is the extra precision
+### (~80 bits) of x87 co-processor registers versus the IEEE standard 64 bits.
+### Generally, storing the result in a local volatile variable forces a
+### truncation back to 64 bits, but it also degrades performance.
 ### Thus, we provide a FLOAT_TRUNCATE macro that may be defined to "volatile"
 ### when compiling for x87 target, or left empty for modern SSE math, that
 ### doesn't suffer from this problem at all.
+### FIXME: If no option value is given, configure uses a default heuristic
+###        which assumes that truncation should occur for MinGW and Cygwin
+###        systems and not for any others.  It would be marginally nicer
+###        to replace this with a test that checks whether the problem arises
+###        and only sets the flag if necessary.  However, the principal
+###        scenario for those two systems is a cross-build where we can't
+###        run an executable so the test wouldn't be too useful most of the
+###        time (only native builds on MinGW and Cygwin *might* benefit).
+###        Maybe, one could generate assembly code with -S option and inspect
+###        it without having to run an executable, but this sounds pretty dicey.
 AC_ARG_ENABLE([float-truncate],
   [AS_HELP_STRING([--enable-float-truncate],
     [enables truncating intermediate FP results.])],
@@ -438,7 +449,14 @@ AC_ARG_ENABLE([float-truncate],
    else
      ac_float_truncate=
    fi],
-  [ac_float_truncate=])
+  [case $host_os in
+     mingw* | cygwin*)
+       ac_float_truncate=volatile
+     ;;
+     *)
+       ac_float_truncate=
+     ;;
+   esac])
 
 AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate], 
   [Define to volatile if you need to truncate intermediate FP results.])

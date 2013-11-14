@@ -70,6 +70,8 @@ protected:
 
   void run (void)
   {
+    octave_thread_manager::unblock_interrupt_signal ();
+
     octave_initialize_interpreter (m_argc, m_argv, 0);
 
     m_result = octave_execute_interpreter ();

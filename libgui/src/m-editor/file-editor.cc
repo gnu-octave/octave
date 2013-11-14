@@ -302,6 +302,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
             }
 
           emit fetab_set_focus (tab);
+          set_focus ();
         }
       else
         {
@@ -527,7 +528,6 @@ void
 file_editor::handle_edit_file_request (const QString& file)
 {
   request_open_file (file);
-  set_focus ();
 }
 
 void

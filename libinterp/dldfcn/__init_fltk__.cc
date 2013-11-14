@@ -1086,6 +1086,7 @@ private:
                      int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
+    x0 = y0 = x1 = y1 = octave_NaN;
     std::stringstream cbuf;
     cbuf.precision (4);
     cbuf.width (6);

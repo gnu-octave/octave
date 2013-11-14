@@ -105,12 +105,16 @@ welcome_wizard::welcome_wizard (QWidget *p)
   QPushButton *finish_button = new QPushButton;
   finish_button->setText (tr ("Finish"));
 
+  QPushButton *cancel_button = new QPushButton;
+  cancel_button->setText (tr ("Cancel"));
+
   QSpacerItem *vspace = new QSpacerItem (20, 40, QSizePolicy::Minimum);
 
   QHBoxLayout *button_bar = new QHBoxLayout;
 
   button_bar->addItem (hfill);
   button_bar->addWidget (finish_button);
+  button_bar->addWidget (cancel_button);
 
   QSpacerItem *vfill = new QSpacerItem (20, 40, QSizePolicy::Minimum,
                                         QSizePolicy::Expanding);
@@ -122,4 +126,5 @@ welcome_wizard::welcome_wizard (QWidget *p)
   page_layout->addItem (vfill);
 
   connect (finish_button, SIGNAL (clicked ()), this, SLOT (accept ()));
+  connect (cancel_button, SIGNAL (clicked ()), this, SLOT (reject ()));
 }

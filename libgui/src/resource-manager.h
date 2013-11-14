@@ -49,11 +49,6 @@ public:
     return instance_ok () ? instance->do_get_default_settings () : 0;
   }
 
-  static QString get_home_path (void)
-  {
-    return instance_ok () ? instance->do_get_home_path () : QString ();
-  }
-
   static QString get_settings_file (void)
   {
     return instance_ok () ? instance->do_get_settings_file () : QString ();
@@ -108,23 +103,21 @@ private:
 
   static bool instance_ok (void);
 
+  QString settings_directory;
+
+  QString settings_file;
+
   QSettings *settings;
 
   QSettings *default_settings;
-
-  QString home_path;
-
-  bool first_run;
 
   QSettings *do_get_settings (void) const;
 
   QSettings *do_get_default_settings (void) const;
 
-  QString do_get_home_path (void) const;
-
   QString do_get_settings_file (void);
 
-  QString do_get_settings_path (void);
+  QString do_get_settings_directory (void);
 
   void do_reload_settings (void);
 

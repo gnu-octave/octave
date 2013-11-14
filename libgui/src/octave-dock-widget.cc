@@ -123,6 +123,7 @@ octave_dock_widget::~octave_dock_widget ()
 
   settings->setValue (name+"Visible", isVisible ()); // store visibility
   settings->setValue (name+"Floating", _floating);    // store visibility
+  settings->setValue (name+"_minimized", isMinimized ()); // store minimized
 
   settings->endGroup ();
   settings->sync ();

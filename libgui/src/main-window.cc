@@ -701,6 +701,10 @@ main_window::set_window_layout (QSettings *settings)
       widget->make_window ();
 #endif
       widget->setVisible (true);
+      if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())
+        widget->showMinimized ();
+      else
+        widget->setVisible (true);
     }
 
 }

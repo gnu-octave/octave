@@ -408,7 +408,8 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 endfunction
 
 
-%!test  # with infeasible initial guess
+%% Test infeasible initial guess (bug #40536)
+%!testif HAVE_GLPK
 %!
 %! H = 1;  q = 0;                # objective: x -> 0.5 x^2
 %! A = 1;  lb = 1;  ub = +inf;   # constraint: x >= 1

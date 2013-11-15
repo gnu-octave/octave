@@ -32,7 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "action-container.h"
 
 class
-OCTINTERP_API
+OCTAVE_API
 unwind_protect : public action_container
 {
 public:
@@ -107,7 +107,7 @@ private:
 // crash.
 
 class
-OCTINTERP_API
+OCTAVE_API
 unwind_protect_safe : public unwind_protect
 {
 private:

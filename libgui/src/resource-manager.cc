@@ -65,7 +65,7 @@ resource_manager::resource_manager (void)
   QString home_path
     = desktopServices.storageLocation (QDesktopServices::HomeLocation);
 
-  settings_directory = home_path + "/.config/octave/";
+  settings_directory = home_path + "/.config/octave";
 
   settings_file = settings_directory + "/qt-settings";
 

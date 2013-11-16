@@ -51,7 +51,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "workspace-view.h"
 #include "history-dock-widget.h"
 #include "files-dock-widget.h"
-#include "news-dock-widget.h"
 #include "terminal-dock-widget.h"
 #include "documentation-dock-widget.h"
 #include "octave-qt-link.h"
@@ -110,6 +109,8 @@ public slots:
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
   void display_release_notes (void);
+  void load_and_display_community_news (int serial = -1);
+  void display_community_news (const QString& news);
   void open_bug_tracker_page (void);
   void open_octave_packages_page (void);
   void open_agora_page (void);
@@ -268,7 +269,6 @@ private:
   QStatusBar *status_bar;
 
   // Subwindows.
-  news_dock_widget *news_window;
   terminal_dock_widget *command_window;
   history_dock_widget *history_window;
   files_dock_widget *file_browser_window;
@@ -278,7 +278,6 @@ private:
   QList<octave_dock_widget *> dock_widget_list ()
   {
     QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
-    list.append (static_cast<octave_dock_widget *> (news_window));
     list.append (static_cast<octave_dock_widget *> (command_window));
     list.append (static_cast<octave_dock_widget *> (history_window));
     list.append (static_cast<octave_dock_widget *> (file_browser_window));
@@ -327,6 +326,8 @@ private:
   // release notes window
   QWidget * release_notes_window;
 
+  QWidget * community_news_window;
+
   octave_qt_link *_octave_qt_link;
 
   QClipboard *_clipboard;
@@ -338,6 +339,34 @@ private:
   QStringList *_cmd_queue;
   QSemaphore   _cmd_processing;
   QMutex       _cmd_queue_mutex;
+};
+
+class news_reader : public QObject
+{
+  Q_OBJECT
+
+public:
+
+  news_reader (const QString& xbase_url, const QString& xpage,
+               int xserial = -1)
+    : QObject (), base_url (xbase_url), page (xpage), serial (xserial)
+  { }
+
+public slots:
+
+  void process (void);
+
+signals:
+
+  void display_news_signal (const QString& news);
+
+  void finished (void);
+
+private:
+
+  QString base_url;
+  QString page;
+  int serial;
 };
 
 #endif // MAINWINDOW_H

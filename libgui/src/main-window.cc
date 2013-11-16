@@ -40,6 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QIcon>
 #include <QTextStream>
+#include <QThread>
+#include <QDateTime>
+#include <QDebug>
 
 #include <utility>
 
@@ -49,7 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "main-window.h"
 #include "settings-dialog.h"
 
+#include "Array.h"
 #include "cmd-edit.h"
+#include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
@@ -70,7 +75,6 @@ main_window::main_window (QWidget *p)
   : QMainWindow (p),
     _workspace_model (new workspace_model ()),
     status_bar (new QStatusBar ()),
-    news_window (new news_dock_widget (this)),
     command_window (new terminal_dock_widget (this)),
     history_window (new history_dock_widget (this)),
     file_browser_window (new files_dock_widget (this)),
@@ -79,12 +83,32 @@ main_window::main_window (QWidget *p)
     workspace_window (new workspace_view (this)),
     find_files_dlg (0),
     release_notes_window (0),
+    community_news_window (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
     _cmd_queue (new QStringList ()),  // no command pending
     _cmd_processing (1),
     _cmd_queue_mutex ()
 {
+  QSettings *settings = resource_manager::get_settings ();
+
+  QDateTime last_checked;
+  int serial = 0;
+
+  if (settings)
+    {
+      last_checked
+        = settings->value ("news/last_time_checked", QDateTime ()).toDateTime ();
+
+      serial = settings->value ("news/last_news_item", 0).toInt ();
+    }
+
+  QDateTime current = QDateTime::currentDateTimeUtc ();
+  QDateTime one_day_ago = current.addDays (-1);
+
+  if (! last_checked.isValid () || one_day_ago > last_checked)
+    load_and_display_community_news (serial);
+
   // We have to set up all our windows, before we finally launch octave.
   construct ();
 }
@@ -95,7 +119,6 @@ main_window::~main_window (void)
   // to its original pipe to capture error messages at exit.
 
   delete editor_window;     // first one for dialogs of modified editor-tabs
-  delete news_window;
   delete command_window;
   delete workspace_window;
   delete doc_browser_window;
@@ -112,6 +135,11 @@ main_window::~main_window (void)
     {
       delete release_notes_window;
       release_notes_window = 0;
+    }
+  if (community_news_window)
+    {
+      delete community_news_window;
+      community_news_window = 0;
     }
   delete _octave_qt_link;
   delete _cmd_queue;
@@ -313,6 +341,151 @@ main_window::display_release_notes (void)
 
   release_notes_window->raise ();
   release_notes_window->activateWindow ();
+}
+
+static const char fixed_community_news[] = "<html>\n\
+<body>\n\
+<p>\n\
+Octave's community news source seems to be unavailable.\n\
+For the latest news, please check\n\
+<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n\
+when you have a connection to the web (link opens in an external browser).\n\
+</p>\n\
+<p>\n\
+<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n\
+</body>\n\
+</html>\n";
+
+void
+news_reader::process (void)
+{
+  // Run this part in a separate thread so Octave can continue to run
+  // while we wait for the page to load.  Then emit the signal to
+  // display it when we have the page contents.
+
+  QString url = base_url + "/" + page;
+  std::ostringstream buf;
+  url_transfer octave_dot_org (url.toStdString (), buf);
+
+  Array<std::string> param;
+  octave_dot_org.http_get (param);
+
+  QString html_text;
+
+  if (octave_dot_org.good ())
+    html_text = QString::fromStdString (buf.str ());
+
+  if (html_text.contains ("this-is-the-gnu-octave-community-news-page"))
+    {
+      if (serial >= 0)
+        {
+          QSettings *settings = resource_manager::get_settings ();
+
+          if (settings)
+            {
+              settings->setValue ("news/last_time_checked",
+                                  QDateTime::currentDateTimeUtc ());
+
+              settings->sync ();
+            }
+
+          QString tag ("community-news-page-serial=");
+
+          int b = html_text.indexOf (tag);
+
+          if (b)
+            {
+              b += tag.length ();
+
+              int e = html_text.indexOf ("\n", b);
+
+              QString tmp = html_text.mid (b, e-b);
+
+              int curr_page_serial = tmp.toInt ();
+
+              if (curr_page_serial > serial)
+                {
+                  if (settings)
+                    {
+                      settings->setValue ("news/last_news_item",
+                                          curr_page_serial);
+
+                      settings->sync ();
+                    }
+                }
+              else
+                return;
+            }
+          else
+            return;
+        }
+    }
+  else
+    html_text = fixed_community_news;
+
+  emit display_news_signal (html_text);
+
+  emit finished ();
+}
+
+void
+main_window::load_and_display_community_news (int serial)
+{
+  QString base_url = "http://octave.org";
+  QString page = "community-news.html";
+
+  QThread *worker_thread = new QThread;
+
+  news_reader *reader = new news_reader (base_url, page, serial);
+
+  reader->moveToThread (worker_thread);
+
+  connect (reader, SIGNAL (display_news_signal (const QString&)),
+           this, SLOT (display_community_news (const QString&)));
+
+  connect (worker_thread, SIGNAL (started (void)),
+           reader, SLOT (process ()));
+
+  connect (reader, SIGNAL (finished (void)), worker_thread, SLOT (quit ()));
+
+  connect (reader, SIGNAL (finished (void)), reader, SLOT (deleteLater ()));
+
+  connect (worker_thread, SIGNAL (finished (void)),
+           worker_thread, SLOT (deleteLater ()));
+
+  worker_thread->start ();
+}
+
+void
+main_window::display_community_news (const QString& news)
+{
+  if (! community_news_window)
+    {
+      community_news_window = new QWidget;
+
+      QTextBrowser *browser = new QTextBrowser (community_news_window);
+
+      browser->setHtml (news);
+      browser->setObjectName ("OctaveNews");
+      browser->setOpenExternalLinks (true);
+
+      QVBoxLayout *vlayout = new QVBoxLayout;
+
+      vlayout->addWidget (browser);
+
+      community_news_window->setLayout (vlayout);
+      community_news_window->setWindowTitle (tr ("Octave Community News"));
+      community_news_window->setWindowIcon (QIcon (":/icons/logo.png"));
+      community_news_window->resize (640, 480);
+    }
+
+  if (! community_news_window->isVisible ())
+    community_news_window->show ();
+  else if (community_news_window->isMinimized ())
+    community_news_window->showNormal ();
+
+  community_news_window->raise ();
+  community_news_window->activateWindow ();
 }
 
 void
@@ -949,7 +1122,6 @@ main_window::construct (void)
                   | QMainWindow::AllowNestedDocks
                   | QMainWindow::AllowTabbedDocks);
 
-  addDockWidget (Qt::RightDockWidgetArea, news_window);
   addDockWidget (Qt::RightDockWidgetArea, command_window);
   addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
   tabifyDockWidget (command_window, doc_browser_window);
@@ -1370,10 +1542,6 @@ main_window::construct_window_menu (QMenuBar *p)
                                        (window_menu, tr ("Show Documentation"),
                                         true, ctrl_shift + Qt::Key_5);
 
-  QAction *show_news_action = construct_window_menu_item
-                              (window_menu, tr ("Show News Window"), true,
-                               ctrl_shift + Qt::Key_6);
-
   window_menu->addSeparator ();
 
   QAction *command_window_action = construct_window_menu_item
@@ -1399,9 +1567,6 @@ main_window::construct_window_menu (QMenuBar *p)
   QAction *documentation_action = construct_window_menu_item
                                   (window_menu, tr ("Documentation"), false,
                                    ctrl + Qt::Key_5);
-
-  QAction *news_action = construct_window_menu_item
-                         (window_menu, tr ("News"), false, ctrl + Qt::Key_6);
 
   window_menu->addSeparator ();
 
@@ -1440,12 +1605,6 @@ main_window::construct_window_menu (QMenuBar *p)
            show_editor_action, SLOT (setChecked (bool)));
 #endif
 
-  connect (show_news_action, SIGNAL (toggled (bool)),
-           news_window, SLOT (setVisible (bool)));
-
-  connect (news_window, SIGNAL (active_changed (bool)),
-           show_news_action, SLOT (setChecked (bool)));
-
   connect (show_documentation_action, SIGNAL (toggled (bool)),
            doc_browser_window, SLOT (setVisible (bool)));
 
@@ -1468,9 +1627,6 @@ main_window::construct_window_menu (QMenuBar *p)
   connect (editor_action, SIGNAL (triggered ()),
            editor_window, SLOT (focus ()));
 #endif
-
-  connect (news_action, SIGNAL (triggered ()),
-           news_window, SLOT (focus ()));
 
   connect (documentation_action, SIGNAL (triggered ()),
            doc_browser_window, SLOT (focus ()));
@@ -1560,7 +1716,7 @@ main_window::construct_news_menu (QMenuBar *p)
            this, SLOT (display_release_notes ()));
 
   connect (current_news_action, SIGNAL (triggered ()),
-           news_window, SLOT (focus ()));
+           this, SLOT (load_and_display_community_news ()));
 }
 
 void

@@ -292,12 +292,18 @@ main_window::display_release_notes (void)
       vlayout->addWidget (browser);
 
       release_notes_window->setLayout (vlayout);
+      release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
+      release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
+
       browser->document()->adjustSize ();
       QSize doc_size = browser->document()->size().toSize ();
       doc_size.rwidth () += 45;
+      int h = QApplication::desktop ()->height ();
+      if (h > 800)
+        h = 800;
+      doc_size.rheight () = h;
+
       release_notes_window->resize (doc_size);
-      release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
-      release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
     }
 
   if (! release_notes_window->isVisible ())

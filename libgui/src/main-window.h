@@ -348,8 +348,9 @@ class news_reader : public QObject
 public:
 
   news_reader (const QString& xbase_url, const QString& xpage,
-               int xserial = -1)
-    : QObject (), base_url (xbase_url), page (xpage), serial (xserial)
+               int xserial = -1, bool xconnect_to_web = false)
+    : QObject (), base_url (xbase_url), page (xpage), serial (xserial),
+      connect_to_web (xconnect_to_web)
   { }
 
 public slots:
@@ -367,6 +368,7 @@ private:
   QString base_url;
   QString page;
   int serial;
+  bool connect_to_web;
 };
 
 #endif // MAINWINDOW_H

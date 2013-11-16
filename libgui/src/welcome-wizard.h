@@ -42,13 +42,18 @@ private:
 
   QList<page_creator_fptr> page_ctor_list;
   QList<page_creator_fptr>::iterator page_list_iterator;
-  QWidget *current_page;                                         
+  QWidget *current_page;
+  bool allow_web_connect_state;
 
 private slots:
+
+  void handle_web_connect_option (int state);
 
   void show_page (void);
   void previous_page (void);
   void next_page (void);
+
+  void accept (void);
 };
 
 #endif // WELCOMEWIZARD_H

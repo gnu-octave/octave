@@ -200,6 +200,9 @@ public:
     next->setDefault (true);
     next->setFocus ();
 
+    connect (checkbox, SIGNAL (stateChanged (int)),
+             wizard, SLOT (handle_web_connect_option (int)));
+
     connect (previous, SIGNAL (clicked ()), wizard, SLOT (previous_page ()));
     connect (next, SIGNAL (clicked ()), wizard, SLOT (next_page ()));
     connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
@@ -319,7 +322,8 @@ private:
 
 welcome_wizard::welcome_wizard (QWidget *p)
   : QDialog (p), page_ctor_list (), page_list_iterator (),
-    current_page (initial_page::create (this))
+    current_page (initial_page::create (this)),
+    allow_web_connect_state (true)
 {
   page_ctor_list.push_back (initial_page::create);
   page_ctor_list.push_back (setup_community_news::create);
@@ -334,6 +338,12 @@ welcome_wizard::welcome_wizard (QWidget *p)
   setMinimumSize (QSize (600, 480));
 
   show_page ();
+}
+
+void
+welcome_wizard::handle_web_connect_option (int state)
+{
+  allow_web_connect_state = state == Qt::Checked;
 }
 
 void
@@ -364,4 +374,24 @@ welcome_wizard::next_page (void)
   ++page_list_iterator;
 
   show_page ();
+}
+
+void
+welcome_wizard::accept (void)
+{
+  // Create default settings file.
+
+  resource_manager::reload_settings ();
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings)
+    {
+      settings->setValue ("news/allow_web_connection",
+                          allow_web_connect_state);
+
+      settings->sync ();
+    }
+
+  QDialog::accept ();
 }

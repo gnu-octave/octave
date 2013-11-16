@@ -92,11 +92,15 @@ main_window::main_window (QWidget *p)
 {
   QSettings *settings = resource_manager::get_settings ();
 
+  bool connect_to_web = true;
   QDateTime last_checked;
   int serial = 0;
 
   if (settings)
     {
+      connect_to_web
+        = settings->value ("news/allow_web_connection", true).toBool ();
+
       last_checked
         = settings->value ("news/last_time_checked", QDateTime ()).toDateTime ();
 
@@ -106,7 +110,8 @@ main_window::main_window (QWidget *p)
   QDateTime current = QDateTime::currentDateTimeUtc ();
   QDateTime one_day_ago = current.addDays (-1);
 
-  if (! last_checked.isValid () || one_day_ago > last_checked)
+  if (connect_to_web
+      && (! last_checked.isValid () || one_day_ago > last_checked))
     load_and_display_community_news (serial);
 
   // We have to set up all our windows, before we finally launch octave.
@@ -343,85 +348,108 @@ main_window::display_release_notes (void)
   release_notes_window->activateWindow ();
 }
 
-static const char fixed_community_news[] = "<html>\n\
-<body>\n\
-<p>\n\
-Octave's community news source seems to be unavailable.\n\
-For the latest news, please check\n\
-<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n\
-when you have a connection to the web (link opens in an external browser).\n\
-</p>\n\
-<p>\n\
-<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n\
-</body>\n\
-</html>\n";
-
 void
 news_reader::process (void)
 {
-  // Run this part in a separate thread so Octave can continue to run
-  // while we wait for the page to load.  Then emit the signal to
-  // display it when we have the page contents.
-
-  QString url = base_url + "/" + page;
-  std::ostringstream buf;
-  url_transfer octave_dot_org (url.toStdString (), buf);
-
-  Array<std::string> param;
-  octave_dot_org.http_get (param);
-
   QString html_text;
 
-  if (octave_dot_org.good ())
-    html_text = QString::fromStdString (buf.str ());
-
-  if (html_text.contains ("this-is-the-gnu-octave-community-news-page"))
+  if (connect_to_web)
     {
-      if (serial >= 0)
+      // Run this part in a separate thread so Octave can continue to
+      // run while we wait for the page to load.  Then emit the signal
+      // to display it when we have the page contents.
+
+      QString url = base_url + "/" + page;
+      std::ostringstream buf;
+      url_transfer octave_dot_org (url.toStdString (), buf);
+
+      Array<std::string> param;
+      octave_dot_org.http_get (param);
+
+      if (octave_dot_org.good ())
+        html_text = QString::fromStdString (buf.str ());
+
+      if (html_text.contains ("this-is-the-gnu-octave-community-news-page"))
         {
-          QSettings *settings = resource_manager::get_settings ();
-
-          if (settings)
+          if (serial >= 0)
             {
-              settings->setValue ("news/last_time_checked",
-                                  QDateTime::currentDateTimeUtc ());
+              QSettings *settings = resource_manager::get_settings ();
 
-              settings->sync ();
-            }
-
-          QString tag ("community-news-page-serial=");
-
-          int b = html_text.indexOf (tag);
-
-          if (b)
-            {
-              b += tag.length ();
-
-              int e = html_text.indexOf ("\n", b);
-
-              QString tmp = html_text.mid (b, e-b);
-
-              int curr_page_serial = tmp.toInt ();
-
-              if (curr_page_serial > serial)
+              if (settings)
                 {
-                  if (settings)
-                    {
-                      settings->setValue ("news/last_news_item",
-                                          curr_page_serial);
+                  settings->setValue ("news/last_time_checked",
+                                      QDateTime::currentDateTimeUtc ());
 
-                      settings->sync ();
+                  settings->sync ();
+                }
+
+              QString tag ("community-news-page-serial=");
+
+              int b = html_text.indexOf (tag);
+
+              if (b)
+                {
+                  b += tag.length ();
+
+                  int e = html_text.indexOf ("\n", b);
+
+                  QString tmp = html_text.mid (b, e-b);
+
+                  int curr_page_serial = tmp.toInt ();
+
+                  if (curr_page_serial > serial)
+                    {
+                      if (settings)
+                        {
+                          settings->setValue ("news/last_news_item",
+                                              curr_page_serial);
+
+                          settings->sync ();
+                        }
                     }
+                  else
+                    return;
                 }
               else
                 return;
             }
-          else
-            return;
         }
+      else
+        html_text = QString
+          (tr ("<html>\n"
+               "<body>\n"
+               "<p>\n"
+               "Octave's community news source seems to be unavailable.\n"
+               "</p>\n"
+               "<p>\n"
+               "For the latest news, please check\n"
+               "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n"
+               "when you have a connection to the web (link opens in an external browser).\n"
+               "</p>\n"
+               "<p>\n"
+               "<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n"
+               "</p>\n"
+               "</body>\n"
+               "</html>\n"));
     }
   else
-    html_text = fixed_community_news;
+    html_text = QString
+      (tr ("<html>\n"
+           "<body>\n"
+           "<p>\n"
+           "Connecting to the web to display the latest Octave Community news has been disabled.\n"
+           "</p>\n"
+           "<p>\n"
+           "For the latest news, please check\n"
+           "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n"
+           "when you have a connection to the web (link opens in an external browser)\n"
+           "or enable web connections for news in Octave's network settings dialog.\n"
+           "</p>\n"
+           "<p>\n"
+           "<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n"
+           "</p>\n"
+           "</body>\n"
+           "</html>\n"));
 
   emit display_news_signal (html_text);
 
@@ -431,12 +459,20 @@ news_reader::process (void)
 void
 main_window::load_and_display_community_news (int serial)
 {
+  QSettings *settings = resource_manager::get_settings ();
+
+  bool connect_to_web
+    = (settings
+       ? settings->value ("news/allow_web_connection", true).toBool ()
+       : true);
+
   QString base_url = "http://octave.org";
   QString page = "community-news.html";
 
   QThread *worker_thread = new QThread;
 
-  news_reader *reader = new news_reader (base_url, page, serial);
+  news_reader *reader = new news_reader (base_url, page, serial,
+                                         connect_to_web);
 
   reader->moveToThread (worker_thread);
 

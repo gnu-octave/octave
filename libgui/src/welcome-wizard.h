@@ -32,9 +32,23 @@ class welcome_wizard : public QDialog
 
 public:
 
+  typedef QWidget *(*page_creator_fptr) (welcome_wizard *wizard);
+
   welcome_wizard (QWidget *parent = 0);
 
   ~welcome_wizard (void) { }
+
+private:
+
+  QList<page_creator_fptr> page_ctor_list;
+  QList<page_creator_fptr>::iterator page_list_iterator;
+  QWidget *current_page;                                         
+
+private slots:
+
+  void show_page (void);
+  void previous_page (void);
+  void next_page (void);
 };
 
 #endif // WELCOMEWIZARD_H

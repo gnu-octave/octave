@@ -274,8 +274,9 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
   if (openFileName.isEmpty ())
     {
-      // ??  Not sure this will happen.  This routine isn't even called
-      // if the user hasn't selected a file.
+      // This happens if edit is calles without an argument
+      // Open eitor with empty edit area instead (as new file would do)
+      request_new_file ("");
     }
   else
     {

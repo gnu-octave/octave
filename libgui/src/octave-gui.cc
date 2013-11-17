@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QApplication>
-#include <QCoreApplication>
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
@@ -76,7 +75,7 @@ protected:
 
     m_result = octave_execute_interpreter ();
 
-    QCoreApplication::exit (m_result);
+    QApplication::exit (m_result);
   }
 
 private:
@@ -187,9 +186,11 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
     }
   else
     {
-      QCoreApplication application (argc, argv);
+      QApplication application (argc, argv);
 
       octave_cli_thread main_thread (argc, argv);
+      
+      application.setQuitOnLastWindowClosed (false);
 
       main_thread.start ();
 

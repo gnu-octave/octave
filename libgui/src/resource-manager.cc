@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDir>
 #include <QNetworkProxy>
 #include <QLibraryInfo>
+#include <QMessageBox>
 
 #include "error.h"
 #include "file-ops.h"
@@ -194,6 +195,20 @@ resource_manager::do_set_settings (const QString& file)
 {
   delete settings;
   settings = new QSettings (file, QSettings::IniFormat);
+
+  if (! (settings
+         && QFile::exists (settings->fileName ())
+         && settings->isWritable ()
+         && settings->status () ==  QSettings::NoError))
+    {
+      QString msg = QString (QT_TR_NOOP ("The settings file\n%1\n"
+              "does not exist and can not be created.\n"
+              "Make sure you have read and write permissions to\n%2\n\n"
+              "Octave GUI must be closed now."));
+      QMessageBox::critical (0, QString (QT_TR_NOOP ("Octave Critical Error")),
+          msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
+      exit (1);
+    }
 }
 
 bool

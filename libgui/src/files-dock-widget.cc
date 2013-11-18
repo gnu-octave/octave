@@ -195,6 +195,11 @@ files_dock_widget::files_dock_widget (QWidget *p)
            SIGNAL (customContextMenuRequested (const QPoint &)),
            this, SLOT (contextmenu_requested (const QPoint &)));
 
+  _file_tree_view->header()->setContextMenuPolicy (Qt::CustomContextMenu);
+  connect (_file_tree_view->header(),
+           SIGNAL (customContextMenuRequested (const QPoint &)),
+           this, SLOT (headercontextmenu_requested (const QPoint &)));
+
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
   vbox_layout->setSpacing (0);
@@ -348,6 +353,84 @@ files_dock_widget::open_item_in_app (const QModelIndex& index)
   QString file = fileInfo.absoluteFilePath ();
 
   QDesktopServices::openUrl (QUrl::fromLocalFile (file));
+}
+
+void files_dock_widget::toggle_headercontextitem_filesize ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("filesdockwidget/showFileSize",
+                      !settings->value ("filesdockwidget/showFileSize",false).toBool ());
+  settings->sync ();
+  this->notice_settings (settings);
+}
+
+void files_dock_widget::toggle_headercontextitem_filetype ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("filesdockwidget/showFileType",
+                      !settings->value ("filesdockwidget/showFileType",false).toBool ());
+  settings->sync ();
+  this->notice_settings (settings);
+}
+
+void files_dock_widget::toggle_headercontextitem_datemodified ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("filesdockwidget/showLastModified",
+                      !settings->value ("filesdockwidget/showLastModified",false).toBool ());
+  settings->sync ();
+  this->notice_settings (settings);
+}
+
+void files_dock_widget::toggle_headercontextitem_showhidden ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("filesdockwidget/showHiddenFiles",
+                      !settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
+  settings->sync ();
+  this->notice_settings (settings);
+}
+
+void
+files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
+{
+  QMenu menu (this);
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  QAction fileSizeAction (tr ("File size"), &menu);
+  fileSizeAction.setCheckable (true);
+  fileSizeAction.setChecked (
+      settings->value ("filesdockwidget/showFileSize",false).toBool ());
+  connect (&fileSizeAction, SIGNAL(triggered ()),
+           this, SLOT (toggle_headercontextitem_filesize ()));
+  menu.addAction (&fileSizeAction);
+
+  QAction fileTypeAction (tr ("File type"), &menu);
+  fileTypeAction.setCheckable (true);
+  fileTypeAction.setChecked (
+      settings->value ("filesdockwidget/showFileType",false).toBool ());
+  connect (&fileTypeAction, SIGNAL(triggered ()),
+           this, SLOT (toggle_headercontextitem_filetype ()));
+  menu.addAction (&fileTypeAction);
+
+  QAction dateModifiedAction (tr ("Date modified"), &menu);
+  dateModifiedAction.setCheckable (true);
+  dateModifiedAction.setChecked(
+      settings->value ("filesdockwidget/showLastModified",false).toBool ());
+  connect (&dateModifiedAction, SIGNAL(triggered ()),
+           this, SLOT (toggle_headercontextitem_datemodified ()));
+  menu.addAction (&dateModifiedAction);
+
+  QAction showHiddenAction (tr ("Show hidden"), &menu);
+  showHiddenAction.setCheckable (true);
+  showHiddenAction.setChecked (
+      settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
+  connect (&showHiddenAction, SIGNAL (triggered ()),
+           this, SLOT (toggle_headercontextitem_showhidden ()));
+  menu.addAction (&showHiddenAction);
+
+  menu.exec (_file_tree_view->mapToGlobal (mpos));
 }
 
 void

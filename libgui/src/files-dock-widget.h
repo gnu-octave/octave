@@ -83,6 +83,13 @@ private slots:
   /** context menu wanted */
   void contextmenu_requested (const QPoint& pos);
 
+  void toggle_headercontextitem_filesize ();
+  void toggle_headercontextitem_filetype ();
+  void toggle_headercontextitem_datemodified ();
+  void toggle_headercontextitem_showhidden ();
+
+  void headercontextmenu_requested (const QPoint& pos);
+
   /* context menu actions */
   void contextmenu_open (bool);
   void contextmenu_open_in_app (bool);

@@ -2024,7 +2024,7 @@ AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
 AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
 AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
 AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
-AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
+AC_CHECK_HEADERS([sys/select.h termcap.h])
 
 ## C++ headers
 
@@ -2145,7 +2145,7 @@ AC_CHECK_FUNCS([log1p log1pf pipe])
 AC_CHECK_FUNCS([realpath resolvepath roundl])
 AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
 AC_CHECK_FUNCS([tempnam tgammaf toascii])
-AC_CHECK_FUNCS([umask uname waitpid])
+AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_kbhit])
 
 dnl There are no workarounds in the code for missing these functions.

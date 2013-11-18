@@ -513,6 +513,10 @@ main_window::display_community_news (const QString& news)
       community_news_window->setWindowTitle (tr ("Octave Community News"));
       community_news_window->setWindowIcon (QIcon (":/icons/logo.png"));
       community_news_window->resize (640, 480);
+      int win_x = QApplication::desktop ()->width ();
+      int win_y = QApplication::desktop ()->height ();
+      community_news_window->move ((win_x - community_news_window->width ())/2,
+                                   (win_y - community_news_window->height ())/2);
     }
 
   if (! community_news_window->isVisible ())

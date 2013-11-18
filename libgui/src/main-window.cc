@@ -915,7 +915,6 @@ main_window::set_window_layout (QSettings *settings)
 #if not defined (Q_OS_WIN32)
       widget->make_window ();
 #endif
-      widget->setVisible (true);
       if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())
         widget->showMinimized ();
       else

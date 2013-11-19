@@ -34,22 +34,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-extern std::string octave_www_statement (bool html = false);
+extern OCTINTERP_API std::string octave_www_statement (bool html = false);
 
-extern std::string octave_contrib_statement (bool html = false);
+extern OCTINTERP_API std::string octave_contrib_statement (bool html = false);
 
-extern std::string octave_bugs_statement (bool html = false);
+extern OCTINTERP_API std::string octave_bugs_statement (bool html = false);
 
-extern std::string octave_name_version_and_copyright (void);
+extern OCTINTERP_API std::string octave_name_version_and_copyright (void);
 
-extern std::string
+extern OCTINTERP_API std::string
 octave_name_version_copyright_copying_and_warranty
   (bool html = false, const std::string& extra_info = std::string ());
 
-extern std::string
+extern OCTINTERP_API std::string
 octave_name_version_copyright_copying_warranty_and_bugs
   (bool html = false, const std::string& extra_info = std::string ());
 
-extern std::string octave_startup_message (bool html = false);
+extern OCTINTERP_API std::string octave_startup_message (bool html = false);
 
 #endif

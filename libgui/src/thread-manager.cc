@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <signal.h>
 
+#include "sighandlers.h"
 #include "thread-manager.h"
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
@@ -47,15 +48,7 @@ public:
 
   void interrupt (void)
   {
-    // FIXME: This doesn't work when octave_interrupt_immediately is
-    // true.  Octave crashes, presumably in the call to
-    // octave_jump_to_enclosing_context.  Does this happen because the
-    // jump occurs while Octave is running in the wrong thread?  That
-    // was happening on Unixy systems until we started using
-    // pthread_kill and blocking interrupts from all threads except the
-    // one running the Octave interpreter.
-
-    ::raise (SIGINT);
+    w32_raise_sigint ();
   }
 };
 

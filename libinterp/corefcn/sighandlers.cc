@@ -74,6 +74,153 @@ static bool Vsigterm_dumps_octave_core = true;
 // List of signals we have caught since last call to octave_signal_handler.
 static bool octave_signals_caught[NSIG];
 
+// Forward declaration.
+static void user_abort (const char *sig_name, int sig_number);
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+class
+w32_interrupt_manager
+{
+public:
+  ~w32_interrupt_manager (void)
+  {
+    if (thread)
+      CloseHandle (thread);
+  }
+
+  static bool init (void) { return instance_ok (); }
+
+  static void octave_jump_to_enclosing_context (void)
+  {
+    if (instance_ok ())
+      instance->do_octave_jump_to_enclosing_context ();
+  }
+
+  static void user_abort (const char *sig_name, int sig_number)
+  {
+    if (instance_ok ())
+      instance->do_user_abort (sig_name, sig_number);
+  }
+
+  static void raise_sigint (void)
+  {
+    if (instance_ok ())
+      instance->do_raise_sigint ();
+  }
+
+private:
+  w32_interrupt_manager (void)
+    : thread (0), thread_id (0)
+  {
+    thread_id = GetCurrentThreadId ();
+
+    DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
+                     GetCurrentProcess (), &thread, 0, FALSE,
+                     DUPLICATE_SAME_ACCESS);
+  }
+
+  static void octave_jump_to_enclosing_context_sync (void)
+  {
+#ifdef _MSC_VER
+    _fpreset ();
+#endif
+    ::octave_jump_to_enclosing_context ();
+  }
+
+  void do_octave_jump_to_enclosing_context (void)
+  {
+    bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
+
+    if (is_interrupt_thread)
+      octave_jump_to_enclosing_context_sync ();
+    else
+      {
+        CONTEXT threadContext;
+
+        SuspendThread (thread);
+        threadContext.ContextFlags = CONTEXT_CONTROL;
+        GetThreadContext (thread, &threadContext);
+        threadContext.Eip = (DWORD) octave_jump_to_enclosing_context_sync;
+        SetThreadContext (thread, &threadContext);
+        ResumeThread (thread);
+      }
+  }
+
+  void do_user_abort (const char *sig_name, int sig_number)
+  {
+    bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
+
+    if (is_interrupt_thread)
+      ::user_abort (sig_name, sig_number);
+    else
+      {
+        SuspendThread (thread);
+        ::user_abort (sig_name, sig_number);
+        ResumeThread (thread);
+      }
+  }
+
+  void do_raise_sigint (void)
+  {
+    bool is_interrupt_thread = (GetCurrentThreadId () == thread_id);
+
+    if (is_interrupt_thread)
+      ::raise (SIGINT);
+    else
+      {
+        SuspendThread (thread);
+        ::raise (SIGINT);
+        ResumeThread (thread);
+      }
+  }
+
+  static bool instance_ok (void)
+  {
+    bool retval = true;
+
+    if (! instance)
+      {
+        instance = new w32_interrupt_manager ();
+
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
+
+    if (! instance)
+      {
+        ::error ("unable to create w32_interrupt_manager");
+
+        retval = false;
+      }
+
+    return retval;
+  }
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
+private:
+  // A handle to the thread that is running the octave interpreter.
+  HANDLE thread;
+
+  // The ID of the thread that is running the octave interpreter.
+  DWORD thread_id;
+
+  static w32_interrupt_manager* instance;
+};
+
+w32_interrupt_manager* w32_interrupt_manager::instance = 0;
+
+void w32_raise_sigint (void)
+{
+  w32_interrupt_manager::raise_sigint ();
+}
+
+#endif
+
 // Signal handler return type.
 #ifndef BADSIG
 #define BADSIG (void (*)(int))-1
@@ -351,7 +498,11 @@ user_abort (const char *sig_name, int sig_number)
           if (octave_interrupt_state == 0)
             octave_interrupt_state = 1;
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+          w32_interrupt_manager::octave_jump_to_enclosing_context ();
+#else
           octave_jump_to_enclosing_context ();
+#endif
         }
       else
         {
@@ -378,7 +529,11 @@ user_abort (const char *sig_name, int sig_number)
 static void
 sigint_handler (int sig)
 {
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  w32_interrupt_manager::user_abort (strsignal (sig), sig);
+#else
   user_abort (strsignal (sig), sig);
+#endif
 }
 
 #ifdef SIGPIPE
@@ -401,6 +556,10 @@ octave_catch_interrupts (void)
 {
   octave_interrupt_handler retval;
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  w32_interrupt_manager::init ();
+#endif
+
 #ifdef SIGINT
   retval.int_handler = octave_set_signal_handler (SIGINT, sigint_handler);
 #endif
@@ -416,6 +575,10 @@ octave_interrupt_handler
 octave_ignore_interrupts (void)
 {
   octave_interrupt_handler retval;
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  w32_interrupt_manager::init ();
+#endif
 
 #ifdef SIGINT
   retval.int_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
@@ -433,6 +596,10 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h,
                               bool restart_syscalls)
 {
   octave_interrupt_handler retval;
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  w32_interrupt_manager::init ();
+#endif
 
 #ifdef SIGINT
   retval.int_handler = octave_set_signal_handler (SIGINT, h.int_handler,

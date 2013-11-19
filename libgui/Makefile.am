@@ -94,6 +94,14 @@ define moc-command
 mv $@-t $@
 endef
 
+define rcc-command
+( echo '#ifdef HAVE_CONFIG_H'; \
+  echo '#include <config.h>'; \
+  echo '#endif'; \
+  $(RCC) $< ) > $@-t
+mv $@-t $@
+endef
+
 moc-%.cc: %.h
 	$(moc-command)
 
@@ -101,7 +109,7 @@ ui-%.h: %.ui
 	$(UIC) -o $@ $<
 
 qrc-%.cc: %.qrc
-	$(RCC) -o $@ $<
+	$(rcc-command)
 
 %.qm: %.ts
 	$(MKDIR_P) languages

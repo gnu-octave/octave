@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2013 John P. Swensen
 Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
@@ -150,10 +151,21 @@ files_dock_widget::files_dock_widget (QWidget *p)
   connect (_sync_browser_directory_action, SIGNAL (triggered ()), this,
            SLOT (do_sync_browser_directory ()));
 
+  QSettings *settings = resource_manager::get_settings ();
+  // FIXME: what should happen if settings is 0?
+
   // Create the QFileSystemModel starting in the actual directory
   QDir curr_dir;
   _file_system_model = new QFileSystemModel (this);
-  _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+  if (settings->value ("filesdockwidget/showHiddenFiles",false).toBool ())
+    {
+      _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries
+                                     | QDir::Hidden);
+    }
+  else
+    {
+      _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+    }
   QModelIndex rootPathIndex = _file_system_model->setRootPath (
                                 curr_dir.absolutePath ());
 
@@ -168,8 +180,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   _file_tree_view->setToolTip (tr ("Double-click a file to open it"));
 
   // get sort column and order as well as cloumn state (order and width)
-  QSettings *settings = resource_manager::get_settings ();
-  // FIXME: what should happen if settings is 0?
+
   _file_tree_view->sortByColumn (
     settings->value ("filesdockwidget/sort_files_by_column",0).toInt (),
     static_cast<Qt::SortOrder>
@@ -358,8 +369,9 @@ files_dock_widget::open_item_in_app (const QModelIndex& index)
 void files_dock_widget::toggle_headercontextitem_filesize ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  settings->setValue ("filesdockwidget/showFileSize",
-                      !settings->value ("filesdockwidget/showFileSize",false).toBool ());
+  settings->setValue
+    ("filesdockwidget/showFileSize",
+     ! settings->value ("filesdockwidget/showFileSize",false).toBool ());
   settings->sync ();
   this->notice_settings (settings);
 }
@@ -367,8 +379,9 @@ void files_dock_widget::toggle_headercontextitem_filesize ()
 void files_dock_widget::toggle_headercontextitem_filetype ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  settings->setValue ("filesdockwidget/showFileType",
-                      !settings->value ("filesdockwidget/showFileType",false).toBool ());
+  settings->setValue
+    ("filesdockwidget/showFileType",
+     ! settings->value ("filesdockwidget/showFileType",false).toBool ());
   settings->sync ();
   this->notice_settings (settings);
 }
@@ -376,8 +389,9 @@ void files_dock_widget::toggle_headercontextitem_filetype ()
 void files_dock_widget::toggle_headercontextitem_datemodified ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  settings->setValue ("filesdockwidget/showLastModified",
-                      !settings->value ("filesdockwidget/showLastModified",false).toBool ());
+  settings->setValue
+    ("filesdockwidget/showLastModified",
+     ! settings->value ("filesdockwidget/showLastModified",false).toBool ());
   settings->sync ();
   this->notice_settings (settings);
 }
@@ -385,8 +399,9 @@ void files_dock_widget::toggle_headercontextitem_datemodified ()
 void files_dock_widget::toggle_headercontextitem_showhidden ()
 {
   QSettings *settings = resource_manager::get_settings ();
-  settings->setValue ("filesdockwidget/showHiddenFiles",
-                      !settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
+  settings->setValue
+    ("filesdockwidget/showHiddenFiles",
+     ! settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
   settings->sync ();
   this->notice_settings (settings);
 }
@@ -401,7 +416,7 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
   QAction fileSizeAction (tr ("File size"), &menu);
   fileSizeAction.setCheckable (true);
   fileSizeAction.setChecked (
-      settings->value ("filesdockwidget/showFileSize",false).toBool ());
+    settings->value ("filesdockwidget/showFileSize",false).toBool ());
   connect (&fileSizeAction, SIGNAL(triggered ()),
            this, SLOT (toggle_headercontextitem_filesize ()));
   menu.addAction (&fileSizeAction);
@@ -409,7 +424,7 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
   QAction fileTypeAction (tr ("File type"), &menu);
   fileTypeAction.setCheckable (true);
   fileTypeAction.setChecked (
-      settings->value ("filesdockwidget/showFileType",false).toBool ());
+    settings->value ("filesdockwidget/showFileType",false).toBool ());
   connect (&fileTypeAction, SIGNAL(triggered ()),
            this, SLOT (toggle_headercontextitem_filetype ()));
   menu.addAction (&fileTypeAction);
@@ -417,7 +432,7 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
   QAction dateModifiedAction (tr ("Date modified"), &menu);
   dateModifiedAction.setCheckable (true);
   dateModifiedAction.setChecked(
-      settings->value ("filesdockwidget/showLastModified",false).toBool ());
+    settings->value ("filesdockwidget/showLastModified",false).toBool ());
   connect (&dateModifiedAction, SIGNAL(triggered ()),
            this, SLOT (toggle_headercontextitem_datemodified ()));
   menu.addAction (&dateModifiedAction);
@@ -425,7 +440,7 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
   QAction showHiddenAction (tr ("Show hidden"), &menu);
   showHiddenAction.setCheckable (true);
   showHiddenAction.setChecked (
-      settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
+    settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
   connect (&showHiddenAction, SIGNAL (triggered ()),
            this, SLOT (toggle_headercontextitem_showhidden ()));
   menu.addAction (&showHiddenAction);
@@ -725,17 +740,24 @@ files_dock_widget::notice_settings (const QSettings *settings)
   // file names are always shown, other columns can be hidden by settings
   _file_tree_view->setColumnHidden (0, false);
   _file_tree_view->setColumnHidden (1,
-    !settings->value ("filesdockwidget/showFileSize",false).toBool ());
+    ! settings->value ("filesdockwidget/showFileSize",false).toBool ());
   _file_tree_view->setColumnHidden (2,
-    !settings->value ("filesdockwidget/showFileType",false).toBool ());
+    ! settings->value ("filesdockwidget/showFileType",false).toBool ());
   _file_tree_view->setColumnHidden (3,
-    !settings->value ("filesdockwidget/showLastModified",false).toBool ());
+    ! settings->value ("filesdockwidget/showLastModified",false).toBool ());
   _file_tree_view->setAlternatingRowColors (
     settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
   if (settings->value ("filesdockwidget/showHiddenFiles",false).toBool ())
     {
-      // TODO: React on option for hidden files.
+      _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries
+                                     | QDir::Hidden);
     }
+  else
+    {
+      _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+    }
+  _file_tree_view->setModel (_file_system_model);
+
   // enable the buttons to sync octave/browser dir
   // only if this is not done by default
   _sync_octave_dir

@@ -916,7 +916,7 @@ main_window::set_window_layout (QSettings *settings)
   // show floating widgets after main win to ensure "Octave" in central menu
   foreach (octave_dock_widget *widget, float_and_visible)
     {
-#if not defined (Q_OS_WIN32)
+#if ! defined (Q_OS_WIN32)
       widget->make_window ();
 #endif
       if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())

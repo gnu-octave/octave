@@ -283,9 +283,10 @@ waitpid (pid);\n\
    @print{} are\n\
 @end example\n\
 \n\
-Note that @code{popen2}, unlike @code{popen}, will not @qcode{\"reap\"} the\n\
+Note that @code{popen2}, unlike @code{popen}, will not @nospell{\"reap\"} the\n\
 child process.  If you don't use @code{waitpid} to check the child's\n\
 exit status, it will linger until Octave exits.\n\
+@seealso{popen, waitpid}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -418,6 +419,7 @@ exit status, it will linger until Octave exits.\n\
 %!   endif
 %! until (done)
 %! fclose (out);
+%! waitpid (pid);
 %! if (unix_sort)
 %!   assert (str, {"these\n","strings\n","some\n","are\n"});
 %! else

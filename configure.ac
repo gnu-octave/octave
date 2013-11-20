@@ -2435,7 +2435,7 @@ do
 
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
-    warn_java_home="JAVA_HOME environment variable not initialized. Auto-detection will proceed but is unreliable."
+    warn_java_home="JAVA_HOME environment variable not initialized.  Auto-detection will proceed but is unreliable."
     OCTAVE_CONFIGURE_WARNING([warn_java_home])
   fi
 

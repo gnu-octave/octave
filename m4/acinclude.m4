@@ -93,6 +93,90 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
   fi
 ])
 dnl
+dnl Check for broken stl_algo.h header file in gcc versions 4.8.0, 4.8.1, 4.8.2
+dnl which leads to failures in nth_element.
+dnl
+AC_DEFUN([OCTAVE_CHECK_BROKEN_STL_ALGO_H], [
+  AC_CACHE_CHECK([whether stl_algo.h is broken],
+    [octave_cv_broken_stl_algo_h],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+// Based on code from a GCC test program.
+
+// Copyright (C) 2013 Free Software Foundation, Inc.
+//
+// This file is part of the GNU ISO C++ Library. This library is free
+// software; you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 3, or (at your option)
+// any later version.
+
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License along
+// with this library; see the file COPYING3. If not see
+// <http://www.gnu.org/licenses/>.
+
+// 25.3.2 [lib.alg.nth.element]
+
+// { dg-options "-std=gnu++11" }
+
+#include <algorithm>
+#include <vector>
+      ]], [[
+std::vector<int> v (7);
+
+v[0] = 207089;
+v[1] = 202585;
+v[2] = 180067;
+v[3] = 157549;
+v[4] = 211592;
+v[5] = 216096;
+v[6] = 207089;
+
+std::nth_element (v.begin (), v.begin () + 3, v.end ());
+
+return v[3] == 207089 ? 0 : 1;
+    ]])],
+    octave_cv_broken_stl_algo_h=no,
+    octave_cv_broken_stl_algo_h=yes,
+    [case "$GXX_VERSION" in
+       *4.8.2*)
+         octave_cv_broken_stl_algo_h=yes,
+       ;;
+     esac
+    ])
+    AC_LANG_POP(C++)
+  ])
+  if test "$GXX" = yes; then
+    if test $octave_cv_broken_stl_algo_h = yes; then
+      case "$GXX_VERSION" in
+        4.8.[[012]])
+        ;;
+        *)
+          octave_cv_broken_stl_algo_h=no
+          warn_stl_algo_h="UNEXPECTED: found nth_element broken in g++ $GXX_VERSION.  Refusing to fix except for g++ 4.8.0, 4.8.1, or 4.8.2.  You appear to have g++ $GXX_VERSION."
+          OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+        ;;
+      esac
+    else
+      case "$GXX_VERSION" in
+        4.8.2)
+          warn_stl_algo_h="UNEXPECTED: found nth_element working in g++ 4.8.2.  Has it been patched on your system?"
+          OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+        ;;
+      esac
+    fi
+  else
+    octave_cv_broken_stl_algo_h=no
+    warn_stl_algo_h="UNEXPECTED: nth_element test failed.  Refusing to fix except for g++ 4.8.2."
+    OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+  fi
+])
+dnl
 dnl Check whether the FFTW library supports multi-threading. This macro
 dnl should be called once per FFTW precision passing in the library
 dnl variant (e.g. "fftw3") and a function in the thread support API
@@ -2057,89 +2141,7 @@ AC_DEFUN([OCTAVE_UNORDERED_MAP_HEADERS], [
   fi
 ])
 
-AC_DEFUN([OCTAVE_CHECK_BROKEN_STL_ALGO_H], [
-  AC_CACHE_CHECK([whether stl_algo.h is broken],
-    [octave_cv_broken_stl_algo_h],
-    [AC_LANG_PUSH(C++)
-    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-// Based on code from a GCC test program.
-
-// Copyright (C) 2013 Free Software Foundation, Inc.
-//
-// This file is part of the GNU ISO C++ Library. This library is free
-// software; you can redistribute it and/or modify it under the
-// terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 3, or (at your option)
-// any later version.
-
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
-// You should have received a copy of the GNU General Public License along
-// with this library; see the file COPYING3. If not see
-// <http://www.gnu.org/licenses/>.
-
-// 25.3.2 [lib.alg.nth.element]
-
-// { dg-options "-std=gnu++11" }
-
-#include <algorithm>
-#include <vector>
-      ]], [[
-std::vector<int> v (7);
-
-v[0] = 207089;
-v[1] = 202585;
-v[2] = 180067;
-v[3] = 157549;
-v[4] = 211592;
-v[5] = 216096;
-v[6] = 207089;
-
-std::nth_element (v.begin (), v.begin () + 3, v.end ());
-
-return v[3] == 207089 ? 0 : 1;
-    ]])],
-    octave_cv_broken_stl_algo_h=no,
-    octave_cv_broken_stl_algo_h=yes,
-    [case "$GXX_VERSION" in
-       *4.8.2*)
-         octave_cv_broken_stl_algo_h=yes,
-       ;;
-     esac
-    ])
-    AC_LANG_POP(C++)
-  ])
-  if test "$GXX" = yes; then
-    if test $octave_cv_broken_stl_algo_h = yes; then
-      case "$GXX_VERSION" in
-        4.8.[[012]])
-        ;;
-        *)
-          octave_cv_broken_stl_algo_h=no
-          warn_stl_algo_h="UNEXPECTED: found nth_element broken in g++ $GXX_VERSION.  Refusing to fix except for g++ 4.8.0, 4.8.1, or 4.8.2.  You appear to have g++ $GXX_VERSION."
-          OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
-        ;;
-      esac
-    else
-      case "$GXX_VERSION" in
-        4.8.2)
-          warn_stl_algo_h="UNEXPECTED: found nth_element working in g++ 4.8.2.  Has it been patched on your system?"
-          OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
-        ;;
-      esac
-    fi
-  else
-    octave_cv_broken_stl_algo_h=no
-    warn_stl_algo_h="UNEXPECTED: nth_element test failed.  Refusing to fix except for g++ 4.8.2."
-    OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
-  fi
-])
-
 dnl         End of macros written by Octave developers
 dnl ------------------------------------------------------------
 dnl
 
-##############################################################################

@@ -145,7 +145,10 @@ return v[3] == 207089 ? 0 : 1;
     octave_cv_broken_stl_algo_h=yes,
     [case "$GXX_VERSION" in
        *4.8.2*)
-         octave_cv_broken_stl_algo_h=yes,
+         octave_cv_broken_stl_algo_h=yes
+       ;;
+       *)
+         octave_cv_broken_stl_algo_h=no
        ;;
      esac
     ])

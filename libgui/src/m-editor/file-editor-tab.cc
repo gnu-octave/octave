@@ -80,6 +80,25 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this,
            SLOT (execute_command_in_terminal (const QString&)));
 
+  connect (_edit_area, 
+           SIGNAL (cursorPositionChanged (int, int)),
+           this,
+           SLOT (handle_cursor_moved (int,int)));
+
+  // create statusbar for row/col indicator
+  _status_bar = new QStatusBar (this);
+
+  _row_indicator = new QLabel ("", this);
+  _row_indicator->setMinimumSize (30,0);
+  QLabel *row_label = new QLabel (tr ("Line:"), this);
+  _col_indicator = new QLabel ("", this);
+  _col_indicator->setMinimumSize (25,0);
+  QLabel *col_label = new QLabel (tr ("Col:"), this);
+  _status_bar->addPermanentWidget (row_label, 0);
+  _status_bar->addPermanentWidget (_row_indicator, 0);
+  _status_bar->addPermanentWidget (col_label, 0);
+  _status_bar->addPermanentWidget (_col_indicator, 0);
+
   // Leave the find dialog box out of memory until requested.
   _find_dialog = 0;
   _find_dialog_is_visible = false;
@@ -121,6 +140,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   QVBoxLayout *edit_area_layout = new QVBoxLayout ();
   edit_area_layout->addWidget (_edit_area);
+  edit_area_layout->addWidget (_status_bar);
   edit_area_layout->setMargin (0);
   setLayout (edit_area_layout);
 
@@ -1452,6 +1472,13 @@ file_editor_tab::center_current_line ()
 
       _edit_area->SendScintilla (2613,first_line); // SCI_SETFIRSTVISIBLELINE
     }
+}
+
+void 
+file_editor_tab::handle_cursor_moved (int line, int col)
+{
+  _row_indicator->setNum (line+1);
+  _col_indicator->setNum (col+1);
 }
 
 #endif

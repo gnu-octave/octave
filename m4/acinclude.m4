@@ -315,8 +315,8 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
   AC_CACHE_CHECK([whether $F77 has the intrinsic function ISNAN],
     [octave_cv_func_fortran_isnan],
     [AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE(
-[[      program foo
+    AC_COMPILE_IFELSE([[
+      program foo
       implicit none
       real x
       double precision y
@@ -327,7 +327,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
         print *, 'y is NaN'
       end if
       end program
-]],
+      ]],
       octave_cv_func_fortran_isnan=yes, octave_cv_func_fortran_isnan=no)
     AC_LANG_POP(Fortran 77)
   ])
@@ -1011,8 +1011,8 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
     [ac_octave_save_FFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE(
-[[      subroutine foo(n, in, out)
+    AC_COMPILE_IFELSE([[
+      subroutine foo(n, in, out)
       integer n, in(n), out(n)
       integer i
       do 10 i = 1, n
@@ -1020,14 +1020,15 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
    10 continue
       return
       end
-]],
+      ]],
       [mv conftest.$ac_objext fintsize.$ac_objext
       ac_octave_save_LIBS="$LIBS"
       LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
       AC_LANG_PUSH(C)
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
           #include <assert.h>
-          #include <stdint.h> ]], [[
+          #include <stdint.h>
+          ]], [[
           #ifdef USE_64_BIT_IDX_T
             typedef int64_t octave_idx_type;
           #else

@@ -83,7 +83,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1526"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1528"/>
         <source>copied selection to clipboard</source>
         <translation>seleção copiada para a área de transferência</translation>
     </message>
@@ -371,7 +371,7 @@ para escrita: %2.</translation>
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+759"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+787"/>
         <source>Goto line</source>
         <translation>Vá para linha</translation>
     </message>
@@ -382,11 +382,12 @@ para escrita: %2.</translation>
     </message>
     <message>
         <location line="+71"/>
+        <location line="+69"/>
         <source>&lt;unnamed&gt;</source>
         <translation>&lt;sem_nome&gt;</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="-12"/>
         <source>Do you want to save or discard the changes?</source>
         <translation>Você deseja salvar ou descartar as alterações?</translation>
     </message>
@@ -396,16 +397,16 @@ para escrita: %2.</translation>
         <translation>Você deseja cancelar fechamento, salvar ou descartar as alterações?</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <location line="+129"/>
-        <location line="+115"/>
-        <location line="+66"/>
+        <location line="+10"/>
+        <location line="+123"/>
+        <location line="+111"/>
+        <location line="+64"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Editor do Octave</translation>
     </message>
     <message>
-        <location line="-331"/>
+        <location line="-319"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -416,12 +417,12 @@ está prestes a ser fechado mas foi modificado.
 %2</translation>
     </message>
     <message>
-        <location line="+210"/>
+        <location line="+202"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Scripts Octave (*.m);; Todos os Arquivos (*)</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+32"/>
         <source>File not saved! The selected file name
 %1
 is the same as the current file name</source>
@@ -430,7 +431,7 @@ is the same as the current file name</source>
 é o mesmo do arquivo atual</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+79"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -448,14 +449,24 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 foi removido ou renomeado. Pretende salvá-lo agora?%2</translation>
     </message>
     <message>
-        <location line="-203"/>
+        <location line="-197"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Não foi possível abrir arquivo %1 para escrita:
 %2.</translation>
     </message>
     <message>
-        <location line="+181"/>
+        <location line="-962"/>
+        <source>Line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Col:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1134"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Parece que o arquivo &apos;%1&apos; foi modificado por outra aplicação. Deseja recarregá-lo?</translation>
     </message>
@@ -463,7 +474,7 @@ foi removido ou renomeado. Pretende salvá-lo agora?%2</translation>
 <context>
     <name>files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+67"/>
+        <location filename="../src/files-dock-widget.cc" line="+68"/>
         <source>File Browser</source>
         <translation>Navegador de Arquivos</translation>
     </message>
@@ -519,29 +530,49 @@ foi removido ou renomeado. Pretende salvá-lo agora?%2</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+257"/>
+        <location line="+354"/>
         <source>Find Files ...</source>
         <translation>Buscar arquivos...</translation>
     </message>
     <message>
-        <location line="-253"/>
-        <location line="+266"/>
+        <location line="-350"/>
+        <location line="+363"/>
         <source>New File</source>
         <translation>Novo Arquivo</translation>
     </message>
     <message>
-        <location line="-263"/>
-        <location line="+266"/>
+        <location line="-360"/>
+        <location line="+363"/>
         <source>New Directory</source>
         <translation>Novo Diretório</translation>
     </message>
     <message>
-        <location line="-237"/>
+        <location line="-323"/>
         <source>Double-click a file to open it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+198"/>
+        <location line="+236"/>
+        <source>File size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>File type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Date modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Show hidden</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
@@ -616,7 +647,7 @@ para:</translation>
         <translation>Não é possível excluir um diretório que não está vázio</translation>
     </message>
     <message>
-        <location line="+137"/>
+        <location line="+144"/>
         <source>Set directory of file browser</source>
         <translation>Definir diretório do navegador de arquivos</translation>
     </message>
@@ -646,7 +677,7 @@ para:</translation>
 <context>
     <name>final_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+234"/>
+        <location filename="../src/welcome-wizard.cc" line="+194"/>
         <source>Enjoy!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -991,7 +1022,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>initial_page</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="-215"/>
+        <location filename="../src/welcome-wizard.cc" line="-179"/>
         <source>Welcome to Octave!</source>
         <translation type="unfinished">Bem-vindo ao Octave!</translation>
     </message>
@@ -1831,7 +1862,7 @@ Octave GUI must be closed now.</source>
 <context>
     <name>setup_community_news</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+60"/>
+        <location filename="../src/welcome-wizard.cc" line="+44"/>
         <source>Community News</source>
         <translation type="unfinished">Novidades da Comunidade</translation>
     </message>
@@ -1896,7 +1927,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+170"/>
+        <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
         <translation>Bem-vindo ao GNU Octave</translation>
     </message>

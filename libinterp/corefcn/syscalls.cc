@@ -382,7 +382,7 @@ exit status, it will linger until Octave exits.\n\
 %! unix_sort = true;
 %! cmd = {"sort", "-r"};
 %! if (ispc ())
-%!   status = system ("sort /? 2> NUL");
+%!   status = system ("sort /? 2>NUL 1>NUL");
 %!   if (status == 0)
 %!     unix_sort = false;
 %!     cmd = {"sort", "/R"};

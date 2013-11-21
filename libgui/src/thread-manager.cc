@@ -48,7 +48,7 @@ public:
 
   void interrupt (void)
   {
-    w32_raise_sigint ();
+    GenerateConsoleCtrlEvent (CTRL_C_EVENT, 0);
   }
 };
 
@@ -90,15 +90,20 @@ octave_thread_manager::octave_thread_manager (void)
 static void
 block_or_unblock_signal (int how, int sig)
 {
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+  // Blocking/unblocking signals at thread level is only supported
+  // on platform with fully compliant POSIX threads. This is not
+  // supported on Win32. Moreover, we have to make sure that SIGINT
+  // handler is not installed before calling AllocConsole: installing
+  // a SIGINT handler internally calls SetConsoleCtrlHandler, which
+  // must be called after AllocConsole to be effective.
+
   sigset_t signal_mask;
 
   sigemptyset (&signal_mask);
 
   sigaddset (&signal_mask, sig);
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  sigprocmask (how, &signal_mask, 0);
-#else
   pthread_sigmask (how, &signal_mask, 0);
 #endif
 }

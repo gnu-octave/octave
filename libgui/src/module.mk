@@ -95,6 +95,7 @@ octave_gui_MOC += \
   src/moc-settings-dialog.cc \
   src/moc-terminal-dock-widget.cc \
   src/moc-color-picker.cc \
+  src/moc-resource-manager.cc \
   src/moc-welcome-wizard.cc \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \

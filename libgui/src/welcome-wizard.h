@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #define WELCOMEWIZARD_H
 
 #include <QDialog>
+#include <QCheckBox>
+#include <QLabel>
 
 class welcome_wizard : public QDialog
 {
@@ -54,6 +56,80 @@ private slots:
   void next_page (void);
 
   void accept (void);
+};
+
+
+class initial_page : public QWidget
+{
+  Q_OBJECT
+
+public:
+
+  initial_page (welcome_wizard *wizard);
+
+  ~initial_page (void) { }
+
+  static QWidget *
+  create (welcome_wizard *wizard) { return new initial_page (wizard); }
+
+private:
+
+  QLabel *title;
+  QLabel *message;
+  QLabel *logo;
+  QPushButton *next;
+  QPushButton *cancel;
+};
+
+
+class setup_community_news : public QWidget
+{
+  Q_OBJECT
+
+public:
+
+  setup_community_news (welcome_wizard *wizard);
+
+  ~setup_community_news (void) { }
+
+  static QWidget *
+  create (welcome_wizard *wizard) { return new setup_community_news (wizard); }
+
+private:
+
+  QLabel *title;
+  QLabel *message;
+  QCheckBox *checkbox;
+  QLabel *checkbox_message;
+  QLabel *logo;
+  QPushButton *previous;
+  QPushButton *next;
+  QPushButton *cancel;
+};
+
+
+class final_page : public QWidget
+{
+  Q_OBJECT
+
+public:
+
+  final_page (welcome_wizard *wizard);
+
+  ~final_page (void) { }
+
+  static QWidget *
+  create (welcome_wizard *wizard) { return new final_page (wizard); }
+
+private:
+
+  QLabel *title;
+  QLabel *message;
+  QLabel *logo;
+  QLabel *links;
+  QPushButton *previous;
+  QPushButton *finish;
+  QPushButton *cancel;
 };
 
 #endif // WELCOMEWIZARD_H

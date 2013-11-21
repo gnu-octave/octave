@@ -29,13 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QTranslator>
 
-class resource_manager
+class resource_manager : public QObject
 {
+  Q_OBJECT
+
 protected:
 
-  resource_manager (void);
-
 public:
+
+  resource_manager (void);
 
   ~resource_manager ();
 

@@ -26,8 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QApplication>
-#include <QCheckBox>
-#include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -44,11 +42,9 @@ make_octave_logo (QWidget *p = 0, int height = 100)
   return logo;
 };
 
-class initial_page : public QWidget
-{
-public:
 
-  initial_page (welcome_wizard *wizard)
+
+initial_page::initial_page (welcome_wizard *wizard)
     : QWidget (wizard),
       title (new QLabel (tr ("Welcome to Octave!"), this)),
       message (new QLabel (this)),
@@ -101,25 +97,9 @@ public:
     connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  ~initial_page (void) { }
 
-  static QWidget *
-  create (welcome_wizard *wizard) { return new initial_page (wizard); }
 
-private:
-
-  QLabel *title;
-  QLabel *message;
-  QLabel *logo;
-  QPushButton *next;
-  QPushButton *cancel;
-};
-
-class setup_community_news : public QWidget
-{
-public:
-
-  setup_community_news (welcome_wizard *wizard)
+setup_community_news::setup_community_news (welcome_wizard *wizard)
     : QWidget (wizard),
       title (new QLabel (tr ("Community News"), this)),
       message (new QLabel (this)),
@@ -208,28 +188,8 @@ public:
     connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  ~setup_community_news (void) { }
 
-  static QWidget *
-  create (welcome_wizard *wizard) { return new setup_community_news (wizard); }
-
-private:
-
-  QLabel *title;
-  QLabel *message;
-  QCheckBox *checkbox;
-  QLabel *checkbox_message;
-  QLabel *logo;
-  QPushButton *previous;
-  QPushButton *next;
-  QPushButton *cancel;
-};
-
-class final_page : public QWidget
-{
-public:
-
-  final_page (welcome_wizard *wizard)
+final_page::final_page (welcome_wizard *wizard)
     : QWidget (wizard),
       title (new QLabel (tr ("Enjoy!"), this)),
       message (new QLabel (this)),
@@ -304,21 +264,6 @@ public:
     connect (cancel, SIGNAL (clicked ()), wizard, SLOT (reject ()));
   }
 
-  ~final_page (void) { }
-
-  static QWidget *
-  create (welcome_wizard *wizard) { return new final_page (wizard); }
-
-private:
-
-  QLabel *title;
-  QLabel *message;
-  QLabel *logo;
-  QLabel *links;
-  QPushButton *previous;
-  QPushButton *finish;
-  QPushButton *cancel;
-};
 
 welcome_wizard::welcome_wizard (QWidget *p)
   : QDialog (p), page_ctor_list (), page_list_iterator (),

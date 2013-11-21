@@ -1291,7 +1291,9 @@ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 save_FFLAGS="$FFLAGS"
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-AX_BLAS_WITH_F77_FUNC([:], [:])
+AX_BLAS_WITH_F77_FUNC([:], [:],
+  [ax_blas_f77_func_ok=yes
+   AC_MSG_RESULT([yes assumed for cross compilation])])
 AX_LAPACK([:], [:])
 
 ## Restore FFLAGS.

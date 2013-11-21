@@ -196,7 +196,8 @@ AX_BLAS([# disable special action], [])
 if test x$ax_blas_ok = xyes ; then
 	AX_BLAS_F77_FUNC(
 	[ifelse([$1],,AC_DEFINE(HAVE_BLAS,1,[Define if you have a BLAS library.]),[$1])],
-	[ax_blas_ok=no; BLAS_LIBS=])
+	[ax_blas_ok=no; BLAS_LIBS=],
+  [$3])
 fi
 if test x$ax_blas_ok = xno ; then
 	$2

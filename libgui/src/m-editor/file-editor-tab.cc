@@ -216,12 +216,18 @@ file_editor_tab::set_file_name (const QString& fileName)
   emit mru_add_file (_file_name);
 }
 
-// valid_file_name: checks whether editor tab contains an existing file
+// valid_file_name (file): checks whether "file" names a file
+// by default, "file" is empty, then _file_name is checked
 bool
-file_editor_tab::valid_file_name ()
+file_editor_tab::valid_file_name (const QString& file)
 {
-  return (! _file_name.isEmpty ()
-          && _file_name.at (_file_name.count () - 1) != '/');
+  QString file_name;
+  if (file.isEmpty ())
+    file_name = _file_name;
+  else
+    file_name = file;
+  return (! file_name.isEmpty ()
+          && file_name.at (file_name.count () - 1) != '/');
 }
 
 void
@@ -295,8 +301,7 @@ file_editor_tab::update_lexer ()
         {
           lexer = new QsciLexerDiff ();
         }
-      else if (_file_name.isEmpty ()
-               || _file_name.at (_file_name.count () - 1) == '/')
+      else if (! valid_file_name ())
         {
           // new, no yet named file: let us assume it is octave
 #if defined (HAVE_LEXER_OCTAVE)
@@ -855,7 +860,7 @@ file_editor_tab::update_window_title (bool modified)
   QString title ("");
   QString tooltip ("");
 
-  if (_file_name.isEmpty () || _file_name.at (_file_name.count () - 1) == '/')
+  if (! valid_file_name ())
     title = tr ("<unnamed>");
   else
     {
@@ -1020,8 +1025,7 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
 {
   // If it is a new file with no name, signal that saveFileAs
   // should be performed.
-  if (saveFileName.isEmpty ()
-      || saveFileName.at (saveFileName.count () - 1) == '/')
+  if (! valid_file_name (saveFileName))
     {
       save_file_as (remove_on_success);
       return;
@@ -1113,7 +1117,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // it had/has no effect on Windows, though)
   fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
 
-  if (!_file_name.isEmpty () && _file_name.at (_file_name.count () - 1) != '/')
+  if (valid_file_name ())
     {
       fileDialog->selectFile (_file_name);
     }

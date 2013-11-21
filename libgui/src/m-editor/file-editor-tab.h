@@ -176,6 +176,7 @@ private:
     int line;
   };
 
+  bool valid_file_name ();
   void save_file (const QString& saveFileName, bool remove_on_success = false);
   void save_file_as (bool remove_on_success = false);
   void message_duplicate_file_name (const QString& fileName);
@@ -184,6 +185,7 @@ private:
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
+  void show_dialog (QDialog *dlg);
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
   QString comment_string (const QString&);

@@ -216,6 +216,14 @@ file_editor_tab::set_file_name (const QString& fileName)
   emit mru_add_file (_file_name);
 }
 
+// valid_file_name: checks whether editor tab contains an existing file
+bool
+file_editor_tab::valid_file_name ()
+{
+  return (! _file_name.isEmpty ()
+          && _file_name.at (_file_name.count () - 1) != '/');
+}
+
 void
 file_editor_tab::handle_margin_clicked (int margin, int line,
                                         Qt::KeyboardModifiers state)
@@ -874,12 +882,29 @@ file_editor_tab::handle_copy_available (bool enableCopy)
   emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name));
 }
 
+// show_dialog: shows a modal or non modal dialog depeding on the closing
+//              of the app
+void
+file_editor_tab::show_dialog (QDialog *dlg)
+{
+  dlg->setAttribute (Qt::WA_DeleteOnClose);
+  if (_app_closing)
+    dlg->exec ();
+  else
+    {
+      dlg->setWindowModality (Qt::WindowModal);
+      dlg->show ();
+    }
+}
+
 int
 file_editor_tab::check_file_modified ()
 {
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
     {
+      activateWindow ();
+      raise ();
       // File is modified but not saved, ask user what to do.  The file
       // editor tab can't be made parent because it may be deleted depending
       // upon the response.  Instead, change the _edit_area to read only.
@@ -896,27 +921,27 @@ file_editor_tab::check_file_modified ()
             = tr ("Do you want to cancel closing, save or discard the changes?");
         }
 
+      QString file;
+      if (valid_file_name ())
+          file = _file_name;
+      else
+          file = tr ("<unnamed>");
+
       QMessageBox* msgBox
         = new QMessageBox (QMessageBox::Warning, tr ("Octave Editor"),
                            tr ("The file\n"
                                "%1\n"
                                "is about to be closed but has been modified.\n"
                                "%2").
-                           arg (_file_name). arg (available_actions),
+                           arg (file). arg (available_actions),
                            buttons, qobject_cast<QWidget *> (parent ()));
 
       msgBox->setDefaultButton (QMessageBox::Save);
       _edit_area->setReadOnly (true);
       connect (msgBox, SIGNAL (finished (int)),
                this, SLOT (handle_file_modified_answer (int)));
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      if (_app_closing)  // app is closing, a non modal dialogs prevent
-        msgBox->exec (); // the app of being closed before an answer from user
-      else
-        {
-          msgBox->setWindowModality (Qt::NonModal);
-          msgBox->show ();
-        }
+
+      show_dialog (msgBox);
 
       return QMessageBox::Cancel;
     }
@@ -1030,9 +1055,7 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
                            tr ("Could not open file %1 for write:\n%2.").
                            arg (file_to_save).arg (file.errorString ()),
                            QMessageBox::Ok, 0);
-      msgBox->setWindowModality (Qt::NonModal);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
+      show_dialog (msgBox);
 
       return;
     }
@@ -1127,9 +1150,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
                this, SLOT (handle_save_file_as_answer (const QString&)));
     }
 
-  fileDialog->setWindowModality (Qt::WindowModal);
-  fileDialog->setAttribute (Qt::WA_DeleteOnClose);
-  fileDialog->show ();
+  show_dialog (fileDialog);
 }
 
 void
@@ -1147,9 +1168,7 @@ file_editor_tab::message_duplicate_file_name (const QString& saveFileName)
                        arg (saveFileName),
                        QMessageBox::Ok, 0);
 
-  msgBox->setWindowModality (Qt::NonModal);
-  msgBox->setAttribute (Qt::WA_DeleteOnClose);
-  msgBox->show ();
+  show_dialog (msgBox);
 }
 
 void

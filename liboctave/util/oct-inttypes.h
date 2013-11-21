@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <iosfwd>
 
+#include <fpucw.h>
+
 #include "lo-traits.h"
 #include "lo-math.h"
 #include "lo-mappers.h"
@@ -183,8 +185,16 @@ public:
   static bool \
   mop (T1 x, T2 y) \
     { \
-      return xop::op (static_cast<long double> (x), \
-                      static_cast<long double> (y)); \
+      DECL_LONG_DOUBLE_ROUNDING \
+ \
+      BEGIN_LONG_DOUBLE_ROUNDING ();\
+ \
+      bool retval = xop::op (static_cast<long double> (x), \
+                             static_cast<long double> (y)); \
+ \
+      END_LONG_DOUBLE_ROUNDING (); \
+ \
+      return retval; \
     }
 #else
   // ... otherwise, use external handlers
@@ -411,13 +421,21 @@ template <>
 inline uint64_t
 octave_int_arith_base<uint64_t, false>:: mul (uint64_t x, uint64_t y)
 {
+  uint64_t retval;
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
+
   if (p > static_cast<long double> (octave_int_base<uint64_t>::max_val ()))
-    {
-      return octave_int_base<uint64_t>::max_val ();
-    }
+    retval = octave_int_base<uint64_t>::max_val ();
   else
-    return static_cast<uint64_t> (p);
+    retval = static_cast<uint64_t> (p);
+
+  END_LONG_DOUBLE_ROUNDING ();
+
+  return retval;
 }
 #else
 // Special handler for 64-bit integer multiply.
@@ -699,20 +717,26 @@ template <>
 inline int64_t
 octave_int_arith_base<int64_t, true>:: mul (int64_t x, int64_t y)
 {
+  uint64_t retval;
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
+
   // NOTE: We could maybe do it with a single branch if HAVE_FAST_INT_OPS,
   // but it would require one more runtime conversion, so the question is
   // whether it would really be faster.
   if (p > static_cast<long double> (octave_int_base<int64_t>::max_val ()))
-    {
-      return octave_int_base<int64_t>::max_val ();
-    }
+    retval = octave_int_base<int64_t>::max_val ();
   else if (p < static_cast<long double> (octave_int_base<int64_t>::min_val ()))
-    {
-      return octave_int_base<int64_t>::min_val ();
-    }
+    retval = octave_int_base<int64_t>::min_val ();
   else
-    return static_cast<int64_t> (p);
+    retval = static_cast<int64_t> (p);
+
+  END_LONG_DOUBLE_ROUNDING ();
+
+  return retval;
 }
 #else
 // Special handler for 64-bit integer multiply.
@@ -986,19 +1010,47 @@ typedef octave_int<uint64_t> octave_uint64;
   template <> \
   inline octave_int64 \
   operator OP (const double& x, const octave_int64& y) \
-  { return octave_int64 (x OP static_cast<long double> (y.value ())); } \
+  { \
+    octave_int64 retval; \
+    DECL_LONG_DOUBLE_ROUNDING \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+    retval = octave_int64 (x OP static_cast<long double> (y.value ())); \
+    END_LONG_DOUBLE_ROUNDING (); \
+    return retval; \
+  } \
   template <> \
   inline octave_uint64 \
   operator OP (const double& x, const octave_uint64& y) \
-  { return octave_uint64 (x OP static_cast<long double> (y.value ())); } \
+  { \
+    octave_uint64 retval; \
+    DECL_LONG_DOUBLE_ROUNDING \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+    retval = octave_uint64 (x OP static_cast<long double> (y.value ())); \
+    END_LONG_DOUBLE_ROUNDING (); \
+    return retval; \
+  } \
   template <> \
   inline octave_int64 \
   operator OP (const octave_int64& x, const double& y) \
-  { return octave_int64 (static_cast<long double> (x.value ()) OP y); } \
+  { \
+    octave_int64 retval; \
+    DECL_LONG_DOUBLE_ROUNDING \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+    retval = octave_int64 (static_cast<long double> (x.value ()) OP y);   \
+    END_LONG_DOUBLE_ROUNDING (); \
+    return retval; \
+  } \
   template <> \
   inline octave_uint64 \
   operator OP (const octave_uint64& x, const double& y) \
-  { return octave_uint64 (static_cast<long double> (x.value ()) OP y); }
+  { \
+    octave_uint64 retval; \
+    DECL_LONG_DOUBLE_ROUNDING \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+    retval = octave_uint64 (static_cast<long double> (x.value ()) OP y); \
+    END_LONG_DOUBLE_ROUNDING (); \
+    return retval; \
+  }
 
 #else
 // external handlers

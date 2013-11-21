@@ -189,7 +189,7 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
   -I$(top_builddir)/libinterp/corefcn -I$(top_srcdir)/libinterp/corefcn \
   -I$(top_srcdir)/libinterp/octave-value \
-  -I$(top_builddir)/libgnu
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
 src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 

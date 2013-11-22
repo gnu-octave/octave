@@ -107,7 +107,7 @@ main_window::main_window (QWidget *p)
       serial = settings->value ("news/last_news_item", 0).toInt ();
     }
 
-  QDateTime current = QDateTime::currentDateTimeUtc ();
+  QDateTime current = QDateTime::currentDateTime ();
   QDateTime one_day_ago = current.addDays (-1);
 
   if (connect_to_web
@@ -378,7 +378,7 @@ news_reader::process (void)
               if (settings)
                 {
                   settings->setValue ("news/last_time_checked",
-                                      QDateTime::currentDateTimeUtc ());
+                                      QDateTime::currentDateTime ());
 
                   settings->sync ();
                 }

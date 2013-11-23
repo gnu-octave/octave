@@ -840,7 +840,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
 void
 file_editor::notice_settings (const QSettings *settings)
 {
-  int icon_size = settings->value ("toolbar_icon_size", 24).toInt ();
+  int icon_size = settings->value ("toolbar_icon_size", 16).toInt ();
   _tool_bar->setIconSize (QSize (icon_size, icon_size));
   // Relay signal to file editor tabs.
   emit fetab_settings_changed (settings);
@@ -868,6 +868,7 @@ file_editor::construct (void)
 
   _menu_bar = new QMenuBar (editor_widget);
   _tool_bar = new QToolBar (editor_widget);
+  _tool_bar->setMovable (true);
   _tab_widget = new QTabWidget (editor_widget);
   _tab_widget->setTabsClosable (true);
 

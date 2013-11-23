@@ -632,7 +632,7 @@ main_window::notice_settings (const QSettings *settings)
   else
     _release_notes_icon = ":/actions/icons/logo.png";
 
-  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
+  int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
   resource_manager::update_network_settings ();

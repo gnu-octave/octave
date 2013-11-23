@@ -80,7 +80,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     ui->comboBox_language->setCurrentIndex (0);  // System is default
 
   ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",
-                                                    24).toInt ());
+                                                    16).toInt ());
 
   // which icon has to be selected
   QString widget_icon_set =

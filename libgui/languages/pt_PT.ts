@@ -93,27 +93,27 @@
     <message>
         <location filename="../../../qsci/qscilexerbash.cpp" line="+208"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -128,37 +128,37 @@
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Parameter expansion</source>
-        <translation type="unfinished"></translation>
+        <translation>Expansão de parâmetro</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Acentos graves</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador de here-doc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Single-quoted here document</source>
-        <translation type="unfinished"></translation>
+        <translation>here-doc com apóstrofos</translation>
     </message>
 </context>
 <context>
@@ -166,42 +166,42 @@
     <message>
         <location filename="../../../qsci/qscilexerbatch.cpp" line="+179"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide command character</source>
-        <translation type="unfinished"></translation>
+        <translation>Carácter para esconder comando</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>External command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando externo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Variável</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
 </context>
 <context>
@@ -209,62 +209,62 @@
     <message>
         <location filename="../../../qsci/qscilexercpp.cpp" line="+352"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C++</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C++ inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C ao estilo JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C inactivo ao estilo JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -289,42 +289,42 @@
     <message>
         <location line="+3"/>
         <source>IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive IDL UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>IDL UUID inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloco de pre-processador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive pre-processor block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloco de pre-processador inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador inactivo</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -349,62 +349,62 @@
     <message>
         <location line="+3"/>
         <source>JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressão regular de JavaScript</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaScript regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressão regular de JavaScript inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C++ ao estilo JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc style C++ comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário C++ inactivo ao estilo JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavras chaves e identificadores secundários</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive secondary keywords and identifiers</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavras chaves e identificadores secundários inactivos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave de JavaDoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave de JavaDoc inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de palavra chave Javadoc</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive JavaDoc keyword error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de palavra chave Javadoc inactiva</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Classes globais e typedefs</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Inactive global classes and typedefs</source>
-        <translation type="unfinished"></translation>
+        <translation>Classes globais e typedefs inactivas</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -422,42 +422,42 @@
     <message>
         <location filename="../../../qsci/qscilexerdiff.cpp" line="+107"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation>Cabeçalho</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posição</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Removed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linha removida</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Added line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linha adicionada</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Changed line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linha modificada</translation>
     </message>
 </context>
 <context>
@@ -465,27 +465,27 @@
     <message>
         <location filename="../../../qsci/qscilexermatlab.cpp" line="+138"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -495,12 +495,12 @@
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -513,32 +513,32 @@
     <message>
         <location filename="../../../qsci/qscilexerperl.cpp" line="+333"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentário</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>POD</source>
-        <translation type="unfinished"></translation>
+        <translation>POD</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Palavra chave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -553,57 +553,57 @@
     <message>
         <location line="+3"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Array</source>
-        <translation type="unfinished"></translation>
+        <translation>Array</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hash</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela hash</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Symbol table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela de símbolos</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressão regular</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Substitution</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituição</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Backticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Acentos graves</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Data section</source>
-        <translation type="unfinished"></translation>
+        <translation>Secção DATA</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Here document delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Delimitador de here-doc</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -648,12 +648,12 @@
     <message>
         <location line="+3"/>
         <source>POD verbatim</source>
-        <translation type="unfinished"></translation>
+        <translation>POD literal</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Subroutine prototype</source>
-        <translation type="unfinished"></translation>
+        <translation>Protótipo de subrotina</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -721,37 +721,37 @@
     <message>
         <location filename="../../../qsci/qsciscintilla.cpp" line="+4201"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Desfazer</translation>
+        <translation>&amp;Desfazer</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Refazer</translation>
+        <translation>&amp;Refazer</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Cor&amp;tar</translation>
+        <translation>Cor&amp;tar</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copiar</translation>
+        <translation>&amp;Copiar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Colar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Excluir</translation>
+        <translation>Apagar</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Select All</source>
-        <translation type="unfinished">Seleccionar Tudo</translation>
+        <translation>Seleccionar Tudo</translation>
     </message>
 </context>
 <context>
@@ -786,13 +786,14 @@
     <message>
         <location line="-40"/>
         <source>New Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova função</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nome da nova função:
+</translation>
     </message>
     <message>
         <location line="+281"/>
@@ -886,22 +887,22 @@ já está aberto no editor</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Next Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponto de interrupção segui&amp;nte</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponto de interrupção anterior</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar/desactivar ponto de interrupção</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Remover todos os pontos de interrupção</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -916,7 +917,7 @@ já está aberto no editor</translation>
     <message>
         <location line="+6"/>
         <source>Save File and Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar ficheiro e executar</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -926,7 +927,7 @@ já está aberto no editor</translation>
     <message>
         <location line="+5"/>
         <source>New &amp;Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova função</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1126,12 +1127,12 @@ foi removido ou renomeado. Pretende guardá-lo agora?%2</translation>
     <message>
         <location line="-962"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linha:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Col:</source>
-        <translation type="unfinished"></translation>
+        <translation>Col:</translation>
     </message>
     <message>
         <location line="+1134"/>
@@ -1217,27 +1218,27 @@ foi removido ou renomeado. Pretende guardá-lo agora?%2</translation>
     <message>
         <location line="-323"/>
         <source>Double-click a file to open it</source>
-        <translation type="unfinished"></translation>
+        <translation>Clicar duas vezes num ficheiro para o abrir</translation>
     </message>
     <message>
         <location line="+236"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho de ficheiro</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de ficheiro</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Date modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Data de modificação</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar ficheiros escondidos</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1351,22 +1352,22 @@ foi removido ou renomeado. Pretende guardá-lo agora?%2</translation>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+194"/>
         <source>Enjoy!</source>
-        <translation type="unfinished"></translation>
+        <translation>Diverte-te!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Anterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Finish</source>
-        <translation type="unfinished">Finalizar</translation>
+        <translation>Finalizar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1375,7 +1376,11 @@ foi removido ou renomeado. Pretende guardá-lo agora?%2</translation>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Esperamos que o Octave lhe seja uma ferramenta útil.&lt;/p&gt;
+&lt;p&gt;Se encontrar problemas, existem várias formas de obter ajuda: suporte comercial; um grupo de discussão; uma wiki; e vários outros métodos baseados na comunidade do Octave.
+É possível encontrar mais informações sobre cada um destes online em &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (abre num navegador externo).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1391,7 +1396,18 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Para mais informação sobre Octave::&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visite &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (abre num navegador externo)&lt;/li&gt;
+&lt;li&gt;Obtenha a documentação online em &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- ou documento-&lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;Abrir o navegador de documentação do Octave com o menu de ajuda&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1663,7 +1679,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Clicar duas vezes num comando para transferir para a linha de comandos</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1696,17 +1712,17 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/welcome-wizard.cc" line="-179"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Bem-vindo ao Octave!</translation>
+        <translation>Bem-vindo ao Octave!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Próximo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1715,7 +1731,11 @@ a:link { text-decoration: underline; color: #0000ff; }
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
 &lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Parece que está a utilizar a interface gráfica do Octave pela primeira vez neste computador.
+Clique &apos;Próximo&apos; para criar um ficheiro de configuração e iniciar o Octave.&lt;/p&gt;
+&lt;p&gt;O ficheiro de configuração é gravado em in %1.  Se esse ficheiro existir, este diálogo não volta a aparecer ao iniciar Octave..&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1816,7 +1836,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+185"/>
         <source>Octave Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Notícias da comunidade Octave</translation>
     </message>
     <message>
         <location line="+171"/>
@@ -2041,7 +2061,18 @@ when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+As notícias da comunidade do Octave não estão disponíveis de momento.
+&lt;/p&gt;
+&lt;p&gt;
+Para as últimas notícias, consultar
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+quando houver ligação à internet.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Os programadores do Octave, </translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2058,7 +2089,19 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Ligar-se à internet para mostrar as últimas notícias da comunidade de Octave foi desactivado.
+&lt;/p&gt;
+&lt;p&gt;
+Para as últimas notícias, consultar
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+quando houver ligação à internet ou
+active ligação para as notícias na secção Network do menu de preferências.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Os programadores do Octave, </translation>
     </message>
 </context>
 <context>
@@ -2110,26 +2153,26 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <location line="+6"/>
         <location line="+7"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sim</translation>
     </message>
     <message>
         <location line="-13"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Não</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">O ficheiro
+        <translation>O ficheiro
 %1
 não existe. Deseja criá-lo?</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Editor do Octave</translation>
+        <translation>Editor do Octave</translation>
     </message>
     <message>
         <location line="+211"/>
@@ -2173,12 +2216,18 @@ Make sure you have read and write permissions to
 %2
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished"></translation>
+        <translation>O ficheiro de preferências
+%1
+não existe e não pode ser criado.
+Confirme que tem permissões de leitura e escrita para
+%2
+
+A Octave GUI tem de ser fechado agora.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Octave Critical Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro crítico do Octave</translation>
     </message>
 </context>
 <context>
@@ -2316,27 +2365,27 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="-17"/>
         <source>Show whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar whitespace</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Do not show whitespace used for indentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Não mostrar whitespace usado para indentação</translation>
     </message>
     <message>
         <location line="+290"/>
         <source># of characters typed before completion list displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de carácteres antes de mostrar lista de preenchimento automático</translation>
     </message>
     <message>
         <location line="+194"/>
         <source>Create nonexistent files without prompting</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar ficheiros não existentes automaticamente</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation type="unfinished"></translation>
+        <translation>linha do comando (%f=ficheiro, %l=linha):</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2346,7 +2395,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seleccionar tipo de letra, tamanho (como diferença para o tamanho padrão), decoração (negrito, itálico, sublinhado), cor do texto e cor do fundo de tela (para o último, a cor rosa (255,0,255) é sinônimo da cor de fundo padrão)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -2366,7 +2415,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+7"/>
         <source>Use foreground color</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar cor do fundo</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -2421,7 +2470,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+8"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir ao Octave ligar-se ao site do Octave para mostrar notícias e informações</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -2451,7 +2500,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+991"/>
         <source>Synchronize Octave working directory with file browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Sincronizar o directório de trabalho do Octave com o navegador de ficheiros</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -2466,7 +2515,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+44"/>
         <source>Proxy type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de proxy:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2536,22 +2585,22 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+44"/>
         <source>Community News</source>
-        <translation type="unfinished">Novidades da Comunidade</translation>
+        <translation>Novidades da Comunidade</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Anterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Próximo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2561,7 +2610,12 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu in the GUI, or by visiting
 &lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Quando o Octave inicia, irá consultar o website do Octave para as últimas notícias e informações sobre a comunidade do Octave.
+A consulta é feita no máximo uma vez por dia e notícias só serão apresentadas quando houver algo novo desde a vez anterior.&lt;/p&gt;
+&lt;p&gt;Também é possível ver as notícias seleccionando &quot;Notícias da comunidade&quot; no menu &quot;Ajuda&quot;, ou ao visitar
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -2572,7 +2626,13 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Permitir ao Octave ligar-se ao website do Octave para mostrar as últimas notícias e informações sobre a comunidade do Octave.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2640,7 +2700,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+37"/>
         <location line="+2"/>
         <source>complex</source>
-        <translation type="unfinished"></translation>
+        <translation>complexo</translation>
     </message>
 </context>
 <context>

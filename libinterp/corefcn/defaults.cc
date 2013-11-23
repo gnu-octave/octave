@@ -471,9 +471,10 @@ DEFUN (EDITOR, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the editor to\n\
-use with the @code{edit_history} command.  The default value is taken from\n\
-the environment variable @w{@env{EDITOR}} when Octave starts.  If the\n\
+Query or set the internal variable that specifies the default text editor.\n\
+\n\
+The default value is taken from the environment variable @w{@env{EDITOR}}\n\
+when Octave starts.  If the\n\
 environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
 @qcode{\"emacs\"}.\n\
 \n\
@@ -481,7 +482,7 @@ When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
 \n\
-@seealso{edit_history}\n\
+@seealso{edit, edit_history}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);

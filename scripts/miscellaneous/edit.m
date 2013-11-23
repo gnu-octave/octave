@@ -23,7 +23,7 @@
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as
-## its argument it will be opened in a text editor.
+## its argument it will be opened in the text editor defined by @code{EDITOR}.
 ##
 ## @itemize @bullet
 ## @item
@@ -70,34 +70,6 @@
 ## The following control fields are used:
 ##
 ## @table @samp
-## @item editor
-## This is the editor to use to modify the functions.  By default it uses
-## Octave's @env{EDITOR} built-in function, which comes from
-## @code{getenv ("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
-## In place of the function name.  For example,
-##
-## @table @asis
-## @item @code{[EDITOR, " %s"]}
-## Use the editor which Octave uses for @code{edit_history}.
-##
-## @item @nospell{"xedit %s &"}
-## pop up simple X11 editor in a separate window
-##
-## @item @nospell{"gnudoit -q \"(find-file \\\"%s\\\")\""}
-## Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
-## @end table
-##
-## See also field @qcode{"mode"}, which controls how the editor is run by
-## Octave.
-##
-## On Cygwin, you will need to convert the Cygwin path to a Windows
-## path if you are using a native Windows editor.  For example:
-## @c Set example in small font to prevent overfull line in TeX
-##
-## @smallexample
-## @exdent '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
-## @end smallexample
-##
 ## @item home
 ## This is the location of user local m-files.  Be sure it is in your
 ## path.  The default is @file{~/octave}.
@@ -153,8 +125,7 @@ function ret = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("EDITOR", [EDITOR() " %s"],
-                                "HOME", fullfile (default_home, "octave"),
+  persistent FUNCTION = struct ("HOME", fullfile (default_home, "octave"),
                                 "AUTHOR", default_user(1),
                                 "EMAIL", [],
                                 "LICENSE", "GPL",
@@ -162,6 +133,9 @@ function ret = edit (varargin)
                                 "EDITINPLACE", false);
   ## Make sure the stateval variables survive "clear functions".
   mlock;
+
+  ## Get default editor every time in case the user has changed it
+  FUNCTION.EDITOR = [EDITOR() " %s"];
 
   if (nargin == 1)
     ## User has supplied one arg, this can be a single file name
@@ -185,7 +159,8 @@ function ret = edit (varargin)
     stateval = varargin{2};
     switch (toupper (statevar))
       case "EDITOR"
-        FUNCTION.EDITOR = stateval;
+        error ("Octave:deprecated-function",
+               "The EDITOR option of edit has been removed. Use EDITOR() directly.")
         return;
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")
@@ -587,14 +562,12 @@ endfunction
 
 
 %!test
-%! s.editor = edit ("get", "editor");
 %! s.home = edit ("get", "home");
 %! s.author = edit ("get", "author");
 %! s.email = edit ("get", "email");
 %! s.license = edit ("get", "license");
 %! s.editinplace = edit ("get", "editinplace");
 %! s.mode = edit ("get", "mode");
-%! edit editor none
 %! edit home none
 %! edit author none
 %! edit email none
@@ -605,14 +578,12 @@ endfunction
 %! else
 %!   edit mode async
 %! endif
-%! edit ("editor", s.editor);
 %! edit ("home", s.home);
 %! edit ("author", s.author);
 %! edit ("email", s.email);
 %! edit ("license", s.license);
 %! edit ("editinplace", s.editinplace);
 %! edit ("mode", s.mode);
-%! assert (edit ("get", "editor"), s.editor);
 %! assert (edit ("get", "home"), s.home);
 %! assert (edit ("get", "author"), s.author);
 %! assert (edit ("get", "email"), s.email);

@@ -1292,15 +1292,16 @@ save_FFLAGS="$FFLAGS"
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
 AX_BLAS_WITH_F77_FUNC([:], [:],
-  [ax_blas_f77_func_ok=yes
-   AC_MSG_RESULT([yes assumed for cross compilation])])
+  [ax_blas_ok=yes
+  AC_MSG_CHECKING([BLAS can be called from Fortran])
+  AC_MSG_RESULT([yes assumed for cross compilation])])
 AX_LAPACK([:], [:])
 
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
 
 ## If necessary, try again with -ff2c in FFLAGS
-if test $ax_blas_f77_func_ok = no; then
+if test $ax_blas_ok = no; then
   save_FFLAGS="$FFLAGS"
   FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
 
@@ -1309,15 +1310,15 @@ if test $ax_blas_f77_func_ok = no; then
 
   ## Restore FFLAGS, with -ff2c if that was helpful
 
-  if test $ax_blas_f77_func_ok = no; then
-    FFLAGS="$save_FFLAGS"
-  else
+  if test $ax_blas_ok = yes; then
     FFLAGS="-ff2c $save_FFLAGS"
+  else
+    FFLAGS="$save_FFLAGS"
   fi
 fi
 
 ## On OSX, try again with a wrapper library (without -ff2c!)
-if test $ax_blas_f77_func_ok = no; then
+if test $ax_blas_ok = no; then
   case $host_os in
     darwin*)
       ## test if wrapper functions help
@@ -1346,7 +1347,7 @@ if test $ax_blas_f77_func_ok = no; then
       AC_LANG_POP(C)
       CFLAGS="$octave_blaswrap_save_CFLAGS"
 
-      if test $ax_blas_f77_func_ok = no; then
+      if test $ax_blas_ok = no; then
         BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
       else
         ## wrapper in cruft, remove from BLAS_LIBS
@@ -1358,8 +1359,8 @@ if test $ax_blas_f77_func_ok = no; then
   esac
 fi
 
-if test $ax_blas_f77_func_ok = no; then
-  if test $USE_64_BIT_IDX_T = yes && test $ax_blas_integer_size_ok = no; then
+if test $ax_blas_ok = no; then
+  if test $USE_64_BIT_IDX_T = yes && test "$ax_blas_integer_size_ok" = no; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
   else

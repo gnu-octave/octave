@@ -29,8 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <iosfwd>
 
-#include <fpucw.h>
-
 #include "lo-traits.h"
 #include "lo-math.h"
 #include "lo-mappers.h"
@@ -176,26 +174,34 @@ public:
   mop (double x, T y)
   { return xop::op (x, static_cast<double> (y)); }
 
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+  template <class xop> static OCTAVE_API bool
+  external_mop (long double, long double);
+#endif
+
   // Typecasting to doubles won't work properly for 64-bit integers --
   // they lose precision.
   // If we have long doubles, use them...
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
 #define DEFINE_LONG_DOUBLE_CMP_OP(T1, T2) \
   template <class xop> \
   static bool \
   mop (T1 x, T2 y) \
-    { \
-      DECL_LONG_DOUBLE_ROUNDING \
- \
-      BEGIN_LONG_DOUBLE_ROUNDING ();\
- \
-      bool retval = xop::op (static_cast<long double> (x), \
-                             static_cast<long double> (y)); \
- \
-      END_LONG_DOUBLE_ROUNDING (); \
- \
-      return retval; \
-    }
+  { \
+    return external_mop<xop> (static_cast<long double> (x), \
+                              static_cast<long double> (y)); \
+  }
+#else
+#define DEFINE_LONG_DOUBLE_CMP_OP(T1, T2) \
+  template <class xop> \
+  static bool \
+  mop (T1 x, T2 y) \
+  { \
+    return xop::op (static_cast<long double> (x), \
+                    static_cast<long double> (y)); \
+  }
+#endif
 #else
   // ... otherwise, use external handlers
 
@@ -225,12 +231,10 @@ public:
 template <class T>
 class octave_int_base
 {
-protected:
+public:
 
   static T min_val () { return std::numeric_limits<T>:: min (); }
   static T max_val () { return std::numeric_limits<T>:: max (); }
-
-public:
 
   // Convert integer value.
   template <class S>
@@ -374,8 +378,10 @@ public:
 
   // Multiplication is done using promotion to wider integer type. If there is
   // no suitable promotion type, this operation *MUST* be specialized.
+  static T mul (T x, T y) { return mul_internal (x, y); }
+
   static T
-  mul (T x, T y)
+  mul_internal (T x, T y)
   {
     // Promotion type for multiplication (if exists).
     typedef typename query_integer_type<2*sizeof (T), false>::type mptype;
@@ -416,15 +422,21 @@ public:
 };
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
+
 // Handle 64-bit multiply using long double
+
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+
+extern OCTAVE_API uint64_t
+octave_external_uint64_uint64_mul (uint64_t, uint64_t);
+
+#endif
+
 template <>
 inline uint64_t
-octave_int_arith_base<uint64_t, false>:: mul (uint64_t x, uint64_t y)
+octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
 {
   uint64_t retval;
-  DECL_LONG_DOUBLE_ROUNDING
-
-  BEGIN_LONG_DOUBLE_ROUNDING ();
 
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
 
@@ -433,15 +445,27 @@ octave_int_arith_base<uint64_t, false>:: mul (uint64_t x, uint64_t y)
   else
     retval = static_cast<uint64_t> (p);
 
-  END_LONG_DOUBLE_ROUNDING ();
-
   return retval;
 }
+
+template <>
+inline uint64_t
+octave_int_arith_base<uint64_t, false>::mul (uint64_t x, uint64_t y)
+{
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+  return octave_external_uint64_uint64_mul (x, y);
 #else
+  return mul_internal (x, y);
+#endif
+}
+
+#else
+
 // Special handler for 64-bit integer multiply.
 template <>
 OCTAVE_API uint64_t
-octave_int_arith_base<uint64_t, false>::mul (uint64_t, uint64_t);
+octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t, uint64_t);
+
 #endif
 
 // Signed integer arithmetics.
@@ -637,8 +661,10 @@ public:
 
   // Multiplication is done using promotion to wider integer type. If there is
   // no suitable promotion type, this operation *MUST* be specialized.
+  static T mul (T x, T y) { return mul_internal (x, y); }
+
   static T
-  mul (T x, T y)
+  mul_internal (T x, T y)
   {
     // Promotion type for multiplication (if exists).
     typedef typename query_integer_type<2*sizeof (T), true>::type mptype;
@@ -712,15 +738,21 @@ public:
 };
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
+
 // Handle 64-bit multiply using long double
+
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+
+extern OCTAVE_API int64_t
+octave_external_int64_int64_mul (int64_t, int64_t);
+
+#endif
+
 template <>
 inline int64_t
-octave_int_arith_base<int64_t, true>:: mul (int64_t x, int64_t y)
+octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 {
-  uint64_t retval;
-  DECL_LONG_DOUBLE_ROUNDING
-
-  BEGIN_LONG_DOUBLE_ROUNDING ();
+  int64_t retval;
 
   long double p = static_cast<long double> (x) * static_cast<long double> (y);
 
@@ -734,15 +766,27 @@ octave_int_arith_base<int64_t, true>:: mul (int64_t x, int64_t y)
   else
     retval = static_cast<int64_t> (p);
 
-  END_LONG_DOUBLE_ROUNDING ();
-
   return retval;
 }
+
+template <>
+inline int64_t
+octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
+{
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+  return octave_external_int64_int64_mul (x, y);
 #else
+  return mul_internal (x, y);
+#endif
+}
+
+#else
+
 // Special handler for 64-bit integer multiply.
 template <>
 OCTAVE_API int64_t
-octave_int_arith_base<int64_t, true>::mul (int64_t, int64_t);
+octave_int_arith_base<int64_t, true>::mul_internal (int64_t, int64_t);
+
 #endif
 
 // This class simply selects the proper arithmetics.
@@ -993,6 +1037,18 @@ typedef octave_int<uint16_t> octave_uint16;
 typedef octave_int<uint32_t> octave_uint32;
 typedef octave_int<uint64_t> octave_uint64;
 
+extern OCTAVE_API long double
+octave_external_long_double_add (long double x, long double y);
+
+extern OCTAVE_API long double
+octave_external_long_double_sub (long double x, long double y);
+
+extern OCTAVE_API long double
+octave_external_long_double_mul (long double x, long double y);
+
+extern OCTAVE_API long double
+octave_external_long_double_div (long double x, long double y);
+
 #define OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <class T> \
   inline octave_int<T> \
@@ -1005,56 +1061,76 @@ typedef octave_int<uint64_t> octave_uint64;
 
 #ifdef OCTAVE_INT_USE_LONG_DOUBLE
 // Handle mixed op using long double
-#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
   OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <> \
   inline octave_int64 \
   operator OP (const double& x, const octave_int64& y) \
   { \
-    octave_int64 retval; \
-    DECL_LONG_DOUBLE_ROUNDING \
-    BEGIN_LONG_DOUBLE_ROUNDING (); \
-    retval = octave_int64 (x OP static_cast<long double> (y.value ())); \
-    END_LONG_DOUBLE_ROUNDING (); \
-    return retval; \
+    return octave_int64 \
+      (octave_external_long_double_ ## NAME \
+       (static_cast<long double> (x), \
+        static_cast<long double> (y.value ()))); \
   } \
   template <> \
   inline octave_uint64 \
   operator OP (const double& x, const octave_uint64& y) \
   { \
-    octave_uint64 retval; \
-    DECL_LONG_DOUBLE_ROUNDING \
-    BEGIN_LONG_DOUBLE_ROUNDING (); \
-    retval = octave_uint64 (x OP static_cast<long double> (y.value ())); \
-    END_LONG_DOUBLE_ROUNDING (); \
-    return retval; \
+    return octave_uint64 \
+      (octave_external_long_double_ ## NAME \
+       (static_cast<long double> (x), \
+        static_cast<long double> (y.value ()))); \
   } \
   template <> \
   inline octave_int64 \
   operator OP (const octave_int64& x, const double& y) \
   { \
-    octave_int64 retval; \
-    DECL_LONG_DOUBLE_ROUNDING \
-    BEGIN_LONG_DOUBLE_ROUNDING (); \
-    retval = octave_int64 (static_cast<long double> (x.value ()) OP y);   \
-    END_LONG_DOUBLE_ROUNDING (); \
-    return retval; \
+    return octave_int64 \
+      (octave_external_long_double_ ## NAME \
+       (static_cast<long double> (x.value ()), \
+        static_cast<long double> (y))); \
   } \
   template <> \
   inline octave_uint64 \
   operator OP (const octave_uint64& x, const double& y) \
   { \
-    octave_uint64 retval; \
-    DECL_LONG_DOUBLE_ROUNDING \
-    BEGIN_LONG_DOUBLE_ROUNDING (); \
-    retval = octave_uint64 (static_cast<long double> (x.value ()) OP y); \
-    END_LONG_DOUBLE_ROUNDING (); \
-    return retval; \
+    return octave_uint64 \
+      (octave_external_long_double_ ## NAME \
+       (static_cast<long double> (x.value ()), \
+        static_cast<long double> (y))); \
   }
-
+#else
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
+  OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
+  template <> \
+  inline octave_int64 \
+  operator OP (const double& x, const octave_int64& y) \
+  { \
+    return octave_int64 (x OP static_cast<long double> (y.value ())); \
+  } \
+  template <> \
+  inline octave_uint64 \
+  operator OP (const double& x, const octave_uint64& y) \
+  { \
+    return octave_uint64 (x OP static_cast<long double> (y.value ())); \
+  } \
+  template <> \
+  inline octave_int64 \
+  operator OP (const octave_int64& x, const double& y) \
+  { \
+    return octave_int64 (static_cast<long double> (x.value ()) OP y);   \
+  } \
+  template <> \
+  inline octave_uint64 \
+  operator OP (const octave_uint64& x, const double& y) \
+  { \
+    return octave_uint64 (static_cast<long double> (x.value ()) OP y); \
+  }
+#endif
 #else
 // external handlers
-#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
   OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <> \
   OCTAVE_API octave_int64 \
@@ -1071,10 +1147,10 @@ typedef octave_int<uint64_t> octave_uint64;
 
 #endif
 
-OCTAVE_INT_DOUBLE_BIN_OP (+)
-OCTAVE_INT_DOUBLE_BIN_OP (-)
-OCTAVE_INT_DOUBLE_BIN_OP (*)
-OCTAVE_INT_DOUBLE_BIN_OP (/)
+OCTAVE_INT_DOUBLE_BIN_OP (+, add)
+OCTAVE_INT_DOUBLE_BIN_OP (-, sub)
+OCTAVE_INT_DOUBLE_BIN_OP (*, mul)
+OCTAVE_INT_DOUBLE_BIN_OP (/, div)
 
 #undef OCTAVE_INT_DOUBLE_BIN_OP0
 #undef OCTAVE_INT_DOUBLE_BIN_OP

@@ -909,9 +909,12 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
+  // show main first but minimized to avoid flickering
+  // otherwise the name of a floating widget is shown in a global menu bar
+  showMinimized ();
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
-  show ();  // main window is ready and can be shown (as first window)
+  show ();
 
   // show floating widgets after main win to ensure "Octave" in central menu
   foreach (octave_dock_widget *widget, float_and_visible)

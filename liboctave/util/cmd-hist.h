@@ -201,7 +201,7 @@ protected:
 
   virtual void do_clean_up_and_save (const std::string&, int);
 
-  void error (int) const;
+  void error (int, const std::string& msg = "") const;
 
   void error (const std::string&) const;
 

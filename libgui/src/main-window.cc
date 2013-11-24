@@ -909,11 +909,15 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
-  // show main first but minimized to avoid flickering
+  // show main first but minimized to avoid flickering,
   // otherwise the name of a floating widget is shown in a global menu bar
   showMinimized ();
+  // hide again, otherwise the geometry is not exactly restored
+  hide ();
+  // restore geomoetry of main window
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+  // show main window
   show ();
 
   // show floating widgets after main win to ensure "Octave" in central menu

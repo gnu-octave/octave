@@ -22,6 +22,21 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
 ## Convert an image in red-green-blue (RGB) color space to an indexed image.
 ##
+## The input image @var{rgb} can be specified as a single matrix of size
+## @nospell{MxNx3}, or as three separate variables, @var{R}, @var{G}, and
+## @var{B}, its three colour channels, red, green, and blue.
+##
+## It outputs an indexed image @var{x} and a colormap @var{map} to interpret
+## an image exactly the same as the input.  No dithering or other form of color
+## quantization is performed.  The output class of the indexed image @var{x}
+## can be uint8, uint16 or double, whichever is required to specify the
+## number of unique colours in the image (which will be equal to the number
+## of rows in @var{map}) in order
+##
+## Multi-dimensional indexed images (of size @nospell{MxNx3xK}) are also
+## supported, both via a single input (@var{rgb}) or its three colour channels
+## as separate variables.
+##
 ## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
 ## @end deftypefn
 
@@ -41,12 +56,12 @@ function [x, map] = rgb2ind (R, G, B)
 
   if (nargin == 1)
     rgb = R;
-    if (ndims (rgb) != 3 || size (rgb, 3) != 3)
+    if (ndims (rgb) > 4 || size (rgb, 3) != 3)
       error ("rgb2ind: argument is not an RGB image");
     else
-      R = rgb(:,:,1);
-      G = rgb(:,:,2);
-      B = rgb(:,:,3);
+      R = rgb(:,:,1,:);
+      G = rgb(:,:,2,:);
+      B = rgb(:,:,3,:);
     endif
   elseif (! size_equal (R, G, B))
     error ("rgb2ind: R, G, and B must have the same size");
@@ -84,9 +99,49 @@ function [x, map] = rgb2ind (R, G, B)
 
 endfunction
 
-%% FIXME: Need some functional tests or %!demo blocks
-
 %% Test input validation
 %!error rgb2ind ()
 %!error rgb2ind (1,2,3,4,5,6,7)
+%!error <RGB> rgb2ind (rand (10, 10, 4))
+
+## FIXME: the following tests simply make sure that rgb2ind and ind2rgb
+##        reverse each other. We should have better tests for this.
+
+## Typical usage
+%!test
+%! rgb = rand (10, 10, 3);
+%! [ind, map] = rgb2ind (rgb);
+%! assert (ind2rgb (ind, map), rgb);
+%!
+%! ## test specifying the RGB channels separated
+%! [ind, map] = rgb2ind (rgb(:,:,1), rgb(:,:,2), rgb(:,:,3));
+%! assert (ind2rgb (ind, map), rgb);
+
+## Test N-dimensional images
+%!test
+%! rgb = rand (10, 10, 3, 10);
+%! [ind, map] = rgb2ind (rgb);
+%! assert (ind2rgb (ind, map), rgb);
+%! [ind, map] = rgb2ind (rgb(:,:,1,:), rgb(:,:,2,:), rgb(:,:,3,:));
+%! assert (ind2rgb (ind, map), rgb);
+
+## Test output class
+%!test
+%! ## this should have more than 65536 unique colors
+%! rgb = rand (1000, 1000, 3);
+%! [ind, map] = rgb2ind (rgb);
+%! assert (class (ind), "double");
+%! assert (class (map), "double");
+%!
+%! ## and this should have between 255 and 65536 unique colors
+%! rgb = rand (20, 20, 3);
+%! [ind, map] = rgb2ind (rgb);
+%! assert (class (ind), "uint16");
+%! assert (class (map), "double");
+%!
+%! ## and this certainly less than 256 unique colors
+%! rgb = rand (10, 10, 3);
+%! [ind, map] = rgb2ind (rgb);
+%! assert (class (ind), "uint8");
+%! assert (class (map), "double");
 

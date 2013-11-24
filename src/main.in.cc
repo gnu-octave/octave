@@ -102,6 +102,75 @@ w32_get_octave_home (void)
 
 #endif
 
+#include <cstdlib>
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#include <windows.h>
+#elif defined (HAVE_FRAMEWORK_CARBON)
+#include <Carbon/Carbon.h>
+#elif defined (HAVE_X_WINDOWS)
+#include <X11/Xlib.h>
+#endif
+
+bool
+display_available (std::string& err_msg)
+{
+  bool dpy_avail = false;
+
+  err_msg = "";
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+  HDC hdc = GetDC (0);
+
+  if (hdc)
+    dpy_avail = true;
+  else
+    err_msg = "no graphical display found";
+
+#elif defined (HAVE_FRAMEWORK_CARBON)
+
+  CGDirectDisplayID display = CGMainDisplayID ();
+
+  if (display)
+    dpy_avail = true;
+  else
+    err_msg = "no graphical display found";
+
+#elif defined (HAVE_X_WINDOWS)
+
+  const char *display_name = getenv ("DISPLAY");
+
+  if (display_name && *display_name)
+    {
+      Display *display = XOpenDisplay (display_name);
+
+      if (display)
+        {
+          Screen *screen = DefaultScreenOfDisplay (display);
+
+          if (! screen)
+            err_msg = "X11 display has no default screen";
+
+          XCloseDisplay (display);
+
+          dpy_avail = true;
+        }
+      else
+        err_msg = "unable to open X11 DISPLAY";
+    }
+  else
+    err_msg = "X11 DISPLAY environment variable not set";
+
+#else
+
+  err_msg = "no graphical display found";
+
+#endif
+
+  return dpy_avail;
+}
+
 #if (defined (HAVE_OCTAVE_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
 
@@ -515,11 +584,8 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && (! defined (__WIN32__) || defined (__CYGWIN__)))
   bool start_gui = true;
   bool gui_libs = true;
-#endif
 
   std::string octave_bindir = get_octave_bindir ();
 
@@ -540,6 +606,8 @@ main (int argc, char **argv)
   new_argv[k++] = strsave ("octave");
 #endif
 
+  bool warn_display = true;
+
   for (int i = 1; i < argc; i++)
     {
       if (! strcmp (argv[i], "--no-gui-libs"))
@@ -550,10 +618,8 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
+          start_gui = false;
           gui_libs = false;
-#endif
           file = octave_bindir + dir_sep_char + "octave-cli";
         }
       else if (! strcmp (argv[i], "--no-gui"))
@@ -564,17 +630,35 @@ main (int argc, char **argv)
           // if the --no-gui option is given, we may be asked to do some
           // plotting or ui* calls.
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
           start_gui = false;
-#endif
           new_argv[k++] = argv[i];
         }
+      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "-q"))
+        warn_display = false;
       else
         new_argv[k++] = argv[i];
     }
 
   new_argv[k] = 0;
+
+  if (gui_libs || start_gui)
+    {
+      std::string display_check_err_msg;
+
+      if (! display_available (display_check_err_msg))
+        {
+          start_gui = false;
+          gui_libs = false;
+
+          file = octave_bindir + dir_sep_char + "octave-cli";
+
+          if (warn_display)
+            {
+              std::cerr << "octave: " << display_check_err_msg << std::endl;
+              std::cerr << "octave: disabiling GUI features" << std::endl;
+            }
+        }
+    }
 
 #if (defined (HAVE_OCTAVE_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))

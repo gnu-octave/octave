@@ -87,6 +87,18 @@ octave_thread_manager::octave_thread_manager (void)
   : rep (octave_thread_manager::create_rep ())
 { }
 
+// The following is a workaround for an apparent bug in GCC 4.1.2 and
+// possibly earlier versions.  See Octave bug report #30685 for details.
+#if defined (__GNUC__)
+# if ! (__GNUC__ > 4 \
+        || (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 \
+                              || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 2))))
+#  undef GNULIB_NAMESPACE
+#  define GNULIB_NAMESPACE
+#  warning "disabling GNULIB_NAMESPACE for signal functions -- consider upgrading to a current version of GCC"
+# endif
+#endif
+
 static void
 block_or_unblock_signal (int how, int sig)
 {
@@ -100,9 +112,9 @@ block_or_unblock_signal (int how, int sig)
 
   sigset_t signal_mask;
 
-  sigemptyset (&signal_mask);
+  GNULIB_NAMESPACE::sigemptyset (&signal_mask);
 
-  sigaddset (&signal_mask, sig);
+  GNULIB_NAMESPACE::sigaddset (&signal_mask, sig);
 
   pthread_sigmask (how, &signal_mask, 0);
 #endif

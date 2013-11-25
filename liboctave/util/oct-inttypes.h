@@ -1037,17 +1037,22 @@ typedef octave_int<uint16_t> octave_uint16;
 typedef octave_int<uint32_t> octave_uint32;
 typedef octave_int<uint64_t> octave_uint64;
 
-extern OCTAVE_API long double
-octave_external_long_double_add (long double x, long double y);
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
 
-extern OCTAVE_API long double
-octave_external_long_double_sub (long double x, long double y);
+#define DECLARE_EXTERNAL_LONG_DOUBLE_OP(RT, OP) \
+  extern OCTAVE_API RT \
+  RT ## _external_long_double_ ## OP (long double x, long double y)
 
-extern OCTAVE_API long double
-octave_external_long_double_mul (long double x, long double y);
+#define DECLARE_EXTERNAL_LONG_DOUBLE_OPS(RT) \
+  DECLARE_EXTERNAL_LONG_DOUBLE_OP (RT, add); \
+  DECLARE_EXTERNAL_LONG_DOUBLE_OP (RT, sub); \
+  DECLARE_EXTERNAL_LONG_DOUBLE_OP (RT, mul); \
+  DECLARE_EXTERNAL_LONG_DOUBLE_OP (RT, div)
 
-extern OCTAVE_API long double
-octave_external_long_double_div (long double x, long double y);
+DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_int64);
+DECLARE_EXTERNAL_LONG_DOUBLE_OPS (octave_uint64);
+
+#endif
 
 #define OCTAVE_INT_DOUBLE_BIN_OP0(OP) \
   template <class T> \
@@ -1068,37 +1073,33 @@ octave_external_long_double_div (long double x, long double y);
   inline octave_int64 \
   operator OP (const double& x, const octave_int64& y) \
   { \
-    return octave_int64 \
-      (octave_external_long_double_ ## NAME \
-       (static_cast<long double> (x), \
-        static_cast<long double> (y.value ()))); \
+    return octave_int64_external_long_double_ ## NAME \
+     (static_cast<long double> (x), \
+      static_cast<long double> (y.value ())); \
   } \
   template <> \
   inline octave_uint64 \
   operator OP (const double& x, const octave_uint64& y) \
   { \
-    return octave_uint64 \
-      (octave_external_long_double_ ## NAME \
-       (static_cast<long double> (x), \
-        static_cast<long double> (y.value ()))); \
+    return octave_uint64_external_long_double_ ## NAME \
+     (static_cast<long double> (x), \
+      static_cast<long double> (y.value ())); \
   } \
   template <> \
   inline octave_int64 \
   operator OP (const octave_int64& x, const double& y) \
   { \
-    return octave_int64 \
-      (octave_external_long_double_ ## NAME \
-       (static_cast<long double> (x.value ()), \
-        static_cast<long double> (y))); \
+    return octave_int64_external_long_double_ ## NAME \
+     (static_cast<long double> (x.value ()), \
+      static_cast<long double> (y)); \
   } \
   template <> \
   inline octave_uint64 \
   operator OP (const octave_uint64& x, const double& y) \
   { \
-    return octave_uint64 \
-      (octave_external_long_double_ ## NAME \
-       (static_cast<long double> (x.value ()), \
-        static_cast<long double> (y))); \
+    return octave_uint64_external_long_double_ ## NAME \
+     (static_cast<long double> (x.value ()), \
+      static_cast<long double> (y)); \
   }
 #else
 #define OCTAVE_INT_DOUBLE_BIN_OP(OP, NAME) \
@@ -1154,6 +1155,8 @@ OCTAVE_INT_DOUBLE_BIN_OP (/, div)
 
 #undef OCTAVE_INT_DOUBLE_BIN_OP0
 #undef OCTAVE_INT_DOUBLE_BIN_OP
+#undef DECLARE_EXTERNAL_LONG_DOUBLE_OP
+#undef DECLARE_EXTERNAL_LONG_DOUBLE_OPS
 
 #define OCTAVE_INT_DOUBLE_CMP_OP(OP,NAME) \
   template <class T> \

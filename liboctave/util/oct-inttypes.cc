@@ -111,25 +111,35 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
   return retval;
 }
 
-#define OCTAVE_LONG_DOUBLE_OP(OP, NAME) \
-  long double \
-  octave_external_long_double_ ## NAME (long double x, long double y) \
+// Note that if we return long double it is apparently possible for
+// truncation to happen at the point of storing the result in retval,
+// which can happen after we end long double rounding.  Attempt to avoid
+// that problem by storing the full precision temporary value in the
+// integer value before we end the long double rounding mode.
+
+#define OCTAVE_LONG_DOUBLE_OP(RT, OP, NAME) \
+  RT \
+  RT ## _external_long_double_ ## NAME (long double x, long double y) \
   { \
     DECL_LONG_DOUBLE_ROUNDING \
  \
     BEGIN_LONG_DOUBLE_ROUNDING (); \
  \
-    long double retval = x OP y; \
+    RT retval = RT (x OP y); \
  \
     END_LONG_DOUBLE_ROUNDING (); \
  \
     return retval; \
   }
 
-OCTAVE_LONG_DOUBLE_OP (+, add)
-OCTAVE_LONG_DOUBLE_OP (-, sub)
-OCTAVE_LONG_DOUBLE_OP (*, mul)
-OCTAVE_LONG_DOUBLE_OP (/, div)
+#define OCTAVE_LONG_DOUBLE_OPS(RT) \
+  OCTAVE_LONG_DOUBLE_OP (RT, +, add); \
+  OCTAVE_LONG_DOUBLE_OP (RT, -, sub); \
+  OCTAVE_LONG_DOUBLE_OP (RT, *, mul); \
+  OCTAVE_LONG_DOUBLE_OP (RT, /, div)
+
+OCTAVE_LONG_DOUBLE_OPS(octave_int64);
+OCTAVE_LONG_DOUBLE_OPS(octave_uint64);
 
 #endif
 

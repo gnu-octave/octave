@@ -71,7 +71,19 @@ public:
   void interrupt (void)
   {
     if (initialized)
-      pthread_kill (my_thread, SIGINT);
+      {
+        // Send SIGINT to all other processes in our process group.
+        // This is needed to interrupt calls to system (), for example.
+
+        // FIXME: What happens if some code inside a
+        // {BEGIN,END}_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE block starts
+        // additional threads and one of those happens to catch this signal?
+        // Would the interrupt handler and the subsequent longjmp and exception
+        // all be executed in the wrong thread?  If so, is there any way to
+        // prevent that from happening?
+
+        kill (0, SIGINT);
+      }
   }
 
 private:

@@ -326,7 +326,6 @@ main_window::display_release_notes (void)
 
       release_notes_window->setLayout (vlayout);
       release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
-      release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
 
       browser->document()->adjustSize ();
       QSize doc_size = browser->document()->size().toSize ();
@@ -343,6 +342,8 @@ main_window::display_release_notes (void)
     release_notes_window->show ();
   else if (release_notes_window->isMinimized ())
     release_notes_window->showNormal ();
+
+  release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
 
   release_notes_window->raise ();
   release_notes_window->activateWindow ();
@@ -511,7 +512,6 @@ main_window::display_community_news (const QString& news)
 
       community_news_window->setLayout (vlayout);
       community_news_window->setWindowTitle (tr ("Octave Community News"));
-      community_news_window->setWindowIcon (QIcon (":/icons/logo.png"));
       community_news_window->resize (640, 480);
       int win_x = QApplication::desktop ()->width ();
       int win_y = QApplication::desktop ()->height ();
@@ -523,6 +523,9 @@ main_window::display_community_news (const QString& news)
     community_news_window->show ();
   else if (community_news_window->isMinimized ())
     community_news_window->showNormal ();
+
+  // same icon as release notes
+  community_news_window->setWindowIcon (QIcon (_release_notes_icon));
 
   community_news_window->raise ();
   community_news_window->activateWindow ();

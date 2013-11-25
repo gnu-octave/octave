@@ -681,7 +681,7 @@ void
 main_window::browse_for_directory (void)
 {
   QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"), 0,
+    = QFileDialog::getExistingDirectory (this, tr ("Browse directories"), 0,
                                          QFileDialog::DontUseNativeDialog);
 
   set_current_working_directory (dir);

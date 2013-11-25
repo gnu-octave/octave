@@ -184,7 +184,29 @@ resource_manager::do_reload_settings (void)
   if (! QFile::exists (settings_file))
     {
       QDir ("/").mkpath (settings_directory);
-      QFile::copy (default_qt_settings_file (), settings_file);
+      QFile qt_settings (default_qt_settings_file ());
+
+      if (!qt_settings.open (QFile::ReadOnly))
+        return;
+
+      QTextStream in (&qt_settings);
+      QString settings_text = in.readAll ();
+      qt_settings.close ();
+
+      // Get the default monospaced font and replace placeholder
+      QFont fixed_font = QFont ();
+      fixed_font.setStyleHint (QFont::Monospace);
+      settings_text.replace("__default_font__",fixed_font.defaultFamily ());
+      settings_text.replace("__default_font_size__","10");
+
+      QFile user_settings (settings_file);
+      if (!user_settings.open (QIODevice::WriteOnly))
+        return;
+
+      QTextStream out (&user_settings);
+      out << settings_text;
+      user_settings.flush ();
+      user_settings.close ();
     }
 
   do_set_settings (settings_file);

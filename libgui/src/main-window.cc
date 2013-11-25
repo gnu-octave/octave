@@ -909,11 +909,13 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
+#if ! defined (Q_OS_WIN32)
   // show main first but minimized to avoid flickering,
   // otherwise the name of a floating widget is shown in a global menu bar
   showMinimized ();
   // hide again, otherwise the geometry is not exactly restored
   hide ();
+#endif
   // restore geomoetry of main window
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());

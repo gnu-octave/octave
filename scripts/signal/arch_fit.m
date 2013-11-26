@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -109,10 +109,11 @@ function [a, b] = arch_fit (y, x, p, iter, gamma, a0, b0)
     esq = e .^ 2;
     Z   = autoreg_matrix (esq, p);
     h   = Z * a;
-    f   = esq ./ h - ones(T,1);
+    f   = esq ./ h - ones (T,1);
     Z_tilde = Z ./ (h * ones (1, p+1));
     delta_a = inv (Z_tilde' * Z_tilde) * Z_tilde' * f;
     a   = a + gamma * delta_a;
   endfor
 
 endfunction
+

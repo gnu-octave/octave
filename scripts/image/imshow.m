@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} imshow (@dots{})
 ## Display the image @var{im}, where @var{im} can be a 2-dimensional
-## (gray-scale image) or a 3-dimensional (RGB image) matrix.
+## (grayscale image) or a 3-dimensional (RGB image) matrix.
 ##
 ## If @var{limits} is a 2-element vector @code{[@var{low}, @var{high}]},
 ## the image is shown using a display range between @var{low} and
@@ -41,9 +41,23 @@
 ##
 ## If given, the parameter @var{string_param1} has value
 ## @var{value1}.  @var{string_param1} can be any of the following:
+##
 ## @table @asis
-## @item "displayrange"
+## @item @qcode{"displayrange"}
 ## @var{value1} is the display range as described above.
+## 
+## @item @qcode{"xdata"}
+## If @var{value1} is a two element vector, it must contain horizontal axis
+## limits in the form [xmin xmax]; Otherwise @var{value1} must be a
+## vector and only the first and last elements will be used for xmin and
+## xmax respectively.
+## 
+## @item @qcode{"ydata"}
+## If @var{value1} is a two element vector, it must contain vertical axis
+## limits in the form [ymin ymax]; Otherwise @var{value1} must be a
+## vector and only the first and last elements will be used for ymin and
+## ymax respectively.
+##
 ## @end table
 ##
 ## The optional return value @var{h} is a graphics handle to the image.
@@ -63,6 +77,7 @@ function h = imshow (im, varargin)
   display_range = NA;
   true_color = false;
   indexed = false;
+  xdata = ydata = [];
 
   ## Get the image.
   if (ischar (im))
@@ -104,9 +119,21 @@ function h = imshow (im, varargin)
         error ("imshow: argument number %d is invalid", narg+1);
       endif
     elseif (ischar (arg))
-      switch (arg)
+      switch (tolower (arg))
         case "displayrange";
           display_range = varargin{narg++};
+        case "xdata";
+          xdata = varargin{narg++};
+          if (! isvector (xdata))
+            error ("imshow: xdata must be a vector")
+          endif
+          xdata = [xdata(1) xdata(end)];
+        case "ydata";
+          ydata = varargin{narg++};
+          if (isvector (xdata))
+            error ("imshow: expect a vector for ydata")
+          endif
+          ydata = [ydata(1) ydata(end)];
         case {"truesize", "initialmagnification"}
           warning ("image: zoom argument ignored -- use GUI features");
         otherwise
@@ -160,9 +187,9 @@ function h = imshow (im, varargin)
   endif
 
   if (true_color || indexed)
-    tmp = image ([], [], im);
+    tmp = image (xdata, ydata, im);
   else
-    tmp = image (im);
+    tmp = image (xdata, ydata, im);
     set (tmp, "cdatamapping", "scaled");
     ## The backend is responsible for scaling to clim if necessary.
     set (gca (), "clim", display_range);
@@ -176,35 +203,46 @@ function h = imshow (im, varargin)
 
 endfunction
 
-%!error imshow ()                           # no arguments
-%!error imshow ({"cell"})                   # No image or filename given
-%!error imshow (ones(4,4,4))                # Too many dimensions in image
 
 %!demo
-%!  imshow ("default.img");
+%! clf;
+%! imshow ("default.img");
 
 %!demo
-%!  imshow ("default.img");
-%!  colormap ("autumn");
+%! clf;
+%! imshow ("default.img");
+%! colormap (autumn (64));
 
 %!demo
-%!  [I, M] = imread ("default.img");
-%!  imshow (I, M);
+%! clf;
+%! [I, M] = imread ("default.img");
+%! imshow (I, M);
 
 %!demo
-%!  [I, M] = imread ("default.img");
-%!  [R, G, B] = ind2rgb (I, M);
-%!  imshow (cat(3, R, G*0.5, B*0.8));
+%! clf;
+%! [I, M] = imread ("default.img");
+%! [R, G, B] = ind2rgb (I, M);
+%! imshow (cat (3, R, G*0.5, B*0.8));
 
 %!demo
-%!  imshow (rand (100, 100));
+%! clf;
+%! imshow (rand (100, 100));
 
 %!demo
-%!  imshow (rand (100, 100, 3));
+%! clf;
+%! imshow (rand (100, 100, 3));
 
 %!demo
-%!  imshow (100*rand (100, 100, 3));
+%! clf;
+%! imshow (100*rand (100, 100, 3));
 
 %!demo
-%!  imshow (rand (100, 100));
-%!  colormap (jet);
+%! clf;
+%! imshow (rand (100, 100));
+%! colormap (jet (64));
+
+%% Test input validation
+%!error imshow ()
+%!error <IM must be an image> imshow ({"cell"})
+%!error <expecting MxN or MxNx3 matrix> imshow (ones (4,4,4))
+

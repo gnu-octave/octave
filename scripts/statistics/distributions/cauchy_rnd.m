@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -84,7 +84,7 @@ function rnd = cauchy_rnd (location, scale, varargin)
 
   if (isscalar (location) && isscalar (scale))
     if (!isinf (location) && (scale > 0) && (scale < Inf))
-      rnd = location - cot (pi * rand (sz)) * scale;
+      rnd = location - cot (pi * rand (sz, cls)) * scale;
     else
       rnd = NaN (sz, cls);
     endif
@@ -92,41 +92,41 @@ function rnd = cauchy_rnd (location, scale, varargin)
     rnd = NaN (sz, cls);
 
     k = !isinf (location) & (scale > 0) & (scale < Inf);
-    rnd(k) = location(k)(:) - cot (pi * rand (sum (k(:)), 1)) .* scale(k)(:);
+    rnd(k) = location(k)(:) - cot (pi * rand (sum (k(:)), 1, cls)) .* scale(k)(:);
   endif
 
 endfunction
 
 
-%!assert(size (cauchy_rnd (1,2)), [1, 1]);
-%!assert(size (cauchy_rnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (cauchy_rnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (cauchy_rnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (cauchy_rnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (cauchy_rnd (1, 2, 3)), [3, 3]);
-%!assert(size (cauchy_rnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (cauchy_rnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (cauchy_rnd (1,2)), [1, 1])
+%!assert (size (cauchy_rnd (ones (2,1), 2)), [2, 1])
+%!assert (size (cauchy_rnd (ones (2,2), 2)), [2, 2])
+%!assert (size (cauchy_rnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (cauchy_rnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (cauchy_rnd (1, 2, 3)), [3, 3])
+%!assert (size (cauchy_rnd (1, 2, [4 1])), [4, 1])
+%!assert (size (cauchy_rnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (cauchy_rnd (1, 2)), "double");
-%!assert(class (cauchy_rnd (single(1), 2)), "single");
-%!assert(class (cauchy_rnd (single([1 1]), 2)), "single");
-%!assert(class (cauchy_rnd (1, single(2))), "single");
-%!assert(class (cauchy_rnd (1, single([2 2]))), "single");
+%!assert (class (cauchy_rnd (1, 2)), "double")
+%!assert (class (cauchy_rnd (single (1), 2)), "single")
+%!assert (class (cauchy_rnd (single ([1 1]), 2)), "single")
+%!assert (class (cauchy_rnd (1, single (2))), "single")
+%!assert (class (cauchy_rnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error cauchy_rnd ()
 %!error cauchy_rnd (1)
-%!error cauchy_rnd (ones(3),ones(2))
-%!error cauchy_rnd (ones(2),ones(3))
+%!error cauchy_rnd (ones (3), ones (2))
+%!error cauchy_rnd (ones (2), ones (3))
 %!error cauchy_rnd (i, 2)
 %!error cauchy_rnd (2, i)
 %!error cauchy_rnd (1,2, -1)
-%!error cauchy_rnd (1,2, ones(2))
+%!error cauchy_rnd (1,2, ones (2))
 %!error cauchy_rnd (1,2, [2 -1 2])
-%!error cauchy_rnd (1,2, 1, ones(2))
+%!error cauchy_rnd (1,2, 1, ones (2))
 %!error cauchy_rnd (1,2, 1, -1)
-%!error cauchy_rnd (ones(2,2), 2, 3)
-%!error cauchy_rnd (ones(2,2), 2, [3, 2])
-%!error cauchy_rnd (ones(2,2), 2, 2, 3)
+%!error cauchy_rnd (ones (2,2), 2, 3)
+%!error cauchy_rnd (ones (2,2), 2, [3, 2])
+%!error cauchy_rnd (ones (2,2), 2, 2, 3)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Daniel Calvelo
+## Copyright (C) 1996-2013 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -53,11 +53,11 @@ function h = dec2hex (d, len)
 endfunction
 
 
-%!assert(dec2hex (2748), "ABC");
-%!assert(dec2hex (2748, 5), "00ABC");
-%!assert(dec2hex ({2748, 2746}), ["ABC"; "ABA"]);
+%!assert (dec2hex (2748), "ABC")
+%!assert (dec2hex (2748, 5), "00ABC")
+%!assert (dec2hex ({2748, 2746}), ["ABC"; "ABA"])
 
 %% Test input validation
-%!error dec2hex ();
-%!error dec2hex (1, 2, 3);
+%!error dec2hex ()
+%!error dec2hex (1, 2, 3)
 

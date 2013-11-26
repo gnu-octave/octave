@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,4 +31,5 @@ function n = namelengthmax ()
 endfunction
 
 
-%!assert (namelengthmax, 63)
+%!assert (namelengthmax (), 63)
+

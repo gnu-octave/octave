@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -50,7 +50,7 @@ function [text, status] = get_first_help_sentence (name, max_len = 80)
     error ("get_first_help_sentence: NAME must be a string");
   endif
 
-  if (!isnumeric (max_len) || max_len <= 0 || max_len != fix (max_len))
+  if (! isnumeric (max_len) || max_len <= 0 || max_len != fix (max_len))
     error ("get_first_help_sentence: MAX_LEN must be positive integer");
   endif
 
@@ -80,10 +80,13 @@ endfunction
 
 ## This function extracts the first sentence from a plain text help text
 function [text, status] = first_sentence_plain_text (help_text, max_len)
-  ## Extract first line by searching for a period or a double line-end.
-  period_idx = find (help_text == '.', 1);
-  line_end_idx = strfind (help_text, "\n\n");
-  text = help_text (1:min ([period_idx(:); line_end_idx(:); max_len; length(help_text)]));
+  ## Extract first line by searching for a period followed by a space class
+  ## character (to support periods in numbers or words) ...
+  period_idx = regexp (help_text, '\.\s', "once");
+  ## ... or a double end-of-line (we subtract 1 because we are not interested
+  ## in capturing the first newline).
+  line_end_idx = regexp (help_text, "\n\n", "once") - 1;
+  text = help_text (1:min ([period_idx; line_end_idx; max_len; length(help_text)]));
   status = 0;
 endfunction
 
@@ -91,27 +94,26 @@ endfunction
 ## The function works by removing @def* from the texinfo text. After this, we
 ## render the text to plain text using makeinfo, and then extract the first line.
 function [text, status] = first_sentence_texinfo (help_text, max_len)
-  ## Lines ending with "@\n" are continuation lines, so they should be concatenated
-  ## with the following line.
+  ## Lines ending with "@\n" are continuation lines, so they should be
+  ## concatenated with the following line.
   help_text = strrep (help_text, "@\n", " ");
 
   ## Find, and remove, lines that start with @def. This should remove things
   ## such as @deftypefn, @deftypefnx, @defvar, etc.
   keep = true (size (help_text));
   def_idx = strfind (help_text, "@def");
-  if (!isempty (def_idx))
+  if (! isempty (def_idx))
     endl_idx = find (help_text == "\n");
     for k = 1:length (def_idx)
-      endl = endl_idx (find (endl_idx > def_idx (k), 1));
+      endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        keep (def_idx (k):end) = false;
-      else
-        keep (def_idx (k):endl) = false;
+        endl = numel (keep);
       endif
+      keep(def_idx(k):endl) = false;
     endfor
 
     ## Remove the @end ... that corresponds to the @def we removed above
-    def1 = def_idx (1);
+    def1 = def_idx(1);
     space_idx = find (help_text == " ");
     space_idx = space_idx (find (space_idx > def1, 1));
     bracket_idx = find (help_text == "{" | help_text == "}");
@@ -120,20 +122,15 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif
     sep_idx = min (space_idx, bracket_idx);
-    def_type = help_text (def1+1:sep_idx-1);
+    def_type = help_text(def1+1:sep_idx-1);
 
-    end_idx = strfind (help_text, sprintf ("@end %s", def_type));
+    end_idx = strfind (help_text, sprintf ("@end %s", def_type))(1);
     if (isempty (end_idx))
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif
-    endl = endl_idx (find (endl_idx > end_idx, 1));
-    if (isempty (endl))
-      keep (end_idx:end) = false;
-    else
-      keep (end_idx:endl) = false;
-    endif
+    keep(end_idx:end) = false;
 
-    help_text = help_text (keep);
+    help_text = help_text(keep);
   endif
 
   ## Run makeinfo to generate plain text
@@ -153,13 +150,15 @@ function [text, status] = first_sentence_html (help_text, max_len)
   text = first_sentence_plain_text (help_text, max_len);
 endfunction
 
-%!assert (strcmp (get_first_help_sentence('get_first_help_sentence'), "Return the first sentence of a function's help text."));
+
+%!assert (get_first_help_sentence ('get_first_help_sentence'), ...
+%!        "Return the first sentence of a function's help text.")
 
 %% Test input validation
 %!error get_first_help_sentence ()
 %!error get_first_help_sentence (1, 2, 3)
-%!error get_first_help_sentence (1)
-%!error get_first_help_sentence ('ls', 'a')
-%!error get_first_help_sentence ('ls', 0)
-%!error get_first_help_sentence ('ls', 80.1)
+%!error <NAME must be a string> get_first_help_sentence (1)
+%!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", "a")
+%!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", 0)
+%!error <MAX_LEN must be positive integer> get_first_help_sentence ("ls", 80.1)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -18,39 +18,40 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map_out} =} brighten (@var{map}, @var{beta})
-## @deftypefnx {Function File} {@var{map_out} =} brighten (@var{h}, @var{beta})
 ## @deftypefnx {Function File} {@var{map_out} =} brighten (@var{beta})
-## Darken or brighten the given colormap.  If the @var{map} argument
-## is omitted, the function is applied to the current colormap.  The first
-## argument can also be a valid graphics handle @var{h}, in which case
-## @code{brighten} is applied to the colormap associated with this handle.
+## @deftypefnx {Function File} {@var{map_out} =} brighten (@var{h}, @var{beta})
+## Brighten or darken a colormap.  If the @var{map} argument is omitted, the
+## function is applied to the current colormap.  The first argument can also be
+## a valid graphics handle @var{h}, in which case @code{brighten} is applied to
+## the colormap associated with this handle.
 ##
-## Should the resulting colormap @var{map_out} not be assigned, it will be
-## written to the current colormap.
+## The argument @var{beta} must be a scalar between -1 and 1, where a
+## negative value darkens and a positive value brightens the colormap.
 ##
-## The argument @var{beta} should be a scalar between -1 and 1,
-## where a negative value darkens and a positive value brightens
-## the colormap.
-## @seealso{colormap}
+## If no output is specified then the result is written to the current colormap.
+## @seealso{colormap, contrast}
 ## @end deftypefn
 
 function rmap = brighten (arg1, beta)
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
   h = -1;
   if (nargin == 1)
     beta = arg1;
-    m = colormap;
+    m = colormap ();
     h = gcf ();
-  elseif (nargin == 2)
+  else
     if (ishandle (arg1))
       h = arg1;
       m = get (h, "colormap");
-    elseif (ismatrix (arg1) && columns (arg1) == 3)
+    elseif (iscolormap (arg1))
       m = arg1;
     else
-      error ("brighten: first argument must be an Nx3 matrix or a handle");
+      error ("brighten: first argument must be a colormap or a graphics handle");
     endif
-  else
-    print_usage ();
   endif
 
   if (! isscalar (beta) || beta <= -1 || beta >= 1)
@@ -74,3 +75,22 @@ function rmap = brighten (arg1, beta)
   endif
 
 endfunction
+
+
+%!demo
+%! ## First figure uses default grayscale colormap
+%! figure;
+%! colormap (gray (64));
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! title ("default grayscale colormap");
+%! pos = get (gcf, "position");
+%! pos(1) += pos(3) + 25;
+%! ## Second figure uses brightened grayscale colormap
+%! figure ("position", pos);
+%! colormap (gray (64));
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! brighten (0.5);
+%! title ("grayscale colormap brightened by 0.5");
+

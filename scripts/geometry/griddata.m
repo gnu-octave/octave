@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
-## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+## @deftypefn  {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefnx {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@dots{})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
 ## The function is defined by @code{@var{z} = f (@var{x}, @var{y})}.
@@ -28,9 +29,9 @@
 ## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
 ## @var{xi}, @var{yi} are vectors then they are made into a 2-D mesh.
 ##
-## The interpolation method can be @code{"nearest"}, @code{"cubic"} or
-## @code{"linear"}.  If method is omitted it defaults to @code{"linear"}.
-## @seealso{delaunay}
+## The interpolation method can be @qcode{"nearest"}, @qcode{"cubic"} or
+## @qcode{"linear"}.  If method is omitted it defaults to @qcode{"linear"}.
+## @seealso{griddata3, griddatan, delaunay}
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>
@@ -38,11 +39,8 @@
 ##              xi and yi are not "meshgridded" if both are vectors
 ##              of the same size (for compatibility)
 
-function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
+function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
 
-  if (nargin == 5)
-    method = "linear";
-  endif
   if (nargin < 5 || nargin > 7)
     print_usage ();
   endif
@@ -51,26 +49,31 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
     method = tolower (method);
   endif
 
+  ## Meshgrid if x and y are vectors but z is matrix
   if (isvector (x) && isvector (y) && all ([numel(y), numel(x)] == size (z)))
     [x, y] = meshgrid (x, y);
-  elseif (! all (size (x) == size (y) & size (x) == size (z)))
-    if (isvector (z))
-      error ("griddata: X, Y, and Z, be vectors of same length");
-    else
-      error ("griddata: lengths of X, Y must match the columns and rows of Z");
+  endif
+    
+  if (isvector (x) && isvector (y) && isvector (z))
+    if (! isequal (length (x), length (y), length (z)))
+      error ("griddata: X, Y, and Z must be vectors of the same length");
     endif
+  elseif (! size_equal (x, y, z))
+    error ("griddata: lengths of X, Y must match the columns and rows of Z");
   endif
 
   ## Meshgrid xi and yi if they are a row and column vector.
   if (rows (xi) == 1 && columns (yi) == 1)
     [xi, yi] = meshgrid (xi, yi);
+  elseif (isvector (xi) && isvector (yi))
+    ## Otherwise, convert to column vectors
+    xi = xi(:);
+    yi = yi(:);
   endif
 
   if (! size_equal (xi, yi))
     error ("griddata: XI and YI must be vectors or matrices of same size");
   endif
-
-  [nr, nc] = size (xi);
 
   x = x(:);
   y = y(:);
@@ -138,40 +141,64 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   elseif (nargout == 0)
     mesh (xi, yi, zi);
   endif
+
 endfunction
 
+
+%!demo
+%! clf;
+%! colormap ("default");
+%! x = 2*rand (100,1) - 1;
+%! y = 2*rand (size (x)) - 1;
+%! z = sin (2*(x.^2 + y.^2));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! griddata (x,y,z,xx,yy);
+%! title ("nonuniform grid sampled at 100 points");
+
+%!demo
+%! clf;
+%! colormap ("default");
+%! x = 2*rand (1000,1) - 1;
+%! y = 2*rand (size (x)) - 1;
+%! z = sin (2*(x.^2 + y.^2));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! griddata (x,y,z,xx,yy);
+%! title ("nonuniform grid sampled at 1000 points");
+
+%!demo
+%! clf;
+%! colormap ("default");
+%! x = 2*rand (1000,1) - 1;
+%! y = 2*rand (size (x)) - 1;
+%! z = sin (2*(x.^2 + y.^2));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! griddata (x,y,z,xx,yy,"nearest");
+%! title ("nonuniform grid sampled at 1000 points with nearest neighbor");
+
 %!testif HAVE_QHULL
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
 %! x = xx(:);
-%! x = x + 10 * (2 * round(rand(size(x))) - 1) * eps;
+%! x = x + 10*(2*round (rand (size (x))) - 1) * eps;
 %! y = yy(:);
-%! y = y + 10 * (2 * round(rand(size(y))) - 1) * eps;
-%! z = sin(2*(x.^2+y.^2));
-%! zz = griddata(x,y,z,xx,yy,'linear');
-%! zz2 = sin(2*(xx.^2+yy.^2));
-%! zz2(isnan(zz)) = NaN;
-%! assert (zz, zz2, 100 * eps)
+%! y = y + 10*(2*round (rand (size (y))) - 1) * eps;
+%! z = sin (2*(x.^2 + y.^2));
+%! zz = griddata (x,y,z,xx,yy,"linear");
+%! zz2 = sin (2*(xx.^2 + yy.^2));
+%! zz2(isnan (zz)) = NaN;
+%! assert (zz, zz2, 100*eps);
 
-%!demo
-%! x=2*rand(100,1)-1;
-%! y=2*rand(size(x))-1;
-%! z=sin(2*(x.^2+y.^2));
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
-%! griddata(x,y,z,xx,yy);
-%! title('nonuniform grid sampled at 100 points');
+%% Test input validation
+%!error griddata ()
+%!error griddata (1)
+%!error griddata (1,2)
+%!error griddata (1,2,3)
+%!error griddata (1,2,3,4)
+%!error griddata (1,2,3,4,5,6,7)
+%!error <vectors of the same length> griddata (1:3, 1:3, 1:4, 1:3, 1:3)
+%!error <vectors of the same length> griddata (1:3, 1:4, 1:3, 1:3, 1:3)
+%!error <vectors of the same length> griddata (1:4, 1:3, 1:3, 1:3, 1:3)
+%!error <the columns and rows of Z> griddata (1:4, 1:3, ones (4,4), 1:3, 1:3)
+%!error <the columns and rows of Z> griddata (1:4, 1:3, ones (3,5), 1:3, 1:3)
+%!error <matrices of same size> griddata (1:3, 1:3, 1:3, 1:4, 1:3)
+%!error <matrices of same size> griddata (1:3, 1:3, 1:3, 1:3, 1:4)
 
-%!demo
-%! x=2*rand(1000,1)-1;
-%! y=2*rand(size(x))-1;
-%! z=sin(2*(x.^2+y.^2));
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
-%! griddata(x,y,z,xx,yy);
-%! title('nonuniform grid sampled at 1000 points');
-
-%!demo
-%! x=2*rand(1000,1)-1;
-%! y=2*rand(size(x))-1;
-%! z=sin(2*(x.^2+y.^2));
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
-%! griddata(x,y,z,xx,yy,'nearest');
-%! title('nonuniform grid sampled at 1000 points with nearest neighbor');

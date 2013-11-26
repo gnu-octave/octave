@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -28,25 +28,25 @@
 ## a string with one of the values:
 ##
 ## @table @asis
-## @item "fix"
+## @item @qcode{"fix"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards zero.
 ##
-## @item "round"
+## @item @qcode{"round"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards the nearest integer.
 ##
-## @item "floor"
+## @item @qcode{"floor"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards negative infinity.
 ##
-## @item "ceil"
+## @item @qcode{"ceil"}
 ## Calculate @code{@var{a} ./ @var{b}} with the fractional part rounded
 ## towards positive infinity.
 ## @end table
 ##
 ## @noindent
-## If @var{op} is not given it defaults to @code{"fix"}.
+## If @var{op} is not given it defaults to @qcode{"fix"}.
 ## An example demonstrating these rounding rules is
 ##
 ## @example
@@ -100,25 +100,27 @@ function z = idivide (x, y, op)
   endif
 endfunction
 
+
 %!shared a, af, b, bf
-%! a = int8(3);
+%! a = int8 (3);
 %! af = 3;
-%! b = int8([-4, 4]);
+%! b = int8 ([-4, 4]);
 %! bf = [-4, 4];
 
 %!assert (idivide (a, b), int8 ([0, 0]))
-%!assert (idivide (a, b, "floor"), int8([-1, 0]))
+%!assert (idivide (a, b, "floor"), int8 ([-1, 0]))
 %!assert (idivide (a, b, "ceil"), int8 ([0, 1]))
 %!assert (idivide (a, b, "round"), int8 ([-1, 1]))
 
 %!assert (idivide (af, b), int8 ([0, 0]))
-%!assert (idivide (af, b, "floor"), int8([-1, 0]))
+%!assert (idivide (af, b, "floor"), int8 ([-1, 0]))
 %!assert (idivide (af, b, "ceil"), int8 ([0, 1]))
 %!assert (idivide (af, b, "round"), int8 ([-1, 1]))
 
 %!assert (idivide (a, bf), int8 ([0, 0]))
-%!assert (idivide (a, bf, "floor"), int8([-1, 0]))
+%!assert (idivide (a, bf, "floor"), int8 ([-1, 0]))
 %!assert (idivide (a, bf, "ceil"), int8 ([0, 1]))
 %!assert (idivide (a, bf, "round"), int8 ([-1, 1]))
 
-%!error (idivide (uint8(1), int8(1)))
+%!error (idivide (uint8 (1), int8 (1)))
+

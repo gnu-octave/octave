@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -46,17 +46,17 @@ endfunction
 %! x = [-1 0.1 1.1 1.9 3];
 %! v = 0.1:0.2:1.9;
 %! y = [0 0.1 0.6 1 1];
-%!assert(empirical_cdf (x, v), y, eps);
-%!assert(empirical_cdf ([x(1) NaN x(3:5)], v), [0 NaN 0.6 1 1], eps);
+%!assert (empirical_cdf (x, v), y, eps)
+%!assert (empirical_cdf ([x(1) NaN x(3:5)], v), [0 NaN 0.6 1 1], eps)
 
 %% Test class of input preserved
-%!assert(empirical_cdf ([x, NaN], v), [y, NaN], eps);
-%!assert(empirical_cdf (single([x, NaN]), v), single([y, NaN]), eps);
-%!assert(empirical_cdf ([x, NaN], single(v)), single([y, NaN]), eps);
+%!assert (empirical_cdf ([x, NaN], v), [y, NaN], eps)
+%!assert (empirical_cdf (single ([x, NaN]), v), single ([y, NaN]), eps)
+%!assert (empirical_cdf ([x, NaN], single (v)), single ([y, NaN]), eps)
 
 %% Test input validation
 %!error empirical_cdf ()
 %!error empirical_cdf (1)
 %!error empirical_cdf (1,2,3)
-%!error empirical_cdf (1, ones(2))
+%!error empirical_cdf (1, ones (2))
 

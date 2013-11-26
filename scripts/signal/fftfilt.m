@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
+## @deftypefn  {Function File} {} fftfilt (@var{b}, @var{x})
+## @deftypefnx {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
 ##
 ## With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
 ## @var{b} using the FFT.
 ##
 ## Given the optional third argument, @var{n}, @code{fftfilt} uses the
-## overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
+## overlap-add method to filter @var{x} with @var{b} using an N-point
+## FFT@.  The FFT size must be an even power of 2 and must be greater than
+## or equal to the length of @var{b}.  If the specified @var{n} does not
+## meet these criteria, it is automatically adjusted to the nearest value
+## that does.
 ##
 ## If @var{x} is a matrix, filter each column of the matrix.
 ## @seealso{filter, filter2}
@@ -94,53 +99,91 @@ function y = fftfilt (b, x, n)
   endif
 
   y = y(1:r_x, :);
+
+  ## Final cleanups:
+
+  ## - If both b and x are real, y should be real.
+  ## - If b is real and x is imaginary, y should be imaginary.
+  ## - If b is imaginary and x is real, y should be imaginary.
+  ## - If both b and x are imaginary, y should be real.
+  xisreal = all (imag (x) == 0);
+  xisimag = all (real (x) == 0);
+
+  if (all (imag (b) == 0))
+    y (:,xisreal) = real (y (:,xisreal));
+    y (:,xisimag) = complex (real (y (:,xisimag)) * 0, imag (y (:,xisimag)));
+  elseif (all (real (b) == 0))
+    y (:,xisreal) = complex (real (y (:,xisreal)) * 0, imag (y (:,xisreal)));
+    y (:,xisimag) = real (y (:,xisimag));
+  endif
+
+  ## - If both x and b are integer in both real and imaginary
+  ##   components, y should be integer.
+  if (! any (b - fix (b)))
+    idx = find (! any (x - fix (x)));
+    y (:, idx) = round (y (:, idx));
+  endif
+
+  ## Transpose after cleanup, otherwise rounding fails.
   if (transpose)
     y = y.';
-  endif
-
-  ## Final cleanups: If both x and b are real, y should be real.
-  ## If both x and b are integer, y should be integer.
-
-  if (isreal (b) && isreal (x))
-    y = real (y);
-  endif
-  if (! any (b - fix (b)))
-    idx = !any (x - fix (x));
-    y(:, idx) = round (y(:, idx));
   endif
 
 endfunction
 
 
 %!shared b, x, r
-%!test
-%!  b = [1 1];
-%!  x = [1, zeros(1,9)];
-%!  assert(fftfilt(b,  x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
-%!  assert(fftfilt(b,  x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
-%!  assert(fftfilt(b.',x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
-%!  assert(fftfilt(b.',x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
 
 %!test
-%!  r = sqrt(1/2) * (1+i);
-%!  b = b*r;
-%!  assert(fftfilt(b, x  ), r*[1 1 0 0 0 0 0 0 0 0]  , eps);
-%!  assert(fftfilt(b, r*x), r*r*[1 1 0 0 0 0 0 0 0 0], eps);
-%!  assert(fftfilt(b, x.'), r*[1 1 0 0 0 0 0 0 0 0].', eps);
+%! b = [1 1];
+%! x = [1, zeros(1,9)];
+%! assert (fftfilt (b,  x  ), [1 1 0 0 0 0 0 0 0 0]  );
+%! assert (fftfilt (b,  x.'), [1 1 0 0 0 0 0 0 0 0].');
+%! assert (fftfilt (b.',x  ), [1 1 0 0 0 0 0 0 0 0]  );
+%! assert (fftfilt (b.',x.'), [1 1 0 0 0 0 0 0 0 0].');
+%! assert (fftfilt (b,  [x.' x.']), [1 1 0 0 0 0 0 0 0 0].'*[1 1]);
+%! assert (fftfilt (b,  [x.'+2*eps x.']) == [1 1 0 0 0 0 0 0 0 0].'*[1 1], [false(10, 1) true(10, 1)]);
 
 %!test
-%!  b = [1 1];
-%!  x = zeros (10,3); x(1,1)=-1; x(1,2)=1;
-%!  y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
-%!  y = fftfilt (b, x);
-%!  assert (y,y0);
+%! r = sqrt (1/2) * (1+i);
+%! b = b*r;
+%! assert (fftfilt (b, x  ), r*[1 1 0 0 0 0 0 0 0 0]  , eps  );
+%! assert (fftfilt (b, r*x), r*r*[1 1 0 0 0 0 0 0 0 0], 2*eps);
+%! assert (fftfilt (b, x.'), r*[1 1 0 0 0 0 0 0 0 0].', eps  );
 
 %!test
-%!  b  = rand (10, 1);
-%!  x  = rand (10, 1);
-%!  y0 = filter (b, 1, x);
-%!  y  = filter (b, 1, x);
-%!  assert (y, y0);
+%! b  = [1 1];
+%! x  = zeros (10,3); x(1,1)=-1; x(1,2)=1;
+%! y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
+%! y  = fftfilt (b, x);
+%! assert (y0, y);
+%! y  = fftfilt (b*i, x);
+%! assert (y0*i, y);
+%! y  = fftfilt (b, x*i);
+%! assert (y0*i, y);
+%! y  = fftfilt (b*i, x*i);
+%! assert (-y0, y);
+%! x  = rand (10, 1);
+%! y  = fftfilt (b, [x x*i]);
+%! assert (true, isreal (y(:,1)));
+%! assert (false, any (real (y(:,2))));
+
+%!test
+%! b  = rand (10, 1);
+%! x  = rand (10, 1);
+%! y0 = filter (b, 1, x);
+%! y  = fftfilt (b, x);
+%! assert (y0, y, 16*eps);
+%! y0 = filter (b*i, 1, x*i);
+%! y  = fftfilt (b*i, x*i);
+%! assert (y0, y, 16*eps);
+
+%!test
+%! b  = rand (10, 1) + i*rand (10, 1);
+%! x  = rand (10, 1) + i*rand (10, 1);
+%! y0 = filter (b, 1, x);
+%! y  = fftfilt (b, x);
+%! assert (y0, y, 55*eps);
 
 %% Test input validation
 %!error fftfilt (1)

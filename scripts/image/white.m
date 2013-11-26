@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -27,29 +27,29 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "white");
+## PKG_DEL: colormap ("unregister", "white");
+
 function map = white (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("white: argument must be a scalar");
+      error ("white: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  if (n > 0)
-    map = ones (n, 3);
-  else
-    map = [];
-  endif
+  map = ones (n, 3);
 
 endfunction
 
+
 %!demo
 %! ## Show the 'white' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (white (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (white (64));
 

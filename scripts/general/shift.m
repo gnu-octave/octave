@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -80,19 +80,19 @@ endfunction
 %! r = [a, b, c];
 %! m = [a; b; c];
 %!
-%! assert(shift (r, 0), r);
-%! assert(shift (r, 3), [c, a, b]);
-%! assert(shift (r, -6), [c, a, b]);
-%! assert(shift (r, -3), [b, c, a]);
-%! assert(shift (m, 1), [c; a; b]);
-%! assert(shift (m, -2), [c; a; b]);
+%! assert (shift (r, 0), r);
+%! assert (shift (r, 3), [c, a, b]);
+%! assert (shift (r, -6), [c, a, b]);
+%! assert (shift (r, -3), [b, c, a]);
+%! assert (shift (m, 1), [c; a; b]);
+%! assert (shift (m, -2), [c; a; b]);
 
 %% Test input validation
 %!error shift ()
 %!error shift (1, 2, 3, 4)
 %!error shift ([], 1)
-%!error shift (ones(2), ones(2))
-%!error shift (ones(2), 1.5)
+%!error shift (ones (2), ones (2))
+%!error shift (ones (2), 1.5)
 %!error shift (1, 1, 1.5)
 %!error shift (1, 1, 0)
 %!error shift (1, 1, 3)

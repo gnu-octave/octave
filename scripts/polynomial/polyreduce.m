@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -31,35 +31,28 @@ function p = polyreduce (c)
 
   if (nargin != 1)
     print_usage ();
-  endif
-
-  if (!isvector (c) || isempty (c))
+  elseif (! isvector (c) || isempty (c))
     error ("polyreduce: C must be a non-empty vector");
   endif
 
-  if (! isempty (c))
+  idx = find (c != 0, 1);
 
-    index = find (c != 0);
-
-    if (isempty (index))
-
-      p = 0;
-
-    else
-
-      p = c(index (1):length (c));
-
-    endif
-
+  if (isempty (idx))
+    p = 0;
+  else
+    p = c(idx:end);
   endif
 
 endfunction
 
-%!assert(all (all (polyreduce ([0, 0, 1, 2, 3]) == [1, 2, 3])));
 
-%!assert(all (all (polyreduce ([1, 2, 3, 0, 0]) == [1, 2, 3, 0, 0])));
+%!assert (polyreduce ([0, 0, 1, 2, 3]), [1, 2, 3])
+%!assert (polyreduce ([1, 2, 3, 0, 0]), [1, 2, 3, 0, 0])
+%!assert (polyreduce ([1, 0, 3]), [1, 0, 3])
+%!assert (polyreduce ([0, 0, 0]), 0)
 
-%!assert(all (all (polyreduce ([1, 0, 3]) == [1, 0, 3])));
-
-%!error polyreduce ([1, 2; 3, 4]);
+%!error polyreduce ()
+%!error polyreduce (1, 2)
+%!error <C must be a non-empty vector> polyreduce ([1, 2; 3, 4])
+%!error <C must be a non-empty vector> polyreduce ([])
 

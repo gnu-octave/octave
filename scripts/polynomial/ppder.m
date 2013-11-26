@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 VZLU Prague, a.s., Czech Republic
+## Copyright (C) 2008-2013 VZLU Prague, a.s., Czech Republic
 ##
 ## This file is part of Octave.
 ##
@@ -13,7 +13,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, see
+## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
@@ -51,20 +51,24 @@ function ppd = ppder (pp, m)
   ppd = mkpp (x, pd, d);
 endfunction
 
+
 %!shared x,y,pp,ppd
-%! x=0:8;y=[x.^2;x.^3+1];pp=spline(x,y);
-%! ppd=ppder(pp);
-%!assert(ppval(ppd,x),[2*x;3*x.^2],1e-14)
-%!assert(ppd.order,3)
-%! ppd=ppder(pp,2);
-%!assert(ppval(ppd,x),[2*ones(size(x));6*x],1e-14)
-%!assert(ppd.order,2)
-%! ppd=ppder(pp,3);
-%!assert(ppd.order,1)
-%!assert(ppd.pieces,8)
-%!assert(size(ppd.coefs),[16,1])
-%! ppd=ppder(pp,4);
-%!assert(ppd.order,1)
-%!assert(ppd.pieces,1)
-%!assert(size(ppd.coefs),[2,1])
-%!assert(ppval(ppd,x),zeros(size(y)),1e-14)
+%! x = 0:8;
+%! y = [x.^2; x.^3+1];
+%! pp = spline (x, y);
+%! ppd = ppder (pp);
+%!assert (ppval (ppd, x), [2*x; 3*x.^2], 1e-14)
+%!assert (ppd.order, 3)
+%! ppd = ppder (pp, 2);
+%!assert (ppval (ppd, x), [2*ones(size (x)); 6*x], 1e-14)
+%!assert (ppd.order, 2)
+%! ppd = ppder (pp, 3);
+%!assert (ppd.order, 1)
+%!assert (ppd.pieces, 8)
+%!assert (size (ppd.coefs), [16, 1])
+%! ppd = ppder (pp, 4);
+%!assert (ppd.order, 1)
+%!assert (ppd.pieces, 1)
+%!assert (size (ppd.coefs), [2, 1])
+%!assert (ppval (ppd,x), zeros (size (y)), 1e-14)
+

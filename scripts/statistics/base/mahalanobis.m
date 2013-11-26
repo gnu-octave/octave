@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -71,10 +71,11 @@ endfunction
 
 
 %% Test input validation
-%!error mahalanobis ();
-%!error mahalanobis (1, 2, 3);
-%!error mahalanobis ('A', 'B');
-%!error mahalanobis ([1, 2], ['A', 'B']);
-%!error mahalanobis (ones (2,2,2));
-%!error mahalanobis (ones (2,2), ones (2,2,2));
-%!error mahalanobis (ones (2,2), ones (2,3));
+%!error mahalanobis ()
+%!error mahalanobis (1, 2, 3)
+%!error mahalanobis ('A', 'B')
+%!error mahalanobis ([1, 2], ['A', 'B'])
+%!error mahalanobis (ones (2,2,2))
+%!error mahalanobis (ones (2,2), ones (2,2,2))
+%!error mahalanobis (ones (2,2), ones (2,3))
+

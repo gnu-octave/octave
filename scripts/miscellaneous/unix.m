@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 John W. Eaton
+## Copyright (C) 2004-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## Execute a system command if running under a Unix-like operating
 ## system, otherwise do nothing.  Return the exit status of the program
 ## in @var{status} and any output from the command in @var{text}.
-## When called with no output argument, or the "-echo" argument is
+## When called with no output argument, or the @qcode{"-echo"} argument is
 ## given, then @var{text} is also sent to standard output.
 ## @seealso{dos, system, isunix, ispc}
 ## @end deftypefn

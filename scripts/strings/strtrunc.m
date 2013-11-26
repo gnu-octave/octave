@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2006-2013 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -55,12 +55,12 @@ function s = strtrunc (s, n)
 endfunction
 
 
-%!assert (strtrunc("abcdefg", 4), "abcd");
-%!assert (strtrunc("abcdefg", 10), "abcdefg");
-%!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
-%!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
-%!assert (strtrunc({"", "1", "21", "321"}, 1), {"", "1", "2", "3"})
-%!assert (strtrunc({"1", "", "2"}, 1), {"1", "", "2"})
+%!assert (strtrunc ("abcdefg", 4), "abcd")
+%!assert (strtrunc ("abcdefg", 10), "abcdefg")
+%!assert (strtrunc (char ("abcdef", "fedcba"), 3), ["abc"; "fed"])
+%!assert (strtrunc ({"abcdef", "fedcba"}, 3), {"abc", "fed"})
+%!assert (strtrunc ({"", "1", "21", "321"}, 1), {"", "1", "2", "3"})
+%!assert (strtrunc ({"1", "", "2"}, 1), {"1", "", "2"})
 %!test
 %! cstr = {"line1"; ["line2"; "line3"]; "line4"};
 %! y = strtrunc (cstr, 4);

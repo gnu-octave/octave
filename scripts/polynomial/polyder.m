@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -60,7 +60,7 @@ function [q, d] = polyder (p, a)
 
         ## remove common factors from numerator and denominator
         x = polygcd (q, d);
-        if (length(x) != 1)
+        if (length (x) != 1)
           q = deconv (q, x);
           d = deconv (d, x);
         endif
@@ -91,9 +91,10 @@ function [q, d] = polyder (p, a)
 endfunction
 
 
-%!assert(all (all (polyder ([1, 2, 3]) == [2, 2])));
-%!assert(polyder (13) == 0);
+%!assert (polyder ([1, 2, 3], [2, 2]))
+%!assert (polyder (13), 0)
 
-%!error polyder ([]);
-%!error polyder ([1, 2; 3, 4]);
+%!error polyder ([])
+%!error polyder (1,2,3)
+%!error <argument must be a vector> polyder ([1, 2; 3, 4])
 

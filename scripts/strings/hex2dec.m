@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Daniel Calvelo
+## Copyright (C) 1996-2013 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -24,9 +24,9 @@
 ## @example
 ## @group
 ## hex2dec ("12B")
-##      @result{} 299
+##       @result{} 299
 ## hex2dec ("12b")
-##      @result{} 299
+##       @result{} 299
 ## @end group
 ## @end example
 ##
@@ -53,13 +53,13 @@ function d = hex2dec (s)
 endfunction
 
 
-%!assert(hex2dec ("0000"), 0);
-%!assert(hex2dec ("1FFFFFFFFFFFFF"), 2^53-1);
-%!assert(hex2dec (["12b"; "12B"]), [299; 299]);
-%!assert(hex2dec ({"A1", "1A"}), [161; 26]);
+%!assert (hex2dec ("0000"), 0)
+%!assert (hex2dec ("1FFFFFFFFFFFFF"), 2^53-1)
+%!assert (hex2dec (["12b"; "12B"]), [299; 299])
+%!assert (hex2dec ({"A1", "1A"}), [161; 26])
 
 %%Test input validation
-%!error hex2dec ();
-%!error hex2dec (1);
-%!error hex2dec ("1", 2);
+%!error hex2dec ()
+%!error hex2dec (1)
+%!error hex2dec ("1", 2)
 

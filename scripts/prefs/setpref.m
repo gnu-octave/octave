@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2012-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -43,7 +43,7 @@ function setpref (group, pref, val)
         prefs.(group).(pref) = val;
       elseif (iscellstr (pref))
         if (size_equal (pref, val))
-          for i = 1:numel(pref)
+          for i = 1:numel (pref)
             prefs.(group).(pref{i}) = val;
           endfor
         else
@@ -62,6 +62,8 @@ function setpref (group, pref, val)
 
 endfunction
 
+
 %% Testing these functions will require some care to avoid wiping out
 %% existing (or creating unwanted) preferences for the user running the
 %% tests.
+

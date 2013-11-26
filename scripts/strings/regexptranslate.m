@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## values
 ##
 ## @table @asis
-## @item "wildcard"
+## @item @qcode{"wildcard"}
 ## The wildcard characters @code{.}, @code{*}, and @code{?} are replaced
 ## with wildcards that are appropriate for a regular expression.
 ## For example:
@@ -36,7 +36,7 @@
 ## @end group
 ## @end example
 ##
-## @item "escape"
+## @item @qcode{"escape"}
 ## The characters @code{$.?[]}, that have special meaning for regular
 ## expressions are escaped so that they are treated literally.  For example:
 ##
@@ -53,7 +53,7 @@
 
 function y = regexptranslate (op, s)
 
-  if nargin != 2
+  if (nargin != 2)
     print_usage ();
   endif
 
@@ -67,7 +67,7 @@ function y = regexptranslate (op, s)
                                             '\*', '.*'), 
                                             '\?', '.');
   elseif (strcmp ("escape", op))
-    y = regexprep (s, '([^\w])', '\$1');
+    y = regexprep (s, '([^\w])', '\\$1');
   else
     error ("regexptranslate: invalid operation OP");
   endif

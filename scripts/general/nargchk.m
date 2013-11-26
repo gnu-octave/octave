@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Bill Denney
+## Copyright (C) 2008-2013 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -63,18 +63,19 @@ endfunction
 
 ## Tests
 %!shared stnul, stmin, stmax
-%!  stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
-%!  stmin = struct ("message", "not enough input arguments",
-%!                  "identifier", "Octave:nargchk:not-enough-inputs");
-%!  stmax = struct ("message", "too many input arguments",
-%!                  "identifier", "Octave:nargchk:too-many-inputs");
+%! stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
+%! stmin = struct ("message", "not enough input arguments",
+%!                 "identifier", "Octave:nargchk:not-enough-inputs");
+%! stmax = struct ("message", "too many input arguments",
+%!                 "identifier", "Octave:nargchk:too-many-inputs");
 %!assert (nargchk (0, 1, 0), "")
 %!assert (nargchk (0, 1, 1), "")
 %!assert (nargchk (1, 1, 0), "not enough input arguments")
 %!assert (nargchk (0, 1, 2), "too many input arguments")
 %!assert (nargchk (0, 1, 2, "string"), "too many input arguments")
 ## Struct outputs
-%!assert (isequal (nargchk (0, 1, 0, "struct"), stnul))
-%!assert (isequal (nargchk (0, 1, 1, "struct"), stnul))
+%!assert (nargchk (0, 1, 0, "struct"), stnul)
+%!assert (nargchk (0, 1, 1, "struct"), stnul)
 %!assert (nargchk (1, 1, 0, "struct"), stmin)
 %!assert (nargchk (0, 1, 2, "struct"), stmax)
+

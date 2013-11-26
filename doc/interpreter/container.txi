@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -40,7 +40,7 @@ another data container, the comma separated list.
 
 Octave includes support for organizing data in structures.  The current
 implementation uses an associative array with indices limited to
-strings, but the syntax is more like C-style structures.  
+strings, but the syntax is more like C-style structures.
 
 @menu
 * Basic Usage and Examples::
@@ -308,7 +308,7 @@ left-hand side of an assignment:
 
 @example
 @group
-[x.a] = deal("new string1", "new string2");
+[x.a] = deal ("new string1", "new string2");
  x(1).a
      @result{} ans = new string1
  x(2).a
@@ -322,7 +322,7 @@ Just as for numerical arrays, it is possible to use vectors as indices
 @example
 @group
 x(3:4) = x(1:2);
-[x([1,3]).a] = deal("other string1", "other string2");
+[x([1,3]).a] = deal ("other string1", "other string2");
 x.a
      @result{}
         ans = other string1
@@ -337,7 +337,7 @@ the example above
 
 @example
 @group
-size(x)
+size (x)
      @result{} ans =
 
           1   4
@@ -372,9 +372,9 @@ in.call1
 @subsection Creating Structures
 @cindex dynamic naming
 
-Besides the index operator ".", Octave can use dynamic naming "(var)" or the
-@code{struct} function to create structures.  Dynamic naming uses the string
-value of a variable as the field name.  For example:
+Besides the index operator @qcode{"."}, Octave can use dynamic naming
+@qcode{"(var)"} or the @code{struct} function to create structures.  Dynamic
+naming uses the string value of a variable as the field name.  For example:
 
 @example
 @group
@@ -389,6 +389,28 @@ x
         @}
 @end group
 @end example
+
+@noindent
+Dynamic indexing also allows you to use arbitrary strings, not merely
+valid Octave identifiers (note that this does not work on @sc{matlab}):
+
+@example
+@group
+a = "long field with spaces (and funny char$)";
+x.a = 1;
+x.(a) = 2;
+x
+     @result{} x =
+        @{
+          a =  1
+          long field with spaces (and funny char$) =  2
+        @}
+@end group
+@end example
+
+@noindent
+The warning id @code{Octave:matlab-incompatible} can be enabled to warn
+about this usage.  @xref{XREFwarning_ids,,warning_ids}.
 
 More realistically, all of the functions that operate on strings can be used
 to build the correct field name before it is entered into the data structure.
@@ -462,16 +484,16 @@ struct ("field1", @{@{1, "one"@}@}, "field2", 2)
      @result{} ans =
         @{
           field1 =
-        
+
         @{
           [1,1] =  1
           [1,2] = one
         @}
-        
+
           field2 =  2
         @}
 @end group
- @end example       
+@end example
 
 @DOCSTRING(struct)
 
@@ -491,9 +513,9 @@ Other functions that can manipulate the fields of a structure are given below.
 
 @DOCSTRING(isfield)
 
-@DOCSTRING(getfield)
-
 @DOCSTRING(setfield)
+
+@DOCSTRING(getfield)
 
 @DOCSTRING(rmfield)
 
@@ -507,7 +529,8 @@ Other functions that can manipulate the fields of a structure are given below.
 The simplest way to process data in a structure is within a @code{for}
 loop (@pxref{Looping Over Structure Elements}).  A similar effect can be
 achieved with the @code{structfun} function, where a user defined
-function is applied to each field of the structure.  @xref{doc-structfun}.
+function is applied to each field of the structure.
+@xref{XREFstructfun,,structfun}.
 
 Alternatively, to process the data in a structure, the structure might
 be converted to another type of container before being treated.
@@ -564,7 +587,7 @@ extracted by indexing with a vector of indexes
 c@{1:2@}
      @result{} ans = a string
      @result{} ans =
-          
+
                0.593993   0.627732
                0.377037   0.033643
 @end group
@@ -578,14 +601,14 @@ third place of the previously created cell array
 @group
 c@{3@} = 3
      @result{} c =
-         
+
          @{
            [1,1] = a string
            [1,2] =
-         
+
               0.593993   0.627732
               0.377037   0.033643
-         
+
            [1,3] =  3
          @}
 @end group
@@ -605,10 +628,10 @@ function.  For example:
 
 @example
 @group
-iscell(c)
+iscell (c)
      @result{} ans = 1
 
-iscell(3)
+iscell (3)
      @result{} ans = 0
 
 @end group
@@ -617,7 +640,7 @@ iscell(3)
 @DOCSTRING(iscell)
 
 @node Creating Cell Arrays
-@subsection Creating Cell Array
+@subsection Creating Cell Arrays
 
 The introductory example (@pxref{Basic Usage of Cell Arrays}) showed
 how to create a cell array containing currently available variables.
@@ -631,9 +654,9 @@ a 2-by-2 cell array containing empty matrices
 
 @example
 @group
-c = cell(2,2)
+c = cell (2,2)
      @result{} c =
-         
+
          @{
            [1,1] = [](0x0)
            [2,1] = [](0x0)
@@ -652,20 +675,19 @@ of the first one is displayed
 
 @example
 @group
-c1 = cell(3, 4, 5);
-c2 = cell( [3, 4, 5] );
-size(c1)
+c1 = cell (3, 4, 5);
+c2 = cell ( [3, 4, 5] );
+size (c1)
      @result{} ans =
          3   4   5
 @end group
 @end example
 
 @noindent
-As can be seen, the @ref{doc-size, @code{size}} function also works
+As can be seen, the @ref{XREFsize,,size} function also works
 for cell arrays.  As do other functions describing the size of an
-object, such as @ref{doc-length, @code{length}}, @ref{doc-numel,
-@code{numel}}, @ref{doc-rows, @code{rows}}, and @ref{doc-columns,
-@code{columns}}.
+object, such as @ref{XREFlength,,length}, @ref{XREFnumel,, numel},
+@ref{XREFrows,,rows}, and @ref{XREFcolumns,,columns}.
 
 @DOCSTRING(cell)
 
@@ -690,14 +712,14 @@ following example illustrates the difference:
 
 @example
 @group
-c = @{"1", "2", "3"; "a", "b", "c"; "4", "5", "6"@};
+c = @{"1", "2", "3"; "x", "y", "z"; "4", "5", "6"@};
 c@{2,3@}
-     @result{} ans = c
+     @result{} ans = z
 
 c(2,3)
      @result{} ans = 
         @{
-          [1,1] = c
+          [1,1] = z
         @}
 @end group
 @end example
@@ -766,7 +788,7 @@ example can be swapped back like this:
 
 @example
 @group
-[c@{[1,2], :@}] = deal(c@{[2, 1], :@})
+[c@{[1,2], :@}] = deal (c@{[2, 1], :@})
      @result{} = 
         @{
           [1,1] =  1
@@ -885,7 +907,7 @@ depending on the actual data.  The simplest way to process that data
 is to iterate through it using one or more @code{for} loops.  The same
 idea can be implemented more easily through the use of the @code{cellfun}
 function that calls a user-specified function on all elements of a cell
-array.  @xref{doc-cellfun}.
+array.  @xref{XREFcellfun,,cellfun}.
 
 An alternative is to convert the data to a different container, such as
 a matrix or a data structure.  Depending on the data this is possible

@@ -1,7 +1,8 @@
 #include "mex.h"
 
 void
-mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
+mexFunction (int nlhs, mxArray* plhs[],
+             int nrhs, const mxArray* prhs[])
 {
   char *str;
   mxArray *v;
@@ -16,7 +17,7 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
   if (v)
     {
       mexPrintf ("%s is a global variable with the following value:\n", str);
-      mexCallMATLAB (0, 0, 1, &v, "disp");
+      mexCallMATLAB (0, NULL, 1, &v, "disp");
     }
 
   v = mexGetArray (str, "caller");
@@ -24,10 +25,10 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
   if (v)
     {
       mexPrintf ("%s is a caller variable with the following value:\n", str);
-      mexCallMATLAB (0, 0, 1, &v, "disp");
+      mexCallMATLAB (0, NULL, 1, &v, "disp");
     }
 
   // WARNING!! Can't do this in MATLAB!  Must copy variable first.
-  mxSetName (prhs[1], str);  
+  mxSetName (prhs[1], str);
   mexPutArray (prhs[1], "caller");
 }

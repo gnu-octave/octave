@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2013 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ver ()
+## @deftypefn  {Function File} {} ver ()
+## @deftypefnx {Function File} {v =} ver ()
+## @deftypefnx {Function File} {v =} ver ("Octave")
+## @deftypefnx {Function File} {v =} ver (@var{package})
+## 
 ## Display a header containing the current Octave version number, license
-## string and operating system, followed by the installed package names,
+## string, and operating system followed by a list of installed packages,
 ## versions, and installation directories.
 ##
-## @deftypefnx {Function File} {v =} ver ()
-## Return a vector of structures, respecting Octave and each installed package.
+## @code{v = ver ()}
+##
+## Return a vector of structures describing Octave and each installed package.
 ## The structure includes the following fields.
 ##
 ## @table @code
@@ -37,13 +42,15 @@
 ## Revision of the package.
 ##
 ## @item Date
-## Date respecting the version/revision.
+## Date of the version/revision.
 ## @end table
 ##
-## @deftypefnx {Function File} {v =} ver ("Octave")
+## @code{v = ver ("Octave")}
+##
 ## Return version information for Octave only.
 ##
-## @deftypefnx {Function File} {v =} ver (@var{package})
+## @code{v = ver (@var{package})}
+##
 ## Return version information for @var{package}.
 ##
 ## @seealso{version, octave_config_info}
@@ -94,7 +101,7 @@ function varargout = ver (package = "")
   else
     if (! isempty (package))
       n = [];
-      for r = 1:numel(ret)
+      for r = 1:numel (ret)
         if (strcmpi (ret(r).Name, package))
           n = r;
           break;
@@ -107,17 +114,18 @@ function varargout = ver (package = "")
 
 endfunction
 
+
 %!test
 %! result = ver;
-%! assert (result(1).Name, "Octave")
-%! assert (result(1).Version, version)
+%! assert (result(1).Name, "Octave");
+%! assert (result(1).Version, version);
 %! result = ver ("octave");
-%! assert (result(1).Name, "Octave")
-%! assert (result(1).Version, version)
+%! assert (result(1).Name, "Octave");
+%! assert (result(1).Version, version);
 
 %!test
 %! lst = pkg ("list");
-%! for n=1:numel(lst)
+%! for n = 1:numel (lst)
 %!   expected = lst{n}.name;
 %!   result = ver (expected);
 %!   assert (result.Name, expected);

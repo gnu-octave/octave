@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ## Copyright (C) 2008 Marco Caliari
 ##
 ## This file is part of Octave.
@@ -22,12 +22,12 @@
 ## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
 ## Compute the Legendre function of degree @var{n} and order
 ## @var{m} = 0 @dots{} N@.  The optional argument, @var{normalization},
-## may be one of @code{"unnorm"}, @code{"sch"}, or @code{"norm"}.
-## The default is @code{"unnorm"}.  The value of @var{n} must be a
+## may be one of @qcode{"unnorm"}, @qcode{"sch"}, or @qcode{"norm"}.
+## The default is @qcode{"unnorm"}.  The value of @var{n} must be a
 ## non-negative scalar integer.
 ##
 ## If the optional argument @var{normalization} is missing or is
-## @code{"unnorm"}, compute the Legendre function of degree @var{n} and
+## @qcode{"unnorm"}, compute the Legendre function of degree @var{n} and
 ## order @var{m} and return all values for @var{m} = 0 @dots{} @var{n}.
 ## The return value has one dimension more than @var{x}.
 ##
@@ -84,7 +84,7 @@
 ## @end group
 ## @end example
 ##
-## If the optional argument @code{normalization} is @code{"sch"},
+## If the optional argument @code{normalization} is @qcode{"sch"},
 ## compute the Schmidt semi-normalized associated Legendre function.
 ## The Schmidt semi-normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
@@ -127,7 +127,7 @@
 ##
 ## @end ifnottex
 ##
-## If the optional argument @var{normalization} is @code{"norm"},
+## If the optional argument @var{normalization} is @qcode{"norm"},
 ## compute the fully normalized associated Legendre function.
 ## The fully normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
@@ -196,7 +196,7 @@ function retval = legendre (n, x, normalization)
   ## http://en.wikipedia.org/wiki/Associated_Legendre_function
 
   overflow = false;
-  retval = zeros([n+1, size(x)]);
+  retval = zeros ([n+1, size(x)]);
   for m = 1:n
     lpm1 = scale;
     lpm2 = (2*m-1) .* x .* scale;
@@ -222,7 +222,7 @@ function retval = legendre (n, x, normalization)
       ## normalization == "sch" or normalization == "norm"
       scale = scale / sqrt ((n-m+1)*(n+m))*(2*m-1);
     endif
-    scale = scale .* sqrt(1-x.^2);
+    scale = scale .* sqrt (1-x.^2);
   endfor
 
   retval(n+1,:) = scale(:);
@@ -286,7 +286,7 @@ endfunction
 
 %!test
 %! result = legendre (0, 0:0.1:1);
-%! assert (result, full(ones(1,11)));
+%! assert (result, full (ones (1,11)));
 
 %!test
 %! result = legendre (3, [-1,0,1;1,0,-1]);
@@ -303,13 +303,14 @@ endfunction
 %! assert (result, expected);
 
 %% Check correct invocation
-%!error legendre ();
-%!error legendre (1);
-%!error legendre (1,2,3,4);
-%!error legendre ([1, 2], [-1, 0, 1]);
-%!error legendre (-1, [-1, 0, 1]);
-%!error legendre (1.1, [-1, 0, 1]);
-%!error legendre (1, [-1+i, 0, 1]);
-%!error legendre (1, [-2, 0, 1]);
-%!error legendre (1, [-1, 0, 2]);
-%!error legendre (1, [-1, 0, 1], "badnorm");
+%!error legendre ()
+%!error legendre (1)
+%!error legendre (1,2,3,4)
+%!error legendre ([1, 2], [-1, 0, 1])
+%!error legendre (-1, [-1, 0, 1])
+%!error legendre (1.1, [-1, 0, 1])
+%!error legendre (1, [-1+i, 0, 1])
+%!error legendre (1, [-2, 0, 1])
+%!error legendre (1, [-1, 0, 2])
+%!error legendre (1, [-1, 0, 1], "badnorm")
+

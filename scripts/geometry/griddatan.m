@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,24 +17,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
+## @deftypefn  {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi})
+## @deftypefnx {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method})
+## @deftypefnx {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
 ## The function is defined by @code{@var{y} = f (@var{x})}.
 ## The interpolation points are all @var{xi}.
 ##
-## The interpolation method can be @code{"nearest"} or @code{"linear"}.
-## If method is omitted it defaults to @code{"linear"}.
-## @seealso{griddata, delaunayn}
+## The interpolation method can be @qcode{"nearest"} or @qcode{"linear"}.
+## If method is omitted it defaults to @qcode{"linear"}.
+## 
+## The optional argument @var{options} is passed directly to Qhull when
+## computing the Delaunay triangulation used for interpolation.  See
+## @code{delaunayn} for information on the defaults and how to pass different
+## values.
+## @seealso{griddata, griddata3, delaunayn}
 ## @end deftypefn
 
 ## Author: David Bateman <dbateman@free.fr>
 
-function yi = griddatan (x, y, xi, method, varargin)
+function yi = griddatan (x, y, xi, method = "linear", varargin)
 
-  if (nargin == 3)
-    method = "linear";
-  endif
   if (nargin < 3)
     print_usage ();
   endif
@@ -46,13 +50,12 @@ function yi = griddatan (x, y, xi, method, varargin)
   [m, n] = size (x);
   [mi, ni] = size (xi);
 
-  if (n != ni || size (y, 1) != m || size (y, 2) != 1)
+  if (n != ni || rows (y) != m || columns (y) != 1)
     error ("griddatan: dimensional mismatch");
   endif
 
   ## triangulate data
-  ## tri = delaunayn(x, varargin{:});
-  tri = delaunayn (x);
+  tri = delaunayn (x, varargin{:});
 
   yi = NaN (mi, 1);
 
@@ -85,22 +88,24 @@ function yi = griddatan (x, y, xi, method, varargin)
 
 endfunction
 
-%!testif HAVE_QHULL
-%! [xx,yy] = meshgrid(linspace(-1,1,32));
-%! xi = [xx(:), yy(:)];
-%! x = (2 * rand(100,2) - 1);
-%! x = [x;1,1;1,-1;-1,-1;-1,1];
-%! y = sin(2*(sum(x.^2,2)));
-%! zz = griddatan(x,y,xi,'linear');
-%! zz2 = griddata(x(:,1),x(:,2),y,xi(:,1),xi(:,2),'linear');
-%! assert (zz, zz2, 1e-10)
 
 %!testif HAVE_QHULL
-%! [xx,yy] = meshgrid(linspace(-1,1,32));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
 %! xi = [xx(:), yy(:)];
-%! x = (2 * rand(100,2) - 1);
+%! x = 2*rand (100,2) - 1;
 %! x = [x;1,1;1,-1;-1,-1;-1,1];
-%! y = sin(2*(sum(x.^2,2)));
-%! zz = griddatan(x,y,xi,'nearest');
-%! zz2 = griddata(x(:,1),x(:,2),y,xi(:,1),xi(:,2),'nearest');
-%! assert (zz, zz2, 1e-10)
+%! y = sin (2 * sum (x.^2,2));
+%! zz = griddatan (x,y,xi,"linear");
+%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"linear");
+%! assert (zz, zz2, 1e-10);
+
+%!testif HAVE_QHULL
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! xi = [xx(:), yy(:)];
+%! x = 2*rand (100,2) - 1;
+%! x = [x;1,1;1,-1;-1,-1;-1,1];
+%! y = sin (2*sum (x.^2,2));
+%! zz = griddatan (x,y,xi,"nearest");
+%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
+%! assert (zz, zz2, 1e-10);
+

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -19,7 +19,7 @@
 @node Image Processing
 @chapter Image Processing
 
-Since an image basically is a matrix Octave is a very powerful
+Since an image is basically a matrix, Octave is a very powerful
 environment for processing and analyzing images.  To illustrate
 how easy it is to do image processing in Octave, the following
 example will load an image, smooth it by a 5-by-5 averaging filter,
@@ -38,20 +38,19 @@ In this example @code{S} contains the smoothed image, and @code{Dx}
 and @code{Dy} contains the partial spatial derivatives of the image.
 
 @menu
-* Loading and Saving Images::   
-* Displaying Images::           
-* Representing Images::         
-* Plotting on top of Images::   
-* Color Conversion::            
+* Loading and Saving Images::
+* Displaying Images::
+* Representing Images::
+* Plotting on top of Images::
+* Color Conversion::
 @end menu
 
 @node Loading and Saving Images
 @section Loading and Saving Images
 
 The first step in most image processing tasks is to load an image
-into Octave.  This is done using the @code{imread} function, which uses the
-@code{GraphicsMagick} library for reading.  This means a vast number of image
-formats is supported.  The @code{imwrite} function is the corresponding function
+into Octave which is done with the @code{imread} function.
+The @code{imwrite} function is the corresponding function
 for writing images to the disk.
 
 In summary, most image processing code will follow the structure of this code
@@ -60,7 +59,7 @@ In summary, most image processing code will follow the structure of this code
 @group
 I = imread ("my_input_image.img");
 J = process_my_image (I);
-imwrite ("my_output_image.img", J);
+imwrite (J, "my_output_image.img");
 @end group
 @end example
 
@@ -76,6 +75,30 @@ provides read access to many of the parameters stored in the header of the image
 file.
 
 @DOCSTRING(imfinfo)
+
+By default, Octave's image IO functions (@code{imread}, @code{imwrite},
+and @code{imfinfo}) use the @code{GraphicsMagick} library for their
+operations.  This means a vast number of image formats is supported
+but considering the large amount of image formats in science and
+its commonly closed nature, it is impossible to have a library
+capable of reading them all.  Because of this, the function
+@code{imformats} keeps a configurable list of available formats,
+their extensions, and what functions should the image IO functions
+use.  This allows to expand Octave's image IO capabilities by
+creating functions aimed at acting on specific file formats.
+
+While it would be possible to call the extra functions directly,
+properly configuring Octave with @code{imformats} allows to keep a
+consistent code that is abstracted from file formats.
+
+It is important to note that a file format is not actually defined by its
+file extension and that @code{GraphicsMagick} is capable to read and write
+more file formats than the ones listed by @code{imformats}.  What this
+means is that even with an incorrect or missing extension the image may
+still be read correctly, and that even unlisted formats are not necessarily
+unsupported.
+
+@DOCSTRING(imformats)
 
 @node Displaying Images
 @section Displaying Images
@@ -93,15 +116,15 @@ shows the image given in the first input argument.
 @node Representing Images
 @section Representing Images
 
-In general Octave supports four different kinds of images, gray-scale
-images, RGB images, binary images, and indexed images.  A gray-scale
+In general Octave supports four different kinds of images, grayscale
+images, RGB images, binary images, and indexed images.  A grayscale
 image is represented with an M-by-N matrix in which each
 element corresponds to the intensity of a pixel.  An RGB image is
 represented with an M-by-N-by-3 array where each
 3-vector corresponds to the red, green, and blue intensities of each
 pixel.
 
-The actual meaning of the value of a pixel in a gray-scale or RGB
+The actual meaning of the value of a pixel in a grayscale or RGB
 image depends on the class of the matrix.  If the matrix is of class
 @code{double} pixel intensities are between 0 and 1, if it is of class
 @code{uint8} intensities are between 0 and 255, and if it is of class
@@ -117,6 +140,8 @@ index in the color map, and each row in the color map corresponds to
 an RGB color.  The color map must be of class @code{double} with values
 between 0 and 1.
 
+@DOCSTRING(iscolormap)
+
 @DOCSTRING(gray2ind)
 
 @DOCSTRING(ind2gray)
@@ -127,9 +152,13 @@ between 0 and 1.
 
 @DOCSTRING(colormap)
 
+@DOCSTRING(rgbplot)
+
 @DOCSTRING(autumn)
 
 @DOCSTRING(bone)
+
+@DOCSTRING(colorcube)
 
 @DOCSTRING(cool)
 
@@ -144,6 +173,8 @@ between 0 and 1.
 @DOCSTRING(hsv)
 
 @DOCSTRING(jet)
+
+@DOCSTRING(lines)
 
 @DOCSTRING(ocean)
 
@@ -166,20 +197,26 @@ between 0 and 1.
 An additional colormap is @code{gmap40}.  This code map contains only
 colors with integer values of the red, green and blue components.  This
 is a workaround for a limitation of gnuplot 4.0, that does not allow the color
-of line or patch objects to be set, and so @code{gmap40} is useful for gnuplot
-4.0 users, and in particular in conjunction with the @var{bar},
-@var{barh} or @var{contour} functions.
+of line or patch objects to be set.  @code{gmap40} is chiefly useful to gnuplot
+4.0 users, and particularly in conjunction with the @var{bar}, @var{surf},
+and @var{contour} functions.
 
 @DOCSTRING(gmap40)
 
 The following three functions modify the existing colormap rather than
-replace it.   
+replace it.
 
 @DOCSTRING(brighten)
 
 @DOCSTRING(spinmap)
 
 @DOCSTRING(whitebg)
+
+The following functions can be used to manipulate colormaps.
+
+@DOCSTRING(cmunique)
+
+@DOCSTRING(cmpermute)
 
 @node Plotting on top of Images
 @section Plotting on top of Images

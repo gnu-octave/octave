@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Kai Habel
+## Copyright (C) 2009-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -71,7 +71,7 @@ function varargout = curl (varargin)
     dy = varargin{2}(:,1,1)(:);
     dz = varargin{3}(1,1,:)(:);
   else
-    print_usage();
+    print_usage ();
   endif
 
   if ((nargin == 4) || (nargin == 2))
@@ -129,14 +129,16 @@ function varargout = curl (varargin)
 
 endfunction
 
+
 %!test
-%! [X,Y]=meshgrid(-20:20,-22:22);
-%! av = curl(2*(X-Y),Y);
-%! assert(all(av(:)==1));
-%! [cz,av] = curl(2*(X-Y),Y);
-%! assert(all(cz(:)==2));
-%! assert(all(av(:)==1));
-%! [cz,av] = curl(X/2,Y/2,2*(X-Y),Y);
-%! assert(all(cz(:)==4));
-%! assert(all(av(:)==2));
-%! assert(size_equal(X,Y,cz,av));
+%! [X,Y] = meshgrid (-20:20,-22:22);
+%! av = curl (2*(X-Y), Y);
+%! assert (all (av(:) == 1));
+%! [cz,av] = curl (2*(X-Y), Y);
+%! assert (all (cz(:) == 2));
+%! assert (all (av(:) == 1));
+%! [cz,av] = curl (X/2, Y/2, 2*(X-Y), Y);
+%! assert (all (cz(:) == 4));
+%! assert (all (av(:) == 2));
+%! assert (size_equal (X,Y,cz,av));
+

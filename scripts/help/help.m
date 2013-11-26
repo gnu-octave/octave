@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -19,12 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} help @var{name}
 ## @deftypefnx {Command} {} help @code{--list}
-## Display the help text for @var{name}.   For example, the command
+## @deftypefnx {Command} {} help @code{.}
+## Display the help text for @var{name}.  For example, the command
 ## @kbd{help help} prints a short message describing the @code{help}
 ## command.
 ##
 ## Given the single argument @code{--list}, list all operators,
 ## keywords, built-in functions, and loadable functions available
+## in the current session of Octave.
+##
+## Given the single argument @code{.}, list all operators available
 ## in the current session of Octave.
 ##
 ## If invoked without any arguments, @code{help} display instructions
@@ -40,7 +44,7 @@ function retval = help (name)
 
   if (nargin == 0)
 
-    puts ("\n\
+    text = "\n\
   For help with individual commands and functions type\n\
 \n\
     help NAME\n\
@@ -54,12 +58,28 @@ function retval = help (name)
     doc\n\
 \n\
   GNU Octave is supported and developed by its user community.\n\
-  For more information visit http://www.octave.org.\n\n");
+  For more information visit http://www.octave.org.\n\n";
+
+    if (nargout == 0)
+      puts (text);
+    else
+      retval = text;
+    endif
 
   elseif (nargin == 1 && ischar (name))
 
     if (strcmp (name, "--list"))
       tmp = do_list_functions ();
+      if (nargout == 0)
+        printf ("%s", tmp);
+      else
+        retval = tmp;
+      endif
+      return;
+    endif
+
+    if (strcmp (name, "."))
+      tmp = do_list_operators ();
       if (nargout == 0)
         printf ("%s", tmp);
       else
@@ -106,10 +126,15 @@ function retval = help (name)
 
 endfunction
 
+function retval = do_list_operators ()
+  
+  retval = sprintf ("*** operators:\n\n%s\n\n",
+                       list_in_columns (__operators__ ()));
+endfunction
+
 function retval = do_list_functions ()
 
-  operators = sprintf ("*** operators:\n\n%s\n\n",
-                       list_in_columns (__operators__ ()));
+  operators = do_list_operators ();
 
   keywords = sprintf ("*** keywords:\n\n%s\n\n",
                       list_in_columns (__keywords__ ()));
@@ -117,7 +142,7 @@ function retval = do_list_functions ()
   builtins = sprintf ("*** builtins:\n\n%s\n\n",
                       list_in_columns (__builtins__ ()));
 
-  dirs = strsplit (path, pathsep);
+  dirs = ostrsplit (path, pathsep);
   flist = "";
   for i = 2:numel (dirs)
     files = sort ({dir(fullfile (dirs{i}, "*.m")).name, ...
@@ -130,7 +155,7 @@ function retval = do_list_functions ()
     endif
   endfor
 
-  retval = cstrcat (operators, keywords, builtins, flist);
+  retval = [operators, keywords, builtins, flist];
 
 endfunction
 
@@ -181,5 +206,6 @@ function do_contents (name)
 endfunction
 
 
-%!assert (! isempty (findstr (help ("ls"), "List directory contents")))
+%!assert (! isempty (strfind (help ("ls"), "List directory contents")))
 %!error <invalid input> help (42)
+

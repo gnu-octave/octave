@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -28,31 +28,36 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "prism");
+## PKG_DEL: colormap ("unregister", "prism");
+
 function map = prism (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("prism: argument must be a scalar");
+      error ("prism: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  p = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
-
-  if (rem (n, 6) == 0)
-    map = kron(ones (fix (n / 6), 1), p);
+  if (n == 1)
+    map = [1 0 0];
+  elseif (n > 1)
+    C = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
+    map = C(rem (0:(n-1), 6) + 1, :);
   else
-    map = [kron(ones (fix (n / 6), 1), p); p(1:rem (n, 6), :)];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'prism' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (prism (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (prism (64));
 

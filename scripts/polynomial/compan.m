@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -79,15 +79,12 @@ function A = compan (c)
 
 endfunction
 
-%!assert(all (all (compan ([1, 2, 3]) == [-2, -3; 1, 0])));
 
-%!assert(all (all (compan ([1; 2; 3]) == [-2, -3; 1, 0])));
+%!assert (compan ([1, 2, 3]), [-2, -3; 1, 0])
+%!assert (compan ([1; 2; 3]), [-2, -3; 1, 0])
+%!assert (isempty (compan (4)))
+%!assert (compan ([3, 2, 1]), [-2/3, -1/3; 1, 0])
 
-%!assert(isempty (compan (4)));
-
-%!assert(all (all (compan ([3, 2, 1]) == [-2/3, -1/3; 1, 0])));
-
-%!error compan ([1,2;3,4]);
-
-%!error compan ([]);
+%!error compan ([1,2;3,4])
+%!error compan ([])
 

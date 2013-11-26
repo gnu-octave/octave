@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -29,10 +29,10 @@
 ## The optional @var{shape} argument may be
 ##
 ## @table @asis
-## @item @var{shape} = "full"
+## @item @var{shape} = @qcode{"full"}
 ## Return the full convolution.  (default)
 ##
-## @item @var{shape} = "same"
+## @item @var{shape} = @qcode{"same"}
 ## Return the central part of the convolution with the same size as @var{a}.
 ## @end table
 ##
@@ -51,12 +51,12 @@ function y = conv (a, b, shape = "full")
 
   if (! (isvector (a) && isvector (b)))
     error ("conv: both arguments A and B must be vectors");
-  elseif (nargin == 3 && ! any (strcmpi (shape, {"full", "same"})))
-    error ('conv: SHAPE argument must be "full" or "same"');
+  elseif (nargin == 3 && ! any (strcmpi (shape, {"full", "same", "valid"})))
+    error ('conv: SHAPE argument must be "full", "same", or "valid"');
   endif
 
-  la = length (a);
-  lb = length (b);
+  la = la_orig = length (a);
+  lb = lb_orig = length (b);
 
   ly = la + lb - 1;
 
@@ -79,63 +79,68 @@ function y = conv (a, b, shape = "full")
 
   y = filter (a, 1, x);
 
-  if (strcmp (shape, "same"))
+  if (strcmpi (shape, "same"))
     idx = ceil ((ly - la) / 2);
     y = y(idx+1:idx+la);
+  elseif (strcmpi (shape, "valid"))
+    len = la_orig - lb_orig;
+    y = y(lb_orig:lb_orig+len);
   endif
 
 endfunction
 
 
 %!test
-%!  x = ones(3,1);
-%!  y = ones(1,3);
-%!  b = 2;
-%!  c = 3;
-%!  assert (conv (x, x), [1; 2; 3; 2; 1]);
-%!  assert (conv (y, y), [1, 2, 3, 2, 1]);
-%!  assert (conv (x, y), [1, 2, 3, 2, 1]);
-%!  assert (conv (y, x), [1; 2; 3; 2; 1]);
-%!  assert (conv (c, x), [3; 3; 3]);
-%!  assert (conv (c, y), [3, 3, 3]);
-%!  assert (conv (x, c), [3; 3; 3]);
-%!  assert (conv (y, c), [3, 3, 3]);
-%!  assert (conv (b, c), 6);
+%! x = ones (3,1);
+%! y = ones (1,3);
+%! b = 2;
+%! c = 3;
+%! assert (conv (x, x), [1; 2; 3; 2; 1]);
+%! assert (conv (y, y), [1, 2, 3, 2, 1]);
+%! assert (conv (x, y), [1, 2, 3, 2, 1]);
+%! assert (conv (y, x), [1; 2; 3; 2; 1]);
+%! assert (conv (c, x), [3; 3; 3]);
+%! assert (conv (c, y), [3, 3, 3]);
+%! assert (conv (x, c), [3; 3; 3]);
+%! assert (conv (y, c), [3, 3, 3]);
+%! assert (conv (b, c), 6);
+
+%!shared a,b
+%!test
+%! a = 1:10;
+%! b = 1:3;
+%!assert (size (conv (a,b)), [1, numel(a)+numel(b)-1])
+%!assert (size (conv (b,a)), [1, numel(a)+numel(b)-1])
 
 %!test
-%!  a = 1:10;
-%!  b = 1:3;
-%!  assert (size (conv(a,b)), [1, numel(a)+numel(b)-1]);
-%!  assert (size (conv(b,a)), [1, numel(a)+numel(b)-1]);
+%! a = (1:10).';
+%!assert (size (conv (a,b)), [numel(a)+numel(b)-1, 1])
+%!assert (size (conv (b,a)), [numel(a)+numel(b)-1, 1])
 
 %!test
-%!  a = (1:10).';
-%!  b = 1:3;
-%!  assert (size (conv(a,b)), [numel(a)+numel(b)-1, 1]);
-%!  assert (size (conv(b,a)), [numel(a)+numel(b)-1, 1]);
+%! a = 1:10;
+%! b = (1:3).';
+%!assert (size (conv (a,b)), [1, numel(a)+numel(b)-1])
+%!assert (size (conv (b,a)), [1, numel(a)+numel(b)-1])
 
 %!test
-%!  a = 1:10;
-%!  b = (1:3).';
-%!  assert (size (conv(a,b)), [1, numel(a)+numel(b)-1]);
-%!  assert (size (conv(b,a)), [1, numel(a)+numel(b)-1]);
+%! a = 1:10;
+%! b = 1:3;
 
-%!test
-%!  a = 1:10;
-%!  b = 1:3;
-%!  assert (conv (a,b,"full"), conv (a,b));
-%!  assert (conv (b,a,"full"), conv (b,a));
+%!assert (conv (a,b,"full"), conv (a,b))
+%!assert (conv (b,a,"full"), conv (b,a))
 
-%!test
-%!  a = 1:10;
-%!  b = 1:3;
-%!  assert (conv (a,b,"same"), [4, 10, 16, 22, 28, 34, 40, 46, 52, 47]);
-%!  assert (conv (b,a,"same"), [28, 34, 40]);
+%!assert (conv (a,b,"same"), [4, 10, 16, 22, 28, 34, 40, 46, 52, 47])
+%!assert (conv (b,a,"same"), [28, 34, 40])
+
+%!assert (conv (a,b,"valid"), [10, 16, 22, 28, 34, 40, 46, 52])
+%!assert (conv (b,a,"valid"), zeros (1,0))
+
 
 %% Test input validation
 %!error conv (1)
 %!error conv (1,2,3,4)
-%!error conv ([1, 2; 3, 4], 3)
-%!error conv (3, [1, 2; 3, 4])
-%!error conv (2, 3, "XXXX")
+%!error <A and B must be vectors> conv ([1, 2; 3, 4], 3)
+%!error <A and B must be vectors> conv (3, [1, 2; 3, 4])
+%!error <SHAPE argument must be> conv (2, 3, "INVALID_SHAPE")
 

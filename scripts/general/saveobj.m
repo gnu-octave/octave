@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -40,5 +40,6 @@
 ## @end deftypefn
 
 function b = saveobj (a)
-  error ("saveobj: not defined for class \"%s\"", class(a));
+  error ('saveobj: not defined for class "%s"', class (a));
 endfunction
+

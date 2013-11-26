@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 VZLU Prague, a.s., Czech Republic
+## Copyright (C) 2008-2013 VZLU Prague, a.s., Czech Republic
 ##
 ## This file is part of Octave.
 ##
@@ -59,3 +59,4 @@ function ang = subspace (A, B)
   endif
 
 endfunction
+

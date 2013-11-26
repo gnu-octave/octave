@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -36,8 +36,9 @@
 ## matrices @var{xi}, @var{yi}.
 ##
 ## If the last argument is a string, the interpolation method can
-## be specified.  The method can be 'linear', 'nearest' or 'cubic'.
-## If it is omitted 'linear' interpolation is assumed.
+## be specified.  The method can be @qcode{"linear"}, @qcode{"nearest"} or
+## @qcode{"cubic"}.  If it is omitted @qcode{"linear"} interpolation is
+## assumed.
 ##
 ## @item interp2 (@var{z}, @var{xi}, @var{yi})
 ## Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} =
@@ -52,19 +53,19 @@
 ## interpolation.  It can take one of the following values
 ##
 ## @table @asis
-## @item 'nearest'
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item 'linear'
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors.
 ##
-## @item 'pchip'
+## @item @qcode{"pchip"}
 ## Piecewise cubic Hermite interpolating polynomial.
 ##
-## @item 'cubic'
+## @item @qcode{"cubic"}
 ## Cubic interpolation from four nearest neighbors.
 ##
-## @item 'spline'
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
@@ -377,7 +378,7 @@ function ZI = interp2 (varargin)
         AX_2 = bc ((XI - K - 2));
 
         ## Perform interpolation
-        sz = size(Z);
+        sz = size (Z);
         ZI = AY_2 .* AX_2 .* Z (sym_sub2ind (sz, L+2, K+2)) ...
            + AY_2 .* AX_1 .* Z (sym_sub2ind (sz, L+2, K+1)) ...
            + AY_2 .* AX0  .* Z (sym_sub2ind (sz, L+2, K))   ...
@@ -420,9 +421,9 @@ function b = isgriddata (X)
 endfunction
 
 ## Compute the bicubic interpolation coefficients
-function o = bc(x)
-  x = abs(x);
-  o = zeros(size(x));
+function o = bc (x)
+  x = abs (x);
+  o = zeros (size (x));
   idx1 = (x < 1);
   idx2 = !idx1 & (x < 2);
   o(idx1) = 1 - 2.*x(idx1).^2 + x(idx1).^3;
@@ -430,7 +431,7 @@ function o = bc(x)
 endfunction
 
 ## This version of sub2ind behaves as if the data was symmetrically padded
-function ind = sym_sub2ind(sz, Y, X)
+function ind = sym_sub2ind (sz, Y, X)
   Y (Y < 1) = 1 - Y (Y < 1);
   while (any (Y (:) > 2 * sz (1)))
     Y (Y > 2 * sz (1)) = round (Y (Y > 2 * sz (1)) / 2);
@@ -441,170 +442,191 @@ function ind = sym_sub2ind(sz, Y, X)
     X (X > 2 * sz (2)) = round (X (X > 2 * sz (2)) / 2);
   endwhile
   X (X > sz (2)) = 1 + 2 * sz (2) - X (X > sz (2));
-  ind = sub2ind(sz, Y, X);
+  ind = sub2ind (sz, Y, X);
 endfunction
 
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
-%! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
+%! x = x(1,:)';  y = y(:,1);
+%! xi = linspace (min (x), max (x), 41);
+%! yi = linspace (min (y), max (y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
-%! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
+%! x = x(1,:)';  y = y(:,1);
+%! xi = linspace (min (x), max (x), 41);
+%! yi = linspace (min (y), max (y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
-%! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
+%! x = x(1,:)';  y = y(:,1);
+%! xi = linspace (min (x), max (x), 41);
+%! yi = linspace (min (y), max (y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
-%! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
+%! x = x(1,:)';  y = y(:,1);
+%! xi = linspace (min (x), max (x), 41);
+%! yi = linspace (min (y), max (y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
-%! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
+%! x = x(1,:)';  y = y(:,1);
+%! xi = linspace (min (x), max (x), 41);
+%! yi = linspace (min (y), max (y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!test % simple test
-%!  x = [1,2,3];
-%!  y = [4,5,6,7];
-%!  [X, Y] = meshgrid(x,y);
-%!  Orig = X.^2 + Y.^3;
-%!  xi = [1.2,2, 1.5];
-%!  yi = [6.2, 4.0, 5.0]';
+%! x = [1,2,3];
+%! y = [4,5,6,7];
+%! [X, Y] = meshgrid (x, y);
+%! Orig = X.^2 + Y.^3;
+%! xi = [1.2,2, 1.5];
+%! yi = [6.2, 4.0, 5.0]';
 %!
-%!  Expected = ...
-%!    [243,   245.4,  243.9;
-%!      65.6,  68,     66.5;
-%!     126.6, 129,    127.5];
-%!  Result = interp2(x,y,Orig, xi, yi);
+%! Expected = ...
+%!   [243,   245.4,  243.9;
+%!     65.6,  68,     66.5;
+%!    126.6, 129,    127.5];
+%! Result = interp2 (x,y,Orig, xi, yi);
 %!
-%!  assert(Result, Expected, 1000*eps);
+%! assert (Result, Expected, 1000*eps);
 
 %!test % 2^n form
-%!  x = [1,2,3];
-%!  y = [4,5,6,7];
-%!  [X, Y] = meshgrid(x,y);
-%!  Orig = X.^2 + Y.^3;
-%!  xi = [1:0.25:3]; yi = [4:0.25:7]';
-%!  Expected = interp2(x,y,Orig, xi, yi);
-%!  Result = interp2(Orig,2);
+%! x = [1,2,3];
+%! y = [4,5,6,7];
+%! [X, Y] = meshgrid (x, y);
+%! Orig = X.^2 + Y.^3;
+%! xi = [1:0.25:3];  yi = [4:0.25:7]';
+%! Expected = interp2 (x,y,Orig, xi, yi);
+%! Result = interp2 (Orig, 2);
 %!
-%!  assert(Result, Expected, 10*eps);
+%! assert (Result, Expected, 10*eps);
 
 %!test % matrix slice
-%!  A = eye(4);
-%!  assert(interp2(A,[1:4],[1:4]),[1,1,1,1]);
+%! A = eye (4);
+%! assert (interp2 (A,[1:4],[1:4]), [1,1,1,1]);
 
 %!test % non-gridded XI,YI
-%!  A = eye(4);
-%!  assert(interp2(A,[1,2;3,4],[1,3;2,4]),[1,0;0,1]);
+%! A = eye (4);
+%! assert (interp2 (A,[1,2;3,4],[1,3;2,4]), [1,0;0,1]);
 
 %!test % for values outside of boundaries
-%!  x = [1,2,3];
-%!  y = [4,5,6,7];
-%!  [X, Y] = meshgrid(x,y);
-%!  Orig = X.^2 + Y.^3;
-%!  xi = [0,4];
-%!  yi = [3,8]';
-%!  assert(interp2(x,y,Orig, xi, yi),[NA,NA;NA,NA]);
-%!  assert(interp2(x,y,Orig, xi, yi,'linear', 0),[0,0;0,0]);
+%! x = [1,2,3];
+%! y = [4,5,6,7];
+%! [X, Y] = meshgrid (x,y);
+%! Orig = X.^2 + Y.^3;
+%! xi = [0,4];
+%! yi = [3,8]';
+%! assert (interp2 (x,y,Orig, xi, yi), [NA,NA;NA,NA]);
+%! assert (interp2 (x,y,Orig, xi, yi,"linear", 0), [0,0;0,0]);
 
 %!test % for values at boundaries
-%!  A=[1,2;3,4];
-%!  x=[0,1];
-%!  y=[2,3]';
-%!  assert(interp2(x,y,A,x,y,'linear'), A);
-%!  assert(interp2(x,y,A,x,y,'nearest'), A);
+%! A=[1,2;3,4];
+%! x=[0,1];
+%! y=[2,3]';
+%! assert (interp2 (x,y,A,x,y,"linear"), A);
+%! assert (interp2 (x,y,A,x,y,"nearest"), A);
 
 %!test % for Matlab-compatible rounding for 'nearest'
 %! X = meshgrid (1:4);
-%! assert (interp2 (X, 2.5, 2.5, 'nearest'), 3);
+%! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
 %!shared z, zout, tol
-%!  z = [1 3 5; 3 5 7; 5 7 9];
-%!  zout = [1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; 4 5 6 7 8; 5 6 7 8 9];
-%!  tol = 2 * eps;
-%!assert (interp2 (z), zout, tol);
-%!assert (interp2 (z, "linear"), zout, tol);
-%!assert (interp2 (z, "pchip"), zout, tol);
-%!assert (interp2 (z, "cubic"), zout, 10 * tol);
-%!assert (interp2 (z, "spline"), zout, tol);
+%! z = [1 3 5; 3 5 7; 5 7 9];
+%! zout = [1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; 4 5 6 7 8; 5 6 7 8 9];
+%! tol = 2 * eps;
+%!assert (interp2 (z), zout, tol)
+%!assert (interp2 (z, "linear"), zout, tol)
+%!assert (interp2 (z, "pchip"), zout, tol)
+%!assert (interp2 (z, "cubic"), zout, 10 * tol)
+%!assert (interp2 (z, "spline"), zout, tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2]', "linear"), repmat ([5, 7, 3], [3, 1]), tol) 
 %!assert (interp2 (z, [2 3 1], [2 2 2]', "pchip"), repmat ([5, 7, 3], [3, 1]), tol) 
 %!assert (interp2 (z, [2 3 1], [2 2 2]', "cubic"), repmat ([5, 7, 3], [3, 1]), 10 * tol) 
 %!assert (interp2 (z, [2 3 1], [2 2 2]', "spline"), repmat ([5, 7, 3], [3, 1]), tol) 
-%!assert (interp2 (z, [2 3 1], [2 2 2], "linear"), [5 7 3], tol);
-%!assert (interp2 (z, [2 3 1], [2 2 2], "pchip"), [5 7 3], tol);
-%!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], 10 * tol);
-%!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol);
+%!assert (interp2 (z, [2 3 1], [2 2 2], "linear"), [5 7 3], tol)
+%!assert (interp2 (z, [2 3 1], [2 2 2], "pchip"), [5 7 3], tol)
+%!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], 10 * tol)
+%!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
+

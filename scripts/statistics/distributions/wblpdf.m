@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -88,24 +88,24 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 Inf];
 %! y = [0, exp(-x(2:4)), NaN];
-%!assert(wblpdf (x, ones(1,5), ones(1,5)), y);
-%!assert(wblpdf (x, 1, ones(1,5)), y);
-%!assert(wblpdf (x, ones(1,5), 1), y);
-%!assert(wblpdf (x, [0 NaN Inf 1 1], 1), [NaN NaN NaN y(4:5)]);
-%!assert(wblpdf (x, 1, [0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)]);
-%!assert(wblpdf ([x, NaN], 1, 1), [y, NaN]);
+%!assert (wblpdf (x, ones (1,5), ones (1,5)), y)
+%!assert (wblpdf (x, 1, ones (1,5)), y)
+%!assert (wblpdf (x, ones (1,5), 1), y)
+%!assert (wblpdf (x, [0 NaN Inf 1 1], 1), [NaN NaN NaN y(4:5)])
+%!assert (wblpdf (x, 1, [0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)])
+%!assert (wblpdf ([x, NaN], 1, 1), [y, NaN])
 
 %% Test class of input preserved
-%!assert(wblpdf (single([x, NaN]), 1, 1), single([y, NaN]));
-%!assert(wblpdf ([x, NaN], single(1), 1), single([y, NaN]));
-%!assert(wblpdf ([x, NaN], 1, single(1)), single([y, NaN]));
+%!assert (wblpdf (single ([x, NaN]), 1, 1), single ([y, NaN]))
+%!assert (wblpdf ([x, NaN], single (1), 1), single ([y, NaN]))
+%!assert (wblpdf ([x, NaN], 1, single (1)), single ([y, NaN]))
 
 %% Test input validation
 %!error wblpdf ()
 %!error wblpdf (1,2,3,4)
-%!error wblpdf (ones(3),ones(2),ones(2))
-%!error wblpdf (ones(2),ones(3),ones(2))
-%!error wblpdf (ones(2),ones(2),ones(3))
+%!error wblpdf (ones (3), ones (2), ones (2))
+%!error wblpdf (ones (2), ones (3), ones (2))
+%!error wblpdf (ones (2), ones (2), ones (3))
 %!error wblpdf (i, 2, 2)
 %!error wblpdf (2, i, 2)
 %!error wblpdf (2, 2, i)

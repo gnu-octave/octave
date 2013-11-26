@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Ivana Varekova
+## Copyright (C) 2005-2013 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -66,13 +66,13 @@ endfunction
 %!      0 0 0 0 1 0 0
 %!      0 0 0 0 1 0 0];
 %!
-%! xy = [1, 0
+%! xy = [1  , 0
 %!       1.5, 1
-%!       2, 0
+%!       2  , 0
 %!       2.5, 2
 %!       3.5, 1
-%!       3, 0
-%!       4, 0];
+%!       3  , 0
+%!       4  , 0];
 %!
 %! clf;
 %! gplot (A, xy, "o-");
@@ -80,5 +80,5 @@ endfunction
 %! title ("gplot() of Binary Tree Adjacency matrix");
 
 %% Mark graphical function as tested by demo block
-%!assert (1);
+%!assert (1)
 

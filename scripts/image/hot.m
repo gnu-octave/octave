@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -28,35 +28,54 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "hot");
+## PKG_DEL: colormap ("unregister", "hot");
+
 function map = hot (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("hot: argument must be a scalar");
+      error ("hot: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
   if (n == 1)
-    map = [0, 0, 0];
-  elseif (n > 1)
-    x = linspace (0, 1, n)';
-    r = (x < 2/5) .* (5/2 * x) + (x >= 2/5);
-    g = (x >= 2/5 & x < 4/5) .* (5/2 * x - 1) + (x >= 4/5);
-    b = (x >= 4/5) .* (5*x - 4);
+    map = [1, 1, 1];
+  elseif (n == 2)
+    map = [1, 1, 1/2
+           1, 1,  1 ];
+  elseif (n > 2)
+    idx = floor (3/8 * n);
+    nel = idx;
+
+    r = ones (n, 1);
+    r(1:idx, 1) = [1:nel]' / nel;
+
+    g = zeros (n, 1);
+    g(idx+1:2*idx, 1) = r(1:idx);
+    g(2*idx+1:end, 1) = 1;
+
+    idx = 2*idx + 1;   # approximately 3/4 *n
+    nel = n - idx + 1;
+
+    b = zeros (n, 1);
+    b(idx:end, 1) = [1:nel]' / nel;
+
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'hot' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (hot (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (hot (64));
 

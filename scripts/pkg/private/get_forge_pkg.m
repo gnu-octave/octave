@@ -1,4 +1,5 @@
-## Copyright (C) 2010-2012 VZLU Prague, a.s.
+## Copyright (C) 2005-2013 Søren Hauberg
+## Copyright (C) 2010-2013 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -25,9 +26,7 @@
 ## @end deftypefn
 
 function [ver, url] = get_forge_pkg (name)
-  if (nargin != 1)
-    print_usage ();
-  endif
+
   ## Verify that name is valid.
   if (! (ischar (name) && rows (name) == 1 && ndims (name) == 2))
     error ("get_forge_pkg: package NAME must be a string");
@@ -45,14 +44,14 @@ function [ver, url] = get_forge_pkg (name)
     ## Good. Let's grep for the version.
     pat = "<tdclass=""package_table"">PackageVersion:</td><td>([\\d.]*)</td>";
     t = regexp (html, pat, "tokens");
-    if (isempty (t) || isempty(t{1}))
+    if (isempty (t) || isempty (t{1}))
       error ("get_forge_pkg: could not read version number from package's page");
     else
       ver = t{1}{1};
       if (nargout > 1)
-        # Build download string.
+        ## Build download string.
         pkg_file = sprintf ("%s-%s.tar.gz", name, ver);
-        url = cstrcat ("http://packages.octave.org/download/", pkg_file);
+        url = ["http://packages.octave.org/download/" pkg_file];
         ## Verify that the package string exists on the page.
         if (isempty (strfind (html, pkg_file)))
           warning ("get_forge_pkg: download URL not verified");
@@ -79,3 +78,4 @@ function [ver, url] = get_forge_pkg (name)
   endif
 
 endfunction
+

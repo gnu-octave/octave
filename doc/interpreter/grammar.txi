@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -25,8 +25,8 @@ This appendix will eventually contain a semi-formal description of
 Octave's language.
 
 @menu
-* Keywords::                    
-* Parser::                    
+* Keywords::
+* Parser::
 @end menu
 
 @node Keywords
@@ -46,12 +46,12 @@ or function names:
 @item @code{endif} @tab @code{endmethods} @tab @code{endparfor}
 @item @code{endproperties} @tab @code{endswitch} @tab @code{endwhile}
 @item @code{enumeration} @tab @code{events} @tab @code{for}
-@item @code{function} @tab @code{get} @tab @code{global}
-@item @code{if} @tab @code{methods} @tab @code{otherwise}
-@item @code{parfor} @tab @code{persistent} @tab @code{properties}
-@item @code{return} @tab @code{set} @tab @code{static}
-@item @code{switch} @tab @code{try} @tab @code{until}
-@item @code{unwind_protect} @tab @code{unwind_protect_cleanup} @tab @code{while}
+@item @code{function} @tab @code{global} @tab @code{if}
+@item @code{methods} @tab @code{otherwise} @tab @code{parfor}
+@item @code{persistent} @tab @code{properties} @tab @code{return}
+@item @code{static} @tab @code{switch} @tab @code{try}
+@item @code{until} @tab @code{unwind_protect} @tab @code{unwind_protect_cleanup}
+@item @code{while}
 @end multitable
 
 The function @code{iskeyword} can be used to quickly check whether an
@@ -78,9 +78,9 @@ from being evaluated periodically.
 @DOCSTRING(remove_input_event_hook)
 
 Finally, when the parser cannot identify an input token it calls a particular
-function to handle this.  By default, this is the function "unimplemented"
-which makes suggestions about possible Octave substitutes for @sc{matlab}
-functions.
+function to handle this.  By default, this is the internal function
+@qcode{"__unimplemented__"} which makes suggestions about possible Octave
+substitutes for @sc{matlab} functions.
 
 @DOCSTRING(missing_function_hook)
 

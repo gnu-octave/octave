@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -79,63 +79,60 @@
 
 function r = roots (v)
 
-  if (nargin != 1 || min (size (v)) > 1)
+  if (nargin != 1 || (! isvector (v) && ! isempty (v)))
     print_usage ();
-  elseif (any (isnan(v) | isinf(v)))
+  elseif (any (! isfinite (v)))
     error ("roots: inputs must not contain Inf or NaN");
   endif
 
-  n = numel (v);
   v = v(:);
+  n = numel (v);
 
-  ## If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ], we can remove the
-  ## leading k zeros and n - k - l roots of the polynomial are zero.
+  ## If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ],
+  ## we can remove the leading k zeros,
+  ## and n - k - l roots of the polynomial are zero.
 
-  if (isempty (v))
-    f = v;
-  else
-    f = find (v ./ max (abs (v)));
+  v_max = max (abs (v));
+  if (isempty (v) || v_max == 0)
+    r = [];
+    return;
   endif
+
+  f = find (v ./ v_max);
   m = numel (f);
 
-  if (m > 0 && n > 1)
-    v = v(f(1):f(m));
-    l = max (size (v));
-    if (l > 1)
-      A = diag (ones (1, l-2), -1);
-      A(1,:) = -v(2:l) ./ v(1);
-      r = eig (A);
-      if (f(m) < n)
-        tmp = zeros (n - f(m), 1);
-        r = [r; tmp];
-      endif
-    else
-      r = zeros (n - f(m), 1);
+  v = v(f(1):f(m));
+  l = numel (v);
+  if (l > 1)
+    A = diag (ones (1, l-2), -1);
+    A(1,:) = -v(2:l) ./ v(1);
+    r = eig (A);
+    if (f(m) < n)
+      r = [r; zeros(n - f(m), 1)];
     endif
   else
-    r = [];
+    r = zeros (n - f(m), 1);
   endif
 
 endfunction
 
+
 %!test
 %! p = [poly([3 3 3 3]), 0 0 0 0];
 %! r = sort (roots (p));
-%! assert (r, [0; 0; 0; 0; 3; 3; 3; 3], 0.001)
+%! assert (r, [0; 0; 0; 0; 3; 3; 3; 3], 0.001);
 
-%!assert(all (all (abs (roots ([1, -6, 11, -6]) - [3; 2; 1]) < sqrt (eps))));
+%!assert (isempty (roots ([])))
+%!assert (isempty (roots ([0 0])))
+%!assert (isempty (roots (1)))
+%!assert (roots ([1, -6, 11, -6]), [3; 2; 1], sqrt (eps))
 
-%!assert(isempty (roots ([])));
+%!assert (roots ([1e-200, -1e200, 1]), 1e-200)
+%!assert (roots ([1e-200, -1e200 * 1i, 1]), -1e-200 * 1i)
 
-%!error roots ([1, 2; 3, 4]);
+%!error roots ()
+%!error roots (1,2)
+%!error roots ([1, 2; 3, 4])
+%!error <inputs must not contain Inf or NaN> roots ([1 Inf 1])
+%!error <inputs must not contain Inf or NaN> roots ([1 NaN 1])
 
-%!assert(isempty (roots (1)));
-
-%!error roots ([1, 2; 3, 4]);
-
-%!error roots ([1 Inf 1]);
-
-%!error roots ([1 NaN 1]);
-
-%!assert(roots ([1e-200, -1e200, 1]), 1e-200)
-%!assert(roots ([1e-200, -1e200 * 1i, 1]), -1e-200 * 1i)

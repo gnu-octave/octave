@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -32,14 +32,14 @@ variables, array references, constants, and function calls, as well as
 combinations of these with various operators.
 
 @menu
-* Index Expressions::           
-* Calling Functions::           
-* Arithmetic Ops::              
-* Comparison Ops::              
-* Boolean Expressions::         
-* Assignment Ops::              
-* Increment Ops::               
-* Operator Precedence::         
+* Index Expressions::
+* Calling Functions::
+* Arithmetic Ops::
+* Comparison Ops::
+* Boolean Expressions::
+* Assignment Ops::
+* Increment Ops::
+* Operator Precedence::
 @end menu
 
 @node Index Expressions
@@ -258,7 +258,7 @@ Consider the following example which creates a 10-element row vector
 $a_i = \sqrt{i}$.
 @end tex
 @ifnottex
-a(i) = sqrt(i).
+a(i) = sqrt (i).
 @end ifnottex
 
 @example
@@ -385,8 +385,8 @@ expressions, and is allowed to be a list of variable names or index
 expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
 
 @menu
-* Call by Value::               
-* Recursion::                   
+* Call by Value::
+* Recursion::
 @end menu
 
 @node Call by Value
@@ -433,7 +433,7 @@ fcn (foo)
 @noindent
 you should not think of the argument as being ``the variable
 @code{foo}.''  Instead, think of the argument as the string value,
-@code{"bar"}.
+@qcode{"bar"}.
 
 Even though Octave uses pass-by-value semantics for function arguments,
 values are not copied unnecessarily.  For example,
@@ -583,7 +583,7 @@ a minimum norm solution is computed.
 Element-by-element left division.  Each element of @var{y} is divided
 by each corresponding element of @var{x}.
 
-@item @var{x} ^ @var{y}
+@item  @var{x} ^ @var{y}
 @itemx @var{x} ** @var{y}
 @opindex **
 @opindex ^
@@ -597,7 +597,7 @@ expansion if @var{y} is not an integer.  An error results if both
 
 The implementation of this operator needs to be improved.
 
-@item @var{x} .^ @var{y}
+@item  @var{x} .^ @var{y}
 @itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
@@ -759,7 +759,7 @@ True if @var{x} is greater than or equal to @var{y}.
 @opindex >
 True if @var{x} is greater than @var{y}.
 
-@item @var{x} != @var{y}
+@item  @var{x} != @var{y}
 @itemx @var{x} ~= @var{y}
 @opindex !=
 @opindex ~=
@@ -768,12 +768,12 @@ True if @var{x} is not equal to @var{y}.
 
 For complex numbers, the following ordering is defined:
 @var{z1} < @var{z2}
-iff
+if and only if
 
 @example
 @group
-  abs(@var{z1}) < abs(@var{z2}) 
-  || (abs(@var{z1}) == abs(@var{z2}) && arg(@var{z1}) < arg(@var{z2}))
+  abs (@var{z1}) < abs (@var{z2}) 
+  || (abs (@var{z1}) == abs (@var{z2}) && arg (@var{z1}) < arg (@var{z2}))
 @end group
 @end example
 
@@ -796,7 +796,7 @@ function, not with the comparison operators listed above.
 
 @DOCSTRING(isequal)
 
-@DOCSTRING(isequalwithequalnans)
+@DOCSTRING(isequaln)
 
 @opindex <=
 @DOCSTRING(le)
@@ -823,8 +823,8 @@ function, not with the comparison operators listed above.
 @cindex not operator
 
 @menu
-* Element-by-element Boolean Operators::  
-* Short-circuit Boolean Operators::  
+* Element-by-element Boolean Operators::
+* Short-circuit Boolean Operators::
 @end menu
 
 @node Element-by-element Boolean Operators
@@ -863,7 +863,7 @@ Elements of the result are true if both corresponding elements of
 Elements of the result are true if either of the corresponding elements
 of @var{boolean1} or @var{boolean2} is true.
 
-@item ! @var{boolean}
+@item  ! @var{boolean}
 @itemx ~ @var{boolean}
 @opindex ~
 @opindex !
@@ -1043,7 +1043,7 @@ Whatever old value @code{z} had before the assignment is forgotten.
 The @samp{=} sign is called an @dfn{assignment operator}.
 
 Assignments can store string values also.  For example, the following
-expression would store the value @code{"this food is good"} in the
+expression would store the value @qcode{"this food is good"} in the
 variable @code{message}:
 
 @example

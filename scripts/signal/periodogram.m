@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ## Copyright (C) 2010 Alois Schloegl
 ##
 ## This file is part of Octave.
@@ -34,21 +34,22 @@
 ##
 ## @itemize
 ## @item x: data; if real-valued a one-sided spectrum is estimated,
-## if complex-valued or range indicates "@nospell{twosided}", the full
+## if complex-valued or range indicates @qcode{"@nospell{twosided}"}, the full
 ## spectrum is estimated.
 ##
 ## @item win: weight data with window, x.*win is used for further computation,
 ## if window is empty, a rectangular window is used.
 ##
-## @item nfft: number of frequency bins, default max(256, 2.^ceil(log2(length(x)))).
+## @item nfft: number of frequency bins, default max (256, 2.^ceil (log2 (length (x)))).
 ##
 ## @item Fs: sampling rate, default 1.
 ##
-## @item range: "@nospell{onesided}" computes spectrum from [0..nfft/2+1].
-## "@nospell{twosided}" computes spectrum from [0..nfft-1].  These strings
-## can appear at any position in the list input arguments after window.
+## @item range: @qcode{"@nospell{onesided}"} computes spectrum from [0..nfft/2+1].
+## @qcode{"@nospell{twosided}"} computes spectrum from [0..nfft-1].  These
+## strings can appear at any position in the list input arguments after
+## window.
 ##
-## @item Pxx: one-, or two-sided power spectrum.
+## @item @nospell{Pxx}: one-, or two-sided power spectrum.
 ##
 ## @item w: angular frequency [0..2*pi) (two-sided) or [0..pi] one-sided.
 ##
@@ -74,14 +75,14 @@ function [pxx, f] = periodogram (x, varargin)
       range = varargin{k};
     else
       switch (j)
-      case 1
-        window = varargin{k};
-      case 2
-        nfft   = varargin{k};
-      case 3
-        fs     = varargin{k};
-      case 4
-        range  = varargin{k};
+        case 1
+          window = varargin{k};
+        case 2
+          nfft   = varargin{k};
+        case 3
+          fs     = varargin{k};
+        case 4
+          range  = varargin{k};
       endswitch
       j++;
     endif
@@ -108,7 +109,7 @@ function [pxx, f] = periodogram (x, varargin)
   if (!  isempty (window))
     if (all (size (x) == size (window)))
       x .*= window;
-    elseif (size (x, 1) == size (window, 1) && size (window, 2) == 1)
+    elseif (rows (x) == rows (window) && columns (window) == 1)
       x .*= window (:,ones (1,c));
     endif;
   endif
@@ -122,7 +123,7 @@ function [pxx, f] = periodogram (x, varargin)
 
   if (strcmp (range, "onesided"))
     range = 1;
-  elseif strcmp (range, "twosided")
+  elseif (strcmp (range, "twosided"))
     range = 2;
   else
     range = 2-isreal (x);
@@ -188,3 +189,4 @@ function [pxx, f] = periodogram (x, varargin)
   endif
 
 endfunction
+

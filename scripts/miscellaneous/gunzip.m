@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Bill Denney
+## Copyright (C) 2006-2013 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -41,3 +41,4 @@ function varargout = gunzip (gzfile, dir = ".")
   endif
 
 endfunction
+

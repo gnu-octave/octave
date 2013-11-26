@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -112,19 +112,19 @@ endfunction
 %! [m2, f2, c2] = mode (full (a));
 %! assert (m, sparse (m2));
 %! assert (f, sparse (f2));
-%! c_exp(1:length(a)) = { sparse (0) };
+%! c_exp(1:length (a)) = { sparse (0) };
 %! assert (c ,c_exp);
 %! assert (c2,c_exp );
 
-%!assert(mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4]);
-%!assert(mode ([2,3,1,2,3,4],2),2);
-%!assert(mode ([2,3,1,2,3,4]),2);
-%!assert(mode (single([2,3,1,2,3,4])), single(2));
-%!assert(mode (int8([2,3,1,2,3,4])), int8(2));
+%!assert (mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4])
+%!assert (mode ([2,3,1,2,3,4],2),2)
+%!assert (mode ([2,3,1,2,3,4]),2)
+%!assert (mode (single ([2,3,1,2,3,4])), single (2))
+%!assert (mode (int8 ([2,3,1,2,3,4])), int8 (2))
 
-%!assert(mode ([2;3;1;2;3;4],1),2);
-%!assert(mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4]);
-%!assert(mode ([2;3;1;2;3;4]),2);
+%!assert (mode ([2;3;1;2;3;4],1),2)
+%!assert (mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4])
+%!assert (mode ([2;3;1;2;3;4]),2)
 
 %!shared x
 %! x(:,:,1) = toeplitz (1:3);
@@ -160,7 +160,7 @@ endfunction
 %!error mode (1, 2, 3)
 %!error mode ({1 2 3})
 %!error mode (['A'; 'B'])
-%!error mode (1, ones(2,2))
+%!error mode (1, ones (2,2))
 %!error mode (1, 1.5)
 %!error mode (1, 0)
 %!error mode (1, 3)

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -27,10 +27,6 @@
 
 function retval = rectangle_sw (n, b)
 
-  if (nargin != 2)
-    print_usage ();
-  endif
-
   retval = zeros (n, 1);
   retval(1) = 2 / b + 1;
 
@@ -40,33 +36,4 @@ function retval = rectangle_sw (n, b)
   retval(2:n) = sin ((2/b + 1) * l / 2) ./ sin (l / 2);
 
 endfunction
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,4 +1,4 @@
-@c Copyright (C) 2008-2012 David Bateman
+@c Copyright (C) 2008-2013 David Bateman
 @c Copyright (C) 2009 VZLU Prague
 @c
 @c This file is part of Octave.
@@ -94,9 +94,7 @@ called with no arguments to should return a value object.  So for example
 our polynomial might look like
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/polynomial.m)
-@end group
 @end example
 
 Note that the return value of the constructor must be the output of
@@ -177,14 +175,12 @@ then Octave will printed nothing when displaying the contents of a class.
 An example of a display method for the polynomial class might be
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/display.m)
-@end group
 @end example
 
 @noindent
 Note that in the display method, it makes sense to start the method
-with the line @code{fprintf("%s =", inputname(1))} to be consistent
+with the line @code{fprintf ("%s =", inputname (1))} to be consistent
 with the rest of Octave and print the variable name to be displayed
 when displaying the class. 
 
@@ -195,9 +191,7 @@ argument of the appropriate class it should return a structure with
 all of the properties of the class.  For example:
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/get.m)
-@end group
 @end example
 
 @noindent
@@ -205,9 +199,7 @@ Similarly, the @code{set} method should taken as its first argument an
 object to modify, and then take property/value pairs to be modified. 
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/set.m)
-@end group
 @end example
 
 @noindent
@@ -276,15 +268,13 @@ determined by the @code{subsref} method.
 
 @DOCSTRING(subsref)
 
-For example we might decide that indexing with "()" evaluates the
-polynomial and indexing with "@{@}" returns the @var{n}-th coefficient (of
-@var{n}-th power).  In this case the @code{subsref} method of our polynomial
-class might look like
+For example we might decide that indexing with @qcode{"()"} evaluates the
+polynomial and indexing with @qcode{"@{@}"} returns the @var{n}-th coefficient
+(of @var{n}-th power).  In this case the @code{subsref} method of our
+polynomial class might look like
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/subsref.m)
-@end group
 @end example
 
 The equivalent functionality for subscripted assignments uses the 
@@ -317,7 +307,7 @@ follows:
 
 @example
 @group
-p = polynomial([1,2,3,4]);
+p = polynomial ([1,2,3,4]);
 p(end-1)
   @result{} 3
 @end group
@@ -354,7 +344,7 @@ and the corresponding method looking like this:
 @group
   function x = subsasgn (x, ss, val)
     @dots{}
-    x.myfield(ss.subs@{1@}) = val;
+    x.myfield (ss.subs@{1@}) = val;
   endfunction
 @end group
 @end example
@@ -495,6 +485,13 @@ in the use of methods of other classes with the user class.  An example
 @cindex transpose, complex-conjugate
 @cindex unary minus
 
+@c Need at least one plaintext sentence here between the @node and @float
+@c table below or the two will overlap due to a bug in Texinfo. 
+@c This is not our fault; this *is* a ridiculous kluge.
+The following table shows, for each built-in numerical operation, the
+corresponding function name to use when providing an overloaded method for a
+user class.
+
 @float Table,tab:overload_ops
 @opindex +
 @opindex -
@@ -633,22 +630,22 @@ For example with our polynomial class consider the case
 @end example
 
 @noindent
-That mixes an object of the class "double" with an object of the class
-"polynomial".  In this case we like to ensure that the return type of
-the above is of the type "polynomial" and so we use the
+That mixes an object of the class @qcode{"double"} with an object of the class
+@qcode{"polynomial"}.  In this case we like to ensure that the return type of
+the above is of the type @qcode{"polynomial"} and so we use the
 @code{superiorto} function in the class constructor.  In particular our
 polynomial class constructor would be modified to be
 
 @example
-@group
 @EXAMPLEFILE(@polynomial/polynomial_superiorto.m)
-@end group
 @end example
 
 Note that user classes always have higher precedence than built-in
 Octave types.  So in fact marking our polynomial class higher than the 
-"double" class is in fact not necessary.
+@qcode{"double"} class is in fact not necessary.
 
+When faced with two objects that have the same precedence, Octave will use the
+method of the object that appears first on the list of arguments.
 
 @node Inheritance and Aggregation
 @section Inheritance and Aggregation
@@ -683,9 +680,7 @@ The equivalent class could be implemented in a class directory
 FIRfilter.m in the class directory.
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/FIRfilter.m)
-@end group
 @end example
 
 As before, the leading comments provide command-line documentation for
@@ -726,15 +721,15 @@ class type and examine the underlying structure.
 
 @example
 @group
-octave:1> f=FIRfilter(polynomial([1 1 1]/3))
+octave:1> f = FIRfilter (polynomial ([1 1 1]/3))
 f.polynomial = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
-octave:2> class(f)
+octave:2> class (f)
 ans = FIRfilter
-octave:3> isa(f,"FIRfilter")
+octave:3> isa (f,"FIRfilter")
 ans =  1
-octave:4> isa(f,"polynomial")
+octave:4> isa (f,"polynomial")
 ans =  1
-octave:5> struct(f)
+octave:5> struct (f)
 ans = 
 @{
 polynomial = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
@@ -749,19 +744,17 @@ underlying struct are private by default, we could provide a mechanism
 to access the fields.  The @code{subsref} method may be used for both.
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/subsref.m)
-@end group
 @end example
 
-The "()" case allows us to filter data using the polynomial provided
+The @qcode{"()"} case allows us to filter data using the polynomial provided
 to the constructor.
 
 @example
 @group
-octave:2> f=FIRfilter(polynomial([1 1 1]/3));
-octave:3> x=ones(5,1);
-octave:4> y=f(x)
+octave:2> f = FIRfilter (polynomial ([1 1 1]/3));
+octave:3> x = ones (5,1);
+octave:4> y = f(x)
 y =
 
    0.33333
@@ -772,11 +765,11 @@ y =
 @end group
 @end example
 
-The "." case allows us to view the contents of the polynomial field.
+The @qcode{"."} case allows us to view the contents of the polynomial field.
 
 @example
 @group
-octave:1> f=FIRfilter(polynomial([1 1 1]/3));
+octave:1> f = FIRfilter (polynomial ([1 1 1]/3));
 octave:2> f.polynomial
 ans = 0.333333 + 0.333333 * X + 0.333333 * X ^ 2
 @end group
@@ -796,12 +789,11 @@ So that
 
 @example
 @group
-octave:6> f=FIRfilter();
-octave:7> f.polynomial = polynomial([1 2 3]);
+octave:6> f = FIRfilter ();
+octave:7> f.polynomial = polynomial ([1 2 3]);
 f.polynomial = 1 + 2 * X + 3 * X ^ 2
 @end group
 @end example
-
 
 Defining the FIRfilter class as a child of the polynomial class
 implies that and FIRfilter object may be used any place that a
@@ -811,9 +803,7 @@ polynomial is simply a field in the class structure.  A class
 constructor for this case might be
 
 @example
-@group
 @EXAMPLEFILE(@FIRfilter/FIRfilter_aggregation.m)
-@end group
 @end example
 
 For our example, the remaining class methods remain unchanged.

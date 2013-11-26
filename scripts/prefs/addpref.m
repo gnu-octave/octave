@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2012-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -45,7 +45,7 @@ function addpref (group, pref, val)
         endif
       elseif (iscellstr (pref))
         if (size_equal (pref, val))
-          for i = 1:numel(pref)
+          for i = 1:numel (pref)
             if (isfield (group, pref{i}))
               error ("preference %s already exists in group %s",
                      pref{i}, group);
@@ -69,6 +69,8 @@ function addpref (group, pref, val)
 
 endfunction
 
+
 %% Testing these functions will require some care to avoid wiping out
 %% existing (or creating unwanted) preferences for the user running the
 %% tests.
+

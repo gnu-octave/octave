@@ -1,18 +1,19 @@
 function b = subsref (snk, s)
+
   if (isempty (s))
     error ('Snork: missing index');
   end
   switch (s(1).type)
     case '()'
       ind = s(1).subs;
-      if (numel (ind) ~= 1)
+      if (numel (ind) != 1)
         error ('Snork: need exactly one index');
       else
         b = snk.cack(ind{1});
       end
     case '{}'
       ind = s(1).subs;
-      if (numel (ind) ~= 1)
+      if (numel (ind) != 1)
         error ('Snork: need exactly one index');
       else
         b = snk.cack(ind{1});
@@ -27,4 +28,5 @@ function b = subsref (snk, s)
     otherwise
       error ('invalid subscript type');
   end
+
 end

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -62,20 +62,20 @@ function [A, k] = rref (A, tol)
     if (m <= tol)
       ## Skip column c, making sure the approximately zero terms are
       ## actually zero.
-      A (r:rows, c) = zeros (rows-r+1, 1);
+      A(r:rows, c) = zeros (rows-r+1, 1);
     else
       ## keep track of bound variables
       used (1, c) = 1;
 
       ## Swap current row and pivot row
-      A ([pivot, r], c:cols) = A ([r, pivot], c:cols);
+      A([pivot, r], c:cols) = A([r, pivot], c:cols);
 
       ## Normalize pivot row
-      A (r, c:cols) = A (r, c:cols) / A (r, c);
+      A(r, c:cols) = A(r, c:cols) / A(r, c);
 
       ## Eliminate the current column
       ridx = [1:r-1, r+1:rows];
-      A (ridx, c:cols) = A (ridx, c:cols) - A (ridx, c) * A(r, c:cols);
+      A(ridx, c:cols) = A(ridx, c:cols) - A(ridx, c) * A(r, c:cols);
 
       ## Check if done
       if (r++ == rows)
@@ -87,42 +87,42 @@ function [A, k] = rref (A, tol)
 
 endfunction
 
+
 %!test
 %! a = [1];
-%! [r k] = rref(a);
-%! assert(r, [1], 2e-8);
-%! assert(k, [1], 2e-8);
+%! [r k] = rref (a);
+%! assert (r, [1], 2e-8);
+%! assert (k, [1], 2e-8);
 
 %!test
 %! a = [1 3; 4 5];
-%! [r k] = rref(a);
-%! assert(rank(a), rank(r), 2e-8);
-%! assert(r, eye(2), 2e-8);
-%! assert(k == [1, 2] || k == [2, 1]);
-
+%! [r k] = rref (a);
+%! assert (rank (a), rank (r), 2e-8);
+%! assert (r, eye (2), 2e-8);
+%! assert (k == [1, 2] || k == [2, 1]);
 
 %!test
 %! a = [1 3; 4 5; 7 9];
-%! [r k] = rref(a);
-%! assert(rank(a), rank(r), 2e-8);
-%! assert(r, eye(3)(:,1:2), 2e-8);
-%! assert(k, [1 2], 2e-8);
+%! [r k] = rref (a);
+%! assert (rank (a), rank (r), 2e-8);
+%! assert (r, eye(3)(:,1:2), 2e-8);
+%! assert (k, [1 2], 2e-8);
 
 %!test
 %! a = [1 2 3; 2 4 6; 7 2 0];
-%! [r k] = rref(a);
-%! assert(rank(a), rank(r), 2e-8);
-%! assert(r, [1 0 (3-7/2); 0 1 (7/4); 0 0 0], 2e-8);
-%! assert(k, [1 2], 2e-8);
+%! [r k] = rref (a);
+%! assert (rank (a), rank (r), 2e-8);
+%! assert (r, [1 0 (3-7/2); 0 1 (7/4); 0 0 0], 2e-8);
+%! assert (k, [1 2], 2e-8);
 
 %!test
 %! a = [1 2 1; 2 4 2.01; 2 4 2.1];
 %! tol = 0.02;
-%! [r k] = rref(a, tol);
-%! assert(rank(a, tol), rank(r, tol), 2e-8);
+%! [r k] = rref (a, tol);
+%! assert (rank (a, tol), rank (r, tol), 2e-8);
 %! tol = 0.2;
-%! [r k] = rref(a, tol);
-%! assert(rank(a, tol), rank(r, tol), 2e-8);
+%! [r k] = rref (a, tol);
+%! assert (rank (a, tol), rank (r, tol), 2e-8);
 
-%!error rref();
+%!error rref ();
 

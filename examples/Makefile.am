@@ -1,6 +1,6 @@
-# Makefile for octave's examples directory
+# Makefile for Octave's examples directory
 #
-# Copyright (C) 1996-2012 John W. Eaton
+# Copyright (C) 1996-2013 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -34,14 +34,13 @@ EXTRA_DIST += \
   addtwomatrices.cc \
   celldemo.cc \
   embedded.cc \
-  firstmexdemo.c \
   fortdemo.cc \
   fortsub.f \
   funcdemo.cc \
   globaldemo.cc \
-  hello.cc \
   helloworld.cc \
   make_int.cc \
+  mex_demo.c \
   mycell.c \
   myfeval.c \
   myfevalf.f \
@@ -53,6 +52,7 @@ EXTRA_DIST += \
   mysparse.c \
   mystring.c \
   mystruct.c \
+  oct_demo.cc \
   oregonator.cc \
   oregonator.m \
   paramdemo.cc \

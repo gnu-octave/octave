@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,7 @@
 ## in the string @var{s}.  Use @code{str2double} for a safer and faster
 ## conversion.
 ##
-## For cell array of strings use @code{str2double}.  
+## For cell array of strings use @code{str2double}.
 ## @seealso{str2double, eval}
 ## @end deftypefn
 
@@ -68,8 +68,8 @@ function [m, state] = str2num (s)
 endfunction
 
 
-%!assert(str2num ("-1.3e2"), -130);
-%!assert(str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4]);
+%!assert (str2num ("-1.3e2"), -130)
+%!assert (str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4])
 
 %!test
 %! [x, state] = str2num ("pi");

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -65,26 +65,26 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(unifinv (x, ones(1,5), 2*ones(1,5)), [NaN 1 1.5 2 NaN]);
-%!assert(unifinv (x, 1, 2*ones(1,5)), [NaN 1 1.5 2 NaN]);
-%!assert(unifinv (x, ones(1,5), 2), [NaN 1 1.5 2 NaN]);
-%!assert(unifinv (x, [1 2 NaN 1 1], 2), [NaN NaN NaN 2 NaN]);
-%!assert(unifinv (x, 1, 2*[1 0 NaN 1 1]), [NaN NaN NaN 2 NaN]);
-%!assert(unifinv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 1 NaN 2 NaN]);
+%!assert (unifinv (x, ones (1,5), 2*ones (1,5)), [NaN 1 1.5 2 NaN])
+%!assert (unifinv (x, 1, 2*ones (1,5)), [NaN 1 1.5 2 NaN])
+%!assert (unifinv (x, ones (1,5), 2), [NaN 1 1.5 2 NaN])
+%!assert (unifinv (x, [1 2 NaN 1 1], 2), [NaN NaN NaN 2 NaN])
+%!assert (unifinv (x, 1, 2*[1 0 NaN 1 1]), [NaN NaN NaN 2 NaN])
+%!assert (unifinv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 1 NaN 2 NaN])
 
 %% Test class of input preserved
-%!assert(unifinv ([x, NaN], 1, 2), [NaN 1 1.5 2 NaN NaN]);
-%!assert(unifinv (single([x, NaN]), 1, 2), single([NaN 1 1.5 2 NaN NaN]));
-%!assert(unifinv ([x, NaN], single(1), 2), single([NaN 1 1.5 2 NaN NaN]));
-%!assert(unifinv ([x, NaN], 1, single(2)), single([NaN 1 1.5 2 NaN NaN]));
+%!assert (unifinv ([x, NaN], 1, 2), [NaN 1 1.5 2 NaN NaN])
+%!assert (unifinv (single ([x, NaN]), 1, 2), single ([NaN 1 1.5 2 NaN NaN]))
+%!assert (unifinv ([x, NaN], single (1), 2), single ([NaN 1 1.5 2 NaN NaN]))
+%!assert (unifinv ([x, NaN], 1, single (2)), single ([NaN 1 1.5 2 NaN NaN]))
 
 %% Test input validation
 %!error unifinv ()
 %!error unifinv (1,2)
 %!error unifinv (1,2,3,4)
-%!error unifinv (ones(3),ones(2),ones(2))
-%!error unifinv (ones(2),ones(3),ones(2))
-%!error unifinv (ones(2),ones(2),ones(3))
+%!error unifinv (ones (3), ones (2), ones (2))
+%!error unifinv (ones (2), ones (3), ones (2))
+%!error unifinv (ones (2), ones (2), ones (3))
 %!error unifinv (i, 2, 2)
 %!error unifinv (2, i, 2)
 %!error unifinv (2, 2, i)

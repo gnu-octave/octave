@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2012 John W. Eaton
+## Copyright (C) 2003-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -29,7 +29,7 @@ function dirname = tempdir ()
   endif
 
   if (! strcmp (dirname(end), filesep))
-    dirname = cstrcat (dirname, filesep);
+    dirname = [dirname filesep];
   endif
 
   if (! isdir (dirname))

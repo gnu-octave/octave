@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2012 Paul Kienzle
+## Copyright (C) 2002-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -35,32 +35,32 @@
 ## The value of @var{c} specifies the number of delimiters to prepend to
 ## each line of data.
 ##
-## If the argument @code{"-append"} is given, append to the end of
+## If the argument @qcode{"-append"} is given, append to the end of
 ## @var{file}.
 ##
 ## In addition, the following keyword value pairs may appear at the end
 ## of the argument list:
 ##
 ## @table @asis
-## @item "append"
-## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
+## @item @qcode{"append"}
+## Either @qcode{"on"} or @qcode{"off"}.  See @qcode{"-append"} above.
 ##
-## @item "delimiter"
+## @item @qcode{"delimiter"}
 ## See @var{delim} above.
 ##
-## @item "newline"
+## @item @qcode{"newline"}
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @samp{"unix"} is changed into "\n",
-## @samp{"pc"} is changed into "\r\n", and @samp{"mac"} is changed
-## into "\r".  Other values for this option are kept as is.
+## exist for this option.  @qcode{"unix"} is changed into @qcode{"\n"},
+## @qcode{"pc"} is changed into @qcode{"\r\n"}, and @qcode{"mac"} is changed
+## into @qcode{"\r"}.  Other values for this option are kept as is.
 ##
-## @item "roffset"
+## @item @qcode{"roffset"}
 ## See @var{r} above.
 ##
-## @item "coffset"
+## @item @qcode{"coffset"}
 ## See @var{c} above.
 ##
-## @item "precision"
+## @item @qcode{"precision"}
 ## The precision to use when writing the file.  It can either be a
 ## format string (as used by fprintf) or a number of significant digits.
 ## @end table
@@ -83,7 +83,7 @@
 ## 2002-03-08 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
 ## 2005-11-27 Bill Denney <bill@givebillmoney.com>
-## * Significant modifications of the input arguements for additional
+## * Significant modifications of the input arguments for additional
 ## functionality.
 
 function dlmwrite (file, M, varargin)
@@ -146,10 +146,15 @@ function dlmwrite (file, M, varargin)
       elseif (i == 3)
         c = varargin{i};
       else
-        print_usage();
+        print_usage ();
       endif
     endif
   endwhile
+
+  ## Expand '\t' to TAB for Matlab compatibility
+  if (strcmp (delim, '\t'))
+    delim = "\t";
+  endif
 
   if (ischar (file))
     [fid, msg] = fopen (file, opentype);
@@ -180,7 +185,7 @@ function dlmwrite (file, M, varargin)
     endif
     if (iscomplex (M))
       M = M.';
-      b = zeros (2*rows(M), columns (M));
+      b = zeros (2*rows (M), columns (M));
       b(1: 2 : end, :) = real (M);
       b(2: 2 : end, :) = imag (M);
       fprintf (fid, template, b);
@@ -197,13 +202,13 @@ endfunction
 
 %!test
 %! f = tmpnam ();
-%! dlmwrite (f,[1,2;3,4],'precision','%5.2f','newline','unix','roffset',1,'coffset',1);
+%! dlmwrite (f,[1,2;3,4],"precision","%5.2f","newline","unix","roffset",1,"coffset",1);
 %! fid = fopen (f,"rt");
-%! f1 = char (fread (fid,Inf,'char')');
+%! f1 = char (fread (fid,Inf,"char")');
 %! fclose (fid);
-%! dlmwrite (f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
+%! dlmwrite (f,[5,6],"precision","%5.2f","newline","unix","coffset",1,"delimiter",",","-append");
 %! fid = fopen (f,"rt");
-%! f2 = char (fread (fid,Inf,'char')');
+%! f2 = char (fread (fid,Inf,"char")');
 %! fclose (fid);
 %! unlink (f);
 %!

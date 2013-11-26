@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -69,27 +69,27 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 2 Inf];
 %! y = [0 0 1/3 1/2 2/3 1];
-%!assert(fcdf (x, 2*ones(1,6), 2*ones(1,6)), y, eps);
-%!assert(fcdf (x, 2, 2*ones(1,6)), y, eps);
-%!assert(fcdf (x, 2*ones(1,6), 2), y, eps);
-%!assert(fcdf (x, [0 NaN Inf 2 2 2], 2), [NaN NaN NaN y(4:6)], eps);
-%!assert(fcdf (x, 2, [0 NaN Inf 2 2 2]), [NaN NaN NaN y(4:6)], eps);
-%!assert(fcdf ([x(1:2) NaN x(4:6)], 2, 2), [y(1:2) NaN y(4:6)], eps);
+%!assert (fcdf (x, 2*ones (1,6), 2*ones (1,6)), y, eps)
+%!assert (fcdf (x, 2, 2*ones (1,6)), y, eps)
+%!assert (fcdf (x, 2*ones (1,6), 2), y, eps)
+%!assert (fcdf (x, [0 NaN Inf 2 2 2], 2), [NaN NaN NaN y(4:6)], eps)
+%!assert (fcdf (x, 2, [0 NaN Inf 2 2 2]), [NaN NaN NaN y(4:6)], eps)
+%!assert (fcdf ([x(1:2) NaN x(4:6)], 2, 2), [y(1:2) NaN y(4:6)], eps)
 
 %% Test class of input preserved
-%!assert(fcdf ([x, NaN], 2, 2), [y, NaN], eps);
-%!assert(fcdf (single([x, NaN]), 2, 2), single([y, NaN]), eps("single"));
-%!assert(fcdf ([x, NaN], single(2), 2), single([y, NaN]), eps("single"));
-%!assert(fcdf ([x, NaN], 2, single(2)), single([y, NaN]), eps("single"));
+%!assert (fcdf ([x, NaN], 2, 2), [y, NaN], eps)
+%!assert (fcdf (single ([x, NaN]), 2, 2), single ([y, NaN]), eps ("single"))
+%!assert (fcdf ([x, NaN], single (2), 2), single ([y, NaN]), eps ("single"))
+%!assert (fcdf ([x, NaN], 2, single (2)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error fcdf ()
 %!error fcdf (1)
 %!error fcdf (1,2)
 %!error fcdf (1,2,3,4)
-%!error fcdf (ones(3),ones(2),ones(2))
-%!error fcdf (ones(2),ones(3),ones(2))
-%!error fcdf (ones(2),ones(2),ones(3))
+%!error fcdf (ones (3), ones (2), ones (2))
+%!error fcdf (ones (2), ones (3), ones (2))
+%!error fcdf (ones (2), ones (2), ones (3))
 %!error fcdf (i, 2, 2)
 %!error fcdf (2, i, 2)
 %!error fcdf (2, 2, i)

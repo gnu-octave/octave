@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -117,18 +117,18 @@ endfunction
 %! x1 = [0,0,0;2,2,2];
 %! x2 = [0,2,4;0,2,4];
 %! y = [1,2,3;4,5,6];
-%!assert (cumtrapz(y), [0,0,0;2.5,3.5,4.5])
-%!assert (cumtrapz(x1,y), [0,0,0;5,7,9])
-%!assert (cumtrapz(y,1), [0,0,0;2.5,3.5,4.5])
-%!assert (cumtrapz(x1,y,1), [0,0,0;5,7,9])
-%!assert (cumtrapz(y,2), [0,1.5,4;0,4.5,10])
-%!assert (cumtrapz(x2,y,2), [0,3,8;0,9,20])
+%!assert (cumtrapz (y), [0,0,0;2.5,3.5,4.5])
+%!assert (cumtrapz (x1,y), [0,0,0;5,7,9])
+%!assert (cumtrapz (y,1), [0,0,0;2.5,3.5,4.5])
+%!assert (cumtrapz (x1,y,1), [0,0,0;5,7,9])
+%!assert (cumtrapz (y,2), [0,1.5,4;0,4.5,10])
+%!assert (cumtrapz (x2,y,2), [0,3,8;0,9,20])
 %% Test ND-array implementation
 %!shared x1,x2,y
 %! x1 = 1:3;
 %! x2 = reshape ([0,2,4;0,2,4], [1 2 3]);
 %! y = reshape ([1,2,3;4,5,6], [1 2 3]);
-%!assert (cumtrapz(y,3), reshape([0,1.5,4;0,4.5,10],[1 2 3]))
-%!assert (cumtrapz(x1,y,3), reshape([0,1.5,4;0,4.5,10],[1 2 3]))
-%!assert (cumtrapz(x2,y,3), reshape([0,3,8;0,9,20],[1 2 3]))
+%!assert (cumtrapz (y,3), reshape ([0,1.5,4;0,4.5,10],[1 2 3]))
+%!assert (cumtrapz (x1,y,3), reshape ([0,1.5,4;0,4.5,10],[1 2 3]))
+%!assert (cumtrapz (x2,y,3), reshape ([0,3,8;0,9,20],[1 2 3]))
 

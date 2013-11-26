@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -21,15 +21,20 @@
 @cindex introduction
 
 GNU Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient interactive command line 
-interface for solving linear and nonlinear problems numerically, and 
-for performing other numerical experiments.  It may also be used as a 
-batch-oriented language for data processing.
+computations.  It is typically used for such problems as solving 
+linear and nonlinear equations, numerical linear algebra, statistical
+analysis, and for performing other numerical experiments.  It may also
+be used as a batch-oriented language for automated data processing.
+
+Until recently GNU Octave provided a command-line interface with
+graphical results displayed in separate windows.  The current version
+(version 3.8, released in late 2013) also provides, by default, a
+graphical user interface.
 
 GNU Octave is freely redistributable software.  You may redistribute 
 it and/or modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation.  The GPL is included in 
-this manual in @ref{Copying}.
+this manual, @pxref{Copying}.
 
 This manual provides comprehensive documentation on how to install, 
 run, use, and extend GNU Octave.  Additional chapters describe how 
@@ -38,18 +43,21 @@ to report bugs and help contribute code.
 This document corresponds to Octave version @value{VERSION}.
 
 @menu
-* Running Octave::              
-* Simple Examples::             
-* Conventions::                 
+* Running Octave::
+* Simple Examples::
+* Conventions::
 @end menu
 
 @node Running Octave
 @section Running Octave
 
-On most systems, Octave is started with the shell command 
-@samp{octave}.  Octave displays an initial message and then a prompt
-indicating it is ready to accept input.  You can begin typing Octave
-commands immediately afterward.
+On most systems, Octave is started with the shell command @samp{octave}.
+This, by default, starts the graphical user interface (GUI).  The central
+window in the GUI is the Octave command-line interface.  Octave displays
+an initial message and then a prompt indicating it is ready to accept
+input.  If you have chosen the traditional command-line interface only
+the command prompt appears.  In any case, you can immediately begin
+typing Octave commands. 
 
 If you get into trouble, you can usually interrupt Octave by typing
 @kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets
@@ -104,7 +112,7 @@ type the following which will evaluate to @code{-1} within the
 tolerance of the calculation. 
 
 @example
-octave:1> exp(i*pi)
+octave:1> exp (i*pi)
 @end example
 
 @subsection Creating a Matrix
@@ -374,7 +382,7 @@ the cursor backward on the line, @kbd{C-f} will move the cursor forward
 on the line, etc.
 
 A complete description of the command line editing capability is given
-in this manual in @ref{Command Line Editing}.
+in this manual, @pxref{Command Line Editing}.
 
 @subsection Help and Documentation
 
@@ -410,7 +418,7 @@ The part of Octave's help facility that allows you to read the complete
 text of the printed manual from within Octave normally uses a separate
 program called Info.  When you invoke Info you will be put into a menu
 driven program that contains the entire Octave manual.  Help for using
-Info is provided in this manual in @ref{Getting Help}.
+Info is provided in this manual, @pxref{Getting Help}.
 
 @node Conventions
 @section Conventions
@@ -419,11 +427,11 @@ This section explains the notational conventions that are used in this
 manual.  You may want to skip this section and refer back to it later.
 
 @menu
-* Fonts::                       
-* Evaluation Notation::         
-* Printing Notation::           
-* Error Messages::              
-* Format of Descriptions::      
+* Fonts::
+* Evaluation Notation::
+* Printing Notation::
+* Error Messages::
+* Format of Descriptions::
 @end menu
 
 @node Fonts
@@ -524,7 +532,7 @@ on your terminal.  Error messages are shown on a line beginning with
 @example
 @group
 fieldnames ([1, 2; 3, 4])
-error: fieldnames: wrong type argument 'matrix'
+error: fieldnames: Invalid input argument
 @end group
 @end example
 
@@ -532,23 +540,22 @@ error: fieldnames: wrong type argument 'matrix'
 @subsection Format of Descriptions
 @cindex description format
 
-Functions, commands, and variables are described in this manual in a 
+Functions and commands are described in this manual in a 
 uniform format.  The first line of a description contains the name of
 the item followed by its arguments, if any.
 @ifnottex
-The category---function, variable, or whatever---appears at the
+The category---function, command, or whatever---appears at the
 beginning of the line.
 @end ifnottex
 @iftex
-The category---function, variable, or whatever---is printed next to the
+The category---function, command, or whatever---is printed next to the
 right margin.
 @end iftex
 The description follows on succeeding lines, sometimes with examples.
 
 @menu
-* A Sample Function Description::  
-* A Sample Command Description::  
-* A Sample Variable Description::  
+* A Sample Function Description::
+* A Sample Command Description::
 @end menu
 
 @node A Sample Function Description
@@ -617,7 +624,7 @@ and is part of the compiled Octave binary.
 The function described is written in a language like C++, C, or Fortran.
 On systems that support dynamic linking of user-supplied functions, it
 may be automatically linked while Octave is running, but only if it is
-needed.  @xref{Dynamically Linked Functions}.
+needed.  @xref{External Code Interface}.
 
 @item Mapping Function
 @cindex mapping function
@@ -643,27 +650,3 @@ Change the current working directory to @var{dir}.  For example,
 printed and the working directory is not changed.
 @end deftypefn
 
-@node A Sample Variable Description
-@subsubsection A Sample Variable Description
-@cindex variable descriptions
-
-A @dfn{variable} is a name that can hold a value.  Although any variable
-can be set by the user, @dfn{built-in variables} typically exist
-specifically so that users can change them to alter the way Octave
-behaves (built-in variables are also sometimes called @dfn{user
-options}).  Ordinary variables and built-in variables are described
-using a format like that for functions except that there are no
-arguments.
-
-Here is a description of the imaginary variable
-@code{do_what_i_mean_not_what_i_say}.
-
-@defvr {Built-in Variable} do_what_i_mean_not_what_i_say
-If the value of this variable is nonzero, Octave will do what you
-actually wanted, even if you have typed a completely different and
-meaningless list of commands.
-@end defvr
-
-Other variable descriptions have the same format, but `Built-in
-Variable' is replaced by `Variable', for ordinary variables, or
-`Constant' for symbolic constants whose values cannot be changed.

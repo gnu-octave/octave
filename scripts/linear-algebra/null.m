@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -67,9 +67,9 @@ function retval = null (A, tol)
     if (rank < cols)
       retval = V (:, rank+1:cols);
       if (isa (A, "single"))
-        retval(abs (retval) < eps ("single")) = 0;
+        retval (abs (retval) < eps ("single")) = 0;
       else
-        retval(abs (retval) < eps) = 0;
+        retval (abs (retval) < eps) = 0;
       endif
     else
       retval = zeros (cols, 0);
@@ -78,34 +78,38 @@ function retval = null (A, tol)
 
 endfunction
 
+
+%% FIXME: Need some tests for 'single' variables as well
+
 %!test
 %! A = 0;
-%! assert(null(A), 1);
+%! assert (null (A), 1);
 
 %!test
 %! A = 1;
-%! assert(null(A), zeros(1,0))
+%! assert (null (A), zeros (1,0));
 
 %!test
 %! A = [1 0; 0 1];
-%! assert(null(A), zeros(2,0));
+%! assert (null (A), zeros (2,0));
 
 %!test
 %! A = [1 0; 1 0];
-%! assert(null(A), [0 1]')
+%! assert (null (A), [0 1]');
 
 %!test
 %! A = [1 1; 0 0];
-%! assert(null(A), [-1/sqrt(2) 1/sqrt(2)]', eps)
+%! assert (null (A), [-1/sqrt(2) 1/sqrt(2)]', eps);
 
 %!test
 %! tol = 1e-4;
 %! A = [1 0; 0 tol-eps];
-%! assert(null(A,tol), [0 1]')
+%! assert (null (A,tol), [0; 1]);
 
 %!test
 %! tol = 1e-4;
 %! A = [1 0; 0 tol+eps];
-%! assert(null(A,tol), zeros(2,0));
+%! assert (null (A,tol), zeros (2,0));
 
-%!error null()
+%!error null ()
+

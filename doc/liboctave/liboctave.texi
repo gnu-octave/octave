@@ -1,4 +1,4 @@
-% Copyright (C) 1996-2012 John W. Eaton
+% Copyright (C) 1996-2013 John W. Eaton
 %
 % This file is part of Octave.
 %
@@ -56,7 +56,7 @@ END-INFO-DIR-ENTRY
 
 @ifnottex
 
-Copyright (C) 1996, 1997 John W. Eaton.
+Copyright (C) 1996-2013 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -80,10 +80,10 @@ modified versions.
 @end ifnottex
 
 @titlepage
-@title{Octave C++ Classes}
-@subtitle{Edition 1.0 for Octave version @value{VERSION}}
-@subtitle{September 1993}
-@author{John W. Eaton}
+@title Octave C++ Classes
+@subtitle Edition 1.0 for Octave version @value{VERSION}
+@subtitle September 1993
+@author John W. Eaton
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997 John W. Eaton.

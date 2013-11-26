@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -92,8 +92,8 @@ function retval = std (x, opt = 0, dim)
 
   n = sz(dim);
   if (n == 1 || isempty (x))
-    if (isa (x, 'single'))
-      retval = zeros (sz, 'single');
+    if (isa (x, "single"))
+      retval = zeros (sz, "single");
     else
       retval = zeros (sz);
     endif
@@ -107,21 +107,21 @@ endfunction
 %!test
 %! x = ones (10, 2);
 %! y = [1, 3];
-%! assert(std (x) == [0, 0]);
-%! assert(std (y), sqrt (2), sqrt (eps));
-%! assert(std (x, 0, 2), zeros (10, 1));
+%! assert (std (x), [0, 0]);
+%! assert (std (y), sqrt (2), sqrt (eps));
+%! assert (std (x, 0, 2), zeros (10, 1));
 
-%!assert(std (ones (3, 1, 2), 0, 2), zeros (3, 1, 2));
-%!assert(std ([1 2], 0), sqrt(2)/2, 5*eps);
-%!assert(std ([1 2], 1), 0.5, 5*eps);
-%!assert(std(1), 0);
-%!assert(std(single(1)), single(0));
-%!assert(std([]), []);
-%!assert(std(ones (1,3,0,2)), ones (1,3,0,2));
+%!assert (std (ones (3, 1, 2), 0, 2), zeros (3, 1, 2));
+%!assert (std ([1 2], 0), sqrt (2)/2, 5*eps);
+%!assert (std ([1 2], 1), 0.5, 5*eps);
+%!assert (std (1), 0);
+%!assert (std (single (1)), single (0));
+%!assert (std ([]), []);
+%!assert (std (ones (1,3,0,2)), ones (1,3,0,2));
 
 %% Test input validation
-%!error std ();
-%!error std (1, 2, 3, 4);
+%!error std ()
+%!error std (1, 2, 3, 4)
 %!error std (['A'; 'B'])
-%!error std (1, -1);
+%!error std (1, -1)
 

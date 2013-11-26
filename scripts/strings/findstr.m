@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -133,11 +133,11 @@ endfunction
 
 
 %!assert (findstr ("abababa", "a"), [1, 3, 5, 7])
-%!assert (findstr ("abababa", "aba"), [1, 3, 5]);
-%!assert (findstr ("aba", "abababa", 0), [1, 5]);
+%!assert (findstr ("abababa", "aba"), [1, 3, 5])
+%!assert (findstr ("aba", "abababa", 0), [1, 5])
 
 %% Test input validation
 %!error findstr ()
-%!error findstr ("foo", "bar", 3, 4);
-%!error findstr (["AB" ; "CD"], "C");
+%!error findstr ("foo", "bar", 3, 4)
+%!error <must have only one non-singleton dimension> findstr (["AB" ; "CD"], "C")
 

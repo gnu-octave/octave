@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -62,7 +62,7 @@ function y = lin2mu (x, n)
   endif
 
   ## Determine sign of x, set sign(0) = 1.
-  sig = sign(x) + (x == 0);
+  sig = sign (x) + (x == 0);
 
   ## Take absolute value of x, but force it to be smaller than 32636;
   ## add bias.
@@ -74,3 +74,4 @@ function y = lin2mu (x, n)
   y = 64 * sig - 16 * e - fix (32 * f) + 335;
 
 endfunction
+

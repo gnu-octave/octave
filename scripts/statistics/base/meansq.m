@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -73,16 +73,16 @@ function y = meansq (x, dim)
 endfunction
 
 
-%!assert(meansq (1:5), 11);
-%!assert(meansq (single(1:5)), single(11));
-%!assert(meansq (magic (4)), [94.5, 92.5, 92.5, 94.5]);
-%!assert(meansq (magic (4), 2), [109.5; 77.5; 77.5; 109.5]);
+%!assert (meansq (1:5), 11)
+%!assert (meansq (single (1:5)), single (11))
+%!assert (meansq (magic (4)), [94.5, 92.5, 92.5, 94.5])
+%!assert (meansq (magic (4), 2), [109.5; 77.5; 77.5; 109.5])
 
 %% Test input validation
 %!error meansq ()
 %!error meansq (1, 2, 3)
-%!error meansq (['A'; 'B']);
-%!error meansq (1, ones(2,2))
+%!error meansq (['A'; 'B'])
+%!error meansq (1, ones (2,2))
 %!error meansq (1, 1.5)
 %!error meansq (1, 0)
 %!error meansq (1, 3)

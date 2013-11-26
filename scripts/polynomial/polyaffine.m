@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Tony Richardson, Jaroslav Hajek
+## Copyright (C) 2009-2013 Tony Richardson, Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -29,7 +29,6 @@
 ##
 ## @seealso{polyval, polyfit}
 ## @end deftypefn
-
 
 function g = polyaffine (f, mu)
 
@@ -73,16 +72,16 @@ endfunction
 %!demo
 %! f = [1/5 4/5 -7/5 -2];
 %! g = polyaffine (f, [1, 1.2]);
-%! x = linspace (-4, 4, 100);
-%! plot(x, polyval (f, x), x, polyval (g, x));
+%! x = linspace (-4,4,100);
+%! plot (x,polyval (f, x), x,polyval (g, x));
 %! legend ("original", "affine");
 %! axis ([-4 4 -3 5]);
-%! grid ("on");
+%! grid on;
 
 %!test
 %! f = [1/5 4/5 -7/5 -2];
 %! mu = [1, 1.2];
 %! g = polyaffine (f, mu);
-%! x = linspace (-4, 4, 100);
+%! x = linspace (-4,4,100);
 %! assert (polyval (f, x, [], mu), polyval (g, x), 1e-10);
 

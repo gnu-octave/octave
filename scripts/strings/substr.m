@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -92,19 +92,19 @@ function t = substr (s, offset, len)
 endfunction
 
 
-%!assert (substr ("This is a test string", 6, 9), "is a test");
-%!assert (substr ("This is a test string", -11), "test string");
-%!assert (substr ("This is a test string", -11, 4), "test");
-%!assert (substr ("This is a test string", -11, -7), "test");
-%!assert (substr ("This is a test string", 1, -7), "This is a test");
-%!assert (isempty (substr ("This is a test string", 1, 0)));
+%!assert (substr ("This is a test string", 6, 9), "is a test")
+%!assert (substr ("This is a test string", -11), "test string")
+%!assert (substr ("This is a test string", -11, 4), "test")
+%!assert (substr ("This is a test string", -11, -7), "test")
+%!assert (substr ("This is a test string", 1, -7), "This is a test")
+%!assert (isempty (substr ("This is a test string", 1, 0)))
 
 %% Test input validation
 %!error substr ()
 %!error substr ("foo", 2, 3, 4)
 %!error substr (ones (5, 1), 1, 1)
-%!error substr ("foo", ones(2,2))
-%!error substr ("foo", 1, ones(2,2))
+%!error substr ("foo", ones (2,2))
+%!error substr ("foo", 1, ones (2,2))
 %!error substr ("foo", 0)
 %!error substr ("foo", 5)
 %!error substr ("foo", 1, 5)

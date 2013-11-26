@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -50,9 +50,9 @@ function v = vech (x)
 
 endfunction
 
-%!assert(all (vech ([1, 2, 3; 4, 5, 6; 7, 8, 9]) == [1; 4; 7; 5; 8; 9]));
 
-%!error vech ();
+%!assert (vech ([1, 2, 3; 4, 5, 6; 7, 8, 9]), [1; 4; 7; 5; 8; 9])
 
-%!error vech (1, 2);
+%!error vech ()
+%!error vech (1, 2)
 

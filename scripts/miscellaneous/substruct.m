@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -73,6 +73,7 @@ function retval = substruct (varargin)
 
 endfunction
 
+
 %!test
 %! x(1,1).type = "()";
 %! x(1,2).type = "{}";
@@ -81,9 +82,11 @@ endfunction
 %! x(1,2).subs = {":"};
 %! x(1,3).subs = "foo";
 %! y = substruct ("()", {1,2,3}, "{}", {":"}, ".", "foo");
-%! assert(x,y);
-%!error assert(substruct);
-%!error assert(substruct (1, 2, 3));
-%!error assert(substruct ("x", 1));
-%!error assert(substruct ("()", [1,2,3]));
-%!error assert(substruct (".", {1,2,3}));
+%! assert (x,y);
+
+%!error substruct ()
+%!error substruct (1, 2, 3)
+%!error substruct ("x", 1)
+%!error substruct ("()", [1,2,3])
+%!error substruct (".", {1,2,3})
+

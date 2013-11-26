@@ -1,21 +1,22 @@
-## Copyright (C) 2006   Sylvain Pelissier   <sylvain.pelissier@gmail.com>
-## Copyright (C) 2012   Carlo de Falco
+## Copyright (C) 2006 Sylvain Pelissier
+## Copyright (C) 2012-2013 Carlo de Falco
 ##
-## This program is free software; you can redistribute it and/or modify
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
+## Octave is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## along with Octave; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-##
 ## @deftypefn  {Function File} {@var{x} =} bicg (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} bicg (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicg (@var{A}, @var{b}, @dots{})
@@ -40,13 +41,14 @@
 ## The preconditioner @var{P} is given as @code{P = M1 * M2}.
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as
 ## a function handle or inline function @code{g} such that
-## @code{g(x, 'notransp') = M1 \ x} or @code{g(x, 'notransp') = M2 \ x} and
-## @code{g(x, 'transp') = M1' \ x} or @code{g(x, 'transp') = M2' \ x}.
+## @code{g(x, "notransp") = M1 \ x} or @code{g(x, "notransp") = M2 \ x} and
+## @code{g(x, "transp") = M1' \ x} or @code{g(x, "transp") = M2' \ x}.
 ##
 ## If called with more than one output parameter
 ##
 ## @itemize @minus
 ## @item @var{flag} indicates the exit status:
+##
 ## @itemize @minus
 ## @item 0: iteration converged to the within the chosen tolerance
 ##
@@ -54,6 +56,7 @@
 ##
 ## @item 3: the algorithm reached stagnation
 ## @end itemize
+##
 ## (the value 2 is unused but skipped for compatibility).
 ##
 ## @item @var{relres} is the final value of the relative residual.
@@ -67,6 +70,8 @@
 ##
 ## @end deftypefn
 
+## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
+## Author: Carlo de Falco
 
 function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
 
@@ -228,14 +233,13 @@ endfunction;
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %! [x, flag, relres, iter, resvec] = bicg (A, b, tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
-%!
 
 %!function y = afun (x, t, a)
-%!  switch t
-%!   case "notransp"
-%!     y = a * x;
-%!   case "transp"
-%!     y = a' * x;
+%!  switch (t)
+%!    case "notransp"
+%!      y = a * x;
+%!    case "transp"
+%!      y = a' * x;
 %!  endswitch
 %!endfunction
 %!
@@ -260,3 +264,4 @@ endfunction;
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = bicg (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
+

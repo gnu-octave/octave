@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -54,16 +54,17 @@ function y = pow2 (f, e)
 
 endfunction
 
+
 %!test
 %! x = [3, 0, -3];
 %! v = [8, 1, .125];
-%! assert(all (abs (pow2 (x) - v) < sqrt (eps)));
+%! assert (pow2 (x), v, sqrt (eps));
 
 %!test
 %! x = [3, 0, -3, 4, 0, -4, 5, 0, -5];
 %! y = [-2, -2, -2, 1, 1, 1, 3, 3, 3];
 %! z = x .* (2 .^ y);
-%! assert(all (abs (pow2 (x,y) - z) < sqrt (eps)));
+%! assert (pow2 (x,y), z, sqrt (eps));
 
-%!error pow2();
+%!error pow2 ()
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} display (@var{a})
 ## Display the contents of an object.  If @var{a} is an object of the
-## class "myclass", then @code{display} is called in a case like
+## class @qcode{"myclass"}, then @code{display} is called in a case like
 ##
 ## @example
 ## myclass (@dots{})
@@ -27,7 +27,7 @@
 ##
 ## @noindent
 ## where Octave is required to display the contents of a variable of the
-## type "myclass".
+## type @qcode{"myclass"}.
 ##
 ## @seealso{class, subsref, subsasgn}
 ## @end deftypefn
@@ -48,3 +48,4 @@ function idx = display (a)
   endif
 
 endfunction
+

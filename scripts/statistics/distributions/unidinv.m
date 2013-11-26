@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -60,22 +60,22 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(unidinv (x, 10*ones(1,5)), [NaN NaN 5 10 NaN], eps);
-%!assert(unidinv (x, 10), [NaN NaN 5 10 NaN], eps);
-%!assert(unidinv (x, 10*[0 1 NaN 1 1]), [NaN NaN NaN 10 NaN], eps);
-%!assert(unidinv ([x(1:2) NaN x(4:5)], 10), [NaN NaN NaN 10 NaN], eps);
+%!assert (unidinv (x, 10*ones (1,5)), [NaN NaN 5 10 NaN], eps)
+%!assert (unidinv (x, 10), [NaN NaN 5 10 NaN], eps)
+%!assert (unidinv (x, 10*[0 1 NaN 1 1]), [NaN NaN NaN 10 NaN], eps)
+%!assert (unidinv ([x(1:2) NaN x(4:5)], 10), [NaN NaN NaN 10 NaN], eps)
 
 %% Test class of input preserved
-%!assert(unidinv ([x, NaN], 10), [NaN NaN 5 10 NaN NaN], eps);
-%!assert(unidinv (single([x, NaN]), 10), single([NaN NaN 5 10 NaN NaN]), eps);
-%!assert(unidinv ([x, NaN], single(10)), single([NaN NaN 5 10 NaN NaN]), eps);
+%!assert (unidinv ([x, NaN], 10), [NaN NaN 5 10 NaN NaN], eps)
+%!assert (unidinv (single ([x, NaN]), 10), single ([NaN NaN 5 10 NaN NaN]), eps)
+%!assert (unidinv ([x, NaN], single (10)), single ([NaN NaN 5 10 NaN NaN]), eps)
 
 %% Test input validation
 %!error unidinv ()
 %!error unidinv (1)
 %!error unidinv (1,2,3)
-%!error unidinv (ones(3),ones(2))
-%!error unidinv (ones(2),ones(3))
+%!error unidinv (ones (3), ones (2))
+%!error unidinv (ones (2), ones (3))
 %!error unidinv (i, 2)
 %!error unidinv (2, i)
 

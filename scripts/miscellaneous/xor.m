@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {@var{z} =} xor (@var{x}, @var{y})
-## Return the `exclusive or' of the entries of @var{x} and @var{y}.
+## Return the @dfn{exclusive or} of the entries of @var{x} and @var{y}.
 ## For boolean expressions @var{x} and @var{y},
 ## @code{xor (@var{x}, @var{y})} is true if and only if one of @var{x} or
 ## @var{y} is true.  Otherwise, for @var{x} and @var{y} both true or both
@@ -60,12 +60,12 @@ function z = xor (x, y)
 
 endfunction
 
-%!assert((xor ([1, 1, 0, 0], [0, 1, 0, 1]) == [1, 0, 0, 1]
-%! && xor ([i, i, 0, 0], [1, 0, 1, 0]) == [0, 1, 1, 0]));
 
-%!assert(all (all (xor (eye (2), fliplr (eye (2))) == ones (2))));
+%!assert (xor ([1, 1, 0, 0], [0, 1, 0, 1]), logical ([1, 0, 0, 1]))
+%!assert (xor ([i, i, 0, 0], [1, 0, 1, 0]), logical ([0, 1, 1, 0]))
 
-%!error xor ();
+%!assert (xor (eye (2), fliplr (eye (2))), logical (ones (2)))
 
-%!error xor (1, 2, 3);
+%!error xor ()
+%!error xor (1, 2, 3)
 

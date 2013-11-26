@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -21,6 +21,7 @@
 ## Array row or command separator.
 ## @seealso{comma}
 ## @end deftypefn
+
 
 ## Mark file as being tested.  No real test needed for a documentation .m file
 %!assert (1)

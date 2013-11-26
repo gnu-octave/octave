@@ -1,5 +1,5 @@
-function [ out ] = cack( in )
+function out = cack (in)
 
   out = in.cack;
-        
+
 end

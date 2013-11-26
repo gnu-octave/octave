@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,20 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{rr}, @var{r}, @var{alt})
-## Perform an t test for the null hypothesis @code{@var{rr} * @var{b} =
-## @var{r}} in a classical normal regression model @code{@var{y} =
-## @var{x} * @var{b} + @var{e}}.  Under the null, the test statistic @var{t}
-## follows a @var{t} distribution with @var{df} degrees of freedom.
+## Perform a t test for the null hypothesis
+## @nospell{@code{@var{rr} * @var{b} = @var{r}}} in a classical normal
+## regression model @code{@var{y} = @var{x} * @var{b} + @var{e}}.  Under the
+## null, the test statistic @var{t} follows a @var{t} distribution with
+## @var{df} degrees of freedom.
 ##
 ## If @var{r} is omitted, a value of 0 is assumed.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{@var{rr} * @var{b} != @var{r}}.  If @var{alt} is @code{">"}, the
-## one-sided alternative @code{@var{rr} * @var{b} > @var{r}} is used.
-## Similarly for @var{"<"}, the one-sided alternative @code{@var{rr} *
-## @var{b} < @var{r}} is used.  The default is the two-sided case.
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @nospell{@code{@var{rr} * @var{b} != @var{r}}}.  If @var{alt} is @qcode{">"},
+## the one-sided alternative
+## @nospell{@code{@var{rr} * @var{b} > @var{r}}} is used.  Similarly for
+## @var{"<"}, the one-sided alternative
+## @nospell{@code{@var{rr} * @var{b} < @var{r}}} is used.  The default is the
+## two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
@@ -81,9 +84,9 @@ function [pval, t, df] = t_test_regression (y, x, rr, r, alt)
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
-  elseif strcmp (alt, ">")
+  elseif (strcmp (alt, ">"))
     pval = 1 - cdf;
-  elseif strcmp (alt, "<")
+  elseif (strcmp (alt, "<"))
     pval = cdf;
   else
     error ("t_test_regression: the value '%s' for alt is not possible", alt);
@@ -94,3 +97,4 @@ function [pval, t, df] = t_test_regression (y, x, rr, r, alt)
   endif
 
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -44,10 +44,10 @@ endfunction
 %!shared x,y
 %! x = [-Inf -log(4) 0 log(4) Inf];
 %! y = [0, 0.16, 1/4, 0.16, 0]; 
-%!assert(logistic_pdf ([x, NaN]), [y, NaN], eps);
+%!assert (logistic_pdf ([x, NaN]), [y, NaN], eps)
 
 %% Test class of input preserved
-%!assert(logistic_pdf (single([x, NaN])), single([y, NaN]), eps ("single"));
+%!assert (logistic_pdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error logistic_pdf ()

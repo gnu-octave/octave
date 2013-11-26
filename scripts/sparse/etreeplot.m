@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Ivana Varekova
+## Copyright (C) 2005-2013 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} etreeplot (@var{A})
 ## @deftypefnx {Function File} {} etreeplot (@var{A}, @var{node_style}, @var{edge_style})
 ## Plot the elimination tree of the matrix @var{A} or
-## @xcode{@var{A}+@var{A}'} if @var{A} in not symmetric.  The optional
+## @tcode{@var{A}+@var{A}'} if @var{A} in not symmetric.  The optional
 ## parameters @var{node_style} and @var{edge_style} define the output
 ## style.
 ## @seealso{treeplot, gplot}
@@ -34,3 +34,4 @@ function etreeplot (A, varargin)
 
   treeplot (etree (A+A'), varargin{:});
 endfunction
+

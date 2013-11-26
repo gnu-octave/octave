@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Alexander Barth
+## Copyright (C) 2006-2013 Alexander Barth
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -40,8 +40,8 @@
 ## @end group
 ## @end example
 ##
-## The parseparams function may be used to separate 'regular'
-## arguments and additional arguments given as property/value pairs of
+## The parseparams function may be used to separate regular numeric
+## arguments from additional arguments given as property/value pairs of
 ## the @var{varargin} cell array.
 ##
 ## In the second form of the call, available options are specified directly
@@ -88,7 +88,7 @@ function [reg, varargout] = parseparams (params, varargin)
       if (! size_equal (pnames, values) || ! all (strs(i:2:end)))
         error_as_caller ("options must be given as name-value pairs");
       endif
-      idx = lookup (toupper(names), toupper(pnames), "m");
+      idx = lookup (toupper (names), toupper (pnames), "m");
       if (! all (idx))
         error_as_caller ("unrecognized option: %s", pnames{find (idx == 0, 1)});
       else

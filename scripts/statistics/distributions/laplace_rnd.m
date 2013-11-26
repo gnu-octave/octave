@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -60,15 +60,15 @@ function rnd = laplace_rnd (varargin)
 endfunction
 
 
-%!assert(size (laplace_rnd (3)), [3, 3]);
-%!assert(size (laplace_rnd ([4 1])), [4, 1]);
-%!assert(size (laplace_rnd (4,1)), [4, 1]);
+%!assert (size (laplace_rnd (3)), [3, 3])
+%!assert (size (laplace_rnd ([4 1])), [4, 1])
+%!assert (size (laplace_rnd (4,1)), [4, 1])
 
 %% Test input validation
 %!error laplace_rnd ()
 %!error laplace_rnd (-1)
-%!error laplace_rnd (ones(2))
+%!error laplace_rnd (ones (2))
 %!error laplace_rnd ([2 -1 2])
-%!error laplace_rnd (1, ones(2))
+%!error laplace_rnd (1, ones (2))
 %!error laplace_rnd (1, -1)
 

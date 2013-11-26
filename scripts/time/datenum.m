@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Paul Kienzle
+## Copyright (C) 2006-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -67,7 +67,7 @@
 ## @end itemize
 ##
 ## @strong{Caution:} this function does not attempt to handle Julian
-## calendars so dates before Octave 15, 1582 are wrong by as much
+## calendars so dates before October 15, 1582 are wrong by as much
 ## as eleven days.  Also, be aware that only Roman Catholic countries
 ## adopted the calendar in 1582.  It took until 1924 for it to be
 ## adopted everywhere.  See the Wikipedia entry on the Gregorian
@@ -85,6 +85,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
 
   ## Days until start of month assuming year starts March 1.
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
+  persistent monthlength = [31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31];
 
   if (nargin == 0 || nargin > 6 || 
      (nargin > 2 && (ischar (year) || iscellstr (year))))
@@ -108,7 +109,25 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     endif
   endif
 
-  month(month<1) = 1; ## For compatibility.  Otherwise allow negative months.
+  if (! (isa (year, "double") && isa (month, "double") && isa (day, "double") &&
+         isa (hour, "double") && isa (minute, "double") && isa (second, "double")))
+    error ("datenum: all inputs must be of class double");
+  endif
+
+  month(month<1) = 1;  # For compatibility.  Otherwise allow negative months.
+
+  ## Treat fractional months, by converting the fraction to days
+  if (floor (month) != month)
+    fracmonth = month - floor (month);
+    month = floor (month);
+    if ((mod (month-1,12) + 1) == 2 && 
+        (floor (year/4) - floor (year/100) + floor (year/400)) != 0)
+      ## leap year
+      day += fracmonth * 29;
+    else
+      day += fracmonth * monthlength ((mod (month-1,12) + 1));
+    endif
+  endif
 
   ## Set start of year to March by moving Jan. and Feb. to previous year.
   ## Correct for months > 12 by moving to subsequent years.
@@ -159,19 +178,19 @@ endfunction
 %! assert (datenum (t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);
 
 ## Test mixed vectors and scalars
-%!assert (datenum([2008;2009], 1, 1), [datenum(2008, 1, 1);datenum(2009, 1, 1)]);
-%!assert (datenum(2008, [1;2], 1), [datenum(2008, 1, 1);datenum(2008, 2, 1)]);
-%!assert (datenum(2008, 1, [1;2]), [datenum(2008, 1, 1);datenum(2008, 1, 2)]);
-%!assert (datenum([2008;2009], [1;2], 1), [datenum(2008, 1, 1);datenum(2009, 2, 1)]);
-%!assert (datenum([2008;2009], 1, [1;2]), [datenum(2008, 1, 1);datenum(2009, 1, 2)]);
-%!assert (datenum(2008, [1;2], [1;2]), [datenum(2008, 1, 1);datenum(2008, 2, 2)]);
+%!assert (datenum ([2008;2009],1,1), [datenum(2008,1,1);datenum(2009,1,1)])
+%!assert (datenum (2008, [1;2], 1), [datenum(2008,1,1);datenum(2008,2,1)])
+%!assert (datenum (2008, 1, [1;2]), [datenum(2008,1,1);datenum(2008,1,2)])
+%!assert (datenum ([2008;2009], [1;2], 1), [datenum(2008,1,1);datenum(2009,2,1)])
+%!assert (datenum ([2008;2009], 1, [1;2]), [datenum(2008,1,1);datenum(2009,1,2)])
+%!assert (datenum (2008, [1;2], [1;2]), [datenum(2008,1,1);datenum(2008,2,2)])
 ## And the other orientation
-%!assert (datenum([2008 2009], 1, 1), [datenum(2008, 1, 1) datenum(2009, 1, 1)]);
-%!assert (datenum(2008, [1 2], 1), [datenum(2008, 1, 1) datenum(2008, 2, 1)]);
-%!assert (datenum(2008, 1, [1 2]), [datenum(2008, 1, 1) datenum(2008, 1, 2)]);
-%!assert (datenum([2008 2009], [1 2], 1), [datenum(2008, 1, 1) datenum(2009, 2, 1)]);
-%!assert (datenum([2008 2009], 1, [1 2]), [datenum(2008, 1, 1) datenum(2009, 1, 2)]);
-%!assert (datenum(2008, [1 2], [1 2]), [datenum(2008, 1, 1) datenum(2008, 2, 2)]);
+%!assert (datenum ([2008 2009], 1, 1), [datenum(2008,1,1) datenum(2009,1,1)])
+%!assert (datenum (2008, [1 2], 1), [datenum(2008,1,1) datenum(2008,2,1)])
+%!assert (datenum (2008, 1, [1 2]), [datenum(2008,1,1) datenum(2008,1,2)])
+%!assert (datenum ([2008 2009], [1 2], 1), [datenum(2008,1,1) datenum(2009,2,1)])
+%!assert (datenum ([2008 2009], 1, [1 2]), [datenum(2008,1,1) datenum(2009,1,2)])
+%!assert (datenum (2008, [1 2], [1 2]), [datenum(2008,1,1) datenum(2008,2,2)])
 ## Test string and cellstr inputs
 %!assert (datenum ("5/19/2001"), 730990)
 %!assert (datenum ({"5/19/2001"}), 730990)
@@ -181,5 +200,7 @@ endfunction
 %% Test input validation
 %!error datenum ()
 %!error datenum (1,2,3,4,5,6,7)
-%!error datenum ([1, 2])
-%!error datenum ([1,2,3,4,5,6,7])
+%!error <expected date vector containing> datenum ([1, 2])
+%!error <expected date vector containing> datenum ([1,2,3,4,5,6,7])
+%!error <all inputs must be of class double> datenum (int32 (2000), int32 (1), int32 (1))
+

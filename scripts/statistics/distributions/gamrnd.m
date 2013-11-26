@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -84,10 +84,7 @@ function rnd = gamrnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((a > 0) && (a < Inf) && (b > 0) && (b < Inf))
-      rnd = b * randg (a, sz);
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      rnd = b * randg (a, sz, cls);
     else 
       rnd = NaN (sz, cls);
     endif
@@ -95,41 +92,41 @@ function rnd = gamrnd (a, b, varargin)
     rnd = NaN (sz, cls);
 
     k = (a > 0) & (a < Inf) & (b > 0) & (b < Inf);
-    rnd(k) = b(k) .* randg (a(k));
+    rnd(k) = b(k) .* randg (a(k), cls);
   endif
 
 endfunction
 
 
-%!assert(size (gamrnd (1,2)), [1, 1]);
-%!assert(size (gamrnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (gamrnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (gamrnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (gamrnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (gamrnd (1, 2, 3)), [3, 3]);
-%!assert(size (gamrnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (gamrnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (gamrnd (1,2)), [1, 1])
+%!assert (size (gamrnd (ones (2,1), 2)), [2, 1])
+%!assert (size (gamrnd (ones (2,2), 2)), [2, 2])
+%!assert (size (gamrnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (gamrnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (gamrnd (1, 2, 3)), [3, 3])
+%!assert (size (gamrnd (1, 2, [4 1])), [4, 1])
+%!assert (size (gamrnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (gamrnd (1, 2)), "double");
-%!assert(class (gamrnd (single(1), 2)), "single");
-%!assert(class (gamrnd (single([1 1]), 2)), "single");
-%!assert(class (gamrnd (1, single(2))), "single");
-%!assert(class (gamrnd (1, single([2 2]))), "single");
+%!assert (class (gamrnd (1, 2)), "double")
+%!assert (class (gamrnd (single (1), 2)), "single")
+%!assert (class (gamrnd (single ([1 1]), 2)), "single")
+%!assert (class (gamrnd (1, single (2))), "single")
+%!assert (class (gamrnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error gamrnd ()
 %!error gamrnd (1)
-%!error gamrnd (ones(3),ones(2))
-%!error gamrnd (ones(2),ones(3))
+%!error gamrnd (ones (3), ones (2))
+%!error gamrnd (ones (2), ones (3))
 %!error gamrnd (i, 2)
 %!error gamrnd (2, i)
 %!error gamrnd (1,2, -1)
-%!error gamrnd (1,2, ones(2))
+%!error gamrnd (1,2, ones (2))
 %!error gamrnd (1, 2, [2 -1 2])
-%!error gamrnd (1,2, 1, ones(2))
+%!error gamrnd (1,2, 1, ones (2))
 %!error gamrnd (1,2, 1, -1)
-%!error gamrnd (ones(2,2), 2, 3)
-%!error gamrnd (ones(2,2), 2, [3, 2])
-%!error gamrnd (ones(2,2), 2, 2, 3)
+%!error gamrnd (ones (2,2), 2, 3)
+%!error gamrnd (ones (2,2), 2, [3, 2])
+%!error gamrnd (ones (2,2), 2, 2, 3)
 

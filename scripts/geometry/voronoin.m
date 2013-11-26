@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -28,6 +28,20 @@
 ## contains options passed to the underlying qhull command.
 ## See the documentation for the Qhull library for details
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
+##
+## The default options depend on the dimension of the input:
+##
+## @itemize
+## @item 2-D and 3-D: @var{options} = @code{@{"Qbb"@}}
+##
+## @item 4-D and higher: @var{options} = @code{@{"Qbb", "Qx"@}}
+## @end itemize
+##
+## If @var{options} is not present or @code{[]} then the default arguments are
+## used.  Otherwise, @var{options} replaces the default argument list. 
+## To append user options to the defaults it is necessary to repeat the 
+## default arguments in @var{options}.  Use a null string to pass no arguments.
+##
 ## @seealso{voronoi, convhulln, delaunayn}
 ## @end deftypefn
 
@@ -63,5 +77,7 @@ endfunction
 
 %% FIXME: Need functional tests
 
-%% FIXME: Need input validation tests
+%!error voronoin ()
+%!error voronoin (1,2,3)
+%!error <number of points must be greater than their dimension> voronoin ([1 2])
 

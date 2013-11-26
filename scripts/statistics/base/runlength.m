@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Paul Kienzle
+## Copyright (C) 2005-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -52,8 +52,8 @@ function [count, value] = runlength (x)
 endfunction
 
 
-%!assert (runlength([2 2 0 4 4 4 0 1 1 1 1]), [2 1 3 1 4]);
-%!assert (runlength([2 2 0 4 4 4 0 1 1 1 1]'), [2 1 3 1 4]);
+%!assert (runlength ([2 2 0 4 4 4 0 1 1 1 1]), [2 1 3 1 4])
+%!assert (runlength ([2 2 0 4 4 4 0 1 1 1 1]'), [2 1 3 1 4])
 %!test
 %! [c, v] = runlength ([2 2 0 4 4 4 0 1 1 1 1]);
 %! assert (c, [2 1 3 1 4]);
@@ -63,4 +63,5 @@ endfunction
 %!error runlength ()
 %!error runlength (1, 2)
 %!error runlength (['A'; 'B'])
-%!error runlength (ones(2,2))
+%!error runlength (ones (2,2))
+

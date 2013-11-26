@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 Alois Schloegl
+## Copyright (C) 2004-2013 Alois Schloegl
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isdir (@var{f})
 ## Return true if @var{f} is a directory.
-## @seealso{is_absolute_filename, is_rooted_relative_filename}
+## @seealso{exist, stat, is_absolute_filename, is_rooted_relative_filename}
 ## @end deftypefn
 
 function retval = isdir (f)
@@ -32,8 +32,10 @@ function retval = isdir (f)
 
 endfunction
 
-%!error isdir ();
-%!error isdir (1, 2);
 
-%!assert (isdir (pwd ()));
-%!assert (! isdir ("this is highly unlikely to be a directory name"));
+%!assert (isdir (pwd ()))
+%!assert (! isdir ("this is highly unlikely to be a directory name"))
+
+%!error isdir ()
+%!error isdir (1, 2)
+

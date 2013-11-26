@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -46,15 +46,15 @@ endfunction
 %! x = [-1 0.1 1.1 1.9 3];
 %! v = 0.1:0.2:1.9;
 %! y = [0 0.1 0.1 0.1 0];
-%!assert(empirical_pdf (x, v), y);
+%!assert (empirical_pdf (x, v), y)
 
 %% Test class of input preserved
-%!assert(empirical_pdf (single(x), v), single (y));
-%!assert(empirical_pdf (x, single(v)), single (y));
+%!assert (empirical_pdf (single (x), v), single (y))
+%!assert (empirical_pdf (x, single (v)), single (y))
 
 %% Test input validation
 %!error empirical_pdf ()
 %!error empirical_pdf (1)
 %!error empirical_pdf (1,2,3)
-%!error empirical_inv (1, ones(2))
+%!error empirical_inv (1, ones (2))
 

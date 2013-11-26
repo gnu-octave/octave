@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -78,20 +78,20 @@ function y = postpad (x, l, c, dim)
     y = x(idx{:});
   else
     sz (dim) = l - d;
-    y = cat (dim, x, c * ones (sz));
+    y = cat (dim, x, c(ones (sz)));
   endif
 
 endfunction
 
-%!error postpad ();
-%!error postpad (1);
-%!error postpad (1,2,3,4,5);
-%!error postpad ([1,2], 2, 2,3);
 
-%!assert (postpad ([1,2], 4), [1,2,0,0]);
-%!assert (postpad ([1;2], 4), [1;2;0;0]);
+%!assert (postpad ([1,2], 4), [1,2,0,0])
+%!assert (postpad ([1;2], 4), [1;2;0;0])
+%!assert (postpad ([1,2], 4, 2), [1,2,2,2])
+%!assert (postpad ([1;2], 4, 2), [1;2;2;2])
+%!assert (postpad ([1,2], 2, 2, 1), [1,2;2,2])
 
-%!assert (postpad ([1,2], 4, 2), [1,2,2,2]);
-%!assert (postpad ([1;2], 4, 2), [1;2;2;2]);
+%!error postpad ()
+%!error postpad (1)
+%!error postpad (1,2,3,4,5)
+%!error postpad ([1,2], 2, 2,3)
 
-%!assert (postpad ([1,2], 2, 2, 1), [1,2;2,2]);

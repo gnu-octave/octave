@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -77,6 +77,7 @@ function t = studentize (x, dim)
   endif
 
 endfunction
+
 
 %!assert(studentize ([1,2,3]), [-1,0,1])
 %!assert(studentize (int8 ([1,2,3])), [-1,0,1])

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -80,11 +80,13 @@ function retval = orth (A, tol)
 
 endfunction
 
+
 %!test
-%! for ii=1:20
+%! for i = 1:20
 %!   A = rand (10, 10);
 %!   V = orth (A);
 %!   if (det (A) != 0)
-%!     assert (V'*V, eye (10), 100*eps)
+%!     assert (V'*V, eye (10), 100*eps);
 %!   endif
 %! endfor
+

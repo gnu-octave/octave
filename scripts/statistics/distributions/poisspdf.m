@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -65,21 +65,21 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 2 Inf];
 %! y = [0, exp(-1)*[1 1 0.5], 0];
-%!assert(poisspdf (x, ones(1,5)), y, eps);
-%!assert(poisspdf (x, 1), y, eps);
-%!assert(poisspdf (x, [1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)], eps);
-%!assert(poisspdf ([x, NaN], 1), [y, NaN], eps);
+%!assert (poisspdf (x, ones (1,5)), y, eps)
+%!assert (poisspdf (x, 1), y, eps)
+%!assert (poisspdf (x, [1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)], eps)
+%!assert (poisspdf ([x, NaN], 1), [y, NaN], eps)
 
 %% Test class of input preserved
-%!assert(poisspdf (single([x, NaN]), 1), single([y, NaN]), eps("single"));
-%!assert(poisspdf ([x, NaN], single(1)), single([y, NaN]), eps("single"));
+%!assert (poisspdf (single ([x, NaN]), 1), single ([y, NaN]), eps ("single"))
+%!assert (poisspdf ([x, NaN], single (1)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error poisspdf ()
 %!error poisspdf (1)
 %!error poisspdf (1,2,3)
-%!error poisspdf (ones(3),ones(2))
-%!error poisspdf (ones(2),ones(3))
+%!error poisspdf (ones (3), ones (2))
+%!error poisspdf (ones (2), ones (3))
 %!error poisspdf (i, 2)
 %!error poisspdf (2, i)
 

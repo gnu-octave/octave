@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -67,30 +67,30 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 2];
 %! y = 1/pi * ( 2 ./ ((x-1).^2 + 2^2) );
-%!assert(cauchy_pdf (x, ones(1,5), 2*ones(1,5)), y);
-%!assert(cauchy_pdf (x, 1, 2*ones(1,5)), y);
-%!assert(cauchy_pdf (x, ones(1,5), 2), y);
-%!assert(cauchy_pdf (x, [-Inf 1 NaN 1 Inf], 2), [NaN y(2) NaN y(4) NaN]);
-%!assert(cauchy_pdf (x, 1, 2*[0 1 NaN 1 Inf]), [NaN y(2) NaN y(4) NaN]);
-%!assert(cauchy_pdf ([x, NaN], 1, 2), [y, NaN]);
+%!assert (cauchy_pdf (x, ones (1,5), 2*ones (1,5)), y)
+%!assert (cauchy_pdf (x, 1, 2*ones (1,5)), y)
+%!assert (cauchy_pdf (x, ones (1,5), 2), y)
+%!assert (cauchy_pdf (x, [-Inf 1 NaN 1 Inf], 2), [NaN y(2) NaN y(4) NaN])
+%!assert (cauchy_pdf (x, 1, 2*[0 1 NaN 1 Inf]), [NaN y(2) NaN y(4) NaN])
+%!assert (cauchy_pdf ([x, NaN], 1, 2), [y, NaN])
 
 %% Test class of input preserved
-%!assert(cauchy_pdf (single([x, NaN]), 1, 2), single([y, NaN]), eps("single"));
-%!assert(cauchy_pdf ([x, NaN], single(1), 2), single([y, NaN]), eps("single"));
-%!assert(cauchy_pdf ([x, NaN], 1, single(2)), single([y, NaN]), eps("single"));
+%!assert (cauchy_pdf (single ([x, NaN]), 1, 2), single ([y, NaN]), eps ("single"))
+%!assert (cauchy_pdf ([x, NaN], single (1), 2), single ([y, NaN]), eps ("single"))
+%!assert (cauchy_pdf ([x, NaN], 1, single (2)), single ([y, NaN]), eps ("single"))
 
 %% Cauchy (0,1) == Student's T distribution with 1 DOF
 %!test
 %! x = rand (10, 1);
-%! assert(cauchy_pdf (x, 0, 1), tpdf (x, 1), eps);
+%! assert (cauchy_pdf (x, 0, 1), tpdf (x, 1), eps);
 
 %% Test input validation
 %!error cauchy_pdf ()
 %!error cauchy_pdf (1,2)
 %!error cauchy_pdf (1,2,3,4)
-%!error cauchy_pdf (ones(3),ones(2),ones(2))
-%!error cauchy_pdf (ones(2),ones(3),ones(2))
-%!error cauchy_pdf (ones(2),ones(2),ones(3))
+%!error cauchy_pdf (ones (3), ones (2), ones (2))
+%!error cauchy_pdf (ones (2), ones (3), ones (2))
+%!error cauchy_pdf (ones (2), ones (2), ones (3))
 %!error cauchy_pdf (i, 2, 2)
 %!error cauchy_pdf (2, i, 2)
 %!error cauchy_pdf (2, 2, i)

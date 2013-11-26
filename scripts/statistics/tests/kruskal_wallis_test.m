@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{pval}, @var{k}, @var{df}] =} kruskal_wallis_test (@var{x1}, @dots{})
-## Perform a Kruskal-Wallis one-factor "analysis of variance".
+## Perform a Kruskal-Wallis one-factor analysis of variance.
 ##
 ## Suppose a variable is observed for @var{k} > 1 different groups, and
 ## let @var{x1}, @dots{}, @var{xk} be the corresponding data vectors.
@@ -36,9 +36,10 @@
 ## where @var{sum_ties} is the sum of @var{t}^2 - @var{t} over each group
 ## of ties where @var{t} is the number of ties in the group and @var{n}
 ## is the total number of values in the input data.  For more info on
-## this adjustment see "Use of Ranks in One-Criterion Variance Analysis"
-## in Journal of the American Statistical Association, Vol. 47,
-## No. 260 (Dec 1952) by William H. Kruskal and W. Allen Wallis.
+## this adjustment see William H. Kruskal and W. Allen Wallis,
+## @cite{Use of Ranks in One-Criterion Variance Analysis}, 
+## Journal of the American Statistical Association, Vol. 47,
+## No. 260 (Dec 1952).
 ##
 ## The p-value (1 minus the CDF of this distribution at @var{k}) is
 ## returned in @var{pval}.
@@ -94,5 +95,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
 
 endfunction
 
+
 ## Test with ties
-%!assert (abs(kruskal_wallis_test([86 86], [74]) - 0.157299207050285) < 0.0000000000001)
+%!assert (abs (kruskal_wallis_test ([86 86], [74]) - 0.157299207050285) < 0.0000000000001)
+

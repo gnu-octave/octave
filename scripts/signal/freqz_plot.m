@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2012 John W. Eaton
+## Copyright (C) 2002-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -64,3 +64,4 @@ function freqz_plot (w, h)
   axis ([w(1), w(n)], "autoy", "label");
 
 endfunction
+

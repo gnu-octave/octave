@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Peter Ekberg
+## Copyright (C) 1999-2013 Peter Ekberg
 ##
 ## This file is part of Octave.
 ##
@@ -44,5 +44,9 @@ function retval = rosser ()
 
 endfunction
 
-%!assert (size(rosser()), [8,8])
-%!error (rosser(1))
+
+%!assert (size (rosser ()), [8,8])
+%!assert (rosser ()([1, end]), [611, 99])
+
+%!error (rosser (1))
+

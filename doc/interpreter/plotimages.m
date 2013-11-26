@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 John W. Eaton and David Bateman
+## Copyright (C) 2007-2013 John W. Eaton and David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@ function plotimages (nm, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d", typ];
   endif
 
   if (strcmp(typ , "txt"))
@@ -34,11 +34,17 @@ function plotimages (nm, typ)
   elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
-    print (cstrcat (nm, ".", typ), d_typ)    
+    xlabel ("x");
+    ylabel ("sin (x)");
+    title ("Simple 2-D Plot");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "hist"))
     rand ("state", 2);
     hist (randn (10000, 1), 30);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    xlabel ("Value");
+    ylabel ("Count");
+    title ("Histogram of 10,000 normally distributed random numbers");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "errorbar"))
     rand ("state", 2);
     x = 0:0.1:10;
@@ -47,32 +53,47 @@ function plotimages (nm, typ)
     yu = 0.1 .* rand (size (x));
     errorbar (x, sin (x), yl, yu);
     axis ([0, 10, -1.1, 1.1]);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    xlabel ("x");
+    ylabel ("sin (x)");
+    title ("Errorbar plot of sin (x)");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    title ("Example polar plot from 0 to 10*pi");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "mesh"))
     tx = ty = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (tx, ty);
     r = sqrt (xx .^ 2 + yy .^ 2) + eps;
     tz = sin (r) ./ r;
     mesh (tx, ty, tz);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    xlabel ("tx");
+    ylabel ("ty");
+    zlabel ("tz");
+    title ("3-D Sombrero plot");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "plot3"))
     t = 0:0.1:10*pi;
     r = linspace (0, 1, numel (t));
     z = linspace (0, 1, numel (t));
     plot3 (r.*sin(t), r.*cos(t), z);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    xlabel ("r.*sin (t)");
+    ylabel ("r.*cos (t)");
+    zlabel ("z");
+    title ("plot3 display of 3-D helix");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "extended"))
     x = 0:0.01:3;
-    plot(x,erf(x));
+    plot (x,erf(x));
     hold on;
-    plot(x,x,"r");
-    axis([0, 3, 0, 1]);
-    text(0.65, 0.6175, cstrcat('\leftarrow x = {2/\surd\pi {\fontsize{16}',
-      '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175'))
-    print (cstrcat (nm, ".", typ), d_typ)
+    plot (x,x,"r");
+    axis ([0, 3, 0, 1]);
+    text (0.65, 0.6175, ['\leftarrow x = {2/\surd\pi {\fontsize{16}' ...
+          '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175']);
+    xlabel ("x");
+    ylabel ("erf (x)");
+    title ("erf (x) with text annotation");
+    print ([nm "." typ], d_typ);
   else
     error ("unrecognized plot requested");
   endif

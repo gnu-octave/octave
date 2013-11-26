@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2009-2010 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -55,3 +55,4 @@ function [x, y] = validargs (caller, x, y, byrows_arg)
   endif
 
 endfunction
+

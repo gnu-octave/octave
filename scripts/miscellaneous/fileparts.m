@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2012 John W. Eaton
+## Copyright (C) 2003-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -25,39 +25,40 @@
 
 function [directory, name, extension, version] = fileparts (filename)
 
-  if (nargin == 1)
-    if (ischar (filename))
-      ds = strchr (filename, filesep ("all"), 1, "last");
-      if (isempty (ds))
-        ds = 0;
-      endif
-      es = rindex (filename, ".");
-      ## These can be the same if they are both 0 (no dir or ext).
-      if (es <= ds)
-        es = length(filename)+1;
-      endif
-      if (ds == 0)
-        directory = "";
-      elseif (ds == 1)
-        directory = filename(1);
-      else
-        directory = filename(1:ds-1);
-      endif
-      name = filename(ds+1:es-1);
-      if (es > 0 && es <= length (filename))
-        extension = filename(es:end);
-      else
-        extension = "";
-      endif
-      version = "";
-    else
-      error ("fileparts: expecting FILENAME argument to be a string");
-    endif
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  if (! ischar (filename) || rows (filename) > 1)
+    error ("fileparts: FILENAME must be a single string");
+  endif
+
+  ds = strchr (filename, filesep ("all"), 1, "last");
+  if (isempty (ds))
+    ds = 0;
+  endif
+  es = rindex (filename, ".");
+  ## These can be the same if they are both 0 (no dir or ext).
+  if (es <= ds)
+    es = length (filename)+1;
+  endif
+  if (ds == 0)
+    directory = "";
+  elseif (ds == 1)
+    directory = filename(1);
+  else
+    directory = filename(1:ds-1);
+  endif
+  name = filename(ds+1:es-1);
+  if (es > 0 && es <= length (filename))
+    extension = filename(es:end);
+  else
+    extension = "";
+  endif
+  version = "";
+
 endfunction
+
 
 %!test
 %! [d, n, e] = fileparts ("file");
@@ -94,3 +95,10 @@ endfunction
 %!test
 %! [d, n, e] = fileparts (".ext");
 %! assert (strcmp (d, "") && strcmp (n, char (zeros (1, 0))) && strcmp (e, ".ext"));
+
+%% Test input validation
+%!error fileparts ()
+%!error fileparts (1,2)
+%!error <FILENAME must be a single string> fileparts (1)
+%!error <FILENAME must be a single string> fileparts (["a"; "b"])
+

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -63,9 +63,10 @@ contributing additional functions for it, and by reporting any problems
 you may have.
 
 @menu
-* Acknowledgements::            
-* How You Can Contribute to Octave::  
-* Distribution::                
+* Acknowledgements::
+* Citing Octave in Publications::
+* How You Can Contribute to Octave::
+* Distribution::
 @end menu
 
 @node Acknowledgements
@@ -86,7 +87,7 @@ supporting the development of Octave:
 @itemize @bullet
 @item
 The United States Department of Energy, through grant number
-DE-FG02-04ER25635.
+@nospell{DE-FG02-04ER25635}.
 
 @item
 Ashok Krishnamurthy, David Hudak, Juan Carlos Chaves, and Stanley
@@ -98,7 +99,7 @@ CTS-9708497, CTS-9311420, CTS-8957123, and CNS-0540147.
 
 @item
 The industrial members of the Texas-Wisconsin Modeling and Control
-Consortium (@uref{http://www.che.utexas.edu/twmcc, TWMCC}).
+Consortium (@url{http://www.che.utexas.edu/twmcc, TWMCC}).
 
 @item
 The Paul A. Elfers Endowed Chair in Chemical Engineering at the
@@ -132,7 +133,7 @@ Advanced Technology Program under Grant No. 003658-078.
 Noel Bell, Senior Engineer, Texaco Chemical Company, Austin Texas.
 
 @item
-John A. Turner, Group Leader, Continuum Dynamics (CCS-2), Los Alamos
+John A. Turner, Group Leader, Continuum Dynamics @nospell{(CCS-2)}, Los Alamos
 National Laboratory, for registering the @url{octave.org} domain name.
 
 @item
@@ -145,6 +146,20 @@ Richard Stallman, for writing GNU.
 
 This project would not have been possible without the GNU software used
 in and to produce Octave.
+
+@node Citing Octave in Publications
+@unnumberedsec Citing Octave in Publications
+@cindex Citing Octave
+@cindex Citations
+
+In view of the many contributions made by numerous developers over many years
+it is common courtesy to cite Octave in publications when it has been used 
+during the course of research or the preparation of figures.  The
+@code{citation} function can automatically generate a recommended citation
+text for Octave or any of its packages.  See the help text below on how to
+use @code{citation}.
+
+@DOCSTRING(citation)
 
 @node How You Can Contribute to Octave
 @unnumberedsec How You Can Contribute to Octave

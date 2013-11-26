@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -90,12 +90,14 @@ function s = spaugment (A, c)
   s = [ c * speye(m, m), A; A', sparse(n, n)];
 endfunction
 
+
 %!testif HAVE_UMFPACK
-%! m = 11; n = 10; mn = max(m ,n);
+%! m = 11; n = 10; mn = max (m ,n);
 %! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
 %! x0 = A \ ones (m,1);
 %! s = spaugment (A);
 %! [L, U, P, Q] = lu (s);
 %! x1 = Q * (U \ (L \ (P  * [ones(m,1); zeros(n,1)])));
 %! x1 = x1(end - n + 1 : end);
-%! assert (x1, x0, 1e-6)
+%! assert (x1, x0, 1e-6);
+

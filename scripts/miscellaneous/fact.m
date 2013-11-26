@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 Jordi Gutiérrez Hermoso 
+## Copyright (C) 2007-2013 Jordi Gutiérrez Hermoso 
 ## Copyright (C) 2007 Stallmanfacts.com
 ##
 ## This file is part of Octave.
@@ -24,14 +24,14 @@
 ## @end deftypefn
 
 
-function f = fact()
-  persistent wisdom = \
+function f = fact ()
+  persistent wisdom = ...
       {
        "Richard Stallman takes notes in binary.";
        "Richard Stallman doesn't need sudo. I will make him a sandwich anyway.";
        "Richard Stallman is my shephurd, and I am his GNU.";
        "Richard Stallman doesn't wget, Richard Stallman wdemands!";
-       "Richard Stallman can touch MC Hammer";
+       "Richard Stallman can touch MC Hammer.";
        "Richard Stallman doesn't read web pages. They write to him.";
        "Richard Stallman gets 9 bits to the byte.";
        "Richard Stallman doesn't really believe in open software, because it's not free enough.";
@@ -50,48 +50,48 @@ function f = fact()
        "Richard Stallman eats ethernet cables. That's why they invented wireless.";
        "Richard Stallman has a katana. 'Nuff said.";
        "Richard Stallman wrote a program that divides by zero.";
-       "Ricahrd Stallman doesn't use zip drives, he just squeezes the hard drive.";
+       "Richard Stallman doesn't use zip drives; he just squeezes the hard drive.";
        "Richard Stallman's compiler is afraid to report errors.";
        "Richard Stallman wrote the compiler God used. The Big Bang was the Universe's first segfault.";
        "Richard Stallman successfully compiled a kernel of popcorn.";
-       "Richard Stallman doesn't write programs, they write themselves out of reverence.";
+       "Richard Stallman doesn't write programs; they write themselves out of reverence.";
        "Richard Stallman can make infinite loops end.";
        "Richard Stallman's anti-virus programs cures HIV.";
        "Richard Stallman's computer doesn't have a clock; it defines what time it is.";
        "Richard Stallman wrote a program to compute the last digit of pi.";
-       "Richard Stallman doesn't use web browsers. He sends a link to a demon that uses wget to fetch the page and sends it back to him.";
+       "Richard Stallman doesn't use web browsers. He sends a link to a daemon that uses wget to fetch the page and sends it back to him.";
        "Richard Stallman can solve the halting problem... in polynomial time.";
        "For Richard Stallman, polynomial time is O(1).";
        "Richard Stallman didn't \"write\" Emacs or created it in his own image. Richard Stallman made Emacs an instance of himself.";
        "Richard Stallman can coerce meaningful data from /dev/null.";
        "Some people wear Linus Torvalds pyjamas to bed, Linus Torvalds wears Richard Stallman pyjamas.";
-       "There is no software development process, only a bunch of programs Richard Stallman allows to exist. ";
-       "Richard Stallman spends his leisure time programming with Guile on GNU Hurd. ";
+       "There is no software development process, only a bunch of programs Richard Stallman allows to exist.";
+       "Richard Stallman spends his leisure time programming with Guile on GNU Hurd.";
        "Richard Stallman's left and right hands are named \"(\" and \")\" ";
-       "Richard Stallman first words were actually syscalls. ";
-       "Richard Stallman didn't create the singularity. He is the singularity. GNU/Linux is only the event horizon. ";
+       "Richard Stallman first words were actually syscalls.";
+       "Richard Stallman didn't create the singularity. He is the singularity. GNU/Linux is only the event horizon.";
        "When Richard Stallman pipes to more, he gets less ";
-       "Richard Stallman never showers: he runs 'make clean'. ";
-       "Richard Stallman needs neither mouse nor keyboard to operate his computer. He just stares it down until it does what he wants. ";
-       "Richard Stallman didn't write the GPL. He is the GPL. ";
-       "Richad Stallman's pinky finger is really a USB memory stick. ";
-       "Richard Stallman called his operating system GNU because he created it before computers existed, when actual gnus were used for calcuations. ";
-       "In Soviet Russia, Richard Stallman is still Richard Stallman! ";
-       "Richard Stallman's flute only plays free music. ";
+       "Richard Stallman never showers; he runs 'make clean'.";
+       "Richard Stallman needs neither mouse nor keyboard to operate his computer. He just stares it down until it does what he wants.";
+       "Richard Stallman didn't write the GPL. He is the GPL.";
+       "Richard Stallman's pinky finger is really a USB memory stick.";
+       "Richard Stallman called his operating system GNU because he created it before computers existed, when actual gnus were used for calcuations.";
+       "In Soviet Russia, Richard Stallman is still Richard Stallman!";
+       "Richard Stallman's flute only plays free music.";
        "When Richard Stallman uses floats, there are no rounding errors.";
-       "Richard Stallman wrote a program so powerful, it knows the question to 42.";
+       "Richard Stallman wrote a program so powerful it knows the question to 42.";
        "Richard Stallman released his own DNA under GNU FDL.";
        "Richard Stallman knows the entire wikipedia by heart, markup included.";
        "Richard Stallman wrote the HAL9000 OS.";
        "Richard Stallman's laser pointer is a lightsaber.";
-       "Richard Stallman never steps down; he shifts the universe up .";
+       "Richard Stallman never steps down; he shifts the universe up.";
        "Richard Stallman doesn't maintain code; he stares at it until it fixes itself out of reverence.";
        "Richard Stallman doesn't use an editor; he sets the fundamental constants of the universe so that a magnetic platter with his code on it evolves itself.";
        "Richard Stallman doesn’t code; he dares the computer to not do his bidding.";
-       "Global warming is caused by Richard Stallman’s rage toward non-free software.";
+       "Global warming is caused by Richard Stallman's rage towards non-free software.";
        "Rather than being birthed like a normal child, Richard Stallman instead instantiated himself polymorphically. Shortly thereafter he grew a beard.";
-       "Richard Stallman discovered extra-terrestrial life but killed them because they used non-free software.";
-       "Richard Stallman doesn't evaluate expressions, expressions evaluate to Richard Stallman.";
+       "Richard Stallman discovered extra-terrestrial life but killed them because they distributed non-free software.";
+       "Richard Stallman doesn't evaluate expressions; expressions evaluate to Richard Stallman.";
        "Richard Stallman can see Russia from his house.";
        "Richard Stallman proved P=NP, twice!";
        "Richard Stallman knows of an unfixed bug in TeX.";
@@ -118,7 +118,7 @@ function f = fact()
        "Richard Satallman can make any operating system free, free from drivers.";
        "Richard Stallman programmed Chuck Norris.";
        "Behind Richard Stallman's beard there is another fist, to code faster.";
-       "Richard Stallman won a Suduku that started with only one number in each line";
+       "Richard Stallman won a Sudoku that started with only one number in each line.";
        "Richard Stallman's brain compiles and runs C code.";
        "Richard Stallman wrote the first version of Emacs using Emacs.";
        "Richard Stallman never gonna give you up, never gonna let you down, never gonna run around and desert you, never gonna make you cry, never gonna say goodbye, never gonna tell a lie and hurt you.";
@@ -127,15 +127,15 @@ function f = fact()
        "Richard Stallman will revert the big rip by adding parenthesis to the dark matter.";
        "When you make a Google search and it doesn't find the answer, Google gently consults Richard Stallman.";
        "Richard Stallman's uptime is over 53 years. And counting up.";
-       "Richard Stallman's portable music player plays ogg and WMA.";
+       "Richard Stallman's portable music player can play ogg and WMA, but is too afraid to invoke Richard Stallman's wrath by playing WMA. Ogg it is, then.";
        "Richard Stallman will never die, but may some day go to /dev/null.";
        "Richard Stallman once got swine flu, but it got cleansed by hereditay GPL and thus got assimilated.";
-       "Richard Stallman don't cut his hair because there are no GNU/Scissors";
+       "Richard Stallman don't cut his hair because there are no GNU/Scissors.";
        "Richard Stallman is the one who trims Chuck Norris beard. And he does it freely, of course.";
        "Richard Stallman does not take bath, for the hydroelectric company uses proprietary software.";
        "Agent Smith loves Richard Stallman's scent.";
        "Richard Stallman is the One.";
-       "\"They can take our lives, but they can never take our freedom.\" Willian Wallace after a litle talk with Richard Stallman.";
+       "\"They can take our lives, but they can never take our freedom.\" -- William Wallace after a little talk with Richard Stallman.";
        "Richard Stallman can connect to any brain using an Emacs ssh client.";
        "Richard Stallman ported Emacs to Intel 4004 chip.";
        "Richard Stallman did not write GNU Emacs, he simply read the source code from /dev/null.";
@@ -147,9 +147,8 @@ function f = fact()
        "When Richard Stallman runs /bin/false, it returns \"true\".";
        "Richard Stallman doesn't like money, because banks don't run on free software.";
        "Richard Stallman user GNU tar to compress air.";
-       "Richard Stallman was installed in the world, it runs on a free program ..";
        "When Richard Stallman reports a bug, the bug prefers to squash itself instead of facing Richard Stallman's wrath.";
-       "There is no Windows in Richard Stallman's house... only Doors...";
+       "There are no Windows in Richard Stallman's house... only Doors...";
        "Richard Stallman doesn't like neither PCs-Intel nor Burger King... He prefers e-Macs...";
        "Richard Stallman can use grep to find Jimmy Hoffa.";
        "Richard Stallman made it possible to not absolutely abhor HPUX.";
@@ -161,8 +160,8 @@ function f = fact()
        "Richard Stallman doesn't need a qwerty/dvorak keyboard only two buttons \"1\" and \"0\" and his erect penis.";
        "On the first day Richard Stallman said M-x create-light.";
        "Richard Stallman once went out of scope for a while. The garbage collector never dared to touch him.";
-       "Richard Stallman does not compile; he closes his eyes, and see energy lines created between bit blocks by the compiler optimizations...";
-       "intx80 first calls Richard Stallman before calling sys_call";
+       "Richard Stallman does not compile; he closes his eyes, and see energy lines created between bit blocks by the compiler optimizations.";
+       "intx80 first calls Richard Stallman before calling sys_call.";
        "Tron is actually a biographical story about Richard Stallman. The director decided to tone it down or audiences wouldn't find it believable.";
        "Richard Stallman always wears a red shirt to make sure that whatever attacks his away-team has to go through him first.";
        "kill -9 invokes Richard Stallman's rage against a process.";
@@ -176,12 +175,12 @@ function f = fact()
        "If Richard Stallman's beard were ever trimmed, the clippings would re-marshal into an exact copy of Richard Stallman.";
        "Richard Stallman never sleeps because he altered his own source to gain background garbage collection.";
        "Richard Stallman's doctor can retrieve a blood sample via CVS.";
-       "Richard Stallman can touch this";
+       "Richard Stallman can touch this.";
        "Because Richard Stallman's DNA is licensed under the FDL, his doctor can't draw his blood without violating HIPAA.";
-       "Richard Stallman can remove his own appendix, using only gdb.";
+       "Richard Stallman can remove his own appendix, using only GDB.";
        "Richard Stallman's DNA includes debugging symbols. But he doesn't need them.";
        "Richard Stallman met Chuck Norris once. Chuck tried a roundhouse, but Richard bashed him in the skull.";
-       "Richard Stallman doesn't need to buy a bigger hard drive. He can compress data infinitely. ";
+       "Richard Stallman doesn't need to buy a bigger hard drive. He can compress data infinitely.";
        "When Richard Stallman cannot take your call, his beard answers the phone for you.";
        "The R in RMS stands for RMS.";
        "Richard Stallman can parse HTML with regular expressions.";
@@ -194,24 +193,24 @@ function f = fact()
        "After being unable to satisfy my wife for years, Richard Stallman was able to single-handedly unlock her orgasm within seconds and managed to write a texinfo manual minutes later for other users.";
        "Richard Stallman's tabbed browser is a set to wget/telnet fg/bg processes.";
        "There is no chin under Richard Stallman' beard. There's only another beard. Recursively.";
-       "Stallman can chown anything! stallman@stallman~$ chown stallman:stallman Earth (for example)";
+       "Richard Stallman can chown anything! stallman@stallman~$ chown stallman:stallman Earth (for example)";
        "Richard Stallman freed his beard so he can always check what's in it.";
        "In the beginning was the Word, and the Word was with RMS, and the Word was GNU.";
        "RMS means \"RMS means Stallman\"";
        "Richard Stallman is the babelfish of his own speeches.";
        "Richard Stallman wrote his own library and lives in it.";
        "Richard Stallman found Waldo using grep in /dev/null";
-       "Richard Stallman doesn't sleep; he is compiling";
+       "Richard Stallman doesn't sleep; he is compiling.";
        "Richard Stallman will get Coca Cola to release their recipe under the GPL.";
        "Richard Stallman doesn't change clothes. He makes case mods.";
        "Richard Stallman compiled the first version of gcc with an hexadecimal editor.";
-       "Richard Stallman will be the last guest on Linux Outlaws";
+       "Richard Stallman will be the last guest on Linux Outlaws.";
        "Richard Stallman calculates the universe's entropy by exploiting forced stack overflows.";
        "Richard Stallman's consciousness will one day become the singularity, which will create Deep Thought, and answer the meaning of life, the universe and everything.";
        "C is actually written in RMS.";
        "Richard Stallman can write software that does not have a buffer overflow when counting money lost by Jerome Kerviel.";
        "There were no double rainbows before Richard Stallman.";
-       "Chuck Norris had to shorten his beard in the presence of Stallman because two beards that awsome, so close would segfault the universe (again).";
+       "Chuck Norris had to shorten his beard in the presence of Richard Stallman because two beards that awsome, so close would segfault the universe (again).";
        "RMS is Titanic.";
        "Richard Stallman is the answer to the Turing Test.";
        "Richard Stallman's beard makes ads for Gillette and Braun appear.";
@@ -225,24 +224,41 @@ function f = fact()
        "Richard Stallman doesn't always run an OS kernel, but when he does he prefers GNU/Hurd. He is... the most interesting hacker in the world. Stay free, my friends.";
        "When Richard Stallman gets hungry, he just picks debris from his foot and eats it.";
        "Richard Stallman can GPL your code just by looking at it funny.";
-       "Richard Mathew Stallman loves birds. Birds make auricular love to Richard Mathew Stallman.";
+       "Richard Stallman loves birds. Birds make auricular love to Richard Stallman.";
        "Richard Stallman is so free that the primitive recursive function for computing his liberty causes a stack overflow.";
        "GNU Hurd is taking more than twenty years to develop because Richard Stallman is using a programming language comprised entirely of different lengths of time.";
        "Richard Stallman's beard contains Richard Stallman, whose beard contains Richard Stallman....";
-       "Richard Stallman had a Google Plus account in 2010.";
-       "sudo chown rms:gnu ~/base -R";
+       "Richard Stallman could have had a Google Plus account in 2010. Too bad he didn't want it.";
        "Richard Stallman pipes the Emacs binaries to /dev/dsp before he goes to sleep.";
        "When Richard Stallman counted his fingers as a kid, he always started with 0.";
        "When Richard Stallman's computer gets a virus, he simply applies a GPL license to it which converts the whole botnet to Linux. I mean, GNU/Linux.";
        "Richard Stallman's beard trimmings can cure cancer. Too bad he never shaves.";
-       "Richard Stallman's doesn't kill a process, he just dares it to stay running.";
-       "Richard Stallman exists because he compiled himself into being. ";
+       "Richard Stallman's doesn't kill a process; he just dares it to stay running.";
+       "Richard Stallman exists because he compiled himself into being.";
        "Richard Stallman's first words were in binary. When they couldn't understand him, he wrote a parser.";
        "Richard Stallman doesn't need any codecs, he just opens a multimedia file with Emacs, and reads the bytes of the file as plain text. He then performs all the necessary decoding in his mind. But he refuses to decode files encrypted with DRM, although his mind is able to.";
+       "Richard Stallman was right. Sadly.";
+       "Richard Stallman can wiretap the NSA.";
+       "This is how Richard Stallman created Emacs: http://stallman.org/photos/rms-working/img_0631.jpg";
+       "Join Richard Stallman now and share the software, you'll be a free hacker, you'll be free!";
+       "Richard Stallman has not agreed to the terms and conditions and privacy policy because only he can actually read all of it.";
+       "Richard Stallman knows how of a backdoor to AES, but he respects your freedom and privacy too much to actually use it.";
+       "Richard Stallman will never get tired of being mocked for the foot cheese incident.";
+       "You like to release non-free software around Richard Stallman? I too like to live dangerously...";
+       "Yeah, if could just go ahead and make all software free for Richard Stallman, that'd be great, thanks.";
+       "Richard Stallman knows exactly what you mean when you talk about the cloud. But do you?";
+       "Richard Stallman satisfies Greenspun's Tenth Rule of programming, since his DNA also contains a complete implementation of all of Common Lisp.";
+       "Richard Stallman can violate the GPL. In a vulgar display of power, he once did so with the Emacs source code, but he undid the violation before most people noticed.";
+       "Good guy Richard Stallman does not try to shake you down for money. He will just kindly ask you to comply with the GPL.";
+       "Richard Stallman is in fact also a little sad that Steve Jobs is gone because it has diminished the size of the loyal opposition.";
+       "Richard Stallman can release LLVM and clang under the GPL.";
+       "No, really, Richard Stallman has a katana.";
+       "Every day Richard Stallman finds at least fifteen things in the world to rage about. You can read his findings here: http://stallman.org/archives/polnotes.html"
+       "Some of these Richard Stallman facts are completely true. Seriously.";
        };
 
   w = wisdom{randi([1, numel(wisdom)])};
-  if nargout > 0
+  if (nargout > 0)
     f = w;
   else
     w = wordwrap (w);
@@ -252,18 +268,20 @@ endfunction
 
 function out = wordwrap (w)
   cols = terminal_size ()(2);
-  wc = strsplit (w, " ");
+  wc = ostrsplit (w, " ");
   out = "\n";
   i = 1;
   numwords = numel (wc);
-  while i <= numwords;
+  while (i <= numwords);
     line = wc{i};
-    while (i < numwords && length (newline = cstrcat (line, " ", wc{i+1})) < cols)
+    while (i < numwords
+           && length (newline = [line " " wc{i+1}]) < cols)
       line = newline;
       i++;
     endwhile
-    out = cstrcat (out, line, "\n");
+    out = [out, line, "\n"];
     i++;
   endwhile
-  out = cstrcat(out, "\n");
+  out = [out, "\n"];
 endfunction
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -77,10 +77,7 @@ function rnd = chi2rnd (n, varargin)
 
   if (isscalar (n))
     if ((n > 0) && (n < Inf))
-      rnd = 2 * randg (n/2, sz);
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      rnd = 2 * randg (n/2, sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
@@ -88,33 +85,33 @@ function rnd = chi2rnd (n, varargin)
     rnd = NaN (sz, cls);
 
     k = (n > 0) | (n < Inf);
-    rnd(k) = 2 * randg (n(k)/2);
+    rnd(k) = 2 * randg (n(k)/2, cls);
   endif
 
 endfunction
 
 
-%!assert(size (chi2rnd (2)), [1, 1]);
-%!assert(size (chi2rnd (ones(2,1))), [2, 1]);
-%!assert(size (chi2rnd (ones(2,2))), [2, 2]);
-%!assert(size (chi2rnd (1, 3)), [3, 3]);
-%!assert(size (chi2rnd (1, [4 1])), [4, 1]);
-%!assert(size (chi2rnd (1, 4, 1)), [4, 1]);
+%!assert (size (chi2rnd (2)), [1, 1])
+%!assert (size (chi2rnd (ones (2,1))), [2, 1])
+%!assert (size (chi2rnd (ones (2,2))), [2, 2])
+%!assert (size (chi2rnd (1, 3)), [3, 3])
+%!assert (size (chi2rnd (1, [4 1])), [4, 1])
+%!assert (size (chi2rnd (1, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (chi2rnd (2)), "double");
-%!assert(class (chi2rnd (single(2))), "single");
-%!assert(class (chi2rnd (single([2 2]))), "single");
+%!assert (class (chi2rnd (2)), "double")
+%!assert (class (chi2rnd (single (2))), "single")
+%!assert (class (chi2rnd (single ([2 2]))), "single")
 
 %% Test input validation
 %!error chi2rnd ()
-%!error chi2rnd (ones(3),ones(2))
-%!error chi2rnd (ones(2),ones(3))
+%!error chi2rnd (ones (3), ones (2))
+%!error chi2rnd (ones (2), ones (3))
 %!error chi2rnd (i)
 %!error chi2rnd (1, -1)
-%!error chi2rnd (1, ones(2))
+%!error chi2rnd (1, ones (2))
 %!error chi2rnd (1, [2 -1 2])
-%!error chi2rnd (ones(2,2), 3)
-%!error chi2rnd (ones(2,2), [3, 2])
-%!error chi2rnd (ones(2,2), 2, 3)
+%!error chi2rnd (ones (2,2), 3)
+%!error chi2rnd (ones (2,2), [3, 2])
+%!error chi2rnd (ones (2,2), 2, 3)
 

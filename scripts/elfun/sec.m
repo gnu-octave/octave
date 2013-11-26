@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -30,18 +30,18 @@ function y = sec (x)
     print_usage ();
   endif
 
-  y = 1 ./ cos(x);
+  y = 1 ./ cos (x);
 
 endfunction
+
 
 %!test
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
 %! x = [0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi];
 %! v = [1, 2*rt3/3, rt2, 2, -2, -rt2, -2*rt3/3, -1];
-%! assert(all (abs (sec (x) - v) < sqrt (eps)));
+%! assert (sec (x), v, sqrt (eps));
 
-%!error sec ();
-
-%!error sec (1, 2);
+%!error sec ()
+%!error sec (1, 2)
 

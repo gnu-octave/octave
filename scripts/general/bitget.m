@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman
+## Copyright (C) 2004-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -39,8 +39,11 @@ function C = bitget (A, n)
   endif
 
   if (isa (A, "double"))
-    Amax = log2 (bitmax) + 1;
+    Amax = ceil (log2 (bitmax));
     _conv = @double;
+  elseif (isa (A, "single"))
+    Amax = ceil (log2 (bitmax ("single")));
+    _conv = @single;
   else
     if (isa (A, "uint8"))
       Amax = 8;
@@ -80,11 +83,10 @@ function C = bitget (A, n)
 
 endfunction
 
-%!error bitget (1);
-%!error bitget (1, 2, 3);
 
 %!test
 %! assert (bitget ([4, 14], [3, 3]), logical ([1, 1]));
+%! assert (bitget (single ([4, 14]), [3, 3]), logical ([1, 1]));
 %! pfx = {"", "u"};
 %! for i = 1:2
 %!   for prec = [8, 16, 32, 64]
@@ -93,17 +95,24 @@ endfunction
 %!   endfor
 %! endfor
 
-%!error bitget (0, 0);
-%!error bitget (0, 55);
+%!error bitget (0, 0)
+%!error bitget (0, 55)
 
-%!error bitget (int8 (0), 9);
-%!error bitget (uint8 (0), 9);
+%!error bitget (single (0), 0)
+%!error bitget (single (0), 26)
 
-%!error bitget (int16 (0), 17);
-%!error bitget (uint16 (0), 17);
+%!error bitget (int8 (0), 9)
+%!error bitget (uint8 (0), 9)
 
-%!error bitget (int32 (0), 33);
-%!error bitget (uint32 (0), 33);
+%!error bitget (int16 (0), 17)
+%!error bitget (uint16 (0), 17)
 
-%!error bitget (int64 (0), 65);
-%!error bitget (uint64 (0), 65);
+%!error bitget (int32 (0), 33)
+%!error bitget (uint32 (0), 33)
+
+%!error bitget (int64 (0), 65)
+%!error bitget (uint64 (0), 65)
+
+%!error bitget (1)
+%!error bitget (1, 2, 3)
+

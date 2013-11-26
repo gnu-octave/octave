@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -56,5 +56,5 @@ endfunction
 %!assert (is_leap_year (1800), false)
 %!assert (is_leap_year (1600), true)
 
-%!error is_leap_year (1, 2);
+%!error is_leap_year (1, 2)
 

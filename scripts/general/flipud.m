@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -52,11 +52,11 @@ function y = flipud (x)
 
 endfunction
 
-%!assert((flipud ([1, 2; 3, 4]) == [3, 4; 1, 2]
-%! && flipud ([1, 2; 3, 4; 5, 6]) == [5, 6; 3, 4; 1, 2]
-%! && flipud ([1, 2, 3; 4, 5, 6]) == [4, 5, 6; 1, 2, 3]));
 
-%!error flipud ();
+%!assert (flipud ([1, 2; 3, 4]), [3, 4; 1, 2])
+%!assert (flipud ([1, 2; 3, 4; 5, 6]), [5, 6; 3, 4; 1, 2])
+%!assert (flipud ([1, 2, 3; 4, 5, 6]), [4, 5, 6; 1, 2, 3])
 
-%!error flipud (1, 2);
+%!error flipud ()
+%!error flipud (1, 2)
 

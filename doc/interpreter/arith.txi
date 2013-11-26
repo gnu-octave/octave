@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -34,14 +34,14 @@ sin ([1, 2; 3, 4])
 
 @menu
 * Exponents and Logarithms::
-* Complex Arithmetic::          
-* Trigonometry::                
-* Sums and Products::           
-* Utility Functions::           
-* Special Functions::           
+* Complex Arithmetic::
+* Trigonometry::
+* Sums and Products::
+* Utility Functions::
+* Special Functions::
 * Rational Approximations::
 * Coordinate Transformations::
-* Mathematical Constants::      
+* Mathematical Constants::
 @end menu
 
 @node Exponents and Logarithms
@@ -118,6 +118,24 @@ are named after the base trigonometric function with a @samp{d} suffix.  For
 example, @code{sin} expects an angle in radians while @code{sind} expects an
 angle in degrees.
 
+Octave uses the C library trigonometric functions.  It is expected that these
+functions are defined by the ISO/IEC 9899 Standard.  This Standard is available
+at: @url{http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf}.
+Section F.9.1 deals with the trigonometric functions.  The behavior of most of
+the functions is relatively straightforward.  However, there are some
+exceptions to the standard behavior.  Many of the exceptions involve the
+behavior for -0.  The most complex case is atan2.  Octave exactly implements
+the behavior given in the Standard.  Including
+@tex
+$atan2(\pm0, -0)$ returns $\pm \pi$.
+@end tex
+@ifnottex
+@code{atan2(+- 0, 0)} returns @code{+- pi}.
+@end ifnottex
+
+It should be noted that @sc{matlab} uses different definitions which apparently
+do not distinguish -0.
+
 @DOCSTRING(sin)
 @DOCSTRING(cos)
 @DOCSTRING(tan)
@@ -172,6 +190,7 @@ cos (pi/2)
 @DOCSTRING(asind)
 @DOCSTRING(acosd)
 @DOCSTRING(atand)
+@DOCSTRING(atan2d)
 @DOCSTRING(asecd)
 @DOCSTRING(acscd)
 @DOCSTRING(acotd)
@@ -244,6 +263,8 @@ cos (pi/2)
 
 @DOCSTRING(sign)
 
+@DOCSTRING(signbit)
+
 @node Special Functions
 @section Special Functions
 
@@ -255,6 +276,8 @@ cos (pi/2)
 
 @DOCSTRING(betainc)
 
+@DOCSTRING(betaincinv)
+
 @DOCSTRING(betaln)
 
 @DOCSTRING(bincoeff)
@@ -263,13 +286,25 @@ cos (pi/2)
 
 @DOCSTRING(duplication_matrix)
 
+@DOCSTRING(dawson)
+
+@DOCSTRING(ellipj)
+
+@DOCSTRING(ellipke)
+
 @DOCSTRING(erf)
 
 @DOCSTRING(erfc)
 
 @DOCSTRING(erfcx)
 
+@DOCSTRING(erfi)
+
 @DOCSTRING(erfinv)
+
+@DOCSTRING(erfcinv)
+
+@DOCSTRING(expint)
 
 @DOCSTRING(gamma)
 
@@ -277,7 +312,7 @@ cos (pi/2)
 
 @DOCSTRING(legendre)
 
-@anchor{doc-gammaln}
+@anchor{XREFgammaln}
 @DOCSTRING(lgamma)
 
 @node Rational Approximations

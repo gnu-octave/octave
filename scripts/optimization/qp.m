@@ -1,4 +1,5 @@
-## Copyright (C) 2000-2012 Gabriele Pannocchia.
+## Copyright (C) 2013 Julien Bect
+## Copyright (C) 2000-2013 Gabriele Pannocchia.
 ##
 ## This file is part of Octave.
 ##
@@ -228,15 +229,15 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       if (! isempty (lb) && ! isempty (ub))
         rtol = sqrt (eps);
         for i = 1:n
-          if (abs(lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
+          if (abs (lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
             ## These are actually an equality constraint
-            tmprow = zeros(1,n);
+            tmprow = zeros (1,n);
             tmprow(i) = 1;
             A = [A;tmprow];
             b = [b; 0.5*(lb(i) + ub(i))];
             n_eq = n_eq + 1;
           else
-            tmprow = zeros(1,n);
+            tmprow = zeros (1,n);
             tmprow(i) = 1;
             Ain = [Ain; tmprow; -tmprow];
             bin = [bin; lb(i); -ub(i)];
@@ -364,7 +365,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
             ub = [];
             ctype = repmat ("L", n_in, 1);
             [P, dummy, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
-            if ((status == 180 || status == 181 || status == 151)
+            if ((status == 0)
                 && all (abs (P(n-n_eq+1:end)) < rtol * (1 + norm (btmp))))
               ## We found a feasible starting point
               if (n_eq > 0)
@@ -405,3 +406,17 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
   endif
 
 endfunction
+
+
+%% Test infeasible initial guess (bug #40536)
+%!testif HAVE_GLPK
+%!
+%! H = 1;  q = 0;                # objective: x -> 0.5 x^2
+%! A = 1;  lb = 1;  ub = +inf;   # constraint: x >= 1
+%! x0 = 0;                       # infeasible initial guess
+%!
+%! [x, obj_qp, INFO, lambda] = qp (x0, H, q, [], [], [], [], lb, A, ub);
+%!
+%! assert (isstruct (INFO) && isfield (INFO, "info") && (INFO.info == 0));
+%! assert ([x obj_qp], [1.0 0.5], eps);
+

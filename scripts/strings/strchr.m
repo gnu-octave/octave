@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Jaroslav Hajek
+## Copyright (C) 2008-2013 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -53,7 +53,7 @@ function varargout = strchr (str, chars, varargin)
     ## Index the str into a mask of valid values.
     ## This is slower than it could be because of the +1 issue.
     f = false (256, 1);
-    f(uint8(chars)+1) = true;
+    f(uint8 (chars) + 1) = true;
     ## Default goes via double -- unnecessarily long.
     si = uint32 (str);
     ## in-place is faster than str+1

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -80,9 +80,9 @@ function [pval, lm] = arch_test (y, x, p)
   if ((rx == 1) && (cx == 1))
     x = autoreg_matrix (y, x);
   elseif (! (rx == T))
-    error ("arch_test: either rows(X) == length(Y), or X is a scalar");
+    error ("arch_test: either rows (X) == length (Y), or X is a scalar");
   endif
-  if (! (isscalar(p) && (rem(p, 1) == 0) && (p > 0)))
+  if (! (isscalar (p) && (rem (p, 1) == 0) && (p > 0)))
     error ("arch_test: P must be a positive integer");
   endif
 
@@ -94,3 +94,4 @@ function [pval, lm] = arch_test (y, x, p)
   pval = 1 - chi2cdf (lm, p);
 
 endfunction
+

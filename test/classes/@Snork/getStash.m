@@ -1,5 +1,5 @@
-function [ out ] = getStash(cls)
+function out = getStash (l)
 
-  out = myStash();
-        
+  out = myStash ();
+
 end

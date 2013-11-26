@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -61,17 +61,19 @@ function retval = polyint (p, k)
 
 endfunction
 
+
 %!test
 %! A = [3, 2, 1];
-%! assert (polyint(A),polyint(A,0));
-%! assert (polyint(A),polyint(A'));
-%! assert (polyint(A),[1, 1, 1, 0]);
-%! assert (polyint(A,1),ones(1,4));
+%! assert (polyint (A), polyint (A,0));
+%! assert (polyint (A), polyint (A'));
+%! assert (polyint (A), [1, 1, 1, 0]);
+%! assert (polyint (A,1), ones (1,4));
 
 %!test
-%! A = ones(1,8);
+%! A = ones (1,8);
 %! B = [length(A):-1:1];
-%! assert (polyint(A),[1./B, 0]);
+%! assert (polyint (A), [1./B, 0]);
 
-%!error polyint()
-%!error polyint(ones(2,2))
+%!error polyint ()
+%!error polyint (ones (2,2))
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -21,6 +21,9 @@
 ## @deftypefn {Function File} {} geopdf (@var{x}, @var{p})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the geometric distribution with parameter @var{p}.
+##
+## The geometric distribution models the number of failures (@var{x}-1) of a
+## Bernoulli trial with probability @var{p} before the first success (@var{x}).
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -65,21 +68,21 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 Inf];
 %! y = [0, 1/2, 1/4, NaN];
-%!assert(geopdf (x, 0.5*ones(1,4)), y);
-%!assert(geopdf (x, 0.5), y);
-%!assert(geopdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)]);
-%!assert(geopdf ([x, NaN], 0.5), [y, NaN]);
+%!assert (geopdf (x, 0.5*ones (1,4)), y)
+%!assert (geopdf (x, 0.5), y)
+%!assert (geopdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)])
+%!assert (geopdf ([x, NaN], 0.5), [y, NaN])
 
 %% Test class of input preserved
-%!assert(geopdf (single([x, NaN]), 0.5), single([y, NaN]), 5*eps("single"));
-%!assert(geopdf ([x, NaN], single(0.5)), single([y, NaN]), 5*eps("single"));
+%!assert (geopdf (single ([x, NaN]), 0.5), single ([y, NaN]), 5*eps ("single"))
+%!assert (geopdf ([x, NaN], single (0.5)), single ([y, NaN]), 5*eps ("single"))
 
 %% Test input validation
 %!error geopdf ()
 %!error geopdf (1)
 %!error geopdf (1,2,3)
-%!error geopdf (ones(3),ones(2))
-%!error geopdf (ones(2),ones(3))
+%!error geopdf (ones (3), ones (2))
+%!error geopdf (ones (2), ones (3))
 %!error geopdf (i, 2)
 %!error geopdf (2, i)
 

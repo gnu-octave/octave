@@ -1,11 +1,13 @@
-## Copyright (C) 2010-2012 Ben Abbott
+## Copyright (C) 2010-2013 Ben Abbott
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
+## Octave is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
@@ -30,7 +32,7 @@ function res = isappdata (h, name)
     error ("isappdata: invalid input");
   endif
 
-  for nh = 1:numel(h)
+  for nh = 1:numel (h)
     data = get (h(nh));
     if (isfield (data, "__appdata__") && isfield (data.__appdata__, name))
       res(nh) = true;
@@ -41,8 +43,9 @@ function res = isappdata (h, name)
 
 endfunction
 
+
 %!test
-%! setappdata (0, "hello", "world")
-%! assert (isappdata (0, "hello"), true)
-%!assert (isappdata (0, "foobar"), false)
+%! setappdata (0, "hello", "world");
+%! assert (isappdata (0, "hello"), true);
+%! assert (isappdata (0, "foobar"), false);
 

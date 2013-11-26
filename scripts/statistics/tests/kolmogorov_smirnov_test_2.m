@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -25,11 +25,11 @@
 ## G.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative F
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative F
 ## != G@.  In this case, the test statistic @var{ks} follows a two-sided
-## Kolmogorov-Smirnov distribution.  If @var{alt} is @code{">"}, the
-## one-sided alternative F > G is considered.  Similarly for @code{"<"},
+## Kolmogorov-Smirnov distribution.  If @var{alt} is @qcode{">"}, the
+## one-sided alternative F > G is considered.  Similarly for @qcode{"<"},
 ## the one-sided alternative F < G is considered.  In this case, the
 ## test statistic @var{ks} has a one-sided Kolmogorov-Smirnov
 ## distribution.  The default is the two-sided case.
@@ -102,3 +102,4 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   endif
 
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -23,10 +23,13 @@
 ## magenta and cyan.  This colormap is specifically designed for users of
 ## gnuplot 4.0 where these 6 colors are the allowable ones for patch objects.
 ## The argument @var{n} must be a scalar.
-## If unspecified, a length of 6 is assumed.  Larger values
-## of @var{n} result in a repetition of the above colors.
+## If unspecified, a length of 6 is assumed.  Larger values of @var{n} result
+## in a repetition of the above colors.
 ## @seealso{colormap}
 ## @end deftypefn
+
+## PKG_ADD: colormap ("register", "gmap40");
+## PKG_DEL: colormap ("unregister", "gmap40");
 
 function map = gmap40 (n)
 
@@ -34,24 +37,25 @@ function map = gmap40 (n)
     n = 6;
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("gmap40: argument must be a scalar");
+      error ("gmap40: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  if (n >= 1)
-    map = repmat ([1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1],
-          ceil (n / 6), 1) (1:n, :);
+  if (n > 1)
+    C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
+    map = C(rem (0:(n-1), 6) + 1, :);
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'gmap40' colormap as an image
-%! image (1:6, linspace (0, 1, 6), repmat (1:6, 6, 1)')
-%! axis ([1, 6, 0, 1], "ticy", "xy")
-%! colormap (gmap40 (6))
+%! image (1:6, linspace (0, 1, 6), repmat ((1:6)', 1, 6));
+%! axis ([1, 6, 0, 1], "ticy", "xy");
+%! colormap (gmap40 (6));
 

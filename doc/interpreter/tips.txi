@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -296,20 +296,20 @@ starting double-quote is not part of the string!
 When choosing variable names try to adhere to the following guidelines.
 
 @table @asis
-@item 
-vectors : x,y,z,t,w
+@item vectors :
+x,y,z,t,w
 
-@item
-matrices : A,B,M
+@item matrices :
+A,B,M
 
-@item
-strings : @nospell{str},s
+@item strings :
+@nospell{str},s
 
-@item
-filenames : @nospell{fname}
+@item filenames :
+@nospell{fname}
 
-@item
-cells,@nospell{cellstrs} : c,@nospell{cstr}
+@item cells,@nospell{cellstrs} :
+c,@nospell{cstr}
 @end table
 
 @item
@@ -347,12 +347,12 @@ therefore looks like this
 @example
 @group
 -*- texinfo -*-
-@@deftypefn@{Function File@} @{@@var@{ret@} =@} fn (@dots{})
+@@deftypefn @{Function File@} @{@@var@{ret@} =@} fn (@dots{})
 @@cindex index term
 Help text in Texinfo format.  Code samples should be marked 
 like @@code@{sample of code@} and variables should be marked
 as @@var@{variable@}.
-@@seealso@{fn2@}
+@@seealso@{fn2, fn3@}
 @@end deftypefn
 @end group
 @end example
@@ -366,7 +366,7 @@ functions.  The important aspects of the documentation string are
 This string signals Octave that the following text is in Texinfo format,
 and should be the first part of any help string in Texinfo format.
 
-@item @@deftypefn@{class@} @dots{} @@end deftypefn
+@item @@deftypefn @{class@} @dots{} @@end deftypefn
 The entire help string should be enclosed within the block defined by
 deftypefn.
 
@@ -385,7 +385,13 @@ is then changed appropriately for display.
 All samples of code should be marked with this macro for the same
 reasons as the @@var macro.
 
-@item @@seealso@{function2@}
+@item  @nospell{@@qcode@{"sample_code"@}}
+@itemx @nospell{@@qcode@{'sample_code'@}}
+All samples of code which are quoted should use this more specialized macro.
+This happens frequently when discussing graphics properties such as "position"
+or options such as "on"/"off".
+
+@item @@seealso@{function2, function3@}
 This is a comma separated list of function names that allows cross
 referencing from one function documentation string to another.
 @end table
@@ -394,7 +400,7 @@ Texinfo format has been designed to generate output for online viewing
 with text terminals as well as generating high-quality printed output.
 To these ends, Texinfo has commands which control the diversion of parts
 of the document into a particular output processor.  Three formats are
-of importance: info, HTML and @TeX{}.  These are selected with
+of importance: info, HTML, and @TeX{}.  These are selected with
 
 @example
 @group
@@ -467,8 +473,8 @@ which produces
 The @code{@@group} block prevents the example from being split across a
 page boundary, while the @code{@@result@{@}} macro produces a right
 arrow signifying the result of a command.  If your example is larger than
-20 lines it is better NOT to use grouping so that a reasonable page boundary
-can be calculated.
+20 lines it is better @emph{NOT} to use grouping so that a reasonable page
+boundary can be calculated.
 
 In many cases a function has multiple ways in which it can be called,
 and the @code{@@deftypefnx} macro can be used to give alternatives.  For
@@ -477,8 +483,8 @@ example
 @example
 @group
 -*- texinfo -*-
-@@deftypefn @{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
-@@deftypefnx@{Function File@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
+@@deftypefn  @{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
+@@deftypefnx @{Function File@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
 Help text in Texinfo format.
 @@end deftypefn
 @end group
@@ -556,14 +562,15 @@ for @@var@{n@} or @@var@{k@}.
 @@seealso@{bincoeff, perms@}
 @@end deftypefn
 @end example
+
 @noindent
 which demonstrates most of the concepts discussed above.
 @iftex
 This documentation string renders as
-
 @c Note: use the actual output of info below, rather than try and 
 @c reproduce it here to prevent it looking different from how it would
 @c appear with info.
+
 @example
  -- Function File: C = nchoosek (N, K)
  -- Function File: C = nchoosek (SET, K)

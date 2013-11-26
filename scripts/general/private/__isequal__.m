@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -48,17 +48,13 @@
 
 function t = __isequal__ (nans_compare_equal, x, varargin)
 
-  if (nargin < 3)
-    print_usage ();
-  endif
-
   l_v = nargin - 2;
 
   ## Generic tests.
 
   ## All arguments must either be of the same class or they must be
   ## numeric values.
-  t = (all (strcmp (class(x),
+  t = (all (strcmp (class (x),
                     cellfun ("class", varargin, "uniformoutput", false)))
        || ((isnumeric (x) || islogical (x))
            && all (cellfun ("isnumeric", varargin)
@@ -160,7 +156,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
         t = (l_f_x == length (f_y)) && all (f_x == f_y);
         if (!t)
-          return;
+          break;
         endif
 
         y = y(f_y);
@@ -172,11 +168,18 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
         endif
 
         if (!t)
-          return;
+          break;
         endif
       endfor
 
     endif
   endif
 
+  if (!t)
+    t = false;
+  else
+    t = true;
+  endif
+
 endfunction
+

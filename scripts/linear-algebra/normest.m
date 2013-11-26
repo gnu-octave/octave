@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 David Bateman and Marco Caliari
+## Copyright (C) 2006-2013 David Bateman and Marco Caliari
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -75,13 +75,14 @@ function [n, c] = normest (A, tol = 1e-6)
   rand ("state", v);    # restore state of random number generator
 endfunction
 
+
 %!test
 %! A = toeplitz ([-2,1,0,0]);
-%! assert (normest(A), norm(A), 1e-6);
+%! assert (normest (A), norm (A), 1e-6);
 
 %!test
 %! A = rand (10);
-%! assert (normest(A), norm(A), 1e-6);
+%! assert (normest (A), norm (A), 1e-6);
 
 %% Test input validation
 %!error normest ()

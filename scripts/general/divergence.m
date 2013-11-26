@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Kai Habel
+## Copyright (C) 2009-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -69,7 +69,7 @@ function retval = divergence (varargin)
     dy = varargin{2}(:,1,1)(:);
     dz = varargin{3}(1,1,:)(:);
   else
-    print_usage();
+    print_usage ();
   endif
 
   if ((nargin == 4) || (nargin == 2))
@@ -81,8 +81,8 @@ function retval = divergence (varargin)
       error ("divergence: size of dx and dy must match the respective dimension of X and Y");
     endif
 
-    retval = gradient(varargin{fidx}, dx, dy);
-    retval += gradient(varargin{fidx + 1}.', dy, dx).';
+    retval = gradient (varargin{fidx}, dx, dy);
+    retval += gradient (varargin{fidx + 1}.', dy, dx).';
 
   elseif ((nargin == 6) || (nargin == 3))
     if (!size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))
@@ -105,8 +105,10 @@ function retval = divergence (varargin)
 
 endfunction
 
+
 %!test
-%! [X,Y]=meshgrid(-20:20,-22:22);
-%! div = divergence(X-Y,Y);
-%! assert(all(div(:)==2));
-%! assert(size_equal(X,Y,div));
+%! [X,Y] = meshgrid (-20:20,-22:22);
+%! div = divergence (X-Y,Y);
+%! assert (all (div(:) == 2));
+%! assert (size_equal (X,Y,div));
+

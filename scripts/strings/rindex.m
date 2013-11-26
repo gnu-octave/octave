@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@
 ## @end example
 ##
 ## The @code{rindex} function is equivalent to @code{index} with
-## @var{direction} set to @samp{"last"}.
+## @var{direction} set to @qcode{"last"}.
 ##
 ## @seealso{find, index}
 ## @end deftypefn
@@ -52,7 +52,8 @@ function n = rindex (s, t)
 endfunction
 
 
-%!assert(rindex ("foobarbaz", "b") == 7 && rindex ("foobarbaz", "o") == 3);
+%!assert (rindex ("foobarbaz", "b"), 7)
+%!assert (rindex ("foobarbaz", "o"), 3)
 
 %!test
 %! str = char ("Hello", "World", "Goodbye", "World");

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -84,11 +84,8 @@ function rnd = betarnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((a > 0) && (a < Inf) && (b > 0) && (b < Inf))
-      r = randg (a, sz);
-      rnd = r ./ (r + randg (b, sz));
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      r = randg (a, sz, cls);
+      rnd = r ./ (r + randg (b, sz, cls));
     else
       rnd = NaN (sz, cls);
     endif
@@ -96,42 +93,42 @@ function rnd = betarnd (a, b, varargin)
     rnd = NaN (sz, cls);
 
     k = (a > 0) & (a < Inf) & (b > 0) & (b < Inf);
-    r = randg (a(k));
-    rnd(k) = r ./ (r + randg (b(k)));
+    r = randg (a(k), cls);
+    rnd(k) = r ./ (r + randg (b(k), cls));
   endif
 
 endfunction
 
 
-%!assert(size (betarnd (1,2)), [1, 1]);
-%!assert(size (betarnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (betarnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (betarnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (betarnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (betarnd (1, 2, 3)), [3, 3]);
-%!assert(size (betarnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (betarnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (betarnd (1,2)), [1, 1])
+%!assert (size (betarnd (ones (2,1), 2)), [2, 1])
+%!assert (size (betarnd (ones (2,2), 2)), [2, 2])
+%!assert (size (betarnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (betarnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (betarnd (1, 2, 3)), [3, 3])
+%!assert (size (betarnd (1, 2, [4 1])), [4, 1])
+%!assert (size (betarnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (betarnd (1, 2)), "double");
-%!assert(class (betarnd (single(1), 2)), "single");
-%!assert(class (betarnd (single([1 1]), 2)), "single");
-%!assert(class (betarnd (1, single(2))), "single");
-%!assert(class (betarnd (1, single([2 2]))), "single");
+%!assert (class (betarnd (1, 2)), "double")
+%!assert (class (betarnd (single (1), 2)), "single")
+%!assert (class (betarnd (single ([1 1]), 2)), "single")
+%!assert (class (betarnd (1, single (2))), "single")
+%!assert (class (betarnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error betarnd ()
 %!error betarnd (1)
-%!error betarnd (ones(3),ones(2))
-%!error betarnd (ones(2),ones(3))
+%!error betarnd (ones (3), ones (2))
+%!error betarnd (ones (2), ones (3))
 %!error betarnd (i, 2)
 %!error betarnd (2, i)
 %!error betarnd (1,2, -1)
-%!error betarnd (1,2, ones(2))
+%!error betarnd (1,2, ones (2))
 %!error binornd (1,2, [2 -1 2])
-%!error betarnd (1,2, 1, ones(2))
+%!error betarnd (1,2, 1, ones (2))
 %!error betarnd (1,2, 1, -1)
-%!error betarnd (ones(2,2), 2, 3)
-%!error betarnd (ones(2,2), 2, [3, 2])
-%!error betarnd (ones(2,2), 2, 2, 3)
+%!error betarnd (ones (2,2), 2, 3)
+%!error betarnd (ones (2,2), 2, [3, 2])
+%!error betarnd (ones (2,2), 2, 2, 3)
 

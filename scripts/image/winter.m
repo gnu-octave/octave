@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -27,13 +27,16 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "winter");
+## PKG_DEL: colormap ("unregister", "winter");
+
 function map = winter (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("winter: argument must be a scalar");
+      error ("winter: N must be a scalar");
     endif
   else
     print_usage ();
@@ -43,19 +46,19 @@ function map = winter (n)
     map = [0, 0, 1];
   elseif (n > 1)
     r = zeros (n, 1);
-    g = (0:n - 1)' ./ (n - 1);
-    b = 1 - g ./ 2;
-
+    g = [0:(n-1)]' / (n - 1);
+    b = 1 - g / 2;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'winter' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (winter (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (winter (64));
 

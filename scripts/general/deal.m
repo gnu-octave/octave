@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 Ariel Tankus
+## Copyright (C) 1998-2013 Ariel Tankus
 ##
 ## This file is part of Octave.
 ##
@@ -73,11 +73,13 @@ function [varargout] = deal (varargin)
 
 endfunction
 
+
 %!test
-%! [a,b]=deal(1,2);
-%! assert(a,1);
-%! assert(b,2);
+%! [a,b] = deal (1,2);
+%! assert (a, 1);
+%! assert (b, 2);
 %!test
-%! [a,b]=deal(1);
-%! assert(a,1);
-%! assert(b,1);
+%! [a,b] = deal (1);
+%! assert (a, 1);
+%! assert (b, 1);
+

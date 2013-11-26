@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -19,5 +19,6 @@
 function b = saveobj (a)
   b = a;
   b = rmfield (b, "curlhandle");
-  b.dir = __ftp_pwd (a.curlhandle);
+  b.dir = __ftp_pwd__ (a.curlhandle);
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Ivana Varekova
+## Copyright (C) 2005-2013 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -116,13 +116,13 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
       left_most++;
       x_coordinate_r(par_number) = left_most;
       max_ht = min (max_ht, level);
-      if (length(stk) > 1 && find ((shift(stk,1)-stk) == 0) > 1
+      if (length (stk) > 1 && find ((shift (stk,1) - stk) == 0) > 1
           && stk(end,2) != stk(end-1,2))
         ## Return to the nearest branching the position to return
         ## position is the position on the stack, where should be
         ## started further search (there are two nodes which has the
         ## same parent node).
-        position = (find ((shift(stk(:,2),1)-stk(:,2)) == 0))(end) + 1;
+        position = (find ((shift (stk(:,2),1) - stk(:,2)) == 0))(end) + 1;
         par_number_vec = stk(position:end,2);
         ## The vector of removed nodes (the content of stack form
         ## position to end).
@@ -173,7 +173,7 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
 
     hold ("on");
     ## Plot each tree component in one loop.
-    for i = 2:length(idx)
+    for i = 2:length (idx)
       ## Tree component start.
       istart = idx(i-1) + 1;
       ## Tree component end.
@@ -196,10 +196,14 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
 
 endfunction
 
-%!demo
-%! % Plot a simple tree plot
-%! treeplot([2 4 2 0 6 4 6])
 
 %!demo
+%! clf;
+%! treeplot ([2 4 2 0 6 4 6]);
+%! % Plot a simple tree plot
+
+%!demo
+%! clf;
+%! treeplot ([2 4 2 0 6 4 6], "b+", "g");
 %! % Plot a simple tree plot defining the edge and node styles
-%! treeplot([2 4 2 0 6 4 6], "b+", "g")
+

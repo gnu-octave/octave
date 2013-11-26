@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -37,18 +37,18 @@ function inv = stdnormal_inv (x)
     error ("stdnormal_inv: X must not be complex");
   endif
 
-  inv = sqrt (2) * erfinv (2 * x - 1);
+  inv = - sqrt (2) * erfcinv (2 * x);
 
 endfunction
 
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(stdnormal_inv (x), [NaN -Inf 0 Inf NaN]);
+%!assert (stdnormal_inv (x), [NaN -Inf 0 Inf NaN])
 
 %% Test class of input preserved
-%!assert(stdnormal_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN]);
-%!assert(stdnormal_inv (single([x, NaN])), single([NaN -Inf 0 Inf NaN NaN]));
+%!assert (stdnormal_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN])
+%!assert (stdnormal_inv (single ([x, NaN])), single ([NaN -Inf 0 Inf NaN NaN]))
 
 %% Test input validation
 %!error stdnormal_inv ()

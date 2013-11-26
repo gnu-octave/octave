@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ## the FTP connection @var{f}.  @var{f} is an FTP object returned by the
 ## ftp function.
 ##
-## The argument @var{file} is passed by the @dfn{glob} function and any
+## The argument @var{file} is passed through the @code{glob} function and any
 ## files that match the wildcards in @var{file} will be uploaded.
 ## @end deftypefn
 
@@ -33,3 +33,4 @@ function retval = mput (f, file)
     retval = __ftp_mput__ (f.curlhandle, file);
   endif
 endfunction
+

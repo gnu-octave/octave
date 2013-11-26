@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -61,8 +61,8 @@ function y = polyvalm (c, x)
 endfunction
 
 
-%!assert(! any (polyvalm ([], [1, 2; 3, 4]))(:));
-%!assert(polyvalm ([1, 2, 3, 4], [3, -4, 1; -2, 0, 2; -1, 4, -3]), [117, -124, 11; -70, 36, 38; -43, 92, -45])
+%!assert (! any (polyvalm ([], [1, 2; 3, 4]))(:));
+%!assert (polyvalm ([1, 2, 3, 4], [3, -4, 1; -2, 0, 2; -1, 4, -3]), [117, -124, 11; -70, 36, 38; -43, 92, -45])
 
-%!error polyvalm ([1, 1, 1], [1, 2; 3, 4; 5, 6]);
+%!error <must be a square matrix> polyvalm ([1, 1, 1], [1, 2; 3, 4; 5, 6])
 

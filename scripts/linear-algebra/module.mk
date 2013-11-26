@@ -12,6 +12,7 @@ linear_algebra_FCN_FILES = \
   linear-algebra/ishermitian.m \
   linear-algebra/issymmetric.m \
   linear-algebra/krylov.m \
+  linear-algebra/linsolve.m \
   linear-algebra/logm.m \
   linear-algebra/normest.m \
   linear-algebra/null.m \

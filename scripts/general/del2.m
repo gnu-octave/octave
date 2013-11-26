@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ## Copyright (C) 2007  David Bateman
 ##
 ## This file is part of Octave.
@@ -157,3 +157,4 @@ function D = del2 (M, varargin)
 
   D = D ./ nd;
 endfunction
+

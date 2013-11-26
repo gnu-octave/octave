@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -50,18 +50,21 @@ function retval = ishermitian (x, tol = 0)
 
 endfunction
 
-%!assert(ishermitian (1));
-%!assert(!(ishermitian ([1, 2])));
-%!assert(ishermitian ([]));
-%!assert(ishermitian ([1, 2; 2, 1]));
-%!assert(!(ishermitian ("test")));
-%!assert(ishermitian ([1, 2.1; 2, 1.1], 0.2));
-%!assert(ishermitian ([1, -2i; 2i, 1]));
-%!assert(!(ishermitian ("t")));
-%!assert(!(ishermitian (["te"; "et"])));
-%!error ishermitian ([1, 2; 2, 1], 0, 0);
-%!error ishermitian ();
+
+%!assert (ishermitian (1))
+%!assert (! ishermitian ([1, 2]))
+%!assert (ishermitian ([]))
+%!assert (ishermitian ([1, 2; 2, 1]))
+%!assert (! ishermitian ("test"))
+%!assert (ishermitian ([1, 2.1; 2, 1.1], 0.2))
+%!assert (ishermitian ([1, -2i; 2i, 1]))
+%!assert (! ishermitian ("t"))
+%!assert (! ishermitian (["te"; "et"]))
 
 %!test
 %! s.a = 1;
-%! assert(!(ishermitian (s)));
+%! assert (! ishermitian (s));
+
+%!error ishermitian ([1, 2; 2, 1], 0, 0)
+%!error ishermitian ()
+

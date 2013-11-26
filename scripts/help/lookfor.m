@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Søren Hauberg
+## Copyright (C) 2009-2013 SÃ¸ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -20,11 +20,11 @@
 ## @deftypefn  {Command} {} lookfor @var{str}
 ## @deftypefnx {Command} {} lookfor -all @var{str}
 ## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor (@var{str})
-## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor ('-all', @var{str})
+## @deftypefnx {Function File} {[@var{func}, @var{helpstring}] =} lookfor ("-all", @var{str})
 ## Search for the string @var{str} in all functions found in the current
 ## function search path.  By default, @code{lookfor} searches for @var{str}
 ## in the first sentence of the help string of each function found.  The entire
-## help text of each function can be searched if the '-all' argument is
+## help text of each function can be searched if the @qcode{"-all"} argument is
 ## supplied.  All searches are case insensitive.
 ##
 ## Called with no output arguments, @code{lookfor} prints the list of
@@ -36,8 +36,9 @@
 ## sentence of the help text is dependent on the format of the
 ## function's help.  All Octave core functions are correctly
 ## formatted, but the same can not be guaranteed for external packages and
-## user-supplied functions.  Therefore, the use of the '-all' argument may
-## be necessary to find related functions that are not a part of Octave.
+## user-supplied functions.  Therefore, the use of the @qcode{"-all"}
+## argument may be necessary to find related functions that are not a part of
+## Octave.
 ## @seealso{help, doc, which}
 ## @end deftypefn
 
@@ -66,10 +67,10 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
   endif
 
   ## Search functions in new path dirs.
-  orig_path = strsplit (__pathorig__ (), pathsep ());
+  orig_path = ostrsplit (__pathorig__ (), pathsep ());
 
   ## ditto for path.
-  new_path = strsplit (path (), pathsep ());
+  new_path = ostrsplit (path (), pathsep ());
 
   ## scratch out directories already covered by orig_path.
   if (had_core_cache)

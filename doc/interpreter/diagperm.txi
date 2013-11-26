@@ -1,4 +1,4 @@
-@c Copyright (C) 2009-2012 Jaroslav Hajek
+@c Copyright (C) 2009-2013 Jaroslav Hajek
 @c
 @c This file is part of Octave.
 @c
@@ -16,19 +16,19 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@node Diagonal and Permutation Matrices 
+@node Diagonal and Permutation Matrices
 @chapter Diagonal and Permutation Matrices
 
 @menu
-* Basic Usage::          Creation and Manipulation of Diagonal and Permutation Matrices
-* Matrix Algebra::       Linear Algebra with Diagonal and Permutation Matrices
+* Basic Usage::          Creation and Manipulation of Diagonal/Permutation Matrices
+* Matrix Algebra::       Linear Algebra with Diagonal/Permutation Matrices
 * Function Support::     Functions That Are Aware of These Matrices
-* Example Codes::        Some Examples of Usage
-* Zeros Treatment::      The Differences in Treatment of Zero Elements
+* Example Code::         Examples of Usage
+* Zeros Treatment::      Differences in Treatment of Zero Elements
 @end menu
 
 @node Basic Usage
-@section Creating and Manipulating Diagonal and Permutation Matrices
+@section Creating and Manipulating Diagonal/Permutation Matrices
 
 A diagonal matrix is defined as a matrix that has zero entries outside the main
 diagonal; that is, 
@@ -93,7 +93,7 @@ Diagonal Matrix
    0   0   3   0
    0   0   0   4
 
-  diag(1:3,5,3)
+  diag (1:3,5,3)
 
 @result{}
 Diagonal Matrix
@@ -210,7 +210,7 @@ requested (explicitly or implicitly), so that subsequent conversions will
 be very cheap.
 
 @node Matrix Algebra
-@section Linear Algebra with Diagonal and Permutation Matrices
+@section Linear Algebra with Diagonal/Permutation Matrices
 
 As has been already said, diagonal and permutation matrices make it
 possible to use efficient algorithms while preserving natural linear
@@ -412,8 +412,8 @@ sparse matrix.
 The @dfn{find} function will also work efficiently with a permutation matrix,
 making it possible to conveniently obtain the permutation indices.
 
-@node Example Codes
-@section Some Examples of Usage
+@node Example Code
+@section Examples of Usage
 
 The following can be used to solve a linear system @code{A*x = b}
 using the pivoted LU@tie{}factorization:
@@ -426,12 +426,22 @@ using the pivoted LU@tie{}factorization:
 @end example
 
 @noindent
-This is how you normalize columns of a matrix @var{X} to unit norm:
+This is one way to normalize columns of a matrix @var{X} to unit norm:
 
 @example
 @group
   s = norm (X, "columns");
-  X = diag (s) \ X;
+  X /= diag (s);
+@end group
+@end example
+
+@noindent
+The same can also be accomplished with broadcasting (@pxref{Broadcasting}):
+
+@example
+@group
+  s = norm (X, "columns");
+  X ./= s;
 @end group
 @end example
 
@@ -445,7 +455,7 @@ in earlier versions of Octave, but slowly.
 @end example
 
 @noindent
-Finally, here's how you solve a linear system @code{A*x = b} 
+Finally, here's how you solve a linear system @code{A*x = b}
 with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 
 @example
@@ -466,7 +476,7 @@ with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 
 
 @node Zeros Treatment
-@section The Differences in Treatment of Zero Elements
+@section Differences in Treatment of Zero Elements
 
 Making diagonal and permutation matrices special matrix objects in their own
 right and the consequent usage of smarter algorithms for certain operations
@@ -500,6 +510,7 @@ computation involving assumed zeros is performed symbolically, not numerically.
 This behavior not only facilitates the most straightforward and efficient
 implementation of algorithms, but also preserves certain useful invariants,
 like:
+
 @itemize
 @item scalar * diagonal matrix is a diagonal matrix
 
@@ -507,6 +518,7 @@ like:
 
 @item permutation matrix * matrix is equivalent to permuting rows
 @end itemize
+
 all of these natural mathematical truths would be invalidated by treating
 assumed zeros as numerical ones.
 
@@ -542,13 +554,13 @@ Inf * full (eye (3))
 
 @example
 @group
-diag(1:3) * [NaN; 1; 1]
+diag (1:3) * [NaN; 1; 1]
 @result{}
    NaN
      2
      3
 
-sparse(1:3,1:3,1:3) * [NaN; 1; 1]
+sparse (1:3,1:3,1:3) * [NaN; 1; 1]
 @result{}
    NaN
      2

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 Paul Kienzle
+## Copyright (C) 2004-2013 Paul Kienzle
 ## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
@@ -39,7 +39,7 @@ function S = __sprand_impl__ (varargin)
     return;
   endif
 
-  [m, n, d, funname, randfun] = deal(varargin{:});
+  [m, n, d, funname, randfun] = deal (varargin{:});
 
   if (!(isscalar (m) && m == fix (m) && m > 0))
     error ("%s: M must be an integer greater than 0", funname);
@@ -55,9 +55,28 @@ function S = __sprand_impl__ (varargin)
 
   mn = m*n;
   k = round (d*mn);
-  idx = randperm (mn, k);
+  if (mn > sizemax ())
+    ## randperm will overflow, so use alternative methods
 
-  [i, j] = ind2sub ([m, n], idx);
+    idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1;
+
+    ## idx contains random numbers in [1,mn]
+    ## generate 1% or 10 more random values than necessary in order to
+    ## reduce the probability that there are less than k distinct
+    ## values; maybe a better strategy could be used but I don't think
+    ## it's worth the price
+    
+    ## actual number of entries in S
+    k = min (length (idx), k);
+    j = floor ((idx(1:k) - 1) / m);
+    i = idx(1:k) - j * m;
+    j++;
+  else
+    idx = randperm (mn, k);
+    [i, j] = ind2sub ([m, n], idx);
+  endif
+
   S = sparse (i, j, randfun (k, 1), m, n);
 
 endfunction
+

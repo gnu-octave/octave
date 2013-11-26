@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -58,10 +58,11 @@ function retval = sinetone (freq, rate, sec, ampl)
   retval = zeros (ns, n);
 
   for k = 1:n
-    retval (:, k) = ampl(k) * sin (2 * pi * (1:ns) / rate * freq(k))';
+    retval(:, k) = ampl(k) * sin (2 * pi * (1:ns) / rate * freq(k))';
   endfor
 
 endfunction
 
 
-%!assert (size (sinetone (18e6, 150e6, 19550/150e6, 1)), [19550, 1]);
+%!assert (size (sinetone (18e6, 150e6, 19550/150e6, 1)), [19550, 1])
+

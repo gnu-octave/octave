@@ -1,29 +1,34 @@
 FCN_FILE_DIRS += miscellaneous
 
 miscellaneous_PRIVATE_FCN_FILES = \
+  miscellaneous/private/display_info_file.m \
   miscellaneous/private/__xzip__.m
 
 miscellaneous_FCN_FILES = \
   miscellaneous/ans.m \
-  miscellaneous/bincoeff.m \
   miscellaneous/bug_report.m \
   miscellaneous/bunzip2.m \
   miscellaneous/bzip2.m \
   miscellaneous/cast.m \
+  miscellaneous/colon.m \
+  miscellaneous/citation.m \
   miscellaneous/comma.m \
   miscellaneous/compare_versions.m \
   miscellaneous/computer.m \
   miscellaneous/copyfile.m \
   miscellaneous/debug.m \
   miscellaneous/delete.m \
+  miscellaneous/desktop.m \
   miscellaneous/dir.m \
   miscellaneous/dos.m \
   miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
+  miscellaneous/error_ids.m \
 	miscellaneous/fact.m \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
   miscellaneous/fullfile.m \
+  miscellaneous/genvarname.m \
   miscellaneous/getappdata.m \
   miscellaneous/getfield.m \
   miscellaneous/gunzip.m \
@@ -68,7 +73,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \
   miscellaneous/unzip.m \
-  miscellaneous/usejava.m \
   miscellaneous/ver.m \
   miscellaneous/version.m \
   miscellaneous/warning_ids.m \

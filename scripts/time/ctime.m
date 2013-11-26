@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -47,8 +47,8 @@ endfunction
 
 %!test
 %! t = time ();
-%! assert(strcmp (asctime (localtime (t)), ctime (t)));
+%! assert (strcmp (asctime (localtime (t)), ctime (t)));
 
-%!error ctime ();
-%!error ctime (1, 2);
+%!error ctime ()
+%!error ctime (1, 2)
 

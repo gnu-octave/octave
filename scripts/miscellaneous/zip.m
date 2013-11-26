@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Sylvain Pelissier
+## Copyright (C) 2006-2013 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -62,7 +62,8 @@ function entries = zip (zipfile, files, rootdir = ".")
     if (entries(end) == "\n")
       entries(end) = [];
     endif
-    entries = strsplit (entries, "\n");
+    entries = ostrsplit (entries, "\n");
   endif
 
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ## Copyright (C) 2009-2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -61,7 +61,7 @@
 ## that in the first column counts how many occurrences each number in
 ## the second column has, taken from the vector @var{x}.  Note the usage
 ## of @code{unique}  for assigning to all repeated elements of @var{x}
-## the same index (@pxref{doc-unique}).
+## the same index (@pxref{XREFunique,,unique}).
 ##
 ## @example
 ## @group
@@ -92,7 +92,7 @@
 ## @end example
 ##
 ## The sparse option can be used as an alternative to the @code{sparse}
-## constructor (@pxref{doc-sparse}). Thus
+## constructor (@pxref{XREFsparse,,sparse}).  Thus
 ##
 ## @example
 ## sparse (@var{i}, @var{j}, @var{sv})
@@ -106,7 +106,7 @@
 ## @end example
 ##
 ## @noindent
-## For repeated indices, @code{sparse} adds the corresponding value. To
+## For repeated indices, @code{sparse} adds the corresponding value.  To
 ## take the minimum instead, use @code{min} as an accumulator function:
 ##
 ## @example
@@ -150,7 +150,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
   else
     ndims = columns (subs);
     if (lenvals > 1 && lenvals != rows (subs))
-      error ("accumarray: dimension mismatch")
+      error ("accumarray: dimension mismatch");
     endif
   endif
 
@@ -368,24 +368,23 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
   endif
 endfunction
 
-%!error (accumarray (1:5))
-%!error (accumarray ([1,2,3],1:2))
+
 %!assert (accumarray ([1;2;4;2;4],101:105), [101;206;0;208])
-%!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105),cat(3, [101,0,0;0,0,0],[0,0,0;206,0,208]))
-%!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105,[],@(x)sin(sum(x))),sin(cat(3, [101,0,0;0,0,0],[0,0,0;206,0,208])))
-%!assert (accumarray ({[1 3 3 2 3 1 2 2 3 3 1 2],[3 4 2 1 4 3 4 2 2 4 3 4],[1 1 2 2 1 1 2 1 1 1 2 2]},101:112),cat(3,[0,0,207,0;0,108,0,0;0,109,0,317],[0,0,111,0;104,0,0,219;0,103,0,0]))
-%!assert (accumarray ([1,1;2,1;2,3;2,1;2,3],101:105,[2,4],@max,NaN),[101,NaN,NaN,NaN;104,NaN,105,NaN])
+%!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105), cat (3, [101,0,0;0,0,0],[0,0,0;206,0,208]))
+%!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105,[],@(x)sin(sum(x))), sin (cat (3, [101,0,0;0,0,0],[0,0,0;206,0,208])))
+%!assert (accumarray ({[1 3 3 2 3 1 2 2 3 3 1 2],[3 4 2 1 4 3 4 2 2 4 3 4],[1 1 2 2 1 1 2 1 1 1 2 2]},101:112), cat (3, [0,0,207,0;0,108,0,0;0,109,0,317], [0,0,111,0;104,0,0,219;0,103,0,0]))
+%!assert (accumarray ([1,1;2,1;2,3;2,1;2,3],101:105,[2,4],@max,NaN), [101,NaN,NaN,NaN;104,NaN,105,NaN])
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105, [], @prod), [101, 0, 0; 10608, 0, 10815])
-%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2 4],@prod,0,true),sparse([1,2,2],[1,1,3],[101,10608,10815],2,4))
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2 4],@prod,0,true), sparse ([1,2,2],[1,1,3],[101,10608,10815],2,4))
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],1,[2,4]), [1,0,0,0;2,0,2,0])
-%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x)length(x)>1),[false,false,false,false;true,false,true,false])
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x)length(x)>1), [false,false,false,false;true,false,true,false])
 %!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 0), [3; 4])
 %!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 1), sparse ([3; 4]))
 %!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 0), [3, 4])
 %!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 1), sparse ([3, 4]))
 %!test
-%! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x){x});
-%! assert (A{2},[102;104])
+%! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3], 101:105, [2,4], @(x){x});
+%! assert (A{2},[102;104]);
 %!test
 %! subs = ceil (rand (2000, 3)*10);
 %! vals = rand (2000, 1);
@@ -405,4 +404,6 @@ endfunction
 %! vals = rand (2000, 1);
 %! assert (accumarray (subsc, vals, [], @max), accumarray (subs, vals, [], @max));
 
+%!error (accumarray (1:5))
+%!error (accumarray ([1,2,3],1:2))
 

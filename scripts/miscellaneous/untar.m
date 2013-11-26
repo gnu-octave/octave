@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 SÃ¸ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## @seealso{tar, unpack, bunzip2, gunzip, unzip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
+## Author: SÃ¸ren Hauberg <hauberg@gmail.com>
 ## Adapted-By: jwe, Bill Denney
 
 function varargout = untar (tarfile, dir = ".")
@@ -41,3 +41,4 @@ function varargout = untar (tarfile, dir = ".")
   endif
 
 endfunction
+

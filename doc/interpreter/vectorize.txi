@@ -1,4 +1,4 @@
-@c Copyright (C) 2012 Jordi Gutiérrez Hermoso
+@c Copyright (C) 2012-2013 Jordi Gutiérrez Hermoso
 @c
 @c This file is part of Octave.
 @c
@@ -42,6 +42,7 @@ code.
 * Broadcasting::               Broadcasting operations
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
+* JIT Compiler::               Just-In-Time Compiler for loops
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 @end menu
@@ -111,7 +112,7 @@ instead of
 @example
 @group
 for i = 1:n
-  if a(i) > 5
+  if (a(i) > 5)
     a(i) -= 20
   endif
 endfor
@@ -191,6 +192,7 @@ ifelse / merge
 
 @item
 Repetition
+
 @itemize
 @item
 repmat
@@ -201,6 +203,7 @@ repelems
 
 @item
 Vectorized arithmetic
+
 @itemize
 @item
 sum
@@ -232,6 +235,7 @@ cummin
 
 @item
 Shape of higher dimensional arrays
+
 @itemize
 @item
 reshape
@@ -342,8 +346,8 @@ broadcast into matrices of size @code{[3 3]} before ordinary matrix
 subtraction takes place.
 
 A special case of broadcasting that may be familiar is when all
-dimensions of the array being broadcast are 1, i.e. the array is a
-scalar. Thus for example, operations like @code{x - 42} and @code{max
+dimensions of the array being broadcast are 1, i.e., the array is a
+scalar.  Thus for example, operations like @code{x - 42} and @code{max
 (x, 2)} are basic examples of broadcasting.
 
 For a higher-dimensional example, suppose @code{img} is an RGB image of
@@ -453,7 +457,7 @@ end_try_catch
 that may have relied on matrices of different size producing an error.
 Due to how broadcasting changes semantics with older versions of Octave,
 by default Octave warns if a broadcasting operation is performed.  To
-disable this warning, refer to its ID (@pxref{doc-warning_ids}):
+disable this warning, refer to its ID (@pxref{XREFwarning_ids,,warning_ids}):
 
 @example
 warning ("off", "Octave:broadcast");
@@ -502,6 +506,39 @@ useful.
 @DOCSTRING(accumarray)
 
 @DOCSTRING(accumdim)
+
+@node JIT Compiler
+@section JIT Compiler
+
+Vectorization is the preferred technique for eliminating loops and speeding up
+code.  Nevertheless, it is not always possible to replace every loop.  In such
+situations it may be worth trying Octave's @strong{experimental} Just-In-Time
+(JIT) compiler.
+
+A JIT compiler works by analyzing the body of a loop, translating the Octave
+statements into another language, compiling the new code segment into an
+executable, and then running the executable and collecting any results.  The
+process is not simple and there is a significant amount of work to perform for
+each step.  It can still make sense, however, if the number of loop iterations
+is large.  Because Octave is an interpreted language every time through a
+loop Octave must parse the statements in the loop body before executing them.
+With a JIT compiler this is done just once when the body is translated to
+another language.
+
+The JIT compiler is a very new feature in Octave and not all valid Octave
+statements can currently be accelerated.  However, if no other technique
+is available it may be worth benchmarking the code with JIT enabled.  The
+function @code{jit_enable} is used to turn compilation on or off.  The
+function @code{jit_startcnt} sets the threshold for acceleration.  Loops
+with iteration counts above @code{jit_startcnt} will be accelerated.  The
+function @code{debug_jit} is not likely to be of use to anyone not working
+directly on the implementation of the JIT compiler.
+
+@DOCSTRING(jit_enable)
+
+@DOCSTRING(jit_startcnt)
+
+@DOCSTRING(debug_jit)
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques
@@ -569,7 +606,7 @@ cell or struct element, and possibly economizes them.  For example:
 @group
 a = zeros (1000); # create a 1000x1000 matrix
 b = a(:,10:100);  # lazy slice
-a = []; # the original a array is still allocated
+a = []; # the original "a" array is still allocated
 c@{1@} = b; # b is reallocated at this point
 @end group
 @end example
@@ -637,7 +674,7 @@ statement instead.  @xref{The try Statement}.
 @item Use @code{ignore_function_time_stamp} when appropriate.
 If you are calling lots of functions, and none of them will need to change
 during your run, set the variable @code{ignore_function_time_stamp} to
-@code{"all"}.  This will stop Octave from checking the time stamp of a function
+@qcode{"all"}.  This will stop Octave from checking the time stamp of a function
 file to see if it has been updated while the program is being run.
 @end itemize
 
@@ -657,7 +694,7 @@ For a vector @code{A}, the following loop
 @group
 n = length (A);
 B = zeros (n, 2);
-for i = 1:length(A)
+for i = 1:length (A)
   ## this will be two columns, the first is the difference and
   ## the second the mean of the two elements used for the diff.
   B(i,:) = [A(i+1)-A(i), (A(i+1) + A(i))/2)];

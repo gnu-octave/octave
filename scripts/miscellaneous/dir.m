@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 John W. Eaton
+## Copyright (C) 2004-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,40 +17,55 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} dir (@var{directory})
+## @deftypefn  {Function File} {} dir
+## @deftypefnx {Function File} {} dir (@var{directory})
 ## @deftypefnx {Function File} {[@var{list}] =} dir (@var{directory})
-## Display file listing for directory @var{directory}.  If a return
-## value is requested, return a structure array with the fields
+## Display file listing for directory @var{directory}.
 ##
-## @example
-## @group
-## name
-## bytes
-## date
-## isdir
-## statinfo
-## @end group
-## @end example
+## If @var{directory} is not specified then list the present working directory.
 ##
-## @noindent
-## where @code{statinfo} is the structure returned from @code{stat}.
+## If a return value is requested, return a structure array with the fields
 ##
-## If @var{directory} is not a directory, return information about the
-## named @var{filename}.  @var{directory} may be a list of directories
-## specified either by name or with wildcard characters (like * and ?)
-## which will be expanded with glob.
+## @table @asis
+## @item name
+## File or directory name. 
+##
+## @item date
+## Timestamp of file modification (string value).
+##
+## @item bytes
+## File size in bytes.
+##
+## @item isdir
+## True if name is a directory. 
+##
+## @item datenum
+## Timestamp of file modification as serial date number (double).
+##
+## @item statinfo
+## Information structure returned from @code{stat}.
+## @end table
+##
+## If @var{directory} is a filename, rather than a directory, then return
+## information about the named file.  @var{directory} may also be a list rather
+## than a single directory or file.
+##
+## @var{directory} is subject to shell expansion if it contains any wildcard
+## characters @samp{*}, @samp{?}, @samp{[]}.  If you want to find a
+## literal example of a wildcard character you must escape it using the
+## backslash operator @samp{\}.
 ##
 ## Note that for symbolic links, @code{dir} returns information about
-## the file that the symbolic link points to instead of the link itself.
+## the file that the symbolic link points to rather than the link itself.
 ## However, if the link points to a nonexistent file, @code{dir} returns
 ## information about the link.
-## @seealso{ls, stat, lstat, readdir, glob, filesep}
+## @seealso{ls, readdir, glob, what, stat}
 ## @end deftypefn
 
 ## Author: jwe
 
-## FIXME -- this is quite slow for large directories, so perhaps
-## it should be converted to C++.
+## FIXME: This is quite slow for large directories, so perhaps
+##        it should be converted to C++.
 
 function retval = dir (directory)
 
@@ -111,7 +126,7 @@ function retval = dir (directory)
             endif
           endif
           [dummy, fn, ext] = fileparts (fn);
-          fn = cstrcat (fn, ext);
+          fn = [fn ext];
           info(i,1).name = fn;
           lt = localtime (st.mtime);
           info(i,1).date = strftime ("%d-%b-%Y %T", lt);
@@ -140,3 +155,4 @@ function retval = dir (directory)
   endif
 
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 John W. Eaton
+## Copyright (C) 2010-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -78,3 +78,4 @@ endfunction
 %!assert (chop (-e, 4, 7), -2.716)
 %!assert (chop (hilb (3), 3), [1,.5,.333;.5,.333,.25;.333,.25,.2])
 %!assert (chop (hilb (3), 2, 7), [.7,.49,.35;.49,.35,.28;.35,.28,.21], 2*eps)
+

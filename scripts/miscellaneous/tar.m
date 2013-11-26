@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 SÃ¸ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -30,7 +30,7 @@
 ## @seealso{untar, bzip2, gzip, zip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
+## Author: SÃ¸ren Hauberg <hauberg@gmail.com>
 
 function entries = tar (tarfile, files, root = ".")
 
@@ -59,8 +59,9 @@ function entries = tar (tarfile, files, root = ".")
     if (output(end) == "\n")
       output(end) = [];
     endif
-    entries = strsplit (output, "\n");
+    entries = ostrsplit (output, "\n");
     entries = entries';
   endif
 
 endfunction
+

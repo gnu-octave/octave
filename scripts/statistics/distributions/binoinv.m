@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -88,27 +88,27 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(binoinv (x, 2*ones(1,5), 0.5*ones(1,5)), [NaN 0 1 2 NaN]);
-%!assert(binoinv (x, 2, 0.5*ones(1,5)), [NaN 0 1 2 NaN]);
-%!assert(binoinv (x, 2*ones(1,5), 0.5), [NaN 0 1 2 NaN]);
-%!assert(binoinv (x, 2*[0 -1 NaN 1.1 1], 0.5), [NaN NaN NaN NaN NaN]);
-%!assert(binoinv (x, 2, 0.5*[0 -1 NaN 3 1]), [NaN NaN NaN NaN NaN]);
-%!assert(binoinv ([x(1:2) NaN x(4:5)], 2, 0.5), [NaN 0 NaN 2 NaN]);
+%!assert (binoinv (x, 2*ones (1,5), 0.5*ones (1,5)), [NaN 0 1 2 NaN])
+%!assert (binoinv (x, 2, 0.5*ones (1,5)), [NaN 0 1 2 NaN])
+%!assert (binoinv (x, 2*ones (1,5), 0.5), [NaN 0 1 2 NaN])
+%!assert (binoinv (x, 2*[0 -1 NaN 1.1 1], 0.5), [NaN NaN NaN NaN NaN])
+%!assert (binoinv (x, 2, 0.5*[0 -1 NaN 3 1]), [NaN NaN NaN NaN NaN])
+%!assert (binoinv ([x(1:2) NaN x(4:5)], 2, 0.5), [NaN 0 NaN 2 NaN])
 
 %% Test class of input preserved
-%!assert(binoinv ([x, NaN], 2, 0.5), [NaN 0 1 2 NaN NaN]);
-%!assert(binoinv (single([x, NaN]), 2, 0.5), single([NaN 0 1 2 NaN NaN]));
-%!assert(binoinv ([x, NaN], single(2), 0.5), single([NaN 0 1 2 NaN NaN]));
-%!assert(binoinv ([x, NaN], 2, single(0.5)), single([NaN 0 1 2 NaN NaN]));
+%!assert (binoinv ([x, NaN], 2, 0.5), [NaN 0 1 2 NaN NaN])
+%!assert (binoinv (single ([x, NaN]), 2, 0.5), single ([NaN 0 1 2 NaN NaN]))
+%!assert (binoinv ([x, NaN], single (2), 0.5), single ([NaN 0 1 2 NaN NaN]))
+%!assert (binoinv ([x, NaN], 2, single (0.5)), single ([NaN 0 1 2 NaN NaN]))
 
 %% Test input validation
 %!error binoinv ()
 %!error binoinv (1)
 %!error binoinv (1,2)
 %!error binoinv (1,2,3,4)
-%!error binoinv (ones(3),ones(2),ones(2))
-%!error binoinv (ones(2),ones(3),ones(2))
-%!error binoinv (ones(2),ones(2),ones(3))
+%!error binoinv (ones (3), ones (2), ones (2))
+%!error binoinv (ones (2), ones (3), ones (2))
+%!error binoinv (ones (2), ones (2), ones (3))
 %!error binoinv (i, 2, 2)
 %!error binoinv (2, i, 2)
 %!error binoinv (2, 2, i)

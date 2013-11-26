@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -75,7 +75,7 @@ function [tok, rem] = strtok (str, delim)
       ## Index the str into a mask of valid values.  Faster for large N.
       f = false (256, 1);
       ## This is slower than it could be because of the +1 issue.
-      f(uint8(delim)+1) = true;
+      f(uint8 (delim)+1) = true;
       ## Default goes via double -- unnecessarily long.
       si = uint32 (str);
       ## in-place is faster than str+1
@@ -133,7 +133,7 @@ endfunction
 
 
 %!demo
-%! strtok("this is the life")
+%! strtok ("this is the life")
 %! % split at the first space, returning "this"
 
 %!demo
@@ -146,7 +146,7 @@ endfunction
 %!   endif
 %!   printf ("<%s>", s(1));
 %! endwhile
-%! printf("\n");
+%! printf ("\n");
 %! % ----------------------------------------------------
 %! % Demonstrates processing of an entire string split on
 %! % a variety of delimiters.  Tokens and delimiters are
@@ -190,19 +190,19 @@ endfunction
 %! assert (r{7}, "");
 
 %% Simple check for 2, 3, and 4 delimeters
-%!assert(strtok ("this is", "i "), "th");
-%!assert(strtok ("this is", "ij "), "th");
-%!assert(strtok ("this is", "ijk "), "th");
+%!assert (strtok ("this is", "i "), "th")
+%!assert (strtok ("this is", "ij "), "th")
+%!assert (strtok ("this is", "ijk "), "th")
 
 %% Test all cases for 8 delimiters since a different
 %!# algorithm is used when more than 7 delimiters
-%!assert (strtok ("","jklmnop "), "");
-%!assert (strtok ("this","jklmnop "), "this");
-%!assert (strtok ("this ","jklmnop "), "this");
-%!assert (strtok ("this is","jklmnop "), "this");
-%!assert (strtok (" this","jklmnop "), "this");
-%!assert (strtok (" this ","jklmnop "), "this");
-%!assert (strtok (" ","jklmnop "), ""(1:0));
+%!assert (strtok ("","jklmnop "), "")
+%!assert (strtok ("this","jklmnop "), "this")
+%!assert (strtok ("this ","jklmnop "), "this")
+%!assert (strtok ("this is","jklmnop "), "this")
+%!assert (strtok (" this","jklmnop "), "this")
+%!assert (strtok (" this ","jklmnop "), "this")
+%!assert (strtok (" ","jklmnop "), ""(1:0))
 
 %% Test 'bad' string orientations
 %!assert (strtok (" this ".'), "this".');   # delimiter at start and end
@@ -211,9 +211,9 @@ endfunction
 %% Test with TAB, LF, VT, FF, and CR
 %!test
 %! for ch = "\t\n\v\f\r"
-%!   [t, r] = strtok (cstrcat ("beg", ch, "end"));
+%!   [t, r] = strtok (["beg", ch, "end"]);
 %!   assert (t, "beg");
-%!   assert (r, cstrcat (ch, "end"))
+%!   assert (r, [ch, "end"]);
 %! endfor
 
 %% Test input validation

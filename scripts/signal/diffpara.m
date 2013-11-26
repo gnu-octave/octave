@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -49,7 +49,7 @@ function [d, dd] = diffpara (x, a, b)
       k = 1;
       x = reshape (x, n, 1);
     else
-      [n, k] = size(x);
+      [n, k] = size (x);
     endif
     if (nargin == 1)
       a = 0.5 * sqrt (n);

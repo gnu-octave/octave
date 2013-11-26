@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Rik Wehbring
+## Copyright (C) 2012-2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -23,11 +23,11 @@
 ## @deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} shell_cmd (@dots{})
 ## @deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} shell_cmd (@var{string}, @var{return_output}, @var{type})
 ## Execute a shell command specified by @var{string}.
-## If the optional argument @var{type} is "async", the process
+## If the optional argument @var{type} is @qcode{"async"}, the process
 ## is started in the background and the process id of the child process
 ## is returned immediately.  Otherwise, the process is started and
 ## Octave waits until it exits.  If the @var{type} argument is omitted, it
-## defaults to a value of "sync".
+## defaults to a value of @qcode{"sync"}.
 ## 
 ## If the optional argument @var{return_output} is true and the subprocess
 ## is started synchronously, or if @var{shell_cmd} is called with one input

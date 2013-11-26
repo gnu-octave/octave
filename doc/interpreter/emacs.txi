@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 Kurt Hornik
+@c Copyright (C) 1996-2013 Kurt Hornik
 @c
 @c This file is part of Octave.
 @c
@@ -44,10 +44,10 @@ Please contact @email{Kurt.Hornik@@wu-wien.ac.at} if you have any questions
 or suggestions on using EOS.
 
 @menu
-* Installing EOS::              
-* Using Octave Mode::           
-* Running Octave from Within Emacs::  
-* Using the Emacs Info Reader for Octave::  
+* Installing EOS::
+* Using Octave Mode::
+* Running Octave from Within Emacs::
+* Using the Emacs Info Reader for Octave::
 @end menu
 
 @node Installing EOS
@@ -251,7 +251,7 @@ matches are found, one can cycle through them using the standard
 @samp{,} (@code{Info-index-next}) command of the Info reader.
 
 The variable @code{octave-help-files} is a list of files to search
-through and defaults to @code{'("octave")}.  If there is also an Octave
+through and defaults to @qcode{'("octave")}.  If there is also an Octave
 Local Guide with corresponding info file, say, @file{octave-LG}, you can
 have @code{octave-help} search both files by 
 @lisp
@@ -329,6 +329,7 @@ is called.
 @end table
 
 If Font Lock mode is enabled, Octave mode will display
+
 @itemize @bullet
 @item
 strings in @code{font-lock-string-face}
@@ -389,7 +390,7 @@ to your @file{.emacs} file.
 
 This will start Octave in a special buffer the name of which is
 specified by the variable @code{inferior-octave-buffer} and defaults to
-@code{"*Inferior Octave*"}.  From within this buffer, you can
+@qcode{"*Inferior Octave*"}.  From within this buffer, you can
 interact with the inferior Octave process `as usual', i.e., by entering
 Octave commands at the prompt.  The buffer is in Inferior Octave mode,
 which is derived from the standard Comint mode, a major mode for
@@ -436,6 +437,7 @@ Kill the inferior Octave process and its buffer
 
 The effect of the commands which send code to the Octave process can be
 customized by the following variables.
+
 @table @code
 @item octave-send-echo-input
 Non-@code{nil} means echo input sent to the inferior Octave process.
@@ -454,7 +456,7 @@ The startup of the inferior Octave process is highly customizable.
 The variable @code{inferior-octave-startup-args} can be used for
 specifying command lines arguments to be passed to Octave on startup
 as a list of strings.  For example, to suppress the startup message and
-use `traditional' mode, set this to @code{'("-q" "--traditional")}.
+use `traditional' mode, set this to @qcode{'("-q" "--traditional")}.
 You can also specify a startup file of Octave commands to be loaded on
 startup; note that these commands will not produce any visible output
 in the process buffer.  Which file to use is controlled by the variable

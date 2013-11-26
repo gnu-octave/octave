@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2012-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -34,3 +34,4 @@ function [msg, msgid] = __error_text__ (varargin)
   [msg, msgid] = lasterr (varargin{:});
 
 endfunction
+

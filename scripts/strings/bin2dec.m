@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Daniel Calvelo
+## Copyright (C) 1996-2013 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -60,15 +60,15 @@ function d = bin2dec (s)
 endfunction
 
 
-%!assert(bin2dec ("0000"), 0);
-%!assert(bin2dec ("1110"), 14);
-%!assert(bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1);
-%!assert(bin2dec ({"1110", "1111"}), [14; 15]);
+%!assert (bin2dec ("0000"), 0)
+%!assert (bin2dec ("1110"), 14)
+%!assert (bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1)
+%!assert (bin2dec ({"1110", "1111"}), [14; 15])
 %!assert (bin2dec ("1 0 1"), 5)
-%!assert (bin2dec (char ("1 0 1", "   1111")), [5; 15]);
+%!assert (bin2dec (char ("1 0 1", "   1111")), [5; 15])
 
 %%Test input validation
-%!error bin2dec ();
-%!error bin2dec (1);
-%!error bin2dec ("1", 2);
+%!error bin2dec ()
+%!error bin2dec (1)
+%!error bin2dec ("1", 2)
 

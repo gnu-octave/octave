@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 VZLU Prague
+## Copyright (C) 2010-2013 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -59,7 +59,7 @@
 
 function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
 
-  if (nargin < 2 || nargin > 5)
+  if (nargin < 2 || nargin > 6)
     print_usage ();
   endif
 
@@ -83,7 +83,8 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
   sz = size (vals);
 
   if (nargin < 3)
-    [~, dim] = max (sz != 1); # first non-singleton dim
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
   elseif (! isindex (dim))
     error ("accumdim: DIM must be a valid dimension");
   elseif (dim > length (sz))
@@ -92,7 +93,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
   sz(dim) = n;
 
   if (length (subs) != size (vals, dim))
-    error ("accumdim: dimension mismatch")
+    error ("accumdim: dimension mismatch");
   endif
 
   if (isempty (func) || func == @sum)
@@ -107,7 +108,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
       subsc{dim} = mask;
       A(subsc{:}) = fillval;
     endif
-    return
+    return;
   endif
 
   ## The general case.
@@ -147,8 +148,8 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
 
 endfunction
 
-%%test accumdim vs. accumarray
 
+%% Test accumdim vs. accumarray
 %!shared a
 %! a = rand (5, 5, 5);
 
@@ -156,3 +157,17 @@ endfunction
 %!assert (accumdim ([2;3;2;2;2], a, 2, 4)(4,:,2), accumarray ([2;3;2;2;2], a(4,:,2), [1,4]))
 %!assert (accumdim ([2;3;2;1;2], a, 3, 3, @min)(1,5,:), accumarray ([2;3;2;1;2], a(1,5,:), [1,1,3], @min))
 %!assert (accumdim ([1;3;2;2;1], a, 2, 3, @median)(4,:,5), accumarray ([1;3;2;2;1], a(4,:,5), [1,3], @median))
+
+%% Test fillval
+%!assert (accumdim ([1;3;1;3;3], a)(2,:,:), zeros (1,5,5))
+%!assert (accumdim ([1;3;1;3;3], a, 1, 4)([2 4],:,:), zeros (2,5,5))
+%!assert (accumdim ([1;3;1;3;3], a, 1, 4, [], pi)([2 4],:,:), pi (2,5,5))
+
+%% Test input validation
+%!error accumdim (1)
+%!error accumdim (1,2,3,4,5,6,7)
+%!error <SUBS must be a subscript vector> accumdim (ones (2,2), ones (2,2))
+%!error <indices must be positive integers> accumdim ([-1 1], ones (2,2))
+%!error <N index out of range> accumdim ([1 2], ones (2,2), 1, 1)
+%!error <dimension mismatch> accumdim ([1], ones (2,2))
+

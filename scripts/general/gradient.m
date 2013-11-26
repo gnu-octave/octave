@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -70,12 +70,12 @@ function varargout = gradient (m, varargin)
     print_usage ();
   endif
 
-  nargout_with_ans = max(1,nargout);
+  nargout_with_ans = max (1,nargout);
   if (ismatrix (m))
     [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
   elseif (isa (m, "function_handle"))
     [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});
-  elseif (ischar(m))
+  elseif (ischar (m))
     [varargout{1:nargout_with_ans}] = handle_gradient (str2func (m), varargin{:});
   else
     error ("gradient: first input must be an array or a function");
@@ -87,13 +87,13 @@ function varargout = matrix_gradient (m, varargin)
   transposed = false;
   if (isvector (m))
     ## make a row vector.
-    transposed = (size (m, 2) == 1);
+    transposed = (columns (m) == 1);
     m = m(:).';
   endif
 
   nd = ndims (m);
   sz = size (m);
-  if (length(sz) > 1)
+  if (length (sz) > 1)
     tmp = sz(1); sz(1) = sz(2); sz(2) = tmp;
   endif
 
@@ -220,6 +220,7 @@ function varargout = handle_gradient (f, p0, varargin)
   endfor
 endfunction
 
+
 %!test
 %! data = [1, 2, 4, 2];
 %! dx = gradient (data);
@@ -228,63 +229,63 @@ endfunction
 %! assert (dx, [1, 3/2, 0, -2]);
 %! assert (dx2, [4, 6, 0, -8]);
 %! assert (dx3, [4, 4, 0, -1]);
-%! assert (size_equal(data, dx));
+%! assert (size_equal (data, dx));
 
 %!test
 %! [Y,X,Z,U] = ndgrid (2:2:8,1:5,4:4:12,3:5:30);
 %! [dX,dY,dZ,dU] = gradient (X);
-%! assert (all(dX(:)==1));
-%! assert (all(dY(:)==0));
-%! assert (all(dZ(:)==0));
-%! assert (all(dU(:)==0));
+%! assert (all (dX(:) == 1));
+%! assert (all (dY(:) == 0));
+%! assert (all (dZ(:) == 0));
+%! assert (all (dU(:) == 0));
 %! [dX,dY,dZ,dU] = gradient (Y);
-%! assert (all(dX(:)==0));
-%! assert (all(dY(:)==2));
-%! assert (all(dZ(:)==0));
-%! assert (all(dU(:)==0));
+%! assert (all (dX(:) == 0));
+%! assert (all (dY(:) == 2));
+%! assert (all (dZ(:) == 0));
+%! assert (all (dU(:) == 0));
 %! [dX,dY,dZ,dU] = gradient (Z);
-%! assert (all(dX(:)==0));
-%! assert (all(dY(:)==0));
-%! assert (all(dZ(:)==4));
-%! assert (all(dU(:)==0));
+%! assert (all (dX(:) == 0));
+%! assert (all (dY(:) == 0));
+%! assert (all (dZ(:) == 4));
+%! assert (all (dU(:) == 0));
 %! [dX,dY,dZ,dU] = gradient (U);
-%! assert (all(dX(:)==0));
-%! assert (all(dY(:)==0));
-%! assert (all(dZ(:)==0));
-%! assert (all(dU(:)==5));
-%! assert (size_equal(dX, dY, dZ, dU, X, Y, Z, U));
+%! assert (all (dX(:) == 0));
+%! assert (all (dY(:) == 0));
+%! assert (all (dZ(:) == 0));
+%! assert (all (dU(:) == 5));
+%! assert (size_equal (dX, dY, dZ, dU, X, Y, Z, U));
 %! [dX,dY,dZ,dU] = gradient (U, 5.0);
-%! assert (all(dU(:)==1));
+%! assert (all (dU(:) == 1));
 %! [dX,dY,dZ,dU] = gradient (U, 1.0, 2.0, 3.0, 2.5);
-%! assert (all(dU(:)==2));
+%! assert (all (dU(:) == 2));
 
 %!test
 %! [Y,X,Z,U] = ndgrid (2:2:8,1:5,4:4:12,3:5:30);
 %! [dX,dY,dZ,dU] = gradient (X+j*X);
-%! assert (all(dX(:)==1+1j));
-%! assert (all(dY(:)==0));
-%! assert (all(dZ(:)==0));
-%! assert (all(dU(:)==0));
+%! assert (all (dX(:) == 1+1j));
+%! assert (all (dY(:) == 0));
+%! assert (all (dZ(:) == 0));
+%! assert (all (dU(:) == 0));
 %! [dX,dY,dZ,dU] = gradient (Y-j*Y);
-%! assert (all(dX(:)==0));
-%! assert (all(dY(:)==2-j*2));
-%! assert (all(dZ(:)==0));
-%! assert (all(dU(:)==0));
+%! assert (all (dX(:) == 0));
+%! assert (all (dY(:) == 2-j*2));
+%! assert (all (dZ(:) == 0));
+%! assert (all (dU(:) == 0));
 %! [dX,dY,dZ,dU] = gradient (Z+j*1);
-%! assert (all(dX(:)==0));
-%! assert (all(dY(:)==0));
-%! assert (all(dZ(:)==4));
-%! assert (all(dU(:)==0));
+%! assert (all (dX(:) == 0));
+%! assert (all (dY(:) == 0));
+%! assert (all (dZ(:) == 4));
+%! assert (all (dU(:) == 0));
 %! [dX,dY,dZ,dU] = gradient (U-j*1);
-%! assert (all(dX(:)==0));
-%! assert (all(dY(:)==0));
-%! assert (all(dZ(:)==0));
-%! assert (all(dU(:)==5));
-%! assert (size_equal(dX, dY, dZ, dU, X, Y, Z, U));
+%! assert (all (dX(:) == 0));
+%! assert (all (dY(:) == 0));
+%! assert (all (dZ(:) == 0));
+%! assert (all (dU(:) == 5));
+%! assert (size_equal (dX, dY, dZ, dU, X, Y, Z, U));
 %! [dX,dY,dZ,dU] = gradient (U, 5.0);
-%! assert (all(dU(:)==1));
+%! assert (all (dU(:) == 1));
 %! [dX,dY,dZ,dU] = gradient (U, 1.0, 2.0, 3.0, 2.5);
-%! assert (all(dU(:)==2));
+%! assert (all (dU(:) == 2));
 
 %!test
 %! x = 0:10;

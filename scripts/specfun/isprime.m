@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -80,8 +80,10 @@ function t = isprime (x)
 endfunction
 
 
-%!assert (isprime (4), logical (0));
-%!assert (isprime (3), logical (1));
-%!assert (isprime (magic (3)), logical ([0, 0, 0; 1, 1, 1; 0, 0, 1]));
+%!assert (isprime (3), true)
+%!assert (isprime (4), false)
+%!assert (isprime (magic (3)), logical ([0, 0, 0; 1, 1, 1; 0, 0, 1]))
+
 %!error isprime ()
 %!error isprime (1, 2)
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -59,10 +59,10 @@ function cdf = expcdf (x, lambda)
   cdf(k) = 1;
 
   k = (x > 0) & (x < Inf) & (lambda > 0);
-  if isscalar (lambda)
-    cdf(k) = 1 - exp (- x(k) / lambda);
+  if (isscalar (lambda))
+    cdf(k) = 1 - exp (-x(k) / lambda);
   else
-    cdf(k) = 1 - exp (- x(k) ./ lambda(k));
+    cdf(k) = 1 - exp (-x(k) ./ lambda(k));
   endif
 
 endfunction
@@ -71,21 +71,21 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 Inf];
 %! y = [0, 1 - exp(-x(2:end)/2)];
-%!assert(expcdf (x, 2*ones(1,5)), y);
-%!assert(expcdf (x, 2), y);
-%!assert(expcdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)]);
+%!assert (expcdf (x, 2*ones (1,5)), y)
+%!assert (expcdf (x, 2), y)
+%!assert (expcdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)])
 
 %% Test class of input preserved
-%!assert(expcdf ([x, NaN], 2), [y, NaN]);
-%!assert(expcdf (single([x, NaN]), 2), single([y, NaN]));
-%!assert(expcdf ([x, NaN], single(2)), single([y, NaN]));
+%!assert (expcdf ([x, NaN], 2), [y, NaN])
+%!assert (expcdf (single ([x, NaN]), 2), single ([y, NaN]))
+%!assert (expcdf ([x, NaN], single (2)), single ([y, NaN]))
 
 %% Test input validation
 %!error expcdf ()
 %!error expcdf (1)
 %!error expcdf (1,2,3)
-%!error expcdf (ones(3),ones(2))
-%!error expcdf (ones(2),ones(3))
+%!error expcdf (ones (3), ones (2))
+%!error expcdf (ones (2), ones (3))
 %!error expcdf (i, 2)
 %!error expcdf (2, i)
 

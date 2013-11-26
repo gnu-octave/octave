@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -54,11 +54,11 @@ function inv = norminv (x, mu = 0, sigma = 1)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (!isinf (mu) && !isnan (mu) && (sigma > 0) && (sigma < Inf))
+    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
       inv =  mu + sigma * stdnormal_inv (x);
     endif
   else
-    k = !isinf (mu) & !isnan (mu) & (sigma > 0) & (sigma < Inf);
+    k = isfinite (mu) & (sigma > 0) & (sigma < Inf);
     inv(k) = mu(k) + sigma(k) .* stdnormal_inv (x(k));
   endif
 
@@ -67,26 +67,26 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(norminv (x, ones(1,5), ones(1,5)), [NaN -Inf 1 Inf NaN]);
-%!assert(norminv (x, 1, ones(1,5)), [NaN -Inf 1 Inf NaN]);
-%!assert(norminv (x, ones(1,5), 1), [NaN -Inf 1 Inf NaN]);
-%!assert(norminv (x, [1 -Inf NaN Inf 1], 1), [NaN NaN NaN NaN NaN]);
-%!assert(norminv (x, 1, [1 0 NaN Inf 1]), [NaN NaN NaN NaN NaN]);
-%!assert(norminv ([x(1:2) NaN x(4:5)], 1, 1), [NaN -Inf NaN Inf NaN]);
+%!assert (norminv (x, ones (1,5), ones (1,5)), [NaN -Inf 1 Inf NaN])
+%!assert (norminv (x, 1, ones (1,5)), [NaN -Inf 1 Inf NaN])
+%!assert (norminv (x, ones (1,5), 1), [NaN -Inf 1 Inf NaN])
+%!assert (norminv (x, [1 -Inf NaN Inf 1], 1), [NaN NaN NaN NaN NaN])
+%!assert (norminv (x, 1, [1 0 NaN Inf 1]), [NaN NaN NaN NaN NaN])
+%!assert (norminv ([x(1:2) NaN x(4:5)], 1, 1), [NaN -Inf NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(norminv ([x, NaN], 1, 1), [NaN -Inf 1 Inf NaN NaN]);
-%!assert(norminv (single([x, NaN]), 1, 1), single([NaN -Inf 1 Inf NaN NaN]));
-%!assert(norminv ([x, NaN], single(1), 1), single([NaN -Inf 1 Inf NaN NaN]));
-%!assert(norminv ([x, NaN], 1, single(1)), single([NaN -Inf 1 Inf NaN NaN]));
+%!assert (norminv ([x, NaN], 1, 1), [NaN -Inf 1 Inf NaN NaN])
+%!assert (norminv (single ([x, NaN]), 1, 1), single ([NaN -Inf 1 Inf NaN NaN]))
+%!assert (norminv ([x, NaN], single (1), 1), single ([NaN -Inf 1 Inf NaN NaN]))
+%!assert (norminv ([x, NaN], 1, single (1)), single ([NaN -Inf 1 Inf NaN NaN]))
 
 %% Test input validation
 %!error norminv ()
 %!error norminv (1,2)
 %!error norminv (1,2,3,4)
-%!error norminv (ones(3),ones(2),ones(2))
-%!error norminv (ones(2),ones(3),ones(2))
-%!error norminv (ones(2),ones(2),ones(3))
+%!error norminv (ones (3), ones (2), ones (2))
+%!error norminv (ones (2), ones (3), ones (2))
+%!error norminv (ones (2), ones (2), ones (3))
 %!error norminv (i, 2, 2)
 %!error norminv (2, i, 2)
 %!error norminv (2, 2, i)

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -33,8 +33,11 @@ function y = reallog (x)
   endif
 endfunction
 
-%!assert (log(1:5),reallog(1:5))
+
+%!assert (log (1:5), reallog (1:5))
 %!test
 %! x = rand (10,10);
-%! assert (log(x),reallog(x))
-%!error (reallog(-1))
+%! assert (log (x),reallog (x));
+
+%!error <produced complex result> reallog (-1)
+

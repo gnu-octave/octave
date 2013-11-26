@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -44,10 +44,10 @@ endfunction
 %!shared x,y
 %! x = [-Inf -log(2) 0 log(2) Inf];
 %! y = [0, 1/4, 1/2, 1/4, 0]; 
-%!assert(laplace_pdf ([x, NaN]), [y, NaN]);
+%!assert (laplace_pdf ([x, NaN]), [y, NaN])
 
 %% Test class of input preserved
-%!assert(laplace_pdf (single([x, NaN])), single([y, NaN]));
+%!assert (laplace_pdf (single ([x, NaN])), single ([y, NaN]))
 
 %% Test input validation
 %!error laplace_pdf ()

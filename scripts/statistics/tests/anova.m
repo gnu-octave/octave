@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -108,3 +108,4 @@ function [pval, f, df_b, df_w] = anova (y, g)
   endif
 
 endfunction
+

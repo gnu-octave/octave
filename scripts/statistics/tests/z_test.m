@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -24,11 +24,11 @@
 ## @var{z} follows a standard normal distribution.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @code{">"}, the
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @qcode{">"}, the
 ## one-sided alternative @code{mean (@var{x}) > @var{m}} is considered.
-## Similarly for @code{"<"}, the one-sided alternative @code{mean
+## Similarly for @qcode{"<"}, the one-sided alternative @code{mean
 ## (@var{x}) < @var{m}} is considered.  The default is the two-sided
 ## case.
 ##
@@ -78,10 +78,11 @@ function [pval, z] = z_test (x, m, v, alt)
   endif
 
   if (nargout == 0)
-    s = cstrcat ("Z-test of mean(x) == %g against mean(x) %s %g,\n",
-                "with known var(x) == %g:\n",
-                "  pval = %g\n");
+    s = ["Z-test of mean(x) == %g against mean(x) %s %g,\n", ...
+         "with known var(x) == %g:\n",                       ...
+         "  pval = %g\n"];
     printf (s, m, alt, m, v, pval);
   endif
 
 endfunction
+

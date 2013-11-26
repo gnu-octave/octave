@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -86,3 +86,4 @@ function saveaudio (name, x, ext, bps)
   fclose (num);
 
 endfunction
+

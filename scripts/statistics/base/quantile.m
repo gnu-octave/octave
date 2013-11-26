@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Ben Abbott and Jaroslav Hajek
+## Copyright (C) 2008-2013 Ben Abbott and Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} quantile (@var{x}, @var{p})
+## @deftypefn  {Function File} {@var{q} =} quantile (@var{x})
+## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
 ## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
@@ -28,6 +29,8 @@
 ## return them in a matrix, such that the i-th row of @var{q} contains
 ## the @var{p}(i)th quantiles of each column of @var{x}.
 ##
+## If @var{p} is unspecified, return the quantiles for
+## @code{[0.00 0.25 0.50 0.75 1.00]}.
 ## The optional argument @var{dim} determines the dimension along which
 ## the quantiles are calculated.  If @var{dim} is omitted, and @var{x} is
 ## a vector or matrix, it defaults to 1 (column-wise quantiles).  If
@@ -35,7 +38,8 @@
 ## dimension.
 ##
 ## The methods available to calculate sample quantiles are the nine methods
-## used by R (http://www.r-project.org/).  The default value is METHOD = 5.
+## used by R (@url{http://www.r-project.org/}).  The default value is
+## @w{METHOD = 5}.
 ##
 ## Discontinuous sample quantile methods 1, 2, and 3
 ##
@@ -51,10 +55,10 @@
 ## interpolation function respecting each methods' representative cdf.
 ##
 ## @enumerate 4
-## @item Method 4: p(k) = k / n. That is, linear interpolation of the
+## @item Method 4: p(k) = k / n.  That is, linear interpolation of the
 ## empirical cdf.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function
+## @item Method 5: p(k) = (k - 0.5) / n.  That is a piecewise linear function
 ## where the knots are the values midway through the steps of the empirical
 ## cdf.
 ##
@@ -128,7 +132,7 @@ function q = quantile (x, p = [], dim = 1, method = 5)
   endif
 
   ## Set the permutation vector.
-  perm = 1:ndims(x);
+  perm = 1:ndims (x);
   perm(1) = dim;
   perm(dim) = 1;
 
@@ -157,7 +161,7 @@ endfunction
 %! p = 0.5;
 %! x = sort (rand (11));
 %! q = quantile (x, p);
-%! assert (q, x(6,:))
+%! assert (q, x(6,:));
 %! x = x.';
 %! q = quantile (x, p, 2);
 %! assert (q, x(:,6));
@@ -174,9 +178,9 @@ endfunction
 %!      1.0000   1.7500   2.5000   3.2500   4.0000
 %!      1.0000   1.4167   2.5000   3.5833   4.0000
 %!      1.0000   1.4375   2.5000   3.5625   4.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -191,9 +195,9 @@ endfunction
 %!      1.0000   2.0000   3.0000   4.0000   5.0000
 %!      1.0000   1.6667   3.0000   4.3333   5.0000
 %!      1.0000   1.6875   3.0000   4.3125   5.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -208,9 +212,9 @@ endfunction
 %!      1.0000   1.7500   3.5000   6.0000   9.0000
 %!      1.0000   1.4167   3.5000   7.3333   9.0000
 %!      1.0000   1.4375   3.5000   7.2500   9.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -225,9 +229,9 @@ endfunction
 %!      1.0000    2.0000    5.0000    9.0000   11.0000
 %!      1.0000    1.6667    5.0000    9.6667   11.0000
 %!      1.0000    1.6875    5.0000    9.6250   11.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -242,9 +246,9 @@ endfunction
 %!      6.0000   10.2500   11.5000   14.2500   16.0000
 %!      6.0000    9.8333   11.5000   15.0000   16.0000
 %!      6.0000    9.8750   11.5000   15.0000   16.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -260,9 +264,9 @@ endfunction
 %!      -2.551474  -0.571522  -0.067751   0.106855   0.495271
 %!      -2.551474  -0.591566  -0.067751   0.146459   0.495271
 %!      -2.551474  -0.590801  -0.067751   0.140686   0.495271];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -274,11 +278,11 @@ endfunction
 %!      0.933100, 0.931200, 0.963500, 0.779600, 0.846100];
 %! tol = 0.00001;
 %! x(5,5) = NaN;
-%! assert (quantile(x, p, 1), [0.27950, 0.79780, 0.32960, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1), [0.27950, 0.79780, 0.32960, 0.55670, 0.44460], tol);
 %! x(1,1) = NaN;
-%! assert (quantile(x, p, 1), [0.35415, 0.79780, 0.32960, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1), [0.35415, 0.79780, 0.32960, 0.55670, 0.44460], tol);
 %! x(3,3) = NaN;
-%! assert (quantile(x, p, 1), [0.35415, 0.79780, 0.42590, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1), [0.35415, 0.79780, 0.42590, 0.55670, 0.44460], tol);
 
 %!test
 %! sx = [2, 3, 4];
@@ -305,8 +309,7 @@ endfunction
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
 ##
 ## The optional input, @var{method}, refers to nine methods available in R
-## (http://www.r-project.org/). The default is @var{method} = 7. For more
-## detail, see `help quantile'.
+## (http://www.r-project.org/). The default is @var{method} = 7.
 ## @seealso{prctile, quantile, statistics}
 
 ## Author: Ben Abbott <bpabbott@mac.com>

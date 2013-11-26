@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -84,12 +84,12 @@ function rnd = unifrnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((-Inf < a) && (a < b) && (b < Inf))
-      rnd =  a + (b - a) * rand (sz);
+      rnd =  a + (b - a) * rand (sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd =  a + (b - a) .* rand (sz);
+    rnd =  a + (b - a) .* rand (sz, cls);
 
     k = !(-Inf < a) | !(a < b) | !(b < Inf);
     rnd(k) = NaN;
@@ -98,35 +98,35 @@ function rnd = unifrnd (a, b, varargin)
 endfunction
 
 
-%!assert(size (unifrnd (1,2)), [1, 1]);
-%!assert(size (unifrnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (unifrnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (unifrnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (unifrnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (unifrnd (1, 2, 3)), [3, 3]);
-%!assert(size (unifrnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (unifrnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (unifrnd (1,2)), [1, 1])
+%!assert (size (unifrnd (ones (2,1), 2)), [2, 1])
+%!assert (size (unifrnd (ones (2,2), 2)), [2, 2])
+%!assert (size (unifrnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (unifrnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (unifrnd (1, 2, 3)), [3, 3])
+%!assert (size (unifrnd (1, 2, [4 1])), [4, 1])
+%!assert (size (unifrnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (unifrnd (1, 2)), "double");
-%!assert(class (unifrnd (single(1), 2)), "single");
-%!assert(class (unifrnd (single([1 1]), 2)), "single");
-%!assert(class (unifrnd (1, single(2))), "single");
-%!assert(class (unifrnd (1, single([2 2]))), "single");
+%!assert (class (unifrnd (1, 2)), "double")
+%!assert (class (unifrnd (single (1), 2)), "single")
+%!assert (class (unifrnd (single ([1 1]), 2)), "single")
+%!assert (class (unifrnd (1, single (2))), "single")
+%!assert (class (unifrnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error unifrnd ()
 %!error unifrnd (1)
-%!error unifrnd (ones(3),ones(2))
-%!error unifrnd (ones(2),ones(3))
+%!error unifrnd (ones (3), ones (2))
+%!error unifrnd (ones (2), ones (3))
 %!error unifrnd (i, 2)
 %!error unifrnd (2, i)
 %!error unifrnd (1,2, -1)
-%!error unifrnd (1,2, ones(2))
+%!error unifrnd (1,2, ones (2))
 %!error unifrnd (1, 2, [2 -1 2])
-%!error unifrnd (1,2, 1, ones(2))
+%!error unifrnd (1,2, 1, ones (2))
 %!error unifrnd (1,2, 1, -1)
-%!error unifrnd (ones(2,2), 2, 3)
-%!error unifrnd (ones(2,2), 2, [3, 2])
-%!error unifrnd (ones(2,2), 2, 2, 3)
+%!error unifrnd (ones (2,2), 2, 3)
+%!error unifrnd (ones (2,2), 2, [3, 2])
+%!error unifrnd (ones (2,2), 2, 2, 3)
 

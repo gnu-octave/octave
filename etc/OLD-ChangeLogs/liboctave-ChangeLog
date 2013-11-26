@@ -1480,7 +1480,7 @@
 	Remove occurences of ftrunc, fnon_int and fnan eveywhere.
 	* oct-inttypes.cc: Ditto last sentence. Remove warning tests.
 
-2010-03-07  Soren Hauberg  <hauberg@gmail.com>
+2010-03-07  Søren Hauberg  <hauberg@gmail.com>
 
 	* dim-vector.h: New constructor accepting a C array of dimensions.
 

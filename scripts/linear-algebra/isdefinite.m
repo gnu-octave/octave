@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2012 Gabriele Pannocchia
+## Copyright (C) 2003-2013 Gabriele Pannocchia
 ##
 ## This file is part of Octave.
 ##
@@ -67,19 +67,19 @@ endfunction
 
 %!test
 %! A = [-1 0; 0 -1];
-%! assert (isdefinite (A), -1)
+%! assert (isdefinite (A), -1);
 
 %!test
 %! A = [1 0; 0 1];
-%! assert (isdefinite (A), 1)
+%! assert (isdefinite (A), 1);
 
 %!test
 %! A = [2 -1 0; -1 2 -1; 0 -1 2];
-%! assert (isdefinite (A), 1)
+%! assert (isdefinite (A), 1);
 
 %!test
 %! A = [1 0; 0 0];
-%! assert (isdefinite (A), 0)
+%! assert (isdefinite (A), 0);
 
 %!error isdefinite ()
 %!error isdefinite (1,2,3)

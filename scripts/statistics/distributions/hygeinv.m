@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1997-2012 Kurt Hornik
+## Copyright (C) 1997-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -80,23 +80,23 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(hygeinv (x, 4*ones(1,5), 2*ones(1,5), 2*ones(1,5)), [NaN 0 1 2 NaN]);
-%!assert(hygeinv (x, 4*ones(1,5), 2, 2), [NaN 0 1 2 NaN]);
-%!assert(hygeinv (x, 4, 2*ones(1,5), 2), [NaN 0 1 2 NaN]);
-%!assert(hygeinv (x, 4, 2, 2*ones(1,5)), [NaN 0 1 2 NaN]);
-%!assert(hygeinv (x, 4*[1 -1 NaN 1.1 1], 2, 2), [NaN NaN NaN NaN NaN]);
-%!assert(hygeinv (x, 4, 2*[1 -1 NaN 1.1 1], 2), [NaN NaN NaN NaN NaN]);
-%!assert(hygeinv (x, 4, 5, 2), [NaN NaN NaN NaN NaN]);
-%!assert(hygeinv (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [NaN NaN NaN NaN NaN]);
-%!assert(hygeinv (x, 4, 2, 5), [NaN NaN NaN NaN NaN]);
-%!assert(hygeinv ([x(1:2) NaN x(4:5)], 4, 2, 2), [NaN 0 NaN 2 NaN]);
+%!assert (hygeinv (x, 4*ones (1,5), 2*ones (1,5), 2*ones (1,5)), [NaN 0 1 2 NaN])
+%!assert (hygeinv (x, 4*ones (1,5), 2, 2), [NaN 0 1 2 NaN])
+%!assert (hygeinv (x, 4, 2*ones (1,5), 2), [NaN 0 1 2 NaN])
+%!assert (hygeinv (x, 4, 2, 2*ones (1,5)), [NaN 0 1 2 NaN])
+%!assert (hygeinv (x, 4*[1 -1 NaN 1.1 1], 2, 2), [NaN NaN NaN NaN NaN])
+%!assert (hygeinv (x, 4, 2*[1 -1 NaN 1.1 1], 2), [NaN NaN NaN NaN NaN])
+%!assert (hygeinv (x, 4, 5, 2), [NaN NaN NaN NaN NaN])
+%!assert (hygeinv (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [NaN NaN NaN NaN NaN])
+%!assert (hygeinv (x, 4, 2, 5), [NaN NaN NaN NaN NaN])
+%!assert (hygeinv ([x(1:2) NaN x(4:5)], 4, 2, 2), [NaN 0 NaN 2 NaN])
 
 %% Test class of input preserved
-%!assert(hygeinv ([x, NaN], 4, 2, 2), [NaN 0 1 2 NaN NaN]);
-%!assert(hygeinv (single([x, NaN]), 4, 2, 2), single([NaN 0 1 2 NaN NaN]));
-%!assert(hygeinv ([x, NaN], single(4), 2, 2), single([NaN 0 1 2 NaN NaN]));
-%!assert(hygeinv ([x, NaN], 4, single(2), 2), single([NaN 0 1 2 NaN NaN]));
-%!assert(hygeinv ([x, NaN], 4, 2, single(2)), single([NaN 0 1 2 NaN NaN]));
+%!assert (hygeinv ([x, NaN], 4, 2, 2), [NaN 0 1 2 NaN NaN])
+%!assert (hygeinv (single ([x, NaN]), 4, 2, 2), single ([NaN 0 1 2 NaN NaN]))
+%!assert (hygeinv ([x, NaN], single (4), 2, 2), single ([NaN 0 1 2 NaN NaN]))
+%!assert (hygeinv ([x, NaN], 4, single (2), 2), single ([NaN 0 1 2 NaN NaN]))
+%!assert (hygeinv ([x, NaN], 4, 2, single (2)), single ([NaN 0 1 2 NaN NaN]))
 
 %% Test input validation
 %!error hygeinv ()
@@ -104,9 +104,9 @@ endfunction
 %!error hygeinv (1,2)
 %!error hygeinv (1,2,3)
 %!error hygeinv (1,2,3,4,5)
-%!error hygeinv (ones(2), ones(3), 1, 1)
-%!error hygeinv (1, ones(2), ones(3), 1)
-%!error hygeinv (1, 1, ones(2), ones(3))
+%!error hygeinv (ones (2), ones (3), 1, 1)
+%!error hygeinv (1, ones (2), ones (3), 1)
+%!error hygeinv (1, 1, ones (2), ones (3))
 %!error hygeinv (i, 2, 2, 2)
 %!error hygeinv (2, i, 2, 2)
 %!error hygeinv (2, 2, i, 2)

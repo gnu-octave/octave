@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -21,8 +21,8 @@
 ## @deftypefn  {Function File} {} strjust (@var{s})
 ## @deftypefnx {Function File} {} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
-## be @samp{"left"}, @samp{"center"}, or @samp{"right"}.  If @var{pos}
-## is omitted it defaults to @samp{"right"}.
+## be @qcode{"left"}, @qcode{"center"}, or @qcode{"right"}.  If @var{pos}
+## is omitted it defaults to @qcode{"right"}.
 ##
 ## Null characters are replaced by spaces.  All other character
 ## data are treated as non-white space.
@@ -87,7 +87,7 @@ function y = strjust (s, pos = "right")
   endif
 
   ## Adjust the column indices.
-  jdx += shift(idx);
+  jdx += shift (idx);
 
   ## Create a blank matrix and position the nonblank characters.
   y = repmat (" ", nr, nc);
@@ -97,16 +97,16 @@ endfunction
 
 
 %!assert (strjust (["a"; "ab"; "abc"; "abcd"]),
-%!        ["   a";"  ab"; " abc"; "abcd"]);
+%!        ["   a";"  ab"; " abc"; "abcd"])
 %!assert (strjust ([" a"; "  ab"; "abc"; "abcd"], "left"),
-%!        ["a   "; "ab  "; "abc "; "abcd"]);
+%!        ["a   "; "ab  "; "abc "; "abcd"])
 %!assert (strjust (["a"; "ab"; "abc"; "abcd"], "CENTER"),
-%!        [" a  "; " ab"; "abc "; "abcd"]);
-%!assert (strjust (["";""]), "");
+%!        [" a  "; " ab"; "abc "; "abcd"])
+%!assert (strjust (["";""]), "")
 
 %% Test input validation
 %!error <Invalid call to strjust> strjust ()
 %!error <Invalid call to strjust> strjust (["a";"ab"], "center", 1)
-%!error <S must be a string> strjust (ones(3,3))
-%!error <S must be a string> strjust (char (ones(3,3,3)))
+%!error <S must be a string> strjust (ones (3,3))
+%!error <S must be a string> strjust (char (ones (3,3,3)))
 

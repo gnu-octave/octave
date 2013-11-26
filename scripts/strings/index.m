@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -28,12 +28,12 @@
 ## @example
 ## @group
 ## index ("Teststring", "t")
-##    @result{} 4
+##     @result{} 4
 ## @end group
 ## @end example
 ##
-## If @var{direction} is @samp{"first"}, return the first element found.
-## If @var{direction} is @samp{"last"}, return the last element found.
+## If @var{direction} is @qcode{"first"}, return the first element found.
+## If @var{direction} is @qcode{"last"}, return the last element found.
 ##
 ## @seealso{find, rindex}
 ## @end deftypefn
@@ -84,20 +84,21 @@ function n = index (s, t, direction = "first")
 endfunction
 
 
-%!assert (index ("foobarbaz", "b") == 4 && index ("foobarbaz", "z") == 9);
+%!assert (index ("foobarbaz", "b"), 4)
+%!assert (index ("foobarbaz", "z"), 9)
 
-%!assert (index("astringbstringcstring", "s"), 2)
-%!assert (index("astringbstringcstring", "st"), 2)
-%!assert (index("astringbstringcstring", "str"), 2)
-%!assert (index("astringbstringcstring", "string"), 2)
-%!assert (index("abc---", "abc+++"), 0)
+%!assert (index ("astringbstringcstring", "s"), 2)
+%!assert (index ("astringbstringcstring", "st"), 2)
+%!assert (index ("astringbstringcstring", "str"), 2)
+%!assert (index ("astringbstringcstring", "string"), 2)
+%!assert (index ("abc---", "abc+++"), 0)
 
 ## test everything out in reverse
-%!assert (index("astringbstringcstring", "s", "last"), 16)
-%!assert (index("astringbstringcstring", "st", "last"), 16)
-%!assert (index("astringbstringcstring", "str", "last"), 16)
-%!assert (index("astringbstringcstring", "string", "last"), 16)
-%!assert (index("abc---", "abc+++", "last"), 0)
+%!assert (index ("astringbstringcstring", "s", "last"), 16)
+%!assert (index ("astringbstringcstring", "st", "last"), 16)
+%!assert (index ("astringbstringcstring", "str", "last"), 16)
+%!assert (index ("astringbstringcstring", "string", "last"), 16)
+%!assert (index ("abc---", "abc+++", "last"), 0)
 
 %!test
 %! str = char ("Hello", "World", "Goodbye", "World");

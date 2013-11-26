@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@ function ret = what (d)
     d = pwd ();
   elseif (isempty (strfind (d, filesep ())))
     ## Find the appropriate directory on the path.
-    p = strtrim (strsplit (path (), pathsep()));
+    p = strtrim (ostrsplit (path (), pathsep ()));
     d = p{find (cellfun (@(x) ! isempty (strfind (x, d)), p))(end)};
   else
     [status, msg, msgid] = fileattrib (d);
@@ -63,13 +63,13 @@ function ret = what (d)
       [dummy, f, e] = fileparts (n);
       if (strcmp (e, ".m"))
         w.m{end+1} = n;
-      elseif (strcmp (e, mexext ()))
-        w.mex{end+1} = n;
       elseif (strcmp (e, ".oct"))
         w.oct{end+1} = n;
+      elseif (strcmp (e, mexext ()))
+        w.mex{end+1} = n;
       elseif (strcmp (e, ".mat"))
         w.mat{end+1} = n;
-      elseif(strcmp (n(1), "@"))
+      elseif (strcmp (n(1), "@"))
         w.classes{end+1} = n;
       endif
     endif
@@ -91,7 +91,7 @@ function __display_filenames__ (msg, p, f)
     printf ("%s %s:\n\n", msg, p);
 
     maxlen = max (cellfun ("length", f));
-    ncols = max (1, floor (terminal_size()(2) / (maxlen + 3)));
+    ncols = max (1, floor (terminal_size ()(2) / (maxlen + 3)));
     fmt = "";
     for i = 1: ncols
       fmt = sprintf ("%s   %%-%ds", fmt, maxlen);
@@ -108,3 +108,4 @@ function __display_filenames__ (msg, p, f)
     endfor
   endif
 endfunction
+

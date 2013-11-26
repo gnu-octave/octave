@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -29,16 +29,16 @@
 ## output is always a column vector.  @var{x} may also be a cell array of
 ## strings.
 ##
-## If the optional argument @code{"rows"} is supplied, return the unique
+## If the optional argument @qcode{"rows"} is supplied, return the unique
 ## rows of @var{x}, sorted in ascending order.
 ##
 ## If requested, return index vectors @var{i} and @var{j} such that
 ## @code{x(i)==y} and @code{y(j)==x}.
 ##
-## Additionally, if @var{i} is a requested output then one of @code{"first"} or
-## @code{"last"} may be given as an input.  If @code{"last"} is specified,
-## return the highest possible indices in @var{i}, otherwise, if @code{"first"}
-## is specified, return the lowest.  The default is @code{"last"}.
+## Additionally, if @var{i} is a requested output then one of @qcode{"first"} or
+## @qcode{"last"} may be given as an input.  If @qcode{"last"} is specified,
+## return the highest possible indices in @var{i}, otherwise, if @qcode{"first"}
+## is specified, return the lowest.  The default is @qcode{"last"}.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
@@ -51,14 +51,17 @@ function [y, i, j] = unique (x, varargin)
   if (nargin > 1)
     ## parse options
     if (iscellstr (varargin))
-      varargin = unique (varargin);
-      optfirst = strmatch ("first", varargin, "exact") > 0;
-      optlast = strmatch ("last", varargin, "exact") > 0;
-      optrows = strmatch ("rows", varargin, "exact") > 0;
+      optfirst = strcmp ("first", varargin);
+      optlast  = strcmp ("last", varargin);
+      optrows  = strcmp ("rows", varargin);
+      if (! all (optfirst | optlast | optrows))
+        error ("unique: invalid option");
+      endif
+      optfirst = any (optfirst);
+      optlast  = any (optlast);
+      optrows  = any (optrows);
       if (optfirst && optlast)
         error ('unique: cannot specify both "last" and "first"');
-      elseif (optfirst + optlast + optrows != nargin-1)
-        error ("unique: invalid option");
       endif
     else
       error ("unique: options must be strings");
@@ -163,52 +166,59 @@ function [y, i, j] = unique (x, varargin)
 
 endfunction
 
-%!assert(unique([1 1 2; 1 2 1; 1 1 2]),[1;2])
-%!assert(unique([1 1 2; 1 0 1; 1 1 2],'rows'),[1 0 1; 1 1 2])
-%!assert(unique([]),[])
-%!assert(unique([1]),[1])
-%!assert(unique([1 2]),[1 2])
-%!assert(unique([1;2]),[1;2])
-%!assert(unique([1,NaN,Inf,NaN,Inf]),[1,Inf,NaN,NaN])
-%!assert(unique({'Foo','Bar','Foo'}),{'Bar','Foo'})
-%!assert(unique({'Foo','Bar','FooBar'}'),{'Bar','Foo','FooBar'}')
-%!assert(unique(zeros(1,0)), zeros(0,1))
-%!assert(unique(zeros(1,0), 'rows'), zeros(1,0))
-%!assert(unique(cell(1,0)), cell(0,1))
-%!assert(unique({}), {})
-%!assert(unique([1,2,2,3,2,4], 'rows'), [1,2,2,3,2,4])
-%!assert(unique([1,2,2,3,2,4]), [1,2,3,4])
-%!assert(unique([1,2,2,3,2,4]', 'rows'), [1,2,3,4]')
-%!assert(unique(sparse([2,0;2,0])), [0,2]')
-%!assert(unique(sparse([1,2;2,3])), [1,2,3]')
-%!assert(unique([1,2,2,3,2,4]', 'rows'), [1,2,3,4]')
-%!assert(unique(single([1,2,2,3,2,4]), 'rows'), single([1,2,2,3,2,4]))
-%!assert(unique(single([1,2,2,3,2,4])), single([1,2,3,4]))
-%!assert(unique(single([1,2,2,3,2,4]'), 'rows'), single([1,2,3,4]'))
-%!assert(unique(uint8([1,2,2,3,2,4]), 'rows'), uint8([1,2,2,3,2,4]))
-%!assert(unique(uint8([1,2,2,3,2,4])), uint8([1,2,3,4]))
-%!assert(unique(uint8([1,2,2,3,2,4]'), 'rows'), uint8([1,2,3,4]'))
+
+%!assert (unique ([1 1 2; 1 2 1; 1 1 2]),[1;2])
+%!assert (unique ([1 1 2; 1 0 1; 1 1 2],"rows"),[1 0 1; 1 1 2])
+%!assert (unique ([]),[])
+%!assert (unique ([1]),[1])
+%!assert (unique ([1 2]),[1 2])
+%!assert (unique ([1;2]),[1;2])
+%!assert (unique ([1,NaN,Inf,NaN,Inf]),[1,Inf,NaN,NaN])
+%!assert (unique ({"Foo","Bar","Foo"}),{"Bar","Foo"})
+%!assert (unique ({"Foo","Bar","FooBar"}'),{"Bar","Foo","FooBar"}')
+%!assert (unique (zeros (1,0)), zeros (0,1))
+%!assert (unique (zeros (1,0), "rows"), zeros (1,0))
+%!assert (unique (cell (1,0)), cell (0,1))
+%!assert (unique ({}), {})
+%!assert (unique ([1,2,2,3,2,4], "rows"), [1,2,2,3,2,4])
+%!assert (unique ([1,2,2,3,2,4]), [1,2,3,4])
+%!assert (unique ([1,2,2,3,2,4]', "rows"), [1,2,3,4]')
+%!assert (unique (sparse ([2,0;2,0])), [0,2]')
+%!assert (unique (sparse ([1,2;2,3])), [1,2,3]')
+%!assert (unique ([1,2,2,3,2,4]', "rows"), [1,2,3,4]')
+%!assert (unique (single ([1,2,2,3,2,4]), "rows"), single ([1,2,2,3,2,4]))
+%!assert (unique (single ([1,2,2,3,2,4])), single ([1,2,3,4]))
+%!assert (unique (single ([1,2,2,3,2,4]'), "rows"), single ([1,2,3,4]'))
+%!assert (unique (uint8 ([1,2,2,3,2,4]), "rows"), uint8 ([1,2,2,3,2,4]))
+%!assert (unique (uint8 ([1,2,2,3,2,4])), uint8 ([1,2,3,4]))
+%!assert (unique (uint8 ([1,2,2,3,2,4]'), "rows"), uint8 ([1,2,3,4]'))
 %!test
-%! [a,i,j] = unique([1,1,2,3,3,3,4]);
-%! assert(a,[1,2,3,4])
-%! assert(i,[2,3,6,7])
-%! assert(j,[1,1,2,3,3,3,4])
+%! [a,i,j] = unique ([1,1,2,3,3,3,4]);
+%! assert (a, [1,2,3,4]);
+%! assert (i, [2,3,6,7]);
+%! assert (j, [1,1,2,3,3,3,4]);
 %!
 %!test
-%! [a,i,j] = unique([1,1,2,3,3,3,4]','first');
-%! assert(a,[1,2,3,4]')
-%! assert(i,[1,3,4,7]')
-%! assert(j,[1,1,2,3,3,3,4]')
+%! [a,i,j] = unique ([1,1,2,3,3,3,4]', "first");
+%! assert (a, [1,2,3,4]');
+%! assert (i, [1,3,4,7]');
+%! assert (j, [1,1,2,3,3,3,4]');
 %!
 %!test
-%! [a,i,j] = unique({'z'; 'z'; 'z'});
-%! assert(a,{'z'})
-%! assert(i,[3]')
-%! assert(j,[1,1,1]')
+%! [a,i,j] = unique ({"z"; "z"; "z"});
+%! assert (a, {"z"});
+%! assert (i, [3]');
+%! assert (j, [1;1;1]);
 %!
 %!test
-%! A=[1,2,3;1,2,3];
-%! [a,i,j] = unique(A,'rows');
-%! assert(a,[1,2,3])
-%! assert(A(i,:),a)
-%! assert(a(j,:),A)
+%! A = [1,2,3;1,2,3];
+%! [a,i,j] = unique (A, "rows");
+%! assert (a, [1,2,3]);
+%! assert (A(i,:), a);
+%! assert (a(j,:), A);
+
+%!error unique({"a", "b", "c"}, "UnknownOption")
+%!error unique({"a", "b", "c"}, "UnknownOption1", "UnknownOption2")
+%!error unique({"a", "b", "c"}, "rows", "UnknownOption2")
+%!error unique({"a", "b", "c"}, "UnknownOption1", "last")
+

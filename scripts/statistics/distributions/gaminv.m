@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -102,27 +102,27 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.63212055882855778 1 2];
-%!assert(gaminv (x, ones(1,5), ones(1,5)), [NaN 0 1 Inf NaN], eps);
-%!assert(gaminv (x, 1, ones(1,5)), [NaN 0 1 Inf NaN], eps);
-%!assert(gaminv (x, ones(1,5), 1), [NaN 0 1 Inf NaN], eps);
-%!assert(gaminv (x, [1 -Inf NaN Inf 1], 1), [NaN NaN NaN NaN NaN]);
-%!assert(gaminv (x, 1, [1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN]);
-%!assert(gaminv ([x(1:2) NaN x(4:5)], 1, 1), [NaN 0 NaN Inf NaN]);
+%!assert (gaminv (x, ones (1,5), ones (1,5)), [NaN 0 1 Inf NaN], eps)
+%!assert (gaminv (x, 1, ones (1,5)), [NaN 0 1 Inf NaN], eps)
+%!assert (gaminv (x, ones (1,5), 1), [NaN 0 1 Inf NaN], eps)
+%!assert (gaminv (x, [1 -Inf NaN Inf 1], 1), [NaN NaN NaN NaN NaN])
+%!assert (gaminv (x, 1, [1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN])
+%!assert (gaminv ([x(1:2) NaN x(4:5)], 1, 1), [NaN 0 NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(gaminv ([x, NaN], 1, 1), [NaN 0 1 Inf NaN NaN], eps);
-%!assert(gaminv (single([x, NaN]), 1, 1), single([NaN 0 1 Inf NaN NaN]), eps("single"));
-%!assert(gaminv ([x, NaN], single(1), 1), single([NaN 0 1 Inf NaN NaN]), eps("single"));
-%!assert(gaminv ([x, NaN], 1, single(1)), single([NaN 0 1 Inf NaN NaN]), eps("single"));
+%!assert (gaminv ([x, NaN], 1, 1), [NaN 0 1 Inf NaN NaN], eps)
+%!assert (gaminv (single ([x, NaN]), 1, 1), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
+%!assert (gaminv ([x, NaN], single (1), 1), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
+%!assert (gaminv ([x, NaN], 1, single (1)), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
 
 %% Test input validation
 %!error gaminv ()
 %!error gaminv (1)
 %!error gaminv (1,2)
 %!error gaminv (1,2,3,4)
-%!error gaminv (ones(3),ones(2),ones(2))
-%!error gaminv (ones(2),ones(3),ones(2))
-%!error gaminv (ones(2),ones(2),ones(3))
+%!error gaminv (ones (3), ones (2), ones (2))
+%!error gaminv (ones (2), ones (3), ones (2))
+%!error gaminv (ones (2), ones (2), ones (3))
 %!error gaminv (i, 2, 2)
 %!error gaminv (2, i, 2)
 %!error gaminv (2, 2, i)

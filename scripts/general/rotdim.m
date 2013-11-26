@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman
+## Copyright (C) 2004-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -60,8 +60,8 @@ function y = rotdim (x, n, plane)
     print_usage ();
   endif
 
-  if (nargin > 1 && ! isempty(n))
-    if (!isscalar (n) || !isreal(n) || fix (n) != n)
+  if (nargin > 1 && ! isempty (n))
+    if (!isscalar (n) || !isreal (n) || fix (n) != n)
       error ("rotdim: N must be a scalar integer");
     endif
   else
@@ -124,35 +124,37 @@ function y = rotdim (x, n, plane)
 
 endfunction
 
-%!error rotdim ();
-%!error rotdim (1, 2, 3, 4);
 
 %!shared r, rr
-%! r = [1,2,3]; rr = [3,2,1];
-%!assert (rotdim (r, 0), r);
-%!assert (rotdim (r, 1), rr');
-%!assert (rotdim (r, 2), rr);
-%!assert (rotdim (r, 3), r');
-%!assert (rotdim (r, 3), rotdim (r, -1));
-%!assert (rotdim (r, 1), rotdim (r));
+%! r = [1,2,3];  rr = [3,2,1];
+%!assert (rotdim (r, 0), r)
+%!assert (rotdim (r, 1), rr')
+%!assert (rotdim (r, 2), rr)
+%!assert (rotdim (r, 3), r')
+%!assert (rotdim (r, 3), rotdim (r, -1))
+%!assert (rotdim (r, 1), rotdim (r))
 
 %!shared c, cr
-%! c = [1;2;3]; cr = [3;2;1];
-%!assert (rotdim (c, 0), c);
-%!assert (rotdim (c, 1), c');
-%!assert (rotdim (c, 2), cr);
-%!assert (rotdim (c, 3), cr');
-%!assert (rotdim (c, 3), rotdim (c, -1));
-%!assert (rotdim (c, 1), rotdim (c));
+%! c = [1;2;3];  cr = [3;2;1];
+%!assert (rotdim (c, 0), c)
+%!assert (rotdim (c, 1), c')
+%!assert (rotdim (c, 2), cr)
+%!assert (rotdim (c, 3), cr')
+%!assert (rotdim (c, 3), rotdim (c, -1))
+%!assert (rotdim (c, 1), rotdim (c))
 
 %!shared m
 %! m = [1,2;3,4];
-%!assert (rotdim (m, 0), m);
-%!assert (rotdim (m, 1), [2,4;1,3]);
-%!assert (rotdim (m, 2), [4,3;2,1]);
-%!assert (rotdim (m, 3), [3,1;4,2]);
-%!assert (rotdim (m, 3), rotdim (m, -1));
-%!assert (rotdim (m, 1), rotdim (m));
+%!assert (rotdim (m, 0), m)
+%!assert (rotdim (m, 1), [2,4;1,3])
+%!assert (rotdim (m, 2), [4,3;2,1])
+%!assert (rotdim (m, 3), [3,1;4,2])
+%!assert (rotdim (m, 3), rotdim (m, -1))
+%!assert (rotdim (m, 1), rotdim (m))
 
 ## FIXME -- we need tests for multidimensional arrays and different
 ## values of PLANE.
+
+%!error rotdim ()
+%!error rotdim (1, 2, 3, 4)
+

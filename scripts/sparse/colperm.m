@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman and Andy Adler
+## Copyright (C) 2004-2013 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -35,3 +35,4 @@ function p = colperm (s)
   idx = find (diff ([j; Inf]) != 0);
   [dummy, p] = sort (idx - [0; idx(1:(end-1))]);
 endfunction
+

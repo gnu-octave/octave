@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -32,8 +32,8 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## cstrcat (s, s, s)
-##      @result{} "ab ab ab "
-##         "cdecdecde"
+##       @result{} "ab ab ab "
+##          "cdecdecde"
 ## @end group
 ## @end example
 ## @seealso{strcat, char, strvcat}
@@ -64,6 +64,6 @@ endfunction
 %!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
 %% Test input validation
-%!error cstrcat ();
-%!error cstrcat (1, 2);
+%!error cstrcat ()
+%!error cstrcat (1, 2)
 

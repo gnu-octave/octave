@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -29,7 +29,7 @@ that can be an integer, a decimal fraction, a number in scientific
 (exponential) notation, or a complex number.  Note that by default numeric
 constants are represented within Octave in double-precision floating
 point format (complex constants are stored as pairs of double-precision
-floating point values).  It is however possible to represent real
+floating point values).  It is, however, possible to represent real
 integers as described in @ref{Integer Data Types}.  Here are some
 examples of real-valued numeric constants, which all have the same
 value:
@@ -93,9 +93,9 @@ You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 * Single Precision Data Types::
 * Integer Data Types::
 * Bit Manipulations::
-* Logical Values:: 
+* Logical Values::
 * Promotion and Demotion of Data Types::
-* Predicates for Numeric Objects::  
+* Predicates for Numeric Objects::
 @end menu
 
 @node Matrices
@@ -304,7 +304,7 @@ easily be misinterpreted.
 @DOCSTRING(fixed_point_format)
 
 @menu
-* Empty Matrices::              
+* Empty Matrices::
 @end menu
 
 @node Empty Matrices
@@ -359,7 +359,7 @@ empty matrix symbol, @samp{[]}.  The built-in variable
 
 Empty matrices may also be used in assignment statements as a convenient
 way to delete rows or columns of matrices.
-@xref{Assignment Ops, ,Assignment Expressions}.
+@xref{Assignment Ops,,Assignment Expressions}.
 
 When Octave parses a matrix expression, it examines the elements of the
 list to determine whether they are all constants.  If they are, it
@@ -546,6 +546,8 @@ when converted.
 
 @DOCSTRING(intmin)
 
+@DOCSTRING(flintmax)
+
 @menu
 * Integer Arithmetic::
 @end menu
@@ -570,7 +572,7 @@ result of @math{10 - 20} when using unsigned integers is zero.
 When doing integer division Octave will round the result to the nearest
 integer.  This is different from most programming languages, where the
 result is often floored to the nearest integer.  So, the result of
-@code{int32(5) ./ int32(8)} is @code{1}.
+@code{int32 (5) ./ int32 (8)} is @code{1}.
 
 @DOCSTRING(idivide)
 
@@ -616,10 +618,10 @@ the function @code{bitmax}.
 
 @DOCSTRING(bitmax)
 
-This is the double precision version of the functions @code{intmax},
+This is the double precision version of the function @code{intmax},
 previously discussed.
 
-Octave also includes the basic bitwise 'and', 'or' and 'exclusive or'
+Octave also includes the basic bitwise 'and', 'or', and 'exclusive or'
 operators.
 
 @DOCSTRING(bitand)
@@ -773,9 +775,9 @@ changed.  For example,
 @example
 @group
 x = ones (2, 2);
-x (1, 1) = single (2)
-    @result{} x = 2   1
-           1   1
+x(1, 1) = single (2)
+   @result{} x = 2   1
+          1   1
 @end group
 @end example
 
@@ -839,4 +841,4 @@ variable.
 
 If instead of knowing properties of variables, you wish to know which
 variables are defined and to gather other information about the
-workspace itself, see @ref{Status of Variables}.
+workspace itself, @pxref{Status of Variables}.

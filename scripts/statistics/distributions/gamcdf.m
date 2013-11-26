@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -66,25 +66,25 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 2 Inf];
 %! y = [0, gammainc(x(2:end), 1)];
-%!assert(gamcdf (x, ones(1,6), ones(1,6)), y);
-%!assert(gamcdf (x, 1, ones(1,6)), y);
-%!assert(gamcdf (x, ones(1,6), 1), y);
-%!assert(gamcdf (x, [0 -Inf NaN Inf 1 1], 1), [NaN NaN NaN NaN y(5:6)]);
-%!assert(gamcdf (x, 1, [0 -Inf NaN Inf 1 1]), [NaN NaN NaN NaN y(5:6)]);
-%!assert(gamcdf ([x(1:2) NaN x(4:6)], 1, 1), [y(1:2) NaN y(4:6)]);
+%!assert (gamcdf (x, ones (1,6), ones (1,6)), y)
+%!assert (gamcdf (x, 1, ones (1,6)), y)
+%!assert (gamcdf (x, ones (1,6), 1), y)
+%!assert (gamcdf (x, [0 -Inf NaN Inf 1 1], 1), [NaN NaN NaN NaN y(5:6)])
+%!assert (gamcdf (x, 1, [0 -Inf NaN Inf 1 1]), [NaN NaN NaN NaN y(5:6)])
+%!assert (gamcdf ([x(1:2) NaN x(4:6)], 1, 1), [y(1:2) NaN y(4:6)])
 
 %% Test class of input preserved
-%!assert(gamcdf ([x, NaN], 1, 1), [y, NaN]);
-%!assert(gamcdf (single([x, NaN]), 1, 1), single([y, NaN]), eps("single"));
+%!assert (gamcdf ([x, NaN], 1, 1), [y, NaN])
+%!assert (gamcdf (single ([x, NaN]), 1, 1), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error gamcdf ()
 %!error gamcdf (1)
 %!error gamcdf (1,2)
 %!error gamcdf (1,2,3,4)
-%!error gamcdf (ones(3),ones(2),ones(2))
-%!error gamcdf (ones(2),ones(3),ones(2))
-%!error gamcdf (ones(2),ones(2),ones(3))
+%!error gamcdf (ones (3), ones (2), ones (2))
+%!error gamcdf (ones (2), ones (3), ones (2))
+%!error gamcdf (ones (2), ones (2), ones (3))
 %!error gamcdf (i, 2, 2)
 %!error gamcdf (2, i, 2)
 %!error gamcdf (2, 2, i)

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -39,5 +39,6 @@ function retval = date ()
 
 endfunction
 
-%!assert(strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))));
+
+%!assert (strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))))
 

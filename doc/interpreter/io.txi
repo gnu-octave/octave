@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -22,12 +22,12 @@
 Octave supports several ways of reading and writing data to or from the
 prompt or a file.  The simplest functions for data Input and Output
 (I/O) are easy to use, but only provide limited control of how
-data is processed.  For more control, a set of functions modelled
+data is processed.  For more control, a set of functions modeled
 after the C standard library are also provided by Octave.
 
 @menu
-* Basic Input and Output::      
-* C-Style I/O Functions::       
+* Basic Input and Output::
+* C-Style I/O Functions::
 @end menu
 
 @node Basic Input and Output
@@ -36,9 +36,9 @@ after the C standard library are also provided by Octave.
 @c We could use a two-line introduction here...
 
 @menu
-* Terminal Output::             
-* Terminal Input::              
-* Simple File I/O::             
+* Terminal Output::
+* Terminal Input::
+* Simple File I/O::
 @end menu
 
 @node Terminal Output
@@ -149,7 +149,7 @@ carriage return.
 The @code{save} and @code{load} commands allow data to be written to and
 read from disk files in various formats.  The default format of files
 written by the @code{save} command can be controlled using the functions
-@code{default_save_options} and @code{save_precision}.
+@code{save_default_options} and @code{save_precision}.
 
 As an example the following code creates a 3-by-3 matrix and saves it
 to the file @samp{myfile.mat}.
@@ -180,7 +180,7 @@ A
 
 There are three functions that modify the behavior of @code{save}.
 
-@DOCSTRING(default_save_options)
+@DOCSTRING(save_default_options)
 
 @DOCSTRING(save_precision)
 
@@ -230,6 +230,11 @@ Formatted data from can be read from, or written to, text files as well.
 
 @DOCSTRING(textscan)
 
+The @code{importdata} function has the ability to work with a wide
+variety of data.
+
+@DOCSTRING(importdata)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu
@@ -239,7 +244,7 @@ Formatted data from can be read from, or written to, text files as well.
 
 If Octave for some reason exits unexpectedly it will by default save the
 variables available in the workspace to a file in the current directory.
-By default this file is named @samp{octave-core} and can be loaded
+By default this file is named @samp{octave-workspace} and can be loaded
 into memory with the @code{load} command.  While the default behavior
 most often is reasonable it can be changed through the following
 functions.
@@ -279,25 +284,25 @@ make your programs easier to understand.
 @DOCSTRING(stderr)
 
 @menu
-* Opening and Closing Files::   
-* Simple Output::               
-* Line-Oriented Input::         
-* Formatted Output::            
-* Output Conversion for Matrices::  
-* Output Conversion Syntax::    
-* Table of Output Conversions::  
-* Integer Conversions::         
+* Opening and Closing Files::
+* Simple Output::
+* Line-Oriented Input::
+* Formatted Output::
+* Output Conversion for Matrices::
+* Output Conversion Syntax::
+* Table of Output Conversions::
+* Integer Conversions::
 * Floating-Point Conversions::
-* Other Output Conversions::    
-* Formatted Input::             
-* Input Conversion Syntax::     
-* Table of Input Conversions::  
-* Numeric Input Conversions::   
-* String Input Conversions::    
-* Binary I/O::                  
-* Temporary Files::             
-* EOF and Errors::              
-* File Positioning::            
+* Other Output Conversions::
+* Formatted Input::
+* Input Conversion Syntax::
+* Table of Input Conversions::
+* Numeric Input Conversions::
+* String Input Conversions::
+* Binary I/O::
+* Temporary Files::
+* EOF and Errors::
+* File Positioning::
 @end menu
 
 @node Opening and Closing Files
@@ -383,7 +388,7 @@ the line @samp{Free Software is needed for Free Science}.
 This section describes how to call @code{printf} and related functions.
 
 The following functions are available for formatted output.  They are
-modelled after the C language functions of the same name, but they
+modeled after the C language functions of the same name, but they
 interpret the format template differently in order to improve the
 performance of printing vector and matrix values.
 
@@ -697,8 +702,8 @@ of the result and a decimal-point character appears only if it is
 followed by a digit.
 
 The following flags can be used to modify the behavior:
-
 @c Not @samp so we can have ' ' as an item.
+
 @table @asis
 @item @samp{-}
 Left-justify the result in the field.  Normally the result is
@@ -972,9 +977,9 @@ For example, reading the input:
 @end example
 
 @noindent
-with the conversion @samp{%10c} produces @code{" hello, wo"}, but
+with the conversion @samp{%10c} produces @qcode{" hello, wo"}, but
 reading the same input with the conversion @samp{%10s} produces
-@code{"hello,"}.
+@qcode{"hello,"}.
 
 @node Binary I/O
 @subsection Binary I/O
@@ -1003,7 +1008,7 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(tmpnam)
 
-@node EOF and Errors, File Positioning, Temporary Files, C-Style I/O Functions
+@node EOF and Errors
 @subsection End of File and Errors
 
 Once a file has been opened its status can be acquired.  As an example

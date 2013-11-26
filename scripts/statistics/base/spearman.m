@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -69,7 +69,7 @@ function rho = spearman (x, y = [])
   endif
 
   ## Restore class cleared by ranks
-  if (isa (x, 'single') || isa (y, 'single'))
+  if (isa (x, "single") || isa (y, "single"))
     rho = single (rho);
   endif
 
@@ -82,13 +82,14 @@ endfunction
 %! assert (spearman (x,y), 1, 5*eps);
 %! assert (spearman (x,-y), -1, 5*eps);
 
-%!assert(spearman ([1 2 3], [-1 1 -2]), -0.5, 5*eps)
+%!assert (spearman ([1 2 3], [-1 1 -2]), -0.5, 5*eps)
 
 %% Test input validation
-%!error spearman ();
-%!error spearman (1, 2, 3);
-%!error spearman (['A'; 'B']);
-%!error spearman (ones(1,2), {1, 2});
-%!error spearman (ones (2,2,2));
-%!error spearman (ones (2,2), ones (2,2,2));
-%!error spearman (ones (2,2), ones (3,2));
+%!error spearman ()
+%!error spearman (1, 2, 3)
+%!error spearman (['A'; 'B'])
+%!error spearman (ones (1,2), {1, 2})
+%!error spearman (ones (2,2,2))
+%!error spearman (ones (2,2), ones (2,2,2))
+%!error spearman (ones (2,2), ones (3,2))
+

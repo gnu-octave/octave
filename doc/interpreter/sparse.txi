@@ -1,4 +1,4 @@
-@c Copyright (C) 2004-2012 David Bateman
+@c Copyright (C) 2004-2013 David Bateman
 @c
 @c This file is part of Octave.
 @c
@@ -23,7 +23,7 @@
 @set htmltex
 @end iftex
 
-@node Sparse Matrices 
+@node Sparse Matrices
 @chapter Sparse Matrices
 
 @menu
@@ -34,7 +34,7 @@
 @end menu
 
 @node Basics
-@section The Creation and Manipulation of Sparse Matrices
+@section Creation and Manipulation of Sparse Matrices
 
 The size of mathematical problems that can be treated at any particular
 time is generally limited by the available computing resources.  Both,
@@ -89,13 +89,13 @@ triplets, with two elements being their position in the array
 easy to grasp, but requires more storage than is strictly needed.
 
 The storage technique used within Octave is the compressed column
-format. It is similar to the Yale format.
+format.  It is similar to the Yale format.
 @footnote{@url{http://en.wikipedia.org/wiki/Sparse_matrix#Yale_format}}
 In this format the position of each element in a row and the data are
-stored as previously. However, if we assume that all elements in the
+stored as previously.  However, if we assume that all elements in the
 same column are stored adjacent in the computers memory, then we only
 need to store information on the number of non-zero elements in each
-column, rather than their positions. Thus assuming that the matrix has
+column, rather than their positions.  Thus assuming that the matrix has
 more non-zero elements than there are columns in the matrix, we win in
 terms of the amount of memory used.
 
@@ -108,7 +108,7 @@ C is.
 @example
 @group
   for (j = 0; j < nc; j++)
-    for (i = cidx (j); i < cidx(j+1); i++)
+    for (i = cidx(j); i < cidx(j+1); i++)
        printf ("non-zero element (%i,%i) is %d\n", 
            ridx(i), j, data(i));
 @end group
@@ -214,7 +214,7 @@ definition of the diagonals of the matrix and create the sparse matrix
 that corresponds to this.  For example,
 
 @example
-s = diag (sparse(randn(1,n)), -1);
+s = diag (sparse (randn (1,n)), -1);
 @end example
 
 @noindent
@@ -307,12 +307,11 @@ number of memory allocations.
 
 The above problem of memory reallocation can be avoided in
 oct-files.  However, the construction of a sparse matrix from an oct-file
-is more complex than can be discussed here, and
-you are referred to chapter @ref{Dynamically Linked Functions}, to have
-a full description of the techniques involved.
+is more complex than can be discussed here.  @xref{External Code Interface},
+for a full description of the techniques involved.
 
 @node Information
-@subsection Finding out Information about Sparse Matrices
+@subsection Finding Information about Sparse Matrices
 
 There are a number of functions that allow information concerning
 sparse matrices to be obtained.  The most basic of these is
@@ -342,7 +341,7 @@ mean and the variance of each column.
 
 When solving linear equations involving sparse matrices Octave
 determines the means to solve the equation based on the type of the
-matrix as discussed in @ref{Sparse Linear Algebra}.  Octave probes the
+matrix (@pxref{Sparse Linear Algebra}).  Octave probes the
 matrix type when the div (/) or ldiv (\) operator is first used with
 the matrix and then caches the type.  However the @dfn{matrix_type}
 function can be used to determine the type of the sparse matrix prior
@@ -350,8 +349,8 @@ to use of the div or ldiv operators.  For example,
 
 @example
 @group
-a = tril (sprandn(1024, 1024, 0.02), -1) ...
-    + speye(1024); 
+a = tril (sprandn (1024, 1024, 0.02), -1) ...
+    + speye (1024); 
 matrix_type (a);
 ans = Lower
 @end group
@@ -365,7 +364,7 @@ the type of a matrix to be a particular type.  For example:
 @example
 @group
 a = matrix_type (tril (sprandn (1024, ...
-   1024, 0.02), -1) + speye(1024), 'Lower');
+   1024, 0.02), -1) + speye (1024), "Lower");
 @end group
 @end example
 
@@ -391,7 +390,7 @@ One use of sparse matrices is in graph theory, where the
 interconnections between nodes are represented as an adjacency
 matrix.  That is, if the i-th node in a graph is connected to the j-th
 node.  Then the ij-th node (and in the case of undirected graphs the
-ji-th node) of the sparse adjacency matrix is non-zero.  If each node
+@nospell{ji-th} node) of the sparse adjacency matrix is non-zero.  If each node
 is then associated with a set of coordinates, then the @dfn{gplot}
 command can be used to graphically display the interconnections
 between nodes.
@@ -400,10 +399,10 @@ As a trivial example of the use of @dfn{gplot} consider the example,
 
 @example
 @group
-A = sparse([2,6,1,3,2,4,3,5,4,6,1,5],
+A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
     [1,1,2,2,3,3,4,4,5,5,6,6],1,6,6);
 xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
-gplot(A,xy)
+gplot (A,xy)
 @end group
 @end example
 
@@ -424,8 +423,8 @@ The dependencies between the nodes of a Cholesky@tie{}factorization can be
 calculated in linear time without explicitly needing to calculate the
 Cholesky@tie{}factorization by the @code{etree} command.  This command
 returns the elimination tree of the matrix and can be displayed
-graphically by the command @code{treeplot(etree(A))} if @code{A} is
-symmetric or @code{treeplot(etree(A+A'))} otherwise.
+graphically by the command @code{treeplot (etree (A))} if @code{A} is
+symmetric or @code{treeplot (etree (A+A'))} otherwise.
 
 @DOCSTRING(spy)
 
@@ -443,9 +442,9 @@ symmetric or @code{treeplot(etree(A+A'))} otherwise.
 @subsection Basic Operators and Functions on Sparse Matrices
 
 @menu
-* Sparse Functions::            
-* Return Types of Operators and Functions::  
-* Mathematical Considerations::  
+* Sparse Functions::
+* Return Types of Operators and Functions::
+* Mathematical Considerations::
 @end menu
 
 @node Sparse Functions
@@ -505,7 +504,7 @@ supplied with these functions within Octave itself for further
 details.
 
 @node Return Types of Operators and Functions
-@subsubsection The Return Types of Operators and Functions
+@subsubsection Return Types of Operators and Functions
 
 The two basic reasons to use sparse matrices are to reduce the memory 
 usage and to not have to do calculations on zero elements.  The two are
@@ -521,7 +520,7 @@ make it a full matrix, and so the example,
 
 @example
 @group
-speye(3) + 0
+speye (3) + 0
 @result{}   1  0  0
   0  1  0
   0  0  1
@@ -543,7 +542,7 @@ matrices exist, in general this does not cause any problems.  However,
 one area where it does cause a problem is where a sparse matrix is
 promoted to a full matrix, where subsequent operations would resparsify
 the matrix.  Such cases are rare, but can be artificially created, for
-example @code{(fliplr(speye(3)) + speye(3)) - speye(3)} gives a full
+example @code{(fliplr (speye (3)) + speye (3)) - speye (3)} gives a full
 matrix when it should give a sparse one.  In general, where such cases 
 occur, they impose only a small memory penalty.
 
@@ -553,7 +552,7 @@ sparse matrices will cause a problem.  That is in the handling of the
 depending on the type of its input arguments.  So 
 
 @example
- a = diag (sparse([1,2,3]), -1);
+ a = diag (sparse ([1,2,3]), -1);
 @end example
 
 @noindent
@@ -574,8 +573,8 @@ The attempt has been made to make sparse matrices behave in exactly the
 same manner as there full counterparts.  However, there are certain differences
 and especially differences with other products sparse implementations.
 
-Firstly, the "./" and ".^" operators must be used with care.  Consider what
-the examples
+Firstly, the @qcode{"./"} and @qcode{".^"} operators must be used with care. 
+Consider what the examples
 
 @example
 @group
@@ -657,7 +656,7 @@ positive definite matrix.
 The standard Cholesky@tie{}factorization of this matrix can be
 obtained by the same command that would be used for a full
 matrix.  This can be visualized with the command 
-@code{r = chol(A); spy(r);}.
+@code{r = chol (A); spy (r);}.
 @xref{fig:simplechol}.
 The original matrix had 
 @ifinfo
@@ -684,8 +683,8 @@ in working with other sparse matrices.
 
 The appropriate sparsity preserving permutation of the original
 matrix is given by @dfn{symamd} and the factorization using this
-reordering can be visualized using the command @code{q = symamd(A);
-r = chol(A(q,q)); spy(r)}.  This gives 
+reordering can be visualized using the command @code{q = symamd (A);
+r = chol (A(q,q)); spy (r)}.  This gives 
 @ifinfo
 @ifnothtml
 29
@@ -699,11 +698,11 @@ non-zero terms which is a significant improvement.
 The Cholesky@tie{}factorization itself can be used to determine the
 appropriate sparsity preserving reordering of the matrix during the
 factorization, In that case this might be obtained with three return
-arguments as r@code{[r, p, q] = chol(A); spy(r)}.
+arguments as @code{[r, p, q] = chol (A); spy (r)}.
 
 @float Figure,fig:simplechol
 @center @image{spchol,4in}
-@caption{Structure of the un-permuted Cholesky@tie{}factorization of the above matrix.}
+@caption{Structure of the unpermuted Cholesky@tie{}factorization of the above matrix.}
 @end float
 
 @float Figure,fig:simplecholperm
@@ -714,7 +713,7 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 In the case of an asymmetric matrix, the appropriate sparsity
 preserving permutation is @dfn{colamd} and the factorization using
 this reordering can be visualized using the command
-@code{q = colamd(A); [l, u, p] = lu(A(:,q)); spy(l+u)}.
+@code{q = colamd (A); [l, u, p] = lu (A(:,q)); spy (l+u)}.
 
 Finally, Octave implicitly reorders the matrix when using the div (/)
 and ldiv (\) operators, and so no the user does not need to explicitly
@@ -796,20 +795,20 @@ using @sc{umfpack}.
 a singular or near singular matrix, find a minimum norm solution using
 @sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse} packages were
 written by Tim Davis and are available at
-http://www.cise.ufl.edu/research/sparse/}.
+@url{http://www.cise.ufl.edu/research/sparse/}}.
 @end enumerate
 
 The band density is defined as the number of non-zero values in the band
-divided by the total number of values in the full band. The banded
+divided by the total number of values in the full band.  The banded
 matrix solvers can be entirely disabled by using @dfn{spparms} to set
 @code{bandden} to 1 (i.e., @code{spparms ("bandden", 1)}).
 
 The QR@tie{}solver factorizes the problem with a Dulmage-Mendelsohn
 decomposition, to separate the problem into blocks that can be treated
 as over-determined, multiple well determined blocks, and a final
-over-determined block. For matrices with blocks of strongly connected
+over-determined block.  For matrices with blocks of strongly connected
 nodes this is a big win as LU@tie{}decomposition can be used for many
-blocks. It also significantly improves the chance of finding a solution
+blocks.  It also significantly improves the chance of finding a solution
 to over-determined problems rather than just returning a vector of
 @dfn{NaN}'s.
 
@@ -856,7 +855,7 @@ singular values and vectors.
 @DOCSTRING(svds)
 
 @node Iterative Techniques
-@section Iterative Techniques applied to sparse matrices
+@section Iterative Techniques Applied to Sparse Matrices
 
 The left division @code{\} and right division @code{/} operators,
 discussed in the previous section, use direct solvers to resolve a
@@ -877,7 +876,7 @@ are partial factorizations of the original matrix.
 @DOCSTRING(luinc)
 
 @node Real Life Example
-@section Real Life Example of the use of Sparse Matrices
+@section Real Life Example using Sparse Matrices
 
 A common application for sparse matrices is in the solution of Finite
 Element Models.  Finite element models allow numerical solution of
@@ -951,23 +950,23 @@ isolated.
 
 @example
 @group
-   node_y= [1;1.2;1.5;1.8;2]*ones(1,11);
-   node_x= ones(5,1)*[1,1.05,1.1,1.2, ...
+   node_y = [1;1.2;1.5;1.8;2]*ones(1,11);
+   node_x = ones(5,1)*[1,1.05,1.1,1.2, ...
              1.3,1.5,1.7,1.8,1.9,1.95,2];
-   nodes= [node_x(:), node_y(:)];
+   nodes = [node_x(:), node_y(:)];
 
-   [h,w]= size(node_x);
-   elems= [];
-   for idx= 1:w-1
-     widx= (idx-1)*h;
-     elems= [elems; ...
+   [h,w] = size (node_x);
+   elems = [];
+   for idx = 1:w-1
+     widx = (idx-1)*h;
+     elems = [elems; ...
        widx+[(1:h-1);(2:h);h+(1:h-1)]'; ...
        widx+[(2:h);h+(2:h);h+(1:h-1)]' ]; 
    endfor
 
-   E= size(elems,1); # No. of simplices
-   N= size(nodes,1); # No. of vertices
-   D= size(elems,2); # dimensions+1
+   E = size (elems,1); # No. of simplices
+   N = size (nodes,1); # No. of vertices
+   D = size (elems,2); # dimensions+1
 @end group
 @end example
 
@@ -1004,32 +1003,32 @@ between simplices and vertices, the global connectivity matrix @code{S} is
 calculated.
 
 @example
-  # Element conductivity
-  conductivity= [1*ones(1,16), ...
+  ## Element conductivity
+  conductivity = [1*ones(1,16), ...
          2*ones(1,48), 1*ones(1,16)];
 
-  # Connectivity matrix
+  ## Connectivity matrix
   C = sparse ((1:D*E), reshape (elems', ...
          D*E, 1), 1, D*E, N);
 
-  # Calculate system matrix
+  ## Calculate system matrix
   Siidx = floor ([0:D*E-1]'/D) * D * ...
          ones(1,D) + ones(D*E,1)*(1:D) ;
-  Sjidx = [1:D*E]'*ones(1,D);
-  Sdata = zeros(D*E,D);
-  dfact = factorial(D-1);
-  for j=1:E
-     a = inv([ones(D,1), ... 
+  Sjidx = [1:D*E]'*ones (1,D);
+  Sdata = zeros (D*E,D);
+  dfact = factorial (D-1);
+  for j = 1:E
+     a = inv ([ones(D,1), ... 
          nodes(elems(j,:), :)]);
      const = conductivity(j) * 2 / ...
-         dfact / abs(det(a));
+         dfact / abs (det (a));
      Sdata(D*(j-1)+(1:D),:) = const * ...
          a(2:D,:)' * a(2:D,:);
   endfor
-  # Element-wise system matrix
-  SE= sparse(Siidx,Sjidx,Sdata);
-  # Global system matrix
-  S= C'* SE *C;
+  ## Element-wise system matrix
+  SE = sparse(Siidx,Sjidx,Sdata);
+  ## Global system matrix
+  S = C'* SE *C;
 @end example
 
 The system matrix acts like the conductivity 
@@ -1050,23 +1049,23 @@ Based on the Dirichlet and Neumann boundary conditions, we are able to
 solve for the voltages at each vertex @code{V}. 
 
 @example
-  # Dirichlet boundary conditions
-  D_nodes=[1:5, 51:55]; 
-  D_value=[10*ones(1,5), 20*ones(1,5)]; 
+  ## Dirichlet boundary conditions
+  D_nodes = [1:5, 51:55]; 
+  D_value = [10*ones(1,5), 20*ones(1,5)]; 
 
-  V= zeros(N,1);
+  V = zeros (N,1);
   V(D_nodes) = D_value;
   idx = 1:N; # vertices without Dirichlet 
              # boundary condns
   idx(D_nodes) = [];
 
-  # Neumann boundary conditions.  Note that
-  # N_value must be normalized by the
-  # boundary length and element conductivity
-  N_nodes=[];
-  N_value=[];
+  ## Neumann boundary conditions.  Note that
+  ## N_value must be normalized by the
+  ## boundary length and element conductivity
+  N_nodes = [];
+  N_value = [];
 
-  Q = zeros(N,1);
+  Q = zeros (N,1);
   Q(N_nodes) = N_value;
 
   V(idx) = S(idx,idx) \ ( Q(idx) - ...
@@ -1085,8 +1084,8 @@ value in the z-axis for each simplex vertex.
   xelems = reshape (nodes(elemx, 1), 4, E);
   yelems = reshape (nodes(elemx, 2), 4, E);
   velems = reshape (V(elemx), 4, E);
-  plot3 (xelems,yelems,velems,'k'); 
-  print ('grid.eps');
+  plot3 (xelems,yelems,velems,"k"); 
+  print "grid.eps";
 @end group
 @end example
 

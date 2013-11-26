@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -62,6 +62,4 @@ function [pval, chisq, df] = mcnemar_test (x)
   endif
 
 endfunction
-
-
 

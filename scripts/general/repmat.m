@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -20,12 +20,13 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} repmat (@var{A}, @var{m})
 ## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n})
-## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n}, @var{p}, @dots{})
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.  If @var{n} is not specified, form an
-## @var{m} by @var{m} block matrix.
+## @var{m} by @var{m} block matrix.  For copying along more than two
+## dimensions, specify the number of times to copy across each dimension
+## @var{m}, @var{n}, @var{p}, @dots{}, in a vector in the second argument.
 ## @seealso{repelems}
 ## @end deftypefn
 
@@ -39,24 +40,48 @@ function x = repmat (A, m, n)
   endif
 
   if (nargin == 3)
-    if (! (isscalar (m) && isscalar (n)))
-      error ("repmat: with 3 arguments M and N must be scalar");
-    endif
-    idx = [m, n];
-  else
-    if (isscalar (m))
-      idx = [m, m];
-      n = m;
-    elseif (isvector (m) && length (m) > 1)
-      ## Ensure that we have a row vector
-      idx = m(:).';
+    if (! isempty (m) && isempty (n))
+      m = m(:).';
+      n = 1;
+    elseif (isempty (m) && ! isempty (n))
+      m = n(:).';
+      n = 1;
+    elseif (isempty (m) && isempty (n))
+      m = n = 1;
     else
-      error ("repmat: invalid dimensional argument");
+      if (all (size (m) > 1))
+        m = m(:,1);
+        if (numel (m) < 3)
+          n = n(end);
+        else
+          n = [];
+        endif
+      endif
+      if (all (size (n) > 1))
+        n = n(:,1);
+      endif
+      m = m(:).';
+      n = n(:).';
+    endif
+  else
+    if (isempty (m))
+      m = n = 1;
+    elseif (isscalar (m))
+      n = m;
+    elseif (ndims (m) > 2)
+      error ("repmat: M has more than 2 dimensions")
+    elseif (all (size (m) > 1))
+      m = m(:,1).';
+      n = [];
+    else
+      m = m(:).';
+      n = [];
     endif
   endif
+  idx = [m, n];
 
   if (all (idx < 0))
-    error ("repmat: invalid dimensions");
+    error ("repmat: invalid dimensions")
   else
     idx = max (idx, 0);
   endif
@@ -92,7 +117,7 @@ function x = repmat (A, m, n)
       cidx{2,i} = ones (1, idx (i));
     endfor
     aaidx = aidx;
-    # add singleton dims
+    ## add singleton dims
     aaidx(2,:) = 1;
     A = reshape (A, aaidx(:));
     x = reshape (A (cidx{:}), idx .* aidx);
@@ -100,63 +125,79 @@ function x = repmat (A, m, n)
 
 endfunction
 
+
+# Tests for ML compatibility
+%!shared x
+%! x = [1 2 3];
+%!assert (repmat (x, [3, 1]), repmat (x, 3, []))
+%!assert (repmat (x, [3, 1]), repmat (x, [], 3))
+%!assert (repmat (x, [1, 3]), repmat (x, [], [1, 3]))
+%!assert (repmat (x, [1, 3]), repmat (x, [1, 3], []))
+%!assert (repmat (x, [1 3]), repmat (x, [1 3; 3 3]))
+%!assert (repmat (x, [1 1 2]), repmat (x, [1 1; 1 3; 2 1]))
+%!assert (repmat (x, [1 3; 1 3], [1; 3]), repmat (x, [1 1 3]))
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1; 4]))
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 3; 1 3], [1 2; 3 4]))
+%!assert (repmat (x, [1 1], 4), repmat (x, [1 1 4]));
+%!assert (repmat (x, [1 1], 4), repmat (x, 1, [1 4]));
+
 # Test various methods of providing size parameters
 %!shared x
 %! x = [1 2;3 4];
-%!assert(repmat(x, [1 1]), repmat(x, 1));
-%!assert(repmat(x, [3 3]), repmat(x, 3));
-%!assert(repmat(x, [1 1]), repmat(x, 1, 1));
-%!assert(repmat(x, [1 3]), repmat(x, 1, 3));
-%!assert(repmat(x, [3 1]), repmat(x, 3, 1));
-%!assert(repmat(x, [3 3]), repmat(x, 3, 3));
+%!assert (repmat (x, [1 1]), repmat (x, 1))
+%!assert (repmat (x, [3 3]), repmat (x, 3))
+%!assert (repmat (x, [1 1]), repmat (x, 1, 1))
+%!assert (repmat (x, [1 3]), repmat (x, 1, 3))
+%!assert (repmat (x, [3 1]), repmat (x, 3, 1))
+%!assert (repmat (x, [3 3]), repmat (x, 3, 3))
 
 # Tests for numel==1 case:
 %!shared x, r
 %! x = [ 65 ];
-%! r = kron(ones(2,2), x);
-%!assert(r, repmat(x, [2 2]));
-%!assert(char(r), repmat(char(x), [2 2]));
-%!assert(int8(r), repmat(int8(x), [2 2]));
+%! r = kron (ones (2,2), x);
+%!assert (r, repmat (x, [2 2]))
+%!assert (char (r), repmat (char (x), [2 2]))
+%!assert (int8 (r), repmat (int8 (x), [2 2]))
 
 # Tests for ndims==2 case:
 %!shared x, r
 %! x = [ 65 66 67 ];
-%! r = kron(ones(2,2), x);
-%!assert(r, repmat(x, [2 2]));
-%!assert(char(r), repmat(char(x), [2 2]));
-%!assert(int8(r), repmat(int8(x), [2 2]));
+%! r = kron (ones (2,2), x);
+%!assert (r, repmat (x, [2 2]))
+%!assert (char (r), repmat (char (x), [2 2]))
+%!assert (int8 (r), repmat (int8 (x), [2 2]))
 
 # Tests for dim>2 case:
 %!shared x, r
 %! x = [ 65 66 67 ];
-%! r = kron(ones(2,2), x);
+%! r = kron (ones (2,2), x);
 %! r(:,:,2) = r(:,:,1);
-%!assert(r, repmat(x, [2 2 2]));
-%!assert(char(r), repmat(char(x), [2 2 2]));
-%!assert(int8(r), repmat(int8(x), [2 2 2]));
+%!assert (r, repmat (x, [2 2 2]))
+%!assert (char (r), repmat (char (x), [2 2 2]))
+%!assert (int8 (r), repmat (int8 (x), [2 2 2]))
 
 # Test that sparsity is kept
-%!assert(sparse(4,4), repmat(sparse(2,2),[2 2]));
+%!assert (sparse (4,4), repmat (sparse (2,2),[2 2]))
 
+%!assert (size (repmat (".", -1, 1)), [0, 1])
+%!assert (size (repmat (".", 1, -1)), [1, 0])
 
-%!assert (size (repmat (".", -1, 1)), [0, 1]);
-%!assert (size (repmat (".", 1, -1)), [1, 0]);
-%!error (size (repmat (".", -1, -1)));
-
-%!assert (size (repmat (1, [1, 0])), [1, 0]);
-%!assert (size (repmat (1, [5, 0])), [5, 0]);
-%!assert (size (repmat (1, [0, 1])), [0, 1]);
-%!assert (size (repmat (1, [0, 5])), [0, 5]);
+%!assert (size (repmat (1, [1, 0])), [1, 0])
+%!assert (size (repmat (1, [5, 0])), [5, 0])
+%!assert (size (repmat (1, [0, 1])), [0, 1])
+%!assert (size (repmat (1, [0, 5])), [0, 5])
 
 %!shared x
 %! x = struct ("a", [], "b", []);
-%!assert (size (repmat (x, [1, 0])), [1, 0]);
-%!assert (size (repmat (x, [5, 0])), [5, 0]);
-%!assert (size (repmat (x, [0, 1])), [0, 1]);
-%!assert (size (repmat (x, [0, 5])), [0, 5]);
+%!assert (size (repmat (x, [1, 0])), [1, 0])
+%!assert (size (repmat (x, [5, 0])), [5, 0])
+%!assert (size (repmat (x, [0, 1])), [0, 1])
+%!assert (size (repmat (x, [0, 5])), [0, 5])
 
-%!assert (size (repmat ({1}, [1, 0])), [1, 0]);
-%!assert (size (repmat ({1}, [5, 0])), [5, 0]);
-%!assert (size (repmat ({1}, [0, 1])), [0, 1]);
-%!assert (size (repmat ({1}, [0, 5])), [0, 5]);
+%!assert (size (repmat ({1}, [1, 0])), [1, 0])
+%!assert (size (repmat ({1}, [5, 0])), [5, 0])
+%!assert (size (repmat ({1}, [0, 1])), [0, 1])
+%!assert (size (repmat ({1}, [0, 5])), [0, 5])
+
+%!error (size (repmat (".", -1, -1)))
 

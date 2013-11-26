@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -56,7 +56,7 @@ function retval = corr (x, y = [])
 
   ## Special case, scalar is always 100% correlated with itself
   if (isscalar (x))
-    if (isa (x, 'single'))
+    if (isa (x, "single"))
       retval = single (1);
     else
       retval = 1;
@@ -89,24 +89,24 @@ endfunction
 %!test
 %! x = [1:3]';
 %! y = [3:-1:1]';
-%! assert (corr (x,y), -1, 5*eps)
-%! assert (corr (x,flipud (y)), 1, 5*eps)
-%! assert (corr ([x, y]), [1 -1; -1 1], 5*eps)
+%! assert (corr (x, y), -1, 5*eps);
+%! assert (corr (x, flipud (y)), 1, 5*eps);
+%! assert (corr ([x, y]), [1 -1; -1 1], 5*eps);
 
 %!test
 %! x = single ([1:3]');
 %! y = single ([3:-1:1]');
-%! assert (corr (x,y), single (-1), 5*eps)
-%! assert (corr (x,flipud (y)), single (1), 5*eps)
-%! assert (corr ([x, y]), single ([1 -1; -1 1]), 5*eps)
+%! assert (corr (x, y), single (-1), 5*eps);
+%! assert (corr (x, flipud (y)), single (1), 5*eps);
+%! assert (corr ([x, y]), single ([1 -1; -1 1]), 5*eps);
 
-%!assert (corr (5), 1);
-%!assert (corr (single(5)), single(1));
+%!assert (corr (5), 1)
+%!assert (corr (single (5)), single (1))
 
 %% Test input validation
-%!error corr ();
-%!error corr (1, 2, 3);
-%!error corr ([1; 2], ["A", "B"]);
-%!error corr (ones (2,2,2));
-%!error corr (ones (2,2), ones (2,2,2));
+%!error corr ()
+%!error corr (1, 2, 3)
+%!error corr ([1; 2], ["A", "B"])
+%!error corr (ones (2,2,2))
+%!error corr (ones (2,2), ones (2,2,2))
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 VZLU Prague, a.s.
+## Copyright (C) 2008-2013 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -40,9 +40,9 @@
 ## is not successful, the function fails.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fzero}
-## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
-## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}.
-## For a description of these options, see @ref{doc-optimset,,optimset}.
+## recognizes these options: @qcode{"FunValCheck"}, @qcode{"OutputFcn"},
+## @qcode{"TolX"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"}.
+## For a description of these options, see @ref{XREFoptimset,,optimset}.
 ##
 ## On exit, the function returns @var{x}, the approximate zero point
 ## and @var{fval}, the function value thereof.
@@ -100,8 +100,8 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8, \
-    "OutputFcn", [], "FunValCheck", "off");
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8,
+                  "OutputFcn", [], "FunValCheck", "off");
     return;
   endif
 
@@ -196,70 +196,70 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   mba = mu*(b - a);
   while (niter < maxiter && nfev < maxfev)
     switch (itype)
-    case 1
-      ## The initial test.
-      if (b - a <= 2*(2 * abs (u) * eps + tolx))
-        x = u; fval = fu;
-        info = 1;
-        break;
-      endif
-      if (abs (fa) <= 1e3*abs (fb) && abs (fb) <= 1e3*abs (fa))
-        ## Secant step.
-        c = u - (a - b) / (fa - fb) * fu;
-      else
-        ## Bisection step.
-        c = 0.5*(a + b);
-      endif
-      d = u; fd = fu;
-      itype = 5;
-    case {2, 3}
-      l = length (unique ([fa, fb, fd, fe]));
-      if (l == 4)
-        ## Inverse cubic interpolation.
-        q11 = (d - e) * fd / (fe - fd);
-        q21 = (b - d) * fb / (fd - fb);
-        q31 = (a - b) * fa / (fb - fa);
-        d21 = (b - d) * fd / (fd - fb);
-        d31 = (a - b) * fb / (fb - fa);
-        q22 = (d21 - q11) * fb / (fe - fb);
-        q32 = (d31 - q21) * fa / (fd - fa);
-        d32 = (d31 - q21) * fd / (fd - fa);
-        q33 = (d32 - q22) * fa / (fe - fa);
-        c = a + q31 + q32 + q33;
-      endif
-      if (l < 4 || sign (c - a) * sign (c - b) > 0)
-        ## Quadratic interpolation + newton.
-        a0 = fa;
-        a1 = (fb - fa)/(b - a);
-        a2 = ((fd - fb)/(d - b) - a1) / (d - a);
-        ## Modification 1: this is simpler and does not seem to be worse.
-        c = a - a0/a1;
-        if (a2 != 0)
-          c = a - a0/a1;
-          for i = 1:itype
-            pc = a0 + (a1 + a2*(c - b))*(c - a);
-            pdc = a1 + a2*(2*c - a - b);
-            if (pdc == 0)
-              c = a - a0/a1;
-              break;
-            endif
-            c -= pc/pdc;
-          endfor
+      case 1
+        ## The initial test.
+        if (b - a <= 2*(2 * abs (u) * eps + tolx))
+          x = u; fval = fu;
+          info = 1;
+          break;
         endif
-      endif
-      itype += 1;
-    case 4
-      ## Double secant step.
-      c = u - 2*(b - a)/(fb - fa)*fu;
-      ## Bisect if too far.
-      if (abs (c - u) > 0.5*(b - a))
+        if (abs (fa) <= 1e3*abs (fb) && abs (fb) <= 1e3*abs (fa))
+          ## Secant step.
+          c = u - (a - b) / (fa - fb) * fu;
+        else
+          ## Bisection step.
+          c = 0.5*(a + b);
+        endif
+        d = u; fd = fu;
+        itype = 5;
+      case {2, 3}
+        l = length (unique ([fa, fb, fd, fe]));
+        if (l == 4)
+          ## Inverse cubic interpolation.
+          q11 = (d - e) * fd / (fe - fd);
+          q21 = (b - d) * fb / (fd - fb);
+          q31 = (a - b) * fa / (fb - fa);
+          d21 = (b - d) * fd / (fd - fb);
+          d31 = (a - b) * fb / (fb - fa);
+          q22 = (d21 - q11) * fb / (fe - fb);
+          q32 = (d31 - q21) * fa / (fd - fa);
+          d32 = (d31 - q21) * fd / (fd - fa);
+          q33 = (d32 - q22) * fa / (fe - fa);
+          c = a + q31 + q32 + q33;
+        endif
+        if (l < 4 || sign (c - a) * sign (c - b) > 0)
+          ## Quadratic interpolation + newton.
+          a0 = fa;
+          a1 = (fb - fa)/(b - a);
+          a2 = ((fd - fb)/(d - b) - a1) / (d - a);
+          ## Modification 1: this is simpler and does not seem to be worse.
+          c = a - a0/a1;
+          if (a2 != 0)
+            c = a - a0/a1;
+            for i = 1:itype
+              pc = a0 + (a1 + a2*(c - b))*(c - a);
+              pdc = a1 + a2*(2*c - a - b);
+              if (pdc == 0)
+                c = a - a0/a1;
+                break;
+              endif
+              c -= pc/pdc;
+            endfor
+          endif
+        endif
+        itype += 1;
+      case 4
+        ## Double secant step.
+        c = u - 2*(b - a)/(fb - fa)*fu;
+        ## Bisect if too far.
+        if (abs (c - u) > 0.5*(b - a))
+          c = 0.5 * (b + a);
+        endif
+        itype = 5;
+      case 5
+        ## Bisection step.
         c = 0.5 * (b + a);
-      endif
-      itype = 5;
-    case 5
-      ## Bisection step.
-      c = 0.5 * (b + a);
-      itype = 2;
+        itype = 2;
     endswitch
 
     ## Don't let c come too close to a or b.
@@ -357,7 +357,9 @@ function fx = guarded_eval (fun, x)
   endif
 endfunction
 
+
 %!shared opt0
 %! opt0 = optimset ("tolx", 0);
-%!assert(fzero(@cos, [0, 3], opt0), pi/2, 10*eps)
-%!assert(fzero(@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)
+%!assert (fzero (@cos, [0, 3], opt0), pi/2, 10*eps)
+%!assert (fzero (@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -74,26 +74,26 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 e Inf];
 %! y = [0, 0, 0.5, 1/2+1/2*erf(1/2), 1];
-%!assert(logncdf (x, zeros(1,5), sqrt(2)*ones(1,5)), y);
-%!assert(logncdf (x, 0, sqrt(2)*ones(1,5)), y);
-%!assert(logncdf (x, zeros(1,5), sqrt(2)), y);
-%!assert(logncdf (x, [0 1 NaN 0 1], sqrt(2)), [0 0 NaN y(4:5)]);
-%!assert(logncdf (x, 0, sqrt(2)*[0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)]);
-%!assert(logncdf ([x(1:3) NaN x(5)], 0, sqrt(2)), [y(1:3) NaN y(5)]);
+%!assert (logncdf (x, zeros (1,5), sqrt(2)*ones (1,5)), y, eps)
+%!assert (logncdf (x, 0, sqrt(2)*ones (1,5)), y, eps)
+%!assert (logncdf (x, zeros (1,5), sqrt(2)), y, eps)
+%!assert (logncdf (x, [0 1 NaN 0 1], sqrt(2)), [0 0 NaN y(4:5)], eps)
+%!assert (logncdf (x, 0, sqrt(2)*[0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)], eps)
+%!assert (logncdf ([x(1:3) NaN x(5)], 0, sqrt(2)), [y(1:3) NaN y(5)], eps)
 
 %% Test class of input preserved
-%!assert(logncdf ([x, NaN], 0, sqrt(2)), [y, NaN]);
-%!assert(logncdf (single([x, NaN]), 0, sqrt(2)), single([y, NaN]), eps("single"));
-%!assert(logncdf ([x, NaN], single(0), sqrt(2)), single([y, NaN]), eps("single"));
-%!assert(logncdf ([x, NaN], 0, single(sqrt(2))), single([y, NaN]), eps("single"));
+%!assert (logncdf ([x, NaN], 0, sqrt(2)), [y, NaN], eps)
+%!assert (logncdf (single ([x, NaN]), 0, sqrt(2)), single ([y, NaN]), eps ("single"))
+%!assert (logncdf ([x, NaN], single (0), sqrt(2)), single ([y, NaN]), eps ("single"))
+%!assert (logncdf ([x, NaN], 0, single (sqrt(2))), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error logncdf ()
 %!error logncdf (1,2)
 %!error logncdf (1,2,3,4)
-%!error logncdf (ones(3),ones(2),ones(2))
-%!error logncdf (ones(2),ones(3),ones(2))
-%!error logncdf (ones(2),ones(2),ones(3))
+%!error logncdf (ones (3), ones (2), ones (2))
+%!error logncdf (ones (2), ones (3), ones (2))
+%!error logncdf (ones (2), ones (2), ones (3))
 %!error logncdf (i, 2, 2)
 %!error logncdf (2, i, 2)
 %!error logncdf (2, 2, i)

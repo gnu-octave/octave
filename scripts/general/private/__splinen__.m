@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -26,24 +26,22 @@
 ## FIXME: Allow arbitrary grids..
 
 function yi = __splinen__ (x, y, xi, extrapval, f)
-  if (nargin != 5)
-    error ("__splinen__: Incorrect number of arguments");
-  endif
   ## ND isvector function.
   isvec = @(x) numel (x) == length (x);
-  if (!iscell (x) || length(x) < ndims(y) || any (! cellfun (isvec, x))
-      || !iscell (xi) || length(xi) < ndims(y) || any (! cellfun (isvec, xi)))
-    error ("__splinen__: %s: non gridded data or dimensions inconsistent", f);
+  if (!iscell (x) || length (x) < ndims (y) || any (! cellfun (isvec, x))
+      || !iscell (xi) || length (xi) < ndims (y) || any (! cellfun (isvec, xi)))
+    error ("__splinen__: %s: non-gridded data or dimensions inconsistent", f);
   endif
   yi = y;
-  for i = length(x):-1:1
+  for i = length (x):-1:1
     yi = permute (spline (x{i}, yi, xi{i}(:)), [length(x),1:length(x)-1]);
   endfor
 
   [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "uniformoutput", false){:});
-  idx = zeros (size(xi{1}));
-  for i = 1 : length(x)
+  idx = zeros (size (xi{1}));
+  for i = 1 : length (x)
     idx |= xi{i} < min (x{i}(:)) | xi{i} > max (x{i}(:));
   endfor
   yi(idx) = extrapval;
 endfunction
+

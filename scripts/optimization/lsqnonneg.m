@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Bill Denney
+## Copyright (C) 2008-2013 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
@@ -21,6 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d})
 ## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
+## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0}, @var{options})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
@@ -29,12 +30,16 @@
 ## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
 ## @code{@var{x} >= 0}.  @var{c} and @var{d} must be real.  @var{x0} is an
 ## optional initial guess for @var{x}.
+## Currently, @code{lsqnonneg}
+## recognizes these options: @qcode{"MaxIter"}, @qcode{"TolX"}.
+## For a description of these options, see @ref{XREFoptimset,,optimset}.
 ##
 ## Outputs:
+##
 ## @itemize @bullet
 ## @item resnorm
 ##
-## The squared 2-norm of the residual: norm(@var{c}*@var{x}-@var{d})^2
+## The squared 2-norm of the residual: norm (@var{c}*@var{x}-@var{d})^2
 ##
 ## @item residual
 ##
@@ -50,10 +55,11 @@
 ## @item output
 ##
 ## A structure with two fields:
-## @itemize @bullet
-## @item "algorithm": The algorithm used ("nnls")
 ##
-## @item "iterations": The number of iterations taken.
+## @itemize @bullet
+## @item @qcode{"algorithm"}: The algorithm used (@qcode{"nnls"})
+##
+## @item @qcode{"iterations"}: The number of iterations taken.
 ## @end itemize
 ##
 ## @item lambda
@@ -73,7 +79,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
   if (nargin == 1 && ischar (c) && strcmp (c, 'defaults'))
     x = optimset ("MaxIter", 1e5);
-    return
+    return;
   endif
 
   if (! (nargin >= 2 && nargin <= 4 && ismatrix (c) && ismatrix (d) && isstruct (options)))
@@ -145,7 +151,8 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     ## compute the gradient.
     w = c'*(d - c*x);
     w(p) = [];
-    if (! any (w > 0))
+    tolx = optimget (options, "TolX", 10*eps*norm (c, 1)*length (c));
+    if (! any (w > tolx))
       if (useqr)
         ## verify the solution achieved using qr updating.
         ## in the best case, this should only take a single step.
@@ -198,14 +205,15 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
 endfunction
 
-## Tests
+
 %!test
 %! C = [1 0;0 1;2 1];
 %! d = [1;3;-2];
-%! assert (lsqnonneg (C, d), [0;0.5], 100*eps)
+%! assert (lsqnonneg (C, d), [0;0.5], 100*eps);
 
 %!test
 %! C = [0.0372 0.2869;0.6861 0.7071;0.6233 0.6245;0.6344 0.6170];
 %! d = [0.8587;0.1781;0.0747;0.8405];
 %! xnew = [0;0.6929];
-%! assert (lsqnonneg (C, d), xnew, 0.0001)
+%! assert (lsqnonneg (C, d), xnew, 0.0001);
+

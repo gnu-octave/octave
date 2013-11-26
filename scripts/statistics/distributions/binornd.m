@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -120,35 +120,35 @@ endfunction
 %!assert (binornd (0, 0, 1), 0)
 %!assert (binornd ([0, 0], [0, 0], 1, 2), [0, 0])
 
-%!assert(size (binornd (2, 1/2)), [1, 1]);
-%!assert(size (binornd (2*ones(2,1), 1/2)), [2, 1]);
-%!assert(size (binornd (2*ones(2,2), 1/2)), [2, 2]);
-%!assert(size (binornd (2, 1/2*ones(2,1))), [2, 1]);
-%!assert(size (binornd (2, 1/2*ones(2,2))), [2, 2]);
-%!assert(size (binornd (2, 1/2, 3)), [3, 3]);
-%!assert(size (binornd (2, 1/2, [4 1])), [4, 1]);
-%!assert(size (binornd (2, 1/2, 4, 1)), [4, 1]);
+%!assert (size (binornd (2, 1/2)), [1, 1])
+%!assert (size (binornd (2*ones (2,1), 1/2)), [2, 1])
+%!assert (size (binornd (2*ones (2,2), 1/2)), [2, 2])
+%!assert (size (binornd (2, 1/2*ones (2,1))), [2, 1])
+%!assert (size (binornd (2, 1/2*ones (2,2))), [2, 2])
+%!assert (size (binornd (2, 1/2, 3)), [3, 3])
+%!assert (size (binornd (2, 1/2, [4 1])), [4, 1])
+%!assert (size (binornd (2, 1/2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (binornd (2, 0.5)), "double");
-%!assert(class (binornd (single(2), 0.5)), "single");
-%!assert(class (binornd (single([2 2]), 0.5)), "single");
-%!assert(class (binornd (2, single(0.5))), "single");
-%!assert(class (binornd (2, single([0.5 0.5]))), "single");
+%!assert (class (binornd (2, 0.5)), "double")
+%!assert (class (binornd (single (2), 0.5)), "single")
+%!assert (class (binornd (single ([2 2]), 0.5)), "single")
+%!assert (class (binornd (2, single (0.5))), "single")
+%!assert (class (binornd (2, single ([0.5 0.5]))), "single")
 
 %% Test input validation
 %!error binornd ()
 %!error binornd (1)
-%!error binornd (ones(3),ones(2))
-%!error binornd (ones(2),ones(3))
+%!error binornd (ones (3), ones (2))
+%!error binornd (ones (2), ones (3))
 %!error binornd (i, 2)
 %!error binornd (2, i)
 %!error binornd (1,2, -1)
-%!error binornd (1,2, ones(2))
+%!error binornd (1,2, ones (2))
 %!error binornd (1,2, [2 -1 2])
-%!error binornd (1,2, 1, ones(2))
+%!error binornd (1,2, 1, ones (2))
 %!error binornd (1,2, 1, -1)
-%!error binornd (ones(2,2), 2, 3)
-%!error binornd (ones(2,2), 2, [3, 2])
-%!error binornd (ones(2,2), 2, 2, 3)
+%!error binornd (ones (2,2), 2, 3)
+%!error binornd (ones (2,2), 2, [3, 2])
+%!error binornd (ones (2,2), 2, 2, 3)
 

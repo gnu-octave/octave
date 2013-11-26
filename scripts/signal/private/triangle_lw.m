@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -26,10 +26,6 @@
 ## Description: Triangular lag window
 
 function retval = triangle_lw (n, b)
-
-  if (nargin != 2)
-    print_usage ();
-  endif
 
   retval = 1 - (0 : n-1)' * b;
   retval = max ([retval'; (zeros (1, n))])';

@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 Paul Kienzle
+## Copyright (C) 2004-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -51,7 +51,7 @@ function [count, mean, var] = spstats (S, j)
   endif
   if (nargout > 2)
     ## FIXME Variance with count = 0 or 1?
-    diff = S - sparse (i, j, mean(j), n, m);
+    diff = S - sparse (i, j, mean (j), n, m);
     var = sum (diff .* diff) ./ (count - 1);
   endif
 
@@ -59,7 +59,8 @@ endfunction
 
 
 %!test
-%! [n,m,v] = spstats([1 2 1 2 3 4],[2 2 1 1 1 1]);
-%! assert(n,sparse([4,2]));
-%! assert(m,sparse([10/4,3/2]),10*eps);
-%! assert(v,sparse([5/3,1/2]),10*eps);
+%! [n,m,v] = spstats ([1 2 1 2 3 4],[2 2 1 1 1 1]);
+%! assert (n, sparse ([4,2]));
+%! assert (m, sparse ([10/4,3/2]), 10*eps);
+%! assert (v, sparse ([5/3,1/2]), 10*eps);
+

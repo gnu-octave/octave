@@ -1,7 +1,7 @@
 function display (p)
   a = p.poly;
   first = true;
-  fprintf("%s =", inputname(1));
+  fprintf ("%s =", inputname (1));
   for i = 1 : length (a);
     if (a(i) != 0)
       if (first)
@@ -26,7 +26,7 @@ function display (p)
     endif
   endfor
   if (first)
-    fprintf(" 0");
+    fprintf (" 0");
   endif
-  fprintf("\n");
+  fprintf ("\n");
 endfunction

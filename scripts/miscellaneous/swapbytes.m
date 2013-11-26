@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -52,7 +52,7 @@ function y = swapbytes (x)
       error ("swapbytes: invalid class of object");
     endif
     y = reshape (typecast (reshape (typecast (x(:), "uint8"), nb, numel (x))
-                           ([nb : -1 : 1], :) (:), clx), size(x));
+                           ([nb : -1 : 1], :) (:), clx), size (x));
   endif
 
 endfunction

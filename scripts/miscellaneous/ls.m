@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} ls options
+## @deftypefn  {Command} {} ls
+## @deftypefnx {Command} {} ls filenames
+## @deftypefnx {Command} {} ls options
+## @deftypefnx {Command} {} ls options filenames
 ## List directory contents.  For example:
 ##
 ## @example
@@ -30,9 +33,14 @@
 ## @end example
 ##
 ## The @code{dir} and @code{ls} commands are implemented by calling your
-## system's directory listing command, so the available options may vary
+## system's directory listing command, so the available options will vary
 ## from system to system.
-## @seealso{dir, stat, readdir, glob, filesep, ls_command}
+##
+## Filenames are subject to shell expansion if they contain any wildcard
+## characters @samp{*}, @samp{?}, @samp{[]}.  If you want to find a
+## literal example of a wildcard character you must escape it using the
+## backslash operator @samp{\}.
+## @seealso{dir, readdir, glob, what, stat, filesep, ls_command}
 ## @end deftypefn
 
 ## Author: jwe
@@ -56,7 +64,7 @@ function retval = ls (varargin)
       ## shell (cmd.exe) on MinGW uses '^' as escape character
       args = regexprep (args, '([^\w.*? -])', '^$1');
     else
-      args = regexprep (args, '([^\w.*? -])', '\$1');
+      args = regexprep (args, '([^\w.*? -])', '\\$1');
     endif
     args = sprintf ("%s ", args{:});
   else
@@ -72,6 +80,8 @@ function retval = ls (varargin)
       error ("ls: command exited abnormally with status %d\n", status);
     elseif (nargout == 0)
       puts (output);
+    elseif (isempty (output))
+      retval = "";
     else
       retval = strvcat (regexp (output, '\S+', 'match'){:});
     endif
@@ -90,5 +100,5 @@ endfunction
 %! assert (ischar (list));
 %! assert (! isempty (list));
 
-%!error ls (1);
+%!error ls (1)
 

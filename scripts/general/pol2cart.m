@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -19,16 +19,17 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{theta}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{theta}, @var{r}, @var{z})
-## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{p})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{p})
+## @deftypefnx {Function File} {[@var{x}, @var{y}] =} pol2cart (@var{P})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} pol2cart (@var{P})
 ## @deftypefnx {Function File} {@var{C} =} pol2cart (@dots{})
 ## Transform polar or cylindrical to Cartesian coordinates.
 ##
 ## @var{theta}, @var{r}, (and @var{z}) must be the same shape, or scalar.
 ## @var{theta} describes the angle relative to the positive x-axis.
 ## @var{r} is the distance to the z-axis (0, 0, z).
-## If called with a single matrix argument then each row of @var{p}
-## represents the polar/(cylindrical) coordinate (@var{x}, @var{y} (, @var{z})).
+## If called with a single matrix argument then each row of @var{P}
+## represents the polar/(cylindrical) coordinate (@var{theta}, @var{r} (,
+## @var{z})).
 ##
 ## If only a single return argument is requested then return a matrix
 ## @var{C} where each row represents one Cartesian coordinate
@@ -39,7 +40,7 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 ## Adapted-by: jwe
 
-function [x, y, z] = pol2cart (theta, r, z)
+function [x, y, z] = pol2cart (theta, r, z = [])
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -49,13 +50,11 @@ function [x, y, z] = pol2cart (theta, r, z)
     if (ismatrix (theta) && (columns (theta) == 2 || columns (theta) == 3))
       if (columns (theta) == 3)
         z = theta(:,3);
-      else
-        z = [];
       endif
       r = theta(:,2);
       theta = theta(:,1);
     else
-      error ("pol2car: matrix input must have 2 or 3 columns [THETA, R (, Z)]");
+      error ("pol2cart: matrix input must have 2 or 3 columns [THETA, R (, Z)]");
     endif
   elseif (nargin == 2)
     if (! ((ismatrix (theta) && ismatrix (r))
@@ -75,32 +74,33 @@ function [x, y, z] = pol2cart (theta, r, z)
   y = r .* sin (theta);
 
   if (nargout <= 1)
-    x  = [x, y, z];
+    x = [x(:), y(:), z(:)];
   endif
 
 endfunction
+
 
 %!test
 %! t = [0, 0.5, 1] * pi;
 %! r = 1;
 %! [x, y] = pol2cart (t, r);
-%! assert (x, [1, 0, -1], sqrt(eps));
-%! assert (y, [0, 1,  0], sqrt(eps));
+%! assert (x, [1, 0, -1], sqrt (eps));
+%! assert (y, [0, 1,  0], sqrt (eps));
 
 %!test
 %! t = [0, 1, 1] * pi/4;
-%! r = sqrt(2) * [0, 1, 2];
-%! [x, y] = pol2cart (t, r);
-%! assert (x, [0, 1, 2], sqrt(eps));
-%! assert (y, [0, 1, 2], sqrt(eps));
+%! r = sqrt (2) * [0, 1, 2];
+%! C = pol2cart (t, r);
+%! assert (C(:,1), [0; 1; 2], sqrt (eps));
+%! assert (C(:,2), [0; 1; 2], sqrt (eps));
 
 %!test
 %! t = [0, 1, 1] * pi/4;
-%! r = sqrt(2) * [0, 1, 2];
+%! r = sqrt (2) * [0, 1, 2];
 %! z = [0, 1, 2];
 %! [x, y, z2] = pol2cart (t, r, z);
-%! assert (x, [0, 1, 2], sqrt(eps));
-%! assert (y, [0, 1, 2], sqrt(eps));
+%! assert (x, [0, 1, 2], sqrt (eps));
+%! assert (y, [0, 1, 2], sqrt (eps));
 %! assert (z, z2);
 
 %!test
@@ -108,8 +108,8 @@ endfunction
 %! r = [0, 1, 2];
 %! z = [0, 1, 2];
 %! [x, y, z2] = pol2cart (t, r, z);
-%! assert (x, [0, 1, 2], sqrt(eps));
-%! assert (y, [0, 0, 0], sqrt(eps));
+%! assert (x, [0, 1, 2], sqrt (eps));
+%! assert (y, [0, 0, 0], sqrt (eps));
 %! assert (z, z2);
 
 %!test
@@ -117,8 +117,8 @@ endfunction
 %! r = 1;
 %! z = [0, 1, 2];
 %! [x, y, z2] = pol2cart (t, r, z);
-%! assert (x, [1, 1, 1] / sqrt(2), eps);
-%! assert (y, [1, 1, 1] / sqrt(2), eps);
+%! assert (x, [1, 1, 1] / sqrt (2), eps);
+%! assert (y, [1, 1, 1] / sqrt (2), eps);
 %! assert (z, z2);
 
 %!test
@@ -127,16 +127,16 @@ endfunction
 %! z = 1;
 %! [x, y, z2] = pol2cart (t, r, z);
 %! assert (x, [1, 2, 3], eps);
-%! assert (y, [0, 0, 0] / sqrt(2), eps);
+%! assert (y, [0, 0, 0] / sqrt (2), eps);
 %! assert (z, z2);
 
 %!test
 %! P = [0, 0; pi/4, sqrt(2); pi/4, 2*sqrt(2)];
 %! C = [0, 0; 1, 1; 2, 2];
-%! assert (pol2cart(P), C, sqrt(eps));
+%! assert (pol2cart (P), C, sqrt (eps));
 
 %!test
 %! P = [0, 0, 0; pi/4, sqrt(2), 1; pi/4, 2*sqrt(2), 2];
 %! C = [0, 0, 0; 1, 1, 1; 2, 2, 2];
-%! assert (pol2cart(P), C, sqrt(eps));
+%! assert (pol2cart (P), C, sqrt (eps));
 

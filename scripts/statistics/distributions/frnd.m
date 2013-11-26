@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -84,7 +84,7 @@ function rnd = frnd (m, n, varargin)
 
   if (isscalar (m) && isscalar (n))
     if ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
-      rnd = n/m * randg (m/2, sz) ./ randg (n/2, sz);
+      rnd = n/m * randg (m/2, sz, cls) ./ randg (n/2, sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
@@ -92,41 +92,41 @@ function rnd = frnd (m, n, varargin)
     rnd = NaN (sz, cls);
 
     k = (m > 0) & (m < Inf) & (n > 0) & (n < Inf);
-    rnd(k) = n(k) ./ m(k) .* randg (m(k)/2) ./ randg (n(k)/2);
+    rnd(k) = n(k) ./ m(k) .* randg (m(k)/2, cls) ./ randg (n(k)/2, cls);
   endif
 
 endfunction
 
 
-%!assert(size (frnd (1,2)), [1, 1]);
-%!assert(size (frnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (frnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (frnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (frnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (frnd (1, 2, 3)), [3, 3]);
-%!assert(size (frnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (frnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (frnd (1,2)), [1, 1])
+%!assert (size (frnd (ones (2,1), 2)), [2, 1])
+%!assert (size (frnd (ones (2,2), 2)), [2, 2])
+%!assert (size (frnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (frnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (frnd (1, 2, 3)), [3, 3])
+%!assert (size (frnd (1, 2, [4 1])), [4, 1])
+%!assert (size (frnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (frnd (1, 2)), "double");
-%!assert(class (frnd (single(1), 2)), "single");
-%!assert(class (frnd (single([1 1]), 2)), "single");
-%!assert(class (frnd (1, single(2))), "single");
-%!assert(class (frnd (1, single([2 2]))), "single");
+%!assert (class (frnd (1, 2)), "double")
+%!assert (class (frnd (single (1), 2)), "single")
+%!assert (class (frnd (single ([1 1]), 2)), "single")
+%!assert (class (frnd (1, single (2))), "single")
+%!assert (class (frnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error frnd ()
 %!error frnd (1)
-%!error frnd (ones(3),ones(2))
-%!error frnd (ones(2),ones(3))
+%!error frnd (ones (3), ones (2))
+%!error frnd (ones (2), ones (3))
 %!error frnd (i, 2)
 %!error frnd (2, i)
 %!error frnd (1,2, -1)
-%!error frnd (1,2, ones(2))
+%!error frnd (1,2, ones (2))
 %!error frnd (1, 2, [2 -1 2])
-%!error frnd (1,2, 1, ones(2))
+%!error frnd (1,2, 1, ones (2))
 %!error frnd (1,2, 1, -1)
-%!error frnd (ones(2,2), 2, 3)
-%!error frnd (ones(2,2), 2, [3, 2])
-%!error frnd (ones(2,2), 2, 2, 3)
+%!error frnd (ones (2,2), 2, 3)
+%!error frnd (ones (2,2), 2, [3, 2])
+%!error frnd (ones (2,2), 2, 2, 3)
 

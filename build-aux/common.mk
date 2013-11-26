@@ -3,11 +3,14 @@ CROSS_TOOL_PREFIX = @CROSS_TOOL_PREFIX@
 AWK = @AWK@
 export AWK
 
-SED = @SED@
-export SED
+GREP = @GREP@
+export GREP
 
 FIND = @FIND@
 export FIND
+
+SED = @SED@
+export SED
 
 PERL = @PERL@
 export PERL
@@ -41,6 +44,7 @@ LEXLIB = @LEXLIB@
 
 YACC = @YACC@
 AM_YFLAGS = -dv
+BISON_PUSH_PULL_DECL_STYLE = @BISON_PUSH_PULL_DECL_STYLE@
 
 GPERF = @GPERF@
 
@@ -53,6 +57,7 @@ TEMPLATE_ARFLAGS = @TEMPLATE_ARFLAGS@
 RANLIB = @RANLIB@
 
 LN_S = @LN_S@
+MKDIR_P = @MKDIR_P@
 
 MAKEINFO = @MAKEINFO@
 TEXI2DVI = @TEXI2DVI@
@@ -61,6 +66,9 @@ TEXI2PDF = @TEXI2PDF@
 GHOSTSCRIPT = @GHOSTSCRIPT@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
+
+DEFAULT_TERMINAL_FONT = @DEFAULT_TERMINAL_FONT@
+DEFAULT_TERMINAL_FONT_SIZE = @DEFAULT_TERMINAL_FONT_SIZE@
 
 ENABLE_DYNAMIC_LINKING = @ENABLE_DYNAMIC_LINKING@
 
@@ -84,41 +92,27 @@ FC = @FC@
 F77 = @F77@
 AM_FFLAGS = @FFLAGS@
 FPICFLAG = @FPICFLAG@
-ALL_FFLAGS = $(FFLAGS)
 F77_FLOAT_STORE_FLAG = @F77_FLOAT_STORE_FLAG@
 F77_INTEGER_8_FLAG = @F77_INTEGER_8_FLAG@
+ALL_FFLAGS = $(FFLAGS)
 
 F77_TOLOWER=@F77_TOLOWER@
 F77_APPEND_UNDERSCORE=@F77_TOLOWER@
 F77_APPEND_EXTRA_UNDERSCORE=@F77_TOLOWER@
 
-X11_INCFLAGS = @X11_INCFLAGS@
-X11_LIBS = @X11_LIBS@
+F77_ISNAN_MACRO=@F77_ISNAN_MACRO@
 
-CARBON_LIBS = @CARBON_LIBS@
-
-MAGICK_CPPFLAGS = @MAGICK_CPPFLAGS@
-MAGICK_LDFLAGS = @MAGICK_LDFLAGS@
-MAGICK_LIBS = @MAGICK_LIBS@
-
-PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
-PTHREAD_LIBS = @PTHREAD_LIBS@
-
-LIBFLAGS = -L$(top_builddir)
-
-DEFS = @DEFS@
-
-UGLY_DEFS = @UGLY_DEFS@
+# C compiler flags.
 
 CC = @CC@
+## FIXME: CC_VERSION is deprecated and should be removed in version 3.12
 CC_VERSION = @CC_VERSION@
-CONFIGURE_CFLAGS = @CFLAGS@
+GCC_VERSION = @GCC_VERSION@
 CPICFLAG = @CPICFLAG@
 XTRA_CFLAGS = @XTRA_CFLAGS@
 WARN_CFLAGS = @WARN_CFLAGS@
-AM_CFLAGS = $(CONFIGURE_CFLAGS) \
-  $(INCFLAGS) $(DEFS) $(XTRA_CFLAGS) $(WARN_CFLAGS) $(CFLAGS) $(PTHREAD_CFLAGS)
-BUG_CFLAGS = $(DEFS) $(XTRA_CFLAGS) $(WARN_CFLAGS) $(CFLAGS)
+AM_CFLAGS = $(XTRA_CFLAGS)
+ALL_CPPFLAGS = $(CPPFLAGS) $(HDF5_CPPFLAGS) $(Z_CPPFLAGS) $(LLVM_CPPFLAGS)
 
 BUILD_CC = @BUILD_CC@
 BUILD_CFLAGS = @BUILD_CFLAGS@
@@ -126,30 +120,32 @@ BUILD_CFLAGS = @BUILD_CFLAGS@
 DEPEND_FLAGS = @DEPEND_FLAGS@
 DEPEND_EXTRA_SED_PATTERN = @DEPEND_EXTRA_SED_PATTERN@
 INCLUDE_DEPS = @INCLUDE_DEPS@
-# ifeq ($(INCLUDE_DEPS),false)
+# ifeq ($(INCLUDE_DEPS),no)
 #   omit_deps = true;
 # endif
 
-GRAPHICS_CFLAGS = @GRAPHICS_CFLAGS@
+DEFS = @DEFS@
+
+# C++ compiler flags.
 
 CXX = @CXX@
+## FIXME: CXX_VERSION is deprecated and should be removed in version 3.12
 CXX_VERSION = @CXX_VERSION@
+GXX_VERSION = @GXX_VERSION@
 CXXCPP = @CXXCPP@
-CONFIGURE_CXXFLAGS = @CXXFLAGS@
 CXXPICFLAG = @CXXPICFLAG@
 XTRA_CXXFLAGS = @XTRA_CXXFLAGS@
 WARN_CXXFLAGS = @WARN_CXXFLAGS@
-AM_CXXFLAGS = $(CONFIGURE_CXXFLAGS) \
-  $(INCFLAGS) $(DEFS) $(XTRA_CXXFLAGS) $(WARN_CXXFLAGS) $(CXXFLAGS) $(PTHREAD_CFLAGS)
-BUG_CXXFLAGS = $(DEFS) $(XTRA_CXXFLAGS) $(WARN_CXXFLAGS) $(CXXFLAGS)
+AM_CXXFLAGS = $(XTRA_CXXFLAGS)
 
 BUILD_CXX = @BUILD_CXX@
 BUILD_CXXFLAGS = @BUILD_CXXFLAGS@
 
-NO_UNDEFINED_LDFLAG = @NO_UNDEFINED_LDFLAG@
+# Linker and library flags
 
 LD_CXX = @LD_CXX@
 LD_STATIC_FLAG = @LD_STATIC_FLAG@
+LIBFLAGS = -L$(top_builddir)
 #ALL_LDFLAGS = $(LIBFLAGS) $(LD_STATIC_FLAG) $(CPICFLAG) $(LDFLAGS)
 
 BUILD_LDFLAGS = @BUILD_LDFLAGS@
@@ -164,7 +160,7 @@ SONAME_FLAGS = @SONAME_FLAGS@
 
 RDYNAMIC_FLAG = @RDYNAMIC_FLAG@
 
-FLIBS = @FLIBS@
+NO_UNDEFINED_LDFLAG = @NO_UNDEFINED_LDFLAG@
 
 MKOCTFILE_AR = @MKOCTFILE_AR@
 MKOCTFILE_CC = @MKOCTFILE_CC@
@@ -179,53 +175,26 @@ MKOCTFILE_RANLIB = @MKOCTFILE_RANLIB@
 
 LIBOCTINTERP = @LIBOCTINTERP@
 LIBOCTAVE = @LIBOCTAVE@
-LIBCRUFT = @LIBCRUFT@
 
-FT2_CFLAGS = @FT2_CFLAGS@
-FT2_LIBS = @FT2_LIBS@
-
-HDF5_CPPFLAGS = @HDF5_CPPFLAGS@
-HDF5_LDFLAGS = @HDF5_LDFLAGS@
-HDF5_LIBS = @HDF5_LIBS@
-
-Z_CPPFLAGS = @Z_CPPFLAGS@
-Z_LDFLAGS = @Z_LDFLAGS@
-Z_LIBS = @Z_LIBS@
-
-GRAPHICS_LIBS = @GRAPHICS_LIBS@
-
-QHULL_CPPFLAGS = @QHULL_CPPFLAGS@
-QHULL_LDFLAGS = @QHULL_LDFLAGS@
-QHULL_LIBS = @QHULL_LIBS@
-
-REGEX_LIBS = @REGEX_LIBS@
-
-LAPACK_LIBS = @LAPACK_LIBS@
-BLAS_LIBS = @BLAS_LIBS@
-
-FFTW3_CPPFLAGS = @FFTW3_CPPFLAGS@
-FFTW3_LDFLAGS = @FFTW3_LDFLAGS@
-FFTW3_LIBS = @FFTW3_LIBS@
-
-FFTW3F_CPPFLAGS = @FFTW3F_CPPFLAGS@
-FFTW3F_LDFLAGS = @FFTW3F_LDFLAGS@
-FFTW3F_LIBS = @FFTW3F_LIBS@
-
-GLPK_CPPFLAGS = @GLPK_CPPFLAGS@
-GLPK_LDFLAGS = @GLPK_LDFLAGS@
-GLPK_LIBS = @GLPK_LIBS@
-
-CURL_CPPFLAGS = @CURL_CPPFLAGS@
-CURL_LDFLAGS = @CURL_LDFLAGS@
-CURL_LIBS = @CURL_LIBS@
+DL_LIBS = @DL_LIBS@
+FLIBS = @FLIBS@
+LIBS = @LIBS@
 
 AMD_CPPFLAGS = @AMD_CPPFLAGS@
 AMD_LDFLAGS = @AMD_LDFLAGS@
 AMD_LIBS = @AMD_LIBS@
 
+ARPACK_CPPFLAGS = @ARPACK_CPPFLAGS@
+ARPACK_LDFLAGS = @ARPACK_LDFLAGS@
+ARPACK_LIBS = @ARPACK_LIBS@
+
+BLAS_LIBS = @BLAS_LIBS@
+
 CAMD_CPPFLAGS = @CAMD_CPPFLAGS@
 CAMD_LDFLAGS = @CAMD_LDFLAGS@
 CAMD_LIBS = @CAMD_LIBS@
+
+CARBON_LIBS = @CARBON_LIBS@
 
 COLAMD_CPPFLAGS = @COLAMD_CPPFLAGS@
 COLAMD_LDFLAGS = @COLAMD_LDFLAGS@
@@ -239,31 +208,79 @@ CHOLMOD_CPPFLAGS = @CHOLMOD_CPPFLAGS@
 CHOLMOD_LDFLAGS = @CHOLMOD_LDFLAGS@
 CHOLMOD_LIBS = @CHOLMOD_LIBS@
 
+CURL_CPPFLAGS = @CURL_CPPFLAGS@
+CURL_LDFLAGS = @CURL_LDFLAGS@
+CURL_LIBS = @CURL_LIBS@
+
 CXSPARSE_CPPFLAGS = @CXSPARSE_CPPFLAGS@
 CXSPARSE_LDFLAGS = @CXSPARSE_LDFLAGS@
 CXSPARSE_LIBS = @CXSPARSE_LIBS@
 
-UMFPACK_CPPFLAGS = @UMFPACK_CPPFLAGS@
-UMFPACK_LDFLAGS = @UMFPACK_LDFLAGS@
-UMFPACK_LIBS = @UMFPACK_LIBS@
+FFTW3_CPPFLAGS = @FFTW3_CPPFLAGS@
+FFTW3_LDFLAGS = @FFTW3_LDFLAGS@
+FFTW3_LIBS = @FFTW3_LIBS@
+
+FFTW3F_CPPFLAGS = @FFTW3F_CPPFLAGS@
+FFTW3F_LDFLAGS = @FFTW3F_LDFLAGS@
+FFTW3F_LIBS = @FFTW3F_LIBS@
+
+FFTW_XCPPFLAGS = $(FFTW3_CPPFLAGS) $(FFTW3F_CPPFLAGS)
+FFTW_XLDFLAGS = $(FFTW3_LDFLAGS) $(FFTW3F_LDFLAGS)
+FFTW_XLIBS = $(FFTW3_LIBS) $(FFTW3F_LIBS)
+
+## Alias CPPFLAGS to CFLAGS.
+## This is closer to the true meaning of `pkg-config --cflags` output.
+FONTCONFIG_CPPFLAGS = @FONTCONFIG_CFLAGS@
+FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
+
+## Alias CPPFLAGS to CFLAGS.
+FT2_CPPFLAGS = @FT2_CFLAGS@
+FT2_CFLAGS = @FT2_CFLAGS@
+FT2_LIBS = @FT2_LIBS@
+
+GLPK_CPPFLAGS = @GLPK_CPPFLAGS@
+GLPK_LDFLAGS = @GLPK_LDFLAGS@
+GLPK_LIBS = @GLPK_LIBS@
+
+GRAPHICS_CFLAGS = @GRAPHICS_CFLAGS@
+GRAPHICS_LIBS = @GRAPHICS_LIBS@
+
+GL2PS_LIBS = @GL2PS_LIBS@
+
+HDF5_CPPFLAGS = @HDF5_CPPFLAGS@
+HDF5_LDFLAGS = @HDF5_LDFLAGS@
+HDF5_LIBS = @HDF5_LIBS@
+
+JAVA_CPPFLAGS = @JAVA_CPPFLAGS@
+JAVA_LIBS = @JAVA_LIBS@
+
+LAPACK_LIBS = @LAPACK_LIBS@
+
+LLVM_CPPFLAGS = @LLVM_CPPFLAGS@
+LLVM_LDFLAGS = @LLVM_LDFLAGS@
+LLVM_LIBS = @LLVM_LIBS@
+
+MAGICK_CPPFLAGS = @MAGICK_CPPFLAGS@
+MAGICK_LDFLAGS = @MAGICK_LDFLAGS@
+MAGICK_LIBS = @MAGICK_LIBS@
 
 OPENGL_LIBS = @OPENGL_LIBS@
+
+PCRE_CPPFLAGS = @PCRE_CPPFLAGS@
+PCRE_LIBS = @PCRE_LIBS@
+
+PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
+PTHREAD_LIBS = @PTHREAD_LIBS@
+
+QHULL_CPPFLAGS = @QHULL_CPPFLAGS@
+QHULL_LDFLAGS = @QHULL_LDFLAGS@
+QHULL_LIBS = @QHULL_LIBS@
 
 QRUPDATE_CPPFLAGS = @QRUPDATE_CPPFLAGS@
 QRUPDATE_LDFLAGS = @QRUPDATE_LDFLAGS@
 QRUPDATE_LIBS = @QRUPDATE_LIBS@
 
 READLINE_LIBS = @READLINE_LIBS@
-TERM_LIBS = @TERM_LIBS@
-
-ARPACK_CPPFLAGS = @ARPACK_CPPFLAGS@
-ARPACK_LDFLAGS = @ARPACK_LDFLAGS@
-ARPACK_LIBS = @ARPACK_LIBS@
-
-DL_LIBS = @DL_LIBS@
-LIBS = @LIBS@
-
-ALL_CPPFLAGS = $(CPPFLAGS) $(HDF5_CPPFLAGS) $(Z_CPPFLAGS)
 
 SPARSE_XCPPFLAGS = \
   $(CHOLMOD_CPPFLAGS) $(UMFPACK_CPPFLAGS) \
@@ -277,15 +294,24 @@ SPARSE_XLDFLAGS = \
 
 ## Order matters, at least on some systems (Cygwin, for example).
 SPARSE_XLIBS = \
-    $(CHOLMOD_LIBS) $(UMFPACK_LIBS) \
-    $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
-    $(CCOLAMD_LIBS) $(CXSPARSE_LIBS)
+  $(CHOLMOD_LIBS) $(UMFPACK_LIBS) \
+  $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
+  $(CCOLAMD_LIBS) $(CXSPARSE_LIBS)
 
-FFTW_XCPPFLAGS = $(FFTW3_CPPFLAGS) $(FFTW3F_CPPFLAGS)
+TERM_LIBS = @TERM_LIBS@
 
-FFTW_XLDFLAGS = $(FFTW3_LDFLAGS) $(FFTW3F_LDFLAGS)
+UMFPACK_CPPFLAGS = @UMFPACK_CPPFLAGS@
+UMFPACK_LDFLAGS = @UMFPACK_LDFLAGS@
+UMFPACK_LIBS = @UMFPACK_LIBS@
 
-FFTW_XLIBS = $(FFTW3_LIBS) $(FFTW3F_LIBS)
+X11_INCFLAGS = @X11_INCFLAGS@
+X11_LIBS = @X11_LIBS@
+
+Z_CPPFLAGS = @Z_CPPFLAGS@
+Z_LDFLAGS = @Z_LDFLAGS@
+Z_LIBS = @Z_LIBS@
+
+# Miscellaneous
 
 USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
 OCTAVE_IDX_TYPE = @OCTAVE_IDX_TYPE@
@@ -332,7 +358,10 @@ libdir = @libdir@
 # Where to install and expect extra files like NEWS and doc-cache.
 octetcdir = @octetcdir@
 
-# Where to install and expect libraries like libcruft.a, liboctave.a,
+# Where to install and expect the language files for the gui.
+octlocaledir = @octlocaledir@
+
+# Where to install and expect libraries like liboctave.a, liboctinterp.a,
 # and other architecture-dependent data.
 octlibdir = @octlibdir@
 
@@ -350,8 +379,14 @@ mandir = @mandir@
 man1dir = @man1dir@
 man1ext = @man1ext@
 
+# Where to install test files.
+octtestsdir = @octtestsdir@
+
 # The full path to the default doc cache file.
 doc_cache_file = @doc_cache_file@
+
+# The full path to the default texi macros file.
+texi_macros_file_file = @texi_macros_file@
 
 # Where to install and expect the info files describing Octave..
 infodir = @infodir@
@@ -431,6 +466,8 @@ ldpreloadsep = $(null)@ldpreloadsep@$(null)
 
 NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 
+# ==================== Octave-specific Makefile rules ====================
+
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
@@ -451,13 +488,13 @@ if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/$@ ] && [ ! -f $@ ]; then \
 fi
 endef
 
-# Yes, the second sed command near the end is needed, to avoid limits
-# in command lengths for some versions of sed.  UGLY_DEFS is often
-# quite large, so it makes sense to split this command there.
+## To avoid shell command line limits, break the replacement patterns
+## into two roughly equal sized parts.
 
 define do_subst_config_vals
 echo "making $@ from $<"
 $(SED) < $< \
+  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
   -e "s|%NO_OCT_FILE_STRIP%|${NO_OCT_FILE_STRIP}|" \
   -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
   -e "s|%OCTAVE_CONF_ALL_CFLAGS%|\"${ALL_CFLAGS}\"|" \
@@ -504,12 +541,16 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_CXXPICFLAG%|\"${CXXPICFLAG}\"|" \
   -e "s|%OCTAVE_CONF_CXX_VERSION%|\"${CXX_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
+  -e "s|%OCTAVE_CONF_DEFS%|\"${DEFS}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%|\"${DEPEND_EXTRA_SED_PATTERN}\"|" \
   -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DL_LIBS%|\"${DL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%|\"${ENABLE_DYNAMIC_LINKING}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
+  -e "s|%OCTAVE_CONF_GCC_VERSION%|\"${GCC_VERSION}\"|" \
+  -e "s|%OCTAVE_CONF_GXX_VERSION%|\"${GXX_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_F77%|\"${F77}\"|" \
   -e "s|%OCTAVE_CONF_F77_FLOAT_STORE_FLAG%|\"${F77_FLOAT_STORE_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_F77_INTEGER_8_FLAG%|\"${F77_INTEGER_8_FLAG}\"|" \
@@ -522,17 +563,19 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_FFTW3F_LDFLAGS%|\"${FFTW3F_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3F_LIBS%|\"${FFTW3F_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_FLIBS%|\"${FLIBS}\"|" \
+  -e "s|%OCTAVE_CONF_FONTCONFIG_CFLAGS%|\"${FONTCONFIG_CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FPICFLAG%|\"${FPICFLAG}\"|" \
+  -e "s|%OCTAVE_CONF_FT2_CFLAGS%|\"${FT2_CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FT2_LIBS%|\"${FT2_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_CPPFLAGS%|\"${GLPK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LDFLAGS%|\"${GLPK_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LIBS%|\"${GLPK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_GNUPLOT%|\"${GNUPLOT}\"|" \
+  -e "s|%OCTAVE_CONF_GRAPHICS_CFLAGS%|\"${GRAPHICS_CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_GRAPHICS_LIBS%|\"${GRAPHICS_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_HDF5_CPPFLAGS%|\"${HDF5_CPPFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_HDF5_LDFLAGS%|\"${HDF5_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_HDF5_CPPFLAGS%|\"${HDF5_CPPFLAGS}\"|" | \
+  $(SED) -e "s|%OCTAVE_CONF_HDF5_LDFLAGS%|\"${HDF5_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_HDF5_LIBS%|\"${HDF5_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_INCFLAGS%|\"${INCFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_INCLUDEDIR%|\"${includedir}\"|" \
   -e "s|%OCTAVE_CONF_LAPACK_LIBS%|\"${LAPACK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
@@ -541,13 +584,15 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LEX%|\"${LEX}\"|" \
   -e "s|%OCTAVE_CONF_LEXLIB%|\"${LEXLIB}\"|" \
   -e "s|%OCTAVE_CONF_LFLAGS%|\"${LFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_LIBCRUFT%|\"${LIBCRUFT}\"|" \
   -e "s|%OCTAVE_CONF_LIBDIR%|\"${libdir}\"|" \
   -e "s|%OCTAVE_CONF_LIBEXT%|\"${LIBEXT}\"|" \
   -e "s|%OCTAVE_CONF_LIBFLAGS%|\"${LIBFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_LIBOCTAVE%|\"${LIBOCTAVE}\"|" \
   -e "s|%OCTAVE_CONF_LIBOCTINTERP%|\"${LIBOCTINTERP}\"|" \
   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_LLVM_CPPFLAGS%|\"${LLVM_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_LLVM_LDFLAGS%|\"${LLVM_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_LLVM_LIBS%|\"${LLVM_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
   -e "s|%OCTAVE_CONF_MAGICK_CPPFLAGS%|\"${MAGICK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_MAGICK_LDFLAGS%|\"${MAGICK_LDFLAGS}\"|" \
@@ -567,6 +612,8 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_OCT_LINK_DEPS%|\"${OCT_LINK_DEPS}\"|" \
   -e "s|%OCTAVE_CONF_OCT_LINK_OPTS%|\"${OCT_LINK_OPTS}\"|" \
   -e "s|%OCTAVE_CONF_OPENGL_LIBS%|\"${OPENGL_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_PCRE_CPPFLAGS%|\"${PCRE_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_PCRE_LIBS%|\"${PCRE_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_CONF_PTHREAD_CFLAGS%|\"${PTHREAD_CFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_PTHREAD_LIBS%|\"${PTHREAD_LIBS}\"|" \
@@ -576,10 +623,12 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_QRUPDATE_CPPFLAGS%|\"${QRUPDATE_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_QRUPDATE_LDFLAGS%|\"${QRUPDATE_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_QRUPDATE_LIBS%|\"${QRUPDATE_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_QT_CPPFLAGS%|\"${QT_CPPFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_QT_LDFLAGS%|\"${QT_LDFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_QT_LIBS%|\"${QT_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_RANLIB%|\"${RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_RDYNAMIC_FLAG%|\"${RDYNAMIC_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_READLINE_LIBS%|\"${READLINE_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_REGEX_LIBS%|\"${REGEX_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_SED%|\"${SED}\"|" \
   -e "s|%OCTAVE_CONF_SHARED_LIBS%|\"${SHARED_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_SHLEXT%|\"${SHLEXT}\"|" \
@@ -590,13 +639,13 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_SONAME_FLAGS%|\"${SONAME_FLAGS}\"|" \
   -e "s|%OCTAVE_CONF_STATIC_LIBS%|\"${STATIC_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_TERM_LIBS%|\"${TERM_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_UGLY_DEFS%|\"${UGLY_DEFS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_CPPFLAGS%|\"${UMFPACK_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_LDFLAGS%|\"${UMFPACK_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_UMFPACK_LIBS%|\"${UMFPACK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_USE_64_BIT_IDX_T%|\"${USE_64_BIT_IDX_T}\"|" \
   -e "s|%OCTAVE_CONF_VERSION%|\"${version}\"|" \
-  -e "s|%OCTAVE_CONF_ENABLE_DYNAMIC_LINKING%|\"${ENABLE_DYNAMIC_LINKING}\"|" \
+  -e "s|%OCTAVE_CONF_WARN_CFLAGS%|\"${WARN_CFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_WARN_CXXFLAGS%|\"${WARN_CXXFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_X11_INCFLAGS%|\"${X11_INCFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_X11_LIBS%|\"${X11_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_XTRA_CFLAGS%|\"${XTRA_CFLAGS}\"|" \
@@ -606,14 +655,14 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_Z_CPPFLAGS%|\"${Z_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_Z_LDFLAGS%|\"${Z_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_Z_LIBS%|\"${Z_LIBS}\"|" \
-  -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" | \
-  $(SED)  -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
+  -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" > $@-t
 $(simple_move_if_change_rule)
 endef
 
 define do_subst_default_vals
 echo "making $@ from $<"
 $(SED) < $< > $@-t \
+  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
   -e "s|%OCTAVE_ARCHLIBDIR%|\"${archlibdir}\"|" \
   -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
   -e "s|%OCTAVE_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
@@ -646,10 +695,13 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_OCTLIBDIR%|\"${octlibdir}\"|" \
+  -e "s|%OCTAVE_OCTLOCALEDIR%|\"${octlocaledir}\"|" \
+  -e "s|%OCTAVE_OCTTESTSDIR%|\"${octtestsdir}\"|" \
   -e "s|%OCTAVE_STARTUPFILEDIR%|\"${startupfiledir}\"|" \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
   -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
+  -e "s|%OCTAVE_TEXI_MACROS_FILE%|\"${texi_macros_file}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"
 $(simple_move_if_change_rule)
 endef
@@ -660,37 +712,38 @@ $(SED) < $< \
   -e "s|%AWK%|${AWK}|g" \
   -e "s|%FIND%|${FIND}|g" \
   -e "s|%SED%|${SED}|g" \
-  -e "s|%library_path_var%|${library_path_var}|g" \
-  -e "s|%liboctinterp%|${SHLPRE}octinterp.${SHLEXT}|g" \
-  -e "s|%liboctave%|${SHLPRE}octave.${SHLEXT}|g" \
-  -e "s|%libcruft%|${SHLPRE}cruft.${SHLEXT}|g" \
-  -e "s|%ldpreloadsep%|${ldpreloadsep}|g" \
-  -e "s|%srcdir%|${srcdir}|" \
-  -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|$(shell pwd)|" > $@-t
 $(simple_move_if_change_rule)
 endef
 
-define do_script_install
-$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
-for f in $(FCN_FILES); do \
-  fbase=`basename $$f`; \
-  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \
-  $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \
-done
-$(top_srcdir)/mkpkgadd $(DESTDIR)$(fcnfiledir)/$(script_sub_dir) > $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t
-if [ -n "`cat $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t`" ]; then \
-  $(INSTALL_DATA) $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD ; \
+define do_subst_qt_settings
+echo "making $@ from $<"
+$(SED) < $< \
+  -e "s|%DEFAULT_TERMINAL_FONT%|${DEFAULT_TERMINAL_FONT}|" \
+  -e "s|%DEFAULT_TERMINAL_FONT_SIZE%|${DEFAULT_TERMINAL_FONT_SIZE}|" > $@-t
+$(simple_move_if_change_rule)
+endef
+
+define test-file-commands
+( echo "## DO NOT EDIT!  Generated automatically from $(<F) by Make."; $(GREP) '^%!' $< ) > $@-t
+mv $@-t $@
+endef
+
+define gdbinit_install_rule
+if [ -f .gdbinit ]; then \
+  echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
 else \
-  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t ; \
+  echo "Installing .gdbinit from version at $<" ; \
+  cp $< $@; \
 fi
 endef
 
-define do_script_uninstall
-for f in $(FCN_FILES_NO_DIR); \
-  do rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
-done
-rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
--rmdir $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
-endef
+%.cc-tst : %.cc
+	$(test-file-commands)
+
+%.yy-tst : %.yy
+	$(test-file-commands)
+
+%.ll-tst : %.ll
+	$(test-file-commands)

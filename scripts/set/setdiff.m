@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -26,7 +26,7 @@
 ## return a column vector, otherwise return a row vector.
 ## @var{a}, @var{b} may be cell arrays of string(s).
 ##
-## Given the optional third argument @samp{"rows"}, return the rows in
+## Given the optional third argument @qcode{"rows"}, return the rows in
 ## @var{a} that are not in @var{b}, sorted in ascending order by rows.
 ##
 ## If requested, return @var{i} such that @code{c = a(i)}.
@@ -82,7 +82,7 @@ function [c, i] = setdiff (a, b, varargin)
         i(idx(dups)) = [];
       endif
       ## Reshape if necessary.
-      if (size (c, 1) != 1 && size (b, 1) == 1)
+      if (rows (c) != 1 && rows (b) == 1)
         c = c.';
       endif
     endif
@@ -90,16 +90,18 @@ function [c, i] = setdiff (a, b, varargin)
 
 endfunction
 
-%!assert(setdiff(["bb";"zz";"bb";"zz"],["bb";"cc";"bb"],"rows"), "zz")
-%!assert(setdiff(["b";"z";"b";"z"],["b";"c";"b"],"rows"), "z")
-%!assert(setdiff(["b";"z";"b";"z"],["b";"c";"b"]), "z")
-%!assert(setdiff([1, 1; 2, 2; 3, 3; 4, 4], [1, 1; 2, 2; 4, 4], "rows"), [3 3])
-%!assert(setdiff([1; 2; 3; 4], [1; 2; 4], "rows"), 3)
-%!assert(setdiff([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 4])
-%!assert(setdiff({"one","two";"three","four"},{"one","two";"three","six"}), {"four"})
+
+%!assert (setdiff (["bb";"zz";"bb";"zz"], ["bb";"cc";"bb"], "rows"), "zz")
+%!assert (setdiff (["b";"z";"b";"z"], ["b";"c";"b"], "rows"), "z")
+%!assert (setdiff (["b";"z";"b";"z"], ["b";"c";"b"]), "z")
+%!assert (setdiff ([1, 1; 2, 2; 3, 3; 4, 4], [1, 1; 2, 2; 4, 4], "rows"), [3 3])
+%!assert (setdiff ([1; 2; 3; 4], [1; 2; 4], "rows"), 3)
+%!assert (setdiff ([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 4])
+%!assert (setdiff ({"one","two";"three","four"}, {"one","two";"three","six"}), {"four"})
 
 %!test
-%! a = [3, 1, 4, 1, 5]; b = [1, 2, 3, 4];
+%! a = [3, 1, 4, 1, 5];  b = [1, 2, 3, 4];
 %! [y, i] = setdiff (a, b.');
-%! assert(y, [5]);
-%! assert(y, a(i));
+%! assert (y, [5]);
+%! assert (y, a(i));
+

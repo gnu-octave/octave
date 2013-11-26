@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Jordi Gutiérrez Hermoso
+## Copyright (C) 2012-2013 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##
@@ -34,7 +34,7 @@
 ## @example
 ## @group
 ## @var{m} = magic (5);
-## cell2mat (nthargout ([1, 2], @@ind2sub, size(@var{m}),
+## cell2mat (nthargout ([1, 2], @@ind2sub, size (@var{m}),
 ##                      nthargout (2, @@max, @var{m}(:))))
 ## @result{} 5   3
 ## @end group
@@ -45,7 +45,7 @@
 ##
 ## @example
 ## @group
-## @var{m} = magic(5);
+## @var{m} = magic (5);
 ## [~, idx] = max (@var{M}(:));
 ## [i, j] = ind2sub (size (@var{m}), idx);
 ## [i, j]
@@ -84,7 +84,7 @@ function out = nthargout (n, varargin)
   endif
 
   if (any (n != fix (n))  || ntot != fix (ntot) || any (n <= 0) || ntot <= 0)
-    error ("nthargout: N and NTOT must consist of positive integers")
+    error ("nthargout: N and NTOT must consist of positive integers");
   endif
 
   outargs = cell (1, ntot);
@@ -107,7 +107,9 @@ function out = nthargout (n, varargin)
 
 endfunction
 
+
 %!shared m
 %! m = magic (5);
-%!assert (nthargout ([1, 2], @ind2sub, size(m), nthargout (2, @max, m(:))), {5,3}) 
+%!assert (nthargout ([1,2], @ind2sub, size (m), nthargout (2, @max, m(:))), {5,3})
 %!assert (nthargout (3, @find, m(m>20)), [23, 24, 25, 21, 22]')
+

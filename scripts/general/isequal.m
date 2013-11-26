@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2013 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isequal (@var{x1}, @var{x2}, @dots{})
 ## Return true if all of @var{x1}, @var{x2}, @dots{} are equal.
-## @seealso{isequalwithequalnans}
+## @seealso{isequaln}
 ## @end deftypefn
 
 function retval = isequal (x1, varargin)
@@ -32,12 +32,13 @@ function retval = isequal (x1, varargin)
 
 endfunction
 
+
 ## test size and shape
-%!assert(isequal([1,2,3,4],[1,2,3,4]), true)
-%!assert(isequal([1;2;3;4],[1;2;3;4]), true)
-%!assert(isequal([1,2,3,4],[1;2;3;4]), false)
-%!assert(isequal([1,2,3,4],[1,2;3,4]), false)
-%!assert(isequal([1,2,3,4],[1,3;2,4]), false)
+%!assert (isequal ([1,2,3,4],[1,2,3,4]), true)
+%!assert (isequal ([1;2;3;4],[1;2;3;4]), true)
+%!assert (isequal ([1,2,3,4],[1;2;3;4]), false)
+%!assert (isequal ([1,2,3,4],[1,2;3,4]), false)
+%!assert (isequal ([1,2,3,4],[1,3;2,4]), false)
 
 %!test
 %! A = 1:8;
@@ -55,20 +56,30 @@ endfunction
 %! assert (isequal (A, B), false);
 
 ## test for equality
-%!assert(isequal([1,2,3,4],[1,2,3,4]), true)
-%!assert(isequal(['a','b','c','d'],['a','b','c','d']), true)
+%!assert (isequal ([1,2,3,4],[1,2,3,4]), true)
+%!assert (isequal (['a','b','c','d'],['a','b','c','d']), true)
 ## Test multi-line strings
-%!assert(isequal(["test";"strings"],["test";"strings"],["test";"strings"]), true)
+%!assert (isequal (["test";"strings"],["test";"strings"],["test";"strings"]), true)
 ## test for inequality
-%!assert(isequal([1,2,3,4],[1;2;3;4]),false)
-%!assert(isequal({1,2,3,4},[1,2,3,4]),false)
-%!assert(isequal([1,2,3,4],{1,2,3,4}),false)
-%!assert(isequal([1,2,NaN,4],[1,2,NaN,4]),false)
-%!assert(isequal(['a','b','c','d'],['a';'b';'c';'d']),false)
-%!assert(isequal({'a','b','c','d'},{'a';'b';'c';'d'}),false)
+%!assert (isequal ([1,2,3,4],[1;2;3;4]), false)
+%!assert (isequal ({1,2,3,4},[1,2,3,4]), false)
+%!assert (isequal ([1,2,3,4],{1,2,3,4}), false)
+%!assert (isequal ([1,2,NaN,4],[1,2,NaN,4]), false)
+%!assert (isequal (['a','b','c','d'],['a';'b';'c';'d']), false)
+%!assert (isequal ({'a','b','c','d'},{'a';'b';'c';'d'}), false)
 ## test for equality (struct)
-%!assert(isequal(struct('a',1,'b',2),struct('a',1,'b',2)),true)
-%!assert(isequal(struct('a',1,'b',2),struct('a',1,'b',2),struct('a',1,'b',2)),true)
-%!assert(isequal(struct('a','abc','b',2),struct('a','abc','b',2)),true)
+%!assert (isequal (struct ('a',1,'b',2),struct ('a',1,'b',2)), true)
+%!assert (isequal (struct ('a',1,'b',2),struct ('a',1,'b',2),struct ('a',1,'b',2)), true)
+%!assert (isequal (struct ('a',"abc",'b',2),struct ('a',"abc",'b',2)), true)
 ## test for inequality (struct)
-%!assert(isequal(struct('a',NaN,'b',2),struct('a',NaN,'b',2),struct('a',NaN,'b',2)),false)
+%!assert (isequal (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), false)
+
+## test for sparse matrices
+%!assert (isequal (sparse (0,1), sparse (0,1)), true)
+%!assert (isequal (sparse (0,1), sparse (1,0)), false)
+%!assert (isequal (sparse (2, 2), sparse (2, 2)), true)
+
+## Input validation
+%!error isequal ()
+%!error isequal (1)
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -64,6 +64,12 @@ function pdf = binopdf (x, n, p)
                   + x(k).*log (p(k)) + (n(k)-x(k)).*log (1-p(k)));
   endif
 
+  ## Special case inputs
+  ksp = k & (p == 0) & (x == 0);
+  pdf(ksp) = 1; 
+  ksp = k & (p == 1) & (x == n);
+  pdf(ksp) = 1; 
+
 endfunction
 
 
@@ -75,26 +81,31 @@ endfunction
 %! endif
 %! x = [-1 0 1 2 3];
 %! y = [0 1/4 1/2 1/4 0];
-%!assert(binopdf (x, 2*ones(1,5), 0.5*ones(1,5)), y, tol);
-%!assert(binopdf (x, 2, 0.5*ones(1,5)), y, tol);
-%!assert(binopdf (x, 2*ones(1,5), 0.5), y, tol);
-%!assert(binopdf (x, 2*[0 -1 NaN 1.1 1], 0.5), [0 NaN NaN NaN 0]);
-%!assert(binopdf (x, 2, 0.5*[0 -1 NaN 3 1]), [0 NaN NaN NaN 0]);
-%!assert(binopdf ([x, NaN], 2, 0.5), [y, NaN], tol);
+%!assert (binopdf (x, 2*ones (1,5), 0.5*ones (1,5)), y, tol)
+%!assert (binopdf (x, 2, 0.5*ones (1,5)), y, tol)
+%!assert (binopdf (x, 2*ones (1,5), 0.5), y, tol)
+%!assert (binopdf (x, 2*[0 -1 NaN 1.1 1], 0.5), [0 NaN NaN NaN 0])
+%!assert (binopdf (x, 2, 0.5*[0 -1 NaN 3 1]), [0 NaN NaN NaN 0])
+%!assert (binopdf ([x, NaN], 2, 0.5), [y, NaN], tol)
+
+## Test Special input values
+%!assert (binopdf (0, 3, 0), 1);
+%!assert (binopdf (2, 2, 1), 1);
+%!assert (binopdf (1, 2, 1), 0);
 
 %% Test class of input preserved
-%!assert(binopdf (single([x, NaN]), 2, 0.5), single([y, NaN]));
-%!assert(binopdf ([x, NaN], single(2), 0.5), single([y, NaN]));
-%!assert(binopdf ([x, NaN], 2, single(0.5)), single([y, NaN]));
+%!assert (binopdf (single ([x, NaN]), 2, 0.5), single ([y, NaN]))
+%!assert (binopdf ([x, NaN], single (2), 0.5), single ([y, NaN]))
+%!assert (binopdf ([x, NaN], 2, single (0.5)), single ([y, NaN]))
 
 %% Test input validation
 %!error binopdf ()
 %!error binopdf (1)
 %!error binopdf (1,2)
 %!error binopdf (1,2,3,4)
-%!error binopdf (ones(3),ones(2),ones(2))
-%!error binopdf (ones(2),ones(3),ones(2))
-%!error binopdf (ones(2),ones(2),ones(3))
+%!error binopdf (ones (3), ones (2), ones (2))
+%!error binopdf (ones (2), ones (3), ones (2))
+%!error binopdf (ones (2), ones (2), ones (3))
 %!error binopdf (i, 2, 2)
 %!error binopdf (2, i, 2)
 %!error binopdf (2, 2, i)

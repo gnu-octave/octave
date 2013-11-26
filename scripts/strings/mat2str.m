@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2012 Rolf Fabian
+## Copyright (C) 2002-2013 Rolf Fabian
 ##
 ## This file is part of Octave.
 ##
@@ -29,7 +29,7 @@
 ## precision of the real part and @code{@var{n}(2)} defines the
 ## precision of the imaginary part.  The default for @var{n} is 15.
 ##
-## If the argument "class" is given then the class of @var{x} is
+## If the argument @qcode{"class"} is given then the class of @var{x} is
 ## included in the string in such a way that @code{eval} will result in the
 ## construction of a matrix of the same class.
 ##
@@ -41,7 +41,7 @@
 ## mat2str ([ -1/3 +i/7; 1/3 -i/7 ], [4 2])
 ##      @result{} "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]"
 ##
-## mat2str (int16([1 -1]), "class")
+## mat2str (int16 ([1 -1]), "class")
 ##      @result{} "int16([1 -1])"
 ##
 ## mat2str (logical (eye (2)))
@@ -103,7 +103,7 @@ function s = mat2str (x, n = 15, cls = "")
     endif
   else
     ## Non-scalar X, print brackets
-    fmt = cstrcat (fmt, " ");
+    fmt = [fmt " "];
     if (x_iscomplex)
       t = x.';
       s = sprintf (fmt, [real(t(:))'; imag(t(:))']);
@@ -114,7 +114,7 @@ function s = mat2str (x, n = 15, cls = "")
       s = sprintf (fmt, x.');
     endif
 
-    s = cstrcat ("[", s);
+    s = ["[" s];
     s(end) = "]";
     idx = strfind (s, " ");
     nc = columns (x);
@@ -122,26 +122,26 @@ function s = mat2str (x, n = 15, cls = "")
   endif
 
   if (strcmp ("class", cls))
-    s = cstrcat (class (x), "(", s, ")");
+    s = [class(x) "(" s ")"];
   endif
 
 endfunction
 
 
-%!assert (mat2str (0.7), "0.7");
-%!assert (mat2str (pi), "3.14159265358979");
-%!assert (mat2str (pi, 5), "3.1416");
-%!assert (mat2str (single (pi), 5, "class"), "single(3.1416)");
+%!assert (mat2str (0.7), "0.7")
+%!assert (mat2str (pi), "3.14159265358979")
+%!assert (mat2str (pi, 5), "3.1416")
+%!assert (mat2str (single (pi), 5, "class"), "single(3.1416)")
 %!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]), "[-0.3333+0.14i;0.3333-0.14i]")
 %!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]")
-%!assert (mat2str (int16 ([1 -1]), 'class'), "int16([1 -1])")
-%!assert (mat2str (true), "true");
-%!assert (mat2str (false), "false");
-%!assert (mat2str (logical (eye (2))), "[true false;false true]");
+%!assert (mat2str (int16 ([1 -1]), "class"), "int16([1 -1])")
+%!assert (mat2str (true), "true")
+%!assert (mat2str (false), "false")
+%!assert (mat2str (logical (eye (2))), "[true false;false true]")
 
 %% Test input validation
 %!error mat2str ()
 %!error mat2str (1,2,3,4)
 %!error mat2str (["Hello"])
-%!error mat2str (ones(3,3,2))
+%!error <X must be two dimensional> mat2str (ones (3,3,2))
 

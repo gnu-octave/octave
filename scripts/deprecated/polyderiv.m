@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -97,6 +97,7 @@ function [q, d] = polyderiv (p, a)
   endif
 
 endfunction
+
 
 %!assert(all (all (polyderiv ([1, 2, 3]) == [2, 2])));
 

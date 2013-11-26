@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Bill Denney
+## Copyright (C) 2008-2013 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -21,8 +21,9 @@
 ## Add @var{q} amount of time (with units @var{f}) to the serial datenum,
 ## @var{d}.
 ##
-## @var{f} must be one of "year", "month", "day", "hour", "minute", "second",
-## or "millisecond".
+## @var{f} must be one of @qcode{"year"}, @qcode{"month"}, @qcode{"day"},
+## @qcode{"hour"}, @qcode{"minute"}, @qcode{"second"}, or
+## @qcode{"millisecond"}.
 ## @seealso{datenum, datevec, etime}
 ## @end deftypefn
 
@@ -77,7 +78,7 @@ endfunction
 
 ## tests
 %!shared d
-%!  d = datenum (2008, 1, 1);
+%! d = datenum (2008, 1, 1);
 ## Identity
 %!assert (addtodate (d, 0, "year"), d)
 %!assert (addtodate (d, 0, "month"), d)

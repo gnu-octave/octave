@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,17 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} contrast (@var{x}, @var{n})
+## @deftypefn  {Function File} {@var{cmap} =} contrast (@var{x})
+## @deftypefnx {Function File} {@var{cmap} =} contrast (@var{x}, @var{n})
 ## Return a gray colormap that maximizes the contrast in an image.  The
 ## returned colormap will have @var{n} rows.  If @var{n} is not defined
-## then the size of the current colormap is used instead.
-## @seealso{colormap}
+## then the size of the current colormap is used.
+## @seealso{colormap, brighten}
 ## @end deftypefn
 
-function map = contrast (x, n)
+function cmap = contrast (x, n)
 
   if (nargin == 1)
-    n = rows (colormap);
+    n = rows (colormap ());
   elseif (nargin == 2)
     if (! isscalar (n))
       error ("contrast: N must be a scalar");
@@ -38,13 +39,26 @@ function map = contrast (x, n)
 
   x = x(:);
   minx = min (x);
-  map = find (diff (sort ([round(n * ((x - minx) ./ (max(x) - minx))); [0:n]'])));
-  minm = min (map);
-  map = (map - minm) ./ (max (map) - minm);
-  map = [map, map, map];
+  cmap = find (diff (sort ([round(n * ((x - minx) ./ (max(x) - minx))); [0:n]'])));
+  minm = min (cmap);
+  cmap = (cmap - minm) ./ (max (cmap) - minm);
+  cmap = [cmap, cmap, cmap];
+
 endfunction
 
-%!assert (contrast(1:100,10),[([0:9]/9)',([0:9]/9)',([0:9]/9)'],1e-10)
+
 %!demo
-%! image (reshape (1:100, 10, 10))
-%! colormap (contrast (1:100,10))
+%! figure;
+%! img = reshape (1:100, 10, 10);
+%! imagesc (img);
+%! colormap (gray (64));
+%! title ("Image with default 64 gray levels");
+%! pos = get (gcf, "position");
+%! pos(1) += pos(3) + 25;
+%! figure ("position", pos); 
+%! colormap (contrast (img, 10));
+%! imagesc (img);
+%! title ("Image with contrast enhanced");
+
+%!assert (contrast (1:100,10), [([0:9]/9)',([0:9]/9)',([0:9]/9)'], 1e-10)
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -91,3 +91,4 @@ function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
   endif
 
 endfunction
+

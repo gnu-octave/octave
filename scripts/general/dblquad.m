@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -40,7 +40,8 @@
 ## is @code{quadcc}.
 ##
 ## Additional arguments, are passed directly to @var{f}.  To use the default
-## value for @var{tol} or @var{quadf} one may pass ':' or an empty matrix ([]).
+## value for @var{tol} or @var{quadf} one may pass @qcode{':'} or an empty
+## matrix ([]).
 ## @seealso{triplequad, quad, quadv, quadl, quadgk, quadcc, trapz}
 ## @end deftypefn
 
@@ -67,16 +68,17 @@ function q = dblquad (f, xa, xb, ya, yb, tol = 1e-6, quadf = @quadcc, varargin)
 endfunction
 
 function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)
-  q = zeros (size(y));
+  q = zeros (size (y));
   for i = 1 : length (y)
     q(i) = feval (quadf, @(x) f(x, y(i), varargin{:}), xa, xb, tol);
   endfor
 endfunction
 
-%% Nasty integrand to show quadcc off
-%!assert (dblquad (@(x,y) 1 ./ (x+y), 0, 1, 0, 1), 2*log(2), 1e-6)
 
-%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadgk), pi * erf(1).^2, 1e-6)
-%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadl), pi * erf(1).^2, 1e-6)
-%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadv), pi * erf(1).^2, 1e-6)
+%% Nasty integrand to show quadcc off
+%!assert (dblquad (@(x,y) 1 ./ (x+y), 0, 1, 0, 1), 2*log (2), 1e-6)
+
+%!assert (dblquad (@(x,y) exp (-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadgk), pi * erf (1).^2, 1e-6)
+%!assert (dblquad (@(x,y) exp (-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadl), pi * erf (1).^2, 1e-6)
+%!assert (dblquad (@(x,y) exp (-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadv), pi * erf (1).^2, 1e-6)
 

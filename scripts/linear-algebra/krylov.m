@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 Auburn University.  All rights reserved.
+## Copyright (C) 1993-2013 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -28,13 +28,13 @@
 ## Using Householder reflections to guard against loss of orthogonality.
 ##
 ## If @var{V} is a vector, then @var{h} contains the Hessenberg matrix
-## such that @nospell{@xcode{a*u == u*h+rk*ek'}}, in which @code{rk =
-## a*u(:,k)-u*h(:,k)}, and @nospell{@xcode{ek'}} is the vector
+## such that @nospell{@tcode{a*u == u*h+rk*ek'}}, in which @code{rk =
+## a*u(:,k)-u*h(:,k)}, and @nospell{@tcode{ek'}} is the vector
 ## @code{[0, 0, @dots{}, 1]} of length @code{k}.  Otherwise, @var{h} is
 ## meaningless.
 ##
 ## If @var{V} is a vector and @var{k} is greater than
-## @code{length(A)-1}, then @var{h} contains the Hessenberg matrix such
+## @code{length (A) - 1}, then @var{h} contains the Hessenberg matrix such
 ## that @code{a*u == u*h}.
 ##
 ## The value of @var{nu} is the dimension of the span of the Krylov
@@ -71,7 +71,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     pflg = 0;
   endif
 
-  if(nargin < 4)
+  if (nargin < 4)
     ## Default tolerance parameter.
     eps1 = defeps;
   endif
@@ -115,14 +115,14 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   iter = 0;
   alpha = [];
   nh = 0;
-  while (length(alpha) < na) && (columns(V) > 0) && (iter < k)
+  while (length (alpha) < na) && (columns (V) > 0) && (iter < k)
     iter++;
 
     ## Get orthogonal basis of V.
     jj = 1;
     while (jj <= columns (V) && length (alpha) < na)
       ## Index of next Householder reflection.
-      nu = length(alpha)+1;
+      nu = length (alpha)+1;
 
       short_pv = pivot_vec(nu:na);
       q = V(:,jj);
@@ -244,3 +244,4 @@ function [a1, b1] = swap (a, b)
   b1 = a;
 
 endfunction
+

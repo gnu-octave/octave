@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,8 @@ function [pval, chisq, df] = chisquare_test_independence (x)
   pval  = 1 - chi2cdf (chisq, df);
 
   if (nargout == 0)
-    printf("  pval: %g\n", pval);
+    printf ("  pval: %g\n", pval);
   endif
 
 endfunction
+

@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-# Copyright (C) 2002-2012 John W. Eaton
+# Copyright (C) 2002-2013 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -240,7 +240,7 @@ When called with two arguments, \@code{$OPT_FCN_NAME} set the option\\n\\
     }
 }
 
-#FIXME: What does this routine do?  And can it be simpler to understand?
+## FIXME: What does this routine do?  And can it be simpler to understand?
 sub get_min_match_len_info
 {
   my ($i, $j, $k);
@@ -513,7 +513,7 @@ sub emit_opt_handler_fcns
 
 #include "$header"
 
-#include "defun-dld.h"
+#include "defun.h"
 #include "pr-output.h"
 
 #include "oct-obj.h"
@@ -909,11 +909,11 @@ show_$CLASS_NAME (const std::string& keyword)
 sub emit_options_function
 {
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
-DEFUN_DLD ($OPT_FCN_NAME, args, ,
+DEFUN ($OPT_FCN_NAME, args, ,
   "-*- texinfo -*-\\n\\
-\@deftypefn  {Loadable Function} {} $OPT_FCN_NAME ()\\n\\
-\@deftypefnx {Loadable Function} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
-\@deftypefnx {Loadable Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
+\@deftypefn  {Built-in Function} {} $OPT_FCN_NAME ()\\n\\
+\@deftypefnx {Built-in Function} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
+\@deftypefnx {Built-in Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
 $DOC_STRING\\n\\
 \\n\\
 Options include\\n\\
@@ -924,7 +924,7 @@ _END_EMIT_OPTIONS_FUNCTION_HDR_
 
   for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print '@item \"', $NAME[$i], '\"\n\\', "\n";
+      print '@item @qcode{\"', $NAME[$i], '\"}\n\\', "\n";
       print $DOC_ITEM[$i] if $DOC_ITEM[$i];
     }
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 VZLU Prague, a.s.
+## Copyright (C) 2008-2013 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -31,31 +31,30 @@
 ## in all calls to @var{fcn}, but otherwise it is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fsolve} recognizes these options:
-## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"},
-## @code{"Jacobian"}, @code{"Updating"}, @code{"ComplexEqn"}
-## @code{"TypicalX"}, @code{"AutoScaling"} and @code{"FinDiffType"}.
+## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
+## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
+## @qcode{"Jacobian"}, @qcode{"Updating"}, @qcode{"ComplexEqn"}
+## @qcode{"TypicalX"}, @qcode{"AutoScaling"} and @qcode{"FinDiffType"}.
 ##
-## If @code{"Jacobian"} is @code{"on"}, it specifies that @var{fcn},
+## If @qcode{"Jacobian"} is @qcode{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
-## of right-hand sides at the requested point.  @code{"TolX"} specifies
+## of right-hand sides at the requested point.  @qcode{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while
-## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
-## for both @code{"TolX"} and @code{"TolFun"}.
+## @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
+## for both @qcode{"TolX"} and @qcode{"TolFun"}.
 ##
-## If @code{"AutoScaling"} is on, the variables will be automatically scaled
+## If @qcode{"AutoScaling"} is on, the variables will be automatically scaled
 ## according to the column norms of the (estimated) Jacobian.  As a result,
 ## TolF becomes scaling-independent.  By default, this option is off, because
 ## it may sometimes deliver unexpected (though mathematically correct) results.
 ##
-## If @code{"Updating"} is "on", the function will attempt to use Broyden
-## updates to update the Jacobian, in order to reduce the amount of Jacobian
-## calculations.
-## If your user function always calculates the Jacobian (regardless of number
-## of output arguments), this option provides no advantage and should be set to
-## false.
+## If @qcode{"Updating"} is @qcode{"on"}, the function will attempt to use
+## @nospell{Broyden} updates to update the Jacobian, in order to reduce the
+## amount of Jacobian calculations.  If your user function always calculates the
+## Jacobian (regardless of number of output arguments), this option provides
+## no advantage and should be set to false.
 ##
-## @code{"ComplexEqn"} is @code{"on"}, @code{fsolve} will attempt to solve
+## @qcode{"ComplexEqn"} is @qcode{"on"}, @code{fsolve} will attempt to solve
 ## complex equations in complex variables, assuming that the equations possess a
 ## complex derivative (i.e., are holomorphic).  If this is not what you want,
 ## should unpack the real and imaginary parts of the system to get a real
@@ -96,7 +95,7 @@
 ## employ OutputFcn: After a vector is evaluated for residuals, if OutputFcn is
 ## called with that vector, then the intermediate results should be saved for
 ## future Jacobian evaluation, and should be kept until a Jacobian evaluation
-## is requested or until outputfcn is called with a different vector, in which
+## is requested or until OutputFcn is called with a different vector, in which
 ## case they should be dropped in favor of this most recent vector.  A short
 ## example how this can be achieved follows:
 ##
@@ -134,7 +133,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
-    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
+    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, ...
     "Jacobian", "off", "TolX", 1e-7, "TolFun", 1e-7,
     "OutputFcn", [], "Updating", "on", "FunValCheck", "off",
     "ComplexEqn", "off", "FinDiffType", "central",
@@ -327,7 +326,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       endif
 
       ## Update delta.
-      if (ratio < min(max(0.1, 0.8*lastratio), 0.9))
+      if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         nsuc = 0;
         nfail ++;
         delta *= decfac;
@@ -446,10 +445,12 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
 
   if (! complexeqn && ! (isreal (fx) && isreal (jx)))
     error ("fsolve:notreal", "fsolve: non-real value encountered");
-  elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
+  elseif (complexeqn && ! (isnumeric (fx) && isnumeric (jx)))
     error ("fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
     error ("fsolve:isnan", "fsolve: NaN value encountered");
+  elseif (any (isinf (fx(:))))
+    error ("fsolve:isinf", "fsolve: Inf value encountered");
   endif
 endfunction
 
@@ -460,19 +461,20 @@ function [fx, jx] = make_fcn_jac (x, fcn, fjac)
   endif
 endfunction
 
+
 %!function retval = __f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
 %!  retval = zeros (3, 1);
-%!  retval(1) = sin(x) + y**2 + log(z) - 7;
-%!  retval(2) = 3*x + 2**y -z**3 + 1;
+%!  retval(1) = sin (x) + y^2 + log (z) - 7;
+%!  retval(2) = 3*x + 2^y -z^3 + 1;
 %!  retval(3) = x + y + z - 5;
 %!endfunction
 %!test
 %! x_opt = [ 0.599054;
-%! 2.395931;
-%! 2.005014 ];
+%!           2.395931;
+%!           2.005014 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve (@__f, [ 0.5; 2.0; 2.5 ]);
 %! assert (info > 0);
@@ -491,7 +493,8 @@ endfunction
 %!  retval(4) = x^2 + 2*y^3 + z - w - 4;
 %!endfunction
 %!test
-%! x_opt = [ -0.767297326653401, 0.590671081117440, 1.47190018629642, -1.52719341133957 ];
+%! x_opt = [ -0.767297326653401, 0.590671081117440, ...
+%!            1.47190018629642, -1.52719341133957 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve (@__f, [-1, 1, 2, -1]);
 %! assert (info > 0);
@@ -503,15 +506,15 @@ endfunction
 %!  y = p(2);
 %!  z = p(3);
 %!  retval = zeros (3, 1);
-%!  retval(1) = sin(x) + y**2 + log(z) - 7;
-%!  retval(2) = 3*x + 2**y -z**3 + 1;
+%!  retval(1) = sin (x) + y^2 + log (z) - 7;
+%!  retval(2) = 3*x + 2^y -z^3 + 1;
 %!  retval(3) = x + y + z - 5;
-%!  retval(4) = x*x + y - z*log(z) - 1.36;
+%!  retval(4) = x*x + y - z*log (z) - 1.36;
 %!endfunction
 %!test
 %! x_opt = [ 0.599054;
-%! 2.395931;
-%! 2.005014 ];
+%!           2.395931;
+%!           2.005014 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve (@__f, [ 0.5; 2.0; 2.5 ]);
 %! assert (info > 0);
@@ -523,14 +526,14 @@ endfunction
 %!  y = p(2);
 %!  z = p(3);
 %!  retval = zeros (3, 1);
-%!  retval(1) = sin(x) + y**2 + log(z) - 7;
-%!  retval(2) = 3*x + 2**y -z**3 + 1;
+%!  retval(1) = sin (x) + y^2 + log (z) - 7;
+%!  retval(2) = 3*x + 2^y -z^3 + 1;
 %!  retval(3) = x + y + z - 5;
 %!endfunction
 %!test
 %! x_opt = [ 0.599054;
-%! 2.395931;
-%! 2.005014 ];
+%!           2.395931;
+%!           2.005014 ];
 %! tol = 1.0e-5;
 %! opt = optimset ("Updating", "qrp");
 %! [x, fval, info] = fsolve (@__f, [ 0.5; 2.0; 2.5 ], opt);
@@ -551,7 +554,6 @@ endfunction
 %! assert (info > 0);
 %! assert (norm (c - c_opt, Inf) < tol);
 %! assert (norm (fval) < norm (noise));
-
 
 %!function y = cfun (x)
 %!  y(1) = (1+i)*x(1)^2 - (1-i)*x(2) - 2;

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 VZLU Prague, a.s.
+## Copyright (C) 2008-2013 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -24,6 +24,7 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
+##
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
 ## In other words, this function attempts to determine a vector @var{x} such
@@ -32,17 +33,17 @@
 ## in all calls to @var{fcn}, but otherwise is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fminunc} recognizes these options:
-## @code{"FunValCheck"}, @code{"OutputFcn"}, @code{"TolX"},
-## @code{"TolFun"}, @code{"MaxIter"}, @code{"MaxFunEvals"},
-## @code{"GradObj"}, @code{"FinDiffType"},
-## @code{"TypicalX"}, @code{"AutoScaling"}.
+## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
+## @qcode{"TolFun"}, @qcode{"MaxIter"}, @qcode{"MaxFunEvals"},
+## @qcode{"GradObj"}, @qcode{"FinDiffType"},
+## @qcode{"TypicalX"}, @qcode{"AutoScaling"}.
 ##
-## If @code{"GradObj"} is @code{"on"}, it specifies that @var{fcn},
+## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn},
 ## called with 2 output arguments, also returns the Jacobian matrix
-## of right-hand sides at the requested point.  @code{"TolX"} specifies
+## of right-hand sides at the requested point.  @qcode{"TolX"} specifies
 ## the termination tolerance in the unknown variables, while
-## @code{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
-## for both @code{"TolX"} and @code{"TolFun"}.
+## @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
+## for both @qcode{"TolX"} and @qcode{"TolFun"}.
 ##
 ## For description of the other options, see @code{optimset}.
 ##
@@ -72,9 +73,12 @@
 ## (@var{output}), the output gradient (@var{grad}) and approximate Hessian
 ## (@var{hess}).
 ##
-## Note: If you only have a single nonlinear equation of one variable, using
-## @code{fminbnd} is usually a much better idea.
-## @seealso{fminbnd, optimset}
+## Notes: If you only have a single nonlinear equation of one variable then
+## using @code{fminbnd} is usually a much better idea.  The algorithm used is a
+## gradient search which depends on the objective function being differentiable.
+## If the function has discontinuities it may be better to use a derivative-free
+## algorithm such as @code{fminsearch}.
+## @seealso{fminbnd, fminsearch, optimset}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
@@ -84,11 +88,11 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fcn) && strcmp (fcn, 'defaults'))
-    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf, \
-    "GradObj", "off", "TolX", 1e-7, "TolFun", 1e-7,
-    "OutputFcn", [], "FunValCheck", "off",
-    "FinDiffType", "central",
-    "TypicalX", [], "AutoScaling", "off");
+    x = optimset ("MaxIter", 400, "MaxFunEvals", Inf,
+                  "GradObj", "off", "TolX", 1e-7, "TolFun", 1e-7,
+                  "OutputFcn", [], "FunValCheck", "off",
+                  "FinDiffType", "central",
+                  "TypicalX", [], "AutoScaling", "off");
     return;
   endif
 
@@ -260,7 +264,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       endif
 
       ## Update delta.
-      if (ratio < min(max(0.1, 0.8*lastratio), 0.9))
+      if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         delta *= decfac;
         decfac ^= 1.4142;
         if (delta <= 1e1*macheps*xn)
@@ -354,8 +358,11 @@ function [fx, gx] = guarded_eval (fun, x)
     error ("fminunc:notreal", "fminunc: non-real value encountered");
   elseif (any (isnan (fx(:))))
     error ("fminunc:isnan", "fminunc: NaN value encountered");
+  elseif (any (isinf (fx(:))))
+    error ("fminunc:isinf", "fminunc: Inf value encountered");
   endif
 endfunction
+
 
 %!function f = __rosenb (x)
 %!  n = length (x);
@@ -373,6 +380,12 @@ endfunction
 %! assert (info > 0);
 %! assert (x, ones (1, 4), tol);
 %! assert (fval, 0, tol);
+%% Test FunValCheck works correctly
+%!assert (fminunc (@(x) x^2, 1, optimset ("FunValCheck", "on")), 0, eps)
+%!error <non-real value> fminunc (@(x) x + i, 1, optimset ("FunValCheck", "on"))
+%!error <NaN value> fminunc (@(x) x + NaN, 1, optimset ("FunValCheck", "on"))
+%!error <Inf value> fminunc (@(x) x + Inf, 1, optimset ("FunValCheck", "on"))
+
 
 ## Solve the double dogleg trust-region minimization problem:
 ## Minimize 1/2*norm(r*x)^2  subject to the constraint norm(d.*x) <= delta,
@@ -414,3 +427,4 @@ function x = __doglegm__ (r, g, d, delta)
     x = alpha * x + ((1-alpha) * min (snm, delta)) * s;
   endif
 endfunction
+

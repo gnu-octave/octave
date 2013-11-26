@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -24,14 +24,14 @@
 ##
 ## @var{d} is a serial date number or a date string.
 ##
-## If the string @var{format} is not present or is equal to "short" then
+## If the string @var{format} is not present or is equal to @qcode{"short"} then
 ## @var{s} will contain the abbreviated name of the weekday.  If @var{format}
-## is "long" then @var{s} will contain the full name.
+## is @qcode{"long"} then @var{s} will contain the full name.
 ##
 ## Table of return values based on @var{format}:
 ##
 ## @multitable @columnfractions .06 .13 .16
-## @headitem @var{n} @tab "short" @tab "long"
+## @headitem @var{n} @tab @qcode{"short"} @tab @qcode{"long"}
 ## @item 1 @tab Sun @tab Sunday
 ## @item 2 @tab Mon @tab Monday
 ## @item 3 @tab Tue @tab Tuesday
@@ -84,12 +84,14 @@ endfunction
 %!demo
 %! ## Current weekday
 %! [n, s] = weekday (now ())
+
 %!demo
 %! ## Weekday from datenum input
 %! [n, s] = weekday (728647)
+
 %!demo
 %! ## Weekday of new millennium from datestr input
-%! [n, s] = weekday ('1-Jan-2000')
+%! [n, s] = weekday ("1-Jan-2000")
 
 # tests
 %!assert (weekday (728647), 2)

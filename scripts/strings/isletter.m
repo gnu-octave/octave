@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 John W. Eaton
+## Copyright (C) 1998-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -36,5 +36,7 @@ function retval = isletter (s)
 
 endfunction
 
-%!error isletter();
-%!error isletter("a", "b");
+
+%!error isletter ()
+%!error isletter ("a", "b")
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -74,31 +74,31 @@ endfunction
 %! x = rand (10,1);
 %! x = x(x > 0.1 & x < 0.9);
 %! y = tpdf (sqrt (x), 2) ./ sqrt (x);
-%! assert(fpdf (x, 1, 2), y, 5*eps);
+%! assert (fpdf (x, 1, 2), y, 5*eps);
 
 %!shared x,y
 %! x = [-1 0 0.5 1 2];
 %! y = [0 0 4/9 1/4 1/9];
-%!assert(fpdf (x, 2*ones(1,5), 2*ones(1,5)), y, eps);
-%!assert(fpdf (x, 2, 2*ones(1,5)), y, eps);
-%!assert(fpdf (x, 2*ones(1,5), 2), y, eps);
-%!assert(fpdf (x, [0 NaN Inf 2 2], 2), [NaN NaN NaN y(4:5)], eps);
-%!assert(fpdf (x, 2, [0 NaN Inf 2 2]), [NaN NaN NaN y(4:5)], eps);
-%!assert(fpdf ([x, NaN], 2, 2), [y, NaN], eps);
+%!assert (fpdf (x, 2*ones (1,5), 2*ones (1,5)), y, eps)
+%!assert (fpdf (x, 2, 2*ones (1,5)), y, eps)
+%!assert (fpdf (x, 2*ones (1,5), 2), y, eps)
+%!assert (fpdf (x, [0 NaN Inf 2 2], 2), [NaN NaN NaN y(4:5)], eps)
+%!assert (fpdf (x, 2, [0 NaN Inf 2 2]), [NaN NaN NaN y(4:5)], eps)
+%!assert (fpdf ([x, NaN], 2, 2), [y, NaN], eps)
 
 %% Test class of input preserved
-%!assert(fpdf (single([x, NaN]), 2, 2), single([y, NaN]), eps("single"));
-%!assert(fpdf ([x, NaN], single(2), 2), single([y, NaN]), eps("single"));
-%!assert(fpdf ([x, NaN], 2, single(2)), single([y, NaN]), eps("single"));
+%!assert (fpdf (single ([x, NaN]), 2, 2), single ([y, NaN]), eps ("single"))
+%!assert (fpdf ([x, NaN], single (2), 2), single ([y, NaN]), eps ("single"))
+%!assert (fpdf ([x, NaN], 2, single (2)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error fpdf ()
 %!error fpdf (1)
 %!error fpdf (1,2)
 %!error fpdf (1,2,3,4)
-%!error fpdf (ones(3),ones(2),ones(2))
-%!error fpdf (ones(2),ones(3),ones(2))
-%!error fpdf (ones(2),ones(2),ones(3))
+%!error fpdf (ones (3), ones (2), ones (2))
+%!error fpdf (ones (2), ones (3), ones (2))
+%!error fpdf (ones (2), ones (2), ones (3))
 %!error fpdf (i, 2, 2)
 %!error fpdf (2, i, 2)
 %!error fpdf (2, 2, i)

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -77,13 +77,13 @@ function rnd = discrete_rnd (v, p, varargin)
 endfunction
 
 
-%!assert(size (discrete_rnd (1:2, 1:2, 3)), [3, 3]);
-%!assert(size (discrete_rnd (1:2, 1:2, [4 1])), [4, 1]);
-%!assert(size (discrete_rnd (1:2, 1:2, 4, 1)), [4, 1]);
+%!assert (size (discrete_rnd (1:2, 1:2, 3)), [3, 3])
+%!assert (size (discrete_rnd (1:2, 1:2, [4 1])), [4, 1])
+%!assert (size (discrete_rnd (1:2, 1:2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (discrete_rnd (1:2, 1:2)), "double");
-%!assert(class (discrete_rnd (single(1:2), 1:2)), "single");
+%!assert (class (discrete_rnd (1:2, 1:2)), "double")
+%!assert (class (discrete_rnd (single (1:2), 1:2)), "single")
 ## FIXME: Maybe this should work, maybe it shouldn't.
 #%!assert(class (discrete_rnd (1:2, single(1:2))), "single");
 
@@ -91,14 +91,14 @@ endfunction
 %!error discrete_rnd ()
 %!error discrete_rnd (1)
 %!error discrete_rnd (1:2,1:2, -1)
-%!error discrete_rnd (1:2,1:2, ones(2))
+%!error discrete_rnd (1:2,1:2, ones (2))
 %!error discrete_rnd (1:2,1:2, [2 -1 2])
-%!error discrete_rnd (1:2,1:2, 1, ones(2))
+%!error discrete_rnd (1:2,1:2, 1, ones (2))
 %!error discrete_rnd (1:2,1:2, 1, -1)
 %% test v,p verification
-%!error discrete_rnd (1, ones(2), ones(2,1))
-%!error discrete_rnd (1, ones(2,1), ones(1,1))
-%!error discrete_rnd (1, ones(2,1), [1 -1])
-%!error discrete_rnd (1, ones(2,1), [1 NaN])
-%!error discrete_rnd (1, ones(2,1), [0  0])
+%!error discrete_rnd (1, ones (2), ones (2,1))
+%!error discrete_rnd (1, ones (2,1), ones (1,1))
+%!error discrete_rnd (1, ones (2,1), [1 -1])
+%!error discrete_rnd (1, ones (2,1), [1 NaN])
+%!error discrete_rnd (1, ones (2,1), [0  0])
 

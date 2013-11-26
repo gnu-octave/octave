@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -72,26 +72,26 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(cauchy_inv (x, ones(1,5), 2*ones(1,5)), [NaN -Inf 1 Inf NaN], eps);
-%!assert(cauchy_inv (x, 1, 2*ones(1,5)), [NaN -Inf 1 Inf NaN], eps);
-%!assert(cauchy_inv (x, ones(1,5), 2), [NaN -Inf 1 Inf NaN], eps);
-%!assert(cauchy_inv (x, [1 -Inf NaN Inf 1], 2), [NaN NaN NaN NaN NaN]);
-%!assert(cauchy_inv (x, 1, 2*[1 0 NaN Inf 1]), [NaN NaN NaN NaN NaN]);
-%!assert(cauchy_inv ([x(1:2) NaN x(4:5)], 1, 2), [NaN -Inf NaN Inf NaN]);
+%!assert (cauchy_inv (x, ones (1,5), 2*ones (1,5)), [NaN -Inf 1 Inf NaN], eps)
+%!assert (cauchy_inv (x, 1, 2*ones (1,5)), [NaN -Inf 1 Inf NaN], eps)
+%!assert (cauchy_inv (x, ones (1,5), 2), [NaN -Inf 1 Inf NaN], eps)
+%!assert (cauchy_inv (x, [1 -Inf NaN Inf 1], 2), [NaN NaN NaN NaN NaN])
+%!assert (cauchy_inv (x, 1, 2*[1 0 NaN Inf 1]), [NaN NaN NaN NaN NaN])
+%!assert (cauchy_inv ([x(1:2) NaN x(4:5)], 1, 2), [NaN -Inf NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(cauchy_inv ([x, NaN], 1, 2), [NaN -Inf 1 Inf NaN NaN], eps);
-%!assert(cauchy_inv (single([x, NaN]), 1, 2), single([NaN -Inf 1 Inf NaN NaN]), eps("single"));
-%!assert(cauchy_inv ([x, NaN], single(1), 2), single([NaN -Inf 1 Inf NaN NaN]), eps("single"));
-%!assert(cauchy_inv ([x, NaN], 1, single(2)), single([NaN -Inf 1 Inf NaN NaN]), eps("single"));
+%!assert (cauchy_inv ([x, NaN], 1, 2), [NaN -Inf 1 Inf NaN NaN], eps)
+%!assert (cauchy_inv (single ([x, NaN]), 1, 2), single ([NaN -Inf 1 Inf NaN NaN]), eps ("single"))
+%!assert (cauchy_inv ([x, NaN], single (1), 2), single ([NaN -Inf 1 Inf NaN NaN]), eps ("single"))
+%!assert (cauchy_inv ([x, NaN], 1, single (2)), single ([NaN -Inf 1 Inf NaN NaN]), eps ("single"))
 
 %% Test input validation
 %!error cauchy_inv ()
 %!error cauchy_inv (1,2)
 %!error cauchy_inv (1,2,3,4)
-%!error cauchy_inv (ones(3),ones(2),ones(2))
-%!error cauchy_inv (ones(2),ones(3),ones(2))
-%!error cauchy_inv (ones(2),ones(2),ones(3))
+%!error cauchy_inv (ones (3), ones (2), ones (2))
+%!error cauchy_inv (ones (2), ones (3), ones (2))
+%!error cauchy_inv (ones (2), ones (2), ones (3))
 %!error cauchy_inv (i, 2, 2)
 %!error cauchy_inv (2, i, 2)
 %!error cauchy_inv (2, 2, i)

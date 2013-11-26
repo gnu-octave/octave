@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2012 John W. Eaton and David Bateman
+@c Copyright (C) 2007-2013 John W. Eaton and David Bateman
 @c
 @c This file is part of Octave.
 @c
@@ -72,7 +72,7 @@ T = delaunay (x, y);
 X = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
 Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
 axis ([0, 1, 0, 1]);
-plot(X, Y, "b", x, y, "r*");
+plot (X, Y, "b", x, y, "r*");
 @end group
 @end example
 
@@ -96,12 +96,15 @@ The result of which can be seen in @ref{fig:delaunay}.
 
 Octave has the functions @code{triplot}, @code{trimesh}, and @code{trisurf}
 to plot the Delaunay triangulation of a 2-dimensional set of points.
+@code{tetramesh} will plot the triangulation of a 3-dimensional set of points.
 
 @DOCSTRING(triplot)
 
 @DOCSTRING(trimesh)
 
 @DOCSTRING(trisurf)
+
+@DOCSTRING(tetramesh)
 
 The difference between @code{triplot}, and @code{trimesh} or @code{triplot},
 is that the former only plots the 2-dimensional triangulation itself, whereas
@@ -169,7 +172,7 @@ is imposed, and we can therefore write the above as
 @example
 @group
 @var{p} - @var{t}(end, :) = @var{beta}(1:end-1) * (@var{t}(1:end-1, :)
-      - ones(@var{N}, 1) * @var{t}(end, :)
+      - ones (@var{N}, 1) * @var{t}(end, :)
 @end group
 @end example
 
@@ -179,8 +182,8 @@ Solving for @var{beta} we can then write
 @example
 @group
 @var{beta}(1:end-1) = (@var{p} - @var{t}(end, :)) / (@var{t}(1:end-1, :)
-      - ones(@var{N}, 1) * @var{t}(end, :))
-@var{beta}(end) = sum(@var{beta}(1:end-1))
+      - ones (@var{N}, 1) * @var{t}(end, :))
+@var{beta}(end) = sum (@var{beta}(1:end-1))
 @end group
 @end example
 
@@ -295,9 +298,9 @@ An example of the use of @code{voronoi} is
 
 @example
 @group
-rand("state",9);
-x = rand(10,1);
-y = rand(10,1);
+rand ("state",9);
+x = rand (10,1);
+y = rand (10,1);
 tri = delaunay (x, y);
 [vx, vy] = voronoi (x, y, tri);
 triplot (tri, x, y, "b");
@@ -333,7 +336,7 @@ rand ("state", 2);
 x = rand (10, 1);
 y = rand (10, 1);
 [c, f] = voronoin ([x, y]);
-af = zeros (size(f));
+af = zeros (size (f));
 for i = 1 : length (f)
   af(i) = polyarea (c (f @{i, :@}, 1), c (f @{i, :@}, 2));
 endfor
@@ -358,7 +361,7 @@ y = randn (100, 1);
 vx = cos (pi * [-1 : 0.1: 1]);
 vy = sin (pi * [-1 : 0.1 : 1]);
 in = inpolygon (x, y, vx, vy);
-plot(vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
+plot (vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
 axis ([-2, 2, -2, 2]);
 @end group
 @end example
@@ -431,12 +434,12 @@ An example of the use of the @code{griddata} function is
 
 @example
 @group
-rand("state",1);
-x=2*rand(1000,1)-1;
-y=2*rand(size(x))-1;
-z=sin(2*(x.^2+y.^2));
-[xx,yy]=meshgrid(linspace(-1,1,32));
-griddata(x,y,z,xx,yy);
+rand ("state", 1);
+x = 2*rand (1000,1) - 1;
+y = 2*rand (size (x)) - 1;
+z = sin (2*(x.^2+y.^2));
+[xx,yy] = meshgrid (linspace (-1,1,32));
+griddata (x,y,z,xx,yy);
 @end group
 @end example
 

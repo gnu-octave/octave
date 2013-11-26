@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 VZLU Prague
+## Copyright (C) 2010-2013 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -38,7 +38,7 @@ function str = fileread (filename)
   endif
 
   unwind_protect
-    str = fread (fid, "*char");
+    str = (fread (fid, "*char")).';
   unwind_protect_cleanup
     fclose (fid);
   end_unwind_protect
@@ -50,11 +50,11 @@ endfunction
 %! cstr = {"Hello World", "The answer is 42", "Goodbye World"};
 %! fname = tmpnam ();
 %! fid = fopen (fname, "w");
-%! fprintf (fid, "%s\n", cstr{:})
+%! fprintf (fid, "%s\n", cstr{:});
 %! fclose (fid);
 %! str = fileread (fname);
-%! assert (str', [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
 %! unlink (fname);
+%! assert (str, [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
 
 %% Test input validation
 %!error fileread ()

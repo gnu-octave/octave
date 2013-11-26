@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -42,17 +42,17 @@ different arrangements.
 
 It should be noted that the statistics functions don't test for data
 containing NaN, NA, or Inf.  These values need to be detected and dealt
-with explicitly.  See @ref{doc-isnan,,isnan}, @ref{doc-isna,,isna}, 
-@ref{doc-isinf,,isinf}, @ref{doc-isfinite,,isfinite}. 
+with explicitly.  See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna}, 
+@ref{XREFisinf,,isinf}, @ref{XREFisfinite,,isfinite}. 
 
 @menu
 * Descriptive Statistics::
-* Basic Statistical Functions:: 
-* Statistical Plots:: 
-* Correlation and Regression Analysis::                      
-* Distributions::     
-* Tests::                       
-* Random Number Generation::          
+* Basic Statistical Functions::
+* Statistical Plots::
+* Correlation and Regression Analysis::
+* Distributions::
+* Tests::
+* Random Number Generation::
 @end menu
 
 @node Descriptive Statistics

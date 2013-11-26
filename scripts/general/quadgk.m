@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -61,7 +61,7 @@
 ## for the integral @var{q}.
 ##
 ## Alternatively, properties of @code{quadgk} can be passed to the function as
-## pairs @code{"@var{prop}", @var{val}}.  Valid properties are
+## pairs @qcode{"@var{prop}", @var{val}}.  Valid properties are
 ##
 ## @table @code
 ## @item AbsTol
@@ -78,12 +78,12 @@
 ## unacceptable error are subdivided and re-evaluated.  If the number of
 ## subintervals exceeds 650 subintervals at any point then a poor
 ## convergence is signaled and the current estimate of the integral is
-## returned.  The property 'MaxIntervalCount' can be used to alter the
+## returned.  The property @qcode{"MaxIntervalCount"} can be used to alter the
 ## number of subintervals that can exist before exiting.
 ##
 ## @item WayPoints
 ## Discontinuities in the first derivative of the function to integrate can be
-## flagged with the  @code{"WayPoints"} property.  This forces the ends of
+## flagged with the @qcode{"WayPoints"} property.  This forces the ends of
 ## a subinterval to fall on the breakpoints of the function and can result in
 ## significantly improved estimation of the error in the integral, faster
 ## computation, or both.  For example,
@@ -141,7 +141,7 @@ function [q, err] = quadgk (f, a, b, varargin)
 
     if (nargin > 3)
       if (! ischar (varargin{1}))
-        if (!isempty (varargin{1}))
+        if (! isempty (varargin{1}))
           abstol = varargin{1};
           reltol = 0;
         endif
@@ -162,7 +162,7 @@ function [q, err] = quadgk (f, a, b, varargin)
               abstol = varargin{idx++};
             elseif (strcmpi (str, "waypoints"))
               waypoints = varargin{idx++} (:);
-              if (isreal(waypoints))
+              if (isreal (waypoints))
                 waypoints (waypoints < a | waypoints > b) = [];
               endif
             elseif (strcmpi (str, "maxintervalcount"))
@@ -170,14 +170,14 @@ function [q, err] = quadgk (f, a, b, varargin)
             elseif (strcmpi (str, "trace"))
               trace = varargin{idx++};
             else
-              error ("quadgk: unknown property %s", str);
+              error ("quadgk: unknown property '%s'", str);
             endif
           else
-            error ("quadgk: expecting property to be a string");
+            error ("quadgk: property PROP must be a string");
           endif
         endwhile
         if (idx != nargin - 2)
-          error ("quadgk: expecting properties in pairs");
+          error ("quadgk: property/value must occur in pairs");
         endif
       endif
     endif
@@ -188,24 +188,24 @@ function [q, err] = quadgk (f, a, b, varargin)
     endif
 
     ## Use variable subsitution to weaken endpoint singularities and to
-    ## perform integration with endpoints at infinity. No transform for
-    ## contour integrals
-    if (iscomplex (a) || iscomplex (b) || iscomplex(waypoints))
+    ## perform integration with endpoints at infinity.  No transform for
+    ## contour integrals.
+    if (iscomplex (a) || iscomplex (b) || iscomplex (waypoints))
       ## contour integral, no transform
       subs = [a; waypoints; b];
       h = sum (abs (diff (subs)));
       h0 = h;
       trans = @(t) t;
-    elseif (isinf (a) && isinf(b))
-      ## Standard Infinite to finite integral transformation.
+    elseif (isinf (a) && isinf (b))
+      ## Standard infinite to finite integral transformation.
       ##   \int_{-\infinity_^\infinity f(x) dx = \int_-1^1 f (g(t)) g'(t) dt
       ## where
       ##   g(t)  = t / (1 - t^2)
       ##   g'(t) =  (1 + t^2) / (1 - t^2) ^ 2
       ## waypoint transform is then
       ##   t =  (2 * g(t)) ./ (1 + sqrt(1 + 4 * g(t) .^ 2))
-      if (!isempty (waypoints))
-        trans = @(x) (2 * x) ./ (1 + sqrt(1 + 4 * x .^ 2));
+      if (! isempty (waypoints))
+        trans = @(x) (2 * x) ./ (1 + sqrt (1 + 4 * x .^ 2));
         subs = [-1; trans(waypoints); 1];
       else
         subs = linspace (-1, 1, 11)';
@@ -214,7 +214,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       h0 = b - a;
       trans = @(t) t ./ (1 - t.^2);
       f = @(t) f (t ./ (1 - t .^ 2)) .* (1 + t .^ 2) ./ ((1 - t .^ 2) .^ 2);
-    elseif (isinf(a))
+    elseif (isinf (a))
       ## Formula defined in Shampine paper as two separate steps. One to
       ## weaken singularity at finite end, then a second to transform to
       ## a finite interval. The singularity weakening transform is
@@ -229,7 +229,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## waypoint transform is then
       ##   t = sqrt (b - x)
       ##   s =  - t / (t + 1)
-      if (!isempty (waypoints))
+      if (! isempty (waypoints))
         tmp = sqrt (b - waypoints);
         trans = @(x)  - x ./ (x + 1);
         subs = [-1; trans(tmp); 0];
@@ -240,7 +240,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       h0 = b - a;
       trans = @(t) b - (t ./ (1 + t)).^2;
       f = @(s) - 2 * s .* f (b -  (s ./ (1 + s)) .^ 2) ./ ((1 + s) .^ 3);
-    elseif (isinf(b))
+    elseif (isinf (b))
       ## Formula defined in Shampine paper as two separate steps. One to
       ## weaken singularity at finite end, then a second to transform to
       ## a finite interval. The singularity weakening transform is
@@ -254,7 +254,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## waypoint transform is then
       ##   t = sqrt (x - a)
       ##   s = t / (t + 1)
-      if (!isempty (waypoints))
+      if (! isempty (waypoints))
         tmp = sqrt (waypoints - a);
         trans = @(x) x ./ (x + 1);
         subs = [0; trans(tmp); 1];
@@ -281,7 +281,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         trans = @__quadgk_finite_waypoint__;
         subs = [-1; trans(waypoints, a, b); 1];
       else
-        subs = linspace(-1, 1, 11)';
+        subs = linspace (-1, 1, 11)';
       endif
       h = 2;
       h0 = b - a;
@@ -297,99 +297,96 @@ function [q, err] = quadgk (f, a, b, varargin)
     endwhile
     subs = [subs(1:end-1), subs(2:end)];
 
-    warn_state = warning ("query", "Octave:divide-by-zero");
+    ## Singularity will cause divide by zero warnings.
+    ## Turn off warning locally for quadgk function only.
+    warning ("off", "Octave:divide-by-zero", "local");
 
-    unwind_protect
-      ## Singularity will cause divide by zero warnings
-      warning ("off", "Octave:divide-by-zero");
+    warn_id = "Octave:quadgk:warning-termination";
 
-      ## Initial evaluation of the integrand on the subintervals
-      [q_subs, q_errs] = __quadgk_eval__ (f, subs);
-      q0 = sum (q_subs);
-      err0 = sum (q_errs);
+    ## Initial evaluation of the integrand on the subintervals
+    [q_subs, q_errs] = __quadgk_eval__ (f, subs);
+    q0 = sum (q_subs);
+    err0 = sum (q_errs);
 
-      if (isa (a, "single") || isa (b, "single") || isa (waypoints, "single"))
-        myeps = eps ("single");
+    if (isa (a, "single") || isa (b, "single") || isa (waypoints, "single"))
+      myeps = eps ("single");
+    else
+      myeps = eps;
+    endif
+
+    first = true;
+    while (true)
+      ## Check for subintervals that are too small. Test must be
+      ## performed in untransformed subintervals. What is a good
+      ## value for this test. Shampine suggests 100*eps
+      if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * myeps))
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      ## Quit if any evaluations are not finite (Inf or NaN)
+      if (any (! isfinite (q_subs)))
+        warning (warn_id, "quadgk: non finite integrand encountered");
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      tol = max (abstol, reltol .* abs (q0));
+
+      ## If the global error estimate is meet exit
+      if (err0 < tol)
+        q = q0;
+        err = err0;
+        break;
+      endif
+
+      ## Accept the subintervals that meet the convergence criteria
+      idx = find (abs (q_errs) < tol .* abs (diff (subs, [], 2)) ./ h);
+      if (first)
+        q = sum (q_subs (idx));
+        err = sum (q_errs(idx));
+        first = false;
       else
-        myeps = eps;
+        q0 = q + sum (q_subs);
+        err0 = err + sum (q_errs);
+        q += sum (q_subs (idx));
+        err += sum (q_errs(idx));
+      endif
+      subs(idx,:) = [];
+
+      ## If no remaining subintervals exit
+      if (rows (subs) == 0)
+        break;
       endif
 
-      first = true;
-      while (true)
-        ## Check for subintervals that are too small. Test must be
-        ## performed in untransformed subintervals. What is a good
-        ## value for this test. Shampine suggests 100*eps
-        if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * myeps))
-          q = q0;
-          err = err0;
-          break;
-        endif
-
-        ## Quit if any evaluations are not finite (Inf or NaN)
-        if (any (! isfinite (q_subs)))
-          warning ("quadgk: non finite integrand encountered");
-          q = q0;
-          err = err0;
-          break;
-        endif
-
-        tol = max (abstol, reltol .* abs (q0));
-
-        ## If the global error estimate is meet exit
-        if (err0 < tol)
-          q = q0;
-          err = err0;
-          break;
-        endif
-
-        ## Accept the subintervals that meet the convergence criteria
-        idx = find (abs (q_errs) < tol .* abs(diff (subs, [], 2)) ./ h);
-        if (first)
-          q = sum (q_subs (idx));
-          err = sum (q_errs(idx));
-          first = false;
-        else
-          q0 = q + sum (q_subs);
-          err0 = err + sum (q_errs);
-          q += sum (q_subs (idx));
-          err += sum (q_errs(idx));
-        endif
-        subs(idx,:) = [];
-
-        ## If no remaining subintervals exit
-        if (rows (subs) == 0)
-          break;
-        endif
-
-        if (trace)
-          disp([rows(subs), err, q0]);
-        endif
-
-        ## Split remaining subintervals in two
-        mid = (subs(:,2) + subs(:,1)) ./ 2;
-        subs = [subs(:,1), mid; mid, subs(:,2)];
-
-        ## If the maximum subinterval count is met accept remaining
-        ## subinterval and exit
-        if (rows (subs) > maxint)
-          warning ("quadgk: maximum interval count (%d) met", maxint);
-          q += sum (q_subs);
-          err += sum (q_errs);
-          break;
-        endif
-
-        ## Evaluation of the integrand on the remaining subintervals
-        [q_subs, q_errs] = __quadgk_eval__ (f, subs);
-      endwhile
-
-      if (err > max (abstol, reltol * abs(q)))
-        warning ("quadgk: Error tolerance not met. Estimated error %g", err);
+      if (trace)
+        disp ([rows(subs), err, q0]);
       endif
-    unwind_protect_cleanup
-      if (strcmp (warn_state.state, "on"))
-        warning ("on", "Octave:divide-by-zero");
+
+      ## Split remaining subintervals in two
+      mid = (subs(:,2) + subs(:,1)) ./ 2;
+      subs = [subs(:,1), mid; mid, subs(:,2)];
+
+      ## If the maximum subinterval count is met accept remaining
+      ## subinterval and exit
+      if (rows (subs) > maxint)
+        warning (warn_id, "quadgk: maximum interval count (%d) met", maxint);
+        q += sum (q_subs);
+        err += sum (q_errs);
+        break;
       endif
-    end_unwind_protect
+
+      ## Evaluation of the integrand on the remaining subintervals
+      [q_subs, q_errs] = __quadgk_eval__ (f, subs);
+    endwhile
+
+    if (err > max (abstol, reltol * abs (q)))
+      warning (warn_id,
+               "quadgk: Error tolerance not met.  Estimated error %g", err);
+    endif
+
   endif
 endfunction
 
@@ -425,7 +422,7 @@ function [q, err] = __quadgk_eval__ (f, subs)
   halfwidth = diff (subs, [], 2) ./ 2;
   center = sum (subs, 2) ./ 2;;
   x = bsxfun (@plus, halfwidth * abscissa, center);
-  y = reshape (f (x(:)), size(x));
+  y = reshape (f (x(:)), size (x));
 
   ## This is faster than using bsxfun as the * operator can use a
   ## single BLAS call, rather than rows(sub) calls to the @times
@@ -436,26 +433,28 @@ endfunction
 
 function t = __quadgk_finite_waypoint__ (x, a, b)
   c = (-4 .* x + 2.* (b + a)) ./ (b - a);
-  k = ((sqrt(c .^ 2 - 4) + c) ./ 2) .^ (1/3);
+  k = ((sqrt (c .^ 2 - 4) + c) ./ 2) .^ (1/3);
   t = real ((sqrt(3) .* 1i * (1 - k .^ 2) - (1 + k .^ 2)) ./ 2 ./ k);
 endfunction
 
-%error (quadgk (@sin))
-%error (quadgk (@sin, -pi))
-%error (quadgk (@sin, -pi, pi, 'DummyArg'))
 
-%!assert (quadgk(@sin,-pi,pi), 0, 1e-6)
-%!assert (quadgk(inline('sin'),-pi,pi), 0, 1e-6)
-%!assert (quadgk('sin',-pi,pi), 0, 1e-6)
-%!assert (quadgk(@sin,-pi,pi,'waypoints', 0, 'MaxIntervalCount', 100, 'reltol', 1e-3, 'abstol', 1e-6, 'trace', false), 0, 1e-6)
-%!assert (quadgk(@sin,-pi,pi,1e-6,false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi), 0, 1e-6)
+%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-6)
+%!assert (quadgk ("sin",-pi,pi), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi, "waypoints", 0, "MaxIntervalCount", 100, "reltol", 1e-3, "abstol", 1e-6, "trace", false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi, 1e-6,false), 0, 1e-6)
 
-%!assert (quadgk(@sin,-pi,0), -2, 1e-6)
-%!assert (quadgk(@sin,0,pi), 2, 1e-6)
-%!assert (quadgk(@(x) 1./sqrt(x), 0, 1), 2, 1e-6)
-%!assert (quadgk (@(x) abs (1 - x.^2), 0, 2, 'Waypoints', 1), 2, 1e-6)
-%!assert (quadgk(@(x) 1./(sqrt(x).*(x+1)), 0, Inf), pi, 1e-6)
-%!assert (quadgk (@(z) log (z), 1+1i, 1+1i, 'WayPoints', [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
+%!assert (quadgk (@sin,-pi,0), -2, 1e-6)
+%!assert (quadgk (@sin,0,pi), 2, 1e-6)
+%!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-6)
+%!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-6)
+%!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-6)
+%!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
 
-%!assert (quadgk (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)
-%!assert (quadgk (@(x) exp(-x .^ 2), -Inf, 0), sqrt(pi)/2, 1e-6)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6)
+
+%!error (quadgk (@sin))
+%!error (quadgk (@sin, -pi))
+%!error (quadgk (@sin, -pi, pi, "DummyArg"))
+

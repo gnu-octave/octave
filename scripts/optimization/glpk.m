@@ -1,4 +1,5 @@
-## Copyright (C) 2005-2012 Nicolo' Giorgetti
+## Copyright (C) 2005-2013 Nicolo' Giorgetti
+## Copyright (C) 2013 Sébastien Villemot <sebastien@debian.org>
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{status}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
+## @deftypefn {Function File} {[@var{xopt}, @var{fmin}, @var{errnum}, @var{extra}] =} glpk (@var{c}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{ctype}, @var{vartype}, @var{sense}, @var{param})
 ## Solve a linear program using the GNU @sc{glpk} library.  Given three
 ## arguments, @code{glpk} solves the following standard LP:
 ## @tex
@@ -106,31 +107,33 @@
 ## An array of characters containing the sense of each constraint in the
 ## constraint matrix.  Each element of the array may be one of the
 ## following values
+##
 ## @table @asis
-## @item "F"
+## @item @qcode{"F"}
 ## A free (unbounded) constraint (the constraint is ignored).
 ##
-## @item "U"
+## @item @qcode{"U"}
 ## An inequality constraint with an upper bound (@code{A(i,:)*x <= b(i)}).
 ##
-## @item "S"
+## @item @qcode{"S"}
 ## An equality constraint (@code{A(i,:)*x = b(i)}).
 ##
-## @item "L"
+## @item @qcode{"L"}
 ## An inequality with a lower bound (@code{A(i,:)*x >= b(i)}).
 ##
-## @item "D"
+## @item @qcode{"D"}
 ## An inequality constraint with both upper and lower bounds
 ## (@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
 ## @end table
 ##
 ## @item vartype
 ## A column array containing the types of the variables.
+##
 ## @table @asis
-## @item "C"
+## @item @qcode{"C"}
 ## A continuous variable.
 ##
-## @item "I"
+## @item @qcode{"I"}
 ## An integer variable.
 ## @end table
 ##
@@ -147,109 +150,125 @@
 ## Integer parameters:
 ##
 ## @table @code
-## @item msglev (@w{@code{LPX_K_MSGLEV}}, default: 1)
+## @item msglev (default: 1)
 ## Level of messages output by solver routines:
+##
 ## @table @asis
-## @item 0
+## @item 0 (@w{@code{GLP_MSG_OFF}})
 ## No output.
 ##
-## @item 1
-## Error messages only.
+## @item 1 (@w{@code{GLP_MSG_ERR}})
+## Error and warning messages only.
 ##
-## @item 2
+## @item 2 (@w{@code{GLP_MSG_ON}})
 ## Normal output.
 ##
-## @item 3
+## @item 3 (@w{@code{GLP_MSG_ALL}})
 ## Full output (includes informational messages).
 ## @end table
 ##
-## @item scale (@w{@code{LPX_K_SCALE}}, default: 1)
-## Scaling option:
-## @table @asis
-## @item 0
-## No scaling.
+## @item scale (default: 16)
+## Scaling option.  The values can be combined with the bitwise OR operator and
+## may be the following:
 ##
-## @item 1
+## @table @asis
+## @item 1 (@w{@code{GLP_SF_GM}})
+## Geometric mean scaling.
+##
+## @item 16 (@w{@code{GLP_SF_EQ}})
 ## Equilibration scaling.
 ##
-## @item 2
-## Geometric mean scaling, then equilibration scaling.
+## @item 32 (@w{@code{GLP_SF_2N}})
+## Round scale factors to power of two.
+##
+## @item 64 (@w{@code{GLP_SF_SKIP}})
+## Skip if problem is well scaled.
 ## @end table
 ##
-## @item dual    (@w{@code{LPX_K_DUAL}}, default: 0)
-## Dual simplex option:
+## Alternatively, a value of 128 (@w{@env{GLP_SF_AUTO}}) may be also
+## specified, in which case the routine chooses the scaling options
+## automatically.
+##
+## @item dual (default: 1)
+## Simplex method option:
+##
 ## @table @asis
-## @item 0
-## Do not use the dual simplex.
+## @item 1 (@w{@code{GLP_PRIMAL}})
+## Use two-phase primal simplex.
 ##
-## @item 1
-## If initial basic solution is dual feasible, use the dual simplex.
+## @item 2 (@w{@code{GLP_DUALP}})
+## Use two-phase dual simplex, and if it fails, switch to the primal simplex.
+##
+## @item 3 (@w{@code{GLP_DUAL}})
+## Use two-phase dual simplex.
 ## @end table
 ##
-## @item price   (@w{@code{LPX_K_PRICE}}, default: 1)
+## @item price (default: 34)
 ## Pricing option (for both primal and dual simplex):
+##
 ## @table @asis
-## @item 0
+## @item 17 (@w{@code{GLP_PT_STD}})
 ## Textbook pricing.
 ##
-## @item 1
+## @item 34 (@w{@code{GLP_PT_PSE}})
 ## Steepest edge pricing.
 ## @end table
 ##
-## @item round   (@w{@code{LPX_K_ROUND}}, default: 0)
-## Solution rounding option:
-## @table @asis
-## @item 0
-## Report all primal and dual values "as is".
+## @item itlim (default: intmax)
+## Simplex iterations limit.  It is decreased by one each time when one simplex
+## iteration has been performed, and reaching zero value signals the solver to
+## stop the search.
 ##
-## @item 1
-## Replace tiny primal and dual values by exact zero.
-## @end table
-##
-## @item itlim   (@w{@code{LPX_K_ITLIM}}, default: -1)
-## Simplex iterations limit.  If this value is positive, it is decreased by
-## one each time when one simplex iteration has been performed, and
-## reaching zero value signals the solver to stop the search.  Negative
-## value means no iterations limit.
-##
-## @item itcnt (@w{@code{LPX_K_OUTFRQ}}, default: 200)
+## @item outfrq (default: 200)
 ## Output frequency, in iterations.  This parameter specifies how
 ## frequently the solver sends information about the solution to the
 ## standard output.
 ##
-## @item branch (@w{@code{LPX_K_BRANCH}}, default: 2)
-## Branching heuristic option (for MIP only):
+## @item branch (default: 4)
+## Branching technique option (for MIP only):
+##
 ## @table @asis
-## @item 0
-## Branch on the first variable.
+## @item 1 (@w{@code{GLP_BR_FFV}})
+## First fractional variable.
 ##
-## @item 1
-## Branch on the last variable.
+## @item 2 (@w{@code{GLP_BR_LFV}})
+## Last fractional variable.
 ##
-## @item 2
-## Branch using a heuristic by Driebeck and Tomlin.
+## @item 3 (@w{@code{GLP_BR_MFV}})
+## Most fractional variable.
+##
+## @item 4 (@w{@code{GLP_BR_DTH}})
+## Heuristic by Driebeck and Tomlin.
+##
+## @item 5 (@w{@code{GLP_BR_PCH}})
+## Hybrid @nospell{pseudocost} heuristic.
 ## @end table
 ##
-## @item btrack (@w{@code{LPX_K_BTRACK}}, default: 2)
-## Backtracking heuristic option (for MIP only):
+## @item btrack (default: 4)
+## Backtracking technique option (for MIP only):
+##
 ## @table @asis
-## @item 0
+## @item 1 (@w{@code{GLP_BT_DFS}})
 ## Depth first search.
 ##
-## @item 1
+## @item 2 (@w{@code{GLP_BT_BFS}})
 ## Breadth first search.
 ##
-## @item 2
-## Backtrack using the best projection heuristic.
+## @item 3 (@w{@code{GLP_BT_BLB}})
+## Best local bound.
+##
+## @item 4 (@w{@code{GLP_BT_BPH}})
+## Best projection heuristic.
 ## @end table
 ##
-## @item presol (@w{@code{LPX_K_PRESOL}}, default: 1)
-## If this flag is set, the routine lpx_simplex solves the problem using
-## the built-in LP presolver.  Otherwise the LP presolver is not used.
+## @item presol (default: 1)
+## If this flag is set, the simplex solver uses the built-in LP presolver.
+## Otherwise the LP presolver is not used.
 ##
 ## @item lpsolver (default: 1)
 ## Select which solver to use.  If the problem is a MIP problem this flag
 ## will be ignored.
+##
 ## @table @asis
 ## @item 1
 ## Revised simplex method.
@@ -257,6 +276,25 @@
 ## @item 2
 ## Interior point method.
 ## @end table
+##
+## @item rtest (default: 34)
+## Ratio test technique:
+##
+## @table @asis
+## @item 17 (@w{@code{GLP_RT_STD}})
+## Standard ("textbook").
+##
+## @item 34 (@w{@code{GLP_RT_HAR}})
+## Harris' two-pass ratio test.
+## @end table
+##
+## @item tmlim (default: intmax)
+## Searching time limit, in milliseconds.
+##
+## @item outdly (default: 0)
+## Output delay, in seconds.  This parameter specifies how long the solver
+## should delay sending information about the solution to the standard
+## output.
 ##
 ## @item save (default: 0)
 ## If this parameter is nonzero, save a copy of the problem in
@@ -267,58 +305,37 @@
 ## Real parameters:
 ##
 ## @table @code
-## @item relax (@w{@code{LPX_K_RELAX}}, default: 0.07)
-## Relaxation parameter used in the ratio test.  If it is zero, the textbook
-## ratio test is used.  If it is non-zero (should be positive), Harris'
-## two-pass ratio test is used.  In the latter case on the first pass of the
-## ratio test basic variables (in the case of primal simplex) or reduced
-## costs of non-basic variables (in the case of dual simplex) are allowed
-## to slightly violate their bounds, but not more than
-## @code{relax*tolbnd} or @code{relax*toldj (thus, @code{relax} is a
-## percentage of @code{tolbnd} or @code{toldj}}.
-##
-## @item tolbnd (@w{@code{LPX_K_TOLBND}}, default: 10e-7)
+## @item tolbnd (default: 1e-7)
 ## Relative tolerance used to check if the current basic solution is primal
 ## feasible.  It is not recommended that you change this parameter unless you
 ## have a detailed understanding of its purpose.
 ##
-## @item toldj (@w{@code{LPX_K_TOLDJ}}, default: 10e-7)
+## @item toldj (default: 1e-7)
 ## Absolute tolerance used to check if the current basic solution is dual
 ## feasible.  It is not recommended that you change this parameter unless you
 ## have a detailed understanding of its purpose.
 ##
-## @item tolpiv (@w{@code{LPX_K_TOLPIV}}, default: 10e-9)
+## @item tolpiv (default: 1e-10)
 ## Relative tolerance used to choose eligible pivotal elements of the
 ## simplex table.  It is not recommended that you change this parameter unless
 ## you have a detailed understanding of its purpose.
 ##
-## @item objll (@w{@code{LPX_K_OBJLL}}, default: -DBL_MAX)
-## Lower limit of the objective function.  If on the phase II the objective
+## @item objll (default: -DBL_MAX)
+## Lower limit of the objective function.  If the objective
 ## function reaches this limit and continues decreasing, the solver stops
 ## the search.  This parameter is used in the dual simplex method only.
 ##
-## @item objul (@w{@code{LPX_K_OBJUL}}, default: +DBL_MAX)
-## Upper limit of the objective function.  If on the phase II the objective
+## @item objul (default: +DBL_MAX)
+## Upper limit of the objective function.  If the objective
 ## function reaches this limit and continues increasing, the solver stops
 ## the search.  This parameter is used in the dual simplex only.
 ##
-## @item tmlim (@w{@code{LPX_K_TMLIM}}, default: -1.0)
-## Searching time limit, in seconds.  If this value is positive, it is
-## decreased each time when one simplex iteration has been performed by the
-## amount of time spent for the iteration, and reaching zero value signals
-## the solver to stop the search.  Negative value means no time limit.
-##
-## @item outdly (@w{@code{LPX_K_OUTDLY}}, default: 0.0)
-## Output delay, in seconds.  This parameter specifies how long the solver
-## should delay sending information about the solution to the standard
-## output.  Non-positive value means no delay.
-##
-## @item tolint (@w{@code{LPX_K_TOLINT}}, default: 10e-5)
+## @item tolint (default: 1e-5)
 ## Relative tolerance used to check if the current basic solution is integer
 ## feasible.  It is not recommended that you change this parameter unless
 ## you have a detailed understanding of its purpose.
 ##
-## @item tolobj (@w{@code{LPX_K_TOLOBJ}}, default: 10e-7)
+## @item tolobj (default: 1e-7)
 ## Relative tolerance used to check if the value of the objective function
 ## is not better than in the best known integer feasible solution.  It is
 ## not recommended that you change this parameter unless you have a
@@ -335,92 +352,74 @@
 ## @item fopt
 ## The optimum value of the objective function.
 ##
-## @item status
-## Status of the optimization.
-##
-## Simplex Method:
-## @table @asis
-## @item 180 (@w{@code{LPX_OPT}})
-## Solution is optimal.
-##
-## @item 181 (@w{@code{LPX_FEAS}})
-## Solution is feasible.
-##
-## @item 182 (@w{@code{LPX_INFEAS}})
-## Solution is infeasible.
-##
-## @item 183 (@w{@code{LPX_NOFEAS}})
-## Problem has no feasible solution.
-##
-## @item 184 (@w{@code{LPX_UNBND}})
-## Problem has no unbounded solution.
-##
-## @item 185 (@w{@code{LPX_UNDEF}})
-## Solution status is undefined.
-## @end table
-## Interior Point Method:
-## @table @asis
-## @item 150 (@w{@code{LPX_T_UNDEF}})
-## The interior point method is undefined.
-##
-## @item 151 (@w{@code{LPX_T_OPT}})
-## The interior point method is optimal.
-## @end table
-## Mixed Integer Method:
-## @table @asis
-## @item 170 (@w{@code{LPX_I_UNDEF}})
-## The status is undefined.
-##
-## @item 171 (@w{@code{LPX_I_OPT}})
-## The solution is integer optimal.
-##
-## @item 172 (@w{@code{LPX_I_FEAS}})
-## Solution integer feasible but its optimality has not been proven
-##
-## @item 173 (@w{@code{LPX_I_NOFEAS}})
-## No integer feasible solution.
-## @end table
-## @noindent
-## If an error occurs, @var{status} will contain one of the following
-## codes:
+## @item errnum
+## Error code.
 ##
 ## @table @asis
-## @item 204 (@w{@code{LPX_E_FAULT}})
-## Unable to start the search.
+## @item 0
+## No error.
 ##
-## @item 205 (@w{@code{LPX_E_OBJLL}})
+## @item 1 (@w{@code{GLP_EBADB}})
+## Invalid basis.
+##
+## @item 2 (@w{@code{GLP_ESING}})
+## Singular matrix.
+##
+## @item 3 (@w{@code{GLP_ECOND}})
+## Ill-conditioned matrix.
+##
+## @item 4 (@w{@code{GLP_EBOUND}})
+## Invalid bounds.
+##
+## @item 5 (@w{@code{GLP_EFAIL}})
+## Solver failed.
+##
+## @item 6 (@w{@code{GLP_EOBJLL}})
 ## Objective function lower limit reached.
 ##
-## @item 206 (@w{@code{LPX_E_OBJUL}})
+## @item 7 (@w{@code{GLP_EOBJUL}})
 ## Objective function upper limit reached.
 ##
-## @item 207 (@w{@code{LPX_E_ITLIM}})
+## @item 8 (@w{@code{GLP_EITLIM}})
 ## Iterations limit exhausted.
 ##
-## @item 208 (@w{@code{LPX_E_TMLIM}})
+## @item 9 (@w{@code{GLP_ETMLIM}})
 ## Time limit exhausted.
 ##
-## @item 209 (@w{@code{LPX_E_NOFEAS}})
-## No feasible solution.
+## @item 10 (@w{@code{GLP_ENOPFS}})
+## No primal feasible solution.
 ##
-## @item 210 (@w{@code{LPX_E_INSTAB}})
+## @item 11 (@w{@code{GLP_ENODFS}})
+## No dual feasible solution.
+##
+## @item 12 (@w{@code{GLP_EROOT}})
+## Root LP optimum not provided.
+##
+## @item 13 (@w{@code{GLP_ESTOP}})
+## Search terminated by application.
+##
+## @item 14 (@w{@code{GLP_EMIPGAP}})
+## Relative MIP gap tolerance reached.
+##
+## @item 15 (@w{@code{GLP_ENOFEAS}})
+## No primal/dual feasible solution.
+##
+## @item 16 (@w{@code{GLP_ENOCVG}})
+## No convergence.
+##
+## @item 17 (@w{@code{GLP_EINSTAB}})
 ## Numerical instability.
 ##
-## @item 211 (@w{@code{LPX_E_SING}})
-## Problems with basis matrix.
+## @item 18 (@w{@code{GLP_EDATA}})
+## Invalid data.
 ##
-## @item 212 (@w{@code{LPX_E_NOCONV}})
-## No convergence (interior).
-##
-## @item 213 (@w{@code{LPX_E_NOPFS}})
-## No primal feasible solution (LP presolver).
-##
-## @item 214 (@w{@code{LPX_E_NODFS}})
-## No dual feasible solution (LP presolver).
+## @item 19 (@w{@code{GLP_ERANGE}})
+## Result out of range.
 ## @end table
 ##
 ## @item extra
 ## A data structure containing the following fields:
+##
 ## @table @code
 ## @item lambda
 ## Dual variables.
@@ -431,9 +430,28 @@
 ## @item time
 ## Time (in seconds) used for solving LP/MIP problem.
 ##
-## @item mem
-## Memory (in bytes) used for solving LP/MIP problem (this is not
-## available if the version of @sc{glpk} is 4.15 or later).
+## @item status
+## Status of the optimization.
+##
+## @table @asis
+## @item 1 (@w{@code{GLP_UNDEF}})
+## Solution status is undefined.
+##
+## @item 2 (@w{@code{GLP_FEAS}})
+## Solution is feasible.
+##
+## @item 3 (@w{@code{GLP_INFEAS}})
+## Solution is infeasible.
+##
+## @item 4 (@w{@code{GLP_NOFEAS}})
+## Problem has no feasible solution.
+##
+## @item 5 (@w{@code{GLP_OPT}})
+## Solution is optimal.
+##
+## @item 6 (@w{@code{GLP_UNBND}})
+## Problem has no unbounded solution.
+## @end table
 ## @end table
 ## @end table
 ##
@@ -464,7 +482,7 @@
 ## Author: Nicolo' Giorgetti <giorgetti@dii.unisi.it>
 ## Adapted-by: jwe
 
-function [xopt, fmin, status, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
+function [xopt, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, sense, param)
 
   ## If there is no input output the version and syntax
   if (nargin < 3 || nargin > 9)
@@ -486,7 +504,7 @@ function [xopt, fmin, status, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     error ("glpk: A cannot be an empty matrix");
     return;
   endif
-  [nc, nxa] = size(A);
+  [nc, nxa] = size (A);
   if (! isreal (A) || nxa != nx)
     error ("glpk: A must be a real valued %d by %d matrix", nc, nx);
     return;
@@ -591,7 +609,8 @@ function [xopt, fmin, status, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     param = struct ();
   endif
 
-  [xopt, fmin, status, extra] = ...
+  [xopt, fmin, errnum, extra] = ...
     __glpk__ (c, A, b, lb, ub, ctype, vartype, sense, param);
 
 endfunction
+

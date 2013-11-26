@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -21,8 +21,8 @@
 ## Return the version number of Octave, as a string.
 ##
 ## This is an alias for the function @w{@env{OCTAVE_VERSION}} provided for
-## compatibility
-## @seealso{OCTAVE_VERSION}.
+## compatibility.
+## @seealso{OCTAVE_VERSION}
 ## @end deftypefn
 
 ## Author: jwe
@@ -37,7 +37,9 @@ function vs = version ()
 
 endfunction
 
-%!assert(ischar (version ()) && strcmp (version (), OCTAVE_VERSION));
+
+%!assert (ischar (version ()))
+%!assert (version (), OCTAVE_VERSION)
 
 %!warning version (1);
 

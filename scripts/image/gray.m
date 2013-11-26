@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -23,11 +23,15 @@
 ## shades of gray.
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
+## @seealso{colormap}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
+
+## PKG_ADD: colormap ("register", "gray");
+## PKG_DEL: colormap ("unregister", "gray");
 
 function map = gray (n)
 
@@ -35,21 +39,27 @@ function map = gray (n)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("gray: argument must be a scalar");
+      error ("gray: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  gr = [0:(n-1)]';
-
-  map = [ gr, gr, gr ] / (n - 1);
+  if (n == 1)
+    map = [0, 0, 0];
+  elseif (n > 1)
+    gr = [0:(n-1)]' / (n - 1);
+    map = [gr, gr, gr];
+  else
+    map = zeros (0, 3);
+  endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'gray' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (gray (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (gray (64));
 

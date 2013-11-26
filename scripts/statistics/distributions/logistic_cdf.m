@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -44,10 +44,10 @@ endfunction
 %!shared x,y
 %! x = [-Inf -log(3) 0 log(3) Inf];
 %! y = [0, 1/4, 1/2, 3/4, 1]; 
-%!assert(logistic_cdf ([x, NaN]), [y, NaN], eps);
+%!assert (logistic_cdf ([x, NaN]), [y, NaN], eps)
 
 %% Test class of input preserved
-%!assert(logistic_cdf (single([x, NaN])), single([y, NaN]), eps ("single"));
+%!assert (logistic_cdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error logistic_cdf ()

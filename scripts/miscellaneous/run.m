@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,13 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} run @var{script}
-## @deftypefnx {Function File} {} run (@var{script})
-## Run scripts in the current workspace that are not necessarily on the
-## path.  If @var{script} is the script to run, including its path, then
-## @code{run} changes the directory to the directory where @var{script} is
-## found.  @code{run} then executes the script, and returns to the original
-## directory.
-## @seealso{system}
+## @deftypefnx {Function File} {} run ("@var{script}")
+## Run @var{script} in the current workspace.
+##
+## Scripts which reside in directories specified in Octave's load
+## path, and which end with the extension @file{".m"}, can be run simply by
+## typing their name.  For scripts not located on the load path, use @code{run}.
+##
+## The file name @var{script} can be a bare, fully qualified, or relative
+## filename and with or without a file extension.  If no extension is specified,
+## Octave will first search for a script with the @file{".m"} extension before
+## falling back to the script name without an extension.
+##
+## Implementation Note: If @var{script} includes a path component, then
+## @code{run} first changes the directory to the directory where @var{script}
+## is found.  @code{run} then executes the script, and returns to the original
+## directory. 
+## @seealso{path, addpath, source}
 ## @end deftypefn
 
 function run (script)
@@ -34,15 +44,25 @@ function run (script)
   endif
 
   [d, f, ext] = fileparts (script);
+  if (! strcmp (ext, ".m"))
+    ## prefer files with .m extension for compatibility with Matlab
+    if (exist ([script ".m"], "file"))
+      f = [f ext];
+      ext = ".m";
+      script = [script ".m"];
+    endif
+  endif
+  
+  if (! exist (script, "file"))
+    error ("run: file SCRIPT must exist and be a valid Octave scriptfile");
+  endif
+  
   if (! isempty (d))
     if (exist (d, "dir"))
       wd = pwd ();
       unwind_protect
         cd (d);
-        if (! exist (cstrcat (f, ext), "file"))
-          error ("run: file SCRIPT must exist and be a valid Octave scriptfile");
-        endif
-        evalin ("caller", sprintf ("source (\"%s%s\");", f, ext),
+        evalin ("caller", sprintf ('source ("%s%s");', f, ext),
                 "rethrow (lasterror ())");
       unwind_protect_cleanup
         cd (wd);
@@ -51,11 +71,20 @@ function run (script)
       error ("run: the path %s doesn't exist", d);
     endif
   else
-    if (exist (script, "file"))
-      evalin ("caller", sprintf ("source (\"%s\");", script),
-              "rethrow (lasterror ())");
+    if (! isempty (ext))
+      script = which (script);
     else
-      error ("run: %s not found", script);
+      ## Search PATH with null extension ('.' will be stripped and ext = "")
+      script = which ([script "."]);
     endif
+    evalin ("caller", sprintf ('source ("%s");', script),
+            "rethrow (lasterror ())");
   endif
 endfunction
+
+
+%% Test input validation
+%!error run ()
+%!error run ("a", "b")
+%!error <SCRIPT must exist> run ("__A_very_#unlikely#_file_name__")
+

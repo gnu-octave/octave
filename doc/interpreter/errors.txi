@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -63,7 +63,7 @@ the function @code{f} is called without any input arguments.
 @group
 function f (arg1)
   if (nargin == 0)
-    error("not enough input arguments");
+    error ("not enough input arguments");
   endif
 endfunction
 @end group
@@ -180,6 +180,39 @@ endfor
 
 @DOCSTRING(lasterr)
 
+It is also possible to assign an identification string to an error.
+If an error has such an ID the user can catch this error
+as will be shown in the next example.  To assign an ID to an error,
+simply call @code{error} with two string arguments, where the first
+is the identification string, and the second is the actual error.  Note
+that error IDs are in the format @qcode{"NAMESPACE:ERROR-NAME"}.  The namespace
+@qcode{"Octave"} is used for Octave's own errors.  Any other string is available
+as a namespace for user's own errors.
+
+The next example counts indexing errors.  The errors are caught using the
+field identifier of the structure returned by the function @code{lasterror}.
+
+@example
+@group
+number_of_errors = 0;
+for n = 1:100
+  try
+    @dots{}
+  catch
+    id = lasterror.identifier;
+    if (strcmp (id, "Octave:invalid-indexing"))
+      number_of_errors++;
+    endif
+  end_try_catch
+endfor
+@end group
+@end example
+
+The functions distributed with Octave can issue one of the following
+errors.
+
+@DOCSTRING(error_ids)
+
 When an error has been handled it is possible to raise it again.  This
 can be useful when an error needs to be detected, but the program should
 still abort.  This is possible using the @code{rethrow} function.  The
@@ -235,9 +268,9 @@ For example:
 @example
 @group
 function rand42
-  old_state = rand ('state');
-  restore_state = onCleanup (@@() rand ('state', old_state);
-  rand ('state', 42);
+  old_state = rand ("state");
+  restore_state = onCleanup (@@() rand ("state", old_state);
+  rand ("state", 42);
   @dots{}
 endfunction  # rand generator state restored by onCleanup
 @end group
@@ -297,20 +330,25 @@ If a warning has such an ID the user can enable and disable this warning
 as will be described in the next section.  To assign an ID to a warning,
 simply call @code{warning} with two string arguments, where the first
 is the identification string, and the second is the actual warning.  Note
-that warning IDs are in the format "NAMESPACE:WARNING-NAME".  The namespace
-"Octave" is used for Octave's own warnings.  Any other string is available
-as a namespace for user's own warnings.
+that warning IDs are in the format @qcode{"NAMESPACE:WARNING-NAME"}.  The
+namespace @qcode{"Octave"} is used for Octave's own warnings.  Any other string
+is available as a namespace for user's own warnings.
 
 @DOCSTRING(warning)
 
 @DOCSTRING(lastwarn)
+
+The functions distributed with Octave can issue one of the following
+warnings.
+
+@DOCSTRING(warning_ids)
 
 @node Enabling and Disabling Warnings
 @subsection Enabling and Disabling Warnings
 
 The @code{warning} function also allows you to control which warnings
 are actually printed to the screen.  If the @code{warning} function
-is called with a string argument that is either @code{"on"} or @code{"off"}
+is called with a string argument that is either @qcode{"on"} or @qcode{"off"}
 all warnings will be enabled or disabled.
 
 It is also possible to enable and disable individual warnings through
@@ -333,10 +371,5 @@ warning ("example:non-negative-variable",
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example
-
-The functions distributed with Octave can issue one of the following
-warnings.
-
-@DOCSTRING(warning_ids)
 
 

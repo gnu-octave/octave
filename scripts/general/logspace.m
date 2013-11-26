@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -85,15 +85,15 @@ endfunction
 %! x2 = logspace (1, 2, 10.1);
 %! x3 = logspace (1, -2, 10);
 %! x4 = logspace (1, pi, 10);
-%! assert (size (x1) == [1, 50] && x1(1) == 10 && x1(50) == 100);
-%! assert (size (x2) == [1, 10] && x2(1) == 10 && x2(10) == 100);
-%! assert (size (x3) == [1, 10] && x3(1) == 10 && x3(10) == 0.01);
-%! assert (size (x4) == [1, 10] && x4(1) == 10 && abs (x4(10) - pi) < sqrt (eps));
+%! assert (size (x1) == [1, 50] && abs (x1(1) - 10) < eps && abs (x1(50) - 100) < eps);
+%! assert (size (x2) == [1, 10] && abs (x2(1) - 10) < eps && abs (x2(10) - 100) < eps);
+%! assert (size (x3) == [1, 10] && abs (x3(1) - 10) < eps && abs (x3(10) - 0.01) < eps);
+%! assert (size (x4) == [1, 10] && abs (x4(1) - 10) < eps && abs (x4(10) - pi) < sqrt (eps));
 
 %% Test input validation
-%!error logspace ();
-%!error logspace (1, 2, 3, 4);
-%!error logspace ([1, 2; 3, 4], 5, 6);
-%!error logspace (1, [1, 2; 3, 4], 6);
-%!error logspace (1, 2, [1, 2; 3, 4]);
+%!error logspace ()
+%!error logspace (1, 2, 3, 4)
+%!error logspace ([1, 2; 3, 4], 5, 6)
+%!error logspace (1, [1, 2; 3, 4], 6)
+%!error logspace (1, 2, [1, 2; 3, 4])
 

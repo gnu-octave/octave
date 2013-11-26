@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,7 @@
 ## To append user options to the defaults it is necessary to repeat the 
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
-## @seealso{delaunay, delaunay3, convhulln, voronoin}
+## @seealso{delaunay, delaunay3, convhulln, voronoin, trimesh, tetramesh}
 ## @end deftypefn
 
 function T = delaunayn (pts, varargin)

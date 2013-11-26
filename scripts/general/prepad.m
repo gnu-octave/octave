@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -46,7 +46,7 @@ function y = prepad (x, l, c, dim)
     c = 0;
   else
     if (! isscalar (c))
-      error ("prepad: third argument must be empty or a scalar");
+      error ("prepad: pad value C must be empty or a scalar");
     endif
   endif
 
@@ -63,7 +63,7 @@ function y = prepad (x, l, c, dim)
   endif
 
   if (! isscalar (l) || l < 0)
-    error ("prepad: second argument must be a positive scaler");
+    error ("prepad: length L must be a positive scalar");
   endif
 
   if (dim > nd)
@@ -83,17 +83,24 @@ function y = prepad (x, l, c, dim)
 
 endfunction
 
-%!error prepad ();
-%!error prepad (1);
-%!error prepad (1,2,3,4,5);
-%!error prepad ([1,2], 2, 2,3);
 
-%!assert (prepad ([1,2], 4), [0,0,1,2]);
-%!assert (prepad ([1;2], 4), [0;0;1;2]);
+%!assert (prepad ([1,2], 4), [0,0,1,2])
+%!assert (prepad ([1;2], 4), [0;0;1;2])
 
-%!assert (prepad ([1,2], 4, 2), [2,2,1,2]);
-%!assert (prepad ([1;2], 4, 2), [2;2;1;2]);
+%!assert (prepad ([1,2], 4, 2), [2,2,1,2])
+%!assert (prepad ([1;2], 4, 2), [2;2;1;2])
 
-%!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2]);
+%!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2])
 
 ## FIXME -- we need tests for multidimensional arrays.
+
+%!error prepad ()
+%!error prepad (1)
+%!error prepad (1,2,3,4,5)
+%!error <C must be empty or a scalar> prepad ([1,2], 2, ones (2))
+%!error <DIM must be an integer> prepad ([1,2], 2, 2, ones (3))
+%!error <DIM must be an integer> prepad ([1,2], 2, 2, 1.1)
+%!error <DIM must be an integer> prepad ([1,2], 2, 2, 3)
+%!error <L must be a positive scalar> prepad ([1,2], ones (2))
+%!error <L must be a positive scalar> prepad ([1,2], -1)
+

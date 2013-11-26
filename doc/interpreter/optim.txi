@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -25,10 +25,10 @@ Quadratic Programming, Nonlinear Programming, and Linear Least Squares
 Minimization.
 
 @menu
-* Linear Programming::       
-* Quadratic Programming::       
-* Nonlinear Programming::       
-* Linear Least Squares::        
+* Linear Programming::
+* Quadratic Programming::
+* Nonlinear Programming::
+* Linear Least Squares::
 @end menu
 
 @c @cindex linear programming

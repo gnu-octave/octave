@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -63,3 +63,4 @@ function X = record (sec, sampling_rate)
   X = Y - 127;
 
 endfunction
+

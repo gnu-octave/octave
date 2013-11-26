@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2012 Kai Habel
+## Copyright (C) 2001-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -79,13 +79,13 @@ function ret = pchip (x, y, xi)
   if (isvector (y))
     y = y(:).'; ##row vector
     szy = size (y);
-    if !(size_equal (x, y))
-      error ("pchip: length of X and Y must match")
+    if (! size_equal (x, y))
+      error ("pchip: length of X and Y must match");
     endif
   else
     szy = size (y);
     if (n != szy(end))
-      error ("pchip: length of X and last dimension of Y must match")
+      error ("pchip: length of X and last dimension of Y must match");
     endif
     y = reshape (y, [prod(szy(1:end-1)), szy(end)]);
   endif
@@ -96,7 +96,7 @@ function ret = pchip (x, y, xi)
     h = diff (x);
     y = fliplr (y);
   elseif (any (h <= 0))
-    error("pchip: X must be strictly monotonic");
+    error ("pchip: X must be strictly monotonic");
   endif
 
   f1 = y(:, 1:n-1);
@@ -125,48 +125,50 @@ function ret = pchip (x, y, xi)
 
 endfunction
 
+
 %!demo
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
 %! xi = 0:0.01:8;
-%! yspline = spline(x,y,xi);
-%! ypchip = pchip(x,y,xi);
-%! title("pchip and spline fit to discontinuous function");
-%! plot(xi,yspline,xi,ypchip,"-",x,y,"+");
-%! legend ("spline","pchip","data");
+%! yspline = spline (x,y,xi);
+%! ypchip = pchip (x,y,xi);
+%! title ("pchip and spline fit to discontinuous function");
+%! plot (xi,yspline, xi,ypchip,"-", x,y,"+");
+%! legend ("spline", "pchip", "data");
 %! %-------------------------------------------------------------------
 %! % confirm that pchip agreed better to discontinuous data than spline
 
-%!shared x,y,y2,pp,yi1,yi2,yi3
+%!shared x, y, y2, pp, yi1, yi2, yi3
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
-%!assert (pchip(x,y,x), y);
-%!assert (pchip(x,y,x'), y');
-%!assert (pchip(x',y',x'), y');
-%!assert (pchip(x',y',x), y);
-%!assert (isempty(pchip(x',y',[])));
-%!assert (isempty(pchip(x,y,[])));
-%!assert (pchip(x,[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
-%!assert (pchip(x,[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
-%!assert (pchip(x',[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
-%!assert (pchip(x',[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x,y,x), y)
+%!assert (pchip (x,y,x'), y')
+%!assert (pchip (x',y',x'), y')
+%!assert (pchip (x',y',x), y)
+%!assert (isempty (pchip (x',y',[])))
+%!assert (isempty (pchip (x,y,[])))
+%!assert (pchip (x,[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x,[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x',[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x',[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
 %!test
-%! x=(0:8)*pi/4;y=[sin(x);cos(x)];
-%! y2(:,:,1)=y;y2(:,:,2)=y+1;y2(:,:,3)=y-1;
-%! pp=pchip(x,shiftdim(y2,2));
-%! yi1=ppval(pp,(1:4)*pi/4);
-%! yi2=ppval(pp,repmat((1:4)*pi/4,[5,1]));
-%! yi3=ppval(pp,[pi/2,pi]);
-%!assert(size(pp.coefs),[48,4]);
-%!assert(pp.pieces,8);
-%!assert(pp.order,4);
-%!assert(pp.dim,[3,2]);
-%!assert(ppval(pp,pi),[0,-1;1,0;-1,-2],1e-14);
-%!assert(yi3(:,:,2),ppval(pp,pi),1e-14);
-%!assert(yi3(:,:,1),[1,0;2,1;0,-1],1e-14);
-%!assert(squeeze(yi1(1,2,:)),[1/sqrt(2); 0; -1/sqrt(2);-1],1e-14);
-%!assert(size(yi2),[3,2,5,4]);
-%!assert(squeeze(yi2(1,2,3,:)),[1/sqrt(2); 0; -1/sqrt(2);-1],1e-14);
+%! x = (0:8)*pi/4; y = [sin(x); cos(x)];
+%! y2(:,:,1) = y; y2(:,:,2) = y+1; y2(:,:,3) = y-1;
+%! pp = pchip (x, shiftdim (y2,2));
+%! yi1 = ppval (pp, (1:4)*pi/4);
+%! yi2 = ppval (pp, repmat ((1:4)*pi/4, [5,1]));
+%! yi3 = ppval (pp, [pi/2,pi]);
+%!assert (size (pp.coefs), [48,4])
+%!assert (pp.pieces, 8)
+%!assert (pp.order, 4)
+%!assert (pp.dim, [3,2])
+%!assert (ppval (pp,pi), [0,-1;1,0;-1,-2], 1e-14)
+%!assert (yi3(:,:,2), ppval (pp,pi), 1e-14)
+%!assert (yi3(:,:,1), [1,0;2,1;0,-1], 1e-14)
+%!assert (squeeze (yi1(1,2,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
+%!assert (size (yi2), [3,2,5,4])
+%!assert (squeeze (yi2(1,2,3,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
 
 %!error (pchip (1,2));
 %!error (pchip (1,2,3));
+

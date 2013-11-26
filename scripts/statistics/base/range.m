@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -50,12 +50,13 @@ function y = range (x, dim)
 endfunction
 
 
-%!assert(range (1:10), 9);
-%!assert(range (single(1:10)), single(9));
-%!assert(range (magic (3)), [5, 8, 5]);
-%!assert(range (magic (3), 2), [7; 4; 7]);
-%!assert(range (2), 0);
+%!assert (range (1:10), 9)
+%!assert (range (single (1:10)), single (9))
+%!assert (range (magic (3)), [5, 8, 5])
+%!assert (range (magic (3), 2), [7; 4; 7])
+%!assert (range (2), 0)
 
 %% Test input validation
 %!error range ()
 %!error range (1, 2, 3)
+

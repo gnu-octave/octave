@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Julian Schnidder
+## Copyright (C) 2008-2013 Julian Schnidder
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile})
-## @deftypefnx {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
-## Invoke Perl script @var{scriptfile} with possibly a list of
-## command line arguments.
-## Returns output in @var{output} and status
-## in @var{status}.
-## @seealso{system}
+## @deftypefn  {Function File} {@var{output} =} perl (@var{scriptfile})
+## @deftypefnx {Function File} {@var{output} =} perl (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
+## @deftypefnx {Function File} {[@var{output}, @var{status}] =} perl (@dots{})
+## Invoke Perl script @var{scriptfile}, possibly with a list of command line
+## arguments.  Return output in @var{output} and optional status in
+## @var{status}.  If @var{scriptfile} is not an absolute file name it is
+## is searched for in the current directory and then in the Octave loadpath.
+## @seealso{system, python}
 ## @end deftypefn
 
 function [output, status] = perl (scriptfile = "-e ''", varargin)
@@ -33,12 +34,18 @@ function [output, status] = perl (scriptfile = "-e ''", varargin)
   ## initial value in the argument list of the function definition.
 
   if (ischar (scriptfile)
-      && ((nargin != 1 && iscellstr (varargin))
-          || (nargin == 1 && ! isempty (scriptfile))))
-    [status, output] = system (cstrcat ("perl ", scriptfile,
-                                        sprintf (" %s", varargin{:})));
+      && (   (nargin == 1 && ! isempty (scriptfile))
+          || (nargin != 1 && iscellstr (varargin))))
+    if (! strcmp (scriptfile(1:2), "-e"))
+      ## Attempt to find file in loadpath.  No effect for absolute filenames.
+      scriptfile = file_in_loadpath (scriptfile);
+    endif
+
+    [status, output] = system (["perl " scriptfile ...
+                                sprintf(" %s", varargin{:})]);
   else
     error ("perl: invalid arguments");
   endif
 
 endfunction
+

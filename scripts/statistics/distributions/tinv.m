@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -87,22 +87,22 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(tinv (x, ones(1,5)), [NaN -Inf 0 Inf NaN]);
-%!assert(tinv (x, 1), [NaN -Inf 0 Inf NaN], eps);
-%!assert(tinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN], eps);
-%!assert(tinv ([x(1:2) NaN x(4:5)], 1), [NaN -Inf NaN Inf NaN]);
+%!assert (tinv (x, ones (1,5)), [NaN -Inf 0 Inf NaN])
+%!assert (tinv (x, 1), [NaN -Inf 0 Inf NaN], eps)
+%!assert (tinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN], eps)
+%!assert (tinv ([x(1:2) NaN x(4:5)], 1), [NaN -Inf NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(tinv ([x, NaN], 1), [NaN -Inf 0 Inf NaN NaN], eps);
-%!assert(tinv (single([x, NaN]), 1), single([NaN -Inf 0 Inf NaN NaN]), eps("single"));
-%!assert(tinv ([x, NaN], single(1)), single([NaN -Inf 0 Inf NaN NaN]), eps("single"));
+%!assert (tinv ([x, NaN], 1), [NaN -Inf 0 Inf NaN NaN], eps)
+%!assert (tinv (single ([x, NaN]), 1), single ([NaN -Inf 0 Inf NaN NaN]), eps ("single"))
+%!assert (tinv ([x, NaN], single (1)), single ([NaN -Inf 0 Inf NaN NaN]), eps ("single"))
 
 %% Test input validation
 %!error tinv ()
 %!error tinv (1)
 %!error tinv (1,2,3)
-%!error tinv (ones(3),ones(2))
-%!error tinv (ones(2),ones(3))
+%!error tinv (ones (3), ones (2))
+%!error tinv (ones (2), ones (3))
 %!error tinv (i, 2)
 %!error tinv (2, i)
 

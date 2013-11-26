@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -39,6 +39,8 @@
 ##
 ## Algorithm taken from Golub and Van Loan,
 ## @cite{Matrix Computations, 2nd edition}.
+## 
+## @seealso{lu, chol, hess, qr, qz, schur, svd}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
@@ -91,6 +93,7 @@ function [aa, bb, q, z] = qzhess (A, B)
 
 endfunction
 
+
 %!test
 %! a = [1 2 1 3;
 %!      2 5 3 2;
@@ -104,13 +107,13 @@ endfunction
 %!         0 0 0 0;
 %!         1 0 0 0;
 %!         1 1 0 0];
-%! [aa, bb, q, z] = qzhess(a, b);
-%! assert(inv(q) - q', zeros(4), 2e-8);
-%! assert(inv(z) - z', zeros(4), 2e-8);
-%! assert(q * a * z, aa, 2e-8);
-%! assert(aa .* mask, zeros(4), 2e-8);
-%! assert(q * b * z, bb, 2e-8);
-%! assert(bb .* mask, zeros(4), 2e-8);
+%! [aa, bb, q, z] = qzhess (a, b);
+%! assert (inv (q) - q', zeros (4), 2e-8);
+%! assert (inv (z) - z', zeros (4), 2e-8);
+%! assert (q * a * z, aa, 2e-8);
+%! assert (aa .* mask, zeros (4), 2e-8);
+%! assert (q * b * z, bb, 2e-8);
+%! assert (bb .* mask, zeros (4), 2e-8);
 
 %!test
 %! a = [1 2 3 4 5;
@@ -128,14 +131,14 @@ endfunction
 %!         1 0 0 0 0;
 %!         1 1 0 0 0;
 %!         1 1 1 0 0];
-%! [aa, bb, q, z] = qzhess(a, b);
-%! assert(inv(q) - q', zeros(5), 2e-8);
-%! assert(inv(z) - z', zeros(5), 2e-8);
-%! assert(q * a * z, aa, 2e-8);
-%! assert(aa .* mask, zeros(5), 2e-8);
-%! assert(q * b * z, bb, 2e-8);
-%! assert(bb .* mask, zeros(5), 2e-8);
+%! [aa, bb, q, z] = qzhess (a, b);
+%! assert (inv (q) - q', zeros (5), 2e-8);
+%! assert (inv (z) - z', zeros (5), 2e-8);
+%! assert (q * a * z, aa, 2e-8);
+%! assert (aa .* mask, zeros (5), 2e-8);
+%! assert (q * b * z, bb, 2e-8);
+%! assert (bb .* mask, zeros (5), 2e-8);
 
-%!error qzhess([0]);
-%!error qzhess();
+%!error qzhess ([0])
+%!error qzhess ()
 

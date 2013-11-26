@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ## $ \sin (\pi x)/(\pi x)$.
 ## @end tex
 ## @ifnottex
-##  sin(pi*x)/(pi*x).
+##  sin (pi*x) / (pi*x).
 ## @end ifnottex
 ## @end deftypefn
 
@@ -47,8 +47,9 @@ function result = sinc (x)
 endfunction
 
 
-%!assert (sinc (0), 1);
-%!assert (sinc (1), 0,1e-6);
+%!assert (sinc (0), 1)
+%!assert (sinc (1), 0,1e-6)
 %!assert (sinc (1/2), 2/pi, 1e-6)
 
 %!error sinc()
+

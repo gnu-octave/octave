@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 Regents of the University of California
+## Copyright (C) 2007-2013 Regents of the University of California
 ##
 ## This file is part of Octave.
 ##
@@ -38,6 +38,7 @@
 ## iterations is limited to 10 and is at least 2.
 ##
 ## References:
+##
 ## @itemize
 ## @item
 ## N.J. Higham and F. Tisseur, @cite{A Block Algorithm
@@ -95,7 +96,7 @@
 
 function [est, v, w, iter] = onenormest (varargin)
 
-  if (size (varargin, 2) < 1 || size (varargin, 2) > 4)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
@@ -103,31 +104,31 @@ function [est, v, w, iter] = onenormest (varargin)
   itmax = 10;
 
   if (ismatrix (varargin{1}))
-    n = size (varargin{1}, 1);
-    if n != size (varargin{1}, 2),
+    [n, nc] = size (varargin{1});
+    if (n != nc)
       error ("onenormest: matrix must be square");
     endif
     apply = @(x) varargin{1} * x;
     apply_t = @(x) varargin{1}' * x;
-    if (size (varargin) > 1)
+    if (nargin > 1)
       t = varargin{2};
     else
       t = min (n, default_t);
     endif
-    issing = isa (varargin {1}, "single");
+    issing = isa (varargin{1}, "single");
   else
-    if (size (varargin, 2) < 3)
-      print_usage();
+    if (nargin < 3)
+      print_usage ();
     endif
-    n = varargin{3};
     apply = varargin{1};
     apply_t = varargin{2};
-    if (size (varargin) > 3)
+    n = varargin{3};
+    if (nargin > 3)
       t = varargin{4};
     else
       t = default_t;
     endif
-    issing = isa (varargin {3}, "single");
+    issing = isa (n, "single");
   endif
 
   ## Initial test vectors X.
@@ -175,7 +176,7 @@ function [est, v, w, iter] = onenormest (varargin)
 
     ## Test if any of S are approximately parallel to previous S
     ## vectors or current S vectors.  If everything is parallel,
-    ## stop. Otherwise, replace any parallel vectors with
+    ## stop.  Otherwise, replace any parallel vectors with
     ## rand{-1,+1}.
     partest = any (abs (S_old' * S - n) < 4*eps*n);
     if (all (partest))
@@ -201,8 +202,7 @@ function [est, v, w, iter] = onenormest (varargin)
 
     Z = feval (apply_t, S);
 
-    ## Now find the largest non-previously-visted index per
-    ## vector.
+    ## Now find the largest non-previously-visted index per vector.
     h = max (abs (Z),2);
     [mh, mhi] = max (h);
     if (iter >= 2 && mhi == ind_best)
@@ -216,10 +216,10 @@ function [est, v, w, iter] = onenormest (varargin)
         ## Visited all these before, so stop.
         break;
       endif
-      ind = ind (!been_there (ind));
+      ind = ind(! been_there(ind));
       if (length (ind) < t)
         ## There aren't enough new vectors, so we're practically
-        ## in a cycle. Stop.
+        ## in a cycle.  Stop.
         break;
       endif
     endif
@@ -229,62 +229,65 @@ function [est, v, w, iter] = onenormest (varargin)
     for zz = 1 : t
       X(ind(zz),zz) = 1;
     endfor
-    been_there (ind (1 : t)) = 1;
+    been_there(ind(1 : t)) = 1;
   endfor
 
-  ## The estimate est and vector w are set in the loop above. The
-  ## vector v selects the ind_best column of A.
+  ## The estimate est and vector w are set in the loop above.
+  ## The vector v selects the ind_best column of A.
   v = zeros (n, 1);
   v(ind_best) = 1;
+
 endfunction
 
+
 %!demo
-%!  N = 100;
-%!  A = randn(N) + eye(N);
-%!  [L,U,P] = lu(A);
-%!  nm1inv = onenormest(@(x) U\(L\(P*x)), @(x) P'*(L'\(U'\x)), N, 30)
-%!  norm(inv(A), 1)
+%! N = 100;
+%! A = randn (N) + eye (N);
+%! [L,U,P] = lu (A);
+%! nm1inv = onenormest (@(x) U\(L\(P*x)), @(x) P'*(L'\(U'\x)), N, 30)
+%! norm (inv (A), 1)
 
 %!test
-%!  N = 10;
-%!  A = ones (N);
-%!  [nm1, v1, w1] = onenormest (A);
-%!  [nminf, vinf, winf] = onenormest (A', 6);
-%!  assert (nm1, N, -2*eps);
-%!  assert (nminf, N, -2*eps);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! N = 10;
+%! A = ones (N);
+%! [nm1, v1, w1] = onenormest (A);
+%! [nminf, vinf, winf] = onenormest (A', 6);
+%! assert (nm1, N, -2*eps);
+%! assert (nminf, N, -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
-%!  N = 10;
-%!  A = ones (N);
-%!  [nm1, v1, w1] = onenormest (@(x) A*x, @(x) A'*x, N, 3);
-%!  [nminf, vinf, winf] = onenormest (@(x) A'*x, @(x) A*x, N, 3);
-%!  assert (nm1, N, -2*eps);
-%!  assert (nminf, N, -2*eps);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! N = 10;
+%! A = ones (N);
+%! [nm1, v1, w1] = onenormest (@(x) A*x, @(x) A'*x, N, 3);
+%! [nminf, vinf, winf] = onenormest (@(x) A'*x, @(x) A*x, N, 3);
+%! assert (nm1, N, -2*eps);
+%! assert (nminf, N, -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
-%!  N = 5;
-%!  A = hilb (N);
-%!  [nm1, v1, w1] = onenormest (A);
-%!  [nminf, vinf, winf] = onenormest (A', 6);
-%!  assert (nm1, norm (A, 1), -2*eps);
-%!  assert (nminf, norm (A, inf), -2*eps);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! N = 5;
+%! A = hilb (N);
+%! [nm1, v1, w1] = onenormest (A);
+%! [nminf, vinf, winf] = onenormest (A', 6);
+%! assert (nm1, norm (A, 1), -2*eps);
+%! assert (nminf, norm (A, inf), -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 ## Only likely to be within a factor of 10.
 %!test
-%!  old_state = rand ("state");
-%!  restore_state = onCleanup (@() rand ("state", old_state));
-%!  rand ('state', 42);  % Initialize to guarantee reproducible results
-%!  N = 100;
-%!  A = rand (N);
-%!  [nm1, v1, w1] = onenormest (A);
-%!  [nminf, vinf, winf] = onenormest (A', 6);
-%!  assert (nm1, norm (A, 1), -.1);
-%!  assert (nminf, norm (A, inf), -.1);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ('state', 42);  % Initialize to guarantee reproducible results
+%! N = 100;
+%! A = rand (N);
+%! [nm1, v1, w1] = onenormest (A);
+%! [nminf, vinf, winf] = onenormest (A', 6);
+%! assert (nm1, norm (A, 1), -.1);
+%! assert (nminf, norm (A, inf), -.1);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
+

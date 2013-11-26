@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2012-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{current_state}} recycle ()
-## @deftypefnx {Function File} {@var{old_state}} recycle (@var{new_state})
+## @deftypefn  {Function File} {@var{current_state} =} recycle ()
+## @deftypefnx {Function File} {@var{old_state} =} recycle (@var{new_state})
 ## Query or set the preference for recycling deleted files.
 ##
-## Recycling files instead of permanently deleting them is currently not
-## implemented in Octave.  To help avoid accidental data loss it
-## is an error to attempt enable file recycling.
+## Recycling files, instead of permanently deleting them, is not currently
+## implemented in Octave.  To help avoid accidental data loss an error
+## will be raised if an attempt is made to enable file recycling.
 ## @seealso{delete}
 ## @end deftypefn
 
@@ -51,16 +51,18 @@ function retval = recycle (state)
         error ("recycle: invalid value of STATE = '%s'", state);
       endif
     else
-      error ("recycle: expecting STATE to be a character string");
+      error ("recycle: STATE must be a character string");
     endif
   endif
 
 endfunction
 
-%!error recycle ("on");
-%!error recycle ("on", "and I mean it");
-%!error recycle (1);
 
 %!test
 %! recycle ("off");
 %! assert (recycle ("off"), "off");
+
+%!error <recycling files is not implemented> recycle ("on")
+%!error recycle ("on", "and I mean it")
+%!error <STATE must be a character string> recycle (1)
+

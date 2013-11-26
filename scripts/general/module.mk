@@ -8,6 +8,7 @@ general_FCN_FILES = \
   general/accumarray.m \
   general/accumdim.m \
   general/bicubic.m \
+  general/bincoeff.m \
   general/bitcmp.m \
   general/bitget.m \
   general/bitset.m \
@@ -18,7 +19,6 @@ general_FCN_FILES = \
   general/celldisp.m \
   general/chop.m \
   general/circshift.m \
-  general/colon.m \
   general/common_size.m \
   general/cplxpair.m \
   general/cumtrapz.m \
@@ -28,15 +28,14 @@ general_FCN_FILES = \
   general/del2.m \
   general/display.m \
   general/divergence.m \
+  general/fieldnames.m \
   general/flipdim.m \
   general/fliplr.m \
   general/flipud.m \
-  general/genvarname.m \
   general/gradient.m \
   general/idivide.m \
   general/int2str.m \
   general/interp1.m \
-  general/interp1q.m \
   general/interp2.m \
   general/interp3.m \
   general/interpn.m \
@@ -45,13 +44,14 @@ general_FCN_FILES = \
   general/iscolumn.m \
   general/isdir.m \
   general/isequal.m \
-  general/isequalwithequalnans.m \
+  general/isequaln.m \
   general/isrow.m \
   general/isscalar.m \
   general/issquare.m \
   general/isvector.m \
   general/loadobj.m \
   general/logspace.m \
+  general/methods.m \
   general/nargchk.m \
   general/narginchk.m \
   general/nargoutchk.m \

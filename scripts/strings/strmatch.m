@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2003 Alois Schloegl
 ## Copyright (C) 2010 VZLU Prague
 ##
@@ -23,10 +23,9 @@
 ## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ## The second argument @var{A} must be a string, character matrix, or a cell
-## array of strings.  If the third argument @code{"exact"} is not given, then
+## array of strings.  If the third argument @qcode{"exact"} is not given, then
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
 ## Trailing spaces and nulls in @var{s} and @var{A} are ignored when matching.
-## option.
 ##
 ## For example:
 ##
@@ -44,7 +43,8 @@
 ## @end example
 ##
 ## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
-## @code{strcmpi} or @code{strncmpi} in all new code.
+## @code{strncmp} (normal case), or @code{strcmp} (@qcode{"exact"} case), or
+## @code{regexp} in all new code.
 ## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
@@ -97,23 +97,23 @@ function idx = strmatch (s, A, exact)
 endfunction
 
 
-%!assert (strmatch("a", {"aaa", "bab", "bbb"}), 1);
-%!assert (strmatch ("apple", "apple juice"), 1);
-%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]), [1; 2]);
-%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}), [1; 2]);
-%!assert (strmatch ("apple pie", "apple"), []);
-%!assert (strmatch ("a ", "a"), 1);
-%!assert (strmatch ("a", "a \0", "exact"), 1);
-%!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1);
-%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4]);
-%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4]);
+%!assert (strmatch ("a", {"aaa", "bab", "bbb"}), 1)
+%!assert (strmatch ("apple", "apple juice"), 1)
+%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]), [1; 2])
+%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}), [1; 2])
+%!assert (strmatch ("apple pie", "apple"), [])
+%!assert (strmatch ("a ", "a"), 1)
+%!assert (strmatch ("a", "a \0", "exact"), 1)
+%!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1)
+%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
+%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4])
 
 %% Test input validation
-%!error <Invalid call to strmatch> strmatch();
-%!error <Invalid call to strmatch> strmatch("a");
-%!error <Invalid call to strmatch> strmatch("a", "aaa", "exact", 1);
-%!error <S must be a string> strmatch(1, "aaa");
-%!error <S must be a string> strmatch(char ("a", "bb"), "aaa");
-%!error <A must be a string> strmatch("a", 1);
-%!error <A must be a string> strmatch("a", {"hello", [1]});
+%!error <Invalid call to strmatch> strmatch ()
+%!error <Invalid call to strmatch> strmatch ("a")
+%!error <Invalid call to strmatch> strmatch ("a", "aaa", "exact", 1)
+%!error <S must be a string> strmatch (1, "aaa")
+%!error <S must be a string> strmatch (char ("a", "bb"), "aaa")
+%!error <A must be a string> strmatch ("a", 1)
+%!error <A must be a string> strmatch ("a", {"hello", [1]})
 

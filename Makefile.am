@@ -1,6 +1,6 @@
-# Makefile for octave
+# Makefile for Octave
 #
-# Copyright (C) 1993-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -37,12 +37,14 @@ EXTRA_DIST = \
   INSTALL.OCTAVE \
   NEWS \
   README \
-  autogen.sh \
-  build-aux/bootstrap \
-  build-aux/bootstrap.conf \
+  CITATION \
+  bootstrap \
+  bootstrap.conf \
+  build-aux/find-files-with-tests.sh \
   build-aux/mk-opts.pl \
-  build-aux/mkinstalldirs \
   build-aux/move-if-change \
+  build-aux/OctJavaQry.class \
+  build-aux/stl_algo.h-fixed \
   etc/NEWS.1 \
   etc/NEWS.2 \
   etc/NEWS.3 \
@@ -63,20 +65,39 @@ EXTRA_DIST = \
   etc/README.gnuplot \
   etc/README.kpathsea \
   etc/gdbinit \
+  etc/octave.appdata.xml \
   run-octave.in
 
 include m4/module.mk
 
-# Subdirectories in which to run `make all'.
-SUBDIRS = libgnu libcruft liboctave src scripts @DOCDIR@ examples test
+# Subdirectories in which to run `make all'.  Including "." before
+# @DOCDIR@ is an attempt to force all preceding directories in the list
+# to be processed before the current directory so that the
+# scripts/DOCSTRINGS libinterp/DOCSTRINGS files are built before
+# attempting to build AUTHORS and BUGS.  Including "." again at the end
+# of the list ensures that we display the "Octave sucessfully built..."
+# message at the very end of the output from Make.  Another fix for
+# these problems would be to continue eliminating the recursive make
+# invocations so that we have better control over the dependencies and
+# the order that things are built.
+SUBDIRS = libgnu liboctave libinterp
+if AMCOND_BUILD_GUI
+SUBDIRS += libgui
+endif
+SUBDIRS += src scripts . @DOCDIR@ examples test .
 
-if AMCOND_BUILD_DOCS
-else
+if ! AMCOND_BUILD_DOCS
 dist-hook:
 	echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
 
 BUILT_SOURCES = run-octave
+
+if AMCOND_HAVE_BROKEN_STL_ALGO_H
+  BUILT_SOURCES += bits/stl_algo.h
+else
+  BUILT_SOURCES += nonexistent-file
+endif
 
 noinst_SCRIPTS = run-octave
 
@@ -87,13 +108,16 @@ INFO_FILES = \
 
 CLEANFILES = $(BUILT_SOURCES)
 
-DISTCLEANFILES = .gdbinit 
+DISTCLEANFILES = \
+  .gdbinit \
+  ChangeLog
 
 MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS = config.h
+octinclude_HEADERS = oct-conf-post.h
 
 all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""
@@ -111,16 +135,24 @@ run-octave: run-octave.in Makefile
 	@$(do_subst_script_vals)
 	chmod a+rx "$@"
 
-.gdbinit: etc/gdbinit
-	@if [ -f .gdbinit ]; then \
-	  echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
-	else \
-	  echo "Installing .gdbinit from version at $<" ; \
-	  cp $< $@; \
-	fi
+bits/stl_algo.h: build-aux/stl_algo.h-fixed
+	$(MKDIR_P) bits
+	$(INSTALL_HEADER) $< $@
 
+## If we aren't trying to fix stl_algo.h, then try to ensure that
+## there isn't a stray copy sitting in the build tree.
+
+nonexistent-file:
+	rm -f bits/stl_algo.h
+.PHONY: nonexistent-file
+
+.gdbinit: etc/gdbinit
+	@$(gdbinit_install_rule)
+
+if AMCOND_BUILD_DOCS
 AUTHORS BUGS INSTALL.OCTAVE:
 	$(MAKE) -C doc/interpreter ../../$@
+endif
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
 
 ChangeLog:
@@ -128,11 +160,13 @@ ChangeLog:
 	mv $@.t $@
 .PHONY: ChangeLog
 
+octetc_DATA = \
+  NEWS \
+  CITATION
+
 doxyhtml:
 	$(MAKE) -C doc/doxyhtml doxyhtml
 .PHONY: doxyhtml
-
-octetc_DATA = NEWS
 
 DIRS_TO_MAKE = \
   $(localfcnfiledir) \

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -78,27 +78,27 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 2 Inf];
 %! y = [0 1/2 3/4 7/8 1];
-%!assert(nbincdf (x, ones(1,5), 0.5*ones(1,5)), y);
-%!assert(nbincdf (x, 1, 0.5*ones(1,5)), y);
-%!assert(nbincdf (x, ones(1,5), 0.5), y);
-%!assert(nbincdf ([x(1:3) 0 x(5)], [0 1 NaN 1.5 Inf], 0.5), [NaN 1/2 NaN nbinpdf(0,1.5,0.5) NaN], eps);
-%!assert(nbincdf (x, 1, 0.5*[-1 NaN 4 1 1]), [NaN NaN NaN y(4:5)]);
-%!assert(nbincdf ([x(1:2) NaN x(4:5)], 1, 0.5), [y(1:2) NaN y(4:5)]);
+%!assert (nbincdf (x, ones (1,5), 0.5*ones (1,5)), y)
+%!assert (nbincdf (x, 1, 0.5*ones (1,5)), y)
+%!assert (nbincdf (x, ones (1,5), 0.5), y)
+%!assert (nbincdf ([x(1:3) 0 x(5)], [0 1 NaN 1.5 Inf], 0.5), [NaN 1/2 NaN nbinpdf(0,1.5,0.5) NaN], eps)
+%!assert (nbincdf (x, 1, 0.5*[-1 NaN 4 1 1]), [NaN NaN NaN y(4:5)])
+%!assert (nbincdf ([x(1:2) NaN x(4:5)], 1, 0.5), [y(1:2) NaN y(4:5)])
 
 %% Test class of input preserved
-%!assert(nbincdf ([x, NaN], 1, 0.5), [y, NaN]);
-%!assert(nbincdf (single([x, NaN]), 1, 0.5), single([y, NaN]));
-%!assert(nbincdf ([x, NaN], single(1), 0.5), single([y, NaN]));
-%!assert(nbincdf ([x, NaN], 1, single(0.5)), single([y, NaN]));
+%!assert (nbincdf ([x, NaN], 1, 0.5), [y, NaN])
+%!assert (nbincdf (single ([x, NaN]), 1, 0.5), single ([y, NaN]))
+%!assert (nbincdf ([x, NaN], single (1), 0.5), single ([y, NaN]))
+%!assert (nbincdf ([x, NaN], 1, single (0.5)), single ([y, NaN]))
 
 %% Test input validation
 %!error nbincdf ()
 %!error nbincdf (1)
 %!error nbincdf (1,2)
 %!error nbincdf (1,2,3,4)
-%!error nbincdf (ones(3),ones(2),ones(2))
-%!error nbincdf (ones(2),ones(3),ones(2))
-%!error nbincdf (ones(2),ones(2),ones(3))
+%!error nbincdf (ones (3), ones (2), ones (2))
+%!error nbincdf (ones (2), ones (3), ones (2))
+%!error nbincdf (ones (2), ones (2), ones (3))
 %!error nbincdf (i, 2, 2)
 %!error nbincdf (2, i, 2)
 %!error nbincdf (2, 2, i)

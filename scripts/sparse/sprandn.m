@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 Paul Kienzle
+## Copyright (C) 2004-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} sprandn (@var{s})
 ## Generate a random sparse matrix.  The size of the matrix will be
 ## @var{m} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1. Values will be normally
+## @var{d} should be between 0 and 1.  Values will be normally
 ## distributed with mean of zero and variance 1.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
@@ -63,12 +63,16 @@ endfunction
 %!error sprandn ()
 %!error sprandn (1, 2)
 %!error sprandn (1, 2, 3, 4)
-%!error sprandn (ones(3), 3, 0.5)
+%!error sprandn (ones (3), 3, 0.5)
 %!error sprandn (3.5, 3, 0.5)
 %!error sprandn (0, 3, 0.5)
-%!error sprandn (3, ones(3), 0.5)
+%!error sprandn (3, ones (3), 0.5)
 %!error sprandn (3, 3.5, 0.5)
 %!error sprandn (3, 0, 0.5)
 %!error sprandn (3, 3, -1)
 %!error sprandn (3, 3, 2)
+
+%% Test very large, very low density matrix doesn't fail 
+%!test
+%! s = sprandn(1e6,1e6,1e-7);
 

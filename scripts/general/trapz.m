@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -123,16 +123,16 @@ function z = trapz (x, y, dim)
 endfunction
 
 
-%!assert (trapz(1:5), 12)
-%!assert (trapz(0:0.5:2,1:5), 6)
-%!assert (trapz([1:5;1:5].',1), [12,12])
-%!assert (trapz([1:5;1:5],2), [12;12])
-%!assert (trapz(repmat(reshape(1:5,1,1,5),2,2), 3), [12 12; 12 12])
-%!assert (trapz([0:0.5:2;0:0.5:2].',[1:5;1:5].',1), [6, 6])
-%!assert (trapz([0:0.5:2;0:0.5:2],[1:5;1:5],2), [6; 6])
-%!assert (trapz(repmat(reshape([0:0.5:2],1,1,5),2,2), ...
-%!              repmat(reshape(1:5,1,1,5),2,2), 3), [6 6; 6 6])
-%!assert (trapz(0:0.5:2,[(1:5)',(1:5)']), [6, 6])
-%!assert (trapz(0:0.5:2,[(1:5);(1:5)],2), [6; 6])
-%!assert (trapz(0:0.5:2,repmat(reshape(1:5,1,1,5),2,2),3), [6 6; 6 6])
+%!assert (trapz (1:5), 12)
+%!assert (trapz (0:0.5:2,1:5), 6)
+%!assert (trapz ([1:5;1:5].',1), [12,12])
+%!assert (trapz ([1:5;1:5],2), [12;12])
+%!assert (trapz (repmat (reshape (1:5,1,1,5),2,2), 3), [12 12; 12 12])
+%!assert (trapz ([0:0.5:2;0:0.5:2].',[1:5;1:5].',1), [6, 6])
+%!assert (trapz ([0:0.5:2;0:0.5:2],[1:5;1:5],2), [6; 6])
+%!assert (trapz (repmat (reshape ([0:0.5:2],1,1,5),2,2), ...
+%!               repmat (reshape (1:5,1,1,5),2,2), 3), [6 6; 6 6])
+%!assert (trapz (0:0.5:2,[(1:5)',(1:5)']), [6, 6])
+%!assert (trapz (0:0.5:2,[(1:5);(1:5)],2), [6; 6])
+%!assert (trapz (0:0.5:2,repmat (reshape (1:5,1,1,5),2,2),3), [6 6; 6 6])
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -41,7 +41,7 @@ function [a, v] = yulewalker (c)
   endif
 
   cp = c(2 : p+1);
-  CP = zeros(p, p);
+  CP = zeros (p, p);
 
   for i = 1:p
     for j = 1:p
@@ -53,8 +53,5 @@ function [a, v] = yulewalker (c)
   v = c(1) - a' * cp;
 
 endfunction
-
-
-
 
 

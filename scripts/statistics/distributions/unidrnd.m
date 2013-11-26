@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2005-2012 John W. Eaton
+## Copyright (C) 2005-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -77,12 +77,12 @@ function rnd = unidrnd (n, varargin)
 
   if (isscalar (n))
     if (n > 0 && n == fix (n))
-      rnd = ceil (rand (sz) * n);
+      rnd = ceil (rand (sz, cls) * n);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd = ceil (rand (sz) .* n);
+    rnd = ceil (rand (sz, cls) .* n);
 
     k = ! (n > 0 & n == fix (n));
     rnd(k) = NaN;
@@ -91,21 +91,21 @@ function rnd = unidrnd (n, varargin)
 endfunction
 
 
-%!assert(size (unidrnd (2)), [1, 1]);
-%!assert(size (unidrnd (ones(2,1))), [2, 1]);
-%!assert(size (unidrnd (ones(2,2))), [2, 2]);
-%!assert(size (unidrnd (10, [4 1])), [4, 1]);
-%!assert(size (unidrnd (10, 4, 1)), [4, 1]);
+%!assert (size (unidrnd (2)), [1, 1])
+%!assert (size (unidrnd (ones (2,1))), [2, 1])
+%!assert (size (unidrnd (ones (2,2))), [2, 2])
+%!assert (size (unidrnd (10, [4 1])), [4, 1])
+%!assert (size (unidrnd (10, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (unidrnd (2)), "double");
-%!assert(class (unidrnd (single(2))), "single");
-%!assert(class (unidrnd (single([2 2]))), "single");
+%!assert (class (unidrnd (2)), "double")
+%!assert (class (unidrnd (single (2))), "single")
+%!assert (class (unidrnd (single ([2 2]))), "single")
 
 %% Test input validation
 %!error unidrnd ()
 %!error unidrnd (10, [1;2;3])
-%!error unidrnd (10, 2, ones(2))
-%!error unidrnd (10*ones(2), 2, 1)
+%!error unidrnd (10, 2, ones (2))
+%!error unidrnd (10*ones (2), 2, 1)
 %!error unidrnd (i)
 

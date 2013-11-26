@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 John W. Eaton
+## Copyright (C) 2005-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -39,24 +39,25 @@
 ## @item directory
 ## True if @var{file} is a directory.
 ##
-## @item UserRead
+## @item  UserRead
 ## @itemx GroupRead
 ## @itemx OtherRead
 ## True if the user (group; other users) has read permission for
 ## @var{file}.
 ##
-## @item UserWrite
+## @item  UserWrite
 ## @itemx GroupWrite
 ## @itemx OtherWrite
 ## True if the user (group; other users) has write permission for
 ## @var{file}.
 ##
-## @item UserExecute
+## @item  UserExecute
 ## @itemx GroupExecute
 ## @itemx OtherExecute
 ## True if the user (group; other users) has execute permission for
 ## @var{file}.
 ## @end table
+##
 ## If an attribute does not apply (i.e., archive on a Unix system) then
 ## the field is set to NaN.
 ##
@@ -142,3 +143,4 @@ function [status, msg, msgid] = fileattrib (file)
   endif
 
 endfunction
+

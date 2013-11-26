@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -52,22 +52,22 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 2];
 %! y = [0, 1 - exp(-x(2:end)/2)];
-%!assert(chi2cdf (x, 2*ones(1,5)), y, eps);
-%!assert(chi2cdf (x, 2), y, eps);
-%!assert(chi2cdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)], eps);
-%!assert(chi2cdf ([x(1:2) NaN x(4:5)], 2), [y(1:2) NaN y(4:5)], eps);
+%!assert (chi2cdf (x, 2*ones (1,5)), y, eps)
+%!assert (chi2cdf (x, 2), y, eps)
+%!assert (chi2cdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)], eps)
+%!assert (chi2cdf ([x(1:2) NaN x(4:5)], 2), [y(1:2) NaN y(4:5)], eps)
 
 %% Test class of input preserved
-%!assert(chi2cdf ([x, NaN], 2), [y, NaN], eps);
-%!assert(chi2cdf (single([x, NaN]), 2), single([y, NaN]), eps("single"));
-%!assert(chi2cdf ([x, NaN], single(2)), single([y, NaN]), eps("single"));
+%!assert (chi2cdf ([x, NaN], 2), [y, NaN], eps)
+%!assert (chi2cdf (single ([x, NaN]), 2), single ([y, NaN]), eps ("single"))
+%!assert (chi2cdf ([x, NaN], single (2)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error chi2cdf ()
 %!error chi2cdf (1)
 %!error chi2cdf (1,2,3)
-%!error chi2cdf (ones(3),ones(2))
-%!error chi2cdf (ones(2),ones(3))
+%!error chi2cdf (ones (3), ones (2))
+%!error chi2cdf (ones (2), ones (3))
 %!error chi2cdf (i, 2)
 %!error chi2cdf (2, i)
 

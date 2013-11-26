@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -87,16 +87,17 @@ endfunction
 %! x3 = [4, 3; 2, 1];
 %! x4 = [3, 1; 4, 2];
 %!
-%! assert(rot90 (x1), x2);
-%! assert(rot90 (x1, 2), x3);
-%! assert(rot90 (x1, 3), x4);
-%! assert(rot90 (x1, 4), x1);
-%! assert(rot90 (x1, 5), x2);
-%! assert(rot90 (x1, -1), x4);
+%! assert (rot90 (x1), x2);
+%! assert (rot90 (x1, 2), x3);
+%! assert (rot90 (x1, 3), x4);
+%! assert (rot90 (x1, 4), x1);
+%! assert (rot90 (x1, 5), x2);
+%! assert (rot90 (x1, -1), x4);
 
 %% Test input validation
-%!error rot90 ();
-%!error rot90 (1, 2, 3);
-%!error rot90 (1, ones(2));
-%!error rot90 (1, 1.5);
-%!error rot90 (1, 1+i);
+%!error rot90 ()
+%!error rot90 (1, 2, 3)
+%!error rot90 (1, ones (2))
+%!error rot90 (1, 1.5)
+%!error rot90 (1, 1+i)
+

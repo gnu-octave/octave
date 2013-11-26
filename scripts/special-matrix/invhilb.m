@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 Dirk Laurie
+## Copyright (C) 1993-2013 Dirk Laurie
 ##
 ## This file is part of Octave.
 ##
@@ -120,7 +120,7 @@ endfunction
 %!            240 , -2700, 6480 , -4200;
 %!            -140, 1680 , -4200, 2800];
 %! assert (invhilb (4), result4);
-%!assert (abs (invhilb (7) * hilb (7) - eye (7)) < sqrt (eps))
+%!assert (invhilb (7) * hilb (7), eye (7), sqrt (eps))
 
 %!error invhilb ()
 %!error invhilb (1, 2)

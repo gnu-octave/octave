@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 John W. Eaton
+## Copyright (C) 2009-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -57,9 +57,10 @@ endfunction
 
 %!test
 %! str = which ("ls");
-%! assert (str(end-17:end), strcat ("miscellaneous", filesep(), "ls.m"));
+%! assert (str(end-17:end), strcat ("miscellaneous", filesep (), "ls.m"));
 %!test
-%! str = which ("dot");
-%! assert (str(end-6:end), "dot.oct");
+%! str = which ("amd");
+%! assert (str(end-6:end), "amd.oct");
 
-%!assert (which ("NO_NAME"), "");
+%!assert (which ("_NO_SUCH_NAME_"), "")
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -83,49 +83,49 @@ function rnd = normrnd (mu, sigma, varargin)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (!isnan (mu) && !isinf (mu) && (sigma > 0) && (sigma < Inf))
-      rnd =  mu + sigma * randn (sz);
+    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
+      rnd =  mu + sigma * randn (sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd = mu + sigma .* randn (sz);
-    k = isnan (mu) | isinf (mu) | !(sigma > 0) | !(sigma < Inf);
+    rnd = mu + sigma .* randn (sz, cls);
+    k = ! isfinite (mu) | !(sigma > 0) | !(sigma < Inf);
     rnd(k) = NaN;
   endif
 
 endfunction
 
 
-%!assert(size (normrnd (1,2)), [1, 1]);
-%!assert(size (normrnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (normrnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (normrnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (normrnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (normrnd (1, 2, 3)), [3, 3]);
-%!assert(size (normrnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (normrnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (normrnd (1,2)), [1, 1])
+%!assert (size (normrnd (ones (2,1), 2)), [2, 1])
+%!assert (size (normrnd (ones (2,2), 2)), [2, 2])
+%!assert (size (normrnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (normrnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (normrnd (1, 2, 3)), [3, 3])
+%!assert (size (normrnd (1, 2, [4 1])), [4, 1])
+%!assert (size (normrnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (normrnd (1, 2)), "double");
-%!assert(class (normrnd (single(1), 2)), "single");
-%!assert(class (normrnd (single([1 1]), 2)), "single");
-%!assert(class (normrnd (1, single(2))), "single");
-%!assert(class (normrnd (1, single([2 2]))), "single");
+%!assert (class (normrnd (1, 2)), "double")
+%!assert (class (normrnd (single (1), 2)), "single")
+%!assert (class (normrnd (single ([1 1]), 2)), "single")
+%!assert (class (normrnd (1, single (2))), "single")
+%!assert (class (normrnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error normrnd ()
 %!error normrnd (1)
-%!error normrnd (ones(3),ones(2))
-%!error normrnd (ones(2),ones(3))
+%!error normrnd (ones (3), ones (2))
+%!error normrnd (ones (2), ones (3))
 %!error normrnd (i, 2)
 %!error normrnd (2, i)
 %!error normrnd (1,2, -1)
-%!error normrnd (1,2, ones(2))
+%!error normrnd (1,2, ones (2))
 %!error normrnd (1, 2, [2 -1 2])
-%!error normrnd (1,2, 1, ones(2))
+%!error normrnd (1,2, 1, ones (2))
 %!error normrnd (1,2, 1, -1)
-%!error normrnd (ones(2,2), 2, 3)
-%!error normrnd (ones(2,2), 2, [3, 2])
-%!error normrnd (ones(2,2), 2, 2, 3)
+%!error normrnd (ones (2,2), 2, 3)
+%!error normrnd (ones (2,2), 2, [3, 2])
+%!error normrnd (ones (2,2), 2, 2, 3)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -26,9 +26,10 @@
 ## Plot the Voronoi diagram of points @code{(@var{x}, @var{y})}.
 ## The Voronoi facets with points at infinity are not drawn.
 ## 
-## If "linespec" is given it is used to set the color and line style of the
-## plot.  If an axis graphics handle @var{hax} is supplied then the Voronoi
-## diagram is drawn on the specified axis rather than in a new figure.
+## If @qcode{"linespec"} is given it is used to set the color and line style
+## of the plot.  If an axis graphics handle @var{hax} is supplied then the
+## Voronoi diagram is drawn on the specified axis rather than in a new
+## figure.
 ##
 ## The @var{options} argument, which must be a string or cell array of strings,
 ## contains options passed to the underlying qhull command.
@@ -37,7 +38,7 @@
 ##
 ## If a single output argument is requested then the Voronoi diagram will be
 ## plotted and a graphics handle @var{h} to the plot is returned.
-## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the Voronoi vertices
+## [@var{vx}, @var{vy}] = voronoi (@dots{}) returns the Voronoi vertices
 ## instead of plotting the diagram.
 ##
 ## @example
@@ -74,13 +75,13 @@ function [vx, vy] = voronoi (varargin)
 
   narg = 1;
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    handl = varargin{1};
-    if (! strcmp (get (handl, "type"), "axes"))
-      error ("voronoi: expecting first argument to be an axes object");
+    hax = varargin{1};
+    if (! isaxes (harg))
+      error ("imagesc: HAX argument must be an axes object");
     endif
     narg++;
   elseif (nargout < 2)
-    handl = gca ();
+    hax = gca ();
   endif
 
   if (nargin < 1 + narg || nargin > 3 + narg)
@@ -105,10 +106,7 @@ function [vx, vy] = voronoi (varargin)
     linespec = varargin(narg);
   endif
 
-  lx = length (x);
-  ly = length (y);
-
-  if (lx != ly)
+  if (length (x) != length (y))
     error ("voronoi: X and Y must be vectors of the same length");
   endif
 
@@ -133,35 +131,33 @@ function [vx, vy] = voronoi (varargin)
                               [[x(:) ; xbox(:)], [y(:); ybox(:)]],
                               opts{:});
 
-  idx = find (! infi);
-  ll = length (idx);
-  c = c(idx).';
-  k = sum (cellfun ("length", c));
+  c = c(! infi).';
+  ## Delete null entries which cause problems in next cellfun function
+  c(cellfun ("isempty", c)) = [];
   edges = cell2mat (cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
                              "uniformoutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';
-  edges = edges (:, [(edges(1, 1: end - 1) != edges(1, 2 : end) | ...
-                      edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
+  edges = edges(:, [(edges(1, 1 :end - 1) != edges(1, 2 : end) | ...
+                     edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
 
   ## Eliminate the edges of the diagram representing the box
-  poutside = (1 : rows(p)) ...
-      (p (:, 1) < xmin - xdelta | p (:, 1) > xmax + xdelta | ...
-       p (:, 2) < ymin - ydelta | p (:, 2) > ymax + ydelta);
-  edgeoutside = ismember (edges (1, :), poutside) & ...
-      ismember (edges (2, :), poutside);
-  edges (:, edgeoutside) = [];
+  poutside = (1:rows (p)) ...
+      (p(:, 1) < xmin - xdelta | p(:, 1) > xmax + xdelta | ...
+       p(:, 2) < ymin - ydelta | p(:, 2) > ymax + ydelta);
+  edgeoutside = ismember (edges(1, :), poutside) & ...
+                ismember (edges(2, :), poutside);
+  edges(:, edgeoutside) = [];
 
   ## Get points of the diagram
   Vvx = reshape (p(edges, 1), size (edges));
   Vvy = reshape (p(edges, 2), size (edges));
 
   if (nargout < 2)
+    h = plot (hax, Vvx, Vvy, linespec{:}, x, y, '+');
     lim = [xmin, xmax, ymin, ymax];
-    h = plot (handl, Vvx, Vvy, linespec{:}, x, y, '+');
-    axis (lim + 0.1 * [[-1, 1] * (lim (2) - lim (1)), ...
-                       [-1, 1] * (lim (4) - lim (3))]);
+    axis (lim + 0.1 * [[-1, 1] * xdelta, [-1, 1] * ydelta]);
     if (nargout == 1)
       vx = h;
     endif
@@ -174,14 +170,14 @@ endfunction
 
 
 %!demo
-%! voronoi (rand(10,1), rand(10,1));
+%! voronoi (rand (10,1), rand (10,1));
 
 %!testif HAVE_QHULL
 %! phi = linspace (-pi, 3/4*pi, 8);
 %! [x,y] = pol2cart (phi, 1);
 %! [vx,vy] = voronoi (x,y);
-%! assert(vx(2,:), zeros (1, columns (vx)), eps);
-%! assert(vy(2,:), zeros (1, columns (vy)), eps);
+%! assert (vx(2,:), zeros (1, columns (vx)), eps);
+%! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
 %% FIXME: Need input validation tests
 

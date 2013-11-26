@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -24,8 +24,9 @@
 ## optional second argument may either give the number of significant
 ## digits (@var{precision}) to be used in the output or a format
 ## template string (@var{format}) as in @code{sprintf} (@pxref{Formatted
-## Output}).  @code{num2str} can also handle complex numbers.  For
-## example:
+## Output}).  @code{num2str} can also handle complex numbers.
+##
+## Examples:
 ##
 ## @example
 ## @group
@@ -50,11 +51,17 @@
 ## @end group
 ## @end example
 ##
+## Notes:
+##
+## For @sc{matlab} compatibility, leading spaces are stripped before returning
+## the string.
+##
 ## The @code{num2str} function is not very flexible.  For better control
 ## over the results, use @code{sprintf} (@pxref{Formatted Output}).
-## Note that for complex @var{x}, the format string may only contain one
-## output conversion specification and nothing else.  Otherwise, you
-## will get unpredictable results.
+##
+## For complex @var{x}, the format string may only contain one
+## output conversion specification and nothing else.  Otherwise, results
+## will be unpredictable.
 ## @seealso{sprintf, int2str, mat2str}
 ## @end deftypefn
 
@@ -64,123 +71,145 @@ function retval = num2str (x, arg)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
+  elseif (! ismatrix (x))
+    error ("num2str: X must be a numeric, logical, or character array");
   endif
 
   if (ischar (x))
     retval = x;
   elseif (isempty (x))
     retval = "";
-  elseif (iscomplex (x))
+  elseif (isreal (x))
     if (nargin == 2)
       if (ischar (arg))
-        fmt = cstrcat (arg, "%-+", arg(2:end), "i");
+        fmt = arg;
+      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
+        fmt = sprintf ("%%%d.%dg", arg+7, arg);
       else
-        if (isnumeric (x) && x == fix (x) && abs (x) < (10 .^ arg))
-          fmt = sprintf ("%%%dd%%-+%ddi  ", arg, arg);
-        else
-          fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
+        error ("num2str: PRECISION must be a scalar integer >= 0");
+      endif
+    else
+      if (isnumeric (x))
+        ## Setup a suitable format string, ignoring inf entries
+        dgt = floor (log10 (max (abs (x(!isinf (x(:)))))));
+        if (isempty (dgt))
+          ## If the whole input array is inf...
+          dgt = 1;
         endif
+
+        if (any (x(:) != fix (x(:))))
+          ## Floating point input
+          dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
+          dgt = min (dgt, 16);      # Cap significant digits at 16
+          fmt = sprintf ("%%%d.%dg", dgt+7+any (x(:) < 0), dgt);
+        else
+          ## Integer input
+          dgt = max (dgt + 1, 1);
+          ## FIXME: Integers should be masked to show only 16 significant digits
+          ##        See %!xtest below
+          fmt = sprintf ("%%%d.%dg", dgt+2+any (x(:) < 0), dgt);
+        endif
+      else
+        ## Logical input
+        fmt = "%3d";
+      endif
+    endif
+    fmt = [deblank(repmat(fmt, 1, columns(x))), "\n"];
+    nd = ndims (x);
+    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
+    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
+  else   # Complex matrix input
+    if (nargin == 2)
+      if (ischar (arg))
+        fmt = [arg "%-+" arg(2:end) "i"];
+      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
+        fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
+      else
+        error ("num2str: PRECISION must be a scalar integer >= 0");
       endif
     else
       ## Setup a suitable format string
-      if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
-        if (max (abs (real (x(:)))) == 0)
-          dgt1 = 2;
-        else
-          dgt1 = ceil (log10 (max (max (abs (real (x(:)))),
-                                   max (abs (imag (x(:))))))) + 2;
-        endif
-        dgt2 = dgt1 - (min (real (x(:))) >= 0);
+      dgt = floor (log10 (max (max (abs (real (x(!isinf (real (x(:))))))),
+                               max (abs (imag (x(!isinf (imag (x(:))))))))));
+      if (isempty (dgt))
+        ## If the whole input array is inf...
+        dgt = 1;
+      endif
 
-        if (length (abs (x) == x) > 0)
-          fmt = sprintf("%%%dg%%+-%dgi  ", dgt2, dgt1);
-        else
-          fmt = sprintf("%%%dd%%+-%ddi  ", dgt2, dgt1);
-        endif
-      elseif (isscalar (x))
-        fmt = "%.6g%-+.6gi";
+      if (any (x(:) != fix (x(:))))
+        ## Floating point input
+          dgt = max (dgt + 4, 5);   # Keep 4 sig. figures after decimal point
+          dgt = min (dgt, 16);      # Cap significant digits at 16
+          fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", dgt+7, dgt, dgt+7, dgt);
       else
-        fmt = "%11.6g%-+11.6gi";
+        ## Integer input
+        dgt = max (1 + dgt, 1);
+        ## FIXME: Integers should be masked to show only 16 significant digits
+        ##        See %!xtest below
+        fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", dgt+2, dgt, dgt+2, dgt);
       endif
     endif
 
     ## Manipulate the complex value to have real values in the odd
     ## columns and imaginary values in the even columns.
-    sz = size (x);
-    nc = sz(2);
+    nc = columns (x);
     nd = ndims (x);
-    perm = fix ([1:0.5:nc+0.5]);
-    perm(2:2:2*nc) = perm(2:2:2*nc) + nc;
     idx = repmat ({':'}, nd, 1);
+    perm(1:2:2*nc) = 1:nc;
+    perm(2:2:2*nc) = nc + (1:nc);
     idx{2} = perm;
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
 
-    fmt = cstrcat (deblank (repmat (fmt, 1, nc)), "\n");
+    fmt = [deblank(repmat(fmt, 1, nc)), "\n"];
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
 
     ## Put the "i"'s where they are supposed to be.
-    while (true)
-      tmp2 = strrep (tmp, " i\n", "i\n");
-      if (length (tmp) == length (tmp2))
-        break;
-      else
-        tmp = tmp2;
-      endif
-    endwhile
-    while (true)
-      tmp2 = strrep (tmp, " i", "i ");
-      if (tmp == tmp2)
-        break;
-      else
-        tmp = tmp2;
-      endif
-    endwhile
+    tmp = regexprep (tmp, " +i\n", "i\n");
+    tmp = regexprep (tmp, "( +)i", "i$1");
 
-    tmp(length (tmp)) = "";
-    retval = char (strtrim (strsplit (tmp, "\n")));
-  else
-    if (nargin == 2)
-      if (ischar (arg))
-        fmt = arg;
-      else
-        if (isnumeric (x) && x == fix (x) && abs (x) < (10 .^ arg))
-          fmt = sprintf ("%%%dd  ", arg);
-        else
-          fmt = sprintf ("%%%d.%dg", arg+7, arg);
-        endif
-      endif
-    else
-      if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
-        if (max (abs (x(:))) == 0)
-          dgt = 2;
-        else
-          dgt = floor (log10 (max (abs(x(:))))) + (min (real (x(:))) < 0) + 2;
-        endif
-        if (length (abs (x) == x) > 0)
-          fmt = sprintf ("%%%dg  ", dgt);
-        else
-          fmt = sprintf ("%%%dd  ", dgt);
-        endif
-      elseif (isscalar (x))
-        fmt = "%11.5g";
-      else
-        fmt = "%11.5g";
-      endif
-    endif
-    fmt = cstrcat (deblank (repmat (fmt, 1, columns (x))), "\n");
-    nd = ndims (x);
-    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
-    tmp(length (tmp)) = "";
-    retval = strtrim (char (strsplit (tmp, "\n")));
+    retval = strtrim (char (ostrsplit (tmp(1:end-1), "\n")));
   endif
 
 endfunction
 
-%!assert ((strcmp (num2str (123), "123") && strcmp (num2str (1.23), "1.23")));
-%!assert (num2str (123.456, 4), "123.5");
-%!assert (all (num2str ([1, 1.34; 3, 3.56], "%5.1f") == ["1.0  1.3"; "3.0  3.6"]));
-%!assert (num2str (1.234 + 27.3i), "1.234+27.3i");
-%!error num2str ();
-%!error num2str (1, 2, 3);
+
+%!assert (num2str (123), "123")
+%!assert (num2str (1.23), "1.23")
+%!assert (num2str (123.456, 4), "123.5")
+%!assert (num2str ([1, 1.34; 3, 3.56], "%5.1f"),  ["1.0  1.3"; "3.0  3.6"])
+%!assert (num2str (1.234 + 27.3i), "1.234+27.3i")
+%!assert (num2str ([true false true]), "1  0  1");
+
+%!assert (num2str (19440606), "19440606")
+%!assert (num2str (2^33), "8589934592")
+%!assert (num2str (-2^33), "-8589934592")
+%!assert (num2str (2^33+1i), "8589934592+1i")
+%!assert (num2str (-2^33+1i), "-8589934592+1i")
+%!assert (num2str (inf), "Inf")
+%!assert (num2str ([inf -inf]), "Inf -Inf")
+%!assert (num2str ([complex(Inf,0), complex(0,-Inf)]), "Inf+0i   0-Infi")
+%!assert (num2str (complex(Inf,1)), "Inf+1i")
+%!assert (num2str (complex(1,Inf)), "1+Infi")
+%!assert (num2str (nan), "NaN")
+%!assert (num2str (complex (NaN, 1)), "NaN+1i")
+%!assert (num2str (complex (1, NaN)), "1+NaNi")
+%!assert (num2str (NA), "NA")
+%!assert (num2str (complex (NA, 1)), "NA+1i")
+%!assert (num2str (complex (1, NA)), "1+NAi")
+
+## FIXME: Integers greater than bitmax() should be masked to show just
+##        16 digits of precision.
+%!xtest
+%! assert (num2str (1e23), "100000000000000000000000");
+
+%!error num2str ()
+%!error num2str (1, 2, 3)
+%!error <X must be a numeric> num2str ({1})
+%!error <PRECISION must be a scalar integer> num2str (1, {1})
+%!error <PRECISION must be a scalar integer> num2str (1, ones (2))
+%!error <PRECISION must be a scalar integer> num2str (1, -1)
+%!error <PRECISION must be a scalar integer> num2str (1+1i, {1})
+%!error <PRECISION must be a scalar integer> num2str (1+1i, ones (2))
+%!error <PRECISION must be a scalar integer> num2str (1+1i, -1)
 

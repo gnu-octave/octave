@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -82,22 +82,22 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.5 1 2];
-%!assert(poissinv (x, ones(1,5)), [NaN 0 1 Inf NaN]);
-%!assert(poissinv (x, 1), [NaN 0 1 Inf NaN]);
-%!assert(poissinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN]);
-%!assert(poissinv ([x(1:2) NaN x(4:5)], 1), [NaN 0 NaN Inf NaN]);
+%!assert (poissinv (x, ones (1,5)), [NaN 0 1 Inf NaN])
+%!assert (poissinv (x, 1), [NaN 0 1 Inf NaN])
+%!assert (poissinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN])
+%!assert (poissinv ([x(1:2) NaN x(4:5)], 1), [NaN 0 NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(poissinv ([x, NaN], 1), [NaN 0 1 Inf NaN NaN]);
-%!assert(poissinv (single([x, NaN]), 1), single([NaN 0 1 Inf NaN NaN]));
-%!assert(poissinv ([x, NaN], single(1)), single([NaN 0 1 Inf NaN NaN]));
+%!assert (poissinv ([x, NaN], 1), [NaN 0 1 Inf NaN NaN])
+%!assert (poissinv (single ([x, NaN]), 1), single ([NaN 0 1 Inf NaN NaN]))
+%!assert (poissinv ([x, NaN], single (1)), single ([NaN 0 1 Inf NaN NaN]))
 
 %% Test input validation
 %!error poissinv ()
 %!error poissinv (1)
 %!error poissinv (1,2,3)
-%!error poissinv (ones(3),ones(2))
-%!error poissinv (ones(2),ones(3))
+%!error poissinv (ones (3), ones (2))
+%!error poissinv (ones (2), ones (3))
 %!error poissinv (i, 2)
 %!error poissinv (2, i)
 

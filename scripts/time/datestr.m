@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -37,16 +37,16 @@
 ##
 ## @multitable @columnfractions 0.1 0.45 0.35
 ## @headitem Code @tab Format @tab Example
-## @item  0 @tab dd-mmm-yyyy HH:MM:SS   @tab 07-Sep-2000 15:38:09
-## @item  1 @tab dd-mmm-yyyy            @tab 07-Sep-2000
-## @item  2 @tab mm/dd/yy               @tab 09/07/00
-## @item  3 @tab mmm                    @tab Sep
-## @item  4 @tab m                      @tab S
-## @item  5 @tab mm                     @tab 09
-## @item  6 @tab mm/dd                  @tab 09/07
-## @item  7 @tab dd                     @tab 07
-## @item  8 @tab ddd                    @tab Thu
-## @item  9 @tab d                      @tab T
+## @item 0 @tab dd-mmm-yyyy HH:MM:SS   @tab 07-Sep-2000 15:38:09
+## @item 1 @tab dd-mmm-yyyy            @tab 07-Sep-2000
+## @item 2 @tab mm/dd/yy               @tab 09/07/00
+## @item 3 @tab mmm                    @tab Sep
+## @item 4 @tab m                      @tab S
+## @item 5 @tab mm                     @tab 09
+## @item 6 @tab mm/dd                  @tab 09/07
+## @item 7 @tab dd                     @tab 07
+## @item 8 @tab ddd                    @tab Thu
+## @item 9 @tab d                      @tab T
 ## @item 10 @tab yyyy                   @tab 2000
 ## @item 11 @tab yy                     @tab 00
 ## @item 12 @tab mmmyy                  @tab Sep00
@@ -56,19 +56,19 @@
 ## @item 16 @tab HH:MM PM               @tab 03:38 PM
 ## @item 17 @tab QQ-YY                  @tab Q3-00
 ## @item 18 @tab QQ                     @tab Q3
-## @item 19 @tab dd/mm                  @tab 13/03
-## @item 20 @tab dd/mm/yy               @tab 13/03/95
-## @item 21 @tab mmm.dd.yyyy HH:MM:SS   @tab Mar.03.1962 13:53:06
-## @item 22 @tab mmm.dd.yyyy            @tab Mar.03.1962
-## @item 23 @tab mm/dd/yyyy             @tab 03/13/1962
-## @item 24 @tab dd/mm/yyyy             @tab 12/03/1962
-## @item 25 @tab yy/mm/dd               @tab 95/03/13
-## @item 26 @tab yyyy/mm/dd             @tab 1995/03/13
-## @item 27 @tab QQ-YYYY                @tab Q4-2132
-## @item 28 @tab mmmyyyy                @tab Mar2047
-## @item 29 @tab yyyymmdd               @tab 20470313
-## @item 30 @tab yyyymmddTHHMMSS        @tab 20470313T132603
-## @item 31 @tab yyyy-mm-dd HH:MM:SS    @tab 1047-03-13 13:26:03
+## @item 19 @tab dd/mm                  @tab 07/09
+## @item 20 @tab dd/mm/yy               @tab 07/09/00
+## @item 21 @tab mmm.dd,yyyy HH:MM:SS   @tab Sep.07,2000 15:38:08
+## @item 22 @tab mmm.dd,yyyy            @tab Sep.07,2000
+## @item 23 @tab mm/dd/yyyy             @tab 09/07/2000
+## @item 24 @tab dd/mm/yyyy             @tab 07/09/2000
+## @item 25 @tab yy/mm/dd               @tab 00/09/07
+## @item 26 @tab yyyy/mm/dd             @tab 2000/09/07
+## @item 27 @tab QQ-YYYY                @tab Q3-2000
+## @item 28 @tab mmmyyyy                @tab Sep2000
+## @item 29 @tab yyyy-mm-dd             @tab 2000-09-07
+## @item 30 @tab yyyymmddTHHMMSS        @tab 20000907T153808
+## @item 31 @tab yyyy-mm-dd HH:MM:SS    @tab 2000-09-07 15:38:08
 ## @end multitable
 ##
 ## If @var{f} is a format string, the following symbols are recognized:
@@ -76,7 +76,7 @@
 ## @multitable @columnfractions 0.1 0.7 0.2
 ## @headitem Symbol @tab Meaning @tab Example
 ## @item yyyy @tab Full year                                    @tab 2005
-## @item yy   @tab Two-digit year                               @tab 2005
+## @item yy   @tab Two-digit year                               @tab 05
 ## @item mmmm @tab Full month name                              @tab December
 ## @item mmm  @tab Abbreviated month name                       @tab Dec
 ## @item mm   @tab Numeric month number (padded with zeros)     @tab 01, 08, 12
@@ -281,13 +281,14 @@ function retval = datestr (date, f = [], p = [])
 endfunction
 
 
-## demos
 %!demo
 %! ## Current date and time in default format
 %! datestr (now ())
+
 %!demo
 %! ## Current date (integer portion of datenum)
 %! datestr (fix (now ()))
+
 %!demo
 %! ## Current time (fractional portion of datenum)
 %! datestr (rem (now (), 1))
@@ -308,9 +309,15 @@ endfunction
 %!assert (datestr (testtime,11), "05")
 %!assert (datestr (testtime,12), "Dec05")
 %!assert (datestr (testtime,13), "02:33:17")
-%!assert (datestr (testtime,14), " 2:33:17 AM")
+## Mac OS X interprets %p parameter to strftime as lower case am/pm indicator.
+## Accomodate this, although no other UNIX-based OS does this.
+%!test
+%! obs = toupper (datestr (testtime,14));
+%! assert (obs, " 2:33:17 AM");
 %!assert (datestr (testtime,15), "02:33")
-%!assert (datestr (testtime,16), " 2:33 AM")
+%!test
+%! obs = toupper (datestr (testtime,16));
+%! assert (obs, " 2:33 AM");
 %!assert (datestr (testtime,17), "Q4-05")
 %!assert (datestr (testtime,18), "Q4")
 %!assert (datestr (testtime,19), "18/12")
@@ -335,3 +342,4 @@ endfunction
 %% Test input validation
 %!error datestr ()
 %!error datestr (1, 2, 3, 4)
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -51,6 +51,9 @@
 ##   normalizes with @math{N}, this provides the second moment around the mean
 ## @end table
 ##
+## If @math{N==1} the value of @var{opt} is ignored and normalization 
+## by @math{N} is used.
+##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ## @seealso{cov, std, skewness, kurtosis, moment}
 ## @end deftypefn
@@ -89,8 +92,8 @@ function retval = var (x, opt = 0, dim)
 
   n = sz(dim);
   if (n == 1)
-    if (isa (x, 'single'))
-      retval = zeros (sz, 'single');
+    if (isa (x, "single"))
+      retval = zeros (sz, "single");
     else
       retval = zeros (sz);
     endif
@@ -103,16 +106,16 @@ function retval = var (x, opt = 0, dim)
 endfunction
 
 
-%!assert(var (13), 0);
-%!assert(var (single(13)), single(0));
-%!assert(var ([1,2,3]), 1);
-%!assert(var ([1,2,3], 1), 2/3, eps);
-%!assert(var ([1,2,3], [], 1), [0,0,0]);
+%!assert (var (13), 0)
+%!assert (var (single (13)), single (0))
+%!assert (var ([1,2,3]), 1)
+%!assert (var ([1,2,3], 1), 2/3, eps)
+%!assert (var ([1,2,3], [], 1), [0,0,0])
 
 %% Test input validation
 %!error var ()
 %!error var (1,2,3,4)
 %!error var (['A'; 'B'])
-%!error var (1, -1);
-%!error var ([],1)
+%!error var (1, -1)
+%!error var ([], 1)
 

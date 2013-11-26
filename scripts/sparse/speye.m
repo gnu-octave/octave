@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman and Andy Adler
+## Copyright (C) 2004-2013 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@
 
 function s = speye (m, n)
   if (nargin == 1)
-    if (isvector (m) && length(m) == 2)
+    if (isvector (m) && length (m) == 2)
       n = m(2);
       m = m(1);
     elseif (isscalar (m))
@@ -50,8 +50,10 @@ function s = speye (m, n)
   s = sparse (1:lo, 1:lo, 1, m, n);
 endfunction
 
-%!assert(issparse(speye(4)))
-%!assert(speye(4),sparse(1:4,1:4,1))
-%!assert(speye(2,4),sparse(1:2,1:2,1,2,4))
-%!assert(speye(4,2),sparse(1:2,1:2,1,4,2))
-%!assert(speye([4,2]),sparse(1:2,1:2,1,4,2))
+
+%!assert (issparse (speye (4)))
+%!assert (speye (4), sparse (1:4,1:4,1))
+%!assert (speye (2,4), sparse (1:2,1:2,1,2,4))
+%!assert (speye (4,2), sparse (1:2,1:2,1,4,2))
+%!assert (speye ([4,2]), sparse (1:2,1:2,1,4,2))
+

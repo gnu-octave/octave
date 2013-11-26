@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Daniel Kraft
+## Copyright (C) 2012-2013 Daniel Kraft
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ## Show flat profiler results.
 ##
 ## This command prints out profiler data as a flat profile.  @var{data} is the
-## structure returned by @code{profile ('info')}.  If @var{n} is given, it
+## structure returned by @code{profile ("info")}.  If @var{n} is given, it
 ## specifies the number of functions to show in the profile; functions are
 ## sorted in descending order by total time spent in them.  If there are more
 ## than @var{n} included in the profile, those will not be shown.  @var{n}
@@ -81,20 +81,24 @@ function profshow (data, n = 20)
 
 endfunction
 
+
 %!demo
-%! profile ("on");
+%! profile on;
 %! A = rand (100);
 %! B = expm (A);
-%! profile ("off");
+%! profile off;
 %! T = profile ("info");
 %! profshow (T, 10);
 
 %!demo
-%! profile ("on");
+%! profile on;
 %! expm (rand (500) + eye (500));
-%! profile ("off");
+%! profile off;
 %! profshow (profile ("info"), 5);
 
-%!error profshow ();
-%!error profshow (1, 2, 3);
-%!error profshow (struct (), 1.2);
+%!error profshow ()
+%!error profshow (1, 2, 3)
+%!error <N must be a positive integer> profshow (struct (), ones (2))
+%!error <N must be a positive integer> profshow (struct (), 1+i)
+%!error <N must be a positive integer> profshow (struct (), -1)
+

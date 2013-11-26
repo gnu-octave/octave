@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -44,12 +44,40 @@ function num = menu (title, varargin)
 
   page_screen_output (0, "local");
 
+  ## Process Supplied Options
+  if (nargin == 2)
+    ## List in a cell array
+    if (iscell (varargin{1}))
+      varargin = varargin{1};
+      nopt = length (varargin);
+      for i = 1:nopt
+        while (iscell (varargin{i}))
+          varargin{i} = varargin{i}{1};
+        endwhile
+      endfor
+    else
+      nopt = nargin - 1;
+    endif
+  else
+    ## List with random elements in it - pick the first always
+    for i = 1:nargin - 1
+      if (iscell (varargin{i}))
+        while (iscell (varargin{i}))
+          varargin{i} = varargin{i}{1};
+        endwhile
+      else
+        if (! ischar (varargin{i}))
+          varargin{i} = varargin{i}(1);
+        endif
+      endif
+    endfor
+    nopt = length (varargin);
+  endif
+
   if (! isempty (title))
     disp (title);
     printf ("\n");
   endif
-
-  nopt = nargin - 1;
 
   while (1)
     for i = 1:nopt

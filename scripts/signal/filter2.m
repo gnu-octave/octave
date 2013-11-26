@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2012 Paul Kienzle
+## Copyright (C) 2001-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -24,13 +24,13 @@
 ## Possible values are:
 ##
 ## @table @asis
-## @item 'full'
+## @item @qcode{"full"}
 ## pad @var{x} with zeros on all sides before filtering.
 ##
-## @item 'same'
+## @item @qcode{"same"}
 ## unpadded @var{x} (default)
 ##
-## @item 'valid'
+## @item @qcode{"valid"}
 ## trim @var{x} after filtering so edge effects are no included.
 ## @end table
 ##
@@ -52,7 +52,7 @@ function y = filter2 (b, x, shape)
     shape = "same";
   endif
 
-  [nr, nc] = size(b);
+  [nr, nc] = size (b);
   y = conv2 (x, b(nr:-1:1, nc:-1:1), shape);
 endfunction
 

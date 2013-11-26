@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -93,10 +93,10 @@ function retval = run_count (x, n, dim)
 endfunction
 
 
-%!assert(run_count (magic(3), 4), [1,0,1;1,0,1;0,1,0;0,0,0])
-%!assert(run_count (magic(3), 4, 2), [1,0,1;1,0,1;0,1,0;0,0,0]')
-%!assert(run_count (5:-1:1, 5), [5, 0, 0, 0, 0])
-%!assert(run_count (ones(3), 4), [0,0,0;0,0,0;1,1,1;0,0,0])
+%!assert (run_count (magic (3), 4), [1,0,1;1,0,1;0,1,0;0,0,0])
+%!assert (run_count (magic (3), 4, 2), [1,0,1;1,0,1;0,1,0;0,0,0]')
+%!assert (run_count (5:-1:1, 5), [5, 0, 0, 0, 0])
+%!assert (run_count (ones (3), 4), [0,0,0;0,0,0;1,1,1;0,0,0])
 
 %% Test input validation
 %!error run_count ()
@@ -104,10 +104,10 @@ endfunction
 %!error run_count (1, 2, 3, 4)
 %!error run_count ({1, 2}, 3)
 %!error run_count (['A'; 'A'; 'B'], 3)
-%!error run_count (1:5, ones(2,2))
+%!error run_count (1:5, ones (2,2))
 %!error run_count (1:5, 1.5)
 %!error run_count (1:5, -2)
-%!error run_count (1:5, 3, ones(2,2))
+%!error run_count (1:5, 3, ones (2,2))
 %!error run_count (1:5, 3, 1.5)
 %!error run_count (1:5, 3, 0)
 

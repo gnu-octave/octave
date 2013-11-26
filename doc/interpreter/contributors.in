@@ -1,8 +1,10 @@
 Ben Abbott
 Andy Adler
+Adam H. Aitkenhead
 Giles Anderson
 Joel Andersson
 Muthiah Annamalai
+Markus Appel
 Marco Atzeri
 Shai Ayal
 Roger Banks
@@ -10,6 +12,7 @@ Ben Barrowes
 Alexander Barth
 David Bateman
 Heinz Bauschke
+Julien Bect
 Roman Belov
 Karl Berry
 David Billinghurst
@@ -20,7 +23,9 @@ Paul Boven
 Richard Bovey
 John Bradshaw
 Marcus Brinkmann
+Max Brister
 Remy Bruno
+Clemens Buchacher
 Ansgar Burchard
 Marco Caliari
 Daniel Calvelo
@@ -34,19 +39,24 @@ Vincent Cautaerts
 Clinton Chee
 Albert Chin-A-Young
 Carsten Clark
+Catalin Codreanu
 J. D. Cole
 Martin Costabel
 Michael Creel
+Richard Crozier
 Jeff Cunningham
 Martin Dalecki
+Jacob Dawid
 Jorge Barros de Abreu
 Carlo de Falco
-Jacob Dawid
 Thomas D. Dean
 Philippe Defert
 Bill Denney
 Fabian Deutsch
 Christos Dimitrakakis
+Pantxo Diribarne
+Vivek Dogra
+John Donoghue
 David M. Doolin
 Carnë Draug
 Pascal A. Dupuis
@@ -69,6 +79,7 @@ Walter Gautschi
 Klaus Gebhardt
 Driss Ghaddab
 Nicolo Giorgetti
+Arun Giridhar
 Michael D. Godfrey
 Michael Goffioul
 Glenn Golden
@@ -78,6 +89,7 @@ Brian Gough
 Steffen Groot
 Etienne Grossmann
 David Grundberg
+Kyle Guinn
 Peter Gustafson
 Kai Habel
 Patrick Häcker
@@ -90,6 +102,7 @@ Dave Hawthorne
 Daniel Heiserer
 Martin Helm
 Stefan Hepp
+Martin Hepperle
 Jordi Gutiérrez Hermoso
 Yozo Hida
 Ryan Hinton
@@ -101,6 +114,7 @@ David Hoover
 Kurt Hornik
 Christopher Hulbert
 Cyril Humbert
+John Hunt
 Teemu Ikonen
 Alan W. Irwin
 Geoff Jacobsen
@@ -119,6 +133,7 @@ Joel Keay
 Mumit Khan
 Paul Kienzle
 Aaron A. King
+Erik Kjelsson
 Arno J. Klaassen
 Alexander Klein
 Geoffrey Knauth
@@ -126,11 +141,14 @@ Heine Kolltveit
 Ken Kouno
 Kacper Kowalik
 Daniel Kraft
+Nir Krakauer
 Aravindh Krishnamoorthy
 Oyvind Kristiansen
+Artem Krosheninnikov
 Piotr Krzyzanowski
 Volker Kuhlmann
 Tetsuro Kurita
+Philipp Kutin
 Miroslaw Kwasniak
 Rafael Laboissiere
 Kai Labusch
@@ -140,6 +158,7 @@ Bill Lash
 Dirk Laurie
 Maurice LeBrun
 Friedrich Leisch
+Thorsten Liebig
 Jyh-miin Lin
 Timo Lindfors
 Benjamin Lindner
@@ -150,39 +169,50 @@ Erik de Castro Lopo
 Massimo Lorenzin
 Emil Lucretiu
 Hoxide Ma
+Colin Macdonald
 James Macnicol
 Jens-Uwe Mager
 Rob Mahurin
+Alexander Mamonov
 Ricardo Marranita
 Orestes Mas
+Axel Mathéi
 Makoto Matsumoto
 Tatsuro Matsuoka
+Christoph Mayer
 Laurent Mazet
 G. D. McBain
-Alexander Mamonov
-Christoph Mayer
+Ronald van der Meer
 Júlio Hoffimann Mendes
+Ed Meyer
 Thorsten Meyer
 Petr Mikulik
+Mike Miller
 Stefan Monnier
 Antoine Moreau
 Kai P. Mueller
 Hannes Müller
 Victor Munoz
+Iain Murray
 Carmen Navarrete
 Todd Neal
 Philip Nienhuis
 Al Niessner
+Felipe G. Nievinski
 Rick Niles
 Takuji Nishimura
 Kai Noda
+Patrick Noffke
 Eric Norum
 Krzesimir Nowak
 Michael O'Brien
 Peter O'Gorman
 Thorsten Ohl
 Arno Onken
+Valentin Ortega-Clavero
 Luis F. Ortiz
+Carl Osterwisch
+Janne Olavi Paanajärvi
 Scott Pakin
 Gabriele Pannocchia
 Sylvain Pelissier
@@ -207,12 +237,16 @@ Balint Reczey
 Joshua Redstone
 Lukas Reichlin
 Michael Reifenberger
+Jens Restemeier
 Anthony Richardson
 Jason Riedy
 E. Joshua Rigler
+Sander van Rijn
 Petter Risholm
 Matthew W. Roberts
+Peter Rosin
 Andrew Ross
+Fabio Rossi
 Mark van Rossum
 Joe Rothweiler
 Kevin Ruland
@@ -256,21 +290,28 @@ Ivan Sutoris
 John Swensen
 Daisuke Takago
 Ariel Tankus
-Matthew Tenny
-Georg Thimm
+Falk Tannhäuser
 Duncan Temple Lang
+Matthew Tenny
 Kris Thielemans
+Georg Thimm
+Corey Thomasson
 Olaf Till
 Christophe Tournery
 Thomas Treichl
 Karsten Trulsen
+David Turner
 Frederick Umminger
 Utkarsh Upadhyay
 Stefan van der Walt
 Peter Van Wieren
 James R. Van Zandt
+Risto Vanhanen
 Gregory Vanuxem
+Mihas Varantsou
 Ivana Varekova
+Sébastien Villemot
+Daniel Wagenaar
 Thomas Walter
 Andreas Weber
 Olaf Weber

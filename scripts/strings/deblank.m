@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -75,15 +75,15 @@ function s = deblank (s)
 endfunction
 
 
-%!assert (deblank (" f o o \0"), " f o o");
-%!assert (deblank ('   '), '');
-%!assert (deblank ("   "), "");
-%!assert (deblank (""), "");
-%!assert (deblank ({}), {});
-%!assert (deblank ({" abc   ", {"   def   "}}), {" abc", {"   def"}});
+%!assert (deblank (" f o o \0"), " f o o")
+%!assert (deblank ('   '), '')
+%!assert (deblank ("   "), "")
+%!assert (deblank (""), "")
+%!assert (deblank ({}), {})
+%!assert (deblank ({" abc   ", {"   def   "}}), {" abc", {"   def"}})
 
-%!error <Invalid call to deblank> deblank ();
-%!error <Invalid call to deblank> deblank ("foo", "bar");
-%!error <argument must be a string> deblank (1);
-%!error <argument must be a string> deblank ({[]});
+%!error <Invalid call to deblank> deblank ()
+%!error <Invalid call to deblank> deblank ("foo", "bar")
+%!error <argument must be a string> deblank (1)
+%!error <argument must be a string> deblank ({[]})
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -139,7 +139,7 @@ endfunction
 %! x = [1:5]';
 %! y = 3*x + 2;
 %! x = [x, ones(5,1)];
-%! assert (ols(y,x), [3; 2], 50*eps)
+%! assert (ols (y,x), [3; 2], 50*eps)
 
 %!test
 %! x = [1, 2; 3, 4];
@@ -163,11 +163,12 @@ endfunction
 %! assert (b, [1.4, 2], 2*eps);
 
 %% Test input validation
-%!error ols ();
-%!error ols (1);
-%!error ols (1, 2, 3);
-%!error ols ([true, true], [1, 2]);
-%!error ols ([1, 2], [true, true]);
-%!error ols (ones (2,2,2), ones (2,2));
-%!error ols (ones (2,2), ones (2,2,2));
-%!error ols (ones(1,2), ones(2,2));
+%!error ols ()
+%!error ols (1)
+%!error ols (1, 2, 3)
+%!error ols ([true, true], [1, 2])
+%!error ols ([1, 2], [true, true])
+%!error ols (ones (2,2,2), ones (2,2))
+%!error ols (ones (2,2), ones (2,2,2))
+%!error ols (ones (1,2), ones (2,2))
+

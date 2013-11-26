@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 S�ren Hauberg
+## Copyright (C) 2009-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -72,6 +72,9 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error ("__makeinfo__: second input argument must be a string");
   endif
 
+  ## NOTE: The 3rd argument is used by Octave-Forge function
+  ##       generate_package_html, not by core Octave.  This functionality
+  ##       can only be removed when that function has been updated.
   if (nargin < 3)
     if (strcmpi (output_type, "plain text"))
       fsee_also = @(T) strcat ...
@@ -86,23 +89,23 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error ("__makeinfo__: third input argument must be a function handle");
   endif
 
+  ## Formatting in m-files has an extra space at the beginning of every line.
+  ## Remove these unwanted spaces if present.  First text char is "\n" delim.
+  if (text(2) == " ")
+    text = strrep (text, "\n ", "\n");
+  endif
+  ## Texinfo crashes if @end tex does not appear first on the line.
+  text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
 
-  ## It seems like makeinfo sometimes gets angry if the first character
-  ## on a line is a space, so we remove these.
-  text = strrep (text, "\n ", "\n");
-
-  ## Handle @seealso macro
-  see_also_pat = '@seealso *\{(.*)\}';
-  args = regexp (text, see_also_pat, 'tokens');
-  for ii = 1:numel (args)
-    expanded = fsee_also (strtrim (strsplit (args{ii}{:}, ',', true)));
-    text = regexprep (text, see_also_pat, expanded, 'once');
-  endfor
-
-  ## Handle @nospell macro
-  text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
-  ## Handle @xcode macro
-  text = regexprep (text, '@xcode *\{([^}]*)\}', "$1");
+  file = texi_macros_file ();
+  fid = fopen (file, "r");
+  if (fid < 0)
+    error ("unable to open %s for reading", file);
+  else
+    macros_text = fread (fid, Inf, "*char")';
+    text = [macros_text text];
+  endif
+  fclose (fid);
 
   if (strcmpi (output_type, "texinfo"))
     status = 0;
@@ -116,7 +119,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   unwind_protect
     ## Write Texinfo to tmp file
     template = "octave-help-XXXXXX";
-    [fid, name] = mkstemp (fullfile (P_tmpdir, template), true);
+    [fid, name] = mkstemp (fullfile (tempdir, template), true);
     if (fid < 0)
       error ("__makeinfo__: could not create temporary file");
     endif
@@ -144,6 +147,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     endif
   end_unwind_protect
 endfunction
+
 
 ## No test needed for internal helper function.
 %!assert (1)

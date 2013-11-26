@@ -6,5 +6,5 @@ Exec=%OCTAVE_PREFIX%/bin/octave
 Icon=%OCTAVE_IMAGEDIR%/octave-logo.svg
 Terminal=true
 Type=Application
-Categories=Development;Math;Science;
+Categories=Education;Science;Math;
 StartupNotify=false

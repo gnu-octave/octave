@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -80,21 +80,21 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 2 3];
 %! y = [0 1/6 4/6 1/6 0];
-%!assert(hygepdf (x, 4*ones(1,5), 2, 2), y);
-%!assert(hygepdf (x, 4, 2*ones(1,5), 2), y);
-%!assert(hygepdf (x, 4, 2, 2*ones(1,5)), y);
-%!assert(hygepdf (x, 4*[1 -1 NaN 1.1 1], 2, 2), [0 NaN NaN NaN 0]);
-%!assert(hygepdf (x, 4, 2*[1 -1 NaN 1.1 1], 2), [0 NaN NaN NaN 0]);
-%!assert(hygepdf (x, 4, 5, 2), [NaN NaN NaN NaN NaN]);
-%!assert(hygepdf (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [0 NaN NaN NaN 0]);
-%!assert(hygepdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN]);
-%!assert(hygepdf ([x, NaN], 4, 2, 2), [y, NaN], eps);
+%!assert (hygepdf (x, 4*ones (1,5), 2, 2), y)
+%!assert (hygepdf (x, 4, 2*ones (1,5), 2), y)
+%!assert (hygepdf (x, 4, 2, 2*ones (1,5)), y)
+%!assert (hygepdf (x, 4*[1 -1 NaN 1.1 1], 2, 2), [0 NaN NaN NaN 0])
+%!assert (hygepdf (x, 4, 2*[1 -1 NaN 1.1 1], 2), [0 NaN NaN NaN 0])
+%!assert (hygepdf (x, 4, 5, 2), [NaN NaN NaN NaN NaN])
+%!assert (hygepdf (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [0 NaN NaN NaN 0])
+%!assert (hygepdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN])
+%!assert (hygepdf ([x, NaN], 4, 2, 2), [y, NaN], eps)
 
 %% Test class of input preserved
-%!assert(hygepdf (single([x, NaN]), 4, 2, 2), single([y, NaN]));
-%!assert(hygepdf ([x, NaN], single(4), 2, 2), single([y, NaN]));
-%!assert(hygepdf ([x, NaN], 4, single(2), 2), single([y, NaN]));
-%!assert(hygepdf ([x, NaN], 4, 2, single(2)), single([y, NaN]));
+%!assert (hygepdf (single ([x, NaN]), 4, 2, 2), single ([y, NaN]))
+%!assert (hygepdf ([x, NaN], single (4), 2, 2), single ([y, NaN]))
+%!assert (hygepdf ([x, NaN], 4, single (2), 2), single ([y, NaN]))
+%!assert (hygepdf ([x, NaN], 4, 2, single (2)), single ([y, NaN]))
 
 %% Test input validation
 %!error hygepdf ()
@@ -102,9 +102,9 @@ endfunction
 %!error hygepdf (1,2)
 %!error hygepdf (1,2,3)
 %!error hygepdf (1,2,3,4,5)
-%!error hygepdf (1, ones(3),ones(2),ones(2))
-%!error hygepdf (1, ones(2),ones(3),ones(2))
-%!error hygepdf (1, ones(2),ones(2),ones(3))
+%!error hygepdf (1, ones (3), ones (2), ones (2))
+%!error hygepdf (1, ones (2), ones (3), ones (2))
+%!error hygepdf (1, ones (2), ones (2), ones (3))
 %!error hygepdf (i, 2, 2, 2)
 %!error hygepdf (2, i, 2, 2)
 %!error hygepdf (2, 2, i, 2)

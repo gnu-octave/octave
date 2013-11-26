@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman
+## Copyright (C) 2004-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -98,7 +98,7 @@ endfunction
 %!error circshift ()
 %!error circshift (1)
 %!error circshift (1,2,3)
-%!error circshift (1, ones(2,2))
+%!error circshift (1, ones (2,2))
 %!error circshift (1, [1 2 3])
 %!error circshift (1, 1.5)
 

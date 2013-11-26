@@ -1,4 +1,4 @@
-## Copyright (C) 1997-2012 Vincent Cautaerts
+## Copyright (C) 1997-2013 Vincent Cautaerts
 ##
 ## This file is part of Octave.
 ##
@@ -69,48 +69,49 @@ function retval = ifftshift (x, dim)
 
 endfunction
 
-%!test
-%!  x = [0:7];
-%!  y = ifftshift (x);
-%!  assert(y, [4 5 6 7 0 1 2 3]);
-%!  assert(ifftshift (y), x);
 
 %!test
-%!  x = [0:6];
-%!  y = ifftshift (x);
-%!  assert(y, [3 4 5 6 0 1 2]);
-%!  assert(ifftshift (y), [6 0 1 2 3 4 5]);
+%! x = [0:7];
+%! y = ifftshift (x);
+%! assert (y, [4 5 6 7 0 1 2 3]);
+%! assert (ifftshift (y), x);
 
 %!test
-%!  x = [0:7]';
-%!  y = ifftshift (x);
-%!  assert(y, [4;5;6;7;0;1;2;3]);
-%!  assert(ifftshift (y), x);
+%! x = [0:6];
+%! y = ifftshift (x);
+%! assert (y, [3 4 5 6 0 1 2]);
+%! assert (ifftshift (y), [6 0 1 2 3 4 5]);
 
 %!test
-%!  x = [0:6]';
-%!  y = ifftshift (x);
-%!  assert(y, [3;4;5;6;0;1;2]);
-%!  assert(ifftshift (y), [6;0;1;2;3;4;5]);
+%! x = [0:7]';
+%! y = ifftshift (x);
+%! assert (y, [4;5;6;7;0;1;2;3]);
+%! assert (ifftshift (y), x);
 
 %!test
-%!  x = [0:3];
-%!  x = [x;2*x;3*x+1;4*x+1];
-%!  y = ifftshift (x);
-%!  assert(y, [[7 10 1 4];[9 13 1 5];[2 3 0 1];[4 6 0 2]]);
-%!  assert(ifftshift (y), x);
+%! x = [0:6]';
+%! y = ifftshift (x);
+%! assert (y, [3;4;5;6;0;1;2]);
+%! assert (ifftshift (y), [6;0;1;2;3;4;5]);
 
 %!test
-%!  x = [0:3];
-%!  x = [x;2*x;3*x+1;4*x+1];
-%!  y = ifftshift (x,1);
-%!  assert(y, [[1 4 7 10];[1 5 9 13];[0 1 2 3];[0 2 4 6]]);
-%!  assert(ifftshift (y,1), x);
+%! x = [0:3];
+%! x = [x;2*x;3*x+1;4*x+1];
+%! y = ifftshift (x);
+%! assert (y, [[7 10 1 4];[9 13 1 5];[2 3 0 1];[4 6 0 2]]);
+%! assert (ifftshift (y), x);
 
 %!test
-%!  x = [0:3];
-%!  x = [x;2*x;3*x+1;4*x+1];
-%!  y = ifftshift (x,2);
-%!  assert(y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
-%!  assert(ifftshift (y,2), x);
+%! x = [0:3];
+%! x = [x;2*x;3*x+1;4*x+1];
+%! y = ifftshift (x,1);
+%! assert (y, [[1 4 7 10];[1 5 9 13];[0 1 2 3];[0 2 4 6]]);
+%! assert (ifftshift (y,1), x);
+
+%!test
+%! x = [0:3];
+%! x = [x;2*x;3*x+1;4*x+1];
+%! y = ifftshift (x,2);
+%! assert (y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
+%! assert (ifftshift (y,2), x);
 

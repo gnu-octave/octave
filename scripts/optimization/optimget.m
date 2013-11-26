@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Jaroslav Hajek
+## Copyright (C) 2008-2013 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -33,12 +33,18 @@ function retval = optimget (options, parname, default)
   endif
 
   opts = __all_opts__ ();
-  idx = lookup (tolower (opts), tolower (parname), "m");
+  idx = strncmpi (opts, parname, length (parname));
 
-  if (idx)
+  nmatch = sum (idx);
+
+  if (nmatch == 1)
     parname = opts{idx};
-  else
+  elseif (nmatch == 0)
     warning ("unrecognized option: %s", parname);
+  else
+    fmt = sprintf ("ambiguous option: %%s (%s%%s)",
+                   repmat ("%s, ", 1, nmatch-1));
+    warning (fmt, parname, opts{idx});
   endif
   if (isfield (options, parname))
     retval = options.(parname);
@@ -49,4 +55,15 @@ function retval = optimget (options, parname, default)
   endif
 
 endfunction
+
+
+%!error optimget ()
+
+%!shared opts
+%! opts = optimset ("tolx", 0.1, "maxit", 100);
+%!assert (optimget (opts, "TolX"), 0.1);
+%!assert (optimget (opts, "maxit"), 100);
+%!assert (optimget (opts, "MaxITer"), 100);
+%!warning (optimget (opts, "Max"));
+%!warning (optimget (opts, "foobar"));
 

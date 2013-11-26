@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Ivana Varekova & Radek Salac
+## Copyright (C) 2008-2013 Ivana Varekova & Radek Salac
 ##
 ## This file is part of Octave.
 ##
@@ -141,10 +141,10 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
 
       ## We are in top level separator when we have one child and the
       ## flag is 1
-      if (columns(idx) == 1 && top_level == 1)
+      if (columns (idx) == 1 && top_level == 1)
         s++;
       else
-        # We aren't in top level separator now.
+        ## We aren't in top level separator now.
         top_level = 0;
       endif
       ## If there is not any descendant of "parent node":
@@ -152,7 +152,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
        left_most++;
        x_coordinate_r(par_number) = left_most;
        max_ht = min (max_ht, level);
-       if (length(stk) > 1 && find ((shift(stk,1)-stk) == 0) > 1
+       if (length (stk) > 1 && find ((shift (stk,1) - stk) == 0) > 1
            && stk(end,2) != stk(end-1,2))
           ## Return to the nearest branching the position to return
           ## position is the position on the stack, where should be
@@ -202,6 +202,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
   endif
 endfunction
 
+
 %!test
 %! % Compute a simple tree layout
 %! [x, y, h, s] = treelayout ([0, 1, 2, 2]);
@@ -225,3 +226,4 @@ endfunction
 %! assert (y, [0, 0, 0, 3]);
 %! assert (h, 0);
 %! assert (s, 1);
+

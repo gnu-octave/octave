@@ -1,9 +1,10 @@
-function g = subsasgn(g, s, x)
+function g = subsasgn (g, s, x)
 
   switch s.type
   case '.'
     switch s.subs
     case 'gyrk'
-      g.gyrk = x; 
+      g.gyrk = x;
   end
+
 end

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -67,21 +67,21 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 2 10 11];
 %! y = [0 0 0.1 0.1 0.1 0];
-%!assert(unidpdf (x, 10*ones(1,6)), y);
-%!assert(unidpdf (x, 10), y);
-%!assert(unidpdf (x, 10*[0 NaN 1 1 1 1]), [NaN NaN y(3:6)]);
-%!assert(unidpdf ([x, NaN], 10), [y, NaN]);
+%!assert (unidpdf (x, 10*ones (1,6)), y)
+%!assert (unidpdf (x, 10), y)
+%!assert (unidpdf (x, 10*[0 NaN 1 1 1 1]), [NaN NaN y(3:6)])
+%!assert (unidpdf ([x, NaN], 10), [y, NaN])
 
 %% Test class of input preserved
-%!assert(unidpdf (single([x, NaN]), 10), single([y, NaN]));
-%!assert(unidpdf ([x, NaN], single(10)), single([y, NaN]));
+%!assert (unidpdf (single ([x, NaN]), 10), single ([y, NaN]))
+%!assert (unidpdf ([x, NaN], single (10)), single ([y, NaN]))
 
 %% Test input validation
 %!error unidpdf ()
 %!error unidpdf (1)
 %!error unidpdf (1,2,3)
-%!error unidpdf (ones(3),ones(2))
-%!error unidpdf (ones(2),ones(3))
+%!error unidpdf (ones (3), ones (2))
+%!error unidpdf (ones (2), ones (3))
 %!error unidpdf (i, 2)
 %!error unidpdf (2, i)
 

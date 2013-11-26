@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{H} =} convhull (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{H} =} convhull (@var{x}, @var{y}, @var{options})
 ## Compute the convex hull of the set of points defined by the
-## vectors @var{x} and @var{y}.  The hull @var{H} is an index vector into
+## arrays @var{x} and @var{y}.  The hull @var{H} is an index vector into
 ## the set of points and specifies which points form the enclosing hull.
 ##
 ## An optional third argument, which must be a string or cell array of strings,
@@ -45,17 +45,20 @@ function H = convhull (x, y, options)
     print_usage ();
   endif
 
-  if (! (isvector (x) && isvector (y) && length (x) == length (y))
-      && ! size_equal (x, y))
-    error ("convhull: X and Y must be the same size");
+  ## convhulln expects column vectors
+  x = x(:);
+  y = y(:);
+
+  if (length (x) != length (y))
+    error ("convhull: X and Y must have the same size");
   elseif (nargin == 3 && ! (ischar (options) || iscellstr (options)))
     error ("convhull: OPTIONS must be a string or cell array of strings");
   endif
 
   if (nargin == 2)
-    i = convhulln ([x(:), y(:)]);
+    i = convhulln ([x, y]);
   else
-    i = convhulln ([x(:), y(:)], options);
+    i = convhulln ([x, y], options);
   endif
 
   n = rows (i);
@@ -85,6 +88,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! x = -3:0.05:3;
 %! y = abs (sin (x));
 %! k = convhull (x, y);
@@ -94,7 +98,7 @@ endfunction
 %!testif HAVE_QHULL
 %! x = -3:0.5:3;
 %! y = abs (sin (x));
-%! assert (convhull (x, y), [1;7;13;12;11;10;4;3;2;1])
+%! assert (convhull (x, y), [1;7;13;12;11;10;4;3;2;1]);
 
 %% FIXME: Need input validation tests
 

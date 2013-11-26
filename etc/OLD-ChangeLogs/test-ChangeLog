@@ -285,7 +285,7 @@
 
 	* test_struct.m: Add struct array tests.
 
-2009-01-23  Søren Hauberg  <hauberg@gmail.com>
+2009-01-23  SÃ¸ren Hauberg  <hauberg@gmail.com>
 
 	* test_prefer.m: Update to match new API of the 'type' function.
 

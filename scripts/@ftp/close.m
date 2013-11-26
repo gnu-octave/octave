@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,10 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} close (@var{f})
-## Close the FTP connection represented by the given FTP object @var{f}.
+## Close the FTP connection represented by the FTP object @var{f}.
+##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function dir (f)
+function close (f)
   __ftp_close__ (f.curlhandle);
 endfunction
+

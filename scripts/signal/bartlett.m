@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Andreas Weingessel
+## Copyright (C) 1995-2013 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -48,16 +48,18 @@ function c = bartlett (m)
 
 endfunction
 
-%!assert (bartlett (1), 1);
-%!assert (bartlett (2), zeros (2,1));
-%!assert (bartlett (16), fliplr (bartlett (16)));
-%!assert (bartlett (15), fliplr (bartlett (15)));
+
+%!assert (bartlett (1), 1)
+%!assert (bartlett (2), zeros (2,1))
+%!assert (bartlett (16), fliplr (bartlett (16)))
+%!assert (bartlett (15), fliplr (bartlett (15)))
 %!test
 %! N = 9;
 %! A = bartlett (N);
-%! assert (A (ceil (N/2)), 1);
+%! assert (A(ceil (N/2)), 1);
 
-%!error bartlett ();
-%!error bartlett (0.5);
-%!error bartlett (-1);
-%!error bartlett (ones(1,4));
+%!error bartlett ()
+%!error bartlett (0.5)
+%!error bartlett (-1)
+%!error bartlett (ones (1,4))
+

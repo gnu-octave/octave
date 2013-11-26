@@ -1,13 +1,13 @@
-## Copyright (C) 2010-2012 Ben Abbott
+## Copyright (C) 2010-2013 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or (at
+## the Free Software Foundation; either version 3 of the License, or (at
 ## your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
+## Octave is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
@@ -61,7 +61,7 @@ function s = untabify (t, tw = 8, dblank = false)
   if (ischar (t))
     s = replace_tabs (t, tw);
   else
-    s = cellfun (@(str) replace_tabs (str, tw), t, "uniformoutput", false);
+    s = cellfun (@replace_tabs, t, {tw}, "uniformoutput", false);
   endif
 
   if (dblank)
@@ -82,10 +82,10 @@ function s = replace_tabs (t, tw)
     nr = rows (t);
     sc = cell (nr, 1);
     for j = 1:nr
-      n = 1:numel(t(j,:));
+      n = 1:numel (t(j,:));
       m = find (t(j,:) == "\t");
       t(j,m) = " ";
-      for i = 1:numel(m)
+      for i = 1:numel (m)
         k = tw * ceil (n(m(i)) / tw);
         dn = k - n(m(i));
         n(m(i):end) += dn;

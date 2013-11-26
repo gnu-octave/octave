@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -63,7 +63,7 @@ function X = loadaudio (name, ext, bps)
       [X, c] = fread (num, inf, "short");
     endif
   elseif (strcmp (ext, "mu") || strcmp (ext, "au")
-          || strcmp (ext, "snd") || strcmp(ext, "ul"))
+          || strcmp (ext, "snd") || strcmp (ext, "ul"))
     [Y, c] = fread (num, inf, "uchar");
     ## remove file header
     m = find (Y(1:64) == 0, 1, "last");
@@ -79,3 +79,4 @@ function X = loadaudio (name, ext, bps)
   fclose (num);
 
 endfunction
+

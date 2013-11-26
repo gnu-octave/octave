@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -25,13 +25,13 @@ command line, and write Octave programs that can be executed as commands
 from your shell.
 
 @menu
-* Invoking Octave from the Command Line::             
-* Quitting Octave::             
-* Getting Help::                
-* Command Line Editing::        
-* Errors::                      
-* Executable Octave Programs::  
-* Comments::                    
+* Invoking Octave from the Command Line::
+* Quitting Octave::
+* Getting Help::
+* Command Line Editing::
+* Errors::
+* Executable Octave Programs::
+* Comments::
 @end menu
 
 @node Invoking Octave from the Command Line
@@ -52,8 +52,8 @@ available options and briefly describe their use (@samp{octave -h} is a
 shorter equivalent).
 
 @menu
-* Command Line Options::        
-* Startup Files::               
+* Command Line Options::
+* Startup Files::
 @end menu
 
 @node Command Line Options
@@ -67,6 +67,13 @@ accepts.
 
 
 @table @code
+
+@item --built-in-docstrings-file @var{filename}
+@cindex @code{--built-in-docstrings-file @var{filename}}
+Specify the name of the file containing documentation strings for the
+built-in functions of Octave.  This value is normally correct and should
+only need to specified in extraordinary situations.
+
 @item  --debug
 @itemx -d
 @cindex @code{--debug}
@@ -74,6 +81,10 @@ accepts.
 Enter parser debugging mode.  Using this option will cause Octave's
 parser to print a lot of information about the commands it reads, and is
 probably only useful if you are actually trying to debug the parser.
+
+@item --debug-jit
+@cindex @code{--debug-jit}
+Enable JIT compiler debugging and tracing.
 
 @item --doc-cache-file @var{filename}
 @cindex @code{--doc-cache-file @var{filename}}
@@ -100,6 +111,10 @@ specified on the command line will override any value of
 @w{@env{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
 in the system or user startup files that set the built-in variable
 @w{@env{EXEC_PATH}}.
+
+@item --force-gui
+@cindex @code{--force-gui}
+Force the graphical user interface (GUI) to start.
 
 @item  --help
 @itemx -h
@@ -139,11 +154,20 @@ commands in the system or user startup files that use the
 @cindex @code{-i}
 Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
-to run Octave within Emacs, see @ref{Emacs Octave Support}.
+to run Octave within Emacs, @pxref{Emacs Octave Support}.
+
+@item --jit-compiler
+@cindex @code{--jit-compiler}
+Enable the JIT compiler used for accelerating loops.
 
 @item --line-editing
 @cindex @code{--line-editing}
 Force readline use for command-line editing.
+
+@item --no-gui
+@cindex @code{--no-gui}
+Disable the graphical user interface (GUI) and use the command line
+interface (CLI) instead.
 
 @item  --no-history
 @itemx -H
@@ -167,6 +191,12 @@ Disable command-line editing.
 @item --no-site-file
 @cindex @code{--no-site-file}
 Don't read the site-wide @file{octaverc} initialization files.
+
+@item  --no-window-system
+@itemx -W
+@cindex @code{--no-window-system}
+Disable use of a windowing system including graphics.  This forces a
+strictly terminal-only environment.
 
 @item  --norc
 @itemx -f
@@ -199,6 +229,10 @@ named on the command line.
 @cindex @code{-q}
 Don't print the usual greeting and version message at startup.
 
+@item --texi-macros-file @var{filename}
+@cindex @code{--texi-macros-file @var{filename}}
+Specify the name of the file containing Texinfo macros for use by makeinfo.
+
 @item  --traditional
 @itemx --braindead
 @cindex @code{--traditional}
@@ -214,7 +248,7 @@ allow_noninteger_range_as_index = true
 beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
-default_save_options            = "-mat-binary"
+save_default_options            = "-mat-binary"
 do_braindead_shortcircuit_evaluation = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
@@ -234,6 +268,12 @@ Octave:function-name-clash
 Octave:load-file-in-path
 @end group
 @end example
+
+@noindent
+Note that this does not enable the @code{Octave:matlab-incompatible}
+warning, which you might want if you want to be told about writing code
+that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
+@ref{XREFwarning_ids,,warning_ids}).
 
 @item  --verbose
 @itemx -V
@@ -389,7 +429,11 @@ found.
 
 @DOCSTRING(makeinfo_program)
 
+@DOCSTRING(texi_macros_file)
+
 @DOCSTRING(doc_cache_file)
+
+@DOCSTRING(built_in_docstrings_file)
 
 @DOCSTRING(suppress_verbose_help_message)
 
@@ -397,7 +441,7 @@ The following functions are principally used internally by Octave for
 generating the documentation.  They are documented here for completeness
 and because they may occasionally be useful for users.
 
-@DOCSTRING(gen_doc_cache)
+@DOCSTRING(doc_cache_create)
 
 @DOCSTRING(get_help_text)
 
@@ -440,14 +484,14 @@ characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 
 
 @menu
-* Cursor Motion::               
-* Killing and Yanking::         
-* Commands For Text::           
-* Commands For Completion::     
-* Commands For History::        
-* Customizing readline::        
-* Customizing the Prompt::      
-* Diary and Echo Commands::     
+* Cursor Motion::
+* Killing and Yanking::
+* Commands For Text::
+* Commands For Completion::
+* Commands For History::
+* Customizing readline::
+* Customizing the Prompt::
+* Diary and Echo Commands::
 @end menu
 
 @node Cursor Motion
@@ -486,7 +530,7 @@ Move to the end of the line.
 @item C-l
 Clear the screen, reprinting the current line at the top.
 
-@item C-_
+@item  C-_
 @itemx C-/
 Undo the last action.  You can undo all the way back to an empty line.
 
@@ -566,7 +610,7 @@ otherwise have a special meaning (e.g., @key{TAB}, @kbd{C-q}, etc.), or
 for quickly correcting typing mistakes.
 
 @table @kbd
-@item C-q
+@item  C-q
 @itemx C-v
 Add the next character that you type to the line verbatim.  This is
 how to insert things like @kbd{C-q} for example.
@@ -634,7 +678,7 @@ Here are the commands for simple browsing and searching the history
 list.
 
 @table @kbd
-@item @key{LFD}
+@item  @key{LFD}
 @itemx @key{RET}
 Accept the current line regardless of where the cursor is.  If the line is
 non-empty, add it to the history list.  If the line was a history
@@ -678,7 +722,7 @@ re-running chunks of commands from the history list.
 Octave also allows you customize the details of when, where, and how history
 is saved.
 
-@DOCSTRING(saving_history)
+@DOCSTRING(history_save)
 
 @DOCSTRING(history_control)
 
@@ -705,9 +749,9 @@ exact command syntax).  The default configuration file is normally
 Octave provides two commands for initializing Readline and thereby changing
 the command line behavior.
 
-@DOCSTRING(read_readline_init_file)
+@DOCSTRING(readline_read_init_file)
 
-@DOCSTRING(re_read_readline_init_file)
+@DOCSTRING(readline_re_read_init_file)
 
 @node Customizing the Prompt
 @subsection Customizing the Prompt
@@ -1003,7 +1047,7 @@ typically hard to understand without them.
 @menu
 * Single Line Comments::
 * Block Comments::
-* Comments and the Help System::                    
+* Comments and the Help System::
 @end menu
 
 @node Single Line Comments
@@ -1021,10 +1065,10 @@ shows whole line and partial line comments.
 @group
 function countdown
   # Count down for main rocket engines 
-  disp(3);
-  disp(2);
-  disp(1);
-  disp("Blast Off!");  # Rocket leaves pad
+  disp (3);
+  disp (2);
+  disp (1);
+  disp ("Blast Off!");  # Rocket leaves pad
 endfunction
 @end group
 @end example
@@ -1044,19 +1088,19 @@ For example,
 @group
 function quick_countdown
   # Count down for main rocket engines 
-  disp(3);
+  disp (3);
  #@{
-  disp(2);
-  disp(1);
+  disp (2);
+  disp (1);
  #@}
-  disp("Blast Off!");  # Rocket leaves pad
+  disp ("Blast Off!");  # Rocket leaves pad
 endfunction
 @end group
 @end example
 
 @noindent
-will produce a very quick countdown from '3' to 'Blast Off' as the
-lines "@code{disp(2);}" and "@code{disp(1);}" won't be executed.
+will produce a very quick countdown from @qcode{'3'} to @qcode{"Blast Off"} as
+the lines "@code{disp (2);}" and "@code{disp (1);}" won't be executed.
 
 The block comment markers must appear alone as the only characters on a line
 (excepting whitespace) in order to be parsed correctly.

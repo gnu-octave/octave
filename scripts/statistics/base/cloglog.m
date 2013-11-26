@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -46,10 +46,12 @@ function y = cloglog (x)
 
 endfunction
 
-%!assert(cloglog(0), -Inf)
-%!assert(cloglog(1), Inf)
-%!assert(cloglog(1/e), 0)
+
+%!assert (cloglog (0), -Inf)
+%!assert (cloglog (1), Inf)
+%!assert (cloglog (1/e), 0)
 
 %% Test input validation
 %!error cloglog ()
 %!error cloglog (1, 2)
+

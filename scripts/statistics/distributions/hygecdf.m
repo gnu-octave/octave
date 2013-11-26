@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1997-2012 Kurt Hornik
+## Copyright (C) 1997-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -76,22 +76,22 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 2 3];
 %! y = [0 1/6 5/6 1 1];
-%!assert(hygecdf (x, 4*ones(1,5), 2, 2), y, eps);
-%!assert(hygecdf (x, 4, 2*ones(1,5), 2), y, eps);
-%!assert(hygecdf (x, 4, 2, 2*ones(1,5)), y, eps);
-%!assert(hygecdf (x, 4*[1 -1 NaN 1.1 1], 2, 2), [y(1) NaN NaN NaN y(5)], eps);
-%!assert(hygecdf (x, 4, 2*[1 -1 NaN 1.1 1], 2), [y(1) NaN NaN NaN y(5)], eps);
-%!assert(hygecdf (x, 4, 5, 2), [NaN NaN NaN NaN NaN]);
-%!assert(hygecdf (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [y(1) NaN NaN NaN y(5)], eps);
-%!assert(hygecdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN]);
-%!assert(hygecdf ([x(1:2) NaN x(4:5)], 4, 2, 2), [y(1:2) NaN y(4:5)], eps);
+%!assert (hygecdf (x, 4*ones (1,5), 2, 2), y, eps)
+%!assert (hygecdf (x, 4, 2*ones (1,5), 2), y, eps)
+%!assert (hygecdf (x, 4, 2, 2*ones (1,5)), y, eps)
+%!assert (hygecdf (x, 4*[1 -1 NaN 1.1 1], 2, 2), [y(1) NaN NaN NaN y(5)], eps)
+%!assert (hygecdf (x, 4, 2*[1 -1 NaN 1.1 1], 2), [y(1) NaN NaN NaN y(5)], eps)
+%!assert (hygecdf (x, 4, 5, 2), [NaN NaN NaN NaN NaN])
+%!assert (hygecdf (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [y(1) NaN NaN NaN y(5)], eps)
+%!assert (hygecdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN])
+%!assert (hygecdf ([x(1:2) NaN x(4:5)], 4, 2, 2), [y(1:2) NaN y(4:5)], eps)
 
 %% Test class of input preserved
-%!assert(hygecdf ([x, NaN], 4, 2, 2), [y, NaN], eps);
-%!assert(hygecdf (single([x, NaN]), 4, 2, 2), single([y, NaN]), eps("single"));
-%!assert(hygecdf ([x, NaN], single(4), 2, 2), single([y, NaN]), eps("single"));
-%!assert(hygecdf ([x, NaN], 4, single(2), 2), single([y, NaN]), eps("single"));
-%!assert(hygecdf ([x, NaN], 4, 2, single(2)), single([y, NaN]), eps("single"));
+%!assert (hygecdf ([x, NaN], 4, 2, 2), [y, NaN], eps)
+%!assert (hygecdf (single ([x, NaN]), 4, 2, 2), single ([y, NaN]), eps ("single"))
+%!assert (hygecdf ([x, NaN], single (4), 2, 2), single ([y, NaN]), eps ("single"))
+%!assert (hygecdf ([x, NaN], 4, single (2), 2), single ([y, NaN]), eps ("single"))
+%!assert (hygecdf ([x, NaN], 4, 2, single (2)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error hygecdf ()
@@ -99,9 +99,9 @@ endfunction
 %!error hygecdf (1,2)
 %!error hygecdf (1,2,3)
 %!error hygecdf (1,2,3,4,5)
-%!error hygecdf (ones(2), ones(3), 1, 1)
-%!error hygecdf (1, ones(2), ones(3), 1)
-%!error hygecdf (1, 1, ones(2), ones(3))
+%!error hygecdf (ones (2), ones (3), 1, 1)
+%!error hygecdf (1, ones (2), ones (3), 1)
+%!error hygecdf (1, 1, ones (2), ones (3))
 %!error hygecdf (i, 2, 2, 2)
 %!error hygecdf (2, i, 2, 2)
 %!error hygecdf (2, 2, i, 2)

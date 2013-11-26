@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,9 +31,9 @@ function [idx, p] = tsearchn (x, t, xi)
     print_usage ();
   endif
 
-  nt = size (t, 1);
+  nt = rows (t);
   [m, n] = size (x);
-  mi = size (xi, 1);
+  mi = rows (xi);
   idx = NaN (mi, 1);
   p = NaN (mi, n + 1);
 
@@ -44,8 +44,8 @@ function [idx, p] = tsearchn (x, t, xi)
     b = cart2bary (x (t (i, :), :), xi(ni,:));
 
     ## Our points xi are in the current triangle if
-    ## (all(b >= 0) && all (b <= 1)). However as we impose that
-    ## sum(b,2) == 1 we only need to test all(b>=0). Note need to add
+    ## (all (b >= 0) && all (b <= 1)). However as we impose that
+    ## sum (b,2) == 1 we only need to test all(b>=0). Note need to add
     ## a small margin for rounding errors
     intri = all (b >= -1e-12, 2);
     idx(ni(intri)) = i;
@@ -69,39 +69,41 @@ function Beta = cart2bary (T, P)
   ##
   ## and therefore we can write the above as
   ##
-  ## P - T(end, :) = Beta(1:end-1) * (T(1:end-1,:) - ones(N,1) * T(end,:))
+  ## P - T(end, :) = Beta(1:end-1) * (T(1:end-1,:) - ones (N,1) * T(end,:))
   ##
   ## and then we can solve for Beta as
   ##
-  ## Beta(1:end-1) = (P - T(end,:)) / (T(1:end-1,:) - ones(N,1) * T(end,:))
-  ## Beta(end) = sum(Beta)
+  ## Beta(1:end-1) = (P - T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:))
+  ## Beta(end) = sum (Beta)
   ##
   ## Note below is generalize for multiple values of P, one per row.
   [M, N] = size (P);
-  Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones(N,1) * T(end,:));
-  Beta (:,end+1) = 1 - sum(Beta, 2);
+  Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:));
+  Beta (:,end+1) = 1 - sum (Beta, 2);
 endfunction
+
 
 %!shared x, tri
 %! x = [-1,-1;-1,1;1,-1];
 %! tri = [1, 2, 3];
 %!test
 %! [idx, p] = tsearchn (x,tri,[-1,-1]);
-%! assert (idx, 1)
-%! assert (p, [1,0,0], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [1,0,0], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[-1,1]);
-%! assert (idx, 1)
-%! assert (p, [0,1,0], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [0,1,0], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[1,-1]);
-%! assert (idx, 1)
-%! assert (p, [0,0,1], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [0,0,1], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[-1/3,-1/3]);
-%! assert (idx, 1)
-%! assert (p, [1/3,1/3,1/3], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [1/3,1/3,1/3], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[1,1]);
-%! assert (idx, NaN)
-%! assert (p, [NaN, NaN, NaN])
+%! assert (idx, NaN);
+%! assert (p, [NaN, NaN, NaN]);
+

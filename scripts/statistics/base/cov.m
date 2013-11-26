@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -86,7 +86,7 @@ function c = cov (x, y = [], opt = 0)
 
   ## Special case, scalar has zero covariance
   if (isscalar (x))
-    if (isa (x, 'single'))
+    if (isa (x, "single"))
       c = single (0);
     else
       c = 0;
@@ -121,22 +121,22 @@ endfunction
 %! x = rand (10);
 %! cx1 = cov (x);
 %! cx2 = cov (x, x);
-%! assert(size (cx1) == [10, 10] && size (cx2) == [10, 10]);
-%! assert(cx1, cx2, 1e1*eps);
+%! assert (size (cx1) == [10, 10] && size (cx2) == [10, 10]);
+%! assert (cx1, cx2, 1e1*eps);
 
 %!test
 %! x = [1:3]';
 %! y = [3:-1:1]';
-%! assert (cov (x,y), -1, 5*eps)
-%! assert (cov (x,flipud (y)), 1, 5*eps)
-%! assert (cov ([x, y]), [1 -1; -1 1], 5*eps)
+%! assert (cov (x, y), -1, 5*eps);
+%! assert (cov (x, flipud (y)), 1, 5*eps);
+%! assert (cov ([x, y]), [1 -1; -1 1], 5*eps);
 
 %!test
 %! x = single ([1:3]');
 %! y = single ([3:-1:1]');
-%! assert (cov (x,y), single (-1), 5*eps)
-%! assert (cov (x,flipud (y)), single (1), 5*eps)
-%! assert (cov ([x, y]), single ([1 -1; -1 1]), 5*eps)
+%! assert (cov (x, y), single (-1), 5*eps);
+%! assert (cov (x, flipud (y)), single (1), 5*eps);
+%! assert (cov ([x, y]), single ([1 -1; -1 1]), 5*eps);
 
 %!test
 %! x = [1:5];
@@ -144,22 +144,22 @@ endfunction
 %! assert (isscalar (c));
 %! assert (c, 2.5);
 
-%!assert(cov (5), 0);
-%!assert(cov (single(5)), single(0));
+%!assert (cov (5), 0)
+%!assert (cov (single (5)), single (0))
 
 %!test
 %! x = [1:5];
 %! c = cov (x, 0);
-%! assert(c, 2.5);
+%! assert (c, 2.5);
 %! c = cov (x, 1);
-%! assert(c, 2);
+%! assert (c, 2);
 
 %% Test input validation
-%!error cov ();
-%!error cov (1, 2, 3, 4);
-%!error cov ([1; 2], ["A", "B"]);
-%!error cov (ones (2,2,2));
-%!error cov (ones (2,2), ones (2,2,2));
-%!error cov (1, 3);
-%!error cov (ones (2,2), ones (3,2));
+%!error cov ()
+%!error cov (1, 2, 3, 4)
+%!error cov ([1; 2], ["A", "B"])
+%!error cov (ones (2,2,2))
+%!error cov (ones (2,2), ones (2,2,2))
+%!error cov (1, 3)
+%!error cov (ones (2,2), ones (3,2))
 

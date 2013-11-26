@@ -1,4 +1,4 @@
-## Copyright (C) 1997-2012 Vincent Cautaerts
+## Copyright (C) 1997-2013 Vincent Cautaerts
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## center of the vector or matrix.
 ##
 ## If @var{x} is a vector of @math{N} elements corresponding to @math{N}
-## time samples spaced by @math{dt}, then
+## time samples spaced by @nospell{@math{dt}}, then
 ## @code{fftshift (fft (@var{x}))} corresponds to frequencies
 ##
 ## @example
@@ -32,7 +32,7 @@
 ## @end example
 ##
 ## @noindent
-## where @nospell{@math{df}} = 1 / @math{dt}.
+## where @nospell{@math{df} = 1 / @math{dt}}.
 ##
 ## If @var{x} is a matrix, the same holds for rows and columns.  If
 ## @var{x} is an array, then the same holds along each dimension.
@@ -85,47 +85,47 @@ endfunction
 
 
 %!test
-%!  x = [0:7];
-%!  y = fftshift (x);
-%!  assert(y, [4 5 6 7 0 1 2 3]);
-%!  assert(fftshift (y), x);
+%! x = [0:7];
+%! y = fftshift (x);
+%! assert (y, [4 5 6 7 0 1 2 3]);
+%! assert (fftshift (y), x);
 
 %!test
-%!  x = [0:6];
-%!  y = fftshift (x);
-%!  assert(y, [4 5 6 0 1 2 3]);
-%!  assert(fftshift (y), [1 2 3 4 5 6 0]);
+%! x = [0:6];
+%! y = fftshift (x);
+%! assert (y, [4 5 6 0 1 2 3]);
+%! assert (fftshift (y), [1 2 3 4 5 6 0]);
 
 %!test
-%!  x = [0:7]';
-%!  y = fftshift (x);
-%!  assert(y, [4;5;6;7;0;1;2;3]);
-%!  assert(fftshift (y), x);
+%! x = [0:7]';
+%! y = fftshift (x);
+%! assert (y, [4;5;6;7;0;1;2;3]);
+%! assert (fftshift (y), x);
 
 %!test
-%!  x = [0:6]';
-%!  y = fftshift (x);
-%!  assert(y, [4;5;6;0;1;2;3]);
-%!  assert(fftshift (y), [1;2;3;4;5;6;0]);
+%! x = [0:6]';
+%! y = fftshift (x);
+%! assert (y, [4;5;6;0;1;2;3]);
+%! assert (fftshift (y), [1;2;3;4;5;6;0]);
 
 %!test
-%!  x = [0:3];
-%!  x = [x;2*x;3*x+1;4*x+1];
-%!  y = fftshift (x);
-%!  assert(y, [[7 10 1 4];[9 13 1 5];[2 3 0 1];[4 6 0 2]]);
-%!  assert(fftshift (y), x);
+%! x = [0:3];
+%! x = [x;2*x;3*x+1;4*x+1];
+%! y = fftshift (x);
+%! assert (y, [[7 10 1 4];[9 13 1 5];[2 3 0 1];[4 6 0 2]]);
+%! assert (fftshift (y), x);
 
 %!test
-%!  x = [0:3];
-%!  x = [x;2*x;3*x+1;4*x+1];
-%!  y = fftshift (x,1);
-%!  assert(y, [[1 4 7 10];[1 5 9 13];[0 1 2 3];[0 2 4 6]]);
-%!  assert(fftshift (y,1), x);
+%! x = [0:3];
+%! x = [x;2*x;3*x+1;4*x+1];
+%! y = fftshift (x,1);
+%! assert (y, [[1 4 7 10];[1 5 9 13];[0 1 2 3];[0 2 4 6]]);
+%! assert (fftshift (y,1), x);
 
 %!test
-%!  x = [0:3];
-%!  x = [x;2*x;3*x+1;4*x+1];
-%!  y = fftshift (x,2);
-%!  assert(y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
-%!  assert(fftshift (y,2), x);
+%! x = [0:3];
+%! x = [x;2*x;3*x+1;4*x+1];
+%! y = fftshift (x,2);
+%! assert (y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
+%! assert (fftshift (y,2), x);
 

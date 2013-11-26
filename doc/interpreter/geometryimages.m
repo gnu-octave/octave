@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -26,20 +26,19 @@ function geometryimages (nm, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d" typ];
   endif
 
-  if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL"))
-      && (strcmp (nm, "voronoi") || strcmp (nm, "griddata")
-          || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
-          || strcmp (nm, "triplot")))
-    sombreroimage (nm, typ);
+  if (! __have_feature__ ("QHULL")
+      && any (strcmp (nm, {"voronoi", "griddata", "convhull", "delaunay", ...
+                           "triplot"})))
+    sombreroimage (nm, typ, d_typ);
   elseif (strcmp (typ, "txt"))
     image_as_txt (nm);
   elseif (strcmp (nm, "voronoi"))
-    rand("state",9);
-    x = rand(10,1);
-    y = rand(10,1);
+    rand ("state", 9);
+    x = rand (10, 1);
+    y = rand (10, 1);
     tri = delaunay (x, y);
     [vx, vy] = voronoi (x, y, tri);
     triplot (tri, x, y, "b");
@@ -47,34 +46,34 @@ function geometryimages (nm, typ)
     plot (vx, vy, "r");
     [r, c] = tri2circ (tri(end,:), x, y);
     pc = [-1:0.01:1];
-    xc = r * sin(pi*pc) + c(1);
-    yc = r * cos(pi*pc) + c(2);
+    xc = r * sin (pi*pc) + c(1);
+    yc = r * cos (pi*pc) + c(2);
     plot (xc, yc, "g-", "LineWidth", 3);
     axis([0, 1, 0, 1]);
     legend ("Delaunay Triangulation", "Voronoi Diagram");
-    print (cstrcat (nm, ".", typ), d_typ)    
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "triplot"))
     rand ("state", 2)
     x = rand (20, 1);
     y = rand (20, 1);
     tri = delaunay (x, y);
     triplot (tri, x, y);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "griddata"))
-    rand("state",1);
-    x=2*rand(1000,1)-1;
-    y=2*rand(size(x))-1;
-    z=sin(2*(x.^2+y.^2));
-    [xx,yy]=meshgrid(linspace(-1,1,32));
-    griddata(x,y,z,xx,yy);
-    print (cstrcat (nm, ".", typ), d_typ)    
+    rand ("state", 1);
+    x = 2 * rand (1000,1) - 1;
+    y = 2 * rand (size (x)) - 1;
+    z = sin (2 * (x.^2 + y.^2));
+    [xx,yy] = meshgrid (linspace (-1,1,32));
+    griddata (x,y,z,xx,yy);
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "convhull"))
     x = -3:0.05:3;
     y = abs (sin (x));
     k = convhull (x, y);
-    plot (x(k),y(k),'r-',x,y,'b+');
+    plot (x(k),y(k),'r-', x,y,'b+');
     axis ([-3.05, 3.05, -0.05, 1.05]);
-    print (cstrcat (nm, ".", typ), d_typ) 
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "delaunay"))
     rand ("state", 1);
     x = rand (1, 10);
@@ -83,8 +82,8 @@ function geometryimages (nm, typ)
     X = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
     Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
     axis ([0, 1, 0, 1]);
-    plot(X, Y, "b", x, y, "r*");
-    print (cstrcat (nm, ".", typ), d_typ) 
+    plot (X,Y,"b", x,y,"r*");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "inpolygon"))
     randn ("state", 2);
     x = randn (100, 1);
@@ -92,9 +91,9 @@ function geometryimages (nm, typ)
     vx = cos (pi * [-1 : 0.1: 1]);
     vy = sin (pi * [-1 : 0.1 : 1]);
     in = inpolygon (x, y, vx, vy);
-    plot(vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
+    plot (vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
     axis ([-2, 2, -2, 2]);
-    print (cstrcat (nm, ".", typ), d_typ) 
+    print ([nm "." typ], d_typ);
   else
     error ("unrecognized plot requested");
   endif
@@ -129,7 +128,7 @@ function hide_output ()
   set (f, "visible", "off");
 endfunction
 
-function sombreroimage (nm, typ)
+function sombreroimage (nm, typ, d_typ)
   if (strcmp (typ, "txt"))
     fid = fopen (sprintf ("%s.txt", nm), "wt");
     fputs (fid, "+-----------------------------+\n");
@@ -141,28 +140,20 @@ function sombreroimage (nm, typ)
   else ## if (!strcmp (typ, "txt"))
 
     hide_output ();
-    if (strcmp (typ, "eps"))
-      d_typ = "-depsc2";
-    else
-      d_typ = cstrcat ("-d", typ);
-    endif
 
-    x = y = linspace (-8, 8, 41)';
-    [xx, yy] = meshgrid (x, y);
-    r = sqrt (xx .^ 2 + yy .^ 2) + eps;
-    z = sin (r) ./ r;
+    [x, y, z] = sombrero ();
     unwind_protect
       mesh (x, y, z);
       title ("Sorry, graphics not available because octave was\\ncompiled without the QHULL library.");
     unwind_protect_cleanup
-      print (cstrcat (nm, ".", typ), d_typ);
+      print ([nm "." typ], d_typ);
       hide_output ();
     end_unwind_protect
   endif
 endfunction
 
 ## generate something for the texinfo @image command to process
-function image_as_txt(nm)
+function image_as_txt (nm)
   fid = fopen (sprintf ("%s.txt", nm), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
@@ -170,3 +161,4 @@ function image_as_txt(nm)
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
+

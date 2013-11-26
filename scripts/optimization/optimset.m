@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 John W. Eaton
+## Copyright (C) 2007-2013 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -25,28 +25,50 @@
 ## Create options struct for optimization functions.
 ##
 ## Valid parameters are:
-## @itemize @bullet
+##
+## @table @asis
 ## @item AutoScaling
 ##
 ## @item ComplexEqn
 ##
+## @item Display
+## Request verbose display of results from optimizations.  Values are:
+##
+## @table @asis
+## @item @qcode{"off"} [default]
+## No display.
+##
+## @item @qcode{"iter"}
+## Display intermediate results for every loop iteration.
+##
+## @item @qcode{"final"}
+## Display the result of the final loop iteration.
+##
+## @item @qcode{"notify"}
+## Display the result of the final loop iteration if the function has
+## failed to converge.
+## @end table
+##
 ## @item FinDiffType
 ##
 ## @item FunValCheck
-## When enabled, display an error if the objective function returns a complex
-## value or NaN@.  Must be set to "on" or "off" [default].
+## When enabled, display an error if the objective function returns an invalid
+## value (a complex number, NaN, or Inf).  Must be set to @qcode{"on"} or
+## @qcode{"off"} [default].  Note: the functions @code{fzero} and
+## @code{fminbnd} correctly handle Inf values and only complex values or NaN
+## will cause an error in this case. 
 ##
 ## @item GradObj
-## When set to "on", the function to be minimized must return a second argument
-## which is the gradient, or first derivative, of the function at the point
-## @var{x}.  If set to "off" [default], the gradient is computed via finite
-## differences.
+## When set to @qcode{"on"}, the function to be minimized must return a
+## second argument which is the gradient, or first derivative, of the
+## function at the point @var{x}.  If set to @qcode{"off"} [default], the
+## gradient is computed via finite differences.
 ##
 ## @item Jacobian
-## When set to "on", the function to be minimized must return a second argument
-## which is the Jacobian, or first derivative, of the function at the point
-## @var{x}.  If set to "off" [default], the Jacobian is computed via finite
-## differences.
+## When set to @qcode{"on"}, the function to be minimized must return a
+## second argument which is the Jacobian, or first derivative, of the
+## function at the point @var{x}.  If set to @qcode{"off"} [default], the
+## Jacobian is computed via finite differences.
 ##
 ## @item MaxFunEvals
 ## Maximum number of function evaluations before optimization stops.
@@ -73,7 +95,7 @@
 ## @item TypicalX
 ##
 ## @item Updating
-## @end itemize
+## @end table
 ## @end deftypefn
 
 function retval = optimset (varargin)
@@ -109,17 +131,20 @@ function retval = optimset (varargin)
     fnames = fieldnames (old);
     ## skip validation if we're in the internal query
     validation = ! isempty (opts);
-    lopts = tolower (opts);
     for [val, key] = new
       if (validation)
         ## Case insensitive lookup in all options.
-        i = lookup (lopts, tolower (key));
+        i = strncmpi (opts, key, length (key));
+        nmatch = sum (i);
         ## Validate option.
-        if (i > 0 && strcmpi (opts{i}, key))
-          ## Use correct case.
-          key = opts{i};
-        else
+        if (nmatch == 1)
+          key = opts{find (i)};
+        elseif (nmatch == 0)
           warning ("unrecognized option: %s", key);
+        else
+          fmt = sprintf ("ambiguous option: %%s (%s%%s)",
+                         repmat ("%s, ", 1, nmatch-1));
+          warning (fmt, key, opts{i});
         endif
       endif
       old.(key) = val;
@@ -141,8 +166,10 @@ function retval = optimset (varargin)
 endfunction
 
 
-%!assert (optimget (optimset ('tolx', 1e-2), 'tOLx'), 1e-2)
-%!assert (isfield (optimset ('tolFun', 1e-3), 'TolFun'))
+%!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
+%!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
+%!warning (optimset ("Max", 10));
+%!warning (optimset ("foobar", 13));
 
 %!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
 

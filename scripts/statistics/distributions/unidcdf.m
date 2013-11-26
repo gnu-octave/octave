@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -68,22 +68,22 @@ endfunction
 %!shared x,y
 %! x = [0 1 2.5 10 11];
 %! y = [0, 0.1 0.2 1.0 1.0];
-%!assert(unidcdf (x, 10*ones(1,5)), y);
-%!assert(unidcdf (x, 10), y);
-%!assert(unidcdf (x, 10*[0 1 NaN 1 1]), [NaN 0.1 NaN y(4:5)]);
-%!assert(unidcdf ([x(1:2) NaN Inf x(5)], 10), [y(1:2) NaN 1 y(5)]);
+%!assert (unidcdf (x, 10*ones (1,5)), y)
+%!assert (unidcdf (x, 10), y)
+%!assert (unidcdf (x, 10*[0 1 NaN 1 1]), [NaN 0.1 NaN y(4:5)])
+%!assert (unidcdf ([x(1:2) NaN Inf x(5)], 10), [y(1:2) NaN 1 y(5)])
 
 %% Test class of input preserved
-%!assert(unidcdf ([x, NaN], 10), [y, NaN]);
-%!assert(unidcdf (single([x, NaN]), 10), single([y, NaN]));
-%!assert(unidcdf ([x, NaN], single(10)), single([y, NaN]));
+%!assert (unidcdf ([x, NaN], 10), [y, NaN])
+%!assert (unidcdf (single ([x, NaN]), 10), single ([y, NaN]))
+%!assert (unidcdf ([x, NaN], single (10)), single ([y, NaN]))
 
 %% Test input validation
 %!error unidcdf ()
 %!error unidcdf (1)
 %!error unidcdf (1,2,3)
-%!error unidcdf (ones(3),ones(2))
-%!error unidcdf (ones(2),ones(3))
+%!error unidcdf (ones (3), ones (2))
+%!error unidcdf (ones (2), ones (3))
 %!error unidcdf (i, 2)
 %!error unidcdf (2, i)
 

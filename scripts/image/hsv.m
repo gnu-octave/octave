@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -20,10 +20,10 @@
 ## @deftypefn {Function File} {} hsv (@var{n})
 ## Create color colormap.  This colormap begins with red, changes through
 ## yellow, green, cyan, blue, and magenta, before returning to red.
-## It is useful for displaying periodic functions.  It is obtained by linearly
-## varying the hue through all possible values while keeping constant maximum
-## saturation and value and is equivalent to
-## @code{hsv2rgb ([linspace(0,1,N)', ones(N,2)])}.
+## It is useful for displaying periodic functions.  The map is obtained by
+## linearly varying the hue through all possible values while keeping constant
+## maximum saturation and value.  The equivalent code is
+## @code{hsv2rgb ([(0:N-1)'/N, ones(N,2)])}.
 ##
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
@@ -32,13 +32,16 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "hsv");
+## PKG_DEL: colormap ("unregister", "hsv");
+
 function map = hsv (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("hsv: argument must be a scalar");
+      error ("hsv: N must be a scalar");
     endif
   else
     print_usage ();
@@ -47,17 +50,18 @@ function map = hsv (n)
   if (n == 1)
     map = [1, 0, 0];
   elseif (n > 1)
-    h = linspace (0, 1, n)';
-    map = hsv2rgb ([h, ones(n, 1), ones(n, 1)]);
+    hue = [0:n-1]' / n;
+    map = hsv2rgb ([hue, ones(n,1), ones(n,1)]);
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'hsv' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (hsv (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (hsv (64));
 

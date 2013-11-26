@@ -1,6 +1,6 @@
 function display (f)
 
-  display(f.polynomial);
+  display (f.polynomial);
 
 endfunction
 

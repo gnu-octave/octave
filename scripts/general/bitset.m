@@ -1,4 +1,5 @@
-## Copyright (C) 2004-2012 David Bateman
+## Copyright (C) 2004-2013 David Bateman
+## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##
@@ -21,7 +22,8 @@
 ## @deftypefnx {Function File} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
 ## Set or reset bit(s) @var{n} of unsigned integers in @var{A}.
 ## @var{val} = 0 resets and @var{val} = 1 sets the bits.
-## The lowest significant bit is: @var{n} = 1
+## The lowest significant bit is: @var{n} = 1.  All variables must be the
+## same size or scalars.
 ##
 ## @example
 ## @group
@@ -32,72 +34,64 @@
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
-## Liberally based on the version by Kai Habel from octave-forge
-
 function C = bitset (A, n, val)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
+  if (any (A(:) < 0))
+    error ("bitset: A must be >= 0");
+  endif
+
+  sz = size (A);
+
   if (nargin == 2)
-    val = 1;
+    val = true (sz);
   endif
 
-  if (isa (A, "double"))
-    Bmax = bitmax;
-    Amax = log2 (Bmax) + 1;
-    _conv = @double;
+  cl = class (A);
+
+  if (isfloat (A) && isreal (A))
+    Bmax = bitmax (cl);
+    Amax = ceil (log2 (Bmax));
+  elseif (isinteger (A))
+    Bmax = intmax (cl);
+    Amax = ceil (log2 (Bmax));
   else
-    if (isa (A, "uint8"))
-      Amax = 8;
-      _conv = @uint8;
-    elseif (isa (A, "uint16"))
-      Amax = 16;
-      _conv = @uint16;
-    elseif (isa (A, "uint32"))
-      Amax = 32;
-      _conv = @uint32;
-    elseif (isa (A, "uint64"))
-      Amax = 64;
-      _conv = @uint64;
-    elseif (isa (A, "int8"))
-      Amax = 8;
-      _conv = @int8;
-    elseif (isa (A, "int16"))
-      Amax = 16;
-      _conv = @int16;
-    elseif (isa (A, "int32"))
-      Amax = 32;
-      _conv = @int32;
-    elseif (isa (A, "int64"))
-      Amax = 64;
-      _conv = @int64;
-    else
-      error ("bitset: invalid class %s", class (A));
-    endif
-    Bmax = intmax (class (A));
+    error ("bitset: invalid class %s", cl);
   endif
 
-  m = double (n(:));
-  if (any (m < 1) || any (m > Amax))
+  if (any ((n < 1)(:)) || any ((n > Amax)(:)))
     error ("bitset: N must be in the range [1,%d]", Amax);
   endif
 
-  mask = bitshift (_conv (1), uint8 (n) - uint8 (1));
-  C = bitxor (A, bitand (A, mask));
+  mask = bitshift (cast (1, cl), uint8 (n) - uint8 (1));
 
-  if (val)
-    C = bitor (A, mask);
+  on = logical (val);
+  off = !on;
+
+  if (isscalar (mask))
+    onmask = mask;
+    offmask = mask;
+  else
+    if (! size_equal (A, n))
+      error ("bitset: N must be scalar or the same size as A");
+    endif
+    onmask = mask(on);
+    offmask = mask(off);
   endif
+
+  C = zeros (sz, cl);
+  C(on) = bitor (A(on), onmask);
+  C(off) = bitand (A(off), bitcmp (offmask));
 
 endfunction
 
-%!error bitset (1);
-%!error bitset (1, 2, 3, 4);
 
 %!test
 %! assert (bitset ([0, 10], [3, 3]), [4, 14]);
+%! assert (bitset (single ([0, 10]), [3, 3]), single ([4, 14]));
 %! pfx = {"", "u"};
 %! for i = 1:2
 %!   for prec = [8, 16, 32, 64]
@@ -106,17 +100,26 @@ endfunction
 %!   endfor
 %! endfor
 
-%!error bitset (0, 0);
-%!error bitset (0, 55);
+## Bug #36458
+%!assert (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]), uint8 ([0, 3; 2 5]))
 
-%!error bitset (int8 (0), 9);
-%!error bitset (uint8 (0), 9);
+%!error bitset (1)
+%!error bitset (1, 2, 3, 4)
+%!error <A must be .= 0> bitset (-1, 2)
+%!error <invalid class char> bitset ("1", 2)
+%!error <N must be in the range \[1,53\]> bitset (0, 0)
+%!error <N must be in the range \[1,53\]> bitset (0, 55)
+%!error <N must be in the range \[1,24\]> bitset (single (0), 0)
+%!error <N must be in the range \[1,24\]> bitset (single (0), 26)
+%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 0)
+%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 9)
+%!error <N must be in the range \[1,7\]> bitset (int8 (0), 9)
+%!error <N must be in the range \[1,15\]> bitset (int16 (0), 17)
+%!error <N must be in the range \[1,16\]> bitset (uint16 (0), 17)
+%!error <N must be in the range \[1,31\]> bitset (int32 (0), 33)
+%!error <N must be in the range \[1,32\]> bitset (uint32 (0), 33)
+%!error <N must be in the range \[1,63\]> bitset (int64 (0), 65)
+%!error <N must be in the range \[1,64\]> bitset (uint64 (0), 65)
+%!error <N must be scalar or the same size as A> bitset (uint8 (1), [1 3])
+%!error <N must be scalar or the same size as A> bitset (uint8 (1:3), [1 3])
 
-%!error bitset (int16 (0), 17);
-%!error bitset (uint16 (0), 17);
-
-%!error bitset (int32 (0), 33);
-%!error bitset (uint32 (0), 33);
-
-%!error bitset (int64 (0), 65);
-%!error bitset (uint64 (0), 65);

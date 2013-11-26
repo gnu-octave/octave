@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Paul Kienzle
+## Copyright (C) 1999-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@
 ## Note: @var{n} must be greater than 2 for the magic square to exist.
 ## @end deftypefn
 
-function A = magic(n)
+function A = magic (n)
 
   if (nargin != 1)
     print_usage ();
@@ -80,13 +80,13 @@ endfunction
 
 
 %!test
-%! for i=3:30
+%! for i = 3:30
 %!   A = magic (i);
 %!   assert (norm(diff([sum(diag(A)),sum(diag(flipud(A))),sum(A),sum(A')])),0);
 %! endfor
 
 %!assert (isempty (magic (0)))
-%!assert (magic(1), 1)
+%!assert (magic (1), 1)
 
 %% Test input validation
 %!error magic ()

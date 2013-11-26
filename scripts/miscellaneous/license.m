@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2013 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -17,34 +17,45 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} license
+## @deftypefn  {Command} {} license
+## @deftypefnx {Function File} {} license ("inuse")
+## @deftypefnx {Function File} {@var{retval} =} license ("inuse")
+## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
+## @deftypefnx {Function File} {} license ("test", @var{feature}, @var{toggle})
+## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
+## 
 ## Display the license of Octave.
 ##
-## @deftypefnx {Function File} {} license ("inuse")
+## @code{license ("inuse")}
+##
 ## Display a list of packages currently being used.
 ##
-## @deftypefnx {Function File} {@var{retval} =} license ("inuse")
+## @code{@var{retval} = license ("inuse")}
+##
 ## Return a structure containing the fields @code{feature} and @code{user}.
 ##
-## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
+## @code{@var{retval} = license ("test", @var{feature})}
+##
 ## Return 1 if a license exists for the product identified by the string
 ## @var{feature} and 0 otherwise.  The argument @var{feature} is case
 ## insensitive and only the first 27 characters are checked.
 ##
-## @deftypefnx {Function File} {} license ("test", @var{feature}, @var{toggle})
+## @code{license ("test", @var{feature}, @var{toggle})}
+##
 ## Enable or disable license testing for @var{feature}, depending on
 ## @var{toggle}, which may be one of:
 ##
 ## @table @asis
-## @item "enable"
+## @item @qcode{"enable"}
 ## Future tests for the specified license of @var{feature} are conducted
 ## as usual.
 ##
-## @item "disable"
+## @item @qcode{"disable"}
 ## Future tests for the specified license of @var{feature} return 0.
 ## @end table
 ##
-## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
+## @code{@var{retval} = license ("checkout", @var{feature})}
+##
 ## Check out a license for @var{feature}, returning 1 on success and 0
 ## on failure.
 ##

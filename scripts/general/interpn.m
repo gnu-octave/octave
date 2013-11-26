@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -29,9 +29,9 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in
-## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc. respect a
-## similar format to @var{x1}, etc., and they represent the points at which
-## the array @var{vi} is interpolated.
+## the @qcode{"ndgrid"} format or vectors.  The parameters @var{y1}, etc.
+## respect a similar format to @var{x1}, etc., and they represent the points
+## at which the array @var{vi} is interpolated.
 ##
 ## If @var{x1}, @dots{}, @var{xn} are omitted, they are assumed to be
 ## @code{x1 = 1 : size (@var{v}, 1)}, etc.  If @var{m} is specified, then
@@ -42,21 +42,21 @@
 ## Method is one of:
 ##
 ## @table @asis
-## @item 'nearest'
+## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item 'linear'
+## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors.
 ##
-## @item 'cubic'
+## @item @qcode{"cubic"}
 ## Cubic interpolation from four nearest neighbors (not implemented yet).
 ##
-## @item 'spline'
+## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
 ##
-## The default method is 'linear'.
+## The default method is @qcode{"linear"}.
 ##
 ## If @var{extrapval} is the scalar value, use it to replace the values
 ## beyond the endpoints with that number.  If @var{extrapval} is missing,
@@ -76,14 +76,14 @@ function vi = interpn (varargin)
 
   if (ischar (varargin{end}))
     method = varargin{end};
-    nargs = nargs - 1;
+    nargs -= 1;
   elseif (nargs > 1 && ischar (varargin{end - 1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("interpn: extrapal is expected to be a numeric scalar");
     endif
     method = varargin{end - 1};
     extrapval = varargin{end};
-    nargs = nargs - 2;
+    nargs -= 2;
   endif
 
   if (nargs < 3)
@@ -102,7 +102,7 @@ function vi = interpn (varargin)
     nd = ndims (v);
     x = cell (1, nd);
     y = cell (1, nd);
-    for i = 1 : nd;
+    for i = 1 : nd
       x{i} = 1 : sz(i);
       y{i} = 1 : (1 / (2 ^ m)) : sz(i);
     endfor
@@ -113,18 +113,18 @@ function vi = interpn (varargin)
     sz = size (v);
     nd = ndims (v);
     x = cell (1, nd);
-    y = varargin (2 : nargs);
-    for i = 1 : nd;
+    y = varargin(2 : nargs);
+    for i = 1 : nd
       x{i} = 1 : sz(i);
     endfor
-  elseif (rem (nargs, 2) == 1 && nargs ==
-          (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
+  elseif (rem (nargs, 2) == 1
+          && nargs == (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
     nv = ceil (nargs / 2);
     v = varargin{nv};
     sz = size (v);
     nd = ndims (v);
-    x = varargin (1 : (nv - 1));
-    y = varargin ((nv + 1) : nargs);
+    x = varargin(1 : (nv - 1));
+    y = varargin((nv + 1) : nargs);
   else
     error ("interpn: wrong number or incorrectly formatted input arguments");
   endif
@@ -134,12 +134,12 @@ function vi = interpn (varargin)
       if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
         error ("interpn: dimensional mismatch");
       endif
-      idx (1 : nd) = {1};
-      idx (i) = ":";
+      idx(1 : nd) = {1};
+      idx(i) = ":";
       x{i} = x{i}(idx{:})(:);
     endfor
-    idx (1 : nd) = {1};
-    idx (1) = ":";
+    idx(1 : nd) = {1};
+    idx(1) = ":";
     x{1} = x{1}(idx{:})(:);
   endif
 
@@ -154,7 +154,7 @@ function vi = interpn (varargin)
 
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
-    vi (isna (vi)) = extrapval;
+    vi(isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
     yshape = size (y{1});
     yidx = cell (1, nd);
@@ -166,7 +166,7 @@ function vi = interpn (varargin)
     for i = 1 : nd
       idx{i} = yidx{i} + (y{i} - x{i}(yidx{i})(:) >= x{i}(yidx{i} + 1)(:) - y{i});
     endfor
-    vi = v (sub2ind (sz, idx{:}));
+    vi = v(sub2ind (sz, idx{:}));
     idx = zeros (prod (yshape), 1);
     for i = 1 : nd
       idx |= y{i} < min (x{i}(:)) | y{i} > max (x{i}(:));
@@ -179,12 +179,12 @@ function vi = interpn (varargin)
         if (! size_equal (y{1}, y{i}))
           error ("interpn: dimensional mismatch");
         endif
-        idx (1 : nd) = {1};
-        idx (i) = ":";
+        idx(1 : nd) = {1};
+        idx(i) = ":";
         y{i} = y{i}(idx{:});
       endfor
-      idx (1 : nd) = {1};
-      idx (1) = ":";
+      idx(1 : nd) = {1};
+      idx(1) = ":";
       y{1} = y{1}(idx{:});
     endif
 
@@ -196,10 +196,10 @@ function vi = interpn (varargin)
       q = cell (1, nd);
       for i = 1 : ly
         q(:) = i;
-        idx {i} = q;
+        idx{i} = q;
       endfor
-      vi = vi (cellfun (@(x) sub2ind (size(vi), x{:}), idx));
-      vi = reshape (vi, size(y{1}));
+      vi = vi(cellfun (@(x) sub2ind (size (vi), x{:}), idx));
+      vi = reshape (vi, size (y{1}));
     endif
   elseif (strcmp (method, "cubic"))
     error ("interpn: cubic interpolation not yet implemented");
@@ -209,93 +209,98 @@ function vi = interpn (varargin)
 
 endfunction
 
-%!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"linear").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"nearest").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
-
-%!#demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"cubic").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "linear").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"spline").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "nearest").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
+%!#demo  # FIXME: Uncomment when support for "cubic" has been added
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "cubic").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2];  y = [10,11,12];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "spline").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! clf;
+%! colormap ("default");
 %! x = y = z = -1:1;
 %! f = @(x,y,z) x.^2 - y - z.^2;
 %! [xx, yy, zz] = meshgrid (x, y, z);
 %! v = f (xx,yy,zz);
 %! xi = yi = zi = -1:0.1:1;
 %! [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
-%! vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
+%! vi = interpn (x, y, z, v, xxi, yyi, zzi, "spline");
 %! mesh (yi, zi, squeeze (vi(1,:,:)));
 
-
 %!test
-%! [x,y,z] = ndgrid(0:2);
-%! f = x+y+z;
-%! assert (interpn(x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5])
-%! assert (interpn(x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],'nearest'), [3, 6])
-%! assert (interpn(x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],'spline'), [1.5, 4.5])
-%! assert (interpn(x,y,z,f,x,y,z), f)
-%! assert (interpn(x,y,z,f,x,y,z,'nearest'), f)
-%! assert (interpn(x,y,z,f,x,y,z,'spline'), f)
+%! [x,y,z] = ndgrid (0:2);
+%! f = x + y + z;
+%! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5]);
+%! assert (interpn (x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],"nearest"), [3, 6]);
+%! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],"spline"), [1.5, 4.5]);
+%! assert (interpn (x,y,z,f,x,y,z), f);
+%! assert (interpn (x,y,z,f,x,y,z,"nearest"), f);
+%! assert (interpn (x,y,z,f,x,y,z,"spline"), f);
 
 %!test
 %! [x, y, z] = ndgrid (0:2, 1:4, 2:6);
 %! f = x + y + z;
-%! xi = [0.5 1.0 1.5];
-%! yi = [1.5 2.0 2.5 3.5];
-%! zi = [2.5 3.5 4.0 5.0 5.5];
+%! xi = [0.5 1.0 1.5];  yi = [1.5 2.0 2.5 3.5];  zi = [2.5 3.5 4.0 5.0 5.5];
 %! fi = interpn (x, y, z, f, xi, yi, zi);
 %! [xi, yi, zi] = ndgrid (xi, yi, zi);
-%! assert (fi, xi + yi + zi)
+%! assert (fi, xi + yi + zi);
 
 %!test
-%! xi = 0:2;
-%! yi = 1:4;
-%! zi = 2:6;
+%! xi = 0:2;  yi = 1:4;  zi = 2:6;
 %! [x, y, z] = ndgrid (xi, yi, zi);
 %! f = x + y + z;
 %! fi = interpn (x, y, z, f, xi, yi, zi, "nearest");
-%! assert (fi, x + y + z)
+%! assert (fi, x + y + z);
 
 %!test
-%! [x,y,z] = ndgrid(0:2);
-%! f = x.^2+y.^2+z.^2;
-%! assert (interpn(x,y,-z,f,1.5,1.5,-1.5), 7.5)
+%! [x,y,z] = ndgrid (0:2);
+%! f = x.^2 + y.^2 + z.^2;
+%! assert (interpn (x,y,-z,f,1.5,1.5,-1.5), 7.5);
 
-%!test % for Matlab-compatible rounding for 'nearest'
-%! X = meshgrid (1:4);
-%! assert (interpn (X, 2.5, 2.5, 'nearest'), 3);
+%!test  # for Matlab-compatible rounding for "nearest"
+%! x = meshgrid (1:4);
+%! assert (interpn (x, 2.5, 2.5, "nearest"), 3);
 
-%!shared z, zout, tol
+%!test
 %! z = zeros (3, 3, 3);
 %! zout = zeros (5, 5, 5);
 %! z(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
@@ -303,12 +308,13 @@ endfunction
 %! z(:,:,3) = z(:,:,2) + 2;
 %! for n = 1:5
 %!   zout(:,:,n) = [1 2 3 4 5;
-%!                  2 3 4 5 6; 
+%!                  2 3 4 5 6;
 %!                  3 4 5 6 7;
 %!                  4 5 6 7 8;
 %!                  5 6 7 8 9] + (n-1);
-%! end
-%! tol = 10 * eps;
-%!assert (interpn (z), zout, tol)
-%!assert (interpn (z, "linear"), zout, tol)
-%!assert (interpn (z, "spline"), zout, tol)
+%! endfor
+%! tol = 10*eps;
+%! assert (interpn (z), zout, tol);
+%! assert (interpn (z, "linear"), zout, tol);
+%! assert (interpn (z, "spline"), zout, tol);
+

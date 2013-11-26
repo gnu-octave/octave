@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 
 DEFUN_DLD (oregonator, args, ,
-  "The `oregonator'.\n\
+           "The `oregonator'.\n\
 \n\
 Reference:\n\
 \n\

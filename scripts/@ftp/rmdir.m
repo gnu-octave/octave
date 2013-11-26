@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -19,9 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rmdir (@var{f}, @var{path})
 ## Remove the remote directory @var{path}, over the FTP connection @var{f}.
+##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
 function rmdir (f, path)
   __ftp_rmdir__ (f.curlhandle, path);
 endfunction
+

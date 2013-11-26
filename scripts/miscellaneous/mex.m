@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 David Bateman
+## Copyright (C) 2006-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mex [options] file @dots{}
+## @deftypefn {Command} {} mex [options] file @dots{}
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
 ## This is equivalent to @code{mkoctfile --mex [options] file}.
 ## @seealso{mkoctfile}
@@ -27,3 +27,4 @@ function mex (varargin)
   args = {"--mex", varargin{:}};
   mkoctfile (args{:});
 endfunction
+

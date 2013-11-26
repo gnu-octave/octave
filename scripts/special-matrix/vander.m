@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -79,17 +79,17 @@ endfunction
 %!test
 %! c = [0,1,2,3];
 %! expect = [0,0,0,1; 1,1,1,1; 8,4,2,1; 27,9,3,1];
-%! assert(vander (c), expect);
+%! assert (vander (c), expect);
 
 %!assert (vander (1), 1)
 %!assert (vander ([1, 2, 3]), vander ([1; 2; 3]))
 %!assert (vander ([1, 2, 3]), [1, 1, 1; 4, 2, 1; 9, 3, 1])
 %!assert (vander ([1, 2, 3]*i), [-1, i, 1; -4, 2i, 1; -9, 3i, 1])
 
-%!assert(vander (2, 3), [4, 2, 1])
-%!assert(vander ([2, 3], 3), [4, 2, 1; 9, 3, 1])
+%!assert (vander (2, 3), [4, 2, 1])
+%!assert (vander ([2, 3], 3), [4, 2, 1; 9, 3, 1])
 
-%!error vander ();
-%!error vander (1, 2, 3);
-%!error <polynomial C must be a vector> vander ([1, 2; 3, 4]);
+%!error vander ()
+%!error vander (1, 2, 3)
+%!error <polynomial C must be a vector> vander ([1, 2; 3, 4])
 

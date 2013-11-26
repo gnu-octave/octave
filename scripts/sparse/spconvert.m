@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman and Andy Adler
+## Copyright (C) 2004-2013 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -65,3 +65,4 @@ endfunction
 %!error spconvert ([1 2])
 %!error spconvert ([1 2 3i])
 %!error spconvert ([1 2 3 4 5])
+

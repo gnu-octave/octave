@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,7 @@ function playaudio (name, ext)
       fclose (fid);
       [status, out] = system (sprintf ('cat "%s" > /dev/dsp', file));
       if (status != 0)
-        system (sprintf ("paplay --raw \"%s\"", file))
+        system (sprintf ("paplay --raw \"%s\"", file));
       endif
     unwind_protect_cleanup
       unlink (file);
@@ -62,12 +62,12 @@ function playaudio (name, ext)
     if (any (strcmp (ext, {"lin", "raw"})))
       [status, out] = system (sprintf ('cat "%s" > /dev/dsp', name));
       if (status != 0)
-        system (sprintf ('paplay --raw "%s"', name))
+        system (sprintf ('paplay --raw "%s"', name));
       endif
     elseif (any (strcmp (ext, {"mu", "au" "snd", "ul"})))
       [status, out] = system (sprintf ('cat "%s" > /dev/audio', name));
       if (status != 0)
-        system (sprintf ('paplay "%s"', name))
+        system (sprintf ('paplay "%s"', name));
       endif
     else
       error ("playaudio: unsupported extension '%s'", ext);

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -40,7 +40,7 @@ function [b, r] = deconv (y, a)
   endif
 
   if (! (isvector (y) && isvector (a)))
-    error("deconv: both arguments must be vectors");
+    error ("deconv: both arguments must be vectors");
   endif
 
   la = length (a);
@@ -68,7 +68,7 @@ function [b, r] = deconv (y, a)
     r = y - conv (a, b);
   else
     ## Respect the orientation of Y"
-    if (size (y, 1) <= size (y, 2))
+    if (rows (y) <= columns (y))
       r = [(zeros (1, lc - ly)), y] - conv (a, b);
     else
       r = [(zeros (lc - ly, 1)); y] - conv (a, b);
@@ -81,30 +81,34 @@ function [b, r] = deconv (y, a)
 
 endfunction
 
+
 %!test
 %! [b, r] = deconv ([3, 6, 9, 9], [1, 2, 3]);
-%! assert(all (all (b == [3, 0])) && all (all (r == [0, 0, 0, 9])));
+%! assert (b, [3, 0]);
+%! assert (r, [0, 0, 0, 9]);
 
 %!test
 %! [b, r] = deconv ([3, 6], [1, 2, 3]);
-%! assert(b == 0 && all (all (r == [3, 6])));
+%! assert (b, 0);
+%! assert (r, [3, 6]);
 
 %!test
 %! [b, r] = deconv ([3, 6], [1; 2; 3]);
-%! assert(b == 0 && all (all (r == [3, 6])));
+%! assert (b, 0);
+%! assert (r, [3, 6]);
 
 %!test
 %! [b,r] = deconv ([3; 6], [1; 2; 3]);
-%! assert (b == 0 && all (all (r == [3; 6])))
+%! assert (b, 0);
+%! assert (r, [3; 6]);
 
 %!test
 %! [b, r] = deconv ([3; 6], [1, 2, 3]);
-%! assert (b == 0 && all (all (r == [3; 6])))
+%! assert (b, 0);
+%! assert (r, [3; 6]);
 
-%!test
-%! assert (deconv ((1:3)',[1, 1]), [1; 1])
+%!assert (deconv ((1:3)',[1, 1]), [1; 1])
 
-%!error [b, r] = deconv ([3, 6], [1, 2; 3, 4]);
-
-%!error [b, r] = deconv ([3, 6; 1, 2], [1, 2, 3]);
+%!error [b, r] = deconv ([3, 6], [1, 2; 3, 4])
+%!error [b, r] = deconv ([3, 6; 1, 2], [1, 2, 3])
 

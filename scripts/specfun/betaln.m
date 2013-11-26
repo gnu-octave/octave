@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 Nicol N. Schraudolph
+## Copyright (C) 1998-2013 Nicol N. Schraudolph
 ##
 ## This file is part of Octave.
 ##
@@ -50,8 +50,9 @@ function retval = betaln (a, b)
 endfunction
 
 
-%!assert (betaln (3,4), log (beta(3,4)),eps);
+%!assert (betaln (3,4), log (beta (3,4)), eps)
 
 %% Test input validation
 %!error (betaln (1))
 %!error (betaln (1,2,3))
+

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -109,27 +109,27 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.75 1 2];
-%!assert(betainv (x, ones(1,5), 2*ones(1,5)), [NaN 0 0.5 1 NaN]);
-%!assert(betainv (x, 1, 2*ones(1,5)), [NaN 0 0.5 1 NaN]);
-%!assert(betainv (x, ones(1,5), 2), [NaN 0 0.5 1 NaN]);
-%!assert(betainv (x, [1 0 NaN 1 1], 2), [NaN NaN NaN 1 NaN]);
-%!assert(betainv (x, 1, 2*[1 0 NaN 1 1]), [NaN NaN NaN 1 NaN]);
-%!assert(betainv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 0 NaN 1 NaN]);
+%!assert (betainv (x, ones (1,5), 2*ones (1,5)), [NaN 0 0.5 1 NaN])
+%!assert (betainv (x, 1, 2*ones (1,5)), [NaN 0 0.5 1 NaN])
+%!assert (betainv (x, ones (1,5), 2), [NaN 0 0.5 1 NaN])
+%!assert (betainv (x, [1 0 NaN 1 1], 2), [NaN NaN NaN 1 NaN])
+%!assert (betainv (x, 1, 2*[1 0 NaN 1 1]), [NaN NaN NaN 1 NaN])
+%!assert (betainv ([x(1:2) NaN x(4:5)], 1, 2), [NaN 0 NaN 1 NaN])
 
 %% Test class of input preserved
-%!assert(betainv ([x, NaN], 1, 2), [NaN 0 0.5 1 NaN NaN]);
-%!assert(betainv (single([x, NaN]), 1, 2), single([NaN 0 0.5 1 NaN NaN]));
-%!assert(betainv ([x, NaN], single(1), 2), single([NaN 0 0.5 1 NaN NaN]));
-%!assert(betainv ([x, NaN], 1, single(2)), single([NaN 0 0.5 1 NaN NaN]));
+%!assert (betainv ([x, NaN], 1, 2), [NaN 0 0.5 1 NaN NaN])
+%!assert (betainv (single ([x, NaN]), 1, 2), single ([NaN 0 0.5 1 NaN NaN]))
+%!assert (betainv ([x, NaN], single (1), 2), single ([NaN 0 0.5 1 NaN NaN]))
+%!assert (betainv ([x, NaN], 1, single (2)), single ([NaN 0 0.5 1 NaN NaN]))
 
 %% Test input validation
 %!error betainv ()
 %!error betainv (1)
 %!error betainv (1,2)
 %!error betainv (1,2,3,4)
-%!error betainv (ones(3),ones(2),ones(2))
-%!error betainv (ones(2),ones(3),ones(2))
-%!error betainv (ones(2),ones(2),ones(3))
+%!error betainv (ones (3), ones (2), ones (2))
+%!error betainv (ones (2), ones (3), ones (2))
+%!error betainv (ones (2), ones (2), ones (3))
 %!error betainv (i, 2, 2)
 %!error betainv (2, i, 2)
 %!error betainv (2, 2, i)

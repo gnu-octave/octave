@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -51,8 +51,8 @@ function retval = list_primes (n)
   endif
 
   retval = zeros (1, n);
-  retval (1) = 2;
-  retval (2) = 3;
+  retval(1) = 2;
+  retval(2) = 3;
 
   n = n - 2;
   i = 3;
@@ -75,7 +75,7 @@ function retval = list_primes (n)
     endwhile
 
     if (is_prime)
-      retval (i++) = p;
+      retval(i++) = p;
       n--;
     endif
     p = p + 2;
@@ -84,8 +84,8 @@ function retval = list_primes (n)
 
 endfunction
 
-%!test
-%! assert (list_primes(), [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,\
-%!                        43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]);
-%! assert (list_primes(5), [2, 3, 5, 7, 11]);
+
+%!assert (list_primes (), [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, ...
+%!                         43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97])
+%!assert (list_primes (5), [2, 3, 5, 7, 11]);
 

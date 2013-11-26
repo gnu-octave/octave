@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -56,7 +56,7 @@ function yi = ppval (pp, xi)
   P = reshape (P, [n, k, d]);
   Pidx = P(idx(:), :);#2d matrix size x: coefs*prod(d) y: prod(sxi)
 
-  if (isvector(xi))
+  if (isvector (xi))
     Pidx = reshape (Pidx, [xn, k, d]);
     Pidx = shiftdim (Pidx, 1);
     dimvec = [d, xn];
@@ -68,15 +68,16 @@ function yi = ppval (pp, xi)
   ndv = length (dimvec);
 
   ## Offsets.
-  dx = (xi - x(idx));
+  dx = (xi - x(idx))(:)';
   dx = repmat (dx, [prod(d), 1]);
   dx = reshape (dx, dimvec);
   dx = shiftdim (dx, ndv - 1);
 
   ## Use Horner scheme.
-  yi = Pidx;
   if (k > 1)
     yi = shiftdim (reshape (Pidx(1,:), dimvec), ndv - 1);
+  else
+    yi = shiftdim (reshape (Pidx, dimvec), ndv - 1);
   endif
 
   for i = 2 : k;
@@ -92,25 +93,39 @@ function yi = ppval (pp, xi)
   if (isvector (xi) && (d == 1))
     yi = reshape (yi, sxi);
   elseif (isfield (pp, "orient") && strcmp (pp.orient, "first"))
-    yi = shiftdim(yi, nd);
+    yi = shiftdim (yi, nd);
   endif
 
-  ##
+  ## FIXME: Why is this commented out, rather than just removed?
   #if (d == 1)
   #  yi = reshape (yi, sxi);
   #endif
 
 endfunction
 
-%!shared b,c,pp,pp2,xi,abserr
-%! b = 1:3; c = ones(2); pp=mkpp(b,c);abserr = 1e-14;pp2=mkpp(b,[c;c],2);
+
+%!shared b, c, pp, pp2, xi, abserr
+%! b = 1:3;
+%! c = ones (2);
+%! pp = mkpp (b, c);
+%! abserr = 1e-14;
+%! pp2 = mkpp (b, [c;c], 2);
 %! xi = [1.1 1.3 1.9 2.1];
-%!assert (ppval(pp,1.1), 1.1, abserr);
-%!assert (ppval(pp,2.1), 1.1, abserr);
-%!assert (ppval(pp,xi), [1.1 1.3 1.9 1.1], abserr);
-%!assert (ppval(pp,xi.'), [1.1 1.3 1.9 1.1].', abserr);
-%!assert (ppval(pp2,1.1), [1.1;1.1], abserr);
-%!assert (ppval(pp2,2.1), [1.1;1.1], abserr);
-%!assert (ppval(pp2,xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr);
-%!assert (ppval(pp2,xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr);
-%!assert (size(ppval(pp2,[xi;xi])), [2 2 4]);
+%!assert (ppval (pp, 1.1), 1.1, abserr)
+%!assert (ppval (pp, 2.1), 1.1, abserr)
+%!assert (ppval (pp, xi), [1.1 1.3 1.9 1.1], abserr)
+%!assert (ppval (pp, xi.'), [1.1 1.3 1.9 1.1].', abserr)
+%!assert (ppval (pp2, 1.1), [1.1;1.1], abserr)
+%!assert (ppval (pp2, 2.1), [1.1;1.1], abserr)
+%!assert (ppval (pp2, xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
+%!assert (ppval (pp2, xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
+%!assert (size (ppval (pp2, [xi;xi])), [2 2 4])
+%!test
+%! breaks = [0, 1, 2, 3];
+%! coefs = rand (6, 4);
+%! pp = mkpp (breaks, coefs, 2);
+%! ret = zeros (2, 4, 2);
+%! ret(:,:,1) = ppval (pp, breaks');
+%! ret(:,:,2) = ppval (pp, breaks');
+%! assert (ppval (pp, [breaks',breaks']), ret)
+

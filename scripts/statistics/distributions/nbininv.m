@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -100,28 +100,28 @@ endfunction
 
 %!shared x
 %! x = [-1 0 3/4 1 2];
-%!assert(nbininv (x, ones(1,5), 0.5*ones(1,5)), [NaN 0 1 Inf NaN]);
-%!assert(nbininv (x, 1, 0.5*ones(1,5)), [NaN 0 1 Inf NaN]);
-%!assert(nbininv (x, ones(1,5), 0.5), [NaN 0 1 Inf NaN]);
-%!assert(nbininv (x, [1 0 NaN Inf 1], 0.5), [NaN NaN NaN NaN NaN]);
-%!assert(nbininv (x, [1 0 1.5 Inf 1], 0.5), [NaN NaN 2 NaN NaN]);
-%!assert(nbininv (x, 1, 0.5*[1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN]);
-%!assert(nbininv ([x(1:2) NaN x(4:5)], 1, 0.5), [NaN 0 NaN Inf NaN]);
+%!assert (nbininv (x, ones (1,5), 0.5*ones (1,5)), [NaN 0 1 Inf NaN])
+%!assert (nbininv (x, 1, 0.5*ones (1,5)), [NaN 0 1 Inf NaN])
+%!assert (nbininv (x, ones (1,5), 0.5), [NaN 0 1 Inf NaN])
+%!assert (nbininv (x, [1 0 NaN Inf 1], 0.5), [NaN NaN NaN NaN NaN])
+%!assert (nbininv (x, [1 0 1.5 Inf 1], 0.5), [NaN NaN 2 NaN NaN])
+%!assert (nbininv (x, 1, 0.5*[1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN])
+%!assert (nbininv ([x(1:2) NaN x(4:5)], 1, 0.5), [NaN 0 NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(nbininv ([x, NaN], 1, 0.5), [NaN 0 1 Inf NaN NaN]);
-%!assert(nbininv (single([x, NaN]), 1, 0.5), single([NaN 0 1 Inf NaN NaN]));
-%!assert(nbininv ([x, NaN], single(1), 0.5), single([NaN 0 1 Inf NaN NaN]));
-%!assert(nbininv ([x, NaN], 1, single(0.5)), single([NaN 0 1 Inf NaN NaN]));
+%!assert (nbininv ([x, NaN], 1, 0.5), [NaN 0 1 Inf NaN NaN])
+%!assert (nbininv (single ([x, NaN]), 1, 0.5), single ([NaN 0 1 Inf NaN NaN]))
+%!assert (nbininv ([x, NaN], single (1), 0.5), single ([NaN 0 1 Inf NaN NaN]))
+%!assert (nbininv ([x, NaN], 1, single (0.5)), single ([NaN 0 1 Inf NaN NaN]))
 
 %% Test input validation
 %!error nbininv ()
 %!error nbininv (1)
 %!error nbininv (1,2)
 %!error nbininv (1,2,3,4)
-%!error nbininv (ones(3),ones(2),ones(2))
-%!error nbininv (ones(2),ones(3),ones(2))
-%!error nbininv (ones(2),ones(2),ones(3))
+%!error nbininv (ones (3), ones (2), ones (2))
+%!error nbininv (ones (2), ones (3), ones (2))
+%!error nbininv (ones (2), ones (2), ones (3))
 %!error nbininv (i, 2, 2)
 %!error nbininv (2, i, 2)
 %!error nbininv (2, 2, i)

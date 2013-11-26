@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,8 @@ function H = hurst (x)
 
   s = std (x);
   w = cumsum (x - mean (x));
-  RS = (max(w) - min(w)) ./ s;
+  RS = (max (w) - min (w)) ./ s;
   H = log (RS) / log (xr);
 
 endfunction
+

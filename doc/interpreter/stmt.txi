@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -46,16 +46,16 @@ The list of statements contained between keywords like @code{if} or
 @dfn{body} of a control statement.
 
 @menu
-* The if Statement::            
-* The switch Statement::        
-* The while Statement::         
-* The do-until Statement::      
-* The for Statement::           
-* The break Statement::         
-* The continue Statement::      
-* The unwind_protect Statement::  
-* The try Statement::           
-* Continuation Lines::          
+* The if Statement::
+* The switch Statement::
+* The while Statement::
+* The do-until Statement::
+* The for Statement::
+* The break Statement::
+* The continue Statement::
+* The unwind_protect Statement::
+* The try Statement::
+* Continuation Lines::
 @end menu
 
 @node The if Statement
@@ -259,7 +259,7 @@ The general form of the @code{switch} statement is
 
 @example
 @group
-switch @var{expression}
+switch (@var{expression})
   case @var{label}
     @var{command_list}
   case @var{label}
@@ -288,7 +288,7 @@ is executed if @emph{any} of the elements of the cell array match
 @example
 @group
 A = 7;
-switch A
+switch (A)
   case @{ 6, 7 @}
     printf ("variable is either 6 or 7\n");
   otherwise
@@ -328,7 +328,7 @@ endswitch
 @end example
 
 @menu
-* Notes for the C Programmer::  
+* Notes for the C Programmer::
 @end menu
 
 @node Notes for the C Programmer
@@ -560,11 +560,11 @@ using the @code{for} statement.  For example consider
 
 @example
 @group
-disp("Loop over a matrix")
+disp ("Loop over a matrix")
 for i = [1,3;2,4]
   i
 endfor
-disp("Loop over a cell array")
+disp ("Loop over a cell array")
 for i = @{1,"two";"three",4@}
   i
 endfor
@@ -580,7 +580,7 @@ multi-dimensional arrays.  For example:
 
 @example
 @group
-a = [1,3;2,4]; c = cat(3, a, 2*a);
+a = [1,3;2,4]; c = cat (3, a, 2*a);
 for i = c
   i
 endfor
@@ -589,8 +589,8 @@ endfor
 
 @noindent
 In the above case, the multi-dimensional matrix @var{c} is reshaped to a
-two-dimensional matrix as @code{reshape (c, rows(c),
-prod(size(c)(2:end)))} and then the same behavior as a loop over a two
+two-dimensional matrix as @code{reshape (c, rows (c),
+prod (size (c)(2:end)))} and then the same behavior as a loop over a two
 dimensional matrix is produced.
 
 Although it is possible to rewrite all @code{for} loops as @code{while}
@@ -601,7 +601,7 @@ easier to think of this counting as part of looping rather than as
 something to do inside the loop.
 
 @menu
-* Looping Over Structure Elements::  
+* Looping Over Structure Elements::
 @end menu
 
 @node Looping Over Structure Elements
@@ -662,10 +662,11 @@ known.
 @section The break Statement
 @cindex @code{break} statement
 
-The @code{break} statement jumps out of the innermost @code{for} or
-@code{while} loop that encloses it.  The @code{break} statement may only
-be used within the body of a loop.  The following example finds the
-smallest divisor of a given integer, and also identifies prime numbers:
+The @code{break} statement jumps out of the innermost @code{while},
+@code{do-until}, or @code{for} loop that encloses it.  The @code{break}
+statement may only be used within the body of a loop.  The following
+example finds the smallest divisor of a given integer, and also
+identifies prime numbers:
 
 @example
 @group
@@ -718,9 +719,10 @@ endwhile
 @cindex @code{continue} statement
 
 The @code{continue} statement, like @code{break}, is used only inside
-@code{for} or @code{while} loops.  It skips over the rest of the loop
-body, causing the next cycle around the loop to begin immediately.
-Contrast this with @code{break}, which jumps out of the loop altogether.
+@code{while}, @code{do-until}, or @code{for} loops.  It skips over the
+rest of the loop body, causing the next cycle around the loop to begin
+immediately.  Contrast this with @code{break}, which jumps out of the
+loop altogether.
 Here is an example:
 
 @example
@@ -768,7 +770,7 @@ endfor
 @cindex @code{unwind_protect_cleanup}
 @cindex @code{end_unwind_protect}
 
-Octave supports a limited form of exception handling modelled after the
+Octave supports a limited form of exception handling modeled after the
 unwind-protect form of Lisp.  
 
 The general form of an @code{unwind_protect} block looks like this:
@@ -848,50 +850,55 @@ the commands do not need to be parsed each time the @var{try} and
 @var{catch} statements are evaluated.  @xref{Errors and Warnings}, for more
 information about the @code{lasterr} function.
 
+@node Continuation Lines
+@section Continuation Lines
 @cindex continuation lines
 @cindex @code{...} continuation marker
 @cindex @code{\} continuation marker
 
-@node Continuation Lines
-@section Continuation Lines
-
 In the Octave language, most statements end with a newline character and
 you must tell Octave to ignore the newline character in order to
 continue a statement from one line to the next.  Lines that end with the
-characters @code{...} or @code{\} are joined with the following line
-before they are divided into tokens by Octave's parser.  For example,
-the lines
+characters @code{...} are joined with the following line before they are
+divided into tokens by Octave's parser.  For example, the lines
 
 @example
 @group
 x = long_variable_name ...
-    + longer_variable_name \
+    + longer_variable_name ...
     - 42
 @end group
 @end example
 
 @noindent
-form a single statement.  The backslash character on the second line
-above is interpreted as a continuation character, @emph{not} as a division
-operator.
+form a single statement.
 
-For continuation lines that do not occur inside string constants,
-whitespace and comments may appear between the continuation marker and
-the newline character.  For example, the statement
+Any text between the continuation marker and the newline character is
+ignored.  For example, the statement
 
 @example
 @group
-x = long_variable_name ...     # comment one
-    + longer_variable_name \   # comment two
-    - 42                       # last comment
+x = long_variable_name ...    # comment one
+    + longer_variable_name ...comment two
+    - 42                      # last comment
 @end group
 @end example
 
 @noindent
-is equivalent to the one shown above.  Inside string constants, the
-continuation marker must appear at the end of the line just before the
-newline character.
+is equivalent to the one shown above.
 
+Inside double-quoted string constants, the character @code{\} has to be
+used as continuation marker.  The @code{\} must appear at the end of the
+line just before the newline character:
+
+@example
+@group
+s = "This text starts in the first line \
+and is continued in the second line."
+@end group
+@end example
+
+@noindent
 Input that occurs inside parentheses can be continued to the next line
 without having to use a continuation marker.  For example, it is
 possible to write statements like

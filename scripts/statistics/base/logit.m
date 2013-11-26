@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -50,10 +50,11 @@ endfunction
 
 %!test
 %! p = [0.01:0.01:0.99];
-%! assert(logit (p), log (p ./ (1-p)), 25*eps)
+%! assert (logit (p), log (p ./ (1-p)), 25*eps);
 
-%!assert(logit ([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, +Inf, NaN])
+%!assert (logit ([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, +Inf, NaN])
 
 %% Test input validation
 %!error logit ()
 %!error logit (1, 2)
+

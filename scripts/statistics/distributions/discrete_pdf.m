@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -62,24 +62,24 @@ endfunction
 %!shared x,v,p,y
 %! x = [-1 0.1 1.1 1.9 3];
 %! v = 0.1:0.2:1.9;
-%! p = 1/length(v) * ones(1, length(v));
+%! p = 1/length (v) * ones (1, length (v));
 %! y = [0 0.1 0.1 0.1 0];
-%!assert(discrete_pdf ([x, NaN], v, p), [y, NaN], 5*eps);
+%!assert (discrete_pdf ([x, NaN], v, p), [y, NaN], 5*eps)
 
 %% Test class of input preserved
-%!assert(discrete_pdf (single([x, NaN]), v, p), single([y, NaN]), 5*eps("single"));
-%!assert(discrete_pdf ([x, NaN], single(v), p), single([y, NaN]), 5*eps("single"));
-%!assert(discrete_pdf ([x, NaN], v, single(p)), single([y, NaN]), 5*eps("single"));
+%!assert (discrete_pdf (single ([x, NaN]), v, p), single ([y, NaN]), 5*eps ("single"))
+%!assert (discrete_pdf ([x, NaN], single (v), p), single ([y, NaN]), 5*eps ("single"))
+%!assert (discrete_pdf ([x, NaN], v, single (p)), single ([y, NaN]), 5*eps ("single"))
 
 %% Test input validation
 %!error discrete_pdf ()
 %!error discrete_pdf (1)
 %!error discrete_pdf (1,2)
 %!error discrete_pdf (1,2,3,4)
-%!error discrete_pdf (1, ones(2), ones(2,1))
-%!error discrete_pdf (1, [1 ; NaN], ones(2,1))
-%!error discrete_pdf (1, ones(2,1), ones(1,1))
-%!error discrete_pdf (1, ones(2,1), [1 -1])
-%!error discrete_pdf (1, ones(2,1), [1 NaN])
-%!error discrete_pdf (1, ones(2,1), [0  0])
+%!error discrete_pdf (1, ones (2), ones (2,1))
+%!error discrete_pdf (1, [1 ; NaN], ones (2,1))
+%!error discrete_pdf (1, ones (2,1), ones (1,1))
+%!error discrete_pdf (1, ones (2,1), [1 -1])
+%!error discrete_pdf (1, ones (2,1), [1 NaN])
+%!error discrete_pdf (1, ones (2,1), [0  0])
 

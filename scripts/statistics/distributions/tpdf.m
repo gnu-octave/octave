@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -53,7 +53,7 @@ function pdf = tpdf (x, n)
   k = isnan (x) | !(n > 0) | !(n < Inf);
   pdf(k) = NaN;
 
-  k = !isinf (x) & !isnan (x) & (n > 0) & (n < Inf);
+  k = isfinite (x) & (n > 0) & (n < Inf);
   if (isscalar (n))
     pdf(k) = (exp (- (n + 1) * log (1 + x(k) .^ 2 / n)/2)
               / (sqrt (n) * beta (n/2, 1/2)));
@@ -68,26 +68,26 @@ endfunction
 %!test
 %! x = rand (10,1);
 %! y = 1./(pi * (1 + x.^2));
-%! assert(tpdf (x, 1), y, 5*eps);
+%! assert (tpdf (x, 1), y, 5*eps);
 
 %!shared x,y
 %! x = [-Inf 0 0.5 1 Inf];
 %! y = 1./(pi * (1 + x.^2));
-%!assert(tpdf (x, ones(1,5)), y, eps);
-%!assert(tpdf (x, 1), y, eps);
-%!assert(tpdf (x, [0 NaN 1 1 1]), [NaN NaN y(3:5)], eps);
+%!assert (tpdf (x, ones (1,5)), y, eps)
+%!assert (tpdf (x, 1), y, eps)
+%!assert (tpdf (x, [0 NaN 1 1 1]), [NaN NaN y(3:5)], eps)
 
 %% Test class of input preserved
-%!assert(tpdf ([x, NaN], 1), [y, NaN], eps);
-%!assert(tpdf (single([x, NaN]), 1), single([y, NaN]), eps("single"));
-%!assert(tpdf ([x, NaN], single(1)), single([y, NaN]), eps("single"));
+%!assert (tpdf ([x, NaN], 1), [y, NaN], eps)
+%!assert (tpdf (single ([x, NaN]), 1), single ([y, NaN]), eps ("single"))
+%!assert (tpdf ([x, NaN], single (1)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error tpdf ()
 %!error tpdf (1)
 %!error tpdf (1,2,3)
-%!error tpdf (ones(3),ones(2))
-%!error tpdf (ones(2),ones(3))
+%!error tpdf (ones (3), ones (2))
+%!error tpdf (ones (2), ones (3))
 %!error tpdf (i, 2)
 %!error tpdf (2, i)
 

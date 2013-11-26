@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -51,22 +51,22 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.3934693402873666 1 2];
-%!assert(chi2inv (x, 2*ones(1,5)), [NaN 0 1 Inf NaN], 5*eps);
-%!assert(chi2inv (x, 2), [NaN 0 1 Inf NaN], 5*eps);
-%!assert(chi2inv (x, 2*[0 1 NaN 1 1]), [NaN 0 NaN Inf NaN], 5*eps);
-%!assert(chi2inv ([x(1:2) NaN x(4:5)], 2), [NaN 0 NaN Inf NaN], 5*eps);
+%!assert (chi2inv (x, 2*ones (1,5)), [NaN 0 1 Inf NaN], 5*eps)
+%!assert (chi2inv (x, 2), [NaN 0 1 Inf NaN], 5*eps)
+%!assert (chi2inv (x, 2*[0 1 NaN 1 1]), [NaN 0 NaN Inf NaN], 5*eps)
+%!assert (chi2inv ([x(1:2) NaN x(4:5)], 2), [NaN 0 NaN Inf NaN], 5*eps)
 
 %% Test class of input preserved
-%!assert(chi2inv ([x, NaN], 2), [NaN 0 1 Inf NaN NaN], 5*eps);
-%!assert(chi2inv (single([x, NaN]), 2), single([NaN 0 1 Inf NaN NaN]), 5*eps("single"));
-%!assert(chi2inv ([x, NaN], single(2)), single([NaN 0 1 Inf NaN NaN]), 5*eps("single"));
+%!assert (chi2inv ([x, NaN], 2), [NaN 0 1 Inf NaN NaN], 5*eps)
+%!assert (chi2inv (single ([x, NaN]), 2), single ([NaN 0 1 Inf NaN NaN]), 5*eps ("single"))
+%!assert (chi2inv ([x, NaN], single (2)), single ([NaN 0 1 Inf NaN NaN]), 5*eps ("single"))
 
 %% Test input validation
 %!error chi2inv ()
 %!error chi2inv (1)
 %!error chi2inv (1,2,3)
-%!error chi2inv (ones(3),ones(2))
-%!error chi2inv (ones(2),ones(3))
+%!error chi2inv (ones (3), ones (2))
+%!error chi2inv (ones (2), ones (3))
 %!error chi2inv (i, 2)
 %!error chi2inv (2, i)
 

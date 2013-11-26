@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 John W. Eaton
+## Copyright (C) 2004-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -38,10 +38,10 @@
 ## of elements for an array.
 ##
 ## If three output arguments are requested, also return the byte order
-## of the current system as a character (@code{"B"} for big-endian or
-## @code{"L"} for little-endian).
+## of the current system as a character (@qcode{"B"} for big-endian or
+## @qcode{"L"} for little-endian).
 ##
-## If the argument @code{"arch"} is specified, return a string
+## If the argument @qcode{"arch"} is specified, return a string
 ## indicating the architecture of the computer on which Octave is
 ## running.
 ## @end deftypefn
@@ -49,7 +49,7 @@
 function [c, maxsize, endian] = computer (a)
 
   if (nargin == 1 && ischar (a) && strcmpi (a, "arch"))
-    tmp = strsplit (octave_config_info ("canonical_host_type"), "-");
+    tmp = ostrsplit (octave_config_info ("canonical_host_type"), "-");
     if (numel (tmp) == 4)
       c = sprintf ("%s-%s-%s", tmp{4}, tmp{3}, tmp{1});
     else
@@ -85,7 +85,10 @@ function [c, maxsize, endian] = computer (a)
 
 endfunction
 
-%!assert((ischar (computer ())
-%! && computer () == octave_config_info ("canonical_host_type")));
-%!assert(ischar (computer ("arch")));
-%!error computer (2);
+
+%!assert (ischar (computer ()))
+%!assert (computer (), octave_config_info ("canonical_host_type"))
+%!assert (ischar (computer ("arch")))
+
+%!error computer (2)
+

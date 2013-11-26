@@ -10,10 +10,13 @@ DEFUN_DLD (celldemo, args, , "Cell Demo")
     print_usage ();
   else
     {
-      Cell c = args (0).cell_value ();
+      Cell c = args(0).cell_value ();
       if (! error_state)
-        for (octave_idx_type i = 0; i < c.nelem (); i++)
-          retval(i) = c.elem (i);
+        for (octave_idx_type i = 0; i < c.numel (); i++)
+          {
+            retval(i) = c(i);          // using operator syntax
+            //retval(i) = c.elem (i);  // using method syntax
+          }
     }
 
   return retval;

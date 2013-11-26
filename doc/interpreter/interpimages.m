@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@ function interpimages (nm, typ)
   if (strcmp (typ, "eps"))
     d_typ = "-depsc2";
   else
-    d_typ = cstrcat ("-d", typ);
+    d_typ = ["-d", typ];
   endif
 
   if (strcmp (typ, "txt"))
@@ -37,10 +37,10 @@ function interpimages (nm, typ)
     ti = t(1) + [0 : k-1]*dt*n/k;
     y = sin (4*t + 0.3) .* cos (3*t - 0.1);
     yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
-    plot (ti, yp, 'g', ti, interp1(t, y, ti, 'spline'), 'b', ...
-          ti, interpft (y, k), 'c', t, y, 'r+');
-    legend ('sin(4t+0.3)cos(3t-0.1)','spline','interpft','data');
-    print (cstrcat (nm, ".", typ), d_typ)
+    plot (ti, yp, "g", ti, interp1 (t, y, ti, "spline"), "b", ...
+          ti, interpft (y, k), "c", t, y, "r+");
+    legend ("sin(4t+0.3)cos(3t-0.1)", "spline", "interpft", "data");
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "interpn"))
     x = y = z = -1:1;
     f = @(x,y,z) x.^2 - y - z.^2;
@@ -48,31 +48,31 @@ function interpimages (nm, typ)
     v = f (xx,yy,zz);
     xi = yi = zi = -1:0.1:1;
     [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
-    vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
+    vi = interpn (x, y, z, v, xxi, yyi, zzi, "spline");
     mesh (zi, yi, squeeze (vi(1,:,:)));
-    print (cstrcat (nm, ".", typ), d_typ)
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "interpderiv1"))
     t = -2:2;
     dt = 1;
     ti =-2:0.025:2;
     dti = 0.025;
-    y = sign(t);
-    ys = interp1(t,y,ti,'spline');
-    yp = interp1(t,y,ti,'pchip');
-    plot (ti, ys,'r-', ti, yp,'g-');
-    legend('spline','pchip', 4);
-    print (cstrcat (nm, ".", typ), d_typ)
+    y = sign (t);
+    ys = interp1 (t,y,ti,"spline");
+    yp = interp1 (t,y,ti,"pchip");
+    plot (ti, ys,"r-", ti, yp,"g-");
+    legend ("spline","pchip", 4);
+    print ([nm "." typ], d_typ);
   elseif (strcmp (nm, "interpderiv2"))
     t = -2:2;
     dt = 1;
     ti =-2:0.025:2;
     dti = 0.025;
-    y = sign(t);
-    ddys = diff(diff(interp1(t,y,ti,'spline'))./dti)./dti;
-    ddyp = diff(diff(interp1(t,y,ti,'pchip'))./dti)./dti;
-    plot (ti(2:end-1),ddys,'r*', ti(2:end-1),ddyp,'g+');
-    legend('spline','pchip');
-    print (cstrcat (nm, ".", typ), d_typ)
+    y = sign (t);
+    ddys = diff (diff (interp1 (t,y,ti,"spline"))./dti)./dti;
+    ddyp = diff (diff (interp1 (t,y,ti,"pchip"))./dti)./dti;
+    plot (ti(2:end-1),ddys,"r*", ti(2:end-1),ddyp,"g+");
+    legend ("spline", "pchip");
+    print ([nm "." typ], d_typ);
   endif
   hide_output ();  
 endfunction
@@ -103,3 +103,4 @@ function image_as_txt(nm)
   fputs (fid, "+---------------------------------+\n");
   fclose (fid);
 endfunction
+

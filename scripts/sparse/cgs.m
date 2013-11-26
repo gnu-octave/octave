@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Radek Salac
+## Copyright (C) 2008-2013 Radek Salac
 ## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.
@@ -18,7 +18,6 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-##
 ## @deftypefn  {Function File} {@var{x} =} cgs (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} cgs (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} cgs (@var{A}, @var{b}, @dots{})
@@ -49,6 +48,7 @@
 ##
 ## @itemize @minus
 ## @item @var{flag} indicates the exit status:
+##
 ## @itemize @minus
 ## @item 0: iteration converged to the within the chosen tolerance
 ##
@@ -56,6 +56,7 @@
 ##
 ## @item 3: the algorithm reached stagnation
 ## @end itemize
+##
 ## (the value 2 is unused but skipped for compatibility).
 ##
 ## @item @var{relres} is the final value of the relative residual.
@@ -189,12 +190,11 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 endfunction
 
 
-
 %!demo
 %! % Solve system of A*x=b
-%! A=[5 -1 3;-1 2 -2;3 -2 3]
-%! b=[7;-1;4]
-%! [a,b,c,d,e]=cgs(A,b)
+%! A = [5 -1 3;-1 2 -2;3 -2 3];
+%! b = [7;-1;4];
+%! [a,b,c,d,e] = cgs (A,b)
 
 %!shared A, b, n, M
 %!
@@ -223,3 +223,4 @@ endfunction
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = cgs (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Bill Lash
+## Copyright (C) 2000-2013 Bill Lash
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@ function retval = unwrap (x, tol, dim)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (!isnumeric (x))
     error ("unwrap: X must be a numeric matrix or vector");
   endif
 
@@ -78,7 +78,7 @@ function retval = unwrap (x, tol, dim)
   ## Find only the peaks, and multiply them by the appropriate amount
   ## of ranges so that there are kronecker deltas at each wrap point
   ## multiplied by the appropriate amount of range values.
-  p =  ceil(abs(d)./rng) .* rng .* (((d > tol) > 0) - ((d < -tol) > 0));
+  p =  ceil (abs (d)./rng) .* rng .* (((d > tol) > 0) - ((d < -tol) > 0));
 
   ## Now need to "integrate" this so that the deltas become steps.
   r = cumsum (p, dim);
@@ -89,16 +89,17 @@ function retval = unwrap (x, tol, dim)
 
 endfunction
 
-%!function t = __xassert(a,b,tol)
+
+%!function t = __xassert (a,b,tol)
 %!  if (nargin == 1)
-%!    t = all(a(:));
+%!    t = all (a(:));
 %!  else
 %!    if (nargin == 2)
 %!      tol = 0;
 %!    endif
-%!    if (any (size(a) != size(b)))
+%!    if (any (size (a) != size (b)))
 %!      t = 0;
-%!    elseif (any (abs(a(:) - b(:)) > tol))
+%!    elseif (any (abs (a(:) - b(:)) > tol))
 %!      t = 0;
 %!    else
 %!      t = 1;
@@ -112,29 +113,29 @@ endfunction
 %! t = [];
 %!
 %! r = [0:100];                        # original vector
-%! w = r - 2*pi*floor((r+pi)/(2*pi));  # wrapped into [-pi,pi]
+%! w = r - 2*pi*floor ((r+pi)/(2*pi)); # wrapped into [-pi,pi]
 %! tol = 1e3*eps;                      # maximum expected deviation
 %!
-%! t(++i) = __xassert(r, unwrap(w), tol);               #unwrap single row
-%! t(++i) = __xassert(r', unwrap(w'), tol);             #unwrap single column
-%! t(++i) = __xassert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
-%! t(++i) = __xassert([r;r], unwrap([w;w],[],2), tol);  #check that dim works
-%! t(++i) = __xassert(r+10, unwrap(10+w), tol);         #check r(1)>pi works
+%! t(++i) = __xassert (r, unwrap (w), tol);              #unwrap single row
+%! t(++i) = __xassert (r', unwrap (w'), tol);            #unwrap single column
+%! t(++i) = __xassert ([r',r'], unwrap ([w',w']), tol);  #unwrap 2 columns
+%! t(++i) = __xassert ([r;r], unwrap ([w;w],[],2), tol); #check that dim works
+%! t(++i) = __xassert (r+10, unwrap (10+w), tol);        #check r(1)>pi works
 %!
-%! t(++i) = __xassert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
-%! t(++i) = __xassert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
-%! t(++i) = __xassert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
+%! t(++i) = __xassert (w', unwrap (w',[],2));  #unwrap col by rows should not change it
+%! t(++i) = __xassert (w, unwrap (w,[],1));    #unwrap row by cols should not change it
+%! t(++i) = __xassert ([w;w], unwrap ([w;w])); #unwrap 2 rows by cols should not change them
 %!
 %! ## verify that setting tolerance too low will cause bad results.
-%! t(++i) = __xassert(any(abs(r - unwrap(w,0.8)) > 100));
+%! t(++i) = __xassert (any (abs (r - unwrap (w,0.8)) > 100));
 %!
-%! assert(all(t));
+%! assert (all (t));
 %!
 %!test
 %! A = [pi*(-4), pi*(-2+1/6), pi/4, pi*(2+1/3), pi*(4+1/2), pi*(8+2/3), pi*(16+1), pi*(32+3/2), pi*64];
-%! assert (unwrap(A), unwrap(A, pi));
-%! assert (unwrap(A, pi), unwrap(A, pi, 2));
-%! assert (unwrap(A', pi), unwrap(A', pi, 1));
+%! assert (unwrap (A), unwrap (A, pi));
+%! assert (unwrap (A, pi), unwrap (A, pi, 2));
+%! assert (unwrap (A', pi), unwrap (A', pi, 1));
 %!
 %!test
 %! A = [pi*(-4); pi*(2+1/3); pi*(16+1)];
@@ -145,12 +146,13 @@ endfunction
 %! E(:, :, 2) = [A+B, B+C, C+D, D+A];
 %! F(:, :, 1) = [unwrap(A), unwrap(B), unwrap(C), unwrap(D)];
 %! F(:, :, 2) = [unwrap(A+B), unwrap(B+C), unwrap(C+D), unwrap(D+A)];
-%! assert (unwrap(E), F);
+%! assert (unwrap (E), F);
 %!
 %!test
 %! A = [0, 2*pi, 4*pi, 8*pi, 16*pi, 65536*pi];
 %! B = [pi*(-2+1/6), pi/4, pi*(2+1/3), pi*(4+1/2), pi*(8+2/3), pi*(16+1), pi*(32+3/2), pi*64];
-%! assert (unwrap(A), zeros(1, length(A)));
-%! assert (diff(unwrap(B), 1)<2*pi, true(1, length(B)-1));
-%!
+%! assert (unwrap (A), zeros (1, length (A)));
+%! assert (diff (unwrap (B), 1) < 2*pi, true (1, length (B)-1));
+
 %!error unwrap()
+

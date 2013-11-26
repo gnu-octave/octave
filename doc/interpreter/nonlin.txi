@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -23,7 +23,7 @@
 
 @menu
 * Solvers::
-* Minimizers::          
+* Minimizers::
 @end menu
 
 @node Solvers
@@ -172,7 +172,11 @@ Often it is useful to find the minimum value of a function rather than just
 the zeroes where it crosses the x-axis.  @code{fminbnd} is designed for the
 simpler, but very common, case of a univariate function where the interval
 to search is bounded.  For unbounded minimization of a function with
-potentially many variables use @code{fminunc}.  @xref{Optimization}, for
+potentially many variables use @code{fminunc} or @code{fminsearch}.  The two
+functions use different internal algorithms and some knowledge of the objective
+function is required.  For functions which can be differentiated, @code{fminunc}
+is appropriate.  For functions with discontinuities, or for which a gradient
+search would fail, use @code{fminsearch}.  @xref{Optimization}, for
 minimization with the presence of constraint functions.  Note that searches
 can be made for maxima by simply inverting the objective function
 @tex
@@ -185,4 +189,6 @@ can be made for maxima by simply inverting the objective function
 @DOCSTRING(fminbnd)
 
 @DOCSTRING(fminunc)
+
+@DOCSTRING(fminsearch)
 

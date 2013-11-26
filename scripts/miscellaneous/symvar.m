@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -29,5 +29,7 @@ function args = symvar (s)
   args = argnames (inline (s));
 endfunction
 
+
 ## This function is tested by the tests for argnames().
 %!assert (1)
+

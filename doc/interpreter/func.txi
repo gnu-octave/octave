@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -29,19 +29,53 @@ interactive Octave sessions, or in external files, and can be called just
 like built-in functions.
 
 @menu
-* Defining Functions::          
-* Multiple Return Values::      
-* Variable-length Argument Lists::  
-* Ignoring Arguments::  
-* Variable-length Return Lists::  
-* Returning from a Function::   
-* Default Arguments::   
-* Function Files::              
-* Script Files::                
-* Function Handles Inline Functions and Anonymous Functions::
+* Introduction to Function and Script Files::
+* Defining Functions::
+* Multiple Return Values::
+* Variable-length Argument Lists::
+* Ignoring Arguments::
+* Variable-length Return Lists::
+* Returning from a Function::
+* Default Arguments::
+* Function Files::
+* Script Files::
+* Function Handles Anonymous Functions Inline Functions::
 * Commands::
-* Organization of Functions::   
+* Organization of Functions::
 @end menu
+
+@node Introduction to Function and Script Files
+@section Introduction to Function and Script Files
+
+There are seven different things covered in this section.
+@enumerate
+@item
+Typing in a function at the command prompt.
+
+@item
+Storing a group of commands in a file --- called a script file.
+
+@item
+Storing a function in a file---called a function file.
+
+@item
+Subfunctions in function files.
+
+@item
+Multiple functions in one script file.
+
+@item
+Private functions.
+
+@item
+Nested functions.
+@end enumerate
+
+Both function files and script files end with an extension of .m, for
+@sc{matlab} compatibility.  If you want more than one independent
+functions in a file, it must be a script file (@pxref{Script Files}),
+and to use these functions you must execute the script file before you
+can use the functions that are in the script file.
 
 @node Defining Functions
 @section Defining Functions
@@ -80,7 +114,7 @@ endfunction
 @end example
 
 The @code{printf} statement (@pxref{Input and Output}) simply tells
-Octave to print the string @code{"\a"}.  The special character @samp{\a}
+Octave to print the string @qcode{"\a"}.  The special character @samp{\a}
 stands for the alert character (ASCII 7).  @xref{Strings}.
 
 Once this function is defined, you can ask Octave to evaluate it by
@@ -291,7 +325,7 @@ values distinct names.
 
 It is possible to use the @code{nthargout} function to obtain only some
 of the return values or several at once in a cell array.
-@ref{Cell Array Objects}
+@xref{Cell Array Objects}.
 
 @DOCSTRING(nthargout)
 
@@ -368,7 +402,7 @@ For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
 
 @DOCSTRING(nargoutchk)
 
-@anchor{doc-varargin} @anchor{doc-varargout}
+@anchor{XREFvarargin} @anchor{XREFvarargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
@@ -703,7 +737,7 @@ If you know that your own function files will not change while you are
 running Octave, you can improve performance by calling
 @code{ignore_function_time_stamp ("all")}, so that Octave will
 ignore the time stamps for all function files.  Passing
-@code{"system"} to this function resets the default behavior.
+@qcode{"system"} to this function resets the default behavior.
 
 @c FIXME -- note about time stamps on files in NFS environments?
 
@@ -717,6 +751,7 @@ ignore the time stamps for all function files.  Passing
 * Manipulating the Load Path::
 * Subfunctions::
 * Private Functions::
+* Nested Functions::
 * Overloading and Autoloading::
 * Function Locking::
 * Function Precedence::
@@ -737,7 +772,7 @@ using @code{addpath} and @code{rmpath}.  As an example, the following
 code adds @samp{~/Octave} to the load path.
 
 @example
-addpath("~/Octave")
+addpath ("~/Octave")
 @end example
 
 @noindent
@@ -825,6 +860,157 @@ Then if the path to @code{func1} is @code{<directory>/func1.m}, and if
 then @code{func2} is only available for use of the functions, like 
 @code{func1}, that are found in @code{<directory>}.
 
+@node Nested Functions
+@subsection Nested Functions
+
+Nested functions are similar to subfunctions in that only the main function is
+visible outside the file.  However, they also allow for child functions to
+access the local variables in their parent function.  This shared access mimics
+using a global variable to share information --- but a global variable which is
+not visible to the rest of Octave.  As a programming strategy, sharing data
+this way can create code which is difficult to maintain.  It is recommended to
+use subfunctions in place of nested functions when possible.
+
+As a simple example, consider a parent function @code{foo}, that calls a nested
+child function @code{bar}, with a shared variable @var{x}.
+
+@example
+@group
+function y = foo ()
+  x = 10;
+  bar ();
+  y = x;
+
+  function bar ()
+    x = 20;
+  endfunction
+endfunction
+
+foo ()
+ @result{} 20
+@end group
+@end example
+
+@noindent
+Notice that there is no special syntax for sharing @var{x}.  This can lead to
+problems with accidental variable sharing between a parent function and its
+child.  While normally variables are inherited, child function parameters and
+return values are local to the child function.
+
+Now consider the function @code{foobar} that uses variables @var{x} and
+@var{y}.  @code{foobar} calls a nested function @code{foo} which takes
+@var{x} as a parameter and returns @var{y}.  @code{foo} then calls @code{bat}
+which does some computation.
+
+@example
+@group
+function z = foobar ()
+  x = 0;
+  y = 0;
+  z = foo (5);
+  z += x + y;
+
+  function y = foo (x)
+    y = x + bat ();
+
+    function z = bat ()
+      z = x;
+    endfunction
+  endfunction
+endfunction
+
+foobar ()
+    @result{} 10
+@end group
+@end example
+
+@noindent
+It is important to note that the @var{x} and @var{y} in @code{foobar} remain
+zero, as in @code{foo} they are a return value and parameter respectively.  The
+@var{x} in @code{bat} refers to the @var{x} in @code{foo}.
+
+Variable inheritance leads to a problem for @code{eval} and scripts.  If a
+new variable is created in a parent function, it is not clear what should happen
+in nested child functions.  For example, consider a parent function @code{foo}
+with a nested child function @code{bar}:
+
+@example
+@group
+function y = foo (to_eval)
+  bar ();
+  eval (to_eval);
+
+  function bar ()
+    eval ("x = 100;");
+    eval ("y = x;");
+  endfunction
+endfunction
+
+foo ("x = 5;")
+    @result{} error: can not add variable "x" to a static workspace
+
+foo ("y = 10;")
+    @result{} 10
+
+foo ("")
+    @result{} 100
+@end group
+@end example
+
+@noindent
+The parent function @code{foo} is unable to create a new variable
+@var{x}, but the child function @code{bar} was successful.  Furthermore, even
+in an @code{eval} statement @var{y} in @code{bar} is the same @var{y} as in its
+parent function @code{foo}.  The use of @code{eval} in conjunction with nested
+functions is best avoided.
+
+As with subfunctions, only the first nested function in a file may be called
+from the outside.  Inside a function the rules are more complicated.  In
+general a nested function may call:
+
+@enumerate 0
+@item
+Globally visible functions
+
+@item
+Any function that the nested function's parent can call
+
+@item
+Sibling functions (functions that have the same parents)
+
+@item
+Direct children
+
+@end enumerate
+
+As a complex example consider a parent function @code{ex_top} with two
+child functions, @code{ex_a} and @code{ex_b}.  In addition, @code{ex_a} has two
+more child functions, @code{ex_aa} and @code{ex_ab}.  For example:
+
+@example
+function ex_top ()
+  ## Can call: ex_top, ex_a, and ex_b
+  ## Can NOT call: ex_aa and ex_ab
+
+  function ex_a ()
+    ## Call call everything
+
+    function ex_aa ()
+      ## Can call everything
+    endfunction
+
+    function ex_ab ()
+      ## Can call everything
+    endfunction
+  endfunction
+
+  function ex_b ()
+    ## Can call: ex_top, ex_a, and ex_b
+    ## Can NOT call: ex_aa and ex_ab
+  endfunction
+endfunction
+@end example
+
 @node Overloading and Autoloading
 @subsection Overloading and Autoloading
 
@@ -891,7 +1077,7 @@ being removed from memory, as the following example shows:
 
 @example
 @group
-function count_calls()
+function count_calls ()
   persistent calls = 0;
   printf ("'count_calls' has been called %d times\n",
           ++calls);
@@ -964,7 +1150,7 @@ An overloaded function as defined by @code{dispatch}.
 A function that has been defined on the command-line.
 
 @item Autoload function
-A function that is marked as autoloaded with @xref{doc-autoload}.
+A function that is marked as autoloaded with @xref{XREFautoload,,autoload}.
 
 @item A Function on the Path
 A function that can be found on the users load-path.  There can also be
@@ -1080,11 +1266,11 @@ execute commands from any file.
 
 @DOCSTRING(source)
 
-@node Function Handles Inline Functions and Anonymous Functions
-@section Function Handles, Inline Functions, and Anonymous Functions
+@node Function Handles Anonymous Functions Inline Functions
+@section Function Handles, Anonymous Functions, Inline Functions
 @cindex handle, function handles
-@cindex inline, inline functions
 @cindex anonymous functions
+@cindex inline, inline functions
 
 It can be very convenient store a function in a variable so that it
 can be passed to a different function.  For example, a function that
@@ -1214,7 +1400,7 @@ body using the @code{inline} function.  The following code defines the
 function @math{f(x) = x^2 + 2}.
 
 @example
-f = inline("x^2 + 2");
+f = inline ("x^2 + 2");
 @end example
 
 @noindent
@@ -1244,7 +1430,7 @@ my_command hello world
 is equivalent to 
 
 @example
-my_command("hello", "world")
+my_command ("hello", "world")
 @end example
 
 @noindent

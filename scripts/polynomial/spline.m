@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ## Copyright (C) 2006 David Bateman
 ##
 ## This file is part of Octave.
@@ -83,12 +83,12 @@ function ret = spline (x, y, xi)
   ## Check the size and shape of y
   ndy = ndims (y);
   szy = size (y);
-  if (ndy == 2 && (szy(1) == n || szy(2) == n))
-    if (szy(2) == n)
+  if (ndy == 2 && (any (szy == n) || any (szy == n+2)))
+    if (szy(2) == n || szy(2) == n+2)
       a = y.';
     else
       a = y;
-      szy = fliplr (szy);
+      szy = szy([2 1]);
     endif
   else
     a = shiftdim (reshape (y, [prod(szy(1:end-1)), szy(end)]), 1);
@@ -100,15 +100,15 @@ function ret = spline (x, y, xi)
   endfor
 
   complete = false;
-  if (size (a, 1) == n + 2)
+  if (rows (a) == n + 2)
     complete = true;
     dfs = a(1,:);
     dfe = a(end,:);
     a = a(2:end-1,:);
   endif
 
-  if (~issorted (x))
-    [x, idx] = sort(x);
+  if (! issorted (x))
+    [x, idx] = sort (x);
     a = a(idx,:);
   endif
 
@@ -131,31 +131,12 @@ function ret = spline (x, y, xi)
       b = b(1:n-1,:);
       a = a(1:n-1,:);
     else
-      if (n == 3)
-        dg = 1.5 * h(1) - 0.5 * h(2);
-        c(2:n-1,:) = 1/dg(1);
-      else
-        dg = 2 * (h(1:n-2) .+ h(2:n-1));
-        dg(1) = dg(1) - 0.5 * h(1);
-        dg(n-2) = dg(n-2) - 0.5 * h(n-1);
-
-        e = h(2:n-2);
-
-        g = 3 * diff (a(2:n,:)) ./ h(2:n-1,idx) ...
-          - 3 * diff (a(1:n-1,:)) ./ h(1:n-2,idx);
-        g(1,:) = 3 * (a(3,:) - a(2,:)) / h(2) ...
-          - 3 / 2 * (3 * (a(2,:) - a(1,:)) / h(1) - dfs);
-        g(n-2,:) = 3 / 2 * (3 * (a(n,:) - a(n-1,:)) / h(n-1) - dfe) ...
-          - 3 * (a(n-1,:) - a(n-2,:)) / h(n-2);
-
-        c(2:n-1,:) = spdiags ([[e(:); 0], dg, [0; e(:)]],
-                              [-1, 0, 1], n-2, n-2) \ g;
-      endif
-
-      c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * dfs
-             - c(2,:) * h(1)) / (2 * h(1));
-      c(n,:) = - (3 / h(n-1) * (a(n,:) - a(n-1,:)) - 3 * dfe
-             + c(n-1,:) * h(n-1)) / (2 * h(n-1));
+      g(1,:) = (a(2,:) - a(1,:)) / h(1) - dfs;
+      g(2:n-1,:) = (a(3:n,:) - a(2:n-1,:)) ./ h(2:n-1) - ...
+                   (a(2:n-1,:) - a(1:n-2,:)) ./ h(1:n-2);
+      g(n,:) = dfe - (a(n,:) - a(n-1,:)) / h(n-1);
+      c = spdiags ([[h/6;0],[h(1)/3;(h(1:n-2)+h(2:n-1))/3;h(n-1)/3],[0;h/6]],...
+                   [-1,0,1],n,n) \ (g / 2);
       b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
         - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
@@ -244,37 +225,38 @@ function ret = spline (x, y, xi)
 
 endfunction
 
+
 %!demo
-%! x = 0:10; y = sin(x);
-%! xspline = 0:0.1:10; yspline = spline(x,y,xspline);
-%! title("spline fit to points from sin(x)");
-%! plot(xspline,sin(xspline),"r",xspline,yspline,"g-",x,y,"b+");
-%! legend("original","interpolation","interpolation points");
+%! x = 0:10; y = sin (x);
+%! xspline = 0:0.1:10;  yspline = spline (x,y,xspline);
+%! title ("spline fit to points from sin (x)");
+%! plot (xspline,sin(xspline),"r", xspline,yspline,"g-", x,y,"b+");
+%! legend ("original", "interpolation", "interpolation points");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
 %!shared x,y,abserr
-%! x = [0:10]; y = sin(x); abserr = 1e-14;
-%!assert (spline(x,y,x), y, abserr);
-%!assert (spline(x,y,x'), y', abserr);
-%!assert (spline(x',y',x'), y', abserr);
-%!assert (spline(x',y',x), y, abserr);
-%!assert (isempty(spline(x',y',[])));
-%!assert (isempty(spline(x,y,[])));
-%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x,[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x',[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x',[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
-%! y = cos(x) + i*sin(x);
-%!assert (spline(x,y,x), y, abserr)
-%!assert (real(spline(x,y,x)), real(y), abserr);
-%!assert (real(spline(x,y,x.')), real(y).', abserr);
-%!assert (real(spline(x.',y.',x.')), real(y).', abserr);
-%!assert (real(spline(x.',y,x)), real(y), abserr);
-%!assert (imag(spline(x,y,x)), imag(y), abserr);
-%!assert (imag(spline(x,y,x.')), imag(y).', abserr);
-%!assert (imag(spline(x.',y.',x.')), imag(y).', abserr);
-%!assert (imag(spline(x.',y,x)), imag(y), abserr);
+%! x = [0:10]; y = sin (x); abserr = 1e-14;
+%!assert (spline (x,y,x), y, abserr)
+%!assert (spline (x,y,x'), y', abserr)
+%!assert (spline (x',y',x'), y', abserr)
+%!assert (spline (x',y',x), y, abserr)
+%!assert (isempty (spline (x',y',[])))
+%!assert (isempty (spline (x,y,[])))
+%!assert (spline (x,[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x,[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x',[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x',[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
+%! y = cos (x) + i*sin (x);
+%!assert (spline (x,y,x), y, abserr)
+%!assert (real (spline (x,y,x)), real (y), abserr)
+%!assert (real (spline (x,y,x.')), real (y).', abserr)
+%!assert (real (spline (x.',y.',x.')), real (y).', abserr)
+%!assert (real (spline (x.',y,x)), real (y), abserr)
+%!assert (imag (spline (x,y,x)), imag (y), abserr)
+%!assert (imag (spline (x,y,x.')), imag (y).', abserr)
+%!assert (imag (spline (x.',y.',x.')), imag (y).', abserr)
+%!assert (imag (spline (x.',y,x)), imag (y), abserr)
 %!test
 %! xnan = 5;
 %! y(x==xnan) = NaN;
@@ -296,10 +278,29 @@ endfunction
 %! y = [1,2,3,4];
 %! pp = spline (x,y);
 %! [x,P] = unmkpp (pp);
-%! assert (norm (P-[3,-3,1,2]), 0, abserr);
+%! assert (P, [3,-3,1,2], abserr);
 %!test
 %! x = [2,1];
 %! y = [1,2,3,4];
 %! pp = spline (x,y);
+%! pp2 = spline (x', y');
 %! [x,P] = unmkpp (pp);
-%! assert (norm (P-[7,-9,1,3]), 0, abserr);
+%! assert (P, [7,-9,1,3], abserr);
+%! assert (pp2, pp);
+%!test
+%! x = [0,1,2];
+%! y = [0,0,1,0,0];
+%! pp = spline (x,y);
+%! pp2 = spline (x', y');
+%! [x,P] = unmkpp (pp);
+%! assert (P, [-2,3,0,0;2,-3,0,1], abserr);
+%! assert (pp2, pp);
+%!test
+%! x = [0,1,2,3];
+%! y = [0,0,1,1,0,0];
+%! pp = spline (x,y);
+%! pp2 = spline (x', y');
+%! [x,P] = unmkpp (pp);
+%! assert (P, [-1,2,0,0;0,-1,1,1;1,-1,-1,1], abserr);
+%! assert (pp2, pp);
+

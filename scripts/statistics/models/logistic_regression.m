@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -190,3 +190,4 @@ function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, thet
   endif
 
 endfunction
+

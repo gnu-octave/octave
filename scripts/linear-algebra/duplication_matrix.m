@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ##  $D_n$
 ## @end tex
 ## @ifnottex
-##  @math{Dn}
+##  @nospell{@math{Dn}}
 ## @end ifnottex
 ##  which is the unique
 ## @tex
@@ -37,7 +37,7 @@
 ##  $D_n * {\rm vech} (A) = {\rm vec} (A)$
 ## @end tex
 ## @ifnottex
-##  @math{Dn vech (A) = vec (A)}
+##  @nospell{@math{Dn vech (A) = vec (A)}}
 ## @end ifnottex
 ##  for all symmetric
 ## @tex
@@ -87,9 +87,10 @@ function d = duplication_matrix (n)
 
 endfunction
 
+
 %!test
 %! N = 2;
-%! A = rand(N);
+%! A = rand (N);
 %! B = A * A';
 %! C = A + A';
 %! D = duplication_matrix (N);
@@ -98,7 +99,7 @@ endfunction
 
 %!test
 %! N = 3;
-%! A = rand(N);
+%! A = rand (N);
 %! B = A * A';
 %! C = A + A';
 %! D = duplication_matrix (N);
@@ -107,14 +108,15 @@ endfunction
 
 %!test
 %! N = 4;
-%! A = rand(N);
+%! A = rand (N);
 %! B = A * A';
 %! C = A + A';
 %! D = duplication_matrix (N);
 %! assert (D * vech (B), vec (B), 1e-6);
 %! assert (D * vech (C), vec (C), 1e-6);
 
-%!error duplication_matrix ();
-%!error duplication_matrix (0.5);
-%!error duplication_matrix (-1);
-%!error duplication_matrix (ones(1,4));
+%!error duplication_matrix ()
+%!error duplication_matrix (0.5)
+%!error duplication_matrix (-1)
+%!error duplication_matrix (ones (1,4))
+

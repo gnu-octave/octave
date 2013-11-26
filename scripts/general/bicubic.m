@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Hoxide Ma
+## Copyright (C) 2005-2013 Hoxide Ma
 ##
 ## This file is part of Octave.
 ##
@@ -38,7 +38,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     print_usage ();
   endif
 
-  if (nargin == 7 && isscalar(spline_alpha))
+  if (nargin == 7 && isscalar (spline_alpha))
     a = spline_alpha;
   else
     a = 0.5;
@@ -50,9 +50,9 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
   if (isa (x, "single") || isa (y, "single") || isa (z, "single")
       || isa (xi, "single") || isa (yi, "single"))
-    myeps = eps("single");
+    myeps = eps ("single");
   else
-    myeps = eps;
+    myeps = eps ();
   endif
 
   if (nargin <= 2)
@@ -65,8 +65,8 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     z = x;
     x = [];
     [rz, cz] = size (z);
-    s = linspace (1, cz, (cz-1)*pow2(n)+1);
-    t = linspace (1, rz, (rz-1)*pow2(n)+1);
+    s = linspace (1, cz, (cz-1) * pow2 (n) + 1);
+    t = linspace (1, rz, (rz-1) * pow2 (n) + 1);
   elseif (nargin == 3)
     if (! isvector (x) || ! isvector (y))
       error ("bicubic: XI and YI must be vector");
@@ -88,6 +88,23 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
       error ("bicubic: X, Y and Z must be equal size matrices of same size");
     endif
 
+    if (all (diff (x) < 0))
+      flipx = true;
+      x = fliplr (x);
+    elseif (all (diff (x) > 0))
+      flipx = false;
+    else
+      error ("bicubic:nonmonotonic", "bicubic: X values must be monotonic");
+    endif
+    if (all (diff (y) < 0))
+      flipy = true;
+      y = flipud (y);
+    elseif (all (diff (y) > 0))
+      flipy = false;
+    else
+      error ("bicubic:nonmonotonic", "bicubic: Y values must be monotonic");
+    endif
+
     ## Mark values outside the lookup table.
     xfirst_ind = find (xi < x(1));
     xlast_ind  = find (xi > x(cz));
@@ -99,9 +116,8 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     yi(yfirst_ind) = y(1);
     yi(ylast_ind) = y(rz);
 
-
     x = reshape (x, 1, cz);
-    x(cz) *= 1 + sign (x(cz))*myeps;
+    x(cz) *= 1 + sign (x(cz)) * myeps;
     if (x(cz) == 0)
       x(cz) = myeps;
     endif;
@@ -111,7 +127,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     xidx = o(find (i > cz));
 
     y = reshape (y, rz, 1);
-    y(rz) *= 1 + sign (y(rz))*myeps;
+    y(rz) *= 1 + sign (y(rz)) * myeps;
     if (y(rz) == 0)
       y(rz) = myeps;
     endif;
@@ -121,8 +137,15 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     yidx = o([find(i > rz)]);
 
     ## Set s and t used follow codes.
-    s = xidx + ((xi .- x(xidx))./(x(xidx+1) .- x(xidx)));
-    t = yidx + ((yi - y(yidx))./(y(yidx+1) - y(yidx)));
+    s = xidx + ((xi .- x(xidx)) ./ (x(xidx+1) .- x(xidx)));
+    t = yidx + ((yi  - y(yidx)) ./ (y(yidx+1)  - y(yidx)));
+
+    if (flipx)
+      s = fliplr (s);
+    endif
+    if (flipy)
+      t = flipud (t);
+    endif
   else
     print_usage ();
   endif
@@ -198,11 +221,28 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
 endfunction
 
+
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]+10; y=[-10,-9,-8];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,bicubic(x,y,A,xi,yi));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4]+10;
+%! y = [-10,-9,-8];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi, yi, bicubic (x,y,A,xi,yi));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+
+%!test
+%! x = linspace (1, -1, 10);
+%! [xx, yy] = meshgrid (x);
+%! z = cos (6 * xx) + sin (6 * yy);
+%! x = linspace (1, -1, 30);
+%! [xx2, yy2] = meshgrid (x);
+%! z1 = interp2 (xx, yy, z, xx2, yy2, "cubic");
+%! z2 = interp2 (fliplr (xx), flipud (yy), fliplr (flipud(z)),
+%!               fliplr (xx2), flipud (yy2), "cubic");
+%! z2 = fliplr (flipud (z2));
+%! assert (z1, z2, 100 * eps ())
+

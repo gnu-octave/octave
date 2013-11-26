@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Friedrich Leisch
+## Copyright (C) 1995-2013 Friedrich Leisch
 ##
 ## This file is part of Octave.
 ##
@@ -31,15 +31,15 @@ function retval = spencer (x)
     print_usage ();
   endif
 
-  [xr, xc] = size(x);
+  [xr, xc] = size (x);
 
   n = xr;
   c = xc;
 
-  if (isvector(x))
-   n = length(x);
+  if (isvector (x))
+   n = length (x);
    c = 1;
-   x = reshape(x, n, 1);
+   x = reshape (x, n, 1);
   endif
 
   w = [-3, -6, -5, 3, 21, 46, 67, 74, 67, 46, 21, 3, -5, -6, -3] / 320;
@@ -47,7 +47,7 @@ function retval = spencer (x)
   retval = fftfilt (w, x);
   retval = [zeros(7,c); retval(15:n,:); zeros(7,c);];
 
-  retval = reshape(retval, xr, xc);
+  retval = reshape (retval, xr, xc);
 
 endfunction
 

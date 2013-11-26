@@ -1,9 +1,9 @@
 #include <octave/oct.h>
 
-DEFUN_DLD (globaldemo, args, , "Global demo.")
+DEFUN_DLD (globaldemo, args, , "Global Demo")
 {
-  int nargin = args.length ();
   octave_value retval;
+  int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();

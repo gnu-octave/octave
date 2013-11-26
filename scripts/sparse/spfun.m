@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman and Andy Adler
+## Copyright (C) 2004-2013 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -37,13 +37,14 @@ function y = spfun (f, S)
   if (isa (f, "function_handle") || isa (f, "inline function"))
     y = sparse (i, j, f(v), m, n);
   else
-    y = sparse(i, j, feval (f, v), m, n);
+    y = sparse (i, j, feval (f, v), m, n);
   endif
 
 endfunction
 
-%!assert(spfun('exp',[1,2;3,0]),sparse([exp(1),exp(2);exp(3),0]))
-%!assert(spfun('exp',sparse([1,2;3,0])),sparse([exp(1),exp(2);exp(3),0]))
-%!assert(spfun(@exp,[1,2;3,0]),sparse([exp(1),exp(2);exp(3),0]))
-%!assert(spfun(@exp,sparse([1,2;3,0])),sparse([exp(1),exp(2);exp(3),0]))
+
+%!assert (spfun ("exp", [1,2;3,0]), sparse ([exp(1),exp(2);exp(3),0]))
+%!assert (spfun ("exp", sparse ([1,2;3,0])), sparse ([exp(1),exp(2);exp(3),0]))
+%!assert (spfun (@exp, [1,2;3,0]), sparse ([exp(1),exp(2);exp(3),0]))
+%!assert (spfun (@exp, sparse ([1,2;3,0])), sparse ([exp(1),exp(2);exp(3),0]))
 

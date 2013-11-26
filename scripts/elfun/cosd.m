@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 David Bateman
+## Copyright (C) 2006-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -26,17 +26,23 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function y = cosd (x)
+
   if (nargin != 1)
     print_usage ();
   endif
+
   I = x / 180;
   y = cos (I .* pi);
   I = I + 0.5;
   y(I == fix (I) & finite (I)) = 0;
+
 endfunction
 
-%!error(cosd())
-%!error(cosd(1,2))
-%!assert(cosd(0:10:80),cos(pi*[0:10:80]/180),-10*eps)
-%!assert(cosd([0,180,360]) != 0)
-%!assert(cosd([90,270]) == 0)
+
+%!assert (cosd (0:10:80), cos (pi*[0:10:80]/180), -10*eps)
+%!assert (cosd ([0, 180, 360]) != 0)
+%!assert (cosd ([90, 270]) == 0)
+
+%!error cosd ()
+%!error cosd (1, 2)
+

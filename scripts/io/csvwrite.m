@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2012 Paul Kienzle
+## Copyright (C) 2001-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -41,14 +41,15 @@ endfunction
 
 %!test
 %! csvwrite (fname, magic (3));
-%! assert (csvread (fname), magic (3));
+%! data = csvread (fname);
 %! unlink (fname);
+%! assert (data, magic (3));
 
 %!test
 %! csvwrite (fname, magic (3), "precision", "%2.1f", "newline", "unix");
 %! fid = fopen (fname, "rt");
 %! txt = char (fread (fid,Inf,'char')');
 %! fclose (fid);
-%! assert (txt, "8.0,1.0,6.0\n3.0,5.0,7.0\n4.0,9.0,2.0\n");
 %! unlink (fname);
+%! assert (txt, "8.0,1.0,6.0\n3.0,5.0,7.0\n4.0,9.0,2.0\n");
 

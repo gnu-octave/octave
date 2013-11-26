@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Keith Goodman
+## Copyright (C) 2006-2013 Keith Goodman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
+## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
 ## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,
@@ -46,20 +46,20 @@
 ## @item -L DIR
 ## Add the library directory DIR to the link command.
 ##
-## @item -M
+## @item  -M
 ## @itemx --depend
 ## Generate dependency files (.d) for C and C++ source files.
 ##
 ## @item -R DIR
 ## Add the run-time path to the link command.
 ##
-## @item -Wl,@dots{}
-## Pass flags though the linker like "-Wl,-rpath=@dots{}".
+## @item @nospell{-Wl,@dots{}}
+## Pass flags though the linker like @nospell{"-Wl,-rpath=@dots{}"}.
 ## The quotes are needed since commas are interpreted as command
 ## separators.
 ##
 ## @item -W@dots{}
-## Pass flags though the compiler like "-Wa,OPTION".
+## Pass flags though the compiler like @nospell{"-Wa,OPTION"}.
 ##
 ## @item -c
 ## Compile but do not link.
@@ -67,13 +67,13 @@
 ## @item -g
 ## Enable debugging options for compilers.
 ##
-## @item -o FILE
+## @item  -o FILE
 ## @itemx --output FILE
 ## Output file name.  Default extension is .oct
 ## (or .mex if @samp{--mex} is specified) unless linking
 ## a stand-alone executable.
 ##
-## @item -p VAR
+## @item  -p VAR
 ## @itemx --print VAR
 ## Print the configuration variable VAR@.  Recognized variables are:
 ##
@@ -87,18 +87,18 @@
 ##    CFLAGS                    LD_CXX
 ##    CPICFLAG                  LD_STATIC_FLAG
 ##    CPPFLAGS                  LFLAGS
-##    CXX                       LIBCRUFT
-##    CXXFLAGS                  LIBOCTAVE
-##    CXXPICFLAG                LIBOCTINTERP
-##    DEPEND_EXTRA_SED_PATTERN  LIBS
-##    DEPEND_FLAGS              OCTAVE_LIBS
-##    DL_LD                     OCTAVE_LINK_DEPS
-##    DL_LDFLAGS                OCT_LINK_DEPS
-##    EXEEXT                    RDYNAMIC_FLAG
-##    F77                       READLINE_LIBS
-##    F77_INTEGER_8_FLAG        SED
-##    FFLAGS                    XTRA_CFLAGS
-##    FFTW3_LDFLAGS             XTRA_CXXFLAGS
+##    CXX                       LIBOCTAVE
+##    CXXFLAGS                  LIBOCTINTERP
+##    CXXPICFLAG                LIBS
+##    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
+##    DEPEND_FLAGS              OCTAVE_LINK_DEPS
+##    DL_LD                     OCT_LINK_DEPS
+##    DL_LDFLAGS                RDYNAMIC_FLAG
+##    EXEEXT                    READLINE_LIBS
+##    F77                       SED
+##    F77_INTEGER_8_FLAG        XTRA_CFLAGS
+##    FFLAGS                    XTRA_CXXFLAGS
+##    FFTW3_LDFLAGS
 ##    FFTW3_LIBS
 ##    FFTW3F_LDFLAGS
 ##
@@ -111,11 +111,11 @@
 ## Assume we are creating a MEX file.  Set the default output extension
 ## to ".mex".
 ##
-## @item -s
+## @item  -s
 ## @itemx --strip
 ## Strip the output file.
 ##
-## @item -v
+## @item  -v
 ## @itemx --verbose
 ## Echo commands as they are executed.
 ##
@@ -143,12 +143,17 @@
 function [output, status] = mkoctfile (varargin)
 
   bindir = octave_config_info ("bindir");
+  ext = octave_config_info ("EXEEXT");
 
-  shell_script = fullfile (bindir, sprintf ("mkoctfile-%s", OCTAVE_VERSION));
+  shell_script = fullfile (bindir, sprintf ("mkoctfile-%s%s", OCTAVE_VERSION, ext));
 
-  cmd = cstrcat ("\"", shell_script, "\"");
+  if (! exist (shell_script, "file"))
+    __gripe_missing_component__ ("mkoctfile", "mkoctfile");
+  endif
+
+  cmd = ['"' shell_script '"'];
   for i = 1:nargin
-    cmd = cstrcat (cmd, " \"", varargin{i}, "\"");
+    cmd = [cmd ' "' varargin{i} '"'];
   endfor
 
   [sys, out] = system (cmd);
@@ -159,11 +164,9 @@ function [output, status] = mkoctfile (varargin)
     printf ("%s", out);
   endif
 
-  if (sys == 127)
-    warning ("unable to find mkoctfile in expected location: '%s'",
-             shell_script);
-
+  if (sys != 0)
     warning ("mkoctfile exited with failure status");
   endif
 
 endfunction
+

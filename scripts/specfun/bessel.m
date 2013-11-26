@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -27,21 +27,21 @@
 ## @table @code
 ## @item besselj
 ## Bessel functions of the first kind.  If the argument @var{opt} is supplied,
-## the result is multiplied by @code{exp(-abs(imag(x)))}.
+## the result is multiplied by @code{exp (-abs (imag (x)))}.
 ##
 ## @item bessely
 ## Bessel functions of the second kind.  If the argument @var{opt} is supplied,
-## the result is multiplied by @code{exp(-abs(imag(x)))}.
+## the result is multiplied by @code{exp (-abs (imag (x)))}.
 ##
 ## @item besseli
 ## Modified Bessel functions of the first kind.  If the argument @var{opt} is
 ## supplied,
-## the result is multiplied by @code{exp(-abs(real(x)))}.
+## the result is multiplied by @code{exp (-abs (real (x)))}.
 ##
 ## @item besselk
 ## Modified Bessel functions of the second kind.  If the argument @var{opt} is
 ## supplied,
-## the result is multiplied by @code{exp(x)}.
+## the result is multiplied by @code{exp (x)}.
 ##
 ## @item besselh
 ## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
@@ -91,4 +91,6 @@ function bessel ()
   error ("bessel: you must use besselj, bessely, besseli, or besselk");
 endfunction
 
+
 %!error bessel ()
+

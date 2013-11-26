@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -68,25 +68,25 @@ endfunction
 %!shared x,y
 %! x = [-1 0 0.5 1 2] + 1;
 %! y = [0 1 1 1 0];
-%!assert(unifpdf (x, ones(1,5), 2*ones(1,5)), y);
-%!assert(unifpdf (x, 1, 2*ones(1,5)), y);
-%!assert(unifpdf (x, ones(1,5), 2), y);
-%!assert(unifpdf (x, [2 NaN 1 1 1], 2), [NaN NaN y(3:5)]);
-%!assert(unifpdf (x, 1, 2*[0 NaN 1 1 1]), [NaN NaN y(3:5)]);
-%!assert(unifpdf ([x, NaN], 1, 2), [y, NaN]);
+%!assert (unifpdf (x, ones (1,5), 2*ones (1,5)), y)
+%!assert (unifpdf (x, 1, 2*ones (1,5)), y)
+%!assert (unifpdf (x, ones (1,5), 2), y)
+%!assert (unifpdf (x, [2 NaN 1 1 1], 2), [NaN NaN y(3:5)])
+%!assert (unifpdf (x, 1, 2*[0 NaN 1 1 1]), [NaN NaN y(3:5)])
+%!assert (unifpdf ([x, NaN], 1, 2), [y, NaN])
 
 %% Test class of input preserved
-%!assert(unifpdf (single([x, NaN]), 1, 2), single([y, NaN]));
-%!assert(unifpdf (single([x, NaN]), single(1), 2), single([y, NaN]));
-%!assert(unifpdf ([x, NaN], 1, single(2)), single([y, NaN]));
+%!assert (unifpdf (single ([x, NaN]), 1, 2), single ([y, NaN]))
+%!assert (unifpdf (single ([x, NaN]), single (1), 2), single ([y, NaN]))
+%!assert (unifpdf ([x, NaN], 1, single (2)), single ([y, NaN]))
 
 %% Test input validation
 %!error unifpdf ()
 %!error unifpdf (1,2)
 %!error unifpdf (1,2,3,4)
-%!error unifpdf (ones(3),ones(2),ones(2))
-%!error unifpdf (ones(2),ones(3),ones(2))
-%!error unifpdf (ones(2),ones(2),ones(3))
+%!error unifpdf (ones (3), ones (2), ones (2))
+%!error unifpdf (ones (2), ones (3), ones (2))
+%!error unifpdf (ones (2), ones (2), ones (3))
 %!error unifpdf (i, 2, 2)
 %!error unifpdf (2, i, 2)
 %!error unifpdf (2, 2, i)

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Bill Denney
+## Copyright (C) 2006-2013 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -22,52 +22,52 @@
 ##
 ## This function assumes that versions @var{v1} and @var{v2} are
 ## arbitrarily long strings made of numeric and period characters
-## possibly followed by an arbitrary string (e.g., "1.2.3", "0.3",
-## "0.1.2+", or "1.2.3.4-test1").
+## possibly followed by an arbitrary string (e.g., @qcode{"1.2.3"},
+## @qcode{"0.3"}, @qcode{"0.1.2+"}, or @qcode{"1.2.3.4-test1"}).
 ##
 ## The version is first split into numeric and character portions
-## and then the parts are padded to be the same length (i.e., "1.1" would be
-## padded to be "1.1.0" when being compared with "1.1.1", and
-## separately, the character parts of the strings are padded with
-## nulls).
+## and then the parts are padded to be the same length (i.e., @qcode{"1.1"}
+## would be padded to be @qcode{"1.1.0"} when being compared with
+## @qcode{"1.1.1"}, and separately, the character parts of the strings are
+## padded with nulls).
 ##
 ## The operator can be any logical operator from the set
 ##
 ## @itemize @bullet
 ## @item
-## "=="
+## @qcode{"=="}
 ## equal
 ##
 ## @item
-## "<"
+## @qcode{"<"}
 ## less than
 ##
 ## @item
-## "<="
+## @qcode{"<="}
 ## less than or equal to
 ##
 ## @item
-## ">"
+## @qcode{">"}
 ## greater than
 ##
 ## @item
-## ">="
+## @qcode{">="}
 ## greater than or equal to
 ##
 ## @item
-## "!="
+## @qcode{"!="}
 ## not equal
 ##
 ## @item
-## "~="
+## @qcode{"~="}
 ## not equal
 ## @end itemize
 ##
-## Note that version "1.1-test2" will compare as greater than
-## "1.1-test10".  Also, since the numeric part is compared first, "a"
-## compares less than "1a" because the second string starts with a
-## numeric part even though @code{double("a")} is greater than
-## @code{double("1").}
+## Note that version @qcode{"1.1-test2"} will compare as greater than
+## @qcode{"1.1-test10"}.  Also, since the numeric part is compared first,
+## @qcode{"a"} compares less than @qcode{"1a"} because the second string
+## starts with a numeric part even though @code{double ("a")} is greater than
+## @code{double ("1").}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
@@ -89,7 +89,7 @@ function out = compare_versions (v1, v2, operator)
   if (! ischar (operator))
     error ("compare_versions: OPERATOR must be a character string");
   elseif (numel (operator) > 2)
-    error("compare_versions: OPERATOR must be 1 or 2 characters long");
+    error ("compare_versions: OPERATOR must be 1 or 2 characters long");
   endif
 
   ## trim off any character data that is not part of a normal version
@@ -99,23 +99,23 @@ function out = compare_versions (v1, v2, operator)
   v1firstchar = find (! ismember (v1, numbers), 1);
   v2firstchar = find (! ismember (v2, numbers), 1);
   if (! isempty (v1firstchar))
-    v1c = v1(v1firstchar:length(v1));
+    v1c = v1(v1firstchar:length (v1));
     v1nochar = v1(1:v1firstchar-1);
   else
     v1c = "";
     v1nochar = v1;
   endif
   if (! isempty (v2firstchar))
-    v2c = v2(v2firstchar:length(v2));
+    v2c = v2(v2firstchar:length (v2));
     v2nochar = v2(1:v2firstchar-1);
   else
     v2c = "";
     v2nochar = v2;
   endif
 
-  v1n = str2num (char (strsplit (v1nochar, ".")));
-  v2n = str2num (char (strsplit (v2nochar, ".")));
-  if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty(v2c)))
+  v1n = str2num (char (ostrsplit (v1nochar, ".")));
+  v2n = str2num (char (ostrsplit (v2nochar, ".")));
+  if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty (v2c)))
     error ("compare_versions: given version strings are not valid: %s %s",
            v1, v2);
   endif
@@ -141,22 +141,22 @@ function out = compare_versions (v1, v2, operator)
   endif
 
   ## Determine the operator.
-  if any (ismember (operator, "="))
+  if (any (ismember (operator, "=")))
     equal_op = true;
   else
     equal_op = false;
   endif
-  if any (ismember (operator, "~!"))
+  if (any (ismember (operator, "~!")))
     not_op = true;
   else
     not_op = false;
   endif
-  if any (ismember (operator, "<"))
+  if (any (ismember (operator, "<")))
     lt_op = true;
   else
     lt_op = false;
   endif
-  if any (ismember (operator, ">"))
+  if (any (ismember (operator, ">")))
     gt_op = true;
   else
     gt_op = false;
@@ -200,54 +200,54 @@ function out = compare_versions (v1, v2, operator)
 
 endfunction
 
+
 ## tests
 ## test both equality symbols
 ## test arbitrarily long equality
-%!assert(compare_versions("1.1.0.0.0", "1.1", "=="), true)
-%!assert(compare_versions("1", "1.1", "<"), true)
-%!assert(compare_versions("1.1", "1.1", "<="), true)
-%!assert(compare_versions("1.1", "1.1.1", "<="), true)
-%!assert(compare_versions("1.23", "1.24", "=<"), true)
+%!assert (compare_versions ("1.1.0.0.0", "1.1", "=="), true)
+%!assert (compare_versions ("1", "1.1", "<"), true)
+%!assert (compare_versions ("1.1", "1.1", "<="), true)
+%!assert (compare_versions ("1.1", "1.1.1", "<="), true)
+%!assert (compare_versions ("1.23", "1.24", "=<"), true)
 ## test different length numbers
-%!assert(compare_versions("23.2000", "23.1", ">"), true)
-%!assert(compare_versions("0.0.2", "0.0.1", ">="), true)
-%!assert(compare_versions("0.2", "0.0.100", "=>"), true)
-%!assert(compare_versions("0.1", "0.2", "!="), true)
-%!assert(compare_versions("0.1", "0.2", "~="), true)
+%!assert (compare_versions ("23.2000", "23.1", ">"), true)
+%!assert (compare_versions ("0.0.2", "0.0.1", ">="), true)
+%!assert (compare_versions ("0.2", "0.0.100", "=>"), true)
+%!assert (compare_versions ("0.1", "0.2", "!="), true)
+%!assert (compare_versions ("0.1", "0.2", "~="), true)
 
 ## test alphanumeric strings
-%!assert(compare_versions("1a", "1b", "<"), true)
-%!assert(compare_versions("a", "1", "<"), true)
-%!assert(compare_versions("1a", "1b", ">"), false)
-%!assert(compare_versions("a", "1", ">"), false)
-%!assert(compare_versions("1.1.0a", "1.1.0b", "=="), false)
-%!assert(compare_versions("1.1.0a", "1.1.0b", "!="), true)
-%!assert(compare_versions("1.1.0test", "1.1.0b", "=="), false)
-%!assert(compare_versions("1.1.0test", "1.1.0test", "=="), true)
+%!assert (compare_versions ("1a", "1b", "<"), true)
+%!assert (compare_versions ("a", "1", "<"), true)
+%!assert (compare_versions ("1a", "1b", ">"), false)
+%!assert (compare_versions ("a", "1", ">"), false)
+%!assert (compare_versions ("1.1.0a", "1.1.0b", "=="), false)
+%!assert (compare_versions ("1.1.0a", "1.1.0b", "!="), true)
+%!assert (compare_versions ("1.1.0test", "1.1.0b", "=="), false)
+%!assert (compare_versions ("1.1.0test", "1.1.0test", "=="), true)
 
 ## make sure that it won't just give true output
-%!assert(compare_versions("1", "0", "=="), false)
+%!assert (compare_versions ("1", "0", "=="), false)
 ## test arbitrarily long equality
-%!assert(compare_versions("1.1.1.0.0", "1.1", "=="), false)
-%!assert(compare_versions("1.1", "1", "<"), false)
-%!assert(compare_versions("2", "1.1", "<="), false)
-%!assert(compare_versions("1.1.1", "1.1", "<="), false)
-%!assert(compare_versions("1.25", "1.24", "=<"), false)
+%!assert (compare_versions ("1.1.1.0.0", "1.1", "=="), false)
+%!assert (compare_versions ("1.1", "1", "<"), false)
+%!assert (compare_versions ("2", "1.1", "<="), false)
+%!assert (compare_versions ("1.1.1", "1.1", "<="), false)
+%!assert (compare_versions ("1.25", "1.24", "=<"), false)
 ## test different length numbers
-%!assert(compare_versions("23.2", "23.100", ">"), false)
-%!assert(compare_versions("0.0.0.2", "0.0.1", ">="), false)
-%!assert(compare_versions("0.0.20", "0.10.2", "=>"), false)
-%!assert(compare_versions("0.1", "0.1", "!="), false)
-%!assert(compare_versions("0.1", "0.1", "~="), false)
+%!assert (compare_versions ("23.2", "23.100", ">"), false)
+%!assert (compare_versions ("0.0.0.2", "0.0.1", ">="), false)
+%!assert (compare_versions ("0.0.20", "0.10.2", "=>"), false)
+%!assert (compare_versions ("0.1", "0.1", "!="), false)
+%!assert (compare_versions ("0.1", "0.1", "~="), false)
 
 %% Test input validation
-%!error(compare_versions(0.1, "0.1", "=="))
-%!error(compare_versions("0.1", 0.1, "=="))
-%!error(compare_versions(["0";".";"1"], "0.1", "=="))
-%!error(compare_versions("0.1", ["0";".";"1"], "=="))
-%!error(compare_versions("0.1", "0.1", "<>"))
-%!error(compare_versions("0.1", "0.1", "!>"))
-%!error(compare_versions("0.1", "0.1", "="))
-%!error(compare_versions("0.1", "0.1", "aa"))
-
+%!error (compare_versions (0.1, "0.1", "=="))
+%!error (compare_versions ("0.1", 0.1, "=="))
+%!error (compare_versions (["0";".";"1"], "0.1", "=="))
+%!error (compare_versions ("0.1", ["0";".";"1"], "=="))
+%!error (compare_versions ("0.1", "0.1", "<>"))
+%!error (compare_versions ("0.1", "0.1", "!>"))
+%!error (compare_versions ("0.1", "0.1", "="))
+%!error (compare_versions ("0.1", "0.1", "aa"))
 

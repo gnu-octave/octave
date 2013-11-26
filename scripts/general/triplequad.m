@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -40,7 +40,8 @@
 ## is @code{quadcc}.
 ##
 ## Additional arguments, are passed directly to @var{f}.  To use the default
-## value for @var{tol} or @var{quadf} one may pass ':' or an empty matrix ([]).
+## value for @var{tol} or @var{quadf} one may pass @qcode{':'} or an empty
+## matrix ([]).
 ## @seealso{dblquad, quad, quadv, quadl, quadgk, quadcc, trapz}
 ## @end deftypefn
 
@@ -69,17 +70,17 @@ function q = triplequad (f, xa, xb, ya, yb, za, zb, tol = 1e-6, quadf = @quadcc,
 endfunction
 
 function q = __triplequad_inner__ (y, z, f, xa, xb, tol, quadf, varargin)
-  q = zeros (size(y));
+  q = zeros (size (y));
   for i = 1 : length (y)
     q(i) = feval (quadf, @(x) f (x, y(i), z, varargin{:}), xa, xb, tol);
   endfor
 endfunction
 
 
-%!assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadcc), pi ^ (3/2) * erf(1).^3, 1e-6)
+%!assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadcc), pi^(3/2) * erf (1).^3, 1e-6)
 
 %% These tests are too expensive to run normally (~30 sec each).  Disable them
-#%!assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadgk), pi ^ (3/2) * erf(1).^3, 1e-6)
-#%!#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadl), pi ^ (3/2) * erf(1).^3, 1e-6)
-#%!#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadv), pi ^ (3/2) * erf(1).^3, 1e-6)
+#%!assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadgk), pi^(3/2) * erf (1).^3, 1e-6)
+#%!#assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadl), pi^(3/2) * erf (1).^3, 1e-6)
+#%!#assert (triplequad (@(x,y,z) exp (-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [], @quadv), pi^(3/2) * erf (1).^3, 1e-6)
 

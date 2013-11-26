@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 John W. Eaton
+## Copyright (C) 2005-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -122,7 +122,7 @@
 ## iterations.  The default value is 100.
 ##
 ## The eighth argument @var{tol} specifies the tolerance for the
-## stopping criteria.  The default value is @code{sqrt(eps)}.
+## stopping criteria.  The default value is @code{sqrt (eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
 ##
@@ -186,12 +186,7 @@
 
 function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, maxiter, tolerance)
 
-  global __sqp_nfun__;
-  global __sqp_obj_fun__;
-  global __sqp_ce_fun__;
-  global __sqp_ci_fun__;
-  global __sqp_cif__;
-  global __sqp_cifcn__;
+  globals = struct (); # data and handles, needed and changed by subfunctions
 
   if (nargin < 2 || nargin > 8 || nargin == 5)
     print_usage ();
@@ -204,110 +199,108 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     x0 = x0';
   endif
 
-  obj_grd = @fd_obj_grd;
   have_hess = 0;
   if (iscell (objf))
     switch (numel (objf))
-     case 1
-       obj_fun = objf{1};
-     case 2
-       obj_fun = objf{1};
-       obj_grd = objf{2};
-     case 3
-       obj_fun = objf{1};
-       obj_grd = objf{2};
-       obj_hess = objf{3};
-       have_hess = 1;
-     otherwise
-      error ("sqp: invalid objective function specification");
+      case 1
+        obj_fun = objf{1};
+        obj_grd = @ (x) fd_obj_grd (x, obj_fun);
+      case 2
+        obj_fun = objf{1};
+        obj_grd = objf{2};
+      case 3
+        obj_fun = objf{1};
+        obj_grd = objf{2};
+        obj_hess = objf{3};
+        have_hess = 1;
+      otherwise
+        error ("sqp: invalid objective function specification");
     endswitch
   else
     obj_fun = objf;   # No cell array, only obj_fun set
+    obj_grd = @ (x) fd_obj_grd (x, obj_fun);
   endif
-  __sqp_obj_fun__ = obj_fun;
 
   ce_fun = @empty_cf;
   ce_grd = @empty_jac;
   if (nargin > 2)
-    ce_grd = @fd_ce_jac;
     if (iscell (cef))
       switch (numel (cef))
-       case 1
-         ce_fun = cef{1};
-       case 2
-         ce_fun = cef{1};
-         ce_grd = cef{2};
-       otherwise
-         error ("sqp: invalid equality constraint function specification");
+        case 1
+          ce_fun = cef{1};
+          ce_grd = @ (x) fd_ce_jac (x, ce_fun);
+        case 2
+          ce_fun = cef{1};
+          ce_grd = cef{2};
+        otherwise
+          error ("sqp: invalid equality constraint function specification");
       endswitch
     elseif (! isempty (cef))
       ce_fun = cef;   # No cell array, only constraint equality function set
+      ce_grd = @ (x) fd_ce_jac (x, ce_fun);
     endif
   endif
-  __sqp_ce_fun__ = ce_fun;
 
   ci_fun = @empty_cf;
   ci_grd = @empty_jac;
   if (nargin > 3)
     ## constraint function given by user with possible gradient
-    __sqp_cif__ = cif;
+    globals.cif = cif;
     ## constraint function given by user without gradient
-    __sqp_cifcn__ = @empty_cf;
+    globals.cifcn = @empty_cf;
     if (iscell (cif))
       if (length (cif) > 0)
-        __sqp_cifcn__ = cif{1};
+        globals.cifcn = cif{1};
       endif
     elseif (! isempty (cif))
-      __sqp_cifcn__ = cif;
+      globals.cifcn = cif;
     endif
 
     if (nargin < 5 || (nargin > 5 && isempty (lb) && isempty (ub)))
       ## constraint inequality function only without any bounds
-      ci_grd = @fd_ci_jac;
+      ci_grd = @ (x) fd_ci_jac (x, globals.cifcn);
       if (iscell (cif))
-        switch length (cif)
-         case {1}
-           ci_fun = cif{1};
-         case {2}
-           ci_fun = cif{1};
-           ci_grd = cif{2};
-        otherwise
-          error ("sqp: invalid inequality constraint function specification");
+        switch (length (cif))
+          case 1
+            ci_fun = cif{1};
+          case 2
+            ci_fun = cif{1};
+            ci_grd = cif{2};
+          otherwise
+           error ("sqp: invalid inequality constraint function specification");
         endswitch
       elseif (! isempty (cif))
         ci_fun = cif;   # No cell array, only constraint inequality function set
       endif
     else
       ## constraint inequality function with bounds present
-      global __sqp_lb__;
       lb_idx = ub_idx = true (size (x0));
       ub_grad = - (lb_grad = eye (rows (x0)));
       if (isvector (lb))
-        __sqp_lb__ = tmp_lb = lb(:);
+        globals.lb = tmp_lb = lb(:);
         lb_idx(:) = tmp_idx = (lb != -Inf);
-        __sqp_lb__ = __sqp_lb__(tmp_idx, 1);
+        globals.lb = globals.lb(tmp_idx, 1);
         lb_grad = lb_grad(lb_idx, :);
       elseif (isempty (lb))
         if (isa (x0, "single"))
-          __sqp_lb__ = tmp_lb = -realmax ("single");
+          globals.lb = tmp_lb = -realmax ("single");
         else
-          __sqp_lb__ = tmp_lb = -realmax;
+          globals.lb = tmp_lb = -realmax;
         endif
       else
         error ("sqp: invalid lower bound");
       endif
 
-      global __sqp_ub__;
       if (isvector (ub))
-        __sqp_ub__ = tmp_ub = ub(:);
+        globals.ub = tmp_ub = ub(:);
         ub_idx(:) = tmp_idx = (ub != Inf);
-        __sqp_ub__ = __sqp_ub__(tmp_idx, 1);
+        globals.ub = globals.ub(tmp_idx, 1);
         ub_grad = ub_grad(ub_idx, :);
       elseif (isempty (ub))
         if (isa (x0, "single"))
-          __sqp_ub__ = tmp_ub = realmax ("single");
+          globals.ub = tmp_ub = realmax ("single");
         else
-          __sqp_ub__ = tmp_ub = realmax;
+          globals.ub = tmp_ub = realmax;
         endif
       else
         error ("sqp: invalid upper bound");
@@ -317,11 +310,10 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
         error ("sqp: upper bound smaller than lower bound");
       endif
       bounds_grad = [lb_grad; ub_grad];
-      ci_fun = @ (x) cf_ub_lb (x, lb_idx, ub_idx);
-      ci_grd = @ (x) cigrad_ub_lb (x, bounds_grad);
+      ci_fun = @ (x) cf_ub_lb (x, lb_idx, ub_idx, globals);
+      ci_grd = @ (x) cigrad_ub_lb (x, bounds_grad, globals);
     endif
 
-    __sqp_ci_fun__ = ci_fun;
   endif   # if (nargin > 3)
 
   iter_max = 100;
@@ -354,7 +346,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
   x = x0;
 
   obj = feval (obj_fun, x0);
-  __sqp_nfun__ = 1;
+  globals.nfun = 1;
 
   c = feval (obj_grd, x0);
 
@@ -432,8 +424,9 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     ## Choose mu such that p is a descent direction for the chosen
     ## merit function phi.
-    [x_new, alpha, obj_new] = linesearch_L1 (x, p, obj_fun, obj_grd,
-                                             ce_fun, ci_fun, lambda, obj);
+    [x_new, alpha, obj_new, globals] = ...
+        linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
+                       obj, globals);
 
     ## Evaluate objective function, constraints, and gradients at x_new.
     c_new = feval (obj_grd, x_new);
@@ -521,14 +514,13 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     info = 103;
   endif
 
-  nf = __sqp_nfun__;
+  nf = globals.nfun;
 
 endfunction
 
 
-function [merit, obj] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, mu)
-
-  global __sqp_nfun__;
+function [merit, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, ...
+                                         x, mu, globals)
 
   ce = feval (ce_fun, x);
   ci = feval (ci_fun, x);
@@ -539,7 +531,7 @@ function [merit, obj] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, mu)
 
   if (isempty (obj))
     obj = feval (obj_fun, x);
-    __sqp_nfun__++;
+    globals.nfun++;
   endif
 
   merit = obj;
@@ -552,8 +544,9 @@ function [merit, obj] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, mu)
 endfunction
 
 
-function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
-                                              ce_fun, ci_fun, lambda, obj)
+function [x_new, alpha, obj, globals] = ...
+      linesearch_L1 (x, p, obj_fun, obj_grd, ce_fun, ci_fun, lambda, ...
+                     obj, globals)
 
   ## Choose parameters
   ##
@@ -576,7 +569,8 @@ function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
   c = feval (obj_grd, x);
   ce = feval (ce_fun, x);
 
-  [phi_x_mu, obj] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, mu);
+  [phi_x_mu, obj, globals] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, ...
+                                     mu, globals);
 
   D_phi_x_mu = c' * p;
   d = feval (ci_fun, x);
@@ -589,7 +583,8 @@ function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
   endif
 
   while (1)
-    [p1, obj] = phi_L1 ([], obj_fun, ce_fun, ci_fun, x+alpha*p, mu);
+    [p1, obj, globals] = phi_L1 ([], obj_fun, ce_fun, ci_fun, ...
+                                 x+alpha*p, mu, globals);
     p2 = phi_x_mu+eta*alpha*D_phi_x_mu;
     if (p1 > p2)
       ## Reset alpha = tau_alpha * alpha for some tau_alpha in the
@@ -648,11 +643,9 @@ function jac = fdjac (f, x)
 endfunction
 
 
-function grd = fd_obj_grd (x)
+function grd = fd_obj_grd (x, obj_fun)
 
-  global __sqp_obj_fun__;
-
-  grd = fdgrd (__sqp_obj_fun__, x);
+  grd = fdgrd (obj_fun, x);
 
 endfunction
 
@@ -671,47 +664,40 @@ function res = empty_jac (x)
 endfunction
 
 
-function jac = fd_ce_jac (x)
+function jac = fd_ce_jac (x, ce_fun)
 
-  global __sqp_ce_fun__;
-
-  jac = fdjac (__sqp_ce_fun__, x);
+  jac = fdjac (ce_fun, x);
 
 endfunction
 
 
-function jac = fd_ci_jac (x)
+function jac = fd_ci_jac (x, cifcn)
 
-  global __sqp_cifcn__;
-  ## __sqp_cifcn__ = constraint function without gradients and lb or ub
-  jac = fdjac (__sqp_cifcn__, x);
+  ## cifcn = constraint function without gradients and lb or ub
+  jac = fdjac (cifcn, x);
 
 endfunction
 
 
-function res = cf_ub_lb (x, lbidx, ubidx)
+function res = cf_ub_lb (x, lbidx, ubidx, globals)
 
   ## combine constraint function with ub and lb
-  global __sqp_cifcn__ __sqp_lb__ __sqp_ub__
-
-  if (isempty (__sqp_cifcn__))
-    res = [x(lbidx,1)-__sqp_lb__; __sqp_ub__-x(ubidx,1)];
+  if (isempty (globals.cifcn))
+    res = [x(lbidx,1)-globals.lb; globals.ub-x(ubidx,1)];
   else
-    res = [feval(__sqp_cifcn__,x); \
-           x(lbidx,1)-__sqp_lb__; __sqp_ub__-x(ubidx,1)];
+    res = [feval(globals.cifcn,x); x(lbidx,1)-globals.lb;
+           globals.ub-x(ubidx,1)];
   endif
 
 endfunction
 
 
-function res = cigrad_ub_lb (x, bgrad)
+function res = cigrad_ub_lb (x, bgrad, globals)
 
-  global __sqp_cif__
+  cigradfcn = @ (x) fd_ci_jac (x, globals.cifcn);
 
-  cigradfcn = @fd_ci_jac;
-
-  if (iscell (__sqp_cif__) && length (__sqp_cif__) > 1)
-    cigradfcn = __sqp_cif__{2};
+  if (iscell (globals.cif) && length (globals.cif) > 1)
+    cigradfcn = globals.cif{2};
   endif
 
   if (isempty (cigradfcn))
@@ -733,6 +719,7 @@ function report (iter, qp_iter, alpha, nfun, obj)
 
 endfunction
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Test Code
 
@@ -743,7 +730,7 @@ endfunction
 %!endfunction
 %!
 %!function obj = __phi (x)
-%!  obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+%!  obj = exp (prod (x)) - 0.5*(x(1)^3 + x(2)^3 + 1)^2;
 %!endfunction
 %!
 %!test
@@ -760,22 +747,24 @@ endfunction
 %!
 %! obj_opt = 0.0539498477702739;
 %!
-%! assert (all (abs (x-x_opt) < 8*sqrt (eps)) && abs (obj-obj_opt) < sqrt (eps));
+%! assert (x, x_opt, 8*sqrt (eps));
+%! assert (obj, obj_opt, sqrt (eps));
 
 %% Test input validation
 %!error sqp ()
 %!error sqp (1)
 %!error sqp (1,2,3,4,5,6,7,8,9)
 %!error sqp (1,2,3,4,5)
-%!error sqp (ones(2,2))
-%!error sqp (1,cell(4,1))
-%!error sqp (1,cell(3,1),cell(3,1))
-%!error sqp (1,cell(3,1),cell(2,1),cell(3,1))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),ones(2,2),[])
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],ones(2,2))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),1,-1)
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],ones(2,2))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],-1)
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],1.5)
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],[],ones(2,2))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],[],-1)
+%!error sqp (ones (2,2))
+%!error sqp (1, cell (4,1))
+%!error sqp (1, cell (3,1), cell (3,1))
+%!error sqp (1, cell (3,1), cell (2,1), cell (3,1))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1), ones (2,2),[])
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[], ones (2,2))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),1,-1)
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[], ones (2,2))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],-1)
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],1.5)
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[], ones (2,2))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[],-1)
+

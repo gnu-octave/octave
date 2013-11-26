@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2012 Rolf Fabian and Paul Kienzle
+## Copyright (C) 2001-2013 Rolf Fabian and Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -141,7 +141,7 @@ endfunction
 
 
 %!assert (nchoosek (80,10), bincoeff (80,10))
-%!assert (nchoosek(1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
+%!assert (nchoosek (1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
 
 %% Test input validation
 %!warning nchoosek (100,45);

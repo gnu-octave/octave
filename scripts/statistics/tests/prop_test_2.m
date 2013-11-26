@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -25,10 +25,10 @@
 ## approximately follows a standard normal distribution.
 ##
 ## With the optional argument string @var{alt}, the alternative of
-## interest can be selected.  If @var{alt} is @code{"!="} or
-## @code{"<>"}, the null is tested against the two-sided alternative
-## @var{p1} != @var{p2}.  If @var{alt} is @code{">"}, the one-sided
-## alternative @var{p1} > @var{p2} is used.  Similarly for @code{"<"},
+## interest can be selected.  If @var{alt} is @qcode{"!="} or
+## @qcode{"<>"}, the null is tested against the two-sided alternative
+## @var{p1} != @var{p2}.  If @var{alt} is @qcode{">"}, the one-sided
+## alternative @var{p1} > @var{p2} is used.  Similarly for @qcode{"<"},
 ## the one-sided alternative @var{p1} < @var{p2} is used.
 ## The default is the two-sided case.
 ##
@@ -65,9 +65,9 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
-  elseif strcmp (alt, ">")
+  elseif (strcmp (alt, ">"))
     pval = 1 - cdf;
-  elseif strcmp (alt, "<")
+  elseif (strcmp (alt, "<"))
     pval = cdf;
   else
     error ("prop_test_2: option %s not recognized", alt);
@@ -78,3 +78,4 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
 
 endfunction
+

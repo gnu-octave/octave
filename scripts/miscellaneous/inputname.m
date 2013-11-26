@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 Paul Kienzle
+## Copyright (C) 2004-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -40,6 +40,7 @@ function s = inputname (n)
 
 endfunction
 
+
 ## Warning: heap big magic in the following tests!!!
 ## The test function builds a private context for each
 ## test, with only the specified values shared between
@@ -51,6 +52,8 @@ endfunction
 ## To test inputname, I need a function context invoked
 ## with known parameter names.  So define a couple of
 ## shared parameters, et voila!, the test is trivial.
-%!shared hello,worldly
-%!assert(inputname(1),'hello');
-%!assert(inputname(2),'worldly');
+  
+%!shared hello, worldly
+%!assert (inputname (1), "hello")
+%!assert (inputname (2), "worldly")
+

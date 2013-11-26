@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2012 Paul Kienzle
+## Copyright (C) 2001-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@
 ## @seealso{rats}
 ## @end deftypefn
 
-function [n,d] = rat(x,tol)
+function [n,d] = rat (x,tol)
 
   if (nargin != [1,2] || nargout > 2)
     print_usage ();
@@ -49,27 +49,27 @@ function [n,d] = rat(x,tol)
 
   ## default norm
   if (nargin < 2)
-    tol = 1e-6 * norm(y,1);
+    tol = 1e-6 * norm (y,1);
   endif
 
   ## First step in the approximation is the integer portion
 
   ## First element in the continued fraction.
-  n = round(y);
-  d = ones(size(y));
+  n = round (y);
+  d = ones (size (y));
   frac = y-n;
-  lastn = ones(size(y));
-  lastd = zeros(size(y));
+  lastn = ones (size (y));
+  lastd = zeros (size (y));
 
-  nd = ndims(y);
+  nd = ndims (y);
   nsz = numel (y);
-  steps = zeros([nsz, 0]);
+  steps = zeros ([nsz, 0]);
 
   ## Grab new factors until all continued fractions converge.
   while (1)
     ## Determine which fractions have not yet converged.
-    idx = find(abs (y-n./d) >= tol);
-    if (isempty(idx))
+    idx = find (abs (y-n./d) >= tol);
+    if (isempty (idx))
       if (isempty (steps))
         steps = NaN (nsz, 1);
       endif
@@ -79,7 +79,7 @@ function [n,d] = rat(x,tol)
     ## Grab the next step in the continued fraction.
     flip = 1./frac(idx);
     ## Next element in the continued fraction.
-    step = round(flip);
+    step = round (flip);
 
     if (nargout < 2)
       tsteps = NaN (nsz, 1);
@@ -100,23 +100,23 @@ function [n,d] = rat(x,tol)
 
   if (nargout == 2)
     ## Move the minus sign to the top.
-    n = n.*sign(d);
-    d = abs(d);
+    n = n .* sign (d);
+    d = abs (d);
 
     ## Return the same shape as you receive.
-    n = reshape(n, size(x));
-    d = reshape(d, size(x));
+    n = reshape (n, size (x));
+    d = reshape (d, size (x));
 
     ## Use 1/0 for Inf.
-    n(isinf(x)) = sign(x(isinf(x)));
-    d(isinf(x)) = 0;
+    n(isinf (x)) = sign (x(isinf (x)));
+    d(isinf (x)) = 0;
 
     ## Reshape the output.
     n = reshape (n, size (x));
     d = reshape (d, size (x));
   else
     n = "";
-    nsteps = size(steps, 2);
+    nsteps = columns (steps);
     for i = 1: nsz
       s = [int2str(y(i))," "];
       j = 1;
@@ -151,10 +151,12 @@ function [n,d] = rat(x,tol)
 
 endfunction
 
-%!error rat ();
-%!error rat (1, 2, 3);
 
 %!test
 %! [n, d] = rat ([0.5, 0.3, 1/3]);
 %! assert (n, [1, 3, 1]);
 %! assert (d, [2, 10, 3]);
+
+%!error rat ();
+%!error rat (1, 2, 3);
+

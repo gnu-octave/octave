@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{map} =} flag ()
 ## @deftypefnx {Function File} {@var{map} =} flag (@var{n})
-## Create color colormap.  This colormap cycles through red, white, blue
+## Create color colormap.  This colormap cycles through red, white, blue,
 ## and black with each index change.
 ## The argument @var{n} must be a scalar.
 ## If unspecified, the length of the current colormap, or 64, is used.
@@ -28,32 +28,36 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "flag");
+## PKG_DEL: colormap ("unregister", "flag");
+
 function map = flag (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("flag: argument must be a scalar");
+      error ("flag: N must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  p = [1, 0, 0; 1, 1, 1; 0, 0, 1; 0, 0, 0];
-  if (rem(n,4) == 0)
-    map = kron (ones (n / 4, 1), p);
+  if (n == 1)
+    map = [1, 0, 0];
+  elseif (n > 1)
+    C = [1, 0, 0; 1, 1, 1; 0, 0, 1; 0, 0, 0];
+    map = C(rem (0:(n-1), 4) + 1, :);
   else
-    m1 = kron (ones (fix (n / 4), 1), p);
-    m2 = p(1:rem (n, 4), :);
-    map = [m1; m2];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'flag' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (flag (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (flag (64));
 

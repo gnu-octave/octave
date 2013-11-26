@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -28,13 +28,16 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "autumn");
+## PKG_DEL: colormap ("unregister", "autumn");
+
 function map = autumn (n)
 
   if (nargin == 0)
     n = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (n))
-      error ("autumn: argument must be a scalar");
+      error ("autumn: N must be a scalar");
     endif
   else
     print_usage ();
@@ -44,18 +47,19 @@ function map = autumn (n)
     map = [1, 0, 0];
   elseif (n > 1)
     r = ones (n, 1);
-    g = (0:n - 1)' ./ (n - 1);
+    g = [0:(n-1)]' / (n - 1);
     b = zeros (n, 1);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction
 
+
 %!demo
 %! ## Show the 'autumn' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (autumn (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (autumn (64));
 

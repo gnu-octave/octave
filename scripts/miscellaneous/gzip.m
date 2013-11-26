@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -20,10 +20,10 @@
 ## @deftypefn  {Function File} {@var{entries} =} gzip (@var{files})
 ## @deftypefnx {Function File} {@var{entries} =} gzip (@var{files}, @var{outdir})
 ## Compress the list of files and/or directories specified in @var{files}.
-## Each file is compressed separately and a new file with a '.gz' extension
-## is created.  The original files are not modified.  Existing compressed
-## files are silently overwritten.  If @var{outdir} is defined the compressed
-## files are placed in this directory.
+## Each file is compressed separately and a new file with a @file{".gz"}
+## extension is created.  The original files are not modified.  Existing
+## compressed files are silently overwritten.  If @var{outdir} is defined the
+## compressed files are placed in this directory.
 ## @seealso{gunzip, bzip2, zip, tar}
 ## @end deftypefn
 
@@ -40,33 +40,36 @@ function entries = gzip (varargin)
 
 endfunction
 
-%!error <Invalid call to gzip.  Correct usage is> gzip("1", "2", "3");
-%!error <Invalid call to gzip.  Correct usage is> gzip();
-%!error <output directory does not exist> gzip("1", tmpnam);
-%!error <FILES must be a character array or cellstr> gzip(1);
+
 %!xtest
-%!  # test gzip together with gunzip
-%!  unwind_protect
-%!    filename = tmpnam;
-%!    dummy    = 1;
-%!    save(filename, "dummy");
-%!    dirname  = tmpnam;
-%!    mkdir(dirname);
-%!    entry = gzip(filename, dirname);
-%!    [path, basename, extension] = fileparts(filename);
-%!    if ! strcmp(entry, [dirname, filesep, basename, extension, ".gz"])
-%!      error("gzipped file does not match expected name!");
-%!    endif
-%!    if ! exist(entry, "file")
-%!      error("gzipped file cannot be found!");
-%!    endif
-%!    gunzip(entry);
-%!    if (system(sprintf("diff %s %s%c%s%s", filename, dirname, filesep,
-%!                                          basename, extension)))
-%!      error("unzipped file not equal to original file!");
-%!    end
-%!  unwind_protect_cleanup
-%!    delete(filename);
-%!    delete([dirname, filesep, basename, extension]);
-%!    rmdir(dirname);
-%!  end_unwind_protect
+%! ## test gzip together with gunzip
+%! unwind_protect
+%!   filename = tmpnam;
+%!   dummy    = 1;
+%!   save (filename, "dummy");
+%!   dirname  = tmpnam;
+%!   mkdir (dirname);
+%!   entry = gzip (filename, dirname);
+%!   [path, basename, extension] = fileparts (filename);
+%!   if (! strcmp (entry, [dirname, filesep, basename, extension, ".gz"]))
+%!     error ("gzipped file does not match expected name!");
+%!   endif
+%!   if (! exist (entry, "file"))
+%!     error ("gzipped file cannot be found!");
+%!   endif
+%!   gunzip (entry);
+%!   if (system (sprintf ("diff %s %s%c%s%s", filename, dirname, filesep,
+%!                                            basename, extension)))
+%!     error ("unzipped file not equal to original file!");
+%!   end
+%! unwind_protect_cleanup
+%!   delete (filename);
+%!   delete ([dirname, filesep, basename, extension]);
+%!   rmdir (dirname);
+%! end_unwind_protect
+
+%!error gzip ()
+%!error gzip ("1", "2", "3")
+%!error <output directory does not exist> gzip ("1", tmpnam)
+%!error <FILES must be a character array or cellstr> gzip (1)
+

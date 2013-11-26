@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -82,7 +82,7 @@ function dump_prefs (file)
               "struct_levels_to_print";
               "suppress_verbose_help_message"];
 
-  for i = 1:rows(sym_list)
+  for i = 1:rows (sym_list)
     sym = deblank (sym_list(i,:));
     try
       val = feval (sym);
@@ -96,3 +96,4 @@ function dump_prefs (file)
   endfor
 
 endfunction
+

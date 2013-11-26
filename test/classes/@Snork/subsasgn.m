@@ -1,11 +1,12 @@
 function snk = subsasgn (snk, s, val)
+
   if (length (s) < 1)
     error ('Snork: needs index');
   end
   switch (s(1).type)
     case '()'
       ind = s(1).subs;
-      if (numel (ind) ~= 1)
+      if (numel (ind) != 1)
         error ('Snork: need exactly one index');
       else
         if (length (s) == 1)
@@ -16,7 +17,7 @@ function snk = subsasgn (snk, s, val)
       end
     case '{}'
       ind = s(1).subs;
-      if (numel (ind) ~= 1)
+      if (numel (ind) != 1)
         error ('Snork: need exactly one index');
       else
         if (length (s) == 1)
@@ -35,4 +36,5 @@ function snk = subsasgn (snk, s, val)
     otherwise
       error ('invalid subscript type');
   end
+
 end

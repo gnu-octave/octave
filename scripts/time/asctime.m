@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asctime (@var{tm_struct})
 ## Convert a time structure to a string using the following 
-## format: "ddd mmm mm HH:MM:SS yyyy".  For example:
+## format: @qcode{"ddd mmm mm HH:MM:SS yyyy"}.  For example:
 ##
 ## @example
 ## @group
@@ -47,8 +47,8 @@ endfunction
 
 %!test
 %! t = time ();
-%! assert(strcmp (asctime (localtime (t)), ctime (t)));
+%! assert (strcmp (asctime (localtime (t)), ctime (t)));
 
-%!error asctime ();
-%!error asctime (1, 2);
+%!error asctime ()
+%!error asctime (1, 2)
 

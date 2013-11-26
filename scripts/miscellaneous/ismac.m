@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 Thomas Treichl
+## Copyright (C) 2007-2013 Thomas Treichl
 ##
 ## This file is part of Octave.
 ##
@@ -32,5 +32,8 @@ function retval = ismac ()
 
 endfunction
 
-%!error ismac (1);
-%!assert (islogical (ismac ()));
+
+%!assert (islogical (ismac ()))
+
+%!error ismac (1)
+

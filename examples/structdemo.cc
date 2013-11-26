@@ -1,14 +1,15 @@
 #include <octave/oct.h>
 #include <octave/ov-struct.h>
 
-DEFUN_DLD (structdemo, args, , "Struct demo.")
+DEFUN_DLD (structdemo, args, , "Struct Demo")
 {
-  int nargin = args.length ();
   octave_value retval;
+  int nargin = args.length ();
 
   if (args.length () == 2)
     {
       octave_scalar_map arg0 = args(0).scalar_map_value ();
+      //octave_map arg0 = args(0).map_value ();
 
       if (! error_state)
         {
@@ -17,6 +18,7 @@ DEFUN_DLD (structdemo, args, , "Struct demo.")
           if (! error_state)
             {
               octave_value tmp = arg0.contents (arg1);
+              //octave_value tmp = arg0.contents (arg1)(0);
 
               if (tmp.is_defined ())
                 {
@@ -27,18 +29,17 @@ DEFUN_DLD (structdemo, args, , "Struct demo.")
                   retval = octave_value (st);
                 }
               else
-                error ("sruct does not contain field named '%s'\n",
+                error ("structdemo: struct does not have a field named '%s'\n",
                        arg1.c_str ());
             }
           else
-            error ("expecting character string as second argument");
+            error ("structdemo: ARG2 must be a character string");
         }
       else
-        error ("expecting struct as first argument");
+        error ("structdemo: ARG1 must be a struct");
     }
   else
     print_usage ();
 
   return retval;
 }
-

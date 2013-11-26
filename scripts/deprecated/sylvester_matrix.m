@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -56,6 +56,7 @@ function retval = sylvester_matrix (k)
   endif
 
 endfunction
+
 
 %!assert((sylvester_matrix (1) == [1, 1; 1, -1]
 %! && (sylvester_matrix (2)

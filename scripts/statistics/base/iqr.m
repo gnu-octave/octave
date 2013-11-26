@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -60,8 +60,8 @@ function y = iqr (x, dim)
   ## can take a matrix, rather than just a vector argument.
   n = sz(dim);
   sz(dim) = 1;
-  if (isa (x, 'single'))
-    y = zeros (sz, 'single');
+  if (isa (x, "single"))
+    y = zeros (sz, "single");
   else
     y = zeros (sz);
   endif
@@ -82,17 +82,17 @@ function y = iqr (x, dim)
 endfunction
 
 
-%!assert (iqr (1:101), 50);
-%!assert (iqr (single(1:101)), single(50));
+%!assert (iqr (1:101), 50)
+%!assert (iqr (single (1:101)), single (50))
 
 %%!test
 %%! x = [1:100];
 %%! n = iqr (x, 0:10);
 %%! assert (n, [repmat(100, 1, 10), 1]);
 
-%!error iqr ();
-%!error iqr (1, 2, 3);
-%!error iqr (1);
-%!error iqr (['A'; 'B']);
-%!error iqr (1:10, 3);
+%!error iqr ()
+%!error iqr (1, 2, 3)
+%!error iqr (1)
+%!error iqr (['A'; 'B'])
+%!error iqr (1:10, 3)
 

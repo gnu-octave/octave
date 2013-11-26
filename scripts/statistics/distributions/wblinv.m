@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -74,25 +74,25 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.63212055882855778 1 2];
-%!assert(wblinv (x, ones(1,5), ones(1,5)), [NaN 0 1 Inf NaN], eps);
-%!assert(wblinv (x, 1, ones(1,5)), [NaN 0 1 Inf NaN], eps);
-%!assert(wblinv (x, ones(1,5), 1), [NaN 0 1 Inf NaN], eps);
-%!assert(wblinv (x, [1 -1 NaN Inf 1], 1), [NaN NaN NaN NaN NaN]);
-%!assert(wblinv (x, 1, [1 -1 NaN Inf 1]), [NaN NaN NaN NaN NaN]);
-%!assert(wblinv ([x(1:2) NaN x(4:5)], 1, 1), [NaN 0 NaN Inf NaN]);
+%!assert (wblinv (x, ones (1,5), ones (1,5)), [NaN 0 1 Inf NaN], eps)
+%!assert (wblinv (x, 1, ones (1,5)), [NaN 0 1 Inf NaN], eps)
+%!assert (wblinv (x, ones (1,5), 1), [NaN 0 1 Inf NaN], eps)
+%!assert (wblinv (x, [1 -1 NaN Inf 1], 1), [NaN NaN NaN NaN NaN])
+%!assert (wblinv (x, 1, [1 -1 NaN Inf 1]), [NaN NaN NaN NaN NaN])
+%!assert (wblinv ([x(1:2) NaN x(4:5)], 1, 1), [NaN 0 NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(wblinv ([x, NaN], 1, 1), [NaN 0 1 Inf NaN NaN], eps);
-%!assert(wblinv (single([x, NaN]), 1, 1), single([NaN 0 1 Inf NaN NaN]), eps("single"));
-%!assert(wblinv ([x, NaN], single(1), 1), single([NaN 0 1 Inf NaN NaN]), eps("single"));
-%!assert(wblinv ([x, NaN], 1, single(1)), single([NaN 0 1 Inf NaN NaN]), eps("single"));
+%!assert (wblinv ([x, NaN], 1, 1), [NaN 0 1 Inf NaN NaN], eps)
+%!assert (wblinv (single ([x, NaN]), 1, 1), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
+%!assert (wblinv ([x, NaN], single (1), 1), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
+%!assert (wblinv ([x, NaN], 1, single (1)), single ([NaN 0 1 Inf NaN NaN]), eps ("single"))
 
 %% Test input validation
 %!error wblinv ()
 %!error wblinv (1,2,3,4)
-%!error wblinv (ones(3),ones(2),ones(2))
-%!error wblinv (ones(2),ones(3),ones(2))
-%!error wblinv (ones(2),ones(2),ones(3))
+%!error wblinv (ones (3), ones (2), ones (2))
+%!error wblinv (ones (2), ones (3), ones (2))
+%!error wblinv (ones (2), ones (2), ones (3))
 %!error wblinv (i, 2, 2)
 %!error wblinv (2, i, 2)
 %!error wblinv (2, 2, i)

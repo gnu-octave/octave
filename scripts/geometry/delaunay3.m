@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2012 Kai Habel
+## Copyright (C) 1999-2013 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -42,7 +42,7 @@
 ## To append user options to the defaults it is necessary to repeat the 
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
-## @seealso{delaunay, delaunayn, convhull, voronoi}
+## @seealso{delaunay, delaunayn, convhull, voronoi, tetramesh}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -54,7 +54,7 @@ function tetr = delaunay3 (x, y, z, options)
   endif
 
   if (! (isvector (x) && isvector (y) && isvector (z)
-         && length (x) == length (y) && length(x) == length (z)))
+         && length (x) == length (y) && length (x) == length (z)))
     error ("delaunay: X, Y, and Z must be the same size");
   elseif (nargin == 4 && ! (ischar (options) || iscellstr (options)))
     error ("delaunay3: OPTIONS must be a string or cell array of strings");

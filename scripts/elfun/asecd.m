@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 David Bateman
+## Copyright (C) 2006-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -25,12 +25,18 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function y = asecd (x)
+
   if (nargin != 1)
     print_usage ();
   endif
-  y = asec (x) .* 180 ./ pi;
-endfunction;
 
-%!error(asecd())
-%!error(asecd(1,2))
-%!assert(asecd(0:10:90),180./pi.*asec(0:10:90),-10*eps)
+  y = asec (x) .* 180 ./ pi;
+
+endfunction
+
+
+%!assert (asecd (0:10:90), 180/pi * asec (0:10:90), -10*eps)
+
+%!error asecd ()
+%!error asecd (1, 2)
+

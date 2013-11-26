@@ -1,5 +1,6 @@
 function r = __trace__ (t)
   persistent history
+
   if (isempty (history))
     history = {};
   end
@@ -14,5 +15,5 @@ function r = __trace__ (t)
   else
     error ('incorrect call to __trace__');
   end
+
 end
-    

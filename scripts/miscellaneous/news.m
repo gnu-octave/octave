@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 John W. Eaton
+## Copyright (C) 2007-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,47 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} news (@var{package})
-## Display the current NEWS file for Octave or installed package.
+## @deftypefn  {Command} {} news
+## @deftypefnx {Command} {} news @var{package}
+## Display the current NEWS file for Octave or an installed package.
 ##
-## If @var{package} is the name of an installed package, display the current
-## NEWS file for that package.
+## When called without an argument, display the NEWS file for Octave.
+## When given a package name @var{package}, display the current NEWS file for
+## that package.
 ## @end deftypefn
 
 function news (package = "octave")
 
-  if (ischar (package) && strcmpi (package, "octave"))
-    octetcdir = octave_config_info ("octetcdir");
-    newsfile  = fullfile (octetcdir, "NEWS");
-
-  elseif (nargin == 1 && ischar (package))
-    installed = pkg ("list");
-    names     = cellfun (@(x) x.name, installed, "UniformOutput", false);
-    ## we are nice and let the user use any case on the package name
-    pos = strcmpi (names, package);
-    if (!any (pos))
-      error ("Package '%s' is not installed.", package);
-    endif
-    newsfile = fullfile (installed{pos}.dir, "packinfo", "NEWS");
-
+  if (nargin > 1)
+    print_usage ();
   else
-    print_usage;
-  endif
-
-  if (exist (newsfile, "file"))
-    f = fopen (newsfile, "r");
-    while (ischar (line = fgets (f)))
-      puts (line);
-    endwhile
-  else
-    if (strcmpi (package, "octave"))
-      error ("news: unable to locate NEWS file");
-    else
-      error ("news: unable to locate NEWS file of %s package", package);
-    endif
+    display_info_file ("news", package, "NEWS");
   endif
 
 endfunction
 
-## Remove from test statistics.  No real tests possible
-%!assert (1)
+
+%!error news (1, 2)
+%!error <news: PACKAGE must be a string> news (1)
+%!error <news: package .* is not installed> news ("__NOT_A_VALID_PKG_NAME__")
+

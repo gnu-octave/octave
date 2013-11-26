@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,25 +19,41 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
+## @deftypefnx {Function File} {} image (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {Function File} {} image ("@var{prop1}", @var{val1}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} image (@dots{})
-## Display a matrix as a color image.  The elements of @var{img} are indices
-## into the current colormap, and the colormap will be scaled so that the
-## extremes of @var{img} are mapped to the extremes of the colormap.
+## Display a matrix as an indexed color image.
 ##
-## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
-## variables are ignored.
+## The elements of @var{img} are indices into the current colormap.
+## @var{x} and @var{y} are optional 2-element vectors, @w{@code{[min, max]}},
+## which specify the range for the axis labels.  If a range is specified as
+## @w{@code{[max, min]}} then the image will be reversed along that axis.  For
+## convenience, @var{x} and @var{y} may be specified as N-element vectors
+## matching the length of the data in @var{img}.  However, only the first and
+## last elements will be used to determine the axis limits.
+## @strong{Warning:} @var{x} and @var{y} are ignored when using gnuplot 4.0
+## or earlier.
+##
+## Multiple property/value pairs may be specified for the image object, but
+## they must appear in pairs.
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ##
 ## Implementation Note: The origin (0, 0) for images is located in the
 ## upper left.  For ordinary plots, the origin is located in the lower
 ## left.  Octave handles this inversion by plotting the data normally,
 ## and then reversing the direction of the y-axis by setting the
-## @code{ydir} property to @code{"reverse"}.  This has implications whenever
+## @code{ydir} property to @qcode{"reverse"}.  This has implications whenever
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
-## using, for example, @code{flipud (ydata,1)}.
+## using, for example, @code{flipud (ydata)}.
 ##
-## The optional return value @var{h} is a graphics handle to the image.
+## Calling Forms: The @code{image} function can be called in two forms:
+## High-Level and Low-Level.  When invoked with normal options, the High-Level
+## form is used which first calls @code{newplot} to prepare the graphic figure
+## and axes.  When the only inputs to @code{image} are property/value pairs
+## the Low-Level form is used which creates a new instance of an image object
+## and inserts it in the current axes.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
@@ -45,44 +61,68 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function retval = image (varargin)
+function h = image (varargin)
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
-
-  firstnonnumeric = Inf;
-  for i = 1 : nargin
-    if (! isnumeric (varargin{i}))
-      firstnonnumeric = i;
-      break;
-    endif
-  endfor
-
-  if (nargin == 0 || firstnonnumeric == 1)
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
+  
+  chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
+  
+  do_new = true;
+  if (nargin == 0)
     img = imread ("default.img");
     x = y = [];
-  elseif (nargin == 1 || firstnonnumeric == 2)
+  elseif (chararg == 1) 
+    ## Low-Level syntax
+    do_new = false;
+    x = y = img = [];
+    idx = find (strcmpi (varargin, "cdata"), 1);
+    if (idx)
+      img = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+    idx = find (strcmpi (varargin, "xdata"), 1);
+    if (idx)
+      x = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+    idx = find (strcmpi (varargin, "ydata"), 1);
+    if (idx)
+      y = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+  elseif (nargin == 1 || chararg == 2)
     img = varargin{1};
     x = y = [];
-  elseif (nargin == 2 || firstnonnumeric == 3)
+  elseif (nargin == 2 || chararg == 3)
     print_usage ();
   else
     x = varargin{1};
     y = varargin{2};
     img = varargin{3};
-    firstnonnumeric = 4;
+    chararg = 4;
   endif
 
-  oldax = gca ();
+  oldfig = [];
+  if (! isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
   unwind_protect
-    axes (ax);
-    h = __img__ (x, y, img, varargin {firstnonnumeric:end});
-    set (ax, "layer", "top");
+    if (do_new)
+      hax = newplot (hax);
+    elseif (isempty (hax))
+      hax = gca ();
+    endif
+
+    htmp = __img__ (hax, do_new, x, y, img, varargin{chararg:end});
+
   unwind_protect_cleanup
-    axes (oldax);
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
   end_unwind_protect
 
   if (nargout > 0)
-    retval = h;
+    h = htmp;
   endif
 
 endfunction
@@ -90,149 +130,118 @@ endfunction
 ## Generic image creation.
 ##
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}. If you're not using gnuplot 4.2 or later, these
+## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function h = __img__ (x, y, img, varargin)
-  
-  newplot ();
+function h = __img__ (hax, do_new, x, y, img, varargin)
 
-  if (isempty (img))
-    error ("__img__: matrix is empty");
+  ## FIXME: Hack for integer formats which use zero-based indexing
+  ##        Hack favors correctness of display over size of image in memory.
+  ##        True fix must be done in C++ code for renderer. 
+  if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
+    img = single (img) + 1;
   endif
 
-  if (isempty (x))
-    x = [1, columns(img)];
-  endif
+  if (! isempty (img))
 
-  if (isempty (y))
-    y = [1, rows(img)];
-  endif
-
-  xdata = [x(1), x(end)];
-  ydata = [y(1), y(end)];
-
-  dx = diff (x);
-  dy = diff (y);
-  dx = std (dx) / mean (abs (dx));
-  dy = std (dy) / mean (abs (dy));
-  tol = 100*eps;
-  if (any (dx > tol) || any (dy > tol))
-    warning ("Image does not map to non-linearly spaced coordinates")
-  endif
-
-  ca = gca ();
-
-  tmp = __go_image__ (ca, "cdata", img, "xdata", xdata, "ydata", ydata,
-                    "cdatamapping", "direct", varargin {:});
-
-  px = __image_pixel_size__ (tmp);
-
-  if (xdata(2) < xdata(1))
-    xdata = xdata(2:-1:1);
-  elseif (xdata(2) == xdata(1))
-    xdata = xdata(1) + [0, size(img,2)-1];
-  endif
-  if (ydata(2) < ydata(1))
-    ydata = ydata(2:-1:1);
-  elseif (ydata(2) == ydata(1))
-    ydata = ydata(1) + [0, size(img,1)-1];
-  endif
-  xlim = xdata + [-px(1), px(1)];
-  ylim = ydata + [-px(2), px(2)];
-
-  ## FIXME -- how can we do this and also get the {x,y}limmode
-  ## properties to remain "auto"?  I suppose this adjustment should
-  ## happen automatically in axes::update_axis_limits instead of
-  ## explicitly setting the values here.  But then what information is
-  ## available to axes::update_axis_limits to determine that the
-  ## adjustment is necessary?
-  set (ca, "xlim", xlim, "ylim", ylim);
-
-  if (ndims (img) == 3)
-    if (isinteger (img))
-      c = class (img);
-      mn = intmin (c);
-      mx = intmax (c);
-      set (ca, "clim", double ([mn, mx]));
+    if (isempty (x))
+      x = [1, columns(img)];
     endif
-  endif
 
-  set (ca, "view", [0, 90]);
+    if (isempty (y))
+      y = [1, rows(img)];
+    endif
 
-  if (strcmp (get (ca, "nextplot"), "replace"))
-    # Always reverse y-axis for images, unless hold is on
-    set (ca, "ydir", "reverse");
-  endif
+    xdata = x([1, end]);
+    ydata = y([1, end]);
 
-  if (nargout > 0)
-    h = tmp;
-  endif
+    if (numel (x) > 2 && numel (y) > 2)
+      ## Test data for non-linear spacing which is unsupported
+      tol = .01;  # 1% tolerance.  FIXME: this value was chosen without thought.
+      dx = diff (x);
+      dxmean = (max (x) - min (x)) / (numel (x) - 1);
+      dx = abs ((abs (dx) - dxmean) / dxmean);
+      dy = diff (y);
+      dymean = (max (y) - min (y)) / (numel (y) - 1);
+      dy = abs ((abs (dy) - dymean) / dymean);
+      if (any (dx > tol) || any (dy > tol))
+        warning (["image: non-linear X, Y data is ignored.  " ...
+                  "IMG will be shown with linear mapping"]);
+      endif
+    endif
+
+  endif  # ! isempty (img)
+
+  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
+                         "cdatamapping", "direct", varargin{:});
+
+  if (do_new && ! ishold (hax))
+    ## Set axis properties for new images
+
+    if (! isempty (img))
+      px = __image_pixel_size__ (h);
+
+      if (xdata(2) < xdata(1))
+        xdata = fliplr (xdata);
+      elseif (xdata(2) == xdata(1))
+        xdata = xdata(1) + [0, columns(img)-1];
+      endif
+      if (ydata(2) < ydata(1))
+        ydata = fliplr (ydata);
+      elseif (ydata(2) == ydata(1))
+        ydata = ydata(1) + [0, rows(img)-1];
+      endif
+      xlim = xdata + [-px(1), px(1)];
+      ylim = ydata + [-px(2), px(2)];
+
+      ## FIXME -- how can we do this and also get the {x,y}limmode
+      ## properties to remain "auto"?  I suppose this adjustment should
+      ## happen automatically in axes::update_axis_limits instead of
+      ## explicitly setting the values here.  But then what information is
+      ## available to axes::update_axis_limits to determine that the
+      ## adjustment is necessary?
+      set (hax, "xlim", xlim, "ylim", ylim);
+
+      if (ndims (img) == 3)
+        if (isinteger (img))
+          cls = class (img);
+          mn = intmin (cls);
+          mx = intmax (cls);
+          set (hax, "clim", double ([mn, mx]));
+        endif
+      endif
+
+    endif  # ! isempty (img)
+
+    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "bottom");
+
+  endif  # do_new
 
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
+%! colormap (jet (21));
 %! img = 1 ./ hilb (11);
-%! x = -5:5;
-%! y = x;
-%! subplot (2,2,1)
-%! h = image (abs(x), abs(y), img);
-%! set (h, "cdatamapping", "scaled")
-%! ylabel ("limits = [4.5, 15.5]")
-%! title ('image (abs(x), abs(y), img)')
-%! subplot (2,2,2)
-%! h = image (-x, y, img);
-%! set (h, "cdatamapping", "scaled")
-%! title ('image (-x, y, img)')
-%! subplot (2,2,3)
-%! h = image (x, -y, img);
-%! set (h, "cdatamapping", "scaled")
-%! title ('image (x, -y, img)')
-%! ylabel ("limits = [-5.5, 5.5]")
-%! subplot (2,2,4)
-%! h = image (-x, -y, img);
-%! set (h, "cdatamapping", "scaled")
-%! title ('image (-x, -y, img)')
+%! x = y = -5:5;
+%! subplot (2,2,1);
+%!  h = image (x, y, img);
+%!  ylabel ("limits = [-5.5, 5.5]");
+%!  title ("image (x, y, img)");
+%! subplot (2,2,2);
+%!  h = image (-x, y, img);
+%!  title ("image (-x, y, img)");
+%! subplot (2,2,3);
+%!  h = image (x, -y, img);
+%!  title ("image (x, -y, img)");
+%!  ylabel ("limits = [-5.5, 5.5]");
+%! subplot (2,2,4);
+%!  h = image (-x, -y, img);
+%!  title ("image (-x, -y, img)");
 
-%!demo
-%! clf
-%! g = 0.1:0.1:10;
-%! h = g'*g;
-%! imagesc (g, g, sin (h));
-%! hold on
-%! imagesc (g, g+12, cos (h/2));
-%! axis ([0 10 0 22])
-%! hold off
-%! title ("two consecutive images")
-
-%!demo
-%! clf
-%! g = 0.1:0.1:10;
-%! h = g'*g;
-%! imagesc (g, g, sin (h));
-%! hold all
-%! plot (g, 11.0 * ones (size (g)))
-%! imagesc (g, g+12, cos (h/2));
-%! axis ([0 10 0 22])
-%! hold off
-%! title ("image, line, image")
-
-%!demo
-%! clf
-%! g = 0.1:0.1:10;
-%! h = g'*g;
-%! plot (g, 10.5 * ones (size (g)))
-%! hold all
-%! imagesc (g, g, sin (h));
-%! plot (g, 11.0 * ones (size (g)))
-%! imagesc (g, g+12, cos (h/2));
-%! plot (g, 11.5 * ones (size (g)))
-%! axis ([0 10 0 22])
-%! hold off
-%! title ("line, image, line, image, line")
-
+## FIXME: Need %!tests for linear

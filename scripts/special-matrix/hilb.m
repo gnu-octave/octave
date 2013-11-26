@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -75,5 +75,5 @@ endfunction
 
 %!error hilb ()
 %!error hilb (1, 2)
-%!error <N must be a scalar integer> hilb (ones(2))
+%!error <N must be a scalar integer> hilb (ones (2))
 

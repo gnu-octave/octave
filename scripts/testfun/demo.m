@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} demo @var{name}
 ## @deftypefnx {Command} {} demo @var{name} @var{n}
-## @deftypefnx {Function File} {} demo ('@var{name}')
-## @deftypefnx {Function File} {} demo ('@var{name}', @var{n})
+## @deftypefnx {Function File} {} demo ("@var{name}")
+## @deftypefnx {Function File} {} demo ("@var{name}", @var{n})
 ##
 ## Run example code block @var{n} associated with the function @var{name}.
 ## If @var{n} is not specified, all examples are run.
@@ -28,15 +28,16 @@
 ## Examples are stored in the script file, or in a file with the same
 ## name but no extension located on Octave's load path.  To keep examples
 ## separate from regular script code, all lines are prefixed by @code{%!}.  Each
-## example must also be introduced by the keyword 'demo' flush left to the
-## prefix with no intervening spaces.  The remainder of the example can
-## contain arbitrary Octave code.  For example:
+## example must also be introduced by the keyword @qcode{"demo"} flush left
+## to the prefix with no intervening spaces.  The remainder of the example
+## can contain arbitrary Octave code.  For example:
 ##
 ## @example
 ## @group
 ## %!demo
-## %! t=0:0.01:2*pi; x = sin (t);
-## %! plot (t,x)
+## %! t = 0:0.01:2*pi;
+## %! x = sin (t);
+## %! plot (t, x);
 ## %! %-------------------------------------------------
 ## %! % the figure window shows one cycle of a sine wave
 ## @end group
@@ -64,10 +65,10 @@
 ## Also, because demo evaluates within a function context, you cannot
 ## define new functions inside a demo.  If you must have function blocks,
 ## rather than just anonymous functions or inline functions, you will have to
-## use @code{eval(example('function',n))} to see them.  Because eval only
+## use @code{eval (example ("function",n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
-## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
-## with the 'if' on the same line as 'demo'.  For example:
+## multiple lines, you must wrap your demo in @qcode{"if 1 <demo stuff> endif"}
+## with the @qcode{"if"} on the same line as @qcode{"demo"}.  For example:
 ##
 ## @example
 ## @group
@@ -100,7 +101,11 @@ function demo (name, n)
   endif
 
   [code, idx] = test (name, "grabdemo");
-  if (isempty (idx))
+
+  if (idx == -1)
+    warning ("no function %s found", name);
+    return;
+  elseif (isempty (idx))
     warning ("no demo available for %s", name);
     return;
   elseif (n >= length (idx))
@@ -111,7 +116,7 @@ function demo (name, n)
   if (n > 0)
     doidx = n;
   else
-    doidx = 1:length(idx)-1;
+    doidx = 1:(length (idx) - 1);
   endif
   for i = 1:length (doidx)
     ## Pause between demos
@@ -122,19 +127,11 @@ function demo (name, n)
     ## Process each demo without failing
     try
       block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
-      ## FIXME: need to check for embedded test functions, which cause
-      ## segfaults, until issues with subfunctions in functions are resolved.
-      embed_func = regexp (block, '^\s*function ', 'once', 'lineanchors');
-      if (isempty (embed_func))
-        ## Use an environment without variables
-        eval (cstrcat ("function __demo__()\n", block, "\nendfunction"));
-        ## Display the code that will be executed before executing it
-        printf ("%s example %d:%s\n\n", name, doidx(i), block);
-        __demo__;
-      else
-        error (["Functions embedded in %!demo blocks are not allowed.\n", ...
-                "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
-      endif
+      ## Use an environment without variables
+      eval (["function __demo__()\n" block "\nendfunction"]);
+      ## Display the code that will be executed before executing it
+      printf ("%s example %d:%s\n\n", name, doidx(i), block);
+      __demo__;
     catch
       ## Let the programmer know which demo failed.
       printf ("%s example %d: failed\n%s\n", name, doidx(i), lasterr ());
@@ -144,11 +141,14 @@ function demo (name, n)
 
 endfunction
 
+
 %!demo
-%! t=0:0.01:2*pi; x = sin(t);
-%! plot (t,x)
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
+%! plot (t, x);
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
 
-%!error demo ();
-%!error demo (1, 2, 3);
+%!error demo ()
+%!error demo (1, 2, 3)
+

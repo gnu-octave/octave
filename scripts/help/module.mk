@@ -5,15 +5,16 @@ help_PRIVATE_FCN_FILES = \
   help/private/__strip_html_tags__.m
 
 help_FCN_FILES = \
+  help/__gripe_missing_component__.m \
   help/__makeinfo__.m \
+  help/__unimplemented__.m \
   help/doc.m \
-  help/gen_doc_cache.m \
+  help/doc_cache_create.m \
   help/get_first_help_sentence.m \
   help/help.m \
   help/lookfor.m \
   help/print_usage.m \
   help/type.m \
-  help/unimplemented.m \
   help/which.m \
   $(help_PRIVATE_FCN_FILES)
 

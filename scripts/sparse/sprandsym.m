@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman and Andy Adler
+## Copyright (C) 2004-2013 David Bateman and Andy Adler
 ## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} sprandsym (@var{s})
 ## Generate a symmetric random sparse matrix.  The size of the matrix will be
 ## @var{n} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1. Values will be normally
+## @var{d} should be between 0 and 1.  Values will be normally
 ## distributed with mean of zero and variance 1.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
@@ -119,9 +119,9 @@ function r = pick_rand_diag (n, k)
   ## numerically to avoid overflow.
 
   ## Degenerate case
-  if k == 1
+  if (k == 1)
     r = 1;
-    return
+    return;
   endif
 
   ## Compute the stuff described above
@@ -151,6 +151,7 @@ function r = pick_rand_diag (n, k)
 
 endfunction
 
+
 %!test
 %! s = sprandsym (10, 0.1);
 %! assert (issparse (s));
@@ -168,7 +169,7 @@ endfunction
 %% Test input validation
 %!error sprandsym ()
 %!error sprandsym (1, 2, 3)
-%!error sprandsym (ones(3), 0.5)
+%!error sprandsym (ones (3), 0.5)
 %!error sprandsym (3.5, 0.5)
 %!error sprandsym (0, 0.5)
 %!error sprandsym (3, -1)

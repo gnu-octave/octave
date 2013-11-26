@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} celldisp (@var{c}, @var{name})
+## @deftypefn  {Function File} {} celldisp (@var{c})
+## @deftypefnx {Function File} {} celldisp (@var{c}, @var{name})
 ## Recursively display the contents of a cell array.  By default the values
 ## are displayed with the name of the variable @var{c}.  However, this name
 ## can be replaced with the variable @var{name}.  For example:
@@ -44,12 +45,13 @@
 ## This is ugly, but seems to be what matlab does..
 
 function celldisp (c, name)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
   if (! iscell (c))
-    error ("celldisp: argument must be a cell array");
+    error ("celldisp: C must be a cell array");
   endif
 
   if (nargin == 1)
@@ -71,17 +73,20 @@ function s = indices (dv, i)
   if (sum (dv != 1) > 1)
     c = cell (size (dv));
     [c{:}] = ind2sub (dv, i);
-    s = sprintf("%i,", c{:});
+    s = sprintf ("%i,", c{:});
     s(end) = [];
   else
-    s = sprintf("%i", i);
+    s = sprintf ("%i", i);
   endif
 endfunction
 
+
 %!demo
 %! c = {1, 2, {31, 32}};
-%! celldisp(c, "b")
+%! celldisp (c, "b")
 
-%!error celldisp ();
-%!error celldisp ({}, "name", 1);
-%!error celldisp (1);
+## Test input validation
+%!error celldisp ()
+%!error celldisp ({}, "name", 1)
+%!error <C must be a cell array> celldisp (1)
+

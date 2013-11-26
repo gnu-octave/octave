@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Daniel Calvelo
+## Copyright (C) 2000-2013 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##
@@ -62,12 +62,15 @@ function retval = dec2base (d, base, len)
     d = cell2mat (d);
   endif
 
-  # Create column vector for algorithm
+  ## Create column vector for algorithm
   if (! iscolumn (d))
     d = d(:);
   endif
-
-  if (! isnumeric (d) || iscomplex (d) || any (d < 0 | d != fix (d)))
+  
+  ## Treat logical as numeric for compatibility with ML
+  if (islogical (d))
+    d = double (d);
+  elseif (! isnumeric (d) || iscomplex (d) || any (d < 0 | d != fix (d)))
     error ("dec2base: input must be real non-negative integers");
   endif
 
@@ -119,23 +122,23 @@ endfunction
 
 
 %!test
-%! s0 = '';
+%! s0 = "";
 %! for n = 1:13
 %!   for b = 2:16
 %!     pp = dec2base (b^n+1, b);
-%!     assert (dec2base(b^n, b), ['1',s0,'0']);
-%!     assert (dec2base(b^n+1, b), ['1',s0,'1']);
+%!     assert (dec2base (b^n, b), ['1',s0,'0']);
+%!     assert (dec2base (b^n+1, b), ['1',s0,'1']);
 %!   endfor
 %!   s0 = [s0,'0'];
 %! endfor
 
 %!test
-%! digits='0123456789ABCDEF';
+%! digits = "0123456789ABCDEF";
 %! for n = 1:13
 %!   for b = 2:16
-%!     pm = dec2base(b^n-1, b);
+%!     pm = dec2base (b^n-1, b);
 %!     assert (length (pm), n);
-%!     assert (all (pm==digits(b)));
+%!     assert (all (pm == digits(b)));
 %!   endfor
 %! endfor
 
@@ -144,12 +147,16 @@ endfunction
 %!   assert (dec2base (0, b), '0');
 %! endfor
 
-%!assert(dec2base (0, 2, 4), "0000");
-%!assert(dec2base (2^51-1, 2), ...
-%!       '111111111111111111111111111111111111111111111111111');
-%!assert(dec2base(uint64(2)^63-1, 16), '7FFFFFFFFFFFFFFF');
-%!assert(dec2base([1, 2; 3, 4], 2, 3), ["001"; "011"; "010"; "100"]);
-%!assert(dec2base({1, 2; 3, 4}, 2, 3), ["001"; "011"; "010"; "100"]);
+%!assert (dec2base (0, 2, 4), "0000")
+%!assert (dec2base (2^51-1, 2), ...
+%!        "111111111111111111111111111111111111111111111111111")
+%!assert (dec2base (uint64 (2)^63-1, 16), "7FFFFFFFFFFFFFFF")
+%!assert (dec2base ([1, 2; 3, 4], 2, 3), ["001"; "011"; "010"; "100"])
+%!assert (dec2base ({1, 2; 3, 4}, 2, 3), ["001"; "011"; "010"; "100"])
+
+%!test
+%! a = 0:3;
+%! assert (dec2base (!a, 2, 1), ["1"; "0"; "0"; "0"])
 
 %%Test input validation
 %!error dec2base ()
@@ -161,7 +168,7 @@ endfunction
 %!error dec2base (1.1)
 %!error dec2base (1, "ABA")
 %!error dec2base (1, "A B")
-%!error dec2base (1, ones(2))
+%!error dec2base (1, ones (2))
 %!error dec2base (1, 1)
 %!error dec2base (1, 37)
 

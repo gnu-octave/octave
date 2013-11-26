@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -40,15 +40,15 @@
 ##
 ## @example
 ## @group
-## a = @{'abc'@};
-## s = @{'abc', 'def'@};
+## a = @{"abc"@};
+## s = @{"abc", "def"@};
 ## [tf, s_idx] = ismember (a, s)
 ##      @result{} tf = [1, 0]
 ##      @result{} s_idx = [1, 0]
 ## @end group
 ## @end example
 ##
-## With the optional third argument @code{"rows"}, and matrices
+## With the optional third argument @qcode{"rows"}, and matrices
 ## @var{A} and @var{s} with the same number of columns, compare rows in
 ## @var{A} with the rows in @var{s}.
 ##
@@ -56,7 +56,7 @@
 ## @group
 ## a = [1:3; 5:7; 4:6];
 ## s = [0:2; 1:3; 2:4; 3:5; 4:6];
-## [tf, s_idx] = ismember(a, s, "rows")
+## [tf, s_idx] = ismember (a, s, "rows")
 ##      @result{} tf = logical ([1; 0; 1])
 ##      @result{} s_idx = [2; 0; 5];
 ## @end group
@@ -133,29 +133,30 @@ function [tf, a_idx] = ismember (A, s, varargin)
 
 endfunction
 
-%!assert (ismember ({''}, {'abc', 'def'}), false);
-%!assert (ismember ('abc', {'abc', 'def'}), true);
-%!assert (isempty (ismember ([], [1, 2])), true);
-%!assert (isempty (ismember ({}, {'a', 'b'})), true);
-%!assert (ismember ('', {'abc', 'def'}), false);
-%!fail ('ismember ([], {1, 2})');
-%!fail ('ismember ({[]}, {1, 2})');
-%!fail ('ismember ({}, {1, 2})');
-%!fail ('ismember ({1}, {''1'', ''2''})');
-%!fail ('ismember (1, ''abc'')');
-%!fail ('ismember ({''1''}, {''1'', ''2''},''rows'')');
-%!fail ('ismember ([1 2 3], [5 4 3 1], ''rows'')');
-%!assert (ismember ({'foo', 'bar'}, {'foobar'}), logical ([0, 0]));
-%!assert (ismember ({'foo'}, {'foobar'}), false);
-%!assert (ismember ({'bar'}, {'foobar'}), false);
-%!assert (ismember ({'bar'}, {'foobar', 'bar'}), true);
-%!assert (ismember ({'foo', 'bar'}, {'foobar', 'bar'}), logical ([0, 1]));
-%!assert (ismember ({'xfb', 'f', 'b'}, {'fb', 'b'}), logical ([0, 0, 1]));
-%!assert (ismember ("1", "0123456789."), true);
+
+%!assert (ismember ({""}, {"abc", "def"}), false)
+%!assert (ismember ("abc", {"abc", "def"}), true)
+%!assert (isempty (ismember ([], [1, 2])), true)
+%!assert (isempty (ismember ({}, {'a', 'b'})), true)
+%!assert (ismember ("", {"abc", "def"}), false)
+%!fail ("ismember ([], {1, 2})")
+%!fail ("ismember ({[]}, {1, 2})")
+%!fail ("ismember ({}, {1, 2})")
+%!fail ("ismember ({1}, {'1', '2'})")
+%!fail ("ismember (1, 'abc')")
+%!fail ("ismember ({'1'}, {'1' '2'},'rows')")
+%!fail ("ismember ([1 2 3], [5 4 3 1], 'rows')")
+%!assert (ismember ({"foo", "bar"}, {"foobar"}), [false false])
+%!assert (ismember ({"foo"}, {"foobar"}), false)
+%!assert (ismember ({"bar"}, {"foobar"}), false)
+%!assert (ismember ({"bar"}, {"foobar", "bar"}), true)
+%!assert (ismember ({"foo", "bar"}, {"foobar", "bar"}), [false true])
+%!assert (ismember ({"xfb", "f", "b"}, {"fb", "b"}), [false false true])
+%!assert (ismember ("1", "0123456789."), true)
 
 %!test
 %! [result, a_idx] = ismember ([1, 2], []);
-%! assert (result, logical ([0, 0]))
+%! assert (result, [false false])
 %! assert (a_idx, [0, 0]);
 
 %!test
@@ -164,46 +165,52 @@ endfunction
 %! assert (a_idx, []);
 
 %!test
-%! [result, a_idx] = ismember ({'a', 'b'}, '');
-%! assert (result, logical ([0, 0]))
+%! [result, a_idx] = ismember ({"a", "b"}, "");
+%! assert (result, [false false])
 %! assert (a_idx, [0, 0]);
 
 %!test
-%! [result, a_idx] = ismember ({'a', 'b'}, {});
-%! assert (result, logical ([0, 0]))
+%! [result, a_idx] = ismember ({"a", "b"}, {});
+%! assert (result, [false false])
 %! assert (a_idx, [0, 0]);
 
 %!test
-%! [result, a_idx] = ismember ('', {'a', 'b'});
+%! [result, a_idx] = ismember ("", {"a", "b"});
 %! assert (result, false)
 %! assert (a_idx, 0);
 
 %!test
-%! [result, a_idx] = ismember ({}, {'a', 'b'});
+%! [result, a_idx] = ismember ({}, {"a", "b"});
 %! assert (result, logical ([]))
 %! assert (a_idx, []);
 
 %!test
-%! [result, a_idx] = ismember([1 2 3 4 5], [3]);
-%! assert (all (result == logical ([0 0 1 0 0])) && all (a_idx == [0 0 1 0 0]));
+%! [result, a_idx] = ismember ([1 2 3 4 5], [3]);
+%! assert (result, logical ([0 0 1 0 0]))
+%! assert (a_idx , [0 0 1 0 0]);
 
 %!test
-%! [result, a_idx] = ismember([1 6], [1 2 3 4 5 1 6 1]);
-%! assert (all (result == logical ([1 1])) && a_idx(2) == 7);
+%! [result, a_idx] = ismember ([1 6], [1 2 3 4 5 1 6 1]);
+%! assert (result, [true true]);
+%! assert (a_idx(2), 7);
 
 %!test
 %! [result, a_idx] = ismember ([3,10,1], [0,1,2,3,4,5,6,7,8,9]);
-%! assert (all (result == logical ([1, 0, 1])) && all (a_idx == [4, 0, 2]));
+%! assert (result, [true false true]);
+%! assert (a_idx, [4, 0, 2]);
 
 %!test
 %! [result, a_idx] = ismember ("1.1", "0123456789.1");
-%! assert (all (result == logical ([1, 1, 1])) && all (a_idx == [12, 11, 12]));
+%! assert (result, [true true true]);
+%! assert (a_idx, [12, 11, 12]);
 
 %!test
-%! [result, a_idx] = ismember([1:3; 5:7; 4:6], [0:2; 1:3; 2:4; 3:5; 4:6], 'rows');
-%! assert (all (result == logical ([1; 0; 1])) && all (a_idx == [2; 0; 5]));
+%! [result, a_idx] = ismember ([1:3; 5:7; 4:6], [0:2; 1:3; 2:4; 3:5; 4:6], "rows");
+%! assert (result, [true; false; true]);
+%! assert (a_idx, [2; 0; 5]);
 
 %!test
-%! [result, a_idx] = ismember([1.1,1.2,1.3; 2.1,2.2,2.3; 10,11,12], [1.1,1.2,1.3; 10,11,12; 2.12,2.22,2.32], 'rows');
-%! assert (all (result == logical ([1; 0; 1])) && all (a_idx == [1; 0; 2]));
+%! [result, a_idx] = ismember ([1.1,1.2,1.3; 2.1,2.2,2.3; 10,11,12], [1.1,1.2,1.3; 10,11,12; 2.12,2.22,2.32], "rows");
+%! assert (result, [true; false; true]);
+%! assert (a_idx, [1; 0; 2]);
 

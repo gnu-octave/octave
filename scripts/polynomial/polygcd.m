@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ## Find the greatest common divisor of two polynomials.  This is equivalent
 ## to the polynomial found by multiplying together all the common roots.
 ## Together with deconv, you can reduce a ratio of two polynomials.
-## The tolerance @var{tol} defaults to @code{sqrt(eps)}.
+## The tolerance @var{tol} defaults to @code{sqrt (eps)}.
 ##
 ## @strong{Caution:} This is a numerically unstable algorithm and should not
 ## be used on large polynomials.
@@ -34,7 +34,7 @@
 ## @group
 ## polygcd (poly (1:8), poly (3:12)) - poly (3:8)
 ## @result{} [ 0, 0, 0, 0, 0, 0, 0 ]
-## deconv (poly (1:8), polygcd (poly (1:8), poly (3:12))) - poly(1:2)
+## deconv (poly (1:8), polygcd (poly (1:8), poly (3:12))) - poly (1:2)
 ## @result{} [ 0, 0, 0 ]
 ## @end group
 ## @end example
@@ -82,21 +82,19 @@ endfunction
 
 
 %!test
-%! poly1 = [1 6 11 6]; % (x+1)(x+2)(x+3)
-%! poly2 = [1 3 2]; % (x+1)(x+2)
+%! poly1 = [1 6 11 6]; # (x+1)(x+2)(x+3);
+%! poly2 = [1 3 2];    # (x+1)(x+2);
 %! poly3 = polygcd (poly1, poly2);
-%! assert (poly3, poly2, sqrt (eps))
+%! assert (poly3, poly2, sqrt (eps));
 
-%!test
-%! assert (polygcd (poly(1:8), poly(3:12)), poly(3:8), sqrt (eps))
-
-%!test
-%! assert (deconv (poly(1:8), polygcd (poly(1:8), poly(3:12))), poly(1:2), sqrt (eps))
+%!assert (polygcd (poly (1:8), poly (3:12)), poly (3:8), sqrt (eps))
+%!assert (deconv (poly (1:8), polygcd (poly (1:8), poly (3:12))), poly (1:2), sqrt (eps))
 
 %!test
 %! for ii=1:10
 %!   p  = (unique (randn (10, 1)) * 10).';
 %!   p1 = p(3:end);
 %!   p2 = p(1:end-2);
-%!   assert (polygcd (poly (-p1), poly (-p2)), poly (- intersect (p1, p2)), sqrt (eps))
+%!   assert (polygcd (poly (-p1), poly (-p2)), poly (- intersect (p1, p2)), sqrt (eps));
 %! endfor
+

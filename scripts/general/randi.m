@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 Rik Wehbring
+## Copyright (C) 2010-2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -34,8 +34,8 @@
 ## with a lower and upper bound in which case the returned integers will be
 ## on the interval @w{[@var{imin}, @var{imax}]}.
 ##
-## The optional argument "@var{class}" will return a matrix of the requested
-## type.  The default is "double".
+## The optional argument @var{class} will return a matrix of the requested
+## type.  The default is @qcode{"double"}.
 ##
 ## The following example returns 150 integers in the range 1-10.
 ##
@@ -44,7 +44,7 @@
 ## @end example
 ##
 ## Implementation Note: @code{randi} relies internally on @code{rand} which
-## uses class "double" to represent numbers.  This limits the maximum
+## uses class @qcode{"double"} to represent numbers.  This limits the maximum
 ## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
 ## returned by the @code{bitmax} function.  For IEEE floating point numbers
 ## this value is @w{@math{2^{53} - 1}}.
@@ -57,7 +57,7 @@
 function ri = randi (bounds, varargin)
 
   if (nargin < 1)
-    print_usage();
+    print_usage ();
   endif
 
   if (! (isnumeric (bounds) && isreal (bounds)))
@@ -111,31 +111,32 @@ function ri = randi (bounds, varargin)
 
 endfunction
 
+
 %!test
 %! ri = randi (10, 1000, 1);
-%! assert(isequal(ri, fix (ri)));
-%! assert(min(ri) == 1);
-%! assert(max(ri) == 10);
-%! assert(rows(ri) == 1000);
-%! assert(columns(ri) == 1);
-%! assert(strcmp (class (ri), "double"));
+%! assert (ri, fix (ri));
+%! assert (min (ri), 1);
+%! assert (max (ri), 10);
+%! assert (rows (ri), 1000);
+%! assert (columns (ri), 1);
+%! assert (class (ri), "double");
 %!test
 %! ri = randi ([-5, 10], 1000, 1, "int8");
-%! assert(isequal(ri, fix (ri)));
-%! assert(min(ri) == -5);
-%! assert(max(ri) == 10);
-%! assert(strcmp (class (ri), "int8"));
+%! assert (ri, fix (ri));
+%! assert (min (ri), int8 (-5));
+%! assert (max (ri), int8 (10));
+%! assert (class (ri), "int8");
 %!
-%!assert(size (randi(10, 3,1,2)) == [3, 1, 2])
+%!assert (size (randi (10, 3,1,2)), [3, 1, 2])
 
 %% Test input validation
-%!error(randi())
-%!error(randi("test"))
-%!error(randi(10+2i))
-%!error(randi(0))
-%!error(randi([10, 1]))
-%!error(randi(256, "uint8"))
-%!error(randi(2^25, "single"))
-%!error(randi(bitmax() + 1))
-%!error(randi([-1, bitmax()]))
+%!error (randi ())
+%!error (randi ("test"))
+%!error (randi (10+2i))
+%!error (randi (0))
+%!error (randi ([10, 1]))
+%!error (randi (256, "uint8"))
+%!error (randi (2^25, "single"))
+%!error (randi (bitmax () + 1))
+%!error (randi ([-1, bitmax()]))
 

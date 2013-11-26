@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 Walter Gautschi
+## Copyright (C) 1998-2013 Walter Gautschi
 ##
 ## This file is part of Octave.
 ##
@@ -136,7 +136,7 @@ function q = quadl (f, a, b, tol = [], trace = false, varargin)
   if (R > 0 && R < 1)
     tol = tol/R;
   endif
-  is = s * abs(is) * tol/myeps;
+  is = s * abs (is) * tol/myeps;
   if (is == 0)
     is = b-a;
   endif
@@ -162,7 +162,7 @@ function q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin)
   h = (b-a)/2;
   m = (a+b)/2;
   alpha = sqrt (2/3);
-  beta = 1 / sqrt(5);
+  beta = 1 / sqrt (5);
   mll = m-alpha*h;
   ml  = m-beta*h;
   mr  = m+beta*h;

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 John W. Eaton
+## Copyright (C) 1996-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -41,22 +41,23 @@ function retval = issquare (x)
 
 endfunction
 
-%!assert(issquare ([]));
-%!assert(issquare (1));
-%!assert(!(issquare ([1, 2])));
-%!assert(issquare ([1, 2; 3, 4]));
-%!assert(!(issquare ([1, 2; 3, 4; 5, 6])));
-%!assert(!(issquare (ones (3,3,3))));
-%!assert(issquare ("t"));
-%!assert(!(issquare ("test")));
-%!assert(issquare (["test"; "ing"; "1"; "2"]));
+
+%!assert (issquare ([]))
+%!assert (issquare (1))
+%!assert (! issquare ([1, 2]))
+%!assert (issquare ([1, 2; 3, 4]))
+%!assert (! issquare ([1, 2; 3, 4; 5, 6]))
+%!assert (! issquare (ones (3,3,3)))
+%!assert (issquare ("t"))
+%!assert (! issquare ("test"))
+%!assert (issquare (["test"; "ing"; "1"; "2"]))
 %!test
 %! s.a = 1;
-%! assert(issquare (s));
-%!assert(issquare ({1, 2; 3, 4}));
-%!assert(sparse (([1, 2; 3, 4])));
+%! assert (issquare (s));
+%!assert (issquare ({1, 2; 3, 4}))
+%!assert (sparse (([1, 2; 3, 4])))
 
 %% Test input validation
-%!error issquare ();
-%!error issquare ([1, 2; 3, 4], 2);
+%!error issquare ()
+%!error issquare ([1, 2; 3, 4], 2)
 

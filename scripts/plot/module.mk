@@ -13,7 +13,6 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__axis_label__.m \
   plot/private/__bar__.m \
   plot/private/__clabel__.m \
-  plot/private/__color_str_rgb__.m \
   plot/private/__contour__.m \
   plot/private/__default_plot_options__.m \
   plot/private/__errcomm__.m \
@@ -80,6 +79,7 @@ plot_FCN_FILES = \
   plot/contour3.m \
   plot/contourc.m \
   plot/contourf.m \
+  plot/copyobj.m \
   plot/cylinder.m \
   plot/daspect.m \
   plot/diffuse.m \
@@ -98,22 +98,26 @@ plot_FCN_FILES = \
   plot/figure.m \
   plot/fill.m \
   plot/findall.m \
+  plot/findfigs.m \
   plot/findobj.m \
   plot/fplot.m \
   plot/gca.m \
   plot/gcbf.m \
   plot/gcbo.m \
   plot/gcf.m \
+  plot/gco.m \
   plot/ginput.m \
   plot/graphics_toolkit.m \
   plot/grid.m \
   plot/gtext.m \
   plot/guidata.m \
   plot/guihandles.m \
+  plot/hdl2struct.m \
   plot/hggroup.m \
   plot/hidden.m \
   plot/hist.m \
   plot/hold.m \
+  plot/isaxes.m \
   plot/isfigure.m \
   plot/ishghandle.m \
   plot/ishold.m \
@@ -146,6 +150,7 @@ plot_FCN_FILES = \
   plot/plotyy.m \
   plot/polar.m \
   plot/print.m \
+  plot/printd.m \
   plot/quiver.m \
   plot/quiver3.m \
   plot/rectangle.m \
@@ -162,20 +167,23 @@ plot_FCN_FILES = \
   plot/semilogyerr.m \
   plot/shading.m \
   plot/shg.m \
+  plot/shrinkfaces.m \
   plot/slice.m \
   plot/sombrero.m \
   plot/specular.m \
   plot/sphere.m \
-  plot/spinmap.m \
   plot/stairs.m \
   plot/stem.m \
   plot/stem3.m \
+  plot/stemleaf.m \
+  plot/struct2hdl.m \
   plot/subplot.m \
   plot/surf.m \
   plot/surface.m \
   plot/surfc.m \
   plot/surfl.m \
   plot/surfnorm.m \
+  plot/tetramesh.m \
   plot/text.m \
   plot/title.m \
   plot/trimesh.m \
@@ -196,6 +204,7 @@ plot_FCN_FILES = \
   plot/view.m \
   plot/waitbar.m \
   plot/waitforbuttonpress.m \
+  plot/waterfall.m \
   plot/whitebg.m \
   plot/xlabel.m \
   plot/xlim.m \

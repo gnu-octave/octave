@@ -1,11 +1,10 @@
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
- ** An experimental GUI is now available with Octave.  The GUI works well
-    on Linux systems, acceptably on Windows, but unsatisfactorily on Mac OS X.
-    To start a GUI session include the "--force-gui" option when invoking
-    Octave.  The GUI is under continuous improvement and will be the default
-    interface for the 4.0 release.
+ ** A GUI is now available with Octave and is the default when starting
+    an interactive session.  The original command line interface is also
+    available and can be entered by using the "--no-gui" option when
+    invoking Octave.
 
  ** Octave now uses OpenGL graphics by default with FLTK widgets.  If
     OpenGL libraries or FLTK widgets are not available when Octave is

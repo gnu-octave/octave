@@ -169,12 +169,14 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
 }
 
 template <class ST>
-std::string
-octave_base_scalar<ST>::short_disp (void) const
+void
+octave_base_scalar<ST>::short_disp (std::ostream& os) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, scalar);
-  return buf.str ();
+  std::string tmp = buf.str ();
+  size_t pos = tmp.find_first_not_of (" ");
+  os << tmp.substr (pos);
 }
 
 template <class ST>

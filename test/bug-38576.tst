@@ -10,7 +10,11 @@
 %!  r = eval ("ls -1;");
 %!endfunction
 
-%!assert (f1 (), 0);
-%!assert (f2 (), 0);
-%!assert (ischar (f3 ()), true);
-%!assert (f3 (1), 0);
+%!test
+%! ## Windows systems can't run "ls -1"
+%! if (! ispc ())
+%!   assert (f1 (), 0);
+%!   assert (f2 (), 0);
+%!   assert (ischar (f3 ()), true);
+%!   assert (f3 (1), 0);
+%! endif

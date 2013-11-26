@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QFileInfo>
 #include <Qsci/qsciapis.h>
+#include <QStatusBar>
+#include <QLabel>
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
@@ -150,6 +152,8 @@ private slots:
   // When the numer of lines changes -> adapt width of margin
   void auto_margin_width ();
 
+  void handle_cursor_moved (int line, int col);
+
 private:
 
   enum editor_markers
@@ -172,6 +176,7 @@ private:
     int line;
   };
 
+  bool valid_file_name (const QString& file=QString ());
   void save_file (const QString& saveFileName, bool remove_on_success = false);
   void save_file_as (bool remove_on_success = false);
   void message_duplicate_file_name (const QString& fileName);
@@ -180,6 +185,7 @@ private:
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
+  void show_dialog (QDialog *dlg);
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
   QString comment_string (const QString&);
@@ -190,6 +196,10 @@ private:
   void center_current_line ();
 
   octave_qscintilla *_edit_area;
+
+  QStatusBar *_status_bar;
+  QLabel *_row_indicator;
+  QLabel *_col_indicator;
 
   QString _file_name;
   QString _file_name_short;

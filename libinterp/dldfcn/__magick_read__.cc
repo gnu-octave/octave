@@ -757,11 +757,34 @@ use @code{imread}.\n\
           frameidx(i)--;
           if (frameidx(i) < 0 || frameidx(i) > nFrames - 1)
             {
+              // We do this check inside the loop because frameidx does not
+              // need to be ordered (this is a feature and even allows for
+              // some frames to be read multiple times).
               error ("imread: index/frames specified are outside the number of images");
               return output;
             }
         }
     }
+
+  // Check that all frames have the same size. We don't do this at the same
+  // time we decode the image because that's done in many different places,
+  // to cover the different types of images which would lead to a lot of
+  // copy and paste.
+  {
+    const unsigned int nRows = imvec[frameidx(0)].rows ();
+    const unsigned int nCols = imvec[frameidx(0)].columns ();
+    const octave_idx_type n = frameidx.nelem ();
+    for (octave_idx_type frame = 0; frame < n; frame++)
+      {
+        if (nRows != imvec[frameidx(frame)].rows () ||
+            nCols != imvec[frameidx(frame)].columns ())
+          {
+            error ("imread: all frames must have the same size but frame %i is different",
+                   frameidx(frame) +1);
+            return output;
+          }
+      }
+  }
 
   const octave_idx_type depth = get_depth (imvec[frameidx(0)]);
   if (is_indexed (imvec[frameidx(0)]))
@@ -1458,7 +1481,7 @@ use @code{imwrite}.\n\
         }
     }
 
-  // FIXME - LoopCount or animationIterations
+  // FIXME: LoopCount or animationIterations
   //  How it should work:
   //
   // This value is only set for the first image in the sequence. Trying

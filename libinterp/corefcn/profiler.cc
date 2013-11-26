@@ -192,7 +192,7 @@ profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 
 profile_data_accumulator::profile_data_accumulator ()
   : known_functions (), fcn_index (),
-    enabled (false), call_tree (NULL), last_time (-1.0)
+    enabled (false), call_tree (0), last_time (-1.0)
 {}
 
 profile_data_accumulator::~profile_data_accumulator ()
@@ -208,7 +208,7 @@ profile_data_accumulator::set_active (bool value)
     {
       // Create a call-tree top-node if there isn't yet one.
       if (!call_tree)
-        call_tree = new tree_node (NULL, 0);
+        call_tree = new tree_node (0, 0);
 
       // Let the top-node be the active one.  This ensures we have a clean
       // fresh start collecting times.
@@ -287,7 +287,7 @@ profile_data_accumulator::reset (void)
   if (call_tree)
     {
       delete call_tree;
-      call_tree = NULL;
+      call_tree = 0;
     }
 
   last_time = -1.0;

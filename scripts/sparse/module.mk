@@ -1,7 +1,7 @@
 FCN_FILE_DIRS += sparse
 
 sparse_PRIVATE_FCN_FILES = \
-	sparse/private/__sprand_impl__.m
+  sparse/private/__sprand_impl__.m
 
 sparse_FCN_FILES = \
   sparse/bicg.m \
@@ -29,7 +29,7 @@ sparse_FCN_FILES = \
   sparse/svds.m \
   sparse/treelayout.m \
   sparse/treeplot.m \
-	$(sparse_PRIVATE_FCN_FILES)
+  $(sparse_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(sparse_FCN_FILES)
 

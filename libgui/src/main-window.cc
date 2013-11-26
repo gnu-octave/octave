@@ -40,6 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QIcon>
 #include <QTextStream>
+#include <QThread>
+#include <QDateTime>
+#include <QDebug>
 
 #include <utility>
 
@@ -49,7 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "main-window.h"
 #include "settings-dialog.h"
 
+#include "Array.h"
 #include "cmd-edit.h"
+#include "url-transfer.h"
 
 #include "builtin-defun-decls.h"
 #include "defaults.h"
@@ -70,7 +75,6 @@ main_window::main_window (QWidget *p)
   : QMainWindow (p),
     _workspace_model (new workspace_model ()),
     status_bar (new QStatusBar ()),
-    news_window (new news_dock_widget (this)),
     command_window (new terminal_dock_widget (this)),
     history_window (new history_dock_widget (this)),
     file_browser_window (new files_dock_widget (this)),
@@ -78,13 +82,38 @@ main_window::main_window (QWidget *p)
     editor_window (create_default_editor (this)),
     workspace_window (new workspace_view (this)),
     find_files_dlg (0),
-    _octave_main_thread (0),
+    release_notes_window (0),
+    community_news_window (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
     _cmd_queue (new QStringList ()),  // no command pending
     _cmd_processing (1),
     _cmd_queue_mutex ()
 {
+  QSettings *settings = resource_manager::get_settings ();
+
+  bool connect_to_web = true;
+  QDateTime last_checked;
+  int serial = 0;
+
+  if (settings)
+    {
+      connect_to_web
+        = settings->value ("news/allow_web_connection", true).toBool ();
+
+      last_checked
+        = settings->value ("news/last_time_checked", QDateTime ()).toDateTime ();
+
+      serial = settings->value ("news/last_news_item", 0).toInt ();
+    }
+
+  QDateTime current = QDateTime::currentDateTime ();
+  QDateTime one_day_ago = current.addDays (-1);
+
+  if (connect_to_web
+      && (! last_checked.isValid () || one_day_ago > last_checked))
+    load_and_display_community_news (serial);
+
   // We have to set up all our windows, before we finally launch octave.
   construct ();
 }
@@ -95,7 +124,6 @@ main_window::~main_window (void)
   // to its original pipe to capture error messages at exit.
 
   delete editor_window;     // first one for dialogs of modified editor-tabs
-  delete news_window;
   delete command_window;
   delete workspace_window;
   delete doc_browser_window;
@@ -108,7 +136,16 @@ main_window::~main_window (void)
       delete find_files_dlg;
       find_files_dlg = 0;
     }
-  delete _octave_main_thread;
+  if (release_notes_window)
+    {
+      delete release_notes_window;
+      release_notes_window = 0;
+    }
+  if (community_news_window)
+    {
+      delete community_news_window;
+      community_news_window = 0;
+    }
   delete _octave_qt_link;
   delete _cmd_queue;
 }
@@ -254,43 +291,244 @@ main_window::open_online_documentation_page (void)
 void
 main_window::display_release_notes (void)
 {
-  std::string news_file = Voct_etc_dir + "/NEWS";
-
-  QString news;
-
-  QFile *file = new QFile (QString::fromStdString (news_file));
-  if (file->open (QFile::ReadOnly))
+  if (! release_notes_window)
     {
-      QTextStream *stream = new QTextStream (file);
-      news = stream->readAll ();
-      if (! news.isEmpty ())
+      std::string news_file = Voct_etc_dir + "/NEWS";
+
+      QString news;
+
+      QFile *file = new QFile (QString::fromStdString (news_file));
+      if (file->open (QFile::ReadOnly))
         {
-          news.prepend ("<pre>");
-          news.append ("</pre>");
+          QTextStream *stream = new QTextStream (file);
+          news = stream->readAll ();
+          if (! news.isEmpty ())
+            {
+              news.prepend ("<pre>");
+              news.append ("</pre>");
+            }
+          else
+            news = (tr ("The release notes file '%1' is empty.")
+                    . arg (QString::fromStdString (news_file)));
         }
       else
-        news = (tr ("The release notes file '%1' is empty.")
+        news = (tr ("The release notes file '%1' cannot be read.")
                 . arg (QString::fromStdString (news_file)));
+
+
+      release_notes_window = new QWidget;
+
+      QTextBrowser *browser = new QTextBrowser (release_notes_window);
+      browser->setText (news);
+
+      QVBoxLayout *vlayout = new QVBoxLayout;
+      vlayout->addWidget (browser);
+
+      release_notes_window->setLayout (vlayout);
+      release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
+
+      browser->document()->adjustSize ();
+      QSize doc_size = browser->document()->size().toSize ();
+      doc_size.rwidth () += 45;
+      int h = QApplication::desktop ()->height ();
+      if (h > 800)
+        h = 800;
+      doc_size.rheight () = h;
+
+      release_notes_window->resize (doc_size);
+    }
+
+  if (! release_notes_window->isVisible ())
+    release_notes_window->show ();
+  else if (release_notes_window->isMinimized ())
+    release_notes_window->showNormal ();
+
+  release_notes_window->setWindowIcon (QIcon (_release_notes_icon));
+
+  release_notes_window->raise ();
+  release_notes_window->activateWindow ();
+}
+
+void
+news_reader::process (void)
+{
+  QString html_text;
+
+  if (connect_to_web)
+    {
+      // Run this part in a separate thread so Octave can continue to
+      // run while we wait for the page to load.  Then emit the signal
+      // to display it when we have the page contents.
+
+      QString url = base_url + "/" + page;
+      std::ostringstream buf;
+      url_transfer octave_dot_org (url.toStdString (), buf);
+
+      Array<std::string> param;
+      octave_dot_org.http_get (param);
+
+      if (octave_dot_org.good ())
+        html_text = QString::fromStdString (buf.str ());
+
+      if (html_text.contains ("this-is-the-gnu-octave-community-news-page"))
+        {
+          if (serial >= 0)
+            {
+              QSettings *settings = resource_manager::get_settings ();
+
+              if (settings)
+                {
+                  settings->setValue ("news/last_time_checked",
+                                      QDateTime::currentDateTime ());
+
+                  settings->sync ();
+                }
+
+              QString tag ("community-news-page-serial=");
+
+              int b = html_text.indexOf (tag);
+
+              if (b)
+                {
+                  b += tag.length ();
+
+                  int e = html_text.indexOf ("\n", b);
+
+                  QString tmp = html_text.mid (b, e-b);
+
+                  int curr_page_serial = tmp.toInt ();
+
+                  if (curr_page_serial > serial)
+                    {
+                      if (settings)
+                        {
+                          settings->setValue ("news/last_news_item",
+                                              curr_page_serial);
+
+                          settings->sync ();
+                        }
+                    }
+                  else
+                    return;
+                }
+              else
+                return;
+            }
+        }
+      else
+        html_text = QString
+          (tr ("<html>\n"
+               "<body>\n"
+               "<p>\n"
+               "Octave's community news source seems to be unavailable.\n"
+               "</p>\n"
+               "<p>\n"
+               "For the latest news, please check\n"
+               "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n"
+               "when you have a connection to the web (link opens in an external browser).\n"
+               "</p>\n"
+               "<p>\n"
+               "<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n"
+               "</p>\n"
+               "</body>\n"
+               "</html>\n"));
     }
   else
-    news = (tr ("The release notes file '%1' cannot be read.")
-            . arg (QString::fromStdString (news_file)));
+    html_text = QString
+      (tr ("<html>\n"
+           "<body>\n"
+           "<p>\n"
+           "Connecting to the web to display the latest Octave Community news has been disabled.\n"
+           "</p>\n"
+           "<p>\n"
+           "For the latest news, please check\n"
+           "<a href=\"http://octave.org/community-news.html\">http://octave.org/community-news.html</a>\n"
+           "when you have a connection to the web (link opens in an external browser)\n"
+           "or enable web connections for news in Octave's network settings dialog.\n"
+           "</p>\n"
+           "<p>\n"
+           "<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n"
+           "</p>\n"
+           "</body>\n"
+           "</html>\n"));
 
+  emit display_news_signal (html_text);
 
-  QWidget *w = new QWidget;
+  emit finished ();
+}
 
-  QTextBrowser *browser = new QTextBrowser (w);
-  browser->setText (news);
+void
+main_window::load_and_display_community_news (int serial)
+{
+  QSettings *settings = resource_manager::get_settings ();
 
-  QVBoxLayout *vlayout = new QVBoxLayout;
-  vlayout->addWidget (browser);
+  bool connect_to_web
+    = (settings
+       ? settings->value ("news/allow_web_connection", true).toBool ()
+       : true);
 
-  w->setLayout (vlayout);
-  w->setWindowTitle (tr ("Octave Release Notes"));
-  w->setWindowIcon (QIcon (_release_notes_icon));
-  w->show ();
-  w->raise ();
-  w->activateWindow ();
+  QString base_url = "http://octave.org";
+  QString page = "community-news.html";
+
+  QThread *worker_thread = new QThread;
+
+  news_reader *reader = new news_reader (base_url, page, serial,
+                                         connect_to_web);
+
+  reader->moveToThread (worker_thread);
+
+  connect (reader, SIGNAL (display_news_signal (const QString&)),
+           this, SLOT (display_community_news (const QString&)));
+
+  connect (worker_thread, SIGNAL (started (void)),
+           reader, SLOT (process ()));
+
+  connect (reader, SIGNAL (finished (void)), worker_thread, SLOT (quit ()));
+
+  connect (reader, SIGNAL (finished (void)), reader, SLOT (deleteLater ()));
+
+  connect (worker_thread, SIGNAL (finished (void)),
+           worker_thread, SLOT (deleteLater ()));
+
+  worker_thread->start ();
+}
+
+void
+main_window::display_community_news (const QString& news)
+{
+  if (! community_news_window)
+    {
+      community_news_window = new QWidget;
+
+      QTextBrowser *browser = new QTextBrowser (community_news_window);
+
+      browser->setHtml (news);
+      browser->setObjectName ("OctaveNews");
+      browser->setOpenExternalLinks (true);
+
+      QVBoxLayout *vlayout = new QVBoxLayout;
+
+      vlayout->addWidget (browser);
+
+      community_news_window->setLayout (vlayout);
+      community_news_window->setWindowTitle (tr ("Octave Community News"));
+      community_news_window->resize (640, 480);
+      int win_x = QApplication::desktop ()->width ();
+      int win_y = QApplication::desktop ()->height ();
+      community_news_window->move ((win_x - community_news_window->width ())/2,
+                                   (win_y - community_news_window->height ())/2);
+    }
+
+  if (! community_news_window->isVisible ())
+    community_news_window->show ();
+  else if (community_news_window->isMinimized ())
+    community_news_window->showNormal ();
+
+  // same icon as release notes
+  community_news_window->setWindowIcon (QIcon (_release_notes_icon));
+
+  community_news_window->raise ();
+  community_news_window->activateWindow ();
 }
 
 void
@@ -397,7 +635,7 @@ main_window::notice_settings (const QSettings *settings)
   else
     _release_notes_icon = ":/actions/icons/logo.png";
 
-  int icon_size = settings->value ("toolbar_icon_size",24).toInt ();
+  int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
   resource_manager::update_network_settings ();
@@ -446,7 +684,7 @@ void
 main_window::browse_for_directory (void)
 {
   QString dir
-    = QFileDialog::getExistingDirectory (this, tr ("Set working directory"), 0,
+    = QFileDialog::getExistingDirectory (this, tr ("Browse directories"), 0,
                                          QFileDialog::DontUseNativeDialog);
 
   set_current_working_directory (dir);
@@ -647,21 +885,23 @@ main_window::set_window_layout (QSettings *settings)
 
       if (! name.isEmpty ())
         {
-          // If floating, make window from widget.
           bool floating = settings->value
               ("DockWidgets/" + name + "Floating", false).toBool ();
+          bool visible = settings->value
+              ("DockWidgets/" + name + "Visible", true).toBool ();
+
+#if defined (Q_OS_WIN32)
+          // If floating, make window from widget.
           if (floating)
             widget->make_window ();
           else if (! widget->parent ())  // should not be floating but is
             widget->make_widget (false); // no docking, just reparent
-
+#else
           // restore geometry
           QVariant val = settings->value ("DockWidgets/" + name);
           widget->restoreGeometry (val.toByteArray ());
-
+#endif
           // make widget visible if desired
-          bool visible = settings->value
-              ("DockWidgets/" + name + "Visible", true).toBool ();
           if (floating && visible)              // floating and visible
             float_and_visible.append (widget);  // not show before main win
           else
@@ -672,13 +912,30 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
+#if ! defined (Q_OS_WIN32)
+  // show main first but minimized to avoid flickering,
+  // otherwise the name of a floating widget is shown in a global menu bar
+  showMinimized ();
+  // hide again, otherwise the geometry is not exactly restored
+  hide ();
+#endif
+  // restore geomoetry of main window
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
-  show ();  // main window is ready and can be shown (as first window)
+  // show main window
+  show ();
 
   // show floating widgets after main win to ensure "Octave" in central menu
   foreach (octave_dock_widget *widget, float_and_visible)
-    widget->setVisible (true);
+    {
+#if ! defined (Q_OS_WIN32)
+      widget->make_window ();
+#endif
+      if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())
+        widget->showMinimized ();
+      else
+        widget->setVisible (true);
+    }
 
 }
 
@@ -916,7 +1173,6 @@ main_window::construct (void)
                   | QMainWindow::AllowNestedDocks
                   | QMainWindow::AllowTabbedDocks);
 
-  addDockWidget (Qt::RightDockWidgetArea, news_window);
   addDockWidget (Qt::RightDockWidgetArea, command_window);
   addDockWidget (Qt::RightDockWidgetArea, doc_browser_window);
   tabifyDockWidget (command_window, doc_browser_window);
@@ -976,9 +1232,7 @@ main_window::construct (void)
 void
 main_window::construct_octave_qt_link (void)
 {
-  _octave_main_thread = new octave_main_thread ();
-
-  _octave_qt_link = new octave_qt_link (_octave_main_thread);
+  _octave_qt_link = new octave_qt_link ();
 
   connect (_octave_qt_link, SIGNAL (exit_signal (int)),
            this, SLOT (exit (int)));
@@ -1059,6 +1313,9 @@ main_window::construct_octave_qt_link (void)
            SLOT (handle_rename_variable_request (const QString&,
                                                  const QString&)));
 
+  connect (command_window, SIGNAL (interrupt_signal (void)),
+           _octave_qt_link, SLOT (terminal_interrupt (void)));
+
   _octave_qt_link->execute_interpreter ();
 
   octave_link::connect_link (_octave_qt_link);
@@ -1102,7 +1359,7 @@ main_window::construct_file_menu (QMenuBar *p)
   file_menu->addSeparator ();
 
   QAction *load_workspace_action
-    = file_menu->addAction (tr ("Load workspace"));
+    = file_menu->addAction (tr ("Load Workspace"));
 
   QAction *save_workspace_action
     = file_menu->addAction (tr ("Save Workspace As"));
@@ -1146,8 +1403,9 @@ main_window::construct_new_menu (QMenu *p)
                            tr ("Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  QAction *new_function_action = new_menu->addAction (tr ("Function"));
-  new_function_action->setEnabled (true);
+  _new_function_action = new_menu->addAction (tr ("Function"));
+  _new_function_action->setEnabled (true);
+  _new_function_action->setShortcutContext (Qt::ApplicationShortcut);
 
   QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
   new_figure_action->setEnabled (true);
@@ -1156,7 +1414,7 @@ main_window::construct_new_menu (QMenu *p)
   connect (_new_script_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_script ()));
 
-  connect (new_function_action, SIGNAL (triggered ()),
+  connect (_new_function_action, SIGNAL (triggered ()),
            editor_window, SLOT (request_new_function ()));
 #endif
 
@@ -1252,11 +1510,11 @@ main_window::construct_debug_menu (QMenuBar *p)
                         Qt::Key_F10);
 
   _debug_step_into = construct_debug_menu_item
-                       (":/actions/icons/db_step_in.png", tr ("Step in"),
+                       (":/actions/icons/db_step_in.png", tr ("Step In"),
                         Qt::Key_F11);
 
   _debug_step_out = construct_debug_menu_item
-                      (":/actions/icons/db_step_out.png", tr ("Step out"),
+                      (":/actions/icons/db_step_out.png", tr ("Step Out"),
                        Qt::ShiftModifier + Qt::Key_F11);
 
   _debug_continue = construct_debug_menu_item
@@ -1335,10 +1593,6 @@ main_window::construct_window_menu (QMenuBar *p)
                                        (window_menu, tr ("Show Documentation"),
                                         true, ctrl_shift + Qt::Key_5);
 
-  QAction *show_news_action = construct_window_menu_item
-                              (window_menu, tr ("Show News Window"), true,
-                               ctrl_shift + Qt::Key_6);
-
   window_menu->addSeparator ();
 
   QAction *command_window_action = construct_window_menu_item
@@ -1364,9 +1618,6 @@ main_window::construct_window_menu (QMenuBar *p)
   QAction *documentation_action = construct_window_menu_item
                                   (window_menu, tr ("Documentation"), false,
                                    ctrl + Qt::Key_5);
-
-  QAction *news_action = construct_window_menu_item
-                         (window_menu, tr ("News"), false, ctrl + Qt::Key_6);
 
   window_menu->addSeparator ();
 
@@ -1405,12 +1656,6 @@ main_window::construct_window_menu (QMenuBar *p)
            show_editor_action, SLOT (setChecked (bool)));
 #endif
 
-  connect (show_news_action, SIGNAL (toggled (bool)),
-           news_window, SLOT (setVisible (bool)));
-
-  connect (news_window, SIGNAL (active_changed (bool)),
-           show_news_action, SLOT (setChecked (bool)));
-
   connect (show_documentation_action, SIGNAL (toggled (bool)),
            doc_browser_window, SLOT (setVisible (bool)));
 
@@ -1433,9 +1678,6 @@ main_window::construct_window_menu (QMenuBar *p)
   connect (editor_action, SIGNAL (triggered ()),
            editor_window, SLOT (focus ()));
 #endif
-
-  connect (news_action, SIGNAL (triggered ()),
-           news_window, SLOT (focus ()));
 
   connect (documentation_action, SIGNAL (triggered ()),
            doc_browser_window, SLOT (focus ()));
@@ -1525,7 +1767,7 @@ main_window::construct_news_menu (QMenuBar *p)
            this, SLOT (display_release_notes ()));
 
   connect (current_news_action, SIGNAL (triggered ()),
-           news_window, SLOT (focus ()));
+           this, SLOT (load_and_display_community_news ()));
 }
 
 void
@@ -1784,6 +2026,9 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       _open_action->setShortcut (QKeySequence::Open);
       _new_script_action->setShortcut (QKeySequence::New);
+      _new_function_action->setShortcut (Qt::ControlModifier
+                                       + Qt::ShiftModifier
+                                       + Qt::Key_N);
 
       _exit_action->setShortcut (QKeySequence::Quit);
 
@@ -1799,6 +2044,7 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       _open_action->setShortcut (no_key);
       _new_script_action->setShortcut (no_key);
+      _new_function_action->setShortcut (no_key);
 
       _exit_action->setShortcut (no_key);
 

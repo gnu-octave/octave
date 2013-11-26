@@ -56,7 +56,7 @@
 ## s = [ "ab"; "cde" ];
 ## strcat (s, s, s)
 ##     @result{}
-##         "ab ab ab "
+##         "ababab   "
 ##         "cdecdecde"
 ## @end group
 ## @end example

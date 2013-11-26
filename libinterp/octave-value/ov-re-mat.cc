@@ -250,8 +250,8 @@ octave_matrix::sparse_matrix_value (bool) const
 SparseComplexMatrix
 octave_matrix::sparse_complex_matrix_value (bool) const
 {
-  // FIXME Need a SparseComplexMatrix (Matrix) constructor to make
-  // this function more efficient. Then this should become
+  // FIXME: Need a SparseComplexMatrix (Matrix) constructor to make
+  // this function more efficient.  Then this should become
   // return SparseComplexMatrix (matrix.matrix_value ());
   return SparseComplexMatrix (sparse_matrix_value ());
 }

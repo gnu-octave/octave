@@ -31,9 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QThread>
 
 #include "octave-link.h"
-#include "octave-main-thread.h"
+#include "octave-interpreter.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
@@ -52,7 +53,7 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (octave_main_thread *mt);
+  octave_qt_link (void);
 
   ~octave_qt_link (void);
 
@@ -61,6 +62,7 @@ public:
   bool do_exit (int status);
 
   bool do_edit_file (const std::string& file);
+  bool do_prompt_new_edit_file (const std::string& file);
 
   int do_message_dialog (const std::string& dlg, const std::string& msg,
                          const std::string& title);
@@ -127,6 +129,7 @@ public:
   void do_show_preferences (void);
 
   void do_show_doc (const std::string& file);
+
 private:
 
   // No copying!
@@ -139,9 +142,13 @@ private:
   void do_delete_debugger_pointer (const std::string& file, int line);
 
   // Thread running octave_main.
-  octave_main_thread *main_thread;
+  QThread *main_thread;
+
+  octave_interpreter *command_interpreter;
 
 signals:
+
+  void execute_interpreter_signal (void);
 
   void exit_signal (int status);
 
@@ -177,6 +184,10 @@ signals:
   void show_preferences_signal (void);
 
   void show_doc_signal (const QString &file);
+
+public slots:
+
+  void terminal_interrupt (void);
 };
 
 #endif

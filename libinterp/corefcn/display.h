@@ -27,7 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 
 class Matrix;
 
-class display_info
+class
+OCTINTERP_API
+display_info
 {
 protected:
 

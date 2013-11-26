@@ -112,6 +112,10 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
   return tmp;
 }
 
+// Templated function because the user can be stubborn enough to request
+// a cell array as an output even in these cases where the output fits
+// in an ordinary array
+template<typename BNDA, typename NDA>
 static octave_value_list
 try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 {
@@ -125,49 +129,49 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
   if (name == "isempty")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
         result(count) = f_args.elem (count).is_empty ();
       retval(0) = result;
     }
   else if (name == "islogical")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_bool_type ();
       retval(0) = result;
     }
   else if (name == "isnumeric")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_numeric_type ();
       retval(0) = result;
     }
   else if (name == "isreal")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_real_type ();
       retval(0) = result;
     }
   else if (name == "length")
     {
-      NDArray result (f_args.dims ());
+      NDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).length ());
       retval(0) = result;
     }
   else if (name == "ndims")
     {
-      NDArray result (f_args.dims ());
+      NDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).ndims ());
       retval(0) = result;
     }
   else if (name == "numel" || name == "prodofsize")
     {
-      NDArray result (f_args.dims ());
+      NDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).numel ());
       retval(0) = result;
@@ -183,7 +187,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
           if (! error_state)
             {
-              NDArray result (f_args.dims ());
+              NDA result (f_args.dims ());
               for (octave_idx_type count = 0; count < k; count++)
                 {
                   dim_vector dv = f_args.elem (count).dims ();
@@ -203,7 +207,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
       if (nargin == 3)
         {
           std::string class_name = args(2).string_value ();
-          boolNDArray result (f_args.dims ());
+          BNDA result (f_args.dims ());
           for (octave_idx_type count = 0; count < k; count++)
             result(count) = (f_args.elem (count).class_name () == class_name);
 
@@ -315,9 +319,7 @@ Return 1 for elements of @var{class}.\n\
 \n\
 Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
 in the form of an inline function, function handle, or the name of a\n\
-function (in a character string).  In the case of a character string\n\
-argument, the function must accept a single argument named @var{x}, and\n\
-it must return a string value.  The function can take one or more arguments,\n\
+function (in a character string). The function can take one or more arguments,\n\
 with the inputs arguments given by @var{C}, @var{D}, etc.  Equally the\n\
 function can return one or more output arguments.  For example:\n\
 \n\
@@ -427,7 +429,7 @@ v = cellfun (@@det, a); # faster\n\
 
   if (func.is_string ())
     {
-      retval = try_cellfun_internal_ops (args, nargin);
+      retval = try_cellfun_internal_ops<boolNDArray,NDArray>(args, nargin);
 
       if (error_state || ! retval.empty ())
         return retval;
@@ -464,6 +466,11 @@ v = cellfun (@@det, a); # faster\n\
       || func.is_function ())
     {
 
+      bool uniform_output = true;
+      octave_value error_handler;
+
+      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+
       // The following is an optimisation because the symbol table can
       // give a more specific function class, so this can result in
       // fewer polymorphic function calls as the function gets called
@@ -491,7 +498,15 @@ v = cellfun (@@det, a); # faster\n\
                 //Try first the optimised code path for built-in functions
                 octave_value_list tmp_args = args;
                 tmp_args(0) = name;
-                retval = try_cellfun_internal_ops (tmp_args, nargin);
+
+                if (uniform_output)
+                  retval =
+                    try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args,
+                                                                    nargin);
+                else
+                  retval =
+                    try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
+
                 if (error_state || ! retval.empty ())
                   return retval;
               }
@@ -503,11 +518,6 @@ v = cellfun (@@det, a); # faster\n\
           }
       }
     nevermind:
-
-      bool uniform_output = true;
-      octave_value error_handler;
-
-      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
       if (error_state)
         return octave_value_list ();
@@ -1028,6 +1038,12 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (a, {fullfile("a","b"), fullfile("e","f")});
 %! assert (b, {"c", "g"});
 %! assert (c, {".d", ".h"});
+
+## Tests for bug #40467
+%!assert (cellfun (@isreal, {1 inf nan []}), [true, true, true, true]);
+%!assert (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true});
+%!assert (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false]);
+%!assert (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false});
 
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)

@@ -1884,12 +1884,19 @@ octave_fcn_binder::maybe_binder (const octave_value& f)
   octave_user_function *usr_fcn = f.user_function_value (false);
   tree_parameter_list *param_list = usr_fcn ? usr_fcn->parameter_list () : 0;
 
-  // Verify that the body is a single expression (always true in theory).
+  tree_statement_list *cmd_list = 0;
+  tree_expression *body_expr = 0;
 
-  tree_statement_list *cmd_list = usr_fcn ? usr_fcn->body () : 0;
-  tree_expression *body_expr = (cmd_list->length () == 1
-                                ? cmd_list->front ()->expression () : 0);
-
+  if (usr_fcn)
+    {
+      cmd_list = usr_fcn->body ();
+      if (cmd_list)
+        {
+          // Verify that body is a single expression (always true in theory).
+          body_expr = (cmd_list->length () == 1
+                       ? cmd_list->front ()->expression () : 0);
+        }
+    }
 
   if (body_expr && body_expr->is_index_expression ()
       && ! (param_list && param_list->takes_varargs ()))

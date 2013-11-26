@@ -109,6 +109,7 @@ private:
 
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
   QAction *_dock_action;
+  bool _floating;
 
 };
 

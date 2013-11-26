@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStyle>
 #include <QTextStream>
 #include <QProcess>
+#include <QInputDialog>
 
 #include "octave-link.h"
 #include "utils.h"
@@ -131,6 +132,11 @@ file_editor::handle_exit_debug_mode (void)
 void
 file_editor::request_new_file (const QString& commands)
 {
+  // Custom editor? If yes, we can only call the editor without passing
+  // some initial contents and even without being sure a new file is opened
+  if (call_custom_editor ())
+    return;
+
   // New file isn't a file_editor_tab function since the file
   // editor tab has yet to be created and there is no object to
   // pass a signal to.  Hence, functionality is here.
@@ -151,22 +157,39 @@ file_editor::request_new_script (const QString& commands)
 }
 
 void
-file_editor::request_new_function (const QString& commands)
+file_editor::request_new_function (bool)
 {
-  QString text = commands;
+  bool ok;
+  // get the name of the new function
+  QString new_name  = QInputDialog::getText (this, tr ("New Function"),
+                      tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
+  if (ok && new_name.length () > 0)
+    {
+      // append suffix if it not already exists
+      if (new_name.rightRef (2) != ".m")
+        new_name.append (".m");
+      // check whether new files are created without prompt
+      QSettings *settings = resource_manager::get_settings ();
+      if (! settings->value ("editor/create_new_file",false).toBool ())
+        {
+          // no, so enable this settings and wait for end of new file loading
+          settings->setValue ("editor/create_new_file",true);
+          connect (this, SIGNAL (file_loaded_signal ()),
+                   this, SLOT (restore_create_file_setting ()));
+        }
+      // start the edit command
+      emit execute_command_in_terminal_signal ("edit " + new_name);
+    }
+}
 
-  if (text.isEmpty ())
-    text = "## Copyright (C)\n"
-      "\n"
-      "## -*- texinfo -*-\n"
-      "## @deftypefn {Function File} {[outputs] =} unamed_function (inputs)\n"
-      "## @end deftypefn\n"
-      "\n"
-      "function [outputs] = unnamed_function (inputs)\n"
-      "\n"
-      "endfunction\n";
-
-  request_new_file (text);
+void
+file_editor::restore_create_file_setting ()
+{
+  // restore the new files creation setting
+  QSettings *settings = resource_manager::get_settings ();
+  settings->setValue ("editor/create_new_file",false);
+  disconnect (this, SIGNAL (file_loaded_signal ()),
+              this, SLOT (restore_create_file_setting ()));
 }
 
 void
@@ -218,28 +241,42 @@ file_editor::find_tab_widget (const QString& file) const
   return retval;
 }
 
+bool
+file_editor::call_custom_editor (const QString& file_name, int line)
+{
+  // Check if the user wants to use a custom file editor.
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings->value ("useCustomFileEditor").toBool ())
+    {
+      QString editor = settings->value ("customFileEditor").toString ();
+      editor.replace ("%f", file_name);
+      editor.replace ("%l", QString::number (line));
+
+      QProcess::startDetached (editor);
+
+      if (line < 0 && ! file_name.isEmpty ())
+        handle_mru_add_file (QFileInfo (file_name).canonicalFilePath ());
+
+      return true;
+    }
+
+  return false;
+}
+
 void
 file_editor::request_open_file (const QString& openFileName, int line,
                                 bool debug_pointer,
                                 bool breakpoint_marker, bool insert)
 {
-  // Check if the user wants to use a custom file editor.
-  QSettings *settings = resource_manager::get_settings ();
-  if (settings->value ("useCustomFileEditor").toBool ())
-    {
-      QString editor = settings->value ("customFileEditor").toString ();
-      editor.replace ("%f", openFileName);
-      editor.replace ("%l", QString::number (line));
-      QProcess::startDetached (editor);
-      if (line < 0)
-        handle_mru_add_file (QDir::cleanPath (openFileName));
-      return;
-    }
+  if (call_custom_editor (openFileName, line))
+    return;   // custom editor called
 
   if (openFileName.isEmpty ())
     {
-      // ??  Not sure this will happen.  This routine isn't even called
-      // if the user hasn't selected a file.
+      // This happens if edit is calles without an argument
+      // Open eitor with empty edit area instead (as new file would do)
+      request_new_file ("");
     }
   else
     {
@@ -266,6 +303,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
             }
 
           emit fetab_set_focus (tab);
+          set_focus ();
         }
       else
         {
@@ -319,8 +357,8 @@ file_editor::request_open_file (const QString& openFileName, int line,
                       // File does not exist, should it be crated?
                       QMessageBox *msgBox;
                       int answer;
-                      if (settings->value ("editor/create_new_file",
-                                           false).toBool ())
+                      QSettings *settings = resource_manager::get_settings ();
+                      if (settings->value ("editor/create_new_file", false).toBool ())
                         {
                           answer = QMessageBox::Yes;
                         }
@@ -366,6 +404,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
 
           // really show editor and the current editor tab
           set_focus ();
+          emit file_loaded_signal ();
         }
     }
 }
@@ -490,7 +529,6 @@ void
 file_editor::handle_edit_file_request (const QString& file)
 {
   request_open_file (file);
-  set_focus ();
 }
 
 void
@@ -751,6 +789,7 @@ file_editor::handle_tab_remove_request (void)
             {
               _tab_widget->removeTab (i);
               delete fileEditorTab;
+              break;
             }
         }
     }
@@ -801,7 +840,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
 void
 file_editor::notice_settings (const QSettings *settings)
 {
-  int icon_size = settings->value ("toolbar_icon_size", 24).toInt ();
+  int icon_size = settings->value ("toolbar_icon_size", 16).toInt ();
   _tool_bar->setIconSize (QSize (icon_size, icon_size));
   // Relay signal to file editor tabs.
   emit fetab_settings_changed (settings);
@@ -829,6 +868,7 @@ file_editor::construct (void)
 
   _menu_bar = new QMenuBar (editor_widget);
   _tool_bar = new QToolBar (editor_widget);
+  _tool_bar->setMovable (true);
   _tab_widget = new QTabWidget (editor_widget);
   _tab_widget->setTabsClosable (true);
 
@@ -877,16 +917,16 @@ file_editor::construct (void)
 
   QAction *next_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_next.png"),
-                   tr ("&Next breakpoint"), _tool_bar);
+                   tr ("&Next Breakpoint"), _tool_bar);
   QAction *previous_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_prev.png"),
-                   tr ("Pre&vious breakpoint"), _tool_bar);
+                   tr ("Pre&vious Breakpoint"), _tool_bar);
   QAction *toggle_breakpoint_action
     = new QAction (QIcon (":/actions/icons/bp_toggle.png"),
-                   tr ("Toggle &breakpoint"), _tool_bar);
+                   tr ("Toggle &Breakpoint"), _tool_bar);
   QAction *remove_all_breakpoints_action
     = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
-                   tr ("&Remove All breakpoints"), _tool_bar);
+                   tr ("&Remove All Breakpoints"), _tool_bar);
 
   _comment_selection_action
     = new QAction (tr ("&Comment"), _tool_bar);
@@ -897,7 +937,7 @@ file_editor::construct (void)
                               tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
-                             tr ("Save File And Run"), _tool_bar);
+                             tr ("Save File and Run"), _tool_bar);
 
   _goto_line_action = new QAction (tr ("Go&to Line"), _tool_bar);
 
@@ -959,6 +999,8 @@ file_editor::construct (void)
     _mru_file_menu->addAction (_mru_file_actions[i]);
 
   fileMenu->addAction (new_action);
+  fileMenu->addAction (QIcon (), tr ("New &Function"),
+                      this, SLOT (request_new_function (bool)));
   fileMenu->addAction (open_action);
   fileMenu->addMenu (_mru_file_menu);
   fileMenu->addSeparator ();
@@ -1149,6 +1191,9 @@ file_editor::construct (void)
 
   connect (_tab_widget, SIGNAL (currentChanged (int)),
            this, SLOT (active_tab_changed (int)));
+
+  connect (this, SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
   resize (500, 400);
   setWindowIcon (QIcon (":/actions/icons/logo.png"));

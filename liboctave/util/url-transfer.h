@@ -31,7 +31,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-class base_url_transfer
+class
+OCTAVE_API
+base_url_transfer
 {
 private:
 
@@ -158,7 +160,9 @@ private:
   base_url_transfer& operator = (const base_url_transfer&);
 };
 
-class url_transfer
+class
+OCTAVE_API
+url_transfer
 {
 public:
 

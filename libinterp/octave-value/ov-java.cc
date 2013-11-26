@@ -241,7 +241,7 @@ set_dll_directory (const std::string& dir = "")
 {
   typedef BOOL (WINAPI *dllfcn_t) (LPCTSTR path);
 
-  static dllfcn_t dllfcn = NULL;
+  static dllfcn_t dllfcn = 0;
   static bool first = true;
 
   if (! dllfcn && first)
@@ -253,7 +253,7 @@ set_dll_directory (const std::string& dir = "")
     }
 
   if (dllfcn)
-    dllfcn (dir.empty () ? NULL : dir.c_str ());
+    dllfcn (dir.empty () ? 0 : dir.c_str ());
 }
 #endif
 
@@ -424,7 +424,7 @@ initialize_jvm (void)
     return;
 
   JNIEnv *current_env;
-  const char *static_locale = setlocale (LC_ALL, NULL);
+  const char *static_locale = setlocale (LC_ALL, 0);
   const std::string locale (static_locale);
 
 #if defined (__WIN32__)
@@ -433,7 +433,16 @@ initialize_jvm (void)
   std::string jvm_lib_path;
   std::string old_cwd;
 
-  if (hMod == NULL)
+  if (hMod)
+    {
+      // JVM seems to be already loaded, better to use that DLL instead
+      // of looking in the registry, to avoid opening a different JVM.
+      jvm_lib_path = get_module_filename (hMod);
+
+      if (jvm_lib_path.empty ())
+        throw std::string ("unable to find Java Runtime Environment");
+    }
+  else
     {
       // In windows, find the location of the JRE from the registry
       // and load the symbol from the dll.
@@ -471,15 +480,6 @@ initialize_jvm (void)
           set_dll_directory (jvm_bin_path);
           octave_env::chdir (jvm_bin_path);
         }
-    }
-  else
-    {
-      // JVM seems to be already loaded, better to use that DLL instead
-      // of looking in the registry, to avoid opening a different JVM.
-      jvm_lib_path = get_module_filename (hMod);
-
-      if (jvm_lib_path.empty ())
-        throw std::string ("unable to find Java Runtime Environment");
     }
 
 #else  // Not Win32 system
@@ -544,7 +544,7 @@ initialize_jvm (void)
           JavaVMAttachArgs vm_args;
           vm_args.version = JNI_VERSION_1_2;
           vm_args.name = const_cast<char *> ("octave");
-          vm_args.group = NULL;
+          vm_args.group = 0;
           if (jvm->AttachCurrentThread (reinterpret_cast<void **> (&current_env),
                                         &vm_args) < 0)
             throw std::string ("JVM internal error, unable to attach octave to existing JVM");
@@ -1595,7 +1595,7 @@ octave_java::dims (void) const
 JNIEnv *
 octave_java::thread_jni_env (void)
 {
-  JNIEnv *env = NULL;
+  JNIEnv *env = 0;
 
   if (jvm)
     jvm->GetEnv (reinterpret_cast<void **> (&env), JNI_VERSION_1_2);

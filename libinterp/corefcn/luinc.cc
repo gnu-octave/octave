@@ -186,7 +186,7 @@ values of @var{p} @var{q} as vector values.\n\
             }
         }
 
-      // FIXME Add code for zero-level factorization
+      // FIXME: Add code for zero-level factorization
       if (zero_level)
         error ("luinc: zero-level factorization not implemented");
 

@@ -1773,3 +1773,37 @@ $
 @end group
 @end example
 
+It is worth noting that, if only builtin funcions are to be calle from 
+a C++ standalone program, then it does not need to initialize the 
+interpreter to do so. The general rule is that, for a builtin 
+function named @code{function_name} in the interpreter, there will be
+a C++ function named @code{Ffunction_name} (note the prepended capital 
+@code{F}) accessible in the C++ API. The declarations for all builtin 
+functions are collected in the header file @code{builtin-defun-decls.h}.
+This feature should be used with care as the list of built-in functions can change.  
+No guarantees can be made that a function that is currently built in won't be implemented 
+as a .m file or as a dynamically linked function in the future.
+An example of how to call builtin functions from C++ can be seen in the code
+
+@example
+@EXAMPLEFILE(standalonebuiltin.cc)
+@end example
+
+@noindent
+which, again, is compiled and run as a standalone application with
+
+@example
+@group
+$ mkoctfile --link-stand-alone standalonebuiltin.cc -o standalonebuiltin
+$ ./standalonebuiltin 
+This is a matrix:
+ 11 12
+ 21 22
+
+This is the norm of the matrix:
+34.4952
+
+@end group
+@end example
+
+

@@ -80,7 +80,7 @@ function varargout = __imread__ (filename, varargin)
 
   ## Check key/value options.
   indexes = cellfun ("isclass", varargin, "char");
-  indexes(indexes) &= ismember (varargin(indexes), {"frames", "index"});
+  indexes(indexes) &= ismember (tolower (varargin(indexes)), {"frames", "index"});
   indexes = find (indexes);
   if (indexes)
     options.index = varargin{indexes+1};
@@ -92,13 +92,20 @@ function varargout = __imread__ (filename, varargin)
 
   try
     ## Use information from the first image to be read to set defaults.
-    info = __magick_ping__ (fn, options.index(1));
+    if (ischar (options.index) && strcmpi (options.index, "all"))
+      info = __magick_ping__ (fn, 1);
+    else
+      info = __magick_ping__ (fn, options.index(1));
+    endif
 
     ## Set default for options.
     options.region = {1:1:info.rows 1:1:info.columns};
 
     for idx = offset:2:(numel (varargin) - offset + 1)
       switch (tolower (varargin{idx}))
+
+        case {"frames", "index"}
+          ## Do nothing. This options were already processed before the loop.
 
         case "pixelregion",
           options.region = varargin{idx+1};

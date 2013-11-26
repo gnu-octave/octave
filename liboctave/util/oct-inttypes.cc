@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <fpucw.h>
+
 #include "lo-error.h"
 
 #include "oct-inttypes.h"
@@ -50,7 +52,140 @@ DECLARE_OCTAVE_INT_TYPENAME (uint16_t, "uint16")
 DECLARE_OCTAVE_INT_TYPENAME (uint32_t, "uint32")
 DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
 
-#ifndef OCTAVE_INT_USE_LONG_DOUBLE
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+
+#define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T) \
+  template <class xop> \
+  bool \
+  octave_int_cmp_op::external_mop (double x, T y) \
+  { \
+     DECL_LONG_DOUBLE_ROUNDING \
+   \
+     BEGIN_LONG_DOUBLE_ROUNDING (); \
+   \
+     bool retval = xop::op (static_cast<long double> (x), \
+                            static_cast<long double> (y)); \
+   \
+     END_LONG_DOUBLE_ROUNDING (); \
+   \
+     return retval; \
+  } \
+   \
+  template <class xop> \
+  bool \
+  octave_int_cmp_op::external_mop (T x, double y) \
+  { \
+     DECL_LONG_DOUBLE_ROUNDING \
+   \
+     BEGIN_LONG_DOUBLE_ROUNDING (); \
+   \
+     bool retval = xop::op (static_cast<long double> (x), \
+                            static_cast<long double> (y)); \
+   \
+     END_LONG_DOUBLE_ROUNDING (); \
+   \
+     return retval; \
+  }
+
+DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (int64_t)
+DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (uint64_t)
+
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T) \
+  template OCTAVE_API bool \
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (double, T); \
+  template OCTAVE_API bool \
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (T, double)
+
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T) \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ne, T)
+
+INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (int64_t);
+INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (uint64_t);
+
+uint64_t
+octave_external_uint64_uint64_mul (uint64_t x, uint64_t y)
+{
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
+  uint64_t retval = octave_int_arith_base<uint64_t, false>::mul_internal (x, y);
+
+  END_LONG_DOUBLE_ROUNDING ();
+
+  return retval;
+}
+
+int64_t
+octave_external_int64_int64_mul (int64_t x, int64_t y)
+{
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
+  int64_t retval = octave_int_arith_base<int64_t, true>::mul_internal (x, y);
+
+  END_LONG_DOUBLE_ROUNDING ();
+
+  return retval;
+}
+
+// Note that if we return long double it is apparently possible for
+// truncation to happen at the point of storing the result in retval,
+// which can happen after we end long double rounding.  Attempt to avoid
+// that problem by storing the full precision temporary value in the
+// integer value before we end the long double rounding mode.
+// Similarly, the conversion from the 64-bit integer type to long double
+// must also occur in long double rounding mode.
+
+#define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME) \
+  T \
+  external_double_ ## T ## _ ## NAME (double x, T y) \
+  { \
+    DECL_LONG_DOUBLE_ROUNDING \
+ \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+ \
+    T retval = T (x OP static_cast<long double> (y.value ())); \
+ \
+    END_LONG_DOUBLE_ROUNDING (); \
+ \
+    return retval; \
+  } \
+ \
+  T \
+  external_ ## T ## _double_ ## NAME (T x, double y) \
+  { \
+    DECL_LONG_DOUBLE_ROUNDING \
+ \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+ \
+    T retval = T (static_cast<long double> (x.value ()) OP y); \
+ \
+    END_LONG_DOUBLE_ROUNDING (); \
+ \
+    return retval; \
+  }
+
+#define OCTAVE_LONG_DOUBLE_OPS(T) \
+  OCTAVE_LONG_DOUBLE_OP (T, +, add); \
+  OCTAVE_LONG_DOUBLE_OP (T, -, sub); \
+  OCTAVE_LONG_DOUBLE_OP (T, *, mul); \
+  OCTAVE_LONG_DOUBLE_OP (T, /, div)
+
+OCTAVE_LONG_DOUBLE_OPS(octave_int64);
+OCTAVE_LONG_DOUBLE_OPS(octave_uint64);
+
+#endif
+
+#else
 
 // Define comparison operators
 
@@ -142,7 +277,7 @@ octave_int_cmp_op::emulate_mop (double x, int64_t y)
 
 template <>
 uint64_t
-octave_int_arith_base<uint64_t, false>::mul (uint64_t x, uint64_t y)
+octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
 {
   // Get upper words
   uint64_t ux = x >> 32, uy = y >> 32;
@@ -185,7 +320,7 @@ overflow:
 
 template <>
 int64_t
-octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
+octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 {
   // The signed case is far worse. The problem is that
   // even if neither integer fits into signed 32-bit range, the result may

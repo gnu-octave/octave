@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "cmd-edit.h"
@@ -302,7 +303,11 @@ gnu_history::do_read (const std::string& f, bool must_exist)
       int status = ::octave_read_history (f.c_str ());
 
       if (status != 0 && must_exist)
-        error (status);
+        {
+          std::string msg = "reading file '" + f + "'";
+
+          error (status, msg);
+        }
       else
         {
           lines_in_file = do_where ();
@@ -326,7 +331,13 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
       int status = ::octave_read_history_range (f.c_str (), from, to);
 
       if (status != 0 && must_exist)
-        error (status);
+        {
+          std::ostringstream buf;
+          buf << "reading lines " << from << " to " << to
+              << " from file '" << f << "'";
+
+          error (status, buf.str ());
+        }
       else
         {
           lines_in_file = do_where ();
@@ -353,7 +364,11 @@ gnu_history::do_write (const std::string& f_arg) const
           int status = ::octave_write_history (f.c_str ());
 
           if (status != 0)
-            error (status);
+            {
+              std::string msg = "writing file '" + f + "'";
+
+              error (status, msg);
+            }
         }
       else
         error ("gnu_history::write: missing file name");
@@ -392,7 +407,11 @@ gnu_history::do_append (const std::string& f_arg)
                     = ::octave_append_history (lines_this_session, f.c_str ());
 
                   if (status != 0)
-                    error (status);
+                    {
+                      std::string msg = "appending to file '" + f_arg + "'";
+
+                      error (status, msg);
+                    }
                   else
                     lines_in_file += lines_this_session;
 
@@ -995,9 +1014,13 @@ command_history::do_clean_up_and_save (const std::string& f_arg, int)
 }
 
 void
-command_history::error (int err_num) const
+command_history::error (int err_num, const std::string& msg) const
 {
-  (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+  if (msg.empty ())
+    (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+  else
+    (*current_liboctave_error_handler) ("%s: %s", msg.c_str (),
+                                        gnulib::strerror (err_num));
 }
 
 void

@@ -405,8 +405,8 @@ endfunction
 %!error <Abs err 1 exceeds tol> assert (3, 4)
 %!assert (3+eps, 3, eps)
 %!assert (3, 3+eps, eps)
-%!error <Abs err 4.4409e-16 exceeds tol> assert (3+2*eps, 3, eps)
-%!error <Abs err 4.4409e-16 exceeds tol> assert (3, 3+2*eps, eps)
+%!error <Abs err 4.4409e-0?16 exceeds tol> assert (3+2*eps, 3, eps)
+%!error <Abs err 4.4409e-0?16 exceeds tol> assert (3, 3+2*eps, eps)
 
 ## vectors
 %!assert ([1,2,3],[1,2,3]);
@@ -443,9 +443,9 @@ endfunction
 
 ## test relative vs. absolute tolerances
 %!test  assert (0.1+eps, 0.1,  2*eps);
-%!error <Rel err 2.2204e-15 exceeds tol> assert (0.1+eps, 0.1, -2*eps);
+%!error <Rel err 2.2204e-0?15 exceeds tol> assert (0.1+eps, 0.1, -2*eps);
 %!test  assert (100+100*eps, 100, -2*eps);
-%!error <Abs err 2.8422e-14 exceeds tol> assert (100+100*eps, 100,  2*eps);
+%!error <Abs err 2.8422e-0?14 exceeds tol> assert (100+100*eps, 100,  2*eps);
 
 ## Corner case of relative tolerance with 0 divider
 %!error <Abs err 2 exceeds tol 0.1> assert (2, 0, -0.1)

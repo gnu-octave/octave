@@ -99,13 +99,15 @@ signals:
                                    int line = -1);
   void fetab_set_focus (const QWidget* ID);
   void request_settings_dialog (const QString&);
+  void execute_command_in_terminal_signal (const QString&);
+  void file_loaded_signal ();
 
 public slots:
   void focus (void);
 
   void request_new_file (const QString& commands);
   void request_new_script (const QString& commands);
-  void request_new_function (const QString& commands);
+  void request_new_function (bool triggered = true);
   void request_open_file (void);
   void request_close_file (bool);
   void request_close_all_files (bool);
@@ -176,6 +178,7 @@ private slots:
                           bool breakpoint_marker = false, bool insert = true);
   void request_preferences (bool);
   void request_styles_preferences (bool);
+  void restore_create_file_setting ();
 
 private:
 
@@ -183,6 +186,7 @@ private:
   void add_file_editor_tab (file_editor_tab *f, const QString& fn);
   void save_file_as (QWidget *fetabID = 0);
   void mru_menu_update (void);
+  bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
   QWidget *find_tab_widget (const QString& openFileName) const;
 

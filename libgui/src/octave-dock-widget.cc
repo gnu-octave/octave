@@ -21,6 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <QApplication>
 #include <QToolBar>
 #include <QToolButton>
@@ -38,6 +42,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 {
 
   _parent = static_cast<QMainWindow *> (p);     // store main window
+  _floating = false;
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
@@ -104,25 +109,21 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
 octave_dock_widget::~octave_dock_widget ()
 {
   // save state of this dock-widget
-  bool floating = false;
-  bool visible;
   QString name = objectName ();
   QSettings *settings = resource_manager::get_settings ();
 
   settings->beginGroup ("DockWidgets");
 
-  if (!parent ())
-    {
-      // widget is floating (windows), save actual floating geometry
-      floating = true;
-      settings->setValue (name+"_floating_geometry", saveGeometry ());
-    }
-  else  // not floating save docked (normal) geometry
+#if defined (Q_OS_WIN32)
+  if (_floating) // widget is floating (windows), save actual floating geometry
+    settings->setValue (name+"_floating_geometry", geometry ());
+  else           // not floating save docked (normal) geometry
+#endif
     settings->setValue (name, saveGeometry ());
 
-  visible = isVisible ();
-  settings->setValue (name+"Floating", floating);  // store floating state
-  settings->setValue (name+"Visible", visible);    // store visibility
+  settings->setValue (name+"Visible", isVisible ()); // store visibility
+  settings->setValue (name+"Floating", _floating);    // store visibility
+  settings->setValue (name+"_minimized", isMinimized ()); // store minimized
 
   settings->endGroup ();
   settings->sync ();
@@ -161,10 +162,11 @@ octave_dock_widget::make_window ()
 
   QSettings *settings = resource_manager::get_settings ();
 
-  // save the docking area for later redocking
+  // save the docking area and geometry for later redocking
   // FIXME: dockWidgetArea always returns 2
   settings->setValue ("DockWidgets/" + objectName () + "_dock_area",
                       _parent->dockWidgetArea (this));
+  settings->setValue ("DockWidgets/" + objectName (), saveGeometry ());
   settings->sync ();
 
   // remove parent and adjust the (un)dock icon
@@ -172,9 +174,9 @@ octave_dock_widget::make_window ()
   _dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
   _dock_action->setToolTip (tr ("Dock widget"));
 
-  // restore the last geometry when floating
-  restoreGeometry (settings->value ("DockWidgets/" + objectName ()
-                                    + "_floating_geometry").toByteArray ());
+  // restore the last geometry( when floating
+  setGeometry (settings->value ("DockWidgets/" + objectName ()
+                       + "_floating_geometry",QRect(50,100,480,480)).toRect ());
 
 #else
 
@@ -183,6 +185,7 @@ octave_dock_widget::make_window ()
 
 #endif
 
+  _floating = true;
 }
 
 // dock the widget
@@ -195,9 +198,10 @@ octave_dock_widget::make_widget (bool dock)
 
   QSettings *settings = resource_manager::get_settings ();
 
-  // save last floating geometry
-  settings->setValue ("DockWidgets/" + objectName () + "_floating_geometry",
-                      saveGeometry ());
+  // save last floating geometry if widget really was floating
+  if (_floating)
+    settings->setValue ("DockWidgets/" + objectName () + "_floating_geometry",
+                        geometry ());
   settings->sync ();
 
   if (dock)
@@ -209,8 +213,8 @@ octave_dock_widget::make_widget (bool dock)
 
       // FIXME: restoreGeometry is ignored for docked widgets
       //        and its child widget
-      // restoreGeometry (settings->value
-      //        ("DockWidgets/" + objectName ()).toByteArray ());
+      restoreGeometry (settings->value
+             ("DockWidgets/" + objectName ()).toByteArray ());
     }
   else  // only reparent, no docking
     setParent (_parent);
@@ -225,23 +229,21 @@ octave_dock_widget::make_widget (bool dock)
   setWindowFlags (Qt::Widget);
 
 #endif
+
+  _floating = false;
 }
 
 // slot for (un)dock action
 void
-octave_dock_widget::change_floating (bool floating)
+octave_dock_widget::change_floating (bool)
 {
-#if defined (Q_OS_WIN32)
-  if (parent ())
-#else
-  if (floating)
-#endif
+  if (_floating)
+    make_widget ();
+  else
     {
       make_window ();
       focus ();
     }
-  else
-    make_widget ();
 }
 
 // slot for hiding the widget

@@ -1027,7 +1027,7 @@ public:
   void print_with_name (std::ostream& os, const std::string& name) const
   { rep->print_with_name (os, name, true); }
 
-  std::string short_disp (void) const { return rep->short_disp (); }
+  void short_disp (std::ostream& os) const { rep->short_disp (os); }
 
   int type_id (void) const { return rep->type_id (); }
 

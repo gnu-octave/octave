@@ -80,7 +80,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     ui->comboBox_language->setCurrentIndex (0);  // System is default
 
   ui->toolbar_icon_size->setValue (settings->value ("toolbar_icon_size",
-                                                    24).toInt ());
+                                                    16).toInt ());
 
   // which icon has to be selected
   QString widget_icon_set =
@@ -159,6 +159,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
   ui->sync_octave_directory->setChecked (
     settings->value ("filesdockwidget/sync_octave_directory",true).toBool ());
+  ui->checkbox_allow_web_connect->setChecked (
+    settings->value ("news/allow_web_connection",false).toBool ());
   ui->useProxyServer->setChecked (
     settings->value ("useProxyServer", false).toBool ());
   ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
@@ -523,6 +525,8 @@ settings_dialog::write_changed_settings ()
                       ui->useAlternatingRowColors->isChecked ());
   settings->setValue ("filesdockwidget/sync_octave_directory",
                       ui->sync_octave_directory->isChecked ());
+  settings->setValue ("news/allow_web_connection",
+                      ui->checkbox_allow_web_connect->isChecked ());
   settings->setValue ("useProxyServer", ui->useProxyServer->isChecked ());
   settings->setValue ("proxyType", ui->proxyType->currentText ());
   settings->setValue ("proxyHostName", ui->proxyHostName->text ());

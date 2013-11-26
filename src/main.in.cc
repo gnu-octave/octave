@@ -102,6 +102,75 @@ w32_get_octave_home (void)
 
 #endif
 
+#include <cstdlib>
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+#include <windows.h>
+#elif defined (HAVE_FRAMEWORK_CARBON)
+#include <Carbon/Carbon.h>
+#elif defined (HAVE_X_WINDOWS)
+#include <X11/Xlib.h>
+#endif
+
+bool
+display_available (std::string& err_msg)
+{
+  bool dpy_avail = false;
+
+  err_msg = "";
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+  HDC hdc = GetDC (0);
+
+  if (hdc)
+    dpy_avail = true;
+  else
+    err_msg = "no graphical display found";
+
+#elif defined (HAVE_FRAMEWORK_CARBON)
+
+  CGDirectDisplayID display = CGMainDisplayID ();
+
+  if (display)
+    dpy_avail = true;
+  else
+    err_msg = "no graphical display found";
+
+#elif defined (HAVE_X_WINDOWS)
+
+  const char *display_name = getenv ("DISPLAY");
+
+  if (display_name && *display_name)
+    {
+      Display *display = XOpenDisplay (display_name);
+
+      if (display)
+        {
+          Screen *screen = DefaultScreenOfDisplay (display);
+
+          if (! screen)
+            err_msg = "X11 display has no default screen";
+
+          XCloseDisplay (display);
+
+          dpy_avail = true;
+        }
+      else
+        err_msg = "unable to open X11 DISPLAY";
+    }
+  else
+    err_msg = "X11 DISPLAY environment variable not set";
+
+#else
+
+  err_msg = "no graphical display found";
+
+#endif
+
+  return dpy_avail;
+}
+
 #if (defined (HAVE_OCTAVE_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
 
@@ -118,11 +187,13 @@ typedef void sig_handler (int);
 
 static pid_t gui_pid = 0;
 
+static int caught_signal = -1;
+
 static void
 gui_driver_sig_handler (int sig)
 {
   if (gui_pid > 0)
-    kill (gui_pid, sig);
+    caught_signal = sig;
 }
 
 static sig_handler *
@@ -364,14 +435,137 @@ get_octave_bindir (void)
   return obd.empty () ? subst_octave_home (std::string (OCTAVE_BINDIR)) : obd;
 }
 
+// Adapted from libtool wrapper.
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+
+/* Prepares an argument vector before calling spawn().
+   Note that spawn() does not by itself call the command interpreter
+     (getenv ("COMSPEC") != NULL ? getenv ("COMSPEC") :
+      ({ OSVERSIONINFO v; v.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+         GetVersionEx(&v);
+         v.dwPlatformId == VER_PLATFORM_WIN32_NT;
+      }) ? "cmd.exe" : "command.com").
+   Instead it simply concatenates the arguments, separated by ' ', and calls
+   CreateProcess().  We must quote the arguments since Win32 CreateProcess()
+   interprets characters like ' ', '\t', '\\', '"' (but not '<' and '>') in a
+   special way:
+   - Space and tab are interpreted as delimiters. They are not treated as
+     delimiters if they are surrounded by double quotes: "...".
+   - Unescaped double quotes are removed from the input. Their only effect is
+     that within double quotes, space and tab are treated like normal
+     characters.
+   - Backslashes not followed by double quotes are not special.
+   - But 2*n+1 backslashes followed by a double quote become
+     n backslashes followed by a double quote (n >= 0):
+       \" -> "
+       \\\" -> \"
+       \\\\\" -> \\"
+ */
+#define SHELL_SPECIAL_CHARS "\"\\ \001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037"
+#define SHELL_SPACE_CHARS " \001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037"
+char **
+prepare_spawn (char **argv)
+{
+  size_t argc;
+  char **new_argv;
+  size_t i;
+
+  /* Count number of arguments.  */
+  for (argc = 0; argv[argc] != NULL; argc++)
+    ;
+
+  /* Allocate new argument vector.  */
+  new_argv = new char* [argc + 1];
+
+  /* Put quoted arguments into the new argument vector.  */
+  for (i = 0; i < argc; i++)
+    {
+      const char *string = argv[i];
+
+      if (string[0] == '\0')
+        new_argv[i] = strdup ("\"\"");
+      else if (strpbrk (string, SHELL_SPECIAL_CHARS) != NULL)
+        {
+          int quote_around = (strpbrk (string, SHELL_SPACE_CHARS) != NULL);
+          size_t length;
+          unsigned int backslashes;
+          const char *s;
+          char *quoted_string;
+          char *p;
+
+          length = 0;
+          backslashes = 0;
+          if (quote_around)
+            length++;
+          for (s = string; *s != '\0'; s++)
+            {
+              char c = *s;
+              if (c == '"')
+                length += backslashes + 1;
+              length++;
+              if (c == '\\')
+                backslashes++;
+              else
+                backslashes = 0;
+            }
+          if (quote_around)
+            length += backslashes + 1;
+
+          quoted_string = new char [length + 1];
+
+          p = quoted_string;
+          backslashes = 0;
+          if (quote_around)
+            *p++ = '"';
+          for (s = string; *s != '\0'; s++)
+            {
+              char c = *s;
+              if (c == '"')
+                {
+                  unsigned int j;
+                  for (j = backslashes + 1; j > 0; j--)
+                    *p++ = '\\';
+                }
+              *p++ = c;
+              if (c == '\\')
+                backslashes++;
+              else
+                backslashes = 0;
+            }
+          if (quote_around)
+            {
+              unsigned int j;
+              for (j = backslashes; j > 0; j--)
+                *p++ = '\\';
+              *p++ = '"';
+            }
+          *p = '\0';
+
+          new_argv[i] = quoted_string;
+        }
+      else
+        new_argv[i] = (char *) string;
+    }
+  new_argv[argc] = NULL;
+
+  return new_argv;
+}
+
+#endif // __WIN32__ && ! __CYGWIN__
+
 static int
 octave_exec (const std::string& file, char **argv)
 {
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  argv = prepare_spawn (argv);
+  return _spawnv (_P_WAIT, file.c_str (), argv);
+#else
   execv (file.c_str (), argv);
 
   std::cerr << "octave: failed to exec '" << file << "'" << std::endl;
 
   return 1;
+#endif
 }
 
 static char *
@@ -391,11 +585,8 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && (! defined (__WIN32__) || defined (__CYGWIN__)))
   bool start_gui = true;
   bool gui_libs = true;
-#endif
 
   std::string octave_bindir = get_octave_bindir ();
 
@@ -409,8 +600,14 @@ main (int argc, char **argv)
 
   char **new_argv = new char * [argc + 1];
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  int k = 1;
+#else
   int k = 0;
   new_argv[k++] = strsave ("octave");
+#endif
+
+  bool warn_display = true;
 
   for (int i = 1; i < argc; i++)
     {
@@ -422,10 +619,8 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
+          start_gui = false;
           gui_libs = false;
-#endif
           file = octave_bindir + dir_sep_char + "octave-cli";
         }
       else if (! strcmp (argv[i], "--no-gui"))
@@ -436,10 +631,13 @@ main (int argc, char **argv)
           // if the --no-gui option is given, we may be asked to do some
           // plotting or ui* calls.
 
-#if (defined (HAVE_OCTAVE_GUI) \
-     && ! defined (__WIN32__) || defined (__CYGWIN__))
           start_gui = false;
-#endif
+          new_argv[k++] = argv[i];
+        }
+      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "--quiet")
+               || ! strcmp (argv[i], "-q"))
+        {
+          warn_display = false;
           new_argv[k++] = argv[i];
         }
       else
@@ -447,6 +645,25 @@ main (int argc, char **argv)
     }
 
   new_argv[k] = 0;
+
+  if (gui_libs || start_gui)
+    {
+      std::string display_check_err_msg;
+
+      if (! display_available (display_check_err_msg))
+        {
+          start_gui = false;
+          gui_libs = false;
+
+          file = octave_bindir + dir_sep_char + "octave-cli";
+
+          if (warn_display)
+            {
+              std::cerr << "octave: " << display_check_err_msg << std::endl;
+              std::cerr << "octave: disabiling GUI features" << std::endl;
+            }
+        }
+    }
 
 #if (defined (HAVE_OCTAVE_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
@@ -478,19 +695,31 @@ main (int argc, char **argv)
         }
       else
         {
-          // Parent.  Forward signals to the child while waiting for it
-          // to exit.
+          // Parent.  Forward signals to child while waiting for it to exit.
 
           int status;
 
-          while (1)
+          while (true)
             {
               WAITPID (gui_pid, &status, 0);
 
-              if (WIFEXITED (status))
+              if (caught_signal > 0)
                 {
-                  retval = WIFEXITED (status) ? WEXITSTATUS (status) : 127;
+                  int sig = caught_signal;
 
+                  caught_signal = -1;
+
+                  kill (gui_pid, sig);
+                }
+              else if (WIFEXITED (status))
+                {
+                  retval = WEXITSTATUS (status);
+                  break;
+                }
+              else if (WIFSIGNALLED (status))
+                {
+                  std::cerr << "octave exited with signal "
+                            << WTERMSIG (status) << std::endl;
                   break;
                 }
             }
@@ -501,6 +730,10 @@ main (int argc, char **argv)
 
 #else
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  file += ".exe";
+  new_argv[0] = strsave (file.c_str ());
+#endif
   retval = octave_exec (file, new_argv);
 
 #endif

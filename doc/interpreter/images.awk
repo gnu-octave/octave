@@ -27,7 +27,7 @@ BEGIN {
     for (j = 2; j <= NF; j++) {
       printf ("%s.%s: %s\n", $j, ext, script);
       printf ("\t$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval \"%s ('%s', '%s');\"\n",
-	      basename, $j, ext);
+              basename, $j, ext);
     }
   }
 }

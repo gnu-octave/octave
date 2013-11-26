@@ -4,7 +4,7 @@
 <context>
     <name>ListDialog</name>
     <message>
-        <location filename="../src/dialog.cc" line="+250"/>
+        <location filename="../src/dialog.cc" line="+251"/>
         <source>Select All</source>
         <translation>Alles selecteren</translation>
     </message>
@@ -42,7 +42,7 @@
         <translation>Blijvend</translation>
     </message>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+64"/>
+        <location filename="../qterminal/libqterminal/QTerminal.cc" line="+65"/>
         <source>foreground</source>
         <translation>Voorgrond</translation>
     </message>
@@ -65,7 +65,7 @@
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.h" line="+116"/>
+        <location filename="../qterminal/libqterminal/QTerminal.h" line="+121"/>
         <source>Copy</source>
         <translation>Kopiëren</translation>
     </message>
@@ -83,7 +83,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1527"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1528"/>
         <source>copied selection to clipboard</source>
         <translation>selectie is naar klembord gekopieerd</translation>
     </message>
@@ -741,7 +741,7 @@
     <message>
         <location line="+6"/>
         <source>&amp;Paste</source>
-        <translation>Plakken</translation>
+        <translation>&amp;Plakken</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -770,21 +770,32 @@
 <context>
     <name>file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+304"/>
-        <location line="+21"/>
-        <location line="+17"/>
-        <location line="+57"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+346"/>
+        <location line="+22"/>
+        <location line="+18"/>
+        <location line="+59"/>
         <location line="+28"/>
         <source>Octave Editor</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-249"/>
+        <location line="-269"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="+222"/>
+        <location line="-40"/>
+        <source>New Function</source>
+        <translation>Nieuwe Functie</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>New function name:
+</source>
+        <translation>Naam van nieuwe functie:</translation>
+    </message>
+    <message>
+        <location line="+281"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -798,12 +809,12 @@ is reeds geopend in de editor</translation>
         <translation>Het bijbehorende tabblad in de editor is verdwenen. Het is waarschijnlijk op een of andere manier gesloten.</translation>
     </message>
     <message>
-        <location line="+228"/>
+        <location line="+227"/>
         <source>&amp;%1 %2</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+173"/>
+        <location line="+174"/>
         <source>&amp;New File</source>
         <translation>&amp;Nieuw Bestand</translation>
     </message>
@@ -863,7 +874,7 @@ is reeds geopend in de editor</translation>
         <translation>&amp;Vorige bladwijzer</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Toggle &amp;Bookmark</source>
         <translation>&amp;Bladwijzer invoegen</translation>
     </message>
@@ -874,23 +885,23 @@ is reeds geopend in de editor</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>&amp;Next breakpoint</source>
-        <translation>Volge&amp;nd onderbreekpunt</translation>
+        <source>&amp;Next Breakpoint</source>
+        <translation>Volge&amp;nd Breekpunt</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Pre&amp;vious breakpoint</source>
-        <translation>&amp;Vorig onderbreekpunt</translation>
+        <source>Pre&amp;vious Breakpoint</source>
+        <translation>&amp;Vorig Breekpunt</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Toggle &amp;breakpoint</source>
-        <translation>&amp;Onderbreekpunt invoegen</translation>
+        <source>Toggle &amp;Breakpoint</source>
+        <translation>Schakel &amp;Breekpunt om</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>&amp;Remove All breakpoints</source>
-        <translation>Alle onderbreekpunten ve&amp;rwijderen</translation>
+        <source>&amp;Remove All Breakpoints</source>
+        <translation>Verwijde&amp;r Alle Breekpunten</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -903,14 +914,24 @@ is reeds geopend in de editor</translation>
         <translation>Zet om naar code</translation>
     </message>
     <message>
-        <location line="+63"/>
-        <source>&amp;Recent Editor Files</source>
-        <translation>Recent geopend</translation>
+        <location line="+6"/>
+        <source>Save File and Run</source>
+        <translation>Sla Bestand op en Voer uit</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+57"/>
+        <source>&amp;Recent Editor Files</source>
+        <translation>&amp;Recent geopend</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>New &amp;Function</source>
+        <translation>Nieuwe &amp;Functie</translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>&amp;Edit Function</source>
-        <translation>Edit functie</translation>
+        <translation>Pas Functie Aan</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -928,32 +949,32 @@ is reeds geopend in de editor</translation>
         <translation>Andere bestanden sluiten</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+51"/>
         <source>Run &amp;Selection</source>
         <translation>Geselecteerde tekst uitvoeren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation>Hulp</translation>
+        <translation>&amp;Hulp</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation>Hulp bij sleutelwoord</translation>
+        <translation>&amp;Hulp bij sleutelwoord</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation>Documentatie bij sleutelwoord</translation>
+        <translation>&amp;Documentatie bij sleutelwoord</translation>
     </message>
     <message>
-        <location line="-147"/>
+        <location line="-151"/>
         <source>&amp;Find and Replace</source>
         <translation>Zoek en Vervang</translation>
     </message>
     <message>
-        <location line="-584"/>
+        <location line="-589"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -962,7 +983,7 @@ for read: %2.</source>
 niet openen om in te lezen: %2.</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -971,7 +992,7 @@ does not exist. Do you want to create it?</source>
 bestaat niet. Wilt u het laten aanmaken?</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+18"/>
         <source>Could not open file
 %1
 for write: %2.</source>
@@ -980,12 +1001,7 @@ for write: %2.</source>
 niet openen om te schrijven: %2.</translation>
     </message>
     <message>
-        <location line="+549"/>
-        <source>Save File And Run</source>
-        <translation>Bestand opslaan en uitvoeren</translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="+554"/>
         <source>Go&amp;to Line</source>
         <translation>Ga naar regel</translation>
     </message>
@@ -995,7 +1011,7 @@ niet openen om te schrijven: %2.</translation>
         <translation>Bestand</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+41"/>
         <source>&amp;Edit</source>
         <translation>B&amp;ewerken</translation>
     </message>
@@ -1005,12 +1021,12 @@ niet openen om te schrijven: %2.</translation>
         <translation>Voorkeuren</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>&amp;Styles Preferences</source>
-        <translation>Stijlvoorkeuren</translation>
+        <translation>&amp;Stijlvoorkeuren</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>&amp;Debug</source>
         <translation>&amp;Debuggen</translation>
     </message>
@@ -1023,9 +1039,9 @@ niet openen om te schrijven: %2.</translation>
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+755"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+787"/>
         <source>Goto line</source>
-        <translation>Ga naar regel ...</translation>
+        <translation>Ga naar regel</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1033,12 +1049,13 @@ niet openen om te schrijven: %2.</translation>
         <translation>Regelnummer</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+71"/>
+        <location line="+69"/>
         <source>&lt;unnamed&gt;</source>
         <translation>naamloos</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="-12"/>
         <source>Do you want to save or discard the changes?</source>
         <translation>Wil je de wijzigingen opslaan of niet?</translation>
     </message>
@@ -1048,16 +1065,16 @@ niet openen om te schrijven: %2.</translation>
         <translation>Wil je niet meer afsluiten, danwel het gewijzigde of het originele bestand opslaan?</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <location line="+129"/>
-        <location line="+115"/>
-        <location line="+66"/>
+        <location line="+10"/>
+        <location line="+123"/>
+        <location line="+111"/>
+        <location line="+64"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-331"/>
+        <location line="-319"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -1068,12 +1085,12 @@ dat gesloten moet worden is gewijzigd.
 %2</translation>
     </message>
     <message>
-        <location line="+210"/>
+        <location line="+202"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+32"/>
         <source>File not saved! The selected file name
 %1
 is the same as the current file name</source>
@@ -1082,7 +1099,7 @@ is the same as the current file name</source>
 is identiek aan de huidige bestandsnaam</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+79"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -1099,14 +1116,24 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
     <message>
-        <location line="-203"/>
+        <location line="-197"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Kon bestand %1 niet openen om te schrijven:
 %2.</translation>
     </message>
     <message>
-        <location line="+181"/>
+        <location line="-962"/>
+        <source>Line:</source>
+        <translation>Regel:</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Col:</source>
+        <translation>Kolom:</translation>
+    </message>
+    <message>
+        <location line="+1134"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Het lijkt erop dat &apos;%1&apos; is gewijzigd door een ander programma. Wil je het opnieuw laden?</translation>
     </message>
@@ -1114,7 +1141,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>files_dock_widget</name>
     <message>
-        <location filename="../src/files-dock-widget.cc" line="+67"/>
+        <location filename="../src/files-dock-widget.cc" line="+68"/>
         <source>File Browser</source>
         <translation>Bestandsbrowser</translation>
     </message>
@@ -1129,27 +1156,27 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Voer pad- of bestandsnaam in</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>Move up one directory</source>
         <translation>Eén mapniveau omhoog</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Show octave directory</source>
         <translation>Laat octave map zien</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Goto current octave directory</source>
         <translation>Ga naar huidige octave map</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Set octave directory</source>
         <translation>Stel octave map in</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Set octave directroy to current browser directory</source>
         <translation>Maak huidige browser map de Octave map</translation>
     </message>
@@ -1164,35 +1191,55 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Laat home map zien</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Search directory</source>
         <translation>Zoek in map</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+244"/>
+        <location line="+354"/>
         <source>Find Files ...</source>
         <translation>Zoek bestanden ...</translation>
     </message>
     <message>
-        <location line="-240"/>
-        <location line="+252"/>
+        <location line="-350"/>
+        <location line="+363"/>
         <source>New File</source>
         <translation>Nieuw bestand</translation>
     </message>
     <message>
-        <location line="-249"/>
-        <location line="+252"/>
+        <location line="-360"/>
+        <location line="+363"/>
         <source>New Directory</source>
         <translation>Nieuwe map</translation>
     </message>
     <message>
-        <location line="-223"/>
-        <source>Doubleclick a file to open it</source>
-        <translation>Dubbelklik op bestandsnaam om te openen</translation>
+        <location line="-323"/>
+        <source>Double-click a file to open it</source>
+        <translation>Dubbelklik een bestand om te openen</translation>
     </message>
     <message>
-        <location line="+185"/>
+        <location line="+236"/>
+        <source>File size</source>
+        <translation>Bestandsgrootte</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>File type</source>
+        <translation>Bestandstype</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Date modified</source>
+        <translation>Laatst gewijzigd</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Show hidden</source>
+        <translation>Verborgen bestanden weergeven</translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Open</source>
         <translation>Open</translation>
     </message>
@@ -1222,7 +1269,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Stel huidige map in</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+8"/>
         <source>Rename</source>
         <translation>Hernoemen</translation>
     </message>
@@ -1232,7 +1279,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Verwijderen</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+108"/>
         <source>Rename file/directory</source>
         <translation>Hernoem bestand/map</translation>
     </message>
@@ -1240,11 +1287,11 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <location line="+1"/>
         <source>Rename file/directory:
 </source>
-        <translation>Hernoem bestand
+        <translation>Hernoem bestand/map:
 </translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>
  to: </source>
         <translation>
@@ -1252,34 +1299,34 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location line="+11"/>
+        <location line="+14"/>
         <source>Delete file/directory</source>
         <translation>Wis bestand/map</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="-13"/>
         <source>Are you sure you want to delete
 </source>
         <translation>Weet u zeker dat u dit wilt verwijderen:
 </translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+14"/>
         <source>Can not delete a directory that is not empty</source>
         <translation>Kan een niet-lege map niet wissen</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="+144"/>
         <source>Set directory of file browser</source>
         <translation>Stel file browser map in</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+29"/>
         <source>Create File</source>
         <translation>Maak nieuw bestand</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>Create file in
 </source>
         <translation>Maak nieuw bestand in
@@ -1291,11 +1338,75 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Maak nieuwe map</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>Create folder in
 </source>
         <translation>Maak nieuwe map in
 </translation>
+    </message>
+</context>
+<context>
+    <name>final_page</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="+194"/>
+        <source>Enjoy!</source>
+        <translation>Veel plezier!</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Previous</source>
+        <translation>Vorige</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Finish</source>
+        <translation>Voltooien</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cancel</source>
+        <translation>Afbreken</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
+&lt;p&gt;If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
+You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;We hopen dat je Octave handig vindt.&lt;/p&gt;
+&lt;p&gt;Als je problemen tegenkomt zijn er verschillende manieren om hulp te krijgen waaronder commerciële edities met ondersteuning, een mailinglijst, een wiki en andere community-gebaseerde ondersteuningskanalen.
+Meer informatie hierover kan je vinden op &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opent in een nieuw venster).&lt;\p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;For more information about Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opens in external browser)&lt;/li&gt;
+&lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translatorcomment>Ben over de laatste zin niet helemaal zeker.</translatorcomment>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Voor meer informatie over Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Bezoek &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (opent in een nieuw venster)&lt;/li&gt;
+&lt;li&gt;Bekijk de online documentatie als &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- of &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (opent in een nieuw venster)&lt;/li&gt;
+&lt;li&gt;Open de documentatie van Octave via het help menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1381,7 +1492,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Zoeken vanaf begin</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+121"/>
         <source>Replace Result</source>
         <translation>Resultaat vervangen</translation>
     </message>
@@ -1404,7 +1515,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>find_files_dialog</name>
     <message>
-        <location filename="../src/find-files-dialog.cc" line="+47"/>
+        <location filename="../src/find-files-dialog.cc" line="+52"/>
         <source>Find Files</source>
         <translation>Zoek bestanden</translation>
     </message>
@@ -1419,12 +1530,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Voer de bestandnaam-expressie in</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>Start in:</source>
         <translation>Begin in:</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Enter the start directory</source>
         <translation>Geef startmap op</translation>
     </message>
@@ -1444,7 +1555,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Ook in onderliggende mappen</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+4"/>
         <source>Search recursively through directories for matching files</source>
         <translation>Zoek ook in onderliggende mappen naar overeenkomende bestanden</translation>
     </message>
@@ -1454,7 +1565,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Neem mappen ook mee</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+4"/>
         <source>Include matching directories in search results</source>
         <translation>Neem overeenkomende mappen mee in zoekresultaten</translation>
     </message>
@@ -1464,7 +1575,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Niet-hoofdlettergevoelige naam</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Set matching name is case insensitive</source>
         <translation>Naam instellen op niet-hoofdlettergevoelig</translation>
     </message>
@@ -1479,17 +1590,17 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Zoeken naar overeenkomende tekst</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Text to match</source>
         <translation>Overeen te komen tekst</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Text case insensitive</source>
         <translation>Niet-hoofdlettergevoelige tekst</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Set text content is case insensitive</source>
         <translation>Tekst instellen op niet-hoofdlettergevoelig</translation>
     </message>
@@ -1499,7 +1610,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Zoekresultaten</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+17"/>
         <source>Idle.</source>
         <translation>Niet bezig.</translation>
     </message>
@@ -1534,7 +1645,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Inhoud van bestand</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+105"/>
         <source>Searching...</source>
         <translation>Bezig met zoeken...</translation>
     </message>
@@ -1547,7 +1658,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>find_files_model</name>
     <message>
-        <location filename="../src/find-files-model.cc" line="+76"/>
+        <location filename="../src/find-files-model.cc" line="+82"/>
         <source>Filename</source>
         <translation>Bestandsnaam</translation>
     </message>
@@ -1565,12 +1676,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Bladeren en zoeken door de opdrachtgeschiedenis.</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Doubleclick a command to transfer it to the terminal.</source>
-        <translation>Dubbelklik op een opdracht om het naar de terminal te sturen.</translation>
+        <location line="+24"/>
+        <source>Double-click a command to transfer it to the terminal.</source>
+        <translation>Dubbelklik een commando om het naar de terminal te sturen.</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+9"/>
         <source>Enter text to filter the command history.</source>
         <translation>Voer tekst in om de opdrachtgeschiedenis mee te filteren.</translation>
     </message>
@@ -1580,7 +1691,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Opdrachtgeschiedenis</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+21"/>
         <source>Copy</source>
         <translation>Kopiëren</translation>
     </message>
@@ -1590,26 +1701,58 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Werk uit</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>Create script</source>
         <translation>Nieuw script</translation>
     </message>
 </context>
 <context>
+    <name>initial_page</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="-179"/>
+        <source>Welcome to Octave!</source>
+        <translation>Welkom bij Octave!</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Next</source>
+        <translation>Volgende</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cancel</source>
+        <translation>Afbreken</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;You seem to be using the Octave graphical interface for the first time on this computer.
+Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
+&lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Het lijkt erop dat je de grafische interface van Octave voor het eerst gebruikt op deze computer.
+Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te starten.&lt;/p&gt;
+&lt;p&gt;Het configuratiebestand is opgeslagen in %1. Als dat bestand bestaat, zal je dit dialoogscherm niet zien wanneer Octave start.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+163"/>
+        <location filename="../src/main-window.cc" line="+201"/>
+        <location line="+1149"/>
         <source>Load Workspace</source>
         <translation>Werkruimte laden</translation>
     </message>
     <message>
-        <location line="+435"/>
-        <location line="+847"/>
+        <location line="-511"/>
+        <location line="+865"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
     </message>
     <message>
-        <location line="-369"/>
+        <location line="-371"/>
         <source>&amp;File</source>
         <translation>Bestand</translation>
     </message>
@@ -1629,12 +1772,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Functie</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Figure</source>
         <translation>Figuur</translation>
     </message>
     <message>
-        <location line="-58"/>
+        <location line="-59"/>
         <source>Open...</source>
         <translation>Open...</translation>
     </message>
@@ -1649,7 +1792,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Afsluiten</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+53"/>
         <source>&amp;Edit</source>
         <translation>B&amp;ewerken</translation>
     </message>
@@ -1669,13 +1812,13 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Plakken</translation>
     </message>
     <message>
-        <location line="-1026"/>
-        <location line="+946"/>
+        <location line="-1247"/>
+        <location line="+1166"/>
         <source>Save Workspace As</source>
-        <translation>Bewaar werkruimte als ...</translation>
+        <translation>Sla Werkruimte Op Als</translation>
     </message>
     <message>
-        <location line="-826"/>
+        <location line="-1042"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Bestand met Release Notes &apos;%1&apos; is leeg.</translation>
     </message>
@@ -1690,12 +1833,17 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Octave Release Notes</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+185"/>
+        <source>Octave Community News</source>
+        <translation>Octave Community Nieuws</translation>
+    </message>
+    <message>
+        <location line="+171"/>
         <source>Set working directory</source>
         <translation>Stel werkmap in</translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+754"/>
         <source>Clear Clipboard</source>
         <translation>Wis klembord</translation>
     </message>
@@ -1730,52 +1878,42 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Volgende opdracht</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Step in</source>
-        <translation>Stap naar binnen</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Step out</source>
-        <translation>Stap naar buiten</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+12"/>
         <source>Continue</source>
         <translation>Doorgaan</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+9"/>
         <source>Exit Debug Mode</source>
         <translation>Debuggen afsluiten</translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+51"/>
         <source>Show File Browser</source>
         <translation>Laat bestandsbrowser zien</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <source>Show News Window</source>
-        <translation>Laat Nieuwsvenster zien</translation>
-    </message>
-    <message>
-        <location line="+11"/>
+        <location line="+26"/>
         <source>File Browser</source>
         <translation>Bestandsbrowser</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <source>News</source>
-        <translation>Nieuws</translation>
+        <location line="-94"/>
+        <source>Step In</source>
+        <translation>Stap In</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+4"/>
+        <source>Step Out</source>
+        <translation>Stap Uit</translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>Reset Default Window Layout</source>
         <translation>Stel oorspronkelijke window layout opnieuw in</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+77"/>
         <source>Octave Packages</source>
         <translation>Octave packages</translation>
     </message>
@@ -1807,7 +1945,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location line="+12"/>
         <source>&amp;News</source>
-        <translation>Nieuws</translation>
+        <translation>&amp;Nieuws</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1825,7 +1963,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Geef mapnaam op</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+9"/>
         <source>Current Directory: </source>
         <translation>Huidige map:</translation>
     </message>
@@ -1840,70 +1978,65 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Blader door mappen</translation>
     </message>
     <message>
-        <location line="-445"/>
-        <source>Load workspace</source>
-        <translation>Werkruimte laden</translation>
-    </message>
-    <message>
-        <location line="+200"/>
+        <location line="-244"/>
         <source>&amp;Window</source>
         <translation>Venster</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+7"/>
         <source>Show Command Window</source>
         <translation>Opdrachtvenster weergeven</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Show Command History</source>
         <translation>Opdrachtgeschiedenis weergeven</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+8"/>
         <source>Show Workspace</source>
         <translation>Werkruimte weergeven</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Show Editor</source>
         <translation>Editor weergeven</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Show Documentation</source>
         <translation>Documentatie weergeven</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+6"/>
         <source>Command Window</source>
         <translation>Opdrachtvenster</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Command History</source>
         <translation>Opdrachtgeschiedenis</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+8"/>
         <source>Workspace</source>
         <translation>Werkruimte</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <location line="+132"/>
+        <location line="+4"/>
+        <location line="+121"/>
         <source>Documentation</source>
         <translation>Documentatie</translation>
     </message>
     <message>
         <location line="-48"/>
         <source>&amp;Help</source>
-        <translation>Hulp</translation>
+        <translation>&amp;Hulp</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1912,23 +2045,74 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
 </context>
 <context>
-    <name>news_dock_widget</name>
+    <name>news_reader</name>
     <message>
-        <location filename="../src/news-dock-widget.cc" line="+44"/>
-        <source>Community News</source>
-        <translation> Community nieuws</translation>
+        <location line="-1268"/>
+        <source>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Octave&apos;s community news source seems to be unavailable.
+&lt;/p&gt;
+&lt;p&gt;
+For the latest news, please check
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+when you have a connection to the web (link opens in an external browser).
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+De Octave community nieuwsbron lijkt onbeschikbaar te zijn.
+&lt;/p&gt;
+&lt;p&gt;
+Kijk voor het laatste nieuws op
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+wanneer je een internetverbinding hebt (link opent in een nieuw scherm).
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; De Octave Ontwikkelaars,</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Connecting to the web to display the latest Octave Community news has been disabled.
+&lt;/p&gt;
+&lt;p&gt;
+For the latest news, please check
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+when you have a connection to the web (link opens in an external browser)
+or enable web connections for news in Octave&apos;s network settings dialog.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Verbinden met het internet om het laatste Octave Community nieuws te laten zien is uitgeschakeld.
+&lt;/p&gt;
+&lt;p&gt;
+Kijk voor het laatste nieuws op
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+wanneer je een verbinding met het internet hebt (link opent in een nieuw scherm)
+of schakel de internetverbinding voor nieuws aan in de netwerkinstellingen van Octave.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; De Octave Ontwikkelaars,</translation>
     </message>
 </context>
 <context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+56"/>
-        <location line="+159"/>
+        <location filename="../src/octave-dock-widget.cc" line="+61"/>
+        <location line="+163"/>
         <source>Undock widget</source>
         <translation>Widget laten zweven</translation>
     </message>
     <message>
-        <location line="-149"/>
+        <location line="-153"/>
         <source>Hide widget</source>
         <translation>Widget verbergen</translation>
     </message>
@@ -1941,7 +2125,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+127"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+130"/>
         <source>Help on</source>
         <translation>Help over</translation>
     </message>
@@ -1951,7 +2135,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Documentatie over</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Edit</source>
         <translation>Edit</translation>
     </message>
@@ -1964,7 +2148,33 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>octave_qt_link</name>
     <message>
-        <location filename="../src/octave-qt-link.cc" line="+270"/>
+        <location filename="../src/octave-qt-link.cc" line="+94"/>
+        <location line="+6"/>
+        <location line="+7"/>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <location line="-13"/>
+        <source>No</source>
+        <translation>Nee</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>File
+%1
+does not exist. Do you want to create it?</source>
+        <translation>Bestand
+%1
+bestaat niet. Wilt u het aanmaken?</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Octave Editor</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+211"/>
         <source>The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
         <translation>Het bestand %1 is niet in zoekpad.  Om de functie die je edit te debuggen moet je òf naar debetreffende map %2 gaan, of die map aan het zoekpad toevoegen.</translation>
     </message>
@@ -1992,6 +2202,31 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <location line="+1"/>
         <source>Cancel</source>
         <translation>Afbreken</translation>
+    </message>
+</context>
+<context>
+    <name>resource_manager</name>
+    <message>
+        <location filename="../src/resource-manager.cc" line="+204"/>
+        <source>The settings file
+%1
+does not exist and can not be created.
+Make sure you have read and write permissions to
+%2
+
+Octave GUI must be closed now.</source>
+        <translation>Het bestand met instellingen
+%1
+bestaat niet en kan niet worden aangemaakt.
+Zorg ervoor dat je toestemming voor lezen en schrijven hebt naar
+%2
+
+De Octave GUI moet nu gesloten worden.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Octave Critical Error</source>
+        <translation>Octave Kritieke Fout</translation>
     </message>
 </context>
 <context>
@@ -2027,17 +2262,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Show white space</source>
-        <translation>Laat witruimtetekens zien</translation>
-    </message>
-    <message>
-        <location line="+27"/>
-        <source>Do not show white spaces used for indentation</source>
-        <translation>Verberg witruimtetekens die worden gebruikt voor inspringen</translation>
-    </message>
-    <message>
-        <location line="+28"/>
+        <location line="+71"/>
         <source>Color</source>
         <translation>Kleur</translation>
     </message>
@@ -2072,12 +2297,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Backspace doet terug inspringen</translation>
     </message>
     <message>
-        <location line="+84"/>
-        <source>Characters before list with suggestions is displayed</source>
-        <translation>Aantal tekens voordat lijst met suggesties wordt weergegeven</translation>
-    </message>
-    <message>
-        <location line="+71"/>
+        <location line="+155"/>
         <source>Match keywords</source>
         <translation>Zoek overeenkomende sleutelwoorden</translation>
     </message>
@@ -2102,37 +2322,17 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Herstel bij opstarten de editor tabs uit de vorige sessie</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Create non existing files without prompting</source>
-        <translation>Maak nieuwe bestanden aan zonder melding</translation>
-    </message>
-    <message>
-        <location line="+47"/>
+        <location line="+60"/>
         <source>Use custom file editor</source>
         <translation>Gebruik een andere editor</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Command  line (%f=file, %l=line):</source>
-        <translation>Opdrachtregel (%f=bestand, %l=regel):</translation>
-    </message>
-    <message>
-        <location line="+22"/>
+        <location line="+32"/>
         <source>Editor Styles</source>
         <translation>Editorstijlen</translation>
     </message>
     <message>
-        <location line="+24"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as difference to the default size), font decoration (bold, italic, underline), textcolor and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>Kies font, fontgrootte (als verschil met standaardgrootte), fonttype (vet, schuin, onderstreept), tekstkleur en achtergrondkleur (de kleur roze (255,0,255) dient alleen om de standaard-achtergrondkleur aan te duiden)</translation>
-    </message>
-    <message>
-        <location line="+76"/>
-        <source>Use Foreground Color</source>
-        <translation>Gebruik voorgrondkleur</translation>
-    </message>
-    <message>
-        <location line="+32"/>
+        <location line="+132"/>
         <source>Terminal Colors</source>
         <translation>Terminalkleuren</translation>
     </message>
@@ -2162,19 +2362,49 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Hele pad in schermtitel weergeven</translation>
     </message>
     <message>
-        <location line="+561"/>
+        <location line="-17"/>
+        <source>Show whitespace</source>
+        <translation>Laat witruimte zien</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Do not show whitespace used for indentation</source>
+        <translation>Laat geen voor inspringen gebruikte witruimte zien</translation>
+    </message>
+    <message>
+        <location line="+290"/>
+        <source># of characters typed before completion list displayed</source>
+        <translation>Getypt aantal karakters voordat de aanvullijst verschijnt</translation>
+    </message>
+    <message>
+        <location line="+194"/>
+        <source>Create nonexistent files without prompting</source>
+        <translation>Maak niet bestaande bestanden aan zonder te vragen</translation>
+    </message>
+    <message>
+        <location line="+57"/>
+        <source>command line (%f=file, %l=line):</source>
+        <translation>command line (%f=bestand, %l=regel):</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>emacs</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+36"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecteer font, font grootte (als een verschil van de standaard grootte), font stijl (dik, schuin, onderstreept), tekstkleur en achtergrondkleur (wat betreft de laatste, de kleur roze (255,0,255) is een plaatsvervanger voor de standaard achtergrondkleur)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+31"/>
         <source>Terminal</source>
         <translation>Opdrachtvenster</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Cursor type:</source>
-        <translation>Type aanwijzer</translation>
+        <translation>Type aanwijzer:</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -2182,7 +2412,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Knipperende aanwijzer</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+7"/>
+        <source>Use foreground color</source>
+        <translation>Gebruik voorgrondkleur</translation>
+    </message>
+    <message>
+        <location line="+94"/>
         <source>Font size</source>
         <translation>Lettergrootte</translation>
     </message>
@@ -2212,12 +2447,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Verborgen bestanden weergeven</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Synchronize octave directory with the file browser</source>
-        <translation>Synchroniseer octave map met die van bestandsbrowser</translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+14"/>
         <source>Alternating row colors</source>
         <translation>Om en om andere regelkleuren</translation>
     </message>
@@ -2237,22 +2467,22 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Netwerk</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+8"/>
+        <source>Allow Octave to connect to the Octave web site to display current news and information</source>
+        <translation>Sta Octave toe om te verbinden met de Octave website om recent nieuws en informatie weer te geven</translation>
+    </message>
+    <message>
+        <location line="+46"/>
         <source>Use proxy server</source>
         <translation>Gebruik proxyserver</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Proxy Type:</source>
-        <translation>Proxy type:</translation>
-    </message>
-    <message>
-        <location line="-33"/>
+        <location line="-23"/>
         <source>HttpProxy</source>
         <translation>http proxy</translation>
     </message>
     <message>
-        <location line="-1120"/>
+        <location line="-1129"/>
         <source>Icon set for dock widgets</source>
         <translation>Iconenset voor dock widgets</translation>
     </message>
@@ -2267,7 +2497,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Icoongrootte</translation>
     </message>
     <message>
-        <location line="+1111"/>
+        <location line="+991"/>
+        <source>Synchronize Octave working directory with file browser</source>
+        <translation>Synchroniseer Octave werkmap met bestandsverkenner</translation>
+    </message>
+    <message>
+        <location line="+129"/>
         <source>Socks5Proxy</source>
         <translation></translation>
     </message>
@@ -2277,7 +2512,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Hostnaam:</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+44"/>
+        <source>Proxy type:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Port:</source>
         <translation>Poort:</translation>
     </message>
@@ -2292,14 +2532,14 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Wachtwoord:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+70"/>
+        <location filename="../src/settings-dialog.cc" line="+71"/>
         <location line="+4"/>
-        <location line="+346"/>
+        <location line="+389"/>
         <source>System setting</source>
         <translation>Systeeminstelling</translation>
     </message>
     <message>
-        <location line="-279"/>
+        <location line="-286"/>
         <source>IBeam Cursor</source>
         <translation>I-balkje</translation>
     </message>
@@ -2314,7 +2554,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Liggend streepje</translation>
     </message>
     <message>
-        <location line="+140"/>
+        <location line="+144"/>
         <source>Difference to the default size</source>
         <translation>Verschil met standaardgrootte</translation>
     </message>
@@ -2340,6 +2580,61 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
 </context>
 <context>
+    <name>setup_community_news</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="+44"/>
+        <source>Community News</source>
+        <translation>Community Nieuws</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Previous</source>
+        <translation>Vorige</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next</source>
+        <translation>Volgende</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cancel</source>
+        <translation>Afbreken</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;When the Octave GUI starts, it will check the Octave web site for current news and information about the Octave community.
+The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
+&lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu in the GUI, or by visiting
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Wanneer de Octave GUI start, zal de website van Octave geraadpleegd worden voor recent nieuws en informatie over de Octave community.
+Dit zal hooguit een keer per dag gedaan worden en nieuws wordt alleen weergegeven als er iets nieuws is sinds de laatste keer dat je het nieuws zag.&lt;/p&gt;
+&lt;p&gt;Het nieuws kan ook bekeken worden door op &quot;Community Nieuws&quot; in het &quot;Hulp&quot; menu te klikken, of door te gaan naar
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Sta Octave toe om verbinding te maken met de Octave website bij het opstarten om recent nieuws en informatie over de Octave community weer te geven.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
     <name>terminal_dock_widget</name>
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+38"/>
@@ -2350,7 +2645,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>webinfo</name>
     <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+79"/>
+        <location filename="../src/qtinfo/webinfo.cc" line="+80"/>
         <source>Type here and press &apos;Return&apos; to search</source>
         <translation>Typ hier en druk op &apos;Enter&apos; om te zoeken</translation>
     </message>
@@ -2363,56 +2658,9 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 <context>
     <name>welcome_wizard</name>
     <message>
-        <location filename="../src/welcome-wizard.cc" line="+40"/>
+        <location filename="../src/welcome-wizard.cc" line="+135"/>
         <source>Welcome to GNU Octave</source>
         <translation>Welkom bij GNU Octave</translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <source>Welcome to Octave!</source>
-        <translation>Welkom bij Octave!</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>You seem to be using the Octave graphical interface for the first  time on this computer.  Click &apos;Finish&apos; to write a configuration file  and launch Octave GUI.</source>
-        <translation>Kennelijk gebruik je Octave&apos;s grafische interface voor het eerst. Klik op Finish, dan wordt er een standaard configuratiebestand aangemaakt en daarna de Octave GUI gestart.</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>The configuration file is stored in %1. If that file exists, you will not see this dialog when Octave starts again.</source>
-        <translation>Het configuratiebestand is opgeslagen als %1. Als dat bestand bestaat zal Octave bij een volgende start dee dialoog overslaan.</translation>
-    </message>
-    <message>
-        <location line="+23"/>
-        <source>&lt;html&gt;&lt;head&gt;
-&lt;style&gt;
-a:link { text-decoration: underline; color: #0000ff; }
-&lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
-&lt;p&gt;For more information about Octave:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Get the documentation online as &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- or &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document&lt;/li&gt;
-&lt;li&gt;Open the documentation browser of Octave GUI with the help menu&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;
-&lt;style&gt;
-a:link { text-decoration: underline; color: #0000ff; }
-&lt;/style&gt;
-&lt;head/&gt;&lt;body&gt;
-&lt;p&gt;Voor meer informatie over Octave:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;ga naar &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Bekijk de documentatie online hier &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- of hier &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document&lt;/li&gt;
-&lt;li&gt;Open de documentatie browser van de Octave GUI met het help menu&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>Finish</source>
-        <translation>Voltooien</translation>
     </message>
 </context>
 <context>
@@ -2443,9 +2691,15 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Klasse</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+109"/>
         <source>Right click to copy, rename, or display</source>
         <translation>Klik rechts om te kopiëren, hernoemen of weergeven</translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <location line="+2"/>
+        <source>complex</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2461,7 +2715,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Bekijk de variabelen in de huidige werkruimte.</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+76"/>
         <source>Copy</source>
         <translation>Kopiëren</translation>
     </message>

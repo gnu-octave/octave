@@ -450,6 +450,55 @@ octave_base_matrix<MT>::print_info (std::ostream& os,
 }
 
 template <class MT>
+void
+octave_base_matrix<MT>::short_disp (std::ostream& os) const
+{
+  if (matrix.is_empty ())
+    os << "[]";
+  else if (matrix.ndims () == 2)
+    {
+      // FIXME: should this be configurable?
+      octave_idx_type max_elts = 10;
+      octave_idx_type elts = 0;
+
+      octave_idx_type nel = matrix.numel ();
+
+      octave_idx_type nr = matrix.rows ();
+      octave_idx_type nc = matrix.columns ();
+
+      os << "[";
+
+      for (octave_idx_type i = 0; i < nr; i++)
+        {
+          for (octave_idx_type j = 0; j < nc; j++)
+            {
+              std::ostringstream buf;
+              octave_print_internal (buf, matrix(j*nr+i));
+              std::string tmp = buf.str ();
+              size_t pos = tmp.find_first_not_of (" ");
+              os << tmp.substr (pos);
+
+              if (++elts >= max_elts)
+                goto done;
+
+              if (j < nc - 1)
+                os << ", ";
+            }
+
+          if (i < nr - 1 && elts < max_elts)
+            os << "; ";
+        }
+
+    done:
+
+      if (nel <= max_elts)
+        os << "]";
+    }
+  else
+    os << "...";
+}
+
+template <class MT>
 octave_value
 octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 {

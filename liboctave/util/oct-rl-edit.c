@@ -395,6 +395,10 @@ octave_rl_set_terminal_name (const char *term)
 void
 octave_rl_initialize (void)
 {
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  rl_catch_signals = 0;
+#endif
+
   rl_initialize ();
 }
 

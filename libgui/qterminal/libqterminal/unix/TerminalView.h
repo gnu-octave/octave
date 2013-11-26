@@ -447,6 +447,8 @@ public slots:
 
 signals:
 
+    void interrupt_signal (void);
+
     /**
      * Emitted when the user presses a key whilst the terminal widget has focus.
      */

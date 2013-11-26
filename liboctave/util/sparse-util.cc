@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "sparse-util.h"
 
-// FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
+// FIXME: this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
 
 #ifdef HAVE_CHOLMOD
 

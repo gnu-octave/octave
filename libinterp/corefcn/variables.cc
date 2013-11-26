@@ -388,8 +388,6 @@ safe_symbol_lookup (const std::string& symbol_name)
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  int retval = 0;
-
   std::string struct_elts;
   std::string symbol_name = name;
 
@@ -401,7 +399,70 @@ symbol_exist (const std::string& name, const std::string& type)
       symbol_name = name.substr (0, pos);
     }
   else if (is_keyword (symbol_name))
-    return retval;
+    return 0;
+
+  bool search_any = type == "any";
+  bool search_var = type == "var";
+  bool search_dir = type == "dir";
+  bool search_file = type == "file";
+  bool search_builtin = type == "builtin";
+
+  if (search_any || search_var)
+    {
+      bool not_a_struct = struct_elts.empty ();
+      bool var_ok = not_a_struct; // || val.is_map_element (struct_elts)
+
+      octave_value val = symbol_table::varval (name);
+
+      if (var_ok && (val.is_constant () || val.is_object ()
+                     || val.is_function_handle ()
+                     || val.is_anonymous_function ()
+                     || val.is_inline_function ()))
+        return 1;
+
+      if (search_var)
+        return 0;
+    }
+
+  if (search_any || search_file || search_dir)
+    {
+      std::string file_name = lookup_autoload (name);
+
+      if (file_name.empty ())
+        file_name = load_path::find_fcn (name);
+
+      size_t len = file_name.length ();
+
+      if (len > 0)
+        {
+          if (search_any || search_file)
+            {
+              if (len > 4 && (file_name.substr (len-4) == ".oct"
+                              || file_name.substr (len-4) == ".mex"))
+                return 3;
+              else
+                return 2;
+            }
+        }
+
+      file_name = file_in_path (name, "");
+
+      if (file_name.empty ())
+        file_name = name;
+
+      file_stat fs (file_name);
+
+      if (fs)
+        {
+          if (search_any || search_file)
+            return fs.is_dir () ? 7 : 2;
+          else if (search_dir && fs.is_dir ())
+            return 7;
+        }
+
+      if (search_file || search_dir)
+        return 0;
+    }
 
   // We shouldn't need to look in the global symbol table, since any
   // name that is visible in the current scope will be in the local
@@ -409,87 +470,23 @@ symbol_exist (const std::string& name, const std::string& type)
 
   octave_value val = safe_symbol_lookup (symbol_name);
 
-  if (val.is_defined ())
+  if (val.is_defined () && struct_elts.empty ())
     {
-      bool not_a_struct = struct_elts.empty ();
-      bool var_ok = not_a_struct /* || val.is_map_element (struct_elts) */;
+      if ((search_any || search_builtin)
+          && val.is_builtin_function ())
+        return 5;
 
-      if (! retval
-          && var_ok
-          && (type == "any" || type == "var")
-          && (val.is_constant () || val.is_object ()
-              || val.is_function_handle ()
-              || val.is_anonymous_function ()
-              || val.is_inline_function ()))
-        {
-          retval = 1;
-        }
-
-      if (! retval
-          && (type == "any" || type == "builtin"))
-        {
-          if (not_a_struct && val.is_builtin_function ())
-            {
-              retval = 5;
-            }
-        }
-
-      if (! retval
-          && not_a_struct
-          && (type == "any" || type == "file")
+      if ((search_any || search_file)
           && (val.is_user_function () || val.is_dld_function ()))
         {
           octave_function *f = val.function_value (true);
           std::string s = f ? f->fcn_file_name () : std::string ();
 
-          retval = s.empty () ? 103 : (val.is_user_function () ? 2 : 3);
+          return s.empty () ? 103 : (val.is_user_function () ? 2 : 3);
         }
     }
 
-  if (! (type == "var" || type == "builtin"))
-    {
-      if (! retval)
-        {
-          std::string file_name = lookup_autoload (name);
-
-          if (file_name.empty ())
-            file_name = load_path::find_fcn (name);
-
-          size_t len = file_name.length ();
-
-          if (len > 0)
-            {
-              if (type == "any" || type == "file")
-                {
-                  if (len > 4 && (file_name.substr (len-4) == ".oct"
-                                  || file_name.substr (len-4) == ".mex"))
-                    retval = 3;
-                  else
-                    retval = 2;
-                }
-            }
-        }
-
-      if (! retval)
-        {
-          std::string file_name = file_in_path (name, "");
-
-          if (file_name.empty ())
-            file_name = name;
-
-          file_stat fs (file_name);
-
-          if (fs)
-            {
-              if (type == "any" || type == "file")
-                retval = fs.is_dir () ? 7 : 2;
-              else if (type == "dir" && fs.is_dir ())
-                retval = 7;
-            }
-        }
-    }
-
-  return retval;
+  return 0;
 }
 
 #define GET_IDX(LEN) \
@@ -564,13 +561,17 @@ Check only for directories.\n\
 
       if (! error_state)
         {
-          std::string type
-            = (nargin == 2) ? args(1).string_value () : std::string ("any");
+          if (nargin == 2)
+            {
+              std::string type = args(1).string_value ();
 
-          if (! error_state)
-            retval = symbol_exist (name, type);
+              if (! error_state)
+                retval = symbol_exist (name, type);
+              else
+                error ("exist: TYPE must be a string");
+            }
           else
-            error ("exist: TYPE must be a string");
+            retval = symbol_exist (name);
         }
       else
         error ("exist: NAME must be a string");
@@ -1563,7 +1564,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
     {
       if (argv[i] == "-file")
         {
-          // FIXME. This is an inefficient manner to implement this as the
+          // FIXME: This is an inefficient manner to implement this as the
           // variables are loaded in to a temporary context and then treated.
           // It would be better to refecat symbol_info_list to not store the
           // symbol records and then use it in load-save.cc (do_load) to

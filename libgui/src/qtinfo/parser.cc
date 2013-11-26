@@ -76,14 +76,14 @@ parser::get_info_path ()
 QIODevice *
 parser::open_file (QFileInfo & file_info)
 {
-  QIODevice *iodevice=NULL;
+  QIODevice *iodevice = 0;
   if ( _compressors_map.contains(file_info.suffix ()))
     {
       QProcess gzip;
       gzip.start (_compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ()));
 
       if (!gzip.waitForFinished ())
-        return NULL;
+        return 0;
 
       QByteArray result = gzip.readAll ();
 
@@ -91,7 +91,7 @@ parser::open_file (QFileInfo & file_info)
       io->setData (result);
 
       if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
-        return NULL;
+        return 0;
 
       iodevice = io;
     }
@@ -99,7 +99,7 @@ parser::open_file (QFileInfo & file_info)
     {
       QFile *io = new QFile (file_info.absoluteFilePath ());
       if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
-        return NULL;
+        return 0;
       iodevice = io;
     }
 
@@ -140,7 +140,7 @@ parser::search_node (const QString& node_arg)
       real_position (pos, file_info, realPos);
 
       QIODevice *io = open_file (file_info);
-      if (io == NULL)
+      if (! io)
         {
           return QString ();
         }
@@ -427,7 +427,7 @@ parser::parse_info_map ()
       QFileInfo fileInfo = _info_files.at (i);
 
       QIODevice *io = open_file (fileInfo);
-      if (io == NULL)
+      if (! io)
         {
           continue;
         }
@@ -572,7 +572,7 @@ parser::global_search (const QString& text, int max_founds)
     {
       QFileInfo file_info = _info_files.at (i);
       QIODevice *io = open_file (file_info);
-      if (io == NULL)
+      if (! io)
         {
           continue;
         }

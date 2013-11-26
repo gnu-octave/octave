@@ -235,7 +235,7 @@ octave_char_matrix_str::string_value (bool) const
     {
       charMatrix chm = matrix.matrix_value ();
 
-      retval = chm.row_as_string (0);  // FIXME???
+      retval = chm.row_as_string (0);  // FIXME?
     }
   else
     error ("invalid conversion of charNDArray to string");
@@ -270,24 +270,19 @@ octave_char_matrix_str::print_raw (std::ostream& os,
                          current_print_indent_level (), true);
 }
 
-std::string
-octave_char_matrix_str::short_disp (void) const
+void
+octave_char_matrix_str::short_disp (std::ostream& os) const
 {
-  std::string retval;
-
   if (matrix.ndims () == 2 && numel () > 0)
     {
-      retval = string_value ();
+      std::string tmp = string_value ();
 
-      // FIXME -- should this be configurable?
+      // FIXME: should this be configurable?
+      size_t max_len = 100;
 
-      if (retval.length () > 100)
-        retval = retval.substr (0, 100);
+      os << (tmp.length () > max_len ? tmp.substr (0, 100) : tmp);
     }
-
-  return retval;
 }
-
 
 bool
 octave_char_matrix_str::save_ascii (std::ostream& os)

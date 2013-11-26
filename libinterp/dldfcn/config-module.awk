@@ -61,7 +61,7 @@ BEGIN {
     sub (/\.cc$/, "", basename);
     print "";
     printf ("dldfcn_%s_la_SOURCES = dldfcn/%s\n",
-	    basename, files[i]);
+            basename, files[i]);
     if (cppflags[i])
       {
         printf ("dldfcn/%s.df: CPPFLAGS += %s\n",

@@ -47,6 +47,7 @@ class charMatrix;
 class charNDArray;
 class PermMatrix;
 class Cell;
+class octave_value;
 
 #include "intNDArray.h"
 #include "oct-inttypes.h"
@@ -54,6 +55,10 @@ class Cell;
 
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, bool d,
+                       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, char c,
                        bool pr_as_read_syntax = false);
 
 extern OCTINTERP_API void
@@ -251,6 +256,10 @@ octave_print_internal (std::ostream& os, const Cell& cell,
                        bool pr_as_read_syntax = false,
                        int extra_indent = 0,
                        bool pr_as_string = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_value& ov,
+                       bool pr_as_read_syntax = false);
 
 // TRUE means that the dimensions of empty objects should be printed
 // like this: x = [](2x0).

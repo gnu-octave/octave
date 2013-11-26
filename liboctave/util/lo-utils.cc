@@ -90,8 +90,7 @@ strsave (const char *s)
 // This function was adapted from xputenv from Karl Berry's kpathsearch
 // library.
 
-// FIXME -- make this do the right thing if we don't have a
-// SMART_PUTENV.
+// FIXME: make this do the right thing if we don't have a SMART_PUTENV.
 
 void
 octave_putenv (const std::string& name, const std::string& value)
@@ -203,8 +202,7 @@ octave_fgetl (FILE *f, bool& eof)
   return retval;
 }
 
-// Note that the caller is responsible for repositioning the stream on
-// failure.
+// Note that the caller is responsible for repositioning the stream on failure.
 
 template <typename T>
 T
@@ -239,7 +237,10 @@ read_inf_nan_na (std::istream& is, char c0)
             if (c2 == 'n' || c2 == 'N')
               val = std::numeric_limits<T>::quiet_NaN ();
             else
-              val = octave_numeric_limits<T>::NA ();
+              {
+                val = octave_numeric_limits<T>::NA ();
+                is.putback (c2);
+              }
           }
         else
           is.setstate (std::ios::failbit);

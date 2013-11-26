@@ -468,7 +468,7 @@ fcn_file_in_path (const std::string& name)
         {
           file_stat fs (name);
 
-          if (fs.exists ())
+          if (fs.exists () && ! fs.is_dir ())
             retval = name;
         }
       else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')

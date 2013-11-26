@@ -330,7 +330,9 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   m_consoleWindow = GetConsoleWindow ();
 
   // In case the console window hasn't been created hidden...
+#ifdef HIDDEN_CONSOLE
   ShowWindow (m_consoleWindow, SW_HIDE);
+#endif
 
   CONSOLE_SCREEN_BUFFER_INFO sbi;
 
@@ -1518,9 +1520,7 @@ void QWinTerminalImpl::copyClipboard (void)
   QString selection = d->getSelection ();
 
   if (selection.isEmpty ())
-    {
-      ::raise (SIGINT);
-    }
+    terminal_interrupt ();
   else
     {
       clipboard->setText (selection);

@@ -520,7 +520,7 @@ pr_min_internal (const Matrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         double val = m(i,j);
-        if (xfinite (val))
+        if (! xfinite (val))
           continue;
 
         all_inf_or_nan = false;
@@ -1699,13 +1699,19 @@ pr_plus_format (std::ostream& os, const T& val)
 }
 
 void
-octave_print_internal (std::ostream& os, double d,
-                       bool /* pr_as_read_syntax */)
+octave_print_internal (std::ostream&, char, bool)
 {
-  if (plus_format)
-    {
-      pr_plus_format (os, d);
-    }
+  panic_impossible ();
+}
+
+void
+octave_print_internal (std::ostream& os, double d,
+                       bool pr_as_read_syntax)
+{
+  if (pr_as_read_syntax)
+    os << d;
+  else if (plus_format)
+    pr_plus_format (os, d);
   else
     {
       set_format (d);
@@ -2116,12 +2122,12 @@ pr_plus_format<> (std::ostream& os, const Complex& c)
 
 void
 octave_print_internal (std::ostream& os, const Complex& c,
-                       bool /* pr_as_read_syntax */)
+                       bool pr_as_read_syntax)
 {
-  if (plus_format)
-    {
-      pr_plus_format (os, c);
-    }
+  if (pr_as_read_syntax)
+    os << c;
+  else if (plus_format)
+    pr_plus_format (os, c);
   else
     {
       set_format (c);
@@ -3376,6 +3382,13 @@ PRINT_INT_ARRAY_INTERNAL (octave_uint64)
 
 void
 octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
+{
+  panic_impossible ();
+}
+
+void
+octave_print_internal (std::ostream&, const octave_value&,
+                       bool pr_as_read_syntax)
 {
   panic_impossible ();
 }

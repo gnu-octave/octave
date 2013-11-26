@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QDir>
 #include <QNetworkProxy>
 #include <QLibraryInfo>
+#include <QMessageBox>
 
 #include "error.h"
 #include "file-ops.h"
@@ -57,9 +58,17 @@ default_qt_settings_file (void)
 }
 
 resource_manager::resource_manager (void)
-  : settings (0), home_path (), first_run (false)
+  : settings_directory (), settings_file (), settings (0),
+    default_settings (0)
 {
-  do_reload_settings ();
+  QDesktopServices desktopServices;
+
+  QString home_path
+    = desktopServices.storageLocation (QDesktopServices::HomeLocation);
+
+  settings_directory = home_path + "/.config/octave";
+
+  settings_file = settings_directory + "/qt-settings";
 
   default_settings = new QSettings (default_qt_settings_file (),
                                     QSettings::IniFormat);
@@ -70,7 +79,6 @@ resource_manager::~resource_manager (void)
   delete settings;
   delete default_settings;
 }
-
 
 QString
 resource_manager::get_gui_translation_dir (void)
@@ -91,26 +99,36 @@ resource_manager::config_translators (QTranslator *qt_tr,
 
   QString qt_trans_dir
     = QLibraryInfo::location (QLibraryInfo::TranslationsPath);
+
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME: what should happen if settings is 0?
 
-  // get the locale from the settings
-  QString language = settings->value ("language","SYSTEM").toString ();
-  if (language == "SYSTEM")
-    language = QLocale::system ().name ();    // get system wide locale
+  if (settings)
+    {
+      // get the locale from the settings
+      QString language = settings->value ("language","SYSTEM").toString ();
 
-  // load the translator file for qt strings
-  loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
-  if (!loaded) // try lower case
-    qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
+      if (language == "SYSTEM")
+        language = QLocale::system ().name ();    // get system wide locale
 
-  // load the translator file for qscintilla settings
-  loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
-  if (!loaded) // try lower case
-    qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
+      // load the translator file for qt strings
+      loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
 
-  // load the translator file for gui strings
-  gui_tr->load (language, get_gui_translation_dir ());
+      if (!loaded) // try lower case
+        qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
+
+      // load the translator file for qscintilla settings
+      loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
+
+      if (!loaded) // try lower case
+        qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
+
+      // load the translator file for gui strings
+      gui_tr->load (language, get_gui_translation_dir ());
+    }
+  else
+    {
+      // FIXME: Is this an error?  If so, what should we do?
+    }
 }
 
 bool
@@ -149,42 +167,47 @@ resource_manager::do_get_default_settings (void) const
 }
 
 QString
-resource_manager::do_get_home_path (void) const
+resource_manager::do_get_settings_directory (void)
 {
-  return home_path;
-}
-
-QString
-resource_manager::do_get_settings_path (void)
-{
-  QDesktopServices desktopServices;
-  home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  QString settings_path = home_path + "/.config/octave/";
-  return settings_path;
+  return settings_directory;
 }
 
 QString
 resource_manager::do_get_settings_file (void)
 {
-  return do_get_settings_path ()  + "qt-settings";
+  return settings_file;
 }
 
 void
 resource_manager::do_reload_settings (void)
 {
-  QDesktopServices desktopServices;
-  home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  QString settings_path = do_get_settings_path ();
-  QString settings_file = do_get_settings_file ();
-
-  if (!QFile::exists (settings_file))
+  if (! QFile::exists (settings_file))
     {
-      QDir ("/").mkpath (settings_path);
-      QFile::copy (default_qt_settings_file (), settings_file);
-      first_run = true;
+      QDir ("/").mkpath (settings_directory);
+      QFile qt_settings (default_qt_settings_file ());
+
+      if (!qt_settings.open (QFile::ReadOnly))
+        return;
+
+      QTextStream in (&qt_settings);
+      QString settings_text = in.readAll ();
+      qt_settings.close ();
+
+      // Get the default monospaced font and replace placeholder
+      QFont fixed_font = QFont ();
+      fixed_font.setStyleHint (QFont::Monospace);
+      settings_text.replace("__default_font__",fixed_font.defaultFamily ());
+      settings_text.replace("__default_font_size__","10");
+
+      QFile user_settings (settings_file);
+      if (!user_settings.open (QIODevice::WriteOnly))
+        return;
+
+      QTextStream out (&user_settings);
+      out << settings_text;
+      user_settings.flush ();
+      user_settings.close ();
     }
-  else
-    first_run = false;
 
   do_set_settings (settings_file);
 }
@@ -194,38 +217,59 @@ resource_manager::do_set_settings (const QString& file)
 {
   delete settings;
   settings = new QSettings (file, QSettings::IniFormat);
+
+  if (! (settings
+         && QFile::exists (settings->fileName ())
+         && settings->isWritable ()
+         && settings->status () ==  QSettings::NoError))
+    {
+      QString msg = QString (QT_TR_NOOP ("The settings file\n%1\n"
+              "does not exist and can not be created.\n"
+              "Make sure you have read and write permissions to\n%2\n\n"
+              "Octave GUI must be closed now."));
+      QMessageBox::critical (0, QString (QT_TR_NOOP ("Octave Critical Error")),
+          msg.arg (do_get_settings_file ()).arg (do_get_settings_directory ()));
+      exit (1);
+    }
 }
 
 bool
 resource_manager::do_is_first_run (void) const
 {
-  return first_run;
+  return ! QFile::exists (settings_file);
 }
 
 void
 resource_manager::do_update_network_settings (void)
 {
-  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-
-  if (settings->value ("useProxyServer",false).toBool ())
+  if (settings)
     {
-      QString proxyTypeString = settings->value ("proxyType").toString ();
+      QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
-      if (proxyTypeString == "Socks5Proxy")
-        proxyType = QNetworkProxy::Socks5Proxy;
-      else if (proxyTypeString == "HttpProxy")
-        proxyType = QNetworkProxy::HttpProxy;
+      if (settings->value ("useProxyServer",false).toBool ())
+        {
+          QString proxyTypeString = settings->value ("proxyType").toString ();
+
+          if (proxyTypeString == "Socks5Proxy")
+            proxyType = QNetworkProxy::Socks5Proxy;
+          else if (proxyTypeString == "HttpProxy")
+            proxyType = QNetworkProxy::HttpProxy;
+        }
+
+      QNetworkProxy proxy;
+
+      proxy.setType (proxyType);
+      proxy.setHostName (settings->value ("proxyHostName").toString ());
+      proxy.setPort (settings->value ("proxyPort",80).toInt ());
+      proxy.setUser (settings->value ("proxyUserName").toString ());
+      proxy.setPassword (settings->value ("proxyPassword").toString ());
+
+      QNetworkProxy::setApplicationProxy (proxy);
     }
-
-  QNetworkProxy proxy;
-
-  proxy.setType (proxyType);
-  proxy.setHostName (settings->value ("proxyHostName").toString ());
-  proxy.setPort (settings->value ("proxyPort",80).toInt ());
-  proxy.setUser (settings->value ("proxyUserName").toString ());
-  proxy.setPassword (settings->value ("proxyPassword").toString ());
-
-  QNetworkProxy::setApplicationProxy (proxy);
+  else
+    {
+      // FIXME: Is this an error?  If so, what should we do?
+    }
 }
 
 QStringList

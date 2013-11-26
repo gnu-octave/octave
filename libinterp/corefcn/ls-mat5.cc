@@ -172,7 +172,7 @@ read_mat5_binary_data (std::istream& is, double *data,
     case miRESERVE3:
       break;
 
-    // FIXME -- how are the 64-bit cases supposed to work here?
+    // FIXME: how are the 64-bit cases supposed to work here?
     case miINT64:
       read_doubles (is, data, LS_LONG, count, swap, flt_fmt);
       break;
@@ -237,7 +237,7 @@ read_mat5_binary_data (std::istream& is, float *data,
     case miRESERVE3:
       break;
 
-    // FIXME -- how are the 64-bit cases supposed to work here?
+    // FIXME: how are the 64-bit cases supposed to work here?
     case miINT64:
       read_floats (is, data, LS_LONG, count, swap, flt_fmt);
       break;

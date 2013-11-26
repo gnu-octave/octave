@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,58 +21,34 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef NEWSDOCKWIDGET_H
-#define NEWSDOCKWIDGET_H
+#ifndef octave_interpreter_h
+#define octave_interpreter_h 1
 
-#include <QTextBrowser>
+#include <QObject>
 
-#include "octave-dock-widget.h"
+#include "thread-manager.h"
 
-class news_dock_widget : public octave_dock_widget
+class octave_interpreter : public QObject
 {
   Q_OBJECT
 
 public:
 
-  news_dock_widget (QWidget *parent = 0);
+  // An object to manage the Octave interpreter.
 
-  void load_news (void);
-
-protected slots:
-
-  void display_news (const QString& news);
-
-  /* from octave_dock_widget */
-  void copyClipboard ();
-
-private:
-
-  QTextBrowser *browser;
-};
-
-class news_reader : public QObject
-{
-  Q_OBJECT
-
-public:
-
-  news_reader (const QString& xbase_url, const QString& xpage)
-    : QObject (), base_url (xbase_url), page (xpage) { }
+  octave_interpreter (void) : QObject (), thread_manager () { }
 
 public slots:
 
-  void process (void);
+  // Initialize and execute the octave interpreter.
 
-signals:
+  void execute (void);
 
-  void display_news_signal (const QString& news);
-
-  void finished (void);
+  void interrupt (void);
 
 private:
 
-  QString base_url;
-  QString page;
+  octave_thread_manager thread_manager;
 };
 
-#endif // NEWSDOCKWIDGET_H
+#endif

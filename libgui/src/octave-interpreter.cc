@@ -21,29 +21,33 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#ifndef OCTAVEMAINTHREAD_H
-#define OCTAVEMAINTHREAD_H
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#include <QThread>
+#include <string>
 
-/**
-  * \class octave_main
-  * \brief This class represents a thread just running octave_main.
-  * \author Jacob Dawid
-  */
-class octave_main_thread : public QThread
+#include <signal.h>
+
+#include "octave.h"
+
+#include "octave-interpreter.h"
+
+void
+octave_interpreter::execute (void)
 {
-public:
-  // Create a new thread for running the octave interpreter.
-  octave_main_thread (void) : QThread () { }
+  thread_manager.register_current_thread ();
 
-  // Start the thread and initialize and execute the octave
-  // interpreter.
-  void execute_interpreter (void);
+  octave_thread_manager::unblock_interrupt_signal ();
 
-protected:
-  // Avoid exec.  Run the octave interpreter in the new thread.
-  void run (void);
-};
+  octave_initialize_interpreter (octave_cmdline_argc, octave_cmdline_argv,
+                                 octave_embedded);
 
-#endif // OCTAVEMAINTHREAD_H
+  octave_execute_interpreter ();
+}
+
+void
+octave_interpreter::interrupt (void)
+{
+  thread_manager.interrupt ();
+}

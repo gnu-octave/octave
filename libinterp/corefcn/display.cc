@@ -42,7 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 display_info *display_info::instance = 0;
 
 #if defined (HAVE_FRAMEWORK_CARBON) && ! defined (HAVE_CARBON_CGDISPLAYBITSPERPIXEL)
-// FIXME - This will only work for MacOS > 10.5. For earlier versions
+// FIXME: This will only work for MacOS > 10.5. For earlier versions
 // this code is not needed (use CGDisplayBitsPerPixel instead).
 size_t DisplayBitsPerPixel (CGDirectDisplayID display)
 {

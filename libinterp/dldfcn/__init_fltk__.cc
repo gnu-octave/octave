@@ -74,6 +74,7 @@ To initialize:
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 
+#include "display.h"
 #include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
@@ -289,7 +290,7 @@ public:
       {
         const Fl_Menu_Item *m = static_cast<const Fl_Menu_Item*> (&
                                 (menubar->menu ()[t]));
-        if ((m->label () != NULL) && m->visible ())
+        if (m->label () && m->visible ())
           n++;
       }
 
@@ -336,7 +337,7 @@ public:
         else
           {
             // End of submenu? Pop back one level.
-            if (m->label () == NULL)
+            if (! m->label ())
               {
                 std::size_t idx = menupath.find_last_of ("/");
                 if (idx != std::string::npos)
@@ -420,7 +421,7 @@ public:
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
-        if (item != NULL)
+        if (item)
           {
             std::string acc = uimenup.get_accelerator ();
             if (acc.length () > 0)
@@ -439,13 +440,13 @@ public:
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
-        if (item != NULL)
+        if (item)
           {
             if (!uimenup.get_callback ().is_empty ())
               item->callback (static_cast<Fl_Callback*> (script_cb),
                               static_cast<void*> (&uimenup));
             else
-              item->callback (NULL, static_cast<void*> (0));
+              item->callback (0, static_cast<void*> (0));
           }
       }
   }
@@ -457,7 +458,7 @@ public:
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
-        if (item != NULL)
+        if (item)
           {
             if (uimenup.is_enable ())
               item->activate ();
@@ -474,7 +475,7 @@ public:
       {
         Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (
                                fltk_label.c_str ()));
-        if (item != NULL)
+        if (item)
           {
             Matrix rgb = uimenup.get_foregroundcolor_rgb ();
 
@@ -503,7 +504,7 @@ public:
             Fl_Menu_Item* item
               = const_cast<Fl_Menu_Item*> (&menubar->menu () [idx]);
             itemflags = item->flags;
-            if (item->label () != NULL)
+            if (item->label ())
               break;
           }
 
@@ -527,7 +528,7 @@ public:
       {
         Fl_Menu_Item* item
           = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
-        if (item != NULL)
+        if (item)
           {
             if (uimenup.is_visible ())
               item->show ();
@@ -550,19 +551,7 @@ public:
             const Fl_Menu_Item* item
               = menubar->find_item (fltk_label.c_str ());
 
-            if (item == NULL)
-              {
-                Matrix uimenu_ch = find_uimenu_children (uimenup);
-                int len = uimenu_ch.numel ();
-                int flags = 0;
-                if (len > 0)
-                  flags = FL_SUBMENU;
-                if (len == 0 && uimenup.is_checked ())
-                  flags += FL_MENU_TOGGLE + FL_MENU_VALUE;
-                menubar->add (fltk_label.c_str (), 0, 0, 0, flags);
-                item_added = true;
-              }
-            else
+            if (item)
               {
                 //avoid duplicate menulabels
                 std::size_t idx1 = fltk_label.find_last_of ("(");
@@ -580,6 +569,18 @@ public:
                 std::ostringstream valstream;
                 valstream << val;
                 fltk_label += "(" + valstream.str () + ")";
+              }
+            else
+              {
+                Matrix uimenu_ch = find_uimenu_children (uimenup);
+                int len = uimenu_ch.numel ();
+                int flags = 0;
+                if (len > 0)
+                  flags = FL_SUBMENU;
+                if (len == 0 && uimenup.is_checked ())
+                  flags += FL_MENU_TOGGLE + FL_MENU_VALUE;
+                menubar->add (fltk_label.c_str (), 0, 0, 0, flags);
+                item_added = true;
               }
           }
         while (!item_added);
@@ -821,7 +822,7 @@ public:
   {
     if (!uimenu->is_visible ())
       {
-        // FIXME - Toolbar and menubar do not update
+        // FIXME: Toolbar and menubar do not update
         uimenu->show ();
         mark_modified ();
       }
@@ -831,7 +832,7 @@ public:
   {
     if (uimenu->is_visible ())
       {
-        // FIXME - Toolbar and menubar do not update
+        // FIXME: Toolbar and menubar do not update
         uimenu->hide ();
         mark_modified ();
       }
@@ -1085,6 +1086,7 @@ private:
                      int px1 = -1, int py1 = -1)
   {
     double x0, y0, x1, y1;
+    x0 = y0 = x1 = y1 = octave_NaN;
     std::stringstream cbuf;
     cbuf.precision (4);
     cbuf.width (6);
@@ -1219,7 +1221,7 @@ private:
 
   void draw (void)
   {
-    // FIXME - Toolbar and menubar do not update properly
+    // FIXME: Toolbar and menubar do not update properly
     Matrix pos = fp.get_boundingbox (true);
     int canvas_h = pos(3);
     int canvas_w = pos(2);
@@ -2050,7 +2052,7 @@ public:
 
         input_event_hook_fcn_id = octave_value_list ();
 
-        // FIXME ???
+        // FIXME: ???
         Fl::wait (fltk_maxtime);
       }
   }
@@ -2090,7 +2092,9 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK
-  if (! toolkit_loaded)
+  if (! display_info::display_available ())
+    error ("__init_fltk__: no graphics DISPLAY available");
+  else if (! toolkit_loaded)
     {
       mlock ();
 

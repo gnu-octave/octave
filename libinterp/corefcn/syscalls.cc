@@ -283,9 +283,10 @@ waitpid (pid);\n\
    @print{} are\n\
 @end example\n\
 \n\
-Note that @code{popen2}, unlike @code{popen}, will not @qcode{\"reap\"} the\n\
+Note that @code{popen2}, unlike @code{popen}, will not @nospell{\"reap\"} the\n\
 child process.  If you don't use @code{waitpid} to check the child's\n\
 exit status, it will linger until Octave exits.\n\
+@seealso{popen, waitpid}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -378,11 +379,19 @@ exit status, it will linger until Octave exits.\n\
 
 /*
 %!test
+%! unix_sort = true;
+%! cmd = {"sort", "-r"};
+%! if (ispc ())
+%!   status = system ("sort /? 2>NUL 1>NUL");
+%!   if (status == 0)
+%!     unix_sort = false;
+%!     cmd = {"sort", "/R"};
+%!   endif
+%! endif
+%! [in, out, pid] = popen2 (cmd{:});
 %! if (isunix ())
-%!   [in, out, pid] = popen2 ("sort", "-r");
 %!   EAGAIN = errno ("EAGAIN");
 %! else
-%!   [in, out, pid] = popen2 ("sort", "/R");
 %!   EAGAIN = errno ("EINVAL");
 %! endif
 %! fputs (in, "these\nare\nsome\nstrings\n");
@@ -392,7 +401,7 @@ exit status, it will linger until Octave exits.\n\
 %! idx = 0;
 %! errs = 0;
 %! do
-%!   if (!isunix ())
+%!   if (! isunix ())
 %!     errno (0);
 %!   endif
 %!   s = fgets (out);
@@ -410,7 +419,8 @@ exit status, it will linger until Octave exits.\n\
 %!   endif
 %! until (done)
 %! fclose (out);
-%! if (isunix ())
+%! waitpid (pid);
+%! if (unix_sort)
 %!   assert (str, {"these\n","strings\n","some\n","are\n"});
 %! else
 %!   assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});

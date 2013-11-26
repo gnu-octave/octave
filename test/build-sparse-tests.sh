@@ -231,7 +231,7 @@ EOF
 
 gen_function() {
     if $preset; then
-	cat >>$TESTS <<EOF
+        cat >>$TESTS <<EOF
 ##
 ## test_sparse
 ##
@@ -243,7 +243,7 @@ endfunction
 
 EOF
     else
-	cat >>$TESTS <<EOF
+        cat >>$TESTS <<EOF
 ##
 ## test_sprandom
 ##

@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QApplication>
-#include <QCoreApplication>
 #include <QTextCodec>
 #include <QThread>
 #include <QTranslator>
@@ -51,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "resource-manager.h"
 #include "main-window.h"
 #include "octave-gui.h"
+#include "thread-manager.h"
 
 // Allow the Octave interpreter to start as in CLI mode with a
 // QApplication context so that it can use Qt for things like plotting
@@ -69,11 +69,13 @@ protected:
 
   void run (void)
   {
+    octave_thread_manager::unblock_interrupt_signal ();
+
     octave_initialize_interpreter (m_argc, m_argv, 0);
 
     m_result = octave_execute_interpreter ();
 
-    QCoreApplication::exit (m_result);
+    QApplication::exit (m_result);
   }
 
 private:
@@ -118,6 +120,8 @@ void message_handler (QtMsgType type, const char *msg)
 int
 octave_start_gui (int argc, char *argv[], bool start_gui)
 {
+  octave_thread_manager::block_interrupt_signal ();
+
   qInstallMsgHandler (message_handler);
 
   if (start_gui)
@@ -127,58 +131,66 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       // Set the codec for all strings
       QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
+      if (resource_manager::is_first_run ())
+        {
+          welcome_wizard welcomeWizard;
+
+          if (welcomeWizard.exec () == QDialog::Rejected)
+            exit (1);
+        }
+
+      resource_manager::reload_settings ();
+
       // install translators for the gui and qt text
       QTranslator gui_tr, qt_tr, qsci_tr;
-      resource_manager::config_translators (&qt_tr,&qsci_tr,&gui_tr);
+
+      resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
+
       application.installTranslator (&qt_tr);
       application.installTranslator (&qsci_tr);
       application.installTranslator (&gui_tr);
 
-      while (true)
-        {
-          if (resource_manager::is_first_run ())
-            {
-              welcome_wizard welcomeWizard;
-              welcomeWizard.exec ();
-              resource_manager::reload_settings ();
-            }
-          else
-            {
-              // update network-settings
-              resource_manager::update_network_settings ();
+      // update network-settings
+      resource_manager::update_network_settings ();
 
 #if ! defined (__WIN32__) || defined (__CYGWIN__)
-              // If we were started from a launcher, TERM might not be
-              // defined, but we provide a terminal with xterm
-              // capabilities.
+      // If we were started from a launcher, TERM might not be
+      // defined, but we provide a terminal with xterm
+      // capabilities.
 
-              std::string term = octave_env::getenv ("TERM");
+      std::string term = octave_env::getenv ("TERM");
 
-              if (term.empty ())
-                octave_env::putenv ("TERM", "xterm");
+      if (term.empty ())
+        octave_env::putenv ("TERM", "xterm");
 #else
-              std::string term = octave_env::getenv ("TERM");
+      std::string term = octave_env::getenv ("TERM");
 
-              if (term.empty ())
-                octave_env::putenv ("TERM", "cygwin");
+      if (term.empty ())
+        octave_env::putenv ("TERM", "cygwin");
 #endif
 
-              // create main window, read settings, and show window
-              main_window w;
-              w.read_settings ();  // get widget settings and window layout
-              w.focus_command_window ();
-              w.connect_visibility_changed (); // connect signals for changes
-                                               // in visibility not before w
-                                               // is shown
-              return application.exec ();
-            }
-        }
+      // Create and show main window.
+
+      main_window w;
+
+      w.read_settings ();
+
+      w.focus_command_window ();
+
+      // Connect signals for changes in visibility not before w
+      // is shown.
+
+      w.connect_visibility_changed ();
+
+      return application.exec ();
     }
   else
     {
-      QCoreApplication application (argc, argv);
+      QApplication application (argc, argv);
 
       octave_cli_thread main_thread (argc, argv);
+      
+      application.setQuitOnLastWindowClosed (false);
 
       main_thread.start ();
 

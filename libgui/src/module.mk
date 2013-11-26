@@ -90,11 +90,12 @@ octave_gui_MOC += \
   src/moc-files-dock-widget.cc \
   src/moc-history-dock-widget.cc \
   src/moc-main-window.cc \
+  src/moc-octave-interpreter.cc \
   src/moc-octave-qt-link.cc \
   src/moc-settings-dialog.cc \
-  src/moc-news-dock-widget.cc \
   src/moc-terminal-dock-widget.cc \
   src/moc-color-picker.cc \
+  src/moc-resource-manager.cc \
   src/moc-welcome-wizard.cc \
   src/moc-workspace-model.cc \
   src/moc-workspace-view.cc \
@@ -126,13 +127,13 @@ noinst_HEADERS += \
   src/m-editor/octave-qscintilla.h \
   src/main-window.h \
   src/octave-gui.h \
-  src/octave-main-thread.h \
+  src/octave-interpreter.h \
   src/octave-qt-link.h \
   src/qtinfo/parser.h \
   src/qtinfo/webinfo.h \
   src/resource-manager.h \
   src/settings-dialog.h \
-  src/news-dock-widget.h \
+  src/thread-manager.h \
   src/terminal-dock-widget.h \
   src/color-picker.h \
   src/welcome-wizard.h \
@@ -153,13 +154,13 @@ src_libgui_src_la_SOURCES = \
   src/main-window.cc \
   src/octave-dock-widget.cc \
   src/octave-gui.cc \
-  src/octave-main-thread.cc \
+  src/octave-interpreter.cc \
   src/octave-qt-link.cc \
   src/qtinfo/parser.cc \
   src/qtinfo/webinfo.cc \
   src/resource-manager.cc \
   src/settings-dialog.cc \
-  src/news-dock-widget.cc \
+  src/thread-manager.cc \
   src/terminal-dock-widget.cc \
   src/color-picker.cc \
   src/welcome-wizard.cc \
@@ -187,7 +188,8 @@ src_libgui_src_la_CPPFLAGS = \
   -I$(top_builddir)/libinterp -I$(top_srcdir)/libinterp \
   -I$(top_builddir)/libinterp/parse-tree -I$(top_srcdir)/libinterp/parse-tree \
   -I$(top_builddir)/libinterp/corefcn -I$(top_srcdir)/libinterp/corefcn \
-  -I$(top_srcdir)/libinterp/octave-value
+  -I$(top_srcdir)/libinterp/octave-value \
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
 src_libgui_src_la_CFLAGS = $(AM_CFLAGS) $(WARN_CFLAGS)
 

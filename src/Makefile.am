@@ -63,6 +63,8 @@ nodist_octave_SOURCES = main.cc
 
 octave_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
+  $(X11_LIBS) \
+  $(CARBON_LIBS) \
   $(GNULIB_LINK_DEPS)
 
 octave_LDFLAGS = \

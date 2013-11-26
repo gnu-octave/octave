@@ -342,6 +342,7 @@ gl_EARLY
 
 GCC_VERSION=
 if test "$GCC" = yes; then
+  AC_MSG_CHECKING([C compiler version number])
   gcc_version=`$CC -v 2>&1 | $GREP "^.*gcc version" | \
     $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
@@ -350,12 +351,40 @@ if test "$GCC" = yes; then
      OCTAVE_CONFIGURE_WARNING([warn_gcc_version])])
 
   GCC_VERSION=$gcc_version
+  AC_MSG_RESULT([$GCC_VERSION])
 fi
-AC_SUBST(CC_VERSION)
+AC_SUBST(GCC_VERSION)
 
 ## FIXME: CC_VERSION is deprecated and should be removed in Octave version 3.12
-CC_VERSION=$gcc_version
-AC_SUBST(GCC_VERSION)
+CC_VERSION=$GCC_VERSION
+AC_SUBST(CC_VERSION)
+
+### Also check g++ version number, it might be different from the
+## gcc version number.
+
+GXX_VERSION=
+if test "$GXX" = yes; then
+  AC_MSG_CHECKING([C++ compiler version number])
+  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
+    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
+
+  AX_COMPARE_VERSION([$gxx_version], [lt], [3],
+    [warn_gxx_version="g++ version $gxx_version is likely to cause problems"
+     OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
+
+  GXX_VERSION=$gxx_version
+  AC_MSG_RESULT([$GXX_VERSION])
+fi
+AC_SUBST(GXX_VERSION)
+
+OCTAVE_CHECK_BROKEN_STL_ALGO_H
+AM_CONDITIONAL([AMCOND_HAVE_BROKEN_STL_ALGO_H],
+  [test $octave_cv_broken_stl_algo_h = yes])
+
+if test $octave_cv_broken_stl_algo_h = yes; then
+  warn_stl_algo_h="Found nth_element broken in g++ $GXX_VERSION.  Attempting to repair by using local patched version of bits/stl_algo.h."
+  OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+fi
 
 ### Determine the compiler flag necessary to create dependencies
 
@@ -395,12 +424,23 @@ CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 
 ### When compiling math for x87, problems may arise in some code comparing
-### floating-point intermediate results.
-### Generally, it helps to store the result in a local volatile variable,
-### but it also degrades performance.
+### floating-point intermediate results.  The root cause is the extra precision
+### (~80 bits) of x87 co-processor registers versus the IEEE standard 64 bits.
+### Generally, storing the result in a local volatile variable forces a
+### truncation back to 64 bits, but it also degrades performance.
 ### Thus, we provide a FLOAT_TRUNCATE macro that may be defined to "volatile"
 ### when compiling for x87 target, or left empty for modern SSE math, that
 ### doesn't suffer from this problem at all.
+### FIXME: If no option value is given, configure uses a default heuristic
+###        which assumes that truncation should occur for MinGW and Cygwin
+###        systems and not for any others.  It would be marginally nicer
+###        to replace this with a test that checks whether the problem arises
+###        and only sets the flag if necessary.  However, the principal
+###        scenario for those two systems is a cross-build where we can't
+###        run an executable so the test wouldn't be too useful most of the
+###        time (only native builds on MinGW and Cygwin *might* benefit).
+###        Maybe, one could generate assembly code with -S option and inspect
+###        it without having to run an executable, but this sounds pretty dicey.
 AC_ARG_ENABLE([float-truncate],
   [AS_HELP_STRING([--enable-float-truncate],
     [enables truncating intermediate FP results.])],
@@ -409,7 +449,14 @@ AC_ARG_ENABLE([float-truncate],
    else
      ac_float_truncate=
    fi],
-  [ac_float_truncate=])
+  [case $host_os in
+     mingw* | cygwin*)
+       ac_float_truncate=volatile
+     ;;
+     *)
+       ac_float_truncate=
+     ;;
+   esac])
 
 AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate], 
   [Define to volatile if you need to truncate intermediate FP results.])
@@ -1234,7 +1281,7 @@ fi
 XTRA_CRUFT_SH_LDFLAGS=
 if test $have_msvc = yes; then
   FLIBS="$FLIBS -lkernel32"
-  XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft/cruft.def"
+  XTRA_CRUFT_SH_LDFLAGS="-Wl,cruft/cruft.def"
 fi
 AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
@@ -1244,14 +1291,17 @@ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 save_FFLAGS="$FFLAGS"
 FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
 
-AX_BLAS_WITH_F77_FUNC([:], [:])
+AX_BLAS_WITH_F77_FUNC([:], [:],
+  [ax_blas_ok=yes
+  AC_MSG_CHECKING([BLAS can be called from Fortran])
+  AC_MSG_RESULT([yes assumed for cross compilation])])
 AX_LAPACK([:], [:])
 
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
 
 ## If necessary, try again with -ff2c in FFLAGS
-if test $ax_blas_f77_func_ok = no; then
+if test $ax_blas_ok = no; then
   save_FFLAGS="$FFLAGS"
   FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
 
@@ -1260,15 +1310,15 @@ if test $ax_blas_f77_func_ok = no; then
 
   ## Restore FFLAGS, with -ff2c if that was helpful
 
-  if test $ax_blas_f77_func_ok = no; then
-    FFLAGS="$save_FFLAGS"
-  else
+  if test $ax_blas_ok = yes; then
     FFLAGS="-ff2c $save_FFLAGS"
+  else
+    FFLAGS="$save_FFLAGS"
   fi
 fi
 
 ## On OSX, try again with a wrapper library (without -ff2c!)
-if test $ax_blas_f77_func_ok = no; then
+if test $ax_blas_ok = no; then
   case $host_os in
     darwin*)
       ## test if wrapper functions help
@@ -1297,7 +1347,7 @@ if test $ax_blas_f77_func_ok = no; then
       AC_LANG_POP(C)
       CFLAGS="$octave_blaswrap_save_CFLAGS"
 
-      if test $ax_blas_f77_func_ok = no; then
+      if test $ax_blas_ok = no; then
         BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
       else
         ## wrapper in cruft, remove from BLAS_LIBS
@@ -1309,8 +1359,8 @@ if test $ax_blas_f77_func_ok = no; then
   esac
 fi
 
-if test $ax_blas_f77_func_ok = no; then
-  if test $USE_64_BIT_IDX_T = yes && test $ax_blas_integer_size_ok = no; then
+if test $ax_blas_ok = no; then
+  if test $USE_64_BIT_IDX_T = yes && test "$ax_blas_integer_size_ok" = no; then
     ## Attempt to be more informative.
     AC_MSG_ERROR([BLAS doesn't seem to support 64-bit integers.  This is incompatible with --enable-64.])
   else
@@ -1977,7 +2027,7 @@ AC_CHECK_HEADERS([curses.h direct.h dlfcn.h floatingpoint.h fpu_control.h])
 AC_CHECK_HEADERS([grp.h ieeefp.h inttypes.h locale.h memory.h ncurses.h])
 AC_CHECK_HEADERS([poll.h pthread.h pwd.h sunmath.h sys/ioctl.h])
 AC_CHECK_HEADERS([sys/param.h sys/poll.h sys/resource.h])
-AC_CHECK_HEADERS([sys/select.h sys/utsname.h termcap.h])
+AC_CHECK_HEADERS([sys/select.h termcap.h])
 
 ## C++ headers
 
@@ -2098,7 +2148,7 @@ AC_CHECK_FUNCS([log1p log1pf pipe])
 AC_CHECK_FUNCS([realpath resolvepath roundl])
 AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
 AC_CHECK_FUNCS([tempnam tgammaf toascii])
-AC_CHECK_FUNCS([umask uname waitpid])
+AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_kbhit])
 
 dnl There are no workarounds in the code for missing these functions.
@@ -2388,7 +2438,7 @@ do
 
   ## Warn if JAVA_HOME is unset.  It is *strongly* advised to specify JAVA_HOME.
   if test -z "$JAVA_HOME"; then
-    warn_java_home="JAVA_HOME environment variable not initialized. Auto-detection will proceed but is unreliable."
+    warn_java_home="JAVA_HOME environment variable not initialized.  Auto-detection will proceed but is unreliable."
     OCTAVE_CONFIGURE_WARNING([warn_java_home])
   fi
 

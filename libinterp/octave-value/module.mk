@@ -156,6 +156,7 @@ octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
 
 octave_value_liboctave_value_la_CPPFLAGS = \
   $(liboctinterp_la_CPPFLAGS) \
+  $(HDF5_CPPFLAGS) \
   $(JAVA_CPPFLAGS)
 
 octave_value_liboctave_value_la_LIBADD = $(JAVA_LIBS)

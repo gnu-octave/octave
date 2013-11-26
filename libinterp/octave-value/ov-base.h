@@ -618,7 +618,7 @@ public:
   print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
 
-  virtual std::string short_disp (void) const { return "..."; }
+  virtual void short_disp (std::ostream& os) const { os << "..."; }
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 

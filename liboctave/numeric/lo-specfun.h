@@ -41,75 +41,75 @@ class FloatRowVector;
 class FloatComplexColumnVector;
 class Range;
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ACOSH)
 extern OCTAVE_API double acosh (double);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ASINH)
 extern OCTAVE_API double asinh (double);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ATANH)
 extern OCTAVE_API double atanh (double);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ERF)
 extern OCTAVE_API double erf (double);
 #endif
 extern OCTAVE_API Complex erf (const Complex& x);
 extern OCTAVE_API FloatComplex erf (const FloatComplex& x);
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ERFC)
 extern OCTAVE_API double erfc (double);
 #endif
 extern OCTAVE_API Complex erfc (const Complex& x);
 extern OCTAVE_API FloatComplex erfc (const FloatComplex& x);
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ACOSHF)
 extern OCTAVE_API float acoshf (float);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ASINHF)
 extern OCTAVE_API float asinhf (float);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ATANHF)
 extern OCTAVE_API float atanhf (float);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ERFF)
 extern OCTAVE_API float erff (float);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_ERFCF)
 extern OCTAVE_API float erfcf (float);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_EXPM1)
 extern OCTAVE_API double expm1 (double x);
 #endif
 extern OCTAVE_API Complex expm1 (const Complex& x);
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_EXPM1F)
 extern OCTAVE_API float expm1f (float x);
 #endif
 extern OCTAVE_API FloatComplex expm1 (const FloatComplex& x);
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_LOG1P)
 extern OCTAVE_API double log1p (double x);
 #endif
 extern OCTAVE_API Complex log1p (const Complex& x);
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_LOG1PF)
 extern OCTAVE_API float log1pf (float x);
 #endif
 extern OCTAVE_API FloatComplex log1p (const FloatComplex& x);
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_CBRT)
 extern OCTAVE_API double cbrt (double x);
 #endif
 
-#if !defined (octave_lo_specfun_h)
+#if !defined (HAVE_CBRTF)
 extern OCTAVE_API float cbrtf (float x);
 #endif
 

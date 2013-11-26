@@ -17,7 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} ls options
+## @deftypefn  {Command} {} ls
+## @deftypefnx {Command} {} ls filenames
+## @deftypefnx {Command} {} ls options
+## @deftypefnx {Command} {} ls options filenames
 ## List directory contents.  For example:
 ##
 ## @example
@@ -30,8 +33,13 @@
 ## @end example
 ##
 ## The @code{dir} and @code{ls} commands are implemented by calling your
-## system's directory listing command, so the available options may vary
+## system's directory listing command, so the available options will vary
 ## from system to system.
+##
+## Filenames are subject to shell expansion if they contain any wildcard
+## characters @samp{*}, @samp{?}, @samp{[]}.  If you want to find a
+## literal example of a wildcard character you must escape it using the
+## backslash operator @samp{\}.
 ## @seealso{dir, readdir, glob, what, stat, filesep, ls_command}
 ## @end deftypefn
 

@@ -6,9 +6,9 @@ function rot = parent (a)
     switch class (a)
       case 'parent'
         %% copy constructor
-	rot = a;
+        rot = a;
       otherwise
-	error ('type mismatch in parent constructor')
+        error ('type mismatch in parent constructor')
     end
   end
   __trace__ ('end parent/parent');

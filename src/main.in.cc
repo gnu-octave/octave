@@ -695,8 +695,7 @@ main (int argc, char **argv)
         }
       else
         {
-          // Parent.  Forward signals to the child while waiting for it
-          // to exit.
+          // Parent.  Forward signals to child while waiting for it to exit.
 
           int status;
 

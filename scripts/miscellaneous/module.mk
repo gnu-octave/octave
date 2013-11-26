@@ -24,7 +24,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
   miscellaneous/error_ids.m \
-	miscellaneous/fact.m \
+  miscellaneous/fact.m \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
   miscellaneous/fullfile.m \

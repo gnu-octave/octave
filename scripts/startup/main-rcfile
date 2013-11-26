@@ -7,8 +7,8 @@
 ## directory.
 
 readline_read_init_file (sprintf ("%s%s%s",
-				  octave_config_info ("startupfiledir"),
-				  filesep, "inputrc"));
+                                  octave_config_info ("startupfiledir"),
+                                  filesep, "inputrc"));
 
 if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
   PAGER_FLAGS ('-e -X -P"-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$"');

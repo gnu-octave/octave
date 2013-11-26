@@ -615,6 +615,7 @@ main (int argc, char **argv)
           #else
             file += "octave-cli";
           #endif
+          new_argv[k++] = argv[i];
         }
       else if (! strcmp (argv[i], "--no-gui-libs"))
         {

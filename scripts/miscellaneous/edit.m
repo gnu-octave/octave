@@ -160,7 +160,7 @@ function ret = edit (varargin)
     switch (toupper (statevar))
       case "EDITOR"
         error ("Octave:deprecated-function",
-               "The EDITOR option of edit has been removed. Use EDITOR() directly.")
+               "The EDITOR option of edit has been removed.  Use EDITOR() directly.")
         return;
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")

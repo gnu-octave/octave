@@ -585,18 +585,12 @@ main (int argc, char **argv)
 {
   int retval = 0;
 
-  bool start_gui = true;
-  bool gui_libs = true;
+  bool start_gui = false;
+  bool gui_libs = false;
 
   std::string octave_bindir = get_octave_bindir ();
 
-  std::string file = octave_bindir + dir_sep_char;
-
-#if defined (HAVE_OCTAVE_GUI)
-  file += "octave-gui";
-#else
-  file += "octave-cli";
-#endif
+  std::string file = octave_bindir + dir_sep_char + "octave-cli";
 
   char **new_argv = new char * [argc + 1];
 
@@ -611,7 +605,18 @@ main (int argc, char **argv)
 
   for (int i = 1; i < argc; i++)
     {
-      if (! strcmp (argv[i], "--no-gui-libs"))
+      if (! strcmp (argv[i], "--force-gui"))
+        {
+          start_gui = true;
+          gui_libs = true;
+          file = octave_bindir + dir_sep_char;
+          #if defined (HAVE_OCTAVE_GUI)
+            file += "octave-gui";
+          #else
+            file += "octave-cli";
+          #endif
+        }
+      else if (! strcmp (argv[i], "--no-gui-libs"))
         {
           // Run the version of Octave that is not linked with any GUI
           // libraries.  It may not be possible to do plotting or any
@@ -619,9 +624,7 @@ main (int argc, char **argv)
           // require less memory.  Don't pass the --no-gui-libs option
           // on as that option is not recognized by Octave.
 
-          start_gui = false;
-          gui_libs = false;
-          file = octave_bindir + dir_sep_char + "octave-cli";
+          // This is the default for 3.8 release.
         }
       else if (! strcmp (argv[i], "--no-gui"))
         {
@@ -631,8 +634,7 @@ main (int argc, char **argv)
           // if the --no-gui option is given, we may be asked to do some
           // plotting or ui* calls.
 
-          start_gui = false;
-          new_argv[k++] = argv[i];
+          // This option calls the cli executable for the 3.8 release.
         }
       else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "-q"))
         warn_display = false;
@@ -691,8 +693,7 @@ main (int argc, char **argv)
         }
       else
         {
-          // Parent.  Forward signals to the child while waiting for it
-          // to exit.
+          // Parent.  Forward signals to child while waiting for it to exit.
 
           int status;
 

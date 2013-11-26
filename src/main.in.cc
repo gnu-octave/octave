@@ -636,8 +636,12 @@ main (int argc, char **argv)
 
           // This option calls the cli executable for the 3.8 release.
         }
-      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "-q"))
-        warn_display = false;
+      else if (! strcmp (argv[i], "--silent") || ! strcmp (argv[i], "-q")
+               || ! strcmp (argv[i], "--quiet"))
+        {
+          warn_display = false;
+          new_argv[k++] = argv[i];
+        }
       else
         new_argv[k++] = argv[i];
     }

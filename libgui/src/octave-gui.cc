@@ -128,9 +128,19 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
     {
       QApplication application (argc, argv);
 
-      // Set the codec for all strings
+      // Set the codec for all strings (before wizard)
       QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
+      // install translators for the gui and qt text (before wizard)
+      QTranslator gui_tr, qt_tr, qsci_tr;
+
+      resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
+
+      application.installTranslator (&qt_tr);
+      application.installTranslator (&qsci_tr);
+      application.installTranslator (&gui_tr);
+
+      // show wizard if this is the first run
       if (resource_manager::is_first_run ())
         {
           welcome_wizard welcomeWizard;
@@ -140,15 +150,6 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
         }
 
       resource_manager::reload_settings ();
-
-      // install translators for the gui and qt text
-      QTranslator gui_tr, qt_tr, qsci_tr;
-
-      resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
-
-      application.installTranslator (&qt_tr);
-      application.installTranslator (&qsci_tr);
-      application.installTranslator (&gui_tr);
 
       // update network-settings
       resource_manager::update_network_settings ();

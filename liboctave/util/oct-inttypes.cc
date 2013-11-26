@@ -56,32 +56,58 @@ DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
 
 #ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
 
-template <class xop>
-bool
-octave_int_cmp_op::external_mop (long double x, long double y)
-{
-   DECL_LONG_DOUBLE_ROUNDING
+#define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T) \
+  template <class xop> \
+  bool \
+  octave_int_cmp_op::external_mop (double x, T y) \
+  { \
+     DECL_LONG_DOUBLE_ROUNDING \
+   \
+     BEGIN_LONG_DOUBLE_ROUNDING (); \
+   \
+     bool retval = xop::op (static_cast<long double> (x), \
+                            static_cast<long double> (y)); \
+   \
+     END_LONG_DOUBLE_ROUNDING (); \
+   \
+     return retval; \
+  } \
+   \
+  template <class xop> \
+  bool \
+  octave_int_cmp_op::external_mop (T x, double y) \
+  { \
+     DECL_LONG_DOUBLE_ROUNDING \
+   \
+     BEGIN_LONG_DOUBLE_ROUNDING (); \
+   \
+     bool retval = xop::op (static_cast<long double> (x), \
+                            static_cast<long double> (y)); \
+   \
+     END_LONG_DOUBLE_ROUNDING (); \
+   \
+     return retval; \
+  }
 
-   BEGIN_LONG_DOUBLE_ROUNDING ();
+DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (int64_t)
+DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (uint64_t)
 
-   bool retval = xop::op (x, y);
-
-   END_LONG_DOUBLE_ROUNDING ();
-
-   return retval;
-}
-
-#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP) \
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T) \
   template OCTAVE_API bool \
-  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (long double, \
-                                                          long double)
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (double, T); \
+  template OCTAVE_API bool \
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (T, double)
 
-INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(lt);
-INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(le);
-INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(gt);
-INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(ge);
-INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(eq);
-INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(ne);
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T) \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ne, T)
+
+INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (int64_t);
+INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (uint64_t);
 
 uint64_t
 octave_external_uint64_uint64_mul (uint64_t x, uint64_t y)
@@ -116,27 +142,43 @@ octave_external_int64_int64_mul (int64_t x, int64_t y)
 // which can happen after we end long double rounding.  Attempt to avoid
 // that problem by storing the full precision temporary value in the
 // integer value before we end the long double rounding mode.
+// Similarly, the conversion from the 64-bit integer type to long double
+// must also occur in long double rounding mode.
 
-#define OCTAVE_LONG_DOUBLE_OP(RT, OP, NAME) \
-  RT \
-  RT ## _external_long_double_ ## NAME (long double x, long double y) \
+#define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME) \
+  T \
+  external_double_ ## T ## _ ## NAME (double x, T y) \
   { \
     DECL_LONG_DOUBLE_ROUNDING \
  \
     BEGIN_LONG_DOUBLE_ROUNDING (); \
  \
-    RT retval = RT (x OP y); \
+    T retval = T (x OP static_cast<long double> (y.value ())); \
+ \
+    END_LONG_DOUBLE_ROUNDING (); \
+ \
+    return retval; \
+  } \
+ \
+  T \
+  external_ ## T ## _double_ ## NAME (T x, double y) \
+  { \
+    DECL_LONG_DOUBLE_ROUNDING \
+ \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+ \
+    T retval = T (static_cast<long double> (x.value ()) OP y); \
  \
     END_LONG_DOUBLE_ROUNDING (); \
  \
     return retval; \
   }
 
-#define OCTAVE_LONG_DOUBLE_OPS(RT) \
-  OCTAVE_LONG_DOUBLE_OP (RT, +, add); \
-  OCTAVE_LONG_DOUBLE_OP (RT, -, sub); \
-  OCTAVE_LONG_DOUBLE_OP (RT, *, mul); \
-  OCTAVE_LONG_DOUBLE_OP (RT, /, div)
+#define OCTAVE_LONG_DOUBLE_OPS(T) \
+  OCTAVE_LONG_DOUBLE_OP (T, +, add); \
+  OCTAVE_LONG_DOUBLE_OP (T, -, sub); \
+  OCTAVE_LONG_DOUBLE_OP (T, *, mul); \
+  OCTAVE_LONG_DOUBLE_OP (T, /, div)
 
 OCTAVE_LONG_DOUBLE_OPS(octave_int64);
 OCTAVE_LONG_DOUBLE_OPS(octave_uint64);

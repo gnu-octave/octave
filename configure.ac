@@ -1141,7 +1141,7 @@ if test -n "$OPENGL_LIBS"; then
   ## Check for fontconfig library
 
   warn_fontconfig=""
-  if test -z "$warn_freetype"; then
+  if test $native_graphics = yes; then
     PKG_CHECK_MODULES(FONTCONFIG, [fontconfig],
       [have_fontconfig=yes
        OPENGL_LIBS="$FONTCONFIG_LIBS $OPENGL_LIBS"
@@ -1153,6 +1153,20 @@ if test -n "$OPENGL_LIBS"; then
   if test -n "$warn_fontconfig"; then
     native_graphics=no
     OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
+  fi
+
+  ## Check for Xft library (when using X11)
+
+  warn_xft=""
+  if test $native_graphics = yes && test "$have_x" = yes; then
+    PKG_CHECK_MODULES(XFT, [xft],
+      [AC_DEFINE(HAVE_XFT, 1, [Define to 1 if Xft is present.])],
+      [warn_xft="Xft library not found.  Native graphics will be disabled."])
+  fi
+
+  if test -n "$warn_xft"; then
+    native_graphics=no
+    OCTAVE_CONFIGURE_WARNING([warn_xft])
   fi
 
   ## Check for FLTK (www.fltk.org) library

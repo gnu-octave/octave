@@ -1150,6 +1150,8 @@ main_window::construct (void)
 
   construct_tool_bar ();
 
+  construct_warning_bar ();
+
   connect (qApp, SIGNAL (aboutToQuit ()),
            this, SLOT (prepare_to_exit ()));
 
@@ -1769,6 +1771,55 @@ main_window::construct_news_menu (QMenuBar *p)
   connect (current_news_action, SIGNAL (triggered ()),
            this, SLOT (load_and_display_community_news ()));
 }
+
+void
+main_window::construct_warning_bar (void)
+{
+  QDockWidget *warning_bar = new QDockWidget (this);
+
+  QFrame *box = new QFrame (warning_bar);
+
+  QLabel *icon = new QLabel (box);
+  QIcon warning_icon = QIcon::fromTheme ("dialog-warning");
+  QPixmap icon_pixmap = warning_icon.pixmap (QSize (32, 32));
+  icon->setPixmap (icon_pixmap);
+
+  QTextBrowser *msg = new QTextBrowser (box);
+  msg->setOpenExternalLinks (true);
+  msg->setText
+    (tr ("<strong>You are using Octave's experimental GUI.</strong>  "
+         "It is under continuous improvement and will be the default "
+         "interface for the 4.0 release.  For more information, select "
+         "the \"Release Notes\" item in the \"Help\" menu of the GUI, "
+         "or visit <a href=\"http://octave.org\">http://octave.org</a>."));
+  msg->setStyleSheet ("background-color: #ffd97f; color: black; margin 4px;");
+  msg->setMinimumWidth (100);
+  msg->setMinimumHeight (48);
+  msg->setMaximumHeight (64);
+  msg->setSizePolicy (QSizePolicy (QSizePolicy::Expanding,
+                                   QSizePolicy::Minimum));
+
+  QHBoxLayout *icon_and_message = new QHBoxLayout;
+
+  icon_and_message->addWidget (icon);
+  icon_and_message->addSpacing (10);
+  icon_and_message->addWidget (msg);
+
+  box->setFrameStyle (QFrame::Box);
+  box->setLineWidth (2);
+  box->setMaximumWidth (1000);
+  box->adjustSize ();
+  box->setLayout (icon_and_message);
+
+  warning_bar->setFeatures (QDockWidget::NoDockWidgetFeatures);
+  warning_bar->setObjectName ("WarningToolBar");
+  warning_bar->setWidget (box);
+
+  addDockWidget (Qt::TopDockWidgetArea, warning_bar);
+
+  setCorner (Qt::TopLeftCorner, Qt::TopDockWidgetArea);
+  setCorner (Qt::TopRightCorner, Qt::TopDockWidgetArea);
+};
 
 void
 main_window::construct_tool_bar (void)

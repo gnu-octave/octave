@@ -222,6 +222,7 @@ private:
 
   void construct_news_menu (QMenuBar *p);
 
+  void construct_warning_bar (void);
   void construct_tool_bar (void);
 
   void establish_octave_link (void);

@@ -67,6 +67,7 @@ octave_gui_ICONS = \
   src/icons/terminal.png \
   src/icons/undo.png \
   src/icons/up.png \
+  src/icons/warning.png \
   src/icons/widget-close.png \
   src/icons/widget-dock.png \
   src/icons/widget-undock.png \

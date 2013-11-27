@@ -1780,7 +1780,9 @@ main_window::construct_warning_bar (void)
   QFrame *box = new QFrame (warning_bar);
 
   QLabel *icon = new QLabel (box);
-  QIcon warning_icon = QIcon::fromTheme ("dialog-warning");
+  QIcon warning_icon
+    = QIcon::fromTheme ("dialog-warning",
+                        QIcon (":/actions/icons/warning.png"));
   QPixmap icon_pixmap = warning_icon.pixmap (QSize (32, 32));
   icon->setPixmap (icon_pixmap);
 

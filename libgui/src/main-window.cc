@@ -1775,9 +1775,10 @@ main_window::construct_news_menu (QMenuBar *p)
 void
 main_window::construct_warning_bar (void)
 {
-  QDockWidget *warning_bar = new QDockWidget (this);
+  _warning_bar = new QDockWidget (this);
+  _warning_bar->setAttribute (Qt::WA_DeleteOnClose);
 
-  QFrame *box = new QFrame (warning_bar);
+  QFrame *box = new QFrame (_warning_bar);
 
   QLabel *icon = new QLabel (box);
   QIcon warning_icon
@@ -1789,23 +1790,41 @@ main_window::construct_warning_bar (void)
   QTextBrowser *msg = new QTextBrowser (box);
   msg->setOpenExternalLinks (true);
   msg->setText
-    (tr ("<strong>You are using Octave's experimental GUI.</strong>  "
-         "It is under continuous improvement and will be the default "
-         "interface for the 4.0 release.  For more information, select "
-         "the \"Release Notes\" item in the \"Help\" menu of the GUI, "
+    (tr ("<strong>You are using a release candidate of Octave's experimental GUI.</strong>  "
+         "Octave is under continuous improvement and the GUI will be the "
+         "default interface for the 4.0 release.  For more information, "
+         "select the \"Release Notes\" item in the \"Help\" menu of the GUI, "
          "or visit <a href=\"http://octave.org\">http://octave.org</a>."));
   msg->setStyleSheet ("background-color: #ffd97f; color: black; margin 4px;");
   msg->setMinimumWidth (100);
-  msg->setMinimumHeight (48);
-  msg->setMaximumHeight (64);
+  msg->setMinimumHeight (60);
+  msg->setMaximumHeight (80);
   msg->setSizePolicy (QSizePolicy (QSizePolicy::Expanding,
                                    QSizePolicy::Minimum));
+
+  QPushButton *info_button = new QPushButton (tr ("More Info"), box);
+  QPushButton *hide_button = new QPushButton (tr ("Hide"), box);
+
+  connect (info_button, SIGNAL (clicked ()),
+           this, SLOT (show_gui_info ()));
+
+  connect (hide_button, SIGNAL (clicked ()),
+           this, SLOT (hide_warning_bar ()));
+
+  QVBoxLayout *button_layout = new QVBoxLayout;
+
+  button_layout->addWidget (info_button);
+  button_layout->addWidget (hide_button);
 
   QHBoxLayout *icon_and_message = new QHBoxLayout;
 
   icon_and_message->addWidget (icon);
   icon_and_message->addSpacing (10);
   icon_and_message->addWidget (msg);
+  icon_and_message->addSpacing (10);
+  icon_and_message->addLayout (button_layout);
+
+  icon_and_message->setAlignment (hide_button, Qt::AlignTop);
 
   box->setFrameStyle (QFrame::Box);
   box->setLineWidth (2);
@@ -1813,15 +1832,53 @@ main_window::construct_warning_bar (void)
   box->adjustSize ();
   box->setLayout (icon_and_message);
 
-  warning_bar->setFeatures (QDockWidget::NoDockWidgetFeatures);
-  warning_bar->setObjectName ("WarningToolBar");
-  warning_bar->setWidget (box);
-
-  addDockWidget (Qt::TopDockWidgetArea, warning_bar);
+  _warning_bar->setFeatures (QDockWidget::NoDockWidgetFeatures);
+  _warning_bar->setObjectName ("WarningToolBar");
+  _warning_bar->setWidget (box);
 
   setCorner (Qt::TopLeftCorner, Qt::TopDockWidgetArea);
   setCorner (Qt::TopRightCorner, Qt::TopDockWidgetArea);
+
+  addDockWidget (Qt::TopDockWidgetArea, _warning_bar);
 };
+
+void
+main_window::hide_warning_bar (void)
+{
+  removeDockWidget (_warning_bar);
+
+  QIcon warning_icon
+    = QIcon::fromTheme ("dialog-warning",
+                        QIcon (":/actions/icons/warning.png"));
+
+  _warning_bar_info_button
+    = new QPushButton (warning_icon, tr ("Experimental GUI Info"));
+
+  _main_tool_bar->addWidget (_warning_bar_info_button);
+
+  connect (_warning_bar_info_button, SIGNAL (clicked ()),
+           this, SLOT (show_gui_info ()));
+}
+
+void
+main_window::show_gui_info (void)
+{
+  QString gui_info
+    (tr ("<p><strong>You are using a release candidate of Octave's experimental GUI.</strong>  "
+         "Octave is under continuous improvement and the GUI will be the "
+         "default interface for the 4.0 release.  For more information, "
+         "select the \"Release Notes\" item in the \"Help\" menu of the GUI, "
+         "or visit <a href=\"http://octave.org\">http://octave.org</a>.</p>"
+         "<p>This message should have more information than the initial "
+         "warning bar message.  Someone needs to write it before we "
+         "create the first release candidate.</p>"));
+
+  QMessageBox gui_info_dialog (QMessageBox::Warning,
+                               tr ("Experimental GUI Info"),
+                               gui_info, QMessageBox::Close);
+
+  gui_info_dialog.exec ();
+}
 
 void
 main_window::construct_tool_bar (void)

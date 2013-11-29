@@ -1805,6 +1805,7 @@ main_window::construct_warning_bar (void)
          "default interface for the 4.0 release.  For more information, "
          "select the \"Release Notes\" item in the \"Help\" menu of the GUI, "
          "or visit <a href=\"http://octave.org\">http://octave.org</a>."));
+
   msg->setStyleSheet ("background-color: #ffd97f; color: black; margin 4px;");
   msg->setMinimumWidth (100);
   msg->setMinimumHeight (60);
@@ -1889,14 +1890,41 @@ void
 main_window::show_gui_info (void)
 {
   QString gui_info
-    (tr ("<p><strong>You are using a release candidate of Octave's experimental GUI.</strong>  "
-         "Octave is under continuous improvement and the GUI will be the "
-         "default interface for the 4.0 release.  For more information, "
-         "select the \"Release Notes\" item in the \"Help\" menu of the GUI, "
-         "or visit <a href=\"http://octave.org\">http://octave.org</a>.</p>"
-         "<p>This message should have more information than the initial "
-         "warning bar message.  Someone needs to write it before we "
-         "create the first release candidate.</p>"));
+    (tr ("<p><strong>A Note about Octave's New GUI</strong></p>"
+         "<p>One of the biggest new features for Octave 3.8 is a graphical "
+         "user interface.  It is the one thing that users have requested "
+         "most often over the last few years and now it is almost ready.  "
+         "But because it is not quite as polished as we would like, we "
+         "have decided to wait until the 4.0.x release series before "
+         "making the GUI the default interface.</p>"
+         "<p>Given the length of time and the number of bug fixes and "
+         "improvements since the last major release Octave, we also "
+         "decided against delaying the release of all these new "
+         "improvements any longer just to perfect the GUI.  So please "
+         "enjoy the 3.8 release of Octave and the preview of the new GUI.  "
+         "We beleive it is working reasonably well, but we also know that "
+         "there are some obvious rough spots and many things that could be "
+         "improved.</p>"
+         "<p><strong>We Need Your Help</strong></p>"
+         "<p>There are many ways that you can help us fix the remaining "
+         "problems, complete the GUI, and improve the overall user "
+         "experience for both novices and experts alike (links will open "
+         "an external browser):</p>"
+         "<p><ul><li>If you are a skilled software developer, you can "
+         "help by contributing your time to help "
+         "<a href=\"http://octave.org/get-involved.html\">develop "
+         "Octave</a>.</li>"
+         "<li>If Octave does not work properly, you are encouraged to "
+         "<a href=\"http://octave.org/bugs.html\">report problems </a> "
+         "that you find.</li>"
+         "<li>Whether you are a user or developer, you can "
+         "<a href=\"http://octave.org/donate.html\">help to fund the "
+         "project</a>.  "
+         "Octave development takes a lot of time and expertise.  "
+         "Your contributions help to ensure that Octave will continue "
+         "to improve.</li></ul></p>"
+         "<p>We hope you find Octave to be useful.  Please help us make "
+         "it even better for the future!</p>"));
 
   QMessageBox gui_info_dialog (QMessageBox::Warning,
                                tr ("Experimental GUI Info"),

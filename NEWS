@@ -1,11 +1,41 @@
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
- ** An experimental GUI is now available with Octave.  The GUI works well
-    on Linux systems, acceptably on Windows, but unsatisfactorily on Mac OS X.
-    To start a GUI session include the "--force-gui" option when invoking
-    Octave.  The GUI is under continuous improvement and will be the default
-    interface for the 4.0 release.
+  ** One of the biggest new features for Octave 3.8 is a graphical user
+     interface.  It is the one thing that users have requested most
+     often over the last few years and now it is almost ready.  But
+     because it is not quite as polished as we would like, we have
+     decided to wait until the 4.0.x release series before making the
+     GUI the default interface (until then, you can use the --force-gui
+     option to start the GUI).
+
+     Given the length of time and the number of bug fixes and
+     improvements since the last major release Octave, we also decided
+     against delaying the release of all these new improvements any
+     longer just to perfect the GUI.  So please enjoy the 3.8 release of
+     Octave and the preview of the new GUI.  We beleive it is working
+     reasonably well, but we also know that there are some obvious rough
+     spots and many things that could be improved.
+
+     WE NEED YOUR HELP.  There are many ways that you can help us fix
+     the remaining problems, complete the GUI, and improve the overall
+     user experience for both novices and experts alike:
+
+       * If you are a skilled software developer, you can help by
+         contributing your time to help with Octave's development.  See
+         http://octave.org/get-involved.html for more information.
+
+       * If Octave does not work properly, you are encouraged
+         report the problems you find.  See http://octave.org/bugs.html
+         for more information about how to report problems.
+
+       * Whether you are a user or developer, you can help to fund the
+         project.  Octave development takes a lot of time and expertise.
+         Your contributions help to ensure that Octave will continue to
+         improve.  See http://octave.org/donate.html for more details.
+
+    We hope you find Octave to be useful.  Please help us make it even
+    better for the future!
 
  ** Octave now uses OpenGL graphics by default with FLTK widgets.  If
     OpenGL libraries or FLTK widgets are not available when Octave is

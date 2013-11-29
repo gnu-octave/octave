@@ -1775,6 +1775,16 @@ main_window::construct_news_menu (QMenuBar *p)
 void
 main_window::construct_warning_bar (void)
 {
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings
+      && settings->value ("General/hide_new_gui_warning", false).toBool ())
+    {
+      construct_gui_info_button ();
+
+      return;
+    }
+
   _warning_bar = new QDockWidget (this);
   _warning_bar->setAttribute (Qt::WA_DeleteOnClose);
 
@@ -1843,21 +1853,36 @@ main_window::construct_warning_bar (void)
 };
 
 void
-main_window::hide_warning_bar (void)
+main_window::construct_gui_info_button (void)
 {
-  removeDockWidget (_warning_bar);
-
   QIcon warning_icon
     = QIcon::fromTheme ("dialog-warning",
                         QIcon (":/actions/icons/warning.png"));
 
-  _warning_bar_info_button
+  _gui_info_button
     = new QPushButton (warning_icon, tr ("Experimental GUI Info"));
 
-  _main_tool_bar->addWidget (_warning_bar_info_button);
+  _main_tool_bar->addWidget (_gui_info_button);
 
-  connect (_warning_bar_info_button, SIGNAL (clicked ()),
+  connect (_gui_info_button, SIGNAL (clicked ()),
            this, SLOT (show_gui_info ()));
+}
+
+void
+main_window::hide_warning_bar (void)
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings)
+    {
+      settings->setValue ("General/hide_new_gui_warning", true);
+
+      settings->sync ();
+    }
+
+  removeDockWidget (_warning_bar);
+
+  construct_gui_info_button ();
 }
 
 void

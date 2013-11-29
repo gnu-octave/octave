@@ -226,6 +226,8 @@ private:
   void construct_news_menu (QMenuBar *p);
 
   void construct_warning_bar (void);
+  void construct_gui_info_button (void);
+
   void construct_tool_bar (void);
 
   void establish_octave_link (void);
@@ -298,7 +300,7 @@ private:
   QToolBar *_main_tool_bar;
 
   QDockWidget *_warning_bar;
-  QPushButton *_warning_bar_info_button;
+  QPushButton *_gui_info_button;
 
   QMenu *_debug_menu;
 

@@ -2476,7 +2476,7 @@ do
     JAVA_HOME=`echo $JAVA_TMP_HOME | $SED -e 's|[[/\\]]bin[[/\\]]\?$||' | $SED -e 's|[[/\\]]jre[[/\\]]\?$||'`
   fi
 
-  case $host_os in
+  case $build_os in
     mingw* | msdosmsvc)
       ## Under Win32 platform, we want JAVA_HOME to be in MSYS format, that is
       ## without colon and backslashes, as it is also used as path separator.
@@ -2484,13 +2484,7 @@ do
       ## (e.g. C:\Program Files\Java\...).
       if test -n "$JAVA_HOME"; then
         JAVA_HOME=`cd "$JAVA_HOME" && pwd`
-        ## Maybe this will be useful in the future, as native Java won't
-        ## understand MSYS paths.
-        JAVA_HOME_NATIVE=`cd "$JAVA_HOME" && pwd -W`
       fi
-    ;;
-    *)
-      JAVA_HOME_NATIVE="$JAVA_HOME"
     ;;
   esac
 

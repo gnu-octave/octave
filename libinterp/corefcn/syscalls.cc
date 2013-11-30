@@ -378,53 +378,71 @@ exit status, it will linger until Octave exits.\n\
 }
 
 /*
-%!test
-%! unix_sort = true;
-%! cmd = {"sort", "-r"};
-%! if (ispc ())
-%!   status = system ("sort /? 2>NUL 1>NUL");
-%!   if (status == 0)
-%!     unix_sort = false;
-%!     cmd = {"sort", "/R"};
-%!   endif
-%! endif
-%! [in, out, pid] = popen2 (cmd{:});
-%! if (isunix ())
+
+%!test  # UNIX-style test
+%! if (isunix () || ismac ())
+%!   [in, out, pid] = popen2 ("sort", "-r");
 %!   EAGAIN = errno ("EAGAIN");
-%! else
-%!   EAGAIN = errno ("EINVAL");
-%! endif
-%! fputs (in, "these\nare\nsome\nstrings\n");
-%! fclose (in);
-%! done = false;
-%! str = {};
-%! idx = 0;
-%! errs = 0;
-%! do
-%!   if (! isunix ())
-%!     errno (0);
-%!   endif
-%!   s = fgets (out);
-%!   if (ischar (s))
-%!     idx++;
-%!     str{idx} = s;
-%!   elseif (errno () == EAGAIN)
-%!     fclear (out);
-%!     sleep (0.1);
-%!     if (++errs == 100)
+%!   fputs (in, "these\nare\nsome\nstrings\n");
+%!   fclose (in);
+%!   done = false;
+%!   str = {};
+%!   idx = 0;
+%!   errs = 0;
+%!   do
+%!     if (ismac ())  # FIXME: Is this necessary?
+%!       errno (0);
+%!     endif
+%!     s = fgets (out);
+%!     if (ischar (s))
+%!       idx++;
+%!       str{idx} = s;
+%!     elseif (errno () == EAGAIN)
+%!       fclear (out);
+%!       sleep (0.1);
+%!       if (++errs == 100)
+%!         done = true;
+%!       endif
+%!     else
 %!       done = true;
 %!     endif
-%!   else
-%!     done = true;
-%!   endif
-%! until (done)
-%! fclose (out);
-%! waitpid (pid);
-%! if (unix_sort)
+%!   until (done)
+%!   fclose (out);
+%!   waitpid (pid);
 %!   assert (str, {"these\n","strings\n","some\n","are\n"});
-%! else
+%! endif
+
+%!test  # Windows-style test
+%! if (ispc () && ! isunix ())
+%!   [in, out, pid] = popen2 ('C:\Windows\system32\sort.exe', "/R");
+%!   EAGAIN = errno ("EINVAL");
+%!   fputs (in, "these\r\nare\r\nsome\r\nstrings\r\n");
+%!   fclose (in);
+%!   done = false;
+%!   str = {};
+%!   idx = 0;
+%!   errs = 0;
+%!   do
+%!     errno (0);
+%!     s = fgets (out);
+%!     if (ischar (s))
+%!       idx++;
+%!       str{idx} = s;
+%!     elseif (errno () == EAGAIN)
+%!       fclear (out);
+%!       sleep (0.1);
+%!       if (++errs == 100)
+%!         done = true;
+%!       endif
+%!     else
+%!       done = true;
+%!     endif
+%!   until (done)
+%!   fclose (out);
+%!   waitpid (pid);
 %!   assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
 %! endif
+
 */
 
 DEFUNX ("fcntl", Ffcntl, args, ,

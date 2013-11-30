@@ -2016,32 +2016,112 @@ derived.\n\
 %!error class ()
 */
 
-DEFUN (__isa_parent__, args, ,
+DEFUN (isa, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __isa_parent__ (@var{class}, @var{name})\n\
-Undocumented internal function.\n\
+@deftypefn {Function File} {} isa (@var{obj}, @var{classname})\n\
+Return true if @var{obj} is an object from the class @var{classname}.\n\
+\n\
+@var{classname} may also be one of the following class categories:\n\
+\n\
+@table @asis\n\
+@item @qcode{\"float\"}\n\
+Floating point value comprising classes @qcode{\"double\"} and\n\
+@qcode{\"single\"}.\n\
+\n\
+@item @qcode{\"integer\"}\n\
+Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.\n\
+\n\
+@item @qcode{\"numeric\"}\n\
+Numeric value comprising either a floating point or integer value.\n\
+@end table\n\
+\n\
+If @var{classname} is a cell array of string, a logical array of the same\n\
+size is returned, containing true for each class to which @var{obj}\n\
+belongs to.\n\
+\n\
+@seealso{class, typeinfo}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
+  octave_value retval;
 
-  if (args.length () == 2)
+  if (args.length () != 2)
     {
-      octave_value cls = args(0);
-      octave_value nm = args(1);
-
-      if (! error_state)
-        {
-          if (cls.find_parent_class (nm.string_value ()))
-            retval = true;
-        }
-      else
-        error ("__isa_parent__: expecting arguments to be character strings");
+      print_usage ();
+      return retval;
     }
-  else
-    print_usage ();
 
-  return retval;
+  octave_value obj = args(0); // not const because of find_parent_class ()
+  const Array<std::string> cls = args(1).cellstr_value ();
+  if (error_state)
+    {
+      error ("isa: CLASSNAME must be a string or cell attay of strings");
+      return retval;
+    }
+
+  boolNDArray matches (cls.dims (), false);
+  const octave_idx_type n = cls.numel ();
+  for (octave_idx_type idx = 0; idx < n; idx++)
+    {
+      const std::string cl = cls(idx);
+      if ((cl == "float"   && obj.is_float_type   ()) ||
+          (cl == "integer" && obj.is_integer_type ()) ||
+          (cl == "numeric" && obj.is_numeric_type ()) ||
+          obj.class_name () == cl || obj.find_parent_class (cl))
+        matches(idx) = true;
+    }
+  return octave_value (matches);
 }
+
+/*
+%!assert (isa ("char", "float"), false)
+%!assert (isa (logical (1), "float"), false)
+%!assert (isa (double (13), "float"), true)
+%!assert (isa (single (13), "float"), true)
+%!assert (isa (int8 (13), "float"), false)
+%!assert (isa (int16 (13), "float"), false)
+%!assert (isa (int32 (13), "float"), false)
+%!assert (isa (int64 (13), "float"), false)
+%!assert (isa (uint8 (13), "float"), false)
+%!assert (isa (uint16 (13), "float"), false)
+%!assert (isa (uint32 (13), "float"), false)
+%!assert (isa (uint64 (13), "float"), false)
+%!assert (isa ("char", "numeric"), false)
+%!assert (isa (logical (1), "numeric"), false)
+%!assert (isa (double (13), "numeric"), true)
+%!assert (isa (single (13), "numeric"), true)
+%!assert (isa (int8 (13), "numeric"), true)
+%!assert (isa (int16 (13), "numeric"), true)
+%!assert (isa (int32 (13), "numeric"), true)
+%!assert (isa (int64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "numeric"), true)
+%!assert (isa (uint16 (13), "numeric"), true)
+%!assert (isa (uint32 (13), "numeric"), true)
+%!assert (isa (uint64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "integer"), true)
+%!assert (isa (double (13), "integer"), false)
+%!assert (isa (single (13), "integer"), false)
+%!assert (isa (single (13), {"integer", "float", "single"}), [false true true])
+
+%!assert (isa (double (13), "double"))
+%!assert (isa (single (13), "single"))
+%!assert (isa (int8 (13), "int8"))
+%!assert (isa (int16 (13), "int16"))
+%!assert (isa (int32 (13), "int32"))
+%!assert (isa (int64 (13), "int64"))
+%!assert (isa (uint8 (13), "uint8"))
+%!assert (isa (uint16 (13), "uint16"))
+%!assert (isa (uint32 (13), "uint32"))
+%!assert (isa (uint64 (13), "uint64"))
+%!assert (isa ("string", "char"))
+%!assert (isa (true, "logical"))
+%!assert (isa (false, "logical"))
+%!assert (isa ({1, 2}, "cell"))
+%!assert (isa ({1, 2}, {"numeric", "integer", "cell"}), [false false true])
+
+%!test
+%! a.b = 1;
+%! assert (isa (a, "struct"));
+*/
 
 DEFUN (__parent_classes__, args, ,
        "-*- texinfo -*-\n\

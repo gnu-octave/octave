@@ -40,7 +40,6 @@ general_FCN_FILES = \
   general/interp3.m \
   general/interpn.m \
   general/interpft.m \
-  general/isa.m \
   general/iscolumn.m \
   general/isdir.m \
   general/isequal.m \

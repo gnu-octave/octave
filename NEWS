@@ -13,7 +13,7 @@ Summary of important user-visible changes for version 3.8:
      improvements since the last major release Octave, we also decided
      against delaying the release of all these new improvements any
      longer just to perfect the GUI.  So please enjoy the 3.8 release of
-     Octave and the preview of the new GUI.  We beleive it is working
+     Octave and the preview of the new GUI.  We believe it is working
      reasonably well, but we also know that there are some obvious rough
      spots and many things that could be improved.
 

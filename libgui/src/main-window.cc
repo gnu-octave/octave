@@ -1902,7 +1902,7 @@ main_window::show_gui_info (void)
          "decided against delaying the release of all these new "
          "improvements any longer just to perfect the GUI.  So please "
          "enjoy the 3.8 release of Octave and the preview of the new GUI.  "
-         "We beleive it is working reasonably well, but we also know that "
+         "We believe it is working reasonably well, but we also know that "
          "there are some obvious rough spots and many things that could be "
          "improved.</p>"
          "<p><strong>We Need Your Help</strong></p>"

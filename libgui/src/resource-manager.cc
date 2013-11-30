@@ -100,35 +100,33 @@ resource_manager::config_translators (QTranslator *qt_tr,
   QString qt_trans_dir
     = QLibraryInfo::location (QLibraryInfo::TranslationsPath);
 
+  QString language = "SYSTEM";  // take system language per default
+
   QSettings *settings = resource_manager::get_settings ();
 
   if (settings)
     {
-      // get the locale from the settings
-      QString language = settings->value ("language","SYSTEM").toString ();
-
-      if (language == "SYSTEM")
-        language = QLocale::system ().name ();    // get system wide locale
-
-      // load the translator file for qt strings
-      loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
-
-      if (!loaded) // try lower case
-        qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
-
-      // load the translator file for qscintilla settings
-      loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
-
-      if (!loaded) // try lower case
-        qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
-
-      // load the translator file for gui strings
-      gui_tr->load (language, get_gui_translation_dir ());
+      // get the locale from the settings if already available
+      language = settings->value ("language","SYSTEM").toString ();
     }
-  else
-    {
-      // FIXME: Is this an error?  If so, what should we do?
-    }
+
+  if (language == "SYSTEM")
+    language = QLocale::system ().name ();    // get system wide locale
+
+  // load the translator file for qt strings
+  loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
+
+  if (!loaded) // try lower case
+    qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
+
+  // load the translator file for qscintilla settings
+  loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
+
+  if (!loaded) // try lower case
+    qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
+
+  // load the translator file for gui strings
+  gui_tr->load (language, get_gui_translation_dir ());
 }
 
 bool

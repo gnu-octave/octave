@@ -117,7 +117,7 @@ Options:
                         expects to find locally installed .oct files.
 
   -p VAR, --print VAR   Print the value of the given configuration
-		        variable VAR.  Recognized variables are:
+                        variable VAR.  Recognized variables are:
 
                           API_VERSION             LOCALAPIOCTFILEDIR
                           ARCHLIBDIR              LOCALARCHLIBDIR

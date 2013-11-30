@@ -127,28 +127,35 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
   if (start_gui)
     {
       QApplication application (argc, argv);
+      QTranslator gui_tr, qt_tr, qsci_tr;
 
-      // Set the codec for all strings
+      // Set the codec for all strings (before wizard)
       QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
+      // show wizard if this is the first run
       if (resource_manager::is_first_run ())
         {
+          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr); // before wizard
+          application.installTranslator (&qt_tr);
+          application.installTranslator (&qsci_tr);
+          application.installTranslator (&gui_tr);
+
           welcome_wizard welcomeWizard;
 
           if (welcomeWizard.exec () == QDialog::Rejected)
             exit (1);
+
+          resource_manager::reload_settings ();  // install settings file
         }
+      else
+        {
+          resource_manager::reload_settings ();  // get settings file
 
-      resource_manager::reload_settings ();
-
-      // install translators for the gui and qt text
-      QTranslator gui_tr, qt_tr, qsci_tr;
-
-      resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr);
-
-      application.installTranslator (&qt_tr);
-      application.installTranslator (&qsci_tr);
-      application.installTranslator (&gui_tr);
+          resource_manager::config_translators (&qt_tr, &qsci_tr, &gui_tr); // after settings
+          application.installTranslator (&qt_tr);
+          application.installTranslator (&qsci_tr);
+          application.installTranslator (&gui_tr);
+        }
 
       // update network-settings
       resource_manager::update_network_settings ();

@@ -28,7 +28,7 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
   fixedtestdir = fullfile (testsdir, "fixed");
   fcnfiledir = octave_config_info ("fcnfiledir");
   if (nargin == 0)
-    fcndirs = { libinterptestdir, liboctavetestdir, fcnfiledir };
+    fcndirs = { liboctavetestdir, libinterptestdir, fcnfiledir };
     fixedtestdirs = { fixedtestdir };
   endif
   global files_with_no_tests = {};

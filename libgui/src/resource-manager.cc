@@ -192,18 +192,29 @@ resource_manager::do_reload_settings (void)
       qt_settings.close ();
 
       // Get the default monospaced font and replace placeholder
-      QFont fixed_font = QFont ();
+#if defined (HAVE_QFONT_MONOSPACE)
+      QFont fixed_font;
       fixed_font.setStyleHint (QFont::Monospace);
-      settings_text.replace("__default_font__",fixed_font.defaultFamily ());
-      settings_text.replace("__default_font_size__","10");
+      QString default_family = fixed_font.defaultFamily ();
+#elif defined (Q_WS_X11) || defined (Q_WS_WIN)
+      QString default_family = "Courier New";
+#elif defined (Q_WS_MAC)
+      QString default_family = "Courier";
+#else
+      QString default_family = "courier";
+#endif
+      settings_text.replace ("__default_font__", default_family);
+      settings_text.replace ("__default_font_size__", "10");
 
       QFile user_settings (settings_file);
-      if (!user_settings.open (QIODevice::WriteOnly))
+
+      if (! user_settings.open (QIODevice::WriteOnly))
         return;
 
       QTextStream out (&user_settings);
+
       out << settings_text;
-      user_settings.flush ();
+
       user_settings.close ();
     }
 

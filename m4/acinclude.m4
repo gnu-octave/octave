@@ -359,6 +359,30 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
   fi
 ])
 dnl
+dnl Check whether Qt provides QFont::Monospace
+dnl
+AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
+  AC_CACHE_CHECK([whether Qt provides QFont::Monospace],
+    [octave_cv_decl_qfont_monospace],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleHint hint = QFont::Monospace;
+        ]])],
+      octave_cv_decl_qfont_monospace=yes,
+      octave_cv_decl_qfont_monospace=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_monospace = yes; then
+    AC_DEFINE(HAVE_QFONT_MONOSPACE, 1,
+      [Define to 1 if Qt provides QFont::Monospace.])
+  fi
+])
+dnl
 dnl Check whether Qscintilla SetPlaceholderText function exists.
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?

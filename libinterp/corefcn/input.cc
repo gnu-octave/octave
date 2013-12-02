@@ -137,7 +137,10 @@ remove_input_event_hook_functions (void)
 void
 set_default_prompts (void)
 {
-  VPS1 = "\\s:\\#> ";
+  // Use literal "octave" instead of "\\s" to avoid setting the prompt
+  // to "octave.exe" or "octave-gui", etc.
+
+  VPS1 = "octave:\\#> ";
   VPS2 = "> ";
   VPS4 = "+ ";
 
@@ -1237,7 +1240,7 @@ DEFUN (PS1, args, nargout,
 Query or set the primary prompt string.  When executing interactively,\n\
 Octave displays the primary prompt when it is ready to read a command.\n\
 \n\
-The default value of the primary prompt string is @qcode{\"\\s:\\#> \"}.\n\
+The default value of the primary prompt string is @qcode{\"octave:\\#> \"}.\n\
 To change it, use a command like\n\
 \n\
 @example\n\

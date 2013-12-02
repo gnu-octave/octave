@@ -393,6 +393,8 @@ endif
 which stops the function execution and prints a message about the correct
 way to call the function whenever the number of inputs is wrong.
 
+@DOCSTRING(validateattributes)
+
 For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
 @code{nargoutchk} are available which provide similar error checking.
 

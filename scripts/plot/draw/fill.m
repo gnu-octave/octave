@@ -94,15 +94,8 @@ function h = fill (varargin)
       for i = 1 : length (iargs)
         cdata = varargin{iargs(i) + 2};
 
-        ## Matlab uses flat/interp shading based on orientation of cdata.
-        if (isnumeric (cdata) && isrow (cdata))
-          popt = ["facecolor", "flat", opts];
-        else
-          popt = opts;
-        endif
-
         [htmp, fail] = __patch__ (hax, varargin{iargs(i)+(0:1)}, cdata,
-                                       popt{:});
+                                       opts{:});
         if (fail)
           print_usage ();
         endif
@@ -145,7 +138,7 @@ function retval = iscolorspec (arg)
     endif
   elseif (isnumeric (arg))
     ## Assume any numeric argument is correctly formatted cdata.
-    ## Let patch worry about the multple different input formats
+    ## Let patch worry about the multple different input formats.
     retval = true;
   endif
 endfunction

@@ -81,6 +81,7 @@ general_FCN_FILES = \
   general/subsindex.m \
   general/triplequad.m \
   general/trapz.m \
+  general/validateattributes.m \
   $(general_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(general_FCN_FILES)

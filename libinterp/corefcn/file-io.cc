@@ -2222,7 +2222,7 @@ DEFUNX ("SEEK_CUR", FSEEK_CUR, args, ,
 @deftypefn {Built-in Function} {} SEEK_CUR ()\n\
 Return the numerical value to pass to @code{fseek} to\n\
 position the file pointer relative to the current position.\n\
-@seealso{SEEK_SET, SEEK_END}.\n\
+@seealso{SEEK_SET, SEEK_END}\n\
 @end deftypefn")
 {
   return const_value ("SEEK_CUR", args, 0);
@@ -2233,7 +2233,7 @@ DEFUNX ("SEEK_END", FSEEK_END, args, ,
 @deftypefn {Built-in Function} {} SEEK_END ()\n\
 Return the numerical value to pass to @code{fseek} to\n\
 position the file pointer relative to the end of the file.\n\
-@seealso{SEEK_SET, SEEK_CUR}.\n\
+@seealso{SEEK_SET, SEEK_CUR}\n\
 @end deftypefn")
 {
   return const_value ("SEEK_END", args, 1);

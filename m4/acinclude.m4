@@ -561,35 +561,72 @@ dnl with the buggy ARPACK library but the C++ program does.  Maybe it
 dnl is the memory allocation that exposes the bug and using statically
 dnl allocated arrays in Fortran does not?
 dnl
+dnl FIXME: it would be nice to avoid the duplication of F77 macros
+dnl and typedefs here and in the f77-fcn.h header file.
+dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK], [
   AC_CACHE_CHECK([whether the arpack library works],
     [octave_cv_lib_arpack_ok],
     [AC_LANG_PUSH(C++)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-// External functions from ARPACK library
-extern "C" int
-F77_FUNC (dnaupd, DNAUPD) (int&, const char *, const int&, const char *,
-                           int&, const double&, double*, const int&,
-                           double*, const int&, int*, int*, double*,
-                           double*, const int&, int&, long int, long int);
-
-extern "C" int
-F77_FUNC (dneupd, DNEUPD) (const int&, const char *, int*, double*,
-                           double*, double*, const int&,
-                           const double&, const double&, double*,
-                           const char*, const int&, const char *,
-                           int&, const double&, double*, const int&,
-                           double*, const int&, int*, int*, double*,
-                           double*, const int&, int&, long int,
-                           long int, long int);
-
-extern "C" int
-F77_FUNC (dgemv, DGEMV) (const char *, const int&, const int&,
-                         const double&, const double*, const int&,
-                         const double*, const int&, const double&,
-                         double*, const int&, long int);
 
 #include <cfloat>
+
+#include <stdint.h>
+
+typedef OCTAVE_IDX_TYPE octave_idx_type;
+typedef int F77_RET_T;
+
+#define F77_CHAR_ARG2(x, l) x
+#define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
+
+#define F77_CHAR_ARG_LEN(l) , l
+
+#define F77_CONST_CHAR_ARG_DECL const char *
+#define F77_CHAR_ARG_LEN_DECL , long
+
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (dnaupd, DNAUPD) (octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type&, const double&,
+                             double*, const octave_idx_type&, double*,
+                             const octave_idx_type&, octave_idx_type*,
+                             octave_idx_type*, double*, double*,
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dneupd, DNEUPD) (const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type*, double*, double*,
+                             double*, const octave_idx_type&, const double&,
+                             const double&, double*,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type&, const double&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, octave_idx_type*,
+                             octave_idx_type*, double*, double*,
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, const octave_idx_type&,
+                           const double&, const double*,
+                           const octave_idx_type&, const double*,
+                           const octave_idx_type&, const double&, double*,
+                           const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
+}
 
 void
 doit (void)
@@ -597,7 +634,7 @@ doit (void)
   // Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
 
   // Problem matrix.  See bug #31479
-  int n = 4;
+  octave_idx_type n = 4;
   double *m = new double [n * n];
   m[0] = 1, m[4] = 0, m[8]  = 0, m[12] = -1;
   m[1] = 0, m[5] = 1, m[9]  = 0, m[13] = 0;
@@ -611,7 +648,7 @@ doit (void)
   resid[2] = 0.150143;
   resid[3] = 0.868067;
 
-  int *ip = new int [11];
+  octave_idx_type *ip = new octave_idx_type [11];
 
   ip[0] = 1;   // ishift
   ip[1] = 0;   // ip[1] not referenced
@@ -625,34 +662,38 @@ doit (void)
   ip[9] = 0;
   ip[10] = 0;
 
-  int *ipntr = new int [14];
+  octave_idx_type *ipntr = new octave_idx_type [14];
 
-  int k = 1;
-  int p = 3;
-  int lwork = 3 * p * (p + 2);
+  octave_idx_type k = 1;
+  octave_idx_type p = 3;
+  octave_idx_type lwork = 3 * p * (p + 2);
 
   double *v = new double [n * (p + 1)];
   double *workl = new double [lwork + 1];
   double *workd = new double [3 * n + 1];
 
-  int ido = 0;
-  int info = 0;
+  octave_idx_type ido = 0;
+  octave_idx_type info = 0;
 
   double tol = DBL_EPSILON;
 
   do
     {
-      F77_FUNC (dnaupd, DNAUPD) (ido, "I", n, "LM", k, tol, resid, p,
-                                 v, n, ip, ipntr, workd, workl, lwork,
-                                 info, 1L, 2L);
+      F77_FUNC (dnaupd, DNAUPD) (ido, F77_CONST_CHAR_ARG2 ("I", 1),
+                                 n, F77_CONST_CHAR_ARG2 ("LM", 2),
+                                 k, tol, resid, p, v, n, ip, ipntr,
+                                 workd, workl, lwork, info
+                                 F77_CHAR_ARG_LEN (1)
+                                 F77_CHAR_ARG_LEN (2));
 
       if (ido == -1 || ido == 1 || ido == 2)
         {
           double *x = workd + ipntr[0] - 1;
           double *y = workd + ipntr[1] - 1;
 
-          F77_FUNC (dgemv, DGEMV) ("N", n, n, 1.0, m, n, x, 1, 0.0,
-                                   y, 1, 1L);
+          F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG2 ("N", 1),
+                                   n, n, 1.0, m, n, x, 1, 0.0, y, 1
+                                   F77_CHAR_ARG_LEN (1));
         }
       else
         {
@@ -666,17 +707,17 @@ doit (void)
     }
   while (1);
 
-  int *sel = new int [p];
+  octave_idx_type *sel = new octave_idx_type [p];
 
   // In Octave, the dimensions of dr and di are k+1, but k+2 avoids segfault
   double *dr = new double [k + 1];
   double *di = new double [k + 1];
   double *workev = new double [3 * p];
 
-  for (int i = 0; i < k + 1; i++)
+  for (octave_idx_type i = 0; i < k + 1; i++)
     dr[i] = di[i] = 0.;
 
-  int rvec = 1;
+  octave_idx_type rvec = 1;
 
   double sigmar = 0.0;
   double sigmai = 0.0;
@@ -684,10 +725,15 @@ doit (void)
   // In Octave, this is n*(k+1), but n*(k+2) avoids segfault
   double *z = new double [n * (k + 1)];
 
-  F77_FUNC (dneupd, DNEUPD) (rvec, "A", sel, dr, di, z, n, sigmar,
-                             sigmai, workev, "I", n, "LM", k, tol,
+  F77_FUNC (dneupd, DNEUPD) (rvec, F77_CONST_CHAR_ARG2 ("A", 1),
+                             sel, dr, di, z, n, sigmar, sigmai, workev,
+                             F77_CONST_CHAR_ARG2 ("I", 1), n,
+                             F77_CONST_CHAR_ARG2 ("LM", 2), k, tol,
                              resid, p, v, n, ip, ipntr, workd,
-                             workl, lwork, info, 1L, 1L, 2L);
+                             workl, lwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (2));
 }
 
 ]], [[

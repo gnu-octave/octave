@@ -36,13 +36,11 @@ function runtests (directory)
     dirs = ostrsplit (path (), pathsep ());
     do_class_dirs = true;
   elseif (nargin == 1)
-    if (is_absolute_filename (directory))
-      dirs = {directory};
-    elseif (isdir (directory))
-      dirs = {canonicalize_file_name(directory)};
-    else
-      if (directory(end) == filesep ())
-        directory = directory(1:end-1);
+    dirs = {canonicalize_file_name(directory)};
+    if (isempty (dirs{1}))
+      ## Search for directory name in path
+      if (directory(end) == '/' || directory(end) == '\')
+        directory(end) = [];
       endif
       fullname = find_dir_in_path (directory);
       if (isempty (fullname))

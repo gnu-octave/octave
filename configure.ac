@@ -305,10 +305,6 @@ if test "$GXX" = yes; then
 fi
 AC_SUBST(GXX_VERSION)
 
-## FIXME: CXX_VERSION is deprecated and should be removed in Octave version 3.12
-CXX_VERSION=$gxx_version
-AC_SUBST(CXX_VERSION)
-
 ### Determine which C compiler to use (we expect to find gcc).
 
 AC_PROG_CC
@@ -354,10 +350,6 @@ if test "$GCC" = yes; then
   AC_MSG_RESULT([$GCC_VERSION])
 fi
 AC_SUBST(GCC_VERSION)
-
-## FIXME: CC_VERSION is deprecated and should be removed in Octave version 3.12
-CC_VERSION=$GCC_VERSION
-AC_SUBST(CC_VERSION)
 
 ### Also check g++ version number, it might be different from the
 ## gcc version number.

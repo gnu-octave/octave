@@ -38,18 +38,17 @@ function runtests (directory)
   elseif (nargin == 1)
     if (is_absolute_filename (directory))
       dirs = {directory};
-    elseif (is_rooted_relative_filename (directory))
+    elseif (isdir (directory))
       dirs = {canonicalize_file_name(directory)};
     else
       if (directory(end) == filesep ())
         directory = directory(1:end-1);
       endif
       fullname = find_dir_in_path (directory);
-      if (! isempty (fullname))
-        dirs = {fullname};
-      else
+      if (isempty (fullname))
         error ("runtests: DIRECTORY argument must be a valid pathname");
       endif
+      dirs = {fullname};
     endif
     do_class_dirs = false;
   else

@@ -2500,7 +2500,7 @@ do
   AC_PATH_PROG(JAR, jar, [], [$JAVA_PATH])
 
   if test -z "$JAVAC" || test -z "$JAR"; then
-    AC_MSG_WARN([No javac compiler or jar executable found.  Octave will not be able to call Java methods.])
+    warn_java="No javac compiler or jar executable found.  Octave will not be able to call Java methods."
     break
   fi
 

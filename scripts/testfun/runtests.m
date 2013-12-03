@@ -127,7 +127,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char").';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(?:test|assert|error|warning)',
+    retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
                                      'lineanchors', 'once'));
   else
     error ("runtests: fopen failed: %s", f);

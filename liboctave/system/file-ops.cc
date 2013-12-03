@@ -689,8 +689,6 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
 
   std::string retval;
 
-#if defined (HAVE_CANONICALIZE_FILE_NAME)
-
   char *tmp = gnulib::canonicalize_file_name (name.c_str ());
 
   if (tmp)
@@ -698,98 +696,6 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
       retval = tmp;
       free (tmp);
     }
-
-#elif defined (HAVE_RESOLVEPATH)
-
-#if !defined (errno)
-extern int errno;
-#endif
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  // All known hosts with resolvepath (e.g. Solaris 7) don't turn
-  // relative names into absolute ones, so prepend the working
-  // directory if the path is not absolute.
-
-  std::string absolute_name = octave_env::make_absolute (name);
-
-  size_t resolved_size = absolute_name.length ();
-
-  while (true)
-    {
-      resolved_size = 2 * resolved_size + 1;
-
-      OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
-
-      int resolved_len
-        = resolvepath (absolute_name.c_str (), resolved, resolved_size);
-
-      if (resolved_len < 0)
-        break;
-
-      if (resolved_len < resolved_size)
-        {
-          retval = resolved;
-          break;
-        }
-    }
-
-#elif defined (__WIN32__)
-
-  int n = 1024;
-
-  std::string win_path (n, '\0');
-
-  while (true)
-    {
-      int status = GetFullPathName (name.c_str (), n, &win_path[0], 0);
-
-      if (status == 0)
-        break;
-      else if (status < n)
-        {
-          win_path.resize (status);
-          retval = win_path;
-          break;
-        }
-      else
-        {
-          n *= 2;
-          win_path.resize (n);
-        }
-    }
-
-#elif defined (HAVE_REALPATH)
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
-
-  if (::realpath (name.c_str (), buf))
-    retval = buf;
-
-#else
-
-  // FIXME: provide replacement here...
-  retval = name;
-
-#endif
 
   if (retval.empty ())
     msg = gnulib::strerror (errno);

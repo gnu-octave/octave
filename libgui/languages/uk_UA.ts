@@ -812,7 +812,7 @@ is already open in the editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+174"/>
+        <location line="+175"/>
         <source>&amp;New File</source>
         <translation type="unfinished">&amp;Створити</translation>
     </message>
@@ -972,7 +972,7 @@ is already open in the editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-589"/>
+        <location line="-590"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -993,7 +993,7 @@ for write: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+554"/>
+        <location line="+555"/>
         <source>Go&amp;to Line</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1031,7 +1031,7 @@ for write: %2.</source>
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+787"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+792"/>
         <source>Goto line</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1058,7 +1058,7 @@ for write: %2.</source>
     </message>
     <message>
         <location line="+10"/>
-        <location line="+123"/>
+        <location line="+122"/>
         <location line="+111"/>
         <location line="+64"/>
         <location line="+22"/>
@@ -1066,7 +1066,7 @@ for write: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-319"/>
+        <location line="-318"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -1074,7 +1074,7 @@ is about to be closed but has been modified.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+201"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1106,7 +1106,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-962"/>
+        <location line="-966"/>
         <source>Line:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1116,7 +1116,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1134"/>
+        <location line="+1138"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1699,13 +1699,13 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <name>main_window</name>
     <message>
         <location filename="../src/main-window.cc" line="+201"/>
-        <location line="+1149"/>
+        <location line="+1163"/>
         <source>Load Workspace</source>
         <translation type="unfinished">Завантажити область змінних</translation>
     </message>
     <message>
-        <location line="-511"/>
-        <location line="+865"/>
+        <location line="-522"/>
+        <location line="+876"/>
         <source>About Octave</source>
         <translation type="unfinished">Про Octave</translation>
     </message>
@@ -1770,13 +1770,13 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1247"/>
-        <location line="+1166"/>
+        <location line="-1261"/>
+        <location line="+1180"/>
         <source>Save Workspace As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1042"/>
+        <location line="-1056"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1791,17 +1791,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+185"/>
+        <location line="+186"/>
         <source>Octave Community News</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+171"/>
-        <source>Set working directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+754"/>
+        <location line="+938"/>
         <source>Clear Clipboard</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1916,7 +1911,33 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+37"/>
+        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>More Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <location line="+66"/>
+        <source>Experimental GUI Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-37"/>
+        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release Octave, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+64"/>
         <source>Enter directory name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1931,12 +1952,13 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-1283"/>
+        <location line="+1286"/>
         <source>Browse directories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-244"/>
+        <location line="-405"/>
         <source>&amp;Window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2005,7 +2027,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1268"/>
+        <location line="-1281"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -2140,7 +2162,7 @@ does not exist. Do you want to create it?</source>
 <context>
     <name>resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+204"/>
+        <location filename="../src/resource-manager.cc" line="+235"/>
         <source>The settings file
 %1
 does not exist and can not be created.

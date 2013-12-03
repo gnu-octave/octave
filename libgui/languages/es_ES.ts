@@ -1158,10 +1158,6 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <translation>Noticas de la comunidad Octave</translation>
     </message>
     <message>
-        <source>Set working directory</source>
-        <translation type="obsolete">Fijar directorio de trabajo</translation>
-    </message>
-    <message>
         <location line="+938"/>
         <source>Clear Clipboard</source>
         <translation>Limpiar el Portapapeles</translation>

@@ -303,7 +303,7 @@ the first that matches.\n\
 If the second optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_path, path}\n\
+@seealso{file_in_path, find_dir_in_path, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -380,7 +380,7 @@ the first that matches.\n\
 If the third optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_loadpath}\n\
+@seealso{file_in_loadpath, find_dir_in_path, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -905,6 +905,7 @@ match is performed at the end of each path element.  For example, if\n\
 \n\
 The second argument is optional.  If it is supplied, return a cell array\n\
 containing all name matches rather than just the first.\n\
+@seealso{file_in_path, file_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();

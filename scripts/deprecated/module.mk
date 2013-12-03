@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
+  deprecated/find_dir_in_path.m \
   deprecated/isstr.m
 
 FCN_FILES += $(deprecated_FCN_FILES)

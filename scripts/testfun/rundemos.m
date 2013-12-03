@@ -42,7 +42,7 @@ function rundemos (directory)
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];
       endif
-      fullname = find_dir_in_path (directory);
+      fullname = dir_in_path (directory);
       if (isempty (fullname))
         error ("rundemos: DIRECTORY argument must be a valid pathname");
       endif

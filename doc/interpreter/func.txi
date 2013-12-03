@@ -802,7 +802,7 @@ After this the directory @samp{~/Octave} will be searched for functions.
 
 @DOCSTRING(command_line_path)
 
-@DOCSTRING(find_dir_in_path)
+@DOCSTRING(dir_in_path)
 
 @node Subfunctions
 @subsection Subfunctions

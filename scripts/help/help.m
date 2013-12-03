@@ -163,7 +163,7 @@ function do_contents (name)
 
   found = false;
 
-  dlist = find_dir_in_path (name, "all");
+  dlist = dir_in_path (name, "all");
 
   for i = 1:numel (dlist)
     fname = make_absolute_filename (fullfile (dlist{i}, "Contents.m"));

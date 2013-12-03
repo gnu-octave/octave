@@ -63,6 +63,10 @@ function retval = ls (varargin)
     if (ispc () && ! isunix ())
       ## shell (cmd.exe) on MinGW uses '^' as escape character
       args = regexprep (args, '([^\w.*? -])', '^$1');
+      ## Strip UNIX directory character which looks like an option to dir cmd.
+      if (args{end}(end) == '/')
+        args{end}(end) = "";
+      endif
     else
       args = regexprep (args, '([^\w.*? -])', '\\$1');
     endif

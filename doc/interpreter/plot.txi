@@ -2631,17 +2631,17 @@ Line styles are specified by the following properties:
 @item linestyle
 May be one of
 
-@table @code
-@item "-"
+@table @asis
+@item @qcode{"-"}
 Solid line.  [default]
 
-@item "--"
+@item @qcode{"--"}
 Dashed line.
 
-@item ":"
+@item @qcode{":"}
 Dotted line.
 
-@item "-."
+@item @qcode{"-."}
 A dash-dot line.
 
 @item @qcode{"none"}

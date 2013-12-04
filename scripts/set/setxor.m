@@ -61,7 +61,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
       na = rows (a); nb = rows (b);
       [c, i] = sortrows ([a; b]);
       n = rows (c);
-      idx = find (all (c(1:n-1) == c(2:n), 2));
+      idx = find (all (c(1:n-1, :) == c(2:n, :), 2));
       if (! isempty (idx))
         c([idx, idx+1],:) = [];
         i([idx, idx+1],:) = [];
@@ -94,9 +94,16 @@ endfunction
 
 %!assert (setxor ([1,2,3],[2,3,4]),[1,4])
 %!assert (setxor ({'a'}, {'a', 'b'}), {'b'})
+
 %!test
 %! a = [3, 1, 4, 1, 5];  b = [1, 2, 3, 4];
-%! [y, ia, ib] = setxor (a, b.');
-%! assert (y, [2, 5]);
-%! assert (y, sort ([a(ia), b(ib)]));
+%! [c, ia, ib] = setxor (a, b.');
+%! assert (c, [2, 5]);
+%! assert (c, sort ([a(ia), b(ib)]));
+
+%!test
+%! a = [1 2; 4 5; 1 3];  b = [1 1; 1 2; 4 5; 2 10];
+%! [c, ia, ib] = setxor (a, b, "rows");
+%! assert (c, [1 1; 1 3; 2 10]);
+%! assert (c, sortrows ([a(ia,:); b(ib,:)]));
 

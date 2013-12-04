@@ -134,7 +134,7 @@ hg export -o ../nasty2.diff tip
 # attach ../nasty2.diff to your bug report
 @end example
 
-Mercurial has a more useful extensions that really should be enabled.
+Mercurial has a few more useful extensions that really should be enabled.
 They are not enabled by default due to a number of factors
 (mostly because they don't work in all terminal types).
 

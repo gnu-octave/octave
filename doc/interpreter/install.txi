@@ -237,9 +237,9 @@ to perform font rendering for Octave's OpenGL-based graphics functions.
 GNU Linear Programming Kit (@url{http://www.gnu.org/software/glpk}).
 GPLK is required for the function @code{glpk}.
 
-@item gl2ps
+@item @nospell{gl2ps}
 OpenGL to PostScript printing library (@url{http://www.geuz.org/gl2ps/}).
-gl2ps is required for printing when using the FLTK toolkit.
+@nospell{gl2ps} is required for printing when using the FLTK toolkit.
 
 @item gnuplot
 Interactive graphics program (@url{http://www.gnuplot.info}).  gnuplot

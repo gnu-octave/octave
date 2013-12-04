@@ -59,6 +59,23 @@ close_fcn (FILE *f)
   gnulib::fclose (f);
 }
 
+static bool
+octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
+{
+  if (sizeof (octave_idx_type) > sizeof (int))
+    {
+      int maxval = std::numeric_limits<int>::max ();
+
+      if (dim > maxval || n > maxval)
+        {
+          error ("%s: dimension too large for Qhull", who);
+          return false;
+        }
+    }
+
+  return true;
+}
+
 DEFUN_DLD (__voronoi__, args, ,
            "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
@@ -85,6 +102,9 @@ Undocumented internal function.\n\
   Matrix points = args(1).matrix_value ();
   const octave_idx_type dim = points.columns ();
   const octave_idx_type num_points = points.rows ();
+
+  if (! octave_qhull_dims_ok (dim, num_points, "__voronoi__"))
+    return retval;
 
   points = points.transpose ();
 

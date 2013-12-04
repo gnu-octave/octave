@@ -1244,7 +1244,8 @@ AC_SUBST(GRAPHICS_LIBS)
 if test $native_graphics = yes; then
   AC_CHECK_HEADERS([gl2ps.h],
     [GL2PS_LIBS="-lgl2ps"],
-    [AC_MSG_WARN([gl2ps library not found.  OpenGL printing is disabled.])])
+    [warn_gl2ps="gl2ps library not found.  OpenGL printing is disabled."
+     OCTAVE_CONFIGURE_WARNING([warn_gl2ps])])
 fi
 
 AC_SUBST(GL2PS_LIBS)
@@ -2491,7 +2492,7 @@ do
   AC_PATH_PROG(JAR, jar, [], [$JAVA_PATH])
 
   if test -z "$JAVAC" || test -z "$JAR"; then
-    AC_MSG_WARN([No javac compiler or jar executable found.  Octave will not be able to call Java methods.])
+    warn_java="No javac compiler or jar executable found.  Octave will not be able to call Java methods."
     break
   fi
 

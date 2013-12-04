@@ -548,7 +548,7 @@ Check only for files and directories.\n\
 Check only for directories.\n\
 @end table\n\
 \n\
-@seealso{file_in_loadpath, file_in_path, stat}\n\
+@seealso{file_in_loadpath, file_in_path, find_dir_in_path, stat}\n\
 @end deftypefn")
 {
   octave_value retval = false;

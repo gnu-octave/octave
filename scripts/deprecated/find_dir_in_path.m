@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})
 ## @deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, "all")
-## This function has been deprecated.  Use @code{dir_in_path} instead.
-## @seealso{dir_in_path}
+## This function has been deprecated.  Use @code{dir_in_loadpath} instead.
+## @seealso{dir_in_loadpath}
 ## @end deftypefn
 
 ## Deprecated in version 4.2
@@ -31,10 +31,10 @@ function retval = find_dir_in_path (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "find_dir_in_path is obsolete and will be removed from a future version of Octave, please use dir_in_path instead");
+             "find_dir_in_path is obsolete and will be removed from a future version of Octave, please use dir_in_loadpath instead");
   endif
 
-  retval = dir_in_path (varargin{:});
+  retval = dir_in_loadpath (varargin{:});
 
 endfunction
 

@@ -37,7 +37,7 @@ function ret = what (d)
       if (d(end) == '/' || d(end) == '\')
         d(end) = [];
       endif
-      dtmp = dir_in_path (d);
+      dtmp = dir_in_loadpath (d);
       if (isempty (dtmp))
         error ("what: could not find the directory %s", d);
       endif

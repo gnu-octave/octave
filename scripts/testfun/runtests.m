@@ -42,7 +42,7 @@ function runtests (directory)
       if (directory(end) == '/' || directory(end) == '\')
         directory(end) = [];
       endif
-      fullname = dir_in_path (directory);
+      fullname = dir_in_loadpath (directory);
       if (isempty (fullname))
         error ("runtests: DIRECTORY argument must be a valid pathname");
       endif

@@ -93,6 +93,13 @@ function h = fill (varargin)
 
       for i = 1 : length (iargs)
         cdata = varargin{iargs(i) + 2};
+        ## For Matlab compatibility, replicate cdata to match size of data
+        if (iscolumn (cdata))
+          sz = size (varargin{iargs(i)});
+          if (all (sz > 1))
+            cdata = repmat (cdata, [1, sz(2)]);
+          endif
+        endif
 
         [htmp, fail] = __patch__ (hax, varargin{iargs(i)+(0:1)}, cdata,
                                        opts{:});

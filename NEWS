@@ -1,53 +1,9 @@
-Summary of important user-visible changes for version 4.2:
----------------------------------------------------------
-
- ** Other new functions added in 4.2:
-
-      dir_in_loadpath
-
- ** Deprecated functions.
-
-    The following functions were deprecated in Octave 3.8 and have been
-    removed from Octave 4.2.
-
-      default_save_options    java_new            
-      gen_doc_cache           java_set                   
-      interp1q                java_unsigned_conversion
-      isequalwithequalnans    javafields                
-      java_convert_matrix     javamethods               
-      java_debug              re_read_readline_init_file
-      java_get                read_readline_init_file   
-      java_invoke             saving_history            
-
-
-    The following functions have been deprecated in Octave 4.2 and will
-    be removed from Octave 4.6 (or whatever version is the second major
-    release after 4.2):
-
-      find_dir_in_path
-
-
-    The following keywords were deprecated in Octave 3.8 and have been
-    removed from Octave 4.2
-
-      static
-
-    The following configuration variables were deprecated in Octave 3.8
-    and have been removed from Octave 4.2
-
-      CC_VERSION  (now GCC_VERSION)
-      CXX_VERSION (now GXX_VERSION)
-
-    The internal class <Octave_map> was deprecated in Octave 3.8 and has
-    been removed from Octave 4.2.  Replacement classes are
-    <octave_map> (struct array) or <octave_scalar_map> for a single structure.
-
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 
  ** Other new functions added in 4.0.0:
 
-      validateattributes
+    *none*
 
  ** Deprecated functions.
 

@@ -38,8 +38,6 @@ EXTRA_DIST = \
   NEWS \
   README \
   CITATION \
-  bootstrap \
-  bootstrap.conf \
   build-aux/find-files-with-tests.sh \
   build-aux/mk-opts.pl \
   build-aux/move-if-change \

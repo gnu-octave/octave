@@ -1,3 +1,3 @@
-%!test
+%!xtest
 %! u_vr
 

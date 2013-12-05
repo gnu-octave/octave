@@ -55,6 +55,23 @@ close_fcn (FILE *f)
   gnulib::fclose (f);
 }
 
+static bool
+octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
+{
+  if (sizeof (octave_idx_type) > sizeof (int))
+    {
+      int maxval = std::numeric_limits<int>::max ();
+
+      if (dim > maxval || n > maxval)
+        {
+          error ("%s: dimension too large for Qhull", who);
+          return false;
+        }
+    }
+
+  return true;
+}
+
 DEFUN_DLD (convhulln, args, nargout,
            "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{h} =} convhulln (@var{pts})\n\
@@ -101,6 +118,9 @@ convex hull is calculated.\n\n\
   Matrix points (args(0).matrix_value ());
   const octave_idx_type dim = points.columns ();
   const octave_idx_type num_points = points.rows ();
+
+  if (! octave_qhull_dims_ok (dim, num_points, "convhulln"))
+    return retval;
 
   points = points.transpose ();
 

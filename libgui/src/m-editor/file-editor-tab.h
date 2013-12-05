@@ -179,7 +179,6 @@ private:
   bool valid_file_name (const QString& file=QString ());
   void save_file (const QString& saveFileName, bool remove_on_success = false);
   void save_file_as (bool remove_on_success = false);
-  void message_duplicate_file_name (const QString& fileName);
 
   void update_lexer ();
   void request_add_breakpoint (int line);

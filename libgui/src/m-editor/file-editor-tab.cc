@@ -1158,31 +1158,12 @@ file_editor_tab::save_file_as (bool remove_on_success)
 }
 
 void
-file_editor_tab::message_duplicate_file_name (const QString& saveFileName)
-{
-  // Could overwrite the file here (and tell user the file was
-  // overwritten), but the user could have unintentionally
-  // selected the same name not intending to overwrite.
-
-  // Create a NonModal message about error.
-  QMessageBox* msgBox
-    = new QMessageBox (QMessageBox::Critical, tr ("Octave Editor"),
-                       tr ("File not saved! The selected file name\n%1\n"
-                           "is the same as the current file name").
-                       arg (saveFileName),
-                       QMessageBox::Ok, 0);
-
-  show_dialog (msgBox);
-}
-
-void
 file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 {
   if (saveFileName == _file_name)
     {
-      message_duplicate_file_name (saveFileName);
-      // Nothing done, allow editing again.
-      _edit_area->setReadOnly (false);
+      // same name as actual file, save it as "save" would do
+      save_file (saveFileName);
     }
   else
     {
@@ -1194,17 +1175,11 @@ file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 void
 file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
 {
-  if (saveFileName == _file_name)
-    {
-      message_duplicate_file_name (saveFileName);
-      // Nothing done, allow editing again.
-      _edit_area->setReadOnly (false);
-    }
-  else
-    {
-      // Have editor check for conflict, delete tab after save.
-      emit editor_check_conflict_save (saveFileName, true);
-    }
+  // saveFileName == _file_name can not happen, because we only can get here
+  // when we close a tab and _file_name is not a valid file name yet
+
+  // Have editor check for conflict, delete tab after save.
+  emit editor_check_conflict_save (saveFileName, true);
 }
 
 void

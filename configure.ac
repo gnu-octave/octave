@@ -19,7 +19,7 @@ dnl Copyright (C) 1993-2013 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [3.7.7+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [4.1.0+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -305,10 +305,6 @@ if test "$GXX" = yes; then
 fi
 AC_SUBST(GXX_VERSION)
 
-## FIXME: CXX_VERSION is deprecated and should be removed in Octave version 3.12
-CXX_VERSION=$gxx_version
-AC_SUBST(CXX_VERSION)
-
 ### Determine which C compiler to use (we expect to find gcc).
 
 AC_PROG_CC
@@ -354,10 +350,6 @@ if test "$GCC" = yes; then
   AC_MSG_RESULT([$GCC_VERSION])
 fi
 AC_SUBST(GCC_VERSION)
-
-## FIXME: CC_VERSION is deprecated and should be removed in Octave version 3.12
-CC_VERSION=$GCC_VERSION
-AC_SUBST(CC_VERSION)
 
 ### Also check g++ version number, it might be different from the
 ## gcc version number.
@@ -1252,7 +1244,8 @@ AC_SUBST(GRAPHICS_LIBS)
 if test $native_graphics = yes; then
   AC_CHECK_HEADERS([gl2ps.h],
     [GL2PS_LIBS="-lgl2ps"],
-    [AC_MSG_WARN([gl2ps library not found.  OpenGL printing is disabled.])])
+    [warn_gl2ps="gl2ps library not found.  OpenGL printing is disabled."
+     OCTAVE_CONFIGURE_WARNING([warn_gl2ps])])
 fi
 
 AC_SUBST(GL2PS_LIBS)
@@ -2152,7 +2145,7 @@ gl_INIT
 dnl These checks define/undefine HAVE_FUNCNAME in config.h.
 dnl Code tests HAVE_FUNCNAME and either uses function or provides workaround.
 dnl Use multiple AC_CHECKs to avoid line continuations '\' in list
-AC_CHECK_FUNCS([canonicalize_file_name ctermid dup2])
+AC_CHECK_FUNCS([ctermid dup2])
 AC_CHECK_FUNCS([endgrent endpwent execvp expm1 expm1f fork])
 AC_CHECK_FUNCS([getegid geteuid getgid getgrent getgrgid getgrnam])
 AC_CHECK_FUNCS([getpgrp getpid getppid getpwent getpwuid getuid])
@@ -2499,7 +2492,7 @@ do
   AC_PATH_PROG(JAR, jar, [], [$JAVA_PATH])
 
   if test -z "$JAVAC" || test -z "$JAR"; then
-    AC_MSG_WARN([No javac compiler or jar executable found.  Octave will not be able to call Java methods.])
+    warn_java="No javac compiler or jar executable found.  Octave will not be able to call Java methods."
     break
   fi
 

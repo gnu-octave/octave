@@ -300,13 +300,15 @@ public:
 
   T& xelem (octave_idx_type n)
   {
-    octave_idx_type i = n % rows (), j = n / rows ();
+    octave_idx_type i = n % rows ();
+    octave_idx_type j = n / rows ();
     return xelem (i, j);
   }
 
   T xelem (octave_idx_type n) const
   {
-    octave_idx_type i = n % rows (), j = n / rows ();
+    octave_idx_type i = n % rows ();
+    octave_idx_type j = n / rows ();
     return xelem (i, j);
   }
 

@@ -52,7 +52,8 @@ static void do_bool_partition (bool *data, octave_idx_type *idx,
   // FIXME: This is essentially a simple bucket sort.
   // Can it be efficiently done by std::partition?
   OCTAVE_LOCAL_BUFFER (octave_idx_type, jdx, nel);
-  octave_idx_type k = 0, l = 0;
+  octave_idx_type k = 0;
+  octave_idx_type l = 0;
   for (octave_idx_type i = 0; i < nel; i++)
     {
       if (data[i] == desc)

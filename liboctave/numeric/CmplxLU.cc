@@ -100,7 +100,8 @@ void ComplexLU::update (const ComplexColumnVector& u,
 
   if (u.length () == m && v.length () == n)
     {
-      ComplexColumnVector utmp = u, vtmp = v;
+      ComplexColumnVector utmp = u;
+      ComplexColumnVector vtmp = v;
       F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
                                  utmp.fortran_vec (), vtmp.fortran_vec ()));
     }
@@ -124,7 +125,8 @@ void ComplexLU::update (const ComplexMatrix& u, const ComplexMatrix& v)
     {
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          ComplexColumnVector utmp = u.column (i);
+          ComplexColumnVector vtmp = v.column (i);
           F77_XFCN (zlu1up, ZLU1UP, (m, n, l.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec ()));
@@ -149,7 +151,8 @@ void ComplexLU::update_piv (const ComplexColumnVector& u,
 
   if (u.length () == m && v.length () == n)
     {
-      ComplexColumnVector utmp = u, vtmp = v;
+      ComplexColumnVector utmp = u;
+      ComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (Complex, w, m);
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (),
@@ -180,7 +183,8 @@ void ComplexLU::update_piv (const ComplexMatrix& u, const ComplexMatrix& v)
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          ComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          ComplexColumnVector utmp = u.column (i);
+          ComplexColumnVector vtmp = v.column (i);
           F77_XFCN (zlup1up, ZLUP1UP, (m, n, l.fortran_vec (),
                                        m, r.fortran_vec (), k,
                                        ipvt.fortran_vec (),

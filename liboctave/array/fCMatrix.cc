@@ -3795,8 +3795,10 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 {
   FloatComplexMatrix retval;
 
-  bool tra = transa != blas_no_trans, trb = transb != blas_no_trans;
-  bool cja = transa == blas_conj_trans, cjb = transb == blas_conj_trans;
+  bool tra = transa != blas_no_trans;
+  bool trb = transb != blas_no_trans;
+  bool cja = transa == blas_conj_trans;
+  bool cjb = transb == blas_conj_trans;
 
   octave_idx_type a_nr = tra ? a.cols () : a.rows ();
   octave_idx_type a_nc = tra ? a.rows () : a.cols ();
@@ -3852,8 +3854,10 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
         }
       else
         {
-          octave_idx_type lda = a.rows (), tda = a.cols ();
-          octave_idx_type ldb = b.rows (), tdb = b.cols ();
+          octave_idx_type lda = a.rows ();
+          octave_idx_type tda = a.cols ();
+          octave_idx_type ldb = b.rows ();
+          octave_idx_type tdb = b.cols ();
 
           retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
           FloatComplex *c = retval.fortran_vec ();
@@ -3933,7 +3937,7 @@ min (const FloatComplex& c, const FloatComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (c, m (i, j));
+        result(i, j) = xmin (c, m(i, j));
       }
 
   return result;
@@ -3953,7 +3957,7 @@ min (const FloatComplexMatrix& m, const FloatComplex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (m (i, j), c);
+        result(i, j) = xmin (m(i, j), c);
       }
 
   return result;
@@ -3982,7 +3986,7 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
+          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = 0;
               break;
@@ -3992,14 +3996,14 @@ min (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       if (columns_are_real_only)
         {
           for (octave_idx_type i = 0; i < nr; i++)
-            result (i, j) = xmin (std::real (a (i, j)), std::real (b (i, j)));
+            result(i, j) = xmin (std::real (a(i, j)), std::real (b(i, j)));
         }
       else
         {
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = xmin (a (i, j), b (i, j));
+              result(i, j) = xmin (a(i, j), b(i, j));
             }
         }
     }
@@ -4021,7 +4025,7 @@ max (const FloatComplex& c, const FloatComplexMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (c, m (i, j));
+        result(i, j) = xmax (c, m(i, j));
       }
 
   return result;
@@ -4041,7 +4045,7 @@ max (const FloatComplexMatrix& m, const FloatComplex& c)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (m (i, j), c);
+        result(i, j) = xmax (m(i, j), c);
       }
 
   return result;
@@ -4070,7 +4074,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          if (std::imag (a (i, j)) != 0.0 || std::imag (b (i, j)) != 0.0)
+          if (std::imag (a(i, j)) != 0.0 || std::imag (b(i, j)) != 0.0)
             {
               columns_are_real_only = 0;
               break;
@@ -4082,7 +4086,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = xmax (std::real (a (i, j)), std::real (b (i, j)));
+              result(i, j) = xmax (std::real (a(i, j)), std::real (b(i, j)));
             }
         }
       else
@@ -4090,7 +4094,7 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = xmax (a (i, j), b (i, j));
+              result(i, j) = xmax (a(i, j), b(i, j));
             }
         }
     }

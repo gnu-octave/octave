@@ -99,7 +99,8 @@ void LU::update (const ColumnVector& u, const ColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      ColumnVector utmp = u, vtmp = v;
+      ColumnVector utmp = u;
+      ColumnVector vtmp = v;
       F77_XFCN (dlu1up, DLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
                                  utmp.fortran_vec (), vtmp.fortran_vec ()));
     }
@@ -123,7 +124,8 @@ void LU::update (const Matrix& u, const Matrix& v)
     {
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          ColumnVector utmp = u.column (i), vtmp = v.column (i);
+          ColumnVector utmp = u.column (i);
+          ColumnVector vtmp = v.column (i);
           F77_XFCN (dlu1up, DLU1UP, (m, n, l.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec ()));
@@ -147,7 +149,8 @@ void LU::update_piv (const ColumnVector& u, const ColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      ColumnVector utmp = u, vtmp = v;
+      ColumnVector utmp = u;
+      ColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, m);
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       F77_XFCN (dlup1up, DLUP1UP, (m, n, l.fortran_vec (),
@@ -178,7 +181,8 @@ void LU::update_piv (const Matrix& u, const Matrix& v)
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          ColumnVector utmp = u.column (i), vtmp = v.column (i);
+          ColumnVector utmp = u.column (i);
+          ColumnVector vtmp = v.column (i);
           F77_XFCN (dlup1up, DLUP1UP, (m, n, l.fortran_vec (),
                                        m, r.fortran_vec (), k,
                                        ipvt.fortran_vec (),

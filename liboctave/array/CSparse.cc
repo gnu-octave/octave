@@ -160,7 +160,8 @@ SparseComplexMatrix::SparseComplexMatrix (const SparseBoolMatrix& a)
 SparseComplexMatrix::SparseComplexMatrix (const ComplexDiagMatrix& a)
   : MSparse<Complex> (a.rows (), a.cols (), a.length ())
 {
-  octave_idx_type j = 0, l = a.length ();
+  octave_idx_type j = 0;
+  octave_idx_type l = a.length ();
   for (octave_idx_type i = 0; i < l; i++)
     {
       cidx (i) = j;
@@ -348,7 +349,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+        for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
           if (found[ridx (i)] == -j)
             found[ridx (i)] = -j - 1;
 
@@ -505,7 +506,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+        for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
           if (found[ridx (i)] == -j)
             found[ridx (i)] = -j - 1;
 
@@ -777,7 +778,8 @@ SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
 
           if (calccond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nr; i++)
                 {
                   double tmp = std::abs (v[i]);
@@ -1321,7 +1323,8 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = std::abs (data (i));
@@ -1412,7 +1415,8 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = std::abs (data (i));
@@ -1473,7 +1477,8 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nr; i++)
                 {
                   double tmp = std::abs (data (i));
@@ -1564,7 +1569,8 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = std::abs (data (i));
@@ -4320,7 +4326,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
                 {
 
                   for (octave_idx_type i = 0; i < b_nr; i++)
-                    Bx[i] = b (i,j);
+                    Bx[i] = b(i,j);
 
                   F77_XFCN (zgttrs, ZGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -5307,7 +5313,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                     {
 
                       for (octave_idx_type i = 0; i < b_nr; i++)
-                        Bx[i] = b (i,j);
+                        Bx[i] = b(i,j);
 
                       F77_XFCN (zpbtrs, ZPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -6589,7 +6595,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               for (octave_idx_type j = 0; j < b_nc; j++)
                 {
                   for (octave_idx_type i = 0; i < b_nr; i++)
-                    Bx[i] = b (i,j);
+                    Bx[i] = b(i,j);
 
                   status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
                                                   Ai,
@@ -7682,87 +7688,85 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 {
   SparseComplexMatrix r;
 
-  if ((a.rows () == b.rows ()) && (a.cols () == b.cols ()))
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
+
+  if (a_nr == b_nr && a_nc == b_nc)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
 
-      octave_idx_type b_nr = b.rows ();
-      octave_idx_type b_nc = b.cols ();
-
-      if (a_nr == 0 || b_nc == 0 || a.nnz () == 0 || b.nnz () == 0)
-        return SparseComplexMatrix (a_nr, a_nc);
-
-      if (a_nr != b_nr || a_nc != b_nc)
-        gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-      else
+      octave_idx_type jx = 0;
+      r.cidx (0) = 0;
+      for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
+          octave_idx_type  ja = a.cidx (i);
+          octave_idx_type  ja_max = a.cidx (i+1);
+          bool ja_lt_max= ja < ja_max;
 
-          octave_idx_type jx = 0;
-          r.cidx (0) = 0;
-          for (octave_idx_type i = 0 ; i < a_nc ; i++)
+          octave_idx_type  jb = b.cidx (i);
+          octave_idx_type  jb_max = b.cidx (i+1);
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max )
             {
-              octave_idx_type  ja = a.cidx (i);
-              octave_idx_type  ja_max = a.cidx (i+1);
-              bool ja_lt_max= ja < ja_max;
-
-              octave_idx_type  jb = b.cidx (i);
-              octave_idx_type  jb_max = b.cidx (i+1);
-              bool jb_lt_max = jb < jb_max;
-
-              while (ja_lt_max || jb_lt_max )
+              octave_quit ();
+              if ((! jb_lt_max) ||
+                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  octave_quit ();
-                  if ((! jb_lt_max) ||
-                      (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+                  Complex tmp = xmin (a.data (ja), 0.);
+                  if (tmp != 0.)
                     {
-                      Complex tmp = xmin (a.data (ja), 0.);
-                      if (tmp != 0.)
-                        {
-                          r.ridx (jx) = a.ridx (ja);
-                          r.data (jx) = tmp;
-                          jx++;
-                        }
-                      ja++;
-                      ja_lt_max= ja < ja_max;
+                      r.ridx (jx) = a.ridx (ja);
+                      r.data (jx) = tmp;
+                      jx++;
                     }
-                  else if (( !ja_lt_max ) ||
-                           (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
-                    {
-                      Complex tmp = xmin (0., b.data (jb));
-                      if (tmp != 0.)
-                        {
-                          r.ridx (jx) = b.ridx (jb);
-                          r.data (jx) = tmp;
-                          jx++;
-                        }
-                      jb++;
-                      jb_lt_max= jb < jb_max;
-                    }
-                  else
-                    {
-                      Complex tmp = xmin (a.data (ja), b.data (jb));
-                      if (tmp != 0.)
-                        {
-                          r.data (jx) = tmp;
-                          r.ridx (jx) = a.ridx (ja);
-                          jx++;
-                        }
-                      ja++;
-                      ja_lt_max= ja < ja_max;
-                      jb++;
-                      jb_lt_max= jb < jb_max;
-                    }
+                  ja++;
+                  ja_lt_max= ja < ja_max;
                 }
-              r.cidx (i+1) = jx;
+              else if (( !ja_lt_max ) ||
+                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+                {
+                  Complex tmp = xmin (0., b.data (jb));
+                  if (tmp != 0.)
+                    {
+                      r.ridx (jx) = b.ridx (jb);
+                      r.data (jx) = tmp;
+                      jx++;
+                    }
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
+              else
+                {
+                  Complex tmp = xmin (a.data (ja), b.data (jb));
+                  if (tmp != 0.)
+                    {
+                      r.data (jx) = tmp;
+                      r.ridx (jx) = a.ridx (ja);
+                      jx++;
+                    }
+                  ja++;
+                  ja_lt_max= ja < ja_max;
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
             }
-
-          r.maybe_compress ();
+          r.cidx (i+1) = jx;
         }
+
+      r.maybe_compress ();
     }
   else
-    (*current_liboctave_error_handler) ("matrix size mismatch");
+    {
+      if (a_nr == 0 || a_nc == 0)
+        r.resize (a_nr, a_nc);
+      else if (b_nr == 0 || b_nc == 0)
+        r.resize (b_nr, b_nc);
+      else
+        gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
+    }
 
   return r;
 }
@@ -7802,91 +7806,85 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 {
   SparseComplexMatrix r;
 
-  if ((a.rows () == b.rows ()) && (a.cols () == b.cols ()))
+  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nc = a.cols ();
+  octave_idx_type b_nr = b.rows ();
+  octave_idx_type b_nc = b.cols ();
+
+  if (a_nr == b_nr && a_nc == b_nc)
     {
-      octave_idx_type a_nr = a.rows ();
-      octave_idx_type a_nc = a.cols ();
+      r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
 
-      octave_idx_type b_nr = b.rows ();
-      octave_idx_type b_nc = b.cols ();
-
-      if (a_nr == 0 || b_nc == 0)
-        return SparseComplexMatrix (a_nr, a_nc);
-      if (a.nnz () == 0)
-        return SparseComplexMatrix (b);
-      if (b.nnz () == 0)
-        return SparseComplexMatrix (a);
-
-      if (a_nr != b_nr || a_nc != b_nc)
-        gripe_nonconformant ("min", a_nr, a_nc, b_nr, b_nc);
-      else
+      octave_idx_type jx = 0;
+      r.cidx (0) = 0;
+      for (octave_idx_type i = 0 ; i < a_nc ; i++)
         {
-          r = SparseComplexMatrix (a_nr, a_nc, (a.nnz () + b.nnz ()));
+          octave_idx_type  ja = a.cidx (i);
+          octave_idx_type  ja_max = a.cidx (i+1);
+          bool ja_lt_max= ja < ja_max;
 
-          octave_idx_type jx = 0;
-          r.cidx (0) = 0;
-          for (octave_idx_type i = 0 ; i < a_nc ; i++)
+          octave_idx_type  jb = b.cidx (i);
+          octave_idx_type  jb_max = b.cidx (i+1);
+          bool jb_lt_max = jb < jb_max;
+
+          while (ja_lt_max || jb_lt_max )
             {
-              octave_idx_type  ja = a.cidx (i);
-              octave_idx_type  ja_max = a.cidx (i+1);
-              bool ja_lt_max= ja < ja_max;
-
-              octave_idx_type  jb = b.cidx (i);
-              octave_idx_type  jb_max = b.cidx (i+1);
-              bool jb_lt_max = jb < jb_max;
-
-              while (ja_lt_max || jb_lt_max )
+              octave_quit ();
+              if ((! jb_lt_max) ||
+                  (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
                 {
-                  octave_quit ();
-                  if ((! jb_lt_max) ||
-                      (ja_lt_max && (a.ridx (ja) < b.ridx (jb))))
+                  Complex tmp = xmax (a.data (ja), 0.);
+                  if (tmp != 0.)
                     {
-                      Complex tmp = xmax (a.data (ja), 0.);
-                      if (tmp != 0.)
-                        {
-                          r.ridx (jx) = a.ridx (ja);
-                          r.data (jx) = tmp;
-                          jx++;
-                        }
-                      ja++;
-                      ja_lt_max= ja < ja_max;
+                      r.ridx (jx) = a.ridx (ja);
+                      r.data (jx) = tmp;
+                      jx++;
                     }
-                  else if (( !ja_lt_max ) ||
-                           (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
-                    {
-                      Complex tmp = xmax (0., b.data (jb));
-                      if (tmp != 0.)
-                        {
-                          r.ridx (jx) = b.ridx (jb);
-                          r.data (jx) = tmp;
-                          jx++;
-                        }
-                      jb++;
-                      jb_lt_max= jb < jb_max;
-                    }
-                  else
-                    {
-                      Complex tmp = xmax (a.data (ja), b.data (jb));
-                      if (tmp != 0.)
-                        {
-                          r.data (jx) = tmp;
-                          r.ridx (jx) = a.ridx (ja);
-                          jx++;
-                        }
-                      ja++;
-                      ja_lt_max= ja < ja_max;
-                      jb++;
-                      jb_lt_max= jb < jb_max;
-                    }
+                  ja++;
+                  ja_lt_max= ja < ja_max;
                 }
-              r.cidx (i+1) = jx;
+              else if (( !ja_lt_max ) ||
+                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+                {
+                  Complex tmp = xmax (0., b.data (jb));
+                  if (tmp != 0.)
+                    {
+                      r.ridx (jx) = b.ridx (jb);
+                      r.data (jx) = tmp;
+                      jx++;
+                    }
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
+              else
+                {
+                  Complex tmp = xmax (a.data (ja), b.data (jb));
+                  if (tmp != 0.)
+                    {
+                      r.data (jx) = tmp;
+                      r.ridx (jx) = a.ridx (ja);
+                      jx++;
+                    }
+                  ja++;
+                  ja_lt_max= ja < ja_max;
+                  jb++;
+                  jb_lt_max= jb < jb_max;
+                }
             }
-
-          r.maybe_compress ();
+          r.cidx (i+1) = jx;
         }
+
+      r.maybe_compress ();
     }
   else
-    (*current_liboctave_error_handler) ("matrix size mismatch");
+    {
+      if (a_nr == 0 || a_nc == 0)
+        r.resize (a_nr, a_nc);
+      else if (b_nr == 0 || b_nc == 0)
+        r.resize (b_nr, b_nc);
+      else
+        gripe_nonconformant ("max", a_nr, a_nc, b_nr, b_nc);
+    }
 
   return r;
 }

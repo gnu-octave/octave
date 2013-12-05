@@ -1548,14 +1548,14 @@ a complete block of 3 values.\n\
 The optional argument @var{arch} is a string specifying the data format\n\
 for the file.  Valid values are\n\
 \n\
-@table @code\n\
+@table @asis\n\
 @item @qcode{\"native\"}\n\
 The format of the current machine.\n\
 \n\
-@item \"ieee-be\"\n\
+@item @qcode{\"ieee-be\"}\n\
 IEEE big endian.\n\
 \n\
-@item \"ieee-le\"\n\
+@item @qcode{\"ieee-le\"}\n\
 IEEE little endian.\n\
 @end table\n\
 \n\

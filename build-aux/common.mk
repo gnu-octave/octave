@@ -105,8 +105,6 @@ F77_ISNAN_MACRO=@F77_ISNAN_MACRO@
 # C compiler flags.
 
 CC = @CC@
-## FIXME: CC_VERSION is deprecated and should be removed in version 3.12
-CC_VERSION = @CC_VERSION@
 GCC_VERSION = @GCC_VERSION@
 CPICFLAG = @CPICFLAG@
 XTRA_CFLAGS = @XTRA_CFLAGS@
@@ -129,8 +127,6 @@ DEFS = @DEFS@
 # C++ compiler flags.
 
 CXX = @CXX@
-## FIXME: CXX_VERSION is deprecated and should be removed in version 3.12
-CXX_VERSION = @CXX_VERSION@
 GXX_VERSION = @GXX_VERSION@
 CXXCPP = @CXXCPP@
 CXXPICFLAG = @CXXPICFLAG@
@@ -516,7 +512,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
   -e "s|%OCTAVE_CONF_CARBON_LIBS%|\"${CARBON_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_CC%|\"${CC}\"|" \
-  -e "s|%OCTAVE_CONF_CC_VERSION%|\"${CC_VERSION}\"|" \
   -e "s|%OCTAVE_CONF_CCOLAMD_CPPFLAGS%|\"${CCOLAMD_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_CCOLAMD_LDFLAGS%|\"${CCOLAMD_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_CCOLAMD_LIBS%|\"${CCOLAMD_LIBS}\"|" \

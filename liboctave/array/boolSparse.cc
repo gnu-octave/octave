@@ -143,7 +143,9 @@ SparseBoolMatrix
 SparseBoolMatrix::any (int dim) const
 {
   Sparse<bool> retval;
-  octave_idx_type nr = rows (), nc = cols (), nz = nnz ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type nz = nnz ();
   if (dim == -1)
     dim = (nr == 1 && nc != 1) ? 1 : 0;
 
@@ -188,7 +190,9 @@ SparseMatrix
 SparseBoolMatrix::sum (int dim) const
 {
   Sparse<double> retval;
-  octave_idx_type nr = rows (), nc = cols (), nz = nnz ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type nz = nnz ();
   if (dim == -1)
     dim = (nr == 1 && nc != 1) ? 1 : 0;
 

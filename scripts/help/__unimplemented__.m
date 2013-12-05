@@ -822,7 +822,6 @@ function list = missing_functions ()
   "unloadlibrary",
   "unmesh",
   "userpath",
-  "validateattributes",
   "verctrl",
   "verLessThan",
   "viewmtx",

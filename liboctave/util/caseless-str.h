@@ -54,7 +54,8 @@ public:
 
     while (p1 != end () && p2 != s.end ())
       {
-        char lp1 = std::tolower (*p1), lp2 = std::tolower (*p2);
+        char lp1 = std::tolower (*p1);
+        char lp2 = std::tolower (*p2);
 
         if ( lp1 > lp2 )
           return false;

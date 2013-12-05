@@ -167,7 +167,8 @@ template <class U, class T, class R, class F>
 Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 {
-  dim_vector xad = xa.dims (), yad = ya.dims ();
+  dim_vector xad = xa.dims ();
+  dim_vector yad = ya.dims ();
   if (xa.numel () == 1)
     return binmap<U, T, R, F> (xa(0), ya, fcn);
   else if (ya.numel () == 1)
@@ -268,7 +269,8 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
   if (fz == U ())
     {
       // Sparsity-preserving function. Do it efficiently.
-      octave_idx_type nr = xs.rows (), nc = xs.cols ();
+      octave_idx_type nr = xs.rows ();
+      octave_idx_type nc = xs.cols ();
       Sparse<T> retval (nr, nc);
 
       octave_idx_type nz = 0;
@@ -276,11 +278,14 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
-          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
-          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
+          octave_idx_type ix = xs.cidx (j);
+          octave_idx_type iy = ys.cidx (j);
+          octave_idx_type ux = xs.cidx (j+1);
+          octave_idx_type uy = ys.cidx (j+1);
           while (ix != ux || iy != uy)
             {
-              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
+              octave_idx_type rx = xs.ridx (ix);
+              octave_idx_type ry = ys.ridx (ix);
               ix += rx <= ry;
               iy += ry <= rx;
               nz++;
@@ -297,11 +302,14 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
-          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
-          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
+          octave_idx_type ix = xs.cidx (j);
+          octave_idx_type iy = ys.cidx (j);
+          octave_idx_type ux = xs.cidx (j+1);
+          octave_idx_type uy = ys.cidx (j+1);
           while (ix != ux || iy != uy)
             {
-              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
+              octave_idx_type rx = xs.ridx (ix);
+              octave_idx_type ry = ys.ridx (ix);
               if (rx == ry)
                 {
                   retval.xridx (nz) = rx;

@@ -284,7 +284,7 @@ function ret = edit (varargin)
     endif
 
     ## If the file includes a path, it may be an overloaded function.
-    if (! index (file, "@") && index (file, filesep))
+    if (! index (file, "@") && strchr (file, '/\'))
       ## No "@" at the beginning of the file, add to the list.
       numfiles = numel (filelist);
       for n = 1:numfiles

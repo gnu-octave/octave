@@ -2696,7 +2696,7 @@ gammainc (double x, const NDArray& a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result (i) = gammainc (x, a(i), err);
+      result(i) = gammainc (x, a(i), err);
 
       if (err)
         goto done;
@@ -2722,7 +2722,7 @@ gammainc (const NDArray& x, double a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result (i) = gammainc (x(i), a, err);
+      result(i) = gammainc (x(i), a, err);
 
       if (err)
         goto done;
@@ -2752,7 +2752,7 @@ gammainc (const NDArray& x, const NDArray& a)
 
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          result (i) = gammainc (x(i), a(i), err);
+          result(i) = gammainc (x(i), a(i), err);
 
           if (err)
             goto done;
@@ -2901,7 +2901,7 @@ gammainc (float x, const FloatNDArray& a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result (i) = gammainc (x, a(i), err);
+      result(i) = gammainc (x, a(i), err);
 
       if (err)
         goto done;
@@ -2927,7 +2927,7 @@ gammainc (const FloatNDArray& x, float a)
 
   for (octave_idx_type i = 0; i < nel; i++)
     {
-      result (i) = gammainc (x(i), a, err);
+      result(i) = gammainc (x(i), a, err);
 
       if (err)
         goto done;
@@ -2957,7 +2957,7 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
 
       for (octave_idx_type i = 0; i < nel; i++)
         {
-          result (i) = gammainc (x(i), a(i), err);
+          result(i) = gammainc (x(i), a(i), err);
 
           if (err)
             goto done;

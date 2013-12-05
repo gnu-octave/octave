@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2013 Kurt Hornik
+## Copyright (C) 2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,38 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cor (@var{x})
-## @deftypefnx {Function File} {} cor (@var{x}, @var{y})
-## Compute matrix of correlation coefficients.
-##
-## This is an alias for @code{corrcoef}.
-## @seealso{corrcoef}
+## @deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})
+## @deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, "all")
+## This function has been deprecated.  Use @code{dir_in_loadpath} instead.
+## @seealso{dir_in_loadpath}
 ## @end deftypefn
 
-function retval = cor (x, y = x)
+## Deprecated in version 4.2
+
+function retval = find_dir_in_path (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "cor is obsolete and will be removed from a future version of Octave; please use corr instead");
+             "find_dir_in_path is obsolete and will be removed from a future version of Octave, please use dir_in_loadpath instead");
   endif
 
-  if (nargin < 1 || nargin > 2)
-    print_usage ();
-  endif
-
-  retval = corrcoef (x, y);
+  retval = dir_in_loadpath (varargin{:});
 
 endfunction
-
-
-%!test
-%! x = rand (10, 2);
-%! assert (cor (x), corrcoef (x), 5*eps);
-%! assert (cor (x(:,1), x(:,2)) == corrcoef (x(:,1), x(:,2)));
-
-%% Test input validation
-%!error corrcoef ();
-%!error corrcoef (1, 2, 3);
 

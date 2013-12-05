@@ -158,7 +158,8 @@ octave_sort<T>::binarysort (T *data, octave_idx_type nel,
   for (; start < nel; ++start)
     {
       /* set l to where *start belongs */
-      octave_idx_type l = 0, r = start;
+      octave_idx_type l = 0;
+      octave_idx_type r = start;
       T pivot = data[start];
       /* Invariants:
        * pivot >= all in [lo, l).
@@ -202,7 +203,8 @@ octave_sort<T>::binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
   for (; start < nel; ++start)
     {
       /* set l to where *start belongs */
-      octave_idx_type l = 0, r = start;
+      octave_idx_type l = 0;
+      octave_idx_type r = start;
       T pivot = data[start];
       /* Invariants:
        * pivot >= all in [lo, l).
@@ -1694,7 +1696,8 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
         {
           // Not the final column.
           assert (n > 1);
-          const T *hi = lo + n, *lst = lo;
+          const T *hi = lo + n;
+          const T *lst = lo;
           for (lo++; lo < hi; lo++)
             {
               if (comp (*lst, *lo))
@@ -1756,7 +1759,8 @@ octave_idx_type
 octave_sort<T>::lookup (const T *data, octave_idx_type nel,
                         const T& value, Comp comp)
 {
-  octave_idx_type lo = 0, hi = nel;
+  octave_idx_type lo = 0;
+  octave_idx_type hi = nel;
 
   while (lo < hi)
     {
@@ -1834,7 +1838,8 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
 {
   if (rev)
     {
-      octave_idx_type i = 0, j = nvalues - 1;
+      octave_idx_type i = 0;
+      octave_idx_type j = nvalues - 1;
 
       if (nvalues > 0 && nel > 0)
         {
@@ -1856,7 +1861,8 @@ octave_sort<T>::lookup_sorted (const T *data, octave_idx_type nel,
     }
   else
     {
-      octave_idx_type i = 0, j = 0;
+      octave_idx_type i = 0;
+      octave_idx_type j = 0;
 
       if (nvalues > 0 && nel > 0)
         {

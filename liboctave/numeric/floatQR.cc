@@ -136,7 +136,8 @@ FloatQR::init (const FloatMatrix& a, qr_type_t qr_type)
 void FloatQR::form (octave_idx_type n, FloatMatrix& afact,
                     float *tau, qr_type_t qr_type)
 {
-  octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
+  octave_idx_type m = afact.rows ();
+  octave_idx_type min_mn = std::min (m, n);
   octave_idx_type info;
 
   if (qr_type == qr_type_raw)
@@ -212,7 +213,8 @@ FloatQR::update (const FloatColumnVector& u, const FloatColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      FloatColumnVector utmp = u, vtmp = v;
+      FloatColumnVector utmp = u;
+      FloatColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
       F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (),
                                  m, r.fortran_vec (), k,
@@ -234,7 +236,8 @@ FloatQR::update (const FloatMatrix& u, const FloatMatrix& v)
       OCTAVE_LOCAL_BUFFER (float, w, 2*k);
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatColumnVector utmp = u.column (i), vtmp = v.column (i);
+          FloatColumnVector utmp = u.column (i);
+          FloatColumnVector vtmp = v.column (i);
           F77_XFCN (sqr1up, SQR1UP, (m, n, k, q.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec (),

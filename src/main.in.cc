@@ -660,7 +660,7 @@ main (int argc, char **argv)
           if (warn_display)
             {
               std::cerr << "octave: " << display_check_err_msg << std::endl;
-              std::cerr << "octave: disabiling GUI features" << std::endl;
+              std::cerr << "octave: disabling GUI features" << std::endl;
             }
         }
     }

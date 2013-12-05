@@ -303,7 +303,7 @@ the first that matches.\n\
 If the second optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_path, path}\n\
+@seealso{file_in_path, dir_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -380,7 +380,7 @@ the first that matches.\n\
 If the third optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_loadpath}\n\
+@seealso{file_in_loadpath, dir_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -892,10 +892,10 @@ system.  No check is done for the existence of @var{file}.\n\
 %!error make_absolute_filename ("foo", "bar")
 */
 
-DEFUN (find_dir_in_path, args, ,
+DEFUN (dir_in_loadpath, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})\n\
-@deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
+@deftypefn  {Built-in Function} {} dir_in_loadpath (@var{dir})\n\
+@deftypefnx {Built-in Function} {} dir_in_loadpath (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @qcode{\"foo/bar\"}, it matches the path element\n\
@@ -905,6 +905,7 @@ match is performed at the end of each path element.  For example, if\n\
 \n\
 The second argument is optional.  If it is supplied, return a cell array\n\
 containing all name matches rather than just the first.\n\
+@seealso{file_in_path, file_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();
@@ -925,7 +926,7 @@ containing all name matches rather than just the first.\n\
             retval = Cell (load_path::find_matching_dirs (dir));
         }
       else
-        error ("find_dir_in_path: DIR must be a directory name");
+        error ("dir_in_loadpath: DIR must be a directory name");
     }
   else
     print_usage ();
@@ -936,8 +937,8 @@ containing all name matches rather than just the first.\n\
 /*
 ## FIXME: We need system-dependent tests here.
 
-%!error find_dir_in_path ()
-%!error find_dir_in_path ("foo", "bar", 1)
+%!error dir_in_loadpath ()
+%!error dir_in_loadpath ("foo", "bar", 1)
 */
 
 DEFUNX ("errno", Ferrno, args, ,

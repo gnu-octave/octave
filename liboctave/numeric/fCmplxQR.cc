@@ -140,7 +140,8 @@ FloatComplexQR::init (const FloatComplexMatrix& a, qr_type_t qr_type)
 void FloatComplexQR::form (octave_idx_type n, FloatComplexMatrix& afact,
                            FloatComplex *tau, qr_type_t qr_type)
 {
-  octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
+  octave_idx_type m = afact.rows ();
+  octave_idx_type min_mn = std::min (m, n);
   octave_idx_type info;
 
   if (qr_type == qr_type_raw)
@@ -217,7 +218,8 @@ FloatComplexQR::update (const FloatComplexColumnVector& u,
 
   if (u.length () == m && v.length () == n)
     {
-      FloatComplexColumnVector utmp = u, vtmp = v;
+      FloatComplexColumnVector utmp = u;
+      FloatComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
@@ -243,7 +245,8 @@ FloatComplexQR::update (const FloatComplexMatrix& u,
       OCTAVE_LOCAL_BUFFER (float, rw, k);
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
+          FloatComplexColumnVector utmp = u.column (i);
+          FloatComplexColumnVector vtmp = v.column (i);
           F77_XFCN (cqr1up, CQR1UP, (m, n, k, q.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec (),

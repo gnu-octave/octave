@@ -327,7 +327,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
+      R fi = i*M_PI/nsamp;
+      R lambda1 = cos (fi);
+      R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
@@ -358,7 +360,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
+      R fi = i*M_PI/nsamp;
+      R lambda1 = cos (fi);
+      R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
@@ -415,7 +419,8 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   // the OSE part
   VectorT y(m.rows (), 1, 0), z(m.rows (), 1);
   typedef typename VectorT::element_type RR;
-  RR lambda = 0, mu = 1;
+  RR lambda = 0;
+  RR mu = 1;
   for (octave_idx_type k = 0; k < m.columns (); k++)
     {
       octave_quit ();

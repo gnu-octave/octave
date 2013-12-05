@@ -2226,20 +2226,6 @@ octave_base_lexer::is_keyword_token (const std::string& s)
           at_beginning_of_statement = true;
           break;
 
-        case static_kw:
-          if ((reading_fcn_file || reading_script_file
-               || reading_classdef_file)
-              && ! fcn_file_full_name.empty ())
-            warning_with_id ("Octave:deprecated-keyword",
-                             "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d of file '%s'",
-                             input_line_number,
-                             fcn_file_full_name.c_str ());
-          else
-            warning_with_id ("Octave:deprecated-keyword",
-                             "the 'static' keyword is obsolete and will be removed from a future version of Octave; please use 'persistent' instead; near line %d",
-                             input_line_number);
-          // fall through ...
-
         case persistent_kw:
         case global_kw:
           looking_at_decl_list = true;

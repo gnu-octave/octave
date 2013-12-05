@@ -176,7 +176,8 @@ dim_vector::squeeze (void) const
 bool
 dim_vector::concat (const dim_vector& dvb, int dim)
 {
-  int orig_nd = ndims (), ndb = dvb.ndims ();
+  int orig_nd = ndims ();
+  int ndb = dvb.ndims ();
   int new_nd = dim < ndb ? ndb : dim + 1;
   if (new_nd > orig_nd)
     resize (new_nd, 1);

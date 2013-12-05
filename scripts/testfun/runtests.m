@@ -36,20 +36,17 @@ function runtests (directory)
     dirs = ostrsplit (path (), pathsep ());
     do_class_dirs = true;
   elseif (nargin == 1)
-    if (is_absolute_filename (directory))
-      dirs = {directory};
-    elseif (is_rooted_relative_filename (directory))
-      dirs = {canonicalize_file_name(directory)};
-    else
-      if (directory(end) == filesep ())
-        directory = directory(1:end-1);
+    dirs = {canonicalize_file_name(directory)};
+    if (isempty (dirs{1}))
+      ## Search for directory name in path
+      if (directory(end) == '/' || directory(end) == '\')
+        directory(end) = [];
       endif
-      fullname = find_dir_in_path (directory);
-      if (! isempty (fullname))
-        dirs = {fullname};
-      else
+      fullname = dir_in_loadpath (directory);
+      if (isempty (fullname))
         error ("runtests: DIRECTORY argument must be a valid pathname");
       endif
+      dirs = {fullname};
     endif
     do_class_dirs = false;
   else
@@ -127,7 +124,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char").';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(?:test|assert|error|warning)',
+    retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
                                      'lineanchors', 'once'));
   else
     error ("runtests: fopen failed: %s", f);

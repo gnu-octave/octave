@@ -1251,8 +1251,6 @@ specified option.\n\
     { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
     { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
     { false, "CC", OCTAVE_CONF_CC },
-    // FIXME: CC_VERSION is deprecated.  Remove in version 3.12
-    { false, "CC_VERSION", OCTAVE_CONF_CC_VERSION },
     { false, "CCOLAMD_CPPFLAGS", OCTAVE_CONF_CCOLAMD_CPPFLAGS },
     { false, "CCOLAMD_LDFLAGS", OCTAVE_CONF_CCOLAMD_LDFLAGS },
     { false, "CCOLAMD_LIBS", OCTAVE_CONF_CCOLAMD_LIBS },
@@ -1275,8 +1273,6 @@ specified option.\n\
     { false, "CXXCPP", OCTAVE_CONF_CXXCPP },
     { false, "CXXFLAGS", OCTAVE_CONF_CXXFLAGS },
     { false, "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG },
-    // FIXME: CXX_VERSION is deprecated.  Remove in version 3.12
-    { false, "CXX_VERSION", OCTAVE_CONF_CXX_VERSION },
     { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
     { false, "DEFS", OCTAVE_CONF_DEFS },
     { false, "DL_LD", OCTAVE_CONF_DL_LD },

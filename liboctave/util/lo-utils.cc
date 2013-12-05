@@ -322,7 +322,8 @@ template <typename T>
 std::complex<T>
 octave_read_cx_fp_value (std::istream& is)
 {
-  T re = 0.0, im = 0.0;
+  T re = 0.0;
+  T im = 0.0;
 
   std::complex<T> cx = 0.0;
 

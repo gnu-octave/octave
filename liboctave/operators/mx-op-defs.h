@@ -599,7 +599,8 @@ FCN (const T& a, const T& b) \
 #define PMM_MULTIPLY_OP(PM, M) \
 M operator * (const PM& p, const M& x) \
 { \
-  octave_idx_type nr = x.rows (), nc = x.columns (); \
+  octave_idx_type nr = x.rows (); \
+  octave_idx_type nc = x.columns (); \
   M result; \
   if (p.columns () != nr) \
     gripe_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
@@ -620,7 +621,8 @@ M operator * (const PM& p, const M& x) \
 #define MPM_MULTIPLY_OP(M, PM) \
 M operator * (const M& x, const PM& p) \
 { \
-  octave_idx_type nr = x.rows (), nc = x.columns (); \
+  octave_idx_type nr = x.rows (); \
+  octave_idx_type nc = x.columns (); \
   M result; \
   if (p.rows () != nc) \
     gripe_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \

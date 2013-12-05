@@ -36,15 +36,15 @@
 ## sensitive).  In addition to the class name, the following categories
 ## names are also valid:
 ##
-## @table @qcode
-## @item "float"
+## @table @asis
+## @item @qcode{"float"}
 ## Floating point value comprising classes @qcode{"double"} and
 ## @qcode{"single"}.
 ##
-## @item "integer"
+## @item @qcode{"integer"}
 ## Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.
 ##
-## @item "numeric"
+## @item @qcode{"numeric"}
 ## Numeric value comprising either a floating point or integer value.
 ##
 ## @end table
@@ -53,108 +53,110 @@
 ## Some of them require an additional value to be supplied right after the
 ## name (see details for each below).
 ##
-## @table @qcode
-## @item "<="
+## @table @asis
+## @item @qcode{"<="}
 ## All values are less than or equal to the following value in @var{attributes}.
 ##
-## @item "<"
+## @item @qcode{"<"}
 ## All values are less than the following value in @var{attributes}.
 ##
-## @item ">="
-## All values are greater than or equal to the following value in @var{attributes}.
+## @item @qcode{">="}
+## All values are greater than or equal to the following value in
+## @var{attributes}.
 ##
-## @item ">"
+## @item @qcode{">"}
 ## All values are greater than the following value in @var{attributes}.
 ##
-## @item "2d"
-## A 2 dimensional matrix.  Note that vectors and empty matrices have
+## @item @qcode{"2d"}
+## A 2-dimensional matrix.  Note that vectors and empty matrices have
 ## 2 dimensions, one of them being of length 1, or both length 0.
 ##
-## @item "3d"
-## Has no more than 3 dimensions.  A 2 dimensional matrix is a 3D matrix
+## @item @qcode{"3d"}
+## Has no more than 3 dimensions.  A 2-dimensional matrix is a 3-D matrix
 ## whose 3rd dimension is of length 1.
 ##
-## @item "binary"
+## @item @qcode{"binary"}
 ## All values are either 1 or 0.
 ##
-## @item "column"
+## @item @qcode{"column"}
 ## Values are arranged in a single column.
 ##
-## @item "decreasing"
+## @item @qcode{"decreasing"}
 ## No value is @var{NaN}, and each is less than the preceding one.
 ##
-## @item "even"
+## @item @qcode{"even"}
 ## All values are even numbers.
 ##
-## @item "finite"
+## @item @qcode{"finite"}
 ## All values are finite.
 ##
-## @item "increasing"
+## @item @qcode{"increasing"}
 ## No value is @var{NaN}, and each is greater than the preceding one.
 ##
-## @item "integer"
+## @item @qcode{"integer"}
 ## All values are integer.  This is different than using @code{isinteger}
 ## which only checks its an integer type.  This checks that each value in
 ## @var{A} is an integer value, i.e., it has no decimal part.
 ##
-## @item "ncols"
+## @item @qcode{"ncols"}
 ## Has exactly as many columns as the next value in @var{attributes}.
 ##
-## @item "ndims"
+## @item @qcode{"ndims"}
 ## Has exactly as many dimensions as the next value in @var{attributes}.
 ##
-## @item "nondecreasing"
-## No value is @var{NaN}, and each is greater than or equal to the preceding one.
+## @item @qcode{"nondecreasing"}
+## No value is @var{NaN}, and each is greater than or equal to the preceding
+## one.
 ##
-## @item "nonempty"
+## @item @qcode{"nonempty"}
 ## It is not empty.
 ##
-## @item "nonincreasing"
+## @item @qcode{"nonincreasing"}
 ## No value is @var{NaN}, and each is less than or equal to the preceding one.
 ##
-## @item "nonnan"
+## @item @qcode{"nonnan"}
 ## No value is a @code{NaN}.
 ##
-## @item "nonnegative"
+## @item @qcode{"non-negative"}
 ## All values are non negative.
 ##
-## @item "nonsparse"
+## @item @qcode{"nonsparse"}
 ## It is not a sparse matrix.
 ##
-## @item "nonzero"
+## @item @qcode{"nonzero"}
 ## No value is zero.
 ##
-## @item "nrows"
+## @item @qcode{"nrows"}
 ## Has exactly as many rows as the next value in @var{attributes}.
 ##
-## @item "numel"
+## @item @qcode{"numel"}
 ## Has exactly as many elements as the next value in @var{attributes}.
 ##
-## @item "odd"
+## @item @qcode{"odd"}
 ## All values are odd numbers.
 ##
-## @item "positive"
+## @item @qcode{"positive"}
 ## All values are positive.
 ##
-## @item "real"
+## @item @qcode{"real"}
 ## It is a non-complex matrix.
 ##
-## @item "row"
+## @item @qcode{"row"}
 ## Values are arranged in a single row.
 ##
-## @item "scalar"
+## @item @qcode{"scalar"}
 ## It is a scalar.
 ##
-## @item "size",
+## @item @qcode{"size",}
 ## Its size has length equal to the values of the next in @var{attributes}.
 ## The next value must is an array with the length for each dimension.  To
 ## ignore the check for a certain dimension, the value of @code{NaN} can be
 ## used.
 ##
-## @item "square"
+## @item @qcode{"square"}
 ## Is a square matrix.
 ##
-## @item "vector"
+## @item @qcode{"vector"}
 ## Values are arranged in a single vector (column or vector).
 ##
 ## @end table

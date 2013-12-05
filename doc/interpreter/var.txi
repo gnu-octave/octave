@@ -221,8 +221,7 @@ persistent d = 3 e f = 5
 @end example
 
 The behavior of persistent variables is equivalent to the behavior of
-static variables in C@.  The command @code{static} in Octave is also
-recognized and is equivalent to @code{persistent}.
+static variables in C@.
 
 Like global variables, a persistent variable may only be initialized once.
 For example, after executing the following code

@@ -30,17 +30,19 @@ function ret = what (d)
 
   if (nargin == 0)
     d = pwd ();
-  elseif (isempty (strfind (d, filesep ())))
-    ## Find the appropriate directory on the path.
-    p = strtrim (ostrsplit (path (), pathsep ()));
-    d = p{find (cellfun (@(x) ! isempty (strfind (x, d)), p))(end)};
   else
-    [status, msg, msgid] = fileattrib (d);
-    if (status != 1)
-      error ("what: could not find the file or path %s", d);
-    else
-      d = msg.Name;
+    dtmp = canonicalize_file_name (d);
+    if (isempty (dtmp))
+      ## Search for directory name in path
+      if (d(end) == '/' || d(end) == '\')
+        d(end) = [];
+      endif
+      dtmp = dir_in_loadpath (d);
+      if (isempty (dtmp))
+        error ("what: could not find the directory %s", d);
+      endif
     endif
+    d = dtmp;
   endif
 
   files = dir (d);
@@ -60,7 +62,7 @@ function ret = what (d)
       continue;
     else
       ## Ignore mdl and p files
-      [dummy, f, e] = fileparts (n);
+      [~, f, e] = fileparts (n);
       if (strcmp (e, ".m"))
         w.m{end+1} = n;
       elseif (strcmp (e, ".oct"))

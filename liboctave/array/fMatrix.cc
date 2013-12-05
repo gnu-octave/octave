@@ -2026,7 +2026,9 @@ FloatMatrix::solve (MatrixType &typ, const FloatComplexMatrix& b,
 static FloatMatrix
 stack_complex_matrix (const FloatComplexMatrix& cm)
 {
-  octave_idx_type m = cm.rows (), n = cm.cols (), nel = m*n;
+  octave_idx_type m = cm.rows ();
+  octave_idx_type n = cm.cols ();
+  octave_idx_type nel = m*n;
   FloatMatrix retval (m, 2*n);
   const FloatComplex *cmd = cm.data ();
   float *rd = retval.fortran_vec ();
@@ -2041,7 +2043,9 @@ stack_complex_matrix (const FloatComplexMatrix& cm)
 static FloatComplexMatrix
 unstack_complex_matrix (const FloatMatrix& sm)
 {
-  octave_idx_type m = sm.rows (), n = sm.cols () / 2, nel = m*n;
+  octave_idx_type m = sm.rows ();
+  octave_idx_type n = sm.cols () / 2;
+  octave_idx_type nel = m*n;
   FloatComplexMatrix retval (m, n);
   const float *smd = sm.data ();
   FloatComplex *rd = retval.fortran_vec ();
@@ -3203,7 +3207,8 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
 {
   FloatMatrix retval;
 
-  bool tra = transa != blas_no_trans, trb = transb != blas_no_trans;
+  bool tra = transa != blas_no_trans;
+  bool trb = transb != blas_no_trans;
 
   octave_idx_type a_nr = tra ? a.cols () : a.rows ();
   octave_idx_type a_nc = tra ? a.rows () : a.cols ();
@@ -3238,8 +3243,10 @@ xgemm (const FloatMatrix& a, const FloatMatrix& b,
         }
       else
         {
-          octave_idx_type lda = a.rows (), tda = a.cols ();
-          octave_idx_type ldb = b.rows (), tdb = b.cols ();
+          octave_idx_type lda = a.rows ();
+          octave_idx_type tda = a.cols ();
+          octave_idx_type ldb = b.rows ();
+          octave_idx_type tdb = b.cols ();
 
           retval = FloatMatrix (a_nr, b_nc);
           float *c = retval.fortran_vec ();
@@ -3308,7 +3315,7 @@ min (float d, const FloatMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (d, m (i, j));
+        result(i, j) = xmin (d, m(i, j));
       }
 
   return result;
@@ -3328,7 +3335,7 @@ min (const FloatMatrix& m, float d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (m (i, j), d);
+        result(i, j) = xmin (m(i, j), d);
       }
 
   return result;
@@ -3355,7 +3362,7 @@ min (const FloatMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (a (i, j), b (i, j));
+        result(i, j) = xmin (a(i, j), b(i, j));
       }
 
   return result;
@@ -3375,7 +3382,7 @@ max (float d, const FloatMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (d, m (i, j));
+        result(i, j) = xmax (d, m(i, j));
       }
 
   return result;
@@ -3395,7 +3402,7 @@ max (const FloatMatrix& m, float d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (m (i, j), d);
+        result(i, j) = xmax (m(i, j), d);
       }
 
   return result;
@@ -3422,7 +3429,7 @@ max (const FloatMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (a (i, j), b (i, j));
+        result(i, j) = xmax (a(i, j), b(i, j));
       }
 
   return result;

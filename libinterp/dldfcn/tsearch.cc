@@ -110,8 +110,10 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
   const octave_idx_type np = xi.length ();
   ColumnVector values (np);
 
-  double x0 = 0.0, y0 = 0.0;
-  double a11 = 0.0, a12 = 0.0, a21 = 0.0, a22 = 0.0, det = 0.0;
+  double x0, y0, a11, a12, a21, a22, det;
+  x0 = y0 = 0.0;
+  a11 = a12 = a21 = a22 = 0.0;
+  det = 0.0;
 
   octave_idx_type k = nelem; // k is a counter of elements
   for (octave_idx_type kp = 0; kp < np; kp++)

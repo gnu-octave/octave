@@ -4704,7 +4704,8 @@ axes::properties::update_camera (void)
   if (camerapositionmode_is ("auto"))
     {
       Matrix tview = get_view ().matrix_value ();
-      double az = tview(0), el = tview(1);
+      double az = tview(0);
+      double el = tview(1);
       double d = 5 * sqrt (pb(0)*pb(0)+pb(1)*pb(1)+pb(2)*pb(2));
 
       if (el == 90 || el == -90)
@@ -4729,7 +4730,8 @@ axes::properties::update_camera (void)
   if (cameraupvectormode_is ("auto"))
     {
       Matrix tview = get_view ().matrix_value ();
-      double az = tview(0), el = tview(1);
+      double az = tview(0);
+      double el = tview(1);
 
       if (el == 90 || el == -90)
         {
@@ -4791,7 +4793,8 @@ axes::properties::update_camera (void)
   translate (x_view, -0.5, -0.5, -0.5);
 
   Matrix x_cube = x_view * unit_cube ();
-  ColumnVector cmin = x_cube.row_min (), cmax = x_cube.row_max ();
+  ColumnVector cmin = x_cube.row_min ();
+  ColumnVector cmax = x_cube.row_max ();
   double xM = cmax(0)-cmin(0);
   double yM = cmax(1)-cmin(1);
 
@@ -4897,9 +4900,11 @@ axes::properties::update_axes_layout (void)
   const Matrix xlims = xform.xscale (get_xlim ().matrix_value ());
   const Matrix ylims = xform.yscale (get_ylim ().matrix_value ());
   const Matrix zlims = xform.zscale (get_zlim ().matrix_value ());
-  double x_min = xlims(0), x_max = xlims(1);
-  double y_min = ylims(0), y_max = ylims(1);
-  double z_min = zlims(0), z_max = zlims(1);
+
+  double x_min, x_max, y_min, y_max, z_min, z_max;
+  x_min = xlims(0), x_max = xlims(1);
+  y_min = ylims(0), y_max = ylims(1);
+  z_min = zlims(0), z_max = zlims(1);
 
   ColumnVector p1, p2, dir (3);
 
@@ -5139,7 +5144,9 @@ axes::properties::update_xlabel_position (void)
                                    get_xticklabel ().all_strings (),
                                    get_xlim ().matrix_value ());
 
-      double wmax = ext(0), hmax = ext(1), angle = 0;
+      double wmax = ext(0);
+      double hmax = ext(1);
+      double angle = 0;
       ColumnVector p =
         graphics_xform::xform_vector ((xpTickN+xpTick)/2, ypTick, zpTick);
 
@@ -5240,7 +5247,9 @@ axes::properties::update_ylabel_position (void)
                                    get_yticklabel ().all_strings (),
                                    get_ylim ().matrix_value ());
 
-      double wmax = ext(0)+4, hmax = ext(1), angle = 0;
+      double wmax = ext(0)+4;
+      double hmax = ext(1);
+      double angle = 0;
       ColumnVector p =
         graphics_xform::xform_vector (xpTick, (ypTickN+ypTick)/2, zpTick);
 
@@ -5333,7 +5342,9 @@ axes::properties::update_zlabel_position (void)
                                    get_zticklabel ().all_strings (),
                                    get_zlim ().matrix_value ());
 
-      double wmax = ext(0), hmax = ext(1), angle = 0;
+      double wmax = ext(0);
+      double hmax = ext(1);
+      double angle = 0;
       ColumnVector p;
 
       if (xySym)
@@ -6402,7 +6413,8 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 #endif
 
   Matrix ext (1, 2, 0.0);
-  double wmax = 0., hmax = 0.;
+  double wmax, hmax;
+  wmax = hmax = 0.;
   int n = std::min (ticklabels.numel (), ticks.numel ());
   for (int i = 0; i < n; i++)
     {
@@ -7225,7 +7237,8 @@ text::properties::update_text_extent (void)
 {
 #ifdef HAVE_FREETYPE
 
-  int halign = 0, valign = 0;
+  int halign = 0;
+  int valign = 0;
 
   if (horizontalalignment_is ("center"))
     halign = 1;
@@ -7368,9 +7381,11 @@ surface::properties::update_normals (void)
       Matrix z = get_zdata ().matrix_value ();
 
 
-      int p = z.columns (), q = z.rows ();
-      int i1 = 0, i2 = 0, i3 = 0;
-      int j1 = 0, j2 = 0, j3 = 0;
+      int p = z.columns ();
+      int q = z.rows ();
+      int i1, i2, i3, j1, j2, j3;
+      i1 = i2 = i3 = 0;
+      j1 = j2 = j3 = 0;
 
       bool x_mat = (x.rows () == q);
       bool y_mat = (y.columns () == p);

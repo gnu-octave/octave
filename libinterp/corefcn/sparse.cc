@@ -125,7 +125,8 @@ to have a common size.\n\
     }
   else if (nargin == 2)
     {
-      octave_idx_type m = 0, n = 0;
+      octave_idx_type m = 0;
+      octave_idx_type n = 0;
       if (args(0).is_scalar_type () && args(1).is_scalar_type ())
         {
           m = args(0).idx_type_value ();
@@ -160,7 +161,8 @@ to have a common size.\n\
 
       if (! error_state)
         {
-          octave_idx_type m = -1, n = -1, nzmax = -1;
+          octave_idx_type m, n, nzmax;
+          m = n = nzmax = -1;
           if (nargin == 6)
             {
               nzmax = args(5).idx_type_value ();

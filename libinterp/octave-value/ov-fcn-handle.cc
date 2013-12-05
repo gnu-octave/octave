@@ -721,7 +721,8 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   if (group_hid < 0)
     return false;
 
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
 
   // attach the type of the variable
   type_hid = H5Tcopy (H5T_C_S1);

@@ -588,7 +588,9 @@ static
 bool check_lu_dims (const octave_value& l, const octave_value& u,
                     const octave_value& p)
 {
-  octave_idx_type m = l.rows (), k = u.rows (), n = u.columns ();
+  octave_idx_type m = l.rows ();
+  octave_idx_type k = u.rows ();
+  octave_idx_type n = u.columns ();
   return ((l.ndims () == 2 && u.ndims () == 2 && k == l.columns ())
           && k == std::min (m, n) &&
           (p.is_undefined () || p.rows () == m));

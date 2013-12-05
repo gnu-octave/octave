@@ -421,7 +421,8 @@ octave_sparse_matrix::save_hdf5 (hid_t loc_id, const char *name,
   if (group_hid < 0)
     return false;
 
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
   SparseMatrix m = sparse_matrix_value ();
   octave_idx_type tmp;

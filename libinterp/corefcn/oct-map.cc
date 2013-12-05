@@ -117,7 +117,8 @@ octave_fields::equal_up_to_order (const octave_fields& other,
 {
   bool retval = true;
 
-  iterator p = begin (), q = other.begin ();
+  iterator p = begin ();
+  iterator q = other.begin ();
   for (; p != end () && q != other.end (); p++, q++)
     {
       if (p->first == q->first)

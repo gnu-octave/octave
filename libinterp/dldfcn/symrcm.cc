@@ -487,7 +487,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   octave_idx_type s = 0;
 
   // head- and tail-indices for the queue
-  octave_idx_type qt = 0, qh = 0;
+  octave_idx_type qt = 0;
+  octave_idx_type qh = 0;
   CMK_Node v, w;
   // dimension of the matrix
   octave_idx_type N = nr;

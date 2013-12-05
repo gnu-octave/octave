@@ -165,7 +165,8 @@ octave_bool::save_hdf5 (hid_t loc_id, const char *name,
                         bool /* save_as_floats */)
 {
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);

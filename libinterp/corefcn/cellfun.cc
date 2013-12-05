@@ -1783,7 +1783,8 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
 
       NDA parray = array.permute (perm);
 
-      octave_idx_type nela = arraydv.numel (), nelc = celldv.numel ();
+      octave_idx_type nela = arraydv.numel ();
+      octave_idx_type nelc = celldv.numel ();
       parray = parray.reshape (dim_vector (nela, nelc));
 
       Cell retval (celldv);
@@ -2036,7 +2037,8 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
   if (ivec >= 0)
     {
       // Vector split. Use 1D indexing.
-      octave_idx_type l = 0, nidx = (ivec == 0 ? nridx : ncidx);
+      octave_idx_type l = 0;
+      octave_idx_type nidx = (ivec == 0 ? nridx : ncidx);
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);

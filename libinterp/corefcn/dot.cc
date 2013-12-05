@@ -128,11 +128,13 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
       return retval;
     }
 
-  octave_value argx = args(0), argy = args(1);
+  octave_value argx = args(0);
+  octave_value argy = args(1);
 
   if (argx.is_numeric_type () && argy.is_numeric_type ())
     {
-      dim_vector dimx = argx.dims (), dimy = argy.dims ();
+      dim_vector dimx = argx.dims ();
+      dim_vector dimy = argy.dims ();
       bool match = dimx == dimy;
       if (! match && nargin == 2
           && dimx.is_vector () && dimy.is_vector ())
@@ -291,13 +293,18 @@ endfor\n\
       return retval;
     }
 
-  octave_value argx = args(0), argy = args(1);
+  octave_value argx = args(0);
+  octave_value argy = args(1);
 
   if (argx.is_numeric_type () && argy.is_numeric_type ())
     {
-      const dim_vector dimx = argx.dims (), dimy = argy.dims ();
+      const dim_vector dimx = argx.dims ();
+      const dim_vector dimy = argy.dims ();
       int nd = dimx.length ();
-      octave_idx_type m = dimx(0), k = dimx(1), n = dimy(1), np = 1;
+      octave_idx_type m = dimx(0);
+      octave_idx_type k = dimx(1);
+      octave_idx_type n = dimy(1);
+      octave_idx_type np = 1;
       bool match = dimy(0) == k && nd == dimy.length ();
       dim_vector dimz = dim_vector::alloc (nd);
       dimz(0) = m;

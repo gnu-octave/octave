@@ -44,7 +44,8 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
     {
       in_draw = true;
 
-      GLint buffsize = 0, state = GL2PS_OVERFLOW;
+      GLint buffsize = 0;
+      GLint state = GL2PS_OVERFLOW;
       GLint viewport[4];
 
       glGetIntegerv (GL_VIEWPORT, viewport);
@@ -222,7 +223,8 @@ glps_renderer::draw_text (const text::properties& props)
   set_color (props.get_color_rgb ());
 
   const Matrix pos = get_transform ().scale (props.get_data_position ());
-  int halign = 0, valign = 0;
+  int halign = 0;
+  int valign = 0;
 
   if (props.horizontalalignment_is ("center"))
     halign = 1;

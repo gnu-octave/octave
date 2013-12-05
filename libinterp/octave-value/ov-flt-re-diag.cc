@@ -119,7 +119,8 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
                                        bool& /* save_as_floats*/)
 {
 
-  int32_t r = matrix.rows (), c = matrix.cols ();
+  int32_t r = matrix.rows ();
+  int32_t c = matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 

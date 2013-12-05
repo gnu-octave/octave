@@ -536,7 +536,8 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
   bool retval = true;
   FloatComplexNDArray m = complex_array_value ();
 

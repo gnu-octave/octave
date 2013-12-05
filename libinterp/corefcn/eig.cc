@@ -62,8 +62,8 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
   octave_value arg_a, arg_b;
 
-  octave_idx_type nr_a = 0, nr_b = 0;
-  octave_idx_type nc_a = 0, nc_b = 0;
+  octave_idx_type nr_a, nr_b, nc_a, nc_b;
+  nr_a = nr_b = nc_a = nc_b = 0;
 
   arg_a = args(0);
   nr_a = arg_a.rows ();

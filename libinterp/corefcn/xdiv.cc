@@ -713,7 +713,9 @@ mdm_div_impl (const MT& a, const DMT& d)
   if (! mx_div_conform (a, d))
     return MT ();
 
-  octave_idx_type m = a.rows (), n = d.rows (), l = d.length ();
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = d.rows ();
+  octave_idx_type l = d.length ();
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;
@@ -794,7 +796,10 @@ dmm_leftdiv_impl (const DMT& d, const MT& a)
   if (! mx_leftdiv_conform (d, a, blas_no_trans))
     return MT ();
 
-  octave_idx_type m = d.cols (), n = a.cols (), k = a.rows (), l = d.length ();
+  octave_idx_type m = d.cols ();
+  octave_idx_type n = a.cols ();
+  octave_idx_type k = a.rows ();
+  octave_idx_type l = d.length ();
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;
@@ -871,8 +876,11 @@ dmdm_div_impl (const MT& a, const DMT& d)
   if (! mx_div_conform (a, d))
     return MT ();
 
-  octave_idx_type m = a.rows (), n = d.rows (), k = d.cols ();
-  octave_idx_type l = std::min (m, n), lk = std::min (l, k);
+  octave_idx_type m = a.rows ();
+  octave_idx_type n = d.rows ();
+  octave_idx_type k = d.cols ();
+  octave_idx_type l = std::min (m, n);
+  octave_idx_type lk = std::min (l, k);
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;
@@ -943,8 +951,11 @@ dmdm_leftdiv_impl (const DMT& d, const MT& a)
   if (! mx_leftdiv_conform (d, a, blas_no_trans))
     return MT ();
 
-  octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();
-  octave_idx_type l = std::min (m, n), lk = std::min (l, k);
+  octave_idx_type m = d.cols ();
+  octave_idx_type n = a.cols ();
+  octave_idx_type k = d.rows ();
+  octave_idx_type l = std::min (m, n);
+  octave_idx_type lk = std::min (l, k);
   MT x (m, n);
   typedef typename DMT::element_type S;
   typedef typename MT::element_type T;

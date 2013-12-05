@@ -441,7 +441,8 @@ template <class DMT, class MT>
 bool
 octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
-  octave_idx_type r = 0, c = 0;
+  octave_idx_type r = 0;
+  octave_idx_type c = 0;
   bool success = true;
 
   if (extract_keyword (is, "rows", r, true)

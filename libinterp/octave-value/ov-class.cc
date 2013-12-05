@@ -1279,7 +1279,8 @@ octave_class::clear_exemplar_map (void)
 bool
 octave_class::reconstruct_parents (void)
 {
-  bool retval = true, might_have_inheritance = false;
+  bool retval = true;
+  bool might_have_inheritance = false;
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.

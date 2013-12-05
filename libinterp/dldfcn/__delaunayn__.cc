@@ -175,7 +175,8 @@ Undocumented internal function.\n\
 
           facetT *facet;
           vertexT *vertex, **vertexp;
-          octave_idx_type nf = 0, i = 0;
+          octave_idx_type nf = 0;
+          octave_idx_type i = 0;
 
           FORALLfacets
             {

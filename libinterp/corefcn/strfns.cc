@@ -647,7 +647,8 @@ static bool
 strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
                   octave_idx_type n)
 {
-  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  octave_idx_type l1 = s1.numel ();
+  octave_idx_type l2 = s2.numel ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
@@ -658,7 +659,8 @@ strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
 static bool
 strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 {
-  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  octave_idx_type l1 = s1.length ();
+  octave_idx_type l2 = s2.length ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
@@ -799,7 +801,8 @@ static bool
 strncmpi_array_op (const charNDArray& s1, const charNDArray& s2,
                    octave_idx_type n)
 {
-  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  octave_idx_type l1 = s1.numel ();
+  octave_idx_type l2 = s2.numel ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
@@ -810,7 +813,8 @@ static bool
 strncmpi_str_op (const std::string& s1, const std::string& s2,
                  octave_idx_type n)
 {
-  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  octave_idx_type l1 = s1.length ();
+  octave_idx_type l2 = s2.length ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));

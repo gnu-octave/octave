@@ -302,7 +302,8 @@ do_hypot (const octave_value& x, const octave_value& y)
 {
   octave_value retval;
 
-  octave_value arg0 = x, arg1 = y;
+  octave_value arg0 = x;
+  octave_value arg1 = y;
   if (! arg0.is_numeric_type ())
     gripe_wrong_type_arg ("hypot", arg0);
   else if (! arg1.is_numeric_type ())
@@ -6708,7 +6709,8 @@ do_accumarray_minmax_fun (const octave_value_list& args,
 
       if (! error_state)
         {
-          octave_value vals = args(1), zero = args (2);
+          octave_value vals = args(1);
+          octave_value zero = args(2);
 
           switch (vals.builtin_type ())
             {
@@ -6790,7 +6792,8 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
   else if (idx.extent (n) > n)
     error ("accumdim: index out of range");
 
-  dim_vector vals_dim = vals.dims (), rdv = vals_dim;
+  dim_vector vals_dim = vals.dims ();
+  dim_vector rdv = vals_dim;
 
   if (dim < 0)
     dim = vals.dims ().first_non_singleton ();
@@ -6869,7 +6872,8 @@ do_merge (const Array<bool>& mask,
   dim_vector dv = mask.dims ();
   NDT retval (dv);
 
-  bool tscl = tval.numel () == 1, fscl = fval.numel () == 1;
+  bool tscl = tval.numel () == 1;
+  bool fscl = fval.numel () == 1;
 
   if ((! tscl && tval.dims () != dv)
       || (! fscl && fval.dims () != dv))
@@ -6879,14 +6883,16 @@ do_merge (const Array<bool>& mask,
       T *rv = retval.fortran_vec ();
       octave_idx_type n = retval.numel ();
 
-      const T *tv = tval.data (), *fv = fval.data ();
+      const T *tv = tval.data ();
+      const T *fv = fval.data ();
       const bool *mv = mask.data ();
 
       if (tscl)
         {
           if (fscl)
             {
-              T ts = tv[0], fs = fv[0];
+              T ts = tv[0];
+              T fs = fv[0];
               for (octave_idx_type i = 0; i < n; i++)
                 rv[i] = mv[i] ? ts : fs;
             }
@@ -6963,7 +6969,8 @@ it is first converted to logical.\n\
       else
         {
           boolNDArray mask = mask_val.bool_array_value ();
-          octave_value tval = args(1), fval = args(2);
+          octave_value tval = args(1);
+          octave_value fval = args(2);
           if (tval.is_double_type () && fval.is_double_type ())
             {
               if (tval.is_complex_type () || fval.is_complex_type ())
@@ -7241,7 +7248,8 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
 
   assert (rep.ndims () == 2 && rep.rows () == 2);
 
-  octave_idx_type n = rep.columns (), l = 0;
+  octave_idx_type n = rep.columns ();
+  octave_idx_type l = 0;
   for (octave_idx_type i = 0; i < n; i++)
     {
       octave_idx_type k = rep(1, i);

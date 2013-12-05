@@ -60,7 +60,8 @@ single_num (std::istringstream& is)
     {
       // It's infinity.
       is.get ();
-      char c1 = is.get (), c2 = is.get ();
+      char c1 = is.get ();
+      char c2 = is.get ();
       if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
         {
           num = octave_Inf;

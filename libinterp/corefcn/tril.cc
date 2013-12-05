@@ -42,7 +42,8 @@ template <class T>
 static Array<T>
 do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
-  octave_idx_type nr = a.rows (), nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
   const T *avec = a.fortran_vec ();
   octave_idx_type zero = 0;
 
@@ -83,7 +84,8 @@ template <class T>
 static Array<T>
 do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
-  octave_idx_type nr = a.rows (), nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
   const T *avec = a.fortran_vec ();
   octave_idx_type zero = 0;
 
@@ -274,7 +276,8 @@ do_trilu (const std::string& name,
                 if (arg.numel () == 0)
                   return arg;
 
-                octave_idx_type nr = dims(0), nc = dims (1);
+                octave_idx_type nr = dims(0);
+                octave_idx_type nc = dims(1);
 
                 // The sole purpose of the below is to force the correct
                 // matrix size. This would not be necessary if the

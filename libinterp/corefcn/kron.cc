@@ -55,8 +55,10 @@ kron (const MArray<R>& a, const MArray<T>& b)
   assert (a.ndims () == 2);
   assert (b.ndims () == 2);
 
-  octave_idx_type nra = a.rows (), nrb = b.rows ();
-  octave_idx_type nca = a.cols (), ncb = b.cols ();
+  octave_idx_type nra = a.rows ();
+  octave_idx_type nrb = b.rows ();
+  octave_idx_type nca = a.cols ();
+  octave_idx_type ncb = b.cols ();
 
   MArray<T> c (dim_vector (nra*nrb, nca*ncb));
   T *cv = c.fortran_vec ();
@@ -79,8 +81,11 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
 {
   assert (b.ndims () == 2);
 
-  octave_idx_type nra = a.rows (), nrb = b.rows (), dla = a.diag_length ();
-  octave_idx_type nca = a.cols (), ncb = b.cols ();
+  octave_idx_type nra = a.rows ();
+  octave_idx_type nrb = b.rows ();
+  octave_idx_type dla = a.diag_length ();
+  octave_idx_type nca = a.cols ();
+  octave_idx_type ncb = b.cols ();
 
   MArray<T> c (dim_vector (nra*nrb, nca*ncb), T ());
 
@@ -129,12 +134,15 @@ kron (const MSparse<T>& A, const MSparse<T>& B)
 static PermMatrix
 kron (const PermMatrix& a, const PermMatrix& b)
 {
-  octave_idx_type na = a.rows (), nb = b.rows ();
-  const octave_idx_type *pa = a.data (), *pb = b.data ();
+  octave_idx_type na = a.rows ();
+  octave_idx_type nb = b.rows ();
+  const octave_idx_type *pa = a.data ();
+  const octave_idx_type *pb = b.data ();
   PermMatrix c(na*nb); // Row permutation.
   octave_idx_type *pc = c.fortran_vec ();
 
-  bool cola = a.is_col_perm (), colb = b.is_col_perm ();
+  bool cola = a.is_col_perm ();
+  bool colb = b.is_col_perm ();
   if (cola && colb)
     {
       for (octave_idx_type i = 0; i < na; i++)
@@ -282,7 +290,8 @@ Since the Kronecker product is associative, this is well-defined.\n\
 
   if (nargin >= 2)
     {
-      octave_value a = args(0), b = args(1);
+      octave_value a = args(0);
+      octave_value b = args(1);
       retval = dispatch_kron (a, b);
       for (octave_idx_type i = 2; i < nargin; i++)
         retval = dispatch_kron (retval, args(i));

@@ -209,7 +209,8 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 
   if (nargin == 2)
     {
-      octave_value argstr = args(0), argpat = args(1);
+      octave_value argstr = args(0);
+      octave_value argpat = args(1);
       if (argpat.is_string ())
         {
           Array<char> needle = argpat.char_array_value ();
@@ -279,7 +280,9 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 {
   Array<char> ret = str;
 
-  octave_idx_type siz = str.numel (), psiz = pat.numel (), rsiz = rep.numel ();
+  octave_idx_type siz = str.numel ();
+  octave_idx_type psiz = pat.numel ();
+  octave_idx_type rsiz = rep.numel ();
 
   if (psiz != 0)
     {
@@ -312,7 +315,8 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
             retsiz = siz + nidx * (rsiz - psiz);
 
           ret.clear (dim_vector (1, retsiz));
-          const char *src = str.data (), *reps = rep.data ();
+          const char *src = str.data ();
+          const char *reps = rep.data ();
           char *dest = ret.fortran_vec ();
 
           octave_idx_type k = 0;
@@ -380,7 +384,9 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
 
   if (nargin == 3)
     {
-      octave_value argstr = args(0), argpat = args(1), argrep = args(2);
+      octave_value argstr = args(0);
+      octave_value argpat = args(1);
+      octave_value argrep = args(2);
       if (argpat.is_string () && argrep.is_string ())
         {
           const Array<char> pat = argpat.char_array_value ();

@@ -683,7 +683,8 @@ static void
 single_type_concat (Array<T>& result,
                     tm_const& tmp)
 {
-  octave_idx_type r = 0, c = 0;
+  octave_idx_type r = 0;
+  octave_idx_type c = 0;
 
   for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
     {
@@ -753,7 +754,8 @@ single_type_concat (Array<T>& result,
           return;
         }
 
-      octave_idx_type ncols = row.length (), i = 0;
+      octave_idx_type ncols = row.length ();
+      octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Array<T>, array_list, ncols);
 
       for (tm_row_const::iterator q = row.begin ();
@@ -791,12 +793,14 @@ single_type_concat (Sparse<T>& result,
   // Sparse matrices require preallocation for efficient indexing; besides,
   // only horizontal concatenation can be efficiently handled by indexing.
   // So we just cat all rows through liboctave, then cat the final column.
-  octave_idx_type nrows = tmp.length (), j = 0;
+  octave_idx_type nrows = tmp.length ();
+  octave_idx_type j = 0;
   OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_row_list, nrows);
   for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
     {
       tm_row_const row = *p;
-      octave_idx_type ncols = row.length (), i = 0;
+      octave_idx_type ncols = row.length ();
+      octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, ncols);
 
       for (tm_row_const::iterator q = row.begin ();
@@ -829,12 +833,14 @@ single_type_concat (octave_map& result,
       return;
     }
 
-  octave_idx_type nrows = tmp.length (), j = 0;
+  octave_idx_type nrows = tmp.length ();
+  octave_idx_type j = 0;
   OCTAVE_LOCAL_BUFFER (octave_map, map_row_list, nrows);
   for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
     {
       tm_row_const row = *p;
-      octave_idx_type ncols = row.length (), i = 0;
+      octave_idx_type ncols = row.length ();
+      octave_idx_type i = 0;
       OCTAVE_LOCAL_BUFFER (MAP, map_list, ncols);
 
       for (tm_row_const::iterator q = row.begin ();

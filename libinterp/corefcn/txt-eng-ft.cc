@@ -635,7 +635,8 @@ ft_render::visit (text_element_string& e)
       FT_UInt glyph_index, previous = 0;
 
       std::string str = e.string_value ();
-      size_t n = str.length (), curr = 0;
+      size_t n = str.length ();
+      size_t curr = 0;
       mbstate_t ps;
       memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;

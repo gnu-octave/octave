@@ -125,8 +125,9 @@ extended_gcd (double a, double b, double& x, double& y)
   double aa = fabs (a);
   double bb = fabs (b);
 
-  double xx = 0, yy = 1;
-  double lx = 1, ly = 0;
+  double xx, lx, yy, ly;
+  xx = 0, lx = 1;
+  yy = 1, ly = 0;
 
   while (bb != 0)
     {
@@ -161,7 +162,8 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
     (*current_liboctave_error_handler)
       ("gcd: all complex parts must be integers");
 
-  std::complex<FP> aa = a, bb = b;
+  std::complex<FP> aa = a;
+  std::complex<FP> bb = b;
   bool swapped = false;
   if (abs (aa) < abs (bb))
     {
@@ -169,8 +171,9 @@ extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
       swapped = true;
     }
 
-  std::complex<FP> xx = 0, lx = 1;
-  std::complex<FP> yy = 1, ly = 0;
+  std::complex<FP> xx, lx, yy, ly;
+  xx = 0, lx = 1;
+  yy = 1, ly = 0;
 
   while (abs(bb) != 0)
     {
@@ -204,8 +207,9 @@ extended_gcd (const octave_int<T>& a, const octave_int<T>& b,
 {
   T aa = a.abs ().value ();
   T bb = b.abs ().value ();
-  T xx = 0, lx = 1;
-  T yy = 1, ly = 0;
+  T xx, lx, yy, ly;
+  xx = 0, lx = 1;
+  yy = 1, ly = 0;
 
   while (bb != 0)
     {
@@ -347,7 +351,8 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       bool incb = bb.numel () != 1;
 
       T *gptr = gg.fortran_vec ();
-      T *xptr = xx.fortran_vec (), *yptr = yy.fortran_vec ();
+      T *xptr = xx.fortran_vec ();
+      T *yptr = yy.fortran_vec ();
 
       octave_idx_type n = gg.numel ();
       for (octave_idx_type i = 0; i < n; i++)

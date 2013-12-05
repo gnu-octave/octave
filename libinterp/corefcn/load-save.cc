@@ -1065,7 +1065,8 @@ parse_save_options (const string_vector &argv,
   string_vector retval;
   int argc = argv.length ();
 
-  bool do_double = false, do_tabs = false;
+  bool do_double = false;
+  bool do_tabs = false;
 
   for (int i = 0; i < argc; i++)
     {

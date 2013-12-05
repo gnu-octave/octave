@@ -101,7 +101,8 @@ do_sqrtm (const octave_value& arg)
 
   typedef typename Matrix::element_type real_type;
 
-  real_type cutoff = 0, one = 1;
+  real_type cutoff = 0;
+  real_type one = 1;
   real_type eps = std::numeric_limits<real_type>::epsilon ();
 
   if (! iscomplex)

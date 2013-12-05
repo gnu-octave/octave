@@ -147,7 +147,8 @@ opengl_texture::create (const octave_value& data)
     {
       // FIXME: dim_vectors hold octave_idx_type values.
       //        Should we check for dimensions larger than intmax?
-      int h = dv(0), w = dv(1), tw, th;
+      int h, w, tw, th;
+      h = dv(0), w = dv(1);
       GLuint id;
       bool ok = true;
 
@@ -1002,7 +1003,8 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       Matrix xticks = xform.xscale (props.get_xtick ().matrix_value ());
       Matrix xmticks = xform.xscale (props.get_xmtick ().matrix_value ());
       string_vector xticklabels = props.get_xticklabel ().all_strings ();
-      int wmax = 0, hmax = 0;
+      int wmax = 0;
+      int hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fy);
       bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
@@ -1110,7 +1112,8 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       Matrix yticks = xform.yscale (props.get_ytick ().matrix_value ());
       Matrix ymticks = xform.yscale (props.get_ymtick ().matrix_value ());
       string_vector yticklabels = props.get_yticklabel ().all_strings ();
-      int wmax = 0, hmax = 0;
+      int wmax = 0;
+      int hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fx);
       bool mirror = props.is_box () && ystate != AXE_ANY_DIR
                     && (! props.has_property ("__plotyy_axes__"));
@@ -1209,7 +1212,8 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       Matrix zticks = xform.zscale (props.get_ztick ().matrix_value ());
       Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
       string_vector zticklabels = props.get_zticklabel ().all_strings ();
-      int wmax = 0, hmax = 0;
+      int wmax = 0;
+      int hmax = 0;
       bool mirror = props.is_box () && zstate != AXE_ANY_DIR;
 
       set_color (props.get_zcolor_rgb ());
@@ -1562,7 +1566,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
   const Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
   const Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
 
-  int zr = z.rows (), zc = z.columns ();
+  int zr = z.rows ();
+  int zc = z.columns ();
 
   NDArray c;
   const NDArray n = props.get_vertexnormals ().array_value ();
@@ -2552,7 +2557,8 @@ opengl_renderer::draw_image (const image::properties& props)
 {
   octave_value cdata = props.get_color_data ();
   dim_vector dv (cdata.dims ());
-  int h = dv(0), w = dv(1);
+  int h = dv(0);
+  int w = dv(1);
 
   Matrix x = props.get_xdata ().matrix_value ();
   Matrix y = props.get_ydata ().matrix_value ();
@@ -2610,8 +2616,9 @@ opengl_renderer::draw_image (const image::properties& props)
   // viewport/clipping plane so we must do the clipping
   // ourselfes - only draw part of the image
 
-  int j0 = 0, j1 = w;
-  int i0 = 0, i1 = h;
+  int j0, j1, i0, i1;
+  j0 = 0, j1 = w;
+  i0 = 0, i1 = h;
 
   float im_xmin = x(0) - nor_dx/2;
   float im_xmax = x(1) + nor_dx/2;

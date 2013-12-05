@@ -738,7 +738,8 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
   hsize_t sz = d.length ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, sz);
   bool empty = false;
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid = -1;
+  hid_t data_hid = -1;
   int retval;
   for (hsize_t i = 0; i < sz; i++)
     {
@@ -865,7 +866,9 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
                bool mark_as_global, bool save_as_floats)
 {
   hsize_t dims[3];
-  hid_t type_id = -1, space_id = -1, data_id = -1, data_type_id = -1;
+  hid_t type_id, space_id, data_id, data_type_id;
+  type_id = space_id = data_id = data_type_id = -1;
+
   bool retval = false;
   octave_value val = tc;
   // FIXME: diagonal & permutation matrices currently don't know how to save

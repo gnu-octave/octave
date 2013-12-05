@@ -264,7 +264,10 @@ fill empty fields.  The default is zero.\n\
     }
 
   // Take a subset if a range was given.
-  octave_idx_type r0 = 0, c0 = 0, r1 = idx_max-1, c1 = idx_max-1;
+  octave_idx_type r0 = 0;
+  octave_idx_type c0 = 0;
+  octave_idx_type r1 = idx_max-1;
+  octave_idx_type c1 = idx_max-1;
   if (nargin > 2)
     {
       if (nargin == 3)
@@ -287,7 +290,12 @@ fill empty fields.  The default is zero.\n\
 
   if (!error_state)
     {
-      octave_idx_type i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
+      octave_idx_type i = 0;
+      octave_idx_type j = 0;
+      octave_idx_type r = 1;
+      octave_idx_type c = 1;
+      octave_idx_type rmax = 0;
+      octave_idx_type cmax = 0;
 
       Matrix rdata;
       ComplexMatrix cdata;

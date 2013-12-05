@@ -779,7 +779,8 @@ octave_user_function::bind_automatic_vars
         {
           // Only assign the hidden variable if black holes actually present.
           Matrix bh (1, nbh);
-          octave_idx_type k = 0, l = 0;
+          octave_idx_type k = 0;
+          octave_idx_type l = 0;
           for (std::list<octave_lvalue>::const_iterator
                p = lvalue_list->begin (); p != lvalue_list->end (); p++)
             {

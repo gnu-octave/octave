@@ -1405,7 +1405,9 @@ public:
             param.modifier = 'r';
             param.parameter_length = 0;
 
-            int a = 0, b = -1, balance = 1;
+            int a = 0;
+            int b = -1;
+            int balance = 1;
             unsigned int items;
             size_t pos;
             std::string cmd;

@@ -1077,7 +1077,8 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     return (empty > 0);
 
   hsize_t rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1, size_hid = -1;
+  hid_t space_hid, data_hid, size_hid;
+  space_hid = data_hid = size_hid = -1;
 
 #if HAVE_HDF5_18
   data_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);

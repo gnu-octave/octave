@@ -291,7 +291,8 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
     if (len < ifargs(i).length ())
       len = ifargs(i).length ();
 
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
   bool retval = true;
 
   // FIXME: Is there a better way of saving string vectors,

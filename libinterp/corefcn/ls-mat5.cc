@@ -1560,7 +1560,8 @@ int
 read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
                               const std::string& filename)
 {
-  int16_t version=0, magic=0;
+  int16_t version = 0;
+  int16_t magic = 0;
   uint64_t subsys_offset;
 
   is.seekg (116, std::ios::beg);

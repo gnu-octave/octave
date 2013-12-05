@@ -1053,7 +1053,8 @@ octave_base_stream::skipl (off_t num, bool& err, const std::string& who)
     {
       std::istream& is = *isp;
 
-      int c = 0, lastc = -1;
+      int c = 0;
+      int lastc = -1;
       cnt = 0;
 
       while (is && (c = is.get ()) != EOF)

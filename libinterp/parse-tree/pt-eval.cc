@@ -379,7 +379,8 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
         dim_vector dv = rhs.dims ().redim (2);
 
-        octave_idx_type nrows = dv(0), steps = dv(1);
+        octave_idx_type nrows = dv(0);
+        octave_idx_type steps = dv(1);
 
         if (steps > 0)
           {

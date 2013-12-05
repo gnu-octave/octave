@@ -162,7 +162,8 @@ tree_binary_expression *
 maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
                                   int l, int c, octave_value::binary_op t)
 {
-  tree_expression *ca = a, *cb = b;
+  tree_expression *ca = a;
+  tree_expression *cb = b;
   octave_value::compound_binary_op ct;
 
   switch (t)

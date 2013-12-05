@@ -347,7 +347,8 @@ octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
@@ -550,7 +551,8 @@ octave_base_int_scalar<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
   hid_t save_type_hid = HDF5_SAVE_TYPE;
   bool retval = true;
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;

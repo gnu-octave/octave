@@ -354,8 +354,10 @@ do_minmax_body (const octave_value_list& args,
     }
   else if (nargin == 2)
     {
-      octave_value argx = args(0), argy = args(1);
-      builtin_type_t xtyp = argx.builtin_type (), ytyp = argy.builtin_type ();
+      octave_value argx = args(0);
+      octave_value argy = args(1);
+      builtin_type_t xtyp = argx.builtin_type ();
+      builtin_type_t ytyp = argy.builtin_type ();
       builtin_type_t rtyp;
       if (xtyp == btyp_char && ytyp == btyp_char)
         rtyp = btyp_char;

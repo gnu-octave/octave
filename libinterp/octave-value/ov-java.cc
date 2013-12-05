@@ -1150,7 +1150,8 @@ box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
           if (jni_env->IsInstanceOf (jobj, cls))
             {
               jobjectArray jarr = reinterpret_cast<jobjectArray> (jobj);
-              int rows = jni_env->GetArrayLength (jarr), cols = 0;
+              int rows = jni_env->GetArrayLength (jarr);
+              int cols = 0;
 
               if (rows > 0)
                 {

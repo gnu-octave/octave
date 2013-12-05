@@ -201,7 +201,8 @@ maybe_optimized_builtin (const std::string& name,
   bsxfun_builtin_op op = bsxfun_builtin_lookup (name);
   if (op != bsxfun_builtin_unknown)
     {
-      builtin_type_t btyp_a = a.builtin_type (), btyp_b = b.builtin_type ();
+      builtin_type_t btyp_a = a.builtin_type ();
+      builtin_type_t btyp_b = b.builtin_type ();
 
       // Simplify single/double combinations.
       if (btyp_a == btyp_float && btyp_b == btyp_double)

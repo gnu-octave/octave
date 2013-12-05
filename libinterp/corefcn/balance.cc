@@ -144,7 +144,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   if (AEPcase)
     {
       // Algebraic eigenvalue problem.
-      bool noperm = false, noscal = false;
+      bool noperm = false;
+      bool noscal = false;
       if (nargin > 1)
         {
           std::string a1s = args(1).string_value ();

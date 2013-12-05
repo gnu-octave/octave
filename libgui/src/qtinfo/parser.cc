@@ -501,7 +501,8 @@ parser::parse_info_map ()
 void
 parser::real_position (int pos, QFileInfo & file_info, int & real_pos)
 {
-  int header = -1, sum = 0;
+  int header = -1;
+  int sum = 0;
   for (int i = 0; i < _info_file_real_size_list.size (); i++)
     {
       info_file_item item = _info_file_real_size_list.at (i);

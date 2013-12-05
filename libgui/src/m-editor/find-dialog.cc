@@ -210,7 +210,8 @@ find_dialog::find_prev ()
 void
 find_dialog::find (bool forward)
 {
-  int line = -1, col = -1;
+  int line, col;
+  line = col = -1;
   bool do_wrap = _wrap_check_box->isChecked ();
   bool do_forward = true;
 

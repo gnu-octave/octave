@@ -348,7 +348,7 @@ SparseComplexMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+        for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
           if (found[ridx (i)] == -j)
             found[ridx (i)] = -j - 1;
 
@@ -505,7 +505,7 @@ SparseComplexMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+        for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
           if (found[ridx (i)] == -j)
             found[ridx (i)] = -j - 1;
 
@@ -4320,7 +4320,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
                 {
 
                   for (octave_idx_type i = 0; i < b_nr; i++)
-                    Bx[i] = b (i,j);
+                    Bx[i] = b(i,j);
 
                   F77_XFCN (zgttrs, ZGTTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -5307,7 +5307,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                     {
 
                       for (octave_idx_type i = 0; i < b_nr; i++)
-                        Bx[i] = b (i,j);
+                        Bx[i] = b(i,j);
 
                       F77_XFCN (zpbtrs, ZPBTRS,
                                 (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -6589,7 +6589,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               for (octave_idx_type j = 0; j < b_nc; j++)
                 {
                   for (octave_idx_type i = 0; i < b_nr; i++)
-                    Bx[i] = b (i,j);
+                    Bx[i] = b(i,j);
 
                   status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
                                                   Ai,

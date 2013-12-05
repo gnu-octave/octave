@@ -440,7 +440,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
       octave_idx_type nr = bnda.rows ();
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = bnda.cidx(j); i < bnda.cidx(j+1); i++)
+        for (octave_idx_type i = bnda.cidx (j); i < bnda.cidx (j+1); i++)
           if (bnda.data (i))
             d[k++] = j * nr + bnda.ridx (i);
 

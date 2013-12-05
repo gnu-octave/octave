@@ -3308,7 +3308,7 @@ min (float d, const FloatMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (d, m (i, j));
+        result(i, j) = xmin (d, m(i, j));
       }
 
   return result;
@@ -3328,7 +3328,7 @@ min (const FloatMatrix& m, float d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (m (i, j), d);
+        result(i, j) = xmin (m(i, j), d);
       }
 
   return result;
@@ -3355,7 +3355,7 @@ min (const FloatMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmin (a (i, j), b (i, j));
+        result(i, j) = xmin (a(i, j), b(i, j));
       }
 
   return result;
@@ -3375,7 +3375,7 @@ max (float d, const FloatMatrix& m)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (d, m (i, j));
+        result(i, j) = xmax (d, m(i, j));
       }
 
   return result;
@@ -3395,7 +3395,7 @@ max (const FloatMatrix& m, float d)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (m (i, j), d);
+        result(i, j) = xmax (m(i, j), d);
       }
 
   return result;
@@ -3422,7 +3422,7 @@ max (const FloatMatrix& a, const FloatMatrix& b)
     for (octave_idx_type i = 0; i < nr; i++)
       {
         octave_quit ();
-        result (i, j) = xmax (a (i, j), b (i, j));
+        result(i, j) = xmax (a(i, j), b(i, j));
       }
 
   return result;

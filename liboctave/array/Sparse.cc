@@ -324,9 +324,9 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       if (n == 1 && a(0) != T ())
         {
           change_capacity (nzm > 1 ? nzm : 1);
-          xcidx(0) = 0;
-          xridx(0) = r(0);
-          xdata(0) = a(0);
+          xcidx (0) = 0;
+          xridx (0) = r(0);
+          xdata (0) = a(0);
 
           for (octave_idx_type j = 0; j < nc; j++)
             xcidx (j+1) = j >= c(0);
@@ -497,8 +497,8 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
         new_nz += rd[i-1] != rd[i];
       // Allocate result.
       change_capacity (nzm > new_nz ? nzm : new_nz);
-      xcidx(0) = 0;
-      xcidx(1) = new_nz;
+      xcidx (0) = 0;
+      xcidx (1) = new_nz;
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -1266,8 +1266,8 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
           else
             {
               const Sparse<T> tmp = *this;
-              octave_idx_type lbi = tmp.cidx(lb);
-              octave_idx_type ubi = tmp.cidx(ub);
+              octave_idx_type lbi = tmp.cidx (lb);
+              octave_idx_type ubi = tmp.cidx (ub);
               octave_idx_type new_nz = nz - (ubi - lbi);
 
               *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
@@ -1310,20 +1310,20 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
                                  tmpl.nnz () + tmpu.nnz ());
               for (octave_idx_type j = 0, k = 0; j < nc; j++)
                 {
-                  for (octave_idx_type i = tmpl.cidx(j); i < tmpl.cidx(j+1);
+                  for (octave_idx_type i = tmpl.cidx (j); i < tmpl.cidx (j+1);
                        i++)
                     {
-                      xdata(k) = tmpl.data(i);
-                      xridx(k++) = tmpl.ridx(i);
+                      xdata (k) = tmpl.data (i);
+                      xridx (k++) = tmpl.ridx (i);
                     }
-                  for (octave_idx_type i = tmpu.cidx(j); i < tmpu.cidx(j+1);
+                  for (octave_idx_type i = tmpu.cidx (j); i < tmpu.cidx (j+1);
                        i++)
                     {
-                      xdata(k) = tmpu.data(i);
-                      xridx(k++) = tmpu.ridx(i) + lb;
+                      xdata (k) = tmpu.data (i);
+                      xridx (k++) = tmpu.ridx (i) + lb;
                     }
 
-                  xcidx(j+1) = k;
+                  xcidx (j+1) = k;
                 }
             }
         }

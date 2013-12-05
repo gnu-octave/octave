@@ -360,7 +360,7 @@ SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
         found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+        for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
           if (found[ridx (i)] == -j)
             found[ridx (i)] = -j - 1;
 
@@ -511,7 +511,7 @@ SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
         found[i] = 0;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+        for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
           if (found[ridx (i)] == -j)
             found[ridx (i)] = -j - 1;
 
@@ -4418,7 +4418,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
-                      Complex c = b (i,j);
+                      Complex c = b(i,j);
                       Bx[i] = std::real (c);
                       Bz[i] = std::imag (c);
                     }
@@ -5175,7 +5175,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                     {
                       for (octave_idx_type i = 0; i < b_nr; i++)
                         {
-                          Complex c = b (i,j);
+                          Complex c = b(i,j);
                           Bx[i] = std::real (c);
                           Bz[i] = std::imag (c);
                         }
@@ -5325,7 +5325,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                     {
                       for (octave_idx_type i = 0; i < nr; i++)
                         {
-                          Complex c = b (i, j);
+                          Complex c = b(i, j);
                           Bx[i] = std::real (c);
                           Bz[i] = std::imag  (c);
                         }
@@ -5480,7 +5480,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
                       for (octave_idx_type i = 0; i < b_nr; i++)
                         {
-                          Complex c = b (i,j);
+                          Complex c = b(i,j);
                           Bx[i] = std::real (c);
                           Bz[i] = std::imag (c);
                         }
@@ -6496,7 +6496,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                 {
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
-                      Complex c = b (i,j);
+                      Complex c = b(i,j);
                       Bx[i] = std::real (c);
                       Bz[i] = std::imag (c);
                     }
@@ -6751,7 +6751,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 {
                   for (octave_idx_type i = 0; i < b_nr; i++)
                     {
-                      Complex c = b (i,j);
+                      Complex c = b(i,j);
                       Bx[i] = std::real (c);
                       Bz[i] = std::imag (c);
                     }

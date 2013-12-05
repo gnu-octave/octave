@@ -203,7 +203,7 @@ octave_user_function::octave_user_function
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
-    class_constructor (false), class_method (false),
+    class_constructor (none), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
 #ifdef HAVE_LLVM
@@ -470,7 +470,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
 octave_value_list
 octave_user_function::do_multi_index_op (int nargout,
-                                         const octave_value_list& args,
+                                         const octave_value_list& _args,
                                          const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
@@ -480,6 +480,23 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (! cmd_list)
     return retval;
+
+  // If this function is a classdef constructor, extract the first input
+  // argument, which must be the partially constructed object instance.
+
+  octave_value_list args (_args);
+  octave_value_list ret_args;
+
+  if (is_classdef_constructor ())
+    {
+      if (args.length () > 0)
+        {
+          ret_args = args.slice (0, 1, true);
+          args = args.slice (1, args.length () - 1, true);
+        }
+      else
+        panic_impossible ();
+    }
 
 #ifdef HAVE_LLVM
   if (is_special_expr ()
@@ -522,6 +539,25 @@ octave_user_function::do_multi_index_op (int nargout,
       param_list->define_from_arg_vector (args);
       if (error_state)
         return retval;
+    }
+
+  // For classdef constructor, pre-populate the output arguments
+  // with the pre-initialized object instance, extracted above.
+
+  if (is_classdef_constructor ())
+    {
+      if (ret_list)
+        {
+          ret_list->define_from_arg_vector (ret_args);
+          if (error_state)
+            return retval;
+        }
+      else
+        {
+          ::error ("%s: invalid classdef constructor, no output argument defined",
+                   dispatch_class ().c_str ());
+          return retval;
+        }
     }
 
   // Force parameter list to be undefined when this function exits.

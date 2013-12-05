@@ -637,6 +637,12 @@ tree_evaluator::visit_fcn_handle (tree_fcn_handle&)
 }
 
 void
+tree_evaluator::visit_funcall (tree_funcall&)
+{
+  panic_impossible ();
+}
+
+void
 tree_evaluator::visit_parameter_list (tree_parameter_list&)
 {
   panic_impossible ();

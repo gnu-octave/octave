@@ -683,6 +683,12 @@ jit_convert::visit_fcn_handle (tree_fcn_handle&)
 }
 
 void
+jit_convert::visit_funcall (tree_funcall&)
+{
+  throw jit_fail_exception ();
+}
+
+void
 jit_convert::visit_parameter_list (tree_parameter_list&)
 {
   throw jit_fail_exception ();

@@ -68,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 #include "options-usage.h"
 #include "ov.h"
+#include "ov-classdef.h"
 #include "ov-range.h"
 #include "toplev.h"
 #include "parse.h"
@@ -751,6 +752,8 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   install_ops ();
 
   install_builtins ();
+
+  install_classdef ();
 
   for (std::list<std::string>::const_iterator it = command_line_path.begin ();
        it != command_line_path.end (); it++)

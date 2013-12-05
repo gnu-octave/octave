@@ -261,7 +261,9 @@ public:
       looking_at_matrix_or_assign_lhs (false),
       looking_for_object_index (false),
       looking_at_indirect_ref (false), parsing_class_method (false),
-      maybe_classdef_get_set_method (false), parsing_classdef (false),
+      parsing_classdef (false), maybe_classdef_get_set_method (false),
+      parsing_classdef_get_method (false),
+      parsing_classdef_set_method (false), 
       quote_is_transpose (false), force_script (false),
       reading_fcn_file (false), reading_script_file (false),
       reading_classdef_file (false),
@@ -341,13 +343,19 @@ public:
   // true means we are parsing a class method in function or classdef file.
   bool parsing_class_method;
 
+  // true means we are parsing a classdef file
+  bool parsing_classdef;
+
   // true means we are parsing a class method declaration line in a
   // classdef file and can accept a property get or set method name.
   // for example, "get.propertyname" is recognized as a function name.
   bool maybe_classdef_get_set_method;
 
-  // true means we are parsing a classdef file
-  bool parsing_classdef;
+  // TRUE means we are parsing a classdef get.method.
+  bool parsing_classdef_get_method;
+
+  // TRUE means we are parsing a classdef set.method.
+  bool parsing_classdef_set_method;
 
   // return transpose or start a string?
   bool quote_is_transpose;

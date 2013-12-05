@@ -21,6 +21,7 @@ PARSE_TREE_INC = \
   parse-tree/pt-cbinop.h \
   parse-tree/pt-cell.h \
   parse-tree/pt-check.h \
+  parse-tree/pt-classdef.h \
   parse-tree/pt-cmd.h \
   parse-tree/pt-colon.h \
   parse-tree/pt-const.h \
@@ -29,6 +30,7 @@ PARSE_TREE_INC = \
   parse-tree/pt-except.h \
   parse-tree/pt-exp.h \
   parse-tree/pt-fcn-handle.h \
+  parse-tree/pt-funcall.h \
   parse-tree/pt-id.h \
   parse-tree/pt-idx.h \
   parse-tree/pt-jump.h \
@@ -52,6 +54,7 @@ PARSE_TREE_SRC = \
   parse-tree/pt-cbinop.cc \
   parse-tree/pt-cell.cc \
   parse-tree/pt-check.cc \
+  parse-tree/pt-classdef.cc \
   parse-tree/pt-cmd.cc \
   parse-tree/pt-colon.cc \
   parse-tree/pt-const.cc \
@@ -60,6 +63,7 @@ PARSE_TREE_SRC = \
   parse-tree/pt-except.cc \
   parse-tree/pt-exp.cc \
   parse-tree/pt-fcn-handle.cc \
+  parse-tree/pt-funcall.cc \
   parse-tree/pt-id.cc \
   parse-tree/pt-idx.cc \
   parse-tree/pt-jump.cc \

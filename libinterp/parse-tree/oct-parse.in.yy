@@ -62,6 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "load-path.h"
 #include "oct-hist.h"
 #include "oct-map.h"
+#include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "ov-null-mat.h"
@@ -70,6 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pt-all.h"
 #include "pt-eval.h"
+#include "pt-funcall.h"
 #include "symtab.h"
 #include "token.h"
 #include "unwind-prot.h"
@@ -164,6 +166,8 @@ static void yyerror (octave_base_parser& parser, const char *s);
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
   tree_fcn_handle *tree_fcn_handle_type;
+  tree_funcall *tree_funcall_type;
+  tree_function_def *tree_function_def_type;
   tree_anon_fcn_handle *tree_anon_fcn_handle_type;
   tree_identifier *tree_identifier_type;
   tree_index_expression *tree_index_expression_type;
@@ -183,7 +187,24 @@ static void yyerror (octave_base_parser& parser, const char *s);
   tree_statement *tree_statement_type;
   tree_statement_list *tree_statement_list_type;
   octave_user_function *octave_user_function_type;
-  void *dummy_type;
+
+  tree_classdef *tree_classdef_type;
+  tree_classdef_attribute* tree_classdef_attribute_type;
+  tree_classdef_attribute_list* tree_classdef_attribute_list_type;
+  tree_classdef_superclass* tree_classdef_superclass_type;
+  tree_classdef_superclass_list* tree_classdef_superclass_list_type;
+  tree_classdef_body* tree_classdef_body_type;
+  tree_classdef_property* tree_classdef_property_type;
+  tree_classdef_property_list* tree_classdef_property_list_type;
+  tree_classdef_properties_block* tree_classdef_properties_block_type;
+  tree_classdef_methods_list* tree_classdef_methods_list_type;
+  tree_classdef_methods_block* tree_classdef_methods_block_type;
+  tree_classdef_event* tree_classdef_event_type;
+  tree_classdef_events_list* tree_classdef_events_list_type;
+  tree_classdef_events_block* tree_classdef_events_block_type;
+  tree_classdef_enum* tree_classdef_enum_type;
+  tree_classdef_enum_list* tree_classdef_enum_list_type;
+  tree_classdef_enum_block* tree_classdef_enum_block_type;
 }
 
 // Tokens with line and column information.
@@ -210,6 +231,7 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL PERSISTENT
 %token <tok_val> FCN_HANDLE
+%token <tok_val> CLASSDEF
 %token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
@@ -218,13 +240,12 @@ static void yyerror (octave_base_parser& parser, const char *s);
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token INPUT_FILE CLASSDEF
+%token INPUT_FILE
 // %token VARARGIN VARARGOUT
 
 // Nonterminals we construct.
-%type <tok_val> function_beg
-%type <comment_type> stash_comment classdef_beg
-%type <comment_type> properties_beg methods_beg events_beg enum_beg
+%type <comment_type> stash_comment
+%type <tok_val> function_beg classdef_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -236,18 +257,19 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %type <tree_expression_type> primary_expr oper_expr power_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
-%type <tree_identifier_type> superclass_identifier meta_identifier
-%type <octave_user_function_type> function1 function2 classdef1
+%type <tree_funcall_type> superclass_identifier meta_identifier
+%type <octave_user_function_type> function1 function2
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_colon_expression_type> colon_expr1
 %type <tree_argument_list_type> arg_list word_list assign_lhs
 %type <tree_argument_list_type> cell_or_matrix_row
 %type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
-%type <tree_parameter_list_type> superclasses opt_superclasses
 %type <tree_command_type> command select_command loop_command
-%type <tree_command_type> jump_command except_command function
-%type <tree_command_type> file classdef
+%type <tree_command_type> jump_command except_command
+%type <tree_function_def_type> function
+%type <tree_classdef_type> classdef
+%type <tree_command_type> file
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -257,25 +279,25 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %type <tree_decl_elt_type> decl2 param_list_elt
 %type <tree_decl_init_list_type> decl1
 %type <tree_decl_command_type> declaration
-%type <tree_statement_type> statement function_end classdef_end
+%type <tree_statement_type> statement function_end
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list
-// These types need to be specified.
-%type <dummy_type> attr
-%type <dummy_type> class_event
-%type <dummy_type> class_enum
-%type <dummy_type> class_property
-%type <dummy_type> properties_list
-%type <dummy_type> properties_block
-%type <dummy_type> methods_list
-%type <dummy_type> methods_block
-%type <dummy_type> opt_attr_list
-%type <dummy_type> attr_list
-%type <dummy_type> events_list
-%type <dummy_type> events_block
-%type <dummy_type> enum_list
-%type <dummy_type> enum_block
-%type <dummy_type> class_body
+%type <tree_classdef_attribute_type> attr
+%type <tree_classdef_attribute_list_type> attr_list opt_attr_list
+%type <tree_classdef_superclass_type> superclass
+%type <tree_classdef_superclass_list_type> superclass_list opt_superclass_list
+%type <tree_classdef_body_type> class_body
+%type <tree_classdef_property_type> class_property
+%type <tree_classdef_property_list_type> property_list
+%type <tree_classdef_properties_block_type> properties_block
+%type <tree_classdef_methods_list_type> methods_list
+%type <tree_classdef_methods_block_type> methods_block
+%type <tree_classdef_event_type> class_event
+%type <tree_classdef_events_list_type> events_list
+%type <tree_classdef_events_block_type> events_block
+%type <tree_classdef_enum_type> class_enum
+%type <tree_classdef_enum_list_type> enum_list
+%type <tree_classdef_enum_block_type> enum_block
 
 // Precedence and associativity.
 %right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
@@ -439,11 +461,26 @@ identifier      : NAME
 
 superclass_identifier
                 : SUPERCLASSREF
-                  { $$ = new tree_identifier ($1->line (), $1->column ()); }
+                  {
+                    std::string method_nm = $1->superclass_method_name ();
+                    std::string package_nm = $1->superclass_package_name ();
+                    std::string class_nm = $1->superclass_class_name ();
+
+                    $$ = parser.make_superclass_ref
+                                       (method_nm, package_nm, class_nm,
+                                        $1->line (), $1->column ());
+                  }
                 ;
 
 meta_identifier : METAQUERY
-                  { $$ = new tree_identifier ($1->line (), $1->column ()); }
+                  {
+                    std::string package_nm = $1->meta_package_name ();
+                    std::string class_nm = $1->meta_class_name ();
+
+                    $$ = parser.make_meta_class_query
+                                       (package_nm, class_nm,
+                                        $1->line (), $1->column ());
+                  }
                 ;
 
 string          : DQ_STRING
@@ -866,8 +903,6 @@ command         : declaration
                 | function
                   { $$ = $1; }
                 | file
-                  { $$ = $1; }
-                | classdef
                   { $$ = $1; }
                 ;
 
@@ -1294,6 +1329,13 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
 
                     $$ = 0;
                   }
+                | INPUT_FILE opt_nl classdef opt_sep END_OF_INPUT
+                  {
+                    if (lexer.reading_classdef_file)
+                      parser.classdef_object = $3;
+
+                    $$ = 0;
+                  }
                 ;
 
 // ===================
@@ -1336,12 +1378,14 @@ fcn_name        : identifier
                   {
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
+                    lexer.parsing_classdef_get_method = true;
                     $$ = $3;
                   }
                 | SET '.' identifier
                   {
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
+                    lexer.parsing_classdef_set_method = true;
                     $$ = $3;
                   }
                 ;
@@ -1351,6 +1395,11 @@ function1       : fcn_name function2
                     std::string fname = $1->name ();
 
                     delete $1;
+
+                    if (lexer.parsing_classdef_get_method)
+                      fname.insert (0, "get.");
+                    else if (lexer.parsing_classdef_set_method)
+                      fname.insert (0, "set.");
 
                     $$ = parser.frob_function (fname, $2);
                   }
@@ -1411,158 +1460,217 @@ function_end    : END
 // Classdef
 // ========
 
-classdef_beg    : CLASSDEF stash_comment
+classdef_beg    : CLASSDEF
                   {
-                    $$ = 0;
+                    if (! lexer.reading_classdef_file)
+                      {
+                        parser.bison_error ("classdef must appear inside a file containing only a class definition");
+                        YYABORT;
+                      }
+
                     lexer.parsing_classdef = true;
+                    $$ = $1;
                   }
                 ;
 
-classdef_end    : END
+classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
                   {
                     lexer.parsing_classdef = false;
 
-                    if (parser.end_token_ok ($1, token::classdef_end))
-                      $$ = parser.make_end ("endclassdef", false,
-                                            $1->line (), $1->column ());
-                    else
-                      ABORT_PARSE;
+                    if (! ($$ = parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
+                      {
+                        // make_classdef deleted $3, $4, $5, and $7.
+                        ABORT_PARSE;
+                      }
                   }
-                ;
-
-classdef1       : classdef_beg opt_attr_list identifier opt_superclasses
-                  { $$ = 0; }
-                ;
-
-classdef        : classdef1 opt_sep class_body opt_sep stash_comment classdef_end
-                  { $$ = 0; }
                 ;
 
 opt_attr_list   : // empty
                   { $$ = 0; }
                 | '(' attr_list ')'
-                  { $$ = 0; }
+                  { $$ = $2; }
                 ;
 
 attr_list       : attr
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_attribute_list ($1); }
                 | attr_list ',' attr
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 ;
 
 attr            : identifier
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_attribute ($1); }
                 | identifier '=' decl_param_init expression
-                  { $$ = 0; }
+                  {
+                    lexer.looking_at_initializer_expression = false;
+                    $$ = new tree_classdef_attribute ($1, $4);
+                  }
                 | EXPR_NOT identifier
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_attribute ($2, false); }
                 ;
 
-opt_superclasses
+opt_superclass_list
                 : // empty
                   { $$ = 0; }
-                | superclasses
-                  { $$ = 0; }
+                | superclass_list
+                  { $$ = $1; }
                 ;
 
-superclasses    : EXPR_LT identifier '.' identifier
-                  { $$ = 0; }
-                | EXPR_LT identifier
-                  { $$ = 0; }
-                | superclasses EXPR_AND identifier '.' identifier
-                  { $$ = 0; }
-                | superclasses EXPR_AND identifier
-                  { $$ = 0; }
+superclass_list : EXPR_LT superclass
+                  { $$ = new tree_classdef_superclass_list ($2); }
+                | superclass_list EXPR_AND superclass
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
+                ;
+
+superclass      : identifier
+                  { $$ = new tree_classdef_superclass ($1); }
+                | identifier '.' identifier
+                  { $$ = new tree_classdef_superclass ($3, $1); }
                 ;
 
 class_body      : properties_block
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_body ($1); }
                 | methods_block
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_body ($1); }
                 | events_block
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_body ($1); }
                 | enum_block
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_body ($1); }
                 | class_body opt_sep properties_block
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 | class_body opt_sep methods_block
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 | class_body opt_sep events_block
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 | class_body opt_sep enum_block
-                  { $$ = 0; }
-                ;
-
-properties_beg  : PROPERTIES stash_comment
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 ;
 
 properties_block
-                : properties_beg opt_attr_list opt_sep properties_list opt_sep END
-                  { $$ = 0; }
+                : PROPERTIES stash_comment opt_attr_list opt_sep property_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_properties_block
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_properties_block delete $3 and $5.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
-properties_list
+property_list
                 : class_property
-                  { $$ = 0; }
-                | properties_list opt_sep class_property
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_property_list ($1); }
+                | property_list opt_sep class_property
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 ;
 
 class_property  : identifier
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_property ($1); }
                 | identifier '=' decl_param_init expression ';'
-                  { $$ = 0; }
+                  {
+                    lexer.looking_at_initializer_expression = false;
+                    $$ = new tree_classdef_property ($1, $4);
+                  }
                 ;
 
-methods_beg     : METHODS stash_comment
-                  { $$ = 0; }
-                ;
-
-methods_block   : methods_beg opt_attr_list opt_sep methods_list opt_sep END
-                  { $$ = 0; }
+methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_methods_block
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_methods_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
 methods_list    : function
-                  { $$ = 0; }
+                  {
+                    octave_value fcn;
+                    if ($1)
+                      fcn = $1->function ();
+                    delete $1;
+                    $$ = new tree_classdef_methods_list (fcn);
+                  }
                 | methods_list opt_sep function
-                  { $$ = 0; }
+                  {
+                    octave_value fcn;
+                    if ($3)
+                      fcn = $3->function ();
+                    delete $3;
+
+                    $1->append (fcn);
+                    $$ = $1;
+                  }
                 ;
 
-events_beg      : EVENTS stash_comment
-                  { $$ = 0; }
-                ;
-
-events_block    : events_beg opt_attr_list opt_sep events_list opt_sep END
-                  { $$ = 0; }
+events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_events_block
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_events_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
 events_list     : class_event
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_events_list ($1); }
                 | events_list opt_sep class_event
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 ;
 
 class_event     : identifier
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_event ($1); }
                 ;
 
-enum_beg        : ENUMERATION stash_comment
-                  { $$ = 0; }
-                ;
-
-enum_block      : enum_beg opt_attr_list opt_sep enum_list opt_sep END
-                  { $$ = 0; }
+enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_enum_block
+                           ($1, $3, $5, $7, $2)))
+                      {
+                        // make_classdef_enum_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
 enum_list       : class_enum
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_enum_list ($1); }
                 | enum_list opt_sep class_enum
-                  { $$ = 0; }
+                  {
+                    $1->append ($3);
+                    $$ = $1;
+                  }
                 ;
 
 class_enum      : identifier '(' expression ')'
-                  { $$ = 0; }
+                  { $$ = new tree_classdef_enum ($1, $3); }
                 ;
 
 // =============
@@ -1660,6 +1768,7 @@ octave_base_parser::reset (void)
   curr_fcn_depth = 0;
   primary_fcn_scope = -1;
   curr_class_name = "";
+  curr_package_name = "";
   function_scopes.clear ();
   primary_fcn_ptr  = 0;
   subfunction_names.clear ();
@@ -3002,6 +3111,197 @@ octave_base_parser::recover_from_parsing_function (void)
   lexer.looking_at_parameter_list = false;
 }
 
+tree_funcall *
+octave_base_parser::make_superclass_ref (const std::string& method_nm,
+                                         const std::string& package_nm,
+                                         const std::string& class_nm,
+                                         int l, int c)
+{
+  octave_value_list args;
+
+  args(2) = class_nm;
+  args(1) = package_nm;
+  args(0) = method_nm;
+
+  octave_value fcn
+    = symbol_table::find_built_in_function ("__superclass_reference__");
+
+  return new tree_funcall (fcn, args);
+}
+
+tree_funcall *
+octave_base_parser::make_meta_class_query (const std::string& package_nm,
+                                           const std::string& class_nm,
+                                           int l, int c)
+{
+  octave_value_list args;
+
+  args(1) = class_nm;
+  args(0) = package_nm;
+
+  octave_value fcn
+    = symbol_table::find_built_in_function ("__meta_class_query__");
+
+  return new tree_funcall (fcn, args);
+}
+
+// A CLASSDEF block defines a class that has a constructor and other
+// methods, but it is not an executable command.  Parsing the block
+// makes some changes in the symbol table (inserting the constructor
+// and methods, and adding to the list of known objects) and creates
+// a parse tree containing meta information about the class.
+
+tree_classdef *
+octave_base_parser::make_classdef (token *tok_val,
+                                   tree_classdef_attribute_list *a,
+                                   tree_identifier *id,
+                                   tree_classdef_superclass_list *sc,
+                                   tree_classdef_body *body, token *end_tok,
+                                   octave_comment_list *lc)
+{
+  tree_classdef *retval = 0;
+
+  std::string cls_name = id->name ();
+
+  std::string nm = lexer.fcn_file_name;
+
+  size_t pos = nm.find_last_of (file_ops::dir_sep_chars ());
+
+  if (pos != std::string::npos)
+    nm = lexer.fcn_file_name.substr (pos+1);
+
+  if (nm != cls_name)
+    bison_error ("invalid classdef definition, the class name must match the file name");
+  else if (end_token_ok (end_tok, token::classdef_end))
+    {
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+      int l = tok_val->line ();
+      int c = tok_val->column ();
+
+      retval = new tree_classdef (a, id, sc, body, lc, tc,
+                                  curr_package_name, l, c);
+    }
+
+  if (! retval)
+    {
+      delete a;
+      delete id;
+      delete sc;
+      delete body;
+    }
+
+  return retval;
+}
+
+tree_classdef_properties_block *
+octave_base_parser::make_classdef_properties_block (token *tok_val,
+                                                    tree_classdef_attribute_list *a,
+                                                    tree_classdef_property_list *plist,
+                                                    token *end_tok,
+                                                    octave_comment_list *lc)
+{
+  tree_classdef_properties_block *retval = 0;
+
+  if (end_token_ok (end_tok, token::properties_end))
+    {
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+      int l = tok_val->line ();
+      int c = tok_val->column ();
+
+      retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
+    }
+  else
+    {
+      delete a;
+      delete plist;
+    }
+
+  return retval;
+}
+
+tree_classdef_methods_block *
+octave_base_parser::make_classdef_methods_block (token *tok_val,
+                                                 tree_classdef_attribute_list *a,
+                                                 tree_classdef_methods_list *mlist,
+                                                 token *end_tok,
+                                                 octave_comment_list *lc)
+{
+  tree_classdef_methods_block *retval = 0;
+
+  if (end_token_ok (end_tok, token::methods_end))
+    {
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+      int l = tok_val->line ();
+      int c = tok_val->column ();
+
+      retval = new tree_classdef_methods_block (a, mlist, lc, tc, l, c);
+    }
+  else
+    {
+      delete a;
+      delete mlist;
+    }
+
+  return retval;
+}
+
+tree_classdef_events_block *
+octave_base_parser::make_classdef_events_block (token *tok_val,
+                                                tree_classdef_attribute_list *a,
+                                                tree_classdef_events_list *elist,
+                                                token *end_tok,
+                                                octave_comment_list *lc)
+{
+  tree_classdef_events_block *retval = 0;
+
+  if (end_token_ok (end_tok, token::events_end))
+    {
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+      int l = tok_val->line ();
+      int c = tok_val->column ();
+
+      retval = new tree_classdef_events_block (a, elist, lc, tc, l, c);
+    }
+  else
+    {
+      delete a;
+      delete elist;
+    }
+
+  return retval;
+}
+
+tree_classdef_enum_block *
+octave_base_parser::make_classdef_enum_block (token *tok_val,
+                                              tree_classdef_attribute_list *a,
+                                              tree_classdef_enum_list *elist,
+                                              token *end_tok,
+                                              octave_comment_list *lc)
+{
+  tree_classdef_enum_block *retval = 0;
+
+  if (end_token_ok (end_tok, token::enumeration_end))
+    {
+      octave_comment_list *tc = lexer.comment_buf.get_comment ();
+
+      int l = tok_val->line ();
+      int c = tok_val->column ();
+
+      retval = new tree_classdef_enum_block (a, elist, lc, tc, l, c);
+    }
+  else
+    {
+      delete a;
+      delete elist;
+    }
+
+  return retval;
+}
+
 // Make an index expression.
 
 tree_index_expression *
@@ -3024,7 +3324,8 @@ octave_base_parser::make_index_expression (tree_expression *expr,
   int l = expr->line ();
   int c = expr->column ();
 
-  expr->mark_postfix_indexed ();
+  if (! expr->is_postfix_indexed ()) 
+    expr->set_postfix_index (type);
 
   if (expr->is_index_expression ())
     {
@@ -3051,6 +3352,9 @@ octave_base_parser::make_indirect_ref (tree_expression *expr,
   int l = expr->line ();
   int c = expr->column ();
 
+  if (! expr->is_postfix_indexed ()) 
+    expr->set_postfix_index ('.');
+
   if (expr->is_index_expression ())
     {
       tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
@@ -3070,12 +3374,16 @@ octave_base_parser::make_indirect_ref (tree_expression *expr,
 // Make an indirect reference expression with dynamic field name.
 
 tree_index_expression *
-octave_base_parser::make_indirect_ref (tree_expression *expr, tree_expression *elt)
+octave_base_parser::make_indirect_ref (tree_expression *expr,
+                                       tree_expression *elt)
 {
   tree_index_expression *retval = 0;
 
   int l = expr->line ();
   int c = expr->column ();
+
+  if (! expr->is_postfix_indexed ()) 
+    expr->set_postfix_index ('.');
 
   if (expr->is_index_expression ())
     {
@@ -3464,6 +3772,7 @@ safe_fclose (FILE *f)
 static octave_function *
 parse_fcn_file (const std::string& full_file, const std::string& file,
                 const std::string& dispatch_type,
+                const std::string& package_name,
                 bool require_file, bool force_script, bool autoload,    
                 bool relative_lookup, const std::string& warn_for)
 {
@@ -3497,6 +3806,7 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
       octave_parser parser (ffile);
 
       parser.curr_class_name = dispatch_type;
+      parser.curr_package_name = package_name;
       parser.autoloading = autoload;
       parser.fcn_file_from_relative_lookup = relative_lookup;
 
@@ -3511,20 +3821,34 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
 
       fcn_ptr = parser.primary_fcn_ptr;
 
-      if (fcn_ptr)
+      if (status == 0)
         {
-          fcn_ptr->maybe_relocate_end ();
-
-          if (parser.parsing_subfunctions)
+          if (parser.lexer.reading_classdef_file
+              && parser.classdef_object)
             {
-              if (! parser.endfunction_found)
-                parser.subfunction_names.reverse ();
+              // Convert parse tree for classdef object to
+              // meta.class info (and stash it in the symbol
+              // table?).  Return pointer to constructor?
 
-              fcn_ptr->stash_subfunction_names (parser.subfunction_names);
+              if (fcn_ptr)
+                panic_impossible ();
+
+              fcn_ptr = parser.classdef_object->make_meta_class ();
+            }
+          else if (fcn_ptr)
+            {
+              fcn_ptr->maybe_relocate_end ();
+
+              if (parser.parsing_subfunctions)
+                {
+                  if (! parser.endfunction_found)
+                    parser.subfunction_names.reverse ();
+
+                  fcn_ptr->stash_subfunction_names (parser.subfunction_names);
+                }
             }
         }
-
-      if (status != 0)
+      else
         error ("parse error while reading file %s", full_file.c_str ());
     }
   else if (require_file)
@@ -3565,7 +3889,8 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
       symbol_found = true;
 
       octave_function *fcn
-        = parse_fcn_file (full_file, file, "", true, false, false, false, "");
+        = parse_fcn_file (full_file, file, "", "", true, false, false, false,
+                          "");
 
       if (fcn)
         {
@@ -3629,6 +3954,7 @@ reverse_lookup_autoload (const std::string& nm)
 octave_function *
 load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
                     const std::string& dispatch_type,
+                    const std::string& package_name,
                     const std::string& fcn_name, bool autoload)
 {
   octave_function *retval = 0;
@@ -3676,7 +4002,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       // to get the help-string to use.
 
       octave_function *tmpfcn = parse_fcn_file (file.substr (0, len - 2),
-                                                nm, dispatch_type, false,
+                                                nm, dispatch_type,
+                                                package_name, false,
                                                 autoload, autoload,
                                                 relative_lookup, "");
 
@@ -3688,8 +4015,8 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     }
   else if (len > 2)
     {
-      retval = parse_fcn_file (file, nm, dispatch_type, true, autoload,
-                               autoload, relative_lookup, "");
+      retval = parse_fcn_file (file, nm, dispatch_type, package_name, true,
+                               autoload, autoload, relative_lookup, "");
     }
 
   if (retval)
@@ -3903,7 +4230,7 @@ source_file (const std::string& file_name, const std::string& context,
   if (! error_state)
     {
       octave_function *fcn = parse_fcn_file (file_full_name, file_name,
-                                             "", require_file, true,
+                                             "", "", require_file, true,
                                              false, false, warn_for);
 
       if (! error_state)
@@ -4626,7 +4953,7 @@ Undocumented internal function.\n\
           if (nargin == 2)
             octave_stdout << "parsing " << full_file << std::endl;
 
-          octave_function *fcn = parse_fcn_file (full_file, file, "",
+          octave_function *fcn = parse_fcn_file (full_file, file, "", "",
                                                  true, false, false,
                                                  false, "__parse_file__");
 

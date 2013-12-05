@@ -1067,7 +1067,7 @@ ANY_INCLUDING_NL (.|{NL})
           {
             curr_lexer->looking_for_object_index = true;
 
-            return curr_lexer->count_token_internal (SUPERCLASSREF);
+            return curr_lexer->count_token_internal (id_tok);
           }
       }
   }
@@ -1094,7 +1094,7 @@ ANY_INCLUDING_NL (.|{NL})
           {
             curr_lexer->looking_for_object_index = true;
 
-            return curr_lexer->count_token_internal (METAQUERY);
+            return curr_lexer->count_token_internal (id_tok);
           }
       }
   }
@@ -1824,8 +1824,10 @@ lexical_feedback::reset (void)
   looking_for_object_index = false; 
   looking_at_indirect_ref = false;
   parsing_class_method = false;
-  maybe_classdef_get_set_method = false;
   parsing_classdef = false;
+  maybe_classdef_get_set_method = false;
+  parsing_classdef_get_method = false;
+  parsing_classdef_set_method = false;
   force_script = false;
   reading_fcn_file = false;
   reading_script_file = false;
@@ -2579,36 +2581,30 @@ octave_base_lexer::looks_like_command_arg (void)
 int
 octave_base_lexer::handle_superclass_identifier (void)
 {
-  std::string pkg;
-  char *yytxt = flex_yytext ();
-  std::string meth = strip_trailing_whitespace (yytxt);
-  size_t pos = meth.find ("@");
-  std::string cls = meth.substr (pos).substr (1);
-  meth = meth.substr (0, pos - 1);
+  std::string meth = flex_yytext ();
 
+  size_t pos = meth.find ("@");
+  std::string cls = meth.substr (pos + 1);
+  meth = meth.substr (0, pos);
+
+  std::string pkg;
   pos = cls.find (".");
   if (pos != std::string::npos)
     {
-      pkg = cls.substr (pos).substr (1);
-      cls = cls.substr (0, pos - 1);
+      pkg = cls.substr (0, pos);
+      cls = cls.substr (pos + 1);
     }
 
   int kw_token = (is_keyword_token (meth) || is_keyword_token (cls)
                   || is_keyword_token (pkg));
   if (kw_token)
     {
-      error ("method, class and package names may not be keywords");
+      error ("method, class, and package names may not be keywords");
       return LEXICAL_ERROR;
     }
 
-  symbol_table::scope_id sid = symtab_context.curr_scope ();
-
-  push_token (new token
-              (SUPERCLASSREF,
-               meth.empty () ? 0 : &(symbol_table::insert (meth, sid)),
-               cls.empty () ? 0 : &(symbol_table::insert (cls, sid)),
-               pkg.empty () ? 0 : &(symbol_table::insert (pkg, sid)),
-               input_line_number, current_input_column));
+  push_token (new token (SUPERCLASSREF, meth, pkg, cls,
+                         input_line_number, current_input_column));
 
   current_input_column += flex_yyleng ();
 
@@ -2618,31 +2614,25 @@ octave_base_lexer::handle_superclass_identifier (void)
 int
 octave_base_lexer::handle_meta_identifier (void)
 {
-  std::string pkg;
-  char *yytxt = flex_yytext ();
-  std::string cls = strip_trailing_whitespace (yytxt).substr (1);
-  size_t pos = cls.find (".");
+  std::string cls = std::string(flex_yytext ()).substr (1);
 
+  std::string pkg;
+  size_t pos = cls.find (".");
   if (pos != std::string::npos)
     {
-      pkg = cls.substr (pos).substr (1);
-      cls = cls.substr (0, pos - 1);
+      pkg = cls.substr (0, pos);
+      cls = cls.substr (pos + 1);
     }
 
   int kw_token = is_keyword_token (cls) || is_keyword_token (pkg);
   if (kw_token)
     {
-       error ("class and package names may not be keywords");
+      error ("class and package names may not be keywords");
       return LEXICAL_ERROR;
     }
 
-  symbol_table::scope_id sid = symtab_context.curr_scope ();
-
-  push_token (new token
-              (METAQUERY,
-               cls.empty () ? 0 : &(symbol_table::insert (cls, sid)),
-               pkg.empty () ? 0 : &(symbol_table::insert (pkg, sid)),
-               input_line_number, current_input_column));
+  push_token (new token (METAQUERY, pkg, cls, input_line_number,
+                         current_input_column));
 
   current_input_column += flex_yyleng ();
 

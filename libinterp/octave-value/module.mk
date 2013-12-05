@@ -36,6 +36,7 @@ OCTAVE_VALUE_INC = \
   octave-value/ov-cell.h \
   octave-value/ov-ch-mat.h \
   octave-value/ov-class.h \
+  octave-value/ov-classdef.h \
   octave-value/ov-colon.h \
   octave-value/ov-complex.h \
   octave-value/ov-cs-list.h \
@@ -94,6 +95,7 @@ OCTAVE_VALUE_SRC = \
   octave-value/ov-cell.cc \
   octave-value/ov-ch-mat.cc \
   octave-value/ov-class.cc \
+  octave-value/ov-classdef.cc \
   octave-value/ov-colon.cc \
   octave-value/ov-complex.cc \
   octave-value/ov-cs-list.cc \

@@ -52,6 +52,7 @@ class tree_multi_assignment;
 class tree_no_op_command;
 class tree_constant;
 class tree_fcn_handle;
+class tree_funcall;
 class tree_parameter_list;
 class tree_postfix_expression;
 class tree_prefix_expression;
@@ -64,6 +65,24 @@ class tree_try_catch_command;
 class tree_unwind_protect_command;
 class tree_while_command;
 class tree_do_until_command;
+
+class tree_classdef_attribute;
+class tree_classdef_attribute_list;
+class tree_classdef_superclass;
+class tree_classdef_superclass_list;
+class tree_classdef_property;
+class tree_classdef_property_list;
+class tree_classdef_properties_block;
+class tree_classdef_methods_list;
+class tree_classdef_methods_block;
+class tree_classdef_event;
+class tree_classdef_events_list;
+class tree_classdef_events_block;
+class tree_classdef_enum;
+class tree_classdef_enum_list;
+class tree_classdef_enum_block;
+class tree_classdef_body;
+class tree_classdef;
 
 class
 tree_walker
@@ -158,6 +177,9 @@ public:
   visit_fcn_handle (tree_fcn_handle&) = 0;
 
   virtual void
+  visit_funcall (tree_funcall&) = 0;
+
+  virtual void
   visit_parameter_list (tree_parameter_list&) = 0;
 
   virtual void
@@ -192,6 +214,57 @@ public:
 
   virtual void
   visit_do_until_command (tree_do_until_command&) = 0;
+
+  virtual void
+  visit_classdef_attribute (tree_classdef_attribute&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_attribute_list (tree_classdef_attribute_list&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_superclass (tree_classdef_superclass&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_superclass_list (tree_classdef_superclass_list&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_property (tree_classdef_property&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_property_list (tree_classdef_property_list&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_properties_block (tree_classdef_properties_block&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_methods_list (tree_classdef_methods_list&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_methods_block (tree_classdef_methods_block&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_event (tree_classdef_event&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_events_list (tree_classdef_events_list&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_events_block (tree_classdef_events_block&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_enum (tree_classdef_enum&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_enum_list (tree_classdef_enum_list&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_enum_block (tree_classdef_enum_block&) { } /* = 0; */
+
+  virtual void
+  visit_classdef_body (tree_classdef_body&) { } /* = 0; */
+
+  virtual void
+  visit_classdef (tree_classdef&) { } /* = 0; */
 
 protected:
 

@@ -756,10 +756,19 @@ public:
     public:
 
       fcn_info_rep (const std::string& nm)
-        : name (nm), subfunctions (), private_functions (),
+        : name (nm), package_name (), subfunctions (), private_functions (),
           class_constructors (), class_methods (), dispatch_map (),
           cmdline_function (), autoload_function (), function_on_path (),
-          built_in_function (), count (1) { }
+          built_in_function (), count (1)
+      {
+        size_t pos = name.rfind ('.');
+
+        if (pos != std::string::npos)
+          {
+            package_name = name.substr (0, pos);
+            name = name.substr (pos+1);
+          }
+      }
 
       octave_value load_private_function (const std::string& dir_name);
 
@@ -774,6 +783,8 @@ public:
       octave_value find_method (const std::string& dispatch_type);
 
       octave_value find_autoload (void);
+
+      octave_value find_package (void);
 
       octave_value find_user_function (void);
 
@@ -883,6 +894,11 @@ public:
           clear_user_function ();
       }
 
+      void clear_package (void)
+      {
+        package = octave_value ();
+      }
+
       void clear (bool force = false)
       {
         clear_map (subfunctions, force);
@@ -892,6 +908,7 @@ public:
 
         clear_autoload_function (force);
         clear_user_function (force);
+        clear_package ();
       }
 
       void add_dispatch (const std::string& type, const std::string& fname)
@@ -915,7 +932,17 @@ public:
 
       void dump (std::ostream& os, const std::string& prefix) const;
 
+      std::string full_name (void) const
+      {
+        if (package_name.empty ())
+          return name;
+        else
+          return package_name + "." + name;
+      }
+
       std::string name;
+
+      std::string package_name;
 
       // Scope id to function object.
       std::map<scope_id, octave_value> subfunctions;
@@ -937,6 +964,8 @@ public:
       octave_value autoload_function;
 
       octave_value function_on_path;
+
+      octave_value package;
 
       octave_value built_in_function;
 

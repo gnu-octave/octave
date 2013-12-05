@@ -102,6 +102,8 @@ public:
 
   void visit_fcn_handle (tree_fcn_handle&);
 
+  void visit_funcall (tree_funcall&);
+
   void visit_parameter_list (tree_parameter_list&);
 
   void visit_postfix_expression (tree_postfix_expression&);

@@ -85,6 +85,10 @@ public:
   virtual bool is_class_constructor (const std::string& = std::string ()) const
   { return false; }
 
+  virtual bool
+  is_classdef_constructor (const std::string& = std::string ()) const
+    { return false; }
+
   virtual bool is_class_method (const std::string& = std::string ()) const
   { return false; }
 
@@ -159,6 +163,9 @@ public:
   virtual void unload (void) { }
 
   virtual void accept (tree_walker&) { }
+
+  virtual bool is_postfix_index_handled (char type) const
+    { return (type == '(' || type == '{'); }
 
 protected:
 

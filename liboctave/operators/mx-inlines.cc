@@ -1345,8 +1345,8 @@ template <class T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n)
 {
-  T s = 0;
-  T e = 0;
+  T s, e;
+  s = e = 0;
   for (octave_idx_type i = 0; i < n; i++)
     twosum_accum (s, e, v[i]);
 

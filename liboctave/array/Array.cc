@@ -688,9 +688,9 @@ private:
       }
     else
       {
-        octave_idx_type sd = sext[lev-1];
-        octave_idx_type dd = dext[lev-1];
-        octave_idx_type k;
+        octave_idx_type sd, dd, k;
+        sd = sext[lev-1];
+        dd = dext[lev-1];
         for (k = 0; k < cext[lev]; k++)
           do_resize_fill (src + k * sd, dest + k * dd, rfv, lev - 1);
 

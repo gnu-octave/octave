@@ -91,7 +91,8 @@ matrix_real_probe (const MArray<T>& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              double aij = a.elem (i,j), aji = a.elem (j,i);
+              double aij = a.elem (i,j);
+              double aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == aji
@@ -149,7 +150,8 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              std::complex<T> aij = a.elem (i,j), aji = a.elem (j,i);
+              std::complex<T> aij = a.elem (i,j);
+              std::complex<T> aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == std::conj (aji)

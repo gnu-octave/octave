@@ -138,7 +138,8 @@ QR::init (const Matrix& a, qr_type_t qr_type)
 void QR::form (octave_idx_type n, Matrix& afact,
                double *tau, qr_type_t qr_type)
 {
-  octave_idx_type m = afact.rows (), min_mn = std::min (m, n);
+  octave_idx_type m = afact.rows ();
+  octave_idx_type min_mn = std::min (m, n);
   octave_idx_type info;
 
   if (qr_type == qr_type_raw)
@@ -214,7 +215,8 @@ QR::update (const ColumnVector& u, const ColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      ColumnVector utmp = u, vtmp = v;
+      ColumnVector utmp = u;
+      ColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
       F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (),
                                  m, r.fortran_vec (), k,
@@ -236,7 +238,8 @@ QR::update (const Matrix& u, const Matrix& v)
       OCTAVE_LOCAL_BUFFER (double, w, 2*k);
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          ColumnVector utmp = u.column (i), vtmp = v.column (i);
+          ColumnVector utmp = u.column (i);
+          ColumnVector vtmp = v.column (i);
           F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (),
                                      m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec (),

@@ -329,7 +329,8 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
 
   DiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
+  octave_idx_type len = c.length ();
+  octave_idx_type lenm = len < a_nc ? len : a_nc;
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -364,7 +365,8 @@ double
 DiagMatrix::rcond (void) const
 {
   ColumnVector av = extract_diag (0).map<double> (fabs);
-  double amx = av.max (), amn = av.min ();
+  double amx = av.max ();
+  double amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }
 

@@ -81,7 +81,8 @@ REGISTER_INT_TYPE (uint64_t);
   class NM \
     { \
     public: \
-      static const bool ltval = (0 OP 1), gtval = (1 OP 0); \
+      static const bool ltval = (0 OP 1); \
+      static const bool gtval = (1 OP 0); \
       template <class T> \
       static bool op (T x, T y) { return x OP y; } \
     }
@@ -92,7 +93,8 @@ REGISTER_INT_TYPE (uint64_t);
   class NM \
     { \
     public: \
-      static const bool ltval = value, gtval = value; \
+      static const bool ltval = value; \
+      static const bool gtval = value; \
       template <class T> \
       static bool op (T, T) { return value; } \
     }
@@ -268,7 +270,9 @@ public:
     // An exhaustive test whether the max and/or min check can be omitted.
     static const bool t_is_signed = std::numeric_limits<T>::is_signed;
     static const bool s_is_signed = std::numeric_limits<S>::is_signed;
-    static const int t_size = sizeof (T), s_size = sizeof (S);
+    static const int t_size = sizeof (T);
+    static const int s_size = sizeof (S);
+
     static const bool omit_chk_min =
       (! s_is_signed || (t_is_signed && t_size >= s_size));
     static const bool omit_chk_max =
@@ -420,7 +424,8 @@ public:
   {
     if (y != 0)
       {
-        T z = x / y, w = x % y;
+        T z = x / y;
+        T w = x % y;
         if (w >= y-w) z += 1;
         return z;
       }
@@ -610,7 +615,8 @@ public:
     // compiler from interfering. Also, the signed operations on small types
     // actually return int.
     T u = static_cast<UT> (x) + static_cast<UT> (y);
-    T ux = u ^ x, uy = u ^ y;
+    T ux = u ^ x;
+    T uy = u ^ y;
     if ((ux & uy) < 0)
       {
         u = octave_int_base<T>::max_val () + __signbit (~u);
@@ -651,7 +657,8 @@ public:
     // compiler from interfering. Also, the signed operations on small types
     // actually return int.
     T u = static_cast<UT> (x) - static_cast<UT> (y);
-    T ux = u ^ x, uy = u ^ ~y;
+    T ux = u ^ x;
+    T uy = u ^ ~y;
     if ((ux & uy) < 0)
       {
         u = octave_int_base<T>::max_val () + __signbit (~u);
@@ -1237,7 +1244,8 @@ template <class T>
 octave_int<T>
 xmax (const octave_int<T>& x, const octave_int<T>& y)
 {
-  const T xv = x.value (), yv = y.value ();
+  const T xv = x.value ();
+  const T yv = y.value ();
   return octave_int<T> (xv >= yv ? xv : yv);
 }
 
@@ -1245,7 +1253,8 @@ template <class T>
 octave_int<T>
 xmin (const octave_int<T>& x, const octave_int<T>& y)
 {
-  const T xv = x.value (), yv = y.value ();
+  const T xv = x.value ();
+  const T yv = y.value ();
   return octave_int<T> (xv <= yv ? xv : yv);
 }
 

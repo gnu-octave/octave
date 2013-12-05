@@ -365,7 +365,8 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
                  void (*op2) (size_t, R *, const X *, Y) throw (),
                  const char *opname)
 {
-  dim_vector dx = x.dims (), dy = y.dims ();
+  dim_vector dx = x.dims ();
+  dim_vector dy = y.dims ();
   if (dx == dy)
     {
       Array<R> r (dx);
@@ -410,7 +411,8 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
                   void (*op1) (size_t, R *, X) throw (),
                   const char *opname)
 {
-  dim_vector dr = r.dims (), dx = x.dims ();
+  dim_vector dr = r.dims ();
+  dim_vector dx = x.dims ();
   if (dr == dx)
     {
       op (r.length (), r.fortran_vec (), x.data ());
@@ -856,7 +858,8 @@ void F (const T *v, T *r, octave_idx_type n) \
 { \
   if (! n) return; \
   T tmp = v[0]; \
-  octave_idx_type i = 1, j = 0; \
+  octave_idx_type i = 1; \
+  octave_idx_type j = 0; \
   if (xisnan (tmp)) \
     { \
       for (; i < n && xisnan (v[i]); i++) ; \
@@ -876,7 +879,8 @@ void F (const T *v, T *r, octave_idx_type *ri, octave_idx_type n) \
 { \
   if (! n) return; \
   T tmp = v[0]; octave_idx_type tmpi = 0; \
-  octave_idx_type i = 1, j = 0; \
+  octave_idx_type i = 1; \
+  octave_idx_type j = 0; \
   if (xisnan (tmp)) \
     { \
       for (; i < n && xisnan (v[i]); i++) ; \
@@ -1330,7 +1334,9 @@ template <class T>
 inline void twosum_accum (T& s, T& e,
                           const T& x)
 {
-  T s1 = s + x, t = s1 - s, e1 = (s - (s1 - t)) + (x - t);
+  T s1 = s + x;
+  T t = s1 - s;
+  T e1 = (s - (s1 - t)) + (x - t);
   s = s1;
   e += e1;
 }
@@ -1339,7 +1345,8 @@ template <class T>
 inline T
 mx_inline_xsum (const T *v, octave_idx_type n)
 {
-  T s = 0, e = 0;
+  T s = 0;
+  T e = 0;
   for (octave_idx_type i = 0; i < n; i++)
     twosum_accum (s, e, v[i]);
 

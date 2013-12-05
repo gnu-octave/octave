@@ -38,7 +38,8 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
   bool retval = this->rows () == this->cols ();
   if (retval)
     {
-      octave_idx_type len = this->length (), i = 0;
+      octave_idx_type len = this->length ();
+      octave_idx_type i = 0;
       for (; i < len; i++)
         if (DiagArray2<T>::elem (i, i) != val) break;
       retval = i == len;

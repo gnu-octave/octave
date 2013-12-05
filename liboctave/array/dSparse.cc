@@ -165,7 +165,8 @@ SparseMatrix::SparseMatrix (const SparseBoolMatrix &a)
 SparseMatrix::SparseMatrix (const DiagMatrix& a)
   : MSparse<double> (a.rows (), a.cols (), a.length ())
 {
-  octave_idx_type j = 0, l = a.length ();
+  octave_idx_type j = 0;
+  octave_idx_type l = a.length ();
   for (octave_idx_type i = 0; i < l; i++)
     {
       cidx (i) = j;
@@ -877,7 +878,8 @@ SparseMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
 
           if (calccond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nr; i++)
                 {
                   double tmp = fabs (v[i]);
@@ -1412,7 +1414,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const Matrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = fabs (data (i));
@@ -1502,7 +1505,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = fabs (data (i));
@@ -1562,7 +1566,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = fabs (data (i));
@@ -1652,7 +1657,8 @@ SparseMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
           if (calc_cond)
             {
-              double dmax = 0., dmin = octave_Inf;
+              double dmax = 0.;
+              double dmin = octave_Inf;
               for (octave_idx_type i = 0; i < nm; i++)
                 {
                   double tmp = fabs (data (i));

@@ -637,7 +637,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           const T *ssrc = src + start;
           if (step == 1)
             copy_or_memcpy (len, ssrc, dest);
@@ -710,7 +711,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
             copy_or_memcpy (len, src, sdest);
@@ -781,7 +783,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
             std::fill (sdest, sdest + len, val);
@@ -850,7 +853,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           octave_idx_type i, j;
           if (step == 1)
             for (i = start, j = start + len; i < j; i++) body (i);
@@ -921,7 +925,8 @@ public:
       case class_range:
         {
           idx_range_rep * r = dynamic_cast<idx_range_rep *> (rep);
-          octave_idx_type start = r->get_start (), step = r->get_step ();
+          octave_idx_type start = r->get_start ();
+          octave_idx_type step = r->get_step ();
           octave_idx_type i, j;
           if (step == 1)
             for (i = start, j = start + len; i < j && body (i); i++) ;
@@ -954,7 +959,8 @@ public:
         {
           idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
           const bool *data = r->get_data ();
-          octave_idx_type ext = r->extent (0), j = 0;
+          octave_idx_type ext = r->extent (0);
+          octave_idx_type j = 0;
           for (octave_idx_type i = 0; i < ext; i++)
             {
               if (data[i])

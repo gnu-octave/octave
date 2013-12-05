@@ -329,7 +329,8 @@ operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
 
   FloatDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
+  octave_idx_type len = c.length ();
+  octave_idx_type lenm = len < a_nc ? len : a_nc;
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -364,7 +365,8 @@ float
 FloatDiagMatrix::rcond (void) const
 {
   FloatColumnVector av = extract_diag (0).map<float> (fabsf);
-  float amx = av.max (), amn = av.min ();
+  float amx = av.max ();
+  float amn = av.min ();
   return amx == 0 ? 0.0f : amn / amx;
 }
 

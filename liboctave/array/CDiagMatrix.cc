@@ -448,7 +448,8 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
+  octave_idx_type len = c.length ();
+  octave_idx_type lenm = len < a_nc ? len : a_nc;
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -549,7 +550,8 @@ double
 ComplexDiagMatrix::rcond (void) const
 {
   ColumnVector av = extract_diag (0).map<double> (std::abs);
-  double amx = av.max (), amn = av.min ();
+  double amx = av.max ();
+  double amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }
 

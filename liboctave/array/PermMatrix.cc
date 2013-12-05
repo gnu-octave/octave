@@ -119,7 +119,8 @@ PermMatrix::determinant (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      octave_idx_type j = p[i], k = q[i];
+      octave_idx_type j = p[i];
+      octave_idx_type k = q[i];
       if (j != i)
         {
           p[k] = p[i];
@@ -191,7 +192,8 @@ PermMatrix::eye (octave_idx_type n)
 PermMatrix
 operator *(const PermMatrix& a, const PermMatrix& b)
 {
-  const Array<octave_idx_type> ia = a.pvec (), ib = b.pvec ();
+  const Array<octave_idx_type> ia = a.pvec ();
+  const Array<octave_idx_type> ib = b.pvec ();
   PermMatrix r;
   octave_idx_type n = a.columns ();
   if (n != b.rows ())

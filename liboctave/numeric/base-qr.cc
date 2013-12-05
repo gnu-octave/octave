@@ -30,8 +30,10 @@ template <class qr_type>
 base_qr<qr_type>::base_qr (const qr_type& q_arg, const qr_type& r_arg)
   : q (q_arg), r (r_arg)
 {
-  octave_idx_type q_nr = q.rows (), q_nc = q.columns ();
-  octave_idx_type r_nr = r.rows (), r_nc = r.columns ();
+  octave_idx_type q_nr = q.rows ();
+  octave_idx_type q_nc = q.columns ();
+  octave_idx_type r_nr = r.rows ();
+  octave_idx_type r_nc = r.columns ();
 
   if (! (q_nc == r_nr && (q_nr == q_nc || (q_nr > q_nc && r_nr == r_nc))))
     {

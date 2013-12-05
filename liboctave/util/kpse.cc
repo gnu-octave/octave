@@ -1612,7 +1612,10 @@ expand_amble (const std::string& text)
 static int
 brace_gobbler (const std::string& text, int& indx, int satisfy)
 {
-  int c = 0, level = 0, quoted = 0, pass_next = 0;
+  int c = 0;
+  int level = 0;
+  int quoted = 0;
+  int pass_next = 0;
 
   size_t text_len = text.length ();
 

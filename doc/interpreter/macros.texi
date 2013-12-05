@@ -28,14 +28,14 @@
 @c which is `XXX'.  This looks particularly bad when the macro body is 
 @c single or double-quoted text, such as a property value `"position"'
 @ifinfo
-@macro qcode{arg}
+@rmacro qcode{arg}
 \arg\
-@end macro
+@end rmacro
 @end ifinfo
 @ifnotinfo
-@macro qcode{arg}
+@rmacro qcode{arg}
 @code{\arg\}
-@end macro
+@end rmacro
 @end ifnotinfo
 
 @c The following macro is used for the on-line help system, but we don't

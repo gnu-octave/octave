@@ -64,6 +64,7 @@ enum octave_kw_id
   properties_kw,
   return_kw,
   set_kw,
+  static_kw,
   switch_kw,
   try_kw,
   until_kw,
@@ -110,6 +111,7 @@ persistent, PERSISTENT, persistent_kw
 properties, PROPERTIES, properties_kw
 return, FUNC_RET, return_kw
 set, SET, set_kw
+static, PERSISTENT, static_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw
 until, UNTIL, until_kw

@@ -237,17 +237,22 @@ function yi = interp1 (x, y, varargin)
         yi = ppval (pp, reshape (xi, szx));
       endif
     case "linear"
-      dy = diff (y);
-      dx = diff (x);
-      dx = repmat (dx, [1 size(dy)(2:end)]);
-      coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
-      xx = x;
 
+      xx = x;
+      yy = y;
+      nxx = nx;
       if (have_jumps)
         ## Omit zero-size intervals.
-        coefs(jumps, :) = [];
+        yy(jumps, :) = [];
         xx(jumps) = [];
+        nxx = rows (xx);
       endif
+
+      dy = diff (yy);
+      dx = diff (xx);
+      dx = repmat (dx, [1 size(dy)(2:end)]);
+
+      coefs = [(dy./dx).'(:), yy(1:nxx-1, :).'(:)];
 
       pp = mkpp (xx, coefs, szy(2:end));
       pp.orient = "first";

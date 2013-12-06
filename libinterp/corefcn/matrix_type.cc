@@ -281,7 +281,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                           && (str_typ == "upper" || str_typ == "lower"))
                         {
                           const ColumnVector perm =
-                            ColumnVector (args (2).vector_value ());
+                            ColumnVector (args(2).vector_value ());
 
                           if (error_state)
                             error ("matrix_type: Invalid permutation vector PERM");
@@ -454,7 +454,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                                           || str_typ == "lower"))
                         {
                           const ColumnVector perm =
-                            ColumnVector (args (2).vector_value ());
+                            ColumnVector (args(2).vector_value ());
 
                           if (error_state)
                             error ("matrix_type: Invalid permutation vector PERM");

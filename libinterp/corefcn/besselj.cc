@@ -598,7 +598,7 @@ return @code{NaN}.\n\
         {
           int idx = nargin == 1 ? 0 : 1;
 
-          if (args (idx).is_single_type ())
+          if (args(idx).is_single_type ())
             {
               FloatComplexNDArray z = args(idx).float_complex_array_value ();
 

@@ -307,10 +307,10 @@ Undocumented internal function.\n\
 
   if (args.length () == 4)
     {
-      RowVector X = args (0).row_vector_value ();
-      RowVector Y = args (1).row_vector_value ();
-      Matrix Z = args (2).matrix_value ();
-      RowVector L = args (3).row_vector_value ();
+      RowVector X = args(0).row_vector_value ();
+      RowVector Y = args(1).row_vector_value ();
+      Matrix Z = args(2).matrix_value ();
+      RowVector L = args(3).row_vector_value ();
 
       if (! error_state)
         {

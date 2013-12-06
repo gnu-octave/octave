@@ -272,7 +272,7 @@ fill empty fields.  The default is zero.\n\
     {
       if (nargin == 3)
         {
-          if (!parse_range_spec (args (2), r0, c0, r1, c1))
+          if (!parse_range_spec (args(2), r0, c0, r1, c1))
             error ("dlmread: error parsing RANGE");
         }
       else if (nargin == 4)

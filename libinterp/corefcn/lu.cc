@@ -158,7 +158,7 @@ information.\n\
   int n = 1;
   while (n < nargin && ! error_state)
     {
-      if (args (n).is_string ())
+      if (args(n).is_string ())
         {
           std::string tmp = args(n++).string_value ();
 

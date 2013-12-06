@@ -585,7 +585,7 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      retval = do_strcmp_fun (args (0), args (1), 0,
+      retval = do_strcmp_fun (args(0), args(1), 0,
                               "strcmp", strcmp_array_op, strcmp_str_op);
     }
   else
@@ -783,7 +783,7 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      retval = do_strcmp_fun (args (0), args (1), 0,
+      retval = do_strcmp_fun (args(0), args(1), 0,
                               "strcmpi", strcmpi_array_op, strcmpi_str_op);
     }
   else

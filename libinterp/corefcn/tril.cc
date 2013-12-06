@@ -213,7 +213,7 @@ do_trilu (const std::string& name,
     print_usage ();
   else
     {
-      octave_value arg = args (0);
+      octave_value arg = args(0);
 
       dim_vector dims = arg.dims ();
       if (dims.length () != 2)

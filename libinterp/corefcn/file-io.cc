@@ -271,7 +271,7 @@ Clear the stream state for the specified file.\n\
 
   if (nargin == 1)
     {
-      int fid = octave_stream_list::get_file_number (args (0));
+      int fid = octave_stream_list::get_file_number (args(0));
 
       octave_stream os = octave_stream_list::lookup (fid, "fclear");
 
@@ -305,7 +305,7 @@ stream before calling @code{input}.\n\
     {
       // FIXME: any way to avoid special case for stdout?
 
-      int fid = octave_stream_list::get_file_number (args (0));
+      int fid = octave_stream_list::get_file_number (args(0));
 
       if (fid == 1)
         {
@@ -1338,7 +1338,7 @@ programs.\n\
 
   tmp_args (0) = 0.0;
   for (int i = 0; i < nargin; i++)
-    tmp_args (i+1) = args (i);
+    tmp_args(i+1) = args(i);
 
   return Ffscanf (tmp_args, nargout);
 }

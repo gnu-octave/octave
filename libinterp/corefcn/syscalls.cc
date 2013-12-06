@@ -511,7 +511,7 @@ system-dependent error message.\n\
 
   if (nargin == 3)
     {
-      octave_stream strm = octave_stream_list::lookup (args (0), "fcntl");
+      octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
 
       if (! error_state)
         {

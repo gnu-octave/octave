@@ -3542,7 +3542,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 
   if (nargin == 2)
     {
-      int fid = octave_stream_list::get_file_number (args (0));
+      int fid = octave_stream_list::get_file_number (args(0));
 
       octave_stream os = octave_stream_list::lookup (fid, "fdisp");
 

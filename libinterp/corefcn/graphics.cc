@@ -9394,7 +9394,7 @@ Undocumented internal function.\n\
     {
       graphics_handle h = octave_NaN;
 
-      const NDArray vals = args (0).array_value ();
+      const NDArray vals = args(0).array_value ();
 
       if (! error_state)
         {
@@ -10191,7 +10191,7 @@ set_property_in_handle (double handle, const std::string& property,
 static bool
 compare_property_values (const octave_value& o1, const octave_value& o2)
 {
-  octave_value_list args (2);
+  octave_value_list args(2);
 
   args(0) = o1;
   args(1) = o2;

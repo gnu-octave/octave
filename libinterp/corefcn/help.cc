@@ -1075,7 +1075,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
   if (args.length () == 1)
     {
-      const std::string name = args (0).string_value ();
+      const std::string name = args(0).string_value ();
 
       if (! error_state)
         {
@@ -1364,7 +1364,7 @@ Undocumented internal function.\n\
     retval = Cell (ffl.append (afl));
   else
     {
-      std::string dir = args (0).string_value ();
+      std::string dir = args(0).string_value ();
 
       if (! error_state)
         {

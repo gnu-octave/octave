@@ -352,8 +352,8 @@ dimensionality as the other array.\n\
                || args(0).is_inline_function ()))
         error ("bsxfun: F must be a string or function handle");
 
-      const octave_value A = args (1);
-      const octave_value B = args (2);
+      const octave_value A = args(1);
+      const octave_value B = args(2);
 
       if (func.is_builtin_function ()
           || (func.is_function_handle ()

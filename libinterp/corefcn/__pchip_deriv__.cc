@@ -59,7 +59,7 @@ Undocumented internal function.\n\
   octave_value retval;
   const int nargin = args.length ();
 
-  bool rows = (nargin == 3 && args (2).uint_value () == 2);
+  bool rows = (nargin == 3 && args(2).uint_value () == 2);
 
   if (nargin >= 2)
     {

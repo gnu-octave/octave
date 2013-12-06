@@ -1837,7 +1837,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           // and then directly resize. However, for some types there might
           // be some additional setup needed, and so this should be avoided.
 
-          octave_value tmp = args (0);
+          octave_value tmp = args(0);
           tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
           if (error_state)
@@ -1851,12 +1851,12 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // Can't fast return here to skip empty matrices as something
               // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
-              tmp = do_cat_op (tmp, args (j), ra_idx);
+              tmp = do_cat_op (tmp, args(j), ra_idx);
 
               if (error_state)
                 return retval;
 
-              dim_vector dv_tmp = args (j).dims ();
+              dim_vector dv_tmp = args(j).dims ();
 
               if (dim >= dv_len)
                 {

@@ -1902,7 +1902,7 @@ num2cell ([1,2;3,4],1)\n\
       octave_value array = args(0);
       Array<int> dimv;
       if (nargin > 1)
-        dimv = args (1).int_vector_value (true);
+        dimv = args(1).int_vector_value (true);
 
       if (error_state)
         ;

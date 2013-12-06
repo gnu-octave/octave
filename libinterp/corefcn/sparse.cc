@@ -113,7 +113,7 @@ to have a common size.\n\
 
   if (nargin == 1)
     {
-      octave_value arg = args (0);
+      octave_value arg = args(0);
       if (arg.is_bool_type ())
         retval = arg.sparse_bool_matrix_value ();
       else if (arg.is_complex_type ())

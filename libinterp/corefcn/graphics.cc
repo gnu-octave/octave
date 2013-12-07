@@ -1012,7 +1012,7 @@ radio_values::values_as_string (void) const
   for (std::set<caseless_str>::const_iterator it = possible_vals.begin ();
        it != possible_vals.end (); it++)
     {
-      if (retval == "")
+      if (retval.empty ())
         {
           if (*it == default_value ())
             retval = "{" + *it + "}";
@@ -1027,8 +1027,10 @@ radio_values::values_as_string (void) const
             retval += " | " + *it;
         }
     }
-  if (retval != "")
+
+  if (! retval.empty ())
     retval = "[ " + retval + " ]";
+
   return retval;
 }
 
@@ -1044,10 +1046,13 @@ radio_values::values_as_cell (void) const
 }
 
 bool
-color_values::str2rgb (std::string str)
+color_values::str2rgb (const std::string& str_arg)
 {
-  double tmp_rgb[3] = {0, 0, 0};
   bool retval = true;
+
+  double tmp_rgb[3] = {0, 0, 0};
+
+  std::string str = str_arg;
   unsigned int len = str.length ();
 
   std::transform (str.begin (), str.end (), str.begin (), tolower);
@@ -2976,7 +2981,8 @@ base_graphics_object::values_as_string (void)
                 }
             }
         }
-      if (retval != "")
+
+      if (! retval.empty ())
         retval += "\n";
     }
   else
@@ -2986,7 +2992,7 @@ base_graphics_object::values_as_string (void)
 }
 
 std::string
-base_graphics_object::value_as_string (std::string prop)
+base_graphics_object::value_as_string (const std::string& prop)
 {
   std::string retval;
 
@@ -2999,12 +3005,11 @@ base_graphics_object::value_as_string (std::string prop)
           if (p.ok () && ! p.is_hidden ())
             {
               if (p.is_radio ())
-                {
-                  retval += p.values_as_string ();
-                }
+                retval += p.values_as_string ();
             }
         }
-      if (retval != "")
+
+      if (! retval.empty ())
         retval += "\n";
     }
   else
@@ -6918,14 +6923,14 @@ axes::update_axis_limits (const std::string& axis_type)
 }
 
 inline
-double force_in_range (const double x, const double lower, const double upper)
+double force_in_range (double x, double lower, double upper)
 {
   if (x < lower)
-    { return lower; }
+    return lower;
   else if (x > upper)
-    { return upper; }
+    return upper;
   else
-    { return x; }
+    return x;
 }
 
 static Matrix
@@ -8187,9 +8192,9 @@ private:
 
   // No copying!
 
-  function_event (const function_event &);
+  function_event (const function_event&);
 
-  function_event & operator = (const function_event &);
+  function_event & operator = (const function_event&);
 };
 
 class
@@ -8391,7 +8396,7 @@ gh_manager::do_post_event (const graphics_event& e)
 }
 
 void
-gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
+gh_manager::do_post_callback (const graphics_handle& h, const std::string& name,
                               const octave_value& data)
 {
   gh_manager::auto_lock guard;
@@ -8441,7 +8446,7 @@ gh_manager::do_post_function (graphics_event::event_fcn fcn, void* fcn_data)
 }
 
 void
-gh_manager::do_post_set (const graphics_handle& h, const std::string name,
+gh_manager::do_post_set (const graphics_handle& h, const std::string& name,
                          const octave_value& value, bool notify_toolkit)
 {
   gh_manager::auto_lock guard;
@@ -8814,7 +8819,7 @@ the dimensions of @var{pv}.\n\
 }
 
 static std::string
-get_graphics_object_type (const double val)
+get_graphics_object_type (double val)
 {
   std::string retval;
 

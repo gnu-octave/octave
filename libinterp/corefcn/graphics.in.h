@@ -296,7 +296,7 @@ public:
 
   graphics_handle get_parent (void) const { return parent; }
 
-  void set_parent (const graphics_handle &h) { parent = h; }
+  void set_parent (const graphics_handle& h) { parent = h; }
 
   bool is_hidden (void) const { return hidden; }
 
@@ -1028,7 +1028,7 @@ public:
     validate ();
   }
 
-  color_values (std::string str)
+  color_values (const std::string& str)
     : xrgb (1, 3)
   {
     if (! str2rgb (str))
@@ -1076,7 +1076,7 @@ public:
 private:
   Matrix xrgb;
 
-  OCTINTERP_API bool str2rgb (std::string str);
+  OCTINTERP_API bool str2rgb (const std::string& str);
 };
 
 class color_property : public base_property
@@ -1631,7 +1631,7 @@ public:
   }
 
   children_property (const std::string& nm, const graphics_handle& h,
-                     const Matrix &val)
+                     const Matrix& val)
     : base_property (nm, h), children_list ()
   {
     do_init_children (val);
@@ -1651,12 +1651,12 @@ public:
 
   base_property* clone (void) const { return new children_property (*this); }
 
-  bool remove_child (const double &val)
+  bool remove_child (double val)
   {
     return do_remove_child (val);
   }
 
-  void adopt (const double &val)
+  void adopt (double val)
   {
     do_adopt_child (val);
   }
@@ -1759,14 +1759,14 @@ protected:
   }
 
 private:
-  void do_init_children (const Matrix &val)
+  void do_init_children (const Matrix& val)
   {
     children_list.clear ();
     for (octave_idx_type i = 0; i < val.numel (); i++)
       children_list.push_front (val.xelem (i));
   }
 
-  void do_init_children (const std::list<double> &val)
+  void do_init_children (const std::list<double>& val)
   {
     children_list.clear ();
     for (const_children_list_iterator p = val.begin (); p != val.end (); p++)
@@ -1800,7 +1800,7 @@ private:
     return false;
   }
 
-  void do_adopt_child (const double &val)
+  void do_adopt_child (double val)
   {
     children_list.push_front (val);
   }
@@ -2600,7 +2600,7 @@ protected:
 protected:
   struct cmp_caseless_str
   {
-    bool operator () (const caseless_str &a, const caseless_str &b) const
+    bool operator () (const caseless_str& a, const caseless_str& b) const
     {
       std::string a1 = a;
       std::transform (a1.begin (), a1.end (), a1.begin (), tolower);
@@ -2706,7 +2706,7 @@ public:
 
   virtual std::string values_as_string (void);
 
-  virtual std::string value_as_string (std::string prop);
+  virtual std::string value_as_string (const std::string& prop);
 
   virtual octave_scalar_map values_as_struct (void);
 
@@ -2979,7 +2979,7 @@ public:
 
   std::string values_as_string (void) { return rep->values_as_string (); }
 
-  std::string value_as_string (std::string prop) 
+  std::string value_as_string (const std::string& prop) 
   { 
     return rep->value_as_string (prop); 
   }
@@ -5396,11 +5396,11 @@ public:
 // ---------------------------------------------------------------------
 
 octave_value
-get_property_from_handle (double handle, const std::string &property,
-                          const std::string &func);
+get_property_from_handle (double handle, const std::string& property,
+                          const std::string& func);
 bool
-set_property_in_handle (double handle, const std::string &property,
-                        const octave_value &arg, const std::string &func);
+set_property_in_handle (double handle, const std::string& property,
+                        const octave_value& arg, const std::string& func);
 
 // ---------------------------------------------------------------------
 
@@ -5871,12 +5871,12 @@ private:
   void do_execute_callback (const graphics_handle& h, const octave_value& cb,
                             const octave_value& data);
 
-  void do_post_callback (const graphics_handle& h, const std::string name,
+  void do_post_callback (const graphics_handle& h, const std::string& name,
                          const octave_value& data);
 
   void do_post_function (graphics_event::event_fcn fcn, void* fcn_data);
 
-  void do_post_set (const graphics_handle& h, const std::string name,
+  void do_post_set (const graphics_handle& h, const std::string& name,
                     const octave_value& value, bool notify_toolkit = true);
 
   int do_process_events (bool force = false);

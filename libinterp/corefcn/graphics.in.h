@@ -2706,6 +2706,8 @@ public:
 
   virtual std::string values_as_string (void);
 
+  virtual std::string value_as_string (std::string prop);
+
   virtual octave_scalar_map values_as_struct (void);
 
   virtual graphics_handle get_parent (void) const
@@ -2976,6 +2978,11 @@ public:
   }
 
   std::string values_as_string (void) { return rep->values_as_string (); }
+
+  std::string value_as_string (std::string prop) 
+  { 
+    return rep->value_as_string (prop); 
+  }
 
   octave_map values_as_struct (void) { return rep->values_as_struct (); }
 

@@ -2985,6 +2985,34 @@ base_graphics_object::values_as_string (void)
   return retval;
 }
 
+std::string
+base_graphics_object::value_as_string (std::string prop)
+{
+  std::string retval;
+
+  if (valid_object ())
+    {
+      if (prop != "children")
+        {
+          property p = get_properties ().get_property (prop);
+
+          if (p.ok () && ! p.is_hidden ())
+            {
+              if (p.is_radio ())
+                {
+                  retval += p.values_as_string ();
+                }
+            }
+        }
+      if (retval != "")
+        retval += "\n";
+    }
+  else
+    error ("base_graphics_object::value_as_string: invalid graphics object");
+
+  return retval;
+}
+
 octave_scalar_map
 base_graphics_object::values_as_struct (void)
 {
@@ -8720,6 +8748,29 @@ the dimensions of @var{pv}.\n\
                   else if (nargin == 2 && args(1).is_map ())
                     {
                       obj.set (args(1).map_value ());
+                    }
+                  else if (nargin == 2 && args(1).is_string ())
+                    {
+                      std::string property = args(1).string_value ();
+                      
+                      octave_map pmap = obj.values_as_struct ();
+
+                      if (pmap.isfield (property))
+                        {
+                          if (nargout != 0)
+                            retval = pmap.getfield (property)(0);
+                          else
+                            {
+                              std::string s = obj.value_as_string (property);
+                              if (! error_state)
+                                octave_stdout << s;
+                            }
+                        }
+                      else
+                        {
+                          error ("set: unknown property");
+                          break;
+                        }
                     }
                   else if (nargin == 1)
                     {

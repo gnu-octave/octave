@@ -135,7 +135,7 @@
 %1
 is already open in the editor</source>
         <translation>Die Datei wurde nicht gespeichert! Eine Datei mit dem gewählten Namen
-&lt;b&gt;%1&lt;b&gt;
+%1
 ist im Editor bereits geöffnet</translation>
     </message>
     <message>

@@ -120,13 +120,13 @@
     <message>
         <location line="-40"/>
         <source>New Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle Fonction</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la nouvelle fonction :</translation>
     </message>
     <message>
         <location line="+281"/>
@@ -220,22 +220,22 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+4"/>
         <source>&amp;Next Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Point d&apos;arrêt suiva&amp;nt</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Point d&apos;arrêt &amp;précédent</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajouter/Retirer un point d&apos;arrêt</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Retirer tous les points d&apos;arrêt</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -250,7 +250,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+6"/>
         <source>Save File and Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer et Exécuter</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -260,7 +260,7 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+5"/>
         <source>New &amp;Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle &amp;Fonction</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -295,12 +295,12 @@ est déjà ouvert dans l&apos;éditeur</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation>Aide sur le mot de clés</translation>
+        <translation>&amp;Aide sur le mot de clés</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation>Documentation sur le mot de clés</translation>
+        <translation>&amp;Documentation sur le mot de clés</translation>
     </message>
     <message>
         <location line="-151"/>
@@ -323,7 +323,7 @@ pour lecture : %2.</translation>
 does not exist. Do you want to create it?</source>
         <translation>Le fichier
 %1
-n&apos;existe pas. Voulez-vous le créer.</translation>
+n&apos;existe pas. Voulez-vous le créer?</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -460,12 +460,12 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="-966"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne :</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Col:</source>
-        <translation type="unfinished"></translation>
+        <translation>Col :</translation>
     </message>
     <message>
         <location line="+1138"/>
@@ -551,27 +551,27 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location line="-323"/>
         <source>Double-click a file to open it</source>
-        <translation type="unfinished"></translation>
+        <translation>Double-cliquer sur un fichier pour l&apos;ouvrir</translation>
     </message>
     <message>
         <location line="+236"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille du fichier</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de fichier</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Date modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Date de modification</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les fichiers cachés</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -685,22 +685,22 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     <message>
         <location filename="../src/welcome-wizard.cc" line="+194"/>
         <source>Enjoy!</source>
-        <translation type="unfinished"></translation>
+        <translation>Appréciez !</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Précédent</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Finish</source>
-        <translation type="unfinished">Fin</translation>
+        <translation>Terminer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -709,7 +709,11 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
 &lt;p&gt;If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Nous espérons que vous trouvez Octave utile.&lt;/p&gt;
+&lt;p&gt;Si vous rencontrez des problèmes, il y a plusieurs moyens d&apos;obtenir de l&apos;aide parmi les quels des options de support commercial, une liste mail, un wiki et d&apos;autre moyens basés sur le recour à la communauté.
+Vous trouverez plus d&apos;information sur chacun de ces moyens en visitant &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (s&apos;ouvre dans un navigateur externe).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -725,7 +729,18 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Pour plus d&apos;infirmations à propos d&apos;Octave :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visitez &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (ouvert dans un navigateur externe)&lt;/li&gt;
+&lt;li&gt;Consultez la documentation en ligne  en &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- ou &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-document (ouvert dans un navigateur externe)&lt;/li&gt;
+&lt;li&gt;Ouvrez le navigateur de documentation du GUI d&apos;Octave avec le menu &quot;Aide&quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -997,7 +1012,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Double cliquez sur une commande pour la transferer au terminal.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1030,17 +1045,17 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/welcome-wizard.cc" line="-179"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Bienvenu dans Octave!</translation>
+        <translation>Bienvenue dans Octave !</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Suivant</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1049,7 +1064,11 @@ a:link { text-decoration: underline; color: #0000ff; }
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
 &lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Vous semblez utiliser l&apos;interface graphique d&apos;Octave pour la première fois sur cet ordianteur.
+Cliquez &quot;Suivant&quot; pour créer un fichier de configuration et lancer Octave.&lt;/p&gt;
+&lt;p&gt;Le fichier de configuration est enregistré dans %1.  Si ce fichier existe vous ne verrez plus ce dialogue au démarrage d&apos;Octave.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1135,12 +1154,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="-1056"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de notes de version &apos;%1&apos; est vide.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de notes de version &apos;%1&apos; est illisible.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1150,7 +1169,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+186"/>
         <source>Octave Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelles de la communauté Octave</translation>
     </message>
     <message>
         <location line="+938"/>
@@ -1210,12 +1229,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="-94"/>
         <source>Step In</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancer d&apos;un pas avec entrée</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter jusqu&apos;à l&apos;instruction de retour</translation>
     </message>
     <message>
         <location line="+108"/>
@@ -1270,28 +1289,28 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+37"/>
         <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Vous utilisez une version &quot;release candidate&quot; du GUI expérimental d&apos;Octave.&lt;/strong&gt;  Octave s&apos;améliore continuellement et ce GUI sera par défaut dans la version 4.0. Pour plus d&apos;informations selectionnez les &quot;Notes de version&quot; dans le menu &quot;Aide&quot; du GUI, ou visitez &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>More Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus d&apos;Infos</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Cacher</translation>
     </message>
     <message>
         <location line="+47"/>
         <location line="+66"/>
         <source>Experimental GUI Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Infos sur le GUI expérimental</translation>
     </message>
     <message>
         <location line="-37"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release Octave, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;strong&gt;Note à propos du nouveau GUI d&apos;Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Parmi les nouvelles fonctionnalités d&apos;Ocatve 3.8, l&apos;interface graphique est une grande évolution. C&apos;est bien la fonctionnalité que les utilisateurs ont le plus réclamée durant les dernières années, et elle est maintenant presque prête. Elle n&apos;est pas aussi parfaite que nous le souhaiterions et c&apos;est pourquoi nous avons décidé d&apos;attendre la version 4.0 pour en faire l&apos;interface par défaut.&lt;/p&gt;&lt;p&gt;Au vu du nombre de bug résolus et des améliorations apportées depuis la dernière version majeure d&apos;Octave, nous avons décidé  de ne pas retarder plus la parution de ces améliorations pour perfectionner le GUI. Vous pouvez maintenant apprécier la version 3.8 et la version préliminaire de la nouvelle interface graphique. Nous pensons qu&apos;elle fonctionne raisonnablement bien, mais nous savons aussi qu&apos;il y a des points durs évidents et beaucoup d&apos;améliorations possibles.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Nous avons besoin de votre aide&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Il y a de multiples manières d&apos;aider à résoudre les bogues restants, à terminer le GUI et à améliorer l&apos;expérience utilisateur aussi bien pour les novices que pour les experts (liens ouverts dans un navigateur externe):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Si vous êtes un développeur  expérimenté, vous pouvez donner de votre temps et &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;développer Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Si Octave ne fonctionne pas correctement, vous êtes encouragés à &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;signaler les problèmes &lt;/a&gt; que vous trouvez.&lt;/li&gt;&lt;li&gt;Que vous soyez utilisateur ou développeur, vous pouvez &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;aider à financer le projet&lt;/a&gt;. Le développement d&apos;Octave demande beaucoup de temps et d’expertise. Vos contributions permettent d&apos;assurer qu&apos;Octave continuera à s&apos;améliorer.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Nous espérons que vous trouverez Octave utile. S&apos;il vous plaît, aidez nous à l&apos;améliorer encore dans le futur !&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -1397,7 +1416,18 @@ when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Les nouvelles de la communauté Octave ne semblent pas disponibles.
+&lt;/p&gt;
+&lt;p&gt;
+Pour lire les nouvelles fraîches, visitez
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+lorsque vous aurez une connexion internet (lien ouvert dans un navigateur externe).
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Les développeurs d&apos;Octave,</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1414,7 +1444,19 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+La connexion à internet pour l&apos;affichage des nouvelles de la communauté d&apos;Octave a été désactivée.
+&lt;/p&gt;
+&lt;p&gt;
+Pour lire les nouvelles fraîches, visitez
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;
+lorsque vous aurez une connexion internet (lien ouvert dans un navigateur externe)
+ou activez la connexion aux nouvelles dans l&apos;onglet &quot;Réseau&quot; du dialogue de préférences d&apos;Octave.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Les développeurs d&apos;Octave,</translation>
     </message>
 </context>
 <context>
@@ -1466,26 +1508,26 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <location line="+6"/>
         <location line="+7"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Oui</translation>
     </message>
     <message>
         <location line="-13"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Non</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Le fichier
+        <translation>Le fichier
 %1
-n&apos;existe pas. Voulez-vous le créer.</translation>
+n&apos;existe pas. Voulez-vous le créer ?</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Éditeur d&apos;Octave</translation>
+        <translation>Éditeur d&apos;Octave</translation>
     </message>
     <message>
         <location line="+211"/>
@@ -1529,12 +1571,18 @@ Make sure you have read and write permissions to
 %2
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier de préférences
+%1
+n&apos;existe pas et ne peut être créé.
+Assurez vous que vous avez accès en lecture et en écriture à
+%2
+
+Le GUI d&apos;Octave doit maintenant être fermé.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Octave Critical Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur Critique d&apos;Octave</translation>
     </message>
 </context>
 <context>
@@ -1672,27 +1720,27 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="-17"/>
         <source>Show whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les espaces</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Do not show whitespace used for indentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas afficher les espaces utilisés pour l&apos;indentation</translation>
     </message>
     <message>
         <location line="+290"/>
         <source># of characters typed before completion list displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Nb. de caractères avant affichage de la liste de complétion</translation>
     </message>
     <message>
         <location line="+194"/>
         <source>Create nonexistent files without prompting</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer les fichiers non-existants sans prévenir</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation type="unfinished"></translation>
+        <translation>ligne de commande (%f=fichier, %l=ligne) :</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1702,7 +1750,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sélectionnez la police, sa taille (différence par rapport à la taille par défaut), son style (gras, italique, souligné), la couleur du texte et de l&apos;arrière plan (pour ce dernier, le rose (255,0,255) fait figure de défaut)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -1722,7 +1770,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+7"/>
         <source>Use foreground color</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser la couleur de l&apos;avant plan</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -1777,7 +1825,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+8"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoriser Octave à se connecter à son site internet afin d&apos;afficher les informations et nouvelle fraîches</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -1807,7 +1855,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+991"/>
         <source>Synchronize Octave working directory with file browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchroniser le répertoire de travail d&apos;Octave et le navigateur de fichiers</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -1822,7 +1870,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+44"/>
         <source>Proxy type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de Proxy :</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1892,22 +1940,22 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+44"/>
         <source>Community News</source>
-        <translation type="unfinished">Nouvelles de la Communauté</translation>
+        <translation>Nouvelles de la Communauté</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Précédent</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Suivant</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1917,7 +1965,12 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu in the GUI, or by visiting
 &lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Quand Octave démarrera, il récupérera sur son site internet les informations et nouvelles fraîches de la communauté d&apos;Octave.
+La récupération se fera un fois par jour au plus, et les nouvelles ne seront affichées que s&apos;il y a réellement eu des changements depuis la dernière visualisation.&lt;/p&gt;
+&lt;p&gt;Vous pouvez aussi voir les nouvelles en sélectionnant &quot;Nouvelles de la Communauté&quot; dans le menu d&apos;&quot;Aide&quot; du GUI, ou en visitant 
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1928,7 +1981,13 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Autoriser Octave à se connecter à son site internet au démarrage afin d&apos;afficher les informations et nouvelle fraîches de la communauté d&apos;Octave.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1996,7 +2055,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+37"/>
         <location line="+2"/>
         <source>complex</source>
-        <translation type="unfinished"></translation>
+        <translation>complexe</translation>
     </message>
 </context>
 <context>

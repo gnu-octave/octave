@@ -100,7 +100,7 @@ public:
 
   virtual std::string original_text (void) const;
 
-  virtual void mark_braindead_shortcircuit (const std::string&) { }
+  virtual void mark_braindead_shortcircuit (void) { }
 
   tree_expression *mark_in_parens (void)
   {

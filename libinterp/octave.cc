@@ -487,7 +487,6 @@ maximum_braindamage (void)
   Fconfirm_recursive_rmdir (octave_value (false));
   Fcrash_dumps_octave_core (octave_value (false));
   Fsave_default_options (octave_value ("-mat-binary"));
-  Fdo_braindead_shortcircuit_evaluation (octave_value (true));
   Ffixed_point_format (octave_value (true));
   Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
   Fpage_screen_output (octave_value (false));

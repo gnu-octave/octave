@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // TRUE means we mark | and & expressions for braindead short-circuit
 // behavior.
-static bool Vdo_braindead_shortcircuit_evaluation;
+static bool Vdo_braindead_shortcircuit_evaluation = true;
 
 // Binary expressions.
 
@@ -52,6 +52,16 @@ tree_binary_expression::rvalue (int nargout)
     retval = rvalue1 (nargout);
 
   return retval;
+}
+
+void
+tree_binary_expression::matlab_style_short_circuit_warning (const char *op)
+{
+  warning_with_id ("Octave:possible-matlab-short-circuit-operator",
+                   "Matlab-style short-circuit operation performed for operator %s",
+                   op);
+
+  braindead_shortcircuit_warning_issued = true;
 }
 
 octave_value
@@ -83,6 +93,7 @@ tree_binary_expression::rvalue1 (int)
                         {
                           if (etype == octave_value::op_el_or)
                             {
+                              matlab_style_short_circuit_warning ("|");
                               result = true;
                               goto done;
                             }
@@ -90,7 +101,10 @@ tree_binary_expression::rvalue1 (int)
                       else
                         {
                           if (etype == octave_value::op_el_and)
-                            goto done;
+                            {
+                              matlab_style_short_circuit_warning ("&");
+                              goto done;
+                            }
                         }
 
                       if (op_rhs)
@@ -298,18 +312,13 @@ variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
+  static bool warned = false;
+  if (! warned)
+    {
+      warned = true;
+      warning_with_id ("Octave:deprecated-function",
+                       "do_braindead_shortcircuit_evaluation is obsolete and will be removed from a future version of Octave");
+    }
+
   return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);
 }
-
-/*
-%!test
-%! x = 0;
-%! do_braindead_shortcircuit_evaluation (0);
-%! if (1 | (x = 1))
-%! endif
-%! assert (x, 1);
-%! do_braindead_shortcircuit_evaluation (1);
-%! if (1 | (x = 0))
-%! endif
-%! assert (x, 1);
-*/

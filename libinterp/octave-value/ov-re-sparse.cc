@@ -55,7 +55,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix",
                                      "double");
 
 idx_vector
-octave_sparse_matrix::index_vector (void) const
+octave_sparse_matrix::index_vector (bool /* require_integers */) const
 {
   if (matrix.numel () == matrix.nnz ())
     return idx_vector (array_value ());

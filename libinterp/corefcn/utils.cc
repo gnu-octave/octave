@@ -1306,9 +1306,6 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
     {
       unwind_protect frame;
 
-      frame.protect_var (Vallow_noninteger_range_as_index);
-      Vallow_noninteger_range_as_index = false;
-
       frame.protect_var (error_state);
 
       frame.protect_var (discard_error_messages);
@@ -1316,7 +1313,8 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 
       try
         {
-          idx_vector idx = args(0).index_vector ();
+          idx_vector idx = args(0).index_vector (true);
+
           if (! error_state)
             {
               if (nargin == 2)

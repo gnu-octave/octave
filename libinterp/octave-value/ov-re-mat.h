@@ -104,7 +104,7 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  idx_vector index_vector (void) const
+  idx_vector index_vector (bool /* require_integers */ = false) const
   { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }

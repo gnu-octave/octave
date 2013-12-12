@@ -76,7 +76,7 @@ public:
 
   type_conv_info numeric_demotion_function (void) const;
 
-  idx_vector index_vector (void) const { return idx_vector (scalar); }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
 
   octave_value any (int = 0) const
   { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }

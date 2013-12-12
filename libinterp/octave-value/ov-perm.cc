@@ -245,9 +245,9 @@ FORWARD_MATRIX_VALUE (boolNDArray, bool_array)
 FORWARD_MATRIX_VALUE (charNDArray, char_array)
 
 idx_vector
-octave_perm_matrix::index_vector (void) const
+octave_perm_matrix::index_vector (bool require_integers) const
 {
-  return to_dense ().index_vector ();
+  return to_dense ().index_vector (require_integers);
 }
 
 octave_value

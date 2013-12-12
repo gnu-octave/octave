@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 
 // If TRUE, allow ranges with non-integer elements as array indices.
-bool Vallow_noninteger_range_as_index = false;
+static bool Vallow_noninteger_range_as_index = true;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
@@ -148,13 +148,14 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 idx_vector
-octave_range::index_vector (void) const
+octave_range::index_vector (bool require_integers) const
 {
   if (idx_cache)
     return *idx_cache;
   else
     {
-      if (! Vallow_noninteger_range_as_index
+      if (require_integers
+          || ! Vallow_noninteger_range_as_index
           || range.all_elements_are_ints ())
         return set_idx_cache (idx_vector (range));
       else
@@ -690,6 +691,14 @@ variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
+  static bool warned = false;
+  if (! warned)
+    {
+      warned = true;
+      warning_with_id ("Octave:deprecated-function",
+                       "allow_noninteger_range_as_index is obsolete and will be removed from a future version of Octave");
+    }
+
   return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
 }
 

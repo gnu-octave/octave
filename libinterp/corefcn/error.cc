@@ -1642,9 +1642,6 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:str-to-num");
   disable_warning ("Octave:mixed-string-concat");
   disable_warning ("Octave:variable-switch-label");
-
-  // This should be an error unless we are in maximum braindamage mode.
-  set_warning_state ("Octave:noninteger-range-as-index", "error");
 }
 
 DEFUN (lasterror, args, ,

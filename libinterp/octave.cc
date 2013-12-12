@@ -482,7 +482,6 @@ maximum_braindamage (void)
   FPS1 (octave_value (">> "));
   FPS2 (octave_value (""));
   FPS4 (octave_value (""));
-  Fallow_noninteger_range_as_index (octave_value (true));
   Fbeep_on_error (octave_value (true));
   Fconfirm_recursive_rmdir (octave_value (false));
   Fcrash_dumps_octave_core (octave_value (false));
@@ -497,9 +496,6 @@ maximum_braindamage (void)
   disable_warning ("Octave:function-name-clash");
   disable_warning ("Octave:load-file-in-path");
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
-
-  // Initialized to "error" by default.
-  set_warning_state ("Octave:noninteger-range-as-index", "on");
 }
 
 // EMBEDDED is declared int instead of bool because this function is

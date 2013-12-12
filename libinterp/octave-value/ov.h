@@ -455,8 +455,10 @@ public:
 
   octave_value& assign (assign_op, const octave_value& rhs);
 
-  idx_vector index_vector (void) const
-  { return rep->index_vector (); }
+  idx_vector index_vector (bool require_integers = false) const
+  {
+    return rep->index_vector (require_integers);
+  }
 
   // Size.
 

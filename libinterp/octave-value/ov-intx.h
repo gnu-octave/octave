@@ -303,8 +303,10 @@ public:
     matrix_ref ().changesign ();
   }
 
-  idx_vector index_vector (void) const
-  { return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix)); }
+  idx_vector index_vector (bool /* require_integers */ = false) const
+  {
+    return idx_cache ? *idx_cache : set_idx_cache (idx_vector (matrix));
+  }
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
@@ -606,7 +608,7 @@ public:
     scalar -= OCTAVE_INT_T (1);
   }
 
-  idx_vector index_vector (void) const { return idx_vector (scalar); }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
 
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, octave_idx_type skip,

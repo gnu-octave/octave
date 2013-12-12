@@ -412,9 +412,9 @@ octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 
 template <class DMT, class MT>
 idx_vector
-octave_base_diag<DMT, MT>::index_vector (void) const
+octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 {
-  return to_dense ().index_vector ();
+  return to_dense ().index_vector (require_integers);
 }
 
 template <class DMT, class MT>

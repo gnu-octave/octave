@@ -61,7 +61,7 @@ bool Vdebug_on_warning = false;
 
 // TRUE means that Octave will try to display a stack trace when a
 // warning is encountered.
-static bool Vbacktrace_on_warning = false;
+static bool Vbacktrace_on_warning = true;
 
 // TRUE means that Octave will print a verbose warning.  Currently unused.
 static bool Vverbose_warning;
@@ -1225,6 +1225,7 @@ DEFUN (warning, args, nargout,
 @deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (@var{state}, \"backtrace\")\n\
 @deftypefnx {Built-in Function} {} warning (@var{state}, @var{id}, \"local\")\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
@@ -1254,6 +1255,11 @@ for example, the following handles all warnings as errors:\n\
 warning (\"error\");\n\
 @end group\n\
 @end example\n\
+\n\
+If the state is @qcode{\"on\"} or @qcode{\"off\"} and the third argument\n\
+is @qcode{\"backtrace\"}, then a stack trace is printed along with the\n\
+warning message when warnings occur inside function calls.  This option\n\
+is enabled by default.\n\
 \n\
 If the state is @qcode{\"on\"}, @qcode{\"off\"}, or @qcode{\"error\"}\n\
 and the third argument is @qcode{\"local\"}, then the warning state\n\
@@ -1636,14 +1642,6 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:str-to-num");
   disable_warning ("Octave:mixed-string-concat");
   disable_warning ("Octave:variable-switch-label");
-
-  // This should be an error unless we are in maximum braindamage mode.
-  // FIXME: Not quite right.  This sets the error state even for braindamage
-  // mode.  Also, this error is not triggered in normal mode because another
-  // error handler catches it first and gives:
-  // error: subscript indices must be either positive integers or logicals
-  set_warning_state ("Octave:noninteger-range-as-index", "error");
-
 }
 
 DEFUN (lasterror, args, ,

@@ -104,7 +104,7 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   dim_vector dims (void) const
   {
@@ -316,8 +316,5 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
-
-// If TRUE, allow ranges with non-integer elements as array indices.
-extern bool Vallow_noninteger_range_as_index;
 
 #endif

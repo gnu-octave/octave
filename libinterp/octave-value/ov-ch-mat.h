@@ -87,7 +87,7 @@ public:
   octave_base_value *empty_clone (void) const
   { return new octave_char_matrix (); }
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   builtin_type_t builtin_type (void) const { return btyp_char; }
 

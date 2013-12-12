@@ -978,7 +978,7 @@ if_cmd_list     : if_cmd_list1
 
 if_cmd_list1    : expression stmt_begin opt_sep opt_list
                   {
-                    $1->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
+                    $1->mark_braindead_shortcircuit ();
 
                     $$ = parser.start_if_command ($1, $4);
                   }
@@ -991,7 +991,7 @@ if_cmd_list1    : expression stmt_begin opt_sep opt_list
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt_list
                   {
-                    $4->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
+                    $4->mark_braindead_shortcircuit ();
 
                     $$ = parser.make_elseif_clause ($1, $4, $7, $2);
                   }
@@ -1053,7 +1053,7 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 
 loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   {
-                    $3->mark_braindead_shortcircuit (lexer.fcn_file_full_name);
+                    $3->mark_braindead_shortcircuit ();
 
                     if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
                       {

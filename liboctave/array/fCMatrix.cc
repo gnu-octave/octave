@@ -3755,7 +3755,7 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
   if (a.rows () > std::min (m.rows (), a.columns ()) / 10)
     return FloatComplexMatrix (m * real (a), m * imag (a));
   else
-    return m * FloatComplexMatrix (a);
+    return FloatComplexMatrix (m) * a;
 }
 
 /*

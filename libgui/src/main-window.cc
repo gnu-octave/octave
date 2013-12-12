@@ -660,6 +660,7 @@ main_window::reset_windows (void)
   QSettings *settings = resource_manager::get_default_settings ();
 
   set_window_layout (settings);
+  showNormal ();  // make sure main window is not minimized
 }
 
 void

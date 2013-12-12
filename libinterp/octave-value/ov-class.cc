@@ -991,7 +991,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 }
 
 idx_vector
-octave_class::index_vector (void) const
+octave_class::index_vector (bool require_integers) const
 {
   idx_vector retval;
 
@@ -1014,7 +1014,7 @@ octave_class::index_vector (void) const
             // add one to the value returned as the index_vector method
             // expects it to be one based.
             retval = do_binary_op (octave_value::op_add, tmp (0),
-                                   octave_value (1.0)).index_vector ();
+                                   octave_value (1.0)).index_vector (require_integers);
         }
     }
   else

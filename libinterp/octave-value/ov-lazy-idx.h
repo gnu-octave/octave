@@ -59,8 +59,7 @@ public:
 
   octave_value full_value (void) const { return make_value (); }
 
-  idx_vector index_vector (void) const
-  { return index; }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return index; }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 

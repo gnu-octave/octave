@@ -483,12 +483,10 @@ maximum_braindamage (void)
   FPS1 (octave_value (">> "));
   FPS2 (octave_value (""));
   FPS4 (octave_value (""));
-  Fallow_noninteger_range_as_index (octave_value (true));
   Fbeep_on_error (octave_value (true));
   Fconfirm_recursive_rmdir (octave_value (false));
   Fcrash_dumps_octave_core (octave_value (false));
   Fsave_default_options (octave_value ("-mat-binary"));
-  Fdo_braindead_shortcircuit_evaluation (octave_value (true));
   Ffixed_point_format (octave_value (true));
   Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
   Fpage_screen_output (octave_value (false));
@@ -721,6 +719,11 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   set_default_prompts ();
 
+  // Initialize default warning state before --traditional option may
+  // reset them.
+
+  initialize_default_warning_state ();
+
   if (traditional)
     maximum_braindamage ();
 
@@ -737,8 +740,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
     F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
 
   initialize_error_handlers ();
-
-  initialize_default_warning_state ();
 
   if (! embedded)
     install_signal_handlers ();

@@ -80,7 +80,7 @@ public:
                             bool resize_ok = false);
 
   // Use this to give a more specific error message
-  idx_vector index_vector (void) const
+  idx_vector index_vector (bool /* require_integers */ = false) const
   {
     error ("attempted to use a complex scalar as an index\n"
            "       (forgot to initialize i or j?)");

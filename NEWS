@@ -1,6 +1,9 @@
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 
+ ** For compatibility with Matlab, the "backtrace" warning option is now
+    enabled by default.
+
  ** The preference
 
       do_braindead_shortcircuit_evaluation

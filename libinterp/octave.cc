@@ -497,6 +497,9 @@ maximum_braindamage (void)
   disable_warning ("Octave:function-name-clash");
   disable_warning ("Octave:load-file-in-path");
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
+
+  // Initialized to "error" by default.
+  set_warning_state ("Octave:noninteger-range-as-index", "on");
 }
 
 // EMBEDDED is declared int instead of bool because this function is
@@ -719,6 +722,11 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   set_default_prompts ();
 
+  // Initialize default warning state before --traditional option may
+  // reset them.
+
+  initialize_default_warning_state ();
+
   if (traditional)
     maximum_braindamage ();
 
@@ -735,8 +743,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
     F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
 
   initialize_error_handlers ();
-
-  initialize_default_warning_state ();
 
   if (! embedded)
     install_signal_handlers ();

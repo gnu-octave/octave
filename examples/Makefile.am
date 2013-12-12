@@ -57,6 +57,7 @@ EXTRA_DIST += \
   oregonator.m \
   paramdemo.cc \
   standalone.cc \
+  standalonebuiltin.cc \
   stringdemo.cc \
   structdemo.cc \
   unwinddemo.cc

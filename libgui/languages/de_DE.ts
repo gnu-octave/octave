@@ -135,7 +135,7 @@
 %1
 is already open in the editor</source>
         <translation>Die Datei wurde nicht gespeichert! Eine Datei mit dem gewählten Namen
-&lt;b&gt;%1&lt;b&gt;
+%1
 ist im Editor bereits geöffnet</translation>
     </message>
     <message>
@@ -404,14 +404,13 @@ konnte nicht zum Schreiben geöffnet werden:
     <message>
         <location line="+10"/>
         <location line="+122"/>
-        <location line="+111"/>
-        <location line="+64"/>
+        <location line="+150"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-318"/>
+        <location line="-293"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -427,16 +426,7 @@ soll geschlossen werden, wurde aber verändert.
         <translation>Octave Dateien (*.m);;All Files (*)</translation>
     </message>
     <message>
-        <location line="+32"/>
-        <source>File not saved! The selected file name
-%1
-is the same as the current file name</source>
-        <translation>Datei wurde nicht gespeichert! Der gewählte Dateiname
-%1
-ist derselbe wie der aktuelle Dateiname</translation>
-    </message>
-    <message>
-        <location line="+79"/>
+        <location line="+86"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -452,7 +442,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</translation>
     </message>
     <message>
-        <location line="-197"/>
+        <location line="-172"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Die Datei %1  konnte nicht zum Schreiben geöffnet werden:
@@ -469,7 +459,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <translation>Spalte:</translation>
     </message>
     <message>
-        <location line="+1138"/>
+        <location line="+1113"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Die Datei %1 wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?</translation>
     </message>
@@ -1073,13 +1063,13 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
     <name>main_window</name>
     <message>
         <location filename="../src/main-window.cc" line="+201"/>
-        <location line="+1161"/>
+        <location line="+1164"/>
         <source>Load Workspace</source>
         <translation>Lade Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="-520"/>
-        <location line="+874"/>
+        <location line="-522"/>
+        <location line="+876"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
@@ -1144,13 +1134,13 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="-1259"/>
-        <location line="+1178"/>
+        <location line="-1262"/>
+        <location line="+1181"/>
         <source>Save Workspace As</source>
         <translation>Arbeitsumgebung speichern als</translation>
     </message>
     <message>
-        <location line="-1054"/>
+        <location line="-1057"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Die Datei &apos;%1&apos; mit Versionshinweisen ist leer.</translation>
     </message>
@@ -1170,11 +1160,7 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
         <translation>Neuigkeiten aus der Octave Community</translation>
     </message>
     <message>
-        <source>Set working directory</source>
-        <translation type="obsolete">Arbeitsverzeichnis setzen</translation>
-    </message>
-    <message>
-        <location line="+936"/>
+        <location line="+939"/>
         <source>Clear Clipboard</source>
         <translation>Zwischenablage leeren</translation>
     </message>
@@ -1289,7 +1275,33 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
         <translation>Neuigkeiten der Community</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+37"/>
+        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
+        <translation>&lt;strong&gt;Diese Version ist Anwärter auf eine Veröffentlichung der experimentellen Octave GUI.&lt;/strong&gt;  Octave wird ständig verbessert und diese GUI wird die Standard-Benutzerschnittstelle der 4.0 Veröffentlichung sein.  Weitere Informationen sind im Menü unter &quot;Neuigkeiten&quot;, &quot;Versionshinweise&quot; oder auf &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; zu finden.</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>More Info</source>
+        <translation>Weitere Informationen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Hide</source>
+        <translation>Verbergen</translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <location line="+66"/>
+        <source>Experimental GUI Info</source>
+        <translation>Informationen zur experimentellen GUI</translation>
+    </message>
+    <message>
+        <location line="-37"/>
+        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release Octave, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;strong&gt;Einige Hinweise zur neuen Octave GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Eine der größten Neuerungen von Octave 3.8 ist die grafische Benutzerschnittstelle (GUI).  Sie ist das, worum die Nutzer in den letzten Jahren am häufigsten gebeten haben, und nun ist sie fast fertig.  Aber weil noch der Feinschliff fehlt, haben wir beschlossen, mit der GUI als Standard-Benutzerschnittstelle auf die 4.0.x Veröffentlichungen zu warten.&lt;/p&gt;&lt;p&gt;In Anbetracht der vergangenen Zeit, der Anzahl der behobenen Fehler und den Verbesserungen seit der letzten Veröffentlichung haben wir uns dazu entschieden, die nächste Veröffentlichung nicht weiter zu verzögern, nur um die GUI zu perfektionieren.  Daher wünschen wir viel Spaß mit der Version 3.8 von Octave und der Vorschau auf die neue GUI.  Wir sind der Meinung, dass sie schon ziemlich gut funktioniert, obwohl uns bewusst ist, dass es noch einige Ecken und Kanten sowie viele Dinge zu verbessern gibt.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Deshalb brauchen wir Deine Mithilfe!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Es gibt viele Möglichkeiten uns zu helfen die verbleibenden Probleme zu beheben, die GUI weiter zu entwickeln und die Benutzererfahrung für Neulinge und Experten gleichermaßen zu verbessern (Links öffnen im externen Browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Falls Du ein geschickter Software-Entwickler bist, kannst du helfen, indem du dich an der &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;Weiterentwicklung von Octave&lt;/a&gt; beteiligst.&lt;/li&gt;&lt;li&gt;Sollte Octave einmal nicht wie erwartet funktionieren, solltest Du das gefundene &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;Problem melden&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Egal, ob Du Anwender oder Entwickler bist, kannst du &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;helfen, das Projekt zu finanzieren&lt;/a&gt;.  Die Weiterentwicklung von Octave braucht viel Zeit und Sachverstand.  Dein Beitrag hilft sicherzustellen, dass Octave weiter verbessert wird.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Wir hoffen, dass du Octave nützlich findest.  Bitte hilf uns Octave zukünftig noch besser zu machen!&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+64"/>
         <source>Enter directory name</source>
         <translation>Neues Verzeichnis eingeben</translation>
     </message>
@@ -1304,13 +1316,13 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
         <translation>Ein Verzeichnis höher</translation>
     </message>
     <message>
-        <location line="-1120"/>
-        <location line="+1123"/>
+        <location line="-1283"/>
+        <location line="+1286"/>
         <source>Browse directories</source>
         <translation>Verzeichnis suchen</translation>
     </message>
     <message>
-        <location line="-244"/>
+        <location line="-405"/>
         <source>&amp;Window</source>
         <translation>&amp;Fenster</translation>
     </message>
@@ -1379,7 +1391,7 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1279"/>
+        <location line="-1282"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -1539,7 +1551,7 @@ existiert nicht. Soll sie erzeugt werden?</translation>
 <context>
     <name>resource_manager</name>
     <message>
-        <location filename="../src/resource-manager.cc" line="+224"/>
+        <location filename="../src/resource-manager.cc" line="+235"/>
         <source>The settings file
 %1
 does not exist and can not be created.

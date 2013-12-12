@@ -498,6 +498,9 @@ maximum_braindamage (void)
   disable_warning ("Octave:function-name-clash");
   disable_warning ("Octave:load-file-in-path");
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
+
+  // Initialized to "error" by default.
+  set_warning_state ("Octave:noninteger-range-as-index", "on");
 }
 
 // EMBEDDED is declared int instead of bool because this function is

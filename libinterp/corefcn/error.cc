@@ -1638,12 +1638,7 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:variable-switch-label");
 
   // This should be an error unless we are in maximum braindamage mode.
-  // FIXME: Not quite right.  This sets the error state even for braindamage
-  // mode.  Also, this error is not triggered in normal mode because another
-  // error handler catches it first and gives:
-  // error: subscript indices must be either positive integers or logicals
   set_warning_state ("Octave:noninteger-range-as-index", "error");
-
 }
 
 DEFUN (lasterror, args, ,

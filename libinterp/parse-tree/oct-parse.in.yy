@@ -1940,95 +1940,6 @@ octave_base_parser::maybe_warn_variable_switch_label (tree_expression *expr)
     }
 }
 
-static tree_expression *
-fold (tree_binary_expression *e)
-{
-  tree_expression *retval = e;
-
-  unwind_protect frame;
-
-  frame.protect_var (error_state);
-  frame.protect_var (warning_state);
-
-  frame.protect_var (discard_error_messages);
-  frame.protect_var (discard_warning_messages);
-
-  discard_error_messages = true;
-  discard_warning_messages = true;
-
-  tree_expression *op1 = e->lhs ();
-  tree_expression *op2 = e->rhs ();
-
-  if (op1->is_constant () && op2->is_constant ())
-    {
-      octave_value tmp = e->rvalue1 ();
-
-      if (! (error_state || warning_state))
-        {
-          tree_constant *tc_retval
-            = new tree_constant (tmp, op1->line (), op1->column ());
-
-          std::ostringstream buf;
-
-          tree_print_code tpc (buf);
-
-          e->accept (tpc);
-
-          tc_retval->stash_original_text (buf.str ());
-
-          delete e;
-
-          retval = tc_retval;
-        }
-    }
-
-  return retval;
-}
-
-static tree_expression *
-fold (tree_unary_expression *e)
-{
-  tree_expression *retval = e;
-
-  unwind_protect frame;
-
-  frame.protect_var (error_state);
-  frame.protect_var (warning_state);
-
-  frame.protect_var (discard_error_messages);
-  frame.protect_var (discard_warning_messages);
-
-  discard_error_messages = true;
-  discard_warning_messages = true;
-
-  tree_expression *op = e->operand ();
-
-  if (op->is_constant ())
-    {
-      octave_value tmp = e->rvalue1 ();
-
-      if (! (error_state || warning_state))
-        {
-          tree_constant *tc_retval
-            = new tree_constant (tmp, op->line (), op->column ());
-
-          std::ostringstream buf;
-
-          tree_print_code tpc (buf);
-
-          e->accept (tpc);
-
-          tc_retval->stash_original_text (buf.str ());
-
-          delete e;
-
-          retval = tc_retval;
-        }
-    }
-
-  return retval;
-}
-
 // Finish building a range.
 
 tree_expression *
@@ -2084,8 +1995,6 @@ octave_base_parser::finish_colon_expression (tree_colon_expression *e)
           e->preserve_base ();
           delete e;
 
-          // FIXME -- need to attempt constant folding here
-          // too (we need a generic way to do that).
           retval = base;
         }
     }
@@ -2298,10 +2207,7 @@ octave_base_parser::make_binary_op (int op, tree_expression *op1,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  tree_binary_expression *e
-    = maybe_compound_binary_expression (op1, op2, l, c, t);
-
-  return fold (e);
+  return maybe_compound_binary_expression (op1, op2, l, c, t);
 }
 
 // Build a boolean expression.
@@ -2330,10 +2236,7 @@ octave_base_parser::make_boolean_op (int op, tree_expression *op1,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  tree_boolean_expression *e
-    = new tree_boolean_expression (op1, op2, l, c, t);
-
-  return fold (e);
+  return new tree_boolean_expression (op1, op2, l, c, t);
 }
 
 // Build a prefix expression.
@@ -2374,10 +2277,7 @@ octave_base_parser::make_prefix_op (int op, tree_expression *op1,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  tree_prefix_expression *e
-    = new tree_prefix_expression (op1, l, c, t);
-
-  return fold (e);
+  return new tree_prefix_expression (op1, l, c, t);
 }
 
 // Build a postfix expression.
@@ -2414,10 +2314,7 @@ octave_base_parser::make_postfix_op (int op, tree_expression *op1,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  tree_postfix_expression *e
-    = new tree_postfix_expression (op1, l, c, t);
-
-  return fold (e);
+  return new tree_postfix_expression (op1, l, c, t);
 }
 
 // Build an unwind-protect command.

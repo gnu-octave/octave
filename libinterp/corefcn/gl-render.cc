@@ -442,7 +442,7 @@ protected:
     // tessellation process might re-order the vertices, such that
     // the first one you get here might not be the first one of the face;
     // but I can't figure out the actual reason.
-    if (color_mode > 0 && (first || color_mode == 2))
+    if (color_mode == 2)
       {
         Matrix col = v->color;
 
@@ -459,7 +459,7 @@ protected:
 
                 for (int k = 0; k < 3; k++)
                   buf[k] = (v->diffuse * col(k));
-                glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+                glMaterialfv (LIGHT_MODE, GL_DIFFUSE, buf);
               }
           }
       }
@@ -2337,7 +2337,38 @@ opengl_renderer::draw_patch (const patch::properties &props)
               tess.begin_polygon (true);
               tess.begin_contour ();
 
-              for (int j = 0; j < count_f(i); j++)
+              if (count_f(i) > 0)
+                {
+                  vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
+
+                  if (fc_mode == 1)
+                    {
+                      // For "flat" shading, use color of 1st vertex.
+                      Matrix col = vv->color;
+
+                      if (col.numel () == 3)
+                        {
+                          glColor3dv (col.data ());
+                          if (fl_mode > 0)
+                            {
+                              float cb[4] = { 0, 0, 0, 1 };
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = (vv->ambient * col(k));
+                              glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+                              for (int k = 0; k < 3; k++)
+                                cb[k] = (vv->diffuse * col(k));
+                              glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+                            }
+                        }
+                    }
+
+                  tess.add_vertex (vv->coords.fortran_vec (), vv);
+                }
+
+              // Add remaining vertices.
+              for (int j = 1; j < count_f(i); j++)
                 {
                   vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
 

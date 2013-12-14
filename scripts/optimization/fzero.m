@@ -302,7 +302,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
     endif
 
     ## If there's an output function, use it now.
-    if (outfcn)
+    if (! isempty (outfcn))
       optv.funccount = nfev;
       optv.fval = fval;
       optv.iteration = niter;

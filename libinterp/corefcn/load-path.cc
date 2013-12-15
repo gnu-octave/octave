@@ -2066,7 +2066,7 @@ genpath (const std::string& dirname, const string_vector& skip)
     {
       retval = dirname;
 
-      string_vector dirlist = dir.read ();
+      string_vector dirlist = dir.read ().sort (false);
 
       octave_idx_type len = dirlist.length ();
 

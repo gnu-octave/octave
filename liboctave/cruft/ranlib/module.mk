@@ -53,7 +53,11 @@ ranlib_libranlib_la_SOURCES = $(RANLIB_SRC)
 ranlib_libranlib_la_DEPENDENCIES = ranlib/ranlib.def
 
 ## Special rules for files which must be built before compilation
+## ranlib directory may not exist in VPATH build; create it if necessary.
 ranlib/ranlib.def: $(RANLIB_SRC) mkf77def
+	@-if ! test -d ranlib; then \
+		mkdir ranlib ; \
+	fi
 	chmod a+rx mkf77def
 	./mkf77def $(srcdir) $(RANLIB_SRC) > $@-t
 	mv $@-t $@

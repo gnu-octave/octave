@@ -71,11 +71,19 @@ nodist_libcruft_la_SOURCES += \
   slatec-fn/derfc.f \
   slatec-fn/erfc.f
 
+## slatec-fn directory may not exist in VPATH build; create it if necessary.
+
 slatec-fn/erfc.f: slatec-fn/erfc.in.f Makefile
+	@-if ! test -d slatec-fn; then \
+		mkdir slatec-fn ; \
+	fi
 	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
 	mv $@-t $@
 
 slatec-fn/derfc.f: slatec-fn/derfc.in.f Makefile
+	@-if ! test -d slatec-fn; then \
+		mkdir slatec-fn ; \
+	fi
 	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
 	mv $@-t $@
 

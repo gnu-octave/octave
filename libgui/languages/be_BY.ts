@@ -14,57 +14,57 @@
     <message>
         <location filename="../../../octave-qt/qcolordialog.cpp" line="+1378"/>
         <source>Hu&amp;e:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ад&amp;ценне:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Sat:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Насычанасць:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Val:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Светласць:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Red:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Чырвоны:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Green:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Зялёны:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bl&amp;ue:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сі&amp;ні:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A&amp;lpha channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>А&amp;льфа:</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>Select Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Пазначыць колер</translation>
     </message>
     <message>
         <location line="+183"/>
         <source>&amp;Basic colors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Базавыя колеры</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Custom colors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Свае колеры</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Add to Custom Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Дадаць да сваіх колераў</translation>
     </message>
 </context>
 <context>
@@ -72,12 +72,12 @@
     <message>
         <location filename="../../../octave-qt/qdialog.cpp" line="+528"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Выканана</translation>
     </message>
     <message>
         <location line="+133"/>
         <source>What&apos;s This?</source>
-        <translation type="unfinished"></translation>
+        <translation>Што гэта?</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@
         <location filename="../../../octave-qt/qmessagebox.cpp" line="+1937"/>
         <location line="+446"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Добра</translation>
     </message>
 </context>
 <context>
@@ -94,27 +94,27 @@
     <message>
         <location filename="../../../octave-qt/qerrormessage.cpp" line="+208"/>
         <source>Debug Message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Адладачнае паведамленне:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Warning:</source>
-        <translation type="unfinished"></translation>
+        <translation>Папярэджанне:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Fatal Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фатальная памылка:</translation>
     </message>
     <message>
         <location line="+208"/>
         <source>&amp;Show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Паказваць гэтае паведамленне зноў</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Добра</translation>
     </message>
 </context>
 <context>
@@ -123,84 +123,84 @@
         <location filename="../../../octave-qt/qfiledialog.cpp" line="+557"/>
         <location filename="../../../octave-qt/qfiledialog_symbian.cpp" line="+192"/>
         <source>Find Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Знайсці каталог</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open</source>
-        <translation type="unfinished">Адкрыць</translation>
+        <translation>Адкрыць</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Захаваць як</translation>
     </message>
     <message>
         <location line="+15"/>
         <location line="+550"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Усе файлы (*)</translation>
     </message>
     <message>
         <location line="-540"/>
         <source>Show </source>
-        <translation type="unfinished"></translation>
+        <translation>Паказаць </translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Пераназваць</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выдаліць</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show &amp;hidden files</source>
-        <translation type="unfinished"></translation>
+        <translation>Паказаць &amp;схаваныя файлы</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Новы каталог</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+750"/>
         <source>Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог:</translation>
     </message>
     <message>
         <location line="-748"/>
         <location line="+754"/>
         <source>File &amp;name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Назва файла:</translation>
     </message>
     <message>
         <location line="-13"/>
         <location line="+55"/>
         <location line="+1582"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Адкрыць</translation>
     </message>
     <message>
         <location line="-1637"/>
         <location line="+55"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Захаваць</translation>
     </message>
     <message>
         <location line="-52"/>
         <source>Directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталогі</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+43"/>
         <source>&amp;Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выбраць</translation>
     </message>
     <message>
         <location line="+789"/>
@@ -208,51 +208,57 @@
         <source>%1
 Directory not found.
 Please verify the correct directory name was given.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Каталог не знойдзены.
+Пераправерце, ці карэктную назву каталогу вы задалі.</translation>
     </message>
     <message>
         <location line="-832"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ужо існуе.
+Замяніць яго?</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>%1
 File not found.
 Please verify the correct file name was given.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Файл не знойдзены.
+Пераправерце, ці карэктную назву файла вы задалі.</translation>
     </message>
     <message>
         <location line="+462"/>
         <source>New Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Новы каталог</translation>
     </message>
     <message>
         <location line="+128"/>
         <source>&apos;%1&apos; is write protected.
 Do you want to delete it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; абаронены ад запісу.
+Выдаліць яго ўсё адно?</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Are sure you want to delete &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Сапраўды жадаеце выдаліць &apos;%1&apos;?</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Could not delete directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не выйшла выдаліць каталог.</translation>
     </message>
     <message>
         <location line="+409"/>
         <source>Recent Places</source>
-        <translation type="unfinished"></translation>
+        <translation>Ранейшыя месцы</translation>
     </message>
     <message>
         <location filename="../../../octave-qt/qfiledialog_win.cpp" line="+131"/>
         <source>All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Усе файлы (*.*)</translation>
     </message>
 </context>
 <context>
@@ -260,64 +266,64 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../../../octave-qt/qfilesystemmodel.cpp" line="+763"/>
         <source>%1 TB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ТБ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1 GB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ГБ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1 MB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 МБ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>%1 KB</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 КБ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 байтаў</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Памылковая назва файла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;b&gt;The name &quot;%1&quot; can not be used.&lt;/b&gt;&lt;p&gt;Try using another name, with fewer characters or no punctuations marks.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Назву &quot;%1&quot; нельга выкарыстаць.&lt;/b&gt;&lt;p&gt;Паспрабуйце іншую, з меншай колькасцю сімвалаў або без знакаў прыпынку.</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Name</source>
-        <translation type="unfinished">Ідэнтыфікатар</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Памер</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тып (Kind)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Type</source>
         <comment>All other platforms</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тып</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Date Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата змянення</translation>
     </message>
 </context>
 <context>
@@ -325,47 +331,47 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../../../octave-qt/qfontdialog.cpp" line="+183"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Пазначыць шрыфт</translation>
     </message>
     <message>
         <location line="+585"/>
         <source>&amp;Font</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Шрыфт</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Font st&amp;yle</source>
-        <translation type="unfinished"></translation>
+        <translation>Стыль ш&amp;рыфту</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Памер</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Effects</source>
-        <translation type="unfinished"></translation>
+        <translation>Эфекты</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Stri&amp;keout</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрэ&amp;слены</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Падкрэслены</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Узор</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Wr&amp;iting System</source>
-        <translation type="unfinished"></translation>
+        <translation>Сістэма нап&amp;ісання</translation>
     </message>
 </context>
 <context>
@@ -373,7 +379,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../../../octave-qt/qinputdialog.cpp" line="+223"/>
         <source>Enter a value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Задайце значэнне:</translation>
     </message>
 </context>
 <context>
@@ -381,38 +387,38 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../../../octave-qt/qmessagebox.cpp" line="-2244"/>
         <source>Show Details...</source>
-        <translation type="unfinished"></translation>
+        <translation>Падрабязнасці...</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Hide Details...</source>
-        <translation type="unfinished"></translation>
+        <translation>Схаваць падрабязнасці...</translation>
     </message>
     <message>
         <location line="+288"/>
         <location line="+845"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Добра</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Даведка</translation>
     </message>
     <message>
         <location line="+488"/>
         <source>&lt;h3&gt;About Qt&lt;/h3&gt;&lt;p&gt;This program uses Qt version %1.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Пра Qt&lt;/h3&gt;&lt;p&gt;Гэтая праграма выкарыстоўва Qt версіі %1.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux, and all major commercial Unix variants. Qt is also available for embedded devices as Qt for Embedded Linux and Qt for Windows CE.&lt;/p&gt;&lt;p&gt;Qt is available under three different licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of the GNU LGPL version 2.1 or GNU GPL version 3.0.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU LGPL version 2.1 is appropriate for the development of Qt applications (proprietary or open source) provided you can comply with the terms and conditions of the GNU LGPL version 2.1.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU General Public License version 3.0 is appropriate for the development of Qt applications where you wish to use such applications in combination with software subject to the terms of the GNU GPL version 3.0 or where you are otherwise willing to comply with the terms of the GNU GPL version 3.0.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;http://qt.digia.com/product/licensing&quot;&gt;qt.digia.com/product/licensing&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;Qt is a Digia product. See &lt;a href=&quot;http://qt.digia.com/&quot;&gt;qt.digia.com&lt;/a&gt; for more information.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Qt - гэта C++-тулкіт для шматплатформеннай распрацоўкі праграм.&lt;/p&gt;&lt;p&gt;Qt дае магчымасць мець адзін выточны код, з якога можна будаваць праграмы для MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux і ўсіх найбольш пашыраных камерцыйных варыянтаў Unix. Яшчэ Qt ёсць для убудаваных пралыд пад маркамі &quot;Qt for Embedded Linux&quot; і &quot;Qt for Windows CE&quot;.&lt;/p&gt;&lt;p&gt;Qt даступны пад трыма рознымі ліцэнзіямі, каб задаволіць патрэбы ўсіх нашых карыстальнікаў.&lt;/p&gt;&lt;p&gt;Qt, ліцэнзаваны на ўмовах нашага камерцыйнага ліцэнзійнага пагаднення, прызначаны для распрацоўкі прыпрыетарных/камерцыйных праграм, дзе вам не трэба дзяліцца выточным кодам з трэцімі асобамі, але адначасова яна не падпадае пад умовы GNU LGPL версіі 2.1 цт GNU GPL версіі 3.0.&lt;/p&gt;&lt;p&gt;Qt, ліцэнзаваны на ўмовах GNU LGPL версіі 2.1, пасуе да распрацоўкі Qt-праграм (прапрыетарных ці адкрытых), калі вы маеце магчымасць выконваць пастановы і ўмовы GNU LGPL версіі 2.1.&lt;/p&gt;&lt;p&gt;Qt, ліцэнзаваны на ўмовах GNU General Public License версіі 3.0, пасуе да распрацоўкі Qt-праграм, пры якой можна спалучаць праграму з праграмамі, што адпавядаюць GNU GPL версіі 3.0.&lt;/p&gt;&lt;p&gt;Глядзіце &lt;a href=&quot;http://qt.digia.com/product/licensing&quot;&gt;qt.digia.com/product/licensing&lt;/a&gt; для агляду ліцэнзавання Qt.&lt;/p&gt;&lt;p&gt;Аўтарскае права (C) 2013 Digia Plc і/ці ейныя філіялы.&lt;/p&gt;&lt;p&gt;Qt - прадукт Digia. Наведайце &lt;a href=&quot;http://qt.digia.com/&quot;&gt;qt.digia.com&lt;/a&gt; па падрабязнасці.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Пра Qt</translation>
     </message>
 </context>
 <context>
@@ -474,12 +480,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../../../octave-qt/qprintdialog_unix.cpp" line="+1238"/>
         <source>Name</source>
-        <translation type="unfinished">Ідэнтыфікатар</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Value</source>
-        <translation type="unfinished">Значэнне</translation>
+        <translation>Значэнне</translation>
     </message>
 </context>
 <context>
@@ -487,22 +493,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../../../octave-qt/qpagesetupdialog_unix.cpp" line="+304"/>
         <source>Centimeters (cm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Сантыметры (см)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Millimeters (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Міліметры (мм)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Inches (in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Цалі (цл)</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Points (pt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Пункты (пт)</translation>
     </message>
 </context>
 <context>
@@ -512,411 +518,414 @@ Do you want to delete it anyway?</source>
         <location line="+13"/>
         <location filename="../../../octave-qt/qprintdialog_win.cpp" line="+270"/>
         <source>Print</source>
-        <translation type="unfinished">Друк</translation>
+        <translation>Друк</translation>
     </message>
     <message>
         <location filename="../../../octave-qt/qpagesetupdialog_unix.cpp" line="-232"/>
         <source>A0</source>
-        <translation type="unfinished"></translation>
+        <translation>A0</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A1</source>
-        <translation type="unfinished"></translation>
+        <translation>A1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A2</source>
-        <translation type="unfinished"></translation>
+        <translation>A2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A3</source>
-        <translation type="unfinished"></translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A4</source>
-        <translation type="unfinished"></translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A5</source>
-        <translation type="unfinished"></translation>
+        <translation>A5</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A6</source>
-        <translation type="unfinished"></translation>
+        <translation>A6</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A7</source>
-        <translation type="unfinished"></translation>
+        <translation>A7</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A8</source>
-        <translation type="unfinished"></translation>
+        <translation>A8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A9</source>
-        <translation type="unfinished"></translation>
+        <translation>A9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B0</source>
-        <translation type="unfinished"></translation>
+        <translation>B0</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B1</source>
-        <translation type="unfinished"></translation>
+        <translation>B1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B2</source>
-        <translation type="unfinished"></translation>
+        <translation>B2</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B3</source>
-        <translation type="unfinished"></translation>
+        <translation>B3</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B4</source>
-        <translation type="unfinished"></translation>
+        <translation>B4</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B5</source>
-        <translation type="unfinished"></translation>
+        <translation>B5</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B6</source>
-        <translation type="unfinished"></translation>
+        <translation>B6</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B7</source>
-        <translation type="unfinished"></translation>
+        <translation>B7</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B8</source>
-        <translation type="unfinished"></translation>
+        <translation>B8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B9</source>
-        <translation type="unfinished"></translation>
+        <translation>B9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B10</source>
-        <translation type="unfinished"></translation>
+        <translation>B10</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C5E</source>
-        <translation type="unfinished"></translation>
+        <translation>C5E</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>DLE</source>
-        <translation type="unfinished"></translation>
+        <translation>DLE</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Executive</source>
-        <translation type="unfinished"></translation>
+        <translation>Executive</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Folio</source>
-        <translation type="unfinished"></translation>
+        <translation>Folio</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ledger</source>
-        <translation type="unfinished"></translation>
+        <translation>Ledger</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Legal</source>
-        <translation type="unfinished"></translation>
+        <translation>Legal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Letter</source>
-        <translation type="unfinished"></translation>
+        <translation>Letter</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tabloid</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabloid</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>US Common #10 Envelope</source>
-        <translation type="unfinished"></translation>
+        <translation>US Common #10 Envelope</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Адмысловы</translation>
     </message>
     <message>
         <location filename="../../../octave-qt/qprintdialog_qws.cpp" line="+148"/>
         <source>File exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл існуе</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;qt&gt;Do you want to overwrite it?&lt;/qt&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;qt&gt;Перапісаць яго?&lt;/qt&gt;</translation>
     </message>
     <message>
         <location line="+184"/>
         <source>A0 (841 x 1189 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A0 (841 x 1189 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A1 (594 x 841 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A1 (594 x 841 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A2 (420 x 594 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A2 (420 x 594 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A3 (297 x 420 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A3 (297 x 420 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A4 (210 x 297 mm, 8.26 x 11.7 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>A4 (210 x 297 мм, 8.26 x 11.7 цаляў)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A5 (148 x 210 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A5 (148 x 210 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A6 (105 x 148 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A6 (105 x 148 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A7 (74 x 105 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A7 (74 x 105 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A8 (52 x 74 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A8 (52 x 74 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>A9 (37 x 52 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A9 (37 x 52 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B0 (1000 x 1414 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B0 (1000 x 1414 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B1 (707 x 1000 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B1 (707 x 1000 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B2 (500 x 707 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B2 (500 x 707 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B3 (353 x 500 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B3 (353 x 500 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B4 (250 x 353 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B4 (250 x 353 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B5 (176 x 250 mm, 6.93 x 9.84 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>B5 (176 x 250 мм, 6.93 x 9.84 цаляў)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B6 (125 x 176 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B6 (125 x 176 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B7 (88 x 125 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B7 (88 x 125 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B8 (62 x 88 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B8 (62 x 88 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B9 (44 x 62 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B9 (44 x 62 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>B10 (31 x 44 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B10 (31 x 44 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C5E (163 x 229 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>C5E (163 x 229 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>DLE (110 x 220 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>DLE (110 x 220 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Executive (7.5 x 10 inches, 191 x 254 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Executive (7.5 x 10 цаляў, 191 x 254 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Folio (210 x 330 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Folio (210 x 330 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ledger (432 x 279 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ledger (432 x 279 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Legal (8.5 x 14 inches, 216 x 356 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Legal (8.5 x 14 цаляў, 216 x 356 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Letter (8.5 x 11 inches, 216 x 279 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Letter (8.5 x 11 цаляў, 216 x 279 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tabloid (279 x 432 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabloid (279 x 432 мм)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>US Common #10 Envelope (105 x 241 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>US Common #10 Envelope (105 x 241 мм)</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Print all</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкаваць усё</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкаваць вылучанае</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print range</source>
-        <translation type="unfinished"></translation>
+        <translation>Друк некалькіх старонак</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкаваць бягучую старонку</translation>
     </message>
     <message>
         <location filename="../../../octave-qt/qprintdialog_unix.cpp" line="-844"/>
         <location line="+68"/>
         <source>&amp;Options &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Настаўленні &gt;&gt;</translation>
     </message>
     <message>
         <location line="-63"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Друкаваць</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>&amp;Options &lt;&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Настаўленні &lt;&lt;</translation>
     </message>
     <message>
         <location line="+260"/>
         <source>Print to File (PDF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Друк у файл (PDF)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print to File (Postscript)</source>
-        <translation type="unfinished"></translation>
+        <translation>Друк у файл (Postscript)</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Local file</source>
-        <translation type="unfinished"></translation>
+        <translation>Лакальны файл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Write %1 file</source>
-        <translation type="unfinished"></translation>
+        <translation>Запісаць %1-файл</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Print To File ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Друк у файл...</translation>
     </message>
     <message>
         <location line="+78"/>
         <source>%1 is a directory.
 Please choose a different file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - гэта каталог.
+Калі ласка, пазначце іншую назву файла.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>File %1 is not writable.
 Please choose a different file name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл %1 не даступны на запіс.
+Калі ласка, пазначце іншую назву файла.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>%1 already exists.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ужо існуе.
+Перапісаць яго?</translation>
     </message>
     <message>
         <location filename="../../../octave-qt/qprintdialog_win.cpp" line="+1"/>
         <source>The &apos;From&apos; value cannot be greater than the &apos;To&apos; value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Значэнне &apos;З&apos; не можа перавышаць значэнне &apos;Да&apos;.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Добра</translation>
     </message>
 </context>
 <context>
@@ -925,7 +934,7 @@ Do you want to overwrite it?</source>
         <location filename="../../../octave-qt/qabstractpagesetupdialog.cpp" line="+68"/>
         <location line="+12"/>
         <source>Page Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Настаўленні старонкі</translation>
     </message>
 </context>
 <context>
@@ -1652,13 +1661,13 @@ Do you want to overwrite it?</source>
     <message>
         <location line="-40"/>
         <source>New Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая функцыя</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Назва новай функцыі:</translation>
     </message>
     <message>
         <location line="+281"/>
@@ -1752,22 +1761,22 @@ is already open in the editor</source>
     <message>
         <location line="+4"/>
         <source>&amp;Next Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Наступны пункт спыну</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Па&amp;пярэдні пункт спыну</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Дадаць/зняць &amp;пункт спыну</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Прыбраць усе пункты спыну</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1782,7 +1791,7 @@ is already open in the editor</source>
     <message>
         <location line="+6"/>
         <source>Save File and Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Захаваць і выканаць файл</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -1792,7 +1801,7 @@ is already open in the editor</source>
     <message>
         <location line="+5"/>
         <source>New &amp;Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая &amp;функцыя</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1822,12 +1831,12 @@ is already open in the editor</source>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation>&amp;Дапамога</translation>
+        <translation>&amp;Даведка</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Help on Keyword</source>
-        <translation>&amp;Дапамога па ключавым слове</translation>
+        <translation>&amp;Даведка па ключавым слове</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1992,12 +2001,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="-966"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Радок:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Col:</source>
-        <translation type="unfinished"></translation>
+        <translation>Слупок:</translation>
     </message>
     <message>
         <location line="+1138"/>
@@ -2010,7 +2019,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+68"/>
         <source>File Browser</source>
-        <translation>Файлавы аглядальнік</translation>
+        <translation>Файлавы агляднік</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2035,7 +2044,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+2"/>
         <source>Goto current octave directory</source>
-        <translation>Перайсці да бягучага каталога Octave</translation>
+        <translation>Перайсці да дзейнага каталога Octave</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2045,12 +2054,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+2"/>
         <source>Set octave directroy to current browser directory</source>
-        <translation>Зрабіць каталогам Octave бягучы каталог аглядальніка</translation>
+        <translation>Зрабіць каталогам Octave дзейны каталог аглядніка</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation>Дзеянні з бягучым каталогам</translation>
+        <translation>Дзеянні з дзейным каталогам</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2083,27 +2092,27 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="-323"/>
         <source>Double-click a file to open it</source>
-        <translation type="unfinished"></translation>
+        <translation>Двойчы пстрыкніце па файле для адкрыцця</translation>
     </message>
     <message>
         <location line="+236"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Памер файла</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тып файла</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Date modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата змянення</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Паказваць схаваныя</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2133,7 +2142,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation>Задаць бягучы каталог</translation>
+        <translation>Задаць дзейны каталог</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2183,7 +2192,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+144"/>
         <source>Set directory of file browser</source>
-        <translation>Задаванне каталогу файлавага аглядальніка</translation>
+        <translation>Задаванне каталогу файлавага аглядніка</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -2213,22 +2222,22 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+194"/>
         <source>Enjoy!</source>
-        <translation type="unfinished"></translation>
+        <translation>Прыемнага карыстання!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Раней</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Finish</source>
-        <translation type="unfinished">Скончыць</translation>
+        <translation>Скончыць</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Скасаваць</translation>
+        <translation>Скасаваць</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2237,7 +2246,11 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Спадзяемся, вы знойдзеце Octave карыснай праграмай.&lt;/p&gt;
+&lt;p&gt;Калі ўзнікнуць якія праблемы, то ёсць некалькі спосабаў іх вырашэння: камерцыйная падтрымка, спіс рассылкі, wiki ды іншыя каналы сувязі з супольнасцю.
+Больш інфармацыі па кожным з іх можна атрымаць, завітаўшы на &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (адкрыецца ў знешнім браўзэры).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2253,7 +2266,18 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Больш звестак пра Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Наведайце &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; (адкрыецца ў знешнім браўзэры)&lt;/li&gt;
+&lt;li&gt;Атрымайце дакументацыю анлайн як &lt;a href=&quot;http://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;html&lt;/a&gt;- ці &lt;a href=&quot;http://www.gnu.org/software/octave/octave.pdf&quot;&gt;pdf&lt;/span&gt;&lt;/a&gt;-дакумент (адкрыецца ў знешнім браўзэры)&lt;/li&gt;
+&lt;li&gt;Адкрыйце агляднік дакументацыі ў GUI Octave праз меню &quot;Даведка&quot;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2525,7 +2549,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Двойчы пстрык па загадзе перадасць яго ў тэрмінал.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2558,17 +2582,17 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/welcome-wizard.cc" line="-179"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Вітаем у Octave!</translation>
+        <translation>Вітаем у Octave!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Далей</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Скасаваць</translation>
+        <translation>Скасаваць</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2577,7 +2601,11 @@ a:link { text-decoration: underline; color: #0000ff; }
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
 &lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Выглядае, што на гэтым кампутары вы выкарыстоўваеце графічны інтэрфэйс Octave упершыню.
+Націсніце &apos;Далей&apos;, каб запісаць файл канфігурацыі і запусціць Octave.&lt;/p&gt;
+&lt;p&gt;Файл канфігурацыі запісаны ў %1.  Калі файл існуе, вы больш не пабачыце гэтае акенца падчас запуску Octave.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2678,7 +2706,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+186"/>
         <source>Octave Community News</source>
-        <translation type="unfinished"></translation>
+        <translation>Навіны супольнасці Octave</translation>
     </message>
     <message>
         <location line="+938"/>
@@ -2728,22 +2756,22 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+51"/>
         <source>Show File Browser</source>
-        <translation>Паказваць файлавы аглядальнік</translation>
+        <translation>Паказваць файлавы агляднік</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>File Browser</source>
-        <translation>Файлавы аглядальнік</translation>
+        <translation>Файлавы агляднік</translation>
     </message>
     <message>
         <location line="-94"/>
         <source>Step In</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок наперад</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location line="+108"/>
@@ -2798,28 +2826,28 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+37"/>
         <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Вы выкарыстоўваеце кандыдат на выпуск эксперыментальнага графічнага (GUI) інтэрфэйсу Octave.&lt;/strong&gt;  Octave пастаянна паляпшаецца, і GUI будзе стандартным інтэрфэйсам з версіі 4.0.  Для дадатковай інфармацыі націсніце &quot;Заўвагі да выпуску&quot; у меню &quot;Навіны&quot;, альбо наведайце &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>More Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Даведацца болей</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Схаваць</translation>
     </message>
     <message>
         <location line="+47"/>
         <location line="+66"/>
         <source>Experimental GUI Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Інфармацыя пра эксперыментальны GUI Octave</translation>
     </message>
     <message>
         <location line="-37"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release Octave, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;strong&gt;Нататка пра новы GUI Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Адна з найбольшых адметнасцяў Octave 3.8 - графічны інтэрфэйс.  Карыстальнікі апошнімі гадамі прасілі яго найбольш часта, і нарэшце ён амаль гатовы.  Але ён пакуль не такі дасканалы, як бы мы жадалі, таму мы вырашылі пачакаць выпуску з серыі 4.0.x перад тым, як рабіць яго стандартным.&lt;/p&gt;&lt;p&gt;Да таго ж, улічваючы час і колькасць выпраўленняў і паляпшэнняў у параўнанні з апошнім буйным выпускам Octave, мы вырашылі затрымліваць новы выпуск толькі дзеля ўдасканалення GUI, не зважаючы на новыя магчымасці.  Таму прыемнага вам карстання выпускам 3.8 і першай версіяй новага інтэрфэйсу.  Нам здаецца, ён працуе даволі добра, але мы ведаем, што ёсць некаторыя відавочныя грубыя недарэчнасці і шмат чаго, што можна палепшыць.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Нам патрабуецца ваша дапамога&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Ёсць шмат спосабаў, якімі вы можаце дапамагчы нам выправіць праблемы, што яшчэ засталіся, скончыць GUI і палепшыць агульнае уражанне як для новых карыстальнікаў, так і для экспертаў (спасылкі адкрыюцца ў знешнім браўзэры):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Калі вы спрактыкаваны распрацоўнік праграм, то можаце выдаткаваць час, каб дапамагчы ў &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;распрацоўцы Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Калі Octave працуе з памылкамі, вы можаце &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;паведаміць пра праблемы&lt;/a&gt;, з якімі сутыкнуліся.&lt;/li&gt;&lt;li&gt;Няхай вы хоць карыстальнік, хоць распрацоўнік, вы можаце &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;прафундаваць праект&lt;/a&gt;.  Распрацоўка Octave патрабуе шмат часу і навыкаў.  Ваш удзел дапаможа гарантаваць, што Octave і надалей будзе ўдасканальвацца.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Спадзяемся, вы знойдзеце Octave карыснай.  Калі ласка, дапамажыце нам зрабіць яго лепшым для будучыні!&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -2829,7 +2857,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <message>
         <location line="+9"/>
         <source>Current Directory: </source>
-        <translation>Бягучы каталог:</translation>
+        <translation>Дзейны каталог:</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2925,7 +2953,18 @@ when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Выглядае, што крыніца навінаў супольнасці Octave недаступная.
+&lt;/p&gt;
+&lt;p&gt;
+Каб атрымаць апошнія навіны, наведайце
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;,
+калі маеце злучэнне з Сецівам (спасылка адкрыецца ў знешнім браўзэры).
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Распрацоўнікі Octave, </translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2942,7 +2981,19 @@ or enable web connections for news in Octave&apos;s network settings dialog.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+Злучэнне з Сецівам для адлюстравання апошніх навінаў супольнасці Octave было адключана.
+&lt;/p&gt;
+&lt;p&gt;
+Каб атрымаць апошнія навіны, наведайце
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;,
+калі маеце злучэнне з Сецівам (спасылка адкрыецца ў знешнім браўзэры),
+або ўключыце сеціўнае злучэнне для навін у акенцы сеткавых настаўленняў Octave.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Распрацоўнікі Octave,</translation>
     </message>
 </context>
 <context>
@@ -2994,41 +3045,41 @@ or enable web connections for news in Octave&apos;s network settings dialog.
         <location line="+6"/>
         <location line="+7"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Так</translation>
     </message>
     <message>
         <location line="-13"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Не</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Файл
+        <translation>Файл
 %1
 не існуе. Жадаеце стварыць яго?</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Рэдактар Octave</translation>
+        <translation>Рэдактар Octave</translation>
     </message>
     <message>
         <location line="+211"/>
         <source>The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation>Файл %1 не існуе ў бягучым шляху.  Для адладкі функцыі, якую вы рэдагуеце, трэба змяніць каталог на %2 або дадаць яго да бягучага шляху.</translation>
+        <translation>Файл %1 не існуе ў дзейным шляху.  Для адладкі функцыі, якую вы рэдагуеце, трэба змяніць каталог на %2 або дадаць яго да дзейнага шляху.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.</source>
-        <translation>Файлу %1 замінае файл з такой самай назвай у бягучым шляху.  Для адладкі функцыі, якую вы рэдагуеце, змяніце каталог на %2.</translation>
+        <translation>Файлу %1 замінае файл з такой самай назвай у дзейным шляху.  Для адладкі функцыі, якую вы рэдагуеце, змяніце каталог на %2.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translation>Змяніць каталог або Дадаць каталог да бягучага шляху</translation>
+        <translation>Змяніць каталог або Дадаць каталог да дзейнага шляху</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3038,7 +3089,7 @@ does not exist. Do you want to create it?</source>
     <message>
         <location line="+1"/>
         <source>Add Directory to Load Path</source>
-        <translation>Дадаць каталог да бягучага шляху</translation>
+        <translation>Дадаць каталог да дзейнага шляху</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3057,12 +3108,18 @@ Make sure you have read and write permissions to
 %2
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл настаўленняў
+%1
+не існуе і не можа быць створаны.
+Упэўніцеся, што маеце дазвол чытаць і пісаць у
+%2
+
+GUI Octave зараз мусіць закрыцца.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Octave Critical Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Крытычная памылка Octave</translation>
     </message>
 </context>
 <context>
@@ -3183,7 +3240,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+27"/>
         <source>Highlight current line</source>
-        <translation>Фарбаваць бягучы радок</translation>
+        <translation>Фарбаваць дзейны радок</translation>
     </message>
     <message>
         <location line="+262"/>
@@ -3203,27 +3260,27 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+55"/>
         <source>Show whitespace</source>
-        <translation type="unfinished"></translation>
+        <translation>Паказваць прагальныя знакі</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Do not show whitespace used for indentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Не паказваць прагальныя знакі ў водступах</translation>
     </message>
     <message>
         <location line="+290"/>
         <source># of characters typed before completion list displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Пасля ўводу колькі знакаў прапаноўваць дапаўненні</translation>
     </message>
     <message>
         <location line="+194"/>
         <source>Create nonexistent files without prompting</source>
-        <translation type="unfinished"></translation>
+        <translation>Ствараць няісныя файлы без пытанняў</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation type="unfinished"></translation>
+        <translation>Загад (%f=файл, %l-радок):</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3233,7 +3290,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Пазначце шрыфт, ягоны памер (як розніцу ад стандартнага памеру), стыль шрыфту (тоўсты, курсіўны, падкрэслены), колер тэксту і колер фону (для фону ружовы (255,0,255) азначае стандартны колер фону)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3253,7 +3310,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+7"/>
         <source>Use foreground color</source>
-        <translation type="unfinished"></translation>
+        <translation>Выкар. колер пярэдняга плану</translation>
     </message>
     <message>
         <location line="+94"/>
@@ -3263,7 +3320,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+35"/>
         <source>File Browser</source>
-        <translation>Файлавы аглядальнік</translation>
+        <translation>Файлавы агляднік</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3308,7 +3365,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+8"/>
         <source>Allow Octave to connect to the Octave web site to display current news and information</source>
-        <translation type="unfinished"></translation>
+        <translation>Дазволіць Octave злучацца з вэб-сайтам Octave для адлюстравання навінаў і свежай інфармацыі</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -3338,7 +3395,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+991"/>
         <source>Synchronize Octave working directory with file browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Сінхранізаваць дзейны каталог Octave з файлавым агляднікам</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -3353,7 +3410,7 @@ Octave GUI must be closed now.</source>
     <message>
         <location line="+44"/>
         <source>Proxy type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тып проксі:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3423,22 +3480,22 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+44"/>
         <source>Community News</source>
-        <translation type="unfinished">Навіны супольнасці</translation>
+        <translation>Навіны супольнасці</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Раней</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Далей</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Скасаваць</translation>
+        <translation>Скасаваць</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3448,7 +3505,12 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu in the GUI, or by visiting
 &lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Падчас свайго запуску Octave GUI будзе правяраць вэб-сайт Octave на апошнія навіны і інфармацыю пра супольнасць Octave.
+Праверка будзе адбывацца раз на дзень, а навіны паказвацца, толькі калі ёсць нешта новае ў параўнанні з апошнім праглядам.&lt;/p&gt;
+&lt;p&gt;Таксама можна паглядзець навіны, выбраўшы пункт &quot;Навіны супольнасці&quot; у меню &quot;Даведка&quot; GUI, альбо наведаўшы
+&lt;a href=&quot;http://octave.org/community-news.html&quot;&gt;http://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -3459,7 +3521,13 @@ a:link { text-decoration: underline; color: #0000ff; }
 &lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;style&gt;
+a:link { text-decoration: underline; color: #0000ff; }
+&lt;/style&gt;
+&lt;head/&gt;&lt;body&gt;
+&lt;p&gt;Дазволіць Octave падчас запуску злучацца з вэб-сайтам Octave для адлюстравання навін і свежай інфармацыі пра супольнасць Octave.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3496,7 +3564,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/workspace-model.cc" line="-42"/>
         <source>Name</source>
-        <translation>Ідэнтыфікатар</translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3527,7 +3595,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+37"/>
         <location line="+2"/>
         <source>complex</source>
-        <translation type="unfinished"></translation>
+        <translation>камплексны</translation>
     </message>
 </context>
 <context>
@@ -3540,7 +3608,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>View the variables in the active workspace.</source>
-        <translation>Прагляд зменных бягучай прасторы.</translation>
+        <translation>Прагляд зменных дзейнай прасторы.</translation>
     </message>
     <message>
         <location line="+76"/>

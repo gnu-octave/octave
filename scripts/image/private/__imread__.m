@@ -90,114 +90,62 @@ function varargout = __imread__ (filename, varargin)
     endif
   endif
 
-  try
-    ## Use information from the first image to be read to set defaults.
-    if (ischar (options.index) && strcmpi (options.index, "all"))
-      info = __magick_ping__ (fn, 1);
-    else
-      info = __magick_ping__ (fn, options.index(1));
-    endif
+  ## Use information from the first image to be read to set defaults.
+  if (ischar (options.index) && strcmpi (options.index, "all"))
+    info = __magick_ping__ (fn, 1);
+  else
+    info = __magick_ping__ (fn, options.index(1));
+  endif
 
-    ## Set default for options.
-    options.region = {1:1:info.rows 1:1:info.columns};
+  ## Set default for options.
+  options.region = {1:1:info.rows 1:1:info.columns};
 
-    for idx = offset:2:(numel (varargin) - offset + 1)
-      switch (tolower (varargin{idx}))
+  for idx = offset:2:(numel (varargin) - offset + 1)
+    switch (tolower (varargin{idx}))
 
-        case {"frames", "index"}
-          ## Do nothing. This options were already processed before the loop.
+      case {"frames", "index"}
+        ## Do nothing. This options were already processed before the loop.
 
-        case "pixelregion",
-          options.region = varargin{idx+1};
-          if (! iscell (options.region) || numel (options.region) != 2)
-            error ("imread: value for %s must be a 2 element cell array",
+      case "pixelregion",
+        options.region = varargin{idx+1};
+        if (! iscell (options.region) || numel (options.region) != 2)
+          error ("imread: value for %s must be a 2 element cell array",
+                 varargin{idx});
+        endif
+        for reg_idx = 1:2
+          if (numel (options.region{reg_idx}) == 3)
+            ## do nothing
+          elseif (numel (options.region{reg_idx}) == 2)
+            options.region{reg_idx}(3) = options.region{reg_idx}(2);
+            options.region{reg_idx}(2) = 1;
+          else
+            error ("imread: range for %s must be a 2 or 3 element vector",
                    varargin{idx});
           endif
-          for reg_idx = 1:2
-            if (numel (options.region{reg_idx}) == 3)
-              ## do nothing
-            elseif (numel (options.region{reg_idx}) == 2)
-              options.region{reg_idx}(3) = options.region{reg_idx}(2);
-              options.region{reg_idx}(2) = 1;
-            else
-              error ("imread: range for %s must be a 2 or 3 element vector",
-                     varargin{idx});
-            endif
-            options.region{reg_idx} = floor (options.region{reg_idx}(1)): ...
-                                      floor (options.region{reg_idx}(2)): ...
-                                      floor (options.region{reg_idx}(3));
-          endfor
-          if (options.region{1}(end) > info.rows)
-            error ("imread: end ROWS for PixelRegions option is larger than image height");
-          elseif (options.region{2}(end) > info.columns)
-            error ("imread: end COLS for PixelRegions option is larger than image width");
-          endif
+          options.region{reg_idx} = floor (options.region{reg_idx}(1)): ...
+                                    floor (options.region{reg_idx}(2)): ...
+                                    floor (options.region{reg_idx}(3));
+        endfor
+        if (options.region{1}(end) > info.rows)
+          error ("imread: end ROWS for PixelRegions option is larger than image height");
+        elseif (options.region{2}(end) > info.columns)
+          error ("imread: end COLS for PixelRegions option is larger than image width");
+        endif
 
-        case "info",
-          ## We ignore this option. This parameter exists in Matlab to
-          ## speed up the reading of multipage TIFF by passing a structure
-          ## that contains information about the start on the file of each
-          ## page.  We can't control it through GraphicsMagic but at least
-          ## we allow to load multiple pages with one command.
+      case "info",
+        ## We ignore this option. This parameter exists in Matlab to
+        ## speed up the reading of multipage TIFF by passing a structure
+        ## that contains information about the start on the file of each
+        ## page.  We can't control it through GraphicsMagic but at least
+        ## we allow to load multiple pages with one command.
 
-        otherwise
-          error ("imread: invalid PARAMETER `%s'", varargin{idx});
+      otherwise
+        error ("imread: invalid PARAMETER `%s'", varargin{idx});
 
-      endswitch
-    endfor
+    endswitch
+  endfor
 
-    [varargout{1:nargout}] = __magick_read__ (fn, options);
-
-  catch
-    ## If we can't read it with Magick, maybe the image is in Octave's
-    ## native image format.  This is from back before Octave had 'imread'
-    ## and 'imwrite'. Then we had the functions 'loadimage' and 'saveimage'.
-    ##
-    ## This "image format" seems to be any file that can be read with
-    ## load() and contains 2 variables.  The variable named "map" is a
-    ## colormap and must exist whether the image is indexed or not. The
-    ## other variable must be named "img" or "X" for a "normal" or
-    ## indexed image.
-    ##
-    ## FIXME: this has been deprecated for the next major release (3.8 or 4.0).
-    ##        If someone wants to revive this as yet another image format, a
-    ##        separate Octave package can be written for it, that register the
-    ##        format through imformats.
-
-    magick_error = lasterr ();
-
-    img_field = false;
-    x_field   = false;
-    map_field = false;
-
-    try
-      vars = load (fn);
-      if (isstruct (vars))
-        img_field = isfield (vars, "img");
-        x_field   = isfield (vars, "X");
-        map_field = isfield (vars, "map");
-      endif
-    catch
-      error ("imread: invalid image file: %s", magick_error);
-    end_try_catch
-
-    if (map_field && (img_field || x_field))
-      varargout{2} = vars.map;
-      if (img_field)
-        varargout{1} = vars.img;
-      else
-        varargout{1} = vars.X;
-      endif
-      persistent warned = false;
-      if (! warned)
-        warning ("Octave's native image format has been deprecated.");
-        warned = true;
-      endif
-    else
-      error ("imread: invalid Octave image file format");
-    endif
-
-  end_try_catch
+  [varargout{1:nargout}] = __magick_read__ (fn, options);
 
 endfunction
 

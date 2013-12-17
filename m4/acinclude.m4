@@ -454,6 +454,37 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QTabWidget::setMovable() function exists.
+dnl This function was added in Qt 4.5.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
+  AC_CACHE_CHECK([whether Qt has the QTabWidget::setMovable() function],
+    [octave_cv_func_qtabwidget_setmovable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QTabWidget>
+        class tab_widget : public QTabWidget
+        {
+        public:
+          tab_widget (QWidget *parent = 0) : QTabWidget (parent) { this->setMovable (true); }
+          ~tab_widget () {}
+        };
+        ]], [[
+        tab_widget tw;
+        ]])],
+      octave_cv_func_qtabwidget_setmovable=yes,
+      octave_cv_func_qtabwidget_setmovable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qtabwidget_setmovable = yes; then
+    AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
+      [Define to 1 if Qt has the QTabWidget::setMovable() function.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [

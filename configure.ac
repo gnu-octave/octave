@@ -1,19 +1,19 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl Copyright (C) 1993-2013 John W. Eaton
-### 
+###
 ### This file is part of Octave.
-### 
+###
 ### Octave is free software; you can redistribute it and/or modify it
 ### under the terms of the GNU General Public License as published by the
 ### Free Software Foundation; either version 3 of the License, or (at
 ### your option) any later version.
-### 
+###
 ### Octave is distributed in the hope that it will be useful, but WITHOUT
 ### ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ### FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ### for more details.
-### 
+###
 ### You should have received a copy of the GNU General Public License
 ### along with Octave; see the file COPYING.  If not, see
 ### <http://www.gnu.org/licenses/>.
@@ -50,7 +50,7 @@ AM_SILENT_RULES
 OCTAVE_CANONICAL_HOST
 
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define to 1 if this is Octave.])
-  
+
 AC_USE_SYSTEM_EXTENSIONS
 
 ### Make configure args available for other uses.
@@ -458,7 +458,7 @@ AC_ARG_ENABLE([float-truncate],
      ;;
    esac])
 
-AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate], 
+AC_DEFINE_UNQUOTED(FLOAT_TRUNCATE, [$ac_float_truncate],
   [Define to volatile if you need to truncate intermediate FP results.])
 
 ### Determine extra CFLAGS that may be necessary for Octave.
@@ -998,7 +998,7 @@ PKG_CHECK_EXISTS([$magick++], [
   ## Make sure we only get -I, -L, and -l flags.  Some Graphics/ImageMagick++
   ## packages add extra flags that are useful when building
   ## Graphics/ImageMagick++ extentions.  These extra flags break the
-  ## Octave build. 
+  ## Octave build.
   MAGICK_CPPFLAGS=`$PKG_CONFIG --cflags-only-I $magick++`
   MAGICK_LDFLAGS=`$PKG_CONFIG --libs-only-L $magick++`
   MAGICK_LIBS=`$PKG_CONFIG --libs-only-l $magick++`
@@ -1059,7 +1059,7 @@ if test "$have_x" = yes; then
   if test -z "$x_libraries"; then
     AC_CHECK_LIB([X11], XrmInitialize, [X11_LIBS="-lX11"], [X11_LIBS=])
   elif test $x_libraries != "NONE"; then
-    AC_CHECK_LIB([X11], XrmInitialize, 
+    AC_CHECK_LIB([X11], XrmInitialize,
       [X11_LIBS="-L$x_libraries -lX11"], [X11_LIBS=], "-L$x_libraries")
   fi
   AC_SUBST(X11_LIBS)
@@ -1233,7 +1233,7 @@ if test -n "$OPENGL_LIBS"; then
       warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
     else
       AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
-    fi 
+    fi
 
     if test -z "$warn_fltk_opengl"; then
       GRAPHICS_CFLAGS="$FLTK_CFLAGS"
@@ -1389,7 +1389,7 @@ fi
 
 ### Check for the qrupdate library
 
-## No need to adjust FFLAGS because only link is attempted. 
+## No need to adjust FFLAGS because only link is attempted.
 ## Must supply proper LIBS, however.
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
@@ -1524,7 +1524,7 @@ if test -n "$UMFPACK_LIBS"; then
                    [suitesparseconfig SuiteSparse],
                    [], [], [$xtra_libs])
     case $ac_cv_search_SuiteSparse_time in
-      -l*)  
+      -l*)
         UMFPACK_LIBS="$UMFPACK_LIBS $ac_cv_search_SuiteSparse_time"
       ;;
       no)
@@ -1642,13 +1642,13 @@ case $canonical_host_type in
         FPICFLAG=
       ;;
     esac
-    SHLEXT=dylib 
+    SHLEXT=dylib
     SHLLIB='$(SHLEXT)'
     SHLEXT_VER='$(version).$(SHLEXT)'
     SHLLIB_VER='$(version).$(SHLLIB)'
     NO_OCT_FILE_STRIP=true
     SONAME_FLAGS='-install_name $(octlibdir)/$@'
-    library_path_var=DYLD_LIBRARY_PATH  
+    library_path_var=DYLD_LIBRARY_PATH
   ;;
   *-*-cygwin*)
     CPICFLAG=
@@ -1659,7 +1659,7 @@ case $canonical_host_type in
     SHLBINPRE=cyg
     SHLEXT=dll
     SHLLIB=dll.a
-    SHLBIN=dll    
+    SHLBIN=dll
     DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
     SONAME_FLAGS='-Wl,--out-implib=$(patsubst $(SHLPRE)%,$(LIBPRE)%,$@).a'
@@ -2140,7 +2140,7 @@ OCTAVE_FAST_INT_OPS
 AC_FUNC_ALLOCA
 
 ## Does the C compiler support Automake subdir-objects option?
-AM_PROG_CC_C_O 
+AM_PROG_CC_C_O
 
 ### gnulib initialization: part 2
 ### After all include and path modifications have taken place
@@ -2249,7 +2249,7 @@ if test $octave_cv_header_math_defines = no; then
       [Define to 1 if _USE_MATH_DEFINES is required to get math constants like M_LN2.])
     CPPFLAGS="$CPPFLAGS -D_USE_MATH_DEFINES"
   fi
-fi 
+fi
 
 if test $octave_cv_header_math_defines = yes; then
   AC_DEFINE(HAVE_MATH_DEFINES, 1,
@@ -2301,7 +2301,7 @@ AC_CHECK_FUNCS([getpwnam], [], [AC_CHECK_LIB([sun], [getpwnam])])
 
 AC_FUNC_CLOSEDIR_VOID
 
-## Check return type of matherr() 
+## Check return type of matherr()
 AC_CACHE_CHECK([for struct exception in math.h],
   [octave_cv_func_matherr_type],
   [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -2318,7 +2318,7 @@ if test $octave_cv_func_matherr_type = yes; then
   AC_DEFINE(EXCEPTION_IN_MATH, 1,
     [Define to 1 if math.h declares struct exception for matherr().])
 fi
- 
+
 ## Signal stuff.
 
 AC_CHECK_DECLS([sys_siglist], [], [],
@@ -2348,7 +2348,7 @@ fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
 ### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
-### done feature testing. 
+### done feature testing.
 
 GCC_EXTRA_FLAGS="-Wall -W -Wshadow -Wformat -Wpointer-arith -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wcast-align -Wcast-qual"
 
@@ -2570,7 +2570,7 @@ do
   fi
 
   if test -z "$JAVA_LDPATH"; then
-    ## Nothing found.  Try Java again using bootpath argument. 
+    ## Nothing found.  Try Java again using bootpath argument.
     JAVA_TMP_LDPATH=`$JAVA -classpath ${srcdir}/build-aux OctJavaQry JAVA_BOOTPATH`
     JAVA_TMP_LDPATH="${JAVA_TMP_LDPATH} ${JAVA_TMP_LDPATH}/client ${JAVA_TMP_LDPATH}/server"
     for dir in $JAVA_TMP_LDPATH; do
@@ -2603,7 +2603,7 @@ do
       :  # libjvm found
     else
       JAVA_LDPATH=""
-    fi 
+    fi
   fi
 
   if test -z "$JAVA_LDPATH"; then
@@ -2643,7 +2643,7 @@ do
   ## Verify jni.h include file exists.
   JNI_PATH=`echo $JAVA_CPPFLAGS | $SED -e 's/-I//g'`
   have_jni=no
-  for dir in $JNI_PATH; do 
+  for dir in $JNI_PATH; do
     if test -f "${dir}/jni.h"; then have_jni=yes; break; fi
   done
   if test $have_jni = yes; then
@@ -2712,7 +2712,7 @@ if test $build_gui = yes; then
     AC_CHECK_TOOLS(RCC, [rcc-qt5 rcc-qt4 rcc])
     AC_CHECK_TOOLS(LRELEASE, [lrelease-qt5 lrelease-qt4 lrelease])
     if test -n "$MOC" && test -n "$UIC" && test -n "$RCC" && test -n "$LRELEASE"; then
-      AC_DEFINE(HAVE_QT, 1, 
+      AC_DEFINE(HAVE_QT, 1,
         [Define to 1 if Qt is available (libraries, developer header files, utility programs (moc, uic, rcc, and lrelease))])
     else
       warn_gui="Qt utility programs moc, uic, rcc, and lrelease not found -- disabling GUI"
@@ -2731,10 +2731,11 @@ if test $build_gui = yes; then
   if test $build_gui = yes; then
     OCTAVE_CHECK_QFONT_MONOSPACE
     OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
+    OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE
   fi
 
   if test $build_gui = yes; then
-    ## Check for Qscintilla library which is used in the GUI editor. 
+    ## Check for Qscintilla library which is used in the GUI editor.
     AC_CACHE_CHECK([whether Qscintilla library is installed],
       [octave_cv_lib_qscintilla],
       [save_CPPFLAGS="$CPPFLAGS"
@@ -2764,7 +2765,7 @@ if test $build_gui = yes; then
       ## other regular Qt libraries.
       QT_LIBS="$QT_LIBS -lqscintilla2"
       OCTAVE_CHECK_VERSION_2_6_0
-      AC_DEFINE(HAVE_QSCINTILLA, 1, 
+      AC_DEFINE(HAVE_QSCINTILLA, 1,
         [Define to 1 if the QScintilla library and header files are available])
 
       save_CPPFLAGS="$CPPFLAGS"
@@ -2831,7 +2832,7 @@ AC_SUBST(ac_config_headers)
 
 AC_CONFIG_FILES([
   oct-conf-post.h:oct-conf-post.in.h
-  Makefile 
+  Makefile
   doc/Makefile
   doc/doxyhtml/Makefile
   doc/doxyhtml/Doxyfile

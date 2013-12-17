@@ -2571,9 +2571,8 @@ Array<T>::diag (octave_idx_type k) const
                     d.xelem (i) = elem (i, i);
                 }
             }
-          else
-            (*current_liboctave_error_handler)
-              ("diag: requested diagonal out of range");
+          else  // Matlab returns [] 0x1 for out-of-range diagonal
+            d.resize (dim_vector (0, 1));
         }
       else
         {

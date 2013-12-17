@@ -2490,9 +2490,8 @@ Sparse<T>::diag (octave_idx_type k) const
                 }
             }
         }
-      else
-        (*current_liboctave_error_handler)
-          ("diag: requested diagonal out of range");
+      else  // Matlab returns [] 0x1 for out-of-range diagonal
+        d = Sparse<T> (0, 1, 0);
     }
   else if (nnr != 0 && nnc != 0)
     {

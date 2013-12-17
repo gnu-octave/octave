@@ -1354,6 +1354,11 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
 %!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
 
+## Test out-of-range diagonals
+%!assert (diag (ones (3,3), 4), zeros (0, 1))
+%!assert (diag (cell (3,3), 4), cell (0, 1))
+%!assert (diag (sparse (ones (3,3)), 4), sparse (zeros (0, 1)))
+
 %% Test input validation
 %!error <Invalid call to diag> diag ()
 %!error <Invalid call to diag> diag (1,2,3,4)

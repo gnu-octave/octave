@@ -153,10 +153,6 @@ endfunction
 ## can be defined in two places, but only in one place can it also be the
 ## string "all"
 function bool = is_valid_index_option (arg)
-  ## is the index option
-  bool = false;
-  if (isvector (arg) && isnumeric (arg) && isreal (arg))
-    bool = true;
-  endif
+  bool = isvector (arg) && isnumeric (arg) && isreal (arg);
 endfunction
 

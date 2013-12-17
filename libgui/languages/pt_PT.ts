@@ -1956,23 +1956,23 @@ Clique &apos;Próximo&apos; para criar um ficheiro de configuração e iniciar o
     <message>
         <location line="+37"/>
         <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Esta é uma versão experimental da interface gráfica para Octave.&lt;/strong&gt;  Octave é um projecto activo em constante desenvolvimento e a interface gráfica será a interface padrão para a versão 4.0. Para mais informações, ver as &quot;Notas de versão&quot; no menu &quot;Ajuda&quot;, ou visitar &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>More Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Mais informações</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Esconder</translation>
     </message>
     <message>
         <location line="+47"/>
         <location line="+66"/>
         <source>Experimental GUI Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informação sobre a interface gráfica experimental</translation>
     </message>
     <message>
         <location line="-37"/>

@@ -1226,18 +1226,21 @@ set (gca (), "xlim", [-10, 10]);
 
 @noindent
 sets the range of the x-axis for the current axes object in the current
-figure to @samp{[-10, 10]}.  Additionally, calling set with a graphics
-object index as the only argument returns a structure containing the
-default values for all the properties for the given object type.  For
-example,
+figure to @samp{[-10, 10]}.
+
+Default property values can also be queried if the @code{set} function is
+called without a value argument.  When only one argument is given (a graphic
+handle) then a structure with defaults for all properties of the given object
+type is returned.  For example,
 
 @example
 set (gca ())
 @end example
 
 @noindent
-returns a structure containing the default property values for axes
-objects.
+returns a structure containing the default property values for axes objects.
+If @code{set} is called with two arguments (a graphic handle and a property
+name) then only the defaults for the requested property are returned.
 
 @DOCSTRING(get)
 

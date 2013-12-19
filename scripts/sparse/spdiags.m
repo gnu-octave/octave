@@ -17,24 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{b}, @var{c}] =} spdiags (@var{A})
-## @deftypefnx {Function File} {@var{b} =} spdiags (@var{A}, @var{c})
-## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{A})
-## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})
+## @deftypefn  {Function File} {@var{B} =} spdiags (@var{A})
+## @deftypefnx {Function File} {[@var{B}, @var{d}] =} spdiags (@var{A})
+## @deftypefnx {Function File} {@var{B} =} spdiags (@var{A}, @var{d})
+## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
+## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
 ## A generalization of the function @code{diag}.  Called with a single
-## input argument, the non-zero diagonals @var{c} of @var{A} are extracted.
+## input argument, the non-zero diagonals @var{d} of @var{A} are extracted.
 ## With two arguments the diagonals to extract are given by the vector
-## @var{c}.
+## @var{d}.
 ##
 ## The other two forms of @code{spdiags} modify the input matrix by
 ## replacing the diagonals.  They use the columns of @var{v} to replace
-## the columns represented by the vector @var{c}.  If the sparse matrix
+## the diagonals represented by the vector @var{d}.  If the sparse matrix
 ## @var{A} is defined then the diagonals of this matrix are replaced.
 ## Otherwise a matrix of @var{m} by @var{n} is created with the
-## diagonals given by @var{v}.
+## diagonals given by the columns of @var{v}.
 ##
-## Negative values of @var{c} represent diagonals below the main
-## diagonal, and positive values of @var{c} diagonals above the main
+## Negative values of @var{d} represent diagonals below the main
+## diagonal, and positive values of @var{d} diagonals above the main
 ## diagonal.
 ##
 ## For example:
@@ -52,43 +53,86 @@
 ##
 ## @end deftypefn
 
-function [A, c] = spdiags (v, c, m, n)
+function [B, d] = spdiags (v, d, m, n)
+
+  if (nargin < 1 || nargin > 4)
+    print_usage ();
+  endif
 
   if (nargin == 1 || nargin == 2)
-    ## extract nonzero diagonals of v into A,c
+    ## extract nonzero diagonals of A into B,d
     [nr, nc] = size (v);
-    [i, j, v] = find (v);
+    [i, j] = find (v);
 
     if (nargin == 1)
-      ## c contains the active diagonals
-      c = unique (j-i);
+      ## d contains the active diagonals
+      d = unique (j-i);
     endif
-    ## FIXME: we can do this without a loop if we are clever
-    offset = max (min (c, nc-nr), 0);
-    A = zeros (min (nr, nc), length (c));
-    for k = 1:length (c)
-      idx = find (j-i == c(k));
-      A(j(idx)-offset(k),k) = v(idx);
+
+    ## FIXME: Maybe this could be done faster using [i,j,v] = find (v)
+    ##        and then massaging the indices i, j.  However, some
+    ##        benchmarking has shown that diag() written in C++ makes
+    ##        the following code faster even with the for loop.
+    Brows = min (nr, nc);
+    B = zeros (Brows, length (d));
+    for k = 1:length (d)
+      dn = d(k);
+      if (dn <= -nr || dn > nc)
+        continue;
+      endif
+      dv = diag (v, dn);
+      len = rows (dv);
+      if (dn < 0)
+        offset = Brows - len + 1;
+        B(offset:Brows, k) = dv;
+      else
+        B(1:len, k) = dv;
+      endif
     endfor
+
   elseif (nargin == 3)
-    ## Replace specific diagonals c of m with v,c
+    ## Replace specific diagonals d of m with v,d
     [nr, nc] = size (m);
-    B = spdiags (m, c);
-    A = m - spdiags (B, c, nr, nc) + spdiags (v, c, nr, nc);
+    A = spdiags (m, d);
+    B = m - spdiags (A, d, nr, nc) + spdiags (v, d, nr, nc);
+
   else
-    ## Create new matrix of size mxn using v,c
+    ## Create new matrix of size mxn using v,d
     [j, i, v] = find (v);
-    offset = max (min (c(:), n-m), 0);
+    offset = max (min (d(:), n-m), 0);
     j = j(:) + offset(i(:));
-    i = j - c(:)(i(:));
+    i = j - d(:)(i(:));
     idx = i > 0 & i <= m & j > 0 & j <= n;
-    A = sparse (i(idx), j(idx), v(idx), m, n);
+    B = sparse (i(idx), j(idx), v(idx), m, n);
+
   endif
 
 endfunction
 
 
+%!test
+%! [B,d] = spdiags (magic (3));
+%! assert (d, [-2 -1 0 1 2]');
+%! assert (B, [0 0 8 1 6
+%!             0 3 5 7 0
+%!             4 9 2 0 0]);
+
+%! B = spdiags (magic (3), [-2 1]);
+%! assert (B, [0 1; 0 7; 4 0]);
+
+%!test
+%! ## Test zero filling for supra- and super-diagonals
+%! A(1,3) = 13;
+%! A(3,1) = 31;
+%! [B, d] = spdiags (A);
+%! assert (d, [-2 2]');
+%! assert (B, [0 13; 0 0; 31 0]);
+
 %!assert (spdiags (zeros (1,0),1,1,1), sparse (0))
 %!assert (spdiags (zeros (0,1),1,1,1), sparse (0))
-%!assert (spdiags ([0.5 -1 0.5], 0:2, 1, 1), sparse(0.5))
+%!assert (spdiags ([0.5 -1 0.5], 0:2, 1, 1), sparse (0.5))
+
+%% Test input validation
+%!error spdiags ()
+%!error spdiags (1,2,3,4,5)
 

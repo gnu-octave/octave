@@ -1,4 +1,5 @@
 ## Copyright (C) 2005-2013 John W. Eaton
+## Copyright (C) 2013 Arun Giridhar
 ##
 ## This file is part of Octave.
 ##
@@ -128,8 +129,17 @@
 ##
 ## @table @asis
 ## @item 101
-## The algorithm terminated normally.
-## Either all constraints meet the requested tolerance, or the stepsize,
+## The algorithm terminated normally. 
+## All constraints meet the specified tolerance.
+##
+## @item 102
+## The BFGS update failed.
+##
+## @item 103
+## The maximum number of iterations was reached.
+##
+## @item 104
+## The stepsize has become too small, i.e., 
 ## @tex
 ## $\Delta x,$
 ## @end tex
@@ -137,12 +147,6 @@
 ## delta @var{x},
 ## @end ifnottex
 ## is less than @code{@var{tol} * norm (x)}.
-##
-## @item 102
-## The BFGS update failed.
-##
-## @item 103
-## The maximum number of iterations was reached.
 ## @end table
 ##
 ## An example of calling @code{sqp}:
@@ -394,6 +398,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
     t3 = all (lambda_i >= 0);
     t4 = norm (lambda .* con);
 
+    ## Normal convergence.  All constraints are satisfied
+    ## and objective has converged.
     if (t2 && t3 && max ([t0; t1; t4]) < tol)
       info = 101;
       break;
@@ -408,8 +414,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     info = INFO.info;
 
-    ## FIXME -- check QP solution and attempt to recover if it has
-    ## failed.  For now, just warn about possible problems.
+    ## FIXME: check QP solution and attempt to recover if it has failed.
+    ##        For now, just warn about possible problems.
     
     id = "Octave:SQP-QP-subproblem";
     switch (info)
@@ -453,8 +459,9 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     delx = x_new - x;
 
+    ## Check if step size has become too small (indicates lack of progress).
     if (norm (delx) < tol * norm (x))
-      info = 101;
+      info = 104;
       break;
     endif
 
@@ -483,6 +490,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
       d2 = delxt*r;
 
+      ## Check if the next BFGS update will work properly.
+      ## If d1 or d2 vanish, the BFGS update will fail.
       if (d1 == 0 || d2 == 0)
         info = 102;
         break;
@@ -510,6 +519,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
   endwhile
 
+  ## Check if we've spent too many iterations without converging.
   if (iter >= iter_max)
     info = 103;
   endif

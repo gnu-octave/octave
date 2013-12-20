@@ -241,17 +241,27 @@ main_window::handle_clear_history_request (void)
   octave_link::post_event (this, &main_window::clear_history_callback);
 }
 
+bool
+main_window::focus_console_after_command ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+  return settings->value ("terminal/focus_after_command",false).toBool ();
+}
+
 void
 main_window::execute_command_in_terminal (const QString& command)
 {
   queue_command (command);
-  focus_command_window ();
+  if (focus_console_after_command ())
+    focus_command_window ();
 }
 
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
   octave_link::post_event (this, &main_window::run_file_callback, info);
+  if (focus_console_after_command ())
+    focus_command_window ();
 }
 
 void

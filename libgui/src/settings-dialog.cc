@@ -168,6 +168,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("terminal/cursorBlinking",true).toBool ());
   ui->terminal_cursorUseForegroundColor->setChecked (
     settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
+  ui->terminal_focus_command->setChecked (
+    settings->value ("terminal/focus_after_command",false).toBool ());
 
   QString cursorType
     = settings->value ("terminal/cursorType", "ibeam").toString ();
@@ -537,6 +539,8 @@ settings_dialog::write_changed_settings ()
                       ui->terminal_cursorBlinking->isChecked ());
   settings->setValue ("terminal/cursorUseForegroundColor",
                       ui->terminal_cursorUseForegroundColor->isChecked ());
+  settings->setValue ("terminal/focus_after_command",
+                      ui->terminal_focus_command->isChecked ());
 
   // the cursor
   QString cursorType;

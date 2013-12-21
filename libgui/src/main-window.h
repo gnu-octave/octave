@@ -250,6 +250,7 @@ private:
 
   void execute_command_callback ();
   void run_file_callback (const QFileInfo& info);
+  bool focus_console_after_command ();
 
   void new_figure_callback (void);
 

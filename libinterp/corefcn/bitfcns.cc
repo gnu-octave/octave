@@ -723,7 +723,7 @@ unsigned 32-bit integer.\n\
 unsigned 64-bit integer.\n\
 @end table\n\
 \n\
-The default for @var{type} is @code{uint32}.\n\
+The default for @var{type} is @code{int32}.\n\
 @seealso{intmin, flintmax, bitmax}\n\
 @end deftypefn")
 {
@@ -793,7 +793,7 @@ unsigned 32-bit integer.\n\
 unsigned 64-bit integer.\n\
 @end table\n\
 \n\
-The default for @var{type} is @code{uint32}.\n\
+The default for @var{type} is @code{int32}.\n\
 @seealso{intmax, flintmax, bitmax}\n\
 @end deftypefn")
 {

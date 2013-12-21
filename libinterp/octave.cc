@@ -491,6 +491,7 @@ maximum_braindamage (void)
   Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
   Fpage_screen_output (octave_value (false));
   Fprint_empty_dimensions (octave_value (false));
+  Fstruct_levels_to_print (octave_value (0));
 
   disable_warning ("Octave:abbreviated-property-match");
   disable_warning ("Octave:fopen-file-in-path");

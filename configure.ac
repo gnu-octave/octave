@@ -435,7 +435,7 @@ CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 ###        it without having to run an executable, but this sounds pretty dicey.
 AC_ARG_ENABLE([float-truncate],
   [AS_HELP_STRING([--enable-float-truncate],
-    [enables truncating intermediate FP results.])],
+    [truncate intermediate FP results])],
   [if test "$enableval" = yes; then
      ac_float_truncate=volatile
    else

@@ -42,6 +42,18 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifndef OCTAVE_VERSION
+#define OCTAVE_VERSION %OCTAVE_VERSION%
+#endif
+
+#ifndef OCTAVE_BINDIR
+#define OCTAVE_BINDIR %OCTAVE_BINDIR%
+#endif
+
+#ifndef OCTAVE_PREFIX
+#define OCTAVE_PREFIX %OCTAVE_PREFIX%
+#endif
+
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
 #define WIN32_LEAN_AND_MEAN
@@ -358,14 +370,6 @@ have_controlling_terminal (void)
 
 #endif
 
-#ifndef OCTAVE_BINDIR
-#define OCTAVE_BINDIR %OCTAVE_BINDIR%
-#endif
-
-#ifndef OCTAVE_PREFIX
-#define OCTAVE_PREFIX %OCTAVE_PREFIX%
-#endif
-
 // Find the directory where the octave binary is supposed to be
 // installed.
 
@@ -593,19 +597,14 @@ main (int argc, char **argv)
   std::string file = octave_bindir + dir_sep_char;
 
 #if defined (HAVE_OCTAVE_GUI)
-  file += "octave-gui";
+  file += "octave-gui-" OCTAVE_VERSION;
 #else
-  file += "octave-cli";
+  file += "octave-cli-" OCTAVE_VERSION;
 #endif
 
   char **new_argv = new char * [argc + 1];
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
   int k = 1;
-#else
-  int k = 0;
-  new_argv[k++] = strsave ("octave");
-#endif
 
   bool warn_display = true;
 
@@ -627,9 +626,9 @@ main (int argc, char **argv)
         {
           // If we see this option, then we can just exec octave; we
           // don't have to create a child process and wait for it to
-          // exit.  But do exec "octave", not "octave-cli", because even
-          // if the --no-gui option is given, we may be asked to do some
-          // plotting or ui* calls.
+          // exit.  But do exec "octave-gui", not "octave-cli", because
+          // even if the --no-gui option is given, we may be asked to do
+          // some plotting or ui* calls.
 
           start_gui = false;
           new_argv[k++] = argv[i];
@@ -655,7 +654,7 @@ main (int argc, char **argv)
           start_gui = false;
           gui_libs = false;
 
-          file = octave_bindir + dir_sep_char + "octave-cli";
+          file = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
 
           if (warn_display)
             {
@@ -664,6 +663,12 @@ main (int argc, char **argv)
             }
         }
     }
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  file += ".exe";
+#endif
+
+  new_argv[0] = strsave (file.c_str ());
 
 #if (defined (HAVE_OCTAVE_GUI) \
      && ! defined (__WIN32__) || defined (__CYGWIN__))
@@ -730,10 +735,6 @@ main (int argc, char **argv)
 
 #else
 
-#if defined (__WIN32__) && ! defined (__CYGWIN__)
-  file += ".exe";
-  new_argv[0] = strsave (file.c_str ());
-#endif
   retval = octave_exec (file, new_argv);
 
 #endif

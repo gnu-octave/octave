@@ -49,8 +49,11 @@ OCTAVE_BINARIES = \
   octave \
   octave-cli
 
+OCTAVE_VERSION_LINKS = octave-cli-$(version)
+
 if AMCOND_BUILD_GUI
   OCTAVE_BINARIES += octave-gui
+  OCTAVE_VERSION_LINKS += octave-gui-$(version)
 endif
 
 OCTAVE_CORE_LIBS = \
@@ -136,6 +139,8 @@ bin_SCRIPTS = \
   octave-config
 endif
 
+all-local: $(OCTAVE_VERSION_LINKS)
+
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.in.cc Makefile
 	@$(do_subst_default_vals)
@@ -189,5 +194,17 @@ endif
 
 .PHONY: make-version-links remove-version-links
 
+## We need these file names in the build tree because the wrapper
+## program (main.cc) will try to invoke the versioned binaries.
+
+octave-cli-$(version): octave-cli
+	rm -f $@
+	$(LN_S) $< $@
+
+octave-gui-$(version): octave-gui
+	rm -f $@
+	$(LN_S) $< $@
+
 CLEANFILES = \
-  $(bin_SCRIPTS)
+  $(bin_SCRIPTS) \
+  $(OCTAVE_VERSION_LINKS)

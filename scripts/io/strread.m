@@ -396,7 +396,7 @@ function varargout = strread (str, format = "%f", varargin)
   if (! isempty (white_spaces))
     ## Check if trailing "\n" might signal padding output arrays to equal size
     ## before it is trimmed away below
-    if ((str(end) == 10) && (nargout > 1))
+    if (str(end) == "\n" && nargout > 1)
       pad_out = 1;
     endif
     ## Condense all repeated whitespace into one single space
@@ -404,7 +404,7 @@ function varargout = strread (str, format = "%f", varargin)
     rxp_wsp = sprintf ("[%s]+", white_spaces);
     str = regexprep (str, rxp_wsp, ' ');
     ## Remove possible leading space at string
-    if (str(1) == 32)
+    if (str(1) == " ")
        str = str(2:end);
     endif
     ## Check for single delimiter followed/preceded by whitespace

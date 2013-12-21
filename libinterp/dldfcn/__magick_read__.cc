@@ -652,13 +652,6 @@ read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
     {
       warning ("Magick++ warning: %s", w.what ());
     }
-  catch (Magick::ErrorCoder& e)
-    {
-      // XXX: why is this error being caught as a warning? It has always
-      //      been like this (function was added the first time to the
-      //      Octave Forge image package with cset d756a7b6d533)
-      warning ("Magick++ coder error: %s", e.what ());
-    }
   catch (Magick::Exception& e)
     {
       error ("Magick++ exception: %s", e.what ());

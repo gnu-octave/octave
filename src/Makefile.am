@@ -49,11 +49,11 @@ OCTAVE_BINARIES = \
   octave \
   octave-cli
 
-OCTAVE_VERSION_LINKS = octave-cli-$(version)
+OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)
 
 if AMCOND_BUILD_GUI
   OCTAVE_BINARIES += octave-gui
-  OCTAVE_VERSION_LINKS += octave-gui-$(version)
+  OCTAVE_VERSION_LINKS += octave-gui-$(version)$(EXEEXT)
 endif
 
 OCTAVE_CORE_LIBS = \
@@ -197,11 +197,11 @@ endif
 ## We need these file names in the build tree because the wrapper
 ## program (main.cc) will try to invoke the versioned binaries.
 
-octave-cli-$(version): octave-cli
+octave-cli-$(version)$(EXEEXT): octave-cli$(EXEEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-octave-gui-$(version): octave-gui
+octave-gui-$(version)$(EXEEXT): octave-gui$(EXEEXT)
 	rm -f $@
 	$(LN_S) $< $@
 

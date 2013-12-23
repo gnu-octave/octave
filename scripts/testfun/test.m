@@ -265,6 +265,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     ## Assume the block will succeed.
     __success = 1;
     __msg = [];
+    __isxtest = 0;
 
 ### DEMO
 
@@ -492,8 +493,15 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
 ### TEST
 
-    elseif (strcmp (__type, "test") || strcmp (__type, "xtest"))
+    elseif (strcmp (__type, "test"))
       __istest = 1;
+      ## Code will be evaluated below.
+
+### XTEST
+
+    elseif (strcmp (__type, "xtest"))
+      __istest = 0;
+      __isxtest = 1;
       ## Code will be evaluated below.
 
 ### Comment block.
@@ -529,6 +537,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         if (strcmp (__type, "xtest"))
            __msg = sprintf ("%sknown failure\n%s", __signal_fail, lasterr ());
            __xfail++;
+           __success = 0;
         else
            __msg = sprintf ("%stest failed\n%s", __signal_fail, lasterr ());
            __success = 0;
@@ -558,7 +567,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         fflush (__fid);
       endif
     endif
-    if (__success == 0)
+    if (__success == 0 && !__isxtest)
       __all_success = 0;
       ## Stop after one error if not in batch mode.
       if (! __batch)
@@ -571,8 +580,8 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         return;
       endif
     endif
-    __tests += __istest;
-    __successes += __success * __istest;
+    __tests += (__istest || __isxtest);
+    __successes += __success * (__istest || __isxtest);
   endfor
   ## Clear any test functions created
   eval (__clear, "");

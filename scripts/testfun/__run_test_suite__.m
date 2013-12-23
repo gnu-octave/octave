@@ -66,7 +66,7 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
       dsk += sk;
     endfor
     puts ("\nSummary:\n\n");
-    nfail = dn - dp;
+    nfail = dn - dp - dxf;
     printf ("  PASS    %6d\n", dp);
     printf ("  FAIL    %6d\n", nfail);
     if (dxf > 0)
@@ -116,16 +116,22 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
 endfunction
 
 function print_test_file_name (nm)
-  filler = repmat (".", 1, 55-length (nm));
+  filler = repmat (".", 1, 52-length (nm));
   printf ("  %s %s", nm, filler);
 endfunction
 
-function print_pass_fail (n, p)
-  if (n > 0)
+function print_pass_fail (p, n, xf, sk)
+  if ((n + sk) > 0)
     printf (" PASS %4d/%-4d", p, n);
-    nfail = n - p;
+    nfail = n - p - xf;
     if (nfail > 0)
-      printf (" FAIL %d", nfail);
+      printf (" FAIL  %-4d", nfail);
+    endif    
+    if (sk > 0)
+      printf (" (SKIP  %-4d)", sk);
+    endif
+    if (xf > 0)
+      printf (" (XFAIL %-4d)", xf);
     endif
   endif
   puts ("\n");
@@ -190,7 +196,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
         if (has_tests (ffnm))
           print_test_file_name (nm);
           [p, n, xf, sk] = test (nm, "quiet", fid);
-          print_pass_fail (n, p);
+          print_pass_fail (p, n, xf, sk);
           files_with_tests(end+1) = ffnm;
         else
           files_with_no_tests(end+1) = ffnm;
@@ -241,7 +247,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         tmp = strrep (tmp, [topbuilddir, filesep], "");
         print_test_file_name (tmp);
         [p, n, xf, sk] = test (f, "quiet", fid);
-        print_pass_fail (n, p);
+        print_pass_fail (p, n, xf, sk);
         dp += p;
         dn += n;
         dxf += xf;

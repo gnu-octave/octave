@@ -46,6 +46,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_VERSION %OCTAVE_VERSION%
 #endif
 
+#ifndef OCTAVE_ARCHLIBDIR
+#define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
+#endif
+
 #ifndef OCTAVE_BINDIR
 #define OCTAVE_BINDIR %OCTAVE_BINDIR%
 #endif
@@ -439,6 +443,20 @@ get_octave_bindir (void)
   return obd.empty () ? subst_octave_home (std::string (OCTAVE_BINDIR)) : obd;
 }
 
+static std::string
+get_octave_archlibdir (void)
+{
+  // Accept value from the environment literally, but substitute
+  // OCTAVE_HOME in the configuration value OCTAVE_ARCHLIBDIR in case
+  // Octave has been relocated to some installation directory other than
+  // the one originally configured.
+
+  std::string dir = octave_getenv ("OCTAVE_ARCHLIBDIR");
+
+  return dir.empty ()
+    ? subst_octave_home (std::string (OCTAVE_ARCHLIBDIR)) : dir;
+}
+
 // Adapted from libtool wrapper.
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 
@@ -593,6 +611,7 @@ main (int argc, char **argv)
   bool gui_libs = false;
 
   std::string octave_bindir = get_octave_bindir ();
+  std::string octave_archlibdir = get_octave_archlibdir ();
 
   std::string file
     = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;;
@@ -609,12 +628,15 @@ main (int argc, char **argv)
         {
           start_gui = true;
           gui_libs = true;
-          file = octave_bindir + dir_sep_char;
-          #if defined (HAVE_OCTAVE_GUI)
-            file += "octave-gui-" OCTAVE_VERSION;
-          #else
-            file += "octave-cli-" OCTAVE_VERSION;
-          #endif
+#if defined (HAVE_OCTAVE_GUI)
+          // The Octave version number is already embedded in the
+          // octave_archlibdir directory name so we don't need to
+          // append it to the octave-gui file name.
+
+          file = octave_archlibdir + dir_sep_char + "octave-gui";
+#else
+          file = octave_bindir + dir_sep_char + "octave-cli-" OCTAVE_VERSION;
+#endif
           new_argv[k++] = argv[i];
         }
       else if (! strcmp (argv[i], "--no-gui-libs"))

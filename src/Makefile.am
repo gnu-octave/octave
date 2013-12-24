@@ -52,7 +52,7 @@ OCTAVE_BINARIES = \
 OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)
 
 if AMCOND_BUILD_GUI
-  OCTAVE_BINARIES += octave-gui
+  archlib_PROGRAMS = octave-gui
   OCTAVE_VERSION_LINKS += octave-gui-$(version)$(EXEEXT)
 endif
 

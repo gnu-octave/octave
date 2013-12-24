@@ -116,22 +116,22 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
 endfunction
 
 function print_test_file_name (nm)
-  filler = repmat (".", 1, 52-length (nm));
+  filler = repmat (".", 1, 60-length (nm));
   printf ("  %s %s", nm, filler);
 endfunction
 
 function print_pass_fail (p, n, xf, sk)
   if ((n + sk) > 0)
-    printf (" PASS %4d/%-4d", p, n);
+    printf (" PASS   %4d/%-4d", p, n);
     nfail = n - p - xf;
     if (nfail > 0)
-      printf (" FAIL  %-4d", nfail);
+      printf ("\n%71s %3d", "FAIL ", nfail);
     endif    
     if (sk > 0)
-      printf (" (SKIP  %-4d)", sk);
+      printf ("\n%71s %3d", "SKIP ", sk);
     endif
     if (xf > 0)
-      printf (" (XFAIL %-4d)", xf);
+      printf ("\n%71s %3d", "XFAIL", xf);
     endif
   endif
   puts ("\n");

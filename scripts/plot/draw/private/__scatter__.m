@@ -84,6 +84,21 @@ function hg = __scatter__ (varargin)
     c = [];
   endif
 
+  ## Validate inputs
+  if (nd == 2 && ! size_equal (x, y)) 
+    error ([fcn ": X and Y must have the same size"]);
+  elseif (nd == 3 && ! size_equal (x, y, z)) 
+    error ([fcn ": X, Y, and Z must have the same size"]);
+  endif
+
+  if (! isscalar (s) && ! size_equal (x, s))
+    error ([fcn ": size of S must match X, Y, and Z"]);
+  endif
+
+  if (rows (c) > 1 && rows (c) != rows (x))
+    error ([fcn ": number of colors in C must match number of points in X"]);
+  endif
+
   newargs = {};
   filled = false;
   have_marker = false;

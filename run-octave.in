@@ -78,7 +78,13 @@ if [ $# -gt 0 ]; then
   fi
 fi
 
+## We set OCTAVE_ARCHLIBDIR so that the wrapper program can find the
+## octave-gui program in the build tree.  That will fail if we ever
+## need Octave to find other things in ARCHLIBDIR that are not built
+## in the $builddir/src directory.
+
 OCTAVE_BINDIR="$builddir/src" \
+OCTAVE_ARCHLIBDIR="$builddir/src" \
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 OCTAVE_DEFAULT_QT_SETTINGS="$builddir/libgui/default-qt-settings" \
 OCTAVE_LOCALE_DIR="$builddir/libgui/languages" \

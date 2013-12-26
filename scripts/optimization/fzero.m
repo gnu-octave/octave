@@ -100,7 +100,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8,
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", eps,
                   "OutputFcn", [], "FunValCheck", "off");
     return;
   endif
@@ -117,7 +117,7 @@ function [x, fval, info, output] = fzero (fun, x0, options = struct ())
   ## displev = optimget (options, "Display", "notify");
   funvalchk = strcmpi (optimget (options, "FunValCheck", "off"), "on");
   outfcn = optimget (options, "OutputFcn");
-  tolx = optimget (options, "TolX", 1e-8);
+  tolx = optimget (options, "TolX", eps);
   maxiter = optimget (options, "MaxIter", Inf);
   maxfev = optimget (options, "MaxFunEvals", Inf);
 

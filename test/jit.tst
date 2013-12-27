@@ -52,6 +52,32 @@
 
 %!testif HAVE_LLVM
 %! jit_failure_count (0)
+%! do
+%!   break;
+%! until (0)
+%! assert (jit_failure_count, 0);
+
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! do
+%!   if (1)
+%!     break;
+%!   end;
+%! until (0)
+%! assert (jit_failure_count, 0);
+
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! i=1;
+%! do
+%!   continue;
+%!   i=i+1;
+%! until (1)
+%! assert (i, 1);
+%! assert (jit_failure_count, 0);
+
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
 %! for i=1:1e6
 %!   if (i == 100)
 %!     break;

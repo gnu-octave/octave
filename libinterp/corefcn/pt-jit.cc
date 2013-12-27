@@ -903,9 +903,66 @@ jit_convert::visit_while_command (tree_while_command& wc)
 }
 
 void
-jit_convert::visit_do_until_command (tree_do_until_command&)
+jit_convert::visit_do_until_command (tree_do_until_command& duc)
 {
-  throw jit_fail_exception ();
+  unwind_protect prot;
+  prot.protect_var (breaks);
+  prot.protect_var (continues);
+  breaks.clear ();
+  continues.clear ();
+
+  jit_block *body = factory.create<jit_block> ("do_until_body");
+  jit_block *cond_check = factory.create<jit_block> ("do_until_cond_check");
+  jit_block *tail = factory.create<jit_block> ("do_until_tail");
+
+  block->append (factory.create<jit_branch> (body));
+  blocks.push_back (body);
+  block = body;
+
+  tree_statement_list *loop_body = duc.body ();
+  bool all_breaking = false;
+  if (loop_body)
+    {
+      try
+        {
+          loop_body->accept (*this);
+        }
+      catch (const jit_break_exception&)
+        {
+          all_breaking = true;
+        }
+    }
+
+  finish_breaks (tail, breaks);
+
+  if (! all_breaking || continues.size ())
+    {
+      jit_block *interrupt_check
+        = factory.create<jit_block> ("interrupt_check");
+      blocks.push_back (interrupt_check);
+      finish_breaks (interrupt_check, continues);
+      if (! all_breaking)
+        block->append (factory.create<jit_branch> (interrupt_check));
+
+      block = interrupt_check;
+      jit_error_check *ec
+        = factory.create<jit_error_check> (jit_error_check::var_interrupt,
+                                           cond_check, final_block);
+      block->append (ec);
+
+      blocks.push_back (cond_check);
+      block = cond_check;
+
+      tree_expression *expr = duc.condition ();
+      assert (expr && "Do-Until expression can not be null");
+      jit_value *check = visit (expr);
+      check = create_checked (&jit_typeinfo::logically_true, check);
+
+      block->append (factory.create<jit_cond_branch> (check, tail, body));
+    }
+
+  blocks.push_back (tail);
+  block = tail;
 }
 
 void

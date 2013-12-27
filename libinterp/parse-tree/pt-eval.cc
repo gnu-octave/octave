@@ -1121,6 +1121,11 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   if (error_state)
     return;
 
+#if HAVE_LLVM
+  if (tree_jit::execute (cmd))
+    return;
+#endif
+
   unwind_protect frame;
 
   frame.protect_var (in_loop_command);

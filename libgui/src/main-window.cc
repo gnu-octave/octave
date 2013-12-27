@@ -1909,7 +1909,7 @@ main_window::show_gui_info (void)
          "have decided to wait until the 4.0.x release series before "
          "making the GUI the default interface.</p>"
          "<p>Given the length of time and the number of bug fixes and "
-         "improvements since the last major release Octave, we also "
+         "improvements since the last major release, we also "
          "decided against delaying the release of all these new "
          "improvements any longer just to perfect the GUI.  So please "
          "enjoy the 3.8 release of Octave and the preview of the new GUI.  "

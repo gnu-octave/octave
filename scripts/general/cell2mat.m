@@ -32,15 +32,14 @@ function m = cell2mat (c)
     print_usage ();
   endif
 
-  if (! iscell (c))
-    error ("cell2mat: C is not a cell array");
-  endif
-
   nb = numel (c);
 
   if (nb == 0)
     m = [];
   else
+    if (! iscell (c))
+      error ("cell2mat: C is not a cell array");
+    endif
 
     ## Check first for valid matrix types
     valid = cellfun ("isnumeric", c);
@@ -94,6 +93,7 @@ endfunction
 %! cell2mat (C)
 
 %!assert (cell2mat ({}), []);
+%!assert (cell2mat ([]), []);
 %!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;

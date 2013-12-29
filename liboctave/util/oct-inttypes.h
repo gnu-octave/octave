@@ -1023,6 +1023,50 @@ operator >> (std::istream& is, octave_int<T>& ival)
   return is;
 }
 
+// We need to specialise for char and unsigned char because
+// std::operator<< and std::operator>> are overloaded to input and
+// output the ASCII character values instead of a representation of
+// their numerical value (e.g. os << char(10) outputs a space instead
+// of outputting the characters '1' and '0')
+
+template <>
+inline std::ostream&
+operator << (std::ostream& os, const octave_int<int8_t>& ival)
+{
+  os << static_cast<int> (ival.value ());
+  return os;
+}
+
+template <>
+inline std::ostream&
+operator << (std::ostream& os, const octave_int<uint8_t>& ival)
+{
+  os << static_cast<unsigned int> (ival.value ());
+  return os;
+}
+
+
+template <>
+inline std::istream&
+operator >> (std::istream& is, octave_int<int8_t>& ival)
+{
+  int tmp = 0;
+  is >> tmp;
+  ival = static_cast<int8_t> (tmp);
+  return is;
+}
+
+template <>
+inline std::istream&
+operator >> (std::istream& is, octave_int<uint8_t>& ival)
+{
+  unsigned int tmp = 0;
+  is >> tmp;
+  ival = static_cast<uint8_t> (tmp);
+  return is;
+}
+
+
 // Bitwise operations
 
 #define OCTAVE_INT_BITCMP_OP(OP) \

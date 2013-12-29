@@ -74,7 +74,9 @@
 %!
 %!  ret = 0;
 %!
-%!  files = {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"};
+%!  files = cellfun (@fullfile, {P_tmpdir}, 
+%!                   {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"}, 
+%!                   "UniformOutput", false);
 %!  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
 %!  tols = {2*eps, 0, 0, 0};
 %!
@@ -196,9 +198,10 @@
 %! STR.string_fld = "Octave";
 %! STR.struct_fld.x = 0;
 %! STR.struct_fld.y = 1;
-%!
-%! save struct.dat -struct STR;
-%! STR = load ("struct.dat");
+%! 
+%! struct_dat = fullfile (P_tmpdir, "struct.dat");
+%! save (struct_dat, "-struct", "STR");
+%! STR = load (struct_dat);
 %!
 %! assert (STR.scalar_fld == 1 && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -206,9 +209,10 @@
 %!         STR.struct_fld.x == 0 && ...
 %!         STR.struct_fld.y == 1 );
 %!
-%!
-%! save -binary struct.dat -struct STR matrix_fld str*_fld;
-%! STR = load ("struct.dat");
+%! 
+%! save ("-binary", struct_dat, 
+%!       "-struct", "STR", "matrix_fld", "str*_fld");
+%! STR =  load (struct_dat);
 %!
 %! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -216,15 +220,16 @@
 %!         STR.struct_fld.x == 0 && ...
 %!         STR.struct_fld.y == 1);
 %!
-%! delete struct.dat;
+%! delete (struct_dat);
 
 %!test
 %! matrix1 = rand (100, 2);
-%! save -ascii matrix.ascii matrix1
-%! matrix2 = load ("matrix.ascii");
+%! matrix_ascii = fullfile (P_tmpdir, "matrix.ascii");
+%! save ("-ascii", matrix_ascii, "matrix1")
+%! matrix2 = load (matrix_ascii);
 %! assert (matrix1, matrix2, 1e-9);
 %!
-%! delete matrix.ascii;
+%! delete (matrix_ascii);
 
 %!error <unable to find file> load ("")
 

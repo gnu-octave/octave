@@ -294,8 +294,7 @@
     </message>
     <message>
         <location line="-772"/>
-        <source>New function name:
-</source>
+        <source>New function name:</source>
         <translation>Nombre de la nueva función:</translation>
     </message>
     <message>
@@ -303,30 +302,28 @@
         <source>Could not open file
 %1
 for read: %2.</source>
-        <translation>No se ha podido abrir el archivo %1 para lectura: %2.</translation>
+        <translation>No se ha podido abrir el archivo\n%1\npara lectura: %2.</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation>El archivo %1 no existe. ¿Desea crearlo?</translation>
+        <translation>El archivo\n%1\nno existe. ¿Desea crearlo?</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file
 %1
 for write: %2.</source>
-        <translation>No se ha podido abrir el archivo
-%1
-para escritura: %2.</translation>
+        <translation>No se ha podido abrir el archivo\n%1\npara escritura: %2.</translation>
     </message>
     <message>
         <location line="+59"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
-        <translation>¡Archivo no guardado! Un archivo con el nombre seleccionado\n%1\n ya se encuentra abierto en el editor</translation>
+        <translation>¡Archivo no guardado! Un archivo con el nombre seleccionado\n%1\nya se encuentra abierto en el editor</translation>
     </message>
     <message>
         <location line="+496"/>
@@ -406,7 +403,7 @@ is already open in the editor</source>
 %1
 is about to be closed but has been modified.
 %2</source>
-        <translation>El archivo\n%1\n está a punto de ser cerrado, pero ha sido modificado.\n%2</translation>
+        <translation>El archivo\n%1\nestá a punto de ser cerrado, pero ha sido modificado.\n%2</translation>
     </message>
     <message>
         <location line="+201"/>
@@ -425,7 +422,7 @@ Warning: The contents in the editor is modified!</source>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
-        <translation>Al parecer, el archivo\n%1\n ha sido eliminado o renombrado.¿Desea guardarlo ahora?%2</translation>
+        <translation>Parece que el archivo\n%1\nha sido eliminado o renombrado.¿Desea guardarlo ahora?%2</translation>
     </message>
     <message>
         <location line="-172"/>
@@ -446,7 +443,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+1113"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation>Al parecer, el archivo \&apos;%1\&apos; ha sido modificado por otra aplicación. ¿Desea recargarlo?</translation>
+        <translation>Parece que el archivo \&apos;%1\&apos; ha sido modificado por otra aplicación. ¿Desea recargarlo?</translation>
     </message>
 </context>
 <context>
@@ -484,12 +481,12 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+5"/>
         <source>Set octave directory</source>
-        <translation>Fijar el directorio de Octave</translation>
+        <translation>Seleccionar el directorio de Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set octave directroy to current browser directory</source>
-        <translation>Fijar el directorio de Octave como directorio actual del explorador</translation>
+        <translation>Asignar el directorio de Octave como directorio actual del explorador</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -499,7 +496,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+3"/>
         <source>Show Home directory</source>
-        <translation>Mostrar el directorio de inicio </translation>
+        <translation>Mostrar el directorio de inicio</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -577,7 +574,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation>Fijar directorio actual</translation>
+        <translation>Asignar directorio actual</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -604,7 +601,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="+1"/>
         <source>
  to: </source>
-        <translation>\n a: </translation>
+        <translation>\na: </translation>
     </message>
     <message>
         <location line="+25"/>
@@ -616,7 +613,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="-13"/>
         <source>Are you sure you want to delete
 </source>
-        <translation>¿Está seguro de que desea eliminar\n</translation>
+        <translation>¿Está seguro de que desea eliminar</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -626,7 +623,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     <message>
         <location line="+144"/>
         <source>Set directory of file browser</source>
-        <translation>Fijar directorio de explorador de archivos</translation>
+        <translation>Seleccionar directorio de explorador de archivos</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -807,7 +804,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation>%1 instancias reemplazadas  </translation>
+        <translation>%1 instancias reemplazadas</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -960,7 +957,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+32"/>
         <source>Set search directory</source>
-        <translation>Fijar directorio de búsqueda</translation>
+        <translation>Seleccionar directorio de búsqueda</translation>
     </message>
 </context>
 <context>
@@ -986,7 +983,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+24"/>
         <source>Double-click a command to transfer it to the terminal.</source>
-        <translation>Pulse dos veces un comando para transferirlo a la terminal.</translation>
+        <translation>Pulse dos veces un comando para transferirlo al terminal.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1040,7 +1037,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 &lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Al parecer, está utilizando la interface gráfica de Octave por primera vez en esta computadora.
+&lt;p&gt;Parece que está utilizando la interface gráfica de Octave por primera vez en esta computadora.
 Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Octave.&lt;/p&gt;
 &lt;p&gt;El archivo de configuración se guardará en %1.  Si el archivo ya existe, no verá este diálogo cuando Octave se inicie.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
@@ -1232,7 +1229,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+3"/>
         <source>Contribute to Octave</source>
-        <translation>Contribuir a Octave</translation>
+        <translation>Colaborar en Octave</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1293,7 +1290,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     <message>
         <location line="+64"/>
         <source>Enter directory name</source>
-        <translation>Introduzca el nombre de directorio</translation>
+        <translation>Introduzca el nombre del directorio</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1397,7 +1394,7 @@ when you have a connection to the web (link opens in an external browser).
         <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
-Las fuentes de noticias de la comunidad Octave al parecer no están disponibles.
+Las fuentes de noticias de la comunidad Octave parece que no están disponibles.
 &lt;/p&gt;
 &lt;p&gt;
 Para las últimas novedades, visite
@@ -1502,7 +1499,7 @@ o active las conexiones de web para ver las novedades en el diálogo de configur
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation>El archivo %1 no existe. ¿Desea crearlo?</translation>
+        <translation>El archivo\n%1\nno existe. ¿Desea crearlo?</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1513,12 +1510,12 @@ does not exist. Do you want to create it?</source>
         <location line="+211"/>
         <source>The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
         <translatorcomment>Uso la traducción &quot;ruta&quot; para &quot;path&quot;: http://es.wikipedia.org/wiki/Ruta_(informática)</translatorcomment>
-        <translation>El archivo %1 no existe en la ruta de carga.  Para depurar la función que acualmente edita tiene que cambiar, ya sea el directorio %2 o agregar ese directorio a la ruta de carga.</translation>
+        <translation>El archivo %1 no existe en la ruta de carga.  Para depurar la función que acualmente edita tiene que cambiar al directorio %2 o bien agregar ese directorio a la ruta de carga.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.</source>
-        <translation>El archivo %1 se solapa con un archivo con el mismo nombre en la ruta de carga.  Para depurar la función que edita, cambie al directorio%2. </translation>
+        <translation>El archivo %1 se solapa con un archivo con el mismo nombre en la ruta de carga.  Para depurar la función que edita, cambie al directorio %2.</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1554,7 +1551,7 @@ Make sure you have read and write permissions to
 
 Octave GUI must be closed now.</source>
         <translation>El archivo de configuración\n%1\nno existe y no puede ser creado.
-Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.</translation>
+Asegúrese de que tiene permisos de escritura sobre\n%2\n\nOctave GUI se cerrará.</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1617,7 +1614,7 @@ Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.
     <message>
         <location line="+20"/>
         <source>Tab width</source>
-        <translation>Tamaño del tabulador </translation>
+        <translation>Tamaño del tabulador</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1667,7 +1664,8 @@ Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.
     <message>
         <location line="+132"/>
         <source>Terminal Colors</source>
-        <translation>Colores de la terminal</translation>
+        <translatorcomment>En es_ES, terminal suele ser masculino, aunque en el español iberoamericano suele adoptarse el femenino</translatorcomment>
+        <translation>Colores del terminal</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -1692,7 +1690,7 @@ Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.
     <message>
         <location line="-282"/>
         <source>Show complete path in window title</source>
-        <translation>Mostrar la ruta completa en el título de la ventana</translation>
+        <translation>Mostrar ruta completa en el título de la ventana</translation>
     </message>
     <message>
         <location line="-17"/>
@@ -1702,7 +1700,7 @@ Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.
     <message>
         <location line="+27"/>
         <source>Do not show whitespace used for indentation</source>
-        <translation>No mostrar los espacios en blanco usados para la sangría</translation>
+        <translation>No mostrar los espacios usados para la sangría</translation>
     </message>
     <message>
         <location line="+290"/>
@@ -1712,12 +1710,12 @@ Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.
     <message>
         <location line="+194"/>
         <source>Create nonexistent files without prompting</source>
-        <translation>Crear archivos no existente sin inicialización</translation>
+        <translation>Crear archivos no existentes sin consultar</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>command line (%f=file, %l=line):</source>
-        <translation>linea de comando(%f=archivo, %l=linea):</translation>
+        <translation>línea de comando(%f=archivo, %l=linea):</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1922,7 +1920,7 @@ Asegúrese de que tiene permisos de escritura sobre\n%2\nOctave GUI se cerrará.
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation>Previo</translation>
+        <translation>Anterior</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1980,7 +1978,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location filename="../src/qtinfo/webinfo.cc" line="+80"/>
         <source>Type here and press &apos;Return&apos; to search</source>
-        <translation>Escriba aquí y pulse la tecla de &apos;Retorno&apos; para buscar</translation>
+        <translation>Escriba aquí y pulse la tecla &apos;Retorno&apos; para buscar</translation>
     </message>
     <message>
         <location line="+4"/>

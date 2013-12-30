@@ -1122,7 +1122,7 @@ See @code{sum} for an explanation of the optional parameters\n\
           else if (str == "double")
             isdouble = true;
           else
-            error ("sum: unrecognized string argument");
+            error ("cumsum: unrecognized string argument");
           nargin --;
         }
     }

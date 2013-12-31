@@ -61,6 +61,8 @@ private:
   void read_terminal_colors (QSettings *settings);
   void write_terminal_colors (QSettings *settings);
 
+  color_picker *_widget_title_bg_color;
+  color_picker *_widget_title_fg_color;
   color_picker *_editor_current_line_color;
 };
 

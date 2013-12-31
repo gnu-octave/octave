@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QApplication>
 #include <QToolBar>
-#include <QToolButton>
 #include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -48,7 +47,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (handle_visibility_changed (bool)));
 
   connect (p, SIGNAL (settings_changed (const QSettings*)),
-           this, SLOT (notice_settings (const QSettings*)));
+           this, SLOT (handle_settings (const QSettings*)));
 
 #if defined (Q_OS_WIN32)
   // windows: add an extra title bar that persists when floating
@@ -61,31 +60,31 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   _dock_action-> setToolTip (tr ("Undock widget"));
   connect (_dock_action, SIGNAL (triggered (bool)),
            this, SLOT (change_floating (bool)));
-  QToolButton *dock_button = new QToolButton (this);
-  dock_button->setDefaultAction (_dock_action);
-  dock_button->setFocusPolicy (Qt::NoFocus);
-  dock_button->setIconSize (QSize (12,12));
+  _dock_button = new QToolButton (this);
+  _dock_button->setDefaultAction (_dock_action);
+  _dock_button->setFocusPolicy (Qt::NoFocus);
+  _dock_button->setIconSize (QSize (12,12));
 
   QAction *close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this );
   close_action-> setToolTip (tr ("Hide widget"));
   connect (close_action, SIGNAL (triggered (bool)),
            this, SLOT (change_visibility (bool)));
-  QToolButton *close_button = new QToolButton (this);
-  close_button->setDefaultAction (close_action);
-  close_button->setFocusPolicy (Qt::NoFocus);
-  close_button->setIconSize (QSize (12,12));
+  _close_button = new QToolButton (this);
+  _close_button->setDefaultAction (close_action);
+  _close_button->setFocusPolicy (Qt::NoFocus);
+  _close_button->setIconSize (QSize (12,12));
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);
-  h_layout->addWidget (dock_button);
-  h_layout->addWidget (close_button);
+  h_layout->addWidget (_dock_button);
+  h_layout->addWidget (_close_button);
   h_layout->setSpacing (0);
-  h_layout->setContentsMargins (6,0,0,0);
+  h_layout->setContentsMargins (5,2,2,2);
 
-  QWidget *title_widget = new QWidget ();
-  title_widget->setLayout (h_layout);
-  setTitleBarWidget (title_widget);
+  _title_widget = new QWidget ();
+  _title_widget->setLayout (h_layout);
+  setTitleBarWidget (_title_widget);
 
 #else
 
@@ -183,6 +182,10 @@ octave_dock_widget::make_window ()
   // non windows: Just set the appripriate window flag
   setWindowFlags (Qt::Window);
 
+  QString css = styleSheet ();
+  css.replace ("widget-undock.png","widget-dock.png");
+  setStyleSheet (css);
+
 #endif
 
   _floating = true;
@@ -228,6 +231,10 @@ octave_dock_widget::make_widget (bool dock)
   // non windows: just say we are a docked widget again
   setWindowFlags (Qt::Widget);
 
+  QString css = styleSheet ();
+  css.replace ("widget-dock.png","widget-undock.png");
+  setStyleSheet (css);
+
 #endif
 
   _floating = false;
@@ -261,4 +268,78 @@ octave_dock_widget::focusWidget ()
   QWidget * w = QApplication::focusWidget ();
   if (w && w->focusProxy ()) w = w->focusProxy ();
   return w;
+}
+
+void
+octave_dock_widget::handle_settings (const QSettings *settings)
+{
+  QString css;
+  QString css_button;
+  QString dock_icon;
+  if (_floating)
+    dock_icon = "widget-dock.png";
+  else
+    dock_icon = "widget-undock.png";
+
+  if (settings->value ("DockWidgets/widget_title_custom_style",false).toBool ())
+    {
+
+      QColor default_var = QColor (0,0,0);
+      QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
+                                         default_var).value<QColor> ();
+
+      default_var = QColor (255,255,255);
+      QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
+                                         default_var).value<QColor> ();
+
+      QString bg_icon = QString ("transparent");
+      if (bg_color.lightness () < 128)
+        bg_icon = fg_color.name ();
+
+#if defined (Q_OS_WIN32)
+      css = QString ("background: %1; color: %2 ;").
+                     arg (bg_color.name ()).
+                     arg (fg_color.name ());
+      css_button = QString ("background: %3; border: 0px;").arg (bg_icon);
+#else
+      css = QString ("QDockWidget::title { background: %1;"
+                     "                     text-align: center left;"
+                     "                     padding: 0px 0px 0px 4px;}\n"
+                     "QDockWidget { color: %2 ; "
+                     "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"
+                     "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"); }"
+                     "QDockWidget::close-button,"
+                     "QDockWidget::float-button { background: %3; border: 0px;}"
+                     ).
+                     arg (bg_color.name ()).
+                     arg (fg_color.name ()).
+                     arg (bg_icon);
+#endif
+    }
+  else
+    {
+#if defined (Q_OS_WIN32)
+      css = QString ("");
+      css_button = QString ("background: transparent; border: 0px;");
+#else
+      css = QString ("QDockWidget::title { text-align: center left;"
+                     "                     padding: 0px 0px 0px 4px;}"
+                     "QDockWidget {"
+                     "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"
+                     "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"); }"
+                     "QDockWidget::close-button,"
+                     "QDockWidget::float-button { border: 0px; }"
+                    );
+#endif
+    }
+
+#if defined (Q_OS_WIN32)
+  _title_widget->setStyleSheet (css);
+  _dock_button->setStyleSheet (css_button);
+  _close_button->setStyleSheet (css_button);
+#else
+  setStyleSheet (css);
+#endif
+
+  notice_settings (settings);  // call individual handler
 }

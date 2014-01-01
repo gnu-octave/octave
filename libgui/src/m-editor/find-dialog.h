@@ -108,6 +108,7 @@ private:
   QWidget           *_extension;
   QsciScintilla     *_edit_area;
   bool               _find_result_available;
+  int                _rep_all;
 };
 
 #endif // FIND_DIALOG_H

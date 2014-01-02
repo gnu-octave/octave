@@ -76,8 +76,8 @@ function [vx, vy] = voronoi (varargin)
   narg = 1;
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
     hax = varargin{1};
-    if (! isaxes (harg))
-      error ("imagesc: HAX argument must be an axes object");
+    if (! isaxes (hax))
+      error ("voronoi: HAX argument must be an axes object");
     endif
     narg++;
   elseif (nargout < 2)
@@ -108,6 +108,10 @@ function [vx, vy] = voronoi (varargin)
 
   if (length (x) != length (y))
     error ("voronoi: X and Y must be vectors of the same length");
+  elseif (length (x) < 3)
+    ## See bug #40996.
+    ## For 2 points it would be nicer to just calculate the bisection line.
+    error ("voronoi: minimum of 3 points needed");
   endif
 
   ## Add box to approximate rays to infinity. For Voronoi diagrams the
@@ -179,5 +183,12 @@ endfunction
 %! assert (vx(2,:), zeros (1, columns (vx)), eps);
 %! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
-%% FIXME: Need input validation tests
+%% Input validation tests
+%!error voronoi ()
+%!error voronoi (ones (3,1))
+%!error voronoi (ones (3,1), ones (3,1), "bogus1", "bogus2", "bogus3")
+%!error <HAX argument must be an axes object> voronoi (0, ones (3,1), ones (3,1))
+%!error <X and Y must be vectors of the same length> voronoi (ones (3,1), ones (4,1))
+%!error <minimum of 3 points needed> voronoi (2.5, 3.5)
+%!error <minimum of 3 points needed> voronoi ([2.5, 3.5], [2.5, 3.5])
 

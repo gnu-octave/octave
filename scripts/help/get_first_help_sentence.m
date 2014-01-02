@@ -124,11 +124,11 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     sep_idx = min (space_idx, bracket_idx);
     def_type = help_text(def1+1:sep_idx-1);
 
-    end_idx = strfind (help_text, sprintf ("@end %s", def_type))(1);
+    end_idx = strfind (help_text, sprintf ("@end %s", def_type));
     if (isempty (end_idx))
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif
-    keep(end_idx:end) = false;
+    keep(end_idx(1):end) = false;
 
     help_text = help_text(keep);
   endif

@@ -213,7 +213,7 @@ of a sparse matrix if possible.\n\
 
       retval(0) = result;
 
-      volatile double xrcond = rcond;
+      volatile double xrcond = isfloat ? frcond : rcond;
       xrcond += 1.0;
       if (nargout < 2 && (info == -1 || xrcond == 1.0))
         warning ("inverse: matrix singular to machine precision, rcond = %g",

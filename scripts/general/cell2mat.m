@@ -38,7 +38,7 @@ function m = cell2mat (c)
     m = [];
   else
     if (! iscell (c))
-      error ("cell2mat: C is not a cell array");
+      error ("cell2mat: C must be a cell array");
     endif
 
     ## Check first for valid matrix types
@@ -115,7 +115,7 @@ endfunction
 
 %!error cell2mat ()
 %!error cell2mat (1,2)
-%!error <C is not a cell array> cell2mat ([1,2])
+%!error <C must be a cell array> cell2mat ([1,2])
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], struct()})
 %!error <mixed cells, structs, and matrices> cell2mat ({[1], {1}})
 %!error <mixed cells, structs, and matrices> cell2mat ({struct(), {1}})

@@ -23,8 +23,16 @@
 ## @seealso{mkoctfile}
 ## @end deftypefn
 
-function mex (varargin)
-  args = {"--mex", varargin{:}};
-  mkoctfile (args{:});
+function retval = mex (varargin)
+
+  [output, status] = mkoctfile ("--mex", varargin{:});
+
+  if (! isempty (output))
+    disp (output);
+  endif
+  if (nargout > 0)
+    retval = status;
+  endif
+
 endfunction
 

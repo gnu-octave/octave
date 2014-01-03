@@ -32,10 +32,8 @@
 ## If @var{p} is unspecified, return the quantiles for
 ## @code{[0.00 0.25 0.50 0.75 1.00]}.
 ## The optional argument @var{dim} determines the dimension along which
-## the quantiles are calculated.  If @var{dim} is omitted, and @var{x} is
-## a vector or matrix, it defaults to 1 (column-wise quantiles).  If
-## @var{x} is an N-D array, @var{dim} defaults to the first non-singleton
-## dimension.
+## the quantiles are calculated.  If @var{dim} is omitted it defaults to
+## the first non-singleton dimension.
 ##
 ## The methods available to calculate sample quantiles are the nine methods
 ## used by R (@url{http://www.r-project.org/}).  The default value is
@@ -108,7 +106,7 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Description: Matlab style quantile function of a discrete/continuous distribution
 
-function q = quantile (x, p = [], dim = 1, method = 5)
+function q = quantile (x, p = [], dim, method = 5)
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
@@ -126,9 +124,14 @@ function q = quantile (x, p = [], dim = 1, method = 5)
     error ("quantile: P must be a numeric vector");
   endif
 
-  if (!(isscalar (dim) && dim == fix (dim))
-      || !(1 <= dim && dim <= ndims (x)))
-    error ("quantile: DIM must be an integer and a valid dimension");
+  if (nargin < 3)
+    ## Find the first non-singleton dimension.
+    (dim = find (size (x) > 1, 1)) || (dim = 1);
+  else
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= ndims (x)))
+      error ("quantile: DIM must be an integer and a valid dimension");
+    endif
   endif
 
   ## Set the permutation vector.
@@ -156,6 +159,30 @@ function q = quantile (x, p = [], dim = 1, method = 5)
 
 endfunction
 
+
+%!test
+%! p = 0.50;
+%! q = quantile (1:4, p);
+%! qa = 2.5;
+%! assert (q, qa);
+%! q = quantile (1:4, p, 1);
+%! qa = [1, 2, 3, 4];
+%! assert (q, qa);
+%! q = quantile (1:4, p, 2);
+%! qa = 2.5;
+%! assert (q, qa);
+
+%!test
+%! p = [0.50 0.75];
+%! q = quantile (1:4, p);
+%! qa = [2.5 3.5];
+%! assert (q, qa);
+%! q = quantile (1:4, p, 1);
+%! qa = [1, 2, 3, 4; 1, 2, 3, 4];
+%! assert (q, qa);
+%! q = quantile (1:4, p, 2);
+%! qa = [2.5 3.5];
+%! assert (q, qa);
 
 %!test
 %! p = 0.5;

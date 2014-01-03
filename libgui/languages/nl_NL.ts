@@ -188,8 +188,8 @@
     <message>
         <location line="-1637"/>
         <location line="+55"/>
-        <source>Save</source>
-        <translation>Bewaar</translation>
+        <source>&amp;Save</source>
+        <translation>&amp;Bewaar</translation>
     </message>
     <message>
         <location line="-52"/>
@@ -413,7 +413,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+5"/>
         <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux, and all major commercial Unix variants. Qt is also available for embedded devices as Qt for Embedded Linux and Qt for Windows CE.&lt;/p&gt;&lt;p&gt;Qt is available under three different licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of the GNU LGPL version 2.1 or GNU GPL version 3.0.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU LGPL version 2.1 is appropriate for the development of Qt applications (proprietary or open source) provided you can comply with the terms and conditions of the GNU LGPL version 2.1.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU General Public License version 3.0 is appropriate for the development of Qt applications where you wish to use such applications in combination with software subject to the terms of the GNU GPL version 3.0 or where you are otherwise willing to comply with the terms of the GNU GPL version 3.0.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;http://qt.digia.com/product/licensing&quot;&gt;qt.digia.com/product/licensing&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;Qt is a Digia product. See &lt;a href=&quot;http://qt.digia.com/&quot;&gt;qt.digia.com&lt;/a&gt; for more information.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Qt is een C++ gereedschapskit voor cross-platform ontwikkeling van applicaties.&lt;/p&gt;&lt;p&gt;Qt biedt enkele-broncode portabiliteit voor MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux en alle belangrijke commerciële Unix varianten. Qt is ook beschikbaar voor embedded devices, zoals Qt voor Embedded Linux en Qt voor Windows CE.&lt;/p&gt;&lt;p&gt;Qt is beschikbaar met drie verschillende licentie-opties bedoeld om te voorzien in de behoeftes van onze gevarieerde gebruikersgroep.&lt;/p&gt;&lt;p&gt;Qt met een commerciële licentie is past bij ontwikkeling van gesloten/commerciële programmatuur waarbij geen broncode met derden wordt gedeeld of anderzins niet kan worden voldaan aan de eisen van de GNU LGPL versie 2.1 of GNU GPL versie 3.0.&lt;/p&gt;&lt;p&gt;Qt met een GNU LGPL versie 2.1 licentie past bij ontwikkeling van Qt programma's (gesloten of open source) indien je kan voldoen aan de eisen en voorwaarden van de GNU LGPL versie 2.1.&lt;/p&gt;&lt;p&gt;Qt met een GNU General Public License versie 3.0 past bij de ontwikkeling van Qt programma's als je die programma's wenst te gebruiken in combinatie met programma's onderworpen aan de GNU GPL versie 3.0 of als je anderszins beeid bent te voldoen aan de eisen van de GNU GPL versie 3.0.&lt;/p&gt;&lt;p&gt;Kijk op &lt;a href=&quot;http://qt.digia.com/product/licensing&quot;&gt;qt.digia.com/product/licensing&lt;/a&gt; voor een overzicht van Qt licenties.&lt;/p&gt;&lt;p&gt;Copyright (C) 2013 Digia Plc en/of dochteronderneming(-en).&lt;/p&gt;&lt;p&gt;Qt is een Digia product. Kijk op &lt;a href=&quot;http://qt.digia.com/&quot;&gt;qt.digia.com&lt;/a&gt; voor meer informatie.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Qt is een C++ gereedschapskit voor cross-platform ontwikkeling van applicaties.&lt;/p&gt;&lt;p&gt;Qt biedt enkele-broncode portabiliteit voor MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux en alle belangrijke commerciële Unix varianten. Qt is ook beschikbaar voor embedded devices, zoals Qt voor Embedded Linux en Qt voor Windows CE.&lt;/p&gt;&lt;p&gt;Qt is beschikbaar met drie verschillende licentie-opties bedoeld om te voorzien in de behoeftes van onze gevarieerde gebruikersgroep.&lt;/p&gt;&lt;p&gt;Qt met een commerciële licentie is past bij ontwikkeling van gesloten/commerciële programmatuur waarbij geen broncode met derden wordt gedeeld of anderzins niet kan worden voldaan aan de eisen van de GNU LGPL versie 2.1 of GNU GPL versie 3.0.&lt;/p&gt;&lt;p&gt;Qt met een GNU LGPL versie 2.1 licentie past bij ontwikkeling van Qt programma&apos;s (gesloten of open source) indien je kan voldoen aan de eisen en voorwaarden van de GNU LGPL versie 2.1.&lt;/p&gt;&lt;p&gt;Qt met een GNU General Public License versie 3.0 past bij de ontwikkeling van Qt programma&apos;s als je die programma&apos;s wenst te gebruiken in combinatie met programma&apos;s onderworpen aan de GNU GPL versie 3.0 of als je anderszins beeid bent te voldoen aan de eisen van de GNU GPL versie 3.0.&lt;/p&gt;&lt;p&gt;Kijk op &lt;a href=&quot;http://qt.digia.com/product/licensing&quot;&gt;qt.digia.com/product/licensing&lt;/a&gt; voor een overzicht van Qt licenties.&lt;/p&gt;&lt;p&gt;Copyright (C) 2013 Digia Plc en/of dochteronderneming(-en).&lt;/p&gt;&lt;p&gt;Qt is een Digia product. Kijk op &lt;a href=&quot;http://qt.digia.com/&quot;&gt;qt.digia.com&lt;/a&gt; voor meer informatie.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -472,6 +472,11 @@ Wil je die toch verwijderen?</translation>
         <location line="+1"/>
         <source>cursor</source>
         <translation>Aanwijzer</translation>
+    </message>
+    <message>
+        <location filename="../src/main-window.cc" line="+1894"/>
+        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;strong&gt;Een opmerking over Octave&apos;s Nieuwe GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Een van de belangrijkste nieuwe kenmerken van Octave 3.8 is een grafische user interface (GUI).  Dat is waar de gebruikers de afgelopen jaren het meest om gevraagd hebben en hij is bijna af.  Maar omdat hij nog niet zo gepolijst is als we zouden willen hebben we besloten te wachten tot de versie 4.0 serie voordat we hem de standaard interface maken.&lt;/p&gt;&lt;p&gt;Vanwege de lange tijd en het aantal bug fixes en verbeteringen sinds de laatste major release versie hebben we ook besloten om niet langer meer te wachten op de GUI om al die verbeteringen door te voeren.  Dus geniet van Octave versie 3.8 en de preview van de nieuwe GUI.  We denken dat hij redelijk goed werkt, maar natuurlijk weten we dat er nog ruwe kantjes aan zitten en ruimte voor verbeteringen.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We hebben je hulp nodig&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Er zijn veel manieren waarop je ons kunt helpen de overgebleven problemen te verhelpen, de GUI te completeren, en de gebruikerservaring voor nieuwelingen en experts (de URLs openen een nieuwe browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Als je een bekwame ontwikkelaar bent kun je ons helpen door bij te dragen &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Als Octave niet goed wekt raden we je aan om &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;de problemen te rapporteren &lt;/a&gt; die je tegen komt.&lt;/li&gt;&lt;li&gt;Of je nu gebruiker of ontwikkelaar bent, je kunt ook &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;een bijdrage geven&lt;/a&gt;.  De ontwikkeling van Octave vraagt een hoop tijd en expertise.  Je bijdrage helpt er aan mee dat Octave verbeterd blijft worden.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hopen dat je Octave nuttig vindt.  Help alsjeblieft om het in de toekomst nog beter te maken!&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -712,7 +717,7 @@ Wil je die toch verwijderen?</translation>
     <message>
         <location line="+1"/>
         <source>A5 (148 x 210 mm)</source>
-        <translation>A5 (148 x 210 mm)>A5 (148 x 210 mm)</translation>
+        <translation>A5 (148 x 210 mm)&gt;A5 (148 x 210 mm)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1941,14 +1946,13 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+10"/>
         <location line="+122"/>
-        <location line="+111"/>
-        <location line="+64"/>
+        <location line="+150"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-318"/>
+        <location line="-293"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -1964,16 +1968,7 @@ dat gesloten moet worden is gewijzigd.
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="+32"/>
-        <source>File not saved! The selected file name
-%1
-is the same as the current file name</source>
-        <translation>Bestand niet opgeslagen! De gekozen bestandsnaam
-%1
-is identiek aan de huidige bestandsnaam</translation>
-    </message>
-    <message>
-        <location line="+79"/>
+        <location line="+86"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -1990,7 +1985,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
     <message>
-        <location line="-197"/>
+        <location line="-172"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Kon bestand %1 niet openen om te schrijven:
@@ -2007,7 +2002,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Kolom:</translation>
     </message>
     <message>
-        <location line="+1138"/>
+        <location line="+1113"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Het lijkt erop dat &apos;%1&apos; is gewijzigd door een ander programma. Wil je het opnieuw laden?</translation>
     </message>
@@ -2614,8 +2609,8 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+201"/>
-        <location line="+1163"/>
+        <location filename="../src/main-window.cc" line="-1693"/>
+        <location line="+1164"/>
         <source>Load Workspace</source>
         <translation>Werkruimte laden</translation>
     </message>
@@ -2686,13 +2681,13 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Plakken</translation>
     </message>
     <message>
-        <location line="-1261"/>
-        <location line="+1180"/>
+        <location line="-1262"/>
+        <location line="+1181"/>
         <source>Save Workspace As</source>
         <translation>Sla Werkruimte Op Als</translation>
     </message>
     <message>
-        <location line="-1056"/>
+        <location line="-1057"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Bestand met Release Notes &apos;%1&apos; is leeg.</translation>
     </message>
@@ -2712,7 +2707,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Octave Community Nieuws</translation>
     </message>
     <message>
-        <location line="+938"/>
+        <location line="+939"/>
         <source>Clear Clipboard</source>
         <translation>Wis klembord</translation>
     </message>
@@ -2829,7 +2824,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     <message>
         <location line="+37"/>
         <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation>Je gerbuikt een "release candiadate" van Octave&apos;s experimentele GUI.&lt;/strong&gt; Octave wordt continu doorontwikkeld en de GUI zal de standaard interface zijn voor versie 4.0.  Kies Release Notes in het Hulp menu van de GUI voor meer informatie, of kijk op &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
+        <translation>Je gerbuikt een &quot;release candiadate&quot; van Octave&apos;s experimentele GUI.&lt;/strong&gt; Octave wordt continu doorontwikkeld en de GUI zal de standaard interface zijn voor versie 4.0.  Kies Release Notes in het Hulp menu van de GUI voor meer informatie, of kijk op &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2848,12 +2843,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Experimentele GUI Informatie</translation>
     </message>
     <message>
-        <location line="-37"/>
-        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release Octave, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;strong&gt;Een opmerking over Octave&apos;s Nieuwe GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Een van de belangrijkste nieuwe kenmerken van Octave 3.8 is een grafische user interface (GUI).  Dat is waar de gebruikers de afgelopen jaren het meest om gevraagd hebben en hij is bijna af.  Maar omdat hij nog niet zo gepolijst is als we zouden willen hebben we besloten te wachten tot de versie 4.0 serie voordat we hem de standaard interface maken.&lt;/p&gt;&lt;p&gt;Vanwege de lange tijd en het aantal bug fixes en verbeteringen sinds de laatste major release versie hebben we ook besloten om niet langer meer te wachten op de GUI om al die verbeteringen door te voeren.  Dus geniet van Octave versie 3.8 en de preview van de nieuwe GUI.  We denken dat hij redelijk goed werkt, maar natuurlijk weten we dat er nog ruwe kantjes aan zitten en ruimte voor verbeteringen.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We hebben je hulp nodig&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Er zijn veel manieren waarop je ons kunt helpen de overgebleven problemen te verhelpen, de GUI te completeren, en de gebruikerservaring voor nieuwelingen en experts (de URLs openen een nieuwe browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Als je een bekwame ontwikkelaar bent kun je ons helpen door bij te dragen &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Als Octave niet goed wekt raden we je aan om &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;de problemen te rapporteren &lt;/a&gt; die je tegen komt.&lt;/li&gt;&lt;li&gt;Of je nu gebruiker of ontwikkelaar bent, je kunt ook &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;een bijdrage geven&lt;/a&gt;.  De ontwikkeling van Octave vraagt een hoop tijd en expertise.  Je bijdrage helpt er aan mee dat Octave verbeterd blijft worden.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hopen dat je Octave nuttig vindt.  Help alsjeblieft om het in de toekomst nog beter te maken!&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location line="+64"/>
+        <location line="+27"/>
         <source>Enter directory name</source>
         <translation>Geef mapnaam op</translation>
     </message>
@@ -2943,7 +2933,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1281"/>
+        <location line="-1282"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;

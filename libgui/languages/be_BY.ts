@@ -474,6 +474,11 @@ Do you want to delete it anyway?</source>
         <source>cursor</source>
         <translation>курсор</translation>
     </message>
+    <message>
+        <location filename="../src/main-window.cc" line="+1894"/>
+        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;strong&gt;Нататка пра новы GUI Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Адна з найбольшых адметнасцяў Octave 3.8 - графічны інтэрфэйс.  Карыстальнікі апошнімі гадамі прасілі яго найбольш часта, і нарэшце ён амаль гатовы.  Але ён пакуль не такі дасканалы, як бы мы жадалі, таму мы вырашылі пачакаць выпуску з серыі 4.0.x перад тым, як рабіць яго стандартным.&lt;/p&gt;&lt;p&gt;Да таго ж, улічваючы час і колькасць выпраўленняў і паляпшэнняў у параўнанні з апошнім буйным выпускам Octave, мы вырашылі затрымліваць новы выпуск толькі дзеля ўдасканалення GUI, не зважаючы на новыя магчымасці.  Таму прыемнага вам карстання выпускам 3.8 і першай версіяй новага інтэрфэйсу.  Нам здаецца, ён працуе даволі добра, але мы ведаем, што ёсць некаторыя відавочныя грубыя недарэчнасці і шмат чаго, што можна палепшыць.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Нам патрабуецца ваша дапамога&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Ёсць шмат спосабаў, якімі вы можаце дапамагчы нам выправіць праблемы, што яшчэ засталіся, скончыць GUI і палепшыць агульнае уражанне як для новых карыстальнікаў, так і для экспертаў (спасылкі адкрыюцца ў знешнім браўзэры):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Калі вы спрактыкаваны распрацоўнік праграм, то можаце выдаткаваць час, каб дапамагчы ў &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;распрацоўцы Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Калі Octave працуе з памылкамі, вы можаце &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;паведаміць пра праблемы&lt;/a&gt;, з якімі сутыкнуліся.&lt;/li&gt;&lt;li&gt;Няхай вы хоць карыстальнік, хоць распрацоўнік, вы можаце &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;прафундаваць праект&lt;/a&gt;.  Распрацоўка Octave патрабуе шмат часу і навыкаў.  Ваш удзел дапаможа гарантаваць, што Octave і надалей будзе ўдасканальвацца.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Спадзяемся, вы знойдзеце Octave карыснай.  Калі ласка, дапамажыце нам зрабіць яго лепшым для будучыні!&lt;/p&gt;</translation>
+    </message>
 </context>
 <context>
     <name>QPPDOptionsModel</name>
@@ -1942,14 +1947,13 @@ for write: %2.</source>
     <message>
         <location line="+10"/>
         <location line="+122"/>
-        <location line="+111"/>
-        <location line="+64"/>
+        <location line="+150"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation>Рэдактар Octave</translation>
     </message>
     <message>
-        <location line="-318"/>
+        <location line="-293"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -1965,16 +1969,7 @@ is about to be closed but has been modified.
         <translation>Файлы Octave (*.m);;Усе файлы (*)</translation>
     </message>
     <message>
-        <location line="+32"/>
-        <source>File not saved! The selected file name
-%1
-is the same as the current file name</source>
-        <translation>Файл не захаваны! Пазначаная назва файла
-%1
-супадае з назвай бягучага файла</translation>
-    </message>
-    <message>
-        <location line="+79"/>
+        <location line="+86"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -1992,7 +1987,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 быў выдалены або пераназваны. Можа, захаваць яго зараз?%2</translation>
     </message>
     <message>
-        <location line="-197"/>
+        <location line="-172"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Не выйшла адкрыць файл %1 на запіс:
@@ -2009,7 +2004,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Слупок:</translation>
     </message>
     <message>
-        <location line="+1138"/>
+        <location line="+1113"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Выглядае на тое, што &apos;%1&apos; быў зменены іншай праграмай. Перачытаць яго?</translation>
     </message>
@@ -2611,8 +2606,8 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="+201"/>
-        <location line="+1163"/>
+        <location filename="../src/main-window.cc" line="-1693"/>
+        <location line="+1164"/>
         <source>Load Workspace</source>
         <translation>Загрузіць прастору зменных</translation>
     </message>
@@ -2683,13 +2678,13 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Уставіць</translation>
     </message>
     <message>
-        <location line="-1261"/>
-        <location line="+1180"/>
+        <location line="-1262"/>
+        <location line="+1181"/>
         <source>Save Workspace As</source>
         <translation>Захаваць прастору зменных як</translation>
     </message>
     <message>
-        <location line="-1056"/>
+        <location line="-1057"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Файл заўваг да выпуску &apos;%1&apos; пусты.</translation>
     </message>
@@ -2709,7 +2704,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Навіны супольнасці Octave</translation>
     </message>
     <message>
-        <location line="+938"/>
+        <location line="+939"/>
         <source>Clear Clipboard</source>
         <translation>Ачысціць буфер</translation>
     </message>
@@ -2845,12 +2840,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Інфармацыя пра эксперыментальны GUI Octave</translation>
     </message>
     <message>
-        <location line="-37"/>
-        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release Octave, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;strong&gt;Нататка пра новы GUI Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Адна з найбольшых адметнасцяў Octave 3.8 - графічны інтэрфэйс.  Карыстальнікі апошнімі гадамі прасілі яго найбольш часта, і нарэшце ён амаль гатовы.  Але ён пакуль не такі дасканалы, як бы мы жадалі, таму мы вырашылі пачакаць выпуску з серыі 4.0.x перад тым, як рабіць яго стандартным.&lt;/p&gt;&lt;p&gt;Да таго ж, улічваючы час і колькасць выпраўленняў і паляпшэнняў у параўнанні з апошнім буйным выпускам Octave, мы вырашылі затрымліваць новы выпуск толькі дзеля ўдасканалення GUI, не зважаючы на новыя магчымасці.  Таму прыемнага вам карстання выпускам 3.8 і першай версіяй новага інтэрфэйсу.  Нам здаецца, ён працуе даволі добра, але мы ведаем, што ёсць некаторыя відавочныя грубыя недарэчнасці і шмат чаго, што можна палепшыць.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Нам патрабуецца ваша дапамога&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Ёсць шмат спосабаў, якімі вы можаце дапамагчы нам выправіць праблемы, што яшчэ засталіся, скончыць GUI і палепшыць агульнае уражанне як для новых карыстальнікаў, так і для экспертаў (спасылкі адкрыюцца ў знешнім браўзэры):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Калі вы спрактыкаваны распрацоўнік праграм, то можаце выдаткаваць час, каб дапамагчы ў &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;распрацоўцы Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Калі Octave працуе з памылкамі, вы можаце &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;паведаміць пра праблемы&lt;/a&gt;, з якімі сутыкнуліся.&lt;/li&gt;&lt;li&gt;Няхай вы хоць карыстальнік, хоць распрацоўнік, вы можаце &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;прафундаваць праект&lt;/a&gt;.  Распрацоўка Octave патрабуе шмат часу і навыкаў.  Ваш удзел дапаможа гарантаваць, што Octave і надалей будзе ўдасканальвацца.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Спадзяемся, вы знойдзеце Octave карыснай.  Калі ласка, дапамажыце нам зрабіць яго лепшым для будучыні!&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location line="+64"/>
+        <location line="+27"/>
         <source>Enter directory name</source>
         <translation>Пазначце назву каталогу</translation>
     </message>
@@ -2940,7 +2930,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1281"/>
+        <location line="-1282"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;

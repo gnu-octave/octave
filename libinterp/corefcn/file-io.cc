@@ -1404,9 +1404,13 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
 DEFUN (fread, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
-Read binary data of type @var{precision} from the specified file ID\n\
-@var{fid}.\n\
+@deftypefn  {Built-in Function} {@var{val} =} fread (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip})\n\
+@deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
+@deftypefnx {Built-in Function} {[@var{val}, @var{count}] =} fread (@dots{})\n\
+Read binary data from the specified file ID @var{fid}.\n\
 \n\
 The optional argument @var{size} specifies the amount of data to read\n\
 and may be one of\n\
@@ -1559,8 +1563,8 @@ IEEE big endian.\n\
 IEEE little endian.\n\
 @end table\n\
 \n\
-The data read from the file is returned in @var{val}, and the number of\n\
-values read is returned in @code{count}\n\
+The output argument @var{val} contains the data read from the file.\n\
+The optional return value @var{count} contains the number of elements read.\n\
 @seealso{fwrite, fgets, fgetl, fscanf, fopen}\n\
 @end deftypefn")
 {

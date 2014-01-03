@@ -81,9 +81,12 @@ function.
 @DOCSTRING(dbstop)
 
 @noindent
-Note that breakpoints cannot be set in built-in functions
-(e.g., @code{sin}, etc.) or dynamically loaded function (i.e., oct-files).  To
-set a breakpoint immediately on entering a function, the breakpoint
+Breakpoints in class methods are also supported (e.g.,
+@code{dbstop("@@class/method")}).  However, breakpoints cannot be set in
+built-in functions (e.g., @code{sin}, etc.) or dynamically loaded function
+(i.e., oct-files).
+
+To set a breakpoint immediately on entering a function, the breakpoint
 should be set to line 1. The leading comment block will be ignored and
 the breakpoint will be set to the first executable statement in the
 function.  For example:

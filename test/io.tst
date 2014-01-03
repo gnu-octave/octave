@@ -532,3 +532,23 @@
 %!error <Invalid call to frewind> frewind (1, 2)
 %!error frewind ("foo")
 
+%!test
+%! id = tmpfile ();
+%! fwrite (id, "abcdefg");
+%! frewind (id);
+%! [data, count] = fread (id);
+%! assert (data, [97; 98; 99; 100; 101; 102; 103]);
+%! assert (count, 7);
+%! frewind (id);
+%! [data, count] = fread (id, 'int16');
+%! assert (data, [25185; 25699; 26213]);
+%! assert (count, 3);
+%! frewind (id);
+%! [data, count] = fread (id, [10, 2], 'int16');
+%! assert (data, [25185; 25699; 26213]);
+%! assert (count, 3);
+%! frewind (id);
+%! [data, count] = fread (id, [2, 10], 'int16');
+%! assert (data, [25185, 26213; 25699, 0]);
+%! assert (count, 3);
+%! fclose (id);

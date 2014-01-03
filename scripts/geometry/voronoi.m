@@ -74,14 +74,13 @@ function [vx, vy] = voronoi (varargin)
   endif
 
   narg = 1;
+  hax = NaN;
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
     hax = varargin{1};
     if (! isaxes (hax))
       error ("voronoi: HAX argument must be an axes object");
     endif
     narg++;
-  elseif (nargout < 2)
-    hax = gca ();
   endif
 
   if (nargin < 1 + narg || nargin > 3 + narg)
@@ -159,6 +158,9 @@ function [vx, vy] = voronoi (varargin)
   Vvy = reshape (p(edges, 2), size (edges));
 
   if (nargout < 2)
+    if (isnan (hax))
+      hax = gca ();
+    endif
     h = plot (hax, Vvx, Vvy, linespec{:}, x, y, '+');
     lim = [xmin, xmax, ymin, ymax];
     axis (lim + 0.1 * [[-1, 1] * xdelta, [-1, 1] * ydelta]);

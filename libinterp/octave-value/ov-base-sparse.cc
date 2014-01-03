@@ -450,25 +450,46 @@ octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 
   // Sparsify the result if possible.
 
-  // FIXME: intentionally skip this step for string mappers. Is this wanted?
-  // FIXME: this will break if some well-meaning person rearranges the
-  // enum list in ov-base.h.
-  if (umap >= umap_xisalnum && umap <= umap_xtoupper)
-    return retval;
-
-  switch (retval.builtin_type ())
+  switch (umap)
     {
-    case btyp_double:
-      retval = retval.sparse_matrix_value ();
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xsignbit:
+    case umap_xtoascii:
+      // FIXME: intentionally skip this step for string mappers.
+      // Is this wanted?
       break;
-    case btyp_complex:
-      retval = retval.sparse_complex_matrix_value ();
-      break;
-    case btyp_bool:
-      retval = retval.sparse_bool_matrix_value ();
-      break;
+
     default:
-      break;
+      {
+        switch (retval.builtin_type ())
+          {
+          case btyp_double:
+            retval = retval.sparse_matrix_value ();
+            break;
+
+          case btyp_complex:
+            retval = retval.sparse_complex_matrix_value ();
+            break;
+
+          case btyp_bool:
+            retval = retval.sparse_bool_matrix_value ();
+            break;
+
+          default:
+            break;
+          }
+      }
     }
 
   return retval;

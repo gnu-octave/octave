@@ -348,16 +348,27 @@ octave_scalar::map (unary_mapper_t umap) const
     case umap_xtoupper:
       return scalar;
 
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xsignbit:
+    case umap_xtoascii:
+      {
+        octave_value str_conv = convert_to_str (true, true);
+        return error_state ? octave_value () : str_conv.map (umap);
+      }
+
     default:
-      // FIXME: this will break if some well-meaning person rearranges
-      // the enum list in ov-base.h.
-      if (umap >= umap_xisalnum && umap <= umap_xtoupper)
-        {
-          octave_value str_conv = convert_to_str (true, true);
-          return error_state ? octave_value () : str_conv.map (umap);
-        }
-      else
-        return octave_base_value::map (umap);
+      return octave_base_value::map (umap);
     }
 }
 

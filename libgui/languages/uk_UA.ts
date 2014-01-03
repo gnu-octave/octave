@@ -1848,7 +1848,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation type="unfinished">Файловий менеджер</translation>
     </message>
     <message>
-        <location line="-94"/>
+        <location line="+194"/>
+        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;News&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-288"/>
         <source>Step In</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1908,12 +1913,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+37"/>
-        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+50"/>
         <source>More Info</source>
         <translation type="unfinished"></translation>
     </message>

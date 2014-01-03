@@ -2759,7 +2759,12 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Файлавы агляднік</translation>
     </message>
     <message>
-        <location line="-94"/>
+        <location line="+194"/>
+        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;News&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
+        <translation>&lt;strong&gt;Вы выкарыстоўваеце кандыдат на выпуск эксперыментальнага графічнага (GUI) інтэрфэйсу Octave.&lt;/strong&gt;  Octave пастаянна паляпшаецца, і GUI будзе стандартным інтэрфэйсам з версіі 4.0.  Для дадатковай інфармацыі націсніце &quot;Заўвагі да выпуску&quot; у меню &quot;Навіны&quot;, альбо наведайце &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location line="-288"/>
         <source>Step In</source>
         <translation>Крок наперад</translation>
     </message>
@@ -2819,12 +2824,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Навіны супольнасці</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation>&lt;strong&gt;Вы выкарыстоўваеце кандыдат на выпуск эксперыментальнага графічнага (GUI) інтэрфэйсу Octave.&lt;/strong&gt;  Octave пастаянна паляпшаецца, і GUI будзе стандартным інтэрфэйсам з версіі 4.0.  Для дадатковай інфармацыі націсніце &quot;Заўвагі да выпуску&quot; у меню &quot;Навіны&quot;, альбо наведайце &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+50"/>
         <source>More Info</source>
         <translation>Даведацца болей</translation>
     </message>

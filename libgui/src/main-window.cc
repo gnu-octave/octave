@@ -1804,7 +1804,7 @@ main_window::construct_warning_bar (void)
     (tr ("<strong>You are using a release candidate of Octave's experimental GUI.</strong>  "
          "Octave is under continuous improvement and the GUI will be the "
          "default interface for the 4.0 release.  For more information, "
-         "select the \"Release Notes\" item in the \"Help\" menu of the GUI, "
+         "select the \"Release Notes\" item in the \"News\" menu of the GUI, "
          "or visit <a href=\"http://octave.org\">http://octave.org</a>."));
 
   msg->setStyleSheet ("background-color: #ffd97f; color: black; margin 4px;");

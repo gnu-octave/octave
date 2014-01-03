@@ -1216,7 +1216,12 @@ Clique em próximo para criar um arquivo de configuração e lançar o Octave.&l
         <translation>Navegador de Arquivos</translation>
     </message>
     <message>
-        <location line="-94"/>
+        <location line="+194"/>
+        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;News&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
+        <translation>&lt;strong&gt;Você está usando uma versão preliminar da interface gráfica (GUI) experimental do Octave.&lt;/strong&gt;  O software está sob melhoria contínua, e a GUI se tornará a interface padrão na versão 4.0.  Para maiores informações, selecione o item &quot;Notas da Versão&quot; no menu &quot;Novidades&quot; da GUI ou acesse &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location line="-288"/>
         <source>Step In</source>
         <translation>Passo a dentro</translation>
     </message>
@@ -1276,12 +1281,7 @@ Clique em próximo para criar um arquivo de configuração e lançar o Octave.&l
         <translation>Novidades da Comunidade</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;Help&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation>&lt;strong&gt;Você está usando uma versão preliminar da interface gráfica (GUI) experimental do Octave.&lt;/strong&gt;  O software está sob melhoria contínua, e a GUI se tornará a interface padrão na versão 4.0.  Para maiores informações, selecione o item &quot;Notas da Versão&quot; no menu &quot;Ajuda&quot; da GUI ou acesse &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+50"/>
         <source>More Info</source>
         <translation>Mais Informações</translation>
     </message>

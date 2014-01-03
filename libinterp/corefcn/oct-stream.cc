@@ -2358,15 +2358,15 @@ do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
   return retval;
 }
 
-#define DO_DOUBLE_CONV(TQUAL) \
+#define DO_DOUBLE_CONV_1(TYPE) \
   do \
     { \
-      if (val > std::numeric_limits<TQUAL long>::max () \
-          || val < std::numeric_limits<TQUAL long>::min ()) \
+      if (val > std::numeric_limits<TYPE>::max () \
+          || val < std::numeric_limits<TYPE>::min ()) \
         { \
           std::string tfmt = fmt; \
  \
-          tfmt.replace (tfmt.rfind (elt->type), 1, ".f"); \
+          tfmt.replace (tfmt.rfind (elt->type), 1, ".g"); \
  \
           if (elt->modifier == 'l') \
             tfmt.replace (tfmt.rfind (elt->modifier), 1, ""); \
@@ -2376,7 +2376,17 @@ do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
         } \
       else \
         retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
-                                  static_cast<TQUAL long> (val), who); \
+                                  static_cast<TYPE> (val), who); \
+    } \
+  while (0)
+
+#define DO_DOUBLE_CONV(TQUAL) \
+  do \
+    { \
+       if (elt->modifier == 'l') \
+         DO_DOUBLE_CONV_1 (TQUAL long); \
+       else \
+         DO_DOUBLE_CONV_1 (TQUAL int); \
     } \
   while (0)
 
@@ -2479,15 +2489,19 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
                           const char *tval;
                           if (xisinf (val))
-                            if (elt->flags.find ('+') != std::string::npos)
-                              tval = (val < 0 ? "-Inf" : "+Inf");
-                            else
-                              tval = (val < 0 ? "-Inf" : "Inf");
+                            {
+                              if (elt->flags.find ('+') != std::string::npos)
+                                tval = (val < 0 ? "-Inf" : "+Inf");
+                              else
+                                tval = (val < 0 ? "-Inf" : "Inf");
+                            }
                           else
-                            if (elt->flags.find ('+') != std::string::npos)
-                              tval = (lo_ieee_is_NA (val) ? "+NA" : "+NaN");
-                            else
-                              tval = (lo_ieee_is_NA (val) ? "NA" : "NaN");
+                            {
+                              if (elt->flags.find ('+') != std::string::npos)
+                                tval = (lo_ieee_is_NA (val) ? "+NA" : "+NaN");
+                              else
+                                tval = (lo_ieee_is_NA (val) ? "NA" : "NaN");
+                            }
 
                           retval += do_printf_conv (os, tfmt.c_str (),
                                                     nsa, sa_1, sa_2,

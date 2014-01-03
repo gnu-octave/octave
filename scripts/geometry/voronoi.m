@@ -107,10 +107,8 @@ function [vx, vy] = voronoi (varargin)
 
   if (length (x) != length (y))
     error ("voronoi: X and Y must be vectors of the same length");
-  elseif (length (x) < 3)
-    ## See bug #40996.
-    ## For 2 points it would be nicer to just calculate the bisection line.
-    error ("voronoi: minimum of 3 points needed");
+  elseif (length (x) < 2)
+    error ("voronoi: minimum of 2 points needed");
   endif
 
   ## Add box to approximate rays to infinity. For Voronoi diagrams the
@@ -145,13 +143,26 @@ function [vx, vy] = voronoi (varargin)
   edges = edges(:, [(edges(1, 1 :end - 1) != edges(1, 2 : end) | ...
                      edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
 
-  ## Eliminate the edges of the diagram representing the box
-  poutside = (1:rows (p)) ...
-      (p(:, 1) < xmin - xdelta | p(:, 1) > xmax + xdelta | ...
-       p(:, 2) < ymin - ydelta | p(:, 2) > ymax + ydelta);
-  edgeoutside = ismember (edges(1, :), poutside) & ...
-                ismember (edges(2, :), poutside);
-  edges(:, edgeoutside) = [];
+  if (numel (x) > 2)
+    ## Eliminate the edges of the diagram representing the box
+    poutside = (1:rows (p)) ...
+        (p(:, 1) < xmin - xdelta | p(:, 1) > xmax + xdelta | ...
+         p(:, 2) < ymin - ydelta | p(:, 2) > ymax + ydelta);
+    edgeoutside = ismember (edges(1, :), poutside) & ...
+                  ismember (edges(2, :), poutside);
+    edges(:, edgeoutside) = [];
+  else
+    ## look for the edge between the two given points
+    for edge = edges(1:2,:) 
+      if (det ([[[1;1],p(edge,1:2)];1,x(1),y(1)])
+          * det ([[[1;1],p(edge,1:2)];1,x(2),y(2)]) < 0)
+        edges = edge;
+        break;
+      endif
+    endfor
+    ## Use larger plot limits to make it more likely single bisector is shown.
+    xdelta = ydelta = max (xdelta, ydelta);
+  endif
 
   ## Get points of the diagram
   Vvx = reshape (p(edges, 1), size (edges));
@@ -185,12 +196,18 @@ endfunction
 %! assert (vx(2,:), zeros (1, columns (vx)), eps);
 %! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
+%!testif HAVE_QHULL
+%! ## Special case of just 2 points
+%! x = [0 1];  y = [1 0];
+%! [vx, vy] = voronoi (x,y);
+%! assert (vx, [-0.7; 1.7], eps);
+%! assert (vy, [-0.7; 1.7], eps);
+
 %% Input validation tests
 %!error voronoi ()
 %!error voronoi (ones (3,1))
 %!error voronoi (ones (3,1), ones (3,1), "bogus1", "bogus2", "bogus3")
 %!error <HAX argument must be an axes object> voronoi (0, ones (3,1), ones (3,1))
 %!error <X and Y must be vectors of the same length> voronoi (ones (3,1), ones (4,1))
-%!error <minimum of 3 points needed> voronoi (2.5, 3.5)
-%!error <minimum of 3 points needed> voronoi ([2.5, 3.5], [2.5, 3.5])
+%!error <minimum of 2 points needed> voronoi (2.5, 3.5)
 

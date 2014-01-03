@@ -464,7 +464,6 @@ octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
     case umap_xisspace:
     case umap_xisupper:
     case umap_xisxdigit:
-    case umap_xsignbit:
     case umap_xtoascii:
       // FIXME: intentionally skip this step for string mappers.
       // Is this wanted?

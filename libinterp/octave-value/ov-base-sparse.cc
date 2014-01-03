@@ -440,11 +440,19 @@ template <class T>
 octave_value
 octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const
 {
+  if (umap == umap_xtolower || umap == umap_xtoupper)
+    return matrix;
+
   // Try the map on the dense value.
+  // FIXME: We should probably be smarter about this, especially for the
+  // cases that are expected to return sparse matrices.
   octave_value retval = this->full_value ().map (umap);
 
   // Sparsify the result if possible.
+
   // FIXME: intentionally skip this step for string mappers. Is this wanted?
+  // FIXME: this will break if some well-meaning person rearranges the
+  // enum list in ov-base.h.
   if (umap >= umap_xisalnum && umap <= umap_xtoupper)
     return retval;
 

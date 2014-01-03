@@ -513,14 +513,13 @@ print_real_mapper_test isxdigit 0
 # Specific tests for certain mapper functions
     cat >>$TESTS <<EOF
 
-%% These mapper functions always return a full matrix
 %!test
 %! wn2s = warning ("query", "Octave:num-to-str");
 %! warning ("off", "Octave:num-to-str");
 %! if (isreal (af))
 %!   assert (toascii (as), toascii (af));
-%!   assert (tolower (as), tolower (af));
-%!   assert (toupper (as), toupper (af));
+%!   assert (tolower (as), as);
+%!   assert (toupper (as), as);
 %! endif
 %! warning (wn2s.state, "Octave:num-to-str");
 

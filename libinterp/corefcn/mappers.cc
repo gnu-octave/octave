@@ -2156,8 +2156,17 @@ DEFALIAS (lower, tolower);
 %!assert (tolower ({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}})
 %!assert (tolower (["ABC"; "DEF"]), ["abc"; "def"])
 %!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
-%!assert (tolower (68), "d")
-%!assert (tolower ({[68, 68; 68, 68]}), {["dd";"dd"]})
+%!assert (tolower (68), 68)
+%!assert (tolower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
+%!test
+%! classes = {@char, @double, @single, ...
+%!            @int8, @int16, @int32, @int64, ...
+%!            @uint8, @uint16, @uint32, @uint64};
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   assert (class (tolower (cls (97))), class (cls (97)));
+%!   assert (class (tolower (cls ([98, 99]))), class (cls ([98, 99])));
+%! endfor
 %!test
 %! a(3,3,3,3) = "D";
 %! assert (tolower (a)(3,3,3,3), "d");
@@ -2207,8 +2216,17 @@ DEFALIAS (upper, toupper);
 %!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}})
 %!assert (toupper (["abc"; "def"]), ["ABC"; "DEF"])
 %!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
-%!assert (toupper (100), "D")
-%!assert (toupper ({[100, 100; 100, 100]}), {["DD";"DD"]})
+%!assert (toupper (100), 100)
+%!assert (toupper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})
+%!test
+%! classes = {@char, @double, @single, ...
+%!            @int8, @int16, @int32, @int64, ...
+%!            @uint8, @uint16, @uint32, @uint64};
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   assert (class (toupper (cls (97))), class (cls (97)));
+%!   assert (class (toupper (cls ([98, 99]))), class (cls ([98, 99])));
+%! endfor
 %!test
 %! a(3,3,3,3) = "d";
 %! assert (toupper (a)(3,3,3,3), "D");

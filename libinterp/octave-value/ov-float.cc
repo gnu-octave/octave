@@ -327,8 +327,21 @@ octave_float_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (isnan, xisnan);
       SCALAR_MAPPER (xsignbit, xsignbit);
 
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return scalar;
+
     default:
-      return octave_base_value::map (umap);
+      // FIXME: this will break if some well-meaning person rearranges
+      // the enum list in ov-base.h.
+      if (umap >= umap_xisalnum && umap <= umap_xtoupper)
+        {
+          octave_value str_conv = convert_to_str (true, true);
+          return error_state ? octave_value () : str_conv.map (umap);
+        }
+      else
+        return octave_base_value::map (umap);
     }
 }
 

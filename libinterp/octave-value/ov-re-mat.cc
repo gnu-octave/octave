@@ -935,7 +935,14 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (isna, bool, octave_is_NA);
       ARRAY_MAPPER (xsignbit, double, xsignbit);
 
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return matrix;
+
     default:
+      // FIXME: this will break if some well-meaning person rearranges
+      // the enum list in ov-base.h.
       if (umap >= umap_xisalnum && umap <= umap_xtoupper)
         {
           octave_value str_conv = convert_to_str (true, true);

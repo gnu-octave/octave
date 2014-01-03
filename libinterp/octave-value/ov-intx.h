@@ -358,8 +358,15 @@ public:
       case umap_finite:
         return boolNDArray (matrix.dims (), true);
 
+      // Special cases for Matlab compatibility.
+      case umap_xtolower:
+      case umap_xtoupper:
+        return matrix;
+
       default:
         {
+          // FIXME: we should be able to do better than converting to
+          // double here.
           octave_matrix m (array_value ());
           return m.map (umap);
         }
@@ -657,6 +664,11 @@ public:
         return false;
       case umap_finite:
         return true;
+
+      // Special cases for Matlab compatibility.
+      case umap_xtolower:
+      case umap_xtoupper:
+        return scalar;
 
       default:
         {

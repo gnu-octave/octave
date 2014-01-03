@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "input.h"
 #include "load-path.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "toplev.h"
@@ -1253,38 +1254,80 @@ load_path::loader::overloads (const std::string& meth,
     }
 }
 
+// Should we cache all files in private directories, or is it OK to just
+// look them up each time as needed?
+
+std::string
+find_private_file (const std::string& fname)
+{
+  std::string retval;
+
+  // Look in private directory corresponding to current function (if
+  // any).
+
+  octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
+
+  if (curr_fcn && ! curr_fcn->is_private_function ())
+    {
+      std::string dir_name = curr_fcn->dir_name ();
+
+      if (! dir_name.empty ())
+        {
+          std::string pfname = dir_name + file_ops::dir_sep_str ()
+            + "private" + file_ops::dir_sep_str () + fname;
+
+          file_stat fs (pfname);
+
+          if (fs.exists () && fs.is_reg ())
+            retval = pfname;
+        }
+    }
+
+  return retval;
+}
+
 std::string
 load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
+  if (octave_env::absolute_pathname (file)
+      || octave_env::rooted_relative_pathname (file))
+    {
+      file_stat fs (file);
+
+      if (fs.exists ())
+        return file;
+    }
+  else
+    {
+      std::string tfile = find_private_file (file);
+
+      if (! tfile.empty ())
+        return tfile;
+    }
+
   if (file.find_first_of (file_ops::dir_sep_chars ()) != std::string::npos)
     {
-      if (octave_env::absolute_pathname (file)
-          || octave_env::rooted_relative_pathname (file))
+      // Given name has a directory separator, so append it to each
+      // element of the load path in turn.
+
+      for (const_dir_info_list_iterator p = dir_info_list.begin ();
+           p != dir_info_list.end ();
+           p++)
         {
-          file_stat fs (file);
+          std::string tfile = file_ops::concat (p->dir_name, file);
+
+          file_stat fs (tfile);
 
           if (fs.exists ())
-            return file;
-        }
-      else
-        {
-          for (const_dir_info_list_iterator p = dir_info_list.begin ();
-               p != dir_info_list.end ();
-               p++)
-            {
-              std::string tfile = file_ops::concat (p->dir_name, file);
-
-              file_stat fs (tfile);
-
-              if (fs.exists ())
-                return tfile;
-            }
+            return tfile;
         }
     }
   else
     {
+      // Look in cache.
+
       for (const_dir_info_list_iterator p = dir_info_list.begin ();
            p != dir_info_list.end ();
            p++)

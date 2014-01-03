@@ -502,17 +502,24 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
   if (! (octave_env::absolute_pathname (fname)
          || octave_env::rooted_relative_pathname (fname)))
     {
+      // Load path will also search "." first, but we don't want to
+      // issue a warning if the file is found in the current directory,
+      // so do an explicit check for that.
+
       file_stat fs (fname);
 
       if (! (fs.exists () && fs.is_reg ()))
         {
+          // Not directly found; search load path.
+
           std::string tmp
             = octave_env::make_absolute (load_path::find_file (fname));
 
           if (! tmp.empty ())
             {
               warning_with_id ("Octave:load-file-in-path",
-                               "load: file found in load path");
+                               "load: file found in load path: %s",
+                               tmp.c_str ());
               fname = tmp;
             }
         }

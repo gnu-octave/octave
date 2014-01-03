@@ -94,8 +94,22 @@ webinfo::webinfo (QWidget *p)
 
   resize (500, 300);
 
-  set_info_path (QString::fromStdString (Vinfo_file));
+  QFileInfo info_file = QFileInfo (QString::fromStdString (Vinfo_file));
 
+  if (info_file.exists ())
+    set_info_path (QString::fromStdString (Vinfo_file));
+  else
+    { // Info file does not exist
+      _search_check_box->setEnabled (false);
+      _search_line_edit->setEnabled (false);
+
+      QTextBrowser *msg = addNewTab (tr ("Error"));
+      QString msg_text = QString ("<html><body><br><br><center><b>%1"
+                                      "</b></center></body></html>").
+                         arg (tr ("The info file %1 does not exist").
+                              arg(info_file.absoluteFilePath ()));
+      msg->setHtml (msg_text);
+    }
 }
 
 void

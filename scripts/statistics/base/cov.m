@@ -55,6 +55,13 @@
 ## @item 1:
 ##   normalize with @math{N}, this provides the second moment around the mean
 ## @end table
+##
+## @sc{matlab} compatibility: Octave always computes the covariance matrix.
+## For two inputs, however, @sc{matlab} will calculate
+## @code{cov (@var{x}(:), @var{y}(:))} whenever the number of elements in
+## @var{x} and @var{y} are equal.  This will result in a scalar rather than
+## a matrix output.  Code relying on this odd definition will need to be
+## changed when running in Octave.
 ## @seealso{corr}
 ## @end deftypefn
 

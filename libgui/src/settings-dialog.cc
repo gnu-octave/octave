@@ -90,6 +90,29 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->general_icon_graphic-> setChecked (widget_icon_set == "GRAPHIC");
   ui->general_icon_letter-> setChecked (widget_icon_set == "LETTER");
 
+  // custom title bar of dock widget
+  QVariant default_var = QColor (255,255,255);
+  QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
+                                      default_var).value<QColor> ();
+  _widget_title_bg_color = new color_picker (bg_color);
+  _widget_title_bg_color->setEnabled (false);
+  ui->layout_widget_bgtitle->addWidget (_widget_title_bg_color,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_bg_color, SLOT (setEnabled (bool)));
+
+  default_var = QColor (0,0,0);
+  QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
+                                      default_var).value<QColor> ();
+  _widget_title_fg_color = new color_picker (fg_color);
+  _widget_title_fg_color->setEnabled (false);
+  ui->layout_widget_fgtitle->addWidget (_widget_title_fg_color,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_fg_color, SLOT (setEnabled (bool)));
+
+  ui->cb_widget_custom_style->setChecked (
+    settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
+
+  // editor
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",
                                                         false).toBool ());
   ui->customFileEditor->setText (
@@ -97,7 +120,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->editor_showLineNumbers->setChecked (
     settings->value ("editor/showLineNumbers",true).toBool () );
 
-  QVariant default_var = QColor (240, 240, 240);
+  default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
                                           default_var).value<QColor> ();
   _editor_current_line_color = new color_picker (setting_color);
@@ -466,6 +489,14 @@ settings_dialog::write_changed_settings ()
   if (language == tr ("System setting"))
     language = "SYSTEM";
   settings->setValue ("language", language);
+
+  // dock widget title bar
+  settings->setValue ("DockWidgets/widget_title_custom_style",
+                      ui->cb_widget_custom_style->isChecked ());
+  settings->setValue ("Dockwidgets/title_bg_color",
+                      _widget_title_bg_color->color ());
+  settings->setValue ("Dockwidgets/title_fg_color",
+                      _widget_title_fg_color->color ());
 
   // other settings
   settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());

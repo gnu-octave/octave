@@ -1814,7 +1814,7 @@ main_window::construct_warning_bar (void)
     (tr ("<strong>You are using a release candidate of Octave's experimental GUI.</strong>  "
          "Octave is under continuous improvement and the GUI will be the "
          "default interface for the 4.0 release.  For more information, "
-         "select the \"Release Notes\" item in the \"Help\" menu of the GUI, "
+         "select the \"Release Notes\" item in the \"News\" menu of the GUI, "
          "or visit <a href=\"http://octave.org\">http://octave.org</a>."));
 
   msg->setStyleSheet ("background-color: #ffd97f; color: black; margin 4px;");
@@ -1901,7 +1901,7 @@ void
 main_window::show_gui_info (void)
 {
   QString gui_info
-    (tr ("<p><strong>A Note about Octave's New GUI</strong></p>"
+    ( QObject::tr ("<p><strong>A Note about Octave's New GUI</strong></p>"
          "<p>One of the biggest new features for Octave 3.8 is a graphical "
          "user interface.  It is the one thing that users have requested "
          "most often over the last few years and now it is almost ready.  "
@@ -1909,7 +1909,7 @@ main_window::show_gui_info (void)
          "have decided to wait until the 4.0.x release series before "
          "making the GUI the default interface.</p>"
          "<p>Given the length of time and the number of bug fixes and "
-         "improvements since the last major release Octave, we also "
+         "improvements since the last major release, we also "
          "decided against delaying the release of all these new "
          "improvements any longer just to perfect the GUI.  So please "
          "enjoy the 3.8 release of Octave and the preview of the new GUI.  "

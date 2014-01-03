@@ -32,7 +32,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -74,7 +74,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QSpinBox" name="toolbar_icon_size">
@@ -107,7 +107,7 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <widget class="QComboBox" name="comboBox_language">
@@ -131,7 +131,7 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="2">
+          <item row="3" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
              <widget class="QRadioButton" name="general_icon_octave">
@@ -159,6 +159,95 @@
             </item>
             <item>
              <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Dock widget title bar</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QCheckBox" name="cb_widget_custom_style">
+              <property name="text">
+               <string>Custom style</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_22">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_bgtitle">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Background color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="layout_widget_bgtitle"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_23">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>12</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_fgtitle">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Text color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="layout_widget_fgtitle"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_21">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1652,6 +1741,38 @@
     <hint type="destinationlabel">
      <x>282</x>
      <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_widget_custom_style</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_bgtitle</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>380</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cb_widget_custom_style</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_fgtitle</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>496</x>
+     <y>156</y>
     </hint>
    </hints>
   </connection>

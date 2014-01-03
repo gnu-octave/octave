@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QIcon>
 #include <QMainWindow>
+#include <QToolButton>
 #include <QMouseEvent>
 
 class octave_dock_widget : public QDockWidget
@@ -81,6 +82,7 @@ public slots:
   virtual void notice_settings (const QSettings*)
   {
   }
+  void handle_settings (const QSettings*);
 
   QMainWindow *main_win () { return _parent; }
 
@@ -110,6 +112,12 @@ private:
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
   QAction *_dock_action;
   bool _floating;
+
+#if defined (Q_OS_WIN32)
+  QWidget *_title_widget;
+  QToolButton *_dock_button;
+  QToolButton *_close_button;
+#endif
 
 };
 

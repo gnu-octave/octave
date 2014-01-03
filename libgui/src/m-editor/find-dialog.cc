@@ -157,6 +157,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _extension->hide ();
   _find_next_button->setDefault (true);
   _find_result_available = false;
+  _rep_all = 0;
 
   // move dialog to side of the parent if there is room on the desktop to do so.
   QWidget * desktop = QApplication::desktop ();
@@ -213,29 +214,38 @@ find_dialog::find (bool forward)
   int line, col;
   line = col = -1;
   bool do_wrap = _wrap_check_box->isChecked ();
-  bool do_forward = true;
+  bool do_forward = forward;
 
-  if (_find_result_available)
-    {
-      // we found a match last time, cursor is at the end of the match
-      if (!forward)
-        {
-          // backward: go back one position or we will find the same again
-          do_forward = false;
-          _edit_area->getCursorPosition (&line,&col);
-          if (col > 0)
-            _edit_area->setCursorPosition (line,--col);
-        }
+  if (!forward && _find_result_available)
+    { // we found a match last time, cursor is at the end of the match
+      // backward: go to start of selection or we will find the same again
+      int line_end, col_end;
+      _edit_area->getSelection (&line,&col,&line_end,&col_end);
+      if (line > -1)
+        _edit_area->setCursorPosition (line,col);
     }
 
   _find_result_available = false;
 
-  if (_from_start_check_box->isChecked ())
+  if (_rep_all)
     {
-      line = 0;
-      col  = 0;
-      if (_backward_check_box->isChecked ())
-        do_wrap = true;
+      if (_rep_all == 1)
+        {
+          line = 0;
+          col = 0;
+        }
+      do_wrap = false;
+      do_forward = true;
+    }
+  else
+    {
+      if (_from_start_check_box->isChecked ())
+        {
+          line = 0;
+          col  = 0;
+          if (_backward_check_box->isChecked ())
+            do_wrap = true;
+        }
     }
 
   if (_edit_area)
@@ -256,7 +266,7 @@ find_dialog::find (bool forward)
     }
   if (_find_result_available)
     _from_start_check_box->setChecked (0);
-  else
+  else if (! _rep_all)
     no_matches_message ();
 }
 
@@ -266,47 +276,38 @@ find_dialog::replace ()
 {
   if (_edit_area)
     {
-      _edit_area->replace (_replace_line_edit->text ());
-      if (!_edit_area->findNext())
-        no_matches_message ();
+      if (_find_result_available && _edit_area->hasSelectedText ())
+        _edit_area->replace (_replace_line_edit->text ());
+      find_next ();
     }
 }
 
 void
 find_dialog::replace_all ()
 {
-  int count = 0;
+  int line, col;
 
-  // check whether find & replace srings are different (avoid endless loop!)
-  int strDiff;
-  Qt::CaseSensitivity cs;
-  if (_case_check_box->isChecked())
+  if (_edit_area)
     {
-      cs = Qt::CaseSensitive;
-    }
-  else
-    {
-      cs = Qt::CaseInsensitive;
-    }
-  strDiff = QString::compare (_search_line_edit->text(),
-                              _replace_line_edit->text(), cs);
+      _edit_area->getCursorPosition (&line,&col);
 
-  // replace all if strings are different
-  if (_edit_area && strDiff )
-    {
-      find (!_backward_check_box->isChecked ());  // find first occurence
+      _rep_all = 1;
+      find_next ();  // find first occurence (forward)
       while (_find_result_available)   // while search string is found
         {
           _edit_area->replace (_replace_line_edit->text ());   // replace
-          count++;                                             // inc counter
-          _find_result_available = _edit_area->findNext();     // and find next
+          _rep_all++;                                          // inc counter
+          find_next ();                                        // find next
         }
+
       QMessageBox msg_box (QMessageBox::Information, tr ("Replace Result"),
-                           tr ("%1 items replaced").arg(count),
+                           tr ("%1 items replaced").arg(_rep_all-1),
                            QMessageBox::Ok, this);
       msg_box.exec ();
+
+      _rep_all = 0;
+      _edit_area->setCursorPosition (line,col);
     }
-  // TODO: Show number of replaced strings
 }
 
 void

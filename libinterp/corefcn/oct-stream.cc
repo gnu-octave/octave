@@ -3164,7 +3164,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                      oct_data_conv::data_type input_type,
                      oct_data_conv::data_type output_type,
                      octave_idx_type skip, oct_mach_info::float_format ffmt,
-                     octave_idx_type& char_count)
+                     octave_idx_type& count)
 {
   octave_value retval;
 
@@ -3181,7 +3181,10 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
       // numbering stays consistent with the order of the elements in the
       // data_type enum in the oct_data_conv class.
 
-      char_count = 0;
+      // Expose this in a future version?
+      octave_idx_type char_count = 0;
+
+      count = 0;
 
       get_size (size, nr, nc, one_elt_size_spec, "fread");
 
@@ -3254,24 +3257,22 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
               std::list <void *> input_buf_list;
 
-              octave_idx_type elts_read = 0;
-
               while (is && ! is.eof ()
-                     && (read_to_eof || elts_read < elts_to_read))
+                     && (read_to_eof || count < elts_to_read))
                 {
                   char *input_buf = new char [input_buf_size];
 
                   is.read (input_buf, input_buf_size);
 
-                  size_t count = is.gcount ();
+                  size_t gcount = is.gcount ();
 
-                  char_count += count;
+                  char_count += gcount;
 
-                  elts_read += count / input_elt_size;
+                  count += gcount / input_elt_size;
 
                   input_buf_list.push_back (input_buf);
 
-                  if (is && skip != 0 && elts_read == block_size)
+                  if (is && skip != 0 && count == block_size)
                     {
                       int seek_status = seek (skip, SEEK_CUR);
 
@@ -3283,12 +3284,25 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
               if (read_to_eof)
                 {
                   if (nc < 0)
-                    nc = elts_read / nr + 1;
+                    nc = count / nr + 1;
                   else
-                    nr = elts_read;
+                    nr = count;
+                }
+              else if (count == 0)
+                {
+                  nr = 0;
+                  nc = 0;
+                }
+              else if (count != nr * nc)
+                {
+                  if (count % nr != 0)
+                    nc = count / nr + 1;
+
+                  if (count < nr)
+                    nr = count;
                 }
 
-              retval = finalize_read (input_buf_list, input_buf_elts, elts_read,
+              retval = finalize_read (input_buf_list, input_buf_elts, count,
                                       nr, nc, input_type, output_type, ffmt);
             }
           else

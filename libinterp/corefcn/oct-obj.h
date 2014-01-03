@@ -107,10 +107,16 @@ public:
   octave_value_list
   slice (octave_idx_type offset, octave_idx_type len, bool tags = false) const
   {
-    octave_value_list retval (data.linear_slice (offset, offset + len));
+    // linear_slice uses begin/end indices instead of offset and
+    // length.  Avoid calling with upper bound out of range.
+    // linear_slice handles the case of len < 0.
+
+    octave_value_list retval
+      = data.linear_slice (offset, std::min (offset + len, length ()));
+
     if (tags && len > 0 && names.length () > 0)
-      retval.names = names.linear_slice (offset,
-                                         std::min (len, names.length ()));
+      retval.names = names.linear_slice (offset, std::min (offset + len,
+                                                           names.length ()));
 
     return retval;
   }

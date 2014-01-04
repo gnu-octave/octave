@@ -874,6 +874,9 @@ file_editor::construct (void)
 #ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_widget->setMovable (true);
 #endif
+  _tab_widget->setStyleSheet ("QTabBar::tab {max-height: 4ex; }");
+
+
 
   QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
                                      tr ("&New File"), _tool_bar);

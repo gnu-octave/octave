@@ -61,3 +61,49 @@
 %!test
 %! a = ones (3); b = []; fail ("subsasgn (a, substruct ('()', {':',1:2}), b)", ".")
 
+%!test
+%! classes = {@int8, @int16, @int32, @int64, ...
+%!   @uint8, @uint16, @uint32, @uint64, ...
+%!   @single, @double, @logical};
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   x = cls ([1, 2, 3]);
+%!   cls_nm = class (x);
+%!   x(2) = [];
+%!   assert (x, cls ([1, 3]));
+%!   assert (class (x), cls_nm);
+%!   x(2) = [];
+%!   assert (x, cls (1));
+%!   assert (class (x), cls_nm);
+%!   x(1) = [];
+%!   assert (x, cls (zeros (1, 0)));
+%!   assert (class (x), cls_nm);
+%! endfor
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   x = cls ([1, 2, 3]);
+%!   cls_nm = class (x);
+%!   x(2) = '';
+%!   assert (x, cls ([1, 3]));
+%!   assert (class (x), cls_nm);
+%!   x(2) = '';
+%!   assert (x, cls (1));
+%!   assert (class (x), cls_nm);
+%!   x(1) = '';
+%!   assert (x, cls (zeros (1, 0)));
+%!   assert (class (x), cls_nm);
+%! endfor
+%! for i = 1:numel (classes)
+%!   cls = classes{i};
+%!   x = cls ([1, 2, 3]);
+%!   cls_nm = class (x);
+%!   x(2) = "";
+%!   assert (x, cls ([1, 3]));
+%!   assert (class (x), cls_nm);
+%!   x(2) = "";
+%!   assert (x, cls (1));
+%!   assert (class (x), cls_nm);
+%!   x(1) = "";
+%!   assert (x, cls (zeros (1, 0)));
+%!   assert (class (x), cls_nm);
+%! endfor

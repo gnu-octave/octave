@@ -65,15 +65,17 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   _dock_button->setFocusPolicy (Qt::NoFocus);
   _dock_button->setIconSize (QSize (12,12));
 
-  QAction *close_action = new QAction
+  _close_action = new QAction
                    (QIcon (":/actions/icons/widget-close.png"), "", this );
-  close_action-> setToolTip (tr ("Hide widget"));
-  connect (close_action, SIGNAL (triggered (bool)),
+  _close_action-> setToolTip (tr ("Hide widget"));
+  connect (_close_action, SIGNAL (triggered (bool)),
            this, SLOT (change_visibility (bool)));
   _close_button = new QToolButton (this);
-  _close_button->setDefaultAction (close_action);
+  _close_button->setDefaultAction (_close_action);
   _close_button->setFocusPolicy (Qt::NoFocus);
   _close_button->setIconSize (QSize (12,12));
+
+  _icon_color = "";
 
   QHBoxLayout *h_layout = new QHBoxLayout ();
   h_layout->addStretch (100);
@@ -146,6 +148,7 @@ octave_dock_widget::set_title (const QString& title)
   QHBoxLayout* h_layout =
     static_cast<QHBoxLayout *> (titleBarWidget ()->layout ());
   QLabel *label = new QLabel (title);
+  label->setStyleSheet ("background: transparent;");
   h_layout->insertWidget (0,label);
 #endif
   setWindowTitle (title);
@@ -170,7 +173,7 @@ octave_dock_widget::make_window ()
 
   // remove parent and adjust the (un)dock icon
   setParent (0, Qt::Window);
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock.png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-dock"+_icon_color+".png"));
   _dock_action->setToolTip (tr ("Dock widget"));
 
   // restore the last geometry( when floating
@@ -183,7 +186,7 @@ octave_dock_widget::make_window ()
   setWindowFlags (Qt::Window);
 
   QString css = styleSheet ();
-  css.replace ("widget-undock.png","widget-dock.png");
+  css.replace ("widget-undock","widget-dock");
   setStyleSheet (css);
 
 #endif
@@ -223,7 +226,7 @@ octave_dock_widget::make_widget (bool dock)
     setParent (_parent);
 
   // adjust the (un)dock icon
-  _dock_action->setIcon (QIcon (":/actions/icons/widget-undock.png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/widget-undock"+_icon_color+".png"));
   _dock_action->setToolTip (tr ("Undock widget"));
 
 #else
@@ -232,7 +235,7 @@ octave_dock_widget::make_widget (bool dock)
   setWindowFlags (Qt::Widget);
 
   QString css = styleSheet ();
-  css.replace ("widget-dock.png","widget-undock.png");
+  css.replace ("widget-dock","widget-undock");
   setStyleSheet (css);
 
 #endif
@@ -276,10 +279,11 @@ octave_dock_widget::handle_settings (const QSettings *settings)
   QString css;
   QString css_button;
   QString dock_icon;
+
   if (_floating)
-    dock_icon = "widget-dock.png";
+    dock_icon = "widget-dock";
   else
-    dock_icon = "widget-undock.png";
+    dock_icon = "widget-undock";
 
   if (settings->value ("DockWidgets/widget_title_custom_style",false).toBool ())
     {
@@ -292,35 +296,41 @@ octave_dock_widget::handle_settings (const QSettings *settings)
       QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
                                          default_var).value<QColor> ();
 
-      QString bg_icon = QString ("transparent");
-      if (bg_color.lightness () < 128)
-        bg_icon = fg_color.name ();
+      int r, g, b;
+      QColor bg_color_light = bg_color.lighter ();
+
+      bg_color.getRgb (&r, &g, &b);
+      if (r+g+b < 400)
+          _icon_color = "-light";
+      else
+        _icon_color = "";
+
+      QString background =
+          QString ("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+                   "            stop: 0 %1, stop: 0.75 %2, stop: 0.9 %2, stop: 1.0 %1);").
+                   arg (bg_color_light.name ()).
+                   arg (bg_color.name ());
 
 #if defined (Q_OS_WIN32)
-      css = QString ("background: %1; color: %2 ;").
-                     arg (bg_color.name ()).
-                     arg (fg_color.name ());
-      css_button = QString ("background: %3; border: 0px;").arg (bg_icon);
+      css = background + QString (" color: %1 ;").arg (fg_color.name ());
 #else
-      css = QString ("QDockWidget::title { background: %1;"
+      css = QString ("QDockWidget::title { " + background +
                      "                     text-align: center left;"
                      "                     padding: 0px 0px 0px 4px;}\n"
-                     "QDockWidget { color: %2 ; "
-                     "  titlebar-close-icon: url(:/actions/icons/widget-close.png);"
-                     "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"); }"
+                     "QDockWidget { color: %1 ; "
+                     "  titlebar-close-icon: url(:/actions/icons/widget-close%2.png);"
+                     "  titlebar-normal-icon: url(:/actions/icons/"+dock_icon+"%2); }"
                      "QDockWidget::close-button,"
-                     "QDockWidget::float-button { background: %3; border: 0px;}"
+                     "QDockWidget::float-button { border: 0px;}"
                      ).
-                     arg (bg_color.name ()).
                      arg (fg_color.name ()).
-                     arg (bg_icon);
+                     arg (_icon_color);
 #endif
     }
   else
     {
 #if defined (Q_OS_WIN32)
       css = QString ("");
-      css_button = QString ("background: transparent; border: 0px;");
 #else
       css = QString ("QDockWidget::title { text-align: center left;"
                      "                     padding: 0px 0px 0px 4px;}"
@@ -335,8 +345,11 @@ octave_dock_widget::handle_settings (const QSettings *settings)
 
 #if defined (Q_OS_WIN32)
   _title_widget->setStyleSheet (css);
+  css_button = QString ("background: transparent; border: 0px;");
   _dock_button->setStyleSheet (css_button);
   _close_button->setStyleSheet (css_button);
+  _dock_action->setIcon (QIcon (":/actions/icons/"+dock_icon+_icon_color+".png"));
+  _close_action->setIcon (QIcon (":/actions/icons/widget-close"+_icon_color+".png"));
 #else
   setStyleSheet (css);
 #endif

@@ -815,16 +815,17 @@ of the @code{unwind_protect} block because evaluation would stop at the
 point of the error and the statement to restore the value would not be
 executed.
 
+In addition to unwind_protect, Octave supports another form of
+exception handling, the @code{try} block.
+
+
 @node The try Statement
 @section The try Statement
 @cindex @code{try} statement
 @cindex @code{catch}
 @cindex @code{end_try_catch}
 
-In addition to unwind_protect, Octave supports another limited form of
-exception handling.
-
-The general form of a @code{try} block looks like this:
+The original form of a @code{try} block looks like this:
 
 @example
 @group
@@ -841,14 +842,27 @@ where @var{body} and @var{cleanup} are both optional and may contain any
 Octave expressions or commands.  The statements in @var{cleanup} are
 only executed if an error occurs in @var{body}.
 
-No warnings or error messages are printed while @var{body} is
-executing.  If an error does occur during the execution of @var{body},
-@var{cleanup} can use the function @code{lasterr} to access the text
-of the message that would have been printed.  This is the same
-as @code{eval (@var{try}, @var{catch})} but it is more efficient since
-the commands do not need to be parsed each time the @var{try} and
-@var{catch} statements are evaluated.  @xref{Errors and Warnings}, for more
-information about the @code{lasterr} function.
+No warnings or error messages are printed while @var{body} is executing.
+If an error does occur during the execution of @var{body}, @var{cleanup}
+can use the functions @code{lasterr} or @code{lasterror} to access the
+text of the message that would have been printed, as well as its
+identifier. The alternative form,
+
+@example
+@group
+try
+  @var{body}
+catch @var{err}
+  @var{cleanup}
+end_try_catch
+@end group
+@end example
+
+@noindent
+will automatically store the output of @code{lasterror} in the structure
+@var{err}. @xref{Errors and Warnings} for more information about the
+@code{lasterr} and @code{lasterror} functions.
+
 
 @node Continuation Lines
 @section Continuation Lines

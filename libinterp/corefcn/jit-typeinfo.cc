@@ -916,7 +916,7 @@ jit_operation::generate (const signature_vec&) const
 
 bool
 jit_operation::signature_cmp
-::operator() (const signature_vec *lhs, const signature_vec *rhs)
+::operator() (const signature_vec *lhs, const signature_vec *rhs) const
 {
   const signature_vec& l = *lhs;
   const signature_vec& r = *rhs;

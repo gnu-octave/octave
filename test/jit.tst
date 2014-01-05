@@ -26,7 +26,6 @@
 %! __old_jit_startcnt__ = jit_startcnt (1000);
 
 ## Test some simple cases that compile.
-
 %!testif HAVE_LLVM
 %! jit_failure_count (0)
 %! for i=1:1e6
@@ -96,7 +95,73 @@
 %! endparfor
 %! assert (i, 100);
 %! assert (jit_failure_count, 0);
+## Test some switch statements
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! do
+%!   switch (1)
+%!   end;
+%! until(1)
+%! assert (jit_failure_count, 0);
 
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! do
+%!   switch (1)
+%!   case 1
+%!     break;
+%!   end;
+%! until(1)
+%! assert (jit_failure_count, 0);
+
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! do
+%!   switch (1)
+%!   otherwise
+%!     break;
+%!   end;
+%! until(1)
+%! assert (jit_failure_count, 0);
+
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! do
+%!   switch (1)
+%!   case 1
+%!     break;
+%!   otherwise
+%!     break;
+%!   end;
+%! until(1)
+%! assert (jit_failure_count, 0);
+
+%!testif HAVE_LLVM
+%! jit_failure_count (0)
+%! i=0;
+%! a=0;
+%! b=0;
+%! do
+%!   i=i+1;
+%!   switch (i)
+%!   case 1
+%!     continue;
+%!   case 2
+%!     b=1;
+%!     continue;
+%!   case 4
+%!     break;
+%!   otherwise
+%!     a=a+5;
+%!   end;
+%!   a=a+1;
+%! until(0);
+%! assert (i, 4);
+%! assert (a, 6);
+%! assert (b, 1);
+%! assert (jit_failure_count, 0);
+
+## Some more complex calculations
 %!testif HAVE_LLVM
 %! jit_failure_count (0)
 %! inc = 1e-5;

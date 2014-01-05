@@ -823,9 +823,110 @@ jit_convert::visit_switch_case_list (tree_switch_case_list&)
 }
 
 void
-jit_convert::visit_switch_command (tree_switch_command&)
+jit_convert::visit_switch_command (tree_switch_command& cmd)
 {
-  throw jit_fail_exception ();
+  tree_switch_case_list *lst = cmd.case_list ();
+
+  // always visit switch expression
+  tree_expression *expr = cmd.switch_value ();
+  assert (expr && "Switch value can not be null");
+  jit_value *value = visit (expr);
+  assert (value);
+
+  size_t case_blocks_num = lst->size ();
+
+  if (! case_blocks_num)  // there's nothing to do
+    return;
+
+  // check for otherwise, it's interpreted as last 'else' condition
+  size_t has_otherwise = 0;
+  tree_switch_case *last = lst->back ();
+  if (last->is_default_case ())
+    has_otherwise = 1;
+
+  std::vector<jit_block *> entry_blocks (case_blocks_num + 1 - has_otherwise);
+
+  // the first entry point is always the actual block. afterward new blocks
+  // are created for every case and the otherwise branch
+  entry_blocks[0] = block;
+  for (size_t i = 1; i < case_blocks_num; ++i)
+    entry_blocks[i] = factory.create<jit_block> ("case_cond");
+
+  jit_block *tail = factory.create<jit_block> ("switch_tail");
+
+  // if there's no otherwise branch, the the 'else' of the last branch
+  // has to point to the tail
+  if (! has_otherwise)
+    entry_blocks[entry_blocks.size()-1] = tail;
+
+  // each branch in the case statement will have different breaks/continues
+  block_list current_breaks = breaks;
+  block_list current_continues = continues;
+  breaks.clear ();
+  continues.clear ();
+
+  size_t num_incomming = 0; // number of incomming blocks to our tail
+
+  tree_switch_case_list::iterator iter = lst->begin ();
+  for (size_t i = 0; i < case_blocks_num; ++iter, ++i)
+    {
+      tree_switch_case *twc = *iter;
+      block = entry_blocks[i]; // case_cond
+      assert (block);
+
+      if (i)
+        blocks.push_back (entry_blocks[i]);  // first block already pushed
+
+      if (! twc->is_default_case ())
+        {
+		  // compare result of switch expression with actual case label
+          tree_expression *te = twc->case_label ();
+          jit_value *label = visit (te);
+          assert(label);
+
+          const jit_operation& fn = jit_typeinfo::binary_op (octave_value::op_eq);
+          jit_value *cond = create_checked (fn, value, label);
+          assert(cond);
+
+          jit_call *check = create_checked (&jit_typeinfo::logically_true,
+                                            cond);
+
+          jit_block *body = factory.create<jit_block> ("case_body");
+          blocks.push_back (body);
+
+          block->append (factory.create<jit_cond_branch> (check, body,
+                                                          entry_blocks[i+1]));
+          block = body; // case_body
+        }
+
+      tree_statement_list *stmt_lst = twc->commands ();
+      assert(stmt_lst);
+
+      try
+        {
+          stmt_lst->accept (*this);
+          num_incomming++;
+          block->append (factory.create<jit_branch> (tail));
+        }
+      catch (const jit_break_exception&)
+        { }
+
+      // each branch in the case statement will have different breaks/continues
+      current_breaks.splice (current_breaks.end (), breaks);
+      current_continues.splice (current_continues.end (), continues);
+    }
+
+  // each branch in the case statement will have different breaks/continues
+  breaks.splice (breaks.end (), current_breaks);
+  continues.splice (continues.end (), current_continues);
+
+  if (num_incomming || ! has_otherwise)
+    {
+      blocks.push_back (tail);
+      block = tail; // switch_tail
+    }
+  else
+    throw jit_break_exception ();   // every branch broke
 }
 
 void

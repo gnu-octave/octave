@@ -452,8 +452,9 @@ Exit the innermost enclosing do, while or for loop.\n\
 
   pair_type ("case",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} case @{@var{value}@}\n\
-A case statement in an switch.  Octave cases are exclusive and do not\n\
+@deftypefn  {Keyword} {} case @var{value}\n\
+@deftypefnx {Keyword} {} case @{@var{value}, @dots{}@}\n\
+A case statement in a switch.  Octave cases are exclusive and do not\n\
 fall-through as do C-language cases.  A switch statement must have at least\n\
 one case.  See @code{switch} for an example.\n\
 @seealso{switch}\n\
@@ -461,7 +462,8 @@ one case.  See @code{switch} for an example.\n\
 
   pair_type ("catch",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} catch\n\
+@deftypefn  {Keyword} {} catch\n\
+@deftypefnx {Keyword} {} catch @var{value}\n\
 Begin the cleanup part of a try-catch block.\n\
 @seealso{try}\n\
 @end deftypefn"),
@@ -507,9 +509,10 @@ Alternate conditional test for an if block.  See @code{if} for an example.\n\
   pair_type ("end",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} end\n\
-Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
-@code{function} block.\n\
-@seealso{for, parfor, if, do, while, function}\n\
+Mark the end of any @code{for}, @code{parfor}, @code{if}, @code{do},\n\
+@code{while}, @code{function}, @code{switch}, @code{try}, or\n\
+@code{unwind_protect} block.\n\
+@seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}\n\
 @end deftypefn"),
 
   pair_type ("end_try_catch",
@@ -595,7 +598,7 @@ parameters.\n\
 
   pair_type ("global",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} global\n\
+@deftypefn {Keyword} {} global @var{var}\n\
 Declare variables to have global scope.\n\
 \n\
 @example\n\
@@ -676,7 +679,7 @@ Return from a function.\n\
   pair_type ("static",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} static\n\
-This function has been deprecated in favor of persistent.\n\
+This statement has been deprecated in favor of @code{persistent}.\n\
 @seealso{persistent}\n\
 @end deftypefn"),
 
@@ -716,7 +719,7 @@ is completed).\n\
 
   pair_type ("until",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} until\n\
+@deftypefn {Keyword} {} until (@var{cond})\n\
 End a do-until loop.  See @code{do} for an example.\n\
 @seealso{do}\n\
 @end deftypefn"),

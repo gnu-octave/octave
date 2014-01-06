@@ -943,6 +943,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
               err.assign ("message", last_error_message ());
               err.assign ("identifier", last_error_id ());
+              err.assign ("stack", last_error_stack ());
 
               if (! error_state)
                 ult.assign (octave_value::op_asn_eq, err);

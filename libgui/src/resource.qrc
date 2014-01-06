@@ -67,5 +67,8 @@
         <file>icons/widget-close.png</file>
         <file>icons/widget-dock.png</file>
         <file>icons/widget-undock.png</file>
+        <file>icons/widget-close-light.png</file>
+        <file>icons/widget-dock-light.png</file>
+        <file>icons/widget-undock-light.png</file>
     </qresource>
 </RCC>

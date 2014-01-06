@@ -372,7 +372,7 @@ private:
 
   struct signature_cmp
   {
-    bool operator() (const signature_vec *lhs, const signature_vec *rhs);
+    bool operator() (const signature_vec *lhs, const signature_vec *rhs) const;
   };
 
   typedef std::map<const signature_vec *, jit_function *, signature_cmp>

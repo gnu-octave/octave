@@ -232,6 +232,27 @@ object) relevant global values before and after the nested call.
     } \
   while (0)
 
+// When a command argument boundary is detected, push out the
+// current argument being built.  This one seems like a good
+// candidate for a function call.
+
+#define COMMAND_ARG_FINISH \
+  do \
+    { \
+      if (curr_lexer->string_text.empty ()) \
+        break; \
+ \
+      int retval = curr_lexer->handle_token (curr_lexer->string_text, \
+                                             SQ_STRING); \
+ \
+      curr_lexer->string_text = ""; \
+      curr_lexer->command_arg_paren_count = 0; \
+ \
+      yyless (0); \
+ \
+      return retval; \
+    } \
+  while (0)
 
 static bool Vdisplay_tokens = false;
 
@@ -283,54 +304,129 @@ ANY_INCLUDING_NL (.|{NL})
 // Help and other command-style functions.
 %}
 
-<COMMAND_START>{NL} {
-    curr_lexer->lexer_debug ("<COMMAND_START>{NL}");
+%{
+// Commands can be continued on a second line using the ellipsis.
+// If an argument is in construction, it is completed.
+%}
+
+<COMMAND_START>(\.\.\.)[^\r\n]*{NL} {
+    curr_lexer->lexer_debug ("<COMMAND_START>(\\.\\.\\.)[^\\r\\n]*{NL}");
+
+    COMMAND_ARG_FINISH;
 
     curr_lexer->input_line_number++;
     curr_lexer->current_input_column = 1;
 
-    curr_lexer->looking_for_object_index = false;
-    curr_lexer->at_beginning_of_statement = true;
-
-    curr_lexer->pop_start_state ();
-
-    return curr_lexer->count_token ('\n');
+    HANDLE_STRING_CONTINUATION;
   }
 
-<COMMAND_START>[\;\,] {
-    curr_lexer->lexer_debug ("<COMMAND_START>[\\;\\,]");
+%{
+// Commands normally end at the end of a line or a semicolon.
+%}
 
+<COMMAND_START>({CCHAR}[^\r\n]*)?{NL} {
+    curr_lexer->lexer_debug ("<COMMAND_START>({CCHAR}[^\\r\\n]*)?{NL}");
+
+    COMMAND_ARG_FINISH;
+
+    curr_lexer->input_line_number++;
+    curr_lexer->current_input_column = 1;
     curr_lexer->looking_for_object_index = false;
     curr_lexer->at_beginning_of_statement = true;
-
     curr_lexer->pop_start_state ();
 
-    if (strcmp (yytext, ",") == 0)
-      return curr_lexer->handle_token (',');
+    return curr_lexer->handle_token ('\n');
+  }
+
+<COMMAND_START>[\,\;] {
+    curr_lexer->lexer_debug( "<COMMAND_START>[\\,\\;]" );
+
+    if (yytext[0] != ',' || curr_lexer->command_arg_paren_count == 0)
+      {
+        COMMAND_ARG_FINISH;
+        curr_lexer->looking_for_object_index = false;
+        curr_lexer->at_beginning_of_statement = true;
+        curr_lexer->pop_start_state ();
+        return curr_lexer->handle_token (yytext[0]);
+      }
     else
-      return curr_lexer->handle_token (';');
+      curr_lexer->string_text += yytext;
+
+    curr_lexer->current_input_column += yyleng;
   }
+
+%{
+// Unbalanced parentheses serve as pseudo-quotes: they are included in
+// the final argument string, but they cause parentheses and quotes to
+// be slurped into that argument as well.
+%}
+
+<COMMAND_START>[\(\[\{]+ {
+    curr_lexer->lexer_debug ("<COMMAND_START>[\\(\\[\\{]+");
+
+    curr_lexer->command_arg_paren_count += yyleng;
+    curr_lexer->string_text += yytext;
+    curr_lexer->current_input_column += yyleng;
+  }
+
+<COMMAND_START>[\)\]\}]+ {
+   curr_lexer->lexer_debug ("<COMMAND_START>[\\)\\]\\}]+");
+
+   curr_lexer->command_arg_paren_count -= yyleng;
+   curr_lexer->string_text += yytext;
+   curr_lexer->current_input_column += yyleng;
+}
+
+%{
+// Handle quoted strings.  Quoted strings that are not separated by
+// whitespace from other argument text are combined with that previous
+// text.  For instance,
+//
+//   command 'text1'"text2"
+//
+// has a single argument text1text2, not two separate arguments.
+// That's why we must test to see if we are in command argument mode
+// when processing the end of a string.
+%}
 
 <COMMAND_START>[\"\'] {
     curr_lexer->lexer_debug ("<COMMAND_START>[\\\"\\']");
 
-    curr_lexer->at_beginning_of_statement = false;
+    if (curr_lexer->command_arg_paren_count == 0)
+      curr_lexer->begin_string (yytext[0] == '"'
+                                ? DQ_STRING_START : SQ_STRING_START);
+    else
+      curr_lexer->string_text += yytext;
 
-    curr_lexer->current_input_column++;
-
-    curr_lexer->begin_string (yytext[0] == '"'
-                              ? DQ_STRING_START : SQ_STRING_START);
+    curr_lexer->current_input_column += yyleng;
   }
 
-<COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
-    curr_lexer->lexer_debug ("<COMMAND_START>[^#% \\t\\r\\n\\;\\,\\\"\\'][^ \\t\\r\\n\\;\\,]*{S}*");
+%{
+// In standard command argument processing, whitespace separates
+// arguments.  In the presence of unbalanced parentheses, it is
+// incorporated into the argument.
+%}
 
-    std::string tok = strip_trailing_whitespace (yytext);
+<COMMAND_START>{S}+ {
+    curr_lexer->lexer_debug ("<COMMAND_START>{S}+");
 
-    curr_lexer->looking_for_object_index = false;
-    curr_lexer->at_beginning_of_statement = false;
+    if (curr_lexer->command_arg_paren_count == 0)
+      COMMAND_ARG_FINISH;
+    else
+      curr_lexer->string_text += yytext;
 
-    return curr_lexer->handle_token (tok, SQ_STRING);
+    curr_lexer->current_input_column += yyleng;
+  }
+
+%{
+// Everything else is slurped into the command arguments.
+%}
+
+<COMMAND_START>([\.]|[^#% \t\r\n\,\;\"\'\(\[\{\}\]\)]+) {
+    curr_lexer->lexer_debug ("<COMMAND_START>[^#% \\t\\r\\n\\.\\,\\;\\\"\\'\\(\\[\\{\\}\\]\\)]+");
+
+    curr_lexer->string_text += yytext;
+    curr_lexer->current_input_column += yyleng;
   }
 
 <MATRIX_START>{S}* {
@@ -678,17 +774,20 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->pop_start_state ();
 
-    curr_lexer->looking_for_object_index = true;
-    curr_lexer->at_beginning_of_statement = false;
+    if (curr_lexer->start_state() != COMMAND_START)
+      {
+        curr_lexer->looking_for_object_index = true;
+        curr_lexer->at_beginning_of_statement = false;
 
-    curr_lexer->push_token (new token (DQ_STRING,
-                                       curr_lexer->string_text,
-                                       curr_lexer->string_line,
-                                       curr_lexer->string_column));
+        curr_lexer->push_token (new token (DQ_STRING,
+                                           curr_lexer->string_text,
+                                           curr_lexer->string_line,
+                                           curr_lexer->string_column));
 
-    curr_lexer->string_text = "";
+        curr_lexer->string_text = "";
 
-    return curr_lexer->count_token_internal (DQ_STRING);
+        return curr_lexer->count_token_internal (DQ_STRING);
+      }
   }
 
 <DQ_STRING_START>\\[0-7]{1,3} {
@@ -861,17 +960,20 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->pop_start_state ();
 
-    curr_lexer->looking_for_object_index = true;
-    curr_lexer->at_beginning_of_statement = false;
+    if (curr_lexer->start_state() != COMMAND_START)
+      {
+        curr_lexer->looking_for_object_index = true;
+        curr_lexer->at_beginning_of_statement = false;
 
-    curr_lexer->push_token (new token (SQ_STRING,
-                                       curr_lexer->string_text,
-                                       curr_lexer->string_line,
-                                       curr_lexer->string_column));
+        curr_lexer->push_token (new token (SQ_STRING,
+                                           curr_lexer->string_text,
+                                           curr_lexer->string_line,
+                                           curr_lexer->string_column));
 
-    curr_lexer->string_text = "";
+        curr_lexer->string_text = "";
 
-    return curr_lexer->count_token_internal (SQ_STRING);
+        return curr_lexer->count_token_internal (SQ_STRING);
+      }
   }
 
 <SQ_STRING_START>[^\'\n\r]+ {
@@ -1851,6 +1953,7 @@ lexical_feedback::reset (void)
   fcn_file_full_name = "";
   looking_at_object_index.clear ();
   looking_at_object_index.push_front (false);
+  command_arg_paren_count = 0;
 
   while (! parsed_function_name.empty ())
     parsed_function_name.pop ();
@@ -3241,3 +3344,4 @@ octave_push_lexer::fill_flex_buffer (char *buf, unsigned max_size)
 
   return status;
 }
+

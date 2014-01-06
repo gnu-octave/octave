@@ -32,6 +32,7 @@ export TEXMFCNF
 
 dist_man_MANS = \
   mkoctfile.1 \
+  octave-cli.1 \
   octave-config.1 \
   octave.1
 

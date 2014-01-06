@@ -71,6 +71,9 @@ octave_gui_ICONS = \
   src/icons/widget-close.png \
   src/icons/widget-dock.png \
   src/icons/widget-undock.png \
+  src/icons/widget-close-light.png \
+  src/icons/widget-dock-light.png \
+  src/icons/widget-undock-light.png \
   src/icons/zoom-in.png \
   src/icons/zoom-out.png
 

@@ -110,13 +110,15 @@ private slots:
 private:
 
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
-  QAction *_dock_action;
   bool _floating;
+  QString _icon_color;
 
 #if defined (Q_OS_WIN32)
   QWidget *_title_widget;
   QToolButton *_dock_button;
   QToolButton *_close_button;
+  QAction *_dock_action;
+  QAction *_close_action;
 #endif
 
 };

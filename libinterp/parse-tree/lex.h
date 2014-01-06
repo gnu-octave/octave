@@ -270,9 +270,9 @@ public:
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
-      block_comment_nesting_level (0), token_count (0),
-      current_input_line (), comment_text (), help_text (),
-      string_text (), string_line (0), string_column (0),
+      block_comment_nesting_level (0), command_arg_paren_count (0),
+      token_count (0), current_input_line (), comment_text (),
+      help_text (), string_text (), string_line (0), string_column (0),
       fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
       symtab_context (), nesting_level (), tokens ()
@@ -396,6 +396,9 @@ public:
 
   // nestng level for blcok comments.
   int block_comment_nesting_level;
+
+  // Parenthesis count for command argument parsing.
+  int command_arg_paren_count;
 
   // Count of tokens recognized by this lexer since initialized or
   // since the last reset.

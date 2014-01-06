@@ -29,7 +29,7 @@ function deps_cell = fix_depends (depends)
   deps = strtrim (ostrsplit (tolower (depends), ","));
   deps_cell = cell (1, length (deps));
   dep_pat = ...
-  '\s*(?<name>\w+)+\s*(\(\s*(?<op>[<>=]+)\s*(?<ver>\d+\.\d+(\.\d+)*)\s*\))*\s*';
+  '\s*(?<name>[-\w]+)\s*(\(\s*(?<op>[<>=]+)\s*(?<ver>\d+\.\d+(\.\d+)*)\s*\))*\s*';
 
   ## For each dependency.
   for i = 1:length (deps)

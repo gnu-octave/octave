@@ -176,6 +176,22 @@ endfor
 @end group
 @end example
 
+@noindent
+Alternatively, the output of the @code{lasterror} function can be found
+in a variable indicated immediately after the @code{catch} keyword, as
+in the example below showing how to redirect an error as a warning:
+
+@example
+@group
+try
+  @dots{}
+catch err
+  warning(err.identifier, err.message);
+  @dots{}
+end_try_catch
+@end group
+@end example
+
 @DOCSTRING(lasterror)
 
 @DOCSTRING(lasterr)

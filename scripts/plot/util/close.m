@@ -105,5 +105,4 @@ endfunction
 %!error <first argument must be "all" or a figure> close ({"all"})
 %!error <first argument must be "all" or a figure> close ("all_and_more")
 %!error <first argument must be "all" or a figure> close (-1)
-%!error <expecting argument to be "all hidden"> close "all" hid"
-
+%!error <expecting argument to be "all hidden"> close all hid

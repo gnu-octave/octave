@@ -541,7 +541,6 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   // the condition check for the ith clause. For the else, it is simple the
   // else body. If there is no else body, then it is padded with the tail
   std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
-  std::vector<jit_block *> branch_blocks (lst.size (), 0); // final blocks
   entry_blocks[0] = block;
 
   // we need to construct blocks first, because they have jumps to eachother

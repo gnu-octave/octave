@@ -560,10 +560,6 @@ maximum value(s).  Thus,\n\
 %! assert (ndims(i), 2);
 %! assert (i, [1, 1; 1, 1]);
 
-## Test for bug #40743
-%!assert (max (zeros (1,0), ones (1,1)), zeros (1,0))
-%!assert (max (sparse (zeros (1,0)), sparse (ones (1,1))), sparse (zeros (1,0)))
-
 %!error max ()
 %!error max (1, 2, 3, 4)
 */

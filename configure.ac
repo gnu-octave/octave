@@ -21,17 +21,41 @@ dnl Copyright (C) 1993-2013 John W. Eaton
 AC_PREREQ([2.62])
 AC_INIT([GNU Octave], [4.1.0+], [http://octave.org/bugs.html], [octave])
 
+dnl Note that the version number is duplicated here and in AC_INIT
+dnl because AC_INIT requires it to be static, not computed from
+dnl shell variables.
+OCTAVE_MAJOR_VERSION=3
+OCTAVE_MINOR_VERSION=8
+OCTAVE_PATCH_VERSION=0
+
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
-OCTAVE_API_VERSION_NUMBER="49"
-OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2013-12-27"
+
 OCTAVE_COPYRIGHT="Copyright (C) 2013 John W. Eaton and others."
+
+OCTAVE_RELEASE_DATE="2013-12-27"
+
+## The "API version" is used as a way of checking that interfaces in the
+## liboctave and libinterp libraries haven't changed in a backwardly
+## incompatible way when loading .oct files.  A better way to do that is
+## with library versioning, but not all systems support that.
+## NOTE: This macro will be removed in a future version of Octave.  If
+## you insist on checking for features using a version number, use the
+## OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, and
+## OCTAVE_PATCH_VERSION macros instead.
+## FIXME: Since we also set libtool versions for liboctave and
+## libinterp, perhaps we should be computing the "api version" from
+## those versions numbers in some way instead of setting it
+## independently here.
+OCTAVE_API_VERSION="api-v49+"
+
+AC_SUBST(OCTAVE_MAJOR_VERSION)
+AC_SUBST(OCTAVE_MINOR_VERSION)
+AC_SUBST(OCTAVE_PATCH_VERSION)
 AC_SUBST(OCTAVE_VERSION)
-AC_SUBST(OCTAVE_API_VERSION_NUMBER)
-AC_SUBST(OCTAVE_API_VERSION)
-AC_SUBST(OCTAVE_RELEASE_DATE)
 AC_SUBST(OCTAVE_COPYRIGHT)
+AC_SUBST(OCTAVE_RELEASE_DATE)
+AC_SUBST(OCTAVE_API_VERSION)
 
 dnl FIXME: We should auto-insert the Mercurial changeset ID into the
 dnl        AC_REVISION field whenever configure.ac is modified.

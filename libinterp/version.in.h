@@ -26,6 +26,20 @@ along with Octave; see the file COPYING.  If not, see
 
 #define OCTAVE_VERSION %OCTAVE_VERSION%
 
+#define OCTAVE_MAJOR_VERSION %OCTAVE_MAJOR_VERSION%
+
+#define OCTAVE_MINOR_VERSION %OCTAVE_MINOR_VERSION%
+
+#define OCTAVE_PATCH_VERSION %OCTAVE_PATCH_VERSION%
+
+// The "API version" is used as a way of checking that interfaces in the
+// liboctave and libinterp libraries haven't changed in a backwardly
+// incompatible way when loading .oct files.  A better way to do that is
+// with library versioning, but not all systems support that.
+// NOTE: This macro will be removed in a future version of Octave.  If
+// you insist on checking for features using a version number, use the
+// OCTAVE_MAJOR_VERSION, OCTAVE_MINOR_VERSION, and
+// OCTAVE_PATCH_VERSION macros instead.
 #define OCTAVE_API_VERSION %OCTAVE_API_VERSION%
 
 #define OCTAVE_RELEASE_DATE %OCTAVE_RELEASE_DATE%

@@ -178,7 +178,14 @@ get_user_code (const std::string& fname = std::string ())
     dbg_fcn = octave_call_stack::caller_user_code ();
   else
     {
-      octave_value fcn = symbol_table::find_function (fname);
+      std::string name = fname;
+
+      size_t name_len = name.length ();
+
+      if (! name.empty () && name_len > 2 && name.substr (name_len-2) == ".m")
+        name = name.substr (0, name_len-2);
+
+      octave_value fcn = symbol_table::find_function (name);
 
       if (fcn.is_defined () && fcn.is_user_code ())
         dbg_fcn = fcn.user_code_value ();

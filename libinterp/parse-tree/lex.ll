@@ -43,7 +43,7 @@ object) relevant global values before and after the nested call.
 
 }
 
-%s COMMAND_START
+%x COMMAND_START
 %s MATRIX_START
 
 %x INPUT_FILE_START
@@ -325,7 +325,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 <COMMAND_START>({CCHAR}[^\r\n]*)?{NL} {
-    curr_lexer->lexer_debug ("<COMMAND_START>({CCHAR}[^\\r\\n]*)?{NL}");
+    curr_lexer->lexer_debug ("<COMMAND_START>({CCHAR}[^\\r\\n])?{NL}");
 
     COMMAND_ARG_FINISH;
 
@@ -339,7 +339,7 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 <COMMAND_START>[\,\;] {
-    curr_lexer->lexer_debug( "<COMMAND_START>[\\,\\;]" );
+    curr_lexer->lexer_debug ("<COMMAND_START>[\\,\\;]");
 
     if (yytext[0] != ',' || curr_lexer->command_arg_paren_count == 0)
       {
@@ -361,7 +361,7 @@ ANY_INCLUDING_NL (.|{NL})
 // be slurped into that argument as well.
 %}
 
-<COMMAND_START>[\(\[\{]+ {
+<COMMAND_START>[\(\[\{]* {
     curr_lexer->lexer_debug ("<COMMAND_START>[\\(\\[\\{]+");
 
     curr_lexer->command_arg_paren_count += yyleng;
@@ -369,7 +369,7 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->current_input_column += yyleng;
   }
 
-<COMMAND_START>[\)\]\}]+ {
+<COMMAND_START>[\)\]\}]* {
    curr_lexer->lexer_debug ("<COMMAND_START>[\\)\\]\\}]+");
 
    curr_lexer->command_arg_paren_count -= yyleng;
@@ -407,8 +407,8 @@ ANY_INCLUDING_NL (.|{NL})
 // incorporated into the argument.
 %}
 
-<COMMAND_START>{S}+ {
-    curr_lexer->lexer_debug ("<COMMAND_START>{S}+");
+<COMMAND_START>{S}* {
+    curr_lexer->lexer_debug ("<COMMAND_START>{S}*");
 
     if (curr_lexer->command_arg_paren_count == 0)
       COMMAND_ARG_FINISH;
@@ -422,8 +422,8 @@ ANY_INCLUDING_NL (.|{NL})
 // Everything else is slurped into the command arguments.
 %}
 
-<COMMAND_START>(\.|[^#% \t\r\n\.\,\;\"\'\(\[\{\}\]\)]+) {
-    curr_lexer->lexer_debug ("<COMMAND_START>(\\.|[^#% \\t\\r\\n\\.\\,\\;\\\"\\'\\(\\[\\{\\}\\]\\)]+)");
+<COMMAND_START>([\.]|[^#% \t\r\n\.\,\;\"\'\(\[\{\}\]\)]*) {
+    curr_lexer->lexer_debug ("<COMMAND_START>([\.]|[^#% \\t\\r\n\\.\\,\\;\\\"\\'\\(\\[\\{\\}\\]\\)]*");
 
     curr_lexer->string_text += yytext;
     curr_lexer->current_input_column += yyleng;

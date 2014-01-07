@@ -20,10 +20,19 @@
 @chapter Linear Algebra
 @cindex linear algebra
 
-This chapter documents the linear algebra functions of Octave.
-Reference material for many of these functions may be found in
-Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
-1989, and in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992.
+This chapter documents the linear algebra functions provided in Octave.
+Reference material for many of these functions may be found in Golub and
+Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins, 1989, and
+in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992. The
+@cite{@sc{lapack} Users' Guide} is available at:
+@cite{http://www.netlib.org/lapack/lug/}
+
+A common text for engineering courses is G. Strang, @cite{Linear Algebra
+and Its Applications, 4th Edition}. It has become a widespread reference
+for linear algebra. An alternative is P. Lax @cite{Linear Algebra and
+Its Applications}, and also is a good choice. It claims to be suitable
+for high school students with substantial mathematical interests as well
+as first-year undergraduates.
 
 @menu
 * Techniques Used for Linear Algebra::
@@ -37,18 +46,18 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 @section Techniques Used for Linear Algebra
 @cindex linear algebra, techniques
 
-Octave includes a polymorphic solver, that selects an appropriate
-matrix factorization depending on the properties of the matrix itself. 
-Generally, the cost of determining the matrix type is small relative to 
-the cost of factorizing the matrix itself, but in any case the matrix 
-type is cached once it is calculated, so that it is not re-determined 
-each time it is used in a linear equation.
+Octave includes a polymorphic solver that selects an appropriate matrix
+factorization depending on the properties of the matrix itself.
+Generally, the cost of determining the matrix type is small relative to
+the cost of factorizing the matrix itself. In any case the matrix type
+is cached once it is calculated so that it is not re-determined each
+time it is used in a linear equation.
 
-The selection tree for how the linear equation is solve or a matrix
-inverse is form is given by
+The selection tree for how the linear equation is solved or a matrix
+inverse is formed is given by:
 
 @enumerate 1
-@item If the matrix is upper or lower triangular sparse a forward or
+@item If the matrix is upper or lower triangular sparse use a forward or
 backward substitution using the @sc{lapack} xTRTRS function, and goto 4.
 
 @c Permuted triangular matrices currently disabled in the code
@@ -76,10 +85,10 @@ will lead to unpredictable results, and so @code{matrix_type} should be
 used with care.
 
 It should be noted that the test for whether a matrix is a candidate for
-Cholesky@tie{}factorization, performed above and by the @code{matrix_type}
-function, does not give a certainty that the matrix is
+Cholesky@tie{}factorization, performed above, and by the @code{matrix_type}
+function, does not make certain that the matrix is
 Hermitian.  However, the attempt to factorize the matrix will quickly
-flag a non-Hermitian matrix.
+detect a non-Hermitian matrix.
 
 @node Basic Matrix Functions
 @section Basic Matrix Functions

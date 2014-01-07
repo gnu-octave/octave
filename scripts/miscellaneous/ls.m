@@ -60,24 +60,15 @@ function retval = ls (varargin)
 
   if (nargin > 0)
     args = tilde_expand (varargin);
-    is_dos = (ispc () && ! isunix ());
-    if (is_dos)
-      optsep = "/";
-    else
-      optsep = "-";
-    endif
-    idx = ! strncmp (args, optsep, 1);
-    ## Enclose paths, potentially having spaces, in double quotes:
-    args(idx) = strcat ('"', args(idx), '"');    
-    if (is_dos)
+    if (ispc () && ! isunix ())
+      idx = ! strncmp (args, '/', 1);
+      ## Enclose paths, potentially having spaces, in double quotes:
+      args(idx) = strcat ('"', args(idx), '"');    
       ## shell (cmd.exe) on MinGW uses '^' as escape character
-      args = regexprep (args, '([^\w.*? -])', '^$1');
-      ## Strip UNIX directory character which looks like an option to dir cmd.
-      if (args{end}(end) == '/')
-        args{end}(end) = "";
-      endif
+      args = regexprep (args, '([^\w.*?])', '^$1');
     else
-      args = regexprep (args, '([^\w.*? -])', '\\$1');
+      ## Escape any special characters in filename
+      args = regexprep (args, '([^\w.*?-[]])', '\\$1');
     endif
     args = sprintf ("%s ", args{:});
   else

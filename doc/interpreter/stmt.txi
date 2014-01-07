@@ -846,7 +846,7 @@ No warnings or error messages are printed while @var{body} is executing.
 If an error does occur during the execution of @var{body}, @var{cleanup}
 can use the functions @code{lasterr} or @code{lasterror} to access the
 text of the message that would have been printed, as well as its
-identifier. The alternative form,
+identifier.  The alternative form,
 
 @example
 @group
@@ -860,7 +860,7 @@ end_try_catch
 
 @noindent
 will automatically store the output of @code{lasterror} in the structure
-@var{err}. @xref{Errors and Warnings} for more information about the
+@var{err}.  @xref{Errors and Warnings}, for more information about the
 @code{lasterr} and @code{lasterror} functions.
 
 

@@ -165,15 +165,12 @@ private:
 
   struct bp_info
   {
-    bp_info (const QString& f, const QString& d, const QString& fn, int l)
-      : file (f.toStdString ()), dir (d.toStdString ()),
-        function_name (fn.toStdString ()), line (l)
-    { }
+    bp_info (const QString& fname, int l = 0);
 
+    int line;
     std::string file;
     std::string dir;
     std::string function_name;
-    int line;
   };
 
   bool valid_file_name (const QString& file=QString ());

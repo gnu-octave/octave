@@ -51,6 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-editor-tab.h"
 #include "file-editor.h"
 
+#include "file-ops.h"
+
 #include "debug.h"
 #include "octave-qt-link.h"
 #include "version.h"
@@ -616,17 +618,40 @@ file_editor_tab::remove_all_breakpoints_callback (const bp_info& info)
     bp_table::remove_all_breakpoints_in_file (info.function_name, true);
 }
 
+file_editor_tab::bp_info::bp_info (const QString& fname, int l)
+  : line (l), file (fname.toStdString ())
+{
+  QFileInfo file_info (fname);
+
+  QString q_dir = file_info.absolutePath ();
+  QString q_function_name = file_info.fileName ();
+
+  // We have to cut off the suffix, because octave appends it.
+  q_function_name.chop (file_info.suffix ().length () + 1);
+
+  dir = q_dir.toStdString ();
+  function_name = q_function_name.toStdString ();
+
+  // Is the last component of DIR @foo?  If so, strip it and prepend it
+  // to the name of the function.
+
+  size_t pos = dir.rfind (file_ops::dir_sep_chars ());
+
+  if (pos != std::string::npos && pos < dir.length () - 1)
+    {
+      if (dir[pos+1] == '@')
+        {
+          function_name = file_ops::concat (dir.substr (pos+1), function_name);
+
+          dir = dir.substr (0, pos);
+        }
+    }
+}
+
 void
 file_editor_tab::request_add_breakpoint (int line)
 {
-  QFileInfo file_info (_file_name);
-  QString dir = file_info.absolutePath ();
-  QString function_name = file_info.fileName ();
-
-  // We have to cut off the suffix, because octave appends it.
-  function_name.chop (file_info.suffix ().length () + 1);
-
-  bp_info info (_file_name, dir, function_name, line+1);
+  bp_info info (_file_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::add_breakpoint_callback, info);
@@ -635,14 +660,7 @@ file_editor_tab::request_add_breakpoint (int line)
 void
 file_editor_tab::request_remove_breakpoint (int line)
 {
-  QFileInfo file_info (_file_name);
-  QString dir = file_info.absolutePath ();
-  QString function_name = file_info.fileName ();
-
-  // We have to cut off the suffix, because octave appends it.
-  function_name.chop (file_info.suffix ().length () + 1);
-
-  bp_info info (_file_name, dir, function_name, line+1);
+  bp_info info (_file_name, line+1);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_breakpoint_callback, info);
@@ -703,14 +721,7 @@ file_editor_tab::remove_all_breakpoints (const QWidget *ID)
   if (ID != this)
     return;
 
-  QFileInfo file_info (_file_name);
-  QString dir = file_info.absolutePath ();
-  QString function_name = file_info.fileName ();
-
-  // We have to cut off the suffix, because octave appends it.
-  function_name.chop (file_info.suffix ().length () + 1);
-
-  bp_info info (_file_name, dir, function_name, 0);
+  bp_info info (_file_name);
 
   octave_link::post_event
     (this, &file_editor_tab::remove_all_breakpoints_callback, info);

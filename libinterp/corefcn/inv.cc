@@ -213,11 +213,22 @@ of a sparse matrix if possible.\n\
 
       retval(0) = result;
 
-      volatile double xrcond = isfloat ? frcond : rcond;
-      xrcond += 1.0;
-      if (nargout < 2 && (info == -1 || xrcond == 1.0))
+      bool rcond_plus_one_eq_one = false;
+
+      if (isfloat)
+        {
+          volatile float xrcond = frcond;
+          rcond_plus_one_eq_one = xrcond + 1.0F == 1.0F;
+        }
+      else
+        {
+          volatile double xrcond = rcond;
+          rcond_plus_one_eq_one = xrcond + 1.0 == 1.0;
+        }
+
+      if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
         warning ("inverse: matrix singular to machine precision, rcond = %g",
-                 rcond);
+                 (isfloat ? frcond : rcond));
     }
 
   return retval;
@@ -230,6 +241,16 @@ of a sparse matrix if possible.\n\
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
 %!error <argument must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
+
+%!test
+%! [xinv, rcond] = inv (single ([1,2;3,4]));
+%! assert (isa (xinv, 'single'));
+%! assert (isa (rcond, 'single'));
+
+%!test
+%! [xinv, rcond] = inv ([1,2;3,4]);
+%! assert (isa (xinv, 'double'));
+%! assert (isa (rcond, 'double'));
 */
 
 // FIXME: this should really be done with an alias, but

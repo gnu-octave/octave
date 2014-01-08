@@ -1184,14 +1184,22 @@ void QConsolePrivate::sendConsoleText (const QString& s)
         {
           if (c == L'\r' && i < (len - 1) && s.at (i+1) == L'\n')
             i++;
-          if (nEvents)
-            {
-              WriteConsoleInput (hStdIn, events, nEvents, &written);
-              nEvents = 0;
-              ZeroMemory (events, sizeof (events));
-            }
-          PostMessage (m_consoleWindow, WM_KEYDOWN, VK_RETURN, 0x001C0001);
-          PostMessage (m_consoleWindow, WM_KEYDOWN, VK_RETURN, 0xC01C0001);
+
+          // add new line
+          events[nEvents].EventType                        = KEY_EVENT;
+          events[nEvents].Event.KeyEvent.bKeyDown          = TRUE;
+          events[nEvents].Event.KeyEvent.wRepeatCount      = 1;
+          events[nEvents].Event.KeyEvent.wVirtualKeyCode   =
+            VK_RETURN;
+          events[nEvents].Event.KeyEvent.wVirtualScanCode  = 0;
+          events[nEvents].Event.KeyEvent.uChar.UnicodeChar = c.unicode ();
+          events[nEvents].Event.KeyEvent.dwControlKeyState = 0;
+          nEvents++;
+ 
+          WriteConsoleInput (hStdIn, events, nEvents, &written);
+          nEvents = 0;
+          ZeroMemory (events, sizeof (events));
+ 
         }
       else
         {

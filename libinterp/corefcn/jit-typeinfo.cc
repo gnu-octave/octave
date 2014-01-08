@@ -872,7 +872,7 @@ Array<octave_idx_type>
 jit_operation::to_idx (const std::vector<jit_type*>& types) const
 {
   octave_idx_type numel = types.size ();
-  numel = std::max (2, numel);
+  numel = std::max (numel, static_cast<octave_idx_type>(2));
 
   Array<octave_idx_type> idx (dim_vector (1, numel));
   for (octave_idx_type i = 0; i < static_cast<octave_idx_type> (types.size ());

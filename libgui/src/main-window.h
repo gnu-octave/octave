@@ -255,19 +255,13 @@ private:
 
   void change_directory_callback (const std::string& directory);
 
-  void debug_continue_callback (void);
-
-  void debug_step_into_callback (void);
-
-  void debug_step_over_callback (void);
-
-  void debug_step_out_callback (void);
-
-  void debug_quit_callback (void);
-
   void exit_callback (void);
 
-  void queue_command (QString command);  // Data models.
+  void queue_command (QString command);
+
+  void queue_debug (QString command);
+
+  void execute_debug_callback ();
 
   workspace_model *_workspace_model;
 
@@ -348,6 +342,11 @@ private:
   QStringList *_cmd_queue;
   QSemaphore   _cmd_processing;
   QMutex       _cmd_queue_mutex;
+
+  // semaphore to synchronize debug signals and related callbacks
+  QStringList *_dbg_queue;
+  QSemaphore   _dbg_processing;
+  QMutex       _dbg_queue_mutex;
 };
 
 class news_reader : public QObject

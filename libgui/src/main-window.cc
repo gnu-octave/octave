@@ -88,7 +88,10 @@ main_window::main_window (QWidget *p)
     _clipboard (QApplication::clipboard ()),
     _cmd_queue (new QStringList ()),  // no command pending
     _cmd_processing (1),
-    _cmd_queue_mutex ()
+    _cmd_queue_mutex (),
+    _dbg_queue (new QStringList ()),  // no debug pending
+    _dbg_processing (1),
+    _dbg_queue_mutex ()
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -770,31 +773,31 @@ main_window::handle_exit_debugger (void)
 void
 main_window::debug_continue (void)
 {
-  octave_link::post_event (this, &main_window::debug_continue_callback);
+  queue_debug ("cont");
 }
 
 void
 main_window::debug_step_into (void)
 {
-  octave_link::post_event (this, &main_window::debug_step_into_callback);
+  queue_debug ("in");
 }
 
 void
 main_window::debug_step_over (void)
 {
-  octave_link::post_event (this, &main_window::debug_step_over_callback);
+  queue_debug ("step");
 }
 
 void
 main_window::debug_step_out (void)
 {
-  octave_link::post_event (this, &main_window::debug_step_out_callback);
+  queue_debug ("out");
 }
 
 void
 main_window::debug_quit (void)
 {
-  octave_link::post_event (this, &main_window::debug_quit_callback);
+  queue_debug ("quit");
 }
 
 void
@@ -2091,15 +2094,7 @@ main_window::change_directory_callback (const std::string& directory)
   Fcd (ovl (directory));
 }
 
-void
-main_window::debug_continue_callback (void)
-{
-  Fdbcont ();
-
-  command_editor::interrupt (true);
-}
-
-// The next three callbacks are invoked by GUI buttons.  Those buttons
+// The next callbacks are invoked by GUI buttons.  Those buttons
 // should only be active when we are doing debugging, which means that
 // Octave is waiting for input in get_debug_input.  Calling
 // command_editor::interrupt will force readline to return even if it
@@ -2107,35 +2102,46 @@ main_window::debug_continue_callback (void)
 // allowing the evaluator to continue and execute the next statement.
 
 void
-main_window::debug_step_into_callback (void)
+main_window::queue_debug (QString debug_cmd)
 {
-  Fdbstep (ovl ("in"));
+  _dbg_queue_mutex.lock ();
+  _dbg_queue->append (debug_cmd);   // queue command
+  _dbg_queue_mutex.unlock ();
 
-  command_editor::interrupt (true);
+  if (_dbg_processing.tryAcquire ())  // if callback not processing, post event
+    octave_link::post_event (this, &main_window::execute_debug_callback);
 }
 
 void
-main_window::debug_step_over_callback (void)
+main_window::execute_debug_callback ()
 {
-  Fdbstep ();
+  bool repost = false;          // flag for reposting event for this callback
 
-  command_editor::interrupt (true);
-}
+  if (!_dbg_queue->isEmpty ())  // list can not be empty here, just to make sure
+    {
+      _dbg_queue_mutex.lock (); // critical path
+      QString debug = _dbg_queue->takeFirst ();
+      if (_dbg_queue->isEmpty ())
+        _dbg_processing.release ();  // cmd queue empty, processing will stop
+      else
+        repost = true;          // not empty, repost at end
+      _dbg_queue_mutex.unlock ();
 
-void
-main_window::debug_step_out_callback (void)
-{
-  Fdbstep (ovl ("out"));
+      if (debug == "step")
+        Fdbstep ();
+      else if (debug == "cont")
+        Fdbcont ();
+      else if (debug == "quit")
+        Fdbquit ();
+      else
+        Fdbstep (ovl (debug.toStdString ()));
 
-  command_editor::interrupt (true);
-}
+      command_editor::interrupt (true);
+    }
 
-void
-main_window::debug_quit_callback (void)
-{
-  Fdbquit ();
+  if (repost)  // queue not empty, so repost event for further processing
+    octave_link::post_event (this, &main_window::execute_debug_callback);
 
-  command_editor::interrupt (true);
 }
 
 void

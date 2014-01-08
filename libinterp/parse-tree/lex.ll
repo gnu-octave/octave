@@ -2622,7 +2622,15 @@ octave_base_lexer::handle_continuation (void)
     {
       comment_text = &yytxt[offset];
 
+      // finish_comment sets at_beginning_of_statement to true but
+      // that's not be correct if we are handling a continued
+      // statement.  Preserve the current state.
+
+      bool saved_bos = at_beginning_of_statement;
+
       finish_comment (octave_comment_elt::end_of_line);
+
+      at_beginning_of_statement = saved_bos;
     }
 
   decrement_promptflag ();

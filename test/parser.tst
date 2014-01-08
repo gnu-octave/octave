@@ -283,3 +283,7 @@
 %! xyz(1) = 1; xyz /= 1;
 %! assert (xyz, 1);
 
+%!test
+%! a = [97 ... % comment
+%!      'b'];
+%! assert (a, 'ab');

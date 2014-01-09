@@ -62,7 +62,7 @@
         <translation>indicador</translation>
     </message>
     <message>
-        <location filename="../src/main-window.cc" line="+1894"/>
+        <location filename="../src/main-window.cc" line="+1897"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;strong&gt;Um aviso sobre a nova interface gráfica do Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Uma das funcionalidades novas mais importantes no Octave versão 3.8 é a interface gráfica (GUI).  É uma coisa que os usuários solicitaram muito frequentemente nos últimos anos, e agora ela está quase pronta.  Mas como ela não está tão bem acabada quanto gostaríamos, decidimos esperar até a próxima versão 4.0 antes de tornar a GUI a interface padrão.&lt;/p&gt;&lt;p&gt;Dado o tempo transcorrido e o número de correções e melhorias desde a última versão, também decidimos não adiar mais o lançamento de todas essas novidades, ao invés ficar aperfeiçoando a GUI.  Portanto, aproveite a versão 3.8 do Octave e a prévia da nova GUI!  Acreditamos que ela está funcionando razoavelmente bem, apesar de alguns aspectos obviamente inacabados, além de muitas melhorias possíveis.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Ajude-nos&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Há muitas formas de você nos ajudar a corrigir os problemas que persistirem, a finalizar a GUI e a melhorar a usabilidade do Octave em geral, tanto para usuários iniciantes quanto para aqueles mais experientes (os links abaixo serão abertos no seu navegador padrão do sistema; o conteúdo poderá estar em inglês):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Se você for um desenvolvedor de software talentoso, ajude-nos contribuindo com o seu tempo, auxiliando no &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;desenvolvimento do Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Se o Octave não estiver funcionando corretamente, convidamos-lhe a &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;relatar os problemas&lt;/a&gt; que você vier a encontrar.&lt;/li&gt;&lt;li&gt;Quer você seja um usuário ou um desenvolvedor, você poderia &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;fazer uma doação&lt;/a&gt; para auxiliar no financiamento do projeto.  Afinal, o desenvolvimento do Octave demanda tempo e conhecimento consideráveis.  A sua generosidade contribui para assegurar a melhoria contínua do Octave.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Esperamos que você goste do Octave.  Ajude-nos a torná-lo ainda melhor no futuro!&lt;/p&gt;</translation>
     </message>
@@ -88,7 +88,7 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1528"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1536"/>
         <source>copied selection to clipboard</source>
         <translation>seleção copiada para a área de transferência</translation>
     </message>
@@ -376,7 +376,7 @@ para escrita: %2.</translation>
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+792"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+803"/>
         <source>Goto line</source>
         <translation>Vá para linha...</translation>
     </message>
@@ -451,7 +451,7 @@ foi removido ou renomeado. Gostaria de salvá-lo agora?%2</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-966"/>
+        <location line="-975"/>
         <source>Line:</source>
         <translation>Linha:</translation>
     </message>
@@ -461,7 +461,7 @@ foi removido ou renomeado. Gostaria de salvá-lo agora?%2</translation>
         <translation>Coluna:</translation>
     </message>
     <message>
-        <location line="+1113"/>
+        <location line="+1122"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Parece que o arquivo &apos;%1&apos; foi modificado por outra aplicação. Deseja recarregá-lo?</translation>
     </message>
@@ -655,6 +655,7 @@ para:</translation>
         <location line="+1"/>
         <source>Create file in
 </source>
+        <comment>String ends with \n!</comment>
         <translation>Criar arquivo em
 </translation>
     </message>
@@ -667,6 +668,7 @@ para:</translation>
         <location line="+1"/>
         <source>Create folder in
 </source>
+        <comment>String ends with \n!</comment>
         <translation>Criar diretório em
 </translation>
     </message>
@@ -1908,16 +1910,19 @@ Octave GUI precisa ser fechado agora.</translation>
     <message>
         <location line="+2"/>
         <source>b</source>
+        <comment>short form for bold</comment>
         <translation>n</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>i</source>
+        <comment>short form for italic</comment>
         <translation>i</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>u</source>
+        <comment>short form for underlined</comment>
         <translation>s</translation>
     </message>
 </context>

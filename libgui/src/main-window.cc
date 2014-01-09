@@ -431,10 +431,10 @@ news_reader::process (void)
                "when you have a connection to the web (link opens in an external browser).\n"
                "</p>\n"
                "<p>\n"
-               "<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n"
+               "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
                "</p>\n"
                "</body>\n"
-               "</html>\n"));
+               "</html>\n");
     }
   else
     html_text = QString
@@ -450,10 +450,10 @@ news_reader::process (void)
            "or enable web connections for news in Octave's network settings dialog.\n"
            "</p>\n"
            "<p>\n"
-           "<small><em>&mdash; The Octave Developers, " OCTAVE_RELEASE_DATE "</em></small>\n"
+           "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"
            "</p>\n"
            "</body>\n"
-           "</html>\n"));
+           "</html>\n");
 
   emit display_news_signal (html_text);
 

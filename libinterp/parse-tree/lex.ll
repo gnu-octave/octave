@@ -1153,7 +1153,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 {IDENT}@{IDENT} |
-{IDENT}@{IDENT}.{IDENT} {
+{IDENT}@{IDENT}\.{IDENT} {
     curr_lexer->lexer_debug ("{IDENT}@{IDENT}|{IDENT}@{IDENT}.{IDENT}");
 
     if (curr_lexer->previous_token_may_be_command ())

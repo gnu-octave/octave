@@ -90,7 +90,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _replace_button = new QPushButton (tr ("&Replace"));
   _replace_all_button = new QPushButton (tr ("Replace &All"));
 
-  _more_button = new QPushButton (tr ("&More"));
+  _more_button = new QPushButton (tr ("&More..."));
   _more_button->setCheckable (true);
   _more_button->setAutoDefault (false);
 

@@ -814,8 +814,8 @@ files_dock_widget::process_new_file (const QString &parent_dir)
   bool ok;
 
   QString name = QInputDialog::getText (this, tr ("Create File"),
-                                        tr ("Create file in\n") + parent_dir,
-                                        QLineEdit::Normal, "New File.txt", &ok);
+       tr ("Create file in\n","String ends with \\n!") + parent_dir,
+       QLineEdit::Normal, "New File.txt", &ok);
   if (ok && name.length () > 0)
     {
       name = parent_dir + "/" + name;
@@ -832,9 +832,8 @@ files_dock_widget::process_new_dir (const QString &parent_dir)
   bool ok;
 
   QString name = QInputDialog::getText (this, tr ("Create Directory"),
-                                        tr ("Create folder in\n") + parent_dir,
-                                        QLineEdit::Normal, "New Directory",
-                                        &ok);
+                tr ("Create folder in\n","String ends with \\n!") + parent_dir,
+                QLineEdit::Normal, "New Directory", &ok);
   if (ok && name.length () > 0)
     {
       QDir dir (parent_dir);

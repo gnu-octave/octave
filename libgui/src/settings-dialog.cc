@@ -354,9 +354,9 @@ settings_dialog::read_lexer_settings (QsciLexer *lexer, QSettings *settings)
           bg_color[i]->setToolTip
           (tr ("Background color, pink (255,0,255) means default"));
         }
-      attrib_font[0+3*i] = new QCheckBox (tr ("b"));
-      attrib_font[1+3*i] = new QCheckBox (tr ("i"));
-      attrib_font[2+3*i] = new QCheckBox (tr ("u"));
+      attrib_font[0+3*i] = new QCheckBox (tr ("b", "short form for bold"));
+      attrib_font[1+3*i] = new QCheckBox (tr ("i", "short form for italic"));
+      attrib_font[2+3*i] = new QCheckBox (tr ("u", "short form for underlined"));
       attrib_font[0+3*i]->setChecked (Qt::Checked && actual_font.bold ());
       attrib_font[0+3*i]->setObjectName (actual_name+"_bold");
       attrib_font[1+3*i]->setChecked (Qt::Checked && actual_font.italic ());

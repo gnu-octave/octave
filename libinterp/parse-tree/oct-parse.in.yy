@@ -298,6 +298,8 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %type <tree_classdef_enum_type> class_enum
 %type <tree_classdef_enum_list_type> enum_list
 %type <tree_classdef_enum_block_type> enum_block
+%type <tree_function_def_type> method_decl method
+%type <octave_user_function_type> method_decl1
 
 // Precedence and associativity.
 %right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
@@ -334,6 +336,8 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_expression_type> 
 %destructor { delete $$; } <tree_constant_type> 
 %destructor { delete $$; } <tree_fcn_handle_type> 
+%destructor { delete $$; } <tree_funcall>
+%destructor { delete $$; } <tree_function_def>
 %destructor { delete $$; } <tree_anon_fcn_handle_type> 
 %destructor { delete $$; } <tree_identifier_type> 
 %destructor { delete $$; } <tree_index_expression_type> 
@@ -353,6 +357,24 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_statement_type> 
 %destructor { delete $$; } <tree_statement_list_type> 
 %destructor { delete $$; } <octave_user_function_type> 
+
+%destructor { delete $$; } <tree_classdef_type>
+%destructor { delete $$; } <tree_classdef_attribute_type>
+%destructor { delete $$; } <tree_classdef_attribute_list_type>
+%destructor { delete $$; } <tree_classdef_superclass_type>
+%destructor { delete $$; } <tree_classdef_superclass_list_type>
+%destructor { delete $$; } <tree_classdef_body_type>
+%destructor { delete $$; } <tree_classdef_property_type>
+%destructor { delete $$; } <tree_classdef_property_list_type>
+%destructor { delete $$; } <tree_classdef_properties_block_type>
+%destructor { delete $$; } <tree_classdef_methods_list_type>
+%destructor { delete $$; } <tree_classdef_methods_block_type>
+%destructor { delete $$; } <tree_classdef_event_type>
+%destructor { delete $$; } <tree_classdef_events_list_type>
+%destructor { delete $$; } <tree_classdef_events_block_type>
+%destructor { delete $$; } <tree_classdef_enum_type>
+%destructor { delete $$; } <tree_classdef_enum_list_type>
+%destructor { delete $$; } <tree_classdef_enum_block_type>
 
 %destructor {
     warning_with_id
@@ -1605,7 +1627,30 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
                   }
                 ;
 
-methods_list    : function
+method_decl1    : identifier
+		  {
+                    if (! ($$ = parser.start_classdef_external_method ($1, 0)))
+                      ABORT_PARSE;
+                  }
+		| identifier param_list
+		  { if (! ($$ = parser.start_classdef_external_method ($1, $2)))
+                      ABORT_PARSE;
+                  }
+                ;
+
+method_decl     : stash_comment method_decl1
+		  { $$ = parser.finish_classdef_external_method ($2, 0, $1); }
+                | stash_comment return_list '=' method_decl1
+		  { $$ = parser.finish_classdef_external_method ($4, $2, $1); }
+                ;
+
+method          : method_decl
+		  { $$ = $1; }
+		| function
+                  { $$ = $1; }
+                ;
+
+methods_list    : method
                   {
                     octave_value fcn;
                     if ($1)
@@ -1613,7 +1658,7 @@ methods_list    : function
                     delete $1;
                     $$ = new tree_classdef_methods_list (fcn);
                   }
-                | methods_list opt_sep function
+                | methods_list opt_sep method
                   {
                     octave_value fcn;
                     if ($3)
@@ -3197,6 +3242,72 @@ octave_base_parser::make_classdef_enum_block (token *tok_val,
     }
 
   return retval;
+}
+
+octave_user_function*
+octave_base_parser::start_classdef_external_method (tree_identifier *id,
+		                                    tree_parameter_list *pl)
+{
+  octave_user_function* retval = 0;
+
+  // External methods are only allowed within @-folders. In this case,
+  // curr_class_name will be non-empty.
+
+  if (! curr_class_name.empty ())
+    {
+
+      std::string mname = id->name ();
+
+      // Methods that cannot be declared outside the classdef file:
+      // - methods with '.' character (e.g. property accessors)
+      // - class constructor
+      // - `delete'
+
+      if (mname.find_first_of (".") == std::string::npos
+          && mname != "delete"
+          && mname != curr_class_name)
+        {
+          // Create a dummy function that is used until the real method
+          // is loaded.
+
+          retval = new octave_user_function (-1, pl);
+
+          retval->stash_function_name (mname);
+
+          int l = id->line ();
+          int c = id->column ();
+
+          retval->stash_fcn_location (l, c);
+        }
+      else
+        bison_error ("invalid external method declaration, an external "
+                     "method cannot be the class constructor, `delete' "
+                     "or have a dot (.) character in its name");
+    }
+  else
+    bison_error ("external methods are only allowed in @-folders");
+
+  if (! retval)
+    delete id;
+
+  return retval;
+}
+
+tree_function_def *
+octave_base_parser::finish_classdef_external_method (octave_user_function *fcn,
+		                                     tree_parameter_list *ret_list,
+                                                     octave_comment_list *cl)
+{
+  if (ret_list)
+    fcn->define_ret_list (ret_list);
+
+  if (cl)
+    fcn->stash_leading_comment (cl);
+
+  int l = fcn->beginning_line ();
+  int c = fcn->beginning_column ();
+
+  return new tree_function_def (fcn, l, c);
 }
 
 // Make an index expression.

@@ -3176,7 +3176,7 @@ cdef_package::cdef_package_rep::meta_subsref
                   else
                     retval(0) = o;
                 }
-              else
+              else if (! error_state)
                 error ("member `%s' in package `%s' does not exist",
                        nm.c_str (), get_name ().c_str ());
             }

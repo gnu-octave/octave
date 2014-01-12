@@ -339,6 +339,15 @@ public:
                             tree_classdef_enum_list *elist,
                             token *end_tok, octave_comment_list *lc);
 
+  octave_user_function *
+  start_classdef_external_method (tree_identifier *id,
+                                  tree_parameter_list *pl);
+
+  tree_function_def *
+  finish_classdef_external_method (octave_user_function *fcn,
+                                   tree_parameter_list *ret_list,
+                                   octave_comment_list *cl);
+
   // Make an index expression.
   tree_index_expression *
   make_index_expression (tree_expression *expr,

@@ -2186,7 +2186,7 @@ AC_CHECK_FUNCS([lgamma lgammaf lgamma_r lgammaf_r])
 AC_CHECK_FUNCS([log1p log1pf pipe])
 AC_CHECK_FUNCS([realpath resolvepath roundl])
 AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
-AC_CHECK_FUNCS([tempnam tgammaf toascii])
+AC_CHECK_FUNCS([tcgetattr tcsetattr tempnam tgammaf toascii])
 AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_kbhit])
 

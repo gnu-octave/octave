@@ -1,7 +1,83 @@
-Icons license for: chat.png help_index.png terminal.png
-jabber_protocol.png
+========================================
+Icons created by the Octave developpers:
+========================================
 
-by http://www.everaldo.com/ on 17.07.2011:
+bp_next.png
+bp_prev.png
+bp_rm_all.png
+bp_toggle.png
+db_cont.png
+db_step_in.png
+db_step_out.png
+db_step.png
+db_stop.png
+graphic_logo_DocumentationDockWidget.png
+graphic_logo_FileEditor.png
+graphic_logo_FilesDockWidget.png
+graphic_logo_HistoryDockWidget.png
+graphic_logo_NewsDockWidget.png
+graphic_logo_ReleaseWidget.png
+graphic_logo_TerminalDockWidget.png
+graphic_logo_WorkspaceView.png
+letter_logo_DocumentationDockWidget.png
+letter_logo_FileEditor.png
+letter_logo_FilesDockWidget.png
+letter_logo_HistoryDockWidget.png
+letter_logo_NewsDockWidget.png
+letter_logo_ReleaseWidget.png
+letter_logo_TerminalDockWidget.png
+letter_logo_WorkspaceView.png
+logo.png
+widget-close.png
+widget-dock.png
+widget-undock.png
+zoom-in.png
+zoom-out.png
+
+========================================
+Icons taken from the Crystal Project:
+========================================
+
+artsbuilderexecute.png
+configure.png
+editcopy.png
+editcut.png
+editdelete.png
+editpaste.png
+fileclose.png
+filenew.png
+fileopen.png
+fileprint.png
+filesaveas.png
+filesave.png
+findf.png
+find.png
+folder_documents.png
+folder_new.png
+folder.png
+gear.png
+home.png
+ok.png
+redled.png
+redo.png
+reload.png
+search.png
+undo.png
+up.png
+  derived icons from up.png:
+    arrow_down.png
+    arrow_left.png
+    arrow_right.png
+    arrow_up.png
+    bookmark.png
+warning.png
+
+
+License of the Crystal Project
+========================================
+
+by http://www.everaldo.com/ on 17.07.2011  (not more available)
+by http://www.softicons.com/free-icons/system-icons/crystal-project-icons-by-everaldo-coelho on 12.01.2014
 
 The Crystal Project are released under LGPL. GNU General Public License.
 

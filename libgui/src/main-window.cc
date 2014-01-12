@@ -1353,7 +1353,7 @@ main_window::construct_file_menu (QMenuBar *p)
   construct_new_menu (file_menu);
 
   _open_action
-    = file_menu->addAction (QIcon (":/actions/icons/fileopen.png"),
+    = file_menu->addAction (QIcon (":/actions/icons/folder_documents.png"),
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -1973,7 +1973,7 @@ main_window::construct_tool_bar (void)
                               QIcon (":/actions/icons/up.png"),
                               tr ("One directory up"));
   QAction *current_dir_search = _main_tool_bar->addAction (
-                                  QIcon (":/actions/icons/search.png"),
+                                  QIcon (":/actions/icons/folder.png"),
                                   tr ("Browse directories"));
 
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),

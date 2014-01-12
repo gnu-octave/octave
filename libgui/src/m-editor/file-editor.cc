@@ -875,7 +875,7 @@ file_editor::construct (void)
   QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
                                      tr ("&New File"), _tool_bar);
 
-  QAction *open_action = new QAction (QIcon (":/actions/icons/fileopen.png"),
+  QAction *open_action = new QAction (QIcon (":/actions/icons/folder_documents.png"),
                                       tr ("&Open File..."), _tool_bar);
 
   _save_action = new QAction (QIcon (":/actions/icons/filesave.png"),
@@ -933,7 +933,7 @@ file_editor::construct (void)
   _uncomment_selection_action
     = new QAction (tr ("&Uncomment"), _tool_bar);
 
-  _find_action = new QAction (QIcon (":/actions/icons/search.png"),
+  _find_action = new QAction (QIcon (":/actions/icons/find.png"),
                               tr ("&Find and Replace..."), _tool_bar);
 
   _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),

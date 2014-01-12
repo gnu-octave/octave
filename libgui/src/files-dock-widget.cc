@@ -126,10 +126,11 @@ files_dock_widget::files_dock_widget (QWidget *p)
                                       _navigation_tool_bar));
 
   popdown_menu->addSeparator ();
-  popdown_menu->addAction (tr ("Search Directory..."),
+  popdown_menu->addAction (QIcon (":/actions/icons/folder.png"),
+                           tr ("Search Directory..."),
                            this, SLOT (popdownmenu_search_dir (bool)));
   popdown_menu->addSeparator ();
-  popdown_menu->addAction (QIcon (":/actions/icons/search.png"),
+  popdown_menu->addAction (QIcon (":/actions/icons/findf.png"),
                            tr ("Find Files..."),
                            this, SLOT (popdownmenu_findfiles (bool)));
   popdown_menu->addSeparator ();

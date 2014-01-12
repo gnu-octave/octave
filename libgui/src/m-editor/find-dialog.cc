@@ -72,7 +72,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   : QDialog (p)
 {
   setWindowTitle ("Find and Replace");
-  setWindowIcon (QIcon(":/actions/icons/search.png"));
+  setWindowIcon (QIcon(":/actions/icons/find.png"));
 
   _search_label = new QLabel (tr ("Find &what:"));
   _search_line_edit = new QLineEdit;

@@ -1200,10 +1200,7 @@ tree_print_code::print_fcn_handle_body (tree_statement_list *b)
     }
 }
 
-// Each print_code() function should call this before printing
-// anything.
-//
-// This doesn't need to be fast, but isn't there a better way?
+// Each print_code() function should call this before printing anything.
 
 void
 tree_print_code::indent (void)
@@ -1214,8 +1211,7 @@ tree_print_code::indent (void)
     {
       os << prefix;
 
-      for (int i = 0; i < curr_print_indent_level; i++)
-        os << " ";
+      os << std::string (curr_print_indent_level, ' ');
 
       beginning_of_line = false;
     }

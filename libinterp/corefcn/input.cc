@@ -1406,11 +1406,12 @@ Undocumented internal function.\n\
 DEFUN (filemarker, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
-@deftypefnx {Built-in Function} {} filemarker (@var{new_val})\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} filemarker (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\
-Query or set the character used to separate filename from the\n\
-the subfunction names contained within the file.  This can be used in\n\
-a generic manner to interact with subfunctions.  For example,\n\
+Query or set the character used to separate the filename from the subfunction\n\
+names contained within the file.  By default this is the character @samp{>}.\n\
+This can be used in a generic manner to interact with subfunctions.\n\
+For example,\n\
 \n\
 @example\n\
 help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
@@ -1418,8 +1419,10 @@ help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 \n\
 @noindent\n\
 returns the help string associated with the subfunction @code{mysubfunc}\n\
-of the function @code{myfunc}.  Another use of @code{filemarker} is when\n\
-debugging it allows easier placement of breakpoints within subfunctions.\n\
+located in the file @file{myfunc.m}.\n\
+\n\
+@code{filemarker} is also useful during debugging for placing breakpoints\n\
+within subfunctions or nested functions.\n\
 For example,\n\
 \n\
 @example\n\
@@ -1430,7 +1433,7 @@ dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
+variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {

@@ -3841,7 +3841,10 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
               if (fcn_ptr)
                 panic_impossible ();
 
-              fcn_ptr = parser.classdef_object->make_meta_class ();
+              bool is_at_folder = ! dispatch_type.empty ();
+
+              fcn_ptr =
+                parser.classdef_object->make_meta_class (is_at_folder);
             }
           else if (fcn_ptr)
             {

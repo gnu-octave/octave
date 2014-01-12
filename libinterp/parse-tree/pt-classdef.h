@@ -628,7 +628,7 @@ public:
 
   const std::string& package_name (void) const { return pack_name; }
 
-  octave_function* make_meta_class (void);
+  octave_function* make_meta_class (bool is_at_folder = false);
 
   tree_classdef *dup (symbol_table::scope_id scope,
                       symbol_table::context_id context) const;

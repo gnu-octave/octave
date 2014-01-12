@@ -827,7 +827,8 @@ public:
   void delete_object (cdef_object obj)
     { get_rep ()->delete_object (obj); }
 
-  static cdef_class make_meta_class (tree_classdef* t);
+  static cdef_class make_meta_class (tree_classdef* t,
+                                     bool is_at_folder = false);
 
   octave_function* get_method_function (const std::string& nm);
 
@@ -1019,7 +1020,9 @@ private:
   cdef_method_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_method_rep (void) : cdef_meta_object_rep () { }
+    cdef_method_rep (void)
+      : cdef_meta_object_rep (), function (), dispatch_type ()
+      { }
 
     cdef_object_rep* copy (void) const { return new cdef_method_rep(*this); }
 
@@ -1036,6 +1039,11 @@ private:
     void set_function (const octave_value& fcn) { function = fcn; }
 
     bool check_access (void) const;
+
+    bool is_external (void) const { return ! dispatch_type.empty (); }
+
+    void mark_as_external (const std::string& dtype)
+      { dispatch_type = dtype; }
 
     octave_value_list execute (const octave_value_list& args, int nargout,
                                bool do_check_access = true,
@@ -1057,7 +1065,9 @@ private:
 
   private:
     cdef_method_rep (const cdef_method_rep& m)
-      : cdef_meta_object_rep (m), function (m.function) { }
+      : cdef_meta_object_rep (m), function (m.function),
+        dispatch_type (m.dispatch_type)
+      { }
 
     void check_method (void);
 
@@ -1069,6 +1079,10 @@ private:
 
   private:
     octave_value function;
+
+    // When non-empty, the method is externally defined and this member
+    // is used to cache the dispatch type to look for the method.
+    std::string dispatch_type;
   };
 
 public:
@@ -1124,6 +1138,11 @@ public:
 
   bool is_constructor (void) const
     { return get_rep ()->is_constructor (); }
+
+  bool is_external (void) const { return get_rep ()->is_external (); }
+
+  void mark_as_external (const std::string& dtype)
+    { get_rep ()->mark_as_external (dtype); }
 
 private:
   cdef_method_rep* get_rep (void)

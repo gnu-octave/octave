@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
+#include "ov-usr-fcn.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-funcall.h"
@@ -358,6 +359,27 @@ check_access (const cdef_class& cls, const octave_value& acc)
            cls.get_name ().c_str ());
   
   return false;
+}
+
+static bool
+is_dummy_method (const octave_value& fcn)
+{
+  bool retval = false;
+
+  if (fcn.is_defined ())
+    {
+      if (fcn.is_user_function ())
+        {
+          octave_user_function *uf = fcn.user_function_value (true);
+
+          if (! uf || ! uf->body ())
+            retval = true;
+        }
+    }
+  else
+    retval = true;
+
+  return retval;
 }
 
 bool
@@ -762,6 +784,9 @@ make_method (const cdef_class& cls, const std::string& name,
     make_function_of_class (cls, fcn);
 
   meth.set_function (fcn);
+
+  if (is_dummy_method (fcn))
+    meth.mark_as_external (cls.get_name ());
 
   return meth;
 }
@@ -2455,7 +2480,7 @@ attribute_value_to_string (T* t, octave_value v)
 }
 
 cdef_class
-cdef_class::make_meta_class (tree_classdef* t)
+cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 {
   cdef_class retval;
   std::string class_name, full_class_name;
@@ -2594,6 +2619,43 @@ cdef_class::make_meta_class (tree_classdef* t)
 
                       retval.install_method (meth);
                     }
+                }
+            }
+        }
+
+      if (is_at_folder)
+        {
+          // Look for all external methods visible on octave path at the
+          // time of loading of the class.
+          //
+          // TODO: This is an "extension" to Matlab behavior, which only
+          // looks in the @-folder containing the original classdef
+          // file. However, this is easier to implement it that way at
+          // the moment.
+
+          std::list<std::string> external_methods =
+            load_path::methods (full_class_name);
+
+          for (std::list<std::string>::const_iterator it = external_methods.begin ();
+               it != external_methods.end (); ++it)
+            {
+              // TODO: should we issue a warning if the method is already
+              // defined in the classdef file?
+
+              if (*it != class_name
+                  && ! retval.find_method (*it, true).ok ())
+                {
+                  // Create a dummy method that is used until the actual
+                  // method is loaded.
+
+                  octave_user_function *fcn = new octave_user_function ();
+
+                  fcn->stash_function_name (*it);
+
+                  cdef_method meth = make_method (retval, *it,
+                                                  octave_value (fcn));
+
+                  retval.install_method (meth);
                 }
             }
         }
@@ -2847,7 +2909,49 @@ cdef_property::cdef_property_rep::check_set_access (void) const
 void
 cdef_method::cdef_method_rep::check_method (void)
 {
-  // FIXME: check whether re-load is needed
+  if (is_external ())
+    {
+      if (is_dummy_method (function))
+        {
+          std::string name = get_name ();
+          std::string cls_name = dispatch_type;
+          std::string pack_name;
+
+          size_t pos = cls_name.rfind ('.');
+
+          if (pos != std::string::npos)
+            {
+              pack_name = cls_name.substr (0, pos);
+              cls_name = cls_name.substr (pos + 1);
+            }
+
+          std::string dir_name;
+          std::string file_name = load_path::find_method (cls_name, name,
+                                                          dir_name, pack_name);
+
+          if (! file_name.empty ())
+            {
+              octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+                                                         dispatch_type,
+                                                         pack_name);
+
+              if (fcn)
+                {
+                  function = octave_value (fcn);
+
+                  make_function_of_class (dispatch_type, function);
+                }
+            }
+        }
+      else
+        {
+          // FIXME: check out-of-date status
+        }
+
+      if (is_dummy_method (function))
+        ::error ("no definition found for method `%s' of class `%s'",
+                 get_name ().c_str (), dispatch_type.c_str ());
+    }
 }
 
 octave_value_list
@@ -2868,7 +2972,7 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
     {
       check_method ();
 
-      if (function.is_defined ())
+      if (! error_state && function.is_defined ())
 	{
 	  retval = execute_ov (function, args, nargout);
 	}
@@ -2899,10 +3003,10 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
     {
       check_method ();
 
-      octave_value_list new_args;
-
-      if (function.is_defined ())
+      if (! error_state && function.is_defined ())
 	{
+          octave_value_list new_args;
+
 	  new_args.resize (args.length () + 1);
 
 	  new_args(0) = to_ov (obj);

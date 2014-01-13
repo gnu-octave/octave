@@ -10,6 +10,8 @@
         <file>icons/fileopen.png</file>
         <file>icons/filesave.png</file>
         <file>icons/fileprint.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/folder_documents.png</file>
         <file>icons/folder_new.png</file>
         <file>icons/home.png</file>
         <file>icons/ok.png</file>
@@ -26,18 +28,12 @@
         <file>icons/arrow_up.png</file>
         <file>icons/arrow_down.png</file>
         <file>icons/bookmark.png</file>
-        <file>icons/question.png</file>
-        <file>icons/star.png</file>
-        <file>icons/stop.png</file>
         <file>icons/zoom-in.png</file>
         <file>icons/zoom-out.png</file>
         <file>icons/find.png</file>
+        <file>icons/findf.png</file>
         <file>icons/gear.png</file>
-        <file>icons/chat.png</file>
-        <file>icons/help_index.png</file>
-        <file>icons/jabber_protocol.png</file>
         <file>icons/logo.png</file>
-        <file>icons/terminal.png</file>
         <file>icons/bp_toggle.png</file>
         <file>icons/bp_rm_all.png</file>
         <file>icons/bp_prev.png</file>

@@ -471,7 +471,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
       // Create a NonModal message about error.
       QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Critical, tr ("Octave Editor"),
-                           tr ("The associated file editor tab has disappeared.  It was likely closed by some means."),
+                           tr ("The associated file editor tab has disappeared."),
                            QMessageBox::Ok, 0);
 
       msgBox->setWindowModality (Qt::NonModal);
@@ -881,17 +881,17 @@ file_editor::construct (void)
   QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
                                      tr ("&New File"), _tool_bar);
 
-  QAction *open_action = new QAction (QIcon (":/actions/icons/fileopen.png"),
-                                      tr ("&Open File"), _tool_bar);
+  QAction *open_action = new QAction (QIcon (":/actions/icons/folder_documents.png"),
+                                      tr ("&Open File..."), _tool_bar);
 
   _save_action = new QAction (QIcon (":/actions/icons/filesave.png"),
                               tr ("&Save File"), _tool_bar);
 
   _save_as_action = new QAction (QIcon (":/actions/icons/filesaveas.png"),
-                                 tr ("Save File &As"), _tool_bar);
+                                 tr ("Save File &As..."), _tool_bar);
 
   _print_action = new QAction ( QIcon (":/actions/icons/fileprint.png"),
-                                tr ("Print"), _tool_bar);
+                                tr ("Print..."), _tool_bar);
 
   _undo_action = new QAction (QIcon (":/actions/icons/undo.png"),
                               tr ("&Undo"), _tool_bar);
@@ -939,13 +939,13 @@ file_editor::construct (void)
   _uncomment_selection_action
     = new QAction (tr ("&Uncomment"), _tool_bar);
 
-  _find_action = new QAction (QIcon (":/actions/icons/search.png"),
-                              tr ("&Find and Replace"), _tool_bar);
+  _find_action = new QAction (QIcon (":/actions/icons/find.png"),
+                              tr ("&Find and Replace..."), _tool_bar);
 
   _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
                              tr ("Save File and Run"), _tool_bar);
 
-  _goto_line_action = new QAction (tr ("Go&to Line"), _tool_bar);
+  _goto_line_action = new QAction (tr ("Go &to Line..."), _tool_bar);
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -1005,7 +1005,7 @@ file_editor::construct (void)
     _mru_file_menu->addAction (_mru_file_actions[i]);
 
   fileMenu->addAction (new_action);
-  fileMenu->addAction (QIcon (), tr ("New &Function"),
+  fileMenu->addAction (QIcon (), tr ("New &Function..."),
                       this, SLOT (request_new_function (bool)));
   fileMenu->addAction (open_action);
   fileMenu->addMenu (_mru_file_menu);
@@ -1061,11 +1061,11 @@ file_editor::construct (void)
   editMenu->addSeparator ();
   _preferences_action =
     editMenu->addAction (QIcon (":/actions/icons/configure.png"),
-                         tr ("&Preferences"),
+                         tr ("&Preferences..."),
                          this, SLOT (request_preferences (bool)));
   _styles_preferences_action =
     editMenu->addAction (QIcon (":/actions/icons/configure.png"),
-                         tr ("&Styles Preferences"),
+                         tr ("&Styles Preferences..."),
                          this, SLOT (request_styles_preferences (bool)));
   _menu_bar->addMenu (editMenu);
 

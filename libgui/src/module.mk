@@ -15,7 +15,6 @@ octave_gui_ICONS = \
   src/icons/bp_prev.png \
   src/icons/bp_rm_all.png \
   src/icons/bp_toggle.png \
-  src/icons/chat.png \
   src/icons/configure.png \
   src/icons/db_cont.png \
   src/icons/db_step_in.png \
@@ -33,8 +32,11 @@ octave_gui_ICONS = \
   src/icons/filesaveas.png \
   src/icons/filesave.png \
   src/icons/find.png \
+  src/icons/findf.png \
   src/icons/gear.png \
+  src/icons/folder_documents.png \
   src/icons/folder_new.png \
+  src/icons/folder.png \
   src/icons/graphic_logo_DocumentationDockWidget.png \
   src/icons/graphic_logo_FileEditor.png \
   src/icons/graphic_logo_FilesDockWidget.png \
@@ -43,10 +45,8 @@ octave_gui_ICONS = \
   src/icons/graphic_logo_TerminalDockWidget.png \
   src/icons/graphic_logo_WorkspaceView.png \
   src/icons/graphic_logo_ReleaseWidget.png \
-  src/icons/help_index.png \
   src/icons/home.png \
   src/icons/icons_license \
-  src/icons/jabber_protocol.png \
   src/icons/letter_logo_DocumentationDockWidget.png \
   src/icons/letter_logo_FileEditor.png \
   src/icons/letter_logo_FilesDockWidget.png \
@@ -57,14 +57,10 @@ octave_gui_ICONS = \
   src/icons/letter_logo_ReleaseWidget.png \
   src/icons/logo.png \
   src/icons/ok.png \
-  src/icons/question.png \
   src/icons/redled.png \
   src/icons/redo.png \
   src/icons/reload.png \
   src/icons/search.png \
-  src/icons/star.png \
-  src/icons/stop.png \
-  src/icons/terminal.png \
   src/icons/undo.png \
   src/icons/up.png \
   src/icons/warning.png \

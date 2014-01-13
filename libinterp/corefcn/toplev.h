@@ -206,6 +206,12 @@ public:
     return instance_ok () ? instance->do_caller_user_code (nskip) : 0;
   }
 
+  // Return TRUE if all elements on the call stack are scripts.
+  static bool all_scripts (void)
+  {
+    return instance_ok () ? instance->do_all_scripts () : false;
+  }
+
   static void
   push (octave_function *f,
         symbol_table::scope_id scope = symbol_table::current_scope (),
@@ -351,6 +357,8 @@ private:
   }
 
   octave_user_code *do_caller_user_code (size_t nskip) const;
+
+  bool do_all_scripts (void) const;
 
   void do_push (octave_function *f, symbol_table::scope_id scope,
                 symbol_table::context_id context)

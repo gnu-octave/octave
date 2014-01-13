@@ -99,23 +99,23 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   _sync_browser_directory_action
     = new QAction (QIcon (":/actions/icons/reload.png"),
-                   tr ("Show octave directory"), _navigation_tool_bar);
+                   tr ("Show Octave directory"), _navigation_tool_bar);
   _sync_browser_directory_action->setToolTip (
-    tr ("Goto current octave directory"));
+    tr ("Go to current Octave directory"));
   _sync_browser_directory_action->setEnabled ("false");
 
   _sync_octave_directory_action
     = new QAction (QIcon (":/actions/icons/ok.png"),
-                   tr ("Set octave directory"), _navigation_tool_bar);
+                   tr ("Set Octave directory"), _navigation_tool_bar);
   _sync_octave_directory_action->setToolTip (
-    tr ("Set octave directroy to current browser directory"));
+    tr ("Set Octave directroy to current browser directory"));
   _sync_octave_directory_action->setEnabled ("false");
 
   QToolButton * popdown_button = new QToolButton ();
   popdown_button->setToolTip (tr ("Actions on current directory"));
   QMenu * popdown_menu = new QMenu ();
   popdown_menu->addAction (QIcon (":/actions/icons/home.png"),
-                           tr ("Show Home directory"),
+                           tr ("Show Home Directory"),
                            this, SLOT (popdownmenu_home (bool)));
   popdown_menu->addAction (_sync_browser_directory_action);
   popdown_menu->addAction (_sync_octave_directory_action);
@@ -126,18 +126,19 @@ files_dock_widget::files_dock_widget (QWidget *p)
                                       _navigation_tool_bar));
 
   popdown_menu->addSeparator ();
-  popdown_menu->addAction (QIcon (":/actions/icons/search.png"),
-                           tr ("Search directory"),
+  popdown_menu->addAction (QIcon (":/actions/icons/folder.png"),
+                           tr ("Search Directory..."),
                            this, SLOT (popdownmenu_search_dir (bool)));
   popdown_menu->addSeparator ();
-  popdown_menu->addAction ( tr ("Find Files ..."),
-                            this, SLOT (popdownmenu_findfiles (bool)));
+  popdown_menu->addAction (QIcon (":/actions/icons/findf.png"),
+                           tr ("Find Files..."),
+                           this, SLOT (popdownmenu_findfiles (bool)));
   popdown_menu->addSeparator ();
   popdown_menu->addAction (QIcon (":/actions/icons/filenew.png"),
-                           tr ("New File"),
+                           tr ("New File..."),
                            this, SLOT (popdownmenu_newfile (bool)));
   popdown_menu->addAction (QIcon (":/actions/icons/folder_new.png"),
-                           tr ("New Directory"),
+                           tr ("New Directory..."),
                            this, SLOT (popdownmenu_newdir (bool)));
 
   _navigation_tool_bar->addWidget (_current_directory);

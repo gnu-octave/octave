@@ -141,12 +141,7 @@ is already open in the editor</source>
         <translation>Arquivo não foi salvo! Um arquivo com o nome selecionado %1 já está aberto no editor</translation>
     </message>
     <message>
-        <location line="+28"/>
-        <source>The associated file editor tab has disappeared.  It was likely closed by some means.</source>
-        <translation>A aba do editor associada ao arquivo desapareceu.</translation>
-    </message>
-    <message>
-        <location line="+227"/>
+        <location line="+255"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
@@ -156,23 +151,23 @@ is already open in the editor</source>
         <translation>&amp;Novo Script</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>&amp;Open File</source>
-        <translation>&amp;Abrir Arquivo</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+6"/>
         <source>&amp;Save File</source>
         <translation>&amp;Salvar Arquivo</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Save File &amp;As</source>
+        <location line="-3"/>
+        <source>&amp;Open File...</source>
+        <translation>&amp;Abrir Arquivo...</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Save File &amp;As...</source>
         <translation>Salvar Arquivo &amp;Como...</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Print</source>
+        <source>Print...</source>
         <translation>Imprimir...</translation>
     </message>
     <message>
@@ -251,22 +246,27 @@ is already open in the editor</source>
         <translation>&amp;Descomentar</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+3"/>
+        <source>&amp;Find and Replace...</source>
+        <translation>&amp;Buscar e Substituir...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Save File and Run</source>
         <translation>Salvar Arquivo e Executá-lo</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+2"/>
+        <source>Go &amp;to Line...</source>
+        <translation>Vá para &amp;Linha...</translation>
+    </message>
+    <message>
+        <location line="+55"/>
         <source>&amp;Recent Editor Files</source>
         <translation>Arquivos &amp;Recentes</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>New &amp;Function</source>
-        <translation>Nova &amp;Função</translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location line="+11"/>
         <source>&amp;Edit Function</source>
         <translation>&amp;Editar Função</translation>
     </message>
@@ -286,7 +286,17 @@ is already open in the editor</source>
         <translation>Fechar Demais Arquivos</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+31"/>
+        <source>&amp;Preferences...</source>
+        <translation>&amp;Preferências...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Styles Preferences...</source>
+        <translation>Preferências de &amp;Estilo...</translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Run &amp;Selection</source>
         <translation>Executar &amp;Seleção</translation>
     </message>
@@ -306,12 +316,7 @@ is already open in the editor</source>
         <translation>&amp;Documentação da Palavra-chave</translation>
     </message>
     <message>
-        <location line="-151"/>
-        <source>&amp;Find and Replace</source>
-        <translation>&amp;Buscar e Substituir</translation>
-    </message>
-    <message>
-        <location line="-590"/>
+        <location line="-741"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -338,32 +343,27 @@ for write: %2.</source>
 para escrita: %2.</translation>
     </message>
     <message>
-        <location line="+555"/>
-        <source>Go&amp;to Line</source>
-        <translation>Vá para &amp;Linha</translation>
+        <location line="+87"/>
+        <source>The associated file editor tab has disappeared.</source>
+        <translation>A aba do editor associada ao arquivo desapareceu.</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+521"/>
         <source>&amp;File</source>
         <translation>&amp;Arquivo</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+7"/>
+        <source>New &amp;Function...</source>
+        <translation>Nova &amp;Função...</translation>
+    </message>
+    <message>
+        <location line="+34"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
     <message>
-        <location line="+22"/>
-        <source>&amp;Preferences</source>
-        <translation>&amp;Preferências</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>&amp;Styles Preferences</source>
-        <translation>Preferências de &amp;Estilo</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+30"/>
         <source>&amp;Debug</source>
         <translation>&amp;Depurar</translation>
     </message>
@@ -489,55 +489,22 @@ foi removido ou renomeado. Gostaria de salvá-lo agora?%2</translation>
         <translation>Subir um nível de diretório</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>Show octave directory</source>
-        <translation>Exibir o diretório do Octave</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Goto current octave directory</source>
-        <translation>Vá para o diretório atual do Octave</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Set octave directory</source>
-        <translation>Escolher o diretório do Octave</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Set octave directroy to current browser directory</source>
-        <translation>Definir diretório do Octave igual ao diretório atual no navegador</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+17"/>
         <source>Actions on current directory</source>
         <translation>Ações no diretório atual</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Show Home directory</source>
-        <translation>Exibir diretório pessoal</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Search directory</source>
-        <translation>Buscar no diretório</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <location line="+354"/>
+        <location line="+372"/>
         <source>Find Files ...</source>
         <translation>Buscar Arquivos...</translation>
     </message>
     <message>
-        <location line="-350"/>
-        <location line="+363"/>
+        <location line="+13"/>
         <source>New File</source>
         <translation>Novo Arquivo</translation>
     </message>
     <message>
-        <location line="-360"/>
-        <location line="+363"/>
+        <location line="+3"/>
         <source>New Directory</source>
         <translation>Novo Diretório</translation>
     </message>
@@ -547,7 +514,52 @@ foi removido ou renomeado. Gostaria de salvá-lo agora?%2</translation>
         <translation>Clique duas vezes em um arquivo para abrí-lo</translation>
     </message>
     <message>
-        <location line="+236"/>
+        <location line="-78"/>
+        <source>Show Octave directory</source>
+        <translation>Exibir o diretório do Octave</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Go to current Octave directory</source>
+        <translation>Vá para o diretório atual do Octave</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Set Octave directory</source>
+        <translation>Definir o diretório do Octave</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Set Octave directroy to current browser directory</source>
+        <translation>Definir diretório do Octave igual ao diretório atual no navegador</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Show Home Directory</source>
+        <translation>Exibir diretório pessoal</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Search Directory...</source>
+        <translation>Buscar no diretório...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Find Files...</source>
+        <translation>Buscar Arquivos...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>New File...</source>
+        <translation>Novo Arquivo...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>New Directory...</source>
+        <translation>Novo Diretório...</translation>
+    </message>
+    <message>
+        <location line="+276"/>
         <source>File size</source>
         <translation>Tamanho do arquivo</translation>
     </message>
@@ -699,13 +711,13 @@ para:</translation>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
-&lt;p&gt;If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
+&lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Esperamos que você ache o Octave uma ferramenta útil.&lt;/p&gt;
-&lt;p&gt;Se encontrar dificuldades, existem várias formas de obter assistência, incluindo suporte comercial, listas de email, wiki, e outros canais de suporte comunitários.
-Você pode encontrar mais informações sobre cada um deles visitando &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (link abre em navegador externo).&lt;/p&gt;
+&lt;p&gt;Esperamos que o Octave seja uma ferramenta últil.&lt;/p&gt;
+&lt;p&gt;Se encontrar problemas, existem várias maneiras de pedir ajuda incluindo suporte comercial, lista de email, wiki, e outros canais de suporte da comunidade.
+Você pode encontrar mais informações sobre cada um deles visitando &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -785,8 +797,8 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+2"/>
-        <source>&amp;More</source>
-        <translation>&amp;Mais opções...</translation>
+        <source>&amp;More...</source>
+        <translation>&amp;Mais...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1055,12 +1067,12 @@ a:link { text-decoration: underline; color: #0000ff; }
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;You seem to be using the Octave graphical interface for the first time on this computer.
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
-&lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
+&lt;p&gt;The configuration file is stored in&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Parece que você está usando a interface gráfica pela primeira vez neste computador.
-Clique em &apos;Próximo&apos; para criar um arquivo de configuração e iniciar o Octave.&lt;/p&gt;
-&lt;p&gt;O arquivo de configuração é armazenado em %1. Se o arquivo existir, você não verá esta mensagem quando o Octave iniciar novamente.&lt;/p&gt;
+Clique em próximo para criar um arquivo de configuração e lançar o Octave.&lt;/p&gt;
+&lt;p&gt;O arquivo de configuração é armazenado em&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -1068,12 +1080,11 @@ Clique em &apos;Próximo&apos; para criar um arquivo de configuração e iniciar
     <name>main_window</name>
     <message>
         <location filename="../src/main-window.cc" line="-1693"/>
-        <location line="+1164"/>
         <source>Load Workspace</source>
         <translation>Carregar Ambiente de Trabalho...</translation>
     </message>
     <message>
-        <location line="-522"/>
+        <location line="+642"/>
         <location line="+876"/>
         <source>About Octave</source>
         <translation>Sobre o Octave</translation>
@@ -1094,12 +1105,7 @@ Clique em &apos;Próximo&apos; para criar um arquivo de configuração e iniciar
         <translation>Script</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Function</source>
-        <translation>Função</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+7"/>
         <source>Figure</source>
         <translation>Figura</translation>
     </message>
@@ -1140,12 +1146,11 @@ Clique em &apos;Próximo&apos; para criar um arquivo de configuração e iniciar
     </message>
     <message>
         <location line="-1262"/>
-        <location line="+1181"/>
         <source>Save Workspace As</source>
         <translation>Salvar Ambiente de Trabalho Como...</translation>
     </message>
     <message>
-        <location line="-1057"/>
+        <location line="+124"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>O arquivo de notas da versão &apos;%1&apos; está vazio.</translation>
     </message>
@@ -1230,7 +1235,22 @@ Clique em &apos;Próximo&apos; para criar um arquivo de configuração e iniciar
         <translation>Passo adentro</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-151"/>
+        <source>Load Workspace...</source>
+        <translation>Carregar ambiente de trabalho...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Save Workspace As...</source>
+        <translation>Salvar Ambiente de Trabalho Como...</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Function...</source>
+        <translation>Função...</translation>
+    </message>
+    <message>
+        <location line="+111"/>
         <source>Step Out</source>
         <translation>Passo afora</translation>
     </message>
@@ -1676,7 +1696,12 @@ Octave GUI precisa ser fechado agora.</translation>
         <translation>Apresentação</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+24"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecionar fonte, tamanho da fonte (como uma diferença do tamanho padrão), estilo da fonte (&lt;b&gt;n&lt;/b&gt;egrito, &lt;b&gt;i&lt;/b&gt;tálico, &lt;b&gt;s&lt;/b&gt;ublinhado), cor de texto e cor de fundo (a cor rosa (255,0,255) é a cor de fundo padrão).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>Terminal Colors</source>
         <translation>Cores do Terminal</translation>
     </message>
@@ -1736,12 +1761,7 @@ Octave GUI precisa ser fechado agora.</translation>
         <translation>emacs</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecionar fonte, tamanho da fonte (na forma de diferença com relacão ao tamanho padrão), estilo da fonte (negrito, itálico, sublinhado), cor da fonte e cor de fundo (a cor rosa (255,0,255) é a cor de fundo padrão).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location line="+67"/>
         <source>Terminal</source>
         <translation>Terminal</translation>
     </message>

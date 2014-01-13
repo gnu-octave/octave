@@ -60,7 +60,7 @@ initial_page::initial_page (welcome_wizard *wizard)
       (tr ("<html><body>\n"
            "<p>You seem to be using the Octave graphical interface for the first time on this computer.\n"
            "Click 'Next' to create a configuration file and launch Octave.</p>\n"
-           "<p>The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.</p>\n"
+           "<p>The configuration file is stored in<br>%1.</p>\n"
            "</body></html>").
            arg (resource_manager::get_settings_file ()));
     message->setWordWrap (true);
@@ -206,7 +206,7 @@ final_page::final_page (welcome_wizard *wizard)
     message->setText
       (tr ("<html><body>\n"
            "<p>We hope you find Octave to be a useful tool.</p>\n"
-           "<p>If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.\n"
+           "<p>If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other commnity-based support channels.\n"
            "You can find more information about each of these by visiting <a href=\"http://octave.org/support.html\">http://octave.org/support.html</a> (opens in external browser).</p>\n"
            "</body></html>"));
     message->setWordWrap (true);

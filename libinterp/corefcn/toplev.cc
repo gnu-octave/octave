@@ -263,6 +263,29 @@ octave_call_stack::do_caller_user_code (size_t nskip) const
   return retval;
 }
 
+bool
+octave_call_stack::do_all_scripts (void) const
+{
+  bool retval = true;
+
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
+    {
+      const call_stack_elt& elt = *(--p);
+
+      octave_function *f = elt.fcn;
+
+      if (f && ! f->is_user_script ())
+        {
+          retval = false;
+          break;
+        }
+    }
+
+  return retval;
+}
+
 // Use static fields for the best efficiency.
 // NOTE: C++0x will allow these two to be merged into one.
 static const char *bt_fieldnames[] = { "file", "name", "line",

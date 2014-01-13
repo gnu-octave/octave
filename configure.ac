@@ -1528,7 +1528,9 @@ fi
 
 if test -n "$UMFPACK_LIBS"; then
   ## SuiteSparse >= 4.0 needs additional link library for SuiteSparse_time()
+  save_CPPFLAGS="$CPPFLAGS"
   save_LIBS="$LIBS";
+  CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
   LIBS="$UMFPACK_LIBS $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
   xtra_libs=
   OCTAVE_UMFPACK_NEED_SUITESPARSE_TIME
@@ -1551,13 +1553,17 @@ if test -n "$UMFPACK_LIBS"; then
     esac
   fi
   LIBS="$save_LIBS"
+  CPPFLAGS="$save_CPPFLAGS"
 
   ## Check for UMFPACK separately split complex matrix and RHS.
   if test -n "$UMFPACK_LIBS"; then
+    save_CPPFLAGS="$CPPFLAGS"
     save_LIBS="$LIBS";
+    CPPFLAGS="$UMFPACK_CPPFLAGS $AMD_CPPFLAGS $CPPFLAGS"
     LIBS="$UMFPACK_LIBS $CHOLMOD_LDFLAGS $CHOLMOD_LIBS $AMD_LDFLAGS $AMD_LIBS $COLAMD_LDFLAGS $COLAMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS $xtra_libs"
     OCTAVE_UMFPACK_SEPARATE_SPLIT
     LIBS="$save_LIBS"
+    CPPFLAGS="$save_CPPFLAGS"
   fi
 fi
 
@@ -2178,7 +2184,7 @@ AC_CHECK_FUNCS([lgamma lgammaf lgamma_r lgammaf_r])
 AC_CHECK_FUNCS([log1p log1pf pipe])
 AC_CHECK_FUNCS([realpath resolvepath roundl])
 AC_CHECK_FUNCS([select setgrent setpwent siglongjmp strsignal])
-AC_CHECK_FUNCS([tempnam tgammaf toascii])
+AC_CHECK_FUNCS([tcgetattr tcsetattr tempnam tgammaf toascii])
 AC_CHECK_FUNCS([umask waitpid])
 AC_CHECK_FUNCS([_kbhit])
 

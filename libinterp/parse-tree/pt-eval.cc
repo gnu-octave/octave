@@ -712,13 +712,12 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           if (! Vdebugging)
             octave_call_stack::set_location (stmt.line (), stmt.column ());
 
-          // FIXME: we need to distinguish functions from scripts
-          //        to get this right.
           if ((statement_context == script
-               && ((Vecho_executing_commands & ECHO_SCRIPTS)
-                   || (Vecho_executing_commands & ECHO_FUNCTIONS)))
+               && ((Vecho_executing_commands & ECHO_SCRIPTS
+                   && octave_call_stack::all_scripts ())
+                   || Vecho_executing_commands & ECHO_FUNCTIONS))
               || (statement_context == function
-                  && (Vecho_executing_commands & ECHO_FUNCTIONS)))
+                  && Vecho_executing_commands & ECHO_FUNCTIONS))
             stmt.echo_code ();
         }
 

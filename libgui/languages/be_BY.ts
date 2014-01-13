@@ -1684,12 +1684,7 @@ is already open in the editor</source>
 ужо адкрыты ў рэдактары</translation>
     </message>
     <message>
-        <location line="+28"/>
-        <source>The associated file editor tab has disappeared.  It was likely closed by some means.</source>
-        <translation>Асацыяваная картка рэдактара знікла.  Выглядае, што яе з нейкай прычыны закрылі.</translation>
-    </message>
-    <message>
-        <location line="+227"/>
+        <location line="+255"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
@@ -1699,24 +1694,24 @@ is already open in the editor</source>
         <translation>&amp;Новы файл</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>&amp;Open File</source>
-        <translation>&amp;Адкрыць файл</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+6"/>
         <source>&amp;Save File</source>
         <translation>&amp;Захаваць файл</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Save File &amp;As</source>
-        <translation>Захаваць файл &amp;як</translation>
+        <location line="-3"/>
+        <source>&amp;Open File...</source>
+        <translation>&amp;Адкрыць файл...</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Save File &amp;As...</source>
+        <translation>Захаваць файл &amp;як...</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Print</source>
-        <translation>Друк</translation>
+        <source>Print...</source>
+        <translation>Друк...</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1794,22 +1789,27 @@ is already open in the editor</source>
         <translation>&amp;Раскаментаваць</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+3"/>
+        <source>&amp;Find and Replace...</source>
+        <translation>&amp;Знайсці і замяніць...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Save File and Run</source>
         <translation>Захаваць і выканаць файл</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+2"/>
+        <source>Go &amp;to Line...</source>
+        <translation>П&amp;ерайсці да радка...</translation>
+    </message>
+    <message>
+        <location line="+55"/>
         <source>&amp;Recent Editor Files</source>
         <translation>&amp;Ранейшыя файлы</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>New &amp;Function</source>
-        <translation>Новая &amp;функцыя</translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location line="+11"/>
         <source>&amp;Edit Function</source>
         <translation>&amp;Змяніць функцыю</translation>
     </message>
@@ -1829,7 +1829,17 @@ is already open in the editor</source>
         <translation>Закрыць іншыя файлы</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+31"/>
+        <source>&amp;Preferences...</source>
+        <translation>&amp;Настаўленні...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Styles Preferences...</source>
+        <translation>&amp;Настаўленні выгляду...</translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Run &amp;Selection</source>
         <translation>Выканаць &amp;вылучанае</translation>
     </message>
@@ -1849,12 +1859,7 @@ is already open in the editor</source>
         <translation>&amp;Дакументацыя па ключавым слове</translation>
     </message>
     <message>
-        <location line="-151"/>
-        <source>&amp;Find and Replace</source>
-        <translation>&amp;Знайсці і замяніць</translation>
-    </message>
-    <message>
-        <location line="-590"/>
+        <location line="-741"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -1881,32 +1886,27 @@ for write: %2.</source>
 на запіс: %2.</translation>
     </message>
     <message>
-        <location line="+555"/>
-        <source>Go&amp;to Line</source>
-        <translation>П&amp;ерайсці да радка</translation>
+        <location line="+87"/>
+        <source>The associated file editor tab has disappeared.</source>
+        <translation>Асацыяваная картка рэдактара знікла.</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+521"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+7"/>
+        <source>New &amp;Function...</source>
+        <translation>Новая &amp;функцыя...</translation>
+    </message>
+    <message>
+        <location line="+34"/>
         <source>&amp;Edit</source>
         <translation>&amp;Змяніць</translation>
     </message>
     <message>
-        <location line="+22"/>
-        <source>&amp;Preferences</source>
-        <translation>&amp;Настаўленні</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>&amp;Styles Preferences</source>
-        <translation>&amp;Настаўленні выгляду</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+30"/>
         <source>&amp;Debug</source>
         <translation>&amp;Адладка</translation>
     </message>
@@ -2032,55 +2032,22 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Перайсці каталогам вышэй</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>Show octave directory</source>
-        <translation>Перайсці да каталогу Octave</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Goto current octave directory</source>
-        <translation>Перайсці да дзейнага каталога Octave</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Set octave directory</source>
-        <translation>Задаць каталог Octave</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Set octave directroy to current browser directory</source>
-        <translation>Зрабіць каталогам Octave дзейны каталог аглядніка</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+17"/>
         <source>Actions on current directory</source>
         <translation>Дзеянні з дзейным каталогам</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Show Home directory</source>
-        <translation>Перайсці да хатняга каталогу</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Search directory</source>
-        <translation>Шукаць каталог</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <location line="+354"/>
+        <location line="+372"/>
         <source>Find Files ...</source>
         <translation>Шукаць файлы...</translation>
     </message>
     <message>
-        <location line="-350"/>
-        <location line="+363"/>
+        <location line="+13"/>
         <source>New File</source>
         <translation>Новы файл</translation>
     </message>
     <message>
-        <location line="-360"/>
-        <location line="+363"/>
+        <location line="+3"/>
         <source>New Directory</source>
         <translation>Новы каталог</translation>
     </message>
@@ -2090,7 +2057,52 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Двойчы пстрыкніце па файле для адкрыцця</translation>
     </message>
     <message>
-        <location line="+236"/>
+        <location line="-78"/>
+        <source>Show Octave directory</source>
+        <translation>Перайсці да каталогу Octave</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Go to current Octave directory</source>
+        <translation>Перайсці да дзейнага каталога Octave</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Set Octave directory</source>
+        <translation>Задаць каталог Octave</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Set Octave directroy to current browser directory</source>
+        <translation>Зрабіць каталогам Octave дзейны каталог аглядніка</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Show Home Directory</source>
+        <translation>Перайсці да хатняга каталогу</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Search Directory...</source>
+        <translation>Шукаць каталог...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Find Files...</source>
+        <translation>Шукаць файлы...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>New File...</source>
+        <translation>Новы файл...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>New Directory...</source>
+        <translation>Новы каталог...</translation>
+    </message>
+    <message>
+        <location line="+276"/>
         <source>File size</source>
         <translation>Памер файла</translation>
     </message>
@@ -2242,7 +2254,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <location line="+7"/>
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;We hope you find Octave to be a useful tool.&lt;/p&gt;
-&lt;p&gt;If you encounter problems, there are a number of ways to get help including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
+&lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other commnity-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
@@ -2328,8 +2340,8 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+2"/>
-        <source>&amp;More</source>
-        <translation>&amp;Больш параметраў</translation>
+        <source>&amp;More...</source>
+        <translation>&amp;Больш параметраў...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2598,12 +2610,12 @@ a:link { text-decoration: underline; color: #0000ff; }
         <source>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;You seem to be using the Octave graphical interface for the first time on this computer.
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
-&lt;p&gt;The configuration file is stored in %1.  If that file exists, you will not see this dialog when Octave starts.&lt;/p&gt;
+&lt;p&gt;The configuration file is stored in&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Выглядае, што на гэтым кампутары вы выкарыстоўваеце графічны інтэрфэйс Octave упершыню.
 Націсніце &apos;Далей&apos;, каб запісаць файл канфігурацыі і запусціць Octave.&lt;/p&gt;
-&lt;p&gt;Файл канфігурацыі запісаны ў %1.  Калі файл існуе, вы больш не пабачыце гэтае акенца падчас запуску Octave.&lt;/p&gt;
+&lt;p&gt;Файл канфігурацыі запісаны ў&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -2611,12 +2623,11 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     <name>main_window</name>
     <message>
         <location filename="../src/main-window.cc" line="-1693"/>
-        <location line="+1164"/>
         <source>Load Workspace</source>
         <translation>Загрузіць прастору зменных</translation>
     </message>
     <message>
-        <location line="-522"/>
+        <location line="+642"/>
         <location line="+876"/>
         <source>About Octave</source>
         <translation>Пра Octave</translation>
@@ -2637,12 +2648,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Новы сцэнар</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Function</source>
-        <translation>Функцыя</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+7"/>
         <source>Figure</source>
         <translation>Графік</translation>
     </message>
@@ -2683,12 +2689,11 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
     </message>
     <message>
         <location line="-1262"/>
-        <location line="+1181"/>
         <source>Save Workspace As</source>
         <translation>Захаваць прастору зменных як</translation>
     </message>
     <message>
-        <location line="-1057"/>
+        <location line="+124"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Файл заўваг да выпуску &apos;%1&apos; пусты.</translation>
     </message>
@@ -2773,7 +2778,22 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
         <translation>Крок наперад</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-151"/>
+        <source>Load Workspace...</source>
+        <translation>Загрузіць прастору зменных...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Save Workspace As...</source>
+        <translation>Захаваць прастору зменных як...</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Function...</source>
+        <translation>Функцыя...</translation>
+    </message>
+    <message>
+        <location line="+111"/>
         <source>Step Out</source>
         <translation>Крок назад</translation>
     </message>
@@ -3217,7 +3237,12 @@ GUI Octave зараз мусіць закрыцца.</translation>
         <translation>Выгляд рэдактара</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+24"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Пазначце шрыфт, ягоны памер (як розніцу ад стандартнага памеру), стыль шрыфту (&lt;b&gt;т&lt;/b&gt;оўсты, &lt;b&gt;к&lt;/b&gt;урсіўны, &lt;b&gt;п&lt;/b&gt;адкрэслены), колер тэксту і колер фону (для фону ружовы (255,0,255) азначае стандартны колер фону).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>Terminal Colors</source>
         <translation>Колеры тэрміналу</translation>
     </message>
@@ -3282,12 +3307,7 @@ GUI Octave зараз мусіць закрыцца.</translation>
         <translation>emacs</translation>
     </message>
     <message>
-        <location line="+36"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (bold, italic, underline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Пазначце шрыфт, ягоны памер (як розніцу ад стандартнага памеру), стыль шрыфту (тоўсты, курсіўны, падкрэслены), колер тэксту і колер фону (для фону ружовы (255,0,255) азначае стандартны колер фону)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location line="+67"/>
         <source>Terminal</source>
         <translation>Тэрмінал</translation>
     </message>

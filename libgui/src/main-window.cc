@@ -1363,7 +1363,7 @@ main_window::construct_file_menu (QMenuBar *p)
   construct_new_menu (file_menu);
 
   _open_action
-    = file_menu->addAction (QIcon (":/actions/icons/fileopen.png"),
+    = file_menu->addAction (QIcon (":/actions/icons/folder_documents.png"),
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -1375,10 +1375,10 @@ main_window::construct_file_menu (QMenuBar *p)
   file_menu->addSeparator ();
 
   QAction *load_workspace_action
-    = file_menu->addAction (tr ("Load Workspace"));
+    = file_menu->addAction (tr ("Load Workspace..."));
 
   QAction *save_workspace_action
-    = file_menu->addAction (tr ("Save Workspace As"));
+    = file_menu->addAction (tr ("Save Workspace As..."));
 
   file_menu->addSeparator ();
 
@@ -1419,7 +1419,7 @@ main_window::construct_new_menu (QMenu *p)
                            tr ("Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  _new_function_action = new_menu->addAction (tr ("Function"));
+  _new_function_action = new_menu->addAction (tr ("Function..."));
   _new_function_action->setEnabled (true);
   _new_function_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -1983,7 +1983,7 @@ main_window::construct_tool_bar (void)
                               QIcon (":/actions/icons/up.png"),
                               tr ("One directory up"));
   QAction *current_dir_search = _main_tool_bar->addAction (
-                                  QIcon (":/actions/icons/search.png"),
+                                  QIcon (":/actions/icons/folder.png"),
                                   tr ("Browse directories"));
 
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),

@@ -1226,6 +1226,9 @@ tree_print_code::newline (const char *alt_txt)
     os << alt_txt;
   else
     {
+      // Print prefix for blank lines.
+      indent ();
+
       os << "\n";
 
       beginning_of_line = true;
@@ -1276,7 +1279,13 @@ tree_print_code::print_comment_elt (const octave_comment_elt& elt)
       if (c == '\n')
         {
           if (prev_char_was_newline)
-            os << "##";
+            {
+              printed_something = true;
+
+              indent ();
+
+              os << "##";
+            }
 
           newline ();
 

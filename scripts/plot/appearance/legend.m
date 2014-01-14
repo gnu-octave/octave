@@ -829,10 +829,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
             case "line"
               color = get (hplots(k), "color");
               style = get (hplots(k), "linestyle");
+              lwidth = min (get (hplots(k), "linewidth"), 5);
               if (! strcmp (style, "none"))
                 l1 = line ("xdata", ([xoffset, xoffset + linelength] + xk * xstep) / lpos(3),
                            "ydata", [1, 1] .* (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", style,
+                           "color", color, "linestyle", style, "linewidth", lwidth,
                            "marker", "none",
                            "userdata", hplots(k));
                 hobjects(end+1) = l1;
@@ -841,7 +842,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
               if (! strcmp (marker, "none"))
                 l1 = line ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
                            "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
-                           "color", color, "linestyle", "none",
+                           "color", color, "linestyle", "none", "linewidth", lwidth,
                            "marker", marker,
                            "markeredgecolor",get (hplots(k), "markeredgecolor"),
                            "markerfacecolor",get (hplots(k), "markerfacecolor"),
@@ -854,6 +855,8 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                 addlistener (hplots(k), "color",
                              {@updateline, hlegend, linelength, false});
                 addlistener (hplots(k), "linestyle",
+                             {@updateline, hlegend, linelength, false});
+                addlistener (hplots(k), "linewidth",
                              {@updateline, hlegend, linelength, false});
                 addlistener (hplots(k), "marker",
                              {@updateline, hlegend, linelength, false});
@@ -1149,6 +1152,7 @@ function deletelegend2 (h, ~, ca, pos, outpos, t1, hplots)
     if (ishandle (hplots(i)) && strcmp (get (hplots(i), "type"), "line"))
       dellistener (hplots(i), "color");
       dellistener (hplots(i), "linestyle");
+      dellistener (hplots(i), "linewidth");
       dellistener (hplots(i), "marker");
       dellistener (hplots(i), "markeredgecolor");
       dellistener (hplots(i), "markerfacecolor");
@@ -1198,14 +1202,18 @@ function updateline (h, ~, hlegend, linelength, update_name)
 
     if (! strcmp (linestyle, "none"))
       line ("xdata", xpos1, "ydata", ypos1, "color", get (h, "color"),
-            "linestyle", get (h, "linestyle"), "marker", "none",
+            "linestyle", get (h, "linestyle"),
+            "linewidth", min (get (h, "linewidth"), 5),
+            "marker", "none",
             "userdata", h, "parent", hlegend);
     endif
     if (! strcmp (marker, "none"))
       line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
             "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
             "markerfacecolor", get (h, "markerfacecolor"),
-            "markersize", get (h, "markersize"), "linestyle", "none",
+            "markersize", get (h, "markersize"), 
+            "linestyle", "none",
+            "linewidth", min (get (h, "linewidth"), 5),
             "userdata", h, "parent", hlegend);
     endif
   endif

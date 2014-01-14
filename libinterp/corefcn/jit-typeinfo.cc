@@ -1609,12 +1609,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
-    llvm::Value *one = llvm::ConstantInt::get (index_t, 1);
-    llvm::Value *ione;
-    if (index_t == int_t)
-      ione = one;
-    else
-      ione = llvm::ConstantInt::get (int_t, 1);
+    llvm::Value *one_idx = llvm::ConstantInt::get (index_t, 1);
+    llvm::Value *one_int = llvm::ConstantInt::get (int_t, 1);
 
     llvm::Value *undef = llvm::UndefValue::get (scalar_t);
     llvm::Value *mat = fn.argument (builder, 0);
@@ -1624,7 +1620,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *int_idx = builder.CreateFPToSI (idx, index_t);
     llvm::Value *check_idx = builder.CreateSIToFP (int_idx, scalar_t);
     llvm::Value *cond0 = builder.CreateFCmpUNE (idx, check_idx);
-    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one);
+    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one_idx);
     llvm::Value *cond = builder.CreateOr (cond0, cond1);
 
     llvm::BasicBlock *done = fn.new_block ("done");
@@ -1647,7 +1643,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateCondBr (cond, bounds_error, success);
 
     builder.SetInsertPoint (bounds_error);
-    gindex_range.call (builder, ione, ione, int_idx, len);
+    gindex_range.call (builder, one_int, one_int, int_idx, len);
     builder.CreateBr (done);
 
     builder.SetInsertPoint (success);
@@ -1681,7 +1677,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
-    llvm::Value *one = llvm::ConstantInt::get (index_t, 1);
+    llvm::Value *one_idx = llvm::ConstantInt::get (index_t, 1);
+    llvm::Value *one_int = llvm::ConstantInt::get (int_t, 1);
 
     llvm::Value *mat = fn.argument (builder, 0);
     llvm::Value *idx = fn.argument (builder, 1);
@@ -1690,7 +1687,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *int_idx = builder.CreateFPToSI (idx, index_t);
     llvm::Value *check_idx = builder.CreateSIToFP (int_idx, scalar_t);
     llvm::Value *cond0 = builder.CreateFCmpUNE (idx, check_idx);
-    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one);
+    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one_idx);
     llvm::Value *cond = builder.CreateOr (cond0, cond1);
 
     llvm::BasicBlock *done = fn.new_block ("done");
@@ -1708,7 +1705,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
     llvm::Value *rcount = builder.CreateExtractValue (mat, 0);
     rcount = builder.CreateLoad (rcount);
-    cond1 = builder.CreateICmpSGT (rcount, one);
+    cond1 = builder.CreateICmpSGT (rcount, one_int);
     cond = builder.CreateOr (cond0, cond1);
 
     llvm::BasicBlock *bounds_error = fn.new_block ("bounds_error", done);

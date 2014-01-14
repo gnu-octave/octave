@@ -2257,6 +2257,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
         {
           symbol_table::clear_objects ();
           octave_class::clear_exemplar_map ();
+          symbol_table::clear_all ();
         }
       else
         {
@@ -2466,6 +2467,7 @@ without the dash as well.\n\
                     {
                       symbol_table::clear_objects ();
                       octave_class::clear_exemplar_map ();
+                      symbol_table::clear_all ();
                     }
                   else
                     {

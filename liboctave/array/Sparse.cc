@@ -2490,8 +2490,16 @@ Sparse<T>::diag (octave_idx_type k) const
                 }
             }
         }
-      else  // Matlab returns [] 0x1 for out-of-range diagonal
-        d = Sparse<T> (0, 1, 0);
+      else
+        {
+          // Matlab returns [] 0x1 for out-of-range diagonal
+
+          octave_idx_type nr = 0;
+          octave_idx_type nc = 1;
+          octave_idx_type nz = 0;
+
+          d = Sparse<T> (nr, nc, nz);
+        }
     }
   else if (nnr != 0 && nnc != 0)
     {

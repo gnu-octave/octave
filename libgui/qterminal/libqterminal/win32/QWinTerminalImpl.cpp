@@ -575,6 +575,9 @@ QColor QConsolePrivate::cursorColor (void) const
 void QConsolePrivate::setBackgroundColor (const QColor& color)
 {
   m_colors[15] = color;
+
+  QPalette palette (color);
+  m_consoleView->setPalette (palette);
 }
 
 void QConsolePrivate::setForegroundColor (const QColor& color)

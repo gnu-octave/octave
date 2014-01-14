@@ -45,7 +45,7 @@ function ret = what (d)
     d = dtmp;
   endif
 
-  files = dir (d);
+  files = readdir (d);
   w.path = d;
   w.m = cell (0, 1);
   w.mex = cell (0, 1);
@@ -56,7 +56,7 @@ function ret = what (d)
   w.classes = cell (0, 1);
 
   for i = 1 : length (files)
-    n = files(i).name;
+    n = files{i};
     ## Ignore . and ..
     if (strcmp (n, ".") || strcmp (n, ".."))
       continue;
@@ -71,7 +71,7 @@ function ret = what (d)
         w.mex{end+1} = n;
       elseif (strcmp (e, ".mat"))
         w.mat{end+1} = n;
-      elseif (strcmp (n(1), "@"))
+      elseif (strcmp (n(1), "@") && isdir (n))
         w.classes{end+1} = n;
       endif
     endif

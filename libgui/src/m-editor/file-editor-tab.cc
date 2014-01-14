@@ -1168,6 +1168,26 @@ file_editor_tab::save_file_as (bool remove_on_success)
   show_dialog (fileDialog);
 }
 
+bool
+file_editor_tab::save_file_check_spaces (QString file_name)
+{
+  QFileInfo file = QFileInfo(file_name);
+
+  if (file.suffix () == "m" && file.baseName ().contains (' '))
+    {
+      int ans = QMessageBox::question (0, tr ("Octave Editor"),
+         tr ("It is not advisable to save an Octave script\n"
+              "in a file with a name containing spaces.\n\n"
+              "Do you wnat to chose another name?"),
+          QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+      if (ans == QMessageBox::Yes)
+        return true;
+    }
+
+  return false;
+}
+
 void
 file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 {
@@ -1179,7 +1199,10 @@ file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
   else
     {
       // Have editor check for conflict, do not delete tab after save.
-      emit editor_check_conflict_save (saveFileName, false);
+      if (save_file_check_spaces (saveFileName))
+        save_file_as (false);
+      else
+        emit editor_check_conflict_save (saveFileName, false);
     }
 }
 
@@ -1190,7 +1213,10 @@ file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
   // when we close a tab and _file_name is not a valid file name yet
 
   // Have editor check for conflict, delete tab after save.
-  emit editor_check_conflict_save (saveFileName, true);
+  if (save_file_check_spaces (saveFileName))
+    save_file_as (true);
+  else
+    emit editor_check_conflict_save (saveFileName, true);
 }
 
 void

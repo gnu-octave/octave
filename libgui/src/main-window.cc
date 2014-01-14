@@ -262,6 +262,28 @@ main_window::execute_command_in_terminal (const QString& command)
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
+  QString file_name = info.canonicalFilePath ();
+  QString command = "run \""+file_name+"\"";
+
+  QString function_name = info.fileName ();
+  function_name.chop (info.suffix ().length () + 1);
+
+  if (function_name.contains (' '))
+    {
+      int ans = QMessageBox::question (0, tr ("Octave"),
+         tr ("The file %1\n"
+             "contains spaces and can not be executed.\n\n"
+             "Do you want to execute\n%2\n"
+             "instead?").
+          arg (file_name).arg (command),
+          QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+      if (ans == QMessageBox::Yes)
+        execute_command_in_terminal (command);
+
+      return;
+    }
+
   octave_link::post_event (this, &main_window::run_file_callback, info);
   if (focus_console_after_command ())
     focus_command_window ();

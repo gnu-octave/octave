@@ -2563,7 +2563,7 @@ do
       JAVA_LIBS=-ladvapi32
       if test $have_msvc = no; then
         if test -n "$JAVA_CPPFLAGS"; then
-          JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/win32"
+          JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/win32"
         else
           JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32"
         fi
@@ -2663,7 +2663,7 @@ do
     ;;
     *)
       if test -n "$JAVA_CPPFLAGS"; then
-        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS}/include -I${JAVA_CPPFLAGS}/include/linux"
+        JAVA_CPPFLAGS="-I${JAVA_CPPFLAGS} -I${JAVA_CPPFLAGS}/linux"
       else
         JAVA_CPPFLAGS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
       fi

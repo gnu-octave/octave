@@ -842,6 +842,13 @@ file_editor::notice_settings (const QSettings *settings)
 {
   int icon_size = settings->value ("toolbar_icon_size", 16).toInt ();
   _tool_bar->setIconSize (QSize (icon_size, icon_size));
+
+  int tab_width = settings->value ("editor/tab_width", 300).toInt ();
+  QString style_sheet = QString ("QTabBar::tab {max-height: 4ex; "
+                                 "max-width: %1px; text-align: right }").
+                                 arg (tab_width);
+  _tab_widget->setStyleSheet (style_sheet);
+
   // Relay signal to file editor tabs.
   emit fetab_settings_changed (settings);
 }
@@ -874,8 +881,7 @@ file_editor::construct (void)
 #ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_widget->setMovable (true);
 #endif
-  _tab_widget->setStyleSheet ("QTabBar::tab {max-height: 4ex; }");
-
+  _tab_widget->setElideMode (Qt::ElideLeft);
 
 
   QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),

@@ -162,6 +162,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/tab_width", 2).toInt ());
   ui->editor_longWindowTitle->setChecked (
     settings->value ("editor/longWindowTitle",false).toBool ());
+  ui->editor_tab_width->setValue (
+    settings->value ("editor/tab_width", 300).toInt ());
   ui->editor_restoreSession->setChecked (
     settings->value ("editor/restoreSession", true).toBool ());
   ui->editor_create_new_file->setChecked (
@@ -539,6 +541,8 @@ settings_dialog::write_changed_settings ()
                       ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle",
                       ui->editor_longWindowTitle->isChecked ());
+  settings->setValue ("editor/tab_width",
+                      ui->editor_tab_width->value ());
   settings->setValue ("editor/restoreSession",
                       ui->editor_restoreSession->isChecked ());
   settings->setValue ("editor/create_new_file",

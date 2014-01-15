@@ -54,6 +54,10 @@ the maintainer tools we depend upon, including:
   - Rsync <http://samba.anu.edu.au/rsync/>
   - Tar <http://www.gnu.org/software/tar/>
 
+In addition to these maintainer tools, Octave makes use of many external
+libraries and packages.  See the file doc/interpreter/install.txi for the
+complete list of required and optional dependencies.
+
 Only building the initial full source tree will be a bit painful.
 Later, after synchronizing from the repository, a plain `make' should
 be sufficient.

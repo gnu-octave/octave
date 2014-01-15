@@ -767,15 +767,6 @@ private:
 
 #undef SETOPT
 
-#else
-
-static void
-disabled_error (void)
-{
-  (*current_liboctave_error_handler)
-    ("support for url transfers was disabled when Octave was built");
-}
-
 #endif
 
 #if defined (HAVE_CURL)
@@ -785,27 +776,15 @@ disabled_error (void)
 #endif
 
 url_transfer::url_transfer (void) : rep (new REP_CLASS ())
-{
-#if !defined (HAVE_CURL)
-  disabled_error ();
-#endif
-}
+{ }
 
 url_transfer::url_transfer (const std::string& host, const std::string& user,
                             const std::string& passwd, std::ostream& os)
   : rep (new REP_CLASS (host, user, passwd, os))
-{
-#if !defined (HAVE_CURL)
-  disabled_error ();
-#endif
-}
+{ }
 
 url_transfer::url_transfer (const std::string& url, std::ostream& os)
   : rep (new REP_CLASS (url, os))
-{
-#if !defined (HAVE_CURL)
-  disabled_error ();
-#endif
-}
+{ }
 
 #undef REP_CLASS

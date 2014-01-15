@@ -71,7 +71,7 @@ along with Octave; see the file COPYING.  If not, see
 find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   : QDialog (p)
 {
-  setWindowTitle ("Find and Replace");
+  setWindowTitle (tr ("Find and Replace"));
   setWindowIcon (QIcon(":/actions/icons/find.png"));
 
   _search_label = new QLabel (tr ("Find &what:"));

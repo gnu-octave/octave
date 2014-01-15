@@ -474,7 +474,7 @@ Wil je die toch verwijderen?</translation>
         <translation>Aanwijzer</translation>
     </message>
     <message>
-        <location filename="../src/main-window.cc" line="+1897"/>
+        <location filename="../src/main-window.cc" line="+1929"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;strong&gt;Een opmerking over Octave&apos;s Nieuwe GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Een van de belangrijkste nieuwe kenmerken van Octave 3.8 is een grafische user interface (GUI).  Dat is waar de gebruikers de afgelopen jaren het meest om gevraagd hebben en hij is bijna af.  Maar omdat hij nog niet zo gepolijst is als we zouden willen hebben we besloten te wachten tot de versie 4.0 serie voordat we hem de standaard interface maken.&lt;/p&gt;&lt;p&gt;Vanwege de lange tijd en het aantal bug fixes en verbeteringen sinds de laatste major release versie hebben we ook besloten om niet langer meer te wachten op de GUI om al die verbeteringen door te voeren.  Dus geniet van Octave versie 3.8 en de preview van de nieuwe GUI.  We denken dat hij redelijk goed werkt, maar natuurlijk weten we dat er nog ruwe kantjes aan zitten en ruimte voor verbeteringen.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We hebben je hulp nodig&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Er zijn veel manieren waarop je ons kunt helpen de overgebleven problemen te verhelpen, de GUI te completeren, en de gebruikerservaring voor nieuwelingen en experts (de URLs openen een nieuwe browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Als je een bekwame ontwikkelaar bent kun je ons helpen door bij te dragen &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Als Octave niet goed wekt raden we je aan om &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;de problemen te rapporteren &lt;/a&gt; die je tegen komt.&lt;/li&gt;&lt;li&gt;Of je nu gebruiker of ontwikkelaar bent, je kunt ook &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;een bijdrage geven&lt;/a&gt;.  De ontwikkeling van Octave vraagt een hoop tijd en expertise.  Je bijdrage helpt er aan mee dat Octave verbeterd blijft worden.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hopen dat je Octave nuttig vindt.  Help alsjeblieft om het in de toekomst nog beter te maken!&lt;/p&gt;</translation>
     </message>
@@ -962,7 +962,7 @@ Wil je die overschrijven?</translation>
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1536"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1539"/>
         <source>copied selection to clipboard</source>
         <translation>selectie is naar klembord gekopieerd</translation>
     </message>
@@ -1688,7 +1688,7 @@ is reeds geopend in de editor</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+175"/>
+        <location line="+187"/>
         <source>&amp;New File</source>
         <translation>&amp;Nieuw Bestand</translation>
     </message>
@@ -1858,7 +1858,7 @@ is reeds geopend in de editor</translation>
         <translation>&amp;Documentatie bij sleutelwoord</translation>
     </message>
     <message>
-        <location line="-741"/>
+        <location line="-753"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -1890,7 +1890,7 @@ niet openen om te schrijven: %2.</translation>
         <translation>Het bijbehorende tabblad in de editor is verdwenen.</translation>
     </message>
     <message>
-        <location line="+521"/>
+        <location line="+533"/>
         <source>&amp;File</source>
         <translation>Bestand</translation>
     </message>
@@ -1946,13 +1946,14 @@ niet openen om te schrijven: %2.</translation>
     <message>
         <location line="+10"/>
         <location line="+122"/>
-        <location line="+150"/>
+        <location line="+109"/>
+        <location line="+67"/>
         <location line="+22"/>
         <source>Octave Editor</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-293"/>
+        <location line="-319"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -1968,7 +1969,15 @@ dat gesloten moet worden is gewijzigd.
         <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+30"/>
+        <source>It is not advisable to save an Octave script
+in a file with a name containing spaces.
+
+Do you wnat to chose another name?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+82"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -1985,7 +1994,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
     <message>
-        <location line="-172"/>
+        <location line="-198"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Kon bestand %1 niet openen om te schrijven:
@@ -2002,7 +2011,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Kolom:</translation>
     </message>
     <message>
-        <location line="+1122"/>
+        <location line="+1148"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Het lijkt erop dat &apos;%1&apos; is gewijzigd door een ander programma. Wil je het opnieuw laden?</translation>
     </message>
@@ -2035,7 +2044,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Bewerkingen op huidige map</translation>
     </message>
     <message>
-        <location line="+372"/>
+        <location line="+373"/>
         <source>Find Files ...</source>
         <translation>Zoek bestanden ...</translation>
     </message>
@@ -2046,16 +2055,17 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
     <message>
         <location line="+3"/>
+        <location line="+333"/>
         <source>New Directory</source>
         <translation>Nieuwe map</translation>
     </message>
     <message>
-        <location line="-323"/>
+        <location line="-656"/>
         <source>Double-click a file to open it</source>
         <translation>Dubbelklik een bestand om te openen</translation>
     </message>
     <message>
-        <location line="-78"/>
+        <location line="-79"/>
         <source>Show Octave directory</source>
         <translation>Laat Octave map zien</translation>
     </message>
@@ -2080,7 +2090,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Laat home map zien</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Search Directory...</source>
         <translation>Zoek in map...</translation>
     </message>
@@ -2215,7 +2225,12 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+1"/>
+        <source>New File.txt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Create Directory</source>
         <translation>Maak nieuwe map</translation>
     </message>
@@ -2295,7 +2310,12 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>find_dialog</name>
     <message>
-        <location filename="../src/m-editor/find-dialog.cc" line="+77"/>
+        <location filename="../src/m-editor/find-dialog.cc" line="+74"/>
+        <source>Find and Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Find &amp;what:</source>
         <translation>Zoek naar:</translation>
     </message>
@@ -2365,7 +2385,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>In se&amp;lectie zoeken</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+72"/>
         <source>Search from end</source>
         <translation>vanaf einde terug zoeken</translation>
     </message>
@@ -2375,7 +2395,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Zoeken vanaf begin</translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="+119"/>
         <source>Replace Result</source>
         <translation>Resultaat vervangen</translation>
     </message>
@@ -2385,7 +2405,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>%1 vervangingen</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Find Result</source>
         <translation>Zoek resultaat</translation>
     </message>
@@ -2533,7 +2553,12 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Bezig met zoeken...</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+23"/>
+        <source>%1 match(es)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Set search directory</source>
         <translation>Stel zoekmap in</translation>
     </message>
@@ -2623,12 +2648,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="-1693"/>
+        <location filename="../src/main-window.cc" line="-1725"/>
         <source>Load Workspace</source>
         <translation>Werkruimte laden</translation>
     </message>
     <message>
-        <location line="+642"/>
+        <location line="+674"/>
         <location line="+876"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
@@ -2689,12 +2714,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Plakken</translation>
     </message>
     <message>
-        <location line="-1262"/>
+        <location line="-1294"/>
         <source>Save Workspace As</source>
         <translation>Sla Werkruimte Op Als</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+156"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
         <translation>Bestand met Release Notes &apos;%1&apos; is leeg.</translation>
     </message>
@@ -2779,7 +2804,22 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Stap In</translation>
     </message>
     <message>
-        <location line="-151"/>
+        <location line="-1278"/>
+        <source>Octave</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The file %1
+contains spaces and can not be executed.
+
+Do you want to execute
+%2
+instead?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1126"/>
         <source>Load Workspace...</source>
         <translation>Werkruimte laden...</translation>
     </message>
@@ -3014,18 +3054,18 @@ of schakel de internetverbinding voor nieuws aan in de netwerkinstellingen van O
 <context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+61"/>
-        <location line="+163"/>
+        <location filename="../src/octave-dock-widget.cc" line="+60"/>
+        <location line="+170"/>
         <source>Undock widget</source>
         <translation>Widget laten zweven</translation>
     </message>
     <message>
-        <location line="-153"/>
+        <location line="-160"/>
         <source>Hide widget</source>
         <translation>Widget verbergen</translation>
     </message>
     <message>
-        <location line="+104"/>
+        <location line="+107"/>
         <source>Dock widget</source>
         <translation>Widget in venster opnemen</translation>
     </message>
@@ -3165,17 +3205,42 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>Grafische iconen</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+22"/>
+        <source>Dock widget title bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Custom style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Background color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Text color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+84"/>
         <source>Color</source>
         <translation>Kleur</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+79"/>
+        <source>Max. tab width in pixel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
         <source>Indent width</source>
         <translation>Inspringafstand</translation>
     </message>
@@ -3185,7 +3250,7 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>Inspringen met tab</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+23"/>
         <source>Auto indentation</source>
         <translation>Automatisch inspringen</translation>
     </message>
@@ -3245,32 +3310,32 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecteer font, font grootte (als een verschil van de standaard grootte), font stijl (&lt;b&gt;d&lt;/b&gt;ik, &lt;b&gt;s&lt;/b&gt;chuin, &lt;b&gt;o&lt;/b&gt;nderstreept), tekstkleur en achtergrondkleur (wat betreft de laatste, de kleur roze (255,0,255) is een plaatsvervanger voor de standaard achtergrondkleur).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+154"/>
         <source>Terminal Colors</source>
         <translation>Terminalkleuren</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="-106"/>
         <source>Font</source>
         <translation>Lettertype</translation>
     </message>
     <message>
-        <location line="-757"/>
+        <location line="-708"/>
         <source>Show line numbers</source>
         <translation>Regelnummers weergeven</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+40"/>
         <source>Highlight current line</source>
         <translation>Markeer huidige regel</translation>
     </message>
     <message>
-        <location line="+262"/>
+        <location line="+305"/>
         <source>Code completion</source>
         <translation>Automatisch aanvullen</translation>
     </message>
     <message>
-        <location line="-282"/>
+        <location line="-338"/>
         <source>Show complete path in window title</source>
         <translation>Hele pad in schermtitel weergeven</translation>
     </message>
@@ -3285,7 +3350,7 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>Laat geen voor inspringen gebruikte witruimte zien</translation>
     </message>
     <message>
-        <location line="+290"/>
+        <location line="+346"/>
         <source># of characters typed before completion list displayed</source>
         <translation>Getypt aantal karakters voordat de aanvullijst verschijnt</translation>
     </message>
@@ -3310,7 +3375,7 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>Opdrachtvenster</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+71"/>
         <source>Cursor type:</source>
         <translation>Type aanwijzer:</translation>
     </message>
@@ -3325,12 +3390,17 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>Gebruik voorgrondkleur</translation>
     </message>
     <message>
-        <location line="+94"/>
+        <location line="-67"/>
         <source>Font size</source>
         <translation>Lettergrootte</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+109"/>
+        <source>Set focus to terminal when running a command from within another widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
         <source>File Browser</source>
         <translation>Bestandsbrowser</translation>
     </message>
@@ -3390,7 +3460,7 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>http proxy</translation>
     </message>
     <message>
-        <location line="-1129"/>
+        <location line="-1272"/>
         <source>Icon set for dock widgets</source>
         <translation>Iconenset voor dock widgets</translation>
     </message>
@@ -3405,7 +3475,7 @@ De Octave GUI moet nu gesloten worden.</translation>
         <translation>Icoongrootte</translation>
     </message>
     <message>
-        <location line="+991"/>
+        <location line="+1134"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Synchroniseer Octave werkmap met bestandsverkenner</translation>
     </message>
@@ -3442,7 +3512,7 @@ De Octave GUI moet nu gesloten worden.</translation>
     <message>
         <location filename="../src/settings-dialog.cc" line="+71"/>
         <location line="+4"/>
-        <location line="+389"/>
+        <location line="+416"/>
         <source>System setting</source>
         <translation>Systeeminstelling</translation>
     </message>
@@ -3556,7 +3626,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>webinfo</name>
     <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+80"/>
+        <location filename="../src/qtinfo/webinfo.cc" line="+83"/>
         <source>Type here and press &apos;Return&apos; to search</source>
         <translation>Typ hier en druk op &apos;Enter&apos; om te zoeken</translation>
     </message>
@@ -3564,6 +3634,16 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+4"/>
         <source>Global search</source>
         <translation>Globaal zoeken</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Error</source>
+        <translation type="unfinished">Fout</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>The info file %1 does not exist</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

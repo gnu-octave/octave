@@ -170,6 +170,17 @@ depend on.
 Package for building software libraries
 (@url{http://www.gnu.org/software/libtool}).  Libtool is required by
 Automake.
+
+@item gperf
+Perfect hash function generator (@url{http://www.gnu.org/software/gperf}).
+You will need gperf if you modify the @code{octave.gperf} file or if you
+delete the file that is generated from it.
+
+@item Texinfo
+Package for generating online and print documentation
+(@url{http://www.gnu.org/software/texinfo}).  You will need Texinfo to
+build Octave's documentation or if you modify the documentation source
+files or the docstring of any Octave function.
 @end table
 
 @node External Packages
@@ -254,6 +265,12 @@ functions.
 Library for manipulating portable data files
 (@url{http://www.hdfgroup.org/HDF5}).  @sc{hdf5} is required for Octave's
 @code{load} and @code{save} commands to read and write HDF data files.
+
+@item Java Development Kit
+Java programming language compiler and libraries.  The OpenJDK free
+software implementation is recommended (@url{http://openjdk.java.net/}),
+although other JDK implementations may work.  Java is required to be able
+to call Java functions from within Octave.
 
 @item LLVM
 Compiler framework, (@url{http://www.llvm.org}).  LLVM is required for

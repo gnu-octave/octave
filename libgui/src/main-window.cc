@@ -399,11 +399,14 @@ news_reader::process (void)
       std::ostringstream buf;
       url_transfer octave_dot_org (url.toStdString (), buf);
 
-      Array<std::string> param;
-      octave_dot_org.http_get (param);
+      if (octave_dot_org.is_valid ())
+        {
+          Array<std::string> param;
+          octave_dot_org.http_get (param);
 
-      if (octave_dot_org.good ())
-        html_text = QString::fromStdString (buf.str ());
+          if (octave_dot_org.good ())
+            html_text = QString::fromStdString (buf.str ());
+        }
 
       if (html_text.contains ("this-is-the-gnu-octave-community-news-page"))
         {

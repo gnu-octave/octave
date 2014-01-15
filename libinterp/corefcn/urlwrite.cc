@@ -189,10 +189,15 @@ private:
 
     url_transfer obj (host, user, passwd, os);
 
-    if (! error_state)
-      handle_map[h] = obj;
+    if (obj.is_valid ())
+      {
+        if (! error_state)
+          handle_map[h] = obj;
+        else
+          h = curl_handle ();
+      }
     else
-      h = curl_handle ();
+      error ("support for url transfers was disabled when Octave was built");
 
     return h;
   }
@@ -413,31 +418,36 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   url_transfer curl = url_transfer (url, ofile);
 
-  curl.http_action (param, method);
-
-  ofile.close ();
-
-  if (curl.good ())
-    frame.discard ();
-
-  if (nargout > 0)
+  if (! curl.is_valid ())
     {
-      if (curl.good ())
-        {
-          retval(2) = std::string ();
-          retval(1) = true;
-          retval(0) = octave_env::make_absolute (filename);
-        }
-      else
-        {
-          retval(2) = curl.lasterror ();
-          retval(1) = false;
-          retval(0) = std::string ();
-        }
-    }
+      curl.http_action (param, method);
 
-  if (nargout < 2 && ! curl.good ())
-    error ("urlwrite: %s", curl.lasterror ().c_str ());
+      ofile.close ();
+
+      if (curl.good ())
+        frame.discard ();
+
+      if (nargout > 0)
+        {
+          if (curl.good ())
+            {
+              retval(2) = std::string ();
+              retval(1) = true;
+              retval(0) = octave_env::make_absolute (filename);
+            }
+          else
+            {
+              retval(2) = curl.lasterror ();
+              retval(1) = false;
+              retval(0) = std::string ();
+            }
+        }
+
+      if (nargout < 2 && ! curl.good ())
+        error ("urlwrite: %s", curl.lasterror ().c_str ());
+    }
+  else
+    error ("support for url transfers was disabled when Octave was built");
 
   return retval;
 }
@@ -540,21 +550,26 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   url_transfer curl = url_transfer (url, buf);
 
-  curl.http_action (param, method);
-
-  if (curl.good ())
+  if (curl.is_valid ())
     {
-      if (nargout > 0)
-        {
-          // Return empty string if no error occured.
-          retval(2) = curl.good () ? "" : curl.lasterror ();
-          retval(1) = curl.good ();
-          retval(0) = buf.str ();
-        }
-    }
+      curl.http_action (param, method);
 
-  if (nargout < 2 && ! curl.good ())
-    error ("urlread: %s", curl.lasterror().c_str());
+      if (curl.good ())
+        {
+          if (nargout > 0)
+            {
+              // Return empty string if no error occured.
+              retval(2) = curl.good () ? "" : curl.lasterror ();
+              retval(1) = curl.good ();
+              retval(0) = buf.str ();
+            }
+        }
+
+      if (nargout < 2 && ! curl.good ())
+        error ("urlread: %s", curl.lasterror().c_str());
+    }
+  else
+    error ("support for url transfers was disabled when Octave was built");
 
   return retval;
 }

@@ -19,27 +19,41 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cast (@var{val}, @var{type})
 ## Convert @var{val} to data type @var{type}.
-## @seealso{int8, uint8, int16, uint16, int32, uint32, int64, uint64, double}
+##
+## The value @var{val} may be modified to fit within the range of the new type.
+##
+## Examples:
+##
+## @example
+## @group
+## cast (-5, "uint8")
+##    @result{} 0
+## cast (300, "int8")
+##    @result{} 127
+## @end group
+## @end example
+##
+## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64, double, single, logical, char}
 ## @end deftypefn
 
 ## Author: jwe
 
 function retval = cast (val, typ)
 
-  if (nargin == 2)
-    if (ischar (typ))
-      if (any (strcmp (typ, {"int8"; "uint8"; "int16"; "uint16";
-                             "int32"; "uint32"; "int64"; "uint64";
-                             "double"; "single"; "logical"; "char"})))
-        retval = feval (typ, val);
-      else
-        error ("cast: type name '%s' is not a built-in type", typ);
-      endif
+  if (nargin != 2)
+    print_usage ();
+  endif
+
+  if (ischar (typ))
+    if (any (strcmp (typ, {"int8"; "uint8"; "int16"; "uint16";
+                           "int32"; "uint32"; "int64"; "uint64";
+                           "double"; "single"; "logical"; "char"})))
+      retval = feval (typ, val);
     else
-      error ("cast: expecting TYPE name as second argument");
+      error ("cast: type name '%s' is not a built-in type", typ);
     endif
   else
-    print_usage ();
+    error ("cast: expecting TYPE name as second argument");
   endif
 
 endfunction

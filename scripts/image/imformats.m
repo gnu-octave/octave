@@ -266,11 +266,10 @@ function is_valid_format (format)
 endfunction
 
 function match = find_ext_idx (formats, ext)
-  ## FIXME: is matlab sensitive to file extensions?
   ## XXX: what should we do if there's more than one hit?
   ##      Should this function prevent the addition of
   ##      duplicated extensions?
-  match = cellfun (@(x) any (strcmp (x, ext)), {formats.ext});
+  match = cellfun (@(x) any (strcmpi (x, ext)), {formats.ext});
 endfunction
 
 function bool = isa_magick (coder, filename)

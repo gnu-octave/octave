@@ -280,33 +280,68 @@ function bool = isa_magick (coder, filename)
   end_try_catch
 endfunction
 
-## changing the function to read
+## When imread or imfinfo are called, the file must exist or the
+## function defined by imformats will never be called.  Because
+## of this, we must create a file for the tests to work.
+
+## changing the function that does the reading
 %!testif HAVE_MAGICK
-%! fmt = imformats ("jpg");
-%! fmt.read = @(x) size (x, 2);
-%! imformats ("update", "jpg", fmt);
-%! assert (imread ("this is 30 characters long.jpg"), 30);
+%! fname = [tmpnam() ".jpg"];
+%! def_fmt = imformats ();
+%! fid = fopen (fname, "w");
+%! unwind_protect
+%!   fmt = imformats ("jpg");
+%!   fmt.read = @numel;
+%!   imformats ("update", "jpg", fmt);
+%!   assert (imread (fname), numel (fname));
+%! unwind_protect_cleanup
+%!   fclose (fid);
+%!   unlink (fname);
+%!   imformats (def_fmt);
+%! end_unwind_protect
 
 ## adding a new format
 %!testif HAVE_MAGICK
-%! fmt = imformats ("jpg");
-%! fmt.ext = "junk";
-%! fmt.read = @(x) true();
-%! imformats ("add", fmt);
-%! assert (imread ("some file.junk"), true);
+%! fname = [tmpnam() ".new_fmt"];
+%! def_fmt = imformats ();
+%! fid = fopen (fname, "w");
+%! unwind_protect
+%!   fmt = imformats ("jpg"); # take jpg as template
+%!   fmt.ext = "new_fmt";
+%!   fmt.read = @() true ();
+%!   imformats ("add", fmt);
+%!   assert (imread (fname), true);
+%! unwind_protect_cleanup
+%!   fclose (fid);
+%!   unlink (fname);
+%!   imformats (def_fmt);
+%! end_unwind_protect
 
-## adding multiple formats in one way
+## adding multiple formats at the same time
 %!testif HAVE_MAGICK
-%! fmt = imformats ("jpg");
-%! fmt.ext = "junk1";
-%! fmt.read = @(x) true();
-%! fmt(2) = fmt(1);
-%! fmt(2).ext = "junk2";
-%! imformats ("add", fmt);
-%! assert (imread ("some file.junk1"), true);
-%! assert (imread ("some file.junk2"), true);
+%! fname1 = [tmpnam() ".new_fmt1"];
+%! fid1 = fopen (fname1, "w");
+%! fname2 = [tmpnam() ".new_fmt2"];
+%! fid2 = fopen (fname2, "w");
+%! def_fmt = imformats ();
+%! unwind_protect
+%!   fmt = imformats ("jpg"); # take jpg as template
+%!   fmt.ext = "new_fmt1";
+%!   fmt.read = @() true();
+%!   fmt(2) = fmt(1);
+%!   fmt(2).ext = "new_fmt2";
+%!   imformats ("add", fmt);
+%!   assert (imread (fname1), true);
+%!   assert (imread (fname2), true);
+%! unwind_protect_cleanup
+%!   fclose (fid1);
+%!   fclose (fid2);
+%!   unlink (fname1);
+%!   unlink (fname2);
+%!   imformats (def_fmt);
+%! end_unwind_protect
 
-## changing format
+## changing format and resetting back to default
 %!testif HAVE_MAGICK
 %! ori_fmt = mod_fmt = imformats ("jpg");
 %! mod_fmt.description = "Another description";

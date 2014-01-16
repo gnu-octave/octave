@@ -44,18 +44,6 @@ function varargout = __imread__ (filename, varargin)
   ## keep track of the varargin offset we're looking at each moment
   offset    = 1;
 
-  filename  = tilde_expand (filename);
-  fn        = file_in_path (IMAGE_PATH, filename);
-  if (isempty (fn) && nargin >= offset + 1 && ischar (varargin{offset}))
-    ## if we can't find the file, check if the next input is the file extension
-    filename  = [filename "." varargin{offset}];
-    fn        = file_in_path (IMAGE_PATH, filename);
-    offset++;
-  endif
-  if (isempty (fn))
-    error ("imread: cannot find %s", filename);
-  endif
-
   ## It is possible for an file with multiple pages to have very different
   ## images on each page. Specifically, they may have different sizes. Because
   ## of this, we need to first find out the index of the images to read so
@@ -92,9 +80,9 @@ function varargout = __imread__ (filename, varargin)
 
   ## Use information from the first image to be read to set defaults.
   if (ischar (options.index) && strcmpi (options.index, "all"))
-    info = __magick_ping__ (fn, 1);
+    info = __magick_ping__ (filename, 1);
   else
-    info = __magick_ping__ (fn, options.index(1));
+    info = __magick_ping__ (filename, options.index(1));
   endif
 
   ## Set default for options.
@@ -145,7 +133,7 @@ function varargout = __imread__ (filename, varargin)
     endswitch
   endfor
 
-  [varargout{1:nargout}] = __magick_read__ (fn, options);
+  [varargout{1:nargout}] = __magick_read__ (filename, options);
 
 endfunction
 

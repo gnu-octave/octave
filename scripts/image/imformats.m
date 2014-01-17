@@ -280,7 +280,6 @@ function bool = isa_magick (coder, filename)
   end_try_catch
 endfunction
 
-
 ## changing the function to read
 %!testif HAVE_MAGICK
 %! fmt = imformats ("jpg");
@@ -318,10 +317,15 @@ endfunction
 %! new_fmt = imformats ("jpg");
 %! assert (new_fmt.description, ori_fmt.description);
 
-## FIXME: how to test for error together with testif?
-## update to an invalid format
-#%!testif HAVE_MAGICK
-#%! fmt = imformats ("jpg");
-#%! fmt = rmfield (fmt, "read");
-#%! error imformats ("update", "jpg", fmt);
+## updating to an invalid format should cause an error
+%!testif HAVE_MAGICK
+%! fmt = imformats ("jpg");
+%! fmt = rmfield (fmt, "read");
+%! error_thrown = false;
+%! try
+%!   imformats ("update", "jpg", fmt);
+%! catch
+%!   error_thrown = true;
+%! end_try_catch
+%! assert (error_thrown, true);
 

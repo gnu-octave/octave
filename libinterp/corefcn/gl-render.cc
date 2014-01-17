@@ -2337,6 +2337,14 @@ opengl_renderer::draw_patch (const patch::properties &props)
               tess.begin_polygon (true);
               tess.begin_contour ();
 
+              // Add vertices in reverse order for Matlab compatibility
+              for (int j = count_f(i)-1; j > 0; j--)
+                {
+                  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
+
+                  tess.add_vertex (vv->coords.fortran_vec (), vv);
+                }
+
               if (count_f(i) > 0)
                 {
                   vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
@@ -2363,14 +2371,6 @@ opengl_renderer::draw_patch (const patch::properties &props)
                             }
                         }
                     }
-
-                  tess.add_vertex (vv->coords.fortran_vec (), vv);
-                }
-
-              // Add remaining vertices.
-              for (int j = 1; j < count_f(i); j++)
-                {
-                  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
 
                   tess.add_vertex (vv->coords.fortran_vec (), vv);
                 }

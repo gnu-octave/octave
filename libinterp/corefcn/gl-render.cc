@@ -437,12 +437,11 @@ protected:
       = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
     //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
-    // FIXME: why did I need to keep the first vertex of the face
-    // in JHandles? I think it's related to the fact that the
-    // tessellation process might re-order the vertices, such that
-    // the first one you get here might not be the first one of the face;
-    // but I can't figure out the actual reason.
-    if (color_mode == 2)
+    // NOTE: OpenGL can re-order vertices so "first" is basically meaningless
+    // in this callback routine.  For "flat" coloring of FaceColor the first
+    // vertex must be identified in the draw_patch routine.
+
+    if (color_mode == 2 || (color_mode == 1 && ! is_filled ()))
       {
         Matrix col = v->color;
 
@@ -2457,7 +2456,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
                   tess.begin_polygon (false);
                   tess.begin_contour ();
 
-                  for (int j = 0; j < count_f(i); j++)
+                  for (int j = count_f(i)-1; j >= 0; j--)
                     {
                       vertex_data::vertex_data_rep *vv
                         = vdata[i+j*fr].get_rep ();

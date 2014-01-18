@@ -4033,6 +4033,7 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
   if (retval)
     {
       retval->stash_dir_name (dir_name);
+      retval->stash_package_name (package_name);
 
       if (retval->is_user_function ())
         {

@@ -46,7 +46,8 @@ public:
 
   octave_function (void)
     : relative (false), locked (false), private_function (false),
-      xdispatch_class (), my_name (), my_dir_name (), doc () { }
+      xdispatch_class (), xpackage_name (), my_name (), my_dir_name (),
+      doc () { }
 
   ~octave_function (void) { }
 
@@ -99,6 +100,10 @@ public:
   void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
 
   std::string dispatch_class (void) const { return xdispatch_class; }
+
+  void stash_package_name (const std::string& pack) { xpackage_name = pack; }
+
+  std::string package_name (void) const { return xpackage_name; }
 
   virtual void
   mark_as_private_function (const std::string& cname = std::string ())
@@ -156,6 +161,14 @@ public:
 
   std::string name (void) const { return my_name; }
 
+  std::string canonical_name (void) const
+    {
+      if (xpackage_name.empty ())
+        return my_name;
+      else
+        return xpackage_name + "." + my_name;
+    }
+
   void document (const std::string& ds) { doc = ds; }
 
   std::string doc_string (void) const { return doc; }
@@ -187,6 +200,10 @@ protected:
   // function inside a class directory, this is the name of the class
   // to which the method belongs.
   std::string xdispatch_class;
+
+  // If this function is part of a package, this is the full name
+  // of the package to which the function belongs.
+  std::string xpackage_name;
 
   // The name of this function.
   std::string my_name;

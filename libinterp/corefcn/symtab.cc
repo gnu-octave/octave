@@ -150,6 +150,24 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
   return retval;
 }
 
+static void
+split_name_with_package (const std::string& name, std::string& fname,
+                         std::string& pname)
+{
+  size_t pos = name.rfind ('.');
+
+  fname.clear ();
+  pname.clear ();
+
+  if (pos != std::string::npos)
+    {
+      fname = name.substr (pos + 1);
+      pname = name.substr (0, pos);
+    }
+  else
+    fname = name;
+}
+
 // Check the load path to see if file that defined this is still
 // visible.  If the file is no longer visible, then erase the
 // definition and move on.  If the file is visible, then we also
@@ -166,11 +184,13 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
 static inline bool
 load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
                       octave_value& function,
-                      const std::string& dispatch_type = std::string ())
+                      const std::string& dispatch_type = std::string (),
+                      const std::string& package_name = std::string ())
 {
   bool retval = false;
 
-  octave_function *fcn = load_fcn_from_file (ff, dir_name, dispatch_type);
+  octave_function *fcn = load_fcn_from_file (ff, dir_name, dispatch_type,
+                                             package_name);
 
   if (fcn)
     {
@@ -212,6 +232,8 @@ out_of_date_check (octave_value& function,
                 {
                   bool clear_breakpoints = false;
                   std::string nm = fcn->name ();
+                  std::string pack = fcn->package_name ();
+                  std::string canonical_nm = fcn->canonical_name ();
 
                   bool is_same_file = false;
 
@@ -236,10 +258,13 @@ out_of_date_check (octave_value& function,
                           if (! dispatch_type.empty ())
                             {
                               file = load_path::find_method (dispatch_type, nm,
-                                                             dir_name);
+                                                             dir_name, pack);
 
                               if (file.empty ())
                                 {
+                                  std::string s_name;
+                                  std::string s_pack;
+
                                   const std::list<std::string>& plist
                                     = symbol_table::parent_classes (dispatch_type);
                                   std::list<std::string>::const_iterator it
@@ -247,10 +272,17 @@ out_of_date_check (octave_value& function,
 
                                   while (it != plist.end ())
                                     {
+                                      split_name_with_package (*it, s_name,
+                                                               s_pack);
+
                                       file = load_path::find_method (*it, nm,
-                                                                     dir_name);
+                                                                     dir_name,
+                                                                     s_pack);
                                       if (! file.empty ())
-                                        break;
+                                        {
+                                          pack = s_pack;
+                                          break;
+                                        }
 
                                       it++;
                                     }
@@ -262,7 +294,7 @@ out_of_date_check (octave_value& function,
                             file = lookup_autoload (nm);
 
                           if (file.empty ())
-                            file = load_path::find_fcn (nm, dir_name);
+                            file = load_path::find_fcn (nm, dir_name, pack);
                         }
 
                       if (! file.empty ())
@@ -304,7 +336,8 @@ out_of_date_check (octave_value& function,
                                 {
                                   retval = load_out_of_date_fcn (ff, dir_name,
                                                                  function,
-                                                                 dispatch_type);
+                                                                 dispatch_type,
+                                                                 pack);
 
                                   clear_breakpoints = true;
                                 }
@@ -323,7 +356,7 @@ out_of_date_check (octave_value& function,
                       // place of the old.
 
                       retval = load_out_of_date_fcn (file, dir_name, function,
-                                                     dispatch_type);
+                                                     dispatch_type, pack);
 
                       clear_breakpoints = true;
                     }
@@ -331,7 +364,8 @@ out_of_date_check (octave_value& function,
                   // If the function has been replaced then clear any
                   // breakpoints associated with it
                   if (clear_breakpoints)
-                    bp_table::remove_all_breakpoints_in_file (nm, true);
+                    bp_table::remove_all_breakpoints_in_file (canonical_nm,
+                                                              true);
                 }
             }
         }

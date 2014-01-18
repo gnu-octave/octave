@@ -207,7 +207,7 @@ out_of_date_check (octave_value& function,
 
               bool relative = check_relative && fcn->is_relative ();
 
-              if (tc < Vlast_prompt_time
+              if (tc <= Vlast_prompt_time
                   || (relative && tc < Vlast_chdir_time))
                 {
                   bool clear_breakpoints = false;

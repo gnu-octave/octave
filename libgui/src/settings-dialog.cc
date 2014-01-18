@@ -57,7 +57,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->setupUi (this);
 
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME: what should happen if settings is 0?
+
+  // restore last geometry
+  restoreGeometry (settings->value("settings/geometry").toByteArray ());
 
   // look for available language files and the actual settings
   QString qm_dir_name = resource_manager::get_gui_translation_dir ();
@@ -622,6 +624,8 @@ settings_dialog::write_changed_settings ()
   write_terminal_colors (settings);
 
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
+  settings->setValue ("settings/geometry",saveGeometry ());
+  settings->sync ();
 }
 
 #ifdef HAVE_QSCINTILLA
@@ -705,6 +709,7 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer, QSettings *settings)
 
   settings->setValue (
     "settings/last_editor_styles_tab",ui->tabs_editor_lexers->currentIndex ());
+  settings->sync ();
 }
 #endif
 

@@ -58,10 +58,17 @@ endfunction
 %!     error ("gzipped file cannot be found!");
 %!   endif
 %!   gunzip (entry);
-%!   if (system (sprintf ("diff %s %s%c%s%s", filename, dirname, filesep,
-%!                                            basename, extension)))
+%!   fid = fopen (filename, "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen ([dirname filesep basename extension], "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
 %!     error ("unzipped file not equal to original file!");
-%!   end
+%!   endif
 %! unwind_protect_cleanup
 %!   delete (filename);
 %!   delete ([dirname, filesep, basename, extension]);

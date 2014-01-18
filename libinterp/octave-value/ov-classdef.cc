@@ -305,7 +305,10 @@ get_class_context (void)
 }
 
 static bool
-check_access (const cdef_class& cls, const octave_value& acc)
+check_access (const cdef_class& cls, const octave_value& acc,
+              const std::string& meth_name = std::string (),
+              const std::string& prop_name = std::string (),
+              bool is_prop_set = false)
 {
   if (acc.is_string ())
     {
@@ -324,7 +327,47 @@ check_access (const cdef_class& cls, const octave_value& acc)
           if (acc_s == "private")
             return (ctx == cls);
           else if (acc_s == "protected")
-            return is_superclass (cls, ctx);
+            {
+              if (is_superclass (cls, ctx))
+                // Calling a protected method in a superclass.
+                return true;
+              else if (is_strict_superclass (ctx, cls))
+                {
+                  // Calling a protected method or property in a derived class.
+                  // This is only allowed if the context class knows about it
+                  // and has access to it.
+
+                  if (! meth_name.empty ())
+                    {
+                      cdef_method m = ctx.find_method (meth_name);
+
+                      if (m.ok ())
+                        return check_access (ctx, m.get ("Access"), meth_name);
+
+                      return false;
+                    }
+                  else if (! prop_name.empty ())
+                    {
+                      cdef_property p = ctx.find_property (prop_name);
+
+                      if (p.ok ())
+                        {
+                          octave_value p_access = p.get (is_prop_set ?
+                                                         "SetAccess" :
+                                                         "GetAccess");
+
+                          return check_access (ctx, p_access, meth_name,
+                                               prop_name, is_prop_set);
+                        }
+
+                      return false;
+                    }
+                  else
+                    panic_impossible ();
+                }
+
+              return false;
+            }
           else
             panic_impossible ();
         }
@@ -2890,7 +2933,8 @@ cdef_property::cdef_property_rep::check_get_access (void) const
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
   if (! error_state)
-    return ::check_access (cls, get ("GetAccess"));
+    return ::check_access (cls, get ("GetAccess"), std::string (),
+                           get_name (), false);
 
   return false;
 }
@@ -2901,7 +2945,8 @@ cdef_property::cdef_property_rep::check_set_access (void) const
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
   if (! error_state)
-    return ::check_access (cls, get ("SetAccess"));
+    return ::check_access (cls, get ("SetAccess"), std::string (),
+                           get_name (), true);
 
   return false;
 }
@@ -3038,7 +3083,7 @@ cdef_method::cdef_method_rep::check_access (void) const
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
   if (! error_state)
-    return ::check_access (cls, get ("Access"));
+    return ::check_access (cls, get ("Access"), get_name ());
 
   return false;
 }

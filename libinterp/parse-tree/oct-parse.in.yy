@@ -1628,25 +1628,25 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
                 ;
 
 method_decl1    : identifier
-		  {
+                  {
                     if (! ($$ = parser.start_classdef_external_method ($1, 0)))
                       ABORT_PARSE;
                   }
-		| identifier param_list
-		  { if (! ($$ = parser.start_classdef_external_method ($1, $2)))
+                | identifier param_list
+                  { if (! ($$ = parser.start_classdef_external_method ($1, $2)))
                       ABORT_PARSE;
                   }
                 ;
 
 method_decl     : stash_comment method_decl1
-		  { $$ = parser.finish_classdef_external_method ($2, 0, $1); }
+                  { $$ = parser.finish_classdef_external_method ($2, 0, $1); }
                 | stash_comment return_list '=' method_decl1
-		  { $$ = parser.finish_classdef_external_method ($4, $2, $1); }
+                  { $$ = parser.finish_classdef_external_method ($4, $2, $1); }
                 ;
 
 method          : method_decl
-		  { $$ = $1; }
-		| function
+                  { $$ = $1; }
+                | function
                   { $$ = $1; }
                 ;
 
@@ -3246,7 +3246,7 @@ octave_base_parser::make_classdef_enum_block (token *tok_val,
 
 octave_user_function*
 octave_base_parser::start_classdef_external_method (tree_identifier *id,
-		                                    tree_parameter_list *pl)
+                                                    tree_parameter_list *pl)
 {
   octave_user_function* retval = 0;
 
@@ -3295,7 +3295,7 @@ octave_base_parser::start_classdef_external_method (tree_identifier *id,
 
 tree_function_def *
 octave_base_parser::finish_classdef_external_method (octave_user_function *fcn,
-		                                     tree_parameter_list *ret_list,
+                                                     tree_parameter_list *ret_list,
                                                      octave_comment_list *cl)
 {
   if (ret_list)

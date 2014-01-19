@@ -1952,7 +1952,9 @@ do_binary_op (octave_value::binary_op op,
   int t2 = v2.type_id ();
 
   if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ())
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
@@ -2208,7 +2210,9 @@ do_binary_op (octave_value::compound_binary_op op,
   int t2 = v2.type_id ();
 
   if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ())
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
@@ -2382,7 +2386,8 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 
   int t = v.type_id ();
 
-  if (t == octave_class::static_type_id ())
+  if (t == octave_class::static_type_id ()
+      || t == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::unary_class_op_fcn f
         = octave_value_typeinfo::lookup_unary_class_op (op);

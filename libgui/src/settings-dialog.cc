@@ -183,6 +183,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("terminal/fontName","Courier New").toString ()) );
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
+
+  // file browser
   ui->showFileSize->setChecked (
     settings->value ("filesdockwidget/showFileSize", false).toBool ());
   ui->showFileType->setChecked (
@@ -193,8 +195,17 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("filesdockwidget/showHiddenFiles",false).toBool ());
   ui->useAlternatingRowColors->setChecked (
     settings->value ("filesdockwidget/useAlternatingRowColors",true).toBool ());
+  connect (ui->sync_octave_directory, SIGNAL (toggled (bool)),
+           this, SLOT (set_disabled_pref_file_browser_dir (bool)));
   ui->sync_octave_directory->setChecked (
     settings->value ("filesdockwidget/sync_octave_directory",true).toBool ());
+  ui->cb_restore_file_browser_dir->setChecked (
+                 settings->value ("filesdockwidget/restore_last_dir",false).toBool ());
+  ui->le_file_browser_dir->setText (
+                 settings->value ("filesdockwidget/startup_dir").toString ());
+  connect (ui->pb_file_browser_dir, SIGNAL (pressed ()),
+           this, SLOT (get_file_browser_dir ()));
+
   ui->checkbox_allow_web_connect->setChecked (
     settings->value ("news/allow_web_connection",false).toBool ());
   ui->useProxyServer->setChecked (
@@ -568,6 +579,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value ());
   settings->setValue ("terminal/fontName",
                       ui->terminal_fontName->currentFont ().family ());
+
   settings->setValue ("filesdockwidget/showFileSize",
                       ui->showFileSize->isChecked ());
   settings->setValue ("filesdockwidget/showFileType",
@@ -580,6 +592,12 @@ settings_dialog::write_changed_settings ()
                       ui->useAlternatingRowColors->isChecked ());
   settings->setValue ("filesdockwidget/sync_octave_directory",
                       ui->sync_octave_directory->isChecked ());
+  settings->setValue ("filesdockwidget/restore_last_dir",
+                      ui->cb_restore_file_browser_dir->isChecked ());
+  settings->setValue ("filesdockwidget/startup_dir", 
+                      ui->le_file_browser_dir->text ());
+
+
   settings->setValue ("news/allow_web_connection",
                       ui->checkbox_allow_web_connect->isChecked ());
   settings->setValue ("useProxyServer", ui->useProxyServer->isChecked ());
@@ -764,11 +782,43 @@ settings_dialog::write_terminal_colors (QSettings *settings)
   settings->sync ();
 }
 
+
+// internal slots
+
+void
+settings_dialog::get_dir (QLineEdit *line_edit, const QString& title)
+{
+  QString dir = QFileDialog::getExistingDirectory(this,
+                title, line_edit->text (),
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  line_edit->setText (dir);
+}
+
 void
 settings_dialog::get_octave_dir ()
 {
-  QString dir = QFileDialog::getExistingDirectory(this,
-                tr("Set Octave Startup Directory"), "",
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-  ui->le_octave_dir->setText (dir);
+  get_dir (ui->le_octave_dir, tr ("Set Octave Startup Directory"));
+}
+
+void
+settings_dialog::get_file_browser_dir ()
+{
+  get_dir (ui->le_file_browser_dir, tr ("Set File Browser Startup Directory"));
+}
+
+void
+settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
+{
+  ui->cb_restore_file_browser_dir->setDisabled (disable);
+
+  if (! disable)
+    {
+      ui->le_file_browser_dir->setDisabled (ui->cb_restore_file_browser_dir->isChecked ());
+      ui->pb_file_browser_dir->setDisabled (ui->cb_restore_file_browser_dir->isChecked ());
+    }
+  else
+    {
+      ui->le_file_browser_dir->setDisabled (disable);
+      ui->pb_file_browser_dir->setDisabled (disable);
+    }
 }

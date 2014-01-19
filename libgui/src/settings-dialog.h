@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QDialog>
 #include <QSettings>
+#include <QLineEdit>
 
 #include "color-picker.h"
 
@@ -47,6 +48,9 @@ class settings_dialog:public QDialog
 
 private slots:
   void get_octave_dir ();
+  void get_file_browser_dir ();
+  void get_dir (QLineEdit*, const QString&);
+  void set_disabled_pref_file_browser_dir (bool disable);
 
 private:
   Ui::settings_dialog * ui;

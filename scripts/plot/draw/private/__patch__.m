@@ -70,7 +70,7 @@ function [h, failed] = __patch__ (p, varargin)
         y = varargin{2};
         iarg = 4;
         if (rem (nargin - iarg, 2) == 1)
-          c = varargin {iarg};
+          c = varargin{iarg};
           z = varargin{3};
           iarg = 5;
         else
@@ -83,7 +83,7 @@ function [h, failed] = __patch__ (p, varargin)
         z = [];
         iarg = 3;
         if (rem (nargin - iarg, 2) == 1)
-          c = varargin {iarg};
+          c = varargin{iarg};
           iarg++; 
         else
           c = [];
@@ -127,7 +127,7 @@ function [h, failed] = __patch__ (p, varargin)
             args{9} = "cdata";
             args{10} = c;
           else
-            error ("patch: color value not valid");
+            error ("patch: color data C must be numeric");
           endif
         elseif (isvector (c) && numel (c) == 3)
           args{7} = "facecolor";
@@ -150,7 +150,7 @@ function [h, failed] = __patch__ (p, varargin)
             args{9} = "cdata";
             args{10} = c;
           else
-            error ("patch: color value not valid");
+            error ("patch: Invalid TrueColor data C");
           endif
         else
           ## Color Vectors
@@ -159,18 +159,17 @@ function [h, failed] = __patch__ (p, varargin)
             args{8} = "interp";
             args{9} = "cdata";
             args{10} = [];
-          elseif (isequal (size (c), size (x)) && isequal (size (c), size (y)))
+          elseif (size_equal (c, x) && size_equal (c, y))
             args{7} = "facecolor";
             args{8} = "interp";
             args{9} = "cdata";
             args{10} = c;
           else
-            error ("patch: size of x, y, and c must be equal");
+            error ("patch: size of X, Y, and C must be equal");
           endif
         endif
       elseif (ischar (c) && rem (nargin - iarg, 2) == 0)
-        ## Assume that any additional argument over an even number is
-        ## color string.
+        ## Assume any additional argument over an even number is a color string.
         args{7} = "facecolor";
         args{8} =  tolower (c);
         args{9} = "cdata";
@@ -195,7 +194,7 @@ function [h, failed] = __patch__ (p, varargin)
   endif
 
   if (!failed)
-    h = __go_patch__ (p, args {:});
+    h = __go_patch__ (p, args{:});
 
     ## Setup listener functions
     addlistener (h, "xdata", @update_data);
@@ -229,19 +228,19 @@ function args = setdata (args)
   if (idx > nargs)
     faces = [];
   else
-    faces = args {idx};
+    faces = args{idx};
   endif
   idx = find (strcmpi (args, "vertices"), 1, "last") + 1;
   if (idx > nargs)
     vert = [];
   else
-    vert = args {idx};
+    vert = args{idx};
   endif
   idx = find (strcmpi (args, "facevertexcdata"), 1, "last") + 1;
   if (isempty (idx) || idx > nargs)
     fvc = [];
   else
-    fvc = args {idx};
+    fvc = args{idx};
   endif
   idx = find (strcmpi (args, "facecolor"), 1, "last") + 1;
   if (isempty (idx) || idx > nargs)
@@ -254,7 +253,7 @@ function args = setdata (args)
   endif
 
   nc = rows (faces);
-  idx = faces .';
+  idx = faces.';
   t1 = isnan (idx);
   for i = find (any (t1))
     first_idx_in_column = find (t1(:,i), 1);
@@ -273,11 +272,11 @@ function args = setdata (args)
   else
     if (columns (fvc) == 3)
       c = cat (3, reshape (fvc(idx, 1), size (idx)),
-               reshape (fvc(idx, 2), size (idx)),
-               reshape (fvc(idx, 3), size (idx)));
+                  reshape (fvc(idx, 2), size (idx)),
+                  reshape (fvc(idx, 3), size (idx)));
     elseif (isempty (fvc))
       c = [];
-    else ## if (columnns (fvc) == 1)
+    else  ## if (columnns (fvc) == 1)
       c = permute (fvc(faces), [2, 1]);
     endif
   endif
@@ -293,25 +292,25 @@ function args = setvertexdata (args)
   if (idx > nargs)
     x = [];
   else
-    x = args {idx};
+    x = args{idx};
   endif
   idx = find (strcmpi (args, "ydata"), 1, "last") + 1;
   if (idx > nargs)
     y = [];
   else
-    y = args {idx};
+    y = args{idx};
   endif
   idx = find (strcmpi (args, "zdata"), 1, "last") + 1;
   if (isempty (idx) || idx > nargs)
     z = [];
   else
-    z = args {idx};
+    z = args{idx};
   endif
   idx = find (strcmpi (args, "cdata"), 1, "last") + 1;
   if (isempty (idx) || idx > nargs)
     c = [];
   else
-    c = args {idx};
+    c = args{idx};
   endif
   idx = find (strcmpi (args, "facecolor"), 1, "last") + 1;
   if (isempty (idx) || idx > nargs)
@@ -328,13 +327,13 @@ function args = setvertexdata (args)
     nr = nc;
     nc = 1;
   endif
-  if (!isempty (z))
-    vert = [x(:), y(:), z(:)];
-  else
+  if (isempty (z))
     vert = [x(:), y(:)];
+  else
+    vert = [x(:), y(:), z(:)];
   endif
   faces = reshape (1:numel (x), nr, nc);
-  faces = faces';
+  faces = faces.';
 
   if (ndims (c) == 3)
     fvc = reshape (c, rows (c) * columns (c), size (c, 3));

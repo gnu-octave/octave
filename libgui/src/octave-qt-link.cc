@@ -43,12 +43,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "resource-manager.h"
 
-octave_qt_link::octave_qt_link (void)
+octave_qt_link::octave_qt_link (QWidget *p)
   : octave_link (), main_thread (new QThread ()),
     command_interpreter (new octave_interpreter ())
 {
   connect (this, SIGNAL (execute_interpreter_signal (void)),
            command_interpreter, SLOT (execute (void)));
+
+  connect (command_interpreter, SIGNAL (octave_ready_signal ()),
+           p, SLOT (handle_octave_ready ()));
 
   command_interpreter->moveToThread (main_thread);
 

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ui-settings-dialog.h"
 #include <QDir>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QVector>
 #include <QHash>
 
@@ -113,6 +114,14 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   ui->cb_widget_custom_style->setChecked (
     settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
+
+  // Octave startup
+  ui->cb_restore_octave_dir->setChecked (
+                 settings->value ("restore_octave_dir",false).toBool ());
+  ui->le_octave_dir->setText (
+                 settings->value ("octave_startup_dir").toString ());
+  connect (ui->pb_octave_dir, SIGNAL (pressed ()),
+           this, SLOT (get_octave_dir ()));
 
   // editor
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor",
@@ -502,8 +511,15 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("Dockwidgets/title_fg_color",
                       _widget_title_fg_color->color ());
 
-  // other settings
+  // icon size
   settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
+
+  // Octave startup
+  settings->setValue ("restore_octave_dir",
+                      ui->cb_restore_octave_dir->isChecked ());
+  settings->setValue ("octave_startup_dir", ui->le_octave_dir->text ());
+
+  //editor
   settings->setValue ("useCustomFileEditor",
                       ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
@@ -746,4 +762,13 @@ settings_dialog::write_terminal_colors (QSettings *settings)
                             color->color ());
     }
   settings->sync ();
+}
+
+void
+settings_dialog::get_octave_dir ()
+{
+  QString dir = QFileDialog::getExistingDirectory(this,
+                tr("Set Octave Startup Directory"), "",
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  ui->le_octave_dir->setText (dir);
 }

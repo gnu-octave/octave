@@ -45,6 +45,9 @@ class settings_dialog:public QDialog
   ~settings_dialog ();
   void write_changed_settings ();
 
+private slots:
+  void get_octave_dir ();
+
 private:
   Ui::settings_dialog * ui;
 #ifdef HAVE_QSCINTILLA

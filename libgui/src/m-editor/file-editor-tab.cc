@@ -1,3 +1,4 @@
+
 /*
 
 Copyright (C) 2011-2013 Jacob Dawid
@@ -1236,7 +1237,7 @@ file_editor_tab::save_file_check_spaces (QString file_name)
       int ans = QMessageBox::question (0, tr ("Octave Editor"),
          tr ("It is not advisable to save an Octave script\n"
               "in a file with a name containing spaces.\n\n"
-              "Do you wnat to chose another name?"),
+              "Do you want to choose another name?"),
           QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
       if (ans == QMessageBox::Yes)

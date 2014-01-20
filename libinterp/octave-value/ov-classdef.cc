@@ -305,6 +305,14 @@ get_class_context (void)
 }
 
 static bool
+in_class_method (const cdef_class& cls)
+{
+  cdef_class ctx = get_class_context ();
+
+  return (ctx.ok () && is_superclass (ctx, cls));
+}
+
+static bool
 check_access (const cdef_class& cls, const octave_value& acc,
               const std::string& meth_name = std::string (),
               const std::string& prop_name = std::string (),
@@ -885,14 +893,38 @@ octave_classdef::subsref (const std::string& type,
   size_t skip = 0;
   octave_value_list retval;
 
-  // FIXME: should check "subsref" method first
+  cdef_class cls = object.get_class ();
+
+  if (! in_class_method (cls))
+    {
+      cdef_method meth = cls.find_method ("subsref");
+
+      if (meth.ok ())
+        {
+          octave_value_list args;
+
+          args(1) = make_idx_args (type, idx, "subsref");
+
+          if (! error_state)
+            {
+              count++;
+              args(0) = octave_value (this);
+
+              retval = meth.execute (args, nargout, true, "subsref");
+            }
+
+          return retval;
+        }
+    }
+
+  // At this point, the default subsref mechanism must be used.
 
   retval = object.subsref (type, idx, nargout, skip, cdef_class ());
 
   if (! error_state)
     {
       if (type.length () > skip && idx.size () > skip)
-	retval = retval(0).next_subsref (nargout, type, idx, skip);
+        retval = retval(0).next_subsref (nargout, type, idx, skip);
     }
 
   return retval;
@@ -906,8 +938,10 @@ octave_classdef::subsref (const std::string& type,
   size_t skip = 0;
   octave_value_list retval;
 
-  // FIXME: should check "subsref" method first
-  // ? not sure this still applied with auto_add version of subsref
+  // This variant of subsref is used to create temporary values when doing
+  // assignment with multi-level indexing. AFAIK this is only used for internal
+  // purpose (not sure we should even implement this) and any overload subsref
+  // should not be called.
 
   retval = object.subsref (type, idx, 1, skip, cdef_class (), auto_add);
 

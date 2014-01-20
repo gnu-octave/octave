@@ -1536,6 +1536,97 @@ CONVDECLX (cell_conv)
   return new octave_cell ();
 }
 
+static inline octave_value_list
+sanitize (const octave_value_list& ovl)
+{
+  octave_value_list retval = ovl;
+
+  for (octave_idx_type i = 0; i < ovl.length (); i++)
+    {
+      if (retval(i).is_magic_colon ())
+        retval(i) = ":";
+    }
+
+  return retval;
+}
+
+octave_value
+make_idx_args (const std::string& type,
+               const std::list<octave_value_list>& idx,
+               const std::string& who)
+{
+  octave_value retval;
+
+  size_t len = type.length ();
+
+  if (len == idx.size ())
+    {
+      Cell type_field (1, len);
+      Cell subs_field (1, len);
+
+      std::list<octave_value_list>::const_iterator p = idx.begin ();
+
+      for (size_t i = 0; i < len; i++)
+        {
+          char t = type[i];
+
+          switch (t)
+            {
+            case '(':
+              type_field(i) = "()";
+              subs_field(i) = Cell (sanitize (*p++));
+              break;
+
+            case '{':
+              type_field(i) = "{}";
+              subs_field(i) = Cell (sanitize (*p++));
+              break;
+
+            case '.':
+              {
+                type_field(i) = ".";
+
+                octave_value_list vlist = *p++;
+
+                if (vlist.length () == 1)
+                  {
+                    octave_value val = vlist(0);
+
+                    if (val.is_string ())
+                      subs_field(i) = val;
+                    else
+                      {
+                        error ("expecting character string argument for '.' index");
+                        return retval;
+                      }
+                  }
+                else
+                  {
+                    error ("expecting single argument for '.' index");
+                    return retval;
+                  }
+              }
+              break;
+
+            default:
+              panic_impossible ();
+              break;
+            }
+        }
+
+      octave_map m;
+
+      m.assign ("type", type_field);
+      m.assign ("subs", subs_field);
+
+      retval = m;
+    }
+  else
+    error ("invalid index for %s", who.c_str ());
+
+  return retval;
+}
+
 void
 install_base_type_conversions (void)
 {

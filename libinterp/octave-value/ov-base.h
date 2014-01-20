@@ -828,4 +828,12 @@ private:
 // is memory to be saved
 extern OCTINTERP_API bool Vsparse_auto_mutate;
 
+// Utility function to convert C++ arguments used in subsref/subsasgn into an
+// octave_value_list object that can be used to call a function/method in the
+// interpreter.
+extern OCTINTERP_API octave_value
+make_idx_args (const std::string& type,
+               const std::list<octave_value_list>& idx,
+               const std::string& who);
+
 #endif

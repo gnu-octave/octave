@@ -91,6 +91,8 @@ signals:
   void fetab_remove_all_breakpoints (const QWidget* ID);
   void fetab_comment_selected_text (const QWidget* ID);
   void fetab_uncomment_selected_text (const QWidget* ID);
+  void fetab_indent_selected_text (const QWidget* ID);
+  void fetab_unindent_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
   void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
@@ -139,6 +141,10 @@ public slots:
 
   void request_comment_selected_text (void);
   void request_uncomment_selected_text (void);
+
+  void request_indent_selected_text (void);
+  void request_unindent_selected_text (void);
+
   void request_find (void);
 
   void request_goto_line (void);
@@ -200,6 +206,9 @@ private:
 
   QAction *_comment_selection_action;
   QAction *_uncomment_selection_action;
+
+  QAction *_indent_selection_action;
+  QAction *_unindent_selection_action;
 
   QAction *_copy_action;
   QAction *_cut_action;

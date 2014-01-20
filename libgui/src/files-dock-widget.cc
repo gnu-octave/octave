@@ -155,8 +155,29 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QSettings *settings = resource_manager::get_settings ();
   // FIXME: what should happen if settings is 0?
 
-  // Create the QFileSystemModel starting in the actual directory
-  QDir curr_dir;
+  // Create the QFileSystemModel starting in the desired directory
+  QDir startup_dir;  // take current dir
+
+  if (settings->value ("filesdockwidget/restore_last_dir",false).toBool ())
+    {
+      // restore last dir from previous session
+      QStringList last_dirs
+        = settings->value ("filesdockwidget/mru_dir_list").toStringList ();
+      if (last_dirs.length () > 0)
+        startup_dir = QDir (last_dirs.at (0));  // last dir in previous session
+    }
+  else if (! settings->value ("filesdockwidget/startup_dir").toString ().isEmpty ())
+    {
+      // do not restore but there is a startup dir configured
+      startup_dir = QDir (settings->value ("filesdockwidget/startup_dir").toString ());
+    }
+
+  if (! startup_dir.exists ())
+    {
+      // the configured startup dir does not exist, take actual one
+      startup_dir = QDir ();
+    }
+
   _file_system_model = new QFileSystemModel (this);
   if (settings->value ("filesdockwidget/showHiddenFiles",false).toBool ())
     {
@@ -168,7 +189,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
       _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
     }
   QModelIndex rootPathIndex = _file_system_model->setRootPath (
-                                curr_dir.absolutePath ());
+                                startup_dir.absolutePath ());
 
   // Attach the model to the QTreeView and set the root index
   _file_tree_view = new FileTreeViewer (container);

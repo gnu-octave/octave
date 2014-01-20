@@ -670,6 +670,19 @@ file_editor::request_uncomment_selected_text (void)
 }
 
 void
+file_editor::request_indent_selected_text (void)
+{
+  emit fetab_indent_selected_text (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::request_unindent_selected_text (void)
+{
+  emit fetab_unindent_selected_text (_tab_widget->currentWidget ());
+}
+
+
+void
 file_editor::request_find (void)
 {
   emit fetab_find (_tab_widget->currentWidget ());
@@ -843,7 +856,7 @@ file_editor::notice_settings (const QSettings *settings)
   int icon_size = settings->value ("toolbar_icon_size", 16).toInt ();
   _tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-  int tab_width = settings->value ("editor/tab_width", 300).toInt ();
+  int tab_width = settings->value ("editor/notebook_tab_width", 300).toInt ();
   QString style_sheet = QString ("QTabBar::tab {max-height: 4ex; "
                                  "max-width: %1px; text-align: right }").
                                  arg (tab_width);
@@ -945,6 +958,11 @@ file_editor::construct (void)
   _uncomment_selection_action
     = new QAction (tr ("&Uncomment"), _tool_bar);
 
+  _indent_selection_action
+    = new QAction (tr ("&Indent"), _tool_bar);
+  _unindent_selection_action
+    = new QAction (tr ("&Unindent"), _tool_bar);
+
   _find_action = new QAction (QIcon (":/actions/icons/find.png"),
                               tr ("&Find and Replace..."), _tool_bar);
 
@@ -978,6 +996,8 @@ file_editor::construct (void)
   _toggle_bookmark_action->setShortcutContext (Qt::WindowShortcut);
   _comment_selection_action->setShortcutContext (Qt::WindowShortcut);
   _uncomment_selection_action->setShortcutContext (Qt::WindowShortcut);
+  _indent_selection_action->setShortcutContext (Qt::WindowShortcut);
+  _unindent_selection_action->setShortcutContext (Qt::WindowShortcut);
   _find_action->setShortcutContext (Qt::WindowShortcut);
   _goto_line_action->setShortcutContext (Qt::WindowShortcut);
 
@@ -1057,6 +1077,9 @@ file_editor::construct (void)
   editMenu->addSeparator ();
   editMenu->addAction (_comment_selection_action);
   editMenu->addAction (_uncomment_selection_action);
+  editMenu->addSeparator ();
+  editMenu->addAction (_indent_selection_action);
+  editMenu->addAction (_unindent_selection_action);
   editMenu->addSeparator ();
   editMenu->addAction (_toggle_bookmark_action);
   editMenu->addAction (_next_bookmark_action);
@@ -1186,6 +1209,12 @@ file_editor::construct (void)
 
   connect (_uncomment_selection_action, SIGNAL (triggered ()),
            this, SLOT (request_uncomment_selected_text ()));
+
+  connect (_indent_selection_action, SIGNAL (triggered ()),
+           this, SLOT (request_indent_selected_text ()));
+
+  connect (_unindent_selection_action, SIGNAL (triggered ()),
+           this, SLOT (request_unindent_selected_text ()));
 
   connect (_find_action, SIGNAL (triggered ()),
            this, SLOT (request_find ()));
@@ -1340,6 +1369,12 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_uncomment_selected_text (const QWidget*)),
            f, SLOT (uncomment_selected_text (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_indent_selected_text (const QWidget*)),
+           f, SLOT (indent_selected_text (const QWidget*)));
+
+  connect (this, SIGNAL (fetab_unindent_selected_text (const QWidget*)),
+           f, SLOT (unindent_selected_text (const QWidget*)));
+
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
 
@@ -1395,6 +1430,11 @@ file_editor::set_shortcuts (bool set)
                                                 + Qt::ControlModifier
                                                 + Qt::Key_R);
 
+      _indent_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_Tab);
+      _unindent_selection_action->setShortcut (Qt::SHIFT
+                                                + Qt::ControlModifier
+                                                + Qt::Key_Tab);
+
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);
       _paste_action->setShortcut (QKeySequence::Paste);
@@ -1426,6 +1466,9 @@ file_editor::set_shortcuts (bool set)
 
       _comment_selection_action->setShortcut (no_key);
       _uncomment_selection_action->setShortcut (no_key);
+
+      _indent_selection_action->setShortcut (no_key);
+      _unindent_selection_action->setShortcut (no_key);
 
       _copy_action->setShortcut (no_key);
       _cut_action->setShortcut (no_key);
@@ -1460,6 +1503,9 @@ file_editor::check_actions ()
 
   _comment_selection_action->setEnabled (have_tabs);
   _uncomment_selection_action->setEnabled (have_tabs);
+
+  _indent_selection_action->setEnabled (have_tabs);
+  _unindent_selection_action->setEnabled (have_tabs);
 
   _paste_action->setEnabled (have_tabs);
   _context_help_action->setEnabled (have_tabs);

@@ -93,6 +93,10 @@ public slots:
 
   void comment_selected_text (const QWidget *ID);
   void uncomment_selected_text (const QWidget *ID);
+
+  void indent_selected_text (const QWidget *ID);
+  void unindent_selected_text (const QWidget *ID);
+
   void find (const QWidget *ID);
   void goto_line (const QWidget *ID, int line = -1);
 
@@ -186,6 +190,7 @@ private:
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
   QString comment_string (const QString&);
+  void do_indent_selected_text (bool indent);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);

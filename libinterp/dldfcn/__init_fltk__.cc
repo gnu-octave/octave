@@ -111,7 +111,7 @@ public:
       in_zoom (false), zoom_box (),  print_mode (false)
   {
     // Ask for double buffering and a depth buffer.
-    mode (FL_DEPTH | FL_DOUBLE);
+    mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
   }
 
   ~OpenGL_fltk (void) { }
@@ -752,7 +752,7 @@ public:
       status->box (FL_ENGRAVED_BOX);
 
       // This allows us to have a valid OpenGL context right away.
-      canvas->mode (FL_DEPTH | FL_DOUBLE );
+      canvas->mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
       if (fp.is_visible ())
         {
           // FIXME: This code should be removed when Octave drops support

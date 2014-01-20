@@ -746,6 +746,25 @@ file_editor_tab::uncomment_selected_text (const QWidget *ID)
 }
 
 void
+file_editor_tab::indent_selected_text (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  do_indent_selected_text (true);
+}
+
+void
+file_editor_tab::unindent_selected_text (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  do_indent_selected_text (false);
+}
+
+
+void
 file_editor_tab::handle_find_dialog_finished (int)
 {
   // Find dialog is going to hide.  Save location of window for
@@ -813,6 +832,43 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
     _edit_area->setCursorPosition (line-1, 0);
 }
 
+void
+file_editor_tab::do_indent_selected_text (bool indent)
+{
+  // TODO
+  _edit_area->beginUndoAction ();
+
+  if (_edit_area->hasSelectedText ())
+    {
+      int lineFrom, lineTo, colFrom, colTo;
+      _edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
+
+      if (colTo == 0)  // the beginning of last line is not selected
+        lineTo--;        // stop at line above
+
+      for (int i = lineFrom; i <= lineTo; i++)
+        {
+          if (indent)
+            _edit_area->indent (i);
+          else
+            _edit_area->unindent (i);
+        }
+      //set selection on (un)indented section
+      _edit_area->setSelection (lineFrom, 0, lineTo,
+                                _edit_area->text (lineTo).length ());
+    }
+  else
+    {
+      int cpline, col;
+      _edit_area->getCursorPosition (&cpline, &col);
+      if (indent)
+        _edit_area->indent (cpline);
+      else
+        _edit_area->unindent (cpline);
+    }
+
+  _edit_area->endUndoAction ();
+}
 
 void
 file_editor_tab::do_comment_selected_text (bool comment)
@@ -1011,6 +1067,7 @@ file_editor_tab::load_file (const QString& fileName)
     return file.errorString ();
 
   QTextStream in (&file);
+  in.setCodec("UTF-8");
   QApplication::setOverrideCursor (Qt::WaitCursor);
   _edit_area->setText (in.readAll ());
   QApplication::restoreOverrideCursor ();
@@ -1077,6 +1134,7 @@ file_editor_tab::save_file (const QString& saveFileName, bool remove_on_success)
 
   // save the contents into the file
   QTextStream out (&file);
+  out.setCodec("UTF-8");
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
   out.flush ();

@@ -38,6 +38,10 @@ public:
 
   octave_interpreter (void) : QObject (), thread_manager () { }
 
+signals:
+
+  void octave_ready_signal ();
+
 public slots:
 
   // Initialize and execute the octave interpreter.

@@ -53,7 +53,7 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (void);
+  octave_qt_link (QWidget *p);
 
   ~octave_qt_link (void);
 

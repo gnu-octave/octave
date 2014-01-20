@@ -1261,19 +1261,48 @@ main_window::construct (void)
                                                           int)));
 #endif
 
-  QDir curr_dir;
-  set_current_working_directory (curr_dir.absolutePath ());
-
   octave_link::post_event (this, &main_window::resize_command_window_callback);
 
   set_global_shortcuts (true);
 
 }
 
+
+void
+main_window::handle_octave_ready ()
+{
+  // actions after the startup files are executed
+  QSettings *settings = resource_manager::get_settings ();
+
+  QDir startup_dir = QDir ();    // current octave dir after startup
+
+  if (settings->value ("restore_octave_dir").toBool ())
+    {
+      // restore last dir from previous session
+      QStringList curr_dirs
+        = settings->value ("MainWindow/current_directory_list").toStringList ();
+      startup_dir = QDir (curr_dirs.at (0));  // last dir in previous session
+    }
+  else if (! settings->value ("octave_startup_dir").toString ().isEmpty ())
+    {
+      // do not restore but there is a startup dir configured
+      startup_dir = QDir (settings->value ("octave_startup_dir").toString ());
+    }
+
+  if (! startup_dir.exists ())
+    {
+      // the configured startup dir does not exist, take actual one
+      startup_dir = QDir ();
+    }
+
+  set_current_working_directory (startup_dir.absolutePath ());
+}
+
+
 void
 main_window::construct_octave_qt_link (void)
 {
-  _octave_qt_link = new octave_qt_link ();
+  _octave_qt_link = new octave_qt_link (this);
 
   connect (_octave_qt_link, SIGNAL (exit_signal (int)),
            this, SLOT (exit (int)));

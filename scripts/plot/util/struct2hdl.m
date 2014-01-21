@@ -297,7 +297,11 @@ function [h, sout] = createpatch (s, par)
   h = patch (prp);
   set (h, "parent", par);
   s.properties = rmfield (s.properties,
-                            {"faces", "vertices", "facevertexcdata"});
+                          {"faces", "vertices", "facevertexcdata"});
+  ## Also remove derived properties.  Otherwise there is a possibility for
+  ## a segfault when 'set (h, properties)' is used to restore properties
+  ## which do not match in size the ones created with from the call to patch().
+  s.properties = rmfield (s.properties, {"xdata", "ydata", "zdata", "cdata"});
   addmissingprops (h, s.properties);
   sout = s;
 endfunction

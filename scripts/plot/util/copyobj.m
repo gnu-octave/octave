@@ -86,32 +86,25 @@ endfunction
 %! legend ('errorbar', 'line');
 %! hnew = copyobj (hdl);
 
-%!#demo
-%! ## FIXME: This demo fails for an obscure reason.
-%! ## It appears that there is something wrong with Octave code for patches.
-%! ## This demo must remain commented out until patch() has been reworked.
-%! unwind_protect
-%!   hdl = figure (1234);
-%!   clf;
-%!   subplot (2,2,1);
-%!   hold on;
-%!   contourf (rand (10, 10));
-%!   colorbar ();
-%!   subplot (2,2,2);
-%!   quiver (rand (10, 10), rand (10, 10));
-%!   subplot (2,2,3);
-%!   colormap (jet (64));
-%!   hold on;
-%!   sombrero ();
-%!   colorbar ('peer', gca, 'NorthOutside');
-%!   subplot (2,2,4);
-%!   imagesc (rand (30, 30));
-%!   text (15, 15, 'Rotated text', ...
-%!         'HorizontAlalignment', 'Center', 'Rotation', 30);
-%!   hnew = copyobj (hdl);
-%! unwind_protect_cleanup
-%!   close all;
-%! end_unwind_protect
+%!demo
+%! hdl = figure (1234);
+%! clf;
+%! subplot (2,2,1);
+%! hold on;
+%! contourf (rand (10, 10));
+%! colorbar ();
+%! subplot (2,2,2);
+%! quiver (rand (10, 10), rand (10, 10));
+%! subplot (2,2,3);
+%! colormap (jet (64));
+%! hold on;
+%! sombrero ();
+%! colorbar ('peer', gca, 'NorthOutside');
+%! subplot (2,2,4);
+%! imagesc (rand (30, 30));
+%! text (15, 15, 'Rotated text', ...
+%!       'HorizontAlalignment', 'Center', 'Rotation', 30);
+%! hnew = copyobj (hdl);
 
 %!testif HAVE_MAGICK
 %! toolkit = graphics_toolkit ();

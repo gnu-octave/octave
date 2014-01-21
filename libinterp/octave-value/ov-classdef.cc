@@ -895,7 +895,7 @@ octave_classdef::subsref (const std::string& type,
 
   cdef_class cls = object.get_class ();
 
-  if (! in_class_method (cls))
+  if (! in_class_method (cls) && ! called_from_builtin ())
     {
       cdef_method meth = cls.find_method ("subsref");
 

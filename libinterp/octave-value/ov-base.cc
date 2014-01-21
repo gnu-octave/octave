@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pr-output.h"
 #include "utils.h"
+#include "toplev.h"
 #include "variables.h"
 
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
@@ -1625,6 +1626,20 @@ make_idx_args (const std::string& type,
     error ("invalid index for %s", who.c_str ());
 
   return retval;
+}
+
+bool
+called_from_builtin (void)
+{
+  octave_function *fcn = octave_call_stack::caller ();
+
+  // FIXME: we probably need a better check here, or some other
+  // mechanism to avoid overloaded functions when builtin is used.
+  // For example, what if someone overloads the builtin function?
+  // Also, are there other places where using builtin is not properly
+  // avoiding dispatch?
+
+  return (fcn && fcn->name () == "builtin");
 }
 
 void

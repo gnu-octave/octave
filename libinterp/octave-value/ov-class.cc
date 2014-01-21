@@ -307,20 +307,6 @@ octave_class::dotref (const octave_value_list& idx)
   return retval;
 }
 
-static bool
-called_from_builtin (void)
-{
-  octave_function *fcn = octave_call_stack::caller ();
-
-  // FIXME: we probably need a better check here, or some other
-  // mechanism to avoid overloaded functions when builtin is used.
-  // For example, what if someone overloads the builtin function?
-  // Also, are there other places where using builtin is not properly
-  // avoiding dispatch?
-
-  return (fcn && fcn->name () == "builtin");
-}
-
 Matrix
 octave_class::size (void)
 {

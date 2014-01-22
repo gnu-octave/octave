@@ -19,15 +19,17 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv})
 ## @deftypefnx {Function File} {} specular (@var{sx}, @var{sy}, @var{sz}, @var{lv}, @var{vv}, @var{se})
-## Calculate specular reflection strength of a surface defined by the normal
-## vector elements @var{sx}, @var{sy}, @var{sz} using Phong's approximation.
+## Calculate the specular reflection strength of a surface defined by the
+## normal vector elements @var{sx}, @var{sy}, @var{sz} using Phong's
+## approximation.
 ##
-## The light source location and viewer location vectors can be specified using
-## parameter @var{lv} and @var{vv} respectively.  The location vectors can
+## The light source location and viewer location vectors are specified using
+## parameters @var{lv} and @var{vv} respectively.  The location vectors can
 ## given as 2-element vectors [azimuth, elevation] in degrees or as 3-element
 ## vectors [x, y, z].
 ##
-## An optional sixth argument describes the specular exponent (spread) @var{se}.
+## An optional sixth argument specifies the specular exponent (spread) @var{se}.
+## If not given, @var{se} defaults to 10.
 ## @seealso{diffuse, surfl}
 ## @end deftypefn
 
@@ -39,54 +41,52 @@ function retval = specular (sx, sy, sz, lv, vv, se)
     print_usage ();
   endif
 
-  ## Checks for specular exponent (se).
-  if (nargin < 6)
-    se = 10;
-  else
-    if (!isnumeric (se) || numel (se) != 1 || se <= 0)
-      error ("specular: exponent must be positive scalar");
-    endif
+  ## Check normal vectors
+  if (! size_equal (sx, sy, sz))
+    error ("specular: SX, SY, and SZ must be the same size");
   endif
 
-  ## Checks for normal vector.
-  if (!size_equal (sx, sy, sz))
-    error ("specular: SX, SY, and SZ must have same size");
-  endif
-
-  ## Check for light vector (lv) argument.
-  if (length (lv) < 2 || length (lv) > 3)
+  ## Check light vector (lv) argument
+  if (! isvector (lv) || length (lv) < 2 || length (lv) > 3)
     error ("specular: light vector LV must be a 2- or 3-element vector");
   elseif (length (lv) == 2)
     [lv(1), lv(2), lv(3)] = sph2cart (lv(1) * pi/180, lv(2) * pi/180, 1.0);
   endif
 
-  ## Check for view vector (vv) argument.
-  if (length (vv) < 2 || length (lv) > 3)
+  ## Check view vector (vv) argument
+  if (! isvector (vv) || length (vv) < 2 || length (lv) > 3)
     error ("specular: view vector VV must be a 2- or 3-element vector");
   elseif (length (vv) == 2)
     [vv(1), vv(2), vv(3)] = sph2cart (vv(1) * pi / 180, vv(2) * pi / 180, 1.0);
   endif
 
-  ## Normalize view and light vector.
-  if (sum (abs (lv)) > 0)
-    lv  /= norm (lv);
-  endif
-  if (sum (abs (vv)) > 0)
-    vv  /= norm (vv);
+  ## Check specular exponent (se) argument
+  if (nargin < 6)
+    se = 10;
+  elseif (! (isnumeric (se) && numel (se) == 1 && se > 0))
+    error ("specular: exponent SE must be a positive scalar");
   endif
 
-  ## Calculate normal vector lengths and dot-products.
+  ## Normalize view and light vectors
+  if (sum (abs (lv)) > 0)
+    lv /= norm (lv);
+  endif
+  if (sum (abs (vv)) > 0)
+    vv /= norm (vv);
+  endif
+
+  ## Calculate normal vector lengths and dot-products
   ns = sqrt (sx.^2 + sy.^2 + sz.^2);
   l_dot_n = (sx * lv(1) + sy * lv(2) + sz * lv(3)) ./ ns;
   v_dot_n = (sx * vv(1) + sy * vv(2) + sz * vv(3)) ./ ns;
 
-  ## Calculate specular reflection using Phong's approximation.
+  ## Calculate specular reflection using Phong's approximation
   retval = 2 * l_dot_n .* v_dot_n - dot (lv, vv);
 
-  ## Set zero if light is on the other side.
+  ## Set reflectance to zero if light is on the other side
   retval(l_dot_n < 0) = 0;
 
-  ## Allow postive values only.
+  ## Allow postive values only
   retval(retval < 0) = 0;
   retval = retval .^ se;
 

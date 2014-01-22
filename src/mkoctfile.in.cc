@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
+#include <unistd.h>
+
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 #include <windows.h>
 #ifdef _MSC_VER

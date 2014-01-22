@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} diffuse (@var{sx}, @var{sy}, @var{sz}, @var{lv})
-## Calculate diffuse reflection strength of a surface defined by the normal
+## Calculate the diffuse reflection strength of a surface defined by the normal
 ## vector elements @var{sx}, @var{sy}, @var{sz}.
 ##
-## The light source location vector @var{lv} can be given as 2-element vector
-## [azimuth, elevation] in degrees or as 3-element vector [lx, ly, lz].
+## The light source location vector @var{lv} can be given as a 2-element vector
+## [azimuth, elevation] in degrees or as a 3-element vector [x, y, z].
 ## @seealso{specular, surfl}
 ## @end deftypefn
 
@@ -34,13 +34,13 @@ function retval = diffuse (sx, sy, sz, lv)
     print_usage ();
   endif
 
-  ## check for normal vector
-  if (!size_equal (sx, sy, sz))
-    error ("diffuse: SX, SY, and SZ must have same size");
+  ## Check normal vectors
+  if (! size_equal (sx, sy, sz))
+    error ("diffuse: SX, SY, and SZ must be the same size");
   endif
 
-  ## check for light vector (lv) argument
-  if (length (lv) < 2 || length (lv) > 3)
+  ## Check light vector (lv) argument
+  if (! isvector (lv) || length (lv) < 2 || length (lv) > 3)
     error ("diffuse: light vector LV must be a 2- or 3-element vector");
   elseif (length (lv) == 2)
     [lv(1), lv(2), lv(3)] = sph2cart (lv(1) * pi/180, lv(2) * pi/180, 1.0);
@@ -48,7 +48,7 @@ function retval = diffuse (sx, sy, sz, lv)
 
   ## Normalize view and light vector.
   if (sum (abs (lv)) > 0)
-    lv  /= norm (lv);
+    lv /= norm (lv);
   endif
 
   ns = sqrt (sx.^2 + sy.^2 + sz.^2);

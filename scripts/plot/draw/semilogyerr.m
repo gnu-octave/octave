@@ -17,9 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} semilogyerr (@var{args})
-## @deftypefnx {Function File} {} semilogyerr (@var{hax}, @var{args})
-## @deftypefnx {Function File} {@var{h} =} semilogyerr (@var{args})
+## @deftypefn  {Function File} {} semilogyerr (@var{y}, @var{ey})
+## @deftypefnx {Function File} {} semilogyerr (@var{y}, @dots{}, @var{fmt})
+## @deftypefnx {Function File} {} semilogyerr (@var{x}, @var{y}, @var{ey})
+## @deftypefnx {Function File} {} semilogyerr (@var{x}, @var{y}, @var{err}, @var{fmt})
+## @deftypefnx {Function File} {} semilogyerr (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
+## @deftypefnx {Function File} {} semilogyerr (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
+## @deftypefnx {Function File} {} semilogyerr (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
+## @deftypefnx {Function File} {} semilogyerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
+## @deftypefnx {Function File} {} semilogyerr (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} semilogyerr (@dots{})
 ## Produce 2-D plots using a logarithmic scale for the y-axis and
 ## errorbars at each data point.
 ##

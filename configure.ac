@@ -1643,7 +1643,6 @@ OCTGUI_DLL_DEFS=
 OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 ldpreloadsep=" "
-BUILD_COMPILED_AUX_PROGRAMS=no
 case $canonical_host_type in
   *-*-386bsd* | *-*-netbsd*)
     SH_LD=ld
@@ -1696,7 +1695,6 @@ case $canonical_host_type in
     ldpreloadsep=":"
   ;;
   *-*-mingw*)
-    BUILD_COMPILED_AUX_PROGRAMS=yes
     if test $have_msvc = yes; then
       DL_LDFLAGS="-shared"
       CPICFLAG=
@@ -1737,7 +1735,6 @@ case $canonical_host_type in
   ;;
 
   *-*-msdosmsvc)
-    BUILD_COMPILED_AUX_PROGRAMS=yes
     DL_LDFLAGS="-shared"
     CPICFLAG=
     CXXPICFLAG=
@@ -1833,9 +1830,6 @@ case $canonical_host_type in
     fi
   ;;
 esac
-
-AM_CONDITIONAL([AMCOND_BUILD_COMPILED_AUX_PROGRAMS],
-  [test $BUILD_COMPILED_AUX_PROGRAMS = yes])
 
 AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])

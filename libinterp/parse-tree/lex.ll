@@ -2311,6 +2311,8 @@ octave_base_lexer::is_keyword_token (const std::string& s)
 
   if (kw)
     {
+      bool previous_at_bos = at_beginning_of_statement;
+
       // May be reset to true for some token types.
       at_beginning_of_statement = false;
 
@@ -2358,7 +2360,10 @@ octave_base_lexer::is_keyword_token (const std::string& s)
                   && (defining_func
                       && ! (looking_at_return_list
                             || parsed_function_name.top ()))))
-            return 0;
+            {
+              at_beginning_of_statement = previous_at_bos;
+              return 0;
+            }
 
           tok_val = new token (end_kw, token::simple_end, l, c);
           at_beginning_of_statement = true;
@@ -2460,7 +2465,10 @@ octave_base_lexer::is_keyword_token (const std::string& s)
           // 'get' and 'set' are keywords in classdef method
           // declarations.
           if (! maybe_classdef_get_set_method)
-            return 0;
+            {
+              at_beginning_of_statement = previous_at_bos;
+              return 0;
+            }
           break;
 
         case enumeration_kw:
@@ -2470,7 +2478,10 @@ octave_base_lexer::is_keyword_token (const std::string& s)
           // 'properties', 'methods' and 'events' are keywords for
           // classdef blocks.
           if (! parsing_classdef)
-            return 0;
+            {
+              at_beginning_of_statement = previous_at_bos;
+              return 0;
+            }
           // fall through ...
 
         case classdef_kw:

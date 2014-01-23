@@ -18,6 +18,7 @@
 
 @node Linear Algebra
 @chapter Linear Algebra
+@cindex linear algebra
 
 This chapter documents the linear algebra functions of Octave.
 Reference material for many of these functions may be found in
@@ -34,6 +35,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @node Techniques Used for Linear Algebra
 @section Techniques Used for Linear Algebra
+@cindex linear algebra, techniques
 
 Octave includes a polymorphic solver, that selects an appropriate
 matrix factorization depending on the properties of the matrix itself. 
@@ -81,6 +83,7 @@ flag a non-Hermitian matrix.
 
 @node Basic Matrix Functions
 @section Basic Matrix Functions
+@cindex matrix functions, basic
 
 @DOCSTRING(balance)
 
@@ -109,6 +112,7 @@ flag a non-Hermitian matrix.
 @DOCSTRING(mgorth)
 
 @DOCSTRING(pinv)
+@cindex pseudoinverse
 
 @DOCSTRING(rank)
 
@@ -120,6 +124,7 @@ flag a non-Hermitian matrix.
 
 @node Matrix Factorizations
 @section Matrix Factorizations
+@cindex matrix factorizations
 
 @DOCSTRING(chol)
 
@@ -173,6 +178,7 @@ flag a non-Hermitian matrix.
 
 @node Functions of a Matrix
 @section Functions of a Matrix
+@cindex matrix, functions of
 
 @DOCSTRING(expm)
 
@@ -188,6 +194,7 @@ flag a non-Hermitian matrix.
 
 @node Specialized Solvers
 @section Specialized Solvers
+@cindex matrix, specialized solvers
 
 @DOCSTRING(bicg)
 

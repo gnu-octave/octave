@@ -912,7 +912,7 @@ file_editor::construct (void)
 #endif
 
   QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
-                                     tr ("&New File"), _tool_bar);
+                                     tr ("&New Script"), _tool_bar);
 
   QAction *open_action = new QAction (QIcon (":/actions/icons/folder_documents.png"),
                                       tr ("&Open File..."), _tool_bar);

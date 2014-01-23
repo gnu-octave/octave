@@ -311,8 +311,8 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 
   QString msg
     = (addpath_option
-       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
-       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
+       ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
 
   QString title = tr ("Change Directory or Add Directory to Load Path");
 

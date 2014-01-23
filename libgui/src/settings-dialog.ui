@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>555</width>
+            <height>299</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1040,7 +1040,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="text">
-                  <string>emacs</string>
+                  <string>emacs +%l %f </string>
                  </property>
                 </widget>
                </item>
@@ -1137,8 +1137,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>494</width>
+            <height>229</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1350,8 +1350,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>474</width>
+            <height>318</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1514,8 +1514,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>154</width>
+            <height>114</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1592,8 +1592,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>678</width>
-            <height>378</height>
+            <width>529</width>
+            <height>204</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

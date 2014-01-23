@@ -258,7 +258,7 @@ workspace_view::notice_settings (const QSettings *settings)
 
   QString tool_tip;
   tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
-  tool_tip += QString (tr ("Colors for the storage class:"));
+  tool_tip += QString (tr ("Colors for variable attributes:"));
   for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
     {
       tool_tip +=

@@ -39,7 +39,7 @@ workspace_model::workspace_model (QObject *p)
   _columnNames.append (tr ("Class"));
   _columnNames.append (tr ("Dimension"));
   _columnNames.append (tr ("Value"));
-  _columnNames.append (tr ("Storage Class"));
+  _columnNames.append (tr ("Attribute"));
 
   for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
     _storage_class_colors.append (QColor (Qt::white));

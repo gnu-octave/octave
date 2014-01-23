@@ -45,8 +45,8 @@ function datetick (varargin)
 
   unwind_protect
     ## FIXME: This will bring the axes to the top of the stack.
-    ##        This may not always be desirable if there are multiple axes
-    ##        objects.
+    ##        This may not be desirable if there are multiple axes objects,
+    ##        such as can occur with plotyy.
     axes (hax);
     __datetick__ (varargin{:});
   unwind_protect_cleanup

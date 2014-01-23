@@ -87,7 +87,7 @@ octave_CPPFLAGS = \
 octave_cli_SOURCES = main-cli.cc
 
 octave_cli_LDADD = \
-  $(OCTAVE_CORE_LIBS)
+  $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_LINK_DEPS)
 
 octave_cli_LDFLAGS = \

@@ -183,13 +183,13 @@ case $with_sepchar in
       mingw* | msdosmsvc)
         sepchar=';' ;;
     esac
-    ;;
+  ;;
   no)
     AC_MSG_ERROR([You are required to define a path separation character])
     ;;
   *)
     sepchar=$with_sepchar
-    ;;
+  ;;
 esac
 AC_SUBST(sepchar)
 AC_DEFINE_UNQUOTED(SEPCHAR, ['$sepchar'],
@@ -2297,7 +2297,7 @@ case $host_os in
   msdosmsvc | mingw*)
     AC_CHECK_FUNCS([setvbuf], [],
                    [AC_MSG_ERROR([Missing function required to build Octave])])
-    ;;
+  ;;
 esac
 
 ## Cygwin kluge for getrusage.
@@ -2716,6 +2716,15 @@ if test $build_gui = yes; then
     QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
     QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
 
+    case $host_os in
+      *darwin*)
+        ## Qt might be installed in framework
+        QT_LDFLAGS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
+        QT_LIBS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+        AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes || test -n $QT_LDFLAGS])
+      ;;
+    esac
+
     ## Check for Qt4
     if ! `$PKG_CONFIG --atleast-version=4.0.0 QtCore`; then
       warn_gui="Qt >= 4.0.0 not found -- disabling GUI"
@@ -2803,7 +2812,7 @@ if test $build_gui = yes; then
           AC_CHECK_FUNCS([setvbuf], [win32_terminal=yes],
             [warn_gui="setvbuf not found -- disabling GUI"
              build_gui=no])
-          ;;
+        ;;
         *)
           AC_CHECK_HEADERS([pty.h libutil.h util.h])
           AC_SEARCH_LIBS([openpty], [util],
@@ -2811,7 +2820,7 @@ if test $build_gui = yes; then
           AC_CHECK_FUNCS([chmod chown ftruncate mmap munmap], [],
             [AC_MSG_ERROR([At least one of chmod, chown, ftruncate, mmap, and munmap not found -- disabling GUI])
              build_gui=no])
-          ;;
+        ;;
       esac
     fi
   fi

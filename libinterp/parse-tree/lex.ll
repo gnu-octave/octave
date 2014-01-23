@@ -254,6 +254,43 @@ object) relevant global values before and after the nested call.
     } \
   while (0)
 
+#define HANDLE_IDENTIFIER(pattern, get_set) \
+  do \
+    { \
+      curr_lexer->lexer_debug (pattern); \
+ \
+      int tok = curr_lexer->previous_token_value (); \
+ \
+      if (curr_lexer->whitespace_is_significant () \
+          && curr_lexer->space_follows_previous_token () \
+          && ! (tok == '[' || tok == '{' \
+                || curr_lexer->previous_token_is_binop ())) \
+        { \
+          yyless (0); \
+          unput (','); \
+        } \
+      else \
+        { \
+          if (! curr_lexer->looking_at_decl_list \
+              && curr_lexer->previous_token_may_be_command ()) \
+            { \
+              yyless (0); \
+              curr_lexer->push_start_state (COMMAND_START); \
+            } \
+          else \
+            { \
+              if (get_set) \
+                curr_lexer->maybe_classdef_get_set_method = false; \
+ \
+              int id_tok = curr_lexer->handle_identifier (); \
+ \
+              if (id_tok >= 0) \
+                return curr_lexer->count_token_internal (id_tok); \
+            } \
+        } \
+    } \
+  while (0)
+
 static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
@@ -1116,37 +1153,17 @@ ANY_INCLUDING_NL (.|{NL})
 
 %{
 // Identifiers.
+
+// Don't allow get and set to be recognized as keywords if they are
+// followed by "(".
 %}
 
+(set|get)/{S}*\( {
+    HANDLE_IDENTIFIER ("(set|get)/{S}*\\(", true);
+  }
+
 {IDENT} {
-    curr_lexer->lexer_debug ("{IDENT}");
-
-    int tok = curr_lexer->previous_token_value ();
-
-    if (curr_lexer->whitespace_is_significant ()
-        && curr_lexer->space_follows_previous_token ()
-        && ! (tok == '[' || tok == '{'
-              || curr_lexer->previous_token_is_binop ()))
-      {
-        yyless (0);
-        unput (',');
-      }
-    else
-      {
-        if (! curr_lexer->looking_at_decl_list
-            && curr_lexer->previous_token_may_be_command ())
-          {
-            yyless (0);
-            curr_lexer->push_start_state (COMMAND_START);
-          }
-        else
-          {
-            int id_tok = curr_lexer->handle_identifier ();
-
-            if (id_tok >= 0)
-              return curr_lexer->count_token_internal (id_tok);
-          }
-      }
+    HANDLE_IDENTIFIER ("{IDENT}", false);
   }
 
 %{

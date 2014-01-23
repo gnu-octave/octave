@@ -92,17 +92,28 @@ function h = fill (varargin)
       set (hax, "nextplot", "add");
 
       for i = 1 : length (iargs)
+        x = varargin{iargs(i)};
+        y = varargin{iargs(i) + 1};
         cdata = varargin{iargs(i) + 2};
+
+        if (! size_equal (x,y))
+          if (iscolumn (y) && rows (y) == rows (x))
+            y = repmat (y, [1, columns(x)]);
+          elseif (iscolumn (x) && rows (x) == rows (y))
+            x = repmat (x, [1, columns(y)]);
+          else
+            error ("fill: X annd Y must have same number of rows");
+          endif
+        endif
         ## For Matlab compatibility, replicate cdata to match size of data
         if (iscolumn (cdata) && ! ischar (cdata))
-          sz = size (varargin{iargs(i)});
+          sz = size (x);
           if (all (sz > 1))
             cdata = repmat (cdata, [1, sz(2)]);
           endif
         endif
 
-        [htmp, fail] = __patch__ (hax, varargin{iargs(i)+(0:1)}, cdata,
-                                       opts{:});
+        [htmp, fail] = __patch__ (hax, x, y, cdata, opts{:});
         if (fail)
           print_usage ();
         endif

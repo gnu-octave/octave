@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>555</width>
-            <height>299</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1137,8 +1137,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>494</width>
-            <height>229</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1350,8 +1350,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>474</width>
-            <height>318</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1514,8 +1514,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>154</width>
-            <height>114</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1539,7 +1539,7 @@
                 </size>
                </property>
                <property name="title">
-                <string>Storage Class Colors</string>
+                <string>Colors for variable attributes </string>
                </property>
               </widget>
              </item>
@@ -1592,8 +1592,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>529</width>
-            <height>204</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

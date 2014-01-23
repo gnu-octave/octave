@@ -244,11 +244,14 @@ initialize (void)
   vars["FFTW3F_LIBS"] = get_variable ("FFTW3F_LIBS", %OCTAVE_CONF_FFTW3F_LIBS%);
   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
-  vars["OCTAVE_LINK_DEPS"] = get_variable ("FLIBS",
+  vars["OCTAVE_LINK_DEPS"] = get_variable ("OCTAVE_LINK_DEPS",
                                            %OCTAVE_CONF_OCTAVE_LINK_DEPS%);
-  vars["OCT_LINK_DEPS"] = get_variable ("FLIBS", %OCTAVE_CONF_OCT_LINK_DEPS%);
-  vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
-
+  vars["OCTAVE_LINK_OPTS"] = get_variable ("OCTAVE_LINK_OPTS",
+                                           %OCTAVE_CONF_OCTAVE_LINK_OPTS%);
+  vars["OCT_LINK_DEPS"] = get_variable ("OCT_LINK_DEPS",
+                                        %OCTAVE_CONF_OCT_LINK_DEPS%);
+  vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
+                                        %OCTAVE_CONF_OCT_LINK_OPTS%);
   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
   vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
@@ -296,6 +299,10 @@ static string help_msg =
 "\n"
 "  -M, --depend            Generate dependency files (.d) for C and C++\n"
 "                          source files.\n"
+#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+"\n"
+"  -pthread                Add -pthread to link command.\n"
+#endif
 "\n"
 "  -RDIR                   Add -RDIR to link command.\n"
 "\n"
@@ -314,29 +321,33 @@ static string help_msg =
 "  -p VAR, --print VAR     Print configuration variable VAR.  Recognized\n"
 "                          variables are:\n"
 "\n"
-"                            ALL_CFLAGS                FFTW3F_LDFLAGS\n"
-"                            ALL_CXXFLAGS              FFTW3F_LIBS\n"
-"                            ALL_FFLAGS                FLIBS\n"
-"                            ALL_LDFLAGS               FPICFLAG\n"
-"                            AR                        INCFLAGS\n"
-"                            BLAS_LIBS                 LAPACK_LIBS\n"
-"                            CC                        LDFLAGS\n"
-"                            CFLAGS                    LD_CXX\n"
-"                            CPICFLAG                  LD_STATIC_FLAG\n"
-"                            CPPFLAGS                  LFLAGS\n"
-"                            CXX                       LIBOCTAVE\n"
-"                            CXXFLAGS                  LIBOCTINTERP\n"
-"                            CXXPICFLAG                LIBS\n"
-"                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
-"                            DEPEND_FLAGS              OCTAVE_LINK_DEPS\n"
-"                            DL_LD                     OCT_LINK_DEPS\n"
-"                            DL_LDFLAGS                RANLIB\n"
-"                            EXEEXT                    RDYNAMIC_FLAG\n"
-"                            F77                       READLINE_LIBS\n"
-"                            F77_INTEGER_8_FLAG        SED\n"
-"                            FFLAGS                    XTRA_CFLAGS\n"
-"                            FFTW3_LDFLAGS             XTRA_CXXFLAGS\n"
-"                            FFTW3_LIBS\n"
+"                            ALL_CFLAGS                  INCFLAGS\n"
+"                            ALL_CXXFLAGS                INCLUDEDIR\n"
+"                            ALL_FFLAGS                  LAPACK_LIBS\n"
+"                            ALL_LDFLAGS                 LD_CXX\n"
+"                            AR                          LDFLAGS\n"
+"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
+"                            CC                          LFLAGS\n"
+"                            CFLAGS                      LIBDIR\n"
+"                            CPICFLAG                    LIBOCTAVE\n"
+"                            CPPFLAGS                    LIBOCTINTERP\n"
+"                            CXX                         LIBS\n"
+"                            CXXFLAGS                    OCTAVE_HOME\n"
+"                            CXXPICFLAG                  OCTAVE_LIBS\n"
+"                            DEPEND_EXTRA_SED_PATTERN    OCTAVE_LINK_DEPS\n"
+"                            DEPEND_FLAGS                OCTAVE_LINK_OPTS\n"
+"                            DL_LD                       OCTAVE_PREFIX\n"
+"                            DL_LDFLAGS                  OCTINCLUDEDIR\n"
+"                            F77                         OCTLIBDIR\n"
+"                            F77_INTEGER8_FLAG           OCT_LINK_DEPS\n"
+"                            FFLAGS                      OCT_LINK_OPTS\n"
+"                            FFTW3F_LDFLAGS              RANLIB\n"
+"                            FFTW3F_LIBS                 RDYNAMIC_FLAG\n"
+"                            FFTW3_LDFLAGS               READLINE_LIBS\n"
+"                            FFTW3_LIBS                  SED\n"
+"                            FFTW_LIBS                   SPECIAL_MATH_LIB\n"
+"                            FLIBS                       XTRA_CFLAGS\n"
+"                            FPICFLAG                    XTRA_CXXFLAGS\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"
 "\n"
@@ -525,6 +536,12 @@ main (int argc, char **argv)
         {
           ldflags += (" " + arg);
         }
+#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+      else if (arg == "-pthread")
+        {
+          ldflags += (" " + arg);
+        }
+#endif
       else if (arg == "-M" || arg == "-depend" || arg == "--depend")
         {
           depend = true;
@@ -781,7 +798,7 @@ main (int argc, char **argv)
                            + objfiles + " " + libfiles + " "
                            + ldflags + " " + vars["LFLAGS"]
                            + " -loctinterp -loctave "
-                           + " " + vars["OCT_LINK_OPTS"]
+                           + " " + vars["OCTAVE_LINK_OPTS"]
                            + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
             }

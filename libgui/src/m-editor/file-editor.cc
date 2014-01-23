@@ -856,10 +856,26 @@ file_editor::notice_settings (const QSettings *settings)
   int icon_size = settings->value ("toolbar_icon_size", 16).toInt ();
   _tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-  int tab_width = settings->value ("editor/notebook_tab_width", 300).toInt ();
-  QString style_sheet = QString ("QTabBar::tab {max-height: 4ex; "
-                                 "max-width: %1px; text-align: right }").
-                                 arg (tab_width);
+  int tab_width_min = settings->value ("editor/notebook_tab_width_min", 160)
+                                      .toInt ();
+  int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
+                                      .toInt ();
+
+  QString style_sheet;
+  if (settings->value ("editor/longWindowTitle", false).toBool ())
+    {
+      style_sheet = QString ("QTabBar::tab {max-height: 4ex; "
+                             "min-width: %1px; max-width: %2px;}")
+                             .arg (tab_width_min).arg (tab_width_max);
+      _tab_widget->setElideMode (Qt::ElideLeft);
+    }
+  else
+    {
+      style_sheet = QString ("QTabBar::tab {max-height: 4ex;}");
+      _tab_widget->setElideMode (Qt::ElideNone);
+    }
+
+  _tab_widget->setUsesScrollButtons (true);
   _tab_widget->setStyleSheet (style_sheet);
 
   // Relay signal to file editor tabs.
@@ -894,8 +910,6 @@ file_editor::construct (void)
 #ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_widget->setMovable (true);
 #endif
-  _tab_widget->setElideMode (Qt::ElideLeft);
-
 
   QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
                                      tr ("&New File"), _tool_bar);

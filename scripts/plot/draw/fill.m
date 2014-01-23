@@ -94,7 +94,7 @@ function h = fill (varargin)
       for i = 1 : length (iargs)
         cdata = varargin{iargs(i) + 2};
         ## For Matlab compatibility, replicate cdata to match size of data
-        if (iscolumn (cdata))
+        if (iscolumn (cdata) && ! ischar (cdata))
           sz = size (varargin{iargs(i)});
           if (all (sz > 1))
             cdata = repmat (cdata, [1, sz(2)]);
@@ -161,3 +161,15 @@ endfunction
 %! y2 = cos (t2);
 %! h = fill (x1,y1,'r', x2,y2,'g');
 
+%!demo
+%! clf;
+%! x = [0 0
+%!      1 0.5
+%!      1 0.5
+%!      0 0];
+%! y = [0 0
+%!      0 0
+%!      1 0.5
+%!      1 0.5];
+%! c = [1 2 3 4]';
+%! fill (x, y, c);

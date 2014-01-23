@@ -49,6 +49,7 @@ toolkit which supports values up to @math{10^{308}}.
 
 @node High-Level Plotting
 @section High-Level Plotting
+@cindex plotting, high-level
 
 Octave provides simple means to create many different types of two- and
 three-dimensional plots using high-level functions.
@@ -261,8 +262,9 @@ get or set individual axis limits.  Each has the same form.
 
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
+@cindex plotting, two-dimensional functions
 
-Octave can plot a function from a function handle inline function or
+Octave can plot a function from a function handle, inline function, or
 string defining the function without the user needing to explicitly
 create the data to be plotted.  The function @code{fplot} also generates
 two-dimensional plots with linear axes using a function name and limits
@@ -300,6 +302,7 @@ function include @code{ezplot}, @code{ezcontour}, @code{ezcontourf} and
 
 @node Three-Dimensional Plots
 @subsection Three-Dimensional Plots
+@cindex plotting, three-dimensional
 
 The function @code{mesh} produces mesh surface plots.  For example,
 
@@ -480,6 +483,7 @@ See @ref{Text Properties} for the properties that you can set.
 
 @node Multiple Plots on One Page
 @subsection Multiple Plots on One Page
+@cindex plotting, multiple plots per figure
 
 Octave can display more than one plot in a single figure.  The simplest
 way to do this is to use the @code{subplot} function to divide the plot
@@ -506,6 +510,7 @@ numbered in column-major order (top to bottom, left to right).
 
 @node Multiple Plot Windows
 @subsection Multiple Plot Windows
+@cindex plotting, multiple plot windows
 
 You can open multiple plot windows using the @code{figure} function.
 For example,
@@ -527,6 +532,7 @@ the second a cosine wave.  Figure numbers must be positive integers.
 
 @node Manipulation of Plot Windows
 @subsection Manipulation of Plot Windows
+@cindex plotting, window manipulation
 
 By default, Octave refreshes the plot window when a prompt is printed,
 or when waiting for input.  The
@@ -903,6 +909,7 @@ The result of which can be seen in @ref{fig:extendedtext}
 
 @node Printing and Saving Plots
 @subsection Printing and Saving Plots
+@cindex plotting, saving and printing plots
 @cindex printing plots
 @cindex saving plots
 
@@ -1253,6 +1260,7 @@ name) then only the defaults for the requested property are returned.
 @DOCSTRING(findfigs)
 
 @cindex saving graphics objects
+@cindex graphics objects, saving
 
 Figures can be printed or saved in many graphics formats with @code{print} and
 @code{saveas}.  Occasionally, however, it may be useful to save the original
@@ -2985,8 +2993,8 @@ series is displayed (default is @qcode{"on"}).  The handle of the graphics
 object representing the baseline is given by the @code{baseline} property and
 the y-value of the baseline by the @code{basevalue} property.
 
-Changes to any of these property are propagated to the other members of
-the bar series and to the baseline itself.  Equally changes in the
+Changes to any of these properties are propagated to the other members of
+the bar series and to the baseline itself.  Equally, changes in the
 properties of the base line itself are propagated to the members of the
 corresponding bar series.
 

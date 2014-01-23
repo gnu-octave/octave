@@ -60,6 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defaults.h"
 #include "symtab.h"
 #include "version.h"
+#include "utils.h"
 
 static file_editor_interface *
 create_default_editor (QWidget *p)
@@ -263,16 +264,17 @@ void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
   QString file_name = info.canonicalFilePath ();
-  QString command = "run \""+file_name+"\"";
+  QString command = "run \"" + file_name + "\"";
 
   QString function_name = info.fileName ();
   function_name.chop (info.suffix ().length () + 1);
 
-  if (function_name.contains (' '))
+  if (! valid_identifier (function_name.toStdString ()))
     {
       int ans = QMessageBox::question (0, tr ("Octave"),
          tr ("The file %1\n"
-             "contains spaces and can not be executed.\n\n"
+             "can not be executed because its name\n"
+             "is not a valid identifier.\n\n"
              "Do you want to execute\n%2\n"
              "instead?").
           arg (file_name).arg (command),

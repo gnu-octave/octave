@@ -1,3 +1,4 @@
+
 /*
 
 Copyright (C) 2011-2013 Jacob Dawid
@@ -56,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "debug.h"
 #include "octave-qt-link.h"
 #include "version.h"
+#include "utils.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -1227,16 +1229,20 @@ file_editor_tab::save_file_as (bool remove_on_success)
 }
 
 bool
-file_editor_tab::save_file_check_spaces (QString file_name)
+file_editor_tab::check_valid_identifier (QString file_name)
 {
-  QFileInfo file = QFileInfo(file_name);
+  QFileInfo file = QFileInfo (file_name);
+  QString base_name = file.baseName ();
 
-  if (file.suffix () == "m" && file.baseName ().contains (' '))
+  if ((file.suffix () == "m")
+      && (! valid_identifier (base_name.toStdString ())))
     {
       int ans = QMessageBox::question (0, tr ("Octave Editor"),
-         tr ("It is not advisable to save an Octave script\n"
-              "in a file with a name containing spaces.\n\n"
-              "Do you wnat to chose another name?"),
+         tr ("\"%1\"\n"
+             "is not a valid identifier.\n\n"
+             "If you keep this file name, you will not be able to\n"
+             "call your script using its name as an Octave command.\n\n"
+             "Do you want to choose another name?").arg (base_name),
           QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
       if (ans == QMessageBox::Yes)
@@ -1257,7 +1263,7 @@ file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
   else
     {
       // Have editor check for conflict, do not delete tab after save.
-      if (save_file_check_spaces (saveFileName))
+      if (check_valid_identifier (saveFileName))
         save_file_as (false);
       else
         emit editor_check_conflict_save (saveFileName, false);
@@ -1271,7 +1277,7 @@ file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
   // when we close a tab and _file_name is not a valid file name yet
 
   // Have editor check for conflict, delete tab after save.
-  if (save_file_check_spaces (saveFileName))
+  if (check_valid_identifier (saveFileName))
     save_file_as (true);
   else
     emit editor_check_conflict_save (saveFileName, true);

@@ -180,7 +180,7 @@ private:
   bool valid_file_name (const QString& file=QString ());
   void save_file (const QString& saveFileName, bool remove_on_success = false);
   void save_file_as (bool remove_on_success = false);
-  bool save_file_check_spaces (QString file_name);
+  bool check_valid_identifier (QString file_name);
 
   void update_lexer ();
   void request_add_breakpoint (int line);

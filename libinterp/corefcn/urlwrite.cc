@@ -554,15 +554,12 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
     {
       curl.http_action (param, method);
 
-      if (curl.good ())
+      if (nargout > 0)
         {
-          if (nargout > 0)
-            {
-              // Return empty string if no error occured.
-              retval(2) = curl.good () ? "" : curl.lasterror ();
-              retval(1) = curl.good ();
-              retval(0) = buf.str ();
-            }
+          // Return empty string if no error occured.
+          retval(2) = curl.good () ? "" : curl.lasterror ();
+          retval(1) = curl.good ();
+          retval(0) = buf.str ();
         }
 
       if (nargout < 2 && ! curl.good ())

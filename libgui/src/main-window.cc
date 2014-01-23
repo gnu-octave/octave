@@ -1472,7 +1472,7 @@ main_window::construct_new_menu (QMenu *p)
 
   _new_script_action
     = new_menu->addAction (QIcon (":/actions/icons/filenew.png"),
-                           tr ("Script"));
+                           tr ("New Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
   _new_function_action = new_menu->addAction (tr ("Function..."));

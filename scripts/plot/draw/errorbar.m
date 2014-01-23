@@ -17,47 +17,79 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} errorbar (@var{args})
+## @deftypefn  {Function File} {} errorbar (@var{y}, @var{ey})
+## @deftypefnx {Function File} {} errorbar (@var{y}, @dots{}, @var{fmt})
+## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{ey})
+## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{err}, @var{fmt})
+## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
+## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
+## @deftypefnx {Function File} {} errorbar (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
+## @deftypefnx {Function File} {} errorbar (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
 ## @deftypefnx {Function File} {} errorbar (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} errorbar (@dots{})
-## Create a 2-D with errorbars.
+## Create a 2-D plot with errorbars.
 ##
-## Many different combinations of arguments are possible.  The simplest
-## form is
+## Many different combinations of arguments are possible.  The simplest form is
 ##
 ## @example
 ## errorbar (@var{y}, @var{ey})
 ## @end example
 ##
 ## @noindent
-## where the first argument is taken as the set of @var{y} coordinates
-## and the second argument @var{ey} is taken as the errors of the
-## @var{y} values.  @var{x} coordinates are taken to be the indices
-## of the elements, starting with 1.
+## where the first argument is taken as the set of @var{y} coordinates, the
+## second argument @var{ey} are the errors around the @var{y} values, and the
+## @var{x} coordinates are taken to be the indices of the elements
+## (@code{1:numel (@var{y})}).
 ##
-## If more than two arguments are given, they are interpreted as
+## The general form of the function is
 ##
 ## @example
-## errorbar (@var{x}, @var{y}, @dots{}, @var{fmt}, @dots{})
+## errorbar (@var{x}, @var{y}, @var{err1}, @dots{}, @var{fmt}, @dots{})
 ## @end example
 ##
 ## @noindent
-## where after @var{x} and @var{y} there can be up to four error
-## parameters such as @var{ey}, @var{ex}, @var{ly}, @var{uy}, etc.,
-## depending on the plot type.  Any number of argument sets may appear,
-## as long as they are separated with a format string @var{fmt}.
+## After the @var{x} and @var{y} arguments there can be 1, 2, or 4
+## parameters specifying the error values depending on the nature of the error
+## values and the plot format @var{fmt}.
 ##
-## If @var{y} is a matrix, @var{x} and error parameters must also be matrices
-## having same dimensions.  The columns of @var{y} are plotted versus the
-## corresponding columns of @var{x} and errorbars are drawn from
-## the corresponding columns of error parameters.
+## @table @asis
+## @item @var{err} (scalar)
+## When the error is a scalar all points share the same error value.
+## The errorbars are symmetric and are drawn from @var{data}-@var{err} to
+## @var{data}+@var{err}.
+## The @var{fmt} argument determines whether @var{err} is in the x-direction, 
+## y-direction (default), or both.
 ##
-## If @var{fmt} is missing, yerrorbars ("~") plot style is assumed.
+## @item @var{err} (vector or matrix)
+## Each data point has a particular error value.
+## The errorbars are symmetric and are drawn from @var{data}(n)-@var{err}(n) to
+## @var{data}(n)+@var{err}(n).
 ##
-## If the @var{fmt} argument is supplied, it is interpreted as in
-## normal plots.  In addition, @var{fmt} may include an errorbar style
-## which must precede the line and marker format.  The following plot
-## styles are supported by errorbar:
+## @item @var{lerr}, @var{uerr} (scalar)
+## The errors have a single low-side value and a single upper-side value.
+## The errorbars are not symmetric and are drawn from @var{data}-@var{lerr} to
+## @var{data}+@var{uerr}.
+##
+## @item @var{lerr}, @var{uerr} (vector or matrix)
+## Each data point has a low-side error and an upper-side error.
+## The errorbars are not symmetric and are drawn from
+## @var{data}(n)-@var{lerr}(n) to @var{data}(n)+@var{uerr}(n).
+## @end table
+##
+## Any number of data sets (@var{x1},@var{y1}, @var{x2},@var{y2}, @dots{}) may
+## appear as long as they are separated by a format string @var{fmt}.
+##
+## If @var{y} is a matrix, @var{x} and the error parameters must also be
+## matrices having the same dimensions.  The columns of @var{y} are plotted
+## versus the corresponding columns of @var{x} and errorbars are taken from
+## the corresponding columns of the error parameters.
+##
+## If @var{fmt} is missing, the yerrorbars ("~") plot style is assumed.
+##
+## If the @var{fmt} argument is supplied then it is interpreted, as in normal
+## plots, to specify the line style, marker, and color.  In addition,
+## @var{fmt} may include an errorbar style which @strong{must precede} the
+## ordinary format codes.  The following errorbar styles are supported:
 ##
 ## @table @samp
 ## @item ~
@@ -69,14 +101,14 @@
 ## @item ~>
 ## Set xyerrorbars plot style.
 ##
-## @item #
-## Set boxes plot style.
-##
 ## @item #~
-## Set boxerrorbars plot style.
+## Set yboxes plot style.
+##
+## @item #
+## Set xboxes plot style.
 ##
 ## @item #~>
-## Set boxxyerrorbars plot style.
+## Set xyboxes plot style.
 ## @end table
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
@@ -85,15 +117,24 @@
 ## The optional return value @var{h} is a handle to the hggroup object
 ## representing the data plot and errorbars.
 ##
+## Note: For compatibility with @sc{matlab} a line is drawn through all data
+## points.  However, most scientific errorbar plots are a scatter plot of
+## points with errorbars.  To accomplish this, add a marker style to the
+## @var{fmt} argument such as @qcode{"."}.  Alternatively, remove the line
+## by modifying the returned graphic handle with
+## @code{set (h, "linestyle", "none")}.
+##
 ## Examples:
 ##
 ## @example
-## errorbar (@var{x}, @var{y}, @var{ex}, ">")
+## errorbar (@var{x}, @var{y}, @var{ex}, ">.r")
 ## @end example
 ##
 ## @noindent
 ## produces an xerrorbar plot of @var{y} versus @var{x} with @var{x}
-## errorbars drawn from @var{x}-@var{ex} to @var{x}+@var{ex}.
+## errorbars drawn from @var{x}-@var{ex} to @var{x}+@var{ex}.  The marker
+## @qcode{"."} is used so no connecting line is drawn and the errorbars
+## appear in red.
 ##
 ## @example
 ## @group

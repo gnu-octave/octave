@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -388,7 +388,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>554</width>
+            <width>662</width>
             <height>399</height>
            </rect>
           </property>
@@ -554,16 +554,45 @@
                <item row="1" column="2">
                 <layout class="QGridLayout" name="gridLayout_6">
                  <item row="0" column="0">
-                  <widget class="QLabel" name="label_16">
+                  <widget class="QLabel" name="editor_lbl_min_tab_width">
                    <property name="text">
-                    <string>Max. tab width in pixel</string>
+                    <string>Tab width min.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <widget class="QSpinBox" name="editor_notebook_tab_width">
+                 <item row="0" column="3">
+                  <widget class="QSpinBox" name="editor_notebook_tab_width_min">
                    <property name="minimum">
-                    <number>100</number>
+                    <number>80</number>
+                   </property>
+                   <property name="maximum">
+                    <number>600</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>20</number>
+                   </property>
+                   <property name="value">
+                    <number>160</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="6">
+                  <spacer name="horizontalSpacer_25">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="5">
+                  <widget class="QSpinBox" name="editor_notebook_tab_width_max">
+                   <property name="minimum">
+                    <number>180</number>
                    </property>
                    <property name="maximum">
                     <number>600</number>
@@ -576,18 +605,12 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="2">
-                  <spacer name="horizontalSpacer_25">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                 <item row="0" column="4">
+                  <widget class="QLabel" name="editor_lbl_max_tab_width">
+                   <property name="text">
+                    <string>max.</string>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -1017,7 +1040,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="text">
-                  <string>emacs</string>
+                  <string>emacs +%l %f </string>
                  </property>
                 </widget>
                </item>
@@ -1327,8 +1350,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>474</width>
-            <height>318</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1491,8 +1514,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>154</width>
-            <height>114</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1516,7 +1539,7 @@
                 </size>
                </property>
                <property name="title">
-                <string>Storage Class Colors</string>
+                <string>Colors for variable attributes </string>
                </property>
               </widget>
              </item>
@@ -1569,8 +1592,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>529</width>
-            <height>204</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2171,6 +2194,70 @@
     <hint type="destinationlabel">
      <x>426</x>
      <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_longWindowTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_lbl_min_tab_width</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>343</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_longWindowTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_notebook_tab_width_max</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>437</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_longWindowTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_lbl_max_tab_width</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>439</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_longWindowTitle</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_notebook_tab_width_min</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>72</y>
     </hint>
    </hints>
   </connection>

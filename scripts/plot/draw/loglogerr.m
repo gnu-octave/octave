@@ -17,7 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} loglogerr (@var{args})
+## @deftypefn  {Function File} {} loglogerr (@var{y}, @var{ey})
+## @deftypefnx {Function File} {} loglogerr (@var{y}, @dots{}, @var{fmt})
+## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{ey})
+## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{err}, @var{fmt})
+## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{lerr}, @var{uerr}, @var{fmt})
+## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{ex}, @var{ey}, @var{fmt})
+## @deftypefnx {Function File} {} loglogerr (@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, @var{fmt})
+## @deftypefnx {Function File} {} loglogerr (@var{x1}, @var{y1}, @dots{}, @var{fmt}, @var{xn}, @var{yn}, @dots{})
 ## @deftypefnx {Function File} {} loglogerr (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} loglogerr (@dots{})
 ## Produce 2-D plots on a double logarithm axis with errorbars.

@@ -127,7 +127,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   popdown_menu->addSeparator ();
   popdown_menu->addAction (QIcon (":/actions/icons/folder.png"),
-                           tr ("Search Directory..."),
+                           tr ("Set Browser Directory..."),
                            this, SLOT (popdownmenu_search_dir (bool)));
   popdown_menu->addSeparator ();
   popdown_menu->addAction (QIcon (":/actions/icons/findf.png"),

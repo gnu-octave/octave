@@ -866,9 +866,6 @@ if test $build_jit = yes; then
     LDFLAGS="$save_LDFLAGS"
   fi
 
-  AM_CONDITIONAL([AMCOND_HAVE_LLVM],
-    [test -z "$warn_llvm"])
-
   if test -z "$warn_llvm"; then
     AC_DEFINE(HAVE_LLVM, 1, [Define to 1 if LLVM is available.])
   else
@@ -890,6 +887,7 @@ AC_SUBST(LLVM_CPPFLAGS)
 AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)
+AM_CONDITIONAL([AMCOND_HAVE_LLVM], [test -z "$warn_llvm"])
 
 ### Check for HDF5 library.
 
@@ -2830,7 +2828,8 @@ if test $build_gui = yes; then
 fi
 
 AM_CONDITIONAL([AMCOND_BUILD_GUI], [test $build_gui = yes])
-AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test "$octave_cv_lib_qscintilla" = yes])
+AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA],
+               [test "$octave_cv_lib_qscintilla" = yes])
 AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 AC_SUBST(QT_CPPFLAGS)
 AC_SUBST(QT_LDFLAGS)

@@ -1633,15 +1633,25 @@ method_decl1    : identifier
                       ABORT_PARSE;
                   }
                 | identifier param_list
-                  { if (! ($$ = parser.start_classdef_external_method ($1, $2)))
+                  {
+                    if (! ($$ = parser.start_classdef_external_method ($1, $2)))
                       ABORT_PARSE;
                   }
                 ;
 
 method_decl     : stash_comment method_decl1
                   { $$ = parser.finish_classdef_external_method ($2, 0, $1); }
-                | stash_comment return_list '=' method_decl1
-                  { $$ = parser.finish_classdef_external_method ($4, $2, $1); }
+                | stash_comment return_list '='
+                  {
+                    lexer.defining_func++;
+                    lexer.parsed_function_name.push (false);
+                  }
+                  method_decl1
+                  {
+                    lexer.defining_func--;
+                    lexer.parsed_function_name.pop ();
+                    $$ = parser.finish_classdef_external_method ($5, $2, $1);
+                  }
                 ;
 
 method          : method_decl

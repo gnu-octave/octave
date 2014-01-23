@@ -2344,10 +2344,9 @@ octave_base_lexer::is_keyword_token (const std::string& s)
 
         case end_kw:
           if (inside_any_object_index ()
-              || (! reading_classdef_file
-                  && (defining_func
-                      && ! (looking_at_return_list
-                            || parsed_function_name.top ()))))
+              || (defining_func
+                  && ! (looking_at_return_list
+                        || parsed_function_name.top ())))
             {
               at_beginning_of_statement = previous_at_bos;
               return 0;

@@ -2726,9 +2726,14 @@ if test $build_gui = yes; then
     case $host_os in
       *darwin*)
         ## Qt might be installed in framework
-        QT_LDFLAGS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-        QT_LIBS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-        AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes || test -n $QT_LDFLAGS])
+        if test -z "$QT_LIBS"; then
+          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
+          QT_LIBS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+          ## Enabling link_all_deps works around libtool's imperfect handling
+          ## of the -F flag
+          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],
+                         [test $link_all_deps = yes || test -n "$QT_LDFLAGS"])
+        fi
       ;;
     esac
 

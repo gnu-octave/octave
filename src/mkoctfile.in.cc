@@ -1,3 +1,4 @@
+// %NO_EDIT_WARNING%
 /*
 
 Copyright (C) 2008-2013 Michael Goffioul
@@ -36,40 +37,19 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <unistd.h>
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-#include <windows.h>
-#ifdef _MSC_VER
-#define popen _popen
-#define pclose _pclose
-#endif
-#endif
-
 using namespace std;
 
-static bool initialized = false;
 static map<string,string> vars;
 
-static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
-
-static string
-substitute_prefix (const string& s, const string& prefix,
-                   const string& new_prefix)
-{
-  string retval = s;
-
-  if (!prefix.empty () && new_prefix != prefix)
-    {
-      int len = prefix.length ();
-      if (retval.find (prefix) == 0)
-        retval.replace (0, len, new_prefix);
-    }
-
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  replace (retval.begin (), retval.end (), '/', '\\');
+#ifndef OCTAVE_VERSION
+#define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
 #endif
 
-  return retval;
-}
+#ifndef OCTAVE_PREFIX
+#define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
+#endif
+
+#include "shared-fcns.h"
 
 static string
 get_line (FILE *fp)
@@ -116,70 +96,20 @@ quote_path (const string& s)
 static void
 initialize (void)
 {
-  if (initialized)
-    return;
-
-  initialized = true;
-
-  vars["OCTAVE_HOME"] = get_variable ("OCTAVE_HOME", "");
-
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  int n = 1024;
-
-  string bin_dir (n, '\0');
-
-  while (true)
-    {
-      int status = GetModuleFileName (0, &bin_dir[0], n);
-
-      if (status < n)
-        {
-          bin_dir.resize (status);
-          break;
-        }
-      else
-        {
-          n *= 2;
-          bin_dir.resize (n);
-        }
-    }
-
-  if (! bin_dir.empty ())
-    {
-      size_t pos = bin_dir.rfind ("\\bin\\");
-
-      if (pos != string::npos)
-        vars["OCTAVE_HOME"] = bin_dir.substr (0, pos);
-    }
-#endif
+  vars["OCTAVE_HOME"] = get_octave_home ();
+  vars["OCTAVE_PREFIX"] = OCTAVE_PREFIX;
 
   vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
-
-  vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
 
   string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
   string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
   string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
   string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
 
-  if (! vars["OCTAVE_HOME"].empty ())
-    {
-      DEFAULT_OCTINCLUDEDIR
-        = substitute_prefix (DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-
-      DEFAULT_INCLUDEDIR
-        = substitute_prefix (DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-
-      DEFAULT_LIBDIR
-        = substitute_prefix (DEFAULT_LIBDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-
-      DEFAULT_OCTLIBDIR
-        = substitute_prefix (DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-    }
+  DEFAULT_OCTINCLUDEDIR = subst_octave_home (DEFAULT_OCTINCLUDEDIR);
+  DEFAULT_INCLUDEDIR = subst_octave_home (DEFAULT_INCLUDEDIR);
+  DEFAULT_LIBDIR = subst_octave_home (DEFAULT_LIBDIR);
+  DEFAULT_OCTLIBDIR = subst_octave_home (DEFAULT_OCTLIBDIR);
 
   vars["OCTINCLUDEDIR"] = get_variable ("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
   vars["INCLUDEDIR"] = get_variable ("INCLUDEDIR", DEFAULT_INCLUDEDIR);
@@ -279,7 +209,7 @@ initialize (void)
 }
 
 static string usage_msg = "usage: mkoctfile [options] file ...";
-static string version_msg = "mkoctfile, version " + OCTAVE_VERSION;
+static string version_msg = "mkoctfile, version " OCTAVE_VERSION;
 static bool debug = false;
 static string help_msg =
 "\n"
@@ -422,8 +352,7 @@ run_command (const string& cmd)
 bool
 is_true (const std::string& s)
 {
-  return (s == "yes"
-          || s == "true");
+  return (s == "yes" || s == "true");
 }
 
 int
@@ -449,7 +378,6 @@ main (int argc, char **argv)
   bool link_stand_alone = false;
   string output_ext = ".oct";
   bool depend = false;
-  bool compile = true;
 
   if (argc == 1)
     {
@@ -545,7 +473,6 @@ main (int argc, char **argv)
       else if (arg == "-M" || arg == "-depend" || arg == "--depend")
         {
           depend = true;
-          compile = false;
         }
       else if (arg == "-o" || arg == "-output" || arg == "--output")
         {

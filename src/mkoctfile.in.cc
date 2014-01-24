@@ -60,7 +60,7 @@ get_line (FILE *fp)
 
   while (true)
     {
-      c = static_cast<char> (fgetc (fp));
+      c = static_cast<char> (gnulib::fgetc (fp));
       if (c == '\n' || c == EOF)
         break;
       if (buf.size () <= idx)
@@ -565,7 +565,7 @@ main (int argc, char **argv)
         {
           string f = *it, dfile = basename (f, true) + ".d", line;
 
-          unlink (dfile.c_str ());
+          gnulib::unlink (dfile.c_str ());
           string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
                        + vars["CPPFLAGS"] + " " + vars["ALL_CFLAGS"] + " "
                        + incflags  + " " + defs + " " + quote_path (f);
@@ -596,7 +596,7 @@ main (int argc, char **argv)
         {
           string f = *it, dfile = basename (f, true) + ".d", line;
 
-          unlink (dfile.c_str ());
+          gnulib::unlink (dfile.c_str ());
           string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
                        + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " "
                        + incflags  + " " + defs + " " + quote_path (f);

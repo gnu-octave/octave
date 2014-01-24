@@ -474,7 +474,7 @@ Wil je die toch verwijderen?</translation>
         <translation>Aanwijzer</translation>
     </message>
     <message>
-        <location filename="../src/main-window.cc" line="+1897"/>
+        <location filename="../src/main-window.cc" line="+1900"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;strong&gt;Een opmerking over Octave&apos;s Nieuwe GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Een van de belangrijkste nieuwe kenmerken van Octave 3.8 is een grafische user interface (GUI).  Dat is waar de gebruikers de afgelopen jaren het meest om gevraagd hebben en hij is bijna af.  Maar omdat hij nog niet zo gepolijst is als we zouden willen hebben we besloten te wachten tot de versie 4.0 serie voordat we hem de standaard interface maken.&lt;/p&gt;&lt;p&gt;Vanwege de lange tijd en het aantal bug fixes en verbeteringen sinds de laatste major release versie hebben we ook besloten om niet langer meer te wachten op de GUI om al die verbeteringen door te voeren.  Dus geniet van Octave versie 3.8 en de preview van de nieuwe GUI.  We denken dat hij redelijk goed werkt, maar natuurlijk weten we dat er nog ruwe kantjes aan zitten en ruimte voor verbeteringen.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We hebben je hulp nodig&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Er zijn veel manieren waarop je ons kunt helpen de overgebleven problemen te verhelpen, de GUI te completeren, en de gebruikerservaring voor nieuwelingen en experts (de URLs openen een nieuwe browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Als je een bekwame ontwikkelaar bent kun je ons helpen door bij te dragen &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Als Octave niet goed wekt raden we je aan om &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;de problemen te rapporteren &lt;/a&gt; die je tegen komt.&lt;/li&gt;&lt;li&gt;Of je nu gebruiker of ontwikkelaar bent, je kunt ook &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;een bijdrage geven&lt;/a&gt;.  De ontwikkeling van Octave vraagt een hoop tijd en expertise.  Je bijdrage helpt er aan mee dat Octave verbeterd blijft worden.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hopen dat je Octave nuttig vindt.  Help alsjeblieft om het in de toekomst nog beter te maken!&lt;/p&gt;</translation>
     </message>
@@ -2035,7 +2035,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Bewerkingen op huidige map</translation>
     </message>
     <message>
-        <location line="+372"/>
+        <location line="+373"/>
         <source>Find Files ...</source>
         <translation>Zoek bestanden ...</translation>
     </message>
@@ -2055,7 +2055,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Dubbelklik een bestand om te openen</translation>
     </message>
     <message>
-        <location line="-78"/>
+        <location line="-79"/>
         <source>Show Octave directory</source>
         <translation>Laat Octave map zien</translation>
     </message>
@@ -2080,7 +2080,7 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
         <translation>Laat home map zien</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Search Directory...</source>
         <translation>Zoek in map...</translation>
     </message>
@@ -2623,12 +2623,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="-1693"/>
+        <location filename="../src/main-window.cc" line="-1696"/>
         <source>Load Workspace</source>
         <translation>Werkruimte laden</translation>
     </message>
     <message>
-        <location line="+642"/>
+        <location line="+645"/>
         <location line="+876"/>
         <source>About Octave</source>
         <translation>Over Octave</translation>
@@ -2689,7 +2689,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Plakken</translation>
     </message>
     <message>
-        <location line="-1262"/>
+        <location line="-1265"/>
         <source>Save Workspace As</source>
         <translation>Sla Werkruimte Op Als</translation>
     </message>
@@ -2709,7 +2709,7 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
         <translation>Octave Release Notes</translation>
     </message>
     <message>
-        <location line="+186"/>
+        <location line="+189"/>
         <source>Octave Community News</source>
         <translation>Octave Community Nieuws</translation>
     </message>

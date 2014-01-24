@@ -62,7 +62,7 @@
         <translation>cursor</translation>
     </message>
     <message>
-        <location filename="../src/main-window.cc" line="+1897"/>
+        <location filename="../src/main-window.cc" line="+1900"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;strong&gt;Nota acerca de la nueva GUI de Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Una de las novedades más grandes de Octave 3.8 es la interfaz gráfica de usuario.  Esto ha sido algo que los usuarios han solicitado frecuentemente durante los últimos años, y ahora está casi lista. Pero como esta interfaz aún no está tan pulida como a nosotros nos gustaría, hemos decidido esperar hasta la serie de versiones 4.0.x de Octave para hacer a la GUI la interfaz por defecto.&lt;/p&gt;&lt;p&gt;Dado el tiempo transcurrido, el número de correcciones de errores del software (bugs) y el número de mejoras desde la última versión mayor de Octave, también hemos decidido retrasar el lanzamiento de todas estas nuevas mejoras durante más tiempo con el fin de perfeccionar la GUI.  Disfrute de la versión 3.8 de Octave y la versión previa de la nueva GUI.  Creemos que está funcionando razonablemente bien, pero también somos conscientes de que existen muchas cosas que se pueden mejorar.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Necesitamos su ayuda&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Hay varias maneras mediante las cuales usted nos puede ayudar a arreglar errores, completar la GUI y, en general, mejorar la experiencia del usuario, ya sean novatos o expertos (los enlaces se abrirán en un navegador externo):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Si usted es un desarrollador de software experimentado, puede contribuir con su tiempo para ayudar &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;Desarrollo de Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Si Octave no funciona adecuadamente, se le invita a  &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;reportar problemas &lt;/a&gt; que haya encontrado.&lt;/li&gt;&lt;li&gt;Si usted es usuario o desarrollador, puede &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;ayudar a financiar el proyecto&lt;/a&gt;.  El desarrollo de Octave necesita tiempo y conocimientos. Su contribución ayudaría en gran medida a asegurar que Octave continúe mejorando.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Esperamos que haya encontrado Octave muy útil. Por favor, ¡ayúdenos a hacerlo aún mejor en el futuro!&lt;/p&gt;</translation>
     </message>
@@ -480,7 +480,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Acciones en el directorio actual</translation>
     </message>
     <message>
-        <location line="+372"/>
+        <location line="+373"/>
         <source>Find Files ...</source>
         <translation>Buscar archivos ...</translation>
     </message>
@@ -500,7 +500,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Pulse dos veces en un archivo para abrirlo</translation>
     </message>
     <message>
-        <location line="-78"/>
+        <location line="-79"/>
         <source>Show Octave directory</source>
         <translation>Mostrar el directorio de Octave</translation>
     </message>
@@ -525,7 +525,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
         <translation>Mostrar el directorio de inicio</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>Search Directory...</source>
         <translation>Buscar directorio...</translation>
     </message>
@@ -1068,12 +1068,12 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="-1693"/>
+        <location filename="../src/main-window.cc" line="-1696"/>
         <source>Load Workspace</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+642"/>
+        <location line="+645"/>
         <location line="+876"/>
         <source>About Octave</source>
         <translation>Acerca de Octave</translation>
@@ -1135,7 +1135,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <translation>Pegar</translation>
     </message>
     <message>
-        <location line="-1262"/>
+        <location line="-1265"/>
         <source>Save Workspace As</source>
         <translation>Guardar espacio de trabajo como</translation>
     </message>
@@ -1155,7 +1155,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
         <translation>Notas de la versión de Octave</translation>
     </message>
     <message>
-        <location line="+186"/>
+        <location line="+189"/>
         <source>Octave Community News</source>
         <translation>Noticas de la comunidad Octave</translation>
     </message>

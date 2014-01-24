@@ -1096,13 +1096,13 @@ defaults to 10 (+/- 5 lines)\n\
             {
               int l_min = std::max (l - n/2, 0);
               int l_max = l + n/2;
-              do_dbtype (octave_stdout, dbg_fcn->name (), l_min, l-1);
+              do_dbtype (octave_stdout, name, l_min, l-1);
 
               std::string line = get_file_line (name, l);
               if (! line.empty ())
                 octave_stdout << l << "-->\t" << line << std::endl;
 
-              do_dbtype (octave_stdout, dbg_fcn->name (), l+1, l_max);
+              do_dbtype (octave_stdout, name, l+1, l_max);
             }
         }
       else

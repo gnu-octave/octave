@@ -1040,6 +1040,8 @@ public:
 
   ~octave_classdef_superclass_ref (void) { }
 
+  octave_function* function_value (bool = false) { return this; }
+
   octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,

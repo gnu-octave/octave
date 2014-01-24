@@ -81,3 +81,31 @@ tree_funcall::accept (tree_walker& tw)
 {
   tw.visit_funcall (*this);
 }
+
+octave_value_list
+tree_funcall::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  retval = feval (fcn.function_value (), args, nargout);
+
+  if (retval.length () == 1 && retval(0).is_function ())
+    {
+      // The return object is a function. We may need to re-index it using the
+      // same logic as for identifier. This is primarily used for superclass
+      // references in classdef.
+
+      octave_value val = retval(0);
+      octave_function *f = val.function_value (true);
+
+      if (f && ! (is_postfix_indexed ()
+                  && f->is_postfix_index_handled (postfix_index ())))
+        {
+          octave_value_list tmp_args;
+
+          retval = val.do_multi_index_op (nargout, tmp_args);
+        }
+    }
+
+  return retval;
+}

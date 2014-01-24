@@ -71,10 +71,7 @@ public:
     return retval;
   }
 
-  octave_value_list rvalue (int nargout)
-  {
-    return feval (fcn.function_value (), args, nargout);
-  }
+  octave_value_list rvalue (int nargout);
 
   octave_value function (void) const { return fcn; }
 

@@ -844,7 +844,7 @@ execution is stopped.\n\
 
       if (l > 0)
         {
-          octave_stdout << " line " << l << std::endl;
+          octave_stdout << "line " << l << std::endl;
 
           if (have_file)
             {
@@ -855,7 +855,7 @@ execution is stopped.\n\
             }
         }
       else
-        octave_stdout << " <unknown line>" << std::endl;
+        octave_stdout << "<unknown line>" << std::endl;
     }
   else
     error ("dbwhere: must be inside a user function to use dbwhere\n");

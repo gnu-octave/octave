@@ -207,28 +207,47 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
   if (args.length () == 0)
     return;
 
-  // If we are already in a debugging function.
-  if (octave_call_stack::caller_user_code ())
-    {
-      idx = 0;
-      symbol_name = get_user_code ()->name ();
-    }
+  if (args(0).is_string ())
+  {
+    // string could be function name or line number
+    int isint = atoi (args(0).string_value ().c_str ());
+
+    if (error_state)
+      return;
+
+    if (isint == 0)
+      {
+        // It was a function name
+        symbol_name = args(0).string_value ();
+        if (error_state)
+          return;
+        idx = 1;
+      }
+    else
+      {
+        // It was a line number.  Need to get function name from debugger.
+        if (Vdebugging)
+          {
+            symbol_name = get_user_code ()->name ();
+            idx = 0;
+          }
+        else
+          {
+            error ("%s: no function specified", who);
+          }
+      }
+  }
   else if (args(0).is_map ())
     {
-      // Problem because parse_dbfunction_params() can only pass out a
-      // single function
-    }
-  else if (args(0).is_string ())
-    {
-      symbol_name = args(0).string_value ();
-      if (error_state)
-        return;
-      idx = 1;
+      // This is a problem because parse_dbfunction_params()
+      // can only pass out a single function.
+      error ("%s: struct input not implemented", who);
+      return;
     }
   else
     error ("%s: invalid parameter specified", who);
 
-  for (int i = idx; i < nargin; i++ )
+  for (int i = idx; i < nargin; i++)
     {
       if (args(i).is_string ())
         {
@@ -238,7 +257,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
           lines[list_idx++] = line;
         }
       else if (args(i).is_map ())
-        octave_stdout << who << ": accepting a struct" << std::endl;
+        octave_stdout << who << ": skipping struct input" << std::endl;
       else
         {
           const NDArray arg = args(i).array_value ();
@@ -724,6 +743,9 @@ The name of the m-file where the function code is located.\n\
 A line number, or vector of line numbers, with a breakpoint.\n\
 @end table\n\
 \n\
+Note: When @code{dbstatus} is called from the debug prompt within a function,\n\
+the list of breakpoints is automatically trimmed to the breakpoints in the\n\
+current function.\n\
 @seealso{dbclear, dbwhere}\n\
 @end deftypefn")
 {

@@ -752,11 +752,14 @@ A line number, or vector of line numbers, with a breakpoint.\n\
     }
   else
     {
-      octave_user_code *dbg_fcn = get_user_code ();
-      if (dbg_fcn)
+      if (Vdebugging)
         {
-          symbol_name = dbg_fcn->name ();
-          fcn_list(0) = symbol_name;
+          octave_user_code *dbg_fcn = get_user_code ();
+          if (dbg_fcn)
+            {
+              symbol_name = dbg_fcn->name ();
+              fcn_list(0) = symbol_name;
+            }
         }
 
       bp_list = bp_table::get_breakpoint_list (fcn_list);

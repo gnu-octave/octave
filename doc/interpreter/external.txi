@@ -1037,14 +1037,14 @@ An example of the inclusion of a Fortran function in an oct-file is
 given in the following example, where the C++ wrapper is
 
 @example
-@EXAMPLEFILE(fortdemo.cc)
+@EXAMPLEFILE(fortrandemo.cc)
 @end example
 
 @noindent
 and the Fortran function is
 
 @example
-@EXAMPLEFILE(fortsub.f)
+@EXAMPLEFILE(fortransub.f)
 @end example
 
 This example demonstrates most of the features needed to link to an
@@ -1054,13 +1054,13 @@ in order for the example to work.
 
 @example
 @group
-mkoctfile fortdemo.cc fortsub.f
-[b, s] = fortdemo (1:3)
+mkoctfile fortrandemo.cc fortransub.f
+[b, s] = fortrandemo (1:3)
 @result{}
   b = 1.00000   0.50000   0.33333
   s = There are   3 values in the input vector
-[b, s] = fortdemo (0:3)
-error: fortdemo: fortsub: divide by zero
+[b, s] = fortrandemo (0:3)
+error: fortrandemo: fortransub: divide by zero
 @end group
 @end example
 

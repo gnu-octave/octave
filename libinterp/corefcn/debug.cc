@@ -946,7 +946,7 @@ numbers.\n\
           dbg_fcn = get_user_code ();
 
           if (dbg_fcn)
-            do_dbtype (octave_stdout, dbg_fcn->name (), 0,
+            do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (), 0,
                        std::numeric_limits<int>::max ());
           else
             error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
@@ -978,7 +978,8 @@ numbers.\n\
                       error ("dbtype: start and end lines must be >= 1\n");
 
                     if (start <= end)
-                      do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
+                      do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),
+                                                start, end);
                     else
                       error ("dbtype: start line must be less than end line\n");
                   }
@@ -988,7 +989,7 @@ numbers.\n\
                 dbg_fcn = get_user_code (arg);
 
                 if (dbg_fcn)
-                  do_dbtype (octave_stdout, dbg_fcn->name (), 0,
+                  do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (), 0,
                              std::numeric_limits<int>::max ());
                 else
                   error ("dbtype: function <%s> not found\n", arg.c_str ());
@@ -1026,7 +1027,7 @@ numbers.\n\
                 error ("dbtype: start and end lines must be >= 1\n");
 
               if (start <= end)
-                do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
+                do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (), start, end);
               else
                 error ("dbtype: start line must be less than end line\n");
             }

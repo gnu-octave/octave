@@ -461,7 +461,7 @@ Note, however, that both types of strings are represented by the
 @example
 @group
 octave_value_list retval;
-charNDArray c;
+charNDArray ch;
 @dots{}
 // Create single quoted string
 retval(1) = octave_value (ch);        // default constructor is sq_string
@@ -675,7 +675,8 @@ technique
 
 @example
 @group
-int nz = 4, nr = 3, nc = 4;
+int nz, nr, nc;
+nz = 4, nr = 3, nc = 4;
 
 ColumnVector ridx (nz);
 ColumnVector cidx (nz);
@@ -711,7 +712,8 @@ Sample code:
 
 @example
 @group
-int nz = 4, nr = 3, nc = 4;
+int nz, nr, nc;
+nz = 4, nr = 3, nc = 4;
 SparseMatrix sm (nr, nc, nz);
 sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
 @end group
@@ -730,7 +732,8 @@ with fewer elements than are actually inserted in the matrix.  Therefore,
 
 @example
 @group
-int nz = 4, nr = 3, nc = 4;
+int nr, nc;
+nr = 3, nc = 4;
 SparseMatrix sm (nr, nc, 0);
 sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
 @end group
@@ -759,7 +762,8 @@ An example of the use of @code{maybe_compress} is
 
 @example
 @group
-int nz = 6, nr = 3, nc = 4;
+int nz, nr, nc;
+nz = 6, nr = 3, nc = 4;
 
 SparseMatrix sm1 (nr, nc, nz);
 sm1(0,0) = 1; sm1(0,1) = 2; sm1(1,3) = 3; sm1(2,3) = 4;
@@ -782,7 +786,8 @@ be
 @example
 octave_value arg;
 @dots{}
-int nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
+int nz, nr, nc;
+nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
 SparseMatrix sm (nr, nc, nz);
 Matrix m = arg.matrix_value ();
 
@@ -816,7 +821,8 @@ The above example would then be modified as
 @example
 octave_value arg;
 @dots{}
-int nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
+int nz, nr, nc;
+nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
 SparseMatrix sm (nr, nc, nz);
 Matrix m = arg.matrix_value ();
 
@@ -1113,9 +1119,9 @@ An example of its use is:
 @group
 paramdemo ([1, 2, NaN, Inf])
 @result{} Properties of input array:
-      includes Inf or NaN values
-      includes other values than 1 and 0
-      includes only int, Inf or NaN values
+     includes Inf or NaN values
+     includes other values than 1 and 0
+     includes only int, Inf or NaN values
 @end group
 @end example
 
@@ -1492,8 +1498,8 @@ An example of its expected output is
 @example
 @group
 mystring (["First String"; "Second String"])
-@result{} s1 = Second String
-        First String
+@result{} Second String
+   First String
 @end group
 @end example
 
@@ -1603,32 +1609,22 @@ An example of the behavior of this function within Octave is then
 @example
 a(1).f1 = "f11"; a(1).f2 = "f12"; 
 a(2).f1 = "f21"; a(2).f2 = "f22";
-b = mystruct (a)
-@result{} field f1(0) = f11
+b = mystruct (a);
+@result{}  field f1(0) = f11
     field f1(1) = f21
     field f2(0) = f12
     field f2(1) = f22
-    b =
-    @{
-      this =
+b
+@result{} 2x2 struct array containing the fields:
 
-      (,
-        [1] = this1
-        [2] = this2
-        [3] = this3
-        [4] = this4
-      ,)
+     this
+     that
 
-      that =
+b(3)
+@result{} scalar structure containing the fields:
 
-      (,
-        [1] = that1
-        [2] = that2
-        [3] = that3
-        [4] = that4
-      ,)
-
-    @}
+     this = this3
+     that = that3
 @end example
 
 @node Sparse Matrices with Mex-Files
@@ -1686,6 +1682,18 @@ mex-files is given by the file @file{mysparse.c} shown below.
 
 @example
 @EXAMPLEFILE(mysparse.c)
+@end example
+
+A sample usage of @code{mysparse} is
+
+@example
+@group
+sm = sparse ([1, 0; 0, pi]);
+mysparse (sm)
+@result{}
+Matrix is 2-by-2 real sparse matrix with 2 elements
+last non-zero element (2, 2) = 3.14159
+@end group
 @end example
 
 @node Calling Other Functions in Mex-Files

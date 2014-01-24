@@ -51,6 +51,9 @@ bin_PROGRAMS = \
   octave-cli \
   octave-config
 
+noinst_HEADERS = \
+  shared-fcns.h
+
 OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)
 
 if AMCOND_BUILD_GUI

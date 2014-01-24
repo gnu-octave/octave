@@ -280,14 +280,7 @@ function [local_packages, global_packages] = pkg (varargin)
   global_install = ((ispc () && ! isunix ()) || (geteuid () == 0));
 
   if (isbool (prefix))
-    if (global_install)
-      prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-      archprefix = fullfile (octave_config_info ("libdir"),
-                             "octave", "packages");
-    else
-      prefix = fullfile ("~", "octave");
-      archprefix = prefix;
-    endif
+    [prefix, archprefix] = default_prefix (global_install);
     prefix = tilde_expand (prefix);
     archprefix = tilde_expand (archprefix);
   endif
@@ -326,15 +319,12 @@ function [local_packages, global_packages] = pkg (varargin)
       case "-local"
         global_install = false;
         if (! user_prefix)
-          prefix = tilde_expand (fullfile ("~", "octave"));
-          archprefix = prefix;
+          [prefix, archprefix] = default_prefix (global_install);
         endif
       case "-global"
         global_install = true;
         if (! user_prefix)
-          prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-          archprefix = fullfile (octave_config_info ("libdir"),
-                                 "octave", "packages");
+          [prefix, archprefix] = default_prefix (global_install);
         endif
       case available_actions
         if (strcmp (action, "none"))

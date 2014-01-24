@@ -1,5 +1,4 @@
-## Copyright (C) 2005-2013 Søren Hauberg
-## Copyright (C) 2010 VZLU Prague, a.s.
+## Copyright (C) 2014 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##
@@ -18,15 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{archprefix} =} getarchprefix (@var{desc}, @var{global_install})
+## @deftypefn {Function File} {[@var{prefix}, @var{archprefix} =} @
+## default_prefix (@var{global_install})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function archprefix = getarchprefix (desc, global_install)
+function [prefix, archprefix] = default_prefix (global_install)
   if (global_install)
-    [~, archprefix] = default_prefix (global_install);
+    prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
+    archprefix = fullfile (octave_config_info ("libdir"), "octave",
+                           "packages", [desc.name "-" desc.version]);
   else
-    archprefix = desc.dir;
+    prefix = tilde_expand (fullfile ("~", "octave"));
+    archprefix = prefix;
   endif
 endfunction
 

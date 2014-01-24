@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
-## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
+## @deftypefnx {Function File} {[@var{output}, @var{status}] =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the

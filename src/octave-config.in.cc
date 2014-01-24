@@ -139,57 +139,91 @@ initialize (void)
   vars["API_VERSION"] = %OCTAVE_API_VERSION%;
   vars["CANONICAL_HOST_TYPE"] = %OCTAVE_CANONICAL_HOST_TYPE%;
   vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
-  vars["ARCHLIBDIR"] = substitute_prefix (%OCTAVE_ARCHLIBDIR%,
-                                          PREFIX, OCTAVE_HOME);
-  vars["BINDIR"] = substitute_prefix (%OCTAVE_BINDIR%, PREFIX, OCTAVE_HOME);
-  vars["DATADIR"] = substitute_prefix (%OCTAVE_DATADIR%, PREFIX, OCTAVE_HOME);
-  vars["DATAROOTDIR"] = substitute_prefix (%OCTAVE_DATAROOTDIR%,
-                                           PREFIX, OCTAVE_HOME);
-  vars["EXEC_PREFIX"] = substitute_prefix (%OCTAVE_EXEC_PREFIX%,
-                                           PREFIX, OCTAVE_HOME);
-  vars["FCNFILEDIR"] = substitute_prefix (%OCTAVE_FCNFILEDIR%,
-                                          PREFIX, OCTAVE_HOME);
-  vars["IMAGEDIR"] = substitute_prefix (%OCTAVE_IMAGEDIR%, PREFIX, OCTAVE_HOME);
-  vars["INCLUDEDIR"] = substitute_prefix (%OCTAVE_INCLUDEDIR%,
-                                          PREFIX, OCTAVE_HOME);
-  vars["INFODIR"] = substitute_prefix (%OCTAVE_INFODIR%, PREFIX, OCTAVE_HOME);
-  vars["INFOFILE"] = substitute_prefix (%OCTAVE_INFOFILE%, PREFIX, OCTAVE_HOME);
-  vars["LIBDIR"] = substitute_prefix (%OCTAVE_LIBDIR%, PREFIX, OCTAVE_HOME);
-  vars["LIBEXECDIR"] = substitute_prefix (%OCTAVE_LIBEXECDIR%,
-                                          PREFIX, OCTAVE_HOME);
-  vars["LOCALAPIARCHLIBDIR"] = substitute_prefix (%OCTAVE_LOCALAPIARCHLIBDIR%,
-                                                  PREFIX, OCTAVE_HOME);
-  vars["LOCALAPIFCNFILEDIR"] = substitute_prefix (%OCTAVE_LOCALAPIFCNFILEDIR%,
-                                                  PREFIX, OCTAVE_HOME);
-  vars["LOCALAPIOCTFILEDIR"] = substitute_prefix (%OCTAVE_LOCALAPIOCTFILEDIR%,
-                                                  PREFIX, OCTAVE_HOME);
-  vars["LOCALARCHLIBDIR"] = substitute_prefix (%OCTAVE_LOCALARCHLIBDIR%,
-                                               PREFIX, OCTAVE_HOME);
-  vars["LOCALFCNFILEDIR"] = substitute_prefix (%OCTAVE_LOCALFCNFILEDIR%,
-                                               PREFIX, OCTAVE_HOME);
-  vars["LOCALOCTFILEDIR"] = substitute_prefix (%OCTAVE_LOCALOCTFILEDIR%,
-                                               PREFIX, OCTAVE_HOME);
-  vars["LOCALSTARTUPFILEDIR"] = substitute_prefix (%OCTAVE_LOCALSTARTUPFILEDIR%,
-                                                   PREFIX, OCTAVE_HOME);
-  vars["LOCALVERARCHLIBDIR"] = substitute_prefix (%OCTAVE_LOCALVERARCHLIBDIR%,
-                                                  PREFIX, OCTAVE_HOME);
-  vars["LOCALVERFCNFILEDIR"] = substitute_prefix (%OCTAVE_LOCALVERFCNFILEDIR%,
-                                                  PREFIX, OCTAVE_HOME);
-  vars["LOCALVEROCTFILEDIR"] = substitute_prefix (%OCTAVE_LOCALVEROCTFILEDIR%,
-                                                  PREFIX, OCTAVE_HOME);
-  vars["MAN1DIR"] = substitute_prefix (%OCTAVE_MAN1DIR%, PREFIX, OCTAVE_HOME);
+  vars["ARCHLIBDIR"] = %OCTAVE_ARCHLIBDIR%;
+  vars["BINDIR"] = %OCTAVE_BINDIR%;
+  vars["DATADIR"] = %OCTAVE_DATADIR%;
+  vars["DATAROOTDIR"] = %OCTAVE_DATAROOTDIR%;
+  vars["EXEC_PREFIX"] = %OCTAVE_EXEC_PREFIX%;
+  vars["FCNFILEDIR"] = %OCTAVE_FCNFILEDIR%;
+  vars["IMAGEDIR"] = %OCTAVE_IMAGEDIR%;
+  vars["INCLUDEDIR"] = %OCTAVE_INCLUDEDIR%;
+  vars["INFODIR"] = %OCTAVE_INFODIR%;
+  vars["INFOFILE"] = %OCTAVE_INFOFILE%;
+  vars["LIBDIR"] = %OCTAVE_LIBDIR%;
+  vars["LIBEXECDIR"] = %OCTAVE_LIBEXECDIR%;
+  vars["LOCALAPIARCHLIBDIR"] = %OCTAVE_LOCALAPIARCHLIBDIR%;
+  vars["LOCALAPIFCNFILEDIR"] = %OCTAVE_LOCALAPIFCNFILEDIR%;
+  vars["LOCALAPIOCTFILEDIR"] = %OCTAVE_LOCALAPIOCTFILEDIR%;
+  vars["LOCALARCHLIBDIR"] = %OCTAVE_LOCALARCHLIBDIR%;
+  vars["LOCALFCNFILEDIR"] = %OCTAVE_LOCALFCNFILEDIR%;
+  vars["LOCALOCTFILEDIR"] = %OCTAVE_LOCALOCTFILEDIR%;
+  vars["LOCALSTARTUPFILEDIR"] = %OCTAVE_LOCALSTARTUPFILEDIR%;
+  vars["LOCALVERARCHLIBDIR"] = %OCTAVE_LOCALVERARCHLIBDIR%;
+  vars["LOCALVERFCNFILEDIR"] = %OCTAVE_LOCALVERFCNFILEDIR%;
+  vars["LOCALVEROCTFILEDIR"] = %OCTAVE_LOCALVEROCTFILEDIR%;
+  vars["MAN1DIR"] = %OCTAVE_MAN1DIR%;
   vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
-  vars["MANDIR"] = substitute_prefix (%OCTAVE_MANDIR%, PREFIX, OCTAVE_HOME);
-  vars["OCTFILEDIR"] = substitute_prefix (%OCTAVE_OCTFILEDIR%,
-                                          PREFIX, OCTAVE_HOME);
-  vars["OCTINCLUDEDIR"] = substitute_prefix (%OCTAVE_OCTINCLUDEDIR%,
-                                             PREFIX, OCTAVE_HOME);
-  vars["OCTLIBDIR"] = substitute_prefix (%OCTAVE_OCTLIBDIR%,
-                                         PREFIX, OCTAVE_HOME);
-  vars["PREFIX"] = (OCTAVE_HOME.empty () ? PREFIX : OCTAVE_HOME);
-  vars["STARTUPFILEDIR"] = substitute_prefix (%OCTAVE_STARTUPFILEDIR%,
-                                              PREFIX, OCTAVE_HOME);
+  vars["MANDIR"] = %OCTAVE_MANDIR%;
+  vars["OCTFILEDIR"] = %OCTAVE_OCTFILEDIR%;
+  vars["OCTINCLUDEDIR"] = %OCTAVE_OCTINCLUDEDIR%;
+  vars["OCTLIBDIR"] = %OCTAVE_OCTLIBDIR%;
+  vars["PREFIX"] = %OCTAVE_PREFIX%;
+  vars["STARTUPFILEDIR"] = %OCTAVE_STARTUPFILEDIR%;
   vars["VERSION"] = %OCTAVE_VERSION%;
+
+  if (! OCTAVE_HOME.empty ())
+    {
+      vars["ARCHLIBDIR"] = substitute_prefix (vars["ARCHLIBDIR"],
+                                              PREFIX, OCTAVE_HOME);
+      vars["BINDIR"] = substitute_prefix (vars["BINDIR"], PREFIX, OCTAVE_HOME);
+      vars["DATADIR"] = substitute_prefix (vars["DATADIR"], PREFIX, OCTAVE_HOME);
+      vars["DATAROOTDIR"] = substitute_prefix (vars["DATAROOTDIR"],
+                                               PREFIX, OCTAVE_HOME);
+      vars["EXEC_PREFIX"] = substitute_prefix (vars["EXEC_PREFIX"],
+                                               PREFIX, OCTAVE_HOME);
+      vars["FCNFILEDIR"] = substitute_prefix (vars["FCNFILEDIR"],
+                                              PREFIX, OCTAVE_HOME);
+      vars["IMAGEDIR"] = substitute_prefix (vars["IMAGEDIR"], PREFIX, OCTAVE_HOME);
+      vars["INCLUDEDIR"] = substitute_prefix (vars["INCLUDEDIR"],
+                                              PREFIX, OCTAVE_HOME);
+      vars["INFODIR"] = substitute_prefix (vars["INFODIR"], PREFIX, OCTAVE_HOME);
+      vars["INFOFILE"] = substitute_prefix (vars["INFOFILE"], PREFIX, OCTAVE_HOME);
+      vars["LIBDIR"] = substitute_prefix (vars["LIBDIR"], PREFIX, OCTAVE_HOME);
+      vars["LIBEXECDIR"] = substitute_prefix (vars["LIBEXECDIR"],
+                                              PREFIX, OCTAVE_HOME);
+      vars["LOCALAPIARCHLIBDIR"] = substitute_prefix (vars["LOCALAPIARCHLIBDIR"],
+                                                      PREFIX, OCTAVE_HOME);
+      vars["LOCALAPIFCNFILEDIR"] = substitute_prefix (vars["LOCALAPIFCNFILEDIR"],
+                                                      PREFIX, OCTAVE_HOME);
+      vars["LOCALAPIOCTFILEDIR"] = substitute_prefix (vars["LOCALAPIOCTFILEDIR"],
+                                                      PREFIX, OCTAVE_HOME);
+      vars["LOCALARCHLIBDIR"] = substitute_prefix (vars["LOCALARCHLIBDIR"],
+                                                   PREFIX, OCTAVE_HOME);
+      vars["LOCALFCNFILEDIR"] = substitute_prefix (vars["LOCALFCNFILEDIR"],
+                                                   PREFIX, OCTAVE_HOME);
+      vars["LOCALOCTFILEDIR"] = substitute_prefix (vars["LOCALOCTFILEDIR"],
+                                                   PREFIX, OCTAVE_HOME);
+      vars["LOCALSTARTUPFILEDIR"] = substitute_prefix (vars["LOCALSTARTUPFILEDIR"],
+                                                       PREFIX, OCTAVE_HOME);
+      vars["LOCALVERARCHLIBDIR"] = substitute_prefix (vars["LOCALVERARCHLIBDIR"],
+                                                      PREFIX, OCTAVE_HOME);
+      vars["LOCALVERFCNFILEDIR"] = substitute_prefix (vars["LOCALVERFCNFILEDIR"],
+                                                      PREFIX, OCTAVE_HOME);
+      vars["LOCALVEROCTFILEDIR"] = substitute_prefix (vars["LOCALVEROCTFILEDIR"],
+                                                      PREFIX, OCTAVE_HOME);
+      vars["MAN1DIR"] = substitute_prefix (vars["MAN1DIR"], PREFIX, OCTAVE_HOME);
+      vars["MANDIR"] = substitute_prefix (vars["MANDIR"], PREFIX, OCTAVE_HOME);
+      vars["OCTFILEDIR"] = substitute_prefix (vars["OCTFILEDIR"],
+                                              PREFIX, OCTAVE_HOME);
+      vars["OCTINCLUDEDIR"] = substitute_prefix (vars["OCTINCLUDEDIR"],
+                                                 PREFIX, OCTAVE_HOME);
+      vars["OCTLIBDIR"] = substitute_prefix (vars["OCTLIBDIR"],
+                                             PREFIX, OCTAVE_HOME);
+      vars["STARTUPFILEDIR"] = substitute_prefix (vars["STARTUPFILEDIR"],
+                                                  PREFIX, OCTAVE_HOME);
+
+      vars["PREFIX"] = OCTAVE_HOME;
+    }
 }
 
 int

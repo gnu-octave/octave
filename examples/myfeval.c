@@ -6,7 +6,7 @@ mexFunction (int nlhs, mxArray* plhs[],
 {
   char *str;
 
-  mexPrintf ("Hello, World!\n");
+  mexPrintf ("Starting file myfeval.mex\n");
 
   mexPrintf ("I have %d inputs and %d outputs\n", nrhs, nlhs);
 
@@ -17,7 +17,11 @@ mexFunction (int nlhs, mxArray* plhs[],
 
   mexPrintf ("I'm going to call the function %s\n", str);
 
-  mexCallMATLAB (nlhs, plhs, nrhs-1, (mxArray*)prhs+1, str);
+  if (nlhs == 0)
+    nlhs = 1;  // Octave's automatic 'ans' variable
+
+  /* Cast prhs just to get rid of 'const' qualifier and stop compile warning */
+  mexCallMATLAB (nlhs, plhs, nrhs-1, (mxArray**)prhs+1, str);
 
   mxFree (str);
 }

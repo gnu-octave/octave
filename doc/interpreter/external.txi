@@ -1712,12 +1712,11 @@ If this code is in the file @file{myfeval.c}, and is compiled to
 
 @example
 @group
-myfeval ("sin", 1)
 a = myfeval ("sin", 1)
-@result{} Hello, World!
-    I have 2 inputs and 1 outputs
-    I'm going to call the interpreter function sin
-    a =  0.84147
+@result{} Starting file myfeval.mex
+   I have 2 inputs and 1 outputs
+   I'm going to call the interpreter function sin
+   a =  0.84147
 @end group
 @end example
 
@@ -1811,8 +1810,7 @@ This is a matrix:
 
 This is the norm of the matrix:
 34.4952
-
+$
 @end group
 @end example
-
 

@@ -506,23 +506,23 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                           tr ("Set Current Directory"),
                           this, SLOT (contextmenu_setcurrentdir (bool)));
           menu.addSeparator ();
-          menu.addAction (tr ("Find Files ..."), this,
+          menu.addAction (tr ("Find Files..."), this,
                           SLOT (contextmenu_findfiles (bool)));
         }
 
       menu.addSeparator ();
-      menu.addAction (tr ("Rename"), this, SLOT (contextmenu_rename (bool)));
-      menu.addAction (QIcon (":/actions/icons/editdelete.png"), tr ("Delete"),
-                      this, SLOT (contextmenu_delete (bool)));
+      menu.addAction (tr ("Rename..."), this, SLOT (contextmenu_rename (bool)));
+      menu.addAction (QIcon (":/actions/icons/editdelete.png"),
+                      tr ("Delete..."), this, SLOT (contextmenu_delete (bool)));
 
       if (info.isDir ())
         {
           menu.addSeparator ();
           menu.addAction (QIcon (":/actions/icons/filenew.png"),
-                          tr ("New File"),
+                          tr ("New File..."),
                           this, SLOT (contextmenu_newfile (bool)));
           menu.addAction (QIcon (":/actions/icons/folder_new.png"),
-                          tr ("New Directory"),
+                          tr ("New Directory..."),
                           this, SLOT (contextmenu_newdir (bool)));
         }
 

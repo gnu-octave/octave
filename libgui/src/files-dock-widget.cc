@@ -531,7 +531,14 @@ files_dock_widget::contextmenu_open (bool)
 
   for ( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     {
-      item_double_clicked (*it);
+      QFileInfo file = _file_system_model->fileInfo (*it);
+      if (file.exists ())
+        {
+          if (file.isFile ())
+            emit open_file (file.absoluteFilePath ());
+          else
+            set_current_directory (file.absoluteFilePath ());
+        }
     }
 }
 

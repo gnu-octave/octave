@@ -85,7 +85,6 @@ snarf_file (const std::string& fname)
           if (file.eof ())
             {
               // Expected to read the entire file.
-
               retval = buf;
             }
           else
@@ -99,8 +98,7 @@ snarf_file (const std::string& fname)
 static std::deque<size_t>
 get_line_offsets (const std::string& buf)
 {
-  // This could maybe be smarter.  Is deque the right thing to use
-  // here?
+  // This could maybe be smarter.  Is deque the right thing to use here?
 
   std::deque<size_t> offsets;
 
@@ -375,7 +373,6 @@ bp_table::do_add_breakpoint (const std::string& fname,
   return retval;
 }
 
-
 int
 bp_table::do_remove_breakpoint_1 (octave_user_code *fcn,
                                   const std::string& fname,
@@ -541,9 +538,12 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
 void
 bp_table::do_remove_all_breakpoints (void)
 {
-  for (const_bp_set_iterator it = bp_set.begin (); it != bp_set.end (); it++)
-    remove_all_breakpoints_in_file (*it);
-
+  // Odd loop structure required because delete will invalidate bp_set iterators
+  for (const_bp_set_iterator it=bp_set.begin (), it_next=it; it != bp_set.end (); it=it_next)
+    {
+      ++it_next;
+      remove_all_breakpoints_in_file (*it);
+    }
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 }
@@ -556,7 +556,7 @@ do_find_bkpt_list (octave_value_list slist,
 
   for (int i = 0; i < slist.length (); i++)
     {
-      if (slist (i).string_value () == match)
+      if (slist(i).string_value () == match)
         {
           retval = slist(i).string_value ();
           break;
@@ -565,7 +565,6 @@ do_find_bkpt_list (octave_value_list slist,
 
   return retval;
 }
-
 
 bp_table::fname_line_map
 bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
@@ -595,7 +594,7 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
                       bp_table::intmap bkpts_vec;
 
                       for (int i = 0; i < len; i++)
-                        bkpts_vec[i] = bkpts (i).double_value ();
+                        bkpts_vec[i] = bkpts(i).double_value ();
 
                       std::string symbol_name = f->name ();
 
@@ -679,28 +678,38 @@ next executable line.\n\
 
 DEFUN (dbclear, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbclear (\"@var{func}\")\n\
-@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
+@deftypefn  {Command} {} dbclear @var{func}\n\
+@deftypefnx {Command} {} dbclear @var{func} @var{line}\n\
+@deftypefnx {Command} {} dbclear @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {Command} {} dbclear @var{line} @dots{}\n\
+@deftypefnx {Command} {} dbclear all\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\")\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line})\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", [@var{line1}, @dots{}])\n\
 @deftypefnx {Built-in Function} {} dbclear (@var{line}, @dots{})\n\
-Delete a breakpoint in the function @var{func}.\n\
+@deftypefnx {Built-in Function} {} dbclear (\"all\")\n\
+Delete a breakpoint at line number @var{line} in the function @var{func}.\n\
 \n\
 Arguments are\n\
 \n\
 @table @var\n\
 @item func\n\
-Function name as a string variable.  When already in debug\n\
-mode this argument should be omitted and only the line number should be\n\
-given.\n\
+Function name as a string variable.  When already in debug mode this argument\n\
+can be omitted and the current function will be used.\n\
 \n\
 @item line\n\
-Line number from which to remove a breakpoint.  Multiple\n\
-lines may be given as separate arguments or as a vector.\n\
+Line number from which to remove a breakpoint.  Multiple lines may be given\n\
+as separate arguments or as a vector.\n\
 @end table\n\
 \n\
-When called without a line number specification all breakpoints\n\
-in the named function are cleared.\n\
+When called without a line number specification all breakpoints in the named\n\
+function are cleared.\n\
 \n\
 If the requested line is not a breakpoint no action is performed.\n\
+\n\
+The special keyword @qcode{\"all\"} will clear all breakpoints from all\n\
+files.\n\
 @seealso{dbstop, dbstatus, dbwhere}\n\
 @end deftypefn")
 {
@@ -708,10 +717,17 @@ If the requested line is not a breakpoint no action is performed.\n\
   std::string symbol_name = "";
   bp_table::intmap lines;
 
+  int nargin = args.length (); 
+
   parse_dbfunction_params ("dbclear", args, symbol_name, lines);
 
-  if (! error_state)
-    bp_table::remove_breakpoint (symbol_name, lines);
+  if (nargin == 1 && symbol_name == "all")
+    bp_table::remove_all_breakpoints ();
+  else
+  {
+    if (! error_state)
+      bp_table::remove_breakpoint (symbol_name, lines);
+  }
 
   return retval;
 }

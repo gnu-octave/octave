@@ -418,7 +418,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   url_transfer curl = url_transfer (url, ofile);
 
-  if (! curl.is_valid ())
+  if (curl.is_valid ())
     {
       curl.http_action (param, method);
 

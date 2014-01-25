@@ -1500,7 +1500,7 @@ to_cdef (const octave_value& val)
     return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object ();
   else
     {
-      warning ("trying to cast non-object into object");
+      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
       return cdef_object ();
     }
 }
@@ -1514,7 +1514,7 @@ to_cdef_ref (octave_value& val)
     return dynamic_cast<octave_classdef *> (val.internal_rep ())->get_object_ref ();
   else
     {
-      warning ("trying to cast non-object into object");
+      error ("cannot convert `%s' into `object'", val.type_name().c_str ());
       return empty;
     }
 }

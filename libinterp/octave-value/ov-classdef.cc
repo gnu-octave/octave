@@ -959,9 +959,45 @@ octave_classdef::subsasgn (const std::string& type,
                            const std::list<octave_value_list>& idx,
                            const octave_value& rhs)
 {
-  // FIXME: should check "subsasgn" method first
+  octave_value retval;
 
-  return object.subsasgn (type, idx, rhs);
+  cdef_class cls = object.get_class ();
+
+  if (! in_class_method (cls) && ! called_from_builtin ())
+    {
+      cdef_method meth = cls.find_method ("subsasgn");
+
+      if (meth.ok ())
+        {
+          octave_value_list args;
+
+          args(1) = make_idx_args (type, idx, "subsasgn");
+
+          if (! error_state)
+            {
+              count++;
+              args(0) = octave_value (this);
+              args(2) = rhs;
+
+              octave_value_list retlist;
+
+              retlist = meth.execute (args, 1, true, "subsasgn");
+
+              if (! error_state)
+                {
+                  if (retlist.length () > 0)
+                    retval = retlist(0);
+                  else
+                    ::error ("overloaded method `subsasgn' did not return any value");
+                }
+            }
+        }
+    }
+
+  if (! error_state && ! retval.is_defined ())
+    retval = object.subsasgn (type, idx, rhs);
+
+  return retval;
 }
 
 octave_value

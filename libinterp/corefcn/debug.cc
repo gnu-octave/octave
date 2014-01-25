@@ -922,30 +922,16 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
       if (fs)
         {
-          char ch;
           int line = 1;
-          bool isnewline = true;
+          std::string text;  
 
-          // FIXME: Why not use line-oriented input here [getline()]?
-          while (fs.get (ch) && line <= end)
-            {
-              if (isnewline && line >= start)
-                {
-                  os << line << "\t";
-                  isnewline = false;
-                }
-
-              if (line >= start)
-                {
-                  os << ch;
-                }
-
-              if (ch == '\n')
-                {
-                  line++;
-                  isnewline = true;
-                }
-            }
+          while (std::getline (fs, text) && line <= end)
+          {
+            if (line >= start)
+              os << line << "\t" << text << "\n";
+            
+            line++;
+          }
         }
       else
         os << "dbtype: unable to open '" << ff << "' for reading!\n";

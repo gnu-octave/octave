@@ -499,7 +499,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     <message>
         <location line="+373"/>
         <source>Find Files ...</source>
-        <translation>Dateien suchen ...</translation>
+        <translation>Dateien suchen...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -550,7 +550,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
         <location line="+4"/>
         <source>Find Files...</source>
         <translatorcomment>Dateien suchen...</translatorcomment>
-        <translation>Suche Dateien...</translation>
+        <translation>Dateien suchen...</translation>
     </message>
     <message>
         <location line="+4"/>

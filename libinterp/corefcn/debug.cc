@@ -633,31 +633,36 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
+@deftypefn  {Command} dbstop @var{func}\n\
+@deftypefnx {Command} dbstop @var{func} @var{line}\n\
+@deftypefnx {Command} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefnx {Command} {} dbstop @var{line} @dots{}\n\
+@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line1}, @var{line2}, @dots{})\n\
-Set a breakpoint in function @var{func}.\n\
+@deftypefnx {Built-in Function} {} dbstop (\"@var{func}\", [@var{line1}, @dots{}])\n\
+@deftypefnx {Built-in Function} {} dbstop (@var{line}, @dots{})\n\
+Set a breakpoint at line number @var{line} in function @var{func}.\n\
 \n\
 Arguments are\n\
 \n\
 @table @var\n\
 @item func\n\
-Function name as a string variable.  When already in debug\n\
-mode this should be left out and only the line should be given.\n\
+Function name as a string variable.  When already in debug mode this argument\n\
+can be omitted and the current function will be used.\n\
 \n\
 @item line\n\
-Line number where the breakpoint should be set.  Multiple\n\
-lines may be given as separate arguments or as a vector.\n\
+Line number where the breakpoint should be set.  Multiple lines may be given\n\
+as separate arguments or as a vector.\n\
 @end table\n\
 \n\
-When called with a single argument @var{func}, the breakpoint\n\
-is set at the first executable line in the named function.\n\
+When called with a single argument @var{func}, the breakpoint is set at the\n\
+first executable line in the named function.\n\
 \n\
-The optional output @var{rline} is the real line number where the\n\
-breakpoint was set.  This can differ from specified line if\n\
-the line is not executable.  For example, if a breakpoint attempted on a\n\
-blank line then Octave will set the real breakpoint at the\n\
-next executable line.\n\
+The optional output @var{rline} is the real line number where the breakpoint\n\
+was set.  This can differ from the specified line if the line is not\n\
+executable.  For example, if a breakpoint attempted on a blank line then\n\
+Octave will set the real breakpoint at the next executable line.\n\
 @seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}\n\
 @end deftypefn")
 {
@@ -1351,8 +1356,8 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 
 DEFUN (dbup, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbup\n\
-@deftypefnx {Built-in Function} {} dbup (@var{n})\n\
+@deftypefn  {Command} {} dbup\n\
+@deftypefnx {Command} {} dbup @var{n}\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move up one frame.\n\
 @seealso{dbstack, dbdown}\n\
@@ -1367,8 +1372,8 @@ If @var{n} is omitted, move up one frame.\n\
 
 DEFUN (dbdown, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} dbdown\n\
-@deftypefnx {Built-in Function} {} dbdown (@var{n})\n\
+@deftypefn  {Command} {} dbdown\n\
+@deftypefnx {Command} {} dbdown @var{n}\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move down one frame.\n\
 @seealso{dbstack, dbup}\n\

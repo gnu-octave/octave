@@ -456,12 +456,23 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
   QMenu menu (this);
 
   QModelIndex index = _file_tree_view->indexAt (mpos);
-  //QAbstractItemModel *m = _file_tree_view->model ();
 
   if (index.isValid ())
     {
       QFileInfo info = _file_system_model->fileInfo (index);
 
+      QItemSelectionModel *m = _file_tree_view->selectionModel ();
+      QModelIndexList sel = m->selectedRows ();
+
+      // check if item at mouse position is seleccted
+      if (! sel.contains (index))
+        { // is not selected -> clear actual selection and select this item
+          m->setCurrentIndex(index,
+                  QItemSelectionModel::Clear | QItemSelectionModel::Select |
+                  QItemSelectionModel::Rows);
+        }
+
+      // construct the context menu depending on item
       menu.addAction (QIcon (":/actions/icons/fileopen.png"), tr ("Open"),
                       this, SLOT (contextmenu_open (bool)));
 
@@ -505,6 +516,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                           this, SLOT (contextmenu_newdir (bool)));
         }
 
+      // show the menu
       menu.exec (_file_tree_view->mapToGlobal (mpos));
 
     }

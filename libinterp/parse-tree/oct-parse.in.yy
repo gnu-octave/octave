@@ -1423,6 +1423,9 @@ function1       : fcn_name function2
                     else if (lexer.parsing_classdef_set_method)
                       fname.insert (0, "set.");
 
+                    lexer.parsing_classdef_get_method = false;
+                    lexer.parsing_classdef_set_method = false;
+
                     $$ = parser.frob_function (fname, $2);
                   }
                 ;

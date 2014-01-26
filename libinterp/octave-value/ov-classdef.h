@@ -1506,7 +1506,7 @@ to_cdef (const octave_value& val)
 }
 
 inline cdef_object&
-to_cdef_ref (octave_value& val)
+to_cdef_ref (const octave_value& val)
 {
   static cdef_object empty;
 

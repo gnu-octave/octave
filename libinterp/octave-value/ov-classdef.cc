@@ -1148,7 +1148,7 @@ public:
                     {
                       if (is_constructed_object (mname))
                         {
-                          octave_value& sym = symbol_table::varref (mname);
+                          octave_value sym = symbol_table::varval (mname);
 
                           cls.run_constructor (to_cdef_ref (sym), idx);
 

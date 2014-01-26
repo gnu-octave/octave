@@ -1007,7 +1007,10 @@ numbers.\n\
                       end = atoi (end_str.c_str ());
 
                     if (std::min (start, end) <= 0)
-                      error ("dbtype: start and end lines must be >= 1\n");
+                      {
+                        error ("dbtype: start and end lines must be >= 1\n");
+                        break;
+                      }
 
                     if (start <= end)
                       do_dbtype (octave_stdout, dbg_fcn->fcn_file_name (),

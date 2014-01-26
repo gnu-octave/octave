@@ -909,8 +909,6 @@ execution is stopped.\n\
   return retval;
 }
 
-// Copied and modified from the do_type command in help.cc
-// Maybe we could share some code?
 void
 do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 {

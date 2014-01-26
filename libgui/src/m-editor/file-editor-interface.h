@@ -61,6 +61,8 @@ public:
 
   virtual void set_focus () = 0;
 
+  virtual void empty_script (bool, bool) = 0;
+
 public slots:
   virtual void request_new_file (const QString& command = QString ()) = 0;
   virtual void request_new_script (const QString& command = QString ()) = 0;

@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QMessageBox>
 #include <QStyle>
 #include <QTextStream>
+#include <QTabBar>
 #include <QProcess>
 #include <QInputDialog>
 
@@ -1547,5 +1548,67 @@ file_editor::check_actions ()
   _redo_action->setEnabled (have_tabs);
 }
 
+// empty_script determines whether we have to create an empty script
+// 1. At startup, when the editor has to be (really) visible
+//    (Here we can not use the visibility changed signal)
+// 2. When the editor becomes visible when octave is running
+void
+file_editor::empty_script (bool startup, bool visible)
+{
+  bool real_visible;
+
+  if (startup)
+    real_visible = isVisible ();
+  else
+    real_visible = visible;
+
+  if (! real_visible || _tab_widget->count () > 0)
+    return;
+
+  if (startup && ! isFloating ())
+    {
+      // check is editor is really visible or hidden between tabbed widgets
+      QList<QTabBar *> tab_list = main_win ()->findChildren<QTabBar *>();
+
+      bool in_tab = false;
+      int i = 0;
+      while ((i < tab_list.count ()) && (! in_tab))
+        {
+          QTabBar *tab = tab_list.at (i);
+          i++;
+
+          int j = 0;
+          while ((j < tab->count ()) && (! in_tab))
+            {
+              // check all tabs for the editor
+              if (tab->tabText (j) == windowTitle ())
+                {
+                  // editor is in this tab widget
+                  in_tab = true;
+                  int top = tab->currentIndex ();
+                  if (top > -1 && tab->tabText (top) == windowTitle ())
+                    real_visible = true;  // and is the current tab
+                  else
+                    return; // not current tab -> not visible
+                }
+              j++;
+            }
+        }
+    }
+
+  request_new_file ("");
+}
+
+// This slot is a reimplementation of the virtual slot in octave_dock_widget.
+// We need this for creating an empty script when the editor has no open files
+// and is made visible
+void
+file_editor::handle_visibility (bool visible)
+  {
+    empty_script (false, visible);
+
+    if (visible && ! isFloating ())
+      focus ();
+  }
 
 #endif

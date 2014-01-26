@@ -442,7 +442,7 @@ public:
 
 protected:
   // Object property values
-  Octave_map map;
+  octave_scalar_map map;
 
   // Internal/temporary structure used during object construction
   std::map< cdef_class, std::list<cdef_class> > ctor_list;

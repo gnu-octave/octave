@@ -536,7 +536,9 @@
 %! assert (b, 1);
 %! assert (jit_failure_count, 0);
 
-%!testif HAVE_LLVM
+%!xtest
+%! ## FIXME: No support for functions with complex input prototypes
+%! ## testif HAVE_LLVM
 %! jit_failure_count (0)
 %! a = [1+1i 1+2i];
 %! b = 0;
@@ -565,7 +567,9 @@
 %!shared id
 %! id = @(x) x;
 
-%!testif HAVE_LLVM
+%!xtest
+%! ## FIXME: No support for functions with complex input prototypes
+%! ## testif HAVE_LLVM
 %! jit_failure_count (0)
 %! assert (id (1), 1);
 %! assert (id (1+1i), 1+1i);

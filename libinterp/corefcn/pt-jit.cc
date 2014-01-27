@@ -1132,6 +1132,9 @@ jit_convert::get_variable (const std::string& vname)
   else
     {
       octave_value val = record.varval ();
+      if (val.is_undefined ())
+        val = symbol_table::find_function (vname);
+
       jit_type *type = jit_typeinfo::type_of (val);
       bounds.push_back (type_bound (type, vname));
 

@@ -46,7 +46,6 @@ class Cell;
 class mxArray;
 class octave_map;
 class octave_scalar_map;
-class Octave_map;
 class octave_stream;
 class octave_function;
 class octave_user_function;
@@ -285,8 +284,9 @@ public:
   octave_value (const Range& r);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
-  octave_value (const Octave_map& m);
-  octave_value (const Octave_map& m, const std::string& id,
+  octave_value (const octave_map& m, const std::string& id,
+                const std::list<std::string>& plist);
+  octave_value (const octave_scalar_map& m, const std::string& id,
                 const std::list<std::string>& plist);
   octave_value (const octave_value_list& m, bool = false);
   octave_value (octave_value::magic_colon);

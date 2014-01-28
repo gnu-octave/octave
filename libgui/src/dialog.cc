@@ -496,6 +496,12 @@ void FileDialog::accept (void)
   // if not showing only dirs, add end slash for the path component
   if (testOption (QFileDialog::ShowDirsOnly)  == false)
     path = path + "/";
+  else
+    {
+      // if name was provided in uigetdir, add to path
+      if (string_result.size() > 0)
+        path = path + "/" + string_result[0];
+    }
 
   // convert to native slashes
   path = QDir::toNativeSeparators (path);

@@ -491,8 +491,14 @@ void FileDialog::accept (void)
   for (int i = 0; i < string_result.size (); i++)
     string_result[i] = QFileInfo (string_result[i]).fileName ();
 
-
   path = directory ().absolutePath ();
+
+  // if not showing only dirs, add end slash for the path component
+  if (testOption (QFileDialog::ShowDirsOnly)  == false)
+    path = path + "/";
+
+  // convert to native slashes
+  path = QDir::toNativeSeparators (path);
 
   QStringList name_filters = nameFilters ();
   idx = name_filters.indexOf (selectedNameFilter ()) + 1;

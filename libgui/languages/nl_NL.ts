@@ -897,7 +897,7 @@ Wil je die toch verwijderen?</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Print To File ...</source>
+        <source>Print To File...</source>
         <translation>Druk af naar bestand...</translation>
     </message>
     <message>
@@ -2063,8 +2063,8 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
-        <translation>Zoek bestanden ...</translation>
+        <source>Find Files...</source>
+        <translation>Zoek bestanden...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2109,6 +2109,11 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation>Zoek in map...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translation>Zoek bestanden...</translation>
     </message>
@@ -2453,7 +2458,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation>Bladeren ...</translation>
+        <translation>Bladeren...</translation>
     </message>
     <message>
         <location line="+1"/>

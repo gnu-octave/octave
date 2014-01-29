@@ -477,12 +477,23 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
   QMenu menu (this);
 
   QModelIndex index = _file_tree_view->indexAt (mpos);
-  //QAbstractItemModel *m = _file_tree_view->model ();
 
   if (index.isValid ())
     {
       QFileInfo info = _file_system_model->fileInfo (index);
 
+      QItemSelectionModel *m = _file_tree_view->selectionModel ();
+      QModelIndexList sel = m->selectedRows ();
+
+      // check if item at mouse position is seleccted
+      if (! sel.contains (index))
+        { // is not selected -> clear actual selection and select this item
+          m->setCurrentIndex(index,
+                  QItemSelectionModel::Clear | QItemSelectionModel::Select |
+                  QItemSelectionModel::Rows);
+        }
+
+      // construct the context menu depending on item
       menu.addAction (QIcon (":/actions/icons/fileopen.png"), tr ("Open"),
                       this, SLOT (contextmenu_open (bool)));
 
@@ -506,7 +517,8 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                           tr ("Set Current Directory"),
                           this, SLOT (contextmenu_setcurrentdir (bool)));
           menu.addSeparator ();
-          menu.addAction (tr ("Find Files..."), this,
+          menu.addAction (QIcon (":/actions/icons/findf.png"),
+                          tr ("Find Files..."), this,
                           SLOT (contextmenu_findfiles (bool)));
         }
 
@@ -526,6 +538,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                           this, SLOT (contextmenu_newdir (bool)));
         }
 
+      // show the menu
       menu.exec (_file_tree_view->mapToGlobal (mpos));
 
     }
@@ -540,7 +553,14 @@ files_dock_widget::contextmenu_open (bool)
 
   for ( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     {
-      item_double_clicked (*it);
+      QFileInfo file = _file_system_model->fileInfo (*it);
+      if (file.exists ())
+        {
+          if (file.isFile ())
+            emit open_file (file.absoluteFilePath ());
+          else
+            set_current_directory (file.absoluteFilePath ());
+        }
     }
 }
 

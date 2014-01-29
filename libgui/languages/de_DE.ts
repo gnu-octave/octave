@@ -525,8 +525,8 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
-        <translation>Dateien suchen ...</translation>
+        <source>Find Files...</source>
+        <translation>Dateien suchen...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -571,9 +571,14 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation>Verzeichnis suchen...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translatorcomment>Dateien suchen...</translatorcomment>
-        <translation>Suche Dateien...</translation>
+        <translation>Dateien suchen...</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -914,7 +919,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation>Suche ...</translation>
+        <translation>Suche...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1024,7 +1029,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+105"/>
         <source>Searching...</source>
-        <translation>Suche ...</translation>
+        <translation>Suche...</translation>
     </message>
     <message>
         <location line="+23"/>

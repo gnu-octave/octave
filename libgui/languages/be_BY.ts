@@ -898,7 +898,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
         <location line="+71"/>
-        <source>Print To File ...</source>
+        <source>Print To File...</source>
         <translation>Друк у файл...</translation>
     </message>
     <message>
@@ -2065,7 +2065,7 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Шукаць файлы...</translation>
     </message>
     <message>
@@ -2111,6 +2111,11 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation>Шукаць каталог...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translation>Шукаць файлы...</translation>
     </message>

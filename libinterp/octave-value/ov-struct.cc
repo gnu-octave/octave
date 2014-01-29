@@ -769,7 +769,7 @@ octave_struct::save_ascii (std::ostream& os)
       bool b = save_ascii_data (os, val, key, false, 0);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -894,7 +894,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
       bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -1471,7 +1471,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
       bool b = save_ascii_data (os, val, key, false, 0);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -1555,7 +1555,7 @@ octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
       bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;

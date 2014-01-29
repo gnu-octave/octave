@@ -380,7 +380,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
                p = vars.begin (); p != vars.end (); p++)
             {
               if (! save_ascii_data (os, p->varval (0), p->name (), false, 0))
-                return os;
+                return ! os.fail ();
             }
         }
     }
@@ -556,7 +556,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
             {
               if (! save_binary_data (os, p->varval (0), p->name (),
                                       "", 0, save_as_floats))
-                return os;
+                return ! os.fail ();
             }
         }
     }

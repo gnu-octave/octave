@@ -1164,7 +1164,7 @@ foi removido ou renomeado. Pretende guardá-lo agora?%2</translation>
     </message>
     <message>
         <location line="+373"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Procurar Ficheiros...</translation>
     </message>
     <message>

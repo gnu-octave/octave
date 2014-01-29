@@ -898,7 +898,7 @@ Do you want to delete it anyway?</source>
     </message>
     <message>
         <location line="+71"/>
-        <source>Print To File ...</source>
+        <source>Print To File...</source>
         <translation>Друк у файл...</translation>
     </message>
     <message>
@@ -2038,7 +2038,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="+373"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Шукаць файлы...</translation>
     </message>
     <message>

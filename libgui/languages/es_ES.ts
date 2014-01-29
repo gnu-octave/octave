@@ -481,8 +481,8 @@ has been deleted or renamed. Do you want to save it now?%2</source>
     </message>
     <message>
         <location line="+373"/>
-        <source>Find Files ...</source>
-        <translation>Buscar archivos ...</translation>
+        <source>Find Files...</source>
+        <translation>Buscar archivos...</translation>
     </message>
     <message>
         <location line="+13"/>

@@ -498,7 +498,7 @@ wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</tran
     </message>
     <message>
         <location line="+373"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Dateien suchen...</translation>
     </message>
     <message>
@@ -886,7 +886,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation>Suche ...</translation>
+        <translation>Suche...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -991,7 +991,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+105"/>
         <source>Searching...</source>
-        <translation>Suche ...</translation>
+        <translation>Suche...</translation>
     </message>
     <message>
         <location line="+32"/>

@@ -497,7 +497,7 @@ a été supprimé ou rénommé. Voulez-vous l&apos;enregistrer maintenant ?%2</t
     </message>
     <message>
         <location line="+373"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Rechercher des fichiers...</translation>
     </message>
     <message>

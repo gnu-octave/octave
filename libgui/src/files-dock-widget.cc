@@ -497,7 +497,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
                           this, SLOT (contextmenu_setcurrentdir (bool)));
           menu.addSeparator ();
           menu.addAction (QIcon (":/actions/icons/findf.png"),
-                          tr ("Find Files ..."), this,
+                          tr ("Find Files..."), this,
                           SLOT (contextmenu_findfiles (bool)));
         }
 

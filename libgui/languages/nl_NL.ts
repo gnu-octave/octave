@@ -897,7 +897,7 @@ Wil je die toch verwijderen?</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Print To File ...</source>
+        <source>Print To File...</source>
         <translation>Druk af naar bestand...</translation>
     </message>
     <message>
@@ -2036,8 +2036,8 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
     <message>
         <location line="+373"/>
-        <source>Find Files ...</source>
-        <translation>Zoek bestanden ...</translation>
+        <source>Find Files...</source>
+        <translation>Zoek bestanden...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2425,7 +2425,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation>Bladeren ...</translation>
+        <translation>Bladeren...</translation>
     </message>
     <message>
         <location line="+1"/>

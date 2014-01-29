@@ -388,7 +388,7 @@ para escrita: %2.</translation>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+824"/>
         <source>Goto line</source>
-        <translation>Vá para linha...</translation>
+        <translation>Vá para linha</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -522,7 +522,7 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Buscar Arquivos...</translation>
     </message>
     <message>
@@ -554,20 +554,25 @@ Do you want to choose another name?</source>
     <message>
         <location line="+5"/>
         <source>Set Octave directory</source>
-        <translation>Definir o diretório do Octave</translation>
+        <translation>Escolher o diretório do Octave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directroy to current browser directory</source>
-        <translation>Definir diretório do Octave igual ao diretório atual no navegador</translation>
+        <translation>Configurar o diretório do Octave igual ao diretório atual no navegador</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Show Home Directory</source>
-        <translation>Exibir diretório pessoal</translation>
+        <translation>Exibir Diretório Pessoal</translation>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation>Buscar no Diretório...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translation>Buscar Arquivos...</translation>
     </message>
@@ -629,7 +634,7 @@ Do you want to choose another name?</source>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation>Definir Diretório Atual</translation>
+        <translation>Escolher Diretório Atual</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -679,7 +684,7 @@ para:</translation>
     <message>
         <location line="+144"/>
         <source>Set directory of file browser</source>
-        <translation>Definir diretório do Navegador de Arquivos</translation>
+        <translation>Escolher diretório do Navegador de Arquivos</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -743,9 +748,9 @@ para:</translation>
 You can find more information about each of these by visiting &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Esperamos que o Octave seja uma ferramenta últil.&lt;/p&gt;
-&lt;p&gt;Se encontrar problemas, existem várias maneiras de pedir ajuda incluindo suporte comercial, lista de email, wiki, e outros canais de suporte da comunidade.
-Você pode encontrar mais informações sobre cada um deles visitando &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
+&lt;p&gt;Esperamos que você ache o Octave uma ferramenta útil.&lt;/p&gt;
+&lt;p&gt;Se encontrar dificuldades, existem várias formas de obter assistência, incluindo suporte comercial, listas de email, wiki, e outros canais de suporte comunitários.
+Você pode encontrar mais informações sobre cada um deles visitando &lt;a href=&quot;http://octave.org/support.html&quot;&gt;http://octave.org/support.html&lt;/a&gt; (link abre em navegador externo).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -831,7 +836,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>&amp;More...</source>
-        <translation>&amp;Mais...</translation>
+        <translation>&amp;Mais opções...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -846,7 +851,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+1"/>
         <source>Search &amp;backward</source>
-        <translation>Buscar de trás para frente</translation>
+        <translation>Buscar de &amp;trás para frente</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1109,7 +1114,7 @@ Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&g
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Parece que você está usando a interface gráfica pela primeira vez neste computador.
-Clique em próximo para criar um arquivo de configuração e lançar o Octave.&lt;/p&gt;
+Clique em &apos;Avançar&apos; para criar um arquivo de configuração e iniciar o Octave.&lt;/p&gt;
 &lt;p&gt;O arquivo de configuração é armazenado em&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -1119,7 +1124,7 @@ Clique em próximo para criar um arquivo de configuração e lançar o Octave.&l
     <message>
         <location filename="../src/main-window.cc" line="-1758"/>
         <source>Load Workspace</source>
-        <translation>Carregar Ambiente de Trabalho...</translation>
+        <translation>Carregar Ambiente de Trabalho</translation>
     </message>
     <message>
         <location line="+678"/>
@@ -1180,7 +1185,7 @@ Clique em próximo para criar um arquivo de configuração e lançar o Octave.&l
     <message>
         <location line="-1327"/>
         <source>Save Workspace As</source>
-        <translation>Salvar Ambiente de Trabalho Como...</translation>
+        <translation>Salvar Ambiente de Trabalho Como</translation>
     </message>
     <message>
         <location line="+84"/>
@@ -1286,7 +1291,7 @@ instead?</source>
     <message>
         <location line="+1160"/>
         <source>Load Workspace...</source>
-        <translation>Carregar ambiente de trabalho...</translation>
+        <translation>Carregar Ambiente de Trabalho...</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1777,7 +1782,7 @@ Octave GUI precisa ser fechado agora.</translation>
     <message>
         <location line="+17"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecionar fonte, tamanho da fonte (como uma diferença do tamanho padrão), estilo da fonte (&lt;b&gt;n&lt;/b&gt;egrito, &lt;b&gt;i&lt;/b&gt;tálico, &lt;b&gt;s&lt;/b&gt;ublinhado), cor de texto e cor de fundo (a cor rosa (255,0,255) é a cor de fundo padrão).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecionar fonte, tamanho da fonte (variacão com relacão ao tamanho padrão), estilo da fonte (&lt;b&gt;n&lt;/b&gt;egrito, &lt;b&gt;i&lt;/b&gt;tálico, &lt;b&gt;s&lt;/b&gt;ublinhado), cor da fonte e cor de fundo (a cor rosa (255,0,255) é a cor de fundo padrão).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+191"/>

@@ -34,8 +34,8 @@ EXTRA_DIST += \
   addtwomatrices.cc \
   celldemo.cc \
   embedded.cc \
-  fortdemo.cc \
-  fortsub.f \
+  fortrandemo.cc \
+  fortransub.f \
   funcdemo.cc \
   globaldemo.cc \
   helloworld.cc \

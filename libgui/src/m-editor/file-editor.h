@@ -58,6 +58,8 @@ public:
   void handle_exit_debug_mode (void);
 
   void check_actions (void);
+  void empty_script (bool startup, bool visible);
+
 signals:
 
   void fetab_settings_changed (const QSettings *settings);
@@ -171,6 +173,8 @@ public slots:
 
   // Tells the ditor to dis- or enable some shortcuts
   void set_shortcuts (bool set_shortcuts);
+
+  void handle_visibility (bool visible);
 
 
 protected slots:

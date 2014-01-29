@@ -780,7 +780,7 @@ octave_cell::save_ascii (std::ostream& os)
           bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
 
           if (! b)
-            return os;
+            return ! os.fail ();
         }
     }
   else
@@ -802,7 +802,7 @@ octave_cell::save_ascii (std::ostream& os)
               bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
 
               if (! b)
-                return os;
+                return ! os.fail ();
             }
 
           os << "\n";

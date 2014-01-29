@@ -508,8 +508,8 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
-        <translation>Buscar archivos ...</translation>
+        <source>Find Files...</source>
+        <translation>Buscar archivos...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -554,6 +554,11 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation>Buscar directorio...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translation>Buscar archivos...</translation>
     </message>

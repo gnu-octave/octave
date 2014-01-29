@@ -129,10 +129,10 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     ## Take action depending on output type
     switch (lower (output_type))
       case "plain text"
-        cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
+        cmd = sprintf ("%s --no-headers --no-warn --force --no-validate --output=- %s",
                        makeinfo_program (), name);
       case "html"
-        cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force %s",
+        cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force --output=- %s",
                        makeinfo_program (), name);
       otherwise
         error ("__makeinfo__: unsupported output type: '%s'", output_type);

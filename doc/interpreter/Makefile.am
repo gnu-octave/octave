@@ -59,8 +59,8 @@ EXAMPLE_FILES = \
   $(top_srcdir)/examples/addtwomatrices.cc \
   $(top_srcdir)/examples/celldemo.cc \
   $(top_srcdir)/examples/embedded.cc \
-  $(top_srcdir)/examples/fortdemo.cc \
-  $(top_srcdir)/examples/fortsub.f \
+  $(top_srcdir)/examples/fortrandemo.cc \
+  $(top_srcdir)/examples/fortransub.f \
   $(top_srcdir)/examples/funcdemo.cc \
   $(top_srcdir)/examples/globaldemo.cc \
   $(top_srcdir)/examples/helloworld.cc \

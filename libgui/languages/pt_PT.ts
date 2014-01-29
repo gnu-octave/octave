@@ -1191,7 +1191,7 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation>Procurar Ficheiros...</translation>
     </message>
     <message>
@@ -1237,6 +1237,11 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation>Procurar no directório...</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translation>Encontrar Ficheiros...</translation>
     </message>

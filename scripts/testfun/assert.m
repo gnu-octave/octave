@@ -56,7 +56,7 @@
 
 function assert (cond, varargin)
 
-  if (nargin == 0 || nargin > 3)
+  if (nargin == 0)
     print_usage ();
   endif
 
@@ -84,8 +84,10 @@ function assert (cond, varargin)
     expected = varargin{1};
     if (nargin < 3)
       tol = 0;
-    else
+    elseif (nargin == 3)
       tol = varargin{2};
+    else
+      print_usage ();
     endif
 
     ## Add to list as the errors accumulate.  If empty at end then no errors.
@@ -396,6 +398,8 @@ endfunction
 %!error assert ([1,0,1])
 %!error assert ([1;1;0])
 %!error assert ([1,0;1,1])
+%!error <2-part error> assert (false, "%s %s", "2-part", "error")
+%!error <2-part error> assert (false, "TST:msg_id", "%s %s", "2-part", "error")
 
 ## scalars
 %!error <Dimensions don't match> assert (3, [3,3])

@@ -508,7 +508,7 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+379"/>
-        <source>Find Files ...</source>
+        <source>Find Files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -554,6 +554,11 @@ Do you want to choose another name?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Search Directory...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Find Files...</source>
         <translation type="unfinished"></translation>
     </message>

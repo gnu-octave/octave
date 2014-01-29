@@ -1010,6 +1010,9 @@ main_window::connect_visibility_changed (void)
 {
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
+
+  // Main window completely shown, determine whether to create an empty script
+  editor_window->empty_script (true, false);
 }
 
 void

@@ -585,5 +585,5 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   else
     gripe_wrong_type_arg ("save", tc, false);
 
-  return os;
+  return ! os.fail ();
 }

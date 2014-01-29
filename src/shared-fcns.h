@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
 #include <windows.h>
+#include <tlhelp32.h>
 
 #ifdef _MSC_VER
 #define popen _popen

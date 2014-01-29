@@ -37,8 +37,12 @@
 ## Report the current file and line number where execution is stopped.
 ##
 ## @item dbtype
-## List the function where execution is currently stopped, enumerating
+## Display the code of the function being debugged, enumerating
 ## the line numbers.
+##
+## @item dblist
+## List 10 lines of code centered around the line number where execution is
+## stopped.
 ##
 ## @item  dbstep
 ## @itemx dbnext

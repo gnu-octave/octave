@@ -10,13 +10,13 @@
 //
 // To compile this file, type the command
 //
-//   mkoctfile mex_demo.c
+//   mkoctfile --mex mex_demo.c
 //
 // from within Octave or from the shell prompt.  This will create a file
 // called mex_demo.mex that can be loaded by Octave.  To test the mex_demo.mex
 // file, start Octave and type the command
 //
-// [d] = mex_demo ("easy as", 1, 2, 3)
+// d = mex_demo ("easy as", 1, 2, 3)
 //
 // at the Octave prompt.  Octave should respond by printing
 //

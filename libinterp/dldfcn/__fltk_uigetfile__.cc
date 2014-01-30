@@ -123,10 +123,10 @@ Undocumented internal function.\n\
         }
 
       if (multi_type == Fl_File_Chooser::DIRECTORY)
-        retval(0) = std::string (fc.value ());
+        retval(0) = file_ops::native_separator_path (std::string (fc.value ()));
       else
         {
-          retval(1) = std::string (fc.directory ()) + sep;
+          retval(1) = file_ops::native_separator_path (std::string (fc.directory ()) + sep);
           retval(2) = fc.filter_value () + 1;
         }
     }

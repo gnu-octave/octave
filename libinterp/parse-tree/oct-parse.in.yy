@@ -1508,6 +1508,16 @@ classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superc
                         ABORT_PARSE;
                       }
                   }
+                | classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep END
+                  {
+                    lexer.parsing_classdef = false;
+
+                    if (! ($$ = parser.make_classdef ($1, $3, $4, $5, 0, $7, $2)))
+                      {
+                        // make_classdef deleted $3, $4, and $5.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
 opt_attr_list   : // empty
@@ -1598,6 +1608,15 @@ properties_block
                         ABORT_PARSE;
                       }
                   }
+                | PROPERTIES stash_comment opt_attr_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_properties_block
+                           ($1, $3, 0, $5, $2)))
+                      {
+                        // make_classdef_properties_block delete $3.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
 property_list
@@ -1628,6 +1647,16 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
                         ABORT_PARSE;
                       }
                   }
+                | METHODS stash_comment opt_attr_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_methods_block
+                           ($1, $3, 0, $5, $2)))
+                      {
+                        // make_classdef_methods_block deleted $3.
+                        ABORT_PARSE;
+                      }
+                  }
+                ;
                 ;
 
 method_decl1    : identifier
@@ -1692,6 +1721,15 @@ events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep
                         ABORT_PARSE;
                       }
                   }
+                | EVENTS stash_comment opt_attr_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_events_block
+                           ($1, $3, 0, $5, $2)))
+                      {
+                        // make_classdef_events_block deleted $3.
+                        ABORT_PARSE;
+                      }
+                  }
                 ;
 
 events_list     : class_event
@@ -1713,6 +1751,15 @@ enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_
                            ($1, $3, $5, $7, $2)))
                       {
                         // make_classdef_enum_block deleted $3 and $5.
+                        ABORT_PARSE;
+                      }
+                  }
+                | ENUMERATION stash_comment opt_attr_list opt_sep END
+                  {
+                    if (! ($$ = parser.make_classdef_enum_block
+                           ($1, $3, 0, $5, $2)))
+                      {
+                        // make_classdef_enum_block deleted $3.
                         ABORT_PARSE;
                       }
                   }
@@ -3134,6 +3181,9 @@ octave_base_parser::make_classdef (token *tok_val,
       int l = tok_val->line ();
       int c = tok_val->column ();
 
+      if (! body)
+        body = new tree_classdef_body ();
+
       retval = new tree_classdef (a, id, sc, body, lc, tc,
                                   curr_package_name, l, c);
     }
@@ -3165,6 +3215,9 @@ octave_base_parser::make_classdef_properties_block (token *tok_val,
       int l = tok_val->line ();
       int c = tok_val->column ();
 
+      if (! plist)
+        plist = new tree_classdef_property_list ();
+
       retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
     }
   else
@@ -3191,6 +3244,9 @@ octave_base_parser::make_classdef_methods_block (token *tok_val,
 
       int l = tok_val->line ();
       int c = tok_val->column ();
+
+      if (! mlist)
+        mlist = new tree_classdef_methods_list ();
 
       retval = new tree_classdef_methods_block (a, mlist, lc, tc, l, c);
     }
@@ -3219,6 +3275,9 @@ octave_base_parser::make_classdef_events_block (token *tok_val,
       int l = tok_val->line ();
       int c = tok_val->column ();
 
+      if (! elist)
+        elist = new tree_classdef_events_list ();
+
       retval = new tree_classdef_events_block (a, elist, lc, tc, l, c);
     }
   else
@@ -3245,6 +3304,9 @@ octave_base_parser::make_classdef_enum_block (token *tok_val,
 
       int l = tok_val->line ();
       int c = tok_val->column ();
+
+      if (! elist)
+        elist = new tree_classdef_enum_list ();
 
       retval = new tree_classdef_enum_block (a, elist, lc, tc, l, c);
     }

@@ -362,6 +362,27 @@ file_ops::concat (const std::string& dir, const std::string& file)
             : dir + dir_sep_char () + file);
 }
 
+std::string
+file_ops::native_separator_path (const std::string& path)
+{
+  std::string retval;
+
+  if (dir_sep_char () == '/')
+    retval = path;
+  else
+    {
+      size_t n = path.length ();
+      for (size_t i = 0; i < n; i++)
+        {
+          if (path[i] == '/')
+            retval += dir_sep_char();
+          else
+            retval += path[i];
+        }
+    }
+
+  return retval;
+}
 
 int
 octave_mkdir (const std::string& nm, mode_t md)

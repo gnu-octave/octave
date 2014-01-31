@@ -35,7 +35,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon,
                                      "magic-colon", "magic-colon");
 
 void
-octave_magic_colon::print (std::ostream& os, bool) const
+octave_magic_colon::print (std::ostream& os, bool)
 {
   indent (os);
   print_raw (os);

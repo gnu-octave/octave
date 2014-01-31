@@ -389,7 +389,7 @@ octave_perm_matrix::print_as_scalar (void) const
 }
 
 void
-octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_perm_matrix::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

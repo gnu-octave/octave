@@ -3387,8 +3387,7 @@ octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 }
 
 void
-octave_print_internal (std::ostream&, const octave_value&,
-                       bool pr_as_read_syntax)
+octave_print_internal (std::ostream&, const octave_value&, bool)
 {
   panic_impossible ();
 }
@@ -3439,7 +3438,7 @@ representing the elements of @var{x}.  By default @var{len} is 9.\n\
               rat_format = true;
 
               std::ostringstream buf;
-              args(0).print (buf);
+              arg.print (buf);
               std::string s = buf.str ();
 
               std::list<std::string> lst;
@@ -3501,11 +3500,12 @@ returns the formatted output in a string.\n\
 
   if (nargin == 1 && nargout < 2)
     {
+      octave_value arg = args(0);
+
       if (nargout == 0)
-        args(0).print (octave_stdout);
+        arg.print (octave_stdout);
       else
         {
-          octave_value arg = args(0);
           std::ostringstream buf;
           arg.print (buf);
           retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
@@ -3550,8 +3550,10 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
         {
           std::ostream *osp = os.output_stream ();
 
+          octave_value arg = args(1);
+
           if (osp)
-            args(1).print (*osp);
+            arg.print (*osp);
           else
             error ("fdisp: stream FID not open for writing");
         }

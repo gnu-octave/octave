@@ -170,7 +170,7 @@ octave_oncleanup::load_hdf5 (hid_t /* loc_id */, const char * /* name */)
 #endif
 
 void
-octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

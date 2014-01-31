@@ -1017,7 +1017,7 @@ public:
   bool print_as_scalar (void) const
   { return rep->print_as_scalar (); }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const
+  void print (std::ostream& os, bool pr_as_read_syntax = false)
   { rep->print (os, pr_as_read_syntax); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const

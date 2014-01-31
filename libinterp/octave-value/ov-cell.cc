@@ -687,7 +687,7 @@ octave_cell::print_as_scalar (void) const
 }
 
 void
-octave_cell::print (std::ostream& os, bool) const
+octave_cell::print (std::ostream& os, bool)
 {
   print_raw (os);
 }

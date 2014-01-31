@@ -1018,6 +1018,73 @@ octave_classdef::undef_subsasgn (const std::string& type,
   return octave_value ();
 }
 
+void
+octave_classdef::print (std::ostream& os, bool)
+{
+  if (! called_from_builtin ())
+    {
+      cdef_method meth = object.get_class ().find_method ("disp");
+
+      if (meth.ok ())
+        {
+          octave_value_list args;
+
+          count++;
+          args(0) = octave_value (this);
+
+          indent (os);
+          meth.execute (args, 0, true, "disp");
+
+          return;
+        }
+    }
+
+  print_raw (os);
+}
+
+void
+octave_classdef::print_raw (std::ostream& os, bool) const
+{
+  indent (os);
+  os << "<object ";
+  if (object.is_array ())
+    os << "array ";
+  os << class_name () << ">";
+  newline (os);
+}
+
+bool
+octave_classdef::print_name_tag (std::ostream& os,
+                                 const std::string& name) const
+{
+  return octave_base_value::print_name_tag (os, name);
+}
+
+void
+octave_classdef::print_with_name (std::ostream& os, const std::string& name,
+                                  bool print_padding)
+{
+  cdef_method meth = object.get_class ().find_method ("display");
+
+  if (meth.ok ())
+    {
+      octave_value_list args;
+
+      count++;
+      args(0) = octave_value (this);
+
+      string_vector arg_names (1);
+
+      arg_names[0] = name;
+      args.stash_name_tags (arg_names);
+
+      indent (os);
+      meth.execute (args, 0, true, "display");
+    }
+  else
+    octave_base_value::print_with_name (os, name, print_padding);
+}
+
 //----------------------------------------------------------------------------
 
 class octave_classdef_meta : public octave_function

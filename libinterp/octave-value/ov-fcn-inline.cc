@@ -598,7 +598,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
 #endif
 
 void
-octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

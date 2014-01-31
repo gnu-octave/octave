@@ -506,8 +506,7 @@ octave_base_diag<DMT, MT>::print_as_scalar (void) const
 
 template <class DMT, class MT>
 void
-octave_base_diag<DMT, MT>::print (std::ostream& os,
-                                  bool pr_as_read_syntax) const
+octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

@@ -143,7 +143,7 @@ octave_base_scalar<ST>::is_true (void) const
 
 template <class ST>
 void
-octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

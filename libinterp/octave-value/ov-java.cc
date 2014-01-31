@@ -1762,7 +1762,7 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
 }
 
 void
-octave_java::print (std::ostream& os, bool) const
+octave_java::print (std::ostream& os, bool)
 {
   print_raw (os);
   newline (os);

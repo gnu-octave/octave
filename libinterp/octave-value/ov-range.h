@@ -249,7 +249,7 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

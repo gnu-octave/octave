@@ -1387,7 +1387,7 @@ Test for bug #35876
 */
 
 void
-octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

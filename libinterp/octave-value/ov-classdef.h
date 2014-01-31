@@ -1413,26 +1413,18 @@ public:
 
   bool is_object (void) const { return true; }
 
-  bool print_as_scalar (void) const { return true; }
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  void print(std::ostream& os, bool pr_as_read_syntax = false) const
-    {
-      // FIXME: should call "display" method
-      print_raw(os, pr_as_read_syntax);
-      newline(os);
-    }
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void print_raw(std::ostream& os, bool /* pr_as_read_syntax */ = false) const
-    {
-      if (object.is_array ())
-        os << "array (" << object.dims ().str () << ") of "
-          << object.class_name () << " objects";
-      else
-        os << object.class_name () << " object";
-    }
+  bool print_name_tag (std::ostream& os, const std::string& name) const;
+
+  void print_with_name (std::ostream& os, const std::string& name,
+                        bool print_padding = true);
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx, int nargout);
+			     const std::list<octave_value_list>& idx,
+                             int nargout);
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)

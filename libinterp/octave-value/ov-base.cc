@@ -397,7 +397,7 @@ octave_base_value::convert_to_row_or_column_vector (void)
 }
 
 void
-octave_base_value::print (std::ostream&, bool) const
+octave_base_value::print (std::ostream&, bool)
 {
   gripe_wrong_type_arg ("octave_base_value::print ()", type_name ());
 }

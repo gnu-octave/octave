@@ -352,7 +352,7 @@ octave_range::convert_to_str_internal (bool pad, bool force, char type) const
 }
 
 void
-octave_range::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_range::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

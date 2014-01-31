@@ -648,7 +648,7 @@ octave_struct::byte_size (void) const
 }
 
 void
-octave_struct::print (std::ostream& os, bool) const
+octave_struct::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -1359,7 +1359,7 @@ octave_scalar_struct::byte_size (void) const
 }
 
 void
-octave_scalar_struct::print (std::ostream& os, bool) const
+octave_scalar_struct::print (std::ostream& os, bool)
 {
   print_raw (os);
 }

@@ -126,7 +126,7 @@ public:
 
   string_vector map_keys (void) const { return map.fieldnames (); }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -249,7 +249,7 @@ public:
 
   string_vector map_keys (void) const { return map.fieldnames (); }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

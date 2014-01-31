@@ -436,7 +436,7 @@ octave_base_matrix<MT>::print_as_scalar (void) const
 
 template <class MT>
 void
-octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);

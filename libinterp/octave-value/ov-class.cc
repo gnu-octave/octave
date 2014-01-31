@@ -1045,7 +1045,7 @@ octave_class::all_strings (bool pad) const
 
 
 void
-octave_class::print (std::ostream& os, bool) const
+octave_class::print (std::ostream& os, bool)
 {
   print_raw (os);
 }

@@ -606,7 +606,7 @@ public:
 
   virtual bool print_as_scalar (void) const { return false; }
 
-  virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  virtual void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   virtual void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

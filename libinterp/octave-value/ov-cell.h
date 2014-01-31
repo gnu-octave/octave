@@ -147,7 +147,7 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

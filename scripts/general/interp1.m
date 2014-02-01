@@ -212,7 +212,7 @@ function yi = interp1 (x, y, varargin)
     if (have_jumps)
       if (strcmp (method, "linear") || strcmp (method, ("nearest")))
         if (any (jumps(1:nx-2) & jumps(2:nx-1)))
-          error ("interp1: extra points in discontinuities");
+          warning ("interp1: multiple discontinuities at the same X value");
         endif
       else
         error ("interp1: discontinuities not supported for method '%s'", method);
@@ -640,6 +640,7 @@ endfunction
 %!error <table too short> interp1 (1,1,1, "linear")
 %!error <table too short> interp1 (1,1,1, "*nearest")
 %!error <table too short> interp1 (1,1,1, "*linear")
+%!warning <multiple discontinuities> interp1 ([1 1 1 2], [1 2 3 4], 1);
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "pchip")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "cubic")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "spline")

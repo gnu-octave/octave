@@ -211,7 +211,7 @@ information.\n\
 
           SparseMatrix m = arg.sparse_matrix_value ();
 
-          if ( nargout < 4 ) 
+          if ( nargout < 4 )
             {
 
               ColumnVector Qinit;
@@ -220,7 +220,7 @@ information.\n\
                 Qinit (i) = i;
               SparseLU fact (m, Qinit, thres, false, true);
 
-              if ( nargout < 2 ) 
+              if ( nargout < 2 )
                   retval(0) = fact.Y ();
               else
                 {
@@ -233,7 +233,7 @@ information.\n\
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseMatrix L = fact.L ();
-                  if ( nargout < 3 )  
+                  if ( nargout < 3 )
                       retval(0)
                         = octave_value ( P.transpose () * L,
                             MatrixType (MatrixType::Permuted_Lower,
@@ -279,7 +279,7 @@ information.\n\
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-          if ( nargout < 4 ) 
+          if ( nargout < 4 )
             {
 
               ColumnVector Qinit;
@@ -288,7 +288,7 @@ information.\n\
                 Qinit (i) = i;
               SparseComplexLU fact (m, Qinit, thres, false, true);
 
-              if ( nargout < 2 ) 
+              if ( nargout < 2 )
 
                   retval(0) = fact.Y ();
 
@@ -303,7 +303,7 @@ information.\n\
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseComplexMatrix L = fact.L ();
-                  if ( nargout < 3 )  
+                  if ( nargout < 3 )
                       retval(0)
                         = octave_value ( P.transpose () * L,
                             MatrixType (MatrixType::Permuted_Lower,
@@ -343,7 +343,7 @@ information.\n\
                 retval(0) = octave_value (fact.L (),
                                           MatrixType (MatrixType::Lower));
             }
-            
+
         }
       else
         gripe_wrong_type_arg ("lu", arg);
@@ -578,12 +578,12 @@ information.\n\
 %! Bi = [1 2 3 4 5 2 3 6 7 8 4 5 7 8 9];
 %! Bj = [1 3 4 5 6 7 8 9 11 12 13 14 15 16 17];
 %! Bv = [1 1 1 1 1 1 -1 1 1 1 1 -1 1 -1 1];
-%! B = sparse (Bi,Bj,Bv);
-%! [L,U] = lu (B);
+%! B = sparse (Bi, Bj, Bv);
+%! [L, U] = lu (B);
 %! assert (L*U, B);
-%! [L,U,P] = lu(B);
+%! [L, U, P] = lu(B);
 %! assert (P'*L*U, B);
-%! [L,U,P,Q] = lu (B);
+%! [L, U, P, Q] = lu (B);
 %! assert (P'*L*U*Q', B);
 
 */

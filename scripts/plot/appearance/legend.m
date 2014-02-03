@@ -846,7 +846,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                            "marker", marker,
                            "markeredgecolor",get (hplots(k), "markeredgecolor"),
                            "markerfacecolor",get (hplots(k), "markerfacecolor"),
-                           "markersize", get (hplots(k), "markersize"),
+                           "markersize", min (get (hplots(k), "markersize"),10),
                            "userdata", hplots(k));
                 hobjects(end+1) = l1;
               endif
@@ -1211,7 +1211,7 @@ function updateline (h, ~, hlegend, linelength, update_name)
       line ("xdata", xpos2, "ydata", ypos2, "color", get (h, "color"),
             "marker", marker, "markeredgecolor", get (h, "markeredgecolor"),
             "markerfacecolor", get (h, "markerfacecolor"),
-            "markersize", get (h, "markersize"), 
+            "markersize", min (get (h, "markersize"), 10),
             "linestyle", "none",
             "linewidth", min (get (h, "linewidth"), 5),
             "userdata", h, "parent", hlegend);

@@ -580,11 +580,11 @@ information.\n\
 %! Bv = [1 1 1 1 1 1 -1 1 1 1 1 -1 1 -1 1];
 %! B = sparse (Bi,Bj,Bv);
 %! [L,U] = lu (B);
-%! assert (nnz (B - L*U) == 0);
+%! assert (L*U, B);
 %! [L,U,P] = lu(B);
-%! assert (nnz (B - P'*L*U) == 0);
+%! assert (P'*L*U, B);
 %! [L,U,P,Q] = lu (B);
-%! assert (nnz (B - P'*L*U*Q') == 0);
+%! assert (P'*L*U*Q', B);
 
 */
 

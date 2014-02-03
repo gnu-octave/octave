@@ -340,6 +340,31 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
     endwhile
   endwhile
 
+  ## When info != 1, recalculate the gradient and hessian using the final x.
+  if (nargout > 4 && (info == -1 || info == 2 || info == 3))
+    grad0 = grad;  
+    if (has_grad)
+      [fval, grad] = fcn (reshape (x, xsiz));
+      grad = grad(:);
+    else
+      grad = __fdjac__ (fcn, reshape (x, xsiz), fval, typicalx, cdif)(:);
+    endif
+    
+    if (nargout > 5)
+      ## Use the damped BFGS formula.
+      y = grad - grad0;
+      sBs = sumsq (w);
+      Bs = hesr' * w;
+      sy = y' * s;
+      theta = 0.8 / max (1 - sy / sBs, 0.8);
+      r = theta * y + (1-theta) * Bs;
+      hesr = cholupdate (hesr, r / sqrt (s' * r), "+");
+      hesr = cholupdate (hesr, Bs / sqrt (sBs), "-");
+    endif
+    ## Return the gradient in the same shape as x
+    grad = reshape (grad, xsiz);
+  endif
+
   ## Restore original shapes.
   x = reshape (x, xsiz);
 

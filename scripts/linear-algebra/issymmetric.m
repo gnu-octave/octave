@@ -40,7 +40,8 @@ function retval = issymmetric (x, tol = 0)
   retval = isnumeric (x) && issquare (x);
   if (retval)
     if (tol == 0)
-      retval = all ((x == x.')(:));
+      ## Handle large sparse matrices as well as full ones
+      retval = nnz (x != x.') == 0;
     else
       norm_x = norm (x, inf);
       retval = norm_x == 0 || norm (x - x.', inf) / norm_x <= tol;
@@ -59,6 +60,7 @@ endfunction
 %!assert (issymmetric ([1, 2i; 2i, 1]))
 %!assert (! (issymmetric ("t")))
 %!assert (! (issymmetric (["te"; "et"])))
+%!assert (issymmetric (speye (100000)))
 
 %!test
 %! s.a = 1;

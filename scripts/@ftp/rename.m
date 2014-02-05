@@ -28,3 +28,7 @@ function rename (f, oldname, newname)
   __ftp_rename__ (f.curlhandle, oldname, newname);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

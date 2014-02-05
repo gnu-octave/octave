@@ -30,3 +30,7 @@ function ascii (f)
   __ftp_ascii__ (f.curlhandle);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

@@ -27,3 +27,7 @@ function rmdir (f, path)
   __ftp_rmdir__ (f.curlhandle, path);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

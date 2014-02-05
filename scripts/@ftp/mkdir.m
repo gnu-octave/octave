@@ -27,3 +27,7 @@ function mkdir (f, path)
   __ftp_mkdir__ (f.curlhandle, path);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

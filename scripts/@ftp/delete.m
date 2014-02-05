@@ -27,3 +27,7 @@ function delete (f, file)
   __ftp_delete__ (f.curlhandle, file);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

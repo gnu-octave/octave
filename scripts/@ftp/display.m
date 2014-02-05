@@ -24,3 +24,7 @@ function display (obj)
   printf (" mode: %s\n", __ftp_mode__ (obj.curlhandle));
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

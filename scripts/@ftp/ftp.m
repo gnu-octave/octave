@@ -59,3 +59,7 @@ function obj = ftp (host = "", username = "anonymous", password = "")
   endif
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

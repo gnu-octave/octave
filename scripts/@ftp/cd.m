@@ -42,3 +42,7 @@ function path = cd (f, path)
   path = __ftp_pwd__ (f.curlhandle);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

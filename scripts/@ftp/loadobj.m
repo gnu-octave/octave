@@ -34,3 +34,7 @@ function b = loadobj (a)
   endif
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

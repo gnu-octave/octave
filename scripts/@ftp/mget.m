@@ -36,3 +36,7 @@ function mget (f, file)
   __ftp_mget__ (f.curlhandle, file);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

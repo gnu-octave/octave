@@ -29,3 +29,7 @@ function binary (f)
   __ftp_binary__ (f.curlhandle);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

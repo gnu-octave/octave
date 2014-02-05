@@ -22,3 +22,7 @@ function b = saveobj (a)
   b.dir = __ftp_pwd__ (a.curlhandle);
 endfunction
 
+
+## No test possible for interactive function.
+%!assert (1)
+

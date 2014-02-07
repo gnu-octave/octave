@@ -883,7 +883,10 @@ main_window::read_settings (void)
 void
 main_window::set_window_layout (QSettings *settings)
 {
-  QList<octave_dock_widget *> float_and_visible;
+#if ! defined (Q_OS_WIN32)
+  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+#endif
 
   // Restore the geometry of all dock-widgets
   foreach (octave_dock_widget *widget, dock_widget_list ())
@@ -897,20 +900,24 @@ main_window::set_window_layout (QSettings *settings)
           bool visible = settings->value
               ("DockWidgets/" + name + "Visible", true).toBool ();
 
-#if defined (Q_OS_WIN32)
           // If floating, make window from widget.
           if (floating)
             widget->make_window ();
           else if (! widget->parent ())  // should not be floating but is
             widget->make_widget (false); // no docking, just reparent
-#else
+#if ! defined (Q_OS_WIN32)
           // restore geometry
           QVariant val = settings->value ("DockWidgets/" + name);
           widget->restoreGeometry (val.toByteArray ());
 #endif
           // make widget visible if desired
           if (floating && visible)              // floating and visible
-            float_and_visible.append (widget);  // not show before main win
+            {
+              if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())
+                widget->showMinimized ();
+              else
+                widget->setVisible (true);
+            }
           else
             {
               widget->make_widget ();
@@ -919,31 +926,12 @@ main_window::set_window_layout (QSettings *settings)
         }
     }
 
-#if ! defined (Q_OS_WIN32)
-  // show main first but minimized to avoid flickering,
-  // otherwise the name of a floating widget is shown in a global menu bar
-  showMinimized ();
-  // hide again, otherwise the geometry is not exactly restored
-  hide ();
-#endif
-  // restore geomoetry of main window
+#if defined (Q_OS_WIN32)
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
-  // show main window
-  show ();
-
-  // show floating widgets after main win to ensure "Octave" in central menu
-  foreach (octave_dock_widget *widget, float_and_visible)
-    {
-#if ! defined (Q_OS_WIN32)
-      widget->make_window ();
 #endif
-      if (settings->value ("DockWidgets/" + widget->objectName () + "_minimized").toBool ())
-        widget->showMinimized ();
-      else
-        widget->setVisible (true);
-    }
 
+  show ();
 }
 
 void

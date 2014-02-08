@@ -22,18 +22,22 @@
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@var{y}, @var{xi})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
+## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, "left")
+## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, "right")
 ## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, "pp")
 ##
-## One-dimensional interpolation.  Interpolates to determine the value of
-## @var{yi} at the points, @var{xi}.  If not specified, @var{x} is taken
-## to be the indices of @var{y}.  If @var{y} is a matrix or an N-dimensional
-## array, the interpolation is performed on each column of @var{y}.
+## One-dimensional interpolation.
+##
+## Interpolate input data to determine the value of @var{yi} at the points
+## @var{xi}.  If not specified, @var{x} is taken to be the indices of @var{y}.
+## If @var{y} is a matrix or an N-dimensional array, the interpolation is
+## performed on each column of @var{y}.
 ##
 ## Method is one of:
 ##
 ## @table @asis
 ## @item @qcode{"nearest"}
-## Return the nearest neighbor.
+## Return the nearest neighbor
 ##
 ## @item @qcode{"linear"}
 ## Linear interpolation from nearest neighbors
@@ -49,18 +53,19 @@
 ## throughout the curve
 ## @end table
 ##
-## Appending '*' to the start of the above method forces @code{interp1}
+## Adding '*' to the start of any method above forces @code{interp1}
 ## to assume that @var{x} is uniformly spaced, and only @code{@var{x}(1)}
 ## and @code{@var{x}(2)} are referenced.  This is usually faster,
 ## and is never slower.  The default method is @qcode{"linear"}.
 ##
 ## If @var{extrap} is the string @qcode{"extrap"}, then extrapolate values
-## beyond the endpoints.  If @var{extrap} is a number, replace values beyond
-## the endpoints with that number.  If @var{extrap} is missing, assume NA.
+## beyond the endpoints using the current @var{method}.  If @var{extrap} is a
+## number, then replace values beyond the endpoints with that number.  When
+## unspecified, @var{extrap} defaults to NA.
 ##
-## If the string argument @qcode{"pp"} is specified, then @var{xi} should not be
-## supplied and @code{interp1} returns the piecewise polynomial that
-## can later be used with @code{ppval} to evaluate the interpolation.
+## If the string argument @qcode{"pp"} is specified, then @var{xi} should not
+## be supplied and @code{interp1} returns a piecewise polynomial object.  This 
+## object can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
 ## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x}, @var{y},
 ## @var{xi}, @var{method}, @qcode{"extrap"})}.
@@ -71,7 +76,7 @@
 ## right-continuous.  If @var{x} is decreasing, the default discontinuous
 ## interpolant is left-continuous.
 ## The continuity condition of the interpolant may be specified by using
-## the options, @qcode{"-left"} or @qcode{"-right"}, to select a left-continuous
+## the options, @qcode{"left"} or @qcode{"right"}, to select a left-continuous
 ## or right-continuous interpolant, respectively.
 ## Discontinuous interpolation is only allowed for @qcode{"nearest"} and
 ## @qcode{"linear"} methods; in all other cases, the @var{x}-values must be
@@ -95,7 +100,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{interpft}
+## @seealso{interpft, interp2, interp3, interpn}
 ## @end deftypefn
 
 ## Author: Paul Kienzle
@@ -118,7 +123,7 @@ function yi = interp1 (x, y, varargin)
   xi = [];
   ispp = false;
   firstnumeric = true;
-  rightcontinuous = [];
+  rightcontinuous = NaN;
 
   if (nargin > 2)
     for i = 1:length (varargin)
@@ -129,9 +134,9 @@ function yi = interp1 (x, y, varargin)
           extrap = "extrap";
         elseif (strcmp ("pp", arg))
           ispp = true;
-        elseif (any (strcmp ({"right", "-right"}, arg)))
+        elseif (strcmp (arg, "right") || strcmp (arg, "-right"))
           rightcontinuous = true;
-        elseif (any (strcmp ({"left", "-left"}, arg)))
+        elseif (strcmp (arg, "left") || strcmp (arg, "-left"))
           rightcontinuous = false;
         else
           method = arg;
@@ -181,7 +186,7 @@ function yi = interp1 (x, y, varargin)
     y = y(p,:);
   endif
 
-  if (isempty (rightcontinuous))
+  if (isnan (rightcontinuous))
     ## If not specified, set the continuity condition
     if (x(end) < x(1))
       rightcontinuous = false;
@@ -205,9 +210,9 @@ function yi = interp1 (x, y, varargin)
     jumps = x(1:end-1) == x(2:end);
     have_jumps = any (jumps);
     if (have_jumps)
-      if (any (strcmp (method, {"nearest", "linear"})))
+      if (strcmp (method, "linear") || strcmp (method, ("nearest")))
         if (any (jumps(1:nx-2) & jumps(2:nx-1)))
-          error ("interp1: extra points in discontinuities");
+          warning ("interp1: multiple discontinuities at the same X value");
         endif
       else
         error ("interp1: discontinuities not supported for method '%s'", method);
@@ -217,6 +222,7 @@ function yi = interp1 (x, y, varargin)
 
   ## Proceed with interpolating by all methods.
   switch (method)
+
     case "nearest"
       pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)],
                  shiftdim (y, 1), szy(2:end));
@@ -227,6 +233,7 @@ function yi = interp1 (x, y, varargin)
       else
         yi = ppval (pp, reshape (xi, szx));
       endif
+
     case "*nearest"
       pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)],
                  shiftdim (y, 1), szy(2:end));
@@ -236,18 +243,24 @@ function yi = interp1 (x, y, varargin)
       else
         yi = ppval (pp, reshape (xi, szx));
       endif
-    case "linear"
-      dy = diff (y);
-      dx = diff (x);
-      dx = repmat (dx, [1 size(dy)(2:end)]);
-      coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
-      xx = x;
 
+    case "linear"
+
+      xx = x;
+      yy = y;
+      nxx = nx;
       if (have_jumps)
         ## Omit zero-size intervals.
-        coefs(jumps, :) = [];
+        yy(jumps, :) = [];
         xx(jumps) = [];
+        nxx = rows (xx);
       endif
+
+      dy = diff (yy);
+      dx = diff (xx);
+      dx = repmat (dx, [1 size(dy)(2:end)]);
+
+      coefs = [(dy./dx).'(:), yy(1:nxx-1, :).'(:)];
 
       pp = mkpp (xx, coefs, szy(2:end));
       pp.orient = "first";
@@ -286,6 +299,7 @@ function yi = interp1 (x, y, varargin)
           yi = shiftdim (yi, 1);
         endif
       endif
+
     case {"spline", "*spline"}
       if (nx == 2 || starmethod)
         x = linspace (x(1), x(nx), ny);
@@ -302,26 +316,26 @@ function yi = interp1 (x, y, varargin)
           yi = shiftdim (yi, 1);
         endif
       endif
+
     otherwise
       error ("interp1: invalid method '%s'", method);
+
   endswitch
 
-  if (! ispp)
-    if (! ischar (extrap))
-      ## determine which values are out of range and set them to extrap,
-      ## unless extrap == "extrap".
-      minx = min (x(1), x(nx));
-      maxx = max (x(1), x(nx));
+  if (! ispp && ! ischar (extrap))
+    ## determine which values are out of range and set them to extrap,
+    ## unless extrap == "extrap".
+    minx = min (x(1), x(nx));
+    maxx = max (x(1), x(nx));
 
-      outliers = xi < minx | ! (xi <= maxx); # this catches even NaNs
-      if (size_equal (outliers, yi))
-        yi(outliers) = extrap;
-        yi = reshape (yi, szx);
-      elseif (!isvector (yi))
-        yi(outliers, :) = extrap;
-      else
-        yi(outliers.') = extrap;
-      endif
+    outliers = xi < minx | ! (xi <= maxx); # this even catches NaNs
+    if (size_equal (outliers, yi))
+      yi(outliers) = extrap;
+      yi = reshape (yi, szx);
+    elseif (! isvector (yi))
+      yi(outliers, :) = extrap;
+    else
+      yi(outliers.') = extrap;
     endif
   endif
 
@@ -388,12 +402,12 @@ endfunction
 %! h = plot (x, interp1 (x1, y1, x), 'b', x1, y1, 'sb');
 %! hold on
 %! g = plot (x, interp1 (x2, y2, x), 'r', x2, y2, '*r');
-%! xlim ([1 3])
-%! legend ([h(1), g(1)], {'left-continous', 'right-continuous'}, ...
-%!         'location', 'east')
+%! axis ([0.5 3.5 -0.5 1.5])
+%! legend ([h(1), g(1)], {'left-continuous', 'right-continuous'}, ...
+%!         'location', 'northwest')
 %! legend boxoff
 %! %--------------------------------------------------------
-%! % red curve is left-continuos and blue is right-continuous at x = 2
+%! % red curve is left-continuous and blue is right-continuous at x = 2
 
 ##FIXME: add test for n-d arguments here
 
@@ -594,14 +608,15 @@ endfunction
 ## ENDBLOCK
 ## ENDBLOCKTEST
 
-%!# test linear extrapolation
+## test extrapolation (linear)
 %!assert (interp1 ([1:5],[3:2:11],[0,6],"linear","extrap"), [1, 13], eps)
 %!assert (interp1 (xp, yp, [-1, max(xp)+1],"linear",5), [5, 5])
 
+## Basic sanity checks
 %!assert (interp1 (1:2,1:2,1.4,"nearest"), 1)
 %!assert (interp1 (1:2,1:2,1.4,"linear"), 1.4)
 %!assert (interp1 (1:4,1:4,1.4,"cubic"), 1.4)
-%!assert (interp1 (1:2,1:2,1.1, "spline"), 1.1)
+%!assert (interp1 (1:2,1:2,1.1,"spline"), 1.1)
 %!assert (interp1 (1:3,1:3,1.4,"spline"), 1.4)
 
 %!assert (interp1 (1:2:4,1:2:4,1.4,"*nearest"), 1)
@@ -612,13 +627,22 @@ endfunction
 
 %!assert (interp1 ([3,2,1],[3,2,2],2.5), 2.5)
 
-%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap"), [-2,0.5,4,3,1.5])
 %!assert (interp1 ([4,4,3,2,0],[0,1,4,2,1],[1.5,4,4.5], "linear"), [1.75,1,NA])
 %!assert (interp1 (0:4, 2.5), 1.5)
 
+## Left and Right discontinuities
+%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "right"), [-8,2,4,3,1.5])
+%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "left"), [-2,0.5,1,1.5,1.5])
+
+%% Test input validation
 %!error interp1 ()
-%!error interp1 (1,1,1, "linear")
-%!error interp1 (1,1,1, "*nearest")
-%!error interp1 (1,1,1, "*linear")
-%!error interp1 (1:2,1:2,1, "bogus")
+%!error interp1 (1,2,3,4,5,6,7)
+%!error <table too short> interp1 (1,1,1, "linear")
+%!error <table too short> interp1 (1,1,1, "*nearest")
+%!error <table too short> interp1 (1,1,1, "*linear")
+%!warning <multiple discontinuities> interp1 ([1 1 1 2], [1 2 3 4], 1);
+%!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "pchip")
+%!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "cubic")
+%!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "spline")
+%!error <invalid method> interp1 (1:2,1:2,1, "bogus")
 

@@ -1655,7 +1655,7 @@ case $canonical_host_type in
   ;;
   *-*-darwin*)
     DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/libinterp/octave $(LDFLAGS)'
-    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $$BINDIR/octave-$$OCTAVE_VERSION$$EXEEXT'
+    MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $(bindir)/octave-$(version)$(EXEEXT)'
     SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
     case $canonical_host_type in
       powerpc-*)

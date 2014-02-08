@@ -99,8 +99,10 @@ function h = figure (varargin)
   endif
 
   set (0, "currentfigure", f);
-  ## When switching to figure N, make figure visible and on top of stack.
-  if (! init_new_figure)
+  ## When switching to figure N, make figure visible and on top of stack,
+  ## unless visibility is explicitly switched off
+  if (! init_new_figure && ! any (strcmpi (varargin(1:2:end), "visible")
+                                  && strcmpi (varargin(2:2:end), "off")))
     set (f, "visible", "on");
   endif
 
@@ -116,6 +118,11 @@ endfunction
 %! unwind_protect
 %!   assert (hf, gcf);
 %!   assert (isfigure (hf));
+%!   hf2 = figure (hf, "visible", "off");
+%!   assert (hf, hf2);
+%!   assert (hf2, gcf);
+%!   assert (isfigure (hf2));
+%!   assert (get (hf2, "visible"), "off");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

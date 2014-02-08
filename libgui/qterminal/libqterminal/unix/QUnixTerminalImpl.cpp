@@ -59,6 +59,7 @@ void QUnixTerminalImpl::initialize()
     font.setPointSize(10);
 #endif
     setTerminalFont(font);
+    setFocusPolicy (Qt::StrongFocus);
     setFocusProxy(m_terminalView);
     setFocus(Qt::OtherFocusReason);
 

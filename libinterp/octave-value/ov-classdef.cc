@@ -3443,7 +3443,13 @@ cdef_package::cdef_package_rep::meta_subsref
 
                       if (! error_state)
                         {
-                          if (type.size () == 1 ||
+                          // NOTE: the case where the package query is the last
+                          // part of this subsref index is handled in the parse
+                          // tree, because there is some logic to handle magic
+                          // "end" that makes it impossible to execute the
+                          // function call at this stage.
+
+                          if (type.size () > 1 &&
                               ! fcn->is_postfix_index_handled (type[1]))
                             {
                               octave_value_list tmp_args;

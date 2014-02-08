@@ -278,7 +278,16 @@ public:
   static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame)
   {
     return instance_ok ()
-           ? instance->do_backtrace (nskip, curr_user_frame) : octave_map ();
+           ? instance->do_backtrace (nskip, curr_user_frame, true)
+           : octave_map ();
+  }
+
+  static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame,
+                               bool print_subfn)
+  {
+    return instance_ok ()
+           ? instance->do_backtrace (nskip, curr_user_frame, print_subfn)
+           : octave_map ();
   }
 
   static octave_map empty_backtrace (void);
@@ -414,7 +423,8 @@ private:
   }
 
   octave_map do_backtrace (size_t nskip,
-                           octave_idx_type& curr_user_frame) const;
+                           octave_idx_type& curr_user_frame,
+                           bool print_subfn) const;
 
   bool do_goto_frame (size_t n, bool verbose);
 

@@ -301,7 +301,8 @@ octave_call_stack::empty_backtrace (void)
 
 octave_map
 octave_call_stack::do_backtrace (size_t nskip,
-                                 octave_idx_type& curr_user_frame) const
+                                 octave_idx_type& curr_user_frame,
+                                 bool print_subfn) const
 {
   size_t user_code_frames = do_num_user_code_frames (curr_user_frame);
 
@@ -340,7 +341,7 @@ octave_call_stack::do_backtrace (size_t nskip,
 
                   file(k) = f->fcn_file_name ();
                   std::string parent_fcn_name = f->parent_fcn_name ();
-                  if (parent_fcn_name == std::string ())
+                  if (! print_subfn || parent_fcn_name == std::string ())
                     name(k) = f->name ();
                   else
                     name(k) = f->parent_fcn_name () + Vfilemarker + f->name ();

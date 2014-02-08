@@ -1224,10 +1224,9 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 
   if (! error_state)
     {
-      octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
-
       if (nargout == 0)
         {
+          octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
           octave_idx_type nframes_to_display = stk.numel ();
 
           if (nframes_to_display > 0)
@@ -1273,6 +1272,10 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
         }
       else
         {
+          octave_map stk = octave_call_stack::backtrace (nskip,
+                                                         curr_frame,
+                                                         false);
+
           retval(1) = curr_frame < 0 ? 1 : curr_frame + 1;
           retval(0) = stk;
         }

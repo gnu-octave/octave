@@ -3979,13 +3979,15 @@ DEFUN (fixed_point_format, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} fixed_point_format (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
-use a scaled format to print matrix values such that the largest\n\
-element may be written with a single leading digit with the scaling\n\
-factor is printed on the first line of output.  For example:\n\
+use a scaled format to print matrix values.\n\
+\n\
+The scaled format prints a scaling factor on the first line of output chosen\n\
+such that the largest matrix element can be written with a single leading\n\
+digit.  For example:\n\
 \n\
 @example\n\
 @group\n\
-octave:1> logspace (1, 7, 5)'\n\
+logspace (1, 7, 5)'\n\
 ans =\n\
 \n\
   1.0e+07  *\n\
@@ -3999,9 +4001,9 @@ ans =\n\
 @end example\n\
 \n\
 @noindent\n\
-Notice that first value appears to be zero when it is actually 1.  For\n\
-this reason, you should be careful when setting\n\
-@code{fixed_point_format} to a nonzero value.\n\
+Notice that the first value appears to be 0 when it is actually 1.  Because\n\
+of the possibilty for confusion you should be careful about enabling\n\
+@code{fixed_point_format}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\

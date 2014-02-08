@@ -869,9 +869,8 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->string_text += '\v';
   }
 
-<DQ_STRING_START>(\.\.\.){S}*{NL} |
-<DQ_STRING_START>(\.\.\.){S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}|<DQ_STRING_START>(\\.\\.\\.){S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
+<DQ_STRING_START>(\.\.\.){S}*{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}");
 
     static const char *msg = "'...' continuations in double-quoted character strings are obsolete and will not be allowed in a future version of Octave; please use '\\' instead";
 
@@ -887,9 +886,8 @@ ANY_INCLUDING_NL (.|{NL})
     HANDLE_STRING_CONTINUATION;
   }
 
-<DQ_STRING_START>\\{S}+{NL} |
-<DQ_STRING_START>\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}|<DQ_STRING_START>\\\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
+<DQ_STRING_START>\\{S}+{NL} {
+    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}");
 
     static const char *msg = "white space and comments after continuation markers in double-quoted character strings are obsolete and will not be allowed in a future version of Octave";
 

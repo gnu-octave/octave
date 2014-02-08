@@ -366,8 +366,8 @@ gen_matrix:
 DEFUN (rand, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rand (@var{n})\n\
-@deftypefnx {Built-in Function} {} rand (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rand ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} rand (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} rand ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} rand (\"state\")\n\
 @deftypefnx {Built-in Function} {} rand (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} rand (\"state\", \"reset\")\n\
@@ -553,8 +553,8 @@ static std::string current_distribution = octave_rand::distribution ();
 DEFUN (randn, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randn (@var{n})\n\
-@deftypefnx {Built-in Function} {} randn (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randn ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} randn (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} randn ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} randn (\"state\")\n\
 @deftypefnx {Built-in Function} {} randn (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} randn (\"state\", \"reset\")\n\
@@ -625,8 +625,8 @@ J. Statistical Software, vol 5, 2000,\n\
 DEFUN (rande, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rande (@var{n})\n\
-@deftypefnx {Built-in Function} {} rande (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rande ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} rande (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} rande ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} rande (\"state\")\n\
 @deftypefnx {Built-in Function} {} rande (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} rande (\"state\", \"reset\")\n\
@@ -698,8 +698,8 @@ J. Statistical Software, vol 5, 2000,\n\
 DEFUN (randg, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randg (@var{n})\n\
-@deftypefnx {Built-in Function} {} randg (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randg ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} randg (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} randg ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} randg (\"state\")\n\
 @deftypefnx {Built-in Function} {} randg (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} randg (\"state\", \"reset\")\n\
@@ -970,8 +970,8 @@ classes.\n\
 DEFUN (randp, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randp (@var{l}, @var{n})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, @var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, [@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} randp (@var{l}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} randp (@var{l}, [@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} randp (\"state\")\n\
 @deftypefnx {Built-in Function} {} randp (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} randp (\"state\", \"reset\")\n\

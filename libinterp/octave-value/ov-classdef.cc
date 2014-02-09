@@ -1129,6 +1129,27 @@ public:
   bool is_postfix_index_handled (char type) const
     { return object.meta_is_postfix_index_handled (type); }
 
+  bool
+  is_classdef_constructor (const std::string& cname = std::string ()) const
+    {
+      bool retval = false;
+
+      if (object.is_class ())
+        {
+          if (cname.empty ())
+            retval = true;
+          else
+            {
+              cdef_class cls (object);
+
+              if (cls.get_name () == cname)
+                retval = true;
+            }
+        }
+
+      return retval;
+    }
+
 private:
   cdef_meta_object object;
 };

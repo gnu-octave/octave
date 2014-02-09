@@ -1573,7 +1573,8 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
   // for any class.
   if (local_funcs && fptr
       && (fptr->is_subfunction () || fptr->is_private_function ()
-          || fptr->is_class_constructor ()))
+          || fptr->is_class_constructor ()
+          || fptr->is_classdef_constructor ()))
     {
       // Locally visible function.
       retval = octave_value (new octave_fcn_handle (f, tnm));

@@ -57,6 +57,160 @@ warn_convergence (void)
      "an eigenvalue so convergence is not guaranteed");
 }
 
+// Conversion from error number to strings
+std::string 
+arpack_errno2str (const octave_idx_type& errnum, const std::string& fcn_name)
+{
+  std::string msg;
+  std::string bug_msg = "\nThis should not happen.  Please, see https://www.gnu.org/software/octave/bugs.html, and file a bug report";
+
+  switch (errnum)
+    {
+    case -1:
+      msg = "N must be positive";
+      break;
+
+    case -2:
+      msg = "NEV must be positive";
+      break;
+
+    case -3:
+      msg = "NCV-NEV >= 2 and less than or equal to N";
+      break;
+
+    case -4:
+      msg = "The maximum number of Arnoldi update iterations allowed must be greater than zero";
+      break;
+
+    case -5:
+      msg = "WHICH must be one of 'LM', 'SM', 'LR', 'SR', 'LI', 'SI'";
+      break;
+
+    case -6:
+      msg = "BMAT must be one of 'I' or 'G'";
+      break;
+
+    case -7:
+      msg = "Length of private work WORKL array is insufficient";
+      break;
+
+    case -8:
+      msg = "Error return from LAPACK eigenvalue calculation";
+      break;
+
+    case -9:
+      if (fcn_name.compare ("zneupd") == 0)
+        msg = "Error return from calculation of eigenvectors.  Informational error from LAPACK routine ztrevc";
+      else if (fcn_name.compare ("dneupd") == 0)
+        msg = "Error return from calculation of eigenvectors.  Informational error from LAPACK routine dtrevc";
+      else
+        msg = "Starting vector is zero";
+
+      break;
+
+    case -10:
+      if (fcn_name.compare ("dneupd") == 0 ||
+          fcn_name.compare ("dnaupd") == 0)
+        msg = "IPARAM(7) must be 1,2,3,4";
+      else if (fcn_name.compare ("zneupd") == 0 ||
+               fcn_name.compare ("znaupd") == 0)
+        msg = "IPARAM(7) must be 1,2,3";
+      else
+        msg = "IPARAM(7) must be 1,2,3,4,5";
+
+      break;
+
+    case -11:
+      msg = "IPARAM(7) = 1 and BMAT = 'G' are incompatible";
+      break;
+
+    case -12:
+      if (fcn_name.compare ("dnaupd") == 0 || 
+          fcn_name.compare ("znaupd") == 0 ||
+          fcn_name.compare ("dsaupd") == 0)
+        msg = std::string ("IPARAM(1) must be equal to 0 or 1");
+      else if (fcn_name.compare ("dneupd") == 0 ||
+               fcn_name.compare ("zneupd") == 0)
+        msg = "HOWMNY = 'S' not yet implemented";
+      else
+        msg = "NEV and WHICH = 'BE' are incompatible";
+      
+      break;
+
+    case -13:
+      if (fcn_name.compare ("dneupd") == 0 || 
+          fcn_name.compare ("zneupd") == 0)
+        msg = "HOWMNY must be one of 'A' or 'P' if RVEC = .true.";
+      else if (fcn_name.compare ("dsaupd") == 0)
+        msg = "NEV and WHICH = 'BE' are incompatible";
+      
+      break;
+
+    case -14:
+      if (fcn_name.compare ("dneupd") == 0)
+        msg = "DNAUPD did not find any eigenvalues to sufficient accuracy.";
+      else if (fcn_name.compare ("zneupd") == 0)
+        msg = "ZNAUPD did not find any eigenvalues to sufficient accuracy.";
+      else if (fcn_name.compare ("dseupd") == 0)
+        msg = "DSAUPD did not find any eigenvalues to sufficient accuracy.";
+      
+      break;
+
+    case -15:
+      if (fcn_name.compare ("dseupd") == 0)
+        msg = "HOWMNY must be one of 'A' or 'S' if RVEC = .true.";
+      
+      break;
+
+    case -16:
+      if (fcn_name.compare ("dseupd") == 0)
+        msg = "HOWMNY = 'S' not yet implemented";
+      
+      break;
+
+    case -9999:
+      if (fcn_name.compare ("dnaupd") == 0)
+        msg = "Could not build an Arnoldi factorization.  IPARAM(5) returns the size of the current Arnoldi factorization";
+      
+      break;
+
+    case 1:
+      if (fcn_name.compare ("dneupd") == 0)
+        msg = "The Schur form computed by LAPACK routine dlahqr could not be reordered by LAPACK routine dtrsen.  Re-enter subroutine DNEUPD with IPARAM(5)=NCV and increase the size of the arrays DR and DI to have dimension at least dimension NCV and allocate at least NCV columns for Z.  NOTE: Not necessary if Z and V share the same space.  Please notify the authors if this error occurs.";
+      else if (fcn_name.compare ("dnaupd") == 0 || 
+               fcn_name.compare ("znaupd") == 0 ||
+               fcn_name.compare ("dsaupd") == 0)
+        msg = "Maximum number of iterations taken.  All possible eigenvalues of OP has been found.  IPARAM(5) returns the number of wanted converged Ritz values";
+      else if (fcn_name.compare ("znaupd") == 0)
+        msg = "The Schur form computed by LAPACK routine csheqr could not be reordered by LAPACK routine ztrsen.  Re-enter subroutine ZNEUPD with IPARAM(5)=NCV and increase the size of the array D to have dimension at least dimension NCV and allocate at least NCV columns for Z.  NOTE: Not necessary if Z and V share the same space.  Please notify the authors if this error occurs.";
+      
+      break;
+
+    case 2:
+      if (fcn_name.compare ("dnaupd") == 0 || 
+          fcn_name.compare ("znaupd") == 0 ||
+          fcn_name.compare ("dsaupd") == 0)
+        msg = "No longer an informational error.  Deprecated starting with release 2 of ARPACK.";
+      
+      break;
+
+    case 3:
+      if (fcn_name.compare ("dnaupd") == 0 || 
+          fcn_name.compare ("znaupd") == 0 ||
+          fcn_name.compare ("dsaupd") == 0)
+        msg = "No shifts could be applied during a cycle of the implicitly restarted Arnoldi iteration.  One possibility is to increase the size of NCV relative to NEV.";
+      
+      break;
+
+    }
+  
+  if ((errno != -9) & (errno != -14) & (errno != -9999))
+    // This is a bug in Octave interface to ARPACK
+    msg.append (bug_msg);
+
+  return msg;
+}
+
 template <typename M, typename SM>
 static octave_idx_type
 lusolve (const SM& L, const SM& U, M& m)
@@ -409,7 +563,7 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
 
   octave::math::lu<Matrix> fact (AminusSigmaB);
 
-  L = fact. L ();
+  L = fact.L ();
   U = fact.U ();
   ColumnVector P2 = fact.P_vec();
 
@@ -826,7 +980,8 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error in dsaupd: %s", 
+               arpack_errno2str (info, "dsaupd").c_str ());
 
           break;
         }
@@ -909,8 +1064,10 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in dseupd", info2);
-
+    (*current_liboctave_error_handler)
+      ("eigs: error in dseupd: %s", 
+       arpack_errno2str (info2, "dseupd").c_str ());
+      
   return ip(4);
 }
 
@@ -1135,7 +1292,8 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error in dsaupd: %s", 
+               arpack_errno2str (info, "dsaupd").c_str ());
 
           break;
         }
@@ -1209,7 +1367,9 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in dseupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in dseupd: %s", 
+       arpack_errno2str (info2, "dseupd").c_str ());
 
   return ip(4);
 }
@@ -1505,7 +1665,8 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dsaupd", info);
+              ("eigs: error in dsaupd: %s", 
+               arpack_errno2str (info, "dsaupd").c_str ());
 
           break;
         }
@@ -1587,7 +1748,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
          }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in dseupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in dseupd: %s", 
+       arpack_errno2str (info2, "dseupd").c_str ());
 
   return ip(4);
 }
@@ -1798,7 +1961,8 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dnaupd", info);
+              ("eigs: error in dnaupd: %s", 
+               arpack_errno2str (info, "dnaupd").c_str ());
 
           break;
         }
@@ -1938,7 +2102,9 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in dneupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in dneupd: %s", 
+       arpack_errno2str (info2, "dneupd").c_str ());
 
   return ip(4);
 }
@@ -2171,7 +2337,8 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dnaupd", info);
+              ("eigs: error in dnaupd: %s", 
+               arpack_errno2str (info, "dnaupd").c_str ());
 
           break;
         }
@@ -2310,7 +2477,9 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in dneupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in dneupd: %s", 
+       arpack_errno2str (info2, "dneupd").c_str ());
 
   return ip(4);
 }
@@ -2611,7 +2780,8 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in dnaupd", info);
+              ("eigs: error in dnaupd: %s", 
+               arpack_errno2str (info, "dnaupd").c_str ());
 
           break;
         }
@@ -2687,7 +2857,6 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
             d[i] = Complex (octave::numeric_limits<double>::NaN (), 0.);
         }
 
-
       if (! rvec)
         {
           // ARPACK seems to give the eigenvalues in reversed order
@@ -2753,7 +2922,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n_arg,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in dneupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in dneupd: %s", 
+       arpack_errno2str (info2, "dneupd").c_str ());
 
   return ip(4);
 }
@@ -2965,7 +3136,8 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in znaupd", info);
+              ("eigs: error in znaupd: %s", 
+               arpack_errno2str (info, "znaupd").c_str ());
 
           break;
         }
@@ -3053,7 +3225,9 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in zneupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in zneupd: %s", 
+       arpack_errno2str (info2, "zneupd").c_str ());
 
   return ip(4);
 }
@@ -3288,7 +3462,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in znaupd", info);
+              ("eigs: error in znaupd: %s", 
+               arpack_errno2str (info, "znaupd").c_str ());
 
           break;
         }
@@ -3374,7 +3549,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
     }
   else
     (*current_liboctave_error_handler)
-      ("eigs: error %d in zneupd", info2);
+      ("eigs: error in zneupd: %s", 
+       arpack_errno2str (info2, "zneupd").c_str ());
 
   return ip(4);
 }
@@ -3676,7 +3852,8 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error %d in znaupd", info);
+              ("eigs: error in znaupd: %s", 
+               arpack_errno2str (info, "znaupd").c_str ());
 
           break;
         }
@@ -3763,7 +3940,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n_arg,
         }
     }
   else
-    (*current_liboctave_error_handler) ("eigs: error %d in zneupd", info2);
+    (*current_liboctave_error_handler)
+      ("eigs: error in zneupd: %s", 
+       arpack_errno2str (info2, "zneupd").c_str ());
 
   return ip(4);
 }

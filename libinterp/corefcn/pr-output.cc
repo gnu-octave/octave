@@ -3668,6 +3668,38 @@ set_format_style (int argc, const string_vector& argv)
 
           set_output_prec_and_fw (5, 10);
         }
+      else if (arg == "shorte")
+        {
+          init_format_state ();
+          print_e = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortE")
+        {
+          init_format_state ();
+          print_e = true;
+          print_big_e = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortg")
+        {
+          init_format_state ();
+          print_g = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortG")
+        {
+          init_format_state ();
+          print_g = true;
+          print_big_e = true;
+          set_output_prec_and_fw (5, 10);
+        }
+      else if (arg == "shortEng")
+        {
+          init_format_state ();
+          print_eng = true;
+          set_output_prec_and_fw (5, 10);
+        }
       else if (arg == "long")
         {
           if (--argc > 0)
@@ -3711,6 +3743,38 @@ set_format_style (int argc, const string_vector& argv)
           else
             init_format_state ();
 
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longe")
+        {
+          init_format_state ();
+          print_e = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longE")
+        {
+          init_format_state ();
+          print_e = true;
+          print_big_e = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longg")
+        {
+          init_format_state ();
+          print_g = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longG")
+        {
+          init_format_state ();
+          print_g = true;
+          print_big_e = true;
+          set_output_prec_and_fw (15, 20);
+        }
+      else if (arg == "longEng")
+        {
+          init_format_state ();
+          print_eng = true;
           set_output_prec_and_fw (15, 20);
         }
       else if (arg == "hex")

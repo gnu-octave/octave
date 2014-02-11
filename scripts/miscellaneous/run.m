@@ -31,9 +31,10 @@
 ## falling back to the script name without an extension.
 ##
 ## Implementation Note: If @var{script} includes a path component, then
-## @code{run} first changes the directory to the directory where @var{script}
-## is found.  @code{run} then executes the script, and returns to the original
-## directory. 
+## @code{run} first changes the working directory to the directory where
+## @var{script} is found.  Next, the script is executed.  Finally, @code{run}
+## returns to the original working directory unless @code{script} has
+## specifically changed directories.
 ## @seealso{path, addpath, source}
 ## @end deftypefn
 
@@ -65,7 +66,9 @@ function run (script)
         evalin ("caller", sprintf ('source ("%s%s");', f, ext),
                 "rethrow (lasterror ())");
       unwind_protect_cleanup
-        cd (wd);
+        if (strcmp (d, pwd ()))
+          cd (wd);
+        endif
       end_unwind_protect
     else
       error ("run: the path %s doesn't exist", d);

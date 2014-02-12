@@ -1845,7 +1845,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   register_generic ("cos", matrix, matrix);
 
   add_builtin ("exp");
-  register_intrinsic ("exp", llvm::Intrinsic::cos, scalar, scalar);
+  register_intrinsic ("exp", llvm::Intrinsic::exp, scalar, scalar);
   register_generic ("exp", matrix, matrix);
 
   add_builtin ("balance");

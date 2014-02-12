@@ -2777,7 +2777,13 @@ base_properties::set_parent (const octave_value& val)
               // Remove child from current parent
               graphics_object old_parent_obj;
               old_parent_obj = gh_manager::get_object (get_parent ());
-              old_parent_obj.remove_child (__myhandle__);
+
+               
+              if (old_parent_obj.get_handle () != hnp) 
+                old_parent_obj.remove_child (__myhandle__);
+              else
+                // Do nothing more
+                return;
 
               // Check new parent's parent is not this child to avoid recursion
               graphics_object new_parent_obj;
@@ -2799,6 +2805,18 @@ base_properties::set_parent (const octave_value& val)
   else
     error ("set: expecting parent to be a graphics handle");
 }
+
+/*
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = gca ();
+%!   set (hax, "parent", gcf ())
+%!   assert (gca (), hax)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
 
 void
 base_properties::mark_modified (void)

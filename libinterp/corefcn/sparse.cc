@@ -127,20 +127,15 @@ to have a common size.\n\
     {
       octave_idx_type m = 0;
       octave_idx_type n = 0;
-      if (args(0).is_scalar_type () && args(1).is_scalar_type ())
-        {
-          m = args(0).idx_type_value ();
-          n = args(1).idx_type_value ();
-        }
-      else
-        error ("sparse: dimensions M,N must be scalar");
+
+      get_dimensions (args(0), args(1), "sparse", m, n);
 
       if (! error_state)
         {
           if (m >= 0 && n >= 0)
             retval = SparseMatrix (m, n);
           else
-            error ("sparse: dimensions M,N must be positive or zero");
+            error ("sparse: dimensions must be non-negative");
         }
     }
   else if (nargin >= 3)
@@ -171,14 +166,7 @@ to have a common size.\n\
 
           if (nargin == 5)
             {
-              if (args(3).is_scalar_type () && args(4).is_scalar_type ())
-                {
-                  m = args(3).idx_type_value ();
-                  n = args(4).idx_type_value ();
-                }
-              else
-                error ("sparse: expecting scalar dimensions");
-
+              get_dimensions (args(3), args(4), "sparse", m, n);
 
               if (! error_state && (m < 0 || n < 0))
                 error ("sparse: dimensions must be non-negative");

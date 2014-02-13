@@ -776,6 +776,37 @@ file_editor_tab::unindent_selected_text (const QWidget *ID)
 
 
 void
+file_editor_tab::zoom_in (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->zoomIn (1);
+  auto_margin_width ();
+}
+
+void
+file_editor_tab::zoom_out (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->zoomOut (1);
+  auto_margin_width ();
+}
+
+void
+file_editor_tab::zoom_normal (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->zoomTo (0);
+  auto_margin_width ();
+}
+
+
+void
 file_editor_tab::handle_find_dialog_finished (int)
 {
   // Find dialog is going to hide.  Save location of window for

@@ -98,6 +98,10 @@ public slots:
   void indent_selected_text (const QWidget *ID);
   void unindent_selected_text (const QWidget *ID);
 
+  void zoom_in (const QWidget *ID);
+  void zoom_out (const QWidget *ID);
+  void zoom_normal (const QWidget *ID);
+
   void find (const QWidget *ID);
   void goto_line (const QWidget *ID, int line = -1);
   void show_auto_completion (const QWidget *ID);

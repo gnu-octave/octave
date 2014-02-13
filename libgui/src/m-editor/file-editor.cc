@@ -870,6 +870,24 @@ file_editor::active_tab_changed (int index)
 }
 
 void
+file_editor::zoom_in (bool)
+{
+  emit fetab_zoom_in (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::zoom_out (bool)
+{
+  emit fetab_zoom_out (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::zoom_normal (bool)
+{
+  emit fetab_zoom_normal (_tab_widget->currentWidget ());
+}
+
+void
 file_editor::handle_editor_state_changed (bool copy_available,
                                           const QString& file_name)
 {
@@ -1166,6 +1184,15 @@ file_editor::construct (void)
                          this, SLOT (request_styles_preferences (bool)));
   _menu_bar->addMenu (editMenu);
 
+  QMenu *view_menu = new QMenu (tr ("&View"), _menu_bar);
+  _zoom_in_action = view_menu->addAction (QIcon (), tr ("Zoom &In"),
+                                this, SLOT (zoom_in (bool)));
+  _zoom_out_action = view_menu->addAction (QIcon (), tr ("Zoom &Out"),
+                                this, SLOT (zoom_out (bool)));
+  _zoom_normal_action = view_menu->addAction (QIcon (), tr ("&Normal Size"),
+                                this, SLOT (zoom_normal (bool)));
+  _menu_bar->addMenu (view_menu);
+
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
   _debug_menu->addAction (toggle_breakpoint_action);
   _debug_menu->addAction (next_breakpoint_action);
@@ -1395,6 +1422,13 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_selectall (const QWidget*)),
            f, SLOT (select_all (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),
+           f, SLOT (zoom_in (const QWidget*)));
+  connect (this, SIGNAL (fetab_zoom_out (const QWidget*)),
+           f, SLOT (zoom_out (const QWidget*)));
+  connect (this, SIGNAL (fetab_zoom_normal (const QWidget*)),
+           f, SLOT (zoom_normal (const QWidget*)));
+
   connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
            f, SLOT (context_help (const QWidget*, bool)));
 
@@ -1533,6 +1567,10 @@ file_editor::set_shortcuts (bool set)
       _context_help_action->setShortcut (QKeySequence::HelpContents);
       _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
 
+      _zoom_in_action->setShortcuts (QKeySequence::ZoomIn);
+      _zoom_out_action->setShortcuts (QKeySequence::ZoomOut);
+      _zoom_normal_action->setShortcut (Qt::ControlModifier + Qt::Key_Slash);
+
       _find_action->setShortcut (QKeySequence::Find);
       _goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
       _completion_action->setShortcut (Qt::ControlModifier + Qt::Key_Space);
@@ -1568,6 +1606,10 @@ file_editor::set_shortcuts (bool set)
       _paste_action->setShortcut (no_key);
       _selectall_action->setShortcut (no_key);
       _context_help_action->setShortcut (no_key);
+
+      _zoom_in_action->setShortcut (no_key);
+      _zoom_out_action->setShortcut (no_key);
+      _zoom_normal_action->setShortcut (no_key);
 
       _find_action->setShortcut (no_key);
       _goto_line_action->setShortcut (no_key);
@@ -1605,6 +1647,10 @@ file_editor::check_actions ()
   _paste_action->setEnabled (have_tabs);
   _context_help_action->setEnabled (have_tabs);
   _context_doc_action->setEnabled (have_tabs);
+
+  _zoom_in_action->setEnabled (have_tabs);
+  _zoom_out_action->setEnabled (have_tabs);
+  _zoom_normal_action->setEnabled (have_tabs);
 
   _find_action->setEnabled (have_tabs);
   _goto_line_action->setEnabled (have_tabs);

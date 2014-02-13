@@ -424,7 +424,7 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 <COMMAND_START>([\.]|[^#% \t\r\n\.\,\;\"\'\(\[\{\}\]\)]*) {
-    curr_lexer->lexer_debug ("<COMMAND_START>([\.]|[^#% \\t\\r\n\\.\\,\\;\\\"\\'\\(\\[\\{\\}\\]\\)]*");
+    curr_lexer->lexer_debug ("<COMMAND_START>([\\.]|[^#% \\t\\r\\n\\.\\,\\;\\\"\\'\\(\\[\\{\\}\\]\\)]*");
 
     curr_lexer->string_text += yytext;
     curr_lexer->current_input_column += yyleng;

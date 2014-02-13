@@ -1143,7 +1143,7 @@ parse_save_options (const string_vector &argv,
         {
           retval.append (argv[i]);
         }
-      else if (argv[i][0] == '-')
+      else if (argv[i][0] == '-' && argv[i] != "-")
         {
           error ("save: Unrecognized option '%s'", argv[i].c_str ());
         }

@@ -109,11 +109,14 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     endif
   endif
   if (isempty (Fs))
+    freq_norm = true;
     if (nargout == 0)
       Fs = 2;
     else
       Fs = 2*pi;
     endif
+  else
+    freq_norm = false;
   endif
 
   a = a(:);
@@ -171,7 +174,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     f_r = f;
   else
     ## Plot and don't return values.
-    freqz_plot (f, h);
+    freqz_plot (f, h, freq_norm);
   endif
 
 endfunction

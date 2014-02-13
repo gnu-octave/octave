@@ -29,16 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #include <Qsci/qscilexer.h>
-#include <QShortcut>
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
-{
-  installEventFilter (this);
-}
+{ }
 
 octave_qscintilla::~octave_qscintilla ()
 { }
@@ -188,14 +185,5 @@ octave_qscintilla::contextmenu_run (bool)
   for (int i = 0; i < commands.size (); i++ )
     emit execute_command_in_terminal_signal (commands.at (i));
 }
-
-bool
-octave_qscintilla::eventFilter(QObject *obj, QEvent *e)
- {
-  if (e->type() == QEvent::ShortcutOverride)
-    return true;
-  else
-    return QObject::eventFilter(obj, e);
- }
 
 #endif

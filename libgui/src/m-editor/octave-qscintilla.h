@@ -62,7 +62,6 @@ private slots:
 private:
 
   QString _word_at_cursor;
-  bool eventFilter(QObject *obj, QEvent *e);
 
 };
 

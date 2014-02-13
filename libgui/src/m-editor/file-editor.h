@@ -102,11 +102,6 @@ signals:
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
                                    int line = -1);
   void fetab_set_focus (const QWidget* ID);
-
-  void fetab_zoom_in (const QWidget* ID);
-  void fetab_zoom_out (const QWidget* ID);
-  void fetab_zoom_normal (const QWidget* ID);
-
   void request_settings_dialog (const QString&);
   void execute_command_in_terminal_signal (const QString&);
   void file_loaded_signal ();
@@ -195,10 +190,6 @@ private slots:
   void request_styles_preferences (bool);
   void restore_create_file_setting ();
 
-  void zoom_in (bool);
-  void zoom_out (bool);
-  void zoom_normal (bool);
-
 private:
 
   void construct (void);
@@ -228,10 +219,6 @@ private:
   QAction *_paste_action;
   QAction *_context_help_action;
   QAction *_context_doc_action;
-
-  QAction *_zoom_in_action;
-  QAction *_zoom_out_action;
-  QAction *_zoom_normal_action;
 
   QAction *_find_action;
   QAction *_goto_line_action;

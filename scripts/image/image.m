@@ -156,8 +156,8 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
       y = [1, rows(img)];
     endif
 
-    xdata = x([1, end]);
-    ydata = y([1, end]);
+    xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
+    ydata = y([1, end])(:).';
 
     if (numel (x) > 2 && numel (y) > 2)
       ## Test data for non-linear spacing which is unsupported

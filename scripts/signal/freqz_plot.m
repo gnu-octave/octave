@@ -17,15 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} freqz_plot (@var{w}, @var{h})
-## Plot the pass band, stop band and phase response of @var{h}.
+## @deftypefn  {Function File} {} freqz_plot (@var{w}, @var{h})
+## @deftypefnx {Function File} {} freqz_plot (@var{w}, @var{h}, @var{freq_norm})
+## Plot the magnitude and phase response of @var{h}.
+##
+## If the optional @var{freq_norm} argument is true, the frequency vector
+## @var{w} is in units of normalized radians.  If @var{freq_norm} is false, or
+## not given, then @var{w} is measured in Hertz.
+## @seealso{freqz}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function freqz_plot (w, h)
+function freqz_plot (w, h, freq_norm = false)
 
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -38,30 +44,26 @@ function freqz_plot (w, h)
 
   mag = 20 * log10 (abs (h));
   phase = unwrap (arg (h));
-  maxmag = max (mag);
 
-  subplot (3, 1, 1);
-  plot (w, mag);
-  grid ("on");
-  legend ("Pass band (dB)");
-  axis ([w(1), w(n), maxmag-3, maxmag], "labely");
-
-  subplot (3, 1, 2);
-  plot (w, mag);
-  grid ("on");
-  legend ("Stop band (dB)");
-  if (maxmag - min (mag) > 100)
-    axis ([w(1), w(n), maxmag-100, maxmag], "labely");
+  if (freq_norm)
+    x_label = 'Normalized Frequency (\times\pi rad/sample)';
   else
-    axis ("autoy", "labely");
+    x_label = "Frequency (Hz)";
   endif
 
-  subplot (3, 1, 3);
+  subplot (2, 1, 1);
+  plot (w, mag);
+  grid ("on");
+  axis ([w(1), w(n)], "autoy");
+  xlabel (x_label);
+  ylabel ("Magnitude (dB)");
+
+  subplot (2, 1, 2);
   plot (w, phase*360/(2*pi));
   grid ("on");
-  legend ("Phase (degrees)");
-  xlabel ("Frequency");
-  axis ([w(1), w(n)], "autoy", "label");
+  axis ([w(1), w(n)], "autoy");
+  xlabel (x_label);
+  ylabel ("Phase (degrees)");
 
 endfunction
 

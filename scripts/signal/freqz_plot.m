@@ -18,10 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} freqz_plot (@var{w}, @var{h})
-## @deftypefnx {Function File} {} freqz_plot (@var{w}, @var{h}, @var{freq_hz})
-## Plot the pass band, stop band and phase response of @var{h}.  If the
-## optional @var{freq_norm} argument is true, the frequency vector @var{w}
-## is in units of normalized radians and the x-axis is labeled as such.
+## @deftypefnx {Function File} {} freqz_plot (@var{w}, @var{h}, @var{freq_norm})
+## Plot the magnitude and phase response of @var{h}.
+##
+## If the optional @var{freq_norm} argument is true, the frequency vector
+## @var{w} is in units of normalized radians.  If @var{freq_norm} is false, or
+## not given, then @var{w} is measured in Hertz.
+## @seealso{freqz}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
@@ -43,7 +46,7 @@ function freqz_plot (w, h, freq_norm = false)
   phase = unwrap (arg (h));
 
   if (freq_norm)
-    x_label = "Normalized Frequency (\\times\\pi rad/sample)";
+    x_label = 'Normalized Frequency (\times\pi rad/sample)';
   else
     x_label = "Frequency (Hz)";
   endif

@@ -18,6 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
+## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b})
+## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a})
+## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n})
 ## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
 ## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
 ## @deftypefnx {Function File} {} freqz (@dots{})
@@ -27,10 +30,10 @@
 ## respectively.  The response is evaluated at @var{n} angular frequencies
 ## between 0 and
 ## @ifnottex
-##  2*pi.
+## 2*pi.
 ## @end ifnottex
 ## @tex
-##  $2\pi$.
+## $2\pi$.
 ## @end tex
 ##
 ## @noindent
@@ -40,17 +43,16 @@
 ## corresponds to a simple FIR filter).
 ##
 ## If @var{n} is omitted, a value of 512 is assumed.
-##
 ## For fastest computation, @var{n} should factor into a small number of
 ## small primes.
 ##
 ## If the fourth argument, @qcode{"whole"}, is omitted the response is
 ## evaluated at frequencies between 0 and
 ## @ifnottex
-##  pi.
+## pi.
 ## @end ifnottex
 ## @tex
-##  $\pi$.
+## $\pi$.
 ## @end tex
 ##
 ## @code{freqz (@var{b}, @var{a}, @var{w})}
@@ -66,8 +68,9 @@
 ##
 ## @code{freqz (@dots{})}
 ##
-## Plot the pass band, stop band and phase response of @var{h} rather
-## than returning them.
+## Plot the magnitude and phase response of @var{h} rather than returning them.
+##
+## @seealso{freqz_plot}
 ## @end deftypefn
 
 ## Author: jwe ???

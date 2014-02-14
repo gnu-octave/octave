@@ -2938,6 +2938,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
                   if (git != get_methods.end ())
                     {
+                      make_function_of_class (retval, git->second);
                       prop.put ("GetMethod", git->second);
                       get_methods.erase (git);
                     }
@@ -2947,6 +2948,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
                   if (sit != set_methods.end ())
                     {
+                      make_function_of_class (retval, sit->second);
                       prop.put ("SetMethod", sit->second);
                       set_methods.erase (sit);
                     }

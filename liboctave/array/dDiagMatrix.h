@@ -98,7 +98,7 @@ public:
 
   DiagMatrix inverse (void) const;
   DiagMatrix inverse (octave_idx_type& info) const;
-  DiagMatrix pseudo_inverse (void) const;
+  DiagMatrix pseudo_inverse (double tol = 0.0) const;
 
   // other operations
 

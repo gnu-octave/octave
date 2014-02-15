@@ -99,7 +99,7 @@ public:
 
   FloatDiagMatrix inverse (void) const;
   FloatDiagMatrix inverse (octave_idx_type& info) const;
-  FloatDiagMatrix pseudo_inverse (void) const;
+  FloatDiagMatrix pseudo_inverse (float tol = 0.0f) const;
 
   // other operations
 

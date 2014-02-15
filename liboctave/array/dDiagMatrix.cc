@@ -292,7 +292,7 @@ DiagMatrix::inverse (octave_idx_type &info) const
 }
 
 DiagMatrix
-DiagMatrix::pseudo_inverse (void) const
+DiagMatrix::pseudo_inverse (double tol) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
@@ -302,10 +302,10 @@ DiagMatrix::pseudo_inverse (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (elem (i, i) != 0.0)
-        retval.elem (i, i) = 1.0 / elem (i, i);
-      else
+      if (std::abs (elem (i, i)) < tol)
         retval.elem (i, i) = 0.0;
+      else
+        retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
   return retval;

@@ -292,7 +292,7 @@ FloatDiagMatrix::inverse (octave_idx_type &info) const
 }
 
 FloatDiagMatrix
-FloatDiagMatrix::pseudo_inverse (void) const
+FloatDiagMatrix::pseudo_inverse (float tol) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
@@ -302,10 +302,10 @@ FloatDiagMatrix::pseudo_inverse (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (elem (i, i) != 0.0f)
-        retval.elem (i, i) = 1.0f / elem (i, i);
-      else
+      if (std::abs (elem (i, i)) < tol)
         retval.elem (i, i) = 0.0f;
+      else
+        retval.elem (i, i) = 1.0f / elem (i, i);
     }
 
   return retval;

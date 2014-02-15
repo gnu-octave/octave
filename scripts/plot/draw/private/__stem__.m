@@ -48,6 +48,8 @@ function h = __stem__ (have_z, varargin)
 
     h = [];
     nx = rows (x);
+    h_baseline = [];
+    
     for i = 1 : columns (x)
       if (have_z)
         xt = x(:)';
@@ -90,30 +92,25 @@ function h = __stem__ (have_z, varargin)
         __line__ (hax, xt, yt, zt, "color", lc, "linestyle", ls, "parent", hg);
         __line__ (hax, x, y, z, "color", mc, "linestyle", "none",
                        "marker", ms, "markerfacecolor", fc, "parent", hg);
-        h_baseline = [];
       else
         __line__ (hax, xt, yt, "color", lc, "linestyle", ls, "parent", hg);
         __line__ (hax, x(:,i), y(:, i), "color", mc, "linestyle", "none",
                        "marker", ms, "markerfacecolor", fc, "parent", hg);
+        
         x_axis_range = get (hax, "xlim");
-        h_baseline = line (hax, x_axis_range, [0, 0], "color", [0, 0, 0]);
-        set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
-        addlistener (hax, "xlim", @update_xlim);
-        addproperty ("basevalue", h_baseline, "data", 0);
-        addlistener (h_baseline, "basevalue", {@update_baseline, 0});
-        addlistener (h_baseline, "ydata", {@update_baseline, 1});
-        addlistener (h_baseline, "visible", {@update_baseline, 2});
+        if (isempty (h_baseline))
+          h_baseline = line (hax, x_axis_range, [0, 0], "color", [0, 0, 0]);
+          set (h_baseline, "handlevisibility", "off", "xliminclude", "off");
+          addproperty ("basevalue", h_baseline, "data", 0);
+        else
+          set (h_baseline, "xdata", x_axis_range);
+        endif
       endif
 
       ## Setup the hggroup and listeners.
       addproperty ("showbaseline", hg, "radio", "{on}|off");
       addproperty ("baseline", hg, "data", h_baseline);
       addproperty ("basevalue", hg, "data", 0);
-
-      if (! have_z)
-        addlistener (hg, "showbaseline", @show_baseline);
-        addlistener (hg, "basevalue", @move_baseline);
-      endif
 
       addproperty ("color", hg, "linecolor", lc);
       addproperty ("linestyle", hg, "linelinestyle", ls);
@@ -146,13 +143,27 @@ function h = __stem__ (have_z, varargin)
       ## Matlab property, although Octave does not implement it.
       addproperty ("hittestarea", hg, "radio", "on|{off}", "off");
 
-      if (! isempty (args))
-        set (hg, args{:});
-      endif
-      if (i == 1 && ! isempty (h_baseline))
-        set (h_baseline, "parent", get (hg, "parent"));
-      endif
     endfor
+
+    ## baseline listeners
+    if (! isempty (h_baseline))
+      addlistener (hax, "xlim", @update_xlim);
+      for hg = h'
+        addlistener (hg, "showbaseline", @show_baseline);
+        addlistener (hg, "visible", {@show_baseline, h});
+        addlistener (hg, "basevalue", @move_baseline);
+      endfor
+      
+      addlistener (h_baseline, "basevalue", {@update_baseline, 0});
+      addlistener (h_baseline, "ydata", {@update_baseline, 1});
+      addlistener (h_baseline, "visible", {@update_baseline, 2});
+      set (h_baseline, "parent", get (hg(1), "parent"));
+    endif
+
+    ## property/value pairs
+    if (! isempty (args))
+        set (h, args{:});
+    endif
 
     if (! strcmp (hold_state, "add") && have_z)
       set (hax, "view", [-37.5 30],
@@ -365,8 +376,16 @@ function update_baseline (h, ~, src)
   endfor
 endfunction
 
-function show_baseline (h, ~)
-  set (get (h, "baseline"), "visible", get (h, "showbaseline"));
+function show_baseline (h, ~, hg = [])
+  if (isempty (hg))
+    set (get (h, "baseline"), "visible", get (h, "showbaseline"));
+  else
+    if (all (strcmp (get (hg, "visible"), "off")))
+      set (get (h, "baseline"), "visible", "off");
+    else
+      set (get (h, "baseline"), "visible", "on");
+    endif
+  endif
 endfunction
 
 function move_baseline (h, ~)
@@ -374,6 +393,7 @@ function move_baseline (h, ~)
   bl = get (h, "baseline");
 
   set (bl, "ydata", [b0, b0]);
+  set (bl, "basevalue", b0);
 
   kids = get (h, "children");
   yt = get (h, "ydata")(:)';

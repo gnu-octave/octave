@@ -2643,7 +2643,13 @@ May be one of
 @item @qcode{"-"}
 Solid line.  [default]
 
-@item @qcode{"--"}
+@c Special handling required to avoid '--' becoming single en-dash in Info
+@ifinfo
+@item @verb{"--"}
+@end ifinfo
+@iftex
+@item @code{"--"}
+@end iftex
 Dashed line.
 
 @item @qcode{":"}

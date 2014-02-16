@@ -2644,9 +2644,9 @@ May be one of
 Solid line.  [default]
 
 @c Special handling required to avoid '--' becoming single en-dash in Info
-@ifinfo
-@item @verb{"--"}
-@end ifinfo
+@ifnottex
+@item @verb{|"--"|}
+@end ifnottex
 @iftex
 @item @code{"--"}
 @end iftex

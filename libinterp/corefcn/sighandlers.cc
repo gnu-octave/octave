@@ -139,6 +139,12 @@ private:
       octave_jump_to_enclosing_context_sync ();
     else
       {
+        // 64-bit Windows does not appear to have threadContext.Eip.
+        // Something else must be done here to allow interrupts to
+        // properly work across threads.
+
+#if ! (defined (__MINGW64__) || defined (_WIN64))
+
         CONTEXT threadContext;
 
         SuspendThread (thread);
@@ -147,6 +153,7 @@ private:
         threadContext.Eip = (DWORD) octave_jump_to_enclosing_context_sync;
         SetThreadContext (thread, &threadContext);
         ResumeThread (thread);
+#endif
       }
   }
 

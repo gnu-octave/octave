@@ -197,10 +197,14 @@ function limits = __axis__ (ca, ax, varargin)
         ## (useful with the x11 gnuplot terminal after a window resize)
         set (ca, "dataaspectratiomode", "auto");
       endif
-      set (ca, "dataaspectratio", [1, 1, 1]);
+      set (ca, "dataaspectratio", [1, 1, 1], "plotboxaspectratio", [5 4 4]);
+      
     elseif (strcmpi (ax, "normal"))
-      set (ca, "plotboxaspectratio", [1, 1, 1]);
-      set (ca, "plotboxaspectratiomode", "auto");
+      ## Set plotboxaspectratio to something obtuse so that switching
+      ## back to "auto" will force a re-calculation.
+      set (ca, "plotboxaspectratio", [3 2 1]);
+      set (ca, "plotboxaspectratiomode", "auto",
+               "dataaspectratiomode", "auto");
 
       ## axis limits
     elseif (len >= 4 && strcmpi (ax(1:4), "auto"))

@@ -369,7 +369,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                                                     tr ("File\n%1\ndoes not exist. "
                                                         "Do you want to create it?").arg (openFileName),
                                                     QMessageBox::Yes
-                                                    | QMessageBox::No, this);
+                                                    | QMessageBox::No, 0);
 
                           msgBox->setAttribute (Qt::WA_DeleteOnClose);
                           answer = msgBox->exec ();

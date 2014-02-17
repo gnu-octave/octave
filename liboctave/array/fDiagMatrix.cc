@@ -302,10 +302,11 @@ FloatDiagMatrix::pseudo_inverse (float tol) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (std::abs (elem (i, i)) < tol)
+      float val = std::abs (elem (i, i));
+      if (val < tol || val == 0.0f)
         retval.elem (i, i) = 0.0f;
       else
-        retval.elem (i, i) = 1.0f / elem (i, i);
+        retval.elem (i, i) = 1.0f / val;
     }
 
   return retval;

@@ -139,7 +139,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->setUtf8 (true);
 
   // auto completion
-  _edit_area->autoCompleteFromAll ();
   _edit_area->setAutoCompletionSource (QsciScintilla::AcsAll);
 
   QVBoxLayout *edit_area_layout = new QVBoxLayout ();
@@ -835,6 +834,32 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
 }
 
 void
+file_editor_tab::show_auto_completion (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  QsciScintilla::AutoCompletionSource s = _edit_area->autoCompletionSource ();
+  switch (s)
+    {
+      case QsciScintilla::AcsAll:
+        _edit_area->autoCompleteFromAll ();
+        break;
+
+      case QsciScintilla::AcsAPIs:
+        _edit_area->autoCompleteFromAPIs ();
+        break;
+
+      case QsciScintilla::AcsDocument:
+        _edit_area->autoCompleteFromDocument ();
+        break;
+
+      case QsciScintilla::AcsNone:
+        break;
+    }
+}
+
+void
 file_editor_tab::do_indent_selected_text (bool indent)
 {
   // TODO
@@ -1361,30 +1386,29 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _edit_area->setCaretLineVisible
     (settings->value ("editor/highlightCurrentLine", true).toBool ());
 
-  if (settings->value ("editor/codeCompletion", true).toBool ())  // auto compl.
-    {
-      bool match_keywords = settings->value
+  bool match_keywords = settings->value
                             ("editor/codeCompletion_keywords",true).toBool ();
-      bool match_document = settings->value
+  bool match_document = settings->value
                             ("editor/codeCompletion_document",true).toBool ();
 
-      QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
-      if (match_keywords)
-        if (match_document)
-          source = QsciScintilla::AcsAll;
-        else
-          source = QsciScintilla::AcsAPIs;
-      else if (match_document)
-        source = QsciScintilla::AcsDocument;
-      _edit_area->setAutoCompletionSource (source);
+  QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
+  if (match_keywords)
+    if (match_document)
+      source = QsciScintilla::AcsAll;
+    else
+      source = QsciScintilla::AcsAPIs;
+  else if (match_document)
+    source = QsciScintilla::AcsDocument;
+  _edit_area->setAutoCompletionSource (source);
 
-      _edit_area->setAutoCompletionReplaceWord
-        (settings->value ("editor/codeCompletion_replace",false).toBool ());
-      _edit_area->setAutoCompletionCaseSensitivity
-        (settings->value ("editor/codeCompletion_case",true).toBool ());
-      _edit_area->setAutoCompletionThreshold
-        (settings->value ("editor/codeCompletion_threshold",2).toInt ());
-    }
+  _edit_area->setAutoCompletionReplaceWord
+      (settings->value ("editor/codeCompletion_replace",false).toBool ());
+  _edit_area->setAutoCompletionCaseSensitivity
+      (settings->value ("editor/codeCompletion_case",true).toBool ());
+
+  if (settings->value ("editor/codeCompletion", true).toBool ())
+    _edit_area->setAutoCompletionThreshold
+      (settings->value ("editor/codeCompletion_threshold",2).toInt ());
   else
     _edit_area->setAutoCompletionThreshold (-1);
 

@@ -97,6 +97,7 @@ signals:
   void fetab_unindent_selected_text (const QWidget* ID);
   void fetab_find (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
+  void fetab_completion (const QWidget*);
   void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
@@ -150,6 +151,7 @@ public slots:
   void request_find (void);
 
   void request_goto_line (void);
+  void request_completion (void);
 
   void handle_file_name_changed (const QString& fileName,
                                  const QString& toolTip);
@@ -222,6 +224,7 @@ private:
 
   QAction *_find_action;
   QAction *_goto_line_action;
+  QAction *_completion_action;
 
   QAction *_next_bookmark_action;
   QAction *_previous_bookmark_action;

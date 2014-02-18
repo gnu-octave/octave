@@ -164,8 +164,9 @@ ChangeLog:
 .PHONY: ChangeLog
 
 octetc_DATA = \
+  CITATION \
   NEWS \
-  CITATION
+  config.log
 
 doxyhtml:
 	$(MAKE) -C doc/doxyhtml doxyhtml

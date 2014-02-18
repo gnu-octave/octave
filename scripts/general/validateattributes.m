@@ -147,7 +147,7 @@
 ## @item @qcode{"scalar"}
 ## It is a scalar.
 ##
-## @item @qcode{"size",}
+## @item @qcode{"size"}
 ## Its size has length equal to the values of the next in @var{attributes}.
 ## The next value must is an array with the length for each dimension.  To
 ## ignore the check for a certain dimension, the value of @code{NaN} can be

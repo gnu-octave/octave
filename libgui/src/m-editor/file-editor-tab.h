@@ -99,6 +99,7 @@ public slots:
 
   void find (const QWidget *ID);
   void goto_line (const QWidget *ID, int line = -1);
+  void show_auto_completion (const QWidget *ID);
 
   void insert_debugger_pointer (const QWidget *ID, int line = -1);
   void delete_debugger_pointer (const QWidget *ID, int line = -1);

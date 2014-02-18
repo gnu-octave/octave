@@ -185,9 +185,11 @@ function limits = __axis__ (ca, ax, varargin)
       ## aspect ratio
     elseif (strcmpi (ax, "image"))
       __axis__ (ca, "equal");
+      set (ca, "plotboxaspectratiomode", "auto");
       __do_tight_option__ (ca);
     elseif (strcmpi (ax, "square"))
-      set (ca, "plotboxaspectratio", [1, 1, 1]);
+      set (ca, "dataaspectratiomode", "auto",
+               "plotboxaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "equal"))
       if (strcmp (get (get (ca, "parent"), "__graphics_toolkit__"), "gnuplot"))
         ## FIXME - gnuplot applies the aspect ratio activepostionproperty.

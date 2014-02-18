@@ -370,7 +370,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                                                     tr ("File\n%1\ndoes not exist. "
                                                         "Do you want to create it?").arg (openFileName),
                                                     QMessageBox::Yes
-                                                    | QMessageBox::No, this);
+                                                    | QMessageBox::No, 0);
 
                           msgBox->setAttribute (Qt::WA_DeleteOnClose);
                           answer = msgBox->exec ();
@@ -697,6 +697,12 @@ file_editor::request_goto_line (void)
 
 
 void
+file_editor::request_completion (void)
+{
+  emit fetab_completion (_tab_widget->currentWidget ());
+}
+
+void
 file_editor::handle_mru_add_file (const QString& file_name)
 {
   _mru_files.removeAll (file_name);
@@ -986,9 +992,10 @@ file_editor::construct (void)
 
   _goto_line_action = new QAction (tr ("Go &to Line..."), _tool_bar);
 
+  _completion_action = new QAction (tr ("&Show Completion List"), _tool_bar);
+
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
-  // FIXME: what should happen if settings is 0?
   _mru_files = settings->value ("editor/mru_file_list").toStringList ();
   for (int i = 0; i < MaxMRUFiles; ++i)
     {
@@ -1015,6 +1022,7 @@ file_editor::construct (void)
   _unindent_selection_action->setShortcutContext (Qt::WindowShortcut);
   _find_action->setShortcutContext (Qt::WindowShortcut);
   _goto_line_action->setShortcutContext (Qt::WindowShortcut);
+  _completion_action->setShortcutContext (Qt::WindowShortcut);
 
   // toolbar
   _tool_bar->addAction (new_action);
@@ -1092,9 +1100,10 @@ file_editor::construct (void)
   editMenu->addSeparator ();
   editMenu->addAction (_comment_selection_action);
   editMenu->addAction (_uncomment_selection_action);
-  editMenu->addSeparator ();
   editMenu->addAction (_indent_selection_action);
   editMenu->addAction (_unindent_selection_action);
+  editMenu->addSeparator ();
+  editMenu->addAction (_completion_action);
   editMenu->addSeparator ();
   editMenu->addAction (_toggle_bookmark_action);
   editMenu->addAction (_next_bookmark_action);
@@ -1236,6 +1245,9 @@ file_editor::construct (void)
 
   connect (_goto_line_action, SIGNAL (triggered ()),
            this, SLOT (request_goto_line ()));
+
+  connect (_completion_action, SIGNAL (triggered ()),
+           this, SLOT (request_completion ()));
 
   connect (_mru_file_menu, SIGNAL (triggered (QAction *)),
            this, SLOT (request_mru_open_file (QAction *)));
@@ -1396,6 +1408,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
            f, SLOT (goto_line (const QWidget*, int)));
 
+  connect (this, SIGNAL (fetab_completion (const QWidget*)),
+           f, SLOT (show_auto_completion (const QWidget*)));
+
   connect (this, SIGNAL (fetab_set_focus (const QWidget*)),
            f, SLOT (set_focus (const QWidget*)));
 
@@ -1458,6 +1473,7 @@ file_editor::set_shortcuts (bool set)
 
       _find_action->setShortcut (QKeySequence::Find);
       _goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
+      _completion_action->setShortcut (Qt::ControlModifier + Qt::Key_Space);
 
       _next_bookmark_action->setShortcut (Qt::Key_F2);
       _previous_bookmark_action->setShortcut (Qt::SHIFT + Qt::Key_F2);
@@ -1492,6 +1508,7 @@ file_editor::set_shortcuts (bool set)
 
       _find_action->setShortcut (no_key);
       _goto_line_action->setShortcut (no_key);
+      _completion_action->setShortcut (no_key);
 
       _next_bookmark_action->setShortcut (no_key);
       _previous_bookmark_action->setShortcut (no_key);
@@ -1528,6 +1545,7 @@ file_editor::check_actions ()
 
   _find_action->setEnabled (have_tabs);
   _goto_line_action->setEnabled (have_tabs);
+  _completion_action->setEnabled (have_tabs);
 
   _next_bookmark_action->setEnabled (have_tabs);
   _previous_bookmark_action->setEnabled (have_tabs);

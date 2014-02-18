@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -389,7 +389,7 @@
             <x>0</x>
             <y>0</y>
             <width>662</width>
-            <height>399</height>
+            <height>419</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -781,35 +781,131 @@
                <property name="verticalSpacing">
                 <number>0</number>
                </property>
-               <item row="0" column="0">
-                <widget class="QCheckBox" name="editor_codeCompletion">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string>Code completion</string>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
+               <item row="1" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <property name="spacing">
                   <number>6</number>
                  </property>
+                 <property name="bottomMargin">
+                  <number>4</number>
+                 </property>
                  <item>
+                  <widget class="QLabel" name="label_16">
+                   <property name="text">
+                    <string>Auto completion</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="2" column="1">
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_15">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="editor_checkbox_ac_keywords">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Match keywords</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="editor_checkbox_ac_case">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Case sensitive</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QCheckBox" name="editor_checkbox_ac_replace">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Replace word by suggested one</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <spacer name="horizontalSpacer_8">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QCheckBox" name="editor_checkbox_ac_document">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Match words in document</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <spacer name="horizontalSpacer_19">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="1">
+                <layout class="QGridLayout" name="gridLayout_10">
+                 <item row="0" column="1">
                   <widget class="QLabel" name="editor_label_ac_threshold">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string># of characters typed before completion list displayed</string>
+                    <string>after number of characters typed: </string>
                    </property>
                   </widget>
                  </item>
-                 <item>
+                 <item row="0" column="2">
                   <widget class="QSpinBox" name="editor_spinbox_ac_threshold">
                    <property name="enabled">
                     <bool>false</bool>
@@ -834,7 +930,20 @@
                    </property>
                   </widget>
                  </item>
-                 <item>
+                 <item row="0" column="0">
+                  <widget class="QCheckBox" name="editor_codeCompletion">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Show completion list automatically ...</string>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
                   <spacer name="horizontalSpacer_2">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -848,117 +957,6 @@
                   </spacer>
                  </item>
                 </layout>
-               </item>
-               <item row="1" column="2">
-                <layout class="QGridLayout" name="gridLayout_3">
-                 <property name="verticalSpacing">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_15">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeType">
-                    <enum>QSizePolicy::Fixed</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>10</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="editor_checkbox_ac_keywords">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="text">
-                    <string>Match keywords</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QCheckBox" name="editor_checkbox_ac_case">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="text">
-                    <string>Case sensitive</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QCheckBox" name="editor_checkbox_ac_replace">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="text">
-                    <string>Replace word by suggested one</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <spacer name="horizontalSpacer_8">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QCheckBox" name="editor_checkbox_ac_document">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="text">
-                    <string>Match words in document</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <spacer name="horizontalSpacer_19">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item row="0" column="1">
-                <spacer name="horizontalSpacer_7">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>10</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
               </layout>
              </item>
@@ -2006,54 +2004,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>editor_codeCompletion</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_checkbox_ac_keywords</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>238</x>
-     <y>201</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_codeCompletion</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_checkbox_ac_document</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>390</x>
-     <y>201</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_codeCompletion</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_checkbox_ac_replace</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>427</x>
-     <y>229</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>editor_highlightCurrentLine</sender>
    <signal>toggled(bool)</signal>
    <receiver>editor_label_cl_color</receiver>
@@ -2066,22 +2016,6 @@
     <hint type="destinationlabel">
      <x>515</x>
      <y>86</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editor_codeCompletion</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editor_checkbox_ac_case</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>172</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>525</x>
-     <y>203</y>
     </hint>
    </hints>
   </connection>

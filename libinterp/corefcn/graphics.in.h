@@ -2704,6 +2704,11 @@ public:
     return octave_value ();
   }
 
+  virtual bool has_readonly_property (const caseless_str& pname) const
+  {
+    return base_properties::has_readonly_property (pname);
+  }
+
   virtual std::string values_as_string (void);
 
   virtual std::string value_as_string (const std::string& prop);
@@ -2977,6 +2982,11 @@ public:
     return rep->get_factory_defaults ();
   }
 
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    return rep->has_readonly_property (pname);
+  }
+
   std::string values_as_string (void) { return rep->values_as_string (); }
 
   std::string value_as_string (const std::string& prop) 
@@ -3237,6 +3247,14 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
+  
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 private:
   property_list default_properties;
@@ -3461,6 +3479,14 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
+  
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 private:
   property_list default_properties;
@@ -4183,6 +4209,14 @@ public:
 
   void reset_default_properties (void);
 
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
 protected:
   void initialize (const graphics_object& go);
 
@@ -4263,6 +4297,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4428,6 +4470,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4575,6 +4625,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4699,6 +4757,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4854,6 +4920,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -4932,6 +5006,14 @@ public:
   void update_axis_limits (const std::string& axis_type,
                            const graphics_handle& h);
 
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
 };
 
 // ---------------------------------------------------------------------
@@ -4993,6 +5075,14 @@ public:
 
   bool valid_object (void) const { return true; }
 
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
 };
 
 // ---------------------------------------------------------------------
@@ -5039,6 +5129,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 
@@ -5132,6 +5230,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -5199,6 +5305,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 };
 
 // ---------------------------------------------------------------------
@@ -5286,6 +5400,14 @@ public:
 
   void reset_default_properties (void);
 
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
+
 private:
   property_list default_properties;
 };
@@ -5337,6 +5459,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 
@@ -5390,6 +5520,14 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  bool has_readonly_property (const caseless_str& pname) const
+  {
+    bool retval = xproperties.has_readonly_property (pname);
+    if (! retval)
+      retval = base_properties::has_readonly_property (pname);
+    return retval;
+  }
 
 };
 

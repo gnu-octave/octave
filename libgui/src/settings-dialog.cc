@@ -142,6 +142,10 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
            _editor_current_line_color, SLOT (setEnabled (bool)));
   ui->editor_highlightCurrentLine->setChecked (
     settings->value ("editor/highlightCurrentLine",true).toBool () );
+  ui->editor_long_line_marker->setChecked (
+    settings->value ("editor/long_line_marker",true).toBool ());
+  ui->editor_long_line_column->setValue (
+    settings->value ("editor/long_line_column",80).toInt ());
 
   ui->editor_codeCompletion->setChecked (
     settings->value ("editor/codeCompletion", true).toBool () );
@@ -181,6 +185,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/restoreSession", true).toBool ());
   ui->editor_create_new_file->setChecked (
     settings->value ("editor/create_new_file",false).toBool ());
+
+  // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
     settings->value ("terminal/fontName","Courier New").toString ()) );
   ui->terminal_fontSize->setValue (
@@ -542,6 +548,10 @@ settings_dialog::write_changed_settings ()
                       ui->editor_highlightCurrentLine->isChecked ());
   settings->setValue ("editor/highlight_current_line_color",
                       _editor_current_line_color->color ());
+  settings->setValue ("editor/long_line_marker",
+                      ui->editor_long_line_marker->isChecked ());
+  settings->setValue ("editor/long_line_column",
+                      ui->editor_long_line_column->value ());
   settings->setValue ("editor/codeCompletion",
                       ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold",

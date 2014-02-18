@@ -212,4 +212,20 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 %!assert (y*x*y, y, -hitol)
 %!assert ((x*y)', x*y, hitol)
 %!assert ((y*x)', y*x, hitol)
+
+## Clear shared variables
+%!shared
+
+## Test pinv for Diagonal matrices
+%!test
+%! x = diag ([3 2 1 0 -0.5]);
+%! y = pinv (x);
+%! assert (typeinfo (y)(1:8), "diagonal");
+%! assert (isa (y, "double"));
+%! assert (diag (y), [1/3, 1/2, 1, 0  1/-0.5]');
+%! y = pinv (x, 1);
+%! assert (diag (y), [1/3 1/2 1 0 0]');
+%! y = pinv (x, 2);
+%! assert (diag (y), [1/3 1/2 0 0 0]');
+
 */

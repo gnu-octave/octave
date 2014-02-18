@@ -303,10 +303,10 @@ DiagMatrix::pseudo_inverse (double tol) const
   for (octave_idx_type i = 0; i < len; i++)
     {
       double val = std::abs (elem (i, i));
-      if (val < tol || val == 0.0)
+      if (val < tol)
         retval.elem (i, i) = 0.0;
-      else
-        retval.elem (i, i) = 1.0 / val;
+      else if (val != 0.0)
+        retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
   return retval;

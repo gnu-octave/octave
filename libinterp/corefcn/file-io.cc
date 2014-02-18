@@ -1801,7 +1801,7 @@ error condition.\n\
   return retval;
 }
 
-DEFUN (popen, args, ,
+DEFUNX ("popen", Fpopen, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{fid} =} popen (@var{command}, @var{mode})\n\
 Start a process and create a pipe.  The name of the command to run is\n\

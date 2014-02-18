@@ -139,7 +139,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->setUtf8 (true);
 
   // auto completion
-  _edit_area->setAutoCompletionSource (QsciScintilla::AcsAll);
+  _edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCSETCANCELATSTART, false);
 
   QVBoxLayout *edit_area_layout = new QVBoxLayout ();
   edit_area_layout->addWidget (_edit_area);
@@ -1600,6 +1600,9 @@ file_editor_tab::center_current_line ()
 void 
 file_editor_tab::handle_cursor_moved (int line, int col)
 {
+  if (_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))
+    show_auto_completion (this);
+
   _row_indicator->setNum (line+1);
   _col_indicator->setNum (col+1);
 }

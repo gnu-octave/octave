@@ -52,6 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "main-window.h"
 #include "settings-dialog.h"
 
+#include "__init_qt__.h"
+
 #include "Array.h"
 #include "cmd-edit.h"
 #include "url-transfer.h"
@@ -1256,8 +1258,11 @@ main_window::construct (void)
 
   octave_link::post_event (this, &main_window::resize_command_window_callback);
 
-  set_global_shortcuts (true);
+  install___init_qt___functions ();
 
+  Fregister_graphics_toolkit (ovl ("qt"));
+
+  set_global_shortcuts (true);
 }
 
 

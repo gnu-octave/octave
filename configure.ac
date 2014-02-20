@@ -2705,16 +2705,16 @@ if test $build_gui = yes; then
 
   warn_gui=""
   ## Check for Qt libraries
-  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork],
+  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork, QtOpenGL],
     [],
     [warn_gui="Qt libraries not found -- disabling GUI"
      build_gui=no])
 
   if test $build_gui = yes; then
     ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork`"
-    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork`"
-    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork`"
+    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork QtOpenGL`"
+    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork QtOpenGL`"
+    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork QtOpenGL`"
 
     case $host_os in
       *darwin*)

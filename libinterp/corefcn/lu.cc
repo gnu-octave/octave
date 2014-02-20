@@ -574,7 +574,7 @@ information.\n\
 %!error lu ()
 %!error <can not define pivoting threshold> lu ([1, 2; 3, 4], 2)
 
-%!test
+%!testif HAVE_UMFPACK
 %! Bi = [1 2 3 4 5 2 3 6 7 8 4 5 7 8 9];
 %! Bj = [1 3 4 5 6 7 8 9 11 12 13 14 15 16 17];
 %! Bv = [1 1 1 1 1 1 -1 1 1 1 1 -1 1 -1 1];

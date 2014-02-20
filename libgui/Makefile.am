@@ -48,6 +48,7 @@ noinst_HEADERS =
 noinst_LTLIBRARIES =
 
 include src/module.mk
+include graphics/module.mk
 include qterminal-module.mk
 
 ## liboctgui merely collects a bunch of compiled convenience libraries.
@@ -62,6 +63,7 @@ nodist_EXTRA_liboctgui_la_SOURCES = dummy.cc
 liboctgui_la_LIBADD = \
   qterminal/libqterminal.la \
   src/libgui-src.la \
+  graphics/libgui-graphics.la \
   $(top_builddir)/libinterp/liboctinterp.la \
   $(top_builddir)/liboctave/liboctave.la \
   $(LIBOCTGUI_LINK_DEPS)
@@ -98,7 +100,7 @@ define rcc-command
 ( echo '#ifdef HAVE_CONFIG_H'; \
   echo '#include <config.h>'; \
   echo '#endif'; \
-  $(RCC) $< ) > $@-t
+  $(RCC) -name $(@D) $< ) > $@-t
 mv $@-t $@
 endef
 

@@ -173,6 +173,7 @@ nodist_src_libgui_src_la_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
 src_libgui_src_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
+  $(FT2_CFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \

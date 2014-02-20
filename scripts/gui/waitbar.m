@@ -106,7 +106,8 @@ function h = waitbar (varargin)
     ## Save and restore current figure
     cf = get (0, "currentfigure");
 
-    hf = figure ("position", [250, 500, 400, 100],
+    hf = figure ("units", "pixels",
+                 "position", [250, 500, 400, 100],
                  "numbertitle", "off",
                  "menubar", "none", "toolbar", "none",
                  "integerhandle", "off",

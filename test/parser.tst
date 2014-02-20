@@ -287,3 +287,10 @@
 %! a = [97 ... % comment
 %!      'b'];
 %! assert (a, 'ab');
+
+## Check that a cell array containing function handles is parsed
+## correctly with or without commas.
+%!test
+%! a = {1, @sin, 2, @cos};
+%! b = {1 @sin 2 @cos};
+%! assert (a, b)

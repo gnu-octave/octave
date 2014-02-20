@@ -1448,6 +1448,13 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
 
+  _edit_area->setEdgeColumn (
+              settings->value ("editor/long_line_column",80).toInt ());
+  if (settings->value ("editor/long_line_marker",true).toBool ())
+    _edit_area->setEdgeMode (QsciScintilla::EdgeLine);
+  else
+    _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
+
 }
 
 void

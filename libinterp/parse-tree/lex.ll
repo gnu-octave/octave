@@ -1218,6 +1218,8 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 "@" {
+    curr_lexer->lexer_debug ("@");
+
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
       {
@@ -1226,15 +1228,26 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        curr_lexer->lexer_debug ("@");
+        int tok = curr_lexer->previous_token_value ();
 
-        curr_lexer->current_input_column++;
+        if (curr_lexer->whitespace_is_significant ()
+            && curr_lexer->space_follows_previous_token ()
+            && ! (tok == '[' || tok == '{'
+                  || curr_lexer->previous_token_is_binop ()))
+          {
+            yyless (0);
+            unput (',');
+          }
+        else
+          {
+            curr_lexer->current_input_column++;
 
-        curr_lexer->looking_at_function_handle++;
-        curr_lexer->looking_for_object_index = false;
-        curr_lexer->at_beginning_of_statement = false;
+            curr_lexer->looking_at_function_handle++;
+            curr_lexer->looking_for_object_index = false;
+            curr_lexer->at_beginning_of_statement = false;
 
-        return curr_lexer->count_token ('@');
+            return curr_lexer->count_token ('@');
+          }
       }
   }
 

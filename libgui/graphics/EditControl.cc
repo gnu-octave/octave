@@ -31,12 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "TextEdit.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 EditControl* EditControl::create (const graphics_object& go)
 {
@@ -60,15 +56,11 @@ EditControl* EditControl::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 EditControl::EditControl (const graphics_object& go, QLineEdit* edit)
      : BaseControl (go, edit), m_multiLine (false), m_textChanged (false)
 {
   init (edit);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void EditControl::init (QLineEdit* edit, bool callBase)
 {
@@ -90,15 +82,11 @@ void EditControl::init (QLineEdit* edit, bool callBase)
 	   SLOT (editingFinished (void)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 EditControl::EditControl (const graphics_object& go, TextEdit* edit)
      : BaseControl (go, edit), m_multiLine (true), m_textChanged (false)
 {
   init (edit);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void EditControl::init (TextEdit* edit, bool callBase)
 {
@@ -120,20 +108,14 @@ void EditControl::init (TextEdit* edit, bool callBase)
 	   SLOT (editingFinished (void)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 EditControl::~EditControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void EditControl::initCommon (QWidget*)
 {
   m_textChanged = false;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void EditControl::update (int pId)
 {
@@ -154,8 +136,6 @@ void EditControl::update (int pId)
 	}
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool EditControl::updateSingleLine (int pId)
 {
@@ -189,8 +169,6 @@ bool EditControl::updateSingleLine (int pId)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool EditControl::updateMultiLine (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
@@ -218,14 +196,10 @@ bool EditControl::updateMultiLine (int pId)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void EditControl::textChanged (void)
 {
   m_textChanged = true;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void EditControl::editingFinished (void)
 {
@@ -242,8 +216,5 @@ void EditControl::editingFinished (void)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 }; // namespace QtHandles
 
-//////////////////////////////////////////////////////////////////////////////

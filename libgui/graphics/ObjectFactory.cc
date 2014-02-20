@@ -51,12 +51,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ToolBar.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 ObjectFactory* ObjectFactory::instance (void)
 {
@@ -72,8 +68,6 @@ ObjectFactory* ObjectFactory::instance (void)
 
   return &s_instance;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ObjectFactory::createObject (double handle)
 {
@@ -151,7 +145,5 @@ void ObjectFactory::createObject (double handle)
     qWarning ("ObjectFactory::createObject: invalid object for handle %g",
 	      handle);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

@@ -29,12 +29,8 @@ class QEvent;
 class QObject;
 class QWidget;
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 class GenericEventNotifyReceiver;
 
@@ -58,8 +54,6 @@ private:
   QSet<GenericEventNotifyReceiver*> m_receivers;
 };
 
-//////////////////////////////////////////////////////////////////////////////
-
 class GenericEventNotifyReceiver
 {
 public:
@@ -69,8 +63,6 @@ public:
   virtual bool eventNotifyBefore (QObject* obj, QEvent* evt) = 0;
   virtual void eventNotifyAfter (QObject* obj, QEvent* evt) = 0;
 };
-
-//////////////////////////////////////////////////////////////////////////////
 
 inline
 bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
@@ -82,8 +74,6 @@ bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 inline
 void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
                                                      QEvent* evt)
@@ -91,8 +81,6 @@ void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
   foreach (GenericEventNotifyReceiver* r, m_receivers)
     r->eventNotifyAfter (obj, evt);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 #define DECLARE_GENERICEVENTNOTIFY_SENDER(T,B) \
 class T : public B, public GenericEventNotifySender \
@@ -111,10 +99,6 @@ public: \
     } \
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 };
-
-//////////////////////////////////////////////////////////////////////////////
 
 #endif

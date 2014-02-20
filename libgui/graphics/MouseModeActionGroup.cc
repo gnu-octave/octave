@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Figure.h"
 #include "MouseModeActionGroup.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 MouseModeActionGroup::MouseModeActionGroup (QObject* parent)
   : QObject (parent), m_current (0)
@@ -58,13 +54,9 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* parent)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 MouseModeActionGroup::~MouseModeActionGroup (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void MouseModeActionGroup::actionToggled (bool checked)
 {
@@ -91,15 +83,11 @@ void MouseModeActionGroup::actionToggled (bool checked)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 MouseMode MouseModeActionGroup::mouseMode (void) const
 {
   int i = (m_current ? -1 : m_actions.indexOf (m_current));
 
   return static_cast<MouseMode> (i+1);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

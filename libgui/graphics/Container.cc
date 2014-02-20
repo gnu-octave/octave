@@ -33,12 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Object.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 Container::Container (QWidget* parent)
   : ContainerBase (parent), m_canvas (0)
@@ -46,13 +42,9 @@ Container::Container (QWidget* parent)
   setFocusPolicy (Qt::ClickFocus);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Container::~Container (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 Canvas* Container::canvas (const graphics_handle& handle, bool create)
 {
@@ -78,8 +70,6 @@ Canvas* Container::canvas (const graphics_handle& handle, bool create)
   return m_canvas;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Container::resizeEvent (QResizeEvent* /* event */)
 {
   if (m_canvas)
@@ -104,7 +94,5 @@ void Container::resizeEvent (QResizeEvent* /* event */)
 	}
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

@@ -33,12 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ContextMenu.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static void updatePalette (const uicontrol::properties& props, QWidget* w)
 {
@@ -72,15 +68,11 @@ static void updatePalette (const uicontrol::properties& props, QWidget* w)
   w->setPalette (p);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 BaseControl::BaseControl (const graphics_object& go, QWidget* w)
   : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
 {
   init (w);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void BaseControl::init (QWidget* w, bool callBase)
 {
@@ -104,13 +96,9 @@ void BaseControl::init (QWidget* w, bool callBase)
   m_normalizedFont = up.fontunits_is ("normalized");
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 BaseControl::~BaseControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void BaseControl::update (int pId)
 {
@@ -158,8 +146,6 @@ void BaseControl::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool BaseControl::eventFilter (QObject* watched, QEvent* event)
 {
@@ -228,7 +214,5 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* event)
 
   return Object::eventFilter (watched, event);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

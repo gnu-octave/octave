@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 RadioButtonControl* RadioButtonControl::create (const graphics_object& go)
 {
@@ -52,8 +48,6 @@ RadioButtonControl* RadioButtonControl::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 RadioButtonControl::RadioButtonControl (const graphics_object& go,
 					QRadioButton* radio)
     : ButtonControl (go, radio)
@@ -62,12 +56,8 @@ RadioButtonControl::RadioButtonControl (const graphics_object& go,
   radio->setAutoExclusive (false);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 RadioButtonControl::~RadioButtonControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

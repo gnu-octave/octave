@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 ToggleButtonControl* ToggleButtonControl::create (const graphics_object& go)
 {
@@ -52,8 +48,6 @@ ToggleButtonControl* ToggleButtonControl::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
 					  QPushButton* btn)
     : ButtonControl (go, btn)
@@ -62,12 +56,8 @@ ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
   btn->setAutoFillBackground (true);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToggleButtonControl::~ToggleButtonControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

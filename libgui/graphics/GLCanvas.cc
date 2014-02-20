@@ -34,12 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "GLCanvas.h"
 #include "gl-select.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 GLCanvas::GLCanvas (QWidget* parent, const graphics_handle& handle)
   : QGLWidget (parent), Canvas (handle)
@@ -47,13 +43,9 @@ GLCanvas::GLCanvas (QWidget* parent, const graphics_handle& handle)
   setFocusPolicy (Qt::ClickFocus);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 GLCanvas::~GLCanvas (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void GLCanvas::draw (const graphics_handle& handle)
 {
@@ -67,8 +59,6 @@ void GLCanvas::draw (const graphics_handle& handle)
       r.draw(go);
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 graphics_object GLCanvas::selectFromAxes (const graphics_object& ax,
                                           const QPoint& pt)
@@ -85,8 +75,6 @@ graphics_object GLCanvas::selectFromAxes (const graphics_object& ax,
 
   return graphics_object ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 inline void glDrawZoomBox (const QPoint& p1, const QPoint& p2)
 {
@@ -126,35 +114,25 @@ void GLCanvas::drawZoomBox (const QPoint& p1, const QPoint& p2)
   glPopMatrix ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void GLCanvas::paintGL (void)
 {
   canvasPaintEvent ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void GLCanvas::mouseMoveEvent (QMouseEvent* event)
 {
   canvasMouseMoveEvent (event);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void GLCanvas::mousePressEvent (QMouseEvent* event)
 {
   canvasMousePressEvent (event);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void GLCanvas::mouseReleaseEvent (QMouseEvent* event)
 {
   canvasMouseReleaseEvent (event);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void GLCanvas::keyPressEvent (QKeyEvent* event)
 {
@@ -162,14 +140,10 @@ void GLCanvas::keyPressEvent (QKeyEvent* event)
     QGLWidget::keyPressEvent (event);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void GLCanvas::keyReleaseEvent (QKeyEvent* event)
 {
   if (! canvasKeyReleaseEvent (event))
     QGLWidget::keyReleaseEvent (event);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

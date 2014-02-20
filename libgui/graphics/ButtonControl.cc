@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
     : BaseControl (go, btn), m_blockCallback (false)
@@ -57,13 +53,9 @@ ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
   connect (btn, SIGNAL (toggled (bool)), SLOT (toggled (bool)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ButtonControl::~ButtonControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ButtonControl::update (int pId)
 {
@@ -99,8 +91,6 @@ void ButtonControl::update (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ButtonControl::toggled (bool checked)
 {
   QAbstractButton* btn = qWidget<QAbstractButton> ();
@@ -121,8 +111,6 @@ void ButtonControl::toggled (bool checked)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ButtonControl::clicked (void)
 {
   QAbstractButton* btn = qWidget<QAbstractButton> ();
@@ -130,7 +118,5 @@ void ButtonControl::clicked (void)
   if (! btn->isCheckable ())
     gh_manager::post_callback (m_handle, "callback");
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

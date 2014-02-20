@@ -45,12 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 # define OCTAVE_PTR_SCALAR uint64_scalar_value
 //#endif
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static std::string toolkitObjectProperty (const graphics_object& go)
 {
@@ -71,8 +67,6 @@ static std::string toolkitObjectProperty (const graphics_object& go)
   return std::string ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Backend::Backend (void)
   : QObject (), base_graphics_toolkit ("qt")
 {
@@ -82,13 +76,9 @@ Backend::Backend (void)
 	   factory, SLOT (createObject (double)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Backend::~Backend (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool Backend::initialize (const graphics_object& go)
 {
@@ -117,8 +107,6 @@ bool Backend::initialize (const graphics_object& go)
 
   return false;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Backend::update (const graphics_object& go, int pId)
 {
@@ -155,8 +143,6 @@ void Backend::update (const graphics_object& go, int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Backend::finalize (const graphics_object& go)
 {
   Logger::debug ("Backend::finalize %s from thread %08x",
@@ -175,8 +161,6 @@ void Backend::finalize (const graphics_object& go)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Backend::redraw_figure (const graphics_object& go) const
 {
   if (go.get_properties ().is_visible ())
@@ -188,8 +172,6 @@ void Backend::redraw_figure (const graphics_object& go) const
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Object* Backend::toolkitObject (const graphics_object& go)
 {
   ObjectProxy* proxy = toolkitObjectProxy (go);
@@ -199,8 +181,6 @@ Object* Backend::toolkitObject (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 ObjectProxy* Backend::toolkitObjectProxy (const graphics_object& go)
 {
@@ -219,7 +199,5 @@ ObjectProxy* Backend::toolkitObjectProxy (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

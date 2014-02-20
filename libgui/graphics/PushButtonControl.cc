@@ -31,12 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 PushButtonControl* PushButtonControl::create (const graphics_object& go)
 {
@@ -53,21 +49,15 @@ PushButtonControl* PushButtonControl::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 PushButtonControl::PushButtonControl (const graphics_object& go, QPushButton* btn)
   : ButtonControl (go, btn)
 {
   btn->setAutoFillBackground (true);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 PushButtonControl::~PushButtonControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void PushButtonControl::update (int pId)
 {
@@ -84,7 +74,5 @@ void PushButtonControl::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespave QtHandles

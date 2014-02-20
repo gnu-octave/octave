@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ListBoxControl.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static void updateSelection (QListWidget* list, const Matrix& value)
 {
@@ -64,8 +60,6 @@ static void updateSelection (QListWidget* list, const Matrix& value)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ListBoxControl* ListBoxControl::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
@@ -80,8 +74,6 @@ ListBoxControl* ListBoxControl::create (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
      : BaseControl (go, list), m_blockCallback (false)
@@ -121,13 +113,9 @@ ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
 	   SLOT (itemSelectionChanged (void)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ListBoxControl::~ListBoxControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ListBoxControl::update (int pId)
 {
@@ -161,8 +149,6 @@ void ListBoxControl::update (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ListBoxControl::itemSelectionChanged (void)
 {
   if (! m_blockCallback)
@@ -180,7 +166,5 @@ void ListBoxControl::itemSelectionChanged (void)
       gh_manager::post_callback (m_handle, "callback");
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

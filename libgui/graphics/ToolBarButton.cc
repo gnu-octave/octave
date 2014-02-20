@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ToolBarButton.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 template <class T>
 ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction* action)
@@ -62,14 +58,10 @@ ToolBarButton<T>::ToolBarButton (const graphics_object& go, QAction* action)
     w->insertAction (action, m_separator);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 template <class T>
 ToolBarButton<T>::~ToolBarButton (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 template <class T>
 void ToolBarButton<T>::update (int pId)
@@ -123,7 +115,5 @@ void ToolBarButton<T>::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

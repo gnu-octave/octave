@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "PopupMenuControl.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 PopupMenuControl* PopupMenuControl::create (const graphics_object& go)
 {
@@ -52,8 +48,6 @@ PopupMenuControl* PopupMenuControl::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
      : BaseControl (go, box), m_blockUpdate (false)
 {
@@ -65,13 +59,9 @@ PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
 	   SLOT (currentIndexChanged (int)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 PopupMenuControl::~PopupMenuControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void PopupMenuControl::update (int pId)
 {
@@ -126,8 +116,6 @@ void PopupMenuControl::update (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void PopupMenuControl::currentIndexChanged (int index)
 {
   if (! m_blockUpdate)
@@ -138,7 +126,5 @@ void PopupMenuControl::currentIndexChanged (int index)
       gh_manager::post_callback (m_handle, "callback");
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

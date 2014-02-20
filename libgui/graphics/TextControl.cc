@@ -30,12 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "TextControl.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 TextControl* TextControl::create (const graphics_object& go)
 {
@@ -52,8 +48,6 @@ TextControl* TextControl::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 TextControl::TextControl (const graphics_object& go, QLabel* label)
      : BaseControl (go, label)
 {
@@ -68,13 +62,9 @@ TextControl::TextControl (const graphics_object& go, QLabel* label)
   label->setText (Utils::fromStdString (up.get_string_string ()));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 TextControl::~TextControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void TextControl::update (int pId)
 {
@@ -97,7 +87,5 @@ void TextControl::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

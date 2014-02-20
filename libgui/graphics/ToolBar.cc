@@ -38,12 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ToolBar.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static QAction* addEmptyAction (QToolBar* bar)
 {
@@ -66,8 +62,6 @@ static QAction* addEmptyAction (QToolBar* bar)
   return a;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToolBar* ToolBar::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
@@ -82,8 +76,6 @@ ToolBar* ToolBar::create (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
      : Object (go, bar), m_empty (0), m_figure (0)
@@ -105,13 +97,9 @@ ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
   bar->installEventFilter (this);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToolBar::~ToolBar (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ToolBar::update (int pId)
 {
@@ -129,8 +117,6 @@ void ToolBar::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool ToolBar::eventFilter (QObject* watched, QEvent* event)
 {
@@ -167,14 +153,10 @@ bool ToolBar::eventFilter (QObject* watched, QEvent* event)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ToolBar::hideEmpty (void)
 {
   m_empty->setVisible (false);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ToolBar::beingDeleted (void)
 {
@@ -186,7 +168,5 @@ void ToolBar::beingDeleted (void)
 	m_figure->showCustomToolBar (bar, false);
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

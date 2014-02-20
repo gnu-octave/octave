@@ -28,12 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "TextEdit.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 void TextEdit::focusOutEvent (QFocusEvent* event)
 {
@@ -41,8 +37,6 @@ void TextEdit::focusOutEvent (QFocusEvent* event)
 
   emit editingFinished ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void TextEdit::keyPressEvent (QKeyEvent* event)
 {
@@ -53,7 +47,5 @@ void TextEdit::keyPressEvent (QKeyEvent* event)
       && event->modifiers () == Qt::ControlModifier)
     emit editingFinished ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

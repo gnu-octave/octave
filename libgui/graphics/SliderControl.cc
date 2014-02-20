@@ -32,12 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #define RANGE_INT_MAX 1000000
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 SliderControl* SliderControl::create (const graphics_object& go)
 {
@@ -53,8 +49,6 @@ SliderControl* SliderControl::create (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 SliderControl::SliderControl (const graphics_object& go,
 			      QAbstractSlider* slider)
@@ -82,13 +76,9 @@ SliderControl::SliderControl (const graphics_object& go,
   connect (slider, SIGNAL (valueChanged (int)), SLOT (valueChanged (int)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 SliderControl::~SliderControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void SliderControl::update (int pId)
 {
@@ -127,8 +117,6 @@ void SliderControl::update (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void SliderControl::valueChanged (int ival)
 {
   if (! m_blockUpdates)
@@ -158,7 +146,5 @@ void SliderControl::valueChanged (int ival)
 	}
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

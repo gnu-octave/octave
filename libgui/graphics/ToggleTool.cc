@@ -28,12 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ToolBarButton.cc"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 ToggleTool* ToggleTool::create (const graphics_object& go)
 {
@@ -50,8 +46,6 @@ ToggleTool* ToggleTool::create (const graphics_object& go)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToggleTool::ToggleTool (const graphics_object& go, QAction* action)
     : ToolBarButton<uitoggletool> (go, action)
 {
@@ -64,13 +58,9 @@ ToggleTool::ToggleTool (const graphics_object& go, QAction* action)
 	   this, SLOT (triggered (bool)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToggleTool::~ToggleTool (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ToggleTool::update (int pId)
 {
@@ -88,8 +78,6 @@ void ToggleTool::update (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ToggleTool::triggered (bool checked)
 {
   gh_manager::post_set (m_handle, "state", checked, false);
@@ -99,7 +87,5 @@ void ToggleTool::triggered (bool checked)
 			     : "offcallback");
   gh_manager::post_callback (m_handle, "clickedcallback");
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

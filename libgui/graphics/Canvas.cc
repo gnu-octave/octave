@@ -35,12 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "GLCanvas.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::redraw (bool sync)
 {
@@ -50,14 +46,10 @@ void Canvas::redraw (bool sync)
     qWidget ()->update ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Canvas::blockRedraw (bool block)
 {
   m_redrawBlocked = block;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::canvasPaintEvent (void)
 {
@@ -71,8 +63,6 @@ void Canvas::canvasPaintEvent (void)
 	drawZoomBox (m_mouseAnchor, m_mouseCurrent);
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 {
@@ -145,8 +135,6 @@ void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 	}
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::canvasMousePressEvent (QMouseEvent* event)
 {
@@ -293,8 +281,6 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 {
   if (m_mouseMode == ZoomMode
@@ -347,8 +333,6 @@ void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
   m_mouseMode = NoMode;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool Canvas::canvasKeyPressEvent (QKeyEvent* event)
 {
   if (m_eventMask & KeyPress)
@@ -365,8 +349,6 @@ bool Canvas::canvasKeyPressEvent (QKeyEvent* event)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
 {
   if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
@@ -380,15 +362,11 @@ bool Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Canvas* Canvas::create (const std::string& /* name */, QWidget* parent,
 			const graphics_handle& handle)
 {
   // Only OpenGL
   return new GLCanvas (parent, handle);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

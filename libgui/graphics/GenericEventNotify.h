@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -28,12 +29,8 @@ class QEvent;
 class QObject;
 class QWidget;
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 class GenericEventNotifyReceiver;
 
@@ -57,8 +54,6 @@ private:
   QSet<GenericEventNotifyReceiver*> m_receivers;
 };
 
-//////////////////////////////////////////////////////////////////////////////
-
 class GenericEventNotifyReceiver
 {
 public:
@@ -68,8 +63,6 @@ public:
   virtual bool eventNotifyBefore (QObject* obj, QEvent* evt) = 0;
   virtual void eventNotifyAfter (QObject* obj, QEvent* evt) = 0;
 };
-
-//////////////////////////////////////////////////////////////////////////////
 
 inline
 bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
@@ -81,8 +74,6 @@ bool GenericEventNotifySender::notifyReceiversBefore (QObject* obj,
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 inline
 void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
                                                      QEvent* evt)
@@ -90,8 +81,6 @@ void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
   foreach (GenericEventNotifyReceiver* r, m_receivers)
     r->eventNotifyAfter (obj, evt);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 #define DECLARE_GENERICEVENTNOTIFY_SENDER(T,B) \
 class T : public B, public GenericEventNotifySender \
@@ -110,10 +99,6 @@ public: \
     } \
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 };
-
-//////////////////////////////////////////////////////////////////////////////
 
 #endif

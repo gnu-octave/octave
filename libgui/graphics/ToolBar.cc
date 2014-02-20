@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -37,12 +38,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "ToolBar.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static QAction* addEmptyAction (QToolBar* bar)
 {
@@ -65,8 +62,6 @@ static QAction* addEmptyAction (QToolBar* bar)
   return a;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToolBar* ToolBar::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
@@ -81,8 +76,6 @@ ToolBar* ToolBar::create (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
      : Object (go, bar), m_empty (0), m_figure (0)
@@ -104,13 +97,9 @@ ToolBar::ToolBar (const graphics_object& go, QToolBar* bar)
   bar->installEventFilter (this);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ToolBar::~ToolBar (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ToolBar::update (int pId)
 {
@@ -128,8 +117,6 @@ void ToolBar::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool ToolBar::eventFilter (QObject* watched, QEvent* event)
 {
@@ -166,14 +153,10 @@ bool ToolBar::eventFilter (QObject* watched, QEvent* event)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ToolBar::hideEmpty (void)
 {
   m_empty->setVisible (false);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ToolBar::beingDeleted (void)
 {
@@ -185,7 +168,5 @@ void ToolBar::beingDeleted (void)
 	m_figure->showCustomToolBar (bar, false);
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

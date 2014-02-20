@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -29,12 +30,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "Container.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
     : BaseControl (go, btn), m_blockCallback (false)
@@ -56,13 +53,9 @@ ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
   connect (btn, SIGNAL (toggled (bool)), SLOT (toggled (bool)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 ButtonControl::~ButtonControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void ButtonControl::update (int pId)
 {
@@ -98,8 +91,6 @@ void ButtonControl::update (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ButtonControl::toggled (bool checked)
 {
   QAbstractButton* btn = qWidget<QAbstractButton> ();
@@ -120,8 +111,6 @@ void ButtonControl::toggled (bool checked)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void ButtonControl::clicked (void)
 {
   QAbstractButton* btn = qWidget<QAbstractButton> ();
@@ -129,7 +118,5 @@ void ButtonControl::clicked (void)
   if (! btn->isCheckable ())
     gh_manager::post_callback (m_handle, "callback");
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

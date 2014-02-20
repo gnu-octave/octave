@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -35,12 +36,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "Panel.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static int frameStyleFromProperties (const uipanel::properties& pp)
 {
@@ -58,8 +55,6 @@ static int frameStyleFromProperties (const uipanel::properties& pp)
     return (QFrame::Panel | QFrame::Plain);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 static void setupPalette (const uipanel::properties& pp, QPalette& p)
 {
   p.setColor (QPalette::Window,
@@ -71,8 +66,6 @@ static void setupPalette (const uipanel::properties& pp, QPalette& p)
   p.setColor (QPalette::Dark,
 	      Utils::fromRgb (pp.get_shadowcolor_rgb ()));
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 static int borderWidthFromProperties (const uipanel::properties& pp)
 {
@@ -88,8 +81,6 @@ static int borderWidthFromProperties (const uipanel::properties& pp)
   return bw;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Panel* Panel::create (const graphics_object& go)
 {
   Object* parent = Object::parentObject (go);
@@ -104,8 +95,6 @@ Panel* Panel::create (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 Panel::Panel (const graphics_object& go, QFrame* frame)
     : Object (go, frame), m_container (0), m_title (0), m_blockUpdates (false)
@@ -145,13 +134,9 @@ Panel::Panel (const graphics_object& go, QFrame* frame)
     frame->hide ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Panel::~Panel (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool Panel::eventFilter (QObject* watched, QEvent* event)
 {
@@ -222,8 +207,6 @@ bool Panel::eventFilter (QObject* watched, QEvent* event)
 
   return false;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Panel::update (int pId)
 {
@@ -320,8 +303,6 @@ void Panel::update (int pId)
   m_blockUpdates = false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Panel::redraw (void)
 {
   Canvas* canvas = m_container->canvas (m_handle);
@@ -329,8 +310,6 @@ void Panel::redraw (void)
   if (canvas)
     canvas->redraw ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Panel::updateLayout (void)
 {
@@ -369,7 +348,5 @@ void Panel::updateLayout (void)
 		       frame->height () - sz.height ());
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

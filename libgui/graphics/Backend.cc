@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -44,12 +45,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 # define OCTAVE_PTR_SCALAR uint64_scalar_value
 //#endif
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static std::string toolkitObjectProperty (const graphics_object& go)
 {
@@ -70,8 +67,6 @@ static std::string toolkitObjectProperty (const graphics_object& go)
   return std::string ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Backend::Backend (void)
   : QObject (), base_graphics_toolkit ("qt")
 {
@@ -81,13 +76,9 @@ Backend::Backend (void)
 	   factory, SLOT (createObject (double)));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Backend::~Backend (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool Backend::initialize (const graphics_object& go)
 {
@@ -116,8 +107,6 @@ bool Backend::initialize (const graphics_object& go)
 
   return false;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Backend::update (const graphics_object& go, int pId)
 {
@@ -154,8 +143,6 @@ void Backend::update (const graphics_object& go, int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Backend::finalize (const graphics_object& go)
 {
   Logger::debug ("Backend::finalize %s from thread %08x",
@@ -174,8 +161,6 @@ void Backend::finalize (const graphics_object& go)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Backend::redraw_figure (const graphics_object& go) const
 {
   if (go.get_properties ().is_visible ())
@@ -187,8 +172,6 @@ void Backend::redraw_figure (const graphics_object& go) const
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Object* Backend::toolkitObject (const graphics_object& go)
 {
   ObjectProxy* proxy = toolkitObjectProxy (go);
@@ -198,8 +181,6 @@ Object* Backend::toolkitObject (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 ObjectProxy* Backend::toolkitObjectProxy (const graphics_object& go)
 {
@@ -218,7 +199,5 @@ ObjectProxy* Backend::toolkitObjectProxy (const graphics_object& go)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 };

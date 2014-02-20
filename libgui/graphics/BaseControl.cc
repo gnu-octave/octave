@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -32,12 +33,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "ContextMenu.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 static void updatePalette (const uicontrol::properties& props, QWidget* w)
 {
@@ -71,15 +68,11 @@ static void updatePalette (const uicontrol::properties& props, QWidget* w)
   w->setPalette (p);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 BaseControl::BaseControl (const graphics_object& go, QWidget* w)
   : Object (go, w), m_normalizedFont (false), m_keyPressHandlerDefined (false)
 {
   init (w);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void BaseControl::init (QWidget* w, bool callBase)
 {
@@ -103,13 +96,9 @@ void BaseControl::init (QWidget* w, bool callBase)
   m_normalizedFont = up.fontunits_is ("normalized");
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 BaseControl::~BaseControl (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void BaseControl::update (int pId)
 {
@@ -157,8 +146,6 @@ void BaseControl::update (int pId)
       break;
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool BaseControl::eventFilter (QObject* watched, QEvent* event)
 {
@@ -227,7 +214,5 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* event)
 
   return Object::eventFilter (watched, event);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

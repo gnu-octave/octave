@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -44,20 +45,12 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "MouseModeActionGroup.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
 
-//////////////////////////////////////////////////////////////////////////////
-
-#define ABOUT_TEXT "<b>QtHandles</b> - a Qt-based toolkit for <a href=\"http://www.octave.org\">Octave</a>.<br><br>Copyright (C) 2011 Michael Goffioul."
-
-//////////////////////////////////////////////////////////////////////////////
+#define ABOUT_TEXT "<b>QtHandles</b> - a Qt-based toolkit for <a href=\"http://www.octave.org\">Octave</a>.<br><br>Copyright (C) 2011-2014 Michael Goffioul"
 
 DECLARE_GENERICEVENTNOTIFY_SENDER(MenuBar, QMenuBar);
-
-//////////////////////////////////////////////////////////////////////////////
 
 static bool hasUiControlChildren (const figure::properties& fp)
 {
@@ -75,8 +68,6 @@ static bool hasUiControlChildren (const figure::properties& fp)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 static bool hasUiMenuChildren (const figure::properties& fp)
 {
   Matrix kids = fp.get_all_children ();
@@ -91,8 +82,6 @@ static bool hasUiMenuChildren (const figure::properties& fp)
 
   return false;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 static QRect boundingBoxToRect (const Matrix& bb)
 {
@@ -109,14 +98,10 @@ static QRect boundingBoxToRect (const Matrix& bb)
   return r;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Figure* Figure::create (const graphics_object& go)
 {
   return new Figure (go, new FigureWindow ());
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 Figure::Figure (const graphics_object& go, FigureWindow* win)
      : Object (go, win), m_blockUpdates (false), m_mouseMode (NoMode),
@@ -168,13 +153,9 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
   m_container->addReceiver (this);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Figure::~Figure (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::createFigureToolBarAndMenuBar (void)
 {
@@ -223,14 +204,10 @@ void Figure::createFigureToolBarAndMenuBar (void)
   m_menuBar->addReceiver (this);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Container* Figure::innerContainer (void)
 {
   return m_container;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::redraw (void)
 {
@@ -252,8 +229,6 @@ void Figure::redraw (void)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::beingDeleted (void)
 {
   Canvas* canvas = m_container->canvas (m_handle.value (), false);
@@ -265,8 +240,6 @@ void Figure::beingDeleted (void)
   m_container->removeReceiver (this);
   qWidget<FigureWindow> ()->removeReceiver (this);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::update (int pId)
 {
@@ -336,8 +309,6 @@ void Figure::update (int pId)
   m_blockUpdates = false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::showFigureToolBar (bool visible)
 {
   if ((! m_figureToolBar->isHidden ()) != visible)
@@ -366,8 +337,6 @@ void Figure::showFigureToolBar (bool visible)
 	}
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::showMenuBar (bool visible)
 {
@@ -403,8 +372,6 @@ void Figure::showMenuBar (bool visible)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::updateMenuBar (void)
 {
   gh_manager::auto_lock lock;
@@ -414,14 +381,10 @@ void Figure::updateMenuBar (void)
     showMenuBar (Utils::properties<figure> (go).menubar_is ("figure"));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 QWidget* Figure::menu (void)
 {
   return qWidget<QMainWindow> ()->menuBar ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 struct UpdateBoundingBoxData
 {
@@ -452,8 +415,6 @@ void Figure::updateBoundingBoxHelper (void* data)
 
   delete d;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::updateBoundingBox (bool internal, int flags)
 {
@@ -517,8 +478,6 @@ void Figure::updateBoundingBox (bool internal, int flags)
   gh_manager::post_function (Figure::updateBoundingBoxHelper, d);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool Figure::eventNotifyBefore (QObject* obj, QEvent* event)
 {
   if (! m_blockUpdates)
@@ -560,8 +519,6 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* event)
 
   return false;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::eventNotifyAfter (QObject* watched, QEvent* event)
 {
@@ -622,46 +579,32 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* event)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::helpAboutQtHandles (void)
 {
   QMessageBox::about (qWidget<QMainWindow> (), tr ("About QtHandles"),
 		      ABOUT_TEXT);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::fileNewFigure (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::fileCloseFigure (void)
 {
   qWidget<QMainWindow> ()->close ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::editCopy (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::editCut (void)
 {
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::editPaste (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Figure::addCustomToolBar (QToolBar* bar, bool visible)
 {
@@ -688,8 +631,6 @@ void Figure::addCustomToolBar (QToolBar* bar, bool visible)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::showCustomToolBar (QToolBar* bar, bool visible)
 {
   QMainWindow* win = qWidget<QMainWindow> ();
@@ -713,13 +654,9 @@ void Figure::showCustomToolBar (QToolBar* bar, bool visible)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Figure::updateContainer (void)
 {
   redraw ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -34,12 +35,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "GLCanvas.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::redraw (bool sync)
 {
@@ -49,14 +46,10 @@ void Canvas::redraw (bool sync)
     qWidget ()->update ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Canvas::blockRedraw (bool block)
 {
   m_redrawBlocked = block;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::canvasPaintEvent (void)
 {
@@ -70,8 +63,6 @@ void Canvas::canvasPaintEvent (void)
 	drawZoomBox (m_mouseAnchor, m_mouseCurrent);
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 {
@@ -144,8 +135,6 @@ void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 	}
     }
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Canvas::canvasMousePressEvent (QMouseEvent* event)
 {
@@ -292,8 +281,6 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
 {
   if (m_mouseMode == ZoomMode
@@ -346,8 +333,6 @@ void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
   m_mouseMode = NoMode;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool Canvas::canvasKeyPressEvent (QKeyEvent* event)
 {
   if (m_eventMask & KeyPress)
@@ -364,8 +349,6 @@ bool Canvas::canvasKeyPressEvent (QKeyEvent* event)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
 {
   if (! event->isAutoRepeat () && (m_eventMask & KeyRelease))
@@ -379,15 +362,11 @@ bool Canvas::canvasKeyReleaseEvent (QKeyEvent* event)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Canvas* Canvas::create (const std::string& /* name */, QWidget* parent,
 			const graphics_handle& handle)
 {
   // Only OpenGL
   return new GLCanvas (parent, handle);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -38,31 +39,21 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "Object.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace Utils
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 QString fromStdString (const std::string& s)
 {
   return QString::fromLocal8Bit (s.c_str ());
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 std::string toStdString (const QString& s)
 {
   return std::string (s.toLocal8Bit ().data ());
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 QStringList fromStringVector (const string_vector& v)
 {
@@ -75,8 +66,6 @@ QStringList fromStringVector (const string_vector& v)
   return l;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 string_vector toStringVector (const QStringList& l)
 {
   string_vector v (l.length ());
@@ -87,8 +76,6 @@ string_vector toStringVector (const QStringList& l)
 
   return v;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 template <class T>
 QFont computeFont (const typename T::properties& props, int height)
@@ -125,8 +112,6 @@ template QFont computeFont<uicontrol> (const uicontrol::properties& props,
 template QFont computeFont<uipanel> (const uipanel::properties& props,
 				     int height);
 
-//////////////////////////////////////////////////////////////////////////////
-
 QColor fromRgb (const Matrix& rgb)
 {
   QColor c;
@@ -137,8 +122,6 @@ QColor fromRgb (const Matrix& rgb)
   return c;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Matrix toRgb (const QColor& c)
 {
   Matrix rgb (1, 3);
@@ -148,8 +131,6 @@ Matrix toRgb (const QColor& c)
 
   return rgb;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 std::string figureSelectionType (QMouseEvent* event, bool isDoubleClick)
 {
@@ -186,8 +167,6 @@ std::string figureSelectionType (QMouseEvent* event, bool isDoubleClick)
   return std::string ("normal");
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
 {
   Object* tkFig = Backend::toolkitObject (fig);
@@ -208,8 +187,6 @@ Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
 
   return Matrix (1, 2, 0.0);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 Qt::Alignment fromHVAlign (const caseless_str& halign,
 			   const caseless_str& valign)
@@ -236,8 +213,6 @@ Qt::Alignment fromHVAlign (const caseless_str& halign,
 
   return flags;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 QImage makeImageFromCData (const octave_value& v, int width, int height)
 {
@@ -314,8 +289,6 @@ QImage makeImageFromCData (const octave_value& v, int width, int height)
   return QImage ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 octave_scalar_map makeKeyEventStruct (QKeyEvent* event)
 {
   octave_scalar_map retval;
@@ -346,10 +319,6 @@ octave_scalar_map makeKeyEventStruct (QKeyEvent* event)
   return retval;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 }; // namespace Utils
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -29,12 +30,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "Object.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
-
-//////////////////////////////////////////////////////////////////////////////
 
 Object::Object (const graphics_object& go, QObject* obj)
   : QObject (), m_handle (go.get_handle ()), m_qobject (0)
@@ -48,8 +45,6 @@ Object::Object (const graphics_object& go, QObject* obj)
 
   init (obj);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Object::init (QObject* obj, bool)
 {
@@ -68,13 +63,9 @@ void Object::init (QObject* obj, bool)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 Object::~Object (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 graphics_object Object::object (void) const
 {
@@ -87,8 +78,6 @@ graphics_object Object::object (void) const
 
   return gh_manager::get_object (m_handle);
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Object::slotUpdate (int pId)
 {
@@ -109,16 +98,12 @@ void Object::slotUpdate (int pId)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Object::slotFinalize (void)
 {
   gh_manager::auto_lock lock;
 
   finalize ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Object::slotRedraw (void)
 {
@@ -128,13 +113,9 @@ void Object::slotRedraw (void)
     redraw ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Object::update (int /* pId */)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Object::finalize (void)
 {
@@ -146,27 +127,19 @@ void Object::finalize (void)
   deleteLater ();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Object::redraw (void)
 {
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 void Object::beingDeleted (void)
 {
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 void Object::objectDestroyed (QObject* obj)
 {
   if (obj && obj == m_qobject)
     m_qobject = 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 Object* Object::parentObject (const graphics_object& go)
 {
@@ -175,8 +148,6 @@ Object* Object::parentObject (const graphics_object& go)
 
   return parent;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 Object* Object::fromQObject (QObject* obj)
 {
@@ -187,7 +158,5 @@ Object* Object::fromQObject (QObject* obj)
 
   return 0;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 }; // namespace QtHandles

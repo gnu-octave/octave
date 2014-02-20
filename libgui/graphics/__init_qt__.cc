@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011-2014 Michael Goffioul
 
-This file is part of QtHandles.
+This file is part of Octave.
 
-Foobar is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
-QtHandles is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
 
 */
 
@@ -37,16 +38,10 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include "Backend.h"
 #include "Utils.h"
 
-//////////////////////////////////////////////////////////////////////////////
-
 namespace QtHandles
 {
 
-//////////////////////////////////////////////////////////////////////////////
-
 static bool qtHandlesInitialized = false;
-
-//////////////////////////////////////////////////////////////////////////////
 
 bool __init__ (void)
 {
@@ -97,8 +92,6 @@ bool __init__ (void)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 bool __shutdown__ (void)
 {
   if (qtHandlesInitialized)
@@ -117,11 +110,7 @@ bool __shutdown__ (void)
   return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 }; // namespace QtHandles
-
-//////////////////////////////////////////////////////////////////////////////
 
 DEFUN (__init_qt__, , , "")
 {
@@ -129,8 +118,6 @@ DEFUN (__init_qt__, , , "")
 
   return octave_value ();
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 DEFUN (__shutdown_qt__, , , "")
 {
@@ -150,8 +137,6 @@ install___init_qt___functions (void)
 }
 
 #if 0
-
-//////////////////////////////////////////////////////////////////////////////
 
 static QStringList makeFilterSpecs (const Cell& filters)
 {
@@ -183,16 +168,12 @@ static QStringList makeFilterSpecs (const Cell& filters)
   return filterSpecs;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 static QString appendDirSep (const QString& d)
 {
   if (! d.endsWith ("/") && ! d.endsWith (QDir::separator ()))
     return (d + "/");
   return d;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 DEFUN (__uigetfile_qt__, args, , "")
 {
@@ -276,8 +257,6 @@ DEFUN (__uigetfile_qt__, args, , "")
   return retval;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 DEFUN (__uiputfile_qt__, args, , "")
 {
   using namespace QtHandles::Utils;
@@ -327,8 +306,6 @@ DEFUN (__uiputfile_qt__, args, , "")
 
   return retval;
 }
-
-//////////////////////////////////////////////////////////////////////////////
 
 DEFUN (__uigetdir_qt__, args, , "")
 {

@@ -1015,8 +1015,8 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
   if test $have_framework_opengl = yes; then
     AC_DEFINE(HAVE_FRAMEWORK_OPENGL, 1,
       [Define to 1 if framework OPENGL is available.])
-    OPENGL_LIBS="-Wl,-framework -Wl,OpenGL"
-    AC_MSG_NOTICE([adding -Wl,-framework -Wl,OpenGL to OPENGL_LIBS])
+    OPENGL_LIBS="-framework OpenGL"
+    AC_MSG_NOTICE([adding -framework OpenGL to OPENGL_LIBS])
     OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS
   else
     case $canonical_host_type in

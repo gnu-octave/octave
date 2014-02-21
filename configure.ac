@@ -1230,8 +1230,8 @@ OCTAVE_HAVE_FRAMEWORK([Carbon],
 if test $have_framework_carbon = yes; then
   AC_DEFINE(HAVE_FRAMEWORK_CARBON, 1,
     [Define to 1 if framework CARBON is available.])
-  CARBON_LIBS="-Wl,-framework -Wl,Carbon"
-  AC_MSG_NOTICE([adding -Wl,-framework -Wl,Carbon to CARBON_LIBS])
+  CARBON_LIBS="-framework Carbon"
+  AC_MSG_NOTICE([adding -framework Carbon to CARBON_LIBS])
   AC_SUBST(CARBON_LIBS)
 fi
 

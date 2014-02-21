@@ -547,3 +547,25 @@
 %! assert (data, [25185, 26213; 25699, 0]);
 %! assert (count, 3);
 %! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, char (0:15));
+%! frewind (id);
+%! [data, count] = fread (id, inf, "2*uint8", 2);
+%! assert (data, [0; 1; 4; 5; 8; 9; 12; 13]);
+%! assert (count, 8);
+%! frewind (id);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, [0; 1; 5]);
+%! assert (count, 3);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, [6; 7; 11]);
+%! assert (count, 3);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, [12; 13]);
+%! assert (count, 2);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, []);
+%! assert (count, 0);
+%! fclose (id);

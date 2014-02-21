@@ -56,6 +56,7 @@ noinst_HEADERS += \
   graphics/PopupMenuControl.h \
   graphics/PushButtonControl.h \
   graphics/PushTool.h \
+  graphics/QtHandlesUtils.h \
   graphics/RadioButtonControl.h \
   graphics/SliderControl.h \
   graphics/TextControl.h \
@@ -64,7 +65,6 @@ noinst_HEADERS += \
   graphics/ToggleTool.h \
   graphics/ToolBar.h \
   graphics/ToolBarButton.h \
-  graphics/Utils.h \
   graphics/gl-select.h
 
 graphics_libgui_graphics_la_SOURCES = \
@@ -92,6 +92,7 @@ graphics_libgui_graphics_la_SOURCES = \
   graphics/PopupMenuControl.cc \
   graphics/PushButtonControl.cc \
   graphics/PushTool.cc \
+  graphics/QtHandlesUtils.cc \
   graphics/RadioButtonControl.cc \
   graphics/SliderControl.cc \
   graphics/TextControl.cc \
@@ -100,7 +101,6 @@ graphics_libgui_graphics_la_SOURCES = \
   graphics/ToggleTool.cc \
   graphics/ToolBar.cc \
   graphics/ToolBarButton.cc \
-  graphics/Utils.cc \
   graphics/gl-select.cc
 
 nodist_graphics_libgui_graphics_la_SOURCES = $(octave_gui_graphics_MOC) $(octave_gui_graphics_RC)

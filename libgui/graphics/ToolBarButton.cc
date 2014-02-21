@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QWidget>
 
 #include "ToolBarButton.h"
-#include "Utils.h"
+#include "QtHandlesUtils.h"
 
 namespace QtHandles
 {

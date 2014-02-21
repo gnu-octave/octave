@@ -63,6 +63,7 @@ noinst_HEADERS += \
   graphics/ToggleButtonControl.h \
   graphics/ToggleTool.h \
   graphics/ToolBar.h \
+  graphics/ToolBarButton.h \
   graphics/Utils.h \
   graphics/gl-select.h
 
@@ -98,6 +99,7 @@ graphics_libgui_graphics_la_SOURCES = \
   graphics/ToggleButtonControl.cc \
   graphics/ToggleTool.cc \
   graphics/ToolBar.cc \
+  graphics/ToolBarButton.cc \
   graphics/Utils.cc \
   graphics/gl-select.cc
 

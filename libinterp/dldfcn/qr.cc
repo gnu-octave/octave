@@ -129,7 +129,7 @@ $A$\n\
 $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @end tex\n\
 @ifnottex\n\
-@code{@var{Q} * @var{Q} = @var{A}} where @var{Q} is an orthogonal matrix and\n\
+@code{@var{Q} * @var{R} = @var{A}} where @var{Q} is an orthogonal matrix and\n\
 @var{R} is upper triangular.\n\
 @end ifnottex\n\
 \n\

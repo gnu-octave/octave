@@ -30,6 +30,9 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this
 ## dimension.
+##
+## If @var{dim} is larger than the dimensions of @var{x}, the result will
+## have @var{dim} dimensions.
 ## @seealso{postpad, cat, resize}
 ## @end deftypefn
 
@@ -56,8 +59,7 @@ function y = prepad (x, l, c, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == fix (dim) && dim >= 1))
       error ("prepad: DIM must be an integer and a valid dimension");
     endif
   endif
@@ -92,6 +94,9 @@ endfunction
 
 %!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2])
 
+%!assert (prepad ([1,2], 2, 2, 3), reshape ([2,2,1,2], 1, 2, 2))
+%!assert (prepad ([1;2], 2, 2, 3), reshape ([2;2;1;2], 2, 1, 2))
+
 ## FIXME -- we need tests for multidimensional arrays.
 
 %!error prepad ()
@@ -100,7 +105,6 @@ endfunction
 %!error <C must be empty or a scalar> prepad ([1,2], 2, ones (2))
 %!error <DIM must be an integer> prepad ([1,2], 2, 2, ones (3))
 %!error <DIM must be an integer> prepad ([1,2], 2, 2, 1.1)
-%!error <DIM must be an integer> prepad ([1,2], 2, 2, 3)
 %!error <L must be a positive scalar> prepad ([1,2], ones (2))
 %!error <L must be a positive scalar> prepad ([1,2], -1)
 

@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Container.h"
 #include "KeyMap.h"
 #include "Object.h"
-#include "Utils.h"
+#include "QtHandlesUtils.h"
 
 namespace QtHandles
 {

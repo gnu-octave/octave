@@ -2705,23 +2705,24 @@ if test $build_gui = yes; then
 
   warn_gui=""
   ## Check for Qt libraries
-  PKG_CHECK_MODULES(QT, [QtCore, QtGui, QtNetwork, QtOpenGL],
+  QT_MODULES="QtCore QtGui QtNetwork QtOpenGL"
+  PKG_CHECK_MODULES(QT, [$QT_MODULES],
     [],
     [warn_gui="Qt libraries not found -- disabling GUI"
      build_gui=no])
 
   if test $build_gui = yes; then
     ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I QtCore QtGui QtNetwork QtOpenGL`"
-    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L QtCore QtGui QtNetwork QtOpenGL`"
-    QT_LIBS="`$PKG_CONFIG --libs-only-l QtCore QtGui QtNetwork QtOpenGL`"
+    QT_CPPFLAGS="`$PKG_CONFIG --cflags-only-I $QT_MODULES`"
+    QT_LDFLAGS="`$PKG_CONFIG --libs-only-L $QT_MODULES`"
+    QT_LIBS="`$PKG_CONFIG --libs-only-l $QT_MODULES`"
 
     case $host_os in
       *darwin*)
         ## Qt might be installed in framework
         if test -z "$QT_LIBS"; then
-          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-          QT_LIBS="`$PKG_CONFIG --libs-only-other QtCore QtGui QtNetwork | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
+          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
           ## Enabling link_all_deps works around libtool's imperfect handling
           ## of the -F flag
           AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS],

@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #ifndef __QtHandles__KeyMap__
 #define __QtHandles__KeyMap__ 1
 
+#include <string>
+
 namespace QtHandles
 {
 

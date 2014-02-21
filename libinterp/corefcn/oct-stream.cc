@@ -3275,6 +3275,14 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
               while (is && ! is.eof ()
                      && (read_to_eof || count < elts_to_read))
                 {
+                  if (! read_to_eof)
+                    {
+                      octave_idx_type remaining_elts = elts_to_read - count;
+
+                      if (remaining_elts < input_buf_elts)
+                        input_buf_size = remaining_elts * input_elt_size;
+                    }
+
                   char *input_buf = new char [input_buf_size];
 
                   is.read (input_buf, input_buf_size);
@@ -3283,15 +3291,35 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
                   char_count += gcount;
 
-                  count += gcount / input_elt_size;
+                  size_t nel = gcount / input_elt_size;
+
+                  count += nel;
 
                   input_buf_list.push_back (input_buf);
 
-                  if (is && skip != 0 && count == block_size)
+                  if (is && skip != 0 && nel == block_size)
                     {
-                      int seek_status = seek (skip, SEEK_CUR);
+                      // Seek to skip.  If skip would move past EOF,
+                      // position at EOF.
 
-                      if (seek_status < 0)
+                      off_t orig_pos = tell ();
+
+                      seek (0, SEEK_END);
+
+                      off_t eof_pos = tell ();
+
+                      // Is it possible for this to fail to return us to
+                      // the original position?
+                      seek (orig_pos, SEEK_SET);
+
+                      size_t remaining = eof_pos - orig_pos;
+
+                      if (remaining < skip)
+                        seek (0, SEEK_END);
+                      else
+                        seek (skip, SEEK_CUR);
+
+                      if (! is)
                         break;
                     }
                 }

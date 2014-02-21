@@ -119,6 +119,7 @@ function h = findobj (varargin)
   regularexpression = [];
   property          = [];
   logicaloperator   = {};
+  extranegation     = [];
   pname             = {};
   pvalue            = {};
   np = 1;
@@ -128,6 +129,9 @@ function h = findobj (varargin)
   while (na <= numel (args))
     regularexpression(np) = 0;
     property(np) = 0;
+    if (numel (extranegation) < np)
+      extranegation(np) = false;
+    endif
     logicaloperator{np} = "and";
     if (ischar (args{na}))
       if (strcmpi (args{na}, "-regexp"))
@@ -177,10 +181,8 @@ function h = findobj (varargin)
           error ("findobj: inconsistent number of arguments");
         endif
       else
-        ## This is sloppy ... but works like Matlab.
         if (strcmpi (args{na}, "-not"))
-          h = [];
-          return;
+          extranegation(np) = true;
         endif
         na = na + 1;
       endif
@@ -240,6 +242,9 @@ function h = findobj (varargin)
           endif
         else
           match(nh,np) = false;
+        endif
+        if (extranegation(np))
+          match(nh,np) = ! match(nh,np);
         endif
       endfor
     endfor

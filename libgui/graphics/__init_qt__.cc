@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 
 #include "Backend.h"
-#include "Utils.h"
+#include "QtHandlesUtils.h"
 
 namespace QtHandles
 {

@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Container.h"
 #include "SliderControl.h"
-#include "Utils.h"
+#include "QtHandlesUtils.h"
 
 #define RANGE_INT_MAX 1000000
 

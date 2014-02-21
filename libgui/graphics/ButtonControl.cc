@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ButtonControl.h"
 #include "Container.h"
-#include "Utils.h"
+#include "QtHandlesUtils.h"
 
 namespace QtHandles
 {

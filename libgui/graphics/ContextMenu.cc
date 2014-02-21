@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Backend.h"
 #include "ContextMenu.h"
-#include "Utils.h"
+#include "QtHandlesUtils.h"
 
 namespace QtHandles
 {

@@ -32,8 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-// FIXME: These functions do not need to be dynamically loaded.  They should
-//        be placed elsewhere in the Octave code hierarchy.
 
 DEFUN (betainc, args, ,
        "-*- texinfo -*-\n\

@@ -588,15 +588,6 @@
 %! id = tmpfile ();
 %! fwrite (id, char (0:15));
 %! frewind (id);
-%! [data, count] = fread (id, [1, Inf], "4*uint16", 3);
-%! assert (data, [256, 770, 1284, 1798, 3083, 3597]);
-%! assert (count, 6);
-%! fclose (id);
-
-%!test
-%! id = tmpfile ();
-%! fwrite (id, char (0:15));
-%! frewind (id);
 %! [data, count] = fread (id, [3, Inf], "4*uint16", 3);
 %! assert (data, [256, 1798; 770, 3083; 1284, 3597]);
 %! assert (count, 6);

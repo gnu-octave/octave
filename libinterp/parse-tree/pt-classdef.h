@@ -100,25 +100,18 @@ class tree_classdef_superclass
 {
 public:
 
-  tree_classdef_superclass (tree_identifier *i = 0, tree_identifier *p = 0)
-    : id (i), pkg (p) { }
+  tree_classdef_superclass (const std::string& cname)
+    : cls_name (cname) { }
 
-  ~tree_classdef_superclass (void)
-  {
-    delete id;
-    delete pkg;
-  }
+  ~tree_classdef_superclass (void) { }
 
-  tree_identifier *ident (void) { return id; }
-
-  tree_identifier * package (void) { return pkg; }
+  std::string class_name (void) { return cls_name; }
 
   void accept (tree_walker&);
 
 private:
 
-  tree_identifier *id;
-  tree_identifier *pkg;
+  std::string cls_name;
 
   // No copying!
 

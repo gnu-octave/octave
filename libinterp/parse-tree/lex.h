@@ -580,6 +580,8 @@ public:
 
   int is_keyword_token (const std::string& s);
 
+  bool fq_identifier_contains_keyword (const std::string& s);
+
   bool whitespace_is_significant (void);
 
   void handle_number (void);
@@ -597,6 +599,8 @@ public:
   int handle_superclass_identifier (void);
 
   int handle_meta_identifier (void);
+
+  int handle_fq_identifier (void);
 
   int handle_identifier (void);
 
@@ -682,6 +686,8 @@ public:
   int count_token_internal (int tok);
 
   int show_token (int tok);
+
+  void enable_fq_identifier (void);
 
 protected:
 

@@ -41,7 +41,6 @@ public:
     ettype_token,
     sym_rec_token,
     scls_name_token,
-    meta_name_token
   };
 
   enum end_tok_type
@@ -69,10 +68,8 @@ public:
          int l = -1, int c = -1);
   token (int tv, end_tok_type t, int l = -1, int c = -1);
   token (int tv, symbol_table::symbol_record *s, int l = -1, int c = -1);
-  token (int tv, const std::string& pkg, const std::string& cls,
+  token (int tv, const std::string& mth, const std::string& cls,
          int l = -1, int c = -1);
-  token (int tv, const std::string& mth, const std::string& pkg,
-         const std::string& cls, int l = -1, int c = -1);
 
   ~token (void);
 
@@ -106,11 +103,7 @@ public:
   symbol_table::symbol_record *sym_rec (void);
 
   std::string superclass_method_name (void);
-  std::string superclass_package_name (void);
   std::string superclass_class_name (void);
-
-  std::string meta_package_name (void);
-  std::string meta_class_name (void);
 
   std::string text_rep (void);
 
@@ -137,14 +130,8 @@ private:
     struct
     {
       std::string *method_nm;
-      std::string *package_nm;
       std::string *class_nm;
     } sc;
-    struct
-    {
-      std::string *package_nm;
-      std::string *class_nm;
-    } mc;
   };
   std::string orig_text;
 };

@@ -235,6 +235,7 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
+%token <tok_val> FQ_IDENT
 %token <tok_val> GET SET
 %token <tok_val> FCN
 
@@ -485,23 +486,20 @@ superclass_identifier
                 : SUPERCLASSREF
                   {
                     std::string method_nm = $1->superclass_method_name ();
-                    std::string package_nm = $1->superclass_package_name ();
                     std::string class_nm = $1->superclass_class_name ();
 
                     $$ = parser.make_superclass_ref
-                                       (method_nm, package_nm, class_nm,
+                                       (method_nm, class_nm,
                                         $1->line (), $1->column ());
                   }
                 ;
 
 meta_identifier : METAQUERY
                   {
-                    std::string package_nm = $1->meta_package_name ();
-                    std::string class_nm = $1->meta_class_name ();
+                    std::string class_nm = $1->text ();
 
-                    $$ = parser.make_meta_class_query
-                                       (package_nm, class_nm,
-                                        $1->line (), $1->column ());
+                    $$ = parser.make_meta_class_query (class_nm, $1->line (),
+                                                       $1->column ());
                   }
                 ;
 
@@ -1553,19 +1551,21 @@ opt_superclass_list
                   { $$ = $1; }
                 ;
 
-superclass_list : EXPR_LT superclass
-                  { $$ = new tree_classdef_superclass_list ($2); }
-                | superclass_list EXPR_AND superclass
+superclass_list : EXPR_LT
+                  { lexer.enable_fq_identifier (); }
+                  superclass
+                  { $$ = new tree_classdef_superclass_list ($3); }
+                | superclass_list EXPR_AND
+                  { lexer.enable_fq_identifier (); }
+                  superclass
                   {
-                    $1->append ($3);
+                    $1->append ($4);
                     $$ = $1;
                   }
                 ;
 
-superclass      : identifier
-                  { $$ = new tree_classdef_superclass ($1); }
-                | identifier '.' identifier
-                  { $$ = new tree_classdef_superclass ($3, $1); }
+superclass      : FQ_IDENT
+                  { $$ = new tree_classdef_superclass ($1->text ()); }
                 ;
 
 class_body      : properties_block
@@ -3115,14 +3115,12 @@ octave_base_parser::recover_from_parsing_function (void)
 
 tree_funcall *
 octave_base_parser::make_superclass_ref (const std::string& method_nm,
-                                         const std::string& package_nm,
                                          const std::string& class_nm,
                                          int l, int c)
 {
   octave_value_list args;
 
-  args(2) = class_nm;
-  args(1) = package_nm;
+  args(1) = class_nm;
   args(0) = method_nm;
 
   octave_value fcn
@@ -3132,14 +3130,12 @@ octave_base_parser::make_superclass_ref (const std::string& method_nm,
 }
 
 tree_funcall *
-octave_base_parser::make_meta_class_query (const std::string& package_nm,
-                                           const std::string& class_nm,
+octave_base_parser::make_meta_class_query (const std::string& class_nm,
                                            int l, int c)
 {
   octave_value_list args;
 
-  args(1) = class_nm;
-  args(0) = package_nm;
+  args(0) = class_nm;
 
   octave_value fcn
     = symbol_table::find_built_in_function ("__meta_class_query__");

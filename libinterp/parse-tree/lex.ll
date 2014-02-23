@@ -54,6 +54,8 @@ object) relevant global values before and after the nested call.
 %x DQ_STRING_START
 %x SQ_STRING_START
 
+%x FQ_IDENT_START
+
 %{
 
 #include <cctype>
@@ -311,6 +313,7 @@ NL      ((\n)|(\r)|(\r\n))
 Im      [iIjJ]
 CCHAR   [#%]
 IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
+FQIDENT ({IDENT}(\.{IDENT})*)
 EXPON   ([DdEe][+-]?{D}+)
 NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
@@ -1031,6 +1034,35 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %{
+// Fully-qualified identifiers (used for classdef).
+%}
+
+<FQ_IDENT_START>{FQIDENT} {
+    curr_lexer->lexer_debug ("<FQ_IDENT_START>{FQIDENT}");
+    curr_lexer->pop_start_state ();
+
+    int id_tok = curr_lexer->handle_fq_identifier ();
+
+    if (id_tok >= 0)
+      {
+        curr_lexer->looking_for_object_index = true;
+
+        return curr_lexer->count_token_internal (id_tok);
+      }
+  }
+
+<FQ_IDENT_START>{S}+ {
+    curr_lexer->current_input_column += yyleng;
+
+    curr_lexer->mark_previous_token_trailing_space ();
+  }
+
+<FQ_IDENT_START>. {
+    yyless (0);
+    curr_lexer->pop_start_state ();
+  }
+
+%{
 // Imaginary numbers.
 %}
 
@@ -1168,9 +1200,8 @@ ANY_INCLUDING_NL (.|{NL})
 // Superclass method identifiers.
 %}
 
-{IDENT}@{IDENT} |
-{IDENT}@{IDENT}\.{IDENT} {
-    curr_lexer->lexer_debug ("{IDENT}@{IDENT}|{IDENT}@{IDENT}\\.{IDENT}");
+{IDENT}@{FQIDENT} {
+    curr_lexer->lexer_debug ("{IDENT}@{FQIDENT}");
 
     if (curr_lexer->previous_token_may_be_command ())
       {
@@ -1194,9 +1225,8 @@ ANY_INCLUDING_NL (.|{NL})
 // Metaclass query
 %}
 
-\?{IDENT} |
-\?{IDENT}\.{IDENT} {
-    curr_lexer->lexer_debug ("\\?{IDENT}|\\?{IDENT}\\.{IDENT}");
+\?{FQIDENT} {
+    curr_lexer->lexer_debug ("\\?{FQIDENT}");
 
     if (curr_lexer->previous_token_may_be_command ()
         &&  curr_lexer->space_follows_previous_token ())
@@ -2560,6 +2590,34 @@ octave_base_lexer::is_keyword_token (const std::string& s)
 }
 
 bool
+octave_base_lexer::fq_identifier_contains_keyword (const std::string& s)
+{
+  size_t p1 = 0;
+  size_t p2;
+
+  std::string s_part;
+
+  do
+    {
+      p2 = s.find ('.', p1);
+
+      if (p2 != std::string::npos)
+        {
+          s_part = s.substr (p1, p2 - p1);
+          p1 = p2 + 1;
+        }
+      else
+        s_part = s.substr (p1);
+
+      if (is_keyword_token (s_part))
+        return true;
+    }
+  while (p2 != std::string::npos);
+
+  return false;
+}
+
+bool
 octave_base_lexer::whitespace_is_significant (void)
 {
   return (nesting_level.is_bracket ()
@@ -2737,23 +2795,16 @@ octave_base_lexer::handle_superclass_identifier (void)
   std::string cls = meth.substr (pos + 1);
   meth = meth.substr (0, pos);
 
-  std::string pkg;
-  pos = cls.find (".");
-  if (pos != std::string::npos)
-    {
-      pkg = cls.substr (0, pos);
-      cls = cls.substr (pos + 1);
-    }
+  bool kw_token = (is_keyword_token (meth)
+                   || fq_identifier_contains_keyword (cls));
 
-  int kw_token = (is_keyword_token (meth) || is_keyword_token (cls)
-                  || is_keyword_token (pkg));
   if (kw_token)
     {
       error ("method, class, and package names may not be keywords");
       return LEXICAL_ERROR;
     }
 
-  push_token (new token (SUPERCLASSREF, meth, pkg, cls,
+  push_token (new token (SUPERCLASSREF, meth, cls,
                          input_line_number, current_input_column));
 
   current_input_column += flex_yyleng ();
@@ -2766,27 +2817,37 @@ octave_base_lexer::handle_meta_identifier (void)
 {
   std::string cls = std::string(flex_yytext ()).substr (1);
 
-  std::string pkg;
-  size_t pos = cls.find (".");
-  if (pos != std::string::npos)
-    {
-      pkg = cls.substr (0, pos);
-      cls = cls.substr (pos + 1);
-    }
-
-  int kw_token = is_keyword_token (cls) || is_keyword_token (pkg);
-  if (kw_token)
+  if (fq_identifier_contains_keyword (cls))
     {
       error ("class and package names may not be keywords");
       return LEXICAL_ERROR;
     }
 
-  push_token (new token (METAQUERY, pkg, cls, input_line_number,
+  push_token (new token (METAQUERY, cls, input_line_number,
                          current_input_column));
 
   current_input_column += flex_yyleng ();
 
   return METAQUERY;
+}
+
+int
+octave_base_lexer::handle_fq_identifier (void)
+{
+  std::string tok = flex_yytext ();
+
+  if (fq_identifier_contains_keyword (tok))
+    {
+      error ("function, method, class, and package names may not be keywords");
+      return LEXICAL_ERROR;
+    }
+
+  push_token (new token (FQ_IDENT, tok, input_line_number,
+                         current_input_column));
+
+  current_input_column += flex_yyleng ();
+
+  return FQ_IDENT;
 }
 
 // Figure out exactly what kind of token to return when we have seen
@@ -3344,6 +3405,12 @@ octave_base_lexer::show_token (int tok)
     }
 
   return tok;
+}
+
+void
+octave_base_lexer::enable_fq_identifier (void)
+{
+  push_start_state (FQ_IDENT_START);
 }
 
 int

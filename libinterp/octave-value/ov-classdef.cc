@@ -1221,12 +1221,9 @@ public:
       if (! error_state && ctx.ok ())
         {
           std::string mname = args(0).string_value ();
-          std::string pname = args(1).string_value ();
-          std::string cname = args(2).string_value ();
+          std::string cname = args(1).string_value ();
 
-          std::string cls_name = (pname.empty () ?
-                                  cname : pname + "." + cname);
-          cdef_class cls = lookup_class (cls_name);
+          cdef_class cls = lookup_class (cname);
 
           if (! error_state)
             {
@@ -1248,7 +1245,7 @@ public:
                     }
                   else
                     ::error ("`%s' is not a direct superclass of `%s'",
-                             cls_name.c_str (), ctx.get_name ().c_str ());
+                             cname.c_str (), ctx.get_name ().c_str ());
                 }
               else
                 {
@@ -1274,11 +1271,11 @@ public:
                                                    meth_name);
                           else
                             ::error ("no method `%s' found in superclass `%s'",
-                                     meth_name.c_str (), cls_name.c_str ());
+                                     meth_name.c_str (), cname.c_str ());
                         }
                       else
                         ::error ("`%s' is not a superclass of `%s'",
-                                 cls_name.c_str (), ctx.get_name ().c_str ());
+                                 cname.c_str (), ctx.get_name ().c_str ());
                     }
                   else
                     ::error ("method name mismatch (`%s' != `%s')",
@@ -1969,14 +1966,9 @@ public:
 
                   if (args(0).string_value () == obj_name)
                     {
-                      std::string package_name = args(1).string_value ();
-                      std::string class_name = args(2).string_value ();
+                      std::string class_name = args(1).string_value ();
 
-                      std::string ctor_name = (package_name.empty ()
-                                               ? class_name
-                                               : package_name + "." + class_name);
-
-                      cdef_class cls = lookup_class (ctor_name, false);
+                      cdef_class cls = lookup_class (class_name, false);
 
                       if (cls.ok ())
                         ctor_list.push_back (cls);
@@ -2702,9 +2694,7 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
       for (tree_classdef_superclass_list::iterator it = t->superclass_list ()->begin ();
            ! error_state && it != t->superclass_list ()->end (); ++it)
         {
-          std::string sclass_name =
-            ((*it)->package () ? (*it)->package ()->name () + "." : std::string ())
-            + (*it)->ident ()->name ();
+          std::string sclass_name = (*it)->class_name ();
 
           gnulib::printf ("superclass: %s\n", sclass_name.c_str ());
 
@@ -3872,17 +3862,12 @@ Undocumented internal function.\n\
   octave_value retval;
 
   std::cerr << "__meta_class_query__ ("
-            << args(0).string_value () << ", "
-            << args(1).string_value () << ")"
+            << args(0).string_value () << ")"
             << std::endl;
 
-  if (args.length () == 2)
+  if (args.length () == 1)
     {
-      std::string pkg = args(0).string_value ();
-      std::string cls = args(1).string_value ();
-
-      if (! pkg.empty ())
-        cls = pkg + "." + cls;
+      std::string cls = args(0).string_value ();
 
       if (! error_state)
 	retval = to_ov (lookup_class (cls));

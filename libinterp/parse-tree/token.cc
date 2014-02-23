@@ -97,21 +97,8 @@ token::token (int tv, symbol_table::symbol_record *s, int l, int c)
   sr = s;
 }
 
-token::token (int tv, const std::string& pkg, const std::string& cls,
+token::token (int tv, const std::string& mth, const std::string& cls,
               int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = meta_name_token;
-  mc.package_nm = new std::string (pkg);
-  mc.class_nm = new std::string (cls);
-}
-
-token::token (int tv, const std::string& mth, const std::string& pkg,
-              const std::string& cls, int l, int c)
 {
   maybe_cmd = false;
   tspc = false;
@@ -120,7 +107,6 @@ token::token (int tv, const std::string& mth, const std::string& pkg,
   tok_val = tv;
   type_tag = scls_name_token;
   sc.method_nm = new std::string (mth);
-  sc.package_nm = new std::string (pkg);
   sc.class_nm = new std::string (cls);
 }
 
@@ -132,14 +118,7 @@ token::~token (void)
   if (type_tag == scls_name_token)
     {
       delete sc.method_nm;
-      delete sc.package_nm;
       delete sc.class_nm;
-    }
-
-  if (type_tag == meta_name_token)
-    {
-      delete mc.package_nm;
-      delete mc.class_nm;
     }
 }
 
@@ -192,31 +171,10 @@ token::superclass_method_name (void)
 }
 
 std::string
-token::superclass_package_name (void)
-{
-  assert (type_tag == scls_name_token);
-  return *sc.package_nm;
-}
-
-std::string
 token::superclass_class_name (void)
 {
   assert (type_tag == scls_name_token);
   return *sc.class_nm;
-}
-
-std::string
-token::meta_package_name (void)
-{
-  assert (type_tag == meta_name_token);
-  return *mc.package_nm;
-}
-
-std::string
-token::meta_class_name (void)
-{
-  assert (type_tag == meta_name_token);
-  return *mc.class_nm;
 }
 
 std::string

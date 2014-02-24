@@ -66,8 +66,7 @@ tree_funcall::print_raw (std::ostream& os, bool pr_as_read_syntax,
 }
 
 tree_funcall *
-tree_funcall::dup (symbol_table::scope_id,
-                  symbol_table::context_id context) const
+tree_funcall::dup (symbol_table::scope_id, symbol_table::context_id) const
 {
   tree_funcall *new_fc = new tree_funcall (fcn, args, line (), column ());
 

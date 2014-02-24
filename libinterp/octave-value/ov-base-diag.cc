@@ -100,7 +100,6 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                                         bool resize_ok)
 {
   octave_value retval;
-  typedef typename DMT::element_type el_type;
 
   if (idx.length () == 2 && ! resize_ok)
     {

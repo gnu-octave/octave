@@ -18,10 +18,6 @@ SYSTEM_INC = \
   system/sysdir.h \
   system/syswait.h
 
-SYSTEM_C_SRC = \
-  system/tempnam.c \
-  system/tempname.c
-
 SYSTEM_SRC = \
   system/dir-ops.cc \
   system/file-ops.cc \
@@ -33,8 +29,7 @@ SYSTEM_SRC = \
   system/oct-passwd.cc \
   system/oct-syscalls.cc \
   system/oct-time.cc \
-  system/oct-uname.cc \
-  $(SYSTEM_C_SRC)
+  system/oct-uname.cc
 
 noinst_LTLIBRARIES += system/libsystem.la
 

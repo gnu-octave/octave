@@ -285,7 +285,7 @@ An exception are matrix or cell constructors:
 
 @example
   [sin(x), cos(x)]
-  {sin(x), cos(x)}
+  @{sin(x), cos(x)@}
 @end example
 
 @noindent

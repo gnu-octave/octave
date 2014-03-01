@@ -176,8 +176,10 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     ## If no delimiter determined yet, make a guess.
     if (isempty (delimiter))
       ## This pattern can be fooled, but mostly does the job just fine.
-      delim = regexp (row, '[+-\d.eE\*ij ]+([^+-\d.ij])[+-\d.ij]',
-                           'tokens', 'once');
+      delim = regexp (row, '[-+\d.eE*ij ]+([^-+\d.ij])[-+\d.ij]',
+                      'tokens', 'once');
+      #delim = regexp (row, '[+-\d.eE\*ij ]+([^+-\d.ij])[+-\d.ij]',
+      #                     'tokens', 'once');
       if (! isempty (delim))
         delimiter = delim{1};
       endif

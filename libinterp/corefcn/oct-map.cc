@@ -811,9 +811,9 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 %! sr = [s,s];
 %! sc = [s;s];
 %! sm = [s,s;s,s];
-%! assert (nfields (sr), 0);
-%! assert (nfields (sc), 0);
-%! assert (nfields (sm), 0);
+%! assert (numfields (sr), 0);
+%! assert (numfields (sc), 0);
+%! assert (numfields (sm), 0);
 %! assert (size (sr), [1, 2]);
 %! assert (size (sc), [2, 1]);
 %! assert (size (sm), [2, 2]);

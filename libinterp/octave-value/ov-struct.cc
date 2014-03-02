@@ -2066,9 +2066,9 @@ equal dimension is returned.\n\
   return retval;
 }
 
-DEFUN (nfields, args, ,
+DEFUN (numfields, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} nfields (@var{s})\n\
+@deftypefn {Built-in Function} {} numfields (@var{s})\n\
 Return the number of fields of the structure @var{s}.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")

@@ -4,8 +4,16 @@ Summary of important user-visible changes for version 4.2:
  ** Other new functions added in 4.2:
 
       dir_in_loadpath
+      numfields
 
  ** Deprecated functions.
+
+    The following functions have been deprecated in Octave 4.2 and will
+    be removed from Octave 4.6 (or whatever version is the second major
+    release after 4.2):
+
+      find_dir_in_path
+      nfields
 
     The following functions were deprecated in Octave 3.8 and have been
     removed from Octave 4.2.
@@ -18,14 +26,6 @@ Summary of important user-visible changes for version 4.2:
       java_debug              re_read_readline_init_file
       java_get                read_readline_init_file   
       java_invoke             saving_history            
-
-
-    The following functions have been deprecated in Octave 4.2 and will
-    be removed from Octave 4.6 (or whatever version is the second major
-    release after 4.2):
-
-      find_dir_in_path
-
 
     The following keywords were deprecated in Octave 3.8 and have been
     removed from Octave 4.2

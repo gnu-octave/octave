@@ -148,7 +148,7 @@ function assert (cond, varargin)
         err.reason{end+1} = ["Expected struct, but observed " class(cond)];
       elseif (ndims (cond) != ndims (expected)
               || any (size (cond) != size (expected))
-              || rows (fieldnames (cond)) != rows (fieldnames (expected)))
+              || numfields (cond) != numfields (expected))
 
         err.index{end+1} = ".";
         err.observed{end+1} = ["O(" sprintf("%dx", size(cond))(1:end-1) ")"];

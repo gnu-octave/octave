@@ -100,7 +100,7 @@ function imwrite (varargin)
   fmt = imformats (ext);
   ## When there is no match, fmt will be a 1x1 structure with
   ## no fields, so we can't just use `isempty (fmt)'.
-  if (isempty (fieldnames (fmt)))
+  if (numfields (fmt) > 0)
     if (isempty (ext))
       error ("imwrite: no extension found for %s to identify the image format",
              filename);

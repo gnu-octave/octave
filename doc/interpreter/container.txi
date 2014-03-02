@@ -507,7 +507,7 @@ structure or a structure array.
 
 Other functions that can manipulate the fields of a structure are given below.
 
-@DOCSTRING(nfields)
+@DOCSTRING(numfields)
 
 @DOCSTRING(fieldnames)
 

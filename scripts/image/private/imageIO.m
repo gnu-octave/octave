@@ -84,13 +84,13 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
     foo = []; # the function we will use
 
     ## We check if the call to imformats (ext) worked using
-    ## "isempty (fieldnames (fmt))" because when it fails, the returned
+    ## "numfields (fmt) > 0 because when it fails, the returned
     ## struct is not considered empty.
 
     ## try the second input argument
     if (! isempty (varargin) && ischar (varargin{1}))
       fmt = imformats (varargin{1});
-      if (! isempty (fieldnames (fmt)))
+      if (numfields (fmt) > 0)
         foo = fmt.(fieldname);
         varargin(1) = []; # remove format name from arguments
       endif
@@ -104,7 +104,7 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
         ext = ext(2:end);
       endif
       fmt = imformats (ext);
-      if (! isempty (fieldnames (fmt)))
+      if (numfields (fmt) > 0)
         foo = fmt.(fieldname);
       endif
     endif

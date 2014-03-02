@@ -33,7 +33,7 @@
 ## When the input is a Java object @var{javaobj} or Java classname
 ## @var{jclassname} the name are the public data elements of the object or
 ## class.
-## @seealso{nfields, isfield, orderfields, struct, methods}
+## @seealso{numfields, isfield, orderfields, struct, methods}
 ## @end deftypefn
 
 function names = fieldnames (obj)

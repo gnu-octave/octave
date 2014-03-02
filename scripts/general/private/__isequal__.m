@@ -95,9 +95,9 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     if (isstruct (x))
       ## Test the number of fields.
       fn_x = fieldnames (x);
-      l_fn_x = length (fn_x);
+      l_fn_x = numfields (x);
       fn_v = cellfun ("fieldnames", varargin, "uniformoutput", false);
-      t = all (l_fn_x == cellfun ("length", fn_v));
+      t = all (l_fn_x == cellfun ("numfields", varargin));
 
       ## Test that all the names are equal.
       idx = 0;

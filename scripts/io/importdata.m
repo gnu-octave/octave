@@ -146,8 +146,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
     ## i.e., output = output.onlyFieldLeft
 
     ## Update the list of fields
-    fields = fieldnames (output);
-    if (numel (fields) == 1)
+    if (numfields (output) == 1)
       output = output.(fields{1});
     endif
   endif

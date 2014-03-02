@@ -1133,9 +1133,6 @@ A function that constuctors a user class as defined in chapter
 An overloaded function of a class as in chapter
 @ref{Object Oriented Programming}.
 
-@item Legacy Dispatch
-An overloaded function as defined by @code{dispatch}.
-
 @item Command-line Function
 A function that has been defined on the command-line.
 
@@ -1148,8 +1145,8 @@ Oct-file, mex-file or m-file versions of this function and the precedence
 between these versions are in that order.
 
 @item Built-in function
-A function that is builtin to Octave itself such as @code{numel},
-@code{size}, etc.
+A function that is a part of core Octave such as @code{numel}, @code{size},
+etc.
 @end enumerate
 
 @node Script Files

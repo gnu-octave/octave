@@ -332,10 +332,24 @@ function lims = __get_tight_lims__ (ca, ax)
     lims = get (ca, strcat (ax, "lim"));
   else
     data = get (kids, strcat (ax, "data"));
+    types = get (kids, "type");
+    
     scale = get (ca, strcat (ax, "scale"));
     if (! iscell (data))
       data = {data};
     endif
+    
+    ## Extend image data one pixel
+    idx = strcmp (types, "image");
+    if (! isempty (idx) && (ax == "x" || ax == "y"))
+      imdata = data(idx);
+      px = arrayfun (@__image_pixel_size__, kids(idx), "uniformoutput", false);
+      ipx = ifelse (ax == "x", 1, 2);
+      imdata = cellfun (@(x,dx) [(min (x) - dx(ipx)), (max (x) + dx(ipx))],
+                        imdata, px, "uniformoutput", false);
+      data(idx) = imdata;
+    endif
+    
     if (strcmp (scale, "log"))
       tmp = data;
       data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);

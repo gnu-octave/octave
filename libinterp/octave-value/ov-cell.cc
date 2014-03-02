@@ -1289,10 +1289,12 @@ DEFUN (cell, args, ,
 @deftypefnx {Built-in Function} {} cell (@var{m}, @var{n}, @var{k}, @dots{})\n\
 @deftypefnx {Built-in Function} {} cell ([@var{m} @var{n} @dots{}])\n\
 Create a new cell array object.\n\
+\n\
 If invoked with a single scalar integer argument, return a square\n\
 @nospell{NxN} cell array.  If invoked with two or more scalar\n\
 integer arguments, or a vector of integer values, return an array with\n\
 the given dimensions.\n\
+@seealso{cellstr, mat2cell, num2cell, struct2cell}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1367,9 +1369,15 @@ character string.\n\
 
 DEFUN (cellstr, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cellstr (@var{string})\n\
+@deftypefn {Built-in Function} {@var{cstr} =} cellstr (@var{strmat})\n\
 Create a new cell array object from the elements of the string\n\
-array @var{string}.\n\
+array @var{strmat}.\n\
+\n\
+Each row of @var{strmat} becomes an element of @var{cstr}.  Any trailing\n\
+spaces in a row are deleted before conversion.\n\
+\n\
+To convert back from a cellstr to a character array use @code{char}.\n\
+@seealso{cell, char}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1400,11 +1408,11 @@ array @var{string}.\n\
 
 DEFUN (struct2cell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct2cell (@var{S})\n\
+@deftypefn {Built-in Function} {@var{c} =} struct2cell (@var{s})\n\
 Create a new cell array from the objects stored in the struct object.\n\
 If @var{f} is the number of fields in the structure, the resulting\n\
 cell array will have a dimension vector corresponding to\n\
-@code{[@var{F} size(@var{S})]}.  For example:\n\
+@code{[@var{f} size(@var{s})]}.  For example:\n\
 \n\
 @example\n\
 @group\n\

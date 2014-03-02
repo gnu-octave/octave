@@ -640,6 +640,7 @@ DEFUNX ("inline", Finline, args, ,
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
+\n\
 If called with a single argument, the arguments of the generated\n\
 function are extracted from the function itself.  The generated\n\
 function arguments will then be in alphabetical order.  It should\n\
@@ -654,7 +655,12 @@ they are the names of the arguments of the function.\n\
 \n\
 If the second argument is an integer @var{n}, the arguments are\n\
 @qcode{\"x\"}, @qcode{\"P1\"}, @dots{}, @qcode{\"P@var{N}\"}.\n\
-@seealso{argnames, formula, vectorize}\n\
+\n\
+Programming Note: The use of @code{inline} is discouraged and it may be\n\
+removed from a future version of Octave.  The preferred way to create\n\
+functions from strings is through the use of anonymous functions\n\
+(@pxref{Anonymous Functions}) or @code{str2func}.\n\
+@seealso{argnames, formula, vectorize, str2func}\n\
 @end deftypefn")
 {
   octave_value retval;

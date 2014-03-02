@@ -77,6 +77,7 @@ DEFUN (int64, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} int64 (@var{x})\n\
 Convert @var{x} to 64-bit integer type.\n\
+@seealso{int8, uint8, int16, uint16, int32, uint32, uint64}\n\
 @end deftypefn")
 {
   OCTAVE_TYPE_CONV_BODY (int64);

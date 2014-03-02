@@ -187,10 +187,10 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 
 DEFUN (onCleanup, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{c} =} onCleanup (@var{action})\n\
+@deftypefn {Built-in Function} {@var{obj} =} onCleanup (@var{function})\n\
 Create a special object that executes a given function upon destruction.\n\
 If the object is copied to multiple variables (or cell or struct array\n\
-elements) or returned from a function, @var{action} will be executed after\n\
+elements) or returned from a function, @var{function} will be executed after\n\
 clearing the last copy of the object.  Note that if multiple local onCleanup\n\
 variables are created, the order in which they are called is unspecified.\n\
 For similar functionality @xref{The unwind_protect Statement}.\n\

@@ -65,7 +65,8 @@ noinst_HEADERS += \
   graphics/ToggleTool.h \
   graphics/ToolBar.h \
   graphics/ToolBarButton.h \
-  graphics/gl-select.h
+  graphics/gl-select.h \
+  $(TEMPLATE_SRC)
 
 graphics_libgui_graphics_la_SOURCES = \
   graphics/__init_qt__.cc \
@@ -100,8 +101,10 @@ graphics_libgui_graphics_la_SOURCES = \
   graphics/ToggleButtonControl.cc \
   graphics/ToggleTool.cc \
   graphics/ToolBar.cc \
-  graphics/ToolBarButton.cc \
   graphics/gl-select.cc
+
+TEMPLATE_SRC = \
+  graphics/ToolBarButton.cc
 
 nodist_graphics_libgui_graphics_la_SOURCES = $(octave_gui_graphics_MOC) $(octave_gui_graphics_RC)
 

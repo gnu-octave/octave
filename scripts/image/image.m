@@ -183,28 +183,9 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
     ## Set axis properties for new images
 
     if (! isempty (img))
-      px = __image_pixel_size__ (h);
-
-      if (xdata(2) < xdata(1))
-        xdata = fliplr (xdata);
-      elseif (xdata(2) == xdata(1))
-        xdata = xdata(1) + [0, columns(img)-1];
+      if (isscalar (get (hax, "children")))
+        axis (hax, "image")
       endif
-      if (ydata(2) < ydata(1))
-        ydata = fliplr (ydata);
-      elseif (ydata(2) == ydata(1))
-        ydata = ydata(1) + [0, rows(img)-1];
-      endif
-      xlim = xdata + [-px(1), px(1)];
-      ylim = ydata + [-px(2), px(2)];
-
-      ## FIXME -- how can we do this and also get the {x,y}limmode
-      ## properties to remain "auto"?  I suppose this adjustment should
-      ## happen automatically in axes::update_axis_limits instead of
-      ## explicitly setting the values here.  But then what information is
-      ## available to axes::update_axis_limits to determine that the
-      ## adjustment is necessary?
-      set (hax, "xlim", xlim, "ylim", ylim);
 
       if (ndims (img) == 3)
         if (isinteger (img))

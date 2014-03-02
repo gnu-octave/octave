@@ -185,6 +185,7 @@ protected slots:
 
 private slots:
 
+  void request_open_files (const QStringList&);
   void request_open_file (const QString& fileName, int line = -1,
                           bool debug_pointer = false,
                           bool breakpoint_marker = false, bool insert = true);

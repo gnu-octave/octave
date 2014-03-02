@@ -831,10 +831,24 @@ Within a function, return the number of arguments passed to the function.\n\
 At the top level, return the number of command line arguments passed to\n\
 Octave.\n\
 \n\
-If called with the optional argument @var{fcn}, a function name or handle,\n\
+If called with the optional argument @var{fcn}---a function name or handle---\n\
 return the declared number of arguments that the function can accept.\n\
-If the last argument is @var{varargin} the returned value is negative.\n\
-This feature does not work on builtin functions.\n\
+\n\
+If the last argument to @var{fcn} is @var{varargin} the returned value is\n\
+negative.  For example, the function @code{union} for sets is declared as\n\
+\n\
+@example\n\
+@group\n\
+function [y, ia, ib] = union (a, b, varargin)\n\
+\n\
+and\n\
+\n\
+nargin (\"union\")\n\
+@result{} -3\n\
+@end group\n\
+@end example\n\
+\n\
+Programming Note: @code{nargin} does not work on built-in functions.\n\
 @seealso{nargout, varargin, isargout, varargout, nthargout}\n\
 @end deftypefn")
 {
@@ -895,8 +909,8 @@ DEFUN (nargout, args, ,
 @deftypefn  {Built-in Function} {} nargout ()\n\
 @deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
 Within a function, return the number of values the caller expects to\n\
-receive.  If called with the optional argument @var{fcn}, a function\n\
-name or handle, return the number of declared output values that the\n\
+receive.  If called with the optional argument @var{fcn}---a function\n\
+name or handle---return the number of declared output values that the\n\
 function can produce.  If the final output argument is @var{varargout}\n\
 the returned value is negative.\n\
 \n\
@@ -914,8 +928,7 @@ will cause @code{nargout} to return 0 inside the function @code{f} and\n\
 @end example\n\
 \n\
 @noindent\n\
-will cause @code{nargout} to return 2 inside the function\n\
-@code{f}.\n\
+will cause @code{nargout} to return 2 inside the function @code{f}.\n\
 \n\
 In the second usage,\n\
 \n\
@@ -927,15 +940,16 @@ nargout (@@histc) \% or nargout (\"histc\")\n\
 will return 2, because @code{histc} has two outputs, whereas\n\
 \n\
 @example\n\
-nargout (@@deal)\n\
+nargout (@@imread)\n\
 @end example\n\
 \n\
 @noindent\n\
-will return -1, because @code{deal} has a variable number of outputs.\n\
+will return -2, because @code{imread} has two outputs and the second is\n\
+@var{varargout}.\n\
 \n\
-At the top level, @code{nargout} with no argument is undefined.\n\
-@code{nargout} does not work on builtin functions.\n\
-@code{nargout} returns -1 for all anonymous functions.\n\
+At the top level, @code{nargout} with no argument is undefined and will\n\
+produce an error.  @code{nargout} does not work for built-in functions and\n\
+returns -1 for all anonymous functions.\n\
 @seealso{nargin, varargin, isargout, varargout, nthargout}\n\
 @end deftypefn")
 {
@@ -1023,8 +1037,9 @@ DEFUN (optimize_subsasgn_calls, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
 Query or set the internal flag for subsasgn method call optimizations.\n\
+\n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
-subsasgn method of a user-defined class.\n\
+the subsasgn method of a user-defined class.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
@@ -1058,7 +1073,7 @@ DEFUN (isargout, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isargout (@var{k})\n\
 Within a function, return a logical value indicating whether the argument\n\
-@var{k} will be assigned on output to a variable.  If the result is false,\n\
+@var{k} will be assigned to a variable on output.  If the result is false,\n\
 the argument has been ignored during the function call through the use of\n\
 the tilde (~) special output argument.  Functions can use @code{isargout} to\n\
 avoid performing unnecessary calculations for outputs which are unwanted.\n\

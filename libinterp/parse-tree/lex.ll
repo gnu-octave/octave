@@ -1930,6 +1930,7 @@ DEFUN (__display_tokens__, args, nargout,
 @deftypefn {Built-in Function} {} __display_tokens__ ()\n\
 Query or set the internal variable that determines whether Octave's\n\
 lexer displays tokens as they are read.\n\
+@seealso{__lexer_debug_flag__, __token_count__}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (display_tokens);
@@ -1938,7 +1939,8 @@ lexer displays tokens as they are read.\n\
 DEFUN (__token_count__, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __token_count__ ()\n\
-Number of language tokens processed since Octave startup.\n\
+Return the number of language tokens processed since Octave startup.\n\
+@seealso{__lexer_debug_flag__, __display_tokens__}\n\
 @end deftypefn")
 {
   return octave_value (Vtoken_count);
@@ -1946,8 +1948,11 @@ Number of language tokens processed since Octave startup.\n\
 
 DEFUN (__lexer_debug_flag__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val}))\n\
-Undocumented internal function.\n\
+@deftypefn  {Built-in Function} {@var{val} =} __lexer_debug_flag__ ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} __lexer_debug_flag__ (@var{new_val})\n\
+Query or set the internal flag that determines whether Octave's lexer prints\n\
+debug information as it processes an expression.\n\
+@seealso{__display_tokens__, __token_count__, __parse_debug_flag__}\n\
 @end deftypefn")
 {
   octave_value retval;

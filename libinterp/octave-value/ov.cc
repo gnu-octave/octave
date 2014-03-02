@@ -2909,7 +2909,7 @@ are @samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.\n\
 The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
 of index values.\n\
 \n\
-The following example shows how to extract the two first columns of\n\
+The following example shows how to extract the first two columns of\n\
 a matrix\n\
 \n\
 @example\n\

@@ -22,7 +22,7 @@
 ##
 ## @var{h} may also be an array of handles in which case @var{res} will be a
 ## logical array indicating whether each handle has the property @var{prop}.
-## @seealso{get, set}
+## @seealso{get, set, ismethod, isobject}
 ## @end deftypefn
 
 ## Author: Ben Abbott  <bpabbott@mac.com>

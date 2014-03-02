@@ -2062,7 +2062,7 @@ DEFUN (ismethod, args, ,
 @deftypefn {Built-in Function} {} ismethod (@var{x}, @var{method})\n\
 Return true if @var{x} is a class object and the string @var{method}\n\
 is a method of this class.\n\
-@seealso{isobject}\n\
+@seealso{isprop, isobject}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2164,6 +2164,7 @@ When called from a class constructor, mark the object currently\n\
 constructed as having a higher precedence than @var{class_name}.\n\
 More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
+@seealso{inferiorto}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2208,6 +2209,7 @@ When called from a class constructor, mark the object currently\n\
 constructed as having a lower precedence than @var{class_name}.\n\
 More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
+@seealso{superiorto}\n\
 @end deftypefn")
 {
   octave_value retval;

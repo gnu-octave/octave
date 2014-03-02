@@ -211,10 +211,11 @@ file_editor::request_open_file (void)
 
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
+  fileDialog->setFileMode (QFileDialog::ExistingFiles);
   fileDialog->setDirectory (ced);
 
-  connect (fileDialog, SIGNAL (fileSelected (const QString&)),
-           this, SLOT (request_open_file (const QString&)));
+  connect (fileDialog, SIGNAL (filesSelected (const QStringList&)),
+           this, SLOT (request_open_files (const QStringList&)));
 
   fileDialog->setWindowModality (Qt::NonModal);
   fileDialog->setAttribute (Qt::WA_DeleteOnClose);
@@ -263,6 +264,13 @@ file_editor::call_custom_editor (const QString& file_name, int line)
     }
 
   return false;
+}
+
+void
+file_editor::request_open_files (const QStringList& open_file_names)
+{
+  for (int i = 0; i < open_file_names.count (); i++)
+    request_open_file (open_file_names.at (i));
 }
 
 void

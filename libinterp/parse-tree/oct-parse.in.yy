@@ -4119,13 +4119,14 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
 
 DEFUN (autoload, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} autoload (@var{function}, @var{file})\n\
-@deftypefnx {Built-in Function} {} autoload (@dots{}, @asis{\"remove\"})\n\
+@deftypefn  {Built-in Function} {@var{autoload_map} =} autoload ()\n\
+@deftypefnx {Built-in Function} {} autoload (@var{function}, @var{file})\n\
+@deftypefnx {Built-in Function} {} autoload (@dots{}, \"remove\")\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
 The second argument, @var{file}, should be an absolute file name or\n\
 a file name in the same directory as the function or script from which\n\
-the autoload command was run.  @var{file} should not depend on the\n\
+the autoload command was run.  @var{file} @emph{should not} depend on the\n\
 Octave load path.\n\
 \n\
 Normally, calls to @code{autoload} appear in PKG_ADD script files that\n\
@@ -4139,7 +4140,7 @@ autoload (\"foo\", \"bar.oct\");\n\
 \n\
 @noindent\n\
 will load the function @code{foo} from the file @code{bar.oct}.  The above\n\
-usage when @code{bar.oct} is not in the same directory or usages such as\n\
+usage when @code{bar.oct} is not in the same directory, or usages such as\n\
 \n\
 @example\n\
 autoload (\"foo\", file_in_loadpath (\"bar.oct\"))\n\
@@ -4150,7 +4151,7 @@ are strongly discouraged, as their behavior may be unpredictable.\n\
 \n\
 With no arguments, return a structure containing the current autoload map.\n\
 \n\
-If a third argument @asis{'remove'} is given, the function is cleared and\n\
+If a third argument @qcode{\"remove\"} is given, the function is cleared and\n\
 not loaded anymore during the current Octave session.\n\
 \n\
 @seealso{PKG_ADD}\n\
@@ -4348,11 +4349,12 @@ DEFUN (mfilename, args, ,
 @deftypefn  {Built-in Function} {} mfilename ()\n\
 @deftypefnx {Built-in Function} {} mfilename (\"fullpath\")\n\
 @deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
-Return the name of the currently executing file.  At the top-level,\n\
-return the empty string.  Given the argument @qcode{\"fullpath\"},\n\
-include the directory part of the file name, but not the extension.\n\
-Given the argument @qcode{\"fullpathext\"}, include the directory part\n\
-of the file name and the extension.\n\
+Return the name of the currently executing file.\n\
+\n\
+When called from outside an m-file return the empty string.  Given the\n\
+argument @qcode{\"fullpath\"}, include the directory part of the file name,\n\
+but not the extension.  Given the argument @qcode{\"fullpathext\"}, include\n\
+the directory part of the file name and the extension.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4414,9 +4416,11 @@ of the file name and the extension.\n\
 DEFUN (source, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} source (@var{file})\n\
-Parse and execute the contents of @var{file}.  This is equivalent to\n\
-executing commands from a script file, but without requiring the file to\n\
-be named @file{@var{file}.m}.\n\
+Parse and execute the contents of @var{file}.\n\
+\n\
+This is equivalent to executing commands from a script file, but without\n\
+requiring the file to be named @file{@var{file}.m}.\n\
+@seealso{run}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4586,7 +4590,7 @@ instead.\n\
 
 DEFUN (builtin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
+@deftypefn {Built-in Function} {[@dots{}] =} builtin (@var{f}, @dots{})\n\
 Call the base function @var{f} even if @var{f} is overloaded to\n\
 another function for the given type signature.\n\
 \n\
@@ -4753,14 +4757,14 @@ program.  If that fails, evaluate the optional string @var{catch}.\n\
 The string @var{try} is evaluated in the current context,\n\
 so any results remain available after @code{eval} returns.\n\
 \n\
-The following example makes the variable @var{A} with the approximate\n\
-value 3.1416 available.\n\
+The following example creates the variable @var{A} with the approximate\n\
+value of 3.1416 in the current workspace.\n\
 \n\
 @example\n\
 eval (\"A = acos(-1);\");\n\
 @end example\n\
 \n\
-If an error occurs during the evaluation of @var{try} the @var{catch}\n\
+If an error occurs during the evaluation of @var{try} then the @var{catch}\n\
 string is evaluated, as the following example shows:\n\
 \n\
 @example\n\
@@ -4772,9 +4776,11 @@ eval ('error (\"This is a bad example\");',\n\
 @end group\n\
 @end example\n\
 \n\
-Consider using try/catch blocks instead if you are only using @code{eval}\n\
-as an error-capturing mechanism rather than for the execution of arbitrary\n\
-code strings.\n\
+Programming Note: if you are only using @code{eval} as an error-capturing\n\
+mechanism, rather than for the execution of arbitrary code strings,\n\
+Consider using try/catch blocks or unwind_protect/unwind_protect_cleanup\n\
+blocks instead.  These techniques have higher performance and don't introduce\n\
+the security considerations that the evaluation of arbitrary code does.\n\
 @seealso{evalin}\n\
 @end deftypefn")
 {
@@ -4985,8 +4991,11 @@ context @var{context}, which may be either @qcode{\"caller\"} or\n\
 
 DEFUN (__parser_debug_flag__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{old_val} =} __parser_debug_flag__ (@var{new_val}))\n\
-Undocumented internal function.\n\
+@deftypefn  {Built-in Function} {@var{val} =} __parser_debug_flag__ ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} __parser_debug_flag__ (@var{new_val})\n\
+Query or set the internal flag that determines whether Octave's parser prints\n\
+debug information as it processes an expression.\n\
+@seealso{__lexer_debug_flag__}\n\
 @end deftypefn")
 {
   octave_value retval;

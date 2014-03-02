@@ -3291,7 +3291,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
 
                   char_count += gcount;
 
-                  size_t nel = gcount / input_elt_size;
+                  octave_idx_type nel = gcount / input_elt_size;
 
                   count += nel;
 
@@ -3312,7 +3312,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                       // the original position?
                       seek (orig_pos, SEEK_SET);
 
-                      size_t remaining = eof_pos - orig_pos;
+                      off_t remaining = eof_pos - orig_pos;
 
                       if (remaining < skip)
                         seek (0, SEEK_END);
@@ -3327,7 +3327,12 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
               if (read_to_eof)
                 {
                   if (nc < 0)
-                    nc = count / nr + 1;
+                    {
+                      nc = count / nr;
+
+                      if (count % nr != 0)
+                        nc ++;
+                    }
                   else
                     nr = count;
                 }

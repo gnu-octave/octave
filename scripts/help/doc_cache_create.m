@@ -25,7 +25,7 @@
 ## resulting cache is saved in the file @var{out_file}.
 ## The cache is used to speed up @code{lookfor}.
 ##
-## If no directory is given (or it is the empty matrix), a cache for builtin
+## If no directory is given (or it is the empty matrix), a cache for built-in
 ## operators, etc. is generated.
 ##
 ## @seealso{doc_cache_file, lookfor, path}

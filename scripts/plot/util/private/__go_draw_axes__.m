@@ -2158,35 +2158,22 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
     endif
     if (strcmpi (labelmode, "manual"))
-      if (ischar (labels))
-        labels = cellstr (labels);
-      endif
-      if (isnumeric (labels))
-        labels = num2str (real (labels(:)));
-      endif
-      if (ischar (labels))
-        labels = permute (cellstr (labels), [2, 1]);
-      endif
-      if (iscellstr (labels))
-        k = 1;
-        ntics = numel (tics);
-        nlabels = numel (labels);
-        fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
-                 tickdir, ticklength, axispos, mirror);
-        labels = strrep (labels, "%", "%%");
-        for i = 1:ntics
-          fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
-          if (i < ntics)
-            fputs (plot_stream, ", ");
-          endif
-          if (k > nlabels)
-            k = 1;
-          endif
-        endfor
-        fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
-      else
-        error ("__go_draw_axes__: unsupported type of ticklabel");
-      endif
+      k = 1;
+      ntics = numel (tics);
+      nlabels = numel (labels);
+      fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
+               tickdir, ticklength, axispos, mirror);
+      labels = strrep (labels, "%", "%%");
+      for i = 1:ntics
+        fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
+        if (i < ntics)
+          fputs (plot_stream, ", ");
+        endif
+        if (k > nlabels)
+          k = 1;
+        endif
+      endfor
+      fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
     endif
   else
     fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
@@ -2201,20 +2188,12 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
 endfunction
 
 function ticklabel = ticklabel_to_cell (ticklabel)
-  if (isnumeric (ticklabel))
-    ## Use upto 5 significant digits
-    ticklabel = num2str (ticklabel(:), 5);
-  endif
   if (ischar (ticklabel))
-    if (rows (ticklabel) == 1 && any (ticklabel == "|"))
-      ticklabel = ostrsplit (ticklabel, "|");
-    else
-      ticklabel = cellstr (ticklabel);
-    endif
-  elseif (isempty (ticklabel))
-    ticklabel = {""};
-  else
+    ticklabel = cellstr (ticklabel);
+  elseif (iscellstr (ticklabel))
     ticklabel = ticklabel;
+  else
+    error ("__go_draw_axes__: unsupported type of ticklabel");
   endif
 endfunction
 

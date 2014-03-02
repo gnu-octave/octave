@@ -1146,8 +1146,8 @@ Oct-file, mex-file or m-file versions of this function and the precedence
 between these versions are in that order.
 
 @item Built-in function
-A function that is builtin to Octave itself such as @code{numel},
-@code{size}, etc.
+A function that is a part of core Octave such as @code{numel}, @code{size},
+etc.
 @end enumerate
 
 @node Script Files

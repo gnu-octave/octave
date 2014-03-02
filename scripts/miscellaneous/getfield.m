@@ -24,7 +24,7 @@
 ## is the same as @code{setfield}, except it omits the final @var{val}
 ## argument, returning this value instead of setting it.
 ##
-## @seealso{setfield, rmfield, isfield, isstruct, fieldnames, struct}
+## @seealso{setfield, rmfield, isfield, fieldnames, isstruct, struct}
 ## @end deftypefn
 
 ## Author: Etienne Grossmann <etienne@cs.uky.edu>

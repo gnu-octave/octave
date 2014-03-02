@@ -95,7 +95,7 @@
 ## @var{SA}(2).bar(3).baz = 6
 ## @end group
 ## @end example
-## @seealso{getfield, rmfield, isfield, isstruct, fieldnames, struct}
+## @seealso{getfield, rmfield, isfield, fieldnames, isstruct, struct}
 ## @end deftypefn
 
 ## Author:  Etienne Grossmann <etienne@cs.uky.edu>

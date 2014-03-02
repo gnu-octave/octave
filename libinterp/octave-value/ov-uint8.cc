@@ -77,6 +77,7 @@ DEFUN (uint8, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uint8 (@var{x})\n\
 Convert @var{x} to unsigned 8-bit integer type.\n\
+@seealso{int8, int16, uint16, int32, uint32, int64, uint64}\n\
 @end deftypefn")
 {
   OCTAVE_TYPE_CONV_BODY (uint8);

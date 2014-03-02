@@ -1659,9 +1659,49 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 
 DEFUN (functions, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} functions (@var{fcn_handle})\n\
-Return a struct containing information about the function handle\n\
+@deftypefn {Built-in Function} {@var{s} =} functions (@var{fcn_handle})\n\
+Return a structure containing information about the function handle\n\
 @var{fcn_handle}.\n\
+\n\
+The structure @var{s} always contains these 3 fields:\n\
+\n\
+@table @asis\n\
+@item function\n\
+The function name.  For an anonymous function (no name) this will be the\n\
+actual function definition.\n\
+\n\
+@item type\n\
+Type of the function.\n\
+\n\
+@table @asis\n\
+@item anonymous\n\
+The function is anonymous.\n\
+\n\
+@item private\n\
+The function is private.\n\
+\n\
+@item overloaded\n\
+The function overloads an existing function.\n\
+\n\
+@item simple\n\
+The function is a built-in or m-file function.\n\
+\n\
+@item subfunction\n\
+The function is a subfunction within an m-file.\n\
+@end table\n\
+\n\
+@item file\n\
+The m-file that will be called to perform the function.  This field is empty\n\
+for anonymous and built-in functions.\n\
+@end table\n\
+\n\
+In addition, some function types may return more information in additional\n\
+fields.\n\
+\n\
+@strong{Warning:} @code{functions} is provided for debugging purposes only.\n\
+It's behavior may change in the future and programs should not depend on a\n\
+particular output.\n\
+\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1760,6 +1800,7 @@ DEFUN (func2str, args, ,
 @deftypefn {Built-in Function} {} func2str (@var{fcn_handle})\n\
 Return a string containing the name of the function referenced by\n\
 the function handle @var{fcn_handle}.\n\
+@seealso{str2func, functions}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1799,6 +1840,7 @@ DEFUN (str2func, args, ,
 Return a function handle constructed from the string @var{fcn_name}.\n\
 If the optional @qcode{\"global\"} argument is passed, locally visible\n\
 functions are ignored in the lookup.\n\
+@seealso{func2str, inline}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1839,7 +1881,7 @@ DEFUN (is_function_handle, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_function_handle (@var{x})\n\
 Return true if @var{x} is a function handle.\n\
-@seealso{isa, typeinfo, class}\n\
+@seealso{isa, typeinfo, class, functions}\n\
 @end deftypefn")
 {
   octave_value retval;

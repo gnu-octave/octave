@@ -615,8 +615,9 @@ DEFUN (typeinfo, args, ,
 @deftypefnx {Built-in Function} {} typeinfo (@var{expr})\n\
 \n\
 Return the type of the expression @var{expr}, as a string.  If\n\
-@var{expr} is omitted, return an cell array of strings containing all the\n\
+@var{expr} is omitted, return a cell array of strings containing all the\n\
 currently installed data types.\n\
+@seealso{class, isa}\n\
 @end deftypefn")
 {
   octave_value retval;

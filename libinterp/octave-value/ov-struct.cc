@@ -1763,12 +1763,14 @@ octave_scalar_struct::fast_elem_insert_self (void *where,
 
 DEFUN (struct, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{s} =} struct ()\n\
+@deftypefnx {Built-in Function} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
+@deftypefnx {Built-in Function} {@var{s} =} struct (@var{obj})\n\
 \n\
 Create a scalar or array structure and initialize its values.  The\n\
-@var{field1}, @var{field2}, @dots{} variables are strings giving the\n\
+@var{field1}, @var{field2}, @dots{} variables are strings specifying the\n\
 names of the fields and the @var{value1}, @var{value2}, @dots{}\n\
-variables can be any type.\n\
+variables can be of any type.\n\
 \n\
 If the values are cell arrays, create a structure array and initialize\n\
 its values.  The dimensions of each cell array of values must match.\n\
@@ -1803,7 +1805,7 @@ struct (\"foo\", @{1, 2, 3@})\n\
 @end example\n\
 \n\
 @noindent\n\
-The first case is an ordinary scalar struct, one field, one value.  The\n\
+The first case is an ordinary scalar struct---one field, one value.  The\n\
 second produces an empty struct array with one field and no values, since\n\
 s being passed an empty cell array of struct array values.  When the value is\n\
 a cell array containing a single entry, this becomes a scalar struct with\n\
@@ -1812,6 +1814,7 @@ to be an empty cell array.\n\
 \n\
 Finally, if the value is a non-scalar cell array, then @code{struct}\n\
 produces a struct @strong{array}.\n\
+@seealso{cell2struct, fieldnames, orderfields, getfield, setfield, rmfield, structfun}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2006,10 +2009,12 @@ Implements @code{fieldnames()} for structures and Octave objects.\n\
 
 DEFUN (isfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isfield (@var{x}, @var{name})\n\
-Return true if the @var{x} is a structure and it\n\
-includes an element named @var{name}.  If @var{name} is a cell\n\
-array of strings then a logical array of equal dimension is returned.\n\
+@deftypefn  {Built-in Function} {} isfield (@var{x}, \"@var{name}\")\n\
+@deftypefnx {Built-in Function} {} isfield (@var{x}, @var{name})\n\
+Return true if the @var{x} is a structure and it includes an element named\n\
+@var{name}.  If @var{name} is a cell array of strings then a logical array of\n\
+equal dimension is returned.\n\
+@seealso{fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2065,6 +2070,7 @@ DEFUN (nfields, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} nfields (@var{s})\n\
 Return the number of fields of the structure @var{s}.\n\
+@seealso{fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2095,7 +2101,8 @@ Return the number of fields of the structure @var{s}.\n\
 
 DEFUN (cell2struct, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} cell2struct (@var{cell}, @var{fields})\n\
+@deftypefnx {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
 Convert @var{cell} to a structure.  The number of fields in @var{fields}\n\
 must match the number of elements in @var{cell} along dimension @var{dim},\n\
 that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.\n\
@@ -2115,6 +2122,7 @@ A(1)\n\
 \n\
 @end group\n\
 @end example\n\
+@seealso{struct2cell, cell2mat, struct}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2231,10 +2239,10 @@ DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{s} =} rmfield (@var{s}, \"@var{f}\")\n\
 @deftypefnx {Built-in Function} {@var{s} =} rmfield (@var{s}, @var{f})\n\
-Return a copy of the structure (array) @var{s} with the field @var{f}\n\
+Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}\n\
 removed.  If @var{f} is a cell array of strings or a character array, remove\n\
 each of the named fields.\n\
-@seealso{cellstr, iscellstr, setfield}\n\
+@seealso{orderfields, fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2302,6 +2310,7 @@ structure levels to display.\n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
+@seealso{print_struct_array_contents}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print, -1,
@@ -2314,14 +2323,17 @@ DEFUN (print_struct_array_contents, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies whether to print struct\n\
-array contents.  If true, values of struct array elements are printed.\n\
-This variable does not affect scalar structures.  Their elements\n\
-are always printed.  In both cases, however, printing will be limited to\n\
+array contents.\n\
+\n\
+If true, values of struct array elements are printed.\n\
+This variable does not affect scalar structures whose elements are always\n\
+printed.  In both cases, however, printing will be limited to\n\
 the number of levels specified by @var{struct_levels_to_print}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
+@seealso{struct_levels_to_print}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);

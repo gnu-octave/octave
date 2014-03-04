@@ -28,28 +28,25 @@ extern "C" {
 #endif
 
 /*  Octave's idea of infinity.  */
-extern OCTAVE_API double octave_Inf;
+#define octave_Inf (lo_ieee_inf_value ())
 
 /* Octave's idea of a missing value.  */
-extern OCTAVE_API double octave_NA;
+#define octave_NA (lo_ieee_na_value ())
 
 /* Octave's idea of not a number.  */
-extern OCTAVE_API double octave_NaN;
+#define octave_NaN (lo_ieee_nan_value ())
 
 /*  Octave's idea of infinity.  */
-extern OCTAVE_API float octave_Float_Inf;
+#define octave_Float_Inf (lo_ieee_float_inf_value ())
 
 /* Octave's idea of a missing value.  */
-extern OCTAVE_API float octave_Float_NA;
+#define octave_Float_NA (lo_ieee_float_na_value ())
 
 /* Octave's idea of not a number.  */
-extern OCTAVE_API float octave_Float_NaN;
+#define octave_Float_NaN (lo_ieee_float_nan_value ())
 
 /* FIXME -- this code assumes that a double has twice the
    number of bits as an int */
-
-extern OCTAVE_API int lo_ieee_hw;
-extern OCTAVE_API int lo_ieee_lw;
 
 typedef union
 {

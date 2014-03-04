@@ -2222,6 +2222,7 @@ AC_LANG_POP(C++)
 OCTAVE_CHECK_FUNC_CMATH(isnan)
 OCTAVE_CHECK_FUNC_CMATH(isinf)
 OCTAVE_CHECK_FUNC_CMATH(isfinite)
+OCTAVE_CHECK_FUNC_CMATH(signbit)
 
 ## Check for Inf and NaN functions
 

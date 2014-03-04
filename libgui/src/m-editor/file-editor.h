@@ -182,6 +182,7 @@ private slots:
 
 private:
 
+  bool is_editor_console_tabbed ();
   void construct (void);
   void add_file_editor_tab (file_editor_tab *f, const QString& fn);
   void save_file_as (QWidget *fetabID = 0);

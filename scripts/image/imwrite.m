@@ -125,52 +125,37 @@ endfunction
 %!error imwrite ([], "filename.jpg")          # Empty img matrix
 %!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
 
-## test typical usage with normal grayscale and RGB uint8 images
+%!function [r, cmap, a] = write_and_read (varargin)
+%!  filename = [tmpnam() ".tif"];
+%!  unwind_protect
+%!    imwrite (varargin{1}, filename, varargin{2:end});
+%!    [r, cmap, a] = imread (filename, "Index", "all");
+%!  unwind_protect_cleanup
+%!    unlink (filename);
+%!  end_unwind_protect
+%!endfunction
+
+## typical usage with grayscale uint8 images
 %!testif HAVE_MAGICK
-%! bw  = randi (255, 10, "uint8");
+%! bw  = randi (255, 10, 10, 1, "uint8");
+%! r  = write_and_read (bw);
+%! assert (r, bw)
+
+## multipage grayscale uint8 images
+%!testif HAVE_MAGICK
+%! bw  = randi (255, 10, 10, 1, 5, "uint8");
+%! r  = write_and_read (bw);
+%! assert (r, bw)
+
+## typical usage with RGB uint8 images
+%!testif HAVE_MAGICK
 %! rgb = randi (255, 10, 10, 3, "uint8");
-%! filename = [tmpnam() ".png"];
-%! unwind_protect
-%!   imwrite (bw, filename);
-%!   bwr = imread (filename);
-%!   assert (bw, bwr)
-%!
-%!   imwrite (rgb, filename);
-%!   rgbr = imread (filename);
-%!   assert (rgb, rgbr)
-%! unwind_protect_cleanup
-%!   unlink (filename);
-%! end_unwind_protect
+%! r = write_and_read (rgb);
+%! assert (r, rgb)
 
-## Test writing of N dimensional images
+## multipage RGB uint8 images
 %!testif HAVE_MAGICK
-%! bw    = randi (255, 10, 10, 1, 5, "uint8");
-%! rgb   = randi (255, 3, 3, 3, 3, "uint8");
-%! filename = [tmpnam() ".tif"];
-%! unwind_protect
-%!   imwrite (bw, filename);
-%!   bwr = imread (filename, "Index", "all");
-%!   assert (bw, bwr)
-%!
-%!   imwrite (rgb, filename);
-%!   rgbr = imread (filename, "Index", "all");
-%!   assert (rgb, rgbr)
-%!
-%! unwind_protect_cleanup
-%!   unlink (filename);
-%! end_unwind_protect
-
-## test reading and writing of the alpha channel
-%!testif HAVE_MAGICK
-%! imw    = randi (255, 10, "uint8");
-%! alphaw = randi (255, 10, "uint8");
-%! filename = [tmpnam() ".png"];
-%! unwind_protect
-%!   imwrite (imw, filename, "Alpha", alphaw);
-%!   [imr, ~, alphar] = imread (filename);
-%!   assert (imw, imr)
-%!   assert (alphaw, alphar)
-%! unwind_protect_cleanup
-%!   unlink (filename);
-%! end_unwind_protect
+%! rgb = randi (255, 10, 10, 3, 5, "uint8");
+%! r = write_and_read (rgb);
+%! assert (r, rgb)
 

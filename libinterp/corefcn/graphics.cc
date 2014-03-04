@@ -58,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "txt-eng-ft.h"
 #include "unwind-prot.h"
+#include "octave-default-image.h"
 
 // forward declarations
 static octave_value xget (const graphics_handle& h, const caseless_str& name);
@@ -255,6 +256,77 @@ default_data (void)
 }
 
 static Matrix
+default_image_cdata (void)
+{
+  Matrix m (64, 64, 0.0);
+  int i = 0;
+  for (int col = 0; col < 64; col++)
+    for (int row = 0; row < 64; row++)
+      {
+        m(col,row) = static_cast<double> (default_im_data[i]);
+        i++;
+      }
+
+  return m;
+}
+
+static Matrix
+default_surface_xdata (void)
+{
+  Matrix m (3, 3, 0.0);
+  for (int col = 0; col < 3; col++)
+    for (int row = 0; row < 3; row++)
+      m(row,col) = col+1;
+
+  return m;
+}
+
+static Matrix
+default_surface_ydata (void)
+{
+  Matrix m (3, 3, 0.0);
+  for (int row = 0; row < 3; row++)
+    for (int col = 0; col < 3; col++)
+      m(row,col) = row+1;
+
+  return m;
+}
+
+static Matrix
+default_surface_zdata (void)
+{
+  Matrix m (3, 3, 0.0);
+  for (int row = 0; row < 3; row++)
+    m(row,row) = 1.0;
+  return m;
+}
+
+static Matrix
+default_surface_cdata (void)
+{
+  return default_surface_zdata ();
+}
+
+static Matrix
+default_patch_faces (void)
+{
+  Matrix m (1, 3, 1.0);
+  m(1) = 2.0;
+  m(2) = 3.0;
+  return m;
+}
+
+static Matrix
+default_patch_vertices (void)
+{
+  Matrix m (3, 2, 0);
+  m(1) = 1.0;
+  m(3) = 1.0;
+  m(4) = 1.0;
+  return m;
+}
+
+static Matrix
 default_axes_position (void)
 {
   Matrix m (1, 4, 0.0);
@@ -270,6 +342,14 @@ default_axes_outerposition (void)
 {
   Matrix m (1, 4, 0.0);
   m(2) = m(3) = 1.0;
+  return m;
+}
+
+static Matrix
+default_axes_view (void)
+{
+  Matrix m (1, 2, 0.0);
+  m(1) = 90.0;
   return m;
 }
 
@@ -1237,7 +1317,7 @@ array_property::validate (const octave_value& v)
 
       // check dimensional size constraints until a match is found
       for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
-           ! xok && it != size_constraints.end (); ++it)
+           ! xok && it != size_constraints.end ();++it)
         {
           dim_vector itdims = (*it);
 

@@ -3731,7 +3731,7 @@ public:
       radio_property camerapositionmode , "{auto}|manual"
       array_property cameratarget m , Matrix (1, 3, 0.0)
       radio_property cameratargetmode , "{auto}|manual"
-      array_property cameraupvector m , Matrix ()
+      array_property cameraupvector m , Matrix (1, 3, 0.0)
       radio_property cameraupvectormode , "{auto}|manual"
       double_property cameraviewangle m , 10.0
       radio_property cameraviewanglemode , "{auto}|manual"
@@ -3770,7 +3770,7 @@ public:
       handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
       // FIXME: uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
-      array_property view u , Matrix ()
+      array_property view u , default_axes_view ()
       radio_property xaxislocation u , "{bottom}|top|zero"
       color_property xcolor , color_values (0, 0, 0)
       radio_property xdir u , "{normal}|reverse"
@@ -4356,7 +4356,7 @@ public:
       radio_property interpreter u , "{tex}|none|latex"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
-      double_property margin , 1
+      double_property margin , 2
       array_property position smu , Matrix (1, 3, 0.0)
       double_property rotation mu , 0
       text_label_property string u , ""
@@ -4499,10 +4499,11 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (image)
-      array_property alphadata u , Matrix ()
-      radio_property alphadatamapping al , "none|direct|{scaled}"
-      array_property cdata u , Matrix ()
+      array_property alphadata u , Matrix (1, 1, 1.0)
+      radio_property alphadatamapping al , "{none}|direct|scaled"
+      array_property cdata u , default_image_cdata ()
       radio_property cdatamapping al , "scaled|{direct}"
+      string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
       row_vector_property xdata u , Matrix ()
       row_vector_property ydata u , Matrix ()
@@ -4668,7 +4669,7 @@ public:
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property facelighting , "{none}|flat|gouraud|phong"
-      array_property faces , Matrix ()
+      array_property faces , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata , Matrix ()
       // FIXME: interpreter is not a property of a Matlab patch.
@@ -4683,9 +4684,9 @@ public:
       radio_property normalmode , "{auto}|manual"
       double_property specularcolorreflectance , 1.0
       double_property specularexponent , 10.0
-      double_property specularstrength , 0.6
+      double_property specularstrength , 0.9
       array_property vertexnormals , Matrix ()
-      array_property vertices , Matrix ()
+      array_property vertices , default_patch_vertices ()
       array_property xdata u , Matrix ()
       array_property ydata u , Matrix ()
       array_property zdata u , Matrix ()
@@ -4786,11 +4787,11 @@ public:
     // Programming note: Keep property list sorted if new ones are added.
 
     BEGIN_PROPERTIES (surface)
-      array_property alphadata u , Matrix ()
+      array_property alphadata u , Matrix (1, 1, 1.0)
       radio_property alphadatamapping l , "none|direct|{scaled}"
       double_property ambientstrength , 0.3
       radio_property backfacelighting , "unlit|lit|{reverselit}"
-      array_property cdata u , Matrix ()
+      array_property cdata u , default_surface_cdata ()
       radio_property cdatamapping al , "{scaled}|direct"
       string_property cdatasource , ""
       double_property diffusestrength , 0.6
@@ -4817,11 +4818,11 @@ public:
       double_property specularexponent , 10
       double_property specularstrength , 0.9
       array_property vertexnormals u , Matrix ()
-      array_property xdata u , Matrix ()
+      array_property xdata u , default_surface_xdata ()
       string_property xdatasource , ""
-      array_property ydata u , Matrix ()
+      array_property ydata u , default_surface_ydata ()
       string_property ydatasource , ""
-      array_property zdata u , Matrix ()
+      array_property zdata u , default_surface_zdata ()
       string_property zdatasource , ""
 
       // hidden properties for limit computation

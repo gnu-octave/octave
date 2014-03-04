@@ -137,15 +137,31 @@ endfunction
 
 ## typical usage with grayscale uint8 images
 %!testif HAVE_MAGICK
-%! bw  = randi (255, 10, 10, 1, "uint8");
-%! r  = write_and_read (bw);
-%! assert (r, bw)
+%! gray  = randi (255, 10, 10, 1, "uint8");
+%! r  = write_and_read (gray);
+%! assert (r, gray)
+
+## grayscale uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! gray  = randi (255, 10, 10, 1, "uint8");
+%! alpha = randi (255, 10, 10, 1, "uint8");
+%! [r, ~, a] = write_and_read (gray, "Alpha", alpha);
+%! assert (r, gray)
+%! assert (a, alpha)
 
 ## multipage grayscale uint8 images
 %!testif HAVE_MAGICK
-%! bw  = randi (255, 10, 10, 1, 5, "uint8");
-%! r  = write_and_read (bw);
-%! assert (r, bw)
+%! gray  = randi (255, 10, 10, 1, 5, "uint8");
+%! r     = write_and_read (gray);
+%! assert (r, gray)
+
+## multipage RGB uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! gray  = randi (255, 10, 10, 3, 5, "uint8");
+%! alpha = randi (255, 10, 10, 1, 5, "uint8");
+%! [r, ~, a] = write_and_read (gray, "Alpha", alpha);
+%! assert (r, gray)
+%! assert (a, alpha)
 
 ## typical usage with RGB uint8 images
 %!testif HAVE_MAGICK
@@ -153,9 +169,25 @@ endfunction
 %! r = write_and_read (rgb);
 %! assert (r, rgb)
 
+## RGB uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! rgb   = randi (255, 10, 10, 3, "uint8");
+%! alpha = randi (255, 10, 10, 1, "uint8");
+%! [r, ~, a] = write_and_read (rgb, "Alpha", alpha);
+%! assert (r, rgb)
+%! assert (a, alpha)
+
 ## multipage RGB uint8 images
 %!testif HAVE_MAGICK
 %! rgb = randi (255, 10, 10, 3, 5, "uint8");
 %! r = write_and_read (rgb);
 %! assert (r, rgb)
+
+## multipage RGB uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! rgb   = randi (255, 10, 10, 3, 5, "uint8");
+%! alpha = randi (255, 10, 10, 1, 5, "uint8");
+%! [r, ~, a] = write_and_read (rgb, "Alpha", alpha);
+%! assert (r, rgb)
+%! assert (a, alpha)
 

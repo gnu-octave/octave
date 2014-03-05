@@ -69,12 +69,22 @@ void QUnixTerminalImpl::initialize()
     m_terminalModel = new TerminalModel(m_kpty);
     m_terminalModel->setAutoClose(true);
     m_terminalModel->setCodec(QTextCodec::codecForName("UTF-8"));
-    m_terminalModel->setHistoryType(HistoryTypeBuffer(1000));
+    m_terminalModel->setHistoryType(HistoryTypeBuffer (1000));
     m_terminalModel->setDarkBackground(true);
     m_terminalModel->setKeyBindings("");
     m_terminalModel->run();
     m_terminalModel->addView(m_terminalView);
     connectToPty();
+}
+void QUnixTerminalImpl::setScrollBufferSize(int value)
+{
+  if (value > 0)
+    {
+      m_terminalModel->clearHistory ();
+      m_terminalModel->setHistoryType (HistoryTypeBuffer ( value ));
+    }
+  else
+    m_terminalModel->setHistoryType (HistoryTypeNone ());
 }
 
 void QUnixTerminalImpl::connectToPty()

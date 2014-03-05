@@ -205,6 +205,7 @@ public:
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
   void setCursorColor (bool useForegroundColor, const QColor& color);
+  void setScrollBufferSize (int value);
 
   void drawTextBackground (QPainter& p, int cx1, int cy1, int cx2, int cy2,
                            int cw, int ch);
@@ -595,6 +596,14 @@ void QConsolePrivate::setCursorColor (bool useForegroundColor,
                                       const QColor& color)
 {
   m_cursorColor = useForegroundColor ? QColor () : color;
+}
+
+void QConsolePrivate::setScrollBufferSize (int value)
+{
+// FIXME: not tested code follows
+//  CONSOLE_SCREEN_BUFFER_INFO sbi;
+//  GetConsoleScreenBufferInfo (m_stdOut, &sbi);
+//  m_bufferSize = QSize (sbi.dwSize.X, qMax (sbi.dwSize.Y, (SHORT)value));
 }
 
 void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
@@ -1511,6 +1520,13 @@ void QWinTerminalImpl::setCursorColor (bool useForegroundColor,
 {
   d->setCursorColor (useForegroundColor, color);
 }
+
+void QWinTerminalImpl::setScrollBufferSize(int value)
+{
+// FIXME: not tested code follows
+//  d->setScrollBufferSize (value);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 

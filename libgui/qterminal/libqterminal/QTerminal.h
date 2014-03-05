@@ -81,6 +81,8 @@ public:
   virtual void setCursorColor (bool useForegroundColor,
                                const QColor& color) = 0;
 
+  virtual void setScrollBufferSize(int value=1000) = 0;
+
 signals:
 
   void report_status_message (const QString&);

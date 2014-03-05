@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -1255,6 +1255,62 @@
                  </item>
                 </layout>
                </item>
+              <item row="2" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <property name="topMargin">
+                  <number>0</number>
+               </property>
+                 <item>
+                  <widget class="QSpinBox" name="terminal_history_buffer">
+                   <property name="minimum">
+                    <number>0</number>
+                   </property>
+                   <property name="maximum">
+                    <number>5000</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>20</number>
+                   </property>
+                   <property name="value">
+                    <number>1000</number>
+                   </property>
+                 </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_20">
+                   <property name="text">
+                    <string>(Changing buffer size clears history)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_16">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_19">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>History buffer Size</string>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="1">
                 <spacer name="horizontalSpacer_28">
                  <property name="orientation">
@@ -1271,19 +1327,12 @@
                  </property>
                 </spacer>
                </item>
-               <item row="1" column="3">
-                <spacer name="horizontalSpacer_26">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>40</width>
                    <height>20</height>
                   </size>
                  </property>
-                </spacer>
-               </item>
               </layout>
              </item>
              <item>
@@ -1339,6 +1388,9 @@
             <spacer name="verticalSpacer_3">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>

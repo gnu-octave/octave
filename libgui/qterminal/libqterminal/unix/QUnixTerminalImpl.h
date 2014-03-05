@@ -47,7 +47,7 @@ public:
     void setForegroundColor (const QColor& color);
     void setSelectionColor (const QColor& color);
     void setCursorColor (bool useForegroundColor, const QColor& color);
-
+    void setScrollBufferSize(int value);
     QString selectedText();
 
 public slots:

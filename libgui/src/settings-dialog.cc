@@ -191,6 +191,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("terminal/fontName","Courier New").toString ()) );
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
+  ui->terminal_history_buffer->setValue (
+     settings->value ("terminal/history_buffer",1000).toInt ());
 
   // file browser
   ui->showFileSize->setChecked (
@@ -626,6 +628,8 @@ settings_dialog::write_changed_settings ()
                       ui->terminal_cursorUseForegroundColor->isChecked ());
   settings->setValue ("terminal/focus_after_command",
                       ui->terminal_focus_command->isChecked ());
+  settings->setValue ("terminal/history_buffer",
+                      ui->terminal_history_buffer->value() );
 
   // the cursor
   QString cursorType;

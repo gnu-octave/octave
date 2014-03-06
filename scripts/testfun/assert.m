@@ -141,6 +141,19 @@ function assert (cond, varargin)
           end_try_catch
         endif
 
+      elseif (is_function_handle (expected))
+        if (! is_function_handle (cond))
+          err.index{end+1} = "@";
+          err.observed{end+1} = "O";
+          err.expected{end+1} = "E";
+          err.reason{end+1} = ["Expected function handle, but observed " class(cond)];
+        elseif (! isequal (cond, expected))
+          err.index{end+1} = "@";
+          err.observed{end+1} = "O";
+          err.expected{end+1} = "E";
+          err.reason{end+1} = "Function handles don't match";
+        endif
+
       elseif (isstruct (expected))
         if (! isstruct (cond))
           err.index{end+1} = ".";
@@ -533,6 +546,12 @@ endfunction
 %! assert (x,y);
 %! y{1}{1}{1} = 3;
 %! fail ("assert (x,y)", "Abs err 2 exceeds tol 0");
+
+## function handles
+%!assert (@sin, @sin)
+%!error <Function handles don't match> assert (@sin, @cos)
+%!error <Expected function handle, but observed double> assert (pi, @cos)
+%!error <Class function_handle != double> assert (@sin, pi)
 
 %!test
 %! x = {[3], [1,2,3]; 100+100*eps, "dog"};

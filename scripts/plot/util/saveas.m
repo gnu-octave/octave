@@ -56,7 +56,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{print, orient}
+## @seealso{print, hgsave, orient}
 ## @end deftypefn
 
 ## Author: Kai Habel

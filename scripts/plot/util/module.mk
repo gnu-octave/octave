@@ -48,6 +48,8 @@ plot_util_FCN_FILES = \
   plot/util/graphics_toolkit.m \
   plot/util/hdl2struct.m \
   plot/util/hggroup.m \
+  plot/util/hgload.m \
+  plot/util/hgsave.m \
   plot/util/hold.m \
   plot/util/isaxes.m \
   plot/util/isfigure.m \

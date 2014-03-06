@@ -937,6 +937,17 @@ saves the current figure to an encapsulated PostScript file called
 
 @DOCSTRING(orient)
 
+@code{print} and @code{saveas} are used when work on a plot has finished
+and the output must be in a publication-ready format.  During intermediate
+stages it is often better to save the graphics object and all of its
+associated information so that changes---to colors, axis limits, marker styles,
+etc.---can be made easily from within Octave.  The @code{hgsave}/@code{hgload}
+commands can be used to save and re-create a graphics object.
+
+@DOCSTRING(hgsave)
+
+@DOCSTRING(hgload)
+
 @node Interacting with Plots
 @subsection Interacting with Plots
 

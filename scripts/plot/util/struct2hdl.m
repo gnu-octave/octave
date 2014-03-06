@@ -32,7 +32,7 @@
 ## A third boolean argument @var{hilev} can be passed to specify whether
 ## the function should preserve listeners/callbacks, e.g., for legends or
 ## hggroups.  The default is false.
-## @seealso{hdl2struct, findobj}
+## @seealso{hdl2struct, hgload, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>

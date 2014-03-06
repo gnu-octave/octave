@@ -23,7 +23,7 @@
 ##
 ## The fields of the structure @var{s} are @qcode{"type"}, @qcode{"handle"},
 ## @qcode{"properties"}, @qcode{"children"}, and @qcode{"special"}.
-## @seealso{struct2hdl, findobj}
+## @seealso{struct2hdl, hgsave, findobj}
 ## @end deftypefn
 
 ## Author: pdiribarne <pdiribarne@new-host.home>

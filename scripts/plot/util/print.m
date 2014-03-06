@@ -275,7 +275,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{saveas, orient, figure}
+## @seealso{saveas, hgsave, orient, figure}
 ## @end deftypefn
 
 function print (varargin)

@@ -649,8 +649,6 @@ function list = missing_functions ()
   "hdfinfo",
   "hdfread",
   "hgexport",
-  "hgload",
-  "hgsave",
   "hgsetget",
   "hgtransform",
   "ichol",

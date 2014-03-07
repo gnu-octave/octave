@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-link.h"
 #include "utils.h"
+#include "main-window.h"
 
 file_editor::file_editor (QWidget *p)
   : file_editor_interface (p)
@@ -266,6 +267,23 @@ file_editor::call_custom_editor (const QString& file_name, int line)
   return false;
 }
 
+bool
+file_editor::is_editor_console_tabbed ()
+{
+  main_window *w = static_cast<main_window *>(main_win ());
+  QList<QDockWidget *> w_list = w->tabifiedDockWidgets (this);
+  QDockWidget *console =
+    static_cast<QDockWidget *> (w->get_dock_widget_list ().at (0));
+
+  for (int i = 0; i < w_list.count (); i++)
+    {
+      if (w_list.at (i) == console)
+        return true;
+    }
+
+  return false;
+}
+
 void
 file_editor::request_open_files (const QStringList& open_file_names)
 {
@@ -311,8 +329,11 @@ file_editor::request_open_file (const QString& openFileName, int line,
                 emit fetab_do_breakpoint_marker (insert, tab, line);
             }
 
-          emit fetab_set_focus (tab);
-          set_focus ();
+          if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
+            {
+              emit fetab_set_focus (tab);
+              set_focus ();
+            }
         }
       else
         {
@@ -411,9 +432,12 @@ file_editor::request_open_file (const QString& openFileName, int line,
                 }
             }
 
-          // really show editor and the current editor tab
-          set_focus ();
-          emit file_loaded_signal ();
+          if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
+            {
+              // really show editor and the current editor tab
+              set_focus ();
+              emit file_loaded_signal ();
+            }
         }
     }
 }

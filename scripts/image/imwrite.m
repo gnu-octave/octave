@@ -114,7 +114,6 @@ function imwrite (varargin)
 
 endfunction
 
-
 %% Test input validation
 %!error imwrite ()                            # Wrong # of args
 %!error imwrite (1)                           # Wrong # of args
@@ -126,14 +125,69 @@ endfunction
 %!error imwrite ([], "filename.jpg")          # Empty img matrix
 %!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
 
+%!function [r, cmap, a] = write_and_read (varargin)
+%!  filename = [tmpnam() ".tif"];
+%!  unwind_protect
+%!    imwrite (varargin{1}, filename, varargin{2:end});
+%!    [r, cmap, a] = imread (filename, "Index", "all");
+%!  unwind_protect_cleanup
+%!    unlink (filename);
+%!  end_unwind_protect
+%!endfunction
+
+## typical usage with grayscale uint8 images
 %!testif HAVE_MAGICK
-%! imw = randi (255, 100, "uint8");
-%! filename = [tmpnam() ".png"];
-%! unwind_protect
-%!   imwrite (imw, filename);
-%!   imr = imread (filename);
-%! unwind_protect_cleanup
-%!   unlink (filename);
-%! end_unwind_protect
-%! assert (imw, imr)
+%! gray  = randi (255, 10, 10, 1, "uint8");
+%! r  = write_and_read (gray);
+%! assert (r, gray)
+
+## grayscale uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! gray  = randi (255, 10, 10, 1, "uint8");
+%! alpha = randi (255, 10, 10, 1, "uint8");
+%! [r, ~, a] = write_and_read (gray, "Alpha", alpha);
+%! assert (r, gray)
+%! assert (a, alpha)
+
+## multipage grayscale uint8 images
+%!testif HAVE_MAGICK
+%! gray  = randi (255, 10, 10, 1, 5, "uint8");
+%! r     = write_and_read (gray);
+%! assert (r, gray)
+
+## multipage RGB uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! gray  = randi (255, 10, 10, 3, 5, "uint8");
+%! alpha = randi (255, 10, 10, 1, 5, "uint8");
+%! [r, ~, a] = write_and_read (gray, "Alpha", alpha);
+%! assert (r, gray)
+%! assert (a, alpha)
+
+## typical usage with RGB uint8 images
+%!testif HAVE_MAGICK
+%! rgb = randi (255, 10, 10, 3, "uint8");
+%! r = write_and_read (rgb);
+%! assert (r, rgb)
+
+## RGB uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! rgb   = randi (255, 10, 10, 3, "uint8");
+%! alpha = randi (255, 10, 10, 1, "uint8");
+%! [r, ~, a] = write_and_read (rgb, "Alpha", alpha);
+%! assert (r, rgb)
+%! assert (a, alpha)
+
+## multipage RGB uint8 images
+%!testif HAVE_MAGICK
+%! rgb = randi (255, 10, 10, 3, 5, "uint8");
+%! r = write_and_read (rgb);
+%! assert (r, rgb)
+
+## multipage RGB uint8 images with alpha channel
+%!testif HAVE_MAGICK
+%! rgb   = randi (255, 10, 10, 3, 5, "uint8");
+%! alpha = randi (255, 10, 10, 1, 5, "uint8");
+%! [r, ~, a] = write_and_read (rgb, "Alpha", alpha);
+%! assert (r, rgb)
+%! assert (a, alpha)
 

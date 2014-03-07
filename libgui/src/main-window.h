@@ -198,6 +198,9 @@ public slots:
   void clipboard_has_changed (QClipboard::Mode);
   void clear_clipboard ();
 
+  // get the dockwidgets
+  QList<octave_dock_widget *> get_dock_widget_list ()
+    { return dock_widget_list (); }
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

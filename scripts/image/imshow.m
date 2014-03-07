@@ -130,7 +130,7 @@ function h = imshow (im, varargin)
           xdata = [xdata(1) xdata(end)];
         case "ydata";
           ydata = varargin{narg++};
-          if (isvector (xdata))
+          if (! isvector (ydata))
             error ("imshow: expect a vector for ydata")
           endif
           ydata = [ydata(1) ydata(end)];

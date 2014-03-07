@@ -1382,7 +1382,7 @@ Matrix::rcond (void) const
 double
 Matrix::rcond (MatrixType &mattype) const
 {
-  double rcon;
+  double rcon = octave_NaN;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 

@@ -1727,7 +1727,7 @@ FloatComplexMatrix::rcond (void) const
 float
 FloatComplexMatrix::rcond (MatrixType &mattype) const
 {
-  float rcon;
+  float rcon = octave_NaN;
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 

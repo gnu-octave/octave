@@ -416,6 +416,7 @@ read_images (std::vector<Magick::Image>& imvec,
         }
     }
 
+  const octave_idx_type colour_stride = nRows * nCols;
   switch (type)
     {
     case Magick::BilevelType:           // Monochrome bi-level image
@@ -480,6 +481,7 @@ read_images (std::vector<Magick::Image>& imvec,
         img = T (dim_vector (nRows, nCols, 3, nFrames));
         P *img_fvec = img.fortran_vec ();
 
+        const octave_idx_type frame_stride  = colour_stride * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
@@ -487,10 +489,9 @@ read_images (std::vector<Magick::Image>& imvec,
                                                        col_cache, row_cache);
 
             octave_idx_type idx = 0;
-            img_fvec += nRows * nCols * frame;
             P *rbuf   = img_fvec;
-            P *gbuf   = img_fvec + nRows * nCols;
-            P *bbuf   = img_fvec + nRows * nCols * 2;
+            P *gbuf   = img_fvec + colour_stride;
+            P *bbuf   = img_fvec + colour_stride * 2;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -504,6 +505,7 @@ read_images (std::vector<Magick::Image>& imvec,
                   }
                 pix -= col_shift;
               }
+            img_fvec += frame_stride;
           }
         break;
       }
@@ -516,6 +518,8 @@ read_images (std::vector<Magick::Image>& imvec,
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
 
+        const octave_idx_type frame_stride  = colour_stride * 3;
+
         // Unlike the index for the other channels, this one won't need
         // to be reset on each frame since it's a separate matrix.
         octave_idx_type a_idx = 0;
@@ -526,10 +530,9 @@ read_images (std::vector<Magick::Image>& imvec,
                                                        col_cache, row_cache);
 
             octave_idx_type idx = 0;
-            img_fvec += nRows * nCols * frame;
             P *rbuf   = img_fvec;
-            P *gbuf   = img_fvec + nRows * nCols;
-            P *bbuf   = img_fvec + nRows * nCols * 2;
+            P *gbuf   = img_fvec + colour_stride;
+            P *bbuf   = img_fvec + colour_stride * 2;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -544,6 +547,7 @@ read_images (std::vector<Magick::Image>& imvec,
                   }
                 pix -= col_shift;
               }
+            img_fvec += frame_stride;
           }
         retval(2) = alpha;
         break;
@@ -554,6 +558,7 @@ read_images (std::vector<Magick::Image>& imvec,
         img   = T (dim_vector (nRows, nCols, 4, nFrames));
         P *img_fvec = img.fortran_vec ();
 
+        const octave_idx_type frame_stride  = colour_stride * 4;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             const Magick::PixelPacket *pix
@@ -561,11 +566,10 @@ read_images (std::vector<Magick::Image>& imvec,
                                                        col_cache, row_cache);
 
             octave_idx_type idx = 0;
-            img_fvec += nRows * nCols * frame;
             P *cbuf   = img_fvec;
-            P *mbuf   = img_fvec + nRows * nCols;
-            P *ybuf   = img_fvec + nRows * nCols * 2;
-            P *kbuf   = img_fvec + nRows * nCols * 3;
+            P *mbuf   = img_fvec + colour_stride;
+            P *ybuf   = img_fvec + colour_stride * 2;
+            P *kbuf   = img_fvec + colour_stride * 3;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -580,6 +584,7 @@ read_images (std::vector<Magick::Image>& imvec,
                   }
                 pix -= col_shift;
               }
+            img_fvec += frame_stride;
           }
         break;
       }
@@ -591,6 +596,8 @@ read_images (std::vector<Magick::Image>& imvec,
         T alpha   (dim_vector (nRows, nCols, 1, nFrames));
         P *img_fvec = img.fortran_vec ();
         P *a_fvec   = alpha.fortran_vec ();
+
+        const octave_idx_type frame_stride  = colour_stride * 4;
 
         // Unlike the index for the other channels, this one won't need
         // to be reset on each frame since it's a separate matrix.
@@ -606,11 +613,10 @@ read_images (std::vector<Magick::Image>& imvec,
               = imvec[frameidx(frame)].getConstIndexes ();
 
             octave_idx_type idx = 0;
-            img_fvec += nRows * nCols * frame;
             P *cbuf   = img_fvec;
-            P *mbuf   = img_fvec + nRows * nCols;
-            P *ybuf   = img_fvec + nRows * nCols * 2;
-            P *kbuf   = img_fvec + nRows * nCols * 3;
+            P *mbuf   = img_fvec + colour_stride;
+            P *ybuf   = img_fvec + colour_stride * 2;
+            P *kbuf   = img_fvec + colour_stride * 3;
 
             for (octave_idx_type col = 0; col < nCols; col++)
               {
@@ -626,6 +632,7 @@ read_images (std::vector<Magick::Image>& imvec,
                   }
                 pix -= col_shift;
               }
+            img_fvec += frame_stride;
           }
         retval(2) = alpha;
         break;
@@ -1062,7 +1069,6 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
     {
     case Magick::GrayscaleType:
       {
-        octave_idx_type GM_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
@@ -1070,6 +1076,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                                                       Magick::DirectClass);
 
             Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            octave_idx_type GM_idx = 0;
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
@@ -1091,7 +1098,6 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
     case Magick::GrayscaleMatteType:
       {
-        octave_idx_type GM_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
@@ -1099,13 +1105,14 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                                                       Magick::DirectClass);
 
             Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            octave_idx_type GM_idx = 0;
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c;
-                    c.redQuantum   (double (*img_fvec) / divisor);
-                    c.alphaQuantum (MaxRGB - (double (*a_fvec) / divisor));
+                    double grey = double (*img_fvec) / divisor;
+                    Magick::Color c (grey, grey, grey,
+                                     MaxRGB - (double (*a_fvec) / divisor));
                     pix[GM_idx] = c;
                     img_fvec++;
                     a_fvec++;
@@ -1125,7 +1132,6 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         // The fortran_vec offset for the green and blue channels
         const octave_idx_type G_offset = nCols * nRows;
         const octave_idx_type B_offset = nCols * nRows * 2;
-        octave_idx_type GM_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
@@ -1133,6 +1139,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                                                       Magick::DirectClass);
 
             Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            octave_idx_type GM_idx = 0;
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
@@ -1149,6 +1156,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
             // Save changes to underlying image.
             m_img.syncPixels ();
             imvec.push_back (m_img);
+            img_fvec += B_offset;
           }
         break;
       }
@@ -1158,7 +1166,6 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         // The fortran_vec offset for the green and blue channels
         const octave_idx_type G_offset = nCols * nRows;
         const octave_idx_type B_offset = nCols * nRows * 2;
-        octave_idx_type GM_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
@@ -1166,6 +1173,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                                                       Magick::DirectClass);
 
             Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            octave_idx_type GM_idx = 0;
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
@@ -1184,6 +1192,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
             // Save changes to underlying image.
             m_img.syncPixels ();
             imvec.push_back (m_img);
+            img_fvec += B_offset;
           }
         break;
       }
@@ -1194,7 +1203,6 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type M_offset = nCols * nRows;
         const octave_idx_type Y_offset = nCols * nRows * 2;
         const octave_idx_type K_offset = nCols * nRows * 3;
-        octave_idx_type GM_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
@@ -1202,6 +1210,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
                                                       Magick::DirectClass);
 
             Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
+            octave_idx_type GM_idx = 0;
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
@@ -1219,6 +1228,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
             // Save changes to underlying image.
             m_img.syncPixels ();
             imvec.push_back (m_img);
+            img_fvec += K_offset;
           }
         break;
       }
@@ -1229,7 +1239,6 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
         const octave_idx_type M_offset = nCols * nRows;
         const octave_idx_type Y_offset = nCols * nRows * 2;
         const octave_idx_type K_offset = nCols * nRows * 3;
-        octave_idx_type GM_idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
           {
             Magick::Image m_img = init_enconde_image (nCols, nRows, bitdepth,
@@ -1238,6 +1247,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
 
             Magick::PixelPacket *pix = m_img.getPixels (0, 0, nCols, nRows);
             Magick::IndexPacket *ind = m_img.getIndexes ();
+            octave_idx_type GM_idx = 0;
             for (octave_idx_type col = 0; col < nCols; col++)
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
@@ -1257,6 +1267,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
             // Save changes to underlying image.
             m_img.syncPixels ();
             imvec.push_back (m_img);
+            img_fvec += K_offset;
           }
         break;
       }

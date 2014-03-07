@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Daniel Kraft
+## Copyright (C) 2012-2014 Daniel Kraft
 ##
 ## This file is part of Octave.
 ##
@@ -54,6 +54,7 @@ function profshow (data, n = 20)
   ## times to an array, then sort this, and use the resulting index permutation
   ## to print out our table.
   times = -[ data.FunctionTable.TotalTime ];
+  totalTime = -sum (times);
 
   [~, p] = sort (times);
 
@@ -64,19 +65,21 @@ function profshow (data, n = 20)
   for i = 1 : n
     nameLen = max (nameLen, length (data.FunctionTable(p(i)).FunctionName));
   endfor
-  headerFormat = sprintf ("%%4s %%%ds %%4s %%12s %%12s\n", nameLen);
-  rowFormat = sprintf ("%%4d %%%ds %%4s %%12.3f %%12d\n", nameLen);
+  headerFormat = sprintf ("%%4s %%%ds %%4s %%12s %%10s %%12s\n", nameLen);
+  rowFormat = sprintf ("%%4d %%%ds %%4s %%12.3f %%10.2f %%12d\n", nameLen);
 
-  printf (headerFormat, "#", "Function", "Attr", "Time (s)", "Calls");
-  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 2 * 13));
+  printf (headerFormat, ...
+          "#", "Function", "Attr", "Time (s)", "Time (%)", "Calls");
+  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 11 + 2 * 13));
   for i = 1 : n
     row = data.FunctionTable(p(i));
+    timePercent = 100 * row.TotalTime / totalTime;
     attr = "";
     if (row.IsRecursive)
       attr = "R";
     endif
     printf (rowFormat, p(i), row.FunctionName, attr, ...
-            row.TotalTime, row.NumCalls);
+            row.TotalTime, timePercent, row.NumCalls);
   endfor
 
 endfunction

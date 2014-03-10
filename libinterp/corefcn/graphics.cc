@@ -9584,18 +9584,6 @@ Internal function: returns the pixel size of the image in normalized units.\n\
 
 gtk_manager *gtk_manager::instance = 0;
 
-gtk_manager::gtk_manager (void)
-  : dtk (), available_toolkits (), loaded_toolkits ()
-{
-#if defined (HAVE_QT)
-  dtk = display_info::display_available () ? "qt" : "gnuplot";
-#elif defined (HAVE_FLTK)
-  dtk = display_info::display_available () ? "fltk" : "gnuplot";
-#else
-  dtk = "gnuplot";
-#endif
-}
-
 void
 gtk_manager::create_instance (void)
 {
@@ -9638,6 +9626,45 @@ gtk_manager::do_get_toolkit (void) const
     retval = pl->second;
 
   return retval;
+}
+
+void 
+gtk_manager::do_register_toolkit (const std::string& name)
+{
+  if (dtk.empty () || name == "qt"
+      || (name == "fltk"
+          && available_toolkits.find ("qt") == available_toolkits.end ()))
+    dtk = name;
+
+  available_toolkits.insert (name);
+}
+
+void 
+gtk_manager::do_unregister_toolkit (const std::string& name)
+{
+  available_toolkits.erase (name);
+
+  if (dtk == name)
+    {
+      if (available_toolkits.empty ())
+        dtk.clear ();
+      else
+        {
+          const_available_toolkits_iterator pa = available_toolkits.begin ();
+
+          dtk = *pa++;
+
+          while (pa != available_toolkits.end ())
+            {
+              std::string name = *pa++;
+
+              if (name == "qt"
+                  || (name == "fltk"
+                      && available_toolkits.find ("qt") == available_toolkits.end ()))
+                dtk = name;
+            }
+        }
+    }
 }
 
 DEFUN (available_graphics_toolkits, , ,

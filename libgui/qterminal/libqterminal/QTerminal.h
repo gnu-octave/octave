@@ -93,6 +93,8 @@ public slots:
 
   virtual void pasteClipboard (void) = 0;
 
+  virtual void selectAll (void) = 0;
+
   virtual void handleCustomContextMenuRequested (const QPoint& at)
   {
     QClipboard * cb = QApplication::clipboard ();
@@ -126,6 +128,12 @@ protected:
 
     _contextMenu->addSeparator ();
 
+    _selectall_action = _contextMenu->addAction (
+                      tr ("Select All"), this, SLOT (selectAll ()));
+
+
+    _contextMenu->addSeparator ();
+
     _contextMenu->addAction (tr ("Clear All"), parent (),
                              SLOT (handle_clear_command_window_request ()));
 
@@ -143,6 +151,9 @@ protected:
 
     connect (xparent, SIGNAL (pasteClipboard_signal ()),
              this, SLOT (pasteClipboard ()));
+
+    connect (xparent, SIGNAL (selectAll_signal ()),
+             this, SLOT (selectAll ()));
   }
 
 private:
@@ -150,6 +161,7 @@ private:
   QMenu *_contextMenu;
   QAction * _copy_action;
   QAction * _paste_action;
+  QAction * _selectall_action;
 };
 
 #endif // QTERMINAL_H

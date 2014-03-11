@@ -53,6 +53,7 @@ public:
 public slots:
     void copyClipboard();
     void pasteClipboard();
+    void selectAll();
 
 protected:
     void showEvent(QShowEvent *);

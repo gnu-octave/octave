@@ -276,3 +276,10 @@ workspace_view::copyClipboard ()
     handle_contextmenu_copy ();
 }
 
+void
+workspace_view::selectAll ()
+{
+  if (view->hasFocus ())
+    view->selectAll ();
+}  
+

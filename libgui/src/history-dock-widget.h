@@ -64,6 +64,7 @@ private slots:
 
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 private:
 

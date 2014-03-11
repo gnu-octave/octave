@@ -52,6 +52,12 @@ documentation_dock_widget::pasteClipboard ()
   _webinfo->pasteClipboard ();
 }
 void
+documentation_dock_widget::selectAll ()
+{
+  _webinfo->selectAll ();
+}
+
+void
 documentation_dock_widget::showDoc (const QString &name)
 {
   // show the doc pane

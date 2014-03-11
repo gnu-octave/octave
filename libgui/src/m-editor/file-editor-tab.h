@@ -72,6 +72,7 @@ public slots:
   void copy (const QWidget *ID);
   void cut (const QWidget *ID);
   void paste (const QWidget *ID);
+  void select_all (const QWidget *ID);
   void context_help (const QWidget *ID, bool);
   void context_edit (const QWidget *ID);
   void save_file (const QWidget *ID);

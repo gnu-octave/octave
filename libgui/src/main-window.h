@@ -92,6 +92,7 @@ signals:
 
   void copyClipboard_signal (void);
   void pasteClipboard_signal (void);
+  void selectAll_signal (void);
 
   void set_widget_shortcuts_signal (bool);
 
@@ -158,6 +159,7 @@ public slots:
 
   void copyClipboard (void);
   void pasteClipboard (void);
+  void selectAll (void);
 
   void connect_uiwidget_links ();
 

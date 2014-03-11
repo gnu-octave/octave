@@ -2287,6 +2287,20 @@ void TerminalView::pasteClipboard()
     }
 }
 
+void TerminalView::selectAll()
+{
+  if ( !_screenWindow || !hasFocus())
+    return;
+
+  _screenWindow->setSelectionStart(0,-_screenWindow->currentLine(), false);
+  //_screenWindow->setSelectionEnd(_screenWindow->windowColumns(),
+  //                               _screenWindow->windowLines());
+
+  _screenWindow->setSelectionEnd(_screenWindow->columnCount(),
+                                 _screenWindow->windowLines());
+}
+
+
 void TerminalView::pasteSelection()
 {
   emitSelection(true,false);

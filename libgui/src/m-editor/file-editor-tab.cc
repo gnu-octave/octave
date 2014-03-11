@@ -451,6 +451,16 @@ file_editor_tab::paste (const QWidget *ID)
 }
 
 void
+file_editor_tab::select_all (const QWidget *ID)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->selectAll ();
+}
+
+
+void
 file_editor_tab::context_help (const QWidget *ID, bool doc)
 {
   if (ID != this)

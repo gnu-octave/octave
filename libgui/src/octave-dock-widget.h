@@ -101,6 +101,9 @@ protected slots:
   virtual void pasteClipboard ()
   {
   }
+  virtual void selectAll ()
+  {
+  }
 
 private slots:
 

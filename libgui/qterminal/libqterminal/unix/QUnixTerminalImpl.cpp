@@ -205,6 +205,12 @@ void QUnixTerminalImpl::pasteClipboard()
     m_terminalView->pasteClipboard();
 }
 
+void QUnixTerminalImpl::selectAll()
+{
+    m_terminalView->selectAll();
+}
+
+
 QString QUnixTerminalImpl::selectedText ()
 {
   return m_terminalView->selectedText ();

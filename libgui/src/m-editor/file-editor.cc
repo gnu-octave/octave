@@ -595,6 +595,13 @@ file_editor::request_paste (void)
 }
 
 void
+file_editor::request_selectall (void)
+{
+  emit fetab_selectall (_tab_widget->currentWidget ());
+}
+
+
+void
 file_editor::request_context_help (bool)
 {
   emit fetab_context_help (_tab_widget->currentWidget (), false);
@@ -1006,6 +1013,9 @@ file_editor::construct (void)
     = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
                    tr ("&Remove All Breakpoints"), _tool_bar);
 
+  _selectall_action
+    = new QAction (tr ("Select All"), _tool_bar);
+
   _comment_selection_action
     = new QAction (tr ("&Comment"), _tool_bar);
   _uncomment_selection_action
@@ -1128,6 +1138,8 @@ file_editor::construct (void)
   editMenu->addAction (_cut_action);
   editMenu->addAction (_paste_action);
   editMenu->addSeparator ();
+  editMenu->addAction (_selectall_action);
+  editMenu->addSeparator ();
   editMenu->addAction (_find_action);
   editMenu->addSeparator ();
   editMenu->addAction (_comment_selection_action);
@@ -1223,6 +1235,9 @@ file_editor::construct (void)
 
   connect (_paste_action, SIGNAL (triggered ()),
            this, SLOT (request_paste ()));
+
+  connect (_selectall_action, SIGNAL (triggered ()),
+           this, SLOT (request_selectall ()));
 
   connect (_save_action, SIGNAL (triggered ()),
            this, SLOT (request_save_file ()));
@@ -1377,6 +1392,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_paste (const QWidget*)),
            f, SLOT (paste (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_selectall (const QWidget*)),
+           f, SLOT (select_all (const QWidget*)));
+
   connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
            f, SLOT (context_help (const QWidget*, bool)));
 
@@ -1481,6 +1499,17 @@ file_editor::pasteClipboard ()
       request_paste ();
     }
 }
+void
+file_editor::selectAll ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_selectall ();
+    }
+}
+
 
 void
 file_editor::set_shortcuts (bool set)
@@ -1500,6 +1529,7 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);
       _paste_action->setShortcut (QKeySequence::Paste);
+      _selectall_action->setShortcut (QKeySequence::SelectAll);
       _context_help_action->setShortcut (QKeySequence::HelpContents);
       _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
 
@@ -1536,6 +1566,7 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (no_key);
       _cut_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
+      _selectall_action->setShortcut (no_key);
       _context_help_action->setShortcut (no_key);
 
       _find_action->setShortcut (no_key);

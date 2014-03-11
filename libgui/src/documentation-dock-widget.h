@@ -38,6 +38,7 @@ public:
 protected slots:
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
   void showDoc (const QString & name);
 private:

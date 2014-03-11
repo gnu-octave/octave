@@ -113,6 +113,7 @@ private slots:
   /* from octave_doc_widget */
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 signals:
 

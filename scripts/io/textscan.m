@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott
+## Copyright (C) 2010-2014 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -135,6 +135,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     if (! (isempty (args{ipos+1}) && has_str_fmt))
       args{ipos+1} = unique ([" ", args{ipos+1}]);
     endif
+    whitespace = args{ipos+1};
   endif
 
   if (! any (strcmpi (args, "delimiter")))
@@ -660,4 +661,8 @@ endfunction
 %! fclose (fid);
 %! unlink (f);
 %! assert (msg1, lasterr);
+
+%% Bug #41824
+%!test
+%! assert (textscan ("123", "", "whitespace", " "){:}, 123);
 

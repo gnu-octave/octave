@@ -46,7 +46,7 @@ function hnew = copyobj (horig, hparent = 0)
 
   ## current figure and axes
   cf = gcf ();
-  ca = gca ();
+  ca = get (cf, "currentaxes");
   
   ## compatibility of input handles
   kididx = find (strcmp (alltypes, get (horig).type));
@@ -65,7 +65,7 @@ function hnew = copyobj (horig, hparent = 0)
 
   ## reset current figure (and eventually axes) to original
   set (0, "currentfigure", cf);
-  if (get (hnew, "parent") == cf)
+  if (get (hnew, "parent") == cf && ! isempty (ca))
     set (cf, "currentaxes", ca)
   endif
   

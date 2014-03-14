@@ -86,3 +86,33 @@ function [pval, z] = z_test (x, m, v, alt)
 
 endfunction
 
+
+%!test
+%! ## Two-sided (also the default option)
+%! x = rand (10,1); n = length (x);
+%! u0 = 0.5; v = 1/12; # true mean, var
+%! pval = z_test (x, u0, v, "!=");
+%! if (mean (x) >= u0)
+%!   zval = abs (norminv (0.5*pval));
+%! else
+%!   zval = -abs (norminv (0.5*pval));
+%! endif
+%! unew = zval * sqrt (v/n) + u0;
+%! assert (mean (x), unew, 100*eps);
+
+%!test
+%! x = rand (10,1); n = length (x);
+%! u0 = 0.5; v = 1/12;
+%! pval = z_test (x, u0, v, ">");
+%! zval = norminv (1-pval);
+%! unew = zval * sqrt (v/n) + u0;
+%! assert (mean (x), unew, 100*eps);
+
+%!test
+%! x = rand (10,1); n = length (x);
+%! u0 = 0.5; v = 1/12;
+%! pval = z_test (x, u0, v, "<");
+%! zval = norminv (pval);
+%! unew = zval * sqrt (v/n) + u0;
+%! assert (mean (x), unew, 100*eps);
+

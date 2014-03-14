@@ -82,3 +82,34 @@ function [pval, t, df] = t_test (x, m, alt)
 
 endfunction
 
+
+%!test
+%! ## Two-sided (also the default option)
+%! x = rand (10,1); n = length (x);
+%! u0 = 0.5; # true mean
+%! xbar = mean (x);
+%! pval = t_test (x, u0, "!=");
+%! if (xbar >= u0)
+%!   tval = abs (tinv (0.5*pval, n-1));
+%! else
+%!   tval = -abs (tinv (0.5*pval, n-1));
+%! endif
+%! unew = tval * std(x)/sqrt(n) + u0;
+%! assert (xbar, unew, 100*eps);
+
+%!test
+%! x = rand (10,1); n = length (x);
+%! u0 = 0.5;
+%! pval = t_test (x, u0, ">");
+%! tval = tinv (1-pval, n-1);
+%! unew = tval * std(x)/sqrt(n) + u0;
+%! assert (mean (x), unew, 100*eps);
+
+%!test
+%! x = rand (10,1); n = length (x);
+%! u0 = 0.5;
+%! pval = t_test (x, u0, "<");
+%! tval = tinv (pval, n-1);
+%! unew = tval * std(x)/sqrt(n) + u0;
+%! assert (mean (x), unew, 100*eps);
+

@@ -60,3 +60,18 @@ function ang = subspace (A, B)
 
 endfunction
 
+
+%!test
+%! ## For random vectors
+%! a = rand (2,1);
+%! b = rand (2,1);
+%! a1 = norm (a,2);
+%! b1 = norm (b,2);
+%! theta = acos (dot (a,b)/(a1*b1));
+%! assert (theta, subspace (a, b), 100*eps);
+
+%!test
+%! ## For random matrices
+%! M = rand (3, 3);
+%! assert (0, subspace (M, M'), 100*eps);
+

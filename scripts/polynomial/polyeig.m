@@ -26,68 +26,77 @@
 ## @code{@var{C}(s) = @var{C0} + @var{C1} s + @dots{} + @var{Cl} s^l}
 ## polyeig solves the eigenvalue problem
 ## @code{(@var{C0} + @var{C1} + @dots{} + @var{Cl})v = 0}.
+##
 ## Note that the eigenvalues @var{z} are the zeros of the matrix polynomial.
-## @var{z} is an @var{lxn} vector and @var{v} is an (@var{n} x @var{n})l matrix
-## with columns that correspond to the eigenvectors.
+## @var{z} is a row vector with @var{n*l} elements.  @var{v} is a matrix 
+## (@var{n} x @var{n}*@var{l}) with columns that correspond to the
+## eigenvectors.
 ##
 ## @seealso{eig, eigs, compan}
 ## @end deftypefn
 
 ## Author: Fotios Kasolis
 
-function [ z, varargout ] = polyeig (varargin)
+function [z, v] = polyeig (varargin)
   
-  if ( nargout > 2 )
+  if (nargin < 1 || nargout > 2)
     print_usage ();
   endif
 
   nin = numel (varargin);
+  n = rows (varargin{1});
 
-  n = zeros (1, nin);
-
-  for cnt = 1 : nin
-    if (! issquare (varargin{cnt}))
-       error ("polyeig: coefficients must be square matrices");
+  for i = 1 : nin
+    if (! issquare (varargin{i}))
+      error ("polyeig: coefficients must be square matrices");
     endif
-    n(cnt) = size (varargin{cnt}, 1);
+    if (rows (varargin{i}) != n)
+      error ("polyeig: coefficients must have the same dimensions");
+    endif
   endfor
-
-  if (numel (unique (n)) > 1)
-       error ("polyeig: coefficients must have the same dimensions");
-  endif
-  n = unique (n);
 
   ## matrix polynomial degree
   l = nin - 1;
 
   ## form needed matrices
   C = [ zeros(n * (l - 1), n), eye(n * (l - 1));
-       -cell2mat(varargin(1 : end - 1)) ];
+       -cell2mat(varargin(1:end-1)) ];
 
   D = [ eye(n * (l - 1)), zeros(n * (l - 1), n);
        zeros(n, n * (l - 1)), varargin{end} ];
 
   ## solve generalized eigenvalue problem
-  if ( isequal (nargout, 1) )
-    z = eig (C, D);
-  else
-    [ z, v ] = eig (C, D);
-    varargout{1} = v;
-    ## return n-element eigenvectors normalized so
-    ## that the infinity-norm = 1
+  if (nargout == 2)
+    [z, v] = eig (C, D);
+    v = diag (v);
+    ## return n-element eigenvectors normalized so that the infinity-norm = 1
     z = z(1:n,:);
     ## max() takes the abs if complex:
     t = max (z);
     z /= diag (t);
+  else
+    z = eig (C, D);
   endif
 
 endfunction
 
 
-%!test
+%!shared C0, C1
 %! C0 = [8, 0; 0, 4]; C1 = [1, 0; 0, 1];
-%! [v,z] = polyeig (C0, C1);
-%! assert (isequal (z(1), -8), true);
-%! d = C0*v + C1*v*z;
-%! assert (isequal (norm(d), 0.0), true);
 
+%!test
+%! z = polyeig (C0, C1);
+%! assert (z, [-8; -4]);
+
+%!test
+%! [v,z] = polyeig (C0, C1);
+%! assert (z, [-8; -4]);
+%! z = diag (z);
+%! d = C0*v + C1*v*z;
+%! assert (norm (d), 0.0);
+
+%% Input validation tests
+%!error polyeig ()
+%!error [a,b,c] = polyeig (1)
+%!error <coefficients must be square matrices> polyeig (ones (3,2))
+%!error <coefficients must have the same dimensions> polyeig (ones (3,3), ones (2,2))

@@ -182,12 +182,12 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 
       w.read_settings ();
 
-      w.focus_command_window ();
-
       // Connect signals for changes in visibility not before w
       // is shown.
 
       w.connect_visibility_changed ();
+
+      w.focus_command_window ();
 
       return application.exec ();
     }

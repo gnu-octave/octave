@@ -8694,9 +8694,11 @@ DEFUN (set, args, nargout,
 @deftypefn  {Built-in Function} {} set (@var{h}, @var{property}, @var{value}, @dots{})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{properties}, @var{values})\n\
 @deftypefnx {Built-in Function} {} set (@var{h}, @var{pv})\n\
+@deftypefnx {Built-in Function} {@var{value_list} =} set (@var{h}, @var{property})\n\
+@deftypefnx {Built-in Function} {@var{all_value_list} =} set (@var{h})\n\
 Set named property values for the graphics handle (or vector of graphics\n\
 handles) @var{h}.\n\
-There are three ways how to give the property names and values:\n\
+There are three ways to give the property names and values:\n\
 \n\
 @itemize\n\
 @item as a comma separated list of @var{property}, @var{value} pairs\n\
@@ -8722,6 +8724,32 @@ values give the property values.  In contrast to the previous case, all\n\
 elements of @var{pv} will be set in all handles in @var{h} independent of\n\
 the dimensions of @var{pv}.\n\
 @end itemize\n\
+\n\
+@code{set} is also used to query the list of values a named property will\n\
+take.  @code{@var{clist} = set (@var{h}, \"property\")} will return the list\n\
+of possible values for @qcode{\"property\"} in the cell list @var{clist}.\n\
+If no output variable is used then the list is formatted and printed to the\n\
+screen.\n\
+\n\
+If no property is specified (@code{@var{slist} = set (@var{h})}) then a\n\
+structure @var{slist} is returned where the fieldnames are the properties of\n\
+the object @var{h} and the fields are the list of possible values for each\n\
+property.  If no output variable is used then the list is formatted and\n\
+printed to the screen.\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+hf = figure ();\n\
+set (hf, \"paperorientation\")\n\
+@result{}  paperorientation:  [ landscape | @{portrait@} | rotated ]\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+shows the paperorientation property can take three values with the default\n\
+being @qcode{\"portrait\"}.\n\
 @seealso{get}\n\
 @end deftypefn")
 {

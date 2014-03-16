@@ -22,11 +22,16 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [prefix, archprefix] = default_prefix (global_install)
+function [prefix, archprefix] = default_prefix (global_install, desc)
   if (global_install)
     prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-    archprefix = fullfile (octave_config_info ("libdir"), "octave",
-                           "packages", [desc.name "-" desc.version]);
+    if (nargin == 2)
+      archprefix = fullfile (octave_config_info ("libdir"), "octave",
+                             "packages", [desc.name "-" desc.version]);
+    else
+      archprefix = fullfile (octave_config_info ("libdir"), "octave",
+                             "packages");
+    endif
   else
     prefix = tilde_expand (fullfile ("~", "octave"));
     archprefix = prefix;

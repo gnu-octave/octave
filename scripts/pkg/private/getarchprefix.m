@@ -24,7 +24,7 @@
 
 function archprefix = getarchprefix (desc, global_install)
   if (global_install)
-    [~, archprefix] = default_prefix (global_install);
+    [~, archprefix] = default_prefix (global_install, desc);
   else
     archprefix = desc.dir;
   endif

@@ -2399,6 +2399,11 @@ directory names separated by @code{pathsep} are also accepted.  For example:
 @example
 addpath ("dir1:/dir2:~/dir3")
 @end example
+
+For each directory that is added, and that was not already in the path,
+@code{addpath} checks for the existence of a file named @file{PKG_ADD}
+(note lack of .m extension) and runs it if it exists.
+
 @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)
 {
@@ -2500,6 +2505,11 @@ directory names separated by @code{pathsep} are also accepted.  For example:
 @example
 rmpath ("dir1:/dir2:~/dir3")
 @end example
+
+For each directory that is removed, @code{rmpath} checks for the
+existence of a file named @file{PKG_DEL} (note lack of .m extension)
+and runs it if it exists.
+
 @seealso{path, addpath, genpath, pathdef, savepath, pathsep}
 @end deftypefn */)
 {

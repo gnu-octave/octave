@@ -879,13 +879,24 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                                       xoffset + xk * xstep) / lpos(3),
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                           "facecolor", facecolor, "edgecolor", edgecolor,
-                           "cdata", cdata, "userdata", hplots(k));
-                hobjects(end+1) = p1;
-                ## Copy clim from axes so that colors work out.
-                set (hlegend, "clim", get (ca(1), "clim"));
+                            "facecolor", facecolor, "edgecolor", edgecolor,
+                            "cdata", cdata, "userdata", hplots(k));
+              else
+                ## non-standard patch only making use of marker styles
+                ## such as scatter plot.
+                p1 = patch ("xdata", (xoffset + 0.5 * linelength  + xk * xstep) / lpos(3),
+                            "ydata", (lpos(4) - yoffset - yk * ystep) / lpos(4),
+                            "marker", get (hplots(k), "marker"),
+                            "markeredgecolor",get (hplots(k),"markeredgecolor"),
+                            "markerfacecolor",get (hplots(k),"markerfacecolor"),
+                            "markersize", min (get (hplots(k),"markersize"),10),
+                            "cdata", cdata, "userdata", hplots(k));
               endif
-              ## FIXME: Probably need listeners, as for line objects
+              hobjects(end+1) = p1;
+              ## Copy clim from axes so that colors work out.
+              set (hlegend, "clim", get (ca(1), "clim"));
+
+              ## FIXME: Need listeners, as for line objects.
               ##        Changing clim, for example, won't update colors
 
             case "surface"
@@ -897,11 +908,11 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
                                       xoffset + xk * xstep) / lpos(3),
                             "ydata", (lpos(4) - yoffset -
                                       [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
-                           "facecolor", facecolor, "edgecolor", edgecolor,
-                           "cdata", cdata, "userdata", hplots(k));
+                            "facecolor", facecolor, "edgecolor", edgecolor,
+                            "cdata", cdata, "userdata", hplots(k));
                 hobjects(end+1) = p1;
               endif
-              ## FIXME: Probably need listeners, as for line objects
+              ## FIXME: Need listeners, as for line objects.
 
           endswitch
 

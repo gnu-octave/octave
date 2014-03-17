@@ -2984,10 +2984,12 @@ base_graphics_object::values_as_string (void)
   if (valid_object ())
     {
       octave_map m = get ().map_value ();
+      graphics_object obj = gh_manager::get_object (get_handle ());
 
       for (octave_map::const_iterator pa = m.begin (); pa != m.end (); pa++)
         {
-          if (pa->first != "children")
+          if (pa->first != "children" &&
+              ! obj.has_readonly_property (pa->first))
             {
               property p = get_properties ().get_property (pa->first);
 
@@ -3016,7 +3018,9 @@ base_graphics_object::value_as_string (const std::string& prop)
 
   if (valid_object ())
     {
-      if (prop != "children")
+      graphics_object obj = gh_manager::get_object (get_handle ());
+
+      if (prop != "children" && ! obj.has_readonly_property (prop))
         {
           property p = get_properties ().get_property (prop);
 
@@ -3044,11 +3048,13 @@ base_graphics_object::values_as_struct (void)
   if (valid_object ())
     {
       octave_scalar_map m = get ().scalar_map_value ();
+      graphics_object obj = gh_manager::get_object (get_handle ());
 
       for (octave_scalar_map::const_iterator pa = m.begin ();
            pa != m.end (); pa++)
         {
-          if (pa->first != "children")
+          if (pa->first != "children"
+              && ! obj.has_readonly_property (pa->first))
             {
               property p = get_properties ().get_property (pa->first);
 
@@ -3068,6 +3074,25 @@ base_graphics_object::values_as_struct (void)
   return retval;
 }
 
+/*
+%!test
+%! hfig = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   ret = set (hax, "tightinset");
+%!   assert (isempty (ret));
+%!   ret = set (hax, "type");
+%!   assert (isempty (ret));
+%!   ret = set (hfig, "__graphics_toolkit__");
+%!   assert (isempty (ret));
+%!   ret = set (0, "commandwindowsize");
+%!   assert (isempty (ret));
+%!   ret = set (0);
+%!   assert (! isfield (ret, "commandwindowsize"));
+%! unwind_protect_cleanup
+%!   close (hfig);
+%! end_unwind_protect
+*/
 graphics_object
 graphics_object::get_ancestor (const std::string& obj_type) const
 {
@@ -8806,7 +8831,13 @@ being @qcode{\"portrait\"}.\n\
                       
                       octave_map pmap = obj.values_as_struct ();
 
-                      if (pmap.isfield (property))
+                      if (obj.has_readonly_property (property))
+                        if (nargout != 0)
+                          retval = Matrix ();
+                        else
+                          octave_stdout << "set: " << property
+                                        <<" is read-only" << std::endl;
+                      else if (pmap.isfield (property))
                         {
                           if (nargout != 0)
                             retval = pmap.getfield (property)(0);

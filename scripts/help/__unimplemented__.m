@@ -679,7 +679,6 @@ function list = missing_functions ()
   "light",
   "lightangle",
   "lighting",
-  "linkaxes",
   "linkdata",
   "listfonts",
   "loadlibrary",

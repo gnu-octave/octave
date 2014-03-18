@@ -2882,6 +2882,8 @@ hlink = linkprop ([hg, h1, h2], "color");
 
 @DOCSTRING(linkprop)
 
+@DOCSTRING(linkaxes)
+
 These capabilities are used in a number of basic graphics objects.
 The @code{hggroup} objects created by the functions of Octave contain
 one or more graphics object and are used to:

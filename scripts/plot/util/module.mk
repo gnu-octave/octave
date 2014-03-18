@@ -56,6 +56,7 @@ plot_util_FCN_FILES = \
   plot/util/ishghandle.m \
   plot/util/ishold.m \
   plot/util/isprop.m \
+  plot/util/linkaxes.m \
   plot/util/linkprop.m \
   plot/util/meshgrid.m \
   plot/util/ndgrid.m \

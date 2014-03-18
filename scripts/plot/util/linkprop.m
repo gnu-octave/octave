@@ -121,15 +121,15 @@ endfunction
 %! clf;
 %! x = 0:0.1:10;
 %! subplot (1,2,1);
-%! h1 = plot (x, sin (x), "r");
+%! h1 = plot (x, sin (x), 'r');
 %! subplot (1,2,2);
-%! h2 = plot (x, cos (x), "b");
-%! input ("Type <RETURN> to link plots");
-%! hlink = linkprop ([h1, h2], {"color", "linestyle"});
-%! input ("Type <RETURN> to change color");
-%! set (h1, "color", "green");
-%! input ("Type <RETURN> to change linestyle");
-%! set (h2, "linestyle", "--");
+%! h2 = plot (x, cos (x), 'b');
+%! input ('Type <RETURN> to link plots');
+%! hlink = linkprop ([h1, h2], {'color', 'linestyle'});
+%! input ('Type <RETURN> to change color');
+%! set (h1, 'color', 'green');
+%! input ('Type <RETURN> to change linestyle');
+%! set (h2, 'linestyle', '--');
 
 %!test
 %! hf1 = figure ("visible", "off");

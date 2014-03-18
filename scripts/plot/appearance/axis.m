@@ -30,7 +30,9 @@
 ## The argument @var{limits} should be a 2-, 4-, or 6-element vector.  The
 ## first and second elements specify the lower and upper limits for the
 ## x-axis.  The third and fourth specify the limits for the y-axis, and the
-## fifth and sixth specify the limits for the z-axis.
+## fifth and sixth specify the limits for the z-axis.  The special values
+## -Inf and Inf may be used to indicate that the limit should automatically be
+## computed based on the data in the axis.
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
@@ -296,15 +298,35 @@ function limits = __axis__ (ca, ax, varargin)
       endif
     endfor
 
+    autoscale = isinf (ax);
+    lims = [];
     if (len > 1)
+      if (any (autoscale(1:2)))
+        set (ca, "xlimmode", "auto");
+        lims = ax(1:2);
+        lims(autoscale(1:2)) = get (ca, "xlim")(autoscale(1:2));
+        ax(1:2) = lims;
+      endif
       set (ca, "xlim", [ax(1), ax(2)]);
     endif
 
     if (len > 3)
+      if (any (autoscale(3:4)))
+        set (ca, "ylimmode", "auto");
+        lims = ax(3:4);
+        lims(autoscale(3:4)) = get (ca, "ylim")(autoscale(3:4));
+        ax(3:4) = lims;
+      endif
       set (ca, "ylim", [ax(3), ax(4)]);
     endif
 
     if (len > 5)
+      if (any (autoscale(5:6)))
+        set (ca, "zlimmode", "auto");
+        lims = ax(5:6);
+        lims(autoscale(5:6)) = get (ca, "zlim")(autoscale(5:6));
+        ax(5:6) = lims;
+      endif
       set (ca, "zlim", [ax(5), ax(6)]);
     endif
 

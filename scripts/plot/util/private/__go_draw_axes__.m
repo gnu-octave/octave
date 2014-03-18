@@ -2145,40 +2145,37 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
     num_mtics = 5;
   endif
   colorspec = get_text_colorspec (color, mono);
-  if (strcmpi (ticmode, "manual") || strcmpi (labelmode, "manual"))
+  fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
+  if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\nunset m%stics;\n", ax, ax);
       return
     endif
-    if (strcmpi (ticmode, "manual"))
-      fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
-      fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
-               ticklength, axispos, mirror);
-      fprintf (plot_stream, " %.15g,", tics(1:end-1));
-      fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
-    endif
-    if (strcmpi (labelmode, "manual"))
-      k = 1;
-      ntics = numel (tics);
-      nlabels = numel (labels);
-      fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
-               tickdir, ticklength, axispos, mirror);
-      labels = strrep (labels, "%", "%%");
-      for i = 1:ntics
-        fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
-        if (i < ntics)
-          fputs (plot_stream, ", ");
-        endif
-        if (k > nlabels)
-          k = 1;
-        endif
-      endfor
-      fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
-    endif
+    fprintf (plot_stream, "set %stics %s %s %s %s (", ax, tickdir,
+             ticklength, axispos, mirror);
+    fprintf (plot_stream, " %.15g,", tics(1:end-1));
+    fprintf (plot_stream, " %.15g) %s;\n", tics(end), fontspec);
   else
-    fprintf (plot_stream, "set format %s \"%s\";\n", ax, fmt);
     fprintf (plot_stream, "set %stics %s %s %s %s %s %s;\n", ax,
              tickdir, ticklength, axispos, mirror, colorspec, fontspec);
+  endif
+  if (strcmpi (labelmode, "manual"))
+    k = 1;
+    ntics = numel (tics);
+    nlabels = numel (labels);
+    fprintf (plot_stream, "set %stics add %s %s %s %s (", ax,
+             tickdir, ticklength, axispos, mirror);
+    labels = strrep (labels, "%", "%%");
+    for i = 1:ntics
+      fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
+      if (i < ntics)
+        fputs (plot_stream, ", ");
+      endif
+      if (k > nlabels)
+        k = 1;
+      endif
+    endfor
+    fprintf (plot_stream, ") %s %s;\n", colorspec, fontspec);
   endif
   if (strcmp (mtics, "on"))
     fprintf (plot_stream, "set m%stics %d;\n", ax, num_mtics);

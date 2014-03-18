@@ -85,28 +85,37 @@ private:
   int m_result;
 };
 
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+static int fdstderr = -1;
+#endif
 
 // Custom message handler for filtering some messages from Qt.
 
-void message_handler (QtMsgType type, const char *msg)
+void
+message_handler (QtMsgType type, const char *msg)
 {
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+  static FILE *errstream = fdopen (fdstderr, "a+");
+#else
+  static FILE *errstream = stderr;
+#endif
+
   switch (type)
     {
     case QtDebugMsg:
-      if (strncmp (msg, "QFileSystemWatcher: skipping native engine",42) != 0)
-        std::cerr << "Debug: " << msg << std::endl;
+      gnulib::fprintf (errstream, "Debug: %s\n", msg);
       break;
 
     case QtWarningMsg:
-      std::cerr << "Warning: " << msg << std::endl;
+      gnulib::fprintf (errstream, "Warning: %s\n", msg);
       break;
 
     case QtCriticalMsg:
-      std::cerr << "Critical: " << msg << std::endl;
+      gnulib::fprintf (errstream, "Critical: %s\n", msg);
       break;
 
     case QtFatalMsg:
-      std::cerr << "Fatal: " << msg << std::endl;
+      gnulib::fprintf (errstream, "Fatal: %s\n", msg);
       abort ();
 
     default:
@@ -121,6 +130,13 @@ int
 octave_start_gui (int argc, char *argv[], bool start_gui)
 {
   octave_thread_manager::block_interrupt_signal ();
+
+#if ! defined (__WIN32__) || defined (__CYGWIN__)
+  // Store the file descriptor associated with the STDERR stream.  Send
+  // Qt messages there instead of to the STDERR stream that will be
+  // associated with the GUI command window.
+  fdstderr = gnulib::dup (STDERR_FILENO);
+#endif
 
   qInstallMsgHandler (message_handler);
 

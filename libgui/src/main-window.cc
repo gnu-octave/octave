@@ -2013,8 +2013,15 @@ main_window::show_gui_info (void)
 
   QMessageBox gui_info_dialog (QMessageBox::Warning,
                                tr ("Experimental GUI Info"),
-                               gui_info, QMessageBox::Close);
-
+                               QString (gui_info.length (),' '), QMessageBox::Close);
+  QGridLayout *box_layout
+      = qobject_cast<QGridLayout *>(gui_info_dialog.layout());
+  if (box_layout)
+    {
+      QTextEdit *text = new QTextEdit(gui_info);
+      text->setReadOnly(true);
+      box_layout->addWidget(text, 0, 1);
+    }
   gui_info_dialog.exec ();
 }
 

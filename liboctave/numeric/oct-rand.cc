@@ -455,7 +455,7 @@ octave_rand::do_float_scalar (float a)
 
         case gamma_dist:
           if (da <= 0.0 || ! xfinite (a))
-            retval = octave_NaN;
+            dretval = octave_NaN;
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, da, dretval);
           break;

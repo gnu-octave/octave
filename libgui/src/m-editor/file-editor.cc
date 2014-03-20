@@ -965,8 +965,10 @@ file_editor::construct (void)
 
   // FIXME: what was the intended purpose of this unused variable?
   // QStyle *editor_style = QApplication::style ();
-
   _menu_bar = new QMenuBar (editor_widget);
+#if defined (Q_OS_MAC)
+  _menu_bar->setNativeMenuBar (false);
+#endif
   _tool_bar = new QToolBar (editor_widget);
   _tool_bar->setMovable (true);
   _tab_widget = new QTabWidget (editor_widget);

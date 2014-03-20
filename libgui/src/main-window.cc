@@ -1038,6 +1038,22 @@ main_window::pasteClipboard (void)
     emit pasteClipboard_signal ();
 }
 
+void
+main_window::selectAll (void)
+{
+  if (_current_directory_combo_box->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory_combo_box->lineEdit ();
+      if (edit)
+        {
+          edit->selectAll ();
+        }
+    }
+  else
+    emit selectAll_signal ();
+}
+
+
 // Connect the signals emitted when the Octave thread wants to create
 // a dialog box of some sort.  Perhaps a better place for this would be
 // as part of the QUIWidgetCreator class.  However, mainWindow currently
@@ -1513,6 +1529,9 @@ main_window::construct_edit_menu (QMenuBar *p)
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
   _paste_action->setShortcut (QKeySequence::Paste);
+
+  QAction * select_all_action
+    = edit_menu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
 
   _clear_clipboard_action
     = edit_menu->addAction (tr ("Clear Clipboard"), this,
@@ -1994,8 +2013,15 @@ main_window::show_gui_info (void)
 
   QMessageBox gui_info_dialog (QMessageBox::Warning,
                                tr ("Experimental GUI Info"),
-                               gui_info, QMessageBox::Close);
-
+                               QString (gui_info.length (),' '), QMessageBox::Close);
+  QGridLayout *box_layout
+      = qobject_cast<QGridLayout *>(gui_info_dialog.layout());
+  if (box_layout)
+    {
+      QTextEdit *text = new QTextEdit(gui_info);
+      text->setReadOnly(true);
+      box_layout->addWidget(text, 0, 1);
+    }
   gui_info_dialog.exec ();
 }
 

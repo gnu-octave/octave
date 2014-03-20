@@ -183,6 +183,7 @@ public:
   void startCommand (void);
   void sendConsoleText (const QString& s);
   QRect cursorRect (void);
+  void selectAll();
 
   void log (const char* fmt, ...);
 
@@ -655,6 +656,14 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
     }
 
   p.restore ();
+}
+
+void QConsolePrivate::selectAll()
+{
+  m_beginSelection = QPoint (0,0);
+  m_endSelection = QPoint(m_bufferSize.width (), 
+                          m_cursorPos.y());
+  updateSelection();
 }
 
 void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
@@ -1551,6 +1560,16 @@ void QWinTerminalImpl::pasteClipboard (void)
   if (! text.isEmpty ())
     sendText (text);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::selectAll (void)
+{
+  if(!hasFocus()) return;
+
+  d->selectAll();
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////

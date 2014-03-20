@@ -2273,7 +2273,7 @@ public:
 
 private:
 
-  gtk_manager (void);
+  gtk_manager (void) { }
 
   ~gtk_manager (void) { }
 
@@ -2322,15 +2322,9 @@ private:
 
   graphics_toolkit do_get_toolkit (void) const;
 
-  void do_register_toolkit (const std::string& name)
-  {
-    available_toolkits.insert (name);
-  }
+  void do_register_toolkit (const std::string& name);
 
-  void do_unregister_toolkit (const std::string& name)
-  {
-    available_toolkits.erase (name);
-  }
+  void do_unregister_toolkit (const std::string& name);
 
   void do_load_toolkit (const graphics_toolkit& tk)
   {

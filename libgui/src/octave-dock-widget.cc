@@ -105,6 +105,8 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (copyClipboard ()));
   connect (p, SIGNAL (pasteClipboard_signal ()),
            this, SLOT (pasteClipboard ()));
+  connect (p, SIGNAL (selectAll_signal ()),
+           this, SLOT (selectAll ()));
 }
 
 octave_dock_widget::~octave_dock_widget ()

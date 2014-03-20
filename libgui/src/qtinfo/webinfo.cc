@@ -284,6 +284,20 @@ webinfo::copyClipboard ()
 }
 
 void
+webinfo::selectAll ()
+{
+  if (_search_line_edit->hasFocus ())
+    {
+      _search_line_edit->selectAll ();
+    }
+  if (_text_browser->hasFocus ())
+    {
+      _text_browser->selectAll ();
+    }
+}
+
+
+void
 webinfo::pasteClipboard ()
 {
   if (_search_line_edit->hasFocus ())

@@ -29,13 +29,19 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #include <Qsci/qscilexer.h>
+#include <QShortcut>
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
-{ }
+{
+  // disable zoom-in/out shortcuts, these are handled by octave
+  SendScintilla (QsciScintillaBase::SCI_CLEARCMDKEY, '+' + (QsciScintillaBase::SCMOD_CTRL << 16) );
+  SendScintilla (QsciScintillaBase::SCI_CLEARCMDKEY, '-' + (QsciScintillaBase::SCMOD_CTRL << 16) );
+  SendScintilla (QsciScintillaBase::SCI_CLEARCMDKEY, '/' + (QsciScintillaBase::SCMOD_CTRL << 16) );
+}
 
 octave_qscintilla::~octave_qscintilla ()
 { }

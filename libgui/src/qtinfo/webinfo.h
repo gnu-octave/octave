@@ -53,6 +53,7 @@ public slots:
 
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 private:
   QTextBrowser        *_text_browser;

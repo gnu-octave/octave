@@ -416,6 +416,11 @@ public slots:
      */
     void pasteSelection();
 
+    /**
+     * selects all content 
+     */
+    void selectAll();
+
 	 /**
 	 * Causes the widget to display or hide a message informing the user that terminal
 	 * output has been suspended (by using the flow control key combination Ctrl+S)

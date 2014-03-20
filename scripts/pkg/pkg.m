@@ -530,6 +530,23 @@ function [local_packages, global_packages] = pkg (varargin)
     case "update"
       if (nargout == 0)
         installed_pkgs_lst = installed_packages (local_list, global_list);
+        if (length (files) > 0)
+           update_lst = {}; 
+           for i = 1:length (files)
+             is_installed = false;
+             for j = 1:length (installed_pkgs_lst)
+               if (strcmp (files{i}, installed_pkgs_lst{j}.name))
+                 update_lst = { update_lst{:}, installed_pkgs_lst{j} };
+                 is_installed = true;
+               endif
+             endfor
+             if (is_installed == false)
+               s = sprintf ("Package %s is not installed - not updating this package", files{i});
+               warning (s);
+             endif
+           endfor
+           installed_pkgs_lst = update_lst;
+        endif
         for i = 1:length (installed_pkgs_lst)
           installed_pkg_name = installed_pkgs_lst{i}.name;
           installed_pkg_version = installed_pkgs_lst{i}.version;

@@ -65,6 +65,10 @@ Summary of important user-visible changes for version 4.0:
     is now set to "on" by default instead of "error" by default and "on"
     for --traditional.
 
+ ** polyeig now returns a row vector of eigenvalues rather than a matrix
+    with the eigenvalues on the diagonal.  This change was made for Matlab
+    compatibility.
+
  ** Other new functions added in 4.0.0:
 
       validateattributes

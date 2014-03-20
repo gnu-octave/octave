@@ -66,6 +66,7 @@ public:
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
+  void selectAll (void);
   void blinkCursorEvent (void);
 
 signals:

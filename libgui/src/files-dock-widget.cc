@@ -924,5 +924,20 @@ files_dock_widget::pasteClipboard ()
     }
 }
 
+void
+files_dock_widget::selectAll ()
+{
+  if (_file_tree_view->hasFocus ())
+    _file_tree_view->selectAll ();
+  if (_current_directory->hasFocus ())
+    {
+      QLineEdit * edit = _current_directory->lineEdit ();
+      if (edit)
+        {
+          edit->selectAll ();
+        }
+    }
+}
+
 
 

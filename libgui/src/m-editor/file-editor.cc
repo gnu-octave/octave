@@ -595,6 +595,13 @@ file_editor::request_paste (void)
 }
 
 void
+file_editor::request_selectall (void)
+{
+  emit fetab_selectall (_tab_widget->currentWidget ());
+}
+
+
+void
 file_editor::request_context_help (bool)
 {
   emit fetab_context_help (_tab_widget->currentWidget (), false);
@@ -863,6 +870,24 @@ file_editor::active_tab_changed (int index)
 }
 
 void
+file_editor::zoom_in (bool)
+{
+  emit fetab_zoom_in (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::zoom_out (bool)
+{
+  emit fetab_zoom_out (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::zoom_normal (bool)
+{
+  emit fetab_zoom_normal (_tab_widget->currentWidget ());
+}
+
+void
 file_editor::handle_editor_state_changed (bool copy_available,
                                           const QString& file_name)
 {
@@ -940,8 +965,10 @@ file_editor::construct (void)
 
   // FIXME: what was the intended purpose of this unused variable?
   // QStyle *editor_style = QApplication::style ();
-
   _menu_bar = new QMenuBar (editor_widget);
+#if defined (Q_OS_MAC)
+  _menu_bar->setNativeMenuBar (false);
+#endif
   _tool_bar = new QToolBar (editor_widget);
   _tool_bar->setMovable (true);
   _tab_widget = new QTabWidget (editor_widget);
@@ -1005,6 +1032,9 @@ file_editor::construct (void)
   QAction *remove_all_breakpoints_action
     = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
                    tr ("&Remove All Breakpoints"), _tool_bar);
+
+  _selectall_action
+    = new QAction (tr ("Select All"), _tool_bar);
 
   _comment_selection_action
     = new QAction (tr ("&Comment"), _tool_bar);
@@ -1128,6 +1158,8 @@ file_editor::construct (void)
   editMenu->addAction (_cut_action);
   editMenu->addAction (_paste_action);
   editMenu->addSeparator ();
+  editMenu->addAction (_selectall_action);
+  editMenu->addSeparator ();
   editMenu->addAction (_find_action);
   editMenu->addSeparator ();
   editMenu->addAction (_comment_selection_action);
@@ -1153,6 +1185,15 @@ file_editor::construct (void)
                          tr ("&Styles Preferences..."),
                          this, SLOT (request_styles_preferences (bool)));
   _menu_bar->addMenu (editMenu);
+
+  QMenu *view_menu = new QMenu (tr ("&View"), _menu_bar);
+  _zoom_in_action = view_menu->addAction (QIcon (), tr ("Zoom &In"),
+                                this, SLOT (zoom_in (bool)));
+  _zoom_out_action = view_menu->addAction (QIcon (), tr ("Zoom &Out"),
+                                this, SLOT (zoom_out (bool)));
+  _zoom_normal_action = view_menu->addAction (QIcon (), tr ("&Normal Size"),
+                                this, SLOT (zoom_normal (bool)));
+  _menu_bar->addMenu (view_menu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
   _debug_menu->addAction (toggle_breakpoint_action);
@@ -1223,6 +1264,9 @@ file_editor::construct (void)
 
   connect (_paste_action, SIGNAL (triggered ()),
            this, SLOT (request_paste ()));
+
+  connect (_selectall_action, SIGNAL (triggered ()),
+           this, SLOT (request_selectall ()));
 
   connect (_save_action, SIGNAL (triggered ()),
            this, SLOT (request_save_file ()));
@@ -1377,6 +1421,16 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_paste (const QWidget*)),
            f, SLOT (paste (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_selectall (const QWidget*)),
+           f, SLOT (select_all (const QWidget*)));
+
+  connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),
+           f, SLOT (zoom_in (const QWidget*)));
+  connect (this, SIGNAL (fetab_zoom_out (const QWidget*)),
+           f, SLOT (zoom_out (const QWidget*)));
+  connect (this, SIGNAL (fetab_zoom_normal (const QWidget*)),
+           f, SLOT (zoom_normal (const QWidget*)));
+
   connect (this, SIGNAL (fetab_context_help (const QWidget*, bool)),
            f, SLOT (context_help (const QWidget*, bool)));
 
@@ -1481,6 +1535,17 @@ file_editor::pasteClipboard ()
       request_paste ();
     }
 }
+void
+file_editor::selectAll ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_selectall ();
+    }
+}
+
 
 void
 file_editor::set_shortcuts (bool set)
@@ -1500,8 +1565,13 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (QKeySequence::Copy);
       _cut_action->setShortcut (QKeySequence::Cut);
       _paste_action->setShortcut (QKeySequence::Paste);
+      _selectall_action->setShortcut (QKeySequence::SelectAll);
       _context_help_action->setShortcut (QKeySequence::HelpContents);
       _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
+
+      _zoom_in_action->setShortcuts (QKeySequence::ZoomIn);
+      _zoom_out_action->setShortcuts (QKeySequence::ZoomOut);
+      _zoom_normal_action->setShortcut (Qt::ControlModifier + Qt::Key_Slash);
 
       _find_action->setShortcut (QKeySequence::Find);
       _goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
@@ -1536,7 +1606,12 @@ file_editor::set_shortcuts (bool set)
       _copy_action->setShortcut (no_key);
       _cut_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
+      _selectall_action->setShortcut (no_key);
       _context_help_action->setShortcut (no_key);
+
+      _zoom_in_action->setShortcut (no_key);
+      _zoom_out_action->setShortcut (no_key);
+      _zoom_normal_action->setShortcut (no_key);
 
       _find_action->setShortcut (no_key);
       _goto_line_action->setShortcut (no_key);
@@ -1574,6 +1649,10 @@ file_editor::check_actions ()
   _paste_action->setEnabled (have_tabs);
   _context_help_action->setEnabled (have_tabs);
   _context_doc_action->setEnabled (have_tabs);
+
+  _zoom_in_action->setEnabled (have_tabs);
+  _zoom_out_action->setEnabled (have_tabs);
+  _zoom_normal_action->setEnabled (have_tabs);
 
   _find_action->setEnabled (have_tabs);
   _goto_line_action->setEnabled (have_tabs);

@@ -222,3 +222,16 @@ history_dock_widget::pasteClipboard ()
     }
 }
 
+void
+history_dock_widget::selectAll ()
+{
+  if (_filter_line_edit->hasFocus ())
+    {
+        _filter_line_edit->selectAll ();
+    }
+  if (_history_list_view->hasFocus ())
+    {
+        _history_list_view->selectAll ();
+    }
+}
+

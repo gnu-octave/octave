@@ -851,6 +851,11 @@ classes.\n\
 %! ## Test fixed seed
 %! randg ("seed", 1);
 %! assert (randg (100, 1, 6), [89.40208435058594 101.4734725952148 103.4020004272461 93.62763214111328 88.33104705810547 88.1871337890625], 1e-4);
+%!test
+%! ## Test out-of-bounds values produce NaN w/old-style generators & floats
+%! randg ("seed", 1);
+%! result = randg ([-2 Inf], "single");
+%! assert (result, [NaN NaN]);
 
 %!test
 %! if (__random_statistical_tests__)

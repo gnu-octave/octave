@@ -855,7 +855,7 @@ classes.\n\
 %! ## Test out-of-bounds values produce NaN w/old-style generators & floats
 %! randg ("seed", 1);
 %! result = randg ([-2 Inf], "single");
-%! assert (result, [NaN NaN]);
+%! assert (result, single ([NaN NaN]));
 
 %!test
 %! if (__random_statistical_tests__)

@@ -330,7 +330,7 @@ function ret = edit (varargin)
 
     ## If editing a new file, prompt for creation if gui is running
     if (isguirunning ())
-      if (! __octave_link_edit_file__ (file,"prompt"));
+      if (! __octave_link_edit_file__ (file, "prompt"));
         return;
       endif
     endif
@@ -344,8 +344,12 @@ function ret = edit (varargin)
     ext = file(idx+1:end);
     if (! any (strcmp (ext, {"cc", "m"})))
       ## Some unknown file.  Create and open it or just open it.
+      ## Add .m file extension per default
+      fileandpath = [fileandpath ".m"];
       if (isguirunning ())
         ## Write the initial file (if there is anything to write)
+        ## Give user the opportunity to change the file extension
+        fileandpath = uiputfile (fileandpath);
         fid = fopen (fileandpath, "wt");
         if (fid < 0)
           error ("edit: could not create %s", fileandpath);

@@ -129,9 +129,7 @@ function h = waitbar (varargin)
     endif
     title (ax, msg);
 
-    if (! isempty (cf))
-      set (0, "currentfigure", cf);
-    endif
+    set (0, "currentfigure", cf);
   endif
 
   drawnow ();

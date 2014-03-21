@@ -49,7 +49,7 @@ function h = hgload (filename)
   try
     stmp = load (filename, "s_oct40");
   catch
-    error ("hgload: could not load hgsave-formatted object in %s", filename);
+    error ("hgload: could not load hgsave-formatted object in file %s", filename);
   end_try_catch
 
   h = struct2hdl (stmp.s_oct40);

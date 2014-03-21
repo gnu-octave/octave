@@ -2755,6 +2755,39 @@ base_graphics_toolkit::finalize (const graphics_handle& h)
   finalize (go);
 }
 
+static void
+xreset_default_properties (graphics_handle gh,
+                           property_list::pval_map_type factory_pval)
+{
+  graphics_object obj = gh_manager::get_object (gh);
+
+  property_list::pval_map_type pval;
+
+  for (property_list::pval_map_const_iterator it = factory_pval.begin ();
+       it != factory_pval.end (); it++)
+    {
+      std::string pname = it->first;
+
+      // Don't reset internal properties and handle_properties
+      if (! obj.has_readonly_property (pname) &&
+          pname.find ("__") != 0 && pname.find ("current") != 0 &&
+          pname != "uicontextmenu" && pname != "parent")
+        {
+          // Store *mode prop/val in order to set them last 
+          if (pname.find ("mode") == (pname.length () - 4))
+            pval.insert (std::pair<std::string, octave_value>
+                         (pname, it->second));
+          else
+            obj.set (pname, it->second);
+        }
+    }
+
+  // set *mode properties
+  for (property_list::pval_map_const_iterator it = pval.begin ();
+       it != pval.end (); it++)
+    obj.set (it->first, it->second);
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -2774,7 +2807,7 @@ base_properties::set_from_list (base_graphics_object& obj,
            q++)
         {
           std::string pname = q->first;
-
+          
           obj.set (pname, q->second);
 
           if (error_state)
@@ -3085,6 +3118,21 @@ base_graphics_object::remove_all_listeners (void)
         p.delete_listener ();
     }
 }
+
+void 
+base_graphics_object::reset_default_properties (void)
+  {
+    if (valid_object ())
+      {
+        property_list::pval_map_type factory_pval = 
+          gh_manager::get_object (0).get_factory_defaults_list ()
+          .find (type ())->second;
+        
+        xreset_default_properties (get_handle (), factory_pval);
+
+        override_defaults (*this);
+      }
+  }
 
 std::string
 base_graphics_object::values_as_string (void)
@@ -3570,39 +3618,14 @@ root_figure::properties::remove_child (const graphics_handle& gh)
 property_list
 root_figure::factory_properties = root_figure::init_factory_properties ();
 
-static void
-reset_default_properties (property_list& default_properties)
-{
-  property_list new_defaults;
-
-  for (property_list::plist_map_const_iterator p = default_properties.begin ();
-       p != default_properties.end (); p++)
-    {
-      const property_list::pval_map_type pval_map = p->second;
-      std::string prefix = p->first;
-
-      for (property_list::pval_map_const_iterator q = pval_map.begin ();
-           q != pval_map.end ();
-           q++)
-        {
-          std::string s = q->first;
-
-          if (prefix == "axes" && (s == "position" || s == "units"))
-            new_defaults.set (prefix + s, q->second);
-          else if (prefix == "figure" && (s == "position" || s == "units"
-                                          || s == "windowstyle"
-                                          || s == "paperunits"))
-            new_defaults.set (prefix + s, q->second);
-        }
-    }
-
-  default_properties = new_defaults;
-}
-
 void
 root_figure::reset_default_properties (void)
 {
-  ::reset_default_properties (default_properties);
+  // empty list of local defaults
+  default_properties = property_list ();
+
+  xreset_default_properties (get_handle (), 
+                             xproperties.factory_defaults ());
 }
 
 // ---------------------------------------------------------------------
@@ -4462,7 +4485,23 @@ figure::get_default (const caseless_str& name) const
 void
 figure::reset_default_properties (void)
 {
-  ::reset_default_properties (default_properties);
+  // empty list of local defaults
+  default_properties = property_list ();
+
+  property_list::pval_map_type plist = xproperties.factory_defaults ();
+  plist.erase ("units");
+  plist.erase ("position");
+  plist.erase ("paperunits");
+  plist.erase ("paperposition");
+  plist.erase ("windowstyle");
+  xreset_default_properties (get_handle (), plist);
+
+  // FIXME: the following short sleep is needed in order
+  //        to avoid a crash when using qt toolkit
+  Fsleep (octave_value (0.001));
+
+  // override with parents' defaults
+  override_defaults (*this);
 }
 
 // ---------------------------------------------------------------------
@@ -4883,27 +4922,42 @@ axes::properties::set_defaults (base_graphics_object& obj,
 
   visible = "on";
 
-  // Replace preserves Position and Units properties
-  if (mode != "replace")
+  // Replace/Reset preserves Position and Units properties
+  if (mode != "replace" && mode != "reset")
     {
       outerposition = default_axes_outerposition ();
       position = default_axes_position ();
       activepositionproperty = "outerposition";
     }
+  
+  if (mode != "reset")
+    {
+      delete_children (true);
 
-  delete_children (true);
-
-  xlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                             false, false);
-
-  ylabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                             false, false);
-
-  zlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                             false, false);
-
-  title = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                            false, false);
+      xlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                                 false, false);
+      ylabel = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                                 false, false);
+      zlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                                 false, false);
+      title = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                                false, false);
+      adopt (xlabel.handle_value ());
+      adopt (ylabel.handle_value ());
+      adopt (zlabel.handle_value ());
+      adopt (title.handle_value ());
+    }
+  else
+    {
+      graphics_object go = gh_manager::get_object (xlabel.handle_value ());
+      go.reset_default_properties ();
+      go = gh_manager::get_object (ylabel.handle_value ());
+      go.reset_default_properties ();
+      go = gh_manager::get_object (zlabel.handle_value ());
+      go.reset_default_properties ();
+      go = gh_manager::get_object (title.handle_value ());
+      go.reset_default_properties ();
+    }
 
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");
@@ -4940,11 +4994,6 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xset (ylabel.handle_value (), "autopos_tag", "ylabel");
   xset (zlabel.handle_value (), "autopos_tag", "zlabel");
   xset (title.handle_value (), "autopos_tag", "title");
-
-  adopt (xlabel.handle_value ());
-  adopt (ylabel.handle_value ());
-  adopt (zlabel.handle_value ());
-  adopt (title.handle_value ());
 
   update_transform ();
   sync_positions ();
@@ -7649,7 +7698,11 @@ axes::properties::clear_zoom_stack (void)
 void
 axes::reset_default_properties (void)
 {
-  ::reset_default_properties (default_properties);
+  // empty list of local defaults
+  default_properties = property_list ();
+
+  // reset factory defaults
+  set_defaults ("reset");
 }
 
 void
@@ -8694,7 +8747,14 @@ uitoolbar::get_default (const caseless_str& name) const
 void
 uitoolbar::reset_default_properties (void)
 {
-  ::reset_default_properties (default_properties);
+  // empty list of local defaults
+  default_properties = property_list ();
+
+  xreset_default_properties (get_handle (), 
+                             xproperties.factory_defaults ());
+
+  // override with parents' defaults
+  override_defaults (*this);
 }
 
 // ---------------------------------------------------------------------
@@ -9320,12 +9380,13 @@ Undocumented internal function.\n\
 
 DEFUN (reset, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\
-Remove any defaults set for the handle @var{h}.  The default figure\n\
-properties of @qcode{\"position\"}, @qcode{\"units\"},\n\
-@qcode{\"windowstyle\"} and @qcode{\"paperunits\"} and the default axes\n\
-properties of @qcode{\"position\"} and @qcode{\"units\"} are not reset.\n\
-@seealso{cla, clf}\n\
+@deftypefn {Built-in Function} {} reset (@var{h})\n\
+Resets the properites of object(s) @var{h} to their default values.\n\
+For figures, the properties @qcode{\"position\"}, @qcode{\"units\"},\n\
+@qcode{\"windowstyle\"}, and @qcode{\"paperunits\"} are not affected.\n\
+For axes, the properties @qcode{\"position\"} and @qcode{\"units\"} are\n\
+not affected.\n\
+@seealso{cla, clf, newplot}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -9342,11 +9403,136 @@ properties of @qcode{\"position\"} and @qcode{\"units\"} are not reset.\n\
           // loop over graphics objects
           for (octave_idx_type n = 0; n < hcv.length (); n++)
             gh_manager::get_object (hcv(n)).reset_default_properties ();
+
+          if (! error_state)
+            Fdrawnow ();
         }
     }
 
   return octave_value ();
 }
+
+/*
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 20 * eps;
+%!   hax = axes ("defaultlinelinewidth", 3);
+%!   
+%!   hli = line (1:10, 1:10, 1:10, "marker", "o",
+%!               "markerfacecolor", "b", "linestyle", ":");
+%!   
+%!   reset (hli);
+%!   assert (get (hli, "marker"), get (0, "defaultlinemarker"))
+%!   assert (get (hli, "markerfacecolor"), ...
+%!           get (0, "defaultlinemarkerfacecolor"))
+%!   assert (get (hli, "linestyle"), ...
+%!           get (0, "defaultlinelinestyle"))
+%!   assert (get (hli, "linewidth"), 3, tol) # parent axes defaults  
+%!   
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 20 * eps;
+%!   t1 = (1/16:1/8:1)' * 2*pi;
+%!   t2 = ((1/16:1/16:1)' + 1/32) * 2*pi;
+%!   x1 = sin (t1) - 0.8;
+%!   y1 = cos (t1);
+%!   x2 = sin (t2) + 0.8;
+%!   y2 = cos (t2);
+%!   vert = [x1, y1; x2, y2];
+%!   fac = [1:8,NaN(1,8);9:24];
+%!   hpa = patch ('Faces',fac, 'Vertices',vert, 'FaceColor','r');
+%!
+%!   reset (hpa);
+%!   assert (get (hpa, "faces"), get (0, "defaultpatchfaces"), tol)
+%!   assert (get (hpa, "vertices"), get (0, "defaultpatchvertices"), tol)
+%!   assert (get (hpa, "facevertexcdata"), ...
+%!           get (0, "defaultpatchfacevertexcdata"), tol)
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 20 * eps;
+%!   hsu = surface (peaks, "edgecolor", "none");
+%!
+%!   reset (hsu);
+%!   assert (get (hsu, "xdata"), get (0, "defaultsurfacexdata"), tol)
+%!   assert (get (hsu, "ydata"), get (0, "defaultsurfaceydata"), tol)
+%!   assert (get (hsu, "zdata"), get (0, "defaultsurfacezdata"), tol)
+%!   assert (get (hsu, "edgecolor"), ...
+%!           get (0, "defaultsurfaceedgecolor"), tol)
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 20 * eps;   
+%!   him =image (rand (10,10), "cdatamapping", "scaled");
+%!
+%!   reset (him);
+%!   assert (get (him, "cdata"), get (0, "defaultimagecdata"), tol)
+%!   assert (get (him, "cdatamapping"), ...
+%!           get (0, "defaultimagecdatamapping"), tol)
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 20 * eps;   
+%!   hte = text (5, 5, "Hi!", "fontsize", 20 ,"color", "r");
+%!
+%!   reset (hte);
+%!   assert (get (hte, "position"), get (0, "defaulttextposition"), tol)
+%!   assert (get (hte, "fontsize"), get (0, "defaulttextfontsize"), tol)
+%!   assert (get (hte, "color"), get (0, "defaulttextcolor"), tol)
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   tol = 20 * eps;
+%!   pos = get (0, "defaultaxesposition") * .5;
+%!   hax = axes ("linewidth", 2, "position", pos);
+%!   title ("Reset me, please!")
+%! 
+%!   reset (hax);
+%!   assert (get (hax, "linewidth"), get (0, "defaultaxeslinewidth"), tol)
+%!   assert (get (hax, "position"), pos, tol) # axes position is unchanged
+%!   assert (get (hax, "default"), struct ()) # no more axes' defaults
+%!   assert (get (get (hax, "title"), "string"), "")
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+%!test
+%! set (0, "defaultfigurevisible", "off")
+%! hf = figure ("visible", "off", "paperunits", "centimeters", ...
+%!              "papertype", "a4");
+%! unwind_protect
+%!   reset (hf)
+%!   assert (get (hf, "papertype"), get (0, "defaultfigurepapertype"))
+%!   assert (get (hf, "paperunits"), "centimeters") # paperunits is unchanged
+%!   assert (get (hf, "visible"), get (0, "defaultfigurevisible"))
+%! unwind_protect_cleanup
+%!   close (hf)
+%!   set (0, "defaultfigurevisible", "remove")
+%! end_unwind_protect
+*/
 
 DEFUN (set, args, nargout,
        "-*- texinfo -*-\n\

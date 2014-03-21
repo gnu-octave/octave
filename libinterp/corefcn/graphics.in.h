@@ -2698,6 +2698,12 @@ public:
     return octave_value ();
   }
 
+  virtual property_list get_factory_defaults_list (void) const
+  {
+    error ("base_graphics_object::get_factory_defaults_list: invalid graphics object");
+    return property_list ();
+  }
+
   virtual bool has_readonly_property (const caseless_str& pname) const
   {
     return base_properties::has_readonly_property (pname);
@@ -2829,16 +2835,7 @@ public:
 
   virtual void remove_all_listeners (void);
 
-  virtual void reset_default_properties (void)
-  {
-    if (valid_object ())
-      {
-        std::string msg = (type () + "::reset_default_properties");
-        gripe_not_implemented (msg.c_str ());
-      }
-    else
-      error ("base_graphics_object::default: invalid graphics object");
-  }
+  virtual void reset_default_properties (void);
 
 protected:
   virtual void initialize (const graphics_object& go)
@@ -2974,6 +2971,11 @@ public:
   octave_value get_factory_defaults (void) const
   {
     return rep->get_factory_defaults ();
+  }
+
+  property_list get_factory_defaults_list (void) const
+  {
+    return rep->get_factory_defaults_list ();
   }
 
   bool has_readonly_property (const caseless_str& pname) const
@@ -3223,6 +3225,11 @@ public:
   octave_value get_factory_defaults (void) const
   {
     return factory_properties.as_struct ("factory");
+  }
+
+  property_list get_factory_defaults_list (void) const
+  {
+    return factory_properties;
   }
 
   base_properties& get_properties (void) { return xproperties; }

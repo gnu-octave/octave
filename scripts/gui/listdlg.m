@@ -94,21 +94,21 @@ function [sel, ok] = listdlg (varargin)
 
   ## handle key, value pairs
   for i = 1:2:nargin-1
-    if (strcmp (varargin{i}, "ListString"))
+    if (strcmpi (varargin{i}, "ListString"))
       listcell = varargin{i+1};
-    elseif (strcmp (varargin{i}, "SelectionMode"))
+    elseif (strcmpi (varargin{i}, "SelectionMode"))
       selmode = varargin{i+1};
-    elseif (strcmp (varargin{i}, "ListSize"))
+    elseif (strcmpi (varargin{i}, "ListSize"))
       listsize = varargin{i+1};
-    elseif (strcmp (varargin{i}, "InitialValue"))
+    elseif (strcmpi (varargin{i}, "InitialValue"))
       initialvalue = varargin{i+1};
-    elseif (strcmp (varargin{i}, "Name"))
+    elseif (strcmpi (varargin{i}, "Name"))
       name = varargin{i+1};
-    elseif (strcmp (varargin{i}, "PromptString"))
+    elseif (strcmpi (varargin{i}, "PromptString"))
       prompt = varargin{i+1};
-    elseif (strcmp (varargin{i}, "OKString"))
+    elseif (strcmpi (varargin{i}, "OKString"))
       okstring = varargin{i+1};
-    elseif (strcmp (varargin{i}, "CancelString"))
+    elseif (strcmpi (varargin{i}, "CancelString"))
       cancelstring = varargin{i+1};
     endif
   endfor
@@ -130,8 +130,8 @@ function [sel, ok] = listdlg (varargin)
 
   if (__octave_link_enabled__ ())
     [sel, ok] = __octave_link_list_dialog__ (listcell, selmode, listsize,
-                                            initialvalue, name, prompt,
-                                            okstring, cancelstring);
+                                             initialvalue, name, prompt,
+                                             okstring, cancelstring);
   elseif (__have_feature__ ("JAVA"))
     ## transform matrices to cell arrays of strings
     ## swap width and height to correct calling format for JDialogBox
@@ -146,10 +146,14 @@ function [sel, ok] = listdlg (varargin)
                       okstring, cancelstring);
 
     if (numel (ret) > 0)
-      sel = ret;
+      sel = zeros (1, numel (ret));
+      ## for loop needed to convert Java array ret into Octave double sel
+      for i = 1:numel (ret)
+        sel(i) = ret(i);
+      endfor
       ok = 1;
     else
-      sel = {};
+      sel = [];
       ok = 0;
     endif
   else

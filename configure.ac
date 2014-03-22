@@ -245,14 +245,14 @@ if test $USE_OCTAVE_ALLOCATOR = yes; then
 fi
 
 ### Use atomic operations for internal reference counting.  This is required
-### for thread-safe behavior but incurs a significant slowdown, and is thus
-### disabled by default.
+### for thread-safe behavior (Qt Handles) but incurs a significant slowdown.
+### Enabled by default until a higher performing solution can be found.
 
-USE_ATOMIC_REFCOUNT=no
+USE_ATOMIC_REFCOUNT=yes
 AC_ARG_ENABLE([atomic-refcount],
-  [AS_HELP_STRING([--enable-atomic-refcount],
-    [use atomic operations for internal reference counting.  This is required for thread-safe behavior but does not by itself make Octave internals thread safe.])],
-  [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=yes; fi], [])
+  [AS_HELP_STRING([--disable-atomic-refcount],
+    [Do not use atomic operations for internal reference counting.  This option is required for thread-safe behavior as used in the GUI's Qt plotting toolkit.  Performance for CLI-only builds is improved by disabling this feature.])],
+  [if test "$enableval" = no; then USE_ATOMIC_REFCOUNT=no; fi], [])
 if test $USE_ATOMIC_REFCOUNT = yes; then
   AC_DEFINE(USE_ATOMIC_REFCOUNT, 1,
     [Define to 1 to use atomic operations for reference counting.])
@@ -3075,17 +3075,19 @@ if test -n "$warn_gnuplot"; then
   warn_msg_printed=true
 fi
 
-if test $USE_ATOMIC_REFCOUNT = yes; then
+if test $USE_ATOMIC_REFCOUNT = no; then
   AC_MSG_WARN([])
-  AC_MSG_WARN([Using atomic reference counting.])
+  AC_MSG_WARN([atomic reference counting disabled.])
   AC_MSG_WARN([This feature allows access to Octave data safely from])
-  AC_MSG_WARN([another thread, for instance from a GUI.  However this])
-  AC_MSG_WARN([results in a small performance penalty in the Octave])
-  AC_MSG_WARN([interpreter.])
+  AC_MSG_WARN([another thread, and is required when using the GUI's Qt toolkit])
+  AC_MSG_WARN([for plotting.])
   AC_MSG_WARN([])
+fi
+if test $USE_ATOMIC_REFCOUNT = yes; then
   if test $USE_OCTAVE_ALLOCATOR = yes; then
-    AC_MSG_WARN([Thread-safe behavior is not guaranteed unless you also])
-    AC_MSG_WARN([disable the use of the octave_allocator class.])
+    AC_MSG_WARN([Using atomic reference counting.])
+    AC_MSG_WARN([Thread-safe behavior is not guaranteed unless the])
+    AC_MSG_WARN([octave_allocator class is also disabled.])
     AC_MSG_WARN([])
   fi
   warn_msg_printed=true

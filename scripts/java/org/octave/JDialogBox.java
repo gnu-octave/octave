@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2014 Colin Foster
 Copyright (C) 2010, 2013 Martin Hepperle
 
 This file is part of Octave.
@@ -551,24 +552,28 @@ public class JDialogBox
           {
             lst[i] = theTranslator.replace (list[i]);
           }
+
+        JScrollPane scrollPane = new JScrollPane();
         m_List = new JList (lst);
+        scrollPane.setViewportView(m_List);
+
 
         // replace ugly monospaced font
-        m_List.setFont (p.getFont ());
+        scrollPane.setFont (p.getFont ());
 
-        m_List.setMinimumSize (new Dimension (Math.max (1,
-                                                        Integer.parseInt (RowsCols[0].toString ())),
-                                              Math.max (1,
-                                                        Integer.parseInt (RowsCols[1].toString ()))));
-        m_List.setPreferredSize (new Dimension (Math.max (1,
-                                                          Integer.parseInt (RowsCols[1].toString ())),
-                                                Math.max (1,
-                                                          Integer.parseInt (RowsCols[0].toString ()))));
-        m_List.setBorder (new javax.swing.border.EtchedBorder ());
+        scrollPane.setMinimumSize (
+          new Dimension (
+            Math.max (1, Integer.parseInt (RowsCols[0].toString ())),
+            Math.max (1, Integer.parseInt (RowsCols[1].toString ()))));
+        scrollPane.setPreferredSize (
+          new Dimension (
+            Math.max (1, Integer.parseInt (RowsCols[1].toString ())),
+            Math.max (1, Integer.parseInt (RowsCols[0].toString ()))));
+        scrollPane.setBorder (new javax.swing.border.EtchedBorder ());
 
         gbc.gridy = message.length;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        p.add (m_List, gbc);
+        p.add (scrollPane, gbc);
 
         if (on.toLowerCase ().equals ("single"))
           {

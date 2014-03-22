@@ -21,6 +21,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} sprand (@var{m}, @var{n}, @var{d})
+## @deftypefnx  {Function File} {} sprand (@var{m}, @var{n}, @var{d}, @var{rc})
 ## @deftypefnx {Function File} {} sprand (@var{s})
 ## Generate a random sparse matrix.  The size of the matrix will be
 ## @var{m} by @var{n}, with a density of values given by @var{d}.
@@ -29,6 +30,11 @@
 ##
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero.
+##
+## If called with the rc parameter as a scalar, a random sparse matrix with a
+## reciprocal condition number rc is generated. If rc is a vector, then it 
+## contains the first singular values of the matrix generated (length(rc) <= min(m, n)).
+##
 ## @seealso{sprandn, sprandsym}
 ## @end deftypefn
 
@@ -42,12 +48,14 @@
 ## David Bateman
 ##      2004-10-20      Texinfo help and copyright message
 
-function S = sprand (m, n, d)
+function S = sprand (m, n, d, rc)
 
   if (nargin == 1 )
     S = __sprand_impl__ (m, @rand);
   elseif ( nargin == 3)
     S = __sprand_impl__ (m, n, d, "sprand", @rand);
+  elseif (nargin == 4)
+    S = __sprand_impl__ (m, n, d, rc, "sprand", @rand);
   else
     print_usage ();
   endif
@@ -68,6 +76,19 @@ endfunction
 %! assert (sort (j), [2 3 3]');
 %! assert (all (v > 0 & v < 1));
 
+%% Test 4-input calling form
+%!test
+%! d = rand();
+%! s1 = sprand (100, 100, d, 0.4);
+%! rc = [5, 4, 3, 2, 1, 0.1];
+%! s2 = sprand (100, 100, d, rc);
+%! s3 = sprand (6, 4, d, rc);
+%! assert (svd (s2)'(1:length (rc)), rc, sqrt (eps)); 
+%! assert (1/cond (s1), 0.4, sqrt (eps));
+%! assert (nnz (s1) / (100*100), d, 0.02);
+%! assert (nnz (s2) / (100*100), d, 0.02); 
+%! assert (svd (s3)', [5 4 3 2], sqrt (eps));
+
 %% Test input validation
 %!error sprand ()
 %!error sprand (1, 2)
@@ -80,6 +101,8 @@ endfunction
 %!error sprand (3, 0, 0.5)
 %!error sprand (3, 3, -1)
 %!error sprand (3, 3, 2)
+%!error sprand (2, 2, 0.2, -1)
+%!error sprand (2, 2, 0.2, 2)
 
 %% Test very large, very low density matrix doesn't fail 
 %!test

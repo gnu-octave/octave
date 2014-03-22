@@ -86,6 +86,11 @@ function vi = interpn (varargin)
     nargs -= 2;
   endif
 
+  if (method(1) == "*")
+    warning ("interpn: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
+  endif
+
   if (nargs < 3)
     v = varargin{1};
     m = 1;
@@ -317,4 +322,7 @@ endfunction
 %! assert (interpn (z), zout, tol);
 %! assert (interpn (z, "linear"), zout, tol);
 %! assert (interpn (z, "spline"), zout, tol);
+
+%% Test input validation
+%!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");
 

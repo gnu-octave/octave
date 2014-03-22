@@ -152,6 +152,11 @@ function ZI = interp2 (varargin)
     error ("interp2: EXTRAPVAL must be a scalar");
   endif
 
+  if (method(1) == "*")
+    warning ("interp2: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
+  endif
+
   ## Define X, Y, XI, YI if needed
   [zr, zc] = size (Z);
   if (isempty (X))
@@ -629,4 +634,7 @@ endfunction
 %!assert (interp2 (z, [2 3 1], [2 2 2], "pchip"), [5 7 3], tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], 10 * tol)
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
+
+%% Test input validation
+%!warning <ignoring unsupported '\*' flag> interp2 (rand (3,3), 1, "*linear");
 

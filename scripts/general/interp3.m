@@ -85,6 +85,11 @@ function vi = interp3 (varargin)
     nargs = nargs - 2;
   endif
 
+  if (method(1) == "*")
+    warning ("interp3: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
+  endif
+
   if (nargs < 3 || (nargs == 4 && ! isvector (varargin{1})
                     && nargs == (ndims (varargin{1}) + 1)))
     v = varargin{1};
@@ -199,3 +204,5 @@ endfunction
 %!assert (interp3 (z, "linear"), zout, tol)
 %!assert (interp3 (z, "spline"), zout, tol)
 
+%% Test input validation
+%!warning <ignoring unsupported '\*' flag> interp3 (rand (3,3,3), 1, "*linear");

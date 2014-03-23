@@ -80,7 +80,7 @@
 ## Since variable names may only contain letters, digits and underscores,
 ## genvarname replaces any sequence of disallowed characters with
 ## an underscore.  Also, variables may not begin with a digit; in this
-## case an underscore is added before the variable name.
+## case an x is added before the variable name.
 ##
 ## Variable names beginning and ending with two underscores @qcode{"__"} are
 ## valid but they are used internally by octave and should generally be
@@ -131,22 +131,20 @@ function varname = genvarname (str, exclusions)
     str{i}(! ismember (str{i}, validchars)) = "_";
     ## do not use keywords
     if (iskeyword (str{i}))
-      str{i} = ["_" str{i}];
-    endif
-    ## double underscores at the beginning and end are reserved variables
-    underscores = (str{i} == "_");
-    if (any (underscores))
-      firstnon = find (!underscores, 1);
-      lastnon = find (!underscores, 1, "last");
-      str{i}([1:firstnon-2, lastnon+2:end]) = [];
+      firstcharacter = toupper (str{i}(1));
+      str{i} = ["x", firstcharacter, str{i}(2:end)];
     endif
     ## The variable cannot be empty
     if (isempty (str{i}))
       str{i} = "x";
     endif
+    ## Leading underscores are not Matlab compatible
+    if (str{i}(1) == "_")
+      str{i} = ["x", str{i}];
+    endif
     ## it cannot start with a number
     if (ismember (str{i}(1), "0":"9"))
-      str{i} = ["_" str{i}];
+      str{i} = ["x", str{i}];
     endif
 
     ## make sure that the variable is unique relative to other variables
@@ -199,12 +197,12 @@ endfunction
 ## more than one repetition not in order
 %!assert (genvarname ({"a" "b" "a" "b" "a"}), {"a" "b" "a1" "b1" "a2"})
 ## Variable name munging
-%!assert (genvarname ("__x__"), "_x_")
-%!assert (genvarname ("123456789"), "_123456789")
-%!assert (genvarname ("_$1__"), "_1_")
-%!assert (genvarname ("__foo__", "_foo_"), "_foo_1")
-%!assert (genvarname ("1million_and1", "_1million_and1"), "_1million_and1_1")
+%!assert (genvarname ("__x__"), "x__x__")
+%!assert (genvarname ("123456789"), "x123456789")
+%!assert (genvarname ("_$1__"), "x__1__")
+%!assert (genvarname ("__foo__", "x__foo__"), "x__foo__1")
+%!assert (genvarname ("1million_and1", "x1million_and1"), "x1million_and1_1")
 %!assert (genvarname ({"", "", ""}), {"x", "x1", "x2"})
-%!assert (genvarname ("if"), "_if")
-%!assert (genvarname ({"if", "if", "if"}), {"_if", "_if1", "_if2"})
+%!assert (genvarname ("if"), "xIf")
+%!assert (genvarname ({"if", "if", "if"}), {"xIf", "xIf1", "xIf2"})
 

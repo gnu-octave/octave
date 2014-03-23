@@ -48,6 +48,11 @@ function retval = __axis_limits__ (fcn, varargin)
         if (arg(1) >= arg(2))
           error ("%s: axis limits must be increasing", fcn);
         else
+          autoscale = isinf (arg);
+          if (any (autoscale))
+            set (hax, fcnmode, "auto");
+            arg(autoscale) = get (hax, fcn)(autoscale);
+          endif
           set (hax, fcn, arg(:));
         endif
       endif

@@ -298,36 +298,16 @@ function limits = __axis__ (ca, ax, varargin)
       endif
     endfor
 
-    autoscale = isinf (ax);
-    lims = [];
     if (len > 1)
-      if (any (autoscale(1:2)))
-        set (ca, "xlimmode", "auto");
-        lims = ax(1:2);
-        lims(autoscale(1:2)) = get (ca, "xlim")(autoscale(1:2));
-        ax(1:2) = lims;
-      endif
-      set (ca, "xlim", [ax(1), ax(2)]);
+      xlim (ax(1:2));
     endif
 
     if (len > 3)
-      if (any (autoscale(3:4)))
-        set (ca, "ylimmode", "auto");
-        lims = ax(3:4);
-        lims(autoscale(3:4)) = get (ca, "ylim")(autoscale(3:4));
-        ax(3:4) = lims;
-      endif
-      set (ca, "ylim", [ax(3), ax(4)]);
+      ylim (ax(3:4));
     endif
 
     if (len > 5)
-      if (any (autoscale(5:6)))
-        set (ca, "zlimmode", "auto");
-        lims = ax(5:6);
-        lims(autoscale(5:6)) = get (ca, "zlim")(autoscale(5:6));
-        ax(5:6) = lims;
-      endif
-      set (ca, "zlim", [ax(5), ax(6)]);
+      zlim (ax(5:6));
     endif
 
   else

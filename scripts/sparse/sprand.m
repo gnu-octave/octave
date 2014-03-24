@@ -21,21 +21,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} sprand (@var{m}, @var{n}, @var{d})
-## @deftypefnx  {Function File} {} sprand (@var{m}, @var{n}, @var{d}, @var{rc})
+## @deftypefnx {Function File} {} sprand (@var{m}, @var{n}, @var{d}, @var{rc})
 ## @deftypefnx {Function File} {} sprand (@var{s})
-## Generate a random sparse matrix.  The size of the matrix will be
-## @var{m} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1.  Values will be uniformly
-## distributed between 0 and 1.
+## Generate a sparse matrix with uniformly distributed random values.
 ##
-## If called with a single matrix argument, a random sparse matrix is
-## generated wherever the matrix @var{S} is non-zero.
+## The size of the matrix is @var{m}x@var{n} with a density of values @var{d}.
+## @var{d} must be between 0 and 1.  Values will be uniformly distributed on
+## the interval (0, 1).
 ##
-## If called with the rc parameter as a scalar, a random sparse matrix with a
-## reciprocal condition number rc is generated. If rc is a vector, then it 
-## contains the first singular values of the matrix generated (length(rc) <= min(m, n)).
+## If called with a single matrix argument, a sparse matrix is generated with
+## random values wherever the matrix @var{s} is non-zero.
 ##
-## @seealso{sprandn, sprandsym}
+## If called with a scalar fourth argument @var{rc}, a random sparse matrix
+## with reciprocal condition number @var{rc} is generated.  If @var{rc} is
+## a vector, then it specifies the first singular values of the generated
+## matrix (@code{length (@var{rc}) <= min (@var{m}, @var{n})}).
+##
+## @seealso{sprandn, sprandsym, rand}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
@@ -48,14 +50,14 @@
 ## David Bateman
 ##      2004-10-20      Texinfo help and copyright message
 
-function S = sprand (m, n, d, rc)
+function s = sprand (m, n, d, rc)
 
   if (nargin == 1 )
-    S = __sprand_impl__ (m, @rand);
+    s = __sprand_impl__ (m, @rand);
   elseif ( nargin == 3)
-    S = __sprand_impl__ (m, n, d, "sprand", @rand);
+    s = __sprand_impl__ (m, n, d, "sprand", @rand);
   elseif (nargin == 4)
-    S = __sprand_impl__ (m, n, d, rc, "sprand", @rand);
+    s = __sprand_impl__ (m, n, d, rc, "sprand", @rand);
   else
     print_usage ();
   endif
@@ -63,22 +65,15 @@ function S = sprand (m, n, d, rc)
 endfunction
 
 
+%% Test 3-input calling form
 %!test
 %! s = sprand (4, 10, 0.1);
 %! assert (size (s), [4, 10]);
 %! assert (nnz (s) / numel (s), 0.1);
 
-%% Test 1-input calling form
-%!test
-%! s = sprand (sparse ([1 2 3], [3 2 3], [2 2 2]));
-%! [i, j, v] = find (s);
-%! assert (sort (i), [1 2 3]');
-%! assert (sort (j), [2 3 3]');
-%! assert (all (v > 0 & v < 1));
-
 %% Test 4-input calling form
 %!test
-%! d = rand();
+%! d = rand ();
 %! s1 = sprand (100, 100, d, 0.4);
 %! rc = [5, 4, 3, 2, 1, 0.1];
 %! s2 = sprand (100, 100, d, rc);
@@ -89,22 +84,31 @@ endfunction
 %! assert (nnz (s2) / (100*100), d, 0.02); 
 %! assert (svd (s3)', [5 4 3 2], sqrt (eps));
 
+%% Test 1-input calling form
+%!test
+%! s = sprand (sparse ([1 2 3], [3 2 3], [2 2 2]));
+%! [i, j, v] = find (s);
+%! assert (sort (i), [1 2 3]');
+%! assert (sort (j), [2 3 3]');
+%! assert (all (v > 0 & v < 1));
+
 %% Test input validation
 %!error sprand ()
 %!error sprand (1, 2)
 %!error sprand (1, 2, 3, 4)
-%!error sprand (ones (3), 3, 0.5)
-%!error sprand (3.5, 3, 0.5)
-%!error sprand (0, 3, 0.5)
-%!error sprand (3, ones (3), 0.5)
-%!error sprand (3, 3.5, 0.5)
-%!error sprand (3, 0, 0.5)
-%!error sprand (3, 3, -1)
-%!error sprand (3, 3, 2)
-%!error sprand (2, 2, 0.2, -1)
-%!error sprand (2, 2, 0.2, 2)
+%!error <M must be an integer greater than 0> sprand (ones (3), 3, 0.5)
+%!error <M must be an integer greater than 0> sprand (3.5, 3, 0.5)
+%!error <M must be an integer greater than 0> sprand (0, 3, 0.5)
+%!error <N must be an integer greater than 0> sprand (3, ones (3), 0.5)
+%!error <N must be an integer greater than 0> sprand (3, 3.5, 0.5)
+%!error <N must be an integer greater than 0> sprand (3, 0, 0.5)
+%!error <D must be between 0 and 1> sprand (3, 3, -1)
+%!error <D must be between 0 and 1> sprand (3, 3, 2)
+%!error <RC must be a scalar or vector> sprand (2, 2, 0.2, ones (3,3))
+%!error <RC must be between 0 and 1> sprand (2, 2, 0.2, -1)
+%!error <RC must be between 0 and 1> sprand (2, 2, 0.2, 2)
 
 %% Test very large, very low density matrix doesn't fail 
 %!test
-%! s = sprand(1e6,1e6,1e-7);
+%! s = sprand (1e6, 1e6, 1e-7);
 

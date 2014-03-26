@@ -510,8 +510,7 @@ get_debug_input (const std::string& prompt)
 
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
-
-  int curr_debug_line = octave_call_stack::current_line ();
+  int curr_debug_line;
 
   bool have_file = false;
 
@@ -523,9 +522,11 @@ get_debug_input (const std::string& prompt)
         nm = caller->name ();
       else
         have_file = true;
+
+      curr_debug_line = octave_call_stack::caller_user_code_line ();
     }
   else
-    curr_debug_line = -1;
+    curr_debug_line = octave_call_stack::current_line ();
 
   std::ostringstream buf;
 

@@ -35,12 +35,12 @@ function h = hgload (filename)
   endif
   
   ## Check file existence
-  if (! exist (filename))
+  if (isempty (file_in_loadpath (filename)))
     [~, ~, ext] = fileparts (filename);
     if (isempty (ext))
       filename = [filename ".ofig"];
     endif
-    if (! exist (filename))
+    if (isempty (file_in_loadpath (filename)))
       error ("hgload: unable to locate file %s", filename);
     endif
   endif

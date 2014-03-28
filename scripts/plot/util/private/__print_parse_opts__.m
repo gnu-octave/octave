@@ -334,7 +334,7 @@ function arg_st = __print_parse_opts__ (varargin)
     else
       error ("print: a file name may not specified when spooling to a printer")
     endif
-    if (! any (strcmp (arg_st.devopt, gs_device_list))
+    if (! any (strcmp (arg_st.devopt, gs_device_list)))
       ## Only supported ghostscript devices
       error ("print: format must be a valid Ghostscript format for spooling to a printer")
     endif

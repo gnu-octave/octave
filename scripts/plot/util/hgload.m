@@ -33,18 +33,21 @@ function h = hgload (filename)
   if (nargin != 1)
     print_usage ();
   endif
-  
+
   ## Check file existence
-  if (isempty (file_in_loadpath (filename)))
-    [~, ~, ext] = fileparts (filename);
-    if (isempty (ext))
+  [~, ~, ext] = fileparts (filename);
+  if (isempty (ext))
+    if (! isempty (file_in_loadpath ([filename ".ofig"])))
       filename = [filename ".ofig"];
+    elseif (isempty (file_in_loadpath (filename)))
+      error ("hgload: unable to locate file %s", filename);
     endif
+  else
     if (isempty (file_in_loadpath (filename)))
       error ("hgload: unable to locate file %s", filename);
     endif
   endif
-
+    
   ## Load the handle
   try
     stmp = load (filename, "s_oct40");

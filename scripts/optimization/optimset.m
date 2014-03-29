@@ -19,10 +19,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} optimset ()
-## @deftypefnx {Function File} {} optimset (@var{par}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} optimset (@var{old}, @var{par}, @var{val}, @dots{})
-## @deftypefnx {Function File} {} optimset (@var{old}, @var{new})
-## Create options struct for optimization functions.
+## @deftypefnx {Function File} {@var{options} =} optimset ()
+## @deftypefnx {Function File} {@var{options} =} optimset (@var{par}, @var{val}, @dots{})
+## @deftypefnx {Function File} {@var{options} =} optimset (@var{old}, @var{par}, @var{val}, @dots{})
+## @deftypefnx {Function File} {@var{options} =} optimset (@var{old}, @var{new})
+## Create options structure for optimization functions.
+##
+## When called without any input or output arguments, @code{optimset} prints
+## a list of all valid optimization parameters.
+##
+## When called with one output and no inputs, return an options structure with
+## all valid option parameters initialized to @code{[]}.
+##
+## When called with a list of parameter/value pairs, return an options
+## structure with only the named parameters initialized.
+##
+## When the first input is an existing options structure @var{old}, the values
+## are updated from either the @var{par}/@var{val} list or from the options
+## structure @var{new}.
 ##
 ## Valid parameters are:
 ##
@@ -96,13 +110,13 @@
 ##
 ## @item Updating
 ## @end table
+## @seealso{optimget}
 ## @end deftypefn
 
 function retval = optimset (varargin)
 
   nargs = nargin ();
 
-  ## Add more as needed.
   opts = __all_opts__ ();
 
   if (nargs == 0)
@@ -124,8 +138,8 @@ function retval = optimset (varargin)
       error ("optimset: no defaults for function '%s'", fcn);
     end_try_catch
   elseif (nargs == 2 && isstruct (varargin{1}) && isstruct (varargin{2}))
-    ## Set slots in old from nonempties in new.  Should we be checking
-    ## to ensure that the field names are expected?
+    ## Set slots in old from non-empties in new.
+    ## Should we be checking to ensure that the field names are expected?
     old = varargin{1};
     new = varargin{2};
     fnames = fieldnames (old);
@@ -140,9 +154,9 @@ function retval = optimset (varargin)
         if (nmatch == 1)
           key = opts{find (i)};
         elseif (nmatch == 0)
-          warning ("unrecognized option: %s", key);
+          warning ("optimset: unrecognized option: %s", key);
         else
-          fmt = sprintf ("ambiguous option: %%s (%s%%s)",
+          fmt = sprintf ("optimset: ambiguous option: %%s (%s%%s)",
                          repmat ("%s, ", 1, nmatch-1));
           warning (fmt, key, opts{i});
         endif
@@ -155,8 +169,8 @@ function retval = optimset (varargin)
     pairs = reshape (varargin(2:end), 2, []);
     retval = optimset (varargin{1}, cell2struct (pairs(2, :), pairs(1, :), 2));
   elseif (rem (nargs, 2) == 0)
-    ## Create struct.  Default values are replaced by those specified by
-    ## name/value pairs.
+    ## Create struct.
+    ## Default values are replaced by those specified by name/value pairs.
     pairs = reshape (varargin, 2, []);
     retval = optimset (struct (), cell2struct (pairs(2, :), pairs(1, :), 2));
   else
@@ -166,10 +180,13 @@ function retval = optimset (varargin)
 endfunction
 
 
-%!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
+%!assert (isfield (optimset (), "TolFun"))
 %!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
-%!warning (optimset ("Max", 10));
-%!warning (optimset ("foobar", 13));
+%!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
 
-%!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
+%% Test input validation
+%!error optimset ("1_Parameter")
+%!error <no defaults for function> optimset ("%NOT_A_REAL_FUNCTION_NAME%")
+%!warning <unrecognized option: foobar> optimset ("foobar", 13);
+%!warning <ambiguous option: Max> optimset ("Max", 10);
 

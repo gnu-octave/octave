@@ -123,7 +123,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     if (fid < 0)
       error ("__makeinfo__: could not create temporary file");
     endif
-    fwrite (fid, text);
+    fprintf (fid, "%s", text);
     fclose (fid);
 
     ## Take action depending on output type

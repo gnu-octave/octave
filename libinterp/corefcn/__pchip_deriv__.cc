@@ -95,8 +95,8 @@ Undocumented internal function.\n\
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
-              F77_FUNC (pchim, PCHIM) (nx, xvec.data (),
-                                       yvec, dvec, incfd, &ierr);
+              F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
+                                       yvec, dvec, incfd, &ierr));
 
               yvec += inc;
               dvec += inc;
@@ -142,8 +142,8 @@ Undocumented internal function.\n\
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
-              F77_FUNC (dpchim, DPCHIM) (nx, xvec.data (),
-                                         yvec, dvec, incfd, &ierr);
+              F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
+                                         yvec, dvec, incfd, &ierr));
 
               yvec += inc;
               dvec += inc;

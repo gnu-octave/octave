@@ -19,63 +19,63 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{zi} =} interp2 (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{Z}, @var{xi}, @var{yi})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{Z}, @var{n})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z}, @var{xi}, @var{yi})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z}, @var{n})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@var{z})
 ## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method})
-## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrapval})
+## @deftypefnx {Function File} {@var{zi} =} interp2 (@dots{}, @var{method}, @var{extrap})
 ##
-## Two-dimensional interpolation.  @var{x}, @var{y} and @var{z} describe a
-## surface function.  If @var{x} and @var{y} are vectors their length
-## must correspondent to the size of @var{z}.  @var{x} and @var{y} must be
-## monotonic.  If they are matrices they must have the @code{meshgrid}
-## format.
+## Two-dimensional interpolation.
 ##
-## @table @code
-## @item interp2 (@var{x}, @var{y}, @var{Z}, @var{xi}, @var{yi}, @dots{})
-## Returns a matrix corresponding to the points described by the
-## matrices @var{xi}, @var{yi}.
+## Interpolate reference data @var{x}, @var{y}, @var{z} to determine @var{zi}
+## at the coordinates @var{xi}, @var{yi}.  The reference data @var{x}, @var{y}
+## can be matrices, as returned by @code{meshgrid}, in which case the sizes of
+## @var{x}, @var{y}, and @var{z} must be equal.  If @var{x}, @var{y} are
+## vectors describing a grid then @code{length (@var{x}) == columns (@var{z})}
+## and @code{length (@var{y}) == rows (@var{z})}.  In either case the input
+## data must be strictly monotonic.
 ##
-## If the last argument is a string, the interpolation method can
-## be specified.  The method can be @qcode{"linear"}, @qcode{"nearest"} or
-## @qcode{"cubic"}.  If it is omitted @qcode{"linear"} interpolation is
-## assumed.
+## If called without @var{x}, @var{y}, and just a single reference data matrix
+## @var{z}, the 2-D region
+## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})} is assumed.
+## This saves memory if the grid is regular and the distance between points is
+## not important.
 ##
-## @item interp2 (@var{z}, @var{xi}, @var{yi})
-## Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} =
-## 1:columns (@var{z})}
+## If called with a single reference data matrix @var{z} and a refinement
+## value @var{n}, then perform interpolation over a grid where each original
+## interval has been recursively subdivided @var{n} times.  This results in
+## @code{2^@var{n}-1} additional points for every interval in the original
+## grid.  If @var{n} is omitted a value of 1 is used.  As an example, the
+## interval [0,1] with @code{@var{n}==2} results in a refined interval with
+## points at [0, 1/4, 1/2, 3/4, 1].
 ##
-## @item interp2 (@var{z}, @var{n})
-## Interleaves the matrix @var{z} n-times.  If @var{n} is omitted a value
-## of @code{@var{n} = 1} is assumed.
-## @end table
-##
-## The variable @var{method} defines the method to use for the
-## interpolation.  It can take one of the following values
+## The interpolation @var{method} is one of:
 ##
 ## @table @asis
 ## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
-## @item @qcode{"linear"}
+## @item @qcode{"linear"} (default)
 ## Linear interpolation from nearest neighbors.
 ##
 ## @item @qcode{"pchip"}
-## Piecewise cubic Hermite interpolating polynomial.
+## Piecewise cubic Hermite interpolating polynomial---shape-preserving
+## interpolation with smooth first derivative.
 ##
 ## @item @qcode{"cubic"}
-## Cubic interpolation from four nearest neighbors.
+## Cubic interpolation (same as @qcode{"pchip"}).
 ##
 ## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
 ##
-## If a scalar value @var{extrapval} is defined as the final value, then
-## values outside the mesh as set to this value.  Note that in this case
-## @var{method} must be defined as well.  If @var{extrapval} is not
-## defined then NA is assumed.
-##
-## @seealso{interp1}
+## If @var{extrap} is the string @qcode{"extrap"}, then extrapolate values
+## beyond the endpoints using the current @var{method}.  If @var{extrap} is a
+## number, then replace values beyond the endpoints with that number.  When
+## unspecified, @var{extrap} defaults to @code{NA}.  Note that if @var{extrap}
+## is used, @var{method} must be specified as well.
+## @seealso{interp1, interp3, interpn, meshgrid}
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>
@@ -94,10 +94,14 @@
 ##       "meshgridded") to be consistent with the help message
 ##       above and for compatibility.
 
+## FIXME: Need better input validation.
+##        E.g, interp2 (1,1,1) => A(I): index out of bounds
+
 function ZI = interp2 (varargin)
+
   Z = X = Y = XI = YI = n = [];
   method = "linear";
-  extrapval = NA;
+  extrap = NA;
 
   switch (nargin)
     case 1
@@ -120,36 +124,38 @@ function ZI = interp2 (varargin)
       if (ischar (varargin{4}))
         [Z, XI, YI, method] = deal (varargin{:});
       else
-        [Z, n, method, extrapval] = deal (varargin{:});
+        [Z, n, method, extrap] = deal (varargin{:});
       endif
     case 5
       if (ischar (varargin{4}))
-        [Z, XI, YI, method, extrapval] = deal (varargin{:});
+        [Z, XI, YI, method, extrap] = deal (varargin{:});
       else
         [X, Y, Z, XI, YI] = deal (varargin{:});
       endif
     case 6
         [X, Y, Z, XI, YI, method] = deal (varargin{:});
     case 7
-        [X, Y, Z, XI, YI, method, extrapval] = deal (varargin{:});
+        [X, Y, Z, XI, YI, method, extrap] = deal (varargin{:});
     otherwise
       print_usage ();
   endswitch
 
   ## Type checking.
-  if (!ismatrix (Z))
+  if (! ismatrix (Z))
     error ("interp2: Z must be a matrix");
   endif
-  if (!isempty (n) && !isscalar (n))
-    error ("interp2: N must be a scalar");
+  if (! isempty (n) && ! (isscalar (n) && n >= 0 && n == fix (n)))
+    error ("interp2: N must be an integer >= 0");
   endif
-  if (!ischar (method))
+  if (! ischar (method))
     error ("interp2: METHOD must be a string");
   endif
-  if (ischar (extrapval) || strcmp (extrapval, "extrap"))
-    extrapval = [];
-  elseif (!isscalar (extrapval))
-    error ("interp2: EXTRAPVAL must be a scalar");
+  if (isnumeric (extrap) && isscalar (extrap))
+    ## Typical case
+  elseif (strcmp (extrap, "extrap"))
+    extrap = [];
+  else
+    error ('interp2: EXTRAP must be a numeric scalar or "extrap"');
   endif
 
   if (method(1) == "*")
@@ -176,9 +182,7 @@ function ZI = interp2 (varargin)
     error ("interp2: XI, YI must be numeric");
   endif
 
-
-  if (strcmp (method, "linear") || strcmp (method, "nearest") ...
-      || strcmp (method, "pchip"))
+  if (any (strcmp (method, {"nearest", "linear", "pchip", "cubic"})))
 
     ## If X and Y vectors produce a grid from them
     if (isvector (X) && isvector (Y))
@@ -186,7 +190,7 @@ function ZI = interp2 (varargin)
     elseif (size_equal (X, Y))
       X = X(1,:)'; Y = Y(:,1);
     else
-      error ("interp2: X and Y must be matrices of same size");
+      error ("interp2: X and Y must be matrices of equal size");
     endif
     if (columns (Z) != length (X) || rows (Z) != length (Y))
       error ("interp2: X and Y size must match the dimensions of Z");
@@ -249,10 +253,11 @@ function ZI = interp2 (varargin)
       idx = sub2ind (size (Z), yidx+jj, xidx+ii);
       ZI = Z(idx);
 
-    elseif (strcmp (method, "pchip"))
+    elseif (strcmp (method, "pchip") || strcmp (method, "cubic"))
 
       if (length (X) < 2 || length (Y) < 2)
-        error ("interp2: pchip2 requires at least 2 points in each dimension");
+        error ("interp2: %s requires at least 2 points in each dimension",
+               method);
       endif
 
       ## first order derivatives
@@ -308,23 +313,23 @@ function ZI = interp2 (varargin)
 
     endif
 
-    if (! isempty (extrapval))
-      ## set points outside the table to 'extrapval'
-      if (X (1) < X (end))
-        if (Y (1) < Y (end))
-          ZI (XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = ...
-                  extrapval;
+    if (! isempty (extrap))
+      ## set points outside the table to 'extrap'
+      if (X(1) < X(end))
+        if (Y(1) < Y(end))
+          ZI(XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = ...
+                  extrap;
         else
-          ZI (XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = ...
-                  extrapval;
+          ZI(XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = ...
+                  extrap;
         endif
       else
-        if (Y (1) < Y (end))
-          ZI (XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = ...
-                  extrapval;
+        if (Y(1) < Y(end))
+          ZI(XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = ...
+                  extrap;
         else
-          ZI (XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = ...
-                  extrapval;
+          ZI(XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = ...
+                  extrap;
         endif
       endif
     endif
@@ -335,14 +340,13 @@ function ZI = interp2 (varargin)
     if (isvector (X) && isvector (Y))
       X = X(:).';
       Y = Y(:);
-      if (!isequal ([length(Y), length(X)], size(Z)))
+      if (! isequal ([length(Y), length(X)], size (Z)))
         error ("interp2: X and Y size must match the dimensions of Z");
       endif
-    elseif (!size_equal (X, Y))
+    elseif (! size_equal (X, Y))
       error ("interp2: X and Y must be matrices of equal size");
-      if (! size_equal (X, Z))
-        error ("interp2: X and Y size must match the dimensions of Z");
-      endif
+    elseif (! size_equal (X, Z))
+      error ("interp2: X and Y size must match the dimensions of Z");
     endif
 
     ## Check dimensions of XI and YI
@@ -354,75 +358,84 @@ function ZI = interp2 (varargin)
       error ("interp2: XI and YI must be matrices of equal size");
     endif
 
+    ## FIXME: Previously used algorithm for cubic.
+    ##        This produced results within a few eps of "spline".
+    ##        Matlab compatibility requires "cubic" to be a C1 algorithm
+    ##        equivalent to "pchip" so this was commented out 2014/03/30.
+    ##        This can be removed completely in the future if no problems are
+    ##        encountered.
+    #{
     if (strcmp (method, "cubic"))
       if (isgriddata (XI) && isgriddata (YI'))
-        ZI = bicubic (X, Y, Z, XI (1, :), YI (:, 1), extrapval);
+        ZI = bicubic (X, Y, Z, XI (1, :), YI (:, 1), extrap);
       elseif (isgriddata (X) && isgriddata (Y'))
         ## Allocate output
         ZI = zeros (size (X));
 
         ## Find inliers
-        inside = !(XI < X (1) | XI > X (end) | YI < Y (1) | YI > Y (end));
+        inside = !(XI < X(1) | XI > X(end) | YI < Y(1) | YI > Y(end));
 
         ## Scale XI and YI to match indices of Z
-        XI = (columns (Z) - 1) * (XI - X (1)) / (X (end) - X (1)) + 1;
-        YI = (rows (Z) - 1) * (YI - Y (1)) / (Y (end) - Y (1)) + 1;
+        XI = (columns (Z) - 1) * (XI - X(1)) / (X(end) - X(1)) + 1;
+        YI = (rows (Z) - 1) * (YI - Y(1)) / (Y(end) - Y(1)) + 1;
 
         ## Start the real work
         K = floor (XI);
         L = floor (YI);
 
         ## Coefficients
-        AY1  = bc ((YI - L + 1));
-        AX1  = bc ((XI - K + 1));
-        AY0  = bc ((YI - L + 0));
-        AX0  = bc ((XI - K + 0));
-        AY_1 = bc ((YI - L - 1));
-        AX_1 = bc ((XI - K - 1));
-        AY_2 = bc ((YI - L - 2));
-        AX_2 = bc ((XI - K - 2));
+        AY1  = bc (YI - L + 1);
+        AX1  = bc (XI - K + 1);
+        AY0  = bc (YI - L + 0);
+        AX0  = bc (XI - K + 0);
+        AY_1 = bc (YI - L - 1);
+        AX_1 = bc (XI - K - 1);
+        AY_2 = bc (YI - L - 2);
+        AX_2 = bc (XI - K - 2);
 
         ## Perform interpolation
         sz = size (Z);
-        ZI = AY_2 .* AX_2 .* Z (sym_sub2ind (sz, L+2, K+2)) ...
-           + AY_2 .* AX_1 .* Z (sym_sub2ind (sz, L+2, K+1)) ...
-           + AY_2 .* AX0  .* Z (sym_sub2ind (sz, L+2, K))   ...
-           + AY_2 .* AX1  .* Z (sym_sub2ind (sz, L+2, K-1)) ...
-           + AY_1 .* AX_2 .* Z (sym_sub2ind (sz, L+1, K+2)) ...
-           + AY_1 .* AX_1 .* Z (sym_sub2ind (sz, L+1, K+1)) ...
-           + AY_1 .* AX0  .* Z (sym_sub2ind (sz, L+1, K))   ...
-           + AY_1 .* AX1  .* Z (sym_sub2ind (sz, L+1, K-1)) ...
-           + AY0  .* AX_2 .* Z (sym_sub2ind (sz, L,   K+2)) ...
-           + AY0  .* AX_1 .* Z (sym_sub2ind (sz, L,   K+1)) ...
-           + AY0  .* AX0  .* Z (sym_sub2ind (sz, L,   K))   ...
-           + AY0  .* AX1  .* Z (sym_sub2ind (sz, L,   K-1)) ...
-           + AY1  .* AX_2 .* Z (sym_sub2ind (sz, L-1, K+2)) ...
-           + AY1  .* AX_1 .* Z (sym_sub2ind (sz, L-1, K+1)) ...
-           + AY1  .* AX0  .* Z (sym_sub2ind (sz, L-1, K))   ...
-           + AY1  .* AX1  .* Z (sym_sub2ind (sz, L-1, K-1));
-        ZI (!inside) = extrapval;
+        ZI = AY_2 .* AX_2 .* Z(sym_sub2ind (sz, L+2, K+2)) ...
+           + AY_2 .* AX_1 .* Z(sym_sub2ind (sz, L+2, K+1)) ...
+           + AY_2 .* AX0  .* Z(sym_sub2ind (sz, L+2, K))   ...
+           + AY_2 .* AX1  .* Z(sym_sub2ind (sz, L+2, K-1)) ...
+           + AY_1 .* AX_2 .* Z(sym_sub2ind (sz, L+1, K+2)) ...
+           + AY_1 .* AX_1 .* Z(sym_sub2ind (sz, L+1, K+1)) ...
+           + AY_1 .* AX0  .* Z(sym_sub2ind (sz, L+1, K))   ...
+           + AY_1 .* AX1  .* Z(sym_sub2ind (sz, L+1, K-1)) ...
+           + AY0  .* AX_2 .* Z(sym_sub2ind (sz, L,   K+2)) ...
+           + AY0  .* AX_1 .* Z(sym_sub2ind (sz, L,   K+1)) ...
+           + AY0  .* AX0  .* Z(sym_sub2ind (sz, L,   K))   ...
+           + AY0  .* AX1  .* Z(sym_sub2ind (sz, L,   K-1)) ...
+           + AY1  .* AX_2 .* Z(sym_sub2ind (sz, L-1, K+2)) ...
+           + AY1  .* AX_1 .* Z(sym_sub2ind (sz, L-1, K+1)) ...
+           + AY1  .* AX0  .* Z(sym_sub2ind (sz, L-1, K))   ...
+           + AY1  .* AX1  .* Z(sym_sub2ind (sz, L-1, K-1));
+        ZI (!inside) = extrap;
 
       else
         error ("interp2: input data must have 'meshgrid' format");
       endif
+    #}
 
-    elseif (strcmp (method, "spline"))
+    if (strcmp (method, "spline"))
       if (isgriddata (XI) && isgriddata (YI'))
-        ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrapval,
-                        "spline");
+        ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrap,
+                          "spline");
       else
-        error ("interp2: input data must have 'meshgrid' format");
+        error ("interp2: XI, YI must have uniform spacing ('meshgrid' format)");
       endif
     else
-      error ("interp2: interpolation METHOD not recognized");
+      error ("interp2: unrecognized interpolation method '%s'", method);
     endif
 
   endif
+
 endfunction
 
 function b = isgriddata (X)
   d1 = diff (X, 1, 1);
-  b = all (d1 (:) == 0);
+  b = all (d1(:) == 0);
 endfunction
 
 ## Compute the bicubic interpolation coefficients
@@ -437,16 +450,16 @@ endfunction
 
 ## This version of sub2ind behaves as if the data was symmetrically padded
 function ind = sym_sub2ind (sz, Y, X)
-  Y (Y < 1) = 1 - Y (Y < 1);
-  while (any (Y (:) > 2 * sz (1)))
-    Y (Y > 2 * sz (1)) = round (Y (Y > 2 * sz (1)) / 2);
+  Y(Y < 1) = 1 - Y(Y < 1);
+  while (any (Y(:) > 2*sz(1)))
+    Y(Y > 2*sz(1)) = round (Y(Y > 2*sz(1)) / 2);
   endwhile
-  Y (Y > sz (1)) = 1 + 2 * sz (1) - Y (Y > sz (1));
-  X (X < 1) = 1 - X (X < 1);
-  while (any (X (:) > 2 * sz (2)))
-    X (X > 2 * sz (2)) = round (X (X > 2 * sz (2)) / 2);
+  Y(Y > sz(1)) = 1 + 2*sz(1) - Y(Y > sz(1));
+  X(X < 1) = 1 - X(X < 1);
+  while (any (X(:) > 2*sz(2)))
+    X(X > 2 * sz(2)) = round (X(X > 2*sz(2)) / 2);
   endwhile
-  X (X > sz (2)) = 1 + 2 * sz (2) - X (X > sz (2));
+  X(X > sz(2)) = 1 + 2*sz(2) - X(X > sz(2));
   ind = sub2ind (sz, Y, X);
 endfunction
 
@@ -460,7 +473,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 26)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -471,7 +484,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 41)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -482,7 +495,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 26)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -493,9 +506,10 @@ endfunction
 %! yi = linspace (min (y), max (y), 41)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
-%!demo
+## 'pchip' commented out since it is the same as 'cubic'
+%!#demo
 %! clf;
 %! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
@@ -504,9 +518,10 @@ endfunction
 %! yi = linspace (min (y), max (y), 26)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
-%!demo
+## 'pchip' commented out since it is the same as 'cubic'
+%!#demo
 %! clf;
 %! colormap ("default");
 %! [x,y,A] = peaks (10);
@@ -515,7 +530,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 41)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -526,7 +541,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 26)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -537,7 +552,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 41)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -548,7 +563,7 @@ endfunction
 %! yi = linspace (min (y), max (y), 26)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
 %!demo
 %! clf;
@@ -559,61 +574,63 @@ endfunction
 %! yi = linspace (min (y), max (y), 41)';
 %! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
 %! [x,y] = meshgrid (x,y);
-%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+%! hold on; plot3 (x,y,A,"b*"); hold off;
 
-%!test % simple test
+%!test  # simple test
 %! x = [1,2,3];
 %! y = [4,5,6,7];
 %! [X, Y] = meshgrid (x, y);
-%! Orig = X.^2 + Y.^3;
+%! orig = X.^2 + Y.^3;
 %! xi = [1.2,2, 1.5];
 %! yi = [6.2, 4.0, 5.0]';
 %!
-%! Expected = ...
+%! expected = ...
 %!   [243,   245.4,  243.9;
 %!     65.6,  68,     66.5;
 %!    126.6, 129,    127.5];
-%! Result = interp2 (x,y,Orig, xi, yi);
+%! result = interp2 (x,y,orig, xi, yi);
 %!
-%! assert (Result, Expected, 1000*eps);
+%! assert (result, expected, 1000*eps);
 
-%!test % 2^n form
+%!test  # 2^n refinement form
 %! x = [1,2,3];
 %! y = [4,5,6,7];
 %! [X, Y] = meshgrid (x, y);
-%! Orig = X.^2 + Y.^3;
+%! orig = X.^2 + Y.^3;
 %! xi = [1:0.25:3];  yi = [4:0.25:7]';
-%! Expected = interp2 (x,y,Orig, xi, yi);
-%! Result = interp2 (Orig, 2);
+%! expected = interp2 (x,y,orig, xi, yi);
+%! result = interp2 (orig, 2);
 %!
-%! assert (Result, Expected, 10*eps);
+%! assert (result, expected, 10*eps);
 
-%!test % matrix slice
+%!test  # matrix slice
 %! A = eye (4);
 %! assert (interp2 (A,[1:4],[1:4]), [1,1,1,1]);
 
-%!test % non-gridded XI,YI
+%!test  # non-gridded XI,YI
 %! A = eye (4);
 %! assert (interp2 (A,[1,2;3,4],[1,3;2,4]), [1,0;0,1]);
 
-%!test % for values outside of boundaries
+%!test  # for values outside of boundaries
 %! x = [1,2,3];
 %! y = [4,5,6,7];
 %! [X, Y] = meshgrid (x,y);
-%! Orig = X.^2 + Y.^3;
+%! orig = X.^2 + Y.^3;
 %! xi = [0,4];
 %! yi = [3,8]';
-%! assert (interp2 (x,y,Orig, xi, yi), [NA,NA;NA,NA]);
-%! assert (interp2 (x,y,Orig, xi, yi,"linear", 0), [0,0;0,0]);
+%! assert (interp2 (x,y,orig, xi, yi), [NA,NA;NA,NA]);
+%! assert (interp2 (x,y,orig, xi, yi,"linear", 0), [0,0;0,0]);
+%! assert (interp2 (x,y,orig, xi, yi,"linear", "extrap"), [1,17;468,484]);
+%! assert (interp2 (x,y,orig, xi, yi,"nearest", "extrap"), orig([1,end],[1,end]));
 
-%!test % for values at boundaries
-%! A=[1,2;3,4];
-%! x=[0,1];
-%! y=[2,3]';
+%!test  # for values at boundaries
+%! A = [1,2;3,4];
+%! x = [0,1];
+%! y = [2,3]';
 %! assert (interp2 (x,y,A,x,y,"linear"), A);
 %! assert (interp2 (x,y,A,x,y,"nearest"), A);
 
-%!test % for Matlab-compatible rounding for 'nearest'
+%!test  # for Matlab-compatible rounding for 'nearest'
 %! X = meshgrid (1:4);
 %! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
@@ -621,6 +638,7 @@ endfunction
 %! z = [1 3 5; 3 5 7; 5 7 9];
 %! zout = [1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; 4 5 6 7 8; 5 6 7 8 9];
 %! tol = 2 * eps;
+%!
 %!assert (interp2 (z), zout, tol)
 %!assert (interp2 (z, "linear"), zout, tol)
 %!assert (interp2 (z, "pchip"), zout, tol)
@@ -636,5 +654,34 @@ endfunction
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
 
 %% Test input validation
+%!error <Z must be a matrix> interp2 ({1})
+%!error <N must be an integer .= 0> interp2 (1, ones (2))
+%!error <N must be an integer .= 0> interp2 (1, -1)
+%!error <N must be an integer .= 0> interp2 (1, 1.5)
+%!error <METHOD must be a string> interp2 (1, 1, 1, 1, 1, 2)
+%!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', {1})
+%!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', ones (2,2))
+%!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', "abc")
 %!warning <ignoring unsupported '\*' flag> interp2 (rand (3,3), 1, "*linear");
+%!error <X, Y must be numeric matrices> interp2 ({1}, 1, 1, 1, 1)
+%!error <X, Y must be numeric matrices> interp2 (1, {1}, 1, 1, 1)
+%!error <XI, YI must be numeric> interp2 (1, 1, 1, {1}, 1)
+%!error <XI, YI must be numeric> interp2 (1, 1, 1, 1, {1})
+%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), 1, 1, 1, 1)
+%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), ones(2,3), 1, 1, 1)
+%!error <X and Y size must match the dimensions of Z> interp2 (1:3, 1:3, ones (3,2), 1, 1)
+%!error <X and Y size must match the dimensions of Z> interp2 (1:2, 1:2, ones (3,2), 1, 1)
+%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, ones(2,2), 1)
+%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, 1, ones(2,2))
+%!error <pchip requires at least 2 points> interp2 (1, 1, 1, 1, 1, "pchip")
+%!error <cubic requires at least 2 points> interp2 (1, 1, 1, 1, 1, "cubic")
+%!error <X and Y size must match the dimensions of Z> interp2 (1:3, 1:3, ones (3,2), 1, 1, "spline")
+%!error <X and Y size must match the dimensions of Z> interp2 (1:2, 1:2, ones (3,2), 1, 1, "spline")
+%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), 1, 1, 1, 1, "spline")
+%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), ones(2,3), 1, 1, 1, "spline")
+%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, ones(2,2), 1, "spline")
+%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, 1, ones(2,2), "spline")
+%!error <XI, YI must have uniform spacing> interp2 (1, 1, 1, [1 2 4], [1 2 3], "spline")
+%!error <XI, YI must have uniform spacing> interp2 (1, 1, 1, [1 2 3], [1 2 4], "spline")
+%!error <unrecognized interpolation method 'foobar'> interp2 (1, 1, 1, 1, 1, "foobar")
 

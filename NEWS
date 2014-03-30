@@ -1,6 +1,14 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
+ ** Interpolation function changes for Matlab compatibility
+
+    The interpolation method 'cubic' is now equivalent to 'pchip'
+    for interp1, interp2, and interp3.  Previously, 'cubic' was equivalent
+    to 'spline' for interp2.  This may produce different results as 'spline'
+    has continuous 1st and 2nd derivatives while 'pchip' only has a continuous
+    1st derivative.
+
  ** Other new functions added in 4.2:
 
       dir_in_loadpath

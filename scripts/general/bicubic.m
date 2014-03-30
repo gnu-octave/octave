@@ -240,9 +240,9 @@ endfunction
 %! z = cos (6 * xx) + sin (6 * yy);
 %! x = linspace (1, -1, 30);
 %! [xx2, yy2] = meshgrid (x);
-%! z1 = interp2 (xx, yy, z, xx2, yy2, "cubic");
+%! z1 = interp2 (xx, yy, z, xx2, yy2, "spline");
 %! z2 = interp2 (fliplr (xx), flipud (yy), fliplr (flipud(z)),
-%!               fliplr (xx2), flipud (yy2), "cubic");
+%!               fliplr (xx2), flipud (yy2), "spline");
 %! z2 = fliplr (flipud (z2));
 %! assert (z1, z2, 100 * eps ())
 

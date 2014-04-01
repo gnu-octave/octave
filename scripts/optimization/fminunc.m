@@ -25,12 +25,12 @@
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ##
-## @var{fcn} should accepts a vector (array) defining the unknown variables,
+## @var{fcn} should accept a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
-## In other words, this function attempts to determine a vector @var{x} such
-## that @code{@var{fcn} (@var{x})} is a local minimum.
-## @var{x0} determines a starting guess.  The shape of @var{x0} is preserved
-## in all calls to @var{fcn}, but otherwise is treated as a column vector.
+## @code{fminunc} attempts to determine a vector @var{x} such that
+## @code{@var{fcn} (@var{x})} is a local minimum.  @var{x0} determines a
+## starting guess.  The shape of @var{x0} is preserved in all calls to
+## @var{fcn}, but otherwise is treated as a column vector.
 ## @var{options} is a structure specifying additional options.
 ## Currently, @code{fminunc} recognizes these options:
 ## @qcode{"FunValCheck"}, @qcode{"OutputFcn"}, @qcode{"TolX"},
@@ -39,42 +39,46 @@
 ## @qcode{"TypicalX"}, @qcode{"AutoScaling"}.
 ##
 ## If @qcode{"GradObj"} is @qcode{"on"}, it specifies that @var{fcn},
-## called with 2 output arguments, also returns the Jacobian matrix
-## of right-hand sides at the requested point.  @qcode{"TolX"} specifies
-## the termination tolerance in the unknown variables, while
-## @qcode{"TolFun"} is a tolerance for equations.  Default is @code{1e-7}
-## for both @qcode{"TolX"} and @qcode{"TolFun"}.
+## when called with 2 output arguments, also returns the Jacobian matrix
+## of partial first derivatives at the requested point.
+## @code{TolX} specifies the termination tolerance for the unknown variables
+## @var{x}, while @code{TolFun} is a tolerance for the objective function
+## value @var{fval}.  The default is @code{1e-7} for both options.
 ##
-## For description of the other options, see @code{optimset}.
+## For a description of the other options, see @code{optimset}.
 ##
-## On return, @var{fval} contains the value of the function @var{fcn}
-## evaluated at @var{x}, and @var{info} may be one of the following values:
+## On return, @var{x} is the location of the minimum and @var{fval} contains
+## the value of the objective function at @var{x}.  @var{info} may be one of the
+## following values:
 ##
 ## @table @asis
 ## @item 1
 ## Converged to a solution point.  Relative gradient error is less than
-## specified
-## by TolFun.
+## specified by @code{TolFun}.
 ##
 ## @item 2
-## Last relative step size was less that TolX.
+## Last relative step size was less than @code{TolX}.
 ##
 ## @item 3
-## Last relative decrease in function value was less than TolF.
+## Last relative change in function value was less than @code{TolFun}.
 ##
 ## @item 0
-## Iteration limit exceeded.
+## Iteration limit exceeded---either maximum numer of algorithm iterations
+## @code{MaxIter} or maximum number of function evaluations @code{MaxFunEvals}.
+##
+## @item -1
+## Alogrithm terminated by @code{OutputFcn}.
 ##
 ## @item -3
 ## The trust region radius became excessively small.
 ## @end table
 ##
-## Optionally, fminunc can also yield a structure with convergence statistics
-## (@var{output}), the output gradient (@var{grad}) and approximate Hessian
-## (@var{hess}).
+## Optionally, @code{fminunc} can return a structure with convergence statistics
+## (@var{output}), the output gradient (@var{grad}) at the solution @var{x},
+## and approximate Hessian (@var{hess}) at the solution @var{x}.
 ##
-## Notes: If you only have a single nonlinear equation of one variable then
-## using @code{fminbnd} is usually a much better idea.  The algorithm used is a
+## Notes: If have only a single nonlinear equation of one variable then using
+## @code{fminbnd} is usually a much better idea.  The algorithm used is a
 ## gradient search which depends on the objective function being differentiable.
 ## If the function has discontinuities it may be better to use a derivative-free
 ## algorithm such as @code{fminsearch}.
@@ -221,7 +225,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       delta = factor * max (xn, 1);
     endif
 
-    ## FIXME -- why tolf*n*xn? If abs (e) ~ abs(x) * eps is a vector
+    ## FIXME: why tolf*n*xn?  If abs (e) ~ abs(x) * eps is a vector
     ## of perturbations of x, then norm (hesr*e) <= eps*xn, i.e. by
     ## tolf ~ eps we demand as much accuracy as we can expect.
     if (norm (grad) <= tolf*n*xn)
@@ -287,13 +291,13 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
         x += s;
         xn = norm (dg .* x);
         fval = fval1;
-        nsuciter ++;
+        nsuciter++;
         suc = true;
       endif
 
       niter ++;
 
-      ## FIXME: should outputfcn be only called after a successful iteration?
+      ## FIXME: should outputfcn be called only after a successful iteration?
       if (! isempty (outfcn))
         optimvalues.iter = niter;
         optimvalues.funccount = nfev;
@@ -344,8 +348,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
 
 endfunction
 
-## An assistant function that evaluates a function handle and checks for
-## bad results.
+## A helper function that evaluates a function and checks for bad results.
 function [fx, gx] = guarded_eval (fun, x)
   if (nargout > 1)
     [fx, gx] = fun (x);

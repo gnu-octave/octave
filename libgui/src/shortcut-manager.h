@@ -1,0 +1,139 @@
+/*
+
+Copyright (C) 2014 Torsten <ttl@justmail.de>
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+*/
+
+#ifndef SHORTCUT_MANAGER_H
+#define SHORTCUT_MANAGER_H
+
+#include <QWidget>
+#include <QTreeWidget>
+#include <QLineEdit>
+#include <QKeyEvent>
+#include <QLabel>
+
+
+class enter_shortcut : public QLineEdit
+{
+  Q_OBJECT
+
+public:
+  enter_shortcut (QWidget *p = 0);
+  ~enter_shortcut ();
+
+  virtual void  keyPressEvent (QKeyEvent *e);
+
+public slots:
+  void handle_direct_shortcut (int);
+
+private:
+  bool _direct_shortcut;
+
+};
+
+
+class shortcut_manager : public QWidget
+{
+  Q_OBJECT
+
+public:
+  shortcut_manager ();
+  ~shortcut_manager ();
+
+  static void init_data ()
+  {
+    if (instance_ok ())
+      instance->do_init_data ();
+  }
+
+  static void write_shortcuts ()
+  {
+    if (instance_ok ())
+      instance->do_write_shortcuts ();
+  }
+
+  static void set_shortcut (QAction *action, const QString& key)
+  {
+    if (instance_ok ())
+      instance->do_set_shortcut (action, key);
+  }
+
+  static void fill_treewidget (QTreeWidget *tree_view)
+  {
+    if (instance_ok ())
+      instance->do_fill_treewidget (tree_view);
+  }
+
+public slots:
+
+signals:
+
+protected:
+
+protected slots:
+
+  void handle_double_clicked (QTreeWidgetItem*, int);
+  void shortcut_dialog_finished (int);
+  void shortcut_dialog_set_default ();
+
+private:
+
+  static shortcut_manager *instance;
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
+  // No copying!
+
+  shortcut_manager (const shortcut_manager&);
+  shortcut_manager& operator = (const shortcut_manager&);
+
+  static bool instance_ok (void);
+
+  void init (QString, QString, QKeySequence);
+  void do_init_data ();
+  void do_write_shortcuts ();
+  void do_set_shortcut (QAction *action, const QString& key);
+  void do_fill_treewidget (QTreeWidget *tree_view);
+  void shortcut_dialog (int);
+
+  struct shortcut_t
+  {
+    QString description;
+    QString settings_key;
+    QKeySequence actual_sc;
+    QKeySequence default_sc;
+    QTreeWidgetItem *tree_item;
+  };
+
+  QList<shortcut_t> _sc;
+  QHash<QString, int> _shortcut_hash;
+  QHash<QString, int> _action_hash;
+  QHash <QString, QTreeWidgetItem*> _level_hash;
+  QHash<int, QTreeWidgetItem*> _index_item_hash;
+  QHash<QTreeWidgetItem*, int> _item_index_hash;
+
+  QDialog *_dialog;
+  enter_shortcut *_edit_actual;
+  QLabel *_label_default;
+  int _handled_index;
+
+};
+
+
+#endif // SHORTCUT_MANAGER_H

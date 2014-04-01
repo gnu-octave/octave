@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-editor.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
+
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
@@ -1552,6 +1554,10 @@ file_editor::set_shortcuts (bool set)
 {
   if (set)
     {
+
+      shortcut_manager::set_shortcut (_save_action, "editor_file:save");
+      shortcut_manager::set_shortcut (_save_as_action, "editor_file:save_as");
+
       _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_R);
       _uncomment_selection_action->setShortcut (Qt::SHIFT
                                                 + Qt::ControlModifier
@@ -1586,12 +1592,11 @@ file_editor::set_shortcuts (bool set)
       _context_run_action->setShortcut (Qt::Key_F9);
 
       _context_edit_action->setShortcut (Qt::ControlModifier + Qt::Key_E);
-      _save_action->setShortcut (QKeySequence::Save);
-      _save_as_action->setShortcut (QKeySequence::SaveAs);
       _close_action->setShortcut (QKeySequence::Close);
 
       _redo_action->setShortcut (QKeySequence::Redo);
       _undo_action->setShortcut (QKeySequence::Undo);
+
     }
   else
     {

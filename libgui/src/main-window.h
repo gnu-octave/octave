@@ -315,14 +315,21 @@ private:
   QAction *_new_script_action;
   QAction *_new_function_action;
   QAction *_open_action;
+  QAction *_new_figure_action;
+  QAction *_load_workspace_action;
+  QAction *_save_workspace_action;
+  QAction *_preferences_action;
+  QAction *_exit_action;
 
   QAction *_copy_action;
   QAction *_paste_action;
   QAction *_clear_clipboard_action;
   QAction *_undo_action;
-
+  QAction *_clear_command_window_action;
+  QAction *_clear_command_history_action;
+  QAction *_clear_workspace_action;
   QAction *_find_files_action;
-  QAction *_exit_action;
+  QAction *_select_all_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;

@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "main-window.h"
 #include "octave-gui.h"
 #include "thread-manager.h"
@@ -191,6 +192,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       if (term.empty ())
         octave_env::putenv ("TERM", "cygwin");
 #endif
+
+      // shortcut manager
+      shortcut_manager::init_data ();
 
       // Create and show main window.
 

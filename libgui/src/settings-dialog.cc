@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
@@ -56,6 +57,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   QDialog (p), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
+
+  shortcut_manager::fill_treewidget (ui->shortcuts_treewidget);
 
   QSettings *settings = resource_manager::get_settings ();
 
@@ -674,6 +677,8 @@ settings_dialog::write_changed_settings ()
   write_workspace_colors (settings);
 
   write_terminal_colors (settings);
+
+  shortcut_manager::write_shortcuts ();
 
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
   settings->setValue ("settings/geometry",saveGeometry ());

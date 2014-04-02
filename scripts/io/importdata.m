@@ -209,11 +209,33 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
 
   endwhile
 
-  fclose (fid);
-
   if (row == -1)
-    error ("importdata: Unable to determine delimiter");
+    ## No numeric data found => return file as cellstr array
+    ## 1. Read as char string
+    fseek (fid, 0, "bof");
+    output = fread (fid, Inf, "*char")';
+    fclose (fid);
+    ## 2. Find EOL type
+    idx = find (output == "\n", 1) - 1;
+    if (isindex (idx) && output(idx) == "\r")
+      dlm = "\r\n";
+    else
+      dlm = "\n";
+    endif
+    ## 3. Split each line into a cell (column vector)
+    output = strsplit (output, dlm)';
+    ## 4. Remove last cell (for files with -proper- EOL before EOF)
+    if (isempty (output{end}))
+      output(end) = [];
+    endif
+    ## 5. Return after setting some output data
+    delimiter = "";
+    header_rows = numel (output);
+    return;
+  else
+    fclose (fid);
   endif
+
   if (num_header_rows >= 0)
     header_rows = num_header_rows;
   endif
@@ -496,6 +518,30 @@ endfunction
 %! assert (a, A);
 %! assert (d, "\t");
 %! assert (h, 0);
+
+%!test
+%! ## Only text / no numeric data; \n as EOL
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "aaaa 11\nbbbbb 22\nccccc 3\n");
+%! fclose (fid);
+%! [a, d, h] = importdata (fn);
+%! unlink (fn);
+%! assert (a, {"aaaa 11"; "bbbbb 22"; "ccccc 3"});
+%! assert (d, "");
+%! assert (h, 3);
+
+%!test
+%! ## Only text / no numeric data; \r\n as EOL; missing last EOL before EOF
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "aaaa 11\r\nbbbbb 22\r\nccccc 3");
+%! fclose (fid);
+%! [a, d, h] = importdata (fn);
+%! unlink (fn);
+%! assert (a, {"aaaa 11"; "bbbbb 22"; "ccccc 3"});
+%! assert (d, "");
+%! assert (h, 3);
 
 %!error importdata ()
 %!error importdata (1,2,3,4)

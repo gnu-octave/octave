@@ -141,6 +141,12 @@ Figure::Figure (const graphics_object& go, FigureWindow* win)
     eventMask |= Canvas::KeyRelease;
   m_container->canvas (m_handle)->setEventMask (eventMask);
 
+  if (! fp.get_windowbuttonmotionfcn ().is_empty ())
+    {
+      m_container->setMouseTracking (true);
+      m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
+    }
+
   connect (this, SIGNAL (asyncUpdate (void)),
            this, SLOT (updateContainer (void)));
 
@@ -301,6 +307,15 @@ void Figure::update (int pId)
         m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
       else
         m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
+      break;
+    case figure::properties::ID_WINDOWBUTTONMOTIONFCN:
+        {
+          bool hasCallback = ! fp.get_windowbuttonmotionfcn ().is_empty ();
+
+          m_container->setMouseTracking (hasCallback);
+          foreach (QWidget* w, m_container->findChildren<QWidget*> ())
+            { w->setMouseTracking (hasCallback); }
+        }
       break;
     default:
       break;

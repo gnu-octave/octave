@@ -51,6 +51,41 @@ void Canvas::blockRedraw (bool block)
   m_redrawBlocked = block;
 }
 
+void Canvas::updateCurrentPoint(const graphics_object& fig,
+                                const graphics_object& obj, QMouseEvent* event)
+{
+  gh_manager::post_set (fig.get_handle (), "currentpoint",
+                        Utils::figureCurrentPoint (fig, event), false);
+
+  Matrix children = obj.get_properties ().get_children ();
+  octave_idx_type num_children = children.numel ();
+
+  for (int i = 0; i < num_children; i++)
+    {
+      graphics_object childObj (gh_manager::get_object (children(i)));
+
+      if (childObj.isa ("axes"))
+        {
+          axes::properties& ap = Utils::properties<axes> (childObj);
+          Matrix x_zlim = ap.get_transform_zlim ();
+          graphics_xform x_form = ap.get_transform ();
+
+          ColumnVector p1 = x_form.untransform (event->x (), event->y (),
+                                                x_zlim(0));
+          ColumnVector p2 = x_form.untransform (event->x (), event->y (),
+                                                x_zlim(1));
+
+          Matrix cp (2, 3, 0.0);
+
+          cp(0,0) = p1(0); cp(0,1) = p1(1); cp(0,2) = p1(2);
+          cp(1,0) = p2(0); cp(1,1) = p2(1); cp(1,2) = p2(2);
+
+          gh_manager::post_set (childObj.get_handle (), "currentpoint", cp,
+                                false);
+        }
+    }
+}
+
 void Canvas::canvasPaintEvent (void)
 {
   if (! m_redrawBlocked)
@@ -133,6 +168,19 @@ void Canvas::canvasMouseMoveEvent (QMouseEvent* event)
 	default:
 	  break;
 	}
+    }
+  else if (m_mouseMode == NoMode)
+    {
+      graphics_object obj = gh_manager::get_object (m_handle);
+
+      if (obj.valid_object ())
+        {
+          graphics_object figObj (obj.get_ancestor ("figure"));
+
+          updateCurrentPoint (figObj, obj, event);
+	  gh_manager::post_callback (figObj.get_handle (),
+				     "windowbuttonmotionfcn");
+        }
     }
 }
 
@@ -228,9 +276,7 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
 	case NoMode:
 	  gh_manager::post_set (figObj.get_handle (), "selectiontype",
 				Utils::figureSelectionType (event), false);
-	  gh_manager::post_set (figObj.get_handle (), "currentpoint",
-				Utils::figureCurrentPoint (figObj, event),
-				false);
+          updateCurrentPoint (figObj, obj, event);
 	  gh_manager::post_callback (figObj.get_handle (),
 				     "windowbuttondownfcn");
           gh_manager::post_callback (currentObj.get_handle (),
@@ -321,9 +367,7 @@ void Canvas::canvasMouseReleaseEvent (QMouseEvent* event)
         {
           graphics_object figObj (obj.get_ancestor ("figure"));
 
-	  gh_manager::post_set (figObj.get_handle (), "currentpoint",
-				Utils::figureCurrentPoint (figObj, event),
-				false);
+          updateCurrentPoint (figObj, obj, event);
           gh_manager::post_callback (figObj.get_handle (),
                                      "windowbuttonupfcn");
         }

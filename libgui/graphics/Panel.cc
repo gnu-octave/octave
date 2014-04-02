@@ -115,6 +115,12 @@ Panel::Panel (const graphics_object& go, QFrame* frame)
   m_container = new Container (frame);
   m_container->canvas (m_handle);
 
+  if (frame->hasMouseTracking ())
+    {
+      foreach (QWidget* w, frame->findChildren<QWidget*> ())
+        { w->setMouseTracking (true); }
+    }
+
   QString title = Utils::fromStdString (pp.get_title ());
   if (! title.isEmpty ())
     {

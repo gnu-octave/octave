@@ -75,7 +75,17 @@
 ## Controls the image region that is read.  Takes as value a cell array
 ## with two arrays of 3 elements @code{@{@var{rows} @var{cols}@}}.  The
 ## elements in the array are the start, increment and end pixel to be
-## read.  If the increment value is omitted, defaults to 1.
+## read.  If the increment value is omitted, defaults to 1.  For example,
+## the following are all equivalent:
+##
+## @example
+## @group
+## imread (filename, "PixelRegion", @{[200 600] [300 700]@});
+## imread (filename, "PixelRegion", @{[200 1 600] [300 1 700]@});
+## imread (filename)(200:600, 300:700);
+## @end group
+## @end example
+##
 ## @end table
 ##
 ## @seealso{imwrite, imfinfo, imformats}
@@ -129,6 +139,24 @@ endfunction
 %! assert (A(:,:,1), uint8 ([0, 255, 0; 255, 237, 255; 0, 255, 0]));
 %! assert (A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
 %! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
+
+%!function [r, cmap, a] = write_and_read (w, varargin)
+%!  filename = [tmpnam() ".tif"];
+%!  unwind_protect
+%!    imwrite (w, filename);
+%!    [r, cmap, a] = imread (filename, varargin{:});
+%!  unwind_protect_cleanup
+%!    unlink (filename);
+%!  end_unwind_protect
+%!endfunction
+
+## test PixelRegion option
+%!testif HAVE_MAGICK
+%! w = randi (255, 100, 100, "uint8");
+%! [r, cmap, a] = write_and_read (w, "PixelRegion", {[50 70] [20 40]});
+%! assert (r, w(50:70, 20:40))
+%! [r, cmap, a] = write_and_read (w, "PixelRegion", {[50 2 70] [20 3 40]});
+%! assert (r, w(50:2:70, 20:3:40))
 
 ## If a file does not exist, it's the job of imread to check the file
 ## exists before sending it over to __imread__ or whatever function

@@ -434,6 +434,18 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!test
+%! x = char (128:255)';
+%! nm = tmpnam ();
+%! id = fopen (nm, "wb");
+%! fwrite (id, x);
+%! fclose (id);
+%! id = fopen (nm, "rb");
+%! y = fread (id, Inf, "uchar=>char");
+%! fclose (id);
+%! unlink (nm);
+%! assert (x, y);
+
+%!test
 %! nm = tmpnam ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)

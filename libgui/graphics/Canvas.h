@@ -82,6 +82,9 @@ protected:
   bool canvasKeyPressEvent (QKeyEvent* event);
   bool canvasKeyReleaseEvent (QKeyEvent* event);
 
+  void updateCurrentPoint (const graphics_object& fig,
+                           const graphics_object& obj, QMouseEvent *event);
+
 private:
   graphics_handle m_handle;
   bool m_redrawBlocked;

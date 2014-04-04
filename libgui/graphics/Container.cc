@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QChildEvent>
 #include <QVBoxLayout>
 
 #include "graphics.h"
@@ -92,6 +93,14 @@ void Container::resizeEvent (QResizeEvent* /* event */)
 			       xround (bb(2)), xround (bb(3)));
 	    }
 	}
+    }
+}
+
+void Container::childEvent (QChildEvent* event)
+{
+  if (event->child ()->isWidgetType ())
+    {
+      qobject_cast<QWidget*> (event->child ())->setMouseTracking (hasMouseTracking ());
     }
 }
 

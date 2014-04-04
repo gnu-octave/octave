@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "welcome-wizard.h"
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "main-window.h"
 #include "octave-gui.h"
 #include "thread-manager.h"
@@ -85,42 +86,11 @@ private:
   int m_result;
 };
 
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
-static int fdstderr = -1;
-#endif
+// Disable all Qt messages by default.
 
-// Custom message handler for filtering some messages from Qt.
-
-void
+static void
 message_handler (QtMsgType type, const char *msg)
 {
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
-  static FILE *errstream = fdopen (fdstderr, "a+");
-#else
-  static FILE *errstream = stderr;
-#endif
-
-  switch (type)
-    {
-    case QtDebugMsg:
-      gnulib::fprintf (errstream, "Debug: %s\n", msg);
-      break;
-
-    case QtWarningMsg:
-      gnulib::fprintf (errstream, "Warning: %s\n", msg);
-      break;
-
-    case QtCriticalMsg:
-      gnulib::fprintf (errstream, "Critical: %s\n", msg);
-      break;
-
-    case QtFatalMsg:
-      gnulib::fprintf (errstream, "Fatal: %s\n", msg);
-      abort ();
-
-    default:
-      break;
-    }
 }
 
 // If START_GUI is false, we still set up the QApplication so that we
@@ -131,14 +101,11 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 {
   octave_thread_manager::block_interrupt_signal ();
 
-#if ! defined (__WIN32__) || defined (__CYGWIN__)
-  // Store the file descriptor associated with the STDERR stream.  Send
-  // Qt messages there instead of to the STDERR stream that will be
-  // associated with the GUI command window.
-  fdstderr = gnulib::dup (STDERR_FILENO);
-#endif
+  std::string show_gui_msgs = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
-  qInstallMsgHandler (message_handler);
+  // Installing our handler suppresses the messages.
+  if (show_gui_msgs.empty ())
+    qInstallMsgHandler (message_handler);
 
   if (start_gui)
     {
@@ -191,6 +158,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       if (term.empty ())
         octave_env::putenv ("TERM", "cygwin");
 #endif
+
+      // shortcut manager
+      shortcut_manager::init_data ();
 
       // Create and show main window.
 

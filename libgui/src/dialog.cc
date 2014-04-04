@@ -485,23 +485,25 @@ void FileDialog::accept (void)
 
   string_result = selectedFiles ();
 
+  if (testOption (QFileDialog::ShowDirsOnly)  == true &&
+      string_result.size () > 0)
+    {
+      path = string_result[0];
+    }
+  else
+    {
+      path = directory ().absolutePath ();
+    }
+
   // Matlab expects just the file name, whereas the file dialog gave us
-  // pull path names, so fix it.
+  // full path names, so fix it.
 
   for (int i = 0; i < string_result.size (); i++)
     string_result[i] = QFileInfo (string_result[i]).fileName ();
 
-  path = directory ().absolutePath ();
-
   // if not showing only dirs, add end slash for the path component
   if (testOption (QFileDialog::ShowDirsOnly)  == false)
     path = path + "/";
-  else
-    {
-      // if name was provided in uigetdir, add to path
-      if (string_result.size() > 0)
-        path = path + "/" + string_result[0];
-    }
 
   // convert to native slashes
   path = QDir::toNativeSeparators (path);

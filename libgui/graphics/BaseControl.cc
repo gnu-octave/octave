@@ -195,6 +195,20 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* event)
 	    }
 	}
       break;
+    case QEvent::MouseMove:
+      if (qWidget<QWidget> ()->hasMouseTracking ())
+        {
+	  gh_manager::auto_lock lock;
+
+	  QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
+	  graphics_object go = object ();
+	  graphics_object fig = go.get_ancestor ("figure");
+
+          gh_manager::post_set (fig.get_handle (), "currentpoint",
+                                Utils::figureCurrentPoint (fig, m), false);
+          gh_manager::post_callback (fig.get_handle (), "windowbuttonmotionfcn");
+        }
+      break;
     case QEvent::KeyPress:
       if (m_keyPressHandlerDefined)
         {

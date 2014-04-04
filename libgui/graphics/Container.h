@@ -45,6 +45,7 @@ public:
   Canvas* canvas (const graphics_handle& handle, bool create = true);
 
 protected:
+  void childEvent (QChildEvent* event);
   void resizeEvent (QResizeEvent* event);
 
 private:

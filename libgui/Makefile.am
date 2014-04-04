@@ -34,7 +34,8 @@ TRANSLATIONS = \
   languages/pt_BR.ts \
   languages/pt_PT.ts \
   languages/ru_RU.ts \
-  languages/uk_UA.ts
+  languages/uk_UA.ts \
+  languages/zh_CN.ts
 
 LOCALES = $(patsubst languages/%.ts, languages/%.qm, $(TRANSLATIONS))
 

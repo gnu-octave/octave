@@ -3394,6 +3394,18 @@ octave_stream::write (const octave_value& data, octave_idx_type block_size,
 
 template <class T, class V>
 static void
+convert_chars (const void *data, void *conv_data, octave_idx_type n_elts)
+{
+  const T *tt_data = static_cast<const T *> (data);
+
+  V *vt_data = static_cast<V *> (conv_data);
+
+  for (octave_idx_type i = 0; i < n_elts; i++)
+    vt_data[i] = tt_data[i];
+}
+
+template <class T, class V>
+static void
 convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
               bool swap)
 {
@@ -3403,6 +3415,9 @@ convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
 
   for (octave_idx_type i = 0; i < n_elts; i++)
     {
+      // Yes, we want saturation semantics when converting to an integer
+      // type.
+
       V val (data[i]);
 
       vt_data[i] = val.value ();
@@ -3411,6 +3426,20 @@ convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
         swap_bytes<sizeof (val_type)> (&vt_data[i]);
     }
 }
+
+template <class T>
+class ultimate_element_type
+{
+public:
+  typedef T type;
+};
+
+template <class T>
+class ultimate_element_type<octave_int<T> >
+{
+public:
+  typedef T type;
+};
 
 template <class T>
 static bool
@@ -3427,18 +3456,26 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
 
   bool do_float_conversion =  flt_fmt != oct_mach_info::float_format ();
 
-  // We use octave_intN classes here instead of converting directly to
-  // intN_t so that we get integer saturation semantics.
+  typedef typename ultimate_element_type<T>::type ult_elt_type;
 
   switch (output_type)
     {
     case oct_data_conv::dt_char:
+      convert_chars<ult_elt_type, char> (data, conv_data, n_elts);
+      break;
+
     case oct_data_conv::dt_schar:
+      convert_chars<ult_elt_type, signed char> (data, conv_data, n_elts);
+      break;
+
+    case oct_data_conv::dt_uchar:
+      convert_chars<ult_elt_type, unsigned char> (data, conv_data, n_elts);
+      break;
+
     case oct_data_conv::dt_int8:
       convert_ints<T, octave_int8> (data, conv_data, n_elts, swap);
       break;
 
-    case oct_data_conv::dt_uchar:
     case oct_data_conv::dt_uint8:
       convert_ints<T, octave_uint8> (data, conv_data, n_elts, swap);
       break;

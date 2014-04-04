@@ -42,6 +42,10 @@ To initialize:
 
 #ifdef HAVE_FLTK
 
+#if defined (HAVE_X_WINDOWS)
+#include <X11/Xlib.h>
+#endif
+
 #include <map>
 #include <set>
 #include <sstream>
@@ -73,6 +77,7 @@ To initialize:
 
 #include "cmd-edit.h"
 #include "lo-ieee.h"
+#include "oct-env.h"
 
 #include "display.h"
 #include "file-ops.h"
@@ -674,6 +679,14 @@ private:
   Fl_Menu_Bar* menubar;
 };
 
+#if defined (HAVE_X_WINDOWS)
+static int
+xerror_handler (Display *, XErrorEvent *)
+{
+  return 0;
+}
+#endif
+
 class plot_window : public Fl_Window
 {
   friend class fltk_uimenu;
@@ -762,7 +775,18 @@ public:
           // Set WM_CLASS which allows window managers to properly group
           // related windows.  Otherwise, the class is just "FLTK"
           xclass ("Octave");
+
           show ();
+
+#if defined (HAVE_X_WINDOWS)
+          std::string show_gui_msgs
+            = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+
+          // Installing our handler suppresses the messages.
+          if (show_gui_msgs.empty ())
+            XSetErrorHandler (xerror_handler);
+#endif
+
           if (fp.get_currentaxes ().ok ())
             show_canvas ();
           else

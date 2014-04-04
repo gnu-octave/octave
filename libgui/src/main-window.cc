@@ -51,6 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 #include "main-window.h"
 #include "settings-dialog.h"
+#include "shortcut-manager.h"
 
 #include "__init_qt__.h"
 
@@ -679,6 +680,9 @@ main_window::notice_settings (const QSettings *settings)
 
   int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
+
+  set_global_shortcuts (true);
+  set_global_shortcuts (command_window_has_focus ());
 
   resource_manager::update_network_settings ();
 }
@@ -1442,15 +1446,15 @@ main_window::construct_file_menu (QMenuBar *p)
 
   file_menu->addSeparator ();
 
-  QAction *load_workspace_action
+  _load_workspace_action
     = file_menu->addAction (tr ("Load Workspace..."));
 
-  QAction *save_workspace_action
+  _save_workspace_action
     = file_menu->addAction (tr ("Save Workspace As..."));
 
   file_menu->addSeparator ();
 
-  QAction *preferences_action
+  _preferences_action
     = file_menu->addAction (QIcon (":/actions/icons/configure.png"),
                             tr ("Preferences..."));
 
@@ -1459,7 +1463,7 @@ main_window::construct_file_menu (QMenuBar *p)
   _exit_action = file_menu->addAction (tr ("Exit"));
   _exit_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  connect (preferences_action, SIGNAL (triggered ()),
+  connect (_preferences_action, SIGNAL (triggered ()),
            this, SLOT (process_settings_dialog_request ()));
 
 #ifdef HAVE_QSCINTILLA
@@ -1467,10 +1471,10 @@ main_window::construct_file_menu (QMenuBar *p)
            editor_window, SLOT (request_open_file ()));
 #endif
 
-  connect (load_workspace_action, SIGNAL (triggered ()),
+  connect (_load_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_load_workspace_request ()));
 
-  connect (save_workspace_action, SIGNAL (triggered ()),
+  connect (_save_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_save_workspace_request ()));
 
   connect (_exit_action, SIGNAL (triggered ()),
@@ -1491,8 +1495,8 @@ main_window::construct_new_menu (QMenu *p)
   _new_function_action->setEnabled (true);
   _new_function_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
-  new_figure_action->setEnabled (true);
+  _new_figure_action = new_menu->addAction (tr ("Figure"));
+  _new_figure_action->setEnabled (true);
 
 #ifdef HAVE_QSCINTILLA
   connect (_new_script_action, SIGNAL (triggered ()),
@@ -1502,7 +1506,7 @@ main_window::construct_new_menu (QMenu *p)
            editor_window, SLOT (request_new_function ()));
 #endif
 
-  connect (new_figure_action, SIGNAL (triggered ()),
+  connect (_new_figure_action, SIGNAL (triggered ()),
            this, SLOT (handle_new_figure_request ()));
 }
 
@@ -1515,22 +1519,18 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   _undo_action
     = edit_menu->addAction (QIcon (":/actions/icons/undo.png"), tr ("Undo"));
-  _undo_action->setShortcut (QKeySequence::Undo);
 
   edit_menu->addSeparator ();
 
   _copy_action
     = edit_menu->addAction (QIcon (":/actions/icons/editcopy.png"),
                             tr ("Copy"), this, SLOT (copyClipboard ()));
-  _copy_action->setShortcut (QKeySequence::Copy);
-
 
   _paste_action
     = edit_menu->addAction (QIcon (":/actions/icons/editpaste.png"),
                             tr ("Paste"), this, SLOT (pasteClipboard ()));
-  _paste_action->setShortcut (QKeySequence::Paste);
 
-  QAction * select_all_action
+  _select_all_action
     = edit_menu->addAction (tr ("Select All"), this, SLOT (selectAll ()));
 
   _clear_clipboard_action
@@ -1543,25 +1543,25 @@ main_window::construct_edit_menu (QMenuBar *p)
 
   edit_menu->addSeparator ();
 
-  QAction *clear_command_window_action
+  _clear_command_window_action
     = edit_menu->addAction (tr ("Clear Command Window"));
 
-  QAction *clear_command_history
+  _clear_command_history_action
     = edit_menu->addAction (tr ("Clear Command History"));
 
-  QAction *clear_workspace_action
+  _clear_workspace_action
     = edit_menu->addAction (tr ("Clear Workspace"));
 
   connect (_find_files_action, SIGNAL (triggered ()),
            this, SLOT (find_files ()));
 
-  connect (clear_command_window_action, SIGNAL (triggered ()),
+  connect (_clear_command_window_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_command_window_request ()));
 
-  connect (clear_command_history, SIGNAL (triggered ()),
+  connect (_clear_command_history_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_history_request ()));
 
-  connect (clear_workspace_action, SIGNAL (triggered ()),
+  connect (_clear_workspace_action, SIGNAL (triggered ()),
            this, SLOT (handle_clear_workspace_request ()));
 
   connect (_clipboard, SIGNAL (changed (QClipboard::Mode)),
@@ -2282,17 +2282,26 @@ main_window::set_global_shortcuts (bool set_shortcuts)
   if (set_shortcuts)
     {
 
-      _open_action->setShortcut (QKeySequence::Open);
-      _new_script_action->setShortcut (QKeySequence::New);
-      _new_function_action->setShortcut (Qt::ControlModifier
-                                       + Qt::ShiftModifier
-                                       + Qt::Key_N);
+      // file menu
+      shortcut_manager::set_shortcut (_open_action, "main_file:open_file");
+      shortcut_manager::set_shortcut (_new_script_action, "main_file:new_file");
+      shortcut_manager::set_shortcut (_new_function_action, "main_file:new_function");
+      shortcut_manager::set_shortcut (_new_function_action, "main_file:new_figure");
+      shortcut_manager::set_shortcut (_load_workspace_action, "main_file:load_workspace");
+      shortcut_manager::set_shortcut (_save_workspace_action, "main_file:save_workspace");
+      shortcut_manager::set_shortcut (_preferences_action, "main_file:preferences");
+      shortcut_manager::set_shortcut (_exit_action,"main_file:exit");
 
-      _exit_action->setShortcut (QKeySequence::Quit);
-
-      _find_files_action->setShortcut (Qt::ControlModifier
-                                       + Qt::ShiftModifier
-                                       + Qt::Key_F);
+      // edit menu
+      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+      shortcut_manager::set_shortcut (_clear_clipboard_action, "main_edit:clear_clipboard");
+      shortcut_manager::set_shortcut (_find_files_action, "main_edit:find_in_files");
+      shortcut_manager::set_shortcut (_clear_command_history_action, "main_edit:clear_history");
+      shortcut_manager::set_shortcut (_clear_command_window_action, "main_edit:clear_command_window");
+      shortcut_manager::set_shortcut (_clear_workspace_action, "main_edit:clear_workspace");
 
     }
   else
@@ -2300,13 +2309,26 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       QKeySequence no_key = QKeySequence ();
 
+      // file menu
       _open_action->setShortcut (no_key);
       _new_script_action->setShortcut (no_key);
       _new_function_action->setShortcut (no_key);
-
+      _new_function_action->setShortcut (no_key);
+      _load_workspace_action->setShortcut (no_key);
+      _save_workspace_action->setShortcut (no_key);
+      _preferences_action->setShortcut (no_key);
       _exit_action->setShortcut (no_key);
 
+      // edit menu
+      //_copy_action->setShortcut (no_key);
+      //_paste_action->setShortcut (no_key);
+      //_undo_action->setShortcut (no_key);
+      _select_all_action->setShortcut (no_key);
+      _clear_clipboard_action->setShortcut (no_key);
       _find_files_action->setShortcut (no_key);
+      _clear_command_history_action->setShortcut (no_key);
+      _clear_command_window_action->setShortcut (no_key);
+      _clear_workspace_action->setShortcut (no_key);
 
     }
 

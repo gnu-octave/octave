@@ -118,4 +118,5 @@ QTerminal::notice_settings (const QSettings *settings)
     (cursorUseForegroundColor,
      settings->value ("terminal/color_c",
                       QVariant (colors.at (3))).value<QColor> ());
+  setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt() );
 }

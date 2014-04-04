@@ -60,6 +60,7 @@ public:
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
   void setCursorColor (bool useForegoundColor, const QColor& color);
+  void setScrollBufferSize(int value);
 
   QString selectedText ();
 

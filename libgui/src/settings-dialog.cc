@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "resource-manager.h"
+#include "shortcut-manager.h"
 #include "workspace-model.h"
 #include "settings-dialog.h"
 #include "ui-settings-dialog.h"
@@ -56,6 +57,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   QDialog (p), ui (new Ui::settings_dialog)
 {
   ui->setupUi (this);
+
+  shortcut_manager::fill_treewidget (ui->shortcuts_treewidget);
 
   QSettings *settings = resource_manager::get_settings ();
 
@@ -191,6 +194,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("terminal/fontName","Courier New").toString ()) );
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
+  ui->terminal_history_buffer->setValue (
+     settings->value ("terminal/history_buffer",1000).toInt ());
 
   // file browser
   ui->showFileSize->setChecked (
@@ -626,6 +631,8 @@ settings_dialog::write_changed_settings ()
                       ui->terminal_cursorUseForegroundColor->isChecked ());
   settings->setValue ("terminal/focus_after_command",
                       ui->terminal_focus_command->isChecked ());
+  settings->setValue ("terminal/history_buffer",
+                      ui->terminal_history_buffer->value() );
 
   // the cursor
   QString cursorType;
@@ -670,6 +677,8 @@ settings_dialog::write_changed_settings ()
   write_workspace_colors (settings);
 
   write_terminal_colors (settings);
+
+  shortcut_manager::write_shortcuts ();
 
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
   settings->setValue ("settings/geometry",saveGeometry ());

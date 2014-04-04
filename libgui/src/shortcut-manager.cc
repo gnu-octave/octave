@@ -98,8 +98,34 @@ shortcut_manager::do_init_data ()
   init (tr ("Clear Workspace"), "main_edit:clear_workspace", QKeySequence () );
 
   // actions of the editor
+  init (tr ("Edit Function"), "editor_file:edit_function", QKeySequence (Qt::ControlModifier + Qt::Key_E) );
   init (tr ("Save File"), "editor_file:save", QKeySequence::Save );
   init (tr ("Save File As"), "editor_file:save_as", QKeySequence::SaveAs );
+  init (tr ("Close"), "editor_file:close", QKeySequence::Close );
+  init (tr ("Close All"), "editor_file:close_all", QKeySequence () );
+  init (tr ("Close Other"), "editor_file:close_other",  QKeySequence () );
+  init (tr ("Print"), "editor_file:print",  QKeySequence::Print );
+
+  init (tr ("Undo"), "editor_edit:undo",  QKeySequence::Undo );
+  init (tr ("Redo"), "editor_edit:redo",  QKeySequence::Redo );
+  init (tr ("Copy"), "editor_edit:copy",  QKeySequence::Copy );
+  init (tr ("Cuy"), "editor_edit:cut",  QKeySequence::Cut );
+  init (tr ("Paste"), "editor_edit:paste",  QKeySequence::Paste );
+  init (tr ("Select All"), "editor_edit:select_all",  QKeySequence::SelectAll );
+  init (tr ("Find and Replace"), "editor_edit:find_replace",  QKeySequence::Find );
+  init (tr ("Comment Selection"), "editor_edit:comment_selection",  QKeySequence (Qt::ControlModifier + Qt::Key_R) );
+  init (tr ("Uncomment Selection"), "editor_edit:uncomment_selection",  QKeySequence (Qt::SHIFT + Qt::ControlModifier + Qt::Key_R) );
+  init (tr ("Indent Selection"), "editor_edit:indent_selection",  QKeySequence (Qt::ControlModifier + Qt::Key_Tab) );
+  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",  QKeySequence (Qt::SHIFT + Qt::ControlModifier + Qt::Key_Tab) );
+  init (tr ("Completion List"), "editor_edit:completion_list",  QKeySequence (Qt::ControlModifier + Qt::Key_Space) );
+  init (tr ("Toggle Bookmark"), "editor_edit:toggle_bookmark",  QKeySequence (Qt::Key_F7) );
+  init (tr ("Next Bookmark"), "editor_edit:next_bookmark",  QKeySequence (Qt::Key_F2) );
+  init (tr ("Previous Bookmark"), "editor_edit:previous_bookmark",  QKeySequence (Qt::SHIFT + Qt::Key_F2) );
+  init (tr ("Remove All Bookmark"), "editor_edit:remove_bookmark",  QKeySequence () );
+  init (tr ("Goto Line"), "editor_edit:goto_line",  QKeySequence (Qt::ControlModifier+ Qt::Key_G) );
+  init (tr ("Preferences"), "editor_edit:preferences",  QKeySequence () );
+  init (tr ("Styles Preferences"), "editor_edit:styles_preferences",  QKeySequence () );
+
 }
 
 void
@@ -107,9 +133,7 @@ shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  settings->beginGroup ("shortcuts");
-  QKeySequence actual = QKeySequence (settings->value (key, def_sc).toString ());
-  settings->endGroup ();
+  QKeySequence actual = QKeySequence (settings->value ("shortcuts/"+key, def_sc).toString ());
 
   shortcut_t shortcut_info;
   shortcut_info.description = description;
@@ -217,9 +241,11 @@ shortcut_manager::do_set_shortcut (QAction* action, const QString& key)
   QSettings *settings = resource_manager::get_settings ();
 
   int index = _action_hash[key] - 1;
-
-  action->setShortcut (
-    settings->value ("shortcuts/" + key, _sc.at (index).default_sc).toString ());
+  if (index > -1 && index < _sc.count ())
+    action->setShortcut (
+      settings->value ("shortcuts/" + key, _sc.at (index).default_sc).toString ());
+  else
+    qDebug () << "Key: " << key << " not found in _action_hash";
 }
 
 void

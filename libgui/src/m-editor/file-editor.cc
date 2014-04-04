@@ -1555,23 +1555,37 @@ file_editor::set_shortcuts (bool set)
   if (set)
     {
 
+      // File menu
+      shortcut_manager::set_shortcut (_context_edit_action, "editor_file:edit_function");
       shortcut_manager::set_shortcut (_save_action, "editor_file:save");
       shortcut_manager::set_shortcut (_save_as_action, "editor_file:save_as");
+      shortcut_manager::set_shortcut (_close_action, "editor_file:close");
+      shortcut_manager::set_shortcut (_close_all_action, "editor_file:close_all");
+      shortcut_manager::set_shortcut (_close_others_action, "editor_file:close_other");
+      shortcut_manager::set_shortcut (_print_action, "editor_file:print");
 
-      _comment_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_R);
-      _uncomment_selection_action->setShortcut (Qt::SHIFT
-                                                + Qt::ControlModifier
-                                                + Qt::Key_R);
+      // Edit menu
+      shortcut_manager::set_shortcut (_undo_action, "editor_edit:undo");
+      shortcut_manager::set_shortcut (_redo_action, "editor_edit:redo");
+      shortcut_manager::set_shortcut (_copy_action, "editor_edit:copy");
+      shortcut_manager::set_shortcut (_cut_action, "editor_edit:cut");
+      shortcut_manager::set_shortcut (_paste_action, "editor_edit:paste");
+      shortcut_manager::set_shortcut (_selectall_action, "editor_edit:select_all");
+      shortcut_manager::set_shortcut (_find_action, "editor_edit:find_replace");
+      shortcut_manager::set_shortcut (_comment_selection_action, "editor_edit:comment_selection");
+      shortcut_manager::set_shortcut (_uncomment_selection_action, "editor_edit:uncomment_selection");
+      shortcut_manager::set_shortcut (_indent_selection_action, "editor_edit:indent_selection");
+      shortcut_manager::set_shortcut (_unindent_selection_action, "editor_edit:unindent_selection");
+      shortcut_manager::set_shortcut (_completion_action, "editor_edit:completion_list");
+      shortcut_manager::set_shortcut (_toggle_bookmark_action, "editor_edit:toggle_bookmark");
+      shortcut_manager::set_shortcut (_next_bookmark_action, "editor_edit:next_bookmark");
+      shortcut_manager::set_shortcut (_previous_bookmark_action, "editor_edit:previous_bookmark");
+      shortcut_manager::set_shortcut (_remove_bookmark_action, "editor_edit:remove_bookmark");
+      shortcut_manager::set_shortcut (_goto_line_action, "editor_edit:goto_line");
+      shortcut_manager::set_shortcut (_preferences_action, "editor_edit:preferences");
+      shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
 
-      _indent_selection_action->setShortcut (Qt::ControlModifier + Qt::Key_Tab);
-      _unindent_selection_action->setShortcut (Qt::SHIFT
-                                                + Qt::ControlModifier
-                                                + Qt::Key_Tab);
 
-      _copy_action->setShortcut (QKeySequence::Copy);
-      _cut_action->setShortcut (QKeySequence::Cut);
-      _paste_action->setShortcut (QKeySequence::Paste);
-      _selectall_action->setShortcut (QKeySequence::SelectAll);
       _context_help_action->setShortcut (QKeySequence::HelpContents);
       _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
 
@@ -1579,64 +1593,60 @@ file_editor::set_shortcuts (bool set)
       _zoom_out_action->setShortcuts (QKeySequence::ZoomOut);
       _zoom_normal_action->setShortcut (Qt::ControlModifier + Qt::Key_Slash);
 
-      _find_action->setShortcut (QKeySequence::Find);
-      _goto_line_action->setShortcut (Qt::ControlModifier+ Qt::Key_G);
-      _completion_action->setShortcut (Qt::ControlModifier + Qt::Key_Space);
 
-      _next_bookmark_action->setShortcut (Qt::Key_F2);
-      _previous_bookmark_action->setShortcut (Qt::SHIFT + Qt::Key_F2);
-      _toggle_bookmark_action->setShortcut (Qt::Key_F7);
 
-      _print_action->setShortcut (QKeySequence::Print);
       _run_action->setShortcut (Qt::Key_F5);
       _context_run_action->setShortcut (Qt::Key_F9);
 
-      _context_edit_action->setShortcut (Qt::ControlModifier + Qt::Key_E);
-      _close_action->setShortcut (QKeySequence::Close);
 
-      _redo_action->setShortcut (QKeySequence::Redo);
-      _undo_action->setShortcut (QKeySequence::Undo);
 
     }
   else
     {
       QKeySequence no_key = QKeySequence ();
 
-      _comment_selection_action->setShortcut (no_key);
-      _uncomment_selection_action->setShortcut (no_key);
+      // File menu
+      _context_edit_action->setShortcut (no_key);
+      _save_action->setShortcut (no_key);
+      _save_as_action->setShortcut (no_key);
+      _close_action->setShortcut (no_key);
+      _close_all_action->setShortcut (no_key);
+      _close_others_action->setShortcut (no_key);
+      _print_action->setShortcut (no_key);
 
-      _indent_selection_action->setShortcut (no_key);
-      _unindent_selection_action->setShortcut (no_key);
-
+      // Edit menu
+      _redo_action->setShortcut (no_key);
+      _undo_action->setShortcut (no_key);
       _copy_action->setShortcut (no_key);
       _cut_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
       _selectall_action->setShortcut (no_key);
+      _find_action->setShortcut (no_key);
+      _comment_selection_action->setShortcut (no_key);
+      _uncomment_selection_action->setShortcut (no_key);
+      _indent_selection_action->setShortcut (no_key);
+      _unindent_selection_action->setShortcut (no_key);
+      _completion_action->setShortcut (no_key);
+      _toggle_bookmark_action->setShortcut (no_key);
+      _next_bookmark_action->setShortcut (no_key);
+      _previous_bookmark_action->setShortcut (no_key);
+      _remove_bookmark_action->setShortcut (no_key);
+      _goto_line_action->setShortcut (no_key);
+      _preferences_action->setShortcut (no_key);
+      _styles_preferences_action->setShortcut (no_key);
+
+
       _context_help_action->setShortcut (no_key);
 
       _zoom_in_action->setShortcut (no_key);
       _zoom_out_action->setShortcut (no_key);
       _zoom_normal_action->setShortcut (no_key);
 
-      _find_action->setShortcut (no_key);
-      _goto_line_action->setShortcut (no_key);
-      _completion_action->setShortcut (no_key);
 
-      _next_bookmark_action->setShortcut (no_key);
-      _previous_bookmark_action->setShortcut (no_key);
-      _toggle_bookmark_action->setShortcut (no_key);
 
-      _print_action->setShortcut (no_key);
       _run_action->setShortcut (no_key);
       _context_run_action->setShortcut (no_key);
 
-      _context_edit_action->setShortcut (no_key);
-      _save_action->setShortcut (no_key);
-      _save_as_action->setShortcut (no_key);
-      _close_action->setShortcut (no_key);
-
-      _redo_action->setShortcut (no_key);
-      _undo_action->setShortcut (no_key);
     }
 }
 

@@ -177,7 +177,7 @@ endfunction
 
 function [h, sout] = createaxes (s, p, par)
   ## regular axes
-  if (strcmp (s.properties.tag, ""))
+  if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     propval = {"position", s.properties.position};
     hid = {"autopos_tag", "looseinset"};
     for ii = 1:numel (hid)
@@ -551,8 +551,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
 endfunction
 
 function setprops (s, h, p, hilev)
-  more off;
-  if (strcmpi (s.properties.tag, ""))
+  if (! any (strcmpi (s.properties.tag, {"colorbar", "legend"})))
     specs = s.children(s.special);
     if (isempty (specs))
       hdls = [];
@@ -617,8 +616,7 @@ function setprops (s, h, p, hilev)
       endif
     endif
 
-  elseif (strcmpi (s.properties.tag, "legend")
-          || strcmpi (s.properties.tag, "colorbar"))
+  else
     set (h, s.properties);
   endif
 

@@ -168,3 +168,17 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
+%!test 
+%! unwind_protect
+%!   tag = "foo";
+%!   hf = figure ("visible", "off");
+%!   hax = axes ("tag", tag);
+%!   hpa = patch ();
+%!   set (hpa, "facecolor", [.5 .5 .5], "tag", tag)
+%!   hax2 = copyobj (hax, hf);
+%!   assert (get (hax2, "tag"), tag)
+%!   hpa2 = get (hax2, "children");
+%!   assert (get (hpa2, "facecolor"), [.5 .5 .5])
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect

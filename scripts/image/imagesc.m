@@ -100,8 +100,6 @@ function h = imagesc (varargin)
     endif
 
     if (do_new && ! ishold (hax))
-      ## Turn off axis equal which is set by image() call
-      axis ("normal");
       ## use given climits or guess them from the matrix
       if (numel (climits) == 2 && climits(1) <= climits(2))
         set (hax, "clim", climits);

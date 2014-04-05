@@ -146,10 +146,10 @@ function [X, Y] = fplot (varargin)
   ##        problems with the current solution.
 
   while (n < 2^18)    # Something is wrong if we need more than 250K points
-    yi = interp1 (x0, y0, x, "linear")
+    yi = interp1 (x0, y0, x, "linear");
     ## relative error calculation using average of [yi,y] as reference
     ## since neither estimate is known a priori to be better than the other.
-    err = 0.5 * max (abs ((yi - y) ./ (yi + y))(:))
+    err = 0.5 * max (abs ((yi - y) ./ (yi + y))(:));
     if (err < tol || abs (err - err0) < tol/2)
       ## Either relative tolerance has been met OR
       ## algorithm has stopped making any reasonable progress per iteration.

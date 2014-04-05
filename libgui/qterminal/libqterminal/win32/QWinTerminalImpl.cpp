@@ -267,9 +267,9 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 //////////////////////////////////////////////////////////////////////////////
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
-  : q (parent), m_command (cmd), m_hasBlinkingCursor (true),
-    m_cursorType (BlockCursor), m_beginSelection (0, 0),
-    m_endSelection (0, 0), m_settingSelection (false),
+  : q (parent), m_command (cmd), m_cursorBlinking (false),
+    m_hasBlinkingCursor (true), m_cursorType (BlockCursor), 
+    m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
     m_process (NULL), m_inWheelEvent (false)
 {
   log (NULL);

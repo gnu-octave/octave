@@ -367,7 +367,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
 
   shortcut_t shortcut = _sc.at (_handled_index);
   if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash.remove (shortcut.actual_sc);
+    _shortcut_hash.remove (widget + ":" + shortcut.actual_sc.toString ());
   shortcut.actual_sc = _edit_actual->text();
   _sc.replace (_handled_index, shortcut);
 

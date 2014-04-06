@@ -184,7 +184,7 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
     if (! isempty (img))
       if (isscalar (get (hax, "children")))
-        axis (hax, "image")
+        axis (hax, "tight");
       endif
 
       if (ndims (img) == 3)

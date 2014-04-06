@@ -135,6 +135,7 @@ shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
 
   QKeySequence actual = QKeySequence (settings->value ("shortcuts/"+key, def_sc).toString ());
 
+  // append the new shortcut to the list
   shortcut_t shortcut_info;
   shortcut_info.description = description;
   shortcut_info.settings_key = key;
@@ -142,8 +143,10 @@ shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
   shortcut_info.default_sc = def_sc;
   _sc << shortcut_info;
 
+  // insert shortcut prepended by widget in order check for duplicates later
+  QString widget = key.section ('_',0,0);  // get widget that uses the shortcut
   if (! actual.isEmpty ())
-    _shortcut_hash[actual] = _sc.count ();  // offset of 1 to avoid 0
+    _shortcut_hash[widget + ":" + actual.toString ()] = _sc.count ();  // offset of 1 to avoid 0
   _action_hash[key] = _sc.count ();  // offset of 1 to avoid 0
 }
 
@@ -333,7 +336,12 @@ shortcut_manager::shortcut_dialog_finished (int result)
   if (result == QDialog::Rejected)
     return;
 
-  int double_index = _shortcut_hash[_edit_actual->text()] - 1;
+  // check for duplicate
+
+  // get the widget for which this shortcut is defined
+  QString widget = _sc.at (_handled_index).settings_key.section ('_',0,0);
+  // and look
+  int double_index = _shortcut_hash[widget + ":" + _edit_actual->text()] - 1;
 
   if (double_index >= 0 && double_index != _handled_index)
     {
@@ -366,7 +374,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
   _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc);
 
   if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash[shortcut.actual_sc] = _handled_index + 1; // index+1 to avoid 0
+    _shortcut_hash[widget + ":" + shortcut.actual_sc.toString ()] = _handled_index + 1;
 }
 
 void
@@ -408,7 +416,7 @@ enter_shortcut::keyPressEvent (QKeyEvent *e)
     {
       int key = e->key ();
 
-      if (key == Qt::Key_unknown || key == 0 || key >= 16777248)
+      if (key == Qt::Key_unknown || key == 0)
         return;
 
       Qt::KeyboardModifiers modifiers = e->modifiers ();

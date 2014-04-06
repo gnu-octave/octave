@@ -837,6 +837,11 @@ public:
 
   octave_int (T i) : ival (i) { }
 
+  // Always treat characters as unsigned.
+  octave_int (char c)
+    : ival (octave_int_base<T>::truncate_int (static_cast<unsigned char> (c)))
+  { }
+
   octave_int (double d) : ival (octave_int_base<T>::convert_real (d)) { }
 
   octave_int (float d) : ival (octave_int_base<T>::convert_real (d)) { }

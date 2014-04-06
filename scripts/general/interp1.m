@@ -247,20 +247,21 @@ function yi = interp1 (x, y, varargin)
     case "linear"
 
       xx = x;
-      yy = y;
       nxx = nx;
+      yy = y;
+      dy = diff (yy);
       if (have_jumps)
         ## Omit zero-size intervals.
-        yy(jumps, :) = [];
         xx(jumps) = [];
         nxx = rows (xx);
+        yy(jumps, :) = [];
+        dy(jumps, :) = [];
       endif
 
-      dy = diff (yy);
       dx = diff (xx);
       dx = repmat (dx, [1 size(dy)(2:end)]);
 
-      coefs = [(dy./dx).'(:), yy(1:nxx-1, :).'(:)];
+      coefs = [(dy./dx).', yy(1:nxx-1, :).'];
 
       pp = mkpp (xx, coefs, szy(2:end));
       pp.orient = "first";
@@ -631,8 +632,8 @@ endfunction
 %!assert (interp1 (0:4, 2.5), 1.5)
 
 ## Left and Right discontinuities
-%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "right"), [-8,2,4,3,1.5])
-%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "left"), [-2,0.5,1,1.5,1.5])
+%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "right"), [-2,0.5,4,3,1.5])
+%!assert (interp1 ([1,2,2,3,4],[0,1,4,2,1],[-1,1.5,2,2.5,3.5], "linear", "extrap", "left"), [-2,0.5,1,3,1.5])
 
 %% Test input validation
 %!error interp1 ()

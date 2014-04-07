@@ -2044,7 +2044,7 @@ DEFUN (isobject, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isobject (@var{x})\n\
 Return true if @var{x} is a class object.\n\
-@seealso{class, typeinfo, isa, ismethod}\n\
+@seealso{class, typeinfo, isa, ismethod, isprop}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2059,8 +2059,8 @@ Return true if @var{x} is a class object.\n\
 
 DEFUN (ismethod, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ismethod (@var{x}, @var{method})\n\
-Return true if @var{x} is a class object and the string @var{method}\n\
+@deftypefn {Built-in Function} {} ismethod (@var{obj}, @var{method})\n\
+Return true if @var{obj} is a class object and the string @var{method}\n\
 is a method of this class.\n\
 @seealso{isprop, isobject}\n\
 @end deftypefn")

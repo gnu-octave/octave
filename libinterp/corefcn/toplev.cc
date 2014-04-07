@@ -652,6 +652,8 @@ main_loop (void)
     }
   while (retval == 0);
 
+  octave_stdout << "\n";
+
   if (retval == EOF)
     retval = 0;
 

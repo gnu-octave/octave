@@ -271,6 +271,8 @@ private:
 
   void execute_debug_callback ();
 
+  bool confirm_exit_octave ();
+
   workspace_model *_workspace_model;
 
   // Toolbars.

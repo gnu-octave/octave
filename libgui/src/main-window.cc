@@ -894,7 +894,8 @@ void
 main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
-  octave_link::post_event (this, &main_window::exit_callback);
+  if (confirm_exit_octave())
+    octave_link::post_event (this, &main_window::exit_callback);
 }
 
 void
@@ -2365,3 +2366,25 @@ main_window::clear_clipboard ()
 {
   _clipboard->clear (QClipboard::Clipboard);
 }
+
+bool
+main_window::confirm_exit_octave ()
+{
+  bool closenow = true;
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings->value ("prompt_to_exit", false ).toBool())
+    {
+      int ans = QMessageBox::question (this, tr ("Octave"),
+         tr ("Are you sure you want to exit Octave?"),
+          QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+
+      if (ans !=  QMessageBox::Ok)
+        closenow = false;
+
+    }
+  return closenow;
+}
+
+

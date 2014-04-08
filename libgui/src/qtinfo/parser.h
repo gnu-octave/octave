@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: Jacob Dawid <jacob.dawid@gmail.com>
+// Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #include <QStringList>
 #include <QIODevice>

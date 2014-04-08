@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: 2012 Jacob Dawid <jacob.dawid@gmail.com>
+// Author: 2012 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #include <QTextBrowser>
 #include "parser.h"

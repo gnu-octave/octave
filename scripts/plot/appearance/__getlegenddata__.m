@@ -29,7 +29,7 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
   if (numel (ca) == 1)
     kids = get (ca, "children");
   else
-    kids = [get(kids, "children"){:}];
+    kids = [get(ca, "children"){:}];
   endif
 
   for i = numel (kids):-1:1

@@ -140,7 +140,7 @@ function ZI = interp2 (varargin)
       print_usage ();
   endswitch
 
-  ## Type checking.
+  ## Type checking
   if (! ismatrix (Z))
     error ("interp2: Z must be a matrix");
   endif
@@ -149,6 +149,9 @@ function ZI = interp2 (varargin)
   endif
   if (! ischar (method))
     error ("interp2: METHOD must be a string");
+  elseif (method(1) == "*")
+    warning ("interp2: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
   endif
   if (isnumeric (extrap) && isscalar (extrap))
     ## Typical case
@@ -156,11 +159,6 @@ function ZI = interp2 (varargin)
     extrap = [];
   else
     error ('interp2: EXTRAP must be a numeric scalar or "extrap"');
-  endif
-
-  if (method(1) == "*")
-    warning ("interp2: ignoring unsupported '*' flag to METHOD");
-    method(1) = [];
   endif
 
   ## Define X, Y, XI, YI if needed
@@ -182,19 +180,32 @@ function ZI = interp2 (varargin)
     error ("interp2: XI, YI must be numeric");
   endif
 
-  if (any (strcmp (method, {"nearest", "linear", "pchip", "cubic"})))
+  if (isvector (X) && isvector (Y))
+    X = X(:);  Y = Y(:);
+  elseif (size_equal (X, Y))
+    X = X(1,:).';  Y = Y(:,1);
+  else
+    error ("interp2: X and Y must be matrices of equal size");
+  endif
+  if (columns (Z) != length (X) || rows (Z) != length (Y))
+    error ("interp2: X and Y size must match the dimensions of Z");
+  endif
+  dx = diff (X);
+  if (all (dx < 0))
+    X = flipud (X);
+    Z = fliplr (Z); 
+  elseif (any (dx <= 0))
+    error ("interp2: X must be strictly monotonic");
+  endif
+  dy = diff (Y);
+  if (all (dy < 0))
+    Y = flipud (Y);
+    Z = flipud (Z); 
+  elseif (any (dy <= 0))
+    error ("interp2: Y must be strictly monotonic");
+  endif
 
-    ## If X and Y vectors produce a grid from them
-    if (isvector (X) && isvector (Y))
-      X = X(:); Y = Y(:);
-    elseif (size_equal (X, Y))
-      X = X(1,:)'; Y = Y(:,1);
-    else
-      error ("interp2: X and Y must be matrices of equal size");
-    endif
-    if (columns (Z) != length (X) || rows (Z) != length (Y))
-      error ("interp2: X and Y size must match the dimensions of Z");
-    endif
+  if (any (strcmp (method, {"nearest", "linear", "pchip", "cubic"})))
 
     ## If Xi and Yi are vectors of different orientation build a grid
     if ((rows (XI) == 1 && columns (YI) == 1)
@@ -336,24 +347,9 @@ function ZI = interp2 (varargin)
 
   else
 
-    ## Check dimensions of X and Y
-    if (isvector (X) && isvector (Y))
-      X = X(:).';
-      Y = Y(:);
-      if (! isequal ([length(Y), length(X)], size (Z)))
-        error ("interp2: X and Y size must match the dimensions of Z");
-      endif
-    elseif (! size_equal (X, Y))
-      error ("interp2: X and Y must be matrices of equal size");
-    elseif (! size_equal (X, Z))
-      error ("interp2: X and Y size must match the dimensions of Z");
-    endif
-
     ## Check dimensions of XI and YI
     if (isvector (XI) && isvector (YI) && ! size_equal (XI, YI))
-      XI = XI(:).';
-      YI = YI(:);
-      [XI, YI] = meshgrid (XI, YI);
+      XI = XI(:).';  YI = YI(:);
     elseif (! size_equal (XI, YI))
       error ("interp2: XI and YI must be matrices of equal size");
     endif
@@ -420,7 +416,7 @@ function ZI = interp2 (varargin)
 
     if (strcmp (method, "spline"))
       if (isgriddata (XI) && isgriddata (YI'))
-        ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrap,
+        ZI = __splinen__ ({Y, X}, Z, {YI(:,1), XI(1,:)}, extrap,
                           "spline");
       else
         error ("interp2: XI, YI must have uniform spacing ('meshgrid' format)");
@@ -634,6 +630,10 @@ endfunction
 %! X = meshgrid (1:4);
 %! assert (interp2 (X, 2.5, 2.5, "nearest"), 3);
 
+## re-order monotonically decreasing (bug #41838).
+%!assert (interp2 ([1 2 3], [3 2 1], magic (3), 2.5, 3), 3.5);
+%!assert (interp2 ([3 2 1], [1 2 3], magic (3), 1.5, 1), 3.5);
+
 %!shared z, zout, tol
 %! z = [1 3 5; 3 5 7; 5 7 9];
 %! zout = [1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; 4 5 6 7 8; 5 6 7 8 9];
@@ -659,10 +659,10 @@ endfunction
 %!error <N must be an integer .= 0> interp2 (1, -1)
 %!error <N must be an integer .= 0> interp2 (1, 1.5)
 %!error <METHOD must be a string> interp2 (1, 1, 1, 1, 1, 2)
+%!warning <ignoring unsupported '\*' flag> interp2 (rand (3,3), 1, "*linear");
 %!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', {1})
 %!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', ones (2,2))
 %!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', "abc")
-%!warning <ignoring unsupported '\*' flag> interp2 (rand (3,3), 1, "*linear");
 %!error <X, Y must be numeric matrices> interp2 ({1}, 1, 1, 1, 1)
 %!error <X, Y must be numeric matrices> interp2 (1, {1}, 1, 1, 1)
 %!error <XI, YI must be numeric> interp2 (1, 1, 1, {1}, 1)
@@ -671,16 +671,12 @@ endfunction
 %!error <X and Y must be matrices of equal size> interp2 (ones(2,2), ones(2,3), 1, 1, 1)
 %!error <X and Y size must match the dimensions of Z> interp2 (1:3, 1:3, ones (3,2), 1, 1)
 %!error <X and Y size must match the dimensions of Z> interp2 (1:2, 1:2, ones (3,2), 1, 1)
+%!error <X must be strictly monotonic> interp2 ([1 0 2], 1:3, ones (3,3), 1, 1)
+%!error <Y must be strictly monotonic> interp2 (1:3, [1 0 2], ones (3,3), 1, 1)
 %!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, ones(2,2), 1)
 %!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, 1, ones(2,2))
 %!error <pchip requires at least 2 points> interp2 (1, 1, 1, 1, 1, "pchip")
 %!error <cubic requires at least 2 points> interp2 (1, 1, 1, 1, 1, "cubic")
-%!error <X and Y size must match the dimensions of Z> interp2 (1:3, 1:3, ones (3,2), 1, 1, "spline")
-%!error <X and Y size must match the dimensions of Z> interp2 (1:2, 1:2, ones (3,2), 1, 1, "spline")
-%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), 1, 1, 1, 1, "spline")
-%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), ones(2,3), 1, 1, 1, "spline")
-%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, ones(2,2), 1, "spline")
-%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, 1, ones(2,2), "spline")
 %!error <XI, YI must have uniform spacing> interp2 (1, 1, 1, [1 2 4], [1 2 3], "spline")
 %!error <XI, YI must have uniform spacing> interp2 (1, 1, 1, [1 2 3], [1 2 4], "spline")
 %!error <unrecognized interpolation method 'foobar'> interp2 (1, 1, 1, 1, 1, "foobar")

@@ -4851,6 +4851,7 @@ public:
       alphadata.add_constraint ("uint8");
       alphadata.add_constraint (dim_vector (-1, -1));
       vertexnormals.add_constraint (dim_vector (-1, -1, 3));
+      vertexnormals.add_constraint (dim_vector (0, 0));
     }
 
   private:

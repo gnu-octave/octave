@@ -195,10 +195,8 @@ function yi = interp1 (x, y, varargin)
     else
       rightcontinuous = true;
     endif
-  endif
-
-  if ((rightcontinuous && (x(end) < x(1)))
-      || (! rightcontinuous && (x(end) > x(1))))
+  elseif ((rightcontinuous && (x(end) < x(1)))
+          || (! rightcontinuous && (x(end) > x(1))))
     ## Switch between left-continuous and right-continuous
     x = flipud (x);
     y = flipud (y);
@@ -217,7 +215,8 @@ function yi = interp1 (x, y, varargin)
           warning ("interp1: multiple discontinuities at the same X value");
         endif
       else
-        error ("interp1: discontinuities not supported for method '%s'", method);
+        error ("interp1: discontinuities not supported for method '%s'",
+                                                                   method);
       endif
     endif
   endif
@@ -240,6 +239,7 @@ function yi = interp1 (x, y, varargin)
       pp = mkpp ([x(1), x(1)+[0.5:(nx-1)]*dx, x(nx)],
                  shiftdim (y, 1), szy(2:end));
       pp.orient = "first";
+
       if (ispp)
         yi = pp;
       else

@@ -91,6 +91,7 @@ COREFCN_INC = \
   corefcn/oct-stream.h \
   corefcn/oct-strstrm.h \
   corefcn/oct.h \
+  corefcn/octave-default-image.h \
   corefcn/octave-link.h \
   corefcn/pager.h \
   corefcn/pr-output.h \

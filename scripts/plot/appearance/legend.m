@@ -565,6 +565,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       linelength = 15;
 
       ## Create the axis first
+      oldfig = get (0, "currentfigure");
+      if (oldfig != fig)
+        set (0, "currentfigure", fig);
+      else
+        oldfig = [];
+      endif
       curaxes = get (fig, "currentaxes");
       unwind_protect
         ud = ancestor (hplots, "axes");
@@ -1046,6 +1052,9 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         endif
       unwind_protect_cleanup
         set (fig, "currentaxes", curaxes);
+        if (! isempty (oldfig))
+          set (0, "currentfigure", oldfig);
+        endif
       end_unwind_protect
     endif
   endif
@@ -1180,7 +1189,7 @@ function updateline (h, ~, hlegend, linelength, update_name)
   if (update_name)
     ## When string changes, have to rebuild legend completely
     [hplots, text_strings] = __getlegenddata__ (hlegend);
-    legend (hplots, text_strings);
+    legend (get (hplots(1), "parent"), hplots, text_strings);
   else
     kids = get (hlegend, "children");
     ll = lm = [];
@@ -1624,5 +1633,22 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (h);
 %!   graphics_toolkit (toolkit);
+%! end_unwind_protect
+
+%!test
+%! ## bug #42035
+%! h = figure ("visible", "off");
+%! unwind_protect
+%!   hax1 = subplot (1,2,1);
+%!   plot (1:10);
+%!   hax2 = subplot (1,2,2);
+%!   plot (1:10);
+%!   hleg1 = legend (hax1, "foo");
+%!   assert (get (hleg1, "userdata").handle, hax1)
+%!   assert (gca (), hax2);
+%!   hleg2 = legend ("bar");
+%!   assert (get (hleg2, "userdata").handle, gca ())
+%! unwind_protect_cleanup
+%!   close (h);
 %! end_unwind_protect
 

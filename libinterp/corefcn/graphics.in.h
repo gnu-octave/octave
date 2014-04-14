@@ -4504,8 +4504,8 @@ public:
       radio_property cdatamapping al , "scaled|{direct}"
       string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
-      row_vector_property xdata u , Matrix ()
-      row_vector_property ydata u , Matrix ()
+      row_vector_property xdata mu , Matrix ()
+      row_vector_property ydata mu , Matrix ()
       // hidden properties for limit computation
       row_vector_property alim hlr , Matrix ()
       row_vector_property clim hlr , Matrix ()
@@ -4515,6 +4515,8 @@ public:
       bool_property climinclude hlg , "on"
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
+      radio_property xdatamode ha , "{auto}|manual"
+      radio_property ydatamode ha , "{auto}|manual"
     END_PROPERTIES
 
   protected:
@@ -4551,10 +4553,25 @@ public:
         set_clim (cdata.get_limits ());
       else
         clim = cdata.get_limits ();
+
+      if (xdatamode.is ("auto"))
+        update_xdata ();
+      
+      if (ydatamode.is ("auto"))
+        update_ydata ();
     }
 
     void update_xdata (void)
     {
+      if (xdata.get ().is_empty ())
+        set_xdatamode ("auto");
+        
+      if (xdatamode.is ("auto"))
+        {
+          set_xdata (get_auto_xdata ());
+          set_xdatamode ("auto");
+        }
+      
       Matrix limits = xdata.get_limits ();
       float dp = pixel_xsize ();
 
@@ -4565,12 +4582,45 @@ public:
 
     void update_ydata (void)
     {
+      if (ydata.get ().is_empty ())
+        set_ydatamode ("auto");
+        
+      if (ydatamode.is ("auto"))
+        {
+          set_ydata (get_auto_ydata ()); 
+          set_ydatamode ("auto");
+        }
+      
       Matrix limits = ydata.get_limits ();
       float dp = pixel_ysize ();
 
       limits(0) = limits(0) - dp;
       limits(1) = limits(1) + dp;
       set_ylim (limits);
+    }
+
+    Matrix get_auto_xdata (void)
+    {
+      dim_vector dv = get_cdata ().dims ();
+      Matrix data;
+      if (dv(1) > 0.)
+        {
+          data = Matrix (1, 2, 1);
+          data(1) = dv(1);
+        }
+      return data;
+    }
+
+    Matrix get_auto_ydata (void)
+    {
+      dim_vector dv = get_cdata ().dims ();
+      Matrix data;
+      if (dv(0) > 0.)
+        {
+          data = Matrix (1, 2, 1);
+          data(1) = dv(0);
+        }
+      return data;
     }
 
     float pixel_size (octave_idx_type dim, const Matrix limits)

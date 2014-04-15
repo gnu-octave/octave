@@ -479,6 +479,11 @@ private:
 
   int flush (void);
 
+  int do_numeric_printf_conv (std::ostream& os, const printf_format_elt *elt,
+                              int nsa, int sa_1, int sa_2,
+                              const octave_value& val,
+                              const std::string& who);
+
   int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
                  const std::string& who /* = "printf" */);
 

@@ -252,7 +252,8 @@ function retval = datestr (date, f = [], p = [])
 
     df = regexprep (df, '[Ss][Ss]', "%S");
 
-    df = strrep (df, "FFF", sprintf ("%03d", 1000 * (v(i,6) - fix (v(i,6)))));
+    df = strrep (df, "FFF", sprintf ("%03d",
+                                     round (1000 * (v(i,6) - fix (v(i,6))))));
 
     df = strrep (df, 'QQ', sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
 

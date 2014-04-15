@@ -785,11 +785,14 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
 
   if (i < n)
     {
+      // Accept and record modifier, but don't place it in the format
+      // item text.  All integer conversions are handled as 64-bit
+      // integers.
+
       switch (s[i])
         {
         case 'h': case 'l': case 'L':
-          modifier = s[i];
-          *buf << s[i++];
+          modifier = s[i++];
           break;
 
         default:
@@ -2160,7 +2163,7 @@ public:
 
   printf_value_cache (const octave_value_list& args, const std::string& who)
     : values (args), val_idx (0), elt_idx (0),
-      n_vals (values.length ()), n_elts (0), data (0),
+      n_vals (values.length ()), n_elts (0), have_data (false),
       curr_state (ok)
   {
     for (octave_idx_type i = 0; i < values.length (); i++)
@@ -2178,7 +2181,7 @@ public:
   ~printf_value_cache (void) { }
 
   // Get the current value as a double and advance the internal pointer.
-  double double_value (void);
+  octave_value get_next_value (void);
 
   // Get the current value as an int and advance the internal pointer.
   int int_value (void);
@@ -2197,8 +2200,8 @@ private:
   int elt_idx;
   int n_vals;
   int n_elts;
-  const double *data;
-  NDArray curr_val;
+  bool have_data;
+  octave_value curr_val;
   state curr_state;
 
   // Must create value cache with values!
@@ -2212,29 +2215,27 @@ private:
   printf_value_cache& operator = (const printf_value_cache&);
 };
 
-double
-printf_value_cache::double_value (void)
+octave_value
+printf_value_cache::get_next_value (void)
 {
-  double retval = 0.0;
+  octave_value retval;
 
   if (exhausted ())
     curr_state = conversion_error;
 
   while (! exhausted ())
     {
-      if (! data)
+      if (! have_data)
         {
-          octave_value tmp_val = values (val_idx);
+          curr_val = values (val_idx);
 
           // Force string conversion here for compatibility.
-
-          curr_val = tmp_val.array_value (true);
 
           if (! error_state)
             {
               elt_idx = 0;
-              n_elts = curr_val.length ();
-              data = curr_val.data ();
+              n_elts = curr_val.numel ();
+              have_data = true;
             }
           else
             {
@@ -2245,13 +2246,13 @@ printf_value_cache::double_value (void)
 
       if (elt_idx < n_elts)
         {
-          retval = data[elt_idx++];
+          retval = curr_val.fast_elem_extract (elt_idx++);
 
           if (elt_idx >= n_elts)
             {
               elt_idx = 0;
               val_idx++;
-              data = 0;
+              have_data = false;
             }
 
           break;
@@ -2259,7 +2260,7 @@ printf_value_cache::double_value (void)
       else
         {
           val_idx++;
-          data = 0;
+          have_data = false;
 
           if (n_elts == 0 && exhausted ())
             curr_state = conversion_error;
@@ -2276,14 +2277,19 @@ printf_value_cache::int_value (void)
 {
   int retval = 0;
 
-  double dval = double_value ();
+  octave_value val = get_next_value ();
 
   if (! error_state)
     {
-      if (D_NINT (dval) == dval)
-        retval = NINT (dval);
-      else
-        curr_state = conversion_error;
+      double dval = val.double_value ();
+
+      if (! error_state)
+        {
+          if (D_NINT (dval) == dval)
+            retval = NINT (dval);
+          else
+            curr_state = conversion_error;
+        }
     }
 
   return retval;
@@ -2358,37 +2364,195 @@ do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
   return retval;
 }
 
-#define DO_DOUBLE_CONV_1(TYPE) \
-  do \
-    { \
-      if (val > std::numeric_limits<TYPE>::max () \
-          || val < std::numeric_limits<TYPE>::min ()) \
-        { \
-          std::string tfmt = fmt; \
- \
-          tfmt.replace (tfmt.rfind (elt->type), 1, ".g"); \
- \
-          if (elt->modifier == 'l') \
-            tfmt.replace (tfmt.rfind (elt->modifier), 1, ""); \
- \
-          retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, \
-                                    val, who); \
-        } \
-      else \
-        retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
-                                  static_cast<TYPE> (val), who); \
-    } \
-  while (0)
+static bool
+is_nan_or_inf (const octave_value& val)
+{
+  octave_value ov_isnan = val.isnan ();
+  octave_value ov_isinf = val.isinf ();
 
-#define DO_DOUBLE_CONV(TQUAL) \
-  do \
-    { \
-       if (elt->modifier == 'l') \
-         DO_DOUBLE_CONV_1 (TQUAL long); \
-       else \
-         DO_DOUBLE_CONV_1 (TQUAL int); \
-    } \
-  while (0)
+  return (ov_isnan.is_true () || ov_isinf.is_true ());
+}
+
+static bool
+ok_for_signed_int_conv (const octave_value& val)
+{
+  uint64_t limit = std::numeric_limits<int64_t>::max ();
+
+  if (val.is_integer_type ())
+    {
+      if (val.is_uint64_type ())
+        {
+          octave_uint64 ival = val.uint64_scalar_value ();
+
+          if (ival.value () <= limit)
+            return true;
+        }
+      else
+        return true;
+    }
+  else
+    {
+      double dval = val.double_value ();
+
+      if (dval == xround (dval) && dval <= limit)
+        return true;
+    }
+
+  return false;
+}
+
+static bool
+ok_for_unsigned_int_conv (const octave_value& val)
+{
+  if (val.is_integer_type ())
+    return true;
+  else
+    {
+      double dval = val.double_value ();
+
+      uint64_t limit = std::numeric_limits<uint64_t>::max ();
+
+      if (dval == xround (dval) && dval <= limit)
+        return true;
+    }
+
+  return false;
+}
+
+static std::string
+switch_to_g_format (const printf_format_elt *elt)
+{
+  std::string tfmt = elt->text;
+
+  tfmt.replace (tfmt.rfind (elt->type), 1, "g");
+
+  return tfmt;
+}
+
+int
+octave_base_stream::do_numeric_printf_conv (std::ostream& os,
+                                            const printf_format_elt *elt,
+                                            int nsa, int sa_1, int sa_2,
+                                            const octave_value& val,
+                                            const std::string& who)
+{
+  int retval = 0;
+
+  const char *fmt = elt->text;
+
+  if (is_nan_or_inf (val))
+    {
+      double dval = val.double_value ();
+
+      std::string tfmt = fmt;
+      std::string::size_type i1, i2;
+
+      tfmt.replace ((i1 = tfmt.rfind (elt->type)),
+                   1, 1, 's');
+
+      if ((i2 = tfmt.rfind ('.')) != std::string::npos
+          && i2 < i1)
+        {
+          tfmt.erase (i2, i1-i2);
+          if (elt->prec < 0)
+            nsa--;
+        }
+
+      const char *tval;
+      if (lo_ieee_isinf (dval))
+        {
+          if (elt->flags.find ('+') != std::string::npos)
+            tval = (dval < 0 ? "-Inf" : "+Inf");
+          else
+            tval = (dval < 0 ? "-Inf" : "Inf");
+        }
+      else
+        {
+          if (elt->flags.find ('+') != std::string::npos)
+            tval = (lo_ieee_is_NA (dval) ? "+NA" : "+NaN");
+          else
+            tval = (lo_ieee_is_NA (dval) ? "NA" : "NaN");
+        }
+
+      retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, tval, who);
+    }
+  else
+    {
+      static std::string llmod
+        = sizeof (long) == sizeof (int64_t) ? "l" : "ll";
+
+      char type = elt->type;
+
+      switch (type)
+        {
+        case 'd': case 'i': case 'c':
+          if (ok_for_signed_int_conv (val))
+            {
+              octave_int64 tval = val.int64_scalar_value ();
+
+              // Insert "long" modifier.
+              std::string tfmt = fmt;
+              tfmt.replace (tfmt.rfind (type), 1, llmod + type);
+
+              retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                        tval.value (), who);
+            }
+          else
+            {
+              std::string tfmt = switch_to_g_format (elt);
+
+              double dval = val.double_value ();
+
+              if (! error_state)
+                retval += do_printf_conv (os, tfmt.c_str (), nsa,
+                                          sa_1, sa_2, dval, who);
+            }
+          break;
+
+        case 'o': case 'x': case 'X': case 'u':
+          if (ok_for_unsigned_int_conv (val))
+            {
+              octave_uint64 tval = val.uint64_scalar_value ();
+
+              // Insert "long" modifier.
+              std::string tfmt = fmt;
+              tfmt.replace (tfmt.rfind (type), 1, llmod + type);
+
+              retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2,
+                                        tval.value (), who);
+            }
+          else
+            {
+              std::string tfmt = switch_to_g_format (elt);
+
+              double dval = val.double_value ();
+
+              if (! error_state)
+                retval += do_printf_conv (os, tfmt.c_str (), nsa,
+                                          sa_1, sa_2, dval, who);
+            }
+          break;
+
+        case 'f': case 'e': case 'E':
+        case 'g': case 'G':
+          {
+            double dval = val.double_value ();
+
+            if (! error_state)
+              retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, dval, who);
+          }
+          break;
+
+        default:
+          error ("%s: invalid format specifier",
+                 who.c_str ());
+          return -1;
+          break;
+        }
+    }
+
+  return retval;
+}
 
 int
 octave_base_stream::do_printf (printf_format_list& fmt_list,
@@ -2443,8 +2607,6 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                     }
                 }
 
-              const char *fmt = elt->text;
-
               if (elt->type == '%')
                 {
                   os << "%";
@@ -2460,81 +2622,18 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                   std::string val = val_cache.string_value ();
 
                   if (val_cache)
-                    retval += do_printf_conv (os, fmt, nsa, sa_1,
+                    retval += do_printf_conv (os, elt->text, nsa, sa_1,
                                               sa_2, val.c_str (), who);
                   else
                     break;
                 }
               else
                 {
-                  double val = val_cache.double_value ();
+                  octave_value val = val_cache.get_next_value ();
 
                   if (val_cache)
-                    {
-                      if (lo_ieee_isnan (val) || xisinf (val))
-                        {
-                          std::string tfmt = fmt;
-                          std::string::size_type i1, i2;
-
-                          tfmt.replace ((i1 = tfmt.rfind (elt->type)),
-                                        1, 1, 's');
-
-                          if ((i2 = tfmt.rfind ('.')) != std::string::npos
-                              && i2 < i1)
-                            {
-                              tfmt.erase (i2, i1-i2);
-                              if (elt->prec < 0)
-                                nsa--;
-                            }
-
-                          const char *tval;
-                          if (xisinf (val))
-                            {
-                              if (elt->flags.find ('+') != std::string::npos)
-                                tval = (val < 0 ? "-Inf" : "+Inf");
-                              else
-                                tval = (val < 0 ? "-Inf" : "Inf");
-                            }
-                          else
-                            {
-                              if (elt->flags.find ('+') != std::string::npos)
-                                tval = (lo_ieee_is_NA (val) ? "+NA" : "+NaN");
-                              else
-                                tval = (lo_ieee_is_NA (val) ? "NA" : "NaN");
-                            }
-
-                          retval += do_printf_conv (os, tfmt.c_str (),
-                                                    nsa, sa_1, sa_2,
-                                                    tval, who);
-                        }
-                      else
-                        {
-                          char type = elt->type;
-
-                          switch (type)
-                            {
-                            case 'd': case 'i': case 'c':
-                              DO_DOUBLE_CONV (OCTAVE_EMPTY_CPP_ARG);
-                              break;
-
-                            case 'o': case 'x': case 'X': case 'u':
-                              DO_DOUBLE_CONV (unsigned);
-                              break;
-
-                            case 'f': case 'e': case 'E':
-                            case 'g': case 'G':
-                              retval += do_printf_conv (os, fmt, nsa,
-                                                        sa_1, sa_2, val, who);
-                              break;
-
-                            default:
-                              error ("%s: invalid format specifier",
-                                     who.c_str ());
-                              return -1;
-                              break;
-                            }
-                        }
-                    }
+                    retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
+                                                      sa_2, val, who);
                   else
                     break;
                 }

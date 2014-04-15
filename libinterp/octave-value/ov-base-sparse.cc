@@ -436,6 +436,20 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
   return success;
 }
 
+
+template <class T>
+octave_value
+octave_base_sparse<T>::fast_elem_extract (octave_idx_type n) const
+{
+  octave_idx_type nr = matrix.rows ();
+  octave_idx_type nc = matrix.cols ();
+
+  octave_idx_type i = n % nr;
+  octave_idx_type j = n / nr;
+
+  return (i < nr && j < nc) ? octave_value (matrix(i,j)) : octave_value ();
+}
+
 template <class T>
 octave_value
 octave_base_sparse<T>::map (octave_base_value::unary_mapper_t umap) const

@@ -148,6 +148,8 @@ public:
 
   ST& scalar_ref (void) { return scalar; }
 
+  octave_value fast_elem_extract (octave_idx_type n) const;
+
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
 protected:

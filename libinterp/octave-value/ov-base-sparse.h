@@ -165,6 +165,8 @@ public:
 
   octave_idx_type *mex_get_jc (void) const { return matrix.mex_get_jc (); }
 
+  octave_value fast_elem_extract (octave_idx_type n) const;
+
 protected:
 
   octave_value map (octave_base_value::unary_mapper_t umap) const;

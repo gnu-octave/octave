@@ -448,3 +448,18 @@ octave_perm_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
+octave_value
+octave_perm_matrix::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < matrix.numel ())
+    {
+      octave_idx_type nr = matrix.rows ();
+
+      octave_idx_type r = n % nr;
+      octave_idx_type c = n / nr;
+
+      return octave_value (matrix.elem (r, c));
+    }
+  else
+    return octave_value ();
+}

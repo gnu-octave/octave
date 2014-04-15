@@ -207,6 +207,8 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
+  octave_value fast_elem_extract (octave_idx_type n) const;
+
 protected:
 
   DMT matrix;

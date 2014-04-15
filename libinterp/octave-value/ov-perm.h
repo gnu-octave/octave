@@ -218,6 +218,8 @@ public:
   octave_value map (unary_mapper_t umap) const
   { return to_dense ().map (umap); }
 
+  octave_value fast_elem_extract (octave_idx_type n) const;
+
 protected:
 
   PermMatrix matrix;

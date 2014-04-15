@@ -677,6 +677,13 @@ octave_range::as_mxArray (void) const
   return retval;
 }
 
+octave_value
+octave_range::fast_elem_extract (octave_idx_type n) const
+{
+  return (n < range.nelem ())
+    ? octave_value (range.elem (n)) : octave_value ();
+}
+
 DEFUN (allow_noninteger_range_as_index, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\

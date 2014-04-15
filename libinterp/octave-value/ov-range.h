@@ -290,6 +290,8 @@ public:
     return m.map (umap);
   }
 
+  octave_value fast_elem_extract (octave_idx_type n) const;
+
 private:
 
   Range range;

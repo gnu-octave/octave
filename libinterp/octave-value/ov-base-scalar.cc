@@ -180,6 +180,13 @@ octave_base_scalar<ST>::short_disp (std::ostream& os) const
 }
 
 template <class ST>
+octave_value
+octave_base_scalar<ST>::fast_elem_extract (octave_idx_type n) const
+{
+  return (n == 0) ? octave_value (scalar) : octave_value ();
+}
+
+template <class ST>
 bool
 octave_base_scalar<ST>::fast_elem_insert_self (void *where,
                                                builtin_type_t btyp) const

@@ -530,6 +530,23 @@ octave_base_diag<DMT, MT>::print_info (std::ostream& os,
 
 template <class DMT, class MT>
 octave_value
+octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < matrix.numel ())
+    {
+      octave_idx_type nr = matrix.rows ();
+
+      octave_idx_type r = n % nr;
+      octave_idx_type c = n / nr;
+
+      return octave_value (matrix.elem (r, c));
+    }
+  else
+    return octave_value ();
+}
+
+template <class DMT, class MT>
+octave_value
 octave_base_diag<DMT, MT>::to_dense (void) const
 {
   if (! dense_cache.is_defined ())

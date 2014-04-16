@@ -2620,6 +2620,17 @@ void TerminalView::dropEvent(QDropEvent* event)
   //  KUrl::List urls = KUrl::List::fromMimeData(event->mimeData());
 
   QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+  {
+    foreach (QUrl url, event->mimeData ()->urls ())
+    {
+      if(dropText.length () > 0) 
+        dropText += "\n";
+      dropText  += url.toLocalFile ();
+    }
+  }
+
   /*  if (!urls.isEmpty())
   {
     for ( int i = 0 ; i < urls.count() ; i++ )

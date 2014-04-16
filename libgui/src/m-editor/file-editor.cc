@@ -56,6 +56,8 @@ file_editor::file_editor (QWidget *p)
   construct ();
 
   setVisible (false);
+
+  setAcceptDrops(true);
 }
 
 file_editor::~file_editor (void)
@@ -1753,6 +1755,27 @@ file_editor::handle_visibility (bool visible)
 
     if (visible && ! isFloating ())
       focus ();
+  }
+
+void 
+file_editor::dragEnterEvent (QDragEnterEvent *event)
+  {
+    if (event->mimeData ()->hasUrls ())
+      {
+        event->acceptProposedAction();
+      }
+  }
+
+void
+file_editor::dropEvent (QDropEvent *event)
+  {
+    if (event->mimeData ()->hasUrls ())
+      {
+        foreach (QUrl url, event->mimeData ()->urls ())
+        {
+          request_open_file (url.toLocalFile ());
+        }
+      }
   }
 
 #endif

@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCloseEvent>
 #include <QTabWidget>
 
+#include <QDragEnterEvent>
+#include <QDropEvent>
+
 #include <map>
 
 #include "file-editor-interface.h"
@@ -205,6 +208,11 @@ private slots:
   void zoom_out (bool);
   void zoom_normal (bool);
 
+protected:
+
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
+  
 private:
 
   bool is_editor_console_tabbed ();

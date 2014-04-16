@@ -22,6 +22,7 @@ Summary of important user-visible changes for version 4.2:
     be removed from Octave 4.6 (or whatever version is the second major
     release after 4.2):
 
+      bicubic
       find_dir_in_path
       nfields
 

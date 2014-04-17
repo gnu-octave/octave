@@ -2405,14 +2405,21 @@ static bool
 ok_for_unsigned_int_conv (const octave_value& val)
 {
   if (val.is_integer_type ())
-    return true;
+    {
+      // Easier than dispatching here...
+
+      octave_value ov_is_ge_zero
+        = do_binary_op (octave_value::op_ge, val, octave_value (0.0));
+
+      return ov_is_ge_zero.is_true ();
+    }
   else
     {
       double dval = val.double_value ();
 
       uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
-      if (dval == xround (dval) && dval <= limit)
+      if (dval == xround (dval) && dval >= 0 && dval <= limit)
         return true;
     }
 

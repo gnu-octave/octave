@@ -9,6 +9,21 @@ Summary of important user-visible changes for version 4.2:
     has continuous 1st and 2nd derivatives while 'pchip' only has a continuous
     1st derivative.
 
+ ** Integer formats used in the printf family of functions now work for
+    64-bit integers and are more compatible with Matlab when printing
+    non-integer values.  Now instead of truncating, Octave will switch
+    the effective format to '%g' in the following circumstances:
+
+      * the value of an integer type (int8, uint32, etc.) value exceeds
+        the maximum for the format specifier.  For '%d', the limit is
+        intmax ('int64') and for '%u' it is intmax ('uint64').
+
+      * round(x) != x or the value is outside the range allowed by the
+        integer format specifier.
+
+    There is still one difference:  Matlab switches to '%e' and Octave
+    is currently switching to '%g'.
+
  ** Other new functions added in 4.2:
 
       dir_in_loadpath

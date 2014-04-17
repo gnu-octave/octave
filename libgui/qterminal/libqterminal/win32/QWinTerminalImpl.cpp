@@ -35,6 +35,9 @@ see <http://www.gnu.org/licenses/>.
 #include <QToolTip>
 #include <QCursor>
 #include <QMessageBox>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QUrl>
 
 #include <fcntl.h>
 #include <io.h>
@@ -1265,6 +1268,8 @@ QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
 
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent, SLOT (set_global_shortcuts (bool)));
+
+    setAcceptDrops (true);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1595,3 +1600,32 @@ QString QWinTerminalImpl::selectedText ()
   QString selection = d->getSelection ();
   return selection;
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::dragEnterEvent (QDragEnterEvent *event)
+{
+   if (event->mimeData ()->hasUrls ())
+     {
+       event->acceptProposedAction();
+     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::dropEvent (QDropEvent *event)
+{
+  QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+    {
+      foreach (QUrl url, event->mimeData ()->urls ())
+        {
+          if(dropText.length () > 0) 
+            dropText += "\n";
+          dropText  += url.toLocalFile ();
+        }
+      sendText (dropText);
+    }
+}
+

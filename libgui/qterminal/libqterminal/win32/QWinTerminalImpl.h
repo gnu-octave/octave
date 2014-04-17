@@ -32,6 +32,8 @@ class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
 class QPoint;
+class QDragEnterEvent;
+class QDropEvent;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -90,6 +92,9 @@ protected:
   void mouseReleaseEvent (QMouseEvent *event);
 
   bool eventFilter(QObject *obj, QEvent *ev);
+
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
 
 private slots:
   void scrollValueChanged (int value);

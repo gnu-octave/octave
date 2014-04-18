@@ -90,6 +90,8 @@ protected:
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
+  void mouseDoubleClickEvent (QMouseEvent* event);
+  void mouseTripleClickEvent (QMouseEvent* event);
 
   bool eventFilter(QObject *obj, QEvent *ev);
 
@@ -100,9 +102,11 @@ private slots:
   void scrollValueChanged (int value);
   void monitorConsole (void);
   void updateSelection (void);
+  void tripleClickTimeout (void);
 
 private:
   QConsolePrivate* d;
+  bool allowTripleClick;
 };
 
 //////////////////////////////////////////////////////////////////////////////

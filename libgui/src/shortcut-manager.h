@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QLineEdit>
 #include <QKeyEvent>
 #include <QLabel>
-
+#include <QSettings>
 
 class enter_shortcut : public QLineEdit
 {
@@ -132,6 +132,8 @@ private:
   enter_shortcut *_edit_actual;
   QLabel *_label_default;
   int _handled_index;
+
+  QSettings *_settings;
 
 };
 

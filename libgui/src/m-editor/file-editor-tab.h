@@ -92,6 +92,8 @@ public slots:
   void previous_breakpoint (const QWidget *ID);
   void remove_all_breakpoints (const QWidget *ID);
 
+  void scintilla_command (const QWidget *, unsigned int);
+
   void comment_selected_text (const QWidget *ID);
   void uncomment_selected_text (const QWidget *ID);
 

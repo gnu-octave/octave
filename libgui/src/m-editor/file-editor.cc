@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QTabBar>
 #include <QProcess>
 #include <QInputDialog>
+#include <Qsci/qscicommandset.h>
 
 #include "octave-link.h"
 #include "utils.h"
@@ -701,18 +702,85 @@ file_editor::request_remove_breakpoint (void)
   emit fetab_remove_all_breakpoints (_tab_widget->currentWidget ());
 }
 
+// slots for Edit->Commands actions
+void
+file_editor::request_delete_start_word (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::DeleteWordLeft);
+}
+void
+file_editor::request_delete_end_word (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::DeleteWordRight);
+}
+void
+file_editor::request_delete_start_line (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::DeleteLineLeft);
+}
+void
+file_editor::request_delete_end_line (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::DeleteLineRight);
+}
+void
+file_editor::request_delete_line (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::LineDelete);
+}
+void
+file_editor::request_copy_line (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::LineCopy);
+}
+void
+file_editor::request_cut_line (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::LineCut);
+}
+void
+file_editor::request_duplicate_selection (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::SelectionDuplicate);
+}
+void
+file_editor::request_transpose_line (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::LineTranspose);
+}
 void
 file_editor::request_comment_selected_text (void)
 {
   emit fetab_comment_selected_text (_tab_widget->currentWidget ());
 }
-
 void
 file_editor::request_uncomment_selected_text (void)
 {
   emit fetab_uncomment_selected_text (_tab_widget->currentWidget ());
 }
 
+// slots for Edit->Format actions
+void
+file_editor::request_upper_case (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::SelectionUpperCase);
+}
+void
+file_editor::request_lower_case (bool)
+{
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciCommand::SelectionLowerCase);
+}
 void
 file_editor::request_indent_selected_text (void)
 {
@@ -1153,7 +1221,6 @@ file_editor::construct (void)
 
   _menu_bar->addMenu (fileMenu);
 
-
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
   editMenu->addAction (_undo_action);
   editMenu->addAction (_redo_action);
@@ -1166,10 +1233,44 @@ file_editor::construct (void)
   editMenu->addSeparator ();
   editMenu->addAction (_find_action);
   editMenu->addSeparator ();
-  editMenu->addAction (_comment_selection_action);
-  editMenu->addAction (_uncomment_selection_action);
-  editMenu->addAction (_indent_selection_action);
-  editMenu->addAction (_unindent_selection_action);
+
+  _edit_cmd_menu = editMenu->addMenu (tr ("&Commands"));
+
+  _delete_line_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Delete Line"), this, SLOT (request_delete_line (bool)));
+  _copy_line_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Copy Line"), this, SLOT (request_copy_line (bool)));
+  _cut_line_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Cut Line"), this, SLOT (request_cut_line (bool)));
+
+  _edit_cmd_menu->addSeparator ();
+
+  _delete_start_word_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Delete to Start of Word"), this, SLOT (request_delete_start_word (bool)));
+  _delete_end_word_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Delete to End of Word"), this, SLOT (request_delete_end_word (bool)));
+  _delete_start_line_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Delete to Start of Line"), this, SLOT (request_delete_start_line (bool)));
+  _delete_end_line_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Delete to End of Line"), this, SLOT (request_delete_end_line (bool)));
+
+  _edit_cmd_menu->addSeparator ();
+
+  _duplicate_selection_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Duplicate Selection/Line"), this, SLOT (request_duplicate_selection (bool)));
+  _transpose_line_action = _edit_cmd_menu->addAction (
+    QIcon (), tr ("Transpose Line"), this, SLOT (request_transpose_line (bool)));
+
+  _edit_fmt_menu = editMenu->addMenu (tr ("&Format"));
+  _upper_case_action = _edit_fmt_menu->addAction (
+    QIcon (), tr ("&Uppercase Selection"), this, SLOT (request_upper_case (bool)));
+  _lower_case_action = _edit_fmt_menu->addAction (
+    QIcon (), tr ("&Lowercase Selection"), this, SLOT (request_lower_case (bool)));
+  _edit_fmt_menu->addAction (_comment_selection_action);
+  _edit_fmt_menu->addAction (_uncomment_selection_action);
+  _edit_fmt_menu->addAction (_indent_selection_action);
+  _edit_fmt_menu->addAction (_unindent_selection_action);
+
   editMenu->addSeparator ();
   editMenu->addAction (_completion_action);
   editMenu->addSeparator ();
@@ -1480,6 +1581,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_remove_all_breakpoints (const QWidget*)),
            f, SLOT (remove_all_breakpoints (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_scintilla_command (const QWidget *, unsigned int)),
+           f, SLOT (scintilla_command (const QWidget *, unsigned int)));
+
   connect (this, SIGNAL (fetab_comment_selected_text (const QWidget*)),
            f, SLOT (comment_selected_text (const QWidget*)));
 
@@ -1574,8 +1678,21 @@ file_editor::set_shortcuts (bool set)
       shortcut_manager::set_shortcut (_paste_action, "editor_edit:paste");
       shortcut_manager::set_shortcut (_selectall_action, "editor_edit:select_all");
       shortcut_manager::set_shortcut (_find_action, "editor_edit:find_replace");
+
+      shortcut_manager::set_shortcut (_delete_start_word_action, "editor_edit:delete_start_word");
+      shortcut_manager::set_shortcut (_delete_end_word_action, "editor_edit:delete_end_word");
+      shortcut_manager::set_shortcut (_delete_start_line_action, "editor_edit:delete_start_line");
+      shortcut_manager::set_shortcut (_delete_end_line_action, "editor_edit:delete_end_line");
+      shortcut_manager::set_shortcut (_delete_line_action, "editor_edit:delete_line");
+      shortcut_manager::set_shortcut (_copy_line_action, "editor_edit:copy_line");
+      shortcut_manager::set_shortcut (_cut_line_action, "editor_edit:cut_line");
+      shortcut_manager::set_shortcut (_duplicate_selection_action, "editor_edit:duplicate_selection");
+      shortcut_manager::set_shortcut (_transpose_line_action, "editor_edit:transpose_line");
       shortcut_manager::set_shortcut (_comment_selection_action, "editor_edit:comment_selection");
       shortcut_manager::set_shortcut (_uncomment_selection_action, "editor_edit:uncomment_selection");
+
+      shortcut_manager::set_shortcut (_upper_case_action, "editor_edit:upper_case");
+      shortcut_manager::set_shortcut (_lower_case_action, "editor_edit:lower_case");
       shortcut_manager::set_shortcut (_indent_selection_action, "editor_edit:indent_selection");
       shortcut_manager::set_shortcut (_unindent_selection_action, "editor_edit:unindent_selection");
       shortcut_manager::set_shortcut (_completion_action, "editor_edit:completion_list");
@@ -1624,10 +1741,24 @@ file_editor::set_shortcuts (bool set)
       _paste_action->setShortcut (no_key);
       _selectall_action->setShortcut (no_key);
       _find_action->setShortcut (no_key);
+
+      _delete_start_word_action->setShortcut (no_key);
+      _delete_end_word_action->setShortcut (no_key);
+      _delete_end_line_action->setShortcut (no_key);
+      _delete_start_line_action->setShortcut (no_key);
+      _delete_line_action->setShortcut (no_key);
+      _copy_line_action->setShortcut (no_key);
+      _cut_line_action->setShortcut (no_key);
+      _duplicate_selection_action->setShortcut (no_key);
+      _transpose_line_action->setShortcut (no_key);
       _comment_selection_action->setShortcut (no_key);
       _uncomment_selection_action->setShortcut (no_key);
+
+      _upper_case_action->setShortcut (no_key);
+      _lower_case_action->setShortcut (no_key);
       _indent_selection_action->setShortcut (no_key);
       _unindent_selection_action->setShortcut (no_key);
+
       _completion_action->setShortcut (no_key);
       _toggle_bookmark_action->setShortcut (no_key);
       _next_bookmark_action->setShortcut (no_key);
@@ -1656,6 +1787,9 @@ void
 file_editor::check_actions ()
 {
   bool  have_tabs = _tab_widget->count () > 0;
+
+  _edit_cmd_menu->setEnabled (have_tabs);
+  _edit_fmt_menu->setEnabled (have_tabs);
 
   _comment_selection_action->setEnabled (have_tabs);
   _uncomment_selection_action->setEnabled (have_tabs);
@@ -1692,6 +1826,7 @@ file_editor::check_actions ()
 
   _undo_action->setEnabled (have_tabs);
   _redo_action->setEnabled (have_tabs);
+  _selectall_action->setEnabled (have_tabs);
 }
 
 // empty_script determines whether we have to create an empty script

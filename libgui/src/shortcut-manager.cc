@@ -45,6 +45,8 @@ shortcut_manager *shortcut_manager::instance = 0;
 shortcut_manager::shortcut_manager ()
 {
   setObjectName ("Shortcut_Manager");
+
+  _settings = resource_manager::get_settings ();
 }
 
 shortcut_manager::~shortcut_manager ()
@@ -113,10 +115,24 @@ shortcut_manager::do_init_data ()
   init (tr ("Paste"), "editor_edit:paste",  QKeySequence::Paste );
   init (tr ("Select All"), "editor_edit:select_all",  QKeySequence::SelectAll );
   init (tr ("Find and Replace"), "editor_edit:find_replace",  QKeySequence::Find );
+
+  init (tr ("Delete to Start of Word"), "editor_edit:delete_start_word",  QKeySequence::DeleteStartOfWord );
+  init (tr ("Delete to End of Word"), "editor_edit:delete_end_word",  QKeySequence::DeleteEndOfWord );
+  init (tr ("Delete to Start of Line"), "editor_edit:delete_start_line",  QKeySequence (Qt::ControlModifier + Qt::SHIFT + Qt::Key_Backspace) );
+  init (tr ("Delete to End of Line"), "editor_edit:delete_end_line",  QKeySequence (Qt::ControlModifier + Qt::SHIFT + Qt::Key_Delete) );
+  init (tr ("Delete Line"), "editor_edit:delete_line",  QKeySequence (Qt::ControlModifier + Qt::SHIFT + Qt::Key_L) );
+  init (tr ("Copy Line"), "editor_edit:copy_line",  QKeySequence (Qt::ControlModifier + Qt::SHIFT + Qt::Key_C) );
+  init (tr ("Cut Line"), "editor_edit:cut_line",  QKeySequence (Qt::ControlModifier + Qt::SHIFT + Qt::Key_X) );
+  init (tr ("Duplicate Selection/Line"), "editor_edit:duplicate_selection",  QKeySequence (Qt::ControlModifier + Qt::Key_D) );
+  init (tr ("Transpose Line"), "editor_edit:transpose_line",  QKeySequence (Qt::ControlModifier + Qt::Key_T) );
+
   init (tr ("Comment Selection"), "editor_edit:comment_selection",  QKeySequence (Qt::ControlModifier + Qt::Key_R) );
   init (tr ("Uncomment Selection"), "editor_edit:uncomment_selection",  QKeySequence (Qt::SHIFT + Qt::ControlModifier + Qt::Key_R) );
+  init (tr ("Uppercase Selection"), "editor_edit:upper_case",  QKeySequence (Qt::ControlModifier + Qt::Key_U) );
+  init (tr ("Lowercase Selection"), "editor_edit:lower_case",  QKeySequence (Qt::ControlModifier + Qt::AltModifier + Qt::Key_U) );
   init (tr ("Indent Selection"), "editor_edit:indent_selection",  QKeySequence (Qt::ControlModifier + Qt::Key_Tab) );
   init (tr ("Unindent Selection"), "editor_edit:unindent_selection",  QKeySequence (Qt::SHIFT + Qt::ControlModifier + Qt::Key_Tab) );
+
   init (tr ("Completion List"), "editor_edit:completion_list",  QKeySequence (Qt::ControlModifier + Qt::Key_Space) );
   init (tr ("Toggle Bookmark"), "editor_edit:toggle_bookmark",  QKeySequence (Qt::Key_F7) );
   init (tr ("Next Bookmark"), "editor_edit:next_bookmark",  QKeySequence (Qt::Key_F2) );
@@ -125,15 +141,12 @@ shortcut_manager::do_init_data ()
   init (tr ("Goto Line"), "editor_edit:goto_line",  QKeySequence (Qt::ControlModifier+ Qt::Key_G) );
   init (tr ("Preferences"), "editor_edit:preferences",  QKeySequence () );
   init (tr ("Styles Preferences"), "editor_edit:styles_preferences",  QKeySequence () );
-
 }
 
 void
 shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
 {
-  QSettings *settings = resource_manager::get_settings ();
-
-  QKeySequence actual = QKeySequence (settings->value ("shortcuts/"+key, def_sc).toString ());
+  QKeySequence actual = QKeySequence (_settings->value ("shortcuts/"+key, def_sc).toString ());
 
   // append the new shortcut to the list
   shortcut_t shortcut_info;
@@ -209,31 +222,28 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 
   for (int i = 0; i < _sc.count (); i++)
     {
-      shortcut_t shortcut_info = _sc.at (i);
+      shortcut_t sc = _sc.at (i);
 
-      QTreeWidgetItem* section = _level_hash[shortcut_info.settings_key.section(':',0,0)];
+      QTreeWidgetItem* section = _level_hash[sc.settings_key.section(':',0,0)];
       QTreeWidgetItem* tree_item = new QTreeWidgetItem (section);
 
-      tree_item->setText (0, shortcut_info.description);
-      tree_item->setText (1, shortcut_info.default_sc);
-      tree_item->setText (2, shortcut_info.actual_sc);
+      tree_item->setText (0, sc.description);
+      tree_item->setText (1, sc.default_sc);
+      tree_item->setText (2, sc.actual_sc);
 
       _item_index_hash[tree_item] = i + 1; // index+1 to avoid 0
       _index_item_hash[i] = tree_item;
     }
+
 }
 
 void
 shortcut_manager::do_write_shortcuts ()
 {
-  QSettings *settings = resource_manager::get_settings ();
-
-  settings->beginGroup ("shortcuts");
   for (int i = 0; i < _sc.count (); i++)
-    settings->setValue(_sc.at (i).settings_key, _sc.at (i).actual_sc.toString ());
-  settings->endGroup ();
+    _settings->setValue("shortcuts/"+_sc.at (i).settings_key, _sc.at (i).actual_sc.toString ());
 
-  settings->sync ();
+  _settings->sync ();
 
   delete _dialog;
 }
@@ -241,12 +251,11 @@ shortcut_manager::do_write_shortcuts ()
 void
 shortcut_manager::do_set_shortcut (QAction* action, const QString& key)
 {
-  QSettings *settings = resource_manager::get_settings ();
-
   int index = _action_hash[key] - 1;
+
   if (index > -1 && index < _sc.count ())
-    action->setShortcut (
-      settings->value ("shortcuts/" + key, _sc.at (index).default_sc).toString ());
+    action->setShortcut ( QKeySequence (
+      _settings->value ("shortcuts/" + key, _sc.at (index).default_sc).toString ()));
   else
     qDebug () << "Key: " << key << " not found in _action_hash";
 }
@@ -359,7 +368,7 @@ shortcut_manager::shortcut_dialog_finished (int result)
           shortcut_t double_shortcut = _sc.at (double_index);
           double_shortcut.actual_sc = QKeySequence ();
           _sc.replace (double_index, double_shortcut);
-          _index_item_hash[double_index]->setText (1, QKeySequence ());
+          _index_item_hash[double_index]->setText (2, QKeySequence ());
         }
       else
         return;

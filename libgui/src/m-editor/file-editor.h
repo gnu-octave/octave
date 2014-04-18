@@ -107,6 +107,7 @@ signals:
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
                                    int line = -1);
   void fetab_set_focus (const QWidget* ID);
+  void fetab_scintilla_command (const QWidget* ID, unsigned int sci_msg);
 
   void fetab_zoom_in (const QWidget* ID);
   void fetab_zoom_out (const QWidget* ID);
@@ -152,9 +153,21 @@ public slots:
   void request_previous_breakpoint (void);
   void request_remove_breakpoint (void);
 
+  void request_delete_start_word (bool);
+  void request_delete_end_word (bool);
+  void request_delete_start_line (bool);
+  void request_delete_end_line (bool);
+  void request_delete_line (bool);
+  void request_copy_line (bool);
+  void request_cut_line (bool);
+  void request_duplicate_selection (bool);
+  void request_transpose_line (bool);
+
   void request_comment_selected_text (void);
   void request_uncomment_selected_text (void);
 
+  void request_upper_case (bool);
+  void request_lower_case (bool);
   void request_indent_selected_text (void);
   void request_unindent_selected_text (void);
 
@@ -232,9 +245,10 @@ private:
   QToolBar *_tool_bar;
   QMenu *_debug_menu;
 
+  QAction *_upper_case_action;
+  QAction *_lower_case_action;
   QAction *_comment_selection_action;
   QAction *_uncomment_selection_action;
-
   QAction *_indent_selection_action;
   QAction *_unindent_selection_action;
 
@@ -248,6 +262,16 @@ private:
   QAction *_zoom_in_action;
   QAction *_zoom_out_action;
   QAction *_zoom_normal_action;
+
+  QAction *_delete_start_word_action;
+  QAction *_delete_end_word_action;
+  QAction *_delete_start_line_action;
+  QAction *_delete_end_line_action;
+  QAction *_delete_line_action;
+  QAction *_copy_line_action;
+  QAction *_cut_line_action;
+  QAction *_duplicate_selection_action;
+  QAction *_transpose_line_action;
 
   QAction *_find_action;
   QAction *_goto_line_action;
@@ -274,6 +298,9 @@ private:
 
   QAction *_preferences_action;
   QAction *_styles_preferences_action;
+
+  QMenu *_edit_cmd_menu;
+  QMenu *_edit_fmt_menu;
 
   QTabWidget *_tab_widget;
 

@@ -141,8 +141,8 @@ function ZI = interp2 (varargin)
   endswitch
 
   ## Type checking
-  if (! ismatrix (Z))
-    error ("interp2: Z must be a matrix");
+  if (! (ismatrix (Z) && ndims (Z) == 2))
+    error ("interp2: Z must be a 2-D matrix");
   endif
   if (! isempty (n) && ! (isscalar (n) && n >= 0 && n == fix (n)))
     error ("interp2: N must be an integer >= 0");
@@ -654,7 +654,8 @@ endfunction
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
 
 %% Test input validation
-%!error <Z must be a matrix> interp2 ({1})
+%!error <Z must be a 2-D matrix> interp2 ({1})
+%!error <Z must be a 2-D matrix> interp2 (ones (2,2,2))
 %!error <N must be an integer .= 0> interp2 (1, ones (2))
 %!error <N must be an integer .= 0> interp2 (1, -1)
 %!error <N must be an integer .= 0> interp2 (1, 1.5)

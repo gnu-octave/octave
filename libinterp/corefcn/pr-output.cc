@@ -3612,20 +3612,25 @@ set_output_prec_and_fw (int prec, int fw)
   Voutput_max_field_width = fw;
 }
 
+static std::string format_string ("short");
+
 static void
 set_format_style (int argc, const string_vector& argv)
 {
   int idx = 1;
+  std::string format;
 
   if (--argc > 0)
     {
       std::string arg = argv[idx++];
+      format = arg;
 
       if (arg == "short")
         {
           if (--argc > 0)
             {
               arg = argv[idx++];
+              format.append (arg);
 
               if (arg == "e")
                 {
@@ -3703,6 +3708,7 @@ set_format_style (int argc, const string_vector& argv)
           if (--argc > 0)
             {
               arg = argv[idx++];
+              format.append (arg);
 
               if (arg == "e")
                 {
@@ -3800,6 +3806,7 @@ set_format_style (int argc, const string_vector& argv)
           if (--argc > 0)
             {
               arg = argv[idx++];
+              format.append (arg);
 
               if (arg.length () == 3)
                 plus_format_chars = arg;
@@ -3838,20 +3845,29 @@ set_format_style (int argc, const string_vector& argv)
       else if (arg == "compact")
         {
           Vcompact_format = true;
+          return;
         }
       else if (arg == "loose")
         {
           Vcompact_format = false;
+          return;
         }
       else
-        error ("format: unrecognized format state '%s'", arg.c_str ());
+        {
+          error ("format: unrecognized format state '%s'", arg.c_str ());
+          return;
+        }  
     }
   else
     {
       init_format_state ();
       set_output_prec_and_fw (5, 10);
+      format = std::string ("short");
     }
+
+  format_string = format;
 }
+
 
 DEFUN (format, args, ,
        "-*- texinfo -*-\n\
@@ -4035,6 +4051,25 @@ to produce a more readable output with less data per page.  (default).\n\
   set_format_style (argc, argv);
 
   return retval;
+}
+
+DEFUN (__compactformat__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} __compactformat__ ()\n\
+@deftypefnx {Built-in Function} {} __compactformat__ (@var{TRUE|FALSE})\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (compact_format);
+}
+
+DEFUN (__formatstring__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} __formatstring__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (format_string);
 }
 
 DEFUN (fixed_point_format, args, nargout,

@@ -53,8 +53,8 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
       GLint gl2ps_term;
       if (term.find ("eps") != std::string::npos) gl2ps_term = GL2PS_EPS;
       else if (term.find ("pdf") != std::string::npos) gl2ps_term = GL2PS_PDF;
-      else if (term.find ("svg") != std::string::npos) gl2ps_term = GL2PS_SVG;
       else if (term.find ("ps") != std::string::npos) gl2ps_term = GL2PS_PS;
+      else if (term.find ("svg") != std::string::npos) gl2ps_term = GL2PS_SVG;
       else if (term.find ("pgf") != std::string::npos) gl2ps_term = GL2PS_PGF;
       else if (term.find ("tex") != std::string::npos) gl2ps_term = GL2PS_TEX;
       else
@@ -68,7 +68,9 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 
       // Default sort order optimizes for 3D plots
       GLint gl2ps_sort = GL2PS_BSP_SORT;
-      if (term.find ("is2D") != std::string::npos) gl2ps_sort = GL2PS_NO_SORT;
+      // For 2D plots we can use a simpler Z-depth sorting algorithm
+      if (term.find ("is2D") != std::string::npos)
+        gl2ps_sort = GL2PS_SIMPLE_SORT;
 
       while (state == GL2PS_OVERFLOW)
         {

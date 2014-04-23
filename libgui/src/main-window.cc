@@ -1219,9 +1219,6 @@ main_window::construct (void)
   connect (file_browser_window, SIGNAL (find_files_signal (const QString&)),
            this, SLOT (find_files (const QString&)));
 
-  connect (this, SIGNAL (set_widget_shortcuts_signal (bool)),
-           editor_window, SLOT (set_shortcuts (bool)));
-
   connect_uiwidget_links ();
 
   setWindowTitle ("Octave");
@@ -1440,6 +1437,9 @@ main_window::construct_file_menu (QMenuBar *p)
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
+  editor_window->insert_new_open_actions (_new_script_action,
+                                          _new_function_action,
+                                          _open_action);
 
 #ifdef HAVE_QSCINTILLA
   file_menu->addMenu (editor_window->get_mru_menu ());
@@ -2333,7 +2333,6 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
     }
 
-  emit set_widget_shortcuts_signal (set_shortcuts);
 }
 
 void

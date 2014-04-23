@@ -570,37 +570,37 @@ file_editor::handle_edit_file_request (const QString& file)
 }
 
 void
-file_editor::request_undo (void)
+file_editor::request_undo (bool)
 {
   emit fetab_undo (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_redo (void)
+file_editor::request_redo (bool)
 {
   emit fetab_redo (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_copy (void)
+file_editor::request_copy (bool)
 {
   emit fetab_copy (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_cut (void)
+file_editor::request_cut (bool)
 {
   emit fetab_cut (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_paste (void)
+file_editor::request_paste (bool)
 {
   emit fetab_paste (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_selectall (void)
+file_editor::request_selectall (bool)
 {
   emit fetab_selectall (_tab_widget->currentWidget ());
 }
@@ -624,26 +624,26 @@ file_editor::request_context_edit (bool)
 }
 
 void
-file_editor::request_save_file (void)
+file_editor::request_save_file (bool)
 {
   emit fetab_save_file (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_save_file_as (void)
+file_editor::request_save_file_as (bool)
 {
   emit fetab_save_file_as (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_print_file (void)
+file_editor::request_print_file (bool)
 {
   emit fetab_print_file (_tab_widget->currentWidget ());
 }
 
 
 void
-file_editor::request_run_file (void)
+file_editor::request_run_file (bool)
 {
   emit fetab_run_file (_tab_widget->currentWidget ());
 }
@@ -655,49 +655,49 @@ file_editor::request_context_run (bool)
 }
 
 void
-file_editor::request_toggle_bookmark (void)
+file_editor::request_toggle_bookmark (bool)
 {
   emit fetab_toggle_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_next_bookmark (void)
+file_editor::request_next_bookmark (bool)
 {
   emit fetab_next_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_previous_bookmark (void)
+file_editor::request_previous_bookmark (bool)
 {
   emit fetab_previous_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_remove_bookmark (void)
+file_editor::request_remove_bookmark (bool)
 {
   emit fetab_remove_bookmark (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_toggle_breakpoint (void)
+file_editor::request_toggle_breakpoint (bool)
 {
   emit fetab_toggle_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_next_breakpoint (void)
+file_editor::request_next_breakpoint (bool)
 {
   emit fetab_next_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_previous_breakpoint (void)
+file_editor::request_previous_breakpoint (bool)
 {
   emit fetab_previous_breakpoint (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_remove_breakpoint (void)
+file_editor::request_remove_breakpoint (bool)
 {
   emit fetab_remove_all_breakpoints (_tab_widget->currentWidget ());
 }
@@ -758,12 +758,12 @@ file_editor::request_transpose_line (bool)
                                 QsciCommand::LineTranspose);
 }
 void
-file_editor::request_comment_selected_text (void)
+file_editor::request_comment_selected_text (bool)
 {
   emit fetab_comment_selected_text (_tab_widget->currentWidget ());
 }
 void
-file_editor::request_uncomment_selected_text (void)
+file_editor::request_uncomment_selected_text (bool)
 {
   emit fetab_uncomment_selected_text (_tab_widget->currentWidget ());
 }
@@ -782,33 +782,33 @@ file_editor::request_lower_case (bool)
                                 QsciCommand::SelectionLowerCase);
 }
 void
-file_editor::request_indent_selected_text (void)
+file_editor::request_indent_selected_text (bool)
 {
   emit fetab_indent_selected_text (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_unindent_selected_text (void)
+file_editor::request_unindent_selected_text (bool)
 {
   emit fetab_unindent_selected_text (_tab_widget->currentWidget ());
 }
 
 
 void
-file_editor::request_find (void)
+file_editor::request_find (bool)
 {
   emit fetab_find (_tab_widget->currentWidget ());
 }
 
 void
-file_editor::request_goto_line (void)
+file_editor::request_goto_line (bool)
 {
   emit fetab_goto_line (_tab_widget->currentWidget ());
 }
 
 
 void
-file_editor::request_completion (void)
+file_editor::request_completion (bool)
 {
   emit fetab_completion (_tab_widget->currentWidget ());
 }
@@ -969,7 +969,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
     {
       _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
-      _context_run_action->setEnabled (copy_available);
+      _run_selection_action->setEnabled (copy_available);
 
       if (!file_name.isEmpty ())
         {
@@ -1014,6 +1014,8 @@ file_editor::notice_settings (const QSettings *settings)
   _tab_widget->setUsesScrollButtons (true);
   _tab_widget->setStyleSheet (style_sheet);
 
+  set_shortcuts ();
+
   // Relay signal to file editor tabs.
   emit fetab_settings_changed (settings);
 }
@@ -1028,6 +1030,28 @@ void
 file_editor::request_styles_preferences (bool)
 {
   emit request_settings_dialog ("editor_styles");
+}
+
+void
+file_editor::insert_new_open_actions (QAction *new_action,
+                                      QAction *new_fcn_action,
+                                      QAction *open_action)
+{
+  _fileMenu->insertAction (_mru_file_menu->menuAction (), open_action);
+  _fileMenu->insertAction (open_action, new_fcn_action);
+  _fileMenu->insertAction (new_fcn_action, new_action);
+  _tool_bar->insertAction (_save_action, open_action);
+  _tool_bar->insertAction (open_action, new_action);
+}
+
+QAction*
+file_editor::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                         const char *member)
+{
+  QAction *a = menu->addAction (icon, text, this, member);
+  addAction (a);  // important for shortcut context
+  a->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+  return a;
 }
 
 void
@@ -1049,84 +1073,6 @@ file_editor::construct (void)
   _tab_widget->setMovable (true);
 #endif
 
-  QAction *new_action = new QAction (QIcon (":/actions/icons/filenew.png"),
-                                     tr ("&New Script"), _tool_bar);
-
-  QAction *open_action = new QAction (QIcon (":/actions/icons/folder_documents.png"),
-                                      tr ("&Open File..."), _tool_bar);
-
-  _save_action = new QAction (QIcon (":/actions/icons/filesave.png"),
-                              tr ("&Save File"), _tool_bar);
-
-  _save_as_action = new QAction (QIcon (":/actions/icons/filesaveas.png"),
-                                 tr ("Save File &As..."), _tool_bar);
-
-  _print_action = new QAction ( QIcon (":/actions/icons/fileprint.png"),
-                                tr ("Print..."), _tool_bar);
-
-  _undo_action = new QAction (QIcon (":/actions/icons/undo.png"),
-                              tr ("&Undo"), _tool_bar);
-
-  _redo_action = new QAction (QIcon (":/actions/icons/redo.png"),
-                              tr ("&Redo"), _tool_bar);
-
-  _copy_action = new QAction (QIcon (":/actions/icons/editcopy.png"),
-                              tr ("&Copy"), _tool_bar);
-  _copy_action->setEnabled (false);
-
-  _cut_action = new QAction (QIcon (":/actions/icons/editcut.png"),
-                             tr ("Cu&t"), _tool_bar);
-  _cut_action->setEnabled (false);
-
-  _paste_action
-    = new QAction (QIcon (":/actions/icons/editpaste.png"),
-                   tr ("Paste"), _tool_bar);
-
-  _next_bookmark_action = new QAction (tr ("&Next Bookmark"), _tool_bar);
-
-  _previous_bookmark_action = new QAction (tr ("Pre&vious Bookmark"),
-                                           _tool_bar);
-
-  _toggle_bookmark_action = new QAction (tr ("Toggle &Bookmark"), _tool_bar);
-
-  _remove_bookmark_action
-    = new QAction (tr ("&Remove All Bookmarks"), _tool_bar);
-
-  QAction *next_breakpoint_action
-    = new QAction (QIcon (":/actions/icons/bp_next.png"),
-                   tr ("&Next Breakpoint"), _tool_bar);
-  QAction *previous_breakpoint_action
-    = new QAction (QIcon (":/actions/icons/bp_prev.png"),
-                   tr ("Pre&vious Breakpoint"), _tool_bar);
-  QAction *toggle_breakpoint_action
-    = new QAction (QIcon (":/actions/icons/bp_toggle.png"),
-                   tr ("Toggle &Breakpoint"), _tool_bar);
-  QAction *remove_all_breakpoints_action
-    = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
-                   tr ("&Remove All Breakpoints"), _tool_bar);
-
-  _selectall_action
-    = new QAction (tr ("Select All"), _tool_bar);
-
-  _comment_selection_action
-    = new QAction (tr ("&Comment"), _tool_bar);
-  _uncomment_selection_action
-    = new QAction (tr ("&Uncomment"), _tool_bar);
-
-  _indent_selection_action
-    = new QAction (tr ("&Indent"), _tool_bar);
-  _unindent_selection_action
-    = new QAction (tr ("&Unindent"), _tool_bar);
-
-  _find_action = new QAction (QIcon (":/actions/icons/find.png"),
-                              tr ("&Find and Replace..."), _tool_bar);
-
-  _run_action = new QAction (QIcon (":/actions/icons/artsbuilderexecute.png"),
-                             tr ("Save File and Run"), _tool_bar);
-
-  _goto_line_action = new QAction (tr ("Go &to Line..."), _tool_bar);
-
-  _completion_action = new QAction (tr ("&Show Completion List"), _tool_bar);
 
   // the mru-list and an empty array of actions
   QSettings *settings = resource_manager::get_settings ();
@@ -1137,30 +1083,217 @@ file_editor::construct (void)
       _mru_file_actions[i]->setVisible (false);
     }
 
-  // some actions are disabled from the beginning
+  // menu bar
+
+  // file menu
+
+  _fileMenu = new QMenu (tr ("&File"), _menu_bar);
+
+  // new and open menus are inserted later by the main window
+  _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), _fileMenu);
+  for (int i = 0; i < MaxMRUFiles; ++i)
+    _mru_file_menu->addAction (_mru_file_actions[i]);
+  _fileMenu->addMenu (_mru_file_menu);
+
+  _fileMenu->addSeparator ();
+
+  _edit_function_action = add_action (_fileMenu, QIcon (),
+          tr ("&Edit Function"), SLOT (request_context_edit (bool)));
+
+  _fileMenu->addSeparator ();
+
+  _save_action = add_action (_fileMenu, QIcon (":/actions/icons/filesave.png"),
+          tr ("&Save File"), SLOT (request_save_file (bool)));
+  _save_as_action = add_action (_fileMenu, QIcon (":/actions/icons/filesaveas.png"),
+          tr ("Save File &As..."), SLOT (request_save_file_as (bool)));
+
+  _fileMenu->addSeparator ();
+
+  _close_action = add_action (_fileMenu,
+          QIcon::fromTheme("window-close",QIcon (":/actions/icons/fileclose.png")),
+          tr ("&Close"), SLOT (request_close_file (bool)));
+  _close_all_action = add_action (_fileMenu,
+          QIcon::fromTheme("window-close", QIcon (":/actions/icons/fileclose.png")),
+          tr ("Close All"), SLOT (request_close_all_files (bool)));
+  _close_others_action = add_action (_fileMenu,
+          QIcon::fromTheme("window-close", QIcon (":/actions/icons/fileclose.png")),
+          tr ("Close Other Files"), SLOT (request_close_other_files (bool)));
+
+  _fileMenu->addSeparator ();
+
+  _print_action = add_action (_fileMenu, QIcon (":/actions/icons/fileprint.png"),
+          tr ("Print..."), SLOT (request_print_file (bool)));
+
+  _menu_bar->addMenu (_fileMenu);
+
+  // edit menu
+
+  QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
+
+  _undo_action = add_action (editMenu, QIcon (":/actions/icons/undo.png"),
+          tr ("&Undo"), SLOT (request_undo (bool)));
+  _redo_action = add_action (editMenu, QIcon (":/actions/icons/redo.png"),
+          tr ("&Redo"), SLOT (request_redo (bool)));
+
+  editMenu->addSeparator ();
+
+  _copy_action = add_action (editMenu, QIcon (":/actions/icons/editcopy.png"),
+          tr ("&Copy"), SLOT (request_copy (bool)));
   _copy_action->setEnabled (false);
+  _cut_action = add_action (editMenu, QIcon (":/actions/icons/editcut.png"),
+          tr ("Cu&t"), SLOT (request_cut (bool)));
   _cut_action->setEnabled (false);
+  _paste_action = add_action (editMenu, QIcon (":/actions/icons/editpaste.png"),
+          tr ("Paste"), SLOT (request_paste (bool)));
 
-  _run_action->setShortcutContext (Qt::WindowShortcut);
-  _save_action->setShortcutContext (Qt::WindowShortcut);
-  _save_as_action->setShortcutContext (Qt::WindowShortcut);
+  editMenu->addSeparator ();
 
-  _print_action->setShortcutContext (Qt::WindowShortcut);
+  _selectall_action = add_action (editMenu, QIcon (), tr ("Select All"),
+          SLOT (request_selectall (bool)));
 
-  _next_bookmark_action->setShortcutContext (Qt::WindowShortcut);
-  _previous_bookmark_action->setShortcutContext (Qt::WindowShortcut);
-  _toggle_bookmark_action->setShortcutContext (Qt::WindowShortcut);
-  _comment_selection_action->setShortcutContext (Qt::WindowShortcut);
-  _uncomment_selection_action->setShortcutContext (Qt::WindowShortcut);
-  _indent_selection_action->setShortcutContext (Qt::WindowShortcut);
-  _unindent_selection_action->setShortcutContext (Qt::WindowShortcut);
-  _find_action->setShortcutContext (Qt::WindowShortcut);
-  _goto_line_action->setShortcutContext (Qt::WindowShortcut);
-  _completion_action->setShortcutContext (Qt::WindowShortcut);
+  editMenu->addSeparator ();
+
+  _find_action = add_action (editMenu, QIcon (":/actions/icons/find.png"),
+          tr ("&Find and Replace..."), SLOT (request_find (bool)));
+
+  editMenu->addSeparator ();
+
+  _edit_cmd_menu = editMenu->addMenu (tr ("&Commands"));
+
+  _delete_line_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Delete Line"), SLOT (request_delete_line (bool)));
+  _copy_line_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Copy Line"), SLOT (request_copy_line (bool)));
+  _cut_line_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Cut Line"), SLOT (request_cut_line (bool)));
+
+  _edit_cmd_menu->addSeparator ();
+
+  _delete_start_word_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Delete to Start of Word"), SLOT (request_delete_start_word (bool)));
+  _delete_end_word_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Delete to End of Word"), SLOT (request_delete_end_word (bool)));
+  _delete_start_line_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Delete to Start of Line"), SLOT (request_delete_start_line (bool)));
+  _delete_end_line_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Delete to End of Line"), SLOT (request_delete_end_line (bool)));
+
+  _edit_cmd_menu->addSeparator ();
+
+  _duplicate_selection_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Duplicate Selection/Line"), SLOT (request_duplicate_selection (bool)));
+  _transpose_line_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("Transpose Line"), SLOT (request_transpose_line (bool)));
+
+  _edit_cmd_menu->addSeparator ();
+
+  _completion_action = add_action (_edit_cmd_menu, QIcon (),
+          tr ("&Show Completion List"), SLOT (request_completion (bool)));
+
+  _edit_fmt_menu = editMenu->addMenu (tr ("&Format"));
+
+  _upper_case_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("&Uppercase Selection"), SLOT (request_upper_case (bool)));
+  _lower_case_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("&Lowercase Selection"), SLOT (request_lower_case (bool)));
+  _comment_selection_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("&Comment"), SLOT (request_comment_selected_text (bool)));
+  _uncomment_selection_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("&Uncomment"), SLOT (request_uncomment_selected_text (bool)));
+  _indent_selection_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("&Indent"), SLOT (request_indent_selected_text (bool)));
+  _unindent_selection_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("&Unindent"), SLOT (request_unindent_selected_text (bool)));
+
+  _edit_nav_menu = editMenu->addMenu (tr ("Navi&gation"));
+
+  _goto_line_action = add_action (_edit_nav_menu, QIcon (),
+          tr ("Go &to Line..."), SLOT (request_goto_line (bool)));
+
+  _edit_nav_menu->addSeparator ();
+
+  _next_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+          tr ("&Next Bookmark"), SLOT (request_next_bookmark (bool)));
+  _previous_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+          tr ("Pre&vious Bookmark"), SLOT (request_previous_bookmark (bool)));
+  _toggle_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
+          tr ("Toggle &Bookmark"), SLOT (request_toggle_bookmark (bool)));
+  _remove_bookmark_action = add_action (_edit_nav_menu, QIcon (),
+          tr ("&Remove All Bookmarks"), SLOT (request_remove_bookmark (bool)));
+
+  editMenu->addSeparator ();
+
+  _preferences_action = add_action (editMenu,
+          QIcon (":/actions/icons/configure.png"),
+          tr ("&Preferences..."), SLOT (request_preferences (bool)));
+  _styles_preferences_action = add_action (editMenu,
+          QIcon (":/actions/icons/configure.png"),
+          tr ("&Styles Preferences..."), SLOT (request_styles_preferences (bool)));
+
+  _menu_bar->addMenu (editMenu);
+
+  // view menu
+
+  QMenu *view_menu = new QMenu (tr ("&View"), _menu_bar);
+
+  _zoom_in_action = add_action (view_menu, QIcon (),
+          tr ("Zoom &In"), SLOT (zoom_in (bool)));
+  _zoom_out_action = add_action (view_menu, QIcon (),
+          tr ("Zoom &Out"), SLOT (zoom_out (bool)));
+  _zoom_normal_action = add_action (view_menu, QIcon (),
+          tr ("&Normal Size"), SLOT (zoom_normal (bool)));
+
+  _menu_bar->addMenu (view_menu);
+
+  // debug menu
+
+  _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
+
+  _toggle_breakpoint_action = add_action (_debug_menu,
+          QIcon (":/actions/icons/bp_toggle.png"), tr ("Toggle &Breakpoint"),
+          SLOT (request_toggle_breakpoint (bool)));
+  _next_breakpoint_action = add_action (_debug_menu,
+          QIcon (":/actions/icons/bp_next.png"), tr ("&Next Breakpoint"),
+          SLOT (request_next_breakpoint (bool)));
+  _previous_breakpoint_action = add_action (_debug_menu,
+          QIcon (":/actions/icons/bp_prev.png"), tr ("Pre&vious Breakpoint"),
+          SLOT (request_previous_breakpoint (bool)));
+  _remove_all_breakpoints_action = add_action (_debug_menu,
+          QIcon (":/actions/icons/bp_rm_all.png"), tr ("&Remove All Breakpoints"),
+          SLOT (request_remove_breakpoint (bool)));
+
+  _debug_menu->addSeparator ();
+
+  // The other debug actions will be added by the main window.
+
+  _menu_bar->addMenu (_debug_menu);
+
+  // run menu
+
+  QMenu *_run_menu = new QMenu (tr ("&Run"), _menu_bar);
+
+  _run_action = add_action (_run_menu, QIcon (":/actions/icons/artsbuilderexecute.png"),
+          tr ("Save File and Run"), SLOT (request_run_file (bool)));
+  _run_selection_action = add_action (_run_menu, QIcon (),
+          tr ("Run &Selection"), SLOT (request_context_run (bool)));
+  _run_selection_action->setEnabled (false);
+
+  _menu_bar->addMenu (_run_menu);
+
+  // help menu
+
+  QMenu *_help_menu = new QMenu (tr ("&Help"), _menu_bar);
+
+  _context_help_action = add_action (_help_menu, QIcon (),
+          tr ("&Help on Keyword"), SLOT (request_context_help (bool)));
+  _context_doc_action = add_action (_help_menu, QIcon (),
+          tr ("&Documentation on Keyword"), SLOT (request_context_doc (bool)));
+
+  _menu_bar->addMenu (_help_menu);
 
   // toolbar
-  _tool_bar->addAction (new_action);
-  _tool_bar->addAction (open_action);
+
+  // new and open actions are inserted later from main window
   _tool_bar->addAction (_save_action);
   _tool_bar->addAction (_save_as_action);
   _tool_bar->addSeparator ();
@@ -1175,159 +1308,10 @@ file_editor::construct (void)
   _tool_bar->addAction (_find_action);
   _tool_bar->addAction (_run_action);
   _tool_bar->addSeparator ();
-  _tool_bar->addAction (toggle_breakpoint_action);
-  _tool_bar->addAction (next_breakpoint_action);
-  _tool_bar->addAction (previous_breakpoint_action);
-  _tool_bar->addAction (remove_all_breakpoints_action);
-
-  // menu bar
-  QMenu *fileMenu = new QMenu (tr ("&File"), _menu_bar);
-
-  _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), fileMenu);
-  for (int i = 0; i < MaxMRUFiles; ++i)
-    _mru_file_menu->addAction (_mru_file_actions[i]);
-
-  fileMenu->addAction (new_action);
-  fileMenu->addAction (QIcon (), tr ("New &Function..."),
-                      this, SLOT (request_new_function (bool)));
-  fileMenu->addAction (open_action);
-  fileMenu->addMenu (_mru_file_menu);
-  fileMenu->addSeparator ();
-  _context_edit_action =
-    fileMenu->addAction (QIcon (), tr ("&Edit Function"),
-                         this, SLOT (request_context_edit (bool)));
-  fileMenu->addSeparator ();
-  fileMenu->addAction (_save_action);
-  fileMenu->addAction (_save_as_action);
-
-  fileMenu->addSeparator ();
-  _close_action =
-    fileMenu->addAction (QIcon::fromTheme("window-close",
-                                          QIcon (":/actions/icons/fileclose.png")),
-                         tr ("&Close"), this, SLOT (request_close_file (bool)));
-  _close_all_action =
-    fileMenu->addAction (QIcon::fromTheme("window-close",
-                                          QIcon (":/actions/icons/fileclose.png")),
-                         tr ("Close All"),
-                         this, SLOT (request_close_all_files (bool)));
-  _close_others_action =
-    fileMenu->addAction (QIcon::fromTheme("window-close",
-                                          QIcon (":/actions/icons/fileclose.png")),
-                         tr ("Close Other Files"),
-                         this, SLOT (request_close_other_files (bool)));
-
-  fileMenu->addSeparator ();
-  fileMenu->addAction (_print_action);
-
-  _menu_bar->addMenu (fileMenu);
-
-  QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
-  editMenu->addAction (_undo_action);
-  editMenu->addAction (_redo_action);
-  editMenu->addSeparator ();
-  editMenu->addAction (_copy_action);
-  editMenu->addAction (_cut_action);
-  editMenu->addAction (_paste_action);
-  editMenu->addSeparator ();
-  editMenu->addAction (_selectall_action);
-  editMenu->addSeparator ();
-  editMenu->addAction (_find_action);
-  editMenu->addSeparator ();
-
-  _edit_cmd_menu = editMenu->addMenu (tr ("&Commands"));
-
-  _delete_line_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Delete Line"), this, SLOT (request_delete_line (bool)));
-  _copy_line_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Copy Line"), this, SLOT (request_copy_line (bool)));
-  _cut_line_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Cut Line"), this, SLOT (request_cut_line (bool)));
-
-  _edit_cmd_menu->addSeparator ();
-
-  _delete_start_word_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Delete to Start of Word"), this, SLOT (request_delete_start_word (bool)));
-  _delete_end_word_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Delete to End of Word"), this, SLOT (request_delete_end_word (bool)));
-  _delete_start_line_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Delete to Start of Line"), this, SLOT (request_delete_start_line (bool)));
-  _delete_end_line_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Delete to End of Line"), this, SLOT (request_delete_end_line (bool)));
-
-  _edit_cmd_menu->addSeparator ();
-
-  _duplicate_selection_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Duplicate Selection/Line"), this, SLOT (request_duplicate_selection (bool)));
-  _transpose_line_action = _edit_cmd_menu->addAction (
-    QIcon (), tr ("Transpose Line"), this, SLOT (request_transpose_line (bool)));
-
-  _edit_fmt_menu = editMenu->addMenu (tr ("&Format"));
-  _upper_case_action = _edit_fmt_menu->addAction (
-    QIcon (), tr ("&Uppercase Selection"), this, SLOT (request_upper_case (bool)));
-  _lower_case_action = _edit_fmt_menu->addAction (
-    QIcon (), tr ("&Lowercase Selection"), this, SLOT (request_lower_case (bool)));
-  _edit_fmt_menu->addAction (_comment_selection_action);
-  _edit_fmt_menu->addAction (_uncomment_selection_action);
-  _edit_fmt_menu->addAction (_indent_selection_action);
-  _edit_fmt_menu->addAction (_unindent_selection_action);
-
-  editMenu->addSeparator ();
-  editMenu->addAction (_completion_action);
-  editMenu->addSeparator ();
-  editMenu->addAction (_toggle_bookmark_action);
-  editMenu->addAction (_next_bookmark_action);
-  editMenu->addAction (_previous_bookmark_action);
-  editMenu->addAction (_remove_bookmark_action);
-  editMenu->addSeparator ();
-  editMenu->addAction (_goto_line_action);
-  editMenu->addSeparator ();
-  _preferences_action =
-    editMenu->addAction (QIcon (":/actions/icons/configure.png"),
-                         tr ("&Preferences..."),
-                         this, SLOT (request_preferences (bool)));
-  _styles_preferences_action =
-    editMenu->addAction (QIcon (":/actions/icons/configure.png"),
-                         tr ("&Styles Preferences..."),
-                         this, SLOT (request_styles_preferences (bool)));
-  _menu_bar->addMenu (editMenu);
-
-  QMenu *view_menu = new QMenu (tr ("&View"), _menu_bar);
-  _zoom_in_action = view_menu->addAction (QIcon (), tr ("Zoom &In"),
-                                this, SLOT (zoom_in (bool)));
-  _zoom_out_action = view_menu->addAction (QIcon (), tr ("Zoom &Out"),
-                                this, SLOT (zoom_out (bool)));
-  _zoom_normal_action = view_menu->addAction (QIcon (), tr ("&Normal Size"),
-                                this, SLOT (zoom_normal (bool)));
-  _menu_bar->addMenu (view_menu);
-
-  _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
-  _debug_menu->addAction (toggle_breakpoint_action);
-  _debug_menu->addAction (next_breakpoint_action);
-  _debug_menu->addAction (previous_breakpoint_action);
-  _debug_menu->addAction (remove_all_breakpoints_action);
-  _debug_menu->addSeparator ();
-  // The other debug actions will be added by the main window.
-  _menu_bar->addMenu (_debug_menu);
-
-  QMenu *_run_menu = new QMenu (tr ("&Run"), _menu_bar);
-  _run_menu->addAction (_run_action);
-  _context_run_action =
-    _run_menu->addAction (QIcon (), tr ("Run &Selection"),
-                          this, SLOT (request_context_run (bool)));
-  _context_run_action->setEnabled (false);
-  _menu_bar->addMenu (_run_menu);
-
-  QMenu *_help_menu = new QMenu (tr ("&Help"), _menu_bar);
-  _context_help_action =
-    _help_menu->addAction (QIcon (), tr ("&Help on Keyword"),
-                           this, SLOT (request_context_help (bool)));
-  _context_doc_action =
-    _help_menu->addAction (QIcon (), tr ("&Documentation on Keyword"),
-                           this, SLOT (request_context_doc (bool)));
-  _menu_bar->addMenu (_help_menu);
-
-  // shortcuts
-  set_shortcuts (true);
+  _tool_bar->addAction (_toggle_breakpoint_action);
+  _tool_bar->addAction (_next_breakpoint_action);
+  _tool_bar->addAction (_previous_breakpoint_action);
+  _tool_bar->addAction (_remove_all_breakpoints_action);
 
   // layout
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
@@ -1348,87 +1332,6 @@ file_editor::construct (void)
 
   connect (main_win (), SIGNAL (open_file_signal (const QString&)),
            this, SLOT (request_open_file (const QString&)));
-
-  connect (new_action, SIGNAL (triggered ()),
-           this, SLOT (request_new_file ()));
-
-  connect (open_action, SIGNAL (triggered ()),
-           this, SLOT (request_open_file ()));
-
-  connect (_undo_action, SIGNAL (triggered ()),
-           this, SLOT (request_undo ()));
-
-  connect (_redo_action, SIGNAL (triggered ()),
-           this, SLOT (request_redo ()));
-
-  connect (_copy_action, SIGNAL (triggered ()),
-           this, SLOT (request_copy ()));
-
-  connect (_cut_action, SIGNAL (triggered ()),
-           this, SLOT (request_cut ()));
-
-  connect (_paste_action, SIGNAL (triggered ()),
-           this, SLOT (request_paste ()));
-
-  connect (_selectall_action, SIGNAL (triggered ()),
-           this, SLOT (request_selectall ()));
-
-  connect (_save_action, SIGNAL (triggered ()),
-           this, SLOT (request_save_file ()));
-
-  connect (_save_as_action, SIGNAL (triggered ()),
-           this, SLOT (request_save_file_as ()));
-
-  connect (_print_action, SIGNAL (triggered ()),
-           this, SLOT (request_print_file ()));
-
-  connect (_run_action, SIGNAL (triggered ()),
-           this, SLOT (request_run_file ()));
-
-  connect (_toggle_bookmark_action, SIGNAL (triggered ()),
-           this, SLOT (request_toggle_bookmark ()));
-
-  connect (_next_bookmark_action, SIGNAL (triggered ()),
-           this, SLOT (request_next_bookmark ()));
-
-  connect (_previous_bookmark_action, SIGNAL (triggered ()),
-           this, SLOT (request_previous_bookmark ()));
-
-  connect (_remove_bookmark_action, SIGNAL (triggered ()),
-           this, SLOT (request_remove_bookmark ()));
-
-  connect (toggle_breakpoint_action, SIGNAL (triggered ()),
-           this, SLOT (request_toggle_breakpoint ()));
-
-  connect (next_breakpoint_action, SIGNAL (triggered ()),
-           this, SLOT (request_next_breakpoint ()));
-
-  connect (previous_breakpoint_action, SIGNAL (triggered ()),
-           this, SLOT (request_previous_breakpoint ()));
-
-  connect (remove_all_breakpoints_action, SIGNAL (triggered ()),
-           this, SLOT (request_remove_breakpoint ()));
-
-  connect (_comment_selection_action, SIGNAL (triggered ()),
-           this, SLOT (request_comment_selected_text ()));
-
-  connect (_uncomment_selection_action, SIGNAL (triggered ()),
-           this, SLOT (request_uncomment_selected_text ()));
-
-  connect (_indent_selection_action, SIGNAL (triggered ()),
-           this, SLOT (request_indent_selected_text ()));
-
-  connect (_unindent_selection_action, SIGNAL (triggered ()),
-           this, SLOT (request_unindent_selected_text ()));
-
-  connect (_find_action, SIGNAL (triggered ()),
-           this, SLOT (request_find ()));
-
-  connect (_goto_line_action, SIGNAL (triggered ()),
-           this, SLOT (request_goto_line ()));
-
-  connect (_completion_action, SIGNAL (triggered ()),
-           this, SLOT (request_completion ()));
 
   connect (_mru_file_menu, SIGNAL (triggered (QAction *)),
            this, SLOT (request_mru_open_file (QAction *)));
@@ -1630,7 +1533,7 @@ file_editor::copyClipboard ()
 
   if (foc_w && foc_w->inherits ("octave_qscintilla"))
     {
-      request_copy ();
+      request_copy (true);
     }
 }
 void
@@ -1640,7 +1543,7 @@ file_editor::pasteClipboard ()
 
   if (foc_w && foc_w->inherits ("octave_qscintilla"))
     {
-      request_paste ();
+      request_paste (true);
     }
 }
 void
@@ -1650,137 +1553,76 @@ file_editor::selectAll ()
 
   if (foc_w && foc_w->inherits ("octave_qscintilla"))
     {
-      request_selectall ();
+      request_selectall (true);
     }
 }
 
 
 void
-file_editor::set_shortcuts (bool set)
+file_editor::set_shortcuts ()
 {
-  if (set)
-    {
+  // File menu
+  shortcut_manager::set_shortcut (_edit_function_action, "editor_file:edit_function");
+  shortcut_manager::set_shortcut (_save_action, "editor_file:save");
+  shortcut_manager::set_shortcut (_save_as_action, "editor_file:save_as");
+  shortcut_manager::set_shortcut (_close_action, "editor_file:close");
+  shortcut_manager::set_shortcut (_close_all_action, "editor_file:close_all");
+  shortcut_manager::set_shortcut (_close_others_action, "editor_file:close_other");
+  shortcut_manager::set_shortcut (_print_action, "editor_file:print");
 
-      // File menu
-      shortcut_manager::set_shortcut (_context_edit_action, "editor_file:edit_function");
-      shortcut_manager::set_shortcut (_save_action, "editor_file:save");
-      shortcut_manager::set_shortcut (_save_as_action, "editor_file:save_as");
-      shortcut_manager::set_shortcut (_close_action, "editor_file:close");
-      shortcut_manager::set_shortcut (_close_all_action, "editor_file:close_all");
-      shortcut_manager::set_shortcut (_close_others_action, "editor_file:close_other");
-      shortcut_manager::set_shortcut (_print_action, "editor_file:print");
+  // Edit menu
+  shortcut_manager::set_shortcut (_undo_action, "editor_edit:undo");
+  shortcut_manager::set_shortcut (_redo_action, "editor_edit:redo");
+  shortcut_manager::set_shortcut (_copy_action, "editor_edit:copy");
+  shortcut_manager::set_shortcut (_cut_action, "editor_edit:cut");
+  shortcut_manager::set_shortcut (_paste_action, "editor_edit:paste");
+  shortcut_manager::set_shortcut (_selectall_action, "editor_edit:select_all");
+  shortcut_manager::set_shortcut (_find_action, "editor_edit:find_replace");
 
-      // Edit menu
-      shortcut_manager::set_shortcut (_undo_action, "editor_edit:undo");
-      shortcut_manager::set_shortcut (_redo_action, "editor_edit:redo");
-      shortcut_manager::set_shortcut (_copy_action, "editor_edit:copy");
-      shortcut_manager::set_shortcut (_cut_action, "editor_edit:cut");
-      shortcut_manager::set_shortcut (_paste_action, "editor_edit:paste");
-      shortcut_manager::set_shortcut (_selectall_action, "editor_edit:select_all");
-      shortcut_manager::set_shortcut (_find_action, "editor_edit:find_replace");
+  shortcut_manager::set_shortcut (_delete_start_word_action, "editor_edit:delete_start_word");
+  shortcut_manager::set_shortcut (_delete_end_word_action, "editor_edit:delete_end_word");
+  shortcut_manager::set_shortcut (_delete_start_line_action, "editor_edit:delete_start_line");
+  shortcut_manager::set_shortcut (_delete_end_line_action, "editor_edit:delete_end_line");
+  shortcut_manager::set_shortcut (_delete_line_action, "editor_edit:delete_line");
+  shortcut_manager::set_shortcut (_copy_line_action, "editor_edit:copy_line");
+  shortcut_manager::set_shortcut (_cut_line_action, "editor_edit:cut_line");
+  shortcut_manager::set_shortcut (_duplicate_selection_action, "editor_edit:duplicate_selection");
+  shortcut_manager::set_shortcut (_transpose_line_action, "editor_edit:transpose_line");
+  shortcut_manager::set_shortcut (_comment_selection_action, "editor_edit:comment_selection");
+  shortcut_manager::set_shortcut (_uncomment_selection_action, "editor_edit:uncomment_selection");
 
-      shortcut_manager::set_shortcut (_delete_start_word_action, "editor_edit:delete_start_word");
-      shortcut_manager::set_shortcut (_delete_end_word_action, "editor_edit:delete_end_word");
-      shortcut_manager::set_shortcut (_delete_start_line_action, "editor_edit:delete_start_line");
-      shortcut_manager::set_shortcut (_delete_end_line_action, "editor_edit:delete_end_line");
-      shortcut_manager::set_shortcut (_delete_line_action, "editor_edit:delete_line");
-      shortcut_manager::set_shortcut (_copy_line_action, "editor_edit:copy_line");
-      shortcut_manager::set_shortcut (_cut_line_action, "editor_edit:cut_line");
-      shortcut_manager::set_shortcut (_duplicate_selection_action, "editor_edit:duplicate_selection");
-      shortcut_manager::set_shortcut (_transpose_line_action, "editor_edit:transpose_line");
-      shortcut_manager::set_shortcut (_comment_selection_action, "editor_edit:comment_selection");
-      shortcut_manager::set_shortcut (_uncomment_selection_action, "editor_edit:uncomment_selection");
+  shortcut_manager::set_shortcut (_upper_case_action, "editor_edit:upper_case");
+  shortcut_manager::set_shortcut (_lower_case_action, "editor_edit:lower_case");
+  shortcut_manager::set_shortcut (_indent_selection_action, "editor_edit:indent_selection");
+  shortcut_manager::set_shortcut (_unindent_selection_action, "editor_edit:unindent_selection");
+  shortcut_manager::set_shortcut (_completion_action, "editor_edit:completion_list");
+  shortcut_manager::set_shortcut (_goto_line_action, "editor_edit:goto_line");
+  shortcut_manager::set_shortcut (_toggle_bookmark_action, "editor_edit:toggle_bookmark");
+  shortcut_manager::set_shortcut (_next_bookmark_action, "editor_edit:next_bookmark");
+  shortcut_manager::set_shortcut (_previous_bookmark_action, "editor_edit:previous_bookmark");
+  shortcut_manager::set_shortcut (_remove_bookmark_action, "editor_edit:remove_bookmark");
+  shortcut_manager::set_shortcut (_preferences_action, "editor_edit:preferences");
+  shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
 
-      shortcut_manager::set_shortcut (_upper_case_action, "editor_edit:upper_case");
-      shortcut_manager::set_shortcut (_lower_case_action, "editor_edit:lower_case");
-      shortcut_manager::set_shortcut (_indent_selection_action, "editor_edit:indent_selection");
-      shortcut_manager::set_shortcut (_unindent_selection_action, "editor_edit:unindent_selection");
-      shortcut_manager::set_shortcut (_completion_action, "editor_edit:completion_list");
-      shortcut_manager::set_shortcut (_toggle_bookmark_action, "editor_edit:toggle_bookmark");
-      shortcut_manager::set_shortcut (_next_bookmark_action, "editor_edit:next_bookmark");
-      shortcut_manager::set_shortcut (_previous_bookmark_action, "editor_edit:previous_bookmark");
-      shortcut_manager::set_shortcut (_remove_bookmark_action, "editor_edit:remove_bookmark");
-      shortcut_manager::set_shortcut (_goto_line_action, "editor_edit:goto_line");
-      shortcut_manager::set_shortcut (_preferences_action, "editor_edit:preferences");
-      shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
+  // View menu
+  shortcut_manager::set_shortcut (_zoom_in_action, "edit_edit:zoom_in");
+  shortcut_manager::set_shortcut (_zoom_out_action, "edit_edit:zoom_out");
+  shortcut_manager::set_shortcut (_zoom_normal_action, "edit_edit:zoom_normal");
 
+  // Debug menu
+  shortcut_manager::set_shortcut (_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
+  shortcut_manager::set_shortcut (_next_breakpoint_action, "editor_debug:next_breakpoint");
+  shortcut_manager::set_shortcut (_previous_bookmark_action, "editor_debug:previous_breakpoint");
+  shortcut_manager::set_shortcut (_remove_all_breakpoints_action, "editor_debug:remove_breakpoints");
 
-      _context_help_action->setShortcut (QKeySequence::HelpContents);
-      _context_doc_action->setShortcut (Qt::SHIFT + Qt::Key_F1);
+  // Run menu
+  shortcut_manager::set_shortcut (_run_action, "editor_run:run_file");
+  shortcut_manager::set_shortcut (_run_selection_action, "editor_run:run_selection");
 
-      _zoom_in_action->setShortcuts (QKeySequence::ZoomIn);
-      _zoom_out_action->setShortcuts (QKeySequence::ZoomOut);
-      _zoom_normal_action->setShortcut (Qt::ControlModifier + Qt::Key_Slash);
+  // Help menu
+  shortcut_manager::set_shortcut (_context_help_action, "editor_help:help_keyword");
+  shortcut_manager::set_shortcut (_context_doc_action,  "editor_help:doc_keyword");
 
-
-
-      _run_action->setShortcut (Qt::Key_F5);
-      _context_run_action->setShortcut (Qt::Key_F9);
-
-
-
-    }
-  else
-    {
-      QKeySequence no_key = QKeySequence ();
-
-      // File menu
-      _context_edit_action->setShortcut (no_key);
-      _save_action->setShortcut (no_key);
-      _save_as_action->setShortcut (no_key);
-      _close_action->setShortcut (no_key);
-      _close_all_action->setShortcut (no_key);
-      _close_others_action->setShortcut (no_key);
-      _print_action->setShortcut (no_key);
-
-      // Edit menu
-      _redo_action->setShortcut (no_key);
-      _undo_action->setShortcut (no_key);
-      _copy_action->setShortcut (no_key);
-      _cut_action->setShortcut (no_key);
-      _paste_action->setShortcut (no_key);
-      _selectall_action->setShortcut (no_key);
-      _find_action->setShortcut (no_key);
-
-      _delete_start_word_action->setShortcut (no_key);
-      _delete_end_word_action->setShortcut (no_key);
-      _delete_end_line_action->setShortcut (no_key);
-      _delete_start_line_action->setShortcut (no_key);
-      _delete_line_action->setShortcut (no_key);
-      _copy_line_action->setShortcut (no_key);
-      _cut_line_action->setShortcut (no_key);
-      _duplicate_selection_action->setShortcut (no_key);
-      _transpose_line_action->setShortcut (no_key);
-      _comment_selection_action->setShortcut (no_key);
-      _uncomment_selection_action->setShortcut (no_key);
-
-      _upper_case_action->setShortcut (no_key);
-      _lower_case_action->setShortcut (no_key);
-      _indent_selection_action->setShortcut (no_key);
-      _unindent_selection_action->setShortcut (no_key);
-
-      _completion_action->setShortcut (no_key);
-      _toggle_bookmark_action->setShortcut (no_key);
-      _next_bookmark_action->setShortcut (no_key);
-      _previous_bookmark_action->setShortcut (no_key);
-      _remove_bookmark_action->setShortcut (no_key);
-      _goto_line_action->setShortcut (no_key);
-      _preferences_action->setShortcut (no_key);
-      _styles_preferences_action->setShortcut (no_key);
-
-
-      _context_help_action->setShortcut (no_key);
-
-      _zoom_in_action->setShortcut (no_key);
-      _zoom_out_action->setShortcut (no_key);
-      _zoom_normal_action->setShortcut (no_key);
-
-
-
-      _run_action->setShortcut (no_key);
-      _context_run_action->setShortcut (no_key);
-
-    }
 }
 
 void
@@ -1790,10 +1632,10 @@ file_editor::check_actions ()
 
   _edit_cmd_menu->setEnabled (have_tabs);
   _edit_fmt_menu->setEnabled (have_tabs);
+  _edit_nav_menu->setEnabled (have_tabs);
 
   _comment_selection_action->setEnabled (have_tabs);
   _uncomment_selection_action->setEnabled (have_tabs);
-
   _indent_selection_action->setEnabled (have_tabs);
   _unindent_selection_action->setEnabled (have_tabs);
 
@@ -1806,18 +1648,10 @@ file_editor::check_actions ()
   _zoom_normal_action->setEnabled (have_tabs);
 
   _find_action->setEnabled (have_tabs);
-  _goto_line_action->setEnabled (have_tabs);
-  _completion_action->setEnabled (have_tabs);
-
-  _next_bookmark_action->setEnabled (have_tabs);
-  _previous_bookmark_action->setEnabled (have_tabs);
-  _toggle_bookmark_action->setEnabled (have_tabs);
-  _remove_bookmark_action->setEnabled (have_tabs);
-
   _print_action->setEnabled (have_tabs);
   _run_action->setEnabled (have_tabs);
 
-  _context_edit_action->setEnabled (have_tabs);
+  _edit_function_action->setEnabled (have_tabs);
   _save_action->setEnabled (have_tabs);
   _save_as_action->setEnabled (have_tabs);
   _close_action->setEnabled (have_tabs);

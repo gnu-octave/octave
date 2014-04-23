@@ -94,9 +94,8 @@ signals:
   void pasteClipboard_signal (void);
   void selectAll_signal (void);
 
-  void set_widget_shortcuts_signal (bool);
-
 public slots:
+
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
   void handle_load_workspace_request (const QString& file = QString ());

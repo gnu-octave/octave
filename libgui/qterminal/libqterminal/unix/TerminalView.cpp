@@ -212,6 +212,9 @@ void TerminalView::setVTFont(const QFont& f)
       // Disabling kerning saves some computation when rendering text.
       // font.setKerning(false);
 
+      font.setStyleStrategy (  QFont::StyleStrategy(font.styleStrategy()
+                             | QFont::ForceIntegerMetrics)  );
+
       QWidget::setFont(font);
       fontChange(font);
     }

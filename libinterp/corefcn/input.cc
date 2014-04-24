@@ -748,10 +748,10 @@ Pick a number, any number!\n\
 @noindent\n\
 and waits for the user to enter a value.  The string entered by the user\n\
 is evaluated as an expression, so it may be a literal constant, a\n\
-variable name, or any other valid expression.\n\
+variable name, or any other valid Octave code.\n\
 \n\
-Currently, @code{input} only returns one value, regardless of the number\n\
-of values produced by the evaluation of the expression.\n\
+The number of return arguments, their size, and their class depend on the\n\
+expression entered.\n\
 \n\
 If you are only interested in getting a literal string value, you can\n\
 call @code{input} with the character string @qcode{\"s\"} as the second\n\
@@ -762,7 +762,7 @@ Because there may be output waiting to be displayed by the pager, it is\n\
 a good idea to always call @code{fflush (stdout)} before calling\n\
 @code{input}.  This will ensure that all pending output is written to\n\
 the screen before your prompt.\n\
-@seealso{yes_or_no, kbhit}\n\
+@seealso{yes_or_no, kbhit, pause}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -770,7 +770,7 @@ the screen before your prompt.\n\
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = get_user_input (args, nargout);
+    retval = get_user_input (args, std::max (nargout, 1));
   else
     print_usage ();
 

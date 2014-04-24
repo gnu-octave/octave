@@ -341,7 +341,7 @@ function lims = __get_tight_lims__ (ca, ax)
     
     ## Extend image data one pixel
     idx = strcmp (types, "image");
-    if (! isempty (idx) && (ax == "x" || ax == "y"))
+    if (any (idx) && (ax == "x" || ax == "y"))
       imdata = data(idx);
       px = arrayfun (@__image_pixel_size__, kids(idx), "uniformoutput", false);
       ipx = ifelse (ax == "x", 1, 2);

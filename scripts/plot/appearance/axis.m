@@ -299,15 +299,15 @@ function limits = __axis__ (ca, ax, varargin)
     endfor
 
     if (len > 1)
-      xlim (ax(1:2));
+      xlim (ca, ax(1:2));
     endif
 
     if (len > 3)
-      ylim (ax(3:4));
+      ylim (ca, ax(3:4));
     endif
 
     if (len > 5)
-      zlim (ax(5:6));
+      zlim (ca, ax(5:6));
     endif
 
   else

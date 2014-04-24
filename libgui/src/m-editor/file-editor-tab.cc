@@ -739,6 +739,15 @@ file_editor_tab::remove_all_breakpoints (const QWidget *ID)
 }
 
 void
+file_editor_tab::scintilla_command (const QWidget *ID, unsigned int sci_msg)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->SendScintilla (sci_msg);
+}
+
+void
 file_editor_tab::comment_selected_text (const QWidget *ID)
 {
   if (ID != this)

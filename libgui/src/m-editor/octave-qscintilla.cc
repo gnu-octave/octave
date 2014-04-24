@@ -29,18 +29,33 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_QSCINTILLA
 
 #include <Qsci/qscilexer.h>
+#include <Qsci/qscicommandset.h>
 #include <QShortcut>
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
+#include "shortcut-manager.h"
 
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
 {
-  // disable zoom-in/out shortcuts, these are handled by octave
-  SendScintilla (QsciScintillaBase::SCI_CLEARCMDKEY, '+' + (QsciScintillaBase::SCMOD_CTRL << 16) );
-  SendScintilla (QsciScintillaBase::SCI_CLEARCMDKEY, '-' + (QsciScintillaBase::SCMOD_CTRL << 16) );
-  SendScintilla (QsciScintillaBase::SCI_CLEARCMDKEY, '/' + (QsciScintillaBase::SCMOD_CTRL << 16) );
+  // clear scintilla edit shortcuts that are handled by the editor
+  QsciCommandSet  *cmd_set =  standardCommands ();
+  cmd_set->find (QsciCommand::SelectionDuplicate)->setKey (0);
+  cmd_set->find (QsciCommand::LineTranspose)->setKey (0);
+  cmd_set->find (QsciCommand::Undo)->setKey (0);
+  cmd_set->find (QsciCommand::Redo)->setKey (0);
+  cmd_set->find (QsciCommand::SelectionUpperCase)->setKey (0);
+  cmd_set->find (QsciCommand::SelectionLowerCase)->setKey (0);
+  cmd_set->find (QsciCommand::ZoomIn)->setKey (0);
+  cmd_set->find (QsciCommand::ZoomOut)->setKey (0);
+  cmd_set->find (QsciCommand::DeleteWordLeft)->setKey (0);
+  cmd_set->find (QsciCommand::DeleteWordRight)->setKey (0);
+  cmd_set->find (QsciCommand::DeleteLineLeft)->setKey (0);
+  cmd_set->find (QsciCommand::DeleteLineRight)->setKey (0);
+  cmd_set->find (QsciCommand::LineDelete)->setKey (0);
+  cmd_set->find (QsciCommand::LineCut)->setKey (0);
+  cmd_set->find (QsciCommand::LineCopy)->setKey (0);
 }
 
 octave_qscintilla::~octave_qscintilla ()
@@ -50,11 +65,11 @@ void
 octave_qscintilla::get_global_textcursor_pos (QPoint *global_pos,
                                               QPoint *local_pos)
 {
-  long position = SendScintilla (QsciScintillaBase::SCI_GETCURRENTPOS);
+  long position = SendScintilla (SCI_GETCURRENTPOS);
   long point_x  = SendScintilla
-                    (QsciScintillaBase::SCI_POINTXFROMPOSITION,0,position);
+                    (SCI_POINTXFROMPOSITION,0,position);
   long point_y  = SendScintilla
-                    (QsciScintillaBase::SCI_POINTYFROMPOSITION,0,position);
+                    (SCI_POINTYFROMPOSITION,0,position);
   *local_pos = QPoint (point_x,point_y);  // local cursor position
   *global_pos = mapToGlobal (*local_pos); // global position of cursor
 }

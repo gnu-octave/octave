@@ -94,9 +94,8 @@ signals:
   void pasteClipboard_signal (void);
   void selectAll_signal (void);
 
-  void set_widget_shortcuts_signal (bool);
-
 public slots:
+
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
   void handle_load_workspace_request (const QString& file = QString ());
@@ -270,6 +269,8 @@ private:
   void queue_debug (QString command);
 
   void execute_debug_callback ();
+
+  bool confirm_exit_octave ();
 
   workspace_model *_workspace_model;
 

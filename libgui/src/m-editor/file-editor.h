@@ -29,6 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QTabWidget>
+#include <QStackedWidget>
+
+#include <QDragEnterEvent>
+#include <QDropEvent>
 
 #include <map>
 
@@ -52,6 +56,7 @@ public:
   QMenu *get_mru_menu (void) { return _mru_file_menu; }
   QMenu *debug_menu (void);
   QToolBar *toolbar (void);
+  void insert_new_open_actions (QAction*,QAction*,QAction*);
 
   void set_focus (void);
   void handle_enter_debug_mode (void);
@@ -104,6 +109,7 @@ signals:
   void fetab_do_breakpoint_marker (bool insert, const QWidget* ID,
                                    int line = -1);
   void fetab_set_focus (const QWidget* ID);
+  void fetab_scintilla_command (const QWidget* ID, unsigned int sci_msg);
 
   void fetab_zoom_in (const QWidget* ID);
   void fetab_zoom_out (const QWidget* ID);
@@ -124,41 +130,53 @@ public slots:
   void request_close_all_files (bool);
   void request_close_other_files (bool);
   void request_mru_open_file (QAction *action);
-  void request_print_file (void);
+  void request_print_file (bool);
 
-  void request_undo (void);
-  void request_redo (void);
-  void request_copy (void);
-  void request_cut (void);
-  void request_paste (void);
-  void request_selectall (void);
+  void request_undo (bool);
+  void request_redo (bool);
+  void request_copy (bool);
+  void request_cut (bool);
+  void request_paste (bool);
+  void request_selectall (bool);
   void request_context_help (bool);
   void request_context_doc (bool);
   void request_context_edit (bool);
-  void request_save_file (void);
-  void request_save_file_as (void);
-  void request_run_file (void);
+  void request_save_file (bool);
+  void request_save_file_as (bool);
+  void request_run_file (bool);
   void request_context_run (bool);
-  void request_toggle_bookmark (void);
-  void request_next_bookmark (void);
-  void request_previous_bookmark (void);
-  void request_remove_bookmark (void);
+  void request_toggle_bookmark (bool);
+  void request_next_bookmark (bool);
+  void request_previous_bookmark (bool);
+  void request_remove_bookmark (bool);
 
-  void request_toggle_breakpoint (void);
-  void request_next_breakpoint (void);
-  void request_previous_breakpoint (void);
-  void request_remove_breakpoint (void);
+  void request_toggle_breakpoint (bool);
+  void request_next_breakpoint (bool);
+  void request_previous_breakpoint (bool);
+  void request_remove_breakpoint (bool);
 
-  void request_comment_selected_text (void);
-  void request_uncomment_selected_text (void);
+  void request_delete_start_word (bool);
+  void request_delete_end_word (bool);
+  void request_delete_start_line (bool);
+  void request_delete_end_line (bool);
+  void request_delete_line (bool);
+  void request_copy_line (bool);
+  void request_cut_line (bool);
+  void request_duplicate_selection (bool);
+  void request_transpose_line (bool);
 
-  void request_indent_selected_text (void);
-  void request_unindent_selected_text (void);
+  void request_comment_selected_text (bool);
+  void request_uncomment_selected_text (bool);
 
-  void request_find (void);
+  void request_upper_case (bool);
+  void request_lower_case (bool);
+  void request_indent_selected_text (bool);
+  void request_unindent_selected_text (bool);
 
-  void request_goto_line (void);
-  void request_completion (void);
+  void request_find (bool);
+
+  void request_goto_line (bool);
+  void request_completion (bool);
 
   void handle_file_name_changed (const QString& fileName,
                                  const QString& toolTip);
@@ -180,8 +198,7 @@ public slots:
   // Tells the editor to react on changed settings.
   void notice_settings (const QSettings *settings);
 
-  // Tells the ditor to dis- or enable some shortcuts
-  void set_shortcuts (bool set_shortcuts);
+  void set_shortcuts ();
 
   void handle_visibility (bool visible);
 
@@ -205,6 +222,11 @@ private slots:
   void zoom_out (bool);
   void zoom_normal (bool);
 
+protected:
+
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
+  
 private:
 
   bool is_editor_console_tabbed ();
@@ -215,6 +237,8 @@ private:
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
   QWidget *find_tab_widget (const QString& openFileName) const;
+  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                       const char *member);
 
   std::map<QString, QWidget *> editor_tab_map;
 
@@ -224,9 +248,14 @@ private:
   QToolBar *_tool_bar;
   QMenu *_debug_menu;
 
+  QAction *_new_action;
+  QAction *_new_function_action;
+  QAction *_open_action;
+
+  QAction *_upper_case_action;
+  QAction *_lower_case_action;
   QAction *_comment_selection_action;
   QAction *_uncomment_selection_action;
-
   QAction *_indent_selection_action;
   QAction *_unindent_selection_action;
 
@@ -241,6 +270,16 @@ private:
   QAction *_zoom_out_action;
   QAction *_zoom_normal_action;
 
+  QAction *_delete_start_word_action;
+  QAction *_delete_end_word_action;
+  QAction *_delete_start_line_action;
+  QAction *_delete_end_line_action;
+  QAction *_delete_line_action;
+  QAction *_copy_line_action;
+  QAction *_cut_line_action;
+  QAction *_duplicate_selection_action;
+  QAction *_transpose_line_action;
+
   QAction *_find_action;
   QAction *_goto_line_action;
   QAction *_completion_action;
@@ -252,9 +291,9 @@ private:
 
   QAction *_print_action;
   QAction *_run_action;
-  QAction *_context_run_action;
+  QAction *_run_selection_action;
 
-  QAction *_context_edit_action;
+  QAction *_edit_function_action;
   QAction *_save_action;
   QAction *_save_as_action;
   QAction *_close_action;
@@ -266,6 +305,16 @@ private:
 
   QAction *_preferences_action;
   QAction *_styles_preferences_action;
+
+  QAction *_toggle_breakpoint_action;
+  QAction *_next_breakpoint_action;
+  QAction *_previous_breakpoint_action;
+  QAction *_remove_all_breakpoints_action;
+
+  QMenu *_edit_cmd_menu;
+  QMenu *_edit_fmt_menu;
+  QMenu *_edit_nav_menu;
+  QMenu *_fileMenu;
 
   QTabWidget *_tab_widget;
 

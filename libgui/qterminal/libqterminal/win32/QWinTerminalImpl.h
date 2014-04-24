@@ -32,6 +32,8 @@ class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
 class QPoint;
+class QDragEnterEvent;
+class QDropEvent;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -88,16 +90,23 @@ protected:
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
+  void mouseDoubleClickEvent (QMouseEvent* event);
+  void mouseTripleClickEvent (QMouseEvent* event);
 
   bool eventFilter(QObject *obj, QEvent *ev);
+
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
 
 private slots:
   void scrollValueChanged (int value);
   void monitorConsole (void);
   void updateSelection (void);
+  void tripleClickTimeout (void);
 
 private:
   QConsolePrivate* d;
+  bool allowTripleClick;
 };
 
 //////////////////////////////////////////////////////////////////////////////

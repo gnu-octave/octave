@@ -144,7 +144,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
           argx = argx.reshape (dimx);
           dimy = dimy.redim (1);
           argy = argy.reshape (dimy);
-          match = ! error_state;
+          match = ! error_state && (dimx == dimy);
         }
 
       if (match)
@@ -264,6 +264,16 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 %! assert (dot (x, y, 2), [17; 53]);
 %! assert (dot (x, y, 3), [5 12; 21 32]);
 
+%% Test input validation
+%!error dot ()
+%!error dot (1)
+%!error dot (1,2,3,4)
+%!error <X and Y must be numeric> dot ({1,2}, [3,4])
+%!error <X and Y must be numeric> dot ([1,2], {3,4})
+%!error <sizes of X and Y must match> dot ([1 2], [1 2 3])
+%!error <sizes of X and Y must match> dot ([1 2]', [1 2 3]')
+%!error <sizes of X and Y must match> dot (ones (2,2), ones (2,3))
+%!error <DIM must be a valid dimension> dot ([1 2], [1 2], 0)
 */
 
 DEFUN (blkmm, args, ,

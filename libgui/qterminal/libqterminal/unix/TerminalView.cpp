@@ -212,6 +212,9 @@ void TerminalView::setVTFont(const QFont& f)
       // Disabling kerning saves some computation when rendering text.
       // font.setKerning(false);
 
+      font.setStyleStrategy (  QFont::StyleStrategy(font.styleStrategy()
+                             | QFont::ForceIntegerMetrics)  );
+
       QWidget::setFont(font);
       fontChange(font);
     }
@@ -2620,6 +2623,17 @@ void TerminalView::dropEvent(QDropEvent* event)
   //  KUrl::List urls = KUrl::List::fromMimeData(event->mimeData());
 
   QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+  {
+    foreach (QUrl url, event->mimeData ()->urls ())
+    {
+      if(dropText.length () > 0) 
+        dropText += "\n";
+      dropText  += url.toLocalFile ();
+    }
+  }
+
   /*  if (!urls.isEmpty())
   {
     for ( int i = 0 ; i < urls.count() ; i++ )

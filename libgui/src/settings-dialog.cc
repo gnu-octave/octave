@@ -118,6 +118,10 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->cb_widget_custom_style->setChecked (
     settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
 
+  // prompt on exit
+  ui->cb_prompt_to_exit->setChecked (
+    settings->value ("prompt_to_exit",false).toBool ());
+
   // Octave startup
   ui->cb_restore_octave_dir->setChecked (
                  settings->value ("restore_octave_dir",false).toBool ());
@@ -537,6 +541,9 @@ settings_dialog::write_changed_settings ()
 
   // icon size
   settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
+
+  // promp to exit
+  settings->setValue ( "prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
 
   // Octave startup
   settings->setValue ("restore_octave_dir",

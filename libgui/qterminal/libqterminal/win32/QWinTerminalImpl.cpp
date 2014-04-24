@@ -35,6 +35,9 @@ see <http://www.gnu.org/licenses/>.
 #include <QToolTip>
 #include <QCursor>
 #include <QMessageBox>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QUrl>
 
 #include <fcntl.h>
 #include <io.h>
@@ -184,6 +187,8 @@ public:
   void sendConsoleText (const QString& s);
   QRect cursorRect (void);
   void selectAll();
+  void selectWord(const QPoint& cellPos);
+  void selectLine(const QPoint& cellPos);
 
   void log (const char* fmt, ...);
 
@@ -674,6 +679,67 @@ void QConsolePrivate::selectAll()
                           m_cursorPos.y());
   updateSelection();
 }
+
+void QConsolePrivate::selectWord (const QPoint & cellpos)
+{
+  QPoint begin = cellpos;
+  QPoint end = cellpos;
+
+  int scrollOffset = m_consoleRect.top ();
+  int stride = m_consoleRect.width ();
+
+  // get begin, end in buffer offsets
+  begin.ry () -= scrollOffset;
+  end.ry () -= scrollOffset;
+
+  // loog at current clicked on char to determinate ig getting space chunk or nonspace chunk
+  if (QChar(m_buffer[begin.y ()*stride + begin.x ()].Char.UnicodeChar).isSpace () == false)
+  {
+    // from current char, go back and fwd to find start and end of block
+    while(begin.x () > 0 && 
+          QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace() == false)
+    {
+        begin.rx () --;
+    }
+
+    while(end.x () < m_consoleRect.width () && 
+          QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace() == false)
+    {
+      end.rx () ++;
+    }
+  }
+  else
+  {
+    while(begin.x () > 0 && 
+          QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace())
+    {
+      begin.rx () --;
+    }
+
+    while(end.x () < m_consoleRect.width () && 
+          QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace ())
+    {
+      end.rx () ++;
+    }
+  }
+
+  // convert console  offsets to absolute cell positions
+  begin.ry () += scrollOffset;
+  end.ry () += scrollOffset;
+
+  m_beginSelection = begin;
+  m_endSelection = end;
+
+  updateSelection ();
+}
+
+void QConsolePrivate::selectLine (const QPoint & cellpos)
+{
+  m_beginSelection = QPoint (0, cellpos.y ());
+  m_endSelection = QPoint (m_bufferSize.width ()-1, cellpos.y ());
+  updateSelection ();
+}
+
 
 void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
                                      int cx2, int cy2, int cw, int ch)
@@ -1259,12 +1325,15 @@ QConsolePrivate::cursorRect (void)
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
-    : QTerminal (parent), d (new QConsolePrivate (this))
+    : QTerminal (parent), d (new QConsolePrivate (this)),
+      allowTripleClick (false)
 {
     installEventFilter (this);
 
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent, SLOT (set_global_shortcuts (bool)));
+
+    setAcceptDrops (true);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1293,7 +1362,11 @@ void QWinTerminalImpl::mouseMoveEvent (QMouseEvent *event)
 
 void QWinTerminalImpl::mousePressEvent (QMouseEvent *event)
 {
-  if (event->button () == Qt::LeftButton)
+  if (allowTripleClick)
+    {
+      mouseTripleClickEvent (event);
+    }
+  else if (event->button () == Qt::LeftButton)
     {
       d->m_settingSelection = true;
 
@@ -1303,7 +1376,7 @@ void QWinTerminalImpl::mousePressEvent (QMouseEvent *event)
 
 void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
 {
-  if (event->button () == Qt::LeftButton)
+  if (event->button () == Qt::LeftButton && d->m_settingSelection)
     {
       d->m_endSelection = d->posToCell (event->pos ());
 
@@ -1311,6 +1384,36 @@ void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
 
       d->m_settingSelection = false;
     }
+}
+
+void QWinTerminalImpl::mouseDoubleClickEvent (QMouseEvent *event)
+{
+  if (event->button () == Qt::LeftButton)
+    {
+      // doubleclick - select word
+      d->m_settingSelection = false;
+
+      d->selectWord (d->posToCell (event->pos ()));
+
+      allowTripleClick = true;
+
+      QTimer::singleShot (QApplication::doubleClickInterval (),this,
+                     SLOT (tripleClickTimeout ()));
+
+    }
+}
+
+void QWinTerminalImpl::mouseTripleClickEvent (QMouseEvent *event)
+{
+  if (event->button () == Qt::LeftButton)
+    {
+      d->selectLine (d->posToCell (event->pos ()));
+    }
+}
+
+void QWinTerminalImpl::tripleClickTimeout ()
+{
+  allowTripleClick = false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1595,3 +1698,32 @@ QString QWinTerminalImpl::selectedText ()
   QString selection = d->getSelection ();
   return selection;
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::dragEnterEvent (QDragEnterEvent *event)
+{
+   if (event->mimeData ()->hasUrls ())
+     {
+       event->acceptProposedAction();
+     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::dropEvent (QDropEvent *event)
+{
+  QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+    {
+      foreach (QUrl url, event->mimeData ()->urls ())
+        {
+          if(dropText.length () > 0) 
+            dropText += "\n";
+          dropText  += url.toLocalFile ();
+        }
+      sendText (dropText);
+    }
+}
+

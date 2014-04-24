@@ -193,13 +193,14 @@ glps_renderer::set_font (const base_properties& props)
 
 template <typename T>
 static void
-draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data)
+draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data, float maxval)
 {
   OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*w*h);
 
-  for (int i = 0; i < 3*w*h; i++)
-    a[i] = data[i];
-
+  // Convert to GL_FLOAT as it is the only type gl2ps accepts.
+  for (unsigned int i = 0; i < 3*w*h; i++)
+    a[i] = data[i] / maxval;
+  
   gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
 }
 
@@ -207,10 +208,12 @@ void
 glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data)
 {
-  if (type == GL_UNSIGNED_SHORT)
-    ::draw_pixels (w, h, format, static_cast<const GLushort *> (data));
-  else if (type == GL_UNSIGNED_BYTE)
-    ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data));
+  // gl2psDrawPixels only supports the GL_FLOAT type.
+  // Other formats, such as uint8, must be converted first.
+  if (type == GL_UNSIGNED_BYTE)
+    ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data), 255.0f);
+  else if (type == GL_UNSIGNED_SHORT)
+    ::draw_pixels (w, h, format, static_cast<const GLushort *> (data), 65535.0f);
   else
     gl2psDrawPixels (w, h, 0, 0, format, type, data);
 }

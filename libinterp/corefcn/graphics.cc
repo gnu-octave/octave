@@ -5199,6 +5199,7 @@ axes::properties::update_axes_layout (void)
 
   Matrix viewmat = get_view ().matrix_value ();
   nearhoriz = std::abs (viewmat(1)) <= 5;
+  is2D = viewmat(1) == 90;
 
   update_ticklength ();
 }

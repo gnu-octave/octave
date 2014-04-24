@@ -873,6 +873,8 @@ void
 opengl_renderer::draw_axes_boxes (const axes::properties& props)
 {
   bool xySym = props.get_xySym ();
+  bool layer2Dtop = props.get_layer2Dtop ();
+  bool is2d = props.get_is2D ();
   double xPlane = props.get_xPlane ();
   double yPlane = props.get_yPlane ();
   double zPlane = props.get_zPlane ();
@@ -899,6 +901,10 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
 
       // X box
       set_color (props.get_xcolor_rgb ());
+
+      if (layer2Dtop)
+        std::swap (zpTick, zpTickN);
+
       glVertex3d (xPlaneN, ypTick, zpTick);
       glVertex3d (xPlane, ypTick, zpTick);
 
@@ -906,10 +912,13 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
         {
           glVertex3d (xPlaneN, ypTickN, zpTick);
           glVertex3d (xPlane, ypTickN, zpTick);
-          glVertex3d (xPlaneN, ypTickN, zpTickN);
-          glVertex3d (xPlane, ypTickN, zpTickN);
-          glVertex3d (xPlaneN, ypTick, zpTickN);
-          glVertex3d (xPlane, ypTick, zpTickN);
+          if (! is2d)
+            {
+              glVertex3d (xPlaneN, ypTickN, zpTickN);
+              glVertex3d (xPlane, ypTickN, zpTickN);
+              glVertex3d (xPlaneN, ypTick, zpTickN);
+              glVertex3d (xPlane, ypTick, zpTickN);
+            }
         }
 
       // Y box
@@ -921,10 +930,14 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
         {
           glVertex3d (xpTickN, yPlaneN, zpTick);
           glVertex3d (xpTickN, yPlane, zpTick);
-          glVertex3d (xpTickN, yPlaneN, zpTickN);
-          glVertex3d (xpTickN, yPlane, zpTickN);
-          glVertex3d (xpTick, yPlaneN, zpTickN);
-          glVertex3d (xpTick, yPlane, zpTickN);
+
+          if (! is2d)
+            {
+              glVertex3d (xpTickN, yPlaneN, zpTickN);
+              glVertex3d (xpTickN, yPlane, zpTickN);
+              glVertex3d (xpTick, yPlaneN, zpTickN);
+              glVertex3d (xpTick, yPlane, zpTickN);
+            }
         }
 
       // Z box

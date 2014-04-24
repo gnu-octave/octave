@@ -3666,6 +3666,7 @@ public:
     bool get_x2Dtop (void) const { return x2Dtop; }
     bool get_y2Dright (void) const { return y2Dright; }
     bool get_layer2Dtop (void) const { return layer2Dtop; }
+    bool get_is2D (void) const { return is2D; }
     bool get_xySym (void) const { return xySym; }
     bool get_xyzSym (void) const { return xyzSym; }
     bool get_zSign (void) const { return zSign; }
@@ -3704,7 +3705,7 @@ public:
     double fx, fy, fz;
     double xticklen, yticklen, zticklen;
     double xtickoffset, ytickoffset, ztickoffset;
-    bool x2Dtop, y2Dright, layer2Dtop;
+    bool x2Dtop, y2Dright, layer2Dtop, is2D;
     bool xySym, xyzSym, zSign, nearhoriz;
 
 #if HAVE_FREETYPE

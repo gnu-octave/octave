@@ -263,7 +263,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   // Allow identifiers as all digits so we can load lists saved by
   // earlier versions of Octave.
 
-  if (! ident_valid )
+  if (! ident_valid)
     {
       // fix the identifier, replacing invalid chars with underscores
       vname = make_valid_identifier (vname);
@@ -616,7 +616,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
       len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, 0, 0);
       var_name.resize (len+1);
-      H5Gget_objname_by_idx( hs.file_id, hs.current_item, &var_name[0], len+1);
+      H5Gget_objname_by_idx (hs.file_id, hs.current_item, &var_name[0], len+1);
 
       for (int i = argv_idx; i < argc; i++)
         {

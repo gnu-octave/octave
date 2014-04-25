@@ -41,7 +41,7 @@ is_valid_bsxfun (const std::string& name, const dim_vector& dx,
       octave_idx_type xk = dx(i);
       octave_idx_type yk = dy(i);
       // Check the three conditions for valid bsxfun dims
-      if (! ( (xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
+      if (! ((xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
         return false;
     }
 
@@ -71,7 +71,7 @@ is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
       octave_idx_type xk = dx(i);
 
       // Only two valid canditions to check; can't stretch rk
-      if (! ( (rk == xk) || (rk > 1 && xk == 1)))
+      if (! ((rk == xk) || (rk > 1 && xk == 1)))
         return false;
     }
 

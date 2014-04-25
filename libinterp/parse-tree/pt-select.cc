@@ -123,7 +123,7 @@ tree_switch_case::label_matches (const octave_value& val)
 {
   octave_value label_value = label->rvalue1 ();
 
-  if (! error_state && label_value.is_defined () )
+  if (! error_state && label_value.is_defined ())
     {
       if (label_value.is_cell ())
         {

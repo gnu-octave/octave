@@ -302,7 +302,7 @@ RT do_rightdiv_sm_dm (const SM& a, const DM& d)
   using std::min;
   const octave_idx_type nc = min (d_nr, a_nc);
 
-  if ( ! mx_div_conform (a, d))
+  if (! mx_div_conform (a, d))
     return RT ();
 
   const octave_idx_type nz = a.nnz ();
@@ -569,7 +569,7 @@ RT do_leftdiv_dm_sm (const DM& d, const SM& a)
   using std::min;
   const octave_idx_type nr = min (d_nc, a_nr);
 
-  if ( ! mx_leftdiv_conform (d, a))
+  if (! mx_leftdiv_conform (d, a))
     return RT ();
 
   const octave_idx_type nz = a.nnz ();

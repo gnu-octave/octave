@@ -177,7 +177,7 @@ values of @var{p} @var{q} as vector values.\n\
         {
           std::string tmp = args(2).string_value ();
 
-          if (! error_state )
+          if (! error_state)
             {
               if (tmp.compare ("vector") == 0)
                 vecout = true;

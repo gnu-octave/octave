@@ -844,7 +844,7 @@ octave_struct::load_ascii (std::istream& is)
               success = false;
             }
         }
-      else if (len == 0 )
+      else if (len == 0)
         map = octave_map (dv);
       else
         panic_impossible ();

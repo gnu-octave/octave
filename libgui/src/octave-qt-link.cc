@@ -100,7 +100,7 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
     tr ("File\n%1\ndoes not exist. Do you want to create it?").
     arg (QDir::currentPath () + QDir::separator ()
          + QString::fromStdString (file)),
-    tr ("Octave Editor"), "quest", btn, tr ("Yes"), role );
+    tr ("Octave Editor"), "quest", btn, tr ("Yes"), role);
 
   // Wait while the user is responding to message box.
   uiwidget_creator.wait ();

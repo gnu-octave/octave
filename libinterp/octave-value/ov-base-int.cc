@@ -266,7 +266,7 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 template <class T>
 bool
 octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format )
+                                        oct_mach_info::float_format)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))

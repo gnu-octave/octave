@@ -467,7 +467,7 @@ void Figure::updateBoundingBox (bool internal, int flags)
       if (flags & UpdateBoundingBoxSize)
         r.setSize (win->frameGeometry ().size ());
 
-      if (r.isValid () && r != m_outerRect )
+      if (r.isValid () && r != m_outerRect)
         {
           //qDebug() << "outer rect changed:" << m_outerRect << "->>" << r;
           m_outerRect = r;

@@ -141,7 +141,7 @@ workspace_model::data (const QModelIndex& idx, int role) const
 
       if (role == Qt::DisplayRole
           || (idx.column () == 0 && role == Qt::EditRole)
-          || (idx.column () == 0 && role == Qt::ToolTipRole) )
+          || (idx.column () == 0 && role == Qt::ToolTipRole))
         {
           switch (idx.column ())
             {

@@ -303,7 +303,7 @@ used per default.\n\
                   if (args(1).is_real_scalar ())
                     {
                       int nthreads = args(1).int_value();
-                      if ( nthreads >= 1)
+                      if (nthreads >= 1)
                         {
 #if defined (HAVE_FFTW3_THREADS)
                           octave_fftw_planner::threads (nthreads);

@@ -439,7 +439,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
   unsigned int upper;
   int32_t temp;
 
-  if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
+  if (! is.read (reinterpret_cast<char *> (&temp), 4))
     goto data_read_error;
 
   if (swap)
@@ -456,7 +456,7 @@ read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes,
     }
   else
     {
-      if (! is.read (reinterpret_cast<char *> (&temp), 4 ))
+      if (! is.read (reinterpret_cast<char *> (&temp), 4))
         goto data_read_error;
       if (swap)
         swap_bytes<4> (&temp);
@@ -701,7 +701,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     if (len)
       {
-        if (! is.read (name, len ))
+        if (! is.read (name, len))
           goto data_read_error;
 
         is.seekg (tmp_pos + static_cast<std::streamoff>
@@ -1163,7 +1163,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
           if (len)
             {
-              if (! is.read (name, len ))
+              if (! is.read (name, len))
                 goto data_read_error;
 
               is.seekg (tmp_pos + static_cast<std::streamoff>
@@ -1193,7 +1193,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             goto data_read_error;
           }
 
-        if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len ))
+        if (! is.read (reinterpret_cast<char *> (&field_name_length), fn_len))
           goto data_read_error;
 
         if (swap)

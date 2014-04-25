@@ -162,7 +162,7 @@ information.\n\
         {
           std::string tmp = args(n++).string_value ();
 
-          if (! error_state )
+          if (! error_state)
             {
               if (tmp.compare ("vector") == 0)
                 vecout = true;
@@ -174,7 +174,7 @@ information.\n\
         {
           Matrix tmp = args(n++).matrix_value ();
 
-          if (! error_state )
+          if (! error_state)
             {
               if (!issparse)
                 error ("lu: can not define pivoting threshold THRES for full matrices");
@@ -211,7 +211,7 @@ information.\n\
 
           SparseMatrix m = arg.sparse_matrix_value ();
 
-          if ( nargout < 4 )
+          if (nargout < 4)
             {
 
               ColumnVector Qinit;
@@ -220,7 +220,7 @@ information.\n\
                 Qinit (i) = i;
               SparseLU fact (m, Qinit, thres, false, true);
 
-              if ( nargout < 2 )
+              if (nargout < 2)
                   retval(0) = fact.Y ();
               else
                 {
@@ -233,15 +233,15 @@ information.\n\
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseMatrix L = fact.L ();
-                  if ( nargout < 3 )
+                  if (nargout < 3)
                       retval(0)
-                        = octave_value ( P.transpose () * L,
+                        = octave_value (P.transpose () * L,
                             MatrixType (MatrixType::Permuted_Lower,
                                         nr, fact.row_perm ()));
                   else
                     {
                       retval(0) = L;
-                      if ( vecout )
+                      if (vecout)
                         retval(2) = fact.Pr_vec();
                       else
                         retval(2) = P;
@@ -279,7 +279,7 @@ information.\n\
         {
           SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
 
-          if ( nargout < 4 )
+          if (nargout < 4)
             {
 
               ColumnVector Qinit;
@@ -288,7 +288,7 @@ information.\n\
                 Qinit (i) = i;
               SparseComplexLU fact (m, Qinit, thres, false, true);
 
-              if ( nargout < 2 )
+              if (nargout < 2)
 
                   retval(0) = fact.Y ();
 
@@ -303,15 +303,15 @@ information.\n\
 
                   PermMatrix P = fact.Pr_mat ();
                   SparseComplexMatrix L = fact.L ();
-                  if ( nargout < 3 )
+                  if (nargout < 3)
                       retval(0)
-                        = octave_value ( P.transpose () * L,
+                        = octave_value (P.transpose () * L,
                             MatrixType (MatrixType::Permuted_Lower,
                                         nr, fact.row_perm ()));
                   else
                     {
                       retval(0) = L;
-                      if ( vecout )
+                      if (vecout)
                         retval(2) = fact.Pr_vec();
                       else
                         retval(2) = P;

@@ -40,7 +40,7 @@ public:
 
   virtual ~file_editor_interface () { }
 
-  virtual QMenu *get_mru_menu ( ) = 0;
+  virtual QMenu *get_mru_menu () = 0;
   virtual QMenu *debug_menu () = 0;
   virtual QToolBar *toolbar () = 0;
 

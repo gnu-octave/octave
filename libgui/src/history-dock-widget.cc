@@ -206,7 +206,7 @@ history_dock_widget::copyClipboard ()
   if (_filter_line_edit->hasFocus () && _filter_line_edit->hasSelectedText ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
-      clipboard->setText ( _filter_line_edit->selectedText ());
+      clipboard->setText (_filter_line_edit->selectedText ());
     }
 }
 

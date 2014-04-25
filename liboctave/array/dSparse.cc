@@ -777,7 +777,7 @@ atan2 (const SparseMatrix& x, const SparseMatrix& y)
               octave_idx_type  jb_max = y.cidx (i+1);
               bool jb_lt_max = jb < jb_max;
 
-              while (ja_lt_max || jb_lt_max )
+              while (ja_lt_max || jb_lt_max)
                 {
                   octave_quit ();
                   if ((! jb_lt_max) ||
@@ -789,8 +789,8 @@ atan2 (const SparseMatrix& x, const SparseMatrix& y)
                       ja++;
                       ja_lt_max= ja < ja_max;
                     }
-                  else if (( !ja_lt_max ) ||
-                           (jb_lt_max && (y.ridx (jb) < x.ridx (ja)) ) )
+                  else if ((! ja_lt_max) ||
+                           (jb_lt_max && (y.ridx (jb) < x.ridx (ja))))
                     {
                       jb++;
                       jb_lt_max= jb < jb_max;
@@ -7821,7 +7821,7 @@ min (const SparseMatrix& a, const SparseMatrix& b)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
               if ((! jb_lt_max) ||
@@ -7837,8 +7837,8 @@ min (const SparseMatrix& a, const SparseMatrix& b)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max) ||
+                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   double tmp = xmin (0., b.data (jb));
                   if (tmp != 0.)
@@ -7972,7 +7972,7 @@ max (const SparseMatrix& a, const SparseMatrix& b)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
               if ((! jb_lt_max) ||
@@ -7988,8 +7988,8 @@ max (const SparseMatrix& a, const SparseMatrix& b)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max) ||
+                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   double tmp = xmax (0., b.data (jb));
                   if (tmp != 0.)

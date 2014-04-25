@@ -230,7 +230,7 @@ Array index or function argument delimiter.\n\
 
   pair_type (")",
     "-*- texinfo -*-\n\
-@deftypefn {Operator} {} )\n\
+@deftypefn {Operator} {})\n\
 Array index or function argument delimiter.\n\
 @end deftypefn"),
 

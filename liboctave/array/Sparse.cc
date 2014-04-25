@@ -2435,7 +2435,7 @@ Sparse<T>::diag (octave_idx_type k) const
                 if (elem (i, i+k) != 0.)
                   nel++;
             }
-          else if ( k < 0)
+          else if (k < 0)
             {
               for (octave_idx_type i = 0; i < ndiag; i++)
                 if (elem (i-k, i) != 0.)
@@ -2465,7 +2465,7 @@ Sparse<T>::diag (octave_idx_type k) const
                     }
                 }
             }
-          else if ( k < 0)
+          else if (k < 0)
             {
               for (octave_idx_type i = 0; i < ndiag; i++)
                 {

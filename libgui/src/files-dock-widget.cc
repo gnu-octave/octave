@@ -551,7 +551,7 @@ files_dock_widget::contextmenu_open (bool)
   QItemSelectionModel *m = _file_tree_view->selectionModel ();
   QModelIndexList rows = m->selectedRows ();
 
-  for ( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     {
       QFileInfo file = _file_system_model->fileInfo (*it);
       if (file.exists ())
@@ -661,7 +661,7 @@ files_dock_widget::contextmenu_delete (bool)
   QItemSelectionModel *m = _file_tree_view->selectionModel ();
   QModelIndexList rows = m->selectedRows ();
 
-  for ( QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
+  for (QModelIndexList::iterator it = rows.begin (); it != rows.end (); it++)
     {
       QModelIndex index = *it;
 

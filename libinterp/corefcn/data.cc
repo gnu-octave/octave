@@ -2320,8 +2320,8 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4])
 %!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4])
 
-%!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]) )
-%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)) )
+%!assert ([zeros(3,2,2); ones(1,2,2)], repmat ([0;0;0;1],[1,2,2]))
+%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat (zeros (3,2,2), ones (1,2,2)))
 
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4])
 %!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4])

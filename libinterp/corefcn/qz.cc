@@ -928,7 +928,7 @@ compatibility with @sc{matlab}.\n\
                   std::cout << "  single gen eig:" << std::endl;
                   std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
                             << std::endl;
-                  std::cout << "  betar( " << jj << ") = " << bb(jj,jj)
+                  std::cout << "  betar(" << jj << ") = " << bb(jj,jj)
                             << std::endl;
                   std::cout << "  alphai(" << jj << ") = 0" << std::endl;
 #endif
@@ -1277,9 +1277,9 @@ compatibility with @sc{matlab}.\n\
 %! [aa, bb, q, z, v, w, lambda] = qz (a, b);
 %! sz = length (lambda);
 %! observed = (b * v * diag ([lambda;0])) (:, 1:sz);
-%! assert ( (a*v) (:, 1:sz), observed, norm (observed) * 1e-14);
+%! assert ((a*v)(:, 1:sz), observed, norm (observed) * 1e-14);
 %! observed = (diag ([lambda;0]) * w' * b) (1:sz, :);
-%! assert ( (w'*a) (1:sz, :) , observed, norm (observed) * 1e-13);
+%! assert ((w'*a)(1:sz, :) , observed, norm (observed) * 1e-13);
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
 

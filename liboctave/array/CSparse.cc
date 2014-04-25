@@ -7708,7 +7708,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
               if ((! jb_lt_max) ||
@@ -7724,8 +7724,8 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max) ||
+                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   Complex tmp = xmin (0., b.data (jb));
                   if (tmp != 0.)
@@ -7826,7 +7826,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
           octave_idx_type  jb_max = b.cidx (i+1);
           bool jb_lt_max = jb < jb_max;
 
-          while (ja_lt_max || jb_lt_max )
+          while (ja_lt_max || jb_lt_max)
             {
               octave_quit ();
               if ((! jb_lt_max) ||
@@ -7842,8 +7842,8 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
                   ja++;
                   ja_lt_max= ja < ja_max;
                 }
-              else if (( !ja_lt_max ) ||
-                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja)) ) )
+              else if ((! ja_lt_max) ||
+                       (jb_lt_max && (b.ridx (jb) < a.ridx (ja))))
                 {
                   Complex tmp = xmax (0., b.data (jb));
                   if (tmp != 0.)

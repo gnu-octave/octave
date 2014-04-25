@@ -169,7 +169,7 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       // there are elements to be found using the count that we want
       // to find.
       for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
-        for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++ )
+        for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++)
           {
             OCTAVE_QUIT;
             if (direction < 0 && i < nz - count)

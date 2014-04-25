@@ -568,7 +568,7 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
 #if HAVE_HDF5_18
   data_hid = H5Dopen (group_hid, "nr", H5P_DEFAULT);

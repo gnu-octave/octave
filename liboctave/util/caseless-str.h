@@ -57,16 +57,16 @@ public:
         char lp1 = std::tolower (*p1);
         char lp2 = std::tolower (*p2);
 
-        if ( lp1 > lp2 )
+        if (lp1 > lp2)
           return false;
-        if ( lp1 < lp2)
+        if (lp1 < lp2)
           return true;
 
         p1++;
         p2++;
       }
 
-    if ( length () >= s.length ())
+    if (length () >= s.length ())
       return false;
     else
       return true;

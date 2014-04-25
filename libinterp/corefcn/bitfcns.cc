@@ -595,7 +595,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
           int bits_in_type = sizeof (double)
                              * std::numeric_limits<unsigned char>::digits;
           NDArray m = m_arg.array_value ();
-          DO_BITSHIFT ( );
+          DO_BITSHIFT ();
         }
       else if (cname == "single")
         {

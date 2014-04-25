@@ -1976,7 +1976,7 @@ void
 main_window::show_gui_info (void)
 {
   QString gui_info
-    ( QObject::tr ("<p><strong>A Note about Octave's New GUI</strong></p>"
+    (QObject::tr ("<p><strong>A Note about Octave's New GUI</strong></p>"
          "<p>One of the biggest new features for Octave 3.8 is a graphical "
          "user interface.  It is the one thing that users have requested "
          "most often over the last few years and now it is almost ready.  "
@@ -2373,7 +2373,7 @@ main_window::confirm_exit_octave ()
 
   QSettings *settings = resource_manager::get_settings ();
 
-  if (settings->value ("prompt_to_exit", false ).toBool())
+  if (settings->value ("prompt_to_exit", false).toBool ())
     {
       int ans = QMessageBox::question (this, tr ("Octave"),
          tr ("Are you sure you want to exit Octave?"),

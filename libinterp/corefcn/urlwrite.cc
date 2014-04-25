@@ -391,7 +391,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
         }
 
 
-      if (param.numel () % 2 == 1 )
+      if (param.numel () % 2 == 1)
         {
           error ("urlwrite: number of elements in PARAM must be even");
           return retval;
@@ -539,7 +539,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
           return retval;
         }
 
-      if (param.numel () % 2 == 1 )
+      if (param.numel () % 2 == 1)
         {
           error ("urlread: number of elements in PARAM must be even");
           return retval;

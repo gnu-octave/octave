@@ -66,7 +66,7 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   _dock_button->setIconSize (QSize (12,12));
 
   _close_action = new QAction
-                   (QIcon (":/actions/icons/widget-close.png"), "", this );
+                   (QIcon (":/actions/icons/widget-close.png"), "", this);
   _close_action-> setToolTip (tr ("Hide widget"));
   connect (_close_action, SIGNAL (triggered (bool)),
            this, SLOT (change_visibility (bool)));
@@ -178,7 +178,7 @@ octave_dock_widget::make_window ()
   _dock_action->setIcon (QIcon (":/actions/icons/widget-dock"+_icon_color+".png"));
   _dock_action->setToolTip (tr ("Dock widget"));
 
-  // restore the last geometry( when floating
+  // restore the last geometry when floating
   setGeometry (settings->value ("DockWidgets/" + objectName ()
                        + "_floating_geometry",QRect(50,100,480,480)).toRect ());
 

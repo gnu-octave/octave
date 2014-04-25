@@ -151,10 +151,10 @@ public:
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (matrix.matrix_value ( )); }
+  { return ComplexMatrix (matrix.matrix_value ()); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (matrix.matrix_value ( )); }
+  { return FloatComplexMatrix (matrix.matrix_value ()); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (matrix); }

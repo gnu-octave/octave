@@ -456,7 +456,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type  jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
-            while (ja_lt_max || jb_lt_max ) \
+            while (ja_lt_max || jb_lt_max) \
               { \
                 octave_quit (); \
                 if ((! jb_lt_max) || \
@@ -468,8 +468,8 @@ along with Octave; see the file COPYING.  If not, see
                     ja++; \
                     ja_lt_max= ja < ja_max; \
                   } \
-                else if (( !ja_lt_max ) || \
-                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)) ) ) \
+                else if ((! ja_lt_max) || \
+                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)))) \
                   { \
                     r.ridx (jx) = m2.ridx (jb); \
                     r.data (jx) = 0. OP m2.data (jb); \
@@ -564,7 +564,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type  jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
-            while (ja_lt_max || jb_lt_max ) \
+            while (ja_lt_max || jb_lt_max) \
               { \
                 octave_quit (); \
                 if ((! jb_lt_max) || \
@@ -572,8 +572,8 @@ along with Octave; see the file COPYING.  If not, see
                   { \
                      ja++; ja_lt_max= ja < ja_max; \
                   } \
-                else if (( !ja_lt_max ) || \
-                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)) ) ) \
+                else if ((! ja_lt_max) || \
+                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)))) \
                   { \
                      jb++; jb_lt_max= jb < jb_max; \
                   } \
@@ -680,7 +680,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type  jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
-            while (ja_lt_max || jb_lt_max ) \
+            while (ja_lt_max || jb_lt_max) \
               { \
                 octave_quit (); \
                 if ((! jb_lt_max) || \
@@ -691,8 +691,8 @@ along with Octave; see the file COPYING.  If not, see
                     ja++; \
                     ja_lt_max= ja < ja_max; \
                   } \
-                else if (( !ja_lt_max ) || \
-                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)) ) ) \
+                else if ((! ja_lt_max) || \
+                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)))) \
                   { \
                     /* keep those kludges coming */ \
                     r.elem (m2.ridx (jb),i) = Complex () OP m2.data (jb);  \
@@ -1836,7 +1836,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #define SPARSE_ANY_OP(DIM) SPARSE_ANY_ALL_OP (DIM, false, false, !=, true)
 
-#define SPARSE_SPARSE_MUL( RET_TYPE, RET_EL_TYPE, EL_TYPE ) \
+#define SPARSE_SPARSE_MUL(RET_TYPE, RET_EL_TYPE, EL_TYPE) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -2005,7 +2005,7 @@ along with Octave; see the file COPYING.  If not, see
         } \
     }
 
-#define SPARSE_FULL_MUL( RET_TYPE, EL_TYPE, ZERO ) \
+#define SPARSE_FULL_MUL(RET_TYPE, EL_TYPE, ZERO) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -2040,7 +2040,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     }
 
-#define SPARSE_FULL_TRANS_MUL( RET_TYPE, EL_TYPE, ZERO, CONJ_OP ) \
+#define SPARSE_FULL_TRANS_MUL(RET_TYPE, EL_TYPE, ZERO, CONJ_OP) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -2076,7 +2076,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     }
 
-#define FULL_SPARSE_MUL( RET_TYPE, EL_TYPE, ZERO ) \
+#define FULL_SPARSE_MUL(RET_TYPE, EL_TYPE, ZERO) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \
@@ -2112,7 +2112,7 @@ along with Octave; see the file COPYING.  If not, see
       return retval; \
     }
 
-#define FULL_SPARSE_MUL_TRANS( RET_TYPE, EL_TYPE, ZERO, CONJ_OP ) \
+#define FULL_SPARSE_MUL_TRANS(RET_TYPE, EL_TYPE, ZERO, CONJ_OP) \
   octave_idx_type nr = m.rows (); \
   octave_idx_type nc = m.cols (); \
   \

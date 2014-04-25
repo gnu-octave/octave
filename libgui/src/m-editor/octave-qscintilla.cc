@@ -115,7 +115,7 @@ octave_qscintilla::context_run ()
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 {
-  QMenu *context_menu = createStandardContextMenu ( );  // standard menu
+  QMenu *context_menu = createStandardContextMenu ();  // standard menu
 
   // the menu's position
   QPoint global_pos, local_pos;
@@ -203,7 +203,7 @@ octave_qscintilla::contextmenu_run (bool)
 {
   QStringList commands = selectedText ().split (QRegExp("[\r\n]"),
                                                 QString::SkipEmptyParts);
-  for (int i = 0; i < commands.size (); i++ )
+  for (int i = 0; i < commands.size (); i++)
     emit execute_command_in_terminal_signal (commands.at (i));
 }
 

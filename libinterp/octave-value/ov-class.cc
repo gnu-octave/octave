@@ -1183,10 +1183,10 @@ octave_class::reconstruct_parents (void)
     {
       std::string  key = map.key (p);
       Cell         val = map.contents (p);
-      if ( val(0).is_object () )
+      if (val(0).is_object ())
         {
           dbgstr = "blork";
-          if ( key == val(0).class_name () )
+          if (key == val(0).class_name ())
             {
               might_have_inheritance = true;
               dbgstr = "cork";
@@ -1325,7 +1325,7 @@ octave_class::load_ascii (std::istream& is)
                   success = false;
                 }
             }
-          else if (len == 0 )
+          else if (len == 0)
             {
               map = octave_map (dim_vector (1, 1));
               c_name = classname;
@@ -1469,7 +1469,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           success = false;
         }
     }
-  else if (len == 0 )
+  else if (len == 0)
     map = octave_map (dim_vector (1, 1));
   else
     panic_impossible ();

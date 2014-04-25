@@ -1227,7 +1227,7 @@ arrayfun (@@str2num, [1234],\n\
       // fewer polymorphic function calls as the function gets called
       // for each value of the array.
 
-      if (! symbol_table_lookup )
+      if (! symbol_table_lookup)
         {
           if (func.is_function_handle ())
             {

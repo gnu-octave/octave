@@ -3633,7 +3633,7 @@ ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
   double sqrt_eps = sqrt (std::numeric_limits<double>::epsilon ());
   if (m < sqrt_eps)
     {
-      // For small m, ( Abramowitz and Stegun, Section 16.13 )
+      // For small m, (Abramowitz and Stegun, Section 16.13)
       si_u = sin (u);
       co_u = cos (u);
       t = 0.25*m*(u - si_u*co_u);
@@ -3643,7 +3643,7 @@ ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
     }
   else if ((1 - m) < sqrt_eps)
     {
-      // For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 )
+      // For m1 = (1-m) small (Abramowitz and Stegun, Section 16.15)
       m1 = 1 - m;
       si_u = sinh (u);
       co_u = cosh (u);
@@ -3655,8 +3655,8 @@ ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
     }
   else
     {
-      //  Arithmetic-Geometric Mean (AGM) algorithm
-      //    ( Abramowitz and Stegun, Section 16.4 )
+      // Arithmetic-Geometric Mean (AGM) algorithm
+      //   (Abramowitz and Stegun, Section 16.4)
       a[0] = 1;
       b    = sqrt (1 - m);
       c[0] = sqrt (m);

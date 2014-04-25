@@ -155,7 +155,7 @@ sparse matrices.\n\
     {
       std::string tmp = args(n++).string_value ();
 
-      if (! error_state )
+      if (! error_state)
         {
           if (tmp.compare ("vector") == 0)
             vecout = true;

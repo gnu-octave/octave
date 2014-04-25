@@ -291,7 +291,7 @@ public:
     //returns the number of visible menu items
     int len = menubar->size ();
     int n = 0;
-    for (int t = 0; t < len; t++ )
+    for (int t = 0; t < len; t++)
       {
         const Fl_Menu_Item *m = static_cast<const Fl_Menu_Item*> (&
                                 (menubar->menu ()[t]));
@@ -326,7 +326,7 @@ public:
     // Kai Habel (14.10.2010)
 
     std::string menupath;
-    for (int t = 0; t < menubar->size (); t++ )
+    for (int t = 0; t < menubar->size (); t++)
       {
         Fl_Menu_Item *m = const_cast<Fl_Menu_Item*> (&(menubar->menu ()[t]));
         if (m->submenu ())
@@ -336,7 +336,7 @@ public:
               menupath += "/";
             menupath += m->label ();
 
-            if (menupath.compare (findname) == 0 )
+            if (menupath.compare (findname) == 0)
               return (t);
           }
         else
@@ -1056,7 +1056,7 @@ private:
   void pixel2pos (const graphics_handle& ax, int px, int py, double& xx,
                   double& yy) const
   {
-    pixel2pos ( gh_manager::get_object (ax), px, py, xx, yy);
+    pixel2pos (gh_manager::get_object (ax), px, py, xx, yy);
   }
 
   void pixel2pos (graphics_object ax, int px, int py, double& xx,
@@ -1072,7 +1072,7 @@ private:
       }
   }
 
-  graphics_handle pixel2axes_or_ca (int px, int py )
+  graphics_handle pixel2axes_or_ca (int px, int py)
   {
     Matrix kids = fp.get_children ();
     int len = kids.length ();
@@ -1464,7 +1464,7 @@ private:
 
             if (Fl::event_button () == 1)
               {
-                if ( Fl::event_clicks () == 1)
+                if (Fl::event_clicks () == 1)
                   {
                     if (ax_obj && ax_obj.isa ("axes"))
                       {

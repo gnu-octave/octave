@@ -182,7 +182,7 @@ webinfo::addNewTab (const QString& name)
   _text_browser->show ();
 
   connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this,
-           SLOT (link_clicked (const QUrl &)) );
+           SLOT (link_clicked (const QUrl &)));
   disconnect(_tab_bar, SIGNAL (currentChanged(int)), this,
              SLOT (current_tab_changed (int)));
 

@@ -77,7 +77,7 @@ QIODevice *
 parser::open_file (QFileInfo & file_info)
 {
   QIODevice *iodevice = 0;
-  if ( _compressors_map.contains(file_info.suffix ()))
+  if (_compressors_map.contains (file_info.suffix ()))
     {
       QProcess gzip;
       gzip.start (_compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ()));
@@ -277,7 +277,7 @@ replace_links (QString& text)
   QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.]+)");
   int i = 0, f;
 
-  while ( (i = re.indexIn (text,i)) != -1)
+  while ((i = re.indexIn (text,i)) != -1)
     {
       QString type     = re.cap (1);
       QString note     = re.cap (3);
@@ -330,7 +330,7 @@ replace_colons (QString& text)
 {
   QRegExp re ("`([^']+)'");
   int i = 0, f;
-  while ( (i = re.indexIn (text, i)) != -1)
+  while ((i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
       QString bold = "<font style=\"color:SteelBlue;font-weight:bold\">" + t +
@@ -436,7 +436,7 @@ parser::parse_info_map ()
       while (! (nodeText=get_next_node (io)).isEmpty () && foundCount < 2)
         {
           QString first_line = get_first_line (nodeText);
-          if (first_line.startsWith ("Tag") )
+          if (first_line.startsWith ("Tag"))
             {
               foundCount++;
               int pos = 0;
@@ -471,7 +471,7 @@ parser::parse_info_map ()
               foundCount++;
               int pos = 0;
 
-              while ( (pos = re_files.indexIn (nodeText, pos)) != -1)
+              while ((pos = re_files.indexIn (nodeText, pos)) != -1)
                 {
                   QString fileCap = re_files.cap (1).trimmed ();
                   int index = re_files.cap (2).toInt ();
@@ -539,7 +539,7 @@ replace (QString& text, const QRegExp& re, const QString& after)
 {
   int pos = 0;
 
-  while ( (pos = re.indexIn (text, pos)) != -1)
+  while ((pos = re.indexIn (text, pos)) != -1)
     {
       QString cap = text.mid (pos,re.matchedLength ());
       QString a (after);
@@ -579,7 +579,7 @@ parser::global_search (const QString& text, int max_founds)
         }
 
       QString node_text;
-      while ( !(node_text = get_next_node (io)).isEmpty ())
+      while (! (node_text = get_next_node (io)).isEmpty ())
         {
           QString firstLine = get_first_line (node_text);
           QString node = get_node_name (node_text);

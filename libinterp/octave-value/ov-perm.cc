@@ -325,7 +325,7 @@ octave_perm_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_perm_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format )
+                                 oct_mach_info::float_format)
 {
   int32_t sz;
   bool colp;

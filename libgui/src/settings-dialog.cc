@@ -136,7 +136,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->customFileEditor->setText (
     settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (
-    settings->value ("editor/showLineNumbers",true).toBool () );
+    settings->value ("editor/showLineNumbers",true).toBool ());
 
   default_var = QColor (240, 240, 240);
   QColor setting_color = settings->value ("editor/highlight_current_line_color",
@@ -148,14 +148,14 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->editor_highlightCurrentLine, SIGNAL (toggled (bool)),
            _editor_current_line_color, SLOT (setEnabled (bool)));
   ui->editor_highlightCurrentLine->setChecked (
-    settings->value ("editor/highlightCurrentLine",true).toBool () );
+    settings->value ("editor/highlightCurrentLine",true).toBool ());
   ui->editor_long_line_marker->setChecked (
     settings->value ("editor/long_line_marker",true).toBool ());
   ui->editor_long_line_column->setValue (
     settings->value ("editor/long_line_column",80).toInt ());
 
   ui->editor_codeCompletion->setChecked (
-    settings->value ("editor/codeCompletion", true).toBool () );
+    settings->value ("editor/codeCompletion", true).toBool ());
   ui->editor_spinbox_ac_threshold->setValue (
     settings->value ("editor/codeCompletion_threshold",2).toInt ());
   ui->editor_checkbox_ac_keywords->setChecked (
@@ -195,7 +195,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
-    settings->value ("terminal/fontName","Courier New").toString ()) );
+    settings->value ("terminal/fontName","Courier New").toString ()));
   ui->terminal_fontSize->setValue (
     settings->value ("terminal/fontSize", 10).toInt ());
   ui->terminal_history_buffer->setValue (
@@ -254,7 +254,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 
   int currentIndex = 0;
   QString proxyTypeString = settings->value ("proxyType").toString ();
-  while ( (currentIndex < ui->proxyType->count ())
+  while ((currentIndex < ui->proxyType->count ())
           && (ui->proxyType->currentText () != proxyTypeString))
     {
       currentIndex++;
@@ -543,7 +543,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
 
   // promp to exit
-  settings->setValue ( "prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
+  settings->setValue ("prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
 
   // Octave startup
   settings->setValue ("restore_octave_dir",
@@ -639,7 +639,7 @@ settings_dialog::write_changed_settings ()
   settings->setValue ("terminal/focus_after_command",
                       ui->terminal_focus_command->isChecked ());
   settings->setValue ("terminal/history_buffer",
-                      ui->terminal_history_buffer->value() );
+                      ui->terminal_history_buffer->value ());
 
   // the cursor
   QString cursorType;

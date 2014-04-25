@@ -432,7 +432,7 @@ Undocumented internal function.\n\
 
 DEFUN (__octave_link_show_doc__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __octave_link_show_doc__ ( @var{filename} )\n\
+@deftypefn {Built-in Function} {} __octave_link_show_doc__ (@var{filename})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

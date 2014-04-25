@@ -707,55 +707,55 @@ void
 file_editor::request_delete_start_word (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteWordLeft);
+                                QsciScintillaBase::SCI_DELWORDLEFT);
 }
 void
 file_editor::request_delete_end_word (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteWordRight);
+                                QsciScintillaBase::SCI_DELWORDRIGHT);
 }
 void
 file_editor::request_delete_start_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteLineLeft);
+                                QsciScintillaBase::SCI_DELLINELEFT);
 }
 void
 file_editor::request_delete_end_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteLineRight);
+                                QsciScintillaBase::SCI_DELLINERIGHT);
 }
 void
 file_editor::request_delete_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineDelete);
+                                QsciScintillaBase::SCI_LINEDELETE);
 }
 void
 file_editor::request_copy_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineCopy);
+                                QsciScintillaBase::SCI_LINECOPY);
 }
 void
 file_editor::request_cut_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineCut);
+                                QsciScintillaBase::SCI_LINECUT);
 }
 void
 file_editor::request_duplicate_selection (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::SelectionDuplicate);
+                                QsciScintillaBase::SCI_SELECTIONDUPLICATE);
 }
 void
 file_editor::request_transpose_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineTranspose);
+                                QsciScintillaBase::SCI_LINETRANSPOSE);
 }
 void
 file_editor::request_comment_selected_text (bool)
@@ -773,13 +773,13 @@ void
 file_editor::request_upper_case (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::SelectionUpperCase);
+                                QsciScintillaBase::SCI_UPPERCASE);
 }
 void
 file_editor::request_lower_case (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::SelectionLowerCase);
+                                QsciScintillaBase::SCI_LOWERCASE);
 }
 void
 file_editor::request_indent_selected_text (bool)

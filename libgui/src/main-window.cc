@@ -1437,11 +1437,11 @@ main_window::construct_file_menu (QMenuBar *p)
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
+#ifdef HAVE_QSCINTILLA
   editor_window->insert_new_open_actions (_new_script_action,
                                           _new_function_action,
                                           _open_action);
 
-#ifdef HAVE_QSCINTILLA
   file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 

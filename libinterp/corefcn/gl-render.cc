@@ -471,8 +471,7 @@ protected:
     first = false;
   }
 
-  void combine (GLdouble xyz[3], void *data[4], GLfloat w[4],
-                void **out_data)
+  void combine (GLdouble xyz[3], void *data[4], GLfloat w[4], void **out_data)
   {
     //printf ("patch_tesselator::combine\n");
 
@@ -765,7 +764,7 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
           label.erase (0, label.find_first_not_of (" "));
           label = label.substr (0, label.find_last_not_of (" ")+1);
 
-          // FIXME: as tick text is transparent, shouldn't it be
+          // FIXME: As tick text is transparent, shouldn't it be
           //        drawn after axes object, for correct rendering?
           if (xyz == 0) // X
             {
@@ -829,6 +828,10 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
 void
 opengl_renderer::draw_axes_planes (const axes::properties& props)
 {
+  Matrix axe_color = props.get_color_rgb ();
+  if (axe_color.numel () == 0 || ! props.is_visible ())
+    return;
+
   double xPlane = props.get_xPlane ();
   double yPlane = props.get_yPlane ();
   double zPlane = props.get_zPlane ();
@@ -837,41 +840,40 @@ opengl_renderer::draw_axes_planes (const axes::properties& props)
   double zPlaneN = props.get_zPlaneN ();
 
   // Axes planes
-  Matrix axe_color = props.get_color_rgb ();
-  if (axe_color.numel () > 0 && props.is_visible ())
-    {
-      set_color (axe_color);
-      set_polygon_offset (true, 2.5);
+  set_color (axe_color);
+  set_polygon_offset (true, 2.5);
 
-      glBegin (GL_QUADS);
+  glBegin (GL_QUADS);
 
-      // X plane
-      glVertex3d (xPlane, yPlaneN, zPlaneN);
-      glVertex3d (xPlane, yPlane, zPlaneN);
-      glVertex3d (xPlane, yPlane, zPlane);
-      glVertex3d (xPlane, yPlaneN, zPlane);
+  // X plane
+  glVertex3d (xPlane, yPlaneN, zPlaneN);
+  glVertex3d (xPlane, yPlane, zPlaneN);
+  glVertex3d (xPlane, yPlane, zPlane);
+  glVertex3d (xPlane, yPlaneN, zPlane);
 
-      // Y plane
-      glVertex3d (xPlaneN, yPlane, zPlaneN);
-      glVertex3d (xPlane, yPlane, zPlaneN);
-      glVertex3d (xPlane, yPlane, zPlane);
-      glVertex3d (xPlaneN, yPlane, zPlane);
+  // Y plane
+  glVertex3d (xPlaneN, yPlane, zPlaneN);
+  glVertex3d (xPlane, yPlane, zPlaneN);
+  glVertex3d (xPlane, yPlane, zPlane);
+  glVertex3d (xPlaneN, yPlane, zPlane);
 
-      // Z plane
-      glVertex3d (xPlaneN, yPlaneN, zPlane);
-      glVertex3d (xPlane, yPlaneN, zPlane);
-      glVertex3d (xPlane, yPlane, zPlane);
-      glVertex3d (xPlaneN, yPlane, zPlane);
+  // Z plane
+  glVertex3d (xPlaneN, yPlaneN, zPlane);
+  glVertex3d (xPlane, yPlaneN, zPlane);
+  glVertex3d (xPlane, yPlane, zPlane);
+  glVertex3d (xPlaneN, yPlane, zPlane);
 
-      glEnd ();
+  glEnd ();
 
-      set_polygon_offset (false);
-    }
+  set_polygon_offset (false);
 }
 
 void
 opengl_renderer::draw_axes_boxes (const axes::properties& props)
 {
+  if (! props.is_visible ())
+    return;
+
   bool xySym = props.get_xySym ();
   bool layer2Dtop = props.get_layer2Dtop ();
   bool is2d = props.get_is2D ();
@@ -895,117 +897,114 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
   set_linestyle ("-", true);
   set_linewidth (props.get_linewidth ());
 
-  if (props.is_visible ())
+  glBegin (GL_LINES);
+
+  if (layer2Dtop)
+    std::swap (zpTick, zpTickN);
+
+  // X box
+  set_color (props.get_xcolor_rgb ());
+  glVertex3d (xPlaneN, ypTick, zpTick);
+  glVertex3d (xPlane, ypTick, zpTick);
+
+  if (props.is_box ())
     {
-      glBegin (GL_LINES);
-
-      // X box
-      set_color (props.get_xcolor_rgb ());
-
-      if (layer2Dtop)
-        std::swap (zpTick, zpTickN);
-
-      glVertex3d (xPlaneN, ypTick, zpTick);
-      glVertex3d (xPlane, ypTick, zpTick);
-
-      if (props.is_box ())
+      glVertex3d (xPlaneN, ypTickN, zpTick);
+      glVertex3d (xPlane, ypTickN, zpTick);
+      if (! is2d)
         {
-          glVertex3d (xPlaneN, ypTickN, zpTick);
-          glVertex3d (xPlane, ypTickN, zpTick);
-          if (! is2d)
-            {
-              glVertex3d (xPlaneN, ypTickN, zpTickN);
-              glVertex3d (xPlane, ypTickN, zpTickN);
-              glVertex3d (xPlaneN, ypTick, zpTickN);
-              glVertex3d (xPlane, ypTick, zpTickN);
-            }
+          glVertex3d (xPlaneN, ypTickN, zpTickN);
+          glVertex3d (xPlane, ypTickN, zpTickN);
+          glVertex3d (xPlaneN, ypTick, zpTickN);
+          glVertex3d (xPlane, ypTick, zpTickN);
         }
+    }
 
-      // Y box
-      set_color (props.get_ycolor_rgb ());
-      glVertex3d (xpTick, yPlaneN, zpTick);
-      glVertex3d (xpTick, yPlane, zpTick);
+  // Y box
+  set_color (props.get_ycolor_rgb ());
+  glVertex3d (xpTick, yPlaneN, zpTick);
+  glVertex3d (xpTick, yPlane, zpTick);
 
-      if (props.is_box () && ! plotyy)
+  if (props.is_box () && ! plotyy)
+    {
+      glVertex3d (xpTickN, yPlaneN, zpTick);
+      glVertex3d (xpTickN, yPlane, zpTick);
+
+      if (! is2d)
         {
-          glVertex3d (xpTickN, yPlaneN, zpTick);
-          glVertex3d (xpTickN, yPlane, zpTick);
-
-          if (! is2d)
-            {
-              glVertex3d (xpTickN, yPlaneN, zpTickN);
-              glVertex3d (xpTickN, yPlane, zpTickN);
-              glVertex3d (xpTick, yPlaneN, zpTickN);
-              glVertex3d (xpTick, yPlane, zpTickN);
-            }
+          glVertex3d (xpTickN, yPlaneN, zpTickN);
+          glVertex3d (xpTickN, yPlane, zpTickN);
+          glVertex3d (xpTick, yPlaneN, zpTickN);
+          glVertex3d (xpTick, yPlane, zpTickN);
         }
+    }
 
-      // Z box
-      set_color (props.get_zcolor_rgb ());
+  // Z box
+  set_color (props.get_zcolor_rgb ());
+
+  if (xySym)
+    {
+      glVertex3d (xPlaneN, yPlane, zPlaneN);
+      glVertex3d (xPlaneN, yPlane, zPlane);
+    }
+  else
+    {
+      glVertex3d (xPlane, yPlaneN, zPlaneN);
+      glVertex3d (xPlane, yPlaneN, zPlane);
+    }
+
+  if (props.is_box ())
+    {
+      glVertex3d (xPlane, yPlane, zPlaneN);
+      glVertex3d (xPlane, yPlane, zPlane);
 
       if (xySym)
-        {
-          glVertex3d (xPlaneN, yPlane, zPlaneN);
-          glVertex3d (xPlaneN, yPlane, zPlane);
-        }
-      else
         {
           glVertex3d (xPlane, yPlaneN, zPlaneN);
           glVertex3d (xPlane, yPlaneN, zPlane);
         }
-
-      if (props.is_box ())
+      else
         {
-          glVertex3d (xPlane, yPlane, zPlaneN);
-          glVertex3d (xPlane, yPlane, zPlane);
-
-          if (xySym)
-            {
-              glVertex3d (xPlane, yPlaneN, zPlaneN);
-              glVertex3d (xPlane, yPlaneN, zPlane);
-            }
-          else
-            {
-              glVertex3d (xPlaneN, yPlane, zPlaneN);
-              glVertex3d (xPlaneN, yPlane, zPlane);
-            }
-
-          glVertex3d (xPlaneN, yPlaneN, zPlaneN);
-          glVertex3d (xPlaneN, yPlaneN, zPlane);
+          glVertex3d (xPlaneN, yPlane, zPlaneN);
+          glVertex3d (xPlaneN, yPlane, zPlane);
         }
 
-      glEnd ();
+      glVertex3d (xPlaneN, yPlaneN, zPlaneN);
+      glVertex3d (xPlaneN, yPlaneN, zPlane);
     }
+
+  glEnd ();
 }
 
 void
 opengl_renderer::draw_axes_x_grid (const axes::properties& props)
 {
   int xstate = props.get_xstate ();
-  int zstate = props.get_zstate ();
-  bool x2Dtop = props.get_x2Dtop ();
-  bool layer2Dtop = props.get_layer2Dtop ();
-  bool xyzSym = props.get_xyzSym ();
-  bool nearhoriz = props.get_nearhoriz ();
-  double xticklen = props.get_xticklen ();
-  double xtickoffset = props.get_xtickoffset ();
-  double fy = props.get_fy ();
-  double fz = props.get_fz ();
-  double x_min = props.get_x_min ();
-  double x_max = props.get_x_max ();
-  double yPlane = props.get_yPlane ();
-  double yPlaneN = props.get_yPlaneN ();
-  double ypTick = props.get_ypTick ();
-  double ypTickN = props.get_ypTickN ();
-  double zPlane = props.get_zPlane ();
-  double zPlaneN = props.get_zPlaneN ();
-  double zpTick = props.get_zpTick ();
-  double zpTickN = props.get_zpTickN ();
-
-  // X grid
 
   if (props.is_visible () && xstate != AXE_DEPTH_DIR)
     {
+      int zstate = props.get_zstate ();
+      bool x2Dtop = props.get_x2Dtop ();
+      bool layer2Dtop = props.get_layer2Dtop ();
+      bool xyzSym = props.get_xyzSym ();
+      bool nearhoriz = props.get_nearhoriz ();
+      double xticklen = props.get_xticklen ();
+      double xtickoffset = props.get_xtickoffset ();
+      double fy = props.get_fy ();
+      double fz = props.get_fz ();
+      double x_min = props.get_x_min ();
+      double x_max = props.get_x_max ();
+      double yPlane = props.get_yPlane ();
+      double yPlaneN = props.get_yPlaneN ();
+      double ypTick = props.get_ypTick ();
+      double ypTickN = props.get_ypTickN ();
+      double zPlane = props.get_zPlane ();
+      double zPlaneN = props.get_zPlaneN ();
+      double zpTick = props.get_zpTick ();
+      double zpTickN = props.get_zpTickN ();
+
+      // X grid
+
       std::string gridstyle = props.get_gridlinestyle ();
       std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_xgrid = (props.is_xgrid () && (gridstyle != "none"));
@@ -1091,30 +1090,31 @@ void
 opengl_renderer::draw_axes_y_grid (const axes::properties& props)
 {
   int ystate = props.get_ystate ();
-  int zstate = props.get_zstate ();
-  bool y2Dright = props.get_y2Dright ();
-  bool layer2Dtop = props.get_layer2Dtop ();
-  bool xyzSym = props.get_xyzSym ();
-  bool nearhoriz = props.get_nearhoriz ();
-  double yticklen = props.get_yticklen ();
-  double ytickoffset = props.get_ytickoffset ();
-  double fx = props.get_fx ();
-  double fz = props.get_fz ();
-  double xPlane = props.get_xPlane ();
-  double xPlaneN = props.get_xPlaneN ();
-  double xpTick = props.get_xpTick ();
-  double xpTickN = props.get_xpTickN ();
-  double y_min = props.get_y_min ();
-  double y_max = props.get_y_max ();
-  double zPlane = props.get_zPlane ();
-  double zPlaneN = props.get_zPlaneN ();
-  double zpTick = props.get_zpTick ();
-  double zpTickN = props.get_zpTickN ();
-
-  // Y grid
 
   if (ystate != AXE_DEPTH_DIR && props.is_visible ())
     {
+      int zstate = props.get_zstate ();
+      bool y2Dright = props.get_y2Dright ();
+      bool layer2Dtop = props.get_layer2Dtop ();
+      bool xyzSym = props.get_xyzSym ();
+      bool nearhoriz = props.get_nearhoriz ();
+      double yticklen = props.get_yticklen ();
+      double ytickoffset = props.get_ytickoffset ();
+      double fx = props.get_fx ();
+      double fz = props.get_fz ();
+      double xPlane = props.get_xPlane ();
+      double xPlaneN = props.get_xPlaneN ();
+      double xpTick = props.get_xpTick ();
+      double xpTickN = props.get_xpTickN ();
+      double y_min = props.get_y_min ();
+      double y_max = props.get_y_max ();
+      double zPlane = props.get_zPlane ();
+      double zPlaneN = props.get_zPlaneN ();
+      double zpTick = props.get_zpTick ();
+      double zpTickN = props.get_zpTickN ();
+
+      // Y grid
+
       std::string gridstyle = props.get_gridlinestyle ();
       std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_ygrid = (props.is_ygrid () && (gridstyle != "none"));
@@ -1198,23 +1198,24 @@ void
 opengl_renderer::draw_axes_z_grid (const axes::properties& props)
 {
   int zstate = props.get_zstate ();
-  bool xySym = props.get_xySym ();
-  bool zSign = props.get_zSign ();
-  double zticklen = props.get_zticklen ();
-  double ztickoffset = props.get_ztickoffset ();
-  double fx = props.get_fx ();
-  double fy = props.get_fy ();
-  double xPlane = props.get_xPlane ();
-  double xPlaneN = props.get_xPlaneN ();
-  double yPlane = props.get_yPlane ();
-  double yPlaneN = props.get_yPlaneN ();
-  double z_min = props.get_z_min ();
-  double z_max = props.get_z_max ();
-
-  // Z Grid
 
   if (zstate != AXE_DEPTH_DIR && props.is_visible ())
     {
+      bool xySym = props.get_xySym ();
+      bool zSign = props.get_zSign ();
+      double zticklen = props.get_zticklen ();
+      double ztickoffset = props.get_ztickoffset ();
+      double fx = props.get_fx ();
+      double fy = props.get_fy ();
+      double xPlane = props.get_xPlane ();
+      double xPlaneN = props.get_xPlaneN ();
+      double yPlane = props.get_yPlane ();
+      double yPlaneN = props.get_yPlaneN ();
+      double z_min = props.get_z_min ();
+      double z_max = props.get_z_max ();
+
+      // Z Grid
+
       std::string gridstyle = props.get_gridlinestyle ();
       std::string minorgridstyle = props.get_minorgridlinestyle ();
       bool do_zgrid = (props.is_zgrid () && (gridstyle != "none"));
@@ -1353,11 +1354,11 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
   // 1st pass: draw light objects
 
   // Start with the last element of the array of child objects to
-  // display them in the oder they were added to the array.
+  // display them in the order they were added to the array.
 
   for (octave_idx_type i = children.numel () - 1; i >= 0; i--)
     {
-      graphics_object go = gh_manager::get_object (children (i));
+      graphics_object go = gh_manager::get_object (children(i));
 
       if (go.get_properties ().is_visible ())
         {
@@ -1658,8 +1659,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
       glMaterialf (LIGHT_MODE, GL_SHININESS, se);
     }
 
-  // FIXME: good candidate for caching, transfering pixel
-  // data to OpenGL is time consuming.
+  // FIXME: good candidate for caching,
+  //        transferring pixel data to OpenGL is time consuming.
   if (fc_mode == 3)
     tex = opengl_texture::create (props.get_color_data ());
 
@@ -2167,8 +2168,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
     }
 }
 
-// FIXME: global optimization (rendering, data structures...), there
-// is probably a smarter/faster/less-memory-consuming way to do this.
+// FIXME: global optimization (rendering, data structures...),
+// there is probably a smarter/faster/less-memory-consuming way to do this.
 void
 opengl_renderer::draw_patch (const patch::properties &props)
 {
@@ -2301,8 +2302,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
               aa = a(idx);
           }
 
-        vdata[i+j*fr] =
-          vertex_data (vv, cc, nn, aa, as, ds, ss, se);
+        vdata[i+j*fr] = vertex_data (vv, cc, nn, aa, as, ds, ss, se);
       }
 
   if (fl_mode > 0 || el_mode > 0)
@@ -2429,15 +2429,15 @@ opengl_renderer::draw_patch (const patch::properties &props)
           set_linewidth (props.get_linewidth ());
 
 
-          // FIXME: use __index__ property from patch object; should we
-          // offset patch contour as well?
+          // FIXME: use __index__ property from patch object;
+          //        should we offset patch contour as well?
           patch_tesselator tess (this, ec_mode, el_mode);
 
           for (int i = 0; i < nf; i++)
             {
               if (clip_f(i))
                 {
-                  // This is an unclosed contour. Draw it as a line
+                  // This is an unclosed contour. Draw it as a line.
                   bool flag = false;
 
                   for (int j = 0; j < count_f(i); j++)
@@ -2621,7 +2621,7 @@ opengl_renderer::draw_image (const image::properties& props)
 
   if (xisnan (p0(0)) || xisnan (p0(1)) || xisnan (p1(0)) || xisnan (p1(1)))
     {
-      warning ("gl-render: image x,y data too large to draw");
+      warning ("gl-render: image X,Y data too large to draw");
       return;
     }
 
@@ -2654,10 +2654,9 @@ opengl_renderer::draw_image (const image::properties& props)
       nor_dy = 1;
     }
 
-
   // OpenGL won't draw the image if it's origin is outside the
-  // viewport/clipping plane so we must do the clipping
-  // ourselfes - only draw part of the image
+  // viewport/clipping plane so we must do the clipping ourselves--only draw
+  // part of the image.
 
   int j0, j1, i0, i1;
   j0 = 0, j1 = w;
@@ -3107,8 +3106,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       }
       break;
     default:
-      warning ("opengl_renderer: unsupported marker '%s'",
-               marker.c_str ());
+      warning ("opengl_renderer: unsupported marker '%s'", marker.c_str ());
       break;
     }
 
@@ -3156,7 +3154,7 @@ opengl_renderer::render_text (const std::string& txt,
 
   return bbox;
 #else
-  ::warning ("render_text: cannot render text, Freetype library not available");
+  ::warning ("render_text: cannot render text, FreeType library not available");
   return Matrix (1, 4, 0.0);
 #endif
 }

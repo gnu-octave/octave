@@ -5172,18 +5172,14 @@ axes::properties::update_axes_layout (void)
     {
       if (xaxislocation_is ("top"))
         {
-          double tmp = yPlane;
-          yPlane = yPlaneN;
-          yPlaneN = tmp;
+          std::swap (yPlane, yPlaneN);
           x2Dtop = true;
         }
       ypTick = yPlaneN;
       ypTickN = yPlane;
       if (yaxislocation_is ("right"))
         {
-          double tmp = xPlane;
-          xPlane = xPlaneN;
-          xPlaneN = tmp;
+          std::swap (xPlane, xPlaneN);
           y2Dright = true;
         }
       xpTick = xPlaneN;

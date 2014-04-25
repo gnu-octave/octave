@@ -225,7 +225,7 @@ Undocumented internal function.\n\
       std::string multi_on = args(4).string_value (); // on, off, create
       std::string pathname = args(5).string_value ();
 
-      octave_idx_type nel = flist.numel ();
+      octave_idx_type nel;
       octave_link::filter_list filter_lst;
 
       for (octave_idx_type i = 0; i < flist.rows (); i++)

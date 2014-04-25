@@ -581,13 +581,11 @@ set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
         {
           ld = digits;
           rd = prec > digits ? prec - digits : prec;
-          digits++;
         }
       else
         {
           ld = 1;
           rd = prec > digits ? prec - digits : prec;
-          digits = -digits + 1;
         }
 
       fw = 1 + ld + 1 + rd;

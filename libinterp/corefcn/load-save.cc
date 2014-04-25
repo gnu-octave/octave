@@ -1623,8 +1623,6 @@ the file @file{data} in Octave's binary format.\n\
 {
   octave_value_list retval;
 
-  int argc = args.length ();
-
   string_vector argv = args.make_argv ();
 
   if (error_state)
@@ -1648,7 +1646,7 @@ the file @file{data} in Octave's binary format.\n\
   // override from command line
   argv = parse_save_options (argv, format, append, save_as_floats,
                              use_zlib);
-  argc = argv.length ();
+  int argc = argv.length ();
   int i = 0;
 
   if (error_state)

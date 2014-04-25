@@ -105,7 +105,7 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 double
 octave_complex::double_value (bool force_conversion) const
 {
-  double retval = lo_ieee_nan_value ();
+  double retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
@@ -119,7 +119,7 @@ octave_complex::double_value (bool force_conversion) const
 float
 octave_complex::float_value (bool force_conversion) const
 {
-  float retval = lo_ieee_float_nan_value ();
+  float retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",

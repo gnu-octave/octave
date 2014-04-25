@@ -239,7 +239,6 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   if (n_to_find < 0 || n_to_find >= nc)
     {
       start_nc = 0;
-      n_to_find = nc;
       count = nc;
     }
   else if (direction > 0)

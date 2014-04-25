@@ -1216,7 +1216,6 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
             {
               // Matrix is either singular or not positive definite
               mattype.mark_as_unsymmetric ();
-              typ = MatrixType::Full;
             }
         }
 
@@ -4646,7 +4645,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
               m_band(ridx (i) - j + n_lower + n_upper, j) = data (i);
 
           // Calculate the norm of the matrix, for later use.
-          double anorm;
+          double anorm = 0.0;
           if (calc_cond)
             {
               for (octave_idx_type j = 0; j < nr; j++)

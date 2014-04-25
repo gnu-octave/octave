@@ -119,7 +119,7 @@ template<class T>
 MatrixType::matrix_type
 matrix_complex_probe (const MArray<std::complex<T> >& a)
 {
-  MatrixType::matrix_type typ;
+  MatrixType::matrix_type typ = MatrixType::Unknown;
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
 

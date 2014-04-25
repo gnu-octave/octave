@@ -3312,8 +3312,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
       if (! error_state)
         {
 
-          octave_idx_type elts_to_read
-            = std::numeric_limits<octave_idx_type>::max ();
+          octave_idx_type elts_to_read;
 
           if (one_elt_size_spec)
             {
@@ -3342,7 +3341,9 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
                 nr = nc = 0;
             }
 
-          // FIXME: ensure that this does not overflow.
+          // FIXME: Ensure that this does not overflow.
+          //        Maybe try comparing nr * nc computed in double with
+          //        std::numeric_limits<octave_idx_type>::max ();
 
           elts_to_read = nr * nc;
 

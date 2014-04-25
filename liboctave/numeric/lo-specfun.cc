@@ -2578,12 +2578,8 @@ gammainc (double x, double a, bool& err)
   err = false;
 
   if (a < 0.0 || x < 0.0)
-    {
-      (*current_liboctave_error_handler)
-        ("gammainc: A and X must be non-negative");
-
-      err = true;
-    }
+    (*current_liboctave_error_handler)
+      ("gammainc: A and X must be non-negative");
   else
     F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
 
@@ -2783,12 +2779,8 @@ gammainc (float x, float a, bool& err)
   err = false;
 
   if (a < 0.0 || x < 0.0)
-    {
-      (*current_liboctave_error_handler)
-        ("gammainc: A and X must be non-negative");
-
-      err = true;
-    }
+    (*current_liboctave_error_handler)
+      ("gammainc: A and X must be non-negative");
   else
     F77_XFCN (xsgammainc, XSGAMMAINC, (a, x, retval));
 

@@ -45,7 +45,7 @@ is_imag_unit (int c)
 static double
 single_num (std::istringstream& is)
 {
-  double num;
+  double num = 0.0;
 
   char c = is.peek ();
 

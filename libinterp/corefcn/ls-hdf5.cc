@@ -528,6 +528,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
         {
           warning ("load: can't read '%s' (unknown datatype)", name);
           retval = 0; // unknown datatype; skip
+          return retval;
         }
 
       // check for OCTAVE_GLOBAL attribute:

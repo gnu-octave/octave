@@ -5353,7 +5353,7 @@ compute the norms of each column and return a row vector.\n\
 %!assert (norm (x,"inf"), single (7))
 %!assert (norm (x,"fro"), single (10), -eps ("single"))
 %!assert (norm (x), single (10))
-%!assert (norm (single ([1e200, 1])), single (1e200))
+%!assert (norm (single ([1e38, 1])), single (1e38))
 %!assert (norm (single ([3+4i, 3-4i, sqrt(31)])), single (9), -4*eps ("single"))
 %!shared m
 %! m = single (magic (4));

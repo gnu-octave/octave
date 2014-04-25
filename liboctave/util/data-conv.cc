@@ -409,8 +409,6 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
 
           if (input_is_output)
             {
-              input_is_output = false;
-
               s1 = s.substr (1, pos-1);
 
               (*current_liboctave_warning_handler)

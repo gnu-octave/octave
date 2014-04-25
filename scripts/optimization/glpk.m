@@ -123,7 +123,7 @@
 ##
 ## @item @qcode{"D"}
 ## An inequality constraint with both upper and lower bounds
-## (@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
+## (@code{A(i,:)*x >= -b(i)}) @emph{and} (@code{A(i,:)*x <= b(i)}).
 ## @end table
 ##
 ## @item vartype

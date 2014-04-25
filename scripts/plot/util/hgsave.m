@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} hgsave (@var{filename})
-## @deftypefnx {Function File} hgsave (@var{h}, @var{filename})
-## @deftypefnx {Function File} hgsave (@var{h}, @var{filename}, @var{fmt})
+## @deftypefn  {Function File} {} hgsave (@var{filename})
+## @deftypefnx {Function File} {} hgsave (@var{h}, @var{filename})
+## @deftypefnx {Function File} {} hgsave (@var{h}, @var{filename}, @var{fmt})
 ## Save the graphics handle @var{h} to the file @var{filename} in the format
 ## @var{fmt}.
 ##

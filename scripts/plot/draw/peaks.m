@@ -27,7 +27,7 @@
 ## The function has the form
 ##
 ## @tex
-## $$f(x,y) = 3 (1 - x) ^ 2 e ^ {\left(-x^2 - (y+1)^2\right)} - 10 \left({x \over 5} - x^3 - y^5)\right) - {1 \over 3} e^{\left(-(x+1)^2 - y^2\right)}$$
+## $$f(x,y) = 3 (1 - x) ^ 2 e ^ {\left(-x^2 - (y+1)^2\right)} - 10 \left({x \over 5} - x^3 - y^5\right) - {1 \over 3} e^{\left(-(x+1)^2 - y^2\right)}$$
 ## @end tex
 ## @ifnottex
 ## @verbatim

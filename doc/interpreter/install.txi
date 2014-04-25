@@ -846,7 +846,7 @@ options      MATH_EMULATE
 
 @noindent
 in the kernel configuration files (typically found in the directory
-@file{/sys/i386/conf}.  After making this change, you'll need to rebuild
+@file{/sys/i386/conf}).  After making this change, you'll need to rebuild
 the kernel, install it, and reboot.
 
 @item

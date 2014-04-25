@@ -120,7 +120,7 @@ corresponding column of the matrix are nonzero.  For example:\n\
 \n\
 @example\n\
 @group\n\
-all ([2, 3; 1, 0]))\n\
+all ([2, 3; 1, 0])\n\
     @result{} [ 1, 0 ]\n\
 @end group\n\
 @end example\n\
@@ -4607,7 +4607,7 @@ eye (2)\n\
 @equiv{}\n\
 eye (2, 2)\n\
 @equiv{}\n\
-eye (size ([1, 2; 3, 4])\n\
+eye (size ([1, 2; 3, 4]))\n\
 @end group\n\
 @end example\n\
 \n\

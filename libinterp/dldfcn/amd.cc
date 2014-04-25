@@ -67,8 +67,8 @@ behavior of @code{amd}.  The fields of the structure are\n\
 @table @asis\n\
 @item @var{opts}.dense\n\
 Determines what @code{amd} considers to be a dense row or column of the\n\
-input matrix.  Rows or columns with more than @code{max(16, (dense *\n\
-sqrt (@var{n})} entries, where @var{n} is the order of the matrix @var{S},\n\
+input matrix.  Rows or columns with more than @code{max (16, (dense *\n\
+sqrt (@var{n})))} entries, where @var{n} is the order of the matrix @var{S},\n\
 are ignored by @code{amd} during the calculation of the permutation\n\
 The value of dense must be a positive scalar and its default value is 10.0\n\
 \n\

@@ -23,7 +23,7 @@
 ## Sort the numbers @var{z} into complex conjugate pairs ordered by
 ## increasing real part.  Place the negative imaginary complex number
 ## first within each pair.  Place all the real numbers (those with
-## @code{abs (imag (@var{z}) / @var{z}) < @var{tol})}) after the
+## @code{abs (imag (@var{z}) / @var{z}) < @var{tol}}) after the
 ## complex pairs.
 ##
 ## If @var{tol} is unspecified the default value is 100*@code{eps}.

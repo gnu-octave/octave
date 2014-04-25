@@ -577,7 +577,7 @@ classes.\n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/})\n\
+@url{http://www.jstatsoft.org/v05/i08/}\n\
 \n\
 @seealso{rand, rande, randg, randp}\n\
 @end deftypefn")
@@ -648,7 +648,7 @@ classes.\n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/})\n\
+@url{http://www.jstatsoft.org/v05/i08/}\n\
 \n\
 @seealso{rand, randn, randg, randp}\n\
 @end deftypefn")

@@ -793,8 +793,8 @@ using @sc{umfpack}.
 
 @item If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a minimum norm solution using
-@sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse} packages were
-written by Tim Davis and are available at
+@sc{cxsparse}@footnote{The @sc{cholmod}, @sc{umfpack} and @sc{cxsparse}
+packages were written by Tim Davis and are available at
 @url{http://www.cise.ufl.edu/research/sparse/}}.
 @end enumerate
 
@@ -997,7 +997,7 @@ Omega
 as constant on each simplex (represented by the vector @code{conductivity}).
 Based on the finite element geometry, we first calculate a system (or
 stiffness) matrix for each simplex (represented as 3-by-3 elements on the
-diagonal of the element-wise system matrix @code{SE}.  Based on @code{SE} 
+diagonal of the element-wise system matrix @code{SE}).  Based on @code{SE} 
 and a N-by-DE connectivity matrix @code{C}, representing the connections 
 between simplices and vertices, the global connectivity matrix @code{S} is
 calculated.

@@ -209,7 +209,7 @@ OPTION
 A vector of the same length as the state vector.  A nonzero element
 indicates that the corresponding element of the state vector is an
 algebraic variable (i.e., its derivative does not appear explicitly
-in the equation set.
+in the equation set).
 
 This option is required by the
 @qcode{\"compute consistent initial condition\"} and

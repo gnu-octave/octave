@@ -100,10 +100,9 @@ if nonzero, statistics and knobs are printed.\n\
 @var{cmember} is an optional vector of length @math{n}.  It defines the\n\
 constraints on the column ordering.  If @code{@var{cmember}(j) = @var{c}},\n\
 then column @var{j} is in constraint set @var{c} (@var{c} must be in the\n\
-range 1 to\n\
-n).  In the output permutation @var{p}, all columns in set 1 appear\n\
-first, followed by all columns in set 2, and so on.  @code{@var{cmember} =\n\
-ones (1,n)} if not present or empty.\n\
+range 1 to n).  In the output permutation @var{p}, all columns in set 1\n\
+appear first, followed by all columns in set 2, and so on.\n\
+@code{@var{cmember} = ones (1,n)} if not present or empty.\n\
 @code{ccolamd (@var{S}, [], 1 : n)} returns @code{1 : n}\n\
 \n\
 @code{@var{p} = ccolamd (@var{S})} is about the same as\n\

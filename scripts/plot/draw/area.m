@@ -49,7 +49,7 @@
 ## @example
 ## @group
 ## t = linspace (0, 2*pi, 100)';
-## y = [sin(t).^2, cos(t).^2)];
+## y = [sin(t).^2, cos(t).^2];
 ## area (t, y);
 ## legend ("sin^2", "cos^2", "location", "NorthEastOutside");
 ## @end group

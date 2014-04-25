@@ -731,7 +731,9 @@ DEFUN (input, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{ans} =} input (@var{prompt})\n\
 @deftypefnx {Built-in Function} {@var{ans} =} input (@var{prompt}, \"s\")\n\
-Print a prompt and wait for user input.  For example,\n\
+Print @var{prompt} and wait for user input.\n\
+\n\
+For example,\n\
 \n\
 @example\n\
 input (\"Pick a number, any number! \")\n\
@@ -761,7 +763,7 @@ Because there may be output waiting to be displayed by the pager, it is\n\
 a good idea to always call @code{fflush (stdout)} before calling\n\
 @code{input}.  This will ensure that all pending output is written to\n\
 the screen before your prompt.\n\
-@seealso{yes_or_no, kbhit}\n\
+@seealso{yes_or_no, kbhit, pause, menu, listdlg}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -799,12 +801,13 @@ octave_yes_or_no (const std::string& prompt)
 DEFUN (yes_or_no, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{ans} =} yes_or_no (\"@var{prompt}\")\n\
-Ask the user a yes-or-no question.  Return logical true if the answer is yes\n\
-or false if the answer is no.  Takes one argument, @var{prompt}, which is\n\
-the string to display when asking the question.  @var{prompt} should end in\n\
-a space; @code{yes-or-no} adds the string @samp{(yes or no) } to it.  The\n\
-user must confirm the answer with @key{RET} and can edit it until it has\n\
-been confirmed.\n\
+Ask the user a yes-or-no question.\n\
+\n\
+Return logical true if the answer is yes or false if the answer is no.\n\
+Takes one argument, @var{prompt}, which is the string to display when asking\n\
+the question.  @var{prompt} should end in a space; @code{yes-or-no} adds the\n\
+string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
+@key{RET} and can edit it until it has been confirmed.\n\
 @seealso{input}\n\
 @end deftypefn")
 {
@@ -888,7 +891,7 @@ The @code{keyboard} function does not return an exit status.\n\
 \n\
 If @code{keyboard} is invoked without arguments, a default prompt of\n\
 @samp{debug> } is used.\n\
-@seealso{dbcont, dbquit}\n\
+@seealso{dbstop, dbcont, dbquit}\n\
 @end deftypefn")
 {
   octave_value_list retval;

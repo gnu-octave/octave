@@ -202,7 +202,7 @@ octave_dock_widget::make_widget (bool dock)
 {
 #if defined (Q_OS_WIN32)
 
-  // windows: Since floating widget has no parent, we have to readd it
+  // windows: Since floating widget has no parent, we have to read it
 
   QSettings *settings = resource_manager::get_settings ();
 

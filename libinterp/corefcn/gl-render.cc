@@ -1424,7 +1424,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
   if (x_max > floatmax || y_max > floatmax || z_max > floatmax
       || x_min < -floatmax || y_min < -floatmax || z_min < -floatmax)
     {
-      warning ("gl-render: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
+      warning ("opengl_renderer: data values greater than float capacity.  (1) Scale data, or (2) Use gnuplot");
       return;
     }
 
@@ -1589,7 +1589,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
   Matrix a;
 
   if (props.facelighting_is ("phong") || props.edgelighting_is ("phong"))
-    warning ("opengl_renderer::draw: phong light model not supported");
+    warning ("opengl_renderer: phong light model not supported");
 
   int fc_mode = (props.facecolor_is_rgb () ? 0 :
                  (props.facecolor_is ("flat") ? 1 :
@@ -2621,7 +2621,7 @@ opengl_renderer::draw_image (const image::properties& props)
 
   if (xisnan (p0(0)) || xisnan (p0(1)) || xisnan (p1(0)) || xisnan (p1(1)))
     {
-      warning ("gl-render: image X,Y data too large to draw");
+      warning ("opengl_renderer: image X,Y data too large to draw");
       return;
     }
 
@@ -2654,9 +2654,8 @@ opengl_renderer::draw_image (const image::properties& props)
       nor_dy = 1;
     }
 
-  // OpenGL won't draw the image if it's origin is outside the
-  // viewport/clipping plane so we must do the clipping ourselves--only draw
-  // part of the image.
+  // OpenGL won't draw any of the image if it's origin is outside the
+  // viewport/clipping plane so we must do the clipping ourselves.
 
   int j0, j1, i0, i1;
   j0 = 0, j1 = w;
@@ -2755,10 +2754,10 @@ opengl_renderer::draw_image (const image::properties& props)
           draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
         }
       else
-        warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
+        warning ("opengl_renderer: invalid image data type (expected double, uint8, or uint16)");
     }
   else
-    warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
+    warning ("opengl_renderer: invalid image size (expected MxNx3 or MxN)");
 
   glPixelZoom (1, 1);
 }
@@ -3154,7 +3153,7 @@ opengl_renderer::render_text (const std::string& txt,
 
   return bbox;
 #else
-  ::warning ("render_text: cannot render text, FreeType library not available");
+  warning ("opengl_renderer: cannot render text, FreeType library not available");
   return Matrix (1, 4, 0.0);
 #endif
 }

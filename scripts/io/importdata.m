@@ -216,7 +216,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     output = fread (fid, Inf, "*char")';
     fclose (fid);
     ## 2. Find EOL type
-    idx = find (output == "\n", 1) - 1;
+    idx = find (output(1:min (4096, length (output))) == "\n", 1) - 1;
     if (isindex (idx) && output(idx) == "\r")
       dlm = "\r\n";
     else

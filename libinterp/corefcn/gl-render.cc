@@ -2692,7 +2692,7 @@ opengl_renderer::draw_image (const image::properties& props)
   glRasterPos3d (im_xmin + nor_dx*j0, im_ymin + nor_dy*i0, 0);
 
   // by default this is 4
-  glPixelStorei (GL_UNPACK_ALIGNMENT,1);
+  glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
 
   // Expect RGB data
   if (dv.length () == 3 && dv(2) == 3)
@@ -2716,11 +2716,11 @@ opengl_renderer::draw_image (const image::properties& props)
           draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
 
         }
-      else if (cdata.is_uint16_type ())
+      else if (cdata.is_single_type ())
         {
-          const uint16NDArray xcdata = cdata.uint16_array_value ();
+          const FloatNDArray xcdata = cdata.float_array_value ();
 
-          OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
+          OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*(j1-j0)*(i1-i0));
 
           for (int i = i0; i < i1; i++)
             {
@@ -2732,7 +2732,7 @@ opengl_renderer::draw_image (const image::properties& props)
                 }
             }
 
-          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
+          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_FLOAT, a);
 
         }
       else if (cdata.is_uint8_type ())
@@ -2752,9 +2752,29 @@ opengl_renderer::draw_image (const image::properties& props)
             }
 
           draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
+
+        }
+      else if (cdata.is_uint16_type ())
+        {
+          const uint16NDArray xcdata = cdata.uint16_array_value ();
+
+          OCTAVE_LOCAL_BUFFER (GLushort, a, 3*(j1-j0)*(i1-i0));
+
+          for (int i = i0; i < i1; i++)
+            {
+              for (int j = j0, idx = (i-i0)*(j1-j0)*3; j < j1; j++, idx += 3)
+                {
+                  a[idx]   = xcdata(i,j,0);
+                  a[idx+1] = xcdata(i,j,1);
+                  a[idx+2] = xcdata(i,j,2);
+                }
+            }
+
+          draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_SHORT, a);
+
         }
       else
-        warning ("opengl_renderer: invalid image data type (expected double, uint8, or uint16)");
+        warning ("opengl_renderer: invalid image data type (expected double, single, uint8, or uint16)");
     }
   else
     warning ("opengl_renderer: invalid image size (expected MxNx3 or MxN)");

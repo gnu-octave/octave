@@ -748,13 +748,13 @@ screen_size_pixels (void)
 }
 
 static void
-convert_cdata_2 (bool is_scaled, double clim_0, double clim_1,
+convert_cdata_2 (bool is_scaled, bool is_real, double clim_0, double clim_1,
                  const double *cmapv, double x, octave_idx_type lda,
                  octave_idx_type nc, octave_idx_type i, double *av)
 {
   if (is_scaled)
     x = xround ((nc - 1) * (x - clim_0) / (clim_1 - clim_0));
-  else
+  else if (is_real)
     x = xround (x - 1);
 
   if (xisnan (x))
@@ -780,12 +780,13 @@ convert_cdata_2 (bool is_scaled, double clim_0, double clim_1,
 
 template <class T>
 void
-convert_cdata_1 (bool is_scaled, double clim_0, double clim_1,
+convert_cdata_1 (bool is_scaled, bool is_real, double clim_0, double clim_1,
                  const double *cmapv, const T *cv, octave_idx_type lda,
                  octave_idx_type nc, double *av)
 {
   for (octave_idx_type i = 0; i < lda; i++)
-    convert_cdata_2 (is_scaled, clim_0, clim_1, cmapv, cv[i], lda, nc, i, av);
+    convert_cdata_2 (is_scaled, is_real,
+                     clim_0, clim_1, cmapv, cv[i], lda, nc, i, av);
 }
 
 static octave_value
@@ -794,6 +795,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 {
   dim_vector dv (cdata.dims ());
 
+  // TrueColor data doesn't require conversion
   if (dv.length () == cdim && dv(cdim-1) == 3)
     return cdata;
 
@@ -838,22 +840,32 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   double clim_0 = clim(0);
   double clim_1 = clim(1);
 
-#define CONVERT_CDATA_1(ARRAY_T, VAL_FN) \
+  // FIXME: There is a lot of processing time spent just on data conversion
+  //        both here in graphics.cc and again in gl-render.cc.  There must
+  //        be room for improvement!  Here a macro expands to a templated
+  //        function which in turn calls another function (covert_cdata_2).
+  //        And in gl-render.cc (opengl_renderer::draw_image), only GLfloat
+  //        is supported anyways so there is another double for loop across
+  //        height and width to convert all of the input data to GLfloat.
+
+#define CONVERT_CDATA_1(ARRAY_T, VAL_FN, IS_REAL) \
   do \
     { \
       ARRAY_T tmp = cdata. VAL_FN ## array_value (); \
  \
-      convert_cdata_1 (is_scaled, clim_0, clim_1, cmapv, \
+      convert_cdata_1 (is_scaled, IS_REAL, clim_0, clim_1, cmapv, \
                        tmp.data (), lda, nc, av); \
     } \
   while (0)
 
   if (cdata.is_uint8_type ())
-    CONVERT_CDATA_1 (uint8NDArray, uint8_);
-  else if (cdata.is_single_type ())
-    CONVERT_CDATA_1 (FloatNDArray, float_);
+    CONVERT_CDATA_1 (uint8NDArray, uint8_, false);
+  else if (cdata.is_uint16_type ())
+    CONVERT_CDATA_1 (uint16NDArray, uint16_, false);
   else if (cdata.is_double_type ())
-    CONVERT_CDATA_1 (NDArray, );
+    CONVERT_CDATA_1 (NDArray, , true);
+  else if (cdata.is_single_type ())
+    CONVERT_CDATA_1 (FloatNDArray, float_, true);
   else
     error ("unsupported type for cdata (= %s)", cdata.type_name ().c_str ());
 

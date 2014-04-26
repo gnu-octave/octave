@@ -139,13 +139,6 @@ endfunction
 
 function h = __img__ (hax, do_new, x, y, img, varargin)
 
-  ## FIXME: Hack for integer formats which use zero-based indexing
-  ##        Hack favors correctness of display over size of image in memory.
-  ##        True fix must be done in C++ code for renderer. 
-  if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
-    img = single (img) + 1;
-  endif
-
   if (! isempty (img))
 
     if (isempty (x))

@@ -115,7 +115,7 @@ function f = fact ()
        "When Richard Stallman executes ps -e, you show up.";
        "When Richard Stallman gets angry he doesn't swear; he recurses.";
        "On Richard Stallman's computer the bootloader is contained in his .emacs.";
-       "Richard Satallman can make any operating system free, free from drivers.";
+       "Richard Stallman can make any operating system free, free from drivers.";
        "Richard Stallman programmed Chuck Norris.";
        "Behind Richard Stallman's beard there is another fist, to code faster.";
        "Richard Stallman won a Sudoku that started with only one number in each line.";

@@ -1709,20 +1709,20 @@ file_editor::handle_visibility (bool visible)
   }
 
 void 
-file_editor::dragEnterEvent (QDragEnterEvent *event)
+file_editor::dragEnterEvent (QDragEnterEvent *e)
   {
-    if (event->mimeData ()->hasUrls ())
+    if (e->mimeData ()->hasUrls ())
       {
-        event->acceptProposedAction();
+        e->acceptProposedAction();
       }
   }
 
 void
-file_editor::dropEvent (QDropEvent *event)
+file_editor::dropEvent (QDropEvent *e)
   {
-    if (event->mimeData ()->hasUrls ())
+    if (e->mimeData ()->hasUrls ())
       {
-        foreach (QUrl url, event->mimeData ()->urls ())
+        foreach (QUrl url, e->mimeData ()->urls ())
         {
           request_open_file (url.toLocalFile ());
         }

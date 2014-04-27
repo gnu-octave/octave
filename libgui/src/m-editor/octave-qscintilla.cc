@@ -155,11 +155,13 @@ octave_qscintilla::context_run ()
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 {
+  QPoint global_pos, local_pos;                         // the menu's position
   QMenu *context_menu = createStandardContextMenu ( );  // standard menu
 
-  // the menu's position
-  QPoint global_pos, local_pos;
+  // fill context menu with editor's standard actions
+  emit create_context_menu_signal (context_menu);
 
+  // determine position depending on mouse or keyboard event
   if (e->reason () == QContextMenuEvent::Mouse)
     {
       // context menu by mouse

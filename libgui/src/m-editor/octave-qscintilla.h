@@ -50,6 +50,7 @@ public:
 signals:
 
   void execute_command_in_terminal_signal (const QString&);
+  void create_context_menu_signal (QMenu*);
   void qsci_has_focus_signal (bool);
 
 private slots:

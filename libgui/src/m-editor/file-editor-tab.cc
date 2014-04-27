@@ -89,6 +89,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this,
            SLOT (handle_cursor_moved (int,int)));
 
+  connect (_edit_area, SIGNAL (create_context_menu_signal (QMenu*)),
+           this, SLOT (create_context_menu (QMenu*)));
+
   // create statusbar for row/col indicator
   _status_bar = new QStatusBar (this);
 
@@ -1610,6 +1613,12 @@ file_editor_tab::handle_cursor_moved (int line, int col)
 
   _row_indicator->setNum (line+1);
   _col_indicator->setNum (col+1);
+}
+
+void
+file_editor_tab::create_context_menu (QMenu *menu)
+{
+  emit create_context_menu_tab_signal (menu);
 }
 
 void

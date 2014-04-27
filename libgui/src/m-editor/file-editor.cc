@@ -940,10 +940,31 @@ file_editor::handle_add_filename_to_list (const QString& fileName, QWidget *ID)
   editor_tab_map[fileName] = ID;
 }
 
+// context menu of edit area
 void
 file_editor::active_tab_changed (int index)
 {
   emit fetab_change_request (_tab_widget->widget (index));
+}
+
+void file_editor::create_context_menu (QMenu *menu)
+{
+  // remove all standard actions from scintilla
+  QList<QAction *> all_actions = menu->actions ();
+  QAction* a;
+
+  foreach (a, all_actions)
+    menu->removeAction (a);
+
+  // add editor's actions with icons and customized shortcuts
+  menu->addAction (_undo_action);
+  menu->addAction (_redo_action);
+  menu->addSeparator ();
+  menu->addAction (_cut_action);
+  menu->addAction (_copy_action);
+  menu->addAction (_paste_action);
+  menu->addSeparator ();
+  menu->addAction (_selectall_action);
 }
 
 void
@@ -1394,6 +1415,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   connect (f, SIGNAL (mru_add_file (const QString&)),
            this, SLOT (handle_mru_add_file (const QString&)));
+
+  connect (f, SIGNAL (create_context_menu_tab_signal (QMenu *)),
+           this, SLOT (create_context_menu (QMenu *)));
 
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
            main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));

@@ -213,6 +213,8 @@ private slots:
   void zoom_out (bool);
   void zoom_normal (bool);
 
+  void create_context_menu (QMenu *);
+
 protected:
 
   void dragEnterEvent(QDragEnterEvent *event);

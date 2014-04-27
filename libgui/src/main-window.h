@@ -194,6 +194,7 @@ public slots:
 
   // setting global shortcuts
   void set_global_shortcuts (bool enable);
+  void set_global_edit_shortcuts (bool enable);
 
   // handling the clipboard
   void clipboard_has_changed (QClipboard::Mode);

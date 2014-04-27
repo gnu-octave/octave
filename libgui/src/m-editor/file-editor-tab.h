@@ -121,6 +121,7 @@ public slots:
   void file_has_changed (const QString& fileName);
 
   void execute_command_in_terminal (const QString& command);
+  void edit_area_has_focus (bool foucs);
 
 signals:
 
@@ -133,6 +134,7 @@ signals:
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
   void execute_command_in_terminal_signal (const QString&);
+  void set_global_edit_shortcuts_signal (bool);
 
 protected:
 

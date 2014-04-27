@@ -50,6 +50,7 @@ public:
 signals:
 
   void execute_command_in_terminal_signal (const QString&);
+  void qsci_has_focus_signal (bool);
 
 private slots:
 
@@ -58,6 +59,11 @@ private slots:
   void contextmenu_help_doc (bool);
   void contextmenu_edit (bool);
   void contextmenu_run (bool);
+
+protected:
+
+  void focusInEvent (QFocusEvent *focusEvent);
+  void focusOutEvent (QFocusEvent *focusEvent);
 
 private:
 

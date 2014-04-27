@@ -247,4 +247,18 @@ octave_qscintilla::contextmenu_run (bool)
     emit execute_command_in_terminal_signal (commands.at (i));
 }
 
+void
+octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
+{
+  emit qsci_has_focus_signal (true);
+  QsciScintilla::focusInEvent(focusEvent);
+}
+
+void
+octave_qscintilla::focusOutEvent (QFocusEvent *focusEvent)
+{
+  emit qsci_has_focus_signal (false);
+  QsciScintilla::focusOutEvent(focusEvent);
+}
+
 #endif

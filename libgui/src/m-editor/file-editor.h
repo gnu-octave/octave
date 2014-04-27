@@ -204,9 +204,6 @@ public slots:
 
 
 protected slots:
-  void copyClipboard ();
-  void pasteClipboard ();
-  void selectAll ();
 
 private slots:
 

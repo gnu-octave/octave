@@ -1396,6 +1396,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
            main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
+  connect (f, SIGNAL (set_global_edit_shortcuts_signal (bool)),
+           main_win (), SLOT (set_global_edit_shortcuts (bool)));
+
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
            f, SLOT (notice_settings (const QSettings *)));
@@ -1525,38 +1528,6 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 
   check_actions ();
 }
-
-void
-file_editor::copyClipboard ()
-{
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_copy (true);
-    }
-}
-void
-file_editor::pasteClipboard ()
-{
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_paste (true);
-    }
-}
-void
-file_editor::selectAll ()
-{
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_selectall (true);
-    }
-}
-
 
 void
 file_editor::set_shortcuts ()

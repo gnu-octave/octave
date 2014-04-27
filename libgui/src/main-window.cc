@@ -2278,6 +2278,26 @@ main_window::find_files_finished (int)
 }
 
 void
+main_window::set_global_edit_shortcuts (bool enable)
+{
+  if (enable)
+    {
+      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+    }
+  else
+    {
+      QKeySequence no_key = QKeySequence ();
+      _copy_action->setShortcut (no_key);
+      _paste_action->setShortcut (no_key);
+      _undo_action->setShortcut (no_key);
+      _select_all_action->setShortcut (no_key);
+    }
+}
+
+void
 main_window::set_global_shortcuts (bool set_shortcuts)
 {
   if (set_shortcuts)

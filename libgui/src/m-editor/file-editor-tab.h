@@ -47,6 +47,8 @@ public:
 
   ~file_editor_tab (void);
 
+  octave_qscintilla *qsci_edit_area () { return _edit_area; }
+
 public slots:
 
   void update_window_title (bool modified);

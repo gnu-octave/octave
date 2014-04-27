@@ -39,6 +39,8 @@ along with Octave; see the file COPYING.  If not, see
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
 {
+  connect (this, SIGNAL (textChanged ()), this, SLOT (text_changed ()));
+
   // clear scintilla edit shortcuts that are handled by the editor
   QsciCommandSet *cmd_set = standardCommands ();
 
@@ -261,6 +263,12 @@ octave_qscintilla::focusOutEvent (QFocusEvent *focusEvent)
 {
   emit qsci_has_focus_signal (false);
   QsciScintilla::focusOutEvent(focusEvent);
+}
+
+void
+octave_qscintilla::text_changed ()
+{
+  emit status_update (isUndoAvailable (), isRedoAvailable ());
 }
 
 #endif

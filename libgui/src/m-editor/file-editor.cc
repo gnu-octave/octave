@@ -986,6 +986,13 @@ file_editor::zoom_normal (bool)
 }
 
 void
+file_editor::edit_status_update (bool undo, bool redo)
+{
+  _undo_action->setEnabled (undo);
+  _redo_action->setEnabled (redo);
+}
+
+void
 file_editor::handle_editor_state_changed (bool copy_available,
                                           const QString& file_name)
 {
@@ -1158,8 +1165,10 @@ file_editor::construct (void)
 
   _undo_action = add_action (editMenu, QIcon (":/actions/icons/undo.png"),
           tr ("&Undo"), SLOT (request_undo (bool)));
+  _undo_action->setEnabled (false);
   _redo_action = add_action (editMenu, QIcon (":/actions/icons/redo.png"),
           tr ("&Redo"), SLOT (request_redo (bool)));
+  _redo_action->setEnabled (false);
 
   editMenu->addSeparator ();
 
@@ -1395,6 +1404,10 @@ void
 file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 {
   _tab_widget->addTab (f, fn);
+
+  // signals from the qscintilla edit area
+  connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
+           this, SLOT (edit_status_update (bool, bool)));
 
   // Signals from the file editor_tab
   connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
@@ -1640,8 +1653,6 @@ file_editor::check_actions ()
   _close_all_action->setEnabled (have_tabs);
   _close_others_action->setEnabled (have_tabs && _tab_widget->count () > 1);
 
-  _undo_action->setEnabled (have_tabs);
-  _redo_action->setEnabled (have_tabs);
   _selectall_action->setEnabled (have_tabs);
 }
 

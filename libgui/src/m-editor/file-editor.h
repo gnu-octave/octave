@@ -214,6 +214,7 @@ private slots:
   void zoom_normal (bool);
 
   void create_context_menu (QMenu *);
+  void edit_status_update (bool, bool);
 
 protected:
 

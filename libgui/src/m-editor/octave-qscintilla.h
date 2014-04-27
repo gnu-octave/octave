@@ -52,6 +52,7 @@ signals:
   void execute_command_in_terminal_signal (const QString&);
   void create_context_menu_signal (QMenu*);
   void qsci_has_focus_signal (bool);
+  void status_update (bool,bool);
 
 private slots:
 
@@ -60,6 +61,8 @@ private slots:
   void contextmenu_help_doc (bool);
   void contextmenu_edit (bool);
   void contextmenu_run (bool);
+
+  void text_changed (void);
 
 protected:
 

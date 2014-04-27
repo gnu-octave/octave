@@ -1030,22 +1030,18 @@ file_editor::notice_settings (const QSettings *settings)
   int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
                                       .toInt ();
 
-  QString style_sheet;
   if (settings->value ("editor/longWindowTitle", false).toBool ())
     {
-      style_sheet = QString ("QTabBar::tab {max-height: 4ex; "
-                             "min-width: %1px; max-width: %2px;}")
+      QString style_sheet = QString ("QTabBar::tab "
+                                     "{min-width: %1px; max-width: %2px;}")
                              .arg (tab_width_min).arg (tab_width_max);
       _tab_widget->setElideMode (Qt::ElideLeft);
+      _tab_widget->setStyleSheet (style_sheet);
     }
   else
-    {
-      style_sheet = QString ("QTabBar::tab {max-height: 4ex;}");
-      _tab_widget->setElideMode (Qt::ElideNone);
-    }
+    _tab_widget->setElideMode (Qt::ElideNone);
 
   _tab_widget->setUsesScrollButtons (true);
-  _tab_widget->setStyleSheet (style_sheet);
 
   set_shortcuts ();
 

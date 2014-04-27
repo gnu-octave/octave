@@ -76,12 +76,6 @@ signals:
                         bool remove_on_success);
   // No fetab_open, functionality in editor
   // No fetab_new, functionality in editor
-  void fetab_undo (const QWidget* ID);
-  void fetab_redo (const QWidget* ID);
-  void fetab_copy (const QWidget* ID);
-  void fetab_cut (const QWidget* ID);
-  void fetab_paste (const QWidget* ID);
-  void fetab_selectall (const QWidget* ID);
   void fetab_context_help (const QWidget* ID, bool);
   void fetab_context_edit (const QWidget* ID);
   void fetab_save_file (const QWidget* ID);

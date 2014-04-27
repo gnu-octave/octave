@@ -409,61 +409,6 @@ file_editor_tab::set_focus (const QWidget *ID)
 }
 
 void
-file_editor_tab::undo (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->undo ();
-}
-
-void
-file_editor_tab::redo (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->redo ();
-}
-
-void
-file_editor_tab::copy (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->copy ();
-}
-
-void
-file_editor_tab::cut (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->cut ();
-}
-
-void
-file_editor_tab::paste (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->paste ();
-}
-
-void
-file_editor_tab::select_all (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->selectAll ();
-}
-
-
-void
 file_editor_tab::context_help (const QWidget *ID, bool doc)
 {
   if (ID != this)

@@ -572,39 +572,44 @@ file_editor::handle_edit_file_request (const QString& file)
 void
 file_editor::request_undo (bool)
 {
-  emit fetab_undo (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_UNDO);
 }
 
 void
 file_editor::request_redo (bool)
 {
-  emit fetab_redo (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_REDO);
 }
 
 void
 file_editor::request_copy (bool)
 {
-  emit fetab_copy (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_COPY);
 }
 
 void
 file_editor::request_cut (bool)
 {
-  emit fetab_cut (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_CUT);
 }
 
 void
 file_editor::request_paste (bool)
 {
-  emit fetab_paste (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_PASTE);
 }
 
 void
 file_editor::request_selectall (bool)
 {
-  emit fetab_selectall (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_SELECTALL);
 }
-
 
 void
 file_editor::request_context_help (bool)
@@ -1417,24 +1422,6 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (save_file (const QWidget*, const QString&, bool)));
 
   // Signals from the file_editor trivial operations
-  connect (this, SIGNAL (fetab_undo (const QWidget*)),
-           f, SLOT (undo (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_redo (const QWidget*)),
-           f, SLOT (redo (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_copy (const QWidget*)),
-           f, SLOT (copy (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_cut (const QWidget*)),
-           f, SLOT (cut (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_paste (const QWidget*)),
-           f, SLOT (paste (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_selectall (const QWidget*)),
-           f, SLOT (select_all (const QWidget*)));
-
   connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),
            f, SLOT (zoom_in (const QWidget*)));
   connect (this, SIGNAL (fetab_zoom_out (const QWidget*)),

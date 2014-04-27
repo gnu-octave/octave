@@ -1576,9 +1576,9 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
 
   // View menu
-  shortcut_manager::set_shortcut (_zoom_in_action, "edit_edit:zoom_in");
-  shortcut_manager::set_shortcut (_zoom_out_action, "edit_edit:zoom_out");
-  shortcut_manager::set_shortcut (_zoom_normal_action, "edit_edit:zoom_normal");
+  shortcut_manager::set_shortcut (_zoom_in_action, "editor_view:zoom_in");
+  shortcut_manager::set_shortcut (_zoom_out_action, "editor_view:zoom_out");
+  shortcut_manager::set_shortcut (_zoom_normal_action, "editor_view:zoom_normal");
 
   // Debug menu
   shortcut_manager::set_shortcut (_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");

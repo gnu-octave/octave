@@ -1425,6 +1425,16 @@ main_window::construct_menu_bar (void)
   construct_news_menu (menu_bar);
 }
 
+QAction*
+main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                         const char *member)
+{
+  QAction *a = menu->addAction (icon, text, this, member);
+  addAction (a);  // important for shortcut context
+  a->setShortcutContext (Qt::ApplicationShortcut);
+  return a;
+}
+
 void
 main_window::construct_file_menu (QMenuBar *p)
 {
@@ -1571,14 +1581,12 @@ main_window::construct_edit_menu (QMenuBar *p)
 }
 
 QAction *
-main_window::construct_debug_menu_item (const char *icon_file,
-                                        const QString& item,
-                                        const QKeySequence& key)
+main_window::construct_debug_menu_item (const char *icon, const QString& item,
+                                        const char *member)
 {
-  QAction *action = _debug_menu->addAction (QIcon (icon_file), item);
+  QAction *action = add_action (_debug_menu, QIcon (icon), item, member);
 
   action->setEnabled (false);
-  action->setShortcut (key);
 
 #ifdef HAVE_QSCINTILLA
   editor_window->debug_menu ()->addAction (action);
@@ -1594,20 +1602,20 @@ main_window::construct_debug_menu (QMenuBar *p)
   _debug_menu = p->addMenu (tr ("De&bug"));
 
   _debug_step_over = construct_debug_menu_item
-                       (":/actions/icons/db_step.png", tr ("Step"),
-                        Qt::Key_F10);
+                      (":/actions/icons/db_step.png", tr ("Step"),
+                       SLOT (debug_step_over ()));
 
   _debug_step_into = construct_debug_menu_item
-                       (":/actions/icons/db_step_in.png", tr ("Step In"),
-                        Qt::Key_F11);
+                      (":/actions/icons/db_step_in.png", tr ("Step In"),
+                       SLOT (debug_step_into ()));
 
   _debug_step_out = construct_debug_menu_item
                       (":/actions/icons/db_step_out.png", tr ("Step Out"),
-                       Qt::ShiftModifier + Qt::Key_F11);
+                       SLOT (debug_step_out ()));
 
   _debug_continue = construct_debug_menu_item
                       (":/actions/icons/db_cont.png", tr ("Continue"),
-                       Qt::Key_F5);
+                       SLOT (debug_continue ()));
 
   _debug_menu->addSeparator ();
 #ifdef HAVE_QSCINTILLA
@@ -1615,23 +1623,8 @@ main_window::construct_debug_menu (QMenuBar *p)
 #endif
 
   _debug_quit = construct_debug_menu_item
-                (":/actions/icons/db_stop.png", tr ("Exit Debug Mode"),
-                 Qt::ShiftModifier + Qt::Key_F5);
-
-  connect (_debug_step_over, SIGNAL (triggered ()),
-           this, SLOT (debug_step_over ()));
-
-  connect (_debug_step_into, SIGNAL (triggered ()),
-           this, SLOT (debug_step_into ()));
-
-  connect (_debug_step_out, SIGNAL (triggered ()),
-           this, SLOT (debug_step_out ()));
-
-  connect (_debug_continue, SIGNAL (triggered ()),
-           this, SLOT (debug_continue ()));
-
-  connect (_debug_quit, SIGNAL (triggered ()),
-           this, SLOT (debug_quit ()));
+                      (":/actions/icons/db_stop.png", tr ("Quit Debug Mode"),
+                       SLOT (debug_quit ()));
 }
 
 QAction *
@@ -2324,6 +2317,12 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       shortcut_manager::set_shortcut (_clear_command_window_action, "main_edit:clear_command_window");
       shortcut_manager::set_shortcut (_clear_workspace_action, "main_edit:clear_workspace");
 
+      // debug menu
+      shortcut_manager::set_shortcut (_debug_step_over, "main_debug:step_over");
+      shortcut_manager::set_shortcut (_debug_step_into, "main_debug:step_into");
+      shortcut_manager::set_shortcut (_debug_step_out,  "main_debug:step_out");
+      shortcut_manager::set_shortcut (_debug_continue,  "main_debug:continue");
+      shortcut_manager::set_shortcut (_debug_quit,      "main_debug:quit");
     }
   else
     {

@@ -102,6 +102,13 @@ shortcut_manager::do_init_data ()
   init (tr ("Clear Command History"), "main_edit:clear_history", QKeySequence () );
   init (tr ("Clear Workspace"), "main_edit:clear_workspace", QKeySequence () );
 
+  // debug
+  init (tr ("Step Over"), "main_debug:step_over", QKeySequence (Qt::Key_F10));
+  init (tr ("Step Into"), "main_debug:step_into", QKeySequence (Qt::Key_F11));
+  init (tr ("Step Out"), "main_debug:step_out", QKeySequence (Qt::ShiftModifier + Qt::Key_F11));
+  init (tr ("Continue"), "main_debug:continue", QKeySequence (Qt::Key_F5));
+  init (tr ("Quit Debug Mode"), "main_debug:quit", QKeySequence (Qt::ShiftModifier + Qt::Key_F5));
+
   // actions of the editor
 
   // file

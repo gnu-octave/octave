@@ -264,7 +264,8 @@ read_mat5_integer_data (std::istream& is, T *m, octave_idx_type count,
       if (len > 0) \
         { \
           OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-          stream.read (reinterpret_cast<char *> (ptr), size * len); \
+          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
+          stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
           if (swap) \
             swap_bytes< size > (ptr, len); \
           for (octave_idx_type i = 0; i < len; i++) \
@@ -1667,7 +1668,8 @@ data_write_error:
       OCTAVE_LOCAL_BUFFER (TYPE, ptr, count); \
       for (octave_idx_type i = 0; i < count; i++) \
         ptr[i] = static_cast<TYPE> (data[i]); \
-      stream.write (reinterpret_cast<char *> (ptr), count * sizeof (TYPE)); \
+      std::streamsize n_bytes = sizeof (TYPE) * static_cast<std::streamsize> (count); \
+      stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
     } \
   while (0)
 

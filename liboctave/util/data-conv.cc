@@ -585,7 +585,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
       if (len > 0) \
         { \
           OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
-          std::streamsize n_bytes = size * len; \
+          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
           stream.read (reinterpret_cast<char *> (ptr), n_bytes); \
           if (swap) \
             swap_bytes< size > (ptr, len); \
@@ -608,7 +608,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
           OCTAVE_LOCAL_BUFFER (TYPE, ptr, len); \
           for (octave_idx_type i = 0; i < len; i++) \
             ptr[i] = static_cast <TYPE> (data[i]);         \
-          std::streamsize n_bytes = size * len; \
+          std::streamsize n_bytes = size * static_cast<std::streamsize> (len); \
           stream.write (reinterpret_cast<char *> (ptr), n_bytes); \
         } \
     } \
@@ -807,7 +807,7 @@ read_doubles (std::istream& is, double *data, save_type type,
     case LS_FLOAT:
       {
         OCTAVE_LOCAL_BUFFER (float, ptr, len);
-        std::streamsize n_bytes = 4 * len;
+        std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
         is.read (reinterpret_cast<char *> (ptr), n_bytes);
         do_float_format_conversion (ptr, len, fmt);
         for (octave_idx_type i = 0; i < len; i++)
@@ -865,7 +865,7 @@ read_floats (std::istream& is, float *data, save_type type,
 
     case LS_FLOAT: // No conversion necessary.
       {
-        std::streamsize n_bytes = 4 * len;
+        std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
         is.read (reinterpret_cast<char *> (data), n_bytes);
         do_float_format_conversion (data, len, fmt);
       }
@@ -874,7 +874,7 @@ read_floats (std::istream& is, float *data, save_type type,
     case LS_DOUBLE:
       {
         OCTAVE_LOCAL_BUFFER (double, ptr, len);
-        std::streamsize n_bytes = 8 * len;
+        std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
         is.read (reinterpret_cast<char *> (ptr), n_bytes);
         do_double_format_conversion (ptr, len, fmt);
         for (octave_idx_type i = 0; i < len; i++)
@@ -972,7 +972,7 @@ write_floats (std::ostream& os, const float *data, save_type type,
       {
         char tmp_type = static_cast<char> (type);
         os.write (&tmp_type, 1);
-        std::streamsize n_bytes = 4 * len;
+        std::streamsize n_bytes = 4 * static_cast<std::streamsize> (len);
         os.write (reinterpret_cast <const char *> (data), n_bytes);
       }
       break;

@@ -30,6 +30,7 @@ TRANSLATIONS = \
   languages/en_US.ts \
   languages/es_ES.ts \
   languages/fr_FR.ts \
+  languages/it_IT.ts \
   languages/nl_NL.ts \
   languages/pt_BR.ts \
   languages/pt_PT.ts \

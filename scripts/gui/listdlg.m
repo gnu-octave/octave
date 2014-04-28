@@ -74,7 +74,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{errordlg, helpdlg, inputdlg, msgbox, questdlg, warndlg}
+## @seealso{menu, errordlg, helpdlg, inputdlg, msgbox, questdlg, warndlg}
 ## @end deftypefn
 
 function [sel, ok] = listdlg (varargin)

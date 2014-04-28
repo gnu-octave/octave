@@ -24,7 +24,7 @@
 ## programs.  There is no limit to the number of options that may be passed
 ## in, but it may be confusing to present more than will fit easily on one
 ## screen.
-## @seealso{disp, printf, input}
+## @seealso{input, listdlg}
 ## @end deftypefn
 
 ## Author: jwe

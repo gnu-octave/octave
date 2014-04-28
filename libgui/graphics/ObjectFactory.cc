@@ -62,7 +62,7 @@ ObjectFactory* ObjectFactory::instance (void)
   if (! s_instanceCreated)
     {
       if (QThread::currentThread () != QApplication::instance ()->thread ())
-	s_instance.moveToThread (QApplication::instance ()->thread ());
+        s_instance.moveToThread (QApplication::instance ()->thread ());
       s_instanceCreated = true;
     }
 
@@ -78,72 +78,72 @@ void ObjectFactory::createObject (double handle)
   if (go.valid_object ())
     {
       if (go.get_properties ().is_beingdeleted ())
-	qWarning ("ObjectFactory::createObject: object is being deleted");
+        qWarning ("ObjectFactory::createObject: object is being deleted");
       else
-	{
-	  ObjectProxy* proxy = Backend::toolkitObjectProxy (go);
+        {
+          ObjectProxy* proxy = Backend::toolkitObjectProxy (go);
 
-	  if (proxy)
-	    {
-	      Logger::debug ("ObjectFactory::createObject: "
-			     "create %s from thread %08x",
-			     go.type ().c_str (), QThread::currentThreadId ());
+          if (proxy)
+            {
+              Logger::debug ("ObjectFactory::createObject: "
+                             "create %s from thread %08x",
+                             go.type ().c_str (), QThread::currentThreadId ());
 
-	      Object* obj = 0;
+              Object* obj = 0;
 
-	      if (go.isa ("figure"))
-		obj = Figure::create (go);
-	      else if (go.isa ("uicontrol"))
-		{
-		  uicontrol::properties& up =
-		   Utils::properties<uicontrol> (go);
+              if (go.isa ("figure"))
+                obj = Figure::create (go);
+              else if (go.isa ("uicontrol"))
+                {
+                  uicontrol::properties& up =
+                   Utils::properties<uicontrol> (go);
 
-		  if (up.style_is ("pushbutton"))
-		    obj = PushButtonControl::create (go);
-		  else if (up.style_is ("edit"))
-		    obj = EditControl::create (go);
-		  else if (up.style_is ("checkbox"))
-		    obj = CheckBoxControl::create (go);
-		  else if (up.style_is ("radiobutton"))
-		    obj = RadioButtonControl::create (go);
-		  else if (up.style_is ("togglebutton"))
-		    obj = ToggleButtonControl::create (go);
-		  else if (up.style_is ("text"))
-		    obj = TextControl::create (go);
-		  else if (up.style_is ("popupmenu"))
-		    obj = PopupMenuControl::create (go);
-		  else if (up.style_is ("slider"))
-		    obj = SliderControl::create (go);
-		  else if (up.style_is ("listbox"))
-		    obj = ListBoxControl::create (go);
-		}
-	      else if (go.isa ("uipanel"))
-		obj = Panel::create (go);
-	      else if (go.isa ("uimenu"))
-		obj = Menu::create (go);
-	      else if (go.isa ("uicontextmenu"))
-		obj = ContextMenu::create (go);
-	      else if (go.isa ("uitoolbar"))
-		obj = ToolBar::create (go);
-	      else if (go.isa ("uipushtool"))
-		obj = PushTool::create (go);
-	      else if (go.isa ("uitoggletool"))
-		obj = ToggleTool::create (go);
-	      else
-		qWarning ("ObjectFactory::createObject: unsupported type `%s'",
-			  go.type ().c_str ());
+                  if (up.style_is ("pushbutton"))
+                    obj = PushButtonControl::create (go);
+                  else if (up.style_is ("edit"))
+                    obj = EditControl::create (go);
+                  else if (up.style_is ("checkbox"))
+                    obj = CheckBoxControl::create (go);
+                  else if (up.style_is ("radiobutton"))
+                    obj = RadioButtonControl::create (go);
+                  else if (up.style_is ("togglebutton"))
+                    obj = ToggleButtonControl::create (go);
+                  else if (up.style_is ("text"))
+                    obj = TextControl::create (go);
+                  else if (up.style_is ("popupmenu"))
+                    obj = PopupMenuControl::create (go);
+                  else if (up.style_is ("slider"))
+                    obj = SliderControl::create (go);
+                  else if (up.style_is ("listbox"))
+                    obj = ListBoxControl::create (go);
+                }
+              else if (go.isa ("uipanel"))
+                obj = Panel::create (go);
+              else if (go.isa ("uimenu"))
+                obj = Menu::create (go);
+              else if (go.isa ("uicontextmenu"))
+                obj = ContextMenu::create (go);
+              else if (go.isa ("uitoolbar"))
+                obj = ToolBar::create (go);
+              else if (go.isa ("uipushtool"))
+                obj = PushTool::create (go);
+              else if (go.isa ("uitoggletool"))
+                obj = ToggleTool::create (go);
+              else
+                qWarning ("ObjectFactory::createObject: unsupported type `%s'",
+                          go.type ().c_str ());
 
-	      if (obj)
-		proxy->setObject (obj);
-	    }
-	  else
-	    qWarning ("ObjectFactory::createObject: no proxy for handle %g",
-		      handle);
-	}
+              if (obj)
+                proxy->setObject (obj);
+            }
+          else
+            qWarning ("ObjectFactory::createObject: no proxy for handle %g",
+                      handle);
+        }
     }
   else
     qWarning ("ObjectFactory::createObject: invalid object for handle %g",
-	      handle);
+              handle);
 }
 
 };

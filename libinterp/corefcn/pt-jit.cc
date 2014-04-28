@@ -878,7 +878,7 @@ jit_convert::visit_switch_command (tree_switch_command& cmd)
 
       if (! twc->is_default_case ())
         {
-		  // compare result of switch expression with actual case label
+          // compare result of switch expression with actual case label
           tree_expression *te = twc->case_label ();
           jit_value *label = visit (te);
           assert(label);

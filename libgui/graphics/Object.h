@@ -55,14 +55,14 @@ public:
   typename T::properties& properties (void)
     {
       return dynamic_cast<typename T::properties&>
-	(object ().get_properties ());
+        (object ().get_properties ());
     }
   
   template <class T>
   const typename T::properties& properties (void) const
     {
       return dynamic_cast<const typename T::properties&>
-	(object ().get_properties ());
+        (object ().get_properties ());
     }
 
   graphics_object object (void) const;

@@ -46,7 +46,7 @@ ButtonControl::ButtonControl (const graphics_object& go, QAbstractButton* btn)
       Matrix value = up.get_value ().matrix_value ();
 
       if (value.numel () > 0 && value(0) == up.get_max ())
-	btn->setChecked (true);
+        btn->setChecked (true);
     }
 
   connect (btn, SIGNAL (clicked (void)), SLOT (clicked (void)));
@@ -70,19 +70,19 @@ void ButtonControl::update (int pId)
     case uicontrol::properties::ID_VALUE:
       m_blockCallback = true;
       if (btn->isCheckable ())
-	{
-	  Matrix value = up.get_value ().matrix_value ();
+        {
+          Matrix value = up.get_value ().matrix_value ();
 
-	  if (value.numel () > 0)
-	    {
-	      double dValue = value(0);
+          if (value.numel () > 0)
+            {
+              double dValue = value(0);
 
-	      if (dValue == up.get_min () && btn->isChecked ())
-		btn->setChecked (false);
-	      else if (dValue == up.get_max () && ! btn->isChecked ())
-		btn->setChecked (true);
-	    }
-	}
+              if (dValue == up.get_min () && btn->isChecked ())
+                btn->setChecked (false);
+              else if (dValue == up.get_max () && ! btn->isChecked ())
+                btn->setChecked (true);
+            }
+        }
       m_blockCallback = false;
       break;
     default:
@@ -105,8 +105,8 @@ void ButtonControl::toggled (bool checked)
       double newValue = (checked ? up.get_max () : up.get_min ());
 
       if (oldValue.numel() != 1
-	  || (newValue != oldValue(0)))
-	gh_manager::post_set (m_handle, "value", newValue, false);
+          || (newValue != oldValue(0)))
+        gh_manager::post_set (m_handle, "value", newValue, false);
       gh_manager::post_callback (m_handle, "callback");
     }
 }

@@ -207,12 +207,12 @@ public:
   cdef_object& operator = (const cdef_object& obj)
     {
       if (rep != obj.rep)
-	{
+        {
           rep->release ();
 
-	  rep = obj.rep;
-	  rep->refcount++;
-	}
+          rep = obj.rep;
+          rep->refcount++;
+        }
 
       return *this;
     }
@@ -411,12 +411,12 @@ public:
       Cell val = map.contents (pname);
 
       if (val.numel () > 0)
-	return val(0, 0);
+        return val(0, 0);
       else
-	{
-	  error ("get: unknown slot: %s", pname.c_str ());
-	  return octave_value ();
-	}
+        {
+          error ("get: unknown slot: %s", pname.c_str ());
+          return octave_value ();
+        }
     }
 
   octave_value_list
@@ -618,7 +618,7 @@ private:
   {
   public:
     cdef_class_rep (void)
-	: cdef_meta_object_rep (), member_count (0), handle_class (false),
+        : cdef_meta_object_rep (), member_count (0), handle_class (false),
           object_count (0), meta (false) { }
 
     cdef_class_rep (const std::list<cdef_class>& superclasses);
@@ -781,8 +781,8 @@ public:
     {
       // This should never happen...
       if (! is_class ())
-	error ("internal error: invalid assignment from %s to meta.class object",
-	       class_name ().c_str ());
+        error ("internal error: invalid assignment from %s to meta.class object",
+               class_name ().c_str ());
     }
 
   cdef_class& operator = (const cdef_class& cls)
@@ -912,7 +912,7 @@ private:
   {
   public:
     cdef_property_rep (void)
-	: cdef_meta_object_rep () { }
+        : cdef_meta_object_rep () { }
 
     cdef_object_rep* copy (void) const { return new cdef_property_rep (*this); }
 
@@ -967,8 +967,8 @@ public:
     {
       // This should never happen...
       if (! is_property ())
-	error ("internal error: invalid assignment from %s to meta.property object",
-	       class_name ().c_str ());
+        error ("internal error: invalid assignment from %s to meta.property object",
+               class_name ().c_str ());
     }
 
   cdef_property& operator = (const cdef_property& prop)
@@ -1050,7 +1050,7 @@ private:
                                const std::string& who = std::string ());
 
     octave_value_list execute (const cdef_object& obj,
-			       const octave_value_list& args, int nargout,
+                               const octave_value_list& args, int nargout,
                                bool do_check_access = true,
                                const std::string& who = std::string ());
 
@@ -1100,8 +1100,8 @@ public:
     {
       // This should never happen...
       if (! is_method ())
-	error ("internal error: invalid assignment from %s to meta.method object",
-	       class_name ().c_str ());
+        error ("internal error: invalid assignment from %s to meta.method object",
+               class_name ().c_str ());
     }
 
   cdef_method& operator = (const cdef_method& meth)
@@ -1119,7 +1119,7 @@ public:
 
   /* dot-invokation: object is pushed as 1st argument */
   octave_value_list execute (const cdef_object& obj,
-			     const octave_value_list& args, int nargout,
+                             const octave_value_list& args, int nargout,
                              bool do_check_access = true,
                              const std::string& who = std::string ())
     { return get_rep ()->execute (obj, args, nargout, do_check_access, who); }
@@ -1336,8 +1336,8 @@ public:
     {
       // This should never happen...
       if (! is_package ())
-	error ("internal error: invalid assignment from %s to meta.package object",
-	       class_name ().c_str ());
+        error ("internal error: invalid assignment from %s to meta.package object",
+               class_name ().c_str ());
     }
 
   cdef_package& operator = (const cdef_package& pack)
@@ -1423,18 +1423,18 @@ public:
                         bool print_padding = true);
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
+                             const std::list<octave_value_list>& idx,
                              int nargout);
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx)
+                        const std::list<octave_value_list>& idx)
     {
       octave_value_list retval = subsref (type, idx, 1);
       return (retval.length () > 0 ? retval(0) : octave_value ());
     }
 
   octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx,
+                        const std::list<octave_value_list>& idx,
                         bool auto_add);
 
   octave_value subsasgn (const std::string& type,

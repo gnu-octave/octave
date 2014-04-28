@@ -43,7 +43,7 @@ PushButtonControl* PushButtonControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new PushButtonControl (go, new QPushButton (container));
+        return new PushButtonControl (go, new QPushButton (container));
     }
 
   return 0;

@@ -45,24 +45,24 @@ static void updatePalette (const uicontrol::properties& props, QWidget* w)
       || props.style_is ("popupmenu"))
     {
       p.setColor (QPalette::Base,
-		  Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+                  Utils::fromRgb (props.get_backgroundcolor_rgb ()));
       p.setColor (QPalette::Text,
-		  Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+                  Utils::fromRgb (props.get_foregroundcolor_rgb ()));
     }
   else if (props.style_is ("pushbutton")
-	   || props.style_is ("togglebutton"))
+           || props.style_is ("togglebutton"))
     {
       p.setColor (QPalette::Button,
-		  Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+                  Utils::fromRgb (props.get_backgroundcolor_rgb ()));
       p.setColor (QPalette::ButtonText,
-		  Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+                  Utils::fromRgb (props.get_foregroundcolor_rgb ()));
     }
   else
     {
       p.setColor (QPalette::Window,
-		  Utils::fromRgb (props.get_backgroundcolor_rgb ()));
+                  Utils::fromRgb (props.get_backgroundcolor_rgb ()));
       p.setColor (QPalette::WindowText,
-		  Utils::fromRgb (props.get_foregroundcolor_rgb ()));
+                  Utils::fromRgb (props.get_foregroundcolor_rgb ()));
     }
 
   w->setPalette (p);
@@ -83,7 +83,7 @@ void BaseControl::init (QWidget* w, bool callBase)
 
   Matrix bb = up.get_boundingbox (false);
   w->setGeometry (xround (bb(0)), xround (bb(1)),
-		  xround (bb(2)), xround (bb(3)));
+                  xround (bb(2)), xround (bb(3)));
   w->setFont (Utils::computeFont<uicontrol> (up, bb(3)));
   updatePalette (up, w);
   w->setEnabled (up.enable_is ("on"));
@@ -108,11 +108,11 @@ void BaseControl::update (int pId)
    switch (pId)
     {
     case uicontrol::properties::ID_POSITION:
-	{
-	  Matrix bb = up.get_boundingbox (false);
-	  w->setGeometry (xround (bb(0)), xround (bb(1)),
-			  xround (bb(2)), xround (bb(3)));
-	}
+        {
+          Matrix bb = up.get_boundingbox (false);
+          w->setGeometry (xround (bb(0)), xround (bb(1)),
+                          xround (bb(2)), xround (bb(3)));
+        }
       break;
     case uicontrol::properties::ID_FONTNAME:
     case uicontrol::properties::ID_FONTSIZE:
@@ -153,56 +153,56 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* event)
     {
     case QEvent::Resize:
       if (m_normalizedFont)
-	{
-	  gh_manager::auto_lock lock;
+        {
+          gh_manager::auto_lock lock;
 
-	  qWidget<QWidget> ()->setFont (Utils::computeFont<uicontrol>
-					(properties<uicontrol> ()));
-	}
+          qWidget<QWidget> ()->setFont (Utils::computeFont<uicontrol>
+                                        (properties<uicontrol> ()));
+        }
       break;
     case QEvent::MouseButtonPress:
-	{
-	  gh_manager::auto_lock lock;
+        {
+          gh_manager::auto_lock lock;
 
-	  QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
-	  graphics_object go = object ();
-	  uicontrol::properties& up = Utils::properties<uicontrol> (go);
-	  graphics_object fig = go.get_ancestor ("figure");
+          QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
+          graphics_object go = object ();
+          uicontrol::properties& up = Utils::properties<uicontrol> (go);
+          graphics_object fig = go.get_ancestor ("figure");
 
-	  if (m->button () != Qt::LeftButton
-	      || ! up.enable_is ("on"))
-	    {
-	      gh_manager::post_set (fig.get_handle (), "selectiontype",
-				    Utils::figureSelectionType (m), false);
-	      gh_manager::post_set (fig.get_handle (), "currentpoint",
-				    Utils::figureCurrentPoint (fig, m),
-				    false);
-	      gh_manager::post_callback (fig.get_handle (),
-					 "windowbuttondownfcn");
-	      gh_manager::post_callback (m_handle, "buttondownfcn");
+          if (m->button () != Qt::LeftButton
+              || ! up.enable_is ("on"))
+            {
+              gh_manager::post_set (fig.get_handle (), "selectiontype",
+                                    Utils::figureSelectionType (m), false);
+              gh_manager::post_set (fig.get_handle (), "currentpoint",
+                                    Utils::figureCurrentPoint (fig, m),
+                                    false);
+              gh_manager::post_callback (fig.get_handle (),
+                                         "windowbuttondownfcn");
+              gh_manager::post_callback (m_handle, "buttondownfcn");
 
-	      if (m->button () == Qt::RightButton)
-		ContextMenu::executeAt (up, m->globalPos ());
-	    }
-	  else
-	    {
-	      if (up.style_is ("listbox"))
-		gh_manager::post_set (fig.get_handle (), "selectiontype",
-				      Utils::figureSelectionType (m), false);
-	      else
-		gh_manager::post_set (fig.get_handle (), "selectiontype",
-				      octave_value ("normal"), false);
-	    }
-	}
+              if (m->button () == Qt::RightButton)
+                ContextMenu::executeAt (up, m->globalPos ());
+            }
+          else
+            {
+              if (up.style_is ("listbox"))
+                gh_manager::post_set (fig.get_handle (), "selectiontype",
+                                      Utils::figureSelectionType (m), false);
+              else
+                gh_manager::post_set (fig.get_handle (), "selectiontype",
+                                      octave_value ("normal"), false);
+            }
+        }
       break;
     case QEvent::MouseMove:
       if (qWidget<QWidget> ()->hasMouseTracking ())
         {
-	  gh_manager::auto_lock lock;
+          gh_manager::auto_lock lock;
 
-	  QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
-	  graphics_object go = object ();
-	  graphics_object fig = go.get_ancestor ("figure");
+          QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
+          graphics_object go = object ();
+          graphics_object fig = go.get_ancestor ("figure");
 
           gh_manager::post_set (fig.get_handle (), "currentpoint",
                                 Utils::figureCurrentPoint (fig, m), false);

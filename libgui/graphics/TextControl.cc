@@ -42,7 +42,7 @@ TextControl* TextControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new TextControl (go, new QLabel (container));
+        return new TextControl (go, new QLabel (container));
     }
 
   return 0;
@@ -57,7 +57,7 @@ TextControl::TextControl (const graphics_object& go, QLabel* label)
   label->setTextFormat (Qt::PlainText);
   label->setWordWrap (false);
   label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-					   up.get_verticalalignment ()));
+                                           up.get_verticalalignment ()));
   // FIXME: support string_vector
   label->setText (Utils::fromStdString (up.get_string_string ()));
 }
@@ -80,7 +80,7 @@ void TextControl::update (int pId)
     case uicontrol::properties::ID_HORIZONTALALIGNMENT:
     case uicontrol::properties::ID_VERTICALALIGNMENT:
       label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-					       up.get_verticalalignment ()));
+                                               up.get_verticalalignment ()));
       break;
     default:
       BaseControl::update (pId);

@@ -40,8 +40,8 @@ Object::Object (const graphics_object& go, QObject* obj)
 
   if (! lock)
     qCritical ("QtHandles::Object::Object: "
-	       "creating Object (h=%g) without a valid lock!!!",
-	       m_handle.value ());
+               "creating Object (h=%g) without a valid lock!!!",
+               m_handle.value ());
 
   init (obj);
 }
@@ -50,16 +50,16 @@ void Object::init (QObject* obj, bool)
 {
   if (m_qobject)
     qCritical ("QtHandles::Object::init: "
-	       "resetting QObject while in invalid state");
+               "resetting QObject while in invalid state");
 
   m_qobject = obj;
 
   if (m_qobject)
     {
       m_qobject->setProperty ("QtHandles::Object",
-			      qVariantFromValue<void*> (this));
+                              qVariantFromValue<void*> (this));
       connect (m_qobject, SIGNAL (destroyed (QObject*)),
-	       SLOT (objectDestroyed (QObject*)));
+               SLOT (objectDestroyed (QObject*)));
     }
 }
 
@@ -73,8 +73,8 @@ graphics_object Object::object (void) const
 
   if (! lock)
     qCritical ("QtHandles::Object::object: "
-	       "accessing graphics object (h=%g) without a valid lock!!!",
-	       m_handle.value ());
+               "accessing graphics object (h=%g) without a valid lock!!!",
+               m_handle.value ());
 
   return gh_manager::get_object (m_handle);
 }
@@ -93,7 +93,7 @@ void Object::slotUpdate (int pId)
       break;
     default:
       if (object ().valid_object ())
-	update (pId);
+        update (pId);
       break;
     }
 }

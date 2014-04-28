@@ -69,7 +69,7 @@ ListBoxControl* ListBoxControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new ListBoxControl (go, new QListWidget (container));
+        return new ListBoxControl (go, new QListWidget (container));
     }
 
   return 0;
@@ -92,25 +92,25 @@ ListBoxControl::ListBoxControl (const graphics_object& go, QListWidget* list)
       int lc = list->count ();
 
       for (octave_idx_type i = 0; i < n; i++)
-	{
-	  int idx = xround (value(i));
+        {
+          int idx = xround (value(i));
 
-	  if (1 <= idx && idx <= lc)
-	    {
-	      list->item (idx-1)->setSelected (true);
-	      if (i == 0
-		  && list->selectionMode () ==
-		  	QAbstractItemView::SingleSelection)
-		break;
-	    }
-	}
+          if (1 <= idx && idx <= lc)
+            {
+              list->item (idx-1)->setSelected (true);
+              if (i == 0
+                  && list->selectionMode () ==
+                        QAbstractItemView::SingleSelection)
+                break;
+            }
+        }
     }
 
   list->removeEventFilter (this);
   list->viewport ()->installEventFilter (this);
 
   connect (list, SIGNAL (itemSelectionChanged (void)),
-	   SLOT (itemSelectionChanged (void)));
+           SLOT (itemSelectionChanged (void)));
 }
 
 ListBoxControl::~ListBoxControl (void)
@@ -134,9 +134,9 @@ void ListBoxControl::update (int pId)
     case uicontrol::properties::ID_MIN:
     case uicontrol::properties::ID_MAX:
       if ((up.get_max () - up.get_min ()) > 1)
-	list->setSelectionMode (QAbstractItemView::ExtendedSelection);
+        list->setSelectionMode (QAbstractItemView::ExtendedSelection);
       else
-	list->setSelectionMode (QAbstractItemView::SingleSelection);
+        list->setSelectionMode (QAbstractItemView::SingleSelection);
       break;
     case uicontrol::properties::ID_VALUE:
       m_blockCallback = true;

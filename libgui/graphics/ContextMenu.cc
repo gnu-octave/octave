@@ -71,19 +71,19 @@ void ContextMenu::update (int pId)
     {
     case base_properties::ID_VISIBLE:
       if (up.is_visible ())
-	{
-	  Matrix pos = up.get_position ().matrix_value ();
-	  QWidget* parentW = menu->parentWidget ();
-	  QPoint pt;
+        {
+          Matrix pos = up.get_position ().matrix_value ();
+          QWidget* parentW = menu->parentWidget ();
+          QPoint pt;
 
-	  pt.rx () = xround (pos(0));
-	  pt.ry () = parentW->height () - xround (pos(1));
-	  pt = parentW->mapToGlobal (pt);
+          pt.rx () = xround (pos(0));
+          pt.ry () = parentW->height () - xround (pos(1));
+          pt = parentW->mapToGlobal (pt);
 
-	  menu->popup (pt);
-	}
+          menu->popup (pt);
+        }
       else
-	menu->hide ();
+        menu->hide ();
       break;
     default:
       Object::update (pId);
@@ -116,18 +116,18 @@ void ContextMenu::executeAt (const base_properties& props, const QPoint& pt)
       graphics_object go = gh_manager::get_object (h);
 
       if (go.valid_object ())
-	{
-	  ContextMenu* cMenu =
-	    dynamic_cast<ContextMenu*> (Backend::toolkitObject (go));
+        {
+          ContextMenu* cMenu =
+            dynamic_cast<ContextMenu*> (Backend::toolkitObject (go));
 
-	  if (cMenu)
-	    {
-	      QMenu* menu = cMenu->qWidget<QMenu> ();
+          if (cMenu)
+            {
+              QMenu* menu = cMenu->qWidget<QMenu> ();
 
-	      if (menu)
-		menu->popup (pt);
-	    }
-	}
+              if (menu)
+                menu->popup (pt);
+            }
+        }
     }
 }
 

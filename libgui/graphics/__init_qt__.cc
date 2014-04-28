@@ -48,45 +48,45 @@ bool __init__ (void)
   if (! qtHandlesInitialized)
     {
       if (qApp)
-	{
-	  qRegisterMetaType<graphics_object> ("graphics_object");
+        {
+          qRegisterMetaType<graphics_object> ("graphics_object");
 
-	  gh_manager::enable_event_processing (true);
+          gh_manager::enable_event_processing (true);
 
-	  graphics_toolkit tk (new Backend ());
+          graphics_toolkit tk (new Backend ());
           gtk_manager::load_toolkit (tk);
 
-	  octave_add_atexit_function ("__shutdown_qt__");
+          octave_add_atexit_function ("__shutdown_qt__");
 
-	  // Change some default settings to use Qt default colors
-	  QPalette p;
-	  graphics_object root = gh_manager::get_object (0);
+          // Change some default settings to use Qt default colors
+          QPalette p;
+          graphics_object root = gh_manager::get_object (0);
 
-	  /*
-	  root.set ("defaultfigurecolor",
-		    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-	  */
-	  root.set ("defaultuicontrolbackgroundcolor",
-		    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-	  root.set ("defaultuicontrolforegroundcolor",
-		    octave_value (Utils::toRgb
-				  (p.color (QPalette::WindowText))));
-	  root.set ("defaultuipanelbackgroundcolor",
-		    octave_value (Utils::toRgb (p.color (QPalette::Window))));
-	  root.set ("defaultuipanelforegroundcolor",
-		    octave_value (Utils::toRgb
-				  (p.color (QPalette::WindowText))));
-	  root.set ("defaultuipanelhighlightcolor",
-		    octave_value (Utils::toRgb (p.color (QPalette::Light))));
-	  root.set ("defaultuipanelshadowcolor",
-		    octave_value (Utils::toRgb (p.color (QPalette::Dark))));
+          /*
+          root.set ("defaultfigurecolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
+          */
+          root.set ("defaultuicontrolbackgroundcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
+          root.set ("defaultuicontrolforegroundcolor",
+                    octave_value (Utils::toRgb
+                                  (p.color (QPalette::WindowText))));
+          root.set ("defaultuipanelbackgroundcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Window))));
+          root.set ("defaultuipanelforegroundcolor",
+                    octave_value (Utils::toRgb
+                                  (p.color (QPalette::WindowText))));
+          root.set ("defaultuipanelhighlightcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Light))));
+          root.set ("defaultuipanelshadowcolor",
+                    octave_value (Utils::toRgb (p.color (QPalette::Dark))));
 
-	  qtHandlesInitialized = true;
+          qtHandlesInitialized = true;
 
-	  return true;
-	}
+          return true;
+        }
       else
-	error ("__init_qt__: QApplication object must exist.");
+        error ("__init_qt__: QApplication object must exist.");
     }
 
   return false;
@@ -213,45 +213,45 @@ DEFUN (__uigetfile_qt__, args, , "")
       QString filter;
       QStringList files =
         QFileDialog::getOpenFileNames (0, caption, defaultFileName,
-				       filterSpecs.join (";;"), &filter, 0);
+                                       filterSpecs.join (";;"), &filter, 0);
 
       if (! files.isEmpty ())
-	{
-	  Cell cFiles (1, files.length ());
-	  QString dirName;
-	  int i = 0;
+        {
+          Cell cFiles (1, files.length ());
+          QString dirName;
+          int i = 0;
 
-	  foreach (const QString& s, files)
-	    {
-	      QFileInfo fi (s);
+          foreach (const QString& s, files)
+            {
+              QFileInfo fi (s);
 
-	      if (dirName.isEmpty ())
-		dirName = appendDirSep (fi.canonicalPath ());
-	      cFiles(i++) = toStdString (fi.fileName ());
-	    }
+              if (dirName.isEmpty ())
+                dirName = appendDirSep (fi.canonicalPath ());
+              cFiles(i++) = toStdString (fi.fileName ());
+            }
 
-	  retval(0) = cFiles;
-	  retval(1) = toStdString (dirName);
-	  if (! filter.isEmpty ())
-	    retval(2) = static_cast<double> (filterSpecs.indexOf (filter) + 1);
-	}
+          retval(0) = cFiles;
+          retval(1) = toStdString (dirName);
+          if (! filter.isEmpty ())
+            retval(2) = static_cast<double> (filterSpecs.indexOf (filter) + 1);
+        }
     }
   else
     {
       QString filter;
       QString fileName =
         QFileDialog::getOpenFileName (0, caption, defaultFileName,
-				      filterSpecs.join (";;"), &filter, 0);
+                                      filterSpecs.join (";;"), &filter, 0);
 
       if (! fileName.isNull ())
-	{
-	  QFileInfo fi (fileName);
+        {
+          QFileInfo fi (fileName);
 
-	  retval(0) = toStdString (fi.fileName ());
-	  retval(1) = toStdString (appendDirSep (fi.canonicalPath ()));
-	  if (! filter.isEmpty ())
-	    retval(2) = static_cast<double> (filterSpecs.indexOf (filter) + 1);
-	}
+          retval(0) = toStdString (fi.fileName ());
+          retval(1) = toStdString (appendDirSep (fi.canonicalPath ()));
+          if (! filter.isEmpty ())
+            retval(2) = static_cast<double> (filterSpecs.indexOf (filter) + 1);
+        }
     }
 
   return retval;
@@ -289,7 +289,7 @@ DEFUN (__uiputfile_qt__, args, , "")
   QString filter;
   QString fileName =
     QFileDialog::getSaveFileName (0, caption, defaultFileName,
-				  filterSpecs.join (";;"), &filter, 0);
+                                  filterSpecs.join (";;"), &filter, 0);
 
   if (! fileName.isNull ())
     {
@@ -297,11 +297,11 @@ DEFUN (__uiputfile_qt__, args, , "")
 
       retval(0) = toStdString (fi.fileName ());
       if (fi.exists ())
-	retval(1) = toStdString (appendDirSep (fi.canonicalPath ()));
+        retval(1) = toStdString (appendDirSep (fi.canonicalPath ()));
       else
-	retval(1) = toStdString (appendDirSep (fi.absolutePath ()));
+        retval(1) = toStdString (appendDirSep (fi.absolutePath ()));
       if (! filter.isEmpty ())
-	retval(2) = static_cast<double> (filterSpecs.indexOf (filter) + 1);
+        retval(2) = static_cast<double> (filterSpecs.indexOf (filter) + 1);
     }
 
   return retval;
@@ -321,7 +321,7 @@ DEFUN (__uigetdir_qt__, args, , "")
   QString defaultDirectory = fromStdString (args(0).string_value ());
 
   QString dirName = QFileDialog::getExistingDirectory (0, caption,
-						       defaultDirectory);
+                                                       defaultDirectory);
 
   if (! dirName.isNull ())
     retval = toStdString (dirName);

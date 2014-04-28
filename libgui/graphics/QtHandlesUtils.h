@@ -54,10 +54,10 @@ namespace Utils
   Matrix toRgb (const QColor& c);
 
   Qt::Alignment fromHVAlign (const caseless_str& halign,
-			     const caseless_str& valign);
+                             const caseless_str& valign);
 
   std::string figureSelectionType (QMouseEvent* event,
-				   bool isDoubleClick = false);
+                                   bool isDoubleClick = false);
 
   Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event);
 
@@ -72,7 +72,7 @@ namespace Utils
     { return Utils::properties<T> (gh_manager::get_object (h)); }
 
   QImage makeImageFromCData (const octave_value& v, int width = -1,
-			     int height = -1);
+                             int height = -1);
 
   octave_scalar_map makeKeyEventStruct (QKeyEvent* event);
 };

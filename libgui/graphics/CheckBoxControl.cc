@@ -41,7 +41,7 @@ CheckBoxControl* CheckBoxControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new CheckBoxControl (go, new QCheckBox (container));
+        return new CheckBoxControl (go, new QCheckBox (container));
     }
 
   return 0;

@@ -42,7 +42,7 @@ PopupMenuControl* PopupMenuControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new PopupMenuControl (go, new QComboBox (container));
+        return new PopupMenuControl (go, new QComboBox (container));
     }
 
   return 0;
@@ -56,7 +56,7 @@ PopupMenuControl::PopupMenuControl (const graphics_object& go, QComboBox *box)
   box->addItems (Utils::fromStdString (up.get_string_string ()).split ('|'));
 
   connect (box, SIGNAL (currentIndexChanged (int)),
-	   SLOT (currentIndexChanged (int)));
+           SLOT (currentIndexChanged (int)));
 }
 
 PopupMenuControl::~PopupMenuControl (void)
@@ -72,43 +72,43 @@ void PopupMenuControl::update (int pId)
     {
     case uicontrol::properties::ID_STRING:
       m_blockUpdate = true;
-	{
-	  int oldCurrent = box->currentIndex ();
+        {
+          int oldCurrent = box->currentIndex ();
 
-	  box->clear ();
-	  box->addItems (Utils::fromStdString
-			 (up.get_string_string ()).split ('|'));
-	  if (box->count() > 0
-	      && oldCurrent >= 0
-	      && oldCurrent < box->count ())
-	    {
-	      box->setCurrentIndex (oldCurrent);
-	    }
-	  else
-	    {
-	      gh_manager::post_set (m_handle, "value",
-				    octave_value (box->count () > 0
-						  ? 1.0 : 0.0),
-				    false);
-	    }
-	}
+          box->clear ();
+          box->addItems (Utils::fromStdString
+                         (up.get_string_string ()).split ('|'));
+          if (box->count() > 0
+              && oldCurrent >= 0
+              && oldCurrent < box->count ())
+            {
+              box->setCurrentIndex (oldCurrent);
+            }
+          else
+            {
+              gh_manager::post_set (m_handle, "value",
+                                    octave_value (box->count () > 0
+                                                  ? 1.0 : 0.0),
+                                    false);
+            }
+        }
       m_blockUpdate = false;
       break;
     case uicontrol::properties::ID_VALUE:
-	{
-	  Matrix value = up.get_value ().matrix_value ();
+        {
+          Matrix value = up.get_value ().matrix_value ();
 
-	  if (value.numel () > 0)
-	    {
-	      int newIndex = int (value(0)) - 1;
+          if (value.numel () > 0)
+            {
+              int newIndex = int (value(0)) - 1;
 
-	      if (newIndex >= 0 && newIndex < box->count ()
-		  && newIndex != box->currentIndex ())
-		{
-		  box->setCurrentIndex (newIndex);
-		}
-	    }
-	}
+              if (newIndex >= 0 && newIndex < box->count ()
+                  && newIndex != box->currentIndex ())
+                {
+                  box->setCurrentIndex (newIndex);
+                }
+            }
+        }
       break;
     default:
       BaseControl::update (pId);
@@ -121,8 +121,8 @@ void PopupMenuControl::currentIndexChanged (int index)
   if (! m_blockUpdate)
     {
       gh_manager::post_set (m_handle, "value",
-			    octave_value (double (index + 1)),
-			    false);
+                            octave_value (double (index + 1)),
+                            false);
       gh_manager::post_callback (m_handle, "callback");
     }
 }

@@ -42,14 +42,14 @@ RadioButtonControl* RadioButtonControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new RadioButtonControl (go, new QRadioButton (container));
+        return new RadioButtonControl (go, new QRadioButton (container));
     }
 
   return 0;
 }
 
 RadioButtonControl::RadioButtonControl (const graphics_object& go,
-					QRadioButton* radio)
+                                        QRadioButton* radio)
     : ButtonControl (go, radio)
 {
   radio->setAutoFillBackground (true);

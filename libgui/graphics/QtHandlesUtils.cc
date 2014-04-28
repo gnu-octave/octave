@@ -108,9 +108,9 @@ QFont computeFont (const typename T::properties& props, int height)
 }
 
 template QFont computeFont<uicontrol> (const uicontrol::properties& props,
-				       int height);
+                                       int height);
 template QFont computeFont<uipanel> (const uipanel::properties& props,
-				     int height);
+                                     int height);
 
 QColor fromRgb (const Matrix& rgb)
 {
@@ -142,26 +142,26 @@ std::string figureSelectionType (QMouseEvent* event, bool isDoubleClick)
       Qt::KeyboardModifiers mods = event->modifiers ();
 
       if (mods == Qt::NoModifier)
-	{
-	  if (buttons == Qt::LeftButton)
-	    return std::string ("normal");
-	  else if (buttons == Qt::RightButton)
-	    return std::string ("alt");
+        {
+          if (buttons == Qt::LeftButton)
+            return std::string ("normal");
+          else if (buttons == Qt::RightButton)
+            return std::string ("alt");
 #if defined (Q_WS_WIN)
-	  else if (buttons == (Qt::LeftButton|Qt::RightButton))
-	    return std::string ("extend");
+          else if (buttons == (Qt::LeftButton|Qt::RightButton))
+            return std::string ("extend");
 #elif defined (Q_WS_X11)
-	  else if (buttons == Qt::MidButton)
-	    return std::string ("extend");
+          else if (buttons == Qt::MidButton)
+            return std::string ("extend");
 #endif
-	}
+        }
       else if (buttons == Qt::LeftButton)
-	{
-	  if (mods == Qt::ShiftModifier)
-	    return std::string ("extend");
-	  else if (mods == Qt::ControlModifier)
-	    return std::string ("alt");
-	}
+        {
+          if (mods == Qt::ShiftModifier)
+            return std::string ("extend");
+          else if (mods == Qt::ControlModifier)
+            return std::string ("alt");
+        }
     }
 
   return std::string ("normal");
@@ -176,20 +176,20 @@ Matrix figureCurrentPoint (const graphics_object& fig, QMouseEvent* event)
       Container* c = tkFig->innerContainer ();
 
       if (c)
-	{
-	  QPoint qp = c->mapFromGlobal (event->globalPos ());
+        {
+          QPoint qp = c->mapFromGlobal (event->globalPos ());
 
-	  return
-	    tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
-							       qp.y ());
-	}
+          return
+            tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
+                                                               qp.y ());
+        }
     }
 
   return Matrix (1, 2, 0.0);
 }
 
 Qt::Alignment fromHVAlign (const caseless_str& halign,
-			   const caseless_str& valign)
+                           const caseless_str& valign)
 {
   Qt::Alignment flags;
 
@@ -230,58 +230,58 @@ QImage makeImageFromCData (const octave_value& v, int width, int height)
       img.fill (qRgba (0, 0, 0, 0));
 
       if (v.is_uint8_type ())
-	{
-	  uint8NDArray d = v.uint8_array_value ();
+        {
+          uint8NDArray d = v.uint8_array_value ();
 
-	  for (int i = 0; i < w; i++)
-	    for (int j = 0; j < h; j++)
-	      {
-		int r = d(j, i, 0);
-		int g = d(j, i, 1);
-		int b = d(j, i, 2);
-		int a = 255;
+          for (int i = 0; i < w; i++)
+            for (int j = 0; j < h; j++)
+              {
+                int r = d(j, i, 0);
+                int g = d(j, i, 1);
+                int b = d(j, i, 2);
+                int a = 255;
 
-		img.setPixel (x_off + i, y_off + j, qRgba (r, g, b, a));
-	      }
-	}
+                img.setPixel (x_off + i, y_off + j, qRgba (r, g, b, a));
+              }
+        }
       else if (v.is_single_type ())
-	{
-	  FloatNDArray f = v.float_array_value ();
+        {
+          FloatNDArray f = v.float_array_value ();
 
-	  for (int i = 0; i < w; i++)
-	    for (int j = 0; j < h; j++)
-	      {
-		float r = f(j, i, 0);
-		float g = f(j, i, 1);
-		float b = f(j, i, 2);
-		int a = (xisnan (r) || xisnan (g) || xisnan (b) ? 0 : 255);
+          for (int i = 0; i < w; i++)
+            for (int j = 0; j < h; j++)
+              {
+                float r = f(j, i, 0);
+                float g = f(j, i, 1);
+                float b = f(j, i, 2);
+                int a = (xisnan (r) || xisnan (g) || xisnan (b) ? 0 : 255);
 
-		img.setPixel (x_off + i, y_off + j,
-			      qRgba (xround (r * 255),
-				     xround (g * 255),
-				     xround (b * 255),
-				     a));
-	      }
-	}
+                img.setPixel (x_off + i, y_off + j,
+                              qRgba (xround (r * 255),
+                                     xround (g * 255),
+                                     xround (b * 255),
+                                     a));
+              }
+        }
       else if (v.is_real_type ())
-	{
-	  NDArray d = v.array_value ();
+        {
+          NDArray d = v.array_value ();
 
-	  for (int i = 0; i < w; i++)
-	    for (int j = 0; j < h; j++)
-	      {
-		double r = d(j, i, 0);
-		double g = d(j, i, 1);
-		double b = d(j, i, 2);
-		int a = (xisnan (r) || xisnan (g) || xisnan (b) ? 0 : 255);
+          for (int i = 0; i < w; i++)
+            for (int j = 0; j < h; j++)
+              {
+                double r = d(j, i, 0);
+                double g = d(j, i, 1);
+                double b = d(j, i, 2);
+                int a = (xisnan (r) || xisnan (g) || xisnan (b) ? 0 : 255);
 
-		img.setPixel (x_off + i, y_off + j,
-			      qRgba (xround (r * 255),
-				     xround (g * 255),
-				     xround (b * 255),
-				     a));
-	      }
-	}
+                img.setPixel (x_off + i, y_off + j,
+                              qRgba (xround (r * 255),
+                                     xround (g * 255),
+                                     xround (b * 255),
+                                     a));
+              }
+        }
 
       return img;
     }

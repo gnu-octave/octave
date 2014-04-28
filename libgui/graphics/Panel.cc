@@ -58,13 +58,13 @@ static int frameStyleFromProperties (const uipanel::properties& pp)
 static void setupPalette (const uipanel::properties& pp, QPalette& p)
 {
   p.setColor (QPalette::Window,
-	      Utils::fromRgb (pp.get_backgroundcolor_rgb ()));
+              Utils::fromRgb (pp.get_backgroundcolor_rgb ()));
   p.setColor (QPalette::WindowText,
-	      Utils::fromRgb (pp.get_foregroundcolor_rgb ()));
+              Utils::fromRgb (pp.get_foregroundcolor_rgb ()));
   p.setColor (QPalette::Light,
-	      Utils::fromRgb (pp.get_highlightcolor_rgb ()));
+              Utils::fromRgb (pp.get_highlightcolor_rgb ()));
   p.setColor (QPalette::Dark,
-	      Utils::fromRgb (pp.get_shadowcolor_rgb ()));
+              Utils::fromRgb (pp.get_shadowcolor_rgb ()));
 }
 
 static int borderWidthFromProperties (const uipanel::properties& pp)
@@ -75,7 +75,7 @@ static int borderWidthFromProperties (const uipanel::properties& pp)
     {
       bw = xround (pp.get_borderwidth ());
       if (pp.bordertype_is ("etchedin") || pp.bordertype_is ("etchedout"))
-	bw *= 2;
+        bw *= 2;
     }
 
   return bw;
@@ -90,7 +90,7 @@ Panel* Panel::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new Panel (go, new QFrame (container));
+        return new Panel (go, new QFrame (container));
     }
 
   return 0;
@@ -105,7 +105,7 @@ Panel::Panel (const graphics_object& go, QFrame* frame)
   frame->setAutoFillBackground (true);
   Matrix bb = pp.get_boundingbox (false);
   frame->setGeometry (xround (bb(0)), xround (bb(1)),
-		      xround (bb(2)), xround (bb(3)));
+                      xround (bb(2)), xround (bb(3)));
   frame->setFrameStyle (frameStyleFromProperties (pp));
   frame->setLineWidth (xround (pp.get_borderwidth ()));
   QPalette pal = frame->palette ();
@@ -149,66 +149,66 @@ bool Panel::eventFilter (QObject* watched, QEvent* event)
   if (! m_blockUpdates)
     {
       if (watched == qObject ())
-	{
-	  switch (event->type ())
-	    {
-	    case QEvent::Resize:
-		{
-		  gh_manager::auto_lock lock;
-		  graphics_object go = object ();
+        {
+          switch (event->type ())
+            {
+            case QEvent::Resize:
+                {
+                  gh_manager::auto_lock lock;
+                  graphics_object go = object ();
 
-		  if (go.valid_object ())
-		    {
-		      if (m_title)
-			{
-			  const uipanel::properties& pp =
-			    Utils::properties<uipanel> (go);
+                  if (go.valid_object ())
+                    {
+                      if (m_title)
+                        {
+                          const uipanel::properties& pp =
+                            Utils::properties<uipanel> (go);
 
-			  if (pp.fontunits_is ("normalized"))
-			    {
-			      QFrame* frame = qWidget<QFrame> ();
+                          if (pp.fontunits_is ("normalized"))
+                            {
+                              QFrame* frame = qWidget<QFrame> ();
 
-			      m_title->setFont (Utils::computeFont<uipanel>
-						(pp, frame->height ()));
-			      m_title->resize (m_title->sizeHint ());
-			    }
-			}
-		      updateLayout ();
-		    }
-		}
-	      break;
-	    case QEvent::MouseButtonPress:
-		{
-		  QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
+                              m_title->setFont (Utils::computeFont<uipanel>
+                                                (pp, frame->height ()));
+                              m_title->resize (m_title->sizeHint ());
+                            }
+                        }
+                      updateLayout ();
+                    }
+                }
+              break;
+            case QEvent::MouseButtonPress:
+                {
+                  QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
 
-		  if (m->button () == Qt::RightButton)
-		    {
-		      gh_manager::auto_lock lock;
+                  if (m->button () == Qt::RightButton)
+                    {
+                      gh_manager::auto_lock lock;
 
-		      ContextMenu::executeAt (properties (), m->globalPos ());
-		    }
-		}
-	      break;
-	    default:
-	      break;
-	    }
-	}
+                      ContextMenu::executeAt (properties (), m->globalPos ());
+                    }
+                }
+              break;
+            default:
+              break;
+            }
+        }
       else if (watched == m_container)
-	{
-	  switch (event->type ())
-	    {
-	    case QEvent::Resize:
-	      if (qWidget<QWidget> ()->isVisible ())
-		{
-		  gh_manager::auto_lock lock;
+        {
+          switch (event->type ())
+            {
+            case QEvent::Resize:
+              if (qWidget<QWidget> ()->isVisible ())
+                {
+                  gh_manager::auto_lock lock;
 
-		  properties ().update_boundingbox ();
-		}
-	      break;
-	    default:
-	      break;
-	    }
-	}
+                  properties ().update_boundingbox ();
+                }
+              break;
+            default:
+              break;
+            }
+        }
     }
 
   return false;
@@ -224,13 +224,13 @@ void Panel::update (int pId)
   switch (pId)
     {
     case uipanel::properties::ID_POSITION:
-	{
-	  Matrix bb = pp.get_boundingbox (false);
+        {
+          Matrix bb = pp.get_boundingbox (false);
 
-	  frame->setGeometry (xround (bb(0)), xround (bb(1)),
-			      xround (bb(2)), xround (bb(3)));
-	  updateLayout ();
-	}
+          frame->setGeometry (xround (bb(0)), xround (bb(1)),
+                              xround (bb(2)), xround (bb(3)));
+          updateLayout ();
+        }
       break;
     case uipanel::properties::ID_BORDERWIDTH:
       frame->setLineWidth (xround (pp.get_borderwidth ()));
@@ -240,46 +240,46 @@ void Panel::update (int pId)
     case uipanel::properties::ID_FOREGROUNDCOLOR:
     case uipanel::properties::ID_HIGHLIGHTCOLOR:
     case uipanel::properties::ID_SHADOWCOLOR:
-	{
-	  QPalette pal = frame->palette ();
+        {
+          QPalette pal = frame->palette ();
 
-	  setupPalette (pp, pal);
-	  frame->setPalette (pal);
-	  if (m_title)
-	    m_title->setPalette (pal);
-	}
+          setupPalette (pp, pal);
+          frame->setPalette (pal);
+          if (m_title)
+            m_title->setPalette (pal);
+        }
       break;
     case uipanel::properties::ID_TITLE:
-	{
-	  QString title = Utils::fromStdString (pp.get_title ());
+        {
+          QString title = Utils::fromStdString (pp.get_title ());
 
-	  if (title.isEmpty ())
-	    {
-	      if (m_title)
-		delete m_title;
-	      m_title = 0;
-	    }
-	  else
-	    {
-	      if (! m_title)
-		{
-		  QPalette pal = frame->palette ();
+          if (title.isEmpty ())
+            {
+              if (m_title)
+                delete m_title;
+              m_title = 0;
+            }
+          else
+            {
+              if (! m_title)
+                {
+                  QPalette pal = frame->palette ();
 
-		  m_title = new QLabel (title, frame);
-		  m_title->setAutoFillBackground (true);
-		  m_title->setContentsMargins (4, 0, 4, 0);
-		  m_title->setPalette (pal);
-		  m_title->setFont (Utils::computeFont<uipanel> (pp));
-		  m_title->show ();
-		}
-	      else
-		{
-		  m_title->setText (title);
-		  m_title->resize (m_title->sizeHint ());
-		}
-	    }
-	  updateLayout ();
-	}
+                  m_title = new QLabel (title, frame);
+                  m_title->setAutoFillBackground (true);
+                  m_title->setContentsMargins (4, 0, 4, 0);
+                  m_title->setPalette (pal);
+                  m_title->setFont (Utils::computeFont<uipanel> (pp));
+                  m_title->show ();
+                }
+              else
+                {
+                  m_title->setText (title);
+                  m_title->resize (m_title->sizeHint ());
+                }
+            }
+          updateLayout ();
+        }
     case uipanel::properties::ID_TITLEPOSITION:
       updateLayout ();
       break;
@@ -292,11 +292,11 @@ void Panel::update (int pId)
     case uipanel::properties::ID_FONTWEIGHT:
     case uipanel::properties::ID_FONTANGLE:
       if (m_title)
-	{
-	  m_title->setFont (Utils::computeFont<uipanel> (pp));
-	  m_title->resize (m_title->sizeHint ());
-	  updateLayout ();
-	}
+        {
+          m_title->setFont (Utils::computeFont<uipanel> (pp));
+          m_title->resize (m_title->sizeHint ());
+          updateLayout ();
+        }
       break;
     case uipanel::properties::ID_VISIBLE:
       frame->setVisible (pp.is_visible ());
@@ -326,9 +326,9 @@ void Panel::updateLayout (void)
   int bw = borderWidthFromProperties (pp);
 
   frame->setFrameRect (QRect (xround (bb(0)) - bw, xround (bb(1)) - bw,
-			      xround (bb(2)) + 2*bw, xround (bb(3)) + 2*bw));
+                              xround (bb(2)) + 2*bw, xround (bb(3)) + 2*bw));
   m_container->setGeometry (xround (bb(0)), xround (bb(1)),
-			    xround (bb(2)), xround (bb(3)));
+                            xround (bb(2)), xround (bb(3)));
 
   if (m_blockUpdates)
     pp.update_boundingbox ();
@@ -339,19 +339,19 @@ void Panel::updateLayout (void)
       int offset = 5;
 
       if (pp.titleposition_is ("lefttop"))
-	m_title->move (bw+offset, 0);
+        m_title->move (bw+offset, 0);
       else if (pp.titleposition_is ("righttop"))
-	m_title->move (frame->width () - bw - offset - sz.width (), 0);
+        m_title->move (frame->width () - bw - offset - sz.width (), 0);
       else if (pp.titleposition_is ("leftbottom"))
-	m_title->move (bw+offset, frame->height () - sz.height ());
+        m_title->move (bw+offset, frame->height () - sz.height ());
       else if (pp.titleposition_is ("rightbottom"))
-	m_title->move (frame->width () - bw - offset - sz.width (),
-		       frame->height () - sz.height ());
+        m_title->move (frame->width () - bw - offset - sz.width (),
+                       frame->height () - sz.height ());
       else if (pp.titleposition_is ("centertop"))
-	m_title->move (frame->width () / 2 - sz.width () / 2, 0);
+        m_title->move (frame->width () / 2 - sz.width () / 2, 0);
       else if (pp.titleposition_is ("centerbottom"))
-	m_title->move (frame->width () / 2 - sz.width () / 2,
-		       frame->height () - sz.height ());
+        m_title->move (frame->width () / 2 - sz.width () / 2,
+                       frame->height () - sz.height ());
     }
 }
 

@@ -57,12 +57,12 @@ gripe_method_access (const std::string& from, const cdef_method& meth)
     acc_s = "class-restricted";
 
   error ("%s: method `%s' has %s access and cannot be run in this context",
-	 from.c_str (), meth.get_name ().c_str (), acc_s.c_str ());
+         from.c_str (), meth.get_name ().c_str (), acc_s.c_str ());
 }
 
 static void
 gripe_property_access (const std::string& from, const cdef_property& prop,
-		       bool is_set = false)
+                       bool is_set = false)
 {
   octave_value acc = prop.get (is_set ? "SetAccess" : "GetAccess");
   std::string acc_s;
@@ -74,10 +74,10 @@ gripe_property_access (const std::string& from, const cdef_property& prop,
 
   if (is_set)
     error ("%s: property `%s' has %s access and cannot be set in this context",
-	   from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
+           from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
   else
     error ("%s: property `%s' has %s access and cannot be obtained in this context",
-	   from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
+           from.c_str (), prop.get_name ().c_str (), acc_s.c_str ());
 }
 
 static std::string
@@ -222,7 +222,7 @@ to_ov (const std::list<cdef_class>& class_list)
 
 static bool
 is_superclass (const cdef_class& clsa, const cdef_class& clsb,
-	       bool allow_equal = true, int max_depth = -1)
+               bool allow_equal = true, int max_depth = -1)
 {
   bool retval = false;
 
@@ -233,13 +233,13 @@ is_superclass (const cdef_class& clsa, const cdef_class& clsb,
       Cell c = clsb.get ("SuperClasses").cell_value ();
 
       for (int i = 0; ! error_state && ! retval && i < c.numel (); i++)
-	{
-	  cdef_class cls = lookup_class (c(i));
+        {
+          cdef_class cls = lookup_class (c(i));
 
-	  if (! error_state)
-	    retval = is_superclass (clsa, cls, true,
+          if (! error_state)
+            retval = is_superclass (clsa, cls, true,
                                     max_depth < 0 ? max_depth : max_depth-1);
-	}
+        }
     }
 
   return retval;
@@ -539,9 +539,9 @@ class_fromName (const octave_value_list& args, int /* nargout */)
       std::string name = args(0).string_value ();
 
       if (! error_state)
-	retval(0) = to_ov (lookup_class (name));
+        retval(0) = to_ov (lookup_class (name));
       else
-	error ("fromName: invalid class name, expected a string value");
+        error ("fromName: invalid class name, expected a string value");
     }
   else
     error ("fromName: invalid number of parameters");
@@ -559,29 +559,29 @@ class_fevalStatic (const octave_value_list& args, int nargout)
       cdef_class cls (to_cdef (args(0)));
 
       if (! error_state)
-	{
-	  std::string meth_name = args(1).string_value ();
+        {
+          std::string meth_name = args(1).string_value ();
 
-	  if (! error_state)
-	    {
-	      cdef_method meth = cls.find_method (meth_name);
+          if (! error_state)
+            {
+              cdef_method meth = cls.find_method (meth_name);
 
-	      if (meth.ok ())
-		{
+              if (meth.ok ())
+                {
                     if (meth.is_static ())
                       retval = meth.execute (args.splice (0, 2), nargout,
                                              true, "fevalStatic");
                     else
                       error ("fevalStatic: method `%s' is not static",
                              meth_name.c_str ());
-		}
-	      else
-		error ("fevalStatic: method not found: %s",
-		       meth_name.c_str ());
-	    }
-	  else
-	    error ("fevalStatic: invalid method name, expected a string value");
-	}
+                }
+              else
+                error ("fevalStatic: method not found: %s",
+                       meth_name.c_str ());
+            }
+          else
+            error ("fevalStatic: invalid method name, expected a string value");
+        }
       error ("fevalStatic: invalid object, expected a meta.class object");
     }
   else
@@ -601,30 +601,30 @@ class_getConstant (const octave_value_list& args, int /* nargout */)
       cdef_class cls = to_cdef (args(0));
 
       if (! error_state)
-	{
-	  std::string prop_name = args(1).string_value ();
+        {
+          std::string prop_name = args(1).string_value ();
 
-	  if (! error_state)
-	    {
-	      cdef_property prop = cls.find_property (prop_name);
+          if (! error_state)
+            {
+              cdef_property prop = cls.find_property (prop_name);
 
-	      if (prop.ok ())
-		{
+              if (prop.ok ())
+                {
                   if (prop.is_constant ())
                     retval(0) = prop.get_value (true, "getConstant");
                   else
                     error ("getConstant: property `%s' is not constant",
                            prop_name.c_str ());
-		}
-	      else
-		error ("getConstant: property not found: %s",
-		       prop_name.c_str ());
-	    }
-	  else
-	    error ("getConstant: invalid property name, expected a string value");
-	}
+                }
+              else
+                error ("getConstant: property not found: %s",
+                       prop_name.c_str ());
+            }
+          else
+            error ("getConstant: invalid property name, expected a string value");
+        }
       else
-	error ("getConstant: invalid object, expected a meta.class object");
+        error ("getConstant: invalid object, expected a meta.class object");
     }
   else
     error ("getConstant: invalid arguments");
@@ -647,9 +647,9 @@ class_ ## OP (const octave_value_list& args, int /* nargout */) \
       cdef_class clsb = to_cdef (args(1)); \
 \
       if (! error_state) \
-	retval(0) = FUN (CLSA, CLSB); \
+        retval(0) = FUN (CLSA, CLSB); \
       else \
-	error (#OP ": invalid objects, expected meta.class objects"); \
+        error (#OP ": invalid objects, expected meta.class objects"); \
     } \
   else \
     error (#OP ": invalid arguments"); \
@@ -773,10 +773,10 @@ make_meta_class (const std::string& name, const cdef_class& super)
 
 static cdef_property
 make_property (const cdef_class& cls, const std::string& name,
-	       const octave_value& get_method = Matrix (),
-	       const std::string& get_access = "public",
-	       const octave_value& set_method = Matrix (),
-	       const std::string& set_access = "public")
+               const octave_value& get_method = Matrix (),
+               const std::string& get_access = "public",
+               const octave_value& set_method = Matrix (),
+               const std::string& set_access = "public")
 {
   cdef_property prop (name);
 
@@ -948,7 +948,7 @@ octave_classdef::subsref (const std::string& type,
   if (! error_state)
     {
       if (type.length () > skip && idx.size () > skip)
-	retval = retval(0).next_subsref (1, type, idx, skip);
+        retval = retval(0).next_subsref (1, type, idx, skip);
     }
 
   return retval.length () > 0 ? retval(0) : octave_value ();
@@ -1345,13 +1345,13 @@ cdef_object_scalar::subsref (const std::string& type,
   switch (type[0])
     {
     case '.':
-	{
-	  std::string name = (idx.front ())(0).string_value ();
+        {
+          std::string name = (idx.front ())(0).string_value ();
 
-	  cdef_method meth = cls.find_method (name);
+          cdef_method meth = cls.find_method (name);
 
-	  if (meth.ok ())
-	    {
+          if (meth.ok ())
+            {
               int _nargout = (type.length () > 2 ? 1 : nargout);
 
               octave_value_list args;
@@ -1375,14 +1375,14 @@ cdef_object_scalar::subsref (const std::string& type,
                   retval = meth.execute (cdef_object (this), args, _nargout,
                                          true, "subsref");
                 }
-	    }
+            }
 
-	  if (skip == 0 && ! error_state)
-	    {
-	      cdef_property prop = cls.find_property (name);
+          if (skip == 0 && ! error_state)
+            {
+              cdef_property prop = cls.find_property (name);
 
-	      if (prop.ok ())
-		{
+              if (prop.ok ())
+                {
                   if (prop.is_constant ())
                     retval(0) = prop.get_value (true, "subsref");
                   else
@@ -1393,12 +1393,12 @@ cdef_object_scalar::subsref (const std::string& type,
                     }
 
                   skip = 1;
-		}
-	      else
-		error ("subsref: unknown method or property: %s", name.c_str ());
-	    }
-	  break;
-	}
+                }
+              else
+                error ("subsref: unknown method or property: %s", name.c_str ());
+            }
+          break;
+        }
 
     case '(':
         {
@@ -1890,7 +1890,7 @@ cdef_class::cdef_class_rep::find_method (const std::string& nm, bool local)
       // FIXME: check if method reload needed
 
       if (meth.ok ())
-	return meth;
+        return meth;
     }
 
   if (! local)
@@ -2101,7 +2101,7 @@ cdef_class::cdef_class_rep::get_methods (void)
       int idx = 0;
 
       for (std::map<std::string,cdef_method>::const_iterator it = meths.begin ();
-	   it != meths.end (); ++it, ++idx)
+           it != meths.end (); ++it, ++idx)
         c (idx, 0) = to_ov (it->second);
 
       return c;
@@ -2149,9 +2149,9 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string, cdef_method>& me
       cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
-	cls.get_rep ()->find_methods (meths, true);
+        cls.get_rep ()->find_methods (meths, true);
       else
-	break;
+        break;
     }
 }
 
@@ -2165,7 +2165,7 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
       cdef_property& prop = it->second;
 
       if (prop.ok ())
-	return prop;
+        return prop;
     }
 
   // Look into superclasses
@@ -2177,12 +2177,12 @@ cdef_class::cdef_class_rep::find_property (const std::string& nm)
       cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
-	{
-	  cdef_property prop = cls.find_property (nm);
+        {
+          cdef_property prop = cls.find_property (nm);
 
-	  if (prop.ok ())
-	    return prop;
-	}
+          if (prop.ok ())
+            return prop;
+        }
     }
 
   return cdef_property ();
@@ -2210,7 +2210,7 @@ cdef_class::cdef_class_rep::get_properties (void)
       int idx = 0;
 
       for (std::map<std::string,cdef_property>::const_iterator it = props.begin ();
-	   it != props.end (); ++it, ++idx)
+           it != props.end (); ++it, ++idx)
         c (idx, 0) = to_ov (it->second);
 
       return c;
@@ -2231,7 +2231,7 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>
       std::string nm = it->second.get_name ();
 
       if (props.find (nm) == props.end ())
-	{
+        {
           if (only_inherited)
             {
               octave_value acc = it->second.get ("GetAccess");
@@ -2241,8 +2241,8 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>
                 continue;
             }
 
-	  props[nm] = it->second;
-	}
+          props[nm] = it->second;
+        }
     }
 
   // Look into superclasses
@@ -2254,9 +2254,9 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>
       cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
-	cls.get_rep ()->find_properties (props, true);
+        cls.get_rep ()->find_properties (props, true);
       else
-	break;
+        break;
     }
 }
 
@@ -2312,9 +2312,9 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
       cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
-	cls.get_rep ()->find_names (names, all);
+        cls.get_rep ()->find_names (names, all);
       else
-	break;
+        break;
     }
 }
 
@@ -2331,7 +2331,7 @@ cdef_class::cdef_class_rep::get_names (void)
 
       int idx = 0;
       for (std::set<std::string>::const_iterator it = names.begin ();
-	   it != names.end (); ++it, ++idx)
+           it != names.end (); ++it, ++idx)
         v[idx] = *it;
 
       return v.sort (true);
@@ -2367,7 +2367,7 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
       cdef_class cls = lookup_class (super_classes(i));
 
       if (!error_state)
-	cls.delete_object (obj);
+        cls.delete_object (obj);
     }
 }
 
@@ -2450,7 +2450,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
   if (! error_state)
     {
       if (type.length () > skip && idx.size () > skip && ! retval.empty ())
-	retval = retval(0).next_subsref (nargout, type, idx, skip);
+        retval = retval(0).next_subsref (nargout, type, idx, skip);
     }
 
   return retval;
@@ -3001,7 +3001,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
       args = execute_ov (get_fcn, args, 1);
 
       if (! error_state)
-	retval = args(0);
+        retval = args(0);
     }
 
   return retval;
@@ -3153,7 +3153,7 @@ cdef_method::cdef_method_rep::check_method (void)
 
 octave_value_list
 cdef_method::cdef_method_rep::execute (const octave_value_list& args,
-				       int nargout, bool do_check_access,
+                                       int nargout, bool do_check_access,
                                        const std::string& who)
 {
   octave_value_list retval;
@@ -3170,21 +3170,21 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
       check_method ();
 
       if (! error_state && function.is_defined ())
-	{
-	  retval = execute_ov (function, args, nargout);
-	}
+        {
+          retval = execute_ov (function, args, nargout);
+        }
     }
   else
     error ("%s: cannot execute abstract method",
-	   get ("Name").string_value ().c_str ());
+           get ("Name").string_value ().c_str ());
 
   return retval;
 }
 
 octave_value_list
 cdef_method::cdef_method_rep::execute (const cdef_object& obj,
-				       const octave_value_list& args,
-				       int nargout, bool do_check_access,
+                                       const octave_value_list& args,
+                                       int nargout, bool do_check_access,
                                        const std::string& who)
 {
   octave_value_list retval;
@@ -3201,21 +3201,21 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
       check_method ();
 
       if (! error_state && function.is_defined ())
-	{
+        {
           octave_value_list new_args;
 
-	  new_args.resize (args.length () + 1);
+          new_args.resize (args.length () + 1);
 
-	  new_args(0) = to_ov (obj);
-	  for (int i = 0; i < args.length (); i++)
-	    new_args(i+1) = args(i);
+          new_args(0) = to_ov (obj);
+          for (int i = 0; i < args.length (); i++)
+            new_args(i+1) = args(i);
 
-	  retval = execute_ov (function, new_args, nargout);
-	}
+          retval = execute_ov (function, new_args, nargout);
+        }
     }
   else
     error ("%s: cannot execute abstract method",
-	   get ("Name").string_value ().c_str ());
+           get ("Name").string_value ().c_str ());
 
   return retval;
 }
@@ -3261,7 +3261,7 @@ cdef_method::cdef_method_rep::meta_subsref
   if (! error_state)
     {
       if (type.length () > 1 && idx.size () > 1 && ! retval.empty ())
-	retval = retval(0).next_subsref (nargout, type, idx, 1);
+        retval = retval(0).next_subsref (nargout, type, idx, 1);
     }
 
   return retval;
@@ -3283,9 +3283,9 @@ package_fromName (const octave_value_list& args, int /* nargout */)
       std::string name = args(0).string_value ();
 
       if (! error_state)
-	retval(0) = to_ov (lookup_package (name));
+        retval(0) = to_ov (lookup_package (name));
       else
-	error ("fromName: invalid package name, expected a string value");
+        error ("fromName: invalid package name, expected a string value");
     }
   else
     error ("fromName: invalid number of parameters");
@@ -3551,41 +3551,41 @@ install_classdef (void)
   meta_class.install_property (make_attribute (meta_class, "Hidden"));
   meta_class.install_property
       (make_property (meta_class, "InferiorClasses",
-		      make_fcn_handle (class_get_inferiorclasses, "meta.class>get.InferiorClasses"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (class_get_inferiorclasses, "meta.class>get.InferiorClasses"),
+                      "public", Matrix (), "private"));
   meta_class.install_property
       (make_property  (meta_class, "Methods",
-		       make_fcn_handle (class_get_methods, "meta.class>get.Methods"),
-		       "public", Matrix (), "private"));
+                       make_fcn_handle (class_get_methods, "meta.class>get.Methods"),
+                       "public", Matrix (), "private"));
   meta_class.install_property
       (make_property  (meta_class, "MethodList",
-		       make_fcn_handle (class_get_methods, "meta.class>get.MethodList"),
-		       "public", Matrix (), "private"));
+                       make_fcn_handle (class_get_methods, "meta.class>get.MethodList"),
+                       "public", Matrix (), "private"));
   meta_class.install_property (make_attribute (meta_class, "Name"));
   meta_class.install_property
       (make_property  (meta_class, "Properties",
-		       make_fcn_handle (class_get_properties, "meta.class>get.Properties"),
-		       "public", Matrix (), "private"));
+                       make_fcn_handle (class_get_properties, "meta.class>get.Properties"),
+                       "public", Matrix (), "private"));
   meta_class.install_property
       (make_property  (meta_class, "PropertyList",
-		       make_fcn_handle (class_get_properties, "meta.class>get.PropertyList"),
-		       "public", Matrix (), "private"));
+                       make_fcn_handle (class_get_properties, "meta.class>get.PropertyList"),
+                       "public", Matrix (), "private"));
   meta_class.install_property (make_attribute (meta_class, "Sealed"));
   meta_class.install_property
       (make_property (meta_class, "SuperClasses",
-		      make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClasses"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClasses"),
+                      "public", Matrix (), "private"));
   meta_class.install_property
       (make_property (meta_class, "SuperClassList",
-		      make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClassList"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (class_get_superclasses, "meta.class>get.SuperClassList"),
+                      "public", Matrix (), "private"));
   /* meta.class methods */
   meta_class.install_method (make_method (meta_class, "fromName", class_fromName,
-					  "public", true));
+                                          "public", true));
   meta_class.install_method (make_method (meta_class, "fevalStatic", class_fevalStatic,
-					  "public", false));
+                                          "public", false));
   meta_class.install_method (make_method (meta_class, "getConstant", class_getConstant,
-					  "public", false));
+                                          "public", false));
   meta_class.install_method (make_method (meta_class, "eq", class_eq));
   meta_class.install_method (make_method (meta_class, "ne", class_ne));
   meta_class.install_method (make_method (meta_class, "lt", class_lt));
@@ -3622,8 +3622,8 @@ install_classdef (void)
   meta_property.install_property (make_attribute (meta_property, "DefiningClass"));
   meta_property.install_property
       (make_property (meta_property, "DefaultValue",
-		      make_fcn_handle (property_get_defaultvalue, "meta.property>get.DefaultValue"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (property_get_defaultvalue, "meta.property>get.DefaultValue"),
+                      "public", Matrix (), "private"));
   meta_property.install_property (make_attribute (meta_property, "HasDefault"));
   /* meta.property events */
   // FIXME: add events
@@ -3636,28 +3636,28 @@ install_classdef (void)
   meta_package.install_property (make_property  (meta_package, "ContainingPackage"));
   meta_package.install_property
       (make_property (meta_package, "ClassList",
-		      make_fcn_handle (package_get_classes, "meta.package>get.ClassList"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (package_get_classes, "meta.package>get.ClassList"),
+                      "public", Matrix (), "private"));
   meta_package.install_property
       (make_property (meta_package, "Classes",
-		      make_fcn_handle (package_get_classes, "meta.package>get.Classes"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (package_get_classes, "meta.package>get.Classes"),
+                      "public", Matrix (), "private"));
   meta_package.install_property
       (make_property (meta_package, "FunctionList",
-		      make_fcn_handle (package_get_functions, "meta.package>get.FunctionList"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (package_get_functions, "meta.package>get.FunctionList"),
+                      "public", Matrix (), "private"));
   meta_package.install_property
       (make_property (meta_package, "Functions",
-		      make_fcn_handle (package_get_functions, "meta.package>get.Functions"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (package_get_functions, "meta.package>get.Functions"),
+                      "public", Matrix (), "private"));
   meta_package.install_property
       (make_property (meta_package, "PackageList",
-		      make_fcn_handle (package_get_packages, "meta.package>get.PackageList"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (package_get_packages, "meta.package>get.PackageList"),
+                      "public", Matrix (), "private"));
   meta_package.install_property
       (make_property (meta_package, "Packages",
-		      make_fcn_handle (package_get_packages, "meta.package>get.Packages"),
-		      "public", Matrix (), "private"));
+                      make_fcn_handle (package_get_packages, "meta.package>get.Packages"),
+                      "public", Matrix (), "private"));
   meta_package.install_method (make_method (meta_package, "fromName", package_fromName,
                                             "public", true));
   meta_package.install_method (make_method (meta_package, "getAllPackages", package_getAllPackages,
@@ -3734,7 +3734,7 @@ cdef_manager::do_find_class (const std::string& name,
   if (it == all_classes.end ())
     {
       if (error_if_not_found)
-	error ("class not found: %s", name.c_str ());
+        error ("class not found: %s", name.c_str ());
     }
   else
     {
@@ -3744,9 +3744,9 @@ cdef_manager::do_find_class (const std::string& name,
         cls = lookup_class (cls);
 
       if (cls.ok ())
-	return cls;
+        return cls;
       else
-	all_classes.erase (it);
+        all_classes.erase (it);
     }
 
   return cdef_class ();
@@ -3834,9 +3834,9 @@ DEFUN (__meta_get_package__, args, , "")
       std::string cname = args(0).string_value ();
 
       if (! error_state)
-	retval = to_ov (lookup_package (cname));
+        retval = to_ov (lookup_package (cname));
       else
-	error ("invalid package name, expected a string value");
+        error ("invalid package name, expected a string value");
     }
   else
     print_usage ();
@@ -3870,9 +3870,9 @@ Undocumented internal function.\n\
       std::string cls = args(0).string_value ();
 
       if (! error_state)
-	retval = to_ov (lookup_class (cls));
+        retval = to_ov (lookup_class (cls));
       else
-	error ("invalid class name, expected a string value");
+        error ("invalid class name, expected a string value");
     }
   else
     print_usage ();

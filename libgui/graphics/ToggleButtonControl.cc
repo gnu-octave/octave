@@ -42,14 +42,14 @@ ToggleButtonControl* ToggleButtonControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new ToggleButtonControl (go, new QPushButton (container));
+        return new ToggleButtonControl (go, new QPushButton (container));
     }
 
   return 0;
 }
 
 ToggleButtonControl::ToggleButtonControl (const graphics_object& go,
-					  QPushButton* btn)
+                                          QPushButton* btn)
     : ButtonControl (go, btn)
 {
   btn->setCheckable (true);

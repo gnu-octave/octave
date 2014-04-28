@@ -39,8 +39,17 @@ along with Octave; see the file COPYING.  If not, see
 octave_qscintilla::octave_qscintilla (QWidget *p)
   : QsciScintilla (p)
 {
+  connect (this, SIGNAL (textChanged ()), this, SLOT (text_changed ()));
+
   // clear scintilla edit shortcuts that are handled by the editor
-  QsciCommandSet  *cmd_set =  standardCommands ();
+  QsciCommandSet *cmd_set = standardCommands ();
+
+#ifdef HAVE_QSCI_VERSION_2_6_0
+  // find () was added in QScintilla 2.6
+  cmd_set->find (QsciCommand::SelectionCopy)->setKey (0);
+  cmd_set->find (QsciCommand::SelectionCut)->setKey (0);
+  cmd_set->find (QsciCommand::Paste)->setKey (0);
+  cmd_set->find (QsciCommand::SelectAll)->setKey (0);
   cmd_set->find (QsciCommand::SelectionDuplicate)->setKey (0);
   cmd_set->find (QsciCommand::LineTranspose)->setKey (0);
   cmd_set->find (QsciCommand::Undo)->setKey (0);
@@ -56,6 +65,39 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
   cmd_set->find (QsciCommand::LineDelete)->setKey (0);
   cmd_set->find (QsciCommand::LineCut)->setKey (0);
   cmd_set->find (QsciCommand::LineCopy)->setKey (0);
+#else
+  // find commands via its default key (tricky way without find ())
+  QList< QsciCommand * > cmd_list = cmd_set->commands ();
+  for (int i = 0; i < cmd_list.length (); i++)
+    {
+      int cmd_key = cmd_list.at (i)->key ();
+      switch (cmd_key)
+        {
+          case Qt::Key_C | Qt::CTRL :               // SelectionCopy
+          case Qt::Key_X | Qt::CTRL :               // SelectionCut
+          case Qt::Key_V | Qt::CTRL :               // Paste
+          case Qt::Key_A | Qt::CTRL :               // SelectAll
+          case Qt::Key_D | Qt::CTRL :               // SelectionDuplicate
+          case Qt::Key_T | Qt::CTRL :               // LineTranspose
+          case Qt::Key_Z | Qt::CTRL :               // Undo
+          case Qt::Key_Y | Qt::CTRL :               // Redo
+          case Qt::Key_Z | Qt::CTRL | Qt::SHIFT :   // Redo
+          case Qt::Key_U | Qt::CTRL :               // SelectionLowerCase
+          case Qt::Key_U | Qt::CTRL | Qt::SHIFT :   // SelectionUpperCase
+          case Qt::Key_Plus | Qt::CTRL :            // ZoomIn
+          case Qt::Key_Minus | Qt::CTRL :           // ZoomOut
+          case Qt::Key_Backspace | Qt::CTRL | Qt::SHIFT :   // DeleteLineLeft
+          case Qt::Key_Delete | Qt::CTRL | Qt::SHIFT :      // DeleteLineRight
+          case Qt::Key_K | Qt::META :                       // DeleteLineRight
+          case Qt::Key_Backspace | Qt::CTRL :       // DeleteWordLeft
+          case Qt::Key_Delete | Qt::CTRL :          // DeleteWordRight
+          case Qt::Key_L | Qt::CTRL | Qt::SHIFT :   // LineDelete
+          case Qt::Key_L | Qt::CTRL :               // LineCut
+          case Qt::Key_T | Qt::CTRL | Qt::SHIFT :   // LineCopy
+            cmd_list.at (i)->setKey (0);
+        }
+    }
+#endif
 }
 
 octave_qscintilla::~octave_qscintilla ()
@@ -115,11 +157,13 @@ octave_qscintilla::context_run ()
 void
 octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 {
+  QPoint global_pos, local_pos;                         // the menu's position
   QMenu *context_menu = createStandardContextMenu ();  // standard menu
 
-  // the menu's position
-  QPoint global_pos, local_pos;
+  // fill context menu with editor's standard actions
+  emit create_context_menu_signal (context_menu);
 
+  // determine position depending on mouse or keyboard event
   if (e->reason () == QContextMenuEvent::Mouse)
     {
       // context menu by mouse
@@ -205,6 +249,26 @@ octave_qscintilla::contextmenu_run (bool)
                                                 QString::SkipEmptyParts);
   for (int i = 0; i < commands.size (); i++)
     emit execute_command_in_terminal_signal (commands.at (i));
+}
+
+void
+octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
+{
+  emit qsci_has_focus_signal (true);
+  QsciScintilla::focusInEvent(focusEvent);
+}
+
+void
+octave_qscintilla::focusOutEvent (QFocusEvent *focusEvent)
+{
+  emit qsci_has_focus_signal (false);
+  QsciScintilla::focusOutEvent(focusEvent);
+}
+
+void
+octave_qscintilla::text_changed ()
+{
+  emit status_update (isUndoAvailable (), isRedoAvailable ());
 }
 
 #endif

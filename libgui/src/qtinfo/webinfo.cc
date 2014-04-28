@@ -60,7 +60,6 @@ webinfo::webinfo (QWidget *p)
 #ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_bar->setMovable (true);
 #endif
-  _tab_bar->setStyleSheet ("QTabBar::tab {max-height: 4ex; }");
   hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);

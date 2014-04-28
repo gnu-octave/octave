@@ -89,6 +89,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this,
            SLOT (handle_cursor_moved (int,int)));
 
+  connect (_edit_area, SIGNAL (create_context_menu_signal (QMenu*)),
+           this, SLOT (create_context_menu (QMenu*)));
+
   // create statusbar for row/col indicator
   _status_bar = new QStatusBar (this);
 
@@ -153,6 +156,9 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this, SLOT (handle_copy_available (bool)));
+
+  connect (_edit_area, SIGNAL (qsci_has_focus_signal (bool)),
+           this, SLOT (edit_area_has_focus (bool)));
 
   connect (&_file_system_watcher, SIGNAL (fileChanged (const QString&)),
            this, SLOT (file_has_changed (const QString&)));
@@ -404,61 +410,6 @@ file_editor_tab::set_focus (const QWidget *ID)
     return;
   _edit_area->setFocus ();
 }
-
-void
-file_editor_tab::undo (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->undo ();
-}
-
-void
-file_editor_tab::redo (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->redo ();
-}
-
-void
-file_editor_tab::copy (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->copy ();
-}
-
-void
-file_editor_tab::cut (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->cut ();
-}
-
-void
-file_editor_tab::paste (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->paste ();
-}
-
-void
-file_editor_tab::select_all (const QWidget *ID)
-{
-  if (ID != this)
-    return;
-
-  _edit_area->selectAll ();
-}
-
 
 void
 file_editor_tab::context_help (const QWidget *ID, bool doc)
@@ -1662,6 +1613,18 @@ file_editor_tab::handle_cursor_moved (int line, int col)
 
   _row_indicator->setNum (line+1);
   _col_indicator->setNum (col+1);
+}
+
+void
+file_editor_tab::create_context_menu (QMenu *menu)
+{
+  emit create_context_menu_tab_signal (menu);
+}
+
+void
+file_editor_tab::edit_area_has_focus (bool focus)
+{
+  emit set_global_edit_shortcuts_signal (! focus);
 }
 
 #endif

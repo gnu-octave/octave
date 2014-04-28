@@ -180,8 +180,7 @@ shortcut_manager::do_init_data ()
   // view
   init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
   init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
-  init (tr ("Zoom Normal"), "editor_view:zoom_normal",
-        QKeySequence (Qt::ControlModifier + Qt::Key_Slash));
+  init (tr ("Zoom Normal"), "editor_view:zoom_normal",  QKeySequence (Qt::ControlModifier + Qt::AltModifier + Qt::Key_0));
 
   // debug
   init (tr ("Toggle Breakpoint"), "editor_debug:toggle_breakpoint",

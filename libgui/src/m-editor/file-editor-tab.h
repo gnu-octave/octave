@@ -47,6 +47,8 @@ public:
 
   ~file_editor_tab (void);
 
+  octave_qscintilla *qsci_edit_area () { return _edit_area; }
+
 public slots:
 
   void update_window_title (bool modified);
@@ -67,12 +69,6 @@ public slots:
   void file_name_query (const QWidget *ID);
 
   void set_focus (const QWidget *ID);
-  void undo (const QWidget *ID);
-  void redo (const QWidget *ID);
-  void copy (const QWidget *ID);
-  void cut (const QWidget *ID);
-  void paste (const QWidget *ID);
-  void select_all (const QWidget *ID);
   void context_help (const QWidget *ID, bool);
   void context_edit (const QWidget *ID);
   void save_file (const QWidget *ID);
@@ -121,6 +117,8 @@ public slots:
   void file_has_changed (const QString& fileName);
 
   void execute_command_in_terminal (const QString& command);
+  void edit_area_has_focus (bool foucs);
+  void create_context_menu (QMenu *);
 
 signals:
 
@@ -133,6 +131,8 @@ signals:
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
   void execute_command_in_terminal_signal (const QString&);
+  void set_global_edit_shortcuts_signal (bool);
+  void create_context_menu_tab_signal (QMenu *);
 
 protected:
 

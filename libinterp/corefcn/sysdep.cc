@@ -641,7 +641,7 @@ x = kbhit (1);\n\
 @noindent\n\
 is identical to the above example, but doesn't wait for a keypress,\n\
 returning the empty string if no key is available.\n\
-@seealso{input}\n\
+@seealso{input, pause}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -667,12 +667,16 @@ returning the empty string if no key is available.\n\
 
 DEFUN (pause, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} pause (@var{seconds})\n\
-Suspend the execution of the program.  If invoked without any arguments,\n\
-Octave waits until you type a character.  With a numeric argument, it\n\
-pauses for the given number of seconds.  For example, the following\n\
-statement prints a message and then waits 5 seconds before clearing the\n\
-screen.\n\
+@deftypefn  {Built-in Function} {} pause ()\n\
+@deftypefnx {Built-in Function} {} pause (@var{n})\n\
+Suspend the execution of the program for @var{n} seconds.\n\
+\n\
+@var{n} is a positive real value and may be a fraction of a second.\n\
+If invoked without an input arguments then the program is suspended until a\n\
+character is typed.\n\
+\n\
+The following example prints a message and then waits 5 seconds before\n\
+clearing the screen.\n\
 \n\
 @example\n\
 @group\n\
@@ -681,6 +685,7 @@ pause (5);\n\
 clc;\n\
 @end group\n\
 @end example\n\
+@seealso{kbhit, sleep}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -736,6 +741,7 @@ DEFUN (sleep, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
 Suspend the execution of the program for the given number of seconds.\n\
+@seealso{usleep, pause}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -776,6 +782,7 @@ Suspend the execution of the program for the given number of\n\
 microseconds.  On systems where it is not possible to sleep for periods\n\
 of time less than one second, @code{usleep} will pause the execution for\n\
 @code{round (@var{microseconds} / 1e6)} seconds.\n\
+@seealso{sleep, pause}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -915,8 +922,8 @@ tilde_expand (\"~/bin\")\n\
 DEFUN (have_window_system, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} have_window_system ()\n\
-Return true if Octave a window system is available (X11, Windows,\n\
-or Apple OS X) and false otherwise.\n\
+Return true if a window system is available (X11, Windows, or Apple OS X)\n\
+and false otherwise.\n\
 @end deftypefn")
 {
   return octave_value (display_info::display_available ());

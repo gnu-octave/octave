@@ -1437,11 +1437,11 @@ main_window::construct_file_menu (QMenuBar *p)
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
 
+#ifdef HAVE_QSCINTILLA
   editor_window->insert_new_open_actions (_new_script_action,
                                           _new_function_action,
                                           _open_action);
 
-#ifdef HAVE_QSCINTILLA
   file_menu->addMenu (editor_window->get_mru_menu ());
 #endif
 
@@ -2275,6 +2275,26 @@ void
 main_window::find_files_finished (int)
 {
 
+}
+
+void
+main_window::set_global_edit_shortcuts (bool enable)
+{
+  if (enable)
+    {
+      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+    }
+  else
+    {
+      QKeySequence no_key = QKeySequence ();
+      _copy_action->setShortcut (no_key);
+      _paste_action->setShortcut (no_key);
+      _undo_action->setShortcut (no_key);
+      _select_all_action->setShortcut (no_key);
+    }
 }
 
 void

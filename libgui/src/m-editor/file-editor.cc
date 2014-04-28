@@ -572,39 +572,44 @@ file_editor::handle_edit_file_request (const QString& file)
 void
 file_editor::request_undo (bool)
 {
-  emit fetab_undo (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_UNDO);
 }
 
 void
 file_editor::request_redo (bool)
 {
-  emit fetab_redo (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_REDO);
 }
 
 void
 file_editor::request_copy (bool)
 {
-  emit fetab_copy (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_COPY);
 }
 
 void
 file_editor::request_cut (bool)
 {
-  emit fetab_cut (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_CUT);
 }
 
 void
 file_editor::request_paste (bool)
 {
-  emit fetab_paste (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_PASTE);
 }
 
 void
 file_editor::request_selectall (bool)
 {
-  emit fetab_selectall (_tab_widget->currentWidget ());
+  emit fetab_scintilla_command (_tab_widget->currentWidget (),
+                                QsciScintillaBase::SCI_SELECTALL);
 }
-
 
 void
 file_editor::request_context_help (bool)
@@ -707,55 +712,55 @@ void
 file_editor::request_delete_start_word (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteWordLeft);
+                                QsciScintillaBase::SCI_DELWORDLEFT);
 }
 void
 file_editor::request_delete_end_word (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteWordRight);
+                                QsciScintillaBase::SCI_DELWORDRIGHT);
 }
 void
 file_editor::request_delete_start_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteLineLeft);
+                                QsciScintillaBase::SCI_DELLINELEFT);
 }
 void
 file_editor::request_delete_end_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::DeleteLineRight);
+                                QsciScintillaBase::SCI_DELLINERIGHT);
 }
 void
 file_editor::request_delete_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineDelete);
+                                QsciScintillaBase::SCI_LINEDELETE);
 }
 void
 file_editor::request_copy_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineCopy);
+                                QsciScintillaBase::SCI_LINECOPY);
 }
 void
 file_editor::request_cut_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineCut);
+                                QsciScintillaBase::SCI_LINECUT);
 }
 void
 file_editor::request_duplicate_selection (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::SelectionDuplicate);
+                                QsciScintillaBase::SCI_SELECTIONDUPLICATE);
 }
 void
 file_editor::request_transpose_line (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::LineTranspose);
+                                QsciScintillaBase::SCI_LINETRANSPOSE);
 }
 void
 file_editor::request_comment_selected_text (bool)
@@ -773,13 +778,13 @@ void
 file_editor::request_upper_case (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::SelectionUpperCase);
+                                QsciScintillaBase::SCI_UPPERCASE);
 }
 void
 file_editor::request_lower_case (bool)
 {
   emit fetab_scintilla_command (_tab_widget->currentWidget (),
-                                QsciCommand::SelectionLowerCase);
+                                QsciScintillaBase::SCI_LOWERCASE);
 }
 void
 file_editor::request_indent_selected_text (bool)
@@ -935,10 +940,31 @@ file_editor::handle_add_filename_to_list (const QString& fileName, QWidget *ID)
   editor_tab_map[fileName] = ID;
 }
 
+// context menu of edit area
 void
 file_editor::active_tab_changed (int index)
 {
   emit fetab_change_request (_tab_widget->widget (index));
+}
+
+void file_editor::create_context_menu (QMenu *menu)
+{
+  // remove all standard actions from scintilla
+  QList<QAction *> all_actions = menu->actions ();
+  QAction* a;
+
+  foreach (a, all_actions)
+    menu->removeAction (a);
+
+  // add editor's actions with icons and customized shortcuts
+  menu->addAction (_undo_action);
+  menu->addAction (_redo_action);
+  menu->addSeparator ();
+  menu->addAction (_cut_action);
+  menu->addAction (_copy_action);
+  menu->addAction (_paste_action);
+  menu->addSeparator ();
+  menu->addAction (_selectall_action);
 }
 
 void
@@ -957,6 +983,13 @@ void
 file_editor::zoom_normal (bool)
 {
   emit fetab_zoom_normal (_tab_widget->currentWidget ());
+}
+
+void
+file_editor::edit_status_update (bool undo, bool redo)
+{
+  _undo_action->setEnabled (undo);
+  _redo_action->setEnabled (redo);
 }
 
 void
@@ -997,22 +1030,18 @@ file_editor::notice_settings (const QSettings *settings)
   int tab_width_max = settings->value ("editor/notebook_tab_width_max", 300)
                                       .toInt ();
 
-  QString style_sheet;
   if (settings->value ("editor/longWindowTitle", false).toBool ())
     {
-      style_sheet = QString ("QTabBar::tab {max-height: 4ex; "
-                             "min-width: %1px; max-width: %2px;}")
+      QString style_sheet = QString ("QTabBar::tab "
+                                     "{min-width: %1px; max-width: %2px;}")
                              .arg (tab_width_min).arg (tab_width_max);
       _tab_widget->setElideMode (Qt::ElideLeft);
+      _tab_widget->setStyleSheet (style_sheet);
     }
   else
-    {
-      style_sheet = QString ("QTabBar::tab {max-height: 4ex;}");
-      _tab_widget->setElideMode (Qt::ElideNone);
-    }
+    _tab_widget->setElideMode (Qt::ElideNone);
 
   _tab_widget->setUsesScrollButtons (true);
-  _tab_widget->setStyleSheet (style_sheet);
 
   set_shortcuts ();
 
@@ -1132,8 +1161,10 @@ file_editor::construct (void)
 
   _undo_action = add_action (editMenu, QIcon (":/actions/icons/undo.png"),
           tr ("&Undo"), SLOT (request_undo (bool)));
+  _undo_action->setEnabled (false);
   _redo_action = add_action (editMenu, QIcon (":/actions/icons/redo.png"),
           tr ("&Redo"), SLOT (request_redo (bool)));
+  _redo_action->setEnabled (false);
 
   editMenu->addSeparator ();
 
@@ -1370,6 +1401,10 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 {
   _tab_widget->addTab (f, fn);
 
+  // signals from the qscintilla edit area
+  connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
+           this, SLOT (edit_status_update (bool, bool)));
+
   // Signals from the file editor_tab
   connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
            this, SLOT (handle_file_name_changed (const QString&,
@@ -1390,11 +1425,17 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (mru_add_file (const QString&)),
            this, SLOT (handle_mru_add_file (const QString&)));
 
+  connect (f, SIGNAL (create_context_menu_tab_signal (QMenu *)),
+           this, SLOT (create_context_menu (QMenu *)));
+
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
            main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
 
   connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
            main_win (), SLOT (execute_command_in_terminal (const QString&)));
+
+  connect (f, SIGNAL (set_global_edit_shortcuts_signal (bool)),
+           main_win (), SLOT (set_global_edit_shortcuts (bool)));
 
   // Signals from the file_editor non-trivial operations
   connect (this, SIGNAL (fetab_settings_changed (const QSettings *)),
@@ -1414,24 +1455,6 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (save_file (const QWidget*, const QString&, bool)));
 
   // Signals from the file_editor trivial operations
-  connect (this, SIGNAL (fetab_undo (const QWidget*)),
-           f, SLOT (undo (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_redo (const QWidget*)),
-           f, SLOT (redo (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_copy (const QWidget*)),
-           f, SLOT (copy (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_cut (const QWidget*)),
-           f, SLOT (cut (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_paste (const QWidget*)),
-           f, SLOT (paste (const QWidget*)));
-
-  connect (this, SIGNAL (fetab_selectall (const QWidget*)),
-           f, SLOT (select_all (const QWidget*)));
-
   connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),
            f, SLOT (zoom_in (const QWidget*)));
   connect (this, SIGNAL (fetab_zoom_out (const QWidget*)),
@@ -1527,38 +1550,6 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 }
 
 void
-file_editor::copyClipboard ()
-{
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_copy (true);
-    }
-}
-void
-file_editor::pasteClipboard ()
-{
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_paste (true);
-    }
-}
-void
-file_editor::selectAll ()
-{
-  QWidget * foc_w = focusWidget ();
-
-  if (foc_w && foc_w->inherits ("octave_qscintilla"))
-    {
-      request_selectall (true);
-    }
-}
-
-
-void
 file_editor::set_shortcuts ()
 {
   // File menu
@@ -1605,9 +1596,9 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
 
   // View menu
-  shortcut_manager::set_shortcut (_zoom_in_action, "edit_edit:zoom_in");
-  shortcut_manager::set_shortcut (_zoom_out_action, "edit_edit:zoom_out");
-  shortcut_manager::set_shortcut (_zoom_normal_action, "edit_edit:zoom_normal");
+  shortcut_manager::set_shortcut (_zoom_in_action, "editor_view:zoom_in");
+  shortcut_manager::set_shortcut (_zoom_out_action, "editor_view:zoom_out");
+  shortcut_manager::set_shortcut (_zoom_normal_action, "editor_view:zoom_normal");
 
   // Debug menu
   shortcut_manager::set_shortcut (_toggle_breakpoint_action, "editor_debug:toggle_breakpoint");
@@ -1658,8 +1649,6 @@ file_editor::check_actions ()
   _close_all_action->setEnabled (have_tabs);
   _close_others_action->setEnabled (have_tabs && _tab_widget->count () > 1);
 
-  _undo_action->setEnabled (have_tabs);
-  _redo_action->setEnabled (have_tabs);
   _selectall_action->setEnabled (have_tabs);
 }
 
@@ -1727,20 +1716,20 @@ file_editor::handle_visibility (bool visible)
   }
 
 void 
-file_editor::dragEnterEvent (QDragEnterEvent *event)
+file_editor::dragEnterEvent (QDragEnterEvent *e)
   {
-    if (event->mimeData ()->hasUrls ())
+    if (e->mimeData ()->hasUrls ())
       {
-        event->acceptProposedAction();
+        e->acceptProposedAction();
       }
   }
 
 void
-file_editor::dropEvent (QDropEvent *event)
+file_editor::dropEvent (QDropEvent *e)
   {
-    if (event->mimeData ()->hasUrls ())
+    if (e->mimeData ()->hasUrls ())
       {
-        foreach (QUrl url, event->mimeData ()->urls ())
+        foreach (QUrl url, e->mimeData ()->urls ())
         {
           request_open_file (url.toLocalFile ());
         }

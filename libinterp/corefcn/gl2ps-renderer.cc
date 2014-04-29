@@ -97,7 +97,7 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           buffsize += 1024*1024;
           gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
                           gl2ps_term, gl2ps_sort,
-                          (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
+                          (GL2PS_SILENT 
                            | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
                            | GL2PS_BEST_ROOT | gl2ps_text
                            | GL2PS_NO_PS3_SHADING),

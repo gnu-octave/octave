@@ -651,7 +651,7 @@ opengl_renderer::render_grid (const std::string& gridstyle,
   for (int i = 0; i < ticks.numel (); i++)
     {
       double val = ticks(i);
-      if (lim1 <= val && val <= lim2)
+      if (lim1 < val && val < lim2)
         {
           if (xyz == 0) // X
             {

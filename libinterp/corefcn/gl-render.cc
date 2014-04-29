@@ -2278,7 +2278,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
 
         Matrix vv (1, 3, 0.0);
         Matrix cc;
-        Matrix nn(1, 3, 0.0);
+        Matrix nn (1, 3, 0.0);
         double aa = 1.0;
 
         vv(0) = v(idx,0); vv(1) = v(idx,1);
@@ -2339,7 +2339,10 @@ opengl_renderer::draw_patch (const patch::properties &props)
             glEnable (GL_LIGHTING);
 
           // FIXME: use __index__ property from patch object
-          patch_tesselator tess (this, fc_mode, fl_mode, 0);
+          // -1.25 chosen to provide sufficient Z-offset for
+          // 'layer' property of 2-D plots and not to provoke
+          // Z-fighting with tesselator outline.
+          patch_tesselator tess (this, fc_mode, fl_mode, -1.25);
 
           for (int i = 0; i < nf; i++)
             {

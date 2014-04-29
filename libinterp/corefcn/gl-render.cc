@@ -700,7 +700,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
     {
       double val = ticks(i);
 
-      if (lim1 <= val && val <= lim2)
+      if (lim1 < val && val < lim2)
         {
           if (xyz == 0) // X
             {

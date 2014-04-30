@@ -6424,11 +6424,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   double tmp;
   // FIXME: should this be checked for somewhere else? (i.e. set{x,y,z}lim)
   if (hi < lo)
-    {
-      tmp = hi;
-      hi = lo;
-      lo = tmp;
-    }
+    std::swap (hi, lo);
 
   if (is_logscale)
     {
@@ -6445,15 +6441,17 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         }
     }
 
-  double tick_sep = calc_tick_sep (lo , hi);
-
-  if (is_logscale && ! (xisinf (hi) || xisinf (lo)))
+  double tick_sep;
+  
+  if (is_logscale)
     {
-      // FIXME: what if (hi-lo) < tick_sep?
-      //         ex: loglog ([1 1.1])
-      tick_sep = std::max (tick_sep, 1.);
-      tick_sep = std::ceil (tick_sep);
+      if (! (xisinf (hi) || xisinf (lo)))
+        tick_sep = 1;  // Tick is every order of magnitude (bug #39449)
+      else
+        tick_sep = 0;
     }
+  else
+    tick_sep = calc_tick_sep (lo , hi);
 
   int i1 = static_cast<int> (gnulib::floor (lo / tick_sep));
   int i2 = static_cast<int> (std::ceil (hi / tick_sep));

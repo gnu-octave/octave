@@ -109,6 +109,23 @@ shortcut_manager::do_init_data ()
   init (tr ("Continue"), "main_debug:continue", QKeySequence (Qt::Key_F5));
   init (tr ("Quit Debug Mode"), "main_debug:quit", QKeySequence (Qt::ShiftModifier + Qt::Key_F5));
 
+  // window
+  QKeySequence ctrl = Qt::ControlModifier;
+  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
+  init (tr ("Show Command Window"), "main_window:show_command", ctrl_shift + Qt::Key_0);
+  init (tr ("Show Command History"), "main_window:show_history", ctrl_shift + Qt::Key_1);
+  init (tr ("Show File Browser"), "main_window:show_file_browser", ctrl_shift + Qt::Key_2);
+  init (tr ("Show Workspace"), "main_window:show_workspace", ctrl_shift + Qt::Key_3);
+  init (tr ("Show Editor"), "main_window:show_editor", ctrl_shift + Qt::Key_4);
+  init (tr ("Show Documentation"), "main_window:show_doc", ctrl_shift + Qt::Key_5);
+  init (tr ("Command Window"), "main_window:command", ctrl + Qt::Key_0);
+  init (tr ("Command History"), "main_window:history", ctrl + Qt::Key_1);
+  init (tr ("File Browser"), "main_window:file_browser", ctrl + Qt::Key_2);
+  init (tr ("Workspace"), "main_window:workspace", ctrl + Qt::Key_3);
+  init (tr ("Editor"), "main_window:editor", ctrl + Qt::Key_4);
+  init (tr ("Documentation"), "main_window:doc", ctrl + Qt::Key_5);
+  init (tr ("Reset Window Layout"), "main_window:reset", QKeySequence ());
+
   // actions of the editor
 
   // file

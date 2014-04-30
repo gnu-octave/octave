@@ -224,8 +224,7 @@ private:
                                       const char* member);
   void construct_debug_menu (QMenuBar *p);
   QAction *construct_window_menu_item (QMenu *p, const QString& item,
-                                       bool checkable,
-                                       const QKeySequence& key);
+                                       bool checkable, QWidget*);
   void construct_window_menu (QMenuBar *p);
   void construct_help_menu (QMenuBar *p);
   void construct_documentation_menu (QMenu *p);
@@ -332,6 +331,20 @@ private:
   QAction *_clear_workspace_action;
   QAction *_find_files_action;
   QAction *_select_all_action;
+
+  QAction *_show_command_window_action;
+  QAction *_show_history_action;
+  QAction *_show_workspace_action;
+  QAction *_show_file_browser_action;
+  QAction *_show_editor_action;
+  QAction *_show_documentation_action;
+  QAction *_command_window_action;
+  QAction *_history_action;
+  QAction *_workspace_action;
+  QAction *_file_browser_action;
+  QAction *_editor_action;
+  QAction *_documentation_action;
+  QAction *_reset_windows_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;

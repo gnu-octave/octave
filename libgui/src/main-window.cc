@@ -1629,14 +1629,31 @@ main_window::construct_debug_menu (QMenuBar *p)
 
 QAction *
 main_window::construct_window_menu_item (QMenu *p, const QString& item,
-                                         bool checkable,
-                                         const QKeySequence& key)
+                                         bool checkable, QWidget *widget)
 {
-  QAction *action = p->addAction (item);
+  QAction *action = p->addAction (QIcon (), item);
 
+  addAction (action);  // important for shortcut context
   action->setCheckable (checkable);
-  action->setShortcut (key);
   action->setShortcutContext (Qt::ApplicationShortcut);
+
+  if (widget)  // might be zero for editor_window
+    {
+      if (checkable)
+        {
+          // action for visibilty of dock widget
+          connect (action, SIGNAL (toggled (bool)),
+                   widget, SLOT (setVisible (bool)));
+
+          connect (widget, SIGNAL (active_changed (bool)),
+                  action, SLOT (setChecked (bool)));
+        }
+      else
+        {
+          // action for focus of dock widget
+          connect (action, SIGNAL (triggered ()), widget, SLOT (focus ()));
+        }
+    }
 
   return action;
 }
@@ -1646,125 +1663,48 @@ main_window::construct_window_menu (QMenuBar *p)
 {
   QMenu *window_menu = p->addMenu (tr ("&Window"));
 
-  QKeySequence ctrl = Qt::ControlModifier;
-  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
+  _show_command_window_action = construct_window_menu_item
+            (window_menu, tr ("Show Command Window"), true, command_window);
 
-  QAction *show_command_window_action = construct_window_menu_item
-                                        (window_menu,
-                                         tr ("Show Command Window"), true,
-                                         ctrl_shift + Qt::Key_0);
+  _show_history_action = construct_window_menu_item
+            (window_menu, tr ("Show Command History"), true, history_window);
 
-  QAction *show_history_action = construct_window_menu_item
-                                 (window_menu, tr ("Show Command History"),
-                                  true, ctrl_shift + Qt::Key_1);
+  _show_file_browser_action = construct_window_menu_item
+            (window_menu, tr ("Show File Browser"), true, file_browser_window);
 
-  QAction *show_file_browser_action =  construct_window_menu_item
-                                       (window_menu, tr ("Show File Browser"),
-                                        true, ctrl_shift + Qt::Key_2);
+  _show_workspace_action = construct_window_menu_item
+            (window_menu, tr ("Show Workspace"), true, workspace_window);
 
-  QAction *show_workspace_action = construct_window_menu_item
-                                   (window_menu, tr ("Show Workspace"), true,
-                                    ctrl_shift + Qt::Key_3);
+  _show_editor_action = construct_window_menu_item
+            (window_menu, tr ("Show Editor"), true, editor_window);
 
-  QAction *show_editor_action = construct_window_menu_item
-                                (window_menu, tr ("Show Editor"), true,
-                                 ctrl_shift + Qt::Key_4);
-
-  QAction *show_documentation_action = construct_window_menu_item
-                                       (window_menu, tr ("Show Documentation"),
-                                        true, ctrl_shift + Qt::Key_5);
+  _show_documentation_action = construct_window_menu_item
+            (window_menu, tr ("Show Documentation"), true, doc_browser_window);
 
   window_menu->addSeparator ();
 
-  QAction *command_window_action = construct_window_menu_item
-                                   (window_menu, tr ("Command Window"), false,
-                                    ctrl + Qt::Key_0);
+  _command_window_action = construct_window_menu_item
+            (window_menu, tr ("Command Window"), false, command_window);
 
-  QAction *history_action = construct_window_menu_item
-                            (window_menu, tr ("Command History"), false,
-                             ctrl + Qt::Key_1);
+  _history_action = construct_window_menu_item
+            (window_menu, tr ("Command History"), false, history_window);
 
-  QAction *file_browser_action = construct_window_menu_item
-                                 (window_menu, tr ("File Browser"), false,
-                                  ctrl + Qt::Key_2);
+  _file_browser_action = construct_window_menu_item
+            (window_menu, tr ("File Browser"), false, file_browser_window);
 
-  QAction *workspace_action = construct_window_menu_item
-                              (window_menu, tr ("Workspace"), false,
-                               ctrl + Qt::Key_3);
+  _workspace_action = construct_window_menu_item
+            (window_menu, tr ("Workspace"), false, workspace_window);
 
-  QAction *editor_action = construct_window_menu_item
-                           (window_menu, tr ("Editor"), false,
-                            ctrl + Qt::Key_4);
+  _editor_action = construct_window_menu_item
+            (window_menu, tr ("Editor"), false, editor_window);
 
-  QAction *documentation_action = construct_window_menu_item
-                                  (window_menu, tr ("Documentation"), false,
-                                   ctrl + Qt::Key_5);
+  _documentation_action = construct_window_menu_item
+            (window_menu, tr ("Documentation"), false, doc_browser_window);
 
   window_menu->addSeparator ();
 
-  QAction *reset_windows_action
-    = window_menu->addAction (tr ("Reset Default Window Layout"));
-
-  connect (show_command_window_action, SIGNAL (toggled (bool)),
-           command_window, SLOT (setVisible (bool)));
-
-  connect (command_window, SIGNAL (active_changed (bool)),
-           show_command_window_action, SLOT (setChecked (bool)));
-
-  connect (show_workspace_action, SIGNAL (toggled (bool)),
-           workspace_window, SLOT (setVisible (bool)));
-
-  connect (workspace_window, SIGNAL (active_changed (bool)),
-           show_workspace_action, SLOT (setChecked (bool)));
-
-  connect (show_history_action, SIGNAL (toggled (bool)),
-           history_window, SLOT (setVisible (bool)));
-
-  connect (history_window, SIGNAL (active_changed (bool)),
-           show_history_action, SLOT (setChecked (bool)));
-
-  connect (show_file_browser_action, SIGNAL (toggled (bool)),
-           file_browser_window, SLOT (setVisible (bool)));
-
-  connect (file_browser_window, SIGNAL (active_changed (bool)),
-           show_file_browser_action, SLOT (setChecked (bool)));
-
-#ifdef HAVE_QSCINTILLA
-  connect (show_editor_action, SIGNAL (toggled (bool)),
-           editor_window, SLOT (setVisible (bool)));
-
-  connect (editor_window, SIGNAL (active_changed (bool)),
-           show_editor_action, SLOT (setChecked (bool)));
-#endif
-
-  connect (show_documentation_action, SIGNAL (toggled (bool)),
-           doc_browser_window, SLOT (setVisible (bool)));
-
-  connect (doc_browser_window, SIGNAL (active_changed (bool)),
-           show_documentation_action, SLOT (setChecked (bool)));
-
-  connect (command_window_action, SIGNAL (triggered ()),
-           command_window, SLOT (focus ()));
-
-  connect (workspace_action, SIGNAL (triggered ()),
-           workspace_window, SLOT (focus ()));
-
-  connect (history_action, SIGNAL (triggered ()),
-           history_window, SLOT (focus ()));
-
-  connect (file_browser_action, SIGNAL (triggered ()),
-           file_browser_window, SLOT (focus ()));
-
-#ifdef HAVE_QSCINTILLA
-  connect (editor_action, SIGNAL (triggered ()),
-           editor_window, SLOT (focus ()));
-#endif
-
-  connect (documentation_action, SIGNAL (triggered ()),
-           doc_browser_window, SLOT (focus ()));
-
-  connect (reset_windows_action, SIGNAL (triggered ()),
-           this, SLOT (reset_windows ()));
+  _reset_windows_action = add_action (window_menu, QIcon (),
+              tr ("Reset Default Window Layout"), SLOT (reset_windows ()));
 }
 
 void
@@ -2323,6 +2263,21 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       shortcut_manager::set_shortcut (_debug_step_out,  "main_debug:step_out");
       shortcut_manager::set_shortcut (_debug_continue,  "main_debug:continue");
       shortcut_manager::set_shortcut (_debug_quit,      "main_debug:quit");
+
+      // window menu
+      shortcut_manager::set_shortcut (_show_command_window_action, "main_window:show_command");
+      shortcut_manager::set_shortcut (_show_history_action, "main_window:show_history");
+      shortcut_manager::set_shortcut (_show_workspace_action,  "main_window:show_workspace");
+      shortcut_manager::set_shortcut (_show_file_browser_action,  "main_window:show_file_browser");
+      shortcut_manager::set_shortcut (_show_editor_action, "main_window:show_editor");
+      shortcut_manager::set_shortcut (_show_documentation_action, "main_window:show_doc");
+      shortcut_manager::set_shortcut (_command_window_action, "main_window:command");
+      shortcut_manager::set_shortcut (_history_action, "main_window:history");
+      shortcut_manager::set_shortcut (_workspace_action,  "main_window:workspace");
+      shortcut_manager::set_shortcut (_file_browser_action,  "main_window:file_browser");
+      shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
+      shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
+      shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
     }
   else
     {
@@ -2340,9 +2295,6 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _exit_action->setShortcut (no_key);
 
       // edit menu
-      //_copy_action->setShortcut (no_key);
-      //_paste_action->setShortcut (no_key);
-      //_undo_action->setShortcut (no_key);
       _select_all_action->setShortcut (no_key);
       _clear_clipboard_action->setShortcut (no_key);
       _find_files_action->setShortcut (no_key);
@@ -2350,6 +2302,8 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _clear_command_window_action->setShortcut (no_key);
       _clear_workspace_action->setShortcut (no_key);
 
+      // window menu
+      _reset_windows_action->setShortcut (no_key);
     }
 
 }

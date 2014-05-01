@@ -866,6 +866,8 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
     CONVERT_CDATA_1 (NDArray, , true);
   else if (cdata.is_single_type ())
     CONVERT_CDATA_1 (FloatNDArray, float_, true);
+  else if (cdata.is_bool_type ())
+    CONVERT_CDATA_1 (boolNDArray, bool_, false);
   else
     error ("unsupported type for cdata (= %s)", cdata.type_name ().c_str ());
 

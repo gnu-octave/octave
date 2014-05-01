@@ -173,11 +173,6 @@ function h = imshow (im, varargin)
     im(nans) = display_range(1);
   endif
 
-  ## This is for compatibility.
-  if (! (indexed || (true_color && isinteger (im))) || islogical (im))
-    im = double (im);
-  endif
-
   ## Clamp the image to the range boundaries
   if (! (true_color || indexed || islogical (im)))
     low = display_range(1);

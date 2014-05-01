@@ -355,6 +355,9 @@ private:
   QAction *_developer_action;
   QAction *_about_octave_action;
 
+  QAction *_release_notes_action;
+  QAction *_current_news_action;
+
   // Toolbars.
   QComboBox *_current_directory_combo_box;
   static const int current_directory_width = 300;

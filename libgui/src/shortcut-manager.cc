@@ -136,6 +136,10 @@ shortcut_manager::do_init_data ()
   init (tr ("Octave Developer Resources"), "main_help:developer", QKeySequence ());
   init (tr ("About Octave"), "main_help:about", QKeySequence ());
 
+  // news
+  init (tr ("Release Notes"), "main_news:release_notes", QKeySequence ());
+  init (tr ("Community News"), "main_news:community_news", QKeySequence ());
+
   // actions of the editor
 
   // file

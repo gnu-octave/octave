@@ -1762,17 +1762,11 @@ main_window::construct_news_menu (QMenuBar *p)
 {
   QMenu *news_menu = p->addMenu (tr ("&News"));
 
-  QAction *release_notes_action
-    = news_menu->addAction (tr ("Release Notes"));
+  _release_notes_action = add_action (news_menu, QIcon (),
+            tr ("Release Notes"), SLOT (display_release_notes ()));
 
-  QAction *current_news_action
-    = news_menu->addAction (tr ("Community News"));
-
-  connect (release_notes_action, SIGNAL (triggered ()),
-           this, SLOT (display_release_notes ()));
-
-  connect (current_news_action, SIGNAL (triggered ()),
-           this, SLOT (load_and_display_community_news ()));
+  _current_news_action = add_action (news_menu, QIcon (),
+            tr ("Community News"), SLOT (load_and_display_community_news ()));
 }
 
 void
@@ -2273,6 +2267,9 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
       shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
 
+      // news menu
+      shortcut_manager::set_shortcut (_release_notes_action, "main_news:release_notes");
+      shortcut_manager::set_shortcut (_current_news_action, "main_news:community_news");
     }
   else
     {
@@ -2309,6 +2306,10 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _contribute_action->setShortcut (no_key);
       _developer_action->setShortcut (no_key);
       _about_octave_action->setShortcut (no_key);
+
+      // news menu
+      _release_notes_action->setShortcut (no_key);
+      _current_news_action->setShortcut (no_key);
     }
 
 }

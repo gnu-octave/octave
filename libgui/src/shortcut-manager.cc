@@ -126,6 +126,16 @@ shortcut_manager::do_init_data ()
   init (tr ("Documentation"), "main_window:doc", ctrl + Qt::Key_5);
   init (tr ("Reset Window Layout"), "main_window:reset", QKeySequence ());
 
+  // help
+  init (tr ("Show Ondisk Documentation"), "main_help:ondisk_doc", QKeySequence ());
+  init (tr ("Show Online Documentation"), "main_help:online_doc", QKeySequence ());
+  init (tr ("Report a Bug"), "main_help:report_bug", QKeySequence ());
+  init (tr ("Octave Packages"), "main_help:packages", QKeySequence ());
+  init (tr ("Share Code"), "main_help:agora", QKeySequence ());
+  init (tr ("Contribute to Octave"), "main_help:contribute", QKeySequence ());
+  init (tr ("Octave Developer Resources"), "main_help:developer", QKeySequence ());
+  init (tr ("About Octave"), "main_help:about", QKeySequence ());
+
   // actions of the editor
 
   // file

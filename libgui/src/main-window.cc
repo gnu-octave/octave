@@ -1429,9 +1429,15 @@ main_window::construct_menu_bar (void)
 
 QAction*
 main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
-                         const char *member)
+                         const char *member, const QWidget *receiver)
 {
-  QAction *a = menu->addAction (icon, text, this, member);
+  QAction *a;
+
+  if (receiver)
+    a = menu->addAction (icon, text, receiver, member);
+  else
+    a = menu->addAction (icon, text, this, member);
+
   addAction (a);  // important for shortcut context
   a->setShortcutContext (Qt::ApplicationShortcut);
   return a;
@@ -1718,61 +1724,37 @@ main_window::construct_help_menu (QMenuBar *p)
 
   help_menu->addSeparator ();
 
-  QAction *report_bug_action
-    = help_menu->addAction (tr ("Report Bug"));
+  _report_bug_action = add_action (help_menu, QIcon (),
+            tr ("Report Bug"), SLOT (open_bug_tracker_page ()));
 
-  QAction *octave_packages_action
-    = help_menu->addAction (tr ("Octave Packages"));
+  _octave_packages_action =  add_action (help_menu, QIcon (),
+            tr ("Octave Packages"), SLOT (open_octave_packages_page ()));
 
-  QAction *agora_action
-    = help_menu->addAction (tr ("Share Code"));
+  _agora_action = add_action (help_menu, QIcon (),
+            tr ("Share Code"), SLOT (open_agora_page ()));
 
-  QAction *contribute_action
-    = help_menu->addAction (tr ("Contribute to Octave"));
+  _contribute_action = add_action (help_menu, QIcon (),
+            tr ("Contribute to Octave"), SLOT (open_contribute_page ()));
 
-  QAction *developer_action
-    = help_menu->addAction (tr ("Octave Developer Resources"));
+  _developer_action = add_action (help_menu, QIcon (),
+            tr ("Octave Developer Resources"), SLOT (open_developer_page ()));
 
   help_menu->addSeparator ();
 
-  QAction *about_octave_action
-    = help_menu->addAction (tr ("About Octave"));
-
-  connect (report_bug_action, SIGNAL (triggered ()),
-           this, SLOT (open_bug_tracker_page ()));
-
-  connect (octave_packages_action, SIGNAL (triggered ()),
-           this, SLOT (open_octave_packages_page ()));
-
-  connect (agora_action, SIGNAL (triggered ()),
-           this, SLOT (open_agora_page ()));
-
-  connect (contribute_action, SIGNAL (triggered ()),
-           this, SLOT (open_contribute_page ()));
-
-  connect (developer_action, SIGNAL (triggered ()),
-           this, SLOT (open_developer_page ()));
-
-  connect (about_octave_action, SIGNAL (triggered ()),
-           this, SLOT (show_about_octave ()));
+  _about_octave_action = add_action (help_menu, QIcon (),
+            tr ("About Octave"), SLOT (show_about_octave ()));
 }
 
 void
 main_window::construct_documentation_menu (QMenu *p)
 {
-  QMenu *documentation_menu = p->addMenu (tr ("Documentation"));
+  QMenu *doc_menu = p->addMenu (tr ("Documentation"));
 
-  QAction *ondisk_documentation_action
-    = documentation_menu->addAction (tr ("On Disk"));
+  _ondisk_doc_action = add_action (doc_menu, QIcon (),
+                     tr ("On Disk"), SLOT (focus ()), doc_browser_window);
 
-  QAction *online_documentation_action
-    = documentation_menu->addAction (tr ("Online"));
-
-  connect (ondisk_documentation_action, SIGNAL (triggered ()),
-           doc_browser_window, SLOT (focus ()));
-
-  connect (online_documentation_action, SIGNAL (triggered ()),
-           this, SLOT (open_online_documentation_page ()));
+  _online_doc_action = add_action (doc_menu, QIcon (),
+                     tr ("Online"), SLOT (open_online_documentation_page ()));
 }
 
 void
@@ -2280,6 +2262,17 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
       shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
       shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
+
+      // help menu
+      shortcut_manager::set_shortcut (_ondisk_doc_action, "main_help:ondisk_doc");
+      shortcut_manager::set_shortcut (_online_doc_action, "main_help:online_doc");
+      shortcut_manager::set_shortcut (_report_bug_action, "main_help:report_bug");
+      shortcut_manager::set_shortcut (_octave_packages_action, "main_help:packages");
+      shortcut_manager::set_shortcut (_agora_action, "main_help:agora");
+      shortcut_manager::set_shortcut (_contribute_action, "main_help:contribute");
+      shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
+      shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
+
     }
   else
     {
@@ -2306,6 +2299,16 @@ main_window::set_global_shortcuts (bool set_shortcuts)
 
       // window menu
       _reset_windows_action->setShortcut (no_key);
+
+      // help menu
+      _ondisk_doc_action->setShortcut (no_key);
+      _online_doc_action->setShortcut (no_key);
+      _report_bug_action->setShortcut (no_key);
+      _octave_packages_action->setShortcut (no_key);
+      _agora_action->setShortcut (no_key);
+      _contribute_action->setShortcut (no_key);
+      _developer_action->setShortcut (no_key);
+      _about_octave_action->setShortcut (no_key);
     }
 
 }

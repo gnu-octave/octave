@@ -214,7 +214,7 @@ private:
   void construct_octave_qt_link (void);
 
   QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
-                       const char *member);
+                       const char *member, const QWidget *receiver = 0);
 
   void construct_menu_bar (void);
   void construct_file_menu (QMenuBar *p);
@@ -345,6 +345,15 @@ private:
   QAction *_editor_action;
   QAction *_documentation_action;
   QAction *_reset_windows_action;
+
+  QAction *_ondisk_doc_action;
+  QAction *_online_doc_action;
+  QAction *_report_bug_action;
+  QAction *_octave_packages_action;
+  QAction *_agora_action;
+  QAction *_contribute_action;
+  QAction *_developer_action;
+  QAction *_about_octave_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;

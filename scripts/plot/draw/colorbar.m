@@ -311,18 +311,30 @@ function update_colorbar_clim (hax, d, hi, vert)
       set (hiax, "xlim", cext);
     endif
 
+    ##########################################################################
     ## FIXME: Setting xlim or ylim from within a listener callback
     ##        causes the axis to change size rather than change limits.
     ##        Workaround it by jiggling the position property which forces
     ##        a redraw of the axis object.
     ##
-    ## Debug Example:
-    ## Uncomment the line below.
-    ##   keyboard;
-    ## Now run the the following code.
-    ##   clf; colorbar (); contour (peaks ())
-    ## Once the keyboard command has been hit in the debugger try
-    ##   set (hiax, "ylim", [0 0.5]) 
+    ## To see the problem:
+    ## Comment out the 5 lines below the comment box which jiggle position
+    ## 
+    ## Now run the the following code:
+    ##   clear -f
+    ##   clf; contour (peaks ()); colorbar (); 
+    ##   caxis ([0 5]);
+    ## Up to this point everything is fine.
+    ##   caxis ("auto");
+    ## Now colorbar will be badly sized.
+    ##
+    ## The problem line is
+    ##   set (hiax, "ylim", cext) 
+    ##
+    ## The issue seems to be that the axes object is redrawn to the wrong size
+    ## and then is marked as clean so that further internal calls which set the
+    ## correct size do not cause the object to be refreshed.
+    ##########################################################################
     pos = get (hiax, "position");
     pos(1) += eps;
     set (hiax, "position", pos);

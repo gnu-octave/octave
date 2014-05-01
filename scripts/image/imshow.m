@@ -45,6 +45,9 @@
 ## @table @asis
 ## @item @qcode{"displayrange"}
 ## @var{value1} is the display range as described above.
+##
+## @item @qcode{"colormap"}
+## @var{value1} is the colormap to use when displaying an indexed image.
 ## 
 ## @item @qcode{"xdata"}
 ## If @var{value1} is a two element vector, it must contain horizontal axis

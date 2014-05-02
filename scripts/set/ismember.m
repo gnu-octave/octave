@@ -118,14 +118,19 @@ function [tf, a_idx] = ismember (A, s, varargin)
       a_idx = zeros (rows (A), 1);
     else
 
-      ## FIXME: lookup does not support "rows", so we just use unique.
-      [xx, ii, jj] = unique ([A; s], "rows", "last");
-      na = rows (A);
-      jj = ii(jj(1:na));
-      tf = jj > na;
+      if (rows (s) == 1)
+        tf = all (bsxfun (@eq, A, s), 2);
+        a_idx = double (tf);
+      else
+        ## FIXME: lookup does not support "rows", so we just use unique.
+        [~, ii, jj] = unique ([A; s], "rows", "last");
+        na = rows (A);
+        jj = ii(jj(1:na));
+        tf = jj > na;
 
-      if (nargout > 1)
-        a_idx = max (0, jj - na);
+        if (nargout > 1)
+          a_idx = max (0, jj - na);
+        endif
       endif
 
     endif
@@ -213,4 +218,9 @@ endfunction
 %! [result, a_idx] = ismember ([1.1,1.2,1.3; 2.1,2.2,2.3; 10,11,12], [1.1,1.2,1.3; 10,11,12; 2.12,2.22,2.32], "rows");
 %! assert (result, [true; false; true]);
 %! assert (a_idx, [1; 0; 2]);
+
+%!test
+%! [result, a_idx] = ismember ([1:3; 5:7; 4:6; 0:2; 1:3; 2:4], [1:3], "rows");
+%! assert (result, logical ([1 0 0 0 1 0]'));
+%! assert (a_idx, [1 0 0 0 1 0]');
 

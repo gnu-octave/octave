@@ -95,8 +95,10 @@ code to execute.
 @cindex path, removing from classpath
 @DOCSTRING(javarmpath)
 
-The following four functions provide information and control over the interface
+The following functions provide information and control over the interface
 between Octave and the Java Virtual Machine.
+
+@DOCSTRING(javachk)
 
 @DOCSTRING(usejava)
 

@@ -43,6 +43,7 @@
 ## @qcode{"desktop"} always returns @code{false} as Octave has no Java-based
 ## desktop.  Other features may be available if Octave was compiled with the
 ## Java Interface and Java is installed.
+## @seealso{javachk}
 ## @end deftypefn
 
 ## Author: Rik Wehbring

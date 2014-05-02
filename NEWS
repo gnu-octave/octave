@@ -29,6 +29,7 @@ Summary of important user-visible changes for version 4.2:
       dir_in_loadpath
       hgload
       hgsave
+      javachk
       numfields
 
  ** Deprecated functions.

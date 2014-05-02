@@ -672,7 +672,6 @@ function list = missing_functions ()
   "isjava",
   "isocaps",
   "isstudent",
-  "javachk",
   "ldl",
   "libfunctions",
   "libfunctionsview",

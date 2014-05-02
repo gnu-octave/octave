@@ -206,8 +206,9 @@ function h = imshow (im, varargin)
     htmp = image (xdata, ydata, im);
   else
     htmp = imagesc (xdata, ydata, im, display_range);
+    set (gca (), "clim", display_range);
   endif
-  set (gca (), "visible", "off");
+  set (gca (), "visible", "off", "view", [0, 90], "ydir", "reverse", "layer", "top");
   axis ("image");
 
   if (nargout > 0)

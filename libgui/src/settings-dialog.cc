@@ -271,6 +271,10 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   // terminal colors
   read_terminal_colors (settings);
 
+  // shortcuts
+  ui->cb_prevent_readline_conflicts->setChecked (
+    settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
+
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
   QsciLexer *lexer;
@@ -650,7 +654,6 @@ settings_dialog::write_changed_settings ()
     case 2: cursorType = "underline";  break;
     }
   settings->setValue ("terminal/cursorType", cursorType);
-  settings->sync ();
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, get dialog contents, and write settings
@@ -685,10 +688,15 @@ settings_dialog::write_changed_settings ()
 
   write_terminal_colors (settings);
 
+  // shortcuts
+  settings->setValue ("shortcuts/prevent_readline_conflicts",
+                      ui->cb_prevent_readline_conflicts->isChecked ());
   shortcut_manager::write_shortcuts ();
 
+  // settings dialog's geometry
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
   settings->setValue ("settings/geometry",saveGeometry ());
+
   settings->sync ();
 }
 

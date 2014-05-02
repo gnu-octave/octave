@@ -270,6 +270,8 @@ private:
 
   void execute_debug_callback ();
 
+  void configure_shortcuts ();
+
   bool confirm_exit_octave ();
 
   workspace_model *_workspace_model;
@@ -389,6 +391,8 @@ private:
   QStringList *_dbg_queue;
   QSemaphore   _dbg_processing;
   QMutex       _dbg_queue_mutex;
+
+  bool _prevent_readline_conflicts;
 };
 
 class news_reader : public QObject

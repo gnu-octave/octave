@@ -1684,6 +1684,30 @@
               <number>0</number>
              </property>
              <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QCheckBox" name="cb_prevent_readline_conflicts">
+                 <property name="toolTip">
+                  <string>Select this option to prevent conflicts with readline shortcuts</string>
+                 </property>
+                 <property name="text">
+                  <string>Disable global shortcuts when terminal window has focus</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_9">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="label_21">
                <property name="text">
                 <string>Enter a new shortcut by double clicking on the related row.</string>

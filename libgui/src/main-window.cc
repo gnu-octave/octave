@@ -95,7 +95,8 @@ main_window::main_window (QWidget *p)
     _cmd_queue_mutex (),
     _dbg_queue (new QStringList ()),  // no debug pending
     _dbg_processing (1),
-    _dbg_queue_mutex ()
+    _dbg_queue_mutex (),
+    _prevent_readline_conflicts (true)
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -681,7 +682,9 @@ main_window::notice_settings (const QSettings *settings)
   int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
-  set_global_shortcuts (true);
+  _prevent_readline_conflicts =
+    settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
+  configure_shortcuts ();
   set_global_shortcuts (command_window_has_focus ());
 
   resource_manager::update_network_settings ();
@@ -1282,7 +1285,7 @@ main_window::construct (void)
 
   Fregister_graphics_toolkit (ovl ("qt"));
 
-  set_global_shortcuts (true);
+  configure_shortcuts ();
 }
 
 
@@ -2191,15 +2194,16 @@ main_window::find_files_finished (int)
 void
 main_window::set_global_edit_shortcuts (bool enable)
 {
+  // this slot is called when editor gets/loses focus
   if (enable)
-    {
+    { // editor loses focus, set the global shortcuts
       shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
       shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
       shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
       shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
     }
   else
-    {
+    { // disable shortcuts that are also provided by the editor itself
       QKeySequence no_key = QKeySequence ();
       _copy_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
@@ -2209,71 +2213,81 @@ main_window::set_global_edit_shortcuts (bool enable)
 }
 
 void
+main_window::configure_shortcuts ()
+{
+  // file menu
+  shortcut_manager::set_shortcut (_open_action, "main_file:open_file");
+  shortcut_manager::set_shortcut (_new_script_action, "main_file:new_file");
+  shortcut_manager::set_shortcut (_new_function_action, "main_file:new_function");
+  shortcut_manager::set_shortcut (_new_function_action, "main_file:new_figure");
+  shortcut_manager::set_shortcut (_load_workspace_action, "main_file:load_workspace");
+  shortcut_manager::set_shortcut (_save_workspace_action, "main_file:save_workspace");
+  shortcut_manager::set_shortcut (_preferences_action, "main_file:preferences");
+  shortcut_manager::set_shortcut (_exit_action,"main_file:exit");
+
+  // edit menu
+  shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+  shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+  shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+  shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+  shortcut_manager::set_shortcut (_clear_clipboard_action, "main_edit:clear_clipboard");
+  shortcut_manager::set_shortcut (_find_files_action, "main_edit:find_in_files");
+  shortcut_manager::set_shortcut (_clear_command_history_action, "main_edit:clear_history");
+  shortcut_manager::set_shortcut (_clear_command_window_action, "main_edit:clear_command_window");
+  shortcut_manager::set_shortcut (_clear_workspace_action, "main_edit:clear_workspace");
+
+  // debug menu
+  shortcut_manager::set_shortcut (_debug_step_over, "main_debug:step_over");
+  shortcut_manager::set_shortcut (_debug_step_into, "main_debug:step_into");
+  shortcut_manager::set_shortcut (_debug_step_out,  "main_debug:step_out");
+  shortcut_manager::set_shortcut (_debug_continue,  "main_debug:continue");
+  shortcut_manager::set_shortcut (_debug_quit,  "main_debug:quit");
+
+  // window menu
+  shortcut_manager::set_shortcut (_show_command_window_action, "main_window:show_command");
+  shortcut_manager::set_shortcut (_show_history_action, "main_window:show_history");
+  shortcut_manager::set_shortcut (_show_workspace_action,  "main_window:show_workspace");
+  shortcut_manager::set_shortcut (_show_file_browser_action,  "main_window:show_file_browser");
+  shortcut_manager::set_shortcut (_show_editor_action, "main_window:show_editor");
+  shortcut_manager::set_shortcut (_show_documentation_action, "main_window:show_doc");
+  shortcut_manager::set_shortcut (_command_window_action, "main_window:command");
+  shortcut_manager::set_shortcut (_history_action, "main_window:history");
+  shortcut_manager::set_shortcut (_workspace_action,  "main_window:workspace");
+  shortcut_manager::set_shortcut (_file_browser_action,  "main_window:file_browser");
+  shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
+  shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
+  shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
+
+  // help menu
+  shortcut_manager::set_shortcut (_ondisk_doc_action, "main_help:ondisk_doc");
+  shortcut_manager::set_shortcut (_online_doc_action, "main_help:online_doc");
+  shortcut_manager::set_shortcut (_report_bug_action, "main_help:report_bug");
+  shortcut_manager::set_shortcut (_octave_packages_action, "main_help:packages");
+  shortcut_manager::set_shortcut (_agora_action, "main_help:agora");
+  shortcut_manager::set_shortcut (_contribute_action, "main_help:contribute");
+  shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
+  shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
+
+  // news menu
+  shortcut_manager::set_shortcut (_release_notes_action, "main_news:release_notes");
+  shortcut_manager::set_shortcut (_current_news_action, "main_news:community_news");
+}
+
+void
 main_window::set_global_shortcuts (bool set_shortcuts)
 {
+  // this slot is called when the terminal gets/loses focus
+
+  // return if the user don't want to use readline shortcuts
+  if (! _prevent_readline_conflicts)
+    return;
+
   if (set_shortcuts)
-    {
-
-      // file menu
-      shortcut_manager::set_shortcut (_open_action, "main_file:open_file");
-      shortcut_manager::set_shortcut (_new_script_action, "main_file:new_file");
-      shortcut_manager::set_shortcut (_new_function_action, "main_file:new_function");
-      shortcut_manager::set_shortcut (_new_function_action, "main_file:new_figure");
-      shortcut_manager::set_shortcut (_load_workspace_action, "main_file:load_workspace");
-      shortcut_manager::set_shortcut (_save_workspace_action, "main_file:save_workspace");
-      shortcut_manager::set_shortcut (_preferences_action, "main_file:preferences");
-      shortcut_manager::set_shortcut (_exit_action,"main_file:exit");
-
-      // edit menu
-      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
-      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
-      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
-      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
-      shortcut_manager::set_shortcut (_clear_clipboard_action, "main_edit:clear_clipboard");
-      shortcut_manager::set_shortcut (_find_files_action, "main_edit:find_in_files");
-      shortcut_manager::set_shortcut (_clear_command_history_action, "main_edit:clear_history");
-      shortcut_manager::set_shortcut (_clear_command_window_action, "main_edit:clear_command_window");
-      shortcut_manager::set_shortcut (_clear_workspace_action, "main_edit:clear_workspace");
-
-      // debug menu
-      shortcut_manager::set_shortcut (_debug_step_over, "main_debug:step_over");
-      shortcut_manager::set_shortcut (_debug_step_into, "main_debug:step_into");
-      shortcut_manager::set_shortcut (_debug_step_out,  "main_debug:step_out");
-      shortcut_manager::set_shortcut (_debug_continue,  "main_debug:continue");
-      shortcut_manager::set_shortcut (_debug_quit,      "main_debug:quit");
-
-      // window menu
-      shortcut_manager::set_shortcut (_show_command_window_action, "main_window:show_command");
-      shortcut_manager::set_shortcut (_show_history_action, "main_window:show_history");
-      shortcut_manager::set_shortcut (_show_workspace_action,  "main_window:show_workspace");
-      shortcut_manager::set_shortcut (_show_file_browser_action,  "main_window:show_file_browser");
-      shortcut_manager::set_shortcut (_show_editor_action, "main_window:show_editor");
-      shortcut_manager::set_shortcut (_show_documentation_action, "main_window:show_doc");
-      shortcut_manager::set_shortcut (_command_window_action, "main_window:command");
-      shortcut_manager::set_shortcut (_history_action, "main_window:history");
-      shortcut_manager::set_shortcut (_workspace_action,  "main_window:workspace");
-      shortcut_manager::set_shortcut (_file_browser_action,  "main_window:file_browser");
-      shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
-      shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
-      shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
-
-      // help menu
-      shortcut_manager::set_shortcut (_ondisk_doc_action, "main_help:ondisk_doc");
-      shortcut_manager::set_shortcut (_online_doc_action, "main_help:online_doc");
-      shortcut_manager::set_shortcut (_report_bug_action, "main_help:report_bug");
-      shortcut_manager::set_shortcut (_octave_packages_action, "main_help:packages");
-      shortcut_manager::set_shortcut (_agora_action, "main_help:agora");
-      shortcut_manager::set_shortcut (_contribute_action, "main_help:contribute");
-      shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
-      shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
-
-      // news menu
-      shortcut_manager::set_shortcut (_release_notes_action, "main_news:release_notes");
-      shortcut_manager::set_shortcut (_current_news_action, "main_news:community_news");
+    { // terminal loses focus: set the global shortcuts
+      configure_shortcuts ();
     }
   else
-    {
-
+    { // terminal gets focus: disable some shortcuts
       QKeySequence no_key = QKeySequence ();
 
       // file menu
@@ -2311,7 +2325,6 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _release_notes_action->setShortcut (no_key);
       _current_news_action->setShortcut (no_key);
     }
-
 }
 
 void

@@ -603,8 +603,8 @@ main (int argc, char **argv)
 
               retval = 1;
             }
-
-          retval = octave_exec (file, new_argv);
+          else
+            retval = octave_exec (file, new_argv);
         }
       else
         {

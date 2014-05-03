@@ -24,6 +24,12 @@ Summary of important user-visible changes for version 4.2:
     There is still one difference:  Matlab switches to '%e' and Octave
     is currently switching to '%g'.
 
+ ** linkprop has been completely re-coded for performance and Matlab
+    compatibility.  It now returns a linkprop object which must be stored
+    in a variable for as long as the graphic objects should remain linked.
+    To unlink properties use 'clear hlink' where hlink is the variable
+    containing the linkprop object.
+
  ** Other new functions added in 4.2:
 
       dir_in_loadpath

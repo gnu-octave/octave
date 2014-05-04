@@ -562,7 +562,7 @@ agree, or if either of the arguments is complex.\n\
                     X##NDArray a1 = args(1).X##_array_value (); \
                     retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, rem, "rem"); \
                     } \
-                  break
+                  break;
                 MAKE_INT_BRANCH (int8);
                 MAKE_INT_BRANCH (int16);
                 MAKE_INT_BRANCH (int32);
@@ -696,7 +696,7 @@ either of the arguments is complex.\n\
                     X##NDArray a1 = args(1).X##_array_value (); \
                     retval = binmap<octave_##X,octave_##X,octave_##X> (a0, a1, mod, "mod"); \
                     } \
-                  break
+                  break;
                 MAKE_INT_BRANCH (int8);
                 MAKE_INT_BRANCH (int16);
                 MAKE_INT_BRANCH (int32);
@@ -1178,7 +1178,7 @@ See @code{sum} for an explanation of the optional parameters\n\
                 retval = arg.X ## _array_value ().cumsum (dim); \
               else \
                 retval = arg.array_value ().cumsum (dim); \
-              break
+              break;
             MAKE_INT_BRANCH (int8);
             MAKE_INT_BRANCH (int16);
             MAKE_INT_BRANCH (int32);
@@ -2839,12 +2839,16 @@ DEFUN (sum, args, ,
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"native\")\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"double\")\n\
 @deftypefnx {Built-in Function} {} sum (@dots{}, \"extra\")\n\
-Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
-omitted, it defaults to the first non-singleton dimension.\n\
+Sum of elements along dimension @var{dim}.\n\
 \n\
-If the optional argument @qcode{\"native\"} is given, then the sum is\n\
-performed in the same type as the original argument, rather than in the\n\
-default double type.  For example:\n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+\n\
+The optional @qcode{\"type\"} input determines the class of the variable used for\n\
+calculations.  If the argument @qcode{\"native\"} is given, then the operation is\n\
+performed in the same type as the original argument, rather than the default double\n\
+type.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2858,10 +2862,10 @@ sum ([true, true], \"native\")\n\
 On the contrary, if @qcode{\"double\"} is given, the sum is performed in\n\
 double precision even for single precision inputs.\n\
 \n\
-For double precision inputs, @qcode{\"extra\"} indicates that a more accurate\n\
-algorithm than straightforward summation is to be used.  For single precision\n\
-inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
-@qcode{\"extra\"} has no effect.\n\
+For double precision inputs, the @qcode{\"extra\"} option will use a more accurate\n\
+algorithm than straightforward summation.  For single precision inputs,\n\
+@qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise, @qcode{\"extra\"}\n\
+has no effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {
@@ -2886,7 +2890,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
           else if (str == "extra")
             isextra = true;
           else
-            error ("sum: unrecognized string argument");
+            error ("sum: unrecognized type argument '%s'", str.c_str ());
           nargin --;
         }
     }
@@ -2953,7 +2957,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
                 retval = arg.X ## _array_value ().sum (dim); \
               else \
                 retval = arg.X ## _array_value ().dsum (dim); \
-              break
+              break;
             MAKE_INT_BRANCH (int8);
             MAKE_INT_BRANCH (int16);
             MAKE_INT_BRANCH (int32);
@@ -2997,11 +3001,6 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 }
 
 /*
-%!assert (sum ([true,true]), 2)
-%!assert (sum ([true,true],"native"), true)
-%!assert (sum (int8 ([127,10,-20])), 117)
-%!assert (sum (int8 ([127,10,-20]),'native'), int8 (107))
-
 %!assert (sum ([1, 2, 3]), 6)
 %!assert (sum ([-1; -2; -3]), -6)
 %!assert (sum ([i, 2+i, -3+2i, 4]), 3+4i)
@@ -3052,10 +3051,18 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 4), zeros (2, 2, 0, "single"))
 %!assert (sum (zeros (2, 2, 0, 3, "single"), 7), zeros (2, 2, 0, 3, "single"))
 
+## Test "native"
+%!assert (sum ([true,true]), 2)
+%!assert (sum ([true,true], "native"), true)
+%!assert (sum (int8 ([127,10,-20])), 117)
+%!assert (sum (int8 ([127,10,-20]), "native"), int8 (107))
+
 ;-)
 %!assert (sum ("Octave") + "8", sumsq (primes (17)))
 
 %!error sum ()
+%!error sum (1,2,3)
+%!error <unrecognized type argument 'foobar'> sum (1, "foobar")
 */
 
 DEFUN (sumsq, args, ,
@@ -6727,7 +6734,7 @@ it may be better to use @code{sort}.\n\
 #define MAKE_INT_BRANCH(X) \
         case btyp_ ## X: \
           retval = argx.X ## _array_value ().nth_element (n, dim); \
-          break
+          break;
 
         MAKE_INT_BRANCH (int8);
         MAKE_INT_BRANCH (int16);
@@ -6899,7 +6906,7 @@ do_accumarray_minmax_fun (const octave_value_list& args,
               retval = do_accumarray_minmax (idx, vals.X ## _array_value (), \
                                              n, ismin, \
                                              zero.X ## _scalar_value ()); \
-              break
+              break;
 
             MAKE_INT_BRANCH (int8);
             MAKE_INT_BRANCH (int16);
@@ -7498,7 +7505,7 @@ endfor\n\
 #define BTYP_BRANCH(X, EX) \
             case btyp_ ## X: \
               retval = do_repelems (x.EX ## _value (), r); \
-              break
+              break;
 
               BTYP_BRANCH (double, array);
               BTYP_BRANCH (float, float_array);

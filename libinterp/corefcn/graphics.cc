@@ -5672,12 +5672,13 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
     s = xmax(s, (limits(1) - limits(0)) / (pbfactor * dafactor));
 }
 
-static bool updating_aspectratios = false;
+static std::set<double> updating_aspectratios;
 
 void
 axes::properties::update_aspectratios (void)
 {
-  if (updating_aspectratios)
+  if (updating_aspectratios.find (get___myhandle__ ().value ()) !=
+      updating_aspectratios.end ())
     return;
 
   Matrix xlimits = get_xlim ().matrix_value ();
@@ -5743,7 +5744,7 @@ axes::properties::update_aspectratios (void)
           unwind_protect frame;
           frame.protect_var (updating_aspectratios);
 
-          updating_aspectratios = true;
+          updating_aspectratios.insert (get___myhandle__ ().value ());
 
           dx = pba(0) *da(0);
           dy = pba(1) *da(1);
@@ -6691,13 +6692,14 @@ get_children_limits (double& min_val, double& max_val,
     }
 }
 
-static bool updating_axis_limits = false;
+static std::set<double> updating_axis_limits;
 
 void
 axes::update_axis_limits (const std::string& axis_type,
                           const graphics_handle& h)
 {
-  if (updating_axis_limits)
+  if (updating_axis_limits.find (get_handle ().value ()) != 
+      updating_axis_limits.end ())
     return;
 
   Matrix kids = Matrix (1, 1, h.value ());
@@ -6856,7 +6858,7 @@ axes::update_axis_limits (const std::string& axis_type,
   unwind_protect frame;
   frame.protect_var (updating_axis_limits);
 
-  updating_axis_limits = true;
+  updating_axis_limits.insert (get_handle ().value ());
 
   switch (update_type)
     {
@@ -6899,7 +6901,10 @@ axes::update_axis_limits (const std::string& axis_type,
 void
 axes::update_axis_limits (const std::string& axis_type)
 {
-  if (updating_axis_limits || updating_aspectratios)
+  if ((updating_axis_limits.find (get_handle ().value ()) != 
+       updating_axis_limits.end ()) ||
+      (updating_aspectratios.find (get_handle ().value ()) !=
+       updating_aspectratios.end ()))
     return;
 
   Matrix kids = xproperties.get_children ();
@@ -7015,7 +7020,7 @@ axes::update_axis_limits (const std::string& axis_type)
   unwind_protect frame;
   frame.protect_var (updating_axis_limits);
 
-  updating_axis_limits = true;
+  updating_axis_limits.insert (get_handle ().value ());
 
   switch (update_type)
     {

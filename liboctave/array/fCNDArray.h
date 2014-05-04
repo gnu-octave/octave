@@ -83,6 +83,7 @@ public:
   FloatComplexNDArray cumprod (int dim = -1) const;
   FloatComplexNDArray cumsum (int dim = -1) const;
   FloatComplexNDArray prod (int dim = -1) const;
+  ComplexNDArray dprod (int dim = -1) const;
   FloatComplexNDArray sum (int dim = -1) const;
   ComplexNDArray dsum (int dim = -1) const;
   FloatComplexNDArray sumsq (int dim = -1) const;

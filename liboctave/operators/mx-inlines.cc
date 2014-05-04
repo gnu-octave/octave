@@ -485,6 +485,14 @@ inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
 #define OP_RED_SUMSQ(ac, el) ac += el*el
 #define OP_RED_SUMSQC(ac, el) ac += cabsq (el)
 
+inline void op_dble_prod (double& ac, float el)
+{ ac *= el; }
+inline void op_dble_prod (Complex& ac, const FloatComplex& el)
+{ ac *= el; } // FIXME: guaranteed?
+template <class T>
+inline void op_dble_prod (double& ac, const octave_int<T>& el)
+{ ac *= el.double_value (); }
+
 inline void op_dble_sum (double& ac, float el)
 { ac += el; }
 inline void op_dble_sum (Complex& ac, const FloatComplex& el)
@@ -514,6 +522,7 @@ OP_RED_FCN (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_FCN (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 1)
 OP_RED_FCN (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 OP_RED_FCN (mx_inline_any, T, bool, OP_RED_ANYC, false)
@@ -539,6 +548,7 @@ OP_RED_FCN2 (mx_inline_sum, T, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_dsum, T, PROMOTE_DOUBLE(T), op_dble_sum, 0.0)
 OP_RED_FCN2 (mx_inline_count, bool, T, OP_RED_SUM, 0)
 OP_RED_FCN2 (mx_inline_prod, T, T, OP_RED_PROD, 1)
+OP_RED_FCN2 (mx_inline_dprod, T, PROMOTE_DOUBLE(T), op_dble_prod, 0.0)
 OP_RED_FCN2 (mx_inline_sumsq, T, T, OP_RED_SUMSQ, 0)
 OP_RED_FCN2 (mx_inline_sumsq, std::complex<T>, T, OP_RED_SUMSQC, 0)
 
@@ -612,6 +622,7 @@ OP_RED_FCNN (mx_inline_sum, T, T)
 OP_RED_FCNN (mx_inline_dsum, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_count, bool, T)
 OP_RED_FCNN (mx_inline_prod, T, T)
+OP_RED_FCNN (mx_inline_dprod, T, PROMOTE_DOUBLE(T))
 OP_RED_FCNN (mx_inline_sumsq, T, T)
 OP_RED_FCNN (mx_inline_sumsq, std::complex<T>, T)
 OP_RED_FCNN (mx_inline_any, T, bool)

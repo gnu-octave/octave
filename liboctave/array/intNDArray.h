@@ -89,6 +89,7 @@ public:
   intNDArray cummin (int dim = -1) const;
   intNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
+  intNDArray prod (int dim) const;
   intNDArray sum (int dim) const;
   NDArray dsum (int dim) const;
   intNDArray cumsum (int dim) const;

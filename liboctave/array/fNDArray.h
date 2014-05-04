@@ -90,6 +90,7 @@ public:
   FloatNDArray cumprod (int dim = -1) const;
   FloatNDArray cumsum (int dim = -1) const;
   FloatNDArray prod (int dim = -1) const;
+  NDArray dprod (int dim = -1) const;
   FloatNDArray sum (int dim = -1) const;
   NDArray dsum (int dim = -1) const;
   FloatNDArray sumsq (int dim = -1) const;

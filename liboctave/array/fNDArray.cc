@@ -627,6 +627,12 @@ FloatNDArray::prod (int dim) const
   return do_mx_red_op<float, float> (*this, dim, mx_inline_prod);
 }
 
+NDArray
+FloatNDArray::dprod (int dim) const
+{
+  return do_mx_red_op<double, float> (*this, dim, mx_inline_dprod);
+}
+
 FloatNDArray
 FloatNDArray::sum (int dim) const
 {

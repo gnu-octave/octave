@@ -1379,12 +1379,144 @@ DEFUN (prod, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} prod (@var{x})\n\
 @deftypefnx {Built-in Function} {} prod (@var{x}, @var{dim})\n\
-Product of elements along dimension @var{dim}.  If @var{dim} is\n\
-omitted, it defaults to the first non-singleton dimension.\n\
+@deftypefnx {Built-in Function} {} prod (@dots{}, \"native\")\n\
+@deftypefnx {Built-in Function} {} prod (@dots{}, \"double\")\n\
+Product of elements along dimension @var{dim}.\n\
+\n\
+If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
+\n\
+The optional @qcode{\"type\"} input determines the class of the variable used for\n\
+calculations.  If the argument @qcode{\"native\"} is given, then the operation is\n\
+performed in the same type as the original argument, rather than the default double\n\
+type.\n\
+\n\
+For example:\n\
+\n\
+@example\n\
+@group\n\
+prod ([true, true])\n\
+   @result{} 1\n\
+prod ([true, true], \"native\")\n\
+   @result{} true\n\
+@end group\n\
+@end example\n\
+\n\
+On the contrary, if @qcode{\"double\"} is given, the operation is performed in\n\
+double precision even for single precision inputs.\n\
 @seealso{cumprod, sum}\n\
 @end deftypefn")
 {
-  DATA_REDUCTION (prod);
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  bool isnative = false;
+  bool isdouble = false;
+
+  if (nargin > 1 && args(nargin - 1).is_string ())
+    {
+      std::string str = args(nargin - 1).string_value ();
+
+      if (! error_state)
+        {
+          if (str == "native")
+            isnative = true;
+          else if (str == "double")
+            isdouble = true;
+          else
+            error ("prod: unrecognized type argument '%s'", str.c_str ());
+          nargin --;
+        }
+    }
+
+  if (error_state)
+    return retval;
+
+  if (nargin == 1 || nargin == 2)
+    {
+      octave_value arg = args(0);
+
+      int dim = -1;
+      if (nargin == 2)
+        {
+          dim = args(1).int_value () - 1;
+          if (dim < 0)
+            error ("prod: invalid dimension DIM = %d", dim + 1);
+        }
+
+      if (! error_state)
+        {
+          switch (arg.builtin_type ())
+            {
+            case btyp_double:
+              if (arg.is_sparse_type ())
+                retval = arg.sparse_matrix_value ().prod (dim);
+              else
+                retval = arg.array_value ().prod (dim);
+              break;
+            case btyp_complex:
+              if (arg.is_sparse_type ())
+                retval = arg.sparse_complex_matrix_value ().prod (dim);
+              else
+                retval = arg.complex_array_value ().prod (dim);
+              break;
+            case btyp_float:
+              if (isdouble)
+                retval = arg.float_array_value ().dprod (dim);
+              else
+                retval = arg.float_array_value ().prod (dim);
+              break;
+            case btyp_float_complex:
+              if (isdouble)
+                retval = arg.float_complex_array_value ().dprod (dim);
+              else
+                retval = arg.float_complex_array_value ().prod (dim);
+              break;
+
+#define MAKE_INT_BRANCH(X) \
+            case btyp_ ## X: \
+              if (isnative) \
+                retval = arg.X ## _array_value ().prod (dim); \
+              else \
+                retval = arg.array_value ().prod (dim); \
+              break;
+            MAKE_INT_BRANCH (int8);
+            MAKE_INT_BRANCH (int16);
+            MAKE_INT_BRANCH (int32);
+            MAKE_INT_BRANCH (int64);
+            MAKE_INT_BRANCH (uint8);
+            MAKE_INT_BRANCH (uint16);
+            MAKE_INT_BRANCH (uint32);
+            MAKE_INT_BRANCH (uint64);
+#undef MAKE_INT_BRANCH
+
+            // GAGME: Accursed Matlab compatibility...
+            case btyp_char:
+              retval = arg.array_value (true).prod (dim);
+              break;
+            case btyp_bool:
+              if (arg.is_sparse_type ())
+                {
+                  if (isnative)
+                    retval = arg.sparse_bool_matrix_value ().all (dim);
+                  else
+                    retval = arg.sparse_matrix_value ().prod (dim);
+                }
+              else if (isnative)
+                retval = arg.bool_array_value ().all (dim);
+              else
+                retval = NDArray (arg.bool_array_value ().all (dim));
+              break;
+
+            default:
+              gripe_wrong_type_arg ("prod", arg);
+            }
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
 }
 
 /*
@@ -1397,6 +1529,13 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (single ([-1; -2; -3])), single (-6))
 %!assert (prod (single ([i, 2+i, -3+2i, 4])), single (-4 - 32i))
 %!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single ([-1+i, -8+8i, -27+27i]))
+
+%% Test sparse
+%!assert (prod (sparse ([1, 2, 3])), sparse (6))
+%!assert (prod (sparse ([-1; -2; -3])), sparse (-6))
+## Commented out until bug #42290 is fixed
+#%!assert (prod (sparse ([i, 2+i, -3+2i, 4])), sparse (-4 - 32i))
+#%!assert (prod (sparse ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), sparse ([-1+i, -8+8i, -27+27i]))
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8])
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12])
@@ -1428,7 +1567,24 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (zeros (0, 2, "single"), 1), single ([1, 1]))
 %!assert (prod (zeros (0, 2, "single"), 2), zeros (0, 1, "single"))
 
+%% Test "double" type argument
+%!assert (prod (single ([1, 2, 3]), "double"), 6)
+%!assert (prod (single ([-1; -2; -3]), "double"), -6)
+%!assert (prod (single ([i, 2+i, -3+2i, 4]), "double"), -4 - 32i)
+%!assert (prod (single ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), "double"), [-1+i, -8+8i, -27+27i])
+
+%% Test "native" type argument
+%!assert (prod (uint8 ([1, 2, 3]), "native"), uint8 (6))
+%!assert (prod (uint8 ([-1; -2; -3]), "native"), uint8 (0))
+%!assert (prod (int8 ([1, 2, 3]), "native"), int8 (6))
+%!assert (prod (int8 ([-1; -2; -3]), "native"), int8 (-6))
+%!assert (prod ([true false; true true], "native"), [true false])
+%!assert (prod ([true false; true true], 2, "native"), [false; true])
+
+%% Test input validation
 %!error prod ()
+%!error prod (1,2,3)
+%!error <unrecognized type argument 'foobar'> prod (1, "foobar")
 */
 
 static bool
@@ -2807,7 +2963,8 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
             MAKE_INT_BRANCH (uint32);
             MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-              // GAGME: Accursed Matlab compatibility...
+            
+            // GAGME: Accursed Matlab compatibility...
             case btyp_char:
               if (isextra)
                 retval = arg.array_value (true).xsum (dim);

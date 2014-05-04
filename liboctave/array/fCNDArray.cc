@@ -616,6 +616,12 @@ FloatComplexNDArray::prod (int dim) const
   return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_prod);
 }
 
+ComplexNDArray
+FloatComplexNDArray::dprod (int dim) const
+{
+  return do_mx_red_op<Complex, FloatComplex> (*this, dim, mx_inline_dprod);
+}
+
 FloatComplexNDArray
 FloatComplexNDArray::sum (int dim) const
 {

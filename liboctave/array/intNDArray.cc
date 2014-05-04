@@ -213,6 +213,13 @@ intNDArray<T>::signum (void) const
 
 template <class T>
 intNDArray<T>
+intNDArray<T>::prod (int dim) const
+{
+  return do_mx_red_op<T, T> (*this, dim, mx_inline_prod);
+}
+
+template <class T>
+intNDArray<T>
 intNDArray<T>::sum (int dim) const
 {
   return do_mx_red_op<T, T> (*this, dim, mx_inline_sum);

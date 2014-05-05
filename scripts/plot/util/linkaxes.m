@@ -1,5 +1,5 @@
 ## Copyright (C) 2014 Willem Atsma
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -16,10 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*- 
+## -*- texinfo -*-
 ## @deftypefn  {Function File} linkaxes (@var{hax})
 ## @deftypefnx {Function File} linkaxes (@var{hax}, @var{optstr})
-## Link the axis limits of 2-D plots such that a change in one is 
+## Link the axis limits of 2-D plots such that a change in one is
 ## propagated to the others.
 ##
 ## The axes handles to be linked are passed as the first argument @var{hax}.
@@ -72,12 +72,12 @@ function linkaxes (hax, optstr = "xy")
       hld = get (hax(i), "linkaxes_data");
       try
         rmappdata (hld, "linkprop_data");
-      end_try_catch 
+      end_try_catch
     else
       addproperty ("linkaxes_data", hax(i), "any");
     endif
   endfor
-  
+
   switch  (optstr)
     case "x"
       hlink = linkprop (hax, "xlim");
@@ -91,12 +91,12 @@ function linkaxes (hax, optstr = "xy")
     otherwise
       error ("linkaxes: unrecognized OPTSTR '%s'", optstr);
   endswitch
-  
+
   if (! isempty (hlink))
     setappdata (hax(1), "linkprop_data", hlink);
     set (hax, "linkaxes_data", hax(1));
   else
-    set (hax, "linkaxes_data", []); 
+    set (hax, "linkaxes_data", []);
   endif
 
 endfunction

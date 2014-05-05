@@ -274,6 +274,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   // shortcuts
   ui->cb_prevent_readline_conflicts->setChecked (
     settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
+  int set = settings->value ("shortcuts/set",0).toInt ();
+  ui->rb_sc_set1->setChecked (set == 0);
+  ui->rb_sc_set2->setChecked (set == 1);
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
@@ -691,6 +694,10 @@ settings_dialog::write_changed_settings ()
   // shortcuts
   settings->setValue ("shortcuts/prevent_readline_conflicts",
                       ui->cb_prevent_readline_conflicts->isChecked ());
+  int set = 0;
+  if (ui->rb_sc_set2->isChecked ())
+    set = 1;
+  settings->setValue ("shortcuts/set",set);
   shortcut_manager::write_shortcuts ();
 
   // settings dialog's geometry

@@ -1708,9 +1708,50 @@
               </widget>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <item>
+                <widget class="QLabel" name="label_22">
+                 <property name="text">
+                  <string>Use Shortcut Set: </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rb_sc_set1">
+                 <property name="text">
+                  <string>Set 1</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rb_sc_set2">
+                 <property name="text">
+                  <string>Set 2</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_17">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
               <widget class="QLabel" name="label_21">
                <property name="text">
-                <string>Enter a new shortcut by double clicking on the related row.</string>
+                <string>Edit an actual shortcut by double clicking into the related cell</string>
                </property>
               </widget>
              </item>
@@ -1739,9 +1780,6 @@
                    <height>0</height>
                   </size>
                  </property>
-                 <property name="lineWidth">
-                  <number>0</number>
-                 </property>
                  <property name="alternatingRowColors">
                   <bool>true</bool>
                  </property>
@@ -1755,7 +1793,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="columnCount">
-                  <number>3</number>
+                  <number>5</number>
                  </property>
                  <attribute name="headerCascadingSectionResizes">
                   <bool>false</bool>
@@ -1776,21 +1814,35 @@
                   <property name="text">
                    <string>Action</string>
                   </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Default Shortcut</string>
-                  </property>
-                  <property name="textAlignment">
-                   <set>AlignLeft|AlignVCenter</set>
+                  <property name="font">
+                   <font>
+                    <italic>false</italic>
+                   </font>
                   </property>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Actual Shortcut</string>
+                   <string>Set 1 Default</string>
                   </property>
-                  <property name="textAlignment">
-                   <set>AlignLeft|AlignVCenter</set>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Set 1 Actual</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Set 2 Default</string>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <italic>false</italic>
+                   </font>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Set 2 Actual</string>
                   </property>
                  </column>
                 </widget>

@@ -116,8 +116,8 @@ private:
   {
     QString description;
     QString settings_key;
-    QKeySequence actual_sc;
-    QKeySequence default_sc;
+    QKeySequence actual_sc[2];
+    QKeySequence default_sc[2];
     QTreeWidgetItem *tree_item;
   };
 
@@ -134,6 +134,7 @@ private:
   int _handled_index;
 
   QSettings *_settings;
+  int _selected_set;
 
 };
 

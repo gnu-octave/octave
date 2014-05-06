@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QScrollBar>
-
+#include <QDesktopWidget>
 #include "error.h"
 
 #include "cmd-hist.h"
@@ -93,6 +93,14 @@ history_dock_widget::construct ()
            this, SLOT (handle_double_click (QModelIndex)));
 
   setFocusProxy (_filter_line_edit);
+
+  // shrink max. displayed entry size to desktop width
+  QSize screen = QDesktopWidget ().screenGeometry ().size ();
+  int w = screen.width ();
+  QFontMetrics fm = _history_list_view->fontMetrics ();
+  int h = fm.height ();
+  _history_list_view->setGridSize (QSize (w,h));
+  _history_list_view->setTextElideMode (Qt::ElideRight);
 }
 
 void history_dock_widget::ctxMenu (const QPoint &xpos)
@@ -234,4 +242,3 @@ history_dock_widget::selectAll ()
         _history_list_view->selectAll ();
     }
 }
-

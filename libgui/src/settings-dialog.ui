@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -103,7 +103,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item row="6" column="0">
                  <widget class="QCheckBox" name="cb_prompt_to_exit">
                   <property name="text">
                    <string>Confirm before exiting</string>
@@ -280,6 +280,16 @@
                   </property>
                  </widget>
                 </item>
+                <item row="5" column="0">
+                 <widget class="QCheckBox" name="cb_status_bar">
+                  <property name="text">
+                   <string>Show status bar</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>
@@ -396,7 +406,7 @@
             <x>0</x>
             <y>0</y>
             <width>662</width>
-            <height>470</height>
+            <height>524</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -647,6 +657,26 @@
                   </spacer>
                  </item>
                 </layout>
+               </item>
+               <item row="6" column="0">
+                <widget class="QCheckBox" name="cb_code_folding">
+                 <property name="text">
+                  <string>Enable Code Folding</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QCheckBox" name="cb_edit_status_bar">
+                 <property name="text">
+                  <string>Show status bar</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>

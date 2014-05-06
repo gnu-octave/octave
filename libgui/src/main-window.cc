@@ -682,6 +682,11 @@ main_window::notice_settings (const QSettings *settings)
   int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
+  if (settings->value ("show_status_bar",true).toBool ())
+    status_bar->show ();
+  else
+    status_bar->hide ();
+
   _prevent_readline_conflicts =
     settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
   configure_shortcuts ();

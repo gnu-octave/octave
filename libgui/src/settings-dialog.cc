@@ -122,6 +122,10 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->cb_prompt_to_exit->setChecked (
     settings->value ("prompt_to_exit",false).toBool ());
 
+  // Main status bar
+  ui->cb_status_bar->setChecked (
+    settings->value ("show_status_bar",true).toBool ());
+
   // Octave startup
   ui->cb_restore_octave_dir->setChecked (
                  settings->value ("restore_octave_dir",false).toBool ());
@@ -153,6 +157,10 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/long_line_marker",true).toBool ());
   ui->editor_long_line_column->setValue (
     settings->value ("editor/long_line_column",80).toInt ());
+  ui->cb_edit_status_bar->setChecked (
+    settings->value ("editor/show_edit_status_bar",true).toBool ());
+  ui->cb_code_folding->setChecked (
+    settings->value ("editor/code_folding",true).toBool ());
 
   ui->editor_codeCompletion->setChecked (
     settings->value ("editor/codeCompletion", true).toBool () );
@@ -552,6 +560,9 @@ settings_dialog::write_changed_settings ()
   // promp to exit
   settings->setValue ( "prompt_to_exit", ui->cb_prompt_to_exit->isChecked ());
 
+  // status bar
+  settings->setValue ( "show_status_bar", ui->cb_status_bar->isChecked ());
+
   // Octave startup
   settings->setValue ("restore_octave_dir",
                       ui->cb_restore_octave_dir->isChecked ());
@@ -571,6 +582,10 @@ settings_dialog::write_changed_settings ()
                       ui->editor_long_line_marker->isChecked ());
   settings->setValue ("editor/long_line_column",
                       ui->editor_long_line_column->value ());
+  settings->setValue ("editor/code_folding",
+                      ui->cb_code_folding->isChecked ());
+  settings->setValue ("editor/show_edit_status_bar",
+                      ui->cb_edit_status_bar->isChecked ());
   settings->setValue ("editor/codeCompletion",
                       ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/codeCompletion_threshold",

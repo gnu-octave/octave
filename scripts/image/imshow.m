@@ -261,12 +261,19 @@ endfunction
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "uint32"))
 %!error <TrueColor image must be uint8> imshow (ones (3,3,3, "int16"))
 %!error <expecting MxN or MxNx3 matrix> imshow (ones (4,4,4))
-%!error <invalid colormap MAP> imshow ([1,1], [2 0 0])
-%!error <argument number 2 is invalid> imshow ([1,1], [1 0 0 0])
-%!error <invalid colormap> imshow ([1,1], "colormap", [2 0 0])
-%!error <xdata must be a vector> imshow ([1,1], "xdata", ones (2,2))
-%!error <ydata must be a vector> imshow ([1,1], "ydata", ones (2,2))
-%!warning <unrecognized property foobar> imshow ([1,1], "foobar")
-%!error <argument number 2 is invalid> imshow ([1,1], {1})
-%!warning <only showing real part of complex image> imshow ([1+i,1-i])
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   fail ("imshow ([1,1], [2 0 0])", "invalid colormap MAP");
+%!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid"); 
+%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap"); 
+%!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector"); 
+%!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector"); 
+%!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar")
+%!   fail ("imshow ([1,1], {1})", "argument number 2 is invalid"); 
+%!   fail ("imshow ([1+i,1-i])", "warning", "only showing real part of complex image");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

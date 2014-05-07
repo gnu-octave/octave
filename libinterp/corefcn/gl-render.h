@@ -200,7 +200,7 @@ private:
   ColumnVector camera_pos, camera_dir;
 
 #if HAVE_FREETYPE
-  // freetype render, used for text rendering
+  // FreeType render, used for text rendering
   ft_render text_renderer;
 #endif
 

@@ -3758,7 +3758,7 @@ public:
     bool xySym, xyzSym, zSign, nearhoriz;
 
 #if HAVE_FREETYPE
-    // freetype renderer, used for calculation of text (tick labels) size
+    // FreeType renderer, used for calculation of text (tick labels) size
     ft_render text_renderer;
 #endif
 
@@ -4432,7 +4432,7 @@ public:
     Matrix get_extent_matrix (void) const;
     const uint8NDArray& get_pixels (void) const { return pixels; }
 #if HAVE_FREETYPE
-    // freetype renderer, used for calculation of text size
+    // FreeType renderer, used for calculation of text size
     ft_render renderer;
 #endif
 

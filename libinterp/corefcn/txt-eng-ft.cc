@@ -121,7 +121,7 @@ private:
   typedef std::pair<std::string, double> ft_key;
   typedef std::map<ft_key, FT_Face> ft_cache;
 
-  // Cache the fonts loaded by freetype. This cache only contains
+  // Cache the fonts loaded by FreeType. This cache only contains
   // weak references to the fonts, strong references are only present
   // in class ft_render.
   ft_cache cache;
@@ -138,7 +138,7 @@ private:
     : library (), freetype_initialized (false), fontconfig_initialized (false)
   {
     if (FT_Init_FreeType (&library))
-      ::error ("unable to initialize freetype library");
+      ::error ("unable to initialize FreeType library");
     else
       freetype_initialized = true;
 

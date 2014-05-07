@@ -166,11 +166,27 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   nargs = numel (varargin);
   nkids = numel (kids);
 
+  ## Find any existing legend object on figure
+  hlegend = [];
+  fkids = get (fig, "children");
+  for i = 1 : numel (fkids)
+    if (   strcmp (get (fkids(i), "type"), "axes")
+        && strcmp (get (fkids(i), "tag"), "legend"))
+      udata = get (fkids(i), "userdata");
+      if (any (udata.handle == ca))
+        hlegend = fkids(i);
+        break;
+      endif
+    endif
+  endfor
+
   orientation = "default";
   location = "default";
   show = "create";
   textpos = "default";
   box = "default";
+  delete_leg = false;
+  find_leg_hdl = (nargs == 0);
 
   ## Process old way of specifying location with a number rather than a string.
   if (nargs > 0)
@@ -229,20 +245,6 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
       error ("legend: unrecognized legend location");
   endswitch
 
-  ## Find any existing legend object on figure
-  hlegend = [];
-  fkids = get (fig, "children");
-  for i = 1 : numel (fkids)
-    if (   strcmp (get (fkids(i), "type"), "axes")
-        && strcmp (get (fkids(i), "tag"), "legend"))
-      udata = get (fkids(i), "userdata");
-      if (any (udata.handle == ca))
-        hlegend = fkids(i);
-        break;
-      endif
-    endif
-  endfor
-
   if (nargs == 1)
     arg = varargin{1};
     if (ischar (arg))
@@ -250,8 +252,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
         str = tolower (strtrim (arg));
         switch (str)
           case "off"
-            delete (hlegend);
-            return;
+            delete_leg = true;
           case "hide"
             show = "off";
             nargs--;
@@ -305,24 +306,26 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   endif
 
   have_labels = (nargs > 0);
+  hobjects = [];
+  hplots  = [];
+  text_strings = {};
 
-  if (strcmp (show, "off"))
+  if (delete_leg)
+    delete (hlegend);
+    hlegend = [];
+  elseif (find_leg_hdl)
+    ## Don't change anything about legend.
+    ## hleg output will be assigned hlegend value at end of function.
+  elseif (strcmp (show, "off"))
     if (! isempty (hlegend))
       set (findobj (hlegend), "visible", "off");
       hlegend = [];
     endif
-    hobjects = [];
-    hplots  = [];
-    text_strings = {};
   elseif (strcmp (show, "on"))
     if (! isempty (hlegend))
       set (findobj (hlegend), "visible", "on");
-      ## NOTE - Matlab sets both "visible", and "box" to "on"
+      ## NOTE: Matlab sets both "visible" and "box" to "on"
       set (hlegend, "visible", get (hlegend, "box"));
-    else
-      hobjects = [];
-      hplots  = [];
-      text_strings = {};
     endif
   elseif (strcmp (box, "on"))
     if (! isempty (hlegend))
@@ -332,26 +335,24 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (! isempty (hlegend))
       set (hlegend, "box", "off", "visible", "off");
     endif
-  elseif (! have_labels && ! (strcmp (location, "default") &&
-                              strcmp (orientation, "default")))
+  elseif (! have_labels && ! isempty (hlegend)
+          && ! (strcmp (location, "default") && strcmp (orientation, "default")))
     ## Changing location or orientation of existing legend
-    if (! isempty (hlegend))
-      if (strcmp (location, "default"))
-        set (hlegend, "orientation", orientation);
-      elseif (strcmp (orientation, "default"))
-        if (outside)
-          set (hlegend, "location", [location "outside"]);
-        else
-          set (hlegend, "location", location);
-        endif
+    if (strcmp (location, "default"))
+      set (hlegend, "orientation", orientation);
+    elseif (strcmp (orientation, "default"))
+      if (outside)
+        set (hlegend, "location", [location "outside"]);
       else
-        if (outside)
-          set (hlegend, "location", [location "outside"],
-                        "orientation", orientation);
-        else
-          set (hlegend, "location", location,
-                        "orientation", orientation);
-        endif
+        set (hlegend, "location", location);
+      endif
+    else
+      if (outside)
+        set (hlegend, "location", [location "outside"],
+                      "orientation", orientation);
+      else
+        set (hlegend, "location", location,
+                      "orientation", orientation);
       endif
     endif
   else
@@ -1253,8 +1254,8 @@ endfunction
 %!demo
 %! clf;
 %! plot (rand (3));
-%! title ('legend() without inputs creates default labels');
-%! h = legend ();
+%! title ('legend("show") without inputs creates default labels');
+%! h = legend ('show');
 
 %!demo
 %! clf;

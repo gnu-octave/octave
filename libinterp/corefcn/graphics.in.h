@@ -45,7 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-refcount.h"
 #include "ov.h"
 #include "txt-eng-ft.h"
-#include "builtin-defun-decls.h"
 
 // FIXME: maybe this should be a configure option?
 // Matlab defaults to "Helvetica", but that causes problems for many
@@ -3130,8 +3129,8 @@ public:
       bool_property echo , "off"
       string_property errormessage , ""
       string_property fixedwidthfontname , "Courier"
-      radio_property format gs , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rat|{short}|shorte|shorteng|shortg"
-      radio_property formatspacing gs , "compact|{loose}"
+      radio_property format GS , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rat|{short}|shorte|shorteng|shortg"
+      radio_property formatspacing GS , "compact|{loose}"
       string_property language , "ascii"
       array_property monitorpositions , Matrix (1, 4, 0)
       array_property pointerlocation , Matrix (1, 2, 0)
@@ -3146,57 +3145,6 @@ public:
 
   private:
     std::list<graphics_handle> cbo_stack;
-  
-    std::string get_formatspacing (void) const
-    {
-      bool iscompact = F__compactformat__ ()(0).bool_value ();
-      if (iscompact)
-        return std::string ("compact");
-      else
-        return std::string ("loose");
-    }
-
-    void set_formatspacing (const octave_value& val)
-    {
-      if (! error_state)
-        {
-          // Input checking and abrev. matching
-          formatspacing.set (val, false);
-          
-          if (! error_state)
-            {
-              std::string strval = formatspacing.current_value ();
-
-              if (strval == "compact")
-                F__compactformat__ (ovl (true));
-              else
-                F__compactformat__ (ovl (false));
-
-              formatspacing.run_listeners ();
-            }
-        }
-    }
-
-    std::string get_format (void) const
-    {
-      return F__formatstring__ ()(0).string_value ();
-    }
-
-    void set_format (const octave_value& val)
-    {
-      if (! error_state)
-        {
-          // Input checking and abrev. matching
-          format.set (val, false);
-          
-          if (! error_state)
-            {
-              Fformat (ovl (format.current_value ()));     
-
-              format.run_listeners ();
-            }
-        }
-    }
 
   };
 

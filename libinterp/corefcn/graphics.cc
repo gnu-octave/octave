@@ -3208,25 +3208,6 @@ graphics_object::get_ancestor (const std::string& obj_type) const
 // ---------------------------------------------------------------------
 
 void
-root_figure::properties::set_currentfigure (const octave_value& v)
-{
-  graphics_handle val (v);
-
-  if (error_state)
-    return;
-
-  if (xisnan (val.value ()) || is_handle (val))
-    {
-      currentfigure = val;
-
-      if (val.ok ())
-        gh_manager::push_figure (val);
-    }
-  else
-    gripe_set_invalid ("currentfigure");
-}
-
-void
 root_figure::properties::set_callbackobject (const octave_value& v)
 {
   graphics_handle val (v);
@@ -3254,6 +3235,80 @@ root_figure::properties::set_callbackobject (const octave_value& v)
     }
   else
     gripe_set_invalid ("callbackobject");
+}
+
+void
+root_figure::properties::set_currentfigure (const octave_value& v)
+{
+  graphics_handle val (v);
+
+  if (error_state)
+    return;
+
+  if (xisnan (val.value ()) || is_handle (val))
+    {
+      currentfigure = val;
+
+      if (val.ok ())
+        gh_manager::push_figure (val);
+    }
+  else
+    gripe_set_invalid ("currentfigure");
+}
+
+std::string
+root_figure::properties::get_format (void) const
+{
+  return F__formatstring__ ()(0).string_value ();
+}
+
+void
+root_figure::properties::set_format (const octave_value& val)
+{
+  if (! error_state)
+    {
+      // Input checking and abrev. matching
+      format.set (val, false);
+      
+      if (! error_state)
+        {
+          Fformat (ovl (format.current_value ()));     
+
+          format.run_listeners ();
+        }
+    }
+}
+
+std::string
+root_figure::properties::get_formatspacing (void) const
+{
+  bool iscompact = F__compactformat__ ()(0).bool_value ();
+  if (iscompact)
+    return std::string ("compact");
+  else
+    return std::string ("loose");
+}
+
+void
+root_figure::properties::set_formatspacing (const octave_value& val)
+{
+  if (! error_state)
+    {
+      // Input checking and abrev. matching
+      formatspacing.set (val, false);
+      
+      if (! error_state)
+        {
+          std::string strval = formatspacing.current_value ();
+
+          if (strval == "compact")
+            F__compactformat__ (ovl (true));
+          else
+            F__compactformat__ (ovl (false));
+
+          formatspacing.run_listeners ();
+        }
+    }
 }
 
 void

@@ -241,16 +241,16 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
-  itmp= -2;
+  itmp = -2;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nr;
+  itmp = nr;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nc;
+  itmp = nc;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nz;
+  itmp = nz;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
   save_type st = LS_DOUBLE;

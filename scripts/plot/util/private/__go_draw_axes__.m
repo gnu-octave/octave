@@ -2165,7 +2165,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
                    tickdir, ticklength, axispos);
         endif
 
-        labels = regexprep (labels, '%', "%%");
+        labels = strrep (labels, "%", "%%");
         for i = 1:ntics
           fprintf (plot_stream, " \"%s\" %.15g", labels{k++}, tics(i));
           if (i < ntics)
@@ -2322,35 +2322,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
         warning ("latex markup not supported for text objects");
         warned_latex = true;
       endif
-    elseif (enhanced)
-      str = no_super_sub_scripts (str);
     endif
-  endif
-endfunction
-
-function str = no_super_sub_scripts (str)
-  if (iscellstr (str))
-    labels = str;
-  else
-    labels = cellstr (str);
-  endif
-  for marker = "_^" 
-    for m = 1 : numel (labels)
-      n1 = strfind (labels{m}, sprintf ("\\%s", marker));
-      n2 = strfind (labels{m}, marker);
-      if (! isempty (n1))
-        n1 = n1 + 1;
-        n2 = setdiff (n2, n1);
-      endif
-      for n = numel (n2):-1:1
-        labels{m} = [labels{m}(1:n2(n)-1), "\\", labels{m}(n2(n):end)];
-      endfor
-    endfor
-  endfor
-  if (iscellstr (str))
-    str = labels;
-  else
-    str = char (labels);
   endif
 endfunction
 

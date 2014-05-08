@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
+#include "pt-eval.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
 #include "toplev.h"
@@ -66,8 +67,7 @@ static bool Vbacktrace_on_warning = true;
 // TRUE means that Octave will print a verbose warning.  Currently unused.
 static bool Vverbose_warning;
 
-// TRUE means that Octave will print no warnings, but lastwarn will be
-//updated
+// TRUE means that Octave will print no warnings, but lastwarn will be updated
 static bool Vquiet_warning = false;
 
 // A structure containing (most of) the current state of warnings.
@@ -469,6 +469,10 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 
       pr_where ("error");
 
+      tree_evaluator::debug_mode = true;
+
+      tree_evaluator::current_frame = octave_call_stack::current_frame ();
+
       do_keyboard (octave_value_list ());
     }
 }
@@ -656,6 +660,10 @@ warning_1 (const char *id, const char *fmt, va_list args)
           unwind_protect frame;
           frame.protect_var (Vdebug_on_warning);
           Vdebug_on_warning = false;
+
+          tree_evaluator::debug_mode = true;
+
+          tree_evaluator::current_frame = octave_call_stack::current_frame ();
 
           do_keyboard (octave_value_list ());
         }

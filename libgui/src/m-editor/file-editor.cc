@@ -1550,6 +1550,37 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
 }
 
 void
+file_editor::copyClipboard ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_copy (true);
+    }
+}
+void
+file_editor::pasteClipboard ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_paste (true);
+    }
+}
+void
+file_editor::selectAll ()
+{
+  QWidget * foc_w = focusWidget ();
+
+  if (foc_w && foc_w->inherits ("octave_qscintilla"))
+    {
+      request_selectall (true);
+    }
+}
+
+void
 file_editor::set_shortcuts ()
 {
   // File menu

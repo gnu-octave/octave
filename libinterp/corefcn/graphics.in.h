@@ -3848,6 +3848,8 @@ public:
       row_vector_property xmtick h , Matrix ()
       row_vector_property ymtick h , Matrix ()
       row_vector_property zmtick h , Matrix ()
+      // hidden property for text rendering
+      double_property fontsize_points hgr , 0
    END_PROPERTIES
 
   protected:
@@ -4368,7 +4370,7 @@ public:
       radio_property fontangle u , "{normal}|italic|oblique"
       string_property fontname u , OCTAVE_DEFAULT_FONTNAME
       double_property fontsize u , 10
-      radio_property fontunits , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontunits SU , "inches|centimeters|normalized|{points}|pixels"
       radio_property fontweight u , "light|{normal}|demi|bold"
       radio_property horizontalalignment mu , "{left}|center|right"
       radio_property interpreter u , "{tex}|none|latex"
@@ -4394,6 +4396,8 @@ public:
       radio_property horizontalalignmentmode hu , "{auto}|manual"
       radio_property verticalalignmentmode hu , "{auto}|manual"
       radio_property autopos_tag h , "{none}|xlabel|ylabel|zlabel|title"
+      // hidden property for text rendering
+      double_property fontsize_points hgr , 0
     END_PROPERTIES
 
     Matrix get_data_position (void) const;
@@ -4458,6 +4462,7 @@ public:
     void update_verticalalignment (void) { update_text_extent (); }
 
     void update_units (void);
+    void update_fontunits (const caseless_str& old_fontunits);
 
   private:
     std::string cached_units;

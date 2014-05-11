@@ -182,7 +182,7 @@ glps_renderer::set_font (const base_properties& props)
 {
   opengl_renderer::set_font (props);
 
-  fontsize = props.get ("fontsize").double_value ();
+  fontsize = props.get ("fontsize_points").double_value ();
 
   caseless_str fn = props.get ("fontname").string_value ();
   fontname = "";

@@ -6197,7 +6197,7 @@ axes::properties::update_font (void)
   text_renderer.set_font (get ("fontname").string_value (),
                           get ("fontweight").string_value (),
                           get ("fontangle").string_value (),
-                          get ("fontsize").double_value ());
+                          get ("fontsize_points").double_value ());
 #endif
 #endif
 }
@@ -7816,6 +7816,40 @@ text::properties::get_extent (void) const
 }
 
 void
+text::properties::set_fontunits (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_fontunits = get_fontunits ();
+      if (fontunits.set (v, true))
+        {
+          update_fontunits (old_fontunits);
+          mark_modified ();
+        }
+    }
+}
+
+void
+text::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double parent_height = 0;
+  double fsz = get_fontsize ();
+
+  if (new_units == "normalized")
+    {
+      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      graphics_object ax (go.get_ancestor ("axes"));
+
+      parent_height = ax.get_properties ().get_boundingbox (true).elem (3);
+    }
+
+  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+
+  set_fontsize (octave_value (fsz));
+}
+
+void
 text::properties::update_font (void)
 {
 #ifdef HAVE_FREETYPE
@@ -7823,7 +7857,7 @@ text::properties::update_font (void)
   renderer.set_font (get ("fontname").string_value (),
                      get ("fontweight").string_value (),
                      get ("fontangle").string_value (),
-                     get ("fontsize").double_value ());
+                     get ("fontsize_points").double_value ());
 #endif
   renderer.set_color (get_color_rgb ());
 #endif

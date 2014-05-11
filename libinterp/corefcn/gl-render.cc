@@ -2652,6 +2652,8 @@ opengl_renderer::draw_text (const text::properties& props)
   if (props.get_string ().is_empty ())
     return;
 
+  set_font (props);
+
   Matrix pos = xform.scale (props.get_data_position ());
   const Matrix bbox = props.get_extent_matrix ();
 
@@ -2886,7 +2888,7 @@ opengl_renderer::set_font (const base_properties& props)
   text_renderer.set_font (props.get ("fontname").string_value (),
                           props.get ("fontweight").string_value (),
                           props.get ("fontangle").string_value (),
-                          props.get ("fontsize").double_value ());
+                          props.get ("fontsize_points").double_value ());
 #endif
 }
 

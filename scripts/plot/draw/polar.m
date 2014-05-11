@@ -36,6 +36,14 @@
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
 ##
+## Implementation Note: The polar axis is drawn using line and text objects
+## encapsulated in an hggroup.  The hggroup properties are linked to the
+## original axes object such that altering an appearance property, for example
+## @code{fontname}, will update the polar axis.  Two new properties are
+## added to the original axes--@code{rtick}, @code{ttick}--which replace
+## @code{xtick}, @code{ytick}.  The first is a list of tick locations in the
+## radial (rho) direction; The second is a list of tick locations in the
+## angular (theta) direction specified in degrees, i.e., in the range 0--359.
 ## @seealso{rose, compass, plot}
 ## @end deftypefn
 
@@ -87,35 +95,46 @@ function h = polar (varargin)
       print_usage ();
     endif
 
-    set (hax, "xaxislocation", "zero", "yaxislocation", "zero",
-              "plotboxaspectratio", [1, 1, 1]);
+    ## FIXME: Should more gracefully handle "hold on" and not override props.
+    set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
+              "zlim", [-1 1]);
 
-    ## Hide standard axes
-    set(hax, "visible", "off");
-
-    if (!isprop (hax, "rtick"))
+    if (! isprop (hax, "rtick"))
       addproperty ("rtick", hax, "data");
     endif
 
     ## calculate r(ho)tick from xtick
     xtick = get (hax, "xtick");
     rtick = xtick(find (xtick > 0, 1):find (xtick >= maxr, 1));
+    if (isempty (rtick))
+      rtick = [0.5 1];
+    endif
     set (hax, "rtick", rtick);
 
-    addlistener (hax, "rtick", @__update_polar_grid__);
-    addlistener (hax, "fontsize", @__update_text__);
-    addlistener (hax, "linewidth", @__update_lines__);
-
     ## add t(heta)tick
-    if (!isprop (hax, "ttick"))
+    if (! isprop (hax, "ttick"))
       addproperty ("ttick", hax, "data");
     endif
 
-    ## theta(angular) ticks in deg
+    ## theta(angular) ticks in degrees
     set (hax, "ttick", 0:30:330);
-    __update_polar_grid__(hax, []);
 
-    addlistener (hax, "ttick", @__update_polar_grid__);
+    ## Create hggroup to hold text/line objects and attach listeners
+    hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
+    __update_polar_grid__(hax, [], hg);
+
+    addlistener (hax, "rtick", {@__update_polar_grid__, hg});
+    addlistener (hax, "ttick", {@__update_polar_grid__, hg});
+    addlistener (hax, "color", {@__update_patch__, hg});
+    addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
+    addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
+    addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
+    addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
+    addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
+    addlistener (hax, "interpreter", {@__update_text__, hg, "interpreter"});
+    addlistener (hax, "layer", {@__update_layer__, hg});
+    addlistener (hax, "gridlinestyle", {@__update_lines__, hg,"gridlinestyle"});
+    addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -219,67 +238,116 @@ function retval = __plr2__ (h, theta, rho, fmt)
 
 endfunction
 
-function __update_text__ (hax, dummy)
+## Callback functions for listeners
 
-  text_handles = findobj(findobj (hax, "tag", "polar_grid"), "type", "text");
-  set (text_handles, "fontsize", get (hax, "fontsize"));
+function __update_text__ (hax, ~, hg, prop)
 
-endfunction
-
-function __update_lines__ (hax, dummy)
-
-  line_handles = findobj(findobj (hax, "tag", "polar_grid"), "type", "line");
-  set (line_handles, "linewidth", get (hax, "linewidth"));
+  kids = get (hg, "children");
+  idx = strcmp (get (kids, "type"), "text");
+  set (kids(idx).', prop, get (hax, prop));
 
 endfunction
 
-function __update_polar_grid__ (hax, dummy)
+function __update_lines__ (hax,  ~, hg, prop)
 
-  ## Delete polar_grid hggroup if already present
-  delete (findobj (hax, "tag", "polar_grid"));
-  h = hggroup (hax, "tag", "polar_grid");
+  kids = get (hg, "children");
+  idx = strcmp (get (kids, "type"), "line");
+  lprop = prop;
+  if (strcmp (prop, "gridlinestyle"))
+    lprop = "linestyle";
+  endif
+  set (kids(idx).', lprop, get (hax, prop));
 
-  rtick = get (hax, "rtick");
-  ttick = get (hax, "ttick");
-  lw = get (hax, "linewidth");
-  fs = get (hax, "fontsize");
+endfunction
+
+function __update_patch__ (hax, ~, hg)
+
+  kids = get (hg, "children");
+  idx = strcmp (get (kids, "type"), "patch");
+  set (kids(idx).', "facecolor", get (hax, "color"));
+
+endfunction
+
+function __update_layer__ (hax,  ~, hg)
+
+  set (hg, "handlevisibility", "on");
+  kids = get (hax, "children");
+  if (strcmp (get (hax, "layer"), "bottom"))
+    set (hax, "children", [kids(kids != hg); hg]); 
+  else
+    set (hax, "children", [hg; kids(kids != hg)]); 
+  endif
+  set (hg, "handlevisibility", "off");
+
+endfunction
+
+function __update_polar_grid__ (hax, ~, hg)
+
+  ## Delete existing polar grid
+  delete (get (hg, "children"));
+
+  rtick = unique (get (hax, "rtick")(:)');
+  rtick = rtick(rtick > 0);
+  if (isempty (rtick))
+    rtick = [0.5 1];
+  endif
+
+  ttick = unique (get (hax, "ttick")(:)');
+  ttick = ttick(ttick >= 0);
+  if (isempty (ttick))
+    ttick = 0:30:330;
+  endif
+
+  lprops = {"linestyle", get(hax, "gridlinestyle"), ...
+            "linewidth", get(hax, "linewidth")};
+  ## "fontunits" should be first because it affects "fontsize" property.
+  tprops(1:2:12) = {"fontunits", "fontangle", "fontname", "fontsize", ...
+                    "fontweight", "interpreter"};
+  tprops(2:2:12) = get (hax, tprops(1:2:12));
 
   ## The number of points used for a circle
   circle_points = 50;
-  t = linspace(0, 2*pi, circle_points);
-  s = sin(t);
-  c = cos(t);
+  t = linspace (0, 2*pi, circle_points)';
+  x = kron (cos (t), rtick);
+  y = kron (sin (t), rtick);
 
-  ## plot dotted circles
-  y = kron(s', rtick);
-  x = kron(c', rtick);
-  line (x(:,1:end-1), y(:,1:end-1), "linestyle", ":", "parent", h, "linewidth", lw);
+  ## Draw colored disk under axes at Z-depth = -1
+  patch (x(:,end), y(:,end), -ones (circle_points, 1),
+         get (hax, "color"), "parent", hg);
 
-  ## the outer circle is drawn solid
-  line (x(:,end), y(:,end), "linestyle", "-", "parent", h, "linewidth", lw);
+  ## Plot dotted circles
+  line (x(:,1:end-1), y(:,1:end-1), lprops{:}, "parent", hg);
 
-  ## add radial labels
+  ## Outer circle is drawn solid
+  line (x(:,end), y(:,end), lprops{:}, "linestyle", "-", "parent", hg);
+
+  ## Add radial labels
   [x, y] = pol2cart (0.42 * pi, rtick);
-  text (x, y, num2cell(rtick), "verticalalignment", "bottom", "parent", h, "fontsize", fs);
+  text (x, y, num2cell (rtick), "verticalalignment", "bottom", tprops{:},
+        "parent", hg);
 
   ## add radial lines
-  rtick = get (hax, "rtick");
-
   s = rtick(end) * sin (ttick * pi / 180);
   c = rtick(end) * cos (ttick * pi / 180);
-  x = vertcat(zeros(1,numel(ttick)), c);
-  y = vertcat(zeros(1,numel(ttick)), s);
-  line (x, y, "linestyle", ":", "parent", h, "linewidth", lw)
+  x = [zeros(1, numel (ttick)); c];
+  y = [zeros(1, numel (ttick)); s];
+  line (x, y, "linestyle", ":", lprops{:}, "parent", hg);
 
   ## add angular labels
   tticklabel = num2cell (ttick);
+  ## FIXME: This tm factor does not work as fontsize increases
   tm = 1.08;
-  text (tm * c, tm * s, tticklabel, "horizontalalignment", "center", "parent", h, "fontsize", fs)
+  text (tm * c, tm * s, tticklabel, "horizontalalignment", "center",
+        tprops{:}, "parent", hg);
 
   lim = 1.1 * rtick(end);
   set (hax, "xlim", [-lim, lim], "ylim", [-lim, lim]);
 
+  ## Put polar grid behind or ahead of plot
+  __update_layer__ (hax, [], hg);
+
 endfunction
+
 
 %!demo
 %! clf;
@@ -297,24 +365,25 @@ endfunction
 
 %!demo
 %! clf;
+%! theta = linspace (0,2*pi,1000);
+%! rho = sin (2*theta).*cos (2*theta);
+%! polar (theta, rho, '--r');
+%! set (gca, "rtick", 0.1:0.1:0.6, "ttick", 0:20:340);
+%! title ('polar() plot with finer grid');
+
+%!demo
+%! clf;
+%! theta = linspace (0,2*pi,1000);
+%! rho = sin (2*theta).*cos (2*theta);
+%! polar (theta, rho, '--b');
+%! set (gca, "fontsize", 12, "linewidth", 2, "color", [0.8 0.8 0.8]);
+%! title ('polar() plot with modified axis appearance');
+
+%!demo
+%! clf;
 %! theta = linspace (0,8*pi,1000);
 %! rho = sin (5/4*theta);
 %! polar (theta, rho);
-%! set (gca, "rtick", 0.2:0.2:1)
+%! set (gca, "rtick", 0.2:0.2:1);
 %! title ('polar() plot');
 
-%!demo
-%! clf;
-%! theta = linspace (0,2*pi,1000);
-%! rho = sin (2*theta).*cos(2*theta);
-%! polar (theta,rho,'--b')
-%! set (gca, "fontsize", 12, "linewidth", 2);
-%! title ('polar() plot with bigger font and thicker line');
-
-%!demo
-%! clf;
-%! theta = linspace (0,2*pi,1000);
-%! rho = sin (2*theta).*cos(2*theta);
-%! polar (theta,rho,'--r')
-%! set (gca, "rtick", 0.1:0.1:0.6, "ttick", 0:20:340)
-%! title ('polar() plot with finer grid');

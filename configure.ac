@@ -857,9 +857,13 @@ if test $build_jit = yes; then
       warn_llvm="Missing LLVM file TargetData.h.  JIT compiler is disabled."
     fi
 
+    AC_CHECK_HEADERS([llvm/IR/Verifier.h])
+
     OCTAVE_LLVM_FUNCTION_ADDATTRIBUTE_API
     OCTAVE_LLVM_FUNCTION_ADDFNATTR_API
     OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API
+    OCTAVE_LLVM_RAW_FD_OSTREAM_API
+    OCTAVE_LLVM_LEGACY_PASSMANAGER_API
     AC_LANG_POP(C++)
     CPPFLAGS="$save_CPPFLAGS"
     CXXFLAGS="$save_CXXFLAGS"

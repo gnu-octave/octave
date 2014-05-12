@@ -148,7 +148,7 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
 
   else   # datenum input
 
-    if (! isrow (date))
+    if (! iscolumn (date))
       date_sz = size (date);
       do_resize = true;
     endif

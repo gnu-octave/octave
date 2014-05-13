@@ -316,13 +316,15 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       ## See if lowermost data row must be completed
       pad = mod (numel (C{1}), ncols);
       if (pad)
-        ## Textscan returns NaNs for empty fields
-        C(1) = [C{1}; NaN(ncols - pad, 1)]; 
-      endif
-      ## Replace NaNs with EmptyValue, if any
-      ipos = find (strcmpi (args, "emptyvalue"));
-      if (ipos)
-        C{1}(find (isnan (C{1}))) = args{ipos+1};
+        ## Pad output with emptyvalues (rest has been done by stread.m)
+        emptv = find (strcmpi (args, "emptyvalue"));
+        if (isempty (emptv))
+          ## By default textscan returns NaNs for empty fields
+          C(1) = [C{1}; NaN(ncols - pad, 1)];
+        else
+          ## Otherwise return supplied emptyvalue. Pick last occurrence
+          C(1) = [C{1}; repmat(args{emptv(end)+1}, ncols - pad, 1)];
+        endif
       endif
       ## Compute nr. of rows
       nrows = floor (numel (C{1}) / ncols);
@@ -665,4 +667,13 @@ endfunction
 %% Bug #41824
 %!test
 %! assert (textscan ("123", "", "whitespace", " "){:}, 123);
+
+%% Bug #42343-1, just test supplied emptyvalue (actually done by strread.m)
+%!test
+%! assert (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf), {Inf, NaN});
+
+%% Bug #42343-2, test padding with supplied emptyvalue (done by textscan.m)
+%!test
+%! a = textscan (",1,,4\nInf,  ,NaN", "", "delimiter", ",", "emptyvalue", -10);
+%! assert (cell2mat (a), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
 

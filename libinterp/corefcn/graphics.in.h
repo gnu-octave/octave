@@ -3107,16 +3107,10 @@ public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    // FIXME: Matlab defines some root properties and uses them in
-    // the same way that Octave uses an internal static variable to
-    // keep track of state.  set (0, "echo", "on") is equivalent
-    // to Octave's echo ("on"). Properties that still dont have callbacks
-    // are : diary, diaryfileecho, errormessage, language, and recursionlimit.
-    // Note that these properties (and the monitorpositions,
-    // pointerlocation, and pointerwindow properties) are not yet used
-    // by Octave, so setting them will have no effect, and changes
-    // made elswhere (say, the diary or format functions) will not
-    // cause these properties to be updated.
+    // FIXME: Properties that still dont have callbacks are:
+    // language, monitorpositions, pointerlocation, pointerwindow.
+    // Note that these properties are not yet used by Octave, so setting
+    // them will have no effect.
 
     // Programming note: Keep property list sorted if new ones are added.
 
@@ -3124,10 +3118,10 @@ public:
       handle_property callbackobject Sr , graphics_handle ()
       array_property commandwindowsize r , Matrix (1, 2, 0)
       handle_property currentfigure S , graphics_handle ()
-      bool_property diary , "off"
-      string_property diaryfile , "diary"
-      bool_property echo , "off"
-      string_property errormessage , ""
+      bool_property diary GS , "off"
+      string_property diaryfile GS , "diary"
+      bool_property echo GS , "off"
+      string_property errormessage Gr , ""
       string_property fixedwidthfontname , "Courier"
       radio_property format GS , "+|bank|bit|hex|long|longe|longeng|longg|native-bit|native-hex|none|rat|{short}|shorte|shorteng|shortg"
       radio_property formatspacing GS , "compact|{loose}"
@@ -3135,7 +3129,7 @@ public:
       array_property monitorpositions , Matrix (1, 4, 0)
       array_property pointerlocation , Matrix (1, 2, 0)
       double_property pointerwindow r , 0.0
-      double_property recursionlimit , 256.0
+      double_property recursionlimit GS , 256.0
       double_property screendepth r , default_screendepth ()
       double_property screenpixelsperinch r , default_screenpixelsperinch ()
       array_property screensize r , default_screensize ()

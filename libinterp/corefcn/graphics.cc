@@ -3257,6 +3257,89 @@ root_figure::properties::set_currentfigure (const octave_value& v)
 }
 
 std::string
+root_figure::properties::get_diary (void) const
+{
+  bool is_diary_on = F__diarystate__ ()(0).bool_value ();
+  if (is_diary_on)
+    return std::string ("on");
+  else
+    return std::string ("off");
+}
+
+void
+root_figure::properties::set_diary (const octave_value& val)
+{
+  if (! error_state)
+    {
+      // Input checking and abrev. matching
+      diary.set (val, false);
+      
+      if (! error_state)
+        {
+          Fdiary (ovl (diary.current_value ()));
+
+          diary.run_listeners ();
+        }
+    }
+}
+
+std::string
+root_figure::properties::get_diaryfile (void) const
+{
+  return F__diaryfile__ ()(0).string_value ();
+}
+
+void
+root_figure::properties::set_diaryfile (const octave_value& val)
+{
+  if (! error_state)
+    {
+      // Input checking and abrev. matching
+      diaryfile.set (val, false);
+      
+      if (! error_state)
+        {
+          Fdiary (ovl (diaryfile.string_value ()));
+
+          diaryfile.run_listeners ();
+        }
+    }
+}
+
+std::string
+root_figure::properties::get_echo (void) const
+{
+  bool is_echo_on = F__echostate__ ()(0).bool_value ();
+  if (is_echo_on)
+    return std::string ("on");
+  else
+    return std::string ("off");
+}
+
+void
+root_figure::properties::set_echo (const octave_value& val)
+{
+  if (! error_state)
+    {
+      // Input checking and abrev. matching
+      echo.set (val, false);
+      
+      if (! error_state)
+        {
+          Fecho (ovl (echo.current_value ()));
+
+          echo.run_listeners ();
+        }
+    }
+}
+
+std::string
+root_figure::properties::get_errormessage (void) const
+{
+  return Flasterr ()(0).string_value ();
+}
+
+std::string
 root_figure::properties::get_format (void) const
 {
   return F__formatstring__ ()(0).string_value ();
@@ -3307,6 +3390,32 @@ root_figure::properties::set_formatspacing (const octave_value& val)
             F__compactformat__ (ovl (false));
 
           formatspacing.run_listeners ();
+        }
+    }
+}
+
+
+double
+root_figure::properties::get_recursionlimit (void) const
+{
+  return Fmax_recursion_depth ()(0).double_value ();
+}
+
+void
+root_figure::properties::set_recursionlimit (const octave_value& val)
+{
+  if (! error_state)
+    {
+      // Input checking and abrev. matching
+      recursionlimit.set (val, false);
+      
+      if (! error_state)
+        {
+          double dval = recursionlimit.double_value ();
+
+          Fmax_recursion_depth (ovl (dval));
+
+          recursionlimit.run_listeners ();
         }
     }
 }

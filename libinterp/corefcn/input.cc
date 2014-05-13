@@ -1005,6 +1005,15 @@ With no arguments, @code{echo} toggles the current echo state.\n\
   return retval;
 }
 
+DEFUN (__echostate__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{state} =} __echostate__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (Vecho_executing_commands == ECHO_SCRIPTS);
+}
+
 DEFUN (completion_matches, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} completion_matches (@var{hint})\n\

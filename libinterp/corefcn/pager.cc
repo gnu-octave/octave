@@ -52,7 +52,7 @@ static oprocstream *external_pager = 0;
 static bool write_to_diary_file = false;
 
 // The name of the current diary file.
-static std::string diary_file;
+static std::string diary_file ("diary");
 
 // The diary file.
 static std::ofstream external_diary_file;
@@ -587,6 +587,24 @@ With no arguments, @code{diary} toggles the current diary state.\n\
     }
 
   return retval;
+}
+
+DEFUN (__diaryfile__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (diary_file);
+}
+
+DEFUN (__diarystate__, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{state} =} __diarystate__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (write_to_diary_file);
 }
 
 DEFUN (more, args, ,

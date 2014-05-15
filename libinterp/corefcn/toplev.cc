@@ -446,6 +446,8 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
               break;
             }
         }
+      else if (incr == 0)  // Break out of infinite loop by choosing an incr. 
+        incr = -1;
 
       // There is no need to set scope and context here.  That will
       // happen when the dbup/dbdown/keyboard frame is popped and we

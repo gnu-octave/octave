@@ -964,7 +964,9 @@ void Vt102Emulation::sendKeyEvent( QKeyEvent* event )
         if ( modifiers & Qt::AltModifier && !(wantsAltModifier || wantsAnyModifier)
              && !event->text().isEmpty() )
         {
-            textToSend.prepend("\033");
+#if !defined(Q_OS_MAC)
+          textToSend.prepend("\033");
+#endif
         }
 
         if ( entry.command() != KeyboardTranslator::NoCommand )

@@ -654,6 +654,7 @@ octave_user_function::subsasgn_optimization_ok (void)
 {
   bool retval = false;
   if (Voptimize_subsasgn_calls
+      && param_list && ret_list
       && param_list->length () > 0 && ! param_list->varargs_only ()
       && ret_list->length () == 1 && ! ret_list->takes_varargs ())
     {

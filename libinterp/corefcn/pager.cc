@@ -589,7 +589,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
   return retval;
 }
 
-DEFUN (__diaryfile__, args, nargout,
+DEFUN (__diaryfile__, , ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
 Undocumented internal function\n\
@@ -598,7 +598,7 @@ Undocumented internal function\n\
   return ovl (diary_file);
 }
 
-DEFUN (__diarystate__, args, nargout,
+DEFUN (__diarystate__, , ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{state} =} __diarystate__ ()\n\
 Undocumented internal function\n\

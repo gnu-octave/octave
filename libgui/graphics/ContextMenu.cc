@@ -50,8 +50,6 @@ ContextMenu* ContextMenu::create (const graphics_object& go)
 ContextMenu::ContextMenu (const graphics_object& go, QMenu* menu)
     : Object (go, menu)
 {
-  uicontextmenu::properties& up = properties<uicontextmenu> ();
-
   menu->setAutoFillBackground (true);
 
   connect (menu, SIGNAL (aboutToShow (void)), SLOT (aboutToShow (void)));

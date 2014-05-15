@@ -51,9 +51,9 @@ opengl_selector::setup_opengl_transformation (const axes::properties& props)
 }
 
 void
-opengl_selector::init_marker (const std::string& m, double size, float width)  
+opengl_selector::init_marker (const std::string& m, double sz, float width)  
 {
-  opengl_renderer::init_marker (m, size, width);
+  opengl_renderer::init_marker (m, sz, width);
   apply_pick_matrix ();
 }
 

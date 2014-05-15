@@ -35,10 +35,10 @@ function retval = isaxes (h)
   endif
 
   hlist = ishandle (h);
+  retval = hlist;
+
   if (any (hlist))
     retval(hlist) = strcmp (get (h(hlist), "type"), "axes");
-  else
-    retval = hlist;
   endif
 
 endfunction
@@ -54,3 +54,11 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   assert (isaxes ([hax NaN]), [true false]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

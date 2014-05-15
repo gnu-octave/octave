@@ -129,10 +129,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _edit_area->setMarginsBackgroundColor (QColor (232, 232, 220));
   _edit_area->setMarginType (2, QsciScintilla::TextMargin);
 
-  // code folding
-  _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
-  _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
-
   // other features
   _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
   _edit_area->setAutoIndent (true);
@@ -1378,6 +1374,23 @@ file_editor_tab::notice_settings (const QSettings *settings)
   // QSettings pointer is checked before emitting.
 
   update_lexer ();
+
+  // code folding
+  if (settings->value ("editor/code_folding",true).toBool ())
+    {
+      _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
+      _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
+    }
+  else
+    {
+      _edit_area->setFolding (QsciScintilla::NoFoldStyle, 3);
+    }
+
+  // status bar
+  if (settings->value ("editor/show_edit_status_bar",true).toBool ())
+    _status_bar->show ();
+  else
+    _status_bar->hide ();
 
   //highlight current line color
   QVariant default_var = QColor (240, 240, 240);

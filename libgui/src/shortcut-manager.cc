@@ -106,6 +106,44 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
   init (tr ("Clear Workspace"), "main_edit:clear_workspace", QKeySequence ());
 
+  // debug
+  init (tr ("Step Over"), "main_debug:step_over", QKeySequence (Qt::Key_F10));
+  init (tr ("Step Into"), "main_debug:step_into", QKeySequence (Qt::Key_F11));
+  init (tr ("Step Out"), "main_debug:step_out", QKeySequence (Qt::ShiftModifier + Qt::Key_F11));
+  init (tr ("Continue"), "main_debug:continue", QKeySequence (Qt::Key_F5));
+  init (tr ("Quit Debug Mode"), "main_debug:quit", QKeySequence (Qt::ShiftModifier + Qt::Key_F5));
+
+  // window
+  QKeySequence ctrl = Qt::ControlModifier;
+  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
+  init (tr ("Show Command Window"), "main_window:show_command", ctrl_shift + Qt::Key_0);
+  init (tr ("Show Command History"), "main_window:show_history", ctrl_shift + Qt::Key_1);
+  init (tr ("Show File Browser"), "main_window:show_file_browser", ctrl_shift + Qt::Key_2);
+  init (tr ("Show Workspace"), "main_window:show_workspace", ctrl_shift + Qt::Key_3);
+  init (tr ("Show Editor"), "main_window:show_editor", ctrl_shift + Qt::Key_4);
+  init (tr ("Show Documentation"), "main_window:show_doc", ctrl_shift + Qt::Key_5);
+  init (tr ("Command Window"), "main_window:command", ctrl + Qt::Key_0);
+  init (tr ("Command History"), "main_window:history", ctrl + Qt::Key_1);
+  init (tr ("File Browser"), "main_window:file_browser", ctrl + Qt::Key_2);
+  init (tr ("Workspace"), "main_window:workspace", ctrl + Qt::Key_3);
+  init (tr ("Editor"), "main_window:editor", ctrl + Qt::Key_4);
+  init (tr ("Documentation"), "main_window:doc", ctrl + Qt::Key_5);
+  init (tr ("Reset Window Layout"), "main_window:reset", QKeySequence ());
+
+  // help
+  init (tr ("Show Ondisk Documentation"), "main_help:ondisk_doc", QKeySequence ());
+  init (tr ("Show Online Documentation"), "main_help:online_doc", QKeySequence ());
+  init (tr ("Report a Bug"), "main_help:report_bug", QKeySequence ());
+  init (tr ("Octave Packages"), "main_help:packages", QKeySequence ());
+  init (tr ("Share Code"), "main_help:agora", QKeySequence ());
+  init (tr ("Contribute to Octave"), "main_help:contribute", QKeySequence ());
+  init (tr ("Octave Developer Resources"), "main_help:developer", QKeySequence ());
+  init (tr ("About Octave"), "main_help:about", QKeySequence ());
+
+  // news
+  init (tr ("Release Notes"), "main_news:release_notes", QKeySequence ());
+  init (tr ("Community News"), "main_news:community_news", QKeySequence ());
+
   // actions of the editor
 
   // file
@@ -204,20 +242,25 @@ shortcut_manager::do_init_data ()
 void
 shortcut_manager::init (QString description, QString key, QKeySequence def_sc)
 {
-  QKeySequence actual = QKeySequence (_settings->value ("shortcuts/"+key, def_sc).toString ());
+  QKeySequence actual_0 = QKeySequence (_settings->value ("shortcuts/"+key, def_sc).toString ());
+  QKeySequence actual_1 = QKeySequence (_settings->value ("shortcuts/"+key+"_1", def_sc).toString ());
 
   // append the new shortcut to the list
   shortcut_t shortcut_info;
   shortcut_info.description = description;
   shortcut_info.settings_key = key;
-  shortcut_info.actual_sc = actual;
-  shortcut_info.default_sc = def_sc;
+  shortcut_info.actual_sc [0] = actual_0;
+  shortcut_info.actual_sc [1] = actual_1;
+  shortcut_info.default_sc [0] = def_sc;
+  shortcut_info.default_sc [1] = def_sc;  // TODO: Different defaults
   _sc << shortcut_info;
 
   // insert shortcut prepended by widget in order check for duplicates later
   QString widget = key.section ('_',0,0);  // get widget that uses the shortcut
-  if (! actual.isEmpty ())
-    _shortcut_hash[widget + ":" + actual.toString ()] = _sc.count ();  // offset of 1 to avoid 0
+  if (! actual_0.isEmpty ())
+    _shortcut_hash[widget + ":" + actual_0.toString ()] = _sc.count ();  // offset of 1 to avoid 0
+  if (! actual_1.isEmpty ())
+    _shortcut_hash[widget + "_1:" + actual_1.toString ()] = _sc.count ();  // offset of 1 to avoid 0
   _action_hash[key] = _sc.count ();  // offset of 1 to avoid 0
 }
 
@@ -285,9 +328,18 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
       QTreeWidgetItem* section = _level_hash[sc.settings_key.section(':',0,0)];
       QTreeWidgetItem* tree_item = new QTreeWidgetItem (section);
 
+      // set a slightly transparent foreground for default columns
+      QColor fg = QColor (tree_item->foreground (1).color ());
+      fg.setAlpha (128);
+      tree_item->setForeground (1, QBrush (fg));
+      tree_item->setForeground (3,QBrush (fg));
+
+      // write the shortcuts
       tree_item->setText (0, sc.description);
-      tree_item->setText (1, sc.default_sc);
-      tree_item->setText (2, sc.actual_sc);
+      tree_item->setText (1, sc.default_sc [0]);
+      tree_item->setText (2, sc.actual_sc [0]);
+      tree_item->setText (3, sc.default_sc [1]);
+      tree_item->setText (4, sc.actual_sc [1]);
 
       _item_index_hash[tree_item] = i + 1; // index+1 to avoid 0
       _index_item_hash[i] = tree_item;
@@ -299,7 +351,10 @@ void
 shortcut_manager::do_write_shortcuts ()
 {
   for (int i = 0; i < _sc.count (); i++)
-    _settings->setValue("shortcuts/"+_sc.at (i).settings_key, _sc.at (i).actual_sc.toString ());
+    {
+      _settings->setValue("shortcuts/"+_sc.at (i).settings_key, _sc.at (i).actual_sc[0].toString ());
+      _settings->setValue("shortcuts/"+_sc.at (i).settings_key+"_1", _sc.at (i).actual_sc[1].toString ());
+    }
 
   _settings->sync ();
 
@@ -309,18 +364,36 @@ shortcut_manager::do_write_shortcuts ()
 void
 shortcut_manager::do_set_shortcut (QAction* action, const QString& key)
 {
-  int index = _action_hash[key] - 1;
+  int set = _settings->value ("shortcuts/set",0).toInt ();
+  int index;
+
+  index = _action_hash[key] - 1;
+
+  QString key_set = key;
+  if (set == 1)
+    key_set = key+"_1";
 
   if (index > -1 && index < _sc.count ())
     action->setShortcut (QKeySequence (
-      _settings->value ("shortcuts/" + key, _sc.at (index).default_sc).toString ()));
+      _settings->value ("shortcuts/" + key_set, _sc.at (index).default_sc[set]).toString ()));
   else
-    qDebug () << "Key: " << key << " not found in _action_hash";
+    qDebug () << "Key: " << key_set << " not found in _action_hash";
 }
 
 void
-shortcut_manager::handle_double_clicked (QTreeWidgetItem* item, int)
+shortcut_manager::handle_double_clicked (QTreeWidgetItem* item, int col)
 {
+  switch (col)
+    {
+      case 2:
+      case 4:
+        _selected_set = col/2 - 1;
+        break;
+
+      default:
+        return;
+    }
+
   int i = _item_index_hash[item];
   if (i == 0)
     return;  // top-level-item clicked
@@ -335,7 +408,8 @@ shortcut_manager::shortcut_dialog (int index)
     {
       _dialog = new QDialog (this);
 
-      _dialog->setWindowTitle (tr ("Enter new Shortcut"));
+      _dialog->setWindowTitle (tr ("Enter new Shortcut for Set %1")
+                               .arg (_selected_set + 1));
 
       QVBoxLayout *box = new QVBoxLayout(_dialog);
 
@@ -388,8 +462,8 @@ shortcut_manager::shortcut_dialog (int index)
 
     }
 
-  _edit_actual->setText (_sc.at (index).actual_sc);
-  _label_default->setText (_sc.at (index).default_sc);
+  _edit_actual->setText (_sc.at (index).actual_sc[_selected_set]);
+  _label_default->setText (_sc.at (index).default_sc[_selected_set]);
   _handled_index = index;
 
   _edit_actual->setFocus ();
@@ -407,8 +481,12 @@ shortcut_manager::shortcut_dialog_finished (int result)
 
   // get the widget for which this shortcut is defined
   QString widget = _sc.at (_handled_index).settings_key.section ('_',0,0);
-  // and look
-  int double_index = _shortcut_hash[widget + ":" + _edit_actual->text()] - 1;
+  // and look for shortcut
+  QString sep = ":";
+  if (_selected_set)
+    sep = "_1:";
+
+  int double_index = _shortcut_hash[widget + sep + _edit_actual->text()] - 1;
 
   if (double_index >= 0 && double_index != _handled_index)
     {
@@ -424,24 +502,26 @@ shortcut_manager::shortcut_dialog_finished (int result)
       if (ret == QMessageBox::Yes)
         {
           shortcut_t double_shortcut = _sc.at (double_index);
-          double_shortcut.actual_sc = QKeySequence ();
+          double_shortcut.actual_sc[_selected_set] = QKeySequence ();
           _sc.replace (double_index, double_shortcut);
-          _index_item_hash[double_index]->setText (2, QKeySequence ());
+          _index_item_hash[double_index]->setText ((_selected_set + 1)*2, QKeySequence ());
         }
       else
         return;
     }
 
   shortcut_t shortcut = _sc.at (_handled_index);
-  if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash.remove (widget + ":" + shortcut.actual_sc.toString ());
-  shortcut.actual_sc = _edit_actual->text();
+  if (! shortcut.actual_sc[_selected_set].isEmpty ())
+    _shortcut_hash.remove (widget + sep + shortcut.actual_sc[_selected_set].toString ());
+  shortcut.actual_sc[_selected_set] = _edit_actual->text();
   _sc.replace (_handled_index, shortcut);
 
-  _index_item_hash[_handled_index]->setText (2, shortcut.actual_sc);
+  _index_item_hash[_handled_index]->setText ((_selected_set + 1)*2,
+                                             shortcut.actual_sc[_selected_set]);
 
-  if (! shortcut.actual_sc.isEmpty ())
-    _shortcut_hash[widget + ":" + shortcut.actual_sc.toString ()] = _handled_index + 1;
+  if (! shortcut.actual_sc[_selected_set].isEmpty ())
+    _shortcut_hash[widget + sep + shortcut.actual_sc[_selected_set].toString ()] =
+        _handled_index + 1;
 }
 
 void

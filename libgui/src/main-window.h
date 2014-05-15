@@ -213,19 +213,18 @@ private:
 
   void construct_octave_qt_link (void);
 
+  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                       const char *member, const QWidget *receiver = 0);
+
   void construct_menu_bar (void);
   void construct_file_menu (QMenuBar *p);
   void construct_new_menu (QMenu *p);
   void construct_edit_menu (QMenuBar *p);
-  void construct_debug_menu_item (QMenu *p, const QString& item,
-                                  const QKeySequence& key);
-  QAction *construct_debug_menu_item (const char *icon_file,
-                                      const QString& item,
-                                      const QKeySequence& key);
+  QAction *construct_debug_menu_item (const char *icon, const QString& item,
+                                      const char* member);
   void construct_debug_menu (QMenuBar *p);
   QAction *construct_window_menu_item (QMenu *p, const QString& item,
-                                       bool checkable,
-                                       const QKeySequence& key);
+                                       bool checkable, QWidget*);
   void construct_window_menu (QMenuBar *p);
   void construct_help_menu (QMenuBar *p);
   void construct_documentation_menu (QMenu *p);
@@ -270,6 +269,8 @@ private:
   void queue_debug (QString command);
 
   void execute_debug_callback ();
+
+  void configure_shortcuts ();
 
   bool confirm_exit_octave ();
 
@@ -333,6 +334,32 @@ private:
   QAction *_find_files_action;
   QAction *_select_all_action;
 
+  QAction *_show_command_window_action;
+  QAction *_show_history_action;
+  QAction *_show_workspace_action;
+  QAction *_show_file_browser_action;
+  QAction *_show_editor_action;
+  QAction *_show_documentation_action;
+  QAction *_command_window_action;
+  QAction *_history_action;
+  QAction *_workspace_action;
+  QAction *_file_browser_action;
+  QAction *_editor_action;
+  QAction *_documentation_action;
+  QAction *_reset_windows_action;
+
+  QAction *_ondisk_doc_action;
+  QAction *_online_doc_action;
+  QAction *_report_bug_action;
+  QAction *_octave_packages_action;
+  QAction *_agora_action;
+  QAction *_contribute_action;
+  QAction *_developer_action;
+  QAction *_about_octave_action;
+
+  QAction *_release_notes_action;
+  QAction *_current_news_action;
+
   // Toolbars.
   QComboBox *_current_directory_combo_box;
   static const int current_directory_width = 300;
@@ -364,6 +391,8 @@ private:
   QStringList *_dbg_queue;
   QSemaphore   _dbg_processing;
   QMutex       _dbg_queue_mutex;
+
+  bool _prevent_readline_conflicts;
 };
 
 class news_reader : public QObject

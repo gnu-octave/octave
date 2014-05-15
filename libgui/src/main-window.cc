@@ -95,7 +95,8 @@ main_window::main_window (QWidget *p)
     _cmd_queue_mutex (),
     _dbg_queue (new QStringList ()),  // no debug pending
     _dbg_processing (1),
-    _dbg_queue_mutex ()
+    _dbg_queue_mutex (),
+    _prevent_readline_conflicts (true)
 {
   QSettings *settings = resource_manager::get_settings ();
 
@@ -681,7 +682,14 @@ main_window::notice_settings (const QSettings *settings)
   int icon_size = settings->value ("toolbar_icon_size",16).toInt ();
   _main_tool_bar->setIconSize (QSize (icon_size,icon_size));
 
-  set_global_shortcuts (true);
+  if (settings->value ("show_status_bar",true).toBool ())
+    status_bar->show ();
+  else
+    status_bar->hide ();
+
+  _prevent_readline_conflicts =
+    settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ();
+  configure_shortcuts ();
   set_global_shortcuts (command_window_has_focus ());
 
   resource_manager::update_network_settings ();
@@ -1006,8 +1014,10 @@ main_window::connect_visibility_changed (void)
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
 
+#ifdef HAVE_QSCINTILLA
   // Main window completely shown, determine whether to create an empty script
   editor_window->empty_script (true, false);
+#endif
 }
 
 void
@@ -1280,7 +1290,7 @@ main_window::construct (void)
 
   Fregister_graphics_toolkit (ovl ("qt"));
 
-  set_global_shortcuts (true);
+  configure_shortcuts ();
 }
 
 
@@ -1423,6 +1433,22 @@ main_window::construct_menu_bar (void)
   construct_help_menu (menu_bar);
 
   construct_news_menu (menu_bar);
+}
+
+QAction*
+main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                         const char *member, const QWidget *receiver)
+{
+  QAction *a;
+
+  if (receiver)
+    a = menu->addAction (icon, text, receiver, member);
+  else
+    a = menu->addAction (icon, text, this, member);
+
+  addAction (a);  // important for shortcut context
+  a->setShortcutContext (Qt::ApplicationShortcut);
+  return a;
 }
 
 void
@@ -1571,14 +1597,12 @@ main_window::construct_edit_menu (QMenuBar *p)
 }
 
 QAction *
-main_window::construct_debug_menu_item (const char *icon_file,
-                                        const QString& item,
-                                        const QKeySequence& key)
+main_window::construct_debug_menu_item (const char *icon, const QString& item,
+                                        const char *member)
 {
-  QAction *action = _debug_menu->addAction (QIcon (icon_file), item);
+  QAction *action = add_action (_debug_menu, QIcon (icon), item, member);
 
   action->setEnabled (false);
-  action->setShortcut (key);
 
 #ifdef HAVE_QSCINTILLA
   editor_window->debug_menu ()->addAction (action);
@@ -1594,20 +1618,20 @@ main_window::construct_debug_menu (QMenuBar *p)
   _debug_menu = p->addMenu (tr ("De&bug"));
 
   _debug_step_over = construct_debug_menu_item
-                       (":/actions/icons/db_step.png", tr ("Step"),
-                        Qt::Key_F10);
+                      (":/actions/icons/db_step.png", tr ("Step"),
+                       SLOT (debug_step_over ()));
 
   _debug_step_into = construct_debug_menu_item
-                       (":/actions/icons/db_step_in.png", tr ("Step In"),
-                        Qt::Key_F11);
+                      (":/actions/icons/db_step_in.png", tr ("Step In"),
+                       SLOT (debug_step_into ()));
 
   _debug_step_out = construct_debug_menu_item
                       (":/actions/icons/db_step_out.png", tr ("Step Out"),
-                       Qt::ShiftModifier + Qt::Key_F11);
+                       SLOT (debug_step_out ()));
 
   _debug_continue = construct_debug_menu_item
                       (":/actions/icons/db_cont.png", tr ("Continue"),
-                       Qt::Key_F5);
+                       SLOT (debug_continue ()));
 
   _debug_menu->addSeparator ();
 #ifdef HAVE_QSCINTILLA
@@ -1615,35 +1639,37 @@ main_window::construct_debug_menu (QMenuBar *p)
 #endif
 
   _debug_quit = construct_debug_menu_item
-                (":/actions/icons/db_stop.png", tr ("Exit Debug Mode"),
-                 Qt::ShiftModifier + Qt::Key_F5);
-
-  connect (_debug_step_over, SIGNAL (triggered ()),
-           this, SLOT (debug_step_over ()));
-
-  connect (_debug_step_into, SIGNAL (triggered ()),
-           this, SLOT (debug_step_into ()));
-
-  connect (_debug_step_out, SIGNAL (triggered ()),
-           this, SLOT (debug_step_out ()));
-
-  connect (_debug_continue, SIGNAL (triggered ()),
-           this, SLOT (debug_continue ()));
-
-  connect (_debug_quit, SIGNAL (triggered ()),
-           this, SLOT (debug_quit ()));
+                      (":/actions/icons/db_stop.png", tr ("Quit Debug Mode"),
+                       SLOT (debug_quit ()));
 }
 
 QAction *
 main_window::construct_window_menu_item (QMenu *p, const QString& item,
-                                         bool checkable,
-                                         const QKeySequence& key)
+                                         bool checkable, QWidget *widget)
 {
-  QAction *action = p->addAction (item);
+  QAction *action = p->addAction (QIcon (), item);
 
+  addAction (action);  // important for shortcut context
   action->setCheckable (checkable);
-  action->setShortcut (key);
   action->setShortcutContext (Qt::ApplicationShortcut);
+
+  if (widget)  // might be zero for editor_window
+    {
+      if (checkable)
+        {
+          // action for visibilty of dock widget
+          connect (action, SIGNAL (toggled (bool)),
+                   widget, SLOT (setVisible (bool)));
+
+          connect (widget, SIGNAL (active_changed (bool)),
+                  action, SLOT (setChecked (bool)));
+        }
+      else
+        {
+          // action for focus of dock widget
+          connect (action, SIGNAL (triggered ()), widget, SLOT (focus ()));
+        }
+    }
 
   return action;
 }
@@ -1653,125 +1679,48 @@ main_window::construct_window_menu (QMenuBar *p)
 {
   QMenu *window_menu = p->addMenu (tr ("&Window"));
 
-  QKeySequence ctrl = Qt::ControlModifier;
-  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
+  _show_command_window_action = construct_window_menu_item
+            (window_menu, tr ("Show Command Window"), true, command_window);
 
-  QAction *show_command_window_action = construct_window_menu_item
-                                        (window_menu,
-                                         tr ("Show Command Window"), true,
-                                         ctrl_shift + Qt::Key_0);
+  _show_history_action = construct_window_menu_item
+            (window_menu, tr ("Show Command History"), true, history_window);
 
-  QAction *show_history_action = construct_window_menu_item
-                                 (window_menu, tr ("Show Command History"),
-                                  true, ctrl_shift + Qt::Key_1);
+  _show_file_browser_action = construct_window_menu_item
+            (window_menu, tr ("Show File Browser"), true, file_browser_window);
 
-  QAction *show_file_browser_action =  construct_window_menu_item
-                                       (window_menu, tr ("Show File Browser"),
-                                        true, ctrl_shift + Qt::Key_2);
+  _show_workspace_action = construct_window_menu_item
+            (window_menu, tr ("Show Workspace"), true, workspace_window);
 
-  QAction *show_workspace_action = construct_window_menu_item
-                                   (window_menu, tr ("Show Workspace"), true,
-                                    ctrl_shift + Qt::Key_3);
+  _show_editor_action = construct_window_menu_item
+            (window_menu, tr ("Show Editor"), true, editor_window);
 
-  QAction *show_editor_action = construct_window_menu_item
-                                (window_menu, tr ("Show Editor"), true,
-                                 ctrl_shift + Qt::Key_4);
-
-  QAction *show_documentation_action = construct_window_menu_item
-                                       (window_menu, tr ("Show Documentation"),
-                                        true, ctrl_shift + Qt::Key_5);
+  _show_documentation_action = construct_window_menu_item
+            (window_menu, tr ("Show Documentation"), true, doc_browser_window);
 
   window_menu->addSeparator ();
 
-  QAction *command_window_action = construct_window_menu_item
-                                   (window_menu, tr ("Command Window"), false,
-                                    ctrl + Qt::Key_0);
+  _command_window_action = construct_window_menu_item
+            (window_menu, tr ("Command Window"), false, command_window);
 
-  QAction *history_action = construct_window_menu_item
-                            (window_menu, tr ("Command History"), false,
-                             ctrl + Qt::Key_1);
+  _history_action = construct_window_menu_item
+            (window_menu, tr ("Command History"), false, history_window);
 
-  QAction *file_browser_action = construct_window_menu_item
-                                 (window_menu, tr ("File Browser"), false,
-                                  ctrl + Qt::Key_2);
+  _file_browser_action = construct_window_menu_item
+            (window_menu, tr ("File Browser"), false, file_browser_window);
 
-  QAction *workspace_action = construct_window_menu_item
-                              (window_menu, tr ("Workspace"), false,
-                               ctrl + Qt::Key_3);
+  _workspace_action = construct_window_menu_item
+            (window_menu, tr ("Workspace"), false, workspace_window);
 
-  QAction *editor_action = construct_window_menu_item
-                           (window_menu, tr ("Editor"), false,
-                            ctrl + Qt::Key_4);
+  _editor_action = construct_window_menu_item
+            (window_menu, tr ("Editor"), false, editor_window);
 
-  QAction *documentation_action = construct_window_menu_item
-                                  (window_menu, tr ("Documentation"), false,
-                                   ctrl + Qt::Key_5);
+  _documentation_action = construct_window_menu_item
+            (window_menu, tr ("Documentation"), false, doc_browser_window);
 
   window_menu->addSeparator ();
 
-  QAction *reset_windows_action
-    = window_menu->addAction (tr ("Reset Default Window Layout"));
-
-  connect (show_command_window_action, SIGNAL (toggled (bool)),
-           command_window, SLOT (setVisible (bool)));
-
-  connect (command_window, SIGNAL (active_changed (bool)),
-           show_command_window_action, SLOT (setChecked (bool)));
-
-  connect (show_workspace_action, SIGNAL (toggled (bool)),
-           workspace_window, SLOT (setVisible (bool)));
-
-  connect (workspace_window, SIGNAL (active_changed (bool)),
-           show_workspace_action, SLOT (setChecked (bool)));
-
-  connect (show_history_action, SIGNAL (toggled (bool)),
-           history_window, SLOT (setVisible (bool)));
-
-  connect (history_window, SIGNAL (active_changed (bool)),
-           show_history_action, SLOT (setChecked (bool)));
-
-  connect (show_file_browser_action, SIGNAL (toggled (bool)),
-           file_browser_window, SLOT (setVisible (bool)));
-
-  connect (file_browser_window, SIGNAL (active_changed (bool)),
-           show_file_browser_action, SLOT (setChecked (bool)));
-
-#ifdef HAVE_QSCINTILLA
-  connect (show_editor_action, SIGNAL (toggled (bool)),
-           editor_window, SLOT (setVisible (bool)));
-
-  connect (editor_window, SIGNAL (active_changed (bool)),
-           show_editor_action, SLOT (setChecked (bool)));
-#endif
-
-  connect (show_documentation_action, SIGNAL (toggled (bool)),
-           doc_browser_window, SLOT (setVisible (bool)));
-
-  connect (doc_browser_window, SIGNAL (active_changed (bool)),
-           show_documentation_action, SLOT (setChecked (bool)));
-
-  connect (command_window_action, SIGNAL (triggered ()),
-           command_window, SLOT (focus ()));
-
-  connect (workspace_action, SIGNAL (triggered ()),
-           workspace_window, SLOT (focus ()));
-
-  connect (history_action, SIGNAL (triggered ()),
-           history_window, SLOT (focus ()));
-
-  connect (file_browser_action, SIGNAL (triggered ()),
-           file_browser_window, SLOT (focus ()));
-
-#ifdef HAVE_QSCINTILLA
-  connect (editor_action, SIGNAL (triggered ()),
-           editor_window, SLOT (focus ()));
-#endif
-
-  connect (documentation_action, SIGNAL (triggered ()),
-           doc_browser_window, SLOT (focus ()));
-
-  connect (reset_windows_action, SIGNAL (triggered ()),
-           this, SLOT (reset_windows ()));
+  _reset_windows_action = add_action (window_menu, QIcon (),
+              tr ("Reset Default Window Layout"), SLOT (reset_windows ()));
 }
 
 void
@@ -1783,61 +1732,37 @@ main_window::construct_help_menu (QMenuBar *p)
 
   help_menu->addSeparator ();
 
-  QAction *report_bug_action
-    = help_menu->addAction (tr ("Report Bug"));
+  _report_bug_action = add_action (help_menu, QIcon (),
+            tr ("Report Bug"), SLOT (open_bug_tracker_page ()));
 
-  QAction *octave_packages_action
-    = help_menu->addAction (tr ("Octave Packages"));
+  _octave_packages_action =  add_action (help_menu, QIcon (),
+            tr ("Octave Packages"), SLOT (open_octave_packages_page ()));
 
-  QAction *agora_action
-    = help_menu->addAction (tr ("Share Code"));
+  _agora_action = add_action (help_menu, QIcon (),
+            tr ("Share Code"), SLOT (open_agora_page ()));
 
-  QAction *contribute_action
-    = help_menu->addAction (tr ("Contribute to Octave"));
+  _contribute_action = add_action (help_menu, QIcon (),
+            tr ("Contribute to Octave"), SLOT (open_contribute_page ()));
 
-  QAction *developer_action
-    = help_menu->addAction (tr ("Octave Developer Resources"));
+  _developer_action = add_action (help_menu, QIcon (),
+            tr ("Octave Developer Resources"), SLOT (open_developer_page ()));
 
   help_menu->addSeparator ();
 
-  QAction *about_octave_action
-    = help_menu->addAction (tr ("About Octave"));
-
-  connect (report_bug_action, SIGNAL (triggered ()),
-           this, SLOT (open_bug_tracker_page ()));
-
-  connect (octave_packages_action, SIGNAL (triggered ()),
-           this, SLOT (open_octave_packages_page ()));
-
-  connect (agora_action, SIGNAL (triggered ()),
-           this, SLOT (open_agora_page ()));
-
-  connect (contribute_action, SIGNAL (triggered ()),
-           this, SLOT (open_contribute_page ()));
-
-  connect (developer_action, SIGNAL (triggered ()),
-           this, SLOT (open_developer_page ()));
-
-  connect (about_octave_action, SIGNAL (triggered ()),
-           this, SLOT (show_about_octave ()));
+  _about_octave_action = add_action (help_menu, QIcon (),
+            tr ("About Octave"), SLOT (show_about_octave ()));
 }
 
 void
 main_window::construct_documentation_menu (QMenu *p)
 {
-  QMenu *documentation_menu = p->addMenu (tr ("Documentation"));
+  QMenu *doc_menu = p->addMenu (tr ("Documentation"));
 
-  QAction *ondisk_documentation_action
-    = documentation_menu->addAction (tr ("On Disk"));
+  _ondisk_doc_action = add_action (doc_menu, QIcon (),
+                     tr ("On Disk"), SLOT (focus ()), doc_browser_window);
 
-  QAction *online_documentation_action
-    = documentation_menu->addAction (tr ("Online"));
-
-  connect (ondisk_documentation_action, SIGNAL (triggered ()),
-           doc_browser_window, SLOT (focus ()));
-
-  connect (online_documentation_action, SIGNAL (triggered ()),
-           this, SLOT (open_online_documentation_page ()));
+  _online_doc_action = add_action (doc_menu, QIcon (),
+                     tr ("Online"), SLOT (open_online_documentation_page ()));
 }
 
 void
@@ -1845,17 +1770,11 @@ main_window::construct_news_menu (QMenuBar *p)
 {
   QMenu *news_menu = p->addMenu (tr ("&News"));
 
-  QAction *release_notes_action
-    = news_menu->addAction (tr ("Release Notes"));
+  _release_notes_action = add_action (news_menu, QIcon (),
+            tr ("Release Notes"), SLOT (display_release_notes ()));
 
-  QAction *current_news_action
-    = news_menu->addAction (tr ("Community News"));
-
-  connect (release_notes_action, SIGNAL (triggered ()),
-           this, SLOT (display_release_notes ()));
-
-  connect (current_news_action, SIGNAL (triggered ()),
-           this, SLOT (load_and_display_community_news ()));
+  _current_news_action = add_action (news_menu, QIcon (),
+            tr ("Community News"), SLOT (load_and_display_community_news ()));
 }
 
 void
@@ -2280,15 +2199,16 @@ main_window::find_files_finished (int)
 void
 main_window::set_global_edit_shortcuts (bool enable)
 {
+  // this slot is called when editor gets/loses focus
   if (enable)
-    {
+    { // editor loses focus, set the global shortcuts
       shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
       shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
       shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
       shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
     }
   else
-    {
+    { // disable shortcuts that are also provided by the editor itself
       QKeySequence no_key = QKeySequence ();
       _copy_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
@@ -2298,36 +2218,81 @@ main_window::set_global_edit_shortcuts (bool enable)
 }
 
 void
+main_window::configure_shortcuts ()
+{
+  // file menu
+  shortcut_manager::set_shortcut (_open_action, "main_file:open_file");
+  shortcut_manager::set_shortcut (_new_script_action, "main_file:new_file");
+  shortcut_manager::set_shortcut (_new_function_action, "main_file:new_function");
+  shortcut_manager::set_shortcut (_new_function_action, "main_file:new_figure");
+  shortcut_manager::set_shortcut (_load_workspace_action, "main_file:load_workspace");
+  shortcut_manager::set_shortcut (_save_workspace_action, "main_file:save_workspace");
+  shortcut_manager::set_shortcut (_preferences_action, "main_file:preferences");
+  shortcut_manager::set_shortcut (_exit_action,"main_file:exit");
+
+  // edit menu
+  shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+  shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+  shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+  shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+  shortcut_manager::set_shortcut (_clear_clipboard_action, "main_edit:clear_clipboard");
+  shortcut_manager::set_shortcut (_find_files_action, "main_edit:find_in_files");
+  shortcut_manager::set_shortcut (_clear_command_history_action, "main_edit:clear_history");
+  shortcut_manager::set_shortcut (_clear_command_window_action, "main_edit:clear_command_window");
+  shortcut_manager::set_shortcut (_clear_workspace_action, "main_edit:clear_workspace");
+
+  // debug menu
+  shortcut_manager::set_shortcut (_debug_step_over, "main_debug:step_over");
+  shortcut_manager::set_shortcut (_debug_step_into, "main_debug:step_into");
+  shortcut_manager::set_shortcut (_debug_step_out,  "main_debug:step_out");
+  shortcut_manager::set_shortcut (_debug_continue,  "main_debug:continue");
+  shortcut_manager::set_shortcut (_debug_quit,  "main_debug:quit");
+
+  // window menu
+  shortcut_manager::set_shortcut (_show_command_window_action, "main_window:show_command");
+  shortcut_manager::set_shortcut (_show_history_action, "main_window:show_history");
+  shortcut_manager::set_shortcut (_show_workspace_action,  "main_window:show_workspace");
+  shortcut_manager::set_shortcut (_show_file_browser_action,  "main_window:show_file_browser");
+  shortcut_manager::set_shortcut (_show_editor_action, "main_window:show_editor");
+  shortcut_manager::set_shortcut (_show_documentation_action, "main_window:show_doc");
+  shortcut_manager::set_shortcut (_command_window_action, "main_window:command");
+  shortcut_manager::set_shortcut (_history_action, "main_window:history");
+  shortcut_manager::set_shortcut (_workspace_action,  "main_window:workspace");
+  shortcut_manager::set_shortcut (_file_browser_action,  "main_window:file_browser");
+  shortcut_manager::set_shortcut (_editor_action, "main_window:editor");
+  shortcut_manager::set_shortcut (_documentation_action, "main_window:doc");
+  shortcut_manager::set_shortcut (_reset_windows_action, "main_window:reset");
+
+  // help menu
+  shortcut_manager::set_shortcut (_ondisk_doc_action, "main_help:ondisk_doc");
+  shortcut_manager::set_shortcut (_online_doc_action, "main_help:online_doc");
+  shortcut_manager::set_shortcut (_report_bug_action, "main_help:report_bug");
+  shortcut_manager::set_shortcut (_octave_packages_action, "main_help:packages");
+  shortcut_manager::set_shortcut (_agora_action, "main_help:agora");
+  shortcut_manager::set_shortcut (_contribute_action, "main_help:contribute");
+  shortcut_manager::set_shortcut (_developer_action, "main_help:developer");
+  shortcut_manager::set_shortcut (_about_octave_action, "main_help:about");
+
+  // news menu
+  shortcut_manager::set_shortcut (_release_notes_action, "main_news:release_notes");
+  shortcut_manager::set_shortcut (_current_news_action, "main_news:community_news");
+}
+
+void
 main_window::set_global_shortcuts (bool set_shortcuts)
 {
+  // this slot is called when the terminal gets/loses focus
+
+  // return if the user don't want to use readline shortcuts
+  if (! _prevent_readline_conflicts)
+    return;
+
   if (set_shortcuts)
-    {
-
-      // file menu
-      shortcut_manager::set_shortcut (_open_action, "main_file:open_file");
-      shortcut_manager::set_shortcut (_new_script_action, "main_file:new_file");
-      shortcut_manager::set_shortcut (_new_function_action, "main_file:new_function");
-      shortcut_manager::set_shortcut (_new_function_action, "main_file:new_figure");
-      shortcut_manager::set_shortcut (_load_workspace_action, "main_file:load_workspace");
-      shortcut_manager::set_shortcut (_save_workspace_action, "main_file:save_workspace");
-      shortcut_manager::set_shortcut (_preferences_action, "main_file:preferences");
-      shortcut_manager::set_shortcut (_exit_action,"main_file:exit");
-
-      // edit menu
-      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
-      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
-      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
-      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
-      shortcut_manager::set_shortcut (_clear_clipboard_action, "main_edit:clear_clipboard");
-      shortcut_manager::set_shortcut (_find_files_action, "main_edit:find_in_files");
-      shortcut_manager::set_shortcut (_clear_command_history_action, "main_edit:clear_history");
-      shortcut_manager::set_shortcut (_clear_command_window_action, "main_edit:clear_command_window");
-      shortcut_manager::set_shortcut (_clear_workspace_action, "main_edit:clear_workspace");
-
+    { // terminal loses focus: set the global shortcuts
+      configure_shortcuts ();
     }
   else
-    {
-
+    { // terminal gets focus: disable some shortcuts
       QKeySequence no_key = QKeySequence ();
 
       // file menu
@@ -2341,9 +2306,6 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _exit_action->setShortcut (no_key);
 
       // edit menu
-      //_copy_action->setShortcut (no_key);
-      //_paste_action->setShortcut (no_key);
-      //_undo_action->setShortcut (no_key);
       _select_all_action->setShortcut (no_key);
       _clear_clipboard_action->setShortcut (no_key);
       _find_files_action->setShortcut (no_key);
@@ -2351,8 +2313,23 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _clear_command_window_action->setShortcut (no_key);
       _clear_workspace_action->setShortcut (no_key);
 
-    }
+      // window menu
+      _reset_windows_action->setShortcut (no_key);
 
+      // help menu
+      _ondisk_doc_action->setShortcut (no_key);
+      _online_doc_action->setShortcut (no_key);
+      _report_bug_action->setShortcut (no_key);
+      _octave_packages_action->setShortcut (no_key);
+      _agora_action->setShortcut (no_key);
+      _contribute_action->setShortcut (no_key);
+      _developer_action->setShortcut (no_key);
+      _about_octave_action->setShortcut (no_key);
+
+      // news menu
+      _release_notes_action->setShortcut (no_key);
+      _current_news_action->setShortcut (no_key);
+    }
 }
 
 void

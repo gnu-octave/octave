@@ -314,22 +314,27 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
           else
             retsiz = siz + nidx * (rsiz - psiz);
 
-          ret.clear (dim_vector (1, retsiz));
-          const char *src = str.data ();
-          const char *reps = rep.data ();
-          char *dest = ret.fortran_vec ();
-
-          octave_idx_type k = 0;
-          for (octave_idx_type i = 0; i < nidx; i++)
+          if (retsiz == 0)
+            ret.clear (dim_vector (0, 0));
+          else 
             {
-              octave_idx_type j = idx(i);
-              if (j >= k)
-                dest = std::copy (src + k, src + j, dest);
-              dest = std::copy (reps, reps + rsiz, dest);
-              k = j + psiz;
-            }
+              ret.clear (dim_vector (1, retsiz));
+              const char *src = str.data ();
+              const char *reps = rep.data ();
+              char *dest = ret.fortran_vec ();
 
-          std::copy (src + k, src + siz, dest);
+              octave_idx_type k = 0;
+              for (octave_idx_type i = 0; i < nidx; i++)
+                {
+                  octave_idx_type j = idx(i);
+                  if (j >= k)
+                    dest = std::copy (src + k, src + j, dest);
+                  dest = std::copy (reps, reps + rsiz, dest);
+                  k = j + psiz;
+                }
+
+              std::copy (src + k, src + siz, dest);
+            }
         }
     }
 
@@ -438,6 +443,8 @@ strrep (\"This is a test string\", \"is\", \"&%$\")\n\
 %!                "Th&%$ &%$ a test string")
 %!assert (strrep ("abababc", "abab", "xyz"), "xyzxyzc")
 %!assert (strrep ("abababc", "abab", "xyz", "overlaps", false), "xyzabc")
+
+%!assert (size (strrep ("a", "a", "")), [0 0])
 
 %!error strrep ()
 %!error strrep ("foo", "bar", 3, 4)

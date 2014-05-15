@@ -173,7 +173,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
     if (   strcmp (get (fkids(i), "type"), "axes")
         && strcmp (get (fkids(i), "tag"), "legend"))
       udata = get (fkids(i), "userdata");
-      if (any (udata.handle == ca))
+      if (any (ismember (udata.handle, ca)))
         hlegend = fkids(i);
         break;
       endif

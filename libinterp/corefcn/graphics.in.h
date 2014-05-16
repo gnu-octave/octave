@@ -4158,7 +4158,6 @@ public:
 
   void set_defaults (const std::string& mode)
   {
-    remove_all_listeners ();
     xproperties.set_defaults (*this, mode);
   }
 

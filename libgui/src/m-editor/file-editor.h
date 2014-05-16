@@ -178,7 +178,8 @@ public slots:
   void handle_tab_remove_request (void);
   void handle_add_filename_to_list (const QString& fileName, QWidget *ID);
   void active_tab_changed (int index);
-  void handle_editor_state_changed (bool enableCopy, const QString& fileName);
+  void handle_editor_state_changed (bool enableCopy, const QString& fileName,
+                                    bool is_octave_file);
   void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 

@@ -965,6 +965,8 @@ void file_editor::create_context_menu (QMenu *menu)
   menu->addAction (_paste_action);
   menu->addSeparator ();
   menu->addAction (_selectall_action);
+  menu->addSeparator ();
+  menu->addAction (_run_selection_action);
 }
 
 void
@@ -994,7 +996,8 @@ file_editor::edit_status_update (bool undo, bool redo)
 
 void
 file_editor::handle_editor_state_changed (bool copy_available,
-                                          const QString& file_name)
+                                          const QString& file_name,
+                                          bool is_octave_file)
 {
   // In case there is some scenario where traffic could be coming from
   // all the file editor tabs, just process info from the current active tab.
@@ -1002,7 +1005,8 @@ file_editor::handle_editor_state_changed (bool copy_available,
     {
       _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
-      _run_selection_action->setEnabled (copy_available);
+      _run_selection_action->setEnabled (copy_available && is_octave_file);
+      _run_action->setEnabled (is_octave_file);
 
       if (!file_name.isEmpty ())
         {
@@ -1410,8 +1414,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            this, SLOT (handle_file_name_changed (const QString&,
                                                  const QString&)));
 
-  connect (f, SIGNAL (editor_state_changed (bool, const QString&)),
-           this, SLOT (handle_editor_state_changed (bool, const QString&)));
+  connect (f, SIGNAL (editor_state_changed (bool, const QString&, bool)),
+           this, SLOT (handle_editor_state_changed (bool, const QString&, bool)));
 
   connect (f, SIGNAL (tab_remove_request ()),
            this, SLOT (handle_tab_remove_request ()));

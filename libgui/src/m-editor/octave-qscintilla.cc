@@ -200,10 +200,6 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
           context_menu->addAction (tr ("Edit") + " " + _word_at_cursor,
                                    this, SLOT (contextmenu_edit (bool)));
         }
-      context_menu->addSeparator ();   // separator before custom entries
-      if (hasSelectedText ())
-        context_menu->addAction (tr ("&Run Selection"),
-                                 this, SLOT (contextmenu_run (bool)));
     }
 
   // finaly show the menu

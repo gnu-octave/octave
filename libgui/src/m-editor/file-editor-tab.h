@@ -123,7 +123,8 @@ public slots:
 signals:
 
   void file_name_changed (const QString& fileName, const QString& toolTip);
-  void editor_state_changed (bool copy_available, const QString& fileName);
+  void editor_state_changed (bool copy_available, const QString& fileName,
+                             bool is_octave_file);
   void tab_remove_request ();
   void add_filename_to_list (const QString&, QWidget *);
   void mru_add_file (const QString& file_name);
@@ -217,6 +218,7 @@ private:
   bool _long_title;
   bool _copy_available;
   bool _app_closing;
+  bool _is_octave_file;
 
   QFileSystemWatcher _file_system_watcher;
 

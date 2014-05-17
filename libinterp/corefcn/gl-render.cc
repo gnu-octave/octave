@@ -3006,30 +3006,30 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
     {
     case '+':
       glBegin (GL_LINES);
-      glVertex2f (-sz/2, 0);
-      glVertex2f (sz/2, 0);
-      glVertex2f (0, -sz/2);
-      glVertex2f (0, sz/2);
+      glVertex2d (-sz/2, 0);
+      glVertex2d (sz/2, 0);
+      glVertex2d (0, -sz/2);
+      glVertex2d (0, sz/2);
       glEnd ();
       break;
     case 'x':
       glBegin (GL_LINES);
-      glVertex2f (-sz/2, -sz/2);
-      glVertex2f (sz/2, sz/2);
-      glVertex2f (-sz/2, sz/2);
-      glVertex2f (sz/2, -sz/2);
+      glVertex2d (-sz/2, -sz/2);
+      glVertex2d (sz/2, sz/2);
+      glVertex2d (-sz/2, sz/2);
+      glVertex2d (sz/2, -sz/2);
       glEnd ();
       break;
     case '*':
       glBegin (GL_LINES);
-      glVertex2f (-sz/2, 0);
-      glVertex2f (sz/2, 0);
-      glVertex2f (0, -sz/2);
-      glVertex2f (0, sz/2);
-      glVertex2f (-tt, -tt);
-      glVertex2f (+tt, +tt);
-      glVertex2f (-tt, +tt);
-      glVertex2f (+tt, -tt);
+      glVertex2d (-sz/2, 0);
+      glVertex2d (sz/2, 0);
+      glVertex2d (0, -sz/2);
+      glVertex2d (0, sz/2);
+      glVertex2d (-tt, -tt);
+      glVertex2d (+tt, +tt);
+      glVertex2d (-tt, +tt);
+      glVertex2d (+tt, -tt);
       glEnd ();
       break;
     case '.':
@@ -3070,30 +3070,30 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       break;
     case 'v':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (0, sz/2);
-      glVertex2f (sz/2, -sz/2);
-      glVertex2f (-sz/2, -sz/2);
+      glVertex2d (0, sz/2);
+      glVertex2d (sz/2, -sz/2);
+      glVertex2d (-sz/2, -sz/2);
       glEnd ();
       break;
     case '^':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (0, -sz/2);
-      glVertex2f (-sz/2, sz/2);
-      glVertex2f (sz/2, sz/2);
+      glVertex2d (0, -sz/2);
+      glVertex2d (-sz/2, sz/2);
+      glVertex2d (sz/2, sz/2);
       glEnd ();
       break;
     case '>':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (sz/2, 0);
-      glVertex2f (-sz/2, sz/2);
-      glVertex2f (-sz/2, -sz/2);
+      glVertex2d (sz/2, 0);
+      glVertex2d (-sz/2, sz/2);
+      glVertex2d (-sz/2, -sz/2);
       glEnd ();
       break;
     case '<':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-      glVertex2f (-sz/2, 0);
-      glVertex2f (sz/2, -sz/2);
-      glVertex2f (sz/2, sz/2);
+      glVertex2d (-sz/2, 0);
+      glVertex2d (sz/2, -sz/2);
+      glVertex2d (sz/2, sz/2);
       glEnd ();
       break;
     case 'p':

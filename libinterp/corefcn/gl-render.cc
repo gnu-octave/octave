@@ -401,7 +401,7 @@ class
 opengl_renderer::patch_tesselator : public opengl_tesselator
 {
 public:
-  patch_tesselator (opengl_renderer *r, int cmode, int lmode, int idx = 0)
+  patch_tesselator (opengl_renderer *r, int cmode, int lmode, float idx = 0.0)
     : opengl_tesselator (), renderer (r),
       color_mode (cmode), light_mode (lmode), index (idx),
       first (true), tmp_vdata ()
@@ -419,7 +419,7 @@ protected:
       glShadeModel (GL_FLAT);
 
     if (is_filled ())
-      renderer->set_polygon_offset (true, 1+index);
+      renderer->set_polygon_offset (true, index);
 
     glBegin (type);
   }
@@ -437,9 +437,8 @@ protected:
       = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
     //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
-    // NOTE: OpenGL can re-order vertices so "first" is basically meaningless
-    // in this callback routine.  For "flat" coloring of FaceColor the first
-    // vertex must be identified in the draw_patch routine.
+    // NOTE: OpenGL can re-order vertices.  For "flat" coloring of FaceColor
+    // the first vertex must be identified in the draw_patch routine.
 
     if (color_mode == 2 || (color_mode == 1 && ! is_filled ()))
       {
@@ -2338,11 +2337,11 @@ opengl_renderer::draw_patch (const patch::properties &props)
           if (fl_mode > 0)
             glEnable (GL_LIGHTING);
 
-          // FIXME: use __index__ property from patch object
-          // -1.25 chosen to provide sufficient Z-offset for
-          // 'layer' property of 2-D plots and not to provoke
-          // Z-fighting with tesselator outline.
-          patch_tesselator tess (this, fc_mode, fl_mode, -1.25);
+          // NOTE: Push filled part of patch backwards to avoid Z-fighting with
+          // tesselator outline.  A value of 1.0 seems to work fine.  Value
+          // can't be too large or the patch will be pushed below the axes
+          // planes at +2.5.
+          patch_tesselator tess (this, fc_mode, fl_mode, 1.0);
 
           for (int i = 0; i < nf; i++)
             {
@@ -2431,9 +2430,11 @@ opengl_renderer::draw_patch (const patch::properties &props)
           set_linestyle (props.get_linestyle (), false);
           set_linewidth (props.get_linewidth ());
 
-
-          // FIXME: use __index__ property from patch object;
-          //        should we offset patch contour as well?
+          // NOTE: patch contour cannot be offset.  Offset must occur with the
+          // filled portion of the patch above.  The tesselator uses
+          // GLU_TESS_BOUNDARY_ONLY to get the outline of the patch and OpenGL
+          // automatically sets the glType to GL_LINE_LOOP.  This primitive is
+          // not supported by glPolygonOffset which is used to do Z offsets. 
           patch_tesselator tess (this, ec_mode, el_mode);
 
           for (int i = 0; i < nf; i++)
@@ -2819,13 +2820,13 @@ opengl_renderer::set_font (const base_properties& props)
 }
 
 void
-opengl_renderer::set_polygon_offset (bool on, double offset)
+opengl_renderer::set_polygon_offset (bool on, float offset)
 {
   if (on)
     {
-      glPolygonOffset (offset, offset);
       glEnable (GL_POLYGON_OFFSET_FILL);
       glEnable (GL_POLYGON_OFFSET_LINE);
+      glPolygonOffset (offset, offset);
     }
   else
     {

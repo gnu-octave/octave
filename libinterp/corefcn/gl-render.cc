@@ -622,7 +622,17 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
   if (enhanced)
     {
       glEnable (GL_BLEND);
-      glEnable (GL_LINE_SMOOTH);
+      glEnable (GL_MULTISAMPLE);
+      GLint iMultiSample, iNumSamples;
+      glGetIntegerv (GL_SAMPLE_BUFFERS, &iMultiSample);
+      glGetIntegerv (GL_SAMPLES, &iNumSamples);
+      if (iMultiSample != GL_TRUE || iNumSamples == 0)
+        {
+          // MultiSample not implemented.  Use old-style anti-aliasing
+          glDisable (GL_MULTISAMPLE);
+          glEnable (GL_LINE_SMOOTH);
+          glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
+        }
     }
   else
     {
@@ -816,8 +826,6 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
   glMatrixMode (GL_MODELVIEW);
 
   glClear (GL_DEPTH_BUFFER_BIT);
-
-  glDisable (GL_LINE_SMOOTH);
 
   // store axes transformation data
 
@@ -1340,12 +1348,6 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 {
   // Children
 
-  GLboolean antialias;
-  glGetBooleanv (GL_LINE_SMOOTH, &antialias);
-
-  if (antialias == GL_TRUE)
-    glEnable (GL_LINE_SMOOTH);
-
   Matrix children = props.get_all_children ();
   std::list<graphics_object> obj_list;
   std::list<graphics_object>::iterator it;
@@ -1429,6 +1431,12 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   setup_opengl_transformation (props);
 
+  // Disable line smoothing for axes 
+  GLboolean antialias;
+  glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+  if (antialias == GL_TRUE)
+    glDisable (GL_LINE_SMOOTH);
+
   // draw axes object
 
   draw_axes_planes (props);
@@ -1443,6 +1451,10 @@ opengl_renderer::draw_axes (const axes::properties& props)
   set_linestyle ("-");
 
   set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
+
+  // Re-enable line smoothing for children
+  if (antialias == GL_TRUE)
+    glEnable (GL_LINE_SMOOTH);
 
   draw_axes_children (props);
 }

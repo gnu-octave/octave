@@ -37,6 +37,28 @@ along with Octave; see the file COPYING.  If not, see
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
+// Use symbolic names for axes
+enum {
+  X_AXIS,
+  Y_AXIS,
+  Z_AXIS
+};
+
+// Use symbolic names for color mode
+enum {
+  UNIFORM,
+  FLAT,
+  INTERP,
+  TEXTURE
+};
+
+// Use symbolic names for lighting
+enum {
+  NONE,
+  //FLAT,  // Already declared in anonymous enum for color mode
+  GOURAUD = 2
+};
+
 // Win32 API requires the CALLBACK attributes for
 // GLU callback functions. Define it to empty on
 // other platforms.
@@ -413,7 +435,7 @@ protected:
     //printf ("patch_tesselator::begin (%d)\n", type);
     first = true;
 
-    if (color_mode == 2 || light_mode == 2)
+    if (color_mode == INTERP || light_mode == GOURAUD)
       glShadeModel (GL_SMOOTH);
     else
       glShadeModel (GL_FLAT);
@@ -440,7 +462,7 @@ protected:
     // NOTE: OpenGL can re-order vertices.  For "flat" coloring of FaceColor
     // the first vertex must be identified in the draw_patch routine.
 
-    if (color_mode == 2 || (color_mode == 1 && ! is_filled ()))
+    if (color_mode == INTERP || (color_mode == FLAT && ! is_filled ()))
       {
         Matrix col = v->color;
 
@@ -462,7 +484,7 @@ protected:
           }
       }
 
-    if (light_mode > 0 && (first || light_mode == 2))
+    if (light_mode > 0 && (first || light_mode == GOURAUD))
       glNormal3dv (v->normal.data ());
 
     glVertex3dv (v->coords.data ());
@@ -528,8 +550,8 @@ private:
   patch_tesselator& operator = (const patch_tesselator&);
 
   opengl_renderer *renderer;
-  int color_mode;       // 0: uni,  1: flat, 2: interp
-  int light_mode;       // 0: none, 1: flat, 2: gouraud
+  int color_mode;
+  int light_mode;
   int index;
   bool first;
   std::list<vertex_data> tmp_vdata;
@@ -662,7 +684,7 @@ opengl_renderer::render_grid (const std::string& gridstyle,
       double val = ticks(i);
       if (lim1 <= val && val <= lim2)
         {
-          if (xyz == 0) // X
+          if (xyz == X_AXIS)
             {
               glVertex3d (val, p1N, p2);
               glVertex3d (val, p1, p2);
@@ -672,7 +694,7 @@ opengl_renderer::render_grid (const std::string& gridstyle,
                   glVertex3d (val, p1, p2);
                 }
             }
-          else if (xyz == 1) // Y
+          else if (xyz == Y_AXIS)
             {
               glVertex3d (p1N, val, p2);
               glVertex3d (p1, val, p2);
@@ -682,7 +704,7 @@ opengl_renderer::render_grid (const std::string& gridstyle,
                   glVertex3d (p1, val, p2);
                 }
             }
-          else if (xyz == 2) // Z
+          else if (xyz == Z_AXIS)
             {
               glVertex3d (p1N, p2, val);
               glVertex3d (p1, p2, val);
@@ -711,7 +733,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
 
       if (lim1 <= val && val <= lim2)
         {
-          if (xyz == 0) // X
+          if (xyz == X_AXIS)
             {
               glVertex3d (val, p1, p2);
               glVertex3d (val, p1+dy, p2+dz);
@@ -721,7 +743,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
                   glVertex3d (val, p1N-dy, p2N-dz);
                 }
             }
-          else if (xyz == 1) // Y
+          else if (xyz == Y_AXIS)
             {
               glVertex3d (p1, val, p2);
               glVertex3d (p1+dx, val, p2+dz);
@@ -731,7 +753,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
                   glVertex3d (p1N-dx, val, p2N-dz);
                 }
             }
-          else if (xyz == 2) // Z
+          else if (xyz == Z_AXIS)
             {
               glVertex3d (p1, p2, val);
               glVertex3d (p1+dx, p2+dy, val);
@@ -775,15 +797,15 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
 
           // FIXME: As tick text is transparent, shouldn't it be
           //        drawn after axes object, for correct rendering?
-          if (xyz == 0) // X
+          if (xyz == X_AXIS)
             {
               b = render_text (label, val, p1, p2, ha, va);
             }
-          else if (xyz == 1) // Y
+          else if (xyz == Y_AXIS)
             {
               b = render_text (label, p1, val, p2, ha, va);
             }
-          else if (xyz == 2) // Z
+          else if (xyz == Z_AXIS)
             {
               b = render_text (label, p1, p2, val, ha, va);
             }
@@ -1618,8 +1640,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
   int ea_mode = (props.edgealpha_is_double () ? 0 :
                  (props.edgealpha_is ("flat") ? 1 : 2));
 
-  Matrix fcolor = (fc_mode == 3 ? Matrix (1, 3, 1.0)
-                                : props.get_facecolor_rgb ());
+  Matrix fcolor = (fc_mode == TEXTURE ? Matrix (1, 3, 1.0)
+                                      : props.get_facecolor_rgb ());
   Matrix ecolor = props.get_edgecolor_rgb ();
 
   float as = props.get_ambientstrength ();
@@ -1672,14 +1694,14 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
   // FIXME: good candidate for caching,
   //        transferring pixel data to OpenGL is time consuming.
-  if (fc_mode == 3)
+  if (fc_mode == TEXTURE)
     tex = opengl_texture::create (props.get_color_data ());
 
   if (! props.facecolor_is ("none"))
     {
       if (props.get_facealpha_double () == 1)
         {
-          if (fc_mode == 0 || fc_mode == 3)
+          if (fc_mode == UNIFORM || fc_mode == TEXTURE)
             {
               glColor3dv (fcolor.data ());
               if (fl_mode > 0)
@@ -1696,9 +1718,10 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
           if (fl_mode > 0)
             glEnable (GL_LIGHTING);
-          glShadeModel ((fc_mode == 2 || fl_mode == 2) ? GL_SMOOTH : GL_FLAT);
+          glShadeModel ((fc_mode == INTERP || fl_mode == GOURAUD) ? GL_SMOOTH
+                                                                  : GL_FLAT);
           set_polygon_offset (true, 1);
-          if (fc_mode == 3)
+          if (fc_mode == TEXTURE)
             glEnable (GL_TEXTURE_2D);
 
           for (int i = 1; i < zc; i++)
@@ -1716,13 +1739,13 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       || clip(j-1, i) || clip(j, i))
                     continue;
 
-                  if (fc_mode == 1)
+                  if (fc_mode == FLAT)
                     {
                       // "flat" only needs color at lower-left vertex
                       if (! xfinite (c(j-1,i-1)))
                         continue;
                     }
-                  else if (fc_mode == 2)
+                  else if (fc_mode == INTERP)
                     {
                       // "interp" needs valid color at all 4 vertices
                       if (! (xfinite (c(j-1, i-1)) && xfinite (c(j, i-1))
@@ -1739,7 +1762,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   glBegin (GL_QUADS);
 
                   // Vertex 1
-                  if (fc_mode == 3)
+                  if (fc_mode == TEXTURE)
                     tex.tex_coord (double (i-1) / (zc-1),
                                    double (j-1) / (zr-1));
                   else if (fc_mode > 0)
@@ -1772,9 +1795,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
 
                   // Vertex 2
-                  if (fc_mode == 3)
+                  if (fc_mode == TEXTURE)
                     tex.tex_coord (double (i) / (zc-1), double (j-1) / (zr-1));
-                  else if (fc_mode == 2)
+                  else if (fc_mode == INTERP)
                     {
                       for (int k = 0; k < 3; k++)
                         cb[k] = c(j-1, i, k);
@@ -1792,7 +1815,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                         }
                     }
 
-                  if (fl_mode == 2)
+                  if (fl_mode == GOURAUD)
                     {
                       d = sqrt (n(j-1,i,0) * n(j-1,i,0)
                                 + n(j-1,i,1) * n(j-1,i,1)
@@ -1803,9 +1826,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
                   // Vertex 3
-                  if (fc_mode == 3)
+                  if (fc_mode == TEXTURE)
                     tex.tex_coord (double (i) / (zc-1), double (j) / (zr-1));
-                  else if (fc_mode == 2)
+                  else if (fc_mode == INTERP)
                     {
                       for (int k = 0; k < 3; k++)
                         cb[k] = c(j, i, k);
@@ -1822,7 +1845,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
                         }
                     }
-                  if (fl_mode == 2)
+                  if (fl_mode == GOURAUD)
                     {
                       d = sqrt (n(j,i,0) * n(j,i,0)
                                 + n(j,i,1) * n(j,i,1)
@@ -1832,9 +1855,9 @@ opengl_renderer::draw_surface (const surface::properties& props)
                   glVertex3d (x(j2,i), y(j,i2), z(j,i));
 
                   // Vertex 4
-                  if (fc_mode == 3)
+                  if (fc_mode == TEXTURE)
                     tex.tex_coord (double (i-1) / (zc-1), double (j) / (zr-1));
-                  else if (fc_mode == 2)
+                  else if (fc_mode == INTERP)
                     {
                       for (int k = 0; k < 3; k++)
                         cb[k] = c(j, i-1, k);
@@ -1851,7 +1874,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                           glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
                         }
                     }
-                  if (fl_mode == 2)
+                  if (fl_mode == GOURAUD)
                     {
                       d = sqrt (n(j,i-1,0) * n(j,i-1,0)
                                 + n(j,i-1,1) * n(j,i-1,1)
@@ -1865,7 +1888,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
             }
 
           set_polygon_offset (false);
-          if (fc_mode == 3)
+          if (fc_mode == TEXTURE)
             glDisable (GL_TEXTURE_2D);
 
           if (fl_mode > 0)
@@ -1881,7 +1904,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
     {
       if (props.get_edgealpha_double () == 1)
         {
-          if (ec_mode == 0)
+          if (ec_mode == UNIFORM)
             {
               glColor3dv (ecolor.data ());
               if (fl_mode > 0)
@@ -1898,7 +1921,8 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
           if (el_mode > 0)
             glEnable (GL_LIGHTING);
-          glShadeModel ((ec_mode == 2 || el_mode == 2) ? GL_SMOOTH : GL_FLAT);
+          glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD) ? GL_SMOOTH
+                                                                  : GL_FLAT);
 
           set_linestyle (props.get_linestyle (), false);
           set_linewidth (props.get_linewidth ());
@@ -1920,13 +1944,13 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       if (clip(j-1,i) || clip(j,i))
                         continue;
 
-                      if (ec_mode == 1)
+                      if (ec_mode == FLAT)
                         {
                           // "flat" only needs color at lower-left vertex
                           if (! xfinite (c(j-1,i)))
                             continue;
                         }
-                      else if (ec_mode == 2)
+                      else if (ec_mode == INTERP)
                         {
                           // "interp" needs valid color at both vertices
                           if (! (xfinite (c(j-1, i)) && xfinite (c(j, i))))
@@ -1969,7 +1993,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
 
                       // Vertex 2
-                      if (ec_mode == 2)
+                      if (ec_mode == INTERP)
                         {
                           for (int k = 0; k < 3; k++)
                             cb[k] = c(j, i, k);
@@ -1986,7 +2010,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
                             }
                         }
-                      if (el_mode == 2)
+                      if (el_mode == GOURAUD)
                         {
                           d = sqrt (n(j,i,0) * n(j,i,0)
                                     + n(j,i,1) * n(j,i,1)
@@ -2017,13 +2041,13 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       if (clip(j,i-1) || clip(j,i))
                         continue;
 
-                      if (ec_mode == 1)
+                      if (ec_mode == FLAT)
                         {
                           // "flat" only needs color at lower-left vertex
                           if (! xfinite (c(j,i-1)))
                             continue;
                         }
-                      else if (ec_mode == 2)
+                      else if (ec_mode == INTERP)
                         {
                           // "interp" needs valid color at both vertices
                           if (! (xfinite (c(j, i-1)) && xfinite (c(j, i))))
@@ -2066,7 +2090,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                       glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
 
                       // Vertex 2
-                      if (ec_mode == 2)
+                      if (ec_mode == INTERP)
                         {
                           for (int k = 0; k < 3; k++)
                             cb[k] = c(j, i, k);
@@ -2083,7 +2107,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
                               glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
                             }
                         }
-                      if (el_mode == 2)
+                      if (el_mode == GOURAUD)
                         {
                           d = sqrt (n(j,i,0) * n(j,i,0)
                                     + n(j,i,1) * n(j,i,1)
@@ -2257,13 +2281,13 @@ opengl_renderer::draw_patch (const patch::properties &props)
           if (fc_mode > 0)
             {
               fcolor = c;
-              fc_mode = 0;
+              fc_mode = UNIFORM;
             }
 
           if (ec_mode > 0)
             {
               ecolor = c;
-              ec_mode = 0;
+              ec_mode = UNIFORM;
             }
 
           c = Matrix ();
@@ -2329,7 +2353,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
       // FIXME: adapt to double-radio property
       if (props.get_facealpha_double () == 1)
         {
-          if (fc_mode == 0)
+          if (fc_mode == UNIFORM)
             {
               glColor3dv (fcolor.data ());
               if (fl_mode > 0)
@@ -2375,7 +2399,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
                 {
                   vertex_data::vertex_data_rep *vv = vdata[i].get_rep ();
 
-                  if (fc_mode == 1)
+                  if (fc_mode == FLAT)
                     {
                       // For "flat" shading, use color of 1st vertex.
                       Matrix col = vv->color;
@@ -2419,7 +2443,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
       // FIXME: adapt to double-radio property
       if (props.get_edgealpha_double () == 1)
         {
-          if (ec_mode == 0)
+          if (ec_mode == UNIFORM)
             {
               glColor3dv (ecolor.data ());
               if (el_mode > 0)

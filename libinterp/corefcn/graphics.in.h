@@ -3349,8 +3349,8 @@ public:
       bool_property numbertitle , "on"
       array_property outerposition s , Matrix (1, 4, -1.0)
       radio_property paperorientation U , "{portrait}|landscape|rotated"
-      array_property paperposition , default_figure_paperposition ()
-      radio_property paperpositionmode , "auto|{manual}"
+      array_property paperposition m , default_figure_paperposition ()
+      radio_property paperpositionmode au , "auto|{manual}"
       array_property papersize U , default_figure_papersize ()
       radio_property papertype SU , "{usletter}|uslegal|a0|a1|a2|a3|a4|a5|b0|b1|b2|b3|b4|b5|arch-a|arch-b|arch-c|arch-d|arch-e|a|b|c|d|e|tabloid|<custom>"
       radio_property paperunits Su , "{inches}|centimeters|normalized|points"
@@ -3397,7 +3397,15 @@ public:
       position.add_constraint (dim_vector (1, 4));
     }
 
-  private:
+  private:    
+    Matrix get_auto_paperposition (void);
+
+    void update_paperpositionmode (void)
+    {
+      if (paperpositionmode.is ("auto"))
+        paperposition.set (get_auto_paperposition ());
+    }
+
     mutable graphics_toolkit toolkit;
   };
 

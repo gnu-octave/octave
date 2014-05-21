@@ -3743,6 +3743,9 @@ figure::properties::set_position (const octave_value& v,
           position.run_listeners (POSTSET);
           mark_modified ();
         }
+      
+      if (paperpositionmode.is ("auto"))
+        paperposition.set (get_auto_paperposition ());
     }
 }
 
@@ -3962,6 +3965,83 @@ papersize_from_type (const caseless_str punits, const caseless_str typ)
   return ret;
 }
 
+
+Matrix
+figure::properties::get_auto_paperposition (void)
+{
+  Matrix pos = get_position ().matrix_value ();
+  Matrix sz;
+  
+  caseless_str funits = get_units ();
+  caseless_str punits = get_paperunits ();
+
+  // Convert position from figure units to paperunits 
+  if (funits == "normalized" || punits == "normalized")
+    {
+      sz = screen_size_pixels ();
+      pos = convert_position (pos, funits, "inches", sz);
+
+      if (punits == "normalized")
+        sz = papersize_from_type ("points", get_papertype ());
+
+      pos = convert_position (pos, "inches", punits, sz);
+    }
+  else
+    pos = convert_position (pos, funits, punits, sz);
+
+  // Center the figure on the page
+  sz = get_papersize ().matrix_value ();
+
+  pos(0) = sz(0)/2 - pos(2)/2;
+  pos(1) = sz(1)/2 - pos(3)/2;
+
+  return pos;
+}
+
+/*
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ## paperpositionmode "auto" converts figure size to paper units 
+%!   set (hf, "units", "inches");
+%!   set (hf, "position", [0 0 4 5]);
+%!   set (hf, "paperunits", "centimeters");
+%!   psz = get (hf, "papersize");
+%!   fsz = [10.16 12.7];
+%!   pos = [(psz/2 .- fsz/2) fsz];  
+%!   set (hf, "paperpositionmode", "auto");
+%!   assert (get (hf, "paperposition"), pos)
+%!   
+%!   ## likewise with normalized units 
+%!   set (hf, "paperunits", "normalized");
+%!   fsz = [10.16 12.7]./psz;
+%!   pos = [([0.5 0.5] .- fsz/2) fsz];  
+%!   assert (get (hf, "paperposition"), pos)
+%!   
+%!   ## changing papertype updates paperposition 
+%!   set (hf, "paperunits", "centimeters");
+%!   set  (hf, "papertype", "a4");
+%!   psz = get (hf, "papersize");
+%!   fsz = [10.16 12.7];
+%!   pos = [(psz/2 .- fsz/2) fsz];  
+%!   assert (get (hf, "paperposition"), pos)
+%!
+%!   ## lanscape updates paperposition
+%!   set (hf, "paperorientation", "landscape");
+%!   psz = get (hf, "papersize");
+%!   fsz = [10.16 12.7];
+%!   pos = [(psz/2 .- fsz/2) fsz];  
+%!   assert (get (hf, "paperposition"), pos)
+%!   
+%!   ## back to manual mode
+%!   set (hf, "paperposition", pos+eps)
+%!   assert (get (hf, "paperpositionmode"), "manual")
+%!   assert (get (hf, "paperposition"), pos + eps)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
+
 void
 figure::properties::update_paperunits (const caseless_str& old_paperunits)
 {
@@ -4030,6 +4110,9 @@ figure::properties::update_papertype (void)
       // between update_papersize and update_papertype
       papersize.set (octave_value (sz));
     }
+
+  if (paperpositionmode.is ("auto"))
+    paperposition.set (get_auto_paperposition ());
 }
 
 void
@@ -4162,6 +4245,9 @@ figure::properties::update_papersize (void)
       std::swap (sz(0), sz(1));
       papersize.set (octave_value (sz));
     }
+
+  if (paperpositionmode.is ("auto"))
+    paperposition.set (get_auto_paperposition ());
 }
 
 /*
@@ -4213,6 +4299,9 @@ figure::properties::update_paperorientation (void)
       papersize.set (octave_value (sz));
       paperposition.set (octave_value (pos));
     }
+
+  if (paperpositionmode.is ("auto"))
+    paperposition.set (get_auto_paperposition ());
 }
 
 /*

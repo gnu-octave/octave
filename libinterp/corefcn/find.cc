@@ -88,9 +88,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 {
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
-
-  octave_idx_type nc = v.cols ();
   octave_idx_type nr = v.rows ();
+  octave_idx_type nc = v.cols ();
   octave_idx_type nz = v.nnz ();
 
   // Search in the default range.
@@ -138,21 +137,20 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
   count = (n_to_find > v.cidx (end_nc) - v.cidx (start_nc) ?
            v.cidx (end_nc) - v.cidx (start_nc) : n_to_find);
 
-  // If the original argument was a row vector, force a row vector of
-  // the overall indices to be returned.  But see below for scalar
-  // case...
+  octave_idx_type result_nr;
+  octave_idx_type result_nc;
 
-  octave_idx_type result_nr = count;
-  octave_idx_type result_nc = 1;
-
-  bool scalar_arg = false;
-
-  if (v.rows () == 1)
+  // Default case is to return a column vector, however, if the original
+  // argument was a row vector, then force return of a row vector.
+  if (nr == 1)
     {
       result_nr = 1;
       result_nc = count;
-
-      scalar_arg = (v.columns () == 1);
+    }
+  else
+    {
+      result_nr = count;
+      result_nc = 1;
     }
 
   Matrix idx (result_nr, result_nc);
@@ -164,9 +162,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
 
   if (count > 0)
     {
-      // Search for elements to return.  Only search the region where
-      // there are elements to be found using the count that we want
-      // to find.
+      // Search for elements to return.  Only search the region where there
+      // are elements to be found using the count that we want to find.
       for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
         for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++ )
           {
@@ -182,14 +179,19 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
               break;
           }
     }
-  else if (scalar_arg)
+  else
     {
-      idx.resize (0, 0);
+      // No items found.  Fixup return dimensions for Matlab compatibility.
+      // The behavior to match is documented in Array.cc (Array<T>::find).
+      if ((nr == 0 && nc == 0) || nr == 1 & nc == 1)
+        {
+          idx.resize (0, 0);
 
-      i_idx.resize (0, 0);
-      j_idx.resize (0, 0);
+          i_idx.resize (0, 0);
+          j_idx.resize (0, 0);
 
-      val.resize (dim_vector (0, 0));
+          val.resize (dim_vector (0, 0));
+        }
     }
 
   switch (nargout)
@@ -231,6 +233,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   // There are far fewer special cases to handle for a PermMatrix.
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
+  octave_idx_type nr = v.rows ();
   octave_idx_type nc = v.cols ();
   octave_idx_type start_nc, count;
 
@@ -251,8 +254,6 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
       start_nc = nc - n_to_find;
       count = n_to_find;
     }
-
-  bool scalar_arg = (v.rows () == 1 && v.cols () == 1);
 
   Matrix idx (count, 1);
   Matrix i_idx (count, 1);
@@ -291,13 +292,22 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
             }
         }
     }
-  else if (scalar_arg)
+  else
     {
-      // Same odd compatibility case as the other overrides.
-      idx.resize (0, 0);
-      i_idx.resize (0, 0);
-      j_idx.resize (0, 0);
-      val.resize (dim_vector (0, 0));
+      // FIXME: Is this case even possible?  A scalar permutation matrix seems to devolve
+      //        to a scalar full matrix, at least from the Octave command line.  Perhaps
+      //        this function could be called internally from C++ with such a matrix.
+      // No items found.  Fixup return dimensions for Matlab compatibility.
+      // The behavior to match is documented in Array.cc (Array<T>::find).
+      if ((nr == 0 && nc == 0) || nr == 1 & nc == 1)
+        {
+          idx.resize (0, 0);
+
+          i_idx.resize (0, 0);
+          j_idx.resize (0, 0);
+
+          val.resize (dim_vector (0, 0));
+        }
     }
 
   switch (nargout)

@@ -3291,17 +3291,16 @@ complex ([1, 2], [3, 4])\n\
                     result = Complex (0, 1) * SparseComplexMatrix (im_val);
                   else
                     {
-                      result = SparseComplexMatrix (im_val.dims (), re_val (0));
                       octave_idx_type nr = im_val.rows ();
                       octave_idx_type nc = im_val.cols ();
+                      result = SparseComplexMatrix (nr, nc, re_val(0));
 
                       for (octave_idx_type j = 0; j < nc; j++)
                         {
                           octave_idx_type off = j * nr;
                           for (octave_idx_type i = im_val.cidx (j);
                                i < im_val.cidx (j + 1); i++)
-                            result.data (im_val.ridx (i) + off) =
-                              result.data (im_val.ridx (i) + off) +
+                            result.data (im_val.ridx (i) + off) +=
                               Complex (0, im_val.data (i));
                         }
                     }
@@ -3314,19 +3313,17 @@ complex ([1, 2], [3, 4])\n\
                     result = SparseComplexMatrix (re_val);
                   else
                     {
-                      result = SparseComplexMatrix (re_val.rows (),
-                                                    re_val.cols (),
-                                                    Complex (0, im_val (0)));
                       octave_idx_type nr = re_val.rows ();
                       octave_idx_type nc = re_val.cols ();
+                      result = SparseComplexMatrix (nr, nc,
+                                                    Complex (0, im_val(0)));
 
                       for (octave_idx_type j = 0; j < nc; j++)
                         {
                           octave_idx_type off = j * nr;
                           for (octave_idx_type i = re_val.cidx (j);
                                i < re_val.cidx (j + 1); i++)
-                            result.data (re_val.ridx (i) + off) =
-                              result.data (re_val.ridx (i) + off) +
+                            result.data (re_val.ridx (i) + off) +=
                               re_val.data (i);
                         }
                     }

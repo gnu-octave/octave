@@ -9721,15 +9721,16 @@ object, whether 2 or 3.\n\
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ();
-
-  double h = args(0).double_value ();
-
-  if (! error_state)
-    retval = calc_dimensions (gh_manager::get_object (h));
+  if (nargin == 1)
+    {
+      double h = args(0).double_value ();
+      if (! error_state)
+        retval = calc_dimensions (gh_manager::get_object (h));
+      else
+        error ("__calc_dimensions__: expecting graphics handle as only argument");
+    }
   else
-    error ("__calc_dimensions__: expecting graphics handle as only argument");
+    print_usage ();
 
   return retval;
 }

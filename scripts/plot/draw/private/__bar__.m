@@ -120,13 +120,17 @@ function varargout = __bar__ (vertical, func, varargin)
 
   nbars = columns (y);
 
-  ## Column width is 1 for 'hist*' styles.  Otherwise, same as group width.
-  if (nbars == 1)
+  ## Column width is 1 for 'hist*' styles (bars touch).
+  if (islogical (histc))
+    cwidth = 1;
+    if (nbars == 1)
+      gwidth = 1;
+    else
+      gwidth = width^2;
+    endif
+  elseif (nbars == 1)
     cwidth = 1;
     gwidth = width;
-  elseif (islogical (histc))
-    cwidth = 1;
-    gwidth = width^2;
   else
     cwidth = gwidth = width;
   endif

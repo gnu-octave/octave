@@ -1,17 +1,18 @@
 To cite GNU Octave in publications use:
 
-  John W. Eaton, David Bateman, and Søren Hauberg (2009).  GNU Octave version
-  3.0.1 manual: a high-level interactive language for numerical computations.
+  John W. Eaton, David Bateman, Søren Hauberg, Rik Wehbring (2014).
+  GNU Octave version 3.8.1 manual: a high-level interactive language for
+  numerical computations.
   CreateSpace Independent Publishing Platform.  ISBN 1441413006,
   URL http://www.gnu.org/software/octave/doc/interpreter/
 
 A BibTeX entry for LaTeX users is:
 
   @book{,
-    author    = {John W. Eaton and David Bateman and S\oren Hauberg},
-    title     = {{GNU Octave} version 3.0.1 manual: a high-level interactive language for numerical computations},
+    author    = {John W. Eaton, David Bateman, S\oren Hauberg, and Rik Wehbring},
+    title     = {{GNU Octave} version 3.8.1 manual: a high-level interactive language for numerical computations},
     publisher = {CreateSpace Independent Publishing Platform},
-    year      = {2009},
+    year      = {2014},
     note      = {{ISBN} 1441413006},
     url       = {http://www.gnu.org/software/octave/doc/interpreter},
   }

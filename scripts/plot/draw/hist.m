@@ -157,7 +157,7 @@ function [nn, xx] = hist (varargin)
   if (nargin > 2 && ! ischar (varargin{iarg}))
     ## Normalize the histogram.
     norm = varargin{iarg++};
-    freq *= norm / sum (! isnan (y));
+    freq = bsxfun (@times, freq, norm ./ sum (! isnan (y)));
   endif
 
   if (nargout > 0)
@@ -209,4 +209,6 @@ endfunction
 %! endfor
 %!assert (hist (1,1), 1)
 %!assert (size (hist (randn (750,240), 200)), [200,240])
-
+## Test bug #42394
+%!assert (isempty (hist (rand (10,2), 0:5, 1)), false)
+%!assert (isempty (hist (rand (10,2), 0:5, [1 1])), false)

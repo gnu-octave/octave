@@ -2,6 +2,8 @@ Things to do before making a release:
 
   * Update the version number and release date in configure.ac.
 
+  * Update version number and release year in CITATION.
+
   * Update the NEWS file.
 
   * Update the NEWS-<VERSION>.html, index.in, news.in, and download.in

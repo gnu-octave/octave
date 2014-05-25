@@ -341,6 +341,18 @@ ANY_INCLUDING_NL (.|{NL})
     return curr_lexer->show_token (INPUT_FILE);
   }
 
+<INPUT_FILE_START><<EOF>> {
+    curr_lexer->lexer_debug ("<INPUT_FILE_START><<EOF>>");
+
+    // May be reset later if we see "function" or "classdef" appears
+    // as the first token.
+    curr_lexer->reading_script_file = true;
+
+    curr_lexer->pop_start_state ();
+
+    return curr_lexer->show_token (INPUT_FILE);
+  }
+
 %{
 // Help and other command-style functions.
 %}

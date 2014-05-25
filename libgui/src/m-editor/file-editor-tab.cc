@@ -66,6 +66,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   QString directory = directory_arg;
   _lexer_apis = 0;
   _app_closing = false;
+  _is_octave_file = true;
 
   // Make sure there is a slash at the end of the directory name
   // for identification when saved later.
@@ -84,7 +85,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this,
            SLOT (execute_command_in_terminal (const QString&)));
 
-  connect (_edit_area, 
+  connect (_edit_area,
            SIGNAL (cursorPositionChanged (int, int)),
            this,
            SLOT (handle_cursor_moved (int,int)));
@@ -215,9 +216,9 @@ file_editor_tab::set_file_name (const QString& fileName)
   update_lexer ();
 
   // update the file editor with current editing directory
-  emit editor_state_changed (_copy_available, _file_name);
-  // add the new file to the mru list
+  emit editor_state_changed (_copy_available, _file_name, _is_octave_file);
 
+  // add the new file to the mru list
   emit mru_add_file (_file_name);
 }
 
@@ -270,6 +271,8 @@ file_editor_tab::update_lexer ()
   delete lexer;
   lexer = 0;
 
+  _is_octave_file = false;
+
   if (_file_name.endsWith (".m")
       || _file_name.endsWith ("octaverc"))
     {
@@ -278,6 +281,7 @@ file_editor_tab::update_lexer ()
 #elif defined (HAVE_LEXER_MATLAB)
       lexer = new QsciLexerMatlab ();
 #endif
+      _is_octave_file = true;
     }
 
   if (! lexer)
@@ -311,8 +315,10 @@ file_editor_tab::update_lexer ()
           // new, no yet named file: let us assume it is octave
 #if defined (HAVE_LEXER_OCTAVE)
           lexer = new QsciLexerOctave ();
+          _is_octave_file = true;
 #elif defined (HAVE_LEXER_MATLAB)
           lexer = new QsciLexerMatlab ();
+          _is_octave_file = true;
 #else
           lexer = new QsciLexerBash ();
 #endif
@@ -975,7 +981,8 @@ void
 file_editor_tab::handle_copy_available (bool enableCopy)
 {
   _copy_available = enableCopy;
-  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name));
+  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name),
+                             _is_octave_file);
 }
 
 // show_dialog: shows a modal or non modal dialog depeding on the closing
@@ -1510,7 +1517,8 @@ file_editor_tab::change_editor_state (const QWidget *ID)
       _find_dialog->show ();
     }
 
-  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name));
+  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name),
+                             _is_octave_file);
 }
 
 void

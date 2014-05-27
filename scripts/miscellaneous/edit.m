@@ -340,12 +340,19 @@ function ret = edit (varargin)
     ## If in gui-mode, create it before or editor would prompt again.
     fileandpath = file;
     idx = rindex (file, ".");
-    name = file(1:idx-1);
-    ext = file(idx+1:end);
+    if (idx)
+      name = file(1:idx-1);
+      ext = file(idx+1:end);
+    else
+      name = file;
+      ext = "";
+    endif
     if (! any (strcmp (ext, {"cc", "m"})))
       ## Some unknown file.  Create and open it or just open it.
-      ## Add .m file extension per default
-      fileandpath = [fileandpath ".m"];
+      keyboard;
+      if (isempty (ext))
+        fileandpath = [fileandpath ".m"];  # Add .m extension per default
+      endif
       if (isguirunning ())
         ## Write the initial file (if there is anything to write)
         ## Give user the opportunity to change the file extension

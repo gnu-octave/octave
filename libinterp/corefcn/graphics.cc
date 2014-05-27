@@ -4000,43 +4000,82 @@ figure::properties::get_auto_paperposition (void)
 
 /*
 %!test
-%! hf = figure ("visible", "off");
+%! hf = figure ("visible", "off", "paperpositionmode", "auto");
+%! in_pos = [0 0 4 5];
+%! tol = 20 * eps ();
 %! unwind_protect
 %!   ## paperpositionmode "auto" converts figure size to paper units 
 %!   set (hf, "units", "inches");
-%!   set (hf, "position", [0 0 4 5]);
+%!   set (hf, "position", in_pos);
 %!   set (hf, "paperunits", "centimeters");
 %!   psz = get (hf, "papersize");
-%!   fsz = [10.16 12.7];
+%!   fsz = in_pos(3:4) * 2.54;
 %!   pos = [(psz/2 .- fsz/2) fsz];  
 %!   set (hf, "paperpositionmode", "auto");
-%!   assert (get (hf, "paperposition"), pos)
-%!   
+%!   assert (get (hf, "paperposition"), pos, tol)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off", "paperpositionmode", "auto");
+%! in_pos = [0 0 4 5];
+%! tol = 20 * eps ();
+%! unwind_protect
 %!   ## likewise with normalized units 
+%!   set (hf, "units", "inches");
+%!   set (hf, "position", in_pos);
+%!   psz = get (hf, "papersize");
 %!   set (hf, "paperunits", "normalized");
-%!   fsz = [10.16 12.7]./psz;
+%!   fsz = in_pos(3:4) ./ psz;
 %!   pos = [([0.5 0.5] .- fsz/2) fsz];  
-%!   assert (get (hf, "paperposition"), pos)
-%!   
+%!   assert (get (hf, "paperposition"), pos, tol)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off", "paperpositionmode", "auto");
+%! in_pos = [0 0 4 5];
+%! tol = 20 * eps ();
+%! unwind_protect
 %!   ## changing papertype updates paperposition 
-%!   set (hf, "paperunits", "centimeters");
+%!   set (hf, "units", "inches");
+%!   set (hf, "position", in_pos);
 %!   set  (hf, "papertype", "a4");
 %!   psz = get (hf, "papersize");
-%!   fsz = [10.16 12.7];
+%!   fsz = in_pos(3:4);
 %!   pos = [(psz/2 .- fsz/2) fsz];  
-%!   assert (get (hf, "paperposition"), pos)
-%!
+%!   assert (get (hf, "paperposition"), pos, tol)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off", "paperpositionmode", "auto");
+%! in_pos = [0 0 4 5];
+%! tol = 20 * eps ();
+%! unwind_protect
 %!   ## lanscape updates paperposition
+%!   set (hf, "units", "inches");
+%!   set (hf, "position", in_pos);
 %!   set (hf, "paperorientation", "landscape");
 %!   psz = get (hf, "papersize");
-%!   fsz = [10.16 12.7];
+%!   fsz = in_pos(3:4);
 %!   pos = [(psz/2 .- fsz/2) fsz];  
-%!   assert (get (hf, "paperposition"), pos)
-%!   
+%!   assert (get (hf, "paperposition"), pos, tol)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off", "paperpositionmode", "auto");
+%! in_pos = [0 0 4 5];
+%! unwind_protect
 %!   ## back to manual mode
-%!   set (hf, "paperposition", pos+eps)
+%!   set (hf, "paperposition", in_pos * 1.1)
 %!   assert (get (hf, "paperpositionmode"), "manual")
-%!   assert (get (hf, "paperposition"), pos + eps)
+%!   assert (get (hf, "paperposition"), in_pos * 1.1)
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

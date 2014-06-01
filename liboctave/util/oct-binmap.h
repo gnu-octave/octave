@@ -263,70 +263,61 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
 
   T xzero = T ();
   R yzero = R ();
-
   U fz = fcn (xzero, yzero);
+
   if (fz == U ())
     {
-      // Sparsity-preserving function. Do it efficiently.
-      octave_idx_type nr = xs.rows (), nc = xs.cols ();
-      Sparse<T> retval (nr, nc);
+      // Sparsity-preserving function.  Do it efficiently.
+      octave_idx_type nr = xs.rows ();
+      octave_idx_type nc = xs.cols ();
+      Sparse<T> retval (nr, nc, xs.nnz () + ys.nnz ());
 
       octave_idx_type nz = 0;
-      // Count nonzeros.
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
-          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
-          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
-          while (ix != ux || iy != uy)
+
+          octave_idx_type jx = xs.cidx (j);
+          octave_idx_type jx_max = xs.cidx (j+1);
+          bool jx_lt_max = jx < jx_max;
+
+          octave_idx_type jy = ys.cidx (j);
+          octave_idx_type jy_max = ys.cidx (j+1);
+          bool jy_lt_max = jy < jy_max;
+
+          while (jx_lt_max || jy_lt_max)
             {
-              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
-              ix += rx <= ry;
-              iy += ry <= rx;
+              if (! jy_lt_max
+                  || (jx_lt_max && (xs.ridx (jx) < ys.ridx (jy))))
+                {
+                  retval.xridx (nz) = xs.ridx (jx);
+                  retval.xdata (nz) = fcn (xs.data (jx), yzero);
+                  jx++;
+                  jx_lt_max = jx < jx_max;
+                }
+              else if (! jx_lt_max ||
+                  (jy_lt_max && (ys.ridx (jy) < xs.ridx (jx))))
+                {
+                  retval.xridx (nz) = ys.ridx (jy);
+                  retval.xdata (nz) = fcn (xzero, ys.data (jy));
+                  jy++;
+                  jy_lt_max = jy < jy_max;
+                }
+              else
+                {
+                  retval.xridx (nz) = xs.ridx (jx);
+                  retval.xdata (nz) = fcn (xs.data (jx), ys.data (jy));
+                  jx++;
+                  jx_lt_max = jx < jx_max;
+                  jy++;
+                  jy_lt_max = jy < jy_max;
+                }
               nz++;
             }
-
           retval.xcidx (j+1) = nz;
         }
 
-      // Allocate space.
-      retval.change_capacity (retval.xcidx (nc));
-
-      // Fill.
-      nz = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          octave_quit ();
-          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
-          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
-          while (ix != ux || iy != uy)
-            {
-              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
-              if (rx == ry)
-                {
-                  retval.xridx (nz) = rx;
-                  retval.xdata (nz) = fcn (xs.data (ix), ys.data (iy));
-                  ix++;
-                  iy++;
-                }
-              else if (rx < ry)
-                {
-                  retval.xridx (nz) = rx;
-                  retval.xdata (nz) = fcn (xs.data (ix), yzero);
-                  ix++;
-                }
-              else if (ry < rx)
-                {
-                  retval.xridx (nz) = ry;
-                  retval.xdata (nz) = fcn (xzero, ys.data (iy));
-                  iy++;
-                }
-
-              nz++;
-            }
-        }
-
-      retval.maybe_compress ();
+      retval.maybe_compress (true);
       return retval;
     }
   else

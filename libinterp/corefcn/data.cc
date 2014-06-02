@@ -244,12 +244,9 @@ and orientation.\n\
         }
       else
         {
-          bool a0_scalar = args(0).is_scalar_type ();
-          bool a1_scalar = args(1).is_scalar_type ();
-          if (a0_scalar && a1_scalar)
+          if (args(0).is_scalar_type () && args(1).is_scalar_type ())
             retval = atan2 (args(0).scalar_value (), args(1).scalar_value ());
-          else if ((a0_scalar || args(0).is_sparse_type ())
-                   && (a1_scalar || args(1).is_sparse_type ()))
+          else if (args(0).is_sparse_type ())
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -292,6 +289,40 @@ and orientation.\n\
 %! x = single ([1, 3, 1, 1, 1, 1, 3, 1]);
 %! assert (atan2 (y, x), v, sqrt (eps ("single")));
 
+## Test sparse implementations
+%!shared xs
+%! xs = sparse (0:3);
+%!test
+%! y = atan2 (1, xs);
+%! assert (issparse (y), false);
+%! assert (nnz (y), 4);
+%! assert (y, atan2 (1, 0:3));
+%!test
+%! y = atan2 (0, xs);
+%! assert (issparse (y), false);
+%! assert (nnz (y), 0);
+%! assert (y, zeros (1,4));
+%!test
+%! y = atan2 (xs, 1);
+%! assert (issparse (y));
+%! assert (nnz (y), 3);
+%! assert (y, sparse (atan2 (0:3, 1)));
+%!test
+%! y = atan2 (xs, 0);
+%! assert (issparse (y));
+%! assert (nnz (y), 3);
+%! assert (y, sparse (atan2 (0:3, 0)));
+%!test
+%! y = atan2 (xs, sparse (ones (1, 4)));
+%! assert (issparse (y));
+%! assert (nnz (y), 3);
+%! assert (y, sparse (atan2 (0:3, ones (1,4))));
+%!test
+%! y = atan2 (xs, sparse (zeros (1,4)));
+%! assert (issparse (y));
+%! assert (nnz (y), 3);
+%! assert (y, sparse (atan2 (0:3, zeros (1,4))));
+
 %!error atan2 ()
 %!error atan2 (1, 2, 3)
 */
@@ -328,12 +359,9 @@ do_hypot (const octave_value& x, const octave_value& y)
         }
       else
         {
-          bool a0_scalar = arg0.is_scalar_type ();
-          bool a1_scalar = arg1.is_scalar_type ();
-          if (a0_scalar && a1_scalar)
+          if (arg0.is_scalar_type () && arg1.is_scalar_type ())
             retval = hypot (arg0.scalar_value (), arg1.scalar_value ());
-          else if ((a0_scalar || arg0.is_sparse_type ())
-                   && (a1_scalar || arg1.is_sparse_type ()))
+          else if (arg0.is_sparse_type () || arg1.is_sparse_type ())
             {
               SparseMatrix m0 = arg0.sparse_matrix_value ();
               SparseMatrix m1 = arg1.sparse_matrix_value ();
@@ -398,6 +426,35 @@ hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
 %!assert (size (hypot (1, 2)), [1, 1])
 %!assert (hypot (1:10, 1:10), sqrt (2) * [1:10], 16*eps)
 %!assert (hypot (single (1:10), single (1:10)), single (sqrt (2) * [1:10]))
+
+## Test sparse implementations
+%!shared xs
+%! xs = sparse (0:3);
+%!test
+%! y = hypot (1, xs);
+%! assert (nnz (y), 4);
+%! assert (y, sparse (hypot (1, 0:3)));
+%!test
+%! y = hypot (0, xs);
+%! assert (nnz (y), 3);
+%! assert (y, xs);
+%!test
+%! y = hypot (xs, 1);
+%! assert (nnz (y), 4);
+%! assert (y, sparse (hypot (0:3, 1)));
+%!test
+%! y = hypot (xs, 0);
+%! assert (nnz (y), 3);
+%! assert (y, xs);
+%!test
+%! y = hypot (sparse ([0 0]), sparse ([0 1]));
+%! assert (nnz (y), 1);
+%! assert (y, sparse ([0 1]));
+%!test
+%! y = hypot (sparse ([0 1]), sparse ([0 0]));
+%! assert (nnz (y), 1);
+%! assert (y, sparse ([0 1]));
+
 */
 
 template<typename T, typename ET>
@@ -594,12 +651,9 @@ agree, or if either of the arguments is complex.\n\
         }
       else
         {
-          bool a0_scalar = args(0).is_scalar_type ();
-          bool a1_scalar = args(1).is_scalar_type ();
-          if (a0_scalar && a1_scalar)
+          if (args(0).is_scalar_type () && args(1).is_scalar_type ())
             retval = xrem (args(0).scalar_value (), args(1).scalar_value ());
-          else if ((a0_scalar || args(0).is_sparse_type ())
-                   && (a1_scalar || args(1).is_sparse_type ()))
+          else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
@@ -620,10 +674,44 @@ agree, or if either of the arguments is complex.\n\
 }
 
 /*
+%!assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
+%!assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%!assert (size (fmod (rand (2, 3, 4), 1)), [2, 3, 4])
+%!assert (size (fmod (1, rand (2, 3, 4))), [2, 3, 4])
+%!assert (size (fmod (1, 2)), [1, 1])
+
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2), [1, 0, 1; -1, 0, -1])
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3)),[1, 0, 1; -1, 0, -1])
 %!assert (rem (uint8 ([1, 2, 3; -1, -2, -3]), uint8 (2)), uint8 ([1, 0, 1; -1, 0, -1]))
 %!assert (uint8 (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3))),uint8 ([1, 0, 1; -1, 0, -1]))
+
+## Test sparse implementations
+%!shared xs
+%! xs = sparse (0:3);
+%!test
+%! y = rem (11, xs);
+%! assert (nnz (y), 3);
+%! assert (y, sparse (rem (11, 0:3)));
+%!test
+%! y = rem (0, xs);
+%! assert (nnz (y), 0);
+%! assert (y, sparse (zeros (1,4)));
+%!test
+%! y = rem (xs, 2);
+%! assert (nnz (y), 2);
+%! assert (y, sparse (rem (0:3, 2)));
+%!test
+%! y = rem (xs, 1);
+%! assert (nnz (y), 0);
+%! assert (y, sparse (rem (0:3, 1)));
+%!test
+%! y = rem (sparse ([11 11 11 11]), xs);
+%! assert (nnz (y), 3);
+%! assert (y, sparse (rem (11, 0:3)));
+%!test
+%! y = rem (sparse ([0 0 0 0]), xs);
+%! assert (nnz (y), 0);
+%! assert (y, sparse (zeros (1,4)));
 
 %!error rem (uint (8), int8 (5))
 %!error rem (uint8 ([1, 2]), uint8 ([3, 4, 5]))
@@ -631,15 +719,7 @@ agree, or if either of the arguments is complex.\n\
 %!error rem (1, 2, 3)
 %!error rem ([1, 2], [3, 4, 5])
 %!error rem (i, 1)
-*/
 
-/*
-
-%!assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
-%!assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
-%!assert (size (fmod (rand (2, 3, 4), 1)), [2, 3, 4])
-%!assert (size (fmod (1, rand (2, 3, 4))), [2, 3, 4])
-%!assert (size (fmod (1, 2)), [1, 1])
 */
 
 DEFALIAS (fmod, rem)
@@ -728,12 +808,9 @@ either of the arguments is complex.\n\
         }
       else
         {
-          bool a0_scalar = args(0).is_scalar_type ();
-          bool a1_scalar = args(1).is_scalar_type ();
-          if (a0_scalar && a1_scalar)
+          if (args(0).is_scalar_type () && args(1).is_scalar_type ())
             retval = xmod (args(0).scalar_value (), args(1).scalar_value ());
-          else if ((a0_scalar || args(0).is_sparse_type ())
-                   && (a1_scalar || args(1).is_sparse_type ()))
+          else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();

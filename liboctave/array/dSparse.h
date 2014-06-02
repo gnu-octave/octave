@@ -120,10 +120,13 @@ public:
   friend OCTAVE_API SparseMatrix real (const SparseComplexMatrix& a);
   friend OCTAVE_API SparseMatrix imag (const SparseComplexMatrix& a);
 
-  friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y);
-  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y);
+  friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y)
+                                        GCC_ATTR_DEPRECATED ;
+  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y)
+                                        GCC_ATTR_DEPRECATED ; 
   friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x,
-                                        const SparseMatrix& y);
+                                        const SparseMatrix& y)
+                                        GCC_ATTR_DEPRECATED ;
 
   SparseMatrix transpose (void) const
   {

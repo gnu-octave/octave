@@ -359,7 +359,7 @@ function out = select (args, k, sigma, real_valued, symmetric)
 
     v = args{1};
     v = v(:,idx);
-    out{1} = v(selection,:);
+    out{1} = v(:,selection);
   endif
 
 endfunction
@@ -1114,8 +1114,25 @@ endfunction
 %! [~, idx] = sort (abs (reseig), "ascend");
 %! assert (eigs (A, B, 10, 0), reseig (idx))
 
+%!test
+%! X = [70 47 42 39 50 73 79 23;
+%!      19 52 61 80 36 76 63 68;
+%!      14 34 66 65 29  4 72  9;
+%!      24  8 78 49 58 54 43 33;
+%!      62 69 32 31 40 46 22 28;
+%!      48 12 45 59 10 17 15 25;
+%!      64 67 77 56 13 55 41 74;
+%!      37 38 18 21 11  3 71  7;
+%!       5 35 16  1 51 27 26 44;
+%!      30 57 60 75  2 53 20  6];
+%! Z = X * X';
+%! r = rank (Z);
+%! assert (r, 8);
+%! [V, D] = eigs (Z, r, "lm");
+%! ZZ = V * D * V';
+%! tmp = abs (Z - ZZ);
+%! assert (max (tmp(:)) < 5e-11);
+
 %!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]);
 %!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]);
 %!assert (eigs (diag (1:5), 3, "be"), [1;4;5]);
-
-

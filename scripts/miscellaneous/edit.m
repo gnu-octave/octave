@@ -349,7 +349,6 @@ function ret = edit (varargin)
     endif
     if (! any (strcmp (ext, {"cc", "m"})))
       ## Some unknown file.  Create and open it or just open it.
-      keyboard;
       if (isempty (ext))
         fileandpath = [fileandpath ".m"];  # Add .m extension per default
       endif

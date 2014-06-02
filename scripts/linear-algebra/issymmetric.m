@@ -37,7 +37,7 @@ function retval = issymmetric (x, tol = 0)
     print_usage ();
   endif
 
-  retval = isnumeric (x) && issquare (x);
+  retval = (isnumeric (x) || islogical (x)) && issquare (x);
   if (retval)
     if (tol == 0)
       ## Handle large sparse matrices as well as full ones
@@ -61,6 +61,7 @@ endfunction
 %!assert (! (issymmetric ("t")))
 %!assert (! (issymmetric (["te"; "et"])))
 %!assert (issymmetric (speye (100000)))
+%!assert (issymmetric (logical (eye (2))));
 
 %!test
 %! s.a = 1;

@@ -183,7 +183,7 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
     {
       // No items found.  Fixup return dimensions for Matlab compatibility.
       // The behavior to match is documented in Array.cc (Array<T>::find).
-      if ((nr == 0 && nc == 0) || nr == 1 & nc == 1)
+      if ((nr == 0 && nc == 0) || (nr == 1 && nc == 1))
         {
           idx.resize (0, 0);
 
@@ -294,12 +294,13 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
     }
   else
     {
-      // FIXME: Is this case even possible?  A scalar permutation matrix seems to devolve
-      //        to a scalar full matrix, at least from the Octave command line.  Perhaps
-      //        this function could be called internally from C++ with such a matrix.
+      // FIXME: Is this case even possible?  A scalar permutation matrix seems
+      // to devolve to a scalar full matrix, at least from the Octave command
+      // line.  Perhaps this function could be called internally from C++ with
+      // such a matrix.
       // No items found.  Fixup return dimensions for Matlab compatibility.
       // The behavior to match is documented in Array.cc (Array<T>::find).
-      if ((nr == 0 && nc == 0) || nr == 1 & nc == 1)
+      if ((nr == 0 && nc == 0) || (nr == 1 && nc == 1))
         {
           idx.resize (0, 0);
 

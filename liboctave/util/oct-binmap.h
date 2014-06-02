@@ -218,17 +218,30 @@ template <class U, class T, class R, class F>
 Sparse<U>
 binmap (const T& x, const Sparse<R>& ys, F fcn)
 {
-  octave_idx_type nz = ys.nnz ();
-  Sparse<U> retval (ys.rows (), ys.cols (), nz);
-  for (octave_idx_type i = 0; i < nz; i++)
-    {
-      octave_quit ();
-      retval.xdata (i) = fcn (x, ys.data (i));
-    }
+  R yzero = R ();
+  U fz = fcn (x, yzero);
 
-  octave_quit ();
-  retval.maybe_compress ();
-  return retval;
+  if (fz == U ())  // Sparsity preserving fcn
+    {
+      octave_idx_type nz = ys.nnz ();
+      Sparse<U> retval (ys.rows (), ys.cols (), nz);
+      copy_or_memcpy (nz, ys.ridx (), retval.ridx ());
+      copy_or_memcpy (ys.cols () + 1, ys.cidx (), retval.cidx ());
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          octave_quit ();
+          // FIXME: Could keep track of whether fcn call results in a 0.
+          //        If no zeroes are created could skip maybe_compress()
+          retval.xdata (i) = fcn (x, ys.data (i));
+        }
+
+      octave_quit ();
+      retval.maybe_compress (true);
+      return retval;
+    }
+  else
+    return Sparse<U> (binmap<U, T, R, F> (x, ys.array_value (), fcn));
 }
 
 // Sparse-scalar
@@ -236,17 +249,30 @@ template <class U, class T, class R, class F>
 Sparse<U>
 binmap (const Sparse<T>& xs, const R& y, F fcn)
 {
-  octave_idx_type nz = xs.nnz ();
-  Sparse<U> retval (xs.rows (), xs.cols (), nz);
-  for (octave_idx_type i = 0; i < nz; i++)
-    {
-      octave_quit ();
-      retval.xdata (i) = fcn (xs.data (i), y);
-    }
+  T xzero = T ();
+  U fz = fcn (xzero, y);
 
-  octave_quit ();
-  retval.maybe_compress ();
-  return retval;
+  if (fz == U ())  // Sparsity preserving fcn
+    {
+      octave_idx_type nz = xs.nnz ();
+      Sparse<U> retval (xs.rows (), xs.cols (), nz);
+      copy_or_memcpy (nz, xs.ridx (), retval.ridx ());
+      copy_or_memcpy (xs.cols () + 1, xs.cidx (), retval.cidx ());
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          octave_quit ();
+          // FIXME: Could keep track of whether fcn call results in a 0.
+          //        If no zeroes are created could skip maybe_compress()
+          retval.xdata (i) = fcn (xs.data (i), y);
+        }
+
+      octave_quit ();
+      retval.maybe_compress (true);
+      return retval;
+    }
+  else
+    return Sparse<U> (binmap<U, T, R, F> (xs.array_value (), y, fcn));
 }
 
 // Sparse-Sparse (treats singletons as scalars)
@@ -295,8 +321,8 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
                   jx++;
                   jx_lt_max = jx < jx_max;
                 }
-              else if (! jx_lt_max ||
-                  (jy_lt_max && (ys.ridx (jy) < xs.ridx (jx))))
+              else if (! jx_lt_max
+                       || (jy_lt_max && (ys.ridx (jy) < xs.ridx (jx))))
                 {
                   retval.xridx (nz) = ys.ridx (jy);
                   retval.xdata (nz) = fcn (xzero, ys.data (jy));

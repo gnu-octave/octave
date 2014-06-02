@@ -807,7 +807,7 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_compress ();  // If don't know a-priori the final # of nz.
+sm.maybe_compress ();  // If don't know a priori the final # of nz.
 @end example
 
 @noindent
@@ -847,7 +847,7 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_mutate ();  // If don't know a-priori the final # of nz.
+sm.maybe_mutate ();  // If don't know a priori the final # of nz.
 @end example
 
 Note that both increasing and decreasing the number of non-zero elements in

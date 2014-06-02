@@ -47,7 +47,7 @@ it makes sense to have a special matrix type to handle this class of
 problems where only the non-zero elements of the matrix are
 stored.  Not only does this reduce the amount of memory to store the
 matrix, but it also means that operations on this type of matrix can
-take advantage of the a-priori knowledge of the positions of the
+take advantage of the a priori knowledge of the positions of the
 non-zero elements to accelerate their calculations.
 
 A matrix type that stores only the non-zero elements is generally called
@@ -73,7 +73,7 @@ create their own oct-files.
 
 There are many different means of storing sparse matrix data.  What all
 of the methods have in common is that they attempt to reduce the complexity
-and storage given a-priori knowledge of the particular class of problems
+and storage given a priori knowledge of the particular class of problems
 that will be solved.  A good summary of the available techniques for storing
 sparse matrix is given by Saad @footnote{Y. Saad "SPARSKIT: A basic toolkit
 for sparse matrix computation", 1994,
@@ -573,7 +573,7 @@ The attempt has been made to make sparse matrices behave in exactly the
 same manner as there full counterparts.  However, there are certain differences
 and especially differences with other products sparse implementations.
 
-Firstly, the @qcode{"./"} and @qcode{".^"} operators must be used with care. 
+First, the @qcode{"./"} and @qcode{".^"} operators must be used with care. 
 Consider what the examples
 
 @example

@@ -530,7 +530,7 @@ main (int argc, char **argv)
         }
       else
         {
-          std::cerr << "mkoctfile: unrecognized argument " << arg;
+          std::cerr << "mkoctfile: unrecognized argument " << arg << std::endl;
           return 1;
         }
 
@@ -649,8 +649,8 @@ main (int argc, char **argv)
         }
       else
         {
-          std::cerr << "mkoctfile: no way to compile Fortran file "
-                    << f << std::endl;
+          std::cerr << "mkoctfile: no way to compile Fortran file " << f
+                    << std::endl;
           return 1;
         }
     }

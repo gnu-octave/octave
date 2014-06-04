@@ -1267,8 +1267,12 @@ find_private_file (const std::string& fname)
 
   octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
 
-  if (curr_fcn && ! curr_fcn->is_private_function ())
+  if (curr_fcn)
     {
+      // Even for private functions, dir_name doesn't contain the
+      // "private" directory component so we append it here in all
+      // cases.
+
       std::string dir_name = curr_fcn->dir_name ();
 
       if (! dir_name.empty ())

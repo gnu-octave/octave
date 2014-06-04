@@ -4063,7 +4063,7 @@ Undocumented internal function\n\
   return SET_INTERNAL_VARIABLE (compact_format);
 }
 
-DEFUN (__formatstring__, args, nargout,
+DEFUN (__formatstring__, , ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} __formatstring__ ()\n\
 Undocumented internal function\n\

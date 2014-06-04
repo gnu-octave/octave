@@ -61,7 +61,7 @@ endfunction
 %!assert (! (issymmetric ("t")))
 %!assert (! (issymmetric (["te"; "et"])))
 %!assert (issymmetric (speye (100000)))
-%!assert (issymmetric (logical (eye (2))));
+%!assert (issymmetric (logical (eye (2))))
 
 %!test
 %! s.a = 1;

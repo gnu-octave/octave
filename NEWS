@@ -1,6 +1,18 @@
 Summary of important user-visible changes for version 4.2:
 ---------------------------------------------------------
 
+ ** A new syntax for object oriented programming termed classdef has been
+    introduced.  See the manual for more extensive documentation of the
+    classdef interface.
+    
+    New keywords:
+
+      classdef      endclassdef
+      enumeration   endenumeration
+      events        endevents
+      methods       endmethods
+      properties    endproperties
+
  ** Interpolation function changes for Matlab compatibility
 
     The interpolation method 'cubic' is now equivalent to 'pchip'
@@ -23,6 +35,18 @@ Summary of important user-visible changes for version 4.2:
 
     There is still one difference:  Matlab switches to '%e' and Octave
     is currently switching to '%g'.
+
+ ** Z-order stacking issues with patches, grid lines, and line object
+    plot markers for on screen display and printing have all been resolved.
+    For 2-D plots the axis grid lines can be placed on top of the plot
+    with set (gca, "layer", "top").
+
+ ** The patch graphic object has been overhauled.  It now produces visual
+    results equivalent to Matlab even for esoteric combinations of
+    faces/vertices/cdata.
+
+ ** The polar() plot function now draws a circular theta axis and 
+    radial rho axis rather than using a rectangular x/y axis.
 
  ** linkprop has been completely re-coded for performance and Matlab
     compatibility.  It now returns a linkprop object which must be stored

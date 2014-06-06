@@ -88,9 +88,9 @@ reconverted to the time domain.
 
 @DOCSTRING(interpft)
 
-There are two significant limitations on Fourier interpolation.  Firstly,
+There are two significant limitations on Fourier interpolation.  First,
 the function signal is assumed to be periodic, and so non-periodic
-signals will be poorly represented at the edges.  Secondly, both the
+signals will be poorly represented at the edges.  Second, both the
 signal and its interpolation are required to be sampled at equispaced
 points.  An example of the use of @code{interpft} is
 

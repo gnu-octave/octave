@@ -682,10 +682,10 @@ ColumnVector ridx (nz);
 ColumnVector cidx (nz);
 ColumnVector data (nz);
 
-ridx(0) = 0; cidx(0) = 0; data(0) = 1; 
-ridx(1) = 0; cidx(1) = 1; data(1) = 2; 
-ridx(2) = 1; cidx(2) = 3; data(2) = 3; 
-ridx(3) = 2; cidx(3) = 3; data(3) = 4;
+ridx(0) = 1; cidx(0) = 1; data(0) = 1;
+ridx(1) = 2; cidx(1) = 2; data(1) = 2;
+ridx(2) = 2; cidx(2) = 4; data(2) = 3;
+ridx(3) = 3; cidx(3) = 4; data(3) = 4;
 SparseMatrix sm (data, ridx, cidx, nr, nc);
 @end group
 @end example
@@ -807,7 +807,7 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_compress ();  // If don't know a-priori the final # of nz.
+sm.maybe_compress ();  // If don't know a priori the final # of nz.
 @end example
 
 @noindent
@@ -847,7 +847,7 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_mutate ();  // If don't know a-priori the final # of nz.
+sm.maybe_mutate ();  // If don't know a priori the final # of nz.
 @end example
 
 Note that both increasing and decreasing the number of non-zero elements in

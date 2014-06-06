@@ -81,16 +81,6 @@ their values are derived from the maximum index in the vectors @var{i} and\n\
 be added.  See @code{accumarray} for an example of how to produce different\n\
 behavior, such as taking the minimum instead.\n\
 \n\
-The following are all equivalent:\n\
-\n\
-@example\n\
-@group\n\
-s = sparse (i, j, s, m, n)\n\
-s = sparse (i, j, s, m, n, \"summation\")\n\
-s = sparse (i, j, s, m, n, \"sum\")\n\
-@end group\n\
-@end example\n\
-\n\
 Given the option @qcode{\"unique\"}, if more than two values are specified\n\
 for the same @var{i}, @var{j} indices, the last specified value will be\n\
 used.\n\

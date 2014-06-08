@@ -3650,6 +3650,42 @@ numeric.\n\
 %!assert (isnumeric (sparse ([true, false])), false)
 */
 
+DEFUN (isscalar, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isscalar (@var{x})\n\
+Return true if @var{x} is a scalar.\n\
+@seealso{isvector, ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).numel () == 1;
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (isscalar (1))
+%!assert (isscalar ([1, 2]), false)
+%!assert (isscalar ([]), false)
+%!assert (isscalar ([1, 2; 3, 4]), false)
+
+%!assert (isscalar ("t"))
+%!assert (isscalar ("test"), false)
+%!assert (isscalar (["test"; "ing"]), false)
+
+%!test
+%! s.a = 1;
+%! assert (isscalar (s));
+
+%% Test input validation
+%!error isscalar ()
+%!error isscalar (1, 2)
+*/
+
 DEFUN (ismatrix, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\

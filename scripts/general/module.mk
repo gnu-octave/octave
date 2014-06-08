@@ -44,7 +44,6 @@ general_FCN_FILES = \
   general/isequal.m \
   general/isequaln.m \
   general/isrow.m \
-  general/isscalar.m \
   general/issquare.m \
   general/isvector.m \
   general/loadobj.m \

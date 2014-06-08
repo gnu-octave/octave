@@ -112,11 +112,11 @@ DEFUN (all, args, ,
 @deftypefn  {Built-in Function} {} all (@var{x})\n\
 @deftypefnx {Built-in Function} {} all (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if all elements of the vector\n\
-are nonzero.\n\
+are non-zero.\n\
 \n\
 For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether all of the elements of the\n\
-corresponding column of the matrix are nonzero.  For example:\n\
+corresponding column of the matrix are non-zero.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -159,11 +159,11 @@ DEFUN (any, args, ,
 @deftypefn  {Built-in Function} {} any (@var{x})\n\
 @deftypefnx {Built-in Function} {} any (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if any element of the vector\n\
-is nonzero.\n\
+is non-zero.\n\
 \n\
 For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether any of the elements of the\n\
-corresponding column of the matrix are nonzero.  For example:\n\
+corresponding column of the matrix are non-zero.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -2677,9 +2677,9 @@ Called with a single or no argument, size_equal returns true.\n\
 
 DEFUN (nnz, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{scalar} =} nnz (@var{a})\n\
-Return the number of non zero elements in @var{a}.\n\
-@seealso{sparse, nzmax}\n\
+@deftypefn {Built-in Function} {@var{n} =} nnz (@var{a})\n\
+Return the number of non-zero elements in @var{a}.\n\
+@seealso{nzmax, nonzeros, find}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2694,12 +2694,12 @@ Return the number of non zero elements in @var{a}.\n\
 
 DEFUN (nzmax, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{scalar} =} nzmax (@var{SM})\n\
+@deftypefn {Built-in Function} {@var{n} =} nzmax (@var{SM})\n\
 Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
+\n\
 Note that Octave tends to crop unused memory at the first opportunity\n\
-for sparse objects.  There are some cases of user created sparse objects\n\
-where the value returned by @dfn{nzmax} will not be the same as @dfn{nnz},\n\
-but in general they will give the same result.\n\
+for sparse objects.  Thus, in general the value of @code{nzmax} will be the\n\
+the same as @code{nnz} except for some cases of user-created sparse objects.\n\
 @seealso{nnz, spalloc, sparse}\n\
 @end deftypefn")
 {
@@ -5223,9 +5223,9 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 DEFUN (full, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{FM} =} full (@var{SM})\n\
-Return a full storage matrix from a sparse, diagonal, permutation matrix\n\
+Return a full storage matrix from a sparse, diagonal, permutation matrix,\n\
 or a range.\n\
-@seealso{sparse}\n\
+@seealso{sparse, issparse}\n\
 @end deftypefn")
 {
   octave_value retval;

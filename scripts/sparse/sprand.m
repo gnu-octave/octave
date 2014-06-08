@@ -23,13 +23,13 @@
 ## @deftypefn  {Function File} {} sprand (@var{m}, @var{n}, @var{d})
 ## @deftypefnx {Function File} {} sprand (@var{s})
 ## Generate a random sparse matrix.  The size of the matrix will be
-## @var{m} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1.  Values will be uniformly
-## distributed between 0 and 1.
+## @var{m}x@var{n}, with a density of values given by @var{d}.  @var{d} must
+## be between 0 and 1 inclusive.  Values will be uniformly distributed between
+## 0 and 1.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero.
-## @seealso{sprandn, sprandsym}
+## @seealso{sprandn, sprandsym, spones, sparse}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

@@ -73,7 +73,7 @@ are ignored by @code{amd} during the calculation of the permutation\n\
 The value of dense must be a positive scalar and its default value is 10.0\n\
 \n\
 @item @var{opts}.aggressive\n\
-If this value is a non zero scalar, then @code{amd} performs aggressive\n\
+If this value is a nonzero scalar, then @code{amd} performs aggressive\n\
 absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
 \n\

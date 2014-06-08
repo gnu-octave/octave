@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nonzeros (@var{s})
 ## Return a vector of the non-zero values of the sparse matrix @var{s}.
+## @seealso{find, nnz}
 ## @end deftypefn
 
 function t = nonzeros (s)

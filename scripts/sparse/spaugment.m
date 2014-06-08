@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{s} =} spaugment (@var{A}, @var{c})
-## Create the augmented matrix of @var{A}.  This is given by
+## Create the augmented matrix of @var{A}.
+##
+## This is given by
 ##
 ## @example
 ## @group
@@ -47,7 +49,7 @@
 ## As the matrix @var{s} is symmetric indefinite it can be factorized
 ## with @code{lu}, and the minimum norm solution can therefore be found
 ## without the need for a @code{qr} factorization.  As the residual
-## error will be @code{zeros (@var{m}, @var{m})} for under determined
+## error will be @code{zeros (@var{m}, @var{m})} for underdetermined
 ## problems, and example can be
 ##
 ## @example
@@ -69,6 +71,7 @@
 ##
 ## In general the left division operator is more stable and faster than
 ## using the @code{spaugment} function.
+## @seealso{mldivide}
 ## @end deftypefn
 
 function s = spaugment (A, c)

@@ -20,6 +20,7 @@
 ## @deftypefn {Function File} {@var{r} =} spones (@var{S})
 ## Replace the non-zero entries of @var{S} with ones.  This creates a
 ## sparse matrix with the same structure as @var{S}.
+## @seealso{sparse, sprand, sprandn, sprandsym, spfun, spy}
 ## @end deftypefn
 
 function r = spones (S)

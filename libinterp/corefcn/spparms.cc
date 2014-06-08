@@ -100,6 +100,7 @@ The default values can be restored with the special keyword\n\
 @qcode{\"defaults\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
 set the mmd solvers to attempt a sparser solution at the potential cost of\n\
 longer running time.\n\
+@seealso{chol, colamd, lu, qr, symamd}\n\
 @end deftypefn")
 {
   octave_value_list retval;

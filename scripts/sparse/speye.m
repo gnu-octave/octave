@@ -17,17 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{y} =} speye (@var{m})
-## @deftypefnx {Function File} {@var{y} =} speye (@var{m}, @var{n})
-## @deftypefnx {Function File} {@var{y} =} speye (@var{sz})
-## Return a sparse identity matrix.  This is significantly more
-## efficient than @code{sparse (eye (@var{m}))} as the full matrix
-## is not constructed.
+## @deftypefn  {Function File} {@var{s} =} speye (@var{m}, @var{n})
+## @deftypefnx {Function File} {@var{s} =} speye (@var{m})
+## @deftypefnx {Function File} {@var{s} =} speye (@var{sz})
+## Return a sparse identity matrix of size @var{m}x@var{n}.
 ##
-## Called with a single argument a square matrix of size @var{m} by
-## @var{m} is created.  Otherwise a matrix of @var{m} by @var{n} is
-## created.  If called with a single vector argument, this argument
-## is taken to be the size of the matrix to create.
+## The implementation is significantly more efficient than
+## @code{sparse (eye (@var{m}))} as the full matrix is not constructed.
+##
+## Called with a single argument a square matrix of size
+## @var{m}-by-@var{m} is created.  If called with a single vector argument
+## @var{sz}, this argument is taken to be the size of the matrix to create.
+## @seealso{sparse, spdiags, eye}
 ## @end deftypefn
 
 function s = speye (m, n)

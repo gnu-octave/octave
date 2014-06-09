@@ -657,7 +657,7 @@ Sparse<T>::Sparse (const Array<T>& a)
       octave_idx_type len = a.length ();
       octave_idx_type new_nzmx = 0;
 
-      // First count the number of non-zero terms
+      // First count the number of nonzero terms
       for (octave_idx_type i = 0; i < len; i++)
         if (a(i) != T ())
           new_nzmx++;
@@ -2427,7 +2427,7 @@ Sparse<T>::diag (octave_idx_type k) const
         {
           octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
 
-          // Count the number of non-zero elements
+          // Count the number of nonzero elements
           octave_idx_type nel = 0;
           if (k > 0)
             {

@@ -96,7 +96,7 @@ public:
           oct_mach_info::float_format ff
             = oct_mach_info::native_float_format ());
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const { return is.eof (); }
 
@@ -142,7 +142,7 @@ public:
           oct_mach_info::float_format ff
             = oct_mach_info::native_float_format ());
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const { return os.eof (); }
 

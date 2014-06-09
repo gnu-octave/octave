@@ -394,7 +394,7 @@ If three inputs are given, @var{direction} should be one of\n\
 ascending order.\n\
 \n\
 Note that this function is particularly useful for sparse matrices, as\n\
-it extracts the non-zero elements as vectors, which can then be used to\n\
+it extracts the nonzero elements as vectors, which can then be used to\n\
 create the original matrix.  For example:\n\
 \n\
 @example\n\

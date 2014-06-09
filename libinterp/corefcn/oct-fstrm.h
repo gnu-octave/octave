@@ -52,7 +52,7 @@ public:
 
   off_t tell (void);
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const;
 

@@ -32,7 +32,7 @@ mexFunction (int nlhs, mxArray *plhs[],
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
 
-      mexPrintf ("last non-zero element (%d, %d) = (%g, %g)\n",
+      mexPrintf ("last nonzero element (%d, %d) = (%g, %g)\n",
                  ir[nz-1]+ 1, i, pr[nz-1], pi[nz-1]);
 
       v = mxCreateSparse (m, n, nz, mxCOMPLEX);
@@ -65,7 +65,7 @@ mexFunction (int nlhs, mxArray *plhs[],
 
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
-      mexPrintf ("last non-zero element (%d, %d) = %d\n",
+      mexPrintf ("last nonzero element (%d, %d) = %d\n",
                  ir[nz-1]+ 1, i, pbr[nz-1]);
 
       v = mxCreateSparseLogicalMatrix (m, n, nz);
@@ -95,7 +95,7 @@ mexFunction (int nlhs, mxArray *plhs[],
 
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
-      mexPrintf ("last non-zero element (%d, %d) = %g\n",
+      mexPrintf ("last nonzero element (%d, %d) = %g\n",
                  ir[nz-1]+ 1, i, pr[nz-1]);
 
       v = mxCreateSparse (m, n, nz, mxREAL);

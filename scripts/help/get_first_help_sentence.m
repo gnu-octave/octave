@@ -28,7 +28,7 @@
 ##
 ## The optional output argument @var{status} returns the status reported by
 ## @code{makeinfo}.  If only one output argument is requested, and @var{status}
-## is non-zero, a warning is displayed.
+## is nonzero, a warning is displayed.
 ##
 ## As an example, the first sentence of this help text is
 ##

@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{A})
 ## @deftypefnx {Function File} {@var{A} =} spdiags (@var{v}, @var{d}, @var{m}, @var{n})
 ## A generalization of the function @code{diag}.  Called with a single
-## input argument, the non-zero diagonals @var{d} of @var{A} are extracted.
+## input argument, the nonzero diagonals @var{d} of @var{A} are extracted.
 ## With two arguments the diagonals to extract are given by the vector
 ## @var{d}.
 ##

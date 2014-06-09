@@ -86,7 +86,7 @@ The pivot tolerance of the @sc{umfpack} solvers (default 0.1)\n\
 The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)\n\
 \n\
 @item bandden\n\
-The density of non-zero elements in a banded matrix before it is treated\n\
+The density of nonzero elements in a banded matrix before it is treated\n\
 by the @sc{lapack} banded solvers (default 0.5)\n\
 \n\
 @item umfpack\n\

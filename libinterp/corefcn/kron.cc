@@ -203,7 +203,7 @@ dispatch_kron (const octave_value& a, const octave_value& b)
           // the diagonals as vectors and compute the product.  That
           // will be another vector, which we then use to construct a
           // diagonal matrix object.  Note that this will fail if our
-          // digaonal matrix object is modified to allow the non-zero
+          // digaonal matrix object is modified to allow the nonzero
           // values to be stored off of the principal diagonal (i.e., if
           // diag ([1,2], 3) is modified to return a diagonal matrix
           // object instead of a full matrix object).

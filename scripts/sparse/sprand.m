@@ -30,7 +30,7 @@
 ## the interval (0, 1).
 ##
 ## If called with a single matrix argument, a sparse matrix is generated with
-## random values wherever the matrix @var{s} is non-zero.
+## random values wherever the matrix @var{s} is nonzero.
 ##
 ## If called with a scalar fourth argument @var{rc}, a random sparse matrix
 ## with reciprocal condition number @var{rc} is generated.  If @var{rc} is

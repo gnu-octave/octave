@@ -31,7 +31,7 @@
 ## @code{pct = @var{x}(i) / sum (@var{x})}. 
 ##
 ## The optional input @var{explode} is a vector of the same length as @var{x}
-## that, if non-zero, "explodes" the slice from the pie chart.
+## that, if nonzero, "explodes" the slice from the pie chart.
 ##
 ## The optional input @var{labels} is a cell array of strings of the same
 ## length as @var{x} specifying the label for each slice.

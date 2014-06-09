@@ -169,7 +169,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
       ## The eigenvalues returns by eigs for sigma=0 are symmetric about 0.
       ## As we are only interested in the positive eigenvalues, we have to
       ## double k and then throw out the k negative eigenvalues.
-      ## Separately, if sigma is non-zero, but smaller than the smallest
+      ## Separately, if sigma is nonzero, but smaller than the smallest
       ## singular value, ARPACK may not return k eigenvalues. However, as
       ## computation scales with k we'd like to avoid doubling k for all
       ## scalar values of sigma.

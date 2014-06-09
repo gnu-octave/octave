@@ -319,9 +319,9 @@ Return 1 for elements of @var{class}.\n\
 \n\
 Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
 in the form of an inline function, function handle, or the name of a\n\
-function (in a character string). The function can take one or more arguments,\n\
-with the inputs arguments given by @var{C}, @var{D}, etc.  Equally the\n\
-function can return one or more output arguments.  For example:\n\
+function (in a character string).  The function can take one or more\n\
+arguments, with the inputs arguments given by @var{C}, @var{D}, etc.  \n\
+Equally the function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
 @group\n\

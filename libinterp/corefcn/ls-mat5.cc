@@ -651,7 +651,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   arrayclass = static_cast<arrayclasstype> (flags & 0xff);
 
   int32_t tmp_nzmax;
-  read_int (is, swap, tmp_nzmax);   // max number of non-zero in sparse
+  read_int (is, swap, tmp_nzmax);   // max number of nonzero in sparse
   nzmax = tmp_nzmax;
 
   // dimensions array subelement

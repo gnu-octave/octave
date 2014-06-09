@@ -322,7 +322,7 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
   return x.id;
 }
 
-// Calculates the node's degrees. This means counting the non-zero elements
+// Calculates the node's degrees. This means counting the nonzero elements
 // in the symmetric matrix' rows. This works for non-symmetric matrices
 // as well.
 
@@ -341,7 +341,7 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
         {
           OCTAVE_QUIT;
           octave_idx_type k = ridx[i];
-          // there is a non-zero element (k,j)
+          // there is a nonzero element (k,j)
           D[k]++;
           if (D[k] > max_deg)
             max_deg = D[k];

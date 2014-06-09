@@ -552,7 +552,7 @@ DEFUN (logical, args, ,
 @deftypefn {Built-in Function} {} logical (@var{x})\n\
 Convert the numeric object @var{x} to logical type.\n\
 \n\
-Any non-zero values will be converted to true (1) while zero values\n\
+Any nonzero values will be converted to true (1) while zero values\n\
 will be converted to false (0).  The non-numeric value NaN cannot be\n\
 converted and will produce an error.\n\
 \n\

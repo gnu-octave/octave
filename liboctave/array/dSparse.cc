@@ -2004,7 +2004,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -2100,7 +2100,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -2529,7 +2529,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -2626,7 +2626,7 @@ SparseMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -3084,7 +3084,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -3193,7 +3193,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -3652,7 +3652,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -3762,7 +3762,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                         }
                     }
 
-                  // Count non-zeros in work vector and adjust space in
+                  // Count nonzeros in work vector and adjust space in
                   // retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nc; i++)
@@ -4129,7 +4129,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                              work, b.rows (), err
                              F77_CHAR_ARG_LEN (1)));
 
-                  // Count non-zeros in work vector and adjust
+                  // Count nonzeros in work vector and adjust
                   // space in retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nr; i++)
@@ -4411,7 +4411,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
               OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
 
-              // Take a first guess that the number of non-zero terms
+              // Take a first guess that the number of nonzero terms
               // will be as many as in b
               volatile octave_idx_type x_nz = b.nnz ();
               volatile octave_idx_type ii = 0;
@@ -4458,7 +4458,7 @@ SparseMatrix::trisolve (MatrixType &mattype, const SparseComplexMatrix& b,
                       break;
                     }
 
-                  // Count non-zeros in work vector and adjust
+                  // Count nonzeros in work vector and adjust
                   // space in retval if needed
                   octave_idx_type new_nnz = 0;
                   for (octave_idx_type i = 0; i < nr; i++)
@@ -4852,7 +4852,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                   octave_idx_type b_nc = b.cols ();
                   OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
 
-                  // Take a first guess that the number of non-zero terms
+                  // Take a first guess that the number of nonzero terms
                   // will be as many as in b
                   volatile octave_idx_type x_nz = b.nnz ();
                   volatile octave_idx_type ii = 0;
@@ -5026,7 +5026,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                                  ldm, pipvt, work, b.rows (), err
                                  F77_CHAR_ARG_LEN (1)));
 
-                      // Count non-zeros in work vector and adjust
+                      // Count nonzeros in work vector and adjust
                       // space in retval if needed
                       octave_idx_type new_nnz = 0;
                       for (octave_idx_type i = 0; i < nr; i++)
@@ -5473,7 +5473,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
                   OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
 
-                  // Take a first guess that the number of non-zero terms
+                  // Take a first guess that the number of nonzero terms
                   // will be as many as in b
                   volatile octave_idx_type x_nz = b.nnz ();
                   volatile octave_idx_type ii = 0;
@@ -5519,7 +5519,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                           break;
                         }
 
-                      // Count non-zeros in work vector and adjust
+                      // Count nonzeros in work vector and adjust
                       // space in retval if needed
                       octave_idx_type new_nnz = 0;
                       for (octave_idx_type i = 0; i < nr; i++)
@@ -5686,7 +5686,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                                  ldm, pipvt, Bz, b.rows (), err
                                  F77_CHAR_ARG_LEN (1)));
 
-                      // Count non-zeros in work vector and adjust
+                      // Count nonzeros in work vector and adjust
                       // space in retval if needed
                       octave_idx_type new_nnz = 0;
                       for (octave_idx_type i = 0; i < nr; i++)
@@ -6245,7 +6245,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
               OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
               OCTAVE_LOCAL_BUFFER (double, Xx, b_nr);
 
-              // Take a first guess that the number of non-zero terms
+              // Take a first guess that the number of nonzero terms
               // will be as many as in b
               octave_idx_type x_nz = b.nnz ();
               octave_idx_type ii = 0;
@@ -6742,7 +6742,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               OCTAVE_LOCAL_BUFFER (double, Bx, b_nr);
               OCTAVE_LOCAL_BUFFER (double, Bz, b_nr);
 
-              // Take a first guess that the number of non-zero terms
+              // Take a first guess that the number of nonzero terms
               // will be as many as in b
               octave_idx_type x_nz = b.nnz ();
               octave_idx_type ii = 0;
@@ -7742,7 +7742,7 @@ min (double d, const SparseMatrix& m)
 
   EMPTY_RETURN_CHECK (SparseMatrix);
 
-  // Count the number of non-zero elements
+  // Count the number of nonzero elements
   if (d < 0.)
     {
       result = SparseMatrix (nr, nc, d);
@@ -7893,7 +7893,7 @@ max (double d, const SparseMatrix& m)
 
   EMPTY_RETURN_CHECK (SparseMatrix);
 
-  // Count the number of non-zero elements
+  // Count the number of nonzero elements
   if (d > 0.)
     {
       result = SparseMatrix (nr, nc, d);

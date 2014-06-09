@@ -77,7 +77,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   if (norm == static_cast<T>(0.0))
     {
-      error ("filter: the first element of A must be non-zero");
+      error ("filter: the first element of A must be nonzero");
       return y;
     }
 

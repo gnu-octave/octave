@@ -49,7 +49,7 @@ is determined by the second argument to @code{luinc}.\n\
 \n\
 Called with a second argument of @qcode{'0'}, the zero-level incomplete\n\
 LU@tie{}factorization is produced.  This creates a factorization of @var{A}\n\
-where the position of the non-zero arguments correspond to the same\n\
+where the position of the nonzero arguments correspond to the same\n\
 positions as in the matrix @var{A}.\n\
 \n\
 Alternatively, the fill-in of the incomplete LU@tie{}factorization can\n\

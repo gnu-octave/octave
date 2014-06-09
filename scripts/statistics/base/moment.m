@@ -103,6 +103,7 @@
 ##
 ## @end ifnottex
 ## @end table
+##
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## If both @var{type} and @var{dim} are given they may appear in any order.

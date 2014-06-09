@@ -83,10 +83,10 @@ statement will do.  The @var{then-body} is executed only if
 @var{condition} is true.
 
 The condition in an @code{if} statement is considered true if its value
-is non-zero, and false if its value is zero.  If the value of the
+is nonzero, and false if its value is zero.  If the value of the
 conditional expression in an @code{if} statement is a vector or a
 matrix, it is considered true only if it is non-empty and @emph{all}
-of the elements are non-zero.
+of the elements are nonzero.
 
 The second form of an if statement looks like this:
 
@@ -398,10 +398,10 @@ be) executed two or more times in succession.
 The @code{while} statement is the simplest looping statement in Octave.
 It repeatedly executes a statement as long as a condition is true.  As
 with the condition in an @code{if} statement, the condition in a
-@code{while} statement is considered true if its value is non-zero, and
+@code{while} statement is considered true if its value is nonzero, and
 false if its value is zero.  If the value of the conditional expression
 in a @code{while} statement is a vector or a matrix, it is considered
-true only if it is non-empty and @emph{all} of the elements are non-zero.
+true only if it is non-empty and @emph{all} of the elements are nonzero.
 
 Octave's @code{while} statement looks like this:
 
@@ -463,10 +463,10 @@ except that it repeatedly executes a statement until a condition becomes
 true, and the test of the condition is at the end of the loop, so the
 body of the loop is always executed at least once.  As with the
 condition in an @code{if} statement, the condition in a @code{do-until}
-statement is considered true if its value is non-zero, and false if its
+statement is considered true if its value is nonzero, and false if its
 value is zero.  If the value of the conditional expression in a
 @code{do-until} statement is a vector or a matrix, it is considered 
-true only if it is non-empty and @emph{all} of the elements are non-zero.
+true only if it is non-empty and @emph{all} of the elements are nonzero.
 
 Octave's @code{do-until} statement looks like this:
 

@@ -1886,7 +1886,7 @@ DEFUNX ("signbit", Fsignbit, args, ,
 Return logical true if the value of @var{x} has its sign bit set.\n\
 Otherwise return logical false.  This behavior is consistent with the other\n\
 logical functions.  See@ref{Logical Values}.  The behavior differs from the\n\
-C language function which returns non-zero if the sign bit is set.\n\
+C language function which returns nonzero if the sign bit is set.\n\
 \n\
 This is not the same as @code{x < 0.0}, because IEEE 754 floating point\n\
 allows zero to be signed.  The comparison @code{-0.0 < 0.0} is false,\n\

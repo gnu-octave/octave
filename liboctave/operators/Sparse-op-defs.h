@@ -1184,7 +1184,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
         if (m1_nr != 0 || m1_nc != 0) \
           { \
-            /* Count num of non-zero elements */ \
+            /* Count num of nonzero elements */ \
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
@@ -1252,7 +1252,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
         if (m1_nr != 0 || m1_nc != 0) \
           { \
-            /* Count num of non-zero elements */ \
+            /* Count num of nonzero elements */ \
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
@@ -1424,7 +1424,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
         if (m1_nr != 0 || m1_nc != 0) \
           { \
-            /* Count num of non-zero elements */ \
+            /* Count num of nonzero elements */ \
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
@@ -1492,7 +1492,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
         if (m1_nr != 0 || m1_nc != 0) \
           { \
-            /* Count num of non-zero elements */ \
+            /* Count num of nonzero elements */ \
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
@@ -1930,10 +1930,10 @@ along with Octave; see the file COPYING.  If not, see
           retval.change_capacity (nel); \
           /* The optimal break-point as estimated from simulations */ \
           /* Note that Mergesort is O(nz log(nz)) while searching all */ \
-          /* values is O(nr), where nz here is non-zero per row of */ \
+          /* values is O(nr), where nz here is nonzero per row of */ \
           /* length nr. The test itself was then derived from the */ \
           /* simulation with random square matrices and the observation */ \
-          /* of the number of non-zero elements in the output matrix */ \
+          /* of the number of nonzero elements in the output matrix */ \
           /* it was found that the breakpoints were */ \
           /*   nr: 500  1000  2000  5000 10000 */ \
           /*   nz:   6    25    97   585  2202 */ \

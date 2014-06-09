@@ -615,7 +615,7 @@ main_loop (void)
                     {
                       if (! (interactive || forced_interactive))
                         {
-                          // We should exit with a non-zero status.
+                          // We should exit with a nonzero status.
                           retval = 1;
                           break;
                         }

@@ -238,7 +238,7 @@ done:
   return status;
 }
 
-// Return non-zero if either NR or NC is zero.  Return -1 if this
+// Return nonzero if either NR or NC is zero.  Return -1 if this
 // should be considered fatal; return 1 if this is ok.
 
 int

@@ -112,11 +112,11 @@ DEFUN (all, args, ,
 @deftypefn  {Built-in Function} {} all (@var{x})\n\
 @deftypefnx {Built-in Function} {} all (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if all elements of the vector\n\
-are non-zero.\n\
+are nonzero.\n\
 \n\
 For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether all of the elements of the\n\
-corresponding column of the matrix are non-zero.  For example:\n\
+corresponding column of the matrix are nonzero.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -159,11 +159,11 @@ DEFUN (any, args, ,
 @deftypefn  {Built-in Function} {} any (@var{x})\n\
 @deftypefnx {Built-in Function} {} any (@var{x}, @var{dim})\n\
 For a vector argument, return true (logical 1) if any element of the vector\n\
-is non-zero.\n\
+is nonzero.\n\
 \n\
 For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether any of the elements of the\n\
-corresponding column of the matrix are non-zero.  For example:\n\
+corresponding column of the matrix are nonzero.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -1462,10 +1462,10 @@ Product of elements along dimension @var{dim}.\n\
 \n\
 If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-The optional @qcode{\"type\"} input determines the class of the variable used for\n\
-calculations.  If the argument @qcode{\"native\"} is given, then the operation is\n\
-performed in the same type as the original argument, rather than the default double\n\
-type.\n\
+The optional @qcode{\"type\"} input determines the class of the variable\n\
+used for calculations.  If the argument @qcode{\"native\"} is given, then\n\
+the operation is performed in the same type as the original argument, rather\n\
+than the default double type.\n\
 \n\
 For example:\n\
 \n\
@@ -1478,8 +1478,8 @@ prod ([true, true], \"native\")\n\
 @end group\n\
 @end example\n\
 \n\
-On the contrary, if @qcode{\"double\"} is given, the operation is performed in\n\
-double precision even for single precision inputs.\n\
+On the contrary, if @qcode{\"double\"} is given, the operation is performed\n\
+in double precision even for single precision inputs.\n\
 @seealso{cumprod, sum}\n\
 @end deftypefn")
 {
@@ -2840,7 +2840,7 @@ Called with a single or no argument, size_equal returns true.\n\
 DEFUN (nnz, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{n} =} nnz (@var{a})\n\
-Return the number of non-zero elements in @var{a}.\n\
+Return the number of nonzero elements in @var{a}.\n\
 @seealso{nzmax, nonzeros, find}\n\
 @end deftypefn")
 {
@@ -2920,10 +2920,10 @@ Sum of elements along dimension @var{dim}.\n\
 \n\
 If @var{dim} is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-The optional @qcode{\"type\"} input determines the class of the variable used for\n\
-calculations.  If the argument @qcode{\"native\"} is given, then the operation is\n\
-performed in the same type as the original argument, rather than the default double\n\
-type.\n\
+The optional @qcode{\"type\"} input determines the class of the variable\n\
+used for calculations.  If the argument @qcode{\"native\"} is given, then\n\
+the operation is performed in the same type as the original argument, rather\n\
+than the default double type.\n\
 \n\
 For example:\n\
 \n\
@@ -2939,10 +2939,10 @@ sum ([true, true], \"native\")\n\
 On the contrary, if @qcode{\"double\"} is given, the sum is performed in\n\
 double precision even for single precision inputs.\n\
 \n\
-For double precision inputs, the @qcode{\"extra\"} option will use a more accurate\n\
-algorithm than straightforward summation.  For single precision inputs,\n\
-@qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise, @qcode{\"extra\"}\n\
-has no effect.\n\
+For double precision inputs, the @qcode{\"extra\"} option will use a more\n\
+accurate algorithm than straightforward summation.  For single precision\n\
+inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
+@qcode{\"extra\"} has no effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {

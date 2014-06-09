@@ -44,13 +44,13 @@ the problem size.
 There are many classes of mathematical problems which give rise to
 matrices, where a large number of the elements are zero.  In this case
 it makes sense to have a special matrix type to handle this class of
-problems where only the non-zero elements of the matrix are
+problems where only the nonzero elements of the matrix are
 stored.  Not only does this reduce the amount of memory to store the
 matrix, but it also means that operations on this type of matrix can
 take advantage of the a priori knowledge of the positions of the
-non-zero elements to accelerate their calculations.
+nonzero elements to accelerate their calculations.
 
-A matrix type that stores only the non-zero elements is generally called
+A matrix type that stores only the nonzero elements is generally called
 sparse.  It is the purpose of this document to discuss the basics of the
 storage and creation of sparse matrices and the fundamental operations
 on them.
@@ -81,7 +81,7 @@ for sparse matrix computation", 1994,
 With full matrices, knowledge of the point of an element of the matrix
 within the matrix is implied by its position in the computers memory. 
 However, this is not the case for sparse matrices, and so the positions
-of the non-zero elements of the matrix must equally be stored. 
+of the nonzero elements of the matrix must equally be stored. 
 
 An obvious way to do this is by storing the elements of the matrix as
 triplets, with two elements being their position in the array 
@@ -94,9 +94,9 @@ format.  It is similar to the Yale format.
 In this format the position of each element in a row and the data are
 stored as previously.  However, if we assume that all elements in the
 same column are stored adjacent in the computers memory, then we only
-need to store information on the number of non-zero elements in each
+need to store information on the number of nonzero elements in each
 column, rather than their positions.  Thus assuming that the matrix has
-more non-zero elements than there are columns in the matrix, we win in
+more nonzero elements than there are columns in the matrix, we win in
 terms of the amount of memory used.
 
 In fact, the column index contains one more element than the number of
@@ -109,7 +109,7 @@ C is.
 @group
   for (j = 0; j < nc; j++)
     for (i = cidx(j); i < cidx(j+1); i++)
-       printf ("non-zero element (%i,%i) is %d\n", 
+       printf ("nonzero element (%i,%i) is %d\n", 
            ridx(i), j, data(i));
 @end group
 @end example
@@ -125,7 +125,7 @@ above applies to an example matrix.  Consider the matrix
 @end group
 @end example
 
-The non-zero elements of this matrix are
+The nonzero elements of this matrix are
 
 @example
 @group
@@ -319,7 +319,7 @@ sparse matrices to be obtained.  The most basic of these is
 in fact a sparse matrix.
 
 Another very basic function is @dfn{nnz} that returns the number of
-non-zero entries there are in a sparse matrix, while the function
+nonzero entries there are in a sparse matrix, while the function
 @dfn{nzmax} returns the amount of storage allocated to the sparse
 matrix.  Note that Octave tends to crop unused memory at the first
 opportunity for sparse objects.  There are some cases of user created
@@ -376,7 +376,7 @@ matrix type
 
 There are several graphical means of finding out information about
 sparse matrices.  The first is the @dfn{spy} command, which displays
-the structure of the non-zero elements of the
+the structure of the nonzero elements of the
 matrix.  @xref{fig:spmatrix}, for an example of the use of
 @dfn{spy}.  More advanced graphical information can be obtained with the
 @dfn{treeplot}, @dfn{etreeplot} and @dfn{gplot} commands.
@@ -390,7 +390,7 @@ One use of sparse matrices is in graph theory, where the
 interconnections between nodes are represented as an adjacency
 matrix.  That is, if the i-th node in a graph is connected to the j-th
 node.  Then the ij-th node (and in the case of undirected graphs the
-@nospell{ji-th} node) of the sparse adjacency matrix is non-zero.  If each node
+@nospell{ji-th} node) of the sparse adjacency matrix is nonzero.  If each node
 is then associated with a set of coordinates, then the @dfn{gplot}
 command can be used to graphically display the interconnections
 between nodes.
@@ -509,9 +509,9 @@ details.
 The two basic reasons to use sparse matrices are to reduce the memory 
 usage and to not have to do calculations on zero elements.  The two are
 closely related in that the computation time on a sparse matrix operator
-or function is roughly linear with the number of non-zero elements.
+or function is roughly linear with the number of nonzero elements.
 
-Therefore, there is a certain density of non-zero elements of a matrix 
+Therefore, there is a certain density of nonzero elements of a matrix 
 where it no longer makes sense to store it as a sparse matrix, but rather
 as a full matrix.  For this reason operators and functions that have a 
 high probability of returning a full matrix will always return one.  For
@@ -630,7 +630,7 @@ efficiency, and so the user is warned that calculations where the sign-bit
 of zero is important must not be done using sparse matrices.
 
 In general any function or operator used on a sparse matrix will
-result in a sparse matrix with the same or a larger number of non-zero
+result in a sparse matrix with the same or a larger number of nonzero
 elements than the original matrix.  This is particularly true for the
 important case of sparse matrix factorizations.  The usual way to
 address this is to reorder the matrix, such that its factorization is
@@ -667,7 +667,7 @@ The original matrix had
 @ifset htmltex
 598
 @end ifset
-non-zero terms, while this Cholesky@tie{}factorization has
+nonzero terms, while this Cholesky@tie{}factorization has
 @ifinfo
 @ifnothtml
 71,
@@ -693,7 +693,7 @@ r = chol (A(q,q)); spy (r)}.  This gives
 @ifset htmltex
 399
 @end ifset
-non-zero terms which is a significant improvement.
+nonzero terms which is a significant improvement.
 
 The Cholesky@tie{}factorization itself can be used to determine the
 appropriate sparsity preserving reordering of the matrix during the
@@ -798,7 +798,7 @@ packages were written by Tim Davis and are available at
 @url{http://www.cise.ufl.edu/research/sparse/}}.
 @end enumerate
 
-The band density is defined as the number of non-zero values in the band
+The band density is defined as the number of nonzero values in the band
 divided by the total number of values in the full band.  The banded
 matrix solvers can be entirely disabled by using @dfn{spparms} to set
 @code{bandden} to 1 (i.e., @code{spparms ("bandden", 1)}).

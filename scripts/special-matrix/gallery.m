@@ -1214,9 +1214,9 @@ function A = gearmat (n, i = n, j = -n)
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for gearmat matrix.");
   elseif (! isnumeric (i) || ! isscalar (i) || i == 0 || abs (i) <= n)
-    error ("gallery: I must be a non-zero scalar, and abs (I) <= N for gearmat matrix.");
+    error ("gallery: I must be a nonzero scalar, and abs (I) <= N for gearmat matrix.");
   elseif (! isnumeric (j) || ! isscalar (j) || i == 0 || abs (j) <= n)
-    error ("gallery: J must be a non-zero scalar, and abs (J) <= N for gearmat matrix.");
+    error ("gallery: J must be a nonzero scalar, and abs (J) <= N for gearmat matrix.");
   endif
 
   A = diag (ones (n-1, 1), -1) + diag (ones (n-1, 1), 1);

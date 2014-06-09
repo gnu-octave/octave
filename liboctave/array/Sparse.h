@@ -242,7 +242,7 @@ public:
   Sparse<T>& operator = (const Sparse<T>& a);
 
   // Note that nzmax and capacity are the amount of storage for
-  // non-zero elements, while nnz is the actual number of non-zero
+  // nonzero elements, while nnz is the actual number of nonzero
   // terms.
   octave_idx_type nzmax (void) const { return rep->length (); }
   octave_idx_type capacity (void) const { return nzmax (); }

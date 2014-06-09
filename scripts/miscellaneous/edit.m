@@ -23,7 +23,7 @@
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as
-## its argument it will be opened in the text editor defined by @code{EDITOR}.
+## its argument it will be opened in the text editor defined by @env{EDITOR}.
 ##
 ## @itemize @bullet
 ## @item

@@ -46,7 +46,7 @@ public:
 
   off_t tell (void);
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const;
 
@@ -87,7 +87,7 @@ public:
   static octave_stream
   create (std::istream *arg = 0, const std::string& n = std::string ());
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const;
 
@@ -126,7 +126,7 @@ public:
   static octave_stream
   create (std::ostream *arg, const std::string& n = std::string ());
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const;
 

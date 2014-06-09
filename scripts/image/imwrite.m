@@ -49,7 +49,7 @@
 ##
 ## @item DelayTime
 ## For formats that accept animations (such as GIF), controls for how long a
-## frame is displayed until it moves to the next one. The value must be scalar
+## frame is displayed until it moves to the next one.  The value must be scalar
 ## (which will applied to all frames in @var{img}), or a vector of length
 ## equal to the number of frames in @var{im}.  The value is in seconds, must
 ## be between 0 and 655.35, and defaults to 0.5.

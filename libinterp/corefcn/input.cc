@@ -1007,7 +1007,7 @@ With no arguments, @code{echo} toggles the current echo state.\n\
 
 DEFUN (__echostate__, , ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{state} =} __echostate__ ()\n\
+@deftypefn {Built-in Function} {@var{state} =} __echostate__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {

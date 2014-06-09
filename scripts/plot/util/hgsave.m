@@ -29,12 +29,17 @@
 ## should be one of the following:
 ##
 ## @itemize @bullet
-## @item @code{-binary}, @code{-float-binary}
-## @item @code{-hdf5}, @code{-float-hdf5}
-## @item @code{-V7}, @code{-v7}, @code{-7}, @code{-mat7-binary}
-## @item @code{-V6}, @code{-v6}, @code{-6}, @code{-mat6-binary}
-## @item @code{-text}
-## @item @code{-zip}, @code{-z}
+## @item @option{-binary}, @option{-float-binary}
+##
+## @item @option{-hdf5}, @option{-float-hdf5}
+##
+## @item @option{-V7}, @option{-v7}, @code{-7}, @option{-mat7-binary}
+##
+## @item @option{-V6}, @option{-v6}, @code{-6}, @option{-mat6-binary}
+##
+## @item @option{-text}
+##
+## @item @option{-zip}, @option{-z}
 ## @end itemize
 ##
 ## When producing graphics for final publication use @code{print} or

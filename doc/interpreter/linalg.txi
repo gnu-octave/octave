@@ -49,7 +49,7 @@ as first-year undergraduates.
 Octave includes a polymorphic solver that selects an appropriate matrix
 factorization depending on the properties of the matrix itself.
 Generally, the cost of determining the matrix type is small relative to
-the cost of factorizing the matrix itself. In any case the matrix type
+the cost of factorizing the matrix itself.  In any case the matrix type
 is cached once it is calculated so that it is not re-determined each
 time it is used in a linear equation.
 
@@ -212,3 +212,4 @@ detect a non-Hermitian matrix.
 @DOCSTRING(cgs)
 
 @DOCSTRING(gmres)
+

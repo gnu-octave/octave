@@ -734,6 +734,7 @@ Other systems may require a different solution.
 Suggestions on how to compile ATLAS would be most welcome.
 
 @item @sc{glpk}
+
 @item Qhull (@url{http://www.qhull.org})
 
 Both @sc{glpk} and Qhull use @code{int} internally so maximum problem
@@ -1026,3 +1027,4 @@ are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O"} and
 @env{FFLAGS} is set to @qcode{"-O"}.
 
 @end itemize
+

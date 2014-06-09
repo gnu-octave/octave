@@ -591,7 +591,7 @@ With no arguments, @code{diary} toggles the current diary state.\n\
 
 DEFUN (__diaryfile__, , ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
+@deftypefn {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {
@@ -600,7 +600,7 @@ Undocumented internal function\n\
 
 DEFUN (__diarystate__, , ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{state} =} __diarystate__ ()\n\
+@deftypefn {Built-in Function} {@var{state} =} __diarystate__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {

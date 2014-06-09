@@ -4065,7 +4065,7 @@ Undocumented internal function\n\
 
 DEFUN (__formatstring__, , ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} __formatstring__ ()\n\
+@deftypefn {Built-in Function} {@var{val} =} __formatstring__ ()\n\
 Undocumented internal function\n\
 @end deftypefn")
 {

@@ -39,13 +39,9 @@ general_FCN_FILES = \
   general/interp3.m \
   general/interpn.m \
   general/interpft.m \
-  general/iscolumn.m \
   general/isdir.m \
   general/isequal.m \
   general/isequaln.m \
-  general/isrow.m \
-  general/issquare.m \
-  general/isvector.m \
   general/loadobj.m \
   general/logspace.m \
   general/methods.m \

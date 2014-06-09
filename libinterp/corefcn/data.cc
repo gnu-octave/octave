@@ -3686,6 +3686,128 @@ Return true if @var{x} is a scalar.\n\
 %!error isscalar (1, 2)
 */
 
+DEFUN (isvector, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} isvector (@var{x})\n\
+Return true if @var{x} is a vector.\n\
+\n\
+A vector is a 2-D array where one of the dimensions is equal to 1.  As a\n\
+consequence a 1x1 array, or scalar, is also a vector.\n\
+@seealso{isscalar, ismatrix, size, rows, columns, length}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && (sz(0) == 1 || sz(1) == 1);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (isvector (1))
+%!assert (isvector ([1; 2; 3]))
+%!assert (isvector ([]), false)
+%!assert (isvector ([1, 2; 3, 4]), false)
+
+%!assert (isvector ("t"))
+%!assert (isvector ("test"))
+%!assert (isvector (["test"; "ing"]), false)
+
+%!test
+%! s.a = 1;
+%! assert (isvector (s));
+
+%% Test input validation
+%!error isvector ()
+%!error isvector ([1, 2], 2)
+*/
+
+DEFUN (isrow, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} isrow (@var{x})\n\
+Return true if @var{x} is a row vector.\n\
+@seealso{iscolumn, isscalar, isvector, ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && sz(0) == 1;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (isrow ([1, 2, 3]))
+%!assert (isrow ([1; 2; 3]), false)
+%!assert (isrow (1))
+%!assert (isrow ([]), false)
+%!assert (isrow ([1, 2; 3, 4]), false)
+
+%!assert (isrow ("t"))
+%!assert (isrow ("test"))
+%!assert (isrow (["test"; "ing"]), false)
+
+%!test
+%! s.a = 1;
+%! assert (isrow (s));
+
+%% Test input validation
+%!error isrow ()
+%!error isrow ([1, 2], 2)
+*/
+
+DEFUN (iscolumn, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} iscolumn (@var{x})\n\
+Return true if @var{x} is a column vector.\n\
+@seealso{isrow, isscalar, isvector, ismatrix}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && sz(1) == 1;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (iscolumn ([1, 2, 3]), false)
+%!assert (iscolumn ([1; 2; 3]))
+%!assert (iscolumn (1))
+%!assert (iscolumn ([]), false)
+%!assert (iscolumn ([1, 2; 3, 4]), false)
+
+%!assert (iscolumn ("t"))
+%!assert (iscolumn ("test"), false)
+%!assert (iscolumn (["test"; "ing"]), false)
+
+%!test
+%! s.a = 1;
+%! assert (iscolumn (s));
+
+%% Test input validation
+%!error iscolumn ()
+%!error iscolumn ([1, 2], 2)
+*/
+
 DEFUN (ismatrix, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
@@ -3734,6 +3856,47 @@ will return true for these objects as well.\n\
 
 %!error ismatrix ()
 %!error ismatrix ([1, 2; 3, 4], 2)
+*/
+
+DEFUN (issquare, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} issquare (@var{x})\n\
+Return true if @var{x} is a square matrix.\n\
+@seealso{isscalar, isvector, ismatrix, size}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      dim_vector sz = args(0).dims ();
+      retval = sz.length () == 2 && sz(0) == sz(1);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (issquare ([]))
+%!assert (issquare (1))
+%!assert (! issquare ([1, 2]))
+%!assert (issquare ([1, 2; 3, 4]))
+%!assert (! issquare ([1, 2; 3, 4; 5, 6]))
+%!assert (! issquare (ones (3,3,3)))
+%!assert (issquare ("t"))
+%!assert (! issquare ("test"))
+%!assert (issquare (["test"; "ing"; "1"; "2"]))
+%!test
+%! s.a = 1;
+%! assert (issquare (s));
+%!assert (issquare ({1, 2; 3, 4}))
+%!assert (sparse (([1, 2; 3, 4])))
+
+%% Test input validation
+%!error issquare ()
+%!error issquare ([1, 2; 3, 4], 2)
 */
 
 static octave_value

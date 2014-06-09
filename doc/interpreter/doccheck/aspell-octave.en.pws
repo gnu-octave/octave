@@ -52,6 +52,7 @@ awt
 backend
 Backends
 backends
+backtrace
 bartlett
 BaseValue
 basevalue
@@ -235,6 +236,7 @@ displayrange
 dMatrix
 dmperm
 Dobkin
+docstring
 docstrings
 dOmega
 doNotSpecify
@@ -387,6 +389,7 @@ Gonnet
 goto
 Goto
 gotos
+gperf
 GPL
 GPLK
 gplot
@@ -499,6 +502,7 @@ Jacobians
 javaaddpath
 javamem
 jbig
+JDK
 JIT
 jpeg
 JPEG
@@ -678,8 +682,10 @@ nbincdf
 nbininv
 nbinpdf
 nbinrnd
+ncols
 nd
 ndgrid
+ndims
 ne
 Nelder
 neq
@@ -700,7 +706,11 @@ nodither
 nolabel
 noncommercially
 nonconformant
+nondecreasing
+nonincreasing
+nonnan
 nonsmooth
+nonsparse
 nonzeros
 NOP
 noperm
@@ -713,9 +723,11 @@ NorthOutside
 noscal
 noshare
 notin
+nrows
 nthargout
 NTSC
 ntsc
+numel
 Numpy
 nzmax
 oct
@@ -726,6 +738,7 @@ OLS
 onCleanup
 online
 OpenGL
+OpenJDK
 oplus
 Oppenheim
 Ord
@@ -1166,6 +1179,7 @@ wireframe
 wp
 wspace
 xb
+xboxes
 xc
 xcorr
 xdata
@@ -1188,9 +1202,11 @@ xTRTRS
 xu
 xwd
 xy
+xyboxes
 xyerrorbar
 xyerrorbars
 xyz
+yboxes
 yc
 ydata
 yerrorbar

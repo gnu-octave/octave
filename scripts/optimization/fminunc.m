@@ -63,11 +63,11 @@
 ## Last relative change in function value was less than @code{TolFun}.
 ##
 ## @item 0
-## Iteration limit exceeded---either maximum numer of algorithm iterations
+## Iteration limit exceeded---either maximum number of algorithm iterations
 ## @code{MaxIter} or maximum number of function evaluations @code{MaxFunEvals}.
 ##
 ## @item -1
-## Alogrithm terminated by @code{OutputFcn}.
+## Algorithm terminated by @code{OutputFcn}.
 ##
 ## @item -3
 ## The trust region radius became excessively small.

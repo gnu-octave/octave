@@ -4101,7 +4101,7 @@ ans =\n\
 \n\
 @noindent\n\
 Notice that the first value appears to be 0 when it is actually 1.  Because\n\
-of the possibilty for confusion you should be careful about enabling\n\
+of the possibility for confusion you should be careful about enabling\n\
 @code{fixed_point_format}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\

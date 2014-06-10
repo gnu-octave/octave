@@ -2215,7 +2215,6 @@ opengl_renderer::draw_patch (const patch::properties &props)
   Matrix a;
 
   int nv = v.rows ();
-  // int vmax = v.columns ();
   int nf = f.rows ();
   int fcmax = f.columns ();
 
@@ -2477,10 +2476,14 @@ opengl_renderer::draw_patch (const patch::properties &props)
             {
               if (clip_f(i))
                 {
-                  // This is an unclosed contour. Draw it as a line.
+                  // This is an unclosed contour.  Draw it as a line.
                   bool flag = false;
 
-                  for (int j = 0; j < count_f(i); j++)
+                  glShadeModel ((ec_mode == INTERP || el_mode == GOURAUD)
+                                ? GL_SMOOTH : GL_FLAT);
+
+                  // Add vertices in reverse order for Matlab compatibility
+                  for (int j = count_f(i)-1; j >= 0; j--)
                     {
                       if (! clip(int (f(i,j) - 1)))
                         {
@@ -2492,6 +2495,13 @@ opengl_renderer::draw_patch (const patch::properties &props)
                               flag = true;
                               glBegin (GL_LINE_STRIP);
                             }
+                          if (ec_mode != UNIFORM)
+                            {
+                              Matrix col = vv->color;
+
+                              if (col.numel () == 3)
+                                glColor3dv (col.data ());
+                            }
                           glVertex3d (m(0), m(1), m(2));
                         }
                       else if (flag)
@@ -2500,11 +2510,28 @@ opengl_renderer::draw_patch (const patch::properties &props)
                           glEnd ();
                         }
                     }
+                  // Do loop body with vertex N to "close" GL_LINE_STRIP
+                  // from vertex 0 to vertex N.
+                  int j = count_f(i)-1;
+                  if (flag && ! clip(int (f(i,j) - 1)))
+                    {
+                      vertex_data::vertex_data_rep *vv
+                        = vdata[i+j*fr].get_rep ();
+                      const Matrix m = vv->coords;
+                      if (ec_mode != UNIFORM)
+                        {
+                          Matrix col = vv->color;
+
+                          if (col.numel () == 3)
+                            glColor3dv (col.data ());
+                        }
+                      glVertex3d (m(0), m(1), m(2));
+                    }
 
                   if (flag)
                     glEnd ();
                 }
-              else
+              else  // Normal edge contour drawn with tesselator
                 {
                   tess.begin_polygon (false);
                   tess.begin_contour ();

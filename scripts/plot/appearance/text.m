@@ -129,6 +129,8 @@ function h = text (varargin)
 
   if (isempty (hax))
     hax = gca ();
+  else
+    hax = hax(1);
   endif
 
   ## Position argument may alse be in PROP/VAL pair

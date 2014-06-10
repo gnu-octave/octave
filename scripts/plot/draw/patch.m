@@ -80,6 +80,8 @@ function h = patch (varargin)
   
   if (isempty (hax))
     hax = gca ();
+  else
+    hax = hax(1);
   endif
   
   [htmp, failed] = __patch__ (hax, varargin{:});

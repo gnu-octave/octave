@@ -111,6 +111,8 @@ function h = image (varargin)
       hax = newplot (hax);
     elseif (isempty (hax))
       hax = gca ();
+    else
+      hax = hax(1);
     endif
 
     htmp = __img__ (hax, do_new, x, y, img, varargin{chararg:end});

@@ -49,6 +49,8 @@ function h = line (varargin)
 
   if (isempty (hax))
     hax = gca ();
+  else
+    hax = hax(1);
   endif
 
   htmp = __line__ (hax, varargin{:});

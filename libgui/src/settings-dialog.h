@@ -52,6 +52,12 @@ private slots:
   void get_dir (QLineEdit*, const QString&);
   void set_disabled_pref_file_browser_dir (bool disable);
 
+  // slots for import/export-buttons of shortcut sets
+  void import_shortcut_set1 ();
+  void export_shortcut_set1 ();
+  void import_shortcut_set2 ();
+  void export_shortcut_set2 ();
+
 private:
   Ui::settings_dialog * ui;
 #ifdef HAVE_QSCINTILLA

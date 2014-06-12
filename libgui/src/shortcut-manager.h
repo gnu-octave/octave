@@ -63,10 +63,10 @@ public:
       instance->do_init_data ();
   }
 
-  static void write_shortcuts ()
+  static void write_shortcuts (int set, QSettings *settings)
   {
     if (instance_ok ())
-      instance->do_write_shortcuts ();
+      instance->do_write_shortcuts (set, settings);
   }
 
   static void set_shortcut (QAction *action, const QString& key)
@@ -79,6 +79,12 @@ public:
   {
     if (instance_ok ())
       instance->do_fill_treewidget (tree_view);
+  }
+
+  static void import_export (bool import, int set)
+  {
+    if (instance_ok ())
+      instance->do_import_export (import, set);
   }
 
 public slots:
@@ -107,10 +113,12 @@ private:
 
   void init (QString, QString, QKeySequence);
   void do_init_data ();
-  void do_write_shortcuts ();
+  void do_write_shortcuts (int set, QSettings *settings);
   void do_set_shortcut (QAction *action, const QString& key);
   void do_fill_treewidget (QTreeWidget *tree_view);
+  void do_import_export (bool import, int set);
   void shortcut_dialog (int);
+  void import_shortcuts (int set, QSettings *settings);
 
   struct shortcut_t
   {

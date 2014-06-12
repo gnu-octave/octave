@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QCheckBox>
 #include <QHeaderView>
 #include <QAction>
+#include <QFileDialog>
 
 #include "error.h"
 #include "resource-manager.h"
@@ -300,7 +301,7 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
       QColor fg = QColor (tree_item->foreground (1).color ());
       fg.setAlpha (128);
       tree_item->setForeground (1, QBrush (fg));
-      tree_item->setForeground (3,QBrush (fg));
+      tree_item->setForeground (3, QBrush (fg));
 
       // write the shortcuts
       tree_item->setText (0, sc.description);
@@ -315,18 +316,35 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 
 }
 
+// write one or all actual shortcut set(s) into a settings file
 void
-shortcut_manager::do_write_shortcuts ()
+shortcut_manager::do_write_shortcuts (int set, QSettings* settings)
 {
-  for (int i = 0; i < _sc.count (); i++)
+  if (set)
     {
-      _settings->setValue("shortcuts/"+_sc.at (i).settings_key, _sc.at (i).actual_sc[0].toString ());
-      _settings->setValue("shortcuts/"+_sc.at (i).settings_key+"_1", _sc.at (i).actual_sc[1].toString ());
+      // set is not zero, only write the desired set (index = set-1)
+      // into the settings file that the user has selected for this export
+      for (int i = 0; i < _sc.count (); i++)  // loop over all shortcuts
+        {
+          settings->setValue("shortcuts/"+_sc.at (i).settings_key,
+                             _sc.at (i).actual_sc[set-1].toString ());
+        }
+    }
+  else
+    {
+      // set is zero, write all sets into the normal octave settings file
+      // (this is only the case when called from the closing settings dialog)
+      for (int i = 0; i < _sc.count (); i++)  // loop over all shortcuts
+        {
+          settings->setValue("shortcuts/"+_sc.at (i).settings_key,
+                             _sc.at (i).actual_sc[0].toString ());
+          settings->setValue("shortcuts/"+_sc.at (i).settings_key+"_1",
+                            _sc.at (i).actual_sc[1].toString ());
+        }
+      delete _dialog;  // the dialog for key sequences can be removed now
     }
 
-  _settings->sync ();
-
-  delete _dialog;
+  settings->sync ();    // sync the settings file
 }
 
 void
@@ -498,26 +516,85 @@ shortcut_manager::shortcut_dialog_set_default ()
   _edit_actual->setText (_label_default->text ());
 }
 
+// import a shortcut set from a given settings file and refresh the tree view
+void
+shortcut_manager::import_shortcuts (int set, QSettings *settings)
+{
+  for (int i = 0; i < _sc.count (); i++)
+    {
+      // update the list of all shortcuts
+      shortcut_t sc = _sc.at (i);           // make a copy
+      sc.actual_sc[set-1] = QKeySequence (  // get new shortcut from settings
+        settings->value ("shortcuts/"+sc.settings_key,sc.actual_sc[set-1]).
+                        toString ());       // and use the old one as default
+      _sc.replace (i,sc);                   // replace the old with the new one
+
+      // update the tree view
+      QTreeWidgetItem* tree_item = _index_item_hash[i]; // get related tree item
+      tree_item->setText (2*set, sc.actual_sc [set-1]); // display new shortcut
+    }
+}
+
+// import or export of shortcut sets,
+// called from settings dialog when related buttons are clicked
+void
+shortcut_manager::do_import_export (bool import, int set)
+{
+  QString file;
+
+  // get the file name to read or write the shortcuts,
+  // the default extension is .osc (octave shortcuts)
+  if (import)
+    {
+      file = QFileDialog::getOpenFileName (this,
+              tr ("Import shortcut set %1 from file ...").arg (set), QString (),
+              tr ("Octave Shortcut Files (*.osc);;All Files (*)"));
+    }
+  else
+    {
+      file = QFileDialog::getSaveFileName (this,
+              tr ("Export shortcut set %1 into file ...").arg (set), QString (),
+              tr ("Octave Shortcut Files (*.osc);;All Files (*)"));
+    }
+
+  // create a settings object related to this file
+  QSettings *osc_settings = new QSettings (file, QSettings::IniFormat);
+  if (osc_settings)
+    {
+      // the settings object was successfully created: carry on
+      if (import)
+        import_shortcuts (set, osc_settings);   // import (special action)
+      else
+        do_write_shortcuts (set, osc_settings); // export, like saving settings
+    }
+  else
+    qWarning () << tr ("Failed to open %1 as octave shortcut file"). arg (file);
+
+}
 
 
+// enter_shortcut:
+// class derived from QLineEdit for directly entering key sequences which
 enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)
 {
-  _direct_shortcut = true;
+  _direct_shortcut = true;      // the shortcut is directly entered
 }
 
 enter_shortcut::~enter_shortcut ()
 {
 }
 
+// slot for checkbox whether the shortcut is directly entered or not
 void
 enter_shortcut::handle_direct_shortcut (int state)
 {
   if (state)
-    _direct_shortcut = true;
+    _direct_shortcut = true;  // the shortcut is directly entered
   else
-    _direct_shortcut = false;
+    _direct_shortcut = false; // the shortcut has to be written as text
 }
 
+// new keyPressEvent
 void
 enter_shortcut::keyPressEvent (QKeyEvent *e)
 {
@@ -548,4 +625,3 @@ enter_shortcut::keyPressEvent (QKeyEvent *e)
       setText (QKeySequence(key));
     }
 }
-

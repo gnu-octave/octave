@@ -58,8 +58,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 {
   ui->setupUi (this);
 
-  shortcut_manager::fill_treewidget (ui->shortcuts_treewidget);
-
   QSettings *settings = resource_manager::get_settings ();
 
   // restore last geometry
@@ -280,11 +278,26 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   read_terminal_colors (settings);
 
   // shortcuts
+
   ui->cb_prevent_readline_conflicts->setChecked (
     settings->value ("shortcuts/prevent_readline_conflicts", true).toBool ());
   int set = settings->value ("shortcuts/set",0).toInt ();
   ui->rb_sc_set1->setChecked (set == 0);
   ui->rb_sc_set2->setChecked (set == 1);
+
+  // initialize the tree view with all shortcut data
+  shortcut_manager::fill_treewidget (ui->shortcuts_treewidget);
+
+  // connect the buttons for import/export of the shortcut sets
+  connect (ui->btn_import_shortcut_set1, SIGNAL (clicked ()),
+           this, SLOT (import_shortcut_set1 ()));
+  connect (ui->btn_export_shortcut_set1, SIGNAL (clicked ()),
+           this, SLOT (export_shortcut_set1 ()));
+  connect (ui->btn_import_shortcut_set2, SIGNAL (clicked ()),
+           this, SLOT (import_shortcut_set2 ()));
+  connect (ui->btn_export_shortcut_set2, SIGNAL (clicked ()),
+           this, SLOT (export_shortcut_set2 ()));
+
 
 #ifdef HAVE_QSCINTILLA
   // editor styles: create lexer, read settings, and create dialog elements
@@ -713,7 +726,7 @@ settings_dialog::write_changed_settings ()
   if (ui->rb_sc_set2->isChecked ())
     set = 1;
   settings->setValue ("shortcuts/set",set);
-  shortcut_manager::write_shortcuts ();
+  shortcut_manager::write_shortcuts (0, settings);  // 0: write both sets
 
   // settings dialog's geometry
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
@@ -881,4 +894,29 @@ settings_dialog::set_disabled_pref_file_browser_dir (bool disable)
       ui->le_file_browser_dir->setDisabled (disable);
       ui->pb_file_browser_dir->setDisabled (disable);
     }
+}
+
+// slots for import/export of shortcut sets
+void
+settings_dialog::import_shortcut_set1 ()
+{
+  shortcut_manager::import_export (true,1);
+}
+
+void
+settings_dialog::export_shortcut_set1 ()
+{
+  shortcut_manager::import_export (false,1);
+}
+
+void
+settings_dialog::import_shortcut_set2 ()
+{
+  shortcut_manager::import_export (true,2);
+}
+
+void
+settings_dialog::export_shortcut_set2 ()
+{
+  shortcut_manager::import_export (false,2);
 }

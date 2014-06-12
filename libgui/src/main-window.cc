@@ -2082,7 +2082,7 @@ main_window::execute_command_callback ()
       command_editor::redisplay ();
       // We are executing inside the command editor event loop.  Force
       // the current line to be returned for processing.
-      command_editor::interrupt ();
+      command_editor::accept_line ();
     }
 
   if (repost)  // queue not empty, so repost event for further processing

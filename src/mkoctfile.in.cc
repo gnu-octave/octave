@@ -344,7 +344,10 @@ run_command (const std::string& cmd)
 {
   if (debug)
     std::cout << cmd << std::endl;
-  return system (cmd.c_str ());
+  int result = system (cmd.c_str ());
+  if (WIFEXITED (result))
+    result = WEXITSTATUS (result);
+  return result;
 }
 
 bool

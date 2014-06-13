@@ -300,11 +300,6 @@ static unsigned int Vtoken_count = 0;
 // Internal variable for lexer debugging state.
 static bool lexer_debug_flag = false;
 
-// Forward declarations for functions defined at the bottom of this
-// file that are needed inside the lexer actions.
-
-static std::string strip_trailing_whitespace (char *s);
-
 %}
 
 D       [0-9]
@@ -1921,21 +1916,6 @@ is omitted, return a list of keywords.\n\
 %!assert (iskeyword ("fft"), false)
 
 */
-
-// Used to delete trailing white space from tokens.
-
-static std::string
-strip_trailing_whitespace (char *s)
-{
-  std::string retval = s;
-
-  size_t pos = retval.find_first_of (" \t");
-
-  if (pos != std::string::npos)
-    retval.resize (pos);
-
-  return retval;
-}
 
 DEFUN (__display_tokens__, args, nargout,
   "-*- texinfo -*-\n\

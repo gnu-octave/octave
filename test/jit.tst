@@ -444,7 +444,7 @@
 %! endwhile
 %! assert (i == 10);
 %! assert (a == 10);
-%! jit_failure_count (0)
+%! assert (jit_failure_count, 0);
 
 %!testif HAVE_LLVM
 %! jit_failure_count (0)
@@ -487,7 +487,7 @@
 %!   test_compute_idom ();
 %! end_try_catch
 %! assert (! isempty (lasterr ()));
-%! assert (jit_failure_count, 0);
+%! assert (jit_failure_count, 1);
 
 %!function x = test_overload (a)
 %!  while (1)
@@ -560,7 +560,7 @@
 %!   test_undef ();
 %! end_try_catch
 %! assert (strncmp (lasterr (), "'XXX' undefined near", 20));
-%! assert (jit_failure_count, 0);
+%! assert (jit_failure_count, 1);
 
 %!shared id
 %! id = @(x) x;

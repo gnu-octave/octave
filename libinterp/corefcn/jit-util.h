@@ -42,8 +42,15 @@ namespace llvm
 {
   class Value;
   class Module;
+#ifdef LEGACY_PASSMANAGER
+  namespace legacy {
+    class FunctionPassManager;
+    class PassManager;
+  }
+#else
   class FunctionPassManager;
   class PassManager;
+#endif
   class ExecutionEngine;
   class Function;
   class BasicBlock;

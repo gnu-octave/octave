@@ -386,8 +386,13 @@ private:
   size_t trip_count (const octave_value& bounds) const;
 
   llvm::Module *module;
+#ifdef LEGACY_PASSMANAGER
+  llvm::legacy::PassManager *module_pass_manager;
+  llvm::legacy::FunctionPassManager *pass_manager;
+#else
   llvm::PassManager *module_pass_manager;
   llvm::FunctionPassManager *pass_manager;
+#endif
   llvm::ExecutionEngine *engine;
 };
 

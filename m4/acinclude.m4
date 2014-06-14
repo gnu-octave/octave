@@ -1744,6 +1744,58 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
   fi
 ])
 dnl
+dnl Check for raw_fd_ostream API
+dnl
+AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
+  AC_CACHE_CHECK([check LLVM::raw_fd_ostream arg type is llvm::sys:fs],
+    [octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Support/raw_os_ostream.h>
+          ]], [[
+          std::string str;
+          llvm::raw_fd_ostream fout ("", str, llvm::sys::fs::F_Binary);
+        ]])],
+        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=yes,
+        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs = yes; then
+    AC_DEFINE(RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS, 1,
+      [Define to 1 if LLVM::raw_fd_ostream arg type is llvm::sys:fs.])
+  fi
+])
+dnl
+dnl Check for legacy::PassManager API
+dnl
+AC_DEFUN([OCTAVE_LLVM_LEGACY_PASSMANAGER_API], [
+  AC_CACHE_CHECK([check for LLVM::legacy::PassManager],
+    [octave_cv_legacy_passmanager],
+    [AC_LANG_PUSH(C++)
+      save_LIBS="$LIBS"
+      LIBS="$LLVM_LIBS $LIBS"
+      AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/IR/LegacyPassManager.h>
+          ]], [[
+          llvm::Module *module;
+          llvm::legacy::PassManager *module_pass_manager;
+          llvm::legacy::FunctionPassManager *pass_manager;      
+          module_pass_manager = new llvm::legacy::PassManager ();
+          pass_manager = new llvm::legacy::FunctionPassManager (module);
+        ]])],
+        octave_cv_legacy_passmanager=yes,
+        octave_cv_legacy_passmanager=no)
+      LIBS="$save_LIBS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_legacy_passmanager = yes; then
+    AC_DEFINE(LEGACY_PASSMANAGER, 1,
+      [Define to 1 if LLVM::legacy::PassManager exists.])
+  fi
+])
+dnl
 dnl Check for ar.
 dnl
 AC_DEFUN([OCTAVE_PROG_AR], [

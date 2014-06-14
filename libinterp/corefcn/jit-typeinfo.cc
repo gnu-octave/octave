@@ -34,7 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "jit-typeinfo.h"
 
+#ifdef HAVE_LLVM_IR_VERIFIER_H
+#include <llvm/IR/Verifier.h>
+#else
 #include <llvm/Analysis/Verifier.h>
+#endif
+
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H

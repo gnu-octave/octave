@@ -50,11 +50,22 @@ static int Vjit_failure_count = 0;
 
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
+
+#ifdef HAVE_LLVM_IR_VERIFIER_H
+#include <llvm/IR/Verifier.h>
+#else
 #include <llvm/Analysis/Verifier.h>
+#endif
+
 #include <llvm/Bitcode/ReaderWriter.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
+
+#ifdef LEGACY_PASSMANAGER
+#include <llvm/IR/LegacyPassManager.h>
+#else
 #include <llvm/PassManager.h>
+#endif
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
 #include <llvm/IR/LLVMContext.h>
@@ -2053,10 +2064,15 @@ tree_jit::initialize (void)
   if (! engine)
     return false;
 
+#ifdef LEGACY_PASSMANAGER
+  module_pass_manager = new llvm::legacy::PassManager ();
+  pass_manager = new llvm::legacy::FunctionPassManager (module); 
+#else
   module_pass_manager = new llvm::PassManager ();
+  pass_manager = new llvm::FunctionPassManager (module);
+#endif
   module_pass_manager->add (llvm::createAlwaysInlinerPass ());
 
-  pass_manager = new llvm::FunctionPassManager (module);
 #ifdef HAVE_LLVM_DATALAYOUT
   pass_manager->add (new llvm::DataLayout (*engine->getDataLayout ()));
 #else
@@ -2171,8 +2187,13 @@ tree_jit::optimize (llvm::Function *fn)
   if (Vdebug_jit)
     {
       std::string error;
+#ifdef RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS
+      llvm::raw_fd_ostream fout ("test.bc", error,
+                                 llvm::sys::fs::F_Binary);
+#else
       llvm::raw_fd_ostream fout ("test.bc", error,
                                  llvm::raw_fd_ostream::F_Binary);
+#endif
       llvm::WriteBitcodeToFile (module, fout);
     }
 }

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
+#include "builtin-defun-decls.h"
 
 class file_editor;
 
@@ -205,6 +206,8 @@ private:
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);
   void center_current_line ();
+
+  void add_octave_apis (octave_value_list key_ovl);
 
   octave_qscintilla *_edit_area;
 

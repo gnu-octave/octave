@@ -1014,11 +1014,6 @@ main_window::connect_visibility_changed (void)
 {
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
-
-#ifdef HAVE_QSCINTILLA
-  // Main window completely shown, determine whether to create an empty script
-  editor_window->empty_script (true, false);
-#endif
 }
 
 void
@@ -1323,6 +1318,14 @@ main_window::handle_octave_ready ()
     }
 
   set_current_working_directory (startup_dir.absolutePath ());
+
+#ifdef HAVE_QSCINTILLA
+  // Octave ready, determine whether to create an empty script.
+  // This can not be done when the editor is created because all functions
+  // must be known for the lexer's auto completion informations
+  editor_window->empty_script (true, false);
+#endif
+
 }
 
 

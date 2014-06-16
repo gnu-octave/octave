@@ -166,6 +166,14 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/codeCompletion_threshold",2).toInt ());
   ui->editor_checkbox_ac_keywords->setChecked (
     settings->value ("editor/codeCompletion_keywords",true).toBool ());
+  ui->editor_checkbox_ac_builtins->setEnabled (
+    ui->editor_checkbox_ac_keywords->isChecked ());
+  ui->editor_checkbox_ac_functions->setEnabled (
+    ui->editor_checkbox_ac_keywords->isChecked ());
+  ui->editor_checkbox_ac_builtins->setChecked (
+    settings->value ("editor/codeCompletion_octave_builtins",true).toBool ());
+  ui->editor_checkbox_ac_functions->setChecked (
+    settings->value ("editor/codeCompletion_octave_functions",true).toBool ());
   ui->editor_checkbox_ac_document->setChecked (
     settings->value ("editor/codeCompletion_document",false).toBool ());
   ui->editor_checkbox_ac_case->setChecked (
@@ -605,6 +613,10 @@ settings_dialog::write_changed_settings ()
                       ui->editor_spinbox_ac_threshold->value ());
   settings->setValue ("editor/codeCompletion_keywords",
                       ui->editor_checkbox_ac_keywords->isChecked ());
+  settings->setValue ("editor/codeCompletion_octave_builtins",
+                      ui->editor_checkbox_ac_builtins->isChecked ());
+  settings->setValue ("editor/codeCompletion_octave_functions",
+                      ui->editor_checkbox_ac_functions->isChecked ());
   settings->setValue ("editor/codeCompletion_document",
                       ui->editor_checkbox_ac_document->isChecked ());
   settings->setValue ("editor/codeCompletion_case",

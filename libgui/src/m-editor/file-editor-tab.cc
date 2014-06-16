@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QInputDialog>
 #include <QPrintDialog>
+#include <QDateTime>
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
@@ -58,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "version.h"
 #include "utils.h"
+#include "defaults.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -330,17 +332,75 @@ file_editor_tab::update_lexer ()
         }
     }
 
+  QSettings *settings = resource_manager::get_settings ();
+
+  // build information for auto completion (APIs)
   _lexer_apis = new QsciAPIs(lexer);
+
   if (_lexer_apis)
     {
+      bool update_apis_file = false;  // flag, whether update of apis files
+
       // get path to prepared api info
       QDesktopServices desktopServices;
       QString prep_apis_path
         = desktopServices.storageLocation (QDesktopServices::HomeLocation)
           + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
-      _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
 
-      if (!_lexer_apis->loadPrepared (_prep_apis_file))
+      // get settings which infos are used for octave
+      bool octave_builtins = settings->value (
+                  "editor/codeCompletion_octave_builtins", true).toBool ();
+      bool octave_functions = settings->value (
+                  "editor/codeCompletion_octave_functions", true).toBool ();
+
+      if (_is_octave_file)
+        {
+          // octave file: keywords are always used
+          _prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
+
+          if (octave_builtins)
+            _prep_apis_file = _prep_apis_file + "b";  // use builtins, too
+
+          if (octave_functions)
+            _prep_apis_file = _prep_apis_file + "f";  // use keywords, too
+
+          _prep_apis_file = _prep_apis_file + ".pap"; // final name of apis file
+
+          // check whether the APIs info needs to be prepared and saved
+          QFileInfo apis_file = QFileInfo (_prep_apis_file);
+          update_apis_file = ! apis_file.exists ();  // flag whether apis file needs update
+
+          // function list depends on installed packages: check mod. date
+          if (! update_apis_file & octave_functions)
+            {
+              // check whether package file is newer than apis_file
+              QDateTime apis_date = apis_file.lastModified ();
+
+              // compare to local package list
+              // FIXME: How to get user chosen location?
+              QFileInfo local_pkg_list = QFileInfo (
+                desktopServices.storageLocation (QDesktopServices::HomeLocation)
+                + "/.octave_packages");
+              if (local_pkg_list.exists ()
+                  & (apis_date < local_pkg_list.lastModified ()) )
+                update_apis_file = true;
+
+              // compare to global package list
+              // FIXME: How to get user chosen location?
+              QFileInfo global_pkg_list = QFileInfo (
+                                        QString::fromStdString (Voctave_home)
+                                        + "/share/octave/octave_packages");
+               if (global_pkg_list.exists ()
+                   & (apis_date < global_pkg_list.lastModified ()) )
+                update_apis_file = true;
+            }
+          }
+        else  // no octave file, just add extension
+          {
+            _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+          }
+
+      if (update_apis_file | !_lexer_apis->loadPrepared (_prep_apis_file))
         {
           // no prepared info loaded, prepare and save if possible
 
@@ -348,12 +408,34 @@ file_editor_tab::update_lexer ()
           QString keyword;
           QStringList keyword_list;
           int i,j;
-          for (i=1; i<=3; i++) // test the first 5 keyword sets
+
+          if (_is_octave_file)
             {
-              keyword = QString(lexer->keywords (i));           // get list
-              keyword_list = keyword.split (QRegExp ("\\s+"));  // split
-              for (j = 0; j < keyword_list.size (); j++)        // add to API
-                _lexer_apis->add (keyword_list.at (j));
+              // octave: get keywords from internal informations depending on
+              //         user preferences
+
+              // keywords are always used
+              add_octave_apis (F__keywords__ ());       // add new entries
+
+              if (octave_builtins)
+                add_octave_apis (F__builtins__ ());       // add new entries
+
+              if (octave_functions)
+                add_octave_apis (F__list_functions__ ()); // add new entries
+
+            }
+          else
+            {
+
+              _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+
+              for (i=1; i<=3; i++) // test the first 5 keyword sets
+                {
+                  keyword = QString(lexer->keywords (i));           // get list
+                  keyword_list = keyword.split (QRegExp ("\\s+"));  // split
+                  for (j = 0; j < keyword_list.size (); j++)        // add to API
+                    _lexer_apis->add (keyword_list.at (j));
+                }
             }
 
           // dsiconnect slot for saving prepared info if already connected
@@ -369,9 +451,7 @@ file_editor_tab::update_lexer ()
         }
     }
 
-  QSettings *settings = resource_manager::get_settings ();
-  if (settings)
-    lexer->readSettings (*settings);
+  lexer->readSettings (*settings);
 
   _edit_area->setLexer (lexer);
 
@@ -381,6 +461,17 @@ file_editor_tab::update_lexer ()
   else
     _edit_area->setMarginWidth (2,0);
 
+}
+
+// function for adding entries to the octave lexer's APIs
+void
+file_editor_tab::add_octave_apis (octave_value_list key_ovl)
+{
+  octave_value keys = key_ovl(0);
+  Cell key_list = keys.cell_value ();
+
+  for (int idx = 0; idx < key_list.numel (); idx++)
+    _lexer_apis->add (QString (key_list.elem (idx).string_value ().data ()));
 }
 
 void

@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -404,9 +404,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-146</y>
             <width>662</width>
-            <height>524</height>
+            <height>553</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -874,7 +874,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
+                 <item row="2" column="0">
                   <widget class="QCheckBox" name="editor_checkbox_ac_case">
                    <property name="enabled">
                     <bool>true</bool>
@@ -887,7 +887,17 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
+                 <item row="1" column="0">
+                  <widget class="QCheckBox" name="editor_checkbox_ac_document">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>Match words in document</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
                   <widget class="QCheckBox" name="editor_checkbox_ac_replace">
                    <property name="enabled">
                     <bool>true</bool>
@@ -910,17 +920,7 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="0" column="2">
-                  <widget class="QCheckBox" name="editor_checkbox_ac_document">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="text">
-                    <string>Match words in document</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
+                 <item row="2" column="3">
                   <spacer name="horizontalSpacer_19">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -932,6 +932,30 @@
                     </size>
                    </property>
                   </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <layout class="QHBoxLayout" name="horizontalLayout_14">
+                   <item>
+                    <widget class="QCheckBox" name="editor_checkbox_ac_builtins">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>With Octave builtins</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="editor_checkbox_ac_functions">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>With Octave functions</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </item>
@@ -2597,6 +2621,38 @@
     <hint type="destinationlabel">
      <x>302</x>
      <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_checkbox_ac_keywords</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_checkbox_ac_builtins</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>296</x>
+     <y>231</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_checkbox_ac_keywords</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_checkbox_ac_functions</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>231</y>
     </hint>
    </hints>
   </connection>

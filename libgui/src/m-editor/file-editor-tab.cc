@@ -69,6 +69,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _lexer_apis = 0;
   _app_closing = false;
   _is_octave_file = true;
+  _modal_dialog = false;
 
   // Make sure there is a slash at the end of the directory name
   // for identification when saved later.
@@ -573,7 +574,11 @@ file_editor_tab::run_file (const QWidget *ID)
     return;
 
   if (_edit_area->isModified ())
-    save_file (_file_name);
+    {
+      _modal_dialog = true;    // force modal dialog if the file is a new one
+      save_file (_file_name);  // save file dialog
+      _modal_dialog = false;   // back to non-modal dialogs
+    }
 
   QFileInfo info (_file_name);
   emit run_file_signal (info);
@@ -1077,12 +1082,12 @@ file_editor_tab::handle_copy_available (bool enableCopy)
 }
 
 // show_dialog: shows a modal or non modal dialog depeding on the closing
-//              of the app
+//              of the app and the flag _modal_dialog
 void
 file_editor_tab::show_dialog (QDialog *dlg)
 {
   dlg->setAttribute (Qt::WA_DeleteOnClose);
-  if (_app_closing)
+  if (_app_closing | _modal_dialog)
     dlg->exec ();
   else
     {

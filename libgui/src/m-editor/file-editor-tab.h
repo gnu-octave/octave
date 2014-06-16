@@ -223,6 +223,7 @@ private:
   bool _copy_available;
   bool _app_closing;
   bool _is_octave_file;
+  bool _modal_dialog;
 
   QFileSystemWatcher _file_system_watcher;
 

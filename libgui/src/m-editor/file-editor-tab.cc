@@ -1324,6 +1324,11 @@ file_editor_tab::save_file_as (bool remove_on_success)
           // constructor argument.
           fileDialog->setDirectory (_file_name);
         }
+
+      // propose a name corresponding to the function name
+      QString fname = get_function_name ();
+      if (! fname.isEmpty ())
+        fileDialog->selectFile (fname + ".m");
     }
 
   fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
@@ -1737,6 +1742,28 @@ void
 file_editor_tab::edit_area_has_focus (bool focus)
 {
   emit set_global_edit_shortcuts_signal (! focus);
+}
+
+QString
+file_editor_tab::get_function_name ()
+{
+  QRegExp rxfun1 ("^([\t ]*)function([^=]+)=([^\\(]+)\\(([^\\)]*)\\)");
+  QRegExp rxfun2 ("^([\t ]*)function([^\\(]+)\\(([^\\)]*)\\)");
+  QRegExp rxfun3 ("^([\t ]*)function([\t ]*)([^\t ]+)");
+
+  QStringList lines = _edit_area->text ().split ("\n");
+
+  for (int i = 0; i < lines.count (); i++)
+    {
+      if (rxfun1.indexIn (lines.at (i)) != -1)
+        return rxfun1.cap (3).remove (QRegExp("[ \t]*"));
+      else if (rxfun2.indexIn (lines.at (i)) != -1)
+        return rxfun2.cap (2).remove (QRegExp("[ \t]*"));
+      else if (rxfun3.indexIn (lines.at (i)) != -1)
+        return rxfun3.cap (3).remove (QRegExp("[ \t]*"));
+    }
+
+  return QString ();
 }
 
 #endif

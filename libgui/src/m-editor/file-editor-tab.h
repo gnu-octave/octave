@@ -208,6 +208,7 @@ private:
   void center_current_line ();
 
   void add_octave_apis (octave_value_list key_ovl);
+  QString get_function_name ();
 
   octave_qscintilla *_edit_area;
 

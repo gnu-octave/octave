@@ -573,7 +573,7 @@ file_editor_tab::run_file (const QWidget *ID)
   if (ID != this)
     return;
 
-  if (_edit_area->isModified ())
+  if (_edit_area->isModified () | ! valid_file_name ())
     {
       _modal_dialog = true;    // force modal dialog if the file is a new one
       save_file (_file_name);  // save file dialog

@@ -369,14 +369,17 @@ main_window::display_release_notes (void)
       release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
 
       browser->document()->adjustSize ();
-      QSize doc_size = browser->document()->size().toSize ();
-      doc_size.rwidth () += 45;
-      int h = QApplication::desktop ()->height ();
-      if (h > 800)
-        h = 800;
-      doc_size.rheight () = h;
 
-      release_notes_window->resize (doc_size);
+      // center the window on the screen where octave is running
+      QDesktopWidget *m_desktop = QApplication::desktop ();
+      int screen = m_desktop->screenNumber (this);  // screen of the main window
+      QRect screen_geo = m_desktop->availableGeometry (screen);
+      int win_x = screen_geo.width ();        // width of the screen
+      int win_y = screen_geo.height ();       // height of the screen
+      int reln_x = std::min (480, win_x-80);  // desired width of release notes
+      int reln_y = std::min (640, win_y-80);  // desired height of release notes
+      release_notes_window->resize (reln_x, reln_y);  // set size
+      release_notes_window->move (20, 0);     // move to the top left corner
     }
 
   if (! release_notes_window->isVisible ())

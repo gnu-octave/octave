@@ -556,9 +556,16 @@ main_window::display_community_news (const QString& news)
 
       community_news_window->setLayout (vlayout);
       community_news_window->setWindowTitle (tr ("Octave Community News"));
-      community_news_window->resize (640, 480);
-      int win_x = QApplication::desktop ()->width ();
-      int win_y = QApplication::desktop ()->height ();
+
+      // center the window on the screen where octave is running
+      QDesktopWidget *m_desktop = QApplication::desktop ();
+      int screen = m_desktop->screenNumber (this);  // screen of the main window
+      QRect screen_geo = m_desktop->availableGeometry (screen);
+      int win_x = screen_geo.width ();        // width of the screen
+      int win_y = screen_geo.height ();       // height of the screen
+      int news_x = std::min (640, win_x-80);  // desired width of news window
+      int news_y = std::min (480, win_y-80);  // desired height of news window
+      community_news_window->resize (news_x, news_y);  // set size and center
       community_news_window->move ((win_x - community_news_window->width ())/2,
                                    (win_y - community_news_window->height ())/2);
     }

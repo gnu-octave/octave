@@ -81,8 +81,8 @@ function [c, i] = setdiff (a, b, varargin)
       if (nargout > 1)
         i(idx(dups)) = [];
       endif
-      ## Reshape if necessary.
-      if (rows (c) != 1 && rows (b) == 1)
+      ## Reshape if necessary for Matlab compatibility.
+      if (iscolumn (c) && ! iscolumn (b))
         c = c.';
       endif
     endif
@@ -104,4 +104,17 @@ endfunction
 %! [y, i] = setdiff (a, b.');
 %! assert (y, [5]);
 %! assert (y, a(i));
+
+%% Test output orientation compatibility (bug #42577)
+%!assert (setdiff ([1:5], 2), [1,3,4,5])
+%!assert (setdiff ([1:5]', 2), [1;3;4;5])
+%!assert (setdiff ([1:5], [2:3]), [1,4,5])
+%!assert (setdiff ([1:5], [2:3]'), [1,4,5])
+%!assert (setdiff ([1:5]', [2:3]), [1,4,5])
+%!assert (setdiff ([1:5]', [2:3]'), [1;4;5])
+
+%% Test input validation
+%!error setdiff ()
+%!error setdiff (1)
+%!error setdiff (1,2,3,4)
 

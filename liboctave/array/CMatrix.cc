@@ -2683,11 +2683,8 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       // call.
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
-#if defined (HAVE_LOG2)
-      double tmp = log2 (dminmn / dsmlsizp1);
-#else
-      double tmp = log (dminmn / dsmlsizp1) / log (2.0);
-#endif
+      double tmp = xlog2 (dminmn / dsmlsizp1);
+
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
         nlvl = 0;
@@ -2875,11 +2872,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       // call.
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
-#if defined (HAVE_LOG2)
-      double tmp = log2 (dminmn / dsmlsizp1);
-#else
-      double tmp = log (dminmn / dsmlsizp1) / log (2.0);
-#endif
+      double tmp = xlog2 (dminmn / dsmlsizp1);
+
       octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
         nlvl = 0;

@@ -593,21 +593,21 @@ figure window, call the @code{close} function.
 @node Use of the @code{interpreter} Property
 @subsection Use of the @code{interpreter} Property
 
-All text objects, including titles, labels, legends, and text, include
-the property @qcode{"interpreter"}, this property determines the manner in which
-special control sequences in the text are rendered.  If the interpreter
-is set to @qcode{"none"}, then no rendering occurs.  At this point the
-@qcode{"latex"} option is not implemented and so the @qcode{"latex"}
-interpreter also does not interpret the text.
+All text objects---such as titles, labels, legends, and text---include
+the property @qcode{"interpreter"}, this property determines the manner in
+which special control sequences in the text are rendered.  If the interpreter
+is set to @qcode{"none"}, then no rendering occurs.  Currently the
+@qcode{"latex"} interpreter is not implemented and is equivalent to
+@qcode{"none"}.
 
-The @qcode{"tex"} option implements a subset of @TeX{} functionality in the
-rendering of the text.  This allows the insertion of special characters
-such as Greek or mathematical symbols within the text.  The special
-characters are also inserted with a code starting with the backslash
-(\) character, as in the table @ref{tab:extended}.
+The @qcode{"tex"} option implements a subset of @TeX{} functionality when
+rendering text.  This allows the insertion of special glyphs such as Greek
+characters or mathematical symbols.  The special characters are inserted with
+a code following a backslash (\) character, as in the table
+@ref{tab:extended}.
 
 In addition, the formatting of the text can be changed within the string
-with the codes
+by using the codes
 
 @multitable @columnfractions .2 .2 .6 .2
 @item @tab \bf @tab Bold font @tab
@@ -616,7 +616,7 @@ with the codes
 @item @tab \rm @tab Normal font @tab
 @end multitable
 
-These are be used in conjunction with the @{ and @} characters to limit
+These may be used in conjunction with the @{ and @} characters to limit
 the change in the font to part of the string.  For example,
 
 @example
@@ -636,7 +636,7 @@ It is also possible to change the fontname and size within the text
 use @tab
 @end multitable
 
-Finally, the superscript and subscripting can be controlled with the @qcode{'^'}
+Finally, superscripting and subscripting can be controlled with the @qcode{'^'}
 and @qcode{'_'} characters.  If the @qcode{'^'} or @qcode{'_'} is followed by a
 @{ character, then all of the block surrounded by the @{ @} pair is super- or
 sub-scripted.  Without the @{ @} pair, only the character immediately following

@@ -10,6 +10,7 @@ noinst_HEADERS += \
   qterminal/libqterminal/unix/CharacterColor.h \
   qterminal/libqterminal/unix/Emulation.h \
   qterminal/libqterminal/unix/ExtendedDefaultTranslator.h \
+  qterminal/libqterminal/unix/ExtendedDefaultTranslatorMac.h \
   qterminal/libqterminal/unix/Filter.h \
   qterminal/libqterminal/unix/History.h \
   qterminal/libqterminal/unix/KeyboardTranslator.h \

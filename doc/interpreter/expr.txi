@@ -1237,8 +1237,19 @@ is evaluated as
 @end example
 
 @noindent
-where @var{op} can be either @code{+}, @code{-}, @code{*}, or @code{/}.
-So, the expression
+where @var{op} can be either @code{+}, @code{-}, @code{*}, or @code{/},
+as long as @var{expr2} is a simple expression with no side effects.  If
+@var{expr2} also contains an assignment operator, then this expression
+is evaluated as
+
+@example
+@var{temp} = @var{expr2}
+@var{expr1} = (@var{expr1}) @var{op} @var{temp}
+@end example
+
+@noindent
+where @var{temp} is a placeholder temporary value storing the computed
+result of evaluating @var{expr2}.  So, the expression
 
 @example
 a *= b+1

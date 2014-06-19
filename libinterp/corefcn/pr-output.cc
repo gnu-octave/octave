@@ -2485,11 +2485,10 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
 
       if (pr_as_read_syntax)
         {
-          Array<octave_idx_type> pvec = m.pvec ();
-          bool colp = m.is_col_perm ();
+          Array<octave_idx_type> pvec = m.col_perm_vec ();
 
           os << "eye (";
-          if (colp) os << ":, ";
+          os << ":, ";
 
           octave_idx_type col = 0;
           while (col < nc)
@@ -2520,7 +2519,6 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
               else
                 os << " ...\n";
             }
-          if (! colp) os << ", :";
           os << ")";
         }
       else

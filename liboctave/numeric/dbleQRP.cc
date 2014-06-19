@@ -100,7 +100,7 @@ QRP::init (const Matrix& a, qr_type_t qr_type)
 RowVector
 QRP::Pvec (void) const
 {
-  Array<double> pa (p.pvec ());
+  Array<double> pa (p.col_perm_vec ());
   RowVector pv (MArray<double> (pa) + 1.0);
   return pv;
 }

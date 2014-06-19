@@ -261,9 +261,9 @@ bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
   os << "# size: " << matrix.rows () << "\n";
-  os << "# orient: " << (matrix.is_col_perm () ? 'c' : 'r') << '\n';
+  os << "# orient: c\n";
 
-  Array<octave_idx_type> pvec = matrix.pvec ();
+  Array<octave_idx_type> pvec = matrix.col_perm_vec ();
   octave_idx_type n = pvec.length ();
   ColumnVector tmp (n);
   for (octave_idx_type i = 0; i < n; i++) tmp(i) = pvec(i) + 1;
@@ -314,11 +314,12 @@ octave_perm_matrix::save_binary (std::ostream& os, bool&)
 {
 
   int32_t sz = matrix.rows ();
-  bool colp = matrix.is_col_perm ();
+  bool colp = true;
   os.write (reinterpret_cast<char *> (&sz), 4);
   os.write (reinterpret_cast<char *> (&colp), 1);
-  os.write (reinterpret_cast<const char *> (matrix.data ()),
-                                            matrix.byte_size ());
+  const Array<octave_idx_type>& col_perm = matrix.col_perm_vec ();
+  os.write (reinterpret_cast<const char *> (col_perm.data ()),
+                                            col_perm.byte_size ());
 
   return true;
 }

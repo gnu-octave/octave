@@ -61,18 +61,10 @@ Sparse<T>::Sparse (const PermMatrix& a)
   for (octave_idx_type i = 0; i <= n; i++)
     cidx (i) = i;
 
-  const Array<octave_idx_type> pv = a.pvec ();
+  const Array<octave_idx_type> pv = a.col_perm_vec ();
 
-  if (a.is_row_perm ())
-    {
-      for (octave_idx_type i = 0; i < n; i++)
-        ridx (pv(i)) = i;
-    }
-  else
-    {
-      for (octave_idx_type i = 0; i < n; i++)
-        ridx (i) = pv(i);
-    }
+  for (octave_idx_type i = 0; i < n; i++)
+    ridx (i) = pv(i);
 
   for (octave_idx_type i = 0; i < n; i++)
     data (i) = 1.0;

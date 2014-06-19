@@ -606,13 +606,8 @@ M operator * (const PM& p, const M& x) \
     gripe_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
   else \
     { \
-      if (p.is_col_perm ()) \
-        { \
-          result = M (nr, nc); \
-          result.assign (p.pvec (), idx_vector::colon, x); \
-        } \
-      else \
-        result = x.index (p.pvec (), idx_vector::colon); \
+      result = M (nr, nc); \
+      result.assign (p.col_perm_vec (), idx_vector::colon, x); \
     } \
   \
   return result; \
@@ -627,15 +622,7 @@ M operator * (const M& x, const PM& p) \
   if (p.rows () != nc) \
     gripe_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
   else \
-    { \
-      if (p.is_col_perm ()) \
-        result = x.index (idx_vector::colon, p.pvec ()); \
-      else \
-        { \
-          result = M (nr, nc); \
-          result.assign (idx_vector::colon, p.pvec (), x); \
-        } \
-    } \
+    result = x.index (idx_vector::colon, p.col_perm_vec ()); \
   \
   return result; \
 }

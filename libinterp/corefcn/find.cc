@@ -263,33 +263,15 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
 
   if (count > 0)
     {
-      const octave_idx_type* p = v.data ();
-      if (v.is_col_perm ())
+      const Array<octave_idx_type>& p = v.col_perm_vec ();
+      for (octave_idx_type k = 0; k < count; k++)
         {
-          for (octave_idx_type k = 0; k < count; k++)
-            {
-              OCTAVE_QUIT;
-              const octave_idx_type j = start_nc + k;
-              const octave_idx_type i = p[j];
-              i_idx(k) = static_cast<double> (1+i);
-              j_idx(k) = static_cast<double> (1+j);
-              idx(k) = j * nc + i + 1;
-            }
-        }
-      else
-        {
-          for (octave_idx_type k = 0; k < count; k++)
-            {
-              OCTAVE_QUIT;
-              const octave_idx_type i = start_nc + k;
-              const octave_idx_type j = p[i];
-              // Scatter into the index arrays according to
-              // j adjusted by the start point.
-              const octave_idx_type koff = j - start_nc;
-              i_idx(koff) = static_cast<double> (1+i);
-              j_idx(koff) = static_cast<double> (1+j);
-              idx(koff) = j * nc + i + 1;
-            }
+          OCTAVE_QUIT;
+          const octave_idx_type j = start_nc + k;
+          const octave_idx_type i = p(j);
+          i_idx(k) = static_cast<double> (1+i);
+          j_idx(k) = static_cast<double> (1+j);
+          idx(k) = j * nc + i + 1;
         }
     }
   else

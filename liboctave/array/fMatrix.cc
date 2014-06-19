@@ -259,14 +259,10 @@ FloatMatrix::FloatMatrix (const FloatDiagMatrix& a)
 FloatMatrix::FloatMatrix (const PermMatrix& a)
   : MArray<float> (a.dims (), 0.0)
 {
-  const Array<octave_idx_type> ia (a.pvec ());
+  const Array<octave_idx_type> ia (a.col_perm_vec ());
   octave_idx_type len = a.rows ();
-  if (a.is_col_perm ())
-    for (octave_idx_type i = 0; i < len; i++)
-      elem (ia(i), i) = 1.0;
-  else
-    for (octave_idx_type i = 0; i < len; i++)
-      elem (i, ia(i)) = 1.0;
+  for (octave_idx_type i = 0; i < len; i++)
+    elem (ia(i), i) = 1.0;
 }
 
 // FIXME: could we use a templated mixed-type copy function here?

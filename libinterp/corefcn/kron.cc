@@ -136,39 +136,18 @@ kron (const PermMatrix& a, const PermMatrix& b)
 {
   octave_idx_type na = a.rows ();
   octave_idx_type nb = b.rows ();
-  const octave_idx_type *pa = a.data ();
-  const octave_idx_type *pb = b.data ();
-  PermMatrix c(na*nb); // Row permutation.
-  octave_idx_type *pc = c.fortran_vec ();
-
-  bool cola = a.is_col_perm ();
-  bool colb = b.is_col_perm ();
-  if (cola && colb)
+  const Array<octave_idx_type>& pa = a.col_perm_vec ();
+  const Array<octave_idx_type>& pb = b.col_perm_vec ();
+  Array<octave_idx_type> res_perm;
+  octave_idx_type rescol = 0;
+  for (octave_idx_type i = 0; i < na; i++)
     {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[pa[i]*nb+pb[j]] = i*nb+j;
-    }
-  else if (cola)
-    {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[pa[i]*nb+j] = i*nb+pb[j];
-    }
-  else if (colb)
-    {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[i*nb+pb[j]] = pa[i]*nb+j;
-    }
-  else
-    {
-      for (octave_idx_type i = 0; i < na; i++)
-        for (octave_idx_type j = 0; j < nb; j++)
-          pc[i*nb+j] = pa[i]*nb+pb[j];
+      octave_idx_type a_add = pa(i) * nb;
+      for (octave_idx_type j = 0; j < nb; j++)
+        res_perm.xelem (rescol++) = a_add + pb(j);
     }
 
-  return c;
+  return PermMatrix (res_perm, true);
 }
 
 template <class MTA, class MTB>

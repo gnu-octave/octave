@@ -842,6 +842,20 @@ recompute the factorization from scratch.\n\
 %! assert (norm (vec (P'*L*U - A - u*v.'), Inf) < norm (A)*1e1*eps);
 %!
 %!testif HAVE_QRUPDATE_LUU
+%! [L,U,P] = lu (A);
+%! [~,ordcols] = max (P,[],1);
+%! [~,ordrows] = max (P,[],2);
+%! P1 = eye (size(P))(:,ordcols);
+%! P2 = eye (size(P))(ordrows,:);
+%! assert(P1 == P);
+%! assert(P2 == P);
+%! [L,U,P] = luupdate (L,U,P,u,v);
+%! [L,U,P1] = luupdate (L,U,P1,u,v);
+%! [L,U,P2] = luupdate (L,U,P2,u,v);
+%! assert(P1 == P);
+%! assert(P2 == P);
+%!
+%!testif HAVE_QRUPDATE_LUU
 %! [L,U,P] = lu (Ac);
 %! [L,U,P] = luupdate (L,U,P,uc,vc);
 %! assert (norm (vec (tril (L)-L), Inf) == 0);

@@ -92,17 +92,7 @@ signum (double x)
 double
 xlog2 (double x)
 {
-#if defined (HAVE_LOG2)
-  return log2 (x);
-#else
-#if defined (M_LN2)
-  static double ln2 = M_LN2;
-#else
-  static double ln2 = log (2);
-#endif
-
-  return log (x) / ln2;
-#endif
+  return gnulib::log2 (x);
 }
 
 Complex
@@ -317,19 +307,7 @@ signum (float x)
 float
 xlog2 (float x)
 {
-#if defined (HAVE_LOG2F)
-  return log2f (x);
-#elif defined (HAVE_LOG2)
-  return log2 (x);
-#else
-#if defined (M_LN2)
-  static float ln2 = M_LN2;
-#else
-  static float ln2 = log2 (2);
-#endif
-
-  return log (x) / ln2;
-#endif
+  return gnulib::log2f (x);
 }
 
 FloatComplex

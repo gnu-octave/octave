@@ -667,7 +667,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         }
 
       int ndims = dim_len / 4;
-      dims.resize (ndims);
+      if (ndims == 1)
+        {
+          // R and Python can create a 1-D object which is really an Nx1 object
+          dims.resize (2);
+          dims(1) = 1;
+        }
+      else
+        dims.resize (ndims);
+
       for (int i = 0; i < ndims; i++)
         {
           int32_t n;

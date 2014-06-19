@@ -101,7 +101,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
         fputs (ostream, "set print \"-\";\n");
         fflush (ostream);
         fputs (ostream, "pause mouse any;\n\n");
-        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print \"OCTAVE: \", MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
+        fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) key = (MOUSE_KEY==1063 ? 1 : MOUSE_KEY); print \"OCTAVE: \", MOUSE_X, MOUSE_Y, key; else print \"0 0 -1\"\n");
 
         ## Close output file, to force it to be flushed
         fputs (ostream, "set print;\n");

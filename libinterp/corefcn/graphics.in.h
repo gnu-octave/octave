@@ -3762,7 +3762,7 @@ public:
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       array_property position u , default_axes_position ()
-      radio_property projection , "{orthographic}|perpective"
+      radio_property projection , "{orthographic}|perspective"
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       array_property ticklength u , default_axes_ticklength ()

@@ -212,7 +212,7 @@ sparse matrices.\n\
 
                   if (nargout > 1 || info == 0)
                     {
-                      retval(1) = fact.P ();
+                      retval(1) = info;
                       if (LLt)
                         retval(0) = fact.L ();
                       else
@@ -240,7 +240,7 @@ sparse matrices.\n\
 
                   if (nargout > 1 || info == 0)
                     {
-                      retval(1) = fact.P ();
+                      retval(1) = info;
                       if (LLt)
                         retval(0) = fact.L ();
                       else
@@ -375,6 +375,11 @@ sparse matrices.\n\
 /*
 %!assert (chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps))
 %!assert (chol (single ([2, 1; 1, 1])), single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
+%!test   
+%! ## Bug #42587
+%! A = sparse ([1 0 8;0 1 8;8 8 1]);
+%! [Q, p] = chol (A);
+%! assert (p != 0);
 
 %!error chol ()
 %!error <matrix must be positive definite> chol ([1, 2; 3, 4])

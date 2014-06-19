@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
+#include "builtin-defun-decls.h"
 
 class file_editor;
 
@@ -206,6 +207,9 @@ private:
   void remove_all_breakpoints_callback (const bp_info& info);
   void center_current_line ();
 
+  void add_octave_apis (octave_value_list key_ovl);
+  QString get_function_name ();
+
   octave_qscintilla *_edit_area;
 
   QStatusBar *_status_bar;
@@ -219,6 +223,7 @@ private:
   bool _copy_available;
   bool _app_closing;
   bool _is_octave_file;
+  bool _modal_dialog;
 
   QFileSystemWatcher _file_system_watcher;
 

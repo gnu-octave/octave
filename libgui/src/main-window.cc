@@ -369,14 +369,17 @@ main_window::display_release_notes (void)
       release_notes_window->setWindowTitle (tr ("Octave Release Notes"));
 
       browser->document()->adjustSize ();
-      QSize doc_size = browser->document()->size().toSize ();
-      doc_size.rwidth () += 45;
-      int h = QApplication::desktop ()->height ();
-      if (h > 800)
-        h = 800;
-      doc_size.rheight () = h;
 
-      release_notes_window->resize (doc_size);
+      // center the window on the screen where octave is running
+      QDesktopWidget *m_desktop = QApplication::desktop ();
+      int screen = m_desktop->screenNumber (this);  // screen of the main window
+      QRect screen_geo = m_desktop->availableGeometry (screen);
+      int win_x = screen_geo.width ();        // width of the screen
+      int win_y = screen_geo.height ();       // height of the screen
+      int reln_x = std::min (480, win_x-80);  // desired width of release notes
+      int reln_y = std::min (640, win_y-80);  // desired height of release notes
+      release_notes_window->resize (reln_x, reln_y);  // set size
+      release_notes_window->move (20, 0);     // move to the top left corner
     }
 
   if (! release_notes_window->isVisible ())
@@ -556,9 +559,16 @@ main_window::display_community_news (const QString& news)
 
       community_news_window->setLayout (vlayout);
       community_news_window->setWindowTitle (tr ("Octave Community News"));
-      community_news_window->resize (640, 480);
-      int win_x = QApplication::desktop ()->width ();
-      int win_y = QApplication::desktop ()->height ();
+
+      // center the window on the screen where octave is running
+      QDesktopWidget *m_desktop = QApplication::desktop ();
+      int screen = m_desktop->screenNumber (this);  // screen of the main window
+      QRect screen_geo = m_desktop->availableGeometry (screen);
+      int win_x = screen_geo.width ();        // width of the screen
+      int win_y = screen_geo.height ();       // height of the screen
+      int news_x = std::min (640, win_x-80);  // desired width of news window
+      int news_y = std::min (480, win_y-80);  // desired height of news window
+      community_news_window->resize (news_x, news_y);  // set size and center
       community_news_window->move ((win_x - community_news_window->width ())/2,
                                    (win_y - community_news_window->height ())/2);
     }
@@ -1014,11 +1024,6 @@ main_window::connect_visibility_changed (void)
 {
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
-
-#ifdef HAVE_QSCINTILLA
-  // Main window completely shown, determine whether to create an empty script
-  editor_window->empty_script (true, false);
-#endif
 }
 
 void
@@ -1323,6 +1328,14 @@ main_window::handle_octave_ready ()
     }
 
   set_current_working_directory (startup_dir.absolutePath ());
+
+#ifdef HAVE_QSCINTILLA
+  // Octave ready, determine whether to create an empty script.
+  // This can not be done when the editor is created because all functions
+  // must be known for the lexer's auto completion informations
+  editor_window->empty_script (true, false);
+#endif
+
 }
 
 
@@ -2082,7 +2095,7 @@ main_window::execute_command_callback ()
       command_editor::redisplay ();
       // We are executing inside the command editor event loop.  Force
       // the current line to be returned for processing.
-      command_editor::interrupt ();
+      command_editor::accept_line ();
     }
 
   if (repost)  // queue not empty, so repost event for further processing

@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QInputDialog>
 #include <QPrintDialog>
+#include <QDateTime>
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
@@ -58,6 +59,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "version.h"
 #include "utils.h"
+#include "defaults.h"
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -67,6 +69,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _lexer_apis = 0;
   _app_closing = false;
   _is_octave_file = true;
+  _modal_dialog = false;
 
   // Make sure there is a slash at the end of the directory name
   // for identification when saved later.
@@ -330,17 +333,75 @@ file_editor_tab::update_lexer ()
         }
     }
 
+  QSettings *settings = resource_manager::get_settings ();
+
+  // build information for auto completion (APIs)
   _lexer_apis = new QsciAPIs(lexer);
+
   if (_lexer_apis)
     {
+      bool update_apis_file = false;  // flag, whether update of apis files
+
       // get path to prepared api info
       QDesktopServices desktopServices;
       QString prep_apis_path
         = desktopServices.storageLocation (QDesktopServices::HomeLocation)
           + "/.config/octave/"  + QString(OCTAVE_VERSION) + "/qsci/";
-      _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
 
-      if (!_lexer_apis->loadPrepared (_prep_apis_file))
+      // get settings which infos are used for octave
+      bool octave_builtins = settings->value (
+                  "editor/codeCompletion_octave_builtins", true).toBool ();
+      bool octave_functions = settings->value (
+                  "editor/codeCompletion_octave_functions", true).toBool ();
+
+      if (_is_octave_file)
+        {
+          // octave file: keywords are always used
+          _prep_apis_file = prep_apis_path + lexer->lexer () + "_k";
+
+          if (octave_builtins)
+            _prep_apis_file = _prep_apis_file + "b";  // use builtins, too
+
+          if (octave_functions)
+            _prep_apis_file = _prep_apis_file + "f";  // use keywords, too
+
+          _prep_apis_file = _prep_apis_file + ".pap"; // final name of apis file
+
+          // check whether the APIs info needs to be prepared and saved
+          QFileInfo apis_file = QFileInfo (_prep_apis_file);
+          update_apis_file = ! apis_file.exists ();  // flag whether apis file needs update
+
+          // function list depends on installed packages: check mod. date
+          if (! update_apis_file & octave_functions)
+            {
+              // check whether package file is newer than apis_file
+              QDateTime apis_date = apis_file.lastModified ();
+
+              // compare to local package list
+              // FIXME: How to get user chosen location?
+              QFileInfo local_pkg_list = QFileInfo (
+                desktopServices.storageLocation (QDesktopServices::HomeLocation)
+                + "/.octave_packages");
+              if (local_pkg_list.exists ()
+                  & (apis_date < local_pkg_list.lastModified ()) )
+                update_apis_file = true;
+
+              // compare to global package list
+              // FIXME: How to get user chosen location?
+              QFileInfo global_pkg_list = QFileInfo (
+                                        QString::fromStdString (Voctave_home)
+                                        + "/share/octave/octave_packages");
+               if (global_pkg_list.exists ()
+                   & (apis_date < global_pkg_list.lastModified ()) )
+                update_apis_file = true;
+            }
+          }
+        else  // no octave file, just add extension
+          {
+            _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+          }
+
+      if (update_apis_file | !_lexer_apis->loadPrepared (_prep_apis_file))
         {
           // no prepared info loaded, prepare and save if possible
 
@@ -348,12 +409,34 @@ file_editor_tab::update_lexer ()
           QString keyword;
           QStringList keyword_list;
           int i,j;
-          for (i=1; i<=3; i++) // test the first 5 keyword sets
+
+          if (_is_octave_file)
             {
-              keyword = QString(lexer->keywords (i));           // get list
-              keyword_list = keyword.split (QRegExp ("\\s+"));  // split
-              for (j = 0; j < keyword_list.size (); j++)        // add to API
-                _lexer_apis->add (keyword_list.at (j));
+              // octave: get keywords from internal informations depending on
+              //         user preferences
+
+              // keywords are always used
+              add_octave_apis (F__keywords__ ());       // add new entries
+
+              if (octave_builtins)
+                add_octave_apis (F__builtins__ ());       // add new entries
+
+              if (octave_functions)
+                add_octave_apis (F__list_functions__ ()); // add new entries
+
+            }
+          else
+            {
+
+              _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
+
+              for (i=1; i<=3; i++) // test the first 5 keyword sets
+                {
+                  keyword = QString(lexer->keywords (i));           // get list
+                  keyword_list = keyword.split (QRegExp ("\\s+"));  // split
+                  for (j = 0; j < keyword_list.size (); j++)        // add to API
+                    _lexer_apis->add (keyword_list.at (j));
+                }
             }
 
           // dsiconnect slot for saving prepared info if already connected
@@ -369,9 +452,7 @@ file_editor_tab::update_lexer ()
         }
     }
 
-  QSettings *settings = resource_manager::get_settings ();
-  if (settings)
-    lexer->readSettings (*settings);
+  lexer->readSettings (*settings);
 
   _edit_area->setLexer (lexer);
 
@@ -381,6 +462,17 @@ file_editor_tab::update_lexer ()
   else
     _edit_area->setMarginWidth (2,0);
 
+}
+
+// function for adding entries to the octave lexer's APIs
+void
+file_editor_tab::add_octave_apis (octave_value_list key_ovl)
+{
+  octave_value keys = key_ovl(0);
+  Cell key_list = keys.cell_value ();
+
+  for (int idx = 0; idx < key_list.numel (); idx++)
+    _lexer_apis->add (QString (key_list.elem (idx).string_value ().data ()));
 }
 
 void
@@ -481,8 +573,12 @@ file_editor_tab::run_file (const QWidget *ID)
   if (ID != this)
     return;
 
-  if (_edit_area->isModified ())
-    save_file (_file_name);
+  if (_edit_area->isModified () | ! valid_file_name ())
+    {
+      _modal_dialog = true;    // force modal dialog if the file is a new one
+      save_file (_file_name);  // save file dialog
+      _modal_dialog = false;   // back to non-modal dialogs
+    }
 
   QFileInfo info (_file_name);
   emit run_file_signal (info);
@@ -986,12 +1082,12 @@ file_editor_tab::handle_copy_available (bool enableCopy)
 }
 
 // show_dialog: shows a modal or non modal dialog depeding on the closing
-//              of the app
+//              of the app and the flag _modal_dialog
 void
 file_editor_tab::show_dialog (QDialog *dlg)
 {
   dlg->setAttribute (Qt::WA_DeleteOnClose);
-  if (_app_closing)
+  if (_app_closing | _modal_dialog)
     dlg->exec ();
   else
     {
@@ -1233,6 +1329,11 @@ file_editor_tab::save_file_as (bool remove_on_success)
           // constructor argument.
           fileDialog->setDirectory (_file_name);
         }
+
+      // propose a name corresponding to the function name
+      QString fname = get_function_name ();
+      if (! fname.isEmpty ())
+        fileDialog->selectFile (fname + ".m");
     }
 
   fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
@@ -1646,6 +1747,28 @@ void
 file_editor_tab::edit_area_has_focus (bool focus)
 {
   emit set_global_edit_shortcuts_signal (! focus);
+}
+
+QString
+file_editor_tab::get_function_name ()
+{
+  QRegExp rxfun1 ("^([\t ]*)function([^=]+)=([^\\(]+)\\(([^\\)]*)\\)");
+  QRegExp rxfun2 ("^([\t ]*)function([^\\(]+)\\(([^\\)]*)\\)");
+  QRegExp rxfun3 ("^([\t ]*)function([\t ]*)([^\t ]+)");
+
+  QStringList lines = _edit_area->text ().split ("\n");
+
+  for (int i = 0; i < lines.count (); i++)
+    {
+      if (rxfun1.indexIn (lines.at (i)) != -1)
+        return rxfun1.cap (3).remove (QRegExp("[ \t]*"));
+      else if (rxfun2.indexIn (lines.at (i)) != -1)
+        return rxfun2.cap (2).remove (QRegExp("[ \t]*"));
+      else if (rxfun3.indexIn (lines.at (i)) != -1)
+        return rxfun3.cap (3).remove (QRegExp("[ \t]*"));
+    }
+
+  return QString ();
 }
 
 #endif

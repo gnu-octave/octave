@@ -2520,7 +2520,7 @@ function T = tridiag (n, x = -1, y = 2, z = -1)
   T = spdiags ([[x;0] y [0;z]], -1:1, n, n);
 endfunction
 
-function t = triw (n, alpha = -1, k = -1)
+function t = triw (n, alpha = -1, k = n(end) - 1)
   ## TRIW   Upper triangular matrix discussed by Wilkinson and others.
   ##        TRIW(N, ALPHA, K) is the upper triangular matrix with ones on
   ##        the diagonal and ALPHAs on the first K >= 0 superdiagonals.
@@ -2556,8 +2556,8 @@ function t = triw (n, alpha = -1, k = -1)
     error ("gallery: N must be a 1 or 2 elements vector for triw matrix.");
   elseif (! isscalar (alpha))
     error ("gallery: ALPHA must be a scalar for triw matrix.");
-  elseif (! isscalar (k) || ! isnumeric (k) || fix (k) != k)
-    error ("gallery: K must be a numeric integer for triw matrix.");
+  elseif (! isscalar (k) || ! isnumeric (k) || fix (k) != k || k < 0)
+    error ("gallery: K must be a numeric integer >= 0 for triw matrix.");
   endif
 
   m = n(1);              # Parameter n specifies dimension: m-by-n.

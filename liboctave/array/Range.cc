@@ -387,12 +387,12 @@ operator >> (std::istream& is, Range& a)
 Range
 operator - (const Range& r)
 {
-  return Range (-r.base (), -r.inc (), r.nelem ());
+  return Range (-r.base (), -r.limit (), -r.inc (), r.nelem ());
 }
 
 Range operator + (double x, const Range& r)
 {
-  Range result (x + r.base (), r.inc (), r.nelem ());
+  Range result (x + r.base (), x + r.limit (), r.inc (), r.nelem ());
   if (result.rng_nelem < 0)
     result.cache = x + r.matrix_value ();
 
@@ -401,7 +401,7 @@ Range operator + (double x, const Range& r)
 
 Range operator + (const Range& r, double x)
 {
-  Range result (r.base () + x, r.inc (), r.nelem ());
+  Range result (r.base () + x, r.limit () + x, r.inc (), r.nelem ());
   if (result.rng_nelem < 0)
     result.cache = r.matrix_value () + x;
 
@@ -410,7 +410,7 @@ Range operator + (const Range& r, double x)
 
 Range operator - (double x, const Range& r)
 {
-  Range result (x - r.base (), -r.inc (), r.nelem ());
+  Range result (x - r.base (), x - r.limit (), -r.inc (), r.nelem ());
   if (result.rng_nelem < 0)
     result.cache = x - r.matrix_value ();
 
@@ -419,7 +419,7 @@ Range operator - (double x, const Range& r)
 
 Range operator - (const Range& r, double x)
 {
-  Range result (r.base () - x, r.inc (), r.nelem ());
+  Range result (r.base () - x, r.limit () - x, r.inc (), r.nelem ());
   if (result.rng_nelem < 0)
     result.cache = r.matrix_value () - x;
 
@@ -428,7 +428,7 @@ Range operator - (const Range& r, double x)
 
 Range operator * (double x, const Range& r)
 {
-  Range result (x * r.base (), x * r.inc (), r.nelem ());
+  Range result (x * r.base (), x * r.limit (), x * r.inc (), r.nelem ());
   if (result.rng_nelem < 0)
     result.cache = x * r.matrix_value ();
 
@@ -437,7 +437,7 @@ Range operator * (double x, const Range& r)
 
 Range operator * (const Range& r, double x)
 {
-  Range result (r.base () * x, r.inc () * x, r.nelem ());
+  Range result (r.base () * x, r.limit () * x, r.inc () * x, r.nelem ());
   if (result.rng_nelem < 0)
     result.cache = r.matrix_value () * x;
 

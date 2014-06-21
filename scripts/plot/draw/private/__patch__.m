@@ -35,8 +35,7 @@ function [h, failed] = __patch__ (p, varargin)
   is_numeric_arg = cellfun (@isnumeric, varargin);
 
   if (isempty (varargin))
-    args = {"xdata", [0; 1; 0], "ydata", [1; 1; 0], "facecolor", [0, 0, 0]};
-    args = setvertexdata (args);
+    args = varargin;
   elseif (isstruct (varargin{1}))
     if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
       args{1} = "faces";
@@ -50,7 +49,6 @@ function [h, failed] = __patch__ (p, varargin)
         args{6} = [];
       endif
       args = [args; varargin(2:end)];
-      args = setdata (args);
     else
       failed = true;
     endif
@@ -58,7 +56,6 @@ function [h, failed] = __patch__ (p, varargin)
     if (nargin < 3 || ! is_numeric_arg(2))
       failed = true;
     else
-
       if (nargin > 4 && all (is_numeric_arg(1:4)))
         x = varargin{1};
         y = varargin{2};
@@ -182,188 +179,12 @@ function [h, failed] = __patch__ (p, varargin)
       endif
 
       args = [args, varargin(iarg:end)];
-      args = setvertexdata (args);
     endif
   else
     args = varargin;
-    if (any (strcmpi (args, "faces") | strcmpi (args, "vertices")))
-      args = setdata (args);
-    else
-      args = setvertexdata (args);
-    endif
   endif
 
   if (!failed)
     h = __go_patch__ (p, args{:});
-
-    ## Setup listener functions
-    addlistener (h, "xdata", @update_data);
-    addlistener (h, "ydata", @update_data);
-    addlistener (h, "zdata", @update_data);
-    addlistener (h, "cdata", @update_data);
-
-    addlistener (h, "faces", @update_fvc);
-    addlistener (h, "vertices", @update_fvc);
-    addlistener (h, "facevertexcdata", @update_fvc);
   endif
 endfunction
-
-function args = delfields (args, flds)
-  idx = cellfun ("isclass", args, "char");
-  idx(idx) = ismember (args(idx), flds);
-  if (rows (idx) == 1)
-    idx |= [false, idx(1:end-1)];
-  else
-    idx |= [false; idx(1:end-1)];
-  endif
-  args(idx) = [];
-endfunction
-
-function args = setdata (args)
-  args = delfields (args, {"xdata", "ydata", "zdata", "cdata"});
-  ## Remove the readonly fields as well
-  args = delfields (args, {"type", "uicontextmenu"});
-  nargs = length (args);
-  idx = find (strcmpi (args, "faces"), 1, "last") + 1;
-  if (idx > nargs)
-    faces = [];
-  else
-    faces = args{idx};
-  endif
-  idx = find (strcmpi (args, "vertices"), 1, "last") + 1;
-  if (idx > nargs)
-    vert = [];
-  else
-    vert = args{idx};
-  endif
-  idx = find (strcmpi (args, "facevertexcdata"), 1, "last") + 1;
-  if (isempty (idx) || idx > nargs)
-    fvc = [];
-  else
-    fvc = args{idx};
-  endif
-  idx = find (strcmpi (args, "facecolor"), 1, "last") + 1;
-  if (isempty (idx) || idx > nargs)
-    if (!isempty (fvc))
-      fc = "flat";
-    else
-      fc = [0, 0, 0];
-    endif
-    args = {"facecolor", fc, args{:}};
-  endif
-
-  nc = rows (faces);
-  idx = faces.';
-  t1 = isnan (idx);
-  for i = find (any (t1))
-    first_idx_in_column = find (t1(:,i), 1);
-    idx(first_idx_in_column:end,i) = idx(first_idx_in_column-1,i);
-  endfor
-  x = reshape (vert(:,1)(idx), size (idx));
-  y = reshape (vert(:,2)(idx), size (idx));
-  if (columns (vert) > 2)
-    z = reshape (vert(:,3)(idx), size (idx));
-  else
-    z = [];
-  endif
-
-  if (rows (fvc) == nc || rows (fvc) == 1)
-    c = reshape (fvc, [1, size(fvc)]);
-  else
-    if (columns (fvc) == 3)
-      c = cat (3, reshape (fvc(idx, 1), size (idx)),
-                  reshape (fvc(idx, 2), size (idx)),
-                  reshape (fvc(idx, 3), size (idx)));
-    elseif (isempty (fvc))
-      c = [];
-    else  ## if (columnns (fvc) == 1)
-      c = permute (fvc(faces), [2, 1]);
-    endif
-  endif
-  args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};
-endfunction
-
-function args = setvertexdata (args)
-  args = delfields (args, {"vertices", "faces", "facevertexcdata"});
-  ## Remove the readonly fields as well
-  args = delfields (args, {"type", "uicontextmenu"});
-  nargs = length (args);
-  idx = find (strcmpi (args, "xdata"), 1, "last") + 1;
-  if (idx > nargs)
-    x = [];
-  else
-    x = args{idx};
-  endif
-  idx = find (strcmpi (args, "ydata"), 1, "last") + 1;
-  if (idx > nargs)
-    y = [];
-  else
-    y = args{idx};
-  endif
-  idx = find (strcmpi (args, "zdata"), 1, "last") + 1;
-  if (isempty (idx) || idx > nargs)
-    z = [];
-  else
-    z = args{idx};
-  endif
-  idx = find (strcmpi (args, "cdata"), 1, "last") + 1;
-  if (isempty (idx) || idx > nargs)
-    c = [];
-  else
-    c = args{idx};
-  endif
-  idx = find (strcmpi (args, "facecolor"), 1, "last") + 1;
-  if (isempty (idx) || idx > nargs)
-    if (!isempty (c))
-      fc = "flat";
-    else
-      fc = [0, 0, 0];
-    endif
-    args = {"facecolor", fc, args{:}};
-  endif
-
-  [nr, nc] = size (x);
-  if (nr == 1 && nc > 1)
-    nr = nc;
-    nc = 1;
-  endif
-  if (isempty (z))
-    vert = [x(:), y(:)];
-  else
-    vert = [x(:), y(:), z(:)];
-  endif
-  faces = reshape (1:numel (x), nr, nc);
-  faces = faces.';
-
-  if (ndims (c) == 3)
-    fvc = reshape (c, rows (c) * columns (c), size (c, 3));
-  else
-    fvc = c(:);
-  endif
-
-  args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};
-endfunction
-
-function update_data (h, d)
-  update_handle (h, false);
-endfunction
-
-function update_fvc (h, d)
-  update_handle (h, true);
-endfunction
-
-function update_handle (h, isfv)
-  persistent recursive = false;
-
-  if (! recursive)
-    recursive = true;
-    f = get (h);
-    if (isfv)
-      set (h, setdata ([fieldnames(f), struct2cell(f)].'(:)){:});
-    else
-      set (h, setvertexdata ([fieldnames(f), struct2cell(f)].'(:)){:});
-    endif
-    recursive = false;
-  endif
-endfunction
-

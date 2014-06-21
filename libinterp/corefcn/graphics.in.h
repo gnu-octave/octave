@@ -4689,6 +4689,14 @@ public:
   public:
     octave_value get_color_data (void) const;
 
+    // Matlab allows incoherent data to be stored into patch properties.
+    // The patch should then be ignored by the renderer. 
+    bool has_bad_data (std::string &msg) const 
+      { 
+        msg = bad_data_msg;
+        return ! msg.empty ();
+      }
+
     bool is_aliminclude (void) const
     { return (aliminclude.is_on () && alphadatamapping.is ("scaled")); }
     std::string get_aliminclude (void) const
@@ -4718,9 +4726,9 @@ public:
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("none|flat|interp"))
       radio_property facelighting , "{none}|flat|gouraud|phong"
-      array_property faces , default_patch_faces ()
+      array_property faces u , default_patch_faces ()
       array_property facevertexalphadata , Matrix ()
-      array_property facevertexcdata , Matrix ()
+      array_property facevertexcdata u , Matrix ()
       // FIXME: interpreter is not a property of a Matlab patch.
       //        Octave uses this for legend() with the string displayname.
       radio_property interpreter , "{tex}|none|latex"
@@ -4735,9 +4743,9 @@ public:
       double_property specularexponent , 10.0
       double_property specularstrength , 0.9
       array_property vertexnormals , Matrix ()
-      array_property vertices , default_patch_vertices ()
-      array_property xdata u , Matrix ()
-      array_property ydata u , Matrix ()
+      array_property vertices u , default_patch_vertices ()
+      array_property xdata u , default_patch_xdata ()
+      array_property ydata u , default_patch_ydata ()
       array_property zdata u , Matrix ()
 
       // hidden properties for limit computation
@@ -4771,17 +4779,67 @@ public:
     }
 
   private:
-    void update_xdata (void) { set_xlim (xdata.get_limits ()); }
-    void update_ydata (void) { set_ylim (ydata.get_limits ()); }
-    void update_zdata (void) { set_zlim (zdata.get_limits ()); }
+    std::string bad_data_msg;
+
+    void update_faces (void) { update_data ();}
+
+    void update_vertices (void)  {  update_data ();}
+
+    void update_facevertexcdata (void) { update_data ();}
+
+    void update_fvc (void);
+
+    void update_xdata (void) 
+    { 
+      if (get_xdata ().is_empty ())
+        {
+          // For compatibility with matlab behavior, 
+          // if x/ydata are set empty, silently empty other *data and 
+          // faces properties while vertices remain unchanged. 
+          set_ydata (Matrix ());
+          set_zdata (Matrix ());
+          set_cdata (Matrix ());
+          set_faces (Matrix ());
+        }
+      else
+        update_fvc ();
+
+      set_xlim (xdata.get_limits ());
+    }
+
+    void update_ydata (void) 
+    { 
+      if (get_ydata ().is_empty ())
+        {
+          set_xdata (Matrix ());
+          set_zdata (Matrix ());
+          set_cdata (Matrix ());
+          set_faces (Matrix ());
+        }
+      else
+        update_fvc ();
+
+      set_ylim (ydata.get_limits ());
+    }
+
+    void update_zdata (void) 
+    { 
+      update_fvc ();
+      set_zlim (zdata.get_limits ());
+    }
 
     void update_cdata (void)
     {
+      update_fvc ();
+
       if (cdatamapping_is ("scaled"))
         set_clim (cdata.get_limits ());
       else
         clim = cdata.get_limits ();
     }
+
+
+    void update_data (void);
   };
 
 private:

@@ -152,7 +152,8 @@ endfunction
 %! y2 = cos (t2);
 %! vert = [x1, y1; x2, y2];
 %! fac = [1:8,NaN(1,8);9:24];
-%! patch ('Faces',fac, 'Vertices',vert, 'FaceVertexCData',[0, 1, 0; 0, 0, 1]);
+%! patch ('Faces',fac, 'Vertices',vert, ...
+%!        'FaceVertexCData',[0, 1, 0; 0, 0, 1], 'FaceColor', 'flat');
 
 %!demo
 %! %% Property change on multiple patches

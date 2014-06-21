@@ -2208,6 +2208,14 @@ opengl_renderer::draw_surface (const surface::properties& props)
 void
 opengl_renderer::draw_patch (const patch::properties &props)
 {
+  // Do not render if the patch has incoherent data
+  std::string msg;
+  if (props.has_bad_data (msg))
+    {
+      warning ("opengl_renderer: %s. Not rendering.", msg.c_str ());
+      return;
+    }
+
   const Matrix f = props.get_faces ().matrix_value ();
   const Matrix v = xform.scale (props.get_vertices ().matrix_value ());
   Matrix c;

@@ -327,6 +327,22 @@ default_patch_vertices (void)
 }
 
 static Matrix
+default_patch_xdata (void)
+{
+  Matrix m (3, 1, 0);
+  m(1) = 1.0;
+  return m;
+}
+
+static Matrix
+default_patch_ydata (void)
+{
+  Matrix m (3, 1, 1);
+  m(2) = 0;
+  return m;
+}
+
+static Matrix
 default_axes_position (void)
 {
   Matrix m (1, 4, 0.0);
@@ -7825,6 +7841,195 @@ patch::properties::get_color_data (void) const
     return Matrix ();
   else
     return convert_cdata (*this, fvc,cdatamapping_is ("scaled"), 2);
+}
+
+static bool updating_patch_data = false;
+
+void
+patch::properties::update_fvc (void)
+{
+  if (updating_patch_data)
+    return;
+
+  Matrix xd = get_xdata ().matrix_value ();
+  Matrix yd = get_ydata ().matrix_value ();
+  Matrix zd = get_zdata ().matrix_value ();
+  NDArray cd = get_cdata ().array_value ();
+
+  bad_data_msg = std::string ();
+  if (xd.dims () != yd.dims () || 
+      (xd.dims () != zd.dims () && ! zd.is_empty ()))
+    {
+      bad_data_msg = "x/y/zdata should have the same dimensions";
+      return;
+    }
+
+  // Faces and Vertices
+  dim_vector dv;
+  bool is3D = false;
+  octave_idx_type nr = xd.rows ();
+  octave_idx_type nc = xd.columns ();
+  if (nr == 1 && nc > 1)
+    {
+      nr = nc;
+      nc = 1;
+      xd = xd.transpose ();
+    }
+
+  dv(0) = nr * nc;
+  if (zd.is_empty ())
+    dv(1) = 2;
+  else
+    {
+      dv(1) = 3;
+      is3D = true;
+    }
+
+  Matrix vert (dv);
+  Matrix idx (nc, nr);
+
+  octave_idx_type kk = 0;
+  for (octave_idx_type jj = 0; jj < nc; jj++)
+    {
+      for (octave_idx_type ii = 0; ii < nr; ii++)
+        {
+          vert(kk,0) = xd(ii,jj);
+          vert(kk,1) = yd(ii,jj);
+          if (is3D)
+            vert(kk,2) = zd(ii,jj);
+
+          idx(jj,ii) = static_cast<double> (kk+1);
+
+          kk++;
+        }
+    }
+
+  // facevertexcdata
+  Matrix fvc;
+  if (cd.ndims () == 3)
+    {
+      dv(0) = cd.rows () * cd.columns ();
+      dv(1) = cd.dims ()(2);
+      fvc = cd.reshape (dv);
+    }
+  else
+    fvc = cd.as_column ();
+
+  // FIXME: shouldn't we update facevertexalphadata here ?
+
+  unwind_protect frame;
+  frame.protect_var (updating_patch_data);
+  updating_patch_data = true;
+
+  faces.set (idx);
+  vertices.set (vert);
+  facevertexcdata.set (fvc);
+}
+
+
+void
+patch::properties::update_data (void)
+{
+  if (updating_patch_data)
+    return;
+
+  Matrix idx = get_faces ().matrix_value ().transpose ();
+  Matrix vert = get_vertices ().matrix_value ();
+  NDArray fvc = get_facevertexcdata ().array_value ();
+
+  octave_idx_type nfaces = idx.columns ();
+  octave_idx_type nvert = vert.rows ();
+
+  // Check all vertices in faces are defined
+  bad_data_msg = std::string ();
+  if (static_cast<double> (nvert) < idx.row_max ().max ())
+    {
+      bad_data_msg = "some vertices in \"faces\" property are undefined";
+      return;
+    }
+
+  // Replace NaNs
+  if (idx.any_element_is_inf_or_nan ())
+    {
+      for (octave_idx_type jj = 0; jj < idx.columns (); jj++)
+        {
+          double valid_vert = idx(0,jj);
+          bool turn_valid = false;
+          for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
+            {
+              if (xisnan (idx(ii,jj)) || turn_valid)
+                {
+                  idx(ii,jj) = valid_vert;
+                  turn_valid = true;
+                }
+              else
+                valid_vert = idx(ii,jj);
+            }
+        }
+    }
+  
+  // Build cdata
+  dim_vector dv = dim_vector::alloc (3);
+  NDArray cd;
+  bool pervertex = false;
+
+  if (fvc.rows () == nfaces || fvc.rows () == 1)
+    {
+      dv(0) = 1;
+      dv(1) = fvc.rows ();
+      dv(2) = fvc.columns ();
+      cd = fvc.reshape (dv);
+    }
+  else 
+    {
+      if (! fvc.is_empty ())
+        {
+          dv(0) = idx.rows ();
+          dv(1) = nfaces;
+          dv(2) = fvc.columns ();
+          cd.resize (dv);
+          pervertex = true;
+        }
+    }
+
+  // Build x,y,zdata and eventually per vertex cdata 
+  Matrix xd (idx.dims ()); 
+  Matrix yd (idx.dims ());
+  Matrix zd;
+  bool has_zd = false;
+  if (vert.columns () > 2)
+    {
+      zd = Matrix (idx.dims ());
+      has_zd = true;
+    }
+
+  
+  for (octave_idx_type jj = 0; jj < nfaces; jj++)
+    {
+      for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
+        {
+          octave_idx_type row = static_cast<octave_idx_type> (idx(ii,jj)-1);
+          xd(ii,jj) = vert(row,0);
+          yd(ii,jj) = vert(row,1);
+
+          if (has_zd)
+            zd(ii,jj) = vert(row,2);
+          
+          if (pervertex)
+            for (int kk = 0; kk < fvc.columns (); kk++)
+              cd(ii,jj,kk) = fvc(row,kk);
+        }
+    }
+
+
+  unwind_protect frame;
+  frame.protect_var (updating_patch_data);
+  updating_patch_data = true;
+
+  set_xdata (xd);
+  set_ydata (yd);
+  set_zdata (zd);
+  set_cdata (cd);
 }
 
 // ---------------------------------------------------------------------

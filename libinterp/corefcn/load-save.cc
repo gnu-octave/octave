@@ -265,9 +265,10 @@ get_file_format (std::istream& file, const std::string& filename)
               file.clear ();
               file.seekg (0, std::ios::beg);
 
-              std::string tmp = extract_keyword (file, "name");
+              std::string name_val = extract_keyword (file, "name");
+              std::string type_val = extract_keyword (file, "type");
 
-              if (! tmp.empty ())
+              if (name_val.empty () != true && type_val.empty () != true)
                 retval = LS_ASCII;
               else
                 {

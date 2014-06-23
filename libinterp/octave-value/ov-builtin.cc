@@ -127,7 +127,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
       try
         {
-          BEGIN_PROFILER_BLOCK (profiler_name ())
+          BEGIN_PROFILER_BLOCK (octave_builtin)
 
           retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.

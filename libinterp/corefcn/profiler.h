@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2014 Julien Bect
 Copyright (C) 2012-2013 Daniel Kraft
 
 This file is part of Octave.
@@ -39,17 +40,40 @@ public:
 
   // This is a utility class that can be used to call the enter/exit
   // functions in a manner protected from stack unwinding.
-  class enter
+  template<class T> class enter
   {
   private:
 
     profile_data_accumulator& acc;
     std::string fcn;
+    bool is_active;
 
   public:
 
-    enter (profile_data_accumulator&, const std::string&);
-    virtual ~enter (void);
+    enter (profile_data_accumulator& a, const T& t) : acc (a)
+    {
+      // A profiling block cannot be active if the profiler is not
+      is_active = acc.is_active ();
+
+      if (is_active)
+        {
+          fcn = t.profiler_name ();
+
+          // NOTE: The test f != "" must be kept to prevent a blank line showing
+          //  up in profiler statistics.  See bug #39524.  The root cause is that
+          //  the function name is not set for the recurring readline hook function.
+          if (fcn == "")
+            is_active = false;  // Inactive profiling block
+          else
+            acc.enter_function (fcn);
+        }
+    }
+
+    ~enter ()
+    {
+      if (is_active)
+        acc.exit_function (fcn);
+    }
 
   private:
 
@@ -181,10 +205,12 @@ private:
 extern OCTINTERP_API profile_data_accumulator profiler;
 
 // Helper macro to profile a block of code.
-#define BEGIN_PROFILER_BLOCK(name) \
+
+#define BEGIN_PROFILER_BLOCK(classname) \
   { \
-    profile_data_accumulator::enter pe (profiler, (name));
+    profile_data_accumulator::enter<classname> pe (profiler, *this);
+
 #define END_PROFILER_BLOCK \
-  }
+  }  // end of block => call pe's destructor
 
 #endif

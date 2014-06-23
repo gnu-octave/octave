@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2014 Julien Bect
 Copyright (C) 2012-2013 Daniel Kraft
 
 This file is part of Octave.
@@ -31,29 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include "pager.h"
 #include "profiler.h"
-
-profile_data_accumulator::enter::enter (profile_data_accumulator& a,
-                                        const std::string& f)
-  : acc (a)
-{
-  // FIXME: Add test for f != "" to prevent a blank line showing up
-  //        in profiler statistics.  See bug #39524.  The root cause
-  //        is that the function name is not set for the recurring readline
-  //        hook function.
-  if (acc.is_active () && f != "")
-    {
-      fcn = f;
-      acc.enter_function (fcn);
-    }
-  else
-    fcn = "";
-}
-
-profile_data_accumulator::enter::~enter ()
-{
-  if (fcn != "")
-    acc.exit_function (fcn);
-}
 
 profile_data_accumulator::stats::stats ()
   : time (0.0), calls (0), recursive (false),

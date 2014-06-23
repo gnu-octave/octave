@@ -135,7 +135,7 @@ tree_binary_expression::rvalue1 (int)
 
           if (! error_state && b.is_defined ())
             {
-              BEGIN_PROFILER_BLOCK ("binary " + oper ())
+              BEGIN_PROFILER_BLOCK (tree_binary_expression)
 
               // Note: The profiler does not catch the braindead
               // short-circuit evaluation code above, but that should be

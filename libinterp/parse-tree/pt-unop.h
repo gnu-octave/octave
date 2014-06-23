@@ -108,6 +108,9 @@ public:
 
   void accept (tree_walker& tw);
 
+  std::string profiler_name (void) const { return "prefix " + oper (); }
+
+
 private:
 
   // No copying!
@@ -144,6 +147,8 @@ public:
                         symbol_table::context_id context) const;
 
   void accept (tree_walker& tw);
+
+  std::string profiler_name (void) const { return "postfix " + oper (); }
 
 private:
 

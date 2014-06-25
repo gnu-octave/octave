@@ -245,8 +245,8 @@ function varargout = strread (str, format = "%f", varargin)
             elseif (iscellstr (varargin{n+1}) && numel (varargin{n+1}) == 2)
               [comment_start, comment_end] = deal (varargin{n+1}{:});
             else
-              ## FIXME - a user may have numeric values specified: {'//', 7}
-              ##         this will lead to an error in the warning message
+              ## FIXME: A user may have numeric values specified: {'//', 7}
+              ##        this will lead to an error in the warning message
               error ("strread: unknown or unrecognized comment style '%s'",
                       varargin{n+1});
             endif
@@ -677,8 +677,8 @@ function varargout = strread (str, format = "%f", varargin)
       endif
 
       ## Map to format
-      ## FIXME - add support for formats like "<%s>", "%[a-zA-Z]"
-      ##         Someone with regexp experience is needed.
+      ## FIXME: Add support for formats like "<%s>", "%[a-zA-Z]"
+      ##        Someone with regexp experience is needed.
       switch (fmt_words{m}(1:min (2, length (fmt_words{m}))))
         case "%s"
           if (pad_out)
@@ -688,7 +688,7 @@ function varargout = strread (str, format = "%f", varargin)
           k++;
         case {"%d", "%u", "%f", "%n"}
           n = cellfun ("isempty", data);
-          ### FIXME - erroneously formatted data lead to NaN, not an error
+          ### FIXME: Erroneously formatted data lead to NaN, not an error
           data = str2double (data);
           if (! isempty (regexp (fmt_words{m}, "%[du]")))
             ## Cast to integer
@@ -709,8 +709,8 @@ function varargout = strread (str, format = "%f", varargin)
           switch (fmt_words{m}(ew+1))
             case {"d", "u", "f", "n"}
               n = cellfun ("isempty", data);
-              ### FIXME - erroneously formatted data lead to NaN, not an error
-              ###         => ReturnOnError can't be implemented for numeric data
+              ### FIXME: Erroneously formatted data lead to NaN, not an error
+              ###        => ReturnOnError can't be implemented for numeric data
               data = str2double (strtrunc (data, swidth));
               data(n) = numeric_fill_value;
               if (pad_out)

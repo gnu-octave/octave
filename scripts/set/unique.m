@@ -76,7 +76,7 @@ function [y, i, j] = unique (x, varargin)
     optrows = false;
   endif
 
-  ## FIXME -- the operations
+  ## FIXME: The operations
   ##
   ##   match = (y(1:n-1) == y(2:n));
   ##   y(idx) = [];

@@ -32,7 +32,7 @@ function dump_prefs (file)
     file = stdout;
   endif
 
-  ## FIXME -- it would be nice to be able to get the list of
+  ## FIXME: It would be nice to be able to get the list of
   ## built-in variables directly from Octave so that we wouldn't have to
   ## remember to update it each time the list of preference variables
   ## changes

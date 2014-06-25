@@ -70,9 +70,9 @@ function h = meshc (varargin)
 
     htmp = surface (varargin{:});
 
-    ## FIXME - gnuplot does not support a filled surface and a
-    ## non-filled contour.  3D filled patches are also not supported.
-    ## Thus, the facecolor will be transparent for the gnuplot backend.
+    ## FIXME: gnuplot does not support a filled surface and a
+    ##        non-filled contour.  3D filled patches are also not supported.
+    ##        Thus, the facecolor will be transparent for the gnuplot backend.
     set (htmp, "facecolor", "w");
     set (htmp, "edgecolor", "flat");
     if (! ishold ())

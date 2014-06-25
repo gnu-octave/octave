@@ -42,7 +42,7 @@ function retval = doc (fname)
 
     if (nargin == 1)
       ## Get the directory where the function lives.
-      ## FIXME -- maybe we should have a better way of doing this.
+      ## FIXME: Maybe we should have a better way of doing this?
 
       if (ischar (fname))
         ftype = exist (fname);
@@ -86,7 +86,7 @@ function retval = doc (fname)
         endif
       endif
 
-      ## FIXME -- don't change the order of the arguments below because
+      ## FIXME: Don't change the order of the arguments below because
       ## the info-emacs-info script currently expects --directory DIR as
       ## the third and fourth arguments.  Someone should fix that.
 

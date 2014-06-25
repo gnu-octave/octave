@@ -143,9 +143,9 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   endif
   if (! isempty (opts.prepend)
       && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
-    ## FIXME - Fonts get may be mangled when appending ps/ps2.
-    ##         See "How to concatenate several PS files" at the link,
-    ##         http://en.wikibooks.org/wiki/PostScript_FAQ
+    ## FIXME: Fonts get may be mangled when appending ps/ps2.
+    ##        See "How to concatenate several PS files" at the link,
+    ##        http://en.wikibooks.org/wiki/PostScript_FAQ
     cmd = sprintf ("%s %s", cmd, opts.prepend);
     if (isempty (cleanup_cmd))
       cleanup_cmd = sprintf ("rm %s", opts.prepend);

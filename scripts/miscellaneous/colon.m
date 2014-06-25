@@ -42,5 +42,5 @@ endfunction
 
 %!error colon (1)
 
-## FIXME -- what does colon () mean since it doesn't set a return value?
+## FIXME: What does colon () mean since it doesn't set a return value?
 

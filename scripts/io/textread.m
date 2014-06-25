@@ -135,7 +135,7 @@ function varargout = textread (filename, format = "%f", varargin)
   endif
  
   ## Now that we know what EOL looks like, we can process format_repeat_count.
-  ## FIXME The below isn't ML-compatible: counts lines, not format string uses
+  ## FIXME: The below isn't ML-compatible: counts lines, not format string uses
   if (isfinite (nlines) && (nlines > 0))
     l_eol_char = length (eol_char);
     eoi = findstr (str, eol_char);

@@ -63,7 +63,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       && strcmp (axis_obj.xlimmode, "manual")
       && strcmp (axis_obj.ylimmode, "manual")
       && (nd == 2 || all (mod (axis_obj.view, 90) == 0)))
-    ## FIXME - adjust plotboxaspectratio to respect other
+    ## FIXME: adjust plotboxaspectratio to respect other
     fpos = get (axis_obj.parent, "position");
     apos = axis_obj.position;
   endif
@@ -75,7 +75,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     if (nd == 2 || all (mod (axis_obj.view, 90) == 0))
       dr = dr(1) / dr(2);
     else
-      ## FIXME - need to properly implement 3D
+      ## FIXME: need to properly implement 3D
       dr = mean (dr(1:2)) / dr(3);
     endif
   else
@@ -106,7 +106,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fprintf (plot_stream, "set rmargin 0;\n");
 
       if (nd == 3 && all (axis_obj.view == [0, 90]))
-        ## FIXME -- Kludge to allow colorbar to be added to a pcolor() plot
+        ## FIXME: Kludge to allow colorbar to be added to a pcolor() plot
         pos(3:4) = pos(3:4) * 1.4;
         pos(1:2) = pos(1:2) - pos(3:4) * 0.125;
       endif
@@ -139,8 +139,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   endif
 
   ## Reset all labels, axis-labels, tick-labels, and title
-  ## FIXME - We should have an function to initialize the axis.
-  ##         Presently, this is dispersed in this function.
+  ## FIXME: We should have an function to initialize the axis.
+  ##        Presently, this is dispersed in this function.
   fputs (plot_stream, "unset label;\n");
   fputs (plot_stream, "unset xtics;\n");
   fputs (plot_stream, "unset ytics;\n");
@@ -323,9 +323,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     fputs (plot_stream, "set border front;\n");
   else
     fputs (plot_stream, "set grid layerdefault;\n");
-    ## FIXME -- the gnuplot help says that "layerdefault" should work
-    ## for set border too, but it fails for me with gnuplot 4.2.5.  So
-    ## use "back" instead.
+    ## FIXME: The gnuplot help says that "layerdefault" should work
+    ##        for set border too, but it fails for me with gnuplot 4.2.5.
+    ##        So, use "back" instead.
     fputs (plot_stream, "set border back;\n");
   endif
 
@@ -800,12 +800,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
            endif
 
            if (isfield (obj, "edgecolor"))
-             ## FIXME
-             ## This is the wrong thing to do as edgecolor, markeredgecolor
-             ## and markerfacecolor can have different values and we should
-             ## treat them seperately. However, the below allow the scatter
-             ## functions to work as expected, where only one of these values
-             ## is set
+             ## FIXME: This is the wrong thing to do as edgecolor,
+             ## markeredgecolor and markerfacecolor can have different values
+             ## and we should treat them seperately. However, the code below
+             ## allows the scatter functions to work as expected, where only
+             ## one of these values is set.
              if (strcmp (obj.edgecolor, "none"))
                if (strcmp (obj.markeredgecolor, "none"))
                  ec = obj.markerfacecolor;
@@ -1969,19 +1968,19 @@ function [pt, pt2, obj] = gnuplot_pointtype (obj)
         pt = "10";
         pt2 = "11";
       case ">"
-        ## FIXME: should be triangle pointing right, use triangle pointing up
+        ## FIXME: Should be triangle pointing right, use triangle pointing up
         pt = "8";
         pt2 = "9";
       case "<"
-        ## FIXME: should be triangle pointing left, use triangle pointing down
+        ## FIXME: Should be triangle pointing left, use triangle pointing down
         pt = "10";
         pt2 = "11";
       case {"pentagram", "p"}
-        ## FIXME: should be pentagram, using pentagon
+        ## FIXME: Should be pentagram, using pentagon
         pt = "14";
         pt2 = "15";
       case {"hexagram", "h"}
-        ## FIXME: should be 6 pt start, using "*" instead
+        ## FIXME: Should be 6 pt start, using "*" instead
         pt = pt2 = "3";
       case "none"
         pt = pt2 = "";
@@ -1997,7 +1996,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
   ## DATA is already transposed.
 
-  ## FIXME -- this may need to be converted to C++ for speed.
+  ## FIXME: this may need to be converted to C++ for speed.
 
   ## Convert NA elements to normal NaN values because fprintf writes
   ## "NA" and that confuses gnuplot.
@@ -2298,7 +2297,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
       f = m{i}(2:end);
       if (isfield (sym, f))
         g = getfield (sym, f);
-        ## FIXME The symbol font doesn't seem to support bold or italic
+        ## FIXME: The symbol font doesn't seem to support bold or italic
         ##if (bld)
         ##  if (it)
         ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
@@ -2328,7 +2327,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
           str = [str(1:s(i) - 1) '/' fnt '-bold ' str(s(i) + 3:end)];
         endif
       elseif (strcmpi (f, "color"))
-        ## FIXME Ignore \color but remove trailing {} block as well
+        ## FIXME: Ignore \color but remove trailing {} block as well
         d = strfind (str(e(i) + 1:end),'}');
         if (isempty (d))
           warning ('syntax error in \color argument');
@@ -2359,7 +2358,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
         for j = 1 : length (flds)
           if (strncmp (flds{j}, f, length (flds{j})))
             g = getfield (sym, flds{j});
-            ## FIXME The symbol font doesn't seem to support bold or italic
+            ## FIXME: The symbol font doesn't seem to support bold or italic
             ##if (bld)
             ##  if (it)
             ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
@@ -2383,7 +2382,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   ## shortest.. Don't have to worry about things like ^\theta as they
   ## are already converted to ^{/Symbol q}.
 
-  ## FIXME -- This is a mess... Is it worth it just for a "@" character?
+  ## FIXME: This is a mess... Is it worth it just for a "@" character?
 
   [s, m] = regexp (str,'[_\^]','start','matches');
   i = 1;

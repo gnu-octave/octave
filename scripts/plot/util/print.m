@@ -619,7 +619,7 @@ function cmd = fig2dev (opts, devopt)
   dos_shell = (ispc () && ! isunix ());
   if (! isempty (opts.fig2dev_binary))
     if (dos_shell)
-      ## FIXME - is this the right thing to do for DOS?
+      ## FIXME: Is this the right thing to do for DOS?
       cmd = sprintf ("%s -L %s 2> NUL", opts.fig2dev_binary, devopt);
     else
       cmd = sprintf ("%s -L %s 2> /dev/null", opts.fig2dev_binary, devopt);
@@ -717,7 +717,7 @@ function cmd = pstoedit (opts, devopt)
     if (dos_shell)
       cmd = sprintf ("%s -f %s 2> NUL", opts.pstoedit_binary, devopt);
     else
-      ## FIXME - is this the right thing to do for DOS?
+      ## FIXME: Is this the right thing to do for DOS?
       cmd = sprintf ("%s -f %s 2> /dev/null", opts.pstoedit_binary, devopt);
     endif
   elseif (isempty (opts.pstoedit_binary))

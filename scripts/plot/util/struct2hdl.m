@@ -451,7 +451,7 @@ function [h, sout, pout] = createhg_hilev (s, p, par)
 
   elseif (isfield (fields, "bargroup"))
     ## bar plot
-    ## FIXME - here we don't have access to brothers so we first create all
+    ## FIXME: Here we don't have access to brothers so we first create all
     ## the barseries of the bargroup (but the last), then retrieve information,
     ## and rebuild the whole bargroup.
     ## The duplicate are deleted after calling "setprops"

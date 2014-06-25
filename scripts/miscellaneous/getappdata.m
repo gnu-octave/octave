@@ -35,8 +35,8 @@
 function val = getappdata (h, name)
 
   if (all (ishandle (h)) && nargin == 2 && ischar (name))
-    ## FIXME - Is there a better way to handle non-existent appdata
-    ## and missing fields?
+    ## FIXME: Is there a better way to handle non-existent appdata
+    ##        and missing fields?
     val = cell (numel (h), 1);
     appdata = struct ();
     for nh = 1:numel (h)

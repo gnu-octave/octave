@@ -97,7 +97,7 @@ endfunction
 %!assert (prepad ([1,2], 2, 2, 3), reshape ([2,2,1,2], 1, 2, 2))
 %!assert (prepad ([1;2], 2, 2, 3), reshape ([2;2;1;2], 2, 1, 2))
 
-## FIXME -- we need tests for multidimensional arrays.
+## FIXME: We need tests for multidimensional arrays.
 
 %!error prepad ()
 %!error prepad (1)

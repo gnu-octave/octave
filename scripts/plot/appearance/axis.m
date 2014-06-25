@@ -194,7 +194,7 @@ function limits = __axis__ (ca, ax, varargin)
                "plotboxaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "equal"))
       if (strcmp (get (get (ca, "parent"), "__graphics_toolkit__"), "gnuplot"))
-        ## FIXME - gnuplot applies the aspect ratio activepostionproperty.
+        ## FIXME: gnuplot applies the aspect ratio activepostionproperty.
         set (ca, "activepositionproperty", "position");
         ## The following line is a trick used to trigger the recalculation of
         ## aspect related magnitudes even if the aspect ratio is the same

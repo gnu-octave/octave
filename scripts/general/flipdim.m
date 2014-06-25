@@ -62,7 +62,7 @@ endfunction
 %!assert (flipdim ([1,2;3,4], 2), [2,1;4,3])
 %!assert (flipdim ([1,2;3,4], 3), [1,2;3,4])
 
-## FIXME -- we need tests for multidimensional arrays.
+## FIXME: We need tests for multidimensional arrays.
 
 %!error flipdim ()
 %!error flipdim (1, 2, 3)

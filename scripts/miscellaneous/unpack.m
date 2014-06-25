@@ -84,10 +84,10 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
     ## If the file is a URL, download it and then work with that file.
     if (! isempty (strfind (file, "://")))
-      ## FIXME -- the above is not a perfect test for a URL
+      ## FIXME: The above is not a perfect test for a URL
       urlfile = file;
-      ## FIXME -- should we name the file that we download with the
-      ## same file name as the URL requests?
+      ## FIXME: Should we name the file that we download with the
+      ##        same file name as the URL requests?
       tmpfile = [tmpnam() ext];
       [file, success, msg] = urlwrite (urlfile, tmpfile);
       if (! success)
@@ -194,7 +194,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
   if (nargout > 0 || needmove)
     ## Trim the last CR if needed.
-    ## FIXME -- will this need to change to a check for "\r\n" for windows?
+    ## FIXME: Will this need to change to a check for "\r\n" for windows?
     if (output(end) == "\n")
       output(end) = [];
     endif

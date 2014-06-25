@@ -267,7 +267,7 @@ function retval = datestr (date, f = [], p = [])
     tm.sec = fix (sec);
     tm.usec = fix ((sec - tm.sec) * 1e6);
     tm.wday = wday - 1;
-    ## FIXME -- Do we need YDAY and DST?  How should they be computed?
+    ## FIXME: Do we need YDAY and DST?  How should they be computed?
     ## We don't want to use "localtime (mktime (tm))" because that
     ## doesn't correctly handle dates before 1970-01-01 on some systems.
     ## tm.yday = ?;

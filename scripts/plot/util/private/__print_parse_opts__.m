@@ -298,7 +298,7 @@ function arg_st = __print_parse_opts__ (varargin)
     arg_st.devopt = aliases.(arg_st.devopt);
   endif
 
-  ## FIXME - eps2 & epsc2 needs to be handled
+  ## FIXME: eps2 & epsc2 needs to be handled
   if (strcmp (arg_st.devopt, "pswrite"))
     arg_st.ghostscript.level = 1;
   elseif (strcmp (arg_st.devopt, "ps2write"))
@@ -580,8 +580,8 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
     paperposition = convert2points (paperposition, paperunits);
   endif
 
-  ## FIXME - This will be obsoleted by listeners for paper properties.
-  ##         Papersize is tall when portrait,and wide when landscape.
+  ## FIXME: This will be obsoleted by listeners for paper properties.
+  ##        Papersize is tall when portrait,and wide when landscape.
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
     papersize = papersize([2,1]);

@@ -152,8 +152,8 @@ endfunction
 %!assert (rotdim (m, 3), rotdim (m, -1))
 %!assert (rotdim (m, 1), rotdim (m))
 
-## FIXME -- we need tests for multidimensional arrays and different
-## values of PLANE.
+## FIXME: We need tests for multidimensional arrays
+##        and different values of PLANE.
 
 %!error rotdim ()
 %!error rotdim (1, 2, 3, 4)

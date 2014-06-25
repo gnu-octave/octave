@@ -83,7 +83,7 @@ function entries = __xzip__ (commandname, extension,
       movefile (cellfun (@(x) sprintf ("%s.%s", x, extension), f,
                         "uniformoutput", false), cwd);
       if (nargout > 0)
-        ## FIXME this does not work when you try to compress directories
+        ## FIXME: This does not work when you try to compress directories
         entries  = cellfun (@(x) sprintf ("%s.%s", x, extension),
                             files, "uniformoutput", false);
       endif
@@ -109,8 +109,7 @@ function [d, f] = myfileparts (files)
 endfunction
 
 
-## FIXME -- reinstate these tests if we invent a way to test private
-## functions directly.
+## FIXME: Reinstate tests if we invent a way to test private functions directly.
 ##
 ## %!error <extension has to be a string with finite length>
 ## %!  __xzip__ ("gzip", "", "gzip -r %s", "bla");

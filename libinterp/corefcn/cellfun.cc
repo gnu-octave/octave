@@ -440,7 +440,7 @@ v = cellfun (@@det, a); # faster\n\
 
       if (! valid_identifier (name))
         {
-          std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
+          std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
 
           octave_function *ptr_func
@@ -1193,7 +1193,7 @@ arrayfun (@@str2num, [1234],\n\
 
       if (! valid_identifier (name))
         {
-          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn_");
+          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
 
           octave_function *ptr_func

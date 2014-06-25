@@ -211,7 +211,7 @@ Undocumented internal function.\n\
         {
           std::string name = args(0).string_value ();
           std::string fname = "function y = ";
-          fcn_name = unique_symbol_name ("__eigs_fcn_");
+          fcn_name = unique_symbol_name ("__eigs_fcn__");
           fname.append (fcn_name);
           fname.append ("(x) y = ");
           eigs_fcn = extract_function (args(0), "eigs", fcn_name, fname,

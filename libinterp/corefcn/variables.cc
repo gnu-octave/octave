@@ -388,17 +388,7 @@ safe_symbol_lookup (const std::string& symbol_name)
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  std::string struct_elts;
-  std::string symbol_name = name;
-
-  size_t pos = name.find ('.');
-
-  if (pos != std::string::npos && pos > 0)
-    {
-      struct_elts = name.substr (pos+1);
-      symbol_name = name.substr (0, pos);
-    }
-  else if (is_keyword (symbol_name))
+  if (is_keyword (name))
     return 0;
 
   bool search_any = type == "any";
@@ -409,19 +399,28 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (search_any || search_var)
     {
-      bool not_a_struct = struct_elts.empty ();
-      bool var_ok = not_a_struct; // || val.is_map_element (struct_elts)
-
       octave_value val = symbol_table::varval (name);
 
-      if (var_ok && (val.is_constant () || val.is_object ()
-                     || val.is_function_handle ()
-                     || val.is_anonymous_function ()
-                     || val.is_inline_function ()))
+      if (val.is_constant () || val.is_object ()
+          || val.is_function_handle ()
+          || val.is_anonymous_function ()
+          || val.is_inline_function ())
         return 1;
 
       if (search_var)
         return 0;
+    }
+
+  // We shouldn't need to look in the global symbol table, since any name
+  // that is visible in the current scope will be in the local symbol table.
+
+  octave_value val = safe_symbol_lookup (name);
+
+  if (val.is_defined ())
+    {
+      if ((search_any || search_builtin)
+          && val.is_builtin_function ())
+        return 5;
     }
 
   if (search_any || search_file || search_dir)
@@ -464,24 +463,18 @@ symbol_exist (const std::string& name, const std::string& type)
         return 0;
     }
 
-  // We shouldn't need to look in the global symbol table, since any
-  // name that is visible in the current scope will be in the local
-  // symbol table.
-
-  octave_value val = safe_symbol_lookup (symbol_name);
-
-  if (val.is_defined () && struct_elts.empty ())
+  if (val.is_defined ())
     {
-      if ((search_any || search_builtin)
-          && val.is_builtin_function ())
-        return 5;
-
       if ((search_any || search_file)
           && (val.is_user_function () || val.is_dld_function ()))
         {
           octave_function *f = val.function_value (true);
           std::string s = f ? f->fcn_file_name () : std::string ();
 
+          // FIXME: I believe that by this point in the code the only
+          //        return value is 103.  User functions should have
+          //        been located above.  Maybe replace entire if block
+          //        code with "return 103;"
           return s.empty () ? 103 : (val.is_user_function () ? 2 : 3);
         }
     }
@@ -583,18 +576,41 @@ Check only for directories.\n\
 }
 
 /*
+%!shared dirtmp, __var1
+%! dirtmp = P_tmpdir ();
+%! __var1 = 1;
+
+%!assert (exist ("__%Highly_unlikely_name%__"), 0)
+%!assert (exist ("__var1"), 1)
+%!assert (exist ("__var1", "var"), 1)
+%!assert (exist ("__var1", "builtin"), 0)
+%!assert (exist ("__var1", "dir"), 0)
+%!assert (exist ("__var1", "file"), 0)
+
 %!test
 %! if (isunix ())
-%!   assert (exist ("/tmp") == 7);
-%!   assert (exist ("/tmp", "file") == 7);
-%!   assert (exist ("/tmp", "dir") == 7);
-%!   assert (exist ("/bin/sh") == 2);
-%!   assert (exist ("/bin/sh", "file") == 2);
-%!   assert (exist ("/bin/sh", "dir") == 0);
-%!   assert (exist ("/dev/null") == 2);
-%!   assert (exist ("/dev/null", "file") == 2);
-%!   assert (exist ("/dev/null", "dir") == 0);
+%!   assert (exist ("/bin/sh"), 2);
+%!   assert (exist ("/bin/sh", "file"), 2);
+%!   assert (exist ("/bin/sh", "dir"), 0);
+%!   assert (exist ("/dev/null"), 2);
+%!   assert (exist ("/dev/null", "file"), 2);
+%!   assert (exist ("/dev/null", "dir"), 0);
 %! endif
+
+%!assert (exist ("colon"), 2)
+%!assert (exist ("colon.m"), 2)
+
+%!testif HAVE_CHOLMOD
+%! assert (exist ("chol"), 3);
+%! assert (exist ("chol", "file"), 3);
+%! assert (exist ("chol", "builtin"), 0);
+
+%!assert (exist ("sin"), 5)
+
+%!assert (exist (dirtmp), 7)
+%!assert (exist (dirtmp, "dir"), 7)
+%!assert (exist (dirtmp, "file"), 7)
+
 */
 
 octave_value

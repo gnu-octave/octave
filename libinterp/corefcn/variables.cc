@@ -454,7 +454,18 @@ symbol_exist (const std::string& name, const std::string& type)
       if (fs)
         {
           if (search_any || search_file)
-            return fs.is_dir () ? 7 : 2;
+          {
+            if (fs.is_dir ())
+              return 7;
+
+            size_t len = file_name.length ();
+
+            if (len > 4 && (file_name.substr (len-4) == ".oct"
+                            || file_name.substr (len-4) == ".mex"))
+              return 3;
+            else
+              return 2;
+          }
           else if (search_dir && fs.is_dir ())
             return 7;
         }
@@ -602,6 +613,7 @@ Check only for directories.\n\
 
 %!testif HAVE_CHOLMOD
 %! assert (exist ("chol"), 3);
+%! assert (exist ("chol.oct"), 3);
 %! assert (exist ("chol", "file"), 3);
 %! assert (exist ("chol", "builtin"), 0);
 

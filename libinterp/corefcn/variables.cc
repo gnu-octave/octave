@@ -421,6 +421,9 @@ symbol_exist (const std::string& name, const std::string& type)
       if ((search_any || search_builtin)
           && val.is_builtin_function ())
         return 5;
+
+      if (search_builtin)
+        return 0;
     }
 
   if (search_any || search_file || search_dir)
@@ -474,21 +477,9 @@ symbol_exist (const std::string& name, const std::string& type)
         return 0;
     }
 
-  if (val.is_defined ())
-    {
-      if ((search_any || search_file)
-          && (val.is_user_function () || val.is_dld_function ()))
-        {
-          octave_function *f = val.function_value (true);
-          std::string s = f ? f->fcn_file_name () : std::string ();
-
-          // FIXME: I believe that by this point in the code the only
-          //        return value is 103.  User functions should have
-          //        been located above.  Maybe replace entire if block
-          //        code with "return 103;"
-          return s.empty () ? 103 : (val.is_user_function () ? 2 : 3);
-        }
-    }
+  // Command line function which Matlab does not support
+  if (search_any && val.is_defined () && val.is_user_function ())
+    return 103;
 
   return 0;
 }
@@ -610,6 +601,8 @@ Check only for directories.\n\
 
 %!assert (exist ("colon"), 2)
 %!assert (exist ("colon.m"), 2)
+%!assert (exist ("colon", "file"), 2)
+%!assert (exist ("colon", "dir"), 0)
 
 %!testif HAVE_CHOLMOD
 %! assert (exist ("chol"), 3);
@@ -618,6 +611,8 @@ Check only for directories.\n\
 %! assert (exist ("chol", "builtin"), 0);
 
 %!assert (exist ("sin"), 5)
+%!assert (exist ("sin", "builtin"), 5)
+%!assert (exist ("sin", "file"), 0)
 
 %!assert (exist (dirtmp), 7)
 %!assert (exist (dirtmp, "dir"), 7)

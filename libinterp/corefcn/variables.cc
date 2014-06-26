@@ -414,12 +414,13 @@ symbol_exist (const std::string& name, const std::string& type)
   // We shouldn't need to look in the global symbol table, since any name
   // that is visible in the current scope will be in the local symbol table.
 
-  octave_value val = safe_symbol_lookup (name);
+  octave_value val;
 
-  if (val.is_defined ())
+  if (search_any || search_builtin)
     {
-      if ((search_any || search_builtin)
-          && val.is_builtin_function ())
+      val = safe_symbol_lookup (name);
+
+      if (val.is_defined () && val.is_builtin_function ())
         return 5;
 
       if (search_builtin)

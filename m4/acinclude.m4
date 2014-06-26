@@ -937,6 +937,16 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     ])
 
     if test $have_opengl_incs = yes; then
+      AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+      ])
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
           save_LIBS="$LIBS"

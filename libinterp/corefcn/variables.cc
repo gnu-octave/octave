@@ -418,7 +418,12 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (search_any || search_builtin)
     {
-      val = safe_symbol_lookup (name);
+      // Require a try block because symbol_lookup will attempt unsafe load
+      // of .oct/.mex file.
+      try
+        { val = safe_symbol_lookup (name); }
+      catch (octave_execution_exception)
+        { }
 
       if (val.is_defined () && val.is_builtin_function ())
         return 5;
@@ -462,7 +467,7 @@ symbol_exist (const std::string& name, const std::string& type)
             if (fs.is_dir ())
               return 7;
 
-            size_t len = file_name.length ();
+            len = file_name.length ();
 
             if (len > 4 && (file_name.substr (len-4) == ".oct"
                             || file_name.substr (len-4) == ".mex"))

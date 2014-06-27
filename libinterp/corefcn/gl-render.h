@@ -40,6 +40,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <OpenGL/glu.h>
 #endif
 
+#ifdef HAVE_GL_GLEXT_H
+#include <GL/glext.h>
+#elif defined HAVE_OPENGL_GLEXT_H || defined HAVE_FRAMEWORK_OPENGL
+#include <OpenGL/glext.h>
+#endif
+
 #include "graphics.h"
 #include "txt-eng-ft.h"
 

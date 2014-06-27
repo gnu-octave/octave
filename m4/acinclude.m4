@@ -485,6 +485,38 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
   fi
 ])
 dnl
+dnl Check whether the QsciScintilla::findFirstInSelection () function exists.
+dnl This function was added in QScintilla 2.7.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
+  AC_CACHE_CHECK([whether QSci has the QsciScintilla::findFirstInSelection () function],
+    [octave_cv_func_qsci_findfirstinselection],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qsciscintilla.h>
+        class qsci : public QsciScintilla
+        {
+        public:
+          qsci (QWidget *parent = 0) : QsciScintilla (parent)
+          { this->findFirstInSelection (QString ("x"),true,true,true,true,true); }
+          ~qsci () {}
+        };
+        ]], [[
+        qsci edit;
+        ]])],
+      octave_cv_func_qsci_findfirstinselection=yes,
+      octave_cv_func_qsci_findfirstinselection=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qsci_findfirstinselection = yes; then
+    AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
+      [Define to 1 if Qsci has the QsciScintilla::findFirstInSelection () function.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -905,6 +937,16 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     ])
 
     if test $have_opengl_incs = yes; then
+      AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+      ])
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
           save_LIBS="$LIBS"

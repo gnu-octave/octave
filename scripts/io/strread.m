@@ -192,6 +192,10 @@ function varargout = strread (str, format = "%f", varargin)
     error ("strread: STR and FORMAT arguments must be strings");
   endif
 
+  if (strcmp (typeinfo (format), "sq_string"))
+    format = do_string_escapes (format);
+  endif
+
   ## Parse format string to compare number of conversion fields and nargout
   nfields = length (strfind (format, "%")) - length (strfind (format, "%*"));
   ## If str only has numeric fields, a (default) format ("%f") will do.
@@ -390,6 +394,15 @@ function varargout = strread (str, format = "%f", varargin)
     ## .. and remove it from whitespace collection
     white_spaces = strrep (white_spaces, eol_char, '');
   endif
+
+  ii = numel (fmt_words);
+  while (ii > 0)
+    if (ismember (fmt_words{ii}, delimiter_str)(1))
+      fmt_words(ii) = [];
+      --num_words_per_line;
+    endif
+    --ii;
+  endwhile
 
   pad_out = 0;
   ## Trim whitespace if needed
@@ -973,6 +986,34 @@ endfunction
 %% Test for no output arg (interactive use)
 %!test
 %! assert (strread (",2,,4\n5,,7,", "", "delimiter", ","), [NaN; 2; NaN; 4; 5; NaN; 7]);
+
+%% Test #1 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", "%f %f %f\n");
+%! assert (a, [1; 4; 7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
+%% Test #2 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", "%f %f\n%f");
+%! assert (a, [1;4;7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
+%% Test #3 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", '%f %f %f\n');
+%! assert (a, [1; 4; 7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
+%% Test #3 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", '%f %f\n%f');
+%! assert (a, [1;4;7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
 
 %% Unsupported format specifiers
 %!test

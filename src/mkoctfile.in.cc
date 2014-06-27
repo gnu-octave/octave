@@ -37,6 +37,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <unistd.h>
 
+// This mess suggested by the autoconf manual.
+
+#include <sys/types.h>
+
+#if defined HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+
+#ifndef WIFEXITED
+#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
+
+#ifndef WEXITSTATUS
+#define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
+#endif
+
 static std::map<std::string, std::string> vars;
 
 #ifndef OCTAVE_VERSION
@@ -344,9 +360,12 @@ run_command (const std::string& cmd)
 {
   if (debug)
     std::cout << cmd << std::endl;
+
   int result = system (cmd.c_str ());
+
   if (WIFEXITED (result))
     result = WEXITSTATUS (result);
+
   return result;
 }
 

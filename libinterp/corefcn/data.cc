@@ -723,6 +723,8 @@ agree, or if either of the arguments is complex.\n\
 %!error rem ([1, 2], [3, 4, 5])
 %!error rem (i, 1)
 
+# bug 42627
+%!assert (rem (0.94, 0.01), 0.0);
 */
 
 DEFALIAS (fmod, rem)
@@ -874,6 +876,9 @@ either of the arguments is complex.\n\
 ## non-integer real numbers
 %!assert (mod (2.1, 0.1), 0)
 %!assert (mod (2.1, 0.2), 0.1, eps)
+
+# bug 42627
+%!assert (mod (0.94, 0.01), 0.0);
 */
 
 // FIXME: Need to convert reduction functions of this file for single precision

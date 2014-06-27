@@ -321,33 +321,19 @@ xmod (T x, T y)
     {
       T q = x / y;
 
-      T n = xfloor (q);
-
-      if (X_NINT (y) != y)
+      if (X_NINT (y) != y
+          && (std::abs ((q - X_NINT (q)) / X_NINT (q))
+              < std::numeric_limits<T>::epsilon ()))
+        retval = 0;
+      else
         {
-          if (X_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - X_NINT (q))/ X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-            }
+          T n = xfloor (q);
+
+          // Prevent use of extra precision.
+          volatile T tmp = y * n;
+
+          retval = x - tmp;
         }
-
-      // Prevent use of extra precision.
-      volatile T tmp = y * n;
-
-      retval = x - tmp;
     }
 
   if (x != y && y != 0 && retval != 0)
@@ -368,33 +354,19 @@ xrem (T x, T y)
     {
       T q = x / y;
 
-      T n = xtrunc (q);
-
-      if (X_NINT (y) != y)
+      if (X_NINT (y) != y
+          && (std::abs ((q - X_NINT (q)) / X_NINT (q))
+              < std::numeric_limits<T>::epsilon ()))
+        retval = 0;
+      else
         {
-          if (X_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - X_NINT (q))/ X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-            }
+          T n = xtrunc (q);
+
+          // Prevent use of extra precision.
+          volatile T tmp = y * n;
+
+          retval = x - tmp;
         }
-
-      // Prevent use of extra precision.
-      volatile T tmp = y * n;
-
-      retval = x - tmp;
     }
 
   if (x != y && y != 0 && retval != 0)

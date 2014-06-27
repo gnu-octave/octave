@@ -54,7 +54,7 @@ public:
     : rng_base (b), rng_limit (b + (n-1) * i), rng_inc (i),
       rng_nelem (n), cache ()
   {
-    if (! xfinite (b) || ! xfinite (i))
+    if (! xfinite (b) || ! xfinite (i) | ! xfinite (rng_limit))
       rng_nelem = -2;
   }
 
@@ -145,6 +145,16 @@ private:
 
   void clear_cache (void) const { cache.resize (0, 0); }
 
+protected:
+
+  // For operators' usage (to allow all values to be set directly).
+  Range (double b, double l, double i, octave_idx_type n)
+    : rng_base (b), rng_limit (l), rng_inc (i),
+      rng_nelem (n), cache ()
+  {
+    if (! xfinite (b) || ! xfinite (i) || ! xfinite (l))
+      rng_nelem = -2;
+  }
 };
 
 extern OCTAVE_API Range operator - (const Range& r);

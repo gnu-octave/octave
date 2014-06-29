@@ -418,12 +418,11 @@ symbol_exist (const std::string& name, const std::string& type)
 
   if (search_any || search_builtin)
     {
-      // Require a try block because symbol_lookup will attempt unsafe load
-      // of .oct/.mex file.
-      try
-        { val = safe_symbol_lookup (name); }
-      catch (octave_execution_exception)
-        { }
+      // FIXME: safe_symbol_lookup will attempt unsafe load of .oct/.mex file.
+      // This can cause a segfault.  To catch this would require temporarily
+      // diverting the SIGSEGV exception handler and then restoring it.
+      // See bug #36067.
+      val = safe_symbol_lookup (name);
 
       if (val.is_defined () && val.is_builtin_function ())
         return 5;

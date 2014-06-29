@@ -515,21 +515,38 @@ unique_symbol_name (const std::string& basename)
 
 DEFUN (exist, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
-Return 1 if the name exists as a variable, 2 if the name is an\n\
-absolute file name, an ordinary file in Octave's @code{path}, or (after\n\
-appending @samp{.m}) a function file in Octave's @code{path}, 3 if the\n\
-name is a @samp{.oct} or @samp{.mex} file in Octave's @code{path},\n\
-5 if the name is a built-in function, 7 if the name is a directory, or 103\n\
-if the name is a function not associated with a file (entered on\n\
-the command line).\n\
+@deftypefn  {Built-in Function} {@var{c} =} exist (@var{name})\n\
+@deftypefnx {Built-in Function} {@var{c} =} exist (@var{name}, @var{type})\n\
+Check for the existence of @var{name} as a variable, function, file,\n\
+directory, or class.\n\
 \n\
-Otherwise, return 0.\n\
+The return code @var{c} is one of\n\
 \n\
-This function also returns 2 if a regular file called @var{name}\n\
-exists in Octave's search path.  If you want information about\n\
-other types of files, you should use some combination of the functions\n\
-@code{file_in_path} and @code{stat} instead.\n\
+@table @asis\n\
+@item 1\n\
+@var{name} is a variable.\n\
+\n\
+@item 2\n\
+@var{name} is an absolute file name, an ordinary file in Octave's\n\
+@code{path}, or (after appending @samp{.m}) a function file in Octave's\n\
+@code{path}.\n\
+\n\
+@item 3\n\
+@var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.\n\
+\n\
+@item 5\n\
+@var{name} is a built-in function.\n\
+\n\
+@item 7\n\
+@var{name} is a directory.\n\
+\n\
+@item 103\n\
+@var{name} is a function not associated with a file (entered on the command\n\
+line).\n\
+\n\
+@item 0\n\
+@var{name} does not exist.\n\
+@end table\n\
 \n\
 If the optional argument @var{type} is supplied, check only for\n\
 symbols of the specified type.  Valid types are\n\
@@ -541,12 +558,24 @@ Check only for variables.\n\
 @item @qcode{\"builtin\"}\n\
 Check only for built-in functions.\n\
 \n\
+@item @qcode{\"dir\"}\n\
+Check only for directories.\n\
+\n\
 @item @qcode{\"file\"}\n\
 Check only for files and directories.\n\
 \n\
-@item @qcode{\"dir\"}\n\
-Check only for directories.\n\
+@item @qcode{\"class\"}\n\
+Check only for classes.\n\
 @end table\n\
+\n\
+If no type is given, and there are multiple possible matches for name,\n\
+@code{exist} will return a code according to the following priority list:\n\
+variable, built-in function, oct-file, directory, file, class. \n\
+\n\
+@code{exist} returns 2 if a regular file called @var{name} is present in\n\
+Octave's search path.  If you want information about other types of files\n\
+not on the search path you should use some combination of the functions\n\
+@code{file_in_path} and @code{stat} instead.\n\
 \n\
 @seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}\n\
 @end deftypefn")

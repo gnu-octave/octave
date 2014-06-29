@@ -368,7 +368,7 @@ endfunction
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (2*theta).*cos (2*theta);
 %! polar (theta, rho, '--r');
-%! set (gca, "rtick", 0.1:0.1:0.6, "ttick", 0:20:340);
+%! set (gca, 'rtick', 0.1:0.1:0.6, 'ttick', 0:20:340);
 %! title ('polar() plot with finer grid');
 
 %!demo
@@ -376,7 +376,7 @@ endfunction
 %! theta = linspace (0,2*pi,1000);
 %! rho = sin (2*theta).*cos (2*theta);
 %! polar (theta, rho, '--b');
-%! set (gca, "fontsize", 12, "linewidth", 2, "color", [0.8 0.8 0.8]);
+%! set (gca, 'fontsize', 12, 'linewidth', 2, 'color', [0.8 0.8 0.8]);
 %! title ('polar() plot with modified axis appearance');
 
 %!demo
@@ -384,6 +384,6 @@ endfunction
 %! theta = linspace (0,8*pi,1000);
 %! rho = sin (5/4*theta);
 %! polar (theta, rho);
-%! set (gca, "rtick", 0.2:0.2:1);
+%! set (gca, 'rtick', 0.2:0.2:1);
 %! title ('polar() plot');
 

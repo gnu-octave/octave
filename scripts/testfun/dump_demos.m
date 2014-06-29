@@ -18,19 +18,19 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} dump_demos ()
-## @deftypefnx {Function File} {} dump_demos (@var{DIR})
-## @deftypefnx {Function File} {} dump_demos (@var{DIR}, @var{mfile})
-## @deftypefnx {Function File} {} dump_demos (@var{DIR}, @var{mfile}, @var{fmt})
+## @deftypefnx {Function File} {} dump_demos (@var{dirs})
+## @deftypefnx {Function File} {} dump_demos (@var{dirs}, @var{mfile})
+## @deftypefnx {Function File} {} dump_demos (@var{dirs}, @var{mfile}, @var{fmt})
 ## Produces a script, with the name specified by @var{mfile}, containing
-## the demos in the directory, @var{DIR}. The demos are assumed to produce
+## the demos in the directories, @var{dirs}. The demos are assumed to produce
 ## graphical output, whose renderings are saved with specified format,
 ## @var{fmt}.
 ##
 ## The defaults for each input are;
 ##
 ## @table @samp
-##   @item @var{DIR}
-##   @code{"plot"}
+##   @item @var{dirs}
+##   @code{@{"plot/appearance", "plot/draw", "plot/util"@}}
 ##   @item @var{mfile}
 ##   @code{"dump.m"}
 ##   @item @var{fmt}
@@ -50,21 +50,9 @@
 
 ## Author: Søren Hauberg  <soren@hauberg.org>
 
-function dump_demos (directory="plot", output="dump.m", fmt="png")
-  
-  ## Get path
-  if (nargin < 4)
-    if (is_absolute_filename (directory))
-      dirs = {directory};
-    else
-      fullname = find_dir_in_path (directory);
-      if (! isempty (fullname))
-        dirs = {fullname};
-      else
-        error ("print_demos: expecting argument to be a directory name");
-      endif
-    endif
-  else
+function dump_demos (dirs= {"plot/appearance", "plot/draw", "plot/util"}, output="dump.m", fmt="png")
+
+  if (nargin > 3)
     print_usage ();
   endif
 
@@ -80,24 +68,46 @@ function dump_demos (directory="plot", output="dump.m", fmt="png")
   else
     n = n - 1;
   endif
+  fprintf (fid, "%% DO NOT EDIT!  Generated automatically by dump_demos.m\n");
   fprintf (fid, "function %s ()\n", output(1:n));
   fprintf (fid, "close all\n");
   fprintf (fid, "more off\n");
 
   ## Run and print the demos in each directory
   for i = 1:numel (dirs)
+    if (!is_absolute_filename (dirs{i}))
+      fullname = dir_in_loadpath (dirs{i});
+      if (! isempty (fullname))
+        dirs{i} = fullname;
+      else
+        error ("dump_demos: expecting DIRS argument to be a cell arrays of strings with directory names");
+      endif
+    endif
     d = dirs{i};
+    if (!exist (d, "dir"))
+      error ("dump_demos: directory %s doesn't exist", d);
+    endif
     dump_all_demos (d, fid, fmt);
   endfor
-  
+
   ## Create script ending
   fprintf (fid, "end\n\n")
 
   ## TODO - Should dump_demos() attempt to convert the demos to traditional
-  ##        sytax.
+  ##        syntax.
   ##        (1) oct2mat() to convert some Octave specific syntax.
   ##        (2) Embed sombrero(), vec(), cstrcat() and assert() in demos ?
 
+  ## sombrero has now a default argument which isn't supported from matlab
+  ## http://octave.1599824.n4.nabble.com/sombrero-default-argument-matlab-compatibility-td4665016.html
+  ## TODO: we need to change it prior running
+  ## -function [x, y, z] = sombrero (n = 41)
+  ## +function [x, y, z] = sombrero (n)
+  ## +
+  ## +  if (nargin == 0)
+  ## +    n = 41;
+  ## +  endif
+  
   for mfile = {"sombrero"}
     f = which (mfile{1});
     fid2 = fopen (f);
@@ -106,18 +116,18 @@ function dump_demos (directory="plot", output="dump.m", fmt="png")
     fprintf (fid, "%s", code);
     fclose (fid2);
   endfor
-
-  fprintf (fid, "function x = vec (x)\n")
-  fprintf (fid, "  x = x(:);\n")
-  fprintf (fid, "end\n")
-
-  fprintf (fid, "function str = cstrcat (varargin)\n")
-  fprintf (fid, "  str = [varargin{:}];\n")
-  fprintf (fid, "end\n")
-
-  fprintf (fid, "function assert (varargin)\n")
-  fprintf (fid, "% Do nothing.\n")
-  fprintf (fid, "end\n")
+%~
+  %~ fprintf (fid, "function x = vec (x)\n")
+  %~ fprintf (fid, "  x = x(:);\n")
+  %~ fprintf (fid, "end\n")
+%~
+  %~ fprintf (fid, "function str = cstrcat (varargin)\n")
+  %~ fprintf (fid, "  str = [varargin{:}];\n")
+  %~ fprintf (fid, "end\n")
+%~
+  %~ fprintf (fid, "function assert (varargin)\n")
+  %~ fprintf (fid, "%% Do nothing.\n")
+  %~ fprintf (fid, "end\n")
 
   ## Close script
   fclose (fid);
@@ -148,16 +158,16 @@ function dump_all_demos (directory, fid, fmt)
       fprintf (fid, "    if (numel (dir (name)) == 0)\n");
       fprintf (fid, "      fprintf ('Printing ""%%s"" ... ', name);\n")
       fprintf (fid, "      print ('-d%s', name);\n", fmt);
-      fprintf (fid, "      pause (1);\n");
+#     fprintf (fid, "      pause (1);\n");
       fprintf (fid, "      fprintf ('done\\n');\n");
       fprintf (fid, "    else\n");
       fprintf (fid, "      fprintf ('File ""%%s"" exists.\\n', name);\n")
       fprintf (fid, "    end\n");
-      fprintf (fid, "    drawnow ();\n");
+#     fprintf (fid, "    drawnow ();\n");
       fprintf (fid, "  end\n");
       fprintf (fid, "  close (2:num_figures)\n");
       fprintf (fid, "catch\n");
-      fprintf (fid, "  fprintf ('%s_%s: %%s\\n', lasterr ());\n", fun, idx);
+      fprintf (fid, "  fprintf ('ERROR in %s_%s: %%s\\n', lasterr ());\n", fun, idx);
       fprintf (fid, "end\n\n");
     endfor
   endfor
@@ -178,7 +188,9 @@ function code = oct2mat (code)
   ## Simple hacks to make things Matlab compatible
   code = strrep (code, "%!", "%%");
   code = strrep (code, "!", "~");
-  code = strrep (code, "\"", "'");
+  ## Simple replacing double quotes with single quotes
+  ## causes problems with strings like 'hello "world"'
+  #code = strrep (code, "\"", "'");
   code = strrep (code, "#", "%");
   ## Fix the format specs for the errobar demos
   code = strrep (code, "%r", "#r");

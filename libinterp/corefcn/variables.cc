@@ -565,7 +565,7 @@ Check only for directories.\n\
 Check only for files and directories.\n\
 \n\
 @item @qcode{\"class\"}\n\
-Check only for classes.\n\
+Check only for classes.  (Note: This option is accepted, but not currently implemented)\n\
 @end table\n\
 \n\
 If no type is given, and there are multiple possible matches for name,\n\
@@ -586,16 +586,21 @@ not on the search path you should use some combination of the functions\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string name = args(0).string_value ();
+
           if (nargin == 2)
             {
-              std::string type = args(1).string_value ();
+              if (args(1).is_string ())
+                {
+                  std::string type = args(1).string_value ();
 
-              if (! error_state)
-                retval = symbol_exist (name, type);
+                  if (type == "class")
+                    warning ("exist: \"class\" type argument is not implemented");
+
+                  retval = symbol_exist (name, type);
+                }
               else
                 error ("exist: TYPE must be a string");
             }
@@ -651,6 +656,12 @@ not on the search path you should use some combination of the functions\n\
 %!assert (exist (dirtmp), 7)
 %!assert (exist (dirtmp, "dir"), 7)
 %!assert (exist (dirtmp, "file"), 7)
+
+%!error exist ()
+%!error exist (1,2,3)
+%!warning <"class" type argument is not implemented> exist ("a", "class");
+%!error <TYPE must be a string> exist ("a", 1)
+%!error <NAME must be a string> exist (1)
 
 */
 

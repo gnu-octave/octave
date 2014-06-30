@@ -4931,13 +4931,25 @@ void
 axes::properties::remove_child (const graphics_handle& h)
 {
   if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
-    delete_text_child (xlabel);
+    {
+      delete_text_child (xlabel);
+      update_xlabel_position ();
+    }
   else if (ylabel.handle_value ().ok () && h == ylabel.handle_value ())
-    delete_text_child (ylabel);
+    {
+      delete_text_child (ylabel);
+      update_ylabel_position ();
+    }
   else if (zlabel.handle_value ().ok () && h == zlabel.handle_value ())
-    delete_text_child (zlabel);
+    {
+      delete_text_child (zlabel);
+      update_zlabel_position ();
+    }
   else if (title.handle_value ().ok () && h == title.handle_value ())
-    delete_text_child (title);
+    {
+      delete_text_child (title);
+      update_title_position ();
+    }
   else
     base_properties::remove_child (h);
 }

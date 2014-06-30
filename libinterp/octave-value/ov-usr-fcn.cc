@@ -890,7 +890,7 @@ Programming Note: @code{nargin} does not work on built-in functions.\n\
             {
               // Matlab gives up for histc,
               // so maybe it's ok that that we give up somtimes too?
-              error ("nargin: nargin information not available for builtin functions");
+              error ("nargin: nargin information not available for built-in functions");
             }
         }
       else
@@ -1012,7 +1012,7 @@ returns -1 for all anonymous functions.\n\
               // without making intrusive changes to Octave.
               // Matlab gives up for histc,
               // so maybe it's ok that we give up somtimes too?
-              error ("nargout: nargout information not available for builtin functions.");
+              error ("nargout: nargout information not available for built-in functions.");
             }
         }
       else

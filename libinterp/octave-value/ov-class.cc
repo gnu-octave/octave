@@ -1950,7 +1950,7 @@ belongs to.\n\
   const Array<std::string> cls = args(1).cellstr_value ();
   if (error_state)
     {
-      error ("isa: CLASSNAME must be a string or cell attay of strings");
+      error ("isa: CLASSNAME must be a string or cell array of strings");
       return retval;
     }
 

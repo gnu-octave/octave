@@ -207,11 +207,11 @@ function h = colorbar (varargin)
       if (mirror)
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
                   "ylim", cext, "ylimmode", "manual",
-                  "yaxislocation", "right", args{:});
+                  "yaxislocation", "right", "layer", "top", args{:});
       else
         set (cax, "xtick", [], "xdir", "normal", "ydir", "normal",
                   "ylim", cext, "ylimmode", "manual",
-                  "yaxislocation", "left", args{:});
+                  "yaxislocation", "left", "layer", "top", args{:});
       endif
     else
       hi = image (cax, "xdata", [cmin, cmax], "ydata", [0,1],
@@ -219,11 +219,11 @@ function h = colorbar (varargin)
       if (mirror)
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
                   "xlim", cext, "xlimmode", "manual",
-                  "xaxislocation", "top", args{:});
+                  "xaxislocation", "top", "layer", "top", args{:});
       else
         set (cax, "ytick", [], "xdir", "normal", "ydir", "normal",
                   "xlim", cext, "xlimmode", "manual",
-                  "xaxislocation", "bottom", args{:});
+                  "xaxislocation", "bottom", "layer", "top", args{:});
       endif
     endif
 

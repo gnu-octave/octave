@@ -2768,6 +2768,7 @@ if test $build_gui = yes; then
 
   if test $build_gui = yes; then
     OCTAVE_CHECK_QFONT_MONOSPACE
+    OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS
     OCTAVE_CHECK_FUNC_SETPLACEHOLDERTEXT
   fi
 

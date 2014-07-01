@@ -383,6 +383,30 @@ AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
   fi
 ])
 dnl
+dnl Check whether Qt provides QFont::ForceIntegerMetrics
+dnl
+AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
+  AC_CACHE_CHECK([whether Qt provides QFont::ForceIntegerMetrics],
+    [octave_cv_decl_qfont_force_integer_metrics],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleStrategy strategy = QFont::ForceIntegerMetrics;
+        ]])],
+      octave_cv_decl_qfont_force_integer_metrics=yes,
+      octave_cv_decl_qfont_force_integer_metrics=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_force_integer_metrics = yes; then
+    AC_DEFINE(HAVE_QFONT_FORCE_INTEGER_METRICS, 1,
+      [Define to 1 if Qt provides QFont::ForceIntegerMetrics.])
+  fi
+])
+dnl
 dnl Check whether Qscintilla SetPlaceholderText function exists.
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?

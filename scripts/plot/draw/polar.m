@@ -95,46 +95,51 @@ function h = polar (varargin)
       print_usage ();
     endif
 
-    ## FIXME: Should more gracefully handle "hold on" and not override props.
-    set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
-              "zlim", [-1 1]);
+    if (! ishold (hax))
+      hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
 
-    if (! isprop (hax, "rtick"))
-      addproperty ("rtick", hax, "data");
+      set (hax, "visible", "off", "plotboxaspectratio", [1, 1, 1],
+                "zlim", [-1 1]);
+
+      if (! isprop (hax, "rtick"))
+        addproperty ("rtick", hax, "data");
+      endif
+
+      set (hax, "rtick", __calc_rtick__ (hax, maxr));
+
+      ## add t(heta)tick
+      if (! isprop (hax, "ttick"))
+        addproperty ("ttick", hax, "data");
+      endif
+
+      ## theta(angular) ticks in degrees
+      set (hax, "ttick", 0:30:330);
+
+      __update_polar_grid__ (hax, [], hg);
+
+      set (hg, "deletefcn", {@resetaxis, hax});
+
+      addlistener (hax, "rtick", {@__update_polar_grid__, hg});
+      addlistener (hax, "ttick", {@__update_polar_grid__, hg});
+      addlistener (hax, "color", {@__update_patch__, hg});
+      addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
+      addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
+      addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
+      addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
+      addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
+      addlistener (hax, "interpreter", {@__update_text__, hg, "interpreter"});
+      addlistener (hax, "layer", {@__update_layer__, hg});
+      addlistener (hax, "gridlinestyle",{@__update_lines__,hg,"gridlinestyle"});
+      addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
+    else
+      hg = findall (hax, "tag", "polar_grid");
+      if (! isempty (hg))
+        oldrtick = max (get (hax, "rtick"));
+        if (maxr > oldrtick)
+          set (hax, "rtick", __calc_rtick__ (hax, maxr));
+        endif
+      endif
     endif
-
-    ## calculate r(ho)tick from xtick
-    xtick = get (hax, "xtick");
-    rtick = xtick(find (xtick > 0, 1):find (xtick >= maxr, 1));
-    if (isempty (rtick))
-      rtick = [0.5 1];
-    endif
-    set (hax, "rtick", rtick);
-
-    ## add t(heta)tick
-    if (! isprop (hax, "ttick"))
-      addproperty ("ttick", hax, "data");
-    endif
-
-    ## theta(angular) ticks in degrees
-    set (hax, "ttick", 0:30:330);
-
-    ## Create hggroup to hold text/line objects and attach listeners
-    hg = hggroup (hax, "tag", "polar_grid", "handlevisibility", "off");
-    __update_polar_grid__(hax, [], hg);
-
-    addlistener (hax, "rtick", {@__update_polar_grid__, hg});
-    addlistener (hax, "ttick", {@__update_polar_grid__, hg});
-    addlistener (hax, "color", {@__update_patch__, hg});
-    addlistener (hax, "fontangle", {@__update_text__, hg, "fontangle"});
-    addlistener (hax, "fontname", {@__update_text__, hg, "fontname"});
-    addlistener (hax, "fontsize", {@__update_text__, hg, "fontsize"});
-    addlistener (hax, "fontunits", {@__update_text__, hg, "fontunits"});
-    addlistener (hax, "fontweight", {@__update_text__, hg, "fontweight"});
-    addlistener (hax, "interpreter", {@__update_text__, hg, "interpreter"});
-    addlistener (hax, "layer", {@__update_layer__, hg});
-    addlistener (hax, "gridlinestyle", {@__update_lines__, hg,"gridlinestyle"});
-    addlistener (hax, "linewidth", {@__update_lines__, hg, "linewidth"});
 
   unwind_protect_cleanup
     if (! isempty (oldfig))
@@ -146,6 +151,19 @@ function h = polar (varargin)
     h = htmp;
   endif
 
+endfunction
+
+function rtick = __calc_rtick__ (hax, maxr)
+  ## FIXME: workaround: calculate r(ho)tick from xtick
+  savexlim = get (hax, "xlim");
+  saveylim = get (hax, "ylim");
+  set (hax, "xlim", [-maxr maxr], "ylim", [-maxr maxr]);
+  xtick = get (hax, "xtick");
+  rtick = xtick(find (xtick > 0, 1):find (xtick >= maxr, 1));
+  if (isempty (rtick))
+    rtick = [0.5 1];
+  endif
+  set (hax, "xlim", savexlim, "ylim", saveylim);
 endfunction
 
 function retval = __plr1__ (h, theta, fmt)
@@ -346,6 +364,23 @@ function __update_polar_grid__ (hax, ~, hg)
   ## Put polar grid behind or ahead of plot
   __update_layer__ (hax, [], hg);
 
+endfunction
+
+function resetaxis (~, ~, hax)
+  if (isaxes (hax))
+    dellistener (hax, "rtick");
+    dellistener (hax, "ttick");
+    dellistener (hax, "color");
+    dellistener (hax, "fontangle");
+    dellistener (hax, "fontname");
+    dellistener (hax, "fontsize");
+    dellistener (hax, "fontunits");
+    dellistener (hax, "fontweight");
+    dellistener (hax, "interpreter");
+    dellistener (hax, "layer");
+    dellistener (hax, "gridlinestyle");
+    dellistener (hax, "linewidth");
+  endif
 endfunction
 
 

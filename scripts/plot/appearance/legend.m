@@ -1399,9 +1399,9 @@ endfunction
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
-%! title ('legend() works for bar graphs (hggroups)');
+%! title ('"left" option places text label west of colors');
 %! legend ('1st Bar', '2nd Bar', '3rd Bar');
-%! legend right;
+%! legend left;
 
 %!demo
 %! clf;

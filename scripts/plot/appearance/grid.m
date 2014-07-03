@@ -58,13 +58,10 @@ function grid (varargin)
     print_usage ();
   endif
 
-  grid_on = (   strcmp (get (hax, "xgrid"), "on")
-             && strcmp (get (hax, "ygrid"), "on")
-             && strcmp (get (hax, "zgrid"), "on"));
+  grid_on = any (strcmp (get (hax, {"xgrid", "ygrid", "zgrid"}), "on"));
 
-  minor_on = (   strcmp (get (hax, "xminorgrid"), "on")
-              && strcmp (get (hax, "yminorgrid"), "on")
-              && strcmp (get (hax, "zminorgrid"), "on"));
+  minor_on = any (strcmp (get (hax, {"xminorgrid", "yminorgrid", "zminorgrid"}),
+                         "on"));
 
   minor_auto = true;
   if (nargs == 0)
@@ -102,9 +99,15 @@ function grid (varargin)
   endif
 
   if (grid_on)
-    set (hax, "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    set (hax, "xgrid", "on", "ygrid", "on", "zgrid", "on",
+              "gridlinestyle", ":");
     if (minor_on)
-      set (hax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on");
+      set (hax, "xminorgrid", "on", "yminorgrid", "on", "zminorgrid", "on",
+                "gridlinestyle", "-", "minorgridlinestyle", ":");
+      xg = ifelse (strcmp (get (hax, "xscale"), "log"), "off", "on");
+      yg = ifelse (strcmp (get (hax, "yscale"), "log"), "off", "on");
+      zg = ifelse (strcmp (get (hax, "zscale"), "log"), "off", "on");
+      set (hax, "xgrid", xg, "ygrid", yg, "zgrid", zg);
     elseif (minor_auto)
       xmg = ifelse (strcmp (get (hax, "xscale"), "log"), "on", "off");
       ymg = ifelse (strcmp (get (hax, "yscale"), "log"), "on", "off");
@@ -133,8 +136,26 @@ endfunction
 %!  title ('grid on');
 %! subplot (2,2,3);
 %!  plot (1:100);
+%!  grid off;
+%!  title ('no grid');
+%! subplot (2,2,4);
+%!  plot (1:100);
 %!  grid minor;
 %!  title ('grid minor');
+
+%!demo
+%! subplot (2,2,1);
+%!  semilogy (1:100);
+%!  grid off;
+%!  title ('no grid');
+%! subplot (2,2,2);
+%!  semilogy (1:100);
+%!  grid on;
+%!  title ('grid on');
+%! subplot (2,2,3);
+%!  semilogy (1:100);
+%!  grid off;
+%!  title ('no grid');
 %! subplot (2,2,4);
 %!  semilogy (1:100);
 %!  grid minor;

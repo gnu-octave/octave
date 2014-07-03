@@ -1248,7 +1248,7 @@ endfunction
 %! plot (rand (2));
 %! title ('legend called with cellstr and string inputs for labels');
 %! h = legend ({'foo'}, 'bar');
-%! legend location northeastoutside
+%! legend (h, 'location', 'northeastoutside');
 %! set (h, 'fontsize', 20);
 
 %!demo
@@ -1261,9 +1261,9 @@ endfunction
 %! clf;
 %! x = 0:1;
 %! plot (x,x,';I am Blue;', x,2*x, x,3*x,';I am Red;');
-%! legend location northeastoutside
+%! h = legend ('location', 'northeastoutside');
 %! ## Placing legend inside should return axes to original size
-%! legend location northeast
+%! legend (h, 'location', 'northeast');
 %! title ('Blue and Red keys, with Green missing');
 
 %!demo

@@ -104,7 +104,9 @@ function h = pareto (varargin)
   axis (ax(1), [1 - 0.6, idx95 + 0.6, 0, maxcdf]);
   axis (ax(2), [1 - 0.6, idx95 + 0.6, 0, 100]);
   set (ax(2), "ytick", [0, 20, 40, 60, 80, 100],
-              "yticklabel", {"0%", "20%", "40%", "60%", "80%", "100%"});
+              "yticklabel", {"0%", "20%", "40%", "60%", "80%", "100%"},
+              "ycolor", get (ax(1), "ycolor"));
+  set (hline, "color", get (ax(1), "colororder")(1,:));
   set (ax(1:2), "xtick", 1:idx95, "xticklabel", x(1:idx95));
 
   if (nargout > 0)

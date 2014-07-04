@@ -329,7 +329,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       ## Compute nr. of rows
       nrows = floor (numel (C{1}) / ncols);
       ## Reshape C; watch out, transpose needed
-      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols)';
+      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols).';
       ## Distribute columns over C and wipe cols 2:end of C{1}
       for ii=2:ncols
         C(ii) = C{1}(:, ii);
@@ -677,3 +677,7 @@ endfunction
 %! a = textscan (",1,,4\nInf,  ,NaN", "", "delimiter", ",", "emptyvalue", -10);
 %! assert (cell2mat (a), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
 
+%% Bug #42528
+%!test
+%! assert (textscan ("1i", ""){1},  0+1i);
+%! assert (cell2mat (textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i", "")), [3+0i, 2-4i, NaN+0i; 0-i,  1+0i, 23.4+2.2i]);

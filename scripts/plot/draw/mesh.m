@@ -70,10 +70,15 @@ function h = mesh (varargin)
   unwind_protect
     hax = newplot (hax);
 
-    htmp = surface (varargin{:});
+    mesh_props = {"facecolor", "w", "edgecolor", "flat"};
+    chararg = find (cellfun ("isclass", varargin, "char"), 1);
+    if (isempty (chararg))
+      htmp = surface (varargin{:}, mesh_props{:});
+    else
+      htmp = surface (varargin{1:chararg-1}, mesh_props{:},
+                      varargin{chararg:end});
+    endif
 
-    set (htmp, "facecolor", "w");
-    set (htmp, "edgecolor", "flat");
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on");
@@ -124,4 +129,15 @@ endfunction
 %! if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
 %!   title ({'Gnuplot: mesh color is wrong', 'This is a Gnuplot bug'});
 %! endif
+
+%!demo
+%! clf;
+%! x = logspace (0,1,11);
+%! z = x'*x;
+%! mesh (x, x, z, 'facecolor', 'none', 'edgecolor', 'c');
+%! xlabel 'X-axis';
+%! ylabel 'Y-axis';
+%! zlabel 'Z-axis';
+%! title ({'mesh() default properties overriden', ...
+%!         'transparent mesh with cyan color'});
 

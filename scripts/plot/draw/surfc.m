@@ -71,9 +71,15 @@ function h = surfc (varargin)
   unwind_protect
     hax = newplot (hax);
     
-    htmp = surface (varargin{:});
+    surfc_props = {"facecolor", "flat"};
+    chararg = find (cellfun ("isclass", varargin, "char"), 1);
+    if (isempty (chararg))
+      htmp = surface (varargin{:}, surfc_props{:});
+    else
+      htmp = surface (varargin{1:chararg-1}, surfc_props{:},
+                      varargin{chararg:end});
+    endif
 
-    set (htmp, "facecolor", "flat");
     if (! ishold ())
       set (hax, "view", [-37.5, 30],
                 "xgrid", "on", "ygrid", "on", "zgrid", "on",

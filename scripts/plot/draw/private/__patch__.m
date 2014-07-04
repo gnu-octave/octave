@@ -176,7 +176,7 @@ function [h, failed] = __patch__ (p, varargin)
         args{10} = [];
       else
         args{7} = "facecolor";
-        args{8} = [0, 1, 0];
+        args{8} = [0, 0, 0];
         args{9} = "cdata";
         args{10} = [];
       endif
@@ -247,7 +247,7 @@ function args = setdata (args)
     if (!isempty (fvc))
       fc = "flat";
     else
-      fc = [0, 1, 0];
+      fc = [0, 0, 0];
     endif
     args = {"facecolor", fc, args{:}};
   endif
@@ -317,7 +317,7 @@ function args = setvertexdata (args)
     if (!isempty (c))
       fc = "flat";
     else
-      fc = [0, 1, 0];
+      fc = [0, 0, 0];
     endif
     args = {"facecolor", fc, args{:}};
   endif

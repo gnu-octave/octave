@@ -46,7 +46,7 @@
 function compare_plot_demos (varargin)
 
   arg.toolkits = available_graphics_toolkits ();
-  arg.directories = {"plot/appearance", "plot/draw", "plot/util"};
+  arg.directories = {"plot/appearance", "plot/draw", "plot/util", "image"};
   arg.fmt = "png";
   arg.fcn_file = "";
   arg.replace_images = false;

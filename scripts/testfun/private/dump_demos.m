@@ -30,7 +30,7 @@
 ##
 ## @table @var
 ##   @item @var{dirs}
-##   @code{@{"plot/appearance", "plot/draw", "plot/util"@}}
+##   @code{@{"plot/appearance", "plot/draw", "plot/util", "image/"@}}
 ##   @item @var{mfile}
 ##   @code{"dump.m"}
 ##   @item @var{fmt}
@@ -48,7 +48,7 @@
 
 ## Author: Søren Hauberg  <soren@hauberg.org>
 
-function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util"}, output="dump.m", fmt="png")
+function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image/"}, output="dump.m", fmt="png")
 
   if (nargin > 3)
     print_usage ();

@@ -8,9 +8,13 @@ linear_algebra_FCN_FILES = \
   linear-algebra/duplication_matrix.m \
   linear-algebra/expm.m \
   linear-algebra/housh.m \
+  linear-algebra/isbanded.m \
   linear-algebra/isdefinite.m \
+  linear-algebra/isdiag.m \
   linear-algebra/ishermitian.m \
   linear-algebra/issymmetric.m \
+  linear-algebra/istril.m \
+  linear-algebra/istriu.m \
   linear-algebra/krylov.m \
   linear-algebra/linsolve.m \
   linear-algebra/logm.m \

@@ -811,6 +811,8 @@ variable.
 
 @DOCSTRING(isnumeric)
 
+@DOCSTRING(islogical)
+
 @DOCSTRING(isfloat)
 
 @DOCSTRING(isreal)
@@ -835,7 +837,13 @@ variable.
 
 @DOCSTRING(isdefinite)
 
-@DOCSTRING(islogical)
+@DOCSTRING(isbanded)
+
+@DOCSTRING(isdiag)
+
+@DOCSTRING(istril)
+
+@DOCSTRING(istriu)
 
 @DOCSTRING(isprime)
 

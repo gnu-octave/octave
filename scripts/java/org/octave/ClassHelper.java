@@ -199,7 +199,7 @@ public class ClassHelper
           {
             sb.append (";");
           }
-        sb.append (theField[i].toString ());
+        sb.append (theField[i].getName ());
       }
 
     return (sb.toString ());

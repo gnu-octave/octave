@@ -70,9 +70,13 @@ endfunction
 %! s = struct ();
 %! assert (fieldnames (s), cell (0, 1));
 
-## test Java classname
-%!testif HAVE_JAVA 
+## test Java classname by passing classname
+%!testif HAVE_JAVA
 %! names = fieldnames ("java.lang.Double");
-%! search = strfind (names, "java.lang.Double.MAX_VALUE");
-%! assert (! isempty ([search{:}]));
+%! assert (any (strcmp (names, "MAX_VALUE")));
+
+## test Java classname by passing java object
+%!testif HAVE_JAVA
+%! names = fieldnames (javaObject ("java.lang.Double", 10));
+%! assert (any (strcmp (names, "MAX_VALUE")));
 

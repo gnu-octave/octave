@@ -54,7 +54,11 @@
 ## @seealso{javaaddpath, javarmpath}
 ## @end deftypefn
 
-function varargout = javaclasspath (which)
+function [path1, path2] = javaclasspath (which)
+
+  if (nargin > 1)
+    print_usage ();
+  endif
 
   ## dynamic classpath
   dynamic_path = javaMethod ("getClassPath", "org.octave.ClassHelper");
@@ -70,46 +74,39 @@ function varargout = javaclasspath (which)
     static_path_list = {};
   endif
 
-  switch (nargin)
-    case 0
-      switch (nargout)
-        case 0
-          disp_path_list ("STATIC", static_path_list)
-          disp ("");
-          disp_path_list ("DYNAMIC", dynamic_path_list)
+  if (nargout == 0)
+    if (! nargin)
+      which = "-all";
+    endif
+    switch (tolower (which))
+      case "-dynamic", disp_path_list ("DYNAMIC", dynamic_path_list);
+      case "-static",  disp_path_list ("STATIC", static_path_list);
+      case "-all"
+        disp_path_list ("STATIC", static_path_list);
+        disp ("");
+        disp_path_list ("DYNAMIC", dynamic_path_list);
+      otherwise
+        error ("javaclasspath: invalid value for WHAT");
+    endswitch
 
-        case 1
-          varargout{1} = cellstr (dynamic_path_list);
-
-        case 2
-          varargout{1} = cellstr (dynamic_path_list);
-          varargout{2} = cellstr (static_path_list);
+  else
+    if (! nargin)
+      ## This is to allow retrieval of both paths in separate variables with
+      ## a single call to javaclasspath(). Matlab returns only the -dynamic
+      ## path in this case but this won't break compatibility.
+      path1 = cellstr (dynamic_path_list);
+      path2 = cellstr (static_path_list);
+    else
+      switch (tolower (which))
+        case "-all",     path1 = cellstr ([static_path_list, dynamic_path_list]);
+        case "-dynamic", path1 = cellstr (dynamic_path_list);
+        case "-static",  path1 = cellstr (static_path_list);
+        otherwise
+          error ("javaclasspath: invalid value for WHAT");
       endswitch
-        
-    case 1
-      switch (nargout)
-        case 0
-          if (strcmp (which, "-static"))
-            disp_path_list ("STATIC", static_path_list)
-          elseif (strcmp (which, "-dynamic"))
-            disp_path_list ("DYNAMIC", dynamic_path_list)
-          elseif (strcmp (which, "-all") == 1)
-            disp_path_list ("STATIC", static_path_list)
-            disp ("");
-            disp_path_list ("DYNAMIC", dynamic_path_list)
-          endif
+    endif
+  endif
 
-        case 1
-          if (strcmp (which, "-static") == 1)
-            varargout{1} = cellstr (static_path_list);
-          elseif (strcmp (which, "-dynamic") == 1)
-            varargout{1} = cellstr (dynamic_path_list);
-          elseif (strcmp (which, "-all") == 1)
-            varargout{1} = cellstr ([static_path_list, dynamic_path_list]);
-          endif
-      endswitch
-  endswitch
-  
 endfunction
 
 ## Display cell array of paths

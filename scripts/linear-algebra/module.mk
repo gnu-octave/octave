@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += linear-algebra
 
 linear_algebra_FCN_FILES = \
+  linear-algebra/bandwidth.m \
   linear-algebra/commutation_matrix.m \
   linear-algebra/cond.m \
   linear-algebra/condest.m \

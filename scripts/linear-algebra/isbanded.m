@@ -23,7 +23,7 @@
 ## above the main diagonal.
 ##
 ## @var{lower} and @var{upper} must be non-negative integers.
-## @seealso{isdiag, istril, istriu}
+## @seealso{isdiag, istril, istriu, bandwidth}
 ## @end deftypefn
 
 ## Author: Massimiliano Fasi

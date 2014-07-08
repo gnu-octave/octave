@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isdiag (@var{x})
 ## Return true if @var{x} is a diagonal matrix.
-## @seealso{isbanded, istril, istriu, diag}
+## @seealso{isbanded, istril, istriu, diag, bandwidth}
 ## @end deftypefn
 
 ## Author: Massimiliano Fasi

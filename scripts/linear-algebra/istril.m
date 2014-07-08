@@ -22,7 +22,7 @@
 ##
 ## A lower triangular matrix has nonzero entries only on the main diagonal
 ## and below.
-## @seealso{istriu, isbanded, isdiag, tril}
+## @seealso{istriu, isbanded, isdiag, tril, bandwidth}
 ## @end deftypefn
 
 ## Author: Massimiliano Fasi

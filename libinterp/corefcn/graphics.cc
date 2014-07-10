@@ -329,7 +329,7 @@ default_patch_vertices (void)
 static Matrix
 default_patch_xdata (void)
 {
-  Matrix m (3, 1, 0);
+  Matrix m (3, 1, 0.0);
   m(1) = 1.0;
   return m;
 }
@@ -337,8 +337,8 @@ default_patch_xdata (void)
 static Matrix
 default_patch_ydata (void)
 {
-  Matrix m (3, 1, 1);
-  m(2) = 0;
+  Matrix m (3, 1, 1.0);
+  m(2) = 0.0;
   return m;
 }
 

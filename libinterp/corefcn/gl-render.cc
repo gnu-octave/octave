@@ -2925,7 +2925,7 @@ opengl_renderer::set_linestyle (const std::string& s, bool use_stipple)
   else if (s == ":")
     glLineStipple (1, static_cast<unsigned short> (0x8888));
   else if (s == "--")
-    glLineStipple (1, static_cast<unsigned short> (0x0FFF));
+    glLineStipple (1, static_cast<unsigned short> (0xF0F0));
   else if (s == "-.")
     glLineStipple (1, static_cast<unsigned short> (0x020F));
   else

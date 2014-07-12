@@ -38,13 +38,6 @@
 
 function retval = java_set (obj, name, val)
 
-  persistent warned = false;
-  if (! warned)
-    warned = true;
-    warning ("Octave:deprecated-function",
-             "java_set is obsolete and will be removed from a future version of Octave; use structure-like indexing instead");
-  endif
-
   if (nargin != 3)
     print_usage ();
   endif
@@ -52,8 +45,6 @@ function retval = java_set (obj, name, val)
   if (isjava (obj))
     obj.(name) = val;
   elseif (ischar (obj))
-    ## FIXME: Need a solution for getting static fields of class
-    ##        which does not depend on __java_set__ which will be removed.
     retval = __java_set__ (obj, name, val);
   else
     error ("java_set: OBJ must be a Java object");

@@ -38,13 +38,6 @@
 
 function retval = java_get (obj, name)
 
-  persistent warned = false;
-  if (! warned)
-    warned = true;
-    warning ("Octave:deprecated-function",
-             "java_get is obsolete and will be removed from a future version of Octave; use structure-like indexing instead");
-  endif
-
   if (nargin != 2)
     print_usage ();
   endif
@@ -52,8 +45,6 @@ function retval = java_get (obj, name)
   if (isjava (obj))
     retval = obj.(name);
   elseif (ischar (obj))
-    ## FIXME: Need a solution for getting static fields of class
-    ##        which does not depend on __java_get__ which will be removed.
     retval = __java_get__ (obj, name);
   else
     error ("java_get: OBJ must be a Java object");

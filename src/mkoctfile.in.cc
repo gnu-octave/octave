@@ -626,7 +626,7 @@ main (int argc, char **argv)
       return 0;
     }
 
-  for (it = f77files.begin (); it != f77files.end (); ++it)
+  for (it = f77files.begin (); it != f77files.end () && !result; ++it)
     {
       std::string f = *it, b = basename (f, true);
       if (!vars["F77"].empty ())
@@ -655,7 +655,7 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = cfiles.begin (); it != cfiles.end (); ++it)
+  for (it = cfiles.begin (); it != cfiles.end () && !result; ++it)
     {
       std::string f = *it;
       if (!vars["CC"].empty ())
@@ -685,7 +685,7 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = ccfiles.begin (); it != ccfiles.end (); ++it)
+  for (it = ccfiles.begin (); it != ccfiles.end () && !result; ++it)
     {
       std::string f = *it;
       if (!vars["CXX"].empty ())
@@ -715,7 +715,7 @@ main (int argc, char **argv)
         }
     }
 
-  if (link && !objfiles.empty ())
+  if (link && !objfiles.empty () && !result)
     {
       if (link_stand_alone)
         {

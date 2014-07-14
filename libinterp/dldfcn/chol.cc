@@ -375,7 +375,7 @@ sparse matrices.\n\
 /*
 %!assert (chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps))
 %!assert (chol (single ([2, 1; 1, 1])), single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
-%!test   
+%!testif HAVE_CHOLMOD
 %! ## Bug #42587
 %! A = sparse ([1 0 8;0 1 8;8 8 1]);
 %! [Q, p] = chol (A);

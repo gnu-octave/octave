@@ -164,35 +164,34 @@ endfunction
 
 
 %!demo
-%! disp ('- test listdlg with selectionmode single. No caption, no prompt.');
-%! itemlist = {'An item \\alpha', 'another', 'yet another'};
-%! s = listdlg ('ListString',itemlist, 'SelectionMode','Single');
+%! disp ("- test listdlg with selectionmode single. No caption, no prompt.");
+%! itemlist = {"An item \\alpha", "another", "yet another"};
+%! s = listdlg ("ListString", itemlist, "SelectionMode", "Single");
 %! imax = numel (s);
 %! for i=1:1:imax
-%!   disp (['Selected: ',num2str (i),': ', itemlist{s (i)}]);
+%!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
 %! end
 
 %!demo
-%! disp ('- test listdlg with selectionmode and preselection. Has caption and two lines prompt.');
-%! itemlist = {'An item \\alpha', 'another', 'yet another'};
-%! s = listdlg ('ListString',itemlist, ...
-%!              'SelectionMode','Multiple', ...
-%!              'Name','Selection Dialog', ...
-%!              'InitialValue',[1,2,3,4],
-%!              'PromptString',{'Select <b>an</b> item...', '...or <b>multiple</b> items'} );
+%! disp ("- test listdlg with selectionmode and preselection. Has caption and two lines prompt.");
+%! itemlist = {"An item \\alpha", "another", "yet another"};
+%! s = listdlg ("ListString", itemlist, ...
+%!              "SelectionMode", "Multiple", ...
+%!              "Name", "Selection Dialog", ...
+%!              "InitialValue", [1,2,3,4],
+%!              "PromptString", {"Select <b>an</b> item...", "...or <b>multiple</b> items"});
 %! imax = numel (s);
 %! for i=1:1:imax
-%!   disp (['Selected: ',num2str (i),': ', itemlist{s (i)}]);
+%!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
 %! end
 
 %!demo
-%! disp ('- test listdlg with listsize.');
-%! itemlist = {"Neutron","Electron","Quark","Proton","Neutrino"};
-%! s = listdlg ("ListString",itemlist,
-%!              "Name","Bits and Pieces",
-%!              "ListSize",[200 75] );
+%! disp ("- test listdlg with listsize.");
+%! itemlist = {"Neutron", "Electron", "Quark", "Proton", "Neutrino"};
+%! s = listdlg ("ListString", itemlist,
+%!              "Name", "Bits and Pieces",
+%!              "ListSize", [200 75]);
 %! imax = numel (s);
 %! for i=1:1:imax
-%!   disp (['Selected: ',num2str (i),': ', itemlist{s (i)}]);
+%!   disp (["Selected: ", num2str(i), ": ", itemlist{s(i)}]);
 %! end
-

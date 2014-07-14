@@ -1,6 +1,8 @@
 FCN_FILE_DIRS += java
 
 java_FCN_FILES = \
+  java/java_get.m \
+  java/java_set.m \
   java/javaArray.m \
   java/javaaddpath.m \
   java/javaclasspath.m \

@@ -82,7 +82,7 @@ SUBDIRS = libgnu liboctave libinterp
 if AMCOND_BUILD_GUI
 SUBDIRS += libgui
 endif
-SUBDIRS += src scripts . @DOCDIR@ examples test .
+SUBDIRS += src scripts . @DOCDIR@ examples etc/icons test .
 
 if ! AMCOND_BUILD_DOCS
 dist-hook:

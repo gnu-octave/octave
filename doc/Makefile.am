@@ -29,5 +29,5 @@ EXTRA_DIST = \
   texinfo.tex \
   texmf.cnf
 
-SUBDIRS = doxyhtml icons interpreter liboctave refcard
+SUBDIRS = doxyhtml interpreter liboctave refcard
 

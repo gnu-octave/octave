@@ -2877,10 +2877,10 @@ AC_CONFIG_FILES([
   doc/Makefile
   doc/doxyhtml/Makefile
   doc/doxyhtml/Doxyfile
-  doc/icons/Makefile
   doc/interpreter/Makefile
   doc/liboctave/Makefile
   doc/refcard/Makefile
+  etc/icons/Makefile
   examples/Makefile
   libgnu/Makefile
   libgui/Makefile

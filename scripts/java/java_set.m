@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{obj} =} java_set (@var{obj}, @var{name}, @var{val})
+## @deftypefn {Function File} {@var{obj} =} java_set (@var{obj}, @var{name}, @var{val})
 ## Set the value of the field @var{name} of the Java object @var{obj} to
 ## @var{val}.  For static fields, @var{obj} can be a string representing the
 ## fully qualified named of the corresponding Java class.

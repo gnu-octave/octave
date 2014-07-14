@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} istril (@var{x})
-## Return true if @var{x} is a lower triangular matrix.
+## @deftypefn {Function File} {} istril (@var{A})
+## Return true if @var{A} is a lower triangular matrix.
 ##
 ## A lower triangular matrix has nonzero entries only on the main diagonal
 ## and below.

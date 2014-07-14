@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isbanded (@var{x}, @var{lower}, @var{upper})
-## Return true if @var{x} is a matrix with entries confined between
+## @deftypefn {Function File} {} isbanded (@var{A}, @var{lower}, @var{upper})
+## Return true if @var{A} is a matrix with entries confined between
 ## @var{lower} diagonals below the main diagonal and @var{upper} diagonals
 ## above the main diagonal.
 ##

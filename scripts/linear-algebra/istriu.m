@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} istriu (@var{x})
-## Return true if @var{x} is an upper triangular matrix.
+## @deftypefn {Function File} {} istriu (@var{A})
+## Return true if @var{A} is an upper triangular matrix.
 ##
 ## An upper triangular matrix has nonzero entries only on the main diagonal
 ## and above.

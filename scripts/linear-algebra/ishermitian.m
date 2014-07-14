@@ -18,13 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ishermitian (@var{x})
-## @deftypefnx {Function File} {} ishermitian (@var{x}, @var{tol})
-## Return true if @var{x} is Hermitian within the tolerance specified by
+## @deftypefn  {Function File} {} ishermitian (@var{A})
+## @deftypefnx {Function File} {} ishermitian (@var{A}, @var{tol})
+## Return true if @var{A} is Hermitian within the tolerance specified by
 ## @var{tol}.
+##
 ## The default tolerance is zero (uses faster code).
-## Matrix @var{x} is considered symmetric if
-## @code{norm (@var{x} - @var{x}', Inf) / norm (@var{x}, Inf) < @var{tol}}.
+## Matrix @var{A} is considered symmetric if
+## @code{norm (@var{A} - @var{A}', Inf) / norm (@var{A}, Inf) < @var{tol}}.
 ## @seealso{issymmetric, isdefinite}
 ## @end deftypefn
 
@@ -32,19 +33,19 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
-function retval = ishermitian (x, tol = 0)
+function retval = ishermitian (A, tol = 0)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  retval = isnumeric (x) && issquare (x);
+  retval = isnumeric (A) && issquare (A);
   if (retval)
     if (tol == 0)
-      retval = all ((x == x')(:));
+      retval = all ((A == A')(:));
     else
-      norm_x = norm (x, inf);
-      retval = norm_x == 0 || norm (x - x', inf) / norm_x <= tol;
+      norm_x = norm (A, inf);
+      retval = norm_x == 0 || norm (A - A', inf) / norm_x <= tol;
     endif
   endif
 

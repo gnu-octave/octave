@@ -37,6 +37,22 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <unistd.h>
 
+// This mess suggested by the autoconf manual.
+
+#include <sys/types.h>
+
+#if defined HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+
+#ifndef WIFEXITED
+#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
+
+#ifndef WEXITSTATUS
+#define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
+#endif
+
 static std::map<std::string, std::string> vars;
 
 #ifndef OCTAVE_VERSION
@@ -344,7 +360,13 @@ run_command (const std::string& cmd)
 {
   if (debug)
     std::cout << cmd << std::endl;
-  return system (cmd.c_str ());
+
+  int result = system (cmd.c_str ());
+
+  if (WIFEXITED (result))
+    result = WEXITSTATUS (result);
+
+  return result;
 }
 
 bool
@@ -626,7 +648,7 @@ main (int argc, char **argv)
       return 0;
     }
 
-  for (it = f77files.begin (); it != f77files.end (); ++it)
+  for (it = f77files.begin (); it != f77files.end () && !result; ++it)
     {
       std::string f = *it, b = basename (f, true);
       if (!vars["F77"].empty ())
@@ -655,7 +677,7 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = cfiles.begin (); it != cfiles.end (); ++it)
+  for (it = cfiles.begin (); it != cfiles.end () && !result; ++it)
     {
       std::string f = *it;
       if (!vars["CC"].empty ())
@@ -685,7 +707,7 @@ main (int argc, char **argv)
         }
     }
 
-  for (it = ccfiles.begin (); it != ccfiles.end (); ++it)
+  for (it = ccfiles.begin (); it != ccfiles.end () && !result; ++it)
     {
       std::string f = *it;
       if (!vars["CXX"].empty ())
@@ -715,7 +737,7 @@ main (int argc, char **argv)
         }
     }
 
-  if (link && !objfiles.empty ())
+  if (link && !objfiles.empty () && !result)
     {
       if (link_stand_alone)
         {

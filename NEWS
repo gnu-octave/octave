@@ -75,14 +75,13 @@ Summary of important user-visible changes for version 4.2:
     removed from Octave 4.2.
 
       default_save_options    java_new            
-      gen_doc_cache           java_set                   
-      interp1q                java_unsigned_conversion
-      isequalwithequalnans    javafields                
-      java_convert_matrix     javamethods               
-      java_debug              re_read_readline_init_file
-      java_get                read_readline_init_file   
+      gen_doc_cache           java_unsigned_conversion  
+      interp1q                javafields                
+      isequalwithequalnans    javamethods               
+      java_convert_matrix     re_read_readline_init_file
+      java_debug              read_readline_init_file   
       java_invoke             saving_history            
-
+                              
     The following keywords were deprecated in Octave 3.8 and have been
     removed from Octave 4.2
 

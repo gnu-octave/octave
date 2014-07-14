@@ -48,29 +48,97 @@ methods which return results to Octave.
 @cindex object, creating a Java object
 @DOCSTRING(javaObject)
 
-@cindex fields, displaying available fields of a Java object
-@strong{FIXME:} Need documentation on how fieldnames() is overloaded to return
-the methods of a Java object.
-
-@cindex field, returning value of Java object field
-@strong{FIXME:} Need documentation on how to use structure-like indexing
-to get fields from Java object.
-
-@cindex field, setting value of Java object field
-@strong{FIXME:} Need documentation on how to use structure-like indexing
-to set fields from Java object.
-
-@DOCSTRING(isjava)
-
 @cindex array, creating a Java array
 @DOCSTRING(javaArray)
 
-@cindex method, invoking a method of a Java object
-@DOCSTRING(javaMethod)
+There are many different variable types in Octave but only ones created through
+@code{javaObject} can use Java functions.  Before using Java with an unknown
+object the type can be checked with @code{isjava}.
+
+@DOCSTRING(isjava)
+
+Once an object has been created it is natural to find out what fields the
+object has and to read (get) and write (set) them.
+
+@cindex fields, displaying available fields of a Java object
+In Octave the @code{fieldnames} function for structures has been overloaded
+to return the fields of a Java object.  For example:
+
+@example
+@group
+dobj = javaObject ("java.lang.Double", pi);
+fieldnames (dobj)
+@result{}
+@{
+  [1,1] = public static final double java.lang.Double.POSITIVE_INFINITY
+  [1,2] = public static final double java.lang.Double.NEGATIVE_INFINITY
+  [1,3] = public static final double java.lang.Double.NaN
+  [1,4] = public static final double java.lang.Double.MAX_VALUE
+  [1,5] = public static final double java.lang.Double.MIN_NORMAL
+  [1,6] = public static final double java.lang.Double.MIN_VALUE
+  [1,7] = public static final int java.lang.Double.MAX_EXPONENT
+  [1,8] = public static final int java.lang.Double.MIN_EXPONENT
+  [1,9] = public static final int java.lang.Double.SIZE
+  [1,10] = public static final java.lang.Class java.lang.Double.TYPE
+@}
+@end group
+@end example
+
+@cindex field, returning value of Java object field
+The analogy of objects with structures is carried over into reading and
+writing object fields.  To read a field the object is indexed with the
+@samp{.} operator from structures.  This is the preferred method for reading
+fields, but Octave also provides a function interface to read fields with
+@code{java_get}.  An example of both styles is shown below.
+
+@example
+@group
+dobj = javaObject ("java.lang.Double", pi);
+dobj.MAX_VALUE
+@result{}  1.7977e+308
+java_get ("java.lang.Float", "MAX_VALUE")
+@result{}  3.4028e+38
+@end group
+@end example
+
+@DOCSTRING(java_get)
+
+@cindex field, setting value of Java object field
+@DOCSTRING(java_set)
 
 @cindex methods, displaying available methods of a Java object
-@strong{FIXME:} Need documentation on how methods() is overloaded to return
-the methods of a Java object.
+To see what functions can be called with an object use @code{methods}.
+For example, using the previously created @var{dobj}:
+
+@example
+@group
+methods (dobj)
+@result{}
+Methods for class java.lang.Double:
+boolean equals(java.lang.Object)
+java.lang.String toString(double)
+java.lang.String toString()
+@dots{}
+@end group
+@end example
+
+To call a method of an object the same structure indexing operator @samp{.}
+is used.  Octave also provides a functional interface to calling the methods
+of an object through @code{javaMethod}.  An example showing both styles is
+shown below.
+
+@example
+@group
+dobj = javaObject ("java.lang.Double", pi);
+dobj.equals (3)
+@result{}  0
+javaMethod ("equals", dobj, pi)
+@result{}  1
+@end group
+@end example
+
+@cindex method, invoking a method of a Java object
+@DOCSTRING(javaMethod)
 
 The following three functions are used to display and modify the
 class path used by the Java Virtual Machine.  This is entirely separate

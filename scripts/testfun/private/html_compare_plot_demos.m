@@ -17,159 +17,112 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} html_compare ()
-## @deftypefnx {Function File} {} html_compare (@var{name}, @var{value}, @dots{})
+## @deftypefn  {Function File} {} html_compare (@var{toolkits})
+## @deftypefnx {Function File} {} html_compare (@var{toolkits}, @var{name}, @var{value}, @dots{})
 ##
-## Produces an html document to compare the plot demos produced by Octave's
-## gnuplot and FLTK toolkits with those produced by Matalb.
+## Produces an html document to compare the plot demos produced by
+## @var{toolkits}.
 ##
-## Valid property names, and their defaults, are;
+## Valid property names, and their defaults, are:
 ##
 ## @table @samp
-##   @item date
-##   @code{datestr (now (), 0)}
 ##   @item fmt
 ##   @code{"png"}
-##   @item mfiles
-##   @code{sort (cellstr (ls ("gnuplot")))}
-##   @item gnuplot
-##   @code{sprintf ("Gnuplot %s", __gnuplot_version__ ())}
-##   @item matlab
-##   @code{"Matlab Version 7.11.0.584 (R2010b)"}
-##   @item octave
-##   @code{sprintf ("Octave %s", version)}
 ##   @item output
-##   @code{"compare_plots.html"}
+##   @code{"compare_plot_demos.html"}
 ##   @item template
-##   @code{"html_template.html"}
+##   @code{"html_plot_demos_template.html"}
+##   @item column_width
+##   @code{600}
 ## @end table
 ##
 ## The template parameter refers to a specially formatted html file
 ## which accompanies this m-file script.
 ##
-## This script may be used to generate the index.html page loaded by
-## the link below.
+## Additional toolkit description can be added to the column header
+## with a parameter named equal to the toolkit.  For example:
 ##
 ## @example
 ## @group
-##   http://octave.sourceforge.net/compare_plots
+##   @code{html_compare_plot_demos ({"gnuplot", "fltk"}, "gnuplot", " 4.6 patchlevel 5")}
 ## @end group
 ## @end example
 ##
-## This is done by following the instructions below.
-##
-## @enumerate 
-## @item Begin by downloading a local copy of the web page.
-##
-## @example
-## @group
-## $ wget -vcr --level 1 http://octave.sourceforge.net/compare_plots/
-## @end group
-## @end example
-##
-## @item Use @code{dump_demos} to produce the script used to produce the
-## demo plots. In this example the script is @code{dump.m}.
-##
-## @example
-## @group
-## octave:1> dump_demos plot dump.m png
-## @end group
-## @end example
-## 
-## @item Produce the gnuplot and fltk plots, and place them in their
-## designated directories.
-## 
-## @example
-## @group
-## octave:2> dump
-## octave:3> movefile *.png octave.sourceforge.net/compare_plots/gnuplot/.
-## octave:4> graphics_toolkit fltk
-## octave:5> close all
-## octave:6> dump
-## octave:7> movefile *.png octave.sourceforge.net/compare_plots/fltk/.
-## @end group
-## @end example
-## 
-## @item Start Matlab and edit the script @code{dump.m} to correct the 
-## remaining Octave specific syntax so that it will run under Matlab.
-##
-## @item Run @code{dump.m} under Matlab, and place the plots in the
-## designated matlab directory.
-##
-## @example
-## @group
-## >> dump
-## >> movefile *.png octave.sourceforge.net/compare_plots/matlab/.
-## @end group
-## @end example
-## 
-## @item The web page comparing all plot demos is created by
-##
-## @example
-## @group
-## octave:8> cd octave.sourceforge.net/compare_plots
-## octave:9> html_compare output index.html
-## @end group
-## @end example
-##
-## @item Finally, the new page may be loaded into your browser.
-##
-## @seealso{dump_demos, demo}
+## @seealso{compare_plot_demos, dump_demos, demo}
 ## @end deftypefn
 
 ## Author: Ben Abbott  <bpabbott@mac.com>
 
-function html_compare_plot_demos (varargin)
+function html_compare_plot_demos (toolkits, varargin)
 
-  ## TODO - Names of the toolkits should be input
-  ## Set defaults  
-  in.date = datestr (now (), 0);
+  ## Set defaults
   in.fmt = "png";
   in.figfiles = {};
-  in.octave = sprintf ("Octave %s", version);
-  in.output= "compare_plots.html";
+  in.output= "compare_plot_demos.html";
   in.template = "html_plot_demos_template.html";
-  in.toolkits = {"gnuplot", "matlab", "fltk"};
+  in.column_width = 600;
 
   ## Parse inputs
   for n = 1:2:numel(varargin)
     in.(lower(varargin{n})) = varargin{n+1};
   endfor
 
-  for t = 1:numel(in.toolkits)
-    if (! isfield (in, in.toolkits{t}))
-      ## Column headers for the html page
-      in.(in.toolkits{t}) = upper (in.toolkits{t});
-    endif
-    ## Compile a list of all files for all toolkits
-    if (t == 1)
-      in.figfiles = {dir(sprintf ("gnuplot/*.%s", in.fmt)).name};
-    else
-      filter = sprintf ("%s/*.%s", in.toolkits{t}, in.fmt);
-      in.figfiles = union (in.figfiles, {dir(filter).name});
-    endif
+  ## Compile a list of all files for all toolkits
+  for t = 1:numel(toolkits)
+    filter = sprintf ("%s/*.%s", toolkits{t}, in.fmt);
+    in.figfiles = union (in.figfiles, {dir(filter).name});
   endfor
 
   fid = fopen (which (in.template), "r");
   template = char (fread (fid)) .';
   fclose (fid);
 
-  template = strrep (template, "##OCTAVE##", in.octave);
-  template = strrep (template, "##GNUPLOT##", in.gnuplot);
-  template = strrep (template, "##MATLAB##", in.matlab);
-
-  n1 = findstr (template, "<!-- ##BEGIN## -->");
-  n2 = findstr (template, "<!-- ##END## -->");
-  header = template(1:n1-1);
-  middle = template(n1+18:n2-1);
-  trailer = template(n2+15:end);
+  anchor = "<!-- ##ADD TABLE HERE## -->";
+  n = findstr (template, anchor);
+  header = template(1:n-1);
+  trailer = template(n+numel(anchor):end);
 
   fid = fopen (in.output, "w");
   unwind_protect
     fputs (fid, header);
+    fprintf (fid, "<p><b>\nGenerated on %s by %s with GNU Octave %s</p>",
+             datestr (now (), 0), mfilename, version);
+
+    ## Create table header
+    fprintf (fid, "<table border='1'><tr>\n");
+    for t = 1:numel(toolkits)
+      ## set default
+      column_header = upper (toolkits{t});
+      if (isfield (in, toolkits{t}))
+        column_header = strcat (column_header, in.(toolkits{t}));
+      endif
+      fprintf (fid, '<th>%s <a href="%s/diary.log">diary</a></th>\n', column_header, toolkits{t});
+    endfor
+    fprintf (fid, "</tr>\n");
+
     for m = 1:numel(in.figfiles)
       [~, file] = fileparts (in.figfiles{m});
-      fputs (fid, strrep (middle, "##PLOT##", strcat (file, ".", in.fmt)));
+      fn = strcat (file, ".", in.fmt);
+      fprintf (fid, "<tr>\n");
+      for k = toolkits
+        ffn = fullfile (k{:}, fn);
+        fprintf (fid, "  <td>%s<br>", ffn);
+        if (exist (ffn, "file"))
+          fprintf (fid, "<img src='%s' style='width: %dpx;'>", ffn, in.column_width);
+        else
+          err_fn = regexprep(ffn, ".png", ".err");
+          if (! exist (err_fn, "file"))
+            warning("File %s doesn't exist...", err_fn);
+          else
+            err_fid = fopen (err_fn);
+            msg = char (fread (err_fid))';
+            fclose (err_fid);
+            fprintf (fid, "%s", strrep (msg, "\n", "<br>"));
+          endif
+        endif
+        fprintf (fid, "</td>\n");
+      endfor
+      fprintf (fid, "</tr>\n");
     endfor
     fputs (fid, trailer);
   unwind_protect_cleanup

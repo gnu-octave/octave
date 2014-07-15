@@ -30,7 +30,7 @@
 ##
 ## @table @var
 ##   @item @var{dirs}
-##   @code{@{"plot/appearance", "plot/draw", "plot/util", "image/"@}}
+##   @code{@{"plot/appearance", "plot/draw", "plot/util", "image"@}}
 ##   @item @var{mfile}
 ##   @code{"dump.m"}
 ##   @item @var{fmt}
@@ -48,7 +48,7 @@
 
 ## Author: Søren Hauberg  <soren@hauberg.org>
 
-function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image/"}, output="dump.m", fmt="png")
+function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image"}, output="dump_plot_demos.m", fmt="png")
 
   if (nargin > 3)
     print_usage ();
@@ -71,6 +71,7 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image/"
   fprintf (fid, "function %s ()\n", funcname);
   fprintf (fid, "close all\n");
   fprintf (fid, "more off\n");
+  fprintf (fid, "diary diary.log\n");
 
   ## Run and print the demos in each directory
   for i = 1:numel (dirs)
@@ -83,6 +84,9 @@ function dump_demos (dirs={"plot/appearance", "plot/draw", "plot/util", "image/"
     endif
     dump_all_demos (d, fid, fmt);
   endfor
+
+  ## Stop and flush diary
+  fprintf (fid, "diary off\n");
 
   ## Create script ending
   fprintf (fid, "end\n\n")
@@ -106,13 +110,18 @@ function dump_all_demos (directory, fid, fmt)
     demos = get_demos (fcn);
     for d = 1:numel (demos)
       idx = sprintf ("%02d", d);
+      base_fn = sprintf ("%s_%s", fcn, idx);
       fprintf (fid, "\ntry\n");
+      ## Invoke the ancient, deprecated random seed
+      ## generators, but there is an initialization mismatch with the more modern
+      ## generators reported here (https://savannah.gnu.org/bugs/?42557).
+      fprintf (fid, "  rand ('seed', 1);\n");
       fprintf (fid, "  %s\n\n", demos{d});
       fprintf (fid, "  drawnow;\n");
       fprintf (fid, "  fig = (get (0, 'currentfigure'));\n");
       fprintf (fid, "  if (~ isempty (fig))\n");
       fprintf (fid, "    figure (fig);\n");
-      fprintf (fid, "    name = '%s_%s.%s';\n", fcn, idx, fmt);
+      fprintf (fid, "    name = '%s.%s';\n", base_fn, fmt);
       fprintf (fid, "    if (isempty (dir (name)))\n");
       fprintf (fid, "      fprintf ('Printing ""%%s"" ... ', name);\n")
       fprintf (fid, "      print ('-d%s', name);\n", fmt);
@@ -124,7 +133,10 @@ function dump_all_demos (directory, fid, fmt)
       # Temporary fix for cruft accumulating in figure window.
       fprintf (fid, "  close ('all');\n");
       fprintf (fid, "catch\n");
-      fprintf (fid, "  fprintf ('ERROR in %s_%s: %%s\\n', lasterr ());\n", fcn, idx);
+      fprintf (fid, "  fprintf ('ERROR in %s: %%s\\n', lasterr ());\n", base_fn);
+      fprintf (fid, "  err_fid = fopen ('%s.err', 'w');\n", base_fn);
+      fprintf (fid, "  fprintf (err_fid, '%%s', lasterr ());\n");
+      fprintf (fid, "  fclose (err_fid);\n");
       fprintf (fid, "end\n\n");
     endfor
   endfor

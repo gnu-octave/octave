@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} compare_plot_demos ("toolkits", @{@var{toolkit1}, @var{toolkit2}, @dots{}@})
 ##
 ## Uses @code{dump_demos} and @code{html_compare_plot_demos} to produce an
-## html comparison of the plot demos for each of Octave's graphics toolkits. 
+## html comparison of the plot demos for each of Octave's graphics toolkits.
 ##
 ## An m-file named @file{dump_plots.m} will be created in the current working
 ## directory. This function will be used to render and save the plot demo
@@ -48,7 +48,7 @@ function compare_plot_demos (varargin)
   arg.toolkits = available_graphics_toolkits ();
   arg.directories = {"plot/appearance", "plot/draw", "plot/util", "image"};
   arg.fmt = "png";
-  arg.fcn_file = "";
+  arg.fcn_file = "dump_plot_demos.m";
   arg.replace_images = false;
 
   for n = 1:2:numel(varargin)
@@ -75,11 +75,7 @@ function compare_plot_demos (varargin)
     error ('compare_plot_demos: Invalid value for "fmt"')
   endif
 
-  if (isempty (arg.fcn_file))
-    arg.fcn_file = "dump_plot_demos.m";
-  endif
-
-  ## Generate "dump_plot_demos.m" for rendering/saving the plot demo images
+  ## Generate arg.fcn_file for rendering/saving the plot demo images
   dump_demos (arg.directories, arg.fcn_file, arg.fmt);
 
   [~, fcn_name] = fileparts (arg.fcn_file);
@@ -111,10 +107,13 @@ function compare_plot_demos (varargin)
   unwind_protect_cleanup
     rmpath (cwd);
   end_unwind_protect
-
-  ## Generate the html comparison of the images
-  ## TODO: pass the toolkits{} to allow number of columns to be formatted
-  html_compare_plot_demos ("output", "compare_plot_demos.html")
-
+  if (! strcmp (arg.toolkits, "matlab"))
+    ## Generate the html comparison of the images
+    html_compare_plot_demos (arg.toolkits);
+  else
+    ## We need to run matlab manually before the html page can be created
+    printf ('\nNow run %s in Matlab.\nAfter this run html_compare_plot_demos,\n', arg.fcn_file);
+    printf ('for example html_compare_plot_demos ({"fltk", "gnuplot", "matlab"}), to create the html page.\n');
+  endif
 endfunction
 

@@ -82,7 +82,7 @@ endfunction
 %! y = x.^2;
 %! dy = 2 * (.2 * x);
 %! y2 = (x - 3).^2;
-%! hg = errorbar (x, y, dy,'#~');
+%! hg = errorbar (x, y, dy);
 %! set (hg, 'marker', '^', 'markerfacecolor', rand (1,3));
 %! plot (x, y2, 'ok-');
 %! legend ('errorbar', 'line');

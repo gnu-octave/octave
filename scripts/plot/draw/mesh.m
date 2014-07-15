@@ -126,9 +126,12 @@ endfunction
 %! ylabel 'Y-axis';
 %! zlabel 'log scale';
 %! title ({'mesh() with color proportional to Z^2', 'Z-axis is log scale'});
-%! if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
-%!   title ({'Gnuplot: mesh color is wrong', 'This is a Gnuplot bug'});
-%! endif
+%! try
+%!   if (strcmp (get (gcf, '__graphics_toolkit__'), 'gnuplot'))
+%!     title ({'Gnuplot: mesh color is wrong', 'This is a Gnuplot bug'});
+%!   endif
+%! catch
+%! end
 
 %!demo
 %! clf;

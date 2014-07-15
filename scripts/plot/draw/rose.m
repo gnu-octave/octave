@@ -116,6 +116,11 @@ endfunction
 
 %!demo
 %! clf;
+%! rose (2*randn (1e5, 1), 8);
+%! title ('rose() angular histogram plot with 8 bins');
+
+%!demo
+%! clf;
 %! rose ([2*randn(1e5, 1), pi + 2*randn(1e5, 1)]);
-%! title ('rose() angular histogram plot');
+%! title ('rose() angular histogram plot with 2 data series');
 

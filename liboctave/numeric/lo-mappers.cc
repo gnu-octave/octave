@@ -101,7 +101,7 @@ xlog2 (const Complex& x)
 #if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
-  static double ln2 = log (2);
+  static double ln2 = gnulib::log (2);
 #endif
 
   return std::log (x) / ln2;
@@ -116,7 +116,7 @@ xexp2 (double x)
 #if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
-  static double ln2 = log (2);
+  static double ln2 = gnulib::log (2);
 #endif
 
   return exp (x * ln2);
@@ -522,14 +522,16 @@ Complex
 rc_log (double x)
 {
   const double pi = 3.14159265358979323846;
-  return x < 0.0 ? Complex (log (-x), pi) : Complex (log (x));
+  return x < 0.0 ? Complex (gnulib::log (-x), pi) : Complex (gnulib::log (x));
 }
 
 FloatComplex
 rc_log (float x)
 {
   const float pi = 3.14159265358979323846f;
-  return x < 0.0f ? FloatComplex (logf (-x), pi) : FloatComplex (logf (x));
+  return (x < 0.0f
+          ? FloatComplex (gnulib::logf (-x), pi)
+          : FloatComplex (gnulib::logf (x)));
 }
 
 Complex

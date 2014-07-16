@@ -694,7 +694,7 @@ cmplx FADDEEVA(w)(cmplx z, double relerr)
   else {
     const double pi = 3.14159265358979323846264338327950288419716939937510582;
     if (relerr > 0.1) relerr = 0.1; // not sensible to compute < 1 digit
-    a = pi / sqrt(-log(relerr*0.5));
+    a = pi / sqrt(-gnulib::log(relerr*0.5));
     c = (2/pi)*a;
     a2 = a*a;
   }

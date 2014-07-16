@@ -663,6 +663,16 @@ not on the search path you should use some combination of the functions\n\
 %!error <TYPE must be a string> exist ("a", 1)
 %!error <NAME must be a string> exist (1)
 
+%!test
+%! flist = dir ();
+%! fname = flist(3).name;  ## skip . and ..
+%! assert (exist (fullfile (pwd (), fname), "file"), 2)
+%! assert (exist (fullfile (pwd (), "nonexistentfile"), "file"), 0)
+
+%!assert (exist ("plot.m", "file"), 2);
+%!assert (exist ("./plot.m", "file"), 0);
+%!assert (exist ("./nonexistentfile", "file"), 0);
+%!assert (exist ("nonexistentfile", "file"), 0);
 */
 
 octave_value

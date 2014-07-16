@@ -1300,8 +1300,7 @@ load_path::do_find_file (const std::string& file) const
     {
       file_stat fs (file);
 
-      if (fs.exists ())
-        return file;
+      return fs.exists () ? file : retval;
     }
   else
     {

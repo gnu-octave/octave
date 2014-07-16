@@ -300,12 +300,10 @@ public:
 
   tree_funcall *
   make_superclass_ref (const std::string& method_nm,
-                       const std::string& class_nm,
-                       int l, int c);
+                       const std::string& class_nm);
 
   tree_funcall *
-  make_meta_class_query (const std::string& class_nm,
-                         int l, int c);
+  make_meta_class_query (const std::string& class_nm);
 
   tree_classdef *
   make_classdef (token *tok_val, tree_classdef_attribute_list *a,

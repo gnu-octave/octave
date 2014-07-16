@@ -488,9 +488,7 @@ superclass_identifier
                     std::string method_nm = $1->superclass_method_name ();
                     std::string class_nm = $1->superclass_class_name ();
 
-                    $$ = parser.make_superclass_ref
-                                       (method_nm, class_nm,
-                                        $1->line (), $1->column ());
+                    $$ = parser.make_superclass_ref (method_nm, class_nm);
                   }
                 ;
 
@@ -498,8 +496,7 @@ meta_identifier : METAQUERY
                   {
                     std::string class_nm = $1->text ();
 
-                    $$ = parser.make_meta_class_query (class_nm, $1->line (),
-                                                       $1->column ());
+                    $$ = parser.make_meta_class_query (class_nm);
                   }
                 ;
 
@@ -3115,8 +3112,7 @@ octave_base_parser::recover_from_parsing_function (void)
 
 tree_funcall *
 octave_base_parser::make_superclass_ref (const std::string& method_nm,
-                                         const std::string& class_nm,
-                                         int l, int c)
+                                         const std::string& class_nm)
 {
   octave_value_list args;
 
@@ -3130,8 +3126,7 @@ octave_base_parser::make_superclass_ref (const std::string& method_nm,
 }
 
 tree_funcall *
-octave_base_parser::make_meta_class_query (const std::string& class_nm,
-                                           int l, int c)
+octave_base_parser::make_meta_class_query (const std::string& class_nm)
 {
   octave_value_list args;
 

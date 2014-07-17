@@ -2505,8 +2505,14 @@ jit_info::find (const vmap& extra_vars, const std::string& vname) const
 
 #endif
 
+#if defined (HAVE_LLVM)
+#define UNUSED_WITHOUT_LLVM(x) x
+#else
+#define UNUSED_WITHOUT_LLVM(x) x GCC_ATTR_UNUSED
+#endif
 
-DEFUN (jit_failure_count, args, nargout,
+DEFUN (jit_failure_count, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_failure_count ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_failure_count (@var{new_val})\n\
@@ -2528,7 +2534,8 @@ The original variable value is restored when exiting the function.\n\
 #endif
 }
 
-DEFUN (debug_jit, args, nargout,
+DEFUN (debug_jit, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_jit ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_jit (@var{new_val})\n\
@@ -2550,7 +2557,8 @@ The original variable value is restored when exiting the function.\n\
 #endif
 }
 
-DEFUN (jit_enable, args, nargout,
+DEFUN (jit_enable, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_enable ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_enable (@var{new_val})\n\
@@ -2571,7 +2579,8 @@ The original variable value is restored when exiting the function.\n\
 #endif
 }
 
-DEFUN (jit_startcnt, args, nargout,
+DEFUN (jit_startcnt, UNUSED_WITHOUT_LLVM (args),
+       UNUSED_WITHOUT_LLVM (nargout),
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} jit_startcnt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} jit_startcnt (@var{new_val})\n\

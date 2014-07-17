@@ -68,7 +68,7 @@ foreach my $m_fname (@ARGV)
     {
       my $in_example = (m/\s*\@example\b/ .. m/\s*\@end\s+example\b/);
       s/^\s+\@/\@/ unless $in_example;
-      s/^\s+(\@(?:end)\s+group)/$1/;
+      s/^\s+(\@(?:end)\s+(group|example))/$1/;
       print $_;
     }
 }

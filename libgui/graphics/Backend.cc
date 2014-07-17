@@ -97,8 +97,8 @@ bool Backend::initialize (const graphics_object& go)
       ObjectProxy* proxy = new ObjectProxy ();
       graphics_object gObj (go);
 
-      gObj.get_properties ().set(toolkitObjectProperty (go),
-                                 OCTAVE_PTR_TYPE ((OCTAVE_INTPTR_TYPE) proxy));
+      OCTAVE_PTR_TYPE tmp (reinterpret_cast <OCTAVE_INTPTR_TYPE> (proxy));
+      gObj.get_properties ().set(toolkitObjectProperty (go), tmp);
 
       emit createObject (go.get_handle ().value ());
 

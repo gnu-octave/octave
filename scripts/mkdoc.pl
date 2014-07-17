@@ -21,6 +21,7 @@
 ## Expecting arguments in this order:
 ##
 ##  SRCDIR SRCDIR-FILES ... -- LOCAL-FILES ...
+use File::Spec;
 
 unless (@ARGV >= 2) { die "Usage: $0 srcdir m_filename1 ..." ; }
 
@@ -43,6 +44,7 @@ MFILE: foreach $m_fname (@ARGV)
   }
 
   $full_fname = $srcdir . $m_fname;
+  next MFILE if ((File::Spec->splitdir($full_fname))[-2] eq "private");
   next MFILE unless ( $full_fname =~ m{(.*)/(@|)([^/]*)/(.*)\.m} );
   if ($2)
     { $fcn = "$2$3/$4"; }

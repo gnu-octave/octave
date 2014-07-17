@@ -71,7 +71,7 @@ Menu* Menu::create (const graphics_object& go)
   return 0;
 }
 
-Menu::Menu (const graphics_object& go, QAction* action, Object* parent)
+Menu::Menu (const graphics_object& go, QAction* action, Object* xparent)
     : Object (go, action), m_parent (0), m_separator (0)
 {
   uimenu::properties& up = properties<uimenu> ();
@@ -92,7 +92,7 @@ Menu::Menu (const graphics_object& go, QAction* action, Object* parent)
       m_separator->setVisible (up.is_visible ());
     }
 
-  MenuContainer* menuContainer = dynamic_cast<MenuContainer*> (parent);
+  MenuContainer* menuContainer = dynamic_cast<MenuContainer*> (xparent);
 
   if (menuContainer)
     m_parent = menuContainer->menu ();

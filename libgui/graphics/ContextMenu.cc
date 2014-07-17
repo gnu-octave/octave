@@ -35,11 +35,11 @@ namespace QtHandles
 
 ContextMenu* ContextMenu::create (const graphics_object& go)
 {
-  Object* parent = Object::parentObject (go);
+  Object* xparent = Object::parentObject (go);
 
-  if (parent)
+  if (xparent)
     {
-      QWidget* w = parent->qWidget<QWidget> ();
+      QWidget* w = xparent->qWidget<QWidget> ();
 
       return new ContextMenu (go, new QMenu (w));
     }
@@ -47,13 +47,13 @@ ContextMenu* ContextMenu::create (const graphics_object& go)
   return 0;
 }
 
-ContextMenu::ContextMenu (const graphics_object& go, QMenu* menu)
-    : Object (go, menu)
+ContextMenu::ContextMenu (const graphics_object& go, QMenu* xmenu)
+    : Object (go, xmenu)
 {
-  menu->setAutoFillBackground (true);
+  xmenu->setAutoFillBackground (true);
 
-  connect (menu, SIGNAL (aboutToShow (void)), SLOT (aboutToShow (void)));
-  connect (menu, SIGNAL (aboutToHide (void)), SLOT (aboutToHide (void)));
+  connect (xmenu, SIGNAL (aboutToShow (void)), SLOT (aboutToShow (void)));
+  connect (xmenu, SIGNAL (aboutToHide (void)), SLOT (aboutToHide (void)));
 }
 
 ContextMenu::~ContextMenu (void)
@@ -63,7 +63,7 @@ ContextMenu::~ContextMenu (void)
 void ContextMenu::update (int pId)
 {
   uicontextmenu::properties& up = properties<uicontextmenu> ();
-  QMenu* menu = qWidget<QMenu> ();
+  QMenu* xmenu = qWidget<QMenu> ();
 
   switch (pId)
     {
@@ -71,17 +71,17 @@ void ContextMenu::update (int pId)
       if (up.is_visible ())
         {
           Matrix pos = up.get_position ().matrix_value ();
-          QWidget* parentW = menu->parentWidget ();
+          QWidget* parentW = xmenu->parentWidget ();
           QPoint pt;
 
           pt.rx () = xround (pos(0));
           pt.ry () = parentW->height () - xround (pos(1));
           pt = parentW->mapToGlobal (pt);
 
-          menu->popup (pt);
+          xmenu->popup (pt);
         }
       else
-        menu->hide ();
+        xmenu->hide ();
       break;
     default:
       Object::update (pId);

@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-GLCanvas::GLCanvas (QWidget* parent, const graphics_handle& handle)
-  : QGLWidget (parent), Canvas (handle)
+GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& xhandle)
+  : QGLWidget (xparent), Canvas (xhandle)
 {
   setFocusPolicy (Qt::ClickFocus);
 }
@@ -47,9 +47,9 @@ GLCanvas::~GLCanvas (void)
 {
 }
 
-void GLCanvas::draw (const graphics_handle& handle)
+void GLCanvas::draw (const graphics_handle& xhandle)
 {
-  graphics_object go = gh_manager::get_object (handle);
+  graphics_object go = gh_manager::get_object (xhandle);
 
   if (go)
     {
@@ -119,31 +119,31 @@ void GLCanvas::paintGL (void)
   canvasPaintEvent ();
 }
 
-void GLCanvas::mouseMoveEvent (QMouseEvent* event)
+void GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
 {
-  canvasMouseMoveEvent (event);
+  canvasMouseMoveEvent (xevent);
 }
 
-void GLCanvas::mousePressEvent (QMouseEvent* event)
+void GLCanvas::mousePressEvent (QMouseEvent* xevent)
 {
-  canvasMousePressEvent (event);
+  canvasMousePressEvent (xevent);
 }
 
-void GLCanvas::mouseReleaseEvent (QMouseEvent* event)
+void GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
 {
-  canvasMouseReleaseEvent (event);
+  canvasMouseReleaseEvent (xevent);
 }
 
-void GLCanvas::keyPressEvent (QKeyEvent* event)
+void GLCanvas::keyPressEvent (QKeyEvent* xevent)
 {
-  if (! canvasKeyPressEvent (event))
-    QGLWidget::keyPressEvent (event);
+  if (! canvasKeyPressEvent (xevent))
+    QGLWidget::keyPressEvent (xevent);
 }
 
-void GLCanvas::keyReleaseEvent (QKeyEvent* event)
+void GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
 {
-  if (! canvasKeyReleaseEvent (event))
-    QGLWidget::keyReleaseEvent (event);
+  if (! canvasKeyReleaseEvent (xevent))
+    QGLWidget::keyReleaseEvent (xevent);
 }
 
 }; // namespace QtHandles

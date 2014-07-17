@@ -86,7 +86,7 @@ void GenericEventNotifySender::notifyReceiversAfter (QObject* obj,
 class T : public B, public GenericEventNotifySender \
 { \
 public: \
-  T (QWidget* parent) : B (parent), GenericEventNotifySender () { } \
+  T (QWidget* xparent) : B (xparent), GenericEventNotifySender () { } \
   ~ T (void) { } \
 \
   bool event (QEvent* evt) \

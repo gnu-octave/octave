@@ -1089,8 +1089,7 @@ function updatelegend (h, ~)
           set (hax, "position", position);
           set (hax, "outerposition", outerposition);
       endswitch
-      ## Crazy syntax because set() only seems to support row vectors
-      set (hax, repmat ({"units"}, [1 numel(hax)]), units(:)');
+      set (hax, {"units"}, units);
 
       h = legend (hax(1), hplots, get (h, "string"));
     unwind_protect_cleanup

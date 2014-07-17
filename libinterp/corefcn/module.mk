@@ -44,6 +44,7 @@ TEX_PARSER_INC = \
 COREFCN_INC = \
   corefcn/Cell.h \
   corefcn/c-file-ptr-stream.h \
+  corefcn/cdisplay.h \
   corefcn/comment-list.h \
   corefcn/cutils.h \
   corefcn/data.h \
@@ -144,6 +145,7 @@ COREFCN_SRC = \
   corefcn/bitfcns.cc \
   corefcn/bsxfun.cc \
   corefcn/c-file-ptr-stream.cc \
+  corefcn/cdisplay.c \
   corefcn/cellfun.cc \
   corefcn/colloc.cc \
   corefcn/comment-list.cc \

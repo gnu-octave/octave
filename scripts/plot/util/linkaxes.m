@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} linkaxes (@var{hax})
-## @deftypefnx {Function File} linkaxes (@var{hax}, @var{optstr})
+## @deftypefn  {Function File} {} linkaxes (@var{hax})
+## @deftypefnx {Function File} {} linkaxes (@var{hax}, @var{optstr})
 ## Link the axis limits of 2-D plots such that a change in one is
 ## propagated to the others.
 ##

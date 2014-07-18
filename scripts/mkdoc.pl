@@ -40,31 +40,32 @@ print <<__END_OF_MSG__;
 
 __END_OF_MSG__
 
-foreach my $m_fname (@ARGV)
+MFILE: foreach my $m_fname (@ARGV)
 {
   if ($m_fname eq "--")
-  {
-    $srcdir = getcwd ();
-    next;
-  }
+    {
+      $srcdir = getcwd ();
+      next MFILE;
+    }
 
   my $full_fname = File::Spec->catfile ($srcdir, $m_fname);
   my @paths = File::Spec->splitdir ($full_fname);
-  next if @paths < 3
-       || $paths[-2] eq "private"   # skip private directories
-       || $paths[-1] !~ s/\.m$//i;  # skip non m files and remove extension
+  if (@paths < 3
+      || $paths[-2] eq "private"   # skip private directories
+      || $paths[-1] !~ s/\.m$//i)  # skip non m-files, and remove extension
+    { next MFILE; }
 
   ## @classes will have @class/method as their function name
   my $fcn = $paths[-2] =~ m/^@/ ? File::Spec->catfile (@paths[-2, -1])
                                 : $paths[-1];
 
   my @help_txt = gethelp ($fcn, $full_fname);
-  next unless @help_txt;
+  next MFILE unless @help_txt;
 
   print "\x{1d}$fcn\n";
-  print "\@c $fcn " . File::Spec->catfile ("scripts", $m_fname) . "\n";
+  print "\@c $fcn ", File::Spec->catfile ("scripts", $m_fname), "\n";
 
-  foreach (@help_txt)
+  foreach $_ (@help_txt)
     {
       my $in_example = (m/\s*\@example\b/ .. m/\s*\@end\s+example\b/);
       s/^\s+\@/\@/ unless $in_example;

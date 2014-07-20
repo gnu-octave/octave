@@ -64,6 +64,8 @@ public:
 
   virtual void empty_script (bool, bool) = 0;
 
+  virtual void enable_menu_shortcuts (bool enable) = 0;
+
 public slots:
   virtual void request_new_file (const QString& command = QString ()) = 0;
   virtual void request_new_script (const QString& command = QString ()) = 0;

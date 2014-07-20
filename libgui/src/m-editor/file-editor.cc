@@ -1088,6 +1088,37 @@ file_editor::add_action (QMenu *menu, const QIcon &icon, const QString &text,
 }
 
 void
+file_editor::enable_menu_shortcuts (bool enable)
+{
+  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
+
+ while (i != _hash_menu_text.constEnd())
+   {
+     i.key ()->setTitle (i.value ().at (! enable));
+     ++i;
+   }
+}
+
+QMenu*
+file_editor::m_add_menu (QMenuBar *p, QString name)
+{
+  QMenu *menu = p->addMenu (name);
+
+  QString base_name = name;  // get a copy
+  // replace intended '&' ("&&") by a temp. string
+  base_name.replace ("&&","___octave_amp_replacement___");
+  // remove single '&' (shortcut)
+  base_name.remove ("&");
+  // restore intended '&'
+  base_name.replace ("___octave_amp_replacement___","&&");
+
+  // remember names with and without shortcut
+  _hash_menu_text[menu] = QStringList () << name << base_name;
+
+  return menu;
+}
+
+void
 file_editor::construct (void)
 {
   QWidget *editor_widget = new QWidget (this);
@@ -1120,7 +1151,7 @@ file_editor::construct (void)
 
   // file menu
 
-  _fileMenu = new QMenu (tr ("&File"), _menu_bar);
+  _fileMenu = m_add_menu (_menu_bar, tr ("&File"));
 
   // new and open menus are inserted later by the main window
   _mru_file_menu = new QMenu (tr ("&Recent Editor Files"), _fileMenu);
@@ -1157,11 +1188,9 @@ file_editor::construct (void)
   _print_action = add_action (_fileMenu, QIcon (":/actions/icons/fileprint.png"),
           tr ("Print..."), SLOT (request_print_file (bool)));
 
-  _menu_bar->addMenu (_fileMenu);
-
   // edit menu
 
-  QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
+  QMenu *editMenu = m_add_menu (_menu_bar, tr ("&Edit"));
 
   _undo_action = add_action (editMenu, QIcon (":/actions/icons/undo.png"),
           tr ("&Undo"), SLOT (request_undo (bool)));
@@ -1265,11 +1294,9 @@ file_editor::construct (void)
           QIcon (":/actions/icons/configure.png"),
           tr ("&Styles Preferences..."), SLOT (request_styles_preferences (bool)));
 
-  _menu_bar->addMenu (editMenu);
-
   // view menu
 
-  QMenu *view_menu = new QMenu (tr ("&View"), _menu_bar);
+  QMenu *view_menu = m_add_menu (_menu_bar, tr ("&View"));
 
   _zoom_in_action = add_action (view_menu, QIcon (),
           tr ("Zoom &In"), SLOT (zoom_in (bool)));
@@ -1282,7 +1309,7 @@ file_editor::construct (void)
 
   // debug menu
 
-  _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
+  _debug_menu = m_add_menu (_menu_bar, tr ("&Debug"));
 
   _toggle_breakpoint_action = add_action (_debug_menu,
           QIcon (":/actions/icons/bp_toggle.png"), tr ("Toggle &Breakpoint"),
@@ -1301,11 +1328,9 @@ file_editor::construct (void)
 
   // The other debug actions will be added by the main window.
 
-  _menu_bar->addMenu (_debug_menu);
-
   // run menu
 
-  QMenu *_run_menu = new QMenu (tr ("&Run"), _menu_bar);
+  QMenu *_run_menu = m_add_menu (_menu_bar, tr ("&Run"));
 
   _run_action = add_action (_run_menu, QIcon (":/actions/icons/artsbuilderexecute.png"),
           tr ("Save File and Run"), SLOT (request_run_file (bool)));
@@ -1313,18 +1338,14 @@ file_editor::construct (void)
           tr ("Run &Selection"), SLOT (request_context_run (bool)));
   _run_selection_action->setEnabled (false);
 
-  _menu_bar->addMenu (_run_menu);
-
   // help menu
 
-  QMenu *_help_menu = new QMenu (tr ("&Help"), _menu_bar);
+  QMenu *_help_menu = m_add_menu (_menu_bar, tr ("&Help"));
 
   _context_help_action = add_action (_help_menu, QIcon (),
           tr ("&Help on Keyword"), SLOT (request_context_help (bool)));
   _context_doc_action = add_action (_help_menu, QIcon (),
           tr ("&Documentation on Keyword"), SLOT (request_context_doc (bool)));
-
-  _menu_bar->addMenu (_help_menu);
 
   // toolbar
 

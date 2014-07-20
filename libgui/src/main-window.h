@@ -216,6 +216,8 @@ private:
   QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
                        const char *member, const QWidget *receiver = 0);
 
+  void enable_menu_shortcuts (bool enable);
+  QMenu* m_add_menu (QMenuBar *p, QString text);
   void construct_menu_bar (void);
   void construct_file_menu (QMenuBar *p);
   void construct_new_menu (QMenu *p);
@@ -275,6 +277,9 @@ private:
   bool confirm_exit_octave ();
 
   workspace_model *_workspace_model;
+
+  QHash<QMenu*, QStringList> _hash_menu_text;
+
 
   // Toolbars.
   QStatusBar *status_bar;

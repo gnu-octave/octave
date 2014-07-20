@@ -1432,21 +1432,28 @@ file_editor_tab::file_has_changed (const QString&)
 
   if (QFile::exists (_file_name))
     {
-      // Create a WindowModal message that blocks the edit area
-      // by making _edit_area parent.
-      QMessageBox* msgBox
-        = new QMessageBox (QMessageBox::Warning,
-                           tr ("Octave Editor"),
-                           tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
-                           arg (_file_name),
-                           QMessageBox::Yes | QMessageBox::No, this);
+      if (_always_reload_changed_files)
 
-      connect (msgBox, SIGNAL (finished (int)),
-               this, SLOT (handle_file_reload_answer (int)));
+              load_file (_file_name);
 
-      msgBox->setWindowModality (Qt::WindowModal);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
+      else
+        {
+          // Create a WindowModal message that blocks the edit area
+          // by making _edit_area parent.
+          QMessageBox* msgBox
+            = new QMessageBox (QMessageBox::Warning,
+                               tr ("Octave Editor"),
+                               tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
+                               arg (_file_name),
+                               QMessageBox::Yes | QMessageBox::No, this);
+
+          connect (msgBox, SIGNAL (finished (int)),
+                   this, SLOT (handle_file_reload_answer (int)));
+
+          msgBox->setWindowModality (Qt::WindowModal);
+          msgBox->setAttribute (Qt::WA_DeleteOnClose);
+          msgBox->show ();
+        }
     }
   else
     {
@@ -1577,6 +1584,9 @@ file_editor_tab::notice_settings (const QSettings *settings)
   else
     _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
 
+  // reload changed files
+  _always_reload_changed_files = 
+        settings->value ("editor/always_reload_changed_files",false).toBool ();
 }
 
 void

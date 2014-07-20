@@ -1338,6 +1338,8 @@ main_window::handle_octave_ready ()
   editor_window->empty_script (true, false);
 #endif
 
+  focus_command_window ();  // make sure that the command window has focus
+
 }
 
 

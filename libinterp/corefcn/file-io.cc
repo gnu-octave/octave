@@ -1837,6 +1837,7 @@ endwhile\n\
    @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
 @end group\n\
 @end example\n\
+@seealso{popen2}\n\
 @end deftypefn")
 {
   octave_value retval = -1;

@@ -1503,9 +1503,10 @@ DEFUN (save, args, ,
 @deftypefnx {Command} {} save options file\n\
 @deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
 @deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
+@deftypefnx {Command} {} {@var{s} =} save @samp{-} @var{v1} @var{v2} @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.  The special filename @samp{-} may be used to write\n\
-output to the terminal.  If no variable names are listed, Octave saves\n\
+@var{file}.  The special filename @samp{-} may be used to return the\n\
+content of the variables as a string.  If no variable names are listed, Octave saves\n\
 all the variables in the current scope.  Otherwise, full variable names or\n\
 pattern syntax can be used to specify the variables to save.\n\
 If the @option{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
@@ -1680,11 +1681,10 @@ the file @file{data} in Octave's binary format.\n\
           if (append)
             warning ("save: ignoring -append option for output to stdout");
 
-          // FIXME: should things intended for the screen
-          //        end up in an octave_value (string)?
-
-          save_vars (argv, i, argc, octave_stdout, format,
+          std::ostringstream output_buf;
+          save_vars (argv, i, argc, output_buf, format,
                      save_as_floats, true);
+          retval = octave_value (output_buf.str());
         }
     }
 

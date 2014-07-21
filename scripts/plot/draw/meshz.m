@@ -30,7 +30,7 @@
 ## over a 2-D rectangular region in the x-y plane.  @var{z} determines the
 ## height above the plane of each vertex.  If only a single @var{z} matrix is
 ## given, then it is plotted over the meshgrid
-## @code{@var{x} = 1:columns (@var{z}), @var{y} = 1:rows (@var{z})}.
+## @code{@var{x} = 0:columns (@var{z}) - 1, @var{y} = 0:rows (@var{z}) - 1}.
 ## Thus, columns of @var{z} correspond to different @var{x} values and rows
 ## of @var{z} correspond to different @var{y} values.
 ##
@@ -64,52 +64,65 @@ function h = meshz (varargin)
   ## Find where property/value pairs start
   charidx = find (cellfun ("isclass", varargin, "char"), 1);
 
-  have_c = false;
   if (isempty (charidx))
-    if (nargin == 2 || nargin == 4) 
-      have_c = true;
-      charidx = nargin;   # bundle C matrix back into varargin 
-    else
-      charidx = nargin + 1;
-    endif
+    charidx = nargin + 1;
   endif
 
-  if (charidx == 2)
+  if (nargin == 1)
     z = varargin{1};
     [m, n] = size (z);
-    x = 1:n;
-    y = (1:m).';
+    x = 0:(n-1);
+    y = (0:(m-1)).';
+    c = z;
+  elseif (nargin == 2)
+    z = varargin{1};
+    [m, n] = size (z);
+    x = 0:(n-1);
+    y = (0:(m-1)).';
+    c = varargin{2};
+  elseif (charidx == 4)
+    x = varargin{1};
+    y = varargin{2};
+    z = varargin{3};
+    c = z;
   else
     x = varargin{1};
     y = varargin{2};
     z = varargin{3};
+    c = varargin{4};
   endif
 
+  ## Create a border of one rectangle (2 points) as the curtain around
+  ## the data and draw it with the mean (max + min / 2) color of the data.
+
   if (isvector (x) && isvector (y))
-    x = [x(1), x(:).', x(end)];
-    y = [y(1); y(:); y(end)];
+    x = [x(1), x(1), x(:).', x(end), x(end)];
+    y = [y(1); y(1); y(:); y(end); y(end)];
   else
-    x = [x(1,1), x(1,:), x(1,end);
-         x(:,1), x, x(:,end);
-         x(end,1), x(end,:), x(end,end)];
-    y = [y(1,1), y(1,:), y(1,end);
-         y(:,1), y, y(:,end);
-         y(end,1), y(end,:), y(end,end)];
+    x = [x(1,1), x(1,1), x(1,:), x(1,end), x(1,end);
+         x(1,1), x(1,1), x(1,:), x(1,end), x(1,end);
+         x(:,1), x(:,1), x, x(:,end), x(:,end);
+         x(end,1), x(end,1), x(end,:), x(end,end), x(end,end);
+         x(end,1), x(end,1), x(end,:), x(end,end), x(end,end) ];
+    y = [y(1,1), y(1,1), y(1,:), y(1,end), y(1,end);
+         y(1,1), y(1,1), y(1,:), y(1,end), y(1,end);
+         y(:,1), y(:,1), y, y(:,end), y(:,end);
+         y(end,1), y(end,1), y(end,:), y(end,end), y(end,end);
+         y(end,1), y(end,1), y(end,:), y(end,end), y(end,end) ];
   endif
 
   zref = min (z(isfinite (z)));
-  z = [zref .* ones(1, columns(z) + 2);
-       zref .* ones(rows(z), 1), z, zref .* ones(rows(z), 1);
-       zref .* ones(1, columns(z) + 2)];
+  z = [zref .* ones(1, columns(z) + 4);
+       zref .* ones(1, 2), z(1,:), zref .* ones(1, 2);
+       zref .* ones(rows(z), 1), z(:,1),z, z(:,end), zref .* ones(rows(z), 1);
+       zref .* ones(1, 2), z(end,:), zref .* ones(1, 2);
+       zref .* ones(1, columns(z) + 4)];
 
-  if (have_c)
-    c = varargin{charidx};
-    cref = min (c(isfinite (c)));
-    c = [cref .* ones(1, columns(c) + 2);
-         cref .* ones(rows(c), 1), c, cref .* ones(rows(c), 1);
-         cref .* ones(1, columns(c) + 2)];
-    varargin(charidx) = c;
-  endif
+  cdat = c(isfinite (c(:)));
+  cref = (min (cdat) + max (cdat)) / 2;
+  c = [cref .* ones(2, columns(c) + 4);
+       cref .* ones(rows(c), 2), c, cref .* ones(rows(c), 2);
+       cref .* ones(2, columns(c) + 4)];
     
   oldfig = [];
   if (! isempty (hax))
@@ -117,7 +130,7 @@ function h = meshz (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    htmp = mesh (x, y, z, varargin{charidx:end});
+    htmp = mesh (x, y, z, c, varargin{charidx:end});
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

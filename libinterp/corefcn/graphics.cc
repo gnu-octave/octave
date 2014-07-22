@@ -7873,7 +7873,9 @@ patch::properties::update_fvc (void)
     {
       nr = nc;
       nc = 1;
-      xd = xd.transpose ();
+      xd = xd.as_column ();
+      yd = yd.as_column ();
+      zd = zd.as_column ();
     }
 
   dv(0) = nr * nc;

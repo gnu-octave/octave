@@ -98,6 +98,36 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
         }
     }
 #endif
+
+#if defined (Q_OS_MAC)
+  // Octave interprets Cmd key as Meta whereas Qscintilla interprets it
+  // as Ctrl. We thus invert Meta/Ctrl in Qscintilla's shortcuts list.
+  QList< QsciCommand * > cmd_list_mac = cmd_set->commands ();
+  for (int i = 0; i < cmd_list_mac.length (); i++)
+    {
+      // Primary key 
+      int key = cmd_list_mac.at (i)->key ();
+
+      if (static_cast<int> (key | Qt::META) == key &&
+          static_cast<int> (key | Qt::CTRL) != key)
+        key = (key ^ Qt::META) | Qt::CTRL;
+      else if (static_cast<int> (key | Qt::CTRL) == key)
+        key = (key ^ Qt::CTRL) | Qt::META;
+
+      cmd_list_mac.at (i)->setKey (key);
+
+      // Alternate key
+      key = cmd_list_mac.at (i)->alternateKey ();
+
+      if (static_cast<int> (key | Qt::META) == key &&
+          static_cast<int> (key | Qt::CTRL) != key)
+        key = (key ^ Qt::META) | Qt::CTRL;
+      else if (static_cast<int> (key | Qt::CTRL) == key)
+        key = (key ^ Qt::CTRL) | Qt::META;
+
+      cmd_list_mac.at (i)->setAlternateKey (key);
+    }
+#endif
 }
 
 octave_qscintilla::~octave_qscintilla ()

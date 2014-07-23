@@ -8061,17 +8061,26 @@ surface::properties::update_normals (void)
       Matrix y = get_ydata ().matrix_value ();
       Matrix z = get_zdata ().matrix_value ();
 
-
       int p = z.columns ();
       int q = z.rows ();
-      int i1, i2, i3, j1, j2, j3;
-      i1 = i2 = i3 = 0;
-      j1 = j2 = j3 = 0;
+
+      // FIXME: There might be a cleaner way to do this.  When data is changed
+      // the update_xdata, update_ydata, update_zdata routines are called in a
+      // serial fashion.  Until the final call to update_zdata the matrices
+      // will be of mismatched dimensions which can cause an out-of-bound
+      // indexing in the code below.  This one-liner prevents calculating
+      // normals until dimensions match.
+      if (x.columns () != p || y.rows () != q)
+        return;
+
+      NDArray n (dim_vector (q, p, 3), 0.0);
 
       bool x_mat = (x.rows () == q);
       bool y_mat = (y.columns () == p);
 
-      NDArray n (dim_vector (q, p, 3), 0.0);
+      int i1, i2, i3, j1, j2, j3;
+      i1 = i2 = i3 = 0;
+      j1 = j2 = j3 = 0;
 
       for (int i = 0; i < p; i++)
         {

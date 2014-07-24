@@ -74,15 +74,32 @@ along with Octave; see the file COPYING.  If not, see
 static bool
 is_indexed (const Magick::Image& img)
 {
-  bool retval = false;
-  const std::string format = img.magick ();
-  if (img.classType () == Magick::PseudoClass
-      && format != "JPEG"
-      && (format != "PNG"
-          || const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig") == "3"))
-    retval = true;
-
-  return retval;
+  bool indexed = (img.classType () == Magick::PseudoClass);
+  // Our problem until now is non-indexed images, being represented as indexed
+  // by GM. The following attempts educated guesses to undo this optimization.
+  if (indexed)
+    {
+      const std::string fmt = img.magick ();
+      if (fmt == "JPEG")
+        // The JPEG format does not support indexed images, but GM sometimes
+        // reports grayscale JPEG as indexed. Always false for JPEG.
+        indexed = false;
+      else if (fmt == "PNG")
+        {
+          // Newer versions of GM (at least does not happens with 1.3.16) will
+          // store values from the underlying library as image attributes. In
+          // the case of PNG files, this is libpng where an indexed image will
+          // always have a value of 3 for "color-type-orig". This property
+          // always has a value in libpng so if we get nothing, we assume this
+          // GM version does not store them and we have to go with whatever
+          // GM PseudoClass says.
+          const std::string color_type =
+            const_cast<Magick::Image&> (img).attribute ("PNG:IHDR.color-type-orig");
+          if (! color_type.empty() && color_type != "3")
+            indexed = false;
+        }
+    }
+  return indexed;
 }
 
 //  The depth from depth() is not always correct for us but seems to be the

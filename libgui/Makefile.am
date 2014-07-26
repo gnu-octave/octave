@@ -22,6 +22,10 @@ include $(top_srcdir)/build-aux/common.mk
 
 MOC_CPPFLAGS =
 
+## Fix for bug #42839 where -mieee CFLAG option is added to CPPFLAGS by gnulib.
+## Eventually gnulib will be appropriately fixed and this hack removed.
+MOC_OCTAVE_CPPFLAGS = $(filter-out -mieee, $(AM_CPPFLAGS) $(CPPFLAGS))
+
 octlib_LTLIBRARIES = liboctgui.la
 
 TRANSLATIONS = \
@@ -91,7 +95,7 @@ define moc-command
 ( echo '#ifdef HAVE_CONFIG_H'; \
   echo '#include <config.h>'; \
   echo '#endif'; \
-  $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t
+  $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t
 mv $@-t $@
 endef
 

@@ -59,7 +59,7 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
       else if (term.find ("tex") != std::string::npos) gl2ps_term = GL2PS_TEX;
       else
         {
-          error ("gl2ps-renderer:: Unknown terminal");
+          error ("gl2ps-renderer::draw: Unknown terminal %s", term.c_str ());
           return;
         }
 
@@ -95,16 +95,25 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           else
             include_graph = "foobar-inc";
           buffsize += 1024*1024;
-          gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
-                          gl2ps_term, gl2ps_sort,
-                          (GL2PS_SILENT 
-                           | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
-                           | GL2PS_BEST_ROOT | gl2ps_text
-                           | GL2PS_NO_PS3_SHADING),
-                          GL_RGBA, 0, NULL, 0, 0, 0,
-                          buffsize, fp, include_graph.c_str ());
+          // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
+          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
+                                      gl2ps_term, gl2ps_sort,
+                                      (  GL2PS_NO_BLENDING
+                                       | GL2PS_OCCLUSION_CULL
+                                       | GL2PS_BEST_ROOT
+                                       | gl2ps_text
+                                       | GL2PS_NO_PS3_SHADING),
+                                      GL_RGBA, 0, NULL, 0, 0, 0,
+                                      buffsize, fp, include_graph.c_str ());
+          if (ret == GL2PS_ERROR)
+            error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
           old_print_cmd = print_cmd;
           opengl_renderer::draw (go);
+
+          // Force execution of GL commands in finite time.
+          // Without glFlush () there may primitives be missing in the gl2ps output.
+          glFlush ();
+
           state = gl2psEndPage ();
         }
 
@@ -200,7 +209,7 @@ draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data, float maxval)
   // Convert to GL_FLOAT as it is the only type gl2ps accepts.
   for (int i = 0; i < 3*w*h; i++)
     a[i] = data[i] / maxval;
-  
+
   gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
 }
 

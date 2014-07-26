@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2007-2013 Shai Ayal
+Copyright (C) 2014 Andreas Weber
 
 This file is part of Octave.
 
@@ -91,9 +92,6 @@ To initialize:
 
 #define FLTK_GRAPHICS_TOOLKIT_NAME "fltk"
 
-// Give FLTK no more than 0.01 sec to do its stuff.
-static double fltk_maxtime = 1e-2;
-
 const char* help_text = "\
 Keyboard Shortcuts\n\
 a - autoscale\n\
@@ -113,7 +111,7 @@ class OpenGL_fltk : public Fl_Gl_Window
 public:
   OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
     : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), renderer (),
-      in_zoom (false), zoom_box (),  print_mode (false)
+      in_zoom (false), zoom_box ()
   {
     // Ask for double buffering and a depth buffer.
     mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
@@ -133,16 +131,20 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
-    print_mode  = true;
-    print_cmd = cmd;
-    print_term  = term;
+#ifdef HAVE_GL2PS_H
+    FILE *fp;
+    fp = octave_popen (cmd.c_str (), "w");
+    glps_renderer rend (fp, term);
+    rend.draw (gh_manager::get_object (number), cmd);
+    octave_pclose (fp);
+#else
+    error ("fltk: printing not available without gl2ps library");
+#endif
   }
 
   void resize (int xx, int yy, int ww, int hh)
   {
     Fl_Gl_Window::resize (xx, yy, ww, hh);
-    setup_viewport (ww, hh);
-    redraw ();
   }
 
   bool renumber (double new_number)
@@ -165,48 +167,19 @@ private:
   // (x1,y1,x2,y2)
   Matrix zoom_box;
 
-  bool print_mode;
-  std::string print_cmd;
-  std::string print_term;
-
-  void setup_viewport (int ww, int hh)
-  {
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    glViewport (0, 0, ww, hh);
-  }
-
   void draw (void)
   {
     if (! valid ())
       {
-        valid (1);
-        setup_viewport (w (), h ());
+        glMatrixMode (GL_PROJECTION);
+        glLoadIdentity ();
+        glViewport (0, 0, w (), h ());
       }
 
-    if (print_mode)
-      {
-#ifdef HAVE_GL2PS_H
-        FILE *fp = octave_popen (print_cmd.c_str (), "w");
-        glps_renderer rend (fp, print_term);
+    renderer.draw (gh_manager::get_object (number));
 
-        rend.draw (gh_manager::get_object (number), print_cmd);
-
-        octave_pclose (fp);
-        print_mode = false;
-#else
-        print_mode = false;
-        error ("fltk: printing not available without gl2ps library");
-        return;
-#endif
-      }
-    else
-      {
-        renderer.draw (gh_manager::get_object (number));
-
-        if (zoom ())
-          overlay ();
-      }
+    if (zoom ())
+      overlay ();
   }
 
   void zoom_box_vertex (void)
@@ -282,8 +255,7 @@ class fltk_uimenu
 public:
   fltk_uimenu (int xx, int yy, int ww, int hh)
   {
-    menubar = new
-    Fl_Menu_Bar (xx, yy, ww, hh);
+    menubar = new Fl_Menu_Bar (xx, yy, ww, hh);
   }
 
   int items_to_show (void)
@@ -305,11 +277,13 @@ public:
   void show (void)
   {
     menubar->show ();
+    menubar->redraw ();
   }
 
   void hide (void)
   {
     menubar->hide ();
+    menubar->redraw ();
   }
 
   bool is_visible (void)
@@ -692,13 +666,12 @@ class plot_window : public Fl_Window
   friend class fltk_uimenu;
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
-    : Fl_Window (xx, yy - menu_h, ww, hh + menu_h + status_h, "octave"),
+    : Fl_Window (xx, yy, ww, hh + menu_h + status_h + 2, "octave"),
       window_label (), shift (0), ndim (2), fp (xfp), canvas (0),
       autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
-      status (0), ax_obj (), pos_x (0), pos_y (0)
+      status (0), resize_dummy (0), ax_obj (), pos_x (0), pos_y (0)
   {
     callback (window_close, static_cast<void*> (this));
-    size_range (4*status_h, 2*status_h);
 
     // FIXME: The function below is only available in FLTK >= 1.3
     // At some point support for FLTK 1.1 will be dropped in Octave.
@@ -708,114 +681,88 @@ public:
     // windows.  Otherwise, the class is just "FLTK"
     //default_xclass ("Octave");
 
-    begin ();
-    {
-      // bbox of plot canvas = [xx, yy, ww, hh];
-      // (xx, yy) = UL coordinate relative to UL window.
+    uimenu = new fltk_uimenu (0, 0, ww, menu_h);
+    canvas = new OpenGL_fltk (0, menu_h, ww, hh, number ());
 
-      canvas = new OpenGL_fltk (0, menu_h, ww, hh, number ());
+    // The bottom toolbar is a composite of "autoscale", "togglegrid",
+    // "panzoom", "rotate", "help", and "status". Only "status" should be resized.
 
-      uimenu = new fltk_uimenu (0, 0, ww, menu_h);
-      uimenu->hide ();
+    int toolbar_y = menu_h + hh + 1;
+    status = new Fl_Output (5 * status_h + 1, toolbar_y, ww - 5 * status_h - 1, status_h, "");
 
-      // Toolbar is a composite of "bottom", "autoscale", "togglegrid",
-      // "panzoom", "rotate", "help", and "status".
+    status->textcolor (FL_BLACK);
+    status->color (FL_GRAY);
+    status->textfont (FL_COURIER);
+    status->textsize (10);
+    status->box (FL_ENGRAVED_BOX);
 
-      yy = hh + menu_h;
-      bottom = new Fl_Box (0, yy, ww, status_h);
-      bottom->box (FL_FLAT_BOX);
+    autoscale = new Fl_Button (0, toolbar_y, status_h, status_h, "A");
+    autoscale->callback (button_callback, static_cast<void*> (this));
+    autoscale->tooltip ("Autoscale");
 
-      ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
+    togglegrid = new Fl_Button (status_h, toolbar_y, status_h, status_h, "G");
+    togglegrid->callback (button_callback, static_cast<void*> (this));
+    togglegrid->tooltip ("Toggle Grid");
 
-      autoscale = new Fl_Button (0, yy, status_h, status_h, "A");
-      autoscale->callback (button_callback, static_cast<void*> (this));
-      autoscale->tooltip ("Autoscale");
+    panzoom = new Fl_Button (2* status_h, toolbar_y, status_h, status_h, "P");
+    panzoom->callback (button_callback, static_cast<void*> (this));
+    panzoom->tooltip ("Mouse Pan/Zoom");
 
-      togglegrid = new Fl_Button (status_h, yy, status_h,
-                                  status_h, "G");
-      togglegrid->callback (button_callback, static_cast<void*> (this));
-      togglegrid->tooltip ("Toggle Grid");
+    rotate = new Fl_Button (3 * status_h, toolbar_y, status_h, status_h, "R");
+    rotate->callback (button_callback, static_cast<void*> (this));
+    rotate->tooltip ("Mouse Rotate");
 
-      panzoom = new Fl_Button (2 * status_h, yy, status_h,
-                               status_h, "P");
-      panzoom->callback (button_callback, static_cast<void*> (this));
-      panzoom->tooltip ("Mouse Pan/Zoom");
+    // get dimensions, de-/activate rotate button, set gui_mode
+    gui_mode = rotate_zoom;
+    update_gui_mode ();
 
-      rotate = new Fl_Button (3 * status_h, yy, status_h,
-                              status_h, "R");
-      rotate->callback (button_callback, static_cast<void*> (this));
-      rotate->tooltip ("Mouse Rotate");
+    help = new Fl_Button (4 * status_h, toolbar_y, status_h, status_h, "?");
+    help->callback (button_callback, static_cast<void*> (this));
+    help->tooltip ("Help");
 
-      if (ndim == 2)
-        rotate->deactivate ();
+    // The size of the resize_dummy box also determines the minimum window size
+    resize_dummy = new Fl_Box(5 * status_h + 1, menu_h + 1, ww - 5 * status_h - 1, hh);
+    // read on http://fltk.org/articles.php?L415+I0+T+M1000+P1 how resizable works
+    resizable (resize_dummy);
 
-      help = new Fl_Button (4 * status_h, yy, status_h,
-                            status_h, "?");
-      help->callback (button_callback, static_cast<void*> (this));
-      help->tooltip ("Help");
-
-      status = new Fl_Output (5 * status_h, yy,
-                              ww > 2*status_h ? ww - status_h : 0,
-                              status_h, "");
-
-      status->textcolor (FL_BLACK);
-      status->color (FL_GRAY);
-      status->textfont (FL_COURIER);
-      status->textsize (10);
-      status->box (FL_ENGRAVED_BOX);
-
-      // This allows us to have a valid OpenGL context right away.
-      canvas->mode (FL_DEPTH | FL_DOUBLE | FL_MULTISAMPLE);
-      if (fp.is_visible ())
-        {
-          // FIXME: This code should be removed when Octave drops support
-          // for FLTK 1.1.  Search for default_xclass in this file to find
-          // code that should be uncommented to take its place.
-          //
-          // Set WM_CLASS which allows window managers to properly group
-          // related windows.  Otherwise, the class is just "FLTK"
-          xclass ("Octave");
-
-          show ();
-
-#if defined (HAVE_X_WINDOWS)
-          std::string show_gui_msgs
-            = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
-
-          // Installing our handler suppresses the messages.
-          if (show_gui_msgs.empty ())
-            XSetErrorHandler (xerror_handler);
-#endif
-
-          if (fp.get_currentaxes ().ok ())
-            show_canvas ();
-          else
-            hide_canvas ();
-        }
-    }
     end ();
 
-    status->show ();
-    autoscale->show ();
-    togglegrid->show ();
-    panzoom->show ();
-    rotate->show ();
+    if (fp.is_visible ())
+      {
+        // FIXME: This code should be removed when Octave drops support
+        // for FLTK 1.1.  Search for default_xclass in this file to find
+        // code that should be uncommented to take its place.
+        //
+        // Set WM_CLASS which allows window managers to properly group
+        // related windows.  Otherwise, the class is just "FLTK"
+        xclass ("Octave");
+
+        show ();
+
+#if defined (HAVE_X_WINDOWS)
+        std::string show_gui_msgs
+          = octave_env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+
+        // Installing our handler suppresses the messages.
+        if (show_gui_msgs.empty ())
+          XSetErrorHandler (xerror_handler);
+#endif
+
+        if (fp.get_currentaxes ().ok ())
+          show_canvas ();
+        else
+          hide_canvas ();
+      }
 
     set_name ();
-    resizable (canvas);
-    gui_mode = (ndim == 3 ? rotate_zoom : pan_zoom);
+
     uimenu->add_to_menu (fp);
-    if (uimenu->items_to_show ())
-      show_menubar ();
-    else
+    if (!uimenu->items_to_show ())
       hide_menubar ();
   }
 
   ~plot_window (void)
   {
-    canvas->hide ();
-    status->hide ();
-    uimenu->hide ();
     this->hide ();
   }
 
@@ -835,31 +782,18 @@ public:
   void print (const std::string& cmd, const std::string& term)
   {
     canvas->print (cmd, term);
-
-    // Print immediately so the output file will exist when the drawnow
-    // command is done.
-    mark_modified ();
-    Fl::wait (fltk_maxtime);
   }
 
   void show_menubar (void)
   {
-    if (!uimenu->is_visible ())
-      {
-        // FIXME: Toolbar and menubar do not update
-        uimenu->show ();
-        mark_modified ();
-      }
+    uimenu->show ();
+    update_toolbar_position ();
   }
 
   void hide_menubar (void)
   {
-    if (uimenu->is_visible ())
-      {
-        // FIXME: Toolbar and menubar do not update
-        uimenu->hide ();
-        mark_modified ();
-      }
+    uimenu->hide ();
+    update_toolbar_position ();
   }
 
   void uimenu_update (const graphics_handle& gh, int id)
@@ -922,8 +856,6 @@ public:
           show_menubar ();
         else
           hide_menubar ();
-
-        mark_modified ();
       }
   }
 
@@ -941,15 +873,49 @@ public:
     canvas->hide ();
   }
 
+  // Move the toolbar at the bottom of the plot_window.
+  // The only reason for moving the toolbar is hiding and
+  // showing the menubar. All other resizing is done by fltk.
+
+  void update_toolbar_position ()
+  {
+    int old_canvas_h = canvas->h ();
+    size(w (), old_canvas_h + menu_dy () + status_h + 2);
+    canvas->resize (0, menu_dy (), w (), old_canvas_h);
+
+    int toolbar_y = canvas->h () + menu_dy () + 1;
+    autoscale->position (0, toolbar_y);
+    togglegrid->position (status_h, toolbar_y);
+    panzoom->position (2 * status_h, toolbar_y);
+    rotate->position (3 * status_h, toolbar_y);
+    help->position (4 * status_h, toolbar_y);
+    status->resize (5 * status_h + 1, toolbar_y, w () - 5 * status_h - 1, status_h);
+
+    init_sizes();
+    redraw ();
+  }
+
+  // Called from figure::properties::ID_POSITION
+  // (someone has requested a position change with set(h, "position", [...]))
+  // ww and hh refers to the canvas size, not the plot_window size.
+
+  void update_position (int xx, int yy, int ww, int hh)
+  {
+    Fl_Window::resize (xx, yy + menu_dy (), ww, hh + menu_dy () + status_h + 2);
+  }
+
   void mark_modified (void)
   {
-    damage (FL_DAMAGE_ALL);
-    canvas->damage (FL_DAMAGE_ALL);
+    canvas->redraw ();
+  }
+
+  void update_gui_mode (void)
+  {
     ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
 
     if (ndim == 3)
       rotate->activate ();
-    else if (ndim == 2 && gui_mode == rotate_zoom)
+    else // ndim == 2
       {
         rotate->deactivate ();
         gui_mode = pan_zoom;
@@ -987,7 +953,7 @@ private:
   static const int status_h = 20;
 
   // Menu height
-  static const int menu_h = 20;
+  static const int menu_h = 25;
 
   // Window callback.
   static void window_close (Fl_Widget*, void* data)
@@ -1023,13 +989,13 @@ private:
 
   fltk_uimenu* uimenu;
   OpenGL_fltk* canvas;
-  Fl_Box*    bottom;
   Fl_Button* autoscale;
   Fl_Button* togglegrid;
   Fl_Button* panzoom;
   Fl_Button* rotate;
   Fl_Button* help;
   Fl_Output* status;
+  Fl_Box* resize_dummy;
   graphics_object ax_obj;
   int pos_x;
   int pos_y;
@@ -1123,7 +1089,6 @@ private:
       }
 
     status->value (cbuf.str ().c_str ());
-    status->redraw ();
   }
 
   void view2status (graphics_object ax)
@@ -1140,7 +1105,6 @@ private:
         cbuf << "[azimuth: " << v(0) << ", elevation: " << v(1) << "]";
 
         status->value (cbuf.str ().c_str ());
-        status->redraw ();
       }
   }
 
@@ -1230,43 +1194,17 @@ private:
     return Cell (mod);
   }
 
-  void resize (int xx,int yy,int ww,int hh)
+  void resize (int xx, int yy, int ww, int hh)
   {
     Fl_Window::resize (xx, yy, ww, hh);
 
     Matrix pos (1,4,0);
     pos(0) = xx;
     pos(1) = yy + menu_dy ();
-    pos(2) = ww;
-    pos(3) = hh - menu_dy () - status_h;
+    pos(2) = canvas->w ();
+    pos(3) = canvas->h ();
 
-    fp.set_boundingbox (pos, true);
-  }
-
-  void draw (void)
-  {
-    // FIXME: Toolbar and menubar do not update properly
-    Matrix pos = fp.get_boundingbox (true);
-    int canvas_h = pos(3);
-    int canvas_w = pos(2);
-    int canvas_y = menu_dy ();
-    int toolbar_y = menu_dy () + canvas_h;
-    pos(1) = pos(1) - menu_dy ();
-    pos(3) = pos(3) + menu_dy () + status_h;
-
-    Fl_Window::resize (pos(0), pos(1), pos(2), pos(3));
-
-    bottom->resize (0, toolbar_y, status_h, status_h);
-    autoscale->resize (0, toolbar_y, status_h, status_h);
-    togglegrid->resize (status_h, toolbar_y, status_h, status_h);
-    panzoom->resize (2 * status_h, toolbar_y, status_h, status_h);
-    rotate->resize (3 * status_h, toolbar_y, status_h, status_h);
-    help->resize (4 * status_h, toolbar_y, status_h, status_h);
-    status->resize (5 * status_h, toolbar_y, pos(2) - 4 * status_h, status_h);
-    if (canvas->valid ())
-      canvas->resize (0, canvas_y, canvas_w, canvas_h);
-
-    return Fl_Window::draw ();
+    fp.set_position (pos, false);
   }
 
   int handle (int event)
@@ -1423,7 +1361,7 @@ private:
                 zoom_box (3) =  Fl::event_y () - menu_dy ();
                 canvas->set_zoom_box (zoom_box);
                 canvas->zoom (true);
-                canvas->redraw ();
+                mark_modified ();
               }
 
             break;
@@ -1653,16 +1591,18 @@ public:
       instance->do_update_canvas (hnd2idx (gh), ca);
   }
 
-  static void toggle_menubar_visibility (int fig_idx, bool menubar_is_figure)
+  static void update_position (const std::string& fig_idx_str,
+                               const Matrix pos)
   {
     if (instance_ok ())
-      instance->do_toggle_menubar_visibility (fig_idx, menubar_is_figure);
+      instance->do_update_position (str2idx (fig_idx_str), pos);
   }
 
   static void toggle_menubar_visibility (const std::string& fig_idx_str,
                                          bool menubar_is_figure)
   {
-    toggle_menubar_visibility (str2idx (fig_idx_str), menubar_is_figure);
+    if (instance_ok ())
+      instance->do_toggle_menubar_visibility (str2idx (fig_idx_str), menubar_is_figure);
   }
 
 private:
@@ -1765,7 +1705,10 @@ private:
     wm_iterator win = windows.find (idx);
 
     if (win != windows.end ())
-      win->second->mark_modified ();
+      {
+        win->second->mark_modified ();
+        win->second->update_gui_mode ();
+      }
   }
 
   void do_set_name (int idx)
@@ -1818,6 +1761,14 @@ private:
         else
           win->second->hide_canvas ();
       }
+  }
+
+  void do_update_position (int idx, Matrix pos)
+  {
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->update_position (pos(0), pos(1), pos(2), pos(3));
   }
 
   static int str2idx (const caseless_str& clstr)
@@ -1905,9 +1856,6 @@ __fltk_redraw__ (void)
                 }
             }
         }
-
-      // it seems that we have to call Fl::check twice to get everything drawn
-      Fl::check ();
       Fl::check ();
     }
 
@@ -2014,6 +1962,13 @@ public:
                   figure_manager::set_name (tmp);
                 }
                 break;
+              case figure::properties::ID_POSITION:
+                {
+                  std::string tmp = ov.string_value ();
+                  Matrix pos = fp.get_position ().matrix_value ();
+                  figure_manager::update_position (tmp, pos);
+                }
+                break;
               }
           }
       }
@@ -2030,8 +1985,6 @@ public:
   void redraw_figure (const graphics_object& go) const
   {
     figure_manager::mark_modified (go.get_handle ());
-
-    __fltk_redraw__ ();
   }
 
   void print_figure (const graphics_object& go,
@@ -2040,7 +1993,6 @@ public:
                      const std::string& /*debug_file*/) const
   {
     figure_manager::print (go.get_handle (), file_cmd, term);
-    redraw_figure (go);
   }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
@@ -2048,11 +2000,16 @@ public:
     return figure_manager::get_size (fh);
   }
 
+/*
   double get_screen_resolution (void) const
   {
     // FLTK doesn't give this info.
     return 72.0;
+
+    // FIXME: FLTK >= 1.3.0 could do this with  Fl::screen_dpi (h, v, n)
+    // but do we need it?
   }
+*/
 
   Matrix get_screen_size (void) const
   {
@@ -2068,16 +2025,12 @@ public:
       {
         munlock ("__init_fltk__");
 
-        figure_manager::close_all ();
-
         octave_value_list args = input_event_hook_fcn_id;
         args.append (false);
         Fremove_input_event_hook (args, 0);
-
         input_event_hook_fcn_id = octave_value_list ();
 
-        // FIXME: ???
-        Fl::wait (fltk_maxtime);
+        figure_manager::close_all ();
       }
   }
 
@@ -2138,31 +2091,6 @@ Undocumented internal function.\n\
 #endif
 
   return octave_value ();
-}
-
-DEFUN_DLD (__fltk_maxtime__, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{maxtime} =} __fltk_maxtime__ ()\n\
-@deftypefnx {Loadable Function} {} __fltk_maxtime__ (@var{maxtime})\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-#ifdef HAVE_FLTK
-  octave_value retval = fltk_maxtime;
-
-  if (args.length () == 1)
-    {
-      if (args(0).is_real_scalar ())
-        fltk_maxtime = args(0).double_value ();
-      else
-        error ("argument must be a real scalar");
-    }
-
-  return retval;
-#else
-  error ("__fltk_maxtime__: not available without OpenGL and FLTK libraries");
-  return octave_value ();
-#endif
 }
 
 DEFUN_DLD (__have_fltk__, , ,

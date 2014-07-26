@@ -33,12 +33,6 @@ function __add_default_menu__ (fig)
 
   obj = findall (fig, "-depth", 1, "tag", "__default_menu__", "label", "&File");
   if (isempty (obj))
-    ## FIXME: uimenu() will cause menubar to be displayed, even though property
-    ##        menubar remains set at "none".  So, forcibly turn menubar status
-    ##        on and then off to force figure to hide menubar.
-    menubar_state = get (fig, "menubar");
-    set (fig, "menubar", "figure");
-
     __f = uimenu (fig, "label", "&File", "handlevisibility", "off",
                        "tag", "__default_menu__");
       uimenu (__f, "label", "Save &As", "callback", @save_cb);
@@ -54,12 +48,6 @@ function __add_default_menu__ (fig)
         uimenu (gm, "label", "Rotate+Zoom", "callback", @guimode_cb);
         uimenu (gm, "label", "None+Zoom", "callback", @guimode_cb);
 
-    ## FIXME: This drawnow () must occur after at least one menu item has
-    ##        been defined to avoid sizing issues in new figures.
-    ##        This may lead to flicker.  The real fix must be in the C++ code. 
-    drawnow ();
-
-    set (fig, "menubar", menubar_state);
   endif
 
 endfunction

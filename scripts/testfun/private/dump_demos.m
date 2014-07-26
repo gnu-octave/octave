@@ -111,27 +111,31 @@ function dump_all_demos (directory, fid, fmt)
     for d = 1:numel (demos)
       idx = sprintf ("%02d", d);
       base_fn = sprintf ("%s_%s", fcn, idx);
+      fn = sprintf ('%s.%s', base_fn, fmt);
       fprintf (fid, "\ntry\n");
+      ## First check if the file already exists, skip demo if found
+      fprintf (fid, " if (! exist ('%s', 'file'))\n", fn);
       ## Invoke the ancient, deprecated random seed
       ## generators, but there is an initialization mismatch with the more modern
       ## generators reported here (https://savannah.gnu.org/bugs/?42557).
       fprintf (fid, "  rand ('seed', 1);\n");
+      fprintf (fid, "  tic ();\n");
       fprintf (fid, "  %s\n\n", demos{d});
-      fprintf (fid, "  drawnow;\n");
+      fprintf (fid, "  t_plot = toc ();\n");
       fprintf (fid, "  fig = (get (0, 'currentfigure'));\n");
       fprintf (fid, "  if (~ isempty (fig))\n");
       fprintf (fid, "    figure (fig);\n");
-      fprintf (fid, "    name = '%s.%s';\n", base_fn, fmt);
-      fprintf (fid, "    if (isempty (dir (name)))\n");
-      fprintf (fid, "      fprintf ('Printing ""%%s"" ... ', name);\n")
-      fprintf (fid, "      print ('-d%s', name);\n", fmt);
-      fprintf (fid, "      fprintf ('done\\n');\n");
-      fprintf (fid, "    else\n");
-      fprintf (fid, "      fprintf ('File ""%%s"" exists.\\n', name);\n")
-      fprintf (fid, "    end\n");
+      fprintf (fid, "      fprintf ('Printing ""%s"" ... ');\n", fn);
+      fprintf (fid, "      tic ();\n");
+      fprintf (fid, "      print ('-d%s', '%s');\n", fmt, fn);
+      fprintf (fid, "      t_print = toc ();\n");
+      fprintf (fid, "      fprintf ('[%%f %%f] done\\n',t_plot, t_print);\n");
       fprintf (fid, "  end\n");
       # Temporary fix for cruft accumulating in figure window.
       fprintf (fid, "  close ('all');\n");
+      fprintf (fid, " else\n");
+      fprintf (fid, "   fprintf ('File ""%s"" already exists.\\n');\n", fn);
+      fprintf (fid, " end\n");
       fprintf (fid, "catch\n");
       fprintf (fid, "  fprintf ('ERROR in %s: %%s\\n', lasterr ());\n", base_fn);
       fprintf (fid, "  err_fid = fopen ('%s.err', 'w');\n", base_fn);

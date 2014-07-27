@@ -44,9 +44,12 @@ function __add_default_menu__ (fig)
       uimenu (__e, "label", "&Grid", "callback", @grid_cb);
       uimenu (__e, "label", "Auto&scale", "callback", @autoscale_cb);
       gm = uimenu (__e, "label", "GUI &Mode");
-        uimenu (gm, "label", "Pan+Zoom", "callback", @guimode_cb);
-        uimenu (gm, "label", "Rotate+Zoom", "callback", @guimode_cb);
-        uimenu (gm, "label", "None+Zoom", "callback", @guimode_cb);
+        uimenu (gm, "label", "Pan x and y", "tag", "pan_on", "callback", @guimode_cb);
+        uimenu (gm, "label", "Pan x only", "tag", "pan_xon", "callback", @guimode_cb);
+        uimenu (gm, "label", "Pan y only", "tag", "pan_yon", "callback", @guimode_cb);
+        uimenu (gm, "label", "Rotate on", "tag", "rotate3d", "callback", @guimode_cb);
+        uimenu (gm, "label", "Enable mousezoom", "tag", "zoom_on", "callback", @guimode_cb);
+        uimenu (gm, "label", "Disable mousezoom", "tag", "zoom_off", "callback", @guimode_cb);
 
   endif
 
@@ -90,14 +93,22 @@ function autoscale_cb (h, e)
 endfunction
 
 function guimode_cb (h, e)
-  lbl = get (h, "label");
-  switch (lbl)
-    case "Pan+Zoom"
-      gui_mode ("2D");
-    case "Rotate+Zoom"
-      gui_mode ("3D");
-    case "None"
-      gui_mode ("None");
+  id = get (h, "tag");
+  switch (id)
+    case "pan_on"
+      set (gco, "pan", "on");
+    case "pan_xon"
+      set (gco, "pan", "xon");
+    case "pan_yon"
+      set (gco, "pan", "yon");
+    case "rotate3d"
+      set (gco, "rotate3d", "on");
+    case "no_pan_rotate"
+      set (gco, "pan", "off");
+      set (gco, "rotate3d", "off");
+    case "zoom_on"
+      set (gco, "mouse_wheel_zoom", 0.05);
+    case "zoom_off"
+      set (gco, "mouse_wheel_zoom", 0.0);
   endswitch
 endfunction
-

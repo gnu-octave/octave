@@ -6388,6 +6388,25 @@ axes::properties::set_linestyleorder (const octave_value& v)
 }
 
 void
+axes::properties::set_rotate3d (const octave_value& v)
+{
+  rotate3d.set (v, false, false);
+  if (rotate3d_is ("on"))
+    {
+      int ndim = calc_dimensions (gh_manager::get_object (get_parent ()));
+
+      // Disable rotate3d for 2D plots
+      if (ndim == 2)
+        {
+          rotate3d.set ("off", false, false);
+          pan.set ("on", false, false);
+        }
+      else
+       pan.set ("off", false, false);
+    }
+}
+
+void
 axes::properties::set_units (const octave_value& v)
 {
   if (! error_state)
@@ -7377,6 +7396,9 @@ axes::update_axis_limits (const std::string& axis_type)
     }
 
   xproperties.update_transform ();
+
+  // Disable rotate3d and select pan for 2D plots
+  xproperties.set_rotate3d (xproperties.get_rotate3d ());
 }
 
 inline

@@ -3717,6 +3717,13 @@ public:
 
     void delete_text_child (handle_property& h);
 
+    void set_pan (const octave_value& val)
+    {
+      pan.set (val, false, false);
+      if (pan_is ("on") || pan_is ("xon") || pan_is ("yon"))
+        rotate3d.set ("off", false, false);
+    }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -3757,12 +3764,15 @@ public:
       any_property linestyleorder S , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
+      double_property mouse_wheel_zoom , 0.05
       radio_property nextplot , "add|replacechildren|{replace}"
       array_property outerposition u , default_axes_outerposition ()
+      radio_property pan s , "{on}|xon|yon|off"
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       array_property position u , default_axes_position ()
       radio_property projection , "{orthographic}|perspective"
+      radio_property rotate3d S , "{off}|on"
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       array_property ticklength u , default_axes_ticklength ()

@@ -131,6 +131,7 @@ public:
 
   void print (const std::string& cmd, const std::string& term)
   {
+    //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << "x" << h () << std::endl;
 #ifdef HAVE_GL2PS_H
     FILE *fp;
     fp = octave_popen (cmd.c_str (), "w");
@@ -238,11 +239,6 @@ private:
     return retval;
   }
 };
-
-// Parameter controlling how fast we zoom when using the scrool wheel.
-static double Vwheel_zoom_speed = 0.05;
-// Parameter controlling the GUI mode.
-static enum { pan_zoom, rotate_zoom, none } gui_mode;
 
 void script_cb (Fl_Widget*, void* data)
 {
@@ -667,7 +663,7 @@ class plot_window : public Fl_Window
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
     : Fl_Window (xx, yy, ww, hh + menu_h + status_h + 2, "octave"),
-      window_label (), shift (0), ndim (2), fp (xfp), canvas (0),
+      window_label (), shift (0), fp (xfp), canvas (0),
       autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
       status (0), resize_dummy (0), ax_obj (), pos_x (0), pos_y (0)
   {
@@ -711,10 +707,6 @@ public:
     rotate = new Fl_Button (3 * status_h, toolbar_y, status_h, status_h, "R");
     rotate->callback (button_callback, static_cast<void*> (this));
     rotate->tooltip ("Mouse Rotate");
-
-    // get dimensions, de-/activate rotate button, set gui_mode
-    gui_mode = rotate_zoom;
-    update_gui_mode ();
 
     help = new Fl_Button (4 * status_h, toolbar_y, status_h, status_h, "?");
     help->callback (button_callback, static_cast<void*> (this));
@@ -909,19 +901,6 @@ public:
     canvas->redraw ();
   }
 
-  void update_gui_mode (void)
-  {
-    ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
-
-    if (ndim == 3)
-      rotate->activate ();
-    else // ndim == 2
-      {
-        rotate->deactivate ();
-        gui_mode = pan_zoom;
-      }
-  }
-
   void set_name (void)
   {
     window_label = fp.get_title ();
@@ -942,9 +921,6 @@ private:
 
   // Mod keys status
   int shift;
-
-  // Number of dimensions, 2 or 3.
-  int ndim;
 
   // Figure properties.
   figure::properties& fp;
@@ -978,13 +954,38 @@ private:
       toggle_grid ();
 
     if (widg == panzoom)
-      gui_mode = pan_zoom;
+      set_on_ax_obj ("pan", "on");
 
-    if (widg == rotate && ndim == 3)
-      gui_mode = rotate_zoom;
+    if (widg == rotate)
+      set_on_ax_obj ("rotate3d", "on");
 
     if (widg == help)
       fl_message ("%s", help_text);
+  }
+
+  void set_on_ax_obj (const std::string& name, const std::string& value)
+  {
+    // ax_obj is the last clicked axes object
+    if (ax_obj && ax_obj.isa ("axes"))
+      {
+        axes::properties& ap = dynamic_cast<axes::properties&>(ax_obj.get_properties ());
+        ap.set (name, value);
+      }
+    else // no axes object clicked so far
+      {
+        // take the object in the center of the canvas
+        graphics_handle gh = pixel2axes_or_ca (canvas->w () / 2, canvas->h () / 2);
+
+        if (gh.ok ())
+          {
+            graphics_object tmp = gh_manager::get_object (gh);
+            if (tmp.isa ("axes"))
+              {
+                axes::properties& ap = dynamic_cast<axes::properties&>(tmp.get_properties ());
+                ap.set (name, value);
+              }
+          }
+      }
   }
 
   fltk_uimenu* uimenu;
@@ -1250,12 +1251,12 @@ private:
 
                 case 'p':
                 case 'P':
-                  gui_mode = pan_zoom;
+                  set_on_ax_obj ("pan", "on");
                   break;
 
                 case 'r':
                 case 'R':
-                  gui_mode = rotate_zoom;
+                  set_on_ax_obj ("rotate3d", "on");
                   break;
                 }
             }
@@ -1288,7 +1289,7 @@ private:
             pos_x = Fl::event_x ();
             pos_y = Fl::event_y () - menu_dy ();
 
-            set_currentpoint (Fl::event_x (), Fl::event_y () - menu_dy ());
+            set_currentpoint (pos_x, pos_y);
 
             gh = pixel2axes_or_ca (pos_x, pos_y);
 
@@ -1296,6 +1297,17 @@ private:
               {
                 ax_obj = gh_manager::get_object (gh);
                 set_axes_currentpoint (ax_obj, pos_x, pos_y);
+
+                int ndim = calc_dimensions (ax_obj);
+
+                if (ndim == 3)
+                  rotate->activate ();
+                else // ndim == 2
+                  rotate->deactivate ();
+
+
+                fp.set_currentobject (ax_obj.get_handle ().value ());
+
               }
 
             fp.execute_windowbuttondownfcn (Fl::event_button());
@@ -1316,32 +1328,48 @@ private:
               {
                 if (ax_obj && ax_obj.isa ("axes"))
                   {
-                    if (gui_mode == pan_zoom)
-                      pixel2status (ax_obj, pos_x, pos_y,
-                                    Fl::event_x (),
-                                    Fl::event_y () - menu_dy ());
-                    else
-                      view2status (ax_obj);
                     axes::properties& ap =
                       dynamic_cast<axes::properties&>
                       (ax_obj.get_properties ());
 
-                    double x0, y0, x1, y1;
-                    Matrix pos = fp.get_boundingbox (true);
-                    pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
-                    pixel2pos (ax_obj, Fl::event_x (),
-                                       Fl::event_y () - menu_dy (),
-                                       x1, y1);
-
-                    if (gui_mode == pan_zoom)
-                      ap.translate_view (x0, x1, y0, y1);
-                    else if (gui_mode == rotate_zoom)
+                    // Don't pan or rotate legend
+                    if (ap.get_tag().compare ("legend") < 0)
                       {
-                        double daz, del;
-                        daz = (Fl::event_x () - pos_x) / pos(2) * 360;
-                        del = (Fl::event_y () - menu_dy () - pos_y)
-                              / pos(3) * 360;
-                        ap.rotate_view (del, daz);
+                        if (ap.rotate3d_is ("on"))
+                          view2status (ax_obj);
+                        else
+                          pixel2status (ax_obj, pos_x, pos_y,
+                                        Fl::event_x (),
+                                        Fl::event_y () - menu_dy ());
+
+                        double x0, y0, x1, y1;
+                        Matrix pos = fp.get_boundingbox (true);
+                        pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                        pixel2pos (ax_obj, Fl::event_x (),
+                                           Fl::event_y () - menu_dy (),
+                                           x1, y1);
+
+                        if (ap.pan_is ("on"))
+                          ap.translate_view (x0, x1, y0, y1);
+                        else if (ap.pan_is ("xon"))
+                          ap.translate_view (x0, x1, y1, y1);
+                        else if (ap.pan_is ("yon"))
+                          ap.translate_view (x1, x1, y0, y1);
+                        else if (ap.rotate3d_is ("on"))
+                          {
+                            double daz, del;
+                            daz = (Fl::event_x () - pos_x) / pos(2) * 360;
+                            del = (Fl::event_y () - menu_dy () - pos_y)
+                                  / pos(3) * 360;
+                            ap.rotate_view (del, daz);
+                          }
+                      }
+                    else
+                      {  // move the position of the legend
+                        Matrix pos = ap.get_position ().matrix_value ();
+                        pos(0) += double (Fl::event_x () - pos_x) / canvas->w();
+                        pos(1) -= double (Fl::event_y () - menu_dy () - pos_y) / canvas->h();
+                        ap.set_position (pos);
                       }
 
                     pos_x = Fl::event_x ();
@@ -1376,6 +1404,9 @@ private:
                 {
                   axes::properties& ap =
                     dynamic_cast<axes::properties&> (ax.get_properties ());
+
+                  // Parameter controlling how fast we zoom when using the scrool wheel.
+                  double Vwheel_zoom_speed = ap.get_mouse_wheel_zoom ();
 
                   // Determine if we're zooming in or out.
                   const double factor =
@@ -1707,7 +1738,6 @@ private:
     if (win != windows.end ())
       {
         win->second->mark_modified ();
-        win->second->update_gui_mode ();
       }
   }
 
@@ -1962,6 +1992,7 @@ public:
                   figure_manager::set_name (tmp);
                 }
                 break;
+
               case figure::properties::ID_POSITION:
                 {
                   std::string tmp = ov.string_value ();
@@ -2108,102 +2139,4 @@ Undocumented internal function.\n\
 #endif
 
   return retval;
-}
-
-// FIXME: This function should be abstracted and made potentially
-// available to all graphics toolkits.  This suggests putting it in
-// graphics.cc as is done for drawnow() and having the master
-// mouse_wheel_zoom function call fltk_mouse_wheel_zoom.  The same
-// should be done for gui_mode and fltk_gui_mode.  For now (2011.01.30),
-// just changing function names and docstrings.
-
-DEFUN_DLD (mouse_wheel_zoom, args, nargout,
-           "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{val} =} mouse_wheel_zoom ()\n\
-@deftypefnx {Loadable Function} {@var{old_val} =} mouse_wheel_zoom (@var{new_val})\n\
-@deftypefnx {Loadable Function} {} mouse_wheel_zoom (@var{new_val}, \"local\")\n\
-Query or set the mouse wheel zoom factor.\n\
-\n\
-The zoom factor is a number in the range (0,1) which is the percentage of the\n\
-current axis limits that will be used when zooming.  For example, if the\n\
-current x-axis limits are [0, 50] and @code{mouse_wheel_zoom} is 0.4 (40%),\n\
-then a zoom operation will change the limits by 20.\n\
-\n\
-When called from inside a function with the @qcode{\"local\"} option, the\n\
-variable is changed locally for the function and any subroutines it calls.  \n\
-The original variable value is restored when exiting the function.\n\
-\n\
-This function is currently implemented only for the FLTK graphics toolkit.\n\
-@seealso{gui_mode}\n\
-@end deftypefn")
-{
-#ifdef HAVE_FLTK
-  return SET_INTERNAL_VARIABLE_WITH_LIMITS(wheel_zoom_speed, 0.0001, 0.9999);
-#else
-  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
-  return octave_value ();
-#endif
-}
-
-DEFUN_DLD (gui_mode, args, ,
-           "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{mode} =} gui_mode ()\n\
-@deftypefnx {Built-in Function} {} gui_mode (@var{mode})\n\
-Query or set the GUI mode for the current graphics toolkit.\n\
-The @var{mode} argument can be one of the following strings:\n\
-\n\
-@table @asis\n\
-@item @qcode{\"2d\"}\n\
-Allows panning and zooming of current axes.\n\
-\n\
-@item @qcode{\"3d\"}\n\
-Allows rotating and zooming of current axes.\n\
-\n\
-@item @qcode{\"none\"}\n\
-Mouse inputs have no effect.\n\
-@end table\n\
-\n\
-This function is currently implemented only for the FLTK graphics toolkit.\n\
-@seealso{mouse_wheel_zoom}\n\
-@end deftypefn")
-{
-#ifdef HAVE_FLTK
-  caseless_str mode_str;
-
-  if (gui_mode == pan_zoom)
-    mode_str = "2d";
-  else if (gui_mode == rotate_zoom)
-    mode_str = "3d";
-  else
-    mode_str = "none";
-
-  bool failed = false;
-
-  if (args.length () == 1)
-    {
-      if (args(0).is_string ())
-        {
-          mode_str = args(0).string_value ();
-
-          if (mode_str.compare ("2d"))
-            gui_mode = pan_zoom;
-          else if (mode_str.compare ("3d"))
-            gui_mode = rotate_zoom;
-          else if (mode_str.compare ("none"))
-            gui_mode = none;
-          else
-            failed = true;
-        }
-      else
-        failed = true;
-    }
-
-  if (failed)
-    error ("MODE must be one of the strings: \"2D\", \"3D\", or \"none\"");
-
-  return octave_value (mode_str);
-#else
-  error ("gui_mode: not available without OpenGL and FLTK libraries");
-  return octave_value ();
-#endif
 }

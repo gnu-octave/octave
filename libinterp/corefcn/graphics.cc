@@ -9381,11 +9381,15 @@ Undocumented internal function.\n\
 DEFUN (reset, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h})\n\
-Resets the properites of object(s) @var{h} to their default values.\n\
+Reset the properties of the graphic object @var{h} to their default values.\n\
+\n\
 For figures, the properties @qcode{\"position\"}, @qcode{\"units\"},\n\
 @qcode{\"windowstyle\"}, and @qcode{\"paperunits\"} are not affected.\n\
 For axes, the properties @qcode{\"position\"} and @qcode{\"units\"} are\n\
 not affected.\n\
+\n\
+The input @var{h} may also be a vector of graphic handles in which case\n\
+each individual object will be reset.\n\
 @seealso{cla, clf, newplot}\n\
 @end deftypefn")
 {
@@ -9414,7 +9418,7 @@ not affected.\n\
 
 /*
 
-%!test
+%!test  # line object
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;
@@ -9424,18 +9428,18 @@ not affected.\n\
 %!               "markerfacecolor", "b", "linestyle", ":");
 %!   
 %!   reset (hli);
-%!   assert (get (hli, "marker"), get (0, "defaultlinemarker"))
-%!   assert (get (hli, "markerfacecolor"), ...
-%!           get (0, "defaultlinemarkerfacecolor"))
-%!   assert (get (hli, "linestyle"), ...
-%!           get (0, "defaultlinelinestyle"))
-%!   assert (get (hli, "linewidth"), 3, tol) # parent axes defaults  
+%!   assert (get (hli, "marker"), get (0, "defaultlinemarker"));
+%!   assert (get (hli, "markerfacecolor"), 
+%!           get (0, "defaultlinemarkerfacecolor"));
+%!   assert (get (hli, "linestyle"), 
+%!           get (0, "defaultlinelinestyle"));
+%!   assert (get (hli, "linewidth"), 3, tol);  # parent axes defaults  
 %!   
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
-%!test
+%!test  # patch object
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;
@@ -9447,91 +9451,92 @@ not affected.\n\
 %!   y2 = cos (t2);
 %!   vert = [x1, y1; x2, y2];
 %!   fac = [1:8,NaN(1,8);9:24];
-%!   hpa = patch ('Faces',fac, 'Vertices',vert, 'FaceColor','r');
+%!   hpa = patch ("Faces",fac, "Vertices",vert, "FaceColor","r");
 %!
 %!   reset (hpa);
-%!   assert (get (hpa, "faces"), get (0, "defaultpatchfaces"), tol)
-%!   assert (get (hpa, "vertices"), get (0, "defaultpatchvertices"), tol)
-%!   assert (get (hpa, "facevertexcdata"), ...
-%!           get (0, "defaultpatchfacevertexcdata"), tol)
+%!   assert (get (hpa, "faces"), get (0, "defaultpatchfaces"), tol);
+%!   assert (get (hpa, "vertices"), get (0, "defaultpatchvertices"), tol);
+%!   assert (get (hpa, "facevertexcdata"),
+%!           get (0, "defaultpatchfacevertexcdata"), tol);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
-%!test
+%!test  # surface object
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;
 %!   hsu = surface (peaks, "edgecolor", "none");
 %!
 %!   reset (hsu);
-%!   assert (get (hsu, "xdata"), get (0, "defaultsurfacexdata"), tol)
-%!   assert (get (hsu, "ydata"), get (0, "defaultsurfaceydata"), tol)
-%!   assert (get (hsu, "zdata"), get (0, "defaultsurfacezdata"), tol)
-%!   assert (get (hsu, "edgecolor"), ...
-%!           get (0, "defaultsurfaceedgecolor"), tol)
+%!   assert (get (hsu, "xdata"), get (0, "defaultsurfacexdata"), tol);
+%!   assert (get (hsu, "ydata"), get (0, "defaultsurfaceydata"), tol);
+%!   assert (get (hsu, "zdata"), get (0, "defaultsurfacezdata"), tol);
+%!   assert (get (hsu, "edgecolor"),
+%!           get (0, "defaultsurfaceedgecolor"), tol);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
-%!test
+%!test  # image object
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;   
-%!   him =image (rand (10,10), "cdatamapping", "scaled");
+%!   him = image (rand (10,10), "cdatamapping", "scaled");
 %!
 %!   reset (him);
-%!   assert (get (him, "cdata"), get (0, "defaultimagecdata"), tol)
-%!   assert (get (him, "cdatamapping"), ...
-%!           get (0, "defaultimagecdatamapping"), tol)
+%!   assert (get (him, "cdata"), get (0, "defaultimagecdata"), tol);
+%!   assert (get (him, "cdatamapping"),
+%!           get (0, "defaultimagecdatamapping"), tol);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
-%!test
+%!test  # text object
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;   
 %!   hte = text (5, 5, "Hi!", "fontsize", 20 ,"color", "r");
 %!
 %!   reset (hte);
-%!   assert (get (hte, "position"), get (0, "defaulttextposition"), tol)
-%!   assert (get (hte, "fontsize"), get (0, "defaulttextfontsize"), tol)
-%!   assert (get (hte, "color"), get (0, "defaulttextcolor"), tol)
+%!   assert (get (hte, "position"), get (0, "defaulttextposition"), tol);
+%!   assert (get (hte, "fontsize"), get (0, "defaulttextfontsize"), tol);
+%!   assert (get (hte, "color"), get (0, "defaulttextcolor"), tol);
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
-%!test
+%!test  # axes object  
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;
 %!   pos = get (0, "defaultaxesposition") * .5;
 %!   hax = axes ("linewidth", 2, "position", pos);
-%!   title ("Reset me, please!")
+%!   title ("Reset me, please!");
 %! 
 %!   reset (hax);
-%!   assert (get (hax, "linewidth"), get (0, "defaultaxeslinewidth"), tol)
-%!   assert (get (hax, "position"), pos, tol) # axes position is unchanged
-%!   assert (get (hax, "default"), struct ()) # no more axes' defaults
-%!   assert (get (get (hax, "title"), "string"), "")
+%!   assert (get (hax, "linewidth"), get (0, "defaultaxeslinewidth"), tol);
+%!   assert (get (hax, "position"), pos, tol); # axes position is unchanged
+%!   assert (get (hax, "default"), struct ()); # no more axes' defaults
+%!   assert (get (get (hax, "title"), "string"), "");
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
 
-%!test
-%! set (0, "defaultfigurevisible", "off")
-%! hf = figure ("visible", "off", "paperunits", "centimeters", ...
+%!test  # root figure object
+%! set (0, "defaultfigurevisible", "off");
+%! hf = figure ("visible", "off", "paperunits", "centimeters", 
 %!              "papertype", "a4");
 %! unwind_protect
-%!   reset (hf)
-%!   assert (get (hf, "papertype"), get (0, "defaultfigurepapertype"))
-%!   assert (get (hf, "paperunits"), "centimeters") # paperunits is unchanged
-%!   assert (get (hf, "visible"), get (0, "defaultfigurevisible"))
+%!   reset (hf);
+%!   assert (get (hf, "papertype"), get (0, "defaultfigurepapertype"));
+%!   assert (get (hf, "paperunits"), "centimeters"); # paperunits is unchanged
+%!   assert (get (hf, "visible"), get (0, "defaultfigurevisible"));
 %! unwind_protect_cleanup
-%!   close (hf)
-%!   set (0, "defaultfigurevisible", "remove")
+%!   close (hf);
+%!   set (0, "defaultfigurevisible", "remove");
 %! end_unwind_protect
+
 */
 
 DEFUN (set, args, nargout,

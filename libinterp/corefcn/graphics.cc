@@ -6393,10 +6393,8 @@ axes::properties::set_rotate3d (const octave_value& v)
   rotate3d.set (v, false, false);
   if (rotate3d_is ("on"))
     {
-      int ndim = calc_dimensions (gh_manager::get_object (get_parent ()));
-
       // Disable rotate3d for 2D plots
-      if (ndim == 2)
+      if (get_is2D ())
         {
           rotate3d.set ("off", false, false);
           pan.set ("on", false, false);

@@ -41,12 +41,15 @@ function __add_default_menu__ (fig)
 
     __e = uimenu (fig, "label", "&Edit", "handlevisibility", "off",
                        "tag", "__default_menu__");
-      uimenu (__e, "label", "&Grid", "callback", @grid_cb);
-      uimenu (__e, "label", "Auto&scale", "callback", @autoscale_cb);
-      gm = uimenu (__e, "label", "GUI &Mode");
+      uimenu (__e, "label", "Toggle &grid on all axes", "tag", "toggle", "callback", @grid_cb);
+      uimenu (__e, "label", "Show grid on all axes", "tag", "on", "callback", @grid_cb);
+      uimenu (__e, "label", "Hide grid on all axes", "tag", "off", "callback", @grid_cb);
+      uimenu (__e, "label", "Auto&scale all axes", "callback", @autoscale_cb);
+      gm = uimenu (__e, "label", "GUI &Mode (on all axes)");
         uimenu (gm, "label", "Pan x and y", "tag", "pan_on", "callback", @guimode_cb);
         uimenu (gm, "label", "Pan x only", "tag", "pan_xon", "callback", @guimode_cb);
         uimenu (gm, "label", "Pan y only", "tag", "pan_yon", "callback", @guimode_cb);
+        uimenu (gm, "label", "Disable pan and rotate", "tag", "no_pan_rotate", "callback", @guimode_cb);
         uimenu (gm, "label", "Rotate on", "tag", "rotate3d", "callback", @guimode_cb);
         uimenu (gm, "label", "Enable mousezoom", "tag", "zoom_on", "callback", @guimode_cb);
         uimenu (gm, "label", "Disable mousezoom", "tag", "zoom_off", "callback", @guimode_cb);
@@ -84,31 +87,49 @@ function __save_as__ (caller)
   endif
 endfunction
 
+
+function hax = __get_axes__ (h)
+  ## Get parent figure
+  fig = ancestor (h, "figure");
+
+  ## Find all axes which aren't legends
+  hax = findobj ("type", "axes", "-not", "tag", "legend");
+endfunction
+
 function grid_cb (h, e)
-  grid;
+  hax = __get_axes__ (h);
+  id = get (h, "tag");
+  switch (id)
+    case "toggle"
+      arrayfun (@grid, hax);
+    otherwise
+      arrayfun (@(h) grid(h, id), hax);
+  endswitch
 endfunction
 
 function autoscale_cb (h, e)
-  axis ("auto");
+  hax = __get_axes__ (h);
+  arrayfun (@(h) axis (h, "auto"), hax)
 endfunction
 
 function guimode_cb (h, e)
+  hax = __get_axes__ (h);
   id = get (h, "tag");
   switch (id)
     case "pan_on"
-      set (gco, "pan", "on");
+      arrayfun (@(h) pan (h, "on"), hax)
     case "pan_xon"
-      set (gco, "pan", "xon");
+      arrayfun (@(h) pan (h, "xon"), hax)
     case "pan_yon"
-      set (gco, "pan", "yon");
+      arrayfun (@(h) pan (h, "yon"), hax)
     case "rotate3d"
-      set (gco, "rotate3d", "on");
+      arrayfun (@(h) rotate3d (h, "on"), hax)
     case "no_pan_rotate"
-      set (gco, "pan", "off");
-      set (gco, "rotate3d", "off");
+      arrayfun (@(h) pan (h, "off"), hax)
+      arrayfun (@(h) rotate3d (h, "off"), hax)
     case "zoom_on"
-      set (gco, "mouse_wheel_zoom", 0.05);
+      arrayfun (@(h) set (h, "mouse_wheel_zoom", 0.05), hax);
     case "zoom_off"
-      set (gco, "mouse_wheel_zoom", 0.0);
+      arrayfun (@(h) set (h, "mouse_wheel_zoom", 0.0), hax);
   endswitch
 endfunction

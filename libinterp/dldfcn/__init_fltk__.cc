@@ -62,6 +62,7 @@ To initialize:
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Gl_Window.H>
+#include <FL/names.h>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Output.H>
@@ -223,20 +224,17 @@ private:
 
   int handle (int event)
   {
-    int retval = Fl_Gl_Window::handle (event);
-
     switch (event)
       {
       case FL_ENTER:
-        window ()->cursor (FL_CURSOR_CROSS);
+        cursor (FL_CURSOR_CROSS);
         return 1;
 
       case FL_LEAVE:
-        window ()->cursor (FL_CURSOR_DEFAULT);
+        cursor (FL_CURSOR_DEFAULT);
         return 1;
       }
-
-    return retval;
+    return Fl_Gl_Window::handle (event);
   }
 };
 
@@ -669,6 +667,11 @@ public:
   {
     callback (window_close, static_cast<void*> (this));
 
+    // The size of the resize_dummy box also determines the minimum window size
+    resize_dummy = new Fl_Box(5 * status_h + 1, menu_h + 1, ww - 5 * status_h - 1, hh);
+    // read on http://fltk.org/articles.php?L415+I0+T+M1000+P1 how resizable works
+    resizable (resize_dummy);
+
     // FIXME: The function below is only available in FLTK >= 1.3
     // At some point support for FLTK 1.1 will be dropped in Octave.
     // At that point this function should be uncommented.
@@ -711,11 +714,6 @@ public:
     help = new Fl_Button (4 * status_h, toolbar_y, status_h, status_h, "?");
     help->callback (button_callback, static_cast<void*> (this));
     help->tooltip ("Help");
-
-    // The size of the resize_dummy box also determines the minimum window size
-    resize_dummy = new Fl_Box(5 * status_h + 1, menu_h + 1, ww - 5 * status_h - 1, hh);
-    // read on http://fltk.org/articles.php?L415+I0+T+M1000+P1 how resizable works
-    resizable (resize_dummy);
 
     end ();
 
@@ -948,18 +946,19 @@ private:
   void button_press (Fl_Widget* widg, void*)
   {
     if (widg == autoscale)
-      axis_auto ();
-
-    if (widg == togglegrid)
+      {
+        set_on_ax_obj ("xlimmode", "auto");
+        set_on_ax_obj ("ylimmode", "auto");
+        set_on_ax_obj ("zlimmode", "auto");
+        mark_modified ();
+      }
+    else if (widg == togglegrid)
       toggle_grid ();
-
-    if (widg == panzoom)
+    else if (widg == panzoom)
       set_on_ax_obj ("pan", "on");
-
-    if (widg == rotate)
+    else if (widg == rotate)
       set_on_ax_obj ("rotate3d", "on");
-
-    if (widg == help)
+    else if (widg == help)
       fl_message ("%s", help_text);
   }
 
@@ -971,19 +970,14 @@ private:
         axes::properties& ap = dynamic_cast<axes::properties&>(ax_obj.get_properties ());
         ap.set (name, value);
       }
-    else // no axes object clicked so far
+    else // no axes object clicked so far, take currentaxes
       {
-        // take the object in the center of the canvas
-        graphics_handle gh = pixel2axes_or_ca (canvas->w () / 2, canvas->h () / 2);
-
+        graphics_handle gh = fp.get_currentaxes ();
         if (gh.ok ())
           {
-            graphics_object tmp = gh_manager::get_object (gh);
-            if (tmp.isa ("axes"))
-              {
-                axes::properties& ap = dynamic_cast<axes::properties&>(tmp.get_properties ());
-                ap.set (name, value);
-              }
+            graphics_object go = gh_manager::get_object (gh);
+            axes::properties& ap = dynamic_cast<axes::properties&>(go.get_properties ());
+            ap.set (name, value);
           }
       }
   }
@@ -1000,15 +994,6 @@ private:
   graphics_object ax_obj;
   int pos_x;
   int pos_y;
-
-  void axis_auto (void)
-  {
-    octave_value_list args;
-    args(0) = fp.get_currentaxes ().as_octave_value ();
-    args(1) = "auto";
-    feval ("axis", args);
-    mark_modified ();
-  }
 
   void toggle_grid (void)
   {
@@ -1210,17 +1195,15 @@ private:
 
   int handle (int event)
   {
+    if (event == FL_FOCUS)
+      return 1;
+
+    Fl_Window::handle (event);
     graphics_handle gh;
-
-    graphics_object fig = gh_manager::get_object (fp.get___myhandle__ ());
-    int retval = Fl_Window::handle (event);
-
-    // We only handle events which are in the canvas area.
-    if (!Fl::event_inside (canvas))
-      return retval;
 
     if (!fp.is_beingdeleted ())
       {
+        //std::cout << "plot_window::handle event = " <<  fl_eventnames[event] << std::endl;
         switch (event)
           {
           case FL_KEYDOWN:
@@ -1241,23 +1224,26 @@ private:
                 {
                 case 'a':
                 case 'A':
-                  axis_auto ();
-                  break;
+                  set_on_ax_obj ("xlimmode", "auto");
+                  set_on_ax_obj ("ylimmode", "auto");
+                  set_on_ax_obj ("zlimmode", "auto");
+                  mark_modified ();
+                  return 1;
 
                 case 'g':
                 case 'G':
                   toggle_grid ();
-                  break;
+                  return 1;
 
                 case 'p':
                 case 'P':
                   set_on_ax_obj ("pan", "on");
-                  break;
+                  return 1;
 
                 case 'r':
                 case 'R':
                   set_on_ax_obj ("rotate3d", "on");
-                  break;
+                  return 1;
                 }
             }
             break;
@@ -1275,17 +1261,25 @@ private:
                   evt.assign ("Key", octave_value (std::tolower (key_a)));
                   evt.assign ("Modifier", octave_value (modifier2cell ()));
                   fp.execute_keyreleasefcn (evt);
+                  return 1;
                 }
             }
             break;
+          }
 
+      // Events we only handle if they are in the canvas area.
+      if (Fl::event_inside (canvas))
+        switch (event)
+          {
           case FL_MOVE:
             pixel2status (pixel2axes_or_ca (Fl::event_x (),
                                             Fl::event_y () - menu_dy ()),
                           Fl::event_x (), Fl::event_y () - menu_dy ());
-            break;
+            return 1;
 
           case FL_PUSH:
+            fp.execute_windowbuttondownfcn (Fl::event_button());
+
             pos_x = Fl::event_x ();
             pos_y = Fl::event_y () - menu_dy ();
 
@@ -1305,15 +1299,10 @@ private:
                 else // ndim == 2
                   rotate->deactivate ();
 
-
                 fp.set_currentobject (ax_obj.get_handle ().value ());
 
+                return 1;
               }
-
-            fp.execute_windowbuttondownfcn (Fl::event_button());
-
-            if (Fl::event_button () == 1 || Fl::event_button () == 3)
-              return 1;
 
             break;
 
@@ -1390,6 +1379,7 @@ private:
                 canvas->set_zoom_box (zoom_box);
                 canvas->zoom (true);
                 mark_modified ();
+                return 1;
               }
 
             break;
@@ -1420,9 +1410,9 @@ private:
 
                   ap.zoom_about_point (x1, y1, factor, false);
                   mark_modified ();
+                  return 1;
                 }
             }
-            return 1;
 
           case FL_RELEASE:
             if (fp.get_windowbuttonupfcn ().is_defined ())
@@ -1431,20 +1421,12 @@ private:
                 fp.execute_windowbuttonupfcn ();
               }
 
-            if (Fl::event_button () == 1)
+            if ((Fl::event_button () == 1) && Fl::event_clicks ()) //double click
               {
-                if (Fl::event_clicks () == 1)
-                  {
-                    if (ax_obj && ax_obj.isa ("axes"))
-                      {
-                        axes::properties& ap = dynamic_cast<axes::properties&>
-                                               (ax_obj.get_properties ());
-                        ap.set_xlimmode ("auto");
-                        ap.set_ylimmode ("auto");
-                        ap.set_zlimmode ("auto");
-                        mark_modified ();
-                      }
-                  }
+                set_on_ax_obj ("xlimmode", "auto");
+                set_on_ax_obj ("ylimmode", "auto");
+                set_on_ax_obj ("zlimmode", "auto");
+                return 1;
               }
             if (Fl::event_button () == 3)
               {
@@ -1491,14 +1473,15 @@ private:
                             ap.zoom (xl, yl);
                           }
                         mark_modified ();
+                        return 1;
                       }
                   }
               }
             break;
           }
       }
-
-    return retval;
+    //std::cout << "plot_window::handle wasn't interested in event " <<  fl_eventnames[event] << std::endl;
+    return Fl_Window::handle (event);
   }
 };
 

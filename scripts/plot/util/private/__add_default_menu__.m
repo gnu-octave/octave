@@ -93,7 +93,7 @@ function hax = __get_axes__ (h)
   fig = ancestor (h, "figure");
 
   ## Find all axes which aren't legends
-  hax = findobj ("type", "axes", "-not", "tag", "legend");
+  hax = findobj (fig, "type", "axes", "-not", "tag", "legend");
 endfunction
 
 function grid_cb (h, e)

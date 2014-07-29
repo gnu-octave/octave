@@ -105,11 +105,13 @@ function grid_cb (h, e)
     otherwise
       arrayfun (@(h) grid(h, id), hax);
   endswitch
+  drawnow ();
 endfunction
 
 function autoscale_cb (h, e)
   hax = __get_axes__ (h);
   arrayfun (@(h) axis (h, "auto"), hax)
+  drawnow ();
 endfunction
 
 function guimode_cb (h, e)

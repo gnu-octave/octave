@@ -946,12 +946,7 @@ private:
   void button_press (Fl_Widget* widg, void*)
   {
     if (widg == autoscale)
-      {
-        set_on_ax_obj ("xlimmode", "auto");
-        set_on_ax_obj ("ylimmode", "auto");
-        set_on_ax_obj ("zlimmode", "auto");
-        mark_modified ();
-      }
+      axis_auto ();
     else if (widg == togglegrid)
       toggle_grid ();
     else if (widg == panzoom)
@@ -994,6 +989,19 @@ private:
   graphics_object ax_obj;
   int pos_x;
   int pos_y;
+
+
+  void axis_auto (void)
+  {
+    octave_value_list args;
+    if (fp.get_currentaxes ().ok ())
+      {
+        args(0) = fp.get_currentaxes ().as_octave_value ();
+        args(1) = "auto";
+        feval ("axis", args);
+        mark_modified ();
+      }
+  }
 
   void toggle_grid (void)
   {
@@ -1198,7 +1206,6 @@ private:
     if (event == FL_FOCUS)
       return 1;
 
-    Fl_Window::handle (event);
     graphics_handle gh;
 
     if (!fp.is_beingdeleted ())
@@ -1224,10 +1231,7 @@ private:
                 {
                 case 'a':
                 case 'A':
-                  set_on_ax_obj ("xlimmode", "auto");
-                  set_on_ax_obj ("ylimmode", "auto");
-                  set_on_ax_obj ("zlimmode", "auto");
-                  mark_modified ();
+                  axis_auto ();
                   return 1;
 
                 case 'g':
@@ -1278,12 +1282,13 @@ private:
             return 1;
 
           case FL_PUSH:
-            fp.execute_windowbuttondownfcn (Fl::event_button());
-
             pos_x = Fl::event_x ();
             pos_y = Fl::event_y () - menu_dy ();
 
             set_currentpoint (pos_x, pos_y);
+
+            if (fp.get_windowbuttonupfcn ().is_defined ())
+              fp.execute_windowbuttondownfcn (Fl::event_button());
 
             gh = pixel2axes_or_ca (pos_x, pos_y);
 

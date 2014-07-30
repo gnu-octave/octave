@@ -66,15 +66,8 @@
 
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
-  if (! __octave_link_enabled__ ())
-    tk = graphics_toolkit ();
-    funcname = ["__uigetfile_", tk, "__"];
-    if (numel (tk) > 0 && ! __is_function__ (funcname))
-      warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead", tk);
-    endif
-    funcname = "__uigetfile_fltk__";
-  endif
-  
+  funcname = __get_funcname__ (mfilename ());
+
   if (nargin > 7)
     error ("uigetfile: number of input arguments must be less than eight");
   endif

@@ -30,14 +30,7 @@
 
 function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to Open")
 
-  if (! __octave_link_enabled__ ())
-    tk = graphics_toolkit ();
-    funcname = ["uigetdir", tk, "__"];
-    if (numel (tk) > 0 && ! __is_function__ (funcname))
-      warning ("uigetdir: no implementation for toolkit '%s', using 'fltk' instead", tk);
-    endif
-    funcname = "__uigetdir_fltk__";
-  endif
+  funcname = __get_funcname__ (mfilename ());
 
   if (nargin > 2)
     print_usage ();

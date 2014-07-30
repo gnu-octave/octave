@@ -26,7 +26,7 @@
 function result = __is_function__ (func)
 
   existval = exist (func);
-  result = (existval == 2 || existval == 3 || existval == 5 || existval == 6);
+  result = (existval == 2 || existval == 3 || existval == 5);
 
 endfunction
 

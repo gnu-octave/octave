@@ -67,18 +67,12 @@
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
   if (! __octave_link_enabled__ ())
-    defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
-    funcname = ["__uigetfile_", defaulttoolkit, "__"];
-    functype = exist (funcname);
-    if (! __is_function__ (funcname))
-      funcname = "__uigetfile_fltk__";
-      if (! __is_function__ (funcname))
-        error ("uigetfile: fltk graphics toolkit required");
-      elseif (! strcmp (defaulttoolkit, "gnuplot"))
-        warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead",
-               defaulttoolkit);
-      endif
+    tk = graphics_toolkit ();
+    funcname = ["__uigetfile_", tk, "__"];
+    if (numel (tk) > 0 && ! __is_function__ (funcname))
+      warning ("uigetfile: no implementation for toolkit '%s', using 'fltk' instead", tk);
     endif
+    funcname = "__uigetfile_fltk__";
   endif
   
   if (nargin > 7)

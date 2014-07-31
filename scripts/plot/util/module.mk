@@ -63,12 +63,14 @@ plot_util_FCN_FILES = \
   plot/util/newplot.m \
   plot/util/__next_line_color__.m \
   plot/util/__next_line_style__.m \
+  plot/util/pan.m \
   plot/util/__plt_get_axis_arg__.m \
   plot/util/__pltopt__.m \
   plot/util/printd.m \
   plot/util/print.m \
   plot/util/refreshdata.m \
   plot/util/refresh.m \
+  plot/util/rotate3d.m \
   plot/util/saveas.m \
   plot/util/shg.m \
   plot/util/struct2hdl.m \

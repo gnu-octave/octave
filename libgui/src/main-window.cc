@@ -1024,6 +1024,8 @@ main_window::connect_visibility_changed (void)
 {
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
+
+  editor_window->enable_menu_shortcuts (false);
 }
 
 void
@@ -1336,6 +1338,8 @@ main_window::handle_octave_ready ()
   editor_window->empty_script (true, false);
 #endif
 
+  focus_command_window ();  // make sure that the command window has focus
+
 }
 
 
@@ -1466,9 +1470,40 @@ main_window::add_action (QMenu *menu, const QIcon &icon, const QString &text,
 }
 
 void
+main_window::enable_menu_shortcuts (bool enable)
+{
+  QHash<QMenu*, QStringList>::const_iterator i = _hash_menu_text.constBegin();
+
+ while (i != _hash_menu_text.constEnd())
+   {
+     i.key ()->setTitle (i.value ().at (! enable));
+     ++i;
+   }
+}
+
+QMenu*
+main_window::m_add_menu (QMenuBar *p, QString name)
+{
+  QMenu *menu = p->addMenu (name);
+
+  QString base_name = name;  // get a copy
+  // replace intended '&' ("&&") by a temp. string
+  base_name.replace ("&&","___octave_amp_replacement___");
+  // remove single '&' (shortcut)
+  base_name.remove ("&");
+  // restore intended '&'
+  base_name.replace ("___octave_amp_replacement___","&&");
+
+  // remember names with and without shortcut
+  _hash_menu_text[menu] = QStringList () << name << base_name;
+
+  return menu;
+}
+
+void
 main_window::construct_file_menu (QMenuBar *p)
 {
-  QMenu *file_menu = p->addMenu (tr ("&File"));
+  QMenu *file_menu = m_add_menu (p, tr ("&File"));
 
   construct_new_menu (file_menu);
 
@@ -1554,7 +1589,7 @@ main_window::construct_new_menu (QMenu *p)
 void
 main_window::construct_edit_menu (QMenuBar *p)
 {
-  QMenu *edit_menu = p->addMenu (tr ("&Edit"));
+  QMenu *edit_menu = m_add_menu (p, tr ("&Edit"));
 
   QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
@@ -1629,7 +1664,7 @@ main_window::construct_debug_menu_item (const char *icon, const QString& item,
 void
 main_window::construct_debug_menu (QMenuBar *p)
 {
-  _debug_menu = p->addMenu (tr ("De&bug"));
+  _debug_menu = m_add_menu (p, tr ("De&bug"));
 
   _debug_step_over = construct_debug_menu_item
                       (":/actions/icons/db_step.png", tr ("Step"),
@@ -1691,7 +1726,7 @@ main_window::construct_window_menu_item (QMenu *p, const QString& item,
 void
 main_window::construct_window_menu (QMenuBar *p)
 {
-  QMenu *window_menu = p->addMenu (tr ("&Window"));
+  QMenu *window_menu = m_add_menu (p, tr ("&Window"));
 
   _show_command_window_action = construct_window_menu_item
             (window_menu, tr ("Show Command Window"), true, command_window);
@@ -1740,7 +1775,7 @@ main_window::construct_window_menu (QMenuBar *p)
 void
 main_window::construct_help_menu (QMenuBar *p)
 {
-  QMenu *help_menu = p->addMenu (tr ("&Help"));
+  QMenu *help_menu = m_add_menu (p, tr ("&Help"));
 
   construct_documentation_menu (help_menu);
 
@@ -1782,7 +1817,7 @@ main_window::construct_documentation_menu (QMenu *p)
 void
 main_window::construct_news_menu (QMenuBar *p)
 {
-  QMenu *news_menu = p->addMenu (tr ("&News"));
+  QMenu *news_menu = m_add_menu (p, tr ("&News"));
 
   _release_notes_action = add_action (news_menu, QIcon (),
             tr ("Release Notes"), SLOT (display_release_notes ()));
@@ -2216,6 +2251,7 @@ main_window::set_global_edit_shortcuts (bool enable)
   // this slot is called when editor gets/loses focus
   if (enable)
     { // editor loses focus, set the global shortcuts
+      // and disable the editor's menu
       shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
       shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
       shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
@@ -2223,12 +2259,17 @@ main_window::set_global_edit_shortcuts (bool enable)
     }
   else
     { // disable shortcuts that are also provided by the editor itself
+      // and enable editor's menu
       QKeySequence no_key = QKeySequence ();
       _copy_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
       _undo_action->setShortcut (no_key);
       _select_all_action->setShortcut (no_key);
     }
+
+  // enable/disable the main and the editor's menu shortcuts (alt-key)
+  editor_window->enable_menu_shortcuts (! enable);
+  enable_menu_shortcuts (enable);
 }
 
 void

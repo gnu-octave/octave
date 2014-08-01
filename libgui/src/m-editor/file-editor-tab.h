@@ -224,6 +224,7 @@ private:
   bool _app_closing;
   bool _is_octave_file;
   bool _modal_dialog;
+  bool _always_reload_changed_files;
 
   QFileSystemWatcher _file_system_watcher;
 

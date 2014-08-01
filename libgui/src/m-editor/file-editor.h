@@ -64,6 +64,7 @@ public:
 
   void check_actions (void);
   void empty_script (bool startup, bool visible);
+  void enable_menu_shortcuts (bool enable);
 
 signals:
 
@@ -238,7 +239,10 @@ private:
   QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
                        const char *member);
 
+  QMenu* m_add_menu (QMenuBar *p, QString text);
+
   std::map<QString, QWidget *> editor_tab_map;
+  QHash<QMenu*, QStringList> _hash_menu_text;
 
   QString ced;
 
@@ -322,7 +326,6 @@ private:
   QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
-
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

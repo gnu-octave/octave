@@ -23,7 +23,7 @@
 @cindex Dynamically Linked Functions
 @cindex Octave API
 
-“The sum of human wisdom is not contained in any one language"
+"The sum of human wisdom is not contained in any one language"
   ---Ezra Pound
 
 Octave is a fantastic language for solving many problems in science and

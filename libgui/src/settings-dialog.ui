@@ -404,9 +404,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-146</y>
+            <y>-175</y>
             <width>662</width>
-            <height>553</height>
+            <height>580</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1080,6 +1080,13 @@
                  </property>
                  <property name="text">
                   <string>Create nonexistent files without prompting</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="editor_reload_changed_files">
+                 <property name="text">
+                  <string>Reload externally changed files without prompt</string>
                  </property>
                 </widget>
                </item>

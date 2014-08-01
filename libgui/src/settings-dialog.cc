@@ -206,6 +206,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/restoreSession", true).toBool ());
   ui->editor_create_new_file->setChecked (
     settings->value ("editor/create_new_file",false).toBool ());
+  ui->editor_reload_changed_files->setChecked (
+    settings->value ("editor/always_reload_changed_files",false).toBool ());
 
   // terminal
   ui->terminal_fontName->setCurrentFont (QFont (
@@ -649,6 +651,8 @@ settings_dialog::write_changed_settings ()
                       ui->editor_restoreSession->isChecked ());
   settings->setValue ("editor/create_new_file",
                       ui->editor_create_new_file->isChecked ());
+  settings->setValue ("editor/always_reload_changed_files",
+                      ui->editor_reload_changed_files->isChecked ());
   settings->setValue ("terminal/fontSize", ui->terminal_fontSize->value ());
   settings->setValue ("terminal/fontName",
                       ui->terminal_fontName->currentFont ().family ());

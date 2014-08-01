@@ -383,6 +383,30 @@ AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
   fi
 ])
 dnl
+dnl Check whether Qt provides QFont::ForceIntegerMetrics
+dnl
+AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
+  AC_CACHE_CHECK([whether Qt provides QFont::ForceIntegerMetrics],
+    [octave_cv_decl_qfont_force_integer_metrics],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleStrategy strategy = QFont::ForceIntegerMetrics;
+        ]])],
+      octave_cv_decl_qfont_force_integer_metrics=yes,
+      octave_cv_decl_qfont_force_integer_metrics=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_force_integer_metrics = yes; then
+    AC_DEFINE(HAVE_QFONT_FORCE_INTEGER_METRICS, 1,
+      [Define to 1 if Qt provides QFont::ForceIntegerMetrics.])
+  fi
+])
+dnl
 dnl Check whether Qscintilla SetPlaceholderText function exists.
 dnl FIXME: This test uses a version number.  It potentially could
 dnl        be re-written to actually call the function, but is it worth it?
@@ -1809,6 +1833,49 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
     *bison*) tmp_have_bison=yes ;;
     *) tmp_have_bison=no ;;
   esac
+
+  if test $tmp_have_bison = yes; then
+    AC_CACHE_CHECK([syntax of bison api.prefix (or name-prefix) declaration],
+                   [octave_cv_bison_api_prefix_decl_style], [
+      style="api name"
+      for s in $style; do
+        if test $s = "api"; then
+          def='%define api.prefix "foo_"'
+        else
+          def='%name-prefix="foo_"'
+        fi
+        cat << EOF > conftest.yy
+$def
+%start input
+%%
+input:;
+%%
+EOF
+        $YACC conftest.yy > /dev/null 2>&1
+        ac_status=$?
+        if test $ac_status -eq 0; then
+          octave_cv_bison_api_prefix_decl_style="$s"
+          break
+        fi
+        if test $ac_status -eq 0; then
+          break
+        fi
+      done
+      rm -f conftest.yy y.tab.h y.tab.c
+      ])
+  fi
+
+  AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
+
+  if test -z "$octave_cv_bison_api_prefix_decl_style"; then
+    YACC=
+    warn_bison_api_prefix_decl_style="
+
+I wasn't able to find a suitable style for declaring the api prefix
+in a bison input file so I'm disabling bison.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_bison_api_prefix_decl_style])
+  fi
 
   if test $tmp_have_bison = yes; then
     AC_CACHE_CHECK([syntax of bison push/pull declaration],

@@ -1762,6 +1762,49 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
   esac
 
   if test $tmp_have_bison = yes; then
+    AC_CACHE_CHECK([syntax of bison api.prefix (or name-prefix) declaration],
+                   [octave_cv_bison_api_prefix_decl_style], [
+      style="api name"
+      for s in $style; do
+        if test $s = "api"; then
+          def='%define api.prefix "foo_"'
+        else
+          def='%name-prefix="foo_"'
+        fi
+        cat << EOF > conftest.yy
+$def
+%start input
+%%
+input:;
+%%
+EOF
+        $YACC conftest.yy > /dev/null 2>&1
+        ac_status=$?
+        if test $ac_status -eq 0; then
+          octave_cv_bison_api_prefix_decl_style="$s"
+          break
+        fi
+        if test $ac_status -eq 0; then
+          break
+        fi
+      done
+      rm -f conftest.yy y.tab.h y.tab.c
+      ])
+  fi
+
+  AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
+
+  if test -z "$octave_cv_bison_api_prefix_decl_style"; then
+    YACC=
+    warn_bison_api_prefix_decl_style="
+
+I wasn't able to find a suitable style for declaring the api prefix
+in a bison input file so I'm disabling bison.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_bison_api_prefix_decl_style])
+  fi
+
+  if test $tmp_have_bison = yes; then
     AC_CACHE_CHECK([syntax of bison push/pull declaration],
                    [octave_cv_bison_push_pull_decl_style], [
       style="dash underscore"

@@ -129,10 +129,7 @@ static void yyerror (octave_base_parser& parser, const char *s);
 
 %expect 14
 
-// Don't add spaces around the = here; it causes some versions of
-// bison to fail to properly recognize the directive.
-
-%name-prefix="octave_"
+%API_PREFIX_DECL%
 
 // We are using the pure parser interface and the reentrant lexer
 // interface but the Octave parser and lexer are NOT properly

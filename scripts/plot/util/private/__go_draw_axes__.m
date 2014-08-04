@@ -1586,9 +1586,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     endswitch
     if (__gnuplot_has_feature__ ("key_has_font_properties"))
       [fontname, fontsize] = get_fontname_and_size (hlgnd);
-      fontspec = create_fontspec (fontname, fontsize, gnuplot_term);
+      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term) create_fontspec(fontname, fontsize, gnuplot_term) ];
     else
-      fontspec = "";
+      fontspacespec = "";
     endif
     textcolors = get (findobj (hlgnd.children, "type", "text"), "color");
     if (iscell (textcolors))
@@ -1604,7 +1604,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       colorspec = get_text_colorspec (textcolors, mono);
     endif
     fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s %s;\n",
-             inout, pos, box, reverse, horzvert, fontspec, colorspec,
+             inout, pos, box, reverse, horzvert, fontspacespec, colorspec,
              __do_enhanced_option__ (enhanced, hlgnd));
   else
     fputs (plot_stream, "unset key;\n");
@@ -1755,6 +1755,18 @@ function x = flip (x)
   else
     x = flipud (fliplr (x));
   endif
+endfunction
+
+function spacing_spec = create_spacingspec(f, s, gp_term)
+  # The gnuplot default font size is 10, and default spacing is 1.25.
+  # gnuplot has a concept of a figure global font, and sizes everything
+  # appropriate to that, including the legend spacing.
+  #
+  # This means that if an alternative size is used, gnuplot will use an
+  # inappropriate spacing in the legend by default.
+  spc = s / 10 * 1.25;
+  spacing_spec = sprintf ("spacing %d", spc);
+
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)

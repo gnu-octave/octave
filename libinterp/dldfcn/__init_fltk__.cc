@@ -668,8 +668,10 @@ public:
     callback (window_close, static_cast<void*> (this));
 
     // The size of the resize_dummy box also determines the minimum window size
-    resize_dummy = new Fl_Box(5 * status_h + 1, menu_h + 1, ww - 5 * status_h - 1, hh);
-    // read on http://fltk.org/articles.php?L415+I0+T+M1000+P1 how resizable works
+    resize_dummy = new Fl_Box (5 * status_h + 1, menu_h + 1,
+                               ww - 5 * status_h - 1, hh);
+    // See http://fltk.org/articles.php?L415+I0+T+M1000+P1
+    // for how resizable works
     resizable (resize_dummy);
 
     // FIXME: The function below is only available in FLTK >= 1.3
@@ -684,10 +686,12 @@ public:
     canvas = new OpenGL_fltk (0, menu_h, ww, hh, number ());
 
     // The bottom toolbar is a composite of "autoscale", "togglegrid",
-    // "panzoom", "rotate", "help", and "status". Only "status" should be resized.
+    // "panzoom", "rotate", "help", and "status".
+    // Only "status" should be resized.
 
     int toolbar_y = menu_h + hh + 1;
-    status = new Fl_Output (5 * status_h + 1, toolbar_y, ww - 5 * status_h - 1, status_h, "");
+    status = new Fl_Output (5 * status_h + 1, toolbar_y,
+                            ww - 5 * status_h - 1, status_h, "");
 
     status->textcolor (FL_BLACK);
     status->color (FL_GRAY);
@@ -870,7 +874,7 @@ public:
   void update_toolbar_position ()
   {
     int old_canvas_h = canvas->h ();
-    size(w (), old_canvas_h + menu_dy () + status_h + 2);
+    size (w (), old_canvas_h + menu_dy () + status_h + 2);
     canvas->resize (0, menu_dy (), w (), old_canvas_h);
 
     int toolbar_y = canvas->h () + menu_dy () + 1;
@@ -879,14 +883,15 @@ public:
     panzoom->position (2 * status_h, toolbar_y);
     rotate->position (3 * status_h, toolbar_y);
     help->position (4 * status_h, toolbar_y);
-    status->resize (5 * status_h + 1, toolbar_y, w () - 5 * status_h - 1, status_h);
+    status->resize (5 * status_h + 1, toolbar_y,
+                    w () - 5 * status_h - 1, status_h);
 
-    init_sizes();
+    init_sizes ();
     redraw ();
   }
 
   // Called from figure::properties::ID_POSITION
-  // (someone has requested a position change with set(h, "position", [...]))
+  // (someone has requested a position change with set (h, "position", [...]))
   // ww and hh refers to the canvas size, not the plot_window size.
 
   void update_position (int xx, int yy, int ww, int hh)
@@ -962,7 +967,8 @@ private:
     // ax_obj is the last clicked axes object
     if (ax_obj && ax_obj.isa ("axes"))
       {
-        axes::properties& ap = dynamic_cast<axes::properties&>(ax_obj.get_properties ());
+        axes::properties& ap =
+          dynamic_cast<axes::properties&>(ax_obj.get_properties ());
         ap.set (name, value);
       }
     else // no axes object clicked so far, take currentaxes
@@ -971,7 +977,8 @@ private:
         if (gh.ok ())
           {
             graphics_object go = gh_manager::get_object (gh);
-            axes::properties& ap = dynamic_cast<axes::properties&>(go.get_properties ());
+            axes::properties& ap =
+              dynamic_cast<axes::properties&>(go.get_properties ());
             ap.set (name, value);
           }
       }
@@ -1288,7 +1295,7 @@ private:
             set_currentpoint (pos_x, pos_y);
 
             if (fp.get_windowbuttonupfcn ().is_defined ())
-              fp.execute_windowbuttondownfcn (Fl::event_button());
+              fp.execute_windowbuttondownfcn (Fl::event_button ());
 
             gh = pixel2axes_or_ca (pos_x, pos_y);
 
@@ -1327,7 +1334,7 @@ private:
                       (ax_obj.get_properties ());
 
                     // Don't pan or rotate legend
-                    if (ap.get_tag().compare ("legend") < 0)
+                    if (ap.get_tag ().compare ("legend") < 0)
                       {
                         if (ap.rotate3d_is ("on"))
                           view2status (ax_obj);
@@ -1361,8 +1368,10 @@ private:
                     else
                       {  // move the position of the legend
                         Matrix pos = ap.get_position ().matrix_value ();
-                        pos(0) += double (Fl::event_x () - pos_x) / canvas->w();
-                        pos(1) -= double (Fl::event_y () - menu_dy () - pos_y) / canvas->h();
+                        pos(0) += double (Fl::event_x () - pos_x)
+                                  / canvas->w ();
+                        pos(1) -= double (Fl::event_y () - menu_dy () - pos_y)
+                                  / canvas->h ();
                         ap.set_position (pos);
                       }
 
@@ -1400,7 +1409,7 @@ private:
                   axes::properties& ap =
                     dynamic_cast<axes::properties&> (ax.get_properties ());
 
-                  // Parameter controlling how fast we zoom when using the scrool wheel.
+                  // Control how fast to zoom when using scroll wheel.
                   double Vwheel_zoom_speed = ap.get_mouse_wheel_zoom ();
 
                   // Determine if we're zooming in or out.
@@ -1426,8 +1435,9 @@ private:
                 fp.execute_windowbuttonupfcn ();
               }
 
-            if ((Fl::event_button () == 1) && Fl::event_clicks ()) //double click
+            if ((Fl::event_button () == 1) && Fl::event_clicks ())
               {
+                // Double click
                 set_on_ax_obj ("xlimmode", "auto");
                 set_on_ax_obj ("ylimmode", "auto");
                 set_on_ax_obj ("zlimmode", "auto");
@@ -1621,7 +1631,8 @@ public:
                                          bool menubar_is_figure)
   {
     if (instance_ok ())
-      instance->do_toggle_menubar_visibility (str2idx (fig_idx_str), menubar_is_figure);
+      instance->do_toggle_menubar_visibility (str2idx (fig_idx_str),
+                                              menubar_is_figure);
   }
 
 private:

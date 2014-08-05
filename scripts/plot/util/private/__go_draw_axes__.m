@@ -561,7 +561,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         if (isempty (obj.displayname))
           titlespec{data_idx} = "title \"\"";
         else
-          tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
+          tmp = undo_string_escapes (
+                  __maybe_munge_text__ (enhanced, obj, "displayname")
+                );
           titlespec{data_idx} = ['title "' tmp '"'];
         endif
         usingclause{data_idx} = sprintf ("record=%d", numel (obj.xdata));
@@ -575,14 +577,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             zdat = zeros (size (xdat));
           endif
           data{data_idx} = [xdat, ydat, zdat]';
-          usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)", numel (xdat));
+          usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)",
+                                           numel (xdat));
           ## fputs (plot_stream, "set parametric;\n");
         else
           xdat = obj.xdata(:);
           ydat = obj.ydata(:);
           data{data_idx} = [xdat, ydat]';
-          usingclause{data_idx} = sprintf ("record=%d using ($1):($2) axes %s%s",
-                                          rows (xdat), xaxisloc_using, yaxisloc_using);
+          usingclause{data_idx} = ...
+            sprintf ("record=%d using ($1):($2) axes %s%s",
+                     rows (xdat), xaxisloc_using, yaxisloc_using);
         endif
 
         style = do_linestyle_command (obj, obj.color, data_idx, mono,
@@ -680,7 +684,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
              if (i > 1 || isempty (obj.displayname))
                titlespec{local_idx} = "title \"\"";
              else
-               tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
+               tmp = undo_string_escapes (
+                       __maybe_munge_text__ (enhanced, obj, "displayname")
+                     );
                titlespec{local_idx} = ['title "' tmp '"'];
              endif
              if (isfield (obj, "facecolor"))
@@ -766,7 +772,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                elseif (__gnuplot_has_feature__ ("transparent_patches")
                        && isscalar (obj.facealpha))
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\" fillstyle transparent solid %f",
-                                    round (255*color), obj.facealpha);
+                                      round (255*color), obj.facealpha);
                else
                  colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
                                       round (255*color));
@@ -1115,7 +1121,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           if (isempty (obj.displayname))
             titlespec{data_idx} = "title \"\"";
           else
-            tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "displayname"));
+            tmp = undo_string_escapes (
+                    __maybe_munge_text__ (enhanced, obj, "displayname")
+                  );
             titlespec{data_idx} = ['title "' tmp '"'];
           endif
           withclause{data_idx} = sprintf ("with pm3d linestyle %d",
@@ -1211,7 +1219,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           endif
 
           if (flat_interp_face && strcmp (obj.edgecolor, "flat"))
-            fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n",
+            fprintf (plot_stream,
+                     "set pm3d explicit at s %s %s corners2color c3;\n",
                      interp_str, dord);
           elseif (!facecolor_none_or_white)
             if (strcmp (obj.edgecolor, "none"))
@@ -1221,10 +1230,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                          "set style fill transparent solid %f;\n",
                          obj.facealpha);
               endif
-              fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n",
+              fprintf (plot_stream,
+                       "set pm3d explicit at s %s corners2color c3;\n",
                        interp_str, dord);
             else
-              fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n",
+              fprintf (plot_stream,
+                       "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n",
                        data_idx, interp_str, dord);
 
               if (__gnuplot_has_feature__ ("transparent_surface")
@@ -1443,8 +1454,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
            endif
         endfor
-        fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim(1), clim(2) *
-                 (cmap_sz + rows (addedcmap)) / cmap_sz);
+        fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n",
+                 clim(1), clim(2) * (cmap_sz + rows (addedcmap)) / cmap_sz);
       else
         fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim);
       endif
@@ -1586,7 +1597,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     endswitch
     if (__gnuplot_has_feature__ ("key_has_font_properties"))
       [fontname, fontsize] = get_fontname_and_size (hlgnd);
-      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term) create_fontspec(fontname, fontsize, gnuplot_term) ];
+      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term),
+                        create_fontspec(fontname, fontsize, gnuplot_term) ];
     else
       fontspacespec = "";
     endif
@@ -1658,8 +1670,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                usingclause{1}, titlespec{1}, withclause{1});
     else
-      fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-               usingclause{1}, titlespec{1}, withclause{1});
+      fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n",
+               plot_cmd, usingclause{1}, titlespec{1}, withclause{1});
     endif
     for i = 2:data_idx
       if (have_3d_patch (i))
@@ -1699,8 +1711,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           fputs (plot_stream, "unset obj 2; \\\n");
           fg_is_set = false;
         endif
-        fprintf (plot_stream, "%s \"-\" binary format='%%float64' %s %s %s \\\n", plot_cmd,
-                 usingclause{i}, titlespec{i}, withclause{i});
+        fprintf (plot_stream,"%s \"-\" binary format='%%float64' %s %s %s \\\n",
+                 plot_cmd, usingclause{i}, titlespec{i}, withclause{i});
       else
         fprintf (plot_stream, ", \"-\" binary format='%%float64' %s %s %s \\\n",
                  usingclause{i}, titlespec{i}, withclause{i});
@@ -1717,7 +1729,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             fputs (plot_stream, "\n\n");
           endif
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j).');
-          fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n", data{i}(:,j+1).');
+          fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n\n",data{i}(:,j+1).');
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+2).');
           fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data{i}(:,j+3).');
         endfor
@@ -1757,7 +1769,7 @@ function x = flip (x)
   endif
 endfunction
 
-function spacing_spec = create_spacingspec(f, s, gp_term)
+function spacing_spec = create_spacingspec (f, s, gp_term)
   # The gnuplot default font size is 10, and default spacing is 1.25.
   # gnuplot has a concept of a figure global font, and sizes everything
   # appropriate to that, including the legend spacing.

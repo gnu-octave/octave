@@ -261,7 +261,21 @@ file_editor::call_custom_editor (const QString& file_name, int line)
       editor.replace ("%f", file_name);
       editor.replace ("%l", QString::number (line));
 
-      QProcess::startDetached (editor);
+      bool started_ok = QProcess::startDetached (editor);
+
+      if (started_ok != true)
+        {
+          QMessageBox *msgBox
+            = new QMessageBox (QMessageBox::Critical,
+                               tr ("Octave Editor"),
+                               tr ("Could not start custom file editor\n%1").
+                               arg (editor),
+                               QMessageBox::Ok, this);
+
+           msgBox->setWindowModality (Qt::NonModal);
+           msgBox->setAttribute (Qt::WA_DeleteOnClose);
+           msgBox->show ();
+        }
 
       if (line < 0 && ! file_name.isEmpty ())
         handle_mru_add_file (QFileInfo (file_name).canonicalFilePath ());

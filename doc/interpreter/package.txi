@@ -271,7 +271,7 @@ the package functions are installed, and whether the package is currently
 loaded.
 @end table
 
-Besides the above mentioned files, a package can also contain on or
+Besides the above mentioned files, a package can also contain one or
 more of the following directories:
 
 @table @code
@@ -359,7 +359,7 @@ Name of the package.
 
 @item Version
 Version of the package.  A package version must be 3 numbers separated
-by a dot.
+by dots.
 
 @item Date
 Date of last update.

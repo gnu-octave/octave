@@ -68,7 +68,7 @@ function retval = ls (varargin)
         args{end}(end) = "";
       endif
     else
-      args = regexprep (args, '([^\w.*? -])', '\\$1');
+      args = regexprep (args, '([^\w.*?-])', '\\$1');
     endif
     args = sprintf ("%s ", args{:});
   else

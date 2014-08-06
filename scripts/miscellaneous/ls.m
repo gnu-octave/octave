@@ -68,7 +68,7 @@ function retval = ls (varargin)
       args = regexprep (args, '([^\w.*?])', '^$1');
     else
       ## Escape any special characters in filename
-      args = regexprep (args, '([^\w.*?-[]])', '\\$1');
+      args = regexprep (args, '([^][\w.*?-])', '\\$1');
     endif
     args = sprintf ("%s ", args{:});
   else

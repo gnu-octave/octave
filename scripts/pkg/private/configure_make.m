@@ -80,7 +80,9 @@ function configure_make (desc, packdir, verbose)
 
     ## Make.
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell ([scenv "make -C '" src "'"], verbose);
+      [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
+                                         scenv, nproc ("overridable"), src),
+                                verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);

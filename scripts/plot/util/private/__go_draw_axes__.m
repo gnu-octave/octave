@@ -153,7 +153,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     if (isempty (t.string))
       fputs (plot_stream, "unset title;\n");
     else
-      colorspec = get_text_colorspec (get (axis_obj.title, "color"), mono);
+      colorspec = get_text_colorspec (t.color, mono);
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",

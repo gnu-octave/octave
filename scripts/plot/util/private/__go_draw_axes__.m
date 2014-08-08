@@ -165,7 +165,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.xlabel))
     t = get (axis_obj.xlabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (axis_obj.xcolor, mono);
+    colorspec = get_text_colorspec (t.color, mono);
     if (isempty (t.string))
       fprintf (plot_stream, "unset xlabel;\n");
       fprintf (plot_stream, "unset x2label;\n");
@@ -193,7 +193,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.ylabel))
     t = get (axis_obj.ylabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (axis_obj.ycolor, mono);
+    colorspec = get_text_colorspec (t.color, mono);
     if (isempty (t.string))
       fprintf (plot_stream, "unset ylabel;\n");
       fprintf (plot_stream, "unset y2label;\n");
@@ -221,7 +221,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
   if (! isempty (axis_obj.zlabel))
     t = get (axis_obj.zlabel);
     angle = t.rotation;
-    colorspec = get_text_colorspec (axis_obj.zcolor, mono);
+    colorspec = get_text_colorspec (t.color, mono);
     if (isempty (t.string))
       fputs (plot_stream, "unset zlabel;\n");
     else

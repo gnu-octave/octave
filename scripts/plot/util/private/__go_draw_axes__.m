@@ -1480,12 +1480,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
-          fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_x2tick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 12;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 9;\n");
         else # xaxislocation == zero
           fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
@@ -1498,16 +1496,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
-          fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_x2tick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 6;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 3;\n");
         else # xaxislocation == zero
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 2;\n");
           fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
                    axis_obj.linewidth);
@@ -1516,17 +1511,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
                  axis_obj.tickdir);
         if (strcmpi (axis_obj.xaxislocation, "top"))
-          fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_x2tick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 4;\n");
         elseif (strcmpi (axis_obj.xaxislocation, "bottom"))
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-                   axis_obj.tickdir);
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fputs (plot_stream, "set border 1;\n");
         else # xaxislocation == zero
+          maybe_do_xtick_mirror (plot_stream, axis_obj)
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-                   axis_obj.tickdir);
-          fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                    axis_obj.tickdir);
           fputs (plot_stream, "unset border;\n");
           fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
@@ -2139,6 +2131,13 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
                     plot_stream, mirror, mono, axispos, tickdir, ticklength,
                     fontname, fontspec, interpreter, scale, sgn, gnuplot_term)
   persistent warned_latex = false;
+  
+  ## Avoid emitting anything if the tics are empty, because this undoes the
+  ## effect of the previous unset xtics and thereby adds back in the tics.
+  if (isempty (tics))
+    return;
+  endif
+
   if (mirror)
     mirror = "mirror";
   else
@@ -2611,6 +2610,20 @@ function retval = __do_enhanced_option__ (enhanced, obj)
     else
       retval = "enhanced";
     endif
+  endif
+endfunction
+
+function maybe_do_xtick_mirror (plot_stream, axis_obj)
+  if (! isempty(axis_obj.xtick))
+    fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+                          axis_obj.tickdir);
+  endif
+endfunction
+
+function maybe_do_x2tick_mirror (plot_stream, axis_obj)
+  if (! isempty(axis_obj.xtick))
+    fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+                          axis_obj.tickdir);
   endif
 endfunction
 

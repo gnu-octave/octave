@@ -86,20 +86,18 @@ function [pxx, f] = periodogram (x, varargin)
   endif
 
   nfft = fs = range = window = [];
-  j = 1;
+  j = 2;
   for k = 1:length (varargin)
     if (ischar (varargin{k}))
       range = varargin{k};
     else
       switch (j)
-        case 1
-          window = varargin{k};
         case 2
-          nfft   = varargin{k};
+          window = varargin{k};
         case 3
-          fs     = varargin{k};
+          nfft   = varargin{k};
         case 4
-          range  = varargin{k};
+          fs     = varargin{k};
       endswitch
       j++;
     endif
@@ -124,6 +122,11 @@ function [pxx, f] = periodogram (x, varargin)
     nfft = max (256, 2.^nextpow2 (n));
   elseif (! isscalar (nfft))
     error ("periodogram: NFFT must be a scalar");
+  endif
+
+  use_w_freq = isempty (fs);
+  if (! use_w_freq && ! isscalar (fs))
+    error ("periodogram: FS must be a scalar");
   endif
 
   if (strcmpi (range, "onesided"))
@@ -152,9 +155,9 @@ function [pxx, f] = periodogram (x, varargin)
   endif;
   Pxx = (abs (fft (x, nfft))) .^ 2 / n;
 
-  if (nargin < 4)
+  if (use_w_freq)
     Pxx /= 2*pi;
-  elseif (! isempty (fs))
+  else
     Pxx /= fs;
   endif
 
@@ -176,15 +179,15 @@ function [pxx, f] = periodogram (x, varargin)
     elseif (range == 2)
       f = (0:nfft-1)' / nfft;
     endif
-    if (nargin < 4)
+    if (use_w_freq)
       f *= 2*pi;  # generate w=2*pi*f
-    elseif (! isempty (fs))
+    else
       f *= fs;
     endif
   endif
 
   if (nargout == 0)
-    if (nargin < 4)
+    if (use_w_freq)
       plot (f/(2*pi), 10*log10 (Pxx));
       xlabel ("normalized frequency [x pi rad]");
       ylabel ("Power density [dB/rad/sample]");
@@ -212,5 +215,6 @@ endfunction
 %!error <WIN must be a vector.*same length> periodogram (1:5, ones (2,2))
 %!error <WIN must be a vector.*same length> periodogram (1:5, 1:6)
 %!error <NFFT must be a scalar> periodogram (1:5, 1:5, 1:5)
+%!error <FS must be a scalar> periodogram (1:5, [], [], 1:5)
 %!error <"centered" range type is not implemented> periodogram (1:5, "centered")
 

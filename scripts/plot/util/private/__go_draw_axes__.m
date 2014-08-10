@@ -1590,7 +1590,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     endswitch
     if (__gnuplot_has_feature__ ("key_has_font_properties"))
       [fontname, fontsize] = get_fontname_and_size (hlgnd);
-      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term),
+      fontspacespec = [ create_spacingspec(fontname, fontsize, gnuplot_term),...
                         create_fontspec(fontname, fontsize, gnuplot_term) ];
     else
       fontspacespec = "";

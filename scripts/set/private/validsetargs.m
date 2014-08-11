@@ -18,7 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## Validate arguments for binary set operation.
-function [x, y] = validargs (caller, x, y, byrows_arg)
+
+function [x, y] = validsetargs (caller, x, y, byrows_arg)
 
   if (nargin == 3)
     icx = iscellstr (x);
@@ -32,27 +33,27 @@ function [x, y] = validargs (caller, x, y, byrows_arg)
         error ("%s: cell array of strings cannot be combined with a nonstring value", caller);
       endif
     elseif (! (ismatrix (x) && ismatrix (y)))
-      error ("%s: input arguments must be arrays or cell arrays of strings", caller);
+      error ("%s: A and B must be arrays or cell arrays of strings", caller);
     endif
   elseif (nargin == 4)
-    if (strcmpi (byrows_arg, "rows"))
-      if (iscell (x) || iscell (y))
-        error ('%s: cells not supported with "rows"', caller);
-      elseif (! (ismatrix (x) && ismatrix (y)))
-        error ("%s: input arguments must be arrays or cell arrays of strings", caller);
-      else
-        if (ndims (x) > 2 || ndims (y) > 2)
-          error ('%s: need 2-dimensional matrices for "rows"', caller);
-        elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
-          error ("%s: number of columns must match", caller);
-        endif
-      endif
-    else
+    if (! strcmpi (byrows_arg, "rows"))
       error ("%s: invalid option: %s", caller, byrows_arg);
     endif
-  else
-    print_usage (caller);
+
+    if (iscell (x) || iscell (y))
+      error ('%s: cells not supported with "rows"', caller);
+    elseif (! (ismatrix (x) && ismatrix (y)))
+      error ("%s: A and B must be arrays or cell arrays of strings", caller);
+    else
+      if (ndims (x) > 2 || ndims (y) > 2)
+        error ('%s: A and B must be 2-dimensional matrices for "rows"', caller);
+      elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
+        error ("%s: number of columns in A and B must match", caller);
+      endif
+    endif
   endif
 
 endfunction
 
+
+## %!tests for function are in union.m

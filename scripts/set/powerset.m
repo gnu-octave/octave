@@ -25,33 +25,35 @@
 ## output will always be a cell array of either vectors or strings.
 ##
 ## With the optional second argument @qcode{"rows"}, each row of the set @var{a}
-## is considered one element of the set.  As a result, @var{a} must then be a
-## numerical 2-D matrix.
+## is considered one element of the set.  The input must be a 2-D numeric
+## matrix to use this argument.
 ##
-## @seealso{unique, union, setxor, setdiff, ismember}
+## @seealso{unique, union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
 function p = powerset (a, byrows_arg)
 
-  byrows = false;
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
 
+  byrows = false;
   if (nargin == 2)
     if (! strcmpi (byrows_arg, "rows"))
       error ('powerset: expecting second argument to be "rows"');
     elseif (iscell (a))
-      warning ('powerset: "rows" not valid for cell arrays');
+      error ('powerset: "rows" not valid for cell arrays');
     else
       byrows = true;
     endif
-  elseif (nargin != 1)
-    print_usage ();
   endif
+
   if (iscell (a) && ! iscellstr (a))
-    error ("powerset: cell arrays can only used for character strings");
+    error ("powerset: cell arrays can only be used for character strings");
   endif
 
   if (byrows)
-    a = unique (a, byrows_arg);
+    a = unique (a, "rows");
     n = rows (a);
   else
     a = unique (a);
@@ -86,12 +88,23 @@ function p = powerset (a, byrows_arg)
 endfunction
 
 
-%!shared c, p
-%! c = sort (cellstr ({ [], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]}));
+%!test
+%! c = sort (cellstr ({[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]}));
 %! p = sort (cellstr (powerset ([1, 2, 3])));
-%!assert (p, c);
+%! assert (p, c);
+
+%!test
 %! c = sort (cellstr ({ [], [1:3], [2:4], [3:5], [1:3; 2:4], [1:3; 3:5], [2:4; 3:5], [1:3; 2:4; 3:5]}));
 %! p = sort (cellstr (powerset ([1:3;2:4;3:5], "rows")));
-%!assert (p,c);
+%! assert (p,c);
+
 %!assert (powerset([]), {});  # always return a cell array
+
+%% Test input validation
+%!error powerset ()
+%!error powerset (1,2,3)
+%!error <expecting second argument to be "rows"> powerset (1, "cols")
+%!error <"rows" not valid for cell arrays> powerset ({1}, "rows")
+%!error <cell arrays can only be used for character> powerset ({1})
+%!error <not implemented for more than 32 elements> powerset (1:33)
 

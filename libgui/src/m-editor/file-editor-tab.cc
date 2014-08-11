@@ -60,6 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "version.h"
 #include "utils.h"
 #include "defaults.h"
+#include <oct-map.h>
 
 // Make parent null for the file editor tab so that warning
 // WindowModal messages don't affect grandparents.
@@ -95,6 +96,8 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   connect (_edit_area, SIGNAL (create_context_menu_signal (QMenu*)),
            this, SLOT (create_context_menu (QMenu*)));
+  connect (_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
+           this, SLOT (handle_context_menu_edit (const QString&)));
 
   // create statusbar for row/col indicator
   _status_bar = new QStatusBar (this);
@@ -202,6 +205,108 @@ void
 file_editor_tab::execute_command_in_terminal (const QString& command)
 {
   emit execute_command_in_terminal_signal (command); // connected to main window
+}
+
+void
+file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
+{
+  // search for a subfunction in actual file (this is done at first because
+  // octave finds this function before other with same name in the search path
+  QRegExp rxfun1 ("^[\t ]*function[^=]+=[\t ]*"
+      + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
+  QRegExp rxfun2 ("^[\t ]*function[\t ]+"
+      + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
+  QRegExp rxfun3 ("^[\t ]*function[\t ]+"
+      + word_at_cursor + "[\t ]*$");
+  QRegExp rxfun4 ("^[\t ]*function[^=]+=[\t ]*"
+      + word_at_cursor + "[\t ]*$");
+
+  int pos_fct = -1;
+  QStringList lines = _edit_area->text ().split ("\n");
+
+  int line;
+  for (line = 0; line < lines.count (); line++)
+    {
+      if ((pos_fct = rxfun1.indexIn (lines.at (line))) != -1)
+        break;
+      if ((pos_fct = rxfun2.indexIn (lines.at (line))) != -1)
+        break;
+      if ((pos_fct = rxfun3.indexIn (lines.at (line))) != -1)
+        break;
+      if ((pos_fct = rxfun4.indexIn (lines.at (line))) != -1)
+        break;
+    }
+
+  if (pos_fct > -1)
+    { // reg expr. found: it is an internal function
+      _edit_area->setCursorPosition (line, pos_fct);
+      _edit_area->SendScintilla (2613, line); // SCI_SETFIRSTVISIBLELINE
+      return;
+    }
+
+  // Is it a regular function within the search path? (Call __which__)
+  octave_value_list fct = F__which__ (ovl (word_at_cursor.toStdString ()),0);
+  octave_map map = fct(0).map_value ();
+
+  QString type = QString::fromStdString (
+                         map.contents ("type").data ()[0].string_value ());
+  QString name = QString::fromStdString (
+                         map.contents ("name").data ()[0].string_value ());
+
+  QString message = QString ();
+  QString filename = QString ();
+
+  if (type == QString("built-in function"))
+    { // built in function: can't edit
+      message = tr ("%1 is a built-in function");
+    }
+  else if (type.isEmpty ())
+    {
+      // function not known to octave -> try directory of edited file
+      QFileInfo file = QFileInfo (_file_name);
+      file = QFileInfo (QDir (file.canonicalPath ()), word_at_cursor + ".m");
+
+      if (file.exists ())
+        {
+          filename = file.canonicalFilePath (); // local file exists
+        }
+      else
+        { // local file does not exist -> try private directory
+          file = QFileInfo (_file_name);
+          file = QFileInfo (QDir (file.canonicalPath () + "/private"),
+                            word_at_cursor + ".m");
+
+          if (file.exists ())
+            {
+              filename = file.canonicalFilePath ();  // private function exists
+            }
+          else
+            {
+              message = tr ("Can not find function %1");  // no file found
+            }
+        }
+    }
+
+  if (! message.isEmpty ())
+    {
+      QMessageBox *msgBox
+          = new QMessageBox (QMessageBox::Critical,
+                             tr ("Octave Editor"),
+                             message.arg (name),
+                             QMessageBox::Ok, this);
+
+      msgBox->setWindowModality (Qt::NonModal);
+      msgBox->setAttribute (Qt::WA_DeleteOnClose);
+      msgBox->show ();
+      return;
+    }
+
+  if ( filename.isEmpty ())
+    filename = QString::fromStdString (
+                           map.contents ("file").data ()[0].string_value ());
+
+  emit execute_command_in_terminal_signal (QString("edit ")
+                                           + "\""+filename+"\"");
 }
 
 void

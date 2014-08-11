@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscicommandset.h>
 #include <QShortcut>
 #include <QMessageBox>
-#include <oct-map.h>
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
@@ -267,40 +266,7 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
 void
 octave_qscintilla::contextmenu_edit (bool)
 {
-  octave_value_list fct = F__which__ (ovl (_word_at_cursor.toStdString ()),0);
-  octave_map map = fct(0).map_value ();
-
-  QString type = QString::fromStdString (
-                         map.contents ("type").data ()[0].string_value ());
-  QString name = QString::fromStdString (
-                         map.contents ("name").data ()[0].string_value ());
-
-  QString message = QString ();
-
-  if (type.isEmpty ())
-    message = tr ("Can not find function %1");
-  else if (type == QString("built-in function"))
-    message = tr ("%1 is a built-in function");
-
-  if (! message.isEmpty ())
-    {
-      QMessageBox *msgBox
-          = new QMessageBox (QMessageBox::Critical,
-                             tr ("Octave Editor"),
-                             message.arg (name),
-                             QMessageBox::Ok, this);
-
-      msgBox->setWindowModality (Qt::NonModal);
-      msgBox->setAttribute (Qt::WA_DeleteOnClose);
-      msgBox->show ();
-      return;
-    }
-
-  QString filename = QString::fromStdString (
-                         map.contents ("file").data ()[0].string_value ());
-
-  emit execute_command_in_terminal_signal (QString("edit ")
-                                           + "\""+filename+"\"");
+  emit context_menu_edit_signal (_word_at_cursor);
 }
 
 void

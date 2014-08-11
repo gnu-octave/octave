@@ -1867,20 +1867,23 @@ file_editor_tab::edit_area_has_focus (bool focus)
 QString
 file_editor_tab::get_function_name ()
 {
-  QRegExp rxfun1 ("^([\t ]*)function([^=]+)=([^\\(]+)\\(([^\\)]*)\\)");
-  QRegExp rxfun2 ("^([\t ]*)function([^\\(]+)\\(([^\\)]*)\\)");
-  QRegExp rxfun3 ("^([\t ]*)function([\t ]*)([^\t ]+)");
+  QRegExp rxfun1 ("^[\t ]*function[^=]+=([^\\(]+)\\([^\\)]*\\)[\t ]*$");
+  QRegExp rxfun2 ("^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$");
+  QRegExp rxfun3 ("^[\t ]*function[^=]+=[\t ]*([^\s]+)[\t ]*$");
+  QRegExp rxfun4 ("^[\t ]*function[\t ]+([^\s]+)[\t ]*$");
 
   QStringList lines = _edit_area->text ().split ("\n");
 
   for (int i = 0; i < lines.count (); i++)
     {
       if (rxfun1.indexIn (lines.at (i)) != -1)
-        return rxfun1.cap (3).remove (QRegExp("[ \t]*"));
+        return rxfun1.cap (1).remove (QRegExp("[ \t]*"));
       else if (rxfun2.indexIn (lines.at (i)) != -1)
-        return rxfun2.cap (2).remove (QRegExp("[ \t]*"));
+        return rxfun2.cap (1).remove (QRegExp("[ \t]*"));
       else if (rxfun3.indexIn (lines.at (i)) != -1)
-        return rxfun3.cap (3).remove (QRegExp("[ \t]*"));
+        return rxfun3.cap (1).remove (QRegExp("[ \t]*"));
+      else if (rxfun4.indexIn (lines.at (i)) != -1)
+        return rxfun4.cap (1).remove (QRegExp("[ \t]*"));
     }
 
   return QString ();

@@ -40,8 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-dock-widget.h"
 
 /**
-   \class files_dock_widget
-   \brief Dock widget to display files in the current directory.
+   @class files_dock_widget
+   @brief Dock widget to display files in the current directory.
 */
 class files_dock_widget : public octave_dock_widget
 {

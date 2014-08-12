@@ -58,7 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-files-dialog.h"
 
 /**
- * \class MainWindow
+ * @class MainWindow
  *
  * Represents the main window.
  */

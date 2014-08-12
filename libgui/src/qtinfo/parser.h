@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHash>
 
 /**
- * \class parser
+ * @class parser
  * This class gets nodes and searchs inside of 'info files'.
  * <p>Each info file has nodes. Every node has the documentation.
  * Info files contains a map with position of each node.</p>
@@ -103,9 +103,9 @@ private:
   QIODevice *open_file(QFileInfo & fileInfo);
 
   /** Calculates real position of nodes.
-    * \param pos position from info file.
-    * \param fileInfo returns file what contains that position.
-    * \param realPos returns real position inside of fileInfo.
+    * @param pos position from info file.
+    * @param fileInfo returns file what contains that position.
+    * @param realPos returns real position inside of fileInfo.
     */
   void real_position (int pos, QFileInfo & file_info, int & real_pos);
 

@@ -197,10 +197,12 @@ function varargout = strread (str, format = "%f", varargin)
   endif
 
   ## Parse format string to compare number of conversion fields and nargout
-  nfields = length (strfind (format, "%")) - length (strfind (format, "%*"));
+  nfields = numel (regexp (format, '(%(\d*|\d*\.\d*)?[nfduscq]|%\[)', "match"));
   ## If str only has numeric fields, a (default) format ("%f") will do.
   ## Otherwise:
-  if ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
+  if (! nfields)
+    error ("strread.m: no valid format conversion specifiers found\n");
+  elseif ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
     error ("strread: the number of output variables must match that specified by FORMAT");
   endif
 
@@ -304,7 +306,8 @@ function varargout = strread (str, format = "%f", varargin)
     fmt_words = regexp (format, '[^ ]+', "match");
     
     ## Find position of conversion specifiers (they start with %)
-    idy2 = find (! cellfun ("isempty", regexp (fmt_words, '^%')));
+    fcs_ptrn = '(%\*?(\d*|\d*\.\d*)?[nfduscq]|%\*?\[)';
+    idy2 = find (! cellfun ("isempty", regexp (fmt_words, fcs_ptrn)));
 
     ## Check for unsupported format specifiers
     errpat = '(\[.*\]|[cq]|[nfdu]8|[nfdu]16|[nfdu]32|[nfdu]64)';
@@ -1034,5 +1037,8 @@ endfunction
 
 %% Illegal format specifiers
 %!test
-%!error <unknown format specifier> strread ("1.0", "%z")
+%!error <no valid format conversion specifiers> strread ("1.0", "%z");
 
+%% Test for false positives in check for non-supported format specifiers
+%!test
+%! assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5);

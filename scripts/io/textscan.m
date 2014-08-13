@@ -98,7 +98,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
 
   ## Determine the number of data fields & initialize output array
-  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
+  num_fields = numel (regexp (format, '(%(\d*|\d*\.\d*)?[nfduscq]|%\[)', "match"));
+  if (! num_fields)
+    error ("textscan.m: no valid format conversion specifiers found\n");
+  endif
   C = cell (1, num_fields);
 
   if (! (isa (fid, "double") && fid > 0) && ! ischar (fid))
@@ -681,3 +684,7 @@ endfunction
 %!test
 %! assert (textscan ("1i", ""){1},  0+1i);
 %! assert (cell2mat (textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i", "")), [3+0i, 2-4i, NaN+0i; 0-i,  1+0i, 23.4+2.2i]);
+
+%% Illegal format specifiers
+%!test
+%!error <no valid format conversion specifiers> textscan ("1.0", "%z");

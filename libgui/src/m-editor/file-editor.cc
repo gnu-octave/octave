@@ -835,7 +835,7 @@ file_editor::request_completion (bool)
 void
 file_editor::handle_mru_add_file (const QString& file_name)
 {
-  if (_mru_files.at (0) == file_name)
+  if (_mru_files.count () && _mru_files.at (0) == file_name)
     return;  // the first entry is already the actual file name
 
   _mru_files.removeAll (file_name);

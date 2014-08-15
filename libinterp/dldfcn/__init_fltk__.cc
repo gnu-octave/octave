@@ -659,7 +659,7 @@ class plot_window : public Fl_Window
 {
   friend class fltk_uimenu;
 public:
-  plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
+  plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp, bool internal)
     : Fl_Window (xx, yy, ww, hh + menu_h + status_h + 2, "octave"),
       window_label (), shift (0), fp (xfp), canvas (0),
       autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
@@ -721,6 +721,13 @@ public:
 
     end ();
 
+    set_name ();
+    uimenu->add_to_menu (fp);
+    if (fp.menubar_is ("none") || !uimenu->items_to_show ())
+      hide_menubar ();
+
+    update_boundingbox (internal);
+
     if (fp.is_visible ())
       {
         // FIXME: This code should be removed when Octave drops support
@@ -747,12 +754,6 @@ public:
         else
           hide_canvas ();
       }
-
-    set_name ();
-
-    uimenu->add_to_menu (fp);
-    if (!uimenu->items_to_show ())
-      hide_menubar ();
   }
 
   ~plot_window (void)
@@ -874,7 +875,9 @@ public:
   void update_toolbar_position ()
   {
     int old_canvas_h = canvas->h ();
-    size (w (), old_canvas_h + menu_dy () + status_h + 2);
+
+    // keep position fix, change outerposition accordingly
+    update_boundingbox (true);
     canvas->resize (0, menu_dy (), w (), old_canvas_h);
 
     int toolbar_y = canvas->h () + menu_dy () + 1;
@@ -890,13 +893,33 @@ public:
     redraw ();
   }
 
-  // Called from figure::properties::ID_POSITION
-  // (someone has requested a position change with set (h, "position", [...]))
-  // ww and hh refers to the canvas size, not the plot_window size.
+  Matrix outerposition2position (const Matrix& outerpos)
+    {
+      Matrix pos = outerpos;
+      pos(1) += menu_dy ();
+      pos(3) -= menu_dy () + status_h + 2;
+      return pos;
+    }
 
-  void update_position (int xx, int yy, int ww, int hh)
+  Matrix position2outerposition (const Matrix& pos)
+    {
+      Matrix outerpos = pos;
+      outerpos(1) -= menu_dy ();
+      outerpos(3) += menu_dy () + status_h + 2;
+      return outerpos;
+    }
+
+  // Called from figure::properties::ID_POSITION if internal = true
+  // or ID_OUTERPOSITION if false.
+  // (someone has requested a position change with set (h, "position", [...])
+  // or set (h, "outerposition", [...])
+
+  void update_boundingbox (bool internal)
   {
-    Fl_Window::resize (xx, yy + menu_dy (), ww, hh + menu_dy () + status_h + 2);
+    Matrix bb = fp.get_boundingbox (internal);
+    if (internal)
+      bb = position2outerposition (bb);
+    resize (bb(0), bb(1), bb(2), bb(3));
   }
 
   void mark_modified (void)
@@ -1199,13 +1222,17 @@ private:
   {
     Fl_Window::resize (xx, yy, ww, hh);
 
-    Matrix pos (1,4,0);
-    pos(0) = xx;
-    pos(1) = yy + menu_dy ();
-    pos(2) = canvas->w ();
-    pos(3) = canvas->h ();
+    Matrix bb (1, 4);
+    bb(0) = xx;
+    bb(1) = yy;
+    bb(2) = ww;
+    bb(3) = hh;
 
-    fp.set_position (pos, false);
+    // update outerposition
+    fp.set_boundingbox (bb, false, false);
+
+    // update position
+    fp.set_boundingbox (outerposition2position (bb), true, false);
   }
 
   int handle (int event)
@@ -1620,11 +1647,11 @@ public:
       instance->do_update_canvas (hnd2idx (gh), ca);
   }
 
-  static void update_position (const std::string& fig_idx_str,
-                               const Matrix pos)
+  static void update_boundingbox (const std::string& fig_idx_str,
+                                  bool internal)
   {
     if (instance_ok ())
-      instance->do_update_position (str2idx (fig_idx_str), pos);
+      instance->do_update_boundingbox (str2idx (fig_idx_str), internal);
   }
 
   static void toggle_menubar_visibility (const std::string& fig_idx_str,
@@ -1668,16 +1695,23 @@ private:
 
     if (idx >= 0 && windows.find (idx) == windows.end ())
       {
-        Matrix pos = fp.get_boundingbox (true);
-
-        int x = pos(0);
-        int y = pos(1);
-        int w = pos(2);
-        int h = pos(3);
+        Matrix pos = fp.get_outerposition ().matrix_value ();
+        bool internal = false;
+        // check if figure::properties::outerposition is default -1.0
+        if (pos(2) != -1.0 && pos(3) != -1.0)
+          {
+            pos = fp.get_boundingbox (internal);
+          }
+        else
+          {
+            // use position
+            internal = true;
+            pos = fp.get_boundingbox (internal);
+          }
 
         idx2figprops (curr_index, fp);
 
-        windows[curr_index++] = new plot_window (x, y, w, h, fp);
+        windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3), fp, internal);
       }
   }
 
@@ -1792,12 +1826,12 @@ private:
       }
   }
 
-  void do_update_position (int idx, Matrix pos)
+  void do_update_boundingbox (int idx, bool internal)
   {
     wm_iterator win = windows.find (idx);
 
     if (win != windows.end ())
-      win->second->update_position (pos(0), pos(1), pos(2), pos(3));
+      win->second->update_boundingbox (internal);
   }
 
   static int str2idx (const caseless_str& clstr)
@@ -1859,37 +1893,6 @@ std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
 static bool toolkit_loaded = false;
-
-static int
-__fltk_redraw__ (void)
-{
-  if (toolkit_loaded)
-    {
-      // We scan all figures and add those which use FLTK.
-      graphics_object obj = gh_manager::get_object (0);
-      if (obj && obj.isa ("root"))
-        {
-          base_properties& props = obj.get_properties ();
-          Matrix children = props.get_all_children ();
-
-          for (octave_idx_type n = 0; n < children.numel (); n++)
-            {
-              graphics_object fobj = gh_manager::get_object (children (n));
-              if (fobj && fobj.isa ("figure"))
-                {
-                  figure::properties& fp =
-                    dynamic_cast<figure::properties&> (fobj.get_properties ());
-                  if (fp.get___graphics_toolkit__ ()
-                      == FLTK_GRAPHICS_TOOLKIT_NAME)
-                    figure_manager::new_window (fp);
-                }
-            }
-        }
-      Fl::check ();
-    }
-
-  return 0;
-}
 
 class fltk_graphics_toolkit : public base_graphics_toolkit
 {
@@ -1993,11 +1996,11 @@ public:
                 break;
 
               case figure::properties::ID_POSITION:
-                {
-                  std::string tmp = ov.string_value ();
-                  Matrix pos = fp.get_position ().matrix_value ();
-                  figure_manager::update_position (tmp, pos);
-                }
+                figure_manager::update_boundingbox (ov.string_value (), true);
+                break;
+
+              case figure::properties::ID_OUTERPOSITION:
+                figure_manager::update_boundingbox (ov.string_value (), false);
                 break;
               }
           }
@@ -2014,7 +2017,29 @@ public:
 
   void redraw_figure (const graphics_object& go) const
   {
+    // We scan all figures and add those which use FLTK.
+    graphics_object obj = gh_manager::get_object (0);
+    if (obj && obj.isa ("root"))
+      {
+        base_properties& props = obj.get_properties ();
+        Matrix children = props.get_all_children ();
+
+        for (octave_idx_type n = 0; n < children.numel (); n++)
+          {
+            graphics_object fobj = gh_manager::get_object (children (n));
+            if (fobj && fobj.isa ("figure"))
+              {
+                figure::properties& fp =
+                  dynamic_cast<figure::properties&> (fobj.get_properties ());
+                if (fp.get___graphics_toolkit__ ()
+                    == FLTK_GRAPHICS_TOOLKIT_NAME)
+                  figure_manager::new_window (fp);
+              }
+          }
+      }
+
     figure_manager::mark_modified (go.get_handle ());
+    Fl::check ();
   }
 
   void print_figure (const graphics_object& go,
@@ -2075,16 +2100,16 @@ private:
 
 #endif
 
-DEFUN_DLD (__fltk_redraw__, , ,
+DEFUN_DLD (__fltk_check__, , ,
            "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __fltk_redraw__ ()\n\
-Undocumented internal function.\n\
+@deftypefn {Loadable Function} {} __fltk_check__ ()\n\
+Undocumented internal function. Calls Fl::check ()\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK
-  __fltk_redraw__ ();
+  Fl::check ();
 #else
-  error ("__fltk_redraw__: not available without OpenGL and FLTK libraries");
+  error ("__fltk_check__: not available without OpenGL and FLTK libraries");
 #endif
 
   return octave_value ();
@@ -2110,8 +2135,8 @@ Undocumented internal function.\n\
       gtk_manager::load_toolkit (tk);
       toolkit_loaded = true;
 
-      octave_value fcn (new octave_builtin (F__fltk_redraw__));
-      octave_value fcn_handle (new octave_fcn_handle (fcn, "@__fltk_redraw__"));
+      octave_value fcn (new octave_builtin (F__fltk_check__));
+      octave_value fcn_handle (new octave_fcn_handle (fcn, "@__fltk_check__"));
       octave_value_list id = Fadd_input_event_hook (fcn_handle, 1);
 
       fltk->set_input_event_hook_id (id);

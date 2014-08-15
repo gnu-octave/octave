@@ -41,7 +41,7 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
     set (f, "keypressfcn", @ginput_keypressfcn);
 
     do
-      __fltk_redraw__ ();
+      __fltk_check__ ();
 
       ## Release CPU.
       sleep (0.01);

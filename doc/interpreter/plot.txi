@@ -594,20 +594,26 @@ figure window, call the @code{close} function.
 @subsection Use of the @code{interpreter} Property
 
 All text objects---such as titles, labels, legends, and text---include
-the property @qcode{"interpreter"}, this property determines the manner in
-which special control sequences in the text are rendered.  If the interpreter
-is set to @qcode{"none"}, then no rendering occurs.  Currently the
-@qcode{"latex"} interpreter is not implemented and is equivalent to
-@qcode{"none"}.
+the property @qcode{"interpreter"} that determines the manner in
+which special control sequences in the text are rendered.
+
+The interpreter property can take three values: @qcode{"none"}, @qcode{"tex"},
+@qcode{"latex"}.  If the interpreter is set to @qcode{"none"} then no special
+rendering occurs---the displayed text is a verbatim copy of the specified text.
+Currently, the @qcode{"latex"} interpreter is not implemented and is equivalent
+to @qcode{"none"}.
 
 The @qcode{"tex"} option implements a subset of @TeX{} functionality when
 rendering text.  This allows the insertion of special glyphs such as Greek
-characters or mathematical symbols.  The special characters are inserted with
-a code following a backslash (\) character, as in the table
-@ref{tab:extended}.
+characters or mathematical symbols.  The special characters are inserted with a
+code following a backslash (\) character, as shown in @ref{tab:extended}.
 
-In addition, the formatting of the text can be changed within the string
-by using the codes
+Note that for on-screen display the interpreter property is honored by all
+graphics toolkits.  However for printing, @strong{only} the @qcode{"gnuplot"}
+toolkit renders @TeX{} instructions.
+
+Besides special glyphs, the formatting of text can be changed within the
+string by using the codes
 
 @multitable @columnfractions .2 .2 .6 .2
 @item @tab \bf @tab Bold font @tab
@@ -616,8 +622,8 @@ by using the codes
 @item @tab \rm @tab Normal font @tab
 @end multitable
 
-These may be used in conjunction with the @{ and @} characters to limit
-the change in the font to part of the string.  For example,
+These codes may be used in conjunction with the @{ and @} characters to limit
+the change to just a part of the string.  For example,
 
 @example
 xlabel ('@{\bf H@} = a @{\bf V@}')
@@ -930,6 +936,13 @@ print -deps foo.eps
 @noindent
 saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
+
+The different graphic toolkits have different print capabilities.  In
+particular, the OpenGL based toolkits such as @code{fltk} do not support
+the @qcode{"interpreter"} property of text objects.  This means special
+symbols drawn with the @qcode{"tex"} interpreter will appear correctly
+on-screen but will be rendered with interpreter @qcode{"none"} when printing.
+Switch graphics toolkits for printing if this is a concern.
 
 @DOCSTRING(print)
 

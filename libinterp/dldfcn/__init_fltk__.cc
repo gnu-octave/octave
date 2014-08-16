@@ -661,7 +661,7 @@ class plot_window : public Fl_Window
 public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp, bool internal)
     : Fl_Window (xx, yy, ww, hh + menu_h + status_h + 2, "octave"),
-      window_label (), shift (0), fp (xfp), canvas (0),
+      window_label (), fp (xfp), canvas (0),
       autoscale (0), togglegrid (0), panzoom (0), rotate (0), help (0),
       status (0), resize_dummy (0), ax_obj (), pos_x (0), pos_y (0)
   {
@@ -945,9 +945,6 @@ private:
   // life
   std::string window_label;
 
-  // Mod keys status
-  int shift;
-
   // Figure properties.
   figure::properties& fp;
 
@@ -1176,45 +1173,114 @@ private:
       return 0;
   }
 
-  int key2shift (int key)
+  octave_scalar_map format_key_event (int e_key, const char* e_text, int e_state)
   {
-    if (key == FL_Shift_L || key == FL_Shift_R)
-      return FL_SHIFT;
+    octave_scalar_map evt;
 
-    if (key == FL_Control_L || key == FL_Control_R)
-      return FL_CTRL;
+    evt.assign ("Character", octave_value (e_text));
+    evt.assign ("Modifier", octave_value (modifier2cell (e_state)));
 
-    if (key == FL_Alt_L || key == FL_Alt_R)
-      return FL_ALT;
+    std::string key_str;
+    std::ostringstream tmp_str;
 
-    if (key == FL_Meta_L || key == FL_Meta_R)
-      return FL_META;
+    if (e_key == FL_Escape)
+      key_str = "escape";
+    else if (e_key == FL_Tab)
+      key_str = "tab";
+    else if (e_key == FL_Caps_Lock)
+      key_str = "capslock";
+    else if (e_key == FL_Shift_L || e_key == FL_Shift_R)
+      key_str = "shift";
+    else if (e_key == FL_Control_L || e_key == FL_Control_R)
+      key_str = "control";
+    else if (e_key == FL_Meta_L || e_key == FL_Meta_R)
+      key_str = "windows";
+    else if (e_key == FL_Alt_L || e_key == FL_Alt_R)
+      key_str = "alt";
+    else if (e_key == 32)
+      key_str = "space";
+    else if (e_key == FL_Enter)
+      key_str = "return";
+    else if (e_key == FL_BackSpace)
+      key_str = "backspace";
+    else if (e_key == FL_Print)
+      key_str = "printscreen";
+    else if (e_key == FL_Pause)
+      key_str = "pause";
+    else if (e_key == FL_Home)
+      key_str = "home";
+    else if (e_key == FL_End)
+      key_str = "end";
+    else if (e_key == FL_Insert)
+      key_str = "insert";
+    else if (e_key == FL_Page_Up)
+      key_str = "pageup";
+    else if (e_key == FL_Delete)
+      key_str = "delete";
+    else if (e_key == FL_Page_Down)
+      key_str = "pagedown";
+    else if (e_key == FL_Left)
+      key_str = "leftarrow";
+    else if (e_key == FL_Up)
+      key_str = "uparrow";
+    else if (e_key == FL_Right)
+      key_str = "rightarrow";
+    else if (e_key == FL_Down)
+      key_str = "downarrow";
+    else if (e_key == FL_Num_Lock)
+      key_str = "numlock";
+    else if (e_key == 0xffaf)
+      key_str = "divide";
+    else if (e_key == 0xffaa)
+      key_str = "multiply";
+    else if (e_key == 0xffad)
+      key_str = "subtract";
+    else if (e_key == 0xffab)
+      key_str = "add";
+    else if (e_key == 0xff8d)
+      key_str = "return";
+    else if (e_key == 0xffac)
+      key_str = "separator";
+    else if (e_key >= 0xffb0 && e_key <= 0xffb9)
+      {
+        tmp_str << "numpad" << (e_key - 0xffb0);
+        key_str = tmp_str.str ();
+      }
+    else if (e_key >= (FL_F + 1) && e_key <= (FL_F + 12))
+      {
+        tmp_str << "f" << (e_key - FL_F);
+        key_str = tmp_str.str ();
+      }
+    else if (e_key == ',')
+      key_str = "comma";
+    else if (e_key == '.')
+      key_str = "period";
+    else if (e_key == '-')
+      key_str = "hyphen";
+    else if (e_key == '^' || e_key == '+' || e_key == '#'
+             || e_key == '<' || e_key == 0xfe03 /*AltGr*/)
+      key_str = "0";
+    else if (isalnum (e_key))
+      key_str = std::tolower (e_key);
+    else if (isprint (e_text[0]))
+      key_str = "0";
 
-    return 0;
+    evt.assign ("Key", octave_value (key_str));
+    return evt;
   }
 
-  int key2ascii (int key)
-  {
-    if (key < 256) return key;
-    if (key == FL_Tab) return '\t';
-    if (key == FL_Enter) return 0x0a;
-    if (key == FL_BackSpace) return 0x08;
-    if (key == FL_Escape) return 0x1b;
-
-    return 0;
-  }
-
-  Cell modifier2cell ()
+  Cell modifier2cell (int e_state)
   {
     string_vector mod;
 
-    if (shift & FL_SHIFT)
+    if (e_state & FL_SHIFT)
       mod.append (std::string ("shift"));
-    if (shift & FL_CTRL)
+    if (e_state & FL_CTRL)
       mod.append (std::string ("control"));
-    if (shift & FL_ALT || shift & FL_META)
+    if (e_state & FL_ALT)
       mod.append (std::string ("alt"));
-
+    if (e_state & FL_COMMAND)
+      mod.append (std::string ("command"));
     return Cell (mod);
   }
 
@@ -1245,23 +1311,46 @@ private:
     if (!fp.is_beingdeleted ())
       {
         //std::cout << "plot_window::handle event = " <<  fl_eventnames[event] << std::endl;
+
+        // FLTK resends keyboard events with flipped case if all
+        // widgets rejects the event.
+        // See Event Propagation http://www.fltk.org/doc-1.3/events.html
+        static bool key_resent_detected = false;
+
         switch (event)
           {
+          case FL_SHORTCUT:
+            {
+              // check if it a resent event with switched case
+              static int last_event_key = 0;
+              static char last_event_text = 0;
+
+              int e_key = Fl::event_key ();
+              char e_text = Fl::event_text ()[0];
+              key_resent_detected = (e_key == last_event_key
+                  && std::tolower (last_event_text) == std::tolower (e_text)
+                  && ((islower (last_event_text) && isupper (e_text))
+                      || (isupper (last_event_text) && islower (e_text))));
+
+              last_event_key = e_key;
+              last_event_text = e_text;
+            }
+            break;
+
           case FL_KEYDOWN:
             {
-              int key = Fl::event_key ();
+              int e_key = Fl::event_key ();
+              const char *e_text = Fl::event_text ();
+              int e_state = Fl::event_state ();
+              octave_scalar_map evt =
+                format_key_event (e_key, e_text, e_state);
 
-              shift |= key2shift (key);
-              int key_a = key2ascii (key);
-              if (key_a && fp.get_keypressfcn ().is_defined ())
-                {
-                  octave_scalar_map evt;
-                  evt.assign ("Character", octave_value (key_a));
-                  evt.assign ("Key", octave_value (std::tolower (key_a)));
-                  evt.assign ("Modifier", octave_value (modifier2cell ()));
-                  fp.execute_keypressfcn (evt);
-                }
-              switch (key)
+              fp.set_currentcharacter (std::string (e_text));
+              if (fp.get_keypressfcn ().is_defined ()
+                  && (evt.contents ("Key").length () > 0))
+                fp.execute_keypressfcn (evt);
+
+              switch (e_key)
                 {
                 case 'a':
                 case 'A':
@@ -1288,19 +1377,33 @@ private:
 
           case FL_KEYUP:
             {
-              int key = Fl::event_key ();
-
-              shift &= (~key2shift (key));
-              int key_a = key2ascii (key);
-              if (key_a && fp.get_keyreleasefcn ().is_defined ())
+              int e_key = Fl::event_key ();
+              int e_state = Fl::event_state ();
+              octave_scalar_map evt;
+              if (key_resent_detected && Fl::event_length () == 1)
                 {
-                  octave_scalar_map evt;
-                  evt.assign ("Character", octave_value (key_a));
-                  evt.assign ("Key", octave_value (std::tolower (key_a)));
-                  evt.assign ("Modifier", octave_value (modifier2cell ()));
-                  fp.execute_keyreleasefcn (evt);
-                  return 1;
+                  // FLTK flipped the case of Fl::event_text because no
+                  // widget wanted the FL_KEYDOWN event.
+                  char tmp_e_text[2];
+                  tmp_e_text[0] = Fl::event_text ()[0];
+                  tmp_e_text[1] = 0;
+                  // Undo the case flip
+                  if (std::islower (tmp_e_text[0]))
+                    tmp_e_text[0] = std::toupper (tmp_e_text[0]);
+                  else
+                    tmp_e_text[0] = std::tolower (tmp_e_text[0]);
+                  evt = format_key_event (e_key, tmp_e_text, e_state);
                 }
+              else
+                {
+                  const char *e_text = Fl::event_text ();
+                  evt = format_key_event (e_key, e_text, e_state);
+                }
+
+              if (fp.get_keyreleasefcn ().is_defined ()
+                  && (evt.contents ("Key").length () > 0))
+                fp.execute_keyreleasefcn (evt);
+              return 1;
             }
             break;
           }
@@ -1321,7 +1424,7 @@ private:
 
             set_currentpoint (pos_x, pos_y);
 
-            if (fp.get_windowbuttonupfcn ().is_defined ())
+            if (fp.get_windowbuttondownfcn ().is_defined ())
               fp.execute_windowbuttondownfcn (Fl::event_button ());
 
             gh = pixel2axes_or_ca (pos_x, pos_y);
@@ -1900,7 +2003,9 @@ public:
   fltk_graphics_toolkit (void)
     : base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
       input_event_hook_fcn_id ()
-  { }
+  {
+    Fl::visual (FL_RGB);
+  }
 
   ~fltk_graphics_toolkit (void) { }
 

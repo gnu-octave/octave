@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} __fltk_ginput__ (@var{f}, @var{n})
+## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} __fltk_ginput__ (@var{n})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## This is ginput.m implementation for fltk.
 
-function [x, y, button] = __fltk_ginput__ (f, n = -1)
+function [x, y, button] = __fltk_ginput__ (n = -1)
 
-  if (isempty (get (f, "currentaxes")))
+  if (isempty (gca))
     error ("ginput: must have at least one axes");
   endif
 
@@ -34,11 +34,11 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
 
   unwind_protect
 
-    orig_windowbuttondownfcn = get (f, "windowbuttondownfcn");
-    set (f, "windowbuttondownfcn", @ginput_windowbuttondownfcn);
+    orig_buttondownfcn = get (gca, "buttondownfcn");
+    set (gca, "buttondownfcn", @ginput_buttondownfcn);
 
-    orig_ginput_keypressfcn = get (f, "keypressfcn");
-    set (f, "keypressfcn", @ginput_keypressfcn);
+    orig_ginput_keypressfcn = get (gcf, "keypressfcn");
+    set (gcf, "keypressfcn", @ginput_keypressfcn);
 
     do
       __fltk_check__ ();
@@ -50,8 +50,8 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
     until (n0 == n || n0 < 0)
 
   unwind_protect_cleanup
-    set (f, "windowbuttondownfcn", orig_windowbuttondownfcn);
-    set (f, "keypressfcn", orig_ginput_keypressfcn);
+    set (gca, "buttondownfcn", orig_buttondownfcn);
+    set (gcf, "keypressfcn", orig_ginput_keypressfcn);
   end_unwind_protect
 
 endfunction
@@ -76,20 +76,19 @@ function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
 
 endfunction
 
-function ginput_windowbuttondownfcn (src, data)
-  point = get (get (src,"currentaxes"), "currentpoint");
-  button = data;
+function ginput_buttondownfcn (src, button)
+  point = get (src, "currentpoint");
   ginput_accumulator (1, point(1,1), point(2,1), button);
 endfunction
 
 function ginput_keypressfcn (src, evt)
-  point = get (get (src, "currentaxes"), "currentpoint");
+  point = get (gca, "currentpoint");
   key = evt.Key;
-  if (key == 10)
+  if (key == "return")
     ## Enter key stops ginput.
     ginput_accumulator (2, NaN, NaN, NaN);
   else
-    ginput_accumulator (1, point(1,1), point(2,1), key);
+    ginput_accumulator (1, point(1,1), point(2,1), uint8 (key(1)));
   endif
 endfunction
 

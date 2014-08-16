@@ -1133,6 +1133,7 @@ private:
   {
     if (!fp.is_beingdeleted ())
       {
+        // FIXME: consider figures units property
         Matrix pos (1,2,0);
         pos(0) = px;
         pos(1) = h () - (py + status_h + menu_dy ());
@@ -1443,8 +1444,14 @@ private:
 
                 fp.set_currentobject (ax_obj.get_handle ().value ());
 
+                base_properties& props = ax_obj.get_properties ();
+                if (props.get_buttondownfcn ().is_defined ())
+                  props.execute_buttondownfcn (Fl::event_button ());
+
                 return 1;
               }
+            else if (fp.get_buttondownfcn ().is_defined ())
+              fp.execute_buttondownfcn (Fl::event_button ());
 
             break;
 

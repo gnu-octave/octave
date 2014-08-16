@@ -39,16 +39,15 @@ function varargout = ginput (n)
     print_usage ();
   endif
 
-  f = gcf ();
   a = gca ();  # Create an axis, if necessary
   drawnow ();
-  toolkit = get (f, "__graphics_toolkit__");
+  toolkit = get (gcf, "__graphics_toolkit__");
 
   varargout = cell (1, nargout);
   if (nargin == 0)
-    [varargout{:}] = feval (["__" toolkit "_ginput__"], f);
+    [varargout{:}] = feval (["__" toolkit "_ginput__"]);
   else
-    [varargout{:}] = feval (["__" toolkit "_ginput__"], f, n);
+    [varargout{:}] = feval (["__" toolkit "_ginput__"], n);
   endif
 
 endfunction

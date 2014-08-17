@@ -1548,6 +1548,22 @@ Indicates the orientation for printing.  Either @qcode{"landscape"} or
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item selectiontype
+Holds informations about the last mouse button press within the figure.
+May be one of
+@table @asis
+@item @qcode{"normal"}
+Left mouse button click.
+
+@item @qcode{"extend"}
+Shift + left mouse button click.
+
+@item @qcode{"alternate"}
+Ctrl + left mouse button click or right mouse button click.
+
+@item @qcode{"open"}
+Double-click with any mouse button.
+
+@end table
 
 @item tag
 

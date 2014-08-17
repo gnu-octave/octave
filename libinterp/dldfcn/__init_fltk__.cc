@@ -1426,6 +1426,18 @@ private:
 
             set_currentpoint (pos_x, pos_y);
 
+            if (Fl::event_button () == FL_LEFT_MOUSE
+                && Fl::event_shift ())
+              fp.set_selectiontype ("extend");
+            else if ((Fl::event_button () == FL_LEFT_MOUSE
+                      && Fl::event_ctrl ())
+                      || Fl::event_button () == FL_RIGHT_MOUSE)
+              fp.set_selectiontype ("alternate");
+            else if (Fl::event_clicks ())
+              fp.set_selectiontype ("open");
+            else
+              fp.set_selectiontype ("normal");
+
             if (fp.get_windowbuttondownfcn ().is_defined ())
               fp.execute_windowbuttondownfcn (Fl::event_button ());
 

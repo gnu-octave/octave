@@ -3369,7 +3369,7 @@ public:
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
       callback_property resizefcn , Matrix ()
-      radio_property selectiontype , "{normal}|open|alt|extend"
+      radio_property selectiontype , "{normal}|open|alternate|extend"
       radio_property toolbar , "none|{auto}|figure"
       radio_property units Su , "inches|centimeters|normalized|points|{pixels}|characters"
       callback_property windowbuttondownfcn , Matrix ()

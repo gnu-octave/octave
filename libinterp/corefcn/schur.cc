@@ -63,7 +63,7 @@ DEFUN (schur, args, nargout,
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"real\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@var{A}, @dots{})\n\
+@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@dots{})\n\
 @cindex Schur decomposition\n\
 Compute the Schur@tie{}decomposition of @var{A}\n\
 @tex\n\
@@ -170,7 +170,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
       if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
           && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
         {
-          warning ("schur: incorrect ordered schur argument '%c'",
+          warning ("schur: incorrect ordered schur argument '%s'",
                    ord.c_str ());
           return retval;
         }
@@ -287,10 +287,14 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 %! assert (u' * a * u, s, sqrt (eps ("single")));
 
 %!test
-%! fail ("schur ([1, 2; 3, 4], 2)", "warning");
+%! fail ('schur ([1, 2; 3, 4], "bad_opt")',
+%!       "warning", "incorrect ordered schur argument");
 
 %!error schur ()
+%!error schur (1,2,3)
+%!error [a,b,c] = schur (1)
 %!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
+%!error <wrong type argument 'cell'> schur ({1})
 */
 
 DEFUN (rsf2csf, args, nargout,

@@ -35,15 +35,13 @@
 ## @seealso{demo, test}
 ## @end deftypefn
 
-function [code_r, idx_r] = example (name, n)
+function [ex_code, ex_idx] = example (name, n = 0)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if (nargin < 2)
-    n = 0;
-  elseif (ischar (n))
+  if (ischar (n))
     n = str2double (n);
   endif
 
@@ -51,15 +49,15 @@ function [code_r, idx_r] = example (name, n)
   if (nargout > 0)
     if (n > 0)
       if (n <= length (idx))
-        code_r = code(idx(n):idx(n+1)-1);
-        idx_r = [1, length(code_r)+1];
+        ex_code = code(idx(n):idx(n+1)-1);
+        ex_idx = [1, length(ex_code)+1];
       else
-        code_r = "";
-        idx_r = [];
+        ex_code = "";
+        ex_idx = [];
       endif
     else
-      code_r = code;
-      idx_r = idx;
+      ex_code = code;
+      ex_idx = idx;
     endif
   else
     if (n > 0)
@@ -93,11 +91,11 @@ endfunction
 %! t = 0:0.01:2*pi;  x = sin (t);
 %! plot (t,x)
 
-%!assert (example ("example",1), "\n example (\"example\");");
+%!assert (example ("example", 1), "\n example (\"example\");");
 %!test
 %! [code, idx] = example ("example");
 %! assert (code, ...
-%!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;  x = sin (t);\n plot (t,x)")
+%!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;  x = sin (t);\n plot (t,x)");
 %! assert (idx, [1, 23, 73]);
 
 %% Test input validation

@@ -52,10 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "bsxfun.h"
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 static inline int
 xisint (double x)
 {

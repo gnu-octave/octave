@@ -3002,6 +3002,7 @@ Octave is now configured for $canonical_host_type
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG
   Include support for GNU readline:   $USE_READLINE
   64-bit array dims and indexing:     $USE_64_BIT_IDX_T
+  Experimental SMP multithreading:    $USE_OPENMP
 ])
 
 warn_msg_printed=false

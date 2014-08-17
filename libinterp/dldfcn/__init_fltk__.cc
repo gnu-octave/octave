@@ -759,6 +759,7 @@ public:
   ~plot_window (void)
   {
     this->hide ();
+    Fl::check ();
   }
 
   double number (void) { return fp.get___myhandle__ ().value (); }

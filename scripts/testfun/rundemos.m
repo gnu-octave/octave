@@ -19,13 +19,14 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} rundemos ()
 ## @deftypefnx {Function File} {} rundemos (@var{directory})
-## Execute built-in demos for all function files in the specified directory.
-## Also executes demos in any C++ source files found in the directory, for
-## use with dynamically linked functions.
+## Execute built-in demos for all m-files in the specified @var{directory}.
+##
+## Demo blocks in any C++ source files (@file{*.cc}) will also be executed
+## for use with dynamically linked oct-file functions.
 ##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
-## @seealso{runtests, path}
+## @seealso{demo, runtests, path}
 ## @end deftypefn
 
 ## Author: jwe
@@ -72,7 +73,7 @@ function run_all_demos (directory, do_class_dirs)
         try
           demo (f);
         catch
-          printf ("error: %s\n\n", lasterror().message);
+          printf ("error: %s\n\n", lasterror ().message);
         end_try_catch
         if (i != numel (flist))
           input ("Press <enter> to continue: ", "s");

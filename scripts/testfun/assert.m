@@ -18,21 +18,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} assert (@var{cond})
+## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected}, @var{tol})
 ##
-## Produce an error if the specified condition is not met.  @code{assert} can
-## be called in three different ways.
+## Produce an error if the specified condition is not met.
+##
+## @code{assert} can be called in three different ways.
 ##
 ## @table @code
 ## @item  assert (@var{cond})
+## @itemx assert (@var{cond}, @var{errmsg})
 ## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
 ## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## Called with a single argument @var{cond}, @code{assert} produces an
-## error if @var{cond} is zero.  When called with more than one argument the
-## additional arguments are passed to the @code{error} function.
+## error if @var{cond} is false (numeric zero).  Any additional arguments are
+## passed to the @code{error} function for processing.
 ##
 ## @item assert (@var{observed}, @var{expected})
 ## Produce an error if observed is not the same as expected.  Note that
@@ -46,12 +49,13 @@
 ## an error if @code{abs (@var{observed} - @var{expected}) > abs (@var{tol})}.
 ## If @var{tol} is negative then it is a relative tolerance which will produce
 ## an error if @code{abs (@var{observed} - @var{expected}) >
-## abs (@var{tol} * @var{expected})}.  If @var{expected} is zero @var{tol} will
-## always be interpreted as an absolute tolerance.  If @var{tol} is not scalar
-## its dimensions must agree with those of @var{observed} and @var{expected}
-## and tests are performed on an element-wise basis.
+## abs (@var{tol} * @var{expected})}.
+## If @var{expected} is zero @var{tol} will always be interpreted as an
+## absolute tolerance.  If @var{tol} is not scalar its dimensions must agree
+## with those of @var{observed} and @var{expected} and tests are performed on
+## an element-by-element basis.
 ## @end table
-## @seealso{test, fail, error}
+## @seealso{fail, test, error, isequal}
 ## @end deftypefn
 
 function assert (cond, varargin)

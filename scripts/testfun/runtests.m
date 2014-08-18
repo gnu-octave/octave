@@ -19,13 +19,14 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} runtests ()
 ## @deftypefnx {Function File} {} runtests (@var{directory})
-## Execute built-in tests for all function files in the specified directory.
-## Also executes tests in any C++ source files found in the directory, for
-## use with dynamically linked functions.
+## Execute built-in tests for all m-files in the specified @var{directory}.
+##
+## Test blocks in any C++ source files (@file{*.cc}) will also be executed
+## for use with dynamically linked oct-file functions.
 ##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
-## @seealso{rundemos, path}
+## @seealso{rundemos, test, path}
 ## @end deftypefn
 
 ## Author: jwe

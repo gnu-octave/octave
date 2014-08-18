@@ -1671,10 +1671,14 @@ Either @qcode{"manual"} or @qcode{"auto"}.
 @item createfcn
 
 @item currentpoint
-Holds the coordinates of the point over which the mouse pointer was when
-the mouse button was pressed.  If a mouse callback function is defined,
-@qcode{"currentpoint"} holds the coordinates of the point over which the
-mouse pointer is when the function gets called.
+An 2-by-3 matrix @code{[xf, yf, zf; xb, yb, zb]} which holds the
+coordinates of the point over which the mouse pointer was when the
+mouse button was pressed in axes data units.  If a mouse callback
+function is defined, @qcode{"currentpoint"} holds the pointer
+coordinates at the time the mouse button was pressed.  For 3D plots,
+the first row of the returned matrix specifies the point nearest to
+the current camera position and the second rows the furthest point.
+The two points forms a line which is perpendicular to the screen.
 
 @item dataaspectratio
 A two-element vector specifying the relative height and width of the

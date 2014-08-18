@@ -78,7 +78,7 @@ endfunction
 
 function ginput_buttondownfcn (src, button)
   point = get (src, "currentpoint");
-  ginput_accumulator (1, point(1,1), point(2,1), button);
+  ginput_accumulator (1, point(1,1), point(1,2), button);
 endfunction
 
 function ginput_keypressfcn (src, evt)
@@ -88,7 +88,7 @@ function ginput_keypressfcn (src, evt)
     ## Enter key stops ginput.
     ginput_accumulator (2, NaN, NaN, NaN);
   else
-    ginput_accumulator (1, point(1,1), point(2,1), uint8 (key(1)));
+    ginput_accumulator (1, point(1,1), point(1,2), uint8 (key(1)));
   endif
 endfunction
 

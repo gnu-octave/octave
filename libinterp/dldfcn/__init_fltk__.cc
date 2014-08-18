@@ -1148,19 +1148,25 @@ private:
 
   void set_axes_currentpoint (graphics_object ax, int px, int py)
   {
-    if (ax.valid_object ())
+    if (ax.valid_object () && ax.isa ("axes"))
       {
         axes::properties& ap =
           dynamic_cast<axes::properties&> (ax.get_properties ());
 
-        double xx, yy;
-        pixel2pos (ax, px, py, xx, yy);
+        Matrix x_zlim = ap.get_transform_zlim ();
+        Matrix pos (2, 3, 0.0);
 
-        Matrix pos (2,3,0);
-        pos(0,0) = xx;
-        pos(1,0) = yy;
-        pos(0,1) = xx;
-        pos(1,1) = yy;
+        // front point (nearest to the viewer)
+        ColumnVector tmp = ap.get_transform ().untransform (px, py, x_zlim(0));
+        pos(0,0) = tmp(0);
+        pos(0,1) = tmp(1);
+        pos(0,2) = tmp(2);
+
+        // back point (furthest from the viewer)
+        tmp = ap.get_transform ().untransform (px, py, x_zlim(1));
+        pos(1,0) = tmp(0);
+        pos(1,1) = tmp(1);
+        pos(1,2) = tmp(2);
 
         ap.set_currentpoint (pos);
         fp.set_currentaxes (ap.get___myhandle__ ().value ());

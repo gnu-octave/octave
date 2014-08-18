@@ -1134,10 +1134,7 @@ private:
   {
     if (!fp.is_beingdeleted ())
       {
-        // FIXME: consider figures units property
-        Matrix pos (1,2,0);
-        pos(0) = px;
-        pos(1) = h () - (py + status_h + menu_dy ());
+        Matrix pos = fp.map_from_boundingbox (px, py);
         fp.set_currentpoint (pos);
         graphics_object robj = gh_manager::get_object (fp.get_parent ());
         root_figure::properties& rp =

@@ -1441,10 +1441,22 @@ Handle to graphics object of current axes.
 @item currentobject
 
 @item currentpoint
-Holds the coordinates of the point over which the mouse pointer was when
-the mouse button was pressed.  If a mouse callback function is defined,
-@qcode{"currentpoint"} holds the coordinates of the point over which the
-mouse pointer is when the function gets called.
+An 1-by-2 matrix which holds the coordinates of the point over which
+the mouse pointer was when a mouse event occurred.  The x and y
+coordinates are in units defined by the figures @qcode{"units"} property
+and their origin is the lower left corner of the plotting area.
+
+Events which sets @qcode{"currentpoint"} are
+@table @asis
+@item A mouse button was pressed
+always
+
+@item A mouse button was released
+only if the figures callback @qcode{"windowbuttonupfcn"} is defined
+
+@item The pointer was moved while pressing mouse button (drag)
+only if the figures callback @qcode{"windowbuttonmotionfcn"} is defined
+@end table
 
 @item deletefcn
 
@@ -1572,6 +1584,11 @@ Double-click with any mouse button.
 @item type
 
 @item units
+--- Values: @qcode{"inches"}, @qcode{"centimeters"}, @qcode{"normalized"},
+@qcode{"points"}, @qcode{"pixels"} [default], @qcode{"characters"}.
+
+Specifies the units which are used for @qcode{"position"},
+@qcode{"outerposition"} and @qcode{"currentpoint"}.
 
 @item userdata
 

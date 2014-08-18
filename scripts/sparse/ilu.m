@@ -162,9 +162,19 @@ function [L, U, P] = ilu (A, setup)
     print_usage ();
   endif
 
+
   % Check input matrix
-  if (~issparse(A) || ~issquare (A))
+  if (~issparse (A) || ~issquare (A))
     error ("ilu: Input A must be a sparse square matrix.");
+  endif
+
+  % If A is empty and sparse then return empty L, U and P
+  % Compatibility with Matlab
+  if (isempty (A)) 
+    L = A;
+    U = A;
+    P = A;
+    return;
   endif
 
   % Check input structure, otherwise set default values
@@ -231,20 +241,20 @@ function [L, U, P] = ilu (A, setup)
   % Delegate to specialized ILU
   switch (setup.type)
     case "nofill"
-        [L, U] = ilu0 (A, setup.milu);
+        [L, U] = __ilu0__ (A, setup.milu);
         if (nargout == 3)
           P = speye (length (A));
         endif
     case "crout"
-        [L, U] = iluc (A, setup.droptol, setup.milu);
+        [L, U] = __iluc__ (A, setup.droptol, setup.milu);
         if (nargout == 3)
           P = speye (length (A));
         endif
     case "ilutp"
         if (nargout == 2)
-          [L, U]  = ilutp (A, setup.droptol, setup.thresh, setup.milu, setup.udiag);
+          [L, U]  = __ilutp__ (A, setup.droptol, setup.thresh, setup.milu, setup.udiag);
         elseif (nargout == 3)
-          [L, U, P]  = ilutp (A, setup.droptol, setup.thresh, setup.milu, setup.udiag);
+          [L, U, P]  = __ilutp__ (A, setup.droptol, setup.thresh, setup.milu, setup.udiag);
         endif
     otherwise
       printf ("The input structure is invalid.\n");
@@ -263,46 +273,275 @@ endfunction
 %!test
 %! setup.type = 'nofill';
 %! assert (nnz (ilu (A, setup)), 7840);
-%!test
 %! # This test is taken from the mathworks and should work for full support.
+%!test
 %! setup.type = 'crout';
 %! setup.milu = 'row';
 %! setup.droptol = dtol;
 %! [L, U] = ilu (A, setup);
-%! e = ones (size (A,2),1);
+%! e = ones (size (A, 2),1);
 %! assert (norm (A*e - L*U*e), 1e-14, 1e-14);
 %!test
 %! setup.type = 'crout';
 %! setup.droptol = dtol;
-%! [L, U] = ilu(A,setup);
+%! [L, U] = ilu(A, setup);
 %! assert (norm (A - L * U, 'fro') / norm (A, 'fro'), 0.05, 1e-2);
+
+%! # Tests for input validation
+%!test
+%! [L, U] = ilu (sparse ([]));
+%! assert (isempty (L), logical (1));
+%! assert (isempty (U), logical (1));
+%! setup.type = 'crout';
+%! [L, U] = ilu (sparse ([]), setup);
+%! assert (isempty (L), logical (1));
+%! assert (isempty (U), logical (1));
+%! setup.type = 'ilutp';
+%! [L, U] = ilu (sparse ([]), setup);
+%! assert (isempty (L), logical (1));
+%! assert (isempty (U), logical (1));
+%!error [L, U] = ilu (0);
+%!error [L, U] = ilu ([]);
+%!error [L, U] = ilu (sparse (0));
+%!test
+%! setup.type = 'foo';
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.type = 1;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.type = [];
+%!error [L, U] = ilu (A_tiny, setup);
+%!test
+%! setup.droptol = -1;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.droptol = 0.5i;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.droptol = [];
+%!error [L, U] = ilu (A_tiny, setup);
+%!test
+%! setup.thresh= -1;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.thresh = 0.5i;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.thresh = [];
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.thresh = 2;
+%!error [L, U] = ilu (A_tiny, setup);
+%!test
+%! setup.diag = 0.5;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.diag = [];
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.diag = -1;
+%!error [L, U] = ilu (A_tiny, setup);
+%!test
+%! setup.milu = 'foo';
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.milu = 1;
+%!error [L, U] = ilu (A_tiny, setup);
+%! setup.milu = [];
+%!error [L, U] = ilu (A_tiny, setup);
+
+%! # Check if the elements in U satisfy the non-dropping condition.
 %!test
 %! setup.type = 'crout';
 %! setup.droptol = dtol;
 %! [L, U] = ilu (A, setup);
 %! for j = 1:n
-%!   cmp_value = dtol * norm (A(:, j)) / 2;
+%!   cmp_value = dtol * norm (A(:, j));
 %!   non_zeros = nonzeros (U(:, j));
 %!   for i = 1:length (non_zeros);
 %!     assert (abs (non_zeros (i)) >= cmp_value, logical (1));
 %!   endfor
 %! endfor
 %!test
-%! setup.type = 'crout';
+%! setup.type = 'ilutp';
 %! setup.droptol = dtol;
 %! [L, U] = ilu (A, setup);
 %! for j = 1:n
-%!   cmp_value = dtol * norm (A(:, j)) / 2;
+%!   cmp_value = dtol * norm (A(:, j));
 %!   non_zeros = nonzeros (U(:, j));
 %!   for i = 1:length (non_zeros);
 %!     assert (abs (non_zeros (i)) >= cmp_value, logical (1));
 %!   endfor
 %! endfor
+
+%! # Check that the complete LU factorisation with crout and ilutp algorithms
+%! # output the same result.
 %!test
 %! setup.type = 'crout';
 %! setup.droptol = 0;
 %! [L1, U1] = ilu (A, setup);
 %! setup.type = 'ilutp';
+%! setup.thresh = 0;
 %! [L2, U2] = ilu (A, setup);
 %! assert (norm (L1 - L2, 'fro') / norm (L1, 'fro'), 0, eps);
 %! assert (norm (U1 - U2, 'fro') / norm (U1, 'fro'), 0, eps);
+
+%! # Tests for real matrices of different sizes for ilu0, iluc and ilutp.
+%! # The difference A - L*U should be not greater than eps because with droptol
+%! # equaling 0, the LU complete factorization is performed.
+%!shared n_tiny, n_small, n_medium, n_large, A_tiny, A_small, A_medium, A_large
+%! n_tiny = 5;
+%! n_small = 40;
+%! n_medium = 600;
+%! n_large = 10000;
+%! A_tiny = spconvert ([1 4 2 3 3 4 2 5; 1 1 2 3 4 4 5 5; 1 2 3 4 5 6 7 8]');
+%! A_small = sprand (n_small, n_small, 1/n_small) + speye (n_small);
+%! A_medium = sprand (n_medium, n_medium, 1/n_medium) + speye (n_medium);
+%! A_large = sprand (n_large, n_large, 1/n_large/10) + speye (n_large);
+%!
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_tiny);
+%! assert (norm (A_tiny - L * U, "fro") / norm (A_tiny, "fro"), 0, n_tiny * eps);
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_small);
+%! assert (norm (A_small - L * U, "fro") / norm (A_small, "fro"), 0, 1);
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_medium);
+%! assert (norm (A_medium - L * U, "fro") / norm (A_medium, "fro"), 0, 1);
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_large);
+%! assert (norm (A_large - L * U, "fro") / norm (A_large, "fro"), 0, 1);
+%!
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_tiny, setup);
+%! assert (norm (A_tiny - L * U, "fro") / norm (A_tiny, "fro"), eps, eps);
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_small, setup);
+%! assert (norm (A_small - L * U, "fro") / norm (A_small, "fro"), eps, eps);
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_medium, setup);
+%! assert (norm (A_medium - L * U, "fro") / norm (A_medium, "fro"), eps, eps);
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_large, setup);
+%! assert (norm (A_large - L * U, "fro") / norm (A_large, "fro"), eps, eps);
+%!
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_tiny, setup);
+%! assert (norm (A_tiny - L * U, "fro") / norm (A_tiny, "fro"), eps, eps);
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_small, setup);
+%! assert (norm (A_small - L * U, "fro") / norm (A_small, "fro"), eps, eps);
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_medium, setup);
+%! assert (norm (A_medium - L * U, "fro") / norm (A_medium, "fro"), eps, eps);
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_large, setup);
+%! assert (norm (A_large - L * U, "fro") / norm (A_large, "fro"), eps, eps);
+%!
+
+%! # Tests for complex matrices of different sizes for ilu0, iluc and ilutp.
+%!shared n_tiny, n_small, n_medium, n_large, A_tiny, A_small, A_medium, A_large
+%! n_tiny = 5;
+%! n_small = 40;
+%! n_medium = 600;
+%! n_large = 10000;
+%! A_tiny = spconvert ([1 4 2 3 3 4 2 5; 1 1 2 3 4 4 5 5; 1 2 3 4 5 6 7 8]');
+%! A_tiny(1,1) += 1i;
+%! A_small = sprand(n_small, n_small, 1/n_small) + ...
+%!   i * sprand(n_small, n_small, 1/n_small) + speye (n_small);
+%! A_medium = sprand(n_medium, n_medium, 1/n_medium) + ...
+%!   i * sprand(n_medium, n_medium, 1/n_medium) + speye (n_medium);
+%! A_large = sprand(n_large, n_large, 1/n_large/10) + ...
+%!   i * sprand(n_large, n_large, 1/n_large/10) + speye (n_large);
+%!
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_tiny);
+%! assert (norm (A_tiny - L * U, "fro") / norm (A_tiny, "fro"), 0, n_tiny * eps);
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_small);
+%! assert (norm (A_small - L * U, "fro") / norm (A_small, "fro"), 0, 1);
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_medium);
+%! assert (norm (A_medium - L * U, "fro") / norm (A_medium, "fro"), 0, 1);
+%!test 
+%! setup.type = "nofill";
+%! [L, U] = ilu (A_large);
+%! assert (norm (A_large - L * U, "fro") / norm (A_large, "fro"), 0, 1);
+%!
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_tiny, setup);
+%! assert (norm (A_tiny - L * U, "fro") / norm (A_tiny, "fro"), eps, eps);
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_small, setup);
+%! assert (norm (A_small - L * U, "fro") / norm (A_small, "fro"), eps, eps);
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_medium, setup);
+%! assert (norm (A_medium - L * U, "fro") / norm (A_medium, "fro"), eps, eps);
+%!test 
+%! setup.type = "crout";
+%! [L, U] = ilu (A_large, setup);
+%! assert (norm (A_large - L * U, "fro") / norm (A_large, "fro"), eps, eps);
+%!
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_tiny, setup);
+%! assert (norm (A_tiny - L * U, "fro") / norm (A_tiny, "fro"), eps, eps);
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_small, setup);
+%! assert (norm (A_small - L * U, "fro") / norm (A_small, "fro"), eps, eps);
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_medium, setup);
+%! assert (norm (A_medium - L * U, "fro") / norm (A_medium, "fro"), eps, eps);
+%!test 
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! [L, U] = ilu (A_large, setup);
+%! assert (norm (A_large - L * U, "fro") / norm (A_large, "fro"), eps, eps);
+
+%! #Specific tests for ilutp
+%!shared a1, a2
+%! a1 = sparse ([0 0 4 3 1; 5 1 2.3 2 4.5; 0 0 0 2 1;0 0 8 0 2.2; 0 0 9 9 1 ]);
+%! a2 = sparse ([3 1 0 0 4; 3 1 0 0 -2;0 0 8 0 0; 0 4 0 4 -4.5; 0 -1 0 0 1]);
+%!test
+%! setup.udiag = 1;
+%! setup.type = "ilutp";
+%! setup.droptol = 0.2;
+%! [L, U, P] = ilu (a1, setup);
+%! assert (norm (U, "fro"), 17.4577, 1e-4);
+%! assert (norm (L, "fro"), 2.4192, 1e-4);
+%! setup.udiag = 0;
+%!error [L, U, P] = ilu (a1, setup);
+%!
+%!test
+%! setup.type = "ilutp";
+%! setup.droptol = 0;
+%! setup.thresh = 0;
+%! setup.milu = "row";
+%!error [L, U] = ilu (a2, setup);
+%! 

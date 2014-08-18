@@ -1,4 +1,5 @@
 /**
+ * Copyright (C) 2013 Kai T. Ohlhus <k.ohlhus@gmail.com>
  * Copyright (C) 2014 Eduardo Ramos Fernández <eduradical951@gmail.com>
  *
  * This file is part of Octave.
@@ -24,50 +25,228 @@
 #include "defun-dld.h"
 #include "parse.h"
 
-// Secondary functions specialiced for complex or real case used
-// in icholt algorithms.
-template < typename T > inline T
-ichol_mult_complex (T a, T b)
+// Secondary functions for complex and real case used
+// in ichol algorithms.
+Complex ichol_mult_complex (Complex a, Complex b)
 {
   b.imag (-std::imag (b));
   return a * b;
 }
 
-template < typename T > inline bool
-ichol_checkpivot_complex (T pivot)
+bool ichol_checkpivot_complex (Complex pivot)
 {
   if (pivot.imag () != 0)
     {
-      error ("icholt: Non-real pivot encountered. \
-              The matrix must be hermitian");
+      error ("ichol: Non-real pivot encountered. \
+              The matrix must be hermitian.");
       return false;
     }
   else if (pivot.real () < 0)
     {
-      error ("icholt: Non-positive pivot encountered.");
+      error ("ichol: Non-positive pivot encountered.");
       return false;
     }
   return true;
 
 }
 
-template < typename T > inline bool
-ichol_checkpivot_real (T pivot)
+bool ichol_checkpivot_real (double pivot)
 {
-  if (pivot < T (0))
+  if (pivot < 0)
     {
-      error ("icholt: Non-positive pivot encountered.");
+      error ("ichol: Non-positive pivot encountered.");
       return false;
     }
   return true;
 }
 
-template < typename T> inline T 
-ichol_mult_real (T a, T b)
+double ichol_mult_real (double a, double b)
 {
   return a * b;
 }
 
+template <typename octave_matrix_t, typename T, T (*ichol_mult) (T, T), 
+          bool (*ichol_checkpivot) (T)>
+void ichol_0 (octave_matrix_t& sm, const std::string michol = "off") 
+{
+
+  const octave_idx_type n = sm.cols ();
+  octave_idx_type j1, jend, j2, jrow, jjrow, j, jw, i, k, jj, Llist_len, r;
+  T tl;
+  char opt;
+  enum {OFF, ON};
+  if (michol == "on")
+    opt = ON;
+  else
+    opt = OFF;
+
+  // Input matrix pointers
+  octave_idx_type* cidx = sm.cidx ();
+  octave_idx_type* ridx = sm.ridx ();
+  T* data = sm.data ();
+
+  // Working arrays
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Lfirst, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Llist, n);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, iw, n);
+  OCTAVE_LOCAL_BUFFER (T, dropsums, n);
+
+  // Initialize working arrays
+  for (i = 0; i < n; i++)
+    {
+      iw[i] = -1;
+      Llist[i] = -1;
+      Lfirst[i] = -1;
+      dropsums[i] = 0;
+    }
+
+  // Main loop 
+  for (k = 0; k < n; k++)
+    {
+      j1 = cidx[k];
+      j2 = cidx[k+1];
+      for (j = j1; j < j2; j++)
+        iw[ridx[j]] = j;
+
+      jrow = Llist [k];
+      // Iterate over each non-zero element in the actual row.
+      while (jrow != -1) 
+        {
+          jjrow = Lfirst[jrow];
+          jend = cidx[jrow+1];
+          for (jj = jjrow; jj < jend; jj++)
+            {
+              r = ridx[jj];
+              jw = iw[r];
+              tl = ichol_mult (data[jj], data[jjrow]);
+              if (jw != -1)
+                data[jw] -= tl;
+              else
+                // Because the simetry of the matrix we know the drops
+                // in the column r are also in the column k.
+                if (opt == ON)
+                  {
+                    dropsums[r] -= tl;
+                    dropsums[k] -= tl;
+                  }
+            }
+          // Update the linked list and the first entry of the
+          // actual column.
+          if ((jjrow + 1) < jend)
+            {
+              Lfirst[jrow]++;
+              j = jrow;
+              jrow = Llist[jrow];
+              Llist[j] = Llist[ridx[Lfirst[j]]];
+              Llist[ridx[Lfirst[j]]] = j;
+            }
+          else
+            jrow = Llist[jrow];
+        }
+
+      if (opt == ON)
+        data[j1] += dropsums[k];
+
+      if (ridx[j1] != k)
+        {
+          error ("ichol: There is a pivot equal to zero.");
+          break;
+        }
+
+      if (! ichol_checkpivot (data[j1]))
+        break;
+
+      data[cidx[k]] = std::sqrt (data[j1]);
+
+      // Update Llist and Lfirst with the k-column information.
+      // Also scale the column elements by the pivot and reset 
+      // the working array iw.
+      if (k < (n - 1)) 
+        {
+          iw[ridx[j1]] = -1;
+          for(i = j1 + 1; i < j2; i++)
+            {
+              iw[ridx[i]] = -1;
+              data[i] /= data[j1];
+            }
+          Lfirst[k] = j1;
+          if ((Lfirst[k] + 1) < j2)
+            {
+              Lfirst[k]++;
+              jjrow = ridx[Lfirst[k]];
+              Llist[k] = Llist[jjrow];
+              Llist[jjrow] = k;
+            }
+        }
+    }
+}
+
+DEFUN_DLD (__ichol0__, args, nargout, "-*- texinfo -*-\n\
+@deftypefn   {Loadable Function} {@var{L} =} __ichol0__ (@var{A})\n\
+@deftypefnx  {Loadable Function} {@var{L} =} __ichol0__ (@var{A}, @var{michol})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+  std::string michol = "off";
+ 
+
+  if (nargout > 1 || nargin < 1 || nargin > 2)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  if (args(0).is_scalar_type () || ! args(0).is_sparse_type ())
+    error ("__ichol0__: 1. parameter must be a sparse square matrix.");
+
+  if (args(0).is_empty ())
+    {
+      retval(0) = octave_value (SparseMatrix ());
+      return retval;
+    }
+
+
+  if (nargin == 2)
+    {
+      michol = args(1).string_value ();
+      if (error_state || ! (michol == "on" || michol == "off"))
+        error ("__ichol0__: 2. parameter must be 'on' or 'off' character string.");
+    }
+
+
+  if (!error_state)
+    {
+      // In ICHOL0 algorithm the zero-pattern of the input matrix is preserved so
+      // it's structure does not change during the algorithm. The same input
+      // matrix is used to build the output matrix due to that fact.
+      octave_value_list param_list;
+      if (!args(0).is_complex_type ())
+        {
+          SparseMatrix sm = args(0).sparse_matrix_value ();
+          param_list.append (sm);
+          sm = feval ("tril", param_list)(0).sparse_matrix_value (); 
+          ichol_0 <SparseMatrix, double, ichol_mult_real, ichol_checkpivot_real> (sm, michol);
+          if (! error_state)
+            retval(0) = octave_value (sm);
+        }
+      else
+        {
+          SparseComplexMatrix sm = args(0).sparse_complex_matrix_value ();
+          param_list.append (sm);
+          sm = feval ("tril", param_list)(0).sparse_complex_matrix_value (); 
+          ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex, ichol_checkpivot_complex> (sm, michol);
+          if (! error_state)
+            retval(0) = octave_value (sm);
+        }
+
+    }
+
+  return retval;
+}
 
 template <typename octave_matrix_t, typename T,  T (*ichol_mult) (T, T), 
           bool (*ichol_checkpivot) (T)>
@@ -101,7 +280,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
   // reallocations decrease throughout the process, obtaining a good performance.
   max_len = sm.nnz ();
   max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
-  Array <octave_idx_type> cidx_out_l (dim_vector (n + 1,1));
+  Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
   octave_idx_type* cidx_l = cidx_out_l.fortran_vec ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len ,1));
   octave_idx_type* ridx_l = ridx_out_l.fortran_vec ();
@@ -228,10 +407,10 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
 
       if (data_l[total_len] == zero)
         {
-          error ("icholt: There is a pivot equal to zero.");
+          error ("ichol: There is a pivot equal to zero.");
           break;
         }
-      else if (!ichol_checkpivot (data_l[total_len]))
+      else if (! ichol_checkpivot (data_l[total_len]))
         break;
 
       // Once the elements are dropped and compensation of columns 
@@ -240,6 +419,13 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
       for (jj = total_len + 1; jj < (total_len + w_len); jj++)
         data_l[jj] /=  data_l[total_len];
       total_len += w_len;
+      // Check if there are too many elements to be indexed with octave_idx_type
+      // type due to fill-in during the process.
+      if (total_len < 0)
+        {
+          error ("ichol: Integer overflow. Too many fill-in elements in L");
+          break;
+        }
       cidx_l[k+1] = cidx_l[k] - cidx_l[0] + w_len;
 
       // Update Llist and Lfirst with the k-column information.
@@ -272,37 +458,14 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
 
 }
 
-DEFUN_DLD (icholt, args, nargout, "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{L} =} icholt (@var{A}, @var{droptol}, @var{michol})\n\
-\n\
-Computes the thresholded Incomplete Cholesky factorization [ICT] of A \
-which must be an square hermitian matrix in the complex case and a symmetric \
-positive definite matrix in the real one. \
-\n\
-@code{[@var{L}] = icholt (@var{A}, @var{droptol}, @var{michol})} \
-computes the ICT of @var{A}, such that @code{@var{L} * @var{L}'} is an \
-approximation of the square sparse hermitian matrix @var{A}. @var{droptol} is \
-a non-negative scalar used as a drop tolerance when performing ICT. Elements \
-which are smaller in magnitude than @code{@var{droptol} * norm(@var{A}(j:end, j), 1)} \
-, are dropped from the resulting factor @var{L}. The parameter @var{michol} \
-decides whether the Modified IC(0) should be performed. This compensates the \
-main diagonal of @var{L}, such that @code{@var{A} * @var{e} = @var{L} * @var{L}' \
- * @var{e}} with @code{@var{e} = ones (size (@var{A}, 2), 1))} holds. \n\
-\n\
-For more information about the algorithms themselves see:\n\
-\n\
-[1] Saad, Yousef. \"Preconditioning Techniques.\" Iterative Methods for Sparse Linear \
-Systems. PWS Publishing Company, 1996. \
-\n\
-\n\
-[2] Jones, Mark T. and Plassmann, Paul E.: An Improved Incomplete Cholesky \
-Factorization (1992). \
-\n\
-@seealso{ichol, ichol0, chol, ilu}\n\
+DEFUN_DLD (__icholt__, args, nargout, "-*- texinfo -*-\n\
+@deftypefn   {Loadable Function} {@var{L} =} __icholt__ (@var{A})\n\
+@deftypefnx  {Loadable Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol})\n\
+@deftypefnx  {Loadable Function} {@var{L} =} __icholt__ (@var{A}, @var{droptol}, @var{michol})\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-
   int nargin = args.length ();
   // Default values of parameters
   std::string michol = "off";
@@ -315,67 +478,67 @@ Factorization (1992). \
       return retval;
     }
 
-  if (args (0).is_scalar_type () || !args (0).is_sparse_type ())
-    error ("icholt: 1. parameter must be a sparse square matrix.");
+  if (args(0).is_scalar_type () || ! args(0).is_sparse_type ())
+    error ("__icholt__: 1. parameter must be a sparse square matrix.");
 
-  if (args (0).is_empty ())
+  if (args(0).is_empty ())
     {
-      retval (0) = octave_value (SparseMatrix ());
+      retval(0) = octave_value (SparseMatrix ());
       return retval;
     }
 
   if (! error_state && (nargin >= 2))
     {
-      droptol = args (1).double_value ();
-      if (error_state || (droptol < 0) || ! args (1).is_real_scalar ())
-        error ("icholt: 2. parameter must be a positive real scalar.");
+      droptol = args(1).double_value ();
+      if (error_state || (droptol < 0) || ! args(1).is_real_scalar ())
+        error ("__icholt__: 2. parameter must be a positive real scalar.");
     }
 
   if (! error_state && (nargin == 3))
     {
-      michol = args (2).string_value ();
+      michol = args(2).string_value ();
       if (error_state || !(michol == "on" || michol == "off"))
-        error ("icholt: 3. parameter must be 'on' or 'off' character string.");
+        error ("__icholt__: 3. parameter must be 'on' or 'off' character string.");
     }
 
   if (!error_state)
     {
       octave_value_list param_list;
-      if (! args (0).is_complex_type ())
+      if (! args(0).is_complex_type ())
         {
           Array <double> cols_norm;
           SparseMatrix L;
-          param_list.append (args (0).sparse_matrix_value ());
+          param_list.append (args(0).sparse_matrix_value ());
           SparseMatrix sm_l = feval ("tril", 
-                                     param_list) (0).sparse_matrix_value (); 
-          param_list (0) = sm_l;
-          param_list (1) = 1;
-          param_list (2) = "cols";
-          cols_norm = feval ("norm", param_list) (0).vector_value ();
+                                     param_list)(0).sparse_matrix_value (); 
+          param_list(0) = sm_l;
+          param_list(1) = 1;
+          param_list(2) = "cols";
+          cols_norm = feval ("norm", param_list)(0).vector_value ();
           param_list.clear ();
           ichol_t <SparseMatrix, 
                    double, ichol_mult_real, ichol_checkpivot_real> 
                    (sm_l, L, cols_norm.fortran_vec (), droptol, michol);
           if (! error_state)
-            retval (0) = octave_value (L);
+            retval(0) = octave_value (L);
         }
       else
         {
           Array <Complex> cols_norm;
           SparseComplexMatrix L;
-          param_list.append (args (0).sparse_complex_matrix_value ());
+          param_list.append (args(0).sparse_complex_matrix_value ());
           SparseComplexMatrix sm_l = feval ("tril", 
-                                            param_list) (0).sparse_complex_matrix_value (); 
-          param_list (0) = sm_l;
-          param_list (1) = 1;
-          param_list (2) = "cols";
-          cols_norm = feval ("norm", param_list) (0).complex_vector_value ();
+                                            param_list)(0).sparse_complex_matrix_value (); 
+          param_list(0) = sm_l;
+          param_list(1) = 1;
+          param_list(2) = "cols";
+          cols_norm = feval ("norm", param_list)(0).complex_vector_value ();
           param_list.clear ();
           ichol_t <SparseComplexMatrix, 
                    Complex, ichol_mult_complex, ichol_checkpivot_complex> 
                    (sm_l, L, cols_norm.fortran_vec (), Complex (droptol), michol);
           if (! error_state)
-            retval (0) = octave_value (L);
+            retval(0) = octave_value (L);
         }
 
     }
@@ -384,97 +547,6 @@ Factorization (1992). \
 }
 
 /*
-%% Real matrices
-%!shared A_1, A_2, A_3, A_4, A_5
-%! A_1 = [ 0.37, -0.05,  -0.05,  -0.07;
-%!        -0.05,  0.116,  0.0,   -0.05;
-%!        -0.05,  0.0,    0.116, -0.05;
-%!        -0.07, -0.05,  -0.05,   0.202];
-%! A_1 = sparse(A_1);
-%!
-%! A_2 = gallery ('poisson', 30);
-%!
-%! A_3 = gallery ('tridiag', 50);
-%!
-%! nx = 400; ny = 200;
-%! hx = 1 / (nx + 1); hy = 1 / (ny + 1);
-%! Dxx = spdiags ([ones(nx, 1), -2 * ones(nx, 1), ones(nx, 1)], [-1 0 1 ], nx, nx) / (hx ^ 2);
-%! Dyy = spdiags ([ones(ny, 1), -2 * ones(ny, 1), ones(ny, 1)], [-1 0 1 ], ny, ny) / (hy ^ 2);
-%! A_4 = -kron (Dxx, speye (ny)) - kron (speye (nx), Dyy);
-%! A_4 = sparse (A_4);
-%!
-%! A_5 = [ 0.37, -0.05,          -0.05,  -0.07;
-%!        -0.05,  0.116,          0.0,   -0.05 + 0.05i;
-%!        -0.05,  0.0,            0.116, -0.05;
-%!        -0.07, -0.05 - 0.05i,  -0.05,   0.202];
-%! A_5 = sparse(A_5);
-%! A_6 = [ 0.37,    -0.05 - i, -0.05,  -0.07;
-%!        -0.05 + i, 0.116,     0.0,   -0.05;
-%!        -0.05,     0.0,       0.116, -0.05;
-%!        -0.07,    -0.05,     -0.05,   0.202];
-%! A_6 = sparse(A_6);
-%! A_7 = A_5;
-%! A_7(1) = 2i;
-%!
-%!test
-%!error icholt ([]);
-%!error icholt ([],[]);
-%!error icholt ([],[],[]);
-%!error [~] = icholt ([],[],[]);
-%!error [L] = icholt ([],[],[]);
-%!error [L] = icholt ([], 1e-4, 1);
-%!error [L] = icholt (A_1, [], 'off');
-%!error [L] = icholt (A_1, 1e-4, []);
-%!error [L, E] = icholt (A_1, 1e-4, 'off');
-%!error [L] = icholt (A_1, 1e-4, 'off', A_1);
-%!error icholt (sparse (0), 1e-4, 'off');
-%!error icholt (sparse (-0), 1e-4, 'off');
-%!error icholt (sparse (-1), 1e-4, 'off');
-%!error icholt (sparse (i), 1e-4, 'off');
-%!error icholt (sparse (-i), 1e-4, 'off');
-%!error icholt (sparse (1 + 1i), 1e-4, 'off');
-%!error icholt (sparse (1 - 1i), 1e-4, 'off');
-%!
-%!test
-%! L = icholt (sparse (1), 1e-4, 'off');
-%! assert (L, sparse (1));
-%! L = icholt (sparse (4), 1e-4, 'off');
-%! assert (L, sparse (2));
-%!
-%!test
-%! L = icholt (A_1, 1e-4, 'off');
-%! assert (norm (A_1 - L*L', 'fro') / norm (A_1, 'fro'), eps, eps);
-%! L = icholt (A_1, 1e-4, 'on');
-%! assert (norm (A_1 - L*L', 'fro') / norm (A_1, 'fro'), eps, eps);
-%!
-%!test
-%! L = icholt (A_2, 1e-4, 'off');
-%! assert (norm (A_2 - L*L', 'fro') / norm (A_2, 'fro'), 1e-4, 1e-4);
-%! L = icholt (A_2, 1e-4, 'on');
-%! assert (norm (A_2 - L*L', 'fro') / norm (A_2, 'fro'), 3e-4, 1e-4);
-%!
-%!test
-%! L = icholt (A_3, 1e-4, 'off');
-%! assert (norm (A_3 - L*L', 'fro') / norm (A_3, 'fro'), eps, eps);
-%! L = icholt (A_3, 1e-4, 'on');
-%! assert (norm (A_3 - L*L', 'fro') / norm (A_3, 'fro'), eps, eps);
-%!
-%!test
-%! L = icholt (A_4, 1e-4, 'off');
-%! assert (norm (A_4 - L*L', 'fro') / norm (A_4, 'fro'), 2e-4, 1e-4);
-%! L = icholt (A_4, 1e-4, 'on');
-%! assert (norm (A_4 - L*L', 'fro') / norm (A_4, 'fro'), 7e-4, 1e-4);
-%!
-%% Complex matrices
-%!test
-%! L = ichol0 (A_5, 'off');
-%! assert (norm (A_5 - L*L', 'fro') / norm (A_5, 'fro'), 1e-2, 1e-2);
-%! L = ichol0 (A_5, 'on');
-%! assert (norm (A_5 - L*L', 'fro') / norm (A_5, 'fro'), 2e-2, 1e-2);
-%% Negative pivot 
-%!error ichol0 (A_6, 'off');
-%% Complex entry in the diagonal
-%!error ichol0 (A_7, 'off');
+## No test needed for internal helper function.
+%!assert (1)
 */
-
-

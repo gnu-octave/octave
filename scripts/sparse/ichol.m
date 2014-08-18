@@ -103,13 +103,13 @@
 ## L = chol(A, "lower");
 ## nnz (L)
 ## ans =  10
-## norm (A - L * L', 'fro') / norm (A, 'fro')
+## norm (A - L * L', "fro") / norm (A, "fro")
 ## ans =  1.1993e-16
 ## opts.type = 'nofill';
 ## L = ichol(A,opts);
 ## nnz (L)
 ## ans =  9
-## norm (A - L * L', 'fro') / norm (A, 'fro')
+## norm (A - L * L', "fro") / norm (A, "fro")
 ## ans =  0.019736
 ## @end example
 ##
@@ -128,7 +128,7 @@
 ## L = ichol (A, opts);
 ## nnz (tril (A))
 ## ans =  239400
-## norm (A - L * L', 'fro') / norm (A, 'fro')
+## norm (A - L * L', "fro") / norm (A, "fro")
 ## ans =  0.062327
 ## @end example
 ##
@@ -148,8 +148,15 @@ function [L] = ichol (A, opts)
   endif
 
   % Check input matrix
-  if (isempty (A) || ~issparse(A) || ~issquare (A))
+  if (~issparse(A) || ~issquare (A))
     error ("ichol: Input A must be a non-empty sparse square matrix");
+  endif
+
+  % If A is empty and sparse then return empty L
+  % Compatibility with Matlab
+  if (isempty (A)) 
+    L = A;
+    return;
   endif
 
   % Check input structure, otherwise set default values
@@ -220,10 +227,8 @@ function [L] = ichol (A, opts)
     A += opts.diagcomp * diag (diag (A));
   endif
   if (strcmp (opts.shape, "upper") == 1)
-    disp("entro");
     A_in = triu (A);
     A_in = A_in';
-
   else
     A_in = tril (A);
   endif
@@ -231,9 +236,9 @@ function [L] = ichol (A, opts)
   % Delegate to specialized ICHOL
   switch (opts.type)
     case "nofill"
-      L  = ichol0 (A_in,  opts.michol);
+      L  = __ichol0__ (A_in, opts.michol);
     case "ict"
-      L = icholt (A_in, opts.droptol, opts.michol);
+      L = __icholt__ (A_in, opts.droptol, opts.michol);
     otherwise
       printf ("The input structure is invalid.\n");
   endswitch
@@ -245,18 +250,35 @@ function [L] = ichol (A, opts)
 
 endfunction
 
-%!shared A1, A2
+%!shared A1, A2, A3, A4, A5, A6, A7
 %! A1 = [ 0.37, -0.05,  -0.05,  -0.07;
 %!      -0.05,  0.116,  0.0,   -0.05;
 %!      -0.05,  0.0,    0.116, -0.05;
 %!      -0.07, -0.05,  -0.05,   0.202];
 %! A1 = sparse(A1);
+%! A2 = gallery ('poisson', 30);
+%! A3 = gallery ('tridiag', 50);
 %! nx = 400; ny = 200;
 %! hx = 1 / (nx + 1); hy = 1 / (ny + 1);
 %! Dxx = spdiags ([ones(nx, 1), -2 * ones(nx, 1), ones(nx, 1)], [-1 0 1 ], nx, nx) / (hx ^ 2);
 %! Dyy = spdiags ([ones(ny, 1), -2 * ones(ny, 1), ones(ny, 1)], [-1 0 1 ], ny, ny) / (hy ^ 2);
-%! A2 = -kron (Dxx, speye (ny)) - kron (speye (nx), Dyy);
+%! A4 = -kron (Dxx, speye (ny)) - kron (speye (nx), Dyy);
+%! A5 = [ 0.37, -0.05,          -0.05,  -0.07;
+%!        -0.05,  0.116,          0.0,   -0.05 + 0.05i;
+%!        -0.05,  0.0,            0.116, -0.05;
+%!        -0.07, -0.05 - 0.05i,  -0.05,   0.202];
+%! A5 = sparse(A5);
+%! A6 = [ 0.37,    -0.05 - i, -0.05,  -0.07;
+%!        -0.05 + i, 0.116,     0.0,   -0.05;
+%!        -0.05,     0.0,       0.116, -0.05;
+%!        -0.07,    -0.05,     -0.05,   0.202];
+%! A6 = sparse(A6);
+%! A7 = A5;
+%! A7(1) = 2i;
 %!
+
+%!# Input validation tests
+
 %!test
 %!error ichol ([]);
 %!error ichol (0);
@@ -271,58 +293,191 @@ endfunction
 %!error ichol (sparse (-0));
 %!error ichol (sparse (-1));
 %!error ichol (sparse (-1));
-%!
+%!test
+%! opts.milu = 'foo';
+%!error L = ichol (A1, opts);
+%! opts.milu = 1;
+%!error L = ichol (A1, opts);
+%! opts.milu = [];
+%!error L = ichol (A1, opts);
+%!test
+%! opts.droptol = -1;
+%!error L = ichol (A1, opts);
+%! opts.droptol = 0.5i;
+%!error L = ichol (A1, opts);
+%! opts.droptol = [];
+%!error L = ichol (A1, opts);
+%!test
+%! opts.type = 'foo';
+%!error L = ichol (A1, opts);
+%! opts.type = 1;
+%!error L = ichol (A1, opts);
+%! opts.type = [];
+%!error L = ichol (A1, opts);
+%!test
+%! opts.shape = 'foo';
+%!error L = ichol (A1, opts);
+%! opts.shape = 1;
+%!error L = ichol (A1, opts);
+%! opts.shape = [];
+%!error L = ichol (A1, opts);
+%!test
+%! opts.diagcomp = -1;
+%!error L = ichol (A1, opts);
+%! opts.diagcomp = 0.5i;
+%!error L = ichol (A1, opts);
+%! opts.diagcomp = [];
+%!error L = ichol (A1, opts);
+
+%!# ICHOL0 tests
+
 %!test
 %! opts.type = "nofill";
 %! opts.michol = "off";
 %! assert (nnz (tril (A1)), nnz (ichol (A1, opts)));
 %! assert (nnz (tril (A2)), nnz (ichol (A2, opts)));
+%! assert (nnz (tril (A3)), nnz (ichol (A3, opts)));
+%! assert (nnz (tril (A4)), nnz (ichol (A4, opts)));
+%! assert (nnz (tril (A5)), nnz (ichol (A5, opts)));
 %!
 %!test
 %! opts.type = "nofill";
 %! opts.michol = "off";
 %! L = ichol (A1, opts);
-%! assert (norm (A1 - L * L', 'fro') / norm (A1, 'fro'), 0.01, 0.01);
-%! L = ichol (A2, opts);
-%! assert (norm (A2 - L * L', 'fro') / norm (A2, 'fro'), 0.06, 0.01);
-%!
-%%!test
-%%! opts.type = "nofill";
-%%! opts.michol = "off";
-%%! opts.shape = "upper";
-%%! U = ichol (A1, opts);
-%%! assert (norm (A1 - U' * U, 'fro') / norm (A1, 'fro'), 0.01, 0.01);
-%!
-%!test
-%! opts.type = "nofill";
-%! opts.michol = "off";
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.0197, 1e-4);
+%! opts.shape = "upper";
+%! U = ichol (A1, opts);
+%! assert (norm (A1 - U' * U, "fro") / norm (A1, "fro"), 0.0197, 1e-4);
 %! opts.shape = "lower";
 %! L = ichol (A1, opts);
-%! assert (norm (A1 - L * L', 'fro') / norm (A1, 'fro'), 0.01, 0.01);
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.0197, 1e-4);
 %!
 %!test
-%! opts.type = "nofill";
 %! opts.michol = "on";
+%! opts.shape = "lower";
+%! opts.type = "nofill";
 %! L = ichol (A1, opts);
-%! assert (norm (A1 - L * L', 'fro') / norm (A1, 'fro'), 0.02, 0.01);
-%!
-%!test
-%! opts.type = "nofill";
-%! opts.michol = "on";
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.0279, 1e-4);
+%! opts.shape = "upper";
+%! U = ichol (A1, opts);
+%! assert (norm (A1 - U' * U, "fro") / norm (A1, "fro"), 0.0279, 1e-4);
+%! opts.shape = "lower";
 %! opts.diagcomp = 3e-3;
 %! L = ichol (A1, opts);
-%! assert (norm (A1 - L * L', 'fro') / norm (A1, 'fro'), 0.02, 0.01);
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.0272, 1e-4);
 %!
 %!test
-%! opts.type = "ict";
+%! opts.type = "nofill";
 %! opts.michol = "off";
-%! opts.droptol = 1e-4;
-%! L = ichol (A1, opts);
-%! assert (norm (A1 - L * L', 'fro') / norm (A1, 'fro'), eps, eps);
-%!
-%!test
-%! opts.type = "ict";
-%! opts.michol = "off";
-%! opts.droptol = 1e-4;
 %! L = ichol (A2, opts);
-%! assert (norm (A2 - L * L', 'fro') / norm (A2, 'fro'), 5e-4, 5e-4);
+%! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"), 0.0893, 1e-4)
+%! opts.michol = "on";
+%! L = ichol (A2, opts);
+%! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"), 0.2377, 1e-4)
+%!
+%!test
+%! opts.type = "nofill";
+%! opts.michol = "off";
+%! L = ichol (A3, opts);
+%! assert (norm (A3 - L*L', "fro") / norm (A3, "fro"), eps, eps);
+%! opts.michol = "on";
+%! L = ichol (A3, opts);
+%! assert (norm (A3 - L*L', "fro") / norm (A3, "fro"), eps, eps);
+%!
+%!test
+%! opts.type = "nofill";
+%! opts.michol = "off";
+%! L = ichol (A4, opts);
+%! assert (norm (A4 - L*L', "fro") / norm (A4, "fro"), 0.0623, 1e-4);
+%! opts.michol = "on";
+%! L = ichol (A4, opts);
+%! assert (norm (A4 - L*L', "fro") / norm (A4, "fro"), 0.1664, 1e-4);
+%!
+%!test
+%! opts.type = "nofill";
+%! opts.michol = "off";
+%! L = ichol (A5, opts);
+%! assert (norm (A5 - L*L', "fro") / norm (A5, "fro"), 0.0195, 1e-4);
+%! opts.michol = "on";
+%! L = ichol (A5, opts);
+%! assert (norm (A5 - L*L', "fro") / norm (A5, "fro"), 0.0276, 1e-4);
+%!test
+%% Negative pivot 
+%!error ichol (A6);
+%% Complex entry in the diagonal
+%!error ichol (A7);
+
+%%!ICHOLT tests
+ 
+%%!test
+%! opts.type = "ict";
+%! opts.droptol = 1e-1;
+%! opts.michol = "off";
+%! L = ichol (A1, opts);
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.2065, 1e-4);
+%! opts.shape = "upper";
+%! U = ichol (A1, opts);
+%! assert (norm (A1 - U' * U, "fro") / norm (A1, "fro"), 0.2065, 1e-4);
+%! opts.shape = "lower";
+%! L = ichol (A1, opts);
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.2065, 1e-4);
+%!
+%%!test
+%! opts.type = "ict";
+%! opts.droptol = 1e-1;
+%! opts.michol = "on";
+%! L = ichol (A1, opts);
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.3266, 1e-4);
+%! opts.shape = "upper";
+%! U = ichol (A1, opts);
+%! assert (norm (A1 - U' * U, "fro") / norm (A1, "fro"), 0.3266, 1e-4);
+%! opts.shape = "lower";
+%! opts.diagcomp = 3e-3;
+%! L = ichol (A1, opts);
+%! assert (norm (A1 - L * L', "fro") / norm (A1, "fro"), 0.3266, 1e-4);
+%!
+%!test
+%! opts.type = "ict";
+%! opts.droptol = 1e-1;
+%! opts.michol = "off";
+%! L = ichol (A2, opts);
+%! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"),  0.0893, 1e-4)
+%! opts.michol = "on";
+%! L = ichol (A2, opts);
+%! assert (norm (A2 - L*L', "fro") / norm (A2, "fro"), 0.2377, 1e-4)
+%!
+%!test
+%! opts.type = "ict";
+%! opts.droptol = 1e-1;
+%! opts.michol = "off";
+%! L = ichol (A3, opts);
+%! assert (norm (A3 - L*L', "fro") / norm (A3, "fro"), eps, eps);
+%! opts.michol = "on";
+%! L = ichol (A3, opts);
+%! assert (norm (A3 - L*L', "fro") / norm (A3, "fro"), eps, eps);
+%!
+%!test
+%! opts.type = "ict";
+%! opts.droptol = 1e-1;
+%! opts.michol = "off";
+%! L = ichol (A4, opts);
+%! assert (norm (A4 - L*L', "fro") / norm (A4, "fro"), 0.1224, 1e-4);
+%! opts.michol = "on";
+%! L = ichol (A4, opts);
+%! assert (norm (A4 - L*L', "fro") / norm (A4, "fro"), 0.2118, 1e-4);
+%!
+%!test
+%! opts.type = "ict";
+%! opts.droptol = 1e-1;
+%! opts.michol = "off";
+%! L = ichol (A5, opts);
+%! assert (norm (A5 - L*L', "fro") / norm (A5, "fro"), 0.2044, 1e-4);
+%! opts.michol = "on";
+%! L = ichol (A5, opts);
+%! assert (norm (A5 - L*L', "fro") / norm (A5, "fro"), 0.3231, 1e-4);
+%!test
+%% Negative pivot 
+%! opts.type = "ict";
+%!error ichol (A6, setup);
+%% Complex entry in the diagonal
+%!error ichol (A7, setup);

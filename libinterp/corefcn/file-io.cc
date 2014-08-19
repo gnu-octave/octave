@@ -500,23 +500,8 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
           file_stat fs (fname);
 
-          if (! (md & std::ios::out
-                 || octave_env::absolute_pathname (fname)
-                 || octave_env::rooted_relative_pathname (fname)))
-            {
-              if (! fs.exists ())
-                {
-                  std::string tmp
-                    = octave_env::make_absolute (load_path::find_file (fname));
-
-                  if (! tmp.empty ())
-                    {
-                      warning_with_id ("Octave:fopen-file-in-path",
-                                       "fopen: file found in load path");
-                      fname = tmp;
-                    }
-                }
-            }
+          if (! (md & std::ios::out))
+            fname = find_data_file_in_load_path ("fopen", fname);
 
           if (! fs.is_dir ())
             {

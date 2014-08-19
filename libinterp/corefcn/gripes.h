@@ -131,4 +131,8 @@ gripe_warn_complex_cmp (void);
 extern OCTINTERP_API void
 gripe_disabled_feature (const std::string& func, const std::string& feature,
                         const std::string& pkg="Octave");
+
+extern OCTINTERP_API void
+gripe_data_file_in_path (const std::string& fcn, const std::string& file);
+
 #endif

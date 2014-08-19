@@ -31,10 +31,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "file-stat.h"
 #include "file-ops.h"
-#include "gripes.h"
 #include "load-path.h"
 #include "oct-env.h"
 #include "oct-md5.h"
+#include "utils.h"
 
 DEFUN (md5sum, args, ,
        "-*- texinfo -*-\n\
@@ -64,22 +64,11 @@ string @var{str}.\n\
             retval = oct_md5 (str);
           else
             {
-              file_stat fs (str);
+              std::string fname = file_ops::tilde_expand (str);
 
-              if (! fs.exists ())
-                {
-                  std::string tmp
-                    = octave_env::make_absolute (load_path::find_file (str));
+              fname = find_data_file_in_load_path ("md5sum", fname);
 
-                  if (! tmp.empty ())
-                    {
-                      warning_with_id ("Octave:md5sum-file-in-path",
-                                       "md5sum: file found in load path");
-                      str = tmp;
-                    }
-                }
-
-              retval = oct_md5_file (str);
+              retval = oct_md5_file (fname);
             }
         }
     }

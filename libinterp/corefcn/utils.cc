@@ -452,6 +452,44 @@ file_in_path (const std::string& name, const std::string& suffix)
   return octave_env::make_absolute (load_path::find_file (nm));
 }
 
+std::string
+find_data_file_in_load_path  (const std::string& fcn,
+                              const std::string& file,
+                              bool require_regular_file)
+{
+  std::string fname = file;
+
+  if (! (octave_env::absolute_pathname (fname)
+         || octave_env::rooted_relative_pathname (fname)))
+    {
+      // Load path will also search "." first, but we don't want to
+      // issue a warning if the file is found in the current directory,
+      // so do an explicit check for that.
+
+      file_stat fs (fname);
+
+      bool local_file_ok
+        = fs.exists () && (fs.is_reg () || ! require_regular_file);
+
+      if (! local_file_ok)
+        {
+          // Not directly found; search load path.
+
+          std::string tmp
+            = octave_env::make_absolute (load_path::find_file (fname));
+
+          if (! tmp.empty ())
+            {
+              gripe_data_file_in_path (fcn, tmp);
+
+              fname = tmp;
+            }
+        }
+    }
+
+  return fname;
+}
+
 // See if there is an function file in the path.  If so, return the
 // full path to the file.
 

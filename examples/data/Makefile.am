@@ -1,6 +1,6 @@
-# Makefile for Octave's example directory
+# Makefile for Octave's examples/data directory
 #
-# Copyright (C) 1993-2013 John W. Eaton
+# Copyright (C) 2012-2013 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -18,12 +18,12 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-## Pass-through layer.  Simply pass make commands down to SUBDIRS.
-
 include $(top_srcdir)/build-aux/common.mk
 
-EXTRA_DIST = \
-  Makefile.am
+DATA_FILES = \
+   penny.mat
 
-SUBDIRS = code data
+octdata_DATA = $(DATA_FILES)
+
+EXTRA_DIST = $(DATA_FILES)
 

@@ -445,6 +445,9 @@ localoctfiledir = @localoctfiledir@
 localapioctfiledir = @localapioctfiledir@
 localveroctfiledir = @localveroctfiledir@
 
+# Where Octave will search for example data files shipped with distribution.
+octdatadir = @octdatadir@
+
 # Where Octave will search to find image files.
 imagedir = @imagedir@
 

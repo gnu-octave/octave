@@ -2882,6 +2882,8 @@ AC_CONFIG_FILES([
   doc/refcard/Makefile
   etc/icons/Makefile
   examples/Makefile
+  examples/code/Makefile
+  examples/data/Makefile
   libgnu/Makefile
   libgui/Makefile
   libinterp/Makefile

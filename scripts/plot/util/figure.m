@@ -83,16 +83,7 @@ function h = figure (varargin)
   endif
 
   if (init_new_figure)
-    if (ismac () && strcmp (graphics_toolkit (), "fltk"))
-      ## FIXME: Hack for fltk-aqua to work around bug #31931
-      f = __go_figure__ (f);
-      drawnow ();
-      if (! isempty (varargin))
-        set (f, varargin{:});
-      endif
-    else
-      f = __go_figure__ (f, varargin{:});
-    endif
+    f = __go_figure__ (f, varargin{:});
     __add_default_menu__ (f);
   elseif (nargs > 0)
     set (f, varargin{:});

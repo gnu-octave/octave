@@ -689,6 +689,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_MAN1DIR%|\"${man1dir}\"|" \
   -e "s|%OCTAVE_MAN1EXT%|\"${man1ext}\"|" \
   -e "s|%OCTAVE_MANDIR%|\"${mandir}\"|" \
+  -e "s|%OCTAVE_OCTDATADIR%|\"${octdatadir}\"|" \
   -e "s|%OCTAVE_OCTFILEDIR%|\"${octfiledir}\"|" \
   -e "s|%OCTAVE_OCTETCDIR%|\"${octetcdir}\"|" \
   -e "s|%OCTAVE_OCTINCLUDEDIR%|\"${octincludedir}\"|" \

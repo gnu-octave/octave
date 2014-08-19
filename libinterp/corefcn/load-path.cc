@@ -569,6 +569,7 @@ load_path::do_initialize (bool set_initial_path)
       maybe_add_path_elts (sys_path, Vlocal_fcn_file_dir);
       maybe_add_path_elts (sys_path, Voct_file_dir);
       maybe_add_path_elts (sys_path, Vfcn_file_dir);
+      maybe_add_path_elts (sys_path, Voct_data_dir);
     }
 
   std::string tpath = load_path::command_line_path;

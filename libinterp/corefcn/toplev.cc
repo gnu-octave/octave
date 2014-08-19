@@ -1428,6 +1428,7 @@ specified option.\n\
     { true, "man1dir", OCTAVE_MAN1DIR },
     { false, "man1ext", OCTAVE_MAN1EXT },
     { true, "mandir", OCTAVE_MANDIR },
+    { true, "octdatadir", OCTAVE_OCTDATADIR },
     { true, "octfiledir", OCTAVE_OCTFILEDIR },
     { true, "octetcdir", OCTAVE_OCTETCDIR },
     { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },

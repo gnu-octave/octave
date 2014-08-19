@@ -45,6 +45,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.cc"
 
+// Define to 1 to enable debugging statements.
+#define DEBUG_TRACE 0
+
 static void
 gripe_method_access (const std::string& from, const cdef_method& meth)
 {
@@ -1856,14 +1859,18 @@ bool cdef_object_scalar::is_partially_constructed_for (const cdef_class& cls) co
 
 handle_cdef_object::~handle_cdef_object (void)
 {
-  gnulib::printf ("deleting %s object (handle)\n",
-                  get_class ().get_name ().c_str ());
+#if DEBUG_TRACE
+  std::cerr << "deleting " << get_class ().get_name ()
+            << " object (handle)" << std::endl;
+#endif
 }
 
 value_cdef_object::~value_cdef_object (void)
 {
-  gnulib::printf ("deleting %s object (value)\n",
-                  get_class ().get_name ().c_str ());
+#if DEBUG_TRACE
+  std::cerr << "deleting " << get_class ().get_name ()
+            << " object (value)" << std::endl;
+#endif
 }
 
 cdef_class::cdef_class_rep::cdef_class_rep (const std::list<cdef_class>& superclasses)
@@ -2067,8 +2074,11 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
                       for (std::list<cdef_class>::const_iterator it = explicit_ctor_list.begin ();
                            ! error_state && it != explicit_ctor_list.end (); ++it)
                         {
-                          gnulib::printf ("explicit superclass constructor: %s\n",
-                                          it->get_name ().c_str ());
+#if DEBUG_TRACE
+                          std::cerr << "explicit superclass constructor: "
+                                    << it->get_name () << std::endl;
+#endif
+
                           implicit_ctor_list.remove (*it);
                         }
                     }
@@ -2384,13 +2394,21 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
     {
     case '(':
       // Constructor call
-      gnulib::printf ("constructor\n");
+
+#if DEBUG_TRACE
+      std::cerr << "constructor" << std::endl;
+#endif
+
       retval(0) = construct (idx.front ());
       break;
 
     case '.':
       // Static method, constant (or property?)
-      gnulib::printf ("static method/property\n");
+
+#if DEBUG_TRACE
+      std::cerr << "static method/property" << std::endl;
+#endif
+
       if (idx.front ().length () == 1)
         {
           std::string nm = idx.front ()(0).string_value ();
@@ -2685,7 +2703,10 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
   class_name = full_class_name = t->ident ()->name ();
   if (! t->package_name ().empty ())
     full_class_name = t->package_name () + "." + full_class_name;
-  gnulib::printf ("class: %s\n", full_class_name.c_str ());
+
+#if DEBUG_TRACE
+  std::cerr << "class: " << full_class_name << std::endl;
+#endif
 
   std::list<cdef_class> slist;
 
@@ -2696,7 +2717,9 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
         {
           std::string sclass_name = (*it)->class_name ();
 
-          gnulib::printf ("superclass: %s\n", sclass_name.c_str ());
+#if DEBUG_TRACE
+          std::cerr << "superclass: " << sclass_name << std::endl;
+#endif
 
           cdef_class sclass = lookup_class (sclass_name);
 
@@ -2742,8 +2765,11 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
           std::string aname = (*it)->ident ()->name ();
           octave_value avalue = compute_attribute_value (*it);
 
-          gnulib::printf ("class attribute: %s = %s\n", aname.c_str (),
-                  attribute_value_to_string (*it, avalue).c_str ());
+#if DEBUG_TRACE
+          std::cerr << "class attribute: " << aname << " = "
+                    << attribute_value_to_string (*it, avalue) << std::endl;
+#endif
+
           retval.put (aname, avalue);
         }
     }
@@ -2766,7 +2792,10 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
            it != mb_list.end (); ++it)
         {
           std::map<std::string, octave_value> amap;
-          gnulib::printf ("method block\n");
+
+#if DEBUG_TRACE
+          std::cerr << "method block" << std::endl;
+#endif
 
           // Method attributes
 
@@ -2778,8 +2807,12 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                   std::string aname = (*ait)->ident ()->name ();
                   octave_value avalue = compute_attribute_value (*ait);
 
-                  gnulib::printf ("method attribute: %s = %s\n", aname.c_str (),
-                                  attribute_value_to_string (*ait, avalue).c_str ());
+#if DEBUG_TRACE
+                  std::cerr << "method attribute: " << aname << " = "
+                            << attribute_value_to_string (*ait, avalue)
+                            << std::endl;
+#endif
+
                   amap[aname] = avalue;
                 }
             }
@@ -2804,8 +2837,11 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                     {
                       cdef_method meth = make_method (retval, mname, *mit);
 
-                      gnulib::printf ("%s: %s\n", (mname == class_name ? "constructor" : "method"),
-                                      mname.c_str ());
+#if DEBUG_TRACE
+                      std::cerr << (mname == class_name ? "constructor" : "method")
+                                << ": " << mname << std::endl;
+#endif
+
                       for (std::map<std::string, octave_value>::iterator ait = amap.begin ();
                            ait != amap.end (); ++ait)
                         meth.put (ait->first, ait->second);
@@ -2866,7 +2902,10 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
            it != pb_list.end (); ++it)
         {
           std::map<std::string, octave_value> amap;
-          gnulib::printf ("property block\n");
+
+#if DEBUG_TRACE
+          std::cerr << "property block" << std::endl;
+#endif
 
           // Property attributes
 
@@ -2878,8 +2917,12 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
                   std::string aname = (*ait)->ident ()->name ();
                   octave_value avalue = compute_attribute_value (*ait);
 
-                  gnulib::printf ("property attribute: %s = %s\n", aname.c_str (),
-                          attribute_value_to_string (*ait, avalue).c_str ());
+#if DEBUG_TRACE
+                  std::cerr << "property attribute: " << aname << " = "
+                            << attribute_value_to_string (*ait, avalue)
+                            << std::endl;
+#endif
+
                   if (aname == "Access")
                     {
                       amap["GetAccess"] = avalue;
@@ -2901,13 +2944,21 @@ cdef_class::make_meta_class (tree_classdef* t, bool is_at_folder)
 
                   cdef_property prop = ::make_property (retval, prop_name);
 
-                  gnulib::printf ("property: %s\n", (*pit)->ident ()->name ().c_str ());
+#if DEBUG_TRACE
+                  std::cerr << "property: " << (*pit)->ident ()->name ()
+                            << std::endl;
+#endif
+
                   if ((*pit)->expression ())
                     {
                       octave_value pvalue = (*pit)->expression ()->rvalue1 ();
 
-                      gnulib::printf ("property default: %s\n",
-                              attribute_value_to_string (*pit, pvalue).c_str ());
+#if DEBUG_TRACE
+                      std::cerr << "property default: "
+                                << attribute_value_to_string (*pit, pvalue)
+                                << std::endl;
+#endif
+
                       prop.put ("DefaultValue", pvalue);
                     }
 
@@ -3444,7 +3495,9 @@ cdef_package::cdef_package_rep::meta_subsref
 
           if (! error_state)
             {
-              gnulib::printf ("meta.package query: %s\n", nm.c_str ());
+#if DEBUG_TRACE
+              std::cerr << "meta.package query: " << nm << std::endl;
+#endif
 
               octave_value o = find (nm);
 
@@ -3861,9 +3914,11 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 
+#if DEBUG_TRACE
   std::cerr << "__meta_class_query__ ("
             << args(0).string_value () << ")"
             << std::endl;
+#endif
 
   if (args.length () == 1)
     {

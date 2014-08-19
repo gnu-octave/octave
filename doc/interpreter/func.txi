@@ -404,6 +404,11 @@ For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
 
 @DOCSTRING(nargoutchk)
 
+There is also the class @code{inputParser} which can perform extremely
+complex input checking for functions.
+
+@DOCSTRING(inputParser)
+
 @anchor{XREFvarargin} @anchor{XREFvarargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists

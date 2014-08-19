@@ -33,6 +33,7 @@ general_FCN_FILES = \
   general/flipud.m \
   general/gradient.m \
   general/idivide.m \
+  general/inputParser.m \
   general/int2str.m \
   general/interp1.m \
   general/interp2.m \

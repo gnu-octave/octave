@@ -66,7 +66,7 @@ a file name.
 
 These functions do not implement a GUI element but are useful when developing
 programs that do.  @strong{Warning:} The functions @code{uiwait},
-@code{uiresume}, and @code{waitfor} are only available for the FLTK tooolkit.
+@code{uiresume}, and @code{waitfor} are only available for the FLTK toolkit.
 
 @DOCSTRING(desktop)
 

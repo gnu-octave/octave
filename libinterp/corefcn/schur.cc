@@ -286,15 +286,13 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 %! [u, s] = schur (a);
 %! assert (u' * a * u, s, sqrt (eps ("single")));
 
-%!test
-%! fail ('schur ([1, 2; 3, 4], "bad_opt")',
-%!       "warning", "incorrect ordered schur argument");
-
 %!error schur ()
 %!error schur (1,2,3)
 %!error [a,b,c] = schur (1)
 %!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
 %!error <wrong type argument 'cell'> schur ({1})
+%!warning <incorrect ordered schur argument> schur ([1, 2; 3, 4], "bad_opt");
+
 */
 
 DEFUN (rsf2csf, args, nargout,

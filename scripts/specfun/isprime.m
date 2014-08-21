@@ -22,8 +22,9 @@
 ## Return a logical array which is true where the elements of @var{x} are
 ## prime numbers and false where they are not.
 ##
-## If the maximum value in @var{x} is very large, then you should be using
-## special purpose factorization code.
+## @code{isprime} is appropriate if the maximum value in @var{x} is not too
+## large (< 1e15).  For larger values special purpose factorization code
+## should be used.
 ##
 ## @example
 ## @group
@@ -36,45 +37,43 @@
 
 function t = isprime (x)
 
-  if (nargin == 1)
-    if (any ((x != floor (x) | x < 0)(:)))
-      error ("isprime: needs positive integers");
-    endif
-    maxn = max (x(:));
-    ## generate prime table of suitable length.
-    maxp = min (maxn, max (sqrt (maxn), 1e7)); # FIXME: threshold not optimized.
-    pr = primes (maxp);
-    ## quick search for table matches.
-    t = lookup (pr, x, "b");
-    ## take the rest.
-    m = x(x > maxp);
-    if (! isempty (m))
-      ## there are still possible primes. filter them out by division.
-      if (maxn <= intmax ("uint32"))
-        m = uint32 (m);
-      elseif (maxn <= intmax ("uint64"))
-        m = uint64 (m);
-      else
-        warning ("isprime: too large integers being tested");
-      endif
-      pr = cast (pr(pr <= sqrt (maxn)), class (m));
-      for p = pr
-        m = m(rem (m, p) != 0);
-        if (length (m) < length (pr) / 10)
-          break;
-        endif
-      endfor
-      pr = pr(pr > p);
-      mm = arrayfun (@(x) all (rem (x, pr)), m);
-      m = m(mm);
-      if (! isempty (m))
-        m = cast (sort (m), class (x));
-        t |= lookup (m, x, "b");
-      endif
-    endif
-
-  else
+  if (nargin != 1)
     print_usage ();
+  elseif (! isreal (x) || any ((x < 0 | x != fix (x))(:)))
+    error ("isprime: X must be a non-negative integer");
+  endif
+
+  maxn = max (x(:));
+  ## generate prime table of suitable length.
+  maxp = min (maxn, max (sqrt (maxn), 1e7)); # FIXME: threshold not optimized.
+  pr = primes (maxp);
+  ## quick search for table matches.
+  t = lookup (pr, x, "b");
+  ## take the rest.
+  m = x(x > maxp);
+  if (! isempty (m))
+    ## there are still possible primes. filter them out by division.
+    if (maxn <= intmax ("uint32"))
+      m = uint32 (m);
+    elseif (maxn <= intmax ("uint64"))
+      m = uint64 (m);
+    else
+      warning ("isprime: X contains integers too large to be tested");
+    endif
+    pr = cast (pr(pr <= sqrt (maxn)), class (m));
+    for p = pr
+      m = m(rem (m, p) != 0);
+      if (length (m) < length (pr) / 10)
+        break;
+      endif
+    endfor
+    pr = pr(pr > p);
+    mm = arrayfun (@(x) all (rem (x, pr)), m);
+    m = m(mm);
+    if (! isempty (m))
+      m = cast (sort (m), class (x));
+      t |= lookup (m, x, "b");
+    endif
   endif
 
 endfunction
@@ -84,6 +83,10 @@ endfunction
 %!assert (isprime (4), false)
 %!assert (isprime (magic (3)), logical ([0, 0, 0; 1, 1, 1; 0, 0, 1]))
 
+%% Test input validation
 %!error isprime ()
 %!error isprime (1, 2)
+%!error <X must be a non-negative integer> isprime (i)
+%!error <X must be a non-negative integer> isprime ([1 2; -3 4])
+%!error <X must be a non-negative integer> isprime ([1 2; 3.1 4])
 

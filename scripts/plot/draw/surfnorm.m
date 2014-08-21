@@ -40,7 +40,7 @@
 ## rather than the current axes returned by @code{gca}.
 ##
 ## If output arguments are requested then the components of the normal
-## vectors are returne in @var{nx}, @var{ny}, and @var{nz} and no plot is
+## vectors are returned in @var{nx}, @var{ny}, and @var{nz} and no plot is
 ## made.
 ##
 ## An example of the use of @code{surfnorm} is

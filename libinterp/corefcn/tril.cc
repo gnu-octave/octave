@@ -367,7 +367,7 @@ starts at an offset of @var{k} diagonals above or below the main\n\
 diagonal; above for positive @var{k} and below for negative @var{k}.\n\
 \n\
 The absolute value of @var{k} must not be greater than the number of\n\
-sub-diagonals or super-diagonals.\n\
+subdiagonals or superdiagonals.\n\
 \n\
 For example:\n\
 \n\

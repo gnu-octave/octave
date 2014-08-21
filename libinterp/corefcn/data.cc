@@ -1333,8 +1333,8 @@ DEFUN (diag, args, ,
 @deftypefnx {Built-in Function} {@var{v} =} diag (@var{M}, @var{k})\n\
 Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
 second argument is optional.  If it is positive, the vector is placed on\n\
-the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
-@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the\n\
+the @var{k}-th superdiagonal.  If it is negative, it is placed on the\n\
+@var{-k}-th subdiagonal.  The default value of @var{k} is 0, and the\n\
 vector is placed on the main diagonal.  For example:\n\
 \n\
 @example\n\

@@ -60,14 +60,14 @@
 ## @end table
 ##
 ## The optional second output @var{w} are the normalized angular frequencies.
-## For a onesided calculation @var{w} is in the range [0, pi] if @var{nfft}
-## is even and [0, pi) if @var{nfft} is odd.  Similarly, for a twosided
+## For a one-sided calculation @var{w} is in the range [0, pi] if @var{nfft}
+## is even and [0, pi) if @var{nfft} is odd.  Similarly, for a two-sided
 ## calculation @var{w} is in the range [0, 2*pi] or [0, 2*pi) depending on
 ## @var{nfft}.
 ##
 ## If a sampling frequency is specified, @var{Fs}, then the output frequencies
 ## @var{f} will be in the range [0, @var{Fs}/2] or [0, @var{Fs}/2) for
-## onesided calculations.  For twosided calculations the range will be
+## one-sided calculations.  For two-sided calculations the range will be
 ## [0, @var{Fs}).
 ## 
 ## When called with no outputs the periodogram is immediately plotted in the

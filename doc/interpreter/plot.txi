@@ -1560,7 +1560,7 @@ Indicates the orientation for printing.  Either @qcode{"landscape"} or
 --- Values: @qcode{"on"}, @qcode{"off"}
 
 @item selectiontype
-Holds informations about the last mouse button press within the figure.
+Holds information about the last mouse button press within the figure.
 May be one of
 @table @asis
 @item @qcode{"normal"}

@@ -184,6 +184,7 @@ CreateFcn
 CRLF
 csymamd
 ctranspose
+Ctrl
 CTRL
 CTS
 cummax
@@ -746,6 +747,7 @@ oregonator
 Orthogonalize
 oslash
 otimes
+outerposition
 OutputFcn
 outputfcn
 overridable
@@ -980,6 +982,7 @@ strsplit
 struct
 structs
 subarrays
+subdiagonals
 subdirectories
 subdirectory
 subexpressions
@@ -1011,8 +1014,10 @@ subwindows
 SuiteSparse
 sumsq
 SunOS
+superdiagonal
+superdiagonals
 superiorto
-supradiagonal
+superscripting
 supset
 supseteq
 SV

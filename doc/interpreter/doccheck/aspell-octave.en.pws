@@ -1,5 +1,4 @@
 personal_ws-1.1 en 1
-Abramowitz
 accumarray
 Acknowledgements
 acknowledgements
@@ -7,11 +6,9 @@ ACM
 adams
 Affero
 afterwards
-Ahalt
 aifm
 AIX
 al
-Alamos
 aleph
 alnum
 alphanum
@@ -28,7 +25,6 @@ args
 ARMA
 arpack
 ascii
-Ashok
 ast
 async
 atan
@@ -56,7 +52,6 @@ backtrace
 bartlett
 BaseValue
 basevalue
-Bateman
 BDF
 bdf
 betacdf
@@ -66,7 +61,6 @@ betapdf
 betarnd
 BFGS
 bigtriangledown
-Bilbert
 bincoeff
 binocdf
 binoinv
@@ -91,9 +85,7 @@ bracketx
 brackety
 braindead
 breakpoint
-Brenan
 broadcastable
-Brockwell
 BSX
 builtin
 builtins
@@ -121,7 +113,6 @@ ChangeLog
 changelogs
 changeset
 changesets
-Chaves
 chdir
 Chebyshev
 chisq
@@ -137,7 +128,6 @@ circshift
 circum
 classpath
 classpaths
-Clenshaw
 CLI
 clim
 climmode
@@ -169,7 +159,6 @@ condest
 conformant
 cong
 const
-constuctors
 contextless
 contourc
 convhull
@@ -196,7 +185,6 @@ CurrentAxes
 CurrentFigure
 CurrentObject
 currentpoint
-Cuthill
 cxsparse
 Cygwin
 DAE
@@ -224,7 +212,6 @@ DeleteFcn
 delim
 deltaX
 demi
-Demmel
 DeskJet
 det
 diag
@@ -236,7 +223,6 @@ DisplayNames
 displayrange
 dMatrix
 dmperm
-Dobkin
 docstring
 docstrings
 dOmega
@@ -247,11 +233,8 @@ Downarrow
 downarrow
 downdate
 dpi
-Driebeck
 dt
 Dt
-Dulmage
-Durbin
 dx
 dy
 EastOutside
@@ -262,9 +245,7 @@ eigenpairs
 eigenvector
 eigenvectors
 eigs
-Ekerdt
 elementwise
-Elfers
 elseif
 emacs
 emptyvalue
@@ -273,7 +254,6 @@ endian
 Endian
 endif
 endofline
-Engle's
 eof
 EOF
 EOLs
@@ -293,7 +273,6 @@ errorbars
 errordlg
 ErrorHandler
 ESC
-Esmond
 et
 etree
 etreeplot
@@ -317,7 +296,6 @@ fftn
 fftpack
 FFTs
 fftw
-Fiedler
 fieldname
 fieldnames
 filename
@@ -336,7 +314,6 @@ fontname
 forall
 foregroundcolor
 formfeed
-Forsythe
 Fortran
 fpdf
 fprintf
@@ -356,7 +333,6 @@ gamcdf
 gaminv
 gampdf
 gamrnd
-Gautschi
 gca
 gcbo
 GCC
@@ -385,8 +361,6 @@ gnulib
 gnuplot
 Gnuplot
 gnuplot's
-Golub
-Gonnet
 goto
 Goto
 gotos
@@ -400,7 +374,6 @@ GraphicsAlphaBits
 GraphicsMagick
 Graymap
 grayscale
-Graz
 griddata
 gswin
 GUIs
@@ -408,16 +381,13 @@ gunzipped
 gz
 gzip
 gzipped
-Hackbusch
 Hadamard
-Haddad
 HandleVisibility
 Hankel
 hanning
 Hanning
 hardcode
 hardcoding
-Hauberg
 HDF
 hdf
 headerlines
@@ -431,11 +401,7 @@ hggroup
 hggroups
 hh
 HH
-Higham
-Hindmarsh
-Hindmarsh's
 histc
-Hodel
 holomorphic
 Horner's
 horzcat
@@ -444,13 +410,10 @@ hotelling
 Hotelling's
 HSV
 html
-Hudak
-Huhdanpaa
 hygecdf
 hygeinv
 hygepdf
 hygernd
-Hyndman
 Hypergeometric
 hypergeometric
 IEC
@@ -464,7 +427,6 @@ ij
 Im
 imag
 ImageMagick
-Imenu
 Indices
 indices
 infty
@@ -510,8 +472,6 @@ JPEG
 jpg
 jvm
 JVM's
-Kac
-Kahan
 kendall
 keybindings
 keypress
@@ -519,10 +479,8 @@ keypressfcn
 Kolmogorov
 kolmogorov
 Konrod
-Krishnamurthy
 kron
 kruskal
-Kruskal
 Krylov
 kurtosis
 LabelSpacing
@@ -530,9 +488,7 @@ langle
 Lanzcos
 lapack
 laplace
-Larimore
 LaserJet
-Lauchli
 lceil
 ldiv
 ldivide
@@ -543,10 +499,7 @@ Leftarrow
 leftarrow
 Leftrightarrow
 leftrightarrow
-Lehmer
-Lehoucq
 leq
-Levinson
 LF
 lfloor
 li
@@ -568,7 +521,6 @@ listdlg
 ListSize
 ListString
 literalspacing
-Liu
 LLVM
 LM
 lm
@@ -583,8 +535,6 @@ lognrnd
 lookup
 Lookup
 lookups
-Los
-Lotkin
 Lovato
 lpx
 lr
@@ -600,7 +550,6 @@ ly
 lz
 lzma
 lzw
-Magnus
 Mahalanobis
 makefile
 makefiles
@@ -612,19 +561,14 @@ markeredgecolor
 markerfacecolor
 markersize
 markerstyle
-Marsaglia
-Maschhoff
 matchcase
 matlab
-Matsumoto
 MaxFunEvals
 maxima
 MaxIntervalCount
 MaxIter
 mcnemar
-McNemar's
 meansq
-Mendelsohn
 menubars
 Mersenne
 meshgrid
@@ -635,7 +579,6 @@ metafiles
 Metafont
 mex
 mget
-Michelsen
 Microsystems
 MinGW
 minima
@@ -644,7 +587,6 @@ Minitab
 minval
 MIP
 miscompiled
-Misra
 mkdir
 mkoctfile
 mldivide
@@ -654,8 +596,6 @@ mmm
 mmmm
 mmmyy
 mmmyyyy
-Moler
-Montanet
 mpoles
 mpower
 mput
@@ -688,17 +628,13 @@ nd
 ndgrid
 ndims
 ne
-Nelder
 neq
-Neudecker
 Neumann
 NeXT
 NextPlot
 nfev
 nfft
-Ng
 ni
-Nishimura
 NLP
 nnls
 nnz
@@ -741,7 +677,6 @@ online
 OpenGL
 OpenJDK
 oplus
-Oppenheim
 Ord
 oregonator
 Orthogonalize
@@ -758,7 +693,6 @@ papersize
 paperunits
 PaperUnits
 parseparams
-Parter
 pbm
 PBM
 PBMplus
@@ -777,7 +711,6 @@ pearson
 pentadiagonal
 periodogram
 perp
-Petzold's
 PGF
 pgm
 PGMRES
@@ -802,7 +735,6 @@ POSDEF
 POSIX
 postorder
 PostScript
-Pothen
 powerset
 pre
 preconditioner
@@ -847,20 +779,17 @@ Quickhull
 qz
 QZ
 radices
-Rajamanickam
 randn
 randperm
 rangle
 ranlib
 ras
-Rawlings
 rceil
 rdivide
 Readline
 readline
 RECT
 recursing
-Redheffer
 reentrant
 regex
 regressor
@@ -895,15 +824,11 @@ RMS
 rnd
 roffset
 Rosser
-Rossum
 rpath
 RPMs
 runtime
 sa
-Saad
-Sandia
 SAS
-Schafer
 schar
 Schur
 SCO
@@ -914,7 +839,6 @@ seealso
 SelectionMode
 semidefinite
 Sep
-Shampine
 shiftdim
 si
 signum
@@ -930,7 +854,6 @@ sinetone
 sm
 smirnov
 Smirnov
-Sorensen
 SouthOutside
 sp
 spadesuit
@@ -958,16 +881,12 @@ sqrt
 sqrtm
 sr
 ss
-Stadlober
 stairstep
-Stallman
 startup
 Startup
 statinfo
 stdnormal
 stdout
-Stegun
-Stepleman
 stepsize
 STFT
 STL
@@ -1033,7 +952,6 @@ SYMAMD
 symamd
 symbfact
 symrcm
-Szego
 tcdf
 Tcv
 terminal's
@@ -1047,12 +965,9 @@ textscan
 th
 ths
 tif
-Tikhonov
 TikZ
 Timestamp
 tinv
-Tisseur
-Tisseur's
 tmp
 Toeplitz
 tokenExtents
@@ -1076,7 +991,6 @@ triplot
 trnd
 truecolor
 TrueColor
-Tsang
 Tukey
 tuples
 Tx
@@ -1145,14 +1059,12 @@ vee
 versa
 vertcat
 vertices
-Villadsen
 voronoi
 Voronoi
 waitbar
 waitbars
 wallis
 warndlg
-Wathen
 WAV
 WayPoints
 wblcdf
@@ -1173,12 +1085,10 @@ Wilcoxon
 wildcard
 Wildcards
 wildcards
-Wilks
 windowbuttondownfcn
 windowbuttonmotionfcn
 windowbuttonupfcn
 windowstyle
-WinRand
 WIPO
 wireframe
 wp
@@ -1225,7 +1135,6 @@ yyyy
 YYYY
 yyyymmdd
 yyyymmddTHHMMSS
-Zechner
 Ziggurat
 zlib
 zlim

@@ -28,7 +28,7 @@
 ## and columns are variables.  The vector @var{g} specifies the
 ## corresponding group labels (e.g., numbers from 1 to @var{k}).
 ##
-## The LR test statistic (Wilks' Lambda) and approximate p-values are
+## The LR test statistic (@nospell{Wilks' Lambda}) and approximate p-values are
 ## computed and displayed.
 ## @end deftypefn
 

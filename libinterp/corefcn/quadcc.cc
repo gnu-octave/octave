@@ -1492,9 +1492,9 @@ DEFUN (quadcc, args, nargout,
 @deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 @deftypefnx {Function File} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
-using the doubly-adaptive Clenshaw-Curtis quadrature described by P. Gonnet\n\
-in @cite{Increasing the Reliability of Adaptive Quadrature Using Explicit\n\
-Interpolants}.\n\
+using the doubly-adaptive @nospell{Clenshaw-Curtis} quadrature described by\n\
+@nospell{P. Gonnet} in @cite{Increasing the Reliability of Adaptive\n\
+Quadrature Using Explicit Interpolants}.\n\
 @var{f} is a function handle, inline function, or string\n\
 containing the name of the function to evaluate.\n\
 The function @var{f} must be vectorized and must return a vector of output\n\
@@ -1540,14 +1540,14 @@ Note: @code{quadcc} is a general purpose quadrature algorithm\n\
 and, as such, may be less efficient for a smooth or otherwise\n\
 well-behaved integrand than other methods such as @code{quadgk}.\n\
 \n\
-The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
+The algorithm uses @nospell{Clenshaw-Curtis} quadrature rules of increasing\n\
 degree in each interval and bisects the interval if either the\n\
 function does not appear to be smooth or a rule of maximum\n\
 degree has been reached.  The error estimate is computed from the\n\
 L2-norm of the difference between two successive interpolations\n\
 of the integrand over the nodes of the respective quadrature rules.\n\
 \n\
-Reference: P. Gonnet, @cite{Increasing the Reliability of Adaptive\n\
+Reference: @nospell{P. Gonnet}, @cite{Increasing the Reliability of Adaptive\n\
 Quadrature Using Explicit Interpolants}, ACM Transactions on\n\
 Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\

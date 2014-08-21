@@ -414,7 +414,7 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
 DEFUN_DLD (symrcm, args, ,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} symrcm (@var{S})\n\
-Return the symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
+Return the symmetric reverse @nospell{Cuthill-McKee} permutation of @var{S}.\n\
 @var{p} is a permutation vector such that\n\
 @code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements\n\
 closer to the diagonal than @var{S}.  This is a good preordering for LU\n\
@@ -425,11 +425,11 @@ The algorithm represents a heuristic approach to the NP-complete\n\
 bandwidth minimization problem.  The implementation is based in the\n\
 descriptions found in\n\
 \n\
-E. Cuthill, J. McKee. @cite{Reducing the Bandwidth of Sparse Symmetric\n\
-Matrices}. Proceedings of the 24th ACM National Conference, 157--172\n\
+@nospell{E. Cuthill, J. McKee}. @cite{Reducing the Bandwidth of Sparse\n\
+Symmetric Matrices}. Proceedings of the 24th ACM National Conference, 157--172\n\
 1969, Brandon Press, New Jersey.\n\
 \n\
-A. George, J.W.H. Liu. @cite{Computer Solution of Large Sparse\n\
+@nospell{A. George, J.W.H. Liu}. @cite{Computer Solution of Large Sparse\n\
 Positive Definite Systems}, Prentice Hall Series in Computational\n\
 Mathematics, ISBN 0-13-165274-5, 1981.\n\
 \n\

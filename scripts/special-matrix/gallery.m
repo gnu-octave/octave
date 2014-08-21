@@ -83,7 +83,7 @@
 ## @deftypefn  {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n})
 ## @deftypefnx {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n}, @var{theta})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("dorr", @dots{})
-## Create a diagonally dominant, ill conditioned, tridiagonal matrix.
+## Create a diagonally dominant, ill-conditioned, tridiagonal matrix.
 ##
 ## @end deftypefn
 ##
@@ -94,20 +94,20 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("fiedler", @var{c})
-## Create a symmetric Fiedler matrix.
+## Create a symmetric @nospell{Fiedler} matrix.
 ##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("forsythe", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("forsythe", @var{n}, @var{alpha})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("forsythe", @var{n}, @var{alpha}, @var{lambda})
-## Create a Forsythe matrix (a perturbed Jordan block).
+## Create a @nospell{Forsythe} matrix (a perturbed Jordan block).
 ##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{f} =} gallery ("frank", @var{n})
 ## @deftypefnx {Function File} {@var{f} =} gallery ("frank", @var{n}, @var{k})
-## Create a Frank matrix (ill conditioned eigenvalues).
+## Create a Frank matrix (ill-conditioned eigenvalues).
 ##
 ## @end deftypefn
 ##
@@ -194,13 +194,13 @@
 ## @deftypefn  {Function File} {@var{u} =} gallery ("kahan", @var{n})
 ## @deftypefnx {Function File} {@var{u} =} gallery ("kahan", @var{n}, @var{theta})
 ## @deftypefnx {Function File} {@var{u} =} gallery ("kahan", @var{n}, @var{theta}, @var{pert})
-## Create a Kahan matrix (upper trapezoidal).
+## Create a @nospell{Kahan} matrix (upper trapezoidal).
 ##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("kms", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("kms", @var{n}, @var{rho})
-## Create a Kac-Murdock-Szego Toeplitz matrix.
+## Create a @nospell{Kac-Murdock-Szego} Toeplitz matrix.
 ##
 ## @end deftypefn
 ##
@@ -213,12 +213,12 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("lauchli", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("lauchli", @var{n}, @var{mu})
-## Create a Lauchli matrix (rectangular).
+## Create a @nospell{Lauchli} matrix (rectangular).
 ##
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("lehmer", @var{n})
-## Create a Lehmer matrix (symmetric positive definite).
+## Create a @nospell{Lehmer} matrix (symmetric positive definite).
 ##
 ## @end deftypefn
 ##
@@ -228,7 +228,7 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("lotkin", @var{n})
-## Create a Lotkin matrix.
+## Create a @nospell{Lotkin} matrix.
 ##
 ## @end deftypefn
 ##
@@ -239,7 +239,7 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("moler", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("moler", @var{n}, @var{alpha})
-## Create a Moler matrix (symmetric positive definite).
+## Create a @nospell{Moler} matrix (symmetric positive definite).
 ##
 ## @end deftypefn
 ##
@@ -274,7 +274,8 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("parter", @var{n})
-## Create a Parter matrix (a Toeplitz matrix with singular values near pi).
+## Create a @nospell{Parter} matrix (a Toeplitz matrix with singular values
+## near pi).
 ##
 ## @end deftypefn
 ##
@@ -316,8 +317,8 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("redheff", @var{n})
-## Create a zero and ones matrix of Redheffer associated with the Riemann
-## hypothesis.
+## Create a zero and ones matrix of @nospell{Redheffer} associated with the
+## Riemann hypothesis.
 ##
 ## @end deftypefn
 ##
@@ -365,7 +366,8 @@
 ## @deftypefn  {Function File} {@var{t} =} gallery ("triw", @var{n})
 ## @deftypefnx {Function File} {@var{t} =} gallery ("triw", @var{n}, @var{alpha})
 ## @deftypefnx {Function File} {@var{t} =} gallery ("triw", @var{n}, @var{alpha}, @var{k})
-## Create an upper triangular matrix discussed by Kahan, Golub and Wilkinson.
+## Create an upper triangular matrix discussed by
+## @nospell{Kahan, Golub, and Wilkinson}.
 ##
 ## @end deftypefn
 ##
@@ -390,7 +392,7 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("wathen", @var{nx}, @var{ny})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("wathen", @var{nx}, @var{ny}, @var{k})
-## Create the Wathen matrix.
+## Create the @nospell{Wathen} matrix.
 ##
 ## @end deftypefn
 ##

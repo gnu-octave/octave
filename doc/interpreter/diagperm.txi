@@ -462,7 +462,8 @@ in earlier versions of Octave, but slowly.
 
 @noindent
 Finally, here's how to solve a linear system @code{A*x = b}
-with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
+with @nospell{Tikhonov} regularization (ridge regression) using SVD (a skeleton
+only):
 
 @example
 @group

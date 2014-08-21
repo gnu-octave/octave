@@ -311,11 +311,11 @@ easily be misinterpreted.
 @subsection Empty Matrices
 
 A matrix may have one or both dimensions zero, and operations on empty
-matrices are handled as described by Carl @nospell{de} Boor in @cite{An Empty
-Exercise}, SIGNUM, Volume 25, pages 2-6, 1990 and C. N. Nett and W. M.
-Haddad, in @cite{A System-Theoretic Appropriate Realization of the Empty
-Matrix Concept}, IEEE Transactions on Automatic Control, Volume 38,
-Number 5, May 1993.
+matrices are handled as described by @nospell{Carl de Boor} in
+@cite{An Empty Exercise}, SIGNUM, Volume 25, pages 2-6, 1990 and
+@nospell{C. N. Nett and W. M. Haddad}, in
+@cite{A System-Theoretic Appropriate Realization of the Empty Matrix Concept},
+IEEE Transactions on Automatic Control, Volume 38, Number 5, May 1993.
 @tex
 Briefly, given a scalar $s$, an $m\times n$ matrix $M_{m\times n}$,
 and an $m\times n$ empty matrix $[\,]_{m\times n}$ (with either one or

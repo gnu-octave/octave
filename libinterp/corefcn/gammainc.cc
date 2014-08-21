@@ -57,7 +57,8 @@ gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
 \n\
 @end ifnottex\n\
 with the limiting value of 1 as @var{x} approaches infinity.\n\
-The standard notation is @math{P(a,x)}, e.g., Abramowitz and Stegun (6.5.1).\n\
+The standard notation is @math{P(a,x)}, e.g., @nospell{Abramowitz} and\n\
+@nospell{Stegun} (6.5.1).\n\
 \n\
 If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned\n\
 for each element of @var{x} and vice versa.\n\

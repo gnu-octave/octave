@@ -21,10 +21,10 @@
 @cindex linear algebra
 
 This chapter documents the linear algebra functions provided in Octave.
-Reference material for many of these functions may be found in Golub and
-Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins, 1989, and
-in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992. The
-@cite{@sc{lapack} Users' Guide} is available at:
+Reference material for many of these functions may be found in
+@nospell{Golub and Van Loan}, @cite{Matrix Computations, 2nd Ed.},
+Johns Hopkins, 1989, and in the @cite{@sc{lapack} Users' Guide}, SIAM, 1992.
+The @cite{@sc{lapack} Users' Guide} is available at:
 @cite{http://www.netlib.org/lapack/lug/}
 
 A common text for engineering courses is @nospell{G. Strang},

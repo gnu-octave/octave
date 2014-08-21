@@ -334,9 +334,10 @@ octave:4> x = lsode ("f", x0, t);
 
 @noindent
 The function @code{lsode} uses the Livermore Solver for Ordinary
-Differential Equations, described in A. C. Hindmarsh, @cite{ODEPACK, a
-Systematized Collection of ODE Solvers}, in: Scientific Computing, R. S.
-Stepleman et al. (Eds.), North-Holland, Amsterdam, 1983, pages 55--64.
+Differential Equations, described in @nospell{A. C. Hindmarsh},
+@cite{ODEPACK, a Systematized Collection of ODE Solvers}, in: Scientific
+Computing, @nospell{R. S. Stepleman} et al. (Eds.), North-Holland, Amsterdam,
+1983, pages 55--64.
 
 @subsection Producing Graphical Output
 

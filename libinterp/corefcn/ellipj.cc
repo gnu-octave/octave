@@ -67,7 +67,7 @@ Error---no computation, algorithm termination condition not met,\n\
 return @code{NaN}.\n\
 @end enumerate\n\
 \n\
-Reference: Milton Abramowitz and Irene A Stegun,\n\
+Reference: Milton @nospell{Abramowitz} and Irene A @nospell{Stegun},\n\
 @cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,\n\
 and 16.15), Dover, 1965.\n\
 \n\

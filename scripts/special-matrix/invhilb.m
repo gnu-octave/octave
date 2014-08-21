@@ -63,7 +63,7 @@
 ## The validity of this formula can easily be checked by expanding
 ## the binomial coefficients in both formulas as factorials.  It can
 ## be derived more directly via the theory of Cauchy matrices.
-## See J. W. Demmel, @cite{Applied Numerical Linear Algebra}, p. 92.
+## See @nospell{J. W. Demmel}, @cite{Applied Numerical Linear Algebra}, p. 92.
 ##
 ## Compare this with the numerical calculation of @code{inverse (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the

@@ -183,9 +183,9 @@
 ## of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.
 ## Any other value indicates a failure to converge.
 ## 
-## This function is based on the @sc{arpack} package, written by R. Lehoucq,
-## K. Maschhoff, D. Sorensen, and C. Yang.  For more information see
-## @url{http://www.caam.rice.edu/software/ARPACK/}.
+## This function is based on the @sc{arpack} package, written by
+## @nospell{R. Lehoucq, K. Maschhoff, D. Sorensen, and C. Yang}.  For more
+## information see @url{http://www.caam.rice.edu/software/ARPACK/}.
 ## 
 ## @seealso{eig, svds}
 ## @end deftypefn

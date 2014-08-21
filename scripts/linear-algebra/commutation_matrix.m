@@ -63,8 +63,8 @@
 ## @end ifnottex
 ##  is returned.
 ##
-## See Magnus and Neudecker (1988), @cite{Matrix Differential Calculus with
-## Applications in Statistics and Econometrics.}
+## See @nospell{Magnus and Neudecker} (1988), @cite{Matrix Differential
+## Calculus with Applications in Statistics and Econometrics.}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -33,7 +33,7 @@
 ## Called with only one output, elliptic integrals of the first kind are
 ## returned.
 ##
-## Reference: Milton Abramowitz and Irene A. Stegun,
+## Reference: Milton @nospell{Abramowitz} and Irene A. @nospell{Stegun},
 ## @cite{Handbook of Mathematical Functions}, Chapter 17, Dover, 1965.
 ## @seealso{ellipj}
 ## @end deftypefn

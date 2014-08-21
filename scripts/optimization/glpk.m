@@ -238,7 +238,7 @@
 ## Most fractional variable.
 ##
 ## @item 4 (@w{@code{GLP_BR_DTH}})
-## Heuristic by Driebeck and Tomlin.
+## Heuristic by @nospell{Driebeck and Tomlin}.
 ##
 ## @item 5 (@w{@code{GLP_BR_PCH}})
 ## Hybrid @nospell{pseudocost} heuristic.

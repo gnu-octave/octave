@@ -54,8 +54,8 @@
 ##  @math{A}.
 ## @end ifnottex
 ##
-## See Magnus and Neudecker (1988), Matrix differential calculus with
-## applications in statistics and econometrics.
+## See @nospell{Magnus and Neudecker} (1988), @cite{Matrix Differential
+## Calculus with Applications in Statistics and Econometrics.}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

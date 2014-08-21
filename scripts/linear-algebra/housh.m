@@ -43,7 +43,7 @@
 ## @end table
 ##
 ## @noindent
-## Outputs (see Golub and Van Loan):
+## Outputs (see @nospell{Golub and Van Loan}):
 ##
 ## @table @var
 ## @item beta

@@ -162,8 +162,8 @@
 ##
 ## References:
 ##
-##      [1] W. Hackbusch, @cite{Iterative Solution of Large Sparse Systems of
-##      Equations}, section 9.5.4; Springer, 1994
+## [1] @nospell{W. Hackbusch}, @cite{Iterative Solution of Large Sparse
+## Systems of Equations}, section 9.5.4; Springer, 1994
 ##
 ## @seealso{sparse, pcg}
 ## @end deftypefn

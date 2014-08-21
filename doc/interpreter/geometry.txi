@@ -20,7 +20,7 @@
 @chapter Geometry
 
 Much of the geometry code in Octave is based on the Qhull 
-library@footnote{Barber, C.B., Dobkin, D.P., and Huhdanpaa, H.T., 
+library@footnote{@nospell{Barber, C.B., Dobkin, D.P., and Huhdanpaa, H.T.}, 
 @cite{The Quickhull Algorithm for Convex Hulls}, ACM Trans. on Mathematical 
 Software, 22(4):469--483, Dec 1996, @url{http://www.qhull.org}}.  
 Some of the documentation for Qhull, particularly for the options that 

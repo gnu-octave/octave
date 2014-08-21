@@ -58,8 +58,9 @@ transposition) and @var{H} is upper Hessenberg\n\
 @end ifnottex\n\
 \n\
 The Hessenberg decomposition is usually used as the first step in an\n\
-eigenvalue computation, but has other applications as well (see Golub,\n\
-Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
+eigenvalue computation, but has other applications as well\n\
+(see @nospell{Golub, Nash, and Van Loan},\n\
+IEEE Transactions on Automatic Control, 1979).\n\
 @seealso{eig, chol, lu, qr, qz, schur, svd}\n\
 @end deftypefn")
 {

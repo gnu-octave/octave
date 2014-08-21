@@ -24,8 +24,8 @@
 
 Octave was originally intended to be companion software for an
 undergraduate-level textbook on chemical reactor design being written by
-James B. Rawlings of the University of Wisconsin-Madison and John
-G. Ekerdt of the University of Texas.
+@nospell{James B. Rawlings} of the University of Wisconsin-Madison and
+@nospell{John G. Ekerdt} of the University of Texas.
 
 Clearly, Octave is now much more than just another `courseware' package
 with limited utility beyond the classroom.  Although our initial goals
@@ -90,8 +90,8 @@ The United States Department of Energy, through grant number
 @nospell{DE-FG02-04ER25635}.
 
 @item
-Ashok Krishnamurthy, David Hudak, Juan Carlos Chaves, and Stanley
-C. Ahalt of the Ohio Supercomputer Center.
+@nospell{Ashok Krishnamurthy, David Hudak, Juan Carlos Chaves}, and
+@nospell{Stanley C. Ahalt} of the Ohio Supercomputer Center.
 
 @item
 The National Science Foundation, through grant numbers CTS-0105360,
@@ -102,7 +102,7 @@ The industrial members of the Texas-Wisconsin Modeling and Control
 Consortium (@url{http://www.che.utexas.edu/twmcc, TWMCC}).
 
 @item
-The Paul A. Elfers Endowed Chair in Chemical Engineering at the
+The @nospell{Paul A. Elfers} Endowed Chair in Chemical Engineering at the
 University of Wisconsin-Madison.
 
 @item
@@ -133,15 +133,16 @@ Advanced Technology Program under Grant No. 003658-078.
 Noel Bell, Senior Engineer, Texaco Chemical Company, Austin Texas.
 
 @item
-John A. Turner, Group Leader, Continuum Dynamics @nospell{(CCS-2)}, Los Alamos
-National Laboratory, for registering the @url{octave.org} domain name.
+John A. Turner, Group Leader, Continuum Dynamics @nospell{(CCS-2)},
+@nospell{Los Alamos} National Laboratory, for registering the
+@url{octave.org} domain name.
 
 @item
-James B. Rawlings, Professor, University of Wisconsin-Madison,
+@nospell{James B. Rawlings}, Professor, University of Wisconsin-Madison,
 Department of Chemical and Biological Engineering.
 
 @item
-Richard Stallman, for writing GNU.
+@nospell{Richard Stallman}, for writing GNU.
 @end itemize
 
 This project would not have been possible without the GNU software used

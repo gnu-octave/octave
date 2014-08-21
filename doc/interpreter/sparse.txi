@@ -75,8 +75,8 @@ There are many different means of storing sparse matrix data.  What all
 of the methods have in common is that they attempt to reduce the complexity
 and storage given a priori knowledge of the particular class of problems
 that will be solved.  A good summary of the available techniques for storing
-sparse matrix is given by Saad @footnote{Y. Saad "SPARSKIT: A basic toolkit
-for sparse matrix computation", 1994,
+sparse matrix is given by @nospell{Saad} @footnote{Y. Saad "SPARSKIT: A basic
+toolkit for sparse matrix computation", 1994,
 @url{http://www-users.cs.umn.edu/~saad/software/SPARSKIT/paper.ps}}.
 With full matrices, knowledge of the point of an element of the matrix
 within the matrix is implied by its position in the computers memory. 
@@ -803,7 +803,7 @@ divided by the total number of values in the full band.  The banded
 matrix solvers can be entirely disabled by using @dfn{spparms} to set
 @code{bandden} to 1 (i.e., @code{spparms ("bandden", 1)}).
 
-The QR@tie{}solver factorizes the problem with a Dulmage-Mendelsohn
+The QR@tie{}solver factorizes the problem with a @nospell{Dulmage-Mendelsohn}
 decomposition, to separate the problem into blocks that can be treated
 as over-determined, multiple well determined blocks, and a final
 over-determined block.  For matrices with blocks of strongly connected

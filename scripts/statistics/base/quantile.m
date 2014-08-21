@@ -73,17 +73,17 @@
 ## @var{x} is normally distributed.
 ## @end enumerate
 ##
-## Hyndman and Fan (1996) recommend method 8.  Maxima, S, and R
+## @nospell{Hyndman and Fan} (1996) recommend method 8.  Maxima, S, and R
 ## (versions prior to 2.0.0) use 7 as their default.  Minitab and SPSS
 ## use method 6.  @sc{matlab} uses method 5.
 ##
 ## References:
 ##
 ## @itemize @bullet
-## @item Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) The New
-## S Language.  Wadsworth & Brooks/Cole.
+## @item @nospell{Becker, R. A., Chambers, J. M. and Wilks, A. R.} (1988)
+## The New S Language.  Wadsworth & Brooks/Cole.
 ##
-## @item Hyndman, R. J. and Fan, Y. (1996) Sample quantiles in
+## @item @nospell{Hyndman, R. J. and Fan, Y.} (1996) Sample quantiles in
 ## statistical packages, American Statistician, 50, 361--365.
 ##
 ## @item R: A Language and Environment for Statistical Computing;

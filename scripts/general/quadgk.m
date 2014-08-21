@@ -27,7 +27,7 @@
 ## using adaptive Gauss-Konrod quadrature.
 ## @var{f} is a function handle, inline function, or string
 ## containing the name of the function to evaluate.
-## The formulation is based on a proposal by L.F. Shampine,
+## The formulation is based on a proposal by @nospell{L.F. Shampine},
 ## @cite{"Vectorized adaptive quadrature in @sc{matlab}", Journal of
 ## Computational and Applied Mathematics, pp131-140, Vol 211, Issue 2,
 ## Feb 2008} where all function evaluations at an iteration are

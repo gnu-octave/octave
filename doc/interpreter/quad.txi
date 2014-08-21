@@ -55,7 +55,7 @@ Numerical integration using an adaptive Lobatto rule.
 Numerical integration using an adaptive Gauss-Konrod rule.
 
 @item quadcc
-Numerical integration using adaptive Clenshaw-Curtis rules.
+Numerical integration using adaptive @nospell{Clenshaw-Curtis} rules.
 
 @item trapz, cumtrapz
 Numerical integration of data using the trapezoidal method.

@@ -1131,7 +1131,7 @@ A function defined within a private directory of the directory
 which contains the current function.
 
 @item Class constructor
-A function that constuctors a user class as defined in chapter 
+A function that constructs a user class as defined in chapter
 @ref{Object Oriented Programming}.
 
 @item Class method

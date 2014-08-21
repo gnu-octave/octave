@@ -351,8 +351,8 @@ and the function names in function declarations in
 @code{font-lock-function-name-face}.
 @end itemize
 
-There is also rudimentary support for Imenu (currently, function names
-can be indexed).
+There is also rudimentary support for @nospell{Imenu} (currently, function
+names can be indexed).
 
 @cindex TAGS
 @cindex Emacs TAGS files

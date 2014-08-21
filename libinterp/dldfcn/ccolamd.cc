@@ -132,11 +132,12 @@ such row index exists.  @code{@var{stats}(7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats}(8 : 20)} is always zero in\n\
 the current version of @sc{ccolamd} (reserved for future use).\n\
 \n\
-The authors of the code itself are S. Larimore, T. Davis (Univ. of Florida)\n\
-and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\
-by the National Science Foundation\n\
-@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from Sandia\n\
-National Lab.  See @url{http://www.cise.ufl.edu/research/sparse} for\n\
+The authors of the code itself are @nospell{S. Larimore, T. Davis}\n\
+(Univ. of Florida) and @nospell{S. Rajamanickam} in collaboration with\n\
+@nospell{J. Bilbert and E. Ng}.  Supported by the National Science Foundation\n\
+@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from\n\
+@nospell{Sandia} National Lab.\n\
+See @url{http://www.cise.ufl.edu/research/sparse} for\n\
 ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{colamd, csymamd}\n\
 @end deftypefn")
@@ -389,11 +390,12 @@ such row index exists.  @code{@var{stats}(7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats}(8:20)} is always zero in\n\
 the current version of @sc{ccolamd} (reserved for future use).\n\
 \n\
-The authors of the code itself are S. Larimore, T. Davis (Uni of Florida)\n\
-and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\
-by the National Science Foundation\n\
-@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from Sandia\n\
-National Lab.  See @url{http://www.cise.ufl.edu/research/sparse} for\n\
+The authors of the code itself are @nospell{S. Larimore, T. Davis}\n\
+(Univ. of Florida) and @nospell{S. Rajamanickam} in collaboration with\n\
+@nospell{J. Bilbert and E. Ng}.  Supported by the National Science Foundation\n\
+@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from\n\
+@nospell{Sandia} National Lab.\n\
+See @url{http://www.cise.ufl.edu/research/sparse} for\n\
 ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{symamd, ccolamd}\n\
 @end deftypefn")

@@ -17,111 +17,118 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} inputParser ()
-## Create object @var{parser} of the inputParser class.
+## @deftypefn {Function File} {@var{p} =} inputParser ()
+## Create object @var{p} of the inputParser class.
 ##
-## This class is designed to allow easy parsing of function arguments. This
+## This class is designed to allow easy parsing of function arguments.  The
 ## class supports four types of arguments:
 ##
 ## @enumerate
 ## @item mandatory (see @command{addRequired});
+##
 ## @item optional (see @command{addOptional});
+##
 ## @item named (see @command{addParamValue});
+##
 ## @item switch (see @command{addSwitch}).
 ## @end enumerate
 ##
-## After defining the function API with this methods, the supplied arguments
+## After defining the function API with these methods, the supplied arguments
 ## can be parsed with the @command{parse} method and the parsing results
 ## accessed with the @command{Results} accessor.
 ##
-## @deftypefnx {Accessor method} parser.Parameters
-## Return list of parameters name already defined.
+## @deftypefnx {Accessor method} {} parser.Parameters
+## Return list of parameter names already defined.
 ##
-## @deftypefnx {Accessor method} parser.Results
+## @deftypefnx {Accessor method} {} parser.Results
 ## Return structure with argument names as fieldnames and corresponding values.
 ##
-## @deftypefnx {Accessor method} parser.Unmatched
-## Return structure similar to @command{Results} for unmatched parameters. See
-## the @command{KeepUnmatched} property.
+## @deftypefnx {Accessor method} {} parser.Unmatched
+## Return structure similar to @command{Results}, but for unmatched parameters.
+## See the @command{KeepUnmatched} property.
 ##
-## @deftypefnx {Accessor method} parser.UsingDefaults
+## @deftypefnx {Accessor method} {} parser.UsingDefaults
 ## Return cell array with the names of arguments that are using default values.
 ##
-## @deftypefnx {Class property} parser.CaseSensitive = @var{boolean}
-## Set whether matching of argument names should be case sensitive. Defaults to false.
+## @deftypefnx {Class property} {} parser.CaseSensitive = @var{boolean}
+## Set whether matching of argument names should be case sensitive.  Defaults
+## to false.
 ##
-## @deftypefnx {Class property} parser.FunctionName = @var{name}
-## Set function name to be used on error messages. Defauls to empty string.
+## @deftypefnx {Class property} {} parser.FunctionName = @var{name}
+## Set function name to be used in error messages; Defaults to empty string.
 ##
-## @deftypefnx {Class property} parser.KeepUnmatched = @var{boolean}
-## Set whether an error should be given for non-defined arguments. Defaults to
-## false. If set to true, the extra arguments can be accessed through
-## @code{Unmatched} after the @code{parse} method. Note that since @command{Switch}
-## and @command{ParamValue} arguments can be mixed, it is not possible to know
-## the unmatched type. If argument is found unmatched it is assumed to be of the
-## @command{ParamValue} type and it is expected to be followed by a value.
+## @deftypefnx {Class property} {} parser.KeepUnmatched = @var{boolean}
+## Set whether an error should be given for non-defined arguments.  Defaults to
+## false.  If set to true, the extra arguments can be accessed through
+## @code{Unmatched} after the @code{parse} method.  Note that since
+## @command{Switch} and @command{ParamValue} arguments can be mixed, it is
+## not possible to know the unmatched type.  If argument is found unmatched
+## it is assumed to be of the @command{ParamValue} type and it is expected to
+## be followed by a value.
 ##
-## @deftypefnx {Class property} parser.StructExpand = @var{boolean}
-## Set whether a structure can be passed to the function instead of parameter
-## value pairs. Defaults to true. Not implemented yet.
+## @deftypefnx {Class property} {} parser.StructExpand = @var{boolean}
+## Set whether a structure can be passed to the function instead of
+## parameter/value pairs.  Defaults to true.  Not implemented yet.
 ##
 ## The following example shows how to use this class:
 ##
 ## @example
 ## @group
 ## function check (varargin)
-##     p = inputParser ();                             # create object
-##     p.FunctionName = "check";                    # set function name
-##     p.addRequired ("pack", @@ischar);         # create mandatory argument
+## @c The next two comments need to be indented by one for alignment
+##   p = inputParser ();                      # create object
+##   p.FunctionName = "check";                # set function name
+##   p.addRequired ("pack", @@ischar);         # mandatory argument
+##   p.addOptional ("path", pwd(), @@ischar);  # optional argument
 ##
-##     p.addOptional ("path", pwd(), @@ischar);  # create optional argument
+##   ## create a function handle to anonymous functions for validators
+##   val_mat = @@(x) isvector (x) && all (x <= 1) && all (x >= 0);
+##   p.addOptional ("mat", [0 0], val_mat);
 ##
-##     ## one can create a function handle to anonymous functions for validators
-##     val_mat = @@(x) isvector (x) && all (x <= 1) && all (x >= 0);
-##     p.addOptional ("mat", [0 0], val_mat);
+##   ## create two arguments of type "ParamValue"
+##   val_type = @@(x) any (strcmp (x, @{"linear", "quadratic"@}));
+##   p.addParamValue ("type", "linear", val_type);
+##   val_verb = @@(x) any (strcmp (x, @{"low", "medium", "high"@}));
+##   p.addParamValue ("tolerance", "low", val_verb);
 ##
-##     ## create two ParamValue type of arguments
-##     val_type = @@(x) any (strcmp (x, @{"linear", "quadratic"@}));
-##     p.addParamValue ("type", "linear", val_type);
-##     val_verb = @@(x) any (strcmp (x, @{"low", "medium", "high"@}));
-##     p.addParamValue ("tolerance", "low", val_verb);
+##   ## create a switch type of argument
+##   p.addSwitch ("verbose");
 ##
-##     ## create a switch type of argument
-##     p.addSwitch ("verbose");
+##   p.parse (varargin@{:@});  # Run created parser on inputs
 ##
-##     p.parse (varargin@{:@});
-##
-##     ## the rest of the function can access the input by accessing p.Results
-##     ## for example, to access the value of tolerance, use p.Results.tolerance
+##   ## the rest of the function can access inputs by using p.Results.
+##   ## for example, get the tolerance input with p.Results.tolerance
 ## endfunction
+## @end group
 ##
-## check ("mech");            # valid, will use defaults for other arguments
-## check ();                  # error since at least one argument is mandatory
-## check (1);                 # error since !ischar
-## check ("mech", "~/dev");   # valid, will use defaults for other arguments
+## check ("mech");           # valid, use defaults for other arguments
+## check ();                 # error, one argument is mandatory
+## check (1);                # error, since !ischar
+## check ("mech", "~/dev");  # valid, use defaults for other arguments
 ##
 ## check ("mech", "~/dev", [0 1 0 0], "type", "linear");  # valid
 ##
-## ## the following is also valid. Note how the Switch type of argument can be
-## ## mixed into or before the ParamValue (but still after Optional)
+## ## following is also valid.  Note how the Switch argument type can
+## ## be mixed into or before the ParamValue argument type (but it
+## ## must still appear after any Optional argument).
 ## check ("mech", "~/dev", [0 1 0 0], "verbose", "tolerance", "high");
 ##
-## ## the following returns an error since not all optional arguments, `path' and
-## ## `mat', were given before the named argument `type'.
+## ## following returns an error since not all optional arguments,
+## ## `path' and `mat', were given before the named argument `type'.
 ## check ("mech", "~/dev", "type", "linear");
-## @end group
 ## @end example
 ##
-## @emph{Note 1}: a function can have any mixture of the four API types but they
-## must appear in a specific order. @command{Required} arguments must be the very
-## first which can be followed by @command{Optional} arguments. Only the
-## @command{ParamValue} and @command{Switch} arguments can be mixed together but
-## must be at the end.
+## @emph{Note 1}: A function can have any mixture of the four API types but
+## they must appear in a specific order.  @command{Required} arguments must be
+## first and can be followed by any @command{Optional} arguments.  Only
+## the @command{ParamValue} and @command{Switch} arguments may be mixed
+## together and they must appear at the end.
 ##
-## @emph{Note 2}: if both @command{Optional} and @command{ParamValue} arguments
-## are mixed in a function API, once a string Optional argument fails to validate
-## against, it will be considered the end of @command{Optional} arguments and the
-## first key for a @command{ParamValue} and @command{Switch} arguments.
+## @emph{Note 2}: If both @command{Optional} and @command{ParamValue} arguments
+## are mixed in a function API then once a string Optional argument fails to
+## validate it will be considered the end of the @command{Optional}
+## arguments.  The remaining arguments will be compared against any
+## @command{ParamValue} or @command{Switch} arguments.
 ##
 ## @seealso{nargin, validateattributes, validatestring, varargin}
 ## @end deftypefn
@@ -132,20 +139,20 @@
 ## Add new optional argument to the object @var{parser} of the class inputParser
 ## to implement an ordered arguments type of API 
 ##
-## @var{argname} must be a string with the name of the new argument. The order
+## @var{argname} must be a string with the name of the new argument.  The order
 ## in which new arguments are added with @command{addOptional}, represents the
 ## expected order of arguments.
 ##
 ## @var{default} will be the value used when the argument is not specified.
 ##
-## @var{validator} is an optional anonymous function to validate the given values
-## for the argument with name @var{argname}. Alternatively, a function name
-## can be used.
+## @var{validator} is an optional anonymous function to validate the given
+## values for the argument with name @var{argname}.  Alternatively, a
+## function name can be used.
 ##
 ## See @command{help inputParser} for examples.
 ##
 ## @emph{Note}: if a string argument does not validate, it will be considered a
-## ParamValue key. If an optional argument is not given a validator, anything
+## ParamValue key.  If an optional argument is not given a validator, anything
 ## will be valid, and so any string will be considered will be the value of the
 ## optional argument (in @sc{matlab}, if no validator is given and argument is
 ## a string it will also be considered a ParamValue key).
@@ -155,15 +162,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} addParamValue (@var{argname}, @var{default})
 ## @deftypefnx {Function File} {} addParamValue (@var{argname}, @var{default}, @var{validator})
-## Add new parameter to the object @var{parser} of the class inputParser to implement
-## a name/value pair type of API.
+## Add new parameter to the object @var{parser} of the class inputParser to
+## implement a name/value pair type of API.
 ##
 ## @var{argname} must be a string with the name of the new parameter.
 ##
 ## @var{default} will be the value used when the parameter is not specified.
 ##
 ## @var{validator} is an optional function handle to validate the given values
-## for the parameter with name @var{argname}. Alternatively, a function name
+## for the parameter with name @var{argname}.  Alternatively, a function name
 ## can be used.
 ##
 ## See @command{help inputParser} for examples.
@@ -178,12 +185,12 @@
 ## This method belongs to the inputParser class and implements an ordered
 ## arguments type of API.
 ##
-## @var{argname} must be a string with the name of the new argument. The order
+## @var{argname} must be a string with the name of the new argument.  The order
 ## in which new arguments are added with @command{addrequired}, represents the
 ## expected order of arguments.
 ##
 ## @var{validator} is an optional function handle to validate the given values
-## for the argument with name @var{argname}. Alternatively, a function name
+## for the argument with name @var{argname}.  Alternatively, a function name
 ## can be used.
 ##
 ## See @command{help inputParser} for examples.
@@ -195,16 +202,18 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} addSwitch (@var{argname})
-## Add new switch type of argument to the object @var{parser} of inputParser class.
+## Add new switch type of argument to the object @var{parser} of inputParser
+## class.
 ##
 ## This method belongs to the inputParser class and implements a switch
 ## arguments type of API.
 ##
-## @var{argname} must be a string with the name of the new argument. Arguments
-## of this type can be specified at the end, after @code{Required} and @code{Optional},
-## and mixed between the @code{ParamValue}. They default to false. If one of the
-## arguments supplied is a string like @var{argname}, then after parsing the value
-## of @var{parse}.Results.@var{argname} will be true.
+## @var{argname} must be a string with the name of the new argument.  Arguments
+## of this type can be specified at the end, after @code{Required} and
+## @code{Optional}, and mixed between the @code{ParamValue}.  They default to
+## false.  If one of the arguments supplied is a string like @var{argname},
+## then after parsing the value of @var{parse}.Results.@var{argname} will be
+## true.
 ##
 ## See @command{help inputParser} for examples.
 ##
@@ -212,11 +221,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} parse (@var{varargin})
-## Parses and validates list of arguments according to object @var{parser} of the
-## class inputParser.
+## Parses and validates list of arguments according to object @var{parser} of
+## the class inputParser.
 ##
 ## After parsing, the results can be accessed with the @command{Results}
-## accessor. See @command{help inputParser} for a more complete description.
+## accessor.  See @command{help inputParser} for a more complete description.
 ##
 ## @end deftypefn
 

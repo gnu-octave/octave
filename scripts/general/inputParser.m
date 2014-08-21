@@ -37,27 +37,34 @@
 ## can be parsed with the @command{parse} method and the parsing results
 ## accessed with the @command{Results} accessor.
 ##
-## @deftypefnx {Accessor method} {} parser.Parameters
+## @end deftypefn
+## @deftypefn {Accessor method} {} inputParser.Parameters
 ## Return list of parameter names already defined.
 ##
-## @deftypefnx {Accessor method} {} parser.Results
+## @end deftypefn
+## @deftypefn {Accessor method} {} inputParser.Results
 ## Return structure with argument names as fieldnames and corresponding values.
 ##
-## @deftypefnx {Accessor method} {} parser.Unmatched
+## @end deftypefn
+## @deftypefn {Accessor method} {} inputParser.Unmatched
 ## Return structure similar to @command{Results}, but for unmatched parameters.
 ## See the @command{KeepUnmatched} property.
 ##
-## @deftypefnx {Accessor method} {} parser.UsingDefaults
+## @end deftypefn
+## @deftypefn {Accessor method} {} inputParser.UsingDefaults
 ## Return cell array with the names of arguments that are using default values.
 ##
-## @deftypefnx {Class property} {} parser.CaseSensitive = @var{boolean}
+## @end deftypefn
+## @deftypefn {Class property} {} inputParser.CaseSensitive = @var{boolean}
 ## Set whether matching of argument names should be case sensitive.  Defaults
 ## to false.
 ##
-## @deftypefnx {Class property} {} parser.FunctionName = @var{name}
+## @end deftypefn
+## @deftypefn {Class property} {} inputParser.FunctionName = @var{name}
 ## Set function name to be used in error messages; Defaults to empty string.
 ##
-## @deftypefnx {Class property} {} parser.KeepUnmatched = @var{boolean}
+## @end deftypefn
+## @deftypefn {Class property} {} inputParser.KeepUnmatched = @var{boolean}
 ## Set whether an error should be given for non-defined arguments.  Defaults to
 ## false.  If set to true, the extra arguments can be accessed through
 ## @code{Unmatched} after the @code{parse} method.  Note that since
@@ -66,7 +73,8 @@
 ## it is assumed to be of the @command{ParamValue} type and it is expected to
 ## be followed by a value.
 ##
-## @deftypefnx {Class property} {} parser.StructExpand = @var{boolean}
+## @end deftypefn
+## @deftypefn {Class property} {} inputParser.StructExpand = @var{boolean}
 ## Set whether a structure can be passed to the function instead of
 ## parameter/value pairs.  Defaults to true.  Not implemented yet.
 ##
@@ -134,7 +142,7 @@
 ## @end deftypefn
 
 ## -*- texinfo -*-
-## @deftypefnx {Function File} {} addOptional (@var{argname}, @var{default})
+## @deftypefn  {Function File} {} addOptional (@var{argname}, @var{default})
 ## @deftypefnx {Function File} {} addOptional (@var{argname}, @var{default}, @var{validator})
 ## Add new optional argument to the object @var{parser} of the class inputParser
 ## to implement an ordered arguments type of API 

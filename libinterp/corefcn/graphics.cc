@@ -3672,6 +3672,37 @@ figure::properties::remove_child (const graphics_handle& gh)
     }
 }
 
+void 
+figure::properties::adopt (const graphics_handle& h)
+{
+  base_properties::adopt (h);
+
+  if (! get_currentaxes ().ok ())
+    {
+      graphics_object go = gh_manager::get_object (h);
+
+      if (go.type () == "axes")
+        set_currentaxes (h.as_octave_value ());
+    }
+}
+
+/*
+%!test
+%! hf1 = figure ("visible", "off");
+%! ax1 = subplot (1,2,1);
+%! ax2 = subplot (1,2,2);
+%! hf2 = figure ("visible", "off");
+%! unwind_protect
+%!   set (ax2, "parent", hf2);
+%!   assert (get (hf2, "currentaxes"), ax2);
+%!   assert (get (hf1, "currentaxes"), ax1);
+%!   set (ax1, "parent", hf2);
+%!   assert (get (hf2, "currentaxes"), ax2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+*/
+
 void
 figure::properties::set_visible (const octave_value& val)
 {

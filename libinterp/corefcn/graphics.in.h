@@ -3306,6 +3306,8 @@ public:
         }
     }
 
+    void adopt (const graphics_handle& h);
+
     void set_position (const octave_value& val,
                        bool do_notify_toolkit = true);
 

@@ -1869,8 +1869,8 @@ file_editor_tab::get_function_name ()
 {
   QRegExp rxfun1 ("^[\t ]*function[^=]+=([^\\(]+)\\([^\\)]*\\)[\t ]*$");
   QRegExp rxfun2 ("^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$");
-  QRegExp rxfun3 ("^[\t ]*function[^=]+=[\t ]*([^\s]+)[\t ]*$");
-  QRegExp rxfun4 ("^[\t ]*function[\t ]+([^\s]+)[\t ]*$");
+  QRegExp rxfun3 ("^[\t ]*function[^=]+=[\t ]*([^\\s]+)[\t ]*$");
+  QRegExp rxfun4 ("^[\t ]*function[\t ]+([^\\s]+)[\t ]*$");
 
   QStringList lines = _edit_area->text ().split ("\n");
 

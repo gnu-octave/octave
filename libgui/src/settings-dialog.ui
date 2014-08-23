@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -404,7 +404,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-175</y>
+            <y>0</y>
             <width>662</width>
             <height>580</height>
            </rect>
@@ -1659,8 +1659,11 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_13">
-             <item>
+            <layout class="QGridLayout" name="gridLayout_14">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
               <widget class="QGroupBox" name="workspace_colors_box">
                <property name="enabled">
                 <bool>true</bool>
@@ -1682,16 +1685,10 @@
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="Line" name="line_8">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>1</height>
-                </size>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="cb_hide_tool_tips">
+               <property name="text">
+                <string>Hide tool tip</string>
                </property>
               </widget>
              </item>

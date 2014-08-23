@@ -43,6 +43,11 @@ function t = isprime (x)
     error ("isprime: X must be a non-negative integer");
   endif
 
+  if (isempty (x))
+    t = x;
+    return;
+  endif
+
   maxn = max (x(:));
   ## generate prime table of suitable length.
   maxp = min (maxn, max (sqrt (maxn), 1e7)); # FIXME: threshold not optimized.

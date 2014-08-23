@@ -32,6 +32,18 @@
 ##     @result{} [0, 1, 1, 0, 1, 0]
 ## @end group
 ## @end example
+##
+## If @code{class (@var{x})} is complex, then primality will be tested
+## in the domain of Gaussian integers. This means that some real prime
+## numbers will fail the primality test in this case. For example, 5 =
+## (1+2i)*(1-2i) and 2 = i*(1-i)^2.
+##
+## @example
+## @group
+## isprime ([i, 2, 3, 5])
+##     @result{} [0, 0, 1, 0]
+## @end group
+## @end example
 ## @seealso{primes, factor, gcd, lcm}
 ## @end deftypefn
 
@@ -39,14 +51,22 @@ function t = isprime (x)
 
   if (nargin != 1)
     print_usage ();
-  elseif (! isreal (x) || any ((x < 0 | x != fix (x))(:)))
-    error ("isprime: X must be a non-negative integer");
+  elseif (any (fix (x) != x))
+    error ("isprime: X contains non-integer entries");
   endif
 
   if (isempty (x))
     t = x;
     return;
   endif
+
+  if (iscomplex (x))
+    t = isgaussianprime (x);
+    return;
+  endif
+
+  ## Handle negative entries
+  x = abs (x);
 
   maxn = max (x(:));
   ## generate prime table of suitable length.
@@ -83,15 +103,44 @@ function t = isprime (x)
 
 endfunction
 
+function t = isgaussianprime (z)
+  ## Assumed prime unless proven otherwise
+  t = true (size (z));
+
+  x = real (z);
+  y = imag (z);
+
+  ## If purely real or purely imaginary, ordinary prime test for
+  ## that complex part if that part is 3 mod 4.
+  xidx = y==0 & mod (x, 4) == 3;
+  yidx = x==0 & mod (y, 4) == 3;
+
+  t(xidx) &= isprime (x(xidx));
+  t(yidx) &= isprime (y(yidx));
+
+  ## Otherwise, prime if x^2 + y^2 is prime and NOT 3 mod 4.
+  zabs = x.^2 + y.^2;
+  zidx = mod (zabs, 4) != 3 & !xidx & !yidx;
+
+  t(zidx) &= isprime (zabs (zidx));
+endfunction
+
+
 
 %!assert (isprime (3), true)
 %!assert (isprime (4), false)
+%!assert (isprime (5i), false)
+%!assert (isprime (7i), true)
+%!assert (isprime ([1+2i, (2+3i)*(-1+2i)]), [true, false])
+%!assert (isprime (-2), true)
+%!assert (isprime (complex (-2)), false)
+%!assert (isprime (2i), false)
+%!assert (isprime ([i, 2, 3, 5]), [false, false, true, false])
+%!assert (isprime (0), false)
 %!assert (isprime (magic (3)), logical ([0, 0, 0; 1, 1, 1; 0, 0, 1]))
 
 %% Test input validation
 %!error isprime ()
 %!error isprime (1, 2)
-%!error <X must be a non-negative integer> isprime (i)
-%!error <X must be a non-negative integer> isprime ([1 2; -3 4])
-%!error <X must be a non-negative integer> isprime ([1 2; 3.1 4])
-
+%!error <X contains non-integer entries> isprime (0.5i)
+%!error <X contains non-integer entries> isprime (0.5)

@@ -526,6 +526,7 @@ LM
 lm
 loadpath
 Lobatto
+logfile
 logit
 logncdf
 logninv
@@ -952,6 +953,7 @@ SYMAMD
 symamd
 symbfact
 symrcm
+Syntaxes
 tcdf
 Tcv
 terminal's
@@ -1113,6 +1115,7 @@ xPBTRF
 xPOTRF
 xPTSV
 xtest
+xtests
 xTRTRS
 xu
 xwd

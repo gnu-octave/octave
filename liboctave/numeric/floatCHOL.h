@@ -37,17 +37,17 @@ public:
 
   FloatCHOL (void) : chol_mat (), xrcond (0) { }
 
-  FloatCHOL (const FloatMatrix& a, bool calc_cond = false)
+  FloatCHOL (const FloatMatrix& a, bool upper = true, bool calc_cond = false)
     : chol_mat (), xrcond (0)
   {
-    init (a, calc_cond);
+    init (a, upper, calc_cond);
   }
 
-  FloatCHOL (const FloatMatrix& a, octave_idx_type& info,
+  FloatCHOL (const FloatMatrix& a, octave_idx_type& info, bool upper = true,
              bool calc_cond = false)
     : chol_mat (), xrcond (0)
   {
-    info = init (a, calc_cond);
+    info = init (a, upper, calc_cond);
   }
 
   FloatCHOL (const FloatCHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
@@ -90,7 +90,9 @@ private:
 
   float xrcond;
 
-  octave_idx_type init (const FloatMatrix& a, bool calc_cond);
+  bool is_upper;
+
+  octave_idx_type init (const FloatMatrix& a, bool upper, bool calc_cond);
 };
 
 FloatMatrix OCTAVE_API chol2inv (const FloatMatrix& r);

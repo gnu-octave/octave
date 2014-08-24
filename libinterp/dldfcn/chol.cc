@@ -46,6 +46,13 @@ along with Octave; see the file COPYING.  If not, see
 
 template <class CHOLT>
 static octave_value
+get_chol (const CHOLT& fact)
+{
+  return octave_value (fact.chol_matrix());
+}
+
+template <class CHOLT>
+static octave_value
 get_chol_r (const CHOLT& fact)
 {
   return octave_value (fact.chol_matrix (),
@@ -162,10 +169,6 @@ sparse matrices.\n\
           if (tmp.compare ("vector") == 0)
             vecout = true;
           else if (tmp.compare ("lower") == 0)
-            // FIXME: currently the option "lower" is handled by transposing
-            //  the matrix, factorizing it with the lapack function
-            //  DPOTRF ('U', ...) and finally transposing the factor.  It would
-            //  be more efficient to use DPOTRF ('L', ...) in this case.
             LLt = true;
           else if (tmp.compare ("upper") == 0)
             LLt = false;
@@ -266,18 +269,12 @@ sparse matrices.\n\
                   octave_idx_type info;
 
                   FloatCHOL fact;
-                  if (LLt)
-                    fact = FloatCHOL (m.transpose (), info);
-                  else
-                    fact = FloatCHOL (m, info);
+                  fact = FloatCHOL (m, info, LLt != true);
 
                   if (nargout == 2 || info == 0)
                     {
                       retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
+                      retval(0) = get_chol (fact);
                     }
                   else
                     error ("chol: input matrix must be positive definite");
@@ -323,18 +320,12 @@ sparse matrices.\n\
                   octave_idx_type info;
 
                   CHOL fact;
-                  if (LLt)
-                    fact = CHOL (m.transpose (), info);
-                  else
-                    fact = CHOL (m, info);
+                  fact = CHOL (m, info, LLt != true);
 
                   if (nargout == 2 || info == 0)
                     {
                       retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
+                      retval(0) = get_chol (fact);
                     }
                   else
                     error ("chol: input matrix must be positive definite");
@@ -349,18 +340,12 @@ sparse matrices.\n\
                   octave_idx_type info;
 
                   ComplexCHOL fact;
-                  if (LLt)
-                    fact = ComplexCHOL (m.transpose (), info);
-                  else
-                    fact = ComplexCHOL (m, info);
+                  fact = ComplexCHOL (m, info, LLt != true);
 
                   if (nargout == 2 || info == 0)
                     {
                       retval(1) = info;
-                      if (LLt)
-                        retval(0) = get_chol_l (fact);
-                      else
-                        retval(0) = get_chol_r (fact);
+                      retval(0) = get_chol (fact);
                     }
                   else
                     error ("chol: input matrix must be positive definite");

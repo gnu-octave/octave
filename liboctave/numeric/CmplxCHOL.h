@@ -37,17 +37,17 @@ public:
 
   ComplexCHOL (void) : chol_mat (), xrcond (0) { }
 
-  ComplexCHOL (const ComplexMatrix& a, bool calc_cond = false)
+  ComplexCHOL (const ComplexMatrix& a, bool upper = true, bool calc_cond = false)
     : chol_mat (), xrcond (0)
   {
-    init (a, calc_cond);
+    init (a, upper, calc_cond);
   }
 
-  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info,
+  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info, bool upper = true,
                bool calc_cond = false)
     : chol_mat (), xrcond (0)
   {
-    info = init (a, calc_cond);
+    info = init (a, upper, calc_cond);
   }
 
   ComplexCHOL (const ComplexCHOL& a)
@@ -91,7 +91,9 @@ private:
 
   double xrcond;
 
-  octave_idx_type init (const ComplexMatrix& a, bool calc_cond);
+  bool is_upper;
+
+  octave_idx_type init (const ComplexMatrix& a, bool upper, bool calc_cond);
 };
 
 ComplexMatrix OCTAVE_API chol2inv (const ComplexMatrix& r);

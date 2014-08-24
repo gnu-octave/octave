@@ -843,7 +843,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
     {
       if (mattype.is_hermitian ())
         {
-          CHOL chol (*this, info, calc_cond);
+          CHOL chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

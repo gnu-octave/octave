@@ -86,7 +86,7 @@ extern "C"
 }
 
 octave_idx_type
-ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
+ComplexCHOL::init (const ComplexMatrix& a, bool upper, bool calc_cond)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -101,13 +101,28 @@ ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
   octave_idx_type n = a_nc;
   octave_idx_type info;
 
+  is_upper = upper;
+
   chol_mat.clear (n, n);
-  for (octave_idx_type j = 0; j < n; j++)
+  if (is_upper)
     {
-      for (octave_idx_type i = 0; i <= j; i++)
-        chol_mat.xelem (i, j) = a(i, j);
-      for (octave_idx_type i = j+1; i < n; i++)
-        chol_mat.xelem (i, j) = 0.0;
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          for (octave_idx_type i = 0; i <= j; i++)
+            chol_mat.xelem (i, j) = a (i, j);
+          for (octave_idx_type i = j + 1; i < n; i++)
+            chol_mat.xelem (i, j) = 0.0;
+        }
+     }
+  else
+    {
+      for (octave_idx_type j = 0; j < n; j++)
+        {
+          for (octave_idx_type i = 0; i < j; i++)
+            chol_mat.xelem (i, j) = 0.0;
+       	  for (octave_idx_type i = j; i < n; i++)
+            chol_mat.xelem (i, j) = a (i, j);
+        }
     }
   Complex *h = chol_mat.fortran_vec ();
 
@@ -116,8 +131,18 @@ ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
   if (calc_cond)
     anorm = xnorm (a, 1);
 
-  F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
-                             F77_CHAR_ARG_LEN (1)));
+  if (is_upper)
+    {
+      F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                 n, h, n, info
+                                 F77_CHAR_ARG_LEN (1)));
+    }
+  else
+    {
+      F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
+                                 n, h, n, info
+                                 F77_CHAR_ARG_LEN (1)));
+    }
 
   xrcond = 0.0;
   if (info > 0)
@@ -143,7 +168,7 @@ ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
 }
 
 static ComplexMatrix
-chol2inv_internal (const ComplexMatrix& r)
+chol2inv_internal (const ComplexMatrix& r, bool is_upper = true)
 {
   ComplexMatrix retval;
 
@@ -157,17 +182,37 @@ chol2inv_internal (const ComplexMatrix& r)
 
       ComplexMatrix tmp = r;
 
-      F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
-                                 tmp.fortran_vec (), n, info
-                                 F77_CHAR_ARG_LEN (1)));
+      if (is_upper)
+        {
+          F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("U", 1), n,
+                                     tmp.fortran_vec (), n, info
+                                     F77_CHAR_ARG_LEN (1)));
+        }
+      else
+        {
+          F77_XFCN (zpotri, ZPOTRI, (F77_CONST_CHAR_ARG2 ("L", 1), n,
+                                     tmp.fortran_vec (), n, info
+                                     F77_CHAR_ARG_LEN (1)));
+        }
 
       // If someone thinks of a more graceful way of doing this (or
       // faster for that matter :-)), please let me know!
 
       if (n > 1)
-        for (octave_idx_type j = 0; j < r_nc; j++)
-          for (octave_idx_type i = j+1; i < r_nr; i++)
-            tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
+        {
+          if (is_upper)
+            {
+              for (octave_idx_type j = 0; j < r_nc; j++)
+                for (octave_idx_type i = j+1; i < r_nr; i++)
+                  tmp.xelem (i, j) = tmp.xelem (j, i);
+            }
+          else
+            {
+              for (octave_idx_type j = 0; j < r_nc; j++)
+                for (octave_idx_type i = j+1; i < r_nr; i++)
+                  tmp.xelem (j, i) = tmp.xelem (i, j);
+            }
+        }
 
       retval = tmp;
     }
@@ -181,7 +226,7 @@ chol2inv_internal (const ComplexMatrix& r)
 ComplexMatrix
 ComplexCHOL::inverse (void) const
 {
-  return chol2inv_internal (chol_mat);
+  return chol2inv_internal (chol_mat, is_upper);
 }
 
 void

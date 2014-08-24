@@ -1193,7 +1193,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     {
       if (mattype.is_hermitian ())
         {
-          ComplexCHOL chol (*this, info, calc_cond);
+          ComplexCHOL chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

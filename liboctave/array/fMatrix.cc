@@ -850,7 +850,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
     {
       if (mattype.is_hermitian ())
         {
-          FloatCHOL chol (*this, info, calc_cond);
+          FloatCHOL chol (*this, info, true, calc_cond);
           if (info == 0)
             {
               if (calc_cond)

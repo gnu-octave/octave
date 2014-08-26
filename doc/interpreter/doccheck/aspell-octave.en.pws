@@ -416,6 +416,7 @@ hygepdf
 hygernd
 Hypergeometric
 hypergeometric
+ichol
 IEC
 ieee
 IEEE
@@ -424,6 +425,7 @@ ifft
 ifftn
 ignorecase
 ij
+ilu
 Im
 imag
 ImageMagick

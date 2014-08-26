@@ -650,8 +650,6 @@ function list = missing_functions ()
   "hgexport",
   "hgsetget",
   "hgtransform",
-  "ichol",
-  "ilu",
   "im2frame",
   "im2java",
   "imapprox",

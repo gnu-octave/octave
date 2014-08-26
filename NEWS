@@ -66,10 +66,11 @@ Summary of important user-visible changes for version 4.2:
 
  ** Other new functions added in 4.2:
 
-      bandwidth            isbanded        javachk
-      dir_in_loadpath      isdiag          linkaxes
-      hgload               istril          numfields
-      hgsave               istriu
+      bandwidth            ilu             javachk
+      dir_in_loadpath      isbanded        linkaxes
+      hgload               isdiag          numfields
+      hgsave               istril   
+      ichol                istriu   
 
  ** Deprecated functions.
 

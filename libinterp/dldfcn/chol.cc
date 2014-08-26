@@ -135,7 +135,7 @@ upper triangular part is used.\n\
 \n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
-@seealso{hess, lu, qr, qz, schur, svd, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
+@seealso{hess, lu, qr, qz, schur, svd, ichol, cholinv, chol2inv, cholupdate, cholinsert, choldelete, cholshift}\n\
 @end deftypefn")
 {
   octave_value_list retval;

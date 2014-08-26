@@ -485,11 +485,11 @@ rest of this article, the specific sparse versions of functions are used.
   @dfn{dmperm}, @dfn{symamd}, @dfn{randperm}, @dfn{symrcm}
 
 @item Linear algebra:
-  @dfn{condest}, @dfn{eigs}, @dfn{matrix_type}, @dfn{normest}, @dfn{sprank},
-  @dfn{spaugment}, @dfn{svds}
+  @dfn{condest}, @dfn{eigs}, @dfn{matrix_type},
+  @dfn{normest}, @dfn{sprank}, @dfn{spaugment}, @dfn{svds}
 
 @item Iterative techniques:
-  @dfn{luinc}, @dfn{pcg}, @dfn{pcr}
+  @dfn{ichol}, @dfn{ilu}, @dfn{luinc}, @dfn{pcg}, @dfn{pcr}
 @c @dfn{bicg}, @dfn{bicgstab}, @dfn{cholinc}, @dfn{cgs}, @dfn{gmres}, 
 @c @dfn{lsqr}, @dfn{minres}, @dfn{qmr}, @dfn{symmlq}
 
@@ -860,7 +860,7 @@ singular values and vectors.
 The left division @code{\} and right division @code{/} operators,
 discussed in the previous section, use direct solvers to resolve a
 linear equation of the form @code{@var{x} = @var{A} \ @var{b}} or
-@code{@var{x} = @var{b} / @var{A}}.  Octave equally includes a number of
+@code{@var{x} = @var{b} / @var{A}}.  Octave also includes a number of
 functions to solve sparse linear equations using iterative techniques.
 
 @DOCSTRING(pcg)
@@ -872,6 +872,10 @@ accelerated with the use of a pre-conditioning matrix @var{M}.  In this
 case the linear equation @code{@var{M}^-1 * @var{x} = @var{M}^-1 *
 @var{A} \ @var{b}} is solved instead.  Typical pre-conditioning matrices
 are partial factorizations of the original matrix.
+
+@DOCSTRING(ichol)
+
+@DOCSTRING(ilu)
 
 @DOCSTRING(luinc)
 

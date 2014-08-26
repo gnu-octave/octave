@@ -137,7 +137,7 @@ routines is returned.  If the input matrix is sparse then the matrix @var{L}\n\
 is embedded into @var{U} to give a return value similar to the full case.\n\
 For both full and sparse matrices, @code{lu} loses the permutation\n\
 information.\n\
-@seealso{luupdate, chol, hess, qr, qz, schur, svd}\n\
+@seealso{luupdate, ilu, chol, hess, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
   octave_value_list retval;

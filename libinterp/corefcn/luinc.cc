@@ -93,7 +93,7 @@ are the same as for @code{lu}.\n\
 \n\
 Given the string argument @qcode{\"vector\"}, @code{luinc} returns the\n\
 values of @var{p} @var{q} as vector values.\n\
-@seealso{sparse, lu}\n\
+@seealso{sparse, lu, ilu, ichol}\n\
 @end deftypefn")
 {
   int nargin = args.length ();

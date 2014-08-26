@@ -16,7 +16,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
-##
+
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{L}, @var{U}] =} ilu (@var{A})
 ## @deftypefnx {Function File} {@var{L}, @var{U}] =} ilu (@var{A}, @var{opts})

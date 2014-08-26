@@ -22,11 +22,11 @@
 ## Return a logical array which is true where the elements of @var{x} are
 ## prime numbers and false where they are not.
 ##
-## A prime number is conventionally defined as a positive integer (1, 2, 3,
-## @dots{}) which is divisible only by itself and 1.  Octave extends this
-## definition to include both negative integers and complex values.  A
-## negative integer is prime if its positive counterpart is prime.  This is
-## equivalent to @code{isprime (abs (x))}.
+## A prime number is conventionally defined as a positive integer greater than
+## 1 (e.g., 2, 3, @dots{}) which is divisible only by itself and 1.  Octave
+## extends this definition to include both negative integers and complex
+## values.  A negative integer is prime if its positive counterpart is prime.
+## This is equivalent to @code{isprime (abs (x))}.
 ## 
 ## If @code{class (@var{x})} is complex, then primality is tested in the domain
 ## of Gaussian integers (@url{http://en.wikipedia.org/wiki/Gaussian_integer}).

@@ -500,7 +500,8 @@ documentation string for @code{nchoosek} is
 @@deftypefn  @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{n@}, @@var@{k@})
 @@deftypefnx @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{set@}, @@var@{k@})
 
-Compute the binomial coefficient or all combinations of a set of items.
+Compute the binomial coefficient of @@var@{n@} or list all possible
+combinations of a @@var@{set@} of items.
 
 If @@var@{n@} is a scalar then calculate the binomial coefficient
 of @@var@{n@} and @@var@{k@} which is defined as
@@ -554,10 +555,10 @@ nchoosek (1:3, 2)
 @@end group
 @@end example
 
-@@code@{nchoosek@} works only for non-negative, integer arguments.  Use
-@@code@{bincoeff@} for non-integer and negative scalar arguments, or for
-computing many binomial coefficients at once with vector inputs
-for @@var@{n@} or @@var@{k@}.
+Programming Note: When calculating the binomial coefficient @@code@{nchoosek@}
+works only for non-negative, integer arguments.  Use @@code@{bincoeff@} for
+non-integer and negative scalar arguments, or for computing many binomial
+coefficients at once with vector inputs for @@var@{n@} or @@var@{k@}.
 
 @@seealso@{bincoeff, perms@}
 @@end deftypefn
@@ -566,7 +567,7 @@ for @@var@{n@} or @@var@{k@}.
 @noindent
 which demonstrates most of the concepts discussed above.
 @iftex
-This documentation string renders as
+This documentation string renders in Info format as
 @c Note: use the actual output of info below, rather than try and 
 @c reproduce it here to prevent it looking different from how it would
 @c appear with info.
@@ -574,8 +575,8 @@ This documentation string renders as
 @example
  -- Function File: C = nchoosek (N, K)
  -- Function File: C = nchoosek (SET, K)
-     Compute the binomial coefficient or all combinations of a set of
-     items.
+     Compute the binomial coefficient of N or list all possible
+     combinations of a SET of items.
 
      If N is a scalar then calculate the binomial coefficient of N and
      K which is defined as
@@ -608,32 +609,31 @@ This documentation string renders as
                  1   3
                  2   3
 
+     Programming Note: When calculating the binomial coefficient
      `nchoosek' works only for non-negative, integer arguments.  Use
      `bincoeff' for non-integer and negative scalar arguments, or for
      computing many binomial coefficients at once with vector inputs
      for N or K.
 
-     See also: bincoeff, perms
+     See also: bincoeff, perms.
 @end example
 @noindent
-using info, whereas in a printed documentation using @TeX{} it will
-appear as
+whereas in printed documentation using @TeX{} it will appear as
 
 @deftypefn  {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
 @deftypefnx {Function File} {@var{c} =} nchoosek (@var{set}, @var{k})
 
-Compute the binomial coefficient or all combinations of a set of items.
+Compute the binomial coefficient of @var{n} or list all possible
+combinations of a @var{set} of items.
 
 If @var{n} is a scalar then calculate the binomial coefficient
 of @var{n} and @var{k} which is defined as
-
 @tex
 $$
  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
                = {n! \over k! (n-k)!}
 $$
 @end tex
-
 @noindent
 This is the number of combinations of @var{n} items taken in groups of
 size @var{k}.
@@ -665,10 +665,10 @@ nchoosek (1:3, 2)
 @end group
 @end example
 
-@code{nchoosek} works only for non-negative, integer arguments.  Use
-@code{bincoeff} for non-integer and negative scalar arguments, or for
-computing many binomial coefficients at once with vector inputs for @var{n}
-or @var{k}.
+Programming Note: When calculating the binomial coefficient @code{nchoosek}
+works only for non-negative, integer arguments.  Use @code{bincoeff} for
+non-integer and negative scalar arguments, or for computing many binomial
+coefficients at once with vector inputs for @var{n} or @var{k}.
 
 @seealso{bincoeff, perms}
 @end deftypefn

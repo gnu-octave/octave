@@ -655,7 +655,6 @@ function list = missing_functions ()
   "imapprox",
   "import",
   "inmem",
-  "inputParser",
   "inspect",
   "instrcallback",
   "instrfind",

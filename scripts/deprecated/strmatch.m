@@ -21,6 +21,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} strmatch (@var{s}, @var{A})
 ## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
+##
+## @code{strmatch} is deprecated and will be removed in Octave version 4.6.
+## Use @code{strncmp} (normal case), or @code{strcmp} (@qcode{"exact"} case),
+## or @code{regexp} in all new code.
+##
 ## Return indices of entries of @var{A} which begin with the string @var{s}.
 ## The second argument @var{A} must be a string, character matrix, or a cell
 ## array of strings.  If the third argument @qcode{"exact"} is not given, then
@@ -42,16 +47,22 @@
 ## @end group
 ## @end example
 ##
-## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
-## @code{strncmp} (normal case), or @code{strcmp} (@qcode{"exact"} case), or
-## @code{regexp} in all new code.
 ## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
 ## Author: Paul Kienzle, Alois Schloegl
 ## Adapted-by: jwe
 
+## Deprecated in version 4.2
+
 function idx = strmatch (s, A, exact)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "strmatch is obsolete and will be removed from a future version of Octave, please use strncmp, strcmp, or regexp instead");
+  endif
 
   if (nargin < 2 || nargin > 3)
     print_usage ();

@@ -3699,7 +3699,8 @@ figure::properties::adopt (const graphics_handle& h)
 %!   set (ax1, "parent", hf2);
 %!   assert (get (hf2, "currentaxes"), ax2);
 %! unwind_protect_cleanup
-%!   close (hf);
+%!   close (hf1);
+%!   close (hf2);
 %! end_unwind_protect
 */
 

@@ -3157,7 +3157,7 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
 
   // FIXME: check info?
 
-  retval = -ua*cx*ub.transpose ();
+  retval = ua*cx*ub.transpose ();
 
   return retval;
 }

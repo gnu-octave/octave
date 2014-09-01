@@ -5,7 +5,8 @@ deprecated_FCN_FILES = \
   deprecated/find_dir_in_path.m \
   deprecated/isstr.m \
   deprecated/nfields.m \
-  deprecated/strmatch.m
+  deprecated/strmatch.m \
+  deprecated/syl.m
 
 FCN_FILES += $(deprecated_FCN_FILES)
 

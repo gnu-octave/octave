@@ -244,7 +244,7 @@ COREFCN_SRC = \
   corefcn/strfns.cc \
   corefcn/sub2ind.cc \
   corefcn/svd.cc \
-  corefcn/syl.cc \
+  corefcn/sylvester.cc \
   corefcn/symtab.cc \
   corefcn/syscalls.cc \
   corefcn/sysdep.cc \

@@ -201,7 +201,7 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(blkmm)
 
-@DOCSTRING(syl)
+@DOCSTRING(sylvester)
 
 @node Specialized Solvers
 @section Specialized Solvers

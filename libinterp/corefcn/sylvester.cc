@@ -32,28 +32,30 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN (syl, args, nargout,
+DEFUN (sylvester, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{x} =} syl (@var{A}, @var{B}, @var{C})\n\
+@deftypefn {Built-in Function} {@var{X} =} syl (@var{A}, @var{B}, @var{C})\n\
 Solve the Sylvester equation\n\
 @tex\n\
 $$\n\
- A X + X B + C = 0\n\
+ A X + X B = C\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
 \n\
 @example\n\
-A X + X B + C = 0\n\
+A X + X B = C\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-using standard @sc{lapack} subroutines.  For example:\n\
+using standard @sc{lapack} subroutines.\n\
+\n\
+For example:\n\
 \n\
 @example\n\
 @group\n\
-syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
-   @result{} [ -0.50000, -0.66667; -0.66667, -0.50000 ]\n\
+sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
+   @result{} [ 0.50000, 0.66667; 0.66667, 0.50000 ]\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
@@ -81,11 +83,12 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   octave_idx_type c_nr = arg_c.rows ();
   octave_idx_type c_nc = arg_c.columns ();
 
-  int arg_a_is_empty = empty_arg ("syl", a_nr, a_nc);
-  int arg_b_is_empty = empty_arg ("syl", b_nr, b_nc);
-  int arg_c_is_empty = empty_arg ("syl", c_nr, c_nc);
+  int arg_a_is_empty = empty_arg ("sylvester", a_nr, a_nc);
+  int arg_b_is_empty = empty_arg ("sylvester", b_nr, b_nc);
+  int arg_c_is_empty = empty_arg ("sylvester", c_nr, c_nc);
 
-  bool isfloat = arg_a.is_single_type () || arg_b.is_single_type ()
+  bool isfloat = arg_a.is_single_type ()
+                 || arg_b.is_single_type ()
                  || arg_c.is_single_type ();
 
   if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
@@ -98,9 +101,14 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 
   // Arguments are not empty, so check for correct dimensions.
 
-  if (a_nr != a_nc || b_nr != b_nc)
+  if (a_nr != a_nc)
     {
-      gripe_square_matrix_required ("syl: first two parameters:");
+      gripe_square_matrix_required ("sylvester: input A");
+      return retval;
+    }
+  else if (b_nr != b_nc)
+    {
+      gripe_square_matrix_required ("sylvester: input B");
       return retval;
     }
   else if (a_nr != c_nr || b_nr != c_nc)
@@ -109,7 +117,6 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
       return retval;
     }
 
-  // Dimensions look o.k., let's solve the problem.
   if (isfloat)
     {
       if (arg_a.is_complex_type ()
@@ -209,10 +216,15 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 }
 
 /*
-%!assert (syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12]), [-1/2, -2/3; -2/3, -1/2], sqrt (eps))
-%!assert (syl (single ([1, 2; 3, 4]), single ([5, 6; 7, 8]), single ([9, 10; 11, 12])), single ([-1/2, -2/3; -2/3, -1/2]), sqrt (eps ("single")))
+%!assert (sylvester ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12]), [1/2, 2/3; 2/3, 1/2], sqrt (eps))
+%!assert (sylvester (single ([1, 2; 3, 4]), single ([5, 6; 7, 8]), single ([9, 10; 11, 12])), single ([1/2, 2/3; 2/3, 1/2]), sqrt (eps ("single")))
 
-%!error syl ()
-%!error syl (1, 2, 3, 4)
-%!error <must be a square matrix> syl ([1, 2; 3, 4], [1, 2, 3; 4, 5, 6], [4, 3])
+%% Test input validation
+%!error sylvester ()
+%!error sylvester (1)
+%!error sylvester (1,2)
+%!error sylvester (1, 2, 3, 4)
+%!error <input A: .* must be a square matrix> sylvester (ones (2,3), ones (2,2), ones (2,2))
+%!error <input B: .* must be a square matrix> sylvester (ones (2,2), ones (2,3), ones (2,2))
+%!error <nonconformant matrices> sylvester (ones (2,2), ones (2,2), ones (3,3))
 */

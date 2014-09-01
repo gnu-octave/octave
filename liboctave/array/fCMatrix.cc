@@ -3729,7 +3729,7 @@ Sylvester (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   // FIXME: check info?
 
-  retval = -ua * cx * ub.hermitian ();
+  retval = ua * cx * ub.hermitian ();
 
   return retval;
 }

@@ -459,7 +459,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
                        __shared, __code));
       catch
         __success = false;
-        __msg = [__signal_fails "test failed: syntax error\n" lasterr()];
+        __msg = [__signal_fail "test failed: syntax error\n" lasterr()];
       end_try_catch
 
       if (__success)

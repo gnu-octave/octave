@@ -80,6 +80,7 @@ Summary of important user-visible changes for version 4.2:
 
       bicubic              syl
       find_dir_in_path
+      nargchk
       nfields
 
     The following functions were deprecated in Octave 3.8 and have been

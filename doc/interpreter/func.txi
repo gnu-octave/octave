@@ -395,10 +395,8 @@ way to call the function whenever the number of inputs is wrong.
 
 @DOCSTRING(validateattributes)
 
-For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
-@code{nargoutchk} are available which provide similar error checking.
-
-@DOCSTRING(nargchk)
+For compatibility with @sc{matlab}, @code{narginchk} and @code{nargoutchk} are
+available which provide similar error checking.
 
 @DOCSTRING(narginchk)
 

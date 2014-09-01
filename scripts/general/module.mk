@@ -46,7 +46,6 @@ general_FCN_FILES = \
   general/loadobj.m \
   general/logspace.m \
   general/methods.m \
-  general/nargchk.m \
   general/narginchk.m \
   general/nargoutchk.m \
   general/nthargout.m \

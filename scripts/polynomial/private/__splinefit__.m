@@ -111,7 +111,7 @@ function pp = __splinefit__(varargin)
 %   2011-07-01  Robust fitting parameter added.
 
 % Check number of arguments
-error(nargchk(3,7,nargin));
+narginchk(3,7);
 
 % Check arguments
 [x,y,dim,breaks,n,periodic,beta,constr] = arguments(varargin{:});

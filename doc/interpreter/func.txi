@@ -393,8 +393,6 @@ endif
 which stops the function execution and prints a message about the correct
 way to call the function whenever the number of inputs is wrong.
 
-@DOCSTRING(validateattributes)
-
 For compatibility with @sc{matlab}, @code{narginchk} and @code{nargoutchk} are
 available which provide similar error checking.
 
@@ -402,8 +400,17 @@ available which provide similar error checking.
 
 @DOCSTRING(nargoutchk)
 
-There is also the class @code{inputParser} which can perform extremely
-complex input checking for functions.
+Besides the number of arguments, inputs can be checked for various properties.
+@code{validatestring} is used for string arguments and
+@code{validateattributes} for numeric arguments.
+
+@DOCSTRING(validatestring)
+
+@DOCSTRING(validateattributes)
+
+If none of the preceding functions is sufficient there is also the class
+@code{inputParser} which can perform extremely complex input checking for
+functions.
 
 @DOCSTRING(inputParser)
 

@@ -53,7 +53,7 @@
 ## @end group
 ## @end smallexample
 ##
-## @seealso{strcmp, strcmpi}
+## @seealso{strcmp, strcmpi, validateattributes, inputParser}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>

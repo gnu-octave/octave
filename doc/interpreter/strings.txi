@@ -401,8 +401,6 @@ corresponding functions for case-insensitive comparison.
 
 @DOCSTRING(strncmpi)
 
-@DOCSTRING(validatestring)
-
 @node Manipulating Strings
 @section Manipulating Strings
 

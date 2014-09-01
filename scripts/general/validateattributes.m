@@ -161,7 +161,7 @@
 ##
 ## @end table
 ##
-## @seealso{nargin, varargin, isa, validatestring}
+## @seealso{isa, validatestring, inputParser}
 ## @end deftypefn
 
 function validateattributes (A, cls, attr, varargin)

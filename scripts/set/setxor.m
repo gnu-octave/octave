@@ -1,3 +1,4 @@
+## Copyright (C) 2014 Julien Bect
 ## Copyright (C) 2008-2013 Jaroslav Hajek
 ## Copyright (C) 2000, 2006-2007 Paul Kienzle
 ##
@@ -94,11 +95,11 @@ function [c, ia, ib] = setxor (a, b, varargin)
         c = c.';
       endif
     endif
-  endif
 
-  if (nargout > 1)
-    ia = ia(i(i <= na));
-    ib = ib(i(i > na) - na);
+    if (nargout > 1)
+      ia = ia(i(i <= na));
+      ib = ib(i(i > na) - na);
+    endif
   endif
 
 endfunction
@@ -121,6 +122,34 @@ endfunction
 %! assert (c, [1 1; 1 3; 2 10]);
 %! assert (c, sortrows ([a(ia,:); b(ib,:)]));
 
+%!assert (setxor (1, []), 1)
+%!assert (setxor ([], 1), 1)
+
+%!test
+%! [c, ia, ib] = setxor (1, []);
+%! assert (c, 1);
+%! assert (ia, 1);
+%! assert (isempty (ib));
+
+%!test
+%! [c, ia, ib] = setxor ([], 1);
+%! assert (c, 1);
+%! assert (isempty (ia));
+%! assert (ib, 1);
+
+%!test
+%! a = [2 1; 4 3];  b = [];
+%! [c, ia, ib] = setxor (a, b);
+%! assert (c, [1; 2; 3; 4]);
+%! assert (ia, [3; 1; 4; 2]);
+%! assert (isempty (ib));
+
+%!test
+%! a = [];  b = [2 1; 4 3];
+%! [c, ia, ib] = setxor (a, b);
+%! assert (c, [1; 2; 3; 4]);
+%! assert (isempty (ia));
+%! assert (ib, [3; 1; 4; 2]);
 ## Test orientation of output
 %!shared x,y
 %! x = 1:3;

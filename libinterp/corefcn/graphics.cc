@@ -2775,8 +2775,7 @@ xreset_default_properties (graphics_handle gh,
         {
           // Store *mode prop/val in order to set them last 
           if (pname.find ("mode") == (pname.length () - 4))
-            pval.insert (std::pair<std::string, octave_value>
-                         (pname, it->second));
+            pval[pname] = it->second;
           else
             obj.set (pname, it->second);
         }
@@ -2818,6 +2817,22 @@ base_properties::set_from_list (base_graphics_object& obj,
         }
     }
 }
+
+/*
+## test defaults are set in the order they were stored
+%!test
+%! set(0, "defaultfigureunits", "normalized");
+%! set(0, "defaultfigureposition", [0.7 0 0.3 0.3]);
+%! hf = figure ("visible", "off");
+%! tol = 20 * eps;
+%! unwind_protect
+%!   assert (get (hf, "position"), [0.7 0 0.3 0.3], tol);
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   set(0, "defaultfigureunits", "remove");
+%!   set(0, "defaultfigureposition", "remove");
+%! end_unwind_protect
+*/
 
 octave_value
 base_properties::get_dynamic (const caseless_str& name) const

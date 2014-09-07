@@ -1989,10 +1989,76 @@ private:
 
 // ---------------------------------------------------------------------
 
+typedef std::pair <std::string, octave_value> pval_pair;
+
+class pval_vector : public std::vector <pval_pair>
+{
+ public:
+  const_iterator find (const std::string pname) const
+  {
+    const_iterator it;
+ 
+    for (it = (*this).begin (); it != (*this).end (); it++)
+      if (pname.compare ((*it).first) == 0)
+        return it;
+    
+    return (*this).end ();
+  }
+
+  iterator find (const std::string pname)
+  {
+    iterator it;
+ 
+    for (it = (*this).begin (); it != (*this).end (); it++)
+      if (pname.compare ((*it).first) == 0)
+        return it;
+    
+    return (*this).end ();
+  }
+  
+  octave_value lookup (const std::string pname) const
+  {
+    octave_value retval;
+
+    const_iterator it = find (pname);
+
+    if (it != (*this).end ())
+     retval = (*it).second;
+
+    return retval;
+  }
+
+  octave_value& operator [] (const std::string pname)   
+  {
+    iterator it = find (pname);
+    
+    if (it == (*this).end ())
+      {
+        push_back (pval_pair (pname, octave_value ()));
+        return (*this).back ().second;
+      }
+    
+    return (*it).second;
+  }
+
+  void erase (const std::string pname)
+  {
+    iterator it = find (pname);
+    if (it != (*this).end ())
+      erase (it);
+  }
+  
+  void erase (iterator it)
+  {
+    std::vector <pval_pair>::erase (it);
+  }
+
+};
+
 class property_list
 {
 public:
-  typedef std::map<std::string, octave_value> pval_map_type;
+  typedef pval_vector pval_map_type;
   typedef std::map<std::string, pval_map_type> plist_map_type;
 
   typedef pval_map_type::iterator pval_map_iterator;

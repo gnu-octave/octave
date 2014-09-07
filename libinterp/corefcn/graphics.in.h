@@ -4220,8 +4220,8 @@ public:
   axes (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), xproperties (mh, p), default_properties ()
   {
-    xproperties.override_defaults (*this);
     xproperties.update_transform ();
+    xproperties.override_defaults (*this);
   }
 
   ~axes (void) { }

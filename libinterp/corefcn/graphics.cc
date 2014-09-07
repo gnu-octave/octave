@@ -2806,7 +2806,7 @@ base_properties::set_from_list (base_graphics_object& obj,
            q++)
         {
           std::string pname = q->first;
-          
+
           obj.set (pname, q->second);
 
           if (error_state)
@@ -4766,28 +4766,23 @@ axes::properties::set_text_child (handle_property& hp,
                                   const std::string& who,
                                   const octave_value& v)
 {
-  graphics_handle val;
-
   if (v.is_string ())
     {
-      val = gh_manager::make_graphics_handle ("text", __myhandle__,
-                                              false, false);
-
-      xset (val, "string", v);
+      xset (hp.handle_value (), "string", v);
+      return;
     }
+
+  graphics_handle val;
+  graphics_object go = gh_manager::get_object (gh_manager::lookup (v));
+
+  if (go.isa ("text"))
+    val = ::reparent (v, "set", who, __myhandle__, false);
   else
     {
-      graphics_object go = gh_manager::get_object (gh_manager::lookup (v));
+      std::string cname = v.class_name ();
 
-      if (go.isa ("text"))
-        val = ::reparent (v, "set", who, __myhandle__, false);
-      else
-        {
-          std::string cname = v.class_name ();
-
-          error ("set: expecting text graphics object or character string for %s property, found %s",
-                 who.c_str (), cname.c_str ());
-        }
+      error ("set: expecting text graphics object or character string for %s property, found %s",
+             who.c_str (), cname.c_str ());
     }
 
   if (! error_state)

@@ -70,7 +70,7 @@ Summary of important user-visible changes for version 4.2:
       dir_in_loadpath      isbanded        linkaxes
       hgload               isdiag          numfields
       hgsave               istril          sylvester
-      ichol                istriu   
+      ichol                istriu          lscov         
 
  ** Deprecated functions.
 

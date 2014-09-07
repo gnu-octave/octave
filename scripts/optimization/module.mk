@@ -11,6 +11,7 @@ optimization_FCN_FILES = \
   optimization/fsolve.m \
   optimization/fzero.m \
   optimization/glpk.m \
+  optimization/lscov.m \
   optimization/lsqnonneg.m \
   optimization/optimget.m \
   optimization/optimset.m \

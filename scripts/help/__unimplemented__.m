@@ -705,7 +705,6 @@ function list = missing_functions ()
   "listfonts",
   "loadlibrary",
   "localfunctions",
-  "lscov",
   "lsqr",
   "makehgtform",
   "material",

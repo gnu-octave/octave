@@ -66,7 +66,7 @@
 ##
 ## Not implemented.
 ## @end itemize
-## @seealso{optimset, pqpnonneg}
+## @seealso{optimset, pqpnonneg, lscov}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.

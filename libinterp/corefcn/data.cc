@@ -2602,6 +2602,27 @@ DEFUN (permute, args, ,
 Return the generalized transpose for an N-D array object @var{A}.\n\
 The permutation vector @var{perm} must contain the elements\n\
 @code{1:ndims (A)} (in any order, but each element must appear only once).\n\
+\n\
+The @var{N}th dimension of @var{A} gets remapped to dimension \n\
+@code{@var{PERM}(@var{N})}.\n\ For example,\n\
+\n\
+@example\n\
+@group\n\
+@var{x} = zeros ([2, 3, 5, 7]);\n\
+size (@var{x})\n\
+   @result{}  2   3   5   7\n\
+\n\
+size (permute (@var{x}, [2, 1, 3, 4]))\n\
+   @result{}  3   2   5   7\n\
+\n\
+size (permute (@var{x}, [1, 3, 4, 2]))\n\
+   @result{}  2   5   7   3\n\
+\n\
+## The identity permutation\n\
+size (permute (@var{x}, [1, 2, 3, 4]))\n\
+   @result{}  2   3   5   7\n\
+@end group\n\
+@end example\n\
 @seealso{ipermute}\n\
 @end deftypefn")
 {

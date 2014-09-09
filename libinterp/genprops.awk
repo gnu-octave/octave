@@ -470,7 +470,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n  else if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
+        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n  else if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
 
     first = 1;
 

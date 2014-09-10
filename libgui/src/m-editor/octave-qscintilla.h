@@ -51,6 +51,7 @@ signals:
 
   void execute_command_in_terminal_signal (const QString&);
   void create_context_menu_signal (QMenu*);
+  void context_menu_edit_signal (const QString&);
   void qsci_has_focus_signal (bool);
   void status_update (bool,bool);
 

@@ -23,6 +23,7 @@
 ## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
 ## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
 ## @deftypefnx {Function File} {@var{days} =} datenum ("datestr")
+## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{f})
 ## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{p})
 ## @deftypefnx {Function File} {[@var{days}, @var{secs}] =} datenum (@dots{})
 ## Return the date/time input as a serial day number, with Jan 1, 0000
@@ -37,9 +38,17 @@
 ## The input may be a date vector (see @code{datevec}), 
 ## datestr (see @code{datestr}), or directly specified as input.
 ##
-## When processing input datestrings, @var{p} is the year at the start of the
-## century to which two-digit years will be referenced.  If not specified, it
-## defaults to the current year minus 50.
+## When processing input datestrings, @var{f} is the format string used to
+## interpret date strings (see @code{datestr}).  If no format @var{f} is
+## specified, then a relatively slow search is performed through various
+## formats.  It is always preferable to specify the format string @var{f} if
+## it is known.  Formats which do not specify a particular time component
+## will have the value set to zero.  Formats which do not specify a date
+## will default to January 1st of the current year.
+##
+## @var{p} is the year at the start of the century to which two-digit years
+## will be referenced.  If not specified, it defaults to the current year
+## minus 50.
 ##
 ## The optional output @var{secs} holds the time on the specified day with
 ## greater precision than @var{days}.
@@ -196,6 +205,8 @@ endfunction
 %!assert (datenum ({"5/19/2001"}), 730990)
 %!assert (datenum (char ("5/19/2001", "6/6/1944")), [730990; 710189])
 %!assert (datenum ({"5/19/2001", "6/6/1944"}), [730990; 710189])
+## Test string input with format string
+%!assert (datenum ("5-19, 2001", "mm-dd, yyyy"), 730990)
 
 %% Test input validation
 %!error datenum ()

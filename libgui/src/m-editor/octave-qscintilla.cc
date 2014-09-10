@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qscilexer.h>
 #include <Qsci/qscicommandset.h>
 #include <QShortcut>
+#include <QMessageBox>
 
 #include "octave-qscintilla.h"
 #include "file-editor-tab.h"
@@ -265,7 +266,7 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
 void
 octave_qscintilla::contextmenu_edit (bool)
 {
-  emit execute_command_in_terminal_signal (QString("edit ") + _word_at_cursor);
+  emit context_menu_edit_signal (_word_at_cursor);
 }
 
 void

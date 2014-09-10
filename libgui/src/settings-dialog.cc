@@ -281,8 +281,12 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->proxyUserName->setText (settings->value ("proxyUserName").toString ());
   ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
 
-  // qorkspace colors
+  // Workspace
+  // colors
   read_workspace_colors (settings);
+  // hide tool tips
+  ui->cb_hide_tool_tips->setChecked (
+    settings->value ("workspaceview/hide_tool_tips",false).toBool ());
 
   // terminal colors
   read_terminal_colors (settings);
@@ -731,8 +735,13 @@ settings_dialog::write_changed_settings ()
   delete lexer;
 #endif
 
+  // Workspace
   write_workspace_colors (settings);
+  // hide tool tips
+  settings->setValue ("workspaceview/hide_tool_tips",
+                      ui->cb_hide_tool_tips->isChecked ());
 
+  // Terminal
   write_terminal_colors (settings);
 
   // shortcuts

@@ -257,16 +257,22 @@ workspace_view::notice_settings (const QSettings *settings)
   _model->notice_settings (settings); // update colors of model first
 
   QString tool_tip;
-  tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
-  tool_tip += QString (tr ("Colors for variable attributes:"));
-  for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+
+  if (!settings->value ("workspaceview/hide_tool_tips",false).toBool ())
     {
-      tool_tip +=
-        QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
-        .arg (_model->storage_class_color (i).name ())
-        .arg (resource_manager::storage_class_names ().at (i));
+      tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
+      tool_tip += QString (tr ("Colors for variable attributes:"));
+      for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+        {
+          tool_tip +=
+            QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
+            .arg (_model->storage_class_color (i).name ())
+            .arg (resource_manager::storage_class_names ().at (i));
+        }
     }
+
   setToolTip (tool_tip);
+
 }
 
 void

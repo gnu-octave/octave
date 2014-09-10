@@ -87,8 +87,22 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 
 parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
 	case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	  *api*) api_prefix_decl='%define api.prefix "octave_"'; ;; \
-	  *name*) api_prefix_decl='%name-prefix="octave_"'; ;; \
+	  *api*) \
+	    case "$(BISON_API_PREFIX_DECL_STYLE)" in \
+	     *brace*) \
+	       api_prefix_decl='%define api.prefix {octave_}'; ;; \
+	     *) \
+	       api_prefix_decl='%define api.prefix "octave_"'; ;; \
+             esac; \
+            ;; \
+	  *name*) \
+	    case "$(BISON_API_PREFIX_DECL_STYLE)" in \
+	      *brace*) \
+	        api_prefix_decl='%name-prefix {octave_}'; ;; \
+	      *) \
+	        api_prefix_decl='%name-prefix="octave_"'; ;; \
+            esac; \
+          ;; \
 	esac; \
 	case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
 	  *quote*) quote='"' ;; \

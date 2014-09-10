@@ -1890,26 +1890,38 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
     AC_CACHE_CHECK([syntax of bison api.prefix (or name-prefix) declaration],
                    [octave_cv_bison_api_prefix_decl_style], [
       style="api name"
+      quote="quote brace"
       for s in $style; do
-        if test $s = "api"; then
-          def='%define api.prefix "foo_"'
-        else
-          def='%name-prefix="foo_"'
-        fi
-        cat << EOF > conftest.yy
+        for q in $quote; do
+          if test $s = "api"; then
+            if test $q = "quote"; then
+              def='%define api.prefix "foo_"'
+            else
+              def='%define api.prefix {foo_}'
+            fi
+          else
+            if test $q = "quote"; then
+              def='%name-prefix="foo_"'
+            else
+              def='%name-prefix {foo_}'
+            fi
+          fi
+          cat << EOF > conftest.yy
 $def
 %start input
 %%
 input:;
 %%
 EOF
-        $YACC conftest.yy > /dev/null 2>&1
-        ac_status=$?
-        if test $ac_status -eq 0; then
-          octave_cv_bison_api_prefix_decl_style="$s"
-          break
-        fi
-        if test $ac_status -eq 0; then
+          ## Older versions of bison only warn and exit with success.
+          octave_bison_output=`$YACC conftest.yy 2>&1`
+          ac_status=$?
+          if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
+            octave_cv_bison_api_prefix_decl_style="$s $q"
+            break
+          fi
+        done
+        if test -n "$octave_cv_bison_api_prefix_decl_style"; then
           break
         fi
       done
@@ -1920,7 +1932,7 @@ EOF
   AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
 
   if test -z "$octave_cv_bison_api_prefix_decl_style"; then
-    YACC=
+    tmp_have_bison=no
     warn_bison_api_prefix_decl_style="
 
 I wasn't able to find a suitable style for declaring the api prefix
@@ -1953,9 +1965,9 @@ $def
 input:;
 %%
 EOF
-          $YACC conftest.yy > /dev/null 2>&1
+          octave_bison_output=`$YACC conftest.yy 2>&1`
           ac_status=$?
-          if test $ac_status -eq 0; then
+          if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
             if test $q = noquote; then
               q=
             fi
@@ -1963,7 +1975,7 @@ EOF
             break
           fi
         done
-        if test $ac_status -eq 0; then
+        if test -n "$octave_cv_bison_push_pull_decl_style"; then
           break
         fi
       done
@@ -1974,7 +1986,7 @@ EOF
   AC_SUBST(BISON_PUSH_PULL_DECL_STYLE, $octave_cv_bison_push_pull_decl_style)
 
   if test -z "$octave_cv_bison_push_pull_decl_style"; then
-    YACC=
+    tmp_have_bison=no
     warn_bison_push_pull_decl_style="
 
 I wasn't able to find a suitable style for declaring a push-pull
@@ -1987,9 +1999,10 @@ parser in a bison input file so I'm disabling bison.
     YACC='$(top_srcdir)/build-aux/missing bison'
     warn_bison="
 
-I didn't find bison, but it's only a problem if you need to
-reconstruct parse.cc, which is the case if you're building from VCS
-sources.
+I didn't find bison, or the version of bison that I found does not
+support all the features that are required, but it's only a problem
+if you need to reconstruct parse.cc, which is the case if you're
+building from VCS sources.
 "
     OCTAVE_CONFIGURE_WARNING([warn_bison])
   fi

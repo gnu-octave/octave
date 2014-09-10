@@ -853,6 +853,10 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
             for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)
               {
                 octave_idx_type tmp = i * old_nr + ridx (j);
+                if (tmp < 0)
+                  (*current_liboctave_error_handler)
+                    ("reshape: overflow in octave_idx_type prevents reshaping array");
+
                 octave_idx_type ii = tmp % new_nr;
                 octave_idx_type jj = (tmp - ii) / new_nr;
                 for (octave_idx_type k = kk; k < jj; k++)

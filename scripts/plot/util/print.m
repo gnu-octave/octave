@@ -103,18 +103,29 @@
 ##     Encapsulated PostScript (level 1 and 2, mono and color).  The FLTK
 ## graphic toolkit generates PostScript level 3.0.
 ##
-##   @item  tex
+##   @item  pslatex
 ##   @itemx epslatex
-##   @itemx epslatexstandalone
-##   @itemx pstex
-##   @itemx pslatex
 ##   @itemx pdflatex
-##     Generate a @LaTeX{} (or @TeX{}) file for labels and eps/ps/pdf
-## for graphics.  The file produced by @code{epslatexstandalone} can be
-## processed directly by @LaTeX{}.  The other formats are intended to
-## be included in a @LaTeX{} (or @TeX{}) document.  The @code{tex} device
-## is the same as the @code{epslatex} device.  The @code{pdflatex} device
-## is only available for the FLTK graphics toolkit.
+##   @itemx pslatexstandalone
+##   @itemx epslatexstandalone
+##   @itemx pdflatexstandalone
+##     Generate a @LaTeX{} file @file{@var{filename}.tex} for the text
+## portions of a plot and a file @file{@var{filename}.(ps|eps|pdf)} for the
+## remaining graphics.  The graphics file suffix .ps|eps|pdf is determined
+## by the specified device type.  The @LaTeX{} file produced by the
+## @samp{standalone} option can be processed directly by @LaTeX{}.  The file
+## generated without the @samp{standalone} option is intended to be included
+## from another @LaTeX{} document.  In either case, the @LaTeX{} file
+## contains an @code{\includegraphics} command so that the generated graphics
+## file is automatically included when the @LaTeX{} file is processed.  The
+## text that is written to the @LaTeX{} file contains the strings
+## @strong{exactly} as they were specified in the plot.  If any special
+## characters of the @TeX{} mode interpreter were used, the file must be
+## edited before @LaTeX{} processing.  Specifically, the special characters
+## must be enclosed with dollar signs (@code{$ @dots{} $}), and other
+## characters that are recognized by @LaTeX{} may also need editing (.e.g.,
+## braces).  The @samp{pdflatex} device, and any of the @samp{standalone}
+## formats, are not available with the Gnuplot toolkit.
 ##
 ##   @item tikz
 ##     Generate a @LaTeX{} file using PGF/TikZ@.  For the FLTK toolkit
@@ -175,29 +186,17 @@
 ## Some examples are;
 ##
 ##   @table @code
+##   @item pdfwrite
+##     Produces pdf output from eps
+##
 ##   @item ljet2p
 ##     HP LaserJet @nospell{IIP}
-##
-##   @item ljet3
-##     HP LaserJet III
-##
-##   @item deskjet
-##     HP DeskJet and DeskJet Plus
-##
-##   @item cdj550
-##     HP DeskJet 550C
-##
-##   @item paintjet
-##     HP PointJet
 ##
 ##   @item pcx24b
 ##     24-bit color PCX file format
 ##
 ##   @item ppm
 ##     Portable Pixel Map file format
-##
-##   @item pdfwrite
-##     Produces pdf output from eps
 ##   @end table
 ##
 ##   For a complete list, type @code{system ("gs -h")} to see what formats
@@ -254,24 +253,34 @@
 ##
 ## The filename and options can be given in any order.
 ##
-## Example: Print to a file using the svg device.
+## Example: Print to a file using the pdf device.
 ##
 ## @example
 ## @group
 ## figure (1);
 ## clf ();
 ## surf (peaks);
-## print -dsvg figure1.svg
+## print figure1.pdf
 ## @end group
 ## @end example
 ##
-## Example: Print to an HP DeskJet 550C.
+## Example: Print to a file using jpg device.
 ##
 ## @example
 ## @group
 ## clf ();
 ## surf (peaks);
-## print -dcdj550
+## print -djpg figure2.jpg
+## @end group
+## @end example
+##
+## Example: Print to printer named PS_printer using ps format.
+##
+## @example
+## @group
+## clf ();
+## surf (peaks);
+## print -dpswrite -PPS_printer 
 ## @end group
 ## @end example
 ##
@@ -288,7 +297,7 @@ function print (varargin)
   opts.lpr_cmd = @lpr;
   opts.epstool_cmd = @epstool;
 
-  if (! isfigure (opts.figure))
+  if (isempty (opts.figure) || ! isfigure (opts.figure))
     error ("print: no figure to print");
   endif
 
@@ -414,7 +423,7 @@ function print (varargin)
       endif
     endif
 
-    ## call the graphcis toolkit print script
+    ## call the graphics toolkit print script
     switch (get (opts.figure, "__graphics_toolkit__"))
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
@@ -689,7 +698,7 @@ function cmd = lpr (opts)
       cmd = sprintf ("%s %s", cmd, opts.lpr_options);
     endif
     if (! isempty (opts.printer))
-      cmd = sprintf ("%s -P %s", cmd, opts.printer);
+      cmd = sprintf ("%s %s", cmd, opts.printer);
     endif
   elseif (isempty (opts.lpr_binary))
     error ("print:nolpr", "print.m: 'lpr' not found in PATH");

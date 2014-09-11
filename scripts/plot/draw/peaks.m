@@ -83,6 +83,9 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
 
   if (nargout == 0)
     surf (x, y, Z);
+    Z_max = max (Z(:));
+    Z_min = min (Z(:));
+    axis ([-3, 3, -3, 3, Z_min, Z_max]);
   elseif (nargout == 1)
     X_out = Z;
   else

@@ -63,6 +63,7 @@ and @ref{Advanced Plotting}.
 * Plot Annotations::
 * Multiple Plots on One Page::
 * Multiple Plot Windows::
+* Manipulation of Plot Objects::
 * Manipulation of Plot Windows::
 * Use of the @code{interpreter} Property::
 * Printing and Saving Plots::
@@ -529,6 +530,12 @@ creates two figures, with the first displaying a sine wave and
 the second a cosine wave.  Figure numbers must be positive integers.
 
 @DOCSTRING(figure)
+
+@node Manipulation of Plot Objects
+@subsection Manipulation of Plot Objects
+@cindex plotting, object manipulation
+
+@DOCSTRING(rotate)
 
 @node Manipulation of Plot Windows
 @subsection Manipulation of Plot Windows

@@ -4,7 +4,7 @@ Summary of important user-visible changes for version 4.2:
  ** A new syntax for object oriented programming termed classdef has been
     introduced.  See the manual for more extensive documentation of the
     classdef interface.
-    
+
     New keywords:
 
       classdef      endclassdef
@@ -49,7 +49,7 @@ Summary of important user-visible changes for version 4.2:
     results equivalent to Matlab even for esoteric combinations of
     faces/vertices/cdata.
 
- ** The polar() plot function now draws a circular theta axis and 
+ ** The polar() plot function now draws a circular theta axis and
     radial rho axis rather than using a rectangular x/y axis.
 
  ** linkprop has been completely re-coded for performance and Matlab
@@ -66,11 +66,22 @@ Summary of important user-visible changes for version 4.2:
 
  ** Other new functions added in 4.2:
 
-      bandwidth            ilu             javachk
-      dir_in_loadpath      isbanded        linkaxes
-      hgload               isdiag          numfields
-      hgsave               istril          sylvester
-      ichol                istriu          lscov         
+      bandwidth
+      dir_in_loadpath
+      hgload
+      hgsave
+      ichol
+      ilu
+      isbanded
+      isdiag
+      istril
+      istriu
+      javachk
+      linkaxes
+      lscov
+      numfields
+      rotate
+      sylvester
 
  ** Deprecated functions.
 
@@ -78,22 +89,23 @@ Summary of important user-visible changes for version 4.2:
     be removed from Octave 4.6 (or whatever version is the second major
     release after 4.2):
 
-      bicubic              syl
+      bicubic
       find_dir_in_path
       nargchk
       nfields
+      syl
 
     The following functions were deprecated in Octave 3.8 and have been
     removed from Octave 4.2.
 
-      default_save_options    java_new            
-      gen_doc_cache           java_unsigned_conversion  
-      interp1q                javafields                
-      isequalwithequalnans    javamethods               
+      default_save_options    java_new
+      gen_doc_cache           java_unsigned_conversion
+      interp1q                javafields
+      isequalwithequalnans    javamethods
       java_convert_matrix     re_read_readline_init_file
-      java_debug              read_readline_init_file   
-      java_invoke             saving_history            
-                              
+      java_debug              read_readline_init_file
+      java_invoke             saving_history
+
     The following keywords were deprecated in Octave 3.8 and have been
     removed from Octave 4.2
 
@@ -144,12 +156,12 @@ Summary of important user-visible changes for version 4.0:
 
     The following functions were deprecated in Octave 3.6 and have been
     removed from Octave 4.0.
-                                           
-      cut                polyderiv        
-      cor                shell_cmd        
-      corrcoef           studentize       
-      __error_text__     sylvester_matrix 
-      error_text         
+
+      cut                polyderiv
+      cor                shell_cmd
+      corrcoef           studentize
+      __error_text__     sylvester_matrix
+      error_text
 
     The following functions have been deprecated in Octave 4.0 and will
     be removed from Octave 4.4 (or whatever version is the second major
@@ -157,7 +169,7 @@ Summary of important user-visible changes for version 4.0:
 
       allow_noninteger_range_as_index
       do_braindead_shortcircuit_evaluation
-      
+
     The internal function atan2 of the sparse matrix class has been deprecated
     in Octave 4.0 and will be removed from Octave 4.4 (or whatever version is
     the second major release after 4.0).  Use the Fatan2 function with sparse

@@ -73,6 +73,7 @@ Summary of important user-visible changes for version 4.2:
       odeset
       odeget
       ode45
+      padecoef
       rad2deg
 
  ** Deprecated functions.

@@ -11,6 +11,7 @@ scripts_polynomial_FCN_FILES = \
   scripts/polynomial/deconv.m \
   scripts/polynomial/mkpp.m \
   scripts/polynomial/mpoles.m \
+  scripts/polynomial/padecoef.m \
   scripts/polynomial/pchip.m \
   scripts/polynomial/poly.m \
   scripts/polynomial/polyaffine.m \

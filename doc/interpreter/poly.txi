@@ -349,6 +349,12 @@ robust fitting (@var{beta} = 0) is also included.}
 @end float
 @end ifnotinfo
 
+A very specific form of polynomial interpretation is the Pade' approximant.
+For control systems, a continuous-time delay can be modeled very simply with
+the approximant.
+
+@DOCSTRING(padecoef)
+
 The function, @code{ppval}, evaluates the piecewise polynomials, created
 by @code{mkpp} or other means, and @code{unmkpp} returns detailed
 information about the piecewise polynomial.

@@ -767,7 +767,6 @@ function list = missing_functions ()
   "ordeig",
   "ordqz",
   "outerjoin",
-  "padecoef",
   "parseSoapResponse",
   "partition",
   "pathtool",

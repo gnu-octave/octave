@@ -31,7 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 // Secondary functions for complex and real case used in ichol algorithms.
 Complex ichol_mult_complex (Complex a, Complex b)
 {
+#if defined (HAVE_CXX_COMPLEX_SETTERS)
   b.imag (-std::imag (b));
+#elif defined (HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS)
+  b.imag () = -std::imag (b);
+#else
+  b = std::conj (b);
+#endif
   return a * b;
 }
 

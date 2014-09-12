@@ -23,15 +23,15 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_quit_h)
 #define octave_quit_h 1
 
-#ifdef __cplusplus
-#include <new>
-extern "C" {
-#endif
-
 #include <stdio.h>
 
 #include <signal.h>
 #include <setjmp.h>
+
+#ifdef __cplusplus
+#include <new>
+extern "C" {
+#endif
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 

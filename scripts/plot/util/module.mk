@@ -70,6 +70,7 @@ plot_util_FCN_FILES = \
   plot/util/print.m \
   plot/util/refreshdata.m \
   plot/util/refresh.m \
+  plot/util/rotate.m \
   plot/util/rotate3d.m \
   plot/util/saveas.m \
   plot/util/shg.m \

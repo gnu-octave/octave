@@ -537,6 +537,8 @@ the second a cosine wave.  Figure numbers must be positive integers.
 
 @DOCSTRING(rotate)
 
+@DOCSTRING(rotate3d)
+
 @node Manipulation of Plot Windows
 @subsection Manipulation of Plot Windows
 @cindex plotting, window manipulation

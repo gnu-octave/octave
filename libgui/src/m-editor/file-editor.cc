@@ -1023,7 +1023,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
     {
       _copy_action->setEnabled (copy_available);
       _cut_action->setEnabled (copy_available);
-      _run_selection_action->setEnabled (copy_available && is_octave_file);
+      _run_selection_action->setEnabled (copy_available);
       _run_action->setEnabled (is_octave_file);
 
       if (!file_name.isEmpty ())

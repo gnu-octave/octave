@@ -76,6 +76,7 @@ plot_util_FCN_FILES = \
   plot/util/shg.m \
   plot/util/struct2hdl.m \
   plot/util/subplot.m \
+  plot/util/zoom.m \
   $(plot_util_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(plot_util_FCN_FILES)

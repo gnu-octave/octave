@@ -82,6 +82,7 @@ Summary of important user-visible changes for version 4.2:
       numfields
       rotate
       sylvester
+      zoom
 
  ** Deprecated functions.
 

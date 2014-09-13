@@ -42,7 +42,7 @@
 ## @example
 ## mode = get (gca, "pan");
 ## @end example
-## @seealso{rotate3d}
+## @seealso{rotate3d, zoom}
 ## @end deftypefn
 
 function pan (varargin)

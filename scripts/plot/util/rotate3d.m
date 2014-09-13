@@ -33,7 +33,7 @@
 ## @example
 ## mode = get (gca, "rotate3d");
 ## @end example
-## @seealso{pan}
+## @seealso{pan, zoom}
 ## @end deftypefn
 
 function rotate3d (varargin)

@@ -535,6 +535,8 @@ the second a cosine wave.  Figure numbers must be positive integers.
 @subsection Manipulation of Plot Objects
 @cindex plotting, object manipulation
 
+@DOCSTRING(pan)
+
 @DOCSTRING(rotate)
 
 @DOCSTRING(rotate3d)

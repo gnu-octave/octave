@@ -110,14 +110,6 @@ public:
       instance->do_post_event (obj, method, arg);
   }
 
-  template <class T, class A, class B>
-  static void post_event (T *obj, void (T::*method) (const A&, const B&),
-                          const A& arg_a, const B& arg_b)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg_a, arg_b);
-  }
-
   static void entered_readline_hook (void)
   {
     if (enabled ())

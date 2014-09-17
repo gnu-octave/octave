@@ -179,6 +179,8 @@ public:
 
   bool do_filename_quoting_desired (bool);
 
+  bool do_prefer_env_winsize (bool);
+
   void do_interrupt (bool);
 
   static int operate_and_get_next (int, int);
@@ -649,6 +651,12 @@ bool
 gnu_readline::do_filename_quoting_desired (bool arg)
 {
   return ::octave_rl_filename_quoting_desired (arg);
+}
+
+bool
+gnu_readline::do_prefer_env_winsize (bool arg)
+{
+  return ::octave_rl_prefer_env_winsize (arg);
 }
 
 void

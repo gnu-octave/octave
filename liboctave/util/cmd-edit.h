@@ -83,6 +83,8 @@ public:
 
   static void resize_terminal (void);
 
+  static void set_screen_size (int ht, int wd);
+
   static std::string decode_prompt_string (const std::string& s);
 
   static void restore_terminal_state (void);
@@ -247,6 +249,8 @@ protected:
   virtual void do_clear_screen (bool) { }
 
   virtual void do_resize_terminal (void) { }
+
+  virtual void do_set_screen_size (int, int) { }
 
   virtual std::string do_decode_prompt_string (const std::string&);
 

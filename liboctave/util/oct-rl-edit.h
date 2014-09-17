@@ -62,6 +62,10 @@ extern void octave_rl_clear_screen (int skip_redisplay);
 
 extern void octave_rl_resize_terminal (void);
 
+extern void octave_rl_resize_terminal (void);
+
+extern void octave_rl_set_screen_size (int ht, int wd);
+
 extern void octave_rl_restore_terminal_state (void);
 
 extern char *octave_rl_copy_line (void);

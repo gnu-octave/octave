@@ -100,6 +100,8 @@ public:
 
   void do_resize_terminal (void);
 
+  void do_set_screen_size (int ht, int wd);
+
   std::string newline_chars (void);
 
   void do_restore_terminal_state (void);
@@ -349,6 +351,12 @@ void
 gnu_readline::do_resize_terminal (void)
 {
   ::octave_rl_resize_terminal ();
+}
+
+void
+gnu_readline::do_set_screen_size (int ht, int wd)
+{
+  ::octave_rl_set_screen_size (ht, wd);
 }
 
 std::string
@@ -1110,6 +1118,13 @@ command_editor::resize_terminal (void)
 {
   if (instance_ok ())
     instance->do_resize_terminal ();
+}
+
+void
+command_editor::set_screen_size (int ht, int wd)
+{
+  if (instance_ok ())
+    instance->do_set_screen_size (ht, wd);
 }
 
 std::string

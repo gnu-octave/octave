@@ -163,6 +163,8 @@ public:
 
   static bool filename_quoting_desired (bool);
 
+  static bool prefer_env_winsize (bool);
+
   static bool interrupt (bool = true);
 
   static int current_command_number (void);
@@ -332,6 +334,8 @@ protected:
   virtual bool do_filename_completion_desired (bool) { return false; }
 
   virtual bool do_filename_quoting_desired (bool) { return false; }
+
+  virtual bool do_prefer_env_winsize (bool) { return false; }
 
   virtual void do_interrupt (bool) { }
 

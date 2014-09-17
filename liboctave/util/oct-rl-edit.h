@@ -102,6 +102,8 @@ extern int octave_rl_filename_completion_desired (int);
 
 extern int octave_rl_filename_quoting_desired (int);
 
+extern int octave_rl_prefer_env_winsize (int);
+
 extern void octave_rl_done (int);
 
 extern char *octave_rl_filename_completion_function (const char *, int);

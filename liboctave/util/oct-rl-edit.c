@@ -248,6 +248,14 @@ octave_rl_filename_quoting_desired (int arg)
   return retval;
 }
 
+int
+octave_rl_prefer_env_winsize (int arg)
+{
+  int retval = rl_prefer_env_winsize;
+  rl_prefer_env_winsize = arg;
+  return retval;
+}
+
 void
 octave_rl_done (int arg)
 {

@@ -32,23 +32,27 @@
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function filelist = unpack (file, dir = ".", filetype = "")
+function filelist = unpack (filename, dir = ".", filetype = "")
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (! ischar (file) && ! iscellstr (file))
-    error ("unpack: invalid input file class, %s", class (file));
+  if (! ischar (filename) && ! iscellstr (filename))
+    error ("unpack: invalid input file class, %s", class (filename));
   endif
 
   ## character arrays of more than one string must be treated as cell strings
-  if (ischar (file) && ! isvector (file))
-    file = cellstr (file);
+  if (ischar (filename) && ! isvector (filename))
+    file = cellstr (filename);
+  else
+    file = glob (filename);
   endif
 
   ## Recursively unpack cellstr arrays one file at a time
-  if (iscellstr (file))
+  n_elem = numel (file);
+  if (n_elem > 1)
+    
     files = {};
     for i = 1:numel (file)
       tmpfiles = unpack (file{i}, dir);
@@ -61,6 +65,9 @@ function filelist = unpack (file, dir = ".", filetype = "")
     endif
 
     return;
+    
+  else
+    file = filename;
   endif
 
   if (isdir (file))
@@ -248,4 +255,3 @@ function files = __parse_bzip2__ (output)
   ## Strip leading blanks and .bz2 extension from file name
   files = regexprep (output, '^\s+(.*)\.bz2: .*', '$1');
 endfunction
-

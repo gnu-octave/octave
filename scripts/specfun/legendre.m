@@ -21,15 +21,19 @@
 ## @deftypefn  {Function File} {@var{l} =} legendre (@var{n}, @var{x})
 ## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
 ## Compute the Legendre function of degree @var{n} and order
-## @var{m} = 0 @dots{} N@.  The optional argument, @var{normalization},
-## may be one of @qcode{"unnorm"}, @qcode{"sch"}, or @qcode{"norm"}.
-## The default is @qcode{"unnorm"}.  The value of @var{n} must be a
-## non-negative scalar integer.
+## @var{m} = 0 @dots{} @var{n}.
 ##
-## If the optional argument @var{normalization} is missing or is
-## @qcode{"unnorm"}, compute the Legendre function of degree @var{n} and
-## order @var{m} and return all values for @var{m} = 0 @dots{} @var{n}.
-## The return value has one dimension more than @var{x}.
+## The value @var{n} must be a real non-negative integer.  @var{x} is a
+## vector with real-valued elements in the range [-1, 1].
+##
+## The optional argument @var{normalization} may be one of @qcode{"unnorm"},
+## @qcode{"sch"}, or @qcode{"norm"}.  The default if no normalization is given
+## is @qcode{"unnorm"}.
+##
+## When the optional argument @var{normalization} is @qcode{"unnorm"}, compute
+## the Legendre function of degree @var{n} and order @var{m} and return all
+## values for @var{m} = 0 @dots{} @var{n}.  The return value has one dimension
+## more than @var{x}.
 ##
 ## The Legendre Function of degree @var{n} and order @var{m}:
 ##
@@ -42,7 +46,7 @@
 ##
 ## @example
 ## @group
-##  m        m       2  m/2   d^m
+##  m         m      2  m/2   d^m
 ## P(x) = (-1) * (1-x  )    * ----  P(x)
 ##  n                         dx^m   n
 ## @end group
@@ -84,12 +88,12 @@
 ## @end group
 ## @end example
 ##
-## If the optional argument @code{normalization} is @qcode{"sch"},
+## When the optional argument @code{normalization} is @qcode{"sch"},
 ## compute the Schmidt semi-normalized associated Legendre function.
 ## The Schmidt semi-normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
 ##
-## For Legendre functions of degree n and order 0:
+## For Legendre functions of degree @var{n} and order 0:
 ##
 ## @tex
 ## $$
@@ -127,7 +131,7 @@
 ##
 ## @end ifnottex
 ##
-## If the optional argument @var{normalization} is @qcode{"norm"},
+## When the optional argument @var{normalization} is @qcode{"norm"},
 ## compute the fully normalized associated Legendre function.
 ## The fully normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
@@ -162,11 +166,9 @@ function retval = legendre (n, x, normalization)
     print_usage ();
   endif
 
-  if (!isscalar (n) || n < 0 || n != fix (n))
-    error ("legendre: N must be a non-negative scalar integer");
-  endif
-
-  if (!isreal (x) || any (x(:) < -1 | x(:) > 1))
+  if (! isreal (n) || ! isscalar (n) || n < 0 || n != fix (n))
+    error ("legendre: N must be a real non-negative integer");
+  elseif (! isreal (x) || any (x(:) < -1 | x(:) > 1))
     error ("legendre: X must be real-valued vector in the range -1 <= X <= 1");
   endif
 
@@ -176,15 +178,17 @@ function retval = legendre (n, x, normalization)
     normalization = "unnorm";
   endif
 
+  unnorm = false;
   switch (normalization)
+    case "unnorm"
+      scale = 1;
+      unnorm = true;
     case "norm"
       scale = sqrt (n+0.5);
     case "sch"
       scale = sqrt (2);
-    case "unnorm"
-      scale = 1;
     otherwise
-      error ('legendre: expecting NORMALIZATION option to be "norm", "sch", or "unnorm"');
+      error ('legendre: NORMALIZATION option must be "unnorm", "norm", or "sch"');
   endswitch
 
   scale = scale * ones (size (x));
@@ -204,11 +208,11 @@ function retval = legendre (n, x, normalization)
     for k = m+1:n
       lpm3a = (2*k-1) .* x .* lpm2;
       lpm3b = (k+m-2) .* lpm1;
-      lpm3 = (lpm3a - lpm3b)/(k-m+1);
+      lpm3 = (lpm3a - lpm3b) / (k-m+1);
       lpm1 = lpm2;
       lpm2 = lpm3;
       if (! warned_overflow)
-        if (any (abs (lpm3a) > realmax)
+        if (   any (abs (lpm3a) > realmax)
             || any (abs (lpm3b) > realmax)
             || any (abs (lpm3)  > realmax))
           overflow = true;
@@ -216,24 +220,23 @@ function retval = legendre (n, x, normalization)
       endif
     endfor
     retval(m,:) = lpm3(:);
-    if (strcmp (normalization, "unnorm"))
-      scale = -scale * (2*m-1);
-    else
-      ## normalization == "sch" or normalization == "norm"
-      scale = scale / sqrt ((n-m+1)*(n+m))*(2*m-1);
+    if (unnorm)
+      scale *= -(2*m-1);
+    else  # normalization = "sch" or "norm"
+      scale *= (2*m-1) / sqrt ((n-m+1)*(n+m));
     endif
-    scale = scale .* sqrt (1-x.^2);
+    scale .*= sqrt (1-x.^2);
   endfor
 
   retval(n+1,:) = scale(:);
 
   if (isvector (x))
-  ## vector case is special
+    ## vector case is special
     retval = reshape (retval, n + 1, length (x));
   endif
 
   if (strcmp (normalization, "sch"))
-    retval(1,:) = retval(1,:) / sqrt (2);
+    retval(1,:) ./= sqrt (2);
   endif
 
   if (overflow && ! warned_overflow)
@@ -289,8 +292,8 @@ endfunction
 %! assert (result, full (ones (1,11)));
 
 %!test
-%! result = legendre (3, [-1,0,1;1,0,-1]);
 %! ## Test matrix input
+%! result = legendre (3, [-1,0,1;1,0,-1]);
 %! expected(:,:,1) = [-1,1;0,0;0,0;0,0];
 %! expected(:,:,2) = [0,0;1.5,1.5;0,0;-15,-15];
 %! expected(:,:,3) = [1,-1;0,0;0,0;0,0];
@@ -306,11 +309,12 @@ endfunction
 %!error legendre ()
 %!error legendre (1)
 %!error legendre (1,2,3,4)
-%!error legendre ([1, 2], [-1, 0, 1])
-%!error legendre (-1, [-1, 0, 1])
-%!error legendre (1.1, [-1, 0, 1])
-%!error legendre (1, [-1+i, 0, 1])
-%!error legendre (1, [-2, 0, 1])
-%!error legendre (1, [-1, 0, 2])
-%!error legendre (1, [-1, 0, 1], "badnorm")
+%!error <must be a real non-negative integer> legendre (i, [-1, 0, 1])
+%!error <must be a real non-negative integer> legendre ([1, 2], [-1, 0, 1])
+%!error <must be a real non-negative integer> legendre (-1, [-1, 0, 1])
+%!error <must be a real non-negative integer> legendre (1.1, [-1, 0, 1])
+%!error <must be real-valued vector> legendre (1, [-1+i, 0, 1])
+%!error <in the range -1 .= X .= 1> legendre (1, [-2, 0, 1])
+%!error <in the range -1 .= X .= 1> legendre (1, [-1, 0, 2])
+%!error <NORMALIZATION option must be> legendre (1, [-1, 0, 1], "badnorm")
 

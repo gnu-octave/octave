@@ -70,6 +70,11 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
+  
+  if (xmin > xmax)
+    error ("Octave:invalid-input-arg",
+           "fminbnd: the lower bound cannot be greater than the upper one");
+  endif
 
   if (ischar (fun))
     fun = str2func (fun, "global");
@@ -284,4 +289,7 @@ endfunction
 %!assert (fminbnd (@(x) abs (x-1e7), 0, 1e10, opt0), 1e7, 10e7*sqrt (eps))
 %!assert (fminbnd (@(x) x^2 + sin (2*pi*x), 0.4, 1, opt0), fzero (@(x) 2*x + 2*pi*cos (2*pi*x), [0.4, 1], opt0), sqrt (eps))
 %!assert (fminbnd (@(x) x > 0.3, 0, 1) < 0.3) 
+%!assert (fminbnd (@(x) sin (x), 0, 0), 0, eps) 
+
+%!error <lower bound cannot be greater> fminbnd (@(x) sin (x), 0, -pi)
 

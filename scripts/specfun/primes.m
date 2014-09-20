@@ -107,5 +107,5 @@ endfunction
 
 %!error primes ()
 %!error primes (1, 2)
-%!error <N must be a scalar> primes (1, ones (2,2))
+%!error <N must be a scalar> primes (ones (2,2))
 

@@ -915,6 +915,9 @@ public:
   find_parent_class (const std::string& parent_class_name)
   { return rep->find_parent_class (parent_class_name); }
 
+  bool is_instance_of (const std::string& cls_name) const
+  { return rep->is_instance_of (cls_name); }
+
   octave_function *function_value (bool silent = false) const;
 
   octave_user_function *user_function_value (bool silent = false) const;

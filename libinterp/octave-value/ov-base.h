@@ -583,6 +583,9 @@ public:
   virtual octave_base_value *unique_parent_class (const std::string&)
   { return 0; }
 
+  virtual bool is_instance_of (const std::string&) const
+  { return false; }
+
   virtual octave_function *function_value (bool silent = false);
 
   virtual octave_user_function *user_function_value (bool silent = false);

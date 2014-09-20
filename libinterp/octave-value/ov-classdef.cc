@@ -1088,6 +1088,17 @@ octave_classdef::print_with_name (std::ostream& os, const std::string& name,
     octave_base_value::print_with_name (os, name, print_padding);
 }
 
+bool
+octave_classdef::is_instance_of (const std::string& cls_name) const
+{
+  cdef_class cls = lookup_class (cls_name, false, false);
+
+  if (cls.ok ())
+    return is_superclass (cls, object.get_class ());
+
+  return false;
+}
+
 //----------------------------------------------------------------------------
 
 class octave_classdef_meta : public octave_function

@@ -1015,6 +1015,35 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
   return retval;
 }
 
+bool
+octave_class::is_instance_of (const std::string& cls_name) const
+{
+  bool retval = false;
+
+  if (cls_name == class_name ())
+    retval = true;
+  else
+    {
+      for (std::list<std::string>::const_iterator pit = parent_list.begin ();
+           pit != parent_list.end ();
+           pit++)
+        {
+          octave_map::const_iterator smap = map.seek (*pit);
+
+          const Cell& tmp = map.contents (smap);
+
+          const octave_value& vtmp = tmp(0);
+
+          retval = vtmp.is_instance_of (cls_name);
+
+          if (retval)
+            break;
+        }
+    }
+
+  return retval;
+}
+
 string_vector
 octave_class::all_strings (bool pad) const
 {
@@ -1962,7 +1991,7 @@ belongs to.\n\
       if ((cl == "float"   && obj.is_float_type   ()) ||
           (cl == "integer" && obj.is_integer_type ()) ||
           (cl == "numeric" && obj.is_numeric_type ()) ||
-          obj.class_name () == cl || obj.find_parent_class (cl))
+          obj.class_name () == cl || obj.is_instance_of (cl))
         matches(idx) = true;
     }
   return octave_value (matches);

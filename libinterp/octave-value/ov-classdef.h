@@ -1422,6 +1422,8 @@ public:
   void print_with_name (std::ostream& os, const std::string& name,
                         bool print_padding = true);
 
+  bool is_instance_of (const std::string& cls_name) const;
+
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
                              int nargout);

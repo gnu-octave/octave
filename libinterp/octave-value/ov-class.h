@@ -167,6 +167,8 @@ public:
 
   octave_base_value *unique_parent_class (const std::string&);
 
+  bool is_instance_of (const std::string&) const;
+
   string_vector all_strings (bool pad) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);

@@ -7,7 +7,8 @@ deprecated_FCN_FILES = \
   deprecated/nargchk.m \
   deprecated/nfields.m \
   deprecated/strmatch.m \
-  deprecated/syl.m
+  deprecated/syl.m \
+  deprecated/usage.m
 
 FCN_FILES += $(deprecated_FCN_FILES)
 

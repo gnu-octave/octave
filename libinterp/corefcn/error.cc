@@ -1921,7 +1921,7 @@ also set the last message identifier.\n\
   return retval;
 }
 
-DEFUN (usage, args, ,
+DEFUN (__usage__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} usage (@var{msg})\n\
 Print the message @var{msg}, prefixed by the string @samp{usage: }, and\n\

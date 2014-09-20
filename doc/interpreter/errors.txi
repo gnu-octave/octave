@@ -126,8 +126,6 @@ f ()
 
 @DOCSTRING(print_usage)
 
-@DOCSTRING(usage)
-
 @DOCSTRING(beep)
 
 @DOCSTRING(beep_on_error)

@@ -133,5 +133,5 @@ endfor
 
 cache(:,k:end) = [];    # delete unused pre-allocated entries
 
-save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z"]);
+save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION]);
 save ("-text", output_file, "cache");

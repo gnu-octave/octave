@@ -55,6 +55,7 @@ function doc_cache_create (out_file = "doc-cache", directory = [])
 
   ## Save cache
   if (! isempty (cache))
+     save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION], "local");
      save ("-text", out_file, "cache");
   endif
 

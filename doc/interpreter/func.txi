@@ -1498,7 +1498,7 @@ Class functions for the FTP object.
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
-@code{ismatrix}, @code{nargchk}, etc.
+@code{ismatrix}, @code{narginchk}, etc.
 
 @item geometry
 Functions related to Delaunay triangulation.

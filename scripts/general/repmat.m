@@ -1,3 +1,4 @@
+## Copyright (C) 2014 Markus Bergholz
 ## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
@@ -20,6 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} repmat (@var{A}, @var{m})
 ## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n})
+## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n}, @var{p} @dots{})
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
@@ -33,13 +35,14 @@
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ## Created: July 2000
 
-function x = repmat (A, m, n)
+function x = repmat (A, m, varargin)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2)
     print_usage ();
   endif
 
   if (nargin == 3)
+    n = varargin{1};
     if (! isempty (m) && isempty (n))
       m = m(:).';
       n = 1;
@@ -64,7 +67,15 @@ function x = repmat (A, m, n)
       n = n(:).';
     endif
   else
-    if (isempty (m))
+    if nargin > 3
+      # input check for m and varargin
+      if isscalar(m) && all(cellfun(@(x) isscalar(x), varargin))
+        m = [m varargin{:}];
+        n = [];
+      else
+        error("repmat: All input arguments have to be scalar")
+      end
+    elseif (isempty (m))
       m = n = 1;
     elseif (isscalar (m))
       n = m;
@@ -150,6 +161,7 @@ endfunction
 %!assert (repmat (x, [1 3]), repmat (x, 1, 3))
 %!assert (repmat (x, [3 1]), repmat (x, 3, 1))
 %!assert (repmat (x, [3 3]), repmat (x, 3, 3))
+%!assert (repmat (pi, [1,2,3,4]), repmat(pi,1,2,3,4))
 
 # Tests for numel==1 case:
 %!shared x, r

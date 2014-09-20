@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} is_valid_file_id (@var{fid})
 ## Return true if @var{fid} refers to an open file.
-## @seealso{fopen}
+## @seealso{freport, fopen}
 ## @end deftypefn
 
 function retval = is_valid_file_id (fid)

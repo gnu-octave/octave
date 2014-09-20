@@ -117,6 +117,7 @@ Duplicate a file descriptor.\n\
 If successful, @var{fid} is greater than zero and contains the new file\n\
 ID@.  Otherwise, @var{fid} is negative and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{fopen, fclose, fcntl}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -448,8 +449,9 @@ exit status, it will linger until Octave exits.\n\
 DEFUNX ("fcntl", Ffcntl, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})\n\
-Change the properties of the open file @var{fid}.  The following values\n\
-may be passed as @var{request}:\n\
+Change the properties of the open file @var{fid}.\n\
+\n\
+The following values may be passed as @var{request}:\n\
 \n\
 @vtable @code\n\
 @item F_DUPFD\n\
@@ -500,6 +502,7 @@ Set the file status flags for @var{fid} to the value specified by\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{fopen, dup2}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1959,3 +1962,4 @@ signal.\n\
 {
   return const_value (args, WCONTINUE);
 }
+

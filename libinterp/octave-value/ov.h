@@ -572,6 +572,9 @@ public:
   bool is_object (void) const
   { return rep->is_object (); }
 
+  bool is_classdef_object (void) const
+  { return rep->is_classdef_object (); }
+
   bool is_java (void) const
   { return rep->is_java (); }
 

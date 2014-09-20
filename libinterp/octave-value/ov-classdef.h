@@ -1409,9 +1409,11 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  bool is_map (void) const { return true; }
+  bool is_map (void) const { return false; }
 
   bool is_object (void) const { return true; }
+
+  bool is_classdef_object (void) const { return true; }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 

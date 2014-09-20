@@ -23,8 +23,13 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nthroot (@var{x}, @var{n})
 ##
-## Compute the n-th root of @var{x}, returning real results for real
-## components of @var{x}.  For example:
+## Compute the real (non-complex) @var{n}-th root of @var{x}.
+##
+## @var{x} must have all real entries and @var{n} must be a scalar.
+## If @var{n} is an even integer and @var{x} has negative entries then
+## @code{nthroot} aborts and issues an error.
+##
+## Example:
 ##
 ## @example
 ## @group
@@ -34,10 +39,6 @@
 ## @result{} 0.50000 - 0.86603i
 ## @end group
 ## @end example
-##
-## @var{x} must have all real entries.  @var{n} must be a scalar.
-## If @var{n} is an even integer and @var{X} has negative entries, an
-## error is produced.
 ## @seealso{realsqrt, sqrt, cbrt}
 ## @end deftypefn
 
@@ -47,12 +48,12 @@ function y = nthroot (x, n)
     print_usage ();
   endif
 
-  if (any (iscomplex (x(:))))
+  if (iscomplex (x))
     error ("nthroot: X must not contain complex values");
   endif
 
-  if (! isscalar (n) || n == 0)
-    error ("nthroot: N must be a nonzero scalar");
+  if (! isreal (n) || ! isscalar (n) || n == 0)
+    error ("nthroot: N must be a real nonzero scalar");
   endif
 
   if (n == 3)
@@ -63,16 +64,17 @@ function y = nthroot (x, n)
     y = 1 ./ nthroot (x, -n);
   else
     ## Compute using power.
-    if (n == fix (n) && mod (n, 2) == 1)
+    integer_n = n == fix (n);
+    if (integer_n && mod (n, 2) == 1)
       y = abs (x) .^ (1/n) .* sign (x);
     elseif (any (x(:) < 0))
-      error ("nthroot: if X contains negative values, N must be an odd integer");
+      error ("nthroot: N must be an odd integer if X contains negative values");
     else
       y = x .^ (1/n);
     endif
 
-    if (finite (n) && n > 0 && n == fix (n))
-      ## Correction.
+    if (integer_n && n > 0 && finite (n))
+      ## FIXME: What is this correction for?
       y = ((n-1)*y + x ./ (y.^(n-1))) / n;
       y = merge (finite (y), y, x);
     endif
@@ -82,18 +84,19 @@ function y = nthroot (x, n)
 endfunction
 
 
-%!assert (nthroot (-32,5), -2);
-%!assert (nthroot (81,4), 3);
-%!assert (nthroot (Inf,4), Inf);
-%!assert (nthroot (-Inf,7), -Inf);
-%!assert (nthroot (-Inf,-7), 0);
+%!assert (nthroot (-32, 5), -2)
+%!assert (nthroot (81, 4), 3)
+%!assert (nthroot (Inf, 4), Inf)
+%!assert (nthroot (-Inf, 7), -Inf)
+%!assert (nthroot (-Inf, -7), 0)
 
 %% Test input validation
-%!error (nthroot ())
-%!error (nthroot (1))
-%!error (nthroot (1,2,3))
-%!error (nthroot (1+j,2))
-%!error (nthroot (1,[1 2]))
-%!error (nthroot (1,0))
-%!error (nthroot (-1,2))
+%!error nthroot ()
+%!error nthroot (1)
+%!error nthroot (1,2,3)
+%!error <X must not contain complex values> nthroot (1+j, 2)
+%!error <N must be a real nonzero scalar> nthroot (1, i)
+%!error <N must be a real nonzero scalar> nthroot (1, [1 2])
+%!error <N must be a real nonzero scalar> nthroot (1, 0)
+%!error <N must be an odd integer> nthroot (-1, 2)
 

@@ -18,12 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} realsqrt (@var{x})
-## Return the real-valued square root of each element of @var{x}.  Report an
-## error if any element results in a complex return value.
+## Return the real-valued square root of each element of @var{x}.
+##
+## If any element results in a complex return value @code{realsqrt} aborts
+## and issues an error.
 ## @seealso{sqrt, realpow, reallog}
 ## @end deftypefn
 
 function y = realsqrt (x)
+
   if (nargin != 1)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
@@ -31,13 +34,16 @@ function y = realsqrt (x)
   else
     y = sqrt (x);
   endif
+
 endfunction
 
 
-%!assert (sqrt (1:5), realsqrt (1:5))
+%!assert (realsqrt (1:5), sqrt (1:5))
 %!test
-%! x = rand (10,10);
-%! assert (sqrt (x), realsqrt (x));
+%! x = rand (10, 10);
+%! assert (realsqrt (x), sqrt (x));
 
+%!error realsqrt ()
+%!error realsqrt (1,2)
 %!error <produced complex result> realsqrt (-1)
 

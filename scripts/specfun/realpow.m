@@ -18,31 +18,37 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} realpow (@var{x}, @var{y})
-## Compute the real-valued, element-by-element power operator.  This is
-## equivalent to @w{@code{@var{x} .^ @var{y}}}, except that @code{realpow}
-## reports an error if any return value is complex.
-## @seealso{reallog, realsqrt}
+## Compute the real-valued, element-by-element power operator.
+##
+## This is equivalent to @w{@code{@var{x} .^ @var{y}}}, except that
+## @code{realpow} reports an error if any return value is complex.
+## @seealso{power, reallog, realsqrt}
 ## @end deftypefn
 
 function z = realpow (x, y)
+
   if (nargin != 2)
     print_usage ();
-  else
-    z = x .^ y;
-    if (iscomplex (z))
-      error ("realpow: produced complex result");
-    endif
   endif
+
+  z = x .^ y;
+  if (iscomplex (z))
+    error ("realpow: produced complex result");
+  endif
+
 endfunction
 
 
-%!assert (power (1:10, 0.5:0.5:5), realpow (1:10, 0.5:0.5:5))
-%!assert ([1:10] .^ [0.5:0.5:5], realpow (1:10, 0.5:0.5:5))
+%!assert (realpow (1:10, 0.5:0.5:5), power (1:10, 0.5:0.5:5))
+%!assert (realpow (1:10, 0.5:0.5:5), [1:10] .^ [0.5:0.5:5])
 %!test
-%! x = rand (10,10);
-%! y = randn (10,10);
+%! x = rand (10, 10);
+%! y = randn (10, 10);
 %! assert (x.^y, realpow (x,y));
 %!assert (realpow (1i,2), -1)
 
+%!error realpow ()
+%!error realpow (1)
+%!error realpow (1,2,3)
 %!error <produced complex result> realpow (-1, 1/2)
 

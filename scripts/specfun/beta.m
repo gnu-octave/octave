@@ -18,7 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
-## For real inputs, return the Beta function,
+## Compute the Beta function for real inputs @var{a} and @var{b}. 
+##
+## The Beta function definition is
 ## @tex
 ## $$
 ##  B (a, b) = {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
@@ -31,7 +33,12 @@
 ## @end example
 ##
 ## @end ifnottex
-## @seealso{betaln, betainc}
+##
+## The Beta function can grow quite large and it is often more useful to work
+## with the logarithm of the output rather than the function directly.
+## @xref{XREFbetaln,,betaln}, for computing the logarithm of the Beta function
+## in an efficient manner.
+## @seealso{betaln, betainc, betaincinv}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -44,12 +51,10 @@ function retval = beta (a, b)
     print_usage ();
   endif
 
-  if (any (size (a) != size (b)) && numel (a) != 1 && numel (b) != 1)
-    error ("beta: inputs A and B have inconsistent sizes");
-  endif
-
   if (! isreal (a) || ! isreal (b))
-    error ("beta: inputs A and B must be real");
+    error ("beta: A and B must be real");
+  elseif (! size_equal (a, b) && numel (a) != 1 && numel (b) != 1)
+    error ("beta: A and B must have consistent sizes");
   endif
 
   retval = real (exp (gammaln (a) + gammaln (b) - gammaln (a+b)));
@@ -60,8 +65,8 @@ endfunction
 %!test
 %! a = [1, 1.5, 2, 3];
 %! b = [4, 3, 2, 1];
-%! v1 = beta (a,b);
-%! v2 = beta (b,a);
+%! v1 = beta (a, b);
+%! v2 = beta (b, a);
 %! v3 = gamma (a).*gamma (b) ./ gamma (a+b);
 %! assert (v1, v2, sqrt (eps));
 %! assert (v2, v3, sqrt (eps));
@@ -82,4 +87,10 @@ endfunction
 
 %!error beta ()
 %!error beta (1)
+%!error beta (1,2,3)
+%!error <A and B must be real> beta (1i, 2)
+%!error <A and B must be real> beta (2, 1i)
+%!error <A and B must have consistent sizes> beta ([1 2], [1 2 3])
+%!error <A and B must have consistent sizes> beta ([1 2 3], [1 2])
+%!error <A and B must have consistent sizes> beta ([1 2 3], [1 2 3]')
 

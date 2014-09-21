@@ -287,13 +287,26 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %! x = ones (2);
 %! assert (kron (x, x), ones (4));
 
-%!shared x, y, z
+%!shared x, y, z, p1, p2, d1, d2
 %! x =  [1, 2];
 %! y =  [-1, -2];
 %! z =  [1,  2,  3,  4; 1,  2,  3,  4; 1,  2,  3,  4];
+%! p1 = eye (3)([2, 3, 1], :);  ## Permutation matrix
+%! p2 = [0 1 0; 0 0 1; 1 0 0];  ## Non-permutation equivalent
+%! d1 = diag ([1 2 3]);         ## Diag type matrix
+%! d2 = [1 0 0; 0 2 0; 0 0 3];  ## Non-diag equivalent
 %!assert (kron (1:4, ones (3, 1)), z)
+%!assert (kron (single (1:4), ones (3, 1)), single (z))
+%!assert (kron (sparse (1:4), ones (3, 1)), sparse (z))
+%!assert (kron (complex (1:4), ones (3, 1)), z)
+%!assert (kron (complex (single(1:4)), ones (3, 1)), single(z))
 %!assert (kron (x, y, z), kron (kron (x, y), z))
 %!assert (kron (x, y, z), kron (x, kron (y, z)))
+%!assert (kron (p1, p1), kron (p2, p2))
+%!assert (kron (p1, p2), kron (p2, p1))
+%!assert (kron (d1, d1), kron (d2, d2))
+%!assert (kron (d1, d2), kron (d2, d1))
+
 
 %!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
 

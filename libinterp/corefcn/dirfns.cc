@@ -608,7 +608,7 @@ glob (\"file[12]\")\n\
         [2,1] = file2\n\
       @}\n\
 @end example\n\
-@seealso{ls, dir, readdir, what, fnmatch}\n\
+@seealso{ls, dir, readdir, what}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -664,7 +664,7 @@ glob (\"file[12]\")\n\
 %! assert (result3, {"file1"; "file2"});
 */
 
-DEFUNX ("fnmatch", Ffnmatch, args, ,
+DEFUN (__fnmatch__, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
 Return true or false for each element of @var{string} that matches any of\n\

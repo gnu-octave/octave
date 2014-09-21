@@ -185,17 +185,6 @@
 %!error <Invalid call to glob> glob ()
 %!error <Invalid call to glob> glob ("foo", 1)
 
-%!test
-%! string_fill_char = char (0);
-%! assert ((fnmatch ("a*a", {"aba"; "xxxba"; "aa"}) == [1; 0; 1]
-%! && fnmatch ({"a*a"; "b*b"}, "bob")
-%! && fnmatch ("x[0-5]*", {"x1"; "x6"}) == [1; 0]
-%! && fnmatch ("x[0-5]*", {"x1"; "x6"; "x001"}) == [1; 0; 1]
-%! && fnmatch ("x???y", {"xabcy"; "xy"}) == [1; 0]));
-
-%!error <Invalid call to fnmatch> fnmatch ()
-%!error <Invalid call to fnmatch> fnmatch ("foo", "bar", 3)
-
 %!assert (ischar (file_in_path (path (), "date.m")))
 
 %!error <invalid option> file_in_path ("foo", "bar", 1)

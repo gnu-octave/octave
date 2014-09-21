@@ -96,6 +96,7 @@ Summary of important user-visible changes for version 4.2:
       find_dir_in_path   | dir_in_loadpath
       finite             | isfinite
       fmod               | rem
+      fnmatch            | glob or regexp
       nfields            | numfields
       syl                | sylvester
       usage              | print_usage

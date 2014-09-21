@@ -140,7 +140,7 @@ Summary of important user-visible changes for version 4.2:
 
       fliplr
       flipud
-
+      rot90
 
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------

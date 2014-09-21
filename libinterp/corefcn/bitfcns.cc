@@ -377,6 +377,27 @@ Return the bitwise XOR of non-negative integers.\n\
   return bitop ("bitxor", args);
 }
 
+/*
+%!assert (bitand (true, false), false)
+%!assert (bitor  (true, false), true)
+%!assert (bitxor (true, false), true)
+
+%!assert (bitand (true, true), true)
+%!assert (bitor  (true, true), true)
+%!assert (bitxor (true, true), false)
+
+%!assert (bitand (true, 5), 1)
+
+%!assert (bitand (true, false), false)
+%!assert (bitand (true, true), true)
+%!assert (bitand (true, false), false)
+%!assert (bitand (true, false), false)
+
+## Test idx_arg.length () == 0
+%!error <size of X and Y must match> bitand ([0 0 0], [1 0])
+%!error <size of X and Y must match> bitand ([0; 0; 0], [0 0 0])
+*/
+
 template <typename T>
 static int64_t
 max_mantissa_value ()
@@ -620,6 +641,19 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
 
   return retval;
 }
+
+/*
+%!assert (bitshift (uint8  (16), 1),  uint8 ( 32))
+%!assert (bitshift (uint16 (16), 2), uint16 ( 64))
+%!assert (bitshift (uint32 (16), 3), uint32 (128))
+%!assert (bitshift (uint64 (16), 4), uint64 (256))
+%!assert (bitshift (uint8 (255), 1), uint8 (254))
+
+%!error <expecting integer as second argument> bitshift (16, 1.5)
+%!error bitshift (16, {1})
+%!error <N must be a scalar integer> bitshift (10, [-2 -1 0 1 2], [1 1 1 1 1])
+%!error <N must be positive> bitshift (10, [-2 -1 0 1 2], -1)
+*/
 
 DEFUN (bitmax, args, ,
        "-*- texinfo -*-\n\

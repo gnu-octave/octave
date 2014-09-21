@@ -90,7 +90,7 @@ its elements may have, consult @ref{Status of Variables}.
 
 @DOCSTRING(flipud)
 
-@DOCSTRING(flipdim)
+@DOCSTRING(flip)
 
 @DOCSTRING(rot90)
 

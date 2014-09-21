@@ -22,21 +22,23 @@
 ## @deftypefnx {Function File} {} flipdim (@var{x}, @var{dim})
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.
 ## @var{dim} defaults to the first non-singleton dimension.
-## For example:
 ##
-## @example
-## @group
-## flipdim ([1, 2; 3, 4], 2)
-##       @result{}  2  1
-##           4  3
-## @end group
-## @end example
+## @strong{Warning:} @code{flipdim} is scheduled for removal in version 4.6.
+## Use @code{flip} which can be used as a drop-in replacement.
+##
 ## @seealso{fliplr, flipud, rot90, rotdim}
 ## @end deftypefn
 
 ## Author: David Bateman, Jaroslav Hajek
 
 function y = flipdim (x, dim)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "flipdim is deprecated and will be removed from a future version of Octave; please use flip (x, dim) instead");
+  endif
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
@@ -56,14 +58,4 @@ function y = flipdim (x, dim)
   y = x(idx{:});
 
 endfunction
-
-
-%!assert (flipdim ([1,2;3,4]), flipdim ([1,2 ; 3,4], 1))
-%!assert (flipdim ([1,2;3,4], 2), [2,1;4,3])
-%!assert (flipdim ([1,2;3,4], 3), [1,2;3,4])
-
-## FIXME: We need tests for multidimensional arrays.
-
-%!error flipdim ()
-%!error flipdim (1, 2, 3)
 

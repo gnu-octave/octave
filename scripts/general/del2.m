@@ -315,7 +315,7 @@ endfunction
 %! assert (b(4,4,5), 0.00);
 %! assert (b(5,4,5), 1.00);
 %! assert (b(5,5,5),-6.00);
-%! assert (b, flipdim (b,1));
-%! assert (b, flipdim (b,2));
-%! assert (b, flipdim (b,3));
+%! assert (b, flip (b,1));
+%! assert (b, flip (b,2));
+%! assert (b, flip (b,3));
 

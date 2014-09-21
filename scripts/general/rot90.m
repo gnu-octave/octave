@@ -47,7 +47,7 @@
 ##
 ## Note that @code{rot90} only works with 2-D arrays.  To rotate N-D arrays
 ## use @code{rotdim} instead.
-## @seealso{rotdim, flipud, fliplr, flipdim}
+## @seealso{rotdim, flipud, fliplr, flip}
 ## @end deftypefn
 
 ## Author: jwe

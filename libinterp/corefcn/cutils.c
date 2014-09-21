@@ -53,8 +53,3 @@ octave_usleep (unsigned int useconds)
   nanosleep (&delay, &remaining);
 }
 
-int
-octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args)
-{
-  return vsnprintf (buf, n, fmt, args);
-}

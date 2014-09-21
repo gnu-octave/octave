@@ -464,7 +464,7 @@ print_mapper_test conj
 print_mapper_test cos
 print_mapper_test cosh
 print_mapper_test exp
-print_mapper_test finite
+print_mapper_test isfinite
 print_mapper_test fix
 print_mapper_test floor
 print_mapper_test imag

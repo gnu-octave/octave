@@ -247,10 +247,12 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 %! x = [2, 1; 2, 1];
 %! y = [-0.5, 2; 0.5, -2];
 %! assert (dot (x, y), [0 0]);
+%! assert (dot (single (x), single (y)), single ([0 0]));
 
 %!test
 %! x = [1+i, 3-i; 1-i, 3-i];
 %! assert (dot (x, x), [4, 20]);
+%! assert (dot (single (x), single (x)), single ([4, 20]));
 
 %!test
 %! x = int8 ([1 2]);
@@ -397,4 +399,24 @@ endfor\n\
 %! z(:,:,1) = [7 10; 15 22];
 %! z(:,:,2) = [2 2; 2 2];
 %! assert (blkmm (x,x), z);
+%! assert (blkmm (single (x), single (x)), single (z));
+%! assert (blkmm (x, single (x)), single (z));
+
+%!test
+%! x(:,:,1) = [1 2; 3 4];
+%! x(:,:,2) = [1i 1i; 1i 1i];
+%! z(:,:,1) = [7 10; 15 22];
+%! z(:,:,2) = [-2 -2; -2 -2];
+%! assert (blkmm (x,x), z);
+%! assert (blkmm (single (x), single (x)), single (z));
+%! assert (blkmm (x, single (x)), single (z));
+
+%% Test input validation
+%!error blkmm ()
+%!error blkmm (1)
+%!error blkmm (1,2,3)
+%!error <A and B dimensions don't match> blkmm (ones (2,2), ones (3,3))
+%!error <A and B must be numeric> blkmm ({1,2}, [3,4])
+%!error <A and B must be numeric> blkmm ([3,4], {1,2})
 */
+

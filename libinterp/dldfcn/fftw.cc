@@ -367,8 +367,22 @@ used per default.\n\
 %!   fftw ("planner", def_method);
 %! end_unwind_protect
 
-%!error <Invalid call to fftw> fftw ();
-%!error <Invalid call to fftw> fftw ("planner", "estimate", "measure");
+%!testif HAVE_FFTW
+%! def_dwisdom = fftw ("dwisdom");
+%! def_swisdom = fftw ("swisdom");
+%! unwind_protect
+%!   wisdom = fftw ("dwisdom");
+%!   assert (ischar (wisdom));
+%!   fftw ("dwisdom", wisdom);
+%!   assert (fftw ("dwisdom"), wisdom);
+%!   wisdom = fftw ("swisdom");
+%!   assert (ischar (wisdom));
+%!   fftw ("swisdom", wisdom);
+%!   assert (fftw ("swisdom"), wisdom);
+%! unwind_protect_cleanup
+%!   fftw ("dwisdom", def_dwisdom);
+%!   fftw ("swisdom", def_swisdom);
+%! end_unwind_protect
 
 %!testif HAVE_FFTW3_THREADS
 %! n = fftw ("threads");
@@ -378,4 +392,15 @@ used per default.\n\
 %! unwind_protect_cleanup
 %!   fftw ("threads", n);
 %! end_unwind_protect
+
+%!error <Invalid call to fftw> fftw ();
+%!error <Invalid call to fftw> fftw ("planner", "estimate", "measure");
+%!error fftw (3);
+%!error fftw ("invalid");
+%!error fftw ("planner", "invalid");
+%!error fftw ("planner", 2);
+%!error fftw ("dwisdom", "invalid");
+%!error fftw ("swisdom", "invalid");
+%!error fftw ("threads", "invalid");
+%!error fftw ("threads", -3);
  */

@@ -86,5 +86,7 @@ string @var{str}.\n\
 %! fclose (fid);
 %! assert (md5sum (tfile), "147a664a2ca9410911e61986d3f0d52a");
 %! unlink (tfile);
+
+%!error md5sum ();
 */
 

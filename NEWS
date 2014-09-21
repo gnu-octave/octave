@@ -84,6 +84,13 @@ Summary of important user-visible changes for version 4.2:
       sylvester
       zoom
 
+ ** inline() scheduled for eventual deprecation by Matlab
+
+    Functions created through the use of inline are scheduled for deprecation
+    by Matlab.  When this occurs Octave will continue to support inline
+    functions for an indeterminate amount of time before also removing support.
+    All new code should use anonymous functions in place of inline functions. 
+
  ** Deprecated functions.
 
     The following functions have been deprecated in Octave 4.2 and will

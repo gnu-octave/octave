@@ -1404,6 +1404,10 @@ f = inline ("x^2 + 2");
 After this it is possible to evaluate @math{f} at any @math{x} by
 writing @code{f(x)}.
 
+@strong{Caution}: @sc{matlab} has begun the process of deprecating inline
+functions.  At some point in the future support will be dropped and eventually
+Octave will follow @sc{matlab} and also remove inline functions.  Use anonymous functions in all new code.
+
 @DOCSTRING(inline)
 
 @DOCSTRING(argnames)

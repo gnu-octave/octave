@@ -853,9 +853,10 @@ DEFUN (formula, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} formula (@var{fun})\n\
 Return a character string representing the inline function @var{fun}.\n\
+\n\
 Note that @code{char (@var{fun})} is equivalent to\n\
 @code{formula (@var{fun})}.\n\
-@seealso{argnames, inline, vectorize}\n\
+@seealso{char, argnames, inline, vectorize}\n\
 @end deftypefn")
 {
   octave_value retval;

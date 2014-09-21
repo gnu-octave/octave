@@ -515,6 +515,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(isdeployed)
 
+@DOCSTRING(isstudent)
+
 @DOCSTRING(OCTAVE_HOME)
 
 @DOCSTRING(matlabroot)

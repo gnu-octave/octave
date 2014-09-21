@@ -1479,3 +1479,23 @@ octave_preserve_stream_state::~octave_preserve_stream_state (void)
   stream.width (owidth);
   stream.fill (ofill);
 }
+
+DEFUN (isstudent, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} isstudent ()\n\
+Return true if running in the student edition of Matlab.\n\
+Always return false in Octave.\n\
+\n\
+@seealso{false}\n\
+@end deftypefn")
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  return octave_value (false);
+}
+
+/*
+%!assert (isstudent (), false);
+%!error isstudent (1);
+*/

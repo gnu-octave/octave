@@ -67,20 +67,20 @@ function x = repmat (A, m, varargin)
       n = n(:).';
     endif
   else
-    if nargin > 3
+    if (nargin > 3)
       # input check for m and varargin
-      if isscalar(m) && all(cellfun(@(x) isscalar(x), varargin))
+      if (isscalar (m) && all (cellfun ("numel", varargin) == 1))
         m = [m varargin{:}];
         n = [];
       else
-        error("repmat: All input arguments have to be scalar")
+        error ("repmat: all input arguments must be scalar");
       end
     elseif (isempty (m))
       m = n = 1;
     elseif (isscalar (m))
       n = m;
     elseif (ndims (m) > 2)
-      error ("repmat: M has more than 2 dimensions")
+      error ("repmat: M has more than 2 dimensions");
     elseif (all (size (m) > 1))
       m = m(:,1).';
       n = [];
@@ -92,7 +92,7 @@ function x = repmat (A, m, varargin)
   idx = [m, n];
 
   if (all (idx < 0))
-    error ("repmat: invalid dimensions")
+    error ("repmat: invalid dimensions");
   else
     idx = max (idx, 0);
   endif
@@ -161,7 +161,7 @@ endfunction
 %!assert (repmat (x, [1 3]), repmat (x, 1, 3))
 %!assert (repmat (x, [3 1]), repmat (x, 3, 1))
 %!assert (repmat (x, [3 3]), repmat (x, 3, 3))
-%!assert (repmat (pi, [1,2,3,4]), repmat(pi,1,2,3,4))
+%!assert (repmat (pi, [1,2,3,4]), repmat (pi, 1,2,3,4))
 
 # Tests for numel==1 case:
 %!shared x, r

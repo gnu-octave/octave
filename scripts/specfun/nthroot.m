@@ -73,10 +73,10 @@ function y = nthroot (x, n)
       y = x .^ (1/n);
     endif
 
-    if (integer_n && n > 0 && finite (n))
+    if (integer_n && n > 0 && isfinite (n))
       ## FIXME: What is this correction for?
       y = ((n-1)*y + x ./ (y.^(n-1))) / n;
-      y = merge (finite (y), y, x);
+      y = merge (isfinite (y), y, x);
     endif
 
   endif

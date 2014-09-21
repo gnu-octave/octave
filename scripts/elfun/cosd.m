@@ -34,7 +34,7 @@ function y = cosd (x)
   I = x / 180;
   y = cos (I .* pi);
   I = I + 0.5;
-  y(I == fix (I) & finite (I)) = 0;
+  y(I == fix (I) & isfinite (I)) = 0;
 
 endfunction
 

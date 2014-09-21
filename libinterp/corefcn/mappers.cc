@@ -895,15 +895,15 @@ accurately in the neighborhood of zero.\n\
 
 DEFUN (isfinite, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} isfinite (@var{x})\n\
-@deftypefnx {Mapping Function} {} finite (@var{x})\n\
+@deftypefn {Mapping Function} {} isfinite (@var{x})\n\
 Return a logical array which is true where the elements of @var{x} are\n\
 finite values and false where they are not.\n\
+\n\
 For example:\n\
 \n\
 @example\n\
 @group\n\
-finite ([13, Inf, NA, NaN])\n\
+isfinite ([13, Inf, NA, NaN])\n\
      @result{} [ 1, 0, 0, 0 ]\n\
 @end group\n\
 @end example\n\
@@ -920,16 +920,16 @@ finite ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert (!finite (Inf))
-%!assert (!finite (NaN))
-%!assert (finite (rand (1,10)))
+%!assert (!isfinite (Inf))
+%!assert (!isfinite (NaN))
+%!assert (isfinite (rand (1,10)))
 
-%!assert (!finite (single (Inf)))
-%!assert (!finite (single (NaN)))
-%!assert (finite (single (rand (1,10))))
+%!assert (!isfinite (single (Inf)))
+%!assert (!isfinite (single (NaN)))
+%!assert (isfinite (single (rand (1,10))))
 
-%!error finite ()
-%!error finite (1, 2)
+%!error isfinite ()
+%!error isfinite (1, 2)
 */
 
 DEFUN (fix, args, ,
@@ -2243,4 +2243,3 @@ DEFALIAS (upper, toupper);
 
 DEFALIAS (gammaln, lgamma);
 
-DEFALIAS (finite, isfinite);

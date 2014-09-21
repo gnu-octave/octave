@@ -783,7 +783,6 @@ function list = missing_functions ()
   "renamecats",
   "reordercats",
   "rng",
-  "rotate",
   "rowfun",
   "savefig",
   "scatteredInterpolant",
@@ -868,7 +867,6 @@ function list = missing_functions ()
   "xmlread",
   "xmlwrite",
   "xslt",
-  "zoom",
   };
 endfunction
 

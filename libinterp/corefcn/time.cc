@@ -123,6 +123,8 @@ value returned by @code{time} was 856163706.\n\
 
 /*
 %!assert (time () > 0)
+
+%!error time (1)
 */
 
 DEFUN (gmtime, args, ,
@@ -299,7 +301,9 @@ mktime (localtime (time ()))\n\
 %!assert (datestr (datenum (1795, 1, 1), 0), "01-Jan-1795 00:00:00")
 
 %!error mktime ()
+%!error mktime (1)
 %!error mktime (1, 2, 3)
+%!error mktime (struct ("year", "foo"))
 */
 
 DEFUN (strftime, args, ,
@@ -494,6 +498,8 @@ Year (1970-).\n\
 %!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))));
 
 %!error strftime ()
+%!error strftime ("foo", 1)
+%!error strftime ("foo", struct ("year", "foo"))
 %!error strftime ("foo", localtime (time ()), 1)
 */
 
@@ -537,3 +543,23 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   return retval;
 }
+
+/*
+%!test
+%! fmt = "%Y-%m-%d %H:%M:%S";
+%! s = strftime (fmt, localtime (time ()));
+%! ts = strptime  (s, fmt);
+%! assert (isstruct (ts));
+%! assert (isfield (ts, "usec"));
+%! assert (isfield (ts, "year"));
+%! assert (isfield (ts, "mon"));
+%! assert (isfield (ts, "mday"));
+%! assert (isfield (ts, "sec"));
+%! assert (isfield (ts, "min"));
+%! assert (isfield (ts, "wday"));
+%! assert (isfield (ts, "hour"));
+%! assert (isfield (ts, "isdst"));
+%! assert (isfield (ts, "yday"));
+
+%!error strptime ()
+*/

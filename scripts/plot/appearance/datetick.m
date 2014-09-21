@@ -271,7 +271,7 @@ function [a, b] = __magform__ (x)
     b = 0;
   else
     l = log10 (abs (x));
-    r = fmod (l, 1);
+    r = rem (l, 1);
     a = 10 .^ r;
     b = fix (l - r);
     if (a < 1)

@@ -576,8 +576,7 @@ $x = 0$, $f = e = 0$.\n\
 
 DEFUN (rem, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} rem (@var{x}, @var{y})\n\
-@deftypefnx {Mapping Function} {} fmod (@var{x}, @var{y})\n\
+@deftypefn {Mapping Function} {} rem (@var{x}, @var{y})\n\
 Return the remainder of the division @code{@var{x} / @var{y}}, computed\n\
 using the expression\n\
 \n\
@@ -677,11 +676,11 @@ agree, or if either of the arguments is complex.\n\
 }
 
 /*
-%!assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
-%!assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
-%!assert (size (fmod (rand (2, 3, 4), 1)), [2, 3, 4])
-%!assert (size (fmod (1, rand (2, 3, 4))), [2, 3, 4])
-%!assert (size (fmod (1, 2)), [1, 1])
+%!assert (size (rem (zeros (0, 2), zeros (0, 2))), [0, 2])
+%!assert (size (rem (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%!assert (size (rem (rand (2, 3, 4), 1)), [2, 3, 4])
+%!assert (size (rem (1, rand (2, 3, 4))), [2, 3, 4])
+%!assert (size (rem (1, 2)), [1, 1])
 
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2), [1, 0, 1; -1, 0, -1])
 %!assert (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3)),[1, 0, 1; -1, 0, -1])
@@ -726,8 +725,6 @@ agree, or if either of the arguments is complex.\n\
 # bug 42627
 %!assert (rem (0.94, 0.01), 0.0);
 */
-
-DEFALIAS (fmod, rem)
 
 DEFUN (mod, args, ,
        "-*- texinfo -*-\n\

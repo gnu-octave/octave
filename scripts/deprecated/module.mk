@@ -4,6 +4,7 @@ deprecated_FCN_FILES = \
   deprecated/bicubic.m \
   deprecated/find_dir_in_path.m \
   deprecated/finite.m \
+  deprecated/fmod.m \
   deprecated/isstr.m \
   deprecated/nfields.m \
   deprecated/strmatch.m \

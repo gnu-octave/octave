@@ -240,15 +240,16 @@ DEFUN (fclose, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} fclose (@var{fid})\n\
 @deftypefnx {Built-in Function} {} fclose (\"all\")\n\
+@deftypefnx {Built-in Function} {@var{status} =} fclose (\"all\")\n\
 Close the file specified by the file descriptor @var{fid}.\n\
 \n\
 If successful, @code{fclose} returns 0, otherwise, it returns -1.  The\n\
 second form of the @code{fclose} call closes all open files except\n\
 @code{stdout}, @code{stderr}, and @code{stdin}.\n\
 \n\
-Programming Note: When using \"all\" the file descriptors associated with\n\
-gnuplot will also be closed.  This will prevent further plotting with gnuplot\n\
-until Octave is closed and restarted.\n\
+Programming Note: When using @qcode{\"all\"} the file descriptors associated\n\
+with gnuplot will also be closed.  This will prevent further plotting with\n\
+gnuplot until Octave is closed and restarted.\n\
 @seealso{fopen, fflush, freport}\n\
 @end deftypefn")
 {
@@ -344,8 +345,7 @@ Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, excluding\n\
 the possible trailing newline, are returned as a string.\n\
 \n\
-If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
-character.\n\
+If @var{len} is omitted, @code{fgetl} reads until the next newline character.\n\
 \n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 \n\
@@ -395,8 +395,7 @@ Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, including\n\
 the possible trailing newline, are returned as a string.\n\
 \n\
-If @var{len} is omitted, @code{fgets} reads until the next newline\n\
-character.\n\
+If @var{len} is omitted, @code{fgets} reads until the next newline character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 \n\
@@ -443,7 +442,8 @@ DEFUN (fskipl, args, ,
 @deftypefn  {Built-in Function} {@var{nlines} =} fskipl (@var{fid})\n\
 @deftypefnx {Built-in Function} {@var{nlines} =} fskipl (@var{fid}, @var{count})\n\
 @deftypefnx {Built-in Function} {@var{nlines} =} fskipl (@var{fid}, Inf)\n\
-Read and skip @var{count} lines from the file descriptor @var{fid}.\n\
+Read and skip @var{count} lines from the file specified by the file\n\
+descriptor @var{fid}.\n\
 \n\
 @code{fskipl} discards characters until an end-of-line is encountered exactly\n\
 @var{count}-times, or until the end-of-file marker is found.\n\
@@ -583,7 +583,10 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
 DEFUN (fopen, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})\n\
+@deftypefn  {Built-in Function} {@var{fid} =} fopen (@var{name})\n\
+@deftypefnx {Built-in Function} {@var{fid} =} fopen (@var{name}, @var{mode})\n\
+@deftypefnx {Built-in Function} {@var{fid} =} fopen (@var{name}, @var{mode}, @var{arch})\n\
+@deftypefnx {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@dots{})\n\
 @deftypefnx {Built-in Function} {@var{fid_list} =} fopen (\"all\")\n\
 @deftypefnx {Built-in Function} {[@var{file}, @var{mode}, @var{arch}] =} fopen (@var{fid})\n\
 The first form of the @code{fopen} function opens the named file with\n\
@@ -622,7 +625,7 @@ produce unexpected results.\n\
 The possible values @samp{mode} may have are\n\
 \n\
 @table @asis\n\
-@item @samp{r}\n\
+@item @samp{r} (default)\n\
 Open a file for reading.\n\
 \n\
 @item @samp{w}\n\
@@ -647,7 +650,7 @@ Append a @qcode{\"t\"} to the mode string to open the file in text mode or a\n\
 @qcode{\"b\"} to open in binary mode.  On Windows and Macintosh systems, text\n\
 mode reading and writing automatically converts linefeeds to the\n\
 appropriate line end character for the system (carriage-return linefeed\n\
-on Windows, carriage-return on Macintosh).  The default if no mode is\n\
+on Windows, carriage-return on Macintosh).  The default when no mode is\n\
 specified is binary mode.\n\
 \n\
 Additionally, you may append a @qcode{\"z\"} to the mode string to open a\n\
@@ -658,8 +661,8 @@ The parameter @var{arch} is a string specifying the default data format\n\
 for the file.  Valid values for @var{arch} are:\n\
 \n\
 @table @samp\n\
-@item native\n\
-The format of the current machine (this is the default).\n\
+@item native (default)\n\
+The format of the current machine.\n\
 \n\
 @item ieee-be\n\
 IEEE big endian format.\n\
@@ -773,8 +776,10 @@ freport ()\n\
 
 DEFUN (frewind, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} frewind (@var{fid})\n\
-Move the file pointer to the beginning of the file @var{fid}.\n\
+@deftypefn  {Built-in Function} {} frewind (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{status} =} frewind (@var{fid})\n\
+Move the file pointer to the beginning of the file specified by file\n\
+descriptor @var{fid}.\n\
 \n\
 @code{frewind} returns 0 for success, and -1 if an error is encountered.  It\n\
 is equivalent to @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
@@ -846,9 +851,9 @@ be positive, negative, or zero but not all combinations of @var{origin} and\n\
 
 DEFUN (ftell, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ftell (@var{fid})\n\
+@deftypefn {Built-in Function} {@var{pos} =} ftell (@var{fid})\n\
 Return the position of the file pointer as the number of characters from the\n\
-beginning of the file @var{fid}.\n\
+beginning of the file specified by file descriptor @var{fid}.\n\
 @seealso{fseek, frewind, feof, fopen}\n\
 @end deftypefn")
 {
@@ -871,11 +876,16 @@ beginning of the file @var{fid}.\n\
 
 DEFUN (fprintf, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
-This function is exactly like @code{printf}, except that the output is\n\
-written to the stream @var{fid} instead of @code{stdout}.\n\
+@deftypefn  {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {} fprintf (@var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {@var{numbytes} =} fprintf (@dots{})\n\
+This function is equivalent to @code{printf}, except that the output is\n\
+written to the file descriptor @var{fid} instead of @code{stdout}.\n\
 \n\
-If @var{fid} is omitted, the output is written to @code{stdout}.\n\
+If @var{fid} is omitted, the output is written to @code{stdout} making the\n\
+function exactly equivalent to @code{printf}.\n\
+\n\
+The optional output returns the number of bytes written to the file.\n\
 @seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
 @end deftypefn")
 {
@@ -983,10 +993,15 @@ complete description of the syntax of the template string.\n\
 
 DEFUN (fputs, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})\n\
-Write a string to a file with no formatting.\n\
+@deftypefn  {Built-in Function} {} fputs (@var{fid}, @var{string})\n\
+@deftypefnx {Built-in Function} {@var{status} =} fputs (@var{fid}, @var{string})\n\
+Write the string @var{string} to the file with file descriptor @var{fid}.\n\
 \n\
-Return a non-negative number on success and EOF on error.\n\
+The string is written to the file with no additional formatting.  Use\n\
+@code{fdisp} instead to automatically append a newline character appropriate\n\
+for the local machine.\n\
+\n\
+Return a non-negative number on success or EOF on error.\n\
 @seealso{fdisp, fprintf, fwrite, fopen}\n\
 @end deftypefn")
 {
@@ -1011,8 +1026,12 @@ Return a non-negative number on success and EOF on error.\n\
 
 DEFUN (puts, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} puts (@var{string})\n\
+@deftypefn  {Built-in Function} {} puts (@var{string})\n\
+@deftypefnx {Built-in Function} {@var{status} =} puts (@var{string})\n\
 Write a string to the standard output with no formatting.\n\
+\n\
+The string is written verbatim to the standard output.  Use @code{disp} to\n\
+automatically append a newline character appropriate for the local machine.\n\
 \n\
 Return a non-negative number on success and EOF on error.\n\
 @seealso{fputs, disp}\n\
@@ -1406,7 +1425,7 @@ DEFUN (fread, args, ,
 @deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip})\n\
 @deftypefnx {Built-in Function} {@var{val} =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
 @deftypefnx {Built-in Function} {[@var{val}, @var{count}] =} fread (@dots{})\n\
-Read binary data from the specified file ID @var{fid}.\n\
+Read binary data from the file specified by the file descriptor @var{fid}.\n\
 \n\
 The optional argument @var{size} specifies the amount of data to read\n\
 and may be one of\n\
@@ -1665,10 +1684,14 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
 DEFUN (fwrite, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{count} =} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})\n\
-Write data in binary form of type @var{precision} to the specified file\n\
-ID @var{fid}, returning the number of values successfully written to the\n\
-file.\n\
+@deftypefn  {Built-in Function} {} fwrite (@var{fid}, @var{data})\n\
+@deftypefnx {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision})\n\
+@deftypefnx {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip})\n\
+@deftypefnx {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})\n\
+@deftypefnx {Built-in Function} {@var{count} =} fwrite (@dots{})\n\
+Write data in binary form to the file specified by the file descriptor\n\
+@var{fid}, returning the number of values @var{count} successfully written\n\
+to the file.\n\
 \n\
 The argument @var{data} is a matrix of values that are to be written to\n\
 the file.  The values are extracted in column-major order.\n\
@@ -1726,11 +1749,13 @@ are too large to fit in the specified precision.\n\
 
 DEFUNX ("feof", Ffeof, args, ,
         "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} feof (@var{fid})\n\
-Return 1 if an end-of-file condition has been encountered for a given\n\
-file and 0 otherwise.  Note that it will only return 1 if the end of the\n\
-file has already been encountered, not if the next read operation will\n\
-result in an end-of-file condition.\n\
+@deftypefn {Built-in Function} {@var{status} =} feof (@var{fid})\n\
+Return 1 if an end-of-file condition has been encountered for the file\n\
+specified by file descriptor @var{fid} and 0 otherwise.\n\
+\n\
+Note that @code{feof} will only return 1 if the end of the file has already\n\
+been encountered, not if the next read operation will result in an\n\
+end-of-file condition.\n\
 @seealso{fread, frewind, fseek, fclear, fopen}\n\
 @end deftypefn")
 {
@@ -1753,15 +1778,17 @@ result in an end-of-file condition.\n\
 
 DEFUNX ("ferror", Fferror, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid})\n\
-@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid}, \"clear\")\n\
-Return 1 if an error condition has been encountered for the file ID\n\
-@var{fid} and 0 otherwise.  Note that it will only return 1 if an error\n\
-has already been encountered, not if the next operation will result in\n\
-an error condition.\n\
+@deftypefn  {Built-in Function} {@var{err} =} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{dots}] =} ferror (@var{fid}, \"clear\")\n\
+Return 1 if an error condition has been encountered for the file specified by\n\
+file descriptor @var{fid} and 0 otherwise.\n\
 \n\
-The second argument is optional.  If it is supplied, also clear the\n\
-error condition.\n\
+Note that @code{ferror} will only return 1 if an error has already been\n\
+encountered, not if the next operation will result in an error condition.\n\
+\n\
+The second argument is optional.  If it is supplied, also clear the error\n\
+condition.\n\
 @seealso{fclear, fopen}\n\
 @end deftypefn")
 {

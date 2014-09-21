@@ -4368,6 +4368,8 @@ octave_stream_list::do_list_open_files (void) const
       buf << "  "
           << std::setiosflags (std::ios::right)
           << std::setw (4) << p->first << "     "
+          // reset necessary in addition to setiosflags since this is one stmt.
+          << std::resetiosflags (std::ios::adjustfield)
           << std::setiosflags (std::ios::left)
           << std::setw (3)
           << octave_stream::mode_as_string (os.mode ())

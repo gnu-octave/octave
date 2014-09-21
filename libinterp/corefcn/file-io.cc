@@ -748,12 +748,12 @@ for reading, writing, or both.  For example:\n\
 @group\n\
 freport ()\n\
 \n\
-     @print{}  number  mode  name\n\
-     @print{}\n\
-     @print{}       0     r  stdin\n\
-     @print{}       1     w  stdout\n\
-     @print{}       2     w  stderr\n\
-     @print{}       3     r  myfile\n\
+     @print{}  number  mode  arch       name\n\
+     @print{}  ------  ----  ----       ----\n\
+     @print{}     0     r    ieee-le    stdin\n\
+     @print{}     1     w    ieee-le    stdout\n\
+     @print{}     2     w    ieee-le    stderr\n\
+     @print{}     3     r    ieee-le    myfile\n\
 @end group\n\
 @end example\n\
 @seealso{fopen, fclose, is_valid_file_id}\n\

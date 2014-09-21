@@ -164,11 +164,11 @@ The author of the code itself is Timothy A. Davis\n\
 
               // FIXME: how can we manage the memory allocation of amd
               //        in a cleaner manner?
-              amd_malloc = malloc;
-              amd_free = free;
-              amd_calloc = calloc;
-              amd_realloc = realloc;
-              amd_printf = printf;
+              SUITESPARSE_ASSIGN_FPTR (malloc_func, amd_malloc, malloc);
+              SUITESPARSE_ASSIGN_FPTR (free_func, amd_free, free);
+              SUITESPARSE_ASSIGN_FPTR (calloc_func, amd_calloc, calloc);
+              SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
               octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
                                                           Control, Info);

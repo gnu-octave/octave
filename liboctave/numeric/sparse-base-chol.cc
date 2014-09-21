@@ -105,17 +105,17 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   if (spu == 0.)
     {
       cm->print = -1;
-      cm->print_function = 0;
+      SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
     }
   else
     {
       cm->print = static_cast<int> (spu) + 2;
-      cm->print_function =&SparseCholPrint;
+      SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
     }
 
   cm->error_handler = &SparseCholError;
-  cm->complex_divide = CHOLMOD_NAME(divcomplex);
-  cm->hypotenuse = CHOLMOD_NAME(hypot);
+  SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+  SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
   cm->final_asis = false;
   cm->final_super = false;

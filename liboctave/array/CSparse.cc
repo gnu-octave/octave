@@ -5669,17 +5669,17 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              cm->print_function = 0;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
             }
           else
             {
               cm->print = static_cast<int> (spu) + 2;
-              cm->print_function =&SparseCholPrint;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
             }
 
           cm->error_handler = &SparseCholError;
-          cm->complex_divide = CHOLMOD_NAME(divcomplex);
-          cm->hypotenuse = CHOLMOD_NAME(hypot);
+          SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+          SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
           cm->final_ll = true;
 
@@ -5912,17 +5912,17 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              cm->print_function = 0;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
             }
           else
             {
               cm->print = static_cast<int> (spu) + 2;
-              cm->print_function =&SparseCholPrint;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
             }
 
           cm->error_handler = &SparseCholError;
-          cm->complex_divide = CHOLMOD_NAME(divcomplex);
-          cm->hypotenuse = CHOLMOD_NAME(hypot);
+          SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+          SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
           cm->final_ll = true;
 
@@ -6203,17 +6203,17 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              cm->print_function = 0;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
             }
           else
             {
               cm->print = static_cast<int> (spu) + 2;
-              cm->print_function =&SparseCholPrint;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
             }
 
           cm->error_handler = &SparseCholError;
-          cm->complex_divide = CHOLMOD_NAME(divcomplex);
-          cm->hypotenuse = CHOLMOD_NAME(hypot);
+          SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+          SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
           cm->final_ll = true;
 
@@ -6425,17 +6425,17 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           if (spu == 0.)
             {
               cm->print = -1;
-              cm->print_function = 0;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
             }
           else
             {
               cm->print = static_cast<int> (spu) + 2;
-              cm->print_function =&SparseCholPrint;
+              SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
             }
 
           cm->error_handler = &SparseCholError;
-          cm->complex_divide = CHOLMOD_NAME(divcomplex);
-          cm->hypotenuse = CHOLMOD_NAME(hypot);
+          SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+          SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
           cm->final_ll = true;
 

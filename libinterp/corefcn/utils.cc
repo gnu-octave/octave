@@ -121,6 +121,7 @@ Return true if @var{name} is a valid variable name.\n\
 %!assert (isvarname ("1foo"), false)
 %!assert (isvarname (""), false)
 %!assert (isvarname (12), false)
+%!assert (isvarname ("foo+bar"), false)
 
 %!error isvarname ()
 %!error isvarname ("foo", "bar");
@@ -355,6 +356,8 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
 %!error file_in_loadpath ()
 %!error file_in_loadpath ("foo", "bar", 1)
+%!error file_in_loadpath ([])
+%!error file_in_loadpath ("plot.m", "bar")
 */
 
 DEFUN (file_in_path, args, ,
@@ -439,6 +442,9 @@ name in the path.  If no files are found, return an empty cell array.\n\
 %!error file_in_path ()
 %!error file_in_path ("foo")
 %!error file_in_path ("foo", "bar", "baz", 1)
+%!error file_in_path ([])
+%!error file_in_path (path (), [])
+%!error file_in_path (path (), "plot.m", "bar")
 */
 
 std::string
@@ -718,14 +724,24 @@ Convert special characters in @var{string} to their escaped forms.\n\
 %!assert (do_string_escapes ("foo\\nbar"), ["foo", char(10), "bar"])
 %!assert ("foo\nbar", ["foo", char(10), "bar"])
 
-%!assert (do_string_escapes ('\a\b\f\n\r\t\v'), "\a\b\f\n\r\t\v")
-%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"), "\a\b\f\n\r\t\v")
-%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"),
-%!        char ([7, 8, 12, 10, 13, 9, 11]))
-%!assert ("\a\b\f\n\r\t\v", char ([7, 8, 12, 10, 13, 9, 11]))
+%!assert (do_string_escapes ('\0\a\b\f\n\r\t\v'), "\0\a\b\f\n\r\t\v")
+%!assert (do_string_escapes ("\\0\\a\\b\\f\\n\\r\\t\\v"), "\0\a\b\f\n\r\t\v")
+%!assert (do_string_escapes ("\\0\\a\\b\\f\\n\\r\\t\\v"),
+%!        char ([0, 7, 8, 12, 10, 13, 9, 11]))
+%!assert ("\0\a\b\f\n\r\t\v", char ([0, 7, 8, 12, 10, 13, 9, 11]))
+
+%!assert (do_string_escapes ('\\'), "\\")
+%!assert (do_string_escapes ("\\\\"), "\\")
+%!assert (do_string_escapes ("\\\\"), char (92))
+
+%!assert (do_string_escapes ('\''single-quoted\'''), "'single-quoted'")
+%!assert (do_string_escapes ("\\'single-quoted\\'"), "'single-quoted'")
+%!assert (do_string_escapes ('\"double-quoted\"'), "\"double-quoted\"")
+%!assert (do_string_escapes ("\\\"double-quoted\\\""), "\"double-quoted\"")
 
 %!error do_string_escapes ()
 %!error do_string_escapes ("foo", "bar")
+%!error do_string_escapes (3)
 */
 
 const char *
@@ -844,8 +860,16 @@ representation.\n\
 %!assert (undo_string_escapes (char ([7, 8, 12, 10, 13, 9, 11])),
 %!        "\\a\\b\\f\\n\\r\\t\\v")
 
+%!assert (undo_string_escapes ("\\"), '\\')
+%!assert (undo_string_escapes ("\\"), "\\\\")
+%!assert (undo_string_escapes (char (92)), "\\\\")
+
+%!assert (undo_string_escapes ("\"double-quoted\""), '\"double-quoted\"')
+%!assert (undo_string_escapes ("\"double-quoted\""), "\\\"double-quoted\\\"")
+
 %!error undo_string_escapes ()
 %!error undo_string_escapes ("foo", "bar")
+%!error undo_string_escapes (3)
 */
 
 DEFUN (is_absolute_filename, args, ,
@@ -973,7 +997,18 @@ containing all name matches rather than just the first.\n\
 }
 
 /*
-## FIXME: We need system-dependent tests here.
+%!test
+%! f = dir_in_loadpath ("plot");
+%! assert (ischar (f));
+%! assert (! isempty (f));
+
+%!test
+%! f = dir_in_loadpath ("$$probably_!!_not_&&_a_!!_dir$$");
+%! assert (f, "");
+
+%!test
+%! lst = dir_in_loadpath ("$$probably_!!_not_&&_a_!!_dir$$", "all");
+%! assert (lst, {});
 
 %!error dir_in_loadpath ()
 %!error dir_in_loadpath ("foo", "bar", 1)
@@ -1375,9 +1410,11 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 /*
 %!assert (isindex ([1, 2, 3]))
 %!assert (isindex (1:3))
+%!assert (isindex (1:3, 2), false)
 %!assert (isindex ([1, 2, -3]), false)
 
 %!error isindex ()
+%!error isindex (1:3, 2, 3)
 */
 
 octave_value_list

@@ -20,10 +20,6 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
-## Run cruft dir with stand-alone Makefile.
-## Eventually this will use module.mk syntax.
-SUBDIRS = cruft
-
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
   -I$(srcdir)/array \
@@ -55,6 +51,7 @@ BUILT_SOURCES = $(BUILT_INCS)
 
 octinclude_HEADERS = \
   $(ARRAY_INC) \
+  $(CRUFT_INC) \
   $(NUMERIC_INC) \
   $(OPERATORS_INC) \
   $(SYSTEM_INC) \
@@ -75,7 +72,10 @@ TEMPLATE_SRC =
 
 ## A list of all files that could include tests
 
+liboctave_la_LIBADD =
+
 include array/module.mk
+include cruft/module.mk
 include numeric/module.mk
 include operators/module.mk
 include system/module.mk
@@ -92,14 +92,7 @@ include link-deps.mk
 # Dummy C++ source to force C++ linking.
 nodist_EXTRA_liboctave_la_SOURCES = dummy.cc
 
-liboctave_la_LIBADD = \
-  array/libarray.la \
-  cruft/libcruft.la \
-  cruft/ranlib/libranlib.la \
-  numeric/libnumeric.la \
-  operators/liboperators.la \
-  system/libsystem.la \
-  util/libutil.la \
+liboctave_la_LIBADD += \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBOCTAVE_LINK_DEPS)
 

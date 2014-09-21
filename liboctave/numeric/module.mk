@@ -185,3 +185,4 @@ numeric_libnumeric_la_CPPFLAGS = \
   $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
+liboctave_la_LIBADD += numeric/libnumeric.la

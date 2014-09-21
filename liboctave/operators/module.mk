@@ -67,3 +67,4 @@ operators_liboperators_la_CPPFLAGS = $(liboctave_la_CPPFLAGS)
 
 DISTCLEANFILES += $(BUILT_LIBOPERATORS_SOURCES)
 
+liboctave_la_LIBADD += operators/liboperators.la

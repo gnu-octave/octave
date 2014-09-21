@@ -91,3 +91,4 @@ util_libutil_la_CPPFLAGS = \
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
+liboctave_la_LIBADD += util/libutil.la

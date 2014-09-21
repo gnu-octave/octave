@@ -1,12 +1,12 @@
-EXTRA_DIST += lapack-xtra/module.mk
+EXTRA_DIST += cruft/lapack-xtra/module.mk
 
-libcruft_la_SOURCES += \
-  lapack-xtra/xclange.f \
-  lapack-xtra/xdlamch.f \
-  lapack-xtra/xdlange.f \
-  lapack-xtra/xilaenv.f \
-  lapack-xtra/xslamch.f \
-  lapack-xtra/xslange.f \
-  lapack-xtra/xzlange.f \
-  lapack-xtra/zrsf2csf.f \
-  lapack-xtra/crsf2csf.f
+CRUFT_SOURCES += \
+  cruft/lapack-xtra/xclange.f \
+  cruft/lapack-xtra/xdlamch.f \
+  cruft/lapack-xtra/xdlange.f \
+  cruft/lapack-xtra/xilaenv.f \
+  cruft/lapack-xtra/xslamch.f \
+  cruft/lapack-xtra/xslange.f \
+  cruft/lapack-xtra/xzlange.f \
+  cruft/lapack-xtra/zrsf2csf.f \
+  cruft/lapack-xtra/crsf2csf.f

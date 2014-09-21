@@ -1,3 +1,5 @@
-EXTRA_DIST += Faddeeva/module.mk
+EXTRA_DIST += cruft/Faddeeva/module.mk
 
-libcruft_la_SOURCES += Faddeeva/Faddeeva.cc Faddeeva/Faddeeva.hh
+CRUFT_SOURCES += \
+  cruft/Faddeeva/Faddeeva.cc \
+  cruft/Faddeeva/Faddeeva.hh

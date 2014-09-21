@@ -1,19 +1,19 @@
 EXTRA_DIST += \
-  misc/module.mk \
-  misc/d1mach-tst.for 
+  cruft/misc/module.mk \
+  cruft/misc/d1mach-tst.for 
 
-libcruft_la_SOURCES += \
-  misc/blaswrap.c \
-  misc/cquit.c \
-  misc/d1mach.f \
-  misc/f77-extern.cc \
-  misc/f77-fcn.c \
-  misc/i1mach.f \
-  misc/lo-error.c \
-  misc/quit.cc \
-  misc/r1mach.f
+CRUFT_SOURCES += \
+  cruft/misc/blaswrap.c \
+  cruft/misc/cquit.c \
+  cruft/misc/d1mach.f \
+  cruft/misc/f77-extern.cc \
+  cruft/misc/f77-fcn.c \
+  cruft/misc/i1mach.f \
+  cruft/misc/lo-error.c \
+  cruft/misc/quit.cc \
+  cruft/misc/r1mach.f
 
-octinclude_HEADERS += \
-  misc/f77-fcn.h \
-  misc/lo-error.h \
-  misc/quit.h
+CRUFT_INC += \
+  cruft/misc/f77-fcn.h \
+  cruft/misc/lo-error.h \
+  cruft/misc/quit.h

@@ -36,3 +36,4 @@ noinst_LTLIBRARIES += system/libsystem.la
 system_libsystem_la_SOURCES = $(SYSTEM_SRC)
 system_libsystem_la_CPPFLAGS = $(liboctave_la_CPPFLAGS)
 
+liboctave_la_LIBADD += system/libsystem.la

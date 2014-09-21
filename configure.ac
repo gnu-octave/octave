@@ -2888,7 +2888,6 @@ AC_CONFIG_FILES([
   libgui/Makefile
   libinterp/Makefile
   liboctave/Makefile
-  liboctave/cruft/Makefile
   liboctave/cruft/mkf77def
   scripts/Makefile
   src/Makefile

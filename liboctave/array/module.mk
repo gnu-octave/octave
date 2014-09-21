@@ -141,3 +141,4 @@ array_libarray_la_CPPFLAGS = \
   $(liboctave_la_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
+liboctave_la_LIBADD += array/libarray.la

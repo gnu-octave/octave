@@ -202,8 +202,6 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(glob)
 
-@DOCSTRING(fnmatch)
-
 @DOCSTRING(file_in_path)
 
 @DOCSTRING(filesep)

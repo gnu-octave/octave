@@ -478,7 +478,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
           eval (sprintf ("__test__(%s);", __shared));
           if (! __iswarning)
             __msg = [__signal_fail "error failed.\n" ...
-                     "Expected " __patstr "but got no error\n"];
+                     "Expected " __patstr ", but got no error\n"];
           else
             if (! isempty (__id))
               [~, __err] = lastwarn ();
@@ -490,10 +490,10 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
             warning (__warnstate.state, "quiet");
             if (isempty (__err))
               __msg = [__signal_fail "warning failed.\n" ...
-                       "Expected " __patstr " but got no warning\n"];
+                       "Expected " __patstr ", but got no warning\n"];
             elseif (__mismatch)
               __msg = [__signal_fail "warning failed.\n" ...
-                       "Expected " __patstr " but got <" __err ">\n"];
+                       "Expected " __patstr ", but got <" __err ">\n"];
             else
               __success = true;
             endif
@@ -511,10 +511,10 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
           if (__iswarning)
             __msg = [__signal_fail "warning failed.\n" ...
                      "Expected warning " __patstr ...
-                     " but got error <" __err ">\n"];
+                     ", but got error <" __err ">\n"];
           elseif (__mismatch)
             __msg = [__signal_fail "error failed.\n" ...
-                     "Expected " __patstr " but got <" __err ">\n"];
+                     "Expected " __patstr ", but got <" __err ">\n"];
           else
             __success = true;
           endif

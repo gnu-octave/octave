@@ -1009,10 +1009,10 @@ operands for the operator @samp{&}.
 
 @sc{matlab} has special behavior that allows the operators @samp{&} and
 @samp{|} to short-circuit when used in the truth expression for @code{if} and 
-@code{while} statements.  The Octave parser may be instructed to behave in the
-same manner, but its use is strongly discouraged.
-
-@DOCSTRING(do_braindead_shortcircuit_evaluation)
+@code{while} statements.  Octave also behaves the same way by default,
+though the use of the @samp{&} and @samp{|} operators in this way is
+strongly discouraged.  Instead, you should use the @samp{&&} and @samp{||}
+operators that always have short-circuit behavior.
 
 Finally, the ternary operator (?:) is not supported in Octave.  If
 short-circuiting is not important, it can be replaced by the @code{ifelse}

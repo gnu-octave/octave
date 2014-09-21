@@ -90,6 +90,7 @@
 
 %!error <Invalid call to unlink> unlink ()
 %!error <Invalid call to unlink> unlink ("foo", 1)
+%!error <FILE must be a string> unlink ({})
 
 %!test
 %! [files, status, msg] = readdir (filesep);
@@ -179,6 +180,42 @@
 
 %!error <Invalid call to lstat> lstat ()
 %!error <Invalid call to lstat> lstat ("foo", 1)
+
+%!test
+%! if (isunix ())
+%!  assert (S_ISCHR (stat ("/dev/null").mode));
+%!  assert (S_ISFIFO (stat ("/dev/initctl").mode));
+%!  assert (S_ISLNK (lstat ("/dev/core").mode));
+%! endif
+%! nm = tmpnam ();
+%! fid = fopen (nm, "wb");
+%! fclose (fid);
+%! r = [
+%!  S_ISREG(stat(nm).mode),
+%!  S_ISDIR(stat(nm).mode),
+%!  S_ISCHR(stat(nm).mode),
+%!  S_ISBLK(stat(nm).mode),
+%!  S_ISFIFO(stat(nm).mode),
+%!  S_ISLNK(lstat(nm).mode),
+%!  S_ISSOCK(stat(nm).mode)];
+%! unlink (nm);
+%! assert (r(:), [true; false; false; false; false; false; false]);
+
+%!error <octave_base_value::double_value ()> S_ISREG ({})
+%!error <octave_base_value::double_value ()> S_ISDIR ({})
+%!error <octave_base_value::double_value ()> S_ISCHR ({})
+%!error <octave_base_value::double_value ()> S_ISBLK ({})
+%!error <octave_base_value::double_value ()> S_ISFIFO ({})
+%!error <octave_base_value::double_value ()> S_ISLNK ({})
+%!error <octave_base_value::double_value ()> S_ISSOCK ({})
+
+%!error <Invalid call to S_ISREG> S_ISREG ()
+%!error <Invalid call to S_ISDIR> S_ISDIR ()
+%!error <Invalid call to S_ISCHR> S_ISCHR ()
+%!error <Invalid call to S_ISBLK> S_ISBLK ()
+%!error <Invalid call to S_ISFIFO> S_ISFIFO ()
+%!error <Invalid call to S_ISLNK> S_ISLNK ()
+%!error <Invalid call to S_ISSOCK> S_ISSOCK ()
 
 %!assert (iscell (glob ([filesep "*"])))
 
@@ -359,4 +396,3 @@
 %!assert (isstruct (octave_config_info ()))
 
 %!assert (isstruct (getrusage ()))
-

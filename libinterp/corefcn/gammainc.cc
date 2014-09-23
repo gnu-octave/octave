@@ -73,7 +73,7 @@ integrated from @var{x} to infinity is calculated.  It should be noted that\n\
 @example\n\
 gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
 @end example\n\
-@seealso{gamma, lgamma}\n\
+@seealso{gamma, gammaln}\n\
 @end deftypefn")
 {
   octave_value retval;

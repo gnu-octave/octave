@@ -1024,7 +1024,13 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{gammainc, lgamma}\n\
+\n\
+Programming Note: The gamma function can grow quite large even for small\n\
+input values.  In many cases it may be preferable to use the natural\n\
+logarithm of the gamma function (@code{gammaln}) in calculations to minimize\n\
+loss of precision.  The final result is then\n\
+@code{exp (@var{result_using_gammaln}).}\n\
+@seealso{gammainc, gammaln, factorial}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1574,8 +1580,8 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 
 DEFUN (lgamma, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Mapping Function} {} lgamma (@var{x})\n\
-@deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
+@deftypefn  {Mapping Function} {} gammaln (@var{x})\n\
+@deftypefnx {Mapping Function} {} lgamma (@var{x})\n\
 Return the natural logarithm of the gamma function of @var{x}.\n\
 @seealso{gamma, gammainc}\n\
 @end deftypefn")

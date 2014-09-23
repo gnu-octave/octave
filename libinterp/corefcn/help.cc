@@ -1173,7 +1173,7 @@ The format is a string which is one of @qcode{\"texinfo\"},\n\
 
 DEFUN (__operators__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __operators__ ()\n\
+@deftypefn {Function File} {} __operators__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1185,7 +1185,7 @@ Undocumented internal function.\n\
 
 DEFUN (__keywords__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __keywords__ ()\n\
+@deftypefn {Function File} {} __keywords__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -1197,7 +1197,7 @@ Undocumented internal function.\n\
 
 DEFUN (__builtins__, , ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __builtins__ ()\n\
+@deftypefn {Function File} {} __builtins__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

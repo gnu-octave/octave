@@ -2601,7 +2601,7 @@ The permutation vector @var{perm} must contain the elements\n\
 @code{1:ndims (A)} (in any order, but each element must appear only once).\n\
 \n\
 The @var{N}th dimension of @var{A} gets remapped to dimension \n\
-@code{@var{PERM}(@var{N})}.  For example,\n\
+@code{@var{PERM}(@var{N})}.  For example:\n\
 \n\
 @example\n\
 @group\n\

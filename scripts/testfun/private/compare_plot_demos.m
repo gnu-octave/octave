@@ -24,7 +24,7 @@
 ## html comparison of the plot demos for each of Octave's graphics toolkits.
 ##
 ## An m-file named @file{dump_plots.m} will be created in the current working
-## directory. This function will be used to render and save the plot demo
+## directory.  This function will be used to render and save the plot demo
 ## images.
 ##
 ## If they do not already exist, directories for each available graphics

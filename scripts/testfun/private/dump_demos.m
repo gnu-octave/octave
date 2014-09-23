@@ -31,10 +31,12 @@
 ## @table @var
 ##   @item @var{dirs}
 ##   @code{@{"plot/appearance", "plot/draw", "plot/util", "image"@}}
+##
 ##   @item @var{mfile}
-##   @code{"dump.m"}
+##   @qcode{"dump.m"}
+##
 ##   @item @var{fmt}
-##   @code{"png"}
+##   @qcode{"png"}
 ## @end table
 ##
 ## For example, to produce PNG output for all demos of the functions

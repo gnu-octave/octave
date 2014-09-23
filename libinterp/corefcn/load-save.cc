@@ -1480,15 +1480,14 @@ DEFUN (save, args, ,
 @deftypefnx {Command} {} {@var{s} =} save @samp{-} @var{v1} @var{v2} @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
 @var{file}.  The special filename @samp{-} may be used to return the\n\
-content of the variables as a string.  If no variable names are listed, Octave saves\n\
-all the variables in the current scope.  Otherwise, full variable names or\n\
-pattern syntax can be used to specify the variables to save.\n\
-If the @option{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
-of the scalar structure @var{STRUCT} are saved as if they were variables\n\
-with corresponding names.\n\
-Valid options for the @code{save} command are listed in the following table.\n\
-Options that modify the output format override the format specified by\n\
-@code{save_default_options}.\n\
+content of the variables as a string.  If no variable names are listed,\n\
+Octave saves all the variables in the current scope.  Otherwise, full\n\
+variable names or pattern syntax can be used to specify the variables to\n\
+save.  If the @option{-struct} modifier is used, fields @var{f1} @var{f2}\n\
+@dots{} of the scalar structure @var{STRUCT} are saved as if they were\n\
+variables with corresponding names.  Valid options for the @code{save}\n\
+command are listed in the following table.  Options that modify the output\n\
+format override the format specified by @code{save_default_options}.\n\
 \n\
 If save is invoked using the functional form\n\
 \n\

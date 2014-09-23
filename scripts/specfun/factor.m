@@ -28,7 +28,7 @@
 ## With two output arguments, return the unique prime factors @var{pf} and
 ## their multiplicities.  That is, @code{prod (@var{pf} .^ @var{n}) == @var{q}}.
 ## 
-## Implementation Note: The input @var{q} must be less than than
+## Implementation Note: The input @var{q} must be less than
 ## @code{bitmax} (9.0072e+15) in order to factor correctly.
 ## @seealso{gcd, lcm, isprime, primes}
 ## @end deftypefn

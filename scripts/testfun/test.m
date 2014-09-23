@@ -32,8 +32,9 @@
 ##
 ## @code{test} can be called in either command or functional form.  The exact
 ## operation of test is determined by a combination of mode (interactive or
-## batch), reporting level ("quiet", "normal", "verbose"), and whether a
-## logfile or summary output variable is used.
+## batch), reporting level (@qcode{"quiet"}, @qcode{"normal"},
+## @qcode{"verbose"}), and whether a logfile or summary output variable is
+## used.
 ##
 ## The default mode when @code{test} is called from the command line is
 ## interactive.  In this mode, tests will be run until the first error is

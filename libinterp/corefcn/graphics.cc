@@ -9443,7 +9443,7 @@ is_handle_visible (const octave_value& val)
 
 DEFUN (__is_handle_visible__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} __is_handle_visible__ (@var{h})\n\
+@deftypefn {Built-in Function} {} __is_handle_visible__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

@@ -198,6 +198,7 @@ whenever you create a new source file, it should have the following
 comment header (use appropriate year, name and comment marks):
 
 @example
+@group
 ## Copyright (C) 1996-2013 John W. Eaton <jwe@@octave.org>
 ##
 ## This file is part of Octave.
@@ -215,6 +216,7 @@ comment header (use appropriate year, name and comment marks):
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not,
 ## see <http://www.gnu.org/licenses/>.
+@end group
 @end example
 
 Always include commit messages in changesets.  After making your source

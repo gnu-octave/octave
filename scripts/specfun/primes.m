@@ -22,7 +22,7 @@
 ##
 ## The output data class (double, single, uint32, etc.) is the same as
 ## the input class of @var{n}.  The algorithm used is the Sieve of
-## Eratosthenes.    
+## Eratosthenes.
 ##
 ## Notes: If you need a specific number of primes you can use the
 ## fact that the distance from one prime to the next is, on average,

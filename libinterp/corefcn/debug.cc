@@ -633,9 +633,9 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Command} dbstop @var{func}\n\
-@deftypefnx {Command} dbstop @var{func} @var{line}\n\
-@deftypefnx {Command} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
+@deftypefn  {Command} {} dbstop @var{func}\n\
+@deftypefnx {Command} {} dbstop @var{func} @var{line}\n\
+@deftypefnx {Command} {} dbstop @var{func} @var{line1} @var{line2} @dots{}\n\
 @deftypefnx {Command} {} dbstop @var{line} @dots{}\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
 @deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line})\n\

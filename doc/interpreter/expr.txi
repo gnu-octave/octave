@@ -1243,8 +1243,10 @@ as long as @var{expr2} is a simple expression with no side effects.  If
 is evaluated as
 
 @example
+@group
 @var{temp} = @var{expr2}
 @var{expr1} = (@var{expr1}) @var{op} @var{temp}
+@end group
 @end example
 
 @noindent

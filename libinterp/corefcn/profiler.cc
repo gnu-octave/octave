@@ -419,7 +419,7 @@ profile_data_accumulator profiler;
 // Enable or disable the profiler data collection.
 DEFUN (__profiler_enable__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_enable__ ()\n\
+@deftypefn {Function File} {} __profiler_enable__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -445,7 +445,7 @@ Undocumented internal function.\n\
 // Clear all collected profiling data.
 DEFUN (__profiler_reset__, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_reset__ ()\n\
+@deftypefn {Function File} {} __profiler_reset__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -463,7 +463,7 @@ Undocumented internal function.\n\
 // Query the timings collected by the profiler.
 DEFUN (__profiler_data__, args, nargout,
        "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_data__ ()\n\
+@deftypefn {Function File} {} __profiler_data__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

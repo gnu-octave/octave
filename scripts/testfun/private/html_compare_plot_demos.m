@@ -28,10 +28,13 @@
 ## @table @samp
 ##   @item fmt
 ##   @code{"png"}
+##
 ##   @item output
 ##   @code{"compare_plot_demos.html"}
+##
 ##   @item template
 ##   @code{"html_plot_demos_template.html"}
+##
 ##   @item column_width
 ##   @code{600}
 ## @end table

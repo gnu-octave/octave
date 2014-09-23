@@ -39,6 +39,7 @@
 ##
 ## To query the current mode use the @code{get}
 ## function.  For example:
+##
 ## @example
 ## mode = get (gca, "pan");
 ## @end example

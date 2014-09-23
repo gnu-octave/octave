@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} zoom (@var{factor})
+## @deftypefn  {Command} {} zoom (@var{factor})
 ## @deftypefnx {Command} {} zoom out
 ## @deftypefnx {Command} {} zoom reset
 ## Zoom the current axes object.

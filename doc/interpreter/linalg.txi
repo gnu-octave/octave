@@ -29,7 +29,7 @@ The @cite{@sc{lapack} Users' Guide} is available at:
 
 A common text for engineering courses is @nospell{G. Strang},
 @cite{Linear Algebra and Its Applications, 4th Edition}. It has become a
-widespread reference for linear algebra. An alternative is P. Lax
+widespread reference for linear algebra.  An alternative is P. Lax
 @cite{Linear Algebra and Its Applications}, and also is a good choice.  It
 claims to be suitable for high school students with substantial mathematical
 interests as well as first-year undergraduates.

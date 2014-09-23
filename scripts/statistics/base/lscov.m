@@ -29,7 +29,7 @@
 ##
 ## The optional input argument @var{V} may be a n-by-1 vector of positive
 ## weights (inverse variances), or a n-by-n symmetric positive
-## semidefinite matrix representing the covariance of @var{b}. If
+## semidefinite matrix representing the covariance of @var{b}.  If
 ## @var{V} is not supplied, the ordinary least squares solution is
 ## returned.
 ##
@@ -37,12 +37,13 @@
 ## is currently ignored.
 ##
 ## Besides the least-squares estimate matrix @var{x} (p-by-k), the
-## function also returns @var{stdx} (p-by-k), the error  standard
+## function also returns @var{stdx} (p-by-k), the error standard
 ## deviation of estimated @var{x}; @var{mse} (k-by-1), the estimated
 ## data error covariance scale factors (@math{\sigma^2}); and @var{S}
 ## (p-by-p, or p-by-p-by-k if k > 1), the error covariance of @var{x}.
 ##
-## Reference: Golub and Van Loan (1996), Matrix Computations (3rd Ed.), Johns Hopkins, Section 5.6.3
+## Reference: Golub and Van Loan (1996), Matrix Computations (3rd Ed.), Johns
+## Hopkins, Section 5.6.3
 ##
 ## @end deftypefn
 ## @seealso{ols, gls, lsqnonneg}

@@ -21,15 +21,16 @@
 ## @deftypefnx {Command} {} rotate3d on
 ## @deftypefnx {Command} {} rotate3d off
 ## @deftypefnx {Function File} {} rotate3d (@var{hax}, @dots{})
-## Control 3D rotation mode of interactive graph in GUI.
+## Control 3-D rotation mode of interactive graph in GUI.
 ##
 ## The function state input may be either @qcode{"on"} or @qcode{"off"}
-## and can only be set for 3D plots.
+## and can only be set for 3-D plots.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
 ##
 ## To query the current mode use the @code{get} function.  For example:
+##
 ## @example
 ## mode = get (gca, "rotate3d");
 ## @end example

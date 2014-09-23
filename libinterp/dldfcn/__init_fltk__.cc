@@ -2231,7 +2231,7 @@ private:
 DEFUN_DLD (__fltk_check__, , ,
            "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __fltk_check__ ()\n\
-Undocumented internal function. Calls Fl::check ()\n\
+Undocumented internal function.  Calls Fl::check ()\n\
 @end deftypefn")
 {
 #ifdef HAVE_FLTK

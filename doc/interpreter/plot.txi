@@ -1473,6 +1473,7 @@ coordinates are in units defined by the figures @qcode{"units"} property
 and their origin is the lower left corner of the plotting area.
 
 Events which sets @qcode{"currentpoint"} are
+
 @table @asis
 @item A mouse button was pressed
 always
@@ -1588,6 +1589,7 @@ Indicates the orientation for printing.  Either @qcode{"landscape"} or
 @item selectiontype
 Holds information about the last mouse button press within the figure.
 May be one of
+
 @table @asis
 @item @qcode{"normal"}
 Left mouse button click.
@@ -1718,7 +1720,7 @@ An 2-by-3 matrix @code{[xf, yf, zf; xb, yb, zb]} which holds the
 coordinates of the point over which the mouse pointer was when the
 mouse button was pressed in axes data units.  If a mouse callback
 function is defined, @qcode{"currentpoint"} holds the pointer
-coordinates at the time the mouse button was pressed.  For 3D plots,
+coordinates at the time the mouse button was pressed.  For 3-D plots,
 the first row of the returned matrix specifies the point nearest to
 the current camera position and the second rows the furthest point.
 The two points forms a line which is perpendicular to the screen.

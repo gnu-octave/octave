@@ -1519,9 +1519,10 @@ octave_preserve_stream_state::~octave_preserve_stream_state (void)
 
 DEFUN (isstudent, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} isstudent ()\n\
-Return true if running in the student edition of Matlab.\n\
-Always return false in Octave.\n\
+@deftypefn {Built-in Function} {} isstudent ()\n\
+Return true if running in the student edition of @sc{matlab}.\n\
+\n\
+@code{isstudent} always returns false in Octave.\n\
 \n\
 @seealso{false}\n\
 @end deftypefn")
@@ -1533,6 +1534,7 @@ Always return false in Octave.\n\
 }
 
 /*
-%!assert (isstudent (), false);
-%!error isstudent (1);
+%!assert (isstudent (), false)
+
+%!error isstudent (1)
 */

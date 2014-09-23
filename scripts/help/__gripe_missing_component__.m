@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} __gripe_missing_component__ (@var{caller}, @var{component})
+## @deftypefn {Function File} {} __gripe_missing_component__ (@var{caller}, @var{component})
 ## Undocumented internal function.
 ## @end deftypefn
 

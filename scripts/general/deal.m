@@ -58,7 +58,7 @@
 ## Programming Note: @code{deal} is often used with comma separated lists
 ## derived from cell arrays or structures.  This is unnecessary as the
 ## interpreter can perform the same action without the overhead of a function
-## call.  For example,
+## call.  For example:
 ##
 ## @example
 ## @group
@@ -66,9 +66,9 @@
 ## [x, y, z ] = c@{:@}
 ## @result{}
 ##    x =
-##    
+##
 ##       1   2
-##    
+##
 ##    y = Three
 ##    z =  4
 ## @end group

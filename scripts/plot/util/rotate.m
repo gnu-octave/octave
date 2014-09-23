@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rotate (@var{h}, @var{dir}, @var{alpha})
+## @deftypefn  {Function File} {} rotate (@var{h}, @var{dir}, @var{alpha})
 ## @deftypefnx {Function File} {} rotate (@dots{}, @var{origin})
 ## Rotate the plot object @var{h} through @var{alpha} degrees around
 ## the line with direction @var{dir} and origin @var{origin}.

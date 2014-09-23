@@ -566,7 +566,8 @@ Check only for directories.\n\
 Check only for files and directories.\n\
 \n\
 @item @qcode{\"class\"}\n\
-Check only for classes.  (Note: This option is accepted, but not currently implemented)\n\
+Check only for classes.  (Note: This option is accepted, but not currently\n\
+implemented)\n\
 @end table\n\
 \n\
 If no type is given, and there are multiple possible matches for name,\n\

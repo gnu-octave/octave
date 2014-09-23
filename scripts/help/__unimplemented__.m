@@ -636,7 +636,6 @@ function list = missing_functions ()
   "fitsinfo",
   "fitsread",
   "fitswrite",
-  "flip",
   "flow",
   "frame2im",
   "freqspace",

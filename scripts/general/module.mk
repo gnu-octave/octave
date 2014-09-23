@@ -29,6 +29,7 @@ general_FCN_FILES = \
   general/divergence.m \
   general/fieldnames.m \
   general/flip.m \
+  general/flipdim.m \
   general/fliplr.m \
   general/flipud.m \
   general/gradient.m \

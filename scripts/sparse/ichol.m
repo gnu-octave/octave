@@ -41,14 +41,16 @@
 ## String indicating which flavor of incomplete Cholesky to perform.  Valid
 ## values of this field are @qcode{"nofill"} and @qcode{"ict"}.  The
 ## @qcode{"nofill"} variant performs incomplete Cholesky with zero-fill
-## [IC(0)].  The @qcode{"ict"} variant performs incomplete Cholesky with
-## threshold dropping [ICT].  The default value is @qcode{"nofill"}.
+## @nospell{[IC(0)]}.  The @qcode{"ict"} variant performs incomplete Cholesky
+## with threshold dropping @nospell{[ICT]}.  The default value is
+## @qcode{"nofill"}.
 ##
 ## @item droptol
 ## Drop tolerance when type is @qcode{"ict"}.
-## Non-negative scalar used as a drop tolerance when performing ICT@.  Elements
-## which are smaller in magnitude than a local drop tolerance are dropped from
-## the resulting factor except for the diagonal element which is never dropped.
+## Non-negative scalar used as a drop tolerance when performing @nospell{ICT}@.
+## Elements which are smaller in magnitude than a local drop tolerance are
+## dropped from the resulting factor except for the diagonal element which is
+## never dropped.
 ## The local drop tolerance at step j of the factorization is
 ## @code{norm (@var{A}(j:end, j), 1) * droptol}.  @code{droptol} is ignored if
 ## @code{type} is @qcode{"nofill"}.  The default value is 0.
@@ -135,7 +137,7 @@
 ## References for implemented algorithms:
 ##
 ## [1] @nospell{Y. Saad}. "Preconditioning Techniques." @cite{Iterative
-## Methods for Sparse Linear Systems}, PWS Publishing Company, 1996.
+## Methods for Sparse Linear Systems}, @nospell{PWS} Publishing Company, 1996.
 ##
 ## [2] @nospell{M. Jones, P. Plassmann}: @cite{An Improved Incomplete
 ## Cholesky Factorization}, 1992.

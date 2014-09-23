@@ -45,17 +45,17 @@
 ## fields are ignored.
 ##
 ## @item @qcode{"crout"}
-## Perform the Crout version of ILU factorization, known as ILUC@.  With type
-## set to @qcode{crout}, only the @code{droptol} and @code{milu} options are
-## used; all other fields are ignored.
+## Perform the @nospell{Crout} version of ILU factorization, known as
+## @nospell{ILUC}@.  With type set to @qcode{crout}, only the @code{droptol}
+## and @code{milu} options are used; all other fields are ignored.
 ##
 ## @item @qcode{"ilutp"}
 ## (default) Performs ILU factorization with threshold and pivoting.
 ## @end table
 ##
-## If type is not specified, the ILU factorization with pivoting ILUTP is
-## performed.  Pivoting is never performed with type set to @qcode{"nofill"} or
-## @qcode{"crout"}.
+## If type is not specified, the ILU factorization with pivoting @nospell{ILUTP}
+## is performed.  Pivoting is never performed with type set to @qcode{"nofill"}
+## or @qcode{"crout"}.
 ##
 ## @item droptol
 ## Drop tolerance of the incomplete LU factorization.  @code{droptol} is a

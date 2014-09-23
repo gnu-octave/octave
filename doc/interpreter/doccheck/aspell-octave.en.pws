@@ -888,6 +888,7 @@ stairstep
 startup
 Startup
 statinfo
+stdin
 stdnormal
 stdout
 stepsize
@@ -1113,6 +1114,7 @@ xGTSV
 xl
 xmax
 xmin
+xon
 xPBTRF
 xPOTRF
 xPTSV

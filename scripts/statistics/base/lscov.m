@@ -42,8 +42,8 @@
 ## data error covariance scale factors (@math{\sigma^2}); and @var{S}
 ## (p-by-p, or p-by-p-by-k if k > 1), the error covariance of @var{x}.
 ##
-## Reference: Golub and Van Loan (1996), Matrix Computations (3rd Ed.), Johns
-## Hopkins, Section 5.6.3
+## Reference: @nospell{Golub and Van Loan} (1996),
+## Matrix Computations (3rd Ed.), Johns Hopkins, Section 5.6.3
 ##
 ## @end deftypefn
 ## @seealso{ols, gls, lsqnonneg}

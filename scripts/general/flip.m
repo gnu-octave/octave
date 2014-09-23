@@ -53,14 +53,14 @@
 ## @end group
 ## @end example
 ##
-## @seealso{fliplr, flipud, rot90, rotdim}
+## @seealso{fliplr, flipud, rot90, rotdim, permute, transpose}
 ## @end deftypefn
 
 ## Author: David Bateman, Jaroslav Hajek
 
 function y = flip (x, dim)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -108,4 +108,5 @@ endfunction
 
 %!error flip ()
 %!error flip (1, 2, 3)
+%!error <DIM must be a positive integer> flip (magic (3), -1)
 

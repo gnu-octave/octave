@@ -32,7 +32,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{flipud, rot90, rotdim}
+## @seealso{flipud, flip, rot90, rotdim}
 ## @end deftypefn
 
 ## Author: jwe

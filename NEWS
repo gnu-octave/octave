@@ -106,6 +106,7 @@ Summary of important user-visible changes for version 4.2:
       flipdim            | flip
       fmod               | rem
       fnmatch            | glob or regexp
+      luinc              | ilu or ichol
       nfields            | numfields
       syl                | sylvester
       usage              | print_usage

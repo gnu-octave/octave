@@ -124,7 +124,7 @@
 ## n = 10;
 ## A = diag (sparse (1:n));
 ## b = rand (n, 1);
-## [l, u, p, q] = luinc (A, 1.e-3);
+## [l, u, p] = ilu (A, struct ("droptol", 1.e-3));
 ## @end group
 ## @end example
 ##

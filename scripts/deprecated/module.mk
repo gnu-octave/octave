@@ -8,6 +8,7 @@ deprecated_FCN_FILES = \
   deprecated/fmod.m \
   deprecated/fnmatch.m \
   deprecated/isstr.m \
+  deprecated/luinc.m \
   deprecated/nfields.m \
   deprecated/strmatch.m \
   deprecated/syl.m \

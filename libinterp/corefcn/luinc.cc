@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-DEFUN (luinc, args, nargout,
+DEFUN (__luinc__, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\

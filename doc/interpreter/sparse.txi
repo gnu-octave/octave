@@ -489,7 +489,7 @@ rest of this article, the specific sparse versions of functions are used.
   @dfn{normest}, @dfn{sprank}, @dfn{spaugment}, @dfn{svds}
 
 @item Iterative techniques:
-  @dfn{ichol}, @dfn{ilu}, @dfn{luinc}, @dfn{pcg}, @dfn{pcr}
+  @dfn{ichol}, @dfn{ilu}, @dfn{pcg}, @dfn{pcr}
 @c @dfn{bicg}, @dfn{bicgstab}, @dfn{cholinc}, @dfn{cgs}, @dfn{gmres}, 
 @c @dfn{lsqr}, @dfn{minres}, @dfn{qmr}, @dfn{symmlq}
 

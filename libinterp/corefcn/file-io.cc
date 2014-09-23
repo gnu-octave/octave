@@ -1778,17 +1778,22 @@ end-of-file condition.\n\
 
 DEFUNX ("ferror", Fferror, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{err} =} ferror (@var{fid})\n\
-@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid})\n\
+@deftypefn  {Built-in Function} {@var{msg} =} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{msg}, @var{err}] =} ferror (@var{fid})\n\
 @deftypefnx {Built-in Function} {[@var{dots}] =} ferror (@var{fid}, \"clear\")\n\
-Return 1 if an error condition has been encountered for the file specified by\n\
-file descriptor @var{fid} and 0 otherwise.\n\
+Query the error status of the stream specified by file descriptor @var{fid}\n\
 \n\
-Note that @code{ferror} will only return 1 if an error has already been\n\
-encountered, not if the next operation will result in an error condition.\n\
+If an error condition exists then return a string @var{msg} describing the\n\
+error.  Otherwise, return an empty string @qcode{\"\"}.\n\
 \n\
-The second argument is optional.  If it is supplied, also clear the error\n\
-condition.\n\
+The optional second output is a numeric indication of the error status.\n\
+@var{err} is 1 if an error condition has been encountered and 0 otherwise.\n\
+\n\
+Note that @code{ferror} indicates if an error has already occurred, not\n\
+whether the next operation will result in an error condition.\n\
+\n\
+The second input @qcode{\"clear\"} is optional.  If supplied, the error\n\
+state on the stream will be cleared.\n\
 @seealso{fclear, fopen}\n\
 @end deftypefn")
 {

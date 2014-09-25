@@ -72,6 +72,9 @@ if [ $# -gt 0 ]; then
   elif [ "x$1" = "x-valgrind" ]; then
     driver="valgrind --tool=memcheck"
     shift
+  elif [ "x$1" = "x-callgrind" ]; then
+    driver="valgrind --tool=callgrind"
+    shift
   elif [ "x$1" = "x-strace" ]; then
     driver="strace -o octave.trace"
     shift

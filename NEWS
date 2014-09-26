@@ -25,6 +25,12 @@ Summary of important user-visible changes for version 4.2:
     has continuous 1st and 2nd derivatives while 'pchip' only has a continuous
     1st derivative.
 
+ ** The delaunay function has been extended to accept 3-D inputs for
+    Matlab compatibility.  The delaunay function no longer plots the
+    triangulation if no output argument is requested, instead, the
+    triangulation is always returned.  The delaunay3 function which
+    handles 3-D inputs has been deprecated in favor of delaunay.
+
  ** Integer formats used in the printf family of functions now work for
     64-bit integers and are more compatible with Matlab when printing
     non-integer values.  Now instead of truncating, Octave will switch
@@ -59,6 +65,10 @@ Summary of important user-visible changes for version 4.2:
     containing the linkprop object.
 
  ** isprime has been extended to operate on negative and complex inputs.
+
+ ** The following functions now support N-dimensional arrays:
+
+      fliplr   flipud   rot90
 
  ** The new warning ID "Octave:data-file-in-path" replaces the three
     previous separate warning IDs "Octave:fopen-file-in-path",
@@ -101,6 +111,7 @@ Summary of important user-visible changes for version 4.2:
       Function           | Replacement
       -------------------|------------------
       bicubic            | interp2
+      delaunay3          | delaunay
       find_dir_in_path   | dir_in_loadpath
       finite             | isfinite
       fmod               | rem
@@ -135,12 +146,6 @@ Summary of important user-visible changes for version 4.2:
     The internal class <Octave_map> was deprecated in Octave 3.8 and has
     been removed from Octave 4.2.  Replacement classes are
     <octave_map> (struct array) or <octave_scalar_map> for a single structure.
-
- ** The following functions have now support for N-dimensional arrays:
-
-      fliplr
-      flipud
-      rot90
 
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------

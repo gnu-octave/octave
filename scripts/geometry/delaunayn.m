@@ -47,7 +47,7 @@
 ## To append user options to the defaults it is necessary to repeat the 
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
-## @seealso{delaunay, delaunay3, convhulln, voronoin, trimesh, tetramesh}
+## @seealso{delaunay, convhulln, voronoin, trimesh, tetramesh}
 ## @end deftypefn
 
 function T = delaunayn (pts, varargin)
@@ -75,7 +75,7 @@ function T = delaunayn (pts, varargin)
   ## prod(1:n) is dropped.
   idx = [];
   [nt, n] = size (T);
-  ## FIXME: Vectorize this for loop or convert to delaunayn to .oct function
+  ## FIXME: Vectorize this for loop or convert delaunayn to .oct function
   for i = 1:nt
     X = pts(T(i,1:end-1),:) - pts(T(i,2:end),:);
     if (abs (det (X)) / sqrt (sum (X .^ 2, 2)) < 1e3 * myeps)

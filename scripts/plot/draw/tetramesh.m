@@ -43,7 +43,7 @@
 ## @qcode{"visible"} property @qcode{"on"} or @qcode{"off"}.
 ##
 ## Type @code{demo tetramesh} to see examples on using @code{tetramesh}.
-## @seealso{trimesh, delaunay3, delaunayn, patch}
+## @seealso{trimesh, delaunay, delaunayn, patch}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>
@@ -130,7 +130,7 @@ endfunction
 %! x = [x(:); 0];
 %! y = [y(:); 0];
 %! z = [z(:); 0];
-%! tetra = delaunay3 (x, y, z);
+%! tetra = delaunay (x, y, z);
 %! X = [x(:) y(:) z(:)];
 %! colormap (jet (64));
 %! h = tetramesh (tetra, X);
@@ -147,7 +147,7 @@ endfunction
 %! x = [x(:); 0];
 %! y = [y(:); 0];
 %! z = [z(:); 0];
-%! tetra = delaunay3 (x, y, z);
+%! tetra = delaunay (x, y, z);
 %! X = [x(:) y(:) z(:)];
 %! colormap (gray (256));
 %! tetramesh (tetra, X, 21:20:241, 'EdgeColor', 'w');

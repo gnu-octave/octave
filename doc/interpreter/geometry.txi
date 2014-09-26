@@ -50,14 +50,10 @@ circum-circle.  In this case the Delaunay triangulation is not unique.
 
 @DOCSTRING(delaunay)
 
-The 3- and N-dimensional extension of the Delaunay triangulation are
-given by @code{delaunay3} and @code{delaunayn} respectively.  
-@code{delaunay3} returns a set of tetrahedra that satisfy the
+For 3-D inputs @code{delaunay} returns a set of tetrahedra that satisfy the
 Delaunay circum-circle criteria.  Similarly, @code{delaunayn} returns the
 N-dimensional simplex satisfying the Delaunay circum-circle criteria.  
 The N-dimensional extension of a triangulation is called a tessellation.
-
-@DOCSTRING(delaunay3)
 
 @DOCSTRING(delaunayn)
 
@@ -417,12 +413,10 @@ The output of the above can be seen in @ref{fig:convhull}.
 An important use of the Delaunay tessellation is that it can be used to
 interpolate from scattered data to an arbitrary set of points.  To do
 this the N-simplex of the known set of points is calculated with
-@code{delaunay}, @code{delaunay3} or @code{delaunayn}.  Then the
-simplices in to which the desired points are found are
-identified.  Finally the vertices of the simplices are used to
-interpolate to the desired points.  The functions that perform this
-interpolation are @code{griddata}, @code{griddata3} and
-@code{griddatan}.
+@code{delaunay} or @code{delaunayn}.  Then the simplices in to which the
+desired points are found are identified.  Finally the vertices of the simplices
+are used to interpolate to the desired points.  The functions that perform this
+interpolation are @code{griddata}, @code{griddata3} and @code{griddatan}.
 
 @DOCSTRING(griddata)
 
@@ -444,8 +438,7 @@ griddata (x,y,z,xx,yy);
 @end example
 
 @noindent
-that interpolates from a random scattering of points, to a uniform
-grid. 
+that interpolates from a random scattering of points, to a uniform grid. 
 @ifnotinfo
 The output of the above can be seen in @ref{fig:griddata}.
 

@@ -288,8 +288,7 @@ interpretation and rendering.
 @item Qhull
 Computational geometry library (@url{http://www.qhull.org}).  Qhull is
 required to provide the functions @code{convhull}, @code{convhulln}, 
-@code{delaunay}, @code{delaunay3}, @code{delaunayn}, @code{voronoi}, and
-@code{voronoin}.
+@code{delaunay}, @code{delaunayn}, @code{voronoi}, and @code{voronoin}.
 
 @item QRUPDATE
 QR factorization updating library

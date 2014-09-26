@@ -19,6 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
+##
+## @code{delaunay3} is deprecated and will be removed in Octave version 4.6.
+## Please use @code{delaunay} in all new code.
+##
 ## Compute the Delaunay triangulation for a 3-D set of points.
 ## The return value @var{tetr} is a set of tetrahedrons which satisfies the
 ## Delaunay circum-circle criterion, i.e., only a single data point from
@@ -48,6 +52,13 @@
 ## Author: Kai Habel <kai.habel@gmx.de>
 
 function tetr = delaunay3 (x, y, z, options)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "delaunay3 is obsolete and will be removed from a future version of Octave, please use delaunay instead");
+  endif
 
   if (nargin < 3 || nargin > 4)
     print_usage ();

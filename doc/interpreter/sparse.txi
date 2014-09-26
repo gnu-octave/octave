@@ -877,8 +877,6 @@ are partial factorizations of the original matrix.
 
 @DOCSTRING(ilu)
 
-@DOCSTRING(luinc)
-
 @node Real Life Example
 @section Real Life Example using Sparse Matrices
 

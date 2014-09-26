@@ -49,6 +49,8 @@ workspace_view::workspace_view (QWidget *p)
 
   view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
+  view->setShowGrid (false);
+  view->setAlternatingRowColors (true);
   view_previous_row_count = 0;
 
   // Set an empty widget, so we can assign a layout to it.

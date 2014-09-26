@@ -78,7 +78,7 @@
 
 ## Deprecated in version 4.2
 
-function retval = usage (varargin)
+function [L, U, P, Q] = luinc (varargin)
 
   persistent warned = false;
   if (! warned)
@@ -87,7 +87,7 @@ function retval = usage (varargin)
              "luinc is obsolete and will be removed from a future version of Octave, please use ilu or ichol instead");
   endif
 
-  retval = __luinc__ (varargin{:});
+  [L, U, P, Q] = __luinc__ (varargin{:});
 
 endfunction
 

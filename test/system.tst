@@ -183,31 +183,32 @@
 
 %!test
 %! if (isunix ())
-%!  assert (S_ISCHR (stat ("/dev/null").mode));
-%!  assert (S_ISFIFO (stat ("/dev/initctl").mode));
-%!  assert (S_ISLNK (lstat ("/dev/core").mode));
+%!   assert (S_ISCHR (stat ("/dev/null").mode));
+%!   if (exist ("/dev/initctl"))
+%!     assert (S_ISFIFO (stat ("/dev/initctl").mode));
+%!   endif
+%!   assert (S_ISLNK (lstat ("/dev/core").mode));
 %! endif
 %! nm = tmpnam ();
 %! fid = fopen (nm, "wb");
 %! fclose (fid);
-%! r = [
-%!  S_ISREG(stat(nm).mode),
-%!  S_ISDIR(stat(nm).mode),
-%!  S_ISCHR(stat(nm).mode),
-%!  S_ISBLK(stat(nm).mode),
-%!  S_ISFIFO(stat(nm).mode),
-%!  S_ISLNK(lstat(nm).mode),
-%!  S_ISSOCK(stat(nm).mode)];
+%! r = [ S_ISREG(stat(nm).mode)
+%!       S_ISDIR(stat(nm).mode)
+%!       S_ISCHR(stat(nm).mode)
+%!       S_ISBLK(stat(nm).mode)
+%!       S_ISFIFO(stat(nm).mode)
+%!       S_ISLNK(lstat(nm).mode)
+%!       S_ISSOCK(stat(nm).mode) ];
 %! unlink (nm);
 %! assert (r(:), [true; false; false; false; false; false; false]);
 
-%!error <octave_base_value::double_value ()> S_ISREG ({})
-%!error <octave_base_value::double_value ()> S_ISDIR ({})
-%!error <octave_base_value::double_value ()> S_ISCHR ({})
-%!error <octave_base_value::double_value ()> S_ISBLK ({})
-%!error <octave_base_value::double_value ()> S_ISFIFO ({})
-%!error <octave_base_value::double_value ()> S_ISLNK ({})
-%!error <octave_base_value::double_value ()> S_ISSOCK ({})
+%!error <octave_base_value::double_value> S_ISREG ({})
+%!error <octave_base_value::double_value> S_ISDIR ({})
+%!error <octave_base_value::double_value> S_ISCHR ({})
+%!error <octave_base_value::double_value> S_ISBLK ({})
+%!error <octave_base_value::double_value> S_ISFIFO ({})
+%!error <octave_base_value::double_value> S_ISLNK ({})
+%!error <octave_base_value::double_value> S_ISSOCK ({})
 
 %!error <Invalid call to S_ISREG> S_ISREG ()
 %!error <Invalid call to S_ISDIR> S_ISDIR ()

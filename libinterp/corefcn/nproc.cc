@@ -101,7 +101,7 @@ variable.\n\
 %!   if (! isempty (old_val))
 %!     setenv ("OMP_NUM_THREADS", old_val);
 %!   else
-%!     setenv ("OMP_NUM_THREADS", "");
+%!     unsetenv ("OMP_NUM_THREADS");
 %!   endif
 %! end_unwind_protect
 

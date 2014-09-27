@@ -280,16 +280,16 @@
 %! warning (wns.state, "Octave:num-to-str");
 
 %!test
-%! putenv ("foobar", "baz");
+%! setenv ("foobar", "baz");
 %! assert (getenv ("foobar"), "baz");
 
-%!error <Invalid call to putenv> putenv ()
-%!error <Invalid call to putenv> putenv ("foo", "bar", 1)
+%!error <Invalid call to setenv> setenv ()
+%!error <Invalid call to setenv> setenv ("foo", "bar", 1)
 
 %!test
 %! wns = warning ("query", "Octave:num-to-str");
 %! warning ("on", "Octave:num-to-str");
-%! fail ("putenv (1, 2)","warning");
+%! fail ("setenv (1, 2)","warning");
 %! warning (wns.state, "Octave:num-to-str");
 
 %!test

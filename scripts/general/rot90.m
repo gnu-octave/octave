@@ -51,7 +51,7 @@
 ## i.e., rows and columns.  To perform a rotation on any other plane, use
 ## @code{rotdim}.
 ##
-## @seealso{rotdim, flipud, fliplr, flip}
+## @seealso{rotdim, fliplr, flipud, flip}
 ## @end deftypefn
 
 ## Author: jwe

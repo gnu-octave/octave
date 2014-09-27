@@ -93,6 +93,7 @@ Summary of important user-visible changes for version 4.2:
       numfields
       rotate
       sylvester
+      unsetenv
       zoom
 
  ** inline() scheduled for eventual deprecation by Matlab

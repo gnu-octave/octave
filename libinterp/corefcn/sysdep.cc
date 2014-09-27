@@ -555,6 +555,7 @@ getenv (\"PATH\")\n\
 \n\
 @noindent\n\
 returns a string containing the value of your path.\n\
+@seealso{setenv, unsetenv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -574,11 +575,20 @@ returns a string containing the value of your path.\n\
   return retval;
 }
 
-DEFUN (putenv, args, ,
+/*
+%!assert (ischar (getenv ("OCTAVE_HOME")))
+*/
+
+DEFUN (setenv, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} putenv (@var{var}, @var{value})\n\
-@deftypefnx {Built-in Function} {} setenv (@var{var}, @var{value})\n\
+@deftypefn  {Built-in Function} {} setenv (@var{var}, @var{value})\n\
+@deftypefnx {Built-in Function} {} setenv (@var{var})\n\
+@deftypefnx {Built-in Function} {} putenv (@dots{})\n\
 Set the value of the environment variable @var{var} to @var{value}.\n\
+\n\
+If no @var{value} is specified then the variable will be assigned the null\n\
+string.\n\
+@seealso{unsetenv, getenv}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -597,10 +607,10 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
           if (! error_state)
             octave_env::putenv (var, val);
           else
-            error ("putenv: VALUE must be a string");
+            error ("setenv: VALUE must be a string");
         }
       else
-        error ("putenv: VAR must be a string");
+        error ("setenv: VAR must be a string");
     }
   else
     print_usage ();
@@ -608,13 +618,48 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
   return retval;
 }
 
-DEFALIAS (setenv, putenv);
+DEFALIAS (putenv, setenv);
 
 /*
-%!assert (ischar (getenv ("OCTAVE_HOME")))
 %!test
 %! setenv ("dummy_variable_that_cannot_matter", "foobar");
 %! assert (getenv ("dummy_variable_that_cannot_matter"), "foobar");
+%! unsetenv ("dummy_variable_that_cannot_matter");
+%! assert (getenv ("dummy_variable_that_cannot_matter"), "");
+*/
+
+DEFUN (unsetenv, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{status} =} unsetenv (@var{var})\n\
+Delete the environment variable @var{var}.\n\
+\n\
+Return 0 if the variable was deleted, or did not exist, and -1 if an error\n\
+occurred.\n\
+@seealso{setenv, getenv}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      const char *var = args(0).string_value ().c_str ();
+
+      if (! error_state)
+        {
+          int status = gnulib::unsetenv (var);
+          retval = status;
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+## Test for unsetenv is in setenv test
 */
 
 // FIXME: perhaps kbhit should also be able to print a prompt?

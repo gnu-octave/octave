@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} debug ()
-## Summary of debugging commands.  For more information on each command
-## and available options use @code{help CMD}.
+## Summary of debugging commands.
+##
+## For more information on each command and available options use
+## @code{help CMD}.
 ## 
 ## The debugging commands available in Octave are
 ##
@@ -95,4 +97,8 @@
 function debug ()
   help ("debug");
 endfunction
+
+
+## Mark file as being tested.  No real test needed for a documentation .m file
+%!assert (1)
 

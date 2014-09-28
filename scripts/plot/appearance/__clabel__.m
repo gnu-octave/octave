@@ -127,3 +127,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
 
 endfunction
 
+
+## No test needed for internal helper function.
+%!assert (1)
+

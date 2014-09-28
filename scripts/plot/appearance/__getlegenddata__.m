@@ -59,3 +59,7 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
 
 endfunction
 
+
+## No test needed for internal helper function.
+%!assert (1)
+

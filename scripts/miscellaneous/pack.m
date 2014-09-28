@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} pack ()
-## Consolidate workspace memory in @sc{matlab}.  This function is provided for
-## compatibility, but does nothing in Octave.
+## Consolidate workspace memory in @sc{matlab}.
+##
+## This function is provided for compatibility, but does nothing in Octave.
+## @seealso{clear}
 ## @end deftypefn
 
 ## Author: jwe
@@ -27,4 +29,8 @@
 function pack ()
 
 endfunction
+
+
+## No test needed for empty function
+%!assert (1)
 

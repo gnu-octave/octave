@@ -1511,6 +1511,7 @@ main_window::construct_file_menu (QMenuBar *p)
     = file_menu->addAction (QIcon (":/actions/icons/folder_documents.png"),
                             tr ("Open..."));
   _open_action->setShortcutContext (Qt::ApplicationShortcut);
+  _open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #ifdef HAVE_QSCINTILLA
   editor_window->insert_new_open_actions (_new_script_action,
@@ -1567,11 +1568,11 @@ main_window::construct_new_menu (QMenu *p)
                            tr ("New Script"));
   _new_script_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  _new_function_action = new_menu->addAction (tr ("Function..."));
+  _new_function_action = new_menu->addAction (tr ("New Function..."));
   _new_function_action->setEnabled (true);
   _new_function_action->setShortcutContext (Qt::ApplicationShortcut);
 
-  _new_figure_action = new_menu->addAction (tr ("Figure"));
+  _new_figure_action = new_menu->addAction (tr ("New Figure"));
   _new_figure_action->setEnabled (true);
 
 #ifdef HAVE_QSCINTILLA

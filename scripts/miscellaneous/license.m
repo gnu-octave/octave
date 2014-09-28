@@ -1,4 +1,5 @@
 ## Copyright (C) 2005-2013 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2014 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -18,181 +19,173 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} license
+## @deftypefnx {Command} {} license inuse
+## @deftypefnx {Command} {} license inuse @var{feature}
 ## @deftypefnx {Function File} {} license ("inuse")
 ## @deftypefnx {Function File} {@var{retval} =} license ("inuse")
 ## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
-## @deftypefnx {Function File} {} license ("test", @var{feature}, @var{toggle})
 ## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
-## 
-## Display the license of Octave.
+## @deftypefnx {Function File} {[@var{retval}, @var{errmsg}] =} license ("checkout", @var{feature})
+## Get license information for Octave and Octave packages.
 ##
-## @code{license ("inuse")}
+## GNU Octave is free software distributed under the GNU General Public
+## License (GPL), and a license manager makes no sense.  This function is
+## provided only for @sc{Matlab} compatibility.
 ##
-## Display a list of packages currently being used.
-##
-## @code{@var{retval} = license ("inuse")}
-##
-## Return a structure containing the fields @code{feature} and @code{user}.
-##
-## @code{@var{retval} = license ("test", @var{feature})}
-##
-## Return 1 if a license exists for the product identified by the string
-## @var{feature} and 0 otherwise.  The argument @var{feature} is case
-## insensitive and only the first 27 characters are checked.
-##
-## @code{license ("test", @var{feature}, @var{toggle})}
-##
-## Enable or disable license testing for @var{feature}, depending on
-## @var{toggle}, which may be one of:
+## When called with no extra input arguments, it returns the Octave license,
+## otherwise the first input defines the operation mode and must be one of
+## the following strings: @code{inuse}, @code{test}, and @code{checkout}.
+## The optional @var{feature} argument can either be @qcode{"octave"} (core),
+## or an Octave package.
 ##
 ## @table @asis
-## @item @qcode{"enable"}
-## Future tests for the specified license of @var{feature} are conducted
-## as usual.
+## @item @qcode{"inuse"}
+## Returns a list of loaded features, i.e., octave and the list of loaded
+## packages.  If an output is requested, it returns a struct array with
+## the fields @qcode{"feature"}, and @qcode{"user"}.
 ##
-## @item @qcode{"disable"}
-## Future tests for the specified license of @var{feature} return 0.
+## @item @qcode{"test"}
+## Return true if the specified @var{feature} is installed, false otherwise.
+##
+## An optional third argument @qcode{"enable"} or @qcode{"disable"} is
+## accepted but ignored.
+##
+## @item @qcode{"checkout"}
+## Return true if the specified @var{feature} is installed, false otherwise.
+## An optional second output will have an error message if a package is not
+## installed.
+##
 ## @end table
 ##
-## @code{@var{retval} = license ("checkout", @var{feature})}
-##
-## Check out a license for @var{feature}, returning 1 on success and 0
-## on failure.
-##
-## This function is provided for compatibility with @sc{matlab}.
-## @seealso{ver, version}
+## @seealso{pkg, ver, version}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function retval = license (varargin)
+function [retval, errmsg] = license (cmd, feature, toogle)
 
-  persistent __octave_licenses__;
-
-  if (isempty (__octave_licenses__))
-    __octave_licenses__ = cell ();
-    __octave_licenses__{1,1} = "Octave";
-    __octave_licenses__{1,2} = "GNU General Public License";
-    __octave_licenses__{1,3} = true;
-    if (exist ("OCTAVE_FORGE_VERSION"))
-      __octave_licenses__{2,1} = "octave-forge";
-      __octave_licenses__{2,2} = "<various licenses>";
-      __octave_licenses__{2,3} = true;
-    endif
-  endif
-
-  nout = nargout;
-  nin = nargin;
-  nr_licenses = rows (__octave_licenses__);
-
-  if (nout > 1 || nin > 3)
+  if (nargin > 3)
     print_usage ();
   endif
 
-  if (nin == 0)  
-
-    found = find (strcmp (__octave_licenses__(:,1), "Octave"), 1);
-
-    if (! isempty (found))
-      result = __octave_licenses__{found,2};
-    else
-      result = "unknown";
-    endif
-
-    if (nout == 0)
-      printf ("%s\n", result);
-    else
-      retval = result;
-    endif
-
-  elseif (nin == 1)
-
-    if (nout == 0)
-
-      if (! strcmp (varargin{1}, "inuse"))
-        usage ('license ("inuse")');
-      endif
-
-      printf ("%s\n", __octave_licenses__{:,1});
-
-    else
-
-      if (! strcmp (varargin{1}, "inuse"))
-        usage ('retval = license ("inuse")');
-      endif
-
-      pw = getpwuid (getuid ());
-      if (isstruct (pw))
-        username = pw.name;
-      else
-        username = "octave_user";
-      endif
-
-      retval = struct ("feature", __octave_licenses__(:,1), "user", username);
-
-    endif
-
-  else
-
-    feature = varargin{2}(1:(min ([(length (varargin{2})), 27])));
-
-    if (strcmp (varargin{1}, "test"))
-
-      found = find (strcmpi (__octave_licenses__(:,1), feature), 1);
-
-      if (nin == 2)
-        retval = ! isempty (found) && __octave_licenses__{found,3};
-      else
-        if (! isempty (found))
-          if (strcmp (varargin{3}, "enable"))
-            __octave_licenses__{found,3} = true;
-          elseif (strcmp (varargin{3}, "disable"))
-            __octave_licenses__{found,3} = false;
-          else
-            error ("license: TOGGLE must be either 'enable' or 'disable'");
-          endif
-        else
-          error ("license: FEATURE '%s' not found", feature);
-        endif
-      endif
-
-    elseif (strcmp (varargin{1}, "checkout"))
-
-      if (nin != 2)
-        usage ('retval = license ("checkout", feature)');
-      endif
-
-      found = find (strcmpi (__octave_licenses__(:,1), feature), 1);
-
-      retval = ! isempty (found) && __octave_licenses__{found,3};
-
-    else
-      print_usage ();
-    endif
-
+  ## Then only give information about Octave core
+  if (nargin == 0)
+    retval = "GNU General Public License";
+    return
   endif
+
+  [features, desc, flags] = get_all_features ();
+
+  switch tolower (cmd)
+    case "inuse"
+      if (nargin > 2)
+        print_usage ();
+      endif
+
+      unloaded = cellfun (@(x) x.name, desc(strcmpi (flags, "Not loaded")),
+                          "UniformOutput", false);
+      features(ismember (features, unloaded)) = [];
+
+      if (nargin > 1)
+        features = features(strcmp (features, feature));
+      endif
+      if (nargout == 0)
+        printf ("%s\n", features{:});
+      else
+        retval = struct ("feature", features, "user", get_username ());
+      endif
+
+    case "test"
+      if (nargin < 2)
+        print_usage ();
+      endif
+
+      if (nargin > 2)
+        ## We ignore the toogle argument because... what's the point?  We
+        ## don't need a license management system on Octave.  This function
+        ## will return true, even if anyone tries to disabled a license.
+        switch tolower (toogle)
+          case "enable",  # do nothing
+          case "disable", # do nothing
+          otherwise,      error ("license: TOOGLE must be enable or disable");
+        endswitch
+      endif
+
+      retval = any (strcmp (features, feature));
+
+    case "checkout"
+      ## I guess we could have the checkout command load packages but it's not
+      ## really the same thing.  The closest we have is simply to check if
+      ## there is a package with the feature name, and give an error if not.
+
+      if (nargin != 2)
+        print_usage ();
+      endif
+
+      retval = any (strcmp (features, feature));
+      errmsg = "";
+
+      if (! retval)
+        errmsg = ["No package named \"" feature "\" installed"];
+      endif
+
+    otherwise
+      print_usage ();
+  endswitch
 
 endfunction
 
+function username = get_username ()
+  pw = getpwuid (getuid ());
+  if (isstruct (pw))
+    username = pw.name;
+  else
+    username = "octave_user";
+  endif
+endfunction
 
-%!assert (license(), "GNU General Public License")
-%!assert ((license ("inuse")).feature, "Octave")
+function [features, desc, loaded] = get_all_features ()
+  [desc, loaded] = pkg ("describe", "all");
+  pkg_names = cellfun (@(x) x.name, desc, "UniformOutput", false);
+  features = {"octave", pkg_names{:}};
+endfunction
+
+%!assert (license (), "GNU General Public License")
+%!assert ((license ("inuse", "octave")).feature, "octave")
 
 %!test
-%! lstate = license ("test", "Octave");
-%! license ("test", "Octave", "disable");
-%! assert (license ("test", "Octave"), false);
-%! license ("test", "Octave", "enable");
-%! assert (license ("test", "Octave"), true);
-%! if (lstate == false)
-%!   license ("test", "Octave", "disable");
-%! endif
+%! [desc, flags] = pkg ("describe", "all");
+%! for idx = 1: numel (desc)
+%!   name = desc{idx}.name;
+%!   switch (flags{idx})
+%!     case "Loaded"
+%!       assert ((license ("inuse", name)).feature, name);
+%!     case "Not loaded"
+%!       rv = license ("inuse", name);
+%!       assert (isstruct (rv));
+%!       assert (all (ismember ({"feature", "user"}, fieldnames (rv))));
+%!     otherwise
+%!       error ("code in license out of date");
+%!   endswitch
+%! endfor
 
-%!assert (license ("checkout", "Octave"), true)
+%!assert (license ("test", "octave"), true)
+%!assert (license ("test", "not_a_valid package name"), false)
+
+%!test
+%! desc = pkg ("describe", "all");
+%! for idx = 1: numel (desc)
+%!   assert (license ("test", desc{idx}.name), true)
+%! endfor
+
+%!assert (license ("checkout", "octave"), true)
+
+%!test
+%! [s, e] = license ("checkout", "NOT_A_PACKAGE");
+%! assert (e, "No package named \"NOT_A_PACKAGE\" installed");
 
 %% Test input validation
 %!error license ("not_inuse")
-%!error <TOGGLE must be either> license ("test", "Octave", "not_enable")
-%!error <FEATURE 'INVALID' not found> license ("test", "INVALID", "enable")
-%!error license ("not_test", "Octave", "enable")
+%!error license ("not_test", "octave", "enable")
+%!error <TOOGLE must be enable or disable> license ("test", "octave", "invalid_toogle")
 

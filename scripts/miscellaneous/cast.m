@@ -17,8 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} cast (@var{val}, @var{type})
+## @deftypefn {Function File} {} cast (@var{val}, "@var{type}")
 ## Convert @var{val} to data type @var{type}.
+##
+## @var{val} must be one of the numeric classes:
+## 
+## @example
+## @group
+## "double"
+## "single"
+## "logical"
+## "char"
+## "int8"
+## "int16"
+## "int32"
+## "int64"
+## "uint8"
+## "uint16"
+## "uint32"
+## "uint64"
+## @end group
+## @end example
 ##
 ## The value @var{val} may be modified to fit within the range of the new type.
 ##
@@ -33,28 +52,47 @@
 ## @end group
 ## @end example
 ##
-## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64, double, single, logical, char}
+## @seealso{typecast, int8, uint8, int16, uint16, int32, uint32, int64, uint64, double, single, logical, char, class, typeinfo}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = cast (val, typ)
+function retval = cast (val, type)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (ischar (typ))
-    if (any (strcmp (typ, {"int8"; "uint8"; "int16"; "uint16";
-                           "int32"; "uint32"; "int64"; "uint64";
-                           "double"; "single"; "logical"; "char"})))
-      retval = feval (typ, val);
-    else
-      error ("cast: type name '%s' is not a built-in type", typ);
-    endif
-  else
-    error ("cast: expecting TYPE name as second argument");
+  if (! ischar (type))
+    error ("cast: TYPE must be a string");
+  elseif (! any (strcmp (type, {"int8"; "uint8"; "int16"; "uint16";
+                                "int32"; "uint32"; "int64"; "uint64";
+                                "double"; "single"; "logical"; "char"})))
+    error ("cast: TYPE '%s' is not a built-in type", type);
   endif
+    
+  retval = feval (type, val);
 
 endfunction
+
+
+%!assert (cast (single (2.5), "double"), 2.5)
+%!assert (cast (2.5, "single"), single (2.5))
+%!assert (cast ([5 0 -5], "logical"), [true false true])
+%!assert (cast ([65 66 67], "char"), "ABC")
+%!assert (cast ([-2.5 1.1 2.5], "int8"), int8 ([-3 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "uint8"), uint8 ([0 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "int16"), int16 ([-3 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "uint16"), uint16 ([0 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "int32"), int32 ([-3 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "uint32"), uint32 ([0 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "int64"), int64 ([-3 1 3]))
+%!assert (cast ([-2.5 1.1 2.5], "uint64"), uint64 ([0 1 3]))
+
+## Test input validation
+%!error cast ()
+%!error cast (1)
+%!error cast (1,2,3)
+%!error <TYPE 'foobar' is not a built-in type> cast (1, "foobar")
+%!error <TYPE must be a string> cast (1, {"foobar"})
 

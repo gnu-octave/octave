@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} fact
-## @deftypefnx {Function File} {T =} fact()
+## @deftypefnx {Function File} {T =} fact ()
 ## Display an amazing and random fact about the world's greatest hacker.
 ## @end deftypefn
 
@@ -284,4 +284,8 @@ function out = wordwrap (w)
   endwhile
   out = [out, "\n"];
 endfunction
+
+
+## Mark file as being tested.  No real test needed for a documentation .m file
+%!assert (1)
 

@@ -33,3 +33,7 @@ function ret = __prog_output_assert__ (str)
   _assert_printf = "";
 endfunction
 
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
+

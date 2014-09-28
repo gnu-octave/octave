@@ -84,3 +84,6 @@ function pos = __actual_axis_position__ (h)
   endif
 endfunction
 
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)

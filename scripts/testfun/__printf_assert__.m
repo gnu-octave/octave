@@ -26,3 +26,7 @@ function __printf_assert__ (varargin)
   _assert_printf = cat (2, _assert_printf, sprintf (varargin{:}));
 endfunction
 
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
+

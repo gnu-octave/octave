@@ -33,3 +33,13 @@ function options = __default_plot_options__ ()
 
 endfunction
 
+
+%!test
+%! options = __default_plot_options__ ();
+%! assert (isfield (options, "key"));
+%! assert (options.key, "");
+%! assert (options.color, []);
+%! assert (options.linestyle, []);
+%! assert (options.marker, []);
+%! assert (options.errorstyle, []);
+

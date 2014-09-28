@@ -56,3 +56,23 @@ function [linestyle, marker] = __next_line_style__ (reset)
 
 endfunction
 
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ();
+%!   set (hax, "colororder", [0 0 1]);
+%!   set (hax, "linestyleorder", {"-", ":", "--"});
+%!   hold on;
+%!   h = plot (1:5,1:5, 1:4,1:4, 1:3,1:3);
+%!   assert (get (h, "linestyle"), {"-"; ":"; "--"});
+%!   cla (hax);
+%!   hold all;
+%!   h1 = plot (1:5,1:5);
+%!   h2 = plot (1:4,1:4);
+%!   h3 = plot (1:3,1:3);
+%!   assert (get ([h1;h2;h3], "linestyle"), {"-"; ":"; "--"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

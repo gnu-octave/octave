@@ -17,12 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefn  {Function File} {@var{filepath} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefnx {Function File} {@var{filepaths} =} fullfile (@dots{}, @var{files})
 ## Build complete filename from separate parts.
 ##
 ## Joins any number of path components intelligently.  The return value
 ## is the concatenation of each component with exactly one file separator
 ## between each non empty part.
+##
+## If the last component part is a cell array, returns a cell array of
+## filepaths, one for each element in the last component, e.g.:
+##
+## @example
+## @group
+## fullfile ("/home/username", "data", @{"f1.csv", "f2.csv", "f3.csv"@})
+## @result{}  /home/username/data/f1.csv
+##     /home/username/data/f2.csv
+##     /home/username/data/f3.csv
+## @end group
+## @end example
 ##
 ## @seealso{fileparts}
 ## @end deftypefn
@@ -31,9 +44,14 @@
 
 function filename = fullfile (varargin)
 
-  non_empty = cellfun ("isempty", varargin);
-  filename = strjoin (varargin(! non_empty), filesep);
-  filename(strfind (filename, [filesep filesep])) = "";
+  if (nargin && iscell (varargin{end}))
+    filename = cellfun (@(x) fullfile (varargin{1:end-1}, x), varargin{end},
+                                       "UniformOutput", false);
+  else
+    non_empty = cellfun ("isempty", varargin);
+    filename = strjoin (varargin(! non_empty), filesep);
+    filename(strfind (filename, [filesep filesep])) = "";
+  endif
 
 endfunction
 
@@ -70,3 +88,5 @@ endfunction
 
 ## different on purpose so that "fullfile (c{:})" works for empty c
 %!assert (fullfile (), "")
+
+%!assert (fullfile ("a", "b", {"c", "d"}), {"a/b/c", "a/b/d"})

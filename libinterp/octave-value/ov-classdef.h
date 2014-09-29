@@ -122,7 +122,7 @@ public:
       return octave_value ();
     }
 
-  virtual string_vector map_keys(void) const;
+  virtual string_vector map_keys (void) const;
 
   virtual bool is_valid (void) const { return false; }
 
@@ -269,6 +269,8 @@ public:
     }
 
   string_vector map_keys (void) const { return rep->map_keys (); }
+
+  octave_map map_value (void) const;
 
   const cdef_object_rep* get_rep (void) const { return rep; }
 
@@ -646,7 +648,9 @@ private:
 
     void install_property (const cdef_property& prop);
 
-    Cell get_properties (void);
+    Cell get_properties (int mode);
+
+    std::map<std::string, cdef_property> get_property_map (int mode);
 
     string_vector get_names (void);
 
@@ -708,7 +712,7 @@ private:
     void find_names (std::set<std::string>& names, bool all);
     
     void find_properties (std::map<std::string,cdef_property>& props,
-                          bool only_inherited);
+                          int mode = 0);
 
     void find_methods (std::map<std::string, cdef_method>& meths,
                        bool only_inherited);
@@ -804,7 +808,12 @@ public:
   void install_property (const cdef_property& prop)
     { get_rep ()->install_property (prop); }
 
-  Cell get_properties (void) { return get_rep ()->get_properties (); }
+  Cell get_properties (int mode = property_normal)
+    { return get_rep ()->get_properties (mode); }
+
+  std::map<std::string, cdef_property>
+  get_property_map (int mode = property_normal)
+    { return get_rep ()->get_property_map (mode); }
 
   string_vector get_names (void) { return get_rep ()->get_names (); }
 
@@ -865,6 +874,14 @@ public:
   void register_object (void) { get_rep ()->register_object (); }
 
   void unregister_object (void) { get_rep ()->unregister_object (); }
+
+public:
+  enum
+    {
+      property_normal,
+      property_inherited,
+      property_all
+    };
 
 private:
   cdef_class_rep* get_rep (void)
@@ -1451,6 +1468,8 @@ public:
                   const octave_value& rhs);
 
   string_vector map_keys (void) const { return object.map_keys (); }
+
+  octave_map map_value (void) const { return object.map_value (); }
 
   dim_vector dims (void) const { return object.dims (); }
 

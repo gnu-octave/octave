@@ -1330,6 +1330,63 @@ private:
 
 //----------------------------------------------------------------------------
 
+octave_map
+cdef_object::map_value (void) const
+{
+  octave_map retval;
+
+  warning_with_id ("Octave:classdef-to-struct",
+                   "struct: converting a classdef object into a struct "
+                   "overrides the access restrictions defined for properties. "
+                   "All properties are returned, including private and "
+                   "protected ones.");
+
+  cdef_class cls = get_class ();
+
+  if (cls.ok ())
+    {
+      std::map<std::string, cdef_property> props;
+
+      props = cls.get_property_map (cdef_class::property_all);
+
+      for (std::map<std::string, cdef_property>::iterator it = props.begin ();
+           it != props.end (); ++it)
+        {
+          octave_value pvalue;
+
+          if (is_array ())
+            {
+              Array<cdef_object> a_obj = array_value ();
+
+              Cell cvalue (a_obj.dims ());
+
+              for (octave_idx_type i = 0; i < a_obj.numel (); i++)
+                {
+                  cvalue (i) = it->second.get_value (a_obj(i), false);
+
+                  if (error_state)
+                    break;
+                }
+
+              if (! error_state)
+                retval.setfield (it->first, cvalue);
+            }
+          else
+            {
+              Cell cvalue (dim_vector (1, 1), it->second.get_value (*this, false));
+
+              if (! error_state)
+                retval.setfield (it->first, cvalue);
+            }
+
+          if (error_state)
+            break;
+        }
+    }
+
+  return retval;
+}
+
 string_vector
 cdef_object_rep::map_keys (void) const
 {
@@ -2218,11 +2275,11 @@ cdef_class::cdef_class_rep::install_property (const cdef_property& prop)
 }
 
 Cell
-cdef_class::cdef_class_rep::get_properties (void)
+cdef_class::cdef_class_rep::get_properties (int mode)
 {
   std::map<std::string,cdef_property> props;
 
-  find_properties (props, false);
+  props = get_property_map (mode);
 
   if (! error_state)
     {
@@ -2240,9 +2297,19 @@ cdef_class::cdef_class_rep::get_properties (void)
   return Cell ();
 }
 
+std::map<std::string, cdef_property>
+cdef_class::cdef_class_rep::get_property_map (int mode)
+{
+  std::map<std::string,cdef_property> props;
+
+  find_properties (props, mode);
+
+  return props;
+}
+
 void
 cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>& props,
-                                             bool only_inherited)
+                                             int mode)
 {
   property_const_iterator it;
 
@@ -2253,7 +2320,7 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>
 
       if (props.find (nm) == props.end ())
         {
-          if (only_inherited)
+          if (mode == property_inherited)
             {
               octave_value acc = it->second.get ("GetAccess");
 
@@ -2275,7 +2342,10 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,cdef_property>
       cdef_class cls = lookup_class (super_classes(i));
 
       if (! error_state)
-        cls.get_rep ()->find_properties (props, true);
+        cls.get_rep ()->find_properties (props,
+                                         (mode == property_all ?
+                                          property_all :
+                                          property_inherited));
       else
         break;
     }

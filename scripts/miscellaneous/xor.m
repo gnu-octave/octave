@@ -92,7 +92,7 @@ endfunction
 %!assert (xor (speye (2), fliplr (speye (2))), sparse (logical (ones (2))))
 
 ## Test XOR reduction
-%!assert (xor ([1 0], [1 1], [0 0]), [0 1])
+%!assert (xor ([1 0], [1 1], [0 0]), logical ([0 1]))
 
 %% Test input validation
 %!error xor ()

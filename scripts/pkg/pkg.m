@@ -21,8 +21,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {Command} {} pkg @var{command} @var{option} @var{pkg_name}
-## Manage packages (groups of add-on functions) for Octave.  Different actions
-## are available depending on the value of @var{command}.
+## Manage packages (groups of add-on functions) for Octave.
+##
+## Different actions are available depending on the value of @var{command}.
 ##
 ## Available commands:
 ##
@@ -123,11 +124,25 @@
 ## Show the list of currently installed packages.  For example,
 ##
 ## @example
-## installed_packages = pkg ("list")
+## pkg list
 ## @end example
 ##
 ## @noindent
-## returns a cell array containing a structure for each installed package.
+## will produce a short report with the package name, version, and installation
+## directory for each installed package.  Supply a package name to limit 
+## reporting to a particular package.  For example:
+##
+## @example
+## pkg list image
+## @end example
+##
+## If a single return argument is requested then @code{pkg} returns a cell
+## array where each element is a structure with information on a single
+## package.
+##
+## @example
+## installed_packages = pkg ("list")
+## @end example
 ##
 ## If two output arguments are requested @code{pkg} splits the list of
 ## installed packages into those which were installed by the current user,
@@ -137,7 +152,7 @@
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## The option @qcode{"-forge"} lists packages available at the Octave-Forge
+## The @qcode{"-forge"} option lists packages available at the Octave-Forge
 ## repository.  This requires an internet connection and the cURL library. 
 ## For example:
 ##
@@ -164,7 +179,7 @@
 ## @end example
 ##
 ## @noindent
-## If any of the requested packages is not installed, pkg returns an
+## If any of the requested packages is not installed, @code{pkg} returns an
 ## error, unless a second output is requested:
 ##
 ## @example
@@ -263,6 +278,7 @@
 ## @end deftypefn
 
 function [local_packages, global_packages] = pkg (varargin)
+
   ## Installation prefix (FIXME: what should these be on windows?)
   persistent user_prefix = false;
   persistent prefix = false;
@@ -270,10 +286,6 @@ function [local_packages, global_packages] = pkg (varargin)
   persistent local_list = tilde_expand (fullfile ("~", ".octave_packages"));
   persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
                                      "octave_packages");
-
-  confirm_recursive_rmdir (false, "local");
-
-  mlock ();
 
   ## If user is superuser set global_istall to true
   ## FIXME: is it OK to set this always true on windows?
@@ -285,12 +297,17 @@ function [local_packages, global_packages] = pkg (varargin)
     archprefix = tilde_expand (archprefix);
   endif
 
+  mlock ();
+
+  confirm_recursive_rmdir (false, "local");
+
   available_actions = {"list", "install", "uninstall", "load", ...
                        "unload", "prefix", "local_list", ...
                        "global_list", "rebuild", "build", ...
                        "describe", "update"};
-  ## Handle input
-  if (length (varargin) == 0 || ! iscellstr (varargin))
+
+  ## Parse input arguments
+  if (isempty (varargin) || ! iscellstr (varargin))
     print_usage ();
   endif
   files = {};
@@ -299,7 +316,7 @@ function [local_packages, global_packages] = pkg (varargin)
   action = "none";
   verbose = false;
   octave_forge = false;
-  for i = 1:length (varargin)
+  for i = 1:numel (varargin)
     switch (varargin{i})
       case "-nodeps"
         deps = false;
@@ -327,11 +344,10 @@ function [local_packages, global_packages] = pkg (varargin)
           [prefix, archprefix] = default_prefix (global_install);
         endif
       case available_actions
-        if (strcmp (action, "none"))
-          action = varargin{i};
-        else
+        if (! strcmp (action, "none"))
           error ("more than one action specified");
         endif
+        action = varargin{i};
       otherwise
         files{end+1} = varargin{i};
     endswitch
@@ -352,19 +368,20 @@ function [local_packages, global_packages] = pkg (varargin)
         endif
       else
         if (nargout == 0)
-          installed_packages (local_list, global_list);
+          installed_packages (local_list, global_list, files);
         elseif (nargout == 1)
-          local_packages = installed_packages (local_list, global_list);
+          local_packages = installed_packages (local_list, global_list, files);
         elseif (nargout == 2)
           [local_packages, global_packages] = installed_packages (local_list,
-                                                                  global_list);
+                                                                  global_list,
+                                                                  files);
         else
           error ("too many output arguments requested");
         endif
       endif
 
     case "install"
-      if (length (files) == 0)
+      if (isempty (files))
         error ("you must specify at least one filename when calling 'pkg install'");
       endif
 
@@ -389,48 +406,47 @@ function [local_packages, global_packages] = pkg (varargin)
       end_unwind_protect
 
     case "uninstall"
-      if (length (files) == 0)
+      if (isempty (files))
         error ("you must specify at least one package when calling 'pkg uninstall'");
       endif
-      uninstall (files, deps, verbose, local_list,
-                 global_list, global_install);
+      uninstall (files, deps, verbose, local_list, global_list, global_install);
 
     case "load"
-      if (length (files) == 0)
-        error ("you must specify at least one package, 'all' or 'auto' when calling 'pkg load'");
+      if (isempty (files))
+        error ("you must specify at least one package, 'all', or 'auto' when calling 'pkg load'");
       endif
       load_packages (files, deps, local_list, global_list);
 
     case "unload"
-      if (length (files) == 0)
+      if (isempty (files))
         error ("you must specify at least one package or 'all' when calling 'pkg unload'");
       endif
       unload_packages (files, deps, local_list, global_list);
 
     case "prefix"
-      if (length (files) == 0 && nargout == 0)
+      if (isempty (files) && nargout == 0)
         printf ("Installation prefix:             %s\n", prefix);
         printf ("Architecture dependent prefix:   %s\n", archprefix);
-      elseif (length (files) == 0 && nargout >= 1)
+      elseif (isempty (files) && nargout >= 1)
         local_packages = prefix;
         global_packages = archprefix;
-      elseif (length (files) >= 1 && nargout <= 2 && ischar (files{1}))
+      elseif (numel (files) >= 1 && nargout <= 2 && ischar (files{1}))
         prefix = tilde_expand (files{1});
         if (! exist (prefix, "dir"))
-          [status, msg, msgid] = mkdir (prefix);
+          [status, msg] = mkdir (prefix);
           if (status == 0)
-            error("cannot create prefix %s: %s", prefix, msg);
+            error ("cannot create prefix %s: %s", prefix, msg);
           endif
           warning ("creating the directory %s\n", prefix);
         endif
         local_packages = prefix = canonicalize_file_name (prefix);
         user_prefix = true;
-        if (length (files) >= 2 && ischar (files{2}))
+        if (numel (files) >= 2 && ischar (files{2}))
           archprefix = tilde_expand (files{2});
           if (! exist (archprefix, "dir"))
-            [status, msg, msgid] = mkdir (archprefix);
+            [status, msg] = mkdir (archprefix);
             if (status == 0)
-              error("cannot create archprefix %s: %s", archprefix, msg);
+              error ("cannot create archprefix %s: %s", archprefix, msg);
             endif
             warning ("creating the directory %s\n", archprefix);
             global_packages = archprefix = canonicalize_file_name (archprefix);
@@ -441,11 +457,11 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
       
     case "local_list"
-      if (length (files) == 0 && nargout == 0)
+      if (isempty (files) && nargout == 0)
         disp (local_list);
-      elseif (length (files) == 0 && nargout == 1)
+      elseif (isempty (files) && nargout == 1)
         local_packages = local_list;
-      elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
+      elseif (numel (files) == 1 && nargout == 0 && ischar (files{1}))
         local_list = files{1};
         if (! exist (local_list, "file"))          
           try
@@ -461,11 +477,11 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
 
     case "global_list"
-      if (length (files) == 0 && nargout == 0)
-        disp(global_list);
-      elseif (length (files) == 0 && nargout == 1)
+      if (isempty (files) && nargout == 0)
+        disp (global_list);
+      elseif (isempty (files) && nargout == 1)
         local_packages = global_list;
-      elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
+      elseif (numel (files) == 1 && nargout == 0 && ischar (files{1}))
         global_list = files{1};
         if (! exist (global_list, "file"))  
           try
@@ -490,8 +506,8 @@ function [local_packages, global_packages] = pkg (varargin)
           local_packages = global_packages;
         endif
       else
-        local_packages = rebuild (prefix, archprefix, local_list, files, auto,
-                                  verbose);
+        local_packages = rebuild (prefix, archprefix, local_list, files,
+                                  auto, verbose);
         local_packages = save_order (local_packages);
         save (local_list, "local_packages");
         if (nargout == 0)
@@ -500,23 +516,21 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
 
     case "build"
-      if (length (files) < 2)
+      if (numel (files) < 2)
         error ("you must specify at least the build directory and one filename\nwhen calling 'pkg build'");
       endif
       build (files, deps, auto, verbose);
 
     case "describe"
-      if (length (files) == 0)
+      if (isempty (files))
         error ("you must specify at least one package or 'all' when calling 'pkg describe'");
       endif
-      ## FIXME: the name of the output variables is inconsistent
-      ##            with their content
+      ## FIXME: name of the output variables is inconsistent with their content
       switch (nargout)
         case 0
           describe (files, verbose, local_list, global_list);
         case 1
-          pkg_desc_list = describe (files, verbose, local_list, ...
-                                    global_list);
+          pkg_desc_list = describe (files, verbose, local_list, global_list);
           local_packages = pkg_desc_list;
         case 2
           [pkg_desc_list, flag] = describe (files, verbose, local_list, ...
@@ -530,24 +544,20 @@ function [local_packages, global_packages] = pkg (varargin)
     case "update"
       if (nargout == 0)
         installed_pkgs_lst = installed_packages (local_list, global_list);
-        if (length (files) > 0)
+        if (numel (files) > 0)
            update_lst = {}; 
-           for i = 1:length (files)
-             is_installed = false;
-             for j = 1:length (installed_pkgs_lst)
-               if (strcmp (files{i}, installed_pkgs_lst{j}.name))
-                 update_lst = { update_lst{:}, installed_pkgs_lst{j} };
-                 is_installed = true;
-               endif
-             endfor
-             if (is_installed == false)
-               s = sprintf ("Package %s is not installed - not updating this package", files{i});
-               warning (s);
+           installed_names = {installed_pkgs_list.name}';
+           for i = 1:numel (files)
+             idx = find (strcmp (files{i}, installed_names), 1);
+             if (isempty (idx))
+               warning ("Package %s is not installed - not updating this package", files{i});
+             else
+               update_lst = { update_lst, installed_pkgs_lst{idx} };
              endif
            endfor
            installed_pkgs_lst = update_lst;
         endif
-        for i = 1:length (installed_pkgs_lst)
+        for i = 1:numel (installed_pkgs_lst)
           installed_pkg_name = installed_pkgs_lst{i}.name;
           installed_pkg_version = installed_pkgs_lst{i}.version;
           forge_pkg_version = get_forge_pkg (installed_pkg_name);
@@ -560,7 +570,8 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
 
     otherwise
-      error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
+      error ("you must specify a valid action for 'pkg'.  See 'help pkg' for details");
   endswitch
+
 endfunction
 

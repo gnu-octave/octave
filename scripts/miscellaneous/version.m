@@ -18,11 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} version ()
-## Return the version number of Octave, as a string.
+## Return the version number of Octave as a string.
 ##
 ## This is an alias for the function @w{@env{OCTAVE_VERSION}} provided for
 ## compatibility.
-## @seealso{OCTAVE_VERSION}
+## @seealso{OCTAVE_VERSION, ver}
 ## @end deftypefn
 
 ## Author: jwe

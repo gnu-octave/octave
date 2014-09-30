@@ -5865,9 +5865,10 @@ unary_op_defun_body (octave_value::unary_op op,
 
 DEFUN (not, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} not (@var{x})\n\
-Return the logical NOT of @var{x}.  This function is equivalent to\n\
-@code{! x}.\n\
+@deftypefn {Built-in Function} {@var{z} =} not (@var{x})\n\
+Return the logical NOT of @var{x}.\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{! x}}.\n\
 @seealso{and, or, xor}\n\
 @end deftypefn")
 {
@@ -6206,12 +6207,13 @@ This function and @w{@tcode{x .@xbackslashchar{} y}} are equivalent.\n\
 
 DEFUN (and, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} and (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {} and (@var{x1}, @var{x2}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{z} =} and (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {@var{z} =} and (@var{x1}, @var{x2}, @dots{})\n\
 Return the logical AND of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x & y}}.\n\
-If more arguments are given, the logical and is applied\n\
-cumulatively from left to right:\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{x & y}}.  If\n\
+more than two arguments are given, the logical AND is applied cumulatively\n\
+from left to right:\n\
 \n\
 @example\n\
 (@dots{}((x1 & x2) & x3) & @dots{})\n\
@@ -6227,12 +6229,13 @@ At least one argument is required.\n\
 
 DEFUN (or, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} or (@var{x}, @var{y})\n\
-@deftypefnx {Built-in Function} {} or (@var{x1}, @var{x2}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{z} =} or (@var{x}, @var{y})\n\
+@deftypefnx {Built-in Function} {@var{z} =} or (@var{x1}, @var{x2}, @dots{})\n\
 Return the logical OR of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x | y}}.\n\
-If more arguments are given, the logical or is applied\n\
-cumulatively from left to right:\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{x | y}}.  If\n\
+more than two arguments are given, the logical OR is applied cumulatively\n\
+from left to right:\n\
 \n\
 @example\n\
 (@dots{}((x1 | x2) | x3) | @dots{})\n\

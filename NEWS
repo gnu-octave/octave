@@ -116,6 +116,7 @@ Summary of important user-visible changes for version 4.2:
       -------------------|------------------
       bicubic            | interp2
       delaunay3          | delaunay
+      dump_prefs         | individual preference get/set routines
       find_dir_in_path   | dir_in_loadpath
       finite             | isfinite
       fmod               | rem

@@ -3,6 +3,7 @@ FCN_FILE_DIRS += deprecated
 deprecated_FCN_FILES = \
   deprecated/bicubic.m \
   deprecated/delaunay3.m \
+  deprecated/dump_prefs.m \
   deprecated/find_dir_in_path.m \
   deprecated/finite.m \
   deprecated/fmod.m \

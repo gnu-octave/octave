@@ -21,7 +21,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/desktop.m \
   miscellaneous/dir.m \
   miscellaneous/dos.m \
-  miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
   miscellaneous/error_ids.m \
   miscellaneous/fact.m \

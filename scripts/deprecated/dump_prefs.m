@@ -19,6 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} dump_prefs ()
 ## @deftypefnx {Function File} {} dump_prefs (@var{fid})
+##
+## @code{dump_prefs} is deprecated and will be removed in Octave version 4.6.
+## Please use individual preference get/set routines in all new code.
+##
 ## Dump the current settings of all user preferences to stdout in a format that
 ## can be parsed by Octave later.
 ##
@@ -30,6 +34,13 @@
 ## Author: jwe
 
 function dump_prefs (fid)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "dump_prefs is obsolete and will be removed from a future version of Octave, recode using individual preference get/set routines");
+  endif
 
   if (nargin > 1)
     print_usage ();

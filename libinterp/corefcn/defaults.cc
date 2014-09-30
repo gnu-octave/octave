@@ -602,7 +602,8 @@ Return the name of the top-level Octave installation directory.\n\
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
-Return the version number of Octave, as a string.\n\
+Return the version number of Octave as a string.\n\
+@seealso{ver, version}\n\
 @end deftypefn")
 {
   octave_value retval;

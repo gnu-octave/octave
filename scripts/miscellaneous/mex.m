@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} mex [options] file @dots{}
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
+## 
 ## This is equivalent to @code{mkoctfile --mex [options] file}.
-## @seealso{mkoctfile}
+## @seealso{mkoctfile, mexext}
 ## @end deftypefn
 
 function retval = mex (varargin)
@@ -35,4 +36,8 @@ function retval = mex (varargin)
   endif
 
 endfunction
+
+
+## Remove from test statistics.  All real tests are in mkoctfile. 
+%!assert (1)
 

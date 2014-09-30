@@ -275,6 +275,7 @@
 ## will remove the autoloading status of the image package.
 ##
 ## @end table
+## @seealso{ver, news}
 ## @end deftypefn
 
 function [local_packages, global_packages] = pkg (varargin)

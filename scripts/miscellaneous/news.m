@@ -24,6 +24,7 @@
 ## When called without an argument, display the NEWS file for Octave.
 ## When given a package name @var{package}, display the current NEWS file for
 ## that package.
+## @seealso{ver, pkg}
 ## @end deftypefn
 
 function news (package = "octave")

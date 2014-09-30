@@ -25,22 +25,22 @@
 
 function bug_report ()
 
-  puts ("\n");
-  puts ("  Bug reports play an essential role in making Octave\n");
-  puts ("  reliable.  Please use the Octave bug tracker at\n");
-  puts ("\n");
-  puts ("    http://bugs.octave.org\n");
-  puts ("\n");
-  puts ("  to report problems.\n");
-  puts ("\n");
-  puts ("  Please also read the bug reporting guidelines at\n");
-  puts ("\n");
-  puts ("    http://www.octave.org/bugs.html\n");
-  puts ("\n");
-  puts ("  to learn how to submit useful bug reports that will\n");
-  puts ("  help the Octave community diagnose and fix the problem\n");
-  puts ("  quickly and efficiently.\n");
-  puts ("\n");
+  disp (" ");
+  disp ("  Bug reports play an essential role in making Octave");
+  disp ("  reliable.  Please use the Octave bug tracker at");
+  disp (" ");
+  disp ("    http://bugs.octave.org");
+  disp (" ");
+  disp ("  to report problems.");
+  disp (" ");
+  disp ("  Please also read the bug reporting guidelines at");
+  disp (" ");
+  disp ("    http://www.octave.org/bugs.html");
+  disp (" ");
+  disp ("  to learn how to submit useful bug reports that will");
+  disp ("  help the Octave community diagnose and fix the problem");
+  disp ("  quickly and efficiently.");
+  disp (" ");
 
 endfunction
 

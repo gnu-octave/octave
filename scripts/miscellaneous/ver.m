@@ -47,7 +47,7 @@
 ## Date of the version/revision.
 ## @end table
 ##
-## @seealso{version, octave_config_info, pkg}
+## @seealso{version, octave_config_info, usejava, pkg}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>

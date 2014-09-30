@@ -46,12 +46,11 @@
 ## @end table
 ##
 
-
 function error_ids ()
   help ("error_ids");
 endfunction
 
 
-## Remove from test statistics.  No real tests possible
+## Mark file as being tested.  No real test needed for a documentation .m file
 %!assert (1)
 

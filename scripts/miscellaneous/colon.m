@@ -33,14 +33,14 @@
 ## @seealso{class, subsref, subsasgn}
 ## @end deftypefn
 
-function r = colon (varargin)
+function colon (varargin)
+
   if (nargin != 0)
     error ('colon: not defined for class "%s"', class (varargin{1}));
   endif
+
 endfunction
 
 
-%!error colon (1)
-
-## FIXME: What does colon () mean since it doesn't set a return value?
+%!error <colon: not defined for class "double"> colon (1)
 

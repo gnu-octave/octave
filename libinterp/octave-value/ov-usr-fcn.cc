@@ -832,9 +832,11 @@ DEFUN (nargin, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargin ()\n\
 @deftypefnx {Built-in Function} {} nargin (@var{fcn})\n\
-Within a function, return the number of arguments passed to the function.\n\
-At the top level, return the number of command line arguments passed to\n\
-Octave.\n\
+Report the number of input arguments to a function.\n\
+\n\
+Called from within a function, return the number of arguments passed to the\n\
+function.  At the top level, return the number of command line arguments\n\
+passed to Octave.\n\
 \n\
 If called with the optional argument @var{fcn}---a function name or handle---\n\
 return the declared number of arguments that the function can accept.\n\
@@ -854,7 +856,7 @@ nargin (\"union\")\n\
 @end example\n\
 \n\
 Programming Note: @code{nargin} does not work on built-in functions.\n\
-@seealso{nargout, varargin, isargout, varargout, nthargout}\n\
+@seealso{nargout, narginchk, varargin, inputname}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -913,11 +915,18 @@ DEFUN (nargout, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargout ()\n\
 @deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
-Within a function, return the number of values the caller expects to\n\
-receive.  If called with the optional argument @var{fcn}---a function\n\
-name or handle---return the number of declared output values that the\n\
-function can produce.  If the final output argument is @var{varargout}\n\
-the returned value is negative.\n\
+Report the number of output arguments from a function.\n\
+\n\
+Called from within a function, return the number of values the caller expects\n\
+to receive.  At the top level, @code{nargout} with no argument is undefined\n\
+and will produce an error.\n\
+\n\
+If called with the optional argument @var{fcn}---a function name or\n\
+handle---return the number of declared output values that the function can\n\
+produce.\n\
+\n\
+If the final output argument is @var{varargout} the returned value is\n\
+negative.\n\
 \n\
 For example,\n\
 \n\
@@ -952,10 +961,9 @@ nargout (@@imread)\n\
 will return -2, because @code{imread} has two outputs and the second is\n\
 @var{varargout}.\n\
 \n\
-At the top level, @code{nargout} with no argument is undefined and will\n\
-produce an error.  @code{nargout} does not work for built-in functions and\n\
+Programming Note.  @code{nargout} does not work for built-in functions and\n\
 returns -1 for all anonymous functions.\n\
-@seealso{nargin, varargin, isargout, varargout, nthargout}\n\
+@seealso{nargin, varargout, isargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1078,16 +1086,18 @@ DEFUN (isargout, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isargout (@var{k})\n\
 Within a function, return a logical value indicating whether the argument\n\
-@var{k} will be assigned to a variable on output.  If the result is false,\n\
-the argument has been ignored during the function call through the use of\n\
-the tilde (~) special output argument.  Functions can use @code{isargout} to\n\
-avoid performing unnecessary calculations for outputs which are unwanted.\n\
+@var{k} will be assigned to a variable on output.\n\
+\n\
+If the result is false, the argument has been ignored during the function\n\
+call through the use of the tilde (~) special output argument.  Functions\n\
+can use @code{isargout} to avoid performing unnecessary calculations for\n\
+outputs which are unwanted.\n\
 \n\
 If @var{k} is outside the range @code{1:max (nargout)}, the function returns\n\
 false.  @var{k} can also be an array, in which case the function works\n\
 element-by-element and a logical array is returned.  At the top level,\n\
 @code{isargout} returns an error.\n\
-@seealso{nargout, nargin, varargin, varargout, nthargout}\n\
+@seealso{nargout, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;

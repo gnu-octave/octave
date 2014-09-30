@@ -66,6 +66,9 @@ Summary of important user-visible changes for version 4.2:
 
  ** isprime has been extended to operate on negative and complex inputs.
 
+ ** xor has been extended to accept more than two arguments in which case
+    it performs cumulative XOR reduction.
+
  ** The following functions now support N-dimensional arrays:
 
       fliplr   flipud   rot90

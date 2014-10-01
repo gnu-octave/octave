@@ -31,7 +31,8 @@ function info ()
   Octave are available at\n\
   http://www.octave.org/support.html\n\
 \n\
-  You may also find some information in the Octave Wiki at\n\
+  The Octave Wiki has user-generated content on a variety of subjects\n\
+  including installation and is available at\n\
   http://wiki.octave.org\n\
 \n\
   Additional functionality can be enabled by using packages from\n\
@@ -46,6 +47,6 @@ function info ()
 endfunction
 
 
-## Mark file as being tested.  No real test needed for this function.
+## Mark file as being tested.  No real test needed for a documentation .m file
 %! assert (1)
 

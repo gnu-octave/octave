@@ -3680,12 +3680,11 @@ ellipj (double u, double m, double& sn, double& cn, double& dn, double& err)
       phi = ii*a[Nn]*u;
       for (n = Nn; n > 0; --n)
         {
-          t = phi;
           phi = (asin ((c[n]/a[n])* sin (phi)) + phi)/2;
         }
       sn = sin (phi);
       cn = cos (phi);
-      dn = cn/cos (t - phi);
+      dn = sqrt (1 - m*sn*sn);
     }
 }
 

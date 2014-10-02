@@ -919,6 +919,15 @@ and 16.15), Dover, 1965.\n\
 %! assert (cn, C, 8*eps);
 %! assert (dn, D, 8*eps);
 
+%!test
+%! ## Test continuity of dn when cn is near zero (bug #43344)
+%! m = 0.5;
+%! u = ellipke (0.5);
+%! x = [-1e-3, -1e-12, 0, 1e-12, 1e-3];
+%! [~, ~, dn] = ellipj (u + x, m);
+%! D = 1/sqrt (2) * ones (size (x));
+%! assert (dn, D, 1e-6);
+
 %!error ellipj ()
 %!error ellipj (1)
 %!error ellipj (1,2,3,4)

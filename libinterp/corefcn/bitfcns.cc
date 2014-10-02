@@ -159,6 +159,10 @@ bitop (const std::string& fname, const octave_value_list& args)
                               octave_float_scalar::static_class_name () &&
                               args(1).class_name () !=
                               octave_bool::static_class_name ());
+          bool arg0_is_bool = args(0).class_name () ==
+                              octave_bool::static_class_name ();
+          bool arg1_is_bool = args(1).class_name () ==
+                              octave_bool::static_class_name ();
           bool arg0_is_float = args(0).class_name () ==
                                octave_float_scalar::static_class_name ();
           bool arg1_is_float = args(1).class_name () ==
@@ -166,12 +170,12 @@ bitop (const std::string& fname, const octave_value_list& args)
 
           if (! (arg0_is_int || arg1_is_int))
             {
-              if (! (arg0_is_float || arg1_is_float))
+              if (arg0_is_bool && arg1_is_bool)
                 {
-                  uint64NDArray x (args(0).array_value ());
-                  uint64NDArray y (args(1).array_value ());
+                  boolNDArray x (args(0).bool_array_value ());
+                  boolNDArray y (args(1).bool_array_value ());
                   if (! error_state)
-                    retval = bitopx (fname, x, y).array_value ();
+                    retval = bitopx (fname, x, y).bool_array_value ();
                 }
               else if (arg0_is_float && arg1_is_float)
                 {
@@ -179,6 +183,13 @@ bitop (const std::string& fname, const octave_value_list& args)
                   uint64NDArray y (args(1).float_array_value ());
                   if (! error_state)
                     retval = bitopx (fname, x, y).float_array_value ();
+                }
+              else if (! (arg0_is_float || arg1_is_float))
+                {
+                  uint64NDArray x (args(0).array_value ());
+                  uint64NDArray y (args(1).array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).array_value ();
                 }
               else
                 {

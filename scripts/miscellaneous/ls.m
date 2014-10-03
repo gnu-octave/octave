@@ -82,7 +82,7 @@ function retval = ls (varargin)
     args = "";
   endif
 
-  cmd = [__ls_command__ args];
+  cmd = [__ls_command__ " " args];
 
   if (page_screen_output () || nargout > 0)
     [status, output] = system (cmd);

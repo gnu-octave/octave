@@ -19,7 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} swapbytes (@var{x})
 ## Swap the byte order on values, converting from little endian to big
-## endian and vice versa.  For example:
+## endian and vice versa.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -37,28 +39,35 @@ function y = swapbytes (x)
     print_usage ();
   endif
 
-  clx = class (x);
-  if (strcmp (clx, "int8") || strcmp (clx, "uint8") || isempty (x))
+  cls = class (x);
+  if (strcmp (cls, "int8") || strcmp (cls, "uint8") || isempty (x))
     y = x;
   else
-    if (strcmp (clx, "int16") || strcmp (clx, "uint16"))
+    if (strcmp (cls, "int16") || strcmp (cls, "uint16"))
       nb = 2;
-    elseif (strcmp (clx, "int32") || strcmp (clx, "uint32"))
+    elseif (strcmp (cls, "single")
+            || strcmp (cls, "int32") || strcmp (cls, "uint32"))
       nb = 4;
-    elseif (strcmp (clx, "int64") || strcmp (clx, "uint64")
-            || strcmp (clx, "double"))
+    elseif (strcmp (cls, "double")
+            || strcmp (cls, "int64") || strcmp (cls, "uint64"))
       nb = 8;
     else
-      error ("swapbytes: invalid class of object");
+      error ("swapbytes: invalid object of class '%s'", cls);
     endif
     y = reshape (typecast (reshape (typecast (x(:), "uint8"), nb, numel (x))
-                           ([nb : -1 : 1], :) (:), clx), size (x));
+                           ([nb : -1 : 1], :) (:), cls), size (x));
   endif
 
 endfunction
 
 
-%!assert (double (swapbytes (uint16 (1:4))), [256 512 768 1024])
-%!error (swapbytes ())
-%!error (swapbytes (1, 2))
+%!assert (swapbytes (uint16 (1:4)), uint16 ([256 512 768 1024]))
+%!test
+%! assert (swapbytes (swapbytes (pi)), pi);
+%! assert (swapbytes (swapbytes (single (pi))), single (pi));
+
+## Test input validation
+%!error swapbytes ()
+%!error swapbytes (1, 2)
+%!error <invalid object of class 'cell'> swapbytes ({1})
 

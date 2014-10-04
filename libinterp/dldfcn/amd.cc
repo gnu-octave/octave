@@ -209,14 +209,14 @@ The author of the code itself is Timothy A. Davis\n\
 %! A = ones (20, 30);
 %! A2 = ones (30, 30);
 %!
-%!test
-%!error <matrix S must be square> amd (A)
-%!error amd (A2, 2)
-%!error <matrix S is corrupted> amd([])
-%!test
+%!testif HAVE_AMD
 %! assert(amd (A2), [1:30])
 %! opts.dense = 25;
 %! assert(amd (A2, opts), [1:30])
 %! opts.aggressive = 1;
 %! assert(amd (A2, opts), [1:30])
+
+%!error <matrix S must be square|not available in this version> amd (A)
+%!error amd (A2, 2)
+%!error <matrix S is corrupted|not available in this version> amd ([])
 */

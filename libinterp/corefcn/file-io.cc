@@ -1935,18 +1935,22 @@ DEFUNX ("tmpnam", Ftmpnam, args, ,
 @c List other forms of function in documentation index\n\
 @findex octave_tmp_file_name\n\
 \n\
-@deftypefn  {Built-in Function} {} tmpnam ()\n\
-@deftypefnx {Built-in Function} {} tmpnam (@var{dir})\n\
-@deftypefnx {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
+@deftypefn  {Built-in Function} {@var{fname} =} tmpnam ()\n\
+@deftypefnx {Built-in Function} {@var{fname} =} tmpnam (@var{dir})\n\
+@deftypefnx {Built-in Function} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
 If @var{dir} is also omitted, the default directory for temporary files\n\
-is used.  If @var{dir} is provided, it must exist, otherwise the default\n\
-directory for temporary files is used.  Since the named file is not\n\
-opened, by @code{tmpnam}, it is possible (though relatively unlikely)\n\
-that it will not be available by the time your program attempts to open it.\n\
-@seealso{tmpfile, mkstemp, P_tmpdir}\n\
+(@code{P_tmpdir} is used.  If @var{dir} is provided, it must exist,\n\
+otherwise the default directory for temporary files is used.\n\
+\n\
+Programming Note: Because the named file is not opened by @code{tmpnam},\n\
+it is possible, though relatively unlikely, that it will not be available\n\
+by the time your program attempts to open it.  If this is a concern,\n\
+see @code{tmpfile}.  The functions @code{tmpnam} and @code{tempname} are\n\
+equivalent with the latter provided for @sc{matlab} compatibility.\n\
+@seealso{tempname, mkstemp, tempdir, P_tmpdir, tmpfile}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1990,7 +1994,7 @@ deleted automatically when it is closed or when Octave exits.\n\
 If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
 string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{tmpnam, mkstemp, P_tmpdir}\n\
+@seealso{tempname, tmpnam, mkstemp, tempdir, P_tmpdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2032,15 +2036,16 @@ system-dependent error message.\n\
 
 DEFUN (mkstemp, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (@var{template}, @var{delete})\n\
-Return the file ID corresponding to a new temporary file with a unique\n\
-name created from @var{template}.\n\
+@deftypefn  {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (\"@var{template}\")\n\
+@deftypefnx {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (\"@var{template}\", @var{delete})\n\
+Return the file descriptor @var{fid} corresponding to a new temporary file\n\
+with a unique name created from @var{template}.\n\
 \n\
-The last six characters of @var{template} must be @code{XXXXXX} and these\n\
-are replaced with a string that makes the filename unique.  The file is then\n\
-created with mode read/write and permissions that are system dependent\n\
-(on GNU/Linux systems, the permissions will be 0600 for versions of glibc\n\
-2.0.7 and later).  The file is opened in binary mode and with the\n\
+The last six characters of @var{template} must be @qcode{\"XXXXXX\"} and\n\
+these are replaced with a string that makes the filename unique.  The file\n\
+is then created with mode read/write and permissions that are system\n\
+dependent (on GNU/Linux systems, the permissions will be 0600 for versions of\n\
+glibc\ 2.0.7 and later).  The file is opened in binary mode and with the\n\
 @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true, the file will\n\
@@ -2049,7 +2054,7 @@ be deleted automatically when Octave exits.\n\
 If successful, @var{fid} is a valid file ID, @var{name} is the name of the\n\
 file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 @var{name} is empty, and @var{msg} contains a system-dependent error message.\n\
-@seealso{tmpfile, tmpnam, P_tmpdir}\n\
+@seealso{tempname, tmpnam, tempdir, P_tmpdir, tmpfile, fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2213,10 +2218,14 @@ const_value (const char *, const octave_value_list& args, int val)
 DEFUNX ("P_tmpdir", FP_tmpdir, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} P_tmpdir ()\n\
-Return the default name of the directory for temporary files.\n\
+Return the name of the host system's @strong{default} directory for\n\
+temporary files.\n\
 \n\
-The name of this directory is system dependent.\n\
-@seealso{tmpnam}\n\
+Programming Note: The value returned by @code{P_tmpdir} is always the\n\
+default location.  This value may not agree with that returned from\n\
+@code{tempdir} if the user has overriden the default with the @env{TMPDIR}\n\
+environment variable.\n\
+@seealso{tempdir, tempname, tmpnam, mkstemp, tmpfile}\n\
 @end deftypefn")
 {
   octave_value retval;

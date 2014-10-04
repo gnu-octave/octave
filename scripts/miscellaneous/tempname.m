@@ -17,11 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} tempname ()
-## @deftypefnx {Function File} {} tempname (@var{dir})
-## @deftypefnx {Function File} {} tempname (@var{dir}, @var{prefix})
-## This function is an alias for @code{tmpnam}.
-## @seealso{tmpnam}
+## @deftypefn  {Built-in Function} {@var{fname} =} tempname ()
+## @deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir})
+## @deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir}, @var{prefix})
+## Return a unique temporary file name as a string.
+## 
+## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
+## If @var{dir} is also omitted, the default directory for temporary files
+## (@code{P_tmpdir} is used.  If @var{dir} is provided, it must exist,
+## otherwise the default directory for temporary files is used.
+##
+## Programming Note: Because the named file is not opened by @code{tempname},
+## it is possible, though relatively unlikely, that it will not be available
+## by the time your program attempts to open it.  If this is a concern,
+## see @code{tmpfile}.  The functions @code{tmpnam} and @code{tempname} are
+## equivalent with the latter provided for @sc{matlab} compatibility.
+## @seealso{tmpnam, mkstemp, tempdir, P_tmpdir, tmpfile}
 ## @end deftypefn
 
 function filename = tempname (varargin)
@@ -31,6 +42,6 @@ function filename = tempname (varargin)
 endfunction
 
 
-%% No tests needed for alias.
+## No tests needed for alias.
 %!assert (1)
 

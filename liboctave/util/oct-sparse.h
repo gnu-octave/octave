@@ -96,12 +96,14 @@ along with Octave; see the file COPYING.  If not, see
 
 // Cope with new suitesparse versions
 //
-#if defined (SUITESPARSE_VERSION) && SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3)
-# define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (SuiteSparse_config.f_name = f_assign)
-# define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (SuiteSparse_config.f_name = CHOLMOD_NAME (f_assign))
-#else
-# define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
-# define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
+#if defined (SUITESPARSE_VERSION)
+# if SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3)
+#  define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (SuiteSparse_config.f_name = f_assign)
+#  define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (SuiteSparse_config.f_name = CHOLMOD_NAME (f_assign))
+# else
+#  define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
+#  define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
+# endif
 #endif
 
 #endif

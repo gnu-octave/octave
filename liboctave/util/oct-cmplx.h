@@ -36,6 +36,10 @@ typedef std::complex<float> FloatComplex;
 // The abs/arg comparison is definitely more useful (the other one is emulated
 // rather trivially), so let's be consistent and use that all over.
 
+// The standard C library function arg() returns [-pi,pi], which creates a
+// non-unique representation for numbers along the negative real axis branch
+// cut.  Change this to principal value (-pi,pi] by mapping -pi to pi.
+
 #define DEF_COMPLEXR_COMP(OP, OPS) \
 template <class T> \
 inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
@@ -46,6 +50,15 @@ inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
     { \
       FLOAT_TRUNCATE const T ay = std::arg (a); \
       FLOAT_TRUNCATE const T by = std::arg (b); \
+      if (ay == -M_PI) \
+        { \
+          if (by != -M_PI) \
+            return M_PI OP by; \
+        } \
+      else if (by == -M_PI) \
+        { \
+          return ay OP M_PI; \
+        } \
       return ay OP by; \
     } \
   else \
@@ -59,6 +72,8 @@ inline bool operator OP (const std::complex<T>& a, T b) \
   if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T ay = std::arg (a); \
+      if (ay == -M_PI) \
+        return M_PI OP 0; \
       return ay OP 0; \
     } \
   else \
@@ -72,6 +87,8 @@ inline bool operator OP (T a, const std::complex<T>& b) \
   if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T by = std::arg (b); \
+      if (by == -M_PI) \
+        return 0 OP M_PI; \
       return 0 OP by; \
     } \
   else \

@@ -41,22 +41,54 @@ sort_isnan<FloatComplex> (const FloatComplex& x)
   return xisnan (x);
 }
 
+// Sort Criteria: 1) isnan, 2) magnitude of z, 3) phase of z in range (-pi, pi]
+
 static bool
 nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
 {
-  return (xisnan (y)
-          ? ! xisnan (x)
-          : ((std::abs (x) < std::abs (x))
-             || ((std::abs (x) == std::abs (y)) && (arg (x) < arg (y)))));
+  if (xisnan (y))
+    return (! xisnan (x));
+
+  float xabs = std::abs (x);
+  float yabs = std::abs (y);
+
+  if (xabs < yabs)
+    return true;
+  else if (xabs == yabs)
+    {
+      float xarg = arg (x);
+      float yarg = arg (y);
+      xarg = (xarg == -M_PI) ? M_PI : xarg; 
+      yarg = (yarg == -M_PI) ? M_PI : yarg; 
+
+      return xarg < yarg;
+    }
+  else
+    return false;
 }
 
 static bool
 nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 {
-  return (xisnan (x)
-          ? ! xisnan (y)
-          : ((std::abs (x) > std::abs (x))
-             || ((std::abs (x) == std::abs (y)) && (arg (x) > arg (y)))));
+  if (xisnan (x))
+    return (! xisnan (y));
+
+  float xabs = std::abs (x);
+  float yabs = std::abs (y);
+
+  if (xabs > yabs)
+    return true;
+  else if (xabs == yabs)
+    {
+      float xarg = arg (x);
+      float yarg = arg (y);
+      xarg = (xarg == -M_PI) ? M_PI : xarg; 
+      yarg = (yarg == -M_PI) ? M_PI : yarg; 
+
+      return xarg > yarg;
+    }
+  else
+    return false;
 }
 
 Array<FloatComplex>::compare_fcn_type

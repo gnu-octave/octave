@@ -41,22 +41,54 @@ sort_isnan<Complex> (const Complex& x)
   return xisnan (x);
 }
 
+// Sort Criteria: 1) isnan, 2) magnitude of z, 3) phase of z in range (-pi, pi]
+
 static bool
 nan_ascending_compare (const Complex& x, const Complex& y)
 {
-  return (xisnan (y)
-          ? ! xisnan (x)
-          : ((std::abs (x) < std::abs (y))
-             || ((std::abs (x) == std::abs (y)) && (arg (x) < arg (y)))));
+  if (xisnan (y))
+    return (! xisnan (x));
+
+  double xabs = std::abs (x);
+  double yabs = std::abs (y);
+
+  if (xabs < yabs)
+    return true;
+  else if (xabs == yabs)
+    {
+      double xarg = arg (x);
+      double yarg = arg (y);
+      xarg = (xarg == -M_PI) ? M_PI : xarg; 
+      yarg = (yarg == -M_PI) ? M_PI : yarg; 
+
+      return xarg < yarg;
+    }
+  else
+    return false;
 }
 
 static bool
 nan_descending_compare (const Complex& x, const Complex& y)
 {
-  return (xisnan (x)
-          ? ! xisnan (y)
-          : ((std::abs (x) > std::abs (y))
-             || ((std::abs (x) == std::abs (y)) && (arg (x) > arg (y)))));
+  if (xisnan (x))
+    return (! xisnan (y));
+
+  double xabs = std::abs (x);
+  double yabs = std::abs (y);
+
+  if (xabs > yabs)
+    return true;
+  else if (xabs == yabs)
+    {
+      double xarg = arg (x);
+      double yarg = arg (y);
+      xarg = (xarg == -M_PI) ? M_PI : xarg; 
+      yarg = (yarg == -M_PI) ? M_PI : yarg; 
+
+      return xarg > yarg;
+    }
+  else
+    return false;
 }
 
 Array<Complex>::compare_fcn_type

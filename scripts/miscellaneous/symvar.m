@@ -17,19 +17,39 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} symvar (@var{s})
-## Identify the argument names in the function defined by a string.
-## Common constant names such as @code{pi}, @code{NaN}, @code{Inf},
-## @code{eps}, @code{i} or @code{j} are ignored.  The arguments that are
-## found are returned in a cell array of strings.  If no variables are
-## found then the returned cell array is empty.
+## @deftypefn {Function File} {@var{vars} =} symvar (@var{str})
+## Identify the symbolic variable names in the string @var{str}.
+##
+## Common constant names such as @code{i}, @code{j}, @code{pi}, @code{Inf} and
+## Octave functions such as @code{sin} or @code{plot} are ignored.
+##
+## Any names identified are returned in a cell array of strings.  The array is
+## empty if no variables were found.
+##
+## Example:
+##
+## @example
+## @group
+## symvar ("x^2 + y^2 == 4")
+## @result{} @{
+##      [1,1] = x
+##      [2,1] = y
+##    @}
+## @end group
+## @end example
 ## @end deftypefn
 
-function args = symvar (s)
-  args = argnames (inline (s));
+function vars = symvar (str)
+  vars = argnames (inline (str));
+  ## Correct for auto-generated 'x' variable when no symvar was found. 
+  if (numel (vars) == 1 && strcmp (vars{1}, "x") && ! any (str == "x"))
+    vars = {};
+  endif 
+
 endfunction
 
 
-## This function is tested by the tests for argnames().
-%!assert (1)
+%!assert (symvar ("3*x + 4*y + 5*cos (z)"), {"x"; "y"; "z"})
+%!assert (symvar ("sin()^2 + cos()^2 == 1"), {})
+%!assert (symvar ("1./x"), {"x"})
 

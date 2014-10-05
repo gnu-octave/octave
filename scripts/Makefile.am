@@ -495,5 +495,5 @@ DISTCLEANFILES += \
 
 distclean-local:
 	if [ "x$(srcdir)" != "x." ]; then \
-	  rm $(java_JAVA_IMAGES); \
+	  rm -f $(java_JAVA_IMAGES); \
 	fi

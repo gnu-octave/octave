@@ -76,6 +76,10 @@ function retval = ls (varargin)
     else
       ## Escape any special characters in filename
       args = regexprep (args, '([^][\w.*?-])', '\\$1');
+      ## Undo escaped spaces following command args
+      ## Only used for command form where single str contains many args.
+      ## Example: list = ls ("-l /usr/bin")
+      args = regexprep (args, '(-\w+)(?:\\ )+', '$1 ');
     endif
     args = sprintf ("%s ", args{:});
   else
@@ -92,7 +96,7 @@ function retval = ls (varargin)
     elseif (nargout == 0)
       puts (output);
     else
-      retval = strvcat (regexp (output, '\S+', 'match'){:});
+      retval = strvcat (regexp (output, "[\r\n]+", "split"){:});
     endif
   else
     ## Just let the output flow if the pager is off.  That way the
@@ -108,6 +112,17 @@ endfunction
 %! list = ls ();
 %! assert (ischar (list));
 %! assert (! isempty (list));
+
+%!test
+%! if (isunix ())
+%!   list = ls ("/");
+%!   list = (list')(:)';   # transform to a single row vector
+%!   assert (! isempty (strfind (list, "sbin")));
+%!   list2 = ls ("-l /");
+%!   list2 = (list2')(:)';   # transform to a single row vector
+%!   assert (! isempty (strfind (list2, "sbin")));
+%!   assert (rows (list) == rows (list2));
+%! endif 
 
 %!error <all arguments must be character strings> ls (1)
 ## Test below is valid, but produces confusing output on screen

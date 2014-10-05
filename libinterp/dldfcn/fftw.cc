@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "ov.h"
 
+#include "gripes.h"
+
 DEFUN_DLD (fftw, args, ,
            "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{method} =} fftw (\"planner\")\n\
@@ -189,7 +191,7 @@ used per default.\n\
                               methf = octave_float_fftw_planner::HYBRID;
                             }
                           else
-                            error ("unrecognized planner METHOD");
+                            error ("fftw: unrecognized planner METHOD");
 
                           if (!error_state)
                             {
@@ -210,7 +212,7 @@ used per default.\n\
                         }
                     }
                   else
-                    error ("fftw planner expects a string value as METHOD");
+                    error ("fftw: planner expects a string value as METHOD");
                 }
               else //planner getter
                 {
@@ -246,7 +248,7 @@ used per default.\n\
                           if (arg1.length () < 1)
                             fftw_forget_wisdom ();
                           else if (! fftw_import_wisdom_from_string (arg1.c_str ()))
-                            error ("could not import supplied WISDOM");
+                            error ("fftw: could not import supplied WISDOM");
 
                           if (!error_state)
                             retval = octave_value (std::string (str));
@@ -280,7 +282,7 @@ used per default.\n\
                           if (arg1.length () < 1)
                             fftwf_forget_wisdom ();
                           else if (! fftwf_import_wisdom_from_string (arg1.c_str ()))
-                            error ("could not import supplied WISDOM");
+                            error ("fftw: could not import supplied WISDOM");
 
                           if (!error_state)
                             retval = octave_value (std::string (str));
@@ -308,19 +310,19 @@ used per default.\n\
 #if defined (HAVE_FFTW3_THREADS)
                           octave_fftw_planner::threads (nthreads);
 #else
-                          warning ("this copy of Octave was not configured to use the multithreaded fftw libraries.");
+                          gripe_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
 #if defined (HAVE_FFTW3F_THREADS)
                           octave_float_fftw_planner::threads (nthreads);
 #else
-                          warning ("this copy of Octave was not configured to use the multithreaded fftwf libraries.");
+                          gripe_disabled_feature ("fftw", "multithreaded FFTW");
 #endif
                         }
                       else
-                        error ("number of threads must be >=1");
+                        error ("fftw: number of threads must be >=1");
                     }
                   else
-                    error ("setting threads needs one integer argument.");
+                    error ("fftw: setting threads needs one integer argument");
                 }
               else //threads getter
 #if defined (HAVE_FFTW3_THREADS)
@@ -330,14 +332,14 @@ used per default.\n\
 #endif
             }
           else
-            error ("unrecognized argument");
+            error ("fftw: unrecognized argument");
         }
     }
   else
-    error ("unrecognized argument");
+    error ("fftw: unrecognized argument");
 #else
 
-  warning ("fftw: this copy of Octave was not configured to use the FFTW3 planner");
+  gripe_disabled_feature ("fftw", "the FFTW3 planner");
 
 #endif
 

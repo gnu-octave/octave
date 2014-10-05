@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{filepath} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
-## @deftypefnx {Function File} {@var{filepaths} =} fullfile (@dots{}, @var{files})
+## @deftypefn  {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefnx {Function File} {@var{filenames} =} fullfile (@dots{}, @var{files})
 ## Build complete filename from separate parts.
 ##
 ## Joins any number of path components intelligently.  The return value
@@ -37,7 +37,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{fileparts}
+## @seealso{fileparts, filesep}
 ## @end deftypefn
 
 ## Author: Carnë Draug <carandraug@octave.org>
@@ -90,3 +90,4 @@ endfunction
 %!assert (fullfile (), "")
 
 %!assert (fullfile ("a", "b", {"c", "d"}), {"a/b/c", "a/b/d"})
+

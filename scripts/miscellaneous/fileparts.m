@@ -22,7 +22,7 @@
 ##
 ## The input @var{filename} is a string which is parsed.  There is no attempt
 ## to check whether the filename or directory specified actually exists.
-## @seealso{fullfile, pathsep}
+## @seealso{fullfile, filesep}
 ## @end deftypefn
 
 function [dir, name, ext] = fileparts (filename)

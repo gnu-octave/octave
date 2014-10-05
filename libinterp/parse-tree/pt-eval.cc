@@ -336,21 +336,10 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
         Range rng = rhs.range_value ();
 
         octave_idx_type steps = rng.nelem ();
-        double b = rng.base ();
-        double increment = rng.inc ();
 
         for (octave_idx_type i = 0; i < steps; i++)
           {
-            // Use multiplication here rather than declaring a
-            // temporary variable outside the loop and using
-            //
-            //   tmp_val += increment
-            //
-            // to avoid problems with limited precision.  Also, this
-            // is consistent with the way Range::matrix_value is
-            // implemented.
-
-            octave_value val (b + i * increment);
+            octave_value val (rng.elem (i));
 
             ult.assign (octave_value::op_asn_eq, val);
 

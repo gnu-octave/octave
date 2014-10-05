@@ -204,7 +204,7 @@ hdf5_add_scalar_attr (hid_t loc_id, hid_t type_id,
                       const char *attr_name, void *buf);
 
 #ifdef USE_64_BIT_IDX_T
-#define H5T_NATIVE_IDX H5T_NATIVE_LONG
+#define H5T_NATIVE_IDX H5T_NATIVE_INT64
 #else
 #define H5T_NATIVE_IDX H5T_NATIVE_INT
 #endif

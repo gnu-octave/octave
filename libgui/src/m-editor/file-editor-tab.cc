@@ -560,6 +560,8 @@ file_editor_tab::update_lexer ()
   lexer->readSettings (*settings);
 
   _edit_area->setLexer (lexer);
+  _edit_area->setCaretForegroundColor (lexer->color (0));
+  _edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
 
   // fix line number width with respect to the font size of the lexer
   if (settings->value ("editor/showLineNumbers", true).toBool ())

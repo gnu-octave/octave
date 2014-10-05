@@ -299,7 +299,7 @@ Download a remote file specified by its @var{url} and save it as\n\
 \n\
 @example\n\
 @group\n\
-urlwrite (\"ftp://ftp.octave.org/pub/octave/README\",\n\
+urlwrite (\"ftp://ftp.octave.org/pub/README\",\n\
           \"README.txt\");\n\
 @end group\n\
 @end example\n\
@@ -462,7 +462,7 @@ Download a remote file specified by its @var{url} and return its content\n\
 in string @var{s}.  For example:\n\
 \n\
 @example\n\
-s = urlread (\"ftp://ftp.octave.org/pub/octave/README\");\n\
+s = urlread (\"ftp://ftp.octave.org/pub/README\");\n\
 @end example\n\
 \n\
 The variable @var{success} is 1 if the download was successful,\n\

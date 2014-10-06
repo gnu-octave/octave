@@ -191,11 +191,15 @@ private:
   void remove_all_breakpoints_callback (const bp_info& info);
   void center_current_line ();
 
+  QsciScintilla::EolMode detect_eol_mode ();
+  void update_eol_indicator ();
+
   octave_qscintilla *_edit_area;
 
   QStatusBar *_status_bar;
   QLabel *_row_indicator;
   QLabel *_col_indicator;
+  QLabel *_eol_indicator;
 
   QString _file_name;
   QString _file_name_short;

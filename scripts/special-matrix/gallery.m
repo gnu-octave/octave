@@ -2855,3 +2855,15 @@ function A = bandred (A, kl, ku)
   endif
 endfunction
 
+
+## BIST testing for just a few functions to verify that the main gallery
+## dispatch function works.
+%assert (gallery ("clement", 3), [0 1 0; 2 0 2; 0 1 0])
+%assert (gallery ("invhess", 2), [1 -1; 1 2])
+
+## Test input validation of main dispatch function only
+%!error gallery ()
+%!error <NAME must be a string> gallery (123)
+%!error <matrix binomial not implemented> gallery ("binomial")
+%!error <unknown matrix with NAME foobar> gallery ("foobar")
+

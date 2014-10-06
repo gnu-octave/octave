@@ -71,20 +71,18 @@ function [retval, errmsg] = license (cmd, feature, toogle)
   ## Then only give information about Octave core
   if (nargin == 0)
     retval = "GNU General Public License";
-    return
+    return;
   endif
 
-  [features, desc, flags] = get_all_features ();
+  [features, loaded] = get_all_features ();
 
-  switch tolower (cmd)
+  switch (tolower (cmd))
     case "inuse"
       if (nargin > 2)
         print_usage ();
       endif
 
-      unloaded = cellfun (@(x) x.name, desc(strcmpi (flags, "Not loaded")),
-                          "UniformOutput", false);
-      features(ismember (features, unloaded)) = [];
+      features = features(loaded);
 
       if (nargin > 1)
         features = features(strcmp (features, feature));
@@ -105,9 +103,9 @@ function [retval, errmsg] = license (cmd, feature, toogle)
         ## don't need a license management system on Octave.  This function
         ## will return true, even if anyone tries to disabled a license.
         switch tolower (toogle)
-          case "enable",  # do nothing
-          case "disable", # do nothing
-          otherwise,      error ("license: TOOGLE must be enable or disable");
+          case "enable"   # do nothing
+          case "disable"  # do nothing
+          otherwise       error ("license: TOOGLE must be enable or disable");
         endswitch
       endif
 
@@ -126,7 +124,7 @@ function [retval, errmsg] = license (cmd, feature, toogle)
       errmsg = "";
 
       if (! retval)
-        errmsg = ["No package named \"" feature "\" installed"];
+        errmsg = ['No package named "' feature '" installed'];
       endif
 
     otherwise
@@ -144,45 +142,44 @@ function username = get_username ()
   endif
 endfunction
 
-function [features, desc, loaded] = get_all_features ()
-  [desc, loaded] = pkg ("describe", "all");
-  pkg_names = cellfun (@(x) x.name, desc, "UniformOutput", false);
-  features = {"octave", pkg_names{:}};
+function [features, loaded] = get_all_features ()
+  pkg_list = pkg ("list");
+  features = {"octave", ...
+              cellfun(@(x) x.name, pkg_list, "uniformoutput", false){:}};
+  loaded = [true, cellfun(@(x) x.loaded, pkg_list)];
 endfunction
+
 
 %!assert (license (), "GNU General Public License")
 %!assert ((license ("inuse", "octave")).feature, "octave")
 
+%!shared list
 %!test
-%! [desc, flags] = pkg ("describe", "all");
-%! for idx = 1: numel (desc)
-%!   name = desc{idx}.name;
-%!   switch (flags{idx})
-%!     case "Loaded"
-%!       assert ((license ("inuse", name)).feature, name);
-%!     case "Not loaded"
-%!       rv = license ("inuse", name);
-%!       assert (isstruct (rv));
-%!       assert (all (ismember ({"feature", "user"}, fieldnames (rv))));
-%!     otherwise
-%!       error ("code in license out of date");
-%!   endswitch
+%! list = pkg ("list");
+%! for idx = 1: numel (list)
+%!   name = list{idx}.name;
+%!   if (list{idx}.loaded);
+%!     assert ((license ("inuse", name)).feature, name);
+%!   else
+%!     rv = license ("inuse", name);
+%!     assert (isstruct (rv));
+%!     assert (all (isfield (rv, {"feature", "user"})));
+%!   endif
 %! endfor
 
 %!assert (license ("test", "octave"), true)
 %!assert (license ("test", "not_a_valid package name"), false)
 
 %!test
-%! desc = pkg ("describe", "all");
-%! for idx = 1: numel (desc)
-%!   assert (license ("test", desc{idx}.name), true)
+%! for idx = 1: numel (list)
+%!   assert (license ("test", list{idx}.name), true)
 %! endfor
 
 %!assert (license ("checkout", "octave"), true)
 
 %!test
 %! [s, e] = license ("checkout", "NOT_A_PACKAGE");
-%! assert (e, "No package named \"NOT_A_PACKAGE\" installed");
+%! assert (e, 'No package named "NOT_A_PACKAGE" installed');
 
 %% Test input validation
 %!error license ("not_inuse")

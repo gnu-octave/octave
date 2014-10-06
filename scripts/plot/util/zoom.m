@@ -24,7 +24,9 @@
 ##
 ## Given a numeric argument greater than zero, zoom by the given factor.
 ## If the zoom factor is greater than one, zoom in on the plot.  If the
-## factor is less than one, zoom out.
+## factor is less than one, zoom out.  If the zoom factor is a two- or
+## three-element vector, then the elements specify the zoom factors for
+## the x, y, and z axes respectively.
 ##
 ## Given the option @qcode{"out"}, zoom to the initial zoom setting.
 ##
@@ -53,7 +55,7 @@ function zoom (varargin)
     print_usage ();
   endif
 
-  if (nargin == 1 && isfigure (varargin{1}))
+  if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
     error ("zoom_object_handle = zoom (hfig): not implemented");
   endif
 
@@ -77,9 +79,23 @@ function zoom (varargin)
     arg = varargin{1};
     if (isnumeric (arg))
       factor = arg;
-      if (factor < 0)
+      switch (numel (factor))
+        case 3
+          xfactor = factor(1);
+          yfactor = factor(2);
+          zfactor = factor(3);
+        case 2
+          xfactor = factor(1);
+          yfactor = factor(2);
+          zfactor = 1;
+        case 1
+          xfactor = yfactor = zfactor = factor;
+        otherwise
+          error ("zoom: invalid factor");
+      endswitch
+      if (xfactor < 0 || yfactor < 0 || zfactor < 0)
         error ("zoom: factor must be greater than 1");
-      elseif (factor == 1)
+      elseif (xfactor == 1 && yfactor == 1 && zfactor == 1)
         return;
       endif
       cax = get (hfig, "currentaxes");
@@ -89,7 +105,12 @@ function zoom (varargin)
         if (isempty (initial_zoom))
           setappdata (cax, "__initial_zoom__", limits);
         endif
-        axis (cax, limits / factor);
+        limits(1:2) /= xfactor;
+        limits(3:4) /= yfactor;
+        if (numel (limits) > 4)
+          limits(5:6) /= zfactor;
+        endif
+        axis (cax, limits);
       endif
     elseif (ischar (arg))
       switch (arg)

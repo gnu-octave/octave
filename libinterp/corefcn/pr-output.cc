@@ -85,7 +85,7 @@ static bool free_format = false;
 static bool plus_format = false;
 
 // First char for > 0, second for < 0, third for == 0.
-static std::string plus_format_chars = "+  ";
+static std::string plus_format_chars = "+- ";
 
 // TRUE means always print in a rational approximation
 static bool rat_format = false;
@@ -3746,7 +3746,7 @@ set_format_style (int argc, const string_vector& argv)
                 }
             }
           else
-            plus_format_chars = "+  ";
+            plus_format_chars = "+- ";
 
           init_format_state ();
           plus_format = true;
@@ -3886,13 +3886,14 @@ integer types).\n\
 @itemx + @var{chars}\n\
 @itemx plus\n\
 @itemx plus @var{chars}\n\
-Print a @samp{+} symbol for nonzero matrix elements and a space for zero\n\
-matrix elements.  This format can be very useful for examining the\n\
-structure of a large sparse matrix.\n\
+Print a @samp{+} symbol for matrix elements greater than zero, a\n\
+@samp{-} symbol for elements less than zero and a space for zero matrix\n\
+elements.  This format can be very useful for examining the structure\n\
+of a large sparse matrix.\n\
 \n\
 The optional argument @var{chars} specifies a list of 3 characters to use\n\
 for printing values greater than zero, less than zero and equal to zero.\n\
-For example, with the @samp{+ \"+-.\"} format, @code{[1, 0, -1; -1, 0, 1]}\n\
+For example, with the @samp{\"+\" \"+-.\"} format, @code{[1, 0, -1; -1, 0, 1]}\n\
 is displayed as\n\
 \n\
 @example\n\

@@ -49,7 +49,7 @@
 ## tar archive
 ##
 ## @item  tarbz
-## @itemxtarbz2
+## @itemx tarbz2
 ## @itemx tbz
 ## @itemx tbz2
 ## tar + bzip archive

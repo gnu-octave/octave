@@ -3960,8 +3960,8 @@ The following formats affect all numeric output (floating point and\n\
 integer types).\n\
 \n\
 @table @code\n\
-@item  +\n\
-@itemx + @var{chars}\n\
+@item  \"+\"\n\
+@itemx \"+\" @var{chars}\n\
 @itemx plus\n\
 @itemx plus @var{chars}\n\
 Print a @samp{+} symbol for nonzero matrix elements and a space for zero\n\

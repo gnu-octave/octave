@@ -2045,7 +2045,7 @@ The last six characters of @var{template} must be @qcode{\"XXXXXX\"} and\n\
 these are replaced with a string that makes the filename unique.  The file\n\
 is then created with mode read/write and permissions that are system\n\
 dependent (on GNU/Linux systems, the permissions will be 0600 for versions of\n\
-glibc\ 2.0.7 and later).  The file is opened in binary mode and with the\n\
+glibc 2.0.7 and later).  The file is opened in binary mode and with the\n\
 @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true, the file will\n\

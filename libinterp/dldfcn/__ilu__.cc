@@ -959,8 +959,8 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
   std::string milu = "";
-  double droptol, thresh;
-  double udiag;
+  double droptol = 0, thresh = 1;
+  double udiag = 0;
 
   if (nargout < 2 || nargout > 3 || nargin < 1 || nargin > 5)
     {

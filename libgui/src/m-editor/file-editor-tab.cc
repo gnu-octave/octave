@@ -99,9 +99,15 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   connect (_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
            this, SLOT (handle_context_menu_edit (const QString&)));
 
-  // create statusbar for row/col indicator
+  // create statusbar for row/col indicator and eol mode
   _status_bar = new QStatusBar (this);
 
+  // eol mode
+  _eol_indicator = new QLabel ("",this);
+  _eol_indicator->setMinimumSize (35,0);
+  _status_bar->addPermanentWidget (_eol_indicator, 0);
+
+  // row- and col-indicator
   _row_indicator = new QLabel ("", this);
   _row_indicator->setMinimumSize (30,0);
   QLabel *row_label = new QLabel (tr ("Line:"), this);
@@ -1304,6 +1310,7 @@ file_editor_tab::load_file (const QString& fileName)
   in.setCodec("UTF-8");
   QApplication::setOverrideCursor (Qt::WaitCursor);
   _edit_area->setText (in.readAll ());
+  _edit_area->setEolMode (detect_eol_mode ());
   QApplication::restoreOverrideCursor ();
 
   _copy_available = false;     // no selection yet available
@@ -1311,7 +1318,76 @@ file_editor_tab::load_file (const QString& fileName)
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet
 
+  update_eol_indicator ();
+
   return QString ();
+}
+
+QsciScintilla::EolMode
+file_editor_tab::detect_eol_mode ()
+{
+  char *text = _edit_area->text ().toAscii ().data ();
+  int text_size = _edit_area->text ().length ();
+
+  char eol_lf = 0x0a;
+  char eol_cr = 0x0d;
+
+  int count_lf = 0;
+  int count_cr = 0;
+  int count_crlf = 0;
+
+  for (int i = 0; i < text_size; i++)
+    {
+      if (text[i] == eol_lf)
+        {
+          count_lf++;
+        }
+      else
+        {
+          if (text[i] == eol_cr)
+            {
+              if ((i < text_size -1) && text[i+1] == eol_lf)
+                {
+                  count_crlf++;
+                  i++;
+                }
+              else
+                count_cr++;
+            }
+        }
+    }
+
+  QsciScintilla::EolMode eol_mode = QsciScintilla::EolUnix;
+  int count_max = count_lf;
+
+  if (count_cr > count_max)
+    {
+      eol_mode = QsciScintilla::EolMac;
+      count_max = count_cr;
+    }
+  if (count_crlf > count_max)
+    {
+      eol_mode = QsciScintilla::EolWindows;
+    }
+
+  return eol_mode;
+}
+
+void
+file_editor_tab::update_eol_indicator ()
+{
+  switch (_edit_area->eolMode ())
+    {
+      case QsciScintilla::EolWindows:
+        _eol_indicator->setText ("CRLF");
+        break;
+      case QsciScintilla::EolMac:
+        _eol_indicator->setText ("CR");
+        break;
+      case QsciScintilla::EolUnix:
+        _eol_indicator->setText ("LF");
+        break;
+    }
 }
 
 void
@@ -1320,6 +1396,7 @@ file_editor_tab::new_file (const QString &commands)
   update_window_title (false); // window title (no modification)
   _edit_area->setText (commands);
   _edit_area->setModified (false); // new file is not modified yet
+  update_eol_indicator ();
 }
 
 void

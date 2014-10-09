@@ -2103,6 +2103,12 @@ main_window::resize_command_window_callback (void)
 }
 
 void
+main_window::set_screen_size_callback (const int_pair& sz)
+{
+  command_editor::set_screen_size (sz.first, sz.second);
+}
+
+void
 main_window::clear_history_callback (void)
 {
   Fhistory (ovl ("-c"));
@@ -2386,6 +2392,13 @@ main_window::set_global_shortcuts (bool set_shortcuts)
       _release_notes_action->setShortcut (no_key);
       _current_news_action->setShortcut (no_key);
     }
+}
+
+void
+main_window::set_screen_size (int ht, int wd)
+{
+  octave_link::post_event (this, &main_window::set_screen_size_callback,
+                           int_pair (ht, wd));
 }
 
 void

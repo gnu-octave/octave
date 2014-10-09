@@ -69,6 +69,7 @@ class main_window : public QMainWindow
 public:
 
   typedef std::pair <std::string, std::string> name_pair;
+  typedef std::pair <int, int> int_pair;
 
   main_window (QWidget *parent = 0);
 
@@ -196,6 +197,8 @@ public slots:
   void set_global_shortcuts (bool enable);
   void set_global_edit_shortcuts (bool enable);
 
+  void set_screen_size (int ht, int wd);
+
   // handling the clipboard
   void clipboard_has_changed (QClipboard::Mode);
   void clear_clipboard ();
@@ -251,6 +254,8 @@ private:
   void clear_command_window_callback (void);
 
   void resize_command_window_callback (void);
+
+  void set_screen_size_callback (const int_pair&);
 
   void clear_workspace_callback (void);
 

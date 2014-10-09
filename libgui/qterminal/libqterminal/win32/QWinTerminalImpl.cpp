@@ -969,9 +969,30 @@ void QConsolePrivate::updateConsoleSize (bool sync)
   m_consoleRect.setWidth (winSize.width () / fm.averageCharWidth ());
   m_consoleRect.setHeight (winSize.height () / fm.lineSpacing ());
 
-  m_bufferSize.rwidth () = m_consoleRect.width ();
-  m_bufferSize.rheight () = qMax (m_bufferSize.height (),
-                                  m_consoleRect.height ());
+  // Don't shrink the size of the buffer.  That way wide lines won't be
+  // truncated and will reappear if the window is enlarged again later.
+
+  if (m_consoleRect.width () > m_bufferSize.width ())
+    m_bufferSize.rwidth () = m_consoleRect.width ();
+
+  if (qMax (m_bufferSize.height (), m_consoleRect.height ())
+      > m_bufferSize.height ())
+    m_bufferSize.rheight () = qMax (m_bufferSize.height (),
+                                    m_consoleRect.height ());
+
+  // Store the terminal size in the environment.  When Octave is
+  // initialized, we ask the command editor (usually readline) to prefer
+  // using these values rather than querying the terminal so that the
+  // buffer size can be larger than the size of the window that the
+  // command editor will actually use.
+
+  qputenv ("LINES", QByteArray::number (m_consoleRect.height ()));
+  qputenv ("COLUMNS", QByteArray::number (m_consoleRect.width ())); 
+
+  // Force the command line editor (usually readline) to notice the
+  // change in screen size as soon as possible.
+
+  q->setSize (m_consoleRect.height (), m_consoleRect.width ());
 
   m_consoleRect.moveLeft (0);
   if (m_consoleRect.bottom () >= m_bufferSize.height ())
@@ -1333,6 +1354,9 @@ QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent, SLOT (set_global_shortcuts (bool)));
 
+    connect (this, SIGNAL (set_screen_size_signal (int, int)),
+             parent, SLOT (set_screen_size (int, int)));
+
     setAcceptDrops (true);
 }
 
@@ -1644,8 +1668,9 @@ void QWinTerminalImpl::setTerminalFont (const QFont& f)
 
 void QWinTerminalImpl::setSize (int columns, int lines)
 {
-  Q_UNUSED (columns);
-  Q_UNUSED (lines);
+  d->log ("emit set_screen_size_signal (%d, %d)\n", columns, lines);
+
+  emit set_screen_size_signal (columns, lines);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1726,4 +1751,3 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
       sendText (dropText);
     }
 }
-

@@ -211,15 +211,11 @@ private:
   void add_octave_apis (octave_value_list key_ovl);
   QString get_function_name ();
 
-  QsciScintilla::EolMode detect_eol_mode ();
-  void update_eol_indicator ();
-
   octave_qscintilla *_edit_area;
 
   QStatusBar *_status_bar;
   QLabel *_row_indicator;
   QLabel *_col_indicator;
-  QLabel *_eol_indicator;
 
   QString _file_name;
   QString _file_name_short;

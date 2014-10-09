@@ -128,7 +128,13 @@ function h = __stem__ (have_z, varargin)
       addlistener (hg, "markerfacecolor", @update_props);
       addlistener (hg, "markersize", @update_props);
 
+      if (islogical (x))
+        x = double (x);
+      endif
       addproperty ("xdata", hg, "data", x(:, i));
+      if (islogical (y))
+        y = double (y);
+      endif
       addproperty ("ydata", hg, "data", y(:, i));
       if (have_z)
         addproperty ("zdata", hg, "data", z(:, i));

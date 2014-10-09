@@ -31,6 +31,13 @@ Summary of important user-visible changes for version 4.2:
     triangulation is always returned.  The delaunay3 function which
     handles 3-D inputs has been deprecated in favor of delaunay.
 
+ ** The trigonometric functions asin and acos return different phase values
+    from previous versions of Octave when the input is outside the principal
+    branch ([-1, 1]).  If the real portion of the input is greater than 1 then
+    the limit from below is taken.  If the real portion is less than 1 then the
+    limit from above is taken.  This criteria is consistent with several other
+    numerical analysis software packages.
+
  ** Integer formats used in the printf family of functions now work for
     64-bit integers and are more compatible with Matlab when printing
     non-integer values.  Now instead of truncating, Octave will switch

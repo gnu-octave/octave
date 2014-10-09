@@ -184,7 +184,20 @@ acos (const Complex& x)
 {
   static Complex i (0, 1);
 
-  return -i * (log (x + i * (sqrt (1.0 - x*x))));
+  Complex tmp;
+
+  if (imag (x) == 0.0)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      double xr = real (x);
+      tmp = Complex (1.0 - xr*xr);
+    }
+  else
+    tmp = 1.0 - x*x;
+
+  return -i * log (x + i * sqrt (tmp));
 }
 
 Complex
@@ -198,7 +211,20 @@ asin (const Complex& x)
 {
   static Complex i (0, 1);
 
-  return -i * log (i*x + sqrt (1.0 - x*x));
+  Complex tmp;
+
+  if (imag (x) == 0.0)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      double xr = real (x);
+      tmp = Complex (1.0 - xr*xr);
+    }
+  else
+    tmp = 1.0 - x*x;
+
+  return -i * log (i*x + sqrt (tmp));
 }
 
 Complex
@@ -401,7 +427,20 @@ acos (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
-  return -i * (log (x + i * (sqrt (static_cast<float>(1.0) - x*x))));
+  FloatComplex tmp;
+
+  if (imag (x) == 0.0f)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      float xr = real (x);
+      tmp = FloatComplex (1.0f - xr*xr);
+    }
+  else
+    tmp = 1.0f - x*x;
+
+  return -i * log (x + i * sqrt (tmp));
 }
 
 FloatComplex
@@ -415,7 +454,20 @@ asin (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
-  return -i * log (i*x + sqrt (static_cast<float>(1.0) - x*x));
+  FloatComplex tmp;
+
+  if (imag (x) == 0.0f)
+    {
+      // If the imaginary part of X is 0, then avoid generating an
+      // imaginary part of -0 for the expression 1-x*x.
+      // This effectively chooses the same phase of the branch cut as Matlab.
+      float xr = real (x);
+      tmp = FloatComplex (1.0f - xr*xr);
+    }
+  else
+    tmp = 1.0f - x*x;
+
+  return -i * log (i*x + sqrt (tmp));
 }
 
 FloatComplex

@@ -114,6 +114,20 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 %! v = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
 %! assert (acos (x), v, sqrt (eps ("single")));
 
+## Test values on either side of branch cut
+%!test
+%! rval = 0;
+%! ival = 1.31695789692481635;
+%! obs = acos ([2, 2-i*eps, 2+i*eps]);
+%! exp = [rval + ival*i, rval + ival*i, rval - ival*i];
+%! assert (obs, exp, 2*eps);
+%! rval = pi;
+%! obs = acos ([-2, -2-i*eps, -2+i*eps]);
+%! exp = [rval - ival*i, rval + ival*i, rval - ival*i];
+%! assert (obs, exp, 2*eps);
+%! assert (acos ([2 0]),  [ival*i, pi/2], 2*eps);
+%! assert (acos ([2 0i]), [ival*i, pi/2], 2*eps);
+
 %!error acos ()
 %!error acos (1, 2)
 */
@@ -236,12 +250,32 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
+
+%!test
 %! x = [0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0];
 %! v = [0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0];
-%! assert (all (abs (asin (x) - v) < sqrt (eps)));
+%! assert (asin (x), v, sqrt (eps));
+
+%!test
+%! x = single ([0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0]);
+%! v = single ([0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0]);
+%! assert (asin (x), v, sqrt (eps ("single")));
+
+## Test values on either side of branch cut
+%!test
+%! rval = pi/2;
+%! ival = 1.31695789692481635;
+%! obs = asin ([2, 2-i*eps, 2+i*eps]);
+%! exp = [rval - ival*i, rval - ival*i, rval + ival*i];
+%! assert (obs, exp, 2*eps);
+%! obs = asin ([-2, -2-i*eps, -2+i*eps]);
+%! exp = [-rval + ival*i, -rval - ival*i, -rval + ival*i];
+%! assert (obs, exp, 2*eps);
+%! assert (asin ([2 0]),  [rval - ival*i, 0], 2*eps);
+%! assert (asin ([2 0i]), [rval - ival*i, 0], 2*eps);
 
 %!error asin ()
 %!error asin (1, 2)

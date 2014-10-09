@@ -220,8 +220,8 @@ QImage makeImageFromCData (const octave_value& v, int width, int height)
 
   if (dv.length () == 3 && dv(2) == 3)
     {
-      int w = qMin (dv(1), static_cast<octave_idx_type (width));
-      int h = qMin (dv(0), static_cast<octave_idx_type (height));
+      int w = qMin (dv(1), static_cast<octave_idx_type> (width));
+      int h = qMin (dv(0), static_cast<octave_idx_type> (height));
 
       int x_off = (w < width ? (width - w) / 2 : 0);
       int y_off = (h < height ? (height - h) / 2 : 0);

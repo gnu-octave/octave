@@ -169,13 +169,21 @@ MINGW_signal_cleanup (void)
 {
   w32_set_quiet_shutdown ();
 }
+
+static void
+w32_init (void)
+{
+  w32_set_octave_home ();
+
+  command_editor::prefer_env_winsize (true);
+}
 #endif
 
 #if defined (__MINGW32__)
 static void
 MINGW_init (void)
 {
-  w32_set_octave_home ();
+  w32_init ();
 }
 #endif
 
@@ -183,7 +191,7 @@ MINGW_init (void)
 static void
 MSVC_init (void)
 {
-  w32_set_octave_home ();
+  w32_init ();
 }
 #endif
 

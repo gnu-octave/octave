@@ -1470,6 +1470,13 @@ command_editor::filename_quoting_desired (bool arg)
 }
 
 bool
+command_editor::prefer_env_winsize (bool arg)
+{
+  return (instance_ok ())
+         ? instance->do_prefer_env_winsize (arg) : false;
+}
+
+bool
 command_editor::interrupt (bool arg)
 {
   bool retval;

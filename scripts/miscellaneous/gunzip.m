@@ -17,28 +17,42 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gunzip (@var{gzfile}, @var{dir})
-## Unpack the gzip archive @var{gzfile} to the directory @var{dir}.  If
-## @var{dir} is not specified, it defaults to the current directory.  If
-## @var{gzfile} is a directory, all gzfiles in the directory will be
-## recursively gunzipped.
-## @seealso{gzip, unpack, bunzip2, unzip, untar}
+## @deftypefn  {Function File} {@var{files} =} gunzip (@var{gzfile})
+## @deftypefnx {Function File} {@var{files} =} gunzip (@var{gzfile}, @var{dir})
+## Unpack the gzip archive @var{gzfile}.
+##
+## If @var{gzfile} is a directory, all gzfiles in the directory will be
+## recursively unpacked.  
+##
+## If @var{dir} is specified the files are unpacked in this directory rather
+## than the one where @var{gzfile} is located.
+##
+## The optional output @var{files} is a list of the uncompressed files.
+## @seealso{gzip, bunzip2, unzip, untar, unpack}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = gunzip (gzfile, dir = ".")
+function files = gunzip (gzfile, dir)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (isempty (dir))
+    dir = fileparts (gzfile);
+  endif
+
   if (nargout > 0)
-    varargout = cell (1, nargout);
-    [varargout{:}] = unpack (gzfile, dir, mfilename ());
+    files = unpack (gzfile, dir, "gunzip");
   else
-    unpack (gzfile, dir, mfilename ());
+    unpack (gzfile, dir, "gunzip");
   endif
 
 endfunction
+
+
+## Tests for this m-file are located in gzip.m
+## Remove from test statistics
+%!assert (1);
 

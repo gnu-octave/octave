@@ -17,25 +17,32 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{entries} =} gzip (@var{files})
-## @deftypefnx {Function File} {@var{entries} =} gzip (@var{files}, @var{outdir})
-## Compress the list of files and/or directories specified in @var{files}.
-## Each file is compressed separately and a new file with a @file{".gz"}
-## extension is created.  The original files are not modified.  Existing
-## compressed files are silently overwritten.  If @var{outdir} is defined the
-## compressed files are placed in this directory.
-## @seealso{gunzip, bzip2, zip, tar}
+## @deftypefn  {Function File} {@var{filelist} =} gzip (@var{files})
+## @deftypefnx {Function File} {@var{filelist} =} gzip (@var{files}, @var{dir})
+## Compress the list of files and directories specified in @var{files}.
+##
+## @var{files} is a character array or cell array of strings.  Each file is
+## compressed separately and a new file with a @file{".gz"} extension is
+## created.  The original files are not modified, but, existing compressed
+## files will be silently overwritten.  If a directory is specified then
+## @code{gzip} recursively compresses all files in the directory.
+##
+## If @var{dir} is defined the compressed files are placed in this directory.
+##
+## The optional output @var{filelist} is a list of the compressed files.
+## @seealso{gunzip, bzip2, zip, tar, unpack}
 ## @end deftypefn
 
-function entries = gzip (varargin)
-  if (nargin != 1 && nargin != 2) || (nargout > 1)
+function filelist = gzip (varargin)
+
+  if (nargin < 1 || nargin > 2 || nargout > 1)
     print_usage ();
   endif
 
   if (nargout == 0)
     __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
   else
-    entries = __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
+    filelist = __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
   endif
 
 endfunction
@@ -44,20 +51,21 @@ endfunction
 %!xtest
 %! ## test gzip together with gunzip
 %! unwind_protect
-%!   filename = tmpnam;
-%!   dummy    = 1;
+%!   filename = tempname;
+%!   dummy    = pi;
 %!   save (filename, "dummy");
-%!   dirname  = tmpnam;
+%!   dirname  = tempname;
 %!   mkdir (dirname);
-%!   entry = gzip (filename, dirname);
-%!   [path, basename, extension] = fileparts (filename);
-%!   if (! strcmp (entry, [dirname, filesep, basename, extension, ".gz"]))
+%!   filelist = gzip (filename, dirname);
+%!   filelist = filelist{1};
+%!   [~, basename, extension] = fileparts (filename);
+%!   if (! strcmp (filelist, [dirname, filesep, basename, extension, ".gz"]))
 %!     error ("gzipped file does not match expected name!");
 %!   endif
-%!   if (! exist (entry, "file"))
+%!   if (! exist (filelist, "file"))
 %!     error ("gzipped file cannot be found!");
 %!   endif
-%!   gunzip (entry);
+%!   gunzip (filelist);
 %!   fid = fopen (filename, "rb");
 %!   assert (fid >= 0);
 %!   orig_data = fread (fid);
@@ -67,7 +75,7 @@ endfunction
 %!   new_data = fread (fid);
 %!   fclose (fid);
 %!   if (orig_data != new_data)
-%!     error ("unzipped file not equal to original file!");
+%!     error ("gunzipped file not equal to original file!");
 %!   endif
 %! unwind_protect_cleanup
 %!   delete (filename);
@@ -77,6 +85,6 @@ endfunction
 
 %!error gzip ()
 %!error gzip ("1", "2", "3")
-%!error <output directory does not exist> gzip ("1", tmpnam)
+%!error <output directory does not exist> gzip ("1", tempname)
 %!error <FILES must be a character array or cellstr> gzip (1)
 

@@ -66,7 +66,7 @@
 ## @end table
 ##
 ## The optional return value is a list of @var{files} unpacked.
-## @seealso{bzip2, gzip, zip, tar}
+## @seealso{bunzip2, gunzip, unzip, untar, bzip2, gzip, zip, tar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>

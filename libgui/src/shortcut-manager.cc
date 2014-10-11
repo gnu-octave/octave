@@ -246,6 +246,13 @@ shortcut_manager::do_init_data ()
         QKeySequence (ctrl_shift + Qt::Key_Tab));
 #endif
 
+  init (tr ("Convert Line Ednings to Windows"), "editor_edit:conv_eol_winows",
+        QKeySequence ());
+  init (tr ("Convert Line Ednings to Unix"), "editor_edit:conv_eol_unix",
+        QKeySequence ());
+  init (tr ("Convert Line Ednings to Mac"), "editor_edit:conv_eol_mac",
+        QKeySequence ());
+
   init (tr ("Goto Line"), "editor_edit:goto_line",  
         QKeySequence (ctrl + Qt::Key_G));
   init (tr ("Toggle Bookmark"), "editor_edit:toggle_bookmark",

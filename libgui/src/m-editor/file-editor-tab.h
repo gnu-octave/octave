@@ -96,6 +96,7 @@ public slots:
 
   void indent_selected_text (const QWidget *ID);
   void unindent_selected_text (const QWidget *ID);
+  void convert_eol (const QWidget *ID, QsciScintilla::EolMode);
 
   void zoom_in (const QWidget *ID);
   void zoom_out (const QWidget *ID);

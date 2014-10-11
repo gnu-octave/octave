@@ -96,6 +96,7 @@ signals:
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_indent_selected_text (const QWidget* ID);
   void fetab_unindent_selected_text (const QWidget* ID);
+  void fetab_convert_eol (const QWidget* ID, QsciScintilla::EolMode eol_mode);
   void fetab_find (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
   void fetab_completion (const QWidget*);
@@ -167,6 +168,9 @@ public slots:
   void request_lower_case (bool);
   void request_indent_selected_text (bool);
   void request_unindent_selected_text (bool);
+  void request_conv_eol_windows (bool);
+  void request_conv_eol_unix (bool);
+  void request_conv_eol_mac (bool);
 
   void request_find (bool);
 
@@ -267,6 +271,9 @@ private:
   QAction *_uncomment_selection_action;
   QAction *_indent_selection_action;
   QAction *_unindent_selection_action;
+  QAction *_conv_eol_windows_action;
+  QAction *_conv_eol_unix_action;
+  QAction *_conv_eol_mac_action;
 
   QAction *_copy_action;
   QAction *_cut_action;

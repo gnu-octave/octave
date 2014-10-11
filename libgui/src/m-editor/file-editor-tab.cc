@@ -947,6 +947,16 @@ file_editor_tab::unindent_selected_text (const QWidget *ID)
   do_indent_selected_text (false);
 }
 
+void
+file_editor_tab::convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->convertEols (eol_mode);
+  _edit_area->setEolMode (eol_mode);
+  update_eol_indicator ();
+}
 
 void
 file_editor_tab::zoom_in (const QWidget *ID)

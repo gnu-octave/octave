@@ -812,6 +812,25 @@ file_editor::request_unindent_selected_text (bool)
   emit fetab_unindent_selected_text (_tab_widget->currentWidget ());
 }
 
+void
+file_editor::request_conv_eol_windows (bool)
+{
+  emit fetab_convert_eol (_tab_widget->currentWidget (),
+                          QsciScintilla::EolWindows);
+}
+void
+file_editor::request_conv_eol_unix (bool)
+{
+  emit fetab_convert_eol (_tab_widget->currentWidget (),
+                          QsciScintilla::EolUnix);
+}
+void
+file_editor::request_conv_eol_mac (bool)
+{
+  emit fetab_convert_eol (_tab_widget->currentWidget (),
+                          QsciScintilla::EolMac);
+}
+
 
 void
 file_editor::request_find (bool)
@@ -1325,14 +1344,32 @@ file_editor::construct (void)
           tr ("&Uppercase Selection"), SLOT (request_upper_case (bool)));
   _lower_case_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Lowercase Selection"), SLOT (request_lower_case (bool)));
+
+  _edit_fmt_menu->addSeparator ();
+
   _comment_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Comment"), SLOT (request_comment_selected_text (bool)));
   _uncomment_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Uncomment"), SLOT (request_uncomment_selected_text (bool)));
+
+  _edit_fmt_menu->addSeparator ();
+
   _indent_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Indent"), SLOT (request_indent_selected_text (bool)));
   _unindent_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Unindent"), SLOT (request_unindent_selected_text (bool)));
+
+  _edit_fmt_menu->addSeparator ();
+
+  _conv_eol_windows_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("Convert Line Endings to &Windows (CRLF)"),
+          SLOT (request_conv_eol_windows (bool)));
+  _conv_eol_unix_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("Convert Line Endings to &Unix (LF)"),
+          SLOT (request_conv_eol_unix (bool)));
+  _conv_eol_mac_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("Convert Line Endings to &Mac (CR)"),
+          SLOT (request_conv_eol_mac (bool)));
 
   _edit_nav_menu = editMenu->addMenu (tr ("Navi&gation"));
 
@@ -1636,6 +1673,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_unindent_selected_text (const QWidget*)),
            f, SLOT (unindent_selected_text (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
+           f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
+
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
 
@@ -1739,6 +1779,10 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_remove_bookmark_action, "editor_edit:remove_bookmark");
   shortcut_manager::set_shortcut (_preferences_action, "editor_edit:preferences");
   shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
+
+  shortcut_manager::set_shortcut (_conv_eol_windows_action, "editor_edit:conv_eol_winows");
+  shortcut_manager::set_shortcut (_conv_eol_unix_action,    "editor_edit:conv_eol_unix");
+  shortcut_manager::set_shortcut (_conv_eol_mac_action,     "editor_edit:conv_eol_mac");
 
   // View menu
   shortcut_manager::set_shortcut (_show_linenum_action, "editor_view:show_line_numbers");

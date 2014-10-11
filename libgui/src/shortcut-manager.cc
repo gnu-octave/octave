@@ -262,6 +262,11 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
 
   // view
+  init (tr ("Show Line Numbers"), "editor_view:show_line_numbers", QKeySequence ());
+  init (tr ("Show White Spaces"), "editor_view:show_white_spaces", QKeySequence ());
+  init (tr ("Show Line Endings"), "editor_view:show_eol_chars", QKeySequence ());
+  init (tr ("Show Indentation Guides"), "editor_view:show_ind_guides", QKeySequence ());
+  init (tr ("Show Long Line Marker"), "editor_view:show_long_line", QKeySequence ());
   init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
   init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
 #if defined (Q_OS_MAC)

@@ -1396,9 +1396,28 @@ void
 file_editor_tab::new_file (const QString &commands)
 {
   update_window_title (false); // window title (no modification)
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  // set the eol mode from the settings or depending on the OS if the entry is
+  // missing in the settings
+  QsciScintilla::EolMode eol_modes[] =
+    {QsciScintilla::EolWindows, QsciScintilla::EolUnix, QsciScintilla::EolMac};
+
+#if defined (Q_OS_WIN32)
+  int eol_mode = QsciScintilla::EolWindows;
+#elif defined (Q_OS_MAC)
+  int eol_mode = QsciScintilla::EolMac;
+#else
+  int eol_mode = QsciScintilla::EolUnix;
+#endif
+  _edit_area->setEolMode (
+      eol_modes[settings->value("editor/default_eol_mode",eol_mode).toInt ()]);
+
+  update_eol_indicator ();
+
   _edit_area->setText (commands);
   _edit_area->setModified (false); // new file is not modified yet
-  update_eol_indicator ();
 }
 
 void
@@ -1734,6 +1753,9 @@ file_editor_tab::notice_settings (const QSettings *settings)
       _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
   else
     _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
+
+  _edit_area->setEolVisibility (
+              settings->value("editor/show_eol_chars",false).toBool ());
 
   if (settings->value ("editor/showLineNumbers", true).toBool ())
     {

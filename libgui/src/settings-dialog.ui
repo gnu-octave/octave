@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -406,7 +406,7 @@
             <x>0</x>
             <y>0</y>
             <width>662</width>
-            <height>580</height>
+            <height>613</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -417,6 +417,43 @@
                <property name="horizontalSpacing">
                 <number>6</number>
                </property>
+               <item row="6" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <widget class="QLabel" name="editor_long_line_column_text">
+                   <property name="text">
+                    <string>After Column</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="editor_long_line_column">
+                   <property name="minimum">
+                    <number>2</number>
+                   </property>
+                   <property name="maximum">
+                    <number>256</number>
+                   </property>
+                   <property name="value">
+                    <number>80</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_7">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
                <item row="3" column="0">
                 <widget class="QCheckBox" name="editor_ws_checkbox">
                  <property name="text">
@@ -457,7 +494,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="0">
+               <item row="5" column="0">
                 <widget class="QCheckBox" name="editor_highlightCurrentLine">
                  <property name="enabled">
                   <bool>true</bool>
@@ -467,7 +504,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="2">
+               <item row="5" column="2">
                 <layout class="QGridLayout" name="editor_grid_current_line" rowstretch="0" columnstretch="0,0,0,0,0">
                  <property name="horizontalSpacing">
                   <number>12</number>
@@ -608,7 +645,7 @@
                  </property>
                 </spacer>
                </item>
-               <item row="5" column="0">
+               <item row="6" column="0">
                 <widget class="QCheckBox" name="editor_long_line_marker">
                  <property name="toolTip">
                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
@@ -621,30 +658,69 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="2">
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item row="7" column="0">
+                <widget class="QCheckBox" name="cb_code_folding">
+                 <property name="text">
+                  <string>Enable Code Folding</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0">
+                <widget class="QCheckBox" name="cb_edit_status_bar">
+                 <property name="text">
+                  <string>Show status bar</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QCheckBox" name="cb_show_eol">
+                 <property name="text">
+                  <string>Show eol characters</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="2">
+                <layout class="QHBoxLayout" name="horizontalLayout_17">
                  <item>
-                  <widget class="QLabel" name="editor_long_line_column_text">
+                  <widget class="QLabel" name="label_22">
                    <property name="text">
-                    <string>After Column</string>
+                    <string>Default eol mode</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSpinBox" name="editor_long_line_column">
-                   <property name="minimum">
-                    <number>2</number>
+                  <widget class="QComboBox" name="combo_eol_mode">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToMinimumContentsLength</enum>
                    </property>
-                   <property name="maximum">
-                    <number>256</number>
+                   <property name="minimumContentsLength">
+                    <number>7</number>
                    </property>
-                   <property name="value">
-                    <number>80</number>
-                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Windows</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Unix</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Mac</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_7">
+                  <spacer name="horizontalSpacer_17">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -657,26 +733,6 @@
                   </spacer>
                  </item>
                 </layout>
-               </item>
-               <item row="6" column="0">
-                <widget class="QCheckBox" name="cb_code_folding">
-                 <property name="text">
-                  <string>Enable Code Folding</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QCheckBox" name="cb_edit_status_bar">
-                 <property name="text">
-                  <string>Show status bar</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
                </item>
               </layout>
              </item>

@@ -1369,17 +1369,34 @@ file_editor_tab::detect_eol_mode ()
         }
     }
 
-  QsciScintilla::EolMode eol_mode = QsciScintilla::EolUnix;
-  int count_max = count_lf;
+  // get default from OS or from settings
+#if defined (Q_OS_WIN32)
+  int os_eol_mode = QsciScintilla::EolWindows;
+#elif defined (Q_OS_MAC)
+  int os_eol_mode = QsciScintilla::EolMac;
+#else
+  int os_eol_mode = QsciScintilla::EolUnix;
+#endif
+QSettings *settings = resource_manager::get_settings ();
+QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
+      settings->value("editor/default_eol_mode",os_eol_mode).toInt ());
 
+  int count_max = 0;
+
+  if (count_crlf > count_max)
+    {
+      eol_mode = QsciScintilla::EolWindows;
+      count_max = count_crlf;
+    }
   if (count_cr > count_max)
     {
       eol_mode = QsciScintilla::EolMac;
       count_max = count_cr;
     }
-  if (count_crlf > count_max)
+  if (count_lf > count_max)
     {
-      eol_mode = QsciScintilla::EolWindows;
+      eol_mode = QsciScintilla::EolUnix;
+      count_max = count_lf;
     }
 
   return eol_mode;
@@ -1411,9 +1428,6 @@ file_editor_tab::new_file (const QString &commands)
 
   // set the eol mode from the settings or depending on the OS if the entry is
   // missing in the settings
-  QsciScintilla::EolMode eol_modes[] =
-    {QsciScintilla::EolWindows, QsciScintilla::EolUnix, QsciScintilla::EolMac};
-
 #if defined (Q_OS_WIN32)
   int eol_mode = QsciScintilla::EolWindows;
 #elif defined (Q_OS_MAC)
@@ -1422,7 +1436,8 @@ file_editor_tab::new_file (const QString &commands)
   int eol_mode = QsciScintilla::EolUnix;
 #endif
   _edit_area->setEolMode (
-      eol_modes[settings->value("editor/default_eol_mode",eol_mode).toInt ()]);
+    static_cast<QsciScintilla::EolMode> (
+      settings->value("editor/default_eol_mode",eol_mode).toInt ()));
 
   update_eol_indicator ();
 

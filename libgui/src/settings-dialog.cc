@@ -196,7 +196,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   int eol_mode = QsciScintilla::EolUnix;
 #endif
 #else
-  int eol_mode = 1;
+  int eol_mode = 2;
 #endif
   ui->combo_eol_mode->setCurrentIndex (
     settings->value ("editor/default_eol_mode",eol_mode).toInt () );

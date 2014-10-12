@@ -199,7 +199,7 @@ shortcut_manager::do_init_data ()
   init (tr ("Undo"), "editor_edit:undo", QKeySequence::Undo);
   init (tr ("Redo"), "editor_edit:redo", QKeySequence::Redo);
   init (tr ("Copy"), "editor_edit:copy", QKeySequence::Copy);
-  init (tr ("Cuy"), "editor_edit:cut", QKeySequence::Cut);
+  init (tr ("Cut"), "editor_edit:cut", QKeySequence::Cut);
   init (tr ("Paste"), "editor_edit:paste", QKeySequence::Paste);
   init (tr ("Select All"), "editor_edit:select_all", QKeySequence::SelectAll);
   init (tr ("Find and Replace"), "editor_edit:find_replace",

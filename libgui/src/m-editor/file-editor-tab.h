@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <Qsci/qsciapis.h>
 #include <QStatusBar>
 #include <QLabel>
+#include <QComboBox>
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
@@ -161,6 +162,7 @@ private slots:
   void handle_save_file_as_answer (const QString& fileName);
   void handle_save_file_as_answer_close (const QString& fileName);
   void handle_save_file_as_answer_cancel ();
+  void handle_combo_eol_current_index (int index);
 
   // When apis preparation has finished and is ready to save
   void save_apis_info ();
@@ -221,6 +223,8 @@ private:
   QLabel *_row_indicator;
   QLabel *_col_indicator;
   QLabel *_eol_indicator;
+
+  QsciScintilla::EolMode _save_as_desired_eol;
 
   QString _file_name;
   QString _file_name_short;

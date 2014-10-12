@@ -1543,6 +1543,41 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // it had/has no effect on Windows, though)
   fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
 
+  // get the dialog's layout for adding extra elements
+  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
+  int rows = dialog_layout->rowCount ();
+
+  // define a new grid layout with the extra elements
+  QGridLayout *extra = new QGridLayout (fileDialog);
+  QSpacerItem *spacer = new QSpacerItem (1,1,QSizePolicy::Expanding,
+                                             QSizePolicy::Fixed);
+  QFrame *separator = new QFrame (fileDialog);
+  separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
+  separator->setFrameStyle (QFrame::Sunken);
+
+  // combo box for choosing new line ending chars
+  QLabel *label_eol = new QLabel (tr ("Line Endings:"));
+  QComboBox *combo_eol = new QComboBox ();
+  combo_eol->addItem ("Windows (CRLF)");  // ensure the same order as in
+  combo_eol->addItem ("Mac (CR)");        // the settings dialog
+  combo_eol->addItem ("Unix (LF)");
+  _save_as_desired_eol = _edit_area->eolMode ();      // init with current eol
+  combo_eol->setCurrentIndex (_save_as_desired_eol);
+
+  // track changes in the combo box
+  connect (combo_eol, SIGNAL (currentIndexChanged (int)),
+           this, SLOT (handle_combo_eol_current_index (int)));
+
+  // build the extra grid layout
+  extra->addWidget (separator,0,0,1,3);
+  extra->addWidget (label_eol,1,0);
+  extra->addWidget (combo_eol,1,1);
+  extra->addItem   (spacer,   1,2);
+
+  // and add the extra grid layout to the dialog's layout
+  dialog_layout->addLayout (extra,rows,0,1,dialog_layout->columnCount ());
+
+
   if (valid_file_name ())
     {
       fileDialog->selectFile (_file_name);
@@ -1588,6 +1623,12 @@ file_editor_tab::save_file_as (bool remove_on_success)
   show_dialog (fileDialog);
 }
 
+void
+file_editor_tab::handle_combo_eol_current_index (int index)
+{
+  _save_as_desired_eol = static_cast<QsciScintilla::EolMode> (index);
+}
+
 bool
 file_editor_tab::check_valid_identifier (QString file_name)
 {
@@ -1615,6 +1656,9 @@ file_editor_tab::check_valid_identifier (QString file_name)
 void
 file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 {
+  if (_save_as_desired_eol != _edit_area->eolMode ())
+    convert_eol (this,_save_as_desired_eol);
+
   if (saveFileName == _file_name)
     {
       // same name as actual file, save it as "save" would do
@@ -1633,6 +1677,13 @@ file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 void
 file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
 {
+  if (_save_as_desired_eol != _edit_area->eolMode ())
+    {
+      _edit_area->setReadOnly (false);  // was set to read-only in save_file_as
+      convert_eol (this,_save_as_desired_eol);
+      _edit_area->setReadOnly (true);   // restore read-only mode
+    }
+
   // saveFileName == _file_name can not happen, because we only can get here
   // when we close a tab and _file_name is not a valid file name yet
 

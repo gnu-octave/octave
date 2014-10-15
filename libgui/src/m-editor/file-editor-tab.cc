@@ -99,15 +99,23 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   connect (_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
            this, SLOT (handle_context_menu_edit (const QString&)));
 
-  // create statusbar for row/col indicator
+  // create statusbar for row/col indicator and eol mode
   _status_bar = new QStatusBar (this);
 
+  // eol mode
+  QLabel *eol_label = new QLabel (tr ("eol:"), this);
+  _eol_indicator = new QLabel ("",this);
+  _eol_indicator->setMinimumSize (35,0);
+  _status_bar->addPermanentWidget (eol_label, 0);
+  _status_bar->addPermanentWidget (_eol_indicator, 0);
+
+  // row- and col-indicator
   _row_indicator = new QLabel ("", this);
   _row_indicator->setMinimumSize (30,0);
-  QLabel *row_label = new QLabel (tr ("Line:"), this);
+  QLabel *row_label = new QLabel (tr ("line:"), this);
   _col_indicator = new QLabel ("", this);
   _col_indicator->setMinimumSize (25,0);
-  QLabel *col_label = new QLabel (tr ("Col:"), this);
+  QLabel *col_label = new QLabel (tr ("col:"), this);
   _status_bar->addPermanentWidget (row_label, 0);
   _status_bar->addPermanentWidget (_row_indicator, 0);
   _status_bar->addPermanentWidget (col_label, 0);
@@ -939,6 +947,16 @@ file_editor_tab::unindent_selected_text (const QWidget *ID)
   do_indent_selected_text (false);
 }
 
+void
+file_editor_tab::convert_eol (const QWidget *ID, QsciScintilla::EolMode eol_mode)
+{
+  if (ID != this)
+    return;
+
+  _edit_area->convertEols (eol_mode);
+  _edit_area->setEolMode (eol_mode);
+  update_eol_indicator ();
+}
 
 void
 file_editor_tab::zoom_in (const QWidget *ID)
@@ -1304,6 +1322,7 @@ file_editor_tab::load_file (const QString& fileName)
   in.setCodec("UTF-8");
   QApplication::setOverrideCursor (Qt::WaitCursor);
   _edit_area->setText (in.readAll ());
+  _edit_area->setEolMode (detect_eol_mode ());
   QApplication::restoreOverrideCursor ();
 
   _copy_available = false;     // no selection yet available
@@ -1311,13 +1330,117 @@ file_editor_tab::load_file (const QString& fileName)
   update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet
 
+  update_eol_indicator ();
+
   return QString ();
+}
+
+QsciScintilla::EolMode
+file_editor_tab::detect_eol_mode ()
+{
+  char *text = _edit_area->text ().toAscii ().data ();
+  int text_size = _edit_area->text ().length ();
+
+  char eol_lf = 0x0a;
+  char eol_cr = 0x0d;
+
+  int count_lf = 0;
+  int count_cr = 0;
+  int count_crlf = 0;
+
+  for (int i = 0; i < text_size; i++)
+    {
+      if (text[i] == eol_lf)
+        {
+          count_lf++;
+        }
+      else
+        {
+          if (text[i] == eol_cr)
+            {
+              if ((i < text_size -1) && text[i+1] == eol_lf)
+                {
+                  count_crlf++;
+                  i++;
+                }
+              else
+                count_cr++;
+            }
+        }
+    }
+
+  // get default from OS or from settings
+#if defined (Q_OS_WIN32)
+  int os_eol_mode = QsciScintilla::EolWindows;
+#elif defined (Q_OS_MAC)
+  int os_eol_mode = QsciScintilla::EolMac;
+#else
+  int os_eol_mode = QsciScintilla::EolUnix;
+#endif
+QSettings *settings = resource_manager::get_settings ();
+QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
+      settings->value("editor/default_eol_mode",os_eol_mode).toInt ());
+
+  int count_max = 0;
+
+  if (count_crlf > count_max)
+    {
+      eol_mode = QsciScintilla::EolWindows;
+      count_max = count_crlf;
+    }
+  if (count_cr > count_max)
+    {
+      eol_mode = QsciScintilla::EolMac;
+      count_max = count_cr;
+    }
+  if (count_lf > count_max)
+    {
+      eol_mode = QsciScintilla::EolUnix;
+      count_max = count_lf;
+    }
+
+  return eol_mode;
+}
+
+void
+file_editor_tab::update_eol_indicator ()
+{
+  switch (_edit_area->eolMode ())
+    {
+      case QsciScintilla::EolWindows:
+        _eol_indicator->setText ("CRLF");
+        break;
+      case QsciScintilla::EolMac:
+        _eol_indicator->setText ("CR");
+        break;
+      case QsciScintilla::EolUnix:
+        _eol_indicator->setText ("LF");
+        break;
+    }
 }
 
 void
 file_editor_tab::new_file (const QString &commands)
 {
   update_window_title (false); // window title (no modification)
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  // set the eol mode from the settings or depending on the OS if the entry is
+  // missing in the settings
+#if defined (Q_OS_WIN32)
+  int eol_mode = QsciScintilla::EolWindows;
+#elif defined (Q_OS_MAC)
+  int eol_mode = QsciScintilla::EolMac;
+#else
+  int eol_mode = QsciScintilla::EolUnix;
+#endif
+  _edit_area->setEolMode (
+    static_cast<QsciScintilla::EolMode> (
+      settings->value("editor/default_eol_mode",eol_mode).toInt ()));
+
+  update_eol_indicator ();
+
   _edit_area->setText (commands);
   _edit_area->setModified (false); // new file is not modified yet
 }
@@ -1420,6 +1543,41 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // it had/has no effect on Windows, though)
   fileDialog->setOption(QFileDialog::DontUseNativeDialog, true);
 
+  // get the dialog's layout for adding extra elements
+  QGridLayout *dialog_layout = dynamic_cast<QGridLayout*> (fileDialog->layout ());
+  int rows = dialog_layout->rowCount ();
+
+  // define a new grid layout with the extra elements
+  QGridLayout *extra = new QGridLayout (fileDialog);
+  QSpacerItem *spacer = new QSpacerItem (1,1,QSizePolicy::Expanding,
+                                             QSizePolicy::Fixed);
+  QFrame *separator = new QFrame (fileDialog);
+  separator->setFrameShape (QFrame::HLine);   // horizontal line as separator
+  separator->setFrameStyle (QFrame::Sunken);
+
+  // combo box for choosing new line ending chars
+  QLabel *label_eol = new QLabel (tr ("Line Endings:"));
+  QComboBox *combo_eol = new QComboBox ();
+  combo_eol->addItem ("Windows (CRLF)");  // ensure the same order as in
+  combo_eol->addItem ("Mac (CR)");        // the settings dialog
+  combo_eol->addItem ("Unix (LF)");
+  _save_as_desired_eol = _edit_area->eolMode ();      // init with current eol
+  combo_eol->setCurrentIndex (_save_as_desired_eol);
+
+  // track changes in the combo box
+  connect (combo_eol, SIGNAL (currentIndexChanged (int)),
+           this, SLOT (handle_combo_eol_current_index (int)));
+
+  // build the extra grid layout
+  extra->addWidget (separator,0,0,1,3);
+  extra->addWidget (label_eol,1,0);
+  extra->addWidget (combo_eol,1,1);
+  extra->addItem   (spacer,   1,2);
+
+  // and add the extra grid layout to the dialog's layout
+  dialog_layout->addLayout (extra,rows,0,1,dialog_layout->columnCount ());
+
+
   if (valid_file_name ())
     {
       fileDialog->selectFile (_file_name);
@@ -1465,6 +1623,12 @@ file_editor_tab::save_file_as (bool remove_on_success)
   show_dialog (fileDialog);
 }
 
+void
+file_editor_tab::handle_combo_eol_current_index (int index)
+{
+  _save_as_desired_eol = static_cast<QsciScintilla::EolMode> (index);
+}
+
 bool
 file_editor_tab::check_valid_identifier (QString file_name)
 {
@@ -1492,6 +1656,9 @@ file_editor_tab::check_valid_identifier (QString file_name)
 void
 file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 {
+  if (_save_as_desired_eol != _edit_area->eolMode ())
+    convert_eol (this,_save_as_desired_eol);
+
   if (saveFileName == _file_name)
     {
       // same name as actual file, save it as "save" would do
@@ -1510,6 +1677,13 @@ file_editor_tab::handle_save_file_as_answer (const QString& saveFileName)
 void
 file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
 {
+  if (_save_as_desired_eol != _edit_area->eolMode ())
+    {
+      _edit_area->setReadOnly (false);  // was set to read-only in save_file_as
+      convert_eol (this,_save_as_desired_eol);
+      _edit_area->setReadOnly (true);   // restore read-only mode
+    }
+
   // saveFileName == _file_name can not happen, because we only can get here
   // when we close a tab and _file_name is not a valid file name yet
 
@@ -1655,6 +1829,9 @@ file_editor_tab::notice_settings (const QSettings *settings)
       _edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
   else
     _edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
+
+  _edit_area->setEolVisibility (
+              settings->value("editor/show_eol_chars",false).toBool ());
 
   if (settings->value ("editor/showLineNumbers", true).toBool ())
     {

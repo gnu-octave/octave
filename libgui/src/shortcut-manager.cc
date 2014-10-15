@@ -199,7 +199,7 @@ shortcut_manager::do_init_data ()
   init (tr ("Undo"), "editor_edit:undo", QKeySequence::Undo);
   init (tr ("Redo"), "editor_edit:redo", QKeySequence::Redo);
   init (tr ("Copy"), "editor_edit:copy", QKeySequence::Copy);
-  init (tr ("Cuy"), "editor_edit:cut", QKeySequence::Cut);
+  init (tr ("Cut"), "editor_edit:cut", QKeySequence::Cut);
   init (tr ("Paste"), "editor_edit:paste", QKeySequence::Paste);
   init (tr ("Select All"), "editor_edit:select_all", QKeySequence::SelectAll);
   init (tr ("Find and Replace"), "editor_edit:find_replace",
@@ -246,6 +246,13 @@ shortcut_manager::do_init_data ()
         QKeySequence (ctrl_shift + Qt::Key_Tab));
 #endif
 
+  init (tr ("Convert Line Ednings to Windows"), "editor_edit:conv_eol_winows",
+        QKeySequence ());
+  init (tr ("Convert Line Ednings to Unix"), "editor_edit:conv_eol_unix",
+        QKeySequence ());
+  init (tr ("Convert Line Ednings to Mac"), "editor_edit:conv_eol_mac",
+        QKeySequence ());
+
   init (tr ("Goto Line"), "editor_edit:goto_line",  
         QKeySequence (ctrl + Qt::Key_G));
   init (tr ("Toggle Bookmark"), "editor_edit:toggle_bookmark",
@@ -262,6 +269,11 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
 
   // view
+  init (tr ("Show Line Numbers"), "editor_view:show_line_numbers", QKeySequence ());
+  init (tr ("Show White Spaces"), "editor_view:show_white_spaces", QKeySequence ());
+  init (tr ("Show Line Endings"), "editor_view:show_eol_chars", QKeySequence ());
+  init (tr ("Show Indentation Guides"), "editor_view:show_ind_guides", QKeySequence ());
+  init (tr ("Show Long Line Marker"), "editor_view:show_long_line", QKeySequence ());
   init (tr ("Zoom In"), "editor_view:zoom_in", QKeySequence::ZoomIn);
   init (tr ("Zoom Out"), "editor_view:zoom_out", QKeySequence::ZoomOut);
 #if defined (Q_OS_MAC)

@@ -812,6 +812,25 @@ file_editor::request_unindent_selected_text (bool)
   emit fetab_unindent_selected_text (_tab_widget->currentWidget ());
 }
 
+void
+file_editor::request_conv_eol_windows (bool)
+{
+  emit fetab_convert_eol (_tab_widget->currentWidget (),
+                          QsciScintilla::EolWindows);
+}
+void
+file_editor::request_conv_eol_unix (bool)
+{
+  emit fetab_convert_eol (_tab_widget->currentWidget (),
+                          QsciScintilla::EolUnix);
+}
+void
+file_editor::request_conv_eol_mac (bool)
+{
+  emit fetab_convert_eol (_tab_widget->currentWidget (),
+                          QsciScintilla::EolMac);
+}
+
 
 void
 file_editor::request_find (bool)
@@ -988,6 +1007,41 @@ void file_editor::create_context_menu (QMenu *menu)
 }
 
 void
+file_editor::toggle_preference (const QString& preference, bool def)
+{
+  QSettings *settings = resource_manager::get_settings ();
+  bool old = settings->value (preference,def).toBool ();
+  settings->setValue (preference,!old);
+  notice_settings (settings);
+}
+
+void
+file_editor::show_line_numbers (bool)
+{
+  toggle_preference ("editor/showLineNumbers",true);
+}
+void
+file_editor::show_white_space (bool)
+{
+  toggle_preference ("editor/show_white_space",false);
+}
+void
+file_editor::show_eol_chars (bool)
+{
+  toggle_preference ("editor/show_eol_chars",false);
+}
+void
+file_editor::show_indent_guides (bool)
+{
+  toggle_preference ("editor/show_indent_guides",false);
+}
+void
+file_editor::show_long_line (bool)
+{
+  toggle_preference ("editor/long_line_marker",true);
+}
+
+void
 file_editor::zoom_in (bool)
 {
   emit fetab_zoom_in (_tab_widget->currentWidget ());
@@ -1064,6 +1118,18 @@ file_editor::notice_settings (const QSettings *settings)
     _tab_widget->setElideMode (Qt::ElideNone);
 
   _tab_widget->setUsesScrollButtons (true);
+
+  bool show_it;
+  show_it = settings->value ("editor/showLineNumbers",true).toBool ();
+  _show_linenum_action->setChecked (show_it);
+  show_it = settings->value ("editor/show_white_space",false).toBool ();
+  _show_whitespace_action->setChecked (show_it);
+  show_it = settings->value ("editor/show_eol_chars",false).toBool ();
+  _show_eol_action->setChecked (show_it);
+  show_it = settings->value ("editor/show_indent_guides",false).toBool ();
+  _show_indguide_action->setChecked (show_it);
+  show_it = settings->value ("editor/long_line_marker",true).toBool ();
+  _show_longline_action->setChecked (show_it);
 
   set_shortcuts ();
 
@@ -1278,14 +1344,32 @@ file_editor::construct (void)
           tr ("&Uppercase Selection"), SLOT (request_upper_case (bool)));
   _lower_case_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Lowercase Selection"), SLOT (request_lower_case (bool)));
+
+  _edit_fmt_menu->addSeparator ();
+
   _comment_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Comment"), SLOT (request_comment_selected_text (bool)));
   _uncomment_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Uncomment"), SLOT (request_uncomment_selected_text (bool)));
+
+  _edit_fmt_menu->addSeparator ();
+
   _indent_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Indent"), SLOT (request_indent_selected_text (bool)));
   _unindent_selection_action = add_action (_edit_fmt_menu, QIcon (),
           tr ("&Unindent"), SLOT (request_unindent_selected_text (bool)));
+
+  _edit_fmt_menu->addSeparator ();
+
+  _conv_eol_windows_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("Convert Line Endings to &Windows (CRLF)"),
+          SLOT (request_conv_eol_windows (bool)));
+  _conv_eol_unix_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("Convert Line Endings to &Unix (LF)"),
+          SLOT (request_conv_eol_unix (bool)));
+  _conv_eol_mac_action = add_action (_edit_fmt_menu, QIcon (),
+          tr ("Convert Line Endings to &Mac (CR)"),
+          SLOT (request_conv_eol_mac (bool)));
 
   _edit_nav_menu = editMenu->addMenu (tr ("Navi&gation"));
 
@@ -1315,6 +1399,30 @@ file_editor::construct (void)
   // view menu
 
   QMenu *view_menu = m_add_menu (_menu_bar, tr ("&View"));
+
+  _view_editor_menu = view_menu->addMenu (tr ("&Editor"));
+
+  _show_linenum_action = add_action (_view_editor_menu, QIcon (),
+          tr ("Show &Line Numbers"), SLOT (show_line_numbers (bool)));
+  _show_linenum_action->setCheckable (true);
+
+  _show_whitespace_action = add_action (_view_editor_menu, QIcon (),
+          tr ("Show &White Spaces"), SLOT (show_white_space (bool)));
+  _show_whitespace_action->setCheckable (true);
+
+  _show_eol_action = add_action (_view_editor_menu, QIcon (),
+          tr ("Show Line &Endings"), SLOT (show_eol_chars (bool)));
+  _show_eol_action->setCheckable (true);
+
+  _show_indguide_action = add_action (_view_editor_menu, QIcon (),
+          tr ("Show &Indentation Guides"), SLOT (show_indent_guides (bool)));
+  _show_indguide_action->setCheckable (true);
+
+  _show_longline_action = add_action (_view_editor_menu, QIcon (),
+          tr ("Show Long Line &Marker"), SLOT (show_long_line (bool)));
+  _show_longline_action->setCheckable (true);
+
+  view_menu->addSeparator ();
 
   _zoom_in_action = add_action (view_menu, QIcon (),
           tr ("Zoom &In"), SLOT (zoom_in (bool)));
@@ -1565,6 +1673,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_unindent_selected_text (const QWidget*)),
            f, SLOT (unindent_selected_text (const QWidget*)));
 
+  connect (this, SIGNAL (fetab_convert_eol (const QWidget*, QsciScintilla::EolMode)),
+           f, SLOT (convert_eol (const QWidget*, QsciScintilla::EolMode)));
+
   connect (this, SIGNAL (fetab_find (const QWidget*)),
            f, SLOT (find (const QWidget*)));
 
@@ -1669,7 +1780,16 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_preferences_action, "editor_edit:preferences");
   shortcut_manager::set_shortcut (_styles_preferences_action, "editor_edit:styles_preferences");
 
+  shortcut_manager::set_shortcut (_conv_eol_windows_action, "editor_edit:conv_eol_winows");
+  shortcut_manager::set_shortcut (_conv_eol_unix_action,    "editor_edit:conv_eol_unix");
+  shortcut_manager::set_shortcut (_conv_eol_mac_action,     "editor_edit:conv_eol_mac");
+
   // View menu
+  shortcut_manager::set_shortcut (_show_linenum_action, "editor_view:show_line_numbers");
+  shortcut_manager::set_shortcut (_show_whitespace_action, "editor_view:show_white_spaces");
+  shortcut_manager::set_shortcut (_show_eol_action, "editor_view:show_eol_chars");
+  shortcut_manager::set_shortcut (_show_indguide_action, "editor_view:show_ind_guides");
+  shortcut_manager::set_shortcut (_show_longline_action, "editor_view:show_long_line");
   shortcut_manager::set_shortcut (_zoom_in_action, "editor_view:zoom_in");
   shortcut_manager::set_shortcut (_zoom_out_action, "editor_view:zoom_out");
   shortcut_manager::set_shortcut (_zoom_normal_action, "editor_view:zoom_normal");
@@ -1708,6 +1828,7 @@ file_editor::check_actions ()
   _context_help_action->setEnabled (have_tabs);
   _context_doc_action->setEnabled (have_tabs);
 
+  _view_editor_menu->setEnabled (have_tabs);
   _zoom_in_action->setEnabled (have_tabs);
   _zoom_out_action->setEnabled (have_tabs);
   _zoom_normal_action->setEnabled (have_tabs);

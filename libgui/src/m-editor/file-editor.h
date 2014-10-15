@@ -96,6 +96,7 @@ signals:
   void fetab_uncomment_selected_text (const QWidget* ID);
   void fetab_indent_selected_text (const QWidget* ID);
   void fetab_unindent_selected_text (const QWidget* ID);
+  void fetab_convert_eol (const QWidget* ID, QsciScintilla::EolMode eol_mode);
   void fetab_find (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
   void fetab_completion (const QWidget*);
@@ -167,6 +168,9 @@ public slots:
   void request_lower_case (bool);
   void request_indent_selected_text (bool);
   void request_unindent_selected_text (bool);
+  void request_conv_eol_windows (bool);
+  void request_conv_eol_unix (bool);
+  void request_conv_eol_mac (bool);
 
   void request_find (bool);
 
@@ -214,6 +218,11 @@ private slots:
   void request_styles_preferences (bool);
   void restore_create_file_setting ();
 
+  void show_line_numbers (bool);
+  void show_white_space (bool);
+  void show_eol_chars (bool);
+  void show_indent_guides (bool);
+  void show_long_line (bool);
   void zoom_in (bool);
   void zoom_out (bool);
   void zoom_normal (bool);
@@ -234,6 +243,8 @@ private:
   void save_file_as (QWidget *fetabID = 0);
   void mru_menu_update (void);
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
+
+  void toggle_preference (const QString& preference, bool def);
 
   QWidget *find_tab_widget (const QString& openFileName) const;
   QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
@@ -260,6 +271,9 @@ private:
   QAction *_uncomment_selection_action;
   QAction *_indent_selection_action;
   QAction *_unindent_selection_action;
+  QAction *_conv_eol_windows_action;
+  QAction *_conv_eol_unix_action;
+  QAction *_conv_eol_mac_action;
 
   QAction *_copy_action;
   QAction *_cut_action;
@@ -268,6 +282,11 @@ private:
   QAction *_context_help_action;
   QAction *_context_doc_action;
 
+  QAction *_show_linenum_action;
+  QAction *_show_whitespace_action;
+  QAction *_show_eol_action;
+  QAction *_show_indguide_action;
+  QAction *_show_longline_action;
   QAction *_zoom_in_action;
   QAction *_zoom_out_action;
   QAction *_zoom_normal_action;
@@ -317,6 +336,7 @@ private:
   QMenu *_edit_fmt_menu;
   QMenu *_edit_nav_menu;
   QMenu *_fileMenu;
+  QMenu *_view_editor_menu;
 
   QTabWidget *_tab_widget;
 

@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QHash>
 
 #ifdef HAVE_QSCINTILLA
+#include "octave-qscintilla.h"
 #include <QScrollArea>
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
@@ -184,6 +185,21 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_white_space", false).toBool ());
   ui->editor_ws_indent_checkbox->setChecked (
     settings->value ("editor/show_white_space_indent",false).toBool ());
+  ui->cb_show_eol->setChecked (
+    settings->value ("editor/show_eol_chars",false).toBool () );
+#ifdef HAVE_QSCINTILLA
+#if defined (Q_OS_WIN32)
+  int eol_mode = QsciScintilla::EolWindows;
+#elif defined (Q_OS_MAC)
+  int eol_mode = QsciScintilla::EolMac;
+#else
+  int eol_mode = QsciScintilla::EolUnix;
+#endif
+#else
+  int eol_mode = 2;
+#endif
+  ui->combo_eol_mode->setCurrentIndex (
+    settings->value ("editor/default_eol_mode",eol_mode).toInt () );
   ui->editor_auto_ind_checkbox->setChecked (
     settings->value ("editor/auto_indent", true).toBool ());
   ui->editor_tab_ind_checkbox->setChecked (
@@ -633,6 +649,10 @@ settings_dialog::write_changed_settings ()
                       ui->editor_ws_checkbox->isChecked ());
   settings->setValue ("editor/show_white_space_indent",
                       ui->editor_ws_indent_checkbox->isChecked ());
+  settings->setValue ("editor/show_eol_chars",
+                      ui->cb_show_eol->isChecked ());
+  settings->setValue ("editor/default_eol_mode",
+                      ui->combo_eol_mode->currentIndex ());
   settings->setValue ("editor/auto_indent",
                       ui->editor_auto_ind_checkbox->isChecked ());
   settings->setValue ("editor/tab_indents_line",

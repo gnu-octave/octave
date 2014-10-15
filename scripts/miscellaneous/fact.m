@@ -75,13 +75,13 @@ function f = fact ()
        "Richard Stallman needs neither mouse nor keyboard to operate his computer. He just stares it down until it does what he wants.";
        "Richard Stallman didn't write the GPL. He is the GPL.";
        "Richard Stallman's pinky finger is really a USB memory stick.";
-       "Richard Stallman called his operating system GNU because he created it before computers existed, when actual gnus were used for calcuations.";
+       "Richard Stallman called his operating system GNU because he created it before computers existed, when actual gnus were used for calculations.";
        "In Soviet Russia, Richard Stallman is still Richard Stallman!";
        "Richard Stallman's flute only plays free music.";
        "When Richard Stallman uses floats, there are no rounding errors.";
        "Richard Stallman wrote a program so powerful it knows the question to 42.";
        "Richard Stallman released his own DNA under GNU FDL.";
-       "Richard Stallman knows the entire wikipedia by heart, markup included.";
+       "Richard Stallman knows the entire Wikipedia by heart, markup included.";
        "Richard Stallman wrote the HAL9000 OS.";
        "Richard Stallman's laser pointer is a lightsaber.";
        "Richard Stallman never steps down; he shifts the universe up.";
@@ -115,7 +115,7 @@ function f = fact ()
        "When Richard Stallman executes ps -e, you show up.";
        "When Richard Stallman gets angry he doesn't swear; he recurses.";
        "On Richard Stallman's computer the bootloader is contained in his .emacs.";
-       "Richard Satallman can make any operating system free, free from drivers.";
+       "Richard Stallman can make any operating system free, free from drivers.";
        "Richard Stallman programmed Chuck Norris.";
        "Behind Richard Stallman's beard there is another fist, to code faster.";
        "Richard Stallman won a Sudoku that started with only one number in each line.";
@@ -129,7 +129,7 @@ function f = fact ()
        "Richard Stallman's uptime is over 53 years. And counting up.";
        "Richard Stallman's portable music player can play ogg and WMA, but is too afraid to invoke Richard Stallman's wrath by playing WMA. Ogg it is, then.";
        "Richard Stallman will never die, but may some day go to /dev/null.";
-       "Richard Stallman once got swine flu, but it got cleansed by hereditay GPL and thus got assimilated.";
+       "Richard Stallman once got swine flu, but it got cleansed by hereditary GPL and thus got assimilated.";
        "Richard Stallman don't cut his hair because there are no GNU/Scissors.";
        "Richard Stallman is the one who trims Chuck Norris beard. And he does it freely, of course.";
        "Richard Stallman does not take bath, for the hydroelectric company uses proprietary software.";
@@ -146,7 +146,7 @@ function f = fact ()
        "Richard Stallman is so zealous about privacy he has /dev/null as his home.";
        "When Richard Stallman runs /bin/false, it returns \"true\".";
        "Richard Stallman doesn't like money, because banks don't run on free software.";
-       "Richard Stallman user GNU tar to compress air.";
+       "Richard Stallman uses GNU tar to compress air.";
        "When Richard Stallman reports a bug, the bug prefers to squash itself instead of facing Richard Stallman's wrath.";
        "There are no Windows in Richard Stallman's house... only Doors...";
        "Richard Stallman doesn't like neither PCs-Intel nor Burger King... He prefers e-Macs...";
@@ -210,7 +210,7 @@ function f = fact ()
        "C is actually written in RMS.";
        "Richard Stallman can write software that does not have a buffer overflow when counting money lost by Jerome Kerviel.";
        "There were no double rainbows before Richard Stallman.";
-       "Chuck Norris had to shorten his beard in the presence of Richard Stallman because two beards that awsome, so close would segfault the universe (again).";
+       "Chuck Norris had to shorten his beard in the presence of Richard Stallman because two beards that awesome, so close would segfault the universe (again).";
        "RMS is Titanic.";
        "Richard Stallman is the answer to the Turing Test.";
        "Richard Stallman's beard makes ads for Gillette and Braun appear.";
@@ -218,7 +218,7 @@ function f = fact ()
        "\"RMS\" stands for \"RMS Makes Software\"";
        "Whenever someone writes a \"Hello, world\" program, Richard Stallman says \"Hello\" back.";
        "Richard Stallman wasn't born. He was compiled from source.";
-       "Richard Stallman has a URL tatooed on the left side of his chest where you can download his genetic code.";
+       "Richard Stallman has a URL tattooed on the left side of his chest where you can download his genetic code.";
        "The GNU command line idiom that Richard Stallman never needs: \"date | more\"";
        "Richard Stallman's toe cheese is aged to perfection.";
        "Richard Stallman doesn't always run an OS kernel, but when he does he prefers GNU/Hurd. He is... the most interesting hacker in the world. Stay free, my friends.";

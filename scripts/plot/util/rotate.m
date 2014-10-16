@@ -39,7 +39,7 @@ function rotate (h, direction, alpha, origin)
   ## algorithm between Octave and Matlab.
 
   if (nargin < 3 || nargin > 4)
-    print_unage ();
+    print_usage ();
   endif
 
   is_h = ishandle (h);

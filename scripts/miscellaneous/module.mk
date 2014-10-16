@@ -50,6 +50,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/movefile.m \
   miscellaneous/namelengthmax.m \
   miscellaneous/news.m \
+  miscellaneous/open.m \
   miscellaneous/orderfields.m \
   miscellaneous/pack.m \
   miscellaneous/paren.m \

@@ -106,6 +106,7 @@ BSD_init (void)
 
 #define WIN32_LEAN_AND_MEAN
 #include <tlhelp32.h>
+#include <windows.h>
 
 static void
 w32_set_octave_home (void)
@@ -178,6 +179,36 @@ w32_init (void)
   command_editor::prefer_env_winsize (true);
 }
 #endif
+
+DEFUN (__w32_shell_execute__, args, ,
+           "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __w32_shell_execute__ (@var{file})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  bool retval = false;
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+  if (args.length () == 1)
+    {
+      std::string file = args(0).string_value ();
+
+      if (! error_state)
+        {
+          HINSTANCE status = ShellExecute (0, 0, file.c_str (), 0, 0, SW_SHOWNORMAL);
+
+          // ShellExecute returns a value greater than 32 if successful.
+          retval = (reinterpret_cast<ptrdiff_t> (status) > 32);
+        }
+      else
+        error ("__w32_shell_execute__: expecting argument to be a file name");
+    }
+  else
+    print_usage ();
+#endif
+
+  return octave_value (retval);
+}
 
 #if defined (__MINGW32__)
 static void

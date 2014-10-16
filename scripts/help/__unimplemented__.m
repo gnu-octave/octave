@@ -745,7 +745,6 @@ function list = missing_functions ()
   "odeget",
   "odeset",
   "odextend",
-  "open",
   "openfig",
   "opengl",
   "openvar",

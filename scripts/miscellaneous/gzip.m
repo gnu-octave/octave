@@ -21,16 +21,20 @@
 ## @deftypefnx {Function File} {@var{filelist} =} gzip (@var{files}, @var{dir})
 ## Compress the list of files and directories specified in @var{files}.
 ##
-## @var{files} is a character array or cell array of strings.  Each file is
-## compressed separately and a new file with a @file{".gz"} extension is
-## created.  The original files are not modified, but, existing compressed
-## files will be silently overwritten.  If a directory is specified then
-## @code{gzip} recursively compresses all files in the directory.
+## @var{files} is a character array or cell array of strings.  Shell
+## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
+## expanded.  Each file is compressed separately and a new file with a
+## @file{".gz"} extension is created.  The original files are not modified,
+## but existing compressed files will be silently overwritten. If a directory
+## is specified then @code{gzip} recursively compresses all files in the
+## directory.
 ##
-## If @var{dir} is defined the compressed files are placed in this directory.
+## If @var{dir} is defined the compressed files are placed in this directory,
+## rather than the original directory where the uncompressed file resides.
+## If @var{dir} does not exist it is created.
 ##
 ## The optional output @var{filelist} is a list of the compressed files.
-## @seealso{gunzip, bzip2, zip, tar, unpack}
+## @seealso{gunzip, unpack, bzip2, zip, tar}
 ## @end deftypefn
 
 function filelist = gzip (varargin)
@@ -85,6 +89,5 @@ endfunction
 
 %!error gzip ()
 %!error gzip ("1", "2", "3")
-%!error <output directory does not exist> gzip ("1", tempname)
 %!error <FILES must be a character array or cellstr> gzip (1)
 

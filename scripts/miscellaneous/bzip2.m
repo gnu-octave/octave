@@ -18,46 +18,71 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{entries} =} bzip2 (@var{files})
-## @deftypefnx {Function File} {@var{entries} =} bzip2 (@var{files}, @var{outdir})
+## @deftypefn  {Function File} {@var{filelist} =} bzip2 (@var{files})
+## @deftypefnx {Function File} {@var{filelist} =} bzip2 (@var{files}, @var{dir})
 ## Compress the list of files specified in @var{files}.
-## Each file is compressed separately and a new file with a @file{".bz2"}
-## extension is created.  The original files are not modified.  Existing
-## compressed files are silently overwritten.  If @var{outdir} is defined the
-## compressed files are placed in this directory.
-## @seealso{bunzip2, gzip, zip, tar}
+##
+## @var{files} is a character array or cell array of strings.  Shell
+## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
+## expanded.  Each file is compressed separately and a new file with a
+## @file{".bz2"} extension is created.  The original files are not modified,
+## but existing compressed files will be silently overwritten. 
+##
+## If @var{dir} is defined the compressed files are placed in this directory,
+## rather than the original directory where the uncompressed file resides.
+## If @var{dir} does not exist it is created.
+##
+## The optional output @var{filelist} is a list of the compressed files.
+## @seealso{bunzip2, unpack, gzip, zip, tar}
 ## @end deftypefn
 
-function entries = bzip2 (varargin)
+function filelist = bzip2 (varargin)
 
-  if (nargin == 1 || nargin == 2)
-    if (nargout == 0)
-      __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
-    else
-      entries = __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
-    endif
-  else
+  if (nargin < 1 || nargin > 2 || nargout > 1)
     print_usage ();
+  endif
+
+  if (nargout == 0)
+    __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
+  else
+    filelist = __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
   endif
 
 endfunction
 
 
 %!xtest
-%! ## test for correct cleanup of temporary files
+%! ## test bzip2 together with bunzip2
 %! unwind_protect
-%!   filename = tmpnam;
-%!   dummy    = 1;
+%!   filename = tempname;
+%!   dummy    = pi;
 %!   save (filename, "dummy");
-%!   n_tmpfiles_before = length (find (strncmp ("oct-", cellstr (ls (tempdir)), 4)));
-%!   entry = bzip2 (filename);
-%!   n_tmpfiles_after = length (find (strncmp ("oct-", cellstr (ls (tempdir)), 4)));
-%!   if (n_tmpfiles_before != n_tmpfiles_after)
-%!     error ("bzip2 has not cleaned up temporary files correctly!");
+%!   dirname  = tempname;
+%!   mkdir (dirname);
+%!   filelist = bzip2 (filename, dirname);
+%!   filelist = filelist{1};
+%!   [~, basename, extension] = fileparts (filename);
+%!   if (! strcmp (filelist, [dirname, filesep, basename, extension, ".bz2"]))
+%!     error ("bzipped file does not match expected name!");
+%!   endif
+%!   if (! exist (filelist, "file"))
+%!     error ("bzipped file cannot be found!");
+%!   endif
+%!   bunzip2 (filelist);
+%!   fid = fopen (filename, "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen ([dirname filesep basename extension], "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
+%!     error ("bunzipped file not equal to original file!");
 %!   endif
 %! unwind_protect_cleanup
 %!   delete (filename);
-%!   [path, basename, extension] = fileparts (filename);
-%!   delete ([basename, extension, ".bz2"]);
+%!   delete ([dirname, filesep, basename, extension]);
+%!   rmdir (dirname);
 %! end_unwind_protect
 

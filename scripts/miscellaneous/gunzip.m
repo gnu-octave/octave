@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{files} =} gunzip (@var{gzfile})
-## @deftypefnx {Function File} {@var{files} =} gunzip (@var{gzfile}, @var{dir})
+## @deftypefn  {Function File} {@var{filelist} =} gunzip (@var{gzfile})
+## @deftypefnx {Function File} {@var{filelist} =} gunzip (@var{gzfile}, @var{dir})
 ## Unpack the gzip archive @var{gzfile}.
 ##
 ## If @var{gzfile} is a directory, all gzfiles in the directory will be
@@ -27,13 +27,13 @@
 ## If @var{dir} is specified the files are unpacked in this directory rather
 ## than the one where @var{gzfile} is located.
 ##
-## The optional output @var{files} is a list of the uncompressed files.
-## @seealso{gzip, bunzip2, unzip, untar, unpack}
+## The optional output @var{filelist} is a list of the uncompressed files.
+## @seealso{gzip, unpack, bunzip2, unzip, untar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function files = gunzip (gzfile, dir)
+function filelist = gunzip (gzfile, dir = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -44,7 +44,7 @@ function files = gunzip (gzfile, dir)
   endif
 
   if (nargout > 0)
-    files = unpack (gzfile, dir, "gunzip");
+    filelist = unpack (gzfile, dir, "gunzip");
   else
     unpack (gzfile, dir, "gunzip");
   endif
@@ -54,5 +54,5 @@ endfunction
 
 ## Tests for this m-file are located in gzip.m
 ## Remove from test statistics
-%!assert (1);
+%!assert (1)
 

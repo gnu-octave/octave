@@ -17,27 +17,39 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} bunzip2 (@var{bzfile})
-## @deftypefnx {Function File} {} bunzip2 (@var{bzfile}, @var{dir})
-## Unpack the bzip2 archive @var{bzfile} to the directory @var{dir}.  If
-## @var{dir} is not specified, it defaults to the current directory.
+## @deftypefn  {Function File} {@var{filelist} =} bunzip2 (@var{bzfile})
+## @deftypefnx {Function File} {@var{filelist} =} bunzip2 (@var{bzfile}, @var{dir})
+## Unpack the bzip2 archive @var{bzfile}.
+##
+## If @var{dir} is specified the files are unpacked in this directory rather
+## than the one where @var{bzfile} is located.
+##
+## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{bzip2, unpack, gunzip, unzip, untar}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = bunzip2 (bzfile, dir = ".")
+function filelist = bunzip2 (bzfile, dir = [])
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (isempty (dir))
+    dir = fileparts (bzfile);
+  endif
+
   if (nargout > 0)
-    varargout = cell (1, nargout);
-    [varargout{:}] = unpack (bzfile, dir, mfilename ());
+    filelist = unpack (bzfile, dir, "bunzip2");
   else
-    unpack (bzfile, dir, mfilename ());
+    unpack (bzfile, dir, "bunzip2");
   endif
 
 endfunction
+
+
+## Tests for this m-file are located in bzip2.m
+## Remove from test statistics
+%!assert (1)
 

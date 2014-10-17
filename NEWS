@@ -53,6 +53,12 @@ Summary of important user-visible changes for version 4.2:
     There is still one difference:  Matlab switches to '%e' and Octave
     is currently switching to '%g'.
 
+ ** The archive family of functions (bzip2, gzip, zip, tar) and their
+    unpacking routines (bunzip2, gunzip, unzip, untar, unpack) have
+    been recoded.  Excepting unpack, the default is now to place files
+    in the same directory as the archive (on unpack) or as the original
+    files (on archiving).
+
  ** Z-order stacking issues with patches, grid lines, and line object
     plot markers for on screen display and printing have all been resolved.
     For 2-D plots the axis grid lines can be placed on top of the plot

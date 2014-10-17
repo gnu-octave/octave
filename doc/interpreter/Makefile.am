@@ -170,8 +170,11 @@ MUNGED_TEXI_SRC = \
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
+include graphics_properties.mk
+
 BUILT_TEXINFOS = \
   contributors.texi \
+  $(GRAPH_PROP_TEXI_SRC) \
   $(MUNGED_TEXI_SRC)
 
 info_TEXINFOS = octave.texi

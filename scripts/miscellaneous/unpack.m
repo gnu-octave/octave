@@ -291,31 +291,37 @@ function files = __parse_bzip2__ (output)
 endfunction
 
 
-## FIXME: Maybe there should be a combined test script to test all of the
-##        various pack/unpack routines in the tests/ directory.
 %!test
-%! ## Create temporary file for packing and unpacking
-%! fname = tempname ();
-%! fid = fopen (fname, "wt");
-%! if (fid < 0)
-%!   error ("unpack: Unable to open temporary file for testing");
-%! endif
+%! ## Create temporary directory and file for packing and unpacking
+%! dirname = tempname ();
+%! assert (mkdir (dirname));
+%! filename = tempname ();
+%! fid = fopen (filename, "wt");
+%! assert (fid >= 0);
 %! fprintf (fid, "Hello World\n");
 %! fprintf (fid, "123 456 789\n");
 %! fclose (fid);
-%!
 %! unwind_protect
-%!   copyfile (fname, [fname ".orig"]);
-%!   gzip (fname, P_tmpdir);
-%!   filelist = unpack ([fname ".gz"], P_tmpdir);
-%!   assert (filelist{1}, fname); 
-%!   r = system (sprintf ("diff %s %s.orig", fname, fname));
-%!   if (r)
+%!   copyfile (filename, [filename ".orig"]);
+%!   gzip (filename, dirname);
+%!   [~, f] = fileparts (filename);
+%!   filelist = unpack (fullfile (dirname, [f ".gz"]), P_tmpdir);
+%!   assert (filelist{1}, filename); 
+%!   fid = fopen ([filename ".orig"], "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen (filename, "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
 %!     error ("unpack: Unpacked file does not equal original");
 %!   endif
 %! unwind_protect_cleanup
-%!   exist (fname) && unlink (fname);
-%!   unlink ([fname ".orig"]);
+%!   unlink (filename);
+%!   unlink ([filename ".orig"]);
+%!   rmdir (dirname);
 %! end_unwind_protect
 
 ## Test input validation

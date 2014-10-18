@@ -64,7 +64,8 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     f1 = cellstr (f1);
   elseif (! iscellstr (f1))
     error ("copyfile: F1 must be a string or a cell array of strings");
-  elseif (! ischar (f2))
+  endif
+  if (! ischar (f2))
     error ("copyfile: F2 must be a string");
   endif
 

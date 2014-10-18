@@ -19,11 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2})
 ## @deftypefnx {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, 'f')
-## Copy the file @var{f1} to the destination @var{f2}.
+## Copy the source files or directories @var{f1} to the destination @var{f2}.
 ##
 ## The name @var{f1} may contain globbing patterns.  If @var{f1} expands to
 ## multiple file names, @var{f2} must be a directory.
-## when the force flag @qcode{'f'} is given any existing files will be
+##
+## When the force flag @qcode{'f'} is given any existing files will be
 ## overwritten without prompting.
 ##
 ## If successful, @var{status} is 1, and @var{msg}, @var{msgid} are empty
@@ -45,8 +46,8 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   msg = "";
   msgid = "";
 
-  ## FIXME: maybe use the same method as in ls to allow users control
-  ## over the command that is executed.
+  ## FIXME: Maybe use the same method as in ls to allow users control
+  ##        over the command that is executed.
 
   if (ispc () && ! isunix ()
       && isempty (file_in_path (getenv ("PATH"), "cp.exe")))
@@ -59,26 +60,21 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   endif
 
   ## Input type check.
-  if (! (ischar (f1) || iscellstr (f1)))
-    error ("copyfile: F1 must be a character string or a cell array of character strings");
-  endif
-
-  if (! ischar (f2))
-    error ("copyfile: F2 must be a character string");
+  if (ischar (f1))
+    f1 = cellstr (f1);
+  elseif (! iscellstr (f1))
+    error ("copyfile: F1 must be a string or a cell array of strings");
+  elseif (! ischar (f2))
+    error ("copyfile: F2 must be a string");
   endif
 
   if (nargin == 3 && strcmp (force, "f"))
     cmd = [cmd " " cmd_force_flag];
   endif
 
-  ## If f1 isn't a cellstr convert it to one.
-  if (ischar (f1))
-    f1 = cellstr (f1);
-  endif
-
-  ## If f1 has more than 1 element f2 must be a directory
+  ## If f1 has more than 1 element then f2 must be a directory
   isdir = (exist (f2, "dir") != 0);
-  if (length (f1) > 1 && ! isdir)
+  if (numel (f1) > 1 && ! isdir)
     error ("copyfile: when copying multiple files, F2 must be a directory");
   endif
 
@@ -131,4 +127,37 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   endif
 
 endfunction
+
+
+%!test
+%! unwind_protect
+%!   f1 = tempname;
+%!   tmp_var = pi;
+%!   save (f1, "tmp_var");
+%!   f2 = tempname;
+%!   assert (copyfile (f1, f2));
+%!   assert (exist (f2, "file")); 
+%!   fid = fopen (f1, "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen (f2, "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
+%!     error ("copied file not equal to original file!");
+%!   endif
+%! unwind_protect_cleanup
+%!   delete (f1);
+%!   delete (f2);
+%! end_unwind_protect
+
+## Test input validation
+%!error copyfile ()
+%!error copyfile (1)
+%!error copyfile (1,2,3,4)
+%!error <F1 must be a string> copyfile (1, "foobar")
+%!error <F2 must be a string> copyfile ("foobar", 1)
+%!error <F2 must be a directory> copyfile ({"a", "b"}, "%_NOT_A_DIR_%") 
 

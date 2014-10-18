@@ -60,14 +60,15 @@ function run (script)
   
   if (! isempty (d))
     if (exist (d, "dir"))
-      wd = pwd ();
+      startdir = pwd ();
+      d = canonicalize_file_name (d);
       unwind_protect
         cd (d);
         evalin ("caller", sprintf ('source ("%s%s");', f, ext),
                 "rethrow (lasterror ())");
       unwind_protect_cleanup
         if (strcmp (d, pwd ()))
-          cd (wd);
+          cd (startdir);
         endif
       end_unwind_protect
     else

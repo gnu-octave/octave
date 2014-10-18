@@ -48,5 +48,5 @@ endfunction
 
 
 ## Mark file as being tested.  No real test needed for a documentation .m file
-%! assert (1)
+%!assert (1)
 

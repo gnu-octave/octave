@@ -57,6 +57,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-ui64-nda.h"
 #include "mx-nda-ui64.h"
 
+#include "mx-ui64nda-fs.h"
+#include "mx-fs-ui64nda.h"
+
+#include "mx-ui64nda-fnda.h"
+#include "mx-fnda-ui64nda.h"
+
+#include "mx-ui64-fnda.h"
+#include "mx-fnda-ui64.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"

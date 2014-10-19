@@ -38,7 +38,6 @@ class octave_value_list;
 #include "data-conv.h"
 #include "lo-utils.h"
 #include "mach-info.h"
-#include "oct-locbuf.h"
 #include "oct-refcount.h"
 
 class

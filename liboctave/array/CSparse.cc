@@ -36,6 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-mappers.h"
 #include "f77-fcn.h"
 #include "dRowVector.h"
+#include "mx-m-cs.h"
+#include "mx-cs-m.h"
+#include "mx-cm-s.h"
+#include "mx-fcm-fs.h"
+#include "mx-s-cm.h"
+#include "mx-fs-fcm.h"
 #include "oct-locbuf.h"
 
 #include "dDiagMatrix.h"
@@ -51,10 +57,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparseCmplxCHOL.h"
 #include "SparseCmplxQR.h"
 
+#include "Sparse-op-defs.h"
+
 #include "Sparse-diag-op-defs.h"
 
 #include "Sparse-perm-op-defs.h"
-#include "mx-inlines.cc"
 
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,

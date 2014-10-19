@@ -24,6 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "mx-cm-s.h"
+#include "mx-s-cm.h"
+
+#include "mx-dm-cs.h"
+#include "mx-cs-dm.h"
+
+#include "mx-m-cs.h"
+#include "mx-cs-m.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"

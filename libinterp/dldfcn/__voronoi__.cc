@@ -38,6 +38,7 @@ qhull command
 
 #include <list>
 
+#include "oct-locbuf.h"
 #include "lo-ieee.h"
 
 #include "Cell.h"

@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 #include <string>
 
+#include "oct-locbuf.h"
+
 #include "Cell.h"
 #include "ov.h"
 #include "defun.h"

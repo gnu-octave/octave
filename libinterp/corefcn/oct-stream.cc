@@ -34,12 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <string>
 
-#include <Array.h>
-
+#include "Array.h"
 #include "byte-swap.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"

@@ -38,8 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "vasnprintf.h"
 
-#include "quit.h"
-
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -47,7 +45,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "pathsearch.h"
+#include "quit.h"
 #include "str-vec.h"
 
 #include "Cell.h"

@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray-defs.h"
 #include "mx-base.h"
 #include "mx-op-defs.h"
+#include "mx-fcnda-fs.h"
 #include "oct-fftw.h"
 #include "oct-locbuf.h"
 

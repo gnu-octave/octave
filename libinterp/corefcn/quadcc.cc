@@ -25,14 +25,14 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "lo-ieee.h"
-#include "parse.h"
-#include "variables.h"
+#include "oct-locbuf.h"
 
 #include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
+#include "parse.h"
 #include "utils.h"
-
+#include "variables.h"
 
 /* Extended debugging */
 #define DEBUG_QUADCC 0

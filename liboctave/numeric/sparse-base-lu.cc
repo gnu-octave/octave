@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "sparse-base-lu.h"
 
+#include "PermMatrix.h"
+
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const

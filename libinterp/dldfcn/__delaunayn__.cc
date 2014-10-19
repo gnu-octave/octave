@@ -45,6 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "oct-locbuf.h"
+
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"

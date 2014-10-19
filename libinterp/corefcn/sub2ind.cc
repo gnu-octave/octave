@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "Array-util.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 
 #include "defun.h"

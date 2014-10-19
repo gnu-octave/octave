@@ -30,7 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MatrixType.h"
 #include "dMatrix.h"
+#include "fMatrix.h"
 #include "CMatrix.h"
+#include "fCMatrix.h"
 #include "dSparse.h"
 #include "CSparse.h"
 #include "oct-spparms.h"

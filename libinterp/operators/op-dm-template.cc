@@ -24,6 +24,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+// FIXME: it might be nice to only include the declarations of the
+// operators that are actually needed instead of including all of them.
+#include "mx-ops.h"
+
 #include "ops.h"
 #include "xdiv.h"
 #include LINCLUDE

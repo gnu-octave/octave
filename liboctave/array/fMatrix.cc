@@ -33,6 +33,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include "Array-util.h"
+#include "boolMatrix.h"
+#include "chMatrix.h"
+#include "fMatrix.h"
+#include "fDiagMatrix.h"
+#include "fCMatrix.h"
+#include "fColVector.h"
+#include "fRowVector.h"
+#include "fCColVector.h"
+#include "PermMatrix.h"
 #include "DET.h"
 #include "byte-swap.h"
 #include "f77-fcn.h"
@@ -45,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "mx-base.h"
 #include "mx-fdm-fm.h"
 #include "mx-fm-fdm.h"
 #include "mx-inlines.cc"

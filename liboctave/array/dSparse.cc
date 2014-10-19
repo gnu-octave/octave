@@ -52,6 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparsedbleCHOL.h"
 #include "SparseQR.h"
 
+#include "Sparse-op-defs.h"
+
 #include "Sparse-diag-op-defs.h"
 
 #include "Sparse-perm-op-defs.h"

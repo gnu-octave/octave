@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "Array-util.h"
+
 #include "Cell.h"
 #include "oct-obj.h"
 #include "oct-map.h"

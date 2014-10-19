@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "str-vec.h"
 
 #include <defaults.h>

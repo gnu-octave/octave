@@ -57,6 +57,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-i32-nda.h"
 #include "mx-nda-i32.h"
 
+#include "mx-i32nda-fs.h"
+#include "mx-fs-i32nda.h"
+
+#include "mx-i32nda-fnda.h"
+#include "mx-fnda-i32nda.h"
+
+#include "mx-i32-fnda.h"
+#include "mx-fnda-i32.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"

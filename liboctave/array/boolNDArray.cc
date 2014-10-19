@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "Array-util.h"
+#include "boolNDArray.h"
 #include "CNDArray.h"
 #include "mx-base.h"
 #include "lo-ieee.h"

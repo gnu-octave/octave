@@ -170,6 +170,10 @@ BEGIN {
                 printf ("#include \"%s\"\n", rhs_header) >> h_file;
             }
 
+          ## FIXME: it might be nice to only include the declarations
+          ## of the operators that are actually needed instead of
+          ## including all of them.
+          printf ("#include \"mx-ops.h\"\n") >> h_file;
           printf ("#include \"Sparse-op-defs.h\"\n") >> h_file;
 
           if (bin_ops)

@@ -24,10 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "mx-cs-nda.h"
-#include "mx-nda-cs.h"
-#include "mx-cs-nda.h"
-#include "mx-nda-cs.h"
+#include "mx-fcs-fnda.h"
+#include "mx-fnda-fcs.h"
 
 #include "gripes.h"
 #include "oct-obj.h"

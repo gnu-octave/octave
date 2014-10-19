@@ -25,7 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "Array-util.h"
 #include "error.h"
+#include "oct-locbuf.h"
 #include "str-vec.h"
 
 #include "oct-map.h"

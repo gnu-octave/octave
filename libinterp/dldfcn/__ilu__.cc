@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "oct-locbuf.h"
+
 #include "defun-dld.h"
 #include "parse.h"
 

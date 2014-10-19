@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "f77-fcn.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 #include "SparsedbleLU.h"
 #include "SparseCmplxLU.h"

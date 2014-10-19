@@ -38,6 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mem.h"
 #include "oct-locbuf.h"
 
+#include "Sparse-op-defs.h"
+
 // SparseBoolMatrix class.
 
 bool

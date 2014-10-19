@@ -36,8 +36,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 
 #include "Array-util.h"
+#include "boolMatrix.h"
+#include "chMatrix.h"
+#include "dMatrix.h"
 #include "CMatrix.h"
-#include "CmplxAEPBAL.h"
+#include "CRowVector.h"
+#include "dRowVector.h"
+#include "CDiagMatrix.h"
+#include "dDiagMatrix.h"
 #include "CmplxCHOL.h"
 #include "CmplxSCHUR.h"
 #include "CmplxSVD.h"
@@ -48,7 +54,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "mx-base.h"
 #include "mx-cm-dm.h"
 #include "mx-cm-s.h"
 #include "mx-dm-cm.h"

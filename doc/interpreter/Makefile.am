@@ -274,6 +274,8 @@ EXTRA_DIST = \
   contributors.in \
   doc-cache \
   find-docstring-files.sh \
+  genpropdoc.m \
+  graphics_properties.mk \
   images \
   images.awk \
   images.mk \

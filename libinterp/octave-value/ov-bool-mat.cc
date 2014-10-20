@@ -79,7 +79,7 @@ octave_bool_matrix::try_narrowing_conversion (void)
 
   if (matrix.ndims () == 2)
     {
-      boolMatrix bm = matrix.matrix_value ();
+      boolMatrix bm (matrix);
 
       octave_idx_type nr = bm.rows ();
       octave_idx_type nc = bm.cols ();

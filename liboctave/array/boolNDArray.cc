@@ -107,14 +107,6 @@ boolNDArray::insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx)
   return *this;
 }
 
-
-
-boolMatrix
-boolNDArray::matrix_value (void) const
-{
-  return *this;
-}
-
 void
 boolNDArray::increment_index (Array<octave_idx_type>& ra_idx,
                               const dim_vector& dimensions,

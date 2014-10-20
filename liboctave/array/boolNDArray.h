@@ -29,9 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-op-decl.h"
 #include "bsxfun-decl.h"
 
-#include "boolMatrix.h"
-
-
 class
 OCTAVE_API
 boolNDArray : public Array<bool>
@@ -48,8 +45,6 @@ public:
     : Array<bool> (dv, val) { }
 
   boolNDArray (const boolNDArray& a) : Array<bool> (a) { }
-
-  boolNDArray (const boolMatrix& a) : Array<bool> (a) { }
 
   boolNDArray (const Array<bool>& a) : Array<bool> (a) { }
 
@@ -82,8 +77,6 @@ public:
                        octave_idx_type c);
   boolNDArray& insert (const boolNDArray& a,
                        const Array<octave_idx_type>& ra_idx);
-
-  boolMatrix matrix_value (void) const;
 
   boolNDArray squeeze (void) const { return Array<bool>::squeeze (); }
 

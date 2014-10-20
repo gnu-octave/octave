@@ -135,10 +135,10 @@ public:
   { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-  { return Matrix (matrix.matrix_value ()); }
+  { return Matrix (boolMatrix (matrix)); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (matrix.matrix_value ()); }
+  { return FloatMatrix (boolMatrix (matrix)); }
 
   NDArray array_value (bool = false) const
   { return NDArray (matrix); }
@@ -151,10 +151,10 @@ public:
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (matrix.matrix_value ()); }
+  { return ComplexMatrix (boolMatrix (matrix)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (matrix.matrix_value ()); }
+  { return FloatComplexMatrix (boolMatrix (matrix)); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (matrix); }
@@ -176,19 +176,19 @@ public:
   }
 
   boolMatrix bool_matrix_value (bool = false) const
-  { return matrix.matrix_value (); }
+  { return boolMatrix (matrix); }
 
   boolNDArray bool_array_value (bool = false) const
   { return matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const
-  { return SparseMatrix (Matrix (matrix.matrix_value ())); }
+  { return SparseMatrix (Matrix (boolMatrix (matrix))); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-  { return SparseComplexMatrix (ComplexMatrix (matrix.matrix_value ())); }
+  { return SparseComplexMatrix (ComplexMatrix (boolMatrix (matrix))); }
 
   SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
-  { return SparseBoolMatrix (matrix.matrix_value ()); }
+  { return SparseBoolMatrix (boolMatrix (matrix)); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 

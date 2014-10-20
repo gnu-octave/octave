@@ -2775,7 +2775,7 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, boolMatrix (nda),
                              pr_as_read_syntax, extra_indent);
       break;
 

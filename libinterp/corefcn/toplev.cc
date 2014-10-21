@@ -1251,7 +1251,7 @@ Octave.\n\
 If @var{option} is a string, return the configuration information for the\n\
 specified option.\n\
 \n\
-@seealso{dump_prefs, computer}\n\
+@seealso{computer}\n\
 @end deftypefn")
 {
   octave_value retval;

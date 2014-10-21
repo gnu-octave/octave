@@ -377,11 +377,6 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @option{--verbose} option but without the
 @option{--silent} option.
 
-The @code{dump_prefs} function is useful for determining what customizations
-to Octave are possible and which are in effect.
-
-@DOCSTRING(dump_prefs)
-
 @node Quitting Octave
 @section Quitting Octave
 @cindex exiting octave

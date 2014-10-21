@@ -386,6 +386,15 @@ to Octave are possible and which are in effect.
 @section Quitting Octave
 @cindex exiting octave
 @cindex quitting octave
+@cindex finish.m
+@cindex site exiting file
+
+Shutdown is initiated with the @code{exit} or @code{quit} commands (they are
+equivalent).  Similar to startup, Octave has a shutdown process that can be
+customized by user script files.  During shutdown Octave will search for the
+script file @file{finish.m} in the function load path.  Commands to save all
+workspace variables or cleanup temporary files may be placed there.  Additional
+functions to execute on shutdown may be registered with @code{atexit}.
 
 @DOCSTRING(quit)
 

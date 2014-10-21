@@ -784,11 +784,20 @@ clean_up_and_exit (int retval, bool safe_to_return)
 
 DEFUN (quit, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} exit (@var{status})\n\
+@deftypefn  {Built-in Function} {} exit\n\
+@deftypefnx {Built-in Function} {} exit (@var{status})\n\
+@deftypefnx {Built-in Function} {} quit\n\
 @deftypefnx {Built-in Function} {} quit (@var{status})\n\
-Exit the current Octave session.  If the optional integer value\n\
-@var{status} is supplied, pass that value to the operating system as the\n\
-Octave's exit status.  The default value is zero.\n\
+Exit the current Octave session.\n\
+\n\
+If the optional integer value @var{status} is supplied, pass that value to\n\
+the operating system as Octave's exit status.  The default value is zero.\n\
+\n\
+When exiting, Octave will attempt to run the m-file @file{finish.m} if it\n\
+exists.  User commands to save the workspace or clean up temporary files\n\
+may be placed in that file.  Alternatively, another m-file may be scheduled\n\
+to run using @code{atexit}.\n\
+@seealso{atexit}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1153,7 +1162,9 @@ DEFUN (atexit, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} atexit (@var{fcn})\n\
 @deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
-Register a function to be called when Octave exits.  For example,\n\
+Register a function to be called when Octave exits.\n\
+\n\
+For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -1185,6 +1196,7 @@ Note that @code{atexit} only removes the first occurrence of a function\n\
 from the list, so if a function was placed in the list multiple\n\
 times with @code{atexit}, it must also be removed from the list\n\
 multiple times.\n\
+@seealso{quit}\n\
 @end deftypefn")
 {
   octave_value_list retval;

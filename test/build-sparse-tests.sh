@@ -508,7 +508,7 @@ print_real_mapper_test ispunct 0
 print_real_mapper_test isspace 0
 print_real_mapper_test isupper 0
 print_real_mapper_test isxdigit 0
-#print_real_mapper_test lgamma 1
+#print_real_mapper_test gammaln 1
 
 # Specific tests for certain mapper functions
     cat >>$TESTS <<EOF

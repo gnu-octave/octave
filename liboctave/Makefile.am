@@ -28,7 +28,12 @@ AM_CPPFLAGS = \
   -Ioperators -I$(srcdir)/operators \
   -I$(srcdir)/system \
   -I$(srcdir)/util \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu \
+  $(CURL_CPPFLAGS) \
+  $(SPARSE_XCPPFLAGS) \
+  $(ARPACK_CPPFLAGS) \
+  $(QRUPDATE_CPPFLAGS) \
+  $(FFTW_XCPPFLAGS)
 
 AM_CFLAGS += $(WARN_CFLAGS)
 

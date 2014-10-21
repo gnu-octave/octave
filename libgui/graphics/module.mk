@@ -110,8 +110,9 @@ nodist_graphics_libgui_graphics_la_SOURCES = $(octave_gui_graphics_MOC) $(octave
 
 graphics_libgui_graphics_la_CPPFLAGS = \
   $(AM_CPPFLAGS) \
-  $(FT2_CFLAGS) \
+  $(FT2_CPPFLAGS) \
   $(FONTCONFIG_CPPFLAGS) \
+  $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \
   -Igraphics -I$(srcdir)/graphics \

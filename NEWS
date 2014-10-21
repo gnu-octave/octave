@@ -125,19 +125,20 @@ Summary of important user-visible changes for version 4.2:
     be removed from Octave 4.6 (or whatever version is the second major
     release after 4.2):
 
-      Function           | Replacement
-      -------------------|------------------
-      bicubic            | interp2
-      delaunay3          | delaunay
-      dump_prefs         | individual preference get/set routines
-      find_dir_in_path   | dir_in_loadpath
-      finite             | isfinite
-      fmod               | rem
-      fnmatch            | glob or regexp
-      luinc              | ilu or ichol
-      nfields            | numfields
-      syl                | sylvester
-      usage              | print_usage
+      Function             | Replacement
+      ---------------------|------------------
+      bicubic              | interp2
+      delaunay3            | delaunay
+      dump_prefs           | individual preference get/set routines
+      find_dir_in_path     | dir_in_loadpath
+      finite               | isfinite
+      fmod                 | rem
+      fnmatch              | glob or regexp
+      luinc                | ilu or ichol
+      nfields              | numfields
+      octave_tmp_file_name | tempname
+      syl                  | sylvester
+      usage                | print_usage
 
     The following functions were deprecated in Octave 3.8 and have been
     removed from Octave 4.2.

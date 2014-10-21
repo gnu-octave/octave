@@ -1932,9 +1932,6 @@ The function @code{fclose} may also be used for the same purpose.\n\
 
 DEFUNX ("tmpnam", Ftmpnam, args, ,
         "-*- texinfo -*-\n\
-@c List other forms of function in documentation index\n\
-@findex octave_tmp_file_name\n\
-\n\
 @deftypefn  {Built-in Function} {@var{fname} =} tmpnam ()\n\
 @deftypefnx {Built-in Function} {@var{fname} =} tmpnam (@var{dir})\n\
 @deftypefnx {Built-in Function} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})\n\
@@ -1979,8 +1976,6 @@ equivalent with the latter provided for @sc{matlab} compatibility.\n\
 
   return retval;
 }
-
-DEFALIAS (octave_tmp_file_name, tmpnam);
 
 DEFUN (tmpfile, args, ,
        "-*- texinfo -*-\n\

@@ -10,6 +10,7 @@ deprecated_FCN_FILES = \
   deprecated/fnmatch.m \
   deprecated/isstr.m \
   deprecated/luinc.m \
+  deprecated/octave_tmp_file_name.m \
   deprecated/nfields.m \
   deprecated/strmatch.m \
   deprecated/syl.m \

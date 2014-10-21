@@ -1814,7 +1814,7 @@ to be an empty cell array.\n\
 \n\
 Finally, if the value is a non-scalar cell array, then @code{struct}\n\
 produces a struct @strong{array}.\n\
-@seealso{cell2struct, fieldnames, orderfields, getfield, setfield, rmfield, structfun}\n\
+@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2012,8 +2012,10 @@ DEFUN (isfield, args, ,
 @deftypefn  {Built-in Function} {} isfield (@var{x}, \"@var{name}\")\n\
 @deftypefnx {Built-in Function} {} isfield (@var{x}, @var{name})\n\
 Return true if the @var{x} is a structure and it includes an element named\n\
-@var{name}.  If @var{name} is a cell array of strings then a logical array of\n\
-equal dimension is returned.\n\
+@var{name}.\n\
+\n\
+If @var{name} is a cell array of strings then a logical array of equal\n\
+dimension is returned.\n\
 @seealso{fieldnames}\n\
 @end deftypefn")
 {
@@ -2237,12 +2239,14 @@ extern octave_value_list Fcellstr (const octave_value_list& args, int);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} rmfield (@var{s}, \"@var{f}\")\n\
-@deftypefnx {Built-in Function} {@var{s} =} rmfield (@var{s}, @var{f})\n\
+@deftypefn  {Built-in Function} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
+@deftypefnx {Built-in Function} {@var{sout} =} rmfield (@var{s}, @var{f})\n\
 Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}\n\
-removed.  If @var{f} is a cell array of strings or a character array, remove\n\
-each of the named fields.\n\
-@seealso{orderfields, fieldnames}\n\
+removed.\n\
+\n\
+If @var{f} is a cell array of strings or a character array, remove each of\n\
+the named fields.\n\
+@seealso{orderfields, fieldnames, isfield}\n\
 @end deftypefn")
 {
   octave_value retval;

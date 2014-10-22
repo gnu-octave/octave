@@ -295,7 +295,7 @@
 
 %% Note use fprintf so output not sent to stdout
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! fid1 = fopen (nm,"w");
 %! x = fprintf (fid1, "%s: %d\n", "test", 1);
 %! fclose (fid1);
@@ -340,7 +340,7 @@
 %!     elseif (j == 4)
 %!       mode_list = {"W+"; "R+"; "A+"};
 %!     endif
-%!     nm = tmpnam ();
+%!     nm = tempname ();
 %!     for k = 1:3
 %!       mode = mode_list{k};
 %!       [id, err] = fopen (nm, mode, arch);
@@ -397,12 +397,12 @@
 %!error fclose (0)
 %!error <Invalid call to fclose> fclose (1, 2)
 
-%!assert (ischar (tmpnam ()))
+%!assert (ischar (tempname ()))
 
-%!warning tmpnam (1);
-%!warning tmpnam ("foo", 1);
+%!warning tempname (1);
+%!warning tempname ("foo", 1);
 
-%!error <Invalid call to tmpnam> tmpnam (1, 2, 3)
+%!error <Invalid call to tempname> tempname (1, 2, 3)
 
 %!test
 %! type_list = ["char"; "char*1"; "integer*1"; "int8";
@@ -413,7 +413,7 @@
 %! "real*8"; "int16"; "integer*2"; "int32"; "integer*4"];
 %!
 %! n = rows (type_list);
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   for i = 1:n
@@ -440,7 +440,7 @@
 
 %!test
 %! x = char (128:255)';
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! fwrite (id, x);
 %! fclose (id);
@@ -451,7 +451,7 @@
 %! assert (x, y);
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   fprintf (id, "%d\n", 1:100);

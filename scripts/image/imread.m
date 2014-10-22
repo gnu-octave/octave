@@ -127,7 +127,7 @@ endfunction
 %!   16,  28, 160,  16,   0, 197, 214,  13,  34,  74, ...
 %!  117, 213,  17,   0,   0,   0,   0,  73,  69,  78, ...
 %!   68, 174,  66,  96, 130];
-%! filename = [tmpnam() ".png"];
+%! filename = [tempname() ".png"];
 %! unwind_protect
 %!   fid = fopen (filename, "wb");
 %!   fwrite (fid, vpng);
@@ -141,7 +141,7 @@ endfunction
 %! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
 
 %!function [r, cmap, a] = write_and_read (w, varargin)
-%!  filename = [tmpnam() ".tif"];
+%!  filename = [tempname() ".tif"];
 %!  unwind_protect
 %!    imwrite (w, filename);
 %!    [r, cmap, a] = imread (filename, varargin{:});
@@ -183,7 +183,7 @@ endfunction
 ## make one of the formats read, return what it received as input to
 ## confirm that the input parsing is working correcly
 %!testif HAVE_MAGICK
-%! fname = [tmpnam() ".jpg"];
+%! fname = [tempname() ".jpg"];
 %! def_fmt = imformats ();
 %! fid = fopen (fname, "w");
 %! unwind_protect

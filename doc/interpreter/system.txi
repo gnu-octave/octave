@@ -222,12 +222,6 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(is_rooted_relative_filename)
 
-@DOCSTRING(P_tmpdir)
-
-@DOCSTRING(tempdir)
-
-@DOCSTRING(tempname)
-
 @DOCSTRING(recycle)
 
 @node File Archiving Utilities

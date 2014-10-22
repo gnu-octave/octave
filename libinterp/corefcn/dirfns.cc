@@ -634,7 +634,7 @@ glob (\"file[12]\")\n\
 
 /*
 %!test
-%! tmpdir = tmpnam;
+%! tmpdir = tempname;
 %! filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
 %! if (mkdir (tmpdir))
 %!   cwd = pwd;

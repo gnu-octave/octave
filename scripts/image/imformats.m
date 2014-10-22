@@ -286,7 +286,7 @@ endfunction
 
 ## changing the function that does the reading
 %!testif HAVE_MAGICK
-%! fname = [tmpnam() ".jpg"];
+%! fname = [tempname() ".jpg"];
 %! def_fmt = imformats ();
 %! fid = fopen (fname, "w");
 %! unwind_protect
@@ -302,7 +302,7 @@ endfunction
 
 ## adding a new format
 %!testif HAVE_MAGICK
-%! fname = [tmpnam() ".new_fmt"];
+%! fname = [tempname() ".new_fmt"];
 %! def_fmt = imformats ();
 %! fid = fopen (fname, "w");
 %! unwind_protect
@@ -319,9 +319,9 @@ endfunction
 
 ## adding multiple formats at the same time
 %!testif HAVE_MAGICK
-%! fname1 = [tmpnam() ".new_fmt1"];
+%! fname1 = [tempname() ".new_fmt1"];
 %! fid1 = fopen (fname1, "w");
-%! fname2 = [tmpnam() ".new_fmt2"];
+%! fname2 = [tempname() ".new_fmt2"];
 %! fid2 = fopen (fname2, "w");
 %! def_fmt = imformats ();
 %! unwind_protect

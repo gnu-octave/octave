@@ -58,8 +58,8 @@
 %!error <Invalid call to usleep> usleep (1, 2)
 
 %!test
-%! from = tmpnam ();
-%! to = tmpnam ();
+%! from = tempname ();
+%! to = tempname ();
 %! id = fopen (from, "wb");
 %! if (id > 0 && fclose (id) == 0)
 %!   [s, e] = stat (from);
@@ -79,7 +79,7 @@
 %!error <Invalid call to rename> rename ("foo", "bar", 1)
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! if ((id = fopen (nm, "wb")) > 0)
 %!   [s, err] = stat (nm);
 %!   if (! err && fclose (id) == 0 && unlink (nm) == 0)
@@ -100,7 +100,7 @@
 %!error <Invalid call to readdir> readdir ("foo", 1)
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! e1 = mkdir (nm);
 %! [s2, e2] = stat (nm);
 %! e3 = rmdir (nm);
@@ -121,14 +121,14 @@
 %! ## Test makes no sense on Windows systems
 %! if (isunix () || ismac ())
 %!   orig_umask = umask (0);
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   id = fopen (nm, "wb");
 %!   s1 = stat (nm);
 %!   fclose (id);
 %!   unlink (nm);
 %!
 %!   umask (777);
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   id = fopen (nm, "wb");
 %!   s2 = stat (nm);
 %!   fclose (id);
@@ -189,7 +189,7 @@
 %!   endif
 %!   assert (S_ISLNK (lstat ("/dev/core").mode));
 %! endif
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! fid = fopen (nm, "wb");
 %! fclose (fid);
 %! r = [ S_ISREG(stat(nm).mode)

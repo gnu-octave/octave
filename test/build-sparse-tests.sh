@@ -914,7 +914,7 @@ EOF
 gen_save_tests() {
     cat >>$TESTS <<EOF
 %!test # save ascii
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-text", savefile, "bf", "as_save", "af");
 %! clear as_save;
@@ -922,7 +922,7 @@ gen_save_tests() {
 %! unlink (savefile);
 %! assert (as_save, sparse (af));
 %!test # save binary
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-binary", savefile, "bf", "as_save", "af");
 %! clear as_save;
@@ -930,7 +930,7 @@ gen_save_tests() {
 %! unlink (savefile);
 %! assert (as_save, sparse (af));
 %!testif HAVE_HDF5   # save hdf5
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-hdf5", savefile, "bf", "as_save", "af");
 %! clear as_save;
@@ -941,7 +941,7 @@ gen_save_tests() {
 ## saving sparse matrices to MAT files when using 64-bit indexing since
 ## that is not implemented yet.
 %!test # save matlab
-%! savefile = tmpnam ();
+%! savefile = tempname ();
 %! as_save = as;
 %! save ("-mat", savefile, "bf", "as_save", "af");
 %! clear as_save;

@@ -581,7 +581,7 @@ endfunction
 
 %% Test reading from a real file
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);
@@ -594,7 +594,7 @@ endfunction
 
 %% Tests reading with empty format, should return proper nr of columns
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid, " 1 2 3 4\n5 6 7 8");
 %! fseek (fid, 0, "bof");
@@ -608,7 +608,7 @@ endfunction
 
 %% Tests reading with empty format; empty fields & incomplete lower row
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid, " ,2,,4\n5,6");
 %! fseek (fid, 0, "bof");
@@ -620,7 +620,7 @@ endfunction
 %% Error message tests
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! msg1 = "Missing or illegal value for 'headerlines'";
 %! try
@@ -631,7 +631,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! msg1 = "Missing or illegal value for 'headerlines'";
 %! try
@@ -642,7 +642,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid,"some_string");
 %! fseek (fid, 0, "bof");
@@ -655,7 +655,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid,"some_string");
 %! fseek (fid, 0, "bof");

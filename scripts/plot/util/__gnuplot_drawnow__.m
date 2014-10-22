@@ -77,7 +77,7 @@ function __gnuplot_drawnow__ (h, term, file, mono = false, debug_file)
     term = gnuplot_default_term (plot_stream);
     if (strcmp (term, "dumb"))
       ## popen2 eats stdout of gnuplot, use temporary file instead
-      dumb_tmp_file = tmpnam ();
+      dumb_tmp_file = tempname ();
       enhanced = gnuplot_set_term (plot_stream(1), new_stream, h,
                                    term, dumb_tmp_file);
     else

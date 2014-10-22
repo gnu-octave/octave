@@ -148,8 +148,8 @@ endfunction
 %!   s1 = hdl2struct (h1);
 %!   h2 = struct2hdl (s1);
 %!   s2 = hdl2struct (h2);
-%!   png1 = strcat (tmpnam (), ".png");
-%!   png2 = strcat (tmpnam (), ".png");
+%!   png1 = [tempname() ".png"];
+%!   png2 = [tempname() ".png"];
 %!   unwind_protect
 %!     print (h1, png1);
 %!     [img1, map1, alpha1] = imread (png1);

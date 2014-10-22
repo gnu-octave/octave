@@ -135,7 +135,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     if (! isempty (strfind (file, "://")))
       ## FIXME: The above code is not a perfect test for a URL
       urlfile = file;
-      tmpfile = [tmpnam() ext];
+      tmpfile = [tempname ext];
       [file, success, msg] = urlwrite (urlfile, tmpfile);
       if (! success)
         error ('unpack: could not fetch "%s": %s', urlfile, msg);

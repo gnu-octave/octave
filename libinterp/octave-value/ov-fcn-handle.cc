@@ -1316,7 +1316,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 %! endif
 %! for i = 1:numel (modes)
 %!   mode = modes{i};
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   unwind_protect
 %!     f2 (1); # bug #33857
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
@@ -1369,7 +1369,7 @@ Test for bug #35876
 %! endif
 %! for i = 1:numel (modes)
 %!   mode = modes{i};
-%!   nm = tmpnam ();
+%!   nm = tempname ();
 %!   unwind_protect
 %!     fcn_handle_save_recurse (2, mode, nm, f2, g2, hm2, hdld2, hbi2);
 %!     clear f2 g2 hm2 hdld2 hbi2

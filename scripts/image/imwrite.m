@@ -126,7 +126,7 @@ endfunction
 %!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
 
 %!function [r, cmap, a] = write_and_read (varargin)
-%!  filename = [tmpnam() ".tif"];
+%!  filename = [tempname() ".tif"];
 %!  unwind_protect
 %!    imwrite (varargin{1}, filename, varargin{2:end});
 %!    [r, cmap, a] = imread (filename, "Index", "all");

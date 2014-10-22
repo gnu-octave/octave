@@ -115,7 +115,7 @@
 %! sp = save_precision ();
 %! save_precision (1);
 %! x = pi;
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
@@ -127,7 +127,7 @@
 %! sp = save_precision ();
 %! save_precision (5);
 %! x = pi;
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);

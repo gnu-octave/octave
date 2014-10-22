@@ -1930,11 +1930,11 @@ The function @code{fclose} may also be used for the same purpose.\n\
   return retval;
 }
 
-DEFUNX ("tmpnam", Ftmpnam, args, ,
-        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{fname} =} tmpnam ()\n\
-@deftypefnx {Built-in Function} {@var{fname} =} tmpnam (@var{dir})\n\
-@deftypefnx {Built-in Function} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})\n\
+DEFUN (tempname, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{fname} =} tempname ()\n\
+@deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir})\n\
+@deftypefnx {Built-in Function} {@var{fname} =} tempname (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
@@ -1942,12 +1942,11 @@ If @var{dir} is also omitted, the default directory for temporary files\n\
 (@code{P_tmpdir} is used.  If @var{dir} is provided, it must exist,\n\
 otherwise the default directory for temporary files is used.\n\
 \n\
-Programming Note: Because the named file is not opened by @code{tmpnam},\n\
+Programming Note: Because the named file is not opened by @code{tempname},\n\
 it is possible, though relatively unlikely, that it will not be available\n\
 by the time your program attempts to open it.  If this is a concern,\n\
-see @code{tmpfile}.  The functions @code{tmpnam} and @code{tempname} are\n\
-equivalent with the latter provided for @sc{matlab} compatibility.\n\
-@seealso{tempname, mkstemp, tempdir, P_tmpdir, tmpfile}\n\
+see @code{tmpfile}.\n\
+@seealso{mkstemp, tempdir, P_tmpdir, tmpfile}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1989,7 +1988,7 @@ deleted automatically when it is closed or when Octave exits.\n\
 If successful, @var{fid} is a valid file ID and @var{msg} is an empty\n\
 string.  Otherwise, @var{fid} is -1 and @var{msg} contains a\n\
 system-dependent error message.\n\
-@seealso{tempname, tmpnam, mkstemp, tempdir, P_tmpdir}\n\
+@seealso{tempname, mkstemp, tempdir, P_tmpdir}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2049,7 +2048,7 @@ be deleted automatically when Octave exits.\n\
 If successful, @var{fid} is a valid file ID, @var{name} is the name of the\n\
 file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 @var{name} is empty, and @var{msg} contains a system-dependent error message.\n\
-@seealso{tempname, tmpnam, tempdir, P_tmpdir, tmpfile, fopen}\n\
+@seealso{tempname, tempdir, P_tmpdir, tmpfile, fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2220,7 +2219,7 @@ Programming Note: The value returned by @code{P_tmpdir} is always the\n\
 default location.  This value may not agree with that returned from\n\
 @code{tempdir} if the user has overriden the default with the @env{TMPDIR}\n\
 environment variable.\n\
-@seealso{tempdir, tempname, tmpnam, mkstemp, tmpfile}\n\
+@seealso{tempdir, tempname, mkstemp, tmpfile}\n\
 @end deftypefn")
 {
   octave_value retval;

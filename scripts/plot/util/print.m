@@ -306,7 +306,7 @@ function print (varargin)
 
   if (opts.append_to_file)
     [~, ~, ext] = fileparts (opts.ghostscript.output);
-    opts.ghostscript.prepend = strcat (tmpnam (), ext);
+    opts.ghostscript.prepend = [tempname() ext];
     copyfile (opts.ghostscript.output, opts.ghostscript.prepend);
   endif
 
@@ -484,7 +484,7 @@ function cmd = epstool (opts, filein, fileout)
 
   if (nargin < 2 || strcmp (filein, "-") || isempty (filein))
     pipein = true;
-    filein = strcat (tmpnam (), ".eps");
+    filein = [tempname() ".eps"];
     if (dos_shell)
       cleanup = sprintf ("& del %s ", strrep (filein, '/', '\'));
     else
@@ -496,7 +496,7 @@ function cmd = epstool (opts, filein, fileout)
   endif
   if (strcmp (fileout, "-"))
     pipeout = true;
-    fileout = strcat (tmpnam (), ".eps");
+    fileout = [tempname() ".eps"];
     if (dos_shell)
       cleanup = horzcat (cleanup, sprintf ("& del %s ", strrep (fileout, '/', '\')));
     else

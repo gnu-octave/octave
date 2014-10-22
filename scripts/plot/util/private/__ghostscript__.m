@@ -112,7 +112,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
       offsetfile = opts.offsetfile;
       cleanup_cmd = "";
     else
-      offsetfile = strcat (tmpnam (), ".ps");
+      offsetfile = [tempname() ".ps"];
       cleanup_cmd = sprintf ("rm %s", offsetfile);
     endif
     unwind_protect

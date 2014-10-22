@@ -48,7 +48,7 @@ endfunction
 
 %!test
 %! cstr = {"Hello World", "The answer is 42", "Goodbye World"};
-%! fname = tmpnam ();
+%! fname = tempname ();
 %! fid = fopen (fname, "w");
 %! fprintf (fid, "%s\n", cstr{:});
 %! fclose (fid);

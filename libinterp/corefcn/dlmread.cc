@@ -491,7 +491,7 @@ fill empty fields.  The default is zero.\n\
 
 /*
 %!shared file
-%! file = tmpnam ();
+%! file = tempname ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
@@ -510,7 +510,7 @@ fill empty fields.  The default is zero.\n\
 %! unlink (file);
 
 %!shared file
-%! file = tmpnam ();
+%! file = tempname ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);

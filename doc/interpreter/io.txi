@@ -1006,7 +1006,11 @@ files will be deleted, so this step need not be executed manually.
 
 @DOCSTRING(tmpfile)
 
-@DOCSTRING(tmpnam)
+@DOCSTRING(tempname)
+
+@DOCSTRING(tempdir)
+
+@DOCSTRING(P_tmpdir)
 
 @node EOF and Errors
 @subsection End of File and Errors

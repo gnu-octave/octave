@@ -151,7 +151,7 @@ endfunction
 
 
 %!shared fname
-%! fname = tmpnam ();
+%! fname = tempname ();
 
 %!test
 %! A = [-1:0.1:1; -1:0.1:1]';

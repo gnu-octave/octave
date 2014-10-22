@@ -1626,7 +1626,7 @@ endfunction
 %!   position = get (h, "position");
 %!   plot (rand (3));
 %!   legend ();
-%!   filename = sprintf ("%s.eps", tmpnam ());
+%!   filename = sprintf ("%s.eps", tempname ());
 %!   print (filename);
 %!   unlink (filename);
 %!   assert (get (h, "position"), position);

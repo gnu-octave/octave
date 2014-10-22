@@ -37,7 +37,7 @@ endfunction
 
 
 %!shared fname
-%! fname = tmpnam ();
+%! fname = tempname ();
 
 %!test
 %! csvwrite (fname, magic (3));

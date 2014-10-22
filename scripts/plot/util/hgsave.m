@@ -97,9 +97,9 @@ endfunction
 %!   axes (ax(2));
 %!   text (4.5, 80, "Right Axis", ...
 %!         "color", [0 0.5 0], "horizontalalignment", "center");
-%!   ftmp = [tmpnam() ".ofig"];
-%!   png1 = [tmpnam() ".png"];
-%!   png2 = [tmpnam() ".png"];
+%!   ftmp = [tempname() ".ofig"];
+%!   png1 = [tempname() ".png"];
+%!   png2 = [tempname() ".png"];
 %!   unwind_protect
 %!     hgsave (h1, ftmp);
 %!     print (h1, png1);

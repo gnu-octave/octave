@@ -292,7 +292,7 @@ endfunction
 %!test
 %! ## Comma separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1,-7.2,0\n0.012,6.5,128");
 %! fclose (fid);
@@ -309,7 +309,7 @@ endfunction
 %!test
 %! ## Tab separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
 %! fclose (fid);
@@ -326,7 +326,7 @@ endfunction
 %!test
 %! ## Space separated values, using multiple spaces to align in columns.
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%10.3f %10.3f %10.3f\n", A');
 %! fclose (fid);
@@ -343,7 +343,7 @@ endfunction
 %!test
 %! ## No separator, 1 column of data only
 %! A = [3.1;-7.2;0;0.012;6.5;128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%f\n", A);
 %! fclose (fid);
@@ -363,7 +363,7 @@ endfunction
 %! A.textdata = {"This is a header row."; ...
 %!               "this row does not contain any data, but the next one does."};
 %! A.colheaders = A.textdata (2);
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
@@ -380,7 +380,7 @@ endfunction
 %! A.textdata = {"Label1\tLabel2\tLabel3";
 %!               "col 1\tcol 2\tcol 3"};
 %! A.colheaders = {"col 1", "col 2", "col 3"};
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{:});
 %! fputs (fid, "3.1\t-7.2\t0\n0.012\t6.5\t128");
@@ -396,7 +396,7 @@ endfunction
 %! A.data = [3.1 -7.2 0; 0.012 6.5 128];
 %! A.textdata = {"row1"; "row2"};
 %! A.rowheaders = A.textdata;
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
 %! fclose (fid);
@@ -413,7 +413,7 @@ endfunction
 %!               "      col1 col2 col3"
 %!               "row1"
 %!               "row2"};
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%s\n", A.textdata{1:2});
 %! fputs (fid, "row1\t3.1\t-7.2\t0\nrow2\t0.012\t6.5\t128");
@@ -427,7 +427,7 @@ endfunction
 %!test
 %! ## Ignore empty rows containing only spaces
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fprintf (fid, "%10.3f %10.3f %10.3f\n", A(1,:));
 %! fputs (fid, "      ");
@@ -442,7 +442,7 @@ endfunction
 %!test
 %! ## Exponentials
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "+3.1e0\t-72E-1\t0\n12e-3\t6.5\t128");
 %! fclose (fid);
@@ -455,7 +455,7 @@ endfunction
 %!test
 %! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0-3.4i\n0.012\t-6.5+7.2i\t128");
 %! fclose (fid);
@@ -468,7 +468,7 @@ endfunction
 %!test
 %! ## Exceptional values (Inf, NaN, NA)
 %! A = [3.1 Inf NA; -Inf NaN 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\tInf\tNA\n-Inf\tNaN\t128");
 %! fclose (fid);
@@ -483,7 +483,7 @@ endfunction
 %! A.data = [3.1 NA 0; 0.012 NA 128];
 %! A.textdata = {char(zeros(1,0))
 %!               "NO DATA"};
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t\t0\n0.012\tNO DATA\t128");
 %! fclose (fid);
@@ -496,7 +496,7 @@ endfunction
 %!#test
 %! ## CRLF for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r\n0.012\t6.5\t128");
 %! fclose (fid);
@@ -509,7 +509,7 @@ endfunction
 %!#test
 %! ## CR for line breaks
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "3.1\t-7.2\t0\r0.012\t6.5\t128");
 %! fclose (fid);
@@ -521,7 +521,7 @@ endfunction
 
 %!test
 %! ## Only text / no numeric data; \n as EOL
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "aaaa 11\nbbbbb 22\nccccc 3\n");
 %! fclose (fid);
@@ -533,7 +533,7 @@ endfunction
 
 %!test
 %! ## Only text / no numeric data; \r\n as EOL; missing last EOL before EOF
-%! fn  = tmpnam ();
+%! fn  = tempname ();
 %! fid = fopen (fn, "w");
 %! fputs (fid, "aaaa 11\r\nbbbbb 22\r\nccccc 3");
 %! fclose (fid);

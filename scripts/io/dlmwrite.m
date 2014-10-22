@@ -201,7 +201,7 @@ endfunction
 
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! dlmwrite (f,[1,2;3,4],"precision","%5.2f","newline","unix","roffset",1,"coffset",1);
 %! fid = fopen (f,"rt");
 %! f1 = char (fread (fid,Inf,"char")');

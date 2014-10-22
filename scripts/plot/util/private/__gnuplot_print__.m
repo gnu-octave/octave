@@ -54,7 +54,7 @@ function opts = __gnuplot_print__ (opts)
         gp_opts = [gp_opts " level1"];
       endif
       if (opts.tight_flag || ! isempty (opts.preview))
-        tmp_file = strcat (tmpnam (), ".eps");
+        tmp_file = [tempname() ".eps"];
         eps_drawnow (opts, tmp_file, gp_opts);
         if (dos_shell)
           cleanup = [" & del " strrep(tmp_file, '/', '\')];
@@ -119,7 +119,7 @@ function opts = __gnuplot_print__ (opts)
     case opts.ghostscript.device
       gp_opts = font_spec (opts, "devopt", "eps");
       opts.ghostscript.output = opts.name;
-      opts.ghostscript.source = strcat (tmpnam (), ".eps");
+      opts.ghostscript.source = [tempname() ".eps"];
       eps_drawnow (opts, opts.ghostscript.source, gp_opts);
       [cmd_gs, cmd_cleanup] = __ghostscript__ (opts.ghostscript);
       if (opts.send_to_printer || isempty (opts.name))

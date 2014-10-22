@@ -50,7 +50,7 @@ function gp_var_value = __gnuplot_get_var__ (h, gp_var_name, fmt = "")
   endif
 
   if (use_mkfifo)
-    gpin_name = tmpnam ();
+    gpin_name = tempname ();
 
     ## Mode: 0600 == 6*8*8
     [err, msg] = mkfifo (gpin_name, 6*8*8);

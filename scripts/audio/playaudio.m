@@ -41,7 +41,7 @@ function playaudio (name, ext)
     endif
     X = name(:) + 127;
     unwind_protect
-      file = tmpnam ();
+      file = tempname ();
       fid = fopen (file, "wb");
       fwrite (fid, X, "uchar");
       fclose (fid);

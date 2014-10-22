@@ -68,7 +68,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/symvar.m \
   miscellaneous/tar.m \
   miscellaneous/tempdir.m \
-  miscellaneous/tempname.m \
+  miscellaneous/tmpnam.m \
   miscellaneous/unix.m \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \

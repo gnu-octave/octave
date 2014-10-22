@@ -64,7 +64,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 
       if (exist (tgz, "file"))
         ## Create a temporary directory.
-        tmpdir = tmpnam ();
+        tmpdir = tempname ();
         tmpdirs{end+1} = tmpdir;
         if (verbose)
           printf ("mkdir (%s)\n", tmpdir);

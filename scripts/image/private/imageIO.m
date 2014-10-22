@@ -61,10 +61,10 @@ function varargout = imageIO (func, core_func, fieldname, filename, varargin)
   ## Maybe we have an URL
   if (isempty (fn))
     file_2_delete = true; # mark file for deletion
-    [fn, ~] = urlwrite (filename, tmpnam ());
+    [fn, ~] = urlwrite (filename, tempname ());
     ## Maybe the URL is missing the file extension
     if (isempty (fn) && ! isempty (varargin))
-      [fn, ~] = urlwrite ([filename "." varargin{1}], tmpnam ());
+      [fn, ~] = urlwrite ([filename "." varargin{1}], tempname ());
     endif
 
     if (isempty (fn))

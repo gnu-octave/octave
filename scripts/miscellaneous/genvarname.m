@@ -90,7 +90,7 @@
 ## appended if necessary.  Note, however, that this does @strong{not} include
 ## function names such as @qcode{"sin"}.  Such names should be included in
 ## @var{exclusions} if necessary.
-## @seealso{isvarname, iskeyword, exist, who, tmpnam, eval}
+## @seealso{isvarname, iskeyword, exist, who, tempname, eval}
 ## @end deftypefn
 
 ## Authors: Rob Platt <robert.platt@postgrad.manchester.ac.uk>

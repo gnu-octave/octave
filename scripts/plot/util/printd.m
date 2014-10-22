@@ -44,7 +44,7 @@ function pr_out = printd (obj, filename)
     error ("The output filename: %s requires a suffix.\nOptions are: pdf ps eps txt jpg jpeg", filename);
   endif
   opt = substr (filename, sufix+1);
-  [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);  # Safe version of tmpnam()
+  [pf, tempf, mag] = mkstemp ("oct-XXXXXX", 1);
   fprintf (pf, "%s", disp (obj));
   frewind (pf);
 

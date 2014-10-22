@@ -39,7 +39,7 @@ function X = record (sec, sampling_rate)
 
   unwind_protect
 
-    file = tmpnam ();
+    file = tempname ();
 
     input ("Please hit ENTER and speak afterwards!\n", 1);
 

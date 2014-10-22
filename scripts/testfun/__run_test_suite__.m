@@ -187,7 +187,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   endfor
   saved_dir = pwd ();
   unwind_protect
-    chdir (d);
+    cd (d);
     for i = 1:length (lst)
       nm = lst(i).name;
       if (length (nm) > 4 && strcmpi (nm((end-3):end), ".tst"))
@@ -208,7 +208,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
       endif
     endfor
   unwind_protect_cleanup
-    chdir (saved_dir);
+    cd (saved_dir);
   end_unwind_protect
 endfunction
 

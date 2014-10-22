@@ -221,10 +221,10 @@ function ret = edit (varargin)
     if (exist (FUNCTION.HOME, "dir") == 7)
       curr_dir = pwd ();
       unwind_protect
-        chdir (FUNCTION.HOME);
+        cd (FUNCTION.HOME);
         do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
       unwind_protect_cleanup
-        chdir (curr_dir);
+        cd (curr_dir);
       end_unwind_protect
     else
       do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);

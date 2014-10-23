@@ -139,6 +139,7 @@ noinst_LTLIBRARIES += array/libarray.la
 array_libarray_la_SOURCES = $(ARRAY_SRC)
 array_libarray_la_CPPFLAGS = \
   $(liboctave_la_CPPFLAGS) \
+  $(FFTW_XCPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
 liboctave_la_LIBADD += array/libarray.la

@@ -341,7 +341,9 @@ corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) \
                                  $(FONTCONFIG_CPPFLAGS) \
                                  $(FT2_CPPFLAGS) \
                                  $(HDF5_CPPFLAGS) \
-                                 $(LLVM_CPPFLAGS)
+                                 $(LLVM_CPPFLAGS) \
+                                 $(Z_CPPFLAGS)
+
 corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)

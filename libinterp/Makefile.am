@@ -33,11 +33,7 @@ AM_CPPFLAGS = \
   -Iparse-tree -I$(srcdir)/parse-tree \
   -Icorefcn -I$(srcdir)/corefcn \
   -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu \
-  $(FT2_CPPFLAGS) \
-  $(HDF5_CPPFLAGS) \
-  $(Z_CPPFLAGS) \
-  $(FFTW_XCPPFLAGS) \
-  $(LLVM_CPPFLAGS)
+  $(HDF5_CPPFLAGS)
 
 AM_CFLAGS += $(WARN_CFLAGS)
 

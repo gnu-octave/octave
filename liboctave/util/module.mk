@@ -88,6 +88,7 @@ noinst_LTLIBRARIES += util/libutil.la
 util_libutil_la_SOURCES = $(UTIL_SRC)
 util_libutil_la_CPPFLAGS = \
   $(liboctave_la_CPPFLAGS) \
+  $(CURL_CPPFLAGS) \
   $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 

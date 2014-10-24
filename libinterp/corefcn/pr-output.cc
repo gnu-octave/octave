@@ -2842,7 +2842,7 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, charMatrix (nda),
                              pr_as_read_syntax, extra_indent, pr_as_string);
       break;
 

@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "Array.h"
+#include "chNDArray.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -34,35 +35,36 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-charMatrix : public Array<char>
+charMatrix : public charNDArray
 {
   friend class ComplexMatrix;
 
 public:
 
-  charMatrix (void) : Array<char> () { }
+  charMatrix (void) : charNDArray () { }
 
   charMatrix (octave_idx_type r, octave_idx_type c)
-    : Array<char> (dim_vector (r, c)) { }
+    : charNDArray (dim_vector (r, c)) { }
 
   charMatrix (octave_idx_type r, octave_idx_type c, char val)
-    : Array<char> (dim_vector (r, c), val) { }
+    : charNDArray (dim_vector (r, c), val) { }
 
-  charMatrix (const dim_vector& dv) : Array<char> (dv) { }
+  charMatrix (const dim_vector& dv) : charNDArray (dv) { }
 
-  charMatrix (const dim_vector& dv, char val) : Array<char> (dv, val) { }
+  charMatrix (const dim_vector& dv, char val) : charNDArray (dv, val) { }
 
-  charMatrix (const Array<char>& a) : Array<char> (a.as_matrix ()) { }
+  charMatrix (const Array<char>& a) : charNDArray (a.as_matrix ()) { }
 
-  charMatrix (const charMatrix& a) : Array<char> (a) { }
+  charMatrix (const charMatrix& a) : charNDArray (a) { }
 
-  charMatrix (char c);
+  charMatrix (char c) : charNDArray (c) {}
 
-  charMatrix (const char *s);
+  charMatrix (const char *s) : charNDArray (s) {}
 
-  charMatrix (const std::string& s);
+  charMatrix (const std::string& s) : charNDArray (s) {}
 
-  charMatrix (const string_vector& s, char fill_value = '\0');
+  charMatrix (const string_vector& s, char fill_value = '\0')
+    : charNDArray (s, fill_value) {}
 
   charMatrix& operator = (const charMatrix& a)
   {

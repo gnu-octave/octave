@@ -107,10 +107,10 @@ public:
   { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-  { return Matrix (matrix.matrix_value ()); }
+  { return Matrix (charMatrix (matrix)); }
 
   FloatMatrix float_matrix_value (bool = false) const
-  { return FloatMatrix (matrix.matrix_value ()); }
+  { return FloatMatrix (charMatrix (matrix)); }
 
   NDArray array_value (bool = false) const
   { return NDArray (matrix); }
@@ -123,10 +123,10 @@ public:
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-  { return ComplexMatrix (matrix.matrix_value ()); }
+  { return ComplexMatrix (charMatrix (matrix)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-  { return FloatComplexMatrix (matrix.matrix_value ()); }
+  { return FloatComplexMatrix (charMatrix (matrix)); }
 
   ComplexNDArray complex_array_value (bool = false) const
   { return ComplexNDArray (matrix); }
@@ -135,7 +135,7 @@ public:
   { return FloatComplexNDArray (matrix); }
 
   charMatrix char_matrix_value (bool = false) const
-  { return matrix.matrix_value (); }
+  { return charMatrix (matrix); }
 
   charNDArray char_array_value (bool = false) const
   { return matrix; }

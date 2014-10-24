@@ -211,7 +211,7 @@ octave_char_matrix_str::all_strings (bool) const
 
   if (matrix.ndims () == 2)
     {
-      charMatrix chm = matrix.matrix_value ();
+      charMatrix chm (matrix);
 
       octave_idx_type n = chm.rows ();
 
@@ -233,7 +233,7 @@ octave_char_matrix_str::string_value (bool) const
 
   if (matrix.ndims () == 2)
     {
-      charMatrix chm = matrix.matrix_value ();
+      charMatrix chm (matrix);
 
       retval = chm.row_as_string (0);  // FIXME?
     }
@@ -250,7 +250,7 @@ octave_char_matrix_str::cellstr_value (void) const
 
   if (matrix.ndims () == 2)
     {
-      const charMatrix chm = matrix.matrix_value ();
+      const charMatrix chm (matrix);
       octave_idx_type nr = chm.rows ();
       retval.clear (nr, 1);
       for (octave_idx_type i = 0; i < nr; i++)

@@ -437,6 +437,8 @@ function update_data (h, ~)
       ydat = get (hlist, "ydata");
       if (iscell (ydat))
         y = cell2mat (ydat.');
+      elseif (isvector (ydat))
+        y = ydat(:);
       else
         y = ydat;
       endif

@@ -742,13 +742,9 @@ function body = __extract_test_code (nm)
   fid = fopen (nm, "rt");
   body = [];
   if (fid >= 0)
-    while (! feof (fid))
-      ln = fgetl (fid);
-      if (length (ln) >= 2 && strcmp (ln(1:2), "%!"))
-        body = [body, "\n"];
-        if (length (ln) > 2)
-          body = [body, ln(3:end)];
-        endif
+    while (ischar (ln = fgets (fid)))
+      if (strncmp (ln, "%!", 2))
+        body = [body, ln(3:end)];
       endif
     endwhile
     fclose (fid);

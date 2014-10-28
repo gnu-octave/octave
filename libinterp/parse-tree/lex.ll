@@ -169,7 +169,8 @@ object) relevant global values before and after the nested call.
     { \
       curr_lexer->lexer_debug (PATTERN); \
  \
-      if (curr_lexer->previous_token_may_be_command ()) \
+      if (curr_lexer->previous_token_may_be_command () \
+          && curr_lexer->space_follows_previous_token ()) \
         { \
           yyless (0); \
           curr_lexer->push_start_state (COMMAND_START); \

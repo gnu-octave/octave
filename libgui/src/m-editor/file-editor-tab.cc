@@ -1577,10 +1577,22 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // and add the extra grid layout to the dialog's layout
   dialog_layout->addLayout (extra,rows,0,1,dialog_layout->columnCount ());
 
+  // add the possible filters and the default suffix
+  QStringList filters;
+  filters << tr ("Octave Files (*.m)")
+          << tr ("All Files (*)");
+  fileDialog->setNameFilters (filters);
+  fileDialog->setDefaultSuffix ("m");
 
   if (valid_file_name ())
     {
       fileDialog->selectFile (_file_name);
+      QFileInfo file_info (_file_name);
+      if (file_info.suffix () != "m")
+        { // it is not an octave file
+          fileDialog->selectNameFilter (filters.at (1));  // "All Files"
+          fileDialog->setDefaultSuffix ("");              // no default suffix
+        }
     }
   else
     {
@@ -1601,10 +1613,11 @@ file_editor_tab::save_file_as (bool remove_on_success)
         fileDialog->selectFile (fname + ".m");
     }
 
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
-  fileDialog->setDefaultSuffix ("m");
   fileDialog->setAcceptMode (QFileDialog::AcceptSave);
   fileDialog->setViewMode (QFileDialog::Detail);
+
+  connect (fileDialog, SIGNAL (filterSelected (const QString&)),
+           this, SLOT (handle_save_as_filter_selected (const QString&)));
 
   if (remove_on_success)
     {
@@ -1627,6 +1640,20 @@ void
 file_editor_tab::handle_combo_eol_current_index (int index)
 {
   _save_as_desired_eol = static_cast<QsciScintilla::EolMode> (index);
+}
+
+void
+file_editor_tab::handle_save_as_filter_selected (const QString& filter)
+{
+  QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
+
+  QRegExp rx ("\\*\\.([^ ^\\)]*)[ \\)]");   // regexp for suffix in filter
+  int index = rx.indexIn (filter,0);        // get first suffix in filter
+
+  if (index > -1)
+    file_dialog->setDefaultSuffix (rx.cap (1)); // found a suffix, set default
+  else
+    file_dialog->setDefaultSuffix ("");         // not found, clear default
 }
 
 bool

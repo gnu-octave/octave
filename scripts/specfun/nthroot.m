@@ -74,11 +74,14 @@ function y = nthroot (x, n)
     endif
 
     if (integer_n && n > 0 && isfinite (n))
-      ## FIXME: What is this correction for?
-      y = ((n-1)*y + x ./ (y.^(n-1))) / n;
-      y = merge (isfinite (y), y, x);
+      if (isscalar (y) && y == 0)
+        ## Don't apply correction which leads to division by zero (bug #43492)
+      else
+        ## FIXME: What is this correction for?
+        y = ((n-1)*y + x ./ (y.^(n-1))) / n;
+        y = merge (isfinite (y), y, x);
+      endif
     endif
-
   endif
 
 endfunction
@@ -89,6 +92,12 @@ endfunction
 %!assert (nthroot (Inf, 4), Inf)
 %!assert (nthroot (-Inf, 7), -Inf)
 %!assert (nthroot (-Inf, -7), 0)
+
+## Bug #43492.  This should not generate a division by zero warning
+%!test
+%! warnmsg = lastwarn ();
+%! assert (nthroot (0, 2), 0);
+%! assert (lastwarn (), warnmsg);
 
 %% Test input validation
 %!error nthroot ()

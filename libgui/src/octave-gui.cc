@@ -168,6 +168,8 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
 
       w.read_settings ();
 
+      w.init_terminal_size ();
+
       // Connect signals for changes in visibility not before w
       // is shown.
 

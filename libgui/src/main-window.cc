@@ -941,6 +941,12 @@ main_window::read_settings (void)
 }
 
 void
+main_window::init_terminal_size (void)
+{
+  emit init_terminal_size_signal ();
+}
+
+void
 main_window::set_window_layout (QSettings *settings)
 {
 #if ! defined (Q_OS_WIN32)

@@ -4583,6 +4583,8 @@ public:
 
     octave_value get_color_data (void) const;
 
+    void initialize_data (void) { update_cdata (); }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
     // Programming note: Keep property list sorted if new ones are added.
@@ -4750,6 +4752,7 @@ public:
     : base_graphics_object (), xproperties (mh, p)
   {
     xproperties.override_defaults (*this);
+    xproperties.initialize_data ();
   }
 
   ~image (void) { }

@@ -69,7 +69,7 @@ function h = image (varargin)
   
   do_new = true;
   if (nargin == 0)
-    img = imread ("default.img");
+    img = get (0, "defaultimagecdata");
     x = y = [];
   elseif (chararg == 1) 
     ## Low-Level syntax

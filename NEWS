@@ -23,7 +23,8 @@ Summary of important user-visible changes for version 4.2:
     for interp1, interp2, and interp3.  Previously, 'cubic' was equivalent
     to 'spline' for interp2.  This may produce different results as 'spline'
     has continuous 1st and 2nd derivatives while 'pchip' only has a continuous
-    1st derivative.
+    1st derivative.  The methods 'next' and 'previous' have been added to
+    interp1 for compatibility.
 
  ** The delaunay function has been extended to accept 3-D inputs for
     Matlab compatibility.  The delaunay function no longer plots the

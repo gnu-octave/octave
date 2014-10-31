@@ -1,3 +1,4 @@
+## Copyright (C) 2014 Nir Krakauer
 ## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2009 VZLU Prague
 ##
@@ -39,6 +40,12 @@
 ## @item @qcode{"nearest"}
 ## Return the nearest neighbor.
 ##
+## @item @qcode{"previous"}
+## Return the previous neighbor.
+##
+## @item @qcode{"next"}
+## Return the next neighbor.
+##
 ## @item @qcode{"linear"} (default)
 ## Linear interpolation from nearest neighbors.
 ##
@@ -77,7 +84,7 @@
 ## right-continuous.  If @var{x} is decreasing, the default discontinuous
 ## interpolant is left-continuous.
 ## The continuity condition of the interpolant may be specified by using
-## the options, @qcode{"left"} or @qcode{"right"}, to select a left-continuous
+## the options @qcode{"left"} or @qcode{"right"} to select a left-continuous
 ## or right-continuous interpolant, respectively.
 ## Discontinuous interpolation is only allowed for @qcode{"nearest"} and
 ## @qcode{"linear"} methods; in all other cases, the @var{x}-values must be
@@ -188,6 +195,10 @@ function yi = interp1 (x, y, varargin)
     y = y(p,:);
   endif
 
+  if (any (strcmp (method, {"previous", "*previous", "next", "*next"})))
+    rightcontinuous = NaN; # needed for these methods to work
+  endif 
+
   if (isnan (rightcontinuous))
     ## If not specified, set the continuity condition
     if (x(end) < x(1))
@@ -200,6 +211,18 @@ function yi = interp1 (x, y, varargin)
     ## Switch between left-continuous and right-continuous
     x = flipud (x);
     y = flipud (y);
+  endif
+
+  ## Because of the way mkpp works, it's easiest to implement "next"
+  ## by running "previous" with vectors flipped.
+  if (strcmp (method, "next"))
+    x = flipud (x);
+    y = flipud (y);
+    method = "previous";
+  elseif (strcmp (method, "*next"))
+    x = flipud (x);
+    y = flipud (y);
+    method = "*previous";  
   endif
 
   starmethod = method(1) == "*";
@@ -246,7 +269,30 @@ function yi = interp1 (x, y, varargin)
         yi = ppval (pp, reshape (xi, szx));
       endif
 
+    case "previous"
+      pp = mkpp ([x(1:nx); 2*x(nx)-x(nx-1)],
+                 shiftdim (y, 1), szy(2:end));
+      pp.orient = "first";
+
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
+      endif
+
+    case "*previous"
+      pp = mkpp (x(1)+[0:nx]*dx,
+                 shiftdim (y, 1), szy(2:end));
+      pp.orient = "first";
+
+      if (ispp)
+        yi = pp;
+      else
+        yi = ppval (pp, reshape (xi, szx));
+      endif
+
     case "linear"
+
       xx = x;
       nxx = nx;
       yy = y;
@@ -439,7 +485,7 @@ endfunction
 %! xi = [-1, 0, 2.2, 4, 6.6, 10, 11];
 
 ## The following BLOCK/ENDBLOCK section is repeated for each style
-##    nearest, linear, cubic, spline, pchip
+##    nearest, previous, next, linear, cubic, spline, pchip
 ## The test for ppval of cubic has looser tolerance, but otherwise
 ## the tests are identical.
 ## Note that the block checks style and *style; if you add more tests
@@ -477,6 +523,78 @@ endfunction
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
 %!assert (interp1 (xp,yp,xi,style),...
 %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+%!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
+%!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!error interp1 (1,1,1, style)
+## ENDBLOCK
+
+%!test style = "previous";
+## BLOCK
+%!assert (interp1 (xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA])
+%!assert (interp1 (xp,yp,xp,style), yp, 100*eps)
+%!assert (interp1 (xp,yp,xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp,style), yp, 100*eps)
+%!assert (isempty (interp1 (xp',yp',[],style)))
+%!assert (isempty (interp1 (xp,yp,[],style)))
+%!assert (interp1 (xp,[yp',yp'],xi(:),style),...
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
+## This test is expected to fail, so commented out.
+## "previous" and "next" options are not symmetric w.r.t to flipping xp,yp
+#%!assert (interp1 (xp,yp,xi,style),... 
+#%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+%!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
+%!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!error interp1 (1,1,1, style)
+%!assert (interp1 (xp,[yp',yp'],xi,style),
+%!        interp1 (xp,[yp',yp'],xi,["*",style]),100*eps)
+%!test style = ["*",style];
+%!assert (interp1 (xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA])
+%!assert (interp1 (xp,yp,xp,style), yp, 100*eps)
+%!assert (interp1 (xp,yp,xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp,style), yp, 100*eps)
+%!assert (isempty (interp1 (xp',yp',[],style)))
+%!assert (isempty (interp1 (xp,yp,[],style)))
+%!assert (interp1 (xp,[yp',yp'],xi(:),style),...
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
+# %!assert (interp1 (xp,yp,xi,style),... 
+# %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+%!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
+%!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!error interp1 (1,1,1, style)
+## ENDBLOCK
+
+%!test style = "next";
+## BLOCK
+%!assert (interp1 (xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA])
+%!assert (interp1 (xp,yp,xp,style), yp, 100*eps)
+%!assert (interp1 (xp,yp,xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp,style), yp, 100*eps)
+%!assert (isempty (interp1 (xp',yp',[],style)))
+%!assert (isempty (interp1 (xp,yp,[],style)))
+%!assert (interp1 (xp,[yp',yp'],xi(:),style),...
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
+# %!assert (interp1 (xp,yp,xi,style),... 
+# %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
+%!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
+%!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
+%!error interp1 (1,1,1, style)
+%!assert (interp1 (xp,[yp',yp'],xi,style),
+%!        interp1 (xp,[yp',yp'],xi,["*",style]),100*eps)
+%!test style = ["*",style];
+%!assert (interp1 (xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA])
+%!assert (interp1 (xp,yp,xp,style), yp, 100*eps)
+%!assert (interp1 (xp,yp,xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp',style), yp', 100*eps)
+%!assert (interp1 (xp',yp',xp,style), yp, 100*eps)
+%!assert (isempty (interp1 (xp',yp',[],style)))
+%!assert (isempty (interp1 (xp,yp,[],style)))
+%!assert (interp1 (xp,[yp',yp'],xi(:),style),...
+%!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
+# %!assert (interp1 (xp,yp,xi,style),... 
+# %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
 %!error interp1 (1,1,1, style)
@@ -625,18 +743,25 @@ endfunction
 ## ENDBLOCK
 ## ENDBLOCKTEST
 
-## test extrapolation (linear)
+## test extrapolation
 %!assert (interp1 ([1:5],[3:2:11],[0,6],"linear","extrap"), [1, 13], eps)
+%!assert (interp1 ([1:5],[3:2:11],[0,6],"nearest","extrap"), [3, 11], eps)
+%!assert (interp1 ([1:5],[3:2:11],[0,6],"previous","extrap"), [3, 11], eps)
+%!assert (interp1 ([1:5],[3:2:11],[0,6],"next","extrap"), [3, 11], eps)
 %!assert (interp1 (xp, yp, [-1, max(xp)+1],"linear",5), [5, 5])
 
 ## Basic sanity checks
 %!assert (interp1 (1:2,1:2,1.4,"nearest"), 1)
+%!assert (interp1 (1:2,1:2,1.6,"previous"), 1)
+%!assert (interp1 (1:2,1:2,1.4,"next"), 2)
 %!assert (interp1 (1:2,1:2,1.4,"linear"), 1.4)
 %!assert (interp1 (1:4,1:4,1.4,"cubic"), 1.4)
 %!assert (interp1 (1:2,1:2,1.1,"spline"), 1.1)
 %!assert (interp1 (1:3,1:3,1.4,"spline"), 1.4)
 
 %!assert (interp1 (1:2:4,1:2:4,1.4,"*nearest"), 1)
+%!assert (interp1 (1:2:4,1:2:4,2.2,"*previous"), 1)
+%!assert (interp1 (1:2:4,1:2:4,1.4,"*next"), 3)
 %!assert (interp1 (1:2:4,1:2:4,[0,1,1.4,3,4],"*linear"), [NA,1,1.4,3,NA])
 %!assert (interp1 (1:2:8,1:2:8,1.4,"*cubic"), 1.4)
 %!assert (interp1 (1:2,1:2,1.3, "*spline"), 1.3)
@@ -657,7 +782,10 @@ endfunction
 %!error <minimum of 2 points required> interp1 (1,1,1, "linear")
 %!error <minimum of 2 points required> interp1 (1,1,1, "*nearest")
 %!error <minimum of 2 points required> interp1 (1,1,1, "*linear")
+%!error <minimum of 2 points required> interp1 (1,1,1, "previous")
+%!error <minimum of 2 points required> interp1 (1,1,1, "*previous")
 %!warning <multiple discontinuities> interp1 ([1 1 1 2], [1 2 3 4], 1);
+%!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "next")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "pchip")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "cubic")
 %!error <discontinuities not supported> interp1 ([1 1],[1 2],1, "spline")

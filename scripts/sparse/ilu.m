@@ -18,113 +18,106 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{L}, @var{U}] =} ilu (@var{A})
-## @deftypefnx {Function File} {@var{L}, @var{U}] =} ilu (@var{A}, @var{opts})
+## @deftypefn  {Function File} {} ilu (@var{A})
+## @deftypefnx {Function File} {} ilu (@var{A}, @var{opts})
+## @deftypefnx {Function File} {[@var{L}, @var{U}] =} ilu (@dots{})
 ## @deftypefnx {Function File} {[@var{L}, @var{U}, @var{P}] =} ilu (@dots{})
 ##
-## Compute the incomplete LU factorization of the sparse square matrix @var{A}
-## into a unit lower triangular matrix (@var{L}), an upper triangular matrix
-## (@var{U}), and a permutation matrix (@var{P}).
+## Compute the incomplete LU factorization of the sparse square matrix @var{A}.
 ##
-## These incomplete factorizations may be useful as preconditioners for a
+## @code{ilu} returns a unit lower triangular matrix @var{L}, an upper
+## triangular matrix @var{U}, and optionally a permutation matrix @var{P}, such
+## that @code{@var{L}*@var{U}} approximates @code{@var{P}*@var{A}}. 
+##
+## The factors given by this routine may be useful as preconditioners for a
 ## system of linear equations being solved by iterative methods such as BICG
 ## (BiConjugate Gradients) or GMRES (Generalized Minimum Residual Method).
 ##
 ## The factorization may be modified by passing options in a structure
-## @var{opts}.  The option name is a field in the structure and the setting
+## @var{opts}.  The option name is a field of the structure and the setting
 ## is the value of field.  Names and specifiers are case sensitive.
 ##
 ## @table @code
 ## @item type
-## Type of factorization.  Values for type include:
+## Type of factorization.
 ##
 ## @table @asis
 ## @item @qcode{"nofill"}
-## Perform ILU factorization with 0 level of fill in, known as ILU(0).  With
-## type set to @qcode{"nofill"}, only the @code{milu} option is used; all other
-## fields are ignored.
+## ILU factorization with no fill-in (ILU(0)).
+##
+## Additional supported options: @code{milu}.
 ##
 ## @item @qcode{"crout"}
-## Perform the @nospell{Crout} version of ILU factorization, known as
-## @nospell{ILUC}@.  With type set to @qcode{crout}, only the @code{droptol}
-## and @code{milu} options are used; all other fields are ignored.
+## Crout version of ILU factorization (@nospell{ILUC}).
 ##
-## @item @qcode{"ilutp"}
-## (default) Performs ILU factorization with threshold and pivoting.
+## Additional supported options: @code{milu}, @code{droptol}.
+##
+## @item @qcode{"ilutp"} (default)
+## ILU factorization with threshold and pivoting.
+##
+## Additional supported options: @code{milu}, @code{droptol}, @code{udiag},
+## @code{thresh}.
 ## @end table
 ##
-## If type is not specified, the ILU factorization with pivoting @nospell{ILUTP}
-## is performed.  Pivoting is never performed with type set to @qcode{"nofill"}
-## or @qcode{"crout"}.
-##
 ## @item droptol
-## Drop tolerance of the incomplete LU factorization.  @code{droptol} is a
-## non-negative scalar.  The default value is 0, which produces the complete
-## LU factorization.
+## A non-negative scalar specifying the drop tolerance for factorization.  The
+## default value is 0 which produces the complete LU factorization.
 ##
-## The nonzero entries of @var{U} satisfy
+## Non-diagonal entries of @var{U} are set to 0 unless
 ##
-## @code{abs (@var{U}(i,j)) >= droptol * norm ((@var{A}:,j))}
+## @code{abs (@var{U}(i,j)) >= droptol * norm (@var{A}(:,j))}.
 ##
-## with the exception of the diagonal entries, which are retained regardless of
-## satisfying the criterion.  The entries of @var{L} are tested against the
-## local drop tolerance before being scaled by the pivot, so for nonzeros in
-## @var{L}
+## Non-diagonal entries of @var{L} are set to 0 unless
 ##
 ## @code{abs (@var{L}(i,j)) >= droptol * norm (@var{A}(:,j))/@var{U}(j,j)}.
 ##
 ## @item milu
-## Modified incomplete LU factorization.  Values for @code{milu}
-## include:
+## Modified incomplete LU factorization:
 ##
 ## @table @asis
 ## @item @qcode{"row"}
-## Produces the row-sum modified incomplete LU factorization.  Entries from the
-## newly-formed column of the factors are subtracted from the diagonal of the
-## upper triangular factor, @var{U}, preserving column sums.  That is,
-## @code{@var{A} * e = @var{L} * @var{U} * e}, where e is the vector of ones.
+## Row-sum modified incomplete LU factorization. 
+## The factorization preserves row sums:
+## @code{@var{A} * e = @var{L} * @var{U} * e}, where e is a vector of ones.
 ##
 ## @item @qcode{"col"}
-## Produces the column-sum modified incomplete LU factorization.  Entries from
-## the newly-formed column of the factors are subtracted from the diagonal of
-## the upper triangular factor, @var{U}, preserving column sums.  That is,
-## @code{e'*@var{A} = e'*@var{L}*@var{U}}.
+## Column-sum modified incomplete LU factorization. 
+## The factorization preserves column sums:
+## @code{e' * @var{A} = e' * @var{L} * @var{U}}.
 ##
-## @item @qcode{"off"}
-## (default) No modified incomplete LU factorization is produced.
+## @item @qcode{"off"} (default)
+## Row and column sums are not necessarily preserved.
 ## @end table
 ##
 ## @item udiag
-## If @code{udiag} is 1, any zeros on the diagonal of the upper
-## triangular factor are replaced by the local drop tolerance.  The default
-## is 0.
+## If true, any zeros on the diagonal of the upper triangular factor are
+## replaced by the local drop tolerance
+## @code{droptol * norm (@var{A}(:,j))/@var{U}(j,j)}.  The default is false.
 ##
 ## @item thresh
-## Pivot threshold between 0 (forces diagonal pivoting) and 1,
-## the default, which always chooses the maximum magnitude entry in the column
-## to be the pivot.
+## Pivot threshold for factorization.  It can range between 0 (diagonal
+## pivoting) and 1 (default), where the maximum magnitude entry in the column
+## is chosen to be the pivot.
 ## @end table
 ##
-## @code{ilu (@var{A},@var{setup})} returns
-## @code{@var{L} + @var{U} - speye (size (@var{A}))}, where @var{L} is a unit
-## lower triangular matrix and @var{U} is an upper triangular matrix.
+## If @code{ilu} is called with just one output, the returned matrix is 
+## @code{@var{L} + @var{U} - speye (size (@var{A}))}, where @var{L} is unit
+## lower triangular and @var{U} is upper triangular.
 ##
-## @code{[@var{L}, @var{U}] = ilu (@var{A},@var{setup})} returns a unit lower
-## triangular matrix in @var{L} and an upper triangular matrix in @var{U}.  When
-## SETUP.type = @qcode{"ilutp"}, the role of @var{P} is determined by the
-## value of SETUP.milu.  For SETUP.type == @qcode{"ilutp"}, one of the
-## factors is permuted based on the value of SETUP.milu.  When SETUP.milu ==
-## @qcode{"row"}, U is a column permuted upper triangular factor.  Otherwise,
-## L is a row-permuted unit lower triangular factor.
+## With two outputs, @code{ilu} returns a unit lower triangular matrix @var{L}
+## and an upper triangular matrix @var{U}.  For @var{opts}.type ==
+## @qcode{"ilutp"}, one of the factors is permuted based on the value of
+## @var{opts}.milu.  When @var{opts}.milu == @qcode{"row"}, @var{U} is a
+## column permuted upper triangular factor.  Otherwise, @var{L} is a
+## row-permuted unit lower triangular factor.
 ##
-## @code{[@var{L}, @var{U}, @var{P}] = ilu (@var{A},@var{setup})} returns a
-## unit lower triangular matrix in @var{L}, an upper triangular matrix in
-## @var{U}, and a permutation matrix in @var{P}.  When @code{milu} ! =
-## @qcode{"row"}, @var{P} is returned such that @var{L} and @var{U} are
-## incomplete factors of @var{P}*@var{A}.  When @code{milu} == @qcode{"row"},
-## @var{P} is returned such that and @var{U} are incomplete factors of A*P.
+## If there are three named outputs and @var{opts}.milu != @qcode{"row"},
+## @var{P} is returned such that @var{L} and @var{U} are incomplete factors
+## of @code{@var{P}*@var{A}}.  When @var{opts}.milu == @qcode{"row"}, @var{P}
+## is returned such that @var{L} and @var{U} are incomplete factors of
+## @code{@var{A}*@var{P}}.
 ##
-## Examples
+## EXAMPLES
 ##
 ## @example
 ## @group
@@ -141,9 +134,9 @@
 ## @end group
 ## @end example
 ##
-## This shows that @var{A} has 7840 nonzeros, the complete LU factorization has
-## 126478 nonzeros, and the incomplete LU factorization, with 0 level of
-## fill-in, has 7840 nonzeros, the same amount as @var{A}.  Taken from:
+## This shows that @var{A} has 7,840 nonzeros, the complete LU factorization has
+## 126,478 nonzeros, and the incomplete LU factorization, with 0 level of
+## fill-in, has 7,840 nonzeros, the same amount as @var{A}.  Taken from:
 ## http://www.mathworks.com/help/matlab/ref/ilu.html
 ##
 ## @example

@@ -1,6 +1,6 @@
 ## Copyright (C) 2014 Eduardo Ramos Fernández <eduradical951@gmail.com>
 ## Copyright (C) 2013 Kai T. Ohlhus <k.ohlhus@gmail.com>
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -22,67 +22,75 @@
 ## @deftypefnx {Function File} {@var{L} =} ichol (@var{A}, @var{opts})
 ##
 ## Compute the incomplete Cholesky factorization of the sparse square matrix
-## @var{A} with zero-fill.
+## @var{A}.
 ##
-## By default, ichol references the lower triangle of @var{A} and produces
-## lower triangular factors.
+## By default, @code{ichol} uses only the lower triangle of @var{A} and
+## produces a lower triangular factor @var{L} such that @tcode{L*L'}
+## approximates @var{A}.
 ##
 ## The factor given by this routine may be useful as a preconditioner for a
 ## system of linear equations being solved by iterative methods such as
 ## PCG (Preconditioned Conjugate Gradient).
 ##
 ## The factorization may be modified by passing options in a structure
-## @var{opts}.  The option name is a field in the structure and the setting
+## @var{opts}.  The option name is a field of the structure and the setting
 ## is the value of field.  Names and specifiers are case sensitive.
 ##
 ## @table @asis
 ## @item type
 ## Type of factorization.
-## String indicating which flavor of incomplete Cholesky to perform.  Valid
-## values of this field are @qcode{"nofill"} and @qcode{"ict"}.  The
-## @qcode{"nofill"} variant performs incomplete Cholesky with zero-fill
-## @nospell{[IC(0)]}.  The @qcode{"ict"} variant performs incomplete Cholesky
-## with threshold dropping @nospell{[ICT]}.  The default value is
-## @qcode{"nofill"}.
 ##
-## @item droptol
-## Drop tolerance when type is @qcode{"ict"}.
-## Non-negative scalar used as a drop tolerance when performing @nospell{ICT}@.
-## Elements which are smaller in magnitude than a local drop tolerance are
-## dropped from the resulting factor except for the diagonal element which is
-## never dropped.
-## The local drop tolerance at step j of the factorization is
-## @code{norm (@var{A}(j:end, j), 1) * droptol}.  @code{droptol} is ignored if
-## @code{type} is @qcode{"nofill"}.  The default value is 0.
+## @table @asis
+## @item @qcode{"nofill"} (default)
+## Incomplete Cholesky factorization with no fill-in (@nospell{IC(0)}).
 ##
-## @item michol
-## Indicate whether modified incomplete Cholesky [MIC] is performed.
-## The field may be @qcode{"on"} or @qcode{"off"}.  When performing MIC, the
-## diagonal is compensated for dropped elements to enforce the relationship
-## @code{@var{A} * @var{e} = @var{L} * @var{L}' * @var{e}} where
-## @code{@var{e} = ones (columns (@var{A}), 1)}.  The default value is
-## @qcode{"off"}.
-##
-## @item diagcomp
-## Perform compensated incomplete Cholesky with the specified coefficient.
-## The coefficient is a real non-negative scalar used as a global diagonal
-## shift @code{@var{alpha}} in forming the incomplete Cholesky factor.  That
-## is, instead of performing incomplete Cholesky on @code{@var{A}}, the
-## factorization of @code{@var{A} + @var{alpha} * diag (diag (@var{A}))} is
-## formed.  The default value is 0.
-##
-## @item shape
-## Determine which triangle is referenced and returned.
-## Valid values are @qcode{"upper"} and @qcode{"lower"}.  If @qcode{"upper"}
-## is specified, only the upper triangle of @code{@var{A}} is referenced and
-## @code{@var{R}} is constructed such that @code{@var{A}} is approximated by
-## @code{@var{R}' * @var{R}}.  If @qcode{"lower"} is specified, only the
-## lower triangle of @code{@var{A}} is referenced and @code{@var{L}} is
-## constructed such that @code{@var{A}} is approximated by @code{@var{L} *
-## @var{L}'}.  The default value is @qcode{"lower"}.
+## @item @qcode{"ict"}
+## Incomplete Cholesky factorization with threshold dropping (@nospell{ICT}).
 ## @end table
 ##
-## Examples
+## @item diagcomp
+## A non-negative scalar @var{alpha} for incomplete Cholesky factorization of
+## @code{@var{A} + @var{alpha} * diag (diag (@var{A}))} instead of @var{A}.
+## This can be useful when @var{A} is not positive definite.  The default value
+## is 0.
+##
+## @item droptol
+## A non-negative scalar specifying the drop tolerance for factorization if
+## performing @nospell{ICT}@.  The default value is 0 which produces the complete
+## Cholesky factorization.
+##
+## Non-diagonal entries of @var{L} are set to 0 unless
+##
+## @code{abs (@var{L}(i,j)) >= droptol * norm (@var{A}(j:end, j), 1)}.
+##
+## @item michol
+## Modified incomplete Cholesky factorization:
+##
+## @table @asis
+## @item @qcode{"off"} (default)
+## Row and column sums are not necessarily preserved.
+##
+## @item @qcode{"on"}
+## The diagonal of @var{L} is modified so that row (and column) sums are
+## preserved even when elements have been dropped during the factorization.
+## The relationship preserved is: @code{@var{A} * e = @var{L} * @var{L}' * e},
+## where e is a vector of ones.
+## @end table
+##
+## @item shape
+##
+## @table @asis
+## @item @qcode{"lower"} (default)
+## Use only the lower triangle of @var{A} and return a lower triangular
+## factor @var{L} such that @tcode{L*L'} approximates @var{A}.
+##
+## @item @qcode{"upper"}
+## Use only the upper triangle of @var{A} and return an upper triangular
+## factor @var{U} such that @code{U'*U} approximates @var{A}.
+## @end table
+## @end table
+##
+## EXAMPLES
 ##
 ## The following problem demonstrates how to factorize a sample symmetric
 ## positive definite matrix with the full Cholesky decomposition and with the
@@ -159,7 +167,7 @@ function L = ichol (A, opts = struct ())
   endif
 
   ## If A is empty then return empty L for Matlab compatibility
-  if (isempty (A)) 
+  if (isempty (A))
     L = A;
     return;
   endif
@@ -237,7 +245,7 @@ function L = ichol (A, opts = struct ())
   if (strcmp (opts.shape, "upper"))
     L = L';
   endif
-  
+
 endfunction
 
 
@@ -342,14 +350,14 @@ endfunction
 %! L = ichol (A5, opts);
 %! assert (norm (A5 - L*L', "fro") / norm (A5, "fro"), 0.0276, 1e-4);
 
-## Negative pivot 
+## Negative pivot
 %!error <negative pivot> ichol (A6)
 %!error ichol (A6)
 ## Complex entry in the diagonal
 %!error <non-real pivot> ichol (A7)
 
 ## ICHOLT tests
- 
+
 %%!test
 %! opts.type = "ict";
 %! opts.droptol = 1e-1;

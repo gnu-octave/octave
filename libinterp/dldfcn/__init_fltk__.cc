@@ -1075,7 +1075,7 @@ private:
 
             if (kid.valid_object () && kid.isa ("axes"))
               {
-                Matrix bb = kid.get_properties ().get_boundingbox (true);
+                Matrix bb = kid.get_properties ().get_boundingbox (false);
 
                 if (bb(0) <= px && px < (bb(0)+bb(2))
                     && bb(1) <= py && py < (bb(1)+bb(3)))

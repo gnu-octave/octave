@@ -60,6 +60,8 @@ betaln
 betapdf
 betarnd
 BFGS
+BICG
+BiConjugate
 bigtriangledown
 bincoeff
 binocdf
@@ -171,6 +173,8 @@ cov
 CPLEX
 CreateFcn
 CRLF
+Crout
+crout
 csymamd
 ctranspose
 Ctrl
@@ -215,6 +219,7 @@ demi
 DeskJet
 det
 diag
+diagcomp
 diamondsuit
 dir
 disp
@@ -233,6 +238,7 @@ Downarrow
 downarrow
 downdate
 dpi
+droptol
 dt
 Dt
 dx
@@ -300,7 +306,9 @@ fieldname
 fieldnames
 filename
 filenames
+filepaths
 Filesystem
+filetype
 FinDiffType
 finv
 FIRfilter
@@ -357,6 +365,7 @@ glibc
 globbing
 glpk
 GLS
+GMRES
 gnulib
 gnuplot
 Gnuplot
@@ -417,6 +426,7 @@ hygernd
 Hypergeometric
 hypergeometric
 ichol
+ict
 IEC
 ieee
 IEEE
@@ -426,6 +436,7 @@ ifftn
 ignorecase
 ij
 ilu
+ilutp
 Im
 imag
 ImageMagick
@@ -446,6 +457,7 @@ interpn
 interpolant
 Interpolants
 interquartile
+inuse
 inv
 involutory
 ipermute
@@ -571,6 +583,7 @@ maxima
 MaxIntervalCount
 MaxIter
 mcnemar
+mdl
 meansq
 menubars
 Mersenne
@@ -582,6 +595,7 @@ metafiles
 Metafont
 mex
 mget
+michol
 Microsystems
 MinGW
 minima
@@ -643,6 +657,7 @@ nnls
 nnz
 nocompute
 nodither
+nofill
 nolabel
 noncommercially
 nonconformant
@@ -741,6 +756,7 @@ PostScript
 powerset
 pre
 preconditioner
+preconditioners
 premultiplied
 Prepend
 prepended
@@ -749,6 +765,7 @@ printf
 priori
 Profiler
 profiler
+programmatically
 prolate
 PromptString
 propto
@@ -854,6 +871,7 @@ simplecholperm
 simplematrix
 simplices
 sinetone
+slx
 sm
 smirnov
 Smirnov

@@ -136,26 +136,6 @@ charMatrix::extract (octave_idx_type r1, octave_idx_type c1,
   return result;
 }
 
-charMatrix
-charMatrix::diag (octave_idx_type k) const
-{
-  return Array<char>::diag (k);
-}
-
-// FIXME: Do these really belong here?  Maybe they should be in a base class?
-
-boolMatrix
-charMatrix::all (int dim) const
-{
-  return do_mx_red_op<bool, char> (*this, dim, mx_inline_all);
-}
-
-boolMatrix
-charMatrix::any (int dim) const
-{
-  return do_mx_red_op<bool, char> (*this, dim, mx_inline_any);
-}
-
 MS_CMP_OPS (charMatrix, char)
 MS_BOOL_OPS (charMatrix, char)
 

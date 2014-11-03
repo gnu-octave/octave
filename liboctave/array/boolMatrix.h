@@ -52,12 +52,6 @@ public:
 
   boolMatrix (const boolMatrix& a) : boolNDArray (a) { }
 
-  boolMatrix& operator = (const boolMatrix& a)
-  {
-    Array<bool>::operator = (a);
-    return *this;
-  }
-
   bool operator == (const boolMatrix& a) const;
   bool operator != (const boolMatrix& a) const;
 
@@ -75,9 +69,6 @@ public:
   // other operations
 
   boolMatrix diag (octave_idx_type k = 0) const;
-
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
 
 #if 0
   // i/o

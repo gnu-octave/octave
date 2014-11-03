@@ -84,20 +84,6 @@ boolMatrix::diag (octave_idx_type k) const
   return Array<bool>::diag (k);
 }
 
-// FIXME: Do these really belong here?  Maybe they should be in a base class?
-
-boolMatrix
-boolMatrix::all (int dim) const
-{
-  return do_mx_red_op<bool, bool> (*this, dim, mx_inline_all);
-}
-
-boolMatrix
-boolMatrix::any (int dim) const
-{
-  return do_mx_red_op<bool, bool> (*this, dim, mx_inline_any);
-}
-
 MM_BOOL_OPS (boolMatrix, boolMatrix)
 MS_BOOL_OPS (boolMatrix, bool)
 SM_BOOL_OPS (bool, boolMatrix)

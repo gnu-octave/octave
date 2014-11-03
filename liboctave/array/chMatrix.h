@@ -66,12 +66,6 @@ public:
   charMatrix (const string_vector& s, char fill_value = '\0')
     : charNDArray (s, fill_value) {}
 
-  charMatrix& operator = (const charMatrix& a)
-  {
-    Array<char>::operator = (a);
-    return *this;
-  }
-
   bool operator == (const charMatrix& a) const;
   bool operator != (const charMatrix& a) const;
 
@@ -94,11 +88,6 @@ public:
   {
     Array<char>::resize (dim_vector (nr, nc), rfv);
   }
-
-  charMatrix diag (octave_idx_type k = 0) const;
-
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
 
 #if 0
   // i/o

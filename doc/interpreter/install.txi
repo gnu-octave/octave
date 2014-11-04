@@ -729,6 +729,16 @@ done
 @noindent
 Other systems may require a different solution.
 
+@item @sc{arpack} (http://forge.scilab.org/index.php/p/arpack-ng/)
+
+@itemize @minus
+@item Add @option{-fdefault-integer-8} to @env{FFLAGS} when running configure.
+
+@item Run @code{make} to build the library.
+
+@item Run @code{make install} to install the library.
+@end itemize
+
 @item ATLAS instead of reference @sc{blas} and @sc{lapack}
 
 Suggestions on how to compile ATLAS would be most welcome.

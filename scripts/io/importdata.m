@@ -175,7 +175,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
     ## If no delimiter determined yet, make a guess.
     if (isempty (delimiter))
       ## This pattern can be fooled, but mostly does the job just fine.
-      delim = regexp (row, '[-+\d.eE*ij ]+([^-+\d.ij])[-+\d.ij]',
+      delim = regexpi (row, '[-+\d.e*ij ]+([^-+\de.ij])[-+\de*.ij ]',
                       'tokens', 'once');
       #delim = regexp (row, '[+-\d.eE\*ij ]+([^+-\d.ij])[+-\d.ij]',
       #                     'tokens', 'once');
@@ -517,6 +517,18 @@ endfunction
 %! unlink (fn);
 %! assert (a, A);
 %! assert (d, "\t");
+%! assert (h, 0);
+
+%!test
+%! ## Distinguish double from complex when no delimiter is supplied (bug #43393)
+%! fn  = tmpnam ();
+%! fid = fopen (fn, "w");
+%! fputs (fid, "2.0000e+02   4.0000e-04");
+%! fclose (fid);
+%! [a, d, h] = importdata (fn);
+%! unlink (fn);
+%! assert (a, [2e2, 4e-4]);
+%! assert (d, " ");
 %! assert (h, 0);
 
 %!test

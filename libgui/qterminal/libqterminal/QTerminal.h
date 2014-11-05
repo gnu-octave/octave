@@ -110,6 +110,8 @@ public slots:
 
   void notice_settings (const QSettings *settings);
 
+  virtual void init_terminal_size (void) { }
+
   void terminal_interrupt (void) { emit interrupt_signal (); }
 
 protected:
@@ -147,6 +149,9 @@ protected:
 
     connect (xparent, SIGNAL (settings_changed (const QSettings *)),
              this, SLOT (notice_settings (const QSettings *)));
+
+    connect (xparent, SIGNAL (init_terminal_size_signal ()),
+             this, SLOT (init_terminal_size ()));
 
     connect (xparent, SIGNAL (copyClipboard_signal ()),
              this, SLOT (copyClipboard ()));

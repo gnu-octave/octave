@@ -71,6 +71,7 @@ public slots:
   void pasteClipboard (void);
   void selectAll (void);
   void blinkCursorEvent (void);
+  void init_terminal_size (void);
 
 signals:
   void terminated (void);
@@ -100,7 +101,8 @@ protected:
   void dropEvent(QDropEvent *event);
 
 private slots:
-  void scrollValueChanged (int value);
+  void horizontalScrollValueChanged (int value);
+  void verticalScrollValueChanged (int value);
   void monitorConsole (void);
   void updateSelection (void);
   void tripleClickTimeout (void);

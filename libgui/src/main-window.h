@@ -81,6 +81,7 @@ public:
 
 signals:
   void settings_changed (const QSettings *);
+  void init_terminal_size_signal (void);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
 
@@ -153,6 +154,7 @@ public slots:
                                                 const QString& file, int line);
 
   void read_settings (void);
+  void init_terminal_size (void);
   void set_window_layout (QSettings *settings);
   void write_settings (void);
   void connect_visibility_changed (void);

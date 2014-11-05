@@ -81,7 +81,8 @@ function retval = doc (fname)
         info_file_name = info_file ();
 
         if (! exist (info_file_name, "file")
-            && ! exist ([info_file_name ".gz"], "file"))
+            && ! exist ([info_file_name ".gz"], "file")
+            && ! exist ([info_file_name ".bz2"], "file"))
           __gripe_missing_component__ ("doc", "info-file");
         endif
       endif

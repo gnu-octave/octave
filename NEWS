@@ -96,10 +96,12 @@ Summary of important user-visible changes for version 4.2:
       bandwidth
       dir_in_loadpath
       flip
+      frame2im
       hgload
       hgsave
       ichol
       ilu
+      im2frame
       isbanded
       isdiag
       istril

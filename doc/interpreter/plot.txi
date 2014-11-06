@@ -237,6 +237,10 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(comet3)
 
+@DOCSTRING(frame2im)
+
+@DOCSTRING(im2frame)
+
 @node Axis Configuration
 @subsubsection Axis Configuration
 

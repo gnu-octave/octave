@@ -38,6 +38,7 @@ plot_util_FCN_FILES = \
   plot/util/findall.m \
   plot/util/findfigs.m \
   plot/util/findobj.m \
+  plot/util/frame2im.m \
   plot/util/gca.m \
   plot/util/gcbf.m \
   plot/util/gcbo.m \
@@ -51,6 +52,7 @@ plot_util_FCN_FILES = \
   plot/util/hgload.m \
   plot/util/hgsave.m \
   plot/util/hold.m \
+  plot/util/im2frame.m \
   plot/util/isaxes.m \
   plot/util/isfigure.m \
   plot/util/ishghandle.m \

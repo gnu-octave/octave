@@ -52,8 +52,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>560</width>
-            <height>353</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -404,9 +404,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-256</y>
             <width>662</width>
-            <height>613</height>
+            <height>634</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -755,13 +755,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="4">
-                <widget class="QCheckBox" name="editor_tab_ind_checkbox">
-                 <property name="text">
-                  <string>Tab indents line</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="5">
                 <spacer name="horizontalSpacer_14">
                  <property name="orientation">
@@ -777,6 +770,13 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="2" column="4">
+                <widget class="QCheckBox" name="editor_tab_ind_checkbox">
+                 <property name="text">
+                  <string>Tab indents line</string>
+                 </property>
+                </widget>
                </item>
                <item row="0" column="4">
                 <widget class="QCheckBox" name="editor_auto_ind_checkbox">
@@ -870,6 +870,13 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="3" column="4">
+                <widget class="QCheckBox" name="editor_ind_uses_tabs_checkbox">
+                 <property name="text">
+                  <string>Indentation uses tabs</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -1280,8 +1287,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>262</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1545,8 +1552,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>474</width>
-            <height>318</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1709,8 +1716,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>203</width>
-            <height>134</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1784,8 +1791,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>368</width>
-            <height>244</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2047,8 +2054,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>529</width>
-            <height>204</height>
+            <width>678</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">

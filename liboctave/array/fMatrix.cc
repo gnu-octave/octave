@@ -324,7 +324,7 @@ FloatMatrix&
 FloatMatrix::insert (const FloatMatrix& a,
                      octave_idx_type r, octave_idx_type c)
 {
-  Array<float>::insert (a, r, c);
+  FloatNDArray::insert (a, r, c);
   return *this;
 }
 
@@ -2654,17 +2654,6 @@ FloatMatrix::operator -= (const FloatDiagMatrix& a)
   return *this;
 }
 
-// unary operations
-
-boolMatrix
-FloatMatrix::operator ! (void) const
-{
-  if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-
-  return do_mx_unary_op<bool, float> (*this, mx_inline_not);
-}
-
 // column vector by row vector -> matrix operations
 
 FloatMatrix
@@ -2692,139 +2681,48 @@ operator * (const FloatColumnVector& v, const FloatRowVector& a)
   return retval;
 }
 
-// other operations.
-
-bool
-FloatMatrix::any_element_is_negative (bool neg_zero) const
-{
-  return (neg_zero ? test_all (xnegative_sign)
-          : do_mx_check<float> (*this, mx_inline_any_negative));
-}
-
-bool
-FloatMatrix::any_element_is_positive (bool neg_zero) const
-{
-  return (neg_zero ? test_all (xpositive_sign)
-          : do_mx_check<float> (*this, mx_inline_any_positive));
-}
-
-bool
-FloatMatrix::any_element_is_nan (void) const
-{
-  return do_mx_check<float> (*this, mx_inline_any_nan);
-}
-
-bool
-FloatMatrix::any_element_is_inf_or_nan (void) const
-{
-  return ! do_mx_check<float> (*this, mx_inline_all_finite);
-}
-
-bool
-FloatMatrix::any_element_not_one_or_zero (void) const
-{
-  return ! test_all (xis_one_or_zero);
-}
-
-bool
-FloatMatrix::all_elements_are_int_or_inf_or_nan (void) const
-{
-  return test_all (xis_int_or_inf_or_nan);
-}
-
-// Return nonzero if any element of M is not an integer.  Also extract
-// the largest and smallest values and return them in MAX_VAL and MIN_VAL.
-
-bool
-FloatMatrix::all_integers (float& max_val, float& min_val) const
-{
-  octave_idx_type nel = nelem ();
-
-  if (nel > 0)
-    {
-      max_val = elem (0);
-      min_val = elem (0);
-    }
-  else
-    return false;
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float val = elem (i);
-
-      if (val > max_val)
-        max_val = val;
-
-      if (val < min_val)
-        min_val = val;
-
-      if (! xisinteger (val))
-        return false;
-    }
-
-  return true;
-}
-
-bool
-FloatMatrix::too_large_for_float (void) const
-{
-  return false;
-}
-
 // FIXME: Do these really belong here?  Maybe they should be in a base class?
-
-boolMatrix
-FloatMatrix::all (int dim) const
-{
-  return do_mx_red_op<bool, float> (*this, dim, mx_inline_all);
-}
-
-boolMatrix
-FloatMatrix::any (int dim) const
-{
-  return do_mx_red_op<bool, float> (*this, dim, mx_inline_any);
-}
 
 FloatMatrix
 FloatMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<float, float> (*this, dim, mx_inline_cumprod);
+  return FloatNDArray::cumprod (dim);
 }
 
 FloatMatrix
 FloatMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<float, float> (*this, dim, mx_inline_cumsum);
+  return FloatNDArray::cumsum (dim);
 }
 
 FloatMatrix
 FloatMatrix::prod (int dim) const
 {
-  return do_mx_red_op<float, float> (*this, dim, mx_inline_prod);
+  return FloatNDArray::prod (dim);
 }
 
 FloatMatrix
 FloatMatrix::sum (int dim) const
 {
-  return do_mx_red_op<float, float> (*this, dim, mx_inline_sum);
+  return FloatNDArray::sum (dim);
 }
 
 FloatMatrix
 FloatMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<float, float> (*this, dim, mx_inline_sumsq);
+  return FloatNDArray::sumsq (dim);
 }
 
 FloatMatrix
 FloatMatrix::abs (void) const
 {
-  return do_mx_unary_map<float, float, std::abs> (*this);
+  return FloatNDArray::abs ();
 }
 
 FloatMatrix
 FloatMatrix::diag (octave_idx_type k) const
 {
-  return MArray<float>::diag (k);
+  return FloatNDArray::diag (k);
 }
 
 FloatDiagMatrix

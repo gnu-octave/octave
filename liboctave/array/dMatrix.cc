@@ -2632,15 +2632,6 @@ Matrix::operator -= (const DiagMatrix& a)
 
 // unary operations
 
-boolMatrix
-Matrix::operator ! (void) const
-{
-  if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-
-  return do_mx_unary_op<bool, double> (*this, mx_inline_not);
-}
-
 // column vector by row vector -> matrix operations
 
 Matrix
@@ -2670,131 +2661,54 @@ operator * (const ColumnVector& v, const RowVector& a)
 
 // other operations.
 
-bool
-Matrix::any_element_is_negative (bool neg_zero) const
-{
-  return (neg_zero ? test_all (xnegative_sign)
-          : do_mx_check<double> (*this, mx_inline_any_negative));
-}
-
-bool
-Matrix::any_element_is_positive (bool neg_zero) const
-{
-  return (neg_zero ? test_all (xpositive_sign)
-          : do_mx_check<double> (*this, mx_inline_any_positive));
-}
-
-bool
-Matrix::any_element_is_nan (void) const
-{
-  return do_mx_check<double> (*this, mx_inline_any_nan);
-}
-
-bool
-Matrix::any_element_is_inf_or_nan (void) const
-{
-  return ! do_mx_check<double> (*this, mx_inline_all_finite);
-}
-
-bool
-Matrix::any_element_not_one_or_zero (void) const
-{
-  return ! test_all (xis_one_or_zero);
-}
-
-bool
-Matrix::all_elements_are_int_or_inf_or_nan (void) const
-{
-  return test_all (xis_int_or_inf_or_nan);
-}
-
-// Return nonzero if any element of M is not an integer.  Also extract
-// the largest and smallest values and return them in MAX_VAL and MIN_VAL.
-
-bool
-Matrix::all_integers (double& max_val, double& min_val) const
-{
-  octave_idx_type nel = nelem ();
-
-  if (nel > 0)
-    {
-      max_val = elem (0);
-      min_val = elem (0);
-    }
-  else
-    return false;
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      double val = elem (i);
-
-      if (val > max_val)
-        max_val = val;
-
-      if (val < min_val)
-        min_val = val;
-
-      if (! xisinteger (val))
-        return false;
-    }
-
-  return true;
-}
-
-bool
-Matrix::too_large_for_float (void) const
-{
-  return test_any (xtoo_large_for_float);
-}
-
 // FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 Matrix::all (int dim) const
 {
-  return do_mx_red_op<bool, double> (*this, dim, mx_inline_all);
+  return NDArray::all (dim);
 }
 
 boolMatrix
 Matrix::any (int dim) const
 {
-  return do_mx_red_op<bool, double> (*this, dim, mx_inline_any);
+  return NDArray::any (dim);
 }
 
 Matrix
 Matrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumprod);
+  return NDArray::cumprod (dim);
 }
 
 Matrix
 Matrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<double, double> (*this, dim, mx_inline_cumsum);
+  return NDArray::cumsum (dim);
 }
 
 Matrix
 Matrix::prod (int dim) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_prod);
+  return NDArray::prod (dim);
 }
 
 Matrix
 Matrix::sum (int dim) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_sum);
+  return NDArray::sum (dim);
 }
 
 Matrix
 Matrix::sumsq (int dim) const
 {
-  return do_mx_red_op<double, double> (*this, dim, mx_inline_sumsq);
+  return NDArray::sumsq (dim);
 }
 
 Matrix
 Matrix::abs (void) const
 {
-  return do_mx_unary_map<double, double, std::abs> (*this);
+  return NDArray::abs ();
 }
 
 Matrix

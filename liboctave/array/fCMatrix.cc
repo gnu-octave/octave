@@ -3123,154 +3123,56 @@ FloatComplexMatrix::operator -= (const FloatMatrix& a)
 // unary operations
 
 boolMatrix
-FloatComplexMatrix::operator ! (void) const
-{
-  if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-
-  return do_mx_unary_op<bool, FloatComplex> (*this, mx_inline_not);
-}
-
-// other operations
-
-bool
-FloatComplexMatrix::any_element_is_nan (void) const
-{
-  return do_mx_check<FloatComplex> (*this, mx_inline_any_nan);
-}
-
-bool
-FloatComplexMatrix::any_element_is_inf_or_nan (void) const
-{
-  return ! do_mx_check<FloatComplex> (*this, mx_inline_all_finite);
-}
-
-// Return true if no elements have imaginary components.
-
-bool
-FloatComplexMatrix::all_elements_are_real (void) const
-{
-  return do_mx_check<FloatComplex> (*this, mx_inline_all_real);
-}
-
-// Return nonzero if any element of CM has a non-integer real or
-// imaginary part.  Also extract the largest and smallest (real or
-// imaginary) values and return them in MAX_VAL and MIN_VAL.
-
-bool
-FloatComplexMatrix::all_integers (float& max_val, float& min_val) const
-{
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      FloatComplex val = elem (0, 0);
-
-      float r_val = std::real (val);
-      float i_val = std::imag (val);
-
-      max_val = r_val;
-      min_val = r_val;
-
-      if (i_val > max_val)
-        max_val = i_val;
-
-      if (i_val < max_val)
-        min_val = i_val;
-    }
-  else
-    return false;
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        FloatComplex val = elem (i, j);
-
-        float r_val = std::real (val);
-        float i_val = std::imag (val);
-
-        if (r_val > max_val)
-          max_val = r_val;
-
-        if (i_val > max_val)
-          max_val = i_val;
-
-        if (r_val < min_val)
-          min_val = r_val;
-
-        if (i_val < min_val)
-          min_val = i_val;
-
-        if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
-          return false;
-      }
-
-  return true;
-}
-
-bool
-FloatComplexMatrix::too_large_for_float (void) const
-{
-  return false;
-}
-
-// FIXME: Do these really belong here?  Maybe they should be
-// in a base class?
-
-boolMatrix
 FloatComplexMatrix::all (int dim) const
 {
-  return do_mx_red_op<bool, FloatComplex> (*this, dim, mx_inline_all);
+  return FloatComplexNDArray::all (dim);
 }
 
 boolMatrix
 FloatComplexMatrix::any (int dim) const
 {
-  return do_mx_red_op<bool, FloatComplex> (*this, dim, mx_inline_any);
+  return FloatComplexNDArray::any (dim);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim,
-                                                   mx_inline_cumprod);
+  return FloatComplexNDArray::cumprod (dim);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<FloatComplex, FloatComplex> (*this, dim,
-                                                   mx_inline_cumsum);
+  return FloatComplexNDArray::cumsum (dim);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::prod (int dim) const
 {
-  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_prod);
+  return FloatComplexNDArray::prod (dim);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::sum (int dim) const
 {
-  return do_mx_red_op<FloatComplex, FloatComplex> (*this, dim, mx_inline_sum);
+  return FloatComplexNDArray::sum (dim);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<float, FloatComplex> (*this, dim, mx_inline_sumsq);
+  return FloatComplexNDArray::sumsq (dim);
 }
 
 FloatMatrix FloatComplexMatrix::abs (void) const
 {
-  return do_mx_unary_map<float, FloatComplex, std::abs> (*this);
+  return FloatComplexNDArray::abs ();
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::diag (octave_idx_type k) const
 {
-  return MArray<FloatComplex>::diag (k);
+  return FloatComplexNDArray::diag (k);
 }
 
 FloatComplexDiagMatrix

@@ -3102,148 +3102,54 @@ ComplexMatrix::operator -= (const Matrix& a)
   return *this;
 }
 
-// unary operations
-
-boolMatrix
-ComplexMatrix::operator ! (void) const
-{
-  if (any_element_is_nan ())
-    gripe_nan_to_logical_conversion ();
-
-  return do_mx_unary_op<bool, Complex> (*this, mx_inline_not);
-}
-
 // other operations
-
-bool
-ComplexMatrix::any_element_is_nan (void) const
-{
-  return do_mx_check<Complex> (*this, mx_inline_any_nan);
-}
-
-bool
-ComplexMatrix::any_element_is_inf_or_nan (void) const
-{
-  return ! do_mx_check<Complex> (*this, mx_inline_all_finite);
-}
-
-// Return true if no elements have imaginary components.
-
-bool
-ComplexMatrix::all_elements_are_real (void) const
-{
-  return do_mx_check<Complex> (*this, mx_inline_all_real);
-}
-
-// Return nonzero if any element of CM has a non-integer real or
-// imaginary part.  Also extract the largest and smallest (real or
-// imaginary) values and return them in MAX_VAL and MIN_VAL.
-
-bool
-ComplexMatrix::all_integers (double& max_val, double& min_val) const
-{
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  if (nr > 0 && nc > 0)
-    {
-      Complex val = elem (0, 0);
-
-      double r_val = std::real (val);
-      double i_val = std::imag (val);
-
-      max_val = r_val;
-      min_val = r_val;
-
-      if (i_val > max_val)
-        max_val = i_val;
-
-      if (i_val < max_val)
-        min_val = i_val;
-    }
-  else
-    return false;
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-        Complex val = elem (i, j);
-
-        double r_val = std::real (val);
-        double i_val = std::imag (val);
-
-        if (r_val > max_val)
-          max_val = r_val;
-
-        if (i_val > max_val)
-          max_val = i_val;
-
-        if (r_val < min_val)
-          min_val = r_val;
-
-        if (i_val < min_val)
-          min_val = i_val;
-
-        if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
-          return false;
-      }
-
-  return true;
-}
-
-bool
-ComplexMatrix::too_large_for_float (void) const
-{
-  return test_any (xtoo_large_for_float);
-}
-
-// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 boolMatrix
 ComplexMatrix::all (int dim) const
 {
-  return do_mx_red_op<bool, Complex> (*this, dim, mx_inline_all);
+  return ComplexNDArray::all (dim);
 }
 
 boolMatrix
 ComplexMatrix::any (int dim) const
 {
-  return do_mx_red_op<bool, Complex> (*this, dim, mx_inline_any);
+  return ComplexNDArray::any (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumprod);
+  return ComplexNDArray::cumprod (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<Complex, Complex> (*this, dim, mx_inline_cumsum);
+  return ComplexNDArray::cumsum (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::prod (int dim) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_prod);
+  return ComplexNDArray::prod (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::sum (int dim) const
 {
-  return do_mx_red_op<Complex, Complex> (*this, dim, mx_inline_sum);
+  return ComplexNDArray::sum (dim);
 }
 
 ComplexMatrix
 ComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<double, Complex> (*this, dim, mx_inline_sumsq);
+  return ComplexNDArray::sumsq (dim);
 }
 
-Matrix ComplexMatrix::abs (void) const
+Matrix
+ComplexMatrix::abs (void) const
 {
-  return do_mx_unary_map<double, Complex, std::abs> (*this);
+  return ComplexNDArray::abs ();
 }
 
 ComplexMatrix

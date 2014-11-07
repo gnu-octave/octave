@@ -90,12 +90,6 @@ public:
 
   FloatComplexMatrix (const FloatMatrix& re, const FloatMatrix& im);
 
-  FloatComplexMatrix& operator = (const FloatComplexMatrix& a)
-  {
-    MArray<FloatComplex>::operator = (a);
-    return *this;
-  }
-
   bool operator == (const FloatComplexMatrix& a) const;
   bool operator != (const FloatComplexMatrix& a) const;
 
@@ -380,12 +374,6 @@ public:
   boolMatrix operator ! (void) const;
 
   // other operations
-
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool all_elements_are_real (void) const;
-  bool all_integers (float& max_val, float& min_val) const;
-  bool too_large_for_float (void) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

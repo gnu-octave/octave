@@ -76,12 +76,6 @@ public:
 
   explicit FloatMatrix (const charMatrix& a);
 
-  FloatMatrix& operator = (const FloatMatrix& a)
-  {
-    MArray<float>::operator = (a);
-    return *this;
-  }
-
   bool operator == (const FloatMatrix& a) const;
   bool operator != (const FloatMatrix& a) const;
 
@@ -322,24 +316,6 @@ public:
 
   FloatMatrix& operator += (const FloatDiagMatrix& a);
   FloatMatrix& operator -= (const FloatDiagMatrix& a);
-
-  // unary operations
-
-  boolMatrix operator ! (void) const;
-
-  // other operations
-
-  bool any_element_is_negative (bool = false) const;
-  bool any_element_is_positive (bool = false) const;
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool any_element_not_one_or_zero (void) const;
-  bool all_elements_are_int_or_inf_or_nan (void) const;
-  bool all_integers (float& max_val, float& min_val) const;
-  bool too_large_for_float (void) const;
-
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
 
   FloatMatrix cumprod (int dim = -1) const;
   FloatMatrix cumsum (int dim = -1) const;

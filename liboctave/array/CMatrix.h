@@ -85,12 +85,6 @@ public:
 
   explicit ComplexMatrix (const charMatrix& a);
 
-  ComplexMatrix& operator = (const ComplexMatrix& a)
-  {
-    ComplexNDArray::operator = (a);
-    return *this;
-  }
-
   bool operator == (const ComplexMatrix& a) const;
   bool operator != (const ComplexMatrix& a) const;
 
@@ -357,17 +351,7 @@ public:
   ComplexMatrix& operator += (const Matrix& a);
   ComplexMatrix& operator -= (const Matrix& a);
 
-  // unary operations
-
-  boolMatrix operator ! (void) const;
-
   // other operations
-
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool all_elements_are_real (void) const;
-  bool all_integers (double& max_val, double& min_val) const;
-  bool too_large_for_float (void) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

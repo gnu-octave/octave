@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
+#include "CNDArray.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -34,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-ComplexMatrix : public MArray<Complex>
+ComplexMatrix : public ComplexNDArray
 {
 public:
 
@@ -43,26 +44,26 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  ComplexMatrix (void) : MArray<Complex> () { }
+  ComplexMatrix (void) : ComplexNDArray () { }
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c)
-    : MArray<Complex> (dim_vector (r, c)) { }
+    : ComplexNDArray (dim_vector (r, c)) { }
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
-    : MArray<Complex> (dim_vector (r, c), val) { }
+    : ComplexNDArray (dim_vector (r, c), val) { }
 
-  ComplexMatrix (const dim_vector& dv) : MArray<Complex> (dv.redim (2)) { }
+  ComplexMatrix (const dim_vector& dv) : ComplexNDArray (dv.redim (2)) { }
 
   ComplexMatrix (const dim_vector& dv, const Complex& val)
-    : MArray<Complex> (dv.redim (2), val) { }
+    : ComplexNDArray (dv.redim (2), val) { }
 
-  ComplexMatrix (const ComplexMatrix& a) : MArray<Complex> (a) { }
-
-  template <class U>
-  ComplexMatrix (const MArray<U>& a) : MArray<Complex> (a.as_matrix ()) { }
+  ComplexMatrix (const ComplexMatrix& a) : ComplexNDArray (a) { }
 
   template <class U>
-  ComplexMatrix (const Array<U>& a) : MArray<Complex> (a.as_matrix ()) { }
+  ComplexMatrix (const MArray<U>& a) : ComplexNDArray (a.as_matrix ()) { }
+
+  template <class U>
+  ComplexMatrix (const Array<U>& a) : ComplexNDArray (a.as_matrix ()) { }
 
   ComplexMatrix (const Matrix& re, const Matrix& im);
 
@@ -86,7 +87,7 @@ public:
 
   ComplexMatrix& operator = (const ComplexMatrix& a)
   {
-    MArray<Complex>::operator = (a);
+    ComplexNDArray::operator = (a);
     return *this;
   }
 

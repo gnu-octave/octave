@@ -140,7 +140,7 @@ octave_float_complex_matrix::matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (FloatComplexMatrix (matrix));
 
   return retval;
 }
@@ -154,7 +154,7 @@ octave_float_complex_matrix::float_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (FloatComplexMatrix (matrix));
 
   return retval;
 }
@@ -202,13 +202,13 @@ octave_float_complex_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_float_complex_matrix::complex_matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return FloatComplexMatrix (matrix);
 }
 
 FloatComplexMatrix
 octave_float_complex_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (matrix);
 }
 
 boolNDArray
@@ -290,7 +290,7 @@ octave_float_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      FloatComplexMatrix mat = matrix.matrix_value ();
+      FloatComplexMatrix mat (matrix);
 
       retval = mat.diag (m, n);
     }

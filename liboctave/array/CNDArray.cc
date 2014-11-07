@@ -815,20 +815,6 @@ ComplexNDArray::insert (const ComplexNDArray& a,
   return *this;
 }
 
-ComplexMatrix
-ComplexNDArray::matrix_value (void) const
-{
-  ComplexMatrix retval;
-
-  if (ndims () == 2)
-    retval = ComplexMatrix (Array<Complex> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of ComplexNDArray to ComplexMatrix");
-
-  return retval;
-}
-
 void
 ComplexNDArray::increment_index (Array<octave_idx_type>& ra_idx,
                                  const dim_vector& dimensions,

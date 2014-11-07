@@ -2088,7 +2088,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, Matrix (nda),
                              pr_as_read_syntax, extra_indent);
       break;
 
@@ -2565,7 +2565,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
     {
     case 1:
     case 2:
-      octave_print_internal (os, nda.matrix_value (),
+      octave_print_internal (os, ComplexMatrix (nda),
                              pr_as_read_syntax, extra_indent);
       break;
 

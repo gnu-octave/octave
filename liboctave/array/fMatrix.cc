@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
+#include "fNDArray.h"
 #include "Array-util.h"
 #include "boolMatrix.h"
 #include "chMatrix.h"
@@ -248,24 +249,24 @@ extern "C"
 // Matrix class.
 
 FloatMatrix::FloatMatrix (const FloatRowVector& rv)
-  : MArray<float> (rv)
+  : FloatNDArray (rv)
 {
 }
 
 FloatMatrix::FloatMatrix (const FloatColumnVector& cv)
-  : MArray<float> (cv)
+  : FloatNDArray (cv)
 {
 }
 
 FloatMatrix::FloatMatrix (const FloatDiagMatrix& a)
-  : MArray<float> (a.dims (), 0.0)
+  : FloatNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 FloatMatrix::FloatMatrix (const PermMatrix& a)
-  : MArray<float> (a.dims (), 0.0)
+  : FloatNDArray (a.dims (), 0.0)
 {
   const Array<octave_idx_type> ia (a.col_perm_vec ());
   octave_idx_type len = a.rows ();
@@ -276,12 +277,12 @@ FloatMatrix::FloatMatrix (const PermMatrix& a)
 // FIXME: could we use a templated mixed-type copy function here?
 
 FloatMatrix::FloatMatrix (const boolMatrix& a)
-  : MArray<float> (a)
+  : FloatNDArray (a)
 {
 }
 
 FloatMatrix::FloatMatrix (const charMatrix& a)
-  : MArray<float> (a.dims ())
+  : FloatNDArray (a.dims ())
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)

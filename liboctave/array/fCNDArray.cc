@@ -826,20 +826,6 @@ FloatComplexNDArray::insert (const FloatComplexNDArray& a,
   return *this;
 }
 
-FloatComplexMatrix
-FloatComplexNDArray::matrix_value (void) const
-{
-  FloatComplexMatrix retval;
-
-  if (ndims () == 2)
-    retval = FloatComplexMatrix (Array<FloatComplex> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of FloatComplexNDArray to FloatComplexMatrix");
-
-  return retval;
-}
-
 void
 FloatComplexNDArray::increment_index (Array<octave_idx_type>& ra_idx,
                                       const dim_vector& dimensions,

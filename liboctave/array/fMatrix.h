@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_fMatrix_h)
 #define octave_fMatrix_h 1
 
+#include "fNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -33,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatMatrix : public MArray<float>
+FloatMatrix : public FloatNDArray
 {
 public:
 
@@ -42,26 +43,26 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) : MArray<float> () { }
+  FloatMatrix (void) : FloatNDArray () { }
 
   FloatMatrix (octave_idx_type r, octave_idx_type c)
-    : MArray<float> (dim_vector (r, c)) { }
+    : FloatNDArray (dim_vector (r, c)) { }
 
   FloatMatrix (octave_idx_type r, octave_idx_type c, float val)
-    : MArray<float> (dim_vector (r, c), val) { }
+    : FloatNDArray (dim_vector (r, c), val) { }
 
-  FloatMatrix (const dim_vector& dv) : MArray<float> (dv.redim (2)) { }
+  FloatMatrix (const dim_vector& dv) : FloatNDArray (dv.redim (2)) { }
 
   FloatMatrix (const dim_vector& dv, float val)
-    : MArray<float> (dv.redim (2), val) { }
+    : FloatNDArray (dv.redim (2), val) { }
 
-  FloatMatrix (const FloatMatrix& a) : MArray<float> (a) { }
-
-  template <class U>
-  FloatMatrix (const MArray<U>& a) : MArray<float> (a.as_matrix ()) { }
+  FloatMatrix (const FloatMatrix& a) : FloatNDArray (a) { }
 
   template <class U>
-  FloatMatrix (const Array<U>& a) : MArray<float> (a.as_matrix ()) { }
+  FloatMatrix (const MArray<U>& a) : FloatNDArray (a.as_matrix ()) { }
+
+  template <class U>
+  FloatMatrix (const Array<U>& a) : FloatNDArray (a.as_matrix ()) { }
 
   explicit FloatMatrix (const FloatRowVector& rv);
 
@@ -74,7 +75,6 @@ public:
   explicit FloatMatrix (const boolMatrix& a);
 
   explicit FloatMatrix (const charMatrix& a);
-
 
   FloatMatrix& operator = (const FloatMatrix& a)
   {

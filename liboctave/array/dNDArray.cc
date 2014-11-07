@@ -841,20 +841,6 @@ NDArray::isfinite (void) const
   return do_mx_unary_map<bool, double, xfinite> (*this);
 }
 
-Matrix
-NDArray::matrix_value (void) const
-{
-  Matrix retval;
-
-  if (ndims () == 2)
-    retval = Matrix (Array<double> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of NDArray to Matrix");
-
-  return retval;
-}
-
 void
 NDArray::increment_index (Array<octave_idx_type>& ra_idx,
                           const dim_vector& dimensions,

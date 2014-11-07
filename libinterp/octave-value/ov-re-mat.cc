@@ -142,13 +142,13 @@ octave_matrix::float_value (bool) const
 Matrix
 octave_matrix::matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return Matrix (matrix);
 }
 
 FloatMatrix
 octave_matrix::float_matrix_value (bool) const
 {
-  return FloatMatrix (matrix.matrix_value ());
+  return FloatMatrix (Matrix (matrix));
 }
 
 Complex
@@ -196,13 +196,13 @@ octave_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_matrix::complex_matrix_value (bool) const
 {
-  return ComplexMatrix (matrix.matrix_value ());
+  return ComplexMatrix (Matrix (matrix));
 }
 
 FloatComplexMatrix
 octave_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (Matrix (matrix));
 }
 
 ComplexNDArray
@@ -244,7 +244,7 @@ octave_matrix::char_array_value (bool) const
 SparseMatrix
 octave_matrix::sparse_matrix_value (bool) const
 {
-  return SparseMatrix (matrix.matrix_value ());
+  return SparseMatrix (Matrix (matrix));
 }
 
 SparseComplexMatrix
@@ -277,7 +277,7 @@ octave_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      Matrix mat = matrix.matrix_value ();
+      Matrix mat (matrix);
 
       retval = mat.diag (m, n);
     }

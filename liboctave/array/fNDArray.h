@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_fNDArray_h 1
 
 #include "MArray.h"
-#include "fMatrix.h"
 #include "intNDArray.h"
 
 #include "mx-defs.h"
@@ -37,8 +36,6 @@ FloatNDArray : public MArray<float>
 {
 public:
 
-  typedef FloatMatrix matrix_type;
-
   FloatNDArray (void) : MArray<float> () { }
 
   FloatNDArray (const dim_vector& dv) : MArray<float> (dv) { }
@@ -47,8 +44,6 @@ public:
     : MArray<float> (dv, val) { }
 
   FloatNDArray (const FloatNDArray& a) : MArray<float> (a) { }
-
-  FloatNDArray (const FloatMatrix& a) : MArray<float> (a) { }
 
   template <class U>
   FloatNDArray (const MArray<U>& a) : MArray<float> (a) { }
@@ -136,8 +131,6 @@ public:
   friend OCTAVE_API FloatNDArray imag (const FloatComplexNDArray& a);
 
   friend class FloatComplexNDArray;
-
-  FloatMatrix matrix_value (void) const;
 
   FloatNDArray squeeze (void) const { return MArray<float>::squeeze (); }
 

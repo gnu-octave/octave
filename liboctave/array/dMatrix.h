@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_dMatrix_h)
 #define octave_dMatrix_h 1
 
+#include "dNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -33,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-Matrix : public MArray<double>
+Matrix : public NDArray
 {
 public:
 
@@ -42,26 +43,26 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  Matrix (void) : MArray<double> () { }
+  Matrix (void) : NDArray () { }
 
   Matrix (octave_idx_type r, octave_idx_type c)
-    : MArray<double> (dim_vector (r, c)) { }
+    : NDArray (dim_vector (r, c)) { }
 
   Matrix (octave_idx_type r, octave_idx_type c, double val)
-    : MArray<double> (dim_vector (r, c), val) { }
+    : NDArray (dim_vector (r, c), val) { }
 
-  Matrix (const dim_vector& dv) : MArray<double> (dv.redim (2)) { }
+  Matrix (const dim_vector& dv) : NDArray (dv.redim (2)) { }
 
   Matrix (const dim_vector& dv, double val)
-    : MArray<double> (dv.redim (2), val) { }
+    : NDArray (dv.redim (2), val) { }
 
-  Matrix (const Matrix& a) : MArray<double> (a) { }
-
-  template <class U>
-  Matrix (const MArray<U>& a) : MArray<double> (a.as_matrix ()) { }
+  Matrix (const Matrix& a) : NDArray (a) { }
 
   template <class U>
-  Matrix (const Array<U>& a) : MArray<double> (a.as_matrix ()) { }
+  Matrix (const MArray<U>& a) : NDArray (a.as_matrix ()) { }
+
+  template <class U>
+  Matrix (const Array<U>& a) : NDArray (a.as_matrix ()) { }
 
   explicit Matrix (const RowVector& rv);
 

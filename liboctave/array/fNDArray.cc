@@ -812,20 +812,6 @@ FloatNDArray::isfinite (void) const
   return do_mx_unary_map<bool, float, xfinite> (*this);
 }
 
-FloatMatrix
-FloatNDArray::matrix_value (void) const
-{
-  FloatMatrix retval;
-
-  if (ndims () == 2)
-    retval = FloatMatrix (Array<float> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of FloatNDArray to FloatMatrix");
-
-  return retval;
-}
-
 void
 FloatNDArray::increment_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions,

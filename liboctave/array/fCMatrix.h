@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_fCMatrix_h)
 #define octave_fCMatrix_h 1
 
+#include "fCNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -34,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatComplexMatrix : public MArray<FloatComplex>
+FloatComplexMatrix : public FloatComplexNDArray
 {
 public:
 
@@ -43,31 +44,31 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatComplexMatrix (void) : MArray<FloatComplex> () { }
+  FloatComplexMatrix (void) : FloatComplexNDArray () { }
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c)
-    : MArray<FloatComplex> (dim_vector (r, c)) { }
+    : FloatComplexNDArray (dim_vector (r, c)) { }
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c,
                       const FloatComplex& val)
-    : MArray<FloatComplex> (dim_vector (r, c), val) { }
+    : FloatComplexNDArray (dim_vector (r, c), val) { }
 
   FloatComplexMatrix (const dim_vector& dv)
-    : MArray<FloatComplex> (dv.redim (2)) { }
+    : FloatComplexNDArray (dv.redim (2)) { }
 
   FloatComplexMatrix (const dim_vector& dv, const FloatComplex& val)
-    : MArray<FloatComplex> (dv.redim (2), val) { }
+    : FloatComplexNDArray (dv.redim (2), val) { }
 
   FloatComplexMatrix (const FloatComplexMatrix& a)
-    : MArray<FloatComplex> (a) { }
+    : FloatComplexNDArray (a) { }
 
   template <class U>
   FloatComplexMatrix (const MArray<U>& a)
-    : MArray<FloatComplex> (a.as_matrix ()) { }
+    : FloatComplexNDArray (a.reshape (a.dims ().redim (2))) { }
 
   template <class U>
   FloatComplexMatrix (const Array<U>& a)
-    : MArray<FloatComplex> (a.as_matrix ()) { }
+    : FloatComplexNDArray (a.reshape (a.dims ().redim (2))) { }
 
   explicit FloatComplexMatrix (const FloatMatrix& a);
 

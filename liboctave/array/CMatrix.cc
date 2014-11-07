@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "chMatrix.h"
 #include "dMatrix.h"
 #include "CMatrix.h"
+#include "CNDArray.h"
 #include "CRowVector.h"
 #include "dRowVector.h"
 #include "CDiagMatrix.h"
@@ -267,39 +268,39 @@ static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
 // Complex Matrix class
 
 ComplexMatrix::ComplexMatrix (const Matrix& a)
-  : MArray<Complex> (a)
+  : ComplexNDArray (a)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const RowVector& rv)
-  : MArray<Complex> (rv)
+  : ComplexNDArray (rv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ColumnVector& cv)
-  : MArray<Complex> (cv)
+  : ComplexNDArray (cv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
-  : MArray<Complex> (a.dims (), 0.0)
+  : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
-  : MArray<Complex> (rv)
+  : ComplexNDArray (rv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
-  : MArray<Complex> (cv)
+  : ComplexNDArray (cv)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
-  : MArray<Complex> (a.dims (), 0.0)
+  : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -308,12 +309,12 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
 // FIXME: could we use a templated mixed-type copy function here?
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
-  : MArray<Complex> (a)
+  : ComplexNDArray (a)
 {
 }
 
 ComplexMatrix::ComplexMatrix (const charMatrix& a)
-  : MArray<Complex> (a.dims (), 0.0)
+  : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
@@ -321,7 +322,7 @@ ComplexMatrix::ComplexMatrix (const charMatrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const Matrix& re, const Matrix& im)
-  : MArray<Complex> (re.dims ())
+  : ComplexNDArray (re.dims ())
 {
   if (im.rows () != rows () || im.cols () != cols ())
     (*current_liboctave_error_handler) ("complex: internal error");
@@ -468,7 +469,7 @@ ComplexMatrix&
 ComplexMatrix::insert (const ComplexMatrix& a,
                        octave_idx_type r, octave_idx_type c)
 {
-  Array<Complex>::insert (a, r, c);
+  ComplexNDArray::insert (a, r, c);
   return *this;
 }
 
@@ -3248,7 +3249,7 @@ Matrix ComplexMatrix::abs (void) const
 ComplexMatrix
 ComplexMatrix::diag (octave_idx_type k) const
 {
-  return MArray<Complex>::diag (k);
+  return ComplexNDArray::diag (k);
 }
 
 ComplexDiagMatrix

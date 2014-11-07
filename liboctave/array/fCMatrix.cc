@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "boolMatrix.h"
 #include "chMatrix.h"
 #include "fCMatrix.h"
+#include "fCNDArray.h"
 #include "fCDiagMatrix.h"
 #include "fCColVector.h"
 #include "fCRowVector.h"
@@ -268,39 +269,39 @@ static const FloatComplex FloatComplex_NaN_result (octave_Float_NaN,
 // FloatComplex Matrix class
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix& a)
-  : MArray<FloatComplex> (a)
+  : FloatComplexNDArray (a)
 {
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatRowVector& rv)
-  : MArray<FloatComplex> (rv)
+  : FloatComplexNDArray (rv)
 {
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatColumnVector& cv)
-  : MArray<FloatComplex> (cv)
+  : FloatComplexNDArray (cv)
 {
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatDiagMatrix& a)
-  : MArray<FloatComplex> (a.dims (), 0.0)
+  : FloatComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexRowVector& rv)
-  : MArray<FloatComplex> (rv)
+  : FloatComplexNDArray (rv)
 {
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector& cv)
-  : MArray<FloatComplex> (cv)
+  : FloatComplexNDArray (cv)
 {
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexDiagMatrix& a)
-  : MArray<FloatComplex> (a.dims (), 0.0)
+  : FloatComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -310,12 +311,12 @@ FloatComplexMatrix::FloatComplexMatrix (const FloatComplexDiagMatrix& a)
 // here?
 
 FloatComplexMatrix::FloatComplexMatrix (const boolMatrix& a)
-  : MArray<FloatComplex> (a)
+  : FloatComplexNDArray (a)
 {
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const charMatrix& a)
-  : MArray<FloatComplex> (a.dims (), 0.0)
+  : FloatComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
@@ -324,7 +325,7 @@ FloatComplexMatrix::FloatComplexMatrix (const charMatrix& a)
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatMatrix& re,
                                         const FloatMatrix& im)
-  : MArray<FloatComplex> (re.dims ())
+  : FloatComplexNDArray (re.dims ())
 {
   if (im.rows () != rows () || im.cols () != cols ())
     (*current_liboctave_error_handler) ("complex: internal error");

@@ -152,7 +152,7 @@ octave_complex_matrix::matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (ComplexMatrix (matrix));
 
   return retval;
 }
@@ -166,7 +166,7 @@ octave_complex_matrix::float_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (ComplexMatrix (matrix));
 
   return retval;
 }
@@ -214,13 +214,13 @@ octave_complex_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_complex_matrix::complex_matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return ComplexMatrix (matrix);
 }
 
 FloatComplexMatrix
 octave_complex_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (ComplexMatrix (matrix));
 }
 
 boolNDArray
@@ -270,7 +270,7 @@ octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = SparseMatrix (::real (matrix.matrix_value ()));
+  retval = SparseMatrix (::real (ComplexMatrix (matrix)));
 
   return retval;
 }
@@ -278,7 +278,7 @@ octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
 SparseComplexMatrix
 octave_complex_matrix::sparse_complex_matrix_value (bool) const
 {
-  return SparseComplexMatrix (matrix.matrix_value ());
+  return SparseComplexMatrix (ComplexMatrix (matrix));
 }
 
 octave_value
@@ -302,7 +302,7 @@ octave_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      ComplexMatrix mat = matrix.matrix_value ();
+      ComplexMatrix mat (matrix);
 
       retval = mat.diag (m, n);
     }

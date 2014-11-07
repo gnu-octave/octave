@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dMatrix.h"
 #include "dNDArray.h"
+#include "CMatrix.h"
 #include "CNDArray.h"
 #include "dColVector.h"
 #include "CColVector.h"

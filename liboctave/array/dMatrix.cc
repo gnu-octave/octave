@@ -246,24 +246,24 @@ extern "C"
 // Matrix class.
 
 Matrix::Matrix (const RowVector& rv)
-  : MArray<double> (rv)
+  : NDArray (rv)
 {
 }
 
 Matrix::Matrix (const ColumnVector& cv)
-  : MArray<double> (cv)
+  : NDArray (cv)
 {
 }
 
 Matrix::Matrix (const DiagMatrix& a)
-  : MArray<double> (a.dims (), 0.0)
+  : NDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 Matrix::Matrix (const PermMatrix& a)
-  : MArray<double> (a.dims (), 0.0)
+  : NDArray (a.dims (), 0.0)
 {
   const Array<octave_idx_type> ia (a.col_perm_vec ());
   octave_idx_type len = a.rows ();
@@ -274,12 +274,12 @@ Matrix::Matrix (const PermMatrix& a)
 // FIXME: could we use a templated mixed-type copy function here?
 
 Matrix::Matrix (const boolMatrix& a)
-  : MArray<double> (a)
+  : NDArray (a)
 {
 }
 
 Matrix::Matrix (const charMatrix& a)
-  : MArray<double> (a.dims ())
+  : NDArray (a.dims ())
 {
   for (octave_idx_type i = 0; i < a.rows (); i++)
     for (octave_idx_type j = 0; j < a.cols (); j++)
@@ -2800,7 +2800,7 @@ Matrix::abs (void) const
 Matrix
 Matrix::diag (octave_idx_type k) const
 {
-  return MArray<double>::diag (k);
+  return NDArray::diag (k);
 }
 
 DiagMatrix

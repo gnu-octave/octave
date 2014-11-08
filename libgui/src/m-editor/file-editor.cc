@@ -404,27 +404,31 @@ file_editor::request_open_file (const QString& openFileName, int line,
                   else
                     {
                       // File does not exist, should it be crated?
+                      bool create_file = true;
                       QMessageBox *msgBox;
-                      int answer;
                       QSettings *settings = resource_manager::get_settings ();
-                      if (settings->value ("editor/create_new_file", false).toBool ())
-                        {
-                          answer = QMessageBox::Yes;
-                        }
-                      else
+
+                      if (!settings->value ("editor/create_new_file", false).toBool ())
                         {
                           msgBox = new QMessageBox (QMessageBox::Question,
                                                     tr ("Octave Editor"),
                                                     tr ("File\n%1\ndoes not exist. "
                                                         "Do you want to create it?").arg (openFileName),
-                                                    QMessageBox::Yes
-                                                    | QMessageBox::No, 0);
+                                                    QMessageBox::NoButton,0);
+                          QPushButton *create_button =
+                            msgBox->addButton (tr ("Create"), QMessageBox::YesRole);
+                          msgBox->addButton (tr ("Cancel"), QMessageBox::RejectRole);
+                          msgBox->setDefaultButton (create_button);
+                          msgBox->exec ();
 
-                          msgBox->setAttribute (Qt::WA_DeleteOnClose);
-                          answer = msgBox->exec ();
+                          QAbstractButton *clicked_button = msgBox->clickedButton ();
+                          if (clicked_button != create_button)
+                            create_file = false;
+
+                          delete msgBox;
                         }
 
-                      if (answer == QMessageBox::Yes)
+                      if (create_file)
                         {
                           // create the file and call the editor again
                           QFile file (openFileName);

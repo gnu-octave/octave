@@ -44,9 +44,10 @@ public:
   boolMatrix (octave_idx_type r, octave_idx_type c, bool val)
     : boolNDArray (dim_vector (r, c), val) { }
 
-  boolMatrix (const dim_vector& dv) : boolNDArray (dv) { }
+  boolMatrix (const dim_vector& dv) : boolNDArray (dv.redim (2)) { }
 
-  boolMatrix (const dim_vector& dv, bool val) : boolNDArray (dv, val) { }
+  boolMatrix (const dim_vector& dv, bool val)
+    : boolNDArray (dv.redim (2), val) { }
 
   boolMatrix (const Array<bool>& a) : boolNDArray (a.as_matrix ()) { }
 

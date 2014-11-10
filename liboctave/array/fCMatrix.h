@@ -64,11 +64,11 @@ public:
 
   template <class U>
   FloatComplexMatrix (const MArray<U>& a)
-    : FloatComplexNDArray (a.reshape (a.dims ().redim (2))) { }
+    : FloatComplexNDArray (a.as_matrix ()) { }
 
   template <class U>
   FloatComplexMatrix (const Array<U>& a)
-    : FloatComplexNDArray (a.reshape (a.dims ().redim (2))) { }
+    : FloatComplexNDArray (a.as_matrix ()) { }
 
   explicit FloatComplexMatrix (const FloatMatrix& a);
 

@@ -49,9 +49,10 @@ public:
   charMatrix (octave_idx_type r, octave_idx_type c, char val)
     : charNDArray (dim_vector (r, c), val) { }
 
-  charMatrix (const dim_vector& dv) : charNDArray (dv) { }
+  charMatrix (const dim_vector& dv) : charNDArray (dv.redim (2)) { }
 
-  charMatrix (const dim_vector& dv, char val) : charNDArray (dv, val) { }
+  charMatrix (const dim_vector& dv, char val)
+    : charNDArray (dv.redim (2), val) { }
 
   charMatrix (const Array<char>& a) : charNDArray (a.as_matrix ()) { }
 

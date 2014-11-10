@@ -169,12 +169,6 @@ octave_is_NA (double x)
   return lo_ieee_is_NA (x);
 }
 
-bool
-octave_is_NaN_or_NA (double x)
-{
-  return lo_ieee_isnan (x);
-}
-
 // (double, double) -> double mappers.
 
 // complex -> complex mappers.
@@ -410,12 +404,6 @@ bool
 octave_is_NA (float x)
 {
   return lo_ieee_is_NA (x);
-}
-
-bool
-octave_is_NaN_or_NA (float x)
-{
-  return lo_ieee_isnan (x);
 }
 
 // (float, float) -> float mappers.

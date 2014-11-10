@@ -140,27 +140,6 @@ private:
 
 public:
 
-  // The constructor
-  //
-  //   dim_vector (n)
-  //
-  // creates an dimension vector with N rows and 1 column.  It is
-  // deprecated because of the potentiol for confusion that it causes.
-  // Additional constructors of the form
-  //
-  //   dim_vector (r, c)
-  //   dim_vector (r, c, p)
-  //   dim_vector (d1, d2, d3, d4, ...)
-  //
-  // are available for up to 7 dimensions.
-
-  explicit dim_vector (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : rep (newrep (2))
-  {
-    rep[0] = n;
-    rep[1] = 1;
-  }
-
 #define ASSIGN_REP(i) rep[i] = d ## i;
 #define DIM_VECTOR_CTOR(N) \
   dim_vector (OCT_MAKE_DECL_LIST (octave_idx_type, d, N)) \

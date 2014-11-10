@@ -74,7 +74,6 @@ extern OCTAVE_API int __lo_ieee_isinf (double x);
 
 extern OCTAVE_API int __lo_ieee_is_NA (double);
 extern OCTAVE_API int __lo_ieee_is_old_NA (double);
-extern OCTAVE_API int __lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
 extern OCTAVE_API double __lo_ieee_replace_old_NA (double);
 
 extern OCTAVE_API double lo_ieee_inf_value (void);
@@ -88,7 +87,6 @@ extern OCTAVE_API int __lo_ieee_float_finite (float x);
 extern OCTAVE_API int __lo_ieee_float_isinf (float x);
 
 extern OCTAVE_API int __lo_ieee_float_is_NA (float);
-extern OCTAVE_API int __lo_ieee_float_is_NaN_or_NA (float) GCC_ATTR_DEPRECATED;
 
 extern OCTAVE_API float lo_ieee_float_inf_value (void);
 extern OCTAVE_API float lo_ieee_float_na_value (void);

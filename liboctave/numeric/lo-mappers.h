@@ -72,7 +72,6 @@ extern OCTAVE_API bool xisinf (double x);
 #endif
 
 extern OCTAVE_API bool octave_is_NA (double x);
-extern OCTAVE_API bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
 
 // Generic xmin, xmax definitions
 template <class T>
@@ -154,7 +153,6 @@ extern OCTAVE_API bool xisinf (float x);
 #endif
 
 extern OCTAVE_API bool octave_is_NA (float x);
-extern OCTAVE_API bool octave_is_NaN_or_NA (float x) GCC_ATTR_DEPRECATED;
 
 inline float
 xmin (float x, float y)

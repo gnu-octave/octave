@@ -180,20 +180,6 @@ public:
     rep->count++;
   }
 
-  //! Obsolete 1D ctor (there are no 1D arrays).
-  explicit Array (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : dimensions (n, 1), rep (new typename Array<T>::ArrayRep (n)),
-      slice_data (rep->data), slice_len (rep->len)
-  { }
-
-  //! Obsolete initialized 1D ctor (there are no 1D arrays).
-  explicit Array (octave_idx_type n, const T& val) GCC_ATTR_DEPRECATED
-    : dimensions (n, 1), rep (new typename Array<T>::ArrayRep (n)),
-      slice_data (rep->data), slice_len (rep->len)
-  {
-    fill (val);
-  }
-
   //! nD uninitialized ctor.
   explicit Array (const dim_vector& dv)
     : dimensions (dv),
@@ -337,9 +323,6 @@ public:
 
   //! Chop off leading singleton dimensions
   Array<T> squeeze (void) const;
-
-  void chop_trailing_singletons (void) GCC_ATTR_DEPRECATED
-  { dimensions.chop_trailing_singletons (); }
 
   octave_idx_type compute_index (octave_idx_type i, octave_idx_type j) const;
   octave_idx_type compute_index (octave_idx_type i, octave_idx_type j,

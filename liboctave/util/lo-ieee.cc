@@ -106,12 +106,6 @@ __lo_ieee_replace_old_NA (double x)
     return x;
 }
 
-int
-__lo_ieee_is_NaN_or_NA (double x)
-{
-  return __lo_ieee_isnan (x);
-}
-
 double
 lo_ieee_inf_value (void)
 {
@@ -186,12 +180,6 @@ __lo_ieee_float_is_NA (float x)
   lo_ieee_float t;
   t.value = x;
   return (__lo_ieee_float_isnan (x) && (t.word == LO_IEEE_NA_FLOAT)) ? 1 : 0;
-}
-
-int
-__lo_ieee_float_is_NaN_or_NA (float x)
-{
-  return __lo_ieee_float_isnan (x);
 }
 
 float

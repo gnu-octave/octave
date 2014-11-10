@@ -49,12 +49,6 @@ public:
 
   MArray (void) : Array<T> () { }
 
-  explicit MArray (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : Array<T> (dim_vector (n, 1)) { }
-
-  MArray (octave_idx_type n, const T& val) GCC_ATTR_DEPRECATED
-    : Array<T> (dim_vector (n, 1), val) { }
-
   explicit MArray (const dim_vector& dv)
     : Array<T> (dv) { }
 

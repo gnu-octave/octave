@@ -2,10 +2,7 @@ EXTRA_DIST += \
   array/module.mk
 
 ARRAY_INC = \
-  array/Array2.h \
-  array/Array3.h \
   array/Array.h \
-  array/ArrayN.h \
   array/Array-util.h \
   array/boolMatrix.h \
   array/boolNDArray.h \
@@ -42,11 +39,9 @@ ARRAY_INC = \
   array/int64NDArray.h \
   array/int8NDArray.h \
   array/intNDArray.h \
-  array/MArray2.h \
   array/MArray-decl.h \
   array/MArray-defs.h \
   array/MArray.h \
-  array/MArrayN.h \
   array/Matrix.h \
   array/MatrixType.h \
   array/MDiagArray2.h \

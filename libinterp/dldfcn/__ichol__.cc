@@ -79,7 +79,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 {
 
   const octave_idx_type n = sm.cols ();
-  octave_idx_type j1, jend, j2, jrow, jjrow, j, jw, i, k, jj, Llist_len, r;
+  octave_idx_type j1, jend, j2, jrow, jjrow, j, jw, i, k, jj, r;
   T tl;
   char opt;
   enum {OFF, ON};
@@ -244,7 +244,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T* cols_norm,
 {
 
   const octave_idx_type n = sm.cols ();
-  octave_idx_type j, jrow, jend, jjrow, jw, i, k, jj, Llist_len, total_len,
+  octave_idx_type j, jrow, jend, jjrow, i, k, jj, total_len,
                   w_len, max_len, ind;
   char opt;
   enum {OFF, ON};

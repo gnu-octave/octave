@@ -1128,10 +1128,6 @@ function s = getstructure (objname, base = [])
   elseif (strcmp (objname, "figure"))
     h = hf;
   else
-    if (strcmp (objname, "image"))
-      ## Disable GraphicsMagick warnings
-      warning ("off");
-    endif
     eval (["h = " objname " ();"]);
   endif
   

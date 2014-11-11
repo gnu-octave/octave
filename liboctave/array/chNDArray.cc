@@ -40,36 +40,33 @@ along with Octave; see the file COPYING.  If not, see
 charNDArray::charNDArray (char c)
   : Array<char> ()
 {
-  octave_idx_type nc = 1;
-  octave_idx_type nr = 1;
+  octave_idx_type n = 1;
 
-  resize (nr, nc);
+  resize1 (n);
 
-  elem (0, 0) = c;
+  elem (0) = c;
 }
 
 charNDArray::charNDArray (const char *s)
   : Array<char> ()
 {
-  octave_idx_type nc = s ? strlen (s) : 0;
-  octave_idx_type nr = s && nc > 0 ? 1 : 0;
+  octave_idx_type n = s ? strlen (s) : 0;
 
-  resize (nr, nc);
+  resize1 (n);
 
-  for (octave_idx_type i = 0; i < nc; i++)
-    elem (0, i) = s[i];
+  for (octave_idx_type i = 0; i < n; i++)
+    elem (i) = s[i];
 }
 
 charNDArray::charNDArray (const std::string& s)
   : Array<char> ()
 {
-  octave_idx_type nc = s.length ();
-  octave_idx_type nr = nc > 0 ? 1 : 0;
+  octave_idx_type n = s.length ();
 
-  resize (nr, nc);
+  resize1 (n);
 
-  for (octave_idx_type i = 0; i < nc; i++)
-    elem (0, i) = s[i];
+  for (octave_idx_type i = 0; i < n; i++)
+    elem (i) = s[i];
 }
 
 charNDArray::charNDArray (const string_vector& s, char fill_value)

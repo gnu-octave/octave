@@ -41,9 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mem.h"
 #include "oct-refcount.h"
 
-//! One dimensional array class.  Handles the reference counting for
-//! all the derived classes.
-
+//!Handles the reference counting for all the derived classes.
 template <class T>
 class
 Array
@@ -291,7 +289,7 @@ public:
   }
 
   //! @name First dimension
-  //! 
+  //!
   //! Get the first dimension of the array (number of rows)
   //@{
   octave_idx_type dim1 (void) const { return dimensions(0); }
@@ -308,7 +306,7 @@ public:
   //@}
 
   //! @name Third dimension
-  //! 
+  //!
   //! Get the third dimension of the array (number of pages)
   //@{
   octave_idx_type dim3 (void) const { return dimensions(2); }
@@ -484,21 +482,14 @@ public:
 
   //@{
   //! Resizing (with fill).
-  void resize1 (octave_idx_type n, const T& rfv);
-  void resize1 (octave_idx_type n) { resize1 (n, resize_fill_value ()); }
-
-  void resize (octave_idx_type n) GCC_ATTR_DEPRECATED { resize1 (n); }
-
-  void resize (octave_idx_type nr, octave_idx_type nc,
-               const T& rfv) GCC_ATTR_DEPRECATED
-  {
-    resize2 (nr, nc, rfv);
-  }
-
-  void resize (octave_idx_type nr, octave_idx_type nc) GCC_ATTR_DEPRECATED
+  void resize2 (octave_idx_type nr, octave_idx_type nc, const T& rfv);
+  void resize2 (octave_idx_type nr, octave_idx_type nc)
   {
     resize2 (nr, nc, resize_fill_value ());
   }
+
+  void resize1 (octave_idx_type n, const T& rfv);
+  void resize1 (octave_idx_type n) { resize1 (n, resize_fill_value ()); }
 
   void resize (const dim_vector& dv, const T& rfv);
   void resize (const dim_vector& dv) { resize (dv, resize_fill_value ()); }
@@ -730,7 +721,7 @@ public:
 
   //@{
   //! WARNING: Only call these functions from jit
-  
+
   int *jit_ref_count (void) { return rep->count.get (); }
 
   T *jit_slice_data (void) const { return slice_data; }
@@ -741,13 +732,6 @@ public:
   //@}
 
 private:
-
-  void resize2 (octave_idx_type nr, octave_idx_type nc, const T& rfv);
-  void resize2 (octave_idx_type nr, octave_idx_type nc)
-  {
-    resize2 (nr, nc, resize_fill_value ());
-  }
-
   static void instantiation_guard ();
 };
 

@@ -138,7 +138,7 @@ kron (const PermMatrix& a, const PermMatrix& b)
   octave_idx_type nb = b.rows ();
   const Array<octave_idx_type>& pa = a.col_perm_vec ();
   const Array<octave_idx_type>& pb = b.col_perm_vec ();
-  Array<octave_idx_type> res_perm (na * nb);
+  Array<octave_idx_type> res_perm (dim_vector (1, na * nb));
   octave_idx_type rescol = 0;
   for (octave_idx_type i = 0; i < na; i++)
     {

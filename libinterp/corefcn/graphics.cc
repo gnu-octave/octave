@@ -11064,8 +11064,8 @@ dellistener (gcf, \"position\", c);\n\
                                                  POSTSET);
                   else
                     {
-                      caseless_str persistent = args(2).string_value ();
-                      if (persistent.compare ("persistent"))
+                      if (args(2).is_string () &&
+                          args(2).string_value () == "persistent")
                         {
                           go.delete_property_listener (pname, octave_value (),
                                                        PERSISTENT);

@@ -93,21 +93,21 @@ octave_qt_link::do_prompt_new_edit_file (const std::string& file)
   QFileInfo file_info (QString::fromStdString (file));
   QStringList btn;
   QStringList role;
-  role << "AcceptRole" << "AcceptRole";
-  btn << tr ("Yes") << tr ("No");
+  role << "YesRole" << "RejectRole";
+  btn << tr ("Create") << tr ("Cancel");
 
   uiwidget_creator.signal_dialog (
     tr ("File\n%1\ndoes not exist. Do you want to create it?").
     arg (QDir::currentPath () + QDir::separator ()
          + QString::fromStdString (file)),
-    tr ("Octave Editor"), "quest", btn, tr ("Yes"), role);
+    tr ("Octave Editor"), "quest", btn, tr ("Create"), role );
 
   // Wait while the user is responding to message box.
   uiwidget_creator.wait ();
   // The GUI has sent a signal and the process has been awakened.
   QString answer = uiwidget_creator.get_dialog_button ();
 
-  return (answer == tr ("Yes"));
+  return (answer == tr ("Create"));
 }
 
 int

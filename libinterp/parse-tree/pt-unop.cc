@@ -73,8 +73,8 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state)
             {
-              BEGIN_PROFILER_BLOCK ("prefix " + oper ())
-
+              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
+              
               ref.do_unary_op (etype);
 
               if (! error_state)
@@ -89,7 +89,7 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
-              BEGIN_PROFILER_BLOCK ("prefix " + oper ())
+              BEGIN_PROFILER_BLOCK (tree_prefix_expression)
 
               // Attempt to do the operation in-place if it is unshared
               // (a temporary expression).
@@ -162,8 +162,10 @@ tree_postfix_expression::rvalue1 (int)
             {
               retval = ref.value ();
 
-              BEGIN_PROFILER_BLOCK ("postfix " + oper ())
+              BEGIN_PROFILER_BLOCK (tree_postfix_expression)
+
               ref.do_unary_op (etype);
+
               END_PROFILER_BLOCK
             }
         }
@@ -173,7 +175,7 @@ tree_postfix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
-              BEGIN_PROFILER_BLOCK ("postfix " + oper ())
+              BEGIN_PROFILER_BLOCK (tree_postfix_expression)
 
               retval = ::do_unary_op (etype, val);
 

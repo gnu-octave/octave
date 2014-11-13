@@ -149,8 +149,10 @@ octave_user_script::do_multi_index_op (int nargout,
                   frame.protect_var (tree_evaluator::statement_context);
                   tree_evaluator::statement_context = tree_evaluator::script;
 
-                  BEGIN_PROFILER_BLOCK (profiler_name ())
+                  BEGIN_PROFILER_BLOCK (octave_user_script)
+
                   cmd_list->accept (*current_evaluator);
+
                   END_PROFILER_BLOCK
 
                   if (tree_return_command::returning)
@@ -614,7 +616,7 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (tree_evaluator::statement_context);
   tree_evaluator::statement_context = tree_evaluator::function;
 
-  BEGIN_PROFILER_BLOCK (profiler_name ())
+  BEGIN_PROFILER_BLOCK (octave_user_function)
 
   if (is_special_expr ())
     {

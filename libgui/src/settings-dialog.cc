@@ -210,6 +210,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_indent_guides",false).toBool ());
   ui->editor_ind_width_spinbox->setValue (
     settings->value ("editor/indent_width", 2).toInt ());
+  ui->editor_ind_uses_tabs_checkbox->setChecked (
+    settings->value ("editor/indent_uses_tabs", false).toBool ());
   ui->editor_tab_width_spinbox->setValue (
     settings->value ("editor/tab_width", 2).toInt ());
   ui->editor_longWindowTitle->setChecked (
@@ -663,6 +665,8 @@ settings_dialog::write_changed_settings ()
                       ui->editor_ind_guides_checkbox->isChecked ());
   settings->setValue ("editor/indent_width",
                       ui->editor_ind_width_spinbox->value ());
+  settings->setValue ("editor/indent_uses_tabs",
+                      ui->editor_ind_uses_tabs_checkbox->isChecked ());
   settings->setValue ("editor/tab_width",
                       ui->editor_tab_width_spinbox->value ());
   settings->setValue ("editor/longWindowTitle",

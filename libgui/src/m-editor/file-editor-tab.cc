@@ -1881,6 +1881,8 @@ file_editor_tab::notice_settings (const QSettings *settings)
         (settings->value ("editor/backspace_unindents_line",false).toBool ());
   _edit_area->setIndentationGuides
         (settings->value ("editor/show_indent_guides",false).toBool ());
+  _edit_area->setIndentationsUseTabs
+        (settings->value ("editor/indent_uses_tabs",false).toBool ());
 
   _edit_area->setTabWidth
         (settings->value ("editor/tab_width",2).toInt ());

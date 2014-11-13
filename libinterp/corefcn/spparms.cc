@@ -40,7 +40,7 @@ DEFUN (spparms, args, nargout,
 @deftypefnx {Built-in Function} {[@var{keys}, @var{vals}] =} spparms ()\n\
 @deftypefnx {Built-in Function} {@var{val} =} spparms (@var{key})\n\
 @deftypefnx {Built-in Function} { } spparms (@var{vals})\n\
-@deftypefnx {Built-in Function} { } spparms (\"defaults\")\n\
+@deftypefnx {Built-in Function} { } spparms (\"default\")\n\
 @deftypefnx {Built-in Function} { } spparms (\"tight\")\n\
 @deftypefnx {Built-in Function} { } spparms (@var{key}, @var{val})\n\
 Query or set the parameters used by the sparse solvers and factorization\n\
@@ -97,7 +97,7 @@ Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
 The value of individual keys can be set with\n\
 @code{spparms (@var{key}, @var{val})}.\n\
 The default values can be restored with the special keyword\n\
-@qcode{\"defaults\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
+@qcode{\"default\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
 set the mmd solvers to attempt a sparser solution at the potential cost of\n\
 longer running time.\n\
 @seealso{chol, colamd, lu, qr, symamd}\n\
@@ -129,7 +129,7 @@ longer running time.\n\
           for (int i = 0; i < len; i++)
             str[i] = tolower (str[i]);
 
-          if (str == "defaults")
+          if (str == "defaults" || str == "default")
             octave_sparse_params::defaults ();
           else if (str == "tight")
             octave_sparse_params::tight ();
@@ -181,7 +181,7 @@ longer running time.\n\
 /*
 %!test
 %! old_vals = spparms ();  # save state
-%! spparms ("defaults");
+%! spparms ("default");
 %! vals = spparms ();
 %! assert (vals, [0 1 1 0 3 3 0.5 1.0 1.0 0.1 0.5 1.0 0.001]');
 %! [keys, vals] = spparms ();

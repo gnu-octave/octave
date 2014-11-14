@@ -604,3 +604,12 @@
 %! assert (data, [256, 1798; 770, 3083; 1284, 3597]);
 %! assert (count, 6);
 %! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, "abcd");
+%! frewind (id);
+%! [data, count] = fread (id, [2, 3], "char");
+%! assert (data, [97, 99; 98, 100]);
+%! assert (count, 4);
+%! fclose (id);

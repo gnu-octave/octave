@@ -1058,7 +1058,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 %!test
 %! ## Test exceptional values
 %! x = [-Inf, -1, -0, 0, 1, Inf, NaN];
-%! v = [NaN, NaN, -Inf, Inf, 1, Inf, NaN];
+%! v = [Inf, Inf, -Inf, Inf, 1, Inf, NaN];
 %! assert (gamma (x), v);
 %! assert (gamma (single (x)), single (v));
 

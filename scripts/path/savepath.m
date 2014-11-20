@@ -136,12 +136,17 @@ function retval = savepath (file)
       path_to_save = path_to_preserve(sort (n));
       ## Remove pwd
       path_to_save(strcmp (path_to_save, ["." pathsep])) = [];
-      n = ones (size (path_to_save));
-      for m = 1:numel (path_to_save)
-        n(m) = find (strcmp (path_to_save{m}, path_to_preserve));
-      endfor
-      path_to_save_begin = path_to_save(n <= n_middle);
-      path_to_save_end   = path_to_save(n > n_middle);
+      if (! isempty (path_to_save))
+        n = ones (numel (path_to_save), 1);
+        for m = 1:numel (path_to_save)
+          n(m) = find (strcmp (path_to_save{m}, path_to_preserve));
+        endfor
+        path_to_save_begin = path_to_save(n <= n_middle);
+        path_to_save_end   = path_to_save(n > n_middle);
+      else
+        path_to_save_begin = {};
+        path_to_save_end   = {};
+      endif
     else
       path_to_save_begin = path_to_preserve;
       path_to_save_end   = {};

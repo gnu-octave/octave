@@ -557,7 +557,7 @@ FloatComplexMatrix shift_cols (const FloatComplexMatrix& a,
                                octave_idx_type i, octave_idx_type j)
 {
   octave_idx_type n = a.columns ();
-  Array<octave_idx_type> p (dim_vector (1, n));
+  Array<octave_idx_type> p (dim_vector (n, 1));
   for (octave_idx_type k = 0; k < n; k++) p(k) = k;
   if (i < j)
     {

@@ -1359,7 +1359,7 @@ ComplexMatrix::fourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1400,7 +1400,7 @@ ComplexMatrix::ifourier (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1444,7 +1444,7 @@ ComplexMatrix::fourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1466,7 +1466,7 @@ ComplexMatrix::fourier2d (void) const
   wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> tmp (npts, 1);
+  Array<Complex> tmp (dim_vector (npts, 1));
   Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (zffti, ZFFTI) (npts, pwsave);
@@ -1510,7 +1510,7 @@ ComplexMatrix::ifourier2d (void) const
 
   octave_idx_type nn = 4*npts+15;
 
-  Array<Complex> wsave (nn, 1);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   retval = *this;
@@ -1535,7 +1535,7 @@ ComplexMatrix::ifourier2d (void) const
   wsave.resize (dim_vector (nn, 1));
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> tmp (npts, 1);
+  Array<Complex> tmp (dim_vector (npts, 1));
   Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (zffti, ZFFTI) (npts, pwsave);

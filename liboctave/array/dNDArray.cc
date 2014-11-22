@@ -257,7 +257,7 @@ NDArray::fourier (int dim) const
   ComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (Complex, tmp, npts);
@@ -304,7 +304,7 @@ NDArray::ifourier (int dim) const
   ComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<Complex> wsave (nn);
+  Array<Complex> wsave (dim_vector (nn, 1));
   Complex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (Complex, tmp, npts);
@@ -354,9 +354,9 @@ NDArray::fourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (dim_vector (nn, 1));
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (dim_vector (npts, 1));
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -402,9 +402,9 @@ NDArray::ifourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (dim_vector (nn, 1));
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (dim_vector (npts, 1));
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -450,9 +450,9 @@ NDArray::fourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (dim_vector (nn, 1));
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (dim_vector (npts, 1));
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -497,9 +497,9 @@ NDArray::ifourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<Complex> wsave (nn);
+      Array<Complex> wsave (dim_vector (nn, 1));
       Complex *pwsave = wsave.fortran_vec ();
-      Array<Complex> row (npts);
+      Array<Complex> row (dim_vector (npts, 1));
       Complex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;

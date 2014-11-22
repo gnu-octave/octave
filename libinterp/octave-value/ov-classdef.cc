@@ -3200,12 +3200,18 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 
       if (! error_state)
         {
-          if (args.length() > 0)
+          if (args.length () > 0 && args(0).is_defined ())
             {
-              cdef_object new_obj = to_cdef (args(0));
+              if (args (0).is_classdef_object ())
+                {
+                  cdef_object new_obj = to_cdef (args(0));
 
-              if (! error_state)
-                obj = new_obj;
+                  if (! error_state)
+                    obj = new_obj;
+                }
+              else
+                ::warning ("set-method of property `%s' returned a non-classdef object",
+                           get_name ().c_str ());
             }
         }
     }

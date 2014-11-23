@@ -1883,6 +1883,8 @@ file_editor_tab::notice_settings (const QSettings *settings)
         (settings->value ("editor/show_indent_guides",false).toBool ());
   _edit_area->setIndentationsUseTabs
         (settings->value ("editor/indent_uses_tabs",false).toBool ());
+  _edit_area->setIndentationWidth
+        (settings->value ("editor/indent_width",2).toInt ());
 
   _edit_area->setTabWidth
         (settings->value ("editor/tab_width",2).toInt ());

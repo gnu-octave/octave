@@ -1029,7 +1029,7 @@ Calling @code{error} also sets Octave's internal error state such that\n\
 control will return to the top level without evaluating any more\n\
 commands.  This is useful for aborting from functions or scripts.\n\
 \n\
-If the error message does not end with a new line character, Octave will\n\
+If the error message does not end with a newline character, Octave will\n\
 print a traceback of all the function calls leading to the error.  For\n\
 example, given the following function definitions:\n\
 \n\
@@ -1057,10 +1057,10 @@ error:   f at line 1, column 15\n\
 @end group\n\
 @end example\n\
 \n\
-If the error message ends in a new line character, Octave will print the\n\
+If the error message ends in a newline character, Octave will print the\n\
 message but will not display any traceback messages as it returns\n\
 control to the top level.  For example, modifying the error message\n\
-in the previous example to end in a new line causes Octave to only print\n\
+in the previous example to end in a newline causes Octave to only print\n\
 a single message:\n\
 \n\
 @example\n\
@@ -1093,7 +1093,7 @@ error (err_msg);\n\
 which will only stop execution if an error has been found.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{template}\n\
+sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
 regardless of whether @var{template} has been defined within single quotes\n\
 as long as there are two or more input arguments.\n\
 Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
@@ -1271,7 +1271,7 @@ function.  The @qcode{\"local\"} option is ignored if used in the top-level\n\
 workspace.\n\
 \n\
 Implementation Note: For compatibility with @sc{matlab}, escape\n\
-sequences (e.g., @qcode{\"\\n\"} => newline) are processed in @var{template}\n\
+sequences (e.g., \"\\n\" => newline) are processed in @var{template}\n\
 regardless of whether @var{template} has been defined within single quotes\n\
 as long as there are two or more input arguments.\n\
 Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\

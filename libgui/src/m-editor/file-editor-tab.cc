@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
+#include "octave-txt-lexer.h"
 
 #include "file-ops.h"
 
@@ -396,6 +397,8 @@ file_editor_tab::update_lexer ()
       lexer = new QsciLexerOctave ();
 #elif defined (HAVE_LEXER_MATLAB)
       lexer = new QsciLexerMatlab ();
+#else
+      lexer = new octave_txt_lexer ();
 #endif
       _is_octave_file = true;
     }
@@ -426,6 +429,10 @@ file_editor_tab::update_lexer ()
         {
           lexer = new QsciLexerDiff ();
         }
+      else if (_file_name.endsWith (".sh"))
+        {
+          lexer = new QsciLexerBash ();
+        }
       else if (! valid_file_name ())
         {
           // new, no yet named file: let us assume it is octave
@@ -436,13 +443,13 @@ file_editor_tab::update_lexer ()
           lexer = new QsciLexerMatlab ();
           _is_octave_file = true;
 #else
-          lexer = new QsciLexerBash ();
+          lexer = new octave_txt_lexer ();
 #endif
         }
       else
         {
           // other or no extension
-          lexer = new QsciLexerBash ();
+          lexer = new octave_txt_lexer ();
         }
     }
 

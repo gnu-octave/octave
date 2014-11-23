@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_QSCINTILLA
 #include "octave-qscintilla.h"
+#include "octave-txt-lexer.h"
 #include <QScrollArea>
 
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
@@ -356,6 +357,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   read_lexer_settings (lexer,settings);
   delete lexer;
   lexer = new QsciLexerBash ();
+  read_lexer_settings (lexer,settings);
+  delete lexer;
+  lexer = new octave_txt_lexer ();
   read_lexer_settings (lexer,settings);
   delete lexer;
 #endif
@@ -755,6 +759,9 @@ settings_dialog::write_changed_settings ()
   write_lexer_settings (lexer,settings);
   delete lexer;
   lexer = new QsciLexerBash ();
+  write_lexer_settings (lexer,settings);
+  delete lexer;
+  lexer = new octave_txt_lexer ();
   write_lexer_settings (lexer,settings);
   delete lexer;
 #endif

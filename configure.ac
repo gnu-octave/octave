@@ -784,7 +784,7 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [zlib.h], [gzclearerr])
 
 ### Also define HAVE_ZLIB if libz is found.
-if test $octave_cv_lib_z = yes; then
+if test -z "$warn_z"; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
@@ -1428,7 +1428,8 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [sqr1up],
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
-if test $octave_cv_lib_qrupdate = yes; then
+## Additional check to see if qrupdate lib found supports LU updates
+if test -z "$warn_qrupdate"; then
   AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
     [octave_cv_func_slup1up],
     [LIBS="$LIBS $QRUPDATE_LIBS"

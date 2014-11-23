@@ -928,8 +928,7 @@ OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
   [FFTW3F library not found.  The slower FFTPACK library will be used instead.],
   [fftw3.h], [fftwf_plan_dft_1d])
 
-## Check for the multithreaded FFTW library.
-## Fallback to singlethreaded if not found or disabled
+## Check command line for the option to disable multi-threaded FFTW
 build_fftw_threads=yes
 AC_ARG_ENABLE([fftw-threads],
   [AS_HELP_STRING([--disable-fftw-threads],
@@ -939,19 +938,25 @@ AC_ARG_ENABLE([fftw-threads],
    fi],
   [])
 
-if test $build_fftw_threads = yes; then
-  OCTAVE_CHECK_FFTW_THREADS(fftw3, fftw_plan_with_nthreads)
-  OCTAVE_CHECK_FFTW_THREADS(fftw3f, fftwf_plan_with_nthreads)
-fi
-
-## Octave is currently unable to use FFTW unless both float
-## and double versions are available.
+## Octave is currently unable to use FFTW unless
+## both float and double versions are available.
 
 AM_CONDITIONAL([AMCOND_HAVE_FFTW],
   [test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"])
 
 if test -n "$FFTW3_LIBS" && test -n "$FFTW3F_LIBS"; then
   AC_DEFINE(HAVE_FFTW, 1, [Define if you have both FFTW3 and FFTW3F libraries.])
+else
+  ## --without-fftw3 given, or one of the FFTW3 libs not installed.
+  ## Don't check for FFTW threads as this is now pointless.
+  build_fftw_threads=no
+fi
+
+## Check for the multithreaded FFTW library.
+## Fallback to singlethreaded if not found or disabled
+if test $build_fftw_threads = yes; then
+  OCTAVE_CHECK_FFTW_THREADS(fftw3, fftw_plan_with_nthreads)
+  OCTAVE_CHECK_FFTW_THREADS(fftw3f, fftwf_plan_with_nthreads)
 fi
 
 ## Subdirectory of liboctave/cruft to build if FFTW is not found.

@@ -723,7 +723,7 @@ OCTAVE_F77_FLAG([-ffloat-store], [
 ### Check for the Qhull library
 
 OCTAVE_CHECK_LIB(qhull, QHull,
-  [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
+  [Qhull library not found.  This will result in loss of functionality of some geometry functions.],
   [libqhull/libqhull.h qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h],
   [qh_qhull], [], [],
   [warn_qhull=
@@ -731,7 +731,7 @@ OCTAVE_CHECK_LIB(qhull, QHull,
   OCTAVE_CHECK_LIB_QHULL_OK(
     [TEXINFO_QHULL="@set HAVE_QHULL"
     AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])],
-    [warn_qhull="Qhull library found, but does not seem to work properly -- this will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
+    [warn_qhull="Qhull library found, but does not seem to work properly.  This will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
 
 ### Check for PCRE regex library.
 

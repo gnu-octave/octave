@@ -716,7 +716,7 @@ OCTAVE_F77_FLAG([-ffloat-store], [
 ### Check for the Qhull library
 
 OCTAVE_CHECK_LIB(qhull, QHull,
-  [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
+  [Qhull library not found.  This will result in loss of functionality of some geometry functions.],
   [libqhull/libqhull.h qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h],
   [qh_qhull], [], [],
   [warn_qhull=
@@ -724,7 +724,7 @@ OCTAVE_CHECK_LIB(qhull, QHull,
   OCTAVE_CHECK_LIB_QHULL_OK(
     [TEXINFO_QHULL="@set HAVE_QHULL"
     AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])],
-    [warn_qhull="Qhull library found, but does not seem to work properly -- this will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
+    [warn_qhull="Qhull library found, but does not seem to work properly.  This will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
 
 ### Check for PCRE regex library.
 
@@ -777,7 +777,7 @@ OCTAVE_CHECK_LIB(z, ZLIB,
   [zlib.h], [gzclearerr])
 
 ### Also define HAVE_ZLIB if libz is found.
-if test $octave_cv_lib_z = yes; then
+if test -z "$warn_z"; then
   AC_DEFINE(HAVE_ZLIB, 1, [Define to 1 if ZLIB is available.])
 fi
 
@@ -1426,7 +1426,8 @@ OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [sqr1up],
   [Fortran 77], [don't use qrupdate, disable QR & Cholesky updating functions])
 
-if test $octave_cv_lib_qrupdate = yes; then
+## Additional check to see if qrupdate lib found supports LU updates
+if test -z "$warn_qrupdate"; then
   AC_CACHE_CHECK([for slup1up in $QRUPDATE_LIBS],
     [octave_cv_func_slup1up],
     [LIBS="$LIBS $QRUPDATE_LIBS"

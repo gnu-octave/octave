@@ -48,7 +48,7 @@ function [h, failed] = __patch__ (p, varargin)
       else
         args{6} = [];
       endif
-      args = [args; varargin(2:end)];
+      args = [args, varargin(2:end)];
     else
       failed = true;
     endif

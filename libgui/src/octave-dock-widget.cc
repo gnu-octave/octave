@@ -107,6 +107,9 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
            this, SLOT (pasteClipboard ()));
   connect (p, SIGNAL (selectAll_signal ()),
            this, SLOT (selectAll ()));
+
+  installEventFilter (this);
+
 }
 
 octave_dock_widget::~octave_dock_widget ()
@@ -357,4 +360,15 @@ octave_dock_widget::handle_settings (const QSettings *settings)
 #endif
 
   notice_settings (settings);  // call individual handler
+}
+
+bool octave_dock_widget::eventFilter(QObject *obj, QEvent *e)
+{
+  if (e->type () == QEvent::NonClientAreaMouseButtonDblClick)
+    {
+      e->ignore (); // ignore double clicks into window decoration elements
+      return true;
+    }
+
+  return QDockWidget::eventFilter (obj,e);
 }

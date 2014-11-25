@@ -366,12 +366,15 @@ xgamma (double x)
 {
   double result;
 
-  if (xisnan (x) || (x < 0 && (xisinf (x) || D_NINT (x) == x)))
-    result = octave_NaN;
-  else if (x == 0 && xnegative_sign (x))
-    result = -octave_Inf;
-  else if (x == 0 || xisinf (x))
+  // Special cases for (near) compatibility with Matlab instead of
+  // tgamma.  Matlab does not have -0.
+
+  if (x == 0)
+    result = xnegative_sign (x) ? -octave_Inf : octave_Inf;
+  else if ((x < 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Inf;
+  else if (xisnan (x))
+    result = octave_NaN;
   else
     {
 #if defined (HAVE_TGAMMA)
@@ -379,8 +382,6 @@ xgamma (double x)
 #else
       F77_XFCN (xdgamma, XDGAMMA, (x, result));
 #endif
-      if (xisinf (result) && (static_cast<int> (gnulib::floor (x)) % 2))
-        result = -octave_Inf;
     }
 
   return result;
@@ -437,12 +438,15 @@ xgamma (float x)
 {
   float result;
 
-  if (xisnan (x) || (x < 0 && (xisinf (x) || D_NINT (x) == x)))
-    result = octave_Float_NaN;
-  else if (x == 0 && xnegative_sign (x))
-    result = -octave_Float_Inf;
-  else if (x == 0 || xisinf (x))
+  // Special cases for (near) compatibility with Matlab instead of
+  // tgamma.  Matlab does not have -0.
+
+  if (x == 0)
+    result = xnegative_sign (x) ? -octave_Float_Inf : octave_Float_Inf;
+  else if ((x < 0 && D_NINT (x) == x) || xisinf (x))
     result = octave_Float_Inf;
+  else if (xisnan (x))
+    result = octave_Float_NaN;
   else
     {
 #if defined (HAVE_TGAMMA)
@@ -450,8 +454,6 @@ xgamma (float x)
 #else
       F77_XFCN (xgamma, XGAMMA, (x, result));
 #endif
-      if (xisinf (result) && (static_cast<int> (gnulib::floor (x)) % 2))
-        result = -octave_Float_Inf;
     }
 
   return result;

@@ -316,20 +316,6 @@ AC_DEFINE(__NO_MATH_INLINES, 1,
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
-### Check version number when using g++.
-
-GXX_VERSION=
-if test "$GXX" = yes; then
-  gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
-    $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
-
-  AX_COMPARE_VERSION([$gxx_version], [lt], [3.5],
-    [AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])])
-
-  GXX_VERSION=$gxx_version
-fi
-AC_SUBST(GXX_VERSION)
-
 ### Determine which C compiler to use (we expect to find gcc).
 
 AC_PROG_CC
@@ -376,8 +362,8 @@ if test "$GCC" = yes; then
 fi
 AC_SUBST(GCC_VERSION)
 
-### Also check g++ version number, it might be different from the
-## gcc version number.
+### Check version number when using g++ .
+### It might be different from the gcc version number.
 
 GXX_VERSION=
 if test "$GXX" = yes; then
@@ -385,7 +371,7 @@ if test "$GXX" = yes; then
   gxx_version=`$CXX -v 2>&1 | $GREP "^.*g.. version" | \
     $SED -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
-  AX_COMPARE_VERSION([$gxx_version], [lt], [3],
+  AX_COMPARE_VERSION([$gxx_version], [lt], [4.1],
     [warn_gxx_version="g++ version $gxx_version is likely to cause problems"
      OCTAVE_CONFIGURE_WARNING([warn_gxx_version])])
 

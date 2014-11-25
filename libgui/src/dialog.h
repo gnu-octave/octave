@@ -261,9 +261,9 @@ signals:
 
 private slots:
 
-  void reject (void);
+  void rejectSelection (void);
 
-  void accept (void);
+  void acceptSelection (void);
 };
 
 #endif

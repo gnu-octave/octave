@@ -17,6 +17,7 @@ sparse_FCN_FILES = \
   sparse/nonzeros.m \
   sparse/pcg.m \
   sparse/pcr.m \
+  sparse/qmr.m \
   sparse/spaugment.m \
   sparse/spconvert.m \
   sparse/spdiags.m \

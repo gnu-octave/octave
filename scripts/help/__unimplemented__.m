@@ -768,7 +768,6 @@ function list = missing_functions ()
   "propertyeditor",
   "psi",
   "publish",
-  "qmr",
   "quad2d",
   "rbbox",
   "readtable",

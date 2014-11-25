@@ -110,6 +110,7 @@ Summary of important user-visible changes for version 4.2:
       linkaxes
       lscov
       numfields
+      qmr
       rotate
       sylvester
       unsetenv

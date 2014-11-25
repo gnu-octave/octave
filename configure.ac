@@ -708,8 +708,7 @@ OCTAVE_CHECK_LIB(qhull, QHull,
   [warn_qhull=
   OCTAVE_CHECK_QHULL_VERSION
   OCTAVE_CHECK_LIB_QHULL_OK(
-    [TEXINFO_QHULL="@set HAVE_QHULL"
-    AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])],
+    [AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])],
     [warn_qhull="Qhull library found, but does not seem to work properly.  This will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
 
 ### Check for PCRE regex library.
@@ -891,7 +890,6 @@ OCTAVE_CHECK_LIB(hdf5, HDF5,
   [hdf5.h], [H5Gget_num_objs], [], [],
   [warn_hdf5=
    OCTAVE_CHECK_HDF5_HAS_VER_16_API
-   TEXINFO_HDF5="@set HAVE_HDF5"
    AC_DEFINE(HAVE_HDF5, 1,
      [Define to 1 if HDF5 is available and newer than version 1.6.])
    if test $have_msvc = yes; then
@@ -958,8 +956,7 @@ OCTAVE_CHECK_LIB(glpk, GLPK,
   [glpk/glpk.h glpk.h], [glp_simplex], [], [],
   [warn_glpk=
    OCTAVE_CHECK_LIB_GLPK_OK(
-    [TEXINFO_GLPK="@set HAVE_GLPK"
-    AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
+    [AC_DEFINE(HAVE_GLPK, 1, [Define to 1 if GLPK is available.])],
     [warn_glpk="GLPK library found, but does not seem to work properly -- disabling glpk function"])])
 LIBS="$save_LIBS"
 CPPFLAGS="$save_CPPFLAGS"

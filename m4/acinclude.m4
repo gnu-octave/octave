@@ -598,7 +598,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     ;;
   esac
 
-  [TEXINFO_]m4_toupper([$1])=
   warn_$1="$3"
   m4_set_add([summary_warning_list], [warn_$1])
 
@@ -623,8 +622,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
         m4_ifblank([$8], [
           warn_$1=
           AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
-            [Define to 1 if $2 is available.])
-          [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
+            [Define to 1 if $2 is available.])], [$8])
       fi
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
@@ -634,7 +632,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   fi
 
   AC_SUBST(m4_toupper([$1])_LIBS)
-  AC_SUBST([TEXINFO_]m4_toupper([$1]))
   if test -n "$warn_$1"; then
     AC_MSG_WARN([$warn_$1])
     m4_toupper([$1])_LIBS=

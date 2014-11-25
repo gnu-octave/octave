@@ -125,6 +125,19 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     [retfile, retpath, retindex] = feval (funcname, outargs{:});
   endif
 
+  # add extension to the name it isnt already added
+
+  if ischar (retfile)
+    ext = outargs{1}{retindex};
+    ext = strrep (ext, '*', '');
+
+    if length (retfile) >= length (ext)
+      if ! strcmp (retfile(end-length (ext)+1:end), ext)
+        retfile = [retfile ext];
+      endif
+    endif
+  endif
+
 endfunction
 
 

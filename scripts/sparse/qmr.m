@@ -80,9 +80,9 @@
 ## V. Eijkhour, R. Pozo, C. Romine, and H. van der Vorst,
 ## @cite{Templates for the solution of linear systems: Building blocks
 ## for iterative methods}, SIAM, 2nd ed., 1994.
+## @end enumerate
 ##
 ## @seealso{bicg, bicgstab, cgs, gmres}
-##
 ## @end deftypefn
 
 ## Author: Nathan Podlich <nathan.podlich@gmail.com>

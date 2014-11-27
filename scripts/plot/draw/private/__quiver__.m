@@ -112,8 +112,16 @@ function hg = __quiver__ (varargin)
   ## Normalize 0.20 to 1/3 for plotting
   arrowsize /= 0.20 * 3;
 
-  if (autoscale && numel (u) > 1)
-    ## Scale the arrows to fit in the grid
+  ## Scale the arrows to fit in the grid
+  uu = u;
+  vv = v;
+  if (is3d)
+    ww = w;
+    len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
+  else
+    len = max (sqrt (u(:).^2 + v(:).^2));      
+  endif
+  if (len > 0 && autoscale && numel (u) > 1)
     if (isvector (x))
       nx = ny = sqrt (length (x));
     else
@@ -123,29 +131,19 @@ function hg = __quiver__ (varargin)
     dy = (max (y(:)) - min (y(:))) / ny;
     if (is3d)
       dz = (max (z(:)) - min (z(:))) / max (nx, ny);
-      len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
     else
       dz = 0;
-      len = max (sqrt (u(:).^2 + v(:).^2));
     endif
-    if (len > 0)
-      sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
-      if (sd != 0)
-        s = autoscale * sd;
-      else  # special case of identical points with multiple vectors
-        s = autoscale;
-      endif
-      uu = s * u;
-      vv = s * v;
-      if (is3d)
-        ww = s * w;
-      endif
+    sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
+    if (sd != 0)
+      s = autoscale * sd;
+    else  # special case of identical points with multiple vectors
+      s = autoscale;
     endif
-  else
-    uu = u;
-    vv = v;
+    uu = s * u;
+    vv = s * v;
     if (is3d)
-      ww = w;
+      ww = s * w;
     endif
   endif
 

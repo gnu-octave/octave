@@ -592,8 +592,17 @@ if test x"$FFLAGS" = x""; then
   FFLAGS="-O"
 fi
 
-## the F77 variable, if set, overrides AC_PROG_F77 automatically
-AC_PROG_F77
+## Prefer gfortran, but the user's F77 environment variable will override.
+AC_PROG_F77([gfortran])
+if test -z "$F77"; then
+  ## No gfortran found, search for any other installed compiler.
+  AC_PROG_F77
+fi
+if test "$F77" = g77; then
+  AC_MSG_ERROR([g77 is not a supported Fortran compiler.  Select another compiler by setting the environment variable F77 and re-running configure.])
+fi
+
+## Determine calling conventions for Fortran compiler
 AC_F77_LIBRARY_LDFLAGS
 AC_F77_DUMMY_MAIN
 AC_F77_WRAPPERS
@@ -688,10 +697,6 @@ if test $octave_cv_sizeof_fortran_integer = no; then
   fi
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)
-
-## FIXME: Is this really used?  Makefile seems to use $F77 for compiler
-FC=$F77
-AC_SUBST(FC)
 
 OCTAVE_F77_FLAG([-ffloat-store], [
   AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])

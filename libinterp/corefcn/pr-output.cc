@@ -385,8 +385,7 @@ rational_approx (double val, int len)
           double nextd = d;
 
           // Have we converged to 1/intmax ?
-          if (m > 100
-              || fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
+          if (fabs (frac) < 1 / static_cast<double> (std::numeric_limits<int>::max ()))
             {
               lastn = n;
               lastd = d;
@@ -408,12 +407,14 @@ rational_approx (double val, int len)
           if (n < 0 && d < 0)
             {
               // Double negative, string can be two characters longer..
-              if (buf.str ().length () > static_cast<unsigned int>(len + 2) &&
-                  m > 1)
+              if (buf.str ().length () > static_cast<unsigned int>(len + 2))
                 break;
             }
-          else if (buf.str ().length () > static_cast<unsigned int>(len) &&
-                   m > 1)
+          else if (buf.str ().length () > static_cast<unsigned int>(len))
+            break;
+
+          if (fabs (n) > std::numeric_limits<int>::max ()
+              || fabs (d) > std::numeric_limits<int>::max ())
             break;
 
           s = buf.str ();
@@ -434,6 +435,20 @@ rational_approx (double val, int len)
 
   return s;
 }
+
+/*
+%!assert (rats (2.0005, 9), "4001/2000")
+%!assert (rats (-2.0005, 10), "-4001/2000")
+%!assert (strtrim (rats (2.0005, 30)), "4001/2000")
+%!assert (pi - str2num (rats (pi, 30)), 0, 4 * eps)
+%!assert (e - str2num (rats (e, 30)), 0, 4 * eps)
+%!assert (rats (123, 2), " *")
+
+%!test
+%! v = 1 / double (intmax);
+%! err = v - str2num (rats(v, 12));
+%! assert (err, 0, 4 * eps);
+*/
 
 class
 pr_rational_float
@@ -3403,6 +3418,9 @@ x = str2num (r)\n\
 \n\
 The optional second argument defines the maximum length of the string\n\
 representing the elements of @var{x}.  By default @var{len} is 9.\n\
+\n\
+If the length of the smallest possible rational approximation exceeds\n\
+@var{len}, an asterisk (*) padded with spaces will be returned instead.\n\
 @seealso{format, rat}\n\
 @end deftypefn")
 {

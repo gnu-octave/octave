@@ -466,18 +466,18 @@ FileDialog::FileDialog (const QStringList& name_filters, const QString& title,
            &uiwidget_creator,
            SLOT (filedialog_finished (const QStringList&, const QString&,
                                       int)));
+  connect (this, SIGNAL (accepted ()), this, SLOT (acceptSelection ()));
+  connect (this, SIGNAL (rejected ()), this, SLOT (rejectSelection ()));
 }
 
 void
-FileDialog::reject (void)
+FileDialog::rejectSelection(void)
 {
   QStringList empty;
   emit finish_input (empty, "", 0);
-  done (QDialog::Rejected);
-
 }
 
-void FileDialog::accept (void)
+void FileDialog::acceptSelection (void)
 {
   QStringList string_result;
   QString path;
@@ -513,6 +513,5 @@ void FileDialog::accept (void)
 
   // send the selected info
   emit finish_input (string_result, path, idx);
-  done (QDialog::Accepted);
 }
 

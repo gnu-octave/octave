@@ -91,7 +91,6 @@ SHLBINPRE = @SHLBINPRE@
 
 # Fortran compiler flags.
 
-FC = @FC@
 F77 = @F77@
 AM_FFLAGS = @FFLAGS@
 FPICFLAG = @FPICFLAG@
@@ -557,7 +556,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_F77%|\"${F77}\"|" \
   -e "s|%OCTAVE_CONF_F77_FLOAT_STORE_FLAG%|\"${F77_FLOAT_STORE_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_F77_INTEGER_8_FLAG%|\"${F77_INTEGER_8_FLAG}\"|" \
-  -e "s|%OCTAVE_CONF_FC%|\"${FC}\"|" \
   -e "s|%OCTAVE_CONF_FFLAGS%|\"${FFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3_CPPFLAGS%|\"${FFTW3_CPPFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_FFTW3_LDFLAGS%|\"${FFTW3_LDFLAGS}\"|" \

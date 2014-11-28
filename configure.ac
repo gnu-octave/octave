@@ -719,10 +719,6 @@ if test $octave_cv_sizeof_fortran_integer = no; then
 fi
 AC_SUBST(F77_INTEGER_8_FLAG)
 
-## FIXME: Is this really used?  Makefile seems to use $F77 for compiler
-FC=$F77
-AC_SUBST(FC)
-
 OCTAVE_F77_FLAG([-ffloat-store], [
   AC_MSG_RESULT([setting F77_FLOAT_STORE_FLAG to -ffloat-store])
   F77_FLOAT_STORE_FLAG=-ffloat-store

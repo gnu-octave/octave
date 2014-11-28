@@ -100,9 +100,6 @@ function h = findobj (varargin)
         if (strcmpi (varargin{n1}, "flat"))
           depth = 0;
           n1 = n1 + 1;
-        elseif (strcmpi (varargin{n1}, "-depth"))
-          depth = varargin{n1+1};
-          n1 = n1 + 2;
         endif
       else
         error ("findobj: properties and options must be strings");
@@ -134,7 +131,18 @@ function h = findobj (varargin)
     endif
     logicaloperator{np} = "and";
     if (ischar (args{na}))
-      if (strcmpi (args{na}, "-regexp"))
+      if (strcmpi (args{na}, "-property"))
+        if (na + 1 <= numel (args))
+          na = na + 1;
+          property(np) = 1;
+          pname{np} = args{na};
+          na = na + 1;
+          pvalue{np} = [];
+          np = np + 1;
+        else
+          error ("findobj: inconsistent number of arguments");
+        endif
+      elseif (strcmpi (args{na}, "-regexp"))
         if (na + 2 <= numel (args))
           regularexpression(np) = 1;
           na = na + 1;
@@ -146,14 +154,11 @@ function h = findobj (varargin)
         else
           error ("findobj: inconsistent number of arguments");
         endif
-      elseif (strcmpi (args{na}, "-property"))
+      elseif (strcmpi (args{na}, "-depth"))
         if (na + 1 <= numel (args))
           na = na + 1;
-          property(np) = 1;
-          pname{np} = args{na};
+          depth = args{na};
           na = na + 1;
-          pvalue{np} = [];
-          np = np + 1;
         else
           error ("findobj: inconsistent number of arguments");
         endif

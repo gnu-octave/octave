@@ -172,10 +172,10 @@ endfunction
 %! y2 = [y 2*y];
 %! [b2, se_b2, mse2, S2] = lscov (X, y2);
 %! assert(b2, [b 2*b], eps)
-%! assert(se_b2, [se_b 2*se_b])
-%! assert(mse2, [mse 4*mse])
-%! assert(S2(:, :, 1), S)
-%! assert(S2(:, :, 2), 4*S)
+%! assert(se_b2, [se_b 2*se_b], eps)
+%! assert(mse2, [mse 4*mse], eps)
+%! assert(S2(:, :, 1), S, eps)
+%! assert(S2(:, :, 2), 4*S, eps)
 
 %!test
 %! ## Artificial example with positive semidefinite weight matrix

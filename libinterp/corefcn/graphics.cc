@@ -9657,12 +9657,12 @@ gtk_manager::do_unregister_toolkit (const std::string& name)
 
           while (pa != available_toolkits.end ())
             {
-              std::string name = *pa++;
+              std::string toolkit = *pa++;
 
-              if (name == "qt"
-                  || (name == "fltk"
+              if (toolkit == "qt"
+                  || (toolkit == "fltk"
                       && available_toolkits.find ("qt") == available_toolkits.end ()))
-                dtk = name;
+                dtk = toolkit;
             }
         }
     }

@@ -522,14 +522,16 @@ Complex
 rc_log (double x)
 {
   const double pi = 3.14159265358979323846;
-  return x < 0.0 ? Complex (log (-x), pi) : Complex (log (x));
+  return x < 0.0 ? Complex (gnulib::log (-x), pi) : Complex (gnulib::log (x));
 }
 
 FloatComplex
 rc_log (float x)
 {
   const float pi = 3.14159265358979323846f;
-  return x < 0.0f ? FloatComplex (logf (-x), pi) : FloatComplex (logf (x));
+  return (x < 0.0f
+          ? FloatComplex (gnulib::logf (-x), pi)
+          : FloatComplex (gnulib::logf (x)));
 }
 
 Complex

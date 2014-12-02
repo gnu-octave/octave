@@ -633,7 +633,7 @@ log1p (double x)
       retval = 2 * (s + 1) * u;
     }
   else
-    retval = log (1 + x);
+    retval = gnulib::log (1 + x);
 
   return retval;
 }
@@ -685,14 +685,14 @@ log1pf (float x)
   if (ax < 0.2)
     {
       // approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
-      float u = x / (2 + x), t = 1, s = 0;
+      float u = x / (2 + x), t = 1.0f, s = 0;
       for (int i = 2; i < 12; i += 2)
         s += (t *= u*u) / (i+1);
 
-      retval = 2 * (s + 1) * u;
+      retval = 2 * (s + 1.0f) * u;
     }
   else
-    retval = log (1 + x);
+    retval = gnulib::logf (1.0f + x);
 
   return retval;
 }
@@ -2986,14 +2986,17 @@ done:
 Complex rc_log1p (double x)
 {
   const double pi = 3.14159265358979323846;
-  return x < -1.0 ? Complex (log (-(1.0 + x)), pi) : Complex (log1p (x));
+  return (x < -1.0
+          ? Complex (gnulib::log (-(1.0 + x)), pi)
+          : Complex (log1p (x)));
 }
 
 FloatComplex rc_log1p (float x)
 {
   const float pi = 3.14159265358979323846f;
-  return x < -1.0f ? FloatComplex (logf (-(1.0f + x)), pi)
-                   : FloatComplex (log1pf (x));
+  return (x < -1.0f
+          ? FloatComplex (gnulib::logf (-(1.0f + x)), pi)
+          : FloatComplex (log1pf (x)));
 }
 
 // This algorithm is due to P. J. Acklam.
@@ -3046,7 +3049,7 @@ static double do_erfinv (double x, bool refine)
   else if (ax < 1.0)
     {
       // Tail region.
-      const double q = sqrt (-2*log (0.5*(1-ax)));
+      const double q = sqrt (-2*gnulib::log (0.5*(1-ax)));
       const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
       const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
       y = yn / yd * signum (-x);
@@ -3124,10 +3127,16 @@ static double do_erfcinv (double x, bool refine)
   else if (x > 0.0 && x < 2.0)
     {
       // Tail region.
-      const double q = x < 1 ? sqrt (-2*log (0.5*x)) : sqrt (-2*log (0.5*(2-x)));
+      const double q = (x < 1
+                        ? sqrt (-2*gnulib::log (0.5*x))
+                        : sqrt (-2*gnulib::log (0.5*(2-x))));
+
       const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
+
       const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
+
       y = yn / yd;
+
       if (x < pbreak_lo)
         y = -y;
     }
@@ -3243,8 +3252,8 @@ betain (double x, double p, double q, double beta, bool& err)
 
       if (temp <= acu && temp <= acu * value)
         {
-          value = value * exp (pp * log (xx)
-                               + (qq - 1.0) * log (cx) - beta) / pp;
+          value = value * exp (pp * gnulib::log (xx)
+                               + (qq - 1.0) * gnulib::log (cx) - beta) / pp;
 
           if (indx)
             {
@@ -3342,7 +3351,7 @@ betaincinv (double y, double p, double q)
 
   //  Calculate the initial approximation.
 
-  r = sqrt (- log (a * a));
+  r = sqrt (- gnulib::log (a * a));
 
   ycur = r - (2.30753 + 0.27061 * r) / (1.0 + (0.99229 + 0.04481 * r) * r);
 
@@ -3363,7 +3372,7 @@ betaincinv (double y, double p, double q)
 
       if (t <= 0.0)
         {
-          value = 1.0 - exp ((log ((1.0 - a) * qq) + beta) / qq);
+          value = 1.0 - exp ((gnulib::log ((1.0 - a) * qq) + beta) / qq);
         }
       else
         {
@@ -3371,7 +3380,7 @@ betaincinv (double y, double p, double q)
 
           if (t <= 1.0)
             {
-              value = exp ((log (a * pp) + beta) / pp);
+              value = exp ((gnulib::log (a * pp) + beta) / pp);
             }
           else
             {
@@ -3413,7 +3422,7 @@ betaincinv (double y, double p, double q)
         }
 
       xin = value;
-      ycur = (ycur - a) * exp (beta + r * log (xin) + t * log (1.0 - xin));
+      ycur = (ycur - a) * exp (beta + r * gnulib::log (xin) + t * gnulib::log (1.0 - xin));
 
       if (ycur * yprev <= 0.0)
         {

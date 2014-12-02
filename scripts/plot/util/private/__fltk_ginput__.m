@@ -47,7 +47,14 @@ function [x, y, button] = __fltk_ginput__ (f, n = -1)
       sleep (0.01);
 
       [x, y, n0, button] = ginput_accumulator (-1, 0, 0, 0);
-    until (n0 == n || n0 < 0)
+    until ((n > -1 && n0 >= n) || n0 < 0)
+
+    if (n0 > n)
+      ## More clicks than requested due to double-click or too fast clicking
+      x = x(1:n);
+      y = y(1:n);
+      button = button(1:n);
+    endif
 
   unwind_protect_cleanup
     set (f, "windowbuttondownfcn", orig_windowbuttondownfcn);

@@ -31,8 +31,10 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
     fcndirs = { liboctavetestdir, libinterptestdir, fcnfiledir };
     fixedtestdirs = { fixedtestdir };
   endif
-  global files_with_no_tests = {};
-  global files_with_tests = {};
+  global files_with_no_tests;
+  global files_with_tests;
+  files_with_no_tests = {};
+  files_with_tests = {};
   ## FIXME: These names don't really make sense if we are running
   ##        tests for an installed copy of Octave.
   global topsrcdir = fcnfiledir;
@@ -40,12 +42,13 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
   pso = page_screen_output ();
   warn_state = warning ("query", "quiet");
   warning ("on", "quiet");
+  logfile = make_absolute_filename ("fntests.log");
   try
     page_screen_output (false);
     warning ("off", "Octave:deprecated-function");
-    fid = fopen ("fntests.log", "wt");
+    fid = fopen (logfile, "wt");
     if (fid < 0)
-      error ("could not open fntests.log for writing");
+      error ("could not open %s for writing", logfile);
     endif
     test ("", "explain", fid);
     dp = dn = dxf = dsk = 0;
@@ -76,7 +79,7 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
       printf ("  SKIPPED %6d\n", dsk);
     endif
     puts ("\n");
-    puts ("See the file test/fntests.log for additional details.\n");
+    printf ("See the file %s for additional details.\n", logfile);
     if (dxf > 0)
       puts ("\n");
       puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
@@ -99,8 +102,8 @@ function __run_test_suite__ (fcndirs, fixedtestdirs)
 
     report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
 
-    puts ("\nPlease help improve Octave by contributing tests for\n");
-    puts ("these files (see the list in the file fntests.log).\n\n");
+    puts ("\nPlease help improve Octave by contributing tests for these files\n");
+    printf ("(see the list in the file %s).\n\n", logfile);
 
     fprintf (fid, "\nFiles with no tests:\n\n%s",
                   list_in_columns (files_with_no_tests, 80));

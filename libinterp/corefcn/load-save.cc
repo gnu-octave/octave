@@ -1201,7 +1201,7 @@ write_header (std::ostream& os, load_save_format format)
         char headertext[128];
 
         time (&now);
-        bdt = *gmtime (&now);
+        bdt = *gnulib::gmtime (&now);
         memset (headertext, ' ', 124);
         // ISO 8601 format date
         nstrftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "

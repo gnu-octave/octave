@@ -10713,8 +10713,8 @@ gtk_manager::do_unregister_toolkit (const std::string& name)
 
               if (tk_name == "qt"
                   || (tk_name == "fltk"
-                      && available_toolkits.find ("qt")
-                        == available_toolkits.end ()))
+                      && (available_toolkits.find ("qt")
+                          == available_toolkits.end ())))
                 dtk = tk_name;
             }
         }

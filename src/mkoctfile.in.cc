@@ -70,11 +70,11 @@ get_line (FILE *fp)
 {
   static std::vector<char> buf (100);
   unsigned int idx = 0;
-  char c;
+  int c;
 
   while (true)
     {
-      c = static_cast<char> (gnulib::fgetc (fp));
+      c = gnulib::fgetc (fp);
       if (c == '\n' || c == EOF)
         break;
       if (buf.size () <= idx)

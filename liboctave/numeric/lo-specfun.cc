@@ -685,14 +685,14 @@ log1pf (float x)
   if (ax < 0.2)
     {
       // approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
-      float u = x / (2 + x), t = 1, s = 0;
+      float u = x / (2 + x), t = 1.0f, s = 0;
       for (int i = 2; i < 12; i += 2)
         s += (t *= u*u) / (i+1);
 
-      retval = 2 * (s + 1) * u;
+      retval = 2 * (s + 1.0f) * u;
     }
   else
-    retval = gnulib::logf (1 + x);
+    retval = gnulib::logf (1.0f + x);
 
   return retval;
 }
@@ -2986,8 +2986,9 @@ Complex rc_log1p (double x)
 FloatComplex rc_log1p (float x)
 {
   const float pi = 3.14159265358979323846f;
-  return x < -1.0f ? FloatComplex (gnulib::logf (-(1.0f + x)), pi)
-                   : FloatComplex (log1pf (x));
+  return (x < -1.0f
+          ? FloatComplex (gnulib::logf (-(1.0f + x)), pi)
+          : FloatComplex (log1pf (x)));
 }
 
 // This algorithm is due to P. J. Acklam.
@@ -3118,10 +3119,16 @@ static double do_erfcinv (double x, bool refine)
   else if (x > 0.0 && x < 2.0)
     {
       // Tail region.
-      const double q = x < 1 ? sqrt (-2*gnulib::log (0.5*x)) : sqrt (-2*gnulib::log (0.5*(2-x)));
+      const double q = (x < 1
+                        ? sqrt (-2*gnulib::log (0.5*x))
+                        : sqrt (-2*gnulib::log (0.5*(2-x))));
+
       const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
+
       const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
+
       y = yn / yd;
+
       if (x < pbreak_lo)
         y = -y;
     }

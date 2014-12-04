@@ -2198,13 +2198,22 @@ main_window::execute_debug_callback ()
       _dbg_queue_mutex.unlock ();
 
       if (debug == "step")
-        Fdbstep ();
+        {
+          Fdb_next_breakpoint_quiet ();
+          Fdbstep ();
+        }
       else if (debug == "cont")
-        Fdbcont ();
+        {
+          Fdb_next_breakpoint_quiet ();
+          Fdbcont ();
+        }
       else if (debug == "quit")
         Fdbquit ();
       else
-        Fdbstep (ovl (debug.toStdString ()));
+        {
+          Fdb_next_breakpoint_quiet ();
+          Fdbstep (ovl (debug.toStdString ()));
+        }
 
       command_editor::interrupt (true);
     }

@@ -91,6 +91,8 @@ public:
 
   static void blink_matching_paren (bool flag);
 
+  static bool erase_empty_line (bool flag);
+
   static void set_basic_word_break_characters (const std::string& s);
 
   static void set_completer_word_break_characters (const std::string& s);
@@ -261,6 +263,8 @@ protected:
   virtual void do_restore_terminal_state (void) { }
 
   virtual void do_blink_matching_paren (bool) { }
+
+  virtual bool do_erase_empty_line (bool) { return false; }
 
   virtual void do_set_basic_word_break_characters (const std::string&) { }
 

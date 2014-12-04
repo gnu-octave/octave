@@ -151,6 +151,8 @@ public:
 
   static bool debug_mode;
 
+  static bool quiet_breakpoint_flag;
+
   // Possible types of evaluation contexts.
   enum stmt_list_type
   {

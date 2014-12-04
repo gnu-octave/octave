@@ -74,6 +74,14 @@ octave_rl_enable_paren_matching (int val)
   rl_variable_bind ("blink-matching-paren", val ? "1" : "0");
 }
 
+int
+octave_rl_erase_empty_line (int val)
+{
+  int retval = rl_erase_empty_line;
+  rl_erase_empty_line = val;
+  return retval;
+}
+
 /* It would be much simpler if we could just call _rl_clear_screen to
    only clear the screen, but it is not a public function, and on some
    systems, it is not exported from shared library versions of

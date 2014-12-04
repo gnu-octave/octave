@@ -57,6 +57,8 @@ size_t tree_evaluator::current_frame = 0;
 
 bool tree_evaluator::debug_mode = false;
 
+bool tree_evaluator::quiet_breakpoint_flag = false;
+
 tree_evaluator::stmt_list_type tree_evaluator::statement_context
   = tree_evaluator::other;
 

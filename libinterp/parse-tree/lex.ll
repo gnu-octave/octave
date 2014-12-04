@@ -3398,12 +3398,7 @@ octave_lexer::fill_flex_buffer (char *buf, unsigned max_size)
   if (! input_buf.empty ())
     status = input_buf.copy_chunk (buf, max_size);
   else
-    {
-      status = YY_NULL;
-
-      if (! input_buf.at_eof ())
-        fatal_error ("octave_base_lexer::fill_flex_buffer failed");
-    }
+    status = YY_NULL;
 
   return status;
 }
@@ -3419,12 +3414,7 @@ octave_push_lexer::fill_flex_buffer (char *buf, unsigned max_size)
   if (! input_buf.empty ())
     status = input_buf.copy_chunk (buf, max_size);
   else
-    {
-      status = YY_NULL;
-
-      if (! input_buf.at_eof ())
-        fatal_error ("octave_base_lexer::fill_flex_buffer failed");
-    }
+    status = YY_NULL;
 
   return status;
 }

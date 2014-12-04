@@ -1485,3 +1485,38 @@ Return true if in debugging mode, otherwise false.\n\
 
   return retval;
 }
+
+DEFUN (db_next_breakpoint_quiet, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} db_next_breakpoint_quiet ()\n\
+@deftypefnx {Built-in Function} {} db_next_breakpoint_quiet (@var{flag})\n\
+Disable line info printing at the next breakpoint.  With a logical\n\
+argument, set the state on or off.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0 || nargin == 1)
+    {
+      bool state = true;
+
+      if (nargin == 1)
+        {
+          state = args(0).bool_value ();
+
+          if (error_state)
+            {
+              gripe_wrong_type_arg ("db_next_breakpoint", args(0), true);
+              return retval;
+            }
+        }
+
+      tree_evaluator::quiet_breakpoint_flag = state;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}

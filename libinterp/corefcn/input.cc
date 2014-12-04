@@ -184,9 +184,12 @@ gnu_readline (const std::string& s, bool& eof)
   eof = false;
 
   std::string retval = command_editor::readline (s, eof);
-
+  
   if (! eof && retval.empty ())
     retval = "\n";
+
+  if (command_editor::interrupt (false))
+    retval = "";
 
   return retval;
 }
@@ -508,6 +511,9 @@ get_debug_input (const std::string& prompt)
 {
   unwind_protect frame;
 
+  bool silent = tree_evaluator::quiet_breakpoint_flag;
+  tree_evaluator::quiet_breakpoint_flag = false;
+          
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
   int curr_debug_line;
@@ -544,10 +550,13 @@ get_debug_input (const std::string& prompt)
           // that we are stopped on the no-op command that marks the
           // end of a function or script.
 
-          buf << "stopped in " << nm;
+          if (! silent)
+            {
+              buf << "stopped in " << nm;
 
-          if (curr_debug_line > 0)
-            buf << " at line " << curr_debug_line;
+              if (curr_debug_line > 0)
+                buf << " at line " << curr_debug_line;
+            }
 
           if (have_file)
             {
@@ -558,15 +567,21 @@ get_debug_input (const std::string& prompt)
               frame.add_fcn (execute_in_debugger_handler,
                              std::pair<std::string, int> (nm, curr_debug_line));
 
-              std::string line_buf
-                = get_file_line (nm, curr_debug_line);
+              if (! silent)
+                {
+                  std::string line_buf
+                    = get_file_line (nm, curr_debug_line);
 
-              if (! line_buf.empty ())
-                buf << "\n" << curr_debug_line << ": " << line_buf;
+                  if (! line_buf.empty ())
+                    buf << "\n" << curr_debug_line << ": " << line_buf;
+                }
             }
         }
     }
 
+  if (silent)
+    command_editor::erase_empty_line (true);
+  
   std::string msg = buf.str ();
 
   if (! msg.empty ())
@@ -595,7 +610,7 @@ get_debug_input (const std::string& prompt)
 
       if (command_editor::interrupt (false))
         break;
-      else
+       else
         {
           if (retval == 0 && curr_parser.stmt_list)
             {
@@ -910,6 +925,7 @@ If @code{keyboard} is invoked without arguments, a default prompt of\n\
       octave_call_stack::goto_frame_relative (0);
 
       tree_evaluator::debug_mode = true;
+      tree_evaluator::quiet_breakpoint_flag = false;
 
       tree_evaluator::current_frame = octave_call_stack::current_frame ();
 

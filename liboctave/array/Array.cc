@@ -76,7 +76,7 @@ Array<T>::fill (const T& val)
       slice_data = rep->data;
     }
   else
-    fill_or_memset (slice_len, val, slice_data);
+    std::fill_n (slice_data, slice_len, val);
 }
 
 template <class T>
@@ -399,7 +399,7 @@ private:
         octave_idx_type len = dim[0];
         if (step == 1)
           {
-            copy_or_memcpy (len, src, dest);
+            std::copy (src, src + len, dest);
             dest += len;
           }
         else
@@ -683,8 +683,8 @@ private:
   {
     if (lev == 0)
       {
-        copy_or_memcpy (cext[0], src, dest);
-        fill_or_memset (dext[0] - cext[0], rfv, dest + cext[0]);
+        std::copy (src, src+cext[0], dest);
+        std::fill_n (dest + cext[0], dext[0] - cext[0], rfv);
       }
     else
       {
@@ -694,7 +694,7 @@ private:
         for (k = 0; k < cext[lev]; k++)
           do_resize_fill (src + k * sd, dest + k * dd, rfv, lev - 1);
 
-        fill_or_memset (dext[lev] - k * dd, rfv, dest + k * dd);
+        std::fill_n (dest + k * dd, dext[lev] - k * dd, rfv);
       }
   }
 
@@ -959,7 +959,7 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
                   Array<T> tmp (Array<T> (dim_vector (nn, 1)), dv, 0, n);
                   T *dest = tmp.fortran_vec ();
 
-                  copy_or_memcpy (nx, data (), dest);
+                  std::copy (data (), data () + nx, dest);
                   dest[nx] = rfv;
 
                   *this = tmp;
@@ -972,8 +972,8 @@ Array<T>::resize1 (octave_idx_type n, const T& rfv)
 
               octave_idx_type n0 = std::min (n, nx);
               octave_idx_type n1 = n - n0;
-              copy_or_memcpy (n0, data (), dest);
-              fill_or_memset (n1, rfv, dest + n0);
+              std::copy (data (), data () + n0, dest);
+              std::fill_n (dest + n0, n1, rfv);
 
               *this = tmp;
             }
@@ -1003,22 +1003,22 @@ Array<T>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
           const T *src = data ();
           if (r == rx)
             {
-              copy_or_memcpy (r * c0, src, dest);
+              std::copy (src, src + r * c0, dest);
               dest += r * c0;
             }
           else
             {
               for (octave_idx_type k = 0; k < c0; k++)
                 {
-                  copy_or_memcpy (r0, src, dest);
+                  std::copy (src, src + r0, dest);
                   src += rx;
                   dest += r0;
-                  fill_or_memset (r1, rfv, dest);
+                  std::fill_n (dest, r1, rfv);
                   dest += r1;
                 }
             }
 
-          fill_or_memset (r * c1, rfv, dest);
+          std::fill_n (dest, r * c1, rfv);
 
           *this = tmp;
         }
@@ -1416,8 +1416,8 @@ Array<T>::delete_elements (const idx_vector& i)
           Array<T> tmp (dim_vector (col_vec ? m : 1, !col_vec ? m : 1));
           const T *src = data ();
           T *dest = tmp.fortran_vec ();
-          copy_or_memcpy (l, src, dest);
-          copy_or_memcpy (n - u, src + u, dest + l);
+          std::copy (src, src + l, dest);
+          std::copy (src + u, src + n, dest + l);
           *this = tmp;
         }
       else
@@ -1469,9 +1469,9 @@ Array<T>::delete_elements (int dim, const idx_vector& i)
           l *= dl; u *= dl; n *= dl;
           for (octave_idx_type k = 0; k < du; k++)
             {
-              copy_or_memcpy (l, src, dest);
+              std::copy (src, src + l, dest);
               dest += l;
-              copy_or_memcpy (n - u, src + u, dest);
+              std::copy (src + u, src + n, dest);
               dest += n - u;
               src += n;
             }

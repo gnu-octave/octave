@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "boolSparse.h"
 #include "dSparse.h"
-#include "oct-mem.h"
 #include "oct-locbuf.h"
 
 #include "Sparse-op-defs.h"
@@ -160,8 +159,8 @@ SparseBoolMatrix::any (int dim) const
         retval.xcidx (i+1) = retval.xcidx (i) + (cidx (i+1) > cidx (i));
       octave_idx_type new_nz = retval.xcidx (nc);
       retval.change_capacity (new_nz);
-      fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
-      fill_or_memset (new_nz, true, retval.data ());
+      std::fill_n (retval.ridx (), new_nz, static_cast<octave_idx_type> (0));
+      std::fill_n (retval.data (), new_nz, true);
     }
   else if (dim == 1)
     {
@@ -177,7 +176,7 @@ SparseBoolMatrix::any (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
+          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
           retval = Sparse<bool> (Array<bool> (dim_vector (1, 1), true),
                                  idx_vector (tmp),
                                  idx_vector (static_cast<octave_idx_type> (0)),
@@ -206,7 +205,7 @@ SparseBoolMatrix::sum (int dim) const
         retval.xcidx (i+1) = retval.xcidx (i) + (cidx (i+1) > cidx (i));
       octave_idx_type new_nz = retval.xcidx (nc);
       retval.change_capacity (new_nz);
-      fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
+      std::fill_n (retval.ridx (), new_nz, static_cast<octave_idx_type> (0));
       for (octave_idx_type i = 0, k = 0; i < nc; i++)
         {
           octave_idx_type c = cidx (i+1) - cidx (i);
@@ -228,7 +227,7 @@ SparseBoolMatrix::sum (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
+          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
           retval = Sparse<double> (Array<double> (dim_vector (1, 1), 1.0),
                                    idx_vector (tmp),
                                    idx_vector (static_cast<octave_idx_type> (0)),

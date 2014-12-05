@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstddef>
 #include <cmath>
+#include <cstring>
 #include <memory>
 
 #include "quit.h"

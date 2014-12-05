@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_idx_vector_h 1
 
 #include <cassert>
+#include <cstring>
 
 #include <algorithm>
 #include <iosfwd>
@@ -34,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "dim-vector.h"
 #include "oct-inttypes.h"
 #include "oct-alloc.h"
-#include "oct-mem.h"
 #include "oct-refcount.h"
 
 template<class T> class Array;
@@ -631,7 +631,7 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        copy_or_memcpy (len, src, dest);
+        std::copy (src, src + len, dest);
         break;
 
       case class_range:
@@ -641,7 +641,7 @@ public:
           octave_idx_type step = r->get_step ();
           const T *ssrc = src + start;
           if (step == 1)
-            copy_or_memcpy (len, ssrc, dest);
+            std::copy (ssrc, ssrc + len, dest);
           else if (step == -1)
             std::reverse_copy (ssrc - len + 1, ssrc + 1, dest);
           else if (step == 0)
@@ -705,7 +705,7 @@ public:
     switch (rep->idx_class ())
       {
       case class_colon:
-        copy_or_memcpy (len, src, dest);
+        std::copy (src, src + len, dest);
         break;
 
       case class_range:
@@ -715,7 +715,7 @@ public:
           octave_idx_type step = r->get_step ();
           T *sdest = dest + start;
           if (step == 1)
-            copy_or_memcpy (len, src, sdest);
+            std::copy (src, src + len, sdest);
           else if (step == -1)
             std::reverse_copy (src, src + len, sdest - len + 1);
           else

@@ -38,7 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 
 #include "oct-sort.h"
-#include "oct-mem.h"
 
 class idx_vector;
 class PermMatrix;
@@ -102,9 +101,9 @@ protected:
         nzmx (a.nzmx), nrows (a.nrows), ncols (a.ncols), count (1)
     {
       octave_idx_type nz = a.nnz ();
-      copy_or_memcpy (nz, a.d, d);
-      copy_or_memcpy (nz, a.r, r);
-      copy_or_memcpy (ncols + 1, a.c, c);
+      std::copy (a.d, a.d + nz, d);
+      std::copy (a.r, a.r + nz, r);
+      std::copy (a.c, a.c + ncols + 1, c);
     }
 
     ~SparseRep (void) { delete [] d; delete [] r; delete [] c; }
@@ -213,8 +212,8 @@ public:
   {
     octave_idx_type nz = a.nnz ();
     std::copy (a.rep->d, a.rep->d + nz, rep->d);
-    copy_or_memcpy (nz, a.rep->r, rep->r);
-    copy_or_memcpy (rep->ncols + 1, a.rep->c, rep->c);
+    std::copy (a.rep->r, a.rep->r + nz, rep->r);
+    std::copy (a.rep->c, a.rep->c + rep->ncols + 1, rep->c);
   }
 
   // No type conversion case.

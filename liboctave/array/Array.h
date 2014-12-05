@@ -38,7 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-sort.h"
 #include "quit.h"
-#include "oct-mem.h"
 #include "oct-refcount.h"
 
 //!Handles the reference counting for all the derived classes.
@@ -58,14 +57,14 @@ protected:
     octave_refcount<int> count;
 
     ArrayRep (T *d, octave_idx_type l)
-      : data (no_ctor_new<T> (l)), len (l), count (1)
+      : data (new T [l]), len (l), count (1)
     {
-      copy_or_memcpy (l, d, data);
+      std::copy (d, d+l, data);
     }
 
     template <class U>
     ArrayRep (U *d, octave_idx_type l)
-      : data (no_ctor_new<T> (l)), len (l), count (1)
+      : data (new T [l]), len (l), count (1)
     {
       std::copy (d, d+l, data);
     }
@@ -73,21 +72,21 @@ protected:
     ArrayRep (void) : data (0), len (0), count (1) { }
 
     explicit ArrayRep (octave_idx_type n)
-      : data (no_ctor_new<T> (n)), len (n), count (1) { }
+      : data (new T [n]), len (n), count (1) { }
 
     explicit ArrayRep (octave_idx_type n, const T& val)
-      : data (no_ctor_new<T> (n)), len (n), count (1)
+      : data (new T [n]), len (n), count (1)
     {
-      fill_or_memset (n, val, data);
+      std::fill_n (data, n, val);
     }
 
     ArrayRep (const ArrayRep& a)
-      : data (no_ctor_new<T> (a.len)), len (a.len), count (1)
+      : data (new T [a.len]), len (a.len), count (1)
     {
-      copy_or_memcpy (a.len, a.data, data);
+      std::copy (a.data, a.data + a.len, data);
     }
 
-    ~ArrayRep (void) { no_ctor_delete<T> (data); }
+    ~ArrayRep (void) { delete [] data; }
 
     octave_idx_type length (void) const { return len; }
 

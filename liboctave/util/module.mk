@@ -26,7 +26,6 @@ UTIL_INC = \
   util/oct-inttypes.h \
   util/oct-locbuf.h \
   util/oct-md5.h \
-  util/oct-mem.h \
   util/oct-mutex.h \
   util/oct-refcount.h \
   util/oct-rl-edit.h \

@@ -1939,7 +1939,7 @@ Return a unique temporary file name as a string.\n\
 \n\
 If @var{prefix} is omitted, a value of @qcode{\"oct-\"} is used.\n\
 If @var{dir} is also omitted, the default directory for temporary files\n\
-(@code{P_tmpdir} is used.  If @var{dir} is provided, it must exist,\n\
+(@code{P_tmpdir}) is used.  If @var{dir} is provided, it must exist,\n\
 otherwise the default directory for temporary files is used.\n\
 \n\
 Programming Note: Because the named file is not opened by @code{tempname},\n\

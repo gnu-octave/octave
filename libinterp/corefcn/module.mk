@@ -323,7 +323,7 @@ corefcn/oct-tex-lexer.ll: corefcn/oct-tex-lexer.in.ll corefcn/oct-tex-symbols.in
 	mv $@-t $@
 
 corefcn/oct-tex-symbols.cc: corefcn/oct-tex-symbols.in Makefile.am
-	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } /^#/ { } { if (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; } }' $< > $@-t
+	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } !/^#/ && (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; }' $< > $@-t
 	mv $@-t $@
 
 corefcn/txt-eng.cc: corefcn/oct-tex-symbols.cc

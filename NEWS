@@ -39,6 +39,17 @@ Summary of important user-visible changes for version 4.2:
     limit from above is taken.  This criteria is consistent with several other
     numerical analysis software packages.
 
+ ** strfind changes when using empty pattern ("") for Matlab compatibility
+
+    strfind now returns an empty array when the pattern itself is empty.
+    In previous versions of Octave, strfind matched at every character
+    location when the pattern was empty.
+
+      NEW
+      strfind ("abc", "") => []
+      OLD
+      strfind ("abc", "") => [1, 2, 3, 4]
+
  ** Integer formats used in the printf family of functions now work for
     64-bit integers and are more compatible with Matlab when printing
     non-integer values.  Now instead of truncating, Octave will switch

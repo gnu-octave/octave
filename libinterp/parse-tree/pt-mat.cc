@@ -387,27 +387,30 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
   first_elem = true;
 
-  for (iterator p = begin (); p != end (); p++)
+  if (! error_state)
     {
-      octave_quit ();
-
-      octave_value val = *p;
-
-      dim_vector this_elt_dv = val.dims ();
-
-      if (! this_elt_dv.zero_by_zero ())
+      for (iterator p = begin (); p != end (); p++)
         {
-          all_mt = false;
+          octave_quit ();
 
-          if (first_elem)
+          octave_value val = *p;
+
+          dim_vector this_elt_dv = val.dims ();
+
+          if (! this_elt_dv.zero_by_zero ())
             {
-              first_elem = false;
-              dv = this_elt_dv;
-            }
-          else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
-            {
-              eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
-              break;
+              all_mt = false;
+
+              if (first_elem)
+                {
+                  first_elem = false;
+                  dv = this_elt_dv;
+                }
+              else if ((! any_class) && (! dv.hvcat (this_elt_dv, 1)))
+                {
+                  eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+                  break;
+                }
             }
         }
     }

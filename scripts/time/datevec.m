@@ -155,7 +155,7 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
     date = date(:);
 
     ## Move day 0 from midnight -0001-12-31 to midnight 0000-3-1
-    z = floor (date) - 60;
+    z = double (floor (date) - 60);
     ## Calculate number of centuries; K1 = 0.25 is to avoid rounding problems.
     a = floor ((z - 0.25) / 36524.25);
     ## Days within century; K2 = 0.25 is to avoid rounding problems.
@@ -332,6 +332,8 @@ endfunction
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));
+%!assert (double (datevec (int64 (datenum ([2014 6 1])))), datevec (datenum ([2014 6 1])))
+%!assert (double (datevec (int64 (datenum ([2014 6 18])))), datevec (datenum ([2014 6 18])))
 
 %% Test input validation
 %!error datevec ()

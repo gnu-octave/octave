@@ -329,6 +329,7 @@ function yi = interp1 (x, y, varargin)
     minx = min (x(1), x(nx));
     maxx = max (x(1), x(nx));
 
+    xi = reshape (xi, szx);
     outliers = xi < minx | ! (xi <= maxx); # this even catches NaNs
     if (size_equal (outliers, yi))
       yi(outliers) = extrap;
@@ -338,6 +339,7 @@ function yi = interp1 (x, y, varargin)
     else
       yi(outliers.') = extrap;
     endif
+
   endif
 
 endfunction
@@ -612,6 +614,8 @@ endfunction
 ## test extrapolation (linear)
 %!assert (interp1 ([1:5],[3:2:11],[0,6],"linear","extrap"), [1, 13], eps)
 %!assert (interp1 (xp, yp, [-1, max(xp)+1],"linear",5), [5, 5])
+%!assert (interp1 ([0,1],[1,0],[0.1,0.9;0.2,1.1]), [0.9 0.1; 0.8 NA], eps)
+%!assert (interp1 ([0,1],[1,0],[0.1,0.9;0.2,1]), [0.9 0.1; 0.8 0], eps)
 
 ## Basic sanity checks
 %!assert (interp1 (1:2,1:2,1.4,"nearest"), 1)

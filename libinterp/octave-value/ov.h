@@ -281,7 +281,7 @@ public:
   octave_value (const Array<std::string>& cellstr);
   octave_value (const idx_vector& idx, bool lazy = true);
   octave_value (double base, double limit, double inc);
-  octave_value (const Range& r);
+  octave_value (const Range& r, bool force_range = false);
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
   octave_value (const octave_map& m, const std::string& id,

@@ -103,6 +103,10 @@ static bool Vdisable_diagonal_matrix = false;
 
 static bool Vdisable_permutation_matrix = false;
 
+// If TRUE, don't create special range objects.
+
+static bool Vdisable_range = false;
+
 // FIXME
 
 // Octave's value type.
@@ -1203,8 +1207,10 @@ octave_value::octave_value (double base, double limit, double inc)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Range& r)
-  : rep (new octave_range (r))
+octave_value::octave_value (const Range& r, bool force_range)
+  : rep (force_range || ! Vdisable_range
+         ? dynamic_cast<octave_base_value *> (new octave_range (r))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ())))
 {
   maybe_mutate ();
 }
@@ -3244,3 +3250,35 @@ The original variable value is restored when exiting the function.\n\
 %!assert (typeinfo (fx), "float matrix");
 %!assert (typeinfo (fxi), "float complex matrix");
 */
+
+DEFUN (disable_range, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_range ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_range (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_range (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether permutation\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store permutation\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_range);
+}
+
+/*
+%!function r = __test_dr__ (dr)
+%!  disable_range (dr, "local");
+%!  ## Constant folding will produce range for 1:13.
+%!  base = 1;
+%!  limit = 13;
+%!  r = base:limit;
+%!endfunction
+
+%!assert (typeinfo (__test_dr__ (false)), "range");
+%!assert (typeinfo (__test_dr__ (true)), "matrix");
+*/
+

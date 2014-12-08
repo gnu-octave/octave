@@ -41,7 +41,7 @@ public:
 
   tree_expression (int l = -1, int c = -1)
     : tree (l, c), num_parens (0), postfix_index_type ('\0'),
-      print_flag (false) { }
+      for_cmd_expr (false), print_flag (false) { }
 
   virtual ~tree_expression (void) { }
 
@@ -104,6 +104,10 @@ public:
 
   virtual void mark_braindead_shortcircuit (void) { }
 
+  void mark_as_for_cmd_expr (void) { for_cmd_expr = true; }
+
+  bool is_for_cmd_expr (void) const { return for_cmd_expr; }
+
   tree_expression *mark_in_parens (void)
   {
     num_parens++;
@@ -143,6 +147,10 @@ protected:
   // is 0 (character '\0') if the expression has no associated index.
   // See the code in tree_identifier::rvalue for the rationale.
   char postfix_index_type;
+
+  // TRUE if this expression is the EXPR in for loop:
+  // FOR i = EXPR ... END
+  bool for_cmd_expr;
 
   // Print result of rvalue for this expression?
   bool print_flag;

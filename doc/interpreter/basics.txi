@@ -249,6 +249,7 @@ confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
 disable_diagonal_matrix         = true
 disable_permutation_matrix      = true
+disable_range                   = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 page_screen_output              = false

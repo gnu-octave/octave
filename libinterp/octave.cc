@@ -488,6 +488,7 @@ maximum_braindamage (void)
   Fcrash_dumps_octave_core (octave_value (false));
   Fdisable_diagonal_matrix (octave_value (true));
   Fdisable_permutation_matrix (octave_value (true));
+  Fdisable_range (octave_value (true));
   Ffixed_point_format (octave_value (true));
   Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
   Fpage_screen_output (octave_value (false));

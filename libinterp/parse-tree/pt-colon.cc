@@ -96,7 +96,12 @@ tree_colon_expression::make_range (const Matrix& m_base,
     retval = Range ();
   else
     {
-      retval = Range (m_base(0), m_limit(0), m_increment(0));
+      Range r (m_base(0), m_limit(0), m_increment(0));
+
+      // For compatibility with Matlab, don't allow the range used in
+      // a FOR loop expression to be converted to a Matrix.
+
+      retval = octave_value (r, is_for_cmd_expr ());
 
       if (result_is_str)
         retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');

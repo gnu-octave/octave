@@ -2571,6 +2571,8 @@ octave_base_parser::make_for_command (int tok_id, token *for_tok,
 
   if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
     {
+      expr->mark_as_for_cmd_expr ();
+
       octave_comment_list *tc = lexer.comment_buf.get_comment ();
 
       lexer.looping--;

@@ -95,6 +95,14 @@ along with Octave; see the file COPYING.  If not, see
 // make the grow_size large.
 DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
 
+// If TRUE, don't create special diagonal matrix objects.
+
+static bool Vdisable_diagonal_matrix = false;
+
+// If TRUE, don't create special permutation matrix objects.
+
+static bool Vdisable_permutation_matrix = false;
+
 // FIXME
 
 // Octave's value type.
@@ -674,37 +682,49 @@ octave_value::octave_value (const Array<float>& a)
 }
 
 octave_value::octave_value (const DiagArray2<double>& d)
-  : rep (new octave_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<float>& d)
-  : rep (new octave_float_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<Complex>& d)
-  : rep (new octave_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<FloatComplex>& d)
-  : rep (new octave_float_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagMatrix& d)
-  : rep (new octave_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatDiagMatrix& d)
-  : rep (new octave_float_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
 {
   maybe_mutate ();
 }
@@ -782,13 +802,17 @@ octave_value::octave_value (const Array<FloatComplex>& a)
 }
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
-  : rep (new octave_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatComplexDiagMatrix& d)
-  : rep (new octave_float_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
@@ -818,7 +842,9 @@ octave_value::octave_value (const FloatComplexColumnVector& v)
 }
 
 octave_value::octave_value (const PermMatrix& p)
-  : rep (new octave_perm_matrix (p))
+  : rep (Vdisable_permutation_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (p)))
+         : dynamic_cast<octave_base_value *> (new octave_perm_matrix (p)))
 {
   maybe_mutate ();
 }
@@ -3147,4 +3173,74 @@ Return true if @var{x} is a double-quoted character string.\n\
 
 %!error is_dq_string ()
 %!error is_dq_string ("foo", 2)
+*/
+
+DEFUN (disable_permutation_matrix, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_permutation_matrix ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether permutation\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store permutation\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_permutation_matrix);
+}
+
+/*
+%!function p = __test_dpm__ (dpm)
+%!  disable_permutation_matrix (dpm, "local");
+%!  [~, ~, p] = lu ([1,2;3,4]);
+%!endfunction
+
+%!assert (typeinfo (__test_dpm__ (false)), "permutation matrix");
+%!assert (typeinfo (__test_dpm__ (true)), "matrix");
+*/
+
+DEFUN (disable_diagonal_matrix, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_diagonal_matrix ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether diagonal\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store diagonal\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_diagonal_matrix);
+}
+
+/*
+%!function [x, xi, fx, fxi] = __test_ddm__ (ddm)
+%!  disable_diagonal_matrix (ddm, "local");
+%!  x = eye (2);
+%!  xi = x*i;
+%!  fx = single (x);
+%!  fxi = single (xi);
+%!endfunction
+
+%!shared x, xi, fx, fxi
+%!  [x, xi, fx, fxi] = __test_ddm__ (false);
+%!assert (typeinfo (x), "diagonal matrix");
+%!assert (typeinfo (xi), "complex diagonal matrix");
+%!assert (typeinfo (fx), "float diagonal matrix");
+%!assert (typeinfo (fxi), "float complex diagonal matrix");
+
+%!shared x, xi, fx, fxi
+%!  [x, xi, fx, fxi] = __test_ddm__ (true);
+%!assert (typeinfo (x), "matrix");
+%!assert (typeinfo (xi), "complex matrix");
+%!assert (typeinfo (fx), "float matrix");
+%!assert (typeinfo (fxi), "float complex matrix");
 */

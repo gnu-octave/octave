@@ -70,6 +70,10 @@ public:
 
   explicit FloatMatrix (const FloatDiagMatrix& a);
 
+  explicit FloatMatrix (const MDiagArray2<float>& a);
+
+  explicit FloatMatrix (const DiagArray2<float>& a);
+
   explicit FloatMatrix (const PermMatrix& a);
 
   explicit FloatMatrix (const boolMatrix& a);

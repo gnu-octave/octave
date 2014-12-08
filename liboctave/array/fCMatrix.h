@@ -78,11 +78,19 @@ public:
 
   explicit FloatComplexMatrix (const FloatDiagMatrix& a);
 
+  explicit FloatComplexMatrix (const MDiagArray2<float>& a);
+
+  explicit FloatComplexMatrix (const DiagArray2<float>& a);
+
   explicit FloatComplexMatrix (const FloatComplexRowVector& rv);
 
   explicit FloatComplexMatrix (const FloatComplexColumnVector& cv);
 
   explicit FloatComplexMatrix (const FloatComplexDiagMatrix& a);
+
+  explicit FloatComplexMatrix (const MDiagArray2<FloatComplex>& a);
+
+  explicit FloatComplexMatrix (const DiagArray2<FloatComplex>& a);
 
   explicit FloatComplexMatrix (const boolMatrix& a);
 

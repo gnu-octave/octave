@@ -265,6 +265,20 @@ FloatMatrix::FloatMatrix (const FloatDiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+FloatMatrix::FloatMatrix (const MDiagArray2<float>& a)
+  : FloatNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+FloatMatrix::FloatMatrix (const DiagArray2<float>& a)
+  : FloatNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
 FloatMatrix::FloatMatrix (const PermMatrix& a)
   : FloatNDArray (a.dims (), 0.0)
 {

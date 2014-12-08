@@ -290,6 +290,20 @@ FloatComplexMatrix::FloatComplexMatrix (const FloatDiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+FloatComplexMatrix::FloatComplexMatrix (const MDiagArray2<float>& a)
+  : FloatComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+FloatComplexMatrix::FloatComplexMatrix (const DiagArray2<float>& a)
+  : FloatComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexRowVector& rv)
   : FloatComplexNDArray (rv)
 {
@@ -301,6 +315,20 @@ FloatComplexMatrix::FloatComplexMatrix (const FloatComplexColumnVector& cv)
 }
 
 FloatComplexMatrix::FloatComplexMatrix (const FloatComplexDiagMatrix& a)
+  : FloatComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+FloatComplexMatrix::FloatComplexMatrix (const MDiagArray2<FloatComplex>& a)
+  : FloatComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+FloatComplexMatrix::FloatComplexMatrix (const DiagArray2<FloatComplex>& a)
   : FloatComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)

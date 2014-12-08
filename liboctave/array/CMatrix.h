@@ -75,11 +75,19 @@ public:
 
   explicit ComplexMatrix (const DiagMatrix& a);
 
+  explicit ComplexMatrix (const MDiagArray2<double>& a);
+
+  explicit ComplexMatrix (const DiagArray2<double>& a);
+
   explicit ComplexMatrix (const ComplexRowVector& rv);
 
   explicit ComplexMatrix (const ComplexColumnVector& cv);
 
   explicit ComplexMatrix (const ComplexDiagMatrix& a);
+
+  explicit ComplexMatrix (const MDiagArray2<Complex>& a);
+
+  explicit ComplexMatrix (const DiagArray2<Complex>& a);
 
   explicit ComplexMatrix (const boolMatrix& a);
 

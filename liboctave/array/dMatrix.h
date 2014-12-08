@@ -70,6 +70,10 @@ public:
 
   explicit Matrix (const DiagMatrix& a);
 
+  explicit Matrix (const MDiagArray2<double>& a);
+
+  explicit Matrix (const DiagArray2<double>& a);
+
   explicit Matrix (const PermMatrix& a);
 
   explicit Matrix (const boolMatrix& a);

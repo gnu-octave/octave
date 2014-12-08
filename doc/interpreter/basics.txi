@@ -247,11 +247,13 @@ PS2                             = ""
 beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
-save_default_options            = "-mat-binary"
+disable_diagonal_matrix         = true
+disable_permutation_matrix      = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 page_screen_output              = false
 print_empty_dimensions          = false
+save_default_options            = "-mat-binary"
 struct_levels_to_print          = 0
 @end group
 @end example

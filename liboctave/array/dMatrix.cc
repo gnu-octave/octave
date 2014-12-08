@@ -262,6 +262,20 @@ Matrix::Matrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+Matrix::Matrix (const MDiagArray2<double>& a)
+  : NDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+Matrix::Matrix (const DiagArray2<double>& a)
+  : NDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
 Matrix::Matrix (const PermMatrix& a)
   : NDArray (a.dims (), 0.0)
 {

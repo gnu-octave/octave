@@ -289,6 +289,20 @@ ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
+ComplexMatrix::ComplexMatrix (const MDiagArray2<double>& a)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const DiagArray2<double>& a)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
 ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
   : ComplexNDArray (rv)
 {
@@ -300,6 +314,20 @@ ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const MDiagArray2<Complex>& a)
+  : ComplexNDArray (a.dims (), 0.0)
+{
+  for (octave_idx_type i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const DiagArray2<Complex>& a)
   : ComplexNDArray (a.dims (), 0.0)
 {
   for (octave_idx_type i = 0; i < a.length (); i++)

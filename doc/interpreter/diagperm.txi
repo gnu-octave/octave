@@ -59,7 +59,13 @@ $P_{ij}=0$ otherwise.
 Octave provides special treatment of real and complex rectangular diagonal
 matrices, as well as permutation matrices.  They are stored as special objects,
 using efficient storage and algorithms, facilitating writing both readable and
-efficient matrix algebra expressions in the Octave language.
+efficient matrix algebra expressions in the Octave language.  The
+special treatment may be disabled by using the functions
+@dfn{disable_permutation_matrix} and @dfn{disable_diagonal_matrix}
+
+@DOCSTRING(disable_permutation_matrix)
+
+@DOCSTRING(disable_diagonal_matrix)
 
 @menu
 * Creating Diagonal Matrices::

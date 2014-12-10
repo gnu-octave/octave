@@ -155,7 +155,7 @@ Array<float>::is_sorted (sortmode mode) const
   return mode;
 }
 
-INSTANTIATE_ARRAY_SORT (float);
+template class OCTAVE_API octave_sort<float>;
 
 INSTANTIATE_ARRAY (float, OCTAVE_API);
 

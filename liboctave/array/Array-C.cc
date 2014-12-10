@@ -88,7 +88,7 @@ safe_comparator (sortmode mode, const Array<Complex>& a , bool allow_chk)
   return result;
 }
 
-INSTANTIATE_ARRAY_SORT (Complex);
+template class OCTAVE_API octave_sort<Complex>;
 
 INSTANTIATE_ARRAY (Complex, OCTAVE_API);
 

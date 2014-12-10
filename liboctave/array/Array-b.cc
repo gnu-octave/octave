@@ -104,7 +104,7 @@ octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
   do_bool_partition<true> (data, idx, nel);
 }
 
-INSTANTIATE_ARRAY_SORT (bool);
+template class OCTAVE_API octave_sort<bool>;
 
 INSTANTIATE_ARRAY (bool, OCTAVE_API);
 

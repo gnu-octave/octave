@@ -88,7 +88,7 @@ safe_comparator (sortmode mode, const Array<FloatComplex>& a, bool allow_chk)
   return result;
 }
 
-INSTANTIATE_ARRAY_SORT (FloatComplex);
+template class OCTAVE_API octave_sort<FloatComplex>;
 
 INSTANTIATE_ARRAY (FloatComplex, OCTAVE_API);
 

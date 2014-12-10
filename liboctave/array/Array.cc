@@ -2478,9 +2478,6 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
   return m;
 }
 
-
-#define INSTANTIATE_ARRAY_SORT(T) template class OCTAVE_API octave_sort<T>;
-
 #define NO_INSTANTIATE_ARRAY_SORT(T) \
  \
 template <> Array<T>  \

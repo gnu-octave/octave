@@ -32,6 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.cc"
 #include "oct-sort.cc"
 
-INSTANTIATE_ARRAY_SORT (std::string);
+template class OCTAVE_API octave_sort<std::string>;
 
 INSTANTIATE_ARRAY (std::string, OCTAVE_API);

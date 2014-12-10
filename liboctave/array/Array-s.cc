@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #define INLINE_DESCENDING_SORT
 #include "oct-sort.cc"
 
-INSTANTIATE_ARRAY_SORT (short);
+template class OCTAVE_API octave_sort<short>;
 
 INSTANTIATE_ARRAY (short, OCTAVE_API);
 

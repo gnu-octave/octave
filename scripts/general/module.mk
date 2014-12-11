@@ -39,18 +39,19 @@ general_FCN_FILES = \
   general/interp1.m \
   general/interp2.m \
   general/interp3.m \
-  general/interpn.m \
   general/interpft.m \
+  general/interpn.m \
   general/isdir.m \
   general/isequal.m \
   general/isequaln.m \
   general/loadobj.m \
   general/logspace.m \
   general/methods.m \
+  general/nargchk.m \
   general/narginchk.m \
   general/nargoutchk.m \
-  general/nthargout.m \
   general/nextpow2.m \
+  general/nthargout.m \
   general/num2str.m \
   general/pol2cart.m \
   general/polyarea.m \
@@ -74,8 +75,8 @@ general_FCN_FILES = \
   general/sph2cart.m \
   general/structfun.m \
   general/subsindex.m \
-  general/triplequad.m \
   general/trapz.m \
+  general/triplequad.m \
   general/validateattributes.m \
   $(general_PRIVATE_FCN_FILES)
 

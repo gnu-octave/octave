@@ -3194,6 +3194,7 @@ matrices as full matrices.\n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
+@seealso{disable_range, disable_diagonal_matrix}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (disable_permutation_matrix);
@@ -3222,6 +3223,7 @@ matrices as full matrices.\n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
+@seealso{disable_range, disable_permutation_matrix}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (disable_diagonal_matrix);
@@ -3256,14 +3258,14 @@ DEFUN (disable_range, args, nargout,
 @deftypefn  {Built-in Function} {@var{val} =} disable_range ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} disable_range (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} disable_range (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether permutation\n\
-matrices are stored in a special space-efficient format.  The default\n\
-value is true.  If this option is disabled Octave will store permutation\n\
-matrices as full matrices.\n\
+Query or set the internal variable that controls whether ranges are stored\n\
+in a special space-efficient format.  The default value is true.  If this\n\
+option is disabled Octave will store ranges as full matrices.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.\n\
 The original variable value is restored when exiting the function.\n\
+@seealso{disable_diagonal_matrix, disable_permutation_matrix}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (disable_range);

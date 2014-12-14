@@ -17,6 +17,19 @@ Summary of important user-visible changes for version 4.2:
 
       inputParser
 
+ ** Optional stricter Matlab compatibility for ranges, diagonal matrices,
+    and permutation matrices.
+
+    Octave has internal optimizations which use space-efficient storage
+    for the three data types above.  Three new functions have been added
+    which control whether the optimizations are used (default), or whether
+    the data types are stored as full matrices.
+
+    disable_range   disable_diagonal_matrix   disable_permutation_matrix
+
+    All three optimizations are disabled if Octave is started with the
+    --braindead command line option.
+
  ** Interpolation function changes for Matlab compatibility
 
     The interpolation method 'cubic' is now equivalent to 'pchip'

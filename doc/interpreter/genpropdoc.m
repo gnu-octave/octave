@@ -22,7 +22,7 @@
 ## documentation (see doc/interpreter/graphics_properties.mk).
 ##
 ## All the hard coded documentation is written in getdoc
-## function. See the comments in getdoc bellow for instruction on how
+## function.  See the comments in getdoc bellow for instruction on how
 ## to document a graphics property.
 ## 
 ## @seealso{}
@@ -54,31 +54,31 @@ function genpropdoc (objname, fname)
   fclose (fid);
 endfunction
 
-function  s = getdoc (objname, field, base)
+function s = getdoc (objname, field, base)
   ## Properties are represented by a struct with fields :
   ## 
   ## -"doc": string to be printed verbatim after being expanded
-  ##   through expand_doc function. Special keywords are:
+  ##   through expand_doc function.  Special keywords are:
   ##   "__objname__" further replaced by the current object name;
   ##   "__prop__"  further replaced by the current property name;
   ##   "__modemsg__"  further replaced by a message explaining that
   ##   the propmode will be toggled to "manual".
   ##   You may also cross reference properties using the label format
-  ##   OBJNAMEPROPERTY, e.g "@xref{XREFaxescolor, , axes color
+  ##   OBJNAMEPROPERTY, e.g, "@xref{XREFaxescolor, , axes color
   ##   property}." 
   ## 
   ## -"valid": string that describes valid values for the
-  ##   current property. Use "packopt" function to join options with
+  ##   current property.  Use "packopt" function to join options with
   ##   " | " separator and "markdef" to mark default among valid
   ##   values between curly braces. 
   ##   If not provided, valid values for radio properties are
   ##   automatically retrieved using set function.
   ## 
-  ## -"default": string. If not provided the default value is
+  ## -"default": string.  If not provided the default value is
   ##   automatically retrieved using get function.
   ##
-  ## -"printdefault": a boolean (def. true) that sepcifies whether the
-  ## default value should be printed. It is usefull for properties
+  ## -"printdefault": a boolean (def. true) that specifies whether the
+  ## default value should be printed.  It is useful for properties
   ## like root "screendepth" that default to screen dependant values. 
 
   packopt = @(c) strjoin (c, ' | ');
@@ -97,7 +97,7 @@ function  s = getdoc (objname, field, base)
   valid_scalmat = packopt ({"scalar", "matrix"});
   
   doc_notimpl =  "%s is not yet implemented for __objname__ \
-objects. __prop__ is unused.";
+objects.  __prop__ is unused.";
   doc_unused =  "__prop__ is unused.";
 
 
@@ -129,8 +129,8 @@ clipped in its parent axes limits.";
         
       case "createfcn"
         s.doc = "Callback functions to be executed right after \
-the __objname__ has been created. Those functions have to be set by \
-default using e.g. @code{set (0, \"default__objname__createfcn\", \
+the __objname__ has been created.  Those functions have to be set by \
+default using e.g.  @code{set (0, \"default__objname__createfcn\", \
 'disp (\"__objname__ created!\")') }.";
         s.valid = valid_fcn;
         
@@ -155,7 +155,7 @@ handle is not visible into its parent's children list.";
         s.valid = valid_string;
         
       case "type"
-        s.doc = "Class name of the graphics object. __prop__ is \
+        s.doc = "Class name of the graphics object.  __prop__ is \
 always @qcode{\"__objname__\"}";
         s.valid = valid_string;
         s.printdefault = false;
@@ -178,7 +178,7 @@ not rendered on screen.";
         s.doc = doc_unused;
         
       case "parent"
-        s.doc = "Root figure has no parent graphics object. __prop__ \
+        s.doc = "Root figure has no parent graphics object.  __prop__ \
 is always empty.";
         
       ## Specific properties
@@ -192,21 +192,21 @@ is always empty.";
         
       case "diary"
         s.doc = "If __prop__ is @qcode{\"on\"}, the octave \
-command window session is saved to file. @xref{XREFrootdiaryfile, , \
+command window session is saved to file.  @xref{XREFrootdiaryfile, , \
 diaryfile property}.";
         s.valid = valid_string;
         
       case "diaryfile"
-        s.doc = "The name of the diary file. \
+        s.doc = "The name of the diary file.  \
 @xref{XREFdiary, , diary function}.";
         s.valid = valid_string;
         
       case "echo"
         s.doc = "Control whether octave displays commands executed \
-from scripts. @xref{XREFecho, , echo function}.";
+from scripts.  @xref{XREFecho, , echo function}.";
         
       case "errormessage"
-        s.doc = "The last error message octave raised. \
+        s.doc = "The last error message octave raised.  \
 @xref{XREFlasterr, , lasterr function}.";
         s.valid = valid_string;
         
@@ -214,12 +214,12 @@ from scripts. @xref{XREFecho, , echo function}.";
         s.valid = valid_string;
         
       case "format"
-        s. doc = "This property is a wrapper around @code{format} \
-function. @xref{XREFformat, , format function}.";
+        s.doc = "This property is a wrapper around @code{format} \
+function.  @xref{XREFformat, , format function}.";
         
       case "formatspacing"
-        s. doc = "This property is a wrapper around @code{format} \
-function. @xref{XREFformat, , format function}.";
+        s.doc = "This property is a wrapper around @code{format} \
+function.  @xref{XREFformat, , format function}.";
         
       case "language"
         s.valid = valid_string;
@@ -235,7 +235,7 @@ function. @xref{XREFformat, , format function}.";
         
       case "recursionlimit"
         s.doc = "The maximum number of times a function can be \
-called recursively. @xref{XREFmax_recursion_depth, , \
+called recursively.  @xref{XREFmax_recursion_depth, , \
 max_recursion_depth function}.";
         s.valid = "double";
         
@@ -273,7 +273,7 @@ the value of their @code{handlevisibility} property.";
         s.valid = valid_fcn;
         
       case "color"
-        s.doc = "Color of the figure background. @xref{Colors, , \
+        s.doc = "Color of the figure background.  @xref{Colors, , \
 colorspec}.";
         s.valid = valid_color;
         
@@ -323,8 +323,8 @@ defined \n\
       case "keyreleasefcn"
         s.doc = "With @code{keypressfcn}, the keyboard callback \
 functions.  These callback functions get called when a key is \
-pressed/released respectively. The functions are called with two \
-input arguments. The first argument holds the handle of the calling \
+pressed/released respectively.  The functions are called with two \
+input arguments.  The first argument holds the handle of the calling \
 figure.  The second argument holds the event structure which has the \
 following members:\n\
 @table @code\n\
@@ -341,7 +341,7 @@ with the key.\n\
       case "menubar"
       case "mincolormap"
       case "name"
-        s.doc = "Name to be displayed in the figure title bar. If \
+        s.doc = "Name to be displayed in the figure title bar.  If \
 __prop__ is empty, the title of the figure is \"figure\" followed \
 by the figure handle value.";
         s.valid = valid_string;
@@ -365,12 +365,12 @@ printed figure will have the same size as on-screen figure and will \
 be centered in the output page."; 
       case "papersize"
         s.doc = "Vector @qcode{[width height]} defining the size of the \
-printing paper. Setting this property forces the @code{papertype} \
+printing paper.  Setting this property forces the @code{papertype} \
 property to be set to @qcode{\"<custom>\"}.";
         s.valid = valid_2elvec;
         
       case "papertype"
-        s.doc = "Name of the paper to be used for printed output. \
+        s.doc = "Name of the paper to be used for printed output.  \
 Setting __prop__ also changes @code{papersize} accordingly.";
         
       case "paperunits"
@@ -434,7 +434,7 @@ coordinates of the cursor.";
       case "xvisualmode"
       case "__graphics_toolkit__"
         s.doc = "The graphics toolkit that is used to render the \
-figure. @xref{XREFavailable_graphics_toolkits, , \
+figure.  @xref{XREFavailable_graphics_toolkits, , \
 available_graphics_toolkits function}.";
     endswitch
     
@@ -474,11 +474,11 @@ available_graphics_toolkits function}.";
       case "clim"
         s.valid = valid_2elvec;
         s.doc = "Define the limits for the color axis of image \
-children. __modemsg__. @xref{XREFpcolor, , pcolor function}.";
+children.  __modemsg__.  @xref{XREFpcolor, , pcolor function}.";
         
       case "climmode"
       case "color"
-        s.doc = "Color of the axes background. @xref{Colors, , \
+        s.doc = "Color of the axes background.  @xref{Colors, , \
 colorspec}.";
         s.valid = valid_color;
         
@@ -495,15 +495,15 @@ callback function is defined, @code{currentpoint} holds the \
 pointer coordinates at the time the mouse button was pressed.  For \
 3D plots, the first row of the returned matrix specifies the point \
 nearest to the current camera position and the second rows the \
-furthest point. The two points forms a line which is perpendicular \
+furthest point.  The two points forms a line which is perpendicular \
 to the screen.";
         s.valid = "2-by-3 matrix";
         
       case "dataaspectratio"
         s.doc = "Specify the relative height and width of the data \
-displayed in the axes. Setting @code{dataaspectratio} to @samp{[1, \
+displayed in the axes.  Setting @code{dataaspectratio} to @samp{[1, \
 2]} causes the length of one unit as displayed on the y-axis to be \
-the same as the length of 2 units on the x-axis. __modemsg__.";
+the same as the length of 2 units on the x-axis.  __modemsg__.";
         s.valid = valid_3elvec;
         
       case "dataaspectratiomode"
@@ -514,7 +514,7 @@ the same as the length of 2 units on the x-axis. __modemsg__.";
         s.valid = valid_string;
         
       case "fontsize"
-        s.doc = "Size of the font to be used for axes annotations. \
+        s.doc = "Size of the font to be used for axes annotations.  \
 @xref{XREFaxesfontunits, , fontunits property}.";
         s.valid = "scalar";
         
@@ -568,7 +568,7 @@ outerposition property}.";
         
       case "xaxislocation"
       case "xcolor"
-        s.doc = "Color of the x-axis. @xref{Colors, , colorspec}.";
+        s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), ...
                             "@qcode{\"none\"}"});
         
@@ -581,7 +581,7 @@ outerposition property}.";
         s.valid = valid_handle;
         
       case "xlim"
-        s.doc = "Specify the limits for x-axis. __modemsg__. \
+        s.doc = "Specify the limits for x-axis.  __modemsg__.  \
 @xref{XREFxlim, , xlim function}.";
         s.valid = valid_2elvec;
         
@@ -592,18 +592,18 @@ outerposition property}.";
       case "xminortick"
       case "xscale"
       case "xtick"
-        s.doc = "Position of x tick marks. __modemsg__.";
+        s.doc = "Position of x tick marks.  __modemsg__.";
         s.valid = "vector";
         
       case "xticklabel"
-        s.doc = "Labels of x tick marks. __modemsg__.";
+        s.doc = "Labels of x tick marks.  __modemsg__.";
         s.valid = valid_cellstring;
         
       case "xticklabelmode"
       case "xtickmode"
       case "yaxislocation"
       case "ycolor"
-        s.doc = "Color of the y-axis. @xref{Colors, , colorspec}.";
+        s.doc = "Color of the y-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), ...
                             "@qcode{\"none\"}"});
         
@@ -616,7 +616,7 @@ outerposition property}.";
         s.valid = valid_handle;
         
       case "ylim"
-        s.doc = "Specify the limits for y-axis. __modemsg__. \
+        s.doc = "Specify the limits for y-axis.  __modemsg__.  \
 @xref{XREFylim, , ylim function}.";
         s.valid = valid_2elvec;
         
@@ -627,17 +627,17 @@ outerposition property}.";
       case "yminortick"
       case "yscale"
       case "ytick"
-        s.doc = "Position of y tick marks. __modemsg__.";
+        s.doc = "Position of y tick marks.  __modemsg__.";
         s.valid = "vector";
         
       case "yticklabel"
-        s.doc = "Labels of y tick marks. __modemsg__.";
+        s.doc = "Labels of y tick marks.  __modemsg__.";
         s.valid = valid_cellstring;
         
       case "yticklabelmode"
       case "ytickmode"
       case "zcolor"
-        s.doc = "Color of the z-axis. @xref{Colors, , colorspec}.";
+        s.doc = "Color of the z-axis.  @xref{Colors, , colorspec}.";
         s.valid = packopt ({markdef(valid_color), ...
                             "@qcode{\"none\"}"});
         
@@ -650,7 +650,7 @@ outerposition property}.";
         s.valid = valid_handle;
         
       case "zlim"
-        s.doc = "Specify the limits for z-axis. __modemsg__. \
+        s.doc = "Specify the limits for z-axis.  __modemsg__.  \
 @xref{XREFzlim, , zlim function}.";
         s.valid = valid_2elvec;
         
@@ -661,11 +661,11 @@ outerposition property}.";
       case "zminortick"
       case "zscale"
       case "ztick"
-        s.doc = "Position of z tick marks. __modemsg__.";
+        s.doc = "Position of z tick marks.  __modemsg__.";
         s.valid = "vector";
         
       case "zticklabel"
-        s.doc = "Labels of z tick marks. __modemsg__.";
+        s.doc = "Labels of z tick marks.  __modemsg__.";
         s.valid = valid_cellstring;
         
       case "zticklabelmode"
@@ -681,7 +681,7 @@ outerposition property}.";
         
       ## Specific properties
       case "color"
-        s.doc = "Color of the line object. @xref{Colors, , \
+        s.doc = "Color of the line object.  @xref{Colors, , \
 colorspec}.";
         s.valid = valid_color;
         
@@ -701,20 +701,20 @@ line.";
         s.doc = "Width in points of the line object.";
         
       case "marker"
-        s.doc = "The shape of the marker to be used. @xref{Marker \
+        s.doc = "The shape of the marker to be used.  @xref{Marker \
 Styles}.";
         
       case "markeredgecolor"
-        s.doc = "Color of the edge of the markers. If set \
-@qcode{\"auto\"}, the markers edges have the same color as the line. If \
-set @qcode{\"none\"}, the markers edges are not displayed. This property \
-can also be set to any color. @xref{Colors, , colorspec}.";
+        s.doc = "Color of the edge of the markers.  If set \
+@qcode{\"auto\"}, the markers edges have the same color as the line.  If \
+set @qcode{\"none\"}, the markers edges are not displayed.  This property \
+can also be set to any color.  @xref{Colors, , colorspec}.";
         
       case "markerfacecolor"
-        s.doc = "Color of the face of the markers. If set \
-@qcode{\"auto\"}, the markers faces have the same color as the line. If \
-set @qcode{\"none\"}, the markers faces are not displayed. This property \
-can also be set to any color. @xref{Colors, , colorspec}.";
+        s.doc = "Color of the face of the markers.  If set \
+@qcode{\"auto\"}, the markers faces have the same color as the line.  If \
+set @qcode{\"none\"}, the markers faces are not displayed.  This property \
+can also be set to any color.  @xref{Colors, , colorspec}.";
         
       case "markersize"
         s.doc = "Size of the markers  in points.";
@@ -762,7 +762,7 @@ that should be used as z data.";
         s.valid = valid_color;
         
       case "color"
-        s.doc = "Color of the text. @xref{Colors, ,colorspec}. ";
+        s.doc = "Color of the text.  @xref{Colors, ,colorspec}.  ";
         s.valid = valid_color;
         
       case "displayname"
@@ -776,7 +776,7 @@ that should be used as z data.";
         
       case "extent"
       case "fontangle"
-        s.doc = "Flag whether the font is italic or normal. \
+        s.doc = "Flag whether the font is italic or normal.  \
 @code{fontangle} is currently unused.";
         
       case "fontname"
@@ -990,9 +990,9 @@ markersize property}.";
         
       case "cdata"
         s.doc = "Data defining the patch object color.\n\
-Patch color can be defined for faces or for vertices. \n\n\
+Patch color can be defined for faces or for vertices.  \n\n\
 If @code{cdata} is a scalar index into the current colormap or a RGB \
-triplet, it defines the color of all faces. \n\n\
+triplet, it defines the color of all faces.  \n\n\
 If @code{cdata} is a N-by-1 vector of indices or a N-by-3 (RGB) \
 matrix, it defines the color of each one of the N faces.\n\n\
 If @code{cdata} is a N-by-M or a N-by-M-by-3 (RGB) \
@@ -1282,11 +1282,11 @@ function str = warn_autogen ()
 @c\n\
 @c Octave is distributed in the hope that it will be useful, but WITHOUT\n\
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n\
-@c FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n\
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License\n\
 @c for more details.\n\
 @c\n\
 @c You should have received a copy of the GNU General Public License\n\
-@c along with Octave; see the file COPYING. If not, see\n\
+@c along with Octave; see the file COPYING.  If not, see\n\
 @c <http://www.gnu.org/licenses/>.";
 endfunction
 

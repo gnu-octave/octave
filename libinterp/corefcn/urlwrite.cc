@@ -346,32 +346,37 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       return retval;
     }
 
-  std::string url = args(0).string_value ();
-
-  if (error_state)
+  if (! args(0).is_string ()) 
     {
       error ("urlwrite: URL must be a string");
       return retval;
     }
 
-  // name to store the file if download is succesful
-  // FIXME: Maybe use is_string () for better input validation.
-  std::string filename = args(1).string_value ();
+  std::string url = args(0).string_value ();
 
-  if (error_state)
+  if (! args(1).is_string ()) 
     {
       error ("urlwrite: LOCALFILE must be a string");
       return retval;
     }
+
+  // name to store the file if download is succesful
+  std::string filename = args(1).string_value ();
 
   std::string method;
   Array<std::string> param;
 
   if (nargin == 4)
     {
+      if (! args(2).is_string ()) 
+        {
+          error ("urlwrite: METHOD must be a string");
+          return retval;
+        }
+
       method = args(2).string_value ();
 
-      if (error_state || (method != "get" && method != "post"))
+      if (method != "get" && method != "post")
         {
           error ("urlwrite: METHOD must be \"get\" or \"post\"");
           return retval;
@@ -498,24 +503,28 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
       return retval;
     }
 
-  // FIXME: Maybe use is_string () for better input validation.
-  std::string url = args(0).string_value ();
-
-  if (error_state)
+  if (! args(0).is_string ()) 
     {
       error ("urlread: URL must be a string");
       return retval;
     }
+
+  std::string url = args(0).string_value ();
 
   std::string method;
   Array<std::string> param;
 
   if (nargin == 3)
     {
-      // FIXME: Maybe use is_string () for better input validation.
+      if (! args(1).is_string ()) 
+        {
+          error ("urlread: METHOD must be a string");
+          return retval;
+        }
+
       method = args(1).string_value ();
 
-      if (error_state || (method != "get" && method != "post"))
+      if (method != "get" && method != "post")
         {
           error ("urlread: METHOD must be \"get\" or \"post\"");
           return retval;

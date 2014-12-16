@@ -150,16 +150,14 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
-      // FIXME: Should is_string () be used instead which will warn more
-      //        broadly about incorrect input?
-      std::string s = arg.string_value ();
-
-      std::string cmd = header;
-      cmd.append (s);
-      cmd.append (trailer);
-
-      if (! error_state)
+      if (arg.is_string ())
         {
+          std::string s = arg.string_value ();
+
+          std::string cmd = header;
+          cmd.append (s);
+          cmd.append (trailer);
+
           int parse_status;
 
           eval_string (cmd, true, parse_status, 0);
@@ -938,17 +936,17 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ()) 
         {
+          std::string sval = args(0).string_value ();
+
           if (empty_ok || ! sval.empty ())
             var = sval;
           else
             error ("%s: value must not be empty", nm);
         }
       else
-        error ("%s: expecting arg to be a string", nm);
+        error ("%s: first argument must be a string", nm);
     }
   else if (nargin > 1)
     print_usage ();
@@ -979,10 +977,10 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ()) 
         {
+          std::string sval = args(0).string_value ();
+
           int i = 0;
           for (; i < nchoices; i++)
             {
@@ -996,7 +994,7 @@ set_internal_variable (int& var, const octave_value_list& args,
             error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
         }
       else
-        error ("%s: expecting arg to be a string", nm);
+        error ("%s: first argument must be a string", nm);
     }
   else if (nargin > 1)
     print_usage ();

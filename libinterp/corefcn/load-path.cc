@@ -2437,10 +2437,10 @@ addpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          std::string arg = args(i).string_value ();
-
-          if (! error_state)
+          if (args(i).is_string ())
             {
+              std::string arg = args(i).string_value ();
+
               std::list<std::string> dir_elts = split_path (arg);
 
               if (! append)
@@ -2506,10 +2506,9 @@ rmpath (\"dir1:/dir2:~/dir3\")\n\
 
       for (int i = 0; i < nargin; i++)
         {
-          std::string arg = args(i).string_value ();
-
-          if (! error_state)
+          if (args(i).is_string ())
             {
+              std::string arg = args(i).string_value ();
               std::list<std::string> dir_elts = split_path (arg);
 
               for (std::list<std::string>::const_iterator p = dir_elts.begin ();

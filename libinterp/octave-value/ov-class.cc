@@ -1875,10 +1875,10 @@ derived.\n\
       // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
-      std::string id = args(1).string_value ();
-
-      if (! error_state)
+      if (args(1).is_string ())
         {
+          std::string id = args(1).string_value ();
+
           if (fcn)
             {
               if (fcn->is_class_constructor (id) || fcn->is_class_method (id))

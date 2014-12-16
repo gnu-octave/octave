@@ -740,7 +740,7 @@ endfunction
 
 function body = __extract_test_code (nm)
   fid = fopen (nm, "rt");
-  body = [];
+  body = "";
   if (fid >= 0)
     while (ischar (ln = fgets (fid)))
       if (strncmp (ln, "%!", 2))

@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "data.h"
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "oct-obj.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
@@ -936,6 +937,7 @@ tree_matrix::rvalue1 (int)
 {
   octave_value retval = Matrix ();
 
+  bool all_strings_p = false;
   bool all_sq_strings_p = false;
   bool all_dq_strings_p = false;
   bool all_empty_p = false;
@@ -949,6 +951,7 @@ tree_matrix::rvalue1 (int)
   if (tmp && ! tmp.empty ())
     {
       dim_vector dv = tmp.dims ();
+      all_strings_p = tmp.all_strings_p ();
       all_sq_strings_p = tmp.all_sq_strings_p ();
       all_dq_strings_p = tmp.all_dq_strings_p ();
       all_empty_p = tmp.all_empty_p ();
@@ -993,7 +996,11 @@ tree_matrix::rvalue1 (int)
         {
           char type = all_dq_strings_p ? '"' : '\'';
 
-          maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+          if (! all_strings_p)
+            gripe_implicit_conversion ("Octave:num-to-str",
+                                       "numeric", result_type);
+          else
+            maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
           charNDArray result (dv, Vstring_fill_char);
 

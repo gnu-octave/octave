@@ -1930,6 +1930,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
     {
       std::string result_type;
 
+      bool all_strings_p = true;
       bool all_sq_strings_p = true;
       bool all_dq_strings_p = true;
       bool all_real_p = true;
@@ -1951,6 +1952,8 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           else
             result_type = get_concat_class (result_type, args(i).class_name ());
 
+          if (all_strings_p && ! args(i).is_string ())
+            all_strings_p = false;
           if (all_sq_strings_p && ! args(i).is_sq_string ())
             all_sq_strings_p = false;
           if (all_dq_strings_p && ! args(i).is_dq_string ())
@@ -2009,9 +2012,13 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
         {
           char type = all_dq_strings_p ? '"' : '\'';
 
-          maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
+          if (! all_strings_p)
+            gripe_implicit_conversion ("Octave:num-to-str",
+                                       "numeric", result_type);
+          else
+            maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 
-          charNDArray result =  do_single_type_concat<charNDArray> (args, dim);
+          charNDArray result = do_single_type_concat<charNDArray> (args, dim);
 
           retval = octave_value (result, type);
         }

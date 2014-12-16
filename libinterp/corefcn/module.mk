@@ -76,7 +76,7 @@ COREFCN_INC = \
   corefcn/ls-utils.h \
   corefcn/mex.h \
   corefcn/mexproto.h \
-  corefcn/mxarray.in.h \
+  corefcn/mxarray.h \
   corefcn/oct-errno.h \
   corefcn/oct-fstrm.h \
   corefcn/oct-handle.h \

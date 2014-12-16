@@ -157,7 +157,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       [tt, f, s] = __maybe_munge_text__ (enhanced, t, "string");
       fontspec = create_fontspec (f, s, gnuplot_term);
       fprintf (plot_stream, "set title \"%s\" %s %s %s;\n",
-               undo_string_escapes (tt), fontspec, colorspec, 
+               undo_string_escapes (tt), fontspec, colorspec,
                __do_enhanced_option__ (enhanced, t));
     endif
   endif
@@ -513,6 +513,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           img_ydata = img_ydata(1) + [0, rows(img_data)-1];
         endif
 
+        x_origin = min (img_xdata);
+        y_origin = min (img_ydata);
+
         [y_dim, x_dim] = size (img_data(:,:,1));
         if (x_dim > 1)
           dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
@@ -520,6 +523,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           x_dim = 2;
           img_data = [img_data, img_data];
           dx = abs (img_xdata(2)-img_xdata(1));
+          if (dx < 1)
+            ## Correct gnuplot string for 1-D images
+            dx       = 0.5;
+            x_origin = 0.75;
+          endif
         endif
         if (y_dim > 1)
           dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
@@ -527,10 +535,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           y_dim = 2;
           img_data = [img_data; img_data];
           dy = abs (img_ydata(2)-img_ydata(1));
+          if (dy < 1)
+            ## Correct gnuplot string for 1-D images
+            dy       = 0.5;
+            y_origin = 0.75;
+          endif
         endif
-
-        x_origin = min (img_xdata);
-        y_origin = min (img_ydata);
 
         if (ndims (img_data) == 3)
           data{data_idx} = permute (img_data, [3, 1, 2])(:);
@@ -2131,7 +2141,7 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
                     plot_stream, mirror, mono, axispos, tickdir, ticklength,
                     fontname, fontspec, interpreter, scale, sgn, gnuplot_term)
   persistent warned_latex = false;
-  
+
   ## Avoid emitting anything if the tics are empty, because this undoes the
   ## effect of the previous unset xtics and thereby adds back in the tics.
   if (isempty (tics))
@@ -2626,4 +2636,3 @@ function maybe_do_x2tick_mirror (plot_stream, axis_obj)
                           axis_obj.tickdir);
   endif
 endfunction
-

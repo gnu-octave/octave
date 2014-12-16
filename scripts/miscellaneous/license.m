@@ -30,7 +30,7 @@
 ##
 ## GNU Octave is free software distributed under the GNU General Public
 ## License (GPL), and a license manager makes no sense.  This function is
-## provided only for @sc{Matlab} compatibility.
+## provided only for @sc{matlab} compatibility.
 ##
 ## When called with no extra input arguments, it returns the Octave license,
 ## otherwise the first input defines the operation mode and must be one of

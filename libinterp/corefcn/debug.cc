@@ -1549,7 +1549,7 @@ Return true if in debugging mode, otherwise false.\n\
 
 DEFUN (db_next_breakpoint_quiet, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} db_next_breakpoint_quiet ()\n\
+@deftypefn  {Built-in Function} {} db_next_breakpoint_quiet ()\n\
 @deftypefnx {Built-in Function} {} db_next_breakpoint_quiet (@var{flag})\n\
 Disable line info printing at the next breakpoint.  With a logical\n\
 argument, set the state on or off.\n\

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{output} =} open @var{file}
-## @deftypefnx  {Function File} {@var{output} =} open (@var{file})
+## @deftypefnx {Function File} {@var{output} =} open (@var{file})
 ## Open the file @var{file} in Octave or in an external application
 ## based on the file type as determined by the file name extension.
 ##
@@ -27,8 +27,10 @@
 ## @table @code
 ## @item .m
 ## Open file in the editor.
+##
 ## @item .mat
 ## Load the file in the base workspace.
+##
 ## @item .exe
 ## Execute the program (on Windows systems only).
 ## @end table

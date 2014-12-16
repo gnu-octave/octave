@@ -56,8 +56,8 @@
 ##
 ## @item droptol
 ## A non-negative scalar specifying the drop tolerance for factorization if
-## performing @nospell{ICT}@.  The default value is 0 which produces the complete
-## Cholesky factorization.
+## performing @nospell{ICT}@.  The default value is 0 which produces the
+## complete Cholesky factorization.
 ##
 ## Non-diagonal entries of @var{L} are set to 0 unless
 ##

@@ -25,7 +25,7 @@
 ## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
 ## expanded.  Each file is compressed separately and a new file with a
 ## @file{".gz"} extension is created.  The original files are not modified,
-## but existing compressed files will be silently overwritten. If a directory
+## but existing compressed files will be silently overwritten.  If a directory
 ## is specified then @code{gzip} recursively compresses all files in the
 ## directory.
 ##

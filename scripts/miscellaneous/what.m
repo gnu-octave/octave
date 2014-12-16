@@ -30,22 +30,31 @@
 ## @table @asis
 ## @item path
 ## Full path to directory @var{dir}
+##
 ## @item m
 ## Cell array of m-files
+##
 ## @item mat
 ## Cell array of mat files
+##
 ## @item mex
 ## Cell array of mex files
+##
 ## @item oct
 ## Cell array of oct files
+##
 ## @item mdl
 ## Cell array of mdl files
+##
 ## @item slx
 ## Cell array of slx files
+##
 ## @item p
 ## Cell array of p-files
+##
 ## @item classes
 ## Cell array of class directories (@file{@@@var{classname}/})
+##
 ## @item packages
 ## Cell array of package directories (@file{+@var{pkgname}/})
 ## @end table

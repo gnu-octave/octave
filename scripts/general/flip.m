@@ -30,23 +30,17 @@
 ## @group
 ## flip ([1  2  3  4])
 ##       @result{}  4  3  2  1
-## @end group
 ##
-## @group
 ## flip ([1; 2; 3; 4])
 ##       @result{}  4
 ##           3
 ##           2
 ##           1
-## @end group
 ##
-## @group
 ## flip ([1 2; 3 4])
 ##       @result{}  3  4
 ##           1  2
-## @end group
 ##
-## @group
 ## flip ([1 2; 3 4], 2)
 ##       @result{}  2  1
 ##           4  3

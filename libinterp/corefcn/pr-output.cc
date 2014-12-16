@@ -3989,8 +3989,8 @@ of a large sparse matrix.\n\
 \n\
 The optional argument @var{chars} specifies a list of 3 characters to use\n\
 for printing values greater than zero, less than zero and equal to zero.\n\
-For example, with the @samp{\"+\" \"+-.\"} format, @code{[1, 0, -1; -1, 0, 1]}\n\
-is displayed as\n\
+For example, with the @samp{\"+\" \"+-.\"} format,\n\
+@code{[1, 0, -1; -1, 0, 1]} is displayed as\n\
 \n\
 @example\n\
 @group\n\

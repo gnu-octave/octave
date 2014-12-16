@@ -190,10 +190,10 @@ error message.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string exec_file = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string exec_file = args(0).string_value ();
+
           string_vector exec_args;
 
           if (nargin == 2)
@@ -212,7 +212,7 @@ error message.\n\
                     exec_args[i+1] = tmp[i];
                 }
               else
-                error ("exec: arguments must be character strings");
+                error ("exec: all arguments must be strings");
             }
           else
             {
@@ -300,10 +300,10 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      std::string exec_file = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string exec_file = args(0).string_value ();
+
           string_vector arg_list;
 
           if (nargin >= 2)
@@ -322,7 +322,7 @@ exit status, it will linger until Octave exits.\n\
                     arg_list[i+1] = tmp[i];
                 }
               else
-                error ("popen2: arguments must be character strings");
+                error ("popen2: all arguments must be strings");
             }
           else
             {
@@ -367,7 +367,7 @@ exit status, it will linger until Octave exits.\n\
                 }
             }
           else
-            error ("popen2: arguments must be character strings");
+            error ("popen2: all arguments must be strings");
         }
       else
         error ("popen2: COMMAND argument must be a string");
@@ -1625,10 +1625,9 @@ the empty string (\"\") is returned.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string name = args(0).string_value ();
           std::string msg;
 
           std::string result = octave_canonicalize_file_name (name, msg);
@@ -1638,7 +1637,7 @@ the empty string (\"\") is returned.\n\
           retval(0) = result;
         }
       else
-        error ("canonicalize_file_name: NAME must be a character string");
+        error ("canonicalize_file_name: NAME must be a string");
     }
   else
     print_usage ();

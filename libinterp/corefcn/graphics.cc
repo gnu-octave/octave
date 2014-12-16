@@ -10746,12 +10746,13 @@ List @var{toolkit} as an available graphics toolkit.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        gtk_manager::register_toolkit (name);
+      if (args(0).is_string ())
+        {
+          std::string name = args(0).string_value ();
+          gtk_manager::register_toolkit (name);
+        }
       else
-        error ("register_graphics_toolkit: expecting character string");
+        error ("register_graphics_toolkit: TOOLKIT must be a string");
     }
   else
     print_usage ();

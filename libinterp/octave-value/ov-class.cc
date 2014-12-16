@@ -1063,7 +1063,7 @@ octave_class::all_strings (bool pad) const
           if (tmp(0).is_string ())
             retval = tmp(0).all_strings (pad);
           else
-            error ("cname/char method did not return a character string");
+            error ("cname/char method did not return a string");
         }
     }
   else
@@ -1923,7 +1923,7 @@ derived.\n\
             error ("class: invalid call from outside class constructor or method");
         }
       else
-        error ("class: ID (class name) must be a character string");
+        error ("class: ID (class name) must be a string");
     }
 
   return retval;

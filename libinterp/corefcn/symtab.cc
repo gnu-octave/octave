@@ -1676,10 +1676,9 @@ need to recompiled.\n\
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string sval = args(0).string_value ();
           if (sval == "all")
             Vignore_function_time_stamp = 2;
           else if (sval == "system")
@@ -1687,7 +1686,7 @@ need to recompiled.\n\
           else if (sval == "none")
             Vignore_function_time_stamp = 0;
           else
-            error ("ignore_function_time_stamp: expecting argument to be \"all\", \"system\", or \"none\"");
+            error ("ignore_function_time_stamp: argument must be \"all\", \"system\", or \"none\"");
         }
       else
         error ("ignore_function_time_stamp: expecting argument to be character string");

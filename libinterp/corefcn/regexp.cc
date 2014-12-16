@@ -189,12 +189,13 @@ parse_options (regexp::opts& options, const octave_value_list& args,
 
   for (int i = skip; i < nargin; i++)
     {
-      std::string str = args(i).string_value ();
+      std::string str;
 
-      if (error_state)
+      if (args(i).is_string ())
+        str = args(i).string_value ();
+      else
         {
-          error ("%s: optional arguments must be character strings",
-                 who.c_str ());
+          error ("%s: optional arguments must be strings", who.c_str ());
           break;
         }
 

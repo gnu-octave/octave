@@ -1850,10 +1850,11 @@ functions are ignored in the lookup.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string nm = args(0).string_value ();
-
-      if (! error_state)
-        retval = make_fcn_handle (nm, nargin != 2);
+      if (args(0).is_string ())
+        {
+          std::string nm = args(0).string_value ();
+          retval = make_fcn_handle (nm, nargin != 2);
+        }
       else
         error ("str2func: FCN_NAME must be a string");
     }

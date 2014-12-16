@@ -2874,10 +2874,9 @@ decode_subscripts (const char* name, const octave_value& arg,
 
       for (int k = 0; k < nel; k++)
         {
-          std::string item = type(k).string_value ();
-
-          if (! error_state)
+          if (type(k).is_string ())
             {
+              std::string item = type(k).string_value ();
               if (item == "{}")
                 type_string[k] = '{';
               else if (item == "()")
@@ -2892,8 +2891,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             }
           else
             {
-              error ("%s: expecting type(%d) to be a character string",
-                     name, k+1);
+              error ("%s: type(%d) must be a string", name, k+1);
               return;
             }
 
@@ -2916,8 +2914,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             }
           else
             {
-              error ("%s: expecting subs(%d) to be a character string or cell array",
-                     name, k+1);
+              error ("%s: subs(%d) must be a string or cell array", name, k+1);
               return;
             }
 

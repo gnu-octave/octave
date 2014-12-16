@@ -1866,7 +1866,7 @@ also set the last message identifier.\n\
             }
         }
       else
-        error ("lasterr: expecting arguments to be character strings");
+        error ("lasterr: all arguments must be strings");
     }
   else
     print_usage ();
@@ -1913,7 +1913,7 @@ also set the last message identifier.\n\
             }
         }
       else
-        error ("lastwarn: expecting arguments to be character strings");
+        error ("lastwarn: all arguments must be strings");
     }
   else
     print_usage ();

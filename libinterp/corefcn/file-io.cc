@@ -557,18 +557,20 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
   fid = -1;
 
-  std::string name = tc_name.string_value ();
-
-  if (! error_state)
+  if (tc_name.is_string ())
     {
-      std::string mode = tc_mode.string_value ();
+      std::string name = tc_name.string_value ();
 
-      if (! error_state)
+      if (tc_mode.is_string ())
         {
-          std::string arch = tc_arch.string_value ();
+          std::string mode = tc_mode.string_value ();
 
-          if (! error_state)
-            retval = do_stream_open (name, mode, arch, fid);
+          if (tc_arch.is_string ())
+            {
+              std::string arch = tc_arch.string_value ();
+
+              retval = do_stream_open (name, mode, arch, fid);
+            }
           else
             ::error ("%s: architecture type must be a string", fcn);
         }
@@ -1371,10 +1373,10 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   if (! error_state)
     {
-      std::string prec = prec_arg.string_value ();
-
-      if (! error_state)
+      if (prec_arg.is_string ())
         {
+          std::string prec = prec_arg.string_value ();
+
           int block_size = 1;
           oct_data_conv::data_type input_type;
           oct_data_conv::data_type output_type;
@@ -1388,10 +1390,10 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
               if (! error_state)
                 {
-                  std::string arch = arch_arg.string_value ();
-
-                  if (! error_state)
+                  if (arch_arg.is_string ())
                     {
+                      std::string arch = arch_arg.string_value ();
+
                       oct_mach_info::float_format flt_fmt
                         = oct_mach_info::string_to_float_format (arch);
 
@@ -1641,10 +1643,10 @@ do_fwrite (octave_stream& os, const octave_value& data,
 {
   int retval = -1;
 
-  std::string prec = prec_arg.string_value ();
-
-  if (! error_state)
+  if (prec_arg.is_string ())
     {
+      std::string prec = prec_arg.string_value ();
+
       int block_size = 1;
       oct_data_conv::data_type output_type;
 
@@ -1656,10 +1658,10 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
           if (! error_state)
             {
-              std::string arch = arch_arg.string_value ();
-
-              if (! error_state)
+              if (arch_arg.is_string ())
                 {
+                  std::string arch = arch_arg.string_value ();
+
                   oct_mach_info::float_format flt_fmt
                     = oct_mach_info::string_to_float_format (arch);
 
@@ -1874,14 +1876,14 @@ endwhile\n\
 
   if (nargin == 2)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
-          std::string mode = args(1).string_value ();
+          std::string name = args(0).string_value ();
 
-          if (! error_state)
+          if (args(1).is_string ())
             {
+              std::string mode = args(1).string_value ();
+
               if (mode == "r")
                 {
                   octave_stream ips = octave_iprocstream::create (name);
@@ -1955,20 +1957,25 @@ see @code{tmpfile}.\n\
 
   if (len < 3)
     {
-      std::string dir = len > 0 ? args(0).string_value () : std::string ();
-
-      if (! error_state)
+      std::string dir;
+      if (len > 0)
         {
-          std::string pfx
-            = len > 1 ? args(1).string_value () : std::string ("oct-");
+          if (args(0).is_string ())
+            dir = args(0).string_value ();
+          else
+            ::error ("DIR must be a string");
+        }
 
-          if (! error_state)
-            retval = octave_tempnam (dir, pfx);
+      std::string pfx ("oct-");
+      if (len > 1)
+        {
+          if (args(1).is_string ())
+            pfx = args(1).string_value ();
           else
             ::error ("PREFIX must be a string");
         }
-      else
-        ::error ("DIR argument must be a string");
+
+      retval = octave_tempnam (dir, pfx);
     }
   else
     print_usage ();
@@ -2061,10 +2068,10 @@ file, and @var{msg} is an empty string.  Otherwise, @var{fid} is -1,\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string tmpl8 = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string tmpl8 = args(0).string_value ();
+
           OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
           strcpy (tmp, tmpl8.c_str ());
 

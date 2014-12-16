@@ -1366,27 +1366,24 @@ Undocumented internal function.\n\
 
   if (args.length () == 0)
     retval = Cell (ffl.append (afl));
-  else
+  else if (args(0).is_string ())
     {
       std::string dir = args(0).string_value ();
 
+      string_vector fl = load_path::files (dir, true);
+
       if (! error_state)
         {
-          string_vector fl = load_path::files (dir, true);
+          // Return a sorted list with unique entries (in case of
+          // .m and .oct versions of the same function in a given
+          // directory, for example).
+          fl.sort (true);
 
-          if (! error_state)
-            {
-              // Return a sorted list with unique entries (in case of
-              // .m and .oct versions of the same function in a given
-              // directory, for example).
-              fl.sort (true);
-
-              retval = Cell (fl);
-            }
+          retval = Cell (fl);
         }
-      else
-        error ("__list_functions__: DIRECTORY argument must be a string");
     }
+  else
+    error ("__list_functions__: DIRECTORY argument must be a string");
 
   return retval;
 }

@@ -1006,10 +1006,10 @@ command shell that is started to run the command.\n\
 
       if (nargin == 3)
         {
-          std::string type_str = args(2).string_value ();
-
-          if (! error_state)
+          if (args(2).is_string ())
             {
+              std::string type_str = args(2).string_value ();
+
               if (type_str == "sync")
                 type = et_sync;
               else if (type_str == "async")
@@ -1022,7 +1022,7 @@ command shell that is started to run the command.\n\
             }
           else
             {
-              error ("system: TYPE must be a character string");
+              error ("system: TYPE must be a string");
               return retval;
             }
         }
@@ -1205,10 +1205,10 @@ multiple times.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string arg = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string arg = args(0).string_value ();
+
           bool add_mode = true;
 
           if (nargin == 2)

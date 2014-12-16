@@ -286,11 +286,7 @@
 %!error <Invalid call to setenv> setenv ()
 %!error <Invalid call to setenv> setenv ("foo", "bar", 1)
 
-%!test
-%! wns = warning ("query", "Octave:num-to-str");
-%! warning ("on", "Octave:num-to-str");
-%! fail ("setenv (1, 2)","warning");
-%! warning (wns.state, "Octave:num-to-str");
+%!error <VAR must be a string> setenv (1, 2)
 
 %!test
 %! xdir = pwd ();

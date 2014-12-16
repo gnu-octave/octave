@@ -1462,7 +1462,7 @@ execution to continue until the current function returns.\n\
                 }
             }
           else
-            error ("dbstep: input argument must be a character string");
+            error ("dbstep: input argument must be a string");
         }
       else
         {

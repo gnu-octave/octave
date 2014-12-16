@@ -1597,13 +1597,13 @@ make_idx_args (const std::string& type,
                       subs_field(i) = val;
                     else
                       {
-                        error ("expecting character string argument for '.' index");
+                        error ("string argument required for '.' index");
                         return retval;
                       }
                   }
                 else
                   {
-                    error ("expecting single argument for '.' index");
+                    error ("only single argument permitted for '.' index");
                     return retval;
                   }
               }

@@ -636,10 +636,10 @@ string.\n\
 
   if (nargin == 2 || nargin == 1)
     {
-      std::string var = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string var = args(0).string_value ();
+
           std::string val = (nargin == 2
                              ? args(1).string_value () : std::string ());
 

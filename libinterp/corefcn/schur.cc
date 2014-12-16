@@ -143,9 +143,9 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 
   if (nargin == 2)
     {
-      ord = args(1).string_value ();
-
-      if (error_state)
+      if (args(1).is_string ())
+        ord = args(1).string_value ();
+      else
         {
           error ("schur: second argument must be a string");
           return retval;

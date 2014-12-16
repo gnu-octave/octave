@@ -916,7 +916,7 @@ whos ans\n\
 
   if (error_state)
     {
-      error ("list_in_columns: expecting cellstr or char array");
+      error ("list_in_columns: ARG must be a cellstr or char array");
       return retval;
     }
 
@@ -938,18 +938,10 @@ whos ans\n\
   if (nargin > 2)
     {
       if (args(2).is_string ())
-        {
-          prefix = args(2).string_value ();
-
-          if (error_state)
-            {
-              error ("list_in_columns: PREFIX must be a character string");
-              return retval;
-            }
-        }
+        prefix = args(2).string_value ();
       else
         {
-          error ("list_in_columns: PREFIX must be a character string");
+          error ("list_in_columns: PREFIX must be a string");
           return retval;
         }
     }

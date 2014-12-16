@@ -6855,18 +6855,20 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
   // FIXME: shouldn't these modes be scoped inside a class?
   sortmode smode = UNSORTED;
 
-  std::string mode = arg.string_value ();
-
-  if (error_state)
-    error ("issorted: expecting %s argument to be a character string", argn);
-  else if (mode == "ascending")
-    smode = ASCENDING;
-  else if (mode == "descending")
-    smode = DESCENDING;
-  else if (mode == "either")
-    smode = UNSORTED;
+  if (arg.is_string ())
+    {
+      std::string mode = arg.string_value ();
+      if (mode == "ascending")
+        smode = ASCENDING;
+      else if (mode == "descending")
+        smode = DESCENDING;
+      else if (mode == "either")
+        smode = UNSORTED;
+      else
+        error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
+    }
   else
-    error ("issorted: MODE must be \"ascending\", \"descending\", or \"either\"");
+    error ("issorted: expecting %s argument to be a string", argn);
 
   return smode;
 }
@@ -6910,17 +6912,16 @@ This function does not support sparse matrices.\n\
       if (nargin == 3)
         smode = get_sort_mode_option (args(2), "third");
 
-      std::string tmp = args(1).string_value ();
-
-      if (! error_state)
+      if (args(1).is_string ())
         {
+          std::string tmp = args(1).string_value ();
           if (tmp == "rows")
             by_rows = true;
           else
             smode = get_sort_mode_option (args(1), "second");
         }
       else
-        error ("expecting second argument to be character string");
+        error ("issorted: second argument must be a string");
 
       if (error_state)
         return retval;

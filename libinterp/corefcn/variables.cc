@@ -150,6 +150,8 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
+      // FIXME: Should is_string () be used instead which will warn more
+      //        broadly about incorrect input?
       std::string s = arg.string_value ();
 
       std::string cmd = header;
@@ -341,13 +343,13 @@ do_isglobal (const octave_value_list& args)
       return retval;
     }
 
-  std::string name = args(0).string_value ();
-
-  if (error_state)
+  if (! args(0).is_string ())
     {
       error ("isglobal: NAME must be a string");
       return retval;
     }
+
+  std::string name = args(0).string_value ();
 
   return symbol_table::is_global (name);
 }
@@ -946,7 +948,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
             error ("%s: value must not be empty", nm);
         }
       else
-        error ("%s: expecting arg to be a character string", nm);
+        error ("%s: expecting arg to be a string", nm);
     }
   else if (nargin > 1)
     print_usage ();
@@ -994,7 +996,7 @@ set_internal_variable (int& var, const octave_value_list& args,
             error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
         }
       else
-        error ("%s: expecting arg to be a character string", nm);
+        error ("%s: expecting arg to be a string", nm);
     }
   else if (nargin > 1)
     print_usage ();
@@ -2076,10 +2078,11 @@ then unlock the current function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        munlock (name);
+      if (args(0).is_string ())
+        {
+          std::string name = args(0).string_value ();
+          munlock (name);
+        }
       else
         error ("munlock: FCN must be a string");
     }
@@ -2112,10 +2115,11 @@ named then return true if the current function is locked.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        retval = mislocked (name);
+      if (args(0).is_string ())
+        {
+          std::string name = args(0).string_value ();
+          retval = mislocked (name);
+        }
       else
         error ("mislocked: FCN must be a string");
     }

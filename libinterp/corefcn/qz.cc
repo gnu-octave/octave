@@ -402,7 +402,7 @@ compatibility with @sc{matlab}.\n\
 
   if (nargin == 2)
     ord_job = 'N';
-  else if (!args(2).is_string ())
+  else if (! args(2).is_string ())
     {
       error ("qz: OPT must be a string");
       return retval;

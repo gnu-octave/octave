@@ -392,10 +392,10 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      std::string path = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string path = args(0).string_value ();
+
           string_vector names = args(1).all_strings ();
 
           if (! error_state && names.length () > 0)
@@ -1038,7 +1038,7 @@ if @var{name} is not found.\n\
           if (! error_state)
             retval = octave_errno::lookup (nm);
           else
-            error ("errno: expecting character string argument");
+            error ("errno: expecting string argument");
         }
       else
         {

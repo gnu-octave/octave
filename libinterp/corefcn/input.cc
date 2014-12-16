@@ -837,11 +837,11 @@ string @samp{(yes or no) } to it.  The user must confirm the answer with\n\
 
       if (nargin == 1)
         {
-          prompt = args(0).string_value ();
-
-          if (error_state)
+          if (args(0).is_string ())
+            prompt = args(0).string_value ();
+          else
             {
-              error ("yes_or_no: PROMPT must be a character string");
+              error ("yes_or_no: PROMPT must be a string");
               return retval;
             }
         }
@@ -1210,7 +1210,7 @@ the list of input hook functions.\n\
           retval = hook_fcn.id ();
         }
       else
-        error ("add_input_event_hook: expecting function handle or character string as first argument");
+        error ("add_input_event_hook: FCN must be a function handle or string");
     }
   else
     print_usage ();

@@ -350,16 +350,17 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   if (error_state)
     {
-      error ("urlwrite: URL must be a character string");
+      error ("urlwrite: URL must be a string");
       return retval;
     }
 
   // name to store the file if download is succesful
+  // FIXME: Maybe use is_string () for better input validation.
   std::string filename = args(1).string_value ();
 
   if (error_state)
     {
-      error ("urlwrite: LOCALFILE must be a character string");
+      error ("urlwrite: LOCALFILE must be a string");
       return retval;
     }
 
@@ -370,13 +371,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
     {
       method = args(2).string_value ();
 
-      if (error_state)
-        {
-          error ("urlwrite: METHOD must be \"get\" or \"post\"");
-          return retval;
-        }
-
-      if (method != "get" && method != "post")
+      if (error_state || (method != "get" && method != "post"))
         {
           error ("urlwrite: METHOD must be \"get\" or \"post\"");
           return retval;
@@ -386,10 +381,9 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
       if (error_state)
         {
-          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of character strings");
+          error ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
           return retval;
         }
-
 
       if (param.numel () % 2 == 1)
         {
@@ -498,17 +492,18 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
   int nargin = args.length ();
 
   // verify arguments
-  if (nargin != 1  && nargin != 3)
+  if (nargin != 1 && nargin != 3)
     {
       print_usage ();
       return retval;
     }
 
+  // FIXME: Maybe use is_string () for better input validation.
   std::string url = args(0).string_value ();
 
   if (error_state)
     {
-      error ("urlread: URL must be a character string");
+      error ("urlread: URL must be a string");
       return retval;
     }
 
@@ -517,15 +512,10 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   if (nargin == 3)
     {
+      // FIXME: Maybe use is_string () for better input validation.
       method = args(1).string_value ();
 
-      if (error_state)
-        {
-          error ("urlread: METHOD must be \"get\" or \"post\"");
-          return retval;
-        }
-
-      if (method != "get" && method != "post")
+      if (error_state || (method != "get" && method != "post"))
         {
           error ("urlread: METHOD must be \"get\" or \"post\"");
           return retval;
@@ -535,7 +525,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
       if (error_state)
         {
-          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of character strings");
+          error ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
           return retval;
         }
 

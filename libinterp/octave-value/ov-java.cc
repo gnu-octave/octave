@@ -2050,9 +2050,10 @@ x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
 
       if (args.length () > 0)
         {
-          std::string classname = args(0).string_value ();
-          if (! error_state)
+          if (args(0).is_string ())
             {
+              std::string classname = args(0).string_value ();
+
               octave_value_list tmp;
               for (int i=1; i<args.length (); i++)
                 tmp(i-1) = args(i);
@@ -2114,9 +2115,10 @@ equivalent\n\
 
       if (args.length () > 1)
         {
-          std::string methodname = args(0).string_value ();
-          if (! error_state)
+          if (args(0).is_string ())
             {
+              std::string methodname = args(0).string_value ();
+
               octave_value_list tmp;
               for (int i=2; i<args.length (); i++)
                 tmp(i-2) = args(i);
@@ -2187,9 +2189,10 @@ equivalent\n\
 
       if (args.length () == 2)
         {
-          std::string name = args(1).string_value ();
-          if (! error_state)
+          if (args(1).is_string ())
             {
+              std::string name = args(1).string_value ();
+
               if (args(0).is_java ())
                 {
                   octave_java *jobj = TO_JAVA (args(0));
@@ -2249,9 +2252,10 @@ equivalent\n\
 
       if (args.length () == 3)
         {
-          std::string name = args(1).string_value ();
-          if (! error_state)
+          if (args(1).is_string ())
             {
+              std::string name = args(1).string_value ();
+
               if (args(0).is_java ())
                 {
                   octave_java *jobj = TO_JAVA (args(0));

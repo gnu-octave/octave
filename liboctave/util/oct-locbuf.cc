@@ -140,8 +140,12 @@ octave_chunk_buffer::clear (void)
     }
   else
     {
-      (*current_liboctave_warning_handler)
-        ("octave_chunk_buffer::clear: %d active allocations remain!",
+      // FIXME: Doesn't this situation represent a programming error of
+      // some kind?  If so, maybe this should be a fatal error?
+
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:local-buffer-inconsistency",
+         "octave_chunk_buffer::clear: %d active allocations remain!",
          active);
     }
 }

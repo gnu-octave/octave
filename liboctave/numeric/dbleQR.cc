@@ -703,11 +703,13 @@ void warn_qrupdate_once (void)
   static bool warned = false;
   if (! warned)
     {
-      (*current_liboctave_warning_handler)
-        ("In this version of Octave, QR & Cholesky updating routines\n"
-         "simply update the matrix and recalculate factorizations.\n"
-         "To use fast algorithms, link Octave with the qrupdate library.\n"
-         "See <http://sourceforge.net/projects/qrupdate>.\n");
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:missing-dependency",
+         "In this version of Octave, QR & Cholesky updating routines "
+         "simply update the matrix and recalculate factorizations. "
+         "To use fast algorithms, link Octave with the qrupdate library. "
+         "See <http://sourceforge.net/projects/qrupdate>.");
+
       warned = true;
     }
 }

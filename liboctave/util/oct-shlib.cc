@@ -87,8 +87,9 @@ octave_shlib::shlib_rep::fake_reload (void)
     {
       tm_loaded = fs.mtime ();
 
-      (*current_liboctave_warning_handler)
-        ("library %s not reloaded due to existing references", file.c_str ());
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:library-reload",
+         "library %s not reloaded due to existing references", file.c_str ());
     }
 }
 

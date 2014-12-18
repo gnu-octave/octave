@@ -207,6 +207,15 @@ utsolve (const Matrix&, const ColumnVector&, const Matrix&);
 
 #endif
 
+static void
+warn_convergence (void)
+{
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:convergence",
+     "eigs: 'A - sigma*B' is singular, indicating sigma is exactly "
+     "an eigenvalue so convergence is not guaranteed");
+}
+
 template <class M, class SM>
 static octave_idx_type
 lusolve (const SM& L, const SM& U, M& m)
@@ -508,12 +517,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -585,12 +589,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -682,12 +681,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }
@@ -759,12 +753,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
   volatile double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || xisnan (rcond))
-    {
-      (*current_liboctave_warning_handler)
-        ("eigs: 'A - sigma*B' is singular, indicating sigma is exactly");
-      (*current_liboctave_warning_handler)
-        ("       an eigenvalue. Convergence is not guaranteed");
-    }
+    warn_convergence ();
 
   return true;
 }

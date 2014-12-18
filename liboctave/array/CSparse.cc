@@ -5725,8 +5725,8 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
-          (*current_liboctave_warning_handler)
-            ("CHOLMOD not installed");
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:missing-dependency", "CHOLMOD not installed");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -5982,8 +5982,8 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
-          (*current_liboctave_warning_handler)
-            ("CHOLMOD not installed");
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:missing-dependency", "CHOLMOD not installed");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -6255,8 +6255,8 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
-          (*current_liboctave_warning_handler)
-            ("CHOLMOD not installed");
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:missing-dependency", "CHOLMOD not installed");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;
@@ -6491,8 +6491,8 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
             }
 #else
-          (*current_liboctave_warning_handler)
-            ("CHOLMOD not installed");
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:missing-dependency", "CHOLMOD not installed");
 
           mattype.mark_as_unsymmetric ();
           typ = MatrixType::Full;

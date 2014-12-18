@@ -1549,8 +1549,9 @@ brace_expand (const std::string& text)
       /* What if there isn't a matching close brace? */
       if (! c)
         {
-          (*current_liboctave_warning_handler)
-            ("%s: Unmatched {", text.c_str ());
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:pathsearch-syntax",
+             "%s: Unmatched {", text.c_str ());
 
           result = string_vector (text);
         }
@@ -2545,8 +2546,9 @@ expand (std::string &expansion, const std::string& var)
 {
   if (expanding_p (var))
     {
-      (*current_liboctave_warning_handler)
-        ("kpathsea: variable '%s' references itself (eventually)",
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:pathsearch-syntax",
+         "kpathsea: variable '%s' references itself (eventually)",
          var.c_str ());
     }
   else
@@ -2623,8 +2625,9 @@ kpse_var_expand (const std::string& src)
 
               if (var_end == src_len)
                 {
-                  (*current_liboctave_warning_handler)
-                    ("%s: No matching } for ${", src.c_str ());
+                  (*current_liboctave_warning_with_id_handler)
+                    ("Octave:pathsearch-syntax",
+                     "%s: No matching } for ${", src.c_str ());
                   i = var_end - 1; /* will incr to eos at top of loop */
                 }
               else
@@ -2636,8 +2639,9 @@ kpse_var_expand (const std::string& src)
           else
             {
               /* $<something-else>: error.  */
-              (*current_liboctave_warning_handler)
-                ("%s: Unrecognized variable construct '$%c'",
+              (*current_liboctave_warning_with_id_handler)
+                ("Octave:pathsearch-syntax",
+                 "%s: Unrecognized variable construct '$%c'",
                  src.c_str (), src[i]);
 
               /* Just ignore those chars and keep going.  */

@@ -179,8 +179,9 @@ regexp::compile_internal (void)
                   if (!lookbehind_warned)
                     {
                       lookbehind_warned = true;
-                      (*current_liboctave_warning_handler)
-                        ("%s: arbitrary length lookbehind patterns are only supported up to length %d",
+                      (*current_liboctave_warning_with_id_handler)
+                        ("Octave:regexp-lookbehind-limit",
+                         "%s: arbitrary length lookbehind patterns are only supported up to length %d",
                          who.c_str (), MAXLOOKBEHIND);
                     }
 
@@ -282,8 +283,9 @@ regexp::match (const std::string& buffer)
         {
           // Try harder; start with default value for MATCH_LIMIT
           // and increase it.
-          (*current_liboctave_warning_handler)
-            ("your pattern caused PCRE to hit its MATCH_LIMIT; trying harder now, but this will be slow");
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:regexp-match-limit",
+             "your pattern caused PCRE to hit its MATCH_LIMIT; trying harder now, but this will be slow");
 
           pcre_extra pe;
 

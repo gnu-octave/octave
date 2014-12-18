@@ -819,8 +819,9 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 
   if (dims2.length () > 2)
     {
-      (*current_liboctave_warning_handler)
-        ("reshape: sparse reshape to N-d array smashes dims");
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:reshape-smashes-dims",
+         "reshape: sparse reshape to N-d array smashes dims");
 
       for (octave_idx_type i = 2; i < dims2.length (); i++)
         dims2(1) *= dims2(i);

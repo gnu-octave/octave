@@ -411,8 +411,9 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
             {
               s1 = s.substr (1, pos-1);
 
-              (*current_liboctave_warning_handler)
-                ("warning: ignoring leading * in fread precision");
+              (*current_liboctave_warning_with_id_handler)
+                ("Octave:fread-precision-syntax",
+                 "warning: ignoring leading * in fread precision");
             }
           else
             s1 = s.substr (0, pos);

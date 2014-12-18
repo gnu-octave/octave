@@ -60,7 +60,6 @@ static void
 solve_singularity_warning (double rcond)
 {
   gripe_singular_matrix (rcond);
-  warning ("attempting to find minimum norm solution");
 }
 
 template <class T1, class T2>
@@ -407,7 +406,6 @@ static void
 solve_singularity_warning (float rcond)
 {
   gripe_singular_matrix (rcond);
-  warning ("attempting to find minimum norm solution");
 }
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (FloatMatrix, FloatMatrix);

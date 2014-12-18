@@ -45,7 +45,6 @@ static void
 solve_singularity_warning (double rcond)
 {
   gripe_singular_matrix (rcond);
-  warning ("attempting to find minimum norm solution");
 }
 
 template <class T1, class T2>

@@ -194,6 +194,9 @@ Summary of important user-visible changes for version 4.2:
     been removed from Octave 4.2.  Replacement classes are
     <octave_map> (struct array) or <octave_scalar_map> for a single structure.
 
+ ** The warning ID Octave:singular-matrix-div has been replaced by
+    Octave:nearly-singular-matrix and Octave:singular-matrix.
+
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 

@@ -227,8 +227,7 @@ of a sparse matrix if possible.\n\
         }
 
       if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
-        warning ("inverse: matrix singular to machine precision, rcond = %g",
-                 (isfloat ? frcond : rcond));
+        gripe_singular_matrix (isfloat ? frcond : rcond);
     }
 
   return retval;

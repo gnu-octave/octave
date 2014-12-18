@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "fDiagMatrix.h"
 #include "CDiagMatrix.h"
 #include "fCDiagMatrix.h"
+#include "lo-array-gripes.h"
 #include "quit.h"
 
 #include "error.h"
@@ -58,8 +59,8 @@ result_ok (octave_idx_type info)
 static void
 solve_singularity_warning (double rcond)
 {
-  warning_with_id ("Octave:singular-matrix-div",
-                   "matrix singular to machine precision, rcond = %g", rcond);
+  gripe_singular_matrix (rcond);
+  warning ("attempting to find minimum norm solution");
 }
 
 template <class T1, class T2>
@@ -405,7 +406,7 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ,
 static void
 solve_singularity_warning (float rcond)
 {
-  warning ("matrix singular to machine precision, rcond = %g", rcond);
+  gripe_singular_matrix (rcond);
   warning ("attempting to find minimum norm solution");
 }
 

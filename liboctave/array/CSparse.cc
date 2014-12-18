@@ -1804,9 +1804,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -1821,9 +1819,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -2092,9 +2088,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -2109,9 +2103,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -2327,9 +2319,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -2344,9 +2334,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -2615,9 +2603,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -2632,9 +2618,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -2871,9 +2855,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -2888,9 +2870,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -3179,9 +3159,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -3196,9 +3174,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -3439,9 +3415,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -3456,9 +3430,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -3746,9 +3718,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
 
           volatile double rcond_plus_one = rcond + 1.0;
@@ -3763,9 +3733,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision, rcond = %g",
-                   rcond);
+                gripe_singular_matrix (rcond);
             }
         }
       else
@@ -3912,8 +3880,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
 
             }
           else
@@ -4010,9 +3977,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
-
+                gripe_singular_matrix ();
             }
           else
             {
@@ -4214,8 +4179,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
             }
         }
       else if (typ != MatrixType::Tridiagonal_Hermitian)
@@ -4310,8 +4274,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
             }
           else
             {
@@ -4480,9 +4443,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -4567,8 +4528,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
             }
           else
             {
@@ -4601,9 +4561,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -4727,9 +4685,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -4847,9 +4803,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
-
+                gripe_singular_matrix ();
             }
           else
             {
@@ -4882,9 +4836,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -5047,9 +4999,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -5132,8 +5082,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
             }
           else
             {
@@ -5166,9 +5115,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -5294,9 +5241,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -5419,9 +5364,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   mattype.mark_as_rectangular ();
                 }
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
-
+                gripe_singular_matrix ();
             }
           else
             {
@@ -5454,9 +5397,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                           mattype.mark_as_rectangular ();
                         }
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcond);
+                        gripe_singular_matrix (rcond);
                     }
                 }
               else
@@ -5609,10 +5550,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
           if (sing_handler)
             sing_handler (rcond);
           else
-            (*current_liboctave_error_handler)
-              ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-               rcond);
-
+            gripe_singular_matrix (rcond);
         }
       else if (status < 0)
         {
@@ -5760,9 +5698,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    (*current_liboctave_error_handler)
-                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-                       rcond);
+                    gripe_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6013,9 +5949,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    (*current_liboctave_error_handler)
-                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-                       rcond);
+                    gripe_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6294,9 +6228,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    (*current_liboctave_error_handler)
-                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-                       rcond);
+                    gripe_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6526,9 +6458,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                       mattype.mark_as_rectangular ();
                     }
                   else
-                    (*current_liboctave_error_handler)
-                      ("SparseMatrix::solve matrix singular to machine precision, rcond = %g",
-                       rcond);
+                    gripe_singular_matrix (rcond);
 
                   return retval;
                 }
@@ -6657,10 +6587,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                   if (sing_handler)
                     sing_handler (rcond);
                   else
-                    (*current_liboctave_error_handler)
-                      ("SparseComplexMatrix::solve matrix singular to machine precision, rcond = %g",
-                       rcond);
-
+                    gripe_singular_matrix (rcond);
                 }
 
               UMFPACK_ZNAME (report_info) (control, info);

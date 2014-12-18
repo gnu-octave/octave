@@ -299,8 +299,10 @@
 ## string constant.
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
-## @item Octave:singular-matrix-div
-## By default, the @code{Octave:singular-matrix-div} warning is enabled.
+## @item Octave:nearly-singular-matrix
+## @itemx Octave:singular-matrix
+## By default, the @code{Octave:nearly-singular-matrix} and
+## @code{Octave:singular-matrix} warnings are enabled.
 ##
 ## @item Octave:sqrtm:SingularMatrix
 ## By default, the @code{Octave:sqrtm:SingularMatrix} warning is enabled.

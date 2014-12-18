@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cassert>
 
 #include "Array-util.h"
+#include "lo-array-gripes.h"
 #include "oct-cmplx.h"
 #include "quit.h"
 #include "error.h"
@@ -43,7 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 static void
 solve_singularity_warning (double rcond)
 {
-  warning ("matrix singular to machine precision, rcond = %g", rcond);
+  gripe_singular_matrix (rcond);
   warning ("attempting to find minimum norm solution");
 }
 

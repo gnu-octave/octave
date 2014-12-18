@@ -1625,9 +1625,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -1725,9 +1723,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -1829,9 +1825,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 
@@ -1884,8 +1878,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (sing_handler)
                 sing_handler (rcon);
               else
-                (*current_liboctave_error_handler)
-                  ("matrix singular to machine precision");
+                gripe_singular_matrix ();
 
               mattype.mark_as_rectangular ();
             }
@@ -1913,9 +1906,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                       if (sing_handler)
                         sing_handler (rcon);
                       else
-                        (*current_liboctave_error_handler)
-                          ("matrix singular to machine precision, rcond = %g",
-                           rcon);
+                        gripe_singular_matrix (rcon);
                     }
                 }
 

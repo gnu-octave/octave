@@ -69,7 +69,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   QString directory = directory_arg;
   _lexer_apis = 0;
-  _app_closing = false;
+  _app_closing = 0;   // app is not closing
   _is_octave_file = true;
   _modal_dialog = false;
 
@@ -1243,13 +1243,24 @@ file_editor_tab::check_file_modified ()
                                              QMessageBox::Discard;
       QString available_actions;
 
-      if (_app_closing)
-        available_actions = tr ("Do you want to save or discard the changes?");
-      else
+      switch (_app_closing)
         {
-          buttons = buttons | QMessageBox::Cancel;  // cancel is allowed
-          available_actions
-            = tr ("Do you want to cancel closing, save or discard the changes?");
+          case -1:  // octave is exiting and so does the gui
+            available_actions =
+              tr ("Do you want to save or discard the changes?");
+            break;
+
+          case 1:   // gui is exiting
+            available_actions =
+              tr ("Do you want to cancel exiting octave, save or discard the changes?");
+            buttons = buttons | QMessageBox::Cancel;
+            break;
+
+          case 0:   // tab is closing
+            available_actions =
+              tr ("Do you want to cancel closing, save or discard the changes?");
+            buttons = buttons | QMessageBox::Cancel;
+            break;
         }
 
       QString file;
@@ -1917,14 +1928,16 @@ file_editor_tab::auto_margin_width ()
   _edit_area->setMarginWidth (2, "1"+QString::number (_edit_area->lines ()));
 }
 
-void
-file_editor_tab::conditional_close (const QWidget *ID, bool app_closing)
+// the following close request was changed from a signal slot into a
+// normal function because we need the return value from close whether
+// the tab really was closed (for canceling exiting octave).
+// When emitting a signal, only the return value from the last slot
+// goes back to the sender
+bool
+file_editor_tab::conditional_close (int app_closing)
 {
-  if (ID != this)
-    return;
-
   _app_closing = app_closing;
-  close ();
+  return close ();
 }
 
 void

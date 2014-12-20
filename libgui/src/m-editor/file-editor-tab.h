@@ -51,6 +51,10 @@ public:
 
   octave_qscintilla *qsci_edit_area () { return _edit_area; }
 
+  // Will initiate close if associated with the identifier tag.
+  bool conditional_close (int app_closing = 0);  // default 0: close tab only
+
+
 public slots:
 
   void update_window_title (bool modified);
@@ -60,9 +64,6 @@ public slots:
 
   // Tells the editor tab to react on changed settings.
   void notice_settings (const QSettings *settings);
-
-  // Will initiate close if associated with the identifier tag.
-  void conditional_close (const QWidget *ID, bool app_closing = false);
 
   // Change to a different editor tab by identifier tag.
   void change_editor_state (const QWidget *ID);
@@ -232,7 +233,7 @@ private:
 
   bool _long_title;
   bool _copy_available;
-  bool _app_closing;
+  int _app_closing;     // -1: octave exits, 1: exit request in gui, 0: no exit
   bool _is_octave_file;
   bool _modal_dialog;
   bool _always_reload_changed_files;

@@ -2461,9 +2461,12 @@ main_window::confirm_exit_octave ()
           QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
 
       if (ans !=  QMessageBox::Ok)
-        closenow = false;
+        return false;
 
     }
+
+  closenow = editor_window->check_closing (1);  // 1: exit request from gui
+
   return closenow;
 }
 

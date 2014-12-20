@@ -69,7 +69,6 @@ public:
 signals:
 
   void fetab_settings_changed (const QSettings *settings);
-  void fetab_close_request (const QWidget* ID, bool app_closing = false);
   void fetab_change_request (const QWidget* ID);
   void fetab_file_name_query (const QWidget* ID);
   // Save is a ping-pong type of communication
@@ -117,6 +116,7 @@ signals:
 
 public slots:
   void focus (void);
+  bool check_closing (int closing_state);
 
   void request_new_file (const QString& commands);
   void request_new_script (const QString& commands);

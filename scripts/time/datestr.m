@@ -193,7 +193,7 @@ function retval = datestr (date, f = [], p = [])
     endif
   endif
 
-  retval = [];
+  retval = "";
   for i = 1 : rows (v)
 
     if (isempty (f))
@@ -213,8 +213,8 @@ function retval = datestr (date, f = [], p = [])
     endif
 
     df_orig = df;
-    df = strrep (df, 'AM', "%p");
-    df = strrep (df, 'PM', "%p");
+    df = strrep (df, "AM", "%p");
+    df = strrep (df, "PM", "%p");
     if (strcmp (df, df_orig))
       ## PM not set.
       df = strrep (df, "HH", "%H");
@@ -222,20 +222,20 @@ function retval = datestr (date, f = [], p = [])
       df = strrep (df, "HH", sprintf ("%2d", v(i,4)));
     endif
 
-    df = regexprep (df, '[Yy][Yy][Yy][Yy]', "%Y");
+    df = regexprep (df, "[Yy][Yy][Yy][Yy]", "%Y");
 
-    df = regexprep (df, '[Yy][Yy]', "%y");
+    df = regexprep (df, "[Yy][Yy]", "%y");
 
-    df = regexprep (df, '[Dd][Dd][Dd][Dd]', "%A");
+    df = regexprep (df, "[Dd][Dd][Dd][Dd]", "%A");
 
-    df = regexprep (df, '[Dd][Dd][Dd]', "%a");
+    df = regexprep (df, "[Dd][Dd][Dd]", "%a");
 
-    df = regexprep (df, '[Dd][Dd]', "%d");
+    df = regexprep (df, "[Dd][Dd]", "%d");
 
     wday = weekday (datenum (v(i,1), v(i,2), v(i,3)));
     tmp = names_d{wday};
-    df = regexprep (df, '([^%])[Dd]', sprintf ("$1%s", tmp));
-    df = regexprep (df, '^[Dd]', sprintf ("%s", tmp));
+    df = regexprep (df, "([^%])[Dd]", sprintf ("$1%s", tmp));
+    df = regexprep (df, "^[Dd]", sprintf ("%s", tmp));
 
     df = strrep (df, "mmmm", "%B");
 
@@ -244,18 +244,18 @@ function retval = datestr (date, f = [], p = [])
     df = strrep (df, "mm", "%m");
 
     tmp = names_m{v(i,2)};
-    pos = regexp (df, '[^%]m') + 1;
+    pos = regexp (df, "[^%]m") + 1;
     df(pos) = tmp;
-    df = regexprep (df, '^m', tmp);
+    df = regexprep (df, "^m", tmp);
 
     df = strrep (df, "MM", "%M");
 
-    df = regexprep (df, '[Ss][Ss]', "%S");
+    df = regexprep (df, "[Ss][Ss]", "%S");
 
     df = strrep (df, "FFF", sprintf ("%03d",
                                      round (1000 * (v(i,6) - fix (v(i,6))))));
 
-    df = strrep (df, 'QQ', sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
+    df = strrep (df, "QQ", sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
 
     vi = v(i,:);
     tm.year = vi(1) - 1900;

@@ -422,31 +422,25 @@ pr_where_1 (const char *fmt, ...)
 static void
 pr_where (const char *who)
 {
-  octave_idx_type curr_frame = -1;
+  std::list<octave_call_stack::stack_frame> frames
+    = octave_call_stack::backtrace_frames ();
 
-  octave_map stk = octave_call_stack::backtrace (0, curr_frame);
+  size_t nframes = frames.size ();
 
-  octave_idx_type nframes_to_display = stk.numel ();
-
-  if (nframes_to_display > 0)
+  if (nframes > 0)
+    pr_where_1 ("%s: called from\n", who);
+  
+  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
+       p != frames.end (); p++)
     {
-      pr_where_1 ("%s: called from\n", who);
+      const octave_call_stack::stack_frame& elt = *p;
 
-      Cell names = stk.contents ("name");
-      Cell lines = stk.contents ("line");
-      Cell columns = stk.contents ("column");
+      std::string fcn_name = elt.fcn_name ();
+      int line = elt.line ();
+      int column = elt.column ();
 
-      for (octave_idx_type i = 0; i < nframes_to_display; i++)
-        {
-          octave_value name = names(i);
-          octave_value line = lines(i);
-          octave_value column = columns(i);
-
-          std::string nm = name.string_value ();
-
-          pr_where_1 ("    %s at line %d column %d\n", nm.c_str (),
-                      line.int_value (), column.int_value ());
-        }
+      pr_where_1 ("    %s at line %d column %d\n",
+                  fcn_name.c_str (), line, column);
     }
 }
 
@@ -457,6 +451,9 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 
   error_1 (std::cerr, "error", id, fmt, args, with_cfn);
 
+  if (! symbol_table::at_top_level () && ! discard_error_messages)
+    pr_where ("error");
+
   if ((interactive || forced_interactive)
       && Vdebug_on_error && init_state == 0
       && octave_call_stack::caller_user_code ())
@@ -466,8 +463,6 @@ error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
       Vdebug_on_error = false;
 
       error_state = 0;
-
-      pr_where ("error");
 
       tree_evaluator::debug_mode = true;
 

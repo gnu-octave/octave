@@ -98,14 +98,9 @@ octave_oncleanup::~octave_oncleanup (void)
       error ("onCleanup: internal error: unhandled exception in cleanup action");
     }
 
-  // We don't want to ignore errors that occur in the cleanup code, so
-  // if an error is encountered there, leave error_state alone.
-  // Otherwise, set it back to what it was before.
+  // FIXME: can this happen now?
   if (error_state)
-    {
-      frame.discard_first ();
-      octave_call_stack::backtrace_error_message ();
-    }
+    frame.discard_first ();
 }
 
 octave_scalar_map

@@ -76,41 +76,52 @@ class
 OCTINTERP_API
 octave_call_stack
 {
-private:
-
-  struct call_stack_elt
-  {
-    call_stack_elt (octave_function *f, symbol_table::scope_id s,
-                    symbol_table::context_id c, size_t p = 0)
-      : fcn (f), line (-1), column (-1), scope (s), context (c), prev (p)
-    { }
-
-    call_stack_elt (const call_stack_elt& elt)
-      : fcn (elt.fcn), line (elt.line), column (elt.column),
-        scope (elt.scope), context (elt.context), prev (elt.prev)
-    { }
-
-    octave_function *fcn;
-    int line;
-    int column;
-    symbol_table::scope_id scope;
-    symbol_table::context_id context;
-    size_t prev;
-  };
-
 protected:
 
   octave_call_stack (void) : cs (), curr_frame (0) { }
 
 public:
 
-  typedef std::deque<call_stack_elt>::iterator iterator;
-  typedef std::deque<call_stack_elt>::const_iterator const_iterator;
+  class stack_frame
+  {
+  public:
 
-  typedef std::deque<call_stack_elt>::reverse_iterator
-    reverse_iterator;
-  typedef std::deque<call_stack_elt>::const_reverse_iterator
-    const_reverse_iterator;
+    friend class octave_call_stack;
+
+    stack_frame (octave_function *fcn = 0, symbol_table::scope_id scope = 0,
+                 symbol_table::context_id context = 0, size_t prev = 0)
+      : m_fcn (fcn), m_line (-1), m_column (-1), m_scope (scope),
+        m_context (context), m_prev (prev)
+    { }
+
+    stack_frame (const stack_frame& elt)
+      : m_fcn (elt.m_fcn), m_line (elt.m_line), m_column (elt.m_column),
+        m_scope (elt.m_scope), m_context (elt.m_context), m_prev (elt.m_prev)
+    { }
+
+    int line (void) const { return m_line; }
+
+    int column (void) const { return m_column; }
+
+    std::string fcn_file_name (void) const;
+
+    std::string fcn_name (bool print_subfn = true) const;
+
+  private:
+
+    octave_function *m_fcn;
+    int m_line;
+    int m_column;
+    symbol_table::scope_id m_scope;
+    symbol_table::context_id m_context;
+    size_t m_prev;
+  };
+
+  typedef std::deque<stack_frame>::iterator iterator;
+  typedef std::deque<stack_frame>::const_iterator const_iterator;
+
+  typedef std::deque<stack_frame>::reverse_iterator reverse_iterator;
+  typedef std::deque<stack_frame>::const_reverse_iterator const_reverse_iterator;
 
   static void create_instance (void);
 
@@ -193,6 +204,12 @@ public:
     return instance_ok () ? instance->do_current_context () : 0;
   }
 
+  /*
+  static stack_frame frame (size_t idx)
+  {
+    return instance_ok () ? instance->do_frame (idx) : stack_frame ();
+  }
+  */
   // Function at location N on the call stack (N == 0 is current), may
   // be built-in.
   static octave_function *element (size_t n)
@@ -275,19 +292,39 @@ public:
       instance->do_goto_base_frame ();
   }
 
-  static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame)
+  static octave_map backtrace (size_t nskip = 0)
   {
+    octave_idx_type curr_user_frame = -1;
+
     return instance_ok ()
            ? instance->do_backtrace (nskip, curr_user_frame, true)
            : octave_map ();
   }
-
+  
   static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame,
-                               bool print_subfn)
+                               bool print_subfn = true)
   {
     return instance_ok ()
            ? instance->do_backtrace (nskip, curr_user_frame, print_subfn)
            : octave_map ();
+  }
+
+  static std::list<octave_call_stack::stack_frame>
+  backtrace_frames (size_t nskip = 0)
+  {
+    octave_idx_type curr_user_frame = -1;
+
+    return instance_ok ()
+           ? instance->do_backtrace_frames (nskip, curr_user_frame)
+           : std::list<octave_call_stack::stack_frame> ();
+  }
+  
+  static std::list<octave_call_stack::stack_frame>
+  backtrace_frames (size_t nskip, octave_idx_type& curr_user_frame)
+  {
+    return instance_ok ()
+           ? instance->do_backtrace_frames (nskip, curr_user_frame)
+           : std::list<octave_call_stack::stack_frame> ();
   }
 
   static octave_map empty_backtrace (void);
@@ -304,16 +341,10 @@ public:
       instance->do_clear ();
   }
 
-  static void backtrace_error_message (void)
-  {
-    if (instance_ok ())
-      instance->do_backtrace_error_message ();
-  }
-
 private:
 
   // The current call stack.
-  std::deque<call_stack_elt> cs;
+  std::deque<stack_frame> cs;
 
   size_t curr_frame;
 
@@ -331,7 +362,7 @@ private:
 
   octave_function *do_caller (void) const
   {
-    return curr_frame > 1 ? cs[curr_frame-1].fcn : cs[0].fcn;
+    return curr_frame > 1 ? cs[curr_frame-1].m_fcn : cs[0].m_fcn;
   }
 
   size_t do_current_frame (void) { return curr_frame; }
@@ -343,23 +374,30 @@ private:
   symbol_table::scope_id do_current_scope (void) const
   {
     return curr_frame > 0 && curr_frame < cs.size ()
-           ? cs[curr_frame].scope : 0;
+           ? cs[curr_frame].m_scope : 0;
   }
 
   symbol_table::context_id do_current_context (void) const
   {
     return curr_frame > 0 && curr_frame < cs.size ()
-           ? cs[curr_frame].context : 0;
+           ? cs[curr_frame].m_context : 0;
   }
 
+  /*  const stack_frame& do_frame (size_t idx)
+  {
+    static stack_frame foobar;
+
+    return idx < cs.size () ? cs[idx] : foobar;
+  }
+  */
   octave_function *do_element (size_t n)
   {
     octave_function *retval = 0;
 
     if (cs.size () > n)
       {
-        call_stack_elt& elt = cs[n];
-        retval = elt.fcn;
+        stack_frame& elt = cs[n];
+        retval = elt.m_fcn;
       }
 
     return retval;
@@ -369,12 +407,12 @@ private:
 
   bool do_all_scripts (void) const;
 
-  void do_push (octave_function *f, symbol_table::scope_id scope,
+  void do_push (octave_function *fcn, symbol_table::scope_id scope,
                 symbol_table::context_id context)
   {
     size_t prev_frame = curr_frame;
     curr_frame = cs.size ();
-    cs.push_back (call_stack_elt (f, scope, context, prev_frame));
+    cs.push_back (stack_frame (fcn, scope, context, prev_frame));
     symbol_table::set_scope_and_context (scope, context);
   }
 
@@ -384,8 +422,8 @@ private:
 
     if (! cs.empty ())
       {
-        const call_stack_elt& elt = cs[curr_frame];
-        retval = elt.fcn;
+        const stack_frame& elt = cs[curr_frame];
+        retval = elt.m_fcn;
       }
 
     return retval;
@@ -395,10 +433,10 @@ private:
   {
     if (! cs.empty ())
       {
-        call_stack_elt& elt = cs.back ();
+        stack_frame& elt = cs.back ();
 
-        elt.line = l;
-        elt.column = c;
+        elt.m_line = l;
+        elt.m_column = c;
       }
   }
 
@@ -406,9 +444,9 @@ private:
   {
     if (! cs.empty ())
       {
-        call_stack_elt& elt = cs.back ();
+        stack_frame& elt = cs.back ();
 
-        elt.line = l;
+        elt.m_line = l;
       }
   }
 
@@ -416,11 +454,14 @@ private:
   {
     if (! cs.empty ())
       {
-        call_stack_elt& elt = cs.back ();
+        stack_frame& elt = cs.back ();
 
-        elt.column = c;
+        elt.m_column = c;
       }
   }
+
+  std::list<octave_call_stack::stack_frame>
+  do_backtrace_frames (size_t nskip, octave_idx_type& curr_user_frame) const;
 
   octave_map do_backtrace (size_t nskip,
                            octave_idx_type& curr_user_frame,
@@ -438,17 +479,15 @@ private:
   {
     if (cs.size () > 1)
       {
-        const call_stack_elt& elt = cs.back ();
-        curr_frame = elt.prev;
+        const stack_frame& elt = cs.back ();
+        curr_frame = elt.m_prev;
         cs.pop_back ();
-        const call_stack_elt& new_elt = cs[curr_frame];
-        symbol_table::set_scope_and_context (new_elt.scope, new_elt.context);
+        const stack_frame& new_elt = cs[curr_frame];
+        symbol_table::set_scope_and_context (new_elt.m_scope, new_elt.m_context);
       }
   }
 
   void do_clear (void) { cs.clear (); }
-
-  void do_backtrace_error_message (void) const;
 };
 
 // Call a function with exceptions handled to avoid problems with

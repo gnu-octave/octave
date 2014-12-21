@@ -855,7 +855,7 @@ gen_select_tests() {
 %!assert (as(idx'), sparse (af(idx')));
 %!assert (as(flipud (idx(:))), sparse (af(flipud (idx(:)))))
 %!assert (as([idx,idx]), sparse (af([idx,idx])))
-%!error (as(reshape ([idx;idx], [1,length(idx),2])))
+%!assert (as(reshape ([idx;idx], [1,length(idx),2])), sparse(af(reshape ([idx;idx], [1,length(idx),2]))))
 
 %% Slice tests
 %!assert (as(ridx,cidx), sparse (af(ridx,cidx)))

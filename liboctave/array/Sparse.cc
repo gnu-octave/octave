@@ -1493,9 +1493,12 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           // If indexing a sparse column vector by a vector, the result is a
           // sparse column vector, otherwise it inherits the shape of index.
           // Vector transpose is cheap, so do it right here.
+
+          Array<octave_idx_type> tmp_idx = idx.as_array ().as_matrix ();
+
           const Array<octave_idx_type> idxa = (idx_dims(0) == 1
-                                               ? idx.as_array ().transpose ()
-                                               : idx.as_array ());
+                                               ? tmp_idx.transpose ()
+                                               : tmp_idx);
 
           octave_idx_type new_nr = idxa.rows ();
           octave_idx_type new_nc = idxa.cols ();

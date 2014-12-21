@@ -1396,12 +1396,9 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
   octave_idx_type nel = numel (); // Can throw.
 
-  const dim_vector idx_dims = idx.orig_dimensions ();
+  const dim_vector idx_dims = idx.orig_dimensions ().redim (2);
 
-  if (idx_dims.length () > 2)
-    (*current_liboctave_error_handler)
-      ("cannot index sparse matrix with an N-D Array");
-  else if (idx.is_colon ())
+  if (idx.is_colon ())
     {
       if (nc == 1)
         retval = *this;

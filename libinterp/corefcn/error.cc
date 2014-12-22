@@ -267,6 +267,70 @@ verror (bool save_last_error, std::ostream& os,
     }
 }
 
+static void
+pr_where_2 (const char *fmt, va_list args)
+{
+  if (fmt)
+    {
+      if (*fmt)
+        {
+          size_t len = strlen (fmt);
+
+          if (len > 0)
+            {
+              if (fmt[len - 1] == '\n')
+                {
+                  if (len > 1)
+                    {
+                      char *tmp_fmt = strsave (fmt);
+                      tmp_fmt[len - 1] = '\0';
+                      verror (false, std::cerr, 0, "", tmp_fmt, args);
+                      delete [] tmp_fmt;
+                    }
+                }
+              else
+                verror (false, std::cerr, 0, "", fmt, args);
+            }
+        }
+    }
+  else
+    panic ("pr_where_2: invalid format");
+}
+
+static void
+pr_where_1 (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  pr_where_2 (fmt, args);
+  va_end (args);
+}
+
+static void
+pr_where (const char *who)
+{
+  std::list<octave_call_stack::stack_frame> frames
+    = octave_call_stack::backtrace_frames ();
+
+  size_t nframes = frames.size ();
+
+  if (nframes > 0)
+    pr_where_1 ("%s: called from\n", who);
+
+  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
+       p != frames.end (); p++)
+    {
+      const octave_call_stack::stack_frame& elt = *p;
+
+      std::string fcn_name = elt.fcn_name ();
+      int line = elt.line ();
+      int column = elt.column ();
+
+      pr_where_1 ("    %s at line %d column %d\n",
+                  fcn_name.c_str (), line, column);
+    }
+}
+
 // Note that we don't actually print any message if the error string
 // is just "" or "\n".  This allows error ("") and error ("\n") to
 // just set the error state.
@@ -381,77 +445,14 @@ usage_with_id (const char *id, const char *fmt, ...)
 }
 
 static void
-pr_where_2 (const char *fmt, va_list args)
-{
-  if (fmt)
-    {
-      if (*fmt)
-        {
-          size_t len = strlen (fmt);
-
-          if (len > 0)
-            {
-              if (fmt[len - 1] == '\n')
-                {
-                  if (len > 1)
-                    {
-                      char *tmp_fmt = strsave (fmt);
-                      tmp_fmt[len - 1] = '\0';
-                      verror (false, std::cerr, 0, "", tmp_fmt, args);
-                      delete [] tmp_fmt;
-                    }
-                }
-              else
-                verror (false, std::cerr, 0, "", fmt, args);
-            }
-        }
-    }
-  else
-    panic ("pr_where_2: invalid format");
-}
-
-static void
-pr_where_1 (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  pr_where_2 (fmt, args);
-  va_end (args);
-}
-
-static void
-pr_where (const char *who)
-{
-  std::list<octave_call_stack::stack_frame> frames
-    = octave_call_stack::backtrace_frames ();
-
-  size_t nframes = frames.size ();
-
-  if (nframes > 0)
-    pr_where_1 ("%s: called from\n", who);
-  
-  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
-       p != frames.end (); p++)
-    {
-      const octave_call_stack::stack_frame& elt = *p;
-
-      std::string fcn_name = elt.fcn_name ();
-      int line = elt.line ();
-      int column = elt.column ();
-
-      pr_where_1 ("    %s at line %d column %d\n",
-                  fcn_name.c_str (), line, column);
-    }
-}
-
-static void
 error_2 (const char *id, const char *fmt, va_list args, bool with_cfn = false)
 {
   int init_state = error_state;
 
   error_1 (std::cerr, "error", id, fmt, args, with_cfn);
 
-  if (! symbol_table::at_top_level () && ! discard_error_messages)
+  if (error_state != -2 && ! symbol_table::at_top_level ()
+      && ! discard_error_messages)
     pr_where ("error");
 
   if ((interactive || forced_interactive)

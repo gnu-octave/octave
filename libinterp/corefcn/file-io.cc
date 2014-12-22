@@ -1983,6 +1983,54 @@ see @code{tmpfile}.\n\
   return retval;
 }
 
+/*
+%!test
+%! if (ispc ())
+%!   envname = "TMP";
+%! else
+%!   envname = "TMPDIR";
+%! endif
+%! envdir = getenv (envname);
+%! unsetenv (envname);
+%! unwind_protect
+%!   ## Test 0-argument form
+%!   fname = tempname ();
+%!   [tmpdir, tmpfname] = fileparts (fname); 
+%!   assert (tmpdir, P_tmpdir);
+%!   assert (tmpfname (1:4), "oct-");
+%!   ## Test 1-argument form 
+%!   tmp_tmpdir = [P_tmpdir filesep() substr(tmpfname, -5)];
+%!   mkdir (tmp_tmpdir) || error ("Unable to create tmp dir");
+%!   setenv (envname, P_tmpdir);
+%!   fname = tempname (tmp_tmpdir);
+%!   [tmpdir, tmpfname] = fileparts (fname); 
+%!   assert (tmpdir, tmp_tmpdir);
+%!   assert (tmpfname (1:4), "oct-");
+%!   ## Test 1-argument form w/null tmpdir
+%!   fname = tempname ("");
+%!   [tmpdir, tmpfname] = fileparts (fname); 
+%!   assert (tmpdir, P_tmpdir);
+%!   assert (tmpfname (1:4), "oct-");
+%!   ## Test 2-argument form 
+%!   fname = tempname (tmp_tmpdir, "pfx-");
+%!   [tmpdir, tmpfname] = fileparts (fname); 
+%!   assert (tmpdir, tmp_tmpdir);
+%!   assert (tmpfname (1:4), "pfx-");
+%!   ## Test 2-argument form w/null prefix
+%!   fname = tempname (tmp_tmpdir, "");
+%!   [tmpdir, tmpfname] = fileparts (fname); 
+%!   assert (tmpdir, tmp_tmpdir);
+%!   assert (tmpfname (1:4), "file");
+%! unwind_protect_cleanup
+%!   rmdir (tmp_tmpdir);
+%!   if (isempty (envdir))
+%!     unsetenv (envname);
+%!   else
+%!     setenv (envname, envdir);
+%!   endif
+%! end_unwind_protect
+*/
+
 DEFUN (tmpfile, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} tmpfile ()\n\

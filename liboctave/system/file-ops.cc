@@ -687,8 +687,26 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
   if (tmp)
     {
       retval = tmp;
-
       free (tmp);
+
+      if (! dir.empty ())
+        {
+          // Check that environment variable hasn't overridden dir argument
+          size_t pos = retval.rfind (file_ops::dir_sep_char ());
+          std::string tmpdir = retval.substr (0, pos);  
+          std::string dirarg = dir;
+          if (*dirarg.rbegin () == file_ops::dir_sep_char ())
+            dirarg.erase (--dirarg.end ());
+
+          if (tmpdir != dirarg)
+          {
+            // A different TMPDIR was used.
+            // Replace TMPDIR with given dir if is valid
+            file_stat fs (dirarg, false);
+            if (fs && fs.is_dir ())
+              retval.replace (0, pos, dirarg);
+          }
+        }
     }
   else
     msg = gnulib::strerror (errno);

@@ -37,16 +37,16 @@
 ##
 ## @multitable @columnfractions 0.1 0.45 0.35
 ## @headitem Code @tab Format @tab Example
-## @item 0 @tab dd-mmm-yyyy HH:MM:SS   @tab 07-Sep-2000 15:38:09
-## @item 1 @tab dd-mmm-yyyy            @tab 07-Sep-2000
-## @item 2 @tab mm/dd/yy               @tab 09/07/00
-## @item 3 @tab mmm                    @tab Sep
-## @item 4 @tab m                      @tab S
-## @item 5 @tab mm                     @tab 09
-## @item 6 @tab mm/dd                  @tab 09/07
-## @item 7 @tab dd                     @tab 07
-## @item 8 @tab ddd                    @tab Thu
-## @item 9 @tab d                      @tab T
+## @item 0 @tab dd-mmm-yyyy HH:MM:SS    @tab 07-Sep-2000 15:38:09
+## @item 1 @tab dd-mmm-yyyy             @tab 07-Sep-2000
+## @item 2 @tab mm/dd/yy                @tab 09/07/00
+## @item 3 @tab mmm                     @tab Sep
+## @item 4 @tab m                       @tab S
+## @item 5 @tab mm                      @tab 09
+## @item 6 @tab mm/dd                   @tab 09/07
+## @item 7 @tab dd                      @tab 07
+## @item 8 @tab ddd                     @tab Thu
+## @item 9 @tab d                       @tab T
 ## @item 10 @tab yyyy                   @tab 2000
 ## @item 11 @tab yy                     @tab 00
 ## @item 12 @tab mmmyy                  @tab Sep00

@@ -103,6 +103,7 @@ main_window::main_window (QWidget *p)
   bool connect_to_web = true;
   QDateTime last_checked;
   int serial = 0;
+  _active_dock = 0;
 
   if (settings)
     {
@@ -156,6 +157,27 @@ main_window::~main_window (void)
     }
   delete _octave_qt_link;
   delete _cmd_queue;
+}
+
+// catch focus changes and determine the active dock widget
+void
+main_window::focus_changed (QWidget *, QWidget *w_new)
+{
+  octave_dock_widget* dock = 0;
+  while (w_new && w_new != _main_tool_bar)
+    {
+      dock = qobject_cast <octave_dock_widget *> (w_new);
+      if (dock)
+        break; // its a QDockWidget
+      w_new = qobject_cast <QWidget *> (w_new->previousInFocusChain ());
+    }
+
+  // if new dock has focus, emit signal and store active focus
+  if (dock != _active_dock)
+    {
+      emit active_dock_changed (_active_dock, dock);
+      _active_dock = dock;
+    }
 }
 
 bool
@@ -1278,6 +1300,9 @@ main_window::construct (void)
   setStatusBar (status_bar);
 
   construct_octave_qt_link ();
+
+  connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+           this, SLOT(focus_changed (QWidget*, QWidget*)));
 
 #ifdef HAVE_QSCINTILLA
   connect (this,

@@ -705,6 +705,20 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
             file_stat fs (dirarg, false);
             if (fs && fs.is_dir ())
               retval.replace (0, pos, dirarg);
+
+            // since we have changed the directory, it is possible that the name
+            // we are using is no longer unique, so check/modify
+            std::string tmppath = retval;
+            int attempt = 0;
+            while (++attempt < TMP_MAX && file_stat (tmppath, false).exists ())
+              {
+                char file_postfix[16];
+
+                sprintf(file_postfix, "t%d", attempt);
+
+                tmppath = retval + file_postfix;
+              }
+            retval = tmppath;
           }
         }
     }

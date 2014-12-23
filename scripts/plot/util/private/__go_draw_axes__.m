@@ -2285,7 +2285,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
     bld = false;
   endif
 
-  ## The text object maybe multiline, and may be of any class
+  ## The text object may be multiline, and may be of any class
   str = getfield (obj, fld);
   if (ischar (str) && rows (str) > 1)
     str = cellstr (str);
@@ -2299,6 +2299,10 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
       endif
     endfor
     str = sprintf ("%s\n", str{:})(1:end-1);
+  endif
+
+  if (enhanced)
+    str = regexprep (str, '(?<!\\)@', '\@');
   endif
 
   if (enhanced)

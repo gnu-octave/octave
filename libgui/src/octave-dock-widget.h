@@ -84,6 +84,8 @@ public slots:
   }
   void handle_settings (const QSettings*);
 
+  void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
+
   QMainWindow *main_win () { return _parent; }
 
 protected slots:
@@ -115,9 +117,17 @@ private slots:
 
 private:
 
+  void set_style (bool active);
+
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
   bool _floating;
+  bool _custom_style;
+  QColor _bg_color;
+  QColor _bg_color_active;
+  QColor _fg_color;
+  QColor _fg_color_active;
   QString _icon_color;
+  QString _icon_color_active;
 
 #if defined (Q_OS_WIN32)
   QWidget *_title_widget;

@@ -161,15 +161,24 @@ main_window::~main_window (void)
 
 // catch focus changes and determine the active dock widget
 void
-main_window::focus_changed (QWidget *, QWidget *w_new)
+main_window::focus_changed (QWidget *, QWidget *new_widget)
 {
   octave_dock_widget* dock = 0;
-  while (w_new && w_new != _main_tool_bar)
+  QWidget *w_new = new_widget;  // get a copy of new focus widget
+  QWidget *start = w_new;       // Save it as start of our search
+  int count = 0;                // fallback to prevent endless loop
+
+  while (w_new && w_new != _main_tool_bar && count < 100)
     {
       dock = qobject_cast <octave_dock_widget *> (w_new);
       if (dock)
-        break; // its a QDockWidget
+        break; // it is a QDockWidget ==> exit loop
+
       w_new = qobject_cast <QWidget *> (w_new->previousInFocusChain ());
+      if (w_new == start)
+        break; // we have arrived where we began ==> exit loop
+
+      count++;
     }
 
   // if new dock has focus, emit signal and store active focus

@@ -169,9 +169,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this, SLOT (handle_copy_available (bool)));
 
-  connect (_edit_area, SIGNAL (qsci_has_focus_signal (bool)),
-           this, SLOT (edit_area_has_focus (bool)));
-
   connect (&_file_system_watcher, SIGNAL (fileChanged (const QString&)),
            this, SLOT (file_has_changed (const QString&)));
 
@@ -2086,12 +2083,6 @@ void
 file_editor_tab::create_context_menu (QMenu *menu)
 {
   emit create_context_menu_tab_signal (menu);
-}
-
-void
-file_editor_tab::edit_area_has_focus (bool focus)
-{
-  emit set_global_edit_shortcuts_signal (! focus);
 }
 
 QString

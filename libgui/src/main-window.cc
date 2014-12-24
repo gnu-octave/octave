@@ -184,7 +184,17 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
   // if new dock has focus, emit signal and store active focus
   if (dock != _active_dock)
     {
+      // signal to all dock widgets for updating the style
       emit active_dock_changed (_active_dock, dock);
+
+      // if editor gets/loses focus, shortcuts and menus have to be updated
+      octave_dock_widget *edit_dock_widget =
+                        static_cast <octave_dock_widget *> (editor_window);
+      if (edit_dock_widget == dock)
+        set_global_edit_shortcuts (false);
+      else if (edit_dock_widget == _active_dock)
+        set_global_edit_shortcuts (true);
+
       _active_dock = dock;
     }
 }

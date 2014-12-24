@@ -121,7 +121,6 @@ public slots:
   void file_has_changed (const QString& fileName);
 
   void execute_command_in_terminal (const QString& command);
-  void edit_area_has_focus (bool foucs);
   void create_context_menu (QMenu *);
   void handle_context_menu_edit (const QString&);
 

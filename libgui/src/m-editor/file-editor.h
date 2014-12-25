@@ -58,7 +58,6 @@ public:
   QToolBar *toolbar (void);
   void insert_new_open_actions (QAction*,QAction*,QAction*);
 
-  void set_focus (void);
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
 

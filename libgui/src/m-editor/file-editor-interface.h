@@ -62,8 +62,6 @@ public:
 
   virtual bool check_closing (int closing_state) = 0;
 
-  virtual void set_focus () = 0;
-
   virtual void empty_script (bool, bool) = 0;
 
   virtual void enable_menu_shortcuts (bool enable) = 0;

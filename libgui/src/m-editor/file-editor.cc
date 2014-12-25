@@ -116,18 +116,9 @@ file_editor::check_closing (int closing_state)
 void
 file_editor::focus (void)
 {
-  set_focus ();
-}
+  octave_dock_widget::focus ();
 
-// set focus to editor and its current tab
-void
-file_editor::set_focus (void)
-{
-  if (!isVisible ())
-    setVisible (true);
-  setFocus ();
-  activateWindow ();
-  raise ();
+// set focus to current tab
   QWidget *fileEditorTab = _tab_widget->currentWidget ();
   if (fileEditorTab)
     emit fetab_set_focus (fileEditorTab);
@@ -174,7 +165,7 @@ file_editor::request_new_file (const QString& commands)
     {
       add_file_editor_tab (fileEditorTab, "");  // new tab with empty title
       fileEditorTab->new_file (commands);       // title is updated here
-      set_focus ();                             // focus editor and new tab
+      focus ();                                 // focus editor and new tab
     }
 }
 
@@ -372,7 +363,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
           if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
             {
               emit fetab_set_focus (tab);
-              set_focus ();
+              focus ();
             }
         }
       else
@@ -479,7 +470,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
           if (! ((breakpoint_marker || debug_pointer) && is_editor_console_tabbed ()))
             {
               // really show editor and the current editor tab
-              set_focus ();
+              focus ();
               emit file_loaded_signal ();
             }
         }

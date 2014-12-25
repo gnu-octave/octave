@@ -191,9 +191,9 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       octave_dock_widget *edit_dock_widget =
                         static_cast <octave_dock_widget *> (editor_window);
       if (edit_dock_widget == dock)
-        set_global_edit_shortcuts (false);
+        emit editor_focus_changed (true);
       else if (edit_dock_widget == _active_dock)
-        set_global_edit_shortcuts (true);
+        emit editor_focus_changed (false);
 
       _active_dock = dock;
     }
@@ -1278,6 +1278,12 @@ main_window::construct (void)
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
 
+  connect (this, SIGNAL (editor_focus_changed (bool)),
+           this, SLOT (set_global_edit_shortcuts (bool)));
+
+  connect (this, SIGNAL (editor_focus_changed (bool)),
+           editor_window, SLOT (enable_menu_shortcuts (bool)));
+
   connect (file_browser_window, SIGNAL (load_file_signal (const QString&)),
            this, SLOT (handle_load_workspace_request (const QString&)));
 
@@ -2312,30 +2318,27 @@ main_window::find_files_finished (int)
 }
 
 void
-main_window::set_global_edit_shortcuts (bool enable)
+main_window::set_global_edit_shortcuts (bool editor_has_focus)
 {
   // this slot is called when editor gets/loses focus
-  if (enable)
-    { // editor loses focus, set the global shortcuts
-      // and disable the editor's menu
-      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
-      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
-      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
-      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
-    }
-  else
+  if (editor_has_focus)
     { // disable shortcuts that are also provided by the editor itself
-      // and enable editor's menu
       QKeySequence no_key = QKeySequence ();
       _copy_action->setShortcut (no_key);
       _paste_action->setShortcut (no_key);
       _undo_action->setShortcut (no_key);
       _select_all_action->setShortcut (no_key);
     }
+  else
+    { // editor loses focus, set the global shortcuts
+      shortcut_manager::set_shortcut (_copy_action, "main_edit:copy");
+      shortcut_manager::set_shortcut (_paste_action, "main_edit:paste");
+      shortcut_manager::set_shortcut (_undo_action, "main_edit:undo");
+      shortcut_manager::set_shortcut (_select_all_action, "main_edit:select_all");
+    }
 
-  // enable/disable the main and the editor's menu shortcuts (alt-key)
-  editor_window->enable_menu_shortcuts (! enable);
-  enable_menu_shortcuts (enable);
+  // dis-/enable global menu depending on editor's focus
+  enable_menu_shortcuts (! editor_has_focus);
 }
 
 void

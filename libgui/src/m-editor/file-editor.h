@@ -63,7 +63,6 @@ public:
 
   void check_actions (void);
   void empty_script (bool startup, bool visible);
-  void enable_menu_shortcuts (bool enable);
 
 signals:
 
@@ -114,7 +113,9 @@ signals:
   void file_loaded_signal ();
 
 public slots:
+
   void focus (void);
+  void enable_menu_shortcuts (bool);
   bool check_closing (int closing_state);
 
   void request_new_file (const QString& commands);

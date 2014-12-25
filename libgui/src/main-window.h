@@ -82,6 +82,7 @@ public:
 signals:
 
   void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
+  void editor_focus_changed (bool);
 
   void settings_changed (const QSettings *);
   void init_terminal_size_signal (void);

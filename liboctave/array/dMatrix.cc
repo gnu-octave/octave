@@ -1969,9 +1969,9 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
   // Only calculate the condition number for LU/Cholesky
   if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
-    retval = utsolve (mattype, b, info, rcon, sing_handler, false, transt);
+    retval = utsolve (mattype, b, info, rcon, sing_handler, true, transt);
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-    retval = ltsolve (mattype, b, info, rcon, sing_handler, false, transt);
+    retval = ltsolve (mattype, b, info, rcon, sing_handler, true, transt);
   else if (transt == blas_trans || transt == blas_conj_trans)
     return transpose ().solve (mattype, b, info, rcon, sing_handler,
                                singular_fallback);

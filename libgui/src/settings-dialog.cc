@@ -206,6 +206,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_white_space_indent",false).toBool ());
   ui->cb_show_eol->setChecked (
     settings->value ("editor/show_eol_chars",false).toBool () );
+  ui->cb_show_hscrollbar->setChecked (
+    settings->value ("editor/show_hscroll_bar",true).toBool ());
+
 #ifdef HAVE_QSCINTILLA
 #if defined (Q_OS_WIN32)
   int eol_mode = QsciScintilla::EolWindows;
@@ -679,6 +682,8 @@ settings_dialog::write_changed_settings ()
                       ui->editor_ws_indent_checkbox->isChecked ());
   settings->setValue ("editor/show_eol_chars",
                       ui->cb_show_eol->isChecked ());
+  settings->setValue ("editor/show_hscroll_bar",
+                      ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode",
                       ui->combo_eol_mode->currentIndex ());
   settings->setValue ("editor/auto_indent",

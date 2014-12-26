@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -454,7 +454,7 @@
             <x>0</x>
             <y>0</y>
             <width>662</width>
-            <height>634</height>
+            <height>661</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -781,6 +781,19 @@
                   </spacer>
                  </item>
                 </layout>
+               </item>
+               <item row="9" column="0">
+                <widget class="QCheckBox" name="cb_show_hscrollbar">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>Show horizontal scroll bar</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>

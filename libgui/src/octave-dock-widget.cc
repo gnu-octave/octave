@@ -204,7 +204,7 @@ octave_dock_widget::make_window ()
 
 // dock the widget
 void
-octave_dock_widget::make_widget (bool)
+octave_dock_widget::make_widget (bool dock)
 {
 #if defined (Q_OS_WIN32)
 
@@ -288,6 +288,8 @@ octave_dock_widget::set_style (bool active)
   QString css_button;
   QString dock_icon;
 
+  QString icon_col = _icon_color;
+
   if (_floating)
     dock_icon = "widget-dock";
   else
@@ -297,7 +299,6 @@ octave_dock_widget::set_style (bool active)
     {
 
       QColor bg_col, fg_col;
-      QString icon_col;
 
       if (active)
         {
@@ -356,7 +357,7 @@ octave_dock_widget::set_style (bool active)
   _dock_button->setStyleSheet (css_button);
   _close_button->setStyleSheet (css_button);
   _dock_action->setIcon (QIcon (":/actions/icons/" + dock_icon + icon_col + ".png"));
-  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + dock_icon + icon_col ".png"));
+  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + dock_icon + icon_col + ".png"));
 #else
   setStyleSheet (css);
 #endif

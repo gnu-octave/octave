@@ -496,6 +496,15 @@ array, cell, or struct.
 
 @DOCSTRING(structfun)
 
+Consistent with earlier advice, seek to use Octave built-in functions whenever
+possible for the best performance.  This advice applies especially to the four
+functions above.  For example, when adding two arrays together
+element-by-element one could use a handle to the built-in addition function
+@code{@@plus} or define an anonymous function @code{@@(x,y) x + y}.  But, the
+anonymous function is 60% slower than the first method.
+@xref{Operator Overloading}, for a list of basic functions which might be used
+in place of anonymous ones.
+
 @node Accumulation
 @section Accumulation
 

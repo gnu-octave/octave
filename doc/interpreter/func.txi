@@ -1389,6 +1389,32 @@ adapts a function with several parameters to the form required by
 are passed to @code{betainc} are inherited from the current
 environment.
 
+Note that for performance reasons it is better to use handles to existing
+Octave functions, rather than to define anonymous functions which wrap an
+existing function.  The integration of @code{sin (x)} is 5X faster if the code
+is written as
+
+@example
+quad (@@sin, 0, pi)
+@end example
+
+rather than using the anonymous function @code{@@(x) sin (x)}.  There are many
+operators which have functional equivalents that may be better choices than an
+anonymous function.  Instead of writing
+
+@example
+f = @@(x, y) x + y 
+@end example
+
+this should be coded as
+
+@example
+f = @@plus
+@end example
+
+@xref{Operator Overloading}, for a list of operators which also have a
+functional form.
+
 @node Inline Functions
 @subsection Inline Functions
 

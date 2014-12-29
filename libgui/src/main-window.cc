@@ -1275,6 +1275,9 @@ main_window::construct (void)
   connect (qApp, SIGNAL (aboutToQuit ()),
            this, SLOT (prepare_to_exit ()));
 
+  connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
+           this, SLOT(focus_changed (QWidget*, QWidget*)));
+
   connect (this, SIGNAL (settings_changed (const QSettings *)),
            this, SLOT (notice_settings (const QSettings *)));
 
@@ -1325,9 +1328,6 @@ main_window::construct (void)
   setStatusBar (status_bar);
 
   construct_octave_qt_link ();
-
-  connect (qApp, SIGNAL (focusChanged (QWidget*, QWidget*)),
-           this, SLOT(focus_changed (QWidget*, QWidget*)));
 
 #ifdef HAVE_QSCINTILLA
   connect (this,

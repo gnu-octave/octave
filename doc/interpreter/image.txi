@@ -164,6 +164,8 @@ between 0 and 1.
 
 @DOCSTRING(copper)
 
+@DOCSTRING(cubehelix)
+
 @DOCSTRING(flag)
 
 @DOCSTRING(gray)

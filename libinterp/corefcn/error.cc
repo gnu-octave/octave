@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdarg>
 #include <cstring>
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -1221,6 +1222,127 @@ warning_query (const std::string& id_arg)
   return retval;
 }
 
+static std::string
+default_warning_state (void)
+{
+  std::string retval = "on";
+
+  Cell ident = warning_options.contents ("identifier");
+  Cell state = warning_options.contents ("state");
+
+  octave_idx_type nel = ident.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      if (ident(i).string_value () == "all")
+        {
+          retval = state(i).string_value ();
+          break;
+        }
+    }
+
+  return retval;
+}
+
+static void
+display_warning_options (std::ostream& os)
+{
+  Cell ident = warning_options.contents ("identifier");
+  Cell state = warning_options.contents ("state");
+
+  octave_idx_type nel = ident.numel ();
+
+  std::string all_state = default_warning_state ();
+
+  if (all_state == "on")
+    os << "By default, warnings are enabled.";
+  else if (all_state == "off")
+    os << "By default, warnings are disabled.";
+  else if (all_state == "error")
+    os << "By default, warnings are treated as errors.";
+  else
+    panic_impossible ();
+  
+  if (nel > 1)
+    os << "\n\n";
+
+  // The state for all is always supposed to be first in the list.
+
+  for (octave_idx_type i = 1; i < nel; i++)
+    {
+      std::string tid = ident(i).string_value ();
+      std::string tst = state(i).string_value ();
+
+      os << std::setw (7) << tst << "  " << tid << "\n";
+    }
+
+  os << std::endl;
+}
+
+static void
+set_warning_option (const std::string& state, const std::string& ident)
+{
+  if (ident == "all")
+    {
+      initialize_warning_options (state);
+      return;
+    }
+
+  std::string all_state = default_warning_state ();
+
+  if (state != "on" && state != "off" && state != "error")
+    error ("invalid warning state: %s", state.c_str ());
+
+  Cell tid = warning_options.contents ("identifier");
+  Cell tst = warning_options.contents ("state");
+
+  octave_idx_type nel = tid.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      if (tid(i).string_value () == ident)
+        {
+          // We found it in the current list of options.  If the state
+          // for "all" is same as arg1, we can simply remove the item
+          // from the list.
+
+          if (state == all_state)
+            {
+              for (i = i + 1; i < nel; i++)
+                {
+                  tid(i-1) = tid(i);
+                  tst(i-1) = tst(i);
+                }
+
+              tid.resize (dim_vector (1, nel-1));
+              tst.resize (dim_vector (1, nel-1));
+            }
+          else
+            tst(i) = state;
+
+          warning_options.clear ();
+
+          warning_options.assign ("identifier", tid);
+          warning_options.assign ("state", tst);
+
+          return;
+        }
+    }
+
+  // The option wasn't already in the list.  Append it.
+
+  tid.resize (dim_vector (1, nel+1));
+  tst.resize (dim_vector (1, nel+1));
+
+  tid(nel) = ident;
+  tst(nel) = state;
+
+  warning_options.clear ();
+
+  warning_options.assign ("identifier", tid);
+  warning_options.assign ("state", tst);
+}
+
 DEFUN (warning, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
@@ -1475,49 +1597,7 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
                   if (arg2 == "last")
                     arg2 = Vlast_warning_id;
 
-                  if (arg2 == "all")
-                    initialize_warning_options (arg1);
-                  else
-                    {
-                      Cell ident = warning_options.contents ("identifier");
-                      Cell state = warning_options.contents ("state");
-
-                      octave_idx_type nel = ident.numel ();
-
-                      bool found = false;
-
-                      for (octave_idx_type i = 0; i < nel; i++)
-                        {
-                          if (ident(i).string_value () == arg2)
-                            {
-                              // FIXME: if state for "all" is  same as arg1,
-                              //        we can simply remove the item
-                              //        from the list.
-
-                              state(i) = arg1;
-                              warning_options.assign ("state", state);
-                              found = true;
-                              break;
-                            }
-                        }
-
-                      if (! found)
-                        {
-                          // FIXME: if state for "all" is same as arg1,
-                          //        we don't need to do anything.
-
-                          ident.resize (dim_vector (1, nel+1));
-                          state.resize (dim_vector (1, nel+1));
-
-                          ident(nel) = arg2;
-                          state(nel) = arg1;
-
-                          warning_options.clear ();
-
-                          warning_options.assign ("identifier", ident);
-                          warning_options.assign ("state", state);
-                        }
-                    }
+                  set_warning_option (arg1, arg2);
 
                   done = true;
                 }
@@ -1554,7 +1634,10 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
     }
   else if (argc == 1)
     {
-      retval = warning_options;
+      if (nargout > 0)
+        retval = warning_options;
+      else
+        display_warning_options (octave_stdout);
 
       done = true;
     }
@@ -1569,7 +1652,25 @@ Use a second backslash to stop interpolation of the escape sequence (e.g.,\n\
           octave_map m = arg.map_value ();
 
           if (m.contains ("identifier") && m.contains ("state"))
-            warning_options = m;
+            {
+              // Simply step through the struct elements one at a time.
+
+              Cell ident = m.contents ("identifier");
+              Cell state = m.contents ("state");
+
+              octave_idx_type nel = ident.numel ();
+
+              for (octave_idx_type i = 0; i < nel; i++)
+                {
+                  std::string tst = state(i).string_value ();
+                  std::string tid = ident(i).string_value ();
+
+                  if (error_state)
+                    return retval;
+
+                  set_warning_option (tst, tid);
+                }
+            }
           else
             error ("warning: expecting structure with fields 'identifier' and 'state'");
 
@@ -1624,7 +1725,7 @@ set_warning_state (const octave_value_list& args)
 void
 disable_warning (const std::string& id)
 {
-  set_warning_state (id, "off");
+  set_warning_option ("off", id);
 }
 
 void

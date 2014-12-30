@@ -590,6 +590,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           data{data_idx} = [xdat, ydat, zdat]';
           usingclause{data_idx} = sprintf ("record=%d using ($1):($2):($3)",
                                            numel (xdat));
+          hidden_removal = false;
           ## fputs (plot_stream, "set parametric;\n");
         else
           xdat = obj.xdata(:);

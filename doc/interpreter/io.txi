@@ -616,10 +616,23 @@ Print a literal @samp{%} character.  @xref{Other Output Conversions}.
 @end table
 
 If the syntax of a conversion specification is invalid, unpredictable
-things will happen, so don't do this.  If there aren't enough function
-arguments provided to supply values for all the conversion
-specifications in the template string, or if the arguments are not of
-the correct types, the results are unpredictable.  If you supply more
+things will happen, so don't do this.  In particular, @sc{matlab} allows
+a bare percentage sign @samp{%} with no subsequent conversion character.
+Octave will emit an error and stop if it sees such code.  When the string
+variable to be processed cannot be guaranteed to be free of potential format
+codes it is better to use the two argument form of any of the @code{printf}
+functions and set the format string to @code{%s}.
+
+@example
+@group
+printf (strvar);        # Unsafe if strvar contains format codes
+printf ("%s", strvar);  # Safe
+@end group
+@end example
+
+If there aren't enough function arguments provided to supply values for all
+the conversion specifications in the template string, or if the arguments are
+not of the correct types, the results are unpredictable.  If you supply more
 arguments than conversion specifications, the extra argument values are
 simply ignored; this is sometimes useful.
 

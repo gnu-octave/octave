@@ -301,343 +301,347 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
   __clearfcn = "";
   for __i = 1:numel (__blockidx)-1
 
-    ## Extract the block.
-    __block = __body(__blockidx(__i):__blockidx(__i+1)-2);
+    ## FIXME: Should other global settings be similarly saved and restored?
+    orig_wstate = warning ();
+    unwind_protect
 
-    ## Print the code block before execution if in verbose mode.
-    if (__verbose > 0)
-      fprintf (__fid, "%s%s\n", __signal_block, __block);
-      fflush (__fid);
-    endif
+      ## Extract the block.
+      __block = __body(__blockidx(__i):__blockidx(__i+1)-2);
 
-    ## Split __block into __type and __code.
-    __idx = find (! isletter (__block));
-    if (isempty (__idx))
-      __type = __block;
-      __code = "";
-    else
-      __type = __block(1:__idx(1)-1);
-      __code = __block(__idx(1):length (__block));
-    endif
-
-    ## Assume the block will succeed.
-    __success = true;
-    __msg = [];
-    __isxtest = false;
-
-    ### DEMO
-
-    ## If in __grabdemo mode, then don't process any other block type.
-    ## So that the other block types don't have to worry about
-    ## this __grabdemo mode, the demo block processor grabs all block
-    ## types and skips those which aren't demo blocks.
-
-    __isdemo = strcmp (__type, "demo");
-    if (__grabdemo || __isdemo)
-      __istest = false;
-
-      if (__grabdemo && __isdemo)
-        if (isempty (__demo_code))
-          __demo_code = __code;
-          __demo_idx = [1, length(__demo_code)+1];
-        else
-          __demo_code = [__demo_code, __code];
-          __demo_idx = [__demo_idx, length(__demo_code)+1];
-        endif
-
-      elseif (__rundemo && __isdemo)
-        try
-          ## process the code in an environment without variables
-          eval (sprintf ("function __test__ ()\n%s\nendfunction", __code));
-          __test__;
-          input ("Press <enter> to continue: ", "s");
-        catch
-          __success = false;
-          __msg = [__signal_fail "demo failed\n" lasterr()];
-        end_try_catch
-        clear __test__;
-
+      ## Print the code block before execution if in verbose mode.
+      if (__verbose > 0)
+        fprintf (__fid, "%s%s\n", __signal_block, __block);
+        fflush (__fid);
       endif
-      ## Code already processed.
-      __code = "";
 
-    ### SHARED
-
-    elseif (strcmp (__type, "shared"))
-      __istest = false;
-
-      ## Separate initialization code from variables.
-      __idx = find (__code == "\n");
+      ## Split __block into __type and __code.
+      __idx = find (! isletter (__block));
       if (isempty (__idx))
-        __vars = __code;
+        __type = __block;
         __code = "";
       else
-        __vars = __code (1:__idx(1)-1);
-        __code = __code (__idx(1):length (__code));
+        __type = __block(1:__idx(1)-1);
+        __code = __block(__idx(1):length (__block));
       endif
 
-      ## Strip comments off the variables.
-      __idx = find (__vars == "%" | __vars == "#");
-      if (! isempty (__idx))
-        __vars = __vars(1:__idx(1)-1);
-      endif
+      ## Assume the block will succeed.
+      __success = true;
+      __msg = [];
+      __isxtest = false;
 
-      ## Assign default values to variables.
-      try
-        __vars = deblank (__vars);
-        if (! isempty (__vars))
-          eval ([strrep(__vars, ",", "=[];"), "=[];"]);
-          __shared = __vars;
-          __shared_r = ["[ " __vars "] = "];
-        else
-          __shared = " ";
-          __shared_r = " ";
+### DEMO
+
+      ## If in __grabdemo mode, then don't process any other block type.
+      ## So that the other block types don't have to worry about
+      ## this __grabdemo mode, the demo block processor grabs all block
+      ## types and skips those which aren't demo blocks.
+
+      __isdemo = strcmp (__type, "demo");
+      if (__grabdemo || __isdemo)
+        __istest = false;
+
+        if (__grabdemo && __isdemo)
+          if (isempty (__demo_code))
+            __demo_code = __code;
+            __demo_idx = [1, length(__demo_code)+1];
+          else
+            __demo_code = [__demo_code, __code];
+            __demo_idx = [__demo_idx, length(__demo_code)+1];
+          endif
+
+        elseif (__rundemo && __isdemo)
+          try
+            ## process the code in an environment without variables
+            eval (sprintf ("function __test__ ()\n%s\nendfunction", __code));
+            __test__;
+            input ("Press <enter> to continue: ", "s");
+          catch
+            __success = false;
+            __msg = [__signal_fail "demo failed\n" lasterr()];
+          end_try_catch
+          clear __test__;
+
         endif
-      catch
-        ## Couldn't declare, so don't initialize.
+        ## Code already processed.
         __code = "";
-        __success = false;
-        __msg = [__signal_fail "shared variable initialization failed\n"];
-      end_try_catch
 
-      ## Initialization code will be evaluated below.
+### SHARED
 
-    ### FUNCTION
+      elseif (strcmp (__type, "shared"))
+        __istest = false;
 
-    elseif (strcmp (__type, "function"))
-      __istest = false;
-      persistent __fn = 0;
-      __name_position = function_name (__block);
-      if (isempty (__name_position))
-        __success = false;
-        __msg = [__signal_fail "test failed: missing function name\n"];
-      else
-        __name = __block(__name_position(1):__name_position(2));
-        __code = __block;
+        ## Separate initialization code from variables.
+        __idx = find (__code == "\n");
+        if (isempty (__idx))
+          __vars = __code;
+          __code = "";
+        else
+          __vars = __code (1:__idx(1)-1);
+          __code = __code (__idx(1):length (__code));
+        endif
+
+        ## Strip comments off the variables.
+        __idx = find (__vars == "%" | __vars == "#");
+        if (! isempty (__idx))
+          __vars = __vars(1:__idx(1)-1);
+        endif
+
+        ## Assign default values to variables.
         try
-          eval (__code);  # Define the function
-          __clearfcn = sprintf ("%sclear %s;\n", __clearfcn, __name);
+          __vars = deblank (__vars);
+          if (! isempty (__vars))
+            eval ([strrep(__vars, ",", "=[];"), "=[];"]);
+            __shared = __vars;
+            __shared_r = ["[ " __vars "] = "];
+          else
+            __shared = " ";
+            __shared_r = " ";
+          endif
+        catch
+          ## Couldn't declare, so don't initialize.
+          __code = "";
+          __success = false;
+          __msg = [__signal_fail "shared variable initialization failed\n"];
+        end_try_catch
+
+        ## Initialization code will be evaluated below.
+
+### FUNCTION
+
+      elseif (strcmp (__type, "function"))
+        __istest = false;
+        persistent __fn = 0;
+        __name_position = function_name (__block);
+        if (isempty (__name_position))
+          __success = false;
+          __msg = [__signal_fail "test failed: missing function name\n"];
+        else
+          __name = __block(__name_position(1):__name_position(2));
+          __code = __block;
+          try
+            eval (__code);  # Define the function
+            __clearfcn = sprintf ("%sclear %s;\n", __clearfcn, __name);
+          catch
+            __success = false;
+            __msg = [__signal_fail "test failed: syntax error\n" lasterr()];
+          end_try_catch
+        endif
+        __code = "";
+
+### ENDFUNCTION
+
+      elseif (strcmp (__type, "endfunction"))
+        ## endfunction simply declares the end of a previous function block.
+        ## There is no processing to be done here, just skip to next block.
+        __istest = false;
+        __code = "";
+
+### ASSERT/FAIL
+
+      elseif (strcmp (__type, "assert") || strcmp (__type, "fail"))
+        __istest = true;
+        ## Put the keyword back on the code.
+        __code = __block;
+        ## The code will be evaluated below as a test block.
+
+### ERROR/WARNING
+
+      elseif (strcmp (__type, "error") || strcmp (__type, "warning"))
+        __istest = true;
+        __iswarning = strcmp (__type, "warning");
+        [__pattern, __id, __code] = getpattern (__code);
+        if (__id)
+          __patstr = ["id=" __id];
+        else
+          if (! strcmp (__pattern, '.'))
+            __patstr = ["<" __pattern ">"];
+          else
+            __patstr = ifelse (__iswarning, "a warning", "an error");
+          endif
+        endif
+        try
+          eval (sprintf ("function __test__(%s)\n%s\nendfunction",
+                         __shared, __code));
         catch
           __success = false;
           __msg = [__signal_fail "test failed: syntax error\n" lasterr()];
         end_try_catch
-      endif
-      __code = "";
 
-    ### ENDFUNCTION
+        if (__success)
+          __success = false;
+          __warnstate = warning ("query", "quiet");
+          warning ("on", "quiet");
+          ## Clear error and warning strings before starting
+          lasterr ("");
+          lastwarn ("");
+          try
+            eval (sprintf ("__test__(%s);", __shared));
+            if (! __iswarning)
+              __msg = [__signal_fail "error failed.\n" ...
+                                     "Expected " __patstr ", but got no error\n"];
+            else
+              if (! isempty (__id))
+                [~, __err] = lastwarn ();
+                __mismatch = ! strcmp (__err, __id);
+              else
+                __err = trimerr (lastwarn (), "warning");
+                __mismatch = isempty (regexp (__err, __pattern, "once"));
+              endif
+              warning (__warnstate.state, "quiet");
+              if (isempty (__err))
+                __msg = [__signal_fail "warning failed.\n" ...
+                                       "Expected " __patstr ", but got no warning\n"];
+              elseif (__mismatch)
+                __msg = [__signal_fail "warning failed.\n" ...
+                                       "Expected " __patstr ", but got <" __err ">\n"];
+              else
+                __success = true;
+              endif
+            endif
 
-    elseif (strcmp (__type, "endfunction"))
-      ## endfunction simply declares the end of a previous function block.
-      ## There is no processing to be done here, just skip to next block.
-      __istest = false;
-      __code = "";
-
-    ### ASSERT/FAIL
-
-    elseif (strcmp (__type, "assert") || strcmp (__type, "fail"))
-      __istest = true;
-      ## Put the keyword back on the code.
-      __code = __block;
-      ## The code will be evaluated below as a test block.
-
-    ### ERROR/WARNING
-
-    elseif (strcmp (__type, "error") || strcmp (__type, "warning"))
-      __istest = true;
-      __iswarning = strcmp (__type, "warning");
-      [__pattern, __id, __code] = getpattern (__code);
-      if (__id)
-        __patstr = ["id=" __id];
-      else
-        if (! strcmp (__pattern, '.'))
-          __patstr = ["<" __pattern ">"];
-        else
-          __patstr = ifelse (__iswarning, "a warning", "an error");
-        endif
-      endif
-      try
-        eval (sprintf ("function __test__(%s)\n%s\nendfunction",
-                       __shared, __code));
-      catch
-        __success = false;
-        __msg = [__signal_fail "test failed: syntax error\n" lasterr()];
-      end_try_catch
-
-      if (__success)
-        __success = false;
-        __warnstate = warning ("query", "quiet");
-        warning ("on", "quiet");
-        ## Clear error and warning strings before starting
-        lasterr ("");
-        lastwarn ("");
-        try
-          ## FIXME: lastwarn () must be called once from *WITHIN* the try block
-          ##        or subsequent warning/lastwarn statements may fail.
-          ##        Likely this is something to do with the specialness of
-          ##        the try block which is disabling normal errors.
-          lastwarn ();
-          eval (sprintf ("__test__(%s);", __shared));
-          if (! __iswarning)
-            __msg = [__signal_fail "error failed.\n" ...
-                     "Expected " __patstr ", but got no error\n"];
-          else
+          catch
             if (! isempty (__id))
-              [~, __err] = lastwarn ();
+              [~, __err] = lasterr ();
               __mismatch = ! strcmp (__err, __id);
             else
-              __err = trimerr (lastwarn (), "warning");
+              __err = trimerr (lasterr (), "error");
               __mismatch = isempty (regexp (__err, __pattern, "once"));
             endif
             warning (__warnstate.state, "quiet");
-            if (isempty (__err))
+            if (__iswarning)
               __msg = [__signal_fail "warning failed.\n" ...
-                       "Expected " __patstr ", but got no warning\n"];
+                                     "Expected warning " __patstr ...
+                                     ", but got error <" __err ">\n"];
             elseif (__mismatch)
-              __msg = [__signal_fail "warning failed.\n" ...
-                       "Expected " __patstr ", but got <" __err ">\n"];
+              __msg = [__signal_fail "error failed.\n" ...
+                                     "Expected " __patstr ", but got <" __err ">\n"];
             else
               __success = true;
             endif
-          endif
+          end_try_catch
+          clear __test__;
+        endif
+        ## Code already processed.
+        __code = "";
 
-        catch
-          if (! isempty (__id))
-            [~, __err] = lasterr ();
-            __mismatch = ! strcmp (__err, __id);
+### TESTIF
+
+      elseif (strcmp (__type, "testif"))
+        __e = regexp (__code, '.$', 'lineanchors', 'once');
+        ## Strip any comment from testif line before looking for features
+        __feat_line = strtok (__code(1:__e), '#%'); 
+        __feat = regexp (__feat_line, '\w+', 'match');
+        __feat = strrep (__feat, "HAVE_", "");
+        __have_feat = __have_feature__ (__feat);
+        if (__have_feat)
+          __istest = true;
+          __code = __code(__e + 1 : end);
+        else
+          __xskip++;
+          __istest = false;
+          __code = ""; # Skip the code.
+          __msg = [__signal_skip "skipped test\n"];
+        endif
+
+### TEST
+
+      elseif (strcmp (__type, "test"))
+        __istest = true;
+        ## Code will be evaluated below.
+
+### XTEST
+
+      elseif (strcmp (__type, "xtest"))
+        __istest = false;
+        __isxtest = true;
+        ## Code will be evaluated below.
+
+### Comment block.
+
+      elseif (strcmp (__block(1:1), "#"))
+        __istest = false;
+        __code = ""; # skip the code
+
+### Unknown block.
+
+      else
+        __istest = true;
+        __success = false;
+        __msg = [__signal_fail "unknown test type!\n"];
+        __code = ""; # skip the code
+      endif
+
+      ## evaluate code for test, shared, and assert.
+      if (! isempty(__code))
+        try
+          ## FIXME: Must check for embedded test functions, which cause
+          ## segfaults, until issues with subfunctions in functions are resolved.
+          embed_func = regexp (__code, '^\s*function ', 'once', 'lineanchors');
+          if (isempty (embed_func))
+            eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
+                           __shared_r, __shared, __code));
+            eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
           else
-            __err = trimerr (lasterr (), "error");
-            __mismatch = isempty (regexp (__err, __pattern, "once"));
+            error (["Functions embedded in %!test blocks are not allowed.\n", ...
+                    "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
           endif
-          warning (__warnstate.state, "quiet");
-          if (__iswarning)
-            __msg = [__signal_fail "warning failed.\n" ...
-                     "Expected warning " __patstr ...
-                     ", but got error <" __err ">\n"];
-          elseif (__mismatch)
-            __msg = [__signal_fail "error failed.\n" ...
-                     "Expected " __patstr ", but got <" __err ">\n"];
+        catch
+          if (strcmp (__type, "xtest"))
+            __msg = [__signal_fail "known failure\n" lasterr()];
+            __xfail++;
+            __success = false;
           else
-            __success = true;
+            __msg = [__signal_fail "test failed\n" lasterr()];
+            __success = false;
+          endif
+          if (isempty (lasterr ()))
+            error ("empty error text, probably Ctrl-C --- aborting");
           endif
         end_try_catch
         clear __test__;
       endif
-      ## Code already processed.
-      __code = "";
 
-    ### TESTIF
-
-    elseif (strcmp (__type, "testif"))
-      __e = regexp (__code, '.$', 'lineanchors', 'once');
-      ## Strip any comment from testif line before looking for features
-      __feat_line = strtok (__code(1:__e), '#%'); 
-      __feat = regexp (__feat_line, '\w+', 'match');
-      __feat = strrep (__feat, "HAVE_", "");
-      __have_feat = __have_feature__ (__feat);
-      if (__have_feat)
-        __istest = true;
-        __code = __code(__e + 1 : end);
-      else
-        __xskip++;
-        __istest = false;
-        __code = ""; # Skip the code.
-        __msg = [__signal_skip "skipped test\n"];
-      endif
-
-    ### TEST
-
-    elseif (strcmp (__type, "test"))
-      __istest = true;
-      ## Code will be evaluated below.
-
-    ### XTEST
-
-    elseif (strcmp (__type, "xtest"))
-      __istest = false;
-      __isxtest = true;
-      ## Code will be evaluated below.
-
-    ### Comment block.
-
-    elseif (strcmp (__block(1:1), "#"))
-      __istest = false;
-      __code = ""; # skip the code
-
-    ### Unknown block.
-
-    else
-      __istest = true;
-      __success = false;
-      __msg = [__signal_fail "unknown test type!\n"];
-      __code = ""; # skip the code
-    endif
-
-    ## evaluate code for test, shared, and assert.
-    if (! isempty(__code))
-      try
-        ## FIXME: Must check for embedded test functions, which cause
-        ## segfaults, until issues with subfunctions in functions are resolved.
-        embed_func = regexp (__code, '^\s*function ', 'once', 'lineanchors');
-        if (isempty (embed_func))
-          eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
-                         __shared_r, __shared, __code));
-          eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
-        else
-          error (["Functions embedded in %!test blocks are not allowed.\n", ...
-                  "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
+      ## All done.  Remember if we were successful and print any messages.
+      if (! isempty (__msg) && (__verbose >= 0 || __logfile))
+        ## Make sure the user knows what caused the error.
+        if (__verbose < 1)
+          fprintf (__fid, "%s%s\n", __signal_block, __block);
+          fflush (__fid);
         endif
-      catch
-        if (strcmp (__type, "xtest"))
-           __msg = [__signal_fail "known failure\n" lasterr()];
-           __xfail++;
-           __success = false;
-        else
-           __msg = [__signal_fail "test failed\n" lasterr()];
-           __success = false;
-        endif
-        if (isempty (lasterr ()))
-          error ("empty error text, probably Ctrl-C --- aborting");
-        endif
-      end_try_catch
-      clear __test__;
-    endif
-
-    ## All done.  Remember if we were successful and print any messages.
-    if (! isempty (__msg) && (__verbose >= 0 || __logfile))
-      ## Make sure the user knows what caused the error.
-      if (__verbose < 1)
-        fprintf (__fid, "%s%s\n", __signal_block, __block);
+        fprintf (__fid, "%s\n", __msg);
         fflush (__fid);
+        ## Show the variable context.
+        if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
+            && ! all (__shared == " "))
+          fputs (__fid, "shared variables ");
+          eval (sprintf ("fdisp(__fid,var2struct(%s));", __shared));
+          fflush (__fid);
+        endif
       endif
-      fprintf (__fid, "%s\n", __msg);
-      fflush (__fid);
-      ## Show the variable context.
-      if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
-          && ! all (__shared == " "))
-        fputs (__fid, "shared variables ");
-        eval (sprintf ("fdisp(__fid,var2struct(%s));", __shared));
-        fflush (__fid);
-      endif
-    endif
-    if (! __success && ! __isxtest)
-      __all_success = false;
-      ## Stop after 1 error if not in batch mode or only pass/fail requested.
-      if (! __batch || nargout == 1)
-        if (nargout > 0)
-          if (nargout == 1)
-            __n = false;
-          else
-            __n = __nmax = 0;
+      if (! __success && ! __isxtest)
+        __all_success = false;
+        ## Stop after 1 error if not in batch mode or only pass/fail requested.
+        if (! __batch || nargout == 1)
+          if (nargout > 0)
+            if (nargout == 1)
+              __n = false;
+            else
+              __n = __nmax = 0;
+            endif
           endif
+          if (__close_fid)
+            fclose (__fid);
+          endif
+          return;
         endif
-        if (__close_fid)
-          fclose (__fid);
-        endif
-        return;
       endif
-    endif
-    __tests += (__istest || __isxtest);
-    __successes += __success && (__istest || __isxtest);
+      __tests += (__istest || __isxtest);
+      __successes += __success && (__istest || __isxtest);
+
+    unwind_protect_cleanup
+      warning ("off", "all");
+      warning (orig_wstate);
+    end_unwind_protect
   endfor
 
   ## Clear any functions created during test run 

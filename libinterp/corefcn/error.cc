@@ -171,13 +171,8 @@ vwarning (const char *name, const char *id, const char *fmt, va_list args)
 
   std::string msg_string = output_buf.str ();
 
-  if (! warning_state)
-    {
-      // This is the first warning in a possible series.
-
-      Vlast_warning_id = id;
-      Vlast_warning_message = msg_string;
-    }
+  Vlast_warning_id = id;
+  Vlast_warning_message = msg_string;
 
   if (! Vquiet_warning)
     {

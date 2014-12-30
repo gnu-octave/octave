@@ -115,6 +115,10 @@ parser::is_ref (const QString& node)
 
       return ref.pos-_node_map [ref._node_name].pos;
     }
+  if (_node_map.contains (node))
+    {
+      return 0;  // node: show from the beginning
+    }
   return -1;
 }
 
@@ -653,8 +657,25 @@ parser::find_ref (const QString &ref_name)
         {
           // found ref, so return its name
           text = "XREF" + ref_name;
+          break;
         }
     }
+
+  if (text.isEmpty ())  // try the statement-nodes
+    {
+      QHash<QString, node_map_item>::iterator itn;
+      for (itn=_node_map.begin (); itn!=_node_map.end (); ++itn)
+        {
+          QString k = itn.key ();
+          if (k == "The " + ref_name + " Statement")
+            {
+              // found ref, so return its name
+              text = k;
+              break;
+            }
+        }
+    }
+
   return text;
 }
 

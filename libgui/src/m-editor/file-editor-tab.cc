@@ -1024,14 +1024,15 @@ file_editor_tab::find (const QWidget *ID)
       _find_dialog->setWindowModality (Qt::NonModal);
       _find_dialog_geometry = _find_dialog->geometry ();
     }
-
-  if (!_find_dialog->isVisible ())
+  else if (!_find_dialog->isVisible ())
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
-      _find_dialog->show ();
-      _find_dialog_is_visible = true;
+      QPoint p = _find_dialog->pos ();
+      _find_dialog->move(p.x ()+10, p.y ()+10);
     }
 
+  _find_dialog->show ();
+  _find_dialog_is_visible = true;
   _find_dialog->activateWindow ();
   _find_dialog->init_search_text ();
 
@@ -1961,6 +1962,8 @@ file_editor_tab::change_editor_state (const QWidget *ID)
   if (_find_dialog && _find_dialog_is_visible)
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
+      QPoint p = _find_dialog->pos ();
+      _find_dialog->move(p.x ()+10, p.y ()+10);
       _find_dialog->show ();
     }
 

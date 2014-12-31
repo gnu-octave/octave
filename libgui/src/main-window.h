@@ -80,6 +80,10 @@ public:
   void focus_command_window (void);
 
 signals:
+
+  void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
+  void editor_focus_changed (bool);
+
   void settings_changed (const QSettings *);
   void init_terminal_size_signal (void);
   void new_file_signal (const QString&);
@@ -97,6 +101,9 @@ signals:
   void selectAll_signal (void);
 
 public slots:
+
+  void focus_changed (QWidget *w_old, QWidget *w_new);
+
 
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
@@ -311,6 +318,7 @@ private:
     list.append (static_cast<octave_dock_widget *> (workspace_window));
     return list;
   }
+  octave_dock_widget *_active_dock;
 
   QString _release_notes_icon;
 

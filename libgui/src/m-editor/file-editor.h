@@ -58,18 +58,15 @@ public:
   QToolBar *toolbar (void);
   void insert_new_open_actions (QAction*,QAction*,QAction*);
 
-  void set_focus (void);
   void handle_enter_debug_mode (void);
   void handle_exit_debug_mode (void);
 
   void check_actions (void);
   void empty_script (bool startup, bool visible);
-  void enable_menu_shortcuts (bool enable);
 
 signals:
 
   void fetab_settings_changed (const QSettings *settings);
-  void fetab_close_request (const QWidget* ID, bool app_closing = false);
   void fetab_change_request (const QWidget* ID);
   void fetab_file_name_query (const QWidget* ID);
   // Save is a ping-pong type of communication
@@ -116,7 +113,10 @@ signals:
   void file_loaded_signal ();
 
 public slots:
+
   void focus (void);
+  void enable_menu_shortcuts (bool);
+  bool check_closing (int closing_state);
 
   void request_new_file (const QString& commands);
   void request_new_script (const QString& commands);

@@ -69,7 +69,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
   QString directory = directory_arg;
   _lexer_apis = 0;
-  _app_closing = false;
+  _app_closing = 0;   // app is not closing
   _is_octave_file = true;
   _modal_dialog = false;
 
@@ -168,9 +168,6 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this, SLOT (handle_copy_available (bool)));
-
-  connect (_edit_area, SIGNAL (qsci_has_focus_signal (bool)),
-           this, SLOT (edit_area_has_focus (bool)));
 
   connect (&_file_system_watcher, SIGNAL (fileChanged (const QString&)),
            this, SLOT (file_has_changed (const QString&)));
@@ -1027,14 +1024,15 @@ file_editor_tab::find (const QWidget *ID)
       _find_dialog->setWindowModality (Qt::NonModal);
       _find_dialog_geometry = _find_dialog->geometry ();
     }
-
-  if (!_find_dialog->isVisible ())
+  else if (!_find_dialog->isVisible ())
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
-      _find_dialog->show ();
-      _find_dialog_is_visible = true;
+      QPoint p = _find_dialog->pos ();
+      _find_dialog->move(p.x ()+10, p.y ()+10);
     }
 
+  _find_dialog->show ();
+  _find_dialog_is_visible = true;
   _find_dialog->activateWindow ();
   _find_dialog->init_search_text ();
 
@@ -1243,13 +1241,24 @@ file_editor_tab::check_file_modified ()
                                              QMessageBox::Discard;
       QString available_actions;
 
-      if (_app_closing)
-        available_actions = tr ("Do you want to save or discard the changes?");
-      else
+      switch (_app_closing)
         {
-          buttons = buttons | QMessageBox::Cancel;  // cancel is allowed
-          available_actions
-            = tr ("Do you want to cancel closing, save or discard the changes?");
+          case -1:  // octave is exiting and so does the gui
+            available_actions =
+              tr ("Do you want to save or discard the changes?");
+            break;
+
+          case 1:   // gui is exiting
+            available_actions =
+              tr ("Do you want to cancel exiting octave, save or discard the changes?");
+            buttons = buttons | QMessageBox::Cancel;
+            break;
+
+          case 0:   // tab is closing
+            available_actions =
+              tr ("Do you want to cancel closing, save or discard the changes?");
+            buttons = buttons | QMessageBox::Cancel;
+            break;
         }
 
       QString file;
@@ -1896,6 +1905,10 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _edit_area->setTabWidth
         (settings->value ("editor/tab_width",2).toInt ());
 
+  _edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
+        settings->value ("editor/show_hscroll_bar",true).toBool ());
+  _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
+
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());
 
@@ -1917,14 +1930,16 @@ file_editor_tab::auto_margin_width ()
   _edit_area->setMarginWidth (2, "1"+QString::number (_edit_area->lines ()));
 }
 
-void
-file_editor_tab::conditional_close (const QWidget *ID, bool app_closing)
+// the following close request was changed from a signal slot into a
+// normal function because we need the return value from close whether
+// the tab really was closed (for canceling exiting octave).
+// When emitting a signal, only the return value from the last slot
+// goes back to the sender
+bool
+file_editor_tab::conditional_close (int app_closing)
 {
-  if (ID != this)
-    return;
-
   _app_closing = app_closing;
-  close ();
+  return close ();
 }
 
 void
@@ -1947,6 +1962,8 @@ file_editor_tab::change_editor_state (const QWidget *ID)
   if (_find_dialog && _find_dialog_is_visible)
     {
       _find_dialog->setGeometry (_find_dialog_geometry);
+      QPoint p = _find_dialog->pos ();
+      _find_dialog->move(p.x ()+10, p.y ()+10);
       _find_dialog->show ();
     }
 
@@ -2073,12 +2090,6 @@ void
 file_editor_tab::create_context_menu (QMenu *menu)
 {
   emit create_context_menu_tab_signal (menu);
-}
-
-void
-file_editor_tab::edit_area_has_focus (bool focus)
-{
-  emit set_global_edit_shortcuts_signal (! focus);
 }
 
 QString

@@ -60,10 +60,9 @@ documentation_dock_widget::selectAll ()
 void
 documentation_dock_widget::showDoc (const QString &name)
 {
-  // show the doc pane
+  // show the doc pane without focus for carrying on typing in the console
   if (!isVisible ())
     setVisible (true);
-  setFocus ();
   raise ();
 
   _webinfo->load_ref (name);

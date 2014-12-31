@@ -106,6 +106,15 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
            _widget_title_bg_color, SLOT (setEnabled (bool)));
 
+  default_var = QColor (192,192,192);
+  QColor bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
+                                      default_var).value<QColor> ();
+  _widget_title_bg_color_active = new color_picker (bg_color_active);
+  _widget_title_bg_color_active->setEnabled (false);
+  ui->layout_widget_bgtitle_active->addWidget (_widget_title_bg_color_active,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_bg_color_active, SLOT (setEnabled (bool)));
+
   default_var = QColor (0,0,0);
   QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
                                       default_var).value<QColor> ();
@@ -114,6 +123,15 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->layout_widget_fgtitle->addWidget (_widget_title_fg_color,0);
   connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
            _widget_title_fg_color, SLOT (setEnabled (bool)));
+
+  default_var = QColor (0,0,0);
+  QColor fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
+                                      default_var).value<QColor> ();
+  _widget_title_fg_color_active = new color_picker (fg_color_active);
+  _widget_title_fg_color_active->setEnabled (false);
+  ui->layout_widget_fgtitle_active->addWidget (_widget_title_fg_color_active,0);
+  connect (ui->cb_widget_custom_style, SIGNAL (toggled (bool)),
+           _widget_title_fg_color_active, SLOT (setEnabled (bool)));
 
   ui->cb_widget_custom_style->setChecked (
     settings->value ("DockWidgets/widget_title_custom_style",false).toBool ());
@@ -188,6 +206,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("editor/show_white_space_indent",false).toBool ());
   ui->cb_show_eol->setChecked (
     settings->value ("editor/show_eol_chars",false).toBool () );
+  ui->cb_show_hscrollbar->setChecked (
+    settings->value ("editor/show_hscroll_bar",true).toBool ());
+
 #ifdef HAVE_QSCINTILLA
 #if defined (Q_OS_WIN32)
   int eol_mode = QsciScintilla::EolWindows;
@@ -600,8 +621,12 @@ settings_dialog::write_changed_settings ()
                       ui->cb_widget_custom_style->isChecked ());
   settings->setValue ("Dockwidgets/title_bg_color",
                       _widget_title_bg_color->color ());
+  settings->setValue ("Dockwidgets/title_bg_color_active",
+                      _widget_title_bg_color_active->color ());
   settings->setValue ("Dockwidgets/title_fg_color",
                       _widget_title_fg_color->color ());
+  settings->setValue ("Dockwidgets/title_fg_color_active",
+                      _widget_title_fg_color_active->color ());
 
   // icon size
   settings->setValue ("toolbar_icon_size", ui->toolbar_icon_size->value ());
@@ -657,6 +682,8 @@ settings_dialog::write_changed_settings ()
                       ui->editor_ws_indent_checkbox->isChecked ());
   settings->setValue ("editor/show_eol_chars",
                       ui->cb_show_eol->isChecked ());
+  settings->setValue ("editor/show_hscroll_bar",
+                      ui->cb_show_hscrollbar->isChecked ());
   settings->setValue ("editor/default_eol_mode",
                       ui->combo_eol_mode->currentIndex ());
   settings->setValue ("editor/auto_indent",

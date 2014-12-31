@@ -175,14 +175,11 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _rep_active = false;
 
   // move dialog to side of the parent if there is room on the desktop to do so.
-  QWidget * desktop = QApplication::desktop ();
-  int xp = p->x () + p->frameGeometry ().width ();
-  int yp=  p->y ();
-  if (desktop != 0 && sizeHint ().isValid ())
-    {
-      if (xp + sizeHint ().width () > desktop->width ())
-        xp = desktop->width () - sizeHint ().width ();
-    }
+  int xp = p->x () +20;
+  int yp = p->y () + p->frameGeometry ().height () - sizeHint ().height () -20;
+
+  if (yp < 0)
+    yp = 0;
 
   move (xp, yp);
 

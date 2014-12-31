@@ -279,20 +279,6 @@ octave_qscintilla::contextmenu_run (bool)
 }
 
 void
-octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
-{
-  emit qsci_has_focus_signal (true);
-  QsciScintilla::focusInEvent(focusEvent);
-}
-
-void
-octave_qscintilla::focusOutEvent (QFocusEvent *focusEvent)
-{
-  emit qsci_has_focus_signal (false);
-  QsciScintilla::focusOutEvent(focusEvent);
-}
-
-void
 octave_qscintilla::text_changed ()
 {
   emit status_update (isUndoAvailable (), isRedoAvailable ());

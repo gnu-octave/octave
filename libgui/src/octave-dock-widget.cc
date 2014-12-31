@@ -49,6 +49,9 @@ octave_dock_widget::octave_dock_widget (QWidget *p)
   connect (p, SIGNAL (settings_changed (const QSettings*)),
            this, SLOT (handle_settings (const QSettings*)));
 
+  connect (p, SIGNAL (active_dock_changed (octave_dock_widget*, octave_dock_widget*)),
+           this, SLOT (handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*)));
+
 #if defined (Q_OS_WIN32)
   // windows: add an extra title bar that persists when floating
 
@@ -283,45 +286,45 @@ octave_dock_widget::focusWidget ()
 }
 
 void
-octave_dock_widget::handle_settings (const QSettings *settings)
+octave_dock_widget::set_style (bool active)
 {
   QString css;
   QString css_button;
   QString dock_icon;
+
+  QString icon_col = _icon_color;
 
   if (_floating)
     dock_icon = "widget-dock";
   else
     dock_icon = "widget-undock";
 
-  if (settings->value ("DockWidgets/widget_title_custom_style",false).toBool ())
+  if (_custom_style)
     {
 
-      QColor default_var = QColor (0,0,0);
-      QColor fg_color = settings->value ("Dockwidgets/title_fg_color",
-                                         default_var).value<QColor> ();
+      QColor bg_col, fg_col;
 
-      default_var = QColor (255,255,255);
-      QColor bg_color = settings->value ("Dockwidgets/title_bg_color",
-                                         default_var).value<QColor> ();
-
-      int r, g, b;
-      QColor bg_color_light = bg_color.lighter ();
-
-      bg_color.getRgb (&r, &g, &b);
-      if (r+g+b < 400)
-          _icon_color = "-light";
+      if (active)
+        {
+          bg_col = _bg_color_active;
+          fg_col = _fg_color_active;
+          icon_col = _icon_color_active;
+        }
       else
-        _icon_color = "";
+        {
+          bg_col = _bg_color;
+          fg_col = _fg_color;
+          icon_col = _icon_color;
+        }
 
       QString background =
           QString ("background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
                    "            stop: 0 %1, stop: 0.75 %2, stop: 0.9 %2, stop: 1.0 %1);").
-                   arg (bg_color_light.name ()).
-                   arg (bg_color.name ());
+                   arg (bg_col.lighter ().name ()).
+                   arg (bg_col.name ());
 
 #if defined (Q_OS_WIN32)
-      css = background + QString (" color: %1 ;").arg (fg_color.name ());
+      css = background + QString (" color: %1 ;").arg (fg_col.name ());
 #else
       css = QString ("QDockWidget::title { " + background +
                      "                     text-align: center left;"
@@ -332,8 +335,8 @@ octave_dock_widget::handle_settings (const QSettings *settings)
                      "QDockWidget::close-button,"
                      "QDockWidget::float-button { border: 0px;}"
                      ).
-                     arg (fg_color.name ()).
-                     arg (_icon_color);
+                     arg (fg_col.name ()).
+                     arg (icon_col);
 #endif
     }
   else
@@ -357,13 +360,49 @@ octave_dock_widget::handle_settings (const QSettings *settings)
   css_button = QString ("background: transparent; border: 0px;");
   _dock_button->setStyleSheet (css_button);
   _close_button->setStyleSheet (css_button);
-  _dock_action->setIcon (QIcon (":/actions/icons/"+dock_icon+_icon_color+".png"));
-  _close_action->setIcon (QIcon (":/actions/icons/widget-close"+_icon_color+".png"));
+  _dock_action->setIcon (QIcon (":/actions/icons/" + dock_icon + icon_col + ".png"));
+  _close_action->setIcon (QIcon (":/actions/icons/widget-close" + dock_icon + icon_col + ".png"));
 #else
   setStyleSheet (css);
 #endif
+}
+
+void
+octave_dock_widget::handle_settings (const QSettings *settings)
+{
+  _custom_style =
+    settings->value ("DockWidgets/widget_title_custom_style",false).toBool ();
+
+  QColor default_var = QColor (0,0,0);
+  _fg_color = settings->value ("Dockwidgets/title_fg_color",
+                                default_var).value<QColor> ();
+  default_var = QColor (0,0,0);
+  _fg_color_active = settings->value ("Dockwidgets/title_fg_color_active",
+                                default_var).value<QColor> ();
+
+  default_var = QColor (255,255,255);
+  _bg_color = settings->value ("Dockwidgets/title_bg_color",
+                                default_var).value<QColor> ();
+  default_var = QColor (192,192,192);
+  _bg_color_active = settings->value ("Dockwidgets/title_bg_color_active",
+                                       default_var).value<QColor> ();
+
+  int r, g, b;
+  _bg_color.getRgb (&r, &g, &b);
+  if (r+g+b < 400)
+      _icon_color = "-light";
+  else
+    _icon_color = "";
+
+  _bg_color_active.getRgb (&r, &g, &b);
+  if (r+g+b < 400)
+      _icon_color_active = "-light";
+  else
+    _icon_color_active = "";
 
   notice_settings (settings);  // call individual handler
+
+  set_style (false);
 }
 
 bool octave_dock_widget::eventFilter(QObject *obj, QEvent *e)
@@ -375,4 +414,21 @@ bool octave_dock_widget::eventFilter(QObject *obj, QEvent *e)
     }
 
   return QDockWidget::eventFilter (obj,e);
+}
+
+void
+octave_dock_widget::handle_active_dock_changed (octave_dock_widget *w_old,
+                                                octave_dock_widget *w_new)
+{
+  if (_custom_style && this == w_old)
+    {
+      set_style (false);
+      update ();
+    }
+
+  if (_custom_style && this == w_new)
+    {
+      set_style (true);
+      update ();
+    }
 }

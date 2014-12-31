@@ -244,8 +244,6 @@ workspace_model::set_workspace (bool top_level,
   _complex_flags = complex_flags;
 
   update_table ();
-
-  emit model_changed ();
 }
 
 void
@@ -253,8 +251,6 @@ workspace_model::clear_workspace (void)
 {
   clear_data ();
   update_table ();
-
-  emit model_changed ();
 }
 
 void

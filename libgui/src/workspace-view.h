@@ -62,6 +62,7 @@ protected slots:
 
   // context menu slots
   void handle_contextmenu_copy (void);
+  void handle_contextmenu_copy_value (void);
   void handle_contextmenu_rename (void);
   void handle_contextmenu_disp (void);
   void handle_contextmenu_plot (void);
@@ -76,6 +77,7 @@ private:
 
   void relay_contextmenu_command (const QString& cmdname);
 
+  QString get_var_name (QModelIndex index);
   QTableView *view;
   int view_previous_row_count;
   workspace_model *_model;

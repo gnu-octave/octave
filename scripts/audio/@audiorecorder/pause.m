@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} pause (@var{recorder})
-## Pause recording with the possibility of resuming it later.
+## Pause recording with audiorecorder object @var{recorder}.
 ## @end deftypefn
 
 function pause (recorder)

@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isplaying (@var{player})
-## Returns 1 if the audioplayer object is currently playing back audio.
-## Returns 0 otherwise.
+## Return 1 if the audioplayer object @var{player}is currently playing
+## back audio and 0 otherwise.
 ## @end deftypefn
 
 function result = isplaying (player)

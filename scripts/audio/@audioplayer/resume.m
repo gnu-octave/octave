@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} resume (@var{player})
-## Resume playback for a previously paused audioplayer object.
+## Resume playback for the paused audioplayer object @var{player}.
 ## @end deftypefn
 
 function resume (player)

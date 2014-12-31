@@ -18,38 +18,18 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
+## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
+## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
+## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{function}, @dots{})
+## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder})
+## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
 ## Create an audioplayer object that will play back data @var{y} at sample
-## rate @var{fs}.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
-## Create an audioplayer object that will play back data @var{y} at sample
-## rate @var{fs} and bit depth @var{nbits}.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
-## Create an audioplayer object that will play back data @var{y} at sample
-## rate @var{fs}, bit depth @var{nbits} and using a device with @var{id}
-## that you can get using the audiodevinfo function.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{function}, @var{fs})
-## Argument @var{function} is a function handle, inline function or a string
-## value of a function name that will get called to process audio.  Audio
-## will be played at @var{fs} sampling rate.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{function}, @var{fs}, @var{nbits})
-## Same as above but also allows you to specify the number of bits per
-## sample.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{function}, @var{fs}, @var{nbits}, @var{id})
-## Same as above but also allows you to specify device @var{id} that will be
-## used.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{recorder})
-## Create an audioplayer object that will use data and other information
-## such as sample rate from an audiorecorder object.
-## @end deftypefn
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
-## Create an audioplayer object that will use data and other information
-## from an audiorecorder object and that will use a device with the given @var{id}.
+## rate @var{fs}.  The optional arguments @var{nbits}, and @var{id}
+## specify the bit depth and player device id, respectively.  Device IDs
+## may be found using the audiodevinfo function.
+## Given a function handle, use that function to process the audio.
+## Given an audioplayer object, use the data from the object to
+## initialize the player.
 ## @end deftypefn
 ##
 ## The signal @var{y} can be a vector or a two dimensional array.
@@ -60,9 +40,9 @@
 ##
 ## @example
 ## @group
-## @code{y = randn (2, 44100) - 0.5;}
-## @code{player = audioplayer (y, 44100, 8);}
-## @code{play (player);}
+## y = randn (2, 44100) - 0.5;
+## player = audioplayer (y, 44100, 8);
+## play (player);
 ## @end group
 ## @end example
 ##
@@ -71,24 +51,24 @@
 ##
 ## @example
 ## @group
-## @code{function [ sound, status ] = callback_sine (frames)}
-## @code{  global lphase = 0.0;}
-## @code{  global rphase = 0.0;}
-## @code{  incl = 440.0 / 44100.0;}
-## @code{  incr = 443.0 / 44100.0;}
-## @code{  nl = incl * frames;}
-## @code{  nr = incr * frames;}
-## @code{  left = sin (2.0 * pi * [lphase:incl:lphase+nl]);}
-## @code{  right = sin (2.0 * pi * [rphase:incr:rphase+nr]);}
-## @code{  sound = [left', right'];}
-## @code{  status = 0;}
-## @code{  lphase = lphase + nl;}
-## @code{  rphase = rphase + nr;}
-## @code{endfunction}
-## @code{player = audioplayer (@@callback_sine, 44100);}
-## @code{play (player);}
-## @code{# play for as long as you want}
-## @code{stop (player);}
+## function [ sound, status ] = callback_sine (frames)
+##   global lphase = 0.0;
+##   global rphase = 0.0;
+##   incl = 440.0 / 44100.0;
+##   incr = 443.0 / 44100.0;
+##   nl = incl * frames;
+##   nr = incr * frames;
+##   left = sin (2.0 * pi * [lphase:incl:lphase+nl]);
+##   right = sin (2.0 * pi * [rphase:incr:rphase+nr]);
+##   sound = [left', right'];
+##   status = 0;
+##   lphase = lphase + nl;
+##   rphase = rphase + nr;
+## endfunction
+## player = audioplayer (@@callback_sine, 44100);
+## play (player);
+## # play for as long as you want
+## stop (player);
 ## @end group
 ## @end example
 

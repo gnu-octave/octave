@@ -18,32 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{recorder} =} audiorecorder ()
+## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
+## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
+## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
-## sample rate.
-## @end deftypefn
-## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
-## Create an audiorecorder object recording at specified sample rate
-## @var{fs}, specified bit depth @var{nbits}, and specified number of
-## @var{channels}.
-## @end deftypefn
-## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
-## Create an audiorecorder object recording at specified sample rate @var{fs},
-## specified bit depth @var{nbits}, number of @var{channels}, and recording
-## on the device specified by @var{id}.  You can get device IDs by using the
-## audiodevinfo function.
-## @end deftypefn
-## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{function}, @var{fs})
-## Argument @var{function} is a function handle, inline function, or a string
-## value of a function name that will get called to process audio.  Audio
-## will be recorded at @var{fs} sampling rate.
-## @end deftypefn
-## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{function}, @var{fs}, @var{nbits})
-## Same as above but also allows you to specify the number of bits per
-## sample.
-## @end deftypefn
-## @deftypefn {Function File} {@var{recorder} =} audiorecorder (@var{function}, @var{fs}, @var{nbits}, @var{id})
-## Same as above but also allows you to specify device @var{id} that will be
-## used.
+## sample rate.  The optional arguments @var{fs}, @var{nbits},
+## @var{channels}, and @var{id} specify the sample rate, bit depth,
+## number of channels and recording device id, respectively.  Device IDs
+## may be found using the audiodevinfo function.
+## Given a function handle, use that function to process the audio.
 ## @end deftypefn
 
 function recorder = audiorecorder (varargin)

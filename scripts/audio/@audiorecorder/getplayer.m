@@ -18,7 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{player} =} getplayer (@var{recorder})
-## Returns an audioplayer object with data recorded by the recorder.
+## Return an audioplayer object with data recorded by the audiorecorder
+## object @var{recorder}.
 ## @end deftypefn
 
 function player = getplayer (varargin)

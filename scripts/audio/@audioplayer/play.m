@@ -18,16 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} play (@var{player})
-## Play back audio stored in an audioplayer object without blocking.
-## @end deftypefn
-## @deftypefn {Function File} {} play  (@var{player}, @var{start})
-## Play back audio stored in an audioplayer object starting at the time in
-## seconds specified by @var{start}.
-## @end deftypefn
-## @deftypefn {Function File} {} play (@var{player}, [@var{start}, @var{end}])
-## Play back audio stored in an audioplayer object starting at the time in
-## seconds specified by @var{start} and ending at the time specified by
-## @var{end}.
+## @deftypefnx {Function File} {} play  (@var{player}, @var{start})
+## @deftypefnx {Function File} {} play (@var{player}, @var{limits})
+## Play audio stored in the audioplayer object @var{player} without blocking.
+## Given optional argument start, begin playing at @var{start} seconds
+## in the recording.  Given a two-element vector @var{limits}, begin and
+## end playing at the number of seconds specified by the elements of the
+## vector.
 ## @end deftypefn
 
 function play (varargin)

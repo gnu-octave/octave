@@ -18,19 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} set (@var{player}, @var{name}, @var{value})
+## @deftypefnx {Function File} {} set (@var{player}, @var{properties})
+## @deftypefnx {Function File} {@var{properties} =} set (@var{player})
 ## Set the value of property specified by @var{name} to a given @var{value}.
-## @end deftypefn
-## @deftypefn {Function File} {} set (@var{player}, @var{names}, @var{values})
-## Given a cell array of property @var{names} and a cell array of @var{values},
-## set each property to a corresponding value.
-## @end deftypefn
-## @deftypefn {Function File} {} set (@var{player}, @var{properties})
-## Given a structure @var{properties} where fields are property names, set
-## the value of those properties for an audioplayer object to corresponding
-## values.
-## @end deftypefn
-## @deftypefn {Function File} {@var{properties} =} set (@var{player})
-## Returns a structure of settable properties.
+## If @var{name} and @var{value} are cell arrays, set each property to the
+## corresponding value.  Given a structure of @var{properties} with
+## fields corresponding to property names, set the value of those
+## properties to the field values.  Given only the audioplayer object,
+## return a structure of settable properties.
 ## @end deftypefn
 
 function settable = set (varargin)

@@ -18,7 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stop (@var{recorder})
-## Will stop recording, clean up any audio streams.
+## Stop the audiorecorder object @var{recorder} and clean up any audio
+## streams.
 ## @end deftypefn
 
 function stop (recorder)

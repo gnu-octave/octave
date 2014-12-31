@@ -18,13 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{data} =} getaudiodata (@var{recorder})
-## Returns recorder audio data as a matrix with values between -1.0 and 1.0
+## @deftypefnx {Function File} {@var{data} =} getaudiodata (@var{recorder}, @var{datatype})
+## Return recorder audio data as a matrix with values between -1.0 and 1.0
 ## and with as many columns as there are channels in the recorder.
-## @end deftypefn
-## @deftypefn {Function File} {@var{data} =} getaudiodata (@var{recorder}, @var{datatype})
-## Converts recorded data to specified @var{datatype}.  It can be set to
-## @qcode{"double"}, @qcode{"single"}, @qcode{"int16"}, @qcode{"int8"} or
-## @qcode{"uint8"}.
+## Given the optional argument @var{datatype}, convert the recorded data
+## to the specified type, which may be one of @qcode{"double"},
+## @qcode{"single"}, @qcode{"int16"}, @qcode{"int8"} or @qcode{"uint8"}.
 ## @end deftypefn
 
 function data = getaudiodata (varargin)

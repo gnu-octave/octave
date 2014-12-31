@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -68,20 +68,21 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_scalar::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_scalar::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_numeric_demotion_function,
+            octave_float_scalar::static_type_id ());
 }
 
 octave_value
 octave_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
+  // FIXME: this doesn't solve the problem of
   //
   //   a = 1; a([1,1], [1,1], [1,1])
   //
   // and similar constructions.  Hmm...
 
-  // FIXME -- using this constructor avoids narrowing the
+  // FIXME: using this constructor avoids narrowing the
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
@@ -132,7 +133,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 
       if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
         {
-          // FIXME -- is there something better we could do?
+          // FIXME: is there something better we could do?
 
           ival = 0;
 
@@ -205,7 +206,8 @@ octave_scalar::save_hdf5 (hid_t loc_id, const char *name,
                           bool /* save_as_floats */)
 {
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);
@@ -341,14 +343,31 @@ octave_scalar::map (unary_mapper_t umap) const
       SCALAR_MAPPER (isnan, xisnan);
       SCALAR_MAPPER (xsignbit, xsignbit);
 
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return scalar;
+
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xtoascii:
+      {
+        octave_value str_conv = convert_to_str (true, true);
+        return error_state ? octave_value () : str_conv.map (umap);
+      }
+
     default:
-      if (umap >= umap_xisalnum && umap <= umap_xtoupper)
-        {
-          octave_value str_conv = convert_to_str (true, true);
-          return error_state ? octave_value () : str_conv.map (umap);
-        }
-      else
-        return octave_base_value::map (umap);
+      return octave_base_value::map (umap);
     }
 }
 

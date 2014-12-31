@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -76,18 +76,24 @@ extern ComplexMatrix xleftdiv (const SparseComplexMatrix& a,
 extern SparseMatrix xleftdiv (const SparseMatrix& a, const SparseMatrix& b,
                               MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseMatrix& a,
-                                     const SparseComplexMatrix& b, MatrixType &typ);
+                                     const SparseComplexMatrix& b,
+                                     MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseComplexMatrix& a,
                                      const SparseMatrix& b, MatrixType &typ);
 extern SparseComplexMatrix xleftdiv (const SparseComplexMatrix& a,
-                                     const SparseComplexMatrix& b, MatrixType &typ);
+                                     const SparseComplexMatrix& b,
+                                     MatrixType &typ);
 
-extern SparseMatrix xleftdiv (const DiagMatrix&, const SparseMatrix&, MatrixType&);
-extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&, const SparseMatrix&,
+extern SparseMatrix xleftdiv (const DiagMatrix&, const SparseMatrix&,
+                              MatrixType&);
+extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&,
+                                     const SparseMatrix&,
                                      MatrixType&);
-extern SparseComplexMatrix xleftdiv (const DiagMatrix&, const SparseComplexMatrix&,
+extern SparseComplexMatrix xleftdiv (const DiagMatrix&,
+                                     const SparseComplexMatrix&,
                                      MatrixType&);
-extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&, const SparseComplexMatrix&,
+extern SparseComplexMatrix xleftdiv (const ComplexDiagMatrix&,
+                                     const SparseComplexMatrix&,
                                      MatrixType&);
 
 #endif

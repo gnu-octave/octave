@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -148,7 +148,8 @@ install_fcs_fs_ops (void)
   INSTALL_BINOP (op_el_mul, octave_float_complex, octave_float_scalar, el_mul);
   INSTALL_BINOP (op_el_div, octave_float_complex, octave_float_scalar, el_div);
   INSTALL_BINOP (op_el_pow, octave_float_complex, octave_float_scalar, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_complex, octave_float_scalar, el_ldiv);
+  INSTALL_BINOP (op_el_ldiv, octave_float_complex, octave_float_scalar,
+                 el_ldiv);
   INSTALL_BINOP (op_el_and, octave_float_complex, octave_float_scalar, el_and);
   INSTALL_BINOP (op_el_or, octave_float_complex, octave_float_scalar, el_or);
 

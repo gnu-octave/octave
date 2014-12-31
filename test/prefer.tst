@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -66,16 +66,16 @@
 %! warning (wsn.state, "Octave:str-to-num");
 
 %!test
-%! wir = warning ("query", "Ocave:imag-to-real");
-%! warning ("off", "Ocave:imag-to-real");
+%! wir = warning ("query", "Octave:imag-to-real");
+%! warning ("off", "Octave:imag-to-real");
 %! assert (eye (1+i), 1);
-%! warning (wir.state, "Ocave:imag-to-real");
+%! warning (wir.state, "Octave:imag-to-real");
 
 %!test
-%! wir = warning ("query", "Ocave:imag-to-real");
-%! warning ("on", "Ocave:imag-to-real");
+%! wir = warning ("query", "Octave:imag-to-real");
+%! warning ("on", "Octave:imag-to-real");
 %! fail ("eye (1+i)", "warning");
-%! warning (wir.state, "Ocave:imag-to-real");
+%! warning (wir.state, "Octave:imag-to-real");
 
 %!test
 %! wrre = warning ("query", "Octave:resize-on-range-error");
@@ -115,7 +115,7 @@
 %! sp = save_precision ();
 %! save_precision (1);
 %! x = pi;
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
@@ -127,7 +127,7 @@
 %! sp = save_precision ();
 %! save_precision (5);
 %! x = pi;
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! save ("-text", nm, "x");
 %! clear x;
 %! load (nm);
@@ -160,7 +160,7 @@
 %!test
 %! wndz = warning ("query", "Octave:neg-dim-as-zero");
 %! warning ("on", "Octave:neg-dim-as-zero");
-%! fail ("eye (-1) == []", "warning");
+%! fail ("eye (-1) == []", "warning", "converting negative dimension");
 %! warning (wndz.state, "Octave:neg-dim-as-zero");
 
 %!test
@@ -171,14 +171,8 @@
 
 %!test
 %! watv = warning ("query", "Octave:assign-as-truth-value");
-%! warning ("off", "Octave:assign-as-truth-value");
-%! if (x = 1) 1; endif
-%! warning (watv.state, "Octave:assign-as-truth-value");
-
-%!test
-%! watv = warning ("query", "Octave:assign-as-truth-value");
 %! warning ("on", "Octave:assign-as-truth-value");
-%! fail ("if (x = 1) 1; endif", "warning");
+%! fail ("if (x = 1) 1; endif", "warning", "assignment used as truth value");
 %! warning (watv.state, "Octave:assign-as-truth-value");
 
 %!test
@@ -192,6 +186,6 @@
 %! warning ("on", "Octave:divide-by-zero");
 %! a = 1;
 %! b = 0;
-%! fail ("isinf (a/b);", "warning")
+%! fail ("isinf (a/b);", "warning", "division by zero");
 %! warning (wdbz.state, "Octave:divide-by-zero");
 

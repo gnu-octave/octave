@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 
 This file is part of Octave.
 
@@ -130,7 +130,7 @@ eigs_complex_func (const ComplexColumnVector &x, int &eigs_error)
 }
 
 DEFUN_DLD (__eigs__, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{d} =} __eigs__ (@var{A})\n\
 @deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{k})\n\
 @deftypefnx {Loadable Function} {@var{d} =} __eigs__ (@var{A}, @var{k}, @var{sigma})\n\
@@ -211,7 +211,7 @@ Undocumented internal function.\n\
         {
           std::string name = args(0).string_value ();
           std::string fname = "function y = ";
-          fcn_name = unique_symbol_name ("__eigs_fcn_");
+          fcn_name = unique_symbol_name ("__eigs_fcn__");
           fname.append (fcn_name);
           fname.append ("(x) y = ");
           eigs_fcn = extract_function (args(0), "eigs", fcn_name, fname,
@@ -437,30 +437,34 @@ Undocumented internal function.\n\
 
           if (have_a_fun)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec, eig_val,
-               cresid, octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                    (eigs_complex_func, n, typ, sigma, k, p, info, eig_vec,
+                     eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
+                     disp, maxit);
           else if (have_sigma)
             {
               if (a_is_sparse)
                 nconv = EigsComplexNonSymmetricMatrixShift
-                  (ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
-                   cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                   maxit);
+                        (ascm, sigma, k, p, info, eig_vec, eig_val, bscm, permB,
+                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+                         maxit);
               else
                 nconv = EigsComplexNonSymmetricMatrixShift
-                  (acm, sigma, k, p, info, eig_vec, eig_val, bcm, permB, cresid,
-                   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                        (acm, sigma, k, p, info, eig_vec, eig_val, bcm, permB,
+                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+                         maxit);
             }
           else
             {
               if (a_is_sparse)
                 nconv = EigsComplexNonSymmetricMatrix
-                  (ascm, typ, k, p, info, eig_vec, eig_val, bscm, permB, cresid,
-                   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                        (ascm, typ, k, p, info, eig_vec, eig_val, bscm, permB,
+                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+                         maxit);
               else
                 nconv = EigsComplexNonSymmetricMatrix
-                  (acm, typ, k, p, info, eig_vec, eig_val, bcm, permB, cresid,
-                   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                        (acm, typ, k, p, info, eig_vec, eig_val, bcm, permB,
+                         cresid, octave_stdout, tol, (nargout > 1), cholB, disp,
+                         maxit);
             }
 
           if (nargout < 2)
@@ -480,20 +484,21 @@ Undocumented internal function.\n\
 
           if (have_a_fun)
             nconv = EigsComplexNonSymmetricFunc
-              (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec, eig_val,
-               cresid, octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                    (eigs_complex_func, n, typ,  sigma, k, p, info, eig_vec,
+                     eig_val, cresid, octave_stdout, tol, (nargout > 1), cholB,
+                     disp, maxit);
           else
             {
               if (a_is_sparse)
                 nconv = EigsComplexNonSymmetricMatrixShift
-                  (SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
-                   eig_val, SparseComplexMatrix (bsmm), permB, cresid,
-                   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                        (SparseComplexMatrix (asmm), sigma, k, p, info, eig_vec,
+                         eig_val, SparseComplexMatrix (bsmm), permB, cresid,
+                         octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
               else
                 nconv = EigsComplexNonSymmetricMatrixShift
-                  (ComplexMatrix (amm), sigma, k, p, info, eig_vec,
-                   eig_val, ComplexMatrix (bmm), permB, cresid,
-                   octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
+                        (ComplexMatrix (amm), sigma, k, p, info, eig_vec,
+                         eig_val, ComplexMatrix (bmm), permB, cresid,
+                         octave_stdout, tol, (nargout > 1), cholB, disp, maxit);
             }
 
           if (nargout < 2)
@@ -514,34 +519,34 @@ Undocumented internal function.\n\
 
               if (have_a_fun)
                 nconv = EigsRealSymmetricFunc
-                  (eigs_func, n, typ, sigmar, k, p, info, eig_vec, eig_val,
-                   resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                   maxit);
+                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                         eig_val, resid, octave_stdout, tol, (nargout > 1),
+                         cholB, disp, maxit);
               else if (have_sigma)
                 {
                   if (a_is_sparse)
                     nconv = EigsRealSymmetricMatrixShift
-                      (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
+                             permB, resid, octave_stdout, tol, (nargout > 1),
+                             cholB, disp, maxit);
                   else
                     nconv = EigsRealSymmetricMatrixShift
-                      (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (amm, sigmar, k, p, info, eig_vec, eig_val, bmm,
+                             permB, resid, octave_stdout, tol, (nargout > 1),
+                             cholB, disp, maxit);
                 }
               else
                 {
                   if (a_is_sparse)
                     nconv = EigsRealSymmetricMatrix
-                      (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (asmm, typ, k, p, info, eig_vec, eig_val, bsmm,
+                             permB, resid, octave_stdout, tol, (nargout > 1),
+                             cholB, disp, maxit);
                   else
                     nconv = EigsRealSymmetricMatrix
-                      (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
+                             resid, octave_stdout, tol, (nargout > 1), cholB,
+                             disp, maxit);
                 }
 
               if (nargout < 2)
@@ -560,34 +565,34 @@ Undocumented internal function.\n\
 
               if (have_a_fun)
                 nconv = EigsRealNonSymmetricFunc
-                  (eigs_func, n, typ, sigmar, k, p, info, eig_vec, eig_val,
-                   resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                   maxit);
+                        (eigs_func, n, typ, sigmar, k, p, info, eig_vec,
+                         eig_val, resid, octave_stdout, tol, (nargout > 1),
+                         cholB, disp, maxit);
               else if (have_sigma)
                 {
                   if (a_is_sparse)
                     nconv = EigsRealNonSymmetricMatrixShift
-                      (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
+                             permB, resid, octave_stdout, tol, (nargout > 1), 
+                             cholB, disp, maxit);
                   else
                     nconv = EigsRealNonSymmetricMatrixShift
-                      (amm, sigmar, k, p, info, eig_vec, eig_val, bmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (amm, sigmar, k, p, info, eig_vec, eig_val, bmm,
+                             permB, resid, octave_stdout, tol, (nargout > 1),
+                             cholB, disp, maxit);
                 }
               else
                 {
                   if (a_is_sparse)
                     nconv = EigsRealNonSymmetricMatrix
-                      (asmm, typ, k, p, info, eig_vec, eig_val, bsmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (asmm, typ, k, p, info, eig_vec, eig_val, bsmm,
+                             permB, resid, octave_stdout, tol, (nargout > 1),
+                             cholB, disp, maxit);
                   else
                     nconv = EigsRealNonSymmetricMatrix
-                      (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
-                       resid, octave_stdout, tol, (nargout > 1), cholB, disp,
-                       maxit);
+                            (amm, typ, k, p, info, eig_vec, eig_val, bmm, permB,
+                             resid, octave_stdout, tol, (nargout > 1), cholB,
+                             disp, maxit);
                 }
 
               if (nargout < 2)

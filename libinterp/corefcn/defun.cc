@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -133,12 +133,14 @@ get_current_shlib (void)
     {
       if (curr_fcn->is_dld_function ())
         {
-          octave_dld_function *dld = dynamic_cast<octave_dld_function *> (curr_fcn);
+          octave_dld_function *dld
+            = dynamic_cast<octave_dld_function *> (curr_fcn);
           retval = dld->get_shlib ();
         }
       else if (curr_fcn->is_mex_function ())
         {
-          octave_mex_function *mex = dynamic_cast<octave_mex_function *> (curr_fcn);
+          octave_mex_function *mex
+            = dynamic_cast<octave_mex_function *> (curr_fcn);
           retval = mex->get_shlib ();
         }
     }
@@ -148,7 +150,8 @@ get_current_shlib (void)
 
 bool defun_isargout (int nargout, int iout)
 {
-  const std::list<octave_lvalue> *lvalue_list = octave_builtin::curr_lvalue_list;
+  const std::list<octave_lvalue> *lvalue_list
+    = octave_builtin::curr_lvalue_list;
   if (iout >= std::max (nargout, 1))
     return false;
   else if (lvalue_list)
@@ -172,7 +175,9 @@ bool defun_isargout (int nargout, int iout)
 
 void defun_isargout (int nargout, int nout, bool *isargout)
 {
-  const std::list<octave_lvalue> *lvalue_list = octave_builtin::curr_lvalue_list;
+  const std::list<octave_lvalue> *lvalue_list
+    = octave_builtin::curr_lvalue_list;
+
   if (lvalue_list)
     {
       int k = 0;

@@ -24,6 +24,10 @@
 
 // Author: Torsten <ttl@justmail.de>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "color-picker.h"
 
 // constuctor with initial color as parameter
@@ -31,9 +35,9 @@ color_picker::color_picker (QColor old_color, QWidget* p) : QPushButton (p)
 {
   _color = old_color;
   setFlat (true);
-  setFocusPolicy(Qt::NoFocus);  // no focus, would changes the color
+  setFocusPolicy (Qt::NoFocus);  // no focus, would changes the color
   update_button ();
-  connect(this, SIGNAL (clicked ()), SLOT (select_color ()));
+  connect (this, SIGNAL (clicked ()), SLOT (select_color ()));
 }
 
 // slot for bitton clicked: selct a new color using QColorDialog
@@ -56,12 +60,12 @@ void color_picker::update_button ()
   QWidget *p = parentWidget ();
 
   QString bordercolor
-    = p ? p->palette().text().color().name() : QString ("#000000");
+    = p ? p->palette ().text ().color ().name () : QString ("#000000");
 
-  QString css = QString("background-color: %1; border: 1px solid %2;")
-                        .arg(_color.name())
-                        .arg(bordercolor);
+  QString css = QString ("background-color: %1; border: 1px solid %2;")
+                .arg (_color.name ())
+                .arg (bordercolor);
 
-  setStyleSheet(css);
+  setStyleSheet (css);
   repaint ();
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_complex_matrix_h)
-#define octave_sparse_complex_matrix_h 1
+#if !defined (octave_ov_cx_sparse_h)
+#define octave_ov_cx_sparse_h 1
 
 #include <cstdlib>
 
@@ -87,8 +87,10 @@ public:
 
   ~octave_sparse_complex_matrix (void) { }
 
-  octave_base_value *clone (void) const { return new octave_sparse_complex_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_sparse_complex_matrix (); }
+  octave_base_value *clone (void) const
+  { return new octave_sparse_complex_matrix (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_sparse_complex_matrix (); }
 
   octave_base_value *try_narrowing_conversion (void);
 
@@ -105,7 +107,7 @@ public:
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 
@@ -120,7 +122,7 @@ public:
   SparseMatrix sparse_matrix_value (bool = false) const;
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-    { return matrix; }
+  { return matrix; }
 
   SparseBoolMatrix sparse_bool_matrix_value (bool warn = false) const;
 
@@ -128,11 +130,11 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    {
-      // Yes, for compatibility, we drop the imaginary part here.
-      return os.write (matrix_value (true), block_size, output_type,
-                       skip, flt_fmt);
-    }
+  {
+    // Yes, for compatibility, we drop the imaginary part here.
+    return os.write (matrix_value (true), block_size, output_type,
+                     skip, flt_fmt);
+  }
 #endif
 
   bool save_binary (std::ostream& os, bool& save_as_floats);

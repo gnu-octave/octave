@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -67,7 +67,8 @@ DEFBINOPX (pow, sparse_complex_matrix, complex_matrix)
 
 DEFBINOP (ldiv, sparse_complex_matrix, complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_matrix&);
+  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
+                   const octave_complex_matrix&);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
@@ -83,7 +84,7 @@ DEFBINOP (ldiv, sparse_complex_matrix, complex_matrix)
       MatrixType typ = v1.matrix_type ();
 
       ComplexMatrix ret = xleftdiv (v1.sparse_complex_matrix_value (),
-                      v2.complex_matrix_value (), typ);
+                                    v2.complex_matrix_value (), typ);
 
       v1.matrix_type (typ);
       return ret;
@@ -109,8 +110,8 @@ DEFBINOP (el_pow, sparse_complex_matrix, complex_matrix)
                    const octave_complex_matrix&);
 
   return octave_value
-    (elem_xpow (v1.sparse_complex_matrix_value (), SparseComplexMatrix
-                (v2.complex_matrix_value ())));
+         (elem_xpow (v1.sparse_complex_matrix_value (), SparseComplexMatrix
+                     (v2.complex_matrix_value ())));
 }
 
 DEFBINOP (el_ldiv, sparse_complex_matrix, matrix)
@@ -131,7 +132,7 @@ DEFCATOP (scm_cm, sparse_complex_matrix, complex_matrix)
                    const octave_complex_matrix&);
   SparseComplexMatrix tmp (v2.complex_matrix_value ());
   return octave_value
-    (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
+         (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
 }
 
 DEFASSIGNOP (assign, sparse_complex_matrix, complex_matrix)

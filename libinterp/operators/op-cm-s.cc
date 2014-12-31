@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -138,6 +138,8 @@ install_cm_s_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_scalar, assign);
 
-  INSTALL_ASSIGNOP (op_mul_eq, octave_complex_matrix, octave_scalar, assign_mul);
-  INSTALL_ASSIGNOP (op_div_eq, octave_complex_matrix, octave_scalar, assign_div);
+  INSTALL_ASSIGNOP (op_mul_eq, octave_complex_matrix, octave_scalar,
+                    assign_mul);
+  INSTALL_ASSIGNOP (op_div_eq, octave_complex_matrix, octave_scalar,
+                    assign_div);
 }

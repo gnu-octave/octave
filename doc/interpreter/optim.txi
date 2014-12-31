@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -138,6 +138,8 @@ the @code{gls} is needed.
 @DOCSTRING(gls)
 
 @DOCSTRING(lsqnonneg)
+
+@DOCSTRING(lscov)
 
 @DOCSTRING(optimset)
 

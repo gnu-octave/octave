@@ -1,5 +1,5 @@
 ## Copyright (C) 2013 Carnë Draug
-## Copyright (C) 2008-2012 Thomas L. Scofield
+## Copyright (C) 2008-2013 Thomas L. Scofield
 ## Copyright (C) 2008 Kristian Rumberg
 ## Copyright (C) 2006 Thomas Weber
 ## Copyright (C) 2005 Stefan van der Walt
@@ -23,16 +23,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{img}, @var{map}, @var{alpha}] =} imread (@var{filename})
-## @deftypefnx {Function File} {[@dots{}] =} imread (@var{filename}, @var{ext})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@var{url})
+## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{ext})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{idx})
 ## @deftypefnx {Function File} {[@dots{}] =} imread (@dots{}, @var{param1}, @var{val1}, @dots{})
 ## Read images from various file formats.
 ##
 ## Reads an image as a matrix from the file @var{filename}.  If there is
 ## no file @var{filename}, and @var{ext} was specified, it will look for
-## a file named @var{filename} and extension @var{ext}, i.e., a file named
-## @var{filename}.@var{ext}.
+## a file with the extension @var{ext}.  Finally, it will attempt to download
+## and read an image from @var{url}.
 ##
 ## The size and class of the output depends on the
 ## format of the image.  A color image is returned as an
@@ -75,7 +75,17 @@
 ## Controls the image region that is read.  Takes as value a cell array
 ## with two arrays of 3 elements @code{@{@var{rows} @var{cols}@}}.  The
 ## elements in the array are the start, increment and end pixel to be
-## read.  If the increment value is omitted, defaults to 1.
+## read.  If the increment value is omitted, defaults to 1.  For example,
+## the following are all equivalent:
+##
+## @example
+## @group
+## imread (filename, "PixelRegion", @{[200 600] [300 700]@});
+## imread (filename, "PixelRegion", @{[200 1 600] [300 1 700]@});
+## imread (filename)(200:600, 300:700);
+## @end group
+## @end example
+##
 ## @end table
 ##
 ## @seealso{imwrite, imfinfo, imformats}
@@ -88,23 +98,14 @@
 ## Author: Stefan van der Walt <stefan@sun.ac.za>
 ## Author: Andy Adler
 
-function [img, varargout] = imread (varargin)
+function [img, varargout] = imread (filename, varargin)
   if (nargin < 1)
     print_usage ();
-  elseif (! ischar (varargin{1}))
+  elseif (! ischar (filename))
     error ("imread: FILENAME must be a string");
   endif
-  ## In case the file format was specified as a separate argument we
-  ## do this. imageIO() will ignore the second part if filename on its
-  ## own is enough. And if the second argument was a parameter name instead
-  ## of an extension, it is still going to be passed to the next function
-  ## since we are passing the whole function input as well.
-  filename = {varargin{1}};
-  if (nargin > 1 && ischar (varargin {2}))
-    filename{2} = varargin{2};
-  endif
 
-  [img, varargout{1:nargout-1}] = imageIO (@__imread__, "read", filename, varargin{:});
+  [img, varargout{1:nargout-1}] = imageIO ("imread", @__imread__, "read", filename, varargin{:});
 endfunction
 
 
@@ -126,7 +127,7 @@ endfunction
 %!   16,  28, 160,  16,   0, 197, 214,  13,  34,  74, ...
 %!  117, 213,  17,   0,   0,   0,   0,  73,  69,  78, ...
 %!   68, 174,  66,  96, 130];
-%! filename = [tmpnam() ".png"];
+%! filename = [tempname() ".png"];
 %! unwind_protect
 %!   fid = fopen (filename, "wb");
 %!   fwrite (fid, vpng);
@@ -138,4 +139,67 @@ endfunction
 %! assert (A(:,:,1), uint8 ([0, 255, 0; 255, 237, 255; 0, 255, 0]));
 %! assert (A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
 %! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
+
+%!function [r, cmap, a] = write_and_read (w, varargin)
+%!  filename = [tempname() ".tif"];
+%!  unwind_protect
+%!    imwrite (w, filename);
+%!    [r, cmap, a] = imread (filename, varargin{:});
+%!  unwind_protect_cleanup
+%!    unlink (filename);
+%!  end_unwind_protect
+%!endfunction
+
+## test PixelRegion option
+%!testif HAVE_MAGICK
+%! w = randi (255, 100, 100, "uint8");
+%! [r, cmap, a] = write_and_read (w, "PixelRegion", {[50 70] [20 40]});
+%! assert (r, w(50:70, 20:40))
+%! [r, cmap, a] = write_and_read (w, "PixelRegion", {[50 2 70] [20 3 40]});
+%! assert (r, w(50:2:70, 20:3:40))
+
+## If a file does not exist, it's the job of imread to check the file
+## exists before sending it over to __imread__ or whatever function
+## is defined in imformats to handle that specific format.  This is the
+## same in imfinfo.  So in this test we replace one format in imformats
+## with something that will not give an error if the file is missing
+## and make sure we do get an error.
+%!testif HAVE_MAGICK
+%! fmt = fmt_ori = imformats ("jpg");
+%! fmt.read = @true;
+%! error_thrown = false;
+%! imformats ("update", "jpg", fmt);
+%! unwind_protect
+%!   try
+%!     imread ("I sure hope this file does not exist.jpg");
+%!   catch
+%!     error_thrown = true;
+%!   end_try_catch
+%! unwind_protect_cleanup
+%!   imformats ("update", "jpg", fmt_ori);
+%! end_unwind_protect
+%! assert (error_thrown, true);
+
+## make one of the formats read, return what it received as input to
+## confirm that the input parsing is working correcly
+%!testif HAVE_MAGICK
+%! fname = [tempname() ".jpg"];
+%! def_fmt = imformats ();
+%! fid = fopen (fname, "w");
+%! unwind_protect
+%!   fmt = imformats ("jpg");
+%!   fmt.read = @(varargin) varargin;
+%!   imformats ("update", "jpg", fmt);
+%!   assert (imread (fname), {fname});
+%!   assert (imread (fname, "jpg"), {fname});
+%!   assert (imread (fname(1:end-4), "jpg"), {fname});
+%!   extra_inputs = {"some", 89, i, {6 7 8}};
+%!   assert (imread (fname, extra_inputs{:}), {fname, extra_inputs{:}});
+%!   assert (imread (fname, "jpg", extra_inputs{:}), {fname, extra_inputs{:}});
+%!   assert (imread (fname(1:end-4), "jpg", extra_inputs{:}), {fname, extra_inputs{:}});
+%! unwind_protect_cleanup
+%!   fclose (fid);
+%!   unlink (fname);
+%!   imformats (def_fmt);
+%! end_unwind_protect
 

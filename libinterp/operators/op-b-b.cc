@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-float.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
+#include "ov-null-mat.h"
 #include "ops.h"
 #include "xdiv.h"
 #include "xpow.h"
@@ -92,4 +93,8 @@ install_b_b_ops (void)
   INSTALL_CATOP (octave_float_scalar, octave_bool, f_b);
 
   INSTALL_ASSIGNCONV (octave_bool, octave_bool, octave_bool_matrix);
+
+  INSTALL_ASSIGNCONV (octave_bool, octave_null_matrix, octave_bool_matrix);
+  INSTALL_ASSIGNCONV (octave_bool, octave_null_str, octave_bool_matrix);
+  INSTALL_ASSIGNCONV (octave_bool, octave_null_sq_str, octave_bool_matrix);
 }

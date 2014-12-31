@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -57,7 +57,7 @@ function [pval, b, n] = sign_test (x, y, alt)
   y   = reshape (y, 1, n);
   n   = sum (x != y);
   b   = sum (x > y);
-  cdf = binomial_cdf (b, n, 1/2);
+  cdf = binocdf (b, n, 1/2);
 
   if (nargin == 2)
     alt  = "!=";

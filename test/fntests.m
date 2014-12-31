@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 David Bateman
+## Copyright (C) 2005-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -43,12 +43,12 @@ else
   testdirs = {currdir, srcdir};
 endif
 
-src_tree = canonicalize_file_name (fullfile (topbuilddir, "libinterp"));
 liboctave_tree = canonicalize_file_name (fullfile (topbuilddir, "liboctave"));
+src_tree = canonicalize_file_name (fullfile (topbuilddir, "libinterp"));
 script_tree = canonicalize_file_name (fullfile (topsrcdir, "scripts"));
 local_script_tree = canonicalize_file_name (fullfile (currdir, "../scripts"));
 
-fundirs = {src_tree, liboctave_tree, script_tree};
+fundirs = {liboctave_tree, src_tree, script_tree};
 
 if (! strcmp (currdir, srcdir))
   fundirs{end+1} = local_script_tree;

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -236,7 +236,8 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
 }
 
 octave_idx_type
-FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u, octave_idx_type j)
+FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u,
+                              octave_idx_type j)
 {
   octave_idx_type info = -1;
 
@@ -308,7 +309,8 @@ FloatComplexCHOL::update (const FloatComplexColumnVector& u)
   if (u.length () == n)
     {
       init (chol_mat.hermitian () * chol_mat
-            + FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (), false);
+            + FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (),
+            false);
     }
   else
     (*current_liboctave_error_handler) ("cholupdate: dimension mismatch");
@@ -338,7 +340,9 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
       else
         {
           info = init (chol_mat.hermitian () * chol_mat
-                       - FloatComplexMatrix (u) * FloatComplexMatrix (u).hermitian (), false);
+                       - FloatComplexMatrix (u)
+                       * FloatComplexMatrix (u).hermitian (),
+                       false);
           if (info) info = 1;
         }
     }
@@ -349,7 +353,8 @@ FloatComplexCHOL::downdate (const FloatComplexColumnVector& u)
 }
 
 octave_idx_type
-FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u, octave_idx_type j)
+FloatComplexCHOL::insert_sym (const FloatComplexColumnVector& u,
+                              octave_idx_type j)
 {
   warn_qrupdate_once ();
 

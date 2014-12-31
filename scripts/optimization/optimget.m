@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Jaroslav Hajek
+## Copyright (C) 2008-2013 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -20,10 +20,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} optimget (@var{options}, @var{parname})
 ## @deftypefnx {Function File} {} optimget (@var{options}, @var{parname}, @var{default})
-## Return a specific option from a structure created by
-## @code{optimset}.  If @var{parname} is not a field of the @var{options}
-## structure, return @var{default} if supplied, otherwise return an
-## empty matrix.
+## Return the specific option @var{parname} from the optimization options
+## structure @var{options} created by @code{optimset}.
+##
+## If @var{parname} is not defined then return @var{default} if supplied,
+## otherwise return an empty matrix.
+## @seealso{optimset}
 ## @end deftypefn
 
 function retval = optimget (options, parname, default)
@@ -32,21 +34,22 @@ function retval = optimget (options, parname, default)
     print_usage ();
   endif
 
+  ## Expand partial-length names into full names
   opts = __all_opts__ ();
   idx = strncmpi (opts, parname, length (parname));
-
   nmatch = sum (idx);
 
   if (nmatch == 1)
     parname = opts{idx};
   elseif (nmatch == 0)
-    warning ("unrecognized option: %s", parname);
+    warning ("optimget: unrecognized option: %s", parname);
   else
-    fmt = sprintf ("ambiguous option: %%s (%s%%s)",
+    fmt = sprintf ("optimget: ambiguous option: %%s (%s%%s)",
                    repmat ("%s, ", 1, nmatch-1));
     warning (fmt, parname, opts{idx});
   endif
-  if (isfield (options, parname))
+
+  if (isfield (options, parname) && ! isempty (options.(parname)))
     retval = options.(parname);
   elseif (nargin > 2)
     retval = default;
@@ -57,13 +60,20 @@ function retval = optimget (options, parname, default)
 endfunction
 
 
-%!error optimget ()
-
 %!shared opts
 %! opts = optimset ("tolx", 0.1, "maxit", 100);
-%!assert (optimget (opts, "TolX"), 0.1);
-%!assert (optimget (opts, "maxit"), 100);
-%!assert (optimget (opts, "MaxITer"), 100);
-%!warning (optimget (opts, "Max"));
-%!warning (optimget (opts, "foobar"));
+%!assert (optimget (opts, "TolX"), 0.1)
+%!assert (optimget (opts, "maxit"), 100)
+%!assert (optimget (opts, "MaxITer"), 100)
+%!assert (optimget (opts, "TolFun"), [])
+%!assert (optimget (opts, "TolFun", 1e-3), 1e-3)
+
+%% Test input validation
+%!error optimget ()
+%!error optimget (1)
+%!error optimget (1,2,3,4,5)
+%!error optimget (1, "name")
+%!error optimget (struct (), 2)
+%!warning <unrecognized option: foobar> (optimget (opts, "foobar"));
+%!warning <ambiguous option: Max> (optimget (opts, "Max"));
 

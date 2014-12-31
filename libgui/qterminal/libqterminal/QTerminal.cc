@@ -1,22 +1,23 @@
 /*
 
-Copyright (C) 2012 Michael Goffioul.
-Copyright (C) 2012 Jacob Dawid.
+Copyright (C) 2012-2013 Michael Goffioul.
+Copyright (C) 2012-2013 Jacob Dawid.
 
 This file is part of QTerminal.
 
-Foobar is free software: you can redistribute it and/or modify
+This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-QTerminal is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -117,4 +118,5 @@ QTerminal::notice_settings (const QSettings *settings)
     (cursorUseForegroundColor,
      settings->value ("terminal/color_c",
                       QVariant (colors.at (3))).value<QColor> ());
+  setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
 }

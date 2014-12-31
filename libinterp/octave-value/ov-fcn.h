@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_function_h)
-#define octave_function_h 1
+#if !defined (octave_ov_fcn_h)
+#define octave_ov_fcn_h 1
 
 #include <string>
 
@@ -46,7 +46,8 @@ public:
 
   octave_function (void)
     : relative (false), locked (false), private_function (false),
-      xdispatch_class (), my_name (), my_dir_name (), doc () { }
+      xdispatch_class (), xpackage_name (), my_name (), my_dir_name (),
+      doc () { }
 
   ~octave_function (void) { }
 
@@ -75,18 +76,22 @@ public:
   virtual symbol_table::scope_id scope (void) { return -1; }
 
   virtual octave_time time_parsed (void) const
-    { return octave_time (static_cast<time_t> (0)); }
+  { return octave_time (static_cast<time_t> (0)); }
 
   virtual octave_time time_checked (void) const
-    { return octave_time (static_cast<time_t> (0)); }
+  { return octave_time (static_cast<time_t> (0)); }
 
   virtual bool is_subfunction (void) const { return false; }
 
   virtual bool is_class_constructor (const std::string& = std::string ()) const
+  { return false; }
+
+  virtual bool
+  is_classdef_constructor (const std::string& = std::string ()) const
     { return false; }
 
   virtual bool is_class_method (const std::string& = std::string ()) const
-    { return false; }
+  { return false; }
 
   virtual bool takes_varargs (void) const { return false; }
 
@@ -95,6 +100,10 @@ public:
   void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
 
   std::string dispatch_class (void) const { return xdispatch_class; }
+
+  void stash_package_name (const std::string& pack) { xpackage_name = pack; }
+
+  std::string package_name (void) const { return xpackage_name; }
 
   virtual void
   mark_as_private_function (const std::string& cname = std::string ())
@@ -106,11 +115,11 @@ public:
   bool is_private_function (void) const { return private_function; }
 
   bool is_private_function_of_class (const std::string& nm) const
-    { return private_function && xdispatch_class == nm; }
+  { return private_function && xdispatch_class == nm; }
 
   virtual bool
   is_anonymous_function_of_class (const std::string& = std::string ()) const
-    { return false; }
+  { return false; }
 
   std::string dir_name (void) const { return my_dir_name; }
 
@@ -152,6 +161,14 @@ public:
 
   std::string name (void) const { return my_name; }
 
+  std::string canonical_name (void) const
+    {
+      if (xpackage_name.empty ())
+        return my_name;
+      else
+        return xpackage_name + "." + my_name;
+    }
+
   void document (const std::string& ds) { doc = ds; }
 
   std::string doc_string (void) const { return doc; }
@@ -159,6 +176,9 @@ public:
   virtual void unload (void) { }
 
   virtual void accept (tree_walker&) { }
+
+  virtual bool is_postfix_index_handled (char type) const
+    { return (type == '(' || type == '{'); }
 
 protected:
 
@@ -180,6 +200,10 @@ protected:
   // function inside a class directory, this is the name of the class
   // to which the method belongs.
   std::string xdispatch_class;
+
+  // If this function is part of a package, this is the full name
+  // of the package to which the function belongs.
+  std::string xpackage_name;
 
   // The name of this function.
   std::string my_name;

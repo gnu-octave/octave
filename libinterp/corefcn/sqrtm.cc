@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2012 Ross Lippert and Paul Kienzle
+Copyright (C) 2001-2013 Ross Lippert and Paul Kienzle
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -101,7 +101,8 @@ do_sqrtm (const octave_value& arg)
 
   typedef typename Matrix::element_type real_type;
 
-  real_type cutoff = 0, one = 1;
+  real_type cutoff = 0;
+  real_type one = 1;
   real_type eps = std::numeric_limits<real_type>::epsilon ();
 
   if (! iscomplex)
@@ -200,12 +201,12 @@ do_sqrtm (const octave_value& arg)
 }
 
 DEFUN (sqrtm, args, nargout,
- "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{s} =} sqrtm (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})\n\
 Compute the matrix square root of the square matrix @var{A}.\n\
 \n\
-Ref: N.J. Higham.  @cite{A New sqrtm for @sc{matlab}}.  Numerical\n\
+Ref: @nospell{N.J. Higham}.  @cite{A New sqrtm for @sc{matlab}}.  Numerical\n\
 Analysis Report No. 336, Manchester @nospell{Centre} for Computational\n\
 Mathematics, Manchester, England, January 1999.\n\
 @seealso{expm, logm}\n\
@@ -242,7 +243,8 @@ Mathematics, Manchester, England, January 1999.\n\
     // sqrtm of a diagonal matrix is just sqrt.
     retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
-    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR> (arg);
+    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR>
+                 (arg);
   else if (arg.is_numeric_type ())
     retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
 

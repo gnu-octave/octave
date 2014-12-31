@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,7 +52,8 @@ static void do_bool_partition (bool *data, octave_idx_type *idx,
   // FIXME: This is essentially a simple bucket sort.
   // Can it be efficiently done by std::partition?
   OCTAVE_LOCAL_BUFFER (octave_idx_type, jdx, nel);
-  octave_idx_type k = 0, l = 0;
+  octave_idx_type k = 0;
+  octave_idx_type l = 0;
   for (octave_idx_type i = 0; i < nel; i++)
     {
       if (data[i] == desc)
@@ -103,11 +104,12 @@ octave_sort<bool>::sort (bool *data, octave_idx_type *idx, octave_idx_type nel,
   do_bool_partition<true> (data, idx, nel);
 }
 
-INSTANTIATE_ARRAY_SORT (bool);
+template class OCTAVE_API octave_sort<bool>;
 
 INSTANTIATE_ARRAY (bool, OCTAVE_API);
 
-template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<bool>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&,
+                                               const Array<bool>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

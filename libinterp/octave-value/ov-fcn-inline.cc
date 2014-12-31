@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 
 This file is part of Octave.
 
@@ -284,18 +284,19 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
 #else
   group_hid = H5Gcreate (loc_id, name, 0);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
   size_t len = 0;
   for (int i = 0; i < ifargs.length (); i++)
     if (len < ifargs(i).length ())
       len = ifargs(i).length ();
 
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
   bool retval = true;
 
-  // FIXME Is there a better way of saving string vectors, than a
-  // null padded matrix?
+  // FIXME: Is there a better way of saving string vectors,
+  //        than a null padded matrix?
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
 
@@ -423,7 +424,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
 #if HAVE_HDF5_18
   data_hid = H5Dopen (group_hid, "args", H5P_DEFAULT);
@@ -597,7 +598,7 @@ octave_fcn_inline::load_hdf5 (hid_t loc_id, const char *name)
 #endif
 
 void
-octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_fcn_inline::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -634,11 +635,12 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 }
 
 DEFUNX ("inline", Finline, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} inline (@var{str})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
+\n\
 If called with a single argument, the arguments of the generated\n\
 function are extracted from the function itself.  The generated\n\
 function arguments will then be in alphabetical order.  It should\n\
@@ -653,7 +655,12 @@ they are the names of the arguments of the function.\n\
 \n\
 If the second argument is an integer @var{n}, the arguments are\n\
 @qcode{\"x\"}, @qcode{\"P1\"}, @dots{}, @qcode{\"P@var{N}\"}.\n\
-@seealso{argnames, formula, vectorize}\n\
+\n\
+Programming Note: The use of @code{inline} is discouraged and it may be\n\
+removed from a future version of Octave.  The preferred way to create\n\
+functions from strings is through the use of anonymous functions\n\
+(@pxref{Anonymous Functions}) or @code{str2func}.\n\
+@seealso{argnames, formula, vectorize, str2func}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -806,7 +813,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                       std::string s = args(i).string_value ();
                       fargs(i-1) = s;
                     }
-                    else
+                  else
                     {
                       error ("inline: expecting string arguments");
                       return retval;
@@ -843,12 +850,13 @@ If the second argument is an integer @var{n}, the arguments are\n\
 */
 
 DEFUN (formula, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} formula (@var{fun})\n\
 Return a character string representing the inline function @var{fun}.\n\
+\n\
 Note that @code{char (@var{fun})} is equivalent to\n\
 @code{formula (@var{fun})}.\n\
-@seealso{argnames, inline, vectorize}\n\
+@seealso{char, argnames, inline, vectorize}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -881,7 +889,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 */
 
 DEFUN (argnames, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} argnames (@var{fun})\n\
 Return a cell array of character strings containing the names of\n\
 the arguments of the inline function @var{fun}.\n\
@@ -928,7 +936,7 @@ the arguments of the inline function @var{fun}.\n\
 */
 
 DEFUN (vectorize, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
 Create a vectorized version of the inline function @var{fun}\n\
 by replacing all occurrences of @code{*}, @code{/}, etc., with\n\

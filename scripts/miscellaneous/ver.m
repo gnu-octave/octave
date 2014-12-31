@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 William Poetra Yoga Hadisoeseno
+## Copyright (C) 2005-2013 William Poetra Yoga Hadisoeseno
 ##
 ## This file is part of Octave.
 ##
@@ -17,19 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ver ()
-## @deftypefnx {Function File} {v =} ver ()
-## @deftypefnx {Function File} {v =} ver ("Octave")
-## @deftypefnx {Function File} {v =} ver (@var{package})
+## @deftypefn  {Function File} {} ver
+## @deftypefnx {Function File} {} ver Octave
+## @deftypefnx {Function File} {} ver @var{package}
+## @deftypefnx {Function File} {v =} ver (@dots{})
 ## 
 ## Display a header containing the current Octave version number, license
-## string, and operating system followed by a list of installed packages,
-## versions, and installation directories.
+## string, and operating system.  The header is followed by a list of installed
+## packages, versions, and installation directories.
 ##
-## @code{v = ver ()}
+## Use the package name @var{package} or Octave to limit the listing to a
+## desired component.
 ##
-## Return a vector of structures describing Octave and each installed package.
-## The structure includes the following fields.
+## When called with an output argument, return a vector of structures
+## describing Octave and each installed package.  The structure includes the
+## following fields.
 ##
 ## @table @code
 ## @item Name
@@ -45,71 +47,67 @@
 ## Date of the version/revision.
 ## @end table
 ##
-## @code{v = ver ("Octave")}
-##
-## Return version information for Octave only.
-##
-## @code{v = ver (@var{package})}
-##
-## Return version information for @var{package}.
-##
-## @seealso{version, octave_config_info}
+## @seealso{version, octave_config_info, usejava, pkg}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function varargout = ver (package = "")
+function retval = ver (package = "")
 
   if (nargin > 1)
     print_usage ();
   endif
 
-  ## Start with the version info for Octave
-  ret = struct ("Name", "Octave", "Version", version,
-                "Release", [], "Date", []);
-
-  ## Add the installed packages
-  lst = pkg ("list");
-  for i = 1:length (lst)
-    ret(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
-                         "Release", [], "Date", lst{i}.date);
-  endfor
-
   if (nargout == 0)
-    octave_license = license ();
+    [unm, err] = uname ();
 
-    [unm, status] = uname ();
-
-    if (status < 0)
+    if (err)
       os_string = "unknown";
     else
-      os_string = sprintf ("%s %s %s %s", unm.sysname, unm.release,
-                           unm.version, unm.machine);
+      os_string = sprintf ("%s %s %s %s",
+                           unm.sysname, unm.release, unm.version, unm.machine);
     endif
 
     hbar(1:70) = "-";
-    ver_line1 = "GNU Octave Version ";
-    ver_line2 = "GNU Octave License: ";
-    ver_line3 = "Operating System: ";
+    desc = {hbar
+            ["GNU Octave Version: " OCTAVE_VERSION]
+            ["GNU Octave License: " license]
+            ["Operating System: " os_string]
+            hbar};
 
-    ver_desc = sprintf ("%s\n%s%s\n%s%s\n%s%s\n%s\n", hbar, ver_line1, version,
-                        ver_line2, octave_license, ver_line3, os_string, hbar);
+    printf ("%s\n", desc{:});
 
-    puts (ver_desc);
-
-    pkg ("list");
-  else
-    if (! isempty (package))
-      n = [];
-      for r = 1:numel (ret)
-        if (strcmpi (ret(r).Name, package))
-          n = r;
-          break;
-        endif
-      endfor
-      ret = ret(n);
+    if (isempty (package))
+      pkg ("list");
+    elseif (strcmpi (package, "Octave"))
+      ## Nothing to do, Octave version was already reported
+    else
+      pkg ("list", package);
     endif
-    varargout{1} = ret;
+  else
+    ## Get the installed packages
+    if (isempty (package))
+      lst = pkg ("list");
+      ## Start with the version info for Octave
+      retval = struct ("Name", "Octave", "Version", version,
+                       "Release", [], "Date", []);
+      for i = 1:numel (lst)
+        retval(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
+                                "Release", [], "Date", lst{i}.date);
+      endfor
+    elseif (strcmpi (package, "Octave"))
+      retval = struct ("Name", "Octave", "Version", version,
+                       "Release", [], "Date", []);
+    else 
+      lst = pkg ("list", package);
+      if (isempty (lst))
+        retval = struct ("Name", "", "Version", [],
+                         "Release", [], "Date", []);
+      else
+        retval = struct ("Name", lst{1}.name, "Version", lst{1}.version,
+                         "Release", [], "Date", lst{1}.date);
+      endif
+    endif
   endif
 
 endfunction

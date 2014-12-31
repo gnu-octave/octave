@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Max Brister
+Copyright (C) 2012-2013 Max Brister
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Max Brister <max@2bass.com>
 
-#if !defined (octave_tree_jit_h)
-#define octave_tree_jit_h 1
+#if !defined (octave_pt_jit_h)
+#define octave_pt_jit_h 1
 
 #ifdef HAVE_LLVM
 
@@ -128,6 +128,8 @@ public:
   void visit_constant (tree_constant&);
 
   void visit_fcn_handle (tree_fcn_handle&);
+
+  void visit_funcall (tree_funcall&);
 
   void visit_parameter_list (tree_parameter_list&);
 
@@ -365,7 +367,7 @@ public:
   llvm::Module *get_module (void) const { return module; }
 
   void optimize (llvm::Function *fn);
- private:
+private:
   tree_jit (void);
 
   static tree_jit& instance (void);
@@ -384,8 +386,13 @@ public:
   size_t trip_count (const octave_value& bounds) const;
 
   llvm::Module *module;
+#ifdef LEGACY_PASSMANAGER
+  llvm::legacy::PassManager *module_pass_manager;
+  llvm::legacy::FunctionPassManager *pass_manager;
+#else
   llvm::PassManager *module_pass_manager;
   llvm::FunctionPassManager *pass_manager;
+#endif
   llvm::ExecutionEngine *engine;
 };
 

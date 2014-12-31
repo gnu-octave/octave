@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_scalar_h)
-#define octave_scalar_h 1
+#if !defined (octave_ov_scalar_h)
+#define octave_ov_scalar_h 1
 
 #include <cstdlib>
 
@@ -76,10 +76,10 @@ public:
 
   type_conv_info numeric_demotion_function (void) const;
 
-  idx_vector index_vector (void) const { return idx_vector (scalar); }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (scalar); }
 
   octave_value any (int = 0) const
-    { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
+  { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -93,35 +93,35 @@ public:
 
   int8NDArray
   int8_array_value (void) const
-    { return int8NDArray (dim_vector (1, 1), scalar); }
+  { return int8NDArray (dim_vector (1, 1), scalar); }
 
   int16NDArray
   int16_array_value (void) const
-    { return int16NDArray (dim_vector (1, 1), scalar); }
+  { return int16NDArray (dim_vector (1, 1), scalar); }
 
   int32NDArray
   int32_array_value (void) const
-    { return int32NDArray (dim_vector (1, 1), scalar); }
+  { return int32NDArray (dim_vector (1, 1), scalar); }
 
   int64NDArray
   int64_array_value (void) const
-    { return int64NDArray (dim_vector (1, 1), scalar); }
+  { return int64NDArray (dim_vector (1, 1), scalar); }
 
   uint8NDArray
   uint8_array_value (void) const
-    { return uint8NDArray (dim_vector (1, 1), scalar); }
+  { return uint8NDArray (dim_vector (1, 1), scalar); }
 
   uint16NDArray
   uint16_array_value (void) const
-    { return uint16NDArray (dim_vector (1, 1), scalar); }
+  { return uint16NDArray (dim_vector (1, 1), scalar); }
 
   uint32NDArray
   uint32_array_value (void) const
-    { return uint32NDArray (dim_vector (1, 1), scalar); }
+  { return uint32NDArray (dim_vector (1, 1), scalar); }
 
   uint64NDArray
   uint64_array_value (void) const
-    { return uint64NDArray (dim_vector (1, 1), scalar); }
+  { return uint64NDArray (dim_vector (1, 1), scalar); }
 
 #define DEFINE_INT_SCALAR_VALUE(TYPE) \
   octave_ ## TYPE \
@@ -141,30 +141,32 @@ public:
 
   double double_value (bool = false) const { return scalar; }
 
-  float float_value (bool = false) const { return static_cast<float> (scalar); }
+  float float_value (bool = false) const
+  { return static_cast<float> (scalar); }
 
   double scalar_value (bool = false) const { return scalar; }
 
-  float float_scalar_value (bool = false) const { return static_cast<float> (scalar); }
+  float float_scalar_value (bool = false) const
+  { return static_cast<float> (scalar); }
 
   Matrix matrix_value (bool = false) const
-    { return Matrix (1, 1, scalar); }
+  { return Matrix (1, 1, scalar); }
 
   FloatMatrix float_matrix_value (bool = false) const
-    { return FloatMatrix (1, 1, scalar); }
+  { return FloatMatrix (1, 1, scalar); }
 
   NDArray array_value (bool = false) const
-    { return NDArray (dim_vector (1, 1), scalar); }
+  { return NDArray (dim_vector (1, 1), scalar); }
 
   FloatNDArray float_array_value (bool = false) const
-    { return FloatNDArray (dim_vector (1, 1), scalar); }
+  { return FloatNDArray (dim_vector (1, 1), scalar); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
-    { return SparseMatrix (Matrix (1, 1, scalar)); }
+  { return SparseMatrix (Matrix (1, 1, scalar)); }
 
   // FIXME Need SparseComplexMatrix (Matrix) constructor!!!
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-    { return SparseComplexMatrix (sparse_matrix_value ()); }
+  { return SparseComplexMatrix (sparse_matrix_value ()); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -173,16 +175,16 @@ public:
   FloatComplex float_complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return  ComplexMatrix (1, 1, Complex (scalar)); }
+  { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-    { return  FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
+  { return  FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
 
   ComplexNDArray complex_array_value (bool = false) const
-    { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
+  { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-    { return FloatComplexNDArray (dim_vector (1, 1), FloatComplex (scalar)); }
+  { return FloatComplexNDArray (dim_vector (1, 1), FloatComplex (scalar)); }
 
   charNDArray
   char_array_value (bool = false) const
@@ -238,10 +240,10 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    {
-      return os.write (array_value (), block_size, output_type,
-                       skip, flt_fmt);
-    }
+  {
+    return os.write (array_value (), block_size, output_type,
+                     skip, flt_fmt);
+  }
 
   mxArray *as_mxArray (void) const;
 

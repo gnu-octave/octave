@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2012 John W. Eaton
+Copyright (C) 1995-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -39,12 +39,12 @@ public:
   virtual ~base_minimizer (void) { }
 
   base_minimizer& operator = (const base_minimizer& a)
-    {
-      if (this != &a)
-        x = a.x;
+  {
+    if (this != &a)
+      x = a.x;
 
-      return *this;
-    }
+    return *this;
+  }
 
   // Derived classes must provide a function to actually do the
   // minimization.
@@ -56,63 +56,63 @@ public:
   // get additional information.
 
   virtual ColumnVector minimize (void)
-    {
-      double objf;
-      octave_idx_type inform;
-      ColumnVector lambda;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    double objf;
+    octave_idx_type inform;
+    ColumnVector lambda;
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (double& objf)
-    {
-      octave_idx_type inform;
-      ColumnVector lambda;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    octave_idx_type inform;
+    ColumnVector lambda;
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (double& objf, octave_idx_type& inform)
-    {
-      ColumnVector lambda;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    ColumnVector lambda;
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (double& objf, octave_idx_type& inform,
                                  ColumnVector& lambda)
-    {
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (const ColumnVector& x0)
-    {
-      x = x0;
-      double objf;
-      octave_idx_type inform;
-      ColumnVector lambda;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    x = x0;
+    double objf;
+    octave_idx_type inform;
+    ColumnVector lambda;
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf)
-    {
-      x = x0;
-      octave_idx_type inform;
-      ColumnVector lambda;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    x = x0;
+    octave_idx_type inform;
+    ColumnVector lambda;
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf,
                                  octave_idx_type& inform)
-    {
-      x = x0;
-      ColumnVector lambda;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    x = x0;
+    ColumnVector lambda;
+    return do_minimize (objf, inform, lambda);
+  }
 
   virtual ColumnVector minimize (const ColumnVector& x0, double& objf,
                                  octave_idx_type& inform, ColumnVector& lambda)
-    {
-      x = x0;
-      return do_minimize (objf, inform, lambda);
-    }
+  {
+    x = x0;
+    return do_minimize (objf, inform, lambda);
+  }
 
   octave_idx_type size (void) const { return x.capacity (); }
 

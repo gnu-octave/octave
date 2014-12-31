@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 John W. Eaton
+Copyright (C) 2010-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_glob_h)
-#define octave_glob_h 1
+#if !defined (octave_oct_glob_h)
+#define octave_oct_glob_h 1
 
 #include "str-vec.h"
 

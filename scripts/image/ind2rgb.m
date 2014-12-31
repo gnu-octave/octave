@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -82,27 +82,37 @@ endfunction
 %! ## test basic usage with 1 and 3 outputs
 %! [rgb] = ind2rgb (img, map);
 %! [r, g, b] = ind2rgb (img, map);
-%!assert (ergb, rgb);
-%!assert (ergb, reshape ([r(:) g(:) b(:)], [size(img) 3]));
+%!
+%!assert (ergb, rgb)
+%!assert (ergb, reshape ([r(:) g(:) b(:)], [size(img) 3]))
+%!test
 %! ## test correction for integers
-%! img = uint8 (img -1);
+%! img = uint8 (img - 1);
 %! [rgb] = ind2rgb (img, map);
-%!assert (ergb, rgb);
-%! ## check it fails when image is a float with an index value of 0
-%!fail ("[rgb] = ind2rgb (double(img), map)")
+%! assert (ergb, rgb);
+%!test
+%! ## Check that values below lower bound are mapped to first color value 
+%! rgb = ind2rgb ([-1 0 2], gray (64));
+%! assert (rgb(:,1:2,:), zeros (1,2,3));
+%! assert (rgb(:,3,:), 1/63 * ones (1,1,3));
 
 %% Test input validation
 %!error ind2rgb ()
 %!error ind2rgb (1,2,3)
-%!error <X must be an indexed image> ind2rgb ({1}, jet (64))
+%!error <X must be an indexed image> ind2rgb (ones (3,3,3), jet (64))
 %!error <X must be an indexed image> ind2rgb (1+i, jet (64))
 %!error <X must be an indexed image> ind2rgb (sparse (1), jet (64))
-%!error <X must be an indexed image> ind2rgb (0, jet (64))
 %!error <X must be an indexed image> ind2rgb (1.1, jet (64))
+%!error <X must be an indexed image> ind2rgb ({1}, jet (64))
 %!error <MAP must be a valid colormap> ind2rgb (1, {1})
 %!error <MAP must be a valid colormap> ind2rgb (1, 1+i)
 %!error <MAP must be a valid colormap> ind2rgb (1, ones (2,2,2))
 %!error <MAP must be a valid colormap> ind2rgb (1, ones (2,4))
 %!error <MAP must be a valid colormap> ind2rgb (1, [-1])
 %!error <MAP must be a valid colormap> ind2rgb (1, [2])
+
+%!warning <contains colors outside of colormap> ind2rgb ([-1 1], jet (64));
+%!warning <contains colors outside of colormap> ind2rgb ([0 1 2], gray (5));
+%!warning <contains colors outside of colormap> ind2rgb ([1 2 6], gray (5));
+%!warning <contains colors outside of colormap> ind2rgb (uint8 ([1 2 5]), gray (5));
 

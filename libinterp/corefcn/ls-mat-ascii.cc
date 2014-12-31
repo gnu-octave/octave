@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -133,7 +133,8 @@ get_lines_and_columns (std::istream& is,
       // CRLF pair as the line separator.  Any other CR in the text
       // will not be considered as whitespace.
 
-      if (beg != std::string::npos && buf[beg] == '\r' && beg == buf.length () - 1)
+      if (beg != std::string::npos && buf[beg] == '\r'
+          && beg == buf.length () - 1)
         {
           // We had a blank line ending with a CRLF.  Handle it the
           // same as an empty line.
@@ -172,7 +173,7 @@ get_lines_and_columns (std::istream& is,
               beg = buf.find_first_not_of (", \t", end);
 
               if (beg == std::string::npos || (buf[beg] == '\r' &&
-                                  beg == buf.length () - 1))
+                                               beg == buf.length () - 1))
                 {
                   // We had a line with trailing spaces and
                   // ending with a CRLF, so this should look like EOL,
@@ -210,7 +211,7 @@ get_lines_and_columns (std::istream& is,
   if (! quiet && (nr == 0 || nc == 0))
     error ("load: file '%s' seems to be empty!", filename.c_str ());
 
- done:
+done:
 
   is.clear ();
   is.seekg (pos);
@@ -328,7 +329,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
           if (is || is.eof ())
             {
-              // FIXME -- not sure this is best, but it works.
+              // FIXME: not sure this is best, but it works.
 
               if (is.eof ())
                 is.clear ();

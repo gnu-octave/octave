@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Bill Denney
+## Copyright (C) 2008-2013 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -25,6 +25,9 @@
 ##
 ## This is useful for checking to see that the number of input arguments
 ## supplied to a function is within an acceptable range.
+##
+## @strong{Caution}: @code{nargchk} is scheduled for deprecation.  Use
+## @code{narginchk} in all new code.
 ## @seealso{nargoutchk, narginchk, error, nargin, nargout}
 ## @end deftypefn
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -128,7 +128,7 @@ install_range_ops (void)
   INSTALL_CATOP (octave_bool_matrix, octave_range, bm_r);
   INSTALL_CATOP (octave_char_matrix, octave_range, chm_r);
 
-  // FIXME -- this would be unneccessary if
+  // FIXME: this would be unneccessary if
   // octave_base_value::numeric_assign always tried converting lhs
   // before rhs.
 

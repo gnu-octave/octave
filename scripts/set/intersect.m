@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,19 +18,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} intersect (@var{a}, @var{b})
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@var{a}, @var{b})
+## @deftypefn  {Function File} {@var{c} =} intersect (@var{a}, @var{b})
+## @deftypefnx {Function File} {@var{c} =} intersect (@var{a}, @var{b}, "rows")
+## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@dots{})
 ##
-## Return the elements in both @var{a} and @var{b}, sorted in ascending
-## order.  If @var{a} and @var{b} are both column vectors return a column
-## vector, otherwise return a row vector.
-## @var{a}, @var{b} may be cell arrays of string(s).
+## Return the elements common to both @var{a} and @var{b} sorted in ascending
+## order.
 ##
-## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)==c} and
-## @code{b(ib)==c}.
+## If @var{a} and @var{b} are both column vectors then return a column vector;
+## Otherwise, return a row vector.  The inputs may also be cell arrays of
+## strings.
+##
+## If the optional input @qcode{"rows"} is given then return the common rows of
+## @var{a} and @var{b}.  The inputs must be 2-D matrices to use this option.
+##
+## If requested, return index vectors @var{ia} and @var{ib} such that
+## @code{@var{c} = @var{a}(@var{ia})} and @code{@var{c} = @var{b}(@var{ib})}.
 ##
 ## @end deftypefn
-## @seealso{unique, union, setxor, setdiff, ismember}
+## @seealso{unique, union, setdiff, setxor, ismember}
 
 function [c, ia, ib] = intersect (a, b, varargin)
 
@@ -38,12 +44,15 @@ function [c, ia, ib] = intersect (a, b, varargin)
     print_usage ();
   endif
 
-  [a, b] = validargs ("intersect", a, b, varargin{:});
+  [a, b] = validsetargs ("intersect", a, b, varargin{:});
 
   if (isempty (a) || isempty (b))
     c = ia = ib = [];
   else
-    ## form a and b into sets
+    by_rows = nargin == 3;
+    iscol = isvector (a) && isvector (b) && iscolumn (a) && iscolumn (b);
+
+    ## Form A and B into sets
     if (nargout > 1)
       [a, ja] = unique (a, varargin{:});
       [b, jb] = unique (b, varargin{:});
@@ -52,7 +61,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
       b = unique (b, varargin{:});
     endif
 
-    if (nargin > 2)
+    if (by_rows)
       c = [a; b];
       [c, ic] = sortrows (c);
       ii = find (all (c(1:end-1,:) == c(2:end,:), 2));
@@ -60,7 +69,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
       len_a = rows (a);
     else
       c = [a(:); b(:)];
-      [c, ic] = sort (c);               # [a(:);b(:)](ic) == c
+      [c, ic] = sort (c);         # [a(:);b(:)](ic) == c
       if (iscellstr (c))
         ii = find (strcmp (c(1:end-1), c(2:end)));
       else
@@ -71,11 +80,12 @@ function [c, ia, ib] = intersect (a, b, varargin)
     endif
 
     if (nargout > 1)
-      ia = ja(ic(ii));                  # a(ia) == c
-      ib = jb(ic(ii+1) - len_a);        # b(ib) == c
+      ia = ja(ic(ii));            # a(ia) == c
+      ib = jb(ic(ii+1) - len_a);  # b(ib) == c
     endif
 
-    if (nargin == 2 && (rows (b) == 1 || rows (a) == 1))
+    ## Adjust output orientation for Matlab compatibility
+    if (! by_rows && ! iscol)
       c = c.';
     endif
   endif
@@ -83,7 +93,24 @@ function [c, ia, ib] = intersect (a, b, varargin)
 endfunction
 
 
-%!# Test the routine for index vectors ia and ib
+## Test orientation of output
+%!shared a,b
+%! a = 1:4;
+%! b = 2:5;
+
+%!assert (size (intersect (a, b)), [1 3])
+%!assert (size (intersect (a', b)), [1 3])
+%!assert (size (intersect (a, b')), [1 3])
+%!assert (size (intersect (a', b')), [3 1])
+
+## Test multi-dimensional arrays
+%!test
+%! a = rand (3,3,3);
+%! b = a;
+%! b(1,1,1) = 2;
+%! assert (intersect (a, b), sort (a(2:end)));
+
+## Test the routine for index vectors ia and ib
 %!test
 %! a = [3 2 4 5 7 6 5 1 0 13 13];
 %! b = [3 5 12 1 1 7];

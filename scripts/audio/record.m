@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 John W. Eaton
+## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -39,7 +39,7 @@ function X = record (sec, sampling_rate)
 
   unwind_protect
 
-    file = tmpnam ();
+    file = tempname ();
 
     input ("Please hit ENTER and speak afterwards!\n", 1);
 

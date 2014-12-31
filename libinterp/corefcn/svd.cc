@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 static int Vsvd_driver = SVD::GESVD;
 
 DEFUN (svd, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{s} =} svd (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{U}, @var{S}, @var{V}] =} svd (@var{A}, @var{econ})\n\
@@ -169,7 +169,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
               retval(1) = FloatMatrix (0, 0);
               retval(0) = FloatDiagMatrix (nr, 0, 1.0f);
               break;
-            case SVD::sigma_only: default:
+          case SVD::sigma_only: default:
               retval(0) = FloatMatrix (0, 1);
               break;
             }
@@ -188,7 +188,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
               retval(1) = Matrix (0, 0);
               retval(0) = DiagMatrix (nr, 0, 1.0);
               break;
-            case SVD::sigma_only: default:
+          case SVD::sigma_only: default:
               retval(0) = Matrix (0, 1);
               break;
             }
@@ -403,7 +403,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 */
 
 DEFUN (svd_driver, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} svd_driver ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} svd_driver (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} svd_driver (@var{new_val}, \"local\")\n\

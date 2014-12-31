@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -38,8 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "vasnprintf.h"
 
-#include "quit.h"
-
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -47,7 +45,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "pathsearch.h"
+#include "quit.h"
 #include "str-vec.h"
 
 #include "Cell.h"
@@ -77,7 +77,7 @@ bool
 valid_identifier (const char *s)
 {
   if (! s || ! (isalpha (*s) || *s == '_' || *s == '$'))
-     return false;
+    return false;
 
   while (*++s != '\0')
     if (! (isalnum (*s) || *s == '_' || *s == '$'))
@@ -93,7 +93,7 @@ valid_identifier (const std::string& s)
 }
 
 DEFUN (isvarname, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isvarname (@var{name})\n\
 Return true if @var{name} is a valid variable name.\n\
 @seealso{iskeyword, exist, who}\n\
@@ -121,6 +121,7 @@ Return true if @var{name} is a valid variable name.\n\
 %!assert (isvarname ("1foo"), false)
 %!assert (isvarname (""), false)
 %!assert (isvarname (12), false)
+%!assert (isvarname ("foo+bar"), false)
 
 %!error isvarname ()
 %!error isvarname ("foo", "bar");
@@ -151,7 +152,8 @@ almost_match (const std::string& std, const std::string& s, int min_match_len,
 // Ugh.
 
 int
-keyword_almost_match (const char * const *std, int *min_len, const std::string& s,
+keyword_almost_match (const char * const *std, int *min_len,
+                      const std::string& s,
                       int min_toks_to_match, int max_toks)
 {
   int status = 0;
@@ -229,7 +231,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
         goto done;
     }
 
- done:
+done:
 
   delete [] kw;
   delete [] to_match;
@@ -237,7 +239,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
   return status;
 }
 
-// Return non-zero if either NR or NC is zero.  Return -1 if this
+// Return nonzero if either NR or NC is zero.  Return -1 if this
 // should be considered fatal; return 1 if this is ok.
 
 int
@@ -287,7 +289,7 @@ make_absolute (const string_vector& sv)
 }
 
 DEFUN (file_in_loadpath, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} file_in_loadpath (@var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
@@ -302,7 +304,7 @@ the first that matches.\n\
 If the second optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_path, path}\n\
+@seealso{file_in_path, dir_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -316,7 +318,8 @@ name in the path.  If no files are found, return an empty cell array.\n\
       if (! error_state && names.length () > 0)
         {
           if (nargin == 1)
-            retval = octave_env::make_absolute (load_path::find_first_of (names));
+            retval =
+              octave_env::make_absolute (load_path::find_first_of (names));
           else if (nargin == 2)
             {
               std::string opt = args(1).string_value ();
@@ -353,10 +356,12 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
 %!error file_in_loadpath ()
 %!error file_in_loadpath ("foo", "bar", 1)
+%!error file_in_loadpath ([])
+%!error file_in_loadpath ("plot.m", "bar")
 */
 
 DEFUN (file_in_path, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
 @deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name of @var{file} if it can be found in\n\
@@ -378,7 +383,7 @@ the first that matches.\n\
 If the third optional argument @qcode{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
-@seealso{file_in_loadpath}\n\
+@seealso{file_in_loadpath, dir_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -387,10 +392,10 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      std::string path = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string path = args(0).string_value ();
+
           string_vector names = args(1).all_strings ();
 
           if (! error_state && names.length () > 0)
@@ -437,6 +442,9 @@ name in the path.  If no files are found, return an empty cell array.\n\
 %!error file_in_path ()
 %!error file_in_path ("foo")
 %!error file_in_path ("foo", "bar", "baz", 1)
+%!error file_in_path ([])
+%!error file_in_path (path (), [])
+%!error file_in_path (path (), "plot.m", "bar")
 */
 
 std::string
@@ -448,6 +456,44 @@ file_in_path (const std::string& name, const std::string& suffix)
     nm.append (suffix);
 
   return octave_env::make_absolute (load_path::find_file (nm));
+}
+
+std::string
+find_data_file_in_load_path  (const std::string& fcn,
+                              const std::string& file,
+                              bool require_regular_file)
+{
+  std::string fname = file;
+
+  if (! (octave_env::absolute_pathname (fname)
+         || octave_env::rooted_relative_pathname (fname)))
+    {
+      // Load path will also search "." first, but we don't want to
+      // issue a warning if the file is found in the current directory,
+      // so do an explicit check for that.
+
+      file_stat fs (fname);
+
+      bool local_file_ok
+        = fs.exists () && (fs.is_reg () || ! require_regular_file);
+
+      if (! local_file_ok)
+        {
+          // Not directly found; search load path.
+
+          std::string tmp
+            = octave_env::make_absolute (load_path::find_file (fname));
+
+          if (! tmp.empty ())
+            {
+              gripe_data_file_in_path (fcn, tmp);
+
+              fname = tmp;
+            }
+        }
+    }
+
+  return fname;
 }
 
 // See if there is an function file in the path.  If so, return the
@@ -466,7 +512,7 @@ fcn_file_in_path (const std::string& name)
         {
           file_stat fs (name);
 
-          if (fs.exists ())
+          if (fs.exists () && ! fs.is_dir ())
             retval = name;
         }
       else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
@@ -650,7 +696,7 @@ do_string_escapes (const std::string& s)
 }
 
 DEFUN (do_string_escapes, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} do_string_escapes (@var{string})\n\
 Convert special characters in @var{string} to their escaped forms.\n\
 @end deftypefn")
@@ -678,14 +724,24 @@ Convert special characters in @var{string} to their escaped forms.\n\
 %!assert (do_string_escapes ("foo\\nbar"), ["foo", char(10), "bar"])
 %!assert ("foo\nbar", ["foo", char(10), "bar"])
 
-%!assert (do_string_escapes ('\a\b\f\n\r\t\v'), "\a\b\f\n\r\t\v")
-%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"), "\a\b\f\n\r\t\v")
-%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"),
-%!        char ([7, 8, 12, 10, 13, 9, 11]))
-%!assert ("\a\b\f\n\r\t\v", char ([7, 8, 12, 10, 13, 9, 11]))
+%!assert (do_string_escapes ('\0\a\b\f\n\r\t\v'), "\0\a\b\f\n\r\t\v")
+%!assert (do_string_escapes ("\\0\\a\\b\\f\\n\\r\\t\\v"), "\0\a\b\f\n\r\t\v")
+%!assert (do_string_escapes ("\\0\\a\\b\\f\\n\\r\\t\\v"),
+%!        char ([0, 7, 8, 12, 10, 13, 9, 11]))
+%!assert ("\0\a\b\f\n\r\t\v", char ([0, 7, 8, 12, 10, 13, 9, 11]))
+
+%!assert (do_string_escapes ('\\'), "\\")
+%!assert (do_string_escapes ("\\\\"), "\\")
+%!assert (do_string_escapes ("\\\\"), char (92))
+
+%!assert (do_string_escapes ('\''single-quoted\'''), "'single-quoted'")
+%!assert (do_string_escapes ("\\'single-quoted\\'"), "'single-quoted'")
+%!assert (do_string_escapes ('\"double-quoted\"'), "\"double-quoted\"")
+%!assert (do_string_escapes ("\\\"double-quoted\\\""), "\"double-quoted\"")
 
 %!error do_string_escapes ()
 %!error do_string_escapes ("foo", "bar")
+%!error do_string_escapes (3)
 */
 
 const char *
@@ -748,7 +804,7 @@ undo_string_escapes (const std::string& s)
 }
 
 DEFUN (undo_string_escapes, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} undo_string_escapes (@var{s})\n\
 Convert special characters in strings back to their escaped forms.  For\n\
 example, the expression\n\
@@ -804,12 +860,20 @@ representation.\n\
 %!assert (undo_string_escapes (char ([7, 8, 12, 10, 13, 9, 11])),
 %!        "\\a\\b\\f\\n\\r\\t\\v")
 
+%!assert (undo_string_escapes ("\\"), '\\')
+%!assert (undo_string_escapes ("\\"), "\\\\")
+%!assert (undo_string_escapes (char (92)), "\\\\")
+
+%!assert (undo_string_escapes ("\"double-quoted\""), '\"double-quoted\"')
+%!assert (undo_string_escapes ("\"double-quoted\""), "\\\"double-quoted\\\"")
+
 %!error undo_string_escapes ()
 %!error undo_string_escapes ("foo", "bar")
+%!error undo_string_escapes (3)
 */
 
 DEFUN (is_absolute_filename, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_absolute_filename (@var{file})\n\
 Return true if @var{file} is an absolute filename.\n\
 @seealso{is_rooted_relative_filename, make_absolute_filename, isdir}\n\
@@ -834,7 +898,7 @@ Return true if @var{file} is an absolute filename.\n\
 */
 
 DEFUN (is_rooted_relative_filename, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_rooted_relative_filename (@var{file})\n\
 Return true if @var{file} is a rooted-relative filename.\n\
 @seealso{is_absolute_filename, make_absolute_filename, isdir}\n\
@@ -859,7 +923,7 @@ Return true if @var{file} is a rooted-relative filename.\n\
 */
 
 DEFUN (make_absolute_filename, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} make_absolute_filename (@var{file})\n\
 Return the full name of @var{file} beginning from the root of the file\n\
 system.  No check is done for the existence of @var{file}.\n\
@@ -890,10 +954,10 @@ system.  No check is done for the existence of @var{file}.\n\
 %!error make_absolute_filename ("foo", "bar")
 */
 
-DEFUN (find_dir_in_path, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})\n\
-@deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
+DEFUN (dir_in_loadpath, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} dir_in_loadpath (@var{dir})\n\
+@deftypefnx {Built-in Function} {} dir_in_loadpath (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @qcode{\"foo/bar\"}, it matches the path element\n\
@@ -903,6 +967,7 @@ match is performed at the end of each path element.  For example, if\n\
 \n\
 The second argument is optional.  If it is supplied, return a cell array\n\
 containing all name matches rather than just the first.\n\
+@seealso{file_in_path, file_in_loadpath, path}\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();
@@ -923,7 +988,7 @@ containing all name matches rather than just the first.\n\
             retval = Cell (load_path::find_matching_dirs (dir));
         }
       else
-        error ("find_dir_in_path: DIR must be a directory name");
+        error ("dir_in_loadpath: DIR must be a directory name");
     }
   else
     print_usage ();
@@ -932,14 +997,25 @@ containing all name matches rather than just the first.\n\
 }
 
 /*
-## FIXME: We need system-dependent tests here.
+%!test
+%! f = dir_in_loadpath ("plot");
+%! assert (ischar (f));
+%! assert (! isempty (f));
 
-%!error find_dir_in_path ()
-%!error find_dir_in_path ("foo", "bar", 1)
+%!test
+%! f = dir_in_loadpath ("$$probably_!!_not_&&_a_!!_dir$$");
+%! assert (f, "");
+
+%!test
+%! lst = dir_in_loadpath ("$$probably_!!_not_&&_a_!!_dir$$", "all");
+%! assert (lst, {});
+
+%!error dir_in_loadpath ()
+%!error dir_in_loadpath ("foo", "bar", 1)
 */
 
 DEFUNX ("errno", Ferrno, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{err} =} errno ()\n\
 @deftypefnx {Built-in Function} {@var{err} =} errno (@var{val})\n\
 @deftypefnx {Built-in Function} {@var{err} =} errno (@var{name})\n\
@@ -962,7 +1038,7 @@ if @var{name} is not found.\n\
           if (! error_state)
             retval = octave_errno::lookup (nm);
           else
-            error ("errno: expecting character string argument");
+            error ("errno: expecting string argument");
         }
       else
         {
@@ -998,7 +1074,7 @@ if @var{name} is not found.\n\
 */
 
 DEFUN (errno_list, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} errno_list ()\n\
 Return a structure containing the system-dependent errno values.\n\
 @end deftypefn")
@@ -1280,7 +1356,7 @@ octave_sleep (double seconds)
 }
 
 DEFUN (isindex, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} isindex (@var{ind})\n\
 @deftypefnx {Built-in Function} {} isindex (@var{ind}, @var{n})\n\
 Return true if @var{ind} is a valid index.  Valid indices are\n\
@@ -1303,9 +1379,6 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
     {
       unwind_protect frame;
 
-      frame.protect_var (Vallow_noninteger_range_as_index);
-      Vallow_noninteger_range_as_index = false;
-
       frame.protect_var (error_state);
 
       frame.protect_var (discard_error_messages);
@@ -1313,7 +1386,8 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 
       try
         {
-          idx_vector idx = args(0).index_vector ();
+          idx_vector idx = args(0).index_vector (true);
+
           if (! error_state)
             {
               if (nargin == 2)
@@ -1336,9 +1410,11 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 /*
 %!assert (isindex ([1, 2, 3]))
 %!assert (isindex (1:3))
+%!assert (isindex (1:3, 2), false)
 %!assert (isindex ([1, 2, -3]), false)
 
 %!error isindex ()
+%!error isindex (1:3, 2, 3)
 */
 
 octave_value_list
@@ -1432,3 +1508,33 @@ do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
 
   return retval;
 }
+
+octave_preserve_stream_state::~octave_preserve_stream_state (void)
+{
+  stream.flags (oflags);
+  stream.precision (oprecision);
+  stream.width (owidth);
+  stream.fill (ofill);
+}
+
+DEFUN (isstudent, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isstudent ()\n\
+Return true if running in the student edition of @sc{matlab}.\n\
+\n\
+@code{isstudent} always returns false in Octave.\n\
+\n\
+@seealso{false}\n\
+@end deftypefn")
+{
+  if (args.length () != 0)
+    print_usage ();
+
+  return octave_value (false);
+}
+
+/*
+%!assert (isstudent (), false)
+
+%!error isstudent (1)
+*/

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_char_matrix_h)
-#define octave_char_matrix_h 1
+#if !defined (octave_ov_ch_mat_h)
+#define octave_ov_ch_mat_h 1
 
 #include <cstdlib>
 
@@ -82,10 +82,12 @@ public:
 
   ~octave_char_matrix (void) { }
 
-  octave_base_value *clone (void) const { return new octave_char_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_char_matrix (); }
+  octave_base_value *clone (void) const
+  { return new octave_char_matrix (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_char_matrix (); }
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   builtin_type_t builtin_type (void) const { return btyp_char; }
 
@@ -99,47 +101,47 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   float float_scalar_value (bool frc_str_conv = false) const
-    { return float_value (frc_str_conv); }
+  { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-    { return Matrix (matrix.matrix_value ()); }
+  { return Matrix (charMatrix (matrix)); }
 
   FloatMatrix float_matrix_value (bool = false) const
-    { return FloatMatrix (matrix.matrix_value ()); }
+  { return FloatMatrix (charMatrix (matrix)); }
 
   NDArray array_value (bool = false) const
-    { return NDArray (matrix); }
+  { return NDArray (matrix); }
 
   FloatNDArray float_array_value (bool = false) const
-    { return FloatNDArray (matrix); }
+  { return FloatNDArray (matrix); }
 
   Complex complex_value (bool = false) const;
 
   FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return ComplexMatrix (matrix.matrix_value ()); }
+  { return ComplexMatrix (charMatrix (matrix)); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-    { return FloatComplexMatrix (matrix.matrix_value ()); }
+  { return FloatComplexMatrix (charMatrix (matrix)); }
 
   ComplexNDArray complex_array_value (bool = false) const
-    { return ComplexNDArray (matrix); }
+  { return ComplexNDArray (matrix); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-    { return FloatComplexNDArray (matrix); }
+  { return FloatComplexNDArray (matrix); }
 
   charMatrix char_matrix_value (bool = false) const
-    { return matrix.matrix_value (); }
+  { return charMatrix (matrix); }
 
   charNDArray char_array_value (bool = false) const
-    { return matrix; }
+  { return matrix; }
 
   octave_value convert_to_str_internal (bool, bool, char type) const
-    { return octave_value (matrix, type); }
+  { return octave_value (matrix, type); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

@@ -1,6 +1,6 @@
 # Makefile for Octave's src directory
 #
-# Copyright (C) 1993-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -36,16 +36,30 @@ AM_CFLAGS += $(WARN_CFLAGS)
 AM_CXXFLAGS += $(WARN_CXXFLAGS)
 
 EXTRA_DIST = \
+  main.in.cc \
   mkoctfile.in.cc \
-  mkoctfile.in.sh \
-  octave-config.in.cc \
-  octave-config.in.sh
+  octave-config.in.cc
 
-DISTCLEANFILES =
+DISTCLEANFILES = \
+  main.cc \
+  mkoctfile.cc \
+  octave-config.cc
 
-OCTAVE_BINARIES = \
+bin_PROGRAMS = \
+  mkoctfile \
   octave \
-  octave-cli
+  octave-cli \
+  octave-config
+
+noinst_HEADERS = \
+  shared-fcns.h
+
+OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)
+
+if AMCOND_BUILD_GUI
+  archlib_PROGRAMS = octave-gui
+  OCTAVE_VERSION_LINKS += octave-gui-$(version)$(EXEEXT)
+endif
 
 OCTAVE_CORE_LIBS = \
   $(top_builddir)/libinterp/liboctinterp.la \
@@ -53,10 +67,30 @@ OCTAVE_CORE_LIBS = \
 
 include ../libgui/link-deps.mk
 
+nodist_octave_SOURCES = main.cc
+
+octave_LDADD = \
+  $(top_builddir)/libgnu/libgnu.la \
+  $(X11_LIBS) \
+  $(CARBON_LIBS) \
+  $(GNULIB_LINK_DEPS)
+
+octave_LDFLAGS = \
+  $(NO_UNDEFINED_LDFLAG) \
+  $(OCTAVE_LINK_OPTS)
+
+if AMCOND_BUILD_GUI
+  OCTAVE_CPPFLAGS = -DHAVE_OCTAVE_GUI
+endif
+
+octave_CPPFLAGS = \
+  $(AM_CPPFLAGS) \
+  $(OCTAVE_CPPFLAGS)
+
 octave_cli_SOURCES = main-cli.cc
 
 octave_cli_LDADD = \
-  $(OCTAVE_CORE_LIBS)
+  $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_LINK_DEPS)
 
 octave_cli_LDFLAGS = \
@@ -64,33 +98,23 @@ octave_cli_LDFLAGS = \
   $(OCTAVE_LINK_OPTS)
 
 if AMCOND_BUILD_GUI
-  octave_SOURCES = main.cc
+  octave_gui_SOURCES = main-gui.cc
   OCTAVE_GUI_LIBS = $(top_builddir)/libgui/liboctgui.la
   OCTAVE_GUI_CPPFLAGS = -I$(top_srcdir)/libgui/src
-else
-  octave_SOURCES = main-cli.cc
-  OCTAVE_GUI_LIBS =
-  OCTAVE_GUI_CPPFLAGS =
 endif
 
-octave_CPPFLAGS = \
+octave_gui_CPPFLAGS = \
   $(AM_CPPFLAGS) \
   $(OCTAVE_GUI_CPPFLAGS)
 
-octave_LDADD = \
+octave_gui_LDADD = \
   $(OCTAVE_GUI_LIBS) \
   $(OCTAVE_CORE_LIBS) \
   $(OCTAVE_GUI_LINK_DEPS)
 
-octave_LDFLAGS = \
+octave_gui_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   $(OCTAVE_GUI_LINK_OPTS)
-
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-bin_PROGRAMS = \
-  $(OCTAVE_BINARIES) \
-  mkoctfile \
-  octave-config
 
 mkoctfile_SOURCES =
 nodist_mkoctfile_SOURCES = mkoctfile.cc
@@ -103,33 +127,19 @@ octave_config_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \
   $(LIBS)
 
-DISTCLEANFILES += mkoctfile.cc octave-config.cc
+all-local: $(OCTAVE_VERSION_LINKS)
 
-else
-bin_PROGRAMS = \
-  $(OCTAVE_BINARIES)
-
-bin_SCRIPTS = \
-  mkoctfile \
-  octave-config
-endif
-
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.in.cc Makefile
 	@$(do_subst_default_vals)
 
 mkoctfile.cc: mkoctfile.in.cc Makefile
 	@$(do_subst_config_vals)
 
-else
-octave-config: octave-config.in.sh Makefile
+## main.cc must depend on Makefile.  Calling configure may change
+## default/config values.  However, calling configure will also 
+## regenerate the Makefiles from Makefile.am and trigger the rules below.
+main.cc: main.in.cc Makefile
 	@$(do_subst_default_vals)
-	chmod a+rx $@
-
-mkoctfile: mkoctfile.in.sh Makefile
-	@$(do_subst_config_vals)
-	chmod a+rx $@
-endif
 
 install-exec-hook: make-version-links
 
@@ -141,25 +151,24 @@ make-version-links:
 	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
 	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
 	done
-if ! AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-	cd $(DESTDIR)$(bindir) && \
-	for f in $(basename $(bin_SCRIPTS)); do \
-	  mv $$f $$f-$(version) && \
-	    $(LN_S) $$f-$(version) $$f; \
-	done
-endif
 
 remove-version-links:
 	for f in $(basename $(bin_PROGRAMS)); do \
 	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
 	done
-if ! AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-	for f in $(basename $(bin_SCRIPTS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version); \
-	done
-endif
 
 .PHONY: make-version-links remove-version-links
 
+## We need these file names in the build tree because the wrapper
+## program (main.cc) will try to invoke the versioned binaries.
+
+octave-cli-$(version)$(EXEEXT): octave-cli$(EXEEXT)
+	rm -f $@
+	$(LN_S) $< $@
+
+octave-gui-$(version)$(EXEEXT): octave-gui$(EXEEXT)
+	rm -f $@
+	$(LN_S) $< $@
+
 CLEANFILES = \
-  $(bin_SCRIPTS)
+  $(OCTAVE_VERSION_LINKS)

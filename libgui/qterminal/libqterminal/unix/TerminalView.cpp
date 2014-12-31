@@ -5,7 +5,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
-    Copyright (C) 2012 Jacob Dawid <jacob.dawid@googlemail.com>
+    Copyright (C) 2012-2013 Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,20 +27,20 @@
 #include "unix/TerminalView.h"
 
 // Qt
-#include <QtGui/QApplication>
-#include <QtGui/QBoxLayout>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QApplication>
+#include <QBoxLayout>
+#include <QClipboard>
+#include <QKeyEvent>
 #include <QtCore/QEvent>
 #include <QtCore/QTime>
 #include <QtCore/QFile>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-#include <QtGui/QScrollBar>
-#include <QtGui/QStyle>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLayout>
+#include <QPainter>
+#include <QPixmap>
+#include <QScrollBar>
+#include <QStyle>
 #include <QtCore>
 #include <QtGui>
 
@@ -211,6 +211,12 @@ void TerminalView::setVTFont(const QFont& f)
       // mono-spaced font, in which case kerning information should have an effect.
       // Disabling kerning saves some computation when rendering text.
       // font.setKerning(false);
+
+      QFont::StyleStrategy strategy = font.styleStrategy();
+#if defined (HAVE_QFONT_FORCE_INTEGER_METRICS)
+      strategy |= QFont::ForceIntegerMetrics;
+#endif
+      font.setStyleStrategy(QFont::StyleStrategy(strategy));
 
       QWidget::setFont(font);
       fontChange(font);
@@ -1223,10 +1229,10 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
   // int topLeftX = (_contentWidth - _usedColumns * _fontWidth) / 2;
   int topLeftX = 0;
 
-  int leftUpperX = qMin(_usedColumns-1, qMax(0, qRound((rect.left()   - topLeftX - _leftMargin ) / _fontWidth)));
-  int leftUpperY = qMin(_usedLines-1,  qMax(0, qRound((rect.top()    - topLeftY - _topMargin  ) / _fontHeight)));
-  int rightLowerX = qMin(_usedColumns-1, qMax(0, qRound((rect.right()  - topLeftX - _leftMargin ) / _fontWidth)));
-  int rightLowerY = qMin(_usedLines-1,  qMax(0, qRound((rect.bottom() - topLeftY - _topMargin  ) / _fontHeight)));
+  int leftUpperX = qMin(_usedColumns-1, qMax(0, qFloor((rect.left()   - topLeftX - _leftMargin ) / _fontWidth)));
+  int leftUpperY = qMin(_usedLines-1,  qMax(0, qFloor((rect.top()    - topLeftY - _topMargin  ) / _fontHeight)));
+  int rightLowerX = qMin(_usedColumns-1, qMax(0, qFloor((rect.right()  - topLeftX - _leftMargin ) / _fontWidth)));
+  int rightLowerY = qMin(_usedLines-1,  qMax(0, qFloor((rect.bottom() - topLeftY - _topMargin  ) / _fontHeight)));
 
   const int bufferSize = _usedColumns;
   QChar *disstrU = new QChar[bufferSize];
@@ -2274,9 +2280,7 @@ void TerminalView::copyClipboard()
   QString text = _screenWindow->selectedText(_preserveLineBreaks);
 
   if (text.isEmpty ())
-    {
-      ::raise (SIGINT);
-    }
+    emit interrupt_signal ();
   else
     QApplication::clipboard()->setText(text);
 }
@@ -2288,6 +2292,20 @@ void TerminalView::pasteClipboard()
       emitSelection(false,false);
     }
 }
+
+void TerminalView::selectAll()
+{
+  if ( !_screenWindow || !hasFocus())
+    return;
+
+  _screenWindow->setSelectionStart(0,-_screenWindow->currentLine(), false);
+  //_screenWindow->setSelectionEnd(_screenWindow->windowColumns(),
+  //                               _screenWindow->windowLines());
+
+  _screenWindow->setSelectionEnd(_screenWindow->columnCount(),
+                                 _screenWindow->windowLines());
+}
+
 
 void TerminalView::pasteSelection()
 {
@@ -2520,11 +2538,11 @@ void TerminalView::calcGeometry()
   if (!_isFixedSize)
     {
       // ensure that display is always at least one column wide
-      _columns = qMax(1,qRound(_contentWidth / _fontWidth));
+      _columns = qMax(1,qFloor(_contentWidth / _fontWidth));
       _usedColumns = qMin(_usedColumns,_columns);
 
       // ensure that display is always at least one line high
-      _lines = qMax(1, qRound(_contentHeight / _fontHeight));
+      _lines = qMax(1, qFloor(_contentHeight / _fontHeight));
       _usedLines = qMin(_usedLines,_lines);
     }
 }
@@ -2608,6 +2626,17 @@ void TerminalView::dropEvent(QDropEvent* event)
   //  KUrl::List urls = KUrl::List::fromMimeData(event->mimeData());
 
   QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+  {
+    foreach (QUrl url, event->mimeData ()->urls ())
+    {
+      if(dropText.length () > 0) 
+        dropText += "\n";
+      dropText  += url.toLocalFile ();
+    }
+  }
+
   /*  if (!urls.isEmpty())
   {
     for ( int i = 0 ; i < urls.count() ; i++ )

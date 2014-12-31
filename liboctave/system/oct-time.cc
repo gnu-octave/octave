@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2012 John W. Eaton
+Copyright (C) 1999-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -235,7 +235,7 @@ octave_localtime::init (const octave_time& ot)
 
   time_t t = ot.unix_time ();
 
-  octave_base_tm::init (localtime (&t));
+  octave_base_tm::init (gnulib::localtime (&t));
 }
 
 void
@@ -245,7 +245,7 @@ octave_gmtime::init (const octave_time& ot)
 
   time_t t = ot.unix_time ();
 
-  octave_base_tm::init (gmtime (&t));
+  octave_base_tm::init (gnulib::gmtime (&t));
 }
 
 void

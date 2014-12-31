@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,11 @@
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 
-function dir (f)
+function close (f)
   __ftp_close__ (f.curlhandle);
 endfunction
+
+
+## No test possible for interactive function.
+%!assert (1)
 

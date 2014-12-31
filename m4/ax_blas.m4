@@ -63,12 +63,13 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 12
+#serial 14
 
 AU_ALIAS([ACX_BLAS], [AX_BLAS])
 AC_DEFUN([AX_BLAS], [
 AC_PREREQ(2.50)
 AC_REQUIRE([AC_F77_LIBRARY_LDFLAGS])
+AC_REQUIRE([AC_CANONICAL_HOST])
 ax_blas_ok=no
 
 AC_ARG_WITH(blas,
@@ -107,6 +108,12 @@ if test $ax_blas_ok = no; then
 	LIBS="$save_LIBS"
 fi
 
+# BLAS in OpenBLAS library? (http://xianyi.github.com/OpenBLAS/)
+if test $ax_blas_ok = no; then
+	AC_CHECK_LIB(openblas, $sgemm, [ax_blas_ok=yes
+			                BLAS_LIBS="-lopenblas"])
+fi
+
 # BLAS in ATLAS library? (http://math-atlas.sourceforge.net/)
 if test $ax_blas_ok = no; then
 	AC_CHECK_LIB(atlas, ATL_xerbla,
@@ -129,6 +136,36 @@ if test $ax_blas_ok = no; then
 fi
 
 # BLAS in Intel MKL library?
+if test $ax_blas_ok = no; then
+	# MKL for gfortran
+	if test x"$ac_cv_fc_compiler_gnu" = xyes; then
+		# 64 bit
+		if test $host_cpu = x86_64; then
+			AC_CHECK_LIB(mkl_gf_lp64, $sgemm,
+			[ax_blas_ok=yes;BLAS_LIBS="-lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lpthread"],,
+			[-lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lpthread])
+		# 32 bit
+		elif test $host_cpu = i686; then
+			AC_CHECK_LIB(mkl_gf, $sgemm,
+				[ax_blas_ok=yes;BLAS_LIBS="-lmkl_gf -lmkl_sequential -lmkl_core -lpthread"],,
+				[-lmkl_gf -lmkl_sequential -lmkl_core -lpthread])
+		fi
+	# MKL for other compilers (Intel, PGI, ...?)
+	else
+		# 64-bit
+		if test $host_cpu = x86_64; then
+			AC_CHECK_LIB(mkl_intel_lp64, $sgemm,
+				[ax_blas_ok=yes;BLAS_LIBS="-lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread"],,
+				[-lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread])
+		# 32-bit
+		elif test $host_cpu = i686; then
+			AC_CHECK_LIB(mkl_intel, $sgemm,
+				[ax_blas_ok=yes;BLAS_LIBS="-lmkl_intel -lmkl_sequential -lmkl_core -lpthread"],,
+				[-lmkl_intel -lmkl_sequential -lmkl_core -lpthread])
+		fi
+	fi
+fi
+# Old versions of MKL
 if test $ax_blas_ok = no; then
 	AC_CHECK_LIB(mkl, $sgemm, [ax_blas_ok=yes;BLAS_LIBS="-lmkl -lguide -lpthread"],,[-lguide -lpthread])
 fi

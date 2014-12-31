@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 Kai Habel
+Copyright (C) 2000-2013 Kai Habel
 
 This file is part of Octave.
 
@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <sstream>
+#include "oct-locbuf.h"
 
 #include "Cell.h"
 #include "defun-dld.h"
@@ -55,8 +55,25 @@ close_fcn (FILE *f)
   gnulib::fclose (f);
 }
 
+static bool
+octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
+{
+  if (sizeof (octave_idx_type) > sizeof (int))
+    {
+      int maxval = std::numeric_limits<int>::max ();
+
+      if (dim > maxval || n > maxval)
+        {
+          error ("%s: dimension too large for Qhull", who);
+          return false;
+        }
+    }
+
+  return true;
+}
+
 DEFUN_DLD (convhulln, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{h} =} convhulln (@var{pts})\n\
 @deftypefnx {Loadable Function} {@var{h} =} convhulln (@var{pts}, @var{options})\n\
 @deftypefnx {Loadable Function} {[@var{h}, @var{v}] =} convhulln (@dots{})\n\
@@ -102,6 +119,9 @@ convex hull is calculated.\n\n\
   const octave_idx_type dim = points.columns ();
   const octave_idx_type num_points = points.rows ();
 
+  if (! octave_qhull_dims_ok (dim, num_points, "convhulln"))
+    return retval;
+
   points = points.transpose ();
 
   std::string options;
@@ -131,7 +151,7 @@ convex hull is calculated.\n\n\
           error ("convhulln: OPTIONS must be a string, cell array of strings, or empty");
           return retval;
         }
-     }
+    }
 
   boolT ismalloc = false;
 
@@ -290,7 +310,7 @@ convex hull is calculated.\n\n\
 %!testif HAVE_QHULL
 %! cube = [0 0 0;1 0 0;1 1 0;0 1 0;0 0 1;1 0 1;1 1 1;0 1 1];
 %! [h, v] = convhulln (cube, "Qt");
-%! assert (size (h), [12 3]); 
+%! assert (size (h), [12 3]);
 %! h = sortrows (sort (h, 2), [1:3]);
 %! assert (h, [1 2 4; 1 2 6; 1 4 8; 1 5 6; 1 5 8; 2 3 4; 2 3 7; 2 6 7; 3 4 7; 4 7 8; 5 6 7; 5 7 8]);
 %! assert (v, 1, 10*eps);
@@ -303,7 +323,7 @@ convex hull is calculated.\n\n\
 %!testif HAVE_QHULL
 %! cube = [0 0 0;1 0 0;1 1 0;0 1 0;0 0 1;1 0 1;1 1 1;0 1 1];
 %! [h, v] = convhulln (cube, "QJ");
-%! assert (size (h), [12 3]); 
+%! assert (size (h), [12 3]);
 %! assert (sortrows (sort (h, 2), [1:3]), [1 2 4; 1 2 5; 1 4 5; 2 3 4; 2 3 6; 2 5 6; 3 4 8; 3 6 7; 3 7 8; 4 5 8; 5 6 8; 6 7 8]);
 %! assert (v, 1.0, 1e6*eps);
 

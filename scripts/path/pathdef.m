@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Bill Denney
+## Copyright (C) 2005-2013 Bill Denney
 ## Copyright (C) 2007-2009 Ben Abbott
 ##
 ## This file is part of Octave.
@@ -20,108 +20,82 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{val} =} pathdef ()
 ## Return the default path for Octave.
-## The path information is extracted from one of three sources.
+##
+## The path information is extracted from one of four sources.
 ## The possible sources, in order of preference, are:
 ##
 ## @enumerate
+## @item @file{.octaverc}
+##
 ## @item @file{~/.octaverc}
 ##
-## @item @file{<octave-home>/@dots{}/<version>/m/startup/octaverc}
+## @item @file{<OCTAVE_HOME>/@dots{}/<version>/m/startup/octaverc}
 ##
-## @item Octave's path prior to changes by any octaverc.
+## @item Octave's path prior to changes by any octaverc file.
 ## @end enumerate
 ## @seealso{path, addpath, rmpath, genpath, savepath}
 ## @end deftypefn
 
 function val = pathdef ()
 
-  ## Locate the site octaverc file.
-  pathdir = octave_config_info ("localstartupfiledir");
-  site_octaverc = fullfile (pathdir, "octaverc");
+  if (nargin > 0)
+    print_usage ();
+  endif
+
+  ## Locate any project-specific .octaverc file.
+  proj_octaverc = fullfile (pwd, ".octaverc");
+  if (exist (proj_octaverc, "file"))
+    proj_path = __extractpath__ (proj_octaverc);
+    if (! isempty (proj_path))
+      val = proj_path;
+      return;
+    endif
+  endif
 
   ## Locate the user's ~/.octaverc file.
   user_octaverc = fullfile ("~", ".octaverc");
-
-  ## Extract the specified paths from the site and user octavercs.
-  site_path = __extractpath__ (site_octaverc);
   if (exist (user_octaverc, "file"))
     user_path = __extractpath__ (user_octaverc);
-  else
-    user_path = "";
+    if (! isempty (user_path))
+      val = user_path;
+      return;
+    endif
   endif
 
-  ## A path definition in the user rcfile has precedence over the site rcfile.
-  if (! isempty (user_path))
-    val = user_path;
-  elseif (! isempty (site_path))
+  ## No user octaverc file, locate the site octaverc file.
+  pathdir = octave_config_info ("localstartupfiledir");
+  site_octaverc = fullfile (pathdir, "octaverc");
+  site_path = __extractpath__ (site_octaverc);
+  if (! isempty (site_path))
     val = site_path;
-  else
-    val = __pathorig__ ();
+    return;
   endif
+
+  ## No project, user, or site octaverc file.  Use Octave's default.
+  val = __pathorig__ ();
 
 endfunction
 
-## Extact the path information from the script/function @var{file},
-## created by @file{savepath.m}.  If @var{file} is omitted,
-## @file{~/.octaverc} is used.  If successful, @code{__extractpath__}
-## returns the path specified in @var{file}.
+## Extact the path information from the script/function @var{file}, created by
+## @file{savepath.m}.  If successful, @code{__extractpath__} returns the path
+## specified in @var{file}.
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 
-function specifiedpath = __extractpath__ (savefile)
+function path = __extractpath__ (savefile)
 
-  ## The majority of this code was borrowed from savepath.m.
-  ## FIXME: is there some way to share the common parts instead of duplicating?
-  ## ANSWER: Yes.  Create a private directory and extract this section of code
-  ##         and place it there in a new function only visible by pathdef() and
-  ##         savepath().
-  beginstring = "## Begin savepath auto-created section, do not edit";
-  endstring   = "## End savepath auto-created section";
-
-  if (nargin == 0)
-    savefile = tilde_expand ("~/.octaverc");
-  endif
-
-  ## Parse the file if it exists to see if we should replace a section
-  ## or create a section.
-  startline = endline = 0;
-  filelines = {};
-  if (exist (savefile) == 2)
-    [fid, msg] = fopen (savefile, "rt");
-    if (fid < 0)
-      error ("__extractpath__: could not open savefile, %s: %s", savefile, msg);
-    endif
-    unwind_protect
-      linenum = 0;
-      while (ischar (line = fgetl (fid)))
-        filelines{++linenum} = line;
-        ## find the first and last lines if they exist in the file
-        if (strcmp (line, beginstring))
-          startline = linenum;
-        elseif (strcmp (line, endstring))
-          endline = linenum;
-        endif
-      endwhile
-    unwind_protect_cleanup
-      closeread = fclose (fid);
-      if (closeread < 0)
-        error ("__extractpath__: could not close savefile after reading, %s",
-               savefile);
-      endif
-    end_unwind_protect
-  endif
-
-  ## Extract the path specifiation.
-  if (startline > endline || (startline > 0 && endline == 0))
-    error ("__extractpath__: unable to parse file, %s", savefile);
-  elseif (startline > 0)
-    ## Undo doubling of single quote characters performed by savepath.
-    specifiedpath = strrep (regexprep (cstrcat (filelines(startline:endline){:}),
-                                       " *path *\\('(.*)'\\); *", "$1"),
-                            "''", "'");
+  [filelines, startline, endline] = getsavepath (savefile);
+  if (startline > 0)
+    tmp = regexprep (filelines(startline+1:endline-1),
+                     "^.*path \\('([^\']+)'.*$", "$1");
+    path = strjoin (tmp, ":");
   else
-    specifiedpath = "";
+    path = "";
   endif
 
 endfunction
+
+
+## FIXME: Need some better BIST tests
+%!assert (ischar (pathdef ()))
 

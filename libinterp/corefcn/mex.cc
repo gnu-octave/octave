@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 John W. Eaton
+Copyright (C) 2006-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -97,7 +97,7 @@ valid_key (const char *key)
         }
     }
 
- done:
+done:
 
   return retval;
 }
@@ -168,7 +168,39 @@ public:
 
   mxArray *as_mxArray (void) const
   {
-    return val.as_mxArray ();
+    mxArray *retval = val.as_mxArray ();
+
+    // RETVAL is assumed to be an mxArray_matlab object.  Should we
+    // assert that condition here?
+
+    if (retval)
+      {
+        // Preserve cached values of class name and dimensions in case
+        // they will be used after we mutate.
+
+        // set_class_name will handle deleting class name that comes
+        // from as_mxArray conversion function.
+
+        if (class_name)
+          {
+            retval->set_class_name (class_name);
+
+            class_name = 0;
+          }
+
+        if (dims)
+          {
+            mwSize *xdims = retval->get_dimensions ();
+
+            mxFree (xdims);
+
+            retval->set_dimensions (dims, ndims);
+
+            dims = 0;
+          }
+      }
+
+    return retval;
   }
 
   ~mxArray_octave_value (void)
@@ -245,7 +277,8 @@ public:
       {
         ndims = val.ndims ();
 
-        dims = static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize)));
+        dims = static_cast<mwSize *> (mxArray::malloc (ndims
+                                                       * sizeof (mwSize)));
 
         dim_vector dv = val.dims ();
 
@@ -410,7 +443,8 @@ public:
   }
 
   // Not allowed.
-  void set_field_by_number (mwIndex /*index*/, int /*key_num*/, mxArray */*val*/)
+  void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
+                            mxArray */*val*/)
   {
     request_mutation ();
   }
@@ -454,8 +488,7 @@ public:
 
   char *array_to_string (void) const
   {
-    // FIXME -- this is suposed to handle multi-byte character
-    // strings.
+    // FIXME: this is suposed to handle multi-byte character strings.
 
     char *buf = 0;
 
@@ -525,7 +558,7 @@ public:
     mutate_flag = true;
   }
 
-  mxArray *mutate (void) const { return val.as_mxArray (); }
+  mxArray *mutate (void) const { return as_mxArray (); }
 
   octave_value as_octave_value (void) const { return val; }
 
@@ -535,7 +568,9 @@ protected:
     : mxArray_base (arg), val (arg.val), mutate_flag (arg.mutate_flag),
       id (arg.id), class_name (mxArray::strsave (arg.class_name)),
       ndims (arg.ndims),
-      dims (ndims > 0 ? static_cast<mwSize *> (mxArray::malloc (ndims * sizeof (mwSize))) : 0)
+      dims (ndims > 0 ? static_cast<mwSize *>
+                         (mxArray::malloc (ndims * sizeof (mwSize)))
+                      : 0)
   {
     if (dims)
       {
@@ -559,7 +594,7 @@ private:
   mutable mwSize ndims;
   mutable mwSize *dims;
 
-  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
   mxArray_octave_value& operator = (const mxArray_octave_value&);
@@ -839,7 +874,8 @@ public:
     return 0;
   }
 
-  void set_field_by_number (mwIndex /*index*/, int /*key_num*/, mxArray */*val*/)
+  void set_field_by_number (mwIndex /*index*/, int /*key_num*/,
+                            mxArray */*val*/)
   {
     invalid_type_error ();
   }
@@ -942,7 +978,7 @@ private:
     error ("invalid type for operation");
   }
 
-  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
   mxArray_matlab& operator = (const mxArray_matlab&);
@@ -958,18 +994,25 @@ public:
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, ndims_arg, dims_arg),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (), get_element_size ()) : 0) { }
+      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
+                                               get_element_size ())
+                            : 0) { }
 
   mxArray_number (mxClassID id_arg, const dim_vector& dv,
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, dv),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (), get_element_size ()) : 0) { }
+      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
+                                               get_element_size ())
+                            : 0) { }
 
-  mxArray_number (mxClassID id_arg, mwSize m, mwSize n, mxComplexity flag = mxREAL)
+  mxArray_number (mxClassID id_arg, mwSize m, mwSize n,
+                  mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, m, n),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (), get_element_size ()) : 0) { }
+      pi (flag == mxCOMPLEX ? mxArray::calloc (get_number_of_elements (),
+                                               get_element_size ())
+                            : 0) { }
 
   mxArray_number (mxClassID id_arg, double val)
     : mxArray_matlab (id_arg, 1, 1),
@@ -993,8 +1036,8 @@ public:
     : mxArray_matlab (mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
-      pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
-      pi (0)
+    pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
+    pi (0)
   {
     mxChar *cpr = static_cast<mxChar *> (pr);
     mwSize nel = get_number_of_elements ();
@@ -1002,7 +1045,7 @@ public:
       cpr[i] = str[i];
   }
 
-  // FIXME??
+  // FIXME: ???
   mxArray_number (mwSize m, const char **str)
     : mxArray_matlab (mxCHAR_CLASS, m, max_str_len (m, str)),
       pr (mxArray::calloc (get_number_of_elements (), get_element_size ())),
@@ -1135,8 +1178,7 @@ public:
 
   char *array_to_string (void) const
   {
-    // FIXME -- this is suposed to handle multi-byte character
-    // strings.
+    // FIXME: this is suposed to handle multi-byte character strings.
 
     mwSize nel = get_number_of_elements ();
 
@@ -1321,7 +1363,9 @@ protected:
   mxArray_number (const mxArray_number& val)
     : mxArray_matlab (val),
       pr (mxArray::malloc (get_number_of_elements () * get_element_size ())),
-      pi (val.pi ? mxArray::malloc (get_number_of_elements () * get_element_size ()) : 0)
+      pi (val.pi ? mxArray::malloc (get_number_of_elements ()
+                                    * get_element_size ())
+                 : 0)
   {
     size_t nbytes = get_number_of_elements () * get_element_size ();
 
@@ -1337,7 +1381,7 @@ private:
   void *pr;
   void *pi;
 
-  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
   mxArray_number& operator = (const mxArray_number&);
@@ -1356,7 +1400,7 @@ public:
       pi (flag == mxCOMPLEX ? mxArray::calloc (nzmax, get_element_size ()) : 0),
       ir (static_cast<mwIndex *> (mxArray::calloc (nzmax, sizeof (mwIndex)))),
       jc (static_cast<mwIndex *> (mxArray::calloc (n + 1, sizeof (mwIndex))))
-    { }
+  { }
 
   mxArray_base *dup (void) const { return new mxArray_sparse (*this); }
 
@@ -1504,7 +1548,7 @@ private:
       memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (mwIndex));
   }
 
-  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
   mxArray_sparse& operator = (const mxArray_sparse&);
@@ -1518,25 +1562,35 @@ public:
 
   mxArray_struct (mwSize ndims_arg, const mwSize *dims_arg, int num_keys_arg,
                   const char **keys)
-    : mxArray_matlab (mxSTRUCT_CLASS, ndims_arg, dims_arg), nfields (num_keys_arg),
-      fields (static_cast<char **> (mxArray::calloc (nfields, sizeof (char *)))),
-      data (static_cast<mxArray **> (mxArray::calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
+    : mxArray_matlab (mxSTRUCT_CLASS, ndims_arg, dims_arg),
+      nfields (num_keys_arg),
+      fields (static_cast<char **> (mxArray::calloc (nfields,
+                                                     sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::calloc (nfields *
+                                                      get_number_of_elements (),
+                                                      sizeof (mxArray *))))
   {
     init (keys);
   }
 
   mxArray_struct (const dim_vector& dv, int num_keys_arg, const char **keys)
     : mxArray_matlab (mxSTRUCT_CLASS, dv), nfields (num_keys_arg),
-      fields (static_cast<char **> (mxArray::calloc (nfields, sizeof (char *)))),
-      data (static_cast<mxArray **> (mxArray::calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::calloc (nfields,
+                                                     sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::calloc (nfields *
+                                                      get_number_of_elements (),
+                                                      sizeof (mxArray *))))
   {
     init (keys);
   }
 
   mxArray_struct (mwSize m, mwSize n, int num_keys_arg, const char **keys)
     : mxArray_matlab (mxSTRUCT_CLASS, m, n), nfields (num_keys_arg),
-      fields (static_cast<char **> (mxArray::calloc (nfields, sizeof (char *)))),
-      data (static_cast<mxArray **> (mxArray::calloc (nfields * get_number_of_elements (), sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::calloc (nfields,
+                                                     sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::calloc (nfields *
+                                                      get_number_of_elements (),
+                                                      sizeof (mxArray *))))
   {
     init (keys);
   }
@@ -1572,7 +1626,8 @@ public:
       {
         nfields++;
 
-        fields = static_cast<char **> (mxRealloc (fields, nfields * sizeof (char *)));
+        fields = static_cast<char **>
+                  (mxRealloc (fields, nfields * sizeof (char *)));
 
         if (fields)
           {
@@ -1582,7 +1637,9 @@ public:
 
             mwSize ntot = nfields * nel;
 
-            mxArray **new_data = static_cast<mxArray **> (mxArray::malloc (ntot * sizeof (mxArray *)));
+            mxArray **new_data;
+            new_data = static_cast<mxArray **>
+                        (mxArray::malloc (ntot * sizeof (mxArray *)));
 
             if (new_data)
               {
@@ -1623,9 +1680,12 @@ public:
 
         int new_nfields = nfields - 1;
 
-        char **new_fields = static_cast<char **> (mxArray::malloc (new_nfields * sizeof (char *)));
+        char **new_fields = static_cast<char **>
+                             (mxArray::malloc (new_nfields * sizeof (char *)));
 
-        mxArray **new_data = static_cast<mxArray **> (mxArray::malloc (new_nfields * nel * sizeof (mxArray *)));
+        mxArray **new_data = static_cast<mxArray **>
+                              (mxArray::malloc (new_nfields * nel
+                                                * sizeof (mxArray *)));
 
         for (int i = 0; i < key_num; i++)
           new_fields[i] = fields[i];
@@ -1664,7 +1724,7 @@ public:
   mxArray *get_field_by_number (mwIndex index, int key_num) const
   {
     return key_num >= 0 && key_num < nfields
-      ? data[nfields * index + key_num] : 0;
+           ? data[nfields * index + key_num] : 0;
   }
 
   void set_field_by_number (mwIndex index, int key_num, mxArray *val);
@@ -1732,8 +1792,11 @@ private:
 
   mxArray_struct (const mxArray_struct& val)
     : mxArray_matlab (val), nfields (val.nfields),
-      fields (static_cast<char **> (mxArray::malloc (nfields * sizeof (char *)))),
-      data (static_cast<mxArray **> (mxArray::malloc (nfields * get_number_of_elements () * sizeof (mxArray *))))
+      fields (static_cast<char **> (mxArray::malloc (nfields
+                                                     * sizeof (char *)))),
+      data (static_cast<mxArray **> (mxArray::malloc (nfields *
+                                                      get_number_of_elements ()
+                                                      * sizeof (mxArray *))))
   {
     for (int i = 0; i < nfields; i++)
       fields[i] = mxArray::strsave (val.fields[i]);
@@ -1747,7 +1810,7 @@ private:
       }
   }
 
-  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
   mxArray_struct& operator = (const mxArray_struct& val);
@@ -1761,15 +1824,18 @@ public:
 
   mxArray_cell (mwSize ndims_arg, const mwSize *dims_arg)
     : mxArray_matlab (mxCELL_CLASS, ndims_arg, dims_arg),
-      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
+      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (),
+                                     sizeof (mxArray *)))) { }
 
   mxArray_cell (const dim_vector& dv)
     : mxArray_matlab (mxCELL_CLASS, dv),
-      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
+      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (),
+                                     sizeof (mxArray *)))) { }
 
   mxArray_cell (mwSize m, mwSize n)
     : mxArray_matlab (mxCELL_CLASS, m, n),
-      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *)))) { }
+      data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (),
+                                     sizeof (mxArray *)))) { }
 
   mxArray_base *dup (void) const { return new mxArray_cell (*this); }
 
@@ -1816,7 +1882,8 @@ private:
 
   mxArray_cell (const mxArray_cell& val)
     : mxArray_matlab (val),
-      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
+      data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements ()
+                                                      * sizeof (mxArray *))))
   {
     mwSize nel = get_number_of_elements ();
 
@@ -1827,7 +1894,7 @@ private:
       }
   }
 
-  // No assignment!  FIXME -- should this be implemented?  Note that we
+  // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
   mxArray_cell& operator = (const mxArray_cell&);
@@ -1838,7 +1905,8 @@ private:
 mxArray::mxArray (const octave_value& ov)
   : rep (new mxArray_octave_value (ov)), name (0) { }
 
-mxArray::mxArray (mxClassID id, mwSize ndims, const mwSize *dims, mxComplexity flag)
+mxArray::mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
+                  mxComplexity flag)
   : rep (new mxArray_number (id, ndims, dims, flag)), name (0) { }
 
 mxArray::mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag)
@@ -1859,10 +1927,12 @@ mxArray::mxArray (const char *str)
 mxArray::mxArray (mwSize m, const char **str)
   : rep (new mxArray_number (m, str)), name (0) { }
 
-mxArray::mxArray (mxClassID id, mwSize m, mwSize n, mwSize nzmax, mxComplexity flag)
+mxArray::mxArray (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+                  mxComplexity flag)
   : rep (new mxArray_sparse (id, m, n, nzmax, flag)), name (0) { }
 
-mxArray::mxArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys)
+mxArray::mxArray (mwSize ndims, const mwSize *dims, int num_keys,
+                  const char **keys)
   : rep (new mxArray_struct (ndims, dims, num_keys, keys)), name (0) { }
 
 mxArray::mxArray (const dim_vector& dv, int num_keys, const char **keys)
@@ -1992,7 +2062,7 @@ public:
 
     if (! ptr)
       {
-        // FIXME -- could use "octave_new_handler();" instead
+        // FIXME: could use "octave_new_handler();" instead
 
         error ("%s: failed to allocate %d bytes of memory",
                function_name (), n);
@@ -2373,7 +2443,8 @@ mxMalloc (size_t n)
 void *
 mxRealloc (void *ptr, size_t size)
 {
-  return mex_context ? mex_context->realloc (ptr, size) : gnulib::realloc (ptr, size);
+  return mex_context ? mex_context->realloc (ptr, size)
+                     : gnulib::realloc (ptr, size);
 }
 
 void
@@ -2454,7 +2525,8 @@ mxCreateNumericArray (mwSize ndims, const mwSize *dims, mxClassID class_id,
 }
 
 mxArray *
-mxCreateNumericMatrix (mwSize m, mwSize n, mxClassID class_id, mxComplexity flag)
+mxCreateNumericMatrix (mwSize m, mwSize n, mxClassID class_id,
+                       mxComplexity flag)
 {
   return maybe_mark_array (new mxArray (class_id, m, n, flag));
 }
@@ -2478,7 +2550,8 @@ mxCreateString (const char *str)
 }
 
 mxArray *
-mxCreateStructArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys)
+mxCreateStructArray (mwSize ndims, const mwSize *dims, int num_keys,
+                     const char **keys)
 {
   return maybe_mark_array (new mxArray (ndims, dims, num_keys, keys));
 }
@@ -2696,8 +2769,8 @@ mxSetN (mxArray *ptr, mwSize n)
 void
 mxSetDimensions (mxArray *ptr, const mwSize *dims, mwSize ndims)
 {
-  ptr->set_dimensions (static_cast<mwSize *> (
-                         maybe_unmark (const_cast<mwSize *> (dims))),
+  ptr->set_dimensions (static_cast<mwSize *>
+                       (maybe_unmark (const_cast<mwSize *> (dims))),
                        ndims);
 }
 
@@ -2922,7 +2995,8 @@ mxGetElementSize (const mxArray *ptr)
 // ------------------------------------------------------------------
 
 typedef void (*cmex_fptr) (int nlhs, mxArray **plhs, int nrhs, mxArray **prhs);
-typedef F77_RET_T (*fmex_fptr) (int& nlhs, mxArray **plhs, int& nrhs, mxArray **prhs);
+typedef F77_RET_T (*fmex_fptr) (int& nlhs, mxArray **plhs,
+                                int& nrhs, mxArray **prhs);
 
 octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
@@ -3014,7 +3088,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 {
   octave_value_list args;
 
-  // FIXME -- do we need unwind protect to clean up args?  Off hand, I
+  // FIXME: do we need unwind protect to clean up args?  Off hand, I
   // would say that this problem is endemic to Octave and we will
   // continue to have memory leaks after Ctrl-C until proper exception
   // handling is implemented.  longjmp() only clears the stack, so any
@@ -3029,7 +3103,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 
   if (error_state && mex_context->trap_feval_error == 0)
     {
-      // FIXME -- is this the correct way to clean up?  abort() is
+      // FIXME: is this the correct way to clean up?  abort() is
       // going to trigger a long jump, so the normal class destructors
       // will not be called.  Hopefully this will reduce things to a
       // tiny leak.  Maybe create a new octave memory tracer type
@@ -3048,7 +3122,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 
   for (int i = 0; i < num_to_copy; i++)
     {
-      // FIXME -- it would be nice to avoid copying the value here,
+      // FIXME: it would be nice to avoid copying the value here,
       // but there is no way to steal memory from a matrix, never mind
       // that matrix memory is allocated by new[] and mxArray memory
       // is allocated by malloc().
@@ -3143,8 +3217,8 @@ mexWarnMsgTxt (const char *s)
 void
 mexWarnMsgIdAndTxt (const char *id, const char *fmt, ...)
 {
-  // FIXME -- is this right?  What does Matlab do if fmt is NULL or
-  // an empty string?
+  // FIXME: is this right?  What does Matlab do if fmt is NULL or
+  //        an empty string?
 
   if (fmt && strlen (fmt) > 0)
     {
@@ -3181,7 +3255,7 @@ mexGetVariable (const char *space, const char *name)
     val = get_global_value (name);
   else
     {
-      // FIXME -- should this be in variables.cc?
+      // FIXME: should this be in variables.cc?
 
       unwind_protect frame;
 
@@ -3244,7 +3318,7 @@ mexPutVariable (const char *space, const char *name, const mxArray *ptr)
     set_global_value (name, mxArray::as_octave_value (ptr));
   else
     {
-      // FIXME -- should this be in variables.cc?
+      // FIXME: should this be in variables.cc?
 
       unwind_protect frame;
 

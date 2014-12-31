@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -100,7 +100,6 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
                                         bool resize_ok)
 {
   octave_value retval;
-  typedef typename DMT::element_type el_type;
 
   if (idx.length () == 2 && ! resize_ok)
     {
@@ -147,12 +146,15 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
         if (type.length () == 1)
           {
             octave_value_list jdx = idx.front ();
-            // Check for a simple element assignment. That means, if D is a diagonal matrix,
-            // 'D(i,i) = x' will not destroy its diagonality (provided i is a valid index).
-            if (jdx.length () == 2 && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
+            // Check for a simple element assignment. That means, if D is a
+            // diagonal matrix, 'D(i,i) = x' will not destroy its diagonality
+            // (provided i is a valid index).
+            if (jdx.length () == 2
+                && jdx(0).is_scalar_type () && jdx(1).is_scalar_type ())
               {
                 typename DMT::element_type val;
-                idx_vector i0 = jdx(0).index_vector (), i1 = jdx(1).index_vector ();
+                idx_vector i0 = jdx(0).index_vector ();
+                idx_vector i1 = jdx(1).index_vector ();
                 if (! error_state  && i0(0) == i1(0)
                     && i0(0) < matrix.rows () && i1(0) < matrix.cols ()
                     && chk_valid_scalar (rhs, val))
@@ -224,10 +226,12 @@ octave_base_diag<DMT, MT>::is_true (void) const
   return to_dense ().is_true ();
 }
 
-// FIXME: this should be achieveable using ::real
+// FIXME: This should be achieveable using ::real
 template <class T> inline T helper_getreal (T x) { return x; }
-template <class T> inline T helper_getreal (std::complex<T> x) { return x.real (); }
-// FIXME: we really need some traits so that ad hoc hooks like this are not necessary
+template <class T> inline T helper_getreal (std::complex<T> x)
+{ return x.real (); }
+// FIXME: We really need some traits so that ad hoc hooks like this
+//        are not necessary.
 template <class T> inline T helper_iscomplex (T) { return false; }
 template <class T> inline T helper_iscomplex (std::complex<T>) { return true; }
 
@@ -407,14 +411,15 @@ octave_base_diag<DMT, MT>::sparse_complex_matrix_value (bool) const
 
 template <class DMT, class MT>
 idx_vector
-octave_base_diag<DMT, MT>::index_vector (void) const
+octave_base_diag<DMT, MT>::index_vector (bool require_integers) const
 {
-  return to_dense ().index_vector ();
+  return to_dense ().index_vector (require_integers);
 }
 
 template <class DMT, class MT>
 octave_value
-octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force, char type) const
+octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
+                                                    char type) const
 {
   return to_dense ().convert_to_str_internal (pad, force, type);
 }
@@ -424,7 +429,7 @@ bool
 octave_base_diag<DMT, MT>::save_ascii (std::ostream& os)
 {
   os << "# rows: " << matrix.rows () << "\n"
-    << "# columns: " << matrix.columns () << "\n";
+     << "# columns: " << matrix.columns () << "\n";
 
   os << matrix.extract_diag ();
 
@@ -435,7 +440,8 @@ template <class DMT, class MT>
 bool
 octave_base_diag<DMT, MT>::load_ascii (std::istream& is)
 {
-  octave_idx_type r = 0, c = 0;
+  octave_idx_type r = 0;
+  octave_idx_type c = 0;
   bool success = true;
 
   if (extract_keyword (is, "rows", r, true)
@@ -499,7 +505,7 @@ octave_base_diag<DMT, MT>::print_as_scalar (void) const
 
 template <class DMT, class MT>
 void
-octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -507,7 +513,8 @@ octave_base_diag<DMT, MT>::print (std::ostream& os, bool pr_as_read_syntax) cons
 template <class DMT, class MT>
 int
 octave_base_diag<DMT, MT>::write (octave_stream& os, int block_size,
-                                  oct_data_conv::data_type output_type, int skip,
+                                  oct_data_conv::data_type output_type,
+                                  int skip,
                                   oct_mach_info::float_format flt_fmt) const
 {
   return to_dense ().write (os, block_size, output_type, skip, flt_fmt);
@@ -519,6 +526,23 @@ octave_base_diag<DMT, MT>::print_info (std::ostream& os,
                                        const std::string& prefix) const
 {
   matrix.print_info (os, prefix);
+}
+
+template <class DMT, class MT>
+octave_value
+octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
+{
+  if (n < matrix.numel ())
+    {
+      octave_idx_type nr = matrix.rows ();
+
+      octave_idx_type r = n % nr;
+      octave_idx_type c = n / nr;
+
+      return octave_value (matrix.elem (r, c));
+    }
+  else
+    return octave_value ();
 }
 
 template <class DMT, class MT>

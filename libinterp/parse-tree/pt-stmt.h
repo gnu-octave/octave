@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_stmt_h)
-#define octave_tree_stmt_h 1
+#if !defined (octave_pt_stmt_h)
+#define octave_pt_stmt_h 1
 
 class octave_value_list;
 
@@ -138,14 +138,14 @@ public:
       script_body (false) { append (s); }
 
   ~tree_statement_list (void)
-    {
-      while (! empty ())
-        {
-          iterator p = begin ();
-          delete *p;
-          erase (p);
-        }
-    }
+  {
+    while (! empty ())
+      {
+        iterator p = begin ();
+        delete *p;
+        erase (p);
+      }
+  }
 
   void mark_as_function_body (void) { function_body = true; }
 

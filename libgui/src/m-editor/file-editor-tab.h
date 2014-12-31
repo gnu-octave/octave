@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (file_editor_tab_h)
-#define file_editor_tab_h 1
+#if !defined (octave_file_editor_tab_h)
+#define octave_file_editor_tab_h 1
 
 #include <QWidget>
 #include <QCloseEvent>
@@ -29,9 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QFileInfo>
 #include <Qsci/qsciapis.h>
+#include <QStatusBar>
+#include <QLabel>
+#include <QComboBox>
 
 #include "find-dialog.h"
 #include "octave-qscintilla.h"
+#include "builtin-defun-decls.h"
 
 class file_editor;
 
@@ -45,6 +49,12 @@ public:
 
   ~file_editor_tab (void);
 
+  octave_qscintilla *qsci_edit_area () { return _edit_area; }
+
+  // Will initiate close if associated with the identifier tag.
+  bool conditional_close (int app_closing = 0);  // default 0: close tab only
+
+
 public slots:
 
   void update_window_title (bool modified);
@@ -55,9 +65,6 @@ public slots:
   // Tells the editor tab to react on changed settings.
   void notice_settings (const QSettings *settings);
 
-  // Will initiate close if associated with the identifier tag.
-  void conditional_close (const QWidget *ID, bool app_closing = false);
-
   // Change to a different editor tab by identifier tag.
   void change_editor_state (const QWidget *ID);
 
@@ -65,17 +72,15 @@ public slots:
   void file_name_query (const QWidget *ID);
 
   void set_focus (const QWidget *ID);
-  void undo (const QWidget *ID);
-  void redo (const QWidget *ID);
-  void copy (const QWidget *ID);
-  void cut (const QWidget *ID);
-  void paste (const QWidget *ID);
+  void context_help (const QWidget *ID, bool);
+  void context_edit (const QWidget *ID);
   void save_file (const QWidget *ID);
   void save_file (const QWidget *ID, const QString& fileName,
                   bool remove_on_success);
   void save_file_as (const QWidget *ID);
   void print_file (const QWidget *ID);
   void run_file (const QWidget *ID);
+  void context_run (const QWidget *ID);
   void toggle_bookmark (const QWidget *ID);
   void next_bookmark (const QWidget *ID);
   void previous_bookmark (const QWidget *ID);
@@ -86,10 +91,22 @@ public slots:
   void previous_breakpoint (const QWidget *ID);
   void remove_all_breakpoints (const QWidget *ID);
 
+  void scintilla_command (const QWidget *, unsigned int);
+
   void comment_selected_text (const QWidget *ID);
   void uncomment_selected_text (const QWidget *ID);
+
+  void indent_selected_text (const QWidget *ID);
+  void unindent_selected_text (const QWidget *ID);
+  void convert_eol (const QWidget *ID, QsciScintilla::EolMode);
+
+  void zoom_in (const QWidget *ID);
+  void zoom_out (const QWidget *ID);
+  void zoom_normal (const QWidget *ID);
+
   void find (const QWidget *ID);
   void goto_line (const QWidget *ID, int line = -1);
+  void show_auto_completion (const QWidget *ID);
 
   void insert_debugger_pointer (const QWidget *ID, int line = -1);
   void delete_debugger_pointer (const QWidget *ID, int line = -1);
@@ -104,11 +121,14 @@ public slots:
   void file_has_changed (const QString& fileName);
 
   void execute_command_in_terminal (const QString& command);
+  void create_context_menu (QMenu *);
+  void handle_context_menu_edit (const QString&);
 
 signals:
 
   void file_name_changed (const QString& fileName, const QString& toolTip);
-  void editor_state_changed (bool copy_available, const QString& fileName);
+  void editor_state_changed (bool copy_available, const QString& fileName,
+                             bool is_octave_file);
   void tab_remove_request ();
   void add_filename_to_list (const QString&, QWidget *);
   void mru_add_file (const QString& file_name);
@@ -116,6 +136,8 @@ signals:
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
   void execute_command_in_terminal_signal (const QString&);
+  void set_global_edit_shortcuts_signal (bool);
+  void create_context_menu_tab_signal (QMenu *);
 
 protected:
 
@@ -140,6 +162,8 @@ private slots:
   void handle_save_file_as_answer (const QString& fileName);
   void handle_save_file_as_answer_close (const QString& fileName);
   void handle_save_file_as_answer_cancel ();
+  void handle_save_as_filter_selected (const QString& filter);
+  void handle_combo_eol_current_index (int index);
 
   // When apis preparation has finished and is ready to save
   void save_apis_info ();
@@ -147,53 +171,71 @@ private slots:
   // When the numer of lines changes -> adapt width of margin
   void auto_margin_width ();
 
+  void handle_cursor_moved (int line, int col);
+
 private:
 
   enum editor_markers
-    {
-      bookmark,
-      breakpoint,
-      debugger_position
-    };
+  {
+    bookmark,
+    breakpoint,
+    debugger_position
+  };
 
   struct bp_info
   {
-    bp_info (const QString& f, const QString& d, const QString& fn, int l)
-      : file (f.toStdString ()), dir (d.toStdString ()),
-        function_name (fn.toStdString ()), line (l)
-    { }
+    bp_info (const QString& fname, int l = 0);
 
+    int line;
     std::string file;
     std::string dir;
     std::string function_name;
-    int line;
   };
 
+  bool valid_file_name (const QString& file=QString ());
   void save_file (const QString& saveFileName, bool remove_on_success = false);
   void save_file_as (bool remove_on_success = false);
-  void message_duplicate_file_name (const QString& fileName);
+  bool check_valid_identifier (QString file_name);
 
   void update_lexer ();
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
+  void show_dialog (QDialog *dlg);
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
   QString comment_string (const QString&);
+  void do_indent_selected_text (bool indent);
 
   void add_breakpoint_callback (const bp_info& info);
   void remove_breakpoint_callback (const bp_info& info);
   void remove_all_breakpoints_callback (const bp_info& info);
   void center_current_line ();
 
+  void add_octave_apis (octave_value_list key_ovl);
+  QString get_function_name ();
+
+  QsciScintilla::EolMode detect_eol_mode ();
+  void update_eol_indicator ();
+
   octave_qscintilla *_edit_area;
+
+  QStatusBar *_status_bar;
+  QLabel *_row_indicator;
+  QLabel *_col_indicator;
+  QLabel *_eol_indicator;
+
+  QsciScintilla::EolMode _save_as_desired_eol;
 
   QString _file_name;
   QString _file_name_short;
 
   bool _long_title;
   bool _copy_available;
-  bool _app_closing;
+  int _app_closing;     // -1: octave exits, 1: exit request in gui, 0: no exit
+  bool _is_octave_file;
+  bool _modal_dialog;
+  bool _always_reload_changed_files;
 
   QFileSystemWatcher _file_system_watcher;
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_scalar_h)
-#define octave_base_scalar_h 1
+#if !defined (octave_ov_base_scalar_h)
+#define octave_ov_base_scalar_h 1
 
 #include <cstdlib>
 
@@ -65,14 +65,14 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
-    { return subsref (type, idx); }
+  { return subsref (type, idx); }
 
   octave_value subsasgn (const std::string& type,
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
   octave_value_list do_multi_index_op (int, const octave_value_list& idx)
-    { return do_index_op (idx); }
+  { return do_index_op (idx); }
 
   bool is_constant (void) const { return true; }
 
@@ -101,30 +101,30 @@ public:
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   octave_value sort (octave_idx_type, sortmode) const
-    { return octave_value (scalar); }
+  { return octave_value (scalar); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type,
                      sortmode) const
-    {
-      sidx.resize (dim_vector (1, 1));
-      sidx(0) = 0;
-      return octave_value (scalar);
-    }
+  {
+    sidx.resize (dim_vector (1, 1));
+    sidx(0) = 0;
+    return octave_value (scalar);
+  }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return mode ? mode : ASCENDING; }
+  { return mode ? mode : ASCENDING; }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
-    {
-      return Array<octave_idx_type> (dim_vector (1, 1),
-                                     static_cast<octave_idx_type> (0));
-    }
+  {
+    return Array<octave_idx_type> (dim_vector (1, 1),
+                                   static_cast<octave_idx_type> (0));
+  }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-    { return mode ? mode : ASCENDING; }
+  { return mode ? mode : ASCENDING; }
 
   MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
-    { return matrix_type (); }
+  { return matrix_type (); }
 
   bool is_scalar_type (void) const { return true; }
 
@@ -132,13 +132,13 @@ public:
 
   bool is_true (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
-  std::string short_disp (void) const;
+  void short_disp (std::ostream& os) const;
 
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
@@ -147,6 +147,8 @@ public:
   const ST& scalar_ref (void) const { return scalar; }
 
   ST& scalar_ref (void) { return scalar; }
+
+  octave_value fast_elem_extract (octave_idx_type n) const;
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 

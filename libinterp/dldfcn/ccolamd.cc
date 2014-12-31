@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 
 This file is part of Octave.
 
@@ -52,7 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (ccolamd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} ccolamd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{S}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {@var{p} =} ccolamd (@var{S}, @var{knobs}, @var{cmember})\n\
@@ -100,10 +100,9 @@ if nonzero, statistics and knobs are printed.\n\
 @var{cmember} is an optional vector of length @math{n}.  It defines the\n\
 constraints on the column ordering.  If @code{@var{cmember}(j) = @var{c}},\n\
 then column @var{j} is in constraint set @var{c} (@var{c} must be in the\n\
-range 1 to\n\
-n).  In the output permutation @var{p}, all columns in set 1 appear\n\
-first, followed by all columns in set 2, and so on.  @code{@var{cmember} =\n\
-ones (1,n)} if not present or empty.\n\
+range 1 to n).  In the output permutation @var{p}, all columns in set 1\n\
+appear first, followed by all columns in set 2, and so on.\n\
+@code{@var{cmember} = ones (1,n)} if not present or empty.\n\
 @code{ccolamd (@var{S}, [], 1 : n)} returns @code{1 : n}\n\
 \n\
 @code{@var{p} = ccolamd (@var{S})} is about the same as\n\
@@ -133,11 +132,12 @@ such row index exists.  @code{@var{stats}(7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats}(8 : 20)} is always zero in\n\
 the current version of @sc{ccolamd} (reserved for future use).\n\
 \n\
-The authors of the code itself are S. Larimore, T. Davis (Univ. of Florida)\n\
-and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\
-by the National Science Foundation\n\
-@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from Sandia\n\
-National Lab.  See @url{http://www.cise.ufl.edu/research/sparse} for\n\
+The authors of the code itself are @nospell{S. Larimore, T. Davis}\n\
+(Univ. of Florida) and @nospell{S. Rajamanickam} in collaboration with\n\
+@nospell{J. Bilbert and E. Ng}.  Supported by the National Science Foundation\n\
+@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from\n\
+@nospell{Sandia} National Lab.\n\
+See @url{http://www.cise.ufl.edu/research/sparse} for\n\
 ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{colamd, csymamd}\n\
 @end deftypefn")
@@ -188,7 +188,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
               if (knobs[CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(2): " << User_knobs(1)
                               << ", rows with > max (16,"
-                              << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[CCOLAMD_DENSE_ROW]
+                              << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(2): " << User_knobs(1)
@@ -281,7 +282,8 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
             error ("ccolamd: CMEMBER must be of length equal to #cols of A");
           else
             // Order the columns (destroys A)
-            if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, cmember))
+            if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p,
+                                   knobs, stats, cmember))
               {
                 CCOLAMD_NAME (_report) (stats) ;
                 error ("ccolamd: internal error!");
@@ -336,7 +338,7 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 }
 
 DEFUN_DLD (csymamd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} csymamd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {@var{p} =} csymamd (@var{S}, @var{knobs}, @var{cmember})\n\
@@ -388,11 +390,12 @@ such row index exists.  @code{@var{stats}(7)} is the number of duplicate\n\
 or out-of-order row indices.  @code{@var{stats}(8:20)} is always zero in\n\
 the current version of @sc{ccolamd} (reserved for future use).\n\
 \n\
-The authors of the code itself are S. Larimore, T. Davis (Uni of Florida)\n\
-and S. Rajamanickam in collaboration with J. Bilbert and E. Ng.  Supported\n\
-by the National Science Foundation\n\
-@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from Sandia\n\
-National Lab.  See @url{http://www.cise.ufl.edu/research/sparse} for\n\
+The authors of the code itself are @nospell{S. Larimore, T. Davis}\n\
+(Univ. of Florida) and @nospell{S. Rajamanickam} in collaboration with\n\
+@nospell{J. Bilbert and E. Ng}.  Supported by the National Science Foundation\n\
+@nospell{(DMS-9504974, DMS-9803599, CCR-0203270)}, and a grant from\n\
+@nospell{Sandia} National Lab.\n\
+See @url{http://www.cise.ufl.edu/research/sparse} for\n\
 ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 @seealso{symamd, ccolamd}\n\
 @end deftypefn")
@@ -428,13 +431,15 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
           // print knob settings if spumoni is set
           if (spumoni)
             {
-              octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION << "."
-                            <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE << "\n";
+              octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION
+                            << "." << CCOLAMD_SUB_VERSION
+                            << ", " << CCOLAMD_DATE << "\n";
 
               if (knobs[CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs(0)
                               << ", rows/cols with > max (16,"
-                              << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[CCOLAMD_DENSE_ROW]
+                              << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(1): " << User_knobs(0)
@@ -511,14 +516,13 @@ ccolamd, csymamd, amd, colamd, symamd, and other related orderings.\n\
 
           if (cslen != n_col)
             error ("csymamd: CMEMBER must be of length equal to #cols of A");
-          else
-            if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
-                                  &calloc, &free, cmember, -1))
-              {
-                CSYMAMD_NAME (_report) (stats) ;
-                error ("csymamd: internal error!") ;
-                return retval;
-              }
+          else if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats,
+                                     &calloc, &free, cmember, -1))
+            {
+              CSYMAMD_NAME (_report) (stats) ;
+              error ("csymamd: internal error!") ;
+              return retval;
+            }
         }
       else
         {

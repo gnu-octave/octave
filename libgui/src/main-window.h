@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -21,11 +21,11 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (main_window_h)
-#define main_window_h 1
+#if !defined (octave_main_window_h)
+#define octave_main_window_h 1
 
 // Qt includes
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QThread>
 #include <QTabWidget>
 #include <QMdiArea>
@@ -58,7 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "find-files-dialog.h"
 
 /**
- * \class MainWindow
+ * @class MainWindow
  *
  * Represents the main window.
  */
@@ -69,6 +69,7 @@ class main_window : public QMainWindow
 public:
 
   typedef std::pair <std::string, std::string> name_pair;
+  typedef std::pair <int, int> int_pair;
 
   main_window (QWidget *parent = 0);
 
@@ -79,7 +80,12 @@ public:
   void focus_command_window (void);
 
 signals:
+
+  void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
+  void editor_focus_changed (bool);
+
   void settings_changed (const QSettings *);
+  void init_terminal_size_signal (void);
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
 
@@ -92,10 +98,13 @@ signals:
 
   void copyClipboard_signal (void);
   void pasteClipboard_signal (void);
-
-  void set_widget_shortcuts_signal (bool);
+  void selectAll_signal (void);
 
 public slots:
+
+  void focus_changed (QWidget *w_old, QWidget *w_new);
+
+
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
   void handle_load_workspace_request (const QString& file = QString ());
@@ -108,17 +117,24 @@ public slots:
   void new_file (const QString& commands = QString ());
   void open_file (const QString& file_name = QString ());
   void open_online_documentation_page (void);
+  void display_release_notes (void);
+  void load_and_display_community_news (int serial = -1);
+  void display_community_news (const QString& news);
   void open_bug_tracker_page (void);
   void open_octave_packages_page (void);
   void open_agora_page (void);
   void open_contribute_page (void);
   void open_developer_page (void);
-  void process_settings_dialog_request (void);
+  void process_settings_dialog_request (const QString& desired_tab
+                                                         = QString ());
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
   void prepare_to_exit (void);
   void exit (int status);
   void reset_windows (void);
+
+  void hide_warning_bar (void);
+  void show_gui_info (void);
 
   void change_directory (const QString& dir);
   void browse_for_directory (void);
@@ -126,8 +142,8 @@ public slots:
   void change_directory_up (void);
   void accept_directory_line_edit (void);
 
-  void execute_command_in_terminal(const QString& dir);
-  void run_file_in_terminal(const QFileInfo& info);
+  void execute_command_in_terminal (const QString& dir);
+  void run_file_in_terminal (const QFileInfo& info);
 
   void handle_new_figure_request (void);
 
@@ -145,12 +161,14 @@ public slots:
                                                 const QString& file, int line);
 
   void read_settings (void);
+  void init_terminal_size (void);
   void set_window_layout (QSettings *settings);
   void write_settings (void);
   void connect_visibility_changed (void);
 
   void copyClipboard (void);
   void pasteClipboard (void);
+  void selectAll (void);
 
   void connect_uiwidget_links ();
 
@@ -171,24 +189,32 @@ public slots:
                                   const QFloatList&, const QFloatList&,
                                   const QStringList&);
 
-  void handle_create_filedialog (const QStringList &filters, 
-                                 const QString& title, const QString& filename, 
+  void handle_create_filedialog (const QStringList &filters,
+                                 const QString& title, const QString& filename,
                                  const QString &dirname,
                                  const QString& multimode);
 
   void handle_show_doc (const QString &file);
 
-  // find files dialog 
-  void find_files(const QString &startdir=QDir::currentPath());
-  void find_files_finished(int);
+  void handle_octave_ready ();
+
+  // find files dialog
+  void find_files (const QString &startdir=QDir::currentPath ());
+  void find_files_finished (int);
 
   // setting global shortcuts
   void set_global_shortcuts (bool enable);
+  void set_global_edit_shortcuts (bool enable);
+
+  void set_screen_size (int ht, int wd);
 
   // handling the clipboard
   void clipboard_has_changed (QClipboard::Mode);
   void clear_clipboard ();
 
+  // get the dockwidgets
+  QList<octave_dock_widget *> get_dock_widget_list ()
+    { return dock_widget_list (); }
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
@@ -199,22 +225,28 @@ private:
 
   void construct_octave_qt_link (void);
 
+  QAction *add_action (QMenu *menu, const QIcon &icon, const QString &text,
+                       const char *member, const QWidget *receiver = 0);
+
+  void enable_menu_shortcuts (bool enable);
+  QMenu* m_add_menu (QMenuBar *p, QString text);
   void construct_menu_bar (void);
   void construct_file_menu (QMenuBar *p);
   void construct_new_menu (QMenu *p);
   void construct_edit_menu (QMenuBar *p);
-  void construct_debug_menu_item (QMenu *p, const QString& item,
-                                  const QKeySequence& key);
-  QAction *construct_debug_menu_item (const char *icon_file,
-                                      const QString& item,
-                                      const QKeySequence& key);
+  QAction *construct_debug_menu_item (const char *icon, const QString& item,
+                                      const char* member);
   void construct_debug_menu (QMenuBar *p);
   QAction *construct_window_menu_item (QMenu *p, const QString& item,
-                                       bool checkable,
-                                       const QKeySequence& key);
+                                       bool checkable, QWidget*);
   void construct_window_menu (QMenuBar *p);
   void construct_help_menu (QMenuBar *p);
   void construct_documentation_menu (QMenu *p);
+
+  void construct_news_menu (QMenuBar *p);
+
+  void construct_warning_bar (void);
+  void construct_gui_info_button (void);
 
   void construct_tool_bar (void);
 
@@ -232,32 +264,36 @@ private:
 
   void resize_command_window_callback (void);
 
+  void set_screen_size_callback (const int_pair&);
+
   void clear_workspace_callback (void);
 
   void clear_history_callback (void);
 
   void execute_command_callback ();
   void run_file_callback (const QFileInfo& info);
+  bool focus_console_after_command ();
 
   void new_figure_callback (void);
 
   void change_directory_callback (const std::string& directory);
 
-  void debug_continue_callback (void);
-
-  void debug_step_into_callback (void);
-
-  void debug_step_over_callback (void);
-
-  void debug_step_out_callback (void);
-
-  void debug_quit_callback (void);
-
   void exit_callback (void);
 
-  void queue_command (QString command);  // Data models.
+  void queue_command (QString command);
+
+  void queue_debug (QString command);
+
+  void execute_debug_callback ();
+
+  void configure_shortcuts ();
+
+  bool confirm_exit_octave ();
 
   workspace_model *_workspace_model;
+
+  QHash<QMenu*, QStringList> _hash_menu_text;
+
 
   // Toolbars.
   QStatusBar *status_bar;
@@ -282,8 +318,15 @@ private:
     list.append (static_cast<octave_dock_widget *> (workspace_window));
     return list;
   }
+  octave_dock_widget *_active_dock;
+
+  QString _release_notes_icon;
 
   QToolBar *_main_tool_bar;
+
+  QDockWidget *_warning_bar;
+  QPushButton *_gui_info_button;
+
   QMenu *_debug_menu;
 
   QAction *_debug_continue;
@@ -293,15 +336,49 @@ private:
   QAction *_debug_quit;
 
   QAction *_new_script_action;
+  QAction *_new_function_action;
   QAction *_open_action;
+  QAction *_new_figure_action;
+  QAction *_load_workspace_action;
+  QAction *_save_workspace_action;
+  QAction *_preferences_action;
+  QAction *_exit_action;
 
   QAction *_copy_action;
   QAction *_paste_action;
   QAction *_clear_clipboard_action;
   QAction *_undo_action;
-
+  QAction *_clear_command_window_action;
+  QAction *_clear_command_history_action;
+  QAction *_clear_workspace_action;
   QAction *_find_files_action;
-  QAction *_exit_action;
+  QAction *_select_all_action;
+
+  QAction *_show_command_window_action;
+  QAction *_show_history_action;
+  QAction *_show_workspace_action;
+  QAction *_show_file_browser_action;
+  QAction *_show_editor_action;
+  QAction *_show_documentation_action;
+  QAction *_command_window_action;
+  QAction *_history_action;
+  QAction *_workspace_action;
+  QAction *_file_browser_action;
+  QAction *_editor_action;
+  QAction *_documentation_action;
+  QAction *_reset_windows_action;
+
+  QAction *_ondisk_doc_action;
+  QAction *_online_doc_action;
+  QAction *_report_bug_action;
+  QAction *_octave_packages_action;
+  QAction *_agora_action;
+  QAction *_contribute_action;
+  QAction *_developer_action;
+  QAction *_about_octave_action;
+
+  QAction *_release_notes_action;
+  QAction *_current_news_action;
 
   // Toolbars.
   QComboBox *_current_directory_combo_box;
@@ -313,7 +390,10 @@ private:
   // Find files dialog
   find_files_dialog * find_files_dlg;
 
-  octave_main_thread *_octave_main_thread;
+  // release notes window
+  QWidget * release_notes_window;
+
+  QWidget * community_news_window;
 
   octave_qt_link *_octave_qt_link;
 
@@ -326,6 +406,43 @@ private:
   QStringList *_cmd_queue;
   QSemaphore   _cmd_processing;
   QMutex       _cmd_queue_mutex;
+
+  // semaphore to synchronize debug signals and related callbacks
+  QStringList *_dbg_queue;
+  QSemaphore   _dbg_processing;
+  QMutex       _dbg_queue_mutex;
+
+  bool _prevent_readline_conflicts;
+};
+
+class news_reader : public QObject
+{
+  Q_OBJECT
+
+public:
+
+  news_reader (const QString& xbase_url, const QString& xpage,
+               int xserial = -1, bool xconnect_to_web = false)
+    : QObject (), base_url (xbase_url), page (xpage), serial (xserial),
+      connect_to_web (xconnect_to_web)
+  { }
+
+public slots:
+
+  void process (void);
+
+signals:
+
+  void display_news_signal (const QString& news);
+
+  void finished (void);
+
+private:
+
+  QString base_url;
+  QString page;
+  int serial;
+  bool connect_to_web;
 };
 
 #endif // MAINWINDOW_H

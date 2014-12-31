@@ -1,7 +1,7 @@
 
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -305,11 +305,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
       break;
     }
 
- done:
+done:
 
   return retval;
 
- gen_matrix:
+gen_matrix:
 
   dims.chop_trailing_singletons ();
 
@@ -364,10 +364,10 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 }
 
 DEFUN (rand, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rand (@var{n})\n\
-@deftypefnx {Built-in Function} {} rand (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rand ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} rand (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} rand ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} rand (\"state\")\n\
 @deftypefnx {Built-in Function} {} rand (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} rand (\"state\", \"reset\")\n\
@@ -408,8 +408,8 @@ behavior comparable to @sc{matlab}, initialize with a deterministic state\n\
 vector in Octave's startup files (@pxref{Startup Files}).\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
-Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and\n\
-T. Nishimura,\n\
+Twister with a period of @math{2^{19937}-1} (See\n\
+@nospell{M. Matsumoto and T. Nishimura},\n\
 @cite{Mersenne Twister: A 623-dimensionally equidistributed uniform\n\
 pseudorandom number generator}, ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, pp. 3-30, January 1998,\n\
@@ -463,7 +463,7 @@ classes.\n\
   return retval;
 }
 
-// FIXME -- The old generator (selected when "seed" is set) will not
+// FIXME: The old generator (selected when "seed" is set) will not
 // work properly if compiled to use 64-bit integers.
 
 /*
@@ -551,10 +551,10 @@ classes.\n\
 static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN (randn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randn (@var{n})\n\
-@deftypefnx {Built-in Function} {} randn (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randn ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} randn (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} randn ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} randn (\"state\")\n\
 @deftypefnx {Built-in Function} {} randn (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} randn (\"state\", \"reset\")\n\
@@ -567,17 +567,17 @@ Return a matrix with normally distributed random\n\
 elements having zero mean and variance one.  The arguments are\n\
 handled the same as the arguments for @code{rand}.\n\
 \n\
-By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
-to transform from a uniform to a normal distribution.\n\
+By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
+``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing\n\
 @qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
 classes.\n\
 \n\
-Reference: G. Marsaglia and W.W. Tsang,\n\
+Reference: @nospell{G. Marsaglia and W.W. Tsang},\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/})\n\
+@url{http://www.jstatsoft.org/v05/i08/}\n\
 \n\
 @seealso{rand, rande, randg, randp}\n\
 @end deftypefn")
@@ -623,10 +623,10 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (rande, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} rande (@var{n})\n\
-@deftypefnx {Built-in Function} {} rande (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} rande ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} rande (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} rande ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} rande (\"state\")\n\
 @deftypefnx {Built-in Function} {} rande (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} rande (\"state\", \"reset\")\n\
@@ -638,17 +638,17 @@ DEFUN (rande, args, ,
 Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
-By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
-to transform from a uniform to an exponential distribution.\n\
+By default, @code{randn} uses the @nospell{Marsaglia and Tsang}\n\
+``Ziggurat technique'' to transform from a uniform to a normal distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing\n\
 @qcode{\"double\"} or @qcode{\"single\"} argument.  These are the only valid\n\
 classes.\n\
 \n\
-Reference: G. Marsaglia and W.W. Tsang,\n\
+Reference: @nospell{G. Marsaglia and W.W. Tsang},\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
 J. Statistical Software, vol 5, 2000,\n\
-@url{http://www.jstatsoft.org/v05/i08/})\n\
+@url{http://www.jstatsoft.org/v05/i08/}\n\
 \n\
 @seealso{rand, randn, randg, randp}\n\
 @end deftypefn")
@@ -696,10 +696,10 @@ J. Statistical Software, vol 5, 2000,\n\
 */
 
 DEFUN (randg, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randg (@var{n})\n\
-@deftypefnx {Built-in Function} {} randg (@var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randg ([@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} randg (@var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} randg ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} randg (\"state\")\n\
 @deftypefnx {Built-in Function} {} randg (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} randg (\"state\", \"reset\")\n\
@@ -851,6 +851,11 @@ classes.\n\
 %! ## Test fixed seed
 %! randg ("seed", 1);
 %! assert (randg (100, 1, 6), [89.40208435058594 101.4734725952148 103.4020004272461 93.62763214111328 88.33104705810547 88.1871337890625], 1e-4);
+%!test
+%! ## Test out-of-bounds values produce NaN w/old-style generators & floats
+%! randg ("seed", 1);
+%! result = randg ([-2 Inf], "single");
+%! assert (result, single ([NaN NaN]));
 
 %!test
 %! if (__random_statistical_tests__)
@@ -968,10 +973,10 @@ classes.\n\
 */
 
 DEFUN (randp, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randp (@var{l}, @var{n})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, @var{n}, @var{m}, @dots{})\n\
-@deftypefnx {Built-in Function} {} randp (@var{l}, [@var{n} @var{m} @dots{}])\n\
+@deftypefnx {Built-in Function} {} randp (@var{l}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} randp (@var{l}, [@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {@var{v} =} randp (\"state\")\n\
 @deftypefnx {Built-in Function} {} randp (\"state\", @var{v})\n\
 @deftypefnx {Built-in Function} {} randp (\"state\", \"reset\")\n\
@@ -998,17 +1003,17 @@ W.H. Press, et al., @cite{Numerical Recipes in C},\n\
 Cambridge University Press, 1992.\n\
 \n\
 @item For matrix @var{l} @leq{} 10, use inversion method.[2]\n\
-E. Stadlober, et al., WinRand source code, available via FTP.\n\
+@nospell{E. Stadlober, et al., WinRand source code}, available via FTP.\n\
 \n\
 @item For matrix @var{l} > 10, use patchwork rejection method.\n\
-E. Stadlober, et al., WinRand source code, available via FTP, or\n\
-H. Zechner, @cite{Efficient sampling from continuous and discrete\n\
+@nospell{E. Stadlober, et al., WinRand source code}, available via FTP, or\n\
+@nospell{H. Zechner}, @cite{Efficient sampling from continuous and discrete\n\
 unimodal distributions}, Doctoral Dissertation, 156pp., Technical\n\
-University Graz, Austria, 1994.\n\
+University @nospell{Graz}, Austria, 1994.\n\
 \n\
 @item For @var{l} > 1e8, use normal approximation.\n\
-L. Montanet, et al., @cite{Review of Particle Properties}, Physical Review\n\
-D 50 p1284, 1994.\n\
+@nospell{L. Montanet}, et al., @cite{Review of Particle Properties},\n\
+Physical Review D 50 p1284, 1994.\n\
 @end table\n\
 \n\
 The class of the value returned can be controlled by a trailing\n\
@@ -1116,7 +1121,7 @@ classes.\n\
 */
 
 DEFUN (randperm, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} randperm (@var{n})\n\
 @deftypefnx {Built-in Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
@@ -1157,7 +1162,7 @@ using std::unordered_map;
 
       // Quick and dirty heuristic to decide if we allocate or not the
       // whole vector for tracking the truncated shuffle.
-      bool short_shuffle = m < n/5 && m < 1e5;
+      bool short_shuffle = m < n/5;
 
       if (! error_state)
         {
@@ -1166,7 +1171,20 @@ using std::unordered_map;
           double *rvec = r.fortran_vec ();
 
           octave_idx_type idx_len = short_shuffle ? m : n;
-          Array<octave_idx_type> idx (dim_vector (1, idx_len));
+          Array<octave_idx_type> idx;
+          try
+            {
+              idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+            }
+          catch (std::bad_alloc)
+            {
+              // Looks like n is too big and short_shuffle is false.
+              // Let's try again, but this time with the alternative.
+              idx_len = m;
+              short_shuffle = true;
+              idx = Array<octave_idx_type> (dim_vector (1, idx_len));
+            }
+
           octave_idx_type *ivec = idx.fortran_vec ();
 
           for (octave_idx_type i = 0; i < idx_len; i++)
@@ -1181,7 +1199,7 @@ using std::unordered_map;
               for (octave_idx_type i = 0; i < m; i++)
                 {
                   octave_idx_type k = i +
-                    gnulib::floor (rvec[i] * (n - i));
+                                      gnulib::floor (rvec[i] * (n - i));
 
                   //For shuffling first m entries, no need to use extra
                   //storage
@@ -1205,7 +1223,7 @@ using std::unordered_map;
               for (octave_idx_type i = 0; i < m; i++)
                 {
                   octave_idx_type k = i +
-                    gnulib::floor (rvec[i] * (n - i));
+                                      gnulib::floor (rvec[i] * (n - i));
                   std::swap (ivec[i], ivec[k]);
                 }
             }
@@ -1230,6 +1248,9 @@ using std::unordered_map;
 /*
 %!assert (sort (randperm (20)), 1:20)
 %!assert (length (randperm (20,10)), 10)
+
+## Test biggish N (bug #39378)
+%!assert (length (randperm (30000^2, 100000)), 100000)
 
 %!test
 %! rand ("seed", 0);

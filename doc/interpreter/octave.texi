@@ -1,4 +1,4 @@
-% Copyright (C) 1996-2012 John W. Eaton
+% Copyright (C) 1996-2013 John W. Eaton
 %
 % This file is part of Octave.
 %
@@ -63,8 +63,7 @@ END-INFO-DIR-ENTRY
 
 @ifnottex
 
-Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011 John W. Eaton.
+Copyright @copyright{} 1996-2013 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -91,7 +90,7 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 3 for Octave version @value{VERSION}
-@subtitle February 2011
+@subtitle December 2013
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
@@ -110,7 +109,7 @@ modified versions.
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 1999, 2000, 2001, 2002, 2005, 2006,
-2007, 2011 John W. Eaton.
+2007, 2011, 2013 John W. Eaton.
 
 This is the third edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.
@@ -796,6 +795,7 @@ Creating Packages
 * The DESCRIPTION File::
 * The INDEX File::
 * PKG_ADD and PKG_DEL Directives::
+* Missing Components::
 
 External Code Interface
 

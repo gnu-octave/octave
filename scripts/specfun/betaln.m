@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 Nicol N. Schraudolph
+## Copyright (C) 1998-2013 Nicol N. Schraudolph
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} betaln (@var{a}, @var{b})
-## Return the natural logarithm of the Beta function,
+## Compute the natural logarithm of the Beta function for real inputs @var{a}
+## and @var{b}.
+##
+## @code{betaln} is defined as
 ## @tex
 ## $$
 ##  {\rm betaln} (a, b) = \ln (B (a,b)) \equiv \ln ({\Gamma (a) \Gamma (b) \over \Gamma (a + b)}).
@@ -31,8 +34,11 @@
 ## @end example
 ##
 ## @end ifnottex
-## calculated in a way to reduce the occurrence of underflow.
-## @seealso{beta, betainc, gammaln}
+## and is calculated in a way to reduce the occurrence of underflow.
+##
+## The Beta function can grow quite large and it is often more useful to work
+## with the logarithm of the output rather than the function directly.
+## @seealso{beta, betainc, betaincinv, gammaln}
 ## @end deftypefn
 
 ## Author:   Nicol N. Schraudolph <nic@idsia.ch>
@@ -45,6 +51,12 @@ function retval = betaln (a, b)
     print_usage ();
   endif
 
+  if (! isreal (a) || ! isreal (b))
+    error ("betaln: A and B must be real");
+  elseif (! size_equal (a, b) && numel (a) != 1 && numel (b) != 1)
+    error ("betaln: A and B must have consistent sizes");
+  endif
+
   retval = gammaln (a) + gammaln (b) - gammaln (a + b);
 
 endfunction
@@ -53,6 +65,12 @@ endfunction
 %!assert (betaln (3,4), log (beta (3,4)), eps)
 
 %% Test input validation
-%!error (betaln (1))
-%!error (betaln (1,2,3))
+%!error betaln ()
+%!error betaln (1)
+%!error betaln (1,2,3)
+%!error <A and B must be real> betaln (1i, 2)
+%!error <A and B must be real> betaln (2, 1i)
+%!error <A and B must have consistent sizes> betaln ([1 2], [1 2 3])
+%!error <A and B must have consistent sizes> betaln ([1 2 3], [1 2])
+%!error <A and B must have consistent sizes> betaln ([1 2 3], [1 2 3]')
 

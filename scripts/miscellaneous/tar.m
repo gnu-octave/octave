@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,37 +17,46 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{entries} =} tar (@var{tarfile}, @var{files})
-## @deftypefnx {Function File} {@var{entries} =} tar (@var{tarfile}, @var{files}, @var{root})
-## Pack @var{files} @var{files} into the TAR archive @var{tarfile}.  The
-## list of files must be a string or a cell array of strings.
+## @deftypefn  {Function File} {@var{filelist} =} tar (@var{tarfile}, @var{files})
+## @deftypefnx {Function File} {@var{filelist} =} tar (@var{tarfile}, @var{files}, @var{rootdir})
+## Pack the list of files and directories specified in @var{files} into the
+## TAR archive @var{tarfile}.
 ##
-## The optional argument @var{root} changes the relative path of @var{files}
-## from the current directory.
+## @var{files} is a character array or cell array of strings.  Shell
+## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
+## expanded.  Directories are recursively traversed and all files are added to
+## the archive.
 ##
-## If an output argument is requested the entries in the archive are
-## returned in a cell array.
-## @seealso{untar, bzip2, gzip, zip}
+## If @var{rootdir} is defined then any files without absolute pathnames are
+## located relative to @var{rootdir} rather than the current directory.
+##
+## The optional output @var{filelist} is a list of the files that were included
+## in the archive.
+## @seealso{untar, unpack, bzip2, gzip, zip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
 
-function entries = tar (tarfile, files, root = ".")
+function filelist = tar (tarfile, files, rootdir = ".")
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  if (ischar (files))
+  if (! ischar (tarfile))
+    error ("tar: TARFILE must be a string");
+  elseif (ischar (files))
     files = cellstr (files);
+  elseif (! iscellstr (files))
+    error ("tar: FILES must be a character array or cellstr");
   endif
 
-  if (! (ischar (tarfile) && iscellstr (files) && ischar (root)))
-    error ("tar: all arguments must be character strings");
-  endif
+  rootdir = tilde_expand (rootdir);
 
-  cmd = sprintf ("tar cvf %s -C %s %s", tarfile, root,
-                 sprintf (" %s", files{:}));
+  tarfile = make_absolute_filename (tarfile);
+       
+  cmd = sprintf ("tar cvf %s -C %s %s",
+                          tarfile, rootdir, sprintf (" %s", files{:}));
 
   [status, output] = system (cmd);
 
@@ -59,9 +68,61 @@ function entries = tar (tarfile, files, root = ".")
     if (output(end) == "\n")
       output(end) = [];
     endif
-    entries = ostrsplit (output, "\n");
-    entries = entries';
+    filelist = ostrsplit (output, "\n");
+    filelist = filelist';
   endif
 
 endfunction
+
+
+%!xtest
+%! ## test gzip together with gunzip
+%! unwind_protect
+%!   dirname = tempname;
+%!   assert (mkdir (dirname));
+%!   dirname2 = fullfile (dirname, "dir2");
+%!   assert (mkdir (dirname2));
+%!   fname1 = fullfile (dirname, "f1");
+%!   fname2 = fullfile (dirname2, "f2");
+%!   fid = fopen (fname1, "wt");
+%!   assert (fid >= 0);
+%!   fdisp (fid, "Hello World");
+%!   fclose (fid); 
+%!   fid = fopen (fname2, "wt");
+%!   assert (fid >= 0);
+%!   fdisp (fid, "Goodbye World");
+%!   fclose (fid); 
+%!   tarname = [tempname ".tar"];
+%!   filelist = tar (tarname, {dirname2, fname1});
+%!   if (! strcmp (filelist{3}, fname1))
+%!     error ("tar file contents does not match expected file");
+%!   endif
+%!   if (! exist (tarname, "file"))
+%!     error ("tar archive file cannot be found!");
+%!   endif
+%!   outdir = tempname;
+%!   untar (tarname, outdir);
+%!   fid = fopen (fullfile (outdir, fname1), "rt");
+%!   assert (fid >= 0);
+%!   str = fgetl (fid);
+%!   fclose (fid);
+%!   assert (str, "Hello World");
+%!   fid = fopen (fullfile (outdir, fname2), "rt");
+%!   assert (fid >= 0);
+%!   str = fgetl (fid);
+%!   fclose (fid);
+%!   assert (str, "Goodbye World");
+%! unwind_protect_cleanup
+%!   delete (tarname);
+%!   confirm_recursive_rmdir (false, "local");
+%!   rmdir (dirname, "s");
+%!   rmdir (outdir, "s");
+%! end_unwind_protect
+
+## Test input validation
+%!error tar ()
+%!error tar (1)
+%!error tar (1,2,3,4)
+%!error <TARFILE must be a string> tar (1, "foobar")
+%!error <FILES must be a character array or cellstr> tar ("foobar", 1)
 

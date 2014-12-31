@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatSVD_h)
-#define octave_FloatSVD_h 1
+#if !defined (octave_floatSVD_h)
+#define octave_floatSVD_h 1
 
 #include <iosfwd>
 
@@ -40,35 +40,35 @@ public:
   FloatSVD (const FloatMatrix& a,
             SVD::type svd_type = SVD::std, SVD::driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
-    {
-      init (a, svd_type, svd_driver);
-    }
+  {
+    init (a, svd_type, svd_driver);
+  }
 
   FloatSVD (const FloatMatrix& a, octave_idx_type& info,
             SVD::type svd_type = SVD::std,
             SVD::driver svd_driver = SVD::GESVD)
     : type_computed (), sigma (), left_sm (), right_sm ()
-    {
-      info = init (a, svd_type, svd_driver);
-    }
+  {
+    info = init (a, svd_type, svd_driver);
+  }
 
   FloatSVD (const FloatSVD& a)
     : type_computed (a.type_computed), sigma (a.sigma),
       left_sm (a.left_sm), right_sm (a.right_sm)
-    { }
+  { }
 
   FloatSVD& operator = (const FloatSVD& a)
-    {
-      if (this != &a)
-        {
-          type_computed = a.type_computed;
-          sigma = a.sigma;
-          left_sm = a.left_sm;
-          right_sm = a.right_sm;
-        }
+  {
+    if (this != &a)
+      {
+        type_computed = a.type_computed;
+        sigma = a.sigma;
+        left_sm = a.left_sm;
+        right_sm = a.right_sm;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~FloatSVD (void) { }
 

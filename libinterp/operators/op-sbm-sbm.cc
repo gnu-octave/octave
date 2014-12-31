@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -49,7 +49,7 @@ DEFUNOP (uplus, sparse_bool_matrix)
 DEFUNOP (uminus, sparse_bool_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_bool_matrix&);
-  return octave_value ( - v.sparse_matrix_value ());
+  return octave_value (- v.sparse_matrix_value ());
 }
 
 DEFUNOP (transpose, sparse_bool_matrix)
@@ -79,7 +79,8 @@ CONVDECL (bool_matrix_to_double_matrix)
 {
   CAST_CONV_ARG (const octave_sparse_bool_matrix&);
 
-  return new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
+  return new octave_sparse_matrix (SparseMatrix
+                                    (v.sparse_bool_matrix_value ()));
 }
 
 void

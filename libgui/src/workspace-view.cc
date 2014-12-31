@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "workspace-view.h"
 #include "resource-manager.h"
+#include "symtab.h"
 
 workspace_view::workspace_view (QWidget *p)
   : octave_dock_widget (p), view (new QTableView (this))
@@ -49,6 +50,8 @@ workspace_view::workspace_view (QWidget *p)
 
   view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
+  view->setShowGrid (false);
+  view->setAlternatingRowColors (true);
   view_previous_row_count = 0;
 
   // Set an empty widget, so we can assign a layout to it.
@@ -67,13 +70,14 @@ workspace_view::workspace_view (QWidget *p)
   QSettings *settings = resource_manager::get_settings ();
 
   // Initialize column order and width of the workspace
-  
-  view->horizontalHeader ()->restoreState (settings->value ("workspaceview/column_state").toByteArray ());
+
+  view->horizontalHeader ()->restoreState (
+    settings->value ("workspaceview/column_state").toByteArray ());
 
   // Connect signals and slots.
 
   connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
-           this, SLOT(contextmenu_requested (const QPoint&)));
+           this, SLOT (contextmenu_requested (const QPoint&)));
 
   connect (this, SIGNAL (command_requested (const QString&)),
            p, SLOT (execute_command_in_terminal (const QString&)));
@@ -84,8 +88,8 @@ workspace_view::~workspace_view (void)
 {
   QSettings *settings = resource_manager::get_settings ();
 
-  settings->setValue("workspaceview/column_state",
-                     view->horizontalHeader ()->saveState ());
+  settings->setValue ("workspaceview/column_state",
+                      view->horizontalHeader ()->saveState ());
 
   settings->sync ();
 }
@@ -103,29 +107,38 @@ workspace_view::closeEvent (QCloseEvent *e)
   QDockWidget::closeEvent (e);
 }
 
+QString
+workspace_view::get_var_name (QModelIndex index)
+{
+  index = index.sibling (index.row (), 0);
+  QAbstractItemModel *m = view->model ();
+  QMap<int, QVariant> item_data = m->itemData (index);
+
+  return item_data[0].toString ();
+}
+
 void
 workspace_view::contextmenu_requested (const QPoint& qpos)
 {
   QMenu menu (this);
 
   QModelIndex index = view->indexAt (qpos);
-  QAbstractItemModel *m = view->model ();
 
   // if it isnt Local, Glocal etc, allow the ctx menu
-  if (index.isValid() && index.column () == 0)
+  if (index.isValid () && index.column () == 0)
     {
-      index = index.sibling (index.row(), 0);
+      QString var_name = get_var_name (index);
 
-      QMap<int, QVariant> item_data = m->itemData (index);
-  
-      QString var_name = item_data[0].toString ();
-
-      menu.addAction (tr ("Copy"), this,
+      menu.addAction (tr ("Copy name"), this,
                       SLOT (handle_contextmenu_copy ()));
+
+      menu.addAction (tr ("Copy value"), this,
+                      SLOT (handle_contextmenu_copy_value ()));
 
       QAction *rename = menu.addAction (tr ("Rename"), this,
                                         SLOT (handle_contextmenu_rename ()));
 
+      QAbstractItemModel *m = view->model ();
       const workspace_model *wm = static_cast<const workspace_model *> (m);
 
       if (! wm->is_top_level ())
@@ -136,13 +149,13 @@ workspace_view::contextmenu_requested (const QPoint& qpos)
 
       menu.addSeparator ();
 
-      menu.addAction ("disp(" + var_name + ")", this,
+      menu.addAction ("disp (" + var_name + ")", this,
                       SLOT (handle_contextmenu_disp ()));
 
-      menu.addAction ("plot(" + var_name + ")", this,
+      menu.addAction ("plot (" + var_name + ")", this,
                       SLOT (handle_contextmenu_plot ()));
 
-      menu.addAction ("stem(" + var_name + ")", this,
+      menu.addAction ("stem (" + var_name + ")", this,
                       SLOT (handle_contextmenu_stem ()));
 
       menu.exec (view->mapToGlobal (qpos));
@@ -156,17 +169,29 @@ workspace_view::handle_contextmenu_copy (void)
 
   if (index.isValid ())
     {
-      index = index.sibling(index.row(), 0);
-
-      QAbstractItemModel *m = view->model ();
-
-      QMap<int, QVariant> item_data = m->itemData (index);
-  
-      QString var_name = item_data[0].toString ();
+      QString var_name = get_var_name (index);
 
       QClipboard *clipboard = QApplication::clipboard ();
 
       clipboard->setText (var_name);
+    }
+}
+
+void
+workspace_view::handle_contextmenu_copy_value (void)
+{
+  QModelIndex index = view->currentIndex ();
+
+  if (index.isValid ())
+    {
+      QString var_name = get_var_name (index);
+
+      octave_value val = symbol_table::varval (var_name.toStdString ());
+      std::ostringstream buf;
+      val.print_raw (buf, true);
+
+      QClipboard *clipboard = QApplication::clipboard ();
+      clipboard->setText (QString::fromStdString (buf.str ()));
     }
 }
 
@@ -177,13 +202,7 @@ workspace_view::handle_contextmenu_rename (void)
 
   if (index.isValid ())
     {
-      index = index.sibling(index.row(), 0);
-
-      QAbstractItemModel *m = view->model ();
-
-      QMap<int, QVariant> item_data = m->itemData (index);
-  
-      QString var_name = item_data[0].toString ();
+      QString var_name = get_var_name (index);
 
       QInputDialog* inputDialog = new QInputDialog ();
 
@@ -196,7 +215,10 @@ workspace_view::handle_contextmenu_rename (void)
                                  QLineEdit::Normal, var_name, &ok);
 
       if (ok && ! new_name.isEmpty ())
-        m->setData (index, new_name, Qt::EditRole);
+        {
+          QAbstractItemModel *m = view->model ();
+          m->setData (index, new_name, Qt::EditRole);
+        }
     }
 }
 
@@ -225,13 +247,7 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 
   if (index.isValid ())
     {
-      index = index.sibling(index.row(), 0);
-
-      QAbstractItemModel *m = view->model ();
-
-      QMap<int, QVariant> item_data = m->itemData (index);
-  
-      QString var_name = item_data[0].toString ();
+      QString var_name = get_var_name (index);
 
       emit command_requested (cmdname + " (" + var_name + ");");
     }
@@ -256,15 +272,22 @@ workspace_view::notice_settings (const QSettings *settings)
   _model->notice_settings (settings); // update colors of model first
 
   QString tool_tip;
-  tool_tip  =  QString (tr ("View the variables in the active workspace.<br>"));
-  tool_tip +=  QString (tr ("Colors for the storage class:"));
-  for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+
+  if (!settings->value ("workspaceview/hide_tool_tips",false).toBool ())
     {
-      tool_tip +=  QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
-               .arg (_model->storage_class_color (i).name ())
-               .arg (resource_manager::storage_class_names ().at (i));
+      tool_tip  = QString (tr ("View the variables in the active workspace.<br>"));
+      tool_tip += QString (tr ("Colors for variable attributes:"));
+      for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
+        {
+          tool_tip +=
+            QString ("<div style=\"background-color:%1;color:#000000\">%2</div>")
+            .arg (_model->storage_class_color (i).name ())
+            .arg (resource_manager::storage_class_names ().at (i));
+        }
     }
+
   setToolTip (tool_tip);
+
 }
 
 void
@@ -273,4 +296,11 @@ workspace_view::copyClipboard ()
   if (view->hasFocus ())
     handle_contextmenu_copy ();
 }
+
+void
+workspace_view::selectAll ()
+{
+  if (view->hasFocus ())
+    view->selectAll ();
+}  
 

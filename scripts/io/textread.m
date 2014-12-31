@@ -135,7 +135,7 @@ function varargout = textread (filename, format = "%f", varargin)
   endif
  
   ## Now that we know what EOL looks like, we can process format_repeat_count.
-  ## FIXME The below isn't ML-compatible: counts lines, not format string uses
+  ## FIXME: The below isn't ML-compatible: counts lines, not format string uses
   if (isfinite (nlines) && (nlines > 0))
     l_eol_char = length (eol_char);
     eoi = findstr (str, eol_char);
@@ -221,7 +221,7 @@ endfunction
 
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! d = rand (5, 3);
 %! dlmwrite (f, d, "precision", "%5.2f");
 %! [a, b, c] = textread (f, "%f %f %f", "delimiter", ",", "headerlines", 3);
@@ -231,7 +231,7 @@ endfunction
 %! assert (c, d(4:5, 3), 1e-2);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! d = rand (7, 2);
 %! dlmwrite (f, d, "precision", "%5.2f");
 %! [a, b] = textread (f, "%f, %f", "headerlines", 1);
@@ -240,7 +240,7 @@ endfunction
 
 %% Test reading 2D matrix with empty format
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! d = rand (5, 2);
 %! dlmwrite (f, d, "precision", "%5.2f");
 %! A = textread (f, "", "headerlines", 3);
@@ -249,7 +249,7 @@ endfunction
 
 %% Read multiple lines using empty format string
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
@@ -261,7 +261,7 @@ endfunction
 
 %% Empty format, corner case = one line w/o EOL
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
@@ -273,7 +273,7 @@ endfunction
 
 %% Read multiple lines using empty format string, missing data (should be 0)
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
@@ -285,7 +285,7 @@ endfunction
 
 %% Test with empty positions - ML returns 0 for empty fields
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);
@@ -298,7 +298,7 @@ endfunction
 %% Another test with empty format + positions, now with more incomplete lower
 %% row (must be appended with zeros to get rectangular matrix)
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! unlink (f);
 %! fid = fopen (f, "w");
 %! d = rand (1, 4);

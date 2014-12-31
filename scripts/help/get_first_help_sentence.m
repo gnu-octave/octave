@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Søren Hauberg
+## Copyright (C) 2009-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -28,7 +28,7 @@
 ##
 ## The optional output argument @var{status} returns the status reported by
 ## @code{makeinfo}.  If only one output argument is requested, and @var{status}
-## is non-zero, a warning is displayed.
+## is nonzero, a warning is displayed.
 ##
 ## As an example, the first sentence of this help text is
 ##
@@ -107,10 +107,9 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     for k = 1:length (def_idx)
       endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        keep(def_idx(k):end) = false;
-      else
-        keep(def_idx(k):endl) = false;
+        endl = numel (keep);
       endif
+      keep(def_idx(k):endl) = false;
     endfor
 
     ## Remove the @end ... that corresponds to the @def we removed above
@@ -129,12 +128,7 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
     if (isempty (end_idx))
       error ("get_first_help_sentence: couldn't parse texinfo");
     endif
-    endl = endl_idx(find (endl_idx > end_idx, 1));
-    if (isempty (endl))
-      keep(end_idx:end) = false;
-    else
-      keep(end_idx:endl) = false;
-    endif
+    keep(end_idx(1):end) = false;
 
     help_text = help_text(keep);
   endif

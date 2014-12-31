@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Michael Goffioul
+Copyright (C) 2009-2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -40,16 +40,18 @@ OCTINTERP_API
 ft_render : public text_processor
 {
 public:
-  enum {
-      MODE_BBOX   = 0,
-      MODE_RENDER = 1
+  enum
+  {
+    MODE_BBOX   = 0,
+    MODE_RENDER = 1
   };
 
-  enum {
-      ROTATION_0   = 0,
-      ROTATION_90  = 1,
-      ROTATION_180 = 2,
-      ROTATION_270 = 3
+  enum
+  {
+    ROTATION_0   = 0,
+    ROTATION_90  = 1,
+    ROTATION_180 = 2,
+    ROTATION_270 = 3
   };
 
 public:
@@ -112,46 +114,46 @@ private:
   ft_render& operator = (const ft_render&);
 
   // Class to hold information about fonts and a strong
-  // reference to the font objects loaded by freetype.
+  // reference to the font objects loaded by FreeType.
   class ft_font
+  {
+  public:
+    ft_font (void)
+      : name (), weight (), angle (), size (0), face (0) { }
+
+    ft_font (const std::string& nm, const std::string& wt,
+             const std::string& ang, double sz, FT_Face f = 0)
+      : name (nm), weight (wt), angle (ang), size (sz), face (f) { }
+
+    ft_font (const ft_font& ft);
+
+    ~ft_font (void)
     {
-    public:
-      ft_font (void)
-        : name (), weight (), angle (), size (0), face (0) { }
+      if (face)
+        FT_Done_Face (face);
+    }
 
-      ft_font (const std::string& nm, const std::string& wt,
-               const std::string& ang, double sz, FT_Face f = 0)
-        : name (nm), weight (wt), angle (ang), size (sz), face (f) { }
+    ft_font& operator = (const ft_font& ft);
 
-      ft_font (const ft_font& ft);
+    bool is_valid (void) const { return get_face (); }
 
-      ~ft_font (void)
-        {
-          if (face)
-            FT_Done_Face (face);
-        }
+    std::string get_name (void) const { return name; }
 
-      ft_font& operator = (const ft_font& ft);
+    std::string get_weight (void) const { return weight; }
 
-      bool is_valid (void) const { return get_face (); }
+    std::string get_angle (void) const { return angle; }
 
-      std::string get_name (void) const { return name; }
+    double get_size (void) const { return size; }
 
-      std::string get_weight (void) const { return weight; }
+    FT_Face get_face (void) const;
 
-      std::string get_angle (void) const { return angle; }
-
-      double get_size (void) const { return size; }
-
-      FT_Face get_face (void) const;
-
-    private:
-      std::string name;
-      std::string weight;
-      std::string angle;
-      double size;
-      mutable FT_Face face;
-    };
+  private:
+    std::string name;
+    std::string weight;
+    std::string angle;
+    double size;
+    mutable FT_Face face;
+  };
 
   void push_new_line (void);
 

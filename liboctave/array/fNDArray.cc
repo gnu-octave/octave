@@ -1,7 +1,7 @@
 // N-D Array  manipulations.
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -110,7 +110,7 @@ FloatNDArray::ifourier (int dim) const
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
     octave_fftw::ifft (out + k * stride * n, out + k * stride * n,
-                      n, howmany, stride, dist);
+                       n, howmany, stride, dist);
 
   return retval;
 }
@@ -217,7 +217,7 @@ FloatNDArray::fourier (int dim) const
   FloatComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<FloatComplex> wsave (nn);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, tmp, npts);
@@ -264,7 +264,7 @@ FloatNDArray::ifourier (int dim) const
   FloatComplexNDArray retval (dv);
   octave_idx_type npts = dv(dim);
   octave_idx_type nn = 4*npts+15;
-  Array<FloatComplex> wsave (nn);
+  Array<FloatComplex> wsave (dim_vector (nn, 1));
   FloatComplex *pwsave = wsave.fortran_vec ();
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, tmp, npts);
@@ -294,7 +294,7 @@ FloatNDArray::ifourier (int dim) const
 
           for (octave_idx_type i = 0; i < npts; i++)
             retval((i + k*npts)*stride + j*dist) = tmp[i] /
-              static_cast<float> (npts);
+                                                   static_cast<float> (npts);
         }
     }
 
@@ -314,9 +314,9 @@ FloatNDArray::fourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -362,9 +362,9 @@ FloatNDArray::ifourier2d (void) const
     {
       octave_idx_type npts = dv2(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -387,8 +387,8 @@ FloatNDArray::ifourier2d (void) const
               F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l] /
-                  static_cast<float> (npts);
+                retval((l + k*npts)*stride + j*dist) =
+                  prow[l] / static_cast<float> (npts);
             }
         }
 
@@ -410,9 +410,9 @@ FloatNDArray::fourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -457,9 +457,9 @@ FloatNDArray::ifourierNd (void) const
     {
       octave_idx_type npts = dv(i);
       octave_idx_type nn = 4*npts+15;
-      Array<FloatComplex> wsave (nn);
+      Array<FloatComplex> wsave (dim_vector (nn, 1));
       FloatComplex *pwsave = wsave.fortran_vec ();
-      Array<FloatComplex> row (npts);
+      Array<FloatComplex> row (dim_vector (npts, 1));
       FloatComplex *prow = row.fortran_vec ();
 
       octave_idx_type howmany = numel () / npts;
@@ -482,8 +482,8 @@ FloatNDArray::ifourierNd (void) const
               F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval((l + k*npts)*stride + j*dist) = prow[l] /
-                  static_cast<float> (npts);
+                retval((l + k*npts)*stride + j*dist) =
+                  prow[l] / static_cast<float> (npts);
             }
         }
 
@@ -595,7 +595,7 @@ FloatNDArray::too_large_for_float (void) const
   return false;
 }
 
-// FIXME -- this is not quite the right thing.
+// FIXME: this is not quite the right thing.
 
 boolNDArray
 FloatNDArray::all (int dim) const
@@ -625,6 +625,12 @@ FloatNDArray
 FloatNDArray::prod (int dim) const
 {
   return do_mx_red_op<float, float> (*this, dim, mx_inline_prod);
+}
+
+NDArray
+FloatNDArray::dprod (int dim) const
+{
+  return do_mx_red_op<double, float> (*this, dim, mx_inline_dprod);
 }
 
 FloatNDArray
@@ -700,7 +706,8 @@ FloatNDArray::diff (octave_idx_type order, int dim) const
 }
 
 FloatNDArray
-FloatNDArray::concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_idx)
+FloatNDArray::concat (const FloatNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx)
 {
   if (rb.numel () > 0)
     insert (rb, ra_idx);
@@ -708,7 +715,8 @@ FloatNDArray::concat (const FloatNDArray& rb, const Array<octave_idx_type>& ra_i
 }
 
 FloatComplexNDArray
-FloatNDArray::concat (const FloatComplexNDArray& rb, const Array<octave_idx_type>& ra_idx)
+FloatNDArray::concat (const FloatComplexNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx)
 {
   FloatComplexNDArray retval (*this);
   if (rb.numel () > 0)
@@ -717,7 +725,8 @@ FloatNDArray::concat (const FloatComplexNDArray& rb, const Array<octave_idx_type
 }
 
 charNDArray
-FloatNDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx)
+FloatNDArray::concat (const charNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx)
 {
   charNDArray retval (dims ());
   octave_idx_type nel = numel ();
@@ -737,8 +746,7 @@ FloatNDArray::concat (const charNDArray& rb, const Array<octave_idx_type>& ra_id
           octave_idx_type ival = NINTbig (d);
 
           if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
-            // FIXME -- is there something
-            // better we could do? Should we warn the user?
+            // FIXME: is there something better to do?  Should we warn the user?
             ival = 0;
 
           retval.elem (i) = static_cast<char>(ival);
@@ -765,14 +773,16 @@ imag (const FloatComplexNDArray& a)
 }
 
 FloatNDArray&
-FloatNDArray::insert (const FloatNDArray& a, octave_idx_type r, octave_idx_type c)
+FloatNDArray::insert (const FloatNDArray& a,
+                      octave_idx_type r, octave_idx_type c)
 {
   Array<float>::insert (a, r, c);
   return *this;
 }
 
 FloatNDArray&
-FloatNDArray::insert (const FloatNDArray& a, const Array<octave_idx_type>& ra_idx)
+FloatNDArray::insert (const FloatNDArray& a,
+                      const Array<octave_idx_type>& ra_idx)
 {
   Array<float>::insert (a, ra_idx);
   return *this;
@@ -802,31 +812,17 @@ FloatNDArray::isfinite (void) const
   return do_mx_unary_map<bool, float, xfinite> (*this);
 }
 
-FloatMatrix
-FloatNDArray::matrix_value (void) const
-{
-  FloatMatrix retval;
-
-  if (ndims () == 2)
-      retval = FloatMatrix (Array<float> (*this));
-  else
-    (*current_liboctave_error_handler)
-      ("invalid conversion of FloatNDArray to FloatMatrix");
-
-  return retval;
-}
-
 void
 FloatNDArray::increment_index (Array<octave_idx_type>& ra_idx,
-                          const dim_vector& dimensions,
-                          int start_dimension)
+                               const dim_vector& dimensions,
+                               int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
 octave_idx_type
 FloatNDArray::compute_index (Array<octave_idx_type>& ra_idx,
-                        const dim_vector& dimensions)
+                             const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
 }
@@ -867,16 +863,16 @@ operator >> (std::istream& is, FloatNDArray& a)
     {
       float tmp;
       for (octave_idx_type i = 0; i < nel; i++)
-          {
-            tmp = octave_read_value<float> (is);
-            if (is)
-              a.elem (i) = tmp;
-            else
-              goto done;
-          }
+        {
+          tmp = octave_read_value<float> (is);
+          if (is)
+            a.elem (i) = tmp;
+          else
+            goto done;
+        }
     }
 
- done:
+done:
 
   return is;
 }

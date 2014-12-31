@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -92,7 +92,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
 {
   octave_sparse_bool_matrix& v1 = dynamic_cast<octave_sparse_bool_matrix&> (a1);
 
-  // FIXME -- perhaps add a warning for this conversion if the values
+  // FIXME: perhaps add a warning for this conversion if the values
   // are not all 0 or 1?
 
   SparseBoolMatrix v2 (1, 1, a2.bool_value ());

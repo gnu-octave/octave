@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 VZLU Prague, a.s.
+Copyright (C) 2008-2013 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -36,6 +36,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-cmplx.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "mx-cm-s.h"
+#include "mx-s-cm.h"
+#include "mx-fcm-fs.h"
+#include "mx-fs-fcm.h"
 #include "Array.h"
 #include "Array-util.h"
 #include "CMatrix.h"
@@ -327,7 +331,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
+      R fi = i*M_PI/nsamp;
+      R lambda1 = cos (fi);
+      R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
@@ -341,9 +347,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
     }
 }
 
-// Complex version. Higham's paper does not deal with complex case, so we use a simple
-// extension. First, guess the magnitudes as in real version, then try to rotate lambda
-// to improve further.
+// Complex version. Higham's paper does not deal with complex case, so we use a
+// simple extension. First, guess the magnitudes as in real version, then try
+// to rotate lambda to improve further.
 template <class ColVectorT, class R>
 static void
 higham_subp (const ColVectorT& y, const ColVectorT& col,
@@ -358,7 +364,9 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
   for (octave_idx_type i = 0; i < nsamp; i++)
     {
       octave_quit ();
-      R fi = i*M_PI/nsamp, lambda1 = cos (fi), mu1 = sin (fi);
+      R fi = i*M_PI/nsamp;
+      R lambda1 = cos (fi);
+      R mu1 = sin (fi);
       R lmnr = std::pow (std::pow (std::abs (lambda1), p) +
                          std::pow (std::abs (mu1), p), 1/p);
       lambda1 /= lmnr; mu1 /= lmnr;
@@ -415,7 +423,8 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   // the OSE part
   VectorT y(m.rows (), 1, 0), z(m.rows (), 1);
   typedef typename VectorT::element_type RR;
-  RR lambda = 0, mu = 1;
+  RR lambda = 0;
+  RR mu = 1;
   for (octave_idx_type k = 0; k < m.columns (); k++)
     {
       octave_quit ();
@@ -460,8 +469,9 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
 
 static const char *p_less1_gripe = "xnorm: p must be at least 1";
 
-// Static constant to control the maximum number of iterations. 100 seems to be a good value.
-// Eventually, we can provide a means to change this constant from Octave.
+// Static constant to control the maximum number of iterations.  100 seems to
+// be a good value.  Eventually, we can provide a means to change this
+// constant from Octave.
 static int max_norm_iter = 100;
 
 // version with SVD for dense matrices

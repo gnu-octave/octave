@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Eric Chassande-Mottin, CNRS (France)
+## Copyright (C) 2009-2013 Eric Chassande-Mottin, CNRS (France)
 ## Parts Copyright (C) 2012 Philip Nienhuis
 ##
 ## This file is part of Octave.
@@ -192,11 +192,17 @@ function varargout = strread (str, format = "%f", varargin)
     error ("strread: STR and FORMAT arguments must be strings");
   endif
 
+  if (strcmp (typeinfo (format), "sq_string"))
+    format = do_string_escapes (format);
+  endif
+
   ## Parse format string to compare number of conversion fields and nargout
-  nfields = length (strfind (format, "%")) - length (strfind (format, "%*"));
+  nfields = numel (regexp (format, '(%(\d*|\d*\.\d*)?[nfduscq]|%\[)', "match"));
   ## If str only has numeric fields, a (default) format ("%f") will do.
   ## Otherwise:
-  if ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
+  if (! nfields)
+    error ("strread.m: no valid format conversion specifiers found\n");
+  elseif ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
     error ("strread: the number of output variables must match that specified by FORMAT");
   endif
 
@@ -245,8 +251,8 @@ function varargout = strread (str, format = "%f", varargin)
             elseif (iscellstr (varargin{n+1}) && numel (varargin{n+1}) == 2)
               [comment_start, comment_end] = deal (varargin{n+1}{:});
             else
-              ## FIXME - a user may have numeric values specified: {'//', 7}
-              ##         this will lead to an error in the warning message
+              ## FIXME: A user may have numeric values specified: {'//', 7}
+              ##        this will lead to an error in the warning message
               error ("strread: unknown or unrecognized comment style '%s'",
                       varargin{n+1});
             endif
@@ -300,7 +306,8 @@ function varargout = strread (str, format = "%f", varargin)
     fmt_words = regexp (format, '[^ ]+', "match");
     
     ## Find position of conversion specifiers (they start with %)
-    idy2 = find (! cellfun ("isempty", regexp (fmt_words, '^%')));
+    fcs_ptrn = '(%\*?(\d*|\d*\.\d*)?[nfduscq]|%\*?\[)';
+    idy2 = find (! cellfun ("isempty", regexp (fmt_words, fcs_ptrn)));
 
     ## Check for unsupported format specifiers
     errpat = '(\[.*\]|[cq]|[nfdu]8|[nfdu]16|[nfdu]32|[nfdu]64)';
@@ -391,12 +398,21 @@ function varargout = strread (str, format = "%f", varargin)
     white_spaces = strrep (white_spaces, eol_char, '');
   endif
 
+  ii = numel (fmt_words);
+  while (ii > 0)
+    if (ismember (fmt_words{ii}, delimiter_str)(1))
+      fmt_words(ii) = [];
+      --num_words_per_line;
+    endif
+    --ii;
+  endwhile
+
   pad_out = 0;
   ## Trim whitespace if needed
   if (! isempty (white_spaces))
     ## Check if trailing "\n" might signal padding output arrays to equal size
     ## before it is trimmed away below
-    if ((str(end) == 10) && (nargout > 1))
+    if (str(end) == "\n" && nargout > 1)
       pad_out = 1;
     endif
     ## Condense all repeated whitespace into one single space
@@ -404,7 +420,7 @@ function varargout = strread (str, format = "%f", varargin)
     rxp_wsp = sprintf ("[%s]+", white_spaces);
     str = regexprep (str, rxp_wsp, ' ');
     ## Remove possible leading space at string
-    if (str(1) == 32)
+    if (str(1) == " ")
        str = str(2:end);
     endif
     ## Check for single delimiter followed/preceded by whitespace
@@ -677,8 +693,8 @@ function varargout = strread (str, format = "%f", varargin)
       endif
 
       ## Map to format
-      ## FIXME - add support for formats like "<%s>", "%[a-zA-Z]"
-      ##         Someone with regexp experience is needed.
+      ## FIXME: Add support for formats like "<%s>", "%[a-zA-Z]"
+      ##        Someone with regexp experience is needed.
       switch (fmt_words{m}(1:min (2, length (fmt_words{m}))))
         case "%s"
           if (pad_out)
@@ -688,7 +704,7 @@ function varargout = strread (str, format = "%f", varargin)
           k++;
         case {"%d", "%u", "%f", "%n"}
           n = cellfun ("isempty", data);
-          ### FIXME - erroneously formatted data lead to NaN, not an error
+          ### FIXME: Erroneously formatted data lead to NaN, not an error
           data = str2double (data);
           if (! isempty (regexp (fmt_words{m}, "%[du]")))
             ## Cast to integer
@@ -709,8 +725,8 @@ function varargout = strread (str, format = "%f", varargin)
           switch (fmt_words{m}(ew+1))
             case {"d", "u", "f", "n"}
               n = cellfun ("isempty", data);
-              ### FIXME - erroneously formatted data lead to NaN, not an error
-              ###         => ReturnOnError can't be implemented for numeric data
+              ### FIXME: Erroneously formatted data lead to NaN, not an error
+              ###        => ReturnOnError can't be implemented for numeric data
               data = str2double (strtrunc (data, swidth));
               data(n) = numeric_fill_value;
               if (pad_out)
@@ -974,6 +990,34 @@ endfunction
 %!test
 %! assert (strread (",2,,4\n5,,7,", "", "delimiter", ","), [NaN; 2; NaN; 4; 5; NaN; 7]);
 
+%% Test #1 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", "%f %f %f\n");
+%! assert (a, [1; 4; 7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
+%% Test #2 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", "%f %f\n%f");
+%! assert (a, [1;4;7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
+%% Test #3 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2 3\n4 5 6\n7 8 9\n", '%f %f %f\n');
+%! assert (a, [1; 4; 7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
+%% Test #3 bug #42609
+%!test
+%! [a, b, c] = strread ("1 2\n3\n4 5\n6\n7 8\n9\n", '%f %f\n%f');
+%! assert (a, [1;4;7]);
+%! assert (b, [2; 5; 8]);
+%! assert (c, [3; 6; 9]);
+
 %% Unsupported format specifiers
 %!test
 %!error <format specifiers are not supported> strread ("a", "%c")
@@ -993,5 +1037,8 @@ endfunction
 
 %% Illegal format specifiers
 %!test
-%!error <unknown format specifier> strread ("1.0", "%z")
+%!error <no valid format conversion specifiers> strread ("1.0", "%z");
 
+%% Test for false positives in check for non-supported format specifiers
+%!test
+%! assert (strread ("Total: 32.5 % (of cm values)","Total: %f % (of cm values)"), 32.5, 1e-5);

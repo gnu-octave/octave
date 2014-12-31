@@ -1,7 +1,7 @@
 /*
     This file is part of Konsole, an X terminal.
     
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
+    Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
@@ -29,7 +29,7 @@
 #include <stdio.h>
 
 // Qt 
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 
 #include <QtCore/QTextCodec>
 #include <QtCore/QTextStream>

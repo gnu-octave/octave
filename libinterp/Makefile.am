@@ -1,6 +1,6 @@
 # Makefile for Octave's libinterp directory
 #
-# Copyright (C) 1993-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -32,7 +32,8 @@ AM_CPPFLAGS = \
   -I$(srcdir)/operators \
   -Iparse-tree -I$(srcdir)/parse-tree \
   -Icorefcn -I$(srcdir)/corefcn \
-  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu \
+  $(HDF5_CPPFLAGS)
 
 AM_CFLAGS += $(WARN_CFLAGS)
 
@@ -109,6 +110,7 @@ octinclude_HEADERS = \
   builtins.h \
   builtin-defun-decls.h \
   octave.h \
+  options-usage.h \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
   $(PARSER_INC) \
@@ -186,8 +188,8 @@ liboctinterp_la_LIBADD = \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctinterp_current = 1
-liboctinterp_revision = 1
+liboctinterp_current = 2
+liboctinterp_revision = 0
 liboctinterp_age = 0
 
 liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
@@ -227,19 +229,15 @@ DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 ## Rule to build a DEF file from a .cc file
-##
-## FIXME -- This rule should be fixed to avoid using special
-## flags like JAVA_CPPFLAGS for every file.  How could it be written
-## so that it uses octave_value_liboctave_value_la_CPPFLAGS when
-## generating the octave-value/*.df files?
-## 
-## FIXME -- Shouldn't the build stop if CPP fails here?
+## See also module.mk files for overrides when speciall CPPFLAGS are needed.
+## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
 %.df: %.cc
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
-	mv $@-t $@
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
 
 ## Rules to build test files
 
@@ -274,9 +272,11 @@ oct-conf-features.h: $(top_builddir)/config.h config-features.sh
 version.h: version.in.h Makefile
 	$(SED) < $< \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
-	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
 	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
 	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \
+          -e "s|%OCTAVE_MAJOR_VERSION%|${OCTAVE_MAJOR_VERSION}|" \
+          -e "s|%OCTAVE_MINOR_VERSION%|${OCTAVE_MINOR_VERSION}|" \
+          -e "s|%OCTAVE_PATCH_VERSION%|${OCTAVE_PATCH_VERSION}|" \
 	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
 	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
 	mv $@-t $@

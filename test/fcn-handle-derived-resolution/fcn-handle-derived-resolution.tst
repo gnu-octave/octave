@@ -1,4 +1,4 @@
-## Copyright (C) 2012 John W. Eaton
+## Copyright (C) 2012-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -22,38 +22,46 @@
 %%  Note: This script and all classes are also intended to run
 %%        in Matlab to test compatibility.  Don't break that!
 
-%!shared
-%! clear -classes
+%% FIXME: Can't use 'clear -classes' because it also clears all functions in the
+%% namespace of test.m (bug #35881).  This is a problem only if Octave would
+%% re-use a class definition that was defined somewhere else.  Unfortunately,
+%% that is exactly the case when running 'make check' since the ctor-vs-method
+%% test also uses an @parent, @derived, and @other class.
+%% Until the bug is fixed, it suffices to make the class names unique so that
+%% there is no re-use.  Using the prefix fhdr (fcn-handle-derived-resolution)
+%% for this directory.
+%%!shared
+%%! #clear -classes
 
 %!test
-%! p = parent (7);
+%! p = fhdr_parent (7);
 %! assert (numel (p), 7)
 
 %!test
-%! d = derived (13);
+%! d = fhdr_derived (13);
 %! assert (numel (d), 13)
 
 %!test
-%! p = parent (11);
+%! p = fhdr_parent (11);
 %! f = @numel;
 %! assert (f (p), 11)
 
 %!test
-%! d = parent (21);
+%! d = fhdr_parent (21);
 %! f = @numel;
 %! assert (f (d), 21)
 
 %!test
-%! o(1) = other (13);
-%! o(2) = other (42);
+%! o(1) = fhdr_other (13);
+%! o(2) = fhdr_other (42);
 %! assert (getsize_loop (o), [13, 42])
 
 %!test
-%! o(1) = other (13);
-%! o(2) = other (42);
+%! o(1) = fhdr_other (13);
+%! o(2) = fhdr_other (42);
 %! assert (getsize_cellfun (o), [13, 42])
 
 %!test
-%! o(1) = other (13);
-%! o(2) = other (42);
+%! o(1) = fhdr_other (13);
+%! o(2) = fhdr_other (42);
 %! assert (getsize_arrayfun (o), [13, 42])

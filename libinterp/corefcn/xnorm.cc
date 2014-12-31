@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 VZLU Prague, a.s.
+Copyright (C) 2008-2013 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -48,7 +48,9 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
 
   if (isfloat || x.is_double_type ())
     {
-      if (isvector)
+      if (x.is_empty ())
+        retval = octave_value (0);
+      else if (isvector)
         {
           if (isfloat & iscomplex)
             retval = xnorm (x.float_complex_column_vector_value (),

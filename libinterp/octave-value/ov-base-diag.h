@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_diag_h)
-#define octave_base_diag_h 1
+#if !defined (octave_ov_base_diag_h)
+#define octave_ov_base_diag_h 1
 
 #include <cstdlib>
 
@@ -69,7 +69,7 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
-    { return subsref (type, idx); }
+  { return subsref (type, idx); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -83,10 +83,10 @@ public:
   octave_idx_type nnz (void) const { return to_dense ().nnz (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return to_dense ().reshape (new_dims); }
+  { return to_dense ().reshape (new_dims); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return to_dense ().permute (vec, inv); }
+  { return to_dense ().permute (vec, inv); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -95,24 +95,24 @@ public:
 
   MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
-    { return matrix_type (); }
+  { return matrix_type (); }
 
   octave_value diag (octave_idx_type k = 0) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return to_dense ().sort (dim, mode); }
+  { return to_dense ().sort (dim, mode); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-    { return to_dense ().sort (sidx, dim, mode); }
+  { return to_dense ().sort (sidx, dim, mode); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return to_dense ().is_sorted (mode); }
+  { return to_dense ().is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode mode = ASCENDING) const
-    { return to_dense ().sort_rows_idx (mode); }
+  { return to_dense ().sort_rows_idx (mode); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-    { return to_dense ().is_sorted_rows (mode); }
+  { return to_dense ().is_sorted_rows (mode); }
 
   bool is_matrix_type (void) const { return true; }
 
@@ -131,9 +131,9 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool /* require_integers */ = false) const;
 
   Matrix matrix_value (bool = false) const;
 
@@ -203,9 +203,11 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_info (std::ostream& os, const std::string& prefix) const;
+
+  octave_value fast_elem_extract (octave_idx_type n) const;
 
 protected:
 

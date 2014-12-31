@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -70,7 +70,8 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
       Parent[k] = n ;                // parent of k is not yet known
       Flag[k] = k ;                  // mark node k as visited
-      octave_idx_type kk = (P) ? (P[k]) : (k) ;  // kth original, or permuted, column
+      octave_idx_type kk = (P) ? P[k]  // kth original, or permuted, column
+                               : (k) ;
       octave_idx_type p2 = cidx[kk+1] ;
       for (octave_idx_type p = cidx[kk] ; p < p2 ; p++)
         {
@@ -209,7 +210,7 @@ coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
 }
 
 DEFUN_DLD (colamd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} colamd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} colamd (@var{S}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} colamd (@var{S})\n\
@@ -269,10 +270,9 @@ the current version of @sc{colamd} (reserved for future use).\n\
 \n\
 The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
-The authors of the code itself are Stefan I. Larimore and Timothy A.\n\
-Davis @email{davis@@cise.ufl.edu}, University of Florida.  The algorithm was\n\
-developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
-Ng, Oak Ridge National Laboratory.  (see\n\
+The authors of the code itself are @nospell{Stefan I. Larimore} and\n\
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},\n\
+Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
 @seealso{colperm, symamd, ccolamd}\n\
 @end deftypefn")
@@ -309,8 +309,9 @@ Ng, Oak Ridge National Laboratory.  (see\n\
           if (spumoni)
             {
 
-              octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION << "."
-                            <<  COLAMD_SUB_VERSION << ", " << COLAMD_DATE << ":\n";
+              octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION
+                            << "." <<  COLAMD_SUB_VERSION
+                            << ", " << COLAMD_DATE << ":\n";
 
               if (knobs[COLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs (0)
@@ -449,7 +450,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 }
 
 DEFUN_DLD (symamd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} symamd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} symamd (@var{S}, @var{knobs})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{stats}] =} symamd (@var{S})\n\
@@ -504,10 +505,9 @@ always zero in the current version of SYMAMD (reserved for future use).\n\
 \n\
 The ordering is followed by a column elimination tree post-ordering.\n\
 \n\
-The authors of the code itself are Stefan I. Larimore and Timothy A.\n\
-Davis @email{davis@@cise.ufl.edu}, University of Florida.  The algorithm was\n\
-developed in collaboration with John Gilbert, Xerox PARC, and Esmond\n\
-Ng, Oak Ridge National Laboratory.  (see\n\
+The authors of the code itself are @nospell{Stefan I. Larimore} and\n\
+@nospell{Timothy A. Davis @email{davis@@cise.ufl.edu}}, University of Florida.  The algorithm was developed in collaboration with @nospell{John Gilbert},\n\
+Xerox PARC, and @nospell{Esmond Ng}, Oak Ridge National Laboratory.  (see\n\
 @url{http://www.cise.ufl.edu/research/sparse/colamd})\n\
 @seealso{colperm, colamd}\n\
 @end deftypefn")
@@ -590,7 +590,8 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // Allocate workspace for symamd
       OCTAVE_LOCAL_BUFFER (octave_idx_type, perm, n_col+1);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
-      if (!SYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats, &calloc, &free))
+      if (!SYMAMD_NAME () (n_col, ridx, cidx, perm,
+                           knobs, stats, &calloc, &free))
         {
           SYMAMD_NAME (_report) (stats) ;
           error ("symamd: internal error!") ;
@@ -642,7 +643,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 }
 
 DEFUN_DLD (etree, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} etree (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} etree (@var{S}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\

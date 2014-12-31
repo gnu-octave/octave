@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -164,21 +164,21 @@ oct_mach_info::float_format
 oct_mach_info::native_float_format (void)
 {
   return (instance_ok ())
-    ? instance->native_float_fmt : oct_mach_info::flt_fmt_unknown;
+         ? instance->native_float_fmt : oct_mach_info::flt_fmt_unknown;
 }
 
 bool
 oct_mach_info::words_big_endian (void)
 {
   return (instance_ok ())
-    ? instance->big_chief : false;
+         ? instance->big_chief : false;
 }
 
 bool
 oct_mach_info::words_little_endian (void)
 {
   return (instance_ok ())
-    ? (! instance->big_chief) : false;
+         ? (! instance->big_chief) : false;
 }
 
 oct_mach_info::float_format

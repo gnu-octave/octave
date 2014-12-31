@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -28,13 +28,14 @@
 ## and columns are variables.  The vector @var{g} specifies the
 ## corresponding group labels (e.g., numbers from 1 to @var{k}).
 ##
-## The LR test statistic (Wilks' Lambda) and approximate p-values are
+## The LR test statistic (@nospell{Wilks' Lambda}) and approximate p-values are
 ## computed and displayed.
 ## @end deftypefn
 
-## Three test statistics (Wilks, Hotelling-Lawley, and Pillai-Bartlett)
-## and corresponding approximate p-values are calculated and displayed.
-## (Currently NOT because the fcdf respectively betai code is too bad.)
+## The Hotelling-Lawley and Pillai-Bartlett test statistics are coded.
+## However, they are currently disabled until they can be verified by someone
+## with sufficient understanding of the algorithms.  Please feel free to
+## improve this.
 
 ## Author: TF <Thomas.Fuereder@ci.tuwien.ac.at>
 ## Adapted-By: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -47,13 +48,13 @@ function manova (x, g)
   endif
 
   if (isvector (x))
-    error ("manova: Y must not be a vector");
+    error ("manova: X must not be a vector");
   endif
 
   [n, p] = size (x);
 
   if (!isvector (g) || (length (g) != n))
-    error ("manova: G must be a vector of length rows (Y)");
+    error ("manova: G must be a vector of length rows (X)");
   endif
 
   s = sort (g);

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012 Jacob Dawid
+Copyright (C) 2012-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: Jacob Dawid <jacob.dawid@gmail.com>
+// Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -76,14 +76,14 @@ parser::get_info_path ()
 QIODevice *
 parser::open_file (QFileInfo & file_info)
 {
-  QIODevice *iodevice=NULL;
-  if ( _compressors_map.contains(file_info.suffix ()))
+  QIODevice *iodevice = 0;
+  if (_compressors_map.contains (file_info.suffix ()))
     {
       QProcess gzip;
       gzip.start (_compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ()));
 
       if (!gzip.waitForFinished ())
-        return NULL;
+        return 0;
 
       QByteArray result = gzip.readAll ();
 
@@ -91,7 +91,7 @@ parser::open_file (QFileInfo & file_info)
       io->setData (result);
 
       if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
-        return NULL;
+        return 0;
 
       iodevice = io;
     }
@@ -99,7 +99,7 @@ parser::open_file (QFileInfo & file_info)
     {
       QFile *io = new QFile (file_info.absoluteFilePath ());
       if (!io->open (QIODevice::ReadOnly | QIODevice::Text))
-        return NULL;
+        return 0;
       iodevice = io;
     }
 
@@ -114,6 +114,10 @@ parser::is_ref (const QString& node)
       node_position ref = _ref_map [node];
 
       return ref.pos-_node_map [ref._node_name].pos;
+    }
+  if (_node_map.contains (node))
+    {
+      return 0;  // node: show from the beginning
     }
   return -1;
 }
@@ -140,7 +144,7 @@ parser::search_node (const QString& node_arg)
       real_position (pos, file_info, realPos);
 
       QIODevice *io = open_file (file_info);
-      if (io == NULL)
+      if (! io)
         {
           return QString ();
         }
@@ -166,7 +170,7 @@ parser::search_node (const QString& node, QIODevice *io)
   while (!io->atEnd ())
     {
       QString text = get_next_node (io);
-      if(node == get_node_name (text))
+      if (node == get_node_name (text))
         {
           return text;
         }
@@ -187,12 +191,14 @@ parser::get_next_node (QIODevice *io)
     {
       io->getChar (&c);
       if (c)
-        { // first char is not equal 0
+        {
+          // first char is not equal 0
           io->ungetChar (c);
           line = io->readLine ();
         }
       else
-        { // 0 was read -> image -> text length changes
+        {
+          // 0 was read -> image -> text length changes
           line_buffer = io->readLine ();  // image tag that is not needed
           line = io->readLine ();         // firsts line of text message
           for (i=1; i<line_buffer.size ()+6; i++)  // correct the size
@@ -233,7 +239,7 @@ parser_node (const QString& text, const QString& node_name)
 {
   QString firstLine = get_first_line (text);
   QStringList nodes = firstLine.split (",");
-  for (int i = 0;i < nodes.size (); i++)
+  for (int i = 0; i < nodes.size (); i++)
     {
       QString node = nodes.at (i).trimmed ();
 
@@ -272,20 +278,41 @@ parser::get_node_prev (const QString& text)
 static void
 replace_links (QString& text)
 {
-  QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.])");
+  QRegExp re ("(\\*[N|n]ote|\n\\*)([ |\n]+)([^:]+):([^:\\.,]*)([:,\\.]+)");
   int i = 0, f;
 
-  while ( (i = re.indexIn (text,i)) != -1)
+  while ((i = re.indexIn (text,i)) != -1)
     {
       QString type     = re.cap (1);
       QString note     = re.cap (3);
       QString url_link = re.cap (4);
-      QString link     = re.cap (4);
+      QString term     = re.cap (5);
 
       if (url_link.isEmpty ())
         {
           url_link = note;
         }
+
+      term.replace(":","");
+      note.replace(":","");
+      note.replace (QRegExp ("`([^']+)'"),"\\1");   // no extra format in links
+
+      QRegExp re_break ("(\n[ ]*)");
+
+      if (note == "fig" || note == "tab")
+        url_link.prepend("#");
+
+      QString href;
+      if (type == "\n*")
+        href="\n";
+
+      if (re_break.indexIn (url_link) != -1)
+        term += re_break.cap (1);
+      else if (re_break.indexIn (re.cap (2)) != -1)
+        href = re_break.cap (1) + " ";
+      else if (re_break.indexIn (note) != -1)
+        term += re_break.cap (1);
+      note.replace(re_break,"&nbsp;");
 
       url_link = url_link.trimmed ();
       url_link.replace ("\n"," ");
@@ -294,16 +321,8 @@ replace_links (QString& text)
       url_link.replace ("</b>","");
       url_link = QUrl::toPercentEncoding (url_link, "", "'");
 
-      QString href;
-      if (type=="\n*")
-        {
-          href="\n<img src=':/actions/icons/bookmark.png'/>";
-        }
-      else
-        {
-          href="<img src=':/actions/icons/bookmark.png'/>";
-        }
-      href += re.cap (2) + "<a href='" + url_link + "'>" + note + ":" + link + re.cap (5) + "</a>";
+      href += "<img src=':/actions/icons/bookmark.png' width=10/>";
+      href +=  "&nbsp;<a href='" + url_link + "'>" + note + "</a>" + term;
       f = re.matchedLength ();
       text.replace (i,f,href);
       i += href.size ();
@@ -315,10 +334,11 @@ replace_colons (QString& text)
 {
   QRegExp re ("`([^']+)'");
   int i = 0, f;
-  while ( (i = re.indexIn (text, i)) != -1)
+  while ((i = re.indexIn (text, i)) != -1)
     {
       QString t = re.cap (1);
-      QString bold = "<b>`" + t + "</b>'";
+      QString bold = "<font style=\"color:SteelBlue;font-weight:bold\">" + t +
+                     "</font>";
 
       f = re.matchedLength ();
       text.replace (i,f,bold);
@@ -333,10 +353,12 @@ info_to_html (QString& text)
   text.replace ("<", "&lt;");
   text.replace (">", "&gt;");
 
-  text.replace ("\n* Menu:", "\n<b>Menu:</b>");
-  text.replace ("*See also:*", "<b>See also:</b>");
-  replace_colons (text);
+  text.replace ("\n* Menu:",
+                "\n<font style=\"color:DarkRed;font-weight:bold\">Menu:</font>");
+  text.replace ("See also:",
+                "<font style=\"color:DarkRed;font-style:italic;font-weight:bold\">See also:</font>");
   replace_links (text);
+  replace_colons (text);
 }
 
 QString
@@ -362,8 +384,8 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       info_to_html (text2);
 
       text = text1 + "<a name='" + anchor
-                   + "'/><img src=':/actions/icons/redled.png'><br>&nbsp;"
-                   + text2;
+             + "'/><img src=':/actions/icons/arrow_down.png'><br>&nbsp;"
+             + text2;
     }
   else
     {
@@ -373,10 +395,10 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
     }
 
   QString navigationLinks = QString (
-        "<img src=':/actions/icons/arrow_right.png'/> <b>Section:</b> %1<br>"
-        "<b>Previous Section:</b> <a href='%2'>%3</a><br>"
-        "<b>Next Section:</b> <a href='%4'>%5</a><br>"
-        "<b>Up:</b> <a href='%6'>%7</a><br>\n"
+        "<b>Section:</b> <font style=\"color:DarkRed\">%1</font><br>"
+        "<img src=':/actions/icons/arrow_left.png'/> <b>Previous Section:</b> <a href='%2'>%3</a><br>"
+        "<img src=':/actions/icons/arrow_right.png'/> <b>Next Section:</b> <a href='%4'>%5</a><br>"
+        "<img src=':/actions/icons/arrow_up.png'/> <b>Up:</b> <a href='%6'>%7</a><br>\n"
         )
       .arg (nodeName)
       .arg (QString (QUrl::toPercentEncoding (nodePrev, "", "'")))
@@ -386,8 +408,7 @@ parser::node_text_to_html (const QString& text_arg, int anchorPos,
       .arg (QString (QUrl::toPercentEncoding (nodeUp, "", "'")))
       .arg (nodeUp);
 
-
-  text.prepend ("<hr>\n<pre>");
+  text.prepend ("<hr>\n<pre style=\"font-family:monospace\">");
   text.append ("</pre>\n<hr><hr>\n");
   text.prepend (navigationLinks);
   text.append (navigationLinks);
@@ -405,12 +426,12 @@ parser::parse_info_map ()
   QRegExp re_files ("([^:]+): (\\d+)\n");
   int foundCount = 0;
 
-  for(int i = 0; i < _info_files.size (); i++)
+  for (int i = 0; i < _info_files.size (); i++)
     {
       QFileInfo fileInfo = _info_files.at (i);
 
       QIODevice *io = open_file (fileInfo);
-      if (io == NULL)
+      if (! io)
         {
           continue;
         }
@@ -419,13 +440,14 @@ parser::parse_info_map ()
       while (! (nodeText=get_next_node (io)).isEmpty () && foundCount < 2)
         {
           QString first_line = get_first_line (nodeText);
-          if (first_line.startsWith ("Tag") )
+          if (first_line.startsWith ("Tag"))
             {
               foundCount++;
               int pos = 0;
               QString last_node;
 
-              while ((pos = re.indexIn (nodeText, pos)) != -1) {
+              while ((pos = re.indexIn (nodeText, pos)) != -1)
+                {
                   QString type = re.cap (1);
                   QString node = re.cap (2);
                   int index = re.cap (3).toInt ();
@@ -453,12 +475,13 @@ parser::parse_info_map ()
               foundCount++;
               int pos = 0;
 
-              while ( (pos = re_files.indexIn (nodeText, pos)) != -1) {
+              while ((pos = re_files.indexIn (nodeText, pos)) != -1)
+                {
                   QString fileCap = re_files.cap (1).trimmed ();
                   int index = re_files.cap (2).toInt ();
 
                   info_file_item item;
-                  for (int j = 0;j < _info_files.size (); j++)
+                  for (int j = 0; j < _info_files.size (); j++)
                     {
                       QFileInfo info = _info_files.at (j);
                       if (info.fileName ().startsWith (fileCap))
@@ -482,7 +505,8 @@ parser::parse_info_map ()
 void
 parser::real_position (int pos, QFileInfo & file_info, int & real_pos)
 {
-  int header = -1, sum = 0;
+  int header = -1;
+  int sum = 0;
   for (int i = 0; i < _info_file_real_size_list.size (); i++)
     {
       info_file_item item = _info_file_real_size_list.at (i);
@@ -519,7 +543,7 @@ replace (QString& text, const QRegExp& re, const QString& after)
 {
   int pos = 0;
 
-  while ( (pos = re.indexIn (text, pos)) != -1)
+  while ((pos = re.indexIn (text, pos)) != -1)
     {
       QString cap = text.mid (pos,re.matchedLength ());
       QString a (after);
@@ -553,13 +577,13 @@ parser::global_search (const QString& text, int max_founds)
     {
       QFileInfo file_info = _info_files.at (i);
       QIODevice *io = open_file (file_info);
-      if (io == NULL)
+      if (! io)
         {
           continue;
         }
 
       QString node_text;
-      while ( !(node_text = get_next_node (io)).isEmpty ())
+      while (! (node_text = get_next_node (io)).isEmpty ())
         {
           QString firstLine = get_first_line (node_text);
           QString node = get_node_name (node_text);
@@ -574,7 +598,8 @@ parser::global_search (const QString& text, int max_founds)
           int pos = 0;
           int founds = 0;
 
-          for (; founds < words.size () && node_text.indexOf (words.at (founds)) >= 0; founds++)
+          for (; founds < words.size ()
+                 && node_text.indexOf (words.at (founds)) >= 0; founds++)
             { }
 
           if (founds<words.size ())
@@ -583,19 +608,22 @@ parser::global_search (const QString& text, int max_founds)
             }
           founds = 0;
 
-          while ( (pos = re.indexIn (node_text, pos)) != -1 && founds < max_founds)
+          while ((pos = re.indexIn (node_text, pos)) != -1
+                 && founds < max_founds)
             {
               int line_start, line_end;
               line_start = node_text.lastIndexOf ("\n", pos);
               line_end = node_text.indexOf ("\n", pos);
-              QString line = node_text.mid (line_start, line_end - line_start).trimmed ();
+              QString line = node_text.mid (line_start,
+                                            line_end - line_start).trimmed ();
+              pos += re.matchedLength ();
 
               if (founds == 0)
                 {
                   results.append(
-                        "<br>\n<img src=':/actions/icons/bookmark.png'> <a href='"
-                        + QString(QUrl::toPercentEncoding(node,"","'")) +
-                        "'>");
+                    "<br>\n<img src=':/actions/icons/bookmark.png' width=10> <a href='"
+                    + QString(QUrl::toPercentEncoding(node,"","'")) +
+                    "'>");
                   results.append (node);
                   results.append ("</a><br>\n");
                 }
@@ -605,8 +633,6 @@ parser::global_search (const QString& text, int max_founds)
               results.append ("<br>\n");
 
               founds++;
-
-              pos += re.matchedLength ();
             }
         }
       io->close ();
@@ -617,13 +643,13 @@ parser::global_search (const QString& text, int max_founds)
   return results;
 }
 
-QString 
+QString
 parser::find_ref (const QString &ref_name)
 {
   QString text = "";
 
   QHash<QString,node_position>::iterator it;
-  for (it=_ref_map.begin ();it!=_ref_map.end ();++it)
+  for (it=_ref_map.begin (); it!=_ref_map.end (); ++it)
     {
       QString k = it.key ();
       node_position p = it.value ();
@@ -632,8 +658,25 @@ parser::find_ref (const QString &ref_name)
         {
           // found ref, so return its name
           text = "XREF" + ref_name;
+          break;
         }
     }
+
+  if (text.isEmpty ())  // try the statement-nodes
+    {
+      QHash<QString, node_map_item>::iterator itn;
+      for (itn=_node_map.begin (); itn!=_node_map.end (); ++itn)
+        {
+          QString k = itn.key ();
+          if (k == "The " + ref_name + " Statement")
+            {
+              // found ref, so return its name
+              text = k;
+              break;
+            }
+        }
+    }
+
   return text;
 }
 

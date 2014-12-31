@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -27,15 +27,17 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "sparse-base-lu.h"
 
+#include "PermMatrix.h"
+
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
 {
   octave_idx_type nr = Lfact.rows ();
-  octave_idx_type nc = Ufact.rows ();
-  octave_idx_type rcmin = (nr > nc ? nr : nc);
+  octave_idx_type nz = Lfact.cols ();
+  octave_idx_type nc = Ufact.cols ();
 
-  lu_type Yout (nr, nc, Lfact.nnz () + Ufact.nnz ());
+  lu_type Yout (nr, nc, Lfact.nnz () + Ufact.nnz () - (nr<nz?nr:nz));
   octave_idx_type ii = 0;
   Yout.xcidx (0) = 0;
 
@@ -46,7 +48,7 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
           Yout.xridx (ii) = Ufact.ridx (i);
           Yout.xdata (ii++) = Ufact.data (i);
         }
-      if (j < rcmin)
+      if (j < nz)
         {
           // Note the +1 skips the 1.0 on the diagonal
           for (octave_idx_type i = Lfact.cidx (j) + 1;

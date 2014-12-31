@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 John W. Eaton
+Copyright (C) 2002-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -207,7 +207,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
   while (0)
 
 DEFUN (dasrt, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t})\n\
 @deftypefnx {Built-in Function} {@dots{} =} dasrt (@var{fcn}, @var{g}, @var{x_0}, @var{xdot_0}, @var{t})\n\
 @deftypefnx {Built-in Function} {@dots{} =} dasrt (@var{fcn}, [], @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
@@ -397,8 +397,8 @@ parameters for @code{dasrt}.\n\
               fname = "function y = ";
               fname.append (fcn_name);
               fname.append (" (x, xdot, t) y = ");
-              dasrt_f = extract_function
-                (c(0), "dasrt", fcn_name, fname, "; endfunction");
+              dasrt_f = extract_function (c(0), "dasrt", fcn_name, fname,
+                                          "; endfunction");
             }
 
           if (dasrt_f)
@@ -411,8 +411,8 @@ parameters for @code{dasrt}.\n\
                   jname = "function jac = ";
                   jname.append (jac_name);
                   jname.append (" (x, xdot, t, cj) jac = ");
-                  dasrt_j = extract_function
-                    (c(1), "dasrt", jac_name, jname, "; endfunction");
+                  dasrt_j = extract_function (c(1), "dasrt", jac_name, jname,
+                                              "; endfunction");
 
                   if (!dasrt_j)
                     {
@@ -440,8 +440,8 @@ parameters for @code{dasrt}.\n\
               fname = "function y = ";
               fname.append (fcn_name);
               fname.append (" (x, xdot, t) y = ");
-              dasrt_f = extract_function
-                (f_arg, "dasrt", fcn_name, fname, "; endfunction");
+              dasrt_f = extract_function (f_arg, "dasrt", fcn_name, fname,
+                                          "; endfunction");
               break;
 
             case 2:
@@ -454,8 +454,8 @@ parameters for @code{dasrt}.\n\
                     fname = "function y = ";
                     fname.append (fcn_name);
                     fname.append (" (x, xdot, t) y = ");
-                    dasrt_f = extract_function
-                      (tmp(0), "dasrt", fcn_name, fname, "; endfunction");
+                    dasrt_f = extract_function (tmp(0), "dasrt", fcn_name,
+                                                fname, "; endfunction");
 
                     if (dasrt_f)
                       {
@@ -463,8 +463,8 @@ parameters for @code{dasrt}.\n\
                         jname = "function jac = ";
                         jname.append (jac_name);
                         jname.append (" (x, xdot, t, cj) jac = ");
-                        dasrt_j = extract_function
-                          (tmp(1), "dasrt", jac_name, jname, "; endfunction");
+                        dasrt_j = extract_function (tmp(1), "dasrt", jac_name,
+                                                    jname, "; endfunction");
 
                         if (! dasrt_j)
                           dasrt_f = 0;
@@ -517,14 +517,13 @@ parameters for @code{dasrt}.\n\
   ColumnVector stateprime (args(argp++).vector_value ());
 
   if (error_state)
-    DASRT_ABORT2
-       ("expecting time derivative of state vector as argument %d", argp);
+    DASRT_ABORT2 ("expecting time derivative of state vector as argument %d",
+                  argp);
 
   ColumnVector out_times (args(argp++).vector_value ());
 
   if (error_state)
-    DASRT_ABORT2
-        ("expecting output time vector as %s argument %d", argp);
+    DASRT_ABORT2 ("expecting output time vector as %s argument %d", argp);
 
   double tzero = out_times (0);
 
@@ -537,8 +536,7 @@ parameters for @code{dasrt}.\n\
       crit_times = ColumnVector (args(argp++).vector_value ());
 
       if (error_state)
-        DASRT_ABORT2
-          ("expecting critical time vector as argument %d", argp);
+        DASRT_ABORT2 ("expecting critical time vector as argument %d", argp);
 
       crit_times_set = true;
     }

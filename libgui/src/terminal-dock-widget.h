@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -40,6 +40,14 @@ public:
   bool has_focus (void) const;
 
   void focus (void);
+
+signals:
+
+  void interrupt_signal (void);
+
+protected slots:
+
+  void terminal_interrupt (void);
 
 private:
 

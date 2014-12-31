@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 2012 Daniel Kraft
+Copyright (C) 2014 Julien Bect
+Copyright (C) 2012-2013 Daniel Kraft
 
 This file is part of Octave.
 
@@ -31,25 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-struct.h"
 #include "pager.h"
 #include "profiler.h"
-
-profile_data_accumulator::enter::enter (profile_data_accumulator& a,
-                                        const std::string& f)
-  : acc (a)
-{
-  if (acc.is_active ())
-    {
-      fcn = f;
-      acc.enter_function (fcn);
-    }
-  else
-    fcn = "";
-}
-
-profile_data_accumulator::enter::~enter ()
-{
-  if (fcn != "")
-    acc.exit_function (fcn);
-}
 
 profile_data_accumulator::stats::stats ()
   : time (0.0), calls (0), recursive (false),
@@ -102,10 +84,12 @@ profile_data_accumulator::tree_node::enter (octave_idx_type fcn)
 }
 
 profile_data_accumulator::tree_node*
-profile_data_accumulator::tree_node::exit (octave_idx_type fcn)
+profile_data_accumulator::tree_node::exit (octave_idx_type /* fcn */)
 {
-  assert (parent);
-  assert (fcn_id == fcn);
+  // FIXME: These assert statements don't make sense if profile() is called
+  //        from within a function hierarchy to begin with.  See bug #39587.
+  //  assert (parent);
+  //  assert (fcn_id == fcn);
 
   return parent;
 }
@@ -128,7 +112,7 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
           data[parent->fcn_id - 1].children.insert (fcn_id);
         }
 
-      if (!entry.recursive)
+      if (! entry.recursive)
         for (const tree_node* i = parent; i; i = i->parent)
           if (i->fcn_id == fcn_id)
             {
@@ -192,7 +176,7 @@ profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 
 profile_data_accumulator::profile_data_accumulator ()
   : known_functions (), fcn_index (),
-    enabled (false), call_tree (NULL), last_time (-1.0)
+    enabled (false), call_tree (0), last_time (-1.0)
 {}
 
 profile_data_accumulator::~profile_data_accumulator ()
@@ -207,8 +191,8 @@ profile_data_accumulator::set_active (bool value)
   if (value)
     {
       // Create a call-tree top-node if there isn't yet one.
-      if (!call_tree)
-        call_tree = new tree_node (NULL, 0);
+      if (! call_tree)
+        call_tree = new tree_node (0, 0);
 
       // Let the top-node be the active one.  This ensures we have a clean
       // fresh start collecting times.
@@ -249,13 +233,16 @@ profile_data_accumulator::enter_function (const std::string& fcn)
 
   active_fcn = active_fcn->enter (fcn_idx);
   last_time = query_time ();
+
 }
 
 void
 profile_data_accumulator::exit_function (const std::string& fcn)
 {
   assert (call_tree);
-  assert (active_fcn != call_tree);
+  // FIXME: This assert statements doesn't make sense if profile() is called
+  //        from within a function hierarchy to begin with.  See bug #39587.
+  //assert (active_fcn != call_tree);
 
   // Usually, if we are disabled this function is not even called.  But the
   // call disabling the profiler is an exception.  So also check here
@@ -264,7 +251,9 @@ profile_data_accumulator::exit_function (const std::string& fcn)
     add_current_time ();
 
   fcn_index_map::iterator pos = fcn_index.find (fcn);
-  assert (pos != fcn_index.end ());
+  // FIXME: This assert statements doesn't make sense if profile() is called
+  //        from within a function hierarchy to begin with.  See bug #39587.
+  //assert (pos != fcn_index.end ());
   active_fcn = active_fcn->exit (pos->second);
 
   // If this was an "inner call", we resume executing the parent function
@@ -287,7 +276,7 @@ profile_data_accumulator::reset (void)
   if (call_tree)
     {
       delete call_tree;
-      call_tree = NULL;
+      call_tree = 0;
     }
 
   last_time = -1.0;
@@ -337,15 +326,15 @@ profile_data_accumulator::get_flat (void) const
   else
     {
       static const char *fn[] =
-        {
-          "FunctionName",
-          "TotalTime",
-          "NumCalls",
-          "IsRecursive",
-          "Parents",
-          "Children",
-          0
-        };
+      {
+        "FunctionName",
+        "TotalTime",
+        "NumCalls",
+        "IsRecursive",
+        "Parents",
+        "Children",
+        0
+      };
 
       static octave_map m (dim_vector (0, 1), string_vector (fn));
 
@@ -365,13 +354,13 @@ profile_data_accumulator::get_hierarchical (void) const
   else
     {
       static const char *fn[] =
-        {
-          "Index",
-          "SelfTime",
-          "NumCalls",
-          "Children",
-          0
-        };
+      {
+        "Index",
+        "SelfTime",
+        "NumCalls",
+        "Children",
+        0
+      };
 
       static octave_map m (dim_vector (0, 1), string_vector (fn));
 
@@ -386,7 +375,7 @@ profile_data_accumulator::query_time (void) const
 {
   octave_time now;
 
-  // FIXME -- is this volatile declaration really needed?
+  // FIXME: is this volatile declaration really needed?
   // See bug #34210 for additional details.
   volatile double dnow = now.double_value ();
 
@@ -407,8 +396,8 @@ profile_data_accumulator profiler;
 
 // Enable or disable the profiler data collection.
 DEFUN (__profiler_enable__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_enable ()\n\
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} __profiler_enable__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -433,8 +422,8 @@ Undocumented internal function.\n\
 
 // Clear all collected profiling data.
 DEFUN (__profiler_reset__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_reset ()\n\
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} __profiler_reset__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -451,8 +440,8 @@ Undocumented internal function.\n\
 
 // Query the timings collected by the profiler.
 DEFUN (__profiler_data__, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Function File} __profiler_data ()\n\
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} __profiler_data__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -462,9 +451,10 @@ Undocumented internal function.\n\
   if (nargin > 0)
     warning ("profiler_data: ignoring extra arguments");
 
-  retval(0) = profiler.get_flat ();
   if (nargout > 1)
     retval(1) = profiler.get_hierarchical ();
+  retval(0) = profiler.get_flat ();
 
   return retval;
 }
+

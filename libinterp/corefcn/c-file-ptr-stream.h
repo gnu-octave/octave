@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -44,7 +44,7 @@ public:
 
   c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
-    { }
+  { }
 
   ~c_file_ptr_buf (void);
 
@@ -99,8 +99,7 @@ private:
   c_file_ptr_buf& operator = (const c_file_ptr_buf&);
 };
 
-// FIXME -- the following three classes could probably share
-// some code...
+// FIXME: the following three classes could probably share some code...
 
 template <typename STREAM_T, typename FILE_T, typename BUF_T>
 class
@@ -118,7 +117,7 @@ public:
   void stream_close (void) { if (buf) buf->buf_close (); }
 
   int seek (off_t offset, int origin)
-    { return buf ? buf->seek (offset, origin) : -1; }
+  { return buf ? buf->seek (offset, origin) : -1; }
 
   off_t tell (void) { return buf ? buf->tell () : -1; }
 
@@ -135,9 +134,12 @@ private:
   c_file_ptr_stream& operator = (const c_file_ptr_stream&);
 };
 
-typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf> i_c_file_ptr_stream;
-typedef c_file_ptr_stream<std::ostream, FILE *, c_file_ptr_buf> o_c_file_ptr_stream;
-typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf> io_c_file_ptr_stream;
+typedef c_file_ptr_stream<std::istream, FILE *, c_file_ptr_buf>
+  i_c_file_ptr_stream;
+typedef c_file_ptr_stream<std::ostream, FILE *, c_file_ptr_buf>
+  o_c_file_ptr_stream;
+typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf>
+  io_c_file_ptr_stream;
 
 #ifdef HAVE_ZLIB
 
@@ -162,7 +164,7 @@ public:
 
   c_zfile_ptr_buf (gzFile f_arg, close_fcn cf_arg = file_close)
     : std::streambuf (), f (f_arg), cf (cf_arg)
-    { }
+  { }
 
   ~c_zfile_ptr_buf (void);
 
@@ -193,7 +195,7 @@ public:
   int file_number () const { return -1; }
 
   int seek (off_t offset, int origin)
-    { return f ? gzseek (f, offset, origin) >= 0 : -1; }
+  { return f ? gzseek (f, offset, origin) >= 0 : -1; }
 
   off_t tell (void) { return f ? gztell (f) : -1; }
 
@@ -218,9 +220,12 @@ private:
   c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&);
 };
 
-typedef c_file_ptr_stream<std::istream, gzFile, c_zfile_ptr_buf> i_c_zfile_ptr_stream;
-typedef c_file_ptr_stream<std::ostream, gzFile, c_zfile_ptr_buf> o_c_zfile_ptr_stream;
-typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf> io_c_zfile_ptr_stream;
+typedef c_file_ptr_stream<std::istream, gzFile, c_zfile_ptr_buf>
+  i_c_zfile_ptr_stream;
+typedef c_file_ptr_stream<std::ostream, gzFile, c_zfile_ptr_buf>
+  o_c_zfile_ptr_stream;
+typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
+  io_c_zfile_ptr_stream;
 
 #endif
 

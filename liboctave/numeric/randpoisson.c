@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 John W. Eaton
+Copyright (C) 2006-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -80,13 +80,14 @@ xlgamma (double x)
 static double
 flogfak (double k)
 {
-#define       C0      9.18938533204672742e-01
-#define       C1      8.33333333333333333e-02
-#define       C3     -2.77777777777777778e-03
-#define       C5      7.93650793650793651e-04
-#define       C7     -5.95238095238095238e-04
+#define C0  9.18938533204672742e-01
+#define C1  8.33333333333333333e-02
+#define C3 -2.77777777777777778e-03
+#define C5  7.93650793650793651e-04
+#define C7 -5.95238095238095238e-04
 
-  static double logfak[30L] = {
+  static double logfak[30L] =
+  {
     0.00000000000000000,   0.00000000000000000,   0.69314718055994531,
     1.79175946922805500,   3.17805383034794562,   4.78749174278204599,
     6.57925121201010100,   8.52516136106541430,  10.60460290274525023,
@@ -152,12 +153,12 @@ f (double k, double l_nu, double c_pm)
 static double
 pprsc (double my)
 {
-  static double        my_last = -1.0;
-  static double        m,  k2, k4, k1, k5;
-  static double        dl, dr, r1, r2, r4, r5, ll, lr, l_my, c_pm,
-    f1, f2, f4, f5, p1, p2, p3, p4, p5, p6;
-  double               Dk, X, Y;
-  double               Ds, U, V, W;
+  static double my_last = -1.0;
+  static double m,  k2, k4, k1, k5;
+  static double dl, dr, r1, r2, r4, r5, ll, lr, l_my, c_pm,
+                f1, f2, f4, f5, p1, p2, p3, p4, p5, p6;
+  double        Dk, X, Y;
+  double        Ds, U, V, W;
 
   if (my != my_last)
     {                               /* set-up           */
@@ -322,50 +323,53 @@ poisson_cdf_lookup (double lambda, double *p, size_t n)
   size_t i = n;
 
   t[0] = P = exp (-lambda);
-  for (tableidx = 1; tableidx <= intlambda; tableidx++) {
-    P = P*lambda/(double)tableidx;
-    t[tableidx] = t[tableidx-1] + P;
-  }
-
-  while (i-- > 0) {
-    double u = RUNI;
-
-    /* If u > 0.458 we know we can jump to floor(lambda) before
-     * comparing (this observation is based on Stadlober's winrand
-     * code). For lambda >= 1, this will be a win.  Lambda < 1
-     * is already fast, so adding an extra comparison is not a
-     * problem. */
-    int k = (u > 0.458 ? intlambda : 0);
-
-    /* We aren't using a for loop here because when we find the
-     * right k we want to jump to the next iteration of the
-     * outer loop, and the continue statement will only work for
-     * the inner loop. */
-  nextk:
-    if ( u <= t[k] ) {
-      p[i] = (double) k;
-      continue;
-    }
-    if (++k < tableidx) goto nextk;
-
-    /* We only need high values of the table very rarely so we
-     * don't automatically compute the entire table. */
-    while (tableidx < TABLESIZE) {
+  for (tableidx = 1; tableidx <= intlambda; tableidx++)
+    {
       P = P*lambda/(double)tableidx;
       t[tableidx] = t[tableidx-1] + P;
-      /* Make sure we converge to 1.0 just in case u is uniform
-       * on [0,1] rather than [0,1). */
-      if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
-      tableidx++;
-      if (u <= t[tableidx-1]) break;
     }
 
-    /* We are assuming that the table size is big enough here.
-     * This should be true even if RUNI is returning values in
-     * the range [0,1] rather than [0,1).
-     */
-    p[i] = (double)(tableidx-1);
-  }
+  while (i-- > 0)
+    {
+      double u = RUNI;
+
+      /* If u > 0.458 we know we can jump to floor(lambda) before
+       * comparing (this observation is based on Stadlober's winrand
+       * code). For lambda >= 1, this will be a win.  Lambda < 1
+       * is already fast, so adding an extra comparison is not a
+       * problem. */
+      int k = (u > 0.458 ? intlambda : 0);
+
+      /* We aren't using a for loop here because when we find the
+       * right k we want to jump to the next iteration of the
+       * outer loop, and the continue statement will only work for
+       * the inner loop. */
+    nextk:
+      if (u <= t[k])
+        {
+          p[i] = (double) k;
+          continue;
+        }
+      if (++k < tableidx) goto nextk;
+
+      /* We only need high values of the table very rarely so we
+       * don't automatically compute the entire table. */
+      while (tableidx < TABLESIZE)
+        {
+          P = P*lambda/(double)tableidx;
+          t[tableidx] = t[tableidx-1] + P;
+          /* Make sure we converge to 1.0 just in case u is uniform
+           * on [0,1] rather than [0,1). */
+          if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
+          tableidx++;
+          if (u <= t[tableidx-1]) break;
+        }
+
+      /* We are assuming that the table size is big enough here.
+       * This should be true even if RUNI is returning values in
+       * the range [0,1] rather than [0,1). */
+      p[i] = (double)(tableidx-1);
+    }
 }
 
 static void
@@ -381,31 +385,35 @@ poisson_cdf_lookup_float (double lambda, float *p, size_t n)
   size_t i = n;
 
   t[0] = P = exp (-lambda);
-  for (tableidx = 1; tableidx <= intlambda; tableidx++) {
-    P = P*lambda/(double)tableidx;
-    t[tableidx] = t[tableidx-1] + P;
-  }
-
-  while (i-- > 0) {
-    double u = RUNI;
-    int k = (u > 0.458 ? intlambda : 0);
-  nextk:
-    if ( u <= t[k] ) {
-      p[i] = (float) k;
-      continue;
-    }
-    if (++k < tableidx) goto nextk;
-
-    while (tableidx < TABLESIZE) {
+  for (tableidx = 1; tableidx <= intlambda; tableidx++)
+    {
       P = P*lambda/(double)tableidx;
       t[tableidx] = t[tableidx-1] + P;
-      if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
-      tableidx++;
-      if (u <= t[tableidx-1]) break;
     }
 
-    p[i] = (float)(tableidx-1);
-  }
+  while (i-- > 0)
+    {
+      double u = RUNI;
+      int k = (u > 0.458 ? intlambda : 0);
+    nextk:
+      if (u <= t[k])
+        {
+          p[i] = (float) k;
+          continue;
+        }
+      if (++k < tableidx) goto nextk;
+
+      while (tableidx < TABLESIZE)
+        {
+          P = P*lambda/(double)tableidx;
+          t[tableidx] = t[tableidx-1] + P;
+          if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
+          tableidx++;
+          if (u <= t[tableidx-1]) break;
+        }
+
+      p[i] = (float)(tableidx-1);
+    }
 }
 
 /* From Press, et al., Numerical Recipes */
@@ -420,14 +428,16 @@ poisson_rejection (double lambda, double *p, size_t n)
   for (i = 0; i < n; i++)
     {
       double y, em, t;
-      do {
-        do {
-          y = tan (M_PI*RUNI);
-          em = sq * y + lambda;
-        } while (em < 0.0);
-        em = floor (em);
-        t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
-      } while (RUNI > t);
+      do
+        {
+          do
+            {
+              y = tan (M_PI*RUNI);
+              em = sq * y + lambda;
+            } while (em < 0.0);
+          em = floor (em);
+          t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
+        } while (RUNI > t);
       p[i] = em;
     }
 }
@@ -444,14 +454,16 @@ poisson_rejection_float (double lambda, float *p, size_t n)
   for (i = 0; i < n; i++)
     {
       double y, em, t;
-      do {
-        do {
-          y = tan (M_PI*RUNI);
-          em = sq * y + lambda;
-        } while (em < 0.0);
-        em = floor (em);
-        t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
-      } while (RUNI > t);
+      do
+        {
+          do
+            {
+              y = tan (M_PI*RUNI);
+              em = sq * y + lambda;
+            } while (em < 0.0);
+          em = floor (em);
+          t = 0.9*(1.0+y*y)*exp (em*alxm-flogfak (em)-g);
+        } while (RUNI > t);
       p[i] = em;
     }
 }
@@ -503,28 +515,36 @@ oct_randp (double L)
 {
   double ret;
   if (L < 0.0) ret = NAN;
-  else if (L <= 12.0) {
-    /* From Press, et al. Numerical recipes */
-    double g = exp (-L);
-    int em = -1;
-    double t = 1.0;
-    do {
-      ++em;
-      t *= RUNI;
-    } while (t > g);
-    ret = em;
-  } else if (L <= 1e8) {
-    /* numerical recipes */
-    poisson_rejection (L, &ret, 1);
-  } else if (INFINITE(L)) {
-    /* FIXME R uses NaN, but the normal approx. suggests that as
-     * limit should be inf. Which is correct? */
-    ret = NAN;
-  } else {
-    /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-    ret = floor (RNOR*sqrt (L) + L + 0.5);
-    if (ret < 0.0) ret = 0.0; /* will probably never happen */
-  }
+  else if (L <= 12.0)
+    {
+      /* From Press, et al. Numerical recipes */
+      double g = exp (-L);
+      int em = -1;
+      double t = 1.0;
+      do
+        {
+          ++em;
+          t *= RUNI;
+        } while (t > g);
+      ret = em;
+    }
+  else if (L <= 1e8)
+    {
+      /* numerical recipes */
+      poisson_rejection (L, &ret, 1);
+    }
+  else if (INFINITE(L))
+    {
+      /* FIXME R uses NaN, but the normal approx. suggests that as
+       * limit should be inf. Which is correct? */
+      ret = NAN;
+    }
+  else
+    {
+      /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
+      ret = floor (RNOR*sqrt (L) + L + 0.5);
+      if (ret < 0.0) ret = 0.0; /* will probably never happen */
+    }
   return ret;
 }
 
@@ -568,27 +588,35 @@ oct_float_randp (float FL)
   double L = FL;
   float ret;
   if (L < 0.0) ret = NAN;
-  else if (L <= 12.0) {
-    /* From Press, et al. Numerical recipes */
-    double g = exp (-L);
-    int em = -1;
-    double t = 1.0;
-    do {
-      ++em;
-      t *= RUNI;
-    } while (t > g);
-    ret = em;
-  } else if (L <= 1e8) {
-    /* numerical recipes */
-    poisson_rejection_float (L, &ret, 1);
-  } else if (INFINITE(L)) {
-    /* FIXME R uses NaN, but the normal approx. suggests that as
-     * limit should be inf. Which is correct? */
-    ret = NAN;
-  } else {
-    /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
-    ret = floor (RNOR*sqrt (L) + L + 0.5);
-    if (ret < 0.0) ret = 0.0; /* will probably never happen */
-  }
+  else if (L <= 12.0)
+    {
+      /* From Press, et al. Numerical recipes */
+      double g = exp (-L);
+      int em = -1;
+      double t = 1.0;
+      do
+        {
+          ++em;
+          t *= RUNI;
+        } while (t > g);
+      ret = em;
+    }
+  else if (L <= 1e8)
+    {
+      /* numerical recipes */
+      poisson_rejection_float (L, &ret, 1);
+    }
+  else if (INFINITE(L))
+    {
+      /* FIXME R uses NaN, but the normal approx. suggests that as
+       * limit should be inf. Which is correct? */
+      ret = NAN;
+    }
+  else
+    {
+      /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
+      ret = floor (RNOR*sqrt (L) + L + 0.5);
+      if (ret < 0.0) ret = 0.0; /* will probably never happen */
+    }
   return ret;
 }

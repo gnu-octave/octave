@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jonathan Stickel
+Copyright (C) 2008-2013 Jonathan Stickel
 Copyright (C) 2010 Jaroslav Hajek
 
 This file is part of Octave.
@@ -41,7 +41,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
-static const octave_idx_type idx_max =  std::numeric_limits<octave_idx_type>::max ();
+static const octave_idx_type idx_max =
+  std::numeric_limits<octave_idx_type>::max ();
 
 static bool
 read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)
@@ -156,7 +157,7 @@ parse_range_spec (const octave_value& range_spec,
 }
 
 DEFUN (dlmread, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{data} =} dlmread (@var{file})\n\
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
 @deftypefnx {Built-in Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
@@ -196,7 +197,7 @@ fill empty fields.  The default is zero.\n\
     {
       empty_value = args(nargin-1).double_value ();
       if (error_state)
-         return retval;
+        return retval;
       nargin -= 2;
     }
 
@@ -214,7 +215,7 @@ fill empty fields.  The default is zero.\n\
       // File name.
       std::string fname (args(0).string_value ());
       if (error_state)
-         return retval;
+        return retval;
 
       std::string tname = file_ops::tilde_expand (fname);
 
@@ -233,7 +234,7 @@ fill empty fields.  The default is zero.\n\
       octave_stream is = octave_stream_list::lookup (args(0), "dlmread");
 
       if (error_state)
-         return retval;
+        return retval;
 
       input = is.input_stream ();
 
@@ -263,12 +264,15 @@ fill empty fields.  The default is zero.\n\
     }
 
   // Take a subset if a range was given.
-  octave_idx_type r0 = 0, c0 = 0, r1 = idx_max-1, c1 = idx_max-1;
+  octave_idx_type r0 = 0;
+  octave_idx_type c0 = 0;
+  octave_idx_type r1 = idx_max-1;
+  octave_idx_type c1 = idx_max-1;
   if (nargin > 2)
     {
       if (nargin == 3)
         {
-          if (!parse_range_spec (args (2), r0, c0, r1, c1))
+          if (!parse_range_spec (args(2), r0, c0, r1, c1))
             error ("dlmread: error parsing RANGE");
         }
       else if (nargin == 4)
@@ -286,7 +290,12 @@ fill empty fields.  The default is zero.\n\
 
   if (!error_state)
     {
-      octave_idx_type i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
+      octave_idx_type i = 0;
+      octave_idx_type j = 0;
+      octave_idx_type r = 1;
+      octave_idx_type c = 1;
+      octave_idx_type rmax = 0;
+      octave_idx_type cmax = 0;
 
       Matrix rdata;
       ComplexMatrix cdata;
@@ -482,7 +491,7 @@ fill empty fields.  The default is zero.\n\
 
 /*
 %!shared file
-%! file = tmpnam ();
+%! file = tempname ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
@@ -501,7 +510,7 @@ fill empty fields.  The default is zero.\n\
 %! unlink (file);
 
 %!shared file
-%! file = tmpnam ();
+%! file = tempname ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);

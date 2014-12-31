@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -56,15 +56,17 @@ DEFBINOP_OP (add, sparse_matrix, sparse_matrix, +)
 
 // DEFBINOP_OP (sub, sparse_matrix, sparse_matrix, -)
 
-  static octave_value
-  oct_binop_sub (const octave_base_value& a1, const octave_base_value& a2)
-  {
-    const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-    const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
-    SparseMatrix m = v1.sparse_matrix_value () - v2.sparse_matrix_value ();
+static octave_value
+oct_binop_sub (const octave_base_value& a1, const octave_base_value& a2)
+{
+  const octave_sparse_matrix& v1 =
+    dynamic_cast<const octave_sparse_matrix&> (a1);
+  const octave_sparse_matrix& v2 =
+    dynamic_cast<const octave_sparse_matrix&> (a2);
+  SparseMatrix m = v1.sparse_matrix_value () - v2.sparse_matrix_value ();
 
-    return octave_value (m);
-  }
+  return octave_value (m);
+}
 
 DEFBINOP_OP (mul, sparse_matrix, sparse_matrix, *)
 
@@ -139,7 +141,7 @@ DEFBINOP (el_ldiv, sparse_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_sparse_matrix&);
   return octave_value
-    (quotient (v2.sparse_matrix_value (), v1.sparse_matrix_value ()));
+         (quotient (v2.sparse_matrix_value (), v1.sparse_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_matrix, sparse_matrix, mx_el_and)
@@ -190,7 +192,10 @@ install_sm_sm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_sparse_matrix,
                     assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_matrix, octave_null_sq_str,
+                    null_assign);
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,34 +33,33 @@ token
 public:
 
   enum token_type
-    {
-      generic_token,
-      keyword_token,
-      string_token,
-      double_token,
-      ettype_token,
-      sym_rec_token,
-      scls_rec_token,
-      meta_rec_token
-    };
+  {
+    generic_token,
+    keyword_token,
+    string_token,
+    double_token,
+    ettype_token,
+    sym_rec_token,
+    scls_name_token,
+  };
 
   enum end_tok_type
-    {
-      simple_end,
-      classdef_end,
-      enumeration_end,
-      events_end,
-      for_end,
-      function_end,
-      if_end,
-      methods_end,
-      parfor_end,
-      properties_end,
-      switch_end,
-      while_end,
-      try_catch_end,
-      unwind_protect_end
-    };
+  {
+    simple_end,
+    classdef_end,
+    enumeration_end,
+    events_end,
+    for_end,
+    function_end,
+    if_end,
+    methods_end,
+    parfor_end,
+    properties_end,
+    switch_end,
+    while_end,
+    try_catch_end,
+    unwind_protect_end
+  };
 
   token (int tv, int l = -1, int c = -1);
   token (int tv, bool is_keyword, int l = -1, int c = -1);
@@ -69,11 +68,8 @@ public:
          int l = -1, int c = -1);
   token (int tv, end_tok_type t, int l = -1, int c = -1);
   token (int tv, symbol_table::symbol_record *s, int l = -1, int c = -1);
-  token (int tv, symbol_table::symbol_record *cls,
-         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
-  token (int tv, symbol_table::symbol_record *mth,
-         symbol_table::symbol_record *cls,
-         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
+  token (int tv, const std::string& mth, const std::string& cls,
+         int l = -1, int c = -1);
 
   ~token (void);
 
@@ -106,12 +102,8 @@ public:
   end_tok_type ettype (void) const;
   symbol_table::symbol_record *sym_rec (void);
 
-  symbol_table::symbol_record *method_rec (void);
-  symbol_table::symbol_record *class_rec (void);
-  symbol_table::symbol_record *package_rec (void);
-
-  symbol_table::symbol_record *meta_class_rec (void);
-  symbol_table::symbol_record *meta_package_rec (void);
+  std::string superclass_method_name (void);
+  std::string superclass_class_name (void);
 
   std::string text_rep (void);
 
@@ -130,23 +122,17 @@ private:
   int tok_val;
   token_type type_tag;
   union
+  {
+    std::string *str;
+    double num;
+    end_tok_type et;
+    symbol_table::symbol_record *sr;
+    struct
     {
-      std::string *str;
-      double num;
-      end_tok_type et;
-      symbol_table::symbol_record *sr;
-      struct
-        {
-          symbol_table::symbol_record *mr;
-          symbol_table::symbol_record *cr;
-          symbol_table::symbol_record *pr;
-        } sc;
-      struct
-        {
-          symbol_table::symbol_record *cr;
-          symbol_table::symbol_record *pr;
-        } mc;
-    };
+      std::string *method_nm;
+      std::string *class_nm;
+    } sc;
+  };
   std::string orig_text;
 };
 

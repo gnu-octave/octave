@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -106,11 +106,11 @@ octave_mex_function::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
   //
-  // FIXME -- Note that if a function call returns multiple
+  // FIXME: Note that if a function call returns multiple
   // values, and there is further indexing to perform, then we are
   // ignoring all but the first value.  Is this really what we want to
   // do?  If it is not, then what should happen for stat("file").size,
@@ -122,7 +122,7 @@ octave_mex_function::subsref (const std::string& type,
   return retval;
 }
 
-// FIXME -- shouldn't this declaration be a header file somewhere?
+// FIXME: shouldn't this declaration be a header file somewhere?
 extern octave_value_list
 call_mex (bool have_fmex, void *f, const octave_value_list& args,
           int nargout, octave_mex_function *curr_mex_fcn);
@@ -148,8 +148,10 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       try
         {
-          BEGIN_PROFILER_BLOCK (profiler_name ())
+          BEGIN_PROFILER_BLOCK (octave_mex_function)
+
           retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+
           END_PROFILER_BLOCK
         }
       catch (octave_execution_exception)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <sstream>
+
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-env.h"
@@ -36,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dirfns.h"
 #include "input.h"
 #include "load-path.h"
+#include "ov-classdef.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
@@ -55,7 +58,8 @@ std::map<std::string, octave_value> symbol_table::global_table;
 
 std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
-std::map<std::string, std::set<std::string> > symbol_table::class_precedence_table;
+std::map<std::string, std::set<std::string> >
+  symbol_table::class_precedence_table;
 
 std::map<std::string, std::list<std::string> > symbol_table::parent_map;
 
@@ -83,13 +87,13 @@ symbol_table::symbol_record::symbol_record_rep::active_context (void) const
 {
   octave_user_function *fcn = curr_fcn;
 
-  // FIXME -- If active_context () == -1, then it does not make much
+  // FIXME: If active_context () == -1, then it does not make much
   // sense to use this symbol_record. This means an attempt at accessing
   // a variable from a function that has not been called yet is
   // happening. This should be cleared up when an implementing closures.
 
   return fcn && fcn->active_context () != static_cast<context_id> (-1)
-    ? fcn->active_context () : xcurrent_context;
+         ? fcn->active_context () : xcurrent_context;
 }
 
 void
@@ -146,6 +150,24 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
   return retval;
 }
 
+static void
+split_name_with_package (const std::string& name, std::string& fname,
+                         std::string& pname)
+{
+  size_t pos = name.rfind ('.');
+
+  fname.clear ();
+  pname.clear ();
+
+  if (pos != std::string::npos)
+    {
+      fname = name.substr (pos + 1);
+      pname = name.substr (0, pos);
+    }
+  else
+    fname = name;
+}
+
 // Check the load path to see if file that defined this is still
 // visible.  If the file is no longer visible, then erase the
 // definition and move on.  If the file is visible, then we also
@@ -155,18 +177,20 @@ symbol_table::symbol_record::find (const octave_value_list& args) const
 // elements, we also check if the working directory has changed
 // since the last time the function was loaded/parsed).
 //
-// FIXME -- perhaps this should be done for all loaded functions when
+// FIXME: perhaps this should be done for all loaded functions when
 // the prompt is printed or the directory has changed, and then we
 // would not check for it when finding symbol definitions.
 
 static inline bool
 load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
                       octave_value& function,
-                      const std::string& dispatch_type = std::string ())
+                      const std::string& dispatch_type = std::string (),
+                      const std::string& package_name = std::string ())
 {
   bool retval = false;
 
-  octave_function *fcn = load_fcn_from_file (ff, dir_name, dispatch_type);
+  octave_function *fcn = load_fcn_from_file (ff, dir_name, dispatch_type,
+                                             package_name);
 
   if (fcn)
     {
@@ -191,7 +215,7 @@ out_of_date_check (octave_value& function,
 
   if (fcn)
     {
-      // FIXME -- we need to handle subfunctions properly here.
+      // FIXME: we need to handle subfunctions properly here.
 
       if (! fcn->is_subfunction ())
         {
@@ -203,11 +227,13 @@ out_of_date_check (octave_value& function,
 
               bool relative = check_relative && fcn->is_relative ();
 
-              if (tc < Vlast_prompt_time
+              if (tc <= Vlast_prompt_time
                   || (relative && tc < Vlast_chdir_time))
                 {
                   bool clear_breakpoints = false;
                   std::string nm = fcn->name ();
+                  std::string pack = fcn->package_name ();
+                  std::string canonical_nm = fcn->canonical_name ();
 
                   bool is_same_file = false;
 
@@ -218,10 +244,10 @@ out_of_date_check (octave_value& function,
                     {
                       int nm_len = nm.length ();
 
-                      if (octave_env::absolute_pathname (nm)
-                          && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
-                                              || nm.substr (nm_len-4) == ".mex"))
-                              || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
+                      if (octave_env::absolute_pathname (nm) &&
+                          ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
+                                           || nm.substr (nm_len-4) == ".mex"))
+                            || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
                         file = nm;
                       else
                         {
@@ -232,10 +258,13 @@ out_of_date_check (octave_value& function,
                           if (! dispatch_type.empty ())
                             {
                               file = load_path::find_method (dispatch_type, nm,
-                                                             dir_name);
+                                                             dir_name, pack);
 
                               if (file.empty ())
                                 {
+                                  std::string s_name;
+                                  std::string s_pack;
+
                                   const std::list<std::string>& plist
                                     = symbol_table::parent_classes (dispatch_type);
                                   std::list<std::string>::const_iterator it
@@ -243,9 +272,17 @@ out_of_date_check (octave_value& function,
 
                                   while (it != plist.end ())
                                     {
-                                      file = load_path::find_method (*it, nm, dir_name);
+                                      split_name_with_package (*it, s_name,
+                                                               s_pack);
+
+                                      file = load_path::find_method (*it, nm,
+                                                                     dir_name,
+                                                                     s_pack);
                                       if (! file.empty ())
-                                        break;
+                                        {
+                                          pack = s_pack;
+                                          break;
+                                        }
 
                                       it++;
                                     }
@@ -257,7 +294,7 @@ out_of_date_check (octave_value& function,
                             file = lookup_autoload (nm);
 
                           if (file.empty ())
-                            file = load_path::find_fcn (nm, dir_name);
+                            file = load_path::find_fcn (nm, dir_name, pack);
                         }
 
                       if (! file.empty ())
@@ -299,7 +336,8 @@ out_of_date_check (octave_value& function,
                                 {
                                   retval = load_out_of_date_fcn (ff, dir_name,
                                                                  function,
-                                                                 dispatch_type);
+                                                                 dispatch_type,
+                                                                 pack);
 
                                   clear_breakpoints = true;
                                 }
@@ -318,7 +356,7 @@ out_of_date_check (octave_value& function,
                       // place of the old.
 
                       retval = load_out_of_date_fcn (file, dir_name, function,
-                                                     dispatch_type);
+                                                     dispatch_type, pack);
 
                       clear_breakpoints = true;
                     }
@@ -326,7 +364,8 @@ out_of_date_check (octave_value& function,
                   // If the function has been replaced then clear any
                   // breakpoints associated with it
                   if (clear_breakpoints)
-                    bp_table::remove_all_breakpoints_in_file (nm, true);
+                    bp_table::remove_all_breakpoints_in_file (canonical_nm,
+                                                              true);
                 }
             }
         }
@@ -379,17 +418,44 @@ symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 
   std::string dir_name;
 
-  std::string file_name = load_path::find_method (name, name, dir_name);
+  std::string file_name = load_path::find_method (name, name, dir_name,
+                                                  package_name);
 
   if (! file_name.empty ())
     {
-      octave_function *fcn = load_fcn_from_file (file_name, dir_name, name);
+      octave_function *fcn = load_fcn_from_file (file_name, dir_name, name,
+                                                 package_name);
 
       if (fcn)
         {
           retval = octave_value (fcn);
 
           class_constructors[name] = retval;
+        }
+    }
+  else
+    {
+      // Classdef constructors can be defined anywhere in the path, not
+      // necessarily in @-folders. Look for a normal function and load it.
+      // If the loaded function is a classdef constructor, store it as such
+      // and restore function_on_path to its previous value.
+
+      octave_value old_function_on_path = function_on_path;
+
+      octave_value maybe_cdef_ctor = find_user_function ();
+
+      if (maybe_cdef_ctor.is_defined ())
+        {
+          octave_function *fcn = maybe_cdef_ctor.function_value (true);
+
+          if (fcn && fcn->is_classdef_constructor ())
+            {
+              retval = maybe_cdef_ctor;
+
+              class_constructors[name] = retval;
+
+              function_on_path = old_function_on_path;
+            }
         }
     }
 
@@ -402,47 +468,57 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 {
   octave_value retval;
 
-  if (name == dispatch_type)
+  if (full_name () == dispatch_type)
     retval = load_class_constructor ();
   else
     {
-      std::string dir_name;
+      octave_function *cm = cdef_manager::find_method_symbol (name,
+                                                              dispatch_type);
 
-      std::string file_name = load_path::find_method (dispatch_type, name,
-                                                      dir_name);
+      if (cm)
+        retval = octave_value (cm);
 
-      if (! file_name.empty ())
+      if (! retval.is_defined ())
         {
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name,
-                                                     dispatch_type);
+          std::string dir_name;
 
-          if (fcn)
+          std::string file_name = load_path::find_method (dispatch_type, name,
+                                                          dir_name);
+
+          if (! file_name.empty ())
             {
-              retval = octave_value (fcn);
+              octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+                                                         dispatch_type);
 
-              class_methods[dispatch_type] = retval;
-            }
-        }
-
-      if (retval.is_undefined ())
-        {
-          // Search parent classes
-
-          const std::list<std::string>& plist = parent_classes (dispatch_type);
-
-          std::list<std::string>::const_iterator it = plist.begin ();
-
-          while (it != plist.end ())
-            {
-              retval = find_method (*it);
-
-              if (retval.is_defined ())
+              if (fcn)
                 {
-                  class_methods[dispatch_type] = retval;
-                  break;
-                }
+                  retval = octave_value (fcn);
 
-              it++;
+                  class_methods[dispatch_type] = retval;
+                }
+            }
+
+          if (retval.is_undefined ())
+            {
+              // Search parent classes
+
+              const std::list<std::string>& plist =
+                parent_classes (dispatch_type);
+
+              std::list<std::string>::const_iterator it = plist.begin ();
+
+              while (it != plist.end ())
+                {
+                  retval = find_method (*it);
+
+                  if (retval.is_defined ())
+                    {
+                      class_methods[dispatch_type] = retval;
+                      break;
+                    }
+
+                  it++;
+                }
             }
         }
     }
@@ -451,7 +527,7 @@ symbol_table::fcn_info::fcn_info_rep::load_class_method
 }
 
 void
-symbol_table::fcn_info::fcn_info_rep:: mark_subfunction_in_scope_as_private
+symbol_table::fcn_info::fcn_info_rep::mark_subfunction_in_scope_as_private
   (scope_id scope, const std::string& class_name)
 {
   scope_val_iterator p = subfunctions.find (scope);
@@ -518,8 +594,10 @@ static builtin_type_t (*build_sup_table (void))[btyp_num_types]
            || (btyp_isarray (ityp)
                && (! btyp_isarray (jtyp)
                    || (btyp_isinteger (jtyp) && ! btyp_isinteger (ityp))
-                   || ((ityp == btyp_double || ityp == btyp_complex || ityp == btyp_char)
-                       && (jtyp == btyp_float || jtyp == btyp_float_complex)))));
+                   || ((ityp == btyp_double || ityp == btyp_complex
+                        || ityp == btyp_char)
+                       && (jtyp == btyp_float
+                           || jtyp == btyp_float_complex)))));
 
         sup_table[i][j] = use_j ? jtyp : ityp;
       }
@@ -646,7 +724,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
           scope_val_iterator r = subfunctions.find (scope);
           if (r != subfunctions.end ())
             {
-              // FIXME -- out-of-date check here.
+              // FIXME: out-of-date check here.
 
               return r->second;
             }
@@ -781,6 +859,13 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
   if (fcn.is_defined ())
     return fcn;
 
+  // Package
+
+  fcn = find_package ();
+
+  if (fcn.is_defined ())
+    return fcn;
+
   // Built-in function (might be undefined).
 
   return built_in_function;
@@ -898,7 +983,7 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
       scope_val_iterator r = subfunctions.find (scope);
       if (r != subfunctions.end ())
         {
-          // FIXME -- out-of-date check here.
+          // FIXME: out-of-date check here.
 
           return r->second;
         }
@@ -914,7 +999,8 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
 }
 
 octave_value
-symbol_table::fcn_info::fcn_info_rep::find_method (const std::string& dispatch_type)
+symbol_table::fcn_info::fcn_info_rep::find_method
+  (const std::string& dispatch_type)
 {
   octave_value retval;
 
@@ -968,7 +1054,7 @@ symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 
           std::string dir_name = file_name.substr (0, pos);
 
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+          octave_function *fcn = load_fcn_from_file (file_name, dir_name, "",
                                                      "", name, true);
 
           if (fcn)
@@ -991,11 +1077,13 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
     {
       std::string dir_name;
 
-      std::string file_name = load_path::find_fcn (name, dir_name);
+      std::string file_name = load_path::find_fcn (name, dir_name,
+                                                   package_name);
 
       if (! file_name.empty ())
         {
-          octave_function *fcn = load_fcn_from_file (file_name, dir_name);
+          octave_function *fcn = load_fcn_from_file (file_name, dir_name, "",
+                                                     package_name);
 
           if (fcn)
             function_on_path = octave_value (fcn);
@@ -1003,6 +1091,25 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
     }
 
   return function_on_path;
+}
+
+octave_value
+symbol_table::fcn_info::fcn_info_rep::find_package (void)
+{
+  // FIXME: implement correct way to check out of date package
+  //if (package.is_defined ())
+  //  out_of_date_check (package);
+
+  if (! (error_state || package.is_defined ()))
+    {
+      octave_function * fcn =
+        cdef_manager::find_package_symbol (full_name ());
+
+      if (fcn)
+        package = octave_value (fcn);
+    }
+
+  return package;
 }
 
 // Insert INF_CLASS in the set of class names that are considered
@@ -1059,13 +1166,14 @@ fcn_file_name (const octave_value& fcn)
 }
 
 void
-symbol_table::fcn_info::fcn_info_rep::dump
-  (std::ostream& os, const std::string& prefix) const
+symbol_table::fcn_info::fcn_info_rep::dump (std::ostream& os,
+                                            const std::string& prefix) const
 {
-  os << prefix << name
+  os << prefix << full_name ()
      << " ["
      << (cmdline_function.is_defined () ? "c" : "")
      << (built_in_function.is_defined () ? "b" : "")
+     << (package.is_defined () ? "p" : "")
      << "]\n";
 
   std::string tprefix = prefix + "  ";
@@ -1145,8 +1253,8 @@ symbol_table::find (const std::string& name,
   symbol_table *inst = get_instance (xcurrent_scope);
 
   return inst
-    ? inst->do_find (name, args, skip_variables, local_funcs)
-    : octave_value ();
+         ? inst->do_find (name, args, skip_variables, local_funcs)
+         : octave_value ();
 }
 
 octave_value
@@ -1231,7 +1339,8 @@ symbol_table::dump (std::ostream& os, scope_id scope)
             {
               os << "  subfunctions defined in this scope:\n";
 
-              for (std::map<std::string, octave_value>::const_iterator p = sfuns.begin ();
+              for (std::map<std::string,
+                   octave_value>::const_iterator p = sfuns.begin ();
                    p != sfuns.end (); p++)
                 os << "    " << p->first << "\n";
 
@@ -1283,7 +1392,7 @@ void
 symbol_table::stash_dir_name_for_subfunctions (scope_id scope,
                                                const std::string& dir_name)
 {
-  // FIXME -- is this the best way to do this?  Maybe it would be
+  // FIXME: is this the best way to do this?  Maybe it would be
   // better if we had a map from scope to list of subfunctions
   // stored with the function.  Do we?
 
@@ -1412,8 +1521,13 @@ symbol_table::do_workspace_info (void) const
               else if (sr.is_inherited ())
                 storage = 'i';
 
+              std::ostringstream buf;
+              val.short_disp (buf);
+              std::string short_disp_str = buf.str ();
+
               workspace_element elt (storage, nm, val.class_name (),
-                                     val.short_disp (), dv.str ());
+                                     short_disp_str, dv.str (),
+                                     val.is_complex_type ());
 
               retval.push_back (elt);
             }
@@ -1522,7 +1636,7 @@ symbol_table::do_update_nest (void)
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave checks\n\
@@ -1562,10 +1676,9 @@ need to recompiled.\n\
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string sval = args(0).string_value ();
           if (sval == "all")
             Vignore_function_time_stamp = 2;
           else if (sval == "system")
@@ -1573,7 +1686,7 @@ need to recompiled.\n\
           else if (sval == "none")
             Vignore_function_time_stamp = 0;
           else
-            error ("ignore_function_time_stamp: expecting argument to be \"all\", \"system\", or \"none\"");
+            error ("ignore_function_time_stamp: argument must be \"all\", \"system\", or \"none\"");
         }
       else
         error ("ignore_function_time_stamp: expecting argument to be character string");
@@ -1603,7 +1716,7 @@ need to recompiled.\n\
 */
 
 DEFUN (__current_scope__, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{scope}, @var{context}]} __dump_symtab_info__ ()\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -1617,7 +1730,7 @@ Undocumented internal function.\n\
 }
 
 DEFUN (__dump_symtab_info__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __dump_symtab_info__ ()\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (@var{scope})\n\
 @deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"scopes\")\n\
@@ -1657,8 +1770,8 @@ Undocumented internal function.\n\
 
               octave_idx_type k = 0;
 
-              for (std::list<symbol_table::scope_id>::const_iterator p = lst.begin ();
-                   p != lst.end (); p++)
+              for (std::list<symbol_table::scope_id>::const_iterator
+                   p = lst.begin (); p != lst.end (); p++)
                 v.xelem (k++) = *p;
 
               retval = v;
@@ -1688,7 +1801,7 @@ Undocumented internal function.\n\
 
 #if 0
 
-// FIXME -- should we have functions like this in Octave?
+// FIXME: should we have functions like this in Octave?
 
 DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
 {

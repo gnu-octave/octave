@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstring>
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "cmd-edit.h"
@@ -144,8 +145,9 @@ gnu_history::do_process_histcontrol (const std::string& control_arg)
           else if (tmp == "ignorespace")
             history_control |= HC_IGNSPACE;
           else
-            (*current_liboctave_warning_handler)
-              ("unknown histcontrol directive %s", tmp.c_str ());
+            (*current_liboctave_warning_with_id_handler)
+              ("Octave:history-control",
+               "unknown histcontrol directive %s", tmp.c_str ());
 
           if (end != std::string::npos)
             beg = end + 1;
@@ -156,9 +158,8 @@ gnu_history::do_process_histcontrol (const std::string& control_arg)
 std::string
 gnu_history::do_histcontrol (void) const
 {
-  // FIXME -- instead of reconstructing this value, should we just save
-  // the string we were given when constructing the command_history
-  // object?
+  // FIXME: instead of reconstructing this value, should we just save
+  // the string we were given when constructing the command_history object?
 
   std::string retval;
 
@@ -192,7 +193,7 @@ gnu_history::do_add (const std::string& s)
       if (s.empty ()
           || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
         return false;
-     
+
       // Strip newline before adding to list
       std::string stmp = s;
       int stmp_len = stmp.length ();
@@ -289,7 +290,7 @@ gnu_history::do_goto_mark (void)
 
   mark = 0;
 
-  // FIXME -- for operate_and_get_next.
+  // FIXME: for operate_and_get_next.
   command_editor::remove_startup_hook (command_history::goto_mark);
 
   return 0;
@@ -303,7 +304,11 @@ gnu_history::do_read (const std::string& f, bool must_exist)
       int status = ::octave_read_history (f.c_str ());
 
       if (status != 0 && must_exist)
-        error (status);
+        {
+          std::string msg = "reading file '" + f + "'";
+
+          error (status, msg);
+        }
       else
         {
           lines_in_file = do_where ();
@@ -327,7 +332,13 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
       int status = ::octave_read_history_range (f.c_str (), from, to);
 
       if (status != 0 && must_exist)
-        error (status);
+        {
+          std::ostringstream buf;
+          buf << "reading lines " << from << " to " << to
+              << " from file '" << f << "'";
+
+          error (status, buf.str ());
+        }
       else
         {
           lines_in_file = do_where ();
@@ -354,7 +365,11 @@ gnu_history::do_write (const std::string& f_arg) const
           int status = ::octave_write_history (f.c_str ());
 
           if (status != 0)
-            error (status);
+            {
+              std::string msg = "writing file '" + f + "'";
+
+              error (status, msg);
+            }
         }
       else
         error ("gnu_history::write: missing file name");
@@ -393,7 +408,11 @@ gnu_history::do_append (const std::string& f_arg)
                     = ::octave_append_history (lines_this_session, f.c_str ());
 
                   if (status != 0)
-                    error (status);
+                    {
+                      std::string msg = "appending to file '" + f_arg + "'";
+
+                      error (status, msg);
+                    }
                   else
                     lines_in_file += lines_this_session;
 
@@ -545,7 +564,7 @@ std::string
 command_history::file (void)
 {
   return (instance_ok ())
-    ? instance->do_file () : std::string ();
+         ? instance->do_file () : std::string ();
 }
 
 void
@@ -559,7 +578,7 @@ std::string
 command_history::histcontrol (void)
 {
   return (instance_ok ())
-    ? instance->do_histcontrol () : std::string ();
+         ? instance->do_histcontrol () : std::string ();
 }
 
 void
@@ -573,7 +592,7 @@ int
 command_history::size (void)
 {
   return (instance_ok ())
-    ? instance->do_size () : 0;
+         ? instance->do_size () : 0;
 }
 
 void
@@ -587,7 +606,7 @@ bool
 command_history::ignoring_entries (void)
 {
   return (instance_ok ())
-    ? instance->do_ignoring_entries () : false;
+         ? instance->do_ignoring_entries () : false;
 }
 
 bool
@@ -616,35 +635,35 @@ int
 command_history::where (void)
 {
   return (instance_ok ())
-    ? instance->do_where () : 0;
+         ? instance->do_where () : 0;
 }
 
 int
 command_history::length (void)
 {
   return (instance_ok ())
-    ? instance->do_length () : 0;
+         ? instance->do_length () : 0;
 }
 
 int
 command_history::max_input_history (void)
 {
   return (instance_ok ())
-    ? instance->do_max_input_history () : 0;
+         ? instance->do_max_input_history () : 0;
 }
 
 int
 command_history::base (void)
 {
   return (instance_ok ())
-    ? instance->do_base () : 0;
+         ? instance->do_base () : 0;
 }
 
 int
 command_history::current_number (void)
 {
   return (instance_ok ())
-    ? instance->do_current_number () : 0;
+         ? instance->do_current_number () : 0;
 }
 
 void
@@ -658,14 +677,14 @@ int
 command_history::unstifle (void)
 {
   return (instance_ok ())
-    ? instance->do_unstifle () : 0;
+         ? instance->do_unstifle () : 0;
 }
 
 int
 command_history::is_stifled (void)
 {
   return (instance_ok ())
-    ? instance->do_is_stifled () : 0;
+         ? instance->do_is_stifled () : 0;
 }
 
 void
@@ -679,7 +698,7 @@ int
 command_history::goto_mark (void)
 {
   return (instance_ok ())
-    ? instance->do_goto_mark () : 0;
+         ? instance->do_goto_mark () : 0;
 }
 
 void
@@ -734,14 +753,14 @@ string_vector
 command_history::list (int limit, bool number_lines)
 {
   return (instance_ok ())
-    ? instance->do_list (limit, number_lines) : string_vector ();
+         ? instance->do_list (limit, number_lines) : string_vector ();
 }
 
 std::string
 command_history::get_entry (int n)
 {
   return (instance_ok ())
-    ? instance->do_get_entry (n) : std::string ();
+         ? instance->do_get_entry (n) : std::string ();
 }
 
 void
@@ -761,8 +780,9 @@ command_history::clean_up_and_save (const std::string& f, int n)
 void
 command_history::do_process_histcontrol (const std::string&)
 {
-  (*current_liboctave_warning_handler)
-    ("readline is not linked, so history control is not available");
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:history-control",
+     "readline is not linked, so history control is not available");
 }
 
 void
@@ -996,9 +1016,13 @@ command_history::do_clean_up_and_save (const std::string& f_arg, int)
 }
 
 void
-command_history::error (int err_num) const
+command_history::error (int err_num, const std::string& msg) const
 {
-  (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+  if (msg.empty ())
+    (*current_liboctave_error_handler) ("%s", gnulib::strerror (err_num));
+  else
+    (*current_liboctave_error_handler) ("%s: %s", msg.c_str (),
+                                        gnulib::strerror (err_num));
 }
 
 void

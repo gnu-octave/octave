@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_LU_h)
-#define octave_sparse_LU_h 1
+#if !defined (octave_SparsedbleLU_h)
+#define octave_SparsedbleLU_h 1
 
 #include "sparse-base-lu.h"
 #include "dSparse.h"
@@ -48,13 +48,13 @@ public:
     : sparse_base_lu <SparseMatrix, double, SparseMatrix, double> (a) { }
 
   SparseLU& operator = (const SparseLU& a)
-    {
-      if (this != &a)
-        sparse_base_lu <SparseMatrix, double, SparseMatrix, double>
-          :: operator = (a);
+  {
+    if (this != &a)
+      sparse_base_lu <SparseMatrix, double, SparseMatrix, double>
+      :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~SparseLU (void) { }
 };

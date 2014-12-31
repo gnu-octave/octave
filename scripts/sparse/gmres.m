@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Carlo de Falco
+## Copyright (C) 2009-2013 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##

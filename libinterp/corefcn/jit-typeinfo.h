@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Max Brister
+Copyright (C) 2012-2013 Max Brister
 
 This file is part of Octave.
 
@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 // manage the types.
 //
 // FIXME:
-// Operations are defined and implemented in jit_typeinfo. Eventually they
+// Operations are defined and implemented in jit_typeinfo.  Eventually they
 // should be moved elsewhere. (just like with octave_typeinfo)
 
 // jit_range is compatable with the llvm range structure
@@ -46,7 +46,7 @@ jit_range
 {
   jit_range (const Range& from) : base (from.base ()), limit (from.limit ()),
                                   inc (from.inc ()), nelem (from.nelem ())
-  {}
+  { }
 
   operator Range () const
   {
@@ -61,14 +61,14 @@ jit_range
   octave_idx_type nelem;
 };
 
-std::ostream& operator<< (std::ostream& os, const jit_range& rng);
+std::ostream& operator << (std::ostream& os, const jit_range& rng);
 
 // jit_array is compatable with the llvm array/matrix structures
 template <typename T, typename U>
 struct
 jit_array
 {
-  jit_array () : array (0) {}
+  jit_array () : array (0) { }
 
   jit_array (T& from) : array (new T (from))
   {
@@ -105,7 +105,7 @@ jit_array
 
 typedef jit_array<NDArray, double> jit_matrix;
 
-std::ostream& operator<< (std::ostream& os, const jit_matrix& mat);
+std::ostream& operator << (std::ostream& os, const jit_matrix& mat);
 
 // calling convention
 namespace
@@ -217,12 +217,12 @@ std::ostream& jit_print (std::ostream& os, jit_type *atype);
 
 class jit_value;
 
-// An abstraction for calling llvm functions with jit_values. Deals with calling
-// convention details.
+// An abstraction for calling llvm functions with jit_values.  Deals with
+// calling convention details.
 class
 jit_function
 {
-  friend std::ostream& operator<< (std::ostream& os, const jit_function& fn);
+  friend std::ostream& operator << (std::ostream& os, const jit_function& fn);
 public:
   // create a function in an invalid state
   jit_function ();
@@ -317,7 +317,7 @@ private:
   bool mcan_error;
 };
 
-std::ostream& operator<< (std::ostream& os, const jit_function& fn);
+std::ostream& operator << (std::ostream& os, const jit_function& fn);
 
 
 // Keeps track of information about how to implement operations (+, -, *, ect)
@@ -372,7 +372,7 @@ private:
 
   struct signature_cmp
   {
-    bool operator() (const signature_vec *lhs, const signature_vec *rhs);
+    bool operator() (const signature_vec *lhs, const signature_vec *rhs) const;
   };
 
   typedef std::map<const signature_vec *, jit_function *, signature_cmp>
@@ -389,7 +389,7 @@ class
 jit_index_operation : public jit_operation
 {
 public:
-  jit_index_operation (void) : module (0), engine (0) {}
+  jit_index_operation (void) : module (0), engine (0) { }
 
   void initialize (llvm::Module *amodule, llvm::ExecutionEngine *aengine)
   {

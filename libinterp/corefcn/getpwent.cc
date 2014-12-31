@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -66,7 +66,7 @@ mk_pw_map (const octave_passwd& pw)
 }
 
 DEFUN (getpwent, args, ,
- "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{pw_struct} =} getpwent ()\n\
 Return a structure containing an entry from the password database,\n\
 opening it if necessary.  Once the end of the data has been reached,\n\
@@ -94,7 +94,7 @@ opening it if necessary.  Once the end of the data has been reached,\n\
 }
 
 DEFUN (getpwuid, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{pw_struct} =} getpwuid (@var{uid}).\n\
 Return a structure containing the first entry from the password database\n\
 with the user ID @var{uid}.  If the user ID does not exist in the\n\
@@ -134,7 +134,7 @@ database, @code{getpwuid} returns 0.\n\
 }
 
 DEFUN (getpwnam, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{pw_struct} =} getpwnam (@var{name})\n\
 Return a structure containing the first entry from the password database\n\
 with the user name @var{name}.  If the user name does not exist in the\n\
@@ -167,7 +167,7 @@ database, @code{getpwname} returns 0.\n\
 }
 
 DEFUN (setpwent, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} setpwent ()\n\
 Return the internal pointer to the beginning of the password database.\n\
 @end deftypefn")
@@ -193,7 +193,7 @@ Return the internal pointer to the beginning of the password database.\n\
 }
 
 DEFUN (endpwent, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} endpwent ()\n\
 Close the password database.\n\
 @end deftypefn")

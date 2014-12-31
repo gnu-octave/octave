@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -18,28 +18,48 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} factorial (@var{n})
-## Return the factorial of @var{n} where @var{n} is a positive integer.  If
-## @var{n} is a scalar, this is equivalent to @code{prod (1:@var{n})}.  For
+## Return the factorial of @var{n} where @var{n} is a real non-negative integer.
+##
+## If @var{n} is a scalar, this is equivalent to @code{prod (1:@var{n})}.  For
 ## vector or matrix arguments, return the factorial of each element in the
-## array.  For non-integers see the generalized factorial function
-## @code{gamma}.
-## @seealso{prod, gamma}
+## array.
+##
+## For non-integers see the generalized factorial function @code{gamma}.
+## Note that the factorial function grows large quite quickly, and even
+## with double precision values overflow will occur if @var{n} > 171.  For
+## such cases consider @code{gammaln}.
+## @seealso{prod, gamma, gammaln}
 ## @end deftypefn
 
 function x = factorial (n)
+
   if (nargin != 1)
     print_usage ();
-  elseif (any (n(:) < 0 | n(:) != fix (n(:))))
-    error ("factorial: N must all be non-negative integers");
+  elseif (! isreal (n) || any (n(:) < 0 | n(:) != fix (n(:))))
+    error ("factorial: all N must be real non-negative integers");
   endif
+
   x = round (gamma (n+1));
+
+  ## FIXME: Matlab returns an output of the same type as the input.
+  ## This doesn't seem particularly worth copying--for example uint8 would
+  ## saturate for n > 5.  If desired, however, the following code could be
+  ## uncommented.
+  # if (! isfloat (x))
+  #   x = cast (x, class (n));
+  # endif
+
 endfunction
 
 
 %!assert (factorial (5), prod (1:5))
 %!assert (factorial ([1,2;3,4]), [1,2;6,24])
 %!assert (factorial (70), exp (sum (log (1:70))), -128*eps)
+%!assert (factorial (0), 1)
 
-%!fail ("factorial (5.5)", "must all be non-negative integers")
-%!fail ("factorial (-3)", "must all be non-negative integers")
+%!error factorial ()
+%!error factorial (1,2)
+%!error <must be real non-negative integers> factorial (2i)
+%!error <must be real non-negative integers> factorial (-3)
+%!error <must be real non-negative integers> factorial (5.5)
 

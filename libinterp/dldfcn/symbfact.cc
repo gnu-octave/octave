@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN_DLD (symbfact, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{S})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} symbfact (@var{S}, @var{typ}, @var{mode})\n\
@@ -114,17 +114,17 @@ factorization as determined by @var{typ}.\n\
   if (spu == 0.)
     {
       cm->print = -1;
-      cm->print_function = 0;
+      SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, 0);
     }
   else
     {
       cm->print = static_cast<int> (spu) + 2;
-      cm->print_function =&SparseCholPrint;
+      SUITESPARSE_ASSIGN_FPTR (printf_func, cm->print_function, &SparseCholPrint);
     }
 
   cm->error_handler = &SparseCholError;
-  cm->complex_divide = CHOLMOD_NAME(divcomplex);
-  cm->hypotenuse = CHOLMOD_NAME(hypot);
+  SUITESPARSE_ASSIGN_FPTR2 (divcomplex_func, cm->complex_divide, divcomplex);
+  SUITESPARSE_ASSIGN_FPTR2 (hypot_func, cm->hypotenuse, hypot);
 
   double dummy;
   cholmod_sparse Astore;
@@ -355,7 +355,7 @@ factorization as determined by @var{typ}.\n\
       retval(0) = tmp;
     }
 
- symbfact_error:
+symbfact_error:
 #else
   error ("symbfact: not available in this version of Octave");
 #endif

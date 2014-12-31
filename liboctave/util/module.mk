@@ -2,6 +2,7 @@ EXTRA_DIST += \
   util/module.mk
 
 UTIL_INC = \
+  util/action-container.h \
   util/base-list.h \
   util/byte-swap.h \
   util/caseless-str.h \
@@ -25,7 +26,6 @@ UTIL_INC = \
   util/oct-inttypes.h \
   util/oct-locbuf.h \
   util/oct-md5.h \
-  util/oct-mem.h \
   util/oct-mutex.h \
   util/oct-refcount.h \
   util/oct-rl-edit.h \
@@ -40,11 +40,12 @@ UTIL_INC = \
   util/sparse-util.h \
   util/statdefs.h \
   util/str-vec.h \
-  util/sun-utils.h 
+  util/sun-utils.h \
+  util/unwind-prot.h \
+  util/url-transfer.h
 
 UTIL_C_SRC = \
   util/f2c-main.c \
-  util/lo-cieee.c \
   util/lo-cutils.c \
   util/oct-rl-edit.c \
   util/oct-rl-hist.c 
@@ -71,6 +72,8 @@ UTIL_SRC = \
   util/sparse-sort.cc \
   util/sparse-util.cc \
   util/str-vec.cc \
+  util/unwind-prot.cc \
+  util/url-transfer.cc \
   $(UTIL_C_SRC)
 
 TEMPLATE_SRC += \
@@ -84,5 +87,8 @@ noinst_LTLIBRARIES += util/libutil.la
 util_libutil_la_SOURCES = $(UTIL_SRC)
 util_libutil_la_CPPFLAGS = \
   $(liboctave_la_CPPFLAGS) \
+  $(CURL_CPPFLAGS) \
+  $(PCRE_CPPFLAGS) \
   $(SPARSE_XCPPFLAGS)
 
+liboctave_la_LIBADD += util/libutil.la

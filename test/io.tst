@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -74,7 +74,9 @@
 %!
 %!  ret = 0;
 %!
-%!  files = {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"};
+%!  files = cellfun (@fullfile, {P_tmpdir}, 
+%!                   {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"}, 
+%!                   "UniformOutput", false);
 %!  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
 %!  tols = {2*eps, 0, 0, 0};
 %!
@@ -196,9 +198,10 @@
 %! STR.string_fld = "Octave";
 %! STR.struct_fld.x = 0;
 %! STR.struct_fld.y = 1;
-%!
-%! save struct.dat -struct STR;
-%! STR = load ("struct.dat");
+%! 
+%! struct_dat = fullfile (P_tmpdir, "struct.dat");
+%! save (struct_dat, "-struct", "STR");
+%! STR = load (struct_dat);
 %!
 %! assert (STR.scalar_fld == 1 && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -206,9 +209,10 @@
 %!         STR.struct_fld.x == 0 && ...
 %!         STR.struct_fld.y == 1 );
 %!
-%!
-%! save -binary struct.dat -struct STR matrix_fld str*_fld;
-%! STR = load ("struct.dat");
+%! 
+%! save ("-binary", struct_dat, 
+%!       "-struct", "STR", "matrix_fld", "str*_fld");
+%! STR =  load (struct_dat);
 %!
 %! assert (!isfield (STR,"scalar_fld") && ...
 %!         STR.matrix_fld == [1.1,2;3,4] && ...
@@ -216,15 +220,16 @@
 %!         STR.struct_fld.x == 0 && ...
 %!         STR.struct_fld.y == 1);
 %!
-%! delete struct.dat;
+%! delete (struct_dat);
 
 %!test
 %! matrix1 = rand (100, 2);
-%! save -ascii matrix.ascii matrix1
-%! matrix2 = load ("matrix.ascii");
+%! matrix_ascii = fullfile (P_tmpdir, "matrix.ascii");
+%! save ("-ascii", matrix_ascii, "matrix1")
+%! matrix2 = load (matrix_ascii);
 %! assert (matrix1, matrix2, 1e-9);
 %!
-%! delete matrix.ascii;
+%! delete (matrix_ascii);
 
 %!error <unable to find file> load ("")
 
@@ -290,7 +295,7 @@
 
 %% Note use fprintf so output not sent to stdout
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! fid1 = fopen (nm,"w");
 %! x = fprintf (fid1, "%s: %d\n", "test", 1);
 %! fclose (fid1);
@@ -335,7 +340,7 @@
 %!     elseif (j == 4)
 %!       mode_list = {"W+"; "R+"; "A+"};
 %!     endif
-%!     nm = tmpnam ();
+%!     nm = tempname ();
 %!     for k = 1:3
 %!       mode = mode_list{k};
 %!       [id, err] = fopen (nm, mode, arch);
@@ -392,12 +397,12 @@
 %!error fclose (0)
 %!error <Invalid call to fclose> fclose (1, 2)
 
-%!assert (ischar (tmpnam ()))
+%!assert (ischar (tempname ()))
 
-%!warning tmpnam (1);
-%!warning tmpnam ("foo", 1);
+%!error <DIR must be a string> tempname (1);
+%!error <PREFIX must be a string> tempname ("foo", 1);
 
-%!error <Invalid call to tmpnam> tmpnam (1, 2, 3)
+%!error <Invalid call to tempname> tempname (1, 2, 3)
 
 %!test
 %! type_list = ["char"; "char*1"; "integer*1"; "int8";
@@ -408,7 +413,7 @@
 %! "real*8"; "int16"; "integer*2"; "int32"; "integer*4"];
 %!
 %! n = rows (type_list);
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   for i = 1:n
@@ -434,7 +439,19 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!test
-%! nm = tmpnam ();
+%! x = char (128:255)';
+%! nm = tempname ();
+%! id = fopen (nm, "wb");
+%! fwrite (id, x);
+%! fclose (id);
+%! id = fopen (nm, "rb");
+%! y = fread (id, Inf, "uchar=>char");
+%! fclose (id);
+%! unlink (nm);
+%! assert (x, y);
+
+%!test
+%! nm = tempname ();
 %! id = fopen (nm, "wb");
 %! if (id > 0)
 %!   fprintf (id, "%d\n", 1:100);
@@ -527,3 +544,77 @@
 %!error <Invalid call to frewind> frewind (1, 2)
 %!error frewind ("foo")
 
+%!test
+%! id = tmpfile ();
+%! fwrite (id, "abcdefg");
+%! frewind (id);
+%! [data, count] = fread (id);
+%! assert (data, [97; 98; 99; 100; 101; 102; 103]);
+%! assert (count, 7);
+%! frewind (id);
+%! [data, count] = fread (id, 'int16');
+%! assert (data, [25185; 25699; 26213]);
+%! assert (count, 3);
+%! frewind (id);
+%! [data, count] = fread (id, [10, 2], 'int16');
+%! assert (data, [25185; 25699; 26213]);
+%! assert (count, 3);
+%! frewind (id);
+%! [data, count] = fread (id, [2, 10], 'int16');
+%! assert (data, [25185, 26213; 25699, 0]);
+%! assert (count, 3);
+%! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, char (0:15));
+%! frewind (id);
+%! [data, count] = fread (id, inf, "2*uint8", 2);
+%! assert (data, [0; 1; 4; 5; 8; 9; 12; 13]);
+%! assert (count, 8);
+%! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, char (0:15));
+%! frewind (id);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, [0; 1; 5]);
+%! assert (count, 3);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, [6; 7; 11]);
+%! assert (count, 3);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, [12; 13]);
+%! assert (count, 2);
+%! [data, count] = fread (id, 3, "2*uint8", 3);
+%! assert (data, []);
+%! assert (count, 0);
+%! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, char (0:15));
+%! frewind (id);
+%! [data, count] = fread (id, [1, Inf], "4*uint16", 3);
+%! assert (data, [256, 770, 1284, 1798, 3083, 3597]);
+%! assert (count, 6);
+%! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, char (0:15));
+%! frewind (id);
+%! [data, count] = fread (id, [3, Inf], "4*uint16", 3);
+%! assert (data, [256, 1798; 770, 3083; 1284, 3597]);
+%! assert (count, 6);
+%! fclose (id);
+
+%!test
+%! id = tmpfile ();
+%! fwrite (id, "abcd");
+%! frewind (id);
+%! [data, count] = fread (id, [2, 3], "char");
+%! assert (data, [97, 99; 98, 100]);
+%! assert (count, 4);
+%! fclose (id);

@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2001-2012 Paul Kienzle
+Copyright (C) 2001-2013 Paul Kienzle
 
 This file is part of Octave.
 
@@ -48,33 +48,33 @@ SUCH DAMAGE.
 #define MXARRAY_H
 
 typedef enum
-  {
-    mxREAL = 0,
-    mxCOMPLEX = 1
-  }
-  mxComplexity;
+{
+  mxREAL = 0,
+  mxCOMPLEX = 1
+}
+mxComplexity;
 
 typedef enum
-  {
-    mxUNKNOWN_CLASS = 0,
-    mxCELL_CLASS,
-    mxSTRUCT_CLASS,
-    mxLOGICAL_CLASS,
-    mxCHAR_CLASS,
-    mxUNUSED_CLASS,
-    mxDOUBLE_CLASS,
-    mxSINGLE_CLASS,
-    mxINT8_CLASS,
-    mxUINT8_CLASS,
-    mxINT16_CLASS,
-    mxUINT16_CLASS,
-    mxINT32_CLASS,
-    mxUINT32_CLASS,
-    mxINT64_CLASS,
-    mxUINT64_CLASS,
-    mxFUNCTION_CLASS
-  }
-  mxClassID;
+{
+  mxUNKNOWN_CLASS = 0,
+  mxCELL_CLASS,
+  mxSTRUCT_CLASS,
+  mxLOGICAL_CLASS,
+  mxCHAR_CLASS,
+  mxUNUSED_CLASS,
+  mxDOUBLE_CLASS,
+  mxSINGLE_CLASS,
+  mxINT8_CLASS,
+  mxUINT8_CLASS,
+  mxINT16_CLASS,
+  mxUINT16_CLASS,
+  mxINT32_CLASS,
+  mxUINT32_CLASS,
+  mxINT64_CLASS,
+  mxUINT64_CLASS,
+  mxFUNCTION_CLASS
+}
+mxClassID;
 
 typedef unsigned char mxLogical;
 
@@ -252,7 +252,8 @@ public:
 
   virtual mxArray *get_field_by_number (mwIndex index, int key_num) const = 0;
 
-  virtual void set_field_by_number (mwIndex index, int key_num, mxArray *val) = 0;
+  virtual void
+  set_field_by_number (mwIndex index, int key_num, mxArray *val) = 0;
 
   virtual int get_number_of_fields (void) const = 0;
 
@@ -386,7 +387,8 @@ public:
 
   int is_logical_scalar (void) const { return rep->is_logical_scalar (); }
 
-  int is_logical_scalar_true (void) const { return rep->is_logical_scalar_true (); }
+  int is_logical_scalar_true (void) const
+  { return rep->is_logical_scalar_true (); }
 
   mwSize get_m (void) const { return rep->get_m (); }
 
@@ -394,15 +396,18 @@ public:
 
   mwSize *get_dimensions (void) const { return rep->get_dimensions (); }
 
-  mwSize get_number_of_dimensions (void) const { return rep->get_number_of_dimensions (); }
+  mwSize get_number_of_dimensions (void) const
+  { return rep->get_number_of_dimensions (); }
 
   void set_m (mwSize m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
 
   void set_n (mwSize n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
 
-  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
+  void set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
+  { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
 
-  mwSize get_number_of_elements (void) const { return rep->get_number_of_elements (); }
+  mwSize get_number_of_elements (void) const
+  { return rep->get_number_of_elements (); }
 
   int is_empty (void) const { return get_number_of_elements () == 0; }
 
@@ -414,17 +419,21 @@ public:
 
   const char *get_class_name (void) const { return rep->get_class_name (); }
 
-  void set_class_name (const char *name_arg) { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
+  void set_class_name (const char *name_arg)
+  { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
 
-  mxArray *get_cell (mwIndex idx) const { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
+  mxArray *get_cell (mwIndex idx) const
+  { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
 
-  void set_cell (mwIndex idx, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
+  void set_cell (mwIndex idx, mxArray *val)
+  { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
 
   double get_scalar (void) const { return rep->get_scalar (); }
 
   void *get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
-  void *get_imag_data (void) const { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
+  void *get_imag_data (void) const
+  { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
 
   void set_data (void *pr) { DO_VOID_MUTABLE_METHOD (set_data (pr)); }
 
@@ -444,23 +453,30 @@ public:
 
   int add_field (const char *key) { DO_MUTABLE_METHOD (int, add_field (key)); }
 
-  void remove_field (int key_num) { DO_VOID_MUTABLE_METHOD (remove_field (key_num)); }
+  void remove_field (int key_num)
+  { DO_VOID_MUTABLE_METHOD (remove_field (key_num)); }
 
-  mxArray *get_field_by_number (mwIndex index, int key_num) const { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
+  mxArray *get_field_by_number (mwIndex index, int key_num) const
+  { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
 
-  void set_field_by_number (mwIndex index, int key_num, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
+  void set_field_by_number (mwIndex index, int key_num, mxArray *val)
+  { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
 
   int get_number_of_fields (void) const { return rep->get_number_of_fields (); }
 
-  const char *get_field_name_by_number (int key_num) const { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
+  const char *get_field_name_by_number (int key_num) const
+  { DO_MUTABLE_METHOD (const char*, get_field_name_by_number (key_num)); }
 
-  int get_field_number (const char *key) const { DO_MUTABLE_METHOD (int, get_field_number (key)); }
+  int get_field_number (const char *key) const
+  { DO_MUTABLE_METHOD (int, get_field_number (key)); }
 
-  int get_string (char *buf, mwSize buflen) const { return rep->get_string (buf, buflen); }
+  int get_string (char *buf, mwSize buflen) const
+  { return rep->get_string (buf, buflen); }
 
   char *array_to_string (void) const { return rep->array_to_string (); }
 
-  mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const { return rep->calc_single_subscript (nsubs, subs); }
+  mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
+  { return rep->calc_single_subscript (nsubs, subs); }
 
   size_t get_element_size (void) const { return rep->get_element_size (); }
 

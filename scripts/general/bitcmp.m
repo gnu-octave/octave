@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman
+## Copyright (C) 2004-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,6 +31,7 @@
 ##   @result{} 110100
 ## @end group
 ## @end example
+##
 ## @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
@@ -52,27 +53,11 @@ function C = bitcmp (A, k)
   elseif (isa (A, "single"))
     bmax = bitmax ("single");
     amax = ceil (log2 (bmax));
+  elseif (isinteger (A))
+    amax = sizeof (ones (1, class (A))) * 8;
+    bmax = bitpack (true (amax, 1), class (A));
   else
-    if (isa (A, "uint8"))
-      amax = 8;
-    elseif (isa (A, "uint16"))
-      amax = 16;
-    elseif (isa (A, "uint32"))
-      amax = 32;
-    elseif (isa (A, "uint64"))
-      amax = 64;
-    elseif (isa (A, "int8"))
-      amax = 8;
-    elseif (isa (A, "int16"))
-      amax = 16;
-    elseif (isa (A, "int32"))
-      amax = 32;
-    elseif (isa (A, "int64"))
-      amax = 64;
-    else
-      error ("bitcmp: invalid class %s", class (A));
-    endif
-    bmax = intmax (class (A));
+    error ("bitcmp: invalid class %s", class (A));
   endif
 
   if (nargin == 1 || k == amax)
@@ -130,4 +115,10 @@ endfunction
 %! assert (bitcmp (A,Amax),bitor (bitshift (uint64 (1),Amax-1), bitshift (uint64 (1),Amax-2)));
 %! assert (bitcmp (A,Amax-1), bitshift (uint64 (1),Amax-2));
 %! assert (bitcmp (A,Amax-2), uint64 (0));
+
+## Do not forget signed integers
+%!assert (bitcmp (int8 (127)), int8 (-128)) # [1 1 1 1 1 1 1 0]
+%!assert (bitcmp (int8 (1)), int8 (-2))     # [1 0 0 0 0 0 0 0]
+%!assert (bitcmp (int8 (0)), int8 (-1))     # [0 0 0 0 0 0 0 0]
+%!assert (bitcmp (int8 (8)), int8 (-9))     # [0 0 0 1 0 0 0 0]
 

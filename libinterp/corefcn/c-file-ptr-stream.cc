@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -45,7 +45,7 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
   buf_close ();
 }
 
-// FIXME -- I'm sure there is room for improvement here...
+// FIXME: I'm sure there is room for improvement here...
 
 c_file_ptr_buf::int_type
 c_file_ptr_buf::overflow (int_type c)
@@ -92,8 +92,8 @@ c_file_ptr_buf::int_type
 c_file_ptr_buf::pbackfail (int_type c)
 {
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? ungetc (c, f) :
-    traits_type::not_eof (c);
+  return (c != traits_type::eof () && f) ? ungetc (c, f)
+                                         : traits_type::not_eof (c);
 #else
   return (c != EOF && f) ? ungetc (c, f) : EOF;
 #endif
@@ -217,7 +217,7 @@ c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
   buf_close ();
 }
 
-// FIXME -- I'm sure there is room for improvement here...
+// FIXME: I'm sure there is room for improvement here...
 
 c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::overflow (int_type c)
@@ -264,8 +264,8 @@ c_zfile_ptr_buf::int_type
 c_zfile_ptr_buf::pbackfail (int_type c)
 {
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
-  return (c != traits_type::eof () && f) ? gzungetc (c, f) :
-    traits_type::not_eof (c);
+  return (c != traits_type::eof () && f) ? gzungetc (c, f)
+                                         : traits_type::not_eof (c);
 #else
   return (c != EOF && f) ? gzungetc (c, f) : EOF;
 #endif
@@ -336,7 +336,7 @@ c_zfile_ptr_buf::sync (void)
 int
 c_zfile_ptr_buf::flush (void)
 {
-  // FIXME -- do we need something more complex here, passing
+  // FIXME: do we need something more complex here, passing
   // something other than 0 for the second argument to gzflush and
   // checking the return value, etc.?
 

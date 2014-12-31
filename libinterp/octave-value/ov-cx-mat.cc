@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -74,8 +74,9 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_complex_matrix::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_complex_matrix::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_numeric_demotion_function,
+            octave_float_complex_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -151,7 +152,7 @@ octave_complex_matrix::matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (ComplexMatrix (matrix));
 
   return retval;
 }
@@ -165,7 +166,7 @@ octave_complex_matrix::float_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (ComplexMatrix (matrix));
 
   return retval;
 }
@@ -213,13 +214,13 @@ octave_complex_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_complex_matrix::complex_matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return ComplexMatrix (matrix);
 }
 
 FloatComplexMatrix
 octave_complex_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (ComplexMatrix (matrix));
 }
 
 boolNDArray
@@ -269,7 +270,7 @@ octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = SparseMatrix (::real (matrix.matrix_value ()));
+  retval = SparseMatrix (::real (ComplexMatrix (matrix)));
 
   return retval;
 }
@@ -277,7 +278,7 @@ octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
 SparseComplexMatrix
 octave_complex_matrix::sparse_complex_matrix_value (bool) const
 {
-  return SparseComplexMatrix (matrix.matrix_value ());
+  return SparseComplexMatrix (ComplexMatrix (matrix));
 }
 
 octave_value
@@ -301,7 +302,7 @@ octave_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      ComplexMatrix mat = matrix.matrix_value ();
+      ComplexMatrix mat (matrix);
 
       retval = mat.diag (m, n);
     }
@@ -462,7 +463,7 @@ octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (d.numel () > 4096) // FIXME -- make this configurable.
+  else if (d.numel () > 4096) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -471,14 +472,15 @@ octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 
 
   const Complex *mtmp = m.data ();
-  write_doubles (os, reinterpret_cast<const double *> (mtmp), st, 2 * d.numel ());
+  write_doubles (os, reinterpret_cast<const double *> (mtmp), st,
+                 2 * d.numel ());
 
   return true;
 }
 
 bool
 octave_complex_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                    oct_mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -559,7 +561,8 @@ octave_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
   bool retval = true;
   ComplexNDArray m = complex_array_value ();
 
@@ -647,7 +650,7 @@ octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   if (empty > 0)
     matrix.resize (dv);
   if (empty)
-      return (empty > 0);
+    return (empty > 0);
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);

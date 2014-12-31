@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -51,7 +51,7 @@ extern "C"
 static octave_idx_type
 select_ana (const float& a, const float&)
 {
-   return (a < 0.0);
+  return (a < 0.0);
 }
 
 static octave_idx_type
@@ -61,7 +61,8 @@ select_dig (const float& a, const float& b)
 }
 
 octave_idx_type
-FloatSCHUR::init (const FloatMatrix& a, const std::string& ord, bool calc_unitary)
+FloatSCHUR::init (const FloatMatrix& a, const std::string& ord,
+                  bool calc_unitary)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();

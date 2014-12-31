@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -155,11 +155,12 @@ Array<double>::is_sorted (sortmode mode) const
   return mode;
 }
 
-INSTANTIATE_ARRAY_SORT (double);
+template class OCTAVE_API octave_sort<double>;
 
 INSTANTIATE_ARRAY (double, OCTAVE_API);
 
-template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<double>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&,
+                                               const Array<double>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

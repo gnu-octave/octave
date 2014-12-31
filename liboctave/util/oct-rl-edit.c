@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -74,6 +74,14 @@ octave_rl_enable_paren_matching (int val)
   rl_variable_bind ("blink-matching-paren", val ? "1" : "0");
 }
 
+int
+octave_rl_erase_empty_line (int val)
+{
+  int retval = rl_erase_empty_line;
+  rl_erase_empty_line = val;
+  return retval;
+}
+
 /* It would be much simpler if we could just call _rl_clear_screen to
    only clear the screen, but it is not a public function, and on some
    systems, it is not exported from shared library versions of
@@ -114,6 +122,12 @@ void
 octave_rl_resize_terminal (void)
 {
   rl_resize_terminal ();
+}
+
+void
+octave_rl_set_screen_size (int ht, int wd)
+{
+  rl_set_screen_size (ht, wd);
 }
 
 void
@@ -239,6 +253,14 @@ octave_rl_filename_quoting_desired (int arg)
 {
   int retval = rl_filename_quoting_desired;
   rl_filename_quoting_desired = arg;
+  return retval;
+}
+
+int
+octave_rl_prefer_env_winsize (int arg)
+{
+  int retval = rl_prefer_env_winsize;
+  rl_prefer_env_winsize = arg;
   return retval;
 }
 
@@ -395,6 +417,10 @@ octave_rl_set_terminal_name (const char *term)
 void
 octave_rl_initialize (void)
 {
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  rl_catch_signals = 0;
+#endif
+
   rl_initialize ();
 }
 

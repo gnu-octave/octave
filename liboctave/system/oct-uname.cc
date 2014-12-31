@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 John W. Eaton
+Copyright (C) 2005-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -27,16 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <cerrno>
 #include <cstring>
 
-#ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
-#endif
 
 #include "oct-uname.h"
 
 void
 octave_uname::init (void)
 {
-#if defined (HAVE_UNAME) && defined (HAVE_SYS_UTSNAME_H)
   struct utsname unm;
 
   err = ::uname (&unm);
@@ -51,5 +48,4 @@ octave_uname::init (void)
       utsname_version = unm.version;
       utsname_machine = unm.machine;
     }
-#endif
 }

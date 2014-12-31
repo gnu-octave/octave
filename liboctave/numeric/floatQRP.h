@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatQRP_h)
-#define octave_FloatQRP_h 1
+#if !defined (octave_floatQRP_h)
+#define octave_floatQRP_h 1
 
 #include <iosfwd>
 
@@ -42,15 +42,15 @@ public:
   FloatQRP (const FloatQRP& a) : FloatQR (a), p (a.p) { }
 
   FloatQRP& operator = (const FloatQRP& a)
-    {
-      if (this != &a)
-        {
-          FloatQR::operator = (a);
-          p = a.p;
-        }
+  {
+    if (this != &a)
+      {
+        FloatQR::operator = (a);
+        p = a.p;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~FloatQRP (void) { }
 

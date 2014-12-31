@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 Copyirght (C) 2009, 2010 VZLU Prague
 
 This file is part of Octave.
@@ -29,10 +29,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 
-// The maximum allowed value for a dimension extent. This will normally be a tiny bit
-// off the maximum value of octave_idx_type.
-// Currently 1 is subtracted to allow safe conversion of any 2D Array into Sparse,
-// but this offset may change in the future.
+// The maximum allowed value for a dimension extent. This will normally be a
+// tiny bit off the maximum value of octave_idx_type.
+// Currently 1 is subtracted to allow safe conversion of any 2D Array into
+// Sparse, but this offset may change in the future.
 octave_idx_type
 dim_vector::dim_max (void)
 {
@@ -176,7 +176,8 @@ dim_vector::squeeze (void) const
 bool
 dim_vector::concat (const dim_vector& dvb, int dim)
 {
-  int orig_nd = ndims (), ndb = dvb.ndims ();
+  int orig_nd = ndims ();
+  int ndb = dvb.ndims ();
   int new_nd = dim < ndb ? ndb : dim + 1;
   if (new_nd > orig_nd)
     resize (new_nd, 1);

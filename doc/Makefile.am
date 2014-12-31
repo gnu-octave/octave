@@ -1,6 +1,6 @@
 # Makefile for Octave's doc directory
 #
-# Copyright (C) 1993-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -29,5 +29,5 @@ EXTRA_DIST = \
   texinfo.tex \
   texmf.cnf
 
-SUBDIRS = doxyhtml icons interpreter liboctave refcard
+SUBDIRS = doxyhtml interpreter liboctave refcard
 

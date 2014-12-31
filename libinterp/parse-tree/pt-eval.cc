@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 John W. Eaton
+Copyright (C) 2009-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -56,6 +56,8 @@ int tree_evaluator::dbstep_flag = 0;
 size_t tree_evaluator::current_frame = 0;
 
 bool tree_evaluator::debug_mode = false;
+
+bool tree_evaluator::quiet_breakpoint_flag = false;
 
 tree_evaluator::stmt_list_type tree_evaluator::statement_context
   = tree_evaluator::other;
@@ -252,11 +254,11 @@ tree_decl_elt::eval (void)
       octave_value init_val = expr->rvalue1 ();
 
       if (! error_state)
-       {
-         ult.assign (octave_value::op_asn_eq, init_val);
+        {
+          ult.assign (octave_value::op_asn_eq, init_val);
 
-         retval = true;
-       }
+          retval = true;
+        }
     }
 
   return retval;
@@ -300,7 +302,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
-  // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
+  // FIXME: need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
 
   unwind_protect frame;
@@ -336,21 +338,10 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
         Range rng = rhs.range_value ();
 
         octave_idx_type steps = rng.nelem ();
-        double b = rng.base ();
-        double increment = rng.inc ();
 
         for (octave_idx_type i = 0; i < steps; i++)
           {
-            // Use multiplication here rather than declaring a
-            // temporary variable outside the loop and using
-            //
-            //   tmp_val += increment
-            //
-            // to avoid problems with limited precision.  Also, this
-            // is consistent with the way Range::matrix_value is
-            // implemented.
-
-            octave_value val (b + i * increment);
+            octave_value val (rng.elem (i));
 
             ult.assign (octave_value::op_asn_eq, val);
 
@@ -379,7 +370,8 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
         dim_vector dv = rhs.dims ().redim (2);
 
-        octave_idx_type nrows = dv(0), steps = dv(1);
+        octave_idx_type nrows = dv(0);
+        octave_idx_type steps = dv(1);
 
         if (steps > 0)
           {
@@ -637,6 +629,12 @@ tree_evaluator::visit_fcn_handle (tree_fcn_handle&)
 }
 
 void
+tree_evaluator::visit_funcall (tree_funcall&)
+{
+  panic_impossible ();
+}
+
+void
 tree_evaluator::visit_parameter_list (tree_parameter_list&)
 {
   panic_impossible ();
@@ -705,13 +703,12 @@ tree_evaluator::visit_statement (tree_statement& stmt)
           if (! Vdebugging)
             octave_call_stack::set_location (stmt.line (), stmt.column ());
 
-          // FIXME -- we need to distinguish functions from scripts to
-          // get this right.
           if ((statement_context == script
-               && ((Vecho_executing_commands & ECHO_SCRIPTS)
-                   || (Vecho_executing_commands & ECHO_FUNCTIONS)))
+               && ((Vecho_executing_commands & ECHO_SCRIPTS
+                   && octave_call_stack::all_scripts ())
+                   || Vecho_executing_commands & ECHO_FUNCTIONS))
               || (statement_context == function
-                  && (Vecho_executing_commands & ECHO_FUNCTIONS)))
+                  && Vecho_executing_commands & ECHO_FUNCTIONS))
             stmt.echo_code ();
         }
 
@@ -724,12 +721,12 @@ tree_evaluator::visit_statement (tree_statement& stmt)
               if (debug_mode)
                 do_breakpoint (expr->is_breakpoint ());
 
-              // FIXME -- maybe all of this should be packaged in
+              // FIXME: maybe all of this should be packaged in
               // one virtual function that returns a flag saying whether
               // or not the expression will take care of binding ans and
               // printing the result.
 
-              // FIXME -- it seems that we should just have to
+              // FIXME: it seems that we should just have to
               // call expr->rvalue1 () and that should take care of
               // everything, binding ans as necessary?
 
@@ -760,7 +757,7 @@ tree_evaluator::visit_statement (tree_statement& stmt)
         }
       catch (std::bad_alloc)
         {
-          // FIXME -- We want to use error_with_id here so that we set
+          // FIXME: We want to use error_with_id here so that we set
           // the error state, give users control over this error
           // message, and so that we set the error_state appropriately
           // so we'll get stack trace info when appropriate.  But
@@ -936,6 +933,7 @@ tree_evaluator::visit_try_catch_command (tree_try_catch_command& cmd)
 
               err.assign ("message", last_error_message ());
               err.assign ("identifier", last_error_id ());
+              err.assign ("stack", last_error_stack ());
 
               if (! error_state)
                 ult.assign (octave_value::op_asn_eq, err);
@@ -988,7 +986,7 @@ tree_evaluator::do_unwind_protect_cleanup_code (tree_statement_list *list)
   // The unwind_protects are popped off the stack in the reverse of
   // the order they are pushed on.
 
-  // FIXME -- these statements say that if we see a break or
+  // FIXME: these statements say that if we see a break or
   // return statement in the cleanup block, that we want to use the
   // new value of the breaking or returning flag instead of restoring
   // the previous value.  Is that the right thing to do?  I think so.
@@ -1113,6 +1111,11 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 {
   if (error_state)
     return;
+
+#if HAVE_LLVM
+  if (tree_jit::execute (cmd))
+    return;
+#endif
 
   unwind_protect frame;
 
@@ -1251,7 +1254,7 @@ tree_evaluator::do_keyboard (const octave_value_list& args) const
 }
 
 DEFUN (max_recursion_depth, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} max_recursion_depth (@var{new_val}, \"local\")\n\
@@ -1280,7 +1283,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (silent_functions, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} silent_functions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} silent_functions (@var{new_val}, \"local\")\n\

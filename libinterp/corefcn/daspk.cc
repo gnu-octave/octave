@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -171,7 +171,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   while (0)
 
 DEFUN (daspk, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential-algebraic equations\n\
 @tex\n\
@@ -310,7 +310,7 @@ parameters for @code{daspk}.\n\
                   fname.append (fcn_name);
                   fname.append (" (x, xdot, t) y = ");
                   daspk_fcn = extract_function
-                    (c(0), "daspk", fcn_name, fname, "; endfunction");
+                              (c(0), "daspk", fcn_name, fname, "; endfunction");
                 }
 
               if (daspk_fcn)
@@ -323,8 +323,8 @@ parameters for @code{daspk}.\n\
                       jname = "function jac = ";
                       jname.append (jac_name);
                       jname.append (" (x, xdot, t, cj) jac = ");
-                      daspk_jac = extract_function
-                        (c(1), "daspk", jac_name, jname, "; endfunction");
+                      daspk_jac = extract_function (c(1), "daspk", jac_name,
+                                                    jname, "; endfunction");
 
                       if (!daspk_jac)
                         {
@@ -354,8 +354,8 @@ parameters for @code{daspk}.\n\
                       fname = "function y = ";
                       fname.append (fcn_name);
                       fname.append (" (x, xdot, t) y = ");
-                      daspk_fcn = extract_function
-                        (f_arg, "daspk", fcn_name, fname, "; endfunction");
+                      daspk_fcn = extract_function (f_arg, "daspk", fcn_name,
+                                                    fname, "; endfunction");
                     }
                   while (0);
                   break;
@@ -370,8 +370,8 @@ parameters for @code{daspk}.\n\
                         fname = "function y = ";
                         fname.append (fcn_name);
                         fname.append (" (x, xdot, t) y = ");
-                        daspk_fcn = extract_function
-                          (tmp(0), "daspk", fcn_name, fname, "; endfunction");
+                        daspk_fcn = extract_function (tmp(0), "daspk", fcn_name,
+                                                      fname, "; endfunction");
 
                         if (daspk_fcn)
                           {
@@ -379,9 +379,9 @@ parameters for @code{daspk}.\n\
                             jname = "function jac = ";
                             jname.append (jac_name);
                             jname.append (" (x, xdot, t, cj) jac = ");
-                            daspk_jac = extract_function
-                              (tmp(1), "daspk", jac_name, jname,
-                               "; endfunction");
+                            daspk_jac = extract_function (tmp(1), "daspk",
+                                                          jac_name, jname,
+                                                          "; endfunction");
 
                             if (!daspk_jac)
                               {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -37,7 +37,8 @@ template class octave_base_diag<DiagMatrix, Matrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_diag_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix", "double");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
+                                     "double");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
@@ -65,8 +66,9 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_diag_matrix::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_diag_matrix::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_numeric_demotion_function,
+            octave_float_diag_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -177,7 +179,8 @@ bool
 octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
 
-  int32_t r = matrix.rows (), c = matrix.cols ();
+  int32_t r = matrix.rows ();
+  int32_t c = matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 
@@ -193,7 +196,7 @@ octave_diag_matrix::save_binary (std::ostream& os, bool& save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (matrix.length () > 8192) // FIXME -- make this configurable.
+  else if (matrix.length () > 8192) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))

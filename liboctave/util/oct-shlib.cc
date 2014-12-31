@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2012 John W. Eaton
+Copyright (C) 1999-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -87,8 +87,9 @@ octave_shlib::shlib_rep::fake_reload (void)
     {
       tm_loaded = fs.mtime ();
 
-      (*current_liboctave_warning_handler)
-        ("library %s not reloaded due to existing references", file.c_str ());
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:library-reload",
+         "library %s not reloaded due to existing references", file.c_str ());
     }
 }
 
@@ -161,7 +162,8 @@ public:
 
   ~octave_dlopen_shlib (void);
 
-  void *search (const std::string& name, octave_shlib::name_mangler mangler = 0);
+  void *search (const std::string& name,
+                octave_shlib::name_mangler mangler = 0);
 
   // FIXME: this is possibly redundant because failure to open a library will
   // normally throw an exception, avoiding the construction of an invalid
@@ -247,7 +249,8 @@ public:
 
   ~octave_shl_load_shlib (void);
 
-  void *search (const std::string& name, octave_shlib::name_mangler mangler = 0);
+  void *search (const std::string& name,
+                octave_shlib::name_mangler mangler = 0);
 
   bool is_open (void) const { return (library != 0); }
 
@@ -316,7 +319,8 @@ public:
 
   ~octave_w32_shlib (void);
 
-  void *search (const std::string& name, octave_shlib::name_mangler mangler = 0);
+  void *search (const std::string& name,
+                octave_shlib::name_mangler mangler = 0);
 
   bool is_open (void) const { return (handle != 0); }
 
@@ -410,7 +414,8 @@ public:
 
   void open (const std::string& f);
 
-  void *search (const std::string& name, octave_shlib::name_mangler mangler = 0);
+  void *search (const std::string& name,
+                octave_shlib::name_mangler mangler = 0);
 
   void close (octave_shlib::close_hook cl_hook = 0);
 
@@ -459,7 +464,7 @@ octave_dyld_shlib::octave_dyld_shlib (const std::string& f)
       (*current_liboctave_error_handler)
         ("got NSObjectFileImageReturnCode %d", returnCode);
 
-      // FIXME -- should use NSLinkEditError () to get
+      // FIXME: should use NSLinkEditError () to get
       // more info on what went wrong.
     }
 }

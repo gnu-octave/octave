@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -32,7 +32,7 @@ function yi = ppval (pp, xi)
   if (nargin != 2)
     print_usage ();
   endif
-  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
+  if (! (isstruct (pp) && isfield (pp, "form") && strcmp (pp.form, "pp")))
     error ("ppval: first argument must be a pp-form structure");
   endif
 
@@ -54,7 +54,7 @@ function yi = ppval (pp, xi)
   P = reshape (P, [d, n * k]);
   P = shiftdim (P, nd);
   P = reshape (P, [n, k, d]);
-  Pidx = P(idx(:), :);#2d matrix size x: coefs*prod(d) y: prod(sxi)
+  Pidx = P(idx(:), :);  # 2D matrix size: x = coefs*prod(d), y = prod(sxi)
 
   if (isvector (xi))
     Pidx = reshape (Pidx, [xn, k, d]);
@@ -74,9 +74,10 @@ function yi = ppval (pp, xi)
   dx = shiftdim (dx, ndv - 1);
 
   ## Use Horner scheme.
-  yi = Pidx;
   if (k > 1)
     yi = shiftdim (reshape (Pidx(1,:), dimvec), ndv - 1);
+  else
+    yi = shiftdim (reshape (Pidx, dimvec), ndv - 1);
   endif
 
   for i = 2 : k;
@@ -95,10 +96,9 @@ function yi = ppval (pp, xi)
     yi = shiftdim (yi, nd);
   endif
 
-  ## FIXME: Why is this commented out, rather than just removed?
-  #if (d == 1)
-  #  yi = reshape (yi, sxi);
-  #endif
+  if (d == 1)
+    yi = reshape (yi, sxi);
+  endif
 
 endfunction
 
@@ -110,6 +110,7 @@ endfunction
 %! abserr = 1e-14;
 %! pp2 = mkpp (b, [c;c], 2);
 %! xi = [1.1 1.3 1.9 2.1];
+%!
 %!assert (ppval (pp, 1.1), 1.1, abserr)
 %!assert (ppval (pp, 2.1), 1.1, abserr)
 %!assert (ppval (pp, xi), [1.1 1.3 1.9 1.1], abserr)
@@ -119,6 +120,8 @@ endfunction
 %!assert (ppval (pp2, xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
 %!assert (ppval (pp2, xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
 %!assert (size (ppval (pp2, [xi;xi])), [2 2 4])
+%!assert (ppval (mkpp([0 1],1), magic (3)), ones(3,3))
+%!
 %!test
 %! breaks = [0, 1, 2, 3];
 %! coefs = rand (6, 4);
@@ -127,4 +130,12 @@ endfunction
 %! ret(:,:,1) = ppval (pp, breaks');
 %! ret(:,:,2) = ppval (pp, breaks');
 %! assert (ppval (pp, [breaks',breaks']), ret)
+
+%% Test input validation
+%!error ppval ()
+%!error ppval (1)
+%!error ppval (1,2,3)
+%!error <argument must be a pp-form structure> ppval (1,2)
+%!error <argument must be a pp-form structure> ppval (struct ("a", 1), 2)
+%!error <argument must be a pp-form structure> ppval (struct ("form", "ab"), 2)
 

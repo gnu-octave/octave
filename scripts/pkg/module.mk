@@ -5,6 +5,7 @@ pkg_PRIVATE_FCN_FILES = \
   pkg/private/configure_make.m \
   pkg/private/copy_files.m \
   pkg/private/create_pkgadddel.m \
+  pkg/private/default_prefix.m \
   pkg/private/describe.m \
   pkg/private/dirempty.m \
   pkg/private/extract_pkg.m \

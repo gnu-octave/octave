@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -79,7 +79,7 @@ octave_bool_matrix::try_narrowing_conversion (void)
 
   if (matrix.ndims () == 2)
     {
-      boolMatrix bm = matrix.matrix_value ();
+      boolMatrix bm (matrix);
 
       octave_idx_type nr = bm.rows ();
       octave_idx_type nc = bm.cols ();
@@ -421,7 +421,8 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
   boolNDArray m = bool_array_value ();
 
@@ -510,13 +511,14 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
   octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0)
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp)
+      >= 0)
     {
       retval = true;
 
       boolNDArray btmp (dv);
       for (octave_idx_type i = 0; i < nel; i++)
-          btmp.elem (i) = htmp[i];
+        btmp.elem (i) = htmp[i];
 
       matrix = btmp;
     }
@@ -546,9 +548,16 @@ octave_bool_matrix::as_mxArray (void) const
 }
 
 DEFUN (logical, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} logical (@var{x})\n\
-Convert @var{x} to logical type.\n\
+Convert the numeric object @var{x} to logical type.\n\
+\n\
+Any nonzero values will be converted to true (1) while zero values\n\
+will be converted to false (0).  The non-numeric value NaN cannot be\n\
+converted and will produce an error.\n\
+\n\
+Compatibility Note: Octave accepts complex values as input, whereas\n\
+@sc{matlab} issues an error.\n\
 @seealso{double, single, char}\n\
 @end deftypefn")
 {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_mappers_h)
-#define octave_liboctave_mappers_h 1
+#if !defined (octave_lo_mappers_h)
+#define octave_lo_mappers_h 1
 
 #include <limits>
 
@@ -72,7 +72,6 @@ extern OCTAVE_API bool xisinf (double x);
 #endif
 
 extern OCTAVE_API bool octave_is_NA (double x);
-extern OCTAVE_API bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
 
 // Generic xmin, xmax definitions
 template <class T>
@@ -154,7 +153,6 @@ extern OCTAVE_API bool xisinf (float x);
 #endif
 
 extern OCTAVE_API bool octave_is_NA (float x);
-extern OCTAVE_API bool octave_is_NaN_or_NA (float x) GCC_ATTR_DEPRECATED;
 
 inline float
 xmin (float x, float y)
@@ -178,8 +176,10 @@ extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
 extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);
 
-extern OCTAVE_API FloatComplex xmin (const FloatComplex& x, const FloatComplex& y);
-extern OCTAVE_API FloatComplex xmax (const FloatComplex& x, const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmin (const FloatComplex& x,
+                                     const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmax (const FloatComplex& x,
+                                     const FloatComplex& y);
 
 // These map reals to Complex.
 
@@ -319,33 +319,19 @@ xmod (T x, T y)
     {
       T q = x / y;
 
-      T n = xfloor (q);
-
-      if (X_NINT (y) != y)
+      if (X_NINT (y) != y
+          && (std::abs ((q - X_NINT (q)) / X_NINT (q))
+              < std::numeric_limits<T>::epsilon ()))
+        retval = 0;
+      else
         {
-          if (X_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - X_NINT (q))/ X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-            }
+          T n = xfloor (q);
+
+          // Prevent use of extra precision.
+          volatile T tmp = y * n;
+
+          retval = x - tmp;
         }
-
-      // Prevent use of extra precision.
-      volatile T tmp = y * n;
-
-      retval = x - tmp;
     }
 
   if (x != y && y != 0 && retval != 0)
@@ -366,33 +352,19 @@ xrem (T x, T y)
     {
       T q = x / y;
 
-      T n = xtrunc (q);
-
-      if (X_NINT (y) != y)
+      if (X_NINT (y) != y
+          && (std::abs ((q - X_NINT (q)) / X_NINT (q))
+              < std::numeric_limits<T>::epsilon ()))
+        retval = 0;
+      else
         {
-          if (X_NINT (q) == q)
-            n = q;
-          else
-            {
-              if (x >= -1 && x <= 1)
-                {
-                  if (std::abs (q - X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-              else
-                {
-                  if (std::abs ((q - X_NINT (q))/ X_NINT (q))
-                      < std::numeric_limits<T>::epsilon ())
-                    n = X_NINT (q);
-                }
-            }
+          T n = xtrunc (q);
+
+          // Prevent use of extra precision.
+          volatile T tmp = y * n;
+
+          retval = x - tmp;
         }
-
-      // Prevent use of extra precision.
-      volatile T tmp = y * n;
-
-      retval = x - tmp;
     }
 
   if (x != y && y != 0 && retval != 0)

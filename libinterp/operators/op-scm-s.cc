@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -131,7 +131,7 @@ DEFBINOP (el_ldiv, sparse_complex_matrix, scalar)
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_scalar&);
 
   return octave_value
-    (x_el_div (v2.double_value (), v1.sparse_complex_matrix_value ()));
+         (x_el_div (v2.double_value (), v1.sparse_complex_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_complex_matrix, scalar, mx_el_and)
@@ -142,7 +142,7 @@ DEFCATOP (scm_s, sparse_complex_matrix, scalar)
   CAST_BINOP_ARGS (octave_sparse_complex_matrix&, const octave_scalar&);
   SparseComplexMatrix tmp (1, 1, v2.complex_value ());
   return octave_value
-    (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
+         (v1.sparse_complex_matrix_value (). concat (tmp, ra_idx));
 }
 
 DEFASSIGNOP (assign, sparse_complex_matrix, scalar)

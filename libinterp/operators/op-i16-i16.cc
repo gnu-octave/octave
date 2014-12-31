@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -56,6 +56,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-i16-nda.h"
 #include "mx-nda-i16.h"
+
+#include "mx-i16nda-fs.h"
+#include "mx-fs-i16nda.h"
+
+#include "mx-i16nda-fnda.h"
+#include "mx-fnda-i16nda.h"
+
+#include "mx-i16-fnda.h"
+#include "mx-fnda-i16.h"
 
 #include "gripes.h"
 #include "oct-obj.h"

@@ -3,6 +3,7 @@
 
 /* Look up a filename in a path.
 
+Copyright (C) 2003-2013 John W. Eaton
 Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
 Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
@@ -455,11 +456,11 @@ public:
     : path (pi.path), b (pi.b), e (pi.e), len (pi.len) { }
 
   kpse_path_iterator operator ++ (int)
-    {
-      kpse_path_iterator retval (*this);
-      next ();
-      return retval;
-    }
+  {
+    kpse_path_iterator retval (*this);
+    next ();
+    return retval;
+  }
 
   std::string operator * (void) { return path.substr (b, e-b); }
 
@@ -473,37 +474,37 @@ private:
   size_t len;
 
   void set_end (void)
-    {
-      e = b + 1;
+  {
+    e = b + 1;
 
-      if (e == len)
-        ; /* OK, we have found the last element.  */
-      else if (e > len)
-        b = e = std::string::npos;
-      else
-        {
-          /* Find the next colon not enclosed by braces (or the end of
-             the path).  */
+    if (e == len)
+      ; /* OK, we have found the last element.  */
+    else if (e > len)
+      b = e = std::string::npos;
+    else
+      {
+        /* Find the next colon not enclosed by braces (or the end of
+           the path).  */
 
-          int brace_level = 0;
-          while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
-            e++;
-        }
-    }
+        int brace_level = 0;
+        while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
+          e++;
+      }
+  }
 
   void next (void)
-    {
-      b = e + 1;
+  {
+    b = e + 1;
 
-      /* Skip any consecutive colons.  */
-      while (b < len && kpse_is_env_sep (path[b]))
-        b++;
+    /* Skip any consecutive colons.  */
+    while (b < len && kpse_is_env_sep (path[b]))
+      b++;
 
-      if (b >= len)
-        b = e = std::string::npos;
-      else
-        set_end ();
-    }
+    if (b >= len)
+      b = e = std::string::npos;
+    else
+      set_end ();
+  }
 
   // No assignment.
   kpse_path_iterator& operator = (const kpse_path_iterator&);
@@ -647,14 +648,14 @@ kpse_absolute_p (const std::string& filename, int relative_ok)
 
   int absolute = (len > 0 && IS_DIR_SEP (filename[0]))
 #ifdef DOSISH
-                     /* Novell allows non-alphanumeric drive letters. */
-    || (len > 0 && IS_DEVICE_SEP (filename[1]))
+                 /* Novell allows non-alphanumeric drive letters. */
+                 || (len > 0 && IS_DEVICE_SEP (filename[1]))
 #endif /* DOSISH */
 #ifdef WIN32
-                     /* UNC names */
-    || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
+                 /* UNC names */
+                 || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
 #endif
-    ;
+                 ;
 
   int explicit_relative
     = relative_ok
@@ -710,8 +711,8 @@ log_search (const string_vector& filenames)
           /* Only record absolute filenames, for privacy.  */
           if (log_file && kpse_absolute_p (filename.c_str (), false))
             gnulib::fprintf (log_file, "%lu %s\n",
-                     static_cast<unsigned long> (time (0)),
-                     filename.c_str ());
+                             static_cast<unsigned long> (time (0)),
+                             filename.c_str ());
 
           /* And show them online, if debugging.  We've already started
              the debugging line in 'search', where this is called, so
@@ -825,8 +826,7 @@ path_search (const std::string& path, const std::string& name,
 
       /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
          (search), also tests first_search, and does the resetting.  */
-      found = first_search
-        ? string_vector () : kpse_db_search (name, elt, all);
+      found = first_search ? string_vector () : kpse_db_search (name, elt, all);
 
       /* Search the filesystem if (1) the path spec allows it, and either
          (2a) we are searching for texmf.cnf ; or
@@ -1018,8 +1018,8 @@ path_find_first_of (const std::string& path, const string_vector& names,
               /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
                  (find_first_of), also tests first_search, and does the
                  resetting.  */
-              found = first_search
-                ? string_vector () : kpse_db_search (name, dir.c_str (), all);
+              found = first_search ? string_vector ()
+                                   : kpse_db_search (name, dir.c_str (), all);
 
               /* Search the filesystem if (1) the path spec allows it,
                  and either
@@ -1549,8 +1549,9 @@ brace_expand (const std::string& text)
       /* What if there isn't a matching close brace? */
       if (! c)
         {
-          (*current_liboctave_warning_handler)
-            ("%s: Unmatched {", text.c_str ());
+          (*current_liboctave_warning_with_id_handler)
+            ("Octave:pathsearch-syntax",
+             "%s: Unmatched {", text.c_str ());
 
           result = string_vector (text);
         }
@@ -1612,7 +1613,10 @@ expand_amble (const std::string& text)
 static int
 brace_gobbler (const std::string& text, int& indx, int satisfy)
 {
-  int c = 0, level = 0, quoted = 0, pass_next = 0;
+  int c = 0;
+  int level = 0;
+  int quoted = 0;
+  int pass_next = 0;
 
   size_t text_len = text.length ();
 
@@ -1660,7 +1664,7 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
                 (brace_whitespace (text[i+1]) || text[i+1] == '}'))))
             continue;
           /* If this is being compiled as part of bash, ignore the '{'
-             in a '${}' construct */
+             in a '${ }' construct */
           if ((c != '{') || i == 0 || (text[i-1] != '$'))
             break;
         }
@@ -1828,8 +1832,8 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
       if (i == db_dir_len)
         found = true;
 
-    /* If we've reached the end of PATH_ELT, but not the end of the db
-       directory, it's no good.  */
+      /* If we've reached the end of PATH_ELT, but not the end of the db
+         directory, it's no good.  */
       else if (i == path_elt_len)
         break;
     }
@@ -1920,7 +1924,8 @@ kpse_db_search (const std::string& name_arg,
 
 #ifdef KPSE_DEBUG
           if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-            DEBUGF3 ("db:match (%s,%s) = %d\n", db_file.c_str (), path_elt.c_str (), matched);
+            DEBUGF3 ("db:match (%s,%s) = %d\n",
+                     db_file.c_str (), path_elt.c_str (), matched);
 #endif
 
           /* We got a hit in the database.  Now see if the file actually
@@ -2168,7 +2173,7 @@ dir_links (const std::string& fn)
       struct stat stats;
 
       ret = stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode)
-        ? stats.st_nlink : static_cast<unsigned> (-1);
+            ? stats.st_nlink : static_cast<unsigned> (-1);
 
       link_table[fn] = ret;
 
@@ -2481,7 +2486,8 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
 
   /* If we are the first unmoved element, nothing to relink.  */
   if (unmoved != mover)
-    { /* Remember 'mover's current successor, so we can relink 'mover's
+    {
+      /* Remember 'mover's current successor, so we can relink 'mover's
          predecessor to it.  */
       str_llist_elt_type *before_mover;
       str_llist_elt_type *after_mover = STR_LLIST_NEXT (*mover);
@@ -2528,8 +2534,7 @@ expanding (const std::string& var, bool xp)
 static bool
 expanding_p (const std::string& var)
 {
-  return (expansions.find (var) != expansions.end ())
-    ? expansions[var] : false;
+  return (expansions.find (var) != expansions.end ()) ? expansions[var] : false;
 }
 
 /* Append the result of value of 'var' to EXPANSION, where 'var' begins
@@ -2541,8 +2546,9 @@ expand (std::string &expansion, const std::string& var)
 {
   if (expanding_p (var))
     {
-      (*current_liboctave_warning_handler)
-        ("kpathsea: variable '%s' references itself (eventually)",
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:pathsearch-syntax",
+         "kpathsea: variable '%s' references itself (eventually)",
          var.c_str ());
     }
   else
@@ -2619,8 +2625,9 @@ kpse_var_expand (const std::string& src)
 
               if (var_end == src_len)
                 {
-                  (*current_liboctave_warning_handler)
-                    ("%s: No matching } for ${", src.c_str ());
+                  (*current_liboctave_warning_with_id_handler)
+                    ("Octave:pathsearch-syntax",
+                     "%s: No matching } for ${", src.c_str ());
                   i = var_end - 1; /* will incr to eos at top of loop */
                 }
               else
@@ -2632,8 +2639,9 @@ kpse_var_expand (const std::string& src)
           else
             {
               /* $<something-else>: error.  */
-              (*current_liboctave_warning_handler)
-                ("%s: Unrecognized variable construct '$%c'",
+              (*current_liboctave_warning_with_id_handler)
+                ("Octave:pathsearch-syntax",
+                 "%s: Unrecognized variable construct '$%c'",
                  src.c_str (), src[i]);
 
               /* Just ignore those chars and keep going.  */

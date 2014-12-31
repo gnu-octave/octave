@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 John W. Eaton
+Copyright (C) 2006-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -127,7 +127,8 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
       r[i] = d*v;
     }
   if (a < 1)
-    { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
+    {
+      /* Use gamma(a) = gamma(1+a)*U^(1/a) */
       /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
       for (i = 0; i < n; i++)
         r[i] *= exp (-REXP/a);
@@ -183,7 +184,8 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
       r[i] = d*v;
     }
   if (a < 1)
-    { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
+    {
+      /* Use gamma(a) = gamma(1+a)*U^(1/a) */
       /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
       for (i = 0; i < n; i++)
         r[i] *= exp (-REXP/a);

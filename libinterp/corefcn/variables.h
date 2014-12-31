@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -74,7 +74,8 @@ symbol_exist (const std::string& name, const std::string& type = "any");
 extern OCTINTERP_API std::string
 unique_symbol_name (const std::string& basename);
 
-extern OCTINTERP_API octave_value lookup_function_handle (const std::string& nm);
+extern OCTINTERP_API octave_value
+lookup_function_handle (const std::string& nm);
 
 extern OCTINTERP_API octave_value
 get_global_value (const std::string& nm, bool silent = false);
@@ -130,7 +131,8 @@ set_internal_variable (int& var, const octave_value_list& args,
   set_internal_variable (V ## NM, args, nargout, #NM, CHOICES)
 
 extern OCTINTERP_API std::string builtin_string_variable (const std::string&);
-extern OCTINTERP_API int builtin_real_scalar_variable (const std::string&, double&);
+extern OCTINTERP_API int builtin_real_scalar_variable (const std::string&,
+                                                       double&);
 extern OCTINTERP_API octave_value builtin_any_variable (const std::string&);
 
 extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);

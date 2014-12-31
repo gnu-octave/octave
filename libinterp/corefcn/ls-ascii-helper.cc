@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Benjamin Lindner
+Copyright (C) 2009-2013 Benjamin Lindner
 
 This file is part of Octave.
 
@@ -109,7 +109,7 @@ skip_preceeding_newline (std::istream& is)
             {
               // Yes, LF following CR, eat it.
               is.get (d);
-          }
+            }
 
           // Peek into next character.
           c = is.peek ();

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -311,11 +311,11 @@ easily be misinterpreted.
 @subsection Empty Matrices
 
 A matrix may have one or both dimensions zero, and operations on empty
-matrices are handled as described by Carl @nospell{de} Boor in @cite{An Empty
-Exercise}, SIGNUM, Volume 25, pages 2-6, 1990 and C. N. Nett and W. M.
-Haddad, in @cite{A System-Theoretic Appropriate Realization of the Empty
-Matrix Concept}, IEEE Transactions on Automatic Control, Volume 38,
-Number 5, May 1993.
+matrices are handled as described by @nospell{Carl de Boor} in
+@cite{An Empty Exercise}, SIGNUM, Volume 25, pages 2-6, 1990 and
+@nospell{C. N. Nett and W. M. Haddad}, in
+@cite{A System-Theoretic Appropriate Realization of the Empty Matrix Concept},
+IEEE Transactions on Automatic Control, Volume 38, Number 5, May 1993.
 @tex
 Briefly, given a scalar $s$, an $m\times n$ matrix $M_{m\times n}$,
 and an $m\times n$ empty matrix $[\,]_{m\times n}$ (with either one or
@@ -396,7 +396,7 @@ defines the set of values @samp{[ 1, 2, 3, 4, 5 ]}, and the range
 defines the set of values @samp{[ 1, 4 ]}.
 
 Although a range constant specifies a row vector, Octave does @emph{not}
-convert range constants to vectors unless it is necessary to do so.
+normally convert range constants to vectors unless it is necessary to do so.
 This allows you to write a constant like @samp{1 : 10000} without using
 80,000 bytes of storage on a typical 32-bit workstation.
 
@@ -419,6 +419,11 @@ y = [ 0 : 0.1 : 1];
 @noindent
 defines @var{y} to be of type @code{matrix} and occupies 88 bytes of
 memory.
+
+This space saving optimization may be disabled using the function
+@dfn{disable_range}.
+
+@DOCSTRING(disable_range)
 
 Note that the upper (or lower, if the increment is negative) bound on
 the range is not always included in the set of values, and that ranges
@@ -811,6 +816,8 @@ variable.
 
 @DOCSTRING(isnumeric)
 
+@DOCSTRING(islogical)
+
 @DOCSTRING(isfloat)
 
 @DOCSTRING(isreal)
@@ -835,7 +842,13 @@ variable.
 
 @DOCSTRING(isdefinite)
 
-@DOCSTRING(islogical)
+@DOCSTRING(isbanded)
+
+@DOCSTRING(isdiag)
+
+@DOCSTRING(istril)
+
+@DOCSTRING(istriu)
 
 @DOCSTRING(isprime)
 

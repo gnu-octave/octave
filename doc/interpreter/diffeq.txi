@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -54,7 +54,7 @@ dt
 @end ifnottex
 
 @noindent
-using Hindmarsh's ODE solver @sc{lsode}.
+using @nospell{Hindmarsh's} ODE solver @sc{lsode}.
 
 
 
@@ -106,9 +106,10 @@ t = [0, logspace(-1, log10(303), 150), \
 @end group
 @end example
 
-See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
-Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
-more information about the inner workings of @code{lsode}.
+See @nospell{Alan C. Hindmarsh},
+@cite{ODEPACK, A Systematized Collection of ODE Solvers},
+in Scientific Computing, @nospell{R. S. Stepleman}, editor, (1983)
+for more information about the inner workings of @code{lsode}.
 
 An m-file for the differential equation used above is included with the
 Octave distribution in the examples directory under the name
@@ -139,8 +140,8 @@ $\dot{x} = {dx \over dt}$
 @ifnottex
 @math{x-dot}
 @end ifnottex
-is the derivative of @math{x}.  The equation is solved using Petzold's
-DAE solver @sc{daspk}.
+is the derivative of @math{x}.  The equation is solved using
+@nospell{Petzold's} DAE solver @sc{daspk}.
 
 @DOCSTRING(daspk)
 
@@ -158,6 +159,6 @@ and @sc{dasrt}, which can be used to solve DAEs with constraints
 
 @DOCSTRING(dasrt_options)
 
-See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
+See @nospell{K. E. Brenan}, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989) for
 more information about the implementation of @sc{dassl}.

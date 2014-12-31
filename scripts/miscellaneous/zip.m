@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Sylvain Pelissier
+## Copyright (C) 2006-2013 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -17,35 +17,46 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files})
-## @deftypefnx {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
-## Compress the list of files and/or directories specified in @var{files}
-## into the archive @var{zipfile} in the same directory.  If @var{rootdir}
-## is defined the @var{files} are located relative to @var{rootdir} rather
-## than the current directory.
-## @seealso{unzip, bzip2, gzip, tar}
+## @deftypefn  {Function File} {@var{filelist} =} zip (@var{zipfile}, @var{files})
+## @deftypefnx {Function File} {@var{filelist} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
+## Compress the list of files and directories specified in @var{files} into the
+## ZIP archive @var{zipfile}.
+##
+## @var{files} is a character array or cell array of strings.  Shell
+## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
+## expanded.  Directories are recursively traversed and all files are
+## compressed and added to the archive.
+##
+## If @var{rootdir} is defined then any files without absolute pathnames are
+## located relative to @var{rootdir} rather than the current directory.
+##
+## The optional output @var{filelist} is a list of the files that were included
+## in the archive.
+## @seealso{unzip, unpack, bzip2, gzip, tar}
 ## @end deftypefn
 
 ## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
 
-function entries = zip (zipfile, files, rootdir = ".")
+function filelist = zip (zipfile, files, rootdir = ".")
 
-  if (nargin != 2 && nargin != 3)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
+  if (! ischar (zipfile))
+    error ("zip: ZIPFILE must be a string");
+  elseif (ischar (files))
+    files = cellstr (files);
+  elseif (! iscellstr (files))
+    error ("zip: FILES must be a character array or cellstr");
+  endif
+  
   rootdir = tilde_expand (rootdir);
 
-  if (ischar (files))
-    files = cellstr (files);
-  endif
-
-  if (! ischar (zipfile) && ! iscellstr (files))
-    error ("zip: expecting all arguments to be character strings");
-  endif
-
-  cmd = sprintf ("cd %s; zip -r %s/%s %s", rootdir, pwd (), zipfile,
-                 sprintf (" %s", files{:}));
+  zipfile = make_absolute_filename (zipfile);
+       
+  cmd = sprintf ("cd %s; zip -r %s %s",
+                     rootdir,   zipfile, sprintf (" %s", files{:}));
 
   [status, output] = system (cmd);
 
@@ -54,16 +65,60 @@ function entries = zip (zipfile, files, rootdir = ".")
   endif
 
   if (nargout > 0)
-    cmd = sprintf ("unzip -Z -1 %s", zipfile);
-    [status, entries] = system (cmd);
+    cmd = ["unzip -Z -1 " zipfile];
+    [status, filelist] = system (cmd);
     if (status)
       error ("zip: zipinfo failed with exit status = %d", status);
     endif
-    if (entries(end) == "\n")
-      entries(end) = [];
+    if (filelist(end) == "\n")
+      filelist(end) = [];
     endif
-    entries = ostrsplit (entries, "\n");
+    filelist = ostrsplit (filelist, "\n");
   endif
 
 endfunction
+
+
+%!xtest
+%! ## test zip together with unzip
+%! unwind_protect
+%!   filename = tempname;
+%!   tmp_var  = pi;
+%!   save (filename, "tmp_var");
+%!   dirname = tempname;
+%!   mkdir (dirname);
+%!   zipfile = tempname;
+%!   [~, basename, ext] = fileparts (filename);
+%!   filelist = zip (zipfile, [basename ext], tempdir);
+%!   filelist = filelist{1};
+%!   if (! strcmp (filelist, [basename ext]))
+%!     error ("zip archive does not contain expected name!");
+%!   endif
+%!   if (! exist ([zipfile ".zip"], "file"))
+%!     error ("zip file cannot be found!");
+%!   endif
+%!   unzip ([zipfile ".zip"], dirname);
+%!   fid = fopen (filename, "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen ([dirname filesep basename ext], "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   if (orig_data != new_data)
+%!     error ("unzipped file not equal to original file!");
+%!   endif
+%! unwind_protect_cleanup
+%!   delete (filename);
+%!   delete ([dirname, filesep, basename, extension]);
+%!   rmdir (dirname);
+%! end_unwind_protect
+
+## Test input validation
+%!error zip ()
+%!error zip (1)
+%!error zip (1,2,3,4)
+%!error <ZIPFILE must be a string> zip (1, "foobar")
+%!error <FILES must be a character array or cellstr> zip ("foobar", 1)
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -338,7 +338,8 @@ ComplexCHOL::downdate (const ComplexColumnVector& u)
       else
         {
           info = init (chol_mat.hermitian () * chol_mat
-                       - ComplexMatrix (u) * ComplexMatrix (u).hermitian (), false);
+                       - ComplexMatrix (u) * ComplexMatrix (u).hermitian (),
+                       false);
           if (info) info = 1;
         }
     }

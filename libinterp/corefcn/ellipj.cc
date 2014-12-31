@@ -35,7 +35,7 @@ gripe_ellipj_arg (const char *arg)
 }
 
 DEFUN (ellipj, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m})\n\
 @deftypefnx {Built-in Function} {[@var{sn}, @var{cn}, @var{dn}, @var{err}] =} ellipj (@var{u}, @var{m}, @var{tol})\n\
 Compute the Jacobi elliptic functions @var{sn}, @var{cn}, and @var{dn}\n\
@@ -67,7 +67,7 @@ Error---no computation, algorithm termination condition not met,\n\
 return @code{NaN}.\n\
 @end enumerate\n\
 \n\
-Reference: Milton Abramowitz and Irene A Stegun,\n\
+Reference: Milton @nospell{Abramowitz} and Irene A @nospell{Stegun},\n\
 @cite{Handbook of Mathematical Functions}, Chapter 16 (Sections 16.4, 16.13,\n\
 and 16.15), Dover, 1965.\n\
 \n\
@@ -100,7 +100,8 @@ and 16.15), Dover, 1965.\n\
       if (u_arg.is_scalar_type ())
         {
           if (u_arg.is_real_type ())
-            {  // u real, m scalar
+            {
+              // u real, m scalar
               double u = args(0).double_value ();
 
               if (error_state)
@@ -121,7 +122,8 @@ and 16.15), Dover, 1965.\n\
               retval(0) = sn;
             }
           else
-            {  // u complex, m scalar
+            {
+              // u complex, m scalar
               Complex u = u_arg.complex_value ();
 
               if (error_state)
@@ -143,9 +145,10 @@ and 16.15), Dover, 1965.\n\
             }
         }
       else
-        {  // u is matrix, m is scalar
+        {
+          // u is matrix, m is scalar
           ComplexNDArray u = u_arg.complex_array_value ();
-          
+
           if (error_state)
             {
               gripe_ellipj_arg ("first");
@@ -187,9 +190,11 @@ and 16.15), Dover, 1965.\n\
       dim_vector sz_m = m.dims ();
 
       if (u_arg.is_scalar_type ())
-        {  // u is scalar, m is array
+        {
+          // u is scalar, m is array
           if (u_arg.is_real_type ())
-            {  // u is real scalar, m is array
+            {
+              // u is real scalar, m is array
               double u = u_arg.double_value ();
 
               if (error_state)
@@ -218,7 +223,8 @@ and 16.15), Dover, 1965.\n\
               retval(0) = sn;
             }
           else
-            {  // u is complex scalar, m is array
+            {
+              // u is complex scalar, m is array
               Complex u = u_arg.complex_value ();
 
               if (error_state)
@@ -248,9 +254,11 @@ and 16.15), Dover, 1965.\n\
             }
         }
       else
-        {  // u is array, m is array
+        {
+          // u is array, m is array
           if (u_arg.is_real_type ())
-            {  // u is real array, m is array
+            {
+              // u is real array, m is array
               NDArray u = u_arg.array_value ();
 
               if (error_state)
@@ -263,7 +271,8 @@ and 16.15), Dover, 1965.\n\
 
               if (sz_u.length () == 2 && sz_m.length () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
-                {  // u is real column vector, m is row vector
+                {
+                  // u is real column vector, m is row vector
                   octave_idx_type ur = sz_u(0);
                   octave_idx_type mc = sz_m(1);
                   dim_vector sz_out (ur, mc);
@@ -276,7 +285,8 @@ and 16.15), Dover, 1965.\n\
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
+                              err(i,j));
 
                   if (nargout > 3)
                     retval(3) = err;
@@ -310,7 +320,8 @@ and 16.15), Dover, 1965.\n\
                 error ("ellipj: Invalid size combination for U and M");
             }
           else
-            {  // u is complex array, m is array
+            {
+              // u is complex array, m is array
               ComplexNDArray u = u_arg.complex_array_value ();
 
               if (error_state)
@@ -323,7 +334,8 @@ and 16.15), Dover, 1965.\n\
 
               if (sz_u.length () == 2 && sz_m.length () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
-                {  // u is complex column vector, m is row vector
+                {
+                  // u is complex column vector, m is row vector
                   octave_idx_type ur = sz_u(0);
                   octave_idx_type mc = sz_m(1);
                   dim_vector sz_out (ur, mc);
@@ -336,7 +348,8 @@ and 16.15), Dover, 1965.\n\
 
                   for (octave_idx_type j = 0; j < mc; j++)
                     for (octave_idx_type i = 0; i < ur; i++)
-                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j), err(i,j));
+                      ellipj (pu[i], pm[j], sn(i,j), cn(i,j), dn(i,j),
+                              err(i,j));
 
                   if (nargout > 3)
                     retval(3) = err;
@@ -905,6 +918,15 @@ and 16.15), Dover, 1965.\n\
 %! assert (sn, S, 8*eps);
 %! assert (cn, C, 8*eps);
 %! assert (dn, D, 8*eps);
+
+%!test
+%! ## Test continuity of dn when cn is near zero (bug #43344)
+%! m = 0.5;
+%! u = ellipke (0.5);
+%! x = [-1e-3, -1e-12, 0, 1e-12, 1e-3];
+%! [~, ~, dn] = ellipj (u + x, m);
+%! D = 1/sqrt (2) * ones (size (x));
+%! assert (dn, D, 1e-6);
 
 %!error ellipj ()
 %!error ellipj (1)

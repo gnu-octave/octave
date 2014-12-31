@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -37,7 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 DEFINE_OCTAVE_ALLOCATOR2 (tree_constant, 1024);
 
 void
-tree_constant::print (std::ostream& os, bool pr_as_read_syntax, bool pr_orig_text)
+tree_constant::print (std::ostream& os, bool pr_as_read_syntax,
+                      bool pr_orig_text)
 {
   if (pr_orig_text && ! orig_text.empty ())
     os << orig_text;

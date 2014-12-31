@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexHESS_h)
-#define octave_FloatComplexHESS_h 1
+#if !defined (octave_fCmplxHESS_h)
+#define octave_fCmplxHESS_h 1
 
 #include <iosfwd>
 
@@ -37,39 +37,40 @@ public:
 
   FloatComplexHESS (const FloatComplexMatrix& a)
     : hess_mat (), unitary_hess_mat ()
-    {
-      init (a);
-    }
+  {
+    init (a);
+  }
 
   FloatComplexHESS (const FloatComplexMatrix& a, octave_idx_type& info)
     : hess_mat (), unitary_hess_mat ()
-    {
-      info = init (a);
-    }
+  {
+    info = init (a);
+  }
 
   FloatComplexHESS (const FloatComplexHESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
 
   FloatComplexHESS& operator = (const FloatComplexHESS& a)
-    {
-      if (this != &a)
-        {
-          hess_mat = a.hess_mat;
-          unitary_hess_mat = a.unitary_hess_mat;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        hess_mat = a.hess_mat;
+        unitary_hess_mat = a.unitary_hess_mat;
+      }
+    return *this;
+  }
 
   ~FloatComplexHESS (void) { }
 
   FloatComplexMatrix hess_matrix (void) const { return hess_mat; }
 
   FloatComplexMatrix unitary_hess_matrix (void) const
-    {
-      return unitary_hess_mat;
-    }
+  {
+    return unitary_hess_mat;
+  }
 
-  friend std::ostream& operator << (std::ostream& os, const FloatComplexHESS& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FloatComplexHESS& a);
 
 private:
 

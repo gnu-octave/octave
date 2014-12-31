@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -202,8 +202,6 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(glob)
 
-@DOCSTRING(fnmatch)
-
 @DOCSTRING(file_in_path)
 
 @DOCSTRING(filesep)
@@ -223,12 +221,6 @@ status information on files; and for manipulating file and path names.
 @DOCSTRING(is_absolute_filename)
 
 @DOCSTRING(is_rooted_relative_filename)
-
-@DOCSTRING(P_tmpdir)
-
-@DOCSTRING(tempdir)
-
-@DOCSTRING(tempname)
 
 @DOCSTRING(recycle)
 
@@ -332,6 +324,8 @@ higher-level functions.
 
 @DOCSTRING(dos)
 
+@DOCSTRING(open)
+
 @DOCSTRING(perl)
 
 @DOCSTRING(python)
@@ -408,7 +402,9 @@ they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(getenv)
 
-@DOCSTRING(putenv)
+@DOCSTRING(setenv)
+
+@DOCSTRING(unsetenv)
 
 @node Current Working Directory
 @section Current Working Directory
@@ -516,6 +512,8 @@ referred to as a @var{grp_struct}.
 @DOCSTRING(isieee)
 
 @DOCSTRING(isdeployed)
+
+@DOCSTRING(isstudent)
 
 @DOCSTRING(OCTAVE_HOME)
 

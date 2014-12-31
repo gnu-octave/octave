@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -35,7 +35,8 @@ DEFINE_OCTAVE_ALLOCATOR2(octave_value_list, 1024);
 
 octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
 {
-  octave_idx_type n = 0, nel = 0;
+  octave_idx_type n = 0;
+  octave_idx_type nel = 0;
 
   // Determine number.
   for (std::list<octave_value_list>::const_iterator p = lst.begin ();

@@ -1,7 +1,7 @@
 // utils.cc
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -90,8 +90,7 @@ strsave (const char *s)
 // This function was adapted from xputenv from Karl Berry's kpathsearch
 // library.
 
-// FIXME -- make this do the right thing if we don't have a
-// SMART_PUTENV.
+// FIXME: make this do the right thing if we don't have a SMART_PUTENV.
 
 void
 octave_putenv (const std::string& name, const std::string& value)
@@ -203,8 +202,7 @@ octave_fgetl (FILE *f, bool& eof)
   return retval;
 }
 
-// Note that the caller is responsible for repositioning the stream on
-// failure.
+// Note that the caller is responsible for repositioning the stream on failure.
 
 template <typename T>
 T
@@ -239,7 +237,10 @@ read_inf_nan_na (std::istream& is, char c0)
             if (c2 == 'n' || c2 == 'N')
               val = std::numeric_limits<T>::quiet_NaN ();
             else
-              val = octave_numeric_limits<T>::NA ();
+              {
+                val = octave_numeric_limits<T>::NA ();
+                is.putback (c2);
+              }
           }
         else
           is.setstate (std::ios::failbit);
@@ -261,7 +262,7 @@ octave_read_fp_value (std::istream& is)
 {
   T val = 0.0;
 
-  // FIXME -- resetting stream position is likely to fail unless we are
+  // FIXME: resetting stream position is likely to fail unless we are
   // reading from a file.
   std::ios::streampos pos = is.tellg ();
 
@@ -321,7 +322,8 @@ template <typename T>
 std::complex<T>
 octave_read_cx_fp_value (std::istream& is)
 {
-  T re = 0.0, im = 0.0;
+  T re = 0.0;
+  T im = 0.0;
 
   std::complex<T> cx = 0.0;
 

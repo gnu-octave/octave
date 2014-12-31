@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2012 John W. Eaton
+Copyright (C) 1999-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_cell_h)
-#define octave_cell_h 1
+#if !defined (octave_ov_cell_h)
+#define octave_ov_cell_h 1
 
 #include <cstdlib>
 
@@ -57,7 +57,8 @@ public:
     : octave_base_matrix<Cell> (c), cellstr_cache () { }
 
   octave_cell (const Array<std::string>& str)
-    : octave_base_matrix<Cell> (Cell (str)), cellstr_cache (new Array<std::string> (str)) { }
+    : octave_base_matrix<Cell> (Cell (str)),
+      cellstr_cache (new Array<std::string> (str)) { }
 
   octave_cell (const octave_cell& c)
     : octave_base_matrix<Cell> (c), cellstr_cache () { }
@@ -73,10 +74,10 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -138,7 +139,7 @@ public:
   octave_value_list list_value (void) const;
 
   octave_value convert_to_str_internal (bool pad, bool, char type) const
-    { return octave_value (all_strings (pad), type); }
+  { return octave_value (all_strings (pad), type); }
 
   string_vector all_strings (bool pad = false) const;
 
@@ -146,10 +147,11 @@ public:
 
   bool print_as_scalar (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  void short_disp (std::ostream& os) const;
 
   bool save_ascii (std::ostream& os);
 
@@ -177,7 +179,7 @@ public:
 private:
 
   void clear_cellstr_cache (void) const
-    { cellstr_cache.reset (); }
+  { cellstr_cache.reset (); }
 
   mutable std::auto_ptr<Array<std::string> > cellstr_cache;
 

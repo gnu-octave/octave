@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 Ariel Tankus
+## Copyright (C) 1998-2013 Ariel Tankus
 ##
 ## This file is part of Octave.
 ##
@@ -54,6 +54,26 @@
 ## @example
 ## a = b = c = x;
 ## @end example
+##
+## Programming Note: @code{deal} is often used with comma separated lists
+## derived from cell arrays or structures.  This is unnecessary as the
+## interpreter can perform the same action without the overhead of a function
+## call.  For example:
+##
+## @example
+## @group
+## c = @{[1 2], "Three", 4@};
+## [x, y, z ] = c@{:@}
+## @result{}
+##    x =
+##
+##       1   2
+##
+##    y = Three
+##    z =  4
+## @end group
+## @end example
+## @seealso{cell2struct, struct2cell, repmat}
 ## @end deftypefn
 
 ## Author: Ariel Tankus
@@ -82,4 +102,7 @@ endfunction
 %! [a,b] = deal (1);
 %! assert (a, 1);
 %! assert (b, 1);
+
+%!error deal ()
+%!error <nargin . 1 and nargin != nargout> y = deal (1, 2)
 

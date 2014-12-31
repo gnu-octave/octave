@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_strstream_h)
-#define octave_octave_strstream_h 1
+#if !defined (octave_oct_strstrm_h)
+#define octave_oct_strstrm_h 1
 
 #include <string>
 #include <sstream>
@@ -96,7 +96,7 @@ public:
           oct_mach_info::float_format ff
             = oct_mach_info::native_float_format ());
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const { return is.eof (); }
 
@@ -142,7 +142,7 @@ public:
           oct_mach_info::float_format ff
             = oct_mach_info::native_float_format ());
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const { return os.eof (); }
 

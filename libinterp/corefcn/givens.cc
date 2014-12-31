@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -31,11 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 DEFUN (givens, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{g} =} givens (@var{x}, @var{y})\n\
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{G} =} givens (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
+Compute the Givens rotation matrix @var{G}.\n\
+\n\
 @tex\n\
-Return a $2\\times 2$ orthogonal matrix\n\
+The Givens matrix is a $2\\times 2$ orthogonal matrix\n\
 $$\n\
  G = \\left[\\matrix{c & s\\cr -s'& c\\cr}\\right]\n\
 $$\n\
@@ -46,10 +48,19 @@ $$\n\
 with $x$ and $y$ scalars.\n\
 @end tex\n\
 @ifnottex\n\
-Return a 2 by 2 orthogonal matrix\n\
-@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that\n\
-@code{@var{g} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.\n\
+The Givens matrix is a 2 by 2 orthogonal matrix\n\
+\n\
+@code{@var{g} = [@var{c} @var{s}; -@var{s}' @var{c}]}\n\
+\n\
+such that\n\
+\n\
+@code{@var{g} [@var{x}; @var{y}] = [*; 0]}\n\
+\n\
+with @var{x} and @var{y} scalars.\n\
 @end ifnottex\n\
+\n\
+If two output arguments are requested, return the factors @var{c} and\n\
+@var{s} rather than the Givens rotation matrix.\n\
 \n\
 For example:\n\
 \n\
@@ -60,6 +71,7 @@ givens (1, 1)\n\
        -0.70711   0.70711\n\
 @end group\n\
 @end example\n\
+@seealso{planerot}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -97,10 +109,6 @@ givens (1, 1)\n\
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
                           break;
-
-                        default:
-                          error ("givens: invalid number of output arguments");
-                          break;
                         }
                     }
                 }
@@ -126,10 +134,6 @@ givens (1, 1)\n\
                         case 2:
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
-                          break;
-
-                        default:
-                          error ("givens: invalid number of output arguments");
                           break;
                         }
                     }
@@ -160,10 +164,6 @@ givens (1, 1)\n\
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
                           break;
-
-                        default:
-                          error ("givens: invalid number of output arguments");
-                          break;
                         }
                     }
                 }
@@ -190,10 +190,6 @@ givens (1, 1)\n\
                           retval(1) = result (0, 1);
                           retval(0) = result (0, 0);
                           break;
-
-                        default:
-                          error ("givens: invalid number of output arguments");
-                          break;
                         }
                     }
                 }
@@ -211,4 +207,5 @@ givens (1, 1)\n\
 
 %!error givens ()
 %!error givens (1)
+%!error [a,b,c] = givens (1, 1)
 */

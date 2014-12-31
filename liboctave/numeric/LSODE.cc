@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -89,7 +89,8 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
 
 static octave_idx_type
 lsode_j (const octave_idx_type& neq, const double& time, double *,
-         const octave_idx_type&, const octave_idx_type&, double *pd, const octave_idx_type& nrowpd)
+         const octave_idx_type&, const octave_idx_type&, double *pd,
+         const octave_idx_type& nrowpd)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -336,7 +337,7 @@ LSODE::error_message (void) const
 
     case -1:
       retval = std::string ("excess work on this call (t = ")
-        + t_curr + "; perhaps wrong integration method)";
+               + t_curr + "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -349,24 +350,24 @@ LSODE::error_message (void) const
 
     case -4:
       retval = std::string ("repeated error test failures (t = ")
-        + t_curr + "; check all inputs)";
+               + t_curr + "; check all inputs)";
       break;
 
     case -5:
       retval = std::string ("repeated convergence failures (t = ")
-        + t_curr
-        + "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
+               + t_curr
+               + "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
       retval = std::string ("error weight became zero during problem. (t = ")
-        + t_curr
-        + "; solution component i vanished, and atol or atol(i) == 0)";
+               + t_curr
+               + "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:
       retval = "return requested in user-supplied function (t = "
-        + t_curr + ")";
+               + t_curr + ")";
       break;
 
     default:

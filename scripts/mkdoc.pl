@@ -1,6 +1,7 @@
-#! /usr/bin/perl -w
-#
-# Copyright (C) 2012 Rik Wehbring
+#! /usr/bin/perl
+use utf8;
+
+# Copyright (C) 2012-2013 Rik Wehbring
 #
 # This file is part of Octave.
 #
@@ -18,13 +19,18 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+use strict;
+use warnings;
+use File::Spec;
+use Cwd;
+
 ## Expecting arguments in this order:
 ##
 ##  SRCDIR SRCDIR-FILES ... -- LOCAL-FILES ...
 
 unless (@ARGV >= 2) { die "Usage: $0 srcdir m_filename1 ..." ; }
 
-$srcdir = shift (@ARGV) . '/';
+my $srcdir = shift (@ARGV);
 
 print <<__END_OF_MSG__;
 ### DO NOT EDIT!
@@ -34,35 +40,38 @@ print <<__END_OF_MSG__;
 
 __END_OF_MSG__
 
-MFILE: foreach $m_fname (@ARGV)
+MFILE: foreach my $m_fname (@ARGV)
 {
   if ($m_fname eq "--")
-  {
-    $srcdir = "./";
-    next MFILE;
-  }
+    {
+      $srcdir = getcwd ();
+      next MFILE;
+    }
 
-  $full_fname = $srcdir . $m_fname;
-  next MFILE unless ( $full_fname =~ m{(.*)/(@|)([^/]*)/(.*)\.m} );
-  if ($2)
-    { $fcn = "$2$3/$4"; }
-  else
-    { $fcn = $4; }
+  my $full_fname = File::Spec->catfile ($srcdir, $m_fname);
+  my @paths = File::Spec->splitdir ($full_fname);
+  if (@paths < 3
+      || $paths[-2] eq "private"   # skip private directories
+      || $paths[-1] !~ s/\.m$//i)  # skip non m-files, and remove extension
+    { next MFILE; }
 
-  @help_txt = gethelp ($fcn, $full_fname);
-  next MFILE if ($help_txt[0] eq "");
+  ## @classes will have @class/method as their function name
+  my $fcn = $paths[-2] =~ m/^@/ ? File::Spec->catfile (@paths[-2, -1])
+                                : $paths[-1];
+
+  my @help_txt = gethelp ($fcn, $full_fname);
+  next MFILE unless @help_txt;
 
   print "\x{1d}$fcn\n";
-  print "\@c $fcn scripts/$m_fname\n";
+  print "\@c $fcn ", File::Spec->catfile ("scripts", $m_fname), "\n";
 
   foreach $_ (@help_txt)
-  {
-    s/^\s+\@/\@/ unless $in_example;
-    s/^\s+\@group/\@group/;
-    s/^\s+\@end\s+group/\@end group/;
-    $in_example = (/\s*\@example\b/ .. /\s*\@end\s+example\b/);
-    print $_;
-  }
+    {
+      my $in_example = (m/\s*\@example\b/ .. m/\s*\@end\s+example\b/);
+      s/^\s+\@/\@/ unless $in_example;
+      s/^\s+(\@(?:end)\s+(group|example))/$1/;
+      print $_;
+    }
 }
 
 ################################################################################
@@ -70,34 +79,32 @@ MFILE: foreach $m_fname (@ARGV)
 ################################################################################
 sub gethelp
 {
-  ($fcn, $fname) = @_[0..1]; 
-  open (FH, $fname) or return "";
+  my $fcn   = shift;
+  my $fname = shift;
+  open (my $fh, "<", $fname) or return;
 
-  do
-  {
-    @help_txt = ();
-
-    ## Advance to non-blank line
-    while (defined ($_ = <FH>) and /^\s*$/) {;}
-
-    if (! /^\s*(?:#|%)/ or eof (FH))
+  my @help_txt;
+  while (my $line = <$fh>)
     {
-      ## No comment block found.  Return empty string
-      close (FH);
-      return "";
+      next if $line =~ m/^\s*$/;      # skip empty lines
+      last if $line !~ m/^\s*(#|%)/;  # out of here once code starts
+
+      my $reading_block = sub {defined ($line = <$fh>) && $line !~ m/^\s*$/};
+
+      ## Skip this block
+      if ($line =~ /(Copyright|Author)/)
+        { while (&$reading_block ()) {} }
+      else
+        {
+          do
+            {
+              $line =~ s/^\s*(%|#)+ ?//;
+              push (@help_txt, $line);
+            } while (&$reading_block ());
+          last;
+        }
     }
 
-    ## Extract help text stopping when comment block ends
-    do
-    {
-      ## Remove comment characters at start of line
-      s/^\s*(?:#|%){1,2} ?//;
-      push (@help_txt, $_);
-    } until (! defined ($_ = <FH>) or ! /^\s*(?:#|%)/);
-
-  } until ($help_txt[0] !~ /^(?:Copyright|Author)/); 
-
-  close (FH);
-
+  close ($fh);
   return @help_txt;
 }

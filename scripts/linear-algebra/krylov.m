@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 Auburn University.  All rights reserved.
+## Copyright (C) 1993-2013 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -49,9 +49,9 @@
 ## If the optional parameter @var{pflg} is nonzero, row pivoting is used
 ## to improve numerical behavior.  The default value is 0.
 ##
-## Reference: A. Hodel, P. Misra, @cite{Partial Pivoting in the Computation of
-## Krylov Subspaces of Large Sparse Systems}, Proceedings of the 42nd IEEE
-## Conference on Decision and Control, December 2003.
+## Reference: @nospell{A. Hodel, P. Misra}, @cite{Partial Pivoting in the
+## Computation of Krylov Subspaces of Large Sparse Systems}, Proceedings of
+## the 42nd IEEE Conference on Decision and Control, December 2003.
 ## @end deftypefn
 
 ## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
@@ -133,8 +133,8 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         nv = columns (V);
         if (jj != nv)
           [V(:,jj), V(:,nv)] = swap (V(:,jj), V(:,nv));
-          ## FIXME -- H columns should be swapped too.  Not done
-          ## since Block Hessenberg structure is lost anyway.
+          ## FIXME: H columns should be swapped too.
+          ##        Not done since Block Hessenberg structure is lost anyway.
         endif
         V = V(:,1:(nv-1));
         ## One less reflection.
@@ -167,7 +167,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
         ## Reduce V per the reflection.
         V(idx,:) = V(idx,:) - av*hv*(hv' * V(idx,:));
         if(iter > 1)
-          ## FIXME -- not done correctly for block case.
+          ## FIXME: not done correctly for block case.
           H(nu,nu-1) = V(pivot_vec(nu),jj);
         endif
 

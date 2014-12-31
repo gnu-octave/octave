@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -245,7 +245,7 @@ extern void install_ops (void);
     return octave_value (op v.CONCAT2(e, _value) ()); \
   }
 
-// FIXME -- in some cases, the constructor isn't necessary.
+// FIXME: in some cases, the constructor isn't necessary.
 
 #define DEFUNOP_FN(name, t, f) \
   UNOPDECL (name, a) \
@@ -318,7 +318,7 @@ extern void install_ops (void);
       (v1.CONCAT2(e1, _value) () op v2.CONCAT2(e2, _value) ()); \
   }
 
-// FIXME -- in some cases, the constructor isn't necessary.
+// FIXME: in some cases, the constructor isn't necessary.
 
 #define DEFBINOP_FN(name, t1, t2, f) \
   BINOPDECL (name, a1, a2) \
@@ -352,7 +352,7 @@ extern void install_ops (void);
 #define DEFCATOP(name, t1, t2)  \
   CATOPDECL (name, a1, a2)
 
-// FIXME -- in some cases, the constructor isn't necessary.
+// FIXME: in some cases, the constructor isn't necessary.
 
 #define DEFCATOP_FN(name, t1, t2, f) \
   CATOPDECL (name, a1, a2) \

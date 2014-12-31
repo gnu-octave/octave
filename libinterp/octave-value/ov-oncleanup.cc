@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 VZLU Prague
+Copyright (C) 2010-2013 VZLU Prague
 
 This file is part of Octave.
 
@@ -98,14 +98,9 @@ octave_oncleanup::~octave_oncleanup (void)
       error ("onCleanup: internal error: unhandled exception in cleanup action");
     }
 
-  // We don't want to ignore errors that occur in the cleanup code, so
-  // if an error is encountered there, leave error_state alone.
-  // Otherwise, set it back to what it was before.
+  // FIXME: can this happen now?
   if (error_state)
-    {
-      frame.discard_first ();
-      octave_call_stack::backtrace_error_message ();
-    }
+    frame.discard_first ();
 }
 
 octave_scalar_map
@@ -137,7 +132,8 @@ octave_oncleanup::load_ascii (std::istream& /* is */)
 }
 
 bool
-octave_oncleanup::save_binary (std::ostream& /* os */, bool& /* save_as_floats */)
+octave_oncleanup::save_binary (std::ostream& /* os */,
+                               bool& /* save_as_floats */)
 {
   warn_save_load ();
   return true;
@@ -169,7 +165,7 @@ octave_oncleanup::load_hdf5 (hid_t /* loc_id */, const char * /* name */)
 #endif
 
 void
-octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_oncleanup::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -185,11 +181,11 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 DEFUN (onCleanup, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{c} =} onCleanup (@var{action})\n\
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{obj} =} onCleanup (@var{function})\n\
 Create a special object that executes a given function upon destruction.\n\
 If the object is copied to multiple variables (or cell or struct array\n\
-elements) or returned from a function, @var{action} will be executed after\n\
+elements) or returned from a function, @var{function} will be executed after\n\
 clearing the last copy of the object.  Note that if multiple local onCleanup\n\
 variables are created, the order in which they are called is unspecified.\n\
 For similar functionality @xref{The unwind_protect Statement}.\n\

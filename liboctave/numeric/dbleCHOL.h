@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_CHOL_h)
-#define octave_CHOL_h 1
+#if !defined (octave_dbleCHOL_h)
+#define octave_dbleCHOL_h 1
 
 #include <iosfwd>
 
@@ -39,27 +39,27 @@ public:
 
   CHOL (const Matrix& a, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      init (a, calc_cond);
-    }
+  {
+    init (a, calc_cond);
+  }
 
   CHOL (const Matrix& a, octave_idx_type& info, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      info = init (a, calc_cond);
-    }
+  {
+    info = init (a, calc_cond);
+  }
 
   CHOL (const CHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   CHOL& operator = (const CHOL& a)
-    {
-      if (this != &a)
-        {
-          chol_mat = a.chol_mat;
-          xrcond = a.xrcond;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        chol_mat = a.chol_mat;
+        xrcond = a.xrcond;
+      }
+    return *this;
+  }
 
   Matrix chol_matrix (void) const { return chol_mat; }
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 David Bateman
+Copyright (C) 2008-2013 David Bateman
 
 This file is part of Octave.
 
@@ -51,7 +51,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 DEFUN_DLD (amd, args, nargout,
-    "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{p} =} amd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} amd (@var{S}, @var{opts})\n\
 \n\
@@ -67,13 +67,13 @@ behavior of @code{amd}.  The fields of the structure are\n\
 @table @asis\n\
 @item @var{opts}.dense\n\
 Determines what @code{amd} considers to be a dense row or column of the\n\
-input matrix.  Rows or columns with more than @code{max(16, (dense *\n\
-sqrt (@var{n})} entries, where @var{n} is the order of the matrix @var{S},\n\
+input matrix.  Rows or columns with more than @code{max (16, (dense *\n\
+sqrt (@var{n})))} entries, where @var{n} is the order of the matrix @var{S},\n\
 are ignored by @code{amd} during the calculation of the permutation\n\
 The value of dense must be a positive scalar and its default value is 10.0\n\
 \n\
 @item @var{opts}.aggressive\n\
-If this value is a non zero scalar, then @code{amd} performs aggressive\n\
+If this value is a nonzero scalar, then @code{amd} performs aggressive\n\
 absorption.  The default is not to perform aggressive absorption.\n\
 @end table\n\
 \n\
@@ -162,13 +162,13 @@ The author of the code itself is Timothy A. Davis\n\
               Matrix xinfo (AMD_INFO, 1);
               double *Info = xinfo.fortran_vec ();
 
-              // FIXME -- how can we manage the memory allocation of
-              // amd in a cleaner manner?
-              amd_malloc = malloc;
-              amd_free = free;
-              amd_calloc = calloc;
-              amd_realloc = realloc;
-              amd_printf = printf;
+              // FIXME: how can we manage the memory allocation of amd
+              //        in a cleaner manner?
+              SUITESPARSE_ASSIGN_FPTR (malloc_func, amd_malloc, malloc);
+              SUITESPARSE_ASSIGN_FPTR (free_func, amd_free, free);
+              SUITESPARSE_ASSIGN_FPTR (calloc_func, amd_calloc, calloc);
+              SUITESPARSE_ASSIGN_FPTR (realloc_func, amd_realloc, realloc);
+              SUITESPARSE_ASSIGN_FPTR (printf_func, amd_printf, printf);
 
               octave_idx_type result = AMD_NAME (_order) (n_col, cidx, ridx, P,
                                                           Control, Info);
@@ -204,3 +204,19 @@ The author of the code itself is Timothy A. Davis\n\
 
   return retval;
 }
+/*
+%!shared A, A2, opts
+%! A = ones (20, 30);
+%! A2 = ones (30, 30);
+%!
+%!testif HAVE_AMD
+%! assert(amd (A2), [1:30])
+%! opts.dense = 25;
+%! assert(amd (A2, opts), [1:30])
+%! opts.aggressive = 1;
+%! assert(amd (A2, opts), [1:30])
+
+%!error <matrix S must be square|not available in this version> amd (A)
+%!error amd (A2, 2)
+%!error <matrix S is corrupted|not available in this version> amd ([])
+*/

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -66,7 +66,7 @@ octave_value_typeinfo::register_type (const std::string& t_name,
                                       const octave_value& val)
 {
   return (instance_ok ())
-    ? instance->do_register_type (t_name, c_name, val) : -1;
+         ? instance->do_register_type (t_name, c_name, val) : -1;
 }
 
 bool
@@ -74,15 +74,16 @@ octave_value_typeinfo::register_unary_class_op (octave_value::unary_op op,
                                                 octave_value_typeinfo::unary_class_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_unary_class_op (op, f) : false;
+         ? instance->do_register_unary_class_op (op, f) : false;
 }
 
 bool
 octave_value_typeinfo::register_unary_op (octave_value::unary_op op,
-                                           int t, octave_value_typeinfo::unary_op_fcn f)
+                                          int t,
+                                          octave_value_typeinfo::unary_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_unary_op (op, t, f) : false;
+         ? instance->do_register_unary_op (op, t, f) : false;
 }
 
 bool
@@ -91,7 +92,7 @@ octave_value_typeinfo::register_non_const_unary_op (octave_value::unary_op op,
                                                     octave_value_typeinfo::non_const_unary_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_non_const_unary_op (op, t, f) : false;
+         ? instance->do_register_non_const_unary_op (op, t, f) : false;
 }
 
 bool
@@ -99,7 +100,7 @@ octave_value_typeinfo::register_binary_class_op (octave_value::binary_op op,
                                                  octave_value_typeinfo::binary_class_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_binary_class_op (op, f) : false;
+         ? instance->do_register_binary_class_op (op, f) : false;
 }
 
 bool
@@ -108,7 +109,7 @@ octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
                                            octave_value_typeinfo::binary_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_binary_op (op, t1, t2, f) : false;
+         ? instance->do_register_binary_op (op, t1, t2, f) : false;
 }
 
 bool
@@ -116,7 +117,7 @@ octave_value_typeinfo::register_binary_class_op (octave_value::compound_binary_o
                                                  octave_value_typeinfo::binary_class_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_binary_class_op (op, f) : false;
+         ? instance->do_register_binary_class_op (op, f) : false;
 }
 
 bool
@@ -125,14 +126,15 @@ octave_value_typeinfo::register_binary_op (octave_value::compound_binary_op op,
                                            octave_value_typeinfo::binary_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_binary_op (op, t1, t2, f) : false;
+         ? instance->do_register_binary_op (op, t1, t2, f) : false;
 }
 
 bool
-octave_value_typeinfo::register_cat_op (int t1, int t2, octave_value_typeinfo::cat_op_fcn f)
+octave_value_typeinfo::register_cat_op (int t1, int t2,
+                                        octave_value_typeinfo::cat_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_cat_op (t1, t2, f) : false;
+         ? instance->do_register_cat_op (t1, t2, f) : false;
 }
 
 bool
@@ -141,7 +143,7 @@ octave_value_typeinfo::register_assign_op (octave_value::assign_op op,
                                            octave_value_typeinfo::assign_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_assign_op (op, t_lhs, t_rhs, f) : -1;
+         ? instance->do_register_assign_op (op, t_lhs, t_rhs, f) : -1;
 }
 
 bool
@@ -149,7 +151,7 @@ octave_value_typeinfo::register_assignany_op (octave_value::assign_op op,
                                               int t_lhs, octave_value_typeinfo::assignany_op_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_assignany_op (op, t_lhs, f) : -1;
+         ? instance->do_register_assignany_op (op, t_lhs, f) : -1;
 }
 
 bool
@@ -157,7 +159,8 @@ octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
                                                   int t_result)
 {
   return (instance_ok ())
-    ? instance->do_register_pref_assign_conv (t_lhs, t_rhs, t_result) : false;
+         ? instance->do_register_pref_assign_conv (t_lhs, t_rhs, t_result)
+         : false;
 }
 
 bool
@@ -165,7 +168,7 @@ octave_value_typeinfo::register_type_conv_op (int t, int t_result,
                                               octave_base_value::type_conv_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_type_conv_op (t, t_result, f) : false;
+         ? instance->do_register_type_conv_op (t, t_result, f) : false;
 }
 
 bool
@@ -173,10 +176,10 @@ octave_value_typeinfo::register_widening_op (int t, int t_result,
                                              octave_base_value::type_conv_fcn f)
 {
   return (instance_ok ())
-    ? instance->do_register_widening_op (t, t_result, f) : false;
+         ? instance->do_register_widening_op (t, t_result, f) : false;
 }
 
-// FIXME -- we should also store all class names and provide a
+// FIXME: we should also store all class names and provide a
 // way to list them (calling class with nargin == 0?).
 
 int
@@ -247,14 +250,16 @@ octave_value_typeinfo::do_register_unary_class_op (octave_value::unary_op op,
                op_name.c_str ());
     }
 
-  unary_class_ops.checkelem (static_cast<int> (op)) = reinterpret_cast<void *> (f);
+  unary_class_ops.checkelem (static_cast<int> (op))
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
 
 bool
 octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
-                                             int t, octave_value_typeinfo::unary_op_fcn f)
+                                             int t,
+                                             octave_value_typeinfo::unary_op_fcn f)
 {
   if (lookup_unary_op (op, t))
     {
@@ -272,7 +277,8 @@ octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
 
 bool
 octave_value_typeinfo::do_register_non_const_unary_op
-  (octave_value::unary_op op, int t, octave_value_typeinfo::non_const_unary_op_fcn f)
+  (octave_value::unary_op op, int t,
+   octave_value_typeinfo::non_const_unary_op_fcn f)
 {
   if (lookup_non_const_unary_op (op, t))
     {
@@ -283,7 +289,8 @@ octave_value_typeinfo::do_register_non_const_unary_op
                op_name.c_str (), type_name.c_str ());
     }
 
-  non_const_unary_ops.checkelem (static_cast<int> (op), t) = reinterpret_cast<void *> (f);
+  non_const_unary_ops.checkelem (static_cast<int> (op), t)
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -300,7 +307,8 @@ octave_value_typeinfo::do_register_binary_class_op (octave_value::binary_op op,
                op_name.c_str ());
     }
 
-  binary_class_ops.checkelem (static_cast<int> (op)) = reinterpret_cast<void *> (f);
+  binary_class_ops.checkelem (static_cast<int> (op))
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -320,7 +328,8 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
                op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
     }
 
-  binary_ops.checkelem (static_cast<int> (op), t1, t2) = reinterpret_cast<void *> (f);
+  binary_ops.checkelem (static_cast<int> (op), t1, t2)
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -337,7 +346,8 @@ octave_value_typeinfo::do_register_binary_class_op (octave_value::compound_binar
                op_name.c_str ());
     }
 
-  compound_binary_class_ops.checkelem (static_cast<int> (op)) = reinterpret_cast<void *> (f);
+  compound_binary_class_ops.checkelem (static_cast<int> (op))
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -357,13 +367,15 @@ octave_value_typeinfo::do_register_binary_op (octave_value::compound_binary_op o
                op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
     }
 
-  compound_binary_ops.checkelem (static_cast<int> (op), t1, t2) = reinterpret_cast<void *> (f);
+  compound_binary_ops.checkelem (static_cast<int> (op), t1, t2)
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
 
 bool
-octave_value_typeinfo::do_register_cat_op (int t1, int t2, octave_value_typeinfo::cat_op_fcn f)
+octave_value_typeinfo::do_register_cat_op (int t1, int t2,
+                                           octave_value_typeinfo::cat_op_fcn f)
 {
   if (lookup_cat_op (t1, t2))
     {
@@ -394,7 +406,8 @@ octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
                op_name.c_str (), t_lhs_name.c_str (), t_rhs_name.c_str ());
     }
 
-  assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs) = reinterpret_cast<void *> (f);
+  assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs)
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -412,7 +425,8 @@ octave_value_typeinfo::do_register_assignany_op (octave_value::assign_op op,
                op_name.c_str (), t_lhs_name.c_str ());
     }
 
-  assignany_ops.checkelem (static_cast<int> (op), t_lhs) = reinterpret_cast<void *> (f);
+  assignany_ops.checkelem (static_cast<int> (op), t_lhs)
+    = reinterpret_cast<void *> (f);
 
   return false;
 }
@@ -596,13 +610,14 @@ octave_value_typeinfo::do_installed_type_names (void)
 }
 
 DEFUN (typeinfo, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} typeinfo ()\n\
 @deftypefnx {Built-in Function} {} typeinfo (@var{expr})\n\
 \n\
 Return the type of the expression @var{expr}, as a string.  If\n\
-@var{expr} is omitted, return an cell array of strings containing all the\n\
+@var{expr} is omitted, return a cell array of strings containing all the\n\
 currently installed data types.\n\
+@seealso{class, isa}\n\
 @end deftypefn")
 {
   octave_value retval;

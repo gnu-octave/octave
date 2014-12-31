@@ -1,5 +1,5 @@
-## Copyright (C) 2007 Michael Goffioul
-## Copyright (C) 2010 Martin Hepperle
+## Copyright (C) 2007, 2013 Michael Goffioul
+## Copyright (C) 2010, 2013 Martin Hepperle
 ##
 ## This file is part of Octave.
 ##

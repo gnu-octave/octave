@@ -2,7 +2,6 @@ FCN_FILE_DIRS += geometry
 
 geometry_FCN_FILES = \
   geometry/convhull.m \
-  geometry/delaunay3.m \
   geometry/delaunayn.m \
   geometry/delaunay.m \
   geometry/dsearch.m \

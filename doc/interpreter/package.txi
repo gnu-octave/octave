@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2012 Søren Hauberg
+@c Copyright (C) 2007-2013 Søren Hauberg
 @c
 @c This file is part of Octave.
 @c
@@ -271,7 +271,7 @@ the package functions are installed, and whether the package is currently
 loaded.
 @end table
 
-Besides the above mentioned files, a package can also contain on or
+Besides the above mentioned files, a package can also contain one or
 more of the following directories:
 
 @table @code
@@ -309,6 +309,7 @@ external scripts, etc., called by functions within the package.
 * The DESCRIPTION File::
 * The INDEX File::
 * PKG_ADD and PKG_DEL Directives::
+* Missing Components::
 @end menu
 
 @node The DESCRIPTION File
@@ -358,7 +359,7 @@ Name of the package.
 
 @item Version
 Version of the package.  A package version must be 3 numbers separated
-by a dot.
+by dots.
 
 @item Date
 Date of last update.
@@ -575,3 +576,13 @@ command that should be placed in the @w{@code{PKG_ADD}} file.
 @w{@code{PKG_ADD}} keyword is replaced with @w{@code{PKG_DEL}} and the commands
 get added to the @w{@code{PKG_DEL}} file.
 
+@node Missing Components
+@subsection Missing Components
+
+If a package relies on a component, such as another Octave package, that may
+not be present it may be useful to install a function which informs users what
+to do when a particular component is missing.  The function must be written by
+the package maintainer and registered with Octave using
+@code{missing_component_hook}.
+
+@DOCSTRING(missing_component_hook)

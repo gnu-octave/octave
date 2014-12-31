@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 Kai Habel
+Copyright (C) 2002-2013 Kai Habel
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -51,7 +51,7 @@ extern "C"
 // for piecewise polynomials.
 
 DEFUN (__pchip_deriv__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -59,7 +59,7 @@ Undocumented internal function.\n\
   octave_value retval;
   const int nargin = args.length ();
 
-  bool rows = (nargin == 3 && args (2).uint_value () == 2);
+  bool rows = (nargin == 3 && args(2).uint_value () == 2);
 
   if (nargin >= 2)
     {
@@ -95,8 +95,8 @@ Undocumented internal function.\n\
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
-              F77_FUNC (pchim, PCHIM) (nx, xvec.data (),
-                                       yvec, dvec, incfd, &ierr);
+              F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
+                                       yvec, dvec, incfd, &ierr));
 
               yvec += inc;
               dvec += inc;
@@ -142,8 +142,8 @@ Undocumented internal function.\n\
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
-              F77_FUNC (dpchim, DPCHIM) (nx, xvec.data (),
-                                         yvec, dvec, incfd, &ierr);
+              F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
+                                         yvec, dvec, incfd, &ierr));
 
               yvec += inc;
               dvec += inc;

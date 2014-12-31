@@ -7,7 +7,7 @@ general_PRIVATE_FCN_FILES = \
 general_FCN_FILES = \
   general/accumarray.m \
   general/accumdim.m \
-  general/bicubic.m \
+  general/bincoeff.m \
   general/bitcmp.m \
   general/bitget.m \
   general/bitset.m \
@@ -18,7 +18,6 @@ general_FCN_FILES = \
   general/celldisp.m \
   general/chop.m \
   general/circshift.m \
-  general/colon.m \
   general/common_size.m \
   general/cplxpair.m \
   general/cumtrapz.m \
@@ -29,36 +28,30 @@ general_FCN_FILES = \
   general/display.m \
   general/divergence.m \
   general/fieldnames.m \
+  general/flip.m \
   general/flipdim.m \
   general/fliplr.m \
   general/flipud.m \
-  general/genvarname.m \
   general/gradient.m \
   general/idivide.m \
+  general/inputParser.m \
   general/int2str.m \
   general/interp1.m \
-  general/interp1q.m \
   general/interp2.m \
   general/interp3.m \
-  general/interpn.m \
   general/interpft.m \
-  general/isa.m \
-  general/iscolumn.m \
+  general/interpn.m \
   general/isdir.m \
   general/isequal.m \
   general/isequaln.m \
-  general/isrow.m \
-  general/isscalar.m \
-  general/issquare.m \
-  general/isvector.m \
   general/loadobj.m \
   general/logspace.m \
   general/methods.m \
   general/nargchk.m \
   general/narginchk.m \
   general/nargoutchk.m \
-  general/nthargout.m \
   general/nextpow2.m \
+  general/nthargout.m \
   general/num2str.m \
   general/pol2cart.m \
   general/polyarea.m \
@@ -82,8 +75,9 @@ general_FCN_FILES = \
   general/sph2cart.m \
   general/structfun.m \
   general/subsindex.m \
-  general/triplequad.m \
   general/trapz.m \
+  general/triplequad.m \
+  general/validateattributes.m \
   $(general_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(general_FCN_FILES)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2012 John W. Eaton
+Copyright (C) 1999-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (Cell_h)
-#define Cell_h 1
+#if !defined (octave_Cell_h)
+#define octave_Cell_h 1
 
 #include <string>
 
@@ -89,7 +89,7 @@ public:
                const octave_value& fill_val = Matrix ());
 
   Cell reshape (const dim_vector& new_dims) const
-    { return Array<octave_value>::reshape (new_dims); }
+  { return Array<octave_value>::reshape (new_dims); }
 
   octave_idx_type nnz (void) const;
 
@@ -145,6 +145,6 @@ private:
 
 template<>
 inline Cell octave_value_extract<Cell> (const octave_value& v)
-  { return v.cell_value (); }
+{ return v.cell_value (); }
 
 #endif

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,7 +35,8 @@ class octave_value;
 extern OCTINTERP_API void print_usage (void);
 extern OCTINTERP_API void print_usage (const std::string&);
 
-extern OCTINTERP_API void check_version (const std::string& version, const std::string& fcn);
+extern OCTINTERP_API void check_version (const std::string& version,
+                                         const std::string& fcn);
 
 extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
@@ -59,8 +60,8 @@ extern OCTINTERP_API octave_shlib
 get_current_shlib (void);
 
 // This is a convenience class that calls the above function automatically at
-// construction time. When deriving new classes, you can either use it as a field
-// or as a parent (with multiple inheritance).
+// construction time. When deriving new classes, you can either use it as a
+// field or as a parent (with multiple inheritance).
 
 class octave_auto_shlib : public octave_shlib
 {
@@ -90,7 +91,8 @@ defun_isargout (int, int, bool *);
 
 typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
 
-typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool relative);
+typedef octave_function * 
+  (*octave_dld_fcn_getter) (const octave_shlib&, bool relative);
 
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
   DEFINE_FUNX_INSTALLER_FUN(#name, F ## name, G ## name, doc)

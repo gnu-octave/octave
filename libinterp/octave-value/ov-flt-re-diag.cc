@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -103,7 +103,8 @@ octave_float_diag_matrix::map (unary_mapper_t umap) const
       return DiagMatrix (matrix.rows (), matrix.cols (), 0.0);
     case umap_sqrt:
       {
-        FloatComplexColumnVector tmp = matrix.extract_diag ().map<FloatComplex> (rc_sqrt);
+        FloatComplexColumnVector tmp = matrix.extract_diag ().map<FloatComplex>
+                                       (rc_sqrt);
         FloatComplexDiagMatrix retval (tmp);
         retval.resize (matrix.rows (), matrix.columns ());
         return retval;
@@ -118,13 +119,14 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
                                        bool& /* save_as_floats*/)
 {
 
-  int32_t r = matrix.rows (), c = matrix.cols ();
+  int32_t r = matrix.rows ();
+  int32_t c = matrix.cols ();
   os.write (reinterpret_cast<char *> (&r), 4);
   os.write (reinterpret_cast<char *> (&c), 4);
 
   FloatMatrix m = FloatMatrix (matrix.extract_diag ());
   save_type st = LS_FLOAT;
-  if (matrix.length () > 8192) // FIXME -- make this configurable.
+  if (matrix.length () > 8192) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -139,7 +141,7 @@ octave_float_diag_matrix::save_binary (std::ostream& os,
 
 bool
 octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                       oct_mach_info::float_format fmt)
 {
   int32_t r, c;
   char tmp;

@@ -71,8 +71,8 @@ along with Octave; see the file COPYING.  If not, see
 find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   : QDialog (p)
 {
-  setWindowTitle ("Find and Replace");
-  setWindowIcon (QIcon(":/actions/icons/search.png"));
+  setWindowTitle (tr ("Find and Replace"));
+  setWindowIcon (QIcon(":/actions/icons/find.png"));
 
   _search_label = new QLabel (tr ("Find &what:"));
   _search_line_edit = new QLineEdit;
@@ -90,7 +90,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _replace_button = new QPushButton (tr ("&Replace"));
   _replace_all_button = new QPushButton (tr ("Replace &All"));
 
-  _more_button = new QPushButton (tr ("&More"));
+  _more_button = new QPushButton (tr ("&More..."));
   _more_button->setCheckable (true);
   _more_button->setAutoDefault (false);
 
@@ -107,8 +107,13 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _regex_check_box = new QCheckBox (tr ("Regular E&xpressions"));
   _backward_check_box = new QCheckBox (tr ("Search &backward"));
   _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
-  _search_selection_check_box->setCheckable (false); // TODO: Not implemented.
+#ifdef HAVE_QSCI_FINDSELECTION
+  _search_selection_check_box->setCheckable (true);
+  _search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
+#else
+  _search_selection_check_box->setCheckable (false);
   _search_selection_check_box->setEnabled (false);
+#endif
 
   _edit_area = edit_area;
   connect (_find_next_button,   SIGNAL (clicked ()),
@@ -125,6 +130,15 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
            this,                SLOT (handle_backward_search_changed (int)));
   connect (_button_box,         SIGNAL (rejected ()),
            this,                SLOT (close ()));
+  connect (_search_line_edit,   SIGNAL (textChanged (QString)),
+           this,                SLOT (handle_search_text_changed (QString)));
+
+#ifdef HAVE_QSCI_FINDSELECTION
+  connect (_edit_area, SIGNAL (copyAvailable (bool)),
+           this,       SLOT (handle_selection_changed (bool)));
+  connect (_search_selection_check_box, SIGNAL (stateChanged (int)),
+           this,                        SLOT (handle_sel_search_changed (int)));
+#endif
 
   QVBoxLayout *extension_layout = new QVBoxLayout ();
   extension_layout->setMargin (0);
@@ -157,16 +171,15 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *p)
   _extension->hide ();
   _find_next_button->setDefault (true);
   _find_result_available = false;
+  _rep_all = 0;
+  _rep_active = false;
 
-  // move to dialog to side of the parent if there is room on the desktop to do so.
-  QWidget * desktop = QApplication::desktop ();
-  int xp = p->x () + p->frameGeometry ().width ();
-  int yp=  p->y ();
-  if (desktop != 0 && sizeHint ().isValid ())
-    {
-      if (xp + sizeHint ().width () > desktop->width ())
-        xp = desktop->width () - sizeHint ().width ();
-    }
+  // move dialog to side of the parent if there is room on the desktop to do so.
+  int xp = p->x () +20;
+  int yp = p->y () + p->frameGeometry ().height () - sizeHint ().height () -20;
+
+  if (yp < 0)
+    yp = 0;
 
   move (xp, yp);
 
@@ -181,6 +194,35 @@ find_dialog::handle_backward_search_changed (int backward)
   else
     _from_start_check_box->setText (tr ("Search from start"));
 }
+
+// search text has changed: reset the search
+void
+find_dialog::handle_search_text_changed (QString)
+{
+  if (_search_selection_check_box->isChecked ())
+    _find_result_available = false;
+}
+
+#ifdef HAVE_QSCI_FINDSELECTION
+void
+find_dialog::handle_sel_search_changed (int selected)
+{
+  _from_start_check_box->setEnabled (! selected);
+  _find_result_available = false;
+}
+
+void
+find_dialog::handle_selection_changed (bool has_selected)
+{
+  if (_rep_active)
+    return;
+
+  _search_selection_check_box->setEnabled (has_selected);
+  _find_result_available = false;
+  if (! has_selected)
+    _search_selection_check_box->setChecked (false);
+}
+#endif
 
 // initialize search text with selected text if this is in one single line
 void
@@ -210,104 +252,154 @@ find_dialog::find_prev ()
 void
 find_dialog::find (bool forward)
 {
-  int line = -1, col = -1;
+  int line, col;
+  line = col = -1;
   bool do_wrap = _wrap_check_box->isChecked ();
-  bool do_forward = true;
+  bool do_forward = forward;
 
-  if (_find_result_available)
-    { // we found a match last time, cursor is at the end of the match
-      if (!forward)
-        {  // backward: go back one position or we will find the same again
-          do_forward = false;
-          _edit_area->getCursorPosition (&line,&col);
-          if (col > 0)
-            _edit_area->setCursorPosition (line,--col);
-        }
-    }
-
-  _find_result_available = false;
-
-  if (_from_start_check_box->isChecked ())
+  if (_rep_all)
     {
-      line = 0;
-      col  = 0;
-      if (_backward_check_box->isChecked ())
-        do_wrap = true;
+      if (_rep_all == 1)
+        {
+          line = 0;
+          col = 0;
+        }
+      do_wrap = false;
+      // The following line is a workaround for the issue that when replacing
+      // a text with a new one with different size within the selection,
+      // the selection is not updated leading to missing or extra replacements.
+      // This does not happen, when the selection is search backwards
+      do_forward = ! _search_selection_check_box->isChecked ();
+    }
+  else
+    {
+      if (_from_start_check_box->isChecked ())
+        {
+          if (do_forward)
+            {
+              line = 0;
+              col = 0;
+            }
+          else
+            {
+              line = _edit_area->lines () - 1;
+              col  = _edit_area->text (line).length () - 1;
+              if (col == -1)
+                col = 0;
+            }
+        }
     }
 
   if (_edit_area)
     {
-      _find_result_available = _edit_area->findFirst (_search_line_edit->text (),
-                                                      _regex_check_box->isChecked (),
-                                                      _case_check_box->isChecked (),
-                                                      _whole_words_check_box->isChecked (),
-                                                      do_wrap,
-                                                      do_forward,
-                                                      line,col,
-                                                      true
+      if (_edit_area->hasSelectedText ()
+          && _search_selection_check_box->isChecked ())
+        {
+#ifdef HAVE_QSCI_FINDSELECTION
+           if (_find_result_available)
+             _find_result_available = _edit_area->findNext ();
+           else
+            _find_result_available
+              = _edit_area->findFirstInSelection (
+                                      _search_line_edit->text (),
+                                      _regex_check_box->isChecked (),
+                                      _case_check_box->isChecked (),
+                                      _whole_words_check_box->isChecked (),
+                                      do_forward,
+                                      true
 #ifdef HAVE_QSCI_VERSION_2_6_0
-                                                      , true
+                                      , true
 #endif
-                                                      );
+                                      );
+#endif
+        }
+      else
+        {
+          _find_result_available
+            = _edit_area->findFirst (_search_line_edit->text (),
+                                    _regex_check_box->isChecked (),
+                                    _case_check_box->isChecked (),
+                                    _whole_words_check_box->isChecked (),
+                                    do_wrap,
+                                    do_forward,
+                                    line,col,
+                                    true
+#ifdef HAVE_QSCI_VERSION_2_6_0
+                                    , true
+#endif
+                                    );
+        }
     }
+
   if (_find_result_available)
     _from_start_check_box->setChecked (0);
-  else
+  else if (! _rep_all)
     no_matches_message ();
 }
 
+void
+find_dialog::do_replace ()
+{
+  _rep_active = true;  // changes in selection not made by the user
+  _edit_area->replace (_replace_line_edit->text ());
+  _rep_active = false;
+}
 
 void
 find_dialog::replace ()
 {
   if (_edit_area)
     {
-      _edit_area->replace (_replace_line_edit->text ());
-      if (!_edit_area->findNext())
-        no_matches_message ();
+      // The following line is a workaround for the issue that when replacing
+      // a text with a new one with different size within the selection,
+      // the selection is not updated leading to missing or extra replacements.
+      // This does not happen, when the selection is search backwards
+      if (_search_selection_check_box->isChecked ())
+        _backward_check_box->setChecked (true);
+
+      // do the replace if we have selected text
+      if (_find_result_available && _edit_area->hasSelectedText ())
+        do_replace ();
+
+      find_next ();
     }
 }
 
 void
 find_dialog::replace_all ()
 {
-  int count = 0;
+  int line, col;
 
-  // check whether find & replace srings are different (avoid endless loop!)
-  int strDiff;
-  Qt::CaseSensitivity cs;
-  if (_case_check_box->isChecked())
+  if (_edit_area)
     {
-      cs = Qt::CaseSensitive;
-    }
-  else
-    {
-      cs = Qt::CaseInsensitive;
-    }
-  strDiff = QString::compare(_search_line_edit->text(),_replace_line_edit->text(),cs);
+      _edit_area->getCursorPosition (&line,&col);
 
-  // replace all if strings are different
-  if (_edit_area && strDiff )
-    {
-      find (!_backward_check_box->isChecked ());  // find first occurence
+      _rep_all = 1;
+      find_next ();  // find first occurence (forward)
       while (_find_result_available)   // while search string is found
         {
-          _edit_area->replace (_replace_line_edit->text ());   // replace
-          count++;                                             // inc counter
-          _find_result_available = _edit_area->findNext();     // and find next
+          do_replace ();
+          _rep_all++;                                          // inc counter
+          find_next ();                                        // find next
         }
+
       QMessageBox msg_box (QMessageBox::Information, tr ("Replace Result"),
-                           tr ("%1 items replaced").arg(count),
+                           tr ("%1 items replaced").arg(_rep_all-1),
                            QMessageBox::Ok, this);
       msg_box.exec ();
+
+      _rep_all = 0;
+      _find_result_available = false;
+
+      if (! _search_selection_check_box->isChecked ())
+        _edit_area->setCursorPosition (line,col);
     }
-  // TODO: Show number of replaced strings
 }
 
 void
 find_dialog::no_matches_message ()
 {
- 	QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
+  QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
                        tr ("No more matches found"), QMessageBox::Ok, this);
   msg_box.exec ();
 }

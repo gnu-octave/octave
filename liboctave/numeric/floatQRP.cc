@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -72,15 +72,17 @@ FloatQRP::init (const FloatMatrix& a, qr_type_t qr_type)
     {
       // workspace query.
       float rlwork;
-      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, &rlwork, -1, info));
+      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 &rlwork, -1, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = rlwork;
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (float, work, lwork);
-      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, work, lwork, info));
+      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 work, lwork, info));
     }
   else
     for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;
@@ -98,7 +100,7 @@ FloatQRP::init (const FloatMatrix& a, qr_type_t qr_type)
 FloatRowVector
 FloatQRP::Pvec (void) const
 {
-  Array<float> pa (p.pvec ());
+  Array<float> pa (p.col_perm_vec ());
   FloatRowVector pv (MArray<float> (pa) + 1.0f);
   return pv;
 }

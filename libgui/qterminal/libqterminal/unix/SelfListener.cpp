@@ -1,5 +1,5 @@
 /* qterminal - a terminal widget for Qt
- * Copyright (C) 2011 Jacob Dawid (jacob.dawid@googlemail.com)
+ * Copyright (C) 2011, 2013 Jacob Dawid (jacob.dawid@cybercatalyst.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as

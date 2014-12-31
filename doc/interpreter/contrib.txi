@@ -1,5 +1,5 @@
 @c Copyright (C) 2012 John W. Eaton
-@c Copyright (C) 2008-2012 Jaroslav Hajek
+@c Copyright (C) 2008-2013 Jaroslav Hajek
 @c
 @c This file is part of Octave.
 @c
@@ -36,18 +36,19 @@ This chapter is dedicated to those who wish to contribute code to Octave.
 
 @node How to Contribute
 @section How to Contribute
-The mailing list for Octave development discussion and sending
-contributions is @email{maintainers@@octave.org}.  This concerns the
-development of Octave core, i.e., code that goes to Octave directly.
-You may consider developing and publishing a package instead; a great
-place for this is the allied Octave-Forge project
-(@url{http://octave.sourceforge.net}).  Note that the Octave core project is
-inherently more conservative and follows narrower rules.
+The mailing list for Octave development discussions is
+@email{maintainers@@octave.org}.  Patches should be submitted to
+@url{https://savannah.gnu.org/patch/?func=additem&group=octave, Octave's patch tracker}.
+This concerns the development of Octave core, i.e., code that goes in to Octave
+directly.  You may consider developing and publishing a package instead;
+a great place for this is the allied Octave-Forge project
+(@url{http://octave.sourceforge.net}).  Note that the Octave core
+project is inherently more conservative and follows narrower rules.
 
 @node Building the Development Sources
 @section Building the Development Sources
 
-The directions for building from the Development sources change from
+The directions for building from the development sources change from
 time to time, so you should read the resources for developers on the web
 or in the development sources archive.  Start here:
 @url{http://www.octave.org/get-involved.html}.
@@ -55,8 +56,8 @@ or in the development sources archive.  Start here:
 @node Basics of Generating a Changeset
 @section Basics of Generating a Changeset
 
-The preferable form of contribution is creating a Mercurial changeset
-and submit it to the @url{http://savannah.gnu.org/bugs/?group=octave, bug} or
+The best way to contribute is to create a Mercurial changeset and submit it to
+the @url{http://savannah.gnu.org/bugs/?group=octave, bug} or
 @url{http://savannah.gnu.org/patch/?func=additem&group=octave, patch}
 trackers@footnote{Please use the patch tracker only for patches which add new
 features.  If you have a patch to submit that fixes a bug, you should use the
@@ -67,7 +68,7 @@ also acceptable, but they slow down the review process.  If you want to
 make more contributions, you should really get familiar with Mercurial.
 A good place to start is
 @url{http://www.selenic.com/mercurial/wiki/index.cgi/Tutorial}.  There
-you will also find help how to install Mercurial.
+you will also find help about how to install Mercurial.
 
 A simple contribution sequence could look like this:
 
@@ -89,7 +90,7 @@ hg export -o ../cool.diff tip
 @end example
 
 You may want to get familiar with Mercurial queues to manage your
-changesets.  For working with queues you have to activate the extension
+changesets.  To work with queues you must activate the extension
 @nospell{mq} with the following entry in Mercurial's configuration file
 @file{.hgrc} (or @file{Mercurial.ini} on Windows):
 
@@ -133,7 +134,7 @@ hg export -o ../nasty2.diff tip
 # attach ../nasty2.diff to your bug report
 @end example
 
-Mercurial has a more useful extensions that really should be enabled.
+Mercurial has a few more useful extensions that really should be enabled.
 They are not enabled by default due to a number of factors
 (mostly because they don't work in all terminal types).
 
@@ -166,7 +167,7 @@ status.ignored = black bold
 
 Sometimes a few further improvements for the pager extension are
 necessary.  The following options should not be enabled unless paging
-isn't working correctly:
+is not working correctly.
 
 @example
 @group
@@ -184,51 +185,51 @@ attend = tags, help, annotate, cat, diff, export, status, \
 Enabling the described extensions should immediately lead to a difference
 when using the command line version of @nospell{hg}.  Of these options, the
 only one that enables a new command is @nospell{graphlog}.  It is recommanded
-that you use the command @code{hg glog} instead of @code{hg log} for a better
-feel what commits are being based on.
+that to use the command @code{hg glog}, instead of @code{hg log}, for a better
+feel about what commits are being based on.
 
 @node General Guidelines
 @section General Guidelines
 
-All Octave's sources are distributed under the General Public License
+All Octave's sources are distributed under the GNU General Public License
 (GPL).  Currently, Octave uses GPL version 3.  For details about this
 license, see @url{http://www.gnu.org/licenses/gpl.html}.  Therefore,
 whenever you create a new source file, it should have the following
 comment header (use appropriate year, name and comment marks):
 
 @example
-## Copyright (C) 1996-2012 John W. Eaton <jwe@@octave.org>
+@group
+## Copyright (C) 1996-2013 John W. Eaton <jwe@@octave.org>
 ##
 ## This file is part of Octave.
 ##
-## Octave is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public
-## License as published by the Free Software Foundation;
-## either version 3 of the License, or (at your option) any
-## later version.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied
-## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-## PURPOSE.  See the GNU General Public License for more
-## details.
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public
-## License along with Octave; see the file COPYING.  If not,
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not,
 ## see <http://www.gnu.org/licenses/>.
+@end group
 @end example
 
 Always include commit messages in changesets.  After making your source
 changes, record and briefly describe the changes in your commit message.
 You should have previously configured your @file{.hgrc} (or
 @file{Mercurial.ini} on Windows) with your name and email, which will
-get automatically added to your commit message.  Your commit message
+be automatically added to your commit message.  Your commit message
 should have a brief one-line explanation of what the commit does.  If you
 are patching a bug, this one-line explanation should mention the bug
-number at the end.  If your change is small and only touches one file,
-this is typically sufficient.  If you are modifying several files or
+number at the end.  If your change is small and only touches one file then
+this is typically sufficient.  If you are modifying several files, or
 several parts of one file, you should enumerate your changes roughly
-following the GNU coding standards on changelogs, like the following
+following the GNU coding standards for changelogs, as in the following
 example:
 
 @example
@@ -247,12 +248,12 @@ documentation.
 @end example
 
 @noindent
-In this example, the names of files is mentioned, and in parentheses the
-name of the function in that file that was modified.  There is no need to
-mention the function for m-files that only contain one function.  The
-commit message should describe what is changed, not why.  Any explanation
-of why a change is needed should appear as comments in the code,
-particularly if there is something that might not be obvious to someone
+In this example, the names of the file changed is listed first, and in
+parentheses the name of the function in that file that was modified.  There
+is no need to mention the function for m-files that only contain one function.
+The commit message should describe what was changed, not why it was changed.
+Any explanation for why a change is needed should appear as comments in the
+code, particularly if there is something that might not be obvious to someone
 reading it later.
 
 When submitting code which addresses a known bug on the Octave bug
@@ -266,14 +267,14 @@ Fix bug for complex input for gradient (bug #34292).
 @end example
 
 The preferred comment mark for places that may need further attention is
-FIXME.
+@code{FIXME:}.
 
 @node Octave Sources (m-files)
 @section Octave Sources (m-files)
 
 Don't use tabs.  Tabs cause trouble.  If you are used to them, set up
 your editor so that it converts tabs to spaces.  Indent the bodies of
-the statement blocks.  Recommended indent is 2 spaces.  When calling
+statement blocks.  The recommended indent is 2 spaces.  When calling
 functions, put spaces after commas and before the calling parentheses,
 like this:
 
@@ -282,17 +283,20 @@ like this:
 @end example
 
 @noindent
-An exception are matrix and vector constructors:
+An exception are matrix or cell constructors:
 
 @example
+@group
   [sin(x), cos(x)]
+  @{sin(x), cos(x)@}
+@end group
 @end example
 
 @noindent
 Here, putting spaces after @code{sin}, @code{cos} would result in a
-parse error.  In indexing expression, do not put a space after the
+parse error.  For an indexing expression, do not put a space after the
 identifier (this differentiates indexing and function calls nicely).
-The space after comma is not necessary if index expressions are simple,
+The space after a comma is not necessary if index expressions are simple,
 i.e., you may write
 
 @example
@@ -312,10 +316,10 @@ names must be lowercase.  Function names are global, so choose them
 wisely.
 
 Always use a specific end-of-block statement (like @code{endif},
-@code{endswitch}) rather than generic @code{end}.
+@code{endswitch}) rather than the generic @code{end}.
 
-Enclose the @code{if}, @code{while}, @code{until} and @code{switch}
-conditions in parentheses, like in C:
+Enclose the @code{if}, @code{while}, @code{until}, and @code{switch}
+conditions in parentheses, as in C:
 
 @example
 @group
@@ -358,7 +362,7 @@ lists should be aligned on the first char after the open parenthesis.
 You should put a space before the left open parenthesis and after commas,
 for both function definitions and function calls.
 
-Recommended indent is 2 spaces.  When indenting, indent the statement
+The recommended indent is 2 spaces.  When indenting, indent the statement
 after control structures (like @code{if}, @code{while}, etc.).  If there
 is a compound statement, indent @emph{both} the curly braces and the
 body of the statement (so that the body gets indented by @emph{two}
@@ -394,12 +398,12 @@ SVD::type type = ((nargout == 0 || nargout == 1)
 @end example
 
 @noindent
-Consider putting extra braces around a multiline expression to make it
+Consider putting extra braces around a multi-line expression to make it
 more readable, even if they are not necessary.  Also, do not hesitate to
 put extra braces anywhere if it improves clarity.
 
-Declare variables just before they're needed.  Use local variables of
-blocks---it helps optimization.  Don't write multi-line variable
+Declare variables just before they are needed.  Use local variables of
+blocks---it helps optimization.  Don't write a multi-line variable
 declaration with a single type specification and multiple variables.  If
 the variables don't fit on single line, repeat the type specification.
 Example:

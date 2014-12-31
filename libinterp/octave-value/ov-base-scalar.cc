@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -143,7 +143,7 @@ octave_base_scalar<ST>::is_true (void) const
 
 template <class ST>
 void
-octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -169,17 +169,30 @@ octave_base_scalar<ST>::print_name_tag (std::ostream& os,
 }
 
 template <class ST>
-std::string
-octave_base_scalar<ST>::short_disp (void) const
+void
+octave_base_scalar<ST>::short_disp (std::ostream& os) const
 {
   std::ostringstream buf;
   octave_print_internal (buf, scalar);
-  return buf.str ();
+  std::string tmp = buf.str ();
+  size_t pos = tmp.find_first_not_of (" ");
+  if (pos != std::string::npos)
+    os << tmp.substr (pos);
+  else if (! tmp.empty ())
+    os << tmp[0];
+}
+
+template <class ST>
+octave_value
+octave_base_scalar<ST>::fast_elem_extract (octave_idx_type n) const
+{
+  return (n == 0) ? octave_value (scalar) : octave_value ();
 }
 
 template <class ST>
 bool
-octave_base_scalar<ST>::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+octave_base_scalar<ST>::fast_elem_insert_self (void *where,
+                                               builtin_type_t btyp) const
 {
 
   // Don't use builtin_type () here to avoid an extra VM call.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -60,8 +60,7 @@ nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
 }
 
 Array<FloatComplex>::compare_fcn_type
-safe_comparator (sortmode mode, const Array<FloatComplex>& a,
-                     bool allow_chk)
+safe_comparator (sortmode mode, const Array<FloatComplex>& a, bool allow_chk)
 {
   Array<FloatComplex>::compare_fcn_type result = 0;
 
@@ -89,11 +88,12 @@ safe_comparator (sortmode mode, const Array<FloatComplex>& a,
   return result;
 }
 
-INSTANTIATE_ARRAY_SORT (FloatComplex);
+template class OCTAVE_API octave_sort<FloatComplex>;
 
 INSTANTIATE_ARRAY (FloatComplex, OCTAVE_API);
 
-template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<FloatComplex>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&,
+                                               const Array<FloatComplex>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -45,7 +45,7 @@ octave_base_iostream::tell (void)
   return -1;
 }
 
-// Return non-zero if EOF has been reached on this stream.
+// Return nonzero if EOF has been reached on this stream.
 
 bool
 octave_base_iostream::eof (void) const
@@ -60,7 +60,7 @@ octave_base_iostream::invalid_operation (void) const
   ::error ("%s: invalid operation", stream_type ());
 }
 
-// Return non-zero if EOF has been reached on this stream.
+// Return nonzero if EOF has been reached on this stream.
 
 bool
 octave_istream::eof (void) const
@@ -74,7 +74,7 @@ octave_istream::create (std::istream *arg, const std::string& n)
   return octave_stream (new octave_istream (arg, n));
 }
 
-// Return non-zero if EOF has been reached on this stream.
+// Return nonzero if EOF has been reached on this stream.
 
 bool
 octave_ostream::eof (void) const

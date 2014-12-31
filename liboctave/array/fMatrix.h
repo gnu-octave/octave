@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,9 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatMatrix_int_h)
-#define octave_FloatMatrix_int_h 1
+#if !defined (octave_fMatrix_h)
+#define octave_fMatrix_h 1
 
+#include "fNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -33,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-FloatMatrix : public MArray<float>
+FloatMatrix : public FloatNDArray
 {
 public:
 
@@ -42,26 +43,26 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) : MArray<float> () { }
+  FloatMatrix (void) : FloatNDArray () { }
 
   FloatMatrix (octave_idx_type r, octave_idx_type c)
-    : MArray<float> (dim_vector (r, c)) { }
+    : FloatNDArray (dim_vector (r, c)) { }
 
   FloatMatrix (octave_idx_type r, octave_idx_type c, float val)
-    : MArray<float> (dim_vector (r, c), val) { }
+    : FloatNDArray (dim_vector (r, c), val) { }
 
-  FloatMatrix (const dim_vector& dv) : MArray<float> (dv.redim (2)) { }
+  FloatMatrix (const dim_vector& dv) : FloatNDArray (dv.redim (2)) { }
 
   FloatMatrix (const dim_vector& dv, float val)
-    : MArray<float> (dv.redim (2), val) { }
+    : FloatNDArray (dv.redim (2), val) { }
 
-  FloatMatrix (const FloatMatrix& a) : MArray<float> (a) { }
-
-  template <class U>
-  FloatMatrix (const MArray<U>& a) : MArray<float> (a.as_matrix ()) { }
+  FloatMatrix (const FloatMatrix& a) : FloatNDArray (a) { }
 
   template <class U>
-  FloatMatrix (const Array<U>& a) : MArray<float> (a.as_matrix ()) { }
+  FloatMatrix (const MArray<U>& a) : FloatNDArray (a.as_matrix ()) { }
+
+  template <class U>
+  FloatMatrix (const Array<U>& a) : FloatNDArray (a.as_matrix ()) { }
 
   explicit FloatMatrix (const FloatRowVector& rv);
 
@@ -69,18 +70,15 @@ public:
 
   explicit FloatMatrix (const FloatDiagMatrix& a);
 
+  explicit FloatMatrix (const MDiagArray2<float>& a);
+
+  explicit FloatMatrix (const DiagArray2<float>& a);
+
   explicit FloatMatrix (const PermMatrix& a);
 
   explicit FloatMatrix (const boolMatrix& a);
 
   explicit FloatMatrix (const charMatrix& a);
-
-
-  FloatMatrix& operator = (const FloatMatrix& a)
-    {
-      MArray<float>::operator = (a);
-      return *this;
-    }
 
   bool operator == (const FloatMatrix& a) const;
   bool operator != (const FloatMatrix& a) const;
@@ -89,13 +87,18 @@ public:
 
   // destructive insert/delete/reorder operations
 
-  FloatMatrix& insert (const FloatMatrix& a, octave_idx_type r, octave_idx_type c);
-  FloatMatrix& insert (const FloatRowVector& a, octave_idx_type r, octave_idx_type c);
-  FloatMatrix& insert (const FloatColumnVector& a, octave_idx_type r, octave_idx_type c);
-  FloatMatrix& insert (const FloatDiagMatrix& a, octave_idx_type r, octave_idx_type c);
+  FloatMatrix& insert (const FloatMatrix& a,
+                       octave_idx_type r, octave_idx_type c);
+  FloatMatrix& insert (const FloatRowVector& a,
+                       octave_idx_type r, octave_idx_type c);
+  FloatMatrix& insert (const FloatColumnVector& a,
+                       octave_idx_type r, octave_idx_type c);
+  FloatMatrix& insert (const FloatDiagMatrix& a,
+                       octave_idx_type r, octave_idx_type c);
 
   FloatMatrix& fill (float val);
-  FloatMatrix& fill (float val, octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2);
+  FloatMatrix& fill (float val, octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2);
 
   FloatMatrix append (const FloatMatrix& a) const;
   FloatMatrix append (const FloatRowVector& a) const;
@@ -116,9 +119,11 @@ public:
 
   // resize is the destructive equivalent for this one
 
-  FloatMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+  FloatMatrix extract (octave_idx_type r1, octave_idx_type c1,
+                       octave_idx_type r2, octave_idx_type c2) const;
 
-  FloatMatrix extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const;
+  FloatMatrix extract_n (octave_idx_type r1, octave_idx_type c1,
+                         octave_idx_type nr, octave_idx_type nc) const;
 
   // extract row or column i.
 
@@ -132,22 +137,22 @@ public:
   }
 
 private:
-  FloatMatrix tinverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                   int force, int calc_cond) const;
+  FloatMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
+                        float& rcon, int force, int calc_cond) const;
 
-  FloatMatrix finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                   int force, int calc_cond) const;
+  FloatMatrix finverse (MatrixType &mattype, octave_idx_type& info,
+                        float& rcon, int force, int calc_cond) const;
 
 public:
   FloatMatrix inverse (void) const;
   FloatMatrix inverse (octave_idx_type& info) const;
   FloatMatrix inverse (octave_idx_type& info, float& rcon, int force = 0,
-                  int calc_cond = 1) const;
+                       int calc_cond = 1) const;
 
   FloatMatrix inverse (MatrixType &mattype) const;
   FloatMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   FloatMatrix inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
-                  int force = 0, int calc_cond = 1) const;
+                       int force = 0, int calc_cond = 1) const;
 
   FloatMatrix pseudo_inverse (float tol = 0.0) const;
 
@@ -159,7 +164,8 @@ public:
 
   FloatDET determinant (void) const;
   FloatDET determinant (octave_idx_type& info) const;
-  FloatDET determinant (octave_idx_type& info, float& rcon, int calc_cond = 1) const;
+  FloatDET determinant (octave_idx_type& info, float& rcon,
+                        int calc_cond = 1) const;
   FloatDET determinant (MatrixType &mattype, octave_idx_type& info,
                         float& rcon, int calc_cond = 1) const;
 
@@ -168,143 +174,152 @@ public:
 
 private:
   // Upper triangular matrix solvers
-  FloatMatrix utsolve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info,
-                  float& rcon, solve_singularity_handler sing_handler,
-                  bool calc_cond = false, blas_trans_type transt = blas_no_trans) const;
+  FloatMatrix utsolve (MatrixType &typ, const FloatMatrix& b,
+                       octave_idx_type& info,
+                       float& rcon, solve_singularity_handler sing_handler,
+                       bool calc_cond = false,
+                       blas_trans_type transt = blas_no_trans) const;
 
   // Lower triangular matrix solvers
-  FloatMatrix ltsolve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info,
-                  float& rcon, solve_singularity_handler sing_handler,
-                  bool calc_cond = false, blas_trans_type transt = blas_no_trans) const;
+  FloatMatrix ltsolve (MatrixType &typ, const FloatMatrix& b,
+                       octave_idx_type& info,
+                       float& rcon, solve_singularity_handler sing_handler,
+                       bool calc_cond = false,
+                       blas_trans_type transt = blas_no_trans) const;
 
   // Full matrix solvers (lu/cholesky)
-  FloatMatrix fsolve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info,
-                 float& rcon, solve_singularity_handler sing_handler,
-                 bool calc_cond = false) const;
+  FloatMatrix fsolve (MatrixType &typ, const FloatMatrix& b,
+                      octave_idx_type& info,
+                      float& rcon, solve_singularity_handler sing_handler,
+                      bool calc_cond = false) const;
 
 public:
   // Generic interface to solver with no probing of type
   FloatMatrix solve (MatrixType &typ, const FloatMatrix& b) const;
-  FloatMatrix solve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info) const;
-  FloatMatrix solve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info,
-                float& rcon) const;
-  FloatMatrix solve (MatrixType &typ, const FloatMatrix& b, octave_idx_type& info,
-                float& rcon, solve_singularity_handler sing_handler,
-                bool singular_fallback = true, blas_trans_type transt = blas_no_trans) const;
+  FloatMatrix solve (MatrixType &typ, const FloatMatrix& b,
+                     octave_idx_type& info) const;
+  FloatMatrix solve (MatrixType &typ, const FloatMatrix& b,
+                     octave_idx_type& info, float& rcon) const;
+  FloatMatrix solve (MatrixType &typ, const FloatMatrix& b,
+                     octave_idx_type& info, float& rcon,
+                     solve_singularity_handler sing_handler,
+                     bool singular_fallback = true,
+                     blas_trans_type transt = blas_no_trans) const;
 
   FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b) const;
   FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b,
-                       octave_idx_type& info) const;
+                            octave_idx_type& info) const;
   FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b,
-                       octave_idx_type& info, float& rcon) const;
+                            octave_idx_type& info, float& rcon) const;
   FloatComplexMatrix solve (MatrixType &typ, const FloatComplexMatrix& b,
-                       octave_idx_type& info, float& rcon,
-                       solve_singularity_handler sing_handler,
-                       bool singular_fallback = true,
-                       blas_trans_type transt = blas_no_trans) const;
+                            octave_idx_type& info, float& rcon,
+                            solve_singularity_handler sing_handler,
+                            bool singular_fallback = true,
+                            blas_trans_type transt = blas_no_trans) const;
 
   FloatColumnVector solve (MatrixType &typ, const FloatColumnVector& b) const;
   FloatColumnVector solve (MatrixType &typ, const FloatColumnVector& b,
-                      octave_idx_type& info) const;
+                           octave_idx_type& info) const;
   FloatColumnVector solve (MatrixType &typ, const FloatColumnVector& b,
-                      octave_idx_type& info, float& rcon) const;
+                           octave_idx_type& info, float& rcon) const;
   FloatColumnVector solve (MatrixType &typ, const FloatColumnVector& b,
-                      octave_idx_type& info, float& rcon,
-                      solve_singularity_handler sing_handler,
-                      blas_trans_type transt = blas_no_trans) const;
+                           octave_idx_type& info, float& rcon,
+                           solve_singularity_handler sing_handler,
+                           blas_trans_type transt = blas_no_trans) const;
 
   FloatComplexColumnVector solve (MatrixType &typ,
-                             const FloatComplexColumnVector& b) const;
-  FloatComplexColumnVector solve (MatrixType &typ, const FloatComplexColumnVector& b,
-                             octave_idx_type& info) const;
-  FloatComplexColumnVector solve (MatrixType &typ, const FloatComplexColumnVector& b,
-                             octave_idx_type& info, float& rcon) const;
-  FloatComplexColumnVector solve (MatrixType &typ, const FloatComplexColumnVector& b,
-                             octave_idx_type& info, float& rcon,
-                             solve_singularity_handler sing_handler, blas_trans_type transt = blas_no_trans) const;
+                                  const FloatComplexColumnVector& b) const;
+  FloatComplexColumnVector solve (MatrixType &typ,
+                                  const FloatComplexColumnVector& b,
+                                  octave_idx_type& info) const;
+  FloatComplexColumnVector solve (MatrixType &typ,
+                                  const FloatComplexColumnVector& b,
+                                  octave_idx_type& info, float& rcon) const;
+  FloatComplexColumnVector solve (MatrixType &typ,
+                                  const FloatComplexColumnVector& b,
+                                  octave_idx_type& info, float& rcon,
+                                  solve_singularity_handler sing_handler,
+                                  blas_trans_type transt = blas_no_trans) const;
 
   // Generic interface to solver with probing of type
   FloatMatrix solve (const FloatMatrix& b) const;
   FloatMatrix solve (const FloatMatrix& b, octave_idx_type& info) const;
-  FloatMatrix solve (const FloatMatrix& b, octave_idx_type& info, float& rcon) const;
+  FloatMatrix solve (const FloatMatrix& b, octave_idx_type& info,
+                     float& rcon) const;
   FloatMatrix solve (const FloatMatrix& b, octave_idx_type& info, float& rcon,
                      solve_singularity_handler sing_handler,
                      blas_trans_type transt = blas_no_trans) const;
 
   FloatComplexMatrix solve (const FloatComplexMatrix& b) const;
-  FloatComplexMatrix solve (const FloatComplexMatrix& b, octave_idx_type& info) const;
-  FloatComplexMatrix solve (const FloatComplexMatrix& b, octave_idx_type& info, float& rcon) const;
-  FloatComplexMatrix solve (const FloatComplexMatrix& b, octave_idx_type& info, float& rcon,
+  FloatComplexMatrix solve (const FloatComplexMatrix& b,
+                            octave_idx_type& info) const;
+  FloatComplexMatrix solve (const FloatComplexMatrix& b, octave_idx_type& info,
+                            float& rcon) const;
+  FloatComplexMatrix solve (const FloatComplexMatrix& b, octave_idx_type& info,
+                            float& rcon,
                             solve_singularity_handler sing_handler,
                             blas_trans_type transt = blas_no_trans) const;
 
   FloatColumnVector solve (const FloatColumnVector& b) const;
-  FloatColumnVector solve (const FloatColumnVector& b, octave_idx_type& info) const;
-  FloatColumnVector solve (const FloatColumnVector& b, octave_idx_type& info, float& rcon) const;
-  FloatColumnVector solve (const FloatColumnVector& b, octave_idx_type& info, float& rcon,
+  FloatColumnVector solve (const FloatColumnVector& b,
+                           octave_idx_type& info) const;
+  FloatColumnVector solve (const FloatColumnVector& b, octave_idx_type& info,
+                           float& rcon) const;
+  FloatColumnVector solve (const FloatColumnVector& b, octave_idx_type& info,
+                           float& rcon,
                            solve_singularity_handler sing_handler,
                            blas_trans_type transt = blas_no_trans) const;
 
   FloatComplexColumnVector solve (const FloatComplexColumnVector& b) const;
-  FloatComplexColumnVector solve (const FloatComplexColumnVector& b, octave_idx_type& info) const;
-  FloatComplexColumnVector solve (const FloatComplexColumnVector& b, octave_idx_type& info,
+  FloatComplexColumnVector solve (const FloatComplexColumnVector& b,
+                                  octave_idx_type& info) const;
+  FloatComplexColumnVector solve (const FloatComplexColumnVector& b,
+                                  octave_idx_type& info,
                                   float& rcon) const;
-  FloatComplexColumnVector solve (const FloatComplexColumnVector& b, octave_idx_type& info,
-                                  float& rcon, solve_singularity_handler sing_handler,
+  FloatComplexColumnVector solve (const FloatComplexColumnVector& b,
+                                  octave_idx_type& info,
+                                  float& rcon,
+                                  solve_singularity_handler sing_handler,
                                   blas_trans_type transt = blas_no_trans) const;
 
   // Singular solvers
   FloatMatrix lssolve (const FloatMatrix& b) const;
   FloatMatrix lssolve (const FloatMatrix& b, octave_idx_type& info) const;
   FloatMatrix lssolve (const FloatMatrix& b, octave_idx_type& info,
-                  octave_idx_type& rank) const;
+                       octave_idx_type& rank) const;
   FloatMatrix lssolve (const FloatMatrix& b, octave_idx_type& info,
-                  octave_idx_type& rank, float& rcon) const;
+                       octave_idx_type& rank, float& rcon) const;
 
   FloatComplexMatrix lssolve (const FloatComplexMatrix& b) const;
-  FloatComplexMatrix lssolve (const FloatComplexMatrix& b, octave_idx_type& info) const;
-  FloatComplexMatrix lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
-                         octave_idx_type& rank) const;
-  FloatComplexMatrix lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
-                         octave_idx_type& rank, float &rcon) const;
+  FloatComplexMatrix lssolve (const FloatComplexMatrix& b,
+                              octave_idx_type& info) const;
+  FloatComplexMatrix lssolve (const FloatComplexMatrix& b,
+                              octave_idx_type& info,
+                              octave_idx_type& rank) const;
+  FloatComplexMatrix lssolve (const FloatComplexMatrix& b,
+                              octave_idx_type& info, octave_idx_type& rank,
+                              float &rcon) const;
 
   FloatColumnVector lssolve (const FloatColumnVector& b) const;
-  FloatColumnVector lssolve (const FloatColumnVector& b, octave_idx_type& info) const;
+  FloatColumnVector lssolve (const FloatColumnVector& b,
+                             octave_idx_type& info) const;
   FloatColumnVector lssolve (const FloatColumnVector& b, octave_idx_type& info,
-                        octave_idx_type& rank) const;
+                             octave_idx_type& rank) const;
   FloatColumnVector lssolve (const FloatColumnVector& b, octave_idx_type& info,
-                        octave_idx_type& rank, float& rcon) const;
+                             octave_idx_type& rank, float& rcon) const;
 
   FloatComplexColumnVector lssolve (const FloatComplexColumnVector& b) const;
   FloatComplexColumnVector lssolve (const FloatComplexColumnVector& b,
-                               octave_idx_type& info) const;
+                                    octave_idx_type& info) const;
   FloatComplexColumnVector lssolve (const FloatComplexColumnVector& b,
-                               octave_idx_type& info,
-                               octave_idx_type& rank) const;
+                                    octave_idx_type& info,
+                                    octave_idx_type& rank) const;
   FloatComplexColumnVector lssolve (const FloatComplexColumnVector& b,
-                               octave_idx_type& info,
-                               octave_idx_type& rank, float& rcon) const;
+                                    octave_idx_type& info,
+                                    octave_idx_type& rank, float& rcon) const;
 
   FloatMatrix& operator += (const FloatDiagMatrix& a);
   FloatMatrix& operator -= (const FloatDiagMatrix& a);
-
-  // unary operations
-
-  boolMatrix operator ! (void) const;
-
-  // other operations
-
-  bool any_element_is_negative (bool = false) const;
-  bool any_element_is_positive (bool = false) const;
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool any_element_not_one_or_zero (void) const;
-  bool all_elements_are_int_or_inf_or_nan (void) const;
-  bool all_integers (float& max_val, float& min_val) const;
-  bool too_large_for_float (void) const;
-
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
 
   FloatMatrix cumprod (int dim = -1) const;
   FloatMatrix cumsum (int dim = -1) const;
@@ -331,8 +346,10 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatMatrix& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatMatrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const FloatMatrix& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is,
+                                               FloatMatrix& a);
 };
 
 // Publish externally used friend functions.
@@ -342,19 +359,22 @@ extern OCTAVE_API FloatMatrix imag (const FloatComplexMatrix& a);
 
 // column vector by row vector -> matrix operations
 
-extern OCTAVE_API FloatMatrix operator * (const FloatColumnVector& a, const FloatRowVector& b);
+extern OCTAVE_API FloatMatrix operator * (const FloatColumnVector& a,
+                                          const FloatRowVector& b);
 
 // Other functions.
 
 extern OCTAVE_API FloatMatrix Givens (float, float);
 
-extern OCTAVE_API FloatMatrix Sylvester (const FloatMatrix&, const FloatMatrix&, const FloatMatrix&);
+extern OCTAVE_API FloatMatrix Sylvester (const FloatMatrix&, const FloatMatrix&,
+                                         const FloatMatrix&);
 
 extern OCTAVE_API FloatMatrix xgemm (const FloatMatrix& a, const FloatMatrix& b,
                                      blas_trans_type transa = blas_no_trans,
                                      blas_trans_type transb = blas_no_trans);
 
-extern OCTAVE_API FloatMatrix operator * (const FloatMatrix& a, const FloatMatrix& b);
+extern OCTAVE_API FloatMatrix operator * (const FloatMatrix& a,
+                                          const FloatMatrix& b);
 
 extern OCTAVE_API FloatMatrix min (float d, const FloatMatrix& m);
 extern OCTAVE_API FloatMatrix min (const FloatMatrix& m, float d);

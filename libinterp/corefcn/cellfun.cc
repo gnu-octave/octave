@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2012 Mohamed Kamoun
-Copyright (C) 2006-2012 Bill Denney
+Copyright (C) 2005-2013 Mohamed Kamoun
+Copyright (C) 2006-2013 Bill Denney
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -70,13 +70,15 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
                  octave_value& error_handler)
 {
   octave_value_list tmp;
-  try {
-    tmp = func.do_multi_index_op (nargout, inputlist);
-  }
-  catch (octave_execution_exception) {
-    if (error_handler.is_defined ())
-      error_state = 1;
-  }
+  try
+    {
+      tmp = func.do_multi_index_op (nargout, inputlist);
+    }
+  catch (octave_execution_exception)
+    {
+      if (error_handler.is_defined ())
+        error_state = 1;
+    }
 
   if (error_state)
     {
@@ -85,7 +87,9 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           octave_scalar_map msg;
           msg.assign ("identifier", last_error_id ());
           msg.assign ("message", last_error_message ());
-          msg.assign ("index", static_cast<double> (count + static_cast<octave_idx_type>(1)));
+          msg.assign ("index",
+                      static_cast<double> (count
+                                           + static_cast<octave_idx_type>(1)));
 
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
@@ -108,6 +112,10 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
   return tmp;
 }
 
+// Templated function because the user can be stubborn enough to request
+// a cell array as an output even in these cases where the output fits
+// in an ordinary array
+template<typename BNDA, typename NDA>
 static octave_value_list
 try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 {
@@ -121,49 +129,49 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
   if (name == "isempty")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
         result(count) = f_args.elem (count).is_empty ();
       retval(0) = result;
     }
   else if (name == "islogical")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_bool_type ();
       retval(0) = result;
     }
   else if (name == "isnumeric")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_numeric_type ();
       retval(0) = result;
     }
   else if (name == "isreal")
     {
-      boolNDArray result (f_args.dims ());
+      BNDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem (count).is_real_type ();
       retval(0) = result;
     }
   else if (name == "length")
     {
-      NDArray result (f_args.dims ());
+      NDA result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).length ());
       retval(0) = result;
     }
   else if (name == "ndims")
     {
-      NDArray result (f_args.dims ());
+      NDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).ndims ());
       retval(0) = result;
     }
   else if (name == "numel" || name == "prodofsize")
     {
-      NDArray result (f_args.dims ());
+      NDA result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem (count).numel ());
       retval(0) = result;
@@ -179,7 +187,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
           if (! error_state)
             {
-              NDArray result (f_args.dims ());
+              NDA result (f_args.dims ());
               for (octave_idx_type count = 0; count < k; count++)
                 {
                   dim_vector dv = f_args.elem (count).dims ();
@@ -199,7 +207,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
       if (nargin == 3)
         {
           std::string class_name = args(2).string_value ();
-          boolNDArray result (f_args.dims ());
+          BNDA result (f_args.dims ());
           for (octave_idx_type count = 0; count < k; count++)
             result(count) = (f_args.elem (count).class_name () == class_name);
 
@@ -264,7 +272,7 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
 }
 
 DEFUN (cellfun, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cellfun (@var{name}, @var{C})\n\
 @deftypefnx {Built-in Function} {} cellfun (\"size\", @var{C}, @var{k})\n\
 @deftypefnx {Built-in Function} {} cellfun (\"isclass\", @var{C}, @var{class})\n\
@@ -311,11 +319,9 @@ Return 1 for elements of @var{class}.\n\
 \n\
 Additionally, @code{cellfun} accepts an arbitrary function @var{func}\n\
 in the form of an inline function, function handle, or the name of a\n\
-function (in a character string).  In the case of a character string\n\
-argument, the function must accept a single argument named @var{x}, and\n\
-it must return a string value.  The function can take one or more arguments,\n\
-with the inputs arguments given by @var{C}, @var{D}, etc.  Equally the\n\
-function can return one or more output arguments.  For example:\n\
+function (in a character string).  The function can take one or more\n\
+arguments, with the inputs arguments given by @var{C}, @var{D}, etc.  \n\
+Equally the function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -423,7 +429,7 @@ v = cellfun (@@det, a); # faster\n\
 
   if (func.is_string ())
     {
-      retval = try_cellfun_internal_ops (args, nargin);
+      retval = try_cellfun_internal_ops<boolNDArray,NDArray>(args, nargin);
 
       if (error_state || ! retval.empty ())
         return retval;
@@ -434,7 +440,7 @@ v = cellfun (@@det, a); # faster\n\
 
       if (! valid_identifier (name))
         {
-          std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
+          std::string fcn_name = unique_symbol_name ("__cellfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
 
           octave_function *ptr_func
@@ -459,6 +465,11 @@ v = cellfun (@@det, a); # faster\n\
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
+
+      bool uniform_output = true;
+      octave_value error_handler;
+
+      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
       // The following is an optimisation because the symbol table can
       // give a more specific function class, so this can result in
@@ -487,7 +498,15 @@ v = cellfun (@@det, a); # faster\n\
                 //Try first the optimised code path for built-in functions
                 octave_value_list tmp_args = args;
                 tmp_args(0) = name;
-                retval = try_cellfun_internal_ops (tmp_args, nargin);
+
+                if (uniform_output)
+                  retval =
+                    try_cellfun_internal_ops<boolNDArray, NDArray> (tmp_args,
+                                                                    nargin);
+                else
+                  retval =
+                    try_cellfun_internal_ops<Cell, Cell> (tmp_args, nargin);
+
                 if (error_state || ! retval.empty ())
                   return retval;
               }
@@ -499,11 +518,6 @@ v = cellfun (@@det, a); # faster\n\
           }
       }
     nevermind:
-
-      bool uniform_output = true;
-      octave_value error_handler;
-
-      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
       if (error_state)
         return octave_value_list ();
@@ -1025,6 +1039,12 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (b, {"c", "g"});
 %! assert (c, {".d", ".h"});
 
+## Tests for bug #40467
+%!assert (cellfun (@isreal, {1 inf nan []}), [true, true, true, true]);
+%!assert (cellfun (@isreal, {1 inf nan []}, "UniformOutput", false), {true, true, true, true});
+%!assert (cellfun (@iscomplex, {1 inf nan []}), [false, false, false, false]);
+%!assert (cellfun (@iscomplex, {1 inf nan []}, "UniformOutput", false), {false, false, false, false});
+
 %!error cellfun (1)
 %!error cellfun ("isclass", 1)
 %!error cellfun ("size", 1)
@@ -1038,7 +1058,7 @@ v = cellfun (@@det, a); # faster\n\
 // handle the nargout = 0 case.
 
 DEFUN (arrayfun, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {} arrayfun (@var{func}, @var{A})\n\
 @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A})\n\
 @deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})\n\
@@ -1156,7 +1176,7 @@ arrayfun (@@str2num, [1234],\n\
 
   if (nargin < 2)
     {
-      error_with_id ("Octave:invalid-fun-call", 
+      error_with_id ("Octave:invalid-fun-call",
                      "arrayfun: function requires at least 2 arguments");
       print_usage ();
       return retval;
@@ -1173,7 +1193,7 @@ arrayfun (@@str2num, [1234],\n\
 
       if (! valid_identifier (name))
         {
-          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn_");
+          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn__");
           std::string fname = "function y = " + fcn_name + "(x) y = ";
 
           octave_function *ptr_func
@@ -1207,7 +1227,7 @@ arrayfun (@@str2num, [1234],\n\
       // fewer polymorphic function calls as the function gets called
       // for each value of the array.
 
-      if (! symbol_table_lookup )
+      if (! symbol_table_lookup)
         {
           if (func.is_function_handle ())
             {
@@ -1230,7 +1250,7 @@ arrayfun (@@str2num, [1234],\n\
 
       bool uniform_output = true;
       octave_value error_handler;
-      
+
       get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
       if (error_state)
@@ -1268,7 +1288,7 @@ arrayfun (@@str2num, [1234],\n\
                 {
                   if (mask[i] && inputs[i].dims () != fdims)
                     {
-                      error_with_id ("Octave:invalid-input-arg", 
+                      error_with_id ("Octave:invalid-input-arg",
                                      "arrayfun: dimensions mismatch");
                       return retval;
                     }
@@ -1316,7 +1336,7 @@ arrayfun (@@str2num, [1234],\n\
 
               if (nargout > 0 && tmp.length () < nargout)
                 {
-                  error_with_id ("Octave:invalid-fun-call", 
+                  error_with_id ("Octave:invalid-fun-call",
                                  "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
@@ -1429,7 +1449,7 @@ arrayfun (@@str2num, [1234],\n\
 
               if (nargout > 0 && tmp.length () < nargout)
                 {
-                  error_with_id ("Octave:invalid-fun-call", 
+                  error_with_id ("Octave:invalid-fun-call",
                                  "arrayfun: function returned fewer than nargout values");
                   return retval;
                 }
@@ -1461,7 +1481,7 @@ arrayfun (@@str2num, [1234],\n\
         }
     }
   else
-    error_with_id ("Octave:invalid-fun-call", 
+    error_with_id ("Octave:invalid-fun-call",
                    "arrayfun: argument NAME must be a string or function handle");
 
   return retval;
@@ -1763,7 +1783,8 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
 
       NDA parray = array.permute (perm);
 
-      octave_idx_type nela = arraydv.numel (), nelc = celldv.numel ();
+      octave_idx_type nela = arraydv.numel ();
+      octave_idx_type nelc = celldv.numel ();
       parray = parray.reshape (dim_vector (nela, nelc));
 
       Cell retval (celldv);
@@ -1776,7 +1797,7 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
     }
 }
 
-// FIXME -- this is a mess, but if a size method for the object exists,
+// FIXME: this is a mess, but if a size method for the object exists,
 // we have to call it to get the size of the object instead of using the
 // internal dims method.
 
@@ -1802,7 +1823,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 {
   Cell retval;
 
-  // FIXME -- this copy is only needed because the octave_value::size
+  // FIXME: this copy is only needed because the octave_value::size
   // method is not const.
   octave_value array = obj;
 
@@ -1838,7 +1859,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 }
 
 DEFUN (num2cell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} num2cell (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{C} =} num2cell (@var{A}, @var{dim})\n\
 Convert the numeric matrix @var{A} to a cell array.  If @var{dim} is\n\
@@ -1881,7 +1902,7 @@ num2cell ([1,2;3,4],1)\n\
       octave_value array = args(0);
       Array<int> dimv;
       if (nargin > 1)
-        dimv = args (1).int_vector_value (true);
+        dimv = args(1).int_vector_value (true);
 
       if (error_state)
         ;
@@ -2016,7 +2037,8 @@ do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
   if (ivec >= 0)
     {
       // Vector split. Use 1D indexing.
-      octave_idx_type l = 0, nidx = (ivec == 0 ? nridx : ncidx);
+      octave_idx_type l = 0;
+      octave_idx_type nidx = (ivec == 0 ? nridx : ncidx);
       for (octave_idx_type i = 0; i < nidx; i++)
         {
           octave_idx_type u = l + d[ivec](i);
@@ -2167,7 +2189,7 @@ do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 }
 
 DEFUN (mat2cell, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{d1}, @var{d2}, @dots{})\n\
 @deftypefnx {Built-in Function} {@var{C} =} mat2cell (@var{A}, @var{r})\n\
@@ -2247,7 +2269,8 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
         case btyp_complex:
           {
             if (sparse)
-              retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d, nargin-1);
+              retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d,
+                                       nargin-1);
             else
               retval = do_mat2cell (a.complex_array_value (), d, nargin - 1);
             break;
@@ -2337,7 +2360,7 @@ do_cellslices_nda (const NDA& array,
 }
 
 DEFUN (cellslices, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{sl} =} cellslices (@var{x}, @var{lb}, @var{ub}, @var{dim})\n\
 Given an array @var{x}, this function produces a cell array of slices from\n\
 the array determined by the index vectors @var{lb}, @var{ub}, for lower and\n\
@@ -2385,41 +2408,55 @@ slicing is done along the first non-singleton dimension.\n\
                 {
                   // specialize for some dense arrays.
                   if (x.is_bool_type ())
-                    retcell = do_cellslices_nda (x.bool_array_value (), lb, ub, dim);
+                    retcell = do_cellslices_nda (x.bool_array_value (),
+                                                 lb, ub, dim);
                   else if (x.is_char_matrix ())
-                    retcell = do_cellslices_nda (x.char_array_value (), lb, ub, dim);
+                    retcell = do_cellslices_nda (x.char_array_value (),
+                                                 lb, ub, dim);
                   else if (x.is_integer_type ())
                     {
                       if (x.is_int8_type ())
-                        retcell = do_cellslices_nda (x.int8_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int8_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_int16_type ())
-                        retcell = do_cellslices_nda (x.int16_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int16_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_int32_type ())
-                        retcell = do_cellslices_nda (x.int32_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int32_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_int64_type ())
-                        retcell = do_cellslices_nda (x.int64_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.int64_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint8_type ())
-                        retcell = do_cellslices_nda (x.uint8_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint8_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint16_type ())
-                        retcell = do_cellslices_nda (x.uint16_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint16_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint32_type ())
-                        retcell = do_cellslices_nda (x.uint32_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint32_array_value (),
+                                                     lb, ub, dim);
                       else if (x.is_uint64_type ())
-                        retcell = do_cellslices_nda (x.uint64_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.uint64_array_value (),
+                                                     lb, ub, dim);
                     }
                   else if (x.is_complex_type ())
                     {
                       if (x.is_single_type ())
-                        retcell = do_cellslices_nda (x.float_complex_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.float_complex_array_value (),
+                                                     lb, ub, dim);
                       else
-                        retcell = do_cellslices_nda (x.complex_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.complex_array_value (),
+                                                     lb, ub, dim);
                     }
                   else
                     {
                       if (x.is_single_type ())
-                        retcell = do_cellslices_nda (x.float_array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.float_array_value (),
+                                                     lb, ub, dim);
                       else
-                        retcell = do_cellslices_nda (x.array_value (), lb, ub, dim);
+                        retcell = do_cellslices_nda (x.array_value (),
+                                                     lb, ub, dim);
                     }
                 }
               else
@@ -2458,7 +2495,7 @@ slicing is done along the first non-singleton dimension.\n\
 */
 
 DEFUN (cellindexmat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{y} =} cellindexmat (@var{x}, @var{varargin})\n\
 Given a cell array of matrices @var{x}, this function computes\n\
 \n\

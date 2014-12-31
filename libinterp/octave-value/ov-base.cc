@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -52,6 +52,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pr-output.h"
 #include "utils.h"
+#include "toplev.h"
 #include "variables.h"
 
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
@@ -214,7 +215,7 @@ octave_base_value::do_multi_index_op (int nargout, const octave_value_list& idx,
 }
 
 idx_vector
-octave_base_value::index_vector (void) const
+octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = type_name ();
   error ("%s type invalid as index value", nm.c_str ());
@@ -396,7 +397,7 @@ octave_base_value::convert_to_row_or_column_vector (void)
 }
 
 void
-octave_base_value::print (std::ostream&, bool) const
+octave_base_value::print (std::ostream&, bool)
 {
   gripe_wrong_type_arg ("octave_base_value::print ()", type_name ());
 }
@@ -408,7 +409,8 @@ octave_base_value::print_raw (std::ostream&, bool) const
 }
 
 bool
-octave_base_value::print_name_tag (std::ostream& os, const std::string& name) const
+octave_base_value::print_name_tag (std::ostream& os,
+                                   const std::string& name) const
 {
   bool retval = false;
 
@@ -546,7 +548,8 @@ FloatMatrix
 octave_base_value::float_matrix_value (bool) const
 {
   FloatMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::float_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -580,7 +583,8 @@ octave_base_value::float_complex_value (bool) const
 {
   float tmp = lo_ieee_float_nan_value ();
   FloatComplex retval (tmp, tmp);
-  gripe_wrong_type_arg ("octave_base_value::float_complex_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_complex_value()",
+                        type_name ());
   return retval;
 }
 
@@ -672,7 +676,8 @@ SparseMatrix
 octave_base_value::sparse_matrix_value (bool) const
 {
   SparseMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::sparse_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sparse_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -680,7 +685,8 @@ SparseComplexMatrix
 octave_base_value::sparse_complex_matrix_value (bool) const
 {
   SparseComplexMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::sparse_complex_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sparse_complex_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -688,7 +694,8 @@ SparseBoolMatrix
 octave_base_value::sparse_bool_matrix_value (bool) const
 {
   SparseBoolMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::sparse_bool_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::sparse_bool_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -704,7 +711,8 @@ FloatDiagMatrix
 octave_base_value::float_diag_matrix_value (bool) const
 {
   FloatDiagMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::float_diag_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_diag_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -712,7 +720,8 @@ ComplexDiagMatrix
 octave_base_value::complex_diag_matrix_value (bool) const
 {
   ComplexDiagMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::complex_diag_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::complex_diag_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -720,7 +729,8 @@ FloatComplexDiagMatrix
 octave_base_value::float_complex_diag_matrix_value (bool) const
 {
   FloatComplexDiagMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::float_complex_diag_matrix_value()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::float_complex_diag_matrix_value()",
+                        type_name ());
   return retval;
 }
 
@@ -1177,69 +1187,69 @@ const char *
 octave_base_value::get_umap_name (unary_mapper_t umap)
 {
   static const char *names[num_unary_mappers] =
-    {
-      "abs",
-      "acos",
-      "acosh",
-      "angle",
-      "arg",
-      "asin",
-      "asinh",
-      "atan",
-      "atanh",
-      "cbrt",
-      "ceil",
-      "conj",
-      "cos",
-      "cosh",
-      "erf",
-      "erfinv",
-      "erfcinv",
-      "erfc",
-      "erfcx",
-      "erfi",
-      "dawson",
-      "exp",
-      "expm1",
-      "finite",
-      "fix",
-      "floor",
-      "gamma",
-      "imag",
-      "isinf",
-      "isna",
-      "isnan",
-      "lgamma",
-      "log",
-      "log2",
-      "log10",
-      "log1p",
-      "real",
-      "round",
-      "roundb",
-      "signum",
-      "sin",
-      "sinh",
-      "sqrt",
-      "tan",
-      "tanh",
-      "isalnum",
-      "isalpha",
-      "isascii",
-      "iscntrl",
-      "isdigit",
-      "isgraph",
-      "islower",
-      "isprint",
-      "ispunct",
-      "isspace",
-      "isupper",
-      "isxdigit",
-      "signbit",
-      "toascii",
-      "tolower",
-      "toupper"
-    };
+  {
+    "abs",
+    "acos",
+    "acosh",
+    "angle",
+    "arg",
+    "asin",
+    "asinh",
+    "atan",
+    "atanh",
+    "cbrt",
+    "ceil",
+    "conj",
+    "cos",
+    "cosh",
+    "erf",
+    "erfinv",
+    "erfcinv",
+    "erfc",
+    "erfcx",
+    "erfi",
+    "dawson",
+    "exp",
+    "expm1",
+    "finite",
+    "fix",
+    "floor",
+    "gamma",
+    "imag",
+    "isinf",
+    "isna",
+    "isnan",
+    "lgamma",
+    "log",
+    "log2",
+    "log10",
+    "log1p",
+    "real",
+    "round",
+    "roundb",
+    "signum",
+    "sin",
+    "sinh",
+    "sqrt",
+    "tan",
+    "tanh",
+    "isalnum",
+    "isalpha",
+    "isascii",
+    "iscntrl",
+    "isdigit",
+    "isgraph",
+    "islower",
+    "isprint",
+    "ispunct",
+    "isspace",
+    "isupper",
+    "isxdigit",
+    "signbit",
+    "toascii",
+    "tolower",
+    "toupper"
+  };
 
   if (umap < 0 || umap >= num_unary_mappers)
     return "unknown";
@@ -1376,7 +1386,8 @@ octave_base_value::numeric_assign (const std::string& type,
           // Try biased (one-sided) conversions first.
           if (cf_rhs.type_id () >= 0
               && (octave_value_typeinfo::lookup_assign_op (octave_value::op_asn_eq,
-                                                           t_lhs, cf_rhs.type_id ())
+                                                           t_lhs,
+                                                           cf_rhs.type_id ())
                   || octave_value_typeinfo::lookup_pref_assign_conv (t_lhs,
                                                                      cf_rhs.type_id ()) >= 0))
             cf_this = 0;
@@ -1427,7 +1438,8 @@ octave_base_value::numeric_assign (const std::string& type,
               done = (! error_state);
             }
           else
-            gripe_no_conversion (octave_value::assign_op_as_string (octave_value::op_asn_eq),
+            gripe_no_conversion (octave_value::assign_op_as_string
+                                   (octave_value::op_asn_eq),
                                  type_name (), rhs.type_name ());
         }
     }
@@ -1457,7 +1469,7 @@ octave_base_value::indent (std::ostream& os) const
 
   if (beginning_of_line)
     {
-      // FIXME -- do we need this?
+      // FIXME: do we need this?
       // os << prefix;
 
       for (int i = 0; i < curr_print_indent_level; i++)
@@ -1525,25 +1537,133 @@ CONVDECLX (cell_conv)
   return new octave_cell ();
 }
 
+static inline octave_value_list
+sanitize (const octave_value_list& ovl)
+{
+  octave_value_list retval = ovl;
+
+  for (octave_idx_type i = 0; i < ovl.length (); i++)
+    {
+      if (retval(i).is_magic_colon ())
+        retval(i) = ":";
+    }
+
+  return retval;
+}
+
+octave_value
+make_idx_args (const std::string& type,
+               const std::list<octave_value_list>& idx,
+               const std::string& who)
+{
+  octave_value retval;
+
+  size_t len = type.length ();
+
+  if (len == idx.size ())
+    {
+      Cell type_field (1, len);
+      Cell subs_field (1, len);
+
+      std::list<octave_value_list>::const_iterator p = idx.begin ();
+
+      for (size_t i = 0; i < len; i++)
+        {
+          char t = type[i];
+
+          switch (t)
+            {
+            case '(':
+              type_field(i) = "()";
+              subs_field(i) = Cell (sanitize (*p++));
+              break;
+
+            case '{':
+              type_field(i) = "{}";
+              subs_field(i) = Cell (sanitize (*p++));
+              break;
+
+            case '.':
+              {
+                type_field(i) = ".";
+
+                octave_value_list vlist = *p++;
+
+                if (vlist.length () == 1)
+                  {
+                    octave_value val = vlist(0);
+
+                    if (val.is_string ())
+                      subs_field(i) = val;
+                    else
+                      {
+                        error ("string argument required for '.' index");
+                        return retval;
+                      }
+                  }
+                else
+                  {
+                    error ("only single argument permitted for '.' index");
+                    return retval;
+                  }
+              }
+              break;
+
+            default:
+              panic_impossible ();
+              break;
+            }
+        }
+
+      octave_map m;
+
+      m.assign ("type", type_field);
+      m.assign ("subs", subs_field);
+
+      retval = m;
+    }
+  else
+    error ("invalid index for %s", who.c_str ());
+
+  return retval;
+}
+
+bool
+called_from_builtin (void)
+{
+  octave_function *fcn = octave_call_stack::caller ();
+
+  // FIXME: we probably need a better check here, or some other
+  // mechanism to avoid overloaded functions when builtin is used.
+  // For example, what if someone overloads the builtin function?
+  // Also, are there other places where using builtin is not properly
+  // avoiding dispatch?
+
+  return (fcn && fcn->name () == "builtin");
+}
+
 void
 install_base_type_conversions (void)
 {
   INSTALL_ASSIGNCONV (octave_base_value, octave_scalar, octave_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_matrix, octave_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_complex, octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_complex_matrix, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_base_value, octave_complex_matrix,
+                      octave_complex_matrix);
   INSTALL_ASSIGNCONV (octave_base_value, octave_range, octave_matrix);
-  INSTALL_ASSIGNCONV (octave_base_value, octave_char_matrix_str, octave_char_matrix_str);
+  INSTALL_ASSIGNCONV (octave_base_value, octave_char_matrix_str,
+                      octave_char_matrix_str);
   INSTALL_ASSIGNCONV (octave_base_value, octave_cell, octave_cell);
 
   INSTALL_WIDENOP (octave_base_value, octave_matrix, matrix_conv);
-  INSTALL_WIDENOP (octave_base_value, octave_complex_matrix, complex_matrix_conv);
+  INSTALL_WIDENOP (octave_base_value, octave_complex_matrix,
+                   complex_matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
 }
 
 DEFUN (sparse_auto_mutate, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\

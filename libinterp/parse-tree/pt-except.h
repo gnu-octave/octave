@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_except_h)
-#define octave_tree_except_h 1
+#if !defined (octave_pt_except_h)
+#define octave_pt_except_h 1
 
 class tree_statement_list;
 
@@ -40,8 +40,8 @@ tree_try_catch_command : public tree_command
 public:
 
   tree_try_catch_command (int l = -1, int c = -1)
-    : tree_command (l, c), try_code (0), catch_code (0), expr_id (0), lead_comm (0),
-      mid_comm (0), trail_comm (0) { }
+    : tree_command (l, c), try_code (0), catch_code (0), expr_id (0),
+      lead_comm (0), mid_comm (0), trail_comm (0) { }
 
   tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
                           tree_identifier *id,

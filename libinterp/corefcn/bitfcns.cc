@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 John W. Eaton
+Copyright (C) 2004-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -48,26 +48,26 @@ along with Octave; see the file COPYING.  If not, see
 #include <functional>
 
 #if !defined (HAVE_CXX_BITWISE_OP_TEMPLATES)
-namespace std 
+namespace std
 {
   template <typename T>
-  struct bit_and 
+  struct bit_and
   {
-  public: 
+  public:
     T operator() (const T & op1, const T & op2) const { return (op1 & op2); }
   };
 
   template <typename T>
-  struct bit_or 
+  struct bit_or
   {
-  public: 
+  public:
     T operator() (const T & op1, const T & op2) const { return (op1 | op2); }
   };
 
   template <typename T>
-  struct bit_xor 
+  struct bit_xor
   {
-  public: 
+  public:
     T operator() (const T & op1, const T & op2) const { return (op1 ^ op2); }
   };
 }
@@ -159,6 +159,10 @@ bitop (const std::string& fname, const octave_value_list& args)
                               octave_float_scalar::static_class_name () &&
                               args(1).class_name () !=
                               octave_bool::static_class_name ());
+          bool arg0_is_bool = args(0).class_name () ==
+                              octave_bool::static_class_name ();
+          bool arg1_is_bool = args(1).class_name () ==
+                              octave_bool::static_class_name ();
           bool arg0_is_float = args(0).class_name () ==
                                octave_float_scalar::static_class_name ();
           bool arg1_is_float = args(1).class_name () ==
@@ -166,12 +170,12 @@ bitop (const std::string& fname, const octave_value_list& args)
 
           if (! (arg0_is_int || arg1_is_int))
             {
-              if (! (arg0_is_float || arg1_is_float))
+              if (arg0_is_bool && arg1_is_bool)
                 {
-                  uint64NDArray x (args(0).array_value ());
-                  uint64NDArray y (args(1).array_value ());
+                  boolNDArray x (args(0).bool_array_value ());
+                  boolNDArray y (args(1).bool_array_value ());
                   if (! error_state)
-                    retval = bitopx (fname, x, y).array_value ();
+                    retval = bitopx (fname, x, y).bool_array_value ();
                 }
               else if (arg0_is_float && arg1_is_float)
                 {
@@ -179,6 +183,13 @@ bitop (const std::string& fname, const octave_value_list& args)
                   uint64NDArray y (args(1).float_array_value ());
                   if (! error_state)
                     retval = bitopx (fname, x, y).float_array_value ();
+                }
+              else if (! (arg0_is_float || arg1_is_float))
+                {
+                  uint64NDArray x (args(0).array_value ());
+                  uint64NDArray y (args(1).array_value ());
+                  if (! error_state)
+                    retval = bitopx (fname, x, y).array_value ();
                 }
               else
                 {
@@ -345,7 +356,7 @@ bitop (const std::string& fname, const octave_value_list& args)
 }
 
 DEFUN (bitand, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
 Return the bitwise AND of non-negative integers.\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
@@ -356,7 +367,7 @@ Return the bitwise AND of non-negative integers.\n\
 }
 
 DEFUN (bitor, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
 Return the bitwise OR of non-negative integers.\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
@@ -367,7 +378,7 @@ Return the bitwise OR of non-negative integers.\n\
 }
 
 DEFUN (bitxor, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
 Return the bitwise XOR of non-negative integers.\n\
 @var{x}, @var{y} must be in the range [0,bitmax]\n\
@@ -376,6 +387,27 @@ Return the bitwise XOR of non-negative integers.\n\
 {
   return bitop ("bitxor", args);
 }
+
+/*
+%!assert (bitand (true, false), false)
+%!assert (bitor  (true, false), true)
+%!assert (bitxor (true, false), true)
+
+%!assert (bitand (true, true), true)
+%!assert (bitor  (true, true), true)
+%!assert (bitxor (true, true), false)
+
+%!assert (bitand (true, 5), 1)
+
+%!assert (bitand (true, false), false)
+%!assert (bitand (true, true), true)
+%!assert (bitand (true, false), false)
+%!assert (bitand (true, false), false)
+
+## Test idx_arg.length () == 0
+%!error <size of X and Y must match> bitand ([0 0 0], [1 0])
+%!error <size of X and Y must match> bitand ([0; 0; 0], [0 0 0])
+*/
 
 template <typename T>
 static int64_t
@@ -496,7 +528,7 @@ bitshift (float a, int n, int64_t mask)
   while (0)
 
 DEFUN (bitshift, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
 Return a @var{k} bit shift of @var{n}-digit unsigned\n\
@@ -517,7 +549,7 @@ bitshift (eye (3), 1)\n\
 \n\
 bitshift (10, [-2, -1, 0, 1, 2])\n\
 @result{} 2   5  10  20  40\n\
-@c FIXME -- restore this example when third arg is allowed to be an array.\n\
+@c FIXME: restore this example when third arg is allowed to be an array.\n\
 @c\n\
 @c\n\
 @c bitshift ([1, 10], 2, [3,4])\n\
@@ -543,7 +575,7 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         {
           if (nargin == 3)
             {
-              // FIXME -- for compatibility, we should accept an array
+              // FIXME: for compatibility, we should accept an array
               // or a scalar as the third argument.
               if (args(2).numel () > 1)
                 error ("bitshift: N must be a scalar integer");
@@ -583,27 +615,32 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
         DO_SBITSHIFT (int64, nbits < 64 ? nbits : 64);
       else if (cname == "double")
         {
-          static const int bits_in_mantissa = std::numeric_limits<double>::digits;
+          static const int bits_in_mantissa
+            = std::numeric_limits<double>::digits;
+
           nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
           int64_t mask = max_mantissa_value<double> ();
           if (nbits < bits_in_mantissa)
             mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = sizeof (double) * std::numeric_limits<unsigned char>::digits;
+          int bits_in_type = sizeof (double)
+                             * std::numeric_limits<unsigned char>::digits;
           NDArray m = m_arg.array_value ();
-          DO_BITSHIFT ( );
+          DO_BITSHIFT ();
         }
       else if (cname == "single")
         {
-          static const int bits_in_mantissa = std::numeric_limits<float>::digits;
+          static const int bits_in_mantissa
+            = std::numeric_limits<float>::digits;
           nbits = (nbits < bits_in_mantissa ? nbits : bits_in_mantissa);
           int64_t mask = max_mantissa_value<float> ();
           if (nbits < bits_in_mantissa)
             mask = mask >> (bits_in_mantissa - nbits);
           else if (nbits < 1)
             mask = 0;
-          int bits_in_type = sizeof (float) * std::numeric_limits<unsigned char>::digits;
+          int bits_in_type = sizeof (float)
+                             * std::numeric_limits<unsigned char>::digits;
           FloatNDArray m = m_arg.float_array_value ();
           DO_BITSHIFT (Float);
         }
@@ -616,8 +653,21 @@ bitshift (10, [-2, -1, 0, 1, 2])\n\
   return retval;
 }
 
+/*
+%!assert (bitshift (uint8  (16), 1),  uint8 ( 32))
+%!assert (bitshift (uint16 (16), 2), uint16 ( 64))
+%!assert (bitshift (uint32 (16), 3), uint32 (128))
+%!assert (bitshift (uint64 (16), 4), uint64 (256))
+%!assert (bitshift (uint8 (255), 1), uint8 (254))
+
+%!error <expecting integer as second argument> bitshift (16, 1.5)
+%!error bitshift (16, {1})
+%!error <N must be a scalar integer> bitshift (10, [-2 -1 0 1 2], [1 1 1 1 1])
+%!error <N must be positive> bitshift (10, [-2 -1 0 1 2], -1)
+*/
+
 DEFUN (bitmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} bitmax ()\n\
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
@@ -652,7 +702,7 @@ valid option.  On IEEE-754 compatible systems, @code{bitmax} is\n\
 }
 
 DEFUN (flintmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} flintmax ()\n\
 @deftypefnx {Built-in Function} {} flintmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} flintmax (\"single\")\n\
@@ -687,7 +737,7 @@ floating point value.  The default class is @qcode{\"double\"}, but\n\
 }
 
 DEFUN (intmax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmax (@var{type})\n\
 Return the largest integer that can be represented in an integer type.\n\
 The variable @var{type} can be\n\
@@ -718,7 +768,7 @@ unsigned 32-bit integer.\n\
 unsigned 64-bit integer.\n\
 @end table\n\
 \n\
-The default for @var{type} is @code{uint32}.\n\
+The default for @var{type} is @code{int32}.\n\
 @seealso{intmin, flintmax, bitmax}\n\
 @end deftypefn")
 {
@@ -757,7 +807,7 @@ The default for @var{type} is @code{uint32}.\n\
 }
 
 DEFUN (intmin, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmin (@var{type})\n\
 Return the smallest integer that can be represented in an integer type.\n\
 The variable @var{type} can be\n\
@@ -788,7 +838,7 @@ unsigned 32-bit integer.\n\
 unsigned 64-bit integer.\n\
 @end table\n\
 \n\
-The default for @var{type} is @code{uint32}.\n\
+The default for @var{type} is @code{int32}.\n\
 @seealso{intmax, flintmax, bitmax}\n\
 @end deftypefn")
 {
@@ -827,7 +877,7 @@ The default for @var{type} is @code{uint32}.\n\
 }
 
 DEFUN (sizemax, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizemax ()\n\
 Return the largest value allowed for the size of an array.\n\
 If Octave is compiled with 64-bit indexing, the result is of class int64,\n\

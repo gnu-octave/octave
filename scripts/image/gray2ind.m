@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -45,7 +45,7 @@ function [I, map] = gray2ind (I, n = 64)
     error ("gray2ind: I must be a grayscale or binary image");
   elseif (! isscalar (n) || n < 1 || n > 65536)
     error ("gray2ind: N must be a positive integer in the range [1, 65536]");
-  elseif (! ismatrix (I) || ndims (I) != 2)
+  elseif (! ismatrix (I) || ndims (I) < 2)
     error ("gray2ind: I must be a grayscale or binary image");
   endif
 

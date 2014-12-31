@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -27,12 +27,14 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cassert>
+#include <clocale>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 
 #include <iostream>
 
+#include <fcntl.h>
 #include <getopt.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -56,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "input.h"
 #include "lex.h"
 #include "load-path.h"
+#include "load-save.h"
 #include "octave.h"
 #include "oct-conf.h"
 #include "oct-hist.h"
@@ -63,7 +66,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mutex.h"
 #include "oct-obj.h"
 #include "ops.h"
+#include "options-usage.h"
 #include "ov.h"
+#include "ov-classdef.h"
 #include "ov-range.h"
 #include "toplev.h"
 #include "parse.h"
@@ -153,23 +158,6 @@ static std::string image_path;
 // (--no-window-system, -W)
 static bool no_window_system = false;
 
-// Usage message
-static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--debug-jit] [--doc-cache-file file]\n\
-       [--echo-commands] [--eval CODE] [--exec-path path]\n\
-       [--force-gui] [--help] [--image-path path]\n\
-       [--info-file file] [--info-program prog] [--interactive]\n\
-       [--line-editing] [--no-gui] [--no-history]\n\
-       [--no-init-file] [--no-init-path] [--no-jit-compiler]\n\
-       [--no-line-editing] [--no-site-file] [--no-window-system]\n\
-       [--norc] [-p path] [--path path] [--persist] [--silent]\n\
-       [--traditional] [--verbose] [--version] [file]";
-
-// This is here so that it's more likely that the usage message and
-// the real set of options will agree.  Note: the '+' must come first
-// to prevent getopt from permuting arguments!
-static const char *short_opts = "+HWVdfhip:qvx";
-
 // The code to evaluate at startup (--eval CODE)
 static std::string code_to_eval;
 
@@ -181,63 +169,6 @@ static bool start_gui = false;
 
 // If TRUE use traditional settings (--traditional)
 static bool traditional = false;
-
-// Long options.  See the comments in getopt.h for the meanings of the
-// fields in this structure.
-#define BUILT_IN_DOCSTRINGS_FILE_OPTION 1
-#define DOC_CACHE_FILE_OPTION 2
-#define EVAL_OPTION 3
-#define EXEC_PATH_OPTION 4
-#define FORCE_GUI_OPTION 5
-#define IMAGE_PATH_OPTION 6
-#define INFO_FILE_OPTION 7
-#define INFO_PROG_OPTION 8
-#define DEBUG_JIT_OPTION 9
-#define LINE_EDITING_OPTION 10
-#define NO_GUI_OPTION 11
-#define NO_INIT_FILE_OPTION 12
-#define NO_INIT_PATH_OPTION 13
-#define NO_JIT_COMPILER_OPTION 14
-#define NO_LINE_EDITING_OPTION 15
-#define NO_SITE_FILE_OPTION 16
-#define PERSIST_OPTION 17
-#define TEXI_MACROS_FILE_OPTION 18
-#define TRADITIONAL_OPTION 19
-struct option long_opts[] = {
-  { "braindead",                no_argument,       0, TRADITIONAL_OPTION },
-  { "built-in-docstrings-file", required_argument, 0, BUILT_IN_DOCSTRINGS_FILE_OPTION },
-  { "debug",                    no_argument,       0, 'd' },
-  { "debug-jit",                no_argument,       0, DEBUG_JIT_OPTION },
-  { "doc-cache-file",           required_argument, 0, DOC_CACHE_FILE_OPTION },
-  { "echo-commands",            no_argument,       0, 'x' },
-  { "eval",                     required_argument, 0, EVAL_OPTION },
-  { "exec-path",                required_argument, 0, EXEC_PATH_OPTION },
-  { "force-gui",                no_argument,       0, FORCE_GUI_OPTION },
-  { "help",                     no_argument,       0, 'h' },
-  { "image-path",               required_argument, 0, IMAGE_PATH_OPTION },
-  { "info-file",                required_argument, 0, INFO_FILE_OPTION },
-  { "info-program",             required_argument, 0, INFO_PROG_OPTION },
-  { "interactive",              no_argument,       0, 'i' },
-  { "line-editing",             no_argument,       0, LINE_EDITING_OPTION },
-  { "no-gui",                   no_argument,       0, NO_GUI_OPTION },
-  { "no-history",               no_argument,       0, 'H' },
-  { "no-init-file",             no_argument,       0, NO_INIT_FILE_OPTION },
-  { "no-init-path",             no_argument,       0, NO_INIT_PATH_OPTION },
-  { "no-jit-compiler",          no_argument,       0, NO_JIT_COMPILER_OPTION },
-  { "no-line-editing",          no_argument,       0, NO_LINE_EDITING_OPTION },
-  { "no-site-file",             no_argument,       0, NO_SITE_FILE_OPTION },
-  { "no-window-system",         no_argument,       0, 'W' },
-  { "norc",                     no_argument,       0, 'f' },
-  { "path",                     required_argument, 0, 'p' },
-  { "persist",                  no_argument,       0, PERSIST_OPTION },
-  { "quiet",                    no_argument,       0, 'q' },
-  { "silent",                   no_argument,       0, 'q' },
-  { "texi-macros-file",         required_argument, 0, TEXI_MACROS_FILE_OPTION },
-  { "traditional",              no_argument,       0, TRADITIONAL_OPTION },
-  { "verbose",                  no_argument,       0, 'V' },
-  { "version",                  no_argument,       0, 'v' },
-  { 0,                          0,                 0, 0 }
-};
 
 // Store the command-line options for later use.
 
@@ -262,7 +193,7 @@ intern_argv (int argc, char **argv)
 }
 
 DEFUN (__version_info__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -511,79 +442,6 @@ execute_command_line_file (const std::string& fname)
   safe_source_file (fname, context, verbose, require_file, "octave");
 }
 
-// Usage message with extra help.
-
-static void
-verbose_usage (void)
-{
-  std::cout << octave_name_version_copyright_copying_and_warranty ()
-            << "\n\
-\n\
-Usage: octave [options] [FILE]\n\
-\n\
-Options:\n\
-\n\
-  --built-in-docstrings-file FILE Use docs for built-ins from FILE.\n\
-  --debug, -d             Enter parser debugging mode.\n\
-  --debug-jit             Enable JIT compiler debugging/tracing.\n\
-  --doc-cache-file FILE   Use doc cache file FILE.\n\
-  --echo-commands, -x     Echo commands as they are executed.\n\
-  --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
-  --exec-path PATH        Set path for executing subprograms.\n\
-  --force-gui             Force graphical user interface to start.\n\
-  --help, -h,             Print short help message and exit.\n\
-  --image-path PATH       Add PATH to head of image search path.\n\
-  --info-file FILE        Use top-level info file FILE.\n\
-  --info-program PROGRAM  Use PROGRAM for reading info files.\n\
-  --interactive, -i       Force interactive behavior.\n\
-  --line-editing          Force readline use for command-line editing.\n\
-  --no-gui                Disable the graphical user interface.\n\
-  --no-history, -H        Don't save commands to the history list\n\
-  --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
-  --no-init-path          Don't initialize function search path.\n\
-  --no-jit-compiler       Disable the JIT compiler.\n\
-  --no-line-editing       Don't use readline for command-line editing.\n\
-  --no-site-file          Don't read the site-wide octaverc file.\n\
-  --no-window-system, -W  Disable window system, including graphics.\n\
-  --norc, -f              Don't read any initialization files.\n\
-  --path PATH, -p PATH    Add PATH to head of function search path.\n\
-  --persist               Go interactive after --eval or reading from FILE.\n\
-  --silent, --quiet, -q   Don't print message at startup.\n\
-  --texi-macros-file FILE Use Texinfo macros in FILE for makeinfo command.\n\
-  --traditional           Set variables for closer MATLAB compatibility.\n\
-  --verbose, -V           Enable verbose output in some cases.\n\
-  --version, -v           Print version number and exit.\n\
-\n\
-  FILE                    Execute commands from FILE.  Exit when done\n\
-                          unless --persist is also specified.\n\
-\n"
-            << octave_www_statement ()
-            << "\n\n"
-            << octave_contrib_statement ()
-            << "\n\n"
-            << octave_bugs_statement ()
-            << "\n";
-
-  exit (0);
-}
-
-// Terse usage messsage.
-
-static void
-usage (void)
-{
-  std::cerr << "\nusage: " << usage_string << "\n\n";
-  exit (1);
-}
-
-static void
-print_version_and_exit (void)
-{
-  std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
-            << "\n";
-  exit (0);
-}
-
 static void
 lo_error_handler (const char *fmt, ...)
 {
@@ -625,21 +483,22 @@ maximum_braindamage (void)
   FPS1 (octave_value (">> "));
   FPS2 (octave_value (""));
   FPS4 (octave_value (""));
-  Fallow_noninteger_range_as_index (octave_value (true));
   Fbeep_on_error (octave_value (true));
   Fconfirm_recursive_rmdir (octave_value (false));
   Fcrash_dumps_octave_core (octave_value (false));
-  Fsave_default_options (octave_value ("-mat-binary"));
-  Fdo_braindead_shortcircuit_evaluation (octave_value (true));
+  Fdisable_diagonal_matrix (octave_value (true));
+  Fdisable_permutation_matrix (octave_value (true));
+  Fdisable_range (octave_value (true));
   Ffixed_point_format (octave_value (true));
   Fhistory_timestamp_format_string (octave_value ("%%-- %D %I:%M %p --%%"));
   Fpage_screen_output (octave_value (false));
   Fprint_empty_dimensions (octave_value (false));
+  Fsave_default_options (octave_value ("-mat-binary"));
+  Fstruct_levels_to_print (octave_value (0));
 
   disable_warning ("Octave:abbreviated-property-match");
-  disable_warning ("Octave:fopen-file-in-path");
+  disable_warning ("Octave:data-file-in-path");
   disable_warning ("Octave:function-name-clash");
-  disable_warning ("Octave:load-file-in-path");
   disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
@@ -681,7 +540,7 @@ octave_process_command_line (int argc, char **argv)
           // Unrecognized option.  getopt_long already printed a
           // message about that, so we will just print the usage string
           // and exit.
-          usage ();
+          octave_print_terse_usage_and_exit ();
           break;
 
         case 'H':
@@ -708,7 +567,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'h':
-          verbose_usage ();
+          octave_print_verbose_usage_and_exit ();
           break;
 
         case 'i':
@@ -732,7 +591,7 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         case 'v':
-          print_version_and_exit ();
+          octave_print_version_and_exit ();
           break;
 
         case BUILT_IN_DOCSTRINGS_FILE_OPTION:
@@ -783,6 +642,10 @@ octave_process_command_line (int argc, char **argv)
           Fdebug_jit (octave_value (true));
           break;
 
+        case JIT_COMPILER_OPTION:
+          Fjit_enable (octave_value (true));
+          break;
+
         case LINE_EDITING_OPTION:
           forced_line_editing = true;
           break;
@@ -797,10 +660,6 @@ octave_process_command_line (int argc, char **argv)
 
         case NO_INIT_PATH_OPTION:
           set_initial_path = false;
-          break;
-
-        case NO_JIT_COMPILER_OPTION:
-          Fjit_enable (octave_value (false));
           break;
 
         case NO_LINE_EDITING_OPTION:
@@ -837,7 +696,8 @@ octave_process_command_line (int argc, char **argv)
   if (force_gui_option && no_gui_option)
     {
       error ("error: only one of --force-gui and --no-gui may be used");
-      usage ();
+
+      octave_print_terse_usage_and_exit ();
     }
 }
 
@@ -847,6 +707,10 @@ octave_process_command_line (int argc, char **argv)
 void
 octave_initialize_interpreter (int argc, char **argv, int embedded)
 {
+  // Matlab uses "C" locale for LC_NUMERIC class regardless of local setting
+  setlocale (LC_NUMERIC, "C");
+  setlocale (LC_TIME, "C");
+
   octave_embedded = embedded;
 
   octave_env::set_program_name (argv[0]);
@@ -857,6 +721,11 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   octave_thread::init ();
 
   set_default_prompts ();
+
+  // Initialize default warning state before --traditional option may
+  // reset them.
+
+  initialize_default_warning_state ();
 
   if (traditional)
     maximum_braindamage ();
@@ -875,8 +744,6 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   initialize_error_handlers ();
 
-  initialize_default_warning_state ();
-
   if (! embedded)
     install_signal_handlers ();
   else
@@ -889,6 +756,8 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   install_ops ();
 
   install_builtins ();
+
+  install_classdef ();
 
   for (std::list<std::string>::const_iterator it = command_line_path.begin ();
        it != command_line_path.end (); it++)
@@ -946,6 +815,8 @@ octave_execute_interpreter (void)
   if (! inhibit_startup_message)
     std::cout << octave_startup_message () << "\n" << std::endl;
 
+  octave_prepare_hdf5 ();
+
   execute_startup_files ();
 
   if (! inhibit_startup_message && reading_startup_message_printed)
@@ -1002,14 +873,14 @@ octave_execute_interpreter (void)
     {
       command_editor::blink_matching_paren (false);
 
-      // FIXME -- is this the right thing to do?
+      // FIXME: is this the right thing to do?
 
       Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
     }
 
   if (octave_embedded)
     {
-      // FIXME -- do we need to do any cleanup here before
+      // FIXME: do we need to do any cleanup here before
       // returning?  If we don't, what will happen to Octave functions
       // that have been registered to execute with atexit, for example?
 
@@ -1028,8 +899,17 @@ octave_execute_interpreter (void)
 static bool
 check_starting_gui (void)
 {
-  if (no_window_system || ! display_info::display_available ())
+  if (no_window_system)
     return false;
+
+  std::string err_msg;
+  if (! display_info::display_available (err_msg))
+    {
+      if (! (inhibit_startup_message || err_msg.empty ()))
+        warning (err_msg.c_str ());
+
+      return false;
+    }
 
   if (force_gui_option)
     return true;
@@ -1072,7 +952,7 @@ octave_starting_gui (void)
 }
 
 DEFUN (isguirunning, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isguirunning ()\n\
 Return true if Octave is running in GUI mode and false otherwise.\n\
 @end deftypefn")
@@ -1093,7 +973,7 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 */
 
 DEFUN (argv, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} argv ()\n\
 Return the command line arguments passed to Octave.  For example,\n\
 if you invoked Octave using the command\n\
@@ -1127,7 +1007,7 @@ for an example of how to create an executable Octave script.\n\
 */
 
 DEFUN (program_invocation_name, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_invocation_name ()\n\
 Return the name that was typed at the shell prompt to run Octave.\n\
 \n\
@@ -1154,7 +1034,7 @@ how to create an executable Octave script.\n\
 */
 
 DEFUN (program_name, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_name ()\n\
 Return the last component of the value returned by\n\
 @code{program_invocation_name}.\n\

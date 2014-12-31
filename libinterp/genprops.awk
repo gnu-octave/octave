@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 John W. Eaton
+## Copyright (C) 2007-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ## 
@@ -290,7 +290,7 @@ function emit_declarations ()
   if (class_name && ! base)
     emit_common_declarations();
 
-  printf ("public:\n\n\n  static std::set<std::string> core_property_names (void);\n\n  static bool has_core_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names (void) const;\n\n");
+  printf ("public:\n\n\n  static std::set<std::string> core_property_names (void);\n\n  static std::set<std::string> readonly_property_names (void);\n\n  static bool has_core_property (const caseless_str& pname);\n\n  static bool has_readonly_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names (void) const;\n\n");
 
   if (! base)
     printf ("  bool has_property (const caseless_str& pname) const;\n\n");
@@ -470,7 +470,7 @@ function emit_source ()
               class_name);
 
     if (! base)
-      printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"get\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n\n");
+        printf ("  const std::set<std::string>& pnames = all_property_names ();\n\n  caseless_str pname = validate_property_name (\"set\", go_name, pnames, pname_arg);\n\n  if (error_state)\n    return;\n  else if (has_readonly_property (pname))\n    {\n      error (\"set: \\\"%%s\\\" is read-only\", pname.c_str ());\n      return;\n    }\n\n");
 
     first = 1;
 
@@ -611,6 +611,7 @@ function emit_source ()
       printf ("std::string %s::properties::go_name (\"%s\");\n\n",
               class_name, object_name);
 
+    ## core_property_names
     printf ("std::set<std::string>\n");
     if (base)
       printf ("base_properties");
@@ -622,7 +623,7 @@ function emit_source ()
     if (! base)
       printf ("\n      std::set<std::string> base_pnames = base_properties::core_property_names ();\n      all_pnames.insert (base_pnames.begin (), base_pnames.end ());\n");
     printf ("\n      initialized = true;\n    }\n\n  return all_pnames;\n}\n\n");
-
+    ## has_core_property
     printf ("bool\n");
     if (base)
       printf ("base_properties");
@@ -630,6 +631,30 @@ function emit_source ()
       printf ("%s::properties", class_name);
     printf ("::has_core_property (const caseless_str& pname)\n{\n  std::set<std::string> pnames = core_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name);
 
+    ## readonly_property_names
+    printf ("std::set<std::string>\n");
+    if (base)
+      printf ("base_properties");
+    else
+      printf ("%s::properties", class_name);
+    printf ("::readonly_property_names (void)\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n");
+    for (i = 1; i <= idx; i++)
+        if (readonly[i])
+        {
+            printf ("      all_pnames.insert (\"%s\");\n", name[i]);
+        }
+    if (! base)
+      printf ("\n      std::set<std::string> base_pnames = base_properties::readonly_property_names ();\n      all_pnames.insert (base_pnames.begin (), base_pnames.end ());\n");
+    printf ("\n      initialized = true;\n    }\n\n  return all_pnames;\n}\n\n");
+    ## has_readonly_property
+    printf ("bool\n");
+    if (base)
+      printf ("base_properties");
+    else
+      printf ("%s::properties", class_name);
+    printf ("::has_readonly_property (const caseless_str& pname)\n{\n  std::set<std::string> pnames = readonly_property_names ();\n\n  return pnames.find (pname) != pnames.end ();\n}\n\n", class_name);
+
+    ## all_property_names
     printf ("std::set<std::string>\n");
     if (base)
         printf ("base_properties");

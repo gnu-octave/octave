@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Shai Ayal
+Copyright (C) 2009-2013 Shai Ayal
 
 This file is part of Octave.
 
@@ -24,7 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if defined (HAVE_OPENGL)
+#ifdef HAVE_GL2PS_H
 
 #include <cstdio>
 
@@ -44,7 +44,8 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
     {
       in_draw = true;
 
-      GLint buffsize = 0, state = GL2PS_OVERFLOW;
+      GLint buffsize = 0;
+      GLint state = GL2PS_OVERFLOW;
       GLint viewport[4];
 
       glGetIntegerv (GL_VIEWPORT, viewport);
@@ -52,13 +53,13 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
       GLint gl2ps_term;
       if (term.find ("eps") != std::string::npos) gl2ps_term = GL2PS_EPS;
       else if (term.find ("pdf") != std::string::npos) gl2ps_term = GL2PS_PDF;
-      else if (term.find ("svg") != std::string::npos) gl2ps_term = GL2PS_SVG;
       else if (term.find ("ps") != std::string::npos) gl2ps_term = GL2PS_PS;
+      else if (term.find ("svg") != std::string::npos) gl2ps_term = GL2PS_SVG;
       else if (term.find ("pgf") != std::string::npos) gl2ps_term = GL2PS_PGF;
       else if (term.find ("tex") != std::string::npos) gl2ps_term = GL2PS_TEX;
       else
         {
-          error ("gl2ps-renderer:: Unknown terminal");
+          error ("gl2ps-renderer::draw: Unknown terminal %s", term.c_str ());
           return;
         }
 
@@ -67,14 +68,17 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 
       // Default sort order optimizes for 3D plots
       GLint gl2ps_sort = GL2PS_BSP_SORT;
-      if (term.find ("is2D") != std::string::npos) gl2ps_sort = GL2PS_NO_SORT;
+      // For 2D plots we can use a simpler Z-depth sorting algorithm
+      if (term.find ("is2D") != std::string::npos)
+        gl2ps_sort = GL2PS_SIMPLE_SORT;
 
       while (state == GL2PS_OVERFLOW)
         {
-          // For LaTeX output the fltk print process uses two drawnow() commands.
-          // The first one is for the pdf/ps/eps graph to be included.  The print_cmd
-          // is saved as old_print_cmd.  Then the second drawnow() outputs the tex-file
-          // and the graphic filename to be included is extracted from old_print_cmd.
+          // For LaTeX output the fltk print process uses 2 drawnow() commands.
+          // The first one is for the pdf/ps/eps graph to be included.  The
+          // print_cmd is saved as old_print_cmd.  Then the second drawnow()
+          // outputs the tex-file and the graphic filename to be included is
+          // extracted from old_print_cmd.
           std::string include_graph;
           std::size_t found_redirect = old_print_cmd.find (">");
           if (found_redirect != std::string::npos)
@@ -85,21 +89,31 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
           if (n_begin != std::string::npos)
             {
               std::size_t n_end = include_graph.find_last_not_of (" ");
-              include_graph = include_graph.substr (n_begin, n_end - n_begin + 1);
+              include_graph = include_graph.substr (n_begin,
+                                                    n_end - n_begin + 1);
             }
           else
             include_graph = "foobar-inc";
           buffsize += 1024*1024;
-          gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
-                          gl2ps_term, gl2ps_sort,
-                          (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
-                           | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
-                           | GL2PS_BEST_ROOT | gl2ps_text
-                           | GL2PS_NO_PS3_SHADING),
-                          GL_RGBA, 0, NULL, 0, 0, 0,
-                          buffsize, fp, include_graph.c_str ());
+          // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
+          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
+                                      gl2ps_term, gl2ps_sort,
+                                      (  GL2PS_NO_BLENDING
+                                       | GL2PS_OCCLUSION_CULL
+                                       | GL2PS_BEST_ROOT
+                                       | gl2ps_text
+                                       | GL2PS_NO_PS3_SHADING),
+                                      GL_RGBA, 0, NULL, 0, 0, 0,
+                                      buffsize, fp, include_graph.c_str ());
+          if (ret == GL2PS_ERROR)
+            error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
           old_print_cmd = print_cmd;
           opengl_renderer::draw (go);
+
+          // Force execution of GL commands in finite time.
+          // Without glFlush () there may primitives be missing in the gl2ps output.
+          glFlush ();
+
           state = gl2psEndPage ();
         }
 
@@ -155,8 +169,8 @@ glps_renderer::render_text (const std::string& txt,
   gl2psTextOpt (txt.c_str (), fontname.c_str (), fontsize,
                 alignment_to_mode (ha, va), rotation);
 
-  // FIXME? -- we have no way of getting a bounding box from gl2ps, so
-  // we use freetype
+  // FIXME?
+  // We have no way of getting a bounding box from gl2ps, so we use FreeType.
   Matrix bbox;
   uint8NDArray pixels;
   text_to_pixels (txt, pixels, bbox, 0, 0, rotation);
@@ -168,7 +182,7 @@ glps_renderer::set_font (const base_properties& props)
 {
   opengl_renderer::set_font (props);
 
-  fontsize = props.get ("fontsize").double_value ();
+  fontsize = props.get ("fontsize_points").double_value ();
 
   caseless_str fn = props.get ("fontname").string_value ();
   fontname = "";
@@ -183,17 +197,18 @@ glps_renderer::set_font (const base_properties& props)
   else
     fontname = "Helvetica";
 
-  // FIXME -- add support for bold and italic
+  // FIXME: add support for bold and italic
 }
 
 template <typename T>
 static void
-draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data)
+draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data, float maxval)
 {
   OCTAVE_LOCAL_BUFFER (GLfloat, a, 3*w*h);
 
+  // Convert to GL_FLOAT as it is the only type gl2ps accepts.
   for (int i = 0; i < 3*w*h; i++)
-    a[i] = data[i];
+    a[i] = data[i] / maxval;
 
   gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
 }
@@ -202,10 +217,12 @@ void
 glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
                             GLenum type, const GLvoid *data)
 {
-  if (type == GL_UNSIGNED_SHORT)
-    ::draw_pixels (w, h, format, static_cast<const GLushort *> (data));
-  else if (type == GL_UNSIGNED_BYTE)
-    ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data));
+  // gl2psDrawPixels only supports the GL_FLOAT type.
+  // Other formats, such as uint8, must be converted first.
+  if (type == GL_UNSIGNED_BYTE)
+    ::draw_pixels (w, h, format, static_cast<const GLubyte *> (data), 255.0f);
+  else if (type == GL_UNSIGNED_SHORT)
+    ::draw_pixels (w, h, format, static_cast<const GLushort *> (data), 65535.0f);
   else
     gl2psDrawPixels (w, h, 0, 0, format, type, data);
 }
@@ -220,7 +237,8 @@ glps_renderer::draw_text (const text::properties& props)
   set_color (props.get_color_rgb ());
 
   const Matrix pos = get_transform ().scale (props.get_data_position ());
-  int halign = 0, valign = 0;
+  int halign = 0;
+  int valign = 0;
 
   if (props.horizontalalignment_is ("center"))
     halign = 1;

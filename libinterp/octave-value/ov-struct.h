@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_struct_h)
-#define octave_struct_h 1
+#if !defined (octave_ov_struct_h)
+#define octave_ov_struct_h 1
 
 #include <cstdlib>
 
@@ -68,10 +68,10 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string&,
                              const std::list<octave_value_list>&, int);
@@ -90,7 +90,7 @@ public:
   octave_value squeeze (void) const { return map.squeeze (); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return map.permute (vec, inv); }
+  { return map.permute (vec, inv); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -109,10 +109,10 @@ public:
   octave_idx_type nfields (void) const { return map.nfields (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return map.reshape (new_dims); }
+  { return map.reshape (new_dims); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
-    { octave_map tmap = map; tmap.resize (dv, fill); return tmap; }
+  { octave_map tmap = map; tmap.resize (dv, fill); return tmap; }
 
   bool is_defined (void) const { return true; }
 
@@ -126,7 +126,7 @@ public:
 
   string_vector map_keys (void) const { return map.fieldnames (); }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -183,8 +183,10 @@ public:
 
   ~octave_scalar_struct (void) { }
 
-  octave_base_value *clone (void) const { return new octave_scalar_struct (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_scalar_struct (); }
+  octave_base_value *clone (void) const
+  { return new octave_scalar_struct (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_scalar_struct (); }
 
   octave_value dotref (const octave_value_list& idx, bool auto_add = false);
 
@@ -209,7 +211,7 @@ public:
   octave_value squeeze (void) const { return map; }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return octave_map (map).permute (vec, inv); }
+  { return octave_map (map).permute (vec, inv); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -228,10 +230,10 @@ public:
   octave_idx_type nfields (void) const { return map.nfields (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return octave_map (map).reshape (new_dims); }
+  { return octave_map (map).reshape (new_dims); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
-    { octave_map tmap = map; tmap.resize (dv, fill); return tmap; }
+  { octave_map tmap = map; tmap.resize (dv, fill); return tmap; }
 
   bool is_defined (void) const { return true; }
 
@@ -247,7 +249,7 @@ public:
 
   string_vector map_keys (void) const { return map.fieldnames (); }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

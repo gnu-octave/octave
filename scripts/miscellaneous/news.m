@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 John W. Eaton
+## Copyright (C) 2007-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -24,6 +24,7 @@
 ## When called without an argument, display the NEWS file for Octave.
 ## When given a package name @var{package}, display the current NEWS file for
 ## that package.
+## @seealso{ver, pkg}
 ## @end deftypefn
 
 function news (package = "octave")

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Ben Abbott
+## Copyright (C) 2008-2013 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -30,10 +30,8 @@
 ##
 ## If @var{p} is unspecified, return the quantiles for @code{[0 25 50 75 100]}.
 ## The optional argument @var{dim} determines the dimension along which
-## the percentiles are calculated.  If @var{dim} is omitted, and @var{x} is
-## a vector or matrix, it defaults to 1 (column-wise quantiles).  When
-## @var{x} is an N-D array, @var{dim} defaults to the first non-singleton
-## dimension.
+## the percentiles are calculated.  If @var{dim} is omitted it defaults to the
+## the first non-singleton dimension.
 ## @seealso{quantile}
 ## @end deftypefn
 
@@ -59,14 +57,10 @@ function q = prctile (x, p = [], dim)
   endif
 
   nd = ndims (x);
+  sz = size (x);
   if (nargin < 3)
-    if (nd == 2)
-      ## If a matrix or vector, always use 1st dimension.
-      dim = 1;
-    else
-      ## If an N-d array, find the first non-singleton dimension.
-      (dim = find (sz > 1, 1)) || (dim = 1);
-    endif
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -84,11 +78,26 @@ endfunction
 
 %!test
 %! pct = 50;
+%! q = prctile (1:4, pct);
+%! qa = 2.5;
+%! assert (q, qa);
 %! q = prctile (1:4, pct, 1);
 %! qa = [1, 2, 3, 4];
 %! assert (q, qa);
 %! q = prctile (1:4, pct, 2);
-%! qa = 2.5000;
+%! qa = 2.5;
+%! assert (q, qa);
+
+%!test
+%! pct = [50 75];
+%! q = prctile (1:4, pct);
+%! qa = [2.5 3.5];
+%! assert (q, qa);
+%! q = prctile (1:4, pct, 1);
+%! qa = [1, 2, 3, 4; 1, 2, 3, 4];
+%! assert (q, qa);
+%! q = prctile (1:4, pct, 2);
+%! qa = [2.5 3.5];
 %! assert (q, qa);
 
 %!test

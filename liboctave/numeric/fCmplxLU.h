@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexLU_h)
-#define octave_FloatComplexLU_h 1
+#if !defined (octave_fCmplxLU_h)
+#define octave_fCmplxLU_h 1
 
 #include "base-lu.h"
 #include "dMatrix.h"
@@ -46,20 +46,22 @@ public:
     : base_lu <FloatComplexMatrix> (l, u, p) { }
 
   FloatComplexLU& operator = (const FloatComplexLU& a)
-    {
-      if (this != &a)
-        base_lu <FloatComplexMatrix> :: operator = (a);
+  {
+    if (this != &a)
+      base_lu <FloatComplexMatrix> :: operator = (a);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~FloatComplexLU (void) { }
 
-  void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+  void update (const FloatComplexColumnVector& u,
+               const FloatComplexColumnVector& v);
 
   void update (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 
-  void update_piv (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+  void update_piv (const FloatComplexColumnVector& u,
+                   const FloatComplexColumnVector& v);
 
   void update_piv (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 };

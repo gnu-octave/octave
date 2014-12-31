@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,26 +35,26 @@ public:
 
   dir_entry (const std::string& n = std::string ())
     : name (n), dir (0), fail (false), errmsg ()
-    {
-      if (! name.empty ())
-        open ();
-    }
+  {
+    if (! name.empty ())
+      open ();
+  }
 
   dir_entry (const dir_entry& d)
     : name (d.name), dir (d.dir), fail (d.fail), errmsg (d.errmsg) { }
 
   dir_entry& operator = (const dir_entry& d)
-    {
-      if (this != &d)
-        {
-          name = d.name;
-          dir = d.dir;
-          fail = d.fail;
-          errmsg = d.errmsg;
-        }
+  {
+    if (this != &d)
+      {
+        name = d.name;
+        dir = d.dir;
+        fail = d.fail;
+        errmsg = d.errmsg;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~dir_entry (void) { close (); }
 

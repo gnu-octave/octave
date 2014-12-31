@@ -1,8 +1,8 @@
-      double precision function r1mach (i)
+      real function r1mach (i)
       integer i
       logical init
-      double precision rmach(5)
-      double precision slamch
+      real rmach(5)
+      real slamch
       external slamch
       save init, rmach
       data init /.false./
@@ -20,5 +20,5 @@
   999 write (*, 1999) i
  1999 format (' r1mach - i out of bounds', i10)
       call xstopx (' ')
-      d1mach = 0
+      r1mach = 0
       end

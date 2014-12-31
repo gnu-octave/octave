@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -36,8 +36,8 @@ gripe_invalid_permutation (void)
     ("PermMatrix: invalid permutation vector");
 }
 
-PermMatrix::PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check)
-  : Array<octave_idx_type> (p), _colp(colp)
+void
+PermMatrix::setup (const Array<octave_idx_type>& p, bool colp, bool check)
 {
   if (check)
     {
@@ -47,12 +47,28 @@ PermMatrix::PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check)
           Array<octave_idx_type>::operator = (Array<octave_idx_type> ());
         }
     }
+
+  if (!colp)
+    *this = this->transpose ();
 }
 
-PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
-  : Array<octave_idx_type> (), _colp(colp)
+PermMatrix::PermMatrix (const Array<octave_idx_type>& p)
+  : Array<octave_idx_type> (p)
+{
+  setup (p, false, true);
+}
+
+PermMatrix::PermMatrix (const Array<octave_idx_type>& p, bool colp, bool check)
+  : Array<octave_idx_type> (p)
+{
+  setup (p, colp, check);
+}
+
+void
+PermMatrix::setup (const idx_vector& idx, bool colp, octave_idx_type n)
 {
   octave_idx_type len = idx.length (n);
+
   if (! idx.is_permutation (len))
     gripe_invalid_permutation ();
   else
@@ -61,12 +77,28 @@ PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
       for (octave_idx_type i = 0; i < len; i++) idxa(i) = idx(i);
       Array<octave_idx_type>::operator = (idxa);
     }
+
+  if (!colp)
+    *this = this->transpose ();
+}
+
+PermMatrix::PermMatrix (const idx_vector& idx)
+  : Array<octave_idx_type> ()
+{
+    setup (idx, false, 0);
+}
+
+PermMatrix::PermMatrix (const idx_vector& idx, bool colp, octave_idx_type n)
+  : Array<octave_idx_type> ()
+{
+    setup (idx, colp, n);
 }
 
 PermMatrix::PermMatrix (octave_idx_type n)
-  : Array<octave_idx_type> (dim_vector (n, 1)), _colp (false)
+  : Array<octave_idx_type> (dim_vector (n, 1))
 {
-  for (octave_idx_type i = 0; i < n; i++) xelem (i) = i;
+  for (octave_idx_type i = 0; i < n; i++)
+    xelem (i) = i;
 }
 
 octave_idx_type
@@ -86,8 +118,13 @@ PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 PermMatrix
 PermMatrix::transpose (void) const
 {
-  PermMatrix retval (*this);
-  retval._colp = ! retval._colp;
+  octave_idx_type len = Array<octave_idx_type>::length ();
+
+  PermMatrix retval (len);
+
+  for (octave_idx_type i = 0; i < len; ++i)
+    retval.xelem (xelem (i)) = i;
+
   return retval;
 }
 
@@ -119,7 +156,8 @@ PermMatrix::determinant (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      octave_idx_type j = p[i], k = q[i];
+      octave_idx_type j = p[i];
+      octave_idx_type k = q[i];
       if (j != i)
         {
           p[k] = p[i];
@@ -132,17 +170,20 @@ PermMatrix::determinant (void) const
 }
 
 PermMatrix
-PermMatrix::power (octave_idx_type m) const
+PermMatrix::power(octave_idx_type m) const
+{
+  if (m < 0)
+    return inverse ().pos_power (-m);
+  else if (m > 0)
+    return pos_power (m);
+  else
+    return PermMatrix (rows ());
+}
+
+PermMatrix
+PermMatrix::pos_power (octave_idx_type m) const
 {
   octave_idx_type n = rows ();
-  bool res_colp = _colp;
-  if (m < 0)
-    {
-      res_colp = ! res_colp;
-      m = -m;
-    }
-  else if (m == 0)
-    return PermMatrix (n);
 
   const octave_idx_type *p = data ();
   Array<octave_idx_type> res_pvec (dim_vector (n, 1), -1);
@@ -175,42 +216,29 @@ PermMatrix::power (octave_idx_type m) const
 
     }
 
-  return PermMatrix (res_pvec, res_colp, false);
+  return PermMatrix (res_pvec, true, false);
 }
 
 PermMatrix
 PermMatrix::eye (octave_idx_type n)
 {
-  Array<octave_idx_type> p (dim_vector (n, 1));
-  for (octave_idx_type i = 0; i < n; i++)
-    p(i) = i;
-
-  return PermMatrix (p, false, false);
+  return PermMatrix (n);
 }
 
 PermMatrix
 operator *(const PermMatrix& a, const PermMatrix& b)
 {
-  const Array<octave_idx_type> ia = a.pvec (), ib = b.pvec ();
   PermMatrix r;
+
+  const Array<octave_idx_type> ia = a.col_perm_vec ();
+  const Array<octave_idx_type> ib = b.col_perm_vec ();
+
   octave_idx_type n = a.columns ();
+
   if (n != b.rows ())
     gripe_nonconformant ("operator *", n, n, b.rows (), b.rows ());
-  else if (a._colp == b._colp)
-    {
-      r = PermMatrix ((a._colp
-                       ? ia.index (idx_vector (ib))
-                       : ib.index (idx_vector (ia))), a._colp, false);
-    }
   else
-    {
-      Array<octave_idx_type> ra (dim_vector (n, 1));
-      if (a._colp)
-        ra.assign (idx_vector (ia), ib);
-      else
-        ra.assign (idx_vector (ib), ia);
-      r = PermMatrix (ra, a._colp, false);
-    }
+    r = PermMatrix (ia.index (idx_vector (ib)), true, false);
 
   return r;
 }

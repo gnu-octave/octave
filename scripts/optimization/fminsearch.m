@@ -1,5 +1,5 @@
 ## Copyright (C) 2003,2012 Andy Adler
-## Copyright (C) 2002 N.J.Higham
+## Copyright (C) 2002, 2013 N.J.Higham
 ##
 ## This file is part of Octave.
 ##
@@ -24,9 +24,9 @@
 ##
 ## Find a value of @var{x} which minimizes the function @var{fun}.
 ## The search begins at the point @var{x0} and iterates using the
-## Nelder & Mead Simplex algorithm (a derivative-free method).  This algorithm
-## is better-suited to functions which have discontinuities or for which
-## a gradient-based search such as @code{fminunc} fails.
+## @nospell{Nelder & Mead} Simplex algorithm (a derivative-free method).  This
+## algorithm is better-suited to functions which have discontinuities or for
+## which a gradient-based search such as @code{fminunc} fails.
 ##
 ## Options for the search are provided in the parameter @var{options} using 
 ## the function @code{optimset}.  Currently, @code{fminsearch} accepts the
@@ -116,7 +116,7 @@ endfunction
 ##    and Applied Mathematics, Philadelphia, PA, 1999.
 
 ## From Matrix Toolbox
-## Copyright (C) 2002 N.J.Higham
+## Copyright (C) 2002, 2013 N.J.Higham
 ## www.maths.man.ac.uk/~higham/mctoolbox
 ##
 ## Modifications for Octave by A.Adler 2003

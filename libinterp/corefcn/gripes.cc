@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -61,7 +61,8 @@ gripe_nonconformant (void)
 }
 
 void
-gripe_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2)
+gripe_nonconformant (octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2)
 {
   error ("nonconformant matrices (op1 is %dx%d, op2 is %dx%d)",
          r1, c1, r2, c2);
@@ -243,4 +244,12 @@ gripe_disabled_feature (const std::string& func, const std::string& feature,
 {
   error ("%s: support for %s was disabled when %s was built",
          func.c_str (), feature.c_str (), pkg.c_str ());
+}
+
+void
+gripe_data_file_in_path (const std::string& fcn, const std::string& file)
+{
+  warning_with_id ("Octave:data-file-in-path",
+                   "%s: '%s' found by searching load path",
+                   fcn.c_str (), file.c_str ());
 }

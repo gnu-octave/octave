@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 David Bateman
+## Copyright (C) 2005-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -32,4 +32,8 @@ function ret = __prog_output_assert__ (str)
   endif
   _assert_printf = "";
 endfunction
+
+
+## No test coverage for internal function.  It is tested through calling fcn.
+%!assert (1)
 

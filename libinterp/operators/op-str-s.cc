@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -54,7 +54,8 @@ void
 install_str_s_ops (void)
 {
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_scalar, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_scalar, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_sq_str, octave_scalar,
+                    assign);
 
   INSTALL_CATOP (octave_char_matrix_str, octave_scalar, str_s);
   INSTALL_CATOP (octave_char_matrix_sq_str, octave_scalar, str_s);

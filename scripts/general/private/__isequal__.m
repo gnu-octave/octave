@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -33,17 +33,19 @@
 ## Algorithm:
 ##
 ## 1. Determine the class of x
-## 2. If x is of the struct, cell, list or char class, for each
-##    argument after x, determine whether it has the same class
-##    and size as x.
-##    Otherwise, for each argument after x, verify that it is not
-##    of the struct, cell, list or char class, and that it has
-##    the same size as x.
+## 2. If x and all other arguments have the same class, then check that the
+##    number of dimensions and then the size of each dimension match.
+##    If not all arguments share the same class, then verify that all of the
+##    arguments belong to a comparable "numeric" class which includes
+##    numeric, logical, and character arrays.  Check that number of dimensions
+##    and size of each dimension match.
 ## 3. For each argument after x, compare it for equality with x:
 ##    a. struct     compare each member by name, not by order (recursive)
-##    b. cell/list  compare each member by order (recursive)
-##    c. char       compare each member with strcmp
-##    d. <other>    compare each nonzero member, and assume NaN == NaN
+##    b. object     converted to struct, and then compared as stated above
+##    c. cell       compare each member by order (recursive)
+##    d. char       compare each member with strcmp
+##    e  fcn_handle compare using overloade 'eq' operator
+##    f. <other>    compare each nonzero member, and assume NaN == NaN
 ##                  if nans_compare_equal is nonzero.
 
 function t = __isequal__ (nans_compare_equal, x, varargin)
@@ -53,37 +55,33 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   ## Generic tests.
 
   ## All arguments must either be of the same class or they must be
-  ## numeric values.
+  ## "numeric" values.
   t = (all (strcmp (class (x),
                     cellfun ("class", varargin, "uniformoutput", false)))
-       || ((isnumeric (x) || islogical (x))
-           && all (cellfun ("isnumeric", varargin)
-                   | cellfun ("islogical", varargin))));
+       || ((isreal (x) || isnumeric (x))
+           && all (cellfun ("isreal", varargin)
+                   | cellfun ("isnumeric", varargin))));
 
   if (t)
     ## Test that everything has the same number of dimensions.
-    s_x = size (x);
-    s_v = cellfun (@size, varargin, "uniformoutput", false);
-    t = all (length (s_x) == cellfun ("length", s_v));
+    t = all (ndims (x) == cellfun ("ndims", varargin));
   endif
 
   if (t)
-    ## Test that everything is the same size since it has the same
-    ## dimensionality.
-    l_x = length (s_x);
-    s_v = reshape ([s_v{:}], length (s_x), []);
-    idx = 0;
-    while (t && idx < l_x)
-      idx++;
-      t = all (s_x(idx) == s_v(idx,:));
-    endwhile
+    ## Test that everything is the same size since the dimensionality matches.
+    nd = ndims (x);
+    k = 1;
+    do
+      t = all (size (x,k) == cellfun ("size", varargin, k));
+    until (!t || k++ == nd);
   endif
 
   ## From here on, compare objects as if they were structures.
-  if (isobject (x))
+  if (t && isobject (x))
     x = builtin ("struct", x);
-    varargin = cellfun (@(x) builtin ("struct", x), varargin,
-                        "uniformoutput", false);
+    for i = 1:numel (varargin)
+      varargin{i} = builtin ("struct", varargin{i});
+    endfor
   endif
 
   if (t)
@@ -91,9 +89,9 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     if (isstruct (x))
       ## Test the number of fields.
       fn_x = fieldnames (x);
-      l_fn_x = length (fn_x);
+      l_fn_x = numfields (x);
       fn_v = cellfun ("fieldnames", varargin, "uniformoutput", false);
-      t = all (l_fn_x == cellfun ("length", fn_v));
+      t = all (l_fn_x == cellfun ("numel", fn_v));
 
       ## Test that all the names are equal.
       idx = 0;
@@ -108,12 +106,12 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       while (t && idx < l_fn_x)
         ## Test that all field values are equal.
         idx++;
-        args = {nans_compare_equal, {x.(fn_x{idx})}};
+        args = cell (1, 2+l_v);
+        args(1:2) = {nans_compare_equal, {x.(fn_x{idx})}};
         for argn = 1:l_v
           args{argn+2} = {varargin{argn}.(fn_x{idx})};
         endfor
-        ## Minimize function calls by calling for all the arguments at
-        ## once.
+        ## Minimize function calls by calling for all the arguments at once.
         t = __isequal__ (args{:});
       endwhile
 
@@ -123,24 +121,24 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       idx = 0;
       while (t && idx < l_x)
         idx++;
-        args = {nans_compare_equal, x{idx}};
-        for p = 1:l_v
-          args{p+2} = varargin{p}{idx};
-        endfor
+        args = cell (1, 2+l_v);
+        args(1:2) = {nans_compare_equal, x{idx}}; 
+        args(3:end) = [cellindexmat(varargin, idx){:}];
+
         t = __isequal__ (args{:});
       endwhile
 
-    elseif (ischar (x))
-
+    elseif (ischar (x) && all (cellfun ("isclass", varargin, "char")))
       ## Sizes are equal already, so we can just make everything into a
       ## row and test the rows.
+      n_x = numel (x);
+      strings = cell (1, l_v);
       for i = 1:l_v
-        strings{i} = reshape (varargin{i}, 1, []);
+        strings{i} = reshape (varargin{i}, 1, n_x);
       endfor
-      t = all (strcmp (reshape (x, 1, []), strings));
+      t = all (strcmp (reshape (x, 1, n_x), strings));
 
     elseif (isa (x, "function_handle"))
-
       ## The == operator is overloaded for handles.
       t = all (cellfun ("eq", {x}, varargin));
 
@@ -173,12 +171,6 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       endfor
 
     endif
-  endif
-
-  if (!t)
-    t = false;
-  else
-    t = true;
   endif
 
 endfunction

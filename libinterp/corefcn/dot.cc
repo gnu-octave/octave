@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 VZLU Prague
+Copyright (C) 2009-2013 VZLU Prague
 
 This file is part of Octave.
 
@@ -104,7 +104,7 @@ get_red_dims (const dim_vector& x, const dim_vector& y, int dim,
 }
 
 DEFUN (dot, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
 Compute the dot product of two vectors.  If @var{x} and @var{y}\n\
 are matrices, calculate the dot products along the first\n\
@@ -128,11 +128,13 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
       return retval;
     }
 
-  octave_value argx = args(0), argy = args(1);
+  octave_value argx = args(0);
+  octave_value argy = args(1);
 
   if (argx.is_numeric_type () && argy.is_numeric_type ())
     {
-      dim_vector dimx = argx.dims (), dimy = argy.dims ();
+      dim_vector dimx = argx.dims ();
+      dim_vector dimy = argy.dims ();
       bool match = dimx == dimy;
       if (! match && nargin == 2
           && dimx.is_vector () && dimy.is_vector ())
@@ -142,7 +144,7 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
           argx = argx.reshape (dimx);
           dimy = dimy.redim (1);
           argy = argy.reshape (dimy);
-          match = ! error_state;
+          match = ! error_state && (dimx == dimy);
         }
 
       if (match)
@@ -170,7 +172,8 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       FloatComplexNDArray z(dimz);
                       if (! error_state)
-                        F77_XFCN (cdotc3, CDOTC3, (m, n, k, x.data (), y.data (),
+                        F77_XFCN (cdotc3, CDOTC3, (m, n, k,
+                                                   x.data (), y.data (),
                                                    z.fortran_vec ()));
                       retval = z;
                     }
@@ -181,7 +184,8 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
                       get_red_dims (dimx, dimy, dim, dimz, m, n, k);
                       ComplexNDArray z(dimz);
                       if (! error_state)
-                        F77_XFCN (zdotc3, ZDOTC3, (m, n, k, x.data (), y.data (),
+                        F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
+                                                   x.data (), y.data (),
                                                    z.fortran_vec ()));
                       retval = z;
                     }
@@ -243,10 +247,12 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 %! x = [2, 1; 2, 1];
 %! y = [-0.5, 2; 0.5, -2];
 %! assert (dot (x, y), [0 0]);
+%! assert (dot (single (x), single (y)), single ([0 0]));
 
 %!test
 %! x = [1+i, 3-i; 1-i, 3-i];
 %! assert (dot (x, x), [4, 20]);
+%! assert (dot (single (x), single (x)), single ([4, 20]));
 
 %!test
 %! x = int8 ([1 2]);
@@ -260,10 +266,20 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 %! assert (dot (x, y, 2), [17; 53]);
 %! assert (dot (x, y, 3), [5 12; 21 32]);
 
+%% Test input validation
+%!error dot ()
+%!error dot (1)
+%!error dot (1,2,3,4)
+%!error <X and Y must be numeric> dot ({1,2}, [3,4])
+%!error <X and Y must be numeric> dot ([1,2], {3,4})
+%!error <sizes of X and Y must match> dot ([1 2], [1 2 3])
+%!error <sizes of X and Y must match> dot ([1 2]', [1 2 3]')
+%!error <sizes of X and Y must match> dot (ones (2,2), ones (2,3))
+%!error <DIM must be a valid dimension> dot ([1 2], [1 2], 0)
 */
 
 DEFUN (blkmm, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} blkmm (@var{A}, @var{B})\n\
 Compute products of matrix blocks.  The blocks are given as\n\
 2-dimensional subarrays of the arrays @var{A}, @var{B}.\n\
@@ -289,13 +305,18 @@ endfor\n\
       return retval;
     }
 
-  octave_value argx = args(0), argy = args(1);
+  octave_value argx = args(0);
+  octave_value argy = args(1);
 
   if (argx.is_numeric_type () && argy.is_numeric_type ())
     {
-      const dim_vector dimx = argx.dims (), dimy = argy.dims ();
+      const dim_vector dimx = argx.dims ();
+      const dim_vector dimy = argy.dims ();
       int nd = dimx.length ();
-      octave_idx_type m = dimx(0), k = dimx(1), n = dimy(1), np = 1;
+      octave_idx_type m = dimx(0);
+      octave_idx_type k = dimx(1);
+      octave_idx_type n = dimy(1);
+      octave_idx_type np = 1;
       bool match = dimy(0) == k && nd == dimy.length ();
       dim_vector dimz = dim_vector::alloc (nd);
       dimz(0) = m;
@@ -317,7 +338,8 @@ endfor\n\
                   FloatComplexNDArray y = argy.float_complex_array_value ();
                   FloatComplexNDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (cmatm3, CMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -327,7 +349,8 @@ endfor\n\
                   ComplexNDArray y = argy.complex_array_value ();
                   ComplexNDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (zmatm3, ZMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -340,7 +363,8 @@ endfor\n\
                   FloatNDArray y = argy.float_array_value ();
                   FloatNDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (smatm3, SMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (smatm3, SMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -350,7 +374,8 @@ endfor\n\
                   NDArray y = argy.array_value ();
                   NDArray z(dimz);
                   if (! error_state)
-                    F77_XFCN (dmatm3, DMATM3, (m, n, k, np, x.data (), y.data (),
+                    F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
+                                               x.data (), y.data (),
                                                z.fortran_vec ()));
                   retval = z;
                 }
@@ -374,4 +399,24 @@ endfor\n\
 %! z(:,:,1) = [7 10; 15 22];
 %! z(:,:,2) = [2 2; 2 2];
 %! assert (blkmm (x,x), z);
+%! assert (blkmm (single (x), single (x)), single (z));
+%! assert (blkmm (x, single (x)), single (z));
+
+%!test
+%! x(:,:,1) = [1 2; 3 4];
+%! x(:,:,2) = [1i 1i; 1i 1i];
+%! z(:,:,1) = [7 10; 15 22];
+%! z(:,:,2) = [-2 -2; -2 -2];
+%! assert (blkmm (x,x), z);
+%! assert (blkmm (single (x), single (x)), single (z));
+%! assert (blkmm (x, single (x)), single (z));
+
+%% Test input validation
+%!error blkmm ()
+%!error blkmm (1)
+%!error blkmm (1,2,3)
+%!error <A and B dimensions don't match> blkmm (ones (2,2), ones (3,3))
+%!error <A and B must be numeric> blkmm ({1,2}, [3,4])
+%!error <A and B must be numeric> blkmm ([3,4], {1,2})
 */
+

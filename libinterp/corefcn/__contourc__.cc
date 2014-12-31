@@ -1,6 +1,6 @@
 /* Contour lines for function evaluated on a grid.
 
-Copyright (C) 2007-2012 Kai Habel
+Copyright (C) 2007-2013 Kai Habel
 Copyright (C) 2004, 2007 Shai Ayal
 
 Adapted to an oct file from the stand alone contourl by Victro Munoz
@@ -164,7 +164,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
         }
 
       // Find stop edge.
-      // FIXME -- perhaps this should use a while loop?
+      // FIXME: perhaps this should use a while loop?
       for (unsigned int k = 1; k <= 4; k++)
         {
           if (start_edge == 0 || start_edge == 2)
@@ -298,7 +298,7 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 }
 
 DEFUN (__contourc__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -307,10 +307,10 @@ Undocumented internal function.\n\
 
   if (args.length () == 4)
     {
-      RowVector X = args (0).row_vector_value ();
-      RowVector Y = args (1).row_vector_value ();
-      Matrix Z = args (2).matrix_value ();
-      RowVector L = args (3).row_vector_value ();
+      RowVector X = args(0).row_vector_value ();
+      RowVector Y = args(1).row_vector_value ();
+      Matrix Z = args(2).matrix_value ();
+      RowVector L = args(3).row_vector_value ();
 
       if (! error_state)
         {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2012 Michael Weitzel
+Copyright (C) 2007-2013 Michael Weitzel
 
 This file is part of Octave.
 
@@ -322,7 +322,7 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
   return x.id;
 }
 
-// Calculates the node's degrees. This means counting the non-zero elements
+// Calculates the node's degrees. This means counting the nonzero elements
 // in the symmetric matrix' rows. This works for non-symmetric matrices
 // as well.
 
@@ -341,7 +341,7 @@ calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
         {
           OCTAVE_QUIT;
           octave_idx_type k = ridx[i];
-          // there is a non-zero element (k,j)
+          // there is a nonzero element (k,j)
           D[k]++;
           if (D[k] > max_deg)
             max_deg = D[k];
@@ -412,9 +412,9 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
 
 // An implementation of the Cuthill-McKee algorithm.
 DEFUN_DLD (symrcm, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} symrcm (@var{S})\n\
-Return the symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
+Return the symmetric reverse @nospell{Cuthill-McKee} permutation of @var{S}.\n\
 @var{p} is a permutation vector such that\n\
 @code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements\n\
 closer to the diagonal than @var{S}.  This is a good preordering for LU\n\
@@ -425,11 +425,11 @@ The algorithm represents a heuristic approach to the NP-complete\n\
 bandwidth minimization problem.  The implementation is based in the\n\
 descriptions found in\n\
 \n\
-E. Cuthill, J. McKee. @cite{Reducing the Bandwidth of Sparse Symmetric\n\
-Matrices}. Proceedings of the 24th ACM National Conference, 157--172\n\
-1969, Brandon Press, New Jersey.\n\
+@nospell{E. Cuthill, J. McKee}. @cite{Reducing the Bandwidth of Sparse\n\
+Symmetric Matrices}. Proceedings of the 24th ACM National Conference,\n\
+157--172 1969, Brandon Press, New Jersey.\n\
 \n\
-A. George, J.W.H. Liu. @cite{Computer Solution of Large Sparse\n\
+@nospell{A. George, J.W.H. Liu}. @cite{Computer Solution of Large Sparse\n\
 Positive Definite Systems}, Prentice Hall Series in Computational\n\
 Mathematics, ISBN 0-13-165274-5, 1981.\n\
 \n\
@@ -487,7 +487,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   octave_idx_type s = 0;
 
   // head- and tail-indices for the queue
-  octave_idx_type qt = 0, qh = 0;
+  octave_idx_type qt = 0;
+  octave_idx_type qh = 0;
   CMK_Node v, w;
   // dimension of the matrix
   octave_idx_type N = nr;

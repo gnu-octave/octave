@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 template <class lu_type>
 base_lu<lu_type>::base_lu (const lu_type& l, const lu_type& u,
                            const PermMatrix& p)
-  : a_fact (u), l_fact (l), ipvt (p.pvec ())
+  : a_fact (u), l_fact (l), ipvt (p.transpose ().col_perm_vec ())
 {
   if (l.columns () != u.rows ())
     (*current_liboctave_error_handler) ("lu: dimension mismatch");
@@ -111,7 +111,8 @@ lu_type
 base_lu <lu_type> :: Y (void) const
 {
   if (! packed ())
-    (*current_liboctave_error_handler) ("lu: Y () not implemented for unpacked form");
+    (*current_liboctave_error_handler)
+      ("lu: Y () not implemented for unpacked form");
   return a_fact;
 }
 

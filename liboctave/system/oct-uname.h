@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 John W. Eaton
+Copyright (C) 2005-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_uame_h)
+#if !defined (octave_oct_uname_h)
 #define octave_uname_h 1
 
 #include <string>

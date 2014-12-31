@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2012 John W. Eaton
+Copyright (C) 2007-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -72,7 +72,7 @@ DEF_CLASS_UNOP (uminus)
 DEF_CLASS_UNOP (transpose)
 DEF_CLASS_UNOP (ctranspose)
 
-// FIXME -- we need to handle precedence in the binop function.
+// FIXME: we need to handle precedence in the binop function.
 
 #define DEF_CLASS_BINOP(name) \
   static octave_value \

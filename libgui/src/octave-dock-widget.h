@@ -20,13 +20,14 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dock_widget_h)
-#define octave_dock_widget_h 1
+#if !defined (octave_octave_dock_widget_h)
+#define octave_octave_dock_widget_h 1
 
 #include <QDockWidget>
 #include <QSettings>
 #include <QIcon>
 #include <QMainWindow>
+#include <QToolButton>
 #include <QMouseEvent>
 
 class octave_dock_widget : public QDockWidget
@@ -58,7 +59,7 @@ protected:
     QDockWidget::closeEvent (e);
   }
 
-  QWidget * focusWidget();
+  QWidget * focusWidget ();
 
 public slots:
 
@@ -81,6 +82,9 @@ public slots:
   virtual void notice_settings (const QSettings*)
   {
   }
+  void handle_settings (const QSettings*);
+
+  void handle_active_dock_changed (octave_dock_widget*, octave_dock_widget*);
 
   QMainWindow *main_win () { return _parent; }
 
@@ -99,6 +103,12 @@ protected slots:
   virtual void pasteClipboard ()
   {
   }
+  virtual void selectAll ()
+  {
+  }
+
+  // event filter for double clicks into the window decoration elements
+  bool eventFilter(QObject *obj, QEvent *e);
 
 private slots:
 
@@ -107,8 +117,25 @@ private slots:
 
 private:
 
+  void set_style (bool active);
+
   QMainWindow *_parent;  // store the parent since we are reparenting to 0
+  bool _floating;
+  bool _custom_style;
+  QColor _bg_color;
+  QColor _bg_color_active;
+  QColor _fg_color;
+  QColor _fg_color_active;
+  QString _icon_color;
+  QString _icon_color_active;
+
+#if defined (Q_OS_WIN32)
+  QWidget *_title_widget;
+  QToolButton *_dock_button;
+  QToolButton *_close_button;
   QAction *_dock_action;
+  QAction *_close_action;
+#endif
 
 };
 

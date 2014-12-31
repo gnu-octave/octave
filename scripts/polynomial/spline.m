@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Kai Habel
+## Copyright (C) 2000-2013 Kai Habel
 ## Copyright (C) 2006 David Bateman
 ##
 ## This file is part of Octave.
@@ -83,12 +83,12 @@ function ret = spline (x, y, xi)
   ## Check the size and shape of y
   ndy = ndims (y);
   szy = size (y);
-  if (ndy == 2 && (szy(1) == n || szy(2) == n))
-    if (szy(2) == n)
+  if (ndy == 2 && (any (szy == n) || any (szy == n+2)))
+    if (szy(2) == n || szy(2) == n+2)
       a = y.';
     else
       a = y;
-      szy = fliplr (szy);
+      szy = szy([2 1]);
     endif
   else
     a = shiftdim (reshape (y, [prod(szy(1:end-1)), szy(end)]), 1);
@@ -283,18 +283,24 @@ endfunction
 %! x = [2,1];
 %! y = [1,2,3,4];
 %! pp = spline (x,y);
+%! pp2 = spline (x', y');
 %! [x,P] = unmkpp (pp);
 %! assert (P, [7,-9,1,3], abserr);
+%! assert (pp2, pp);
 %!test
 %! x = [0,1,2];
 %! y = [0,0,1,0,0];
 %! pp = spline (x,y);
+%! pp2 = spline (x', y');
 %! [x,P] = unmkpp (pp);
 %! assert (P, [-2,3,0,0;2,-3,0,1], abserr);
+%! assert (pp2, pp);
 %!test
 %! x = [0,1,2,3];
 %! y = [0,0,1,1,0,0];
 %! pp = spline (x,y);
+%! pp2 = spline (x', y');
 %! [x,P] = unmkpp (pp);
 %! assert (P, [-1,2,0,0;0,-1,1,1;1,-1,-1,1], abserr);
+%! assert (pp2, pp);
 

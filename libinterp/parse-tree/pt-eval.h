@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 John W. Eaton
+Copyright (C) 2009-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_eval_h)
-#define octave_tree_eval_h 1
+#if !defined (octave_pt_eval_h)
+#define octave_pt_eval_h 1
 
 #include <stack>
 #include <string>
@@ -102,6 +102,8 @@ public:
 
   void visit_fcn_handle (tree_fcn_handle&);
 
+  void visit_funcall (tree_funcall&);
+
   void visit_parameter_list (tree_parameter_list&);
 
   void visit_postfix_expression (tree_postfix_expression&);
@@ -148,6 +150,8 @@ public:
   static size_t current_frame;
 
   static bool debug_mode;
+
+  static bool quiet_breakpoint_flag;
 
   // Possible types of evaluation contexts.
   enum stmt_list_type

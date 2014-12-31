@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Andreas Weingessel
+## Copyright (C) 1995-2013 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -20,8 +20,9 @@
 ## @deftypefn {Function File} {} hanning (@var{m})
 ## Return the filter coefficients of a Hanning window of length @var{m}.
 ##
-## For a definition of this window type, see e.g., A. V. Oppenheim &
-## R. W. Schafer, @cite{Discrete-Time Signal Processing}.
+## For a definition of the Hanning window, see e.g.,
+## @nospell{A.V. Oppenheim & R. W. Schafer},
+## @cite{Discrete-Time Signal Processing}.
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

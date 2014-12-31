@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Rik Wehbring
+## Copyright (C) 2012-2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@
 ## When the input is a Java object @var{javaobj} or Java classname
 ## @var{jclassname} the name are the public data elements of the object or
 ## class.
-## @seealso{struct, methods}
+## @seealso{numfields, isfield, orderfields, struct, methods}
 ## @end deftypefn
 
 function names = fieldnames (obj)
@@ -70,9 +70,13 @@ endfunction
 %! s = struct ();
 %! assert (fieldnames (s), cell (0, 1));
 
-## test Java classname
-%!testif HAVE_JAVA 
+## test Java classname by passing classname
+%!testif HAVE_JAVA
 %! names = fieldnames ("java.lang.Double");
-%! search = strfind (names, "java.lang.Double.MAX_VALUE");
-%! assert (! isempty ([search{:}]));
+%! assert (any (strcmp (names, "MAX_VALUE")));
+
+## test Java classname by passing java object
+%!testif HAVE_JAVA
+%! names = fieldnames (javaObject ("java.lang.Double", 10));
+%! assert (any (strcmp (names, "MAX_VALUE")));
 

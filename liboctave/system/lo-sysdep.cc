@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -83,14 +83,16 @@ octave_chdir (const std::string& path_arg)
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 
 pid_t
-octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode,
-    int *fildes, std::string& msg)
+octave_popen2 (const std::string& cmd, const string_vector& args,
+               bool sync_mode,
+               int *fildes, std::string& msg)
 {
   pid_t pid;
   PROCESS_INFORMATION pi;
   STARTUPINFO si;
   std::string command = "\"" + cmd + "\"";
-  HANDLE hProcess = GetCurrentProcess (), childRead, childWrite, parentRead, parentWrite;
+  HANDLE hProcess = GetCurrentProcess ();
+  HANDLE childRead, childWrite, parentRead, parentWrite;
   DWORD pipeMode;
 
   ZeroMemory (&pi, sizeof (pi));
@@ -98,13 +100,15 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
   si.cb = sizeof (si);
 
   if (! CreatePipe (&childRead, &parentWrite, 0, 0) ||
-      ! DuplicateHandle (hProcess, childRead, hProcess, &childRead, 0, TRUE, DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
+      ! DuplicateHandle (hProcess, childRead, hProcess, &childRead, 0, TRUE,
+                         DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
     {
       msg = "popen2: pipe creation failed";
       return -1;
     }
   if (! CreatePipe (&parentRead, &childWrite, 0, 0) ||
-      ! DuplicateHandle (hProcess, childWrite, hProcess, &childWrite, 0, TRUE, DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
+      ! DuplicateHandle (hProcess, childWrite, hProcess, &childWrite, 0, TRUE,
+                         DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
     {
       msg = "popen2: pipe creation failed";
       return -1;
@@ -114,8 +118,10 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
       pipeMode = PIPE_NOWAIT;
       SetNamedPipeHandleState (parentRead, &pipeMode, 0, 0);
     }
-  fildes[1] = _open_osfhandle (reinterpret_cast<intptr_t> (parentRead), _O_RDONLY | _O_BINARY);
-  fildes[0] = _open_osfhandle (reinterpret_cast<intptr_t> (parentWrite), _O_WRONLY | _O_BINARY);
+  fildes[1] = _open_osfhandle (reinterpret_cast<intptr_t> (parentRead),
+                               _O_RDONLY | _O_BINARY);
+  fildes[0] = _open_osfhandle (reinterpret_cast<intptr_t> (parentWrite),
+                               _O_WRONLY | _O_BINARY);
   si.dwFlags |= STARTF_USESTDHANDLES;
   si.hStdInput = childRead;
   si.hStdOutput = childWrite;

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -157,7 +157,9 @@ CONVDECL (float_complex_to_complex)
 {
   CAST_CONV_ARG (const octave_float_complex&);
 
-  return new octave_complex_matrix (ComplexMatrix (1, 1, static_cast<Complex>(v.float_complex_value ())));
+  return new octave_complex_matrix
+               (ComplexMatrix (1, 1,
+                               static_cast<Complex>(v.float_complex_value ())));
 }
 
 void
@@ -187,7 +189,8 @@ install_fcs_fcs_ops (void)
   INSTALL_BINOP (op_el_mul, octave_float_complex, octave_float_complex, el_mul);
   INSTALL_BINOP (op_el_div, octave_float_complex, octave_float_complex, el_div);
   INSTALL_BINOP (op_el_pow, octave_float_complex, octave_float_complex, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_complex, octave_float_complex, el_ldiv);
+  INSTALL_BINOP (op_el_ldiv, octave_float_complex, octave_float_complex,
+                 el_ldiv);
   INSTALL_BINOP (op_el_and, octave_float_complex, octave_float_complex, el_and);
   INSTALL_BINOP (op_el_or, octave_float_complex, octave_float_complex, el_or);
 
@@ -195,13 +198,18 @@ install_fcs_fcs_ops (void)
   INSTALL_CATOP (octave_complex, octave_float_complex, cs_fcs);
   INSTALL_CATOP (octave_float_complex, octave_complex, fcs_cs);
 
-  INSTALL_ASSIGNCONV (octave_float_complex, octave_float_complex, octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_float_complex,
+                      octave_float_complex_matrix);
 
-  INSTALL_ASSIGNCONV (octave_complex, octave_float_complex, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_complex, octave_float_complex,
+                      octave_complex_matrix);
 
-  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_matrix, octave_float_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_str, octave_float_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_sq_str, octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_matrix,
+                      octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_str,
+                      octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_complex, octave_null_sq_str,
+                      octave_float_complex_matrix);
 
   INSTALL_CONVOP (octave_float_complex, octave_complex_matrix,
                   float_complex_to_complex);

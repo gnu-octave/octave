@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2012 John W. Eaton
+## Copyright (C) 2014 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,38 +17,40 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
-## Return a complete filename constructed from the given components.
-## @seealso{fileparts}
+## @deftypefn  {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## @deftypefnx {Function File} {@var{filenames} =} fullfile (@dots{}, @var{files})
+## Build complete filename from separate parts.
+##
+## Joins any number of path components intelligently.  The return value
+## is the concatenation of each component with exactly one file separator
+## between each non empty part.
+##
+## If the last component part is a cell array, returns a cell array of
+## filepaths, one for each element in the last component, e.g.:
+##
+## @example
+## @group
+## fullfile ("/home/username", "data", @{"f1.csv", "f2.csv", "f3.csv"@})
+## @result{}  /home/username/data/f1.csv
+##     /home/username/data/f2.csv
+##     /home/username/data/f3.csv
+## @end group
+## @end example
+##
+## @seealso{fileparts, filesep}
 ## @end deftypefn
+
+## Author: Carnë Draug <carandraug@octave.org>
 
 function filename = fullfile (varargin)
 
-  if (nargin > 0)
-    ## Discard all empty arguments
-    varargin(cellfun ("isempty", varargin)) = [];
-    nargs = numel (varargin);
-    if (nargs > 1)
-      filename = varargin{1};
-      if (strcmp (filename(end), filesep))
-        filename(end) = "";
-      endif
-      for i = 2:nargs
-        tmp = varargin{i};
-        if (i < nargs && strcmp (tmp(end), filesep))
-          tmp(end) = "";
-        elseif (i == nargs && strcmp (tmp, filesep))
-          tmp = "";
-        endif
-        filename = [filename filesep tmp];
-      endfor
-    elseif (nargs == 1)
-      filename = varargin{1};
-    else
-      filename = "";
-    endif
+  if (nargin && iscell (varargin{end}))
+    filename = cellfun (@(x) fullfile (varargin{1:end-1}, x), varargin{end},
+                                       "UniformOutput", false);
   else
-    print_usage ();
+    non_empty = cellfun ("isempty", varargin);
+    filename = strjoin (varargin(! non_empty), filesep);
+    filename(strfind (filename, [filesep filesep])) = "";
   endif
 
 endfunction
@@ -79,4 +81,13 @@ endfunction
 %!assert (fullfile (fs, xfs), fsxfs)
 %!assert (fullfile (fsx, fs), fsxfs)
 %!assert (fullfile (fs, "x", fs), fsxfs)
+
+%!assert (fullfile ("a/", "/", "/", "b", "/", "/"), "a/b/")
+%!assert (fullfile ("/", "a/", "/", "/", "b", "/", "/"), "/a/b/")
+%!assert (fullfile ("/a/", "/", "/", "b", "/", "/"), "/a/b/")
+
+## different on purpose so that "fullfile (c{:})" works for empty c
+%!assert (fullfile (), "")
+
+%!assert (fullfile ("a", "b", {"c", "d"}), {"a/b/c", "a/b/d"})
 

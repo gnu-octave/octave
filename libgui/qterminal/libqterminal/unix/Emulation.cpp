@@ -1,9 +1,9 @@
 /*
     This file is part of Konsole, an X terminal.
 
-    Copyright (C) 2007 Robert Knight <robertknight@gmail.com> 
+    Copyright (C) 2007, 2013 Robert Knight <robertknight@gmail.com> 
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
-    Copyright (C) 1996 by Matthias Ettrich <ettrich@kde.org>
+    Copyright (C) 1996, 2013 by Matthias Ettrich <ettrich@kde.org>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
@@ -33,10 +33,10 @@
 #include <unistd.h>
 
 // Qt
-#include <QtGui/QApplication>
-#include <QtGui/QClipboard>
+#include <QApplication>
+#include <QClipboard>
 #include <QtCore/QHash>
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include <QtCore/QRegExp>
 #include <QtCore/QTextStream>
 #include <QtCore/QThread>

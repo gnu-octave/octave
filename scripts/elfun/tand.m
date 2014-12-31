@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 David Bateman
+## Copyright (C) 2006-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -35,8 +35,8 @@ function y = tand (x)
   I0 = x / 180;
   I90 = (x-90) / 180;
   y = tan (I0 .* pi);
-  y(I0 == fix (I0) & finite (I0)) = 0;
-  y(I90 == fix (I90) & finite (I90)) = Inf;
+  y(I0 == fix (I0) & isfinite (I0)) = 0;
+  y(I90 == fix (I90) & isfinite (I90)) = Inf;
 
 endfunction
 

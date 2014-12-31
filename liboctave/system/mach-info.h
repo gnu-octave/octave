@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,11 +36,11 @@ protected:
 public:
 
   enum float_format
-    {
-      flt_fmt_unknown,
-      flt_fmt_ieee_little_endian,
-      flt_fmt_ieee_big_endian,
-    };
+  {
+    flt_fmt_unknown,
+    flt_fmt_ieee_little_endian,
+    flt_fmt_ieee_big_endian,
+  };
 
   static bool instance_ok (void);
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -39,21 +39,21 @@ public:
 
   sparse_base_lu (const sparse_base_lu& a)
     : Lfact (a.Lfact), Ufact (a.Ufact), Rfact (), cond (a.cond),
-    P (a.P), Q (a.Q)
-    { }
+      P (a.P), Q (a.Q)
+  { }
 
   sparse_base_lu& operator = (const sparse_base_lu& a)
-    {
-      if (this != &a)
-        {
-          Lfact = a.Lfact;
-          Ufact = a.Ufact;
-          cond = a.cond;
-          P = a.P;
-          Q = a.Q;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        Lfact = a.Lfact;
+        Ufact = a.Ufact;
+        cond = a.cond;
+        P = a.P;
+        Q = a.Q;
+      }
+    return *this;
+  }
 
   virtual ~sparse_base_lu (void) { }
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_mex_function_h)
-#define octave_mex_function_h 1
+#if !defined (octave_ov_mex_fcn_h)
+#define octave_ov_mex_fcn_h 1
 
 #include <string>
 
@@ -54,10 +54,10 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -87,7 +87,7 @@ public:
   void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
 
   octave_shlib get_shlib (void) const
-    { return sh_lib; }
+  { return sh_lib; }
 
 private:
 

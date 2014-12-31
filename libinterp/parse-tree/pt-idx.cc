@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -220,7 +220,7 @@ tree_index_expression::get_struct_index
               if (t.is_string () && t.rows () == 1)
                 fn = t.string_value ();
               else
-                error ("dynamic structure field names must be character strings");
+                error ("dynamic structure field names must be strings");
             }
         }
       else
@@ -285,7 +285,8 @@ tree_index_expression::rvalue (int nargout)
 }
 
 octave_value_list
-tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lvalue_list)
+tree_index_expression::rvalue (int nargout,
+                               const std::list<octave_lvalue> *lvalue_list)
 {
   octave_value_list retval;
 
@@ -362,7 +363,7 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
                   // that argument list so we can pass the appropriate
                   // value to the built-in end function.
 
-                  const octave_value_list tmp_list
+                  octave_value_list tmp_list
                     = tmp.subsref (type.substr (tmpi, i - tmpi), idx, nargout);
 
                   tmp = tmp_list.length () ? tmp_list(0) : octave_value ();
@@ -374,6 +375,26 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
 
                   if (error_state)
                     break;
+
+                  if (tmp.is_function ())
+                    {
+                      octave_function *fcn = tmp.function_value (true);
+
+                      if (fcn && ! fcn->is_postfix_index_handled (type[i]))
+                        {
+                          octave_value_list empty_args;
+
+                          tmp_list = tmp.do_multi_index_op (1, empty_args);
+                          tmp = (tmp_list.length ()
+                                 ? tmp_list(0) : octave_value ());
+
+                          if (tmp.is_cs_list ())
+                            gripe_indexed_cs_list ();
+
+                          if (error_state)
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -394,7 +415,8 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
               break;
 
             case '.':
-              idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
+              idx.push_back (octave_value (get_struct_index (p_arg_nm,
+                                                             p_dyn_field)));
               break;
 
             default:
@@ -410,8 +432,27 @@ tree_index_expression::rvalue (int nargout, const std::list<octave_lvalue> *lval
         }
 
       if (! error_state)
-        retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
-                              lvalue_list);
+        {
+          retval = tmp.subsref (type.substr (tmpi, n - tmpi), idx, nargout,
+                                lvalue_list);
+
+          octave_value val = retval.length () ? retval(0) : octave_value ();
+
+          if (! error_state && val.is_function ())
+            {
+              octave_function *fcn = val.function_value (true);
+
+              if (fcn)
+                {
+                  octave_value_list empty_args;
+
+                  retval = (lvalue_list
+                            ? val.do_multi_index_op (nargout, empty_args,
+                                                     lvalue_list)
+                            : val.do_multi_index_op (nargout, empty_args));
+                }
+            }
+        }
     }
 
   return retval;

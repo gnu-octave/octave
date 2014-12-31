@@ -1,8 +1,8 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
-Copyright (C) 2011-2012 John P. Swensen
+Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2013 John P. Swensen
 
 This file is part of Octave.
 
@@ -31,13 +31,17 @@ along with Octave; see the file COPYING.  If not, see
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QThread>
 
 #include "octave-link.h"
-#include "octave-main-thread.h"
+#include "octave-interpreter.h"
 
-// \class OctaveLink
-// \brief Provides threadsafe access to octave.
-// \author Jacob Dawid
+// Defined for purposes of sending QList<int> as part of signal.
+typedef QList<int> QIntList;
+
+// @class OctaveLink
+// @brief Provides threadsafe access to octave.
+// @author Jacob Dawid
 //
 // This class is a wrapper around octave and provides thread safety by
 // buffering access operations to octave and executing them in the
@@ -49,7 +53,7 @@ class octave_qt_link : public QObject, public octave_link
 
 public:
 
-  octave_qt_link (octave_main_thread *mt);
+  octave_qt_link (QWidget *p);
 
   ~octave_qt_link (void);
 
@@ -58,6 +62,7 @@ public:
   bool do_exit (int status);
 
   bool do_edit_file (const std::string& file);
+  bool do_prompt_new_edit_file (const std::string& file);
 
   int do_message_dialog (const std::string& dlg, const std::string& msg,
                          const std::string& title);
@@ -85,7 +90,7 @@ public:
                    const std::list<std::string>& defaults);
 
   std::list<std::string>
-  do_file_dialog (const filter_list& filter, const std::string& title, 
+  do_file_dialog (const filter_list& filter, const std::string& title,
                   const std::string &filename, const std::string &pathname,
                   const std::string& multimode);
 
@@ -124,6 +129,7 @@ public:
   void do_show_preferences (void);
 
   void do_show_doc (const std::string& file);
+
 private:
 
   // No copying!
@@ -136,9 +142,13 @@ private:
   void do_delete_debugger_pointer (const std::string& file, int line);
 
   // Thread running octave_main.
-  octave_main_thread *main_thread;
+  QThread *main_thread;
+
+  octave_interpreter *command_interpreter;
 
 signals:
+
+  void execute_interpreter_signal (void);
 
   void exit_signal (int status);
 
@@ -153,7 +163,8 @@ signals:
                              const QStringList& symbols,
                              const QStringList& class_names,
                              const QStringList& dimensions,
-                             const QStringList& values);
+                             const QStringList& values,
+                             const QIntList& complex_flags);
 
   void clear_workspace_signal (void);
 
@@ -173,6 +184,10 @@ signals:
   void show_preferences_signal (void);
 
   void show_doc_signal (const QString &file);
+
+public slots:
+
+  void terminal_interrupt (void);
 };
 
 #endif

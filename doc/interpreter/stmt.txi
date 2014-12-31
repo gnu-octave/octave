@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -83,10 +83,10 @@ statement will do.  The @var{then-body} is executed only if
 @var{condition} is true.
 
 The condition in an @code{if} statement is considered true if its value
-is non-zero, and false if its value is zero.  If the value of the
+is nonzero, and false if its value is zero.  If the value of the
 conditional expression in an @code{if} statement is a vector or a
 matrix, it is considered true only if it is non-empty and @emph{all}
-of the elements are non-zero.
+of the elements are nonzero.
 
 The second form of an if statement looks like this:
 
@@ -398,10 +398,10 @@ be) executed two or more times in succession.
 The @code{while} statement is the simplest looping statement in Octave.
 It repeatedly executes a statement as long as a condition is true.  As
 with the condition in an @code{if} statement, the condition in a
-@code{while} statement is considered true if its value is non-zero, and
+@code{while} statement is considered true if its value is nonzero, and
 false if its value is zero.  If the value of the conditional expression
 in a @code{while} statement is a vector or a matrix, it is considered
-true only if it is non-empty and @emph{all} of the elements are non-zero.
+true only if it is non-empty and @emph{all} of the elements are nonzero.
 
 Octave's @code{while} statement looks like this:
 
@@ -463,10 +463,10 @@ except that it repeatedly executes a statement until a condition becomes
 true, and the test of the condition is at the end of the loop, so the
 body of the loop is always executed at least once.  As with the
 condition in an @code{if} statement, the condition in a @code{do-until}
-statement is considered true if its value is non-zero, and false if its
+statement is considered true if its value is nonzero, and false if its
 value is zero.  If the value of the conditional expression in a
 @code{do-until} statement is a vector or a matrix, it is considered 
-true only if it is non-empty and @emph{all} of the elements are non-zero.
+true only if it is non-empty and @emph{all} of the elements are nonzero.
 
 Octave's @code{do-until} statement looks like this:
 
@@ -815,16 +815,17 @@ of the @code{unwind_protect} block because evaluation would stop at the
 point of the error and the statement to restore the value would not be
 executed.
 
+In addition to unwind_protect, Octave supports another form of
+exception handling, the @code{try} block.
+
+
 @node The try Statement
 @section The try Statement
 @cindex @code{try} statement
 @cindex @code{catch}
 @cindex @code{end_try_catch}
 
-In addition to unwind_protect, Octave supports another limited form of
-exception handling.
-
-The general form of a @code{try} block looks like this:
+The original form of a @code{try} block looks like this:
 
 @example
 @group
@@ -841,14 +842,27 @@ where @var{body} and @var{cleanup} are both optional and may contain any
 Octave expressions or commands.  The statements in @var{cleanup} are
 only executed if an error occurs in @var{body}.
 
-No warnings or error messages are printed while @var{body} is
-executing.  If an error does occur during the execution of @var{body},
-@var{cleanup} can use the function @code{lasterr} to access the text
-of the message that would have been printed.  This is the same
-as @code{eval (@var{try}, @var{catch})} but it is more efficient since
-the commands do not need to be parsed each time the @var{try} and
-@var{catch} statements are evaluated.  @xref{Errors and Warnings}, for more
-information about the @code{lasterr} function.
+No warnings or error messages are printed while @var{body} is executing.
+If an error does occur during the execution of @var{body}, @var{cleanup}
+can use the functions @code{lasterr} or @code{lasterror} to access the
+text of the message that would have been printed, as well as its
+identifier.  The alternative form,
+
+@example
+@group
+try
+  @var{body}
+catch @var{err}
+  @var{cleanup}
+end_try_catch
+@end group
+@end example
+
+@noindent
+will automatically store the output of @code{lasterror} in the structure
+@var{err}.  @xref{Errors and Warnings}, for more information about the
+@code{lasterr} and @code{lasterror} functions.
+
 
 @node Continuation Lines
 @section Continuation Lines

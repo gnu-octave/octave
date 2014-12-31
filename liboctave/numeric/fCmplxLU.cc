@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -85,7 +85,8 @@ FloatComplexLU::FloatComplexLU (const FloatComplexMatrix& a)
 
 #ifdef HAVE_QRUPDATE_LUU
 
-void FloatComplexLU::update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v)
+void FloatComplexLU::update (const FloatComplexColumnVector& u,
+                             const FloatComplexColumnVector& v)
 {
   if (packed ())
     unpack ();
@@ -99,7 +100,8 @@ void FloatComplexLU::update (const FloatComplexColumnVector& u, const FloatCompl
 
   if (u.length () == m && v.length () == n)
     {
-      FloatComplexColumnVector utmp = u, vtmp = v;
+      FloatComplexColumnVector utmp = u;
+      FloatComplexColumnVector vtmp = v;
       F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
                                  utmp.fortran_vec (), vtmp.fortran_vec ()));
     }
@@ -107,7 +109,8 @@ void FloatComplexLU::update (const FloatComplexColumnVector& u, const FloatCompl
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 }
 
-void FloatComplexLU::update (const FloatComplexMatrix& u, const FloatComplexMatrix& v)
+void FloatComplexLU::update (const FloatComplexMatrix& u,
+                             const FloatComplexMatrix& v)
 {
   if (packed ())
     unpack ();
@@ -123,8 +126,10 @@ void FloatComplexLU::update (const FloatComplexMatrix& u, const FloatComplexMatr
     {
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
-          F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
+          FloatComplexColumnVector utmp = u.column (i);
+          FloatComplexColumnVector vtmp = v.column (i);
+          F77_XFCN (clu1up, CLU1UP, (m, n, l.fortran_vec (),
+                                     m, r.fortran_vec (), k,
                                      utmp.fortran_vec (), vtmp.fortran_vec ()));
         }
     }
@@ -132,7 +137,8 @@ void FloatComplexLU::update (const FloatComplexMatrix& u, const FloatComplexMatr
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 }
 
-void FloatComplexLU::update_piv (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v)
+void FloatComplexLU::update_piv (const FloatComplexColumnVector& u,
+                                 const FloatComplexColumnVector& v)
 {
   if (packed ())
     unpack ();
@@ -146,18 +152,22 @@ void FloatComplexLU::update_piv (const FloatComplexColumnVector& u, const FloatC
 
   if (u.length () == m && v.length () == n)
     {
-      FloatComplexColumnVector utmp = u, vtmp = v;
+      FloatComplexColumnVector utmp = u;
+      FloatComplexColumnVector vtmp = v;
       OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
-      F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                                   ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+      F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
+                                   m, r.fortran_vec (), k,
+                                   ipvt.fortran_vec (),
+                                   utmp.data (), vtmp.data (), w));
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
   else
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 }
 
-void FloatComplexLU::update_piv (const FloatComplexMatrix& u, const FloatComplexMatrix& v)
+void FloatComplexLU::update_piv (const FloatComplexMatrix& u,
+                                 const FloatComplexMatrix& v)
 {
   if (packed ())
     unpack ();
@@ -175,9 +185,12 @@ void FloatComplexLU::update_piv (const FloatComplexMatrix& u, const FloatComplex
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) += 1; // increment
       for (volatile octave_idx_type i = 0; i < u.cols (); i++)
         {
-          FloatComplexColumnVector utmp = u.column (i), vtmp = v.column (i);
-          F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (), m, r.fortran_vec (), k,
-                                       ipvt.fortran_vec (), utmp.data (), vtmp.data (), w));
+          FloatComplexColumnVector utmp = u.column (i);
+          FloatComplexColumnVector vtmp = v.column (i);
+          F77_XFCN (clup1up, CLUP1UP, (m, n, l.fortran_vec (),
+                                       m, r.fortran_vec (), k,
+                                       ipvt.fortran_vec (),
+                                       utmp.data (), vtmp.data (), w));
         }
       for (octave_idx_type i = 0; i < m; i++) ipvt(i) -= 1; // decrement
     }
@@ -187,24 +200,32 @@ void FloatComplexLU::update_piv (const FloatComplexMatrix& u, const FloatComplex
 
 #else
 
-void FloatComplexLU::update (const FloatComplexColumnVector&, const FloatComplexColumnVector&)
+void FloatComplexLU::update (const FloatComplexColumnVector&,
+                             const FloatComplexColumnVector&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
-void FloatComplexLU::update (const FloatComplexMatrix&, const FloatComplexMatrix&)
+void FloatComplexLU::update (const FloatComplexMatrix&,
+                             const FloatComplexMatrix&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
-void FloatComplexLU::update_piv (const FloatComplexColumnVector&, const FloatComplexColumnVector&)
+void FloatComplexLU::update_piv (const FloatComplexColumnVector&,
+                                 const FloatComplexColumnVector&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
-void FloatComplexLU::update_piv (const FloatComplexMatrix&, const FloatComplexMatrix&)
+void FloatComplexLU::update_piv (const FloatComplexMatrix&,
+                                 const FloatComplexMatrix&)
 {
-  (*current_liboctave_error_handler) ("luupdate: not available in this version");
+  (*current_liboctave_error_handler)
+    ("luupdate: not available in this version");
 }
 
 #endif

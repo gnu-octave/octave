@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -170,7 +170,7 @@ do_history (const octave_value_list& args, int nargout)
           || option == "-n")
         {
           if (i < nargin - 1)
-            { 
+            {
               if (args(i+1).is_string ())
                 command_history::set_file (args(++i).string_value ());
               else
@@ -235,7 +235,7 @@ do_history (const octave_value_list& args, int nargout)
               else
                 limit = -tmp;
             }
-          
+
           else
             {
               if (option.length () > 0 && option[0] == '-')
@@ -583,7 +583,7 @@ octave_history_write_timestamp (void)
 }
 
 DEFUN (edit_history, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} edit_history\n\
 @deftypefnx {Command} {} edit_history @var{cmd_number}\n\
 @deftypefnx {Command} {} edit_history @var{first} @var{last}\n\
@@ -626,7 +626,7 @@ buffer to be edited.\n\
 }
 
 DEFUN (history, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} history\n\
 @deftypefnx {Command} {} history @var{opt1} @dots{}\n\
 @deftypefnx {Built-in Function} {@var{h} =} history ()\n\
@@ -675,7 +675,7 @@ argument as a cell string and will not be output to screen.\n\
 }
 
 DEFUN (run_history, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} run_history\n\
 @deftypefnx {Command} {} run_history @var{cmd_number}\n\
 @deftypefnx {Command} {} run_history @var{first} @var{last}\n\
@@ -733,7 +733,7 @@ run_history -1 -2\n\
 }
 
 DEFUN (history_control, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_control ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_control (@var{new_val})\n\
 Query or set the internal variable that specifies how commands are saved\n\
@@ -770,7 +770,7 @@ the history list, subject to the value of @code{history_save}.\n\
 }
 
 DEFUN (history_size, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_size ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_size (@var{new_val})\n\
 Query or set the internal variable that specifies how many entries\n\
@@ -796,7 +796,7 @@ but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 }
 
 DEFUN (history_file, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_file (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
@@ -821,7 +821,7 @@ variable @w{@env{OCTAVE_HISTFILE}}.\n\
 }
 
 DEFUN (history_timestamp_format_string, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} history_timestamp_format_string (@var{new_val}, \"local\")\n\
@@ -844,7 +844,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (history_save, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_save ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_save (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} history_save (@var{new_val}, \"local\")\n\

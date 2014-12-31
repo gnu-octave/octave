@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -401,8 +401,6 @@ corresponding functions for case-insensitive comparison.
 
 @DOCSTRING(strncmpi)
 
-@DOCSTRING(validatestring)
-
 @node Manipulating Strings
 @section Manipulating Strings
 
@@ -441,8 +439,6 @@ general regular expressions, the following functions come with Octave.
 @DOCSTRING(strfind)
 
 @DOCSTRING(strjoin)
-
-@DOCSTRING(strmatch)
 
 @DOCSTRING(strtok)
 

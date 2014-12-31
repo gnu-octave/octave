@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} debug ()
-## Summary of debugging commands.  For more information on each command
-## and available options use @code{help CMD}.
+## Summary of debugging commands.
+##
+## For more information on each command and available options use
+## @code{help CMD}.
 ## 
 ## The debugging commands available in Octave are
 ##
@@ -37,8 +39,12 @@
 ## Report the current file and line number where execution is stopped.
 ##
 ## @item dbtype
-## List the function where execution is currently stopped, enumerating
+## Display the code of the function being debugged, enumerating
 ## the line numbers.
+##
+## @item dblist
+## List 10 lines of code centered around the line number where execution is
+## stopped.
 ##
 ## @item  dbstep
 ## @itemx dbnext
@@ -91,4 +97,8 @@
 function debug ()
   help ("debug");
 endfunction
+
+
+## Mark file as being tested.  No real test needed for a documentation .m file
+%!assert (1)
 

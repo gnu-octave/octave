@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdarg>
 #include <string>
 
+class octave_map;
 class octave_value_list;
 class unwind_protect;
 
@@ -37,7 +38,9 @@ extern OCTINTERP_API void reset_error_handler (void);
 
 extern OCTINTERP_API int warning_enabled (const std::string& id);
 
-extern OCTINTERP_API void vmessage (const char *name, const char *fmt, va_list args);
+extern OCTINTERP_API void
+vmessage (const char *name, const char *fmt, va_list args);
+
 extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
 
 extern OCTINTERP_API void vusage (const char *fmt, va_list args);
@@ -56,7 +59,8 @@ extern OCTINTERP_API void vparse_error (const char *fmt, va_list args);
 extern OCTINTERP_API void parse_error (const char *fmt, ...);
 
 extern OCTINTERP_API void
-vmessage_with_id (const char *id, const char *name, const char *fmt, va_list args);
+vmessage_with_id (const char *id, const char *name,
+                  const char *fmt, va_list args);
 
 extern OCTINTERP_API void
 message_with_id (const char *id, const char *name, const char *fmt, ...);
@@ -134,6 +138,7 @@ extern OCTINTERP_API bool discard_warning_messages;
 // Helper functions to pass last error and warning messages and ids
 extern OCTINTERP_API std::string last_error_message (void);
 extern OCTINTERP_API std::string last_error_id (void);
+extern OCTINTERP_API octave_map last_error_stack (void);
 extern OCTINTERP_API std::string last_warning_message (void);
 extern OCTINTERP_API std::string last_warning_id (void);
 

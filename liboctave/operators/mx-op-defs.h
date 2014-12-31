@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague, a.s.
 
@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_mx_op_defs_h)
 #define octave_mx_op_defs_h 1
 
+#include "lo-array-gripes.h"
 #include "mx-op-decl.h"
 #include "mx-inlines.cc"
 
@@ -599,19 +600,15 @@ FCN (const T& a, const T& b) \
 #define PMM_MULTIPLY_OP(PM, M) \
 M operator * (const PM& p, const M& x) \
 { \
-  octave_idx_type nr = x.rows (), nc = x.columns (); \
+  octave_idx_type nr = x.rows (); \
+  octave_idx_type nc = x.columns (); \
   M result; \
   if (p.columns () != nr) \
     gripe_nonconformant ("operator *", p.rows (), p.columns (), nr, nc); \
   else \
     { \
-      if (p.is_col_perm ()) \
-        { \
-          result = M (nr, nc); \
-          result.assign (p.pvec (), idx_vector::colon, x); \
-        } \
-      else \
-        result = x.index (p.pvec (), idx_vector::colon); \
+      result = M (nr, nc); \
+      result.assign (p.col_perm_vec (), idx_vector::colon, x); \
     } \
   \
   return result; \
@@ -620,20 +617,13 @@ M operator * (const PM& p, const M& x) \
 #define MPM_MULTIPLY_OP(M, PM) \
 M operator * (const M& x, const PM& p) \
 { \
-  octave_idx_type nr = x.rows (), nc = x.columns (); \
+  octave_idx_type nr = x.rows (); \
+  octave_idx_type nc = x.columns (); \
   M result; \
   if (p.rows () != nc) \
     gripe_nonconformant ("operator *", nr, nc, p.rows (), p.columns ()); \
   else \
-    { \
-      if (p.is_col_perm ()) \
-        result = x.index (idx_vector::colon, p.pvec ()); \
-      else \
-        { \
-          result = M (nr, nc); \
-          result.assign (idx_vector::colon, p.pvec (), x); \
-        } \
-    } \
+    result = x.index (idx_vector::colon, p.col_perm_vec ()); \
   \
   return result; \
 }

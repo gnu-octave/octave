@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2012 Kurt Hornik
+## Copyright (C) 1996-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@
 ## Hotelling's two-sample @math{T^2} is returned in @var{tsq}.  Under the null,
 ## @tex
 ## $$
-## {n_x+n_y-p-1) T^2 \over p(n_x+n_y-2)}
+## {(n_x+n_y-p-1) T^2 \over p(n_x+n_y-2)}
 ## $$
 ## @end tex
 ## @ifnottex

@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -83,7 +83,7 @@ function rnd = normrnd (mu, sigma, varargin)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if (isfinite (mu) && (sigma > 0) && (sigma < Inf))
+    if (isfinite (mu) && (sigma >= 0) && (sigma < Inf))
       rnd =  mu + sigma * randn (sz, cls);
     else
       rnd = NaN (sz, cls);

@@ -1,6 +1,6 @@
-# Makefile for Octave's examples directory
+# Makefile for Octave's example directory
 #
-# Copyright (C) 1996-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -18,46 +18,12 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+## Pass-through layer.  Simply pass make commands down to SUBDIRS.
+
 include $(top_srcdir)/build-aux/common.mk
 
-EXTRA_DIST = 
+EXTRA_DIST = \
+  Makefile.am
 
-FCN_FILE_DIRS =
-
-FCN_FILES =
-
-include @polynomial/module.mk
-include @FIRfilter/module.mk
-
-EXTRA_DIST += \
-  $(FCN_FILES) \
-  addtwomatrices.cc \
-  celldemo.cc \
-  embedded.cc \
-  fortdemo.cc \
-  fortsub.f \
-  funcdemo.cc \
-  globaldemo.cc \
-  helloworld.cc \
-  make_int.cc \
-  mex_demo.c \
-  mycell.c \
-  myfeval.c \
-  myfevalf.f \
-  myfunc.c \
-  myhello.c \
-  mypow2.c \
-  myprop.c \
-  myset.c \
-  mysparse.c \
-  mystring.c \
-  mystruct.c \
-  oct_demo.cc \
-  oregonator.cc \
-  oregonator.m \
-  paramdemo.cc \
-  standalone.cc \
-  stringdemo.cc \
-  structdemo.cc \
-  unwinddemo.cc
+SUBDIRS = code data
 

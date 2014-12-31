@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -83,11 +83,15 @@ public:
 
   static void resize_terminal (void);
 
+  static void set_screen_size (int ht, int wd);
+
   static std::string decode_prompt_string (const std::string& s);
 
   static void restore_terminal_state (void);
 
   static void blink_matching_paren (bool flag);
+
+  static bool erase_empty_line (bool flag);
 
   static void set_basic_word_break_characters (const std::string& s);
 
@@ -161,6 +165,8 @@ public:
 
   static bool filename_quoting_desired (bool);
 
+  static bool prefer_env_winsize (bool);
+
   static bool interrupt (bool = true);
 
   static int current_command_number (void);
@@ -222,11 +228,11 @@ protected:
   virtual void do_set_name (const std::string&) { }
 
   std::string do_readline (const std::string& prompt)
-    {
-      bool eof;
+  {
+    bool eof;
 
-      return do_readline (prompt, eof);
-    }
+    return do_readline (prompt, eof);
+  }
 
   virtual std::string do_readline (const std::string&, bool&) = 0;
 
@@ -248,6 +254,8 @@ protected:
 
   virtual void do_resize_terminal (void) { }
 
+  virtual void do_set_screen_size (int, int) { }
+
   virtual std::string do_decode_prompt_string (const std::string&);
 
   virtual std::string newline_chars (void) { return "\n"; }
@@ -255,6 +263,8 @@ protected:
   virtual void do_restore_terminal_state (void) { }
 
   virtual void do_blink_matching_paren (bool) { }
+
+  virtual bool do_erase_empty_line (bool) { return false; }
 
   virtual void do_set_basic_word_break_characters (const std::string&) { }
 
@@ -284,11 +294,14 @@ protected:
 
   virtual dequoting_fcn do_get_dequoting_function (void) const { return 0; }
 
-  virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const { return 0; }
+  virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const
+  { return 0; }
 
-  virtual user_accept_line_fcn do_get_user_accept_line_function (void) const { return 0; }
+  virtual user_accept_line_fcn do_get_user_accept_line_function (void) const
+  { return 0; }
 
-  virtual string_vector do_generate_filename_completions (const std::string& text) = 0;
+  virtual string_vector
+  do_generate_filename_completions (const std::string& text) = 0;
 
   virtual std::string do_get_line_buffer (void) const = 0;
 
@@ -325,6 +338,8 @@ protected:
   virtual bool do_filename_completion_desired (bool) { return false; }
 
   virtual bool do_filename_quoting_desired (bool) { return false; }
+
+  virtual bool do_prefer_env_winsize (bool) { return false; }
 
   virtual void do_interrupt (bool) { }
 

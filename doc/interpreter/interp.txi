@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2012 John W. Eaton
+@c Copyright (C) 2007-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -56,10 +56,10 @@ yp = interp1 (t,y,ti,"pchip");
 ddys = diff (diff (ys)./dti) ./ dti;
 ddyp = diff (diff (yp)./dti) ./ dti;
 figure (1);
-plot (ti,ys,'r-', ti,yp,'g-');
+plot (ti,ys,"r-", ti,yp,"g-");
 legend ("spline", "pchip", 4);
 figure (2);
-plot (ti,ddys,'r+', ti,ddyp,'g*');
+plot (ti,ddys,"r+", ti,ddyp,"g*");
 legend ("spline", "pchip");
 @end group
 @end example
@@ -82,21 +82,15 @@ interpolation methods for a step function}
 @end float
 @end ifnotinfo
 
-A simplified version of @code{interp1} that performs only linear
-interpolation is available in @code{interp1q}.  This argument is slightly
-faster than @code{interp1} as to performs little error checking.
-
-@DOCSTRING(interp1q)
-
 Fourier interpolation, is a resampling technique where a signal is
 converted to the frequency domain, padded with zeros and then
 reconverted to the time domain.
 
 @DOCSTRING(interpft)
 
-There are two significant limitations on Fourier interpolation.  Firstly,
+There are two significant limitations on Fourier interpolation.  First,
 the function signal is assumed to be periodic, and so non-periodic
-signals will be poorly represented at the edges.  Secondly, both the
+signals will be poorly represented at the edges.  Second, both the
 signal and its interpolation are required to be sampled at equispaced
 points.  An example of the use of @code{interpft} is
 
@@ -108,8 +102,8 @@ ti = t(1) + [0 : k-1]*dt*n/k;
 y = sin (4*t + 0.3) .* cos (3*t - 0.1);
 yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
 plot (ti, yp, "g", ti, interp1 (t, y, ti, "spline"), "b", ...
-      ti, interpft (y, k), "c", t, y, 'r+');
-legend ('sin(4t+0.3)cos(3t-0.1', "spline", "interpft", "data");
+      ti, interpft (y, k), "c", t, y, "r+");
+legend ("sin(4t+0.3)cos(3t-0.1)", "spline", "interpft", "data");
 @end group
 @end example
 
@@ -182,7 +176,3 @@ The result of this code can be seen in @ref{fig:interpn}.
 @end float
 @end ifnotinfo
 
-In additional the support function @code{bicubic} that underlies the
-cubic interpolation of @code{interp2} function can be called directly.
-
-@DOCSTRING(bicubic)

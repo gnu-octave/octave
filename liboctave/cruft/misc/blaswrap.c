@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Jarno Rajahalme
+Copyright (C) 2012-2013 Jarno Rajahalme
 
 This file is part of Octave.
 
@@ -35,8 +35,8 @@ convention.  These wrappers map the F2C conformant functions in
 libBLAS and libLAPACK to the native gfortran calling convention, so
 that the libraries can be used with software built for x86_64
 architecture.
- 
- */
+
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h> /* USE_BLASWRAP ? */
@@ -48,7 +48,7 @@ architecture.
  * vecLib is an Apple framework (collection of libraries) containing
  * libBLAS and libLAPACK.  The fortran stubs in these libraries are
  * (mostly, but not completely) in the F2C calling convention.
- * We access the libraries via the vecLib framework to make sure we 
+ * We access the libraries via the vecLib framework to make sure we
  * get the Apple versions, rather than some other blas/lapack with the
  * same name.
  */
@@ -57,7 +57,8 @@ architecture.
 #endif
 
 /*
- * Since this is a wrapper for fortran functions, we do not have prototypes for them.
+ * Since this is a wrapper for fortran functions,
+ * we do not have prototypes for them.
  */
 #pragma GCC diagnostic ignored "-Wmissing-prototypes"
 
@@ -69,22 +70,25 @@ architecture.
  * Convert to normal gfortran calling convention
  */
 
-static void (*f2c_blas_func[])(void); /* forward declaration for the wrapper */
-static void (*f2c_lapack_func[])(void); /* forward declaration for the wrapper */
+static void (*f2c_blas_func[]) (void);   /* forward declaration for wrapper */
+static void (*f2c_lapack_func[]) (void); /* forward declaration for wrapper */
 
 /*
  * LAPACK Wrappers, only need to convert the return value from double to float
  */
 
-typedef double (*F2C_CALL_0)(void);
-typedef double (*F2C_CALL_1)(void *a1);
-typedef double (*F2C_CALL_2)(void *a1, void *a2);
-typedef double (*F2C_CALL_3)(void *a1, void *a2, void *a3);
-typedef double (*F2C_CALL_4)(void *a1, void *a2, void *a3, void *a4);
-typedef double (*F2C_CALL_5)(void *a1, void *a2, void *a3, void *a4, void *a5);
-typedef double (*F2C_CALL_6)(void *a1, void *a2, void *a3, void *a4, void *a5, void *a6);
-typedef double (*F2C_CALL_7)(void *a1, void *a2, void *a3, void *a4, void *a5, void *a6, void *a7);
-typedef double (*F2C_CALL_8)(void *a1, void *a2, void *a3, void *a4, void *a5, void *a6, void *a7, void *a8);
+typedef double (*F2C_CALL_0) (void);
+typedef double (*F2C_CALL_1) (void *a1);
+typedef double (*F2C_CALL_2) (void *a1, void *a2);
+typedef double (*F2C_CALL_3) (void *a1, void *a2, void *a3);
+typedef double (*F2C_CALL_4) (void *a1, void *a2, void *a3, void *a4);
+typedef double (*F2C_CALL_5) (void *a1, void *a2, void *a3, void *a4, void *a5);
+typedef double (*F2C_CALL_6) (void *a1, void *a2, void *a3, void *a4, void *a5,
+                              void *a6);
+typedef double (*F2C_CALL_7) (void *a1, void *a2, void *a3, void *a4, void *a5,
+                              void *a6, void *a7);
+typedef double (*F2C_CALL_8) (void *a1, void *a2, void *a3, void *a4, void *a5,
+                              void *a6, void *a7, void *a8);
 
 #define F2C_LAPACK_CALL_8(name) \
   float name (void *a1, void *a2, void *a3, void *a4, void *a5, void *a6, void *a7, void *a8) \
@@ -234,7 +238,8 @@ DEFINE_LAPACK_ENUM(lapack, LAPACK_LIST)
 typedef struct { float r, i; } complex;
 typedef struct { double r, i; } doublecomplex;
 
-typedef void (*F2C_BLAS_CALL_6)(void *c, void *a1, void *a2, void *a3, void *a4, void *a5);
+typedef void (*F2C_BLAS_CALL_6) (void *c, void *a1, void *a2, void *a3,
+                                 void *a4, void *a5);
 
 #define F2C_BLAS_CALL(type, name) \
 type name (void *a1, void *a2, void *a3, void *a4, void *a5) \
@@ -253,8 +258,8 @@ F2C_BLAS_CALL(doublecomplex, zdotc_)
 /*
  * Function pointer arrays, indexed by the enums
  */
-static void (*f2c_blas_func[f2c_BLAS_COUNT])(void) = { 0 };
-static void (*f2c_lapack_func[f2c_LAPACK_COUNT])(void) = { 0 };
+static void (*f2c_blas_func[f2c_BLAS_COUNT]) (void) = { 0 };
+static void (*f2c_lapack_func[f2c_LAPACK_COUNT]) (void) = { 0 };
 
 /*
  * Initialization: This is called before main ().
@@ -272,11 +277,11 @@ static void initVecLibWrappers (void)
 
   int i;
   for (i = 0; i < f2c_LAPACK_COUNT; i++)
-    if (0 == (f2c_lapack_func[i] = dlsym(apple_vecLib, f2c_lapack_name(i))))
-      abort ();  
+    if (0 == (f2c_lapack_func[i] = dlsym (apple_vecLib, f2c_lapack_name(i))))
+      abort ();
   for (i = 0; i < f2c_BLAS_COUNT; i++)
-    if (0 == (f2c_blas_func[i] = dlsym(apple_vecLib, f2c_blas_name(i))))
-      abort ();  
+    if (0 == (f2c_blas_func[i] = dlsym (apple_vecLib, f2c_blas_name(i))))
+      abort ();
 }
 
 __attribute__((destructor))

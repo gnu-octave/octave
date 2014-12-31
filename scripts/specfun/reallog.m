@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 David Bateman
+## Copyright (C) 2008-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,12 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} reallog (@var{x})
-## Return the real-valued natural logarithm of each element of @var{x}.  Report
-## an error if any element results in a complex return value.
+## Return the real-valued natural logarithm of each element of @var{x}.
+##
+## If any element results in a complex return value @code{reallog} aborts
+## and issues an error.
 ## @seealso{log, realpow, realsqrt}
 ## @end deftypefn
 
 function y = reallog (x)
+
   if (nargin != 1)
     print_usage ();
   elseif (iscomplex (x) || any (x(:) < 0))
@@ -31,13 +34,17 @@ function y = reallog (x)
   else
     y = log (x);
   endif
+
 endfunction
 
 
-%!assert (log (1:5), reallog (1:5))
+%!assert (reallog (1:5), log (1:5))
 %!test
-%! x = rand (10,10);
-%! assert (log (x),reallog (x));
+%! x = rand (10, 10);
+%! assert (reallog (x), log (x));
 
+%!error reallog ()
+%!error reallog (1,2)
+%!error <produced complex result> reallog (2i)
 %!error <produced complex result> reallog (-1)
 

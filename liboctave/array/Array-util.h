@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -29,15 +29,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-array-gripes.h"
 
 extern OCTAVE_API bool index_in_bounds (const Array<octave_idx_type>& ra_idx,
-                             const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
 extern OCTAVE_API void increment_index (Array<octave_idx_type>& ra_idx,
-                             const dim_vector& dimensions,
-                             int start_dimension = 0);
+                                        const dim_vector& dimensions,
+                                        int start_dimension = 0);
 
-extern OCTAVE_API octave_idx_type get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims);
+extern OCTAVE_API octave_idx_type get_scalar_idx (Array<octave_idx_type>& idx,
+                                                  dim_vector& dims);
 
-extern OCTAVE_API octave_idx_type num_ones (const Array<octave_idx_type>& ra_idx);
+extern OCTAVE_API octave_idx_type num_ones (const Array<octave_idx_type>&
+                                            ra_idx);
 
 extern OCTAVE_API bool is_scalar (const dim_vector& dim);
 
@@ -60,12 +62,15 @@ compute_index (octave_idx_type i, octave_idx_type j, octave_idx_type k,
 extern OCTAVE_API octave_idx_type
 compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);
 
-extern OCTAVE_API Array<octave_idx_type> conv_to_int_array (const Array<idx_vector>& a);
+extern OCTAVE_API Array<octave_idx_type>
+conv_to_int_array (const Array<idx_vector>& a);
 
-extern OCTAVE_API Array<idx_vector> conv_to_array (const idx_vector *tmp, const octave_idx_type len);
+extern OCTAVE_API Array<idx_vector> conv_to_array (const idx_vector *tmp,
+                                                   const octave_idx_type len);
 
 extern OCTAVE_API dim_vector freeze (Array<idx_vector>& ra_idx,
-                          const dim_vector& dimensions, int resize_ok);
+                                     const dim_vector& dimensions,
+                                     int resize_ok);
 
 extern OCTAVE_API bool vector_equivalent (const dim_vector& dv);
 
@@ -74,24 +79,29 @@ extern OCTAVE_API bool all_ok (const Array<idx_vector>& ra_idx);
 extern OCTAVE_API bool any_orig_empty (const Array<idx_vector>& ra_idx);
 
 extern OCTAVE_API bool all_colon_equiv (const Array<idx_vector>& ra_idx,
-                             const dim_vector& frozen_lengths);
+                                        const dim_vector& frozen_lengths);
 
 extern OCTAVE_API bool all_ones (const Array<octave_idx_type>& arr);
 
-extern OCTAVE_API Array<octave_idx_type> get_elt_idx (const Array<idx_vector>& ra_idx,
-                               const Array<octave_idx_type>& result_idx);
+extern OCTAVE_API Array<octave_idx_type>
+get_elt_idx (const Array<idx_vector>& ra_idx,
+             const Array<octave_idx_type>& result_idx);
 
-extern OCTAVE_API Array<octave_idx_type> get_ra_idx (octave_idx_type idx, const dim_vector& dims);
+extern OCTAVE_API Array<octave_idx_type> get_ra_idx (octave_idx_type idx,
+                                                     const dim_vector& dims);
 
 extern OCTAVE_API dim_vector zero_dims_inquire (const Array<idx_vector>& ia,
                                                 const dim_vector& rhdv);
 
-extern OCTAVE_API dim_vector zero_dims_inquire (const idx_vector& i, const idx_vector& j,
+extern OCTAVE_API dim_vector zero_dims_inquire (const idx_vector& i,
+                                                const idx_vector& j,
                                                 const dim_vector& rhdv);
 
-extern OCTAVE_API idx_vector sub2ind (const dim_vector& dv, const Array<idx_vector>& idxa);
+extern OCTAVE_API idx_vector sub2ind (const dim_vector& dv,
+                                      const Array<idx_vector>& idxa);
 
-extern OCTAVE_API Array<idx_vector> ind2sub (const dim_vector& dv, const idx_vector& idx);
+extern OCTAVE_API Array<idx_vector> ind2sub (const dim_vector& dv,
+                                             const idx_vector& idx);
 
 struct
 permute_vector

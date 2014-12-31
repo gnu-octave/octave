@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -144,7 +144,8 @@ protected:
 
   virtual std::string do_histcontrol (void) const { return std::string (); }
 
-  virtual void do_initialize (bool, const std::string&, int, const std::string&);
+  virtual void do_initialize (bool, const std::string&, int,
+                              const std::string&);
 
   virtual bool do_is_initialized (void) const;
 
@@ -200,7 +201,7 @@ protected:
 
   virtual void do_clean_up_and_save (const std::string&, int);
 
-  void error (int) const;
+  void error (int, const std::string& msg = "") const;
 
   void error (const std::string&) const;
 

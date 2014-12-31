@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Juan Pablo Carbajal
+## Copyright (C) 2012-2013 Juan Pablo Carbajal
 ##
 ## This file is part of Octave.
 ##
@@ -46,12 +46,11 @@
 ## @end table
 ##
 
-
 function error_ids ()
   help ("error_ids");
 endfunction
 
 
-## Remove from test statistics.  No real tests possible
+## Mark file as being tested.  No real test needed for a documentation .m file
 %!assert (1)
 

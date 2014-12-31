@@ -1,4 +1,4 @@
-@c Copyright (C) 2007-2012 John W. Eaton and David Bateman
+@c Copyright (C) 2007-2013 John W. Eaton and David Bateman
 @c Copyright (C) 2007 Paul Thomas and Christoph Spiel
 @c
 @c This file is part of Octave.
@@ -23,7 +23,7 @@
 @cindex Dynamically Linked Functions
 @cindex Octave API
 
-“The sum of human wisdom is not contained in any one language"
+"The sum of human wisdom is not contained in any one language"
   ---Ezra Pound
 
 Octave is a fantastic language for solving many problems in science and
@@ -461,7 +461,7 @@ Note, however, that both types of strings are represented by the
 @example
 @group
 octave_value_list retval;
-charNDArray c;
+charNDArray ch;
 @dots{}
 // Create single quoted string
 retval(1) = octave_value (ch);        // default constructor is sq_string
@@ -589,7 +589,7 @@ more similar to Octave's @code{Matrix} class than its @code{NDArray} class.
 @subsubsection Array and Sparse Class Differences
 
 The number of elements in a sparse matrix is considered to be the number
-of non-zero elements rather than the product of the dimensions.  Therefore
+of nonzero elements rather than the product of the dimensions.  Therefore
 
 @example
 @group
@@ -600,13 +600,13 @@ int nel = sm.nelem ();
 @end example
 
 @noindent
-returns the number of non-zero elements.  If the user really requires the
-number of elements in the matrix, including the non-zero elements, they
+returns the number of nonzero elements.  If the user really requires the
+number of elements in the matrix, including the nonzero elements, they
 should use @code{numel} rather than @code{nelem}.  Note that for very
 large matrices, where the product of the two dimensions is larger than
 the representation of an unsigned int, then @code{numel} can overflow.
 An example is @code{speye (1e6)} which will create a matrix with a million
-rows and columns, but only a million non-zero elements.  Therefore the
+rows and columns, but only a million nonzero elements.  Therefore the
 number of rows by the number of columns in this case is more than two
 hundred times the maximum value that can be represented by an unsigned int.
 The use of @code{numel} should therefore be avoided useless it is known
@@ -675,16 +675,17 @@ technique
 
 @example
 @group
-int nz = 4, nr = 3, nc = 4;
+int nz, nr, nc;
+nz = 4, nr = 3, nc = 4;
 
 ColumnVector ridx (nz);
 ColumnVector cidx (nz);
 ColumnVector data (nz);
 
-ridx(0) = 0; cidx(0) = 0; data(0) = 1; 
-ridx(1) = 0; cidx(1) = 1; data(1) = 2; 
-ridx(2) = 1; cidx(2) = 3; data(2) = 3; 
-ridx(3) = 2; cidx(3) = 3; data(3) = 4;
+ridx(0) = 1; cidx(0) = 1; data(0) = 1;
+ridx(1) = 2; cidx(1) = 2; data(1) = 2;
+ridx(2) = 2; cidx(2) = 4; data(2) = 3;
+ridx(3) = 3; cidx(3) = 4; data(3) = 4;
 SparseMatrix sm (data, ridx, cidx, nr, nc);
 @end group
 @end example
@@ -706,12 +707,13 @@ extremely memory constrained problems this may not be the best
 technique for creating a sparse matrix.
 
 The alternative is to first create a sparse matrix with the desired
-number of non-zero elements and then later fill those elements in.
+number of nonzero elements and then later fill those elements in.
 Sample code:
 
 @example
 @group
-int nz = 4, nr = 3, nc = 4;
+int nz, nr, nc;
+nz = 4, nr = 3, nc = 4;
 SparseMatrix sm (nr, nc, nz);
 sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
 @end group
@@ -730,7 +732,8 @@ with fewer elements than are actually inserted in the matrix.  Therefore,
 
 @example
 @group
-int nz = 4, nr = 3, nc = 4;
+int nr, nc;
+nr = 3, nc = 4;
 SparseMatrix sm (nr, nc, 0);
 sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
 @end group
@@ -745,7 +748,7 @@ it is possible to create a sparse matrix with too much storage, so having
 @var{nz} greater than 4 is also valid.  The disadvantage is that the matrix
 occupies more memory than strictly needed.
 
-It is not always possible to know the number of non-zero elements prior
+It is not always possible to know the number of nonzero elements prior
 to filling a matrix.  For this reason the additional unused storage of 
 a sparse matrix can be removed after its creation with the
 @code{maybe_compress} function.  In addition, @code{maybe_compress} can
@@ -759,7 +762,8 @@ An example of the use of @code{maybe_compress} is
 
 @example
 @group
-int nz = 6, nr = 3, nc = 4;
+int nz, nr, nc;
+nz = 6, nr = 3, nc = 4;
 
 SparseMatrix sm1 (nr, nc, nz);
 sm1(0,0) = 1; sm1(0,1) = 2; sm1(1,3) = 3; sm1(2,3) = 4;
@@ -782,7 +786,8 @@ be
 @example
 octave_value arg;
 @dots{}
-int nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
+int nz, nr, nc;
+nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
 SparseMatrix sm (nr, nc, nz);
 Matrix m = arg.matrix_value ();
 
@@ -802,7 +807,7 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_compress ();  // If don't know a-priori the final # of nz.
+sm.maybe_compress ();  // If don't know a priori the final # of nz.
 @end example
 
 @noindent
@@ -816,7 +821,8 @@ The above example would then be modified as
 @example
 octave_value arg;
 @dots{}
-int nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
+int nz, nr, nc;
+nz = 6, nr = 3, nc = 4;   // Assume we know the max # nz
 SparseMatrix sm (nr, nc, nz);
 Matrix m = arg.matrix_value ();
 
@@ -841,10 +847,10 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_mutate ();  // If don't know a-priori the final # of nz.
+sm.maybe_mutate ();  // If don't know a priori the final # of nz.
 @end example
 
-Note that both increasing and decreasing the number of non-zero elements in
+Note that both increasing and decreasing the number of nonzero elements in
 a sparse matrix is expensive as it involves memory reallocation.  Also as
 parts of the matrix, though not its entirety, exist as old and new copies
 at the same time, additional memory is needed.  Therefore, if possible this
@@ -1031,14 +1037,14 @@ An example of the inclusion of a Fortran function in an oct-file is
 given in the following example, where the C++ wrapper is
 
 @example
-@EXAMPLEFILE(fortdemo.cc)
+@EXAMPLEFILE(fortrandemo.cc)
 @end example
 
 @noindent
 and the Fortran function is
 
 @example
-@EXAMPLEFILE(fortsub.f)
+@EXAMPLEFILE(fortransub.f)
 @end example
 
 This example demonstrates most of the features needed to link to an
@@ -1048,13 +1054,13 @@ in order for the example to work.
 
 @example
 @group
-mkoctfile fortdemo.cc fortsub.f
-[b, s] = fortdemo (1:3)
+mkoctfile fortrandemo.cc fortransub.f
+[b, s] = fortrandemo (1:3)
 @result{}
   b = 1.00000   0.50000   0.33333
   s = There are   3 values in the input vector
-[b, s] = fortdemo (0:3)
-error: fortdemo: fortsub: divide by zero
+[b, s] = fortrandemo (0:3)
+error: fortrandemo: fortransub: divide by zero
 @end group
 @end example
 
@@ -1113,9 +1119,9 @@ An example of its use is:
 @group
 paramdemo ([1, 2, NaN, Inf])
 @result{} Properties of input array:
-      includes Inf or NaN values
-      includes other values than 1 and 0
-      includes only int, Inf or NaN values
+     includes Inf or NaN values
+     includes other values than 1 and 0
+     includes only int, Inf or NaN values
 @end group
 @end example
 
@@ -1492,8 +1498,8 @@ An example of its expected output is
 @example
 @group
 mystring (["First String"; "Second String"])
-@result{} s1 = Second String
-        First String
+@result{} Second String
+   First String
 @end group
 @end example
 
@@ -1601,34 +1607,26 @@ found in the file @file{mystruct.c} shown below.
 An example of the behavior of this function within Octave is then
 
 @example
+@group
 a(1).f1 = "f11"; a(1).f2 = "f12"; 
 a(2).f1 = "f21"; a(2).f2 = "f22";
-b = mystruct (a)
-@result{} field f1(0) = f11
+b = mystruct (a);
+@result{}  field f1(0) = f11
     field f1(1) = f21
     field f2(0) = f12
     field f2(1) = f22
-    b =
-    @{
-      this =
+b
+@result{} 2x2 struct array containing the fields:
 
-      (,
-        [1] = this1
-        [2] = this2
-        [3] = this3
-        [4] = this4
-      ,)
+     this
+     that
 
-      that =
+b(3)
+@result{} scalar structure containing the fields:
 
-      (,
-        [1] = that1
-        [2] = that2
-        [3] = that3
-        [4] = that4
-      ,)
-
-    @}
+     this = this3
+     that = that3
+@end group
 @end example
 
 @node Sparse Matrices with Mex-Files
@@ -1657,11 +1655,11 @@ void mxSetNzmax (mxArray *ptr, mwSize nzmax);
 
 @noindent
 @code{mxGetNzmax} gets the maximum number of elements that can be stored
-in the sparse matrix.  This is not necessarily the number of non-zero
+in the sparse matrix.  This is not necessarily the number of nonzero
 elements in the sparse matrix.  @code{mxGetJc} returns an array with one
 additional value than the number of columns in the sparse matrix.  The
 difference between consecutive values of the array returned by
-@code{mxGetJc} define the number of non-zero elements in each column of
+@code{mxGetJc} define the number of nonzero elements in each column of
 the sparse matrix.  Therefore,
 
 @example
@@ -1677,15 +1675,27 @@ nz = Jc[n];
 @end example
 
 @noindent
-returns the actual number of non-zero elements stored in the matrix in
+returns the actual number of nonzero elements stored in the matrix in
 @code{nz}.  As the arrays returned by @code{mxGetPr} and @code{mxGetPi}
-only contain the non-zero values of the matrix, we also need a pointer
-to the rows of the non-zero elements, and this is given by
+only contain the nonzero values of the matrix, we also need a pointer
+to the rows of the nonzero elements, and this is given by
 @code{mxGetIr}.  A complete example of the use of sparse matrices in
 mex-files is given by the file @file{mysparse.c} shown below.
 
 @example
 @EXAMPLEFILE(mysparse.c)
+@end example
+
+A sample usage of @code{mysparse} is
+
+@example
+@group
+sm = sparse ([1, 0; 0, pi]);
+mysparse (sm)
+@result{}
+Matrix is 2-by-2 real sparse matrix with 2 elements
+last nonzero element (2, 2) = 3.14159
+@end group
 @end example
 
 @node Calling Other Functions in Mex-Files
@@ -1704,12 +1714,11 @@ If this code is in the file @file{myfeval.c}, and is compiled to
 
 @example
 @group
-myfeval ("sin", 1)
 a = myfeval ("sin", 1)
-@result{} Hello, World!
-    I have 2 inputs and 1 outputs
-    I'm going to call the interpreter function sin
-    a =  0.84147
+@result{} Starting file myfeval.mex
+   I have 2 inputs and 1 outputs
+   I'm going to call the interpreter function sin
+   a =  0.84147
 @end group
 @end example
 
@@ -1752,7 +1761,7 @@ $
 Note that the application @code{standalone} will be dynamically linked
 against the Octave libraries and any Octave support libraries.  The above
 allows the Octave math libraries to be used by an application.  It does
-not, however, allow the script files, oct-files, or builtin functions of
+not, however, allow the script files, oct-files, or built-in functions of
 Octave to be used by the application.  To do that the Octave interpreter
 needs to be initialized first.  An example of how to do this can then be
 seen in the code
@@ -1769,6 +1778,40 @@ which, as before, is compiled and run as a standalone application with
 $ mkoctfile --link-stand-alone embedded.cc -o embedded
 $ ./embedded
 GCD of [10, 15] is 5
+$
+@end group
+@end example
+
+It is worth noting that, if only built-in functions are to be called from 
+a C++ standalone program, then it does not need to initialize the 
+interpreter to do so.  The general rule is that, for a built-in 
+function named @code{function_name} in the interpreter, there will be
+a C++ function named @code{Ffunction_name} (note the prepended capital 
+@code{F}) accessible in the C++ API@.  The declarations for all built-in 
+functions are collected in the header file @code{builtin-defun-decls.h}.
+This feature should be used with care as the list of built-in functions can
+change.  No guarantees can be made that a function that is currently built in
+won't be implemented as a .m file or as a dynamically linked function in the
+future.  An example of how to call built-in functions from C++ can be seen in
+the code
+
+@example
+@EXAMPLEFILE(standalonebuiltin.cc)
+@end example
+
+@noindent
+which, again, is compiled and run as a standalone application with
+
+@example
+@group
+$ mkoctfile --link-stand-alone standalonebuiltin.cc -o standalonebuiltin
+$ ./standalonebuiltin 
+This is a matrix:
+ 11 12
+ 21 22
+
+This is the norm of the matrix:
+34.4952
 $
 @end group
 @end example

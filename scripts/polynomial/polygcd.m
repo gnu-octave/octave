@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -91,10 +91,12 @@ endfunction
 %!assert (deconv (poly (1:8), polygcd (poly (1:8), poly (3:12))), poly (1:2), sqrt (eps))
 
 %!test
-%! for ii=1:10
-%!   p  = (unique (randn (10, 1)) * 10).';
+%! for ii=1:100
+%!   ## Exhibits numerical problems for multipliers of ~4 and greater.
+%!   p  = (unique (randn (10, 1)) * 3).';
 %!   p1 = p(3:end);
 %!   p2 = p(1:end-2);
-%!   assert (polygcd (poly (-p1), poly (-p2)), poly (- intersect (p1, p2)), sqrt (eps));
+%!   assert (polygcd (poly (-p1), poly (-p2)),
+%!           poly (- intersect (p1, p2)), sqrt (eps));
 %! endfor
 

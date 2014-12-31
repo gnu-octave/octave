@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -51,7 +51,8 @@ template class OCTINTERP_API octave_base_sparse<SparseComplexMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse_complex_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix, "sparse complex matrix", "double");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
+                                     "sparse complex matrix", "double");
 
 octave_base_value *
 octave_sparse_complex_matrix::try_narrowing_conversion (void)
@@ -110,7 +111,7 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex sparse matrix", "real scalar");
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
+  // FIXME: maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
       if (numel () > 1)
@@ -146,7 +147,7 @@ octave_sparse_complex_matrix::complex_value (bool) const
 
   Complex retval (tmp, tmp);
 
-  // FIXME -- maybe this should be a function, valid_as_scalar()
+  // FIXME: maybe this should be a function, valid_as_scalar()
   if (numel () > 0)
     {
       if (numel () > 1)
@@ -240,16 +241,16 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats
-  itmp= -2;
+  itmp = -2;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nr;
+  itmp = nr;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nc;
+  itmp = nc;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
-  itmp= nz;
+  itmp = nz;
   os.write (reinterpret_cast<char *> (&itmp), 4);
 
   save_type st = LS_DOUBLE;
@@ -263,7 +264,7 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
       else
         st = LS_FLOAT;
     }
-  else if (matrix.nnz () > 8192) // FIXME -- make this configurable.
+  else if (matrix.nnz () > 8192) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (matrix.all_integers (max_val, min_val))
@@ -272,28 +273,29 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
 
   // add one to the printed indices to go from
   // zero-based to one-based arrays
-   for (int i = 0; i < nc+1; i++)
-     {
-       octave_quit ();
-       itmp = matrix.cidx (i);
-       os.write (reinterpret_cast<char *> (&itmp), 4);
-     }
+  for (int i = 0; i < nc+1; i++)
+    {
+      octave_quit ();
+      itmp = matrix.cidx (i);
+      os.write (reinterpret_cast<char *> (&itmp), 4);
+    }
 
-   for (int i = 0; i < nz; i++)
-     {
-       octave_quit ();
-       itmp = matrix.ridx (i);
-       os.write (reinterpret_cast<char *> (&itmp), 4);
-     }
+  for (int i = 0; i < nz; i++)
+    {
+      octave_quit ();
+      itmp = matrix.ridx (i);
+      os.write (reinterpret_cast<char *> (&itmp), 4);
+    }
 
-   write_doubles (os, reinterpret_cast<const double *> (matrix.data ()), st, 2 * nz);
+  write_doubles (os, reinterpret_cast<const double *> (matrix.data ()), st,
+                 2 * nz);
 
   return true;
 }
 
 bool
 octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
-                                   oct_mach_info::float_format fmt)
+                                           oct_mach_info::float_format fmt)
 {
   int32_t nz, nc, nr, tmp;
   char ctmp;
@@ -304,10 +306,11 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
   if (swap)
     swap_bytes<4> (&tmp);
 
-  if (tmp != -2) {
-    error ("load: only 2-D sparse matrices are supported");
-    return false;
-  }
+  if (tmp != -2)
+    {
+      error ("load: only 2-D sparse matrices are supported");
+      return false;
+    }
 
   if (! is.read (reinterpret_cast<char *> (&nr), 4))
     return false;
@@ -379,14 +382,16 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   matrix.maybe_compress ();
 
 #if HAVE_HDF5_18
-  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  hid_t group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT,
+                               H5P_DEFAULT);
 #else
   hid_t group_hid = H5Gcreate (loc_id, name, 0);
 #endif
   if (group_hid < 0)
     return false;
 
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
   SparseComplexMatrix m = sparse_complex_matrix_value ();
   octave_idx_type tmp;
@@ -540,7 +545,8 @@ octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
     }
 
   itmp = m.xridx ();
-  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                     itmp) >= 0;
   H5Dclose (data_hid);
   if (!retval)
     {
@@ -631,7 +637,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
 #else
   group_hid = H5Gopen (loc_id, name);
 #endif
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0) return false;
 
 #if HAVE_HDF5_18
   data_hid = H5Dopen (group_hid, "nr", H5P_DEFAULT);
@@ -648,7 +654,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nr) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
+               H5S_ALL, H5P_DEFAULT, &nr) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -672,7 +679,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nc) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
+               H5S_ALL, H5P_DEFAULT, &nc) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -696,7 +704,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
       return false;
     }
 
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, &nz) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
+               H5S_ALL, H5P_DEFAULT, &nz) < 0)
     {
       H5Dclose (data_hid);
       H5Gclose (group_hid);
@@ -740,7 +749,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   octave_idx_type *itmp = m.xcidx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
+               H5S_ALL, H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);
@@ -779,7 +789,8 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
     }
 
   itmp = m.xridx ();
-  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL, H5P_DEFAULT, itmp) < 0)
+  if (H5Dread (data_hid, H5T_NATIVE_IDX, H5S_ALL,
+               H5S_ALL, H5P_DEFAULT, itmp) < 0)
     {
       H5Sclose (space_hid);
       H5Dclose (data_hid);

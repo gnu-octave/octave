@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatCHOL_h)
-#define octave_FloatCHOL_h 1
+#if !defined (octave_floatCHOL_h)
+#define octave_floatCHOL_h 1
 
 #include <iosfwd>
 
@@ -39,28 +39,28 @@ public:
 
   FloatCHOL (const FloatMatrix& a, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      init (a, calc_cond);
-    }
+  {
+    init (a, calc_cond);
+  }
 
   FloatCHOL (const FloatMatrix& a, octave_idx_type& info,
              bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      info = init (a, calc_cond);
-    }
+  {
+    info = init (a, calc_cond);
+  }
 
   FloatCHOL (const FloatCHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   FloatCHOL& operator = (const FloatCHOL& a)
-    {
-      if (this != &a)
-        {
-          chol_mat = a.chol_mat;
-          xrcond = a.xrcond;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        chol_mat = a.chol_mat;
+        xrcond = a.xrcond;
+      }
+    return *this;
+  }
 
   FloatMatrix chol_matrix (void) const { return chol_mat; }
 
@@ -81,7 +81,8 @@ public:
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatCHOL& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const FloatCHOL& a);
 
 private:
 

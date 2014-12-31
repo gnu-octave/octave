@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatHESS_h)
-#define octave_FloatHESS_h 1
+#if !defined (octave_floatHESS_h)
+#define octave_floatHESS_h 1
 
 #include <iosfwd>
 
@@ -36,29 +36,29 @@ public:
   FloatHESS (void) : hess_mat (), unitary_hess_mat () { }
 
   FloatHESS (const FloatMatrix& a)
-     : hess_mat (), unitary_hess_mat ()
-    {
-      init (a);
-    }
+    : hess_mat (), unitary_hess_mat ()
+  {
+    init (a);
+  }
 
   FloatHESS (const FloatMatrix& a, octave_idx_type& info)
     : hess_mat (), unitary_hess_mat ()
-    {
-      info = init (a);
-    }
+  {
+    info = init (a);
+  }
 
   FloatHESS (const FloatHESS& a)
     : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
 
   FloatHESS& operator = (const FloatHESS& a)
-    {
-      if (this != &a)
-        {
-          hess_mat = a.hess_mat;
-          unitary_hess_mat = a.unitary_hess_mat;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        hess_mat = a.hess_mat;
+        unitary_hess_mat = a.unitary_hess_mat;
+      }
+    return *this;
+  }
 
   ~FloatHESS (void) { }
 

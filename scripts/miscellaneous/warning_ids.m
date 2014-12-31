@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -299,8 +299,10 @@
 ## string constant.
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
-## @item Octave:singular-matrix-div
-## By default, the @code{Octave:singular-matrix-div} warning is enabled.
+## @item Octave:nearly-singular-matrix
+## @itemx Octave:singular-matrix
+## By default, the @code{Octave:nearly-singular-matrix} and
+## @code{Octave:singular-matrix} warnings are enabled.
 ##
 ## @item Octave:sqrtm:SingularMatrix
 ## By default, the @code{Octave:sqrtm:SingularMatrix} warning is enabled.
@@ -335,12 +337,11 @@
 ## @end table
 ##
 
-
 function warning_ids ()
   help ("warning_ids");
 endfunction
 
 
-## Remove from test statistics.  No real tests possible
+## Mark file as being tested.  No real test needed for a documentation .m file
 %!assert (1)
 

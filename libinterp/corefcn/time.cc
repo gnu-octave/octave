@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -102,7 +102,7 @@ extract_tm (const octave_scalar_map& m)
 }
 
 DEFUN (time, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{seconds} =} time ()\n\
 Return the current time as the number of seconds since the epoch.  The\n\
 epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
@@ -123,10 +123,12 @@ value returned by @code{time} was 856163706.\n\
 
 /*
 %!assert (time () > 0)
+
+%!error time (1)
 */
 
 DEFUN (gmtime, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{tm_struct} =} gmtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
 return a time structure corresponding to CUT (Coordinated Universal Time).\n\
@@ -188,7 +190,7 @@ gmtime (time ())\n\
 */
 
 DEFUN (localtime, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{tm_struct} =} localtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
 return a time structure corresponding to the local time zone.\n\
@@ -249,7 +251,7 @@ localtime (time ())\n\
 */
 
 DEFUN (mktime, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{seconds} =} mktime (@var{tm_struct})\n\
 Convert a time structure corresponding to the local time to the number\n\
 of seconds since the epoch.  For example:\n\
@@ -299,11 +301,13 @@ mktime (localtime (time ()))\n\
 %!assert (datestr (datenum (1795, 1, 1), 0), "01-Jan-1795 00:00:00")
 
 %!error mktime ()
+%!error mktime (1)
 %!error mktime (1, 2, 3)
+%!error mktime (struct ("year", "foo"))
 */
 
 DEFUN (strftime, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strftime (@var{fmt}, @var{tm_struct})\n\
 Format the time structure @var{tm_struct} in a flexible way using the\n\
 format string @var{fmt} that contains @samp{%} substitutions\n\
@@ -459,10 +463,10 @@ Year (1970-).\n\
 
   if (args.length () == 2)
     {
-      std::string fmt = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string fmt = args(0).string_value ();
+
           octave_scalar_map map = args(1).scalar_map_value ();
 
           if (! error_state)
@@ -494,11 +498,13 @@ Year (1970-).\n\
 %!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))));
 
 %!error strftime ()
+%!error strftime ("foo", 1)
+%!error strftime ("foo", struct ("year", "foo"))
 %!error strftime ("foo", localtime (time ()), 1)
 */
 
 DEFUN (strptime, args, ,
- "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})\n\
 Convert the string @var{str} to the time structure @var{tm_struct} under\n\
 the control of the format string @var{fmt}.\n\
@@ -513,14 +519,14 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   if (args.length () == 2)
     {
-      std::string str = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
-          std::string fmt = args(1).string_value ();
+          std::string str = args(0).string_value ();
 
-          if (! error_state)
+          if (args(1).is_string ())
             {
+              std::string fmt = args(1).string_value ();
+
               octave_strptime t (str, fmt);
 
               retval(1) = t.characters_converted ();
@@ -537,3 +543,23 @@ you're absolutely sure the date string will be parsed correctly.\n\
 
   return retval;
 }
+
+/*
+%!test
+%! fmt = "%Y-%m-%d %H:%M:%S";
+%! s = strftime (fmt, localtime (time ()));
+%! ts = strptime  (s, fmt);
+%! assert (isstruct (ts));
+%! assert (isfield (ts, "usec"));
+%! assert (isfield (ts, "year"));
+%! assert (isfield (ts, "mon"));
+%! assert (isfield (ts, "mday"));
+%! assert (isfield (ts, "sec"));
+%! assert (isfield (ts, "min"));
+%! assert (isfield (ts, "wday"));
+%! assert (isfield (ts, "hour"));
+%! assert (isfield (ts, "isdst"));
+%! assert (isfield (ts, "yday"));
+
+%!error strptime ()
+*/

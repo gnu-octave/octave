@@ -1,21 +1,22 @@
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011, 2013 Michael Goffioul.
 
 This file is part of QConsole.
 
-Foobar is free software: you can redistribute it and/or modify
+This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-QConsole is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -31,6 +32,8 @@ class QPaintEvent;
 class QResizeEvent;
 class QWheelEvent;
 class QPoint;
+class QDragEnterEvent;
+class QDropEvent;
 
 class QConsolePrivate;
 class QConsoleThread;
@@ -59,18 +62,22 @@ public:
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
   void setCursorColor (bool useForegoundColor, const QColor& color);
+  void setScrollBufferSize(int value);
 
   QString selectedText ();
 
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
+  void selectAll (void);
   void blinkCursorEvent (void);
+  void init_terminal_size (void);
 
 signals:
   void terminated (void);
   void titleChanged (const QString&);
   void set_global_shortcuts_signal (bool);
+  void set_screen_size_signal (int, int);
 
 protected:
   void viewPaintEvent (QConsoleView*, QPaintEvent*);
@@ -85,16 +92,24 @@ protected:
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
+  void mouseDoubleClickEvent (QMouseEvent* event);
+  void mouseTripleClickEvent (QMouseEvent* event);
 
   bool eventFilter(QObject *obj, QEvent *ev);
 
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
+
 private slots:
-  void scrollValueChanged (int value);
+  void horizontalScrollValueChanged (int value);
+  void verticalScrollValueChanged (int value);
   void monitorConsole (void);
   void updateSelection (void);
+  void tripleClickTimeout (void);
 
 private:
   QConsolePrivate* d;
+  bool allowTripleClick;
 };
 
 //////////////////////////////////////////////////////////////////////////////

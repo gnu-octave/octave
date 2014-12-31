@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -130,7 +130,7 @@ DEFCONV (sparse_complex_matrix_conv, complex, sparse_complex_matrix)
   CAST_CONV_ARG (const octave_complex&);
 
   return new octave_sparse_complex_matrix
-    (SparseComplexMatrix (v.complex_matrix_value ()));
+         (SparseComplexMatrix (v.complex_matrix_value ()));
 }
 
 void

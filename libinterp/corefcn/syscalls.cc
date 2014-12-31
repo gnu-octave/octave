@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -110,13 +110,14 @@ mk_stat_result (const base_file_stat& fs)
 }
 
 DEFUNX ("dup2", Fdup2, args, ,
- "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})\n\
 Duplicate a file descriptor.\n\
 \n\
 If successful, @var{fid} is greater than zero and contains the new file\n\
 ID@.  Otherwise, @var{fid} is negative and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{fopen, fclose, fcntl}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -162,7 +163,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("exec", Fexec, args, ,
- "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})\n\
 Replace current process with a new process.  Calling @code{exec} without\n\
 first calling @code{fork} will terminate your current Octave process and\n\
@@ -189,10 +190,10 @@ error message.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string exec_file = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string exec_file = args(0).string_value ();
+
           string_vector exec_args;
 
           if (nargin == 2)
@@ -211,7 +212,7 @@ error message.\n\
                     exec_args[i+1] = tmp[i];
                 }
               else
-                error ("exec: arguments must be character strings");
+                error ("exec: all arguments must be strings");
             }
           else
             {
@@ -245,7 +246,7 @@ error message.\n\
 }
 
 DEFUNX ("popen2", Fpopen2, args, ,
- "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})\n\
 Start a subprocess with two-way communication.  The name of the process\n\
 is given by @var{command}, and @var{args} is an array of strings\n\
@@ -283,9 +284,10 @@ waitpid (pid);\n\
    @print{} are\n\
 @end example\n\
 \n\
-Note that @code{popen2}, unlike @code{popen}, will not @qcode{\"reap\"} the\n\
+Note that @code{popen2}, unlike @code{popen}, will not @nospell{\"reap\"} the\n\
 child process.  If you don't use @code{waitpid} to check the child's\n\
 exit status, it will linger until Octave exits.\n\
+@seealso{popen, waitpid}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -298,10 +300,10 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      std::string exec_file = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string exec_file = args(0).string_value ();
+
           string_vector arg_list;
 
           if (nargin >= 2)
@@ -320,7 +322,7 @@ exit status, it will linger until Octave exits.\n\
                     arg_list[i+1] = tmp[i];
                 }
               else
-                error ("popen2: arguments must be character strings");
+                error ("popen2: all arguments must be strings");
             }
           else
             {
@@ -339,7 +341,8 @@ exit status, it will linger until Octave exits.\n\
                   std::string msg;
                   pid_t pid;
 
-                  pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode, fildes, msg, interactive);
+                  pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode,
+                                                 fildes, msg, interactive);
                   if (pid >= 0)
                     {
                       FILE *ifile = fdopen (fildes[1], "r");
@@ -348,10 +351,10 @@ exit status, it will linger until Octave exits.\n\
                       std::string nm;
 
                       octave_stream is = octave_stdiostream::create (nm, ifile,
-                          std::ios::in);
+                                                                  std::ios::in);
 
                       octave_stream os = octave_stdiostream::create (nm, ofile,
-                          std::ios::out);
+                                                                 std::ios::out);
 
                       Cell file_ids (1, 2);
 
@@ -359,12 +362,12 @@ exit status, it will linger until Octave exits.\n\
                       retval(1) = octave_stream_list::insert (is);
                       retval(0) = octave_stream_list::insert (os);
                     }
-                                  else
+                  else
                     error (msg.c_str ());
                 }
             }
           else
-            error ("popen2: arguments must be character strings");
+            error ("popen2: all arguments must be strings");
         }
       else
         error ("popen2: COMMAND argument must be a string");
@@ -376,51 +379,79 @@ exit status, it will linger until Octave exits.\n\
 }
 
 /*
-%!test
-%! if (isunix ())
+
+%!test  # UNIX-style test
+%! if (isunix () || ismac ())
 %!   [in, out, pid] = popen2 ("sort", "-r");
 %!   EAGAIN = errno ("EAGAIN");
-%! else
-%!   [in, out, pid] = popen2 ("sort", "/R");
-%!   EAGAIN = errno ("EINVAL");
-%! endif
-%! fputs (in, "these\nare\nsome\nstrings\n");
-%! fclose (in);
-%! done = false;
-%! str = {};
-%! idx = 0;
-%! errs = 0;
-%! do
-%!   if (!isunix ())
-%!     errno (0);
-%!   endif
-%!   s = fgets (out);
-%!   if (ischar (s))
-%!     idx++;
-%!     str{idx} = s;
-%!   elseif (errno () == EAGAIN)
-%!     fclear (out);
-%!     sleep (0.1);
-%!     if (++errs == 100)
+%!   fputs (in, "these\nare\nsome\nstrings\n");
+%!   fclose (in);
+%!   done = false;
+%!   str = {};
+%!   idx = 0;
+%!   errs = 0;
+%!   do
+%!     if (ismac ())  # FIXME: Is this necessary?
+%!       errno (0);
+%!     endif
+%!     s = fgets (out);
+%!     if (ischar (s))
+%!       idx++;
+%!       str{idx} = s;
+%!     elseif (errno () == EAGAIN)
+%!       fclear (out);
+%!       sleep (0.1);
+%!       if (++errs == 100)
+%!         done = true;
+%!       endif
+%!     else
 %!       done = true;
 %!     endif
-%!   else
-%!     done = true;
-%!   endif
-%! until (done)
-%! fclose (out);
-%! if (isunix ())
+%!   until (done)
+%!   fclose (out);
+%!   waitpid (pid);
 %!   assert (str, {"these\n","strings\n","some\n","are\n"});
-%! else
+%! endif
+
+%!test  # Windows-style test
+%! if (ispc () && ! isunix ())
+%!   [in, out, pid] = popen2 ('C:\Windows\system32\sort.exe', "/R");
+%!   EAGAIN = errno ("EINVAL");
+%!   fputs (in, "these\r\nare\r\nsome\r\nstrings\r\n");
+%!   fclose (in);
+%!   done = false;
+%!   str = {};
+%!   idx = 0;
+%!   errs = 0;
+%!   do
+%!     errno (0);
+%!     s = fgets (out);
+%!     if (ischar (s))
+%!       idx++;
+%!       str{idx} = s;
+%!     elseif (errno () == EAGAIN)
+%!       fclear (out);
+%!       sleep (0.1);
+%!       if (++errs == 100)
+%!         done = true;
+%!       endif
+%!     else
+%!       done = true;
+%!     endif
+%!   until (done)
+%!   fclose (out);
+%!   waitpid (pid);
 %!   assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
 %! endif
+
 */
 
 DEFUNX ("fcntl", Ffcntl, args, ,
- "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})\n\
-Change the properties of the open file @var{fid}.  The following values\n\
-may be passed as @var{request}:\n\
+Change the properties of the open file @var{fid}.\n\
+\n\
+The following values may be passed as @var{request}:\n\
 \n\
 @vtable @code\n\
 @item F_DUPFD\n\
@@ -471,6 +502,7 @@ Set the file status flags for @var{fid} to the value specified by\n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
 system-dependent error message.\n\
+@seealso{fopen, dup2}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -482,7 +514,7 @@ system-dependent error message.\n\
 
   if (nargin == 3)
     {
-      octave_stream strm = octave_stream_list::lookup (args (0), "fcntl");
+      octave_stream strm = octave_stream_list::lookup (args(0), "fcntl");
 
       if (! error_state)
         {
@@ -493,7 +525,7 @@ system-dependent error message.\n\
 
           if (! error_state)
             {
-              // FIXME -- Need better checking here?
+              // FIXME: Need better checking here?
               if (fid < 0)
                 error ("fcntl: invalid file id");
               else
@@ -517,7 +549,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("fork", Ffork, args, ,
- "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} fork ()\n\
 Create a copy of the current process.\n\
 \n\
@@ -562,7 +594,7 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 }
 
 DEFUNX ("getpgrp", Fgetpgrp, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {pgid =} getpgrp ()\n\
 Return the process group id of the current process.\n\
 @end deftypefn")
@@ -588,7 +620,7 @@ Return the process group id of the current process.\n\
 }
 
 DEFUNX ("getpid", Fgetpid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {pid =} getpid ()\n\
 Return the process id of the current process.\n\
 @end deftypefn")
@@ -606,7 +638,7 @@ Return the process id of the current process.\n\
 }
 
 DEFUNX ("getppid", Fgetppid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {pid =} getppid ()\n\
 Return the process id of the parent process.\n\
 @end deftypefn")
@@ -624,7 +656,7 @@ Return the process id of the parent process.\n\
 }
 
 DEFUNX ("getegid", Fgetegid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {egid =} getegid ()\n\
 Return the effective group id of the current process.\n\
 @end deftypefn")
@@ -642,7 +674,7 @@ Return the effective group id of the current process.\n\
 }
 
 DEFUNX ("getgid", Fgetgid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {gid =} getgid ()\n\
 Return the real group id of the current process.\n\
 @end deftypefn")
@@ -660,7 +692,7 @@ Return the real group id of the current process.\n\
 }
 
 DEFUNX ("geteuid", Fgeteuid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {euid =} geteuid ()\n\
 Return the effective user id of the current process.\n\
 @end deftypefn")
@@ -678,7 +710,7 @@ Return the effective user id of the current process.\n\
 }
 
 DEFUNX ("getuid", Fgetuid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {uid =} getuid ()\n\
 Return the real user id of the current process.\n\
 @end deftypefn")
@@ -696,7 +728,7 @@ Return the real user id of the current process.\n\
 }
 
 DEFUNX ("kill", Fkill, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} kill (@var{pid}, @var{sig})\n\
 Send signal @var{sig} to process @var{pid}.\n\
 \n\
@@ -748,7 +780,7 @@ Return 0 if successful, otherwise return -1.\n\
 }
 
 DEFUNX ("lstat", Flstat, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{info} =} lstat (@var{symlink})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{symlink})\n\
 Return a structure @var{info} containing information about the symbolic link\n\
@@ -778,7 +810,7 @@ The function outputs are described in the documentation for @code{stat}.\n\
 }
 
 DEFUNX ("mkfifo", Fmkfifo, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mkfifo (@var{name}, @var{mode})\n\
 @deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
 Create a FIFO special file named @var{name} with file mode @var{mode}\n\
@@ -833,7 +865,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("pipe", Fpipe, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{read_fd}, @var{write_fd}, @var{err}, @var{msg}] =} pipe ()\n\
 Create a pipe and return the reading and writing ends of the pipe\n\
 into @var{read_fd} and @var{write_fd} respectively.\n\
@@ -888,7 +920,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("stat", Fstat, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{fid})\n\
 @deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
@@ -1017,7 +1049,7 @@ For example:\n\
 }
 
 DEFUNX ("S_ISREG", FS_ISREG, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISREG (@var{mode})\n\
 Return true if @var{mode} corresponds to a regular file.\n\
 \n\
@@ -1043,7 +1075,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUNX ("S_ISDIR", FS_ISDIR, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISDIR (@var{mode})\n\
 Return true if @var{mode} corresponds to a directory.\n\
 \n\
@@ -1069,7 +1101,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUNX ("S_ISCHR", FS_ISCHR, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISCHR (@var{mode})\n\
 Return true if @var{mode} corresponds to a character device.\n\
 \n\
@@ -1095,7 +1127,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUNX ("S_ISBLK", FS_ISBLK, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISBLK (@var{mode})\n\
 Return true if @var{mode} corresponds to a block device.\n\
 \n\
@@ -1121,7 +1153,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUNX ("S_ISFIFO", FS_ISFIFO, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISFIFO (@var{mode})\n\
 Return true if @var{mode} corresponds to a fifo.\n\
 \n\
@@ -1147,7 +1179,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUNX ("S_ISLNK", FS_ISLNK, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISLNK (@var{mode})\n\
 Return true if @var{mode} corresponds to a symbolic link.\n\
 \n\
@@ -1173,7 +1205,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUNX ("S_ISSOCK", FS_ISSOCK, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} S_ISSOCK (@var{mode})\n\
 Return true if @var{mode} corresponds to a socket.\n\
 \n\
@@ -1199,7 +1231,7 @@ The value of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 }
 
 DEFUN (gethostname, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} gethostname ()\n\
 Return the hostname of the system where Octave is running.\n\
 @end deftypefn")
@@ -1215,7 +1247,7 @@ Return the hostname of the system where Octave is running.\n\
 }
 
 DEFUN (uname, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()\n\
 Return system information in the structure.  For example:\n\
 \n\
@@ -1262,7 +1294,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("unlink", Funlink, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} unlink (@var{file})\n\
 Delete the file named @var{file}.\n\
 \n\
@@ -1301,7 +1333,7 @@ system-dependent error message.\n\
 }
 
 DEFUNX ("waitpid", Fwaitpid, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{pid}, @var{status}, @var{msg}] =} waitpid (@var{pid}, @var{options})\n\
 Wait for process @var{pid} to terminate.  The @var{pid} argument can be:\n\
 \n\
@@ -1370,7 +1402,8 @@ information about the subprocess that exited.\n\
 
               int status = 0;
 
-              pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
+              pid_t result = octave_syscalls::waitpid (pid, &status,
+                                                       options, msg);
 
               retval(2) = msg;
               retval(1) = status;
@@ -1389,7 +1422,7 @@ information about the subprocess that exited.\n\
 }
 
 DEFUNX ("WIFEXITED", FWIFEXITED, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WIFEXITED (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return true if the\n\
 child terminated normally.\n\
@@ -1412,7 +1445,7 @@ child terminated normally.\n\
 }
 
 DEFUNX ("WEXITSTATUS", FWEXITSTATUS, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WEXITSTATUS (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return the exit\n\
 status of the child.  This function should only be employed if\n\
@@ -1436,7 +1469,7 @@ status of the child.  This function should only be employed if\n\
 }
 
 DEFUNX ("WIFSIGNALED", FWIFSIGNALED, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WIFSIGNALED (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return true if the\n\
 child process was terminated by a signal.\n\
@@ -1459,7 +1492,7 @@ child process was terminated by a signal.\n\
 }
 
 DEFUNX ("WTERMSIG", FWTERMSIG, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WTERMSIG (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return the number of\n\
 the signal that caused the child process to terminate.  This function\n\
@@ -1483,7 +1516,7 @@ should only be employed if @code{WIFSIGNALED} returned true.\n\
 }
 
 DEFUNX ("WCOREDUMP", FWCOREDUMP, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WCOREDUMP (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return true if the\n\
 child produced a core dump.  This function should only be employed if\n\
@@ -1509,7 +1542,7 @@ Unix implementations (e.g., AIX, SunOS).\n\
 }
 
 DEFUNX ("WIFSTOPPED", FWIFSTOPPED, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WIFSTOPPED (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return true if the\n\
 child process was stopped by delivery of a signal; this is only\n\
@@ -1534,7 +1567,7 @@ is being traced (see ptrace(2)).\n\
 }
 
 DEFUNX ("WSTOPSIG", FWSTOPSIG, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WSTOPSIG (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return the number of\n\
 the signal which caused the child to stop.  This function should only\n\
@@ -1558,7 +1591,7 @@ be employed if @code{WIFSTOPPED} returned true.\n\
 }
 
 DEFUNX ("WIFCONTINUED", FWIFCONTINUED, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WIFCONTINUED (@var{status})\n\
 Given @var{status} from a call to @code{waitpid}, return true if the\n\
 child process was resumed by delivery of @code{SIGCONT}.\n\
@@ -1581,7 +1614,7 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
 }
 
 DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}] =} canonicalize_file_name (@var{fname})\n\
 Return the canonical name of file @var{fname}.  If the file does not exist\n\
 the empty string (\"\") is returned.\n\
@@ -1592,10 +1625,9 @@ the empty string (\"\") is returned.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string name = args(0).string_value ();
           std::string msg;
 
           std::string result = octave_canonicalize_file_name (name, msg);
@@ -1605,7 +1637,7 @@ the empty string (\"\") is returned.\n\
           retval(0) = result;
         }
       else
-        error ("canonicalize_file_name: NAME must be a character string");
+        error ("canonicalize_file_name: NAME must be a string");
     }
   else
     print_usage ();
@@ -1633,7 +1665,7 @@ const_value (const octave_value_list& args, int val)
 #endif
 
 DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_DUPFD ()\n\
 Return the numerical value to pass to @code{fcntl} to return a\n\
 duplicate file descriptor.\n\
@@ -1649,7 +1681,7 @@ duplicate file descriptor.\n\
 }
 
 DEFUNX ("F_GETFD", FF_GETFD, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_GETFD ()\n\
 Return the numerical value to pass to @code{fcntl} to return the\n\
 file descriptor flags.\n\
@@ -1665,7 +1697,7 @@ file descriptor flags.\n\
 }
 
 DEFUNX ("F_GETFL", FF_GETFL, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_GETFL ()\n\
 Return the numerical value to pass to @code{fcntl} to return the\n\
 file status flags.\n\
@@ -1681,7 +1713,7 @@ file status flags.\n\
 }
 
 DEFUNX ("F_SETFD", FF_SETFD, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_SETFD ()\n\
 Return the numerical value to pass to @code{fcntl} to set the file\n\
 descriptor flags.\n\
@@ -1697,7 +1729,7 @@ descriptor flags.\n\
 }
 
 DEFUNX ("F_SETFL", FF_SETFL, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_SETFL ()\n\
 Return the numerical value to pass to @code{fcntl} to set the file\n\
 status flags.\n\
@@ -1713,7 +1745,7 @@ status flags.\n\
 }
 
 DEFUNX ("O_APPEND", FO_APPEND, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_APPEND ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate each write operation appends,\n\
@@ -1730,7 +1762,7 @@ or that may be passed to @code{fcntl} to set the write mode to append.\n\
 }
 
 DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_ASYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate asynchronous I/O.\n\
@@ -1746,7 +1778,7 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
 }
 
 DEFUNX ("O_CREAT", FO_CREAT, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_CREAT ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that a file should be\n\
@@ -1763,7 +1795,7 @@ created if it does not exist.\n\
 }
 
 DEFUNX ("O_EXCL", FO_EXCL, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_EXCL ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that file locking is used.\n\
@@ -1779,7 +1811,7 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
 }
 
 DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_NONBLOCK ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that non-blocking I/O is in use,\n\
@@ -1796,7 +1828,7 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
 }
 
 DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_RDONLY ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that a file is open for\n\
@@ -1813,7 +1845,7 @@ reading only.\n\
 }
 
 DEFUNX ("O_RDWR", FO_RDWR, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_RDWR ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that a file is open for both\n\
@@ -1830,7 +1862,7 @@ reading and writing.\n\
 }
 
 DEFUNX ("O_SYNC", FO_SYNC, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_SYNC ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that a file is open for\n\
@@ -1847,8 +1879,8 @@ synchronous I/O.\n\
 }
 
 DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} O_TRUNC ()\n\
+        "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} O_TRUNC ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that if file exists, it should\n\
 be truncated when writing.\n\
@@ -1864,7 +1896,7 @@ be truncated when writing.\n\
 }
 
 DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_WRONLY ()\n\
 Return the numerical value of the file status flag that may be\n\
 returned by @code{fcntl} to indicate that a file is open for\n\
@@ -1885,7 +1917,7 @@ writing only.\n\
 #endif
 
 DEFUNX ("WNOHANG", FWNOHANG, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WNOHANG ()\n\
 Return the numerical value of the option argument that may be\n\
 passed to @code{waitpid} to indicate that it should return its\n\
@@ -1901,7 +1933,7 @@ status immediately instead of waiting for a process to exit.\n\
 #endif
 
 DEFUNX ("WUNTRACED", FWUNTRACED, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WUNTRACED ()\n\
 Return the numerical value of the option argument that may be\n\
 passed to @code{waitpid} to indicate that it should also return\n\
@@ -1918,7 +1950,7 @@ if the child process has stopped but is not traced via the\n\
 #endif
 
 DEFUNX ("WCONTINUE", FWCONTINUE, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} WCONTINUE ()\n\
 Return the numerical value of the option argument that may be\n\
 passed to @code{waitpid} to indicate that it should also return\n\
@@ -1929,3 +1961,4 @@ signal.\n\
 {
   return const_value (args, WCONTINUE);
 }
+

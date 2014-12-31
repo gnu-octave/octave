@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -45,7 +45,7 @@ derived file.
 @cindex installing Octave
 
 The procedure for installing Octave from source on a Unix-like system is
-described below.  Building on other platforms will follow similar
+described next.  Building on other platforms will follow similar
 steps.  Note that this description applies to Octave releases.  Building
 the development sources from the Mercurial archive requires additional
 steps as described in @ref{Building the Development Sources}.
@@ -170,6 +170,17 @@ depend on.
 Package for building software libraries
 (@url{http://www.gnu.org/software/libtool}).  Libtool is required by
 Automake.
+
+@item gperf
+Perfect hash function generator (@url{http://www.gnu.org/software/gperf}).
+You will need gperf if you modify the @code{octave.gperf} file or if you
+delete the file that is generated from it.
+
+@item Texinfo
+Package for generating online and print documentation
+(@url{http://www.gnu.org/software/texinfo}).  You will need Texinfo to
+build Octave's documentation or if you modify the documentation source
+files or the docstring of any Octave function.
 @end table
 
 @node External Packages
@@ -237,6 +248,10 @@ to perform font rendering for Octave's OpenGL-based graphics functions.
 GNU Linear Programming Kit (@url{http://www.gnu.org/software/glpk}).
 GPLK is required for the function @code{glpk}.
 
+@item @nospell{gl2ps}
+OpenGL to PostScript printing library (@url{http://www.geuz.org/gl2ps/}).
+@nospell{gl2ps} is required for printing when using the FLTK toolkit.
+
 @item gnuplot
 Interactive graphics program (@url{http://www.gnuplot.info}).  gnuplot
 is currently the default graphics renderer for Octave.
@@ -250,6 +265,12 @@ functions.
 Library for manipulating portable data files
 (@url{http://www.hdfgroup.org/HDF5}).  @sc{hdf5} is required for Octave's
 @code{load} and @code{save} commands to read and write HDF data files.
+
+@item Java Development Kit
+Java programming language compiler and libraries.  The OpenJDK free
+software implementation is recommended (@url{http://openjdk.java.net/}),
+although other JDK implementations may work.  Java is required to be able
+to call Java functions from within Octave.
 
 @item LLVM
 Compiler framework, (@url{http://www.llvm.org}).  LLVM is required for
@@ -267,8 +288,7 @@ interpretation and rendering.
 @item Qhull
 Computational geometry library (@url{http://www.qhull.org}).  Qhull is
 required to provide the functions @code{convhull}, @code{convhulln}, 
-@code{delaunay}, @code{delaunay3}, @code{delaunayn}, @code{voronoi}, and
-@code{voronoin}.
+@code{delaunay}, @code{delaunayn}, @code{voronoi}, and @code{voronoin}.
 
 @item QRUPDATE
 QR factorization updating library
@@ -285,7 +305,7 @@ GUI.
 @item Qt
 GUI and utility libraries (@url{}).  Qt is required for building the GUI.
 It is a large framework, but the only components required are the GUI,
-core, WebKit, and network modules.
+core, and network modules.
 
 @item SuiteSparse
 Sparse matrix factorization library
@@ -514,14 +534,15 @@ make CFLAGS=-O CXXFLAGS=-O LDFLAGS=
 instead of just @command{make}.
 
 @item
-If you encounter errors while compiling Octave, first check the list of
-known problems below to see if there is a workaround or solution for
-your problem.  If not,
+If you encounter errors while compiling Octave, first
+see @ref{Installation Problems} for a list of
+known problems and if there is a workaround or solution for
+your problem.  If not, see
 @ifclear INSTALLONLY
-@pxref{Trouble},
+@ref{Trouble}
 @end ifclear
 @ifset INSTALLONLY
-see the file BUGS
+the file BUGS
 @end ifset
 for information about how to report bugs.
 
@@ -676,83 +697,19 @@ Run @code{make install} to install the library.
 @item
 SuiteSparse (@url{http://www.cise.ufl.edu/research/sparse/SuiteSparse})
 
-@itemize @minus
-@item
-In @file{UFconfig/UFconfig.mk} use the following options for
-@env{CFLAGS} and @env{F77FLAGS}:
+Pass the following options to @command{make} to enable 64-bit integers
+for @sc{blas} library calls.  On 64-bit Windows systems, use
+@code{-DLONGBLAS="long long"} instead.
 
 @example
 @group
-CC = gcc
-CFLAGS = -fPIC -O -DLP64 -DLONGBLAS='long int' -DLONG='long int'
-F77 = gfortran
-F77FLAGS = -fPIC -O -fdefault-integer-8
-BLAS = -L$BLAS/lib -lblas -lgfortran"
-LAPACK = -L$LAPACK/lib -llapack"
+CFLAGS='-DLONGBLAS=long'
+CXXFLAGS='-DLONGBLAS=long'
 @end group
 @end example
 
-@item
-Disable the GPL-incompatible @code{METIS} library:
-
-@example
-@group
-CHOLMOD_CONFIG = -DNPARTITION
-SPQR_CONFIG = -DNPARTITION
-METIS_PATH =
-METIS =
-@end group
-@end example
-
-@item
-Disable the @code{DI} versions of the @code{CHOLMOD} library files by
-setting
-
-@example
-OBJ = $(DL)
-@end example
-
-@noindent
-in @file{CHOLMOD/Lib/Makefile}.
-
-@item
-Disable the @code{DI} versions of the @code{CHOLMOD} tests by commenting
-out or deleting the following lines in @file{CHOLMOD/Demo/Makefile}:
-
-@example
-@group
-./cholmod_demo < Matrix/bcsstk01.tri
-./cholmod_demo < Matrix/lp_afiro.tri
-./cholmod_demo < Matrix/can___24.mtx
-./cholmod_demo < Matrix/c.tri
-./cholmod_simple < Matrix/c.tri
-./cholmod_simple < Matrix/can___24.mtx
-./cholmod_simple < Matrix/bcsstk01.tri
-@end group
-@end example
-
-@item
-Run @command{make} to build the libraries.
-
-@item
-The SuiteSparse @file{Makefile} does not have an install target so
-you must install the files by hand:
-
-@example
-@group
-mkdir $prefix64/include/suitesparse
-cp UFconfig/UFconfig.h $prefix64/include/suitesparse
-for d in AMD BTF CAMD CCOLAMD \
-         CHOLMOD COLAMD CXSparse UMFPACK; do
-  cp $d/Lib/lib*a $prefix64/lib
-  cp $d/Include/*h $prefix64/include/suitesparse
-done
-@end group
-@end example
-
-@item
-You can generate shared versions of these libraries by doing the
-following in the @file{$prefix64/lib} directory: 
+The SuiteSparse makefiles don't generate shared libraries.  On some
+systems, you can generate them by doing something as simple as
 
 @example
 @group
@@ -768,6 +725,17 @@ done
 @end group
 @end example
 
+@noindent
+Other systems may require a different solution.
+
+@item @sc{arpack} (http://forge.scilab.org/index.php/p/arpack-ng/)
+
+@itemize @minus
+@item Add @option{-fdefault-integer-8} to @env{FFLAGS} when running configure.
+
+@item Run @code{make} to build the library.
+
+@item Run @code{make install} to install the library.
 @end itemize
 
 @item ATLAS instead of reference @sc{blas} and @sc{lapack}
@@ -776,11 +744,10 @@ Suggestions on how to compile ATLAS would be most welcome.
 
 @item @sc{glpk}
 
-Suggestions on how to compile @sc{glpk} would be most welcome.
-
 @item Qhull (@url{http://www.qhull.org})
 
-Suggestions on how to compile Qhull would be most welcome.
+Both @sc{glpk} and Qhull use @code{int} internally so maximum problem
+sizes may be limited.
 
 @item Octave
 
@@ -889,7 +856,7 @@ options      MATH_EMULATE
 
 @noindent
 in the kernel configuration files (typically found in the directory
-@file{/sys/i386/conf}.  After making this change, you'll need to rebuild
+@file{/sys/i386/conf}).  After making this change, you'll need to rebuild
 the kernel, install it, and reboot.
 
 @item
@@ -1069,3 +1036,4 @@ are empty, @env{CFLAGS} and @env{CXXFLAGS} are set to @qcode{"-g -O"} and
 @env{FFLAGS} is set to @qcode{"-O"}.
 
 @end itemize
+

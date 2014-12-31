@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sparse.h"
 #include "sparse-util.h"
 
-// FIXME this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
+// FIXME: this overload is here due to API change in SuiteSparse (3.1 -> 3.2)
 
 #ifdef HAVE_CHOLMOD
 
@@ -48,12 +48,9 @@ SparseCholError (int status, const char *file, int line, const char *message)
   // Ignore CHOLMOD_NOT_POSDEF, since we handle that in Fchol as an
   // error or exit status.
   if (status != CHOLMOD_NOT_POSDEF)
-    {
-      (*current_liboctave_warning_handler)("warning %i, at line %i in file %s",
-                                           status, line, file);
-
-      (*current_liboctave_warning_handler)(message);
-    }
+    (*current_liboctave_warning_with_id_handler)
+      ("Octave:cholmod-message", "warning %i, at line %i in file %s: %s",
+       status, line, file, message);
 }
 
 int
@@ -97,7 +94,8 @@ sparse_indices_ok (octave_idx_type *r, octave_idx_type *c,
           if (c[j] > nnz)
             {
               (*current_liboctave_error_handler)
-                ("invalid sparse matrix: cidx[%d] = %d exceeds number of nonzero elements", j, c[j]+1);
+                ("invalid sparse matrix: cidx[%d] = %d exceeds number of nonzero elements",
+                 j, c[j]+1);
               return false;
             }
 

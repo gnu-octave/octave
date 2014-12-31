@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (oct_sparse_h)
-#define oct_sparse_h 1
+#if !defined (octave_oct_sparse_h)
+#define octave_oct_sparse_h 1
 
 #if defined (HAVE_SUITESPARSE_AMD_H)
 #include <suitesparse/amd.h>
@@ -92,6 +92,18 @@ along with Octave; see the file COPYING.  If not, see
 #else
 #define CHOLMOD_NAME(name) cholmod_ ## name
 #endif
+#endif
+
+// Cope with new suitesparse versions
+//
+#if defined (SUITESPARSE_VERSION)
+# if SUITESPARSE_VERSION >= SUITESPARSE_VER_CODE (4, 3)
+#  define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (SuiteSparse_config.f_name = f_assign)
+#  define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (SuiteSparse_config.f_name = CHOLMOD_NAME (f_assign))
+# else
+#  define SUITESPARSE_ASSIGN_FPTR(f_name, f_var, f_assign) (f_var = f_assign)
+#  define SUITESPARSE_ASSIGN_FPTR2(f_name, f_var, f_assign) (f_var = CHOLMOD_NAME (f_assign))
+# endif
 #endif
 
 #endif

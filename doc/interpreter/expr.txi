@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1009,10 +1009,10 @@ operands for the operator @samp{&}.
 
 @sc{matlab} has special behavior that allows the operators @samp{&} and
 @samp{|} to short-circuit when used in the truth expression for @code{if} and 
-@code{while} statements.  The Octave parser may be instructed to behave in the
-same manner, but its use is strongly discouraged.
-
-@DOCSTRING(do_braindead_shortcircuit_evaluation)
+@code{while} statements.  Octave also behaves the same way by default,
+though the use of the @samp{&} and @samp{|} operators in this way is
+strongly discouraged.  Instead, you should use the @samp{&&} and @samp{||}
+operators that always have short-circuit behavior.
 
 Finally, the ternary operator (?:) is not supported in Octave.  If
 short-circuiting is not important, it can be replaced by the @code{ifelse}
@@ -1237,8 +1237,21 @@ is evaluated as
 @end example
 
 @noindent
-where @var{op} can be either @code{+}, @code{-}, @code{*}, or @code{/}.
-So, the expression
+where @var{op} can be either @code{+}, @code{-}, @code{*}, or @code{/},
+as long as @var{expr2} is a simple expression with no side effects.  If
+@var{expr2} also contains an assignment operator, then this expression
+is evaluated as
+
+@example
+@group
+@var{temp} = @var{expr2}
+@var{expr1} = (@var{expr1}) @var{op} @var{temp}
+@end group
+@end example
+
+@noindent
+where @var{temp} is a placeholder temporary value storing the computed
+result of evaluating @var{expr2}.  So, the expression
 
 @example
 a *= b+1

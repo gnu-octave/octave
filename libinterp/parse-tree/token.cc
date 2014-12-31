@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -97,38 +97,29 @@ token::token (int tv, symbol_table::symbol_record *s, int l, int c)
   sr = s;
 }
 
-token::token (int tv, symbol_table::symbol_record *cls,
-              symbol_table::symbol_record *pkg, int l, int c)
+token::token (int tv, const std::string& mth, const std::string& cls,
+              int l, int c)
 {
   maybe_cmd = false;
   tspc = false;
   line_num = l;
   column_num = c;
   tok_val = tv;
-  type_tag = meta_rec_token;
-  mc.cr = cls;
-  mc.pr = pkg;
-}
-
-token::token (int tv, symbol_table::symbol_record *mth,
-              symbol_table::symbol_record *cls,
-              symbol_table::symbol_record *pkg, int l, int c)
-{
-  maybe_cmd = false;
-  tspc = false;
-  line_num = l;
-  column_num = c;
-  tok_val = tv;
-  type_tag = scls_rec_token;
-  sc.mr = mth;
-  sc.cr = cls;
-  sc.pr = pkg;
+  type_tag = scls_name_token;
+  sc.method_nm = new std::string (mth);
+  sc.class_nm = new std::string (cls);
 }
 
 token::~token (void)
 {
   if (type_tag == string_token)
     delete str;
+
+  if (type_tag == scls_name_token)
+    {
+      delete sc.method_nm;
+      delete sc.class_nm;
+    }
 }
 
 std::string
@@ -172,39 +163,18 @@ token::sym_rec (void)
   return sr;
 }
 
-symbol_table::symbol_record *
-token::method_rec (void)
+std::string
+token::superclass_method_name (void)
 {
-  assert (type_tag == scls_rec_token);
-  return sc.mr;
+  assert (type_tag == scls_name_token);
+  return *sc.method_nm;
 }
 
-symbol_table::symbol_record *
-token::class_rec (void)
+std::string
+token::superclass_class_name (void)
 {
-  assert (type_tag == scls_rec_token);
-  return sc.cr;
-}
-
-symbol_table::symbol_record *
-token::package_rec (void)
-{
-  assert (type_tag == scls_rec_token);
-  return sc.pr;
-}
-
-symbol_table::symbol_record *
-token::meta_class_rec (void)
-{
-  assert (type_tag == meta_rec_token);
-  return mc.cr;
-}
-
-symbol_table::symbol_record *
-token::meta_package_rec (void)
-{
-  assert (type_tag == meta_rec_token);
-  return mc.pr;
+  assert (type_tag == scls_name_token);
+  return *sc.class_nm;
 }
 
 std::string

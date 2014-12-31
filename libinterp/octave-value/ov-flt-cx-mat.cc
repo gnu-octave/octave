@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -140,7 +140,7 @@ octave_float_complex_matrix::matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (FloatComplexMatrix (matrix));
 
   return retval;
 }
@@ -154,7 +154,7 @@ octave_float_complex_matrix::float_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
                                "complex matrix", "real matrix");
 
-  retval = ::real (matrix.matrix_value ());
+  retval = ::real (FloatComplexMatrix (matrix));
 
   return retval;
 }
@@ -202,13 +202,13 @@ octave_float_complex_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_float_complex_matrix::complex_matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return FloatComplexMatrix (matrix);
 }
 
 FloatComplexMatrix
 octave_float_complex_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (matrix);
 }
 
 boolNDArray
@@ -290,7 +290,7 @@ octave_float_complex_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      FloatComplexMatrix mat = matrix.matrix_value ();
+      FloatComplexMatrix mat (matrix);
 
       retval = mat.diag (m, n);
     }
@@ -441,7 +441,7 @@ octave_float_complex_matrix::save_binary (std::ostream& os, bool&)
 
   FloatComplexNDArray m = complex_array_value ();
   save_type st = LS_FLOAT;
-  if (d.numel () > 4096) // FIXME -- make this configurable.
+  if (d.numel () > 4096) // FIXME: make this configurable.
     {
       float max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -456,7 +456,7 @@ octave_float_complex_matrix::save_binary (std::ostream& os, bool&)
 
 bool
 octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                                          oct_mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -498,7 +498,7 @@ octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
       FloatComplexNDArray m(dv);
       FloatComplex *im = m.fortran_vec ();
       read_floats (is, reinterpret_cast<float *> (im),
-                    static_cast<save_type> (tmp), 2 * dv.numel (), swap, fmt);
+                   static_cast<save_type> (tmp), 2 * dv.numel (), swap, fmt);
       if (error_state || ! is)
         return false;
       matrix = m;
@@ -517,7 +517,7 @@ octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
       FloatComplex *im = m.fortran_vec ();
       octave_idx_type len = nr * nc;
       read_floats (is, reinterpret_cast<float *> (im),
-                    static_cast<save_type> (tmp), 2*len, swap, fmt);
+                   static_cast<save_type> (tmp), 2*len, swap, fmt);
       if (error_state || ! is)
         return false;
       matrix = m;
@@ -536,7 +536,8 @@ octave_float_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1, type_hid = -1;
+  hid_t space_hid, data_hid, type_hid;
+  space_hid = data_hid = type_hid = -1;
   bool retval = true;
   FloatComplexNDArray m = complex_array_value ();
 
@@ -614,7 +615,7 @@ octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   if (empty > 0)
     matrix.resize (dv);
   if (empty)
-      return (empty > 0);
+    return (empty > 0);
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -683,7 +684,7 @@ octave_float_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
 
 void
 octave_float_complex_matrix::print_raw (std::ostream& os,
-                                  bool pr_as_read_syntax) const
+                                        bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
                          current_print_indent_level ());

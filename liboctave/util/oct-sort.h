@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2003-2012 David Bateman
+Copyright (C) 2003-2013 David Bateman
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -80,8 +80,8 @@ The Python license is
   Agreement.
 */
 
-#if !defined (octave_sort_h)
-#define octave_sort_h 1
+#if !defined (octave_oct_sort_h)
+#define octave_oct_sort_h 1
 
 #include "lo-traits.h"
 
@@ -184,13 +184,13 @@ private:
   {
     MergeState (void)
       : min_gallop (), a (0), ia (0), alloced (0), n (0)
-      { reset (); }
+    { reset (); }
 
     ~MergeState (void)
-      { delete [] a; delete [] ia; }
+    { delete [] a; delete [] ia; }
 
     void reset (void)
-      { min_gallop = MIN_GALLOP; n = 0; }
+    { min_gallop = MIN_GALLOP; n = 0; }
 
     void getmem (octave_idx_type need);
 
@@ -233,22 +233,23 @@ private:
 
   template <class Comp>
   void binarysort (T *data, octave_idx_type nel,
-              octave_idx_type start, Comp comp);
+                   octave_idx_type start, Comp comp);
 
   template <class Comp>
   void binarysort (T *data, octave_idx_type *idx, octave_idx_type nel,
-              octave_idx_type start, Comp comp);
+                   octave_idx_type start, Comp comp);
 
   template <class Comp>
-  octave_idx_type count_run (T *lo, octave_idx_type n, bool& descending, Comp comp);
+  octave_idx_type count_run (T *lo, octave_idx_type n, bool& descending,
+                             Comp comp);
 
   template <class Comp>
-  octave_idx_type gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint,
-                               Comp comp);
+  octave_idx_type gallop_left (T key, T *a, octave_idx_type n,
+                               octave_idx_type hint, Comp comp);
 
   template <class Comp>
-  octave_idx_type gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint,
-                                Comp comp);
+  octave_idx_type gallop_right (T key, T *a, octave_idx_type n,
+                                octave_idx_type hint, Comp comp);
 
   template <class Comp>
   int merge_lo (T *pa, octave_idx_type na,
@@ -271,12 +272,10 @@ private:
                 Comp comp);
 
   template <class Comp>
-  int merge_at (octave_idx_type i, T *data,
-                Comp comp);
+  int merge_at (octave_idx_type i, T *data, Comp comp);
 
   template <class Comp>
-  int merge_at (octave_idx_type i, T *data, octave_idx_type *idx,
-                Comp comp);
+  int merge_at (octave_idx_type i, T *data, octave_idx_type *idx, Comp comp);
 
   template <class Comp>
   int merge_collapse (T *data, Comp comp);

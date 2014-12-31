@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 John W. Eaton
+## Copyright (C) 2009-2013 John W. Eaton
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -133,5 +133,5 @@ endfor
 
 cache(:,k:end) = [];    # delete unused pre-allocated entries
 
-save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z"]);
+save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION]);
 save ("-text", output_file, "cache");

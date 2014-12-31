@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 VZLU Prague, a.s.
+Copyright (C) 2008-2013 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -29,9 +29,16 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 
-extern OCTINTERP_API octave_value xnorm (const octave_value& x, const octave_value& p);
-extern OCTINTERP_API octave_value xcolnorms (const octave_value& x, const octave_value& p);
-extern OCTINTERP_API octave_value xrownorms (const octave_value& x, const octave_value& p);
-extern OCTINTERP_API octave_value xfrobnorm (const octave_value& x);
+extern OCTINTERP_API octave_value
+xnorm (const octave_value& x, const octave_value& p);
+
+extern OCTINTERP_API octave_value
+xcolnorms (const octave_value& x, const octave_value& p);
+
+extern OCTINTERP_API octave_value
+xrownorms (const octave_value& x, const octave_value& p);
+
+extern OCTINTERP_API octave_value
+xfrobnorm (const octave_value& x);
 
 #endif

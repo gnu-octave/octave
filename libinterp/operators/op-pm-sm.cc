@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Jason Riedy
+Copyright (C) 2009-2013 Jason Riedy
 
 This file is part of Octave.
 
@@ -44,12 +44,12 @@ DEFUNOP_OP (uplus, perm_matrix, /* no-op */)
 DEFUNOP (not, perm_matrix)
 {
   // Obviously negation of a permutation matrix destroys sparsity
-  return octave_value ( ! a.bool_array_value ());
+  return octave_value (! a.bool_array_value ());
 }
 
 DEFUNOP (uminus, perm_matrix)
 {
-  return octave_value ( - a.sparse_matrix_value ());
+  return octave_value (- a.sparse_matrix_value ());
 }
 
 // Most other logical operations cast to SparseBoolMatrix

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_user_function_h)
-#define octave_user_function_h 1
+#if !defined (octave_ov_usr_fcn_h)
+#define octave_ov_usr_fcn_h 1
 
 #include <ctime>
 
@@ -112,10 +112,10 @@ public:
   void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
 
   void stash_fcn_file_time (const octave_time& t)
-    {
-      t_parsed = t;
-      mark_fcn_file_up_to_date (t);
-    }
+  {
+    t_parsed = t;
+    mark_fcn_file_up_to_date (t);
+  }
 
   std::string fcn_file_name (void) const { return file_name; }
 
@@ -125,10 +125,10 @@ public:
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -187,7 +187,7 @@ public:
   symbol_table::context_id active_context () const
   {
     return is_anonymous_function ()
-      ? 0 : static_cast<symbol_table::context_id>(call_depth);
+           ? 0 : static_cast<symbol_table::context_id>(call_depth);
   }
 
   octave_function *function_value (bool = false) { return this; }
@@ -203,19 +203,19 @@ public:
   void stash_fcn_file_name (const std::string& nm);
 
   void stash_fcn_location (int line, int col)
-    {
-      location_line = line;
-      location_column = col;
-    }
+  {
+    location_line = line;
+    location_column = col;
+  }
 
   int beginning_line (void) const { return location_line; }
   int beginning_column (void) const { return location_column; }
 
   void stash_fcn_end_location (int line, int col)
-    {
-      end_location_line = line;
-      end_location_column = col;
-    }
+  {
+    end_location_line = line;
+    end_location_column = col;
+  }
 
   int ending_line (void) const { return end_location_line; }
   int ending_column (void) const { return end_location_column; }
@@ -233,10 +233,10 @@ public:
   void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
 
   void stash_fcn_file_time (const octave_time& t)
-    {
-      t_parsed = t;
-      mark_fcn_file_up_to_date (t);
-    }
+  {
+    t_parsed = t;
+    mark_fcn_file_up_to_date (t);
+  }
 
   std::string fcn_file_name (void) const { return file_name; }
 
@@ -259,20 +259,20 @@ public:
   bool is_user_function (void) const { return true; }
 
   void erase_subfunctions (void)
-    {
-      symbol_table::erase_subfunctions_in_scope (local_scope);
-    }
+  {
+    symbol_table::erase_subfunctions_in_scope (local_scope);
+  }
 
   bool takes_varargs (void) const;
 
   bool takes_var_return (void) const;
 
   void mark_as_private_function (const std::string& cname = std::string ())
-    {
-      symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
+  {
+    symbol_table::mark_subfunctions_in_scope_as_private (local_scope, cname);
 
-      octave_function::mark_as_private_function (cname);
-    }
+    octave_function::mark_as_private_function (cname);
+  }
 
   void lock_subfunctions (void);
 
@@ -306,13 +306,13 @@ public:
   bool is_anonymous_function (void) const { return anonymous_function; }
 
   bool is_anonymous_function_of_class
-    (const std::string& cname = std::string ()) const
+  (const std::string& cname = std::string ()) const
   {
     return anonymous_function
-      ? (cname.empty ()
-         ? (! dispatch_class ().empty ())
-         : cname == dispatch_class ())
-      : false;
+           ? (cname.empty ()
+              ? (! dispatch_class ().empty ())
+              : cname == dispatch_class ())
+           : false;
   }
 
   // If we are a special expression, then the function body consists of exactly
@@ -327,28 +327,36 @@ public:
 
   void mark_as_nested_function (void) { nested_function = true; }
 
-  void mark_as_class_constructor (void) { class_constructor = true; }
+  void mark_as_class_constructor (void) { class_constructor = legacy; }
+
+  void mark_as_classdef_constructor (void) { class_constructor = classdef; }
 
   bool is_class_constructor (const std::string& cname = std::string ()) const
-    {
-      return class_constructor
-        ? (cname.empty () ? true : cname == dispatch_class ()) : false;
-    }
+  {
+    return class_constructor == legacy
+      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+  }
+
+  bool is_classdef_constructor (const std::string& cname = std::string ()) const
+  {
+    return class_constructor == classdef
+      ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+  }
 
   void mark_as_class_method (void) { class_method = true; }
 
   bool is_class_method (const std::string& cname = std::string ()) const
-    {
-      return class_method
-        ? (cname.empty () ? true : cname == dispatch_class ()) : false;
-    }
+  {
+    return class_method
+           ? (cname.empty () ? true : cname == dispatch_class ()) : false;
+  }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -356,7 +364,8 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
-                             int nargout, const std::list<octave_lvalue>* lvalue_list);
+                             int nargout,
+                             const std::list<octave_lvalue>* lvalue_list);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
@@ -385,15 +394,15 @@ public:
 
   template <class T>
   bool local_protect (T& variable)
-    {
-      if (curr_unwind_protect_frame)
-        {
-          curr_unwind_protect_frame->protect_var (variable);
-          return true;
-        }
-      else
-        return false;
-    }
+  {
+    if (curr_unwind_protect_frame)
+      {
+        curr_unwind_protect_frame->protect_var (variable);
+        return true;
+      }
+    else
+      return false;
+  }
 
 #ifdef HAVE_LLVM
   jit_function_info *get_info (void) { return jit_info; }
@@ -406,6 +415,13 @@ public:
 #endif
 
 private:
+
+  enum class_ctor_type
+    {
+      none,
+      legacy,
+      classdef
+    };
 
   // List of arguments for this function.  These are local variables.
   tree_parameter_list *param_list;
@@ -469,8 +485,8 @@ private:
   // TRUE means this is a nested function. (either a child or parent)
   bool nested_function;
 
-  // TRUE means this function is the constructor for class object.
-  bool class_constructor;
+  // Enum describing whether this function is the constructor for class object.
+  class_ctor_type class_constructor;
 
   // TRUE means this function is a method for a class.
   bool class_method;

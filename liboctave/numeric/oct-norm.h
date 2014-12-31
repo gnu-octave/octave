@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 VZLU Prague, a.s.
+Copyright (C) 2008-2013 VZLU Prague, a.s.
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // author: Jaroslav Hajek <highegg@gmail.com>
 
-#if !defined (octave_norm_h)
-#define octave_norm_h 1
+#if !defined (octave_oct_norm_h)
+#define octave_oct_norm_h 1
 
 #include "oct-cmplx.h"
 

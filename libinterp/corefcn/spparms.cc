@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -34,13 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 
 DEFUN (spparms, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} { } spparms ()\n\
 @deftypefnx {Built-in Function} {@var{vals} =} spparms ()\n\
 @deftypefnx {Built-in Function} {[@var{keys}, @var{vals}] =} spparms ()\n\
 @deftypefnx {Built-in Function} {@var{val} =} spparms (@var{key})\n\
 @deftypefnx {Built-in Function} { } spparms (@var{vals})\n\
-@deftypefnx {Built-in Function} { } spparms (\"defaults\")\n\
+@deftypefnx {Built-in Function} { } spparms (\"default\")\n\
 @deftypefnx {Built-in Function} { } spparms (\"tight\")\n\
 @deftypefnx {Built-in Function} { } spparms (@var{key}, @var{val})\n\
 Query or set the parameters used by the sparse solvers and factorization\n\
@@ -86,7 +86,7 @@ The pivot tolerance of the @sc{umfpack} solvers (default 0.1)\n\
 The pivot tolerance of the @sc{umfpack} symmetric solvers (default 0.001)\n\
 \n\
 @item bandden\n\
-The density of non-zero elements in a banded matrix before it is treated\n\
+The density of nonzero elements in a banded matrix before it is treated\n\
 by the @sc{lapack} banded solvers (default 0.5)\n\
 \n\
 @item umfpack\n\
@@ -97,9 +97,10 @@ Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
 The value of individual keys can be set with\n\
 @code{spparms (@var{key}, @var{val})}.\n\
 The default values can be restored with the special keyword\n\
-@qcode{\"defaults\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
+@qcode{\"default\"}.  The special keyword @qcode{\"tight\"} can be used to\n\
 set the mmd solvers to attempt a sparser solution at the potential cost of\n\
 longer running time.\n\
+@seealso{chol, colamd, lu, qr, symamd}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -128,8 +129,17 @@ longer running time.\n\
           for (int i = 0; i < len; i++)
             str[i] = tolower (str[i]);
 
-          if (str == "defaults")
-            octave_sparse_params::defaults ();
+          if (str == "defaults" || str == "default")
+            {
+              // FIXME: deprecated in 4.2, remove "defaults" for 4.6 release
+              static bool warned = false;
+              if (! warned && str == "defaults")
+                {
+                  warning ("spparms: use \"default\" instead of \"defaults\"");
+                  warned = true;
+                }
+              octave_sparse_params::defaults ();
+            }
           else if (str == "tight")
             octave_sparse_params::tight ();
           else
@@ -180,7 +190,7 @@ longer running time.\n\
 /*
 %!test
 %! old_vals = spparms ();  # save state
-%! spparms ("defaults");
+%! spparms ("default");
 %! vals = spparms ();
 %! assert (vals, [0 1 1 0 3 3 0.5 1.0 1.0 0.1 0.5 1.0 0.001]');
 %! [keys, vals] = spparms ();

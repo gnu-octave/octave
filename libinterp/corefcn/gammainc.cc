@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2012 John W. Eaton
+Copyright (C) 1997-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (gammainc, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
 @deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"lower\")\n\
 @deftypefnx {Mapping Function} {} gammainc (@var{x}, @var{a}, \"upper\")\n\
@@ -57,7 +57,8 @@ gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
 \n\
 @end ifnottex\n\
 with the limiting value of 1 as @var{x} approaches infinity.\n\
-The standard notation is @math{P(a,x)}, e.g., Abramowitz and Stegun (6.5.1).\n\
+The standard notation is @math{P(a,x)}, e.g., @nospell{Abramowitz} and\n\
+@nospell{Stegun} (6.5.1).\n\
 \n\
 If @var{a} is scalar, then @code{gammainc (@var{x}, @var{a})} is returned\n\
 for each element of @var{x} and vice versa.\n\
@@ -72,7 +73,7 @@ integrated from @var{x} to infinity is calculated.  It should be noted that\n\
 @example\n\
 gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\n\
 @end example\n\
-@seealso{gamma, lgamma}\n\
+@seealso{gamma, gammaln}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -101,7 +102,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
       octave_value x_arg = args(0);
       octave_value a_arg = args(1);
 
-      // FIXME Can we make a template version of the duplicated code below
+      // FIXME: Can we make a template version of the duplicated code below
       if (x_arg.is_single_type () || a_arg.is_single_type ())
         {
           if (x_arg.is_scalar_type ())
@@ -116,7 +117,8 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                          : static_cast<float>(1) - gammainc (x, a);
+                                       : static_cast<float>(1)
+                                         - gammainc (x, a);
                     }
                   else
                     {
@@ -124,7 +126,8 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                          : static_cast<float>(1) - gammainc (x, a);
+                                       : static_cast<float>(1)
+                                         - gammainc (x, a);
                     }
                 }
             }
@@ -140,7 +143,8 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                          : static_cast<float>(1) - gammainc (x, a);
+                                       : static_cast<float>(1)
+                                         - gammainc (x, a);
                     }
                   else
                     {
@@ -148,7 +152,8 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                          : static_cast<float>(1) - gammainc (x, a);
+                                       : static_cast<float>(1)
+                                         - gammainc (x, a);
                     }
                 }
             }
@@ -224,7 +229,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 %! v3 = gammainc (x.*x, a);
 %! assert (v1, v3, sqrt (eps ("single")));
 
-%!assert (gammainc (single (0:4), single (0.5), "upper"), 
+%!assert (gammainc (single (0:4), single (0.5), "upper"),
 %!        single (1)-gammainc (single (0:4), single (0.5)),
 %!        single (1e-7))
 */

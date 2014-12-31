@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -66,6 +66,11 @@ search_path_for_all_files (const std::string&, const string_vector&);
 extern OCTINTERP_API std::string
 file_in_path (const std::string&, const std::string&);
 
+extern OCTINTERP_API std::string
+find_data_file_in_load_path  (const std::string& fcn,
+                              const std::string& file,
+                              bool require_regular_file = false);
+
 extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
@@ -126,5 +131,26 @@ extern OCTINTERP_API
 octave_value
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),
                    const char *fun_name, const octave_value_list& args);
+
+class
+octave_preserve_stream_state
+{
+public:
+
+  octave_preserve_stream_state (std::ios& s)
+    : stream (s), oflags (s.flags ()), oprecision (s.precision ()),
+      owidth (s.width ()), ofill (s.fill ())
+  { }
+
+  ~octave_preserve_stream_state (void);
+
+private:
+
+  std::ios& stream;
+  std::ios::fmtflags oflags;
+  std::streamsize oprecision;
+  int owidth;
+  char ofill;
+};
 
 #endif

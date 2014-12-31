@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -455,7 +455,7 @@ octave_rand::do_float_scalar (float a)
 
         case gamma_dist:
           if (da <= 0.0 || ! xfinite (a))
-            retval = octave_NaN;
+            dretval = octave_NaN;
           else
             F77_FUNC (dgengam, DGENGAM) (1.0, da, dretval);
           break;
@@ -782,7 +782,7 @@ octave_rand::fill (octave_idx_type len, double *v, double a)
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
 #define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (a, x)
-                MAKE_RAND (len);
+              MAKE_RAND (len);
 #undef RAND_FUNC
             }
         }
@@ -872,7 +872,7 @@ octave_rand::fill (octave_idx_type len, float *v, float a)
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (da + 1, tmp);
 #define RAND_FUNC(x) F77_FUNC (dignpoi, DIGNPOI) (da, x)
-                MAKE_RAND (len);
+              MAKE_RAND (len);
 #undef RAND_FUNC
             }
         }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -57,7 +57,8 @@ DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_sq_str);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string", "char");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string",
+                                     "char");
 
 static octave_base_value *
 default_numeric_conversion_function (const octave_base_value& a)
@@ -129,8 +130,9 @@ octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
           idx_vec(i) = idx(i).index_vector ();
 
         if (! error_state)
-          retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-                                 type);
+          retval =
+            octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+                          type);
       }
       break;
     }
@@ -209,7 +211,7 @@ octave_char_matrix_str::all_strings (bool) const
 
   if (matrix.ndims () == 2)
     {
-      charMatrix chm = matrix.matrix_value ();
+      charMatrix chm (matrix);
 
       octave_idx_type n = chm.rows ();
 
@@ -231,9 +233,9 @@ octave_char_matrix_str::string_value (bool) const
 
   if (matrix.ndims () == 2)
     {
-      charMatrix chm = matrix.matrix_value ();
+      charMatrix chm (matrix);
 
-      retval = chm.row_as_string (0);  // FIXME???
+      retval = chm.row_as_string (0);  // FIXME?
     }
   else
     error ("invalid conversion of charNDArray to string");
@@ -248,7 +250,7 @@ octave_char_matrix_str::cellstr_value (void) const
 
   if (matrix.ndims () == 2)
     {
-      const charMatrix chm = matrix.matrix_value ();
+      const charMatrix chm (matrix);
       octave_idx_type nr = chm.rows ();
       retval.clear (nr, 1);
       for (octave_idx_type i = 0; i < nr; i++)
@@ -261,10 +263,25 @@ octave_char_matrix_str::cellstr_value (void) const
 }
 
 void
-octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+octave_char_matrix_str::print_raw (std::ostream& os,
+                                   bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
                          current_print_indent_level (), true);
+}
+
+void
+octave_char_matrix_str::short_disp (std::ostream& os) const
+{
+  if (matrix.ndims () == 2 && numel () > 0)
+    {
+      std::string tmp = string_value ();
+
+      // FIXME: should this be configurable?
+      size_t max_len = 100;
+
+      os << (tmp.length () > max_len ? tmp.substr (0, 100) : tmp);
+    }
 }
 
 bool
@@ -371,8 +388,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 
           if (elements >= 0)
             {
-              // FIXME -- need to be able to get max length
-              // before doing anything.
+              // FIXME: need to be able to get max length before doing anything.
 
               charMatrix chm (elements, 0);
               int max_len = 0;
@@ -567,7 +583,8 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
   charNDArray m = char_array_value ();
 
@@ -676,7 +693,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
     {
       // This is cruft for backward compatiability and easy data
       // importation
-      if (rank == 0)
+      if (rank == 0) //FIXME: Does rank==0 even exist for strings in HDF5?
         {
           // a single string:
           int slen = H5Tget_size (type_hid);
@@ -693,8 +710,9 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               // create datatype for (null-terminated) string
               // to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
-              H5Tset_size (st_id, slen);
-              if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
+              H5Tset_size (st_id, slen+1);
+              if (H5Dread (data_hid, st_id, H5S_ALL,
+                           H5S_ALL, H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
                   H5Tclose (type_hid);
@@ -731,14 +749,15 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
               // same physical length (I think), which is
               // slightly wasteful, but oh well.
 
-              OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
+              OCTAVE_LOCAL_BUFFER (char, s, elements * (slen+1));
 
               // create datatype for (null-terminated) string
               // to read into:
               hid_t st_id = H5Tcopy (H5T_C_S1);
-              H5Tset_size (st_id, slen);
+              H5Tset_size (st_id, slen+1);
 
-              if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, s) < 0)
+              if (H5Dread (data_hid, st_id, H5S_ALL,
+                           H5S_ALL, H5P_DEFAULT, s) < 0)
                 {
                   H5Tclose (st_id);
                   H5Tclose (type_hid);
@@ -747,10 +766,10 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
                   return false;
                 }
 
-              charMatrix chm (elements, slen - 1);
+              charMatrix chm (elements, slen, ' ');
               for (hsize_t i = 0; i < elements; ++i)
                 {
-                  chm.insert (s + i*slen, i, 0);
+                  chm.insert (s + i*(slen+1), i, 0);
                 }
 
               matrix = chm;

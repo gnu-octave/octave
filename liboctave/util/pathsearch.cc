@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -132,14 +132,14 @@ std::string
 dir_path::find_first_of (const string_vector& names)
 {
   return initialized
-    ? kpse_path_find_first_of (p, names, true) : std::string ();
+         ? kpse_path_find_first_of (p, names, true) : std::string ();
 }
 
 string_vector
 dir_path::find_all_first_of (const string_vector& names)
 {
   return initialized
-    ? kpse_all_path_find_first_of (p, names) : string_vector ();
+         ? kpse_all_path_find_first_of (p, names) : string_vector ();
 }
 
 void

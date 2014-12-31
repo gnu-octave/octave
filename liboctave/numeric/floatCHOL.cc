@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -342,7 +342,7 @@ FloatCHOL::downdate (const FloatColumnVector& u)
       else
         {
           info = init (chol_mat.transpose () * chol_mat
-                - FloatMatrix (u) * FloatMatrix (u).transpose (), false);
+                       - FloatMatrix (u) * FloatMatrix (u).transpose (), false);
           if (info) info = 1;
         }
     }

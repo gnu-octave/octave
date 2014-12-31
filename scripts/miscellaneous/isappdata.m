@@ -1,11 +1,13 @@
-## Copyright (C) 2010-2012 Ben Abbott
+## Copyright (C) 2010-2013 Ben Abbott
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful,
+## Octave is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
@@ -15,35 +17,55 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{V} =} isappdata (@var{h}, @var{name})
+## @deftypefn {Function File} {@var{valid} =} isappdata (@var{h}, @var{name})
 ## Return true if the named application data, @var{name}, exists for the
-## object with handle @var{h}.
-## @seealso{getappdata, setappdata, rmappdata}
+## graphics object with handle @var{h}.
+##
+## @var{h} may also be a vector of graphics handles.
+## @seealso{getappdata, setappdata, rmappdata, guidata, get, set, getpref, setpref}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Created: 2010-07-15
 
-function res = isappdata (h, name)
+function valid = isappdata (h, name)
 
-  if (! (all (ishandle (h)) && ischar (name)))
-    error ("isappdata: invalid input");
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
   endif
 
-  for nh = 1:numel (h)
-    data = get (h(nh));
-    if (isfield (data, "__appdata__") && isfield (data.__appdata__, name))
-      res(nh) = true;
-    else
-      res(nh) = false;
-    endif
+  if (! all (ishandle (h(:))))
+    error ("isappdata: H must be a scalar or vector of graphic handles");
+  elseif (! ischar (name))
+    error ("isappdata: NAME must be a string");
+  endif 
+
+  valid = false (size (h));
+  for i = 1:numel (h)
+    try
+      appdata = get (h(i), "__appdata__");
+      if (isfield (appdata, name))
+        valid(i) = true;
+      endif
+    end_try_catch
   endfor
 
 endfunction
 
 
 %!test
-%! setappdata (0, "hello", "world");
-%! assert (isappdata (0, "hello"), true);
-%! assert (isappdata (0, "foobar"), false);
+%! unwind_protect
+%!   setappdata (0, "%hello%", "world");
+%!   assert (isappdata (0, "%hello%"), true);
+%!   assert (isappdata ([0 0], "%hello%"), [true, true]);
+%!   assert (isappdata (0, "%foobar%"), false);
+%! unwind_protect_cleanup
+%!   rmappdata (0, "%hello%");
+%! end_unwind_protect
+
+## Test input validation
+%!error isappdata ()
+%!error isappdata (1,2,3)
+%!error <H must be a scalar .* graphic handle> isappdata (-1, "hello")
+%!error <NAME must be a string> isappdata (0, 1)
 

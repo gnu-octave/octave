@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -85,7 +85,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
   else if (auto_add)
     retval = (numel () == 0) ? Cell (dim_vector (1, 1)) : Cell (dims ());
   else
-    error_with_id ("Octave:invalid-indexing", 
+    error_with_id ("Octave:invalid-indexing",
                    "structure has no member '%s'", nm.c_str ());
 
   return retval;
@@ -189,7 +189,7 @@ octave_struct::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
 
@@ -255,7 +255,7 @@ octave_struct::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_user_function::subsref.
 
@@ -345,7 +345,8 @@ octave_struct::subsasgn (const std::string& type,
                     tmpc = map.contents (pkey).index (idx.front (), true);
                   }
 
-                // FIXME: better code reuse? cf. octave_cell::subsasgn and the case below.
+                // FIXME: better code reuse?
+                //        cf. octave_cell::subsasgn and the case below.
                 if (! error_state)
                   {
                     if (tmpc.numel () == 1)
@@ -360,13 +361,15 @@ octave_struct::subsasgn (const std::string& type,
                             tmp.make_unique (); // probably a no-op.
                           }
                         else
-                          // optimization: ignore the copy still stored inside our map.
+                          // optimization: ignore the copy
+                          // still stored inside our map.
                           tmp.make_unique (1);
 
                         if (! error_state)
-                          t_rhs = (orig_undefined
-                                   ? tmp.undef_subsasgn (next_type, next_idx, rhs)
-                                   : tmp.subsasgn (next_type, next_idx, rhs));
+                          t_rhs =
+                            (orig_undefined
+                               ? tmp.undef_subsasgn (next_type, next_idx, rhs)
+                               : tmp.subsasgn (next_type, next_idx, rhs));
                       }
                     else
                       gripe_indexed_cs_list ();
@@ -419,7 +422,8 @@ octave_struct::subsasgn (const std::string& type,
                         tmp.make_unique (); // probably a no-op.
                       }
                     else
-                      // optimization: ignore the copy still stored inside our map.
+                      // optimization: ignore the copy
+                      // still stored inside our map.
                       tmp.make_unique (1);
 
                     if (! error_state)
@@ -473,7 +477,8 @@ octave_struct::subsasgn (const std::string& type,
 
                         dim_vector didx = dims ().redim (idxf.length ());
                         for (octave_idx_type k = 0; k < idxf.length (); k++)
-                          if (! idxf(k).is_magic_colon ()) didx(k) = idxf(k).numel ();
+                          if (! idxf(k).is_magic_colon ())
+                            didx(k) = idxf(k).numel ();
 
                         if (didx.numel () == tmp_cell.numel ())
                           tmp_cell = tmp_cell.reshape (didx);
@@ -491,12 +496,15 @@ octave_struct::subsasgn (const std::string& type,
                       }
                     else
                       {
-                        const octave_map& cmap = const_cast<const octave_map &> (map);
-                        // cast map to const reference to avoid forced key insertion.
+                        const octave_map& cmap =
+                          const_cast<const octave_map &> (map);
+                        // cast to const reference, avoid forced key insertion.
                         if (idxf.all_scalars ()
-                            || cmap.contents (key).index (idxf, true).numel () == 1)
+                            || cmap.contents (key).index (idxf, true).numel ()
+                               == 1)
                           {
-                            map.assign (idxf, key, Cell (t_rhs.storable_value ()));
+                            map.assign (idxf,
+                                        key, Cell (t_rhs.storable_value ()));
                             if (! error_state)
                               {
                                 count++;
@@ -640,7 +648,7 @@ octave_struct::byte_size (void) const
 }
 
 void
-octave_struct::print (std::ostream& os, bool) const
+octave_struct::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -761,7 +769,7 @@ octave_struct::save_ascii (std::ostream& os)
       bool b = save_ascii_data (os, val, key, false, 0);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -836,15 +844,16 @@ octave_struct::load_ascii (std::istream& is)
               success = false;
             }
         }
-      else if (len == 0 )
+      else if (len == 0)
         map = octave_map (dv);
       else
         panic_impossible ();
     }
-  else {
-    error ("load: failed to extract number of elements in structure");
-    success = false;
-  }
+  else
+    {
+      error ("load: failed to extract number of elements in structure");
+      success = false;
+    }
 
   return success;
 }
@@ -885,7 +894,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
       bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -1031,7 +1040,7 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name)
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
 
-  // FIXME -- fields appear to be sorted alphabetically on loading.
+  // FIXME: fields appear to be sorted alphabetically on loading.
   // Why is that happening?
 
   while (current_item < static_cast<int> (num_obj)
@@ -1125,7 +1134,8 @@ octave_struct::fast_elem_insert (octave_idx_type n,
 }
 DEFINE_OCTAVE_ALLOCATOR(octave_scalar_struct);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct", "struct");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",
+                                    "struct");
 
 octave_value
 octave_scalar_struct::dotref (const octave_value_list& idx, bool auto_add)
@@ -1349,7 +1359,7 @@ octave_scalar_struct::byte_size (void) const
 }
 
 void
-octave_scalar_struct::print (std::ostream& os, bool) const
+octave_scalar_struct::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -1412,7 +1422,8 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 }
 
 bool
-octave_scalar_struct::print_name_tag (std::ostream& os, const std::string& name) const
+octave_scalar_struct::print_name_tag (std::ostream& os,
+                                      const std::string& name) const
 {
   bool retval = false;
 
@@ -1460,7 +1471,7 @@ octave_scalar_struct::save_ascii (std::ostream& os)
       bool b = save_ascii_data (os, val, key, false, 0);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -1512,10 +1523,11 @@ octave_scalar_struct::load_ascii (std::istream& is)
       else
         panic_impossible ();
     }
-  else {
-    error ("load: failed to extract number of elements in structure");
-    success = false;
-  }
+  else
+    {
+      error ("load: failed to extract number of elements in structure");
+      success = false;
+    }
 
   return success;
 }
@@ -1543,7 +1555,7 @@ octave_scalar_struct::save_binary (std::ostream& os, bool& save_as_floats)
       bool b = save_binary_data (os, val, key, "", 0, save_as_floats);
 
       if (! b)
-        return os;
+        return ! os.fail ();
     }
 
   return true;
@@ -1607,7 +1619,8 @@ octave_scalar_struct::load_binary (std::istream& is, bool swap,
 #if defined (HAVE_HDF5)
 
 bool
-octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+octave_scalar_struct::save_hdf5 (hid_t loc_id, const char *name,
+                                 bool save_as_floats)
 {
   hid_t data_hid = -1;
 
@@ -1664,7 +1677,7 @@ octave_scalar_struct::load_hdf5 (hid_t loc_id, const char *name)
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
 
-  // FIXME -- fields appear to be sorted alphabetically on loading.
+  // FIXME: fields appear to be sorted alphabetically on loading.
   // Why is that happening?
 
   while (current_item < static_cast<int> (num_obj)
@@ -1735,7 +1748,8 @@ octave_scalar_struct::to_array (void)
 }
 
 bool
-octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) const
+octave_scalar_struct::fast_elem_insert_self (void *where,
+                                             builtin_type_t btyp) const
 {
 
   if (btyp == btyp_struct)
@@ -1748,13 +1762,15 @@ octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) c
 }
 
 DEFUN (struct, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{s} =} struct ()\n\
+@deftypefnx {Built-in Function} {@var{s} =} struct (@var{field1}, @var{value1}, @var{field2}, @var{value2}, @dots{})\n\
+@deftypefnx {Built-in Function} {@var{s} =} struct (@var{obj})\n\
 \n\
 Create a scalar or array structure and initialize its values.  The\n\
-@var{field1}, @var{field2}, @dots{} variables are strings giving the\n\
+@var{field1}, @var{field2}, @dots{} variables are strings specifying the\n\
 names of the fields and the @var{value1}, @var{value2}, @dots{}\n\
-variables can be any type.\n\
+variables can be of any type.\n\
 \n\
 If the values are cell arrays, create a structure array and initialize\n\
 its values.  The dimensions of each cell array of values must match.\n\
@@ -1789,7 +1805,7 @@ struct (\"foo\", @{1, 2, 3@})\n\
 @end example\n\
 \n\
 @noindent\n\
-The first case is an ordinary scalar struct, one field, one value.  The\n\
+The first case is an ordinary scalar struct---one field, one value.  The\n\
 second produces an empty struct array with one field and no values, since\n\
 s being passed an empty cell array of struct array values.  When the value is\n\
 a cell array containing a single entry, this becomes a scalar struct with\n\
@@ -1798,6 +1814,7 @@ to be an empty cell array.\n\
 \n\
 Finally, if the value is a non-scalar cell array, then @code{struct}\n\
 produces a struct @strong{array}.\n\
+@seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield, orderfields, isstruct, structfun}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1947,7 +1964,7 @@ produces a struct @strong{array}.\n\
 */
 
 DEFUN (isstruct, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isstruct (@var{x})\n\
 Return true if @var{x} is a structure or a structure array.\n\
 @seealso{ismatrix, iscell, isa}\n\
@@ -1964,7 +1981,7 @@ Return true if @var{x} is a structure or a structure array.\n\
 }
 
 DEFUN (__fieldnames__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __fieldnames__ (@var{struct})\n\
 @deftypefnx {Built-in Function} {} __fieldnames__ (@var{obj})\n\
 Internal function.\n\
@@ -1991,11 +2008,15 @@ Implements @code{fieldnames()} for structures and Octave objects.\n\
 }
 
 DEFUN (isfield, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isfield (@var{x}, @var{name})\n\
-Return true if the @var{x} is a structure and it\n\
-includes an element named @var{name}.  If @var{name} is a cell\n\
-array of strings then a logical array of equal dimension is returned.\n\
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} isfield (@var{x}, \"@var{name}\")\n\
+@deftypefnx {Built-in Function} {} isfield (@var{x}, @var{name})\n\
+Return true if the @var{x} is a structure and it includes an element named\n\
+@var{name}.\n\
+\n\
+If @var{name} is a cell array of strings then a logical array of equal\n\
+dimension is returned.\n\
+@seealso{fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2010,7 +2031,7 @@ array of strings then a logical array of equal dimension is returned.\n\
         {
           octave_map m = args(0).map_value ();
 
-          // FIXME -- should this work for all types that can do
+          // FIXME: should this work for all types that can do
           // structure reference operations?
 
           if (args(1).is_string ())
@@ -2047,10 +2068,11 @@ array of strings then a logical array of equal dimension is returned.\n\
   return retval;
 }
 
-DEFUN (nfields, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} nfields (@var{s})\n\
+DEFUN (numfields, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} numfields (@var{s})\n\
 Return the number of fields of the structure @var{s}.\n\
+@seealso{fieldnames}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2081,7 +2103,8 @@ Return the number of fields of the structure @var{s}.\n\
 
 DEFUN (cell2struct, args, ,
        "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
+@deftypefn  {Built-in Function} {} cell2struct (@var{cell}, @var{fields})\n\
+@deftypefnx {Built-in Function} {} cell2struct (@var{cell}, @var{fields}, @var{dim})\n\
 Convert @var{cell} to a structure.  The number of fields in @var{fields}\n\
 must match the number of elements in @var{cell} along dimension @var{dim},\n\
 that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.\n\
@@ -2101,6 +2124,7 @@ A(1)\n\
 \n\
 @end group\n\
 @end example\n\
+@seealso{struct2cell, cell2mat, struct}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2215,12 +2239,14 @@ extern octave_value_list Fcellstr (const octave_value_list& args, int);
 
 DEFUN (rmfield, args, ,
        "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{s} =} rmfield (@var{s}, \"@var{f}\")\n\
-@deftypefnx {Built-in Function} {@var{s} =} rmfield (@var{s}, @var{f})\n\
-Return a copy of the structure (array) @var{s} with the field @var{f}\n\
-removed.  If @var{f} is a cell array of strings or a character array, remove\n\
-each of the named fields.\n\
-@seealso{cellstr, iscellstr, setfield}\n\
+@deftypefn  {Built-in Function} {@var{sout} =} rmfield (@var{s}, \"@var{f}\")\n\
+@deftypefnx {Built-in Function} {@var{sout} =} rmfield (@var{s}, @var{f})\n\
+Return a @emph{copy} of the structure (array) @var{s} with the field @var{f}\n\
+removed.\n\
+\n\
+If @var{f} is a cell array of strings or a character array, remove each of\n\
+the named fields.\n\
+@seealso{orderfields, fieldnames, isfield}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2278,7 +2304,7 @@ each of the named fields.\n\
 */
 
 DEFUN (struct_levels_to_print, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} struct_levels_to_print (@var{new_val}, \"local\")\n\
@@ -2288,6 +2314,7 @@ structure levels to display.\n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
+@seealso{print_struct_array_contents}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print, -1,
@@ -2295,19 +2322,22 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (print_struct_array_contents, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} print_struct_array_contents ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies whether to print struct\n\
-array contents.  If true, values of struct array elements are printed.\n\
-This variable does not affect scalar structures.  Their elements\n\
-are always printed.  In both cases, however, printing will be limited to\n\
+array contents.\n\
+\n\
+If true, values of struct array elements are printed.\n\
+This variable does not affect scalar structures whose elements are always\n\
+printed.  In both cases, however, printing will be limited to\n\
 the number of levels specified by @var{struct_levels_to_print}.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
+@seealso{struct_levels_to_print}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);

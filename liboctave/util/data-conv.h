@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,32 +35,32 @@ oct_data_conv
 public:
 
   enum data_type
-    {
-      dt_int8      =  0,
-      dt_uint8     =  1,
-      dt_int16     =  2,
-      dt_uint16    =  3,
-      dt_int32     =  4,
-      dt_uint32    =  5,
-      dt_int64     =  6,
-      dt_uint64    =  7,
-      dt_single    =  8,
-      dt_double    =  9,
-      dt_char      = 10,
-      dt_schar     = 11,
-      dt_uchar     = 12,
-      dt_logical   = 13,
-      dt_short     = 14,
-      dt_ushort    = 15,
-      dt_int       = 16,
-      dt_uint      = 17,
-      dt_long      = 18,
-      dt_ulong     = 19,
-      dt_longlong  = 20,
-      dt_ulonglong = 21,
-      dt_float     = 22,
-      dt_unknown   = 23 // Must be last, have largest value!
-    };
+  {
+    dt_int8      =  0,
+    dt_uint8     =  1,
+    dt_int16     =  2,
+    dt_uint16    =  3,
+    dt_int32     =  4,
+    dt_uint32    =  5,
+    dt_int64     =  6,
+    dt_uint64    =  7,
+    dt_single    =  8,
+    dt_double    =  9,
+    dt_char      = 10,
+    dt_schar     = 11,
+    dt_uchar     = 12,
+    dt_logical   = 13,
+    dt_short     = 14,
+    dt_ushort    = 15,
+    dt_int       = 16,
+    dt_uint      = 17,
+    dt_long      = 18,
+    dt_ulong     = 19,
+    dt_longlong  = 20,
+    dt_ulonglong = 21,
+    dt_float     = 22,
+    dt_unknown   = 23 // Must be last, have largest value!
+  };
 
   static size_t data_type_size (data_type dt);
 
@@ -81,36 +81,36 @@ public:
 // format that were created with previous versions of Octave.
 
 enum save_type
-  {
-    LS_U_CHAR  = 0,
-    LS_U_SHORT = 1,
-    LS_U_INT   = 2,
-    LS_CHAR    = 3,
-    LS_SHORT   = 4,
-    LS_INT     = 5,
-    LS_FLOAT   = 6,
-    LS_DOUBLE  = 7,
-    LS_U_LONG  = 8,
-    LS_LONG    = 9
-  };
+{
+  LS_U_CHAR  = 0,
+  LS_U_SHORT = 1,
+  LS_U_INT   = 2,
+  LS_CHAR    = 3,
+  LS_SHORT   = 4,
+  LS_INT     = 5,
+  LS_FLOAT   = 6,
+  LS_DOUBLE  = 7,
+  LS_U_LONG  = 8,
+  LS_LONG    = 9
+};
 
 extern OCTAVE_API void
 do_double_format_conversion (void *data, octave_idx_type len,
                              oct_mach_info::float_format from_fmt,
                              oct_mach_info::float_format to_fmt
-                               = oct_mach_info::native_float_format ());
+                             = oct_mach_info::native_float_format ());
 
 extern OCTAVE_API void
 do_float_format_conversion (void *data, octave_idx_type len,
                             oct_mach_info::float_format from_fmt,
                             oct_mach_info::float_format to_fmt
-                              = oct_mach_info::native_float_format ());
+                            = oct_mach_info::native_float_format ());
 
 extern OCTAVE_API void
 do_float_format_conversion (void *data, size_t sz, octave_idx_type len,
                             oct_mach_info::float_format from_fmt,
                             oct_mach_info::float_format to_fmt
-                              = oct_mach_info::native_float_format ());
+                            = oct_mach_info::native_float_format ());
 
 extern OCTAVE_API void
 read_doubles (std::istream& is, double *data, save_type type,

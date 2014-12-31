@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_RowVector_h)
-#define octave_RowVector_h 1
+#if !defined (octave_dRowVector_h)
+#define octave_dRowVector_h 1
 
 #include "MArray.h"
 
@@ -50,10 +50,10 @@ public:
   RowVector (const Array<double>& a) : MArray<double> (a.as_row ()) { }
 
   RowVector& operator = (const RowVector& a)
-    {
-      MArray<double>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<double>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const RowVector& a) const;
   bool operator != (const RowVector& a) const;
@@ -89,7 +89,8 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const RowVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const RowVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, RowVector& a);
 
   void resize (octave_idx_type n, const double& rfv = 0)
@@ -98,7 +99,7 @@ public:
   }
 
   void clear (octave_idx_type n)
-    { Array<double>::clear (1, n); }
+  { Array<double>::clear (1, n); }
 
 };
 
@@ -106,7 +107,8 @@ public:
 
 double OCTAVE_API operator * (const RowVector& a, const ColumnVector& b);
 
-Complex OCTAVE_API operator * (const RowVector& a, const ComplexColumnVector& b);
+Complex OCTAVE_API operator * (const RowVector& a,
+                               const ComplexColumnVector& b);
 
 // other operations
 

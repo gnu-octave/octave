@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,11 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexNDArray_h)
-#define octave_ComplexNDArray_h 1
+#if !defined (octave_CNDArray_h)
+#define octave_CNDArray_h 1
 
 #include "MArray.h"
-#include "CMatrix.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
@@ -36,8 +35,6 @@ ComplexNDArray : public MArray<Complex>
 {
 public:
 
-  typedef ComplexMatrix matrix_type;
-
   ComplexNDArray (void) : MArray<Complex> () { }
 
   ComplexNDArray (const dim_vector& dv) : MArray<Complex> (dv) { }
@@ -46,8 +43,6 @@ public:
     : MArray<Complex> (dv, val) { }
 
   ComplexNDArray (const ComplexNDArray& a) : MArray<Complex> (a) { }
-
-  ComplexNDArray (const ComplexMatrix& a) : MArray<Complex> (a) { }
 
   template <class U>
   ComplexNDArray (const MArray<U>& a) : MArray<Complex> (a) { }
@@ -58,16 +53,16 @@ public:
   ComplexNDArray (const charNDArray&);
 
   ComplexNDArray& operator = (const ComplexNDArray& a)
-    {
-      MArray<Complex>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<Complex>::operator = (a);
+    return *this;
+  }
 
   // unary operations
 
   boolNDArray operator ! (void) const;
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;
@@ -84,8 +79,10 @@ public:
   ComplexNDArray sum (int dim = -1) const;
   ComplexNDArray xsum (int dim = -1) const;
   ComplexNDArray sumsq (int dim = -1) const;
-  ComplexNDArray concat (const ComplexNDArray& rb, const Array<octave_idx_type>& ra_idx);
-  ComplexNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
+  ComplexNDArray concat (const ComplexNDArray& rb,
+                         const Array<octave_idx_type>& ra_idx);
+  ComplexNDArray concat (const NDArray& rb,
+                         const Array<octave_idx_type>& ra_idx);
 
   ComplexNDArray max (int dim = -1) const;
   ComplexNDArray max (Array<octave_idx_type>& index, int dim = -1) const;
@@ -99,9 +96,12 @@ public:
 
   ComplexNDArray diff (octave_idx_type order = 1, int dim = -1) const;
 
-  ComplexNDArray& insert (const NDArray& a, octave_idx_type r, octave_idx_type c);
-  ComplexNDArray& insert (const ComplexNDArray& a, octave_idx_type r, octave_idx_type c);
-  ComplexNDArray& insert (const ComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
+  ComplexNDArray& insert (const NDArray& a,
+                          octave_idx_type r, octave_idx_type c);
+  ComplexNDArray& insert (const ComplexNDArray& a,
+                          octave_idx_type r, octave_idx_type c);
+  ComplexNDArray& insert (const ComplexNDArray& a,
+                          const Array<octave_idx_type>& ra_idx);
 
   NDArray abs (void) const;
   boolNDArray isnan (void) const;
@@ -119,8 +119,6 @@ public:
   ComplexNDArray fourierNd (void) const;
   ComplexNDArray ifourierNd (void) const;
 
-  ComplexMatrix matrix_value (void) const;
-
   ComplexNDArray squeeze (void) const { return MArray<Complex>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
@@ -128,12 +126,14 @@ public:
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexNDArray& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexNDArray& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const ComplexNDArray& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is,
+                                               ComplexNDArray& a);
 
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (double& max_val, double& min_val) const;
@@ -143,10 +143,10 @@ public:
   ComplexNDArray diag (octave_idx_type m, octave_idx_type n) const;
 
   ComplexNDArray& changesign (void)
-    {
-      MArray<Complex>::changesign ();
-      return *this;
-    }
+  {
+    MArray<Complex>::changesign ();
+    return *this;
+  }
 
 };
 

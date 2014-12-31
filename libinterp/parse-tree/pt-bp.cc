@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2012 Ben Sapp
+Copyright (C) 2001-2013 Ben Sapp
 
 This file is part of Octave.
 
@@ -288,6 +288,12 @@ tree_breakpoint::visit_constant (tree_constant&)
 
 void
 tree_breakpoint::visit_fcn_handle (tree_fcn_handle&)
+{
+  panic_impossible ();
+}
+
+void
+tree_breakpoint::visit_funcall (tree_funcall&)
 {
   panic_impossible ();
 }

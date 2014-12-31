@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "statdefs.h"
 
-// FIXME -- the is_* and mode_as_string functions are only valid
+// FIXME: the is_* and mode_as_string functions are only valid
 // for initialized objects.  If called for an object that is not
 // initialized, they should throw an exception.
 
@@ -198,7 +198,7 @@ file_stat::update_internal (bool force)
       struct stat buf;
 
       int status = follow_links
-        ? stat (cname, &buf) : gnulib::lstat (cname, &buf);
+                   ? stat (cname, &buf) : gnulib::lstat (cname, &buf);
 
       if (status < 0)
         {

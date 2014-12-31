@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_magic_colon_h)
-#define octave_magic_colon_h 1
+#if !defined (octave_ov_colon_h)
+#define octave_ov_colon_h 1
 
 #include <cstdlib>
 
@@ -54,10 +54,12 @@ public:
 
   ~octave_magic_colon (void) { }
 
-  octave_base_value *clone (void) const { return new octave_magic_colon (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_magic_colon (); }
+  octave_base_value *clone (void) const
+  { return new octave_magic_colon (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_magic_colon (); }
 
-  idx_vector index_vector (void) const { return idx_vector (':'); }
+  idx_vector index_vector (bool /* require_integers */ = false) const { return idx_vector (':'); }
 
   bool is_defined (void) const { return true; }
 
@@ -65,7 +67,7 @@ public:
 
   bool is_magic_colon (void) const { return true; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

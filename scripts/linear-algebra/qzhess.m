@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -35,9 +35,9 @@
 ## @end example
 ##
 ## The Hessenberg-triangular decomposition is the first step in
-## Moler and Stewart's QZ@tie{}decomposition algorithm.
+## @nospell{Moler and Stewart's} QZ@tie{}decomposition algorithm.
 ##
-## Algorithm taken from Golub and Van Loan,
+## Algorithm taken from @nospell{Golub and Van Loan},
 ## @cite{Matrix Computations, 2nd edition}.
 ## 
 ## @seealso{lu, chol, hess, qr, qz, schur, svd}

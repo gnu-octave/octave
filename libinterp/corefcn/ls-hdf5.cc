@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -248,8 +248,11 @@ herr_t
 hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 {
   hdf5_callback_data *d = static_cast <hdf5_callback_data *> (dv);
-  hid_t type_id = -1, type_class_id = -1, data_id = -1, subgroup_id = -1,
-    space_id = -1;
+  hid_t type_id = -1;
+  hid_t type_class_id = -1;
+  hid_t data_id = -1;
+  hid_t subgroup_id = -1;
+  hid_t space_id = -1;;
 
   H5G_stat_t info;
   herr_t retval = 0;
@@ -260,7 +263,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   // Allow identifiers as all digits so we can load lists saved by
   // earlier versions of Octave.
 
-  if (! ident_valid )
+  if (! ident_valid)
     {
       // fix the identifier, replacing invalid chars with underscores
       vname = make_valid_identifier (vname);
@@ -395,7 +398,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
           // What integer type do we really have..
           std::string int_typ;
 #ifdef HAVE_H5T_GET_NATIVE_TYPE
-          // FIXME test this code and activated with an autoconf
+          // FIXME: test this code and activated with an autoconf
           // test!! It is also incorrect for 64-bit indexing!!
 
           switch (H5Tget_native_type (type_id, H5T_DIR_ASCEND))
@@ -525,6 +528,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
         {
           warning ("load: can't read '%s' (unknown datatype)", name);
           retval = 0; // unknown datatype; skip
+          return retval;
         }
 
       // check for OCTAVE_GLOBAL attribute:
@@ -544,7 +548,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
                name);
     }
 
- done:
+done:
   if (retval < 0)
     error ("load: error while reading hdf5 item %s", name);
 
@@ -580,7 +584,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 // and error.
 std::string
 read_hdf5_data (std::istream& is, const std::string& /* filename */,
-                bool& global, octave_value& tc, std::string& doc)
+                bool& global, octave_value& tc, std::string& doc,
+                const string_vector& argv, int argv_idx, int argc)
 {
   std::string retval;
 
@@ -599,6 +604,37 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 #endif
   H5Gget_num_objs (group_id, &num_obj);
   H5Gclose (group_id);
+
+  // For large datasets and out-of-core functionality,
+  // check if only parts of the data is requested
+  bool load_named_vars = argv_idx < argc;
+  while (load_named_vars && hs.current_item < static_cast<int> (num_obj))
+    {
+      std::vector<char> var_name;
+      bool found = false;
+      size_t len = 0;
+
+      len = H5Gget_objname_by_idx (hs.file_id, hs.current_item, 0, 0);
+      var_name.resize (len+1);
+      H5Gget_objname_by_idx (hs.file_id, hs.current_item, &var_name[0], len+1);
+
+      for (int i = argv_idx; i < argc; i++)
+        {
+          glob_match pattern (argv[i]);
+          if (pattern.match (std::string (&var_name[0])))
+            {
+              found = true;
+              break;
+            }
+        }
+
+      if (found)
+        break;
+
+      hs.current_item++;
+    }
+
+
   if (hs.current_item < static_cast<int> (num_obj))
     H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
                                     hdf5_read_next_data, &d);
@@ -703,7 +739,8 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
   hsize_t sz = d.length ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, sz);
   bool empty = false;
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid = -1;
+  hid_t data_hid = -1;
   int retval;
   for (hsize_t i = 0; i < sz; i++)
     {
@@ -830,7 +867,9 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
                bool mark_as_global, bool save_as_floats)
 {
   hsize_t dims[3];
-  hid_t type_id = -1, space_id = -1, data_id = -1, data_type_id = -1;
+  hid_t type_id, space_id, data_id, data_type_id;
+  type_id = space_id = data_id = data_type_id = -1;
+
   bool retval = false;
   octave_value val = tc;
   // FIXME: diagonal & permutation matrices currently don't know how to save
@@ -842,7 +881,8 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 
   std::string t = val.type_name ();
 #if HAVE_HDF5_18
-  data_id = H5Gcreate (loc_id, name.c_str (), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  data_id = H5Gcreate (loc_id, name.c_str (), H5P_DEFAULT, H5P_DEFAULT,
+                       H5P_DEFAULT);
 #else
   data_id = H5Gcreate (loc_id, name.c_str (), 0);
 #endif
@@ -884,7 +924,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
   if (retval)
     retval = hdf5_add_attr (data_id, "OCTAVE_NEW_FORMAT") >= 0;
 
- error_cleanup:
+error_cleanup:
 
   if (data_type_id >= 0)
     H5Dclose (data_type_id);

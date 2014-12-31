@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -96,7 +96,12 @@ tree_colon_expression::make_range (const Matrix& m_base,
     retval = Range ();
   else
     {
-      retval = Range (m_base(0), m_limit(0), m_increment(0));
+      Range r (m_base(0), m_limit(0), m_increment(0));
+
+      // For compatibility with Matlab, don't allow the range used in
+      // a FOR loop expression to be converted to a Matrix.
+
+      retval = octave_value (r, is_for_cmd_expr ());
 
       if (result_is_str)
         retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
@@ -270,7 +275,8 @@ tree_colon_expression::dup (symbol_table::scope_id scope,
   tree_colon_expression *new_ce = new
     tree_colon_expression (op_base ? op_base->dup (scope, context) : 0,
                            op_limit ? op_limit->dup (scope, context) : 0,
-                           op_increment ? op_increment->dup (scope, context) : 0,
+                           op_increment ? op_increment->dup (scope, context)
+                                        : 0,
                            line (), column ());
 
   new_ce->copy_base (*new_ce);

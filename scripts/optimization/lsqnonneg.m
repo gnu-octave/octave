@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Bill Denney
+## Copyright (C) 2008-2013 Bill Denney
 ## Copyright (C) 2008 Jaroslav Hajek
 ## Copyright (C) 2009 VZLU Prague
 ##
@@ -66,7 +66,7 @@
 ##
 ## Not implemented.
 ## @end itemize
-## @seealso{optimset, pqpnonneg}
+## @seealso{optimset, pqpnonneg, lscov}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.

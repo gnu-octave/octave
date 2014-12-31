@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 John W. Eaton
+Copyright (C) 2012-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_octave_gui_h)
 #define octave_octave_gui_h 1
 
-extern OCTGUI_API int octave_start_gui (int argc, char **argv);
+extern OCTGUI_API int octave_start_gui (int argc, char **argv,
+                                        bool start_gui = true);
 
 #endif

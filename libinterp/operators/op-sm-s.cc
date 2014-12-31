@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -124,7 +124,7 @@ DEFBINOP (el_ldiv, sparse_matrix, scalar)
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
 
   return octave_value
-    (x_el_div (v2.complex_value (), v1.sparse_matrix_value ()));
+         (x_el_div (v2.complex_value (), v1.sparse_matrix_value ()));
 }
 
 DEFBINOP_FN (el_and, sparse_matrix, scalar, mx_el_and)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,18 +20,19 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_null_matrix_h)
-#define octave_null_matrix_h 1
+#if !defined (octave_ov_null_mat_h)
+#define octave_ov_null_mat_h 1
 
 #include "ov.h"
 #include "ov-re-mat.h"
 #include "ov-str-mat.h"
 
 // Design rationale:
-// The constructors are hidden. There is only one null matrix (or null string) object,
-// that can have shallow copies. Cloning the object returns just a normal empty matrix,
-// so all the shallow copies are, in fact, read-only. This conveniently ensures that any
-// attempt to fiddle with the null matrix destroys its special status.
+// The constructors are hidden.  There is only one null matrix (or null string)
+// object, that can have shallow copies.  Cloning the object returns just a
+// normal empty matrix, so all the shallow copies are, in fact, read-only. This
+// conveniently ensures that any attempt to fiddle with the null matrix
+// destroys its special status.
 
 // The special [] value.
 

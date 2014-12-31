@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.

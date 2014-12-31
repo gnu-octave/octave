@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 John W. Eaton
+Copyright (C) 2004-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_int_matrix_h)
-#define octave_base_int_matrix_h 1
+#if !defined (octave_ov_base_int_h)
+#define octave_ov_base_int_h 1
 
 #include <cstdlib>
 
@@ -52,8 +52,11 @@ public:
 
   ~octave_base_int_matrix (void) { }
 
-  octave_base_value *clone (void) const { return new octave_base_int_matrix (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_base_int_matrix (); }
+  octave_base_value *clone (void) const
+  { return new octave_base_int_matrix (*this); }
+
+  octave_base_value *empty_clone (void) const
+  { return new octave_base_int_matrix (); }
 
   octave_base_value *try_narrowing_conversion (void);
 
@@ -71,10 +74,10 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& );
+  bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format );
+                    oct_mach_info::float_format);
 
 #if defined (HAVE_HDF5)
   bool save_hdf5 (hid_t loc_id, const char *name, bool);
@@ -97,8 +100,10 @@ public:
 
   ~octave_base_int_scalar (void) { }
 
-  octave_base_value *clone (void) const { return new octave_base_int_scalar (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_base_int_scalar (); }
+  octave_base_value *clone (void) const
+  { return new octave_base_int_scalar (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_base_int_scalar (); }
 
   octave_base_value *try_narrowing_conversion (void) { return 0; }
 
@@ -114,13 +119,13 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& );
+  bool save_binary (std::ostream& os, bool&);
 
   bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format );
+                    oct_mach_info::float_format);
 
 #if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool );
+  bool save_hdf5 (hid_t loc_id, const char *name, bool);
 
   bool load_hdf5 (hid_t loc_id, const char *name);
 #endif

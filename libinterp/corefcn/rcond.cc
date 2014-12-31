@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 David Bateman
+Copyright (C) 2008-2013 David Bateman
 
 This file is part of Octave.
 
@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (rcond, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{c} =} rcond (@var{A})\n\
 Compute the 1-norm estimate of the reciprocal condition number as returned\n\
 by @sc{lapack}.  If the matrix is well-conditioned then @var{c} will be near\n\

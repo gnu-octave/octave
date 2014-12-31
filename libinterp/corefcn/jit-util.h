@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Max Brister
+Copyright (C) 2012-2013 Max Brister
 
 This file is part of Octave.
 
@@ -42,8 +42,15 @@ namespace llvm
 {
   class Value;
   class Module;
+#ifdef LEGACY_PASSMANAGER
+  namespace legacy {
+    class FunctionPassManager;
+    class PassManager;
+  }
+#else
   class FunctionPassManager;
   class PassManager;
+#endif
   class ExecutionEngine;
   class Function;
   class BasicBlock;
@@ -77,10 +84,10 @@ class tree_expression;
 class jit_fail_exception : public std::runtime_error
 {
 public:
-  jit_fail_exception (void) : std::runtime_error ("unknown"), mknown (false) {}
+  jit_fail_exception (void) : std::runtime_error ("unknown"), mknown (false) { }
   jit_fail_exception (const std::string& reason) : std::runtime_error (reason),
                                                    mknown (true)
-  {}
+  { }
 
   bool known (void) const { return mknown; }
 private:
@@ -102,7 +109,7 @@ jit_internal_list
 {
   friend class jit_internal_node<LIST_T, NODE_T>;
 public:
-  jit_internal_list (void) : use_head (0), use_tail (0), muse_count (0) {}
+  jit_internal_list (void) : use_head (0), use_tail (0), muse_count (0) { }
 
   virtual ~jit_internal_list (void)
   {
@@ -127,7 +134,7 @@ jit_internal_node
 public:
   typedef jit_internal_list<LIST_T, NODE_T> jit_ilist;
 
-  jit_internal_node (void) : mvalue (0), mnext (0), mprev (0) {}
+  jit_internal_node (void) : mvalue (0), mnext (0), mprev (0) { }
 
   ~jit_internal_node (void) { remove (); }
 

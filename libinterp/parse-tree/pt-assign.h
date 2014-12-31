@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_assign_h)
-#define octave_tree_assign_h 1
+#if !defined (octave_pt_assign_h)
+#define octave_pt_assign_h 1
 
 #include <iosfwd>
 #include <string>
@@ -143,7 +143,8 @@ public:
 
   void accept (tree_walker& tw);
 
-  octave_value::assign_op op_type (void) const { return octave_value::op_asn_eq; }
+  octave_value::assign_op op_type (void) const
+  { return octave_value::op_asn_eq; }
 
 private:
 

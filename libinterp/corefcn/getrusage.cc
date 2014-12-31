@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -60,7 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 // System resource functions.
 
 DEFUN (getrusage, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} getrusage ()\n\
 Return a structure containing a number of statistics about the current\n\
 Octave process.  Not all fields are available on all systems.  If it is\n\
@@ -124,7 +124,7 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   octave_scalar_map m;
   octave_scalar_map tv_tmp;
 
-  // FIXME -- maybe encapsulate all of this in a liboctave class
+  // FIXME: maybe encapsulate all of this in a liboctave class
 #if defined (HAVE_GETRUSAGE)
 
   struct rusage ru;

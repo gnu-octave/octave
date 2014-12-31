@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -47,7 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (balance, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{AA} =} balance (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{AA} =} balance (@var{A}, @var{opt})\n\
 @deftypefnx {Built-in Function} {[@var{DD}, @var{AA}] =} balance (@var{A}, @var{opt})\n\
@@ -68,7 +68,7 @@ In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where\n\
 \n\
 If four output values are requested, compute @code{@var{AA} =\n\
 @var{CC}*@var{A}*@var{DD}} and @code{@var{BB} = @var{CC}*@var{B}*@var{DD}},\n\
-in which @var{AA} and @var{BB} have non-zero elements of approximately the\n\
+in which @var{AA} and @var{BB} have nonzero elements of approximately the\n\
 same magnitude and @var{CC} and @var{DD} are permuted diagonal matrices as\n\
 in @var{DD} for the algebraic eigenvalue problem.\n\
 \n\
@@ -110,11 +110,11 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       return retval;
     }
 
-  bool isfloat = args(0).is_single_type () ||
-    (! AEPcase && args(1).is_single_type ());
+  bool isfloat = args(0).is_single_type ()
+                 || (! AEPcase && args(1).is_single_type ());
 
-  bool complex_case = (args(0).is_complex_type () ||
-                       (! AEPcase && args(1).is_complex_type ()));
+  bool complex_case = args(0).is_complex_type ()
+                      || (! AEPcase && args(1).is_complex_type ());
 
   // Extract argument 1 parameter for both AEP and GEP.
   Matrix aa;
@@ -144,7 +144,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   if (AEPcase)
     {
       // Algebraic eigenvalue problem.
-      bool noperm = false, noscal = false;
+      bool noperm = false;
+      bool noscal = false;
       if (nargin > 1)
         {
           std::string a1s = args(1).string_value ();

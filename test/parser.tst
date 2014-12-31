@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 John W. Eaton
+## Copyright (C) 2010-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -80,7 +80,19 @@
 
 ## Level 11 (transpose and exponentiation)
 %!test
+%! a = 2;
+%! assert (2 ^a++, 4)
+%! assert (a, 3)
+%! assert (2 ^--a ^2, 16)
+%! assert (a, 2)
+%! assert (2 ^++a, 8)
+%! assert (a, 3)
+%! assert (a' ^2, 9)
+%! assert (2 ^sin(0), 1)
 %! assert (-2 ^2, -4);
+%! assert (2 ^+1 ^3, 8)
+%! assert (2 ^-1 ^3, 0.125)
+%! assert (2 ^~0 ^2, 4)
 %! assert (!0 ^0, false);
 %! assert (2*3 ^2, 18);
 %! assert (2+3 ^2, 11);
@@ -196,8 +208,6 @@
 ## Level 12 (postfix increment and decrement)
 ## No tests possible since a++-- is not valid
 ## Level 11 (transpose and exponentiation)
-## Note: Exponentiation should be left-to-right, but Octave does right-to-left.
-##       See bug #33304.
 %!test
 %! assert (2^3**2, 64);
 %! assert ([2 3].^2.', [4;9]);
@@ -207,9 +217,6 @@
 %! assert (2^-4^3, (1/16)^3);
 %! assert (2^+4^3, 16^3);
 %! assert (2^~0^2, 4);
-
-## Note: Exponentiation should be left-to-right, but Octave does right-to-left.
-##       See bug #33304.
 
 ## Level 10 (unary plus/minus, prefix increment/decrement, not)
 %!test
@@ -275,3 +282,15 @@
 %!test
 %! xyz(1) = 1; xyz /= 1;
 %! assert (xyz, 1);
+
+%!test
+%! a = [97 ... % comment
+%!      'b'];
+%! assert (a, 'ab');
+
+## Check that a cell array containing function handles is parsed
+## correctly with or without commas.
+%!test
+%! a = {1, @sin, 2, @cos};
+%! b = {1 @sin 2 @cos};
+%! assert (a, b)

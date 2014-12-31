@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -171,7 +171,7 @@ read_mat_file_header (std::istream& is, bool& swap, int32_t& mopt,
 
   return 0;
 
- data_read_error:
+data_read_error:
   return -1;
 }
 
@@ -358,7 +358,8 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             for (octave_idx_type i = 0; i < nr - 1; i++)
               c.xelem (i) = dtmp[i] - 1;
             nc_new = dtmp[nr - 1];
-            read_mat_binary_data (is, data.fortran_vec (), prec, nr - 1, swap, flt_fmt);
+            read_mat_binary_data (is, data.fortran_vec (), prec, nr - 1,
+                                  swap, flt_fmt);
             read_mat_binary_data (is, dtmp, prec, 1, swap, flt_fmt);
 
             SparseMatrix sm = SparseMatrix (data, r, c, nr_new, nc_new);
@@ -406,10 +407,10 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
           tc = tc.convert_to_str (false, true, '\'');
       }
 
-      return retval;
-    }
+    return retval;
+  }
 
- data_read_error:
+data_read_error:
   error ("load: trouble reading binary file '%s'", filename.c_str ());
   return retval;
 }
@@ -460,7 +461,6 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       len = nr * nc;
     }
 
-
   // LEN includes the terminating character, and the file is also
   // supposed to include it.
 
@@ -488,7 +488,10 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
           for (octave_idx_type j = 0; j < ncol; j++)
             buf[j*nrow+i] = static_cast<double> (*s++ & 0x00FF);
         }
-      os.write (reinterpret_cast<char *> (buf), nrow*ncol*sizeof (double));
+      std::streamsize n_bytes = static_cast<std::streamsize> (nrow) *
+                                static_cast<std::streamsize> (ncol) *
+                                sizeof (double);
+      os.write (reinterpret_cast<char *> (buf), n_bytes);
     }
   else if (tc.is_range ())
     {
@@ -517,7 +520,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
           for (octave_idx_type i = 0; i < len; i++)
             dtmp[i] = m.ridx (i) + 1;
-          os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+          std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
+          os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = nr;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
@@ -525,19 +529,19 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
           for (octave_idx_type j = 0; j < nc; j++)
             for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
               dtmp[ii++] = j + 1;
-          os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+          os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = nc;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
           for (octave_idx_type i = 0; i < len; i++)
             dtmp[i] = std::real (m.data (i));
-          os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+          os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = 0.;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
           for (octave_idx_type i = 0; i < len; i++)
             dtmp[i] = std::imag (m.data (i));
-          os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+          os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           os.write (reinterpret_cast<const char *> (&ds), 8);
         }
       else
@@ -546,7 +550,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
           for (octave_idx_type i = 0; i < len; i++)
             dtmp[i] = m.ridx (i) + 1;
-          os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+          std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
+          os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = nr;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
@@ -554,11 +559,11 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
           for (octave_idx_type j = 0; j < nc; j++)
             for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
               dtmp[ii++] = j + 1;
-          os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+          os.write (reinterpret_cast<const char *> (dtmp), n_bytes);
           ds = nc;
           os.write (reinterpret_cast<const char *> (&ds), 8);
 
-          os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
+          os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
           ds = 0.;
           os.write (reinterpret_cast<const char *> (&ds), 8);
         }
@@ -566,7 +571,8 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   else if (tc.is_real_matrix ())
     {
       Matrix m = tc.matrix_value ();
-      os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
+      std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
+      os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
     }
   else if (tc.is_complex_scalar ())
     {
@@ -577,12 +583,13 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
     {
       ComplexMatrix m_cmplx = tc.complex_matrix_value ();
       Matrix m = ::real (m_cmplx);
-      os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
+      std::streamsize n_bytes = 8 * static_cast<std::streamsize> (len);
+      os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
       m = ::imag (m_cmplx);
-      os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
+      os.write (reinterpret_cast<const char *> (m.data ()), n_bytes);
     }
   else
     gripe_wrong_type_arg ("save", tc, false);
 
-  return os;
+  return ! os.fail ();
 }

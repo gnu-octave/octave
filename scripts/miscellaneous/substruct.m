@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -19,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} substruct (@var{type}, @var{subs}, @dots{})
-## Create a subscript structure for use with @code{subsref} or
-## @code{subsasgn}.  For example:
+## Create a subscript structure for use with @code{subsref} or @code{subsasgn}.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -35,7 +36,9 @@
 ##            [1,2] = :
 ##          @}
 ##        @}
-## x = [1, 2, 3; 4, 5, 6; 7, 8, 9];
+## x = [1, 2, 3;
+##      4, 5, 6;
+##      7, 8, 9];
 ## subsref (x, idx)
 ##    @result{} 7  8  9
 ## @end group
@@ -47,29 +50,27 @@
 
 function retval = substruct (varargin)
 
-  nargs = nargin;
-
-  if (nargs > 1 && mod (nargs, 2) == 0)
-    typ = varargin(1:2:nargs);
-    sub = varargin(2:2:nargs);
-    braces = strcmp (typ, "()") | strcmp (typ, "{}");
-    dots = strcmp (typ, ".");
-    if (all (braces | dots))
-      cells = cellfun ("isclass", sub, "cell");
-      chars = cellfun ("isclass", sub, "char");
-      if (any (braces &! cells))
-        error ("substruct: for TYPE == () or {}, SUBS must be a cell array");
-      elseif (any (dots &! chars))
-        error ("substruct: for TYPE == ., SUBS must be a character string");
-      endif
-    else
-      error ("substruct: expecting TYPE to be one of \"()\", \"{}\", or \".\"");
-    endif
-
-    retval = struct ("type", typ, "subs", sub);
-  else
+  if (nargin < 2 || mod (nargin, 2) != 0)
     print_usage ();
   endif
+
+  typ = varargin(1:2:nargin);
+  sub = varargin(2:2:nargin);
+  braces = strcmp (typ, "()") | strcmp (typ, "{}");
+  dots = strcmp (typ, ".");
+  if (all (braces | dots))
+    cells = cellfun ("isclass", sub, "cell");
+    chars = cellfun ("isclass", sub, "char");
+    if (any (braces & !cells))
+      error ("substruct: for TYPE == () or {}, SUBS must be a cell array");
+    elseif (any (dots & !chars))
+      error ("substruct: for TYPE == ., SUBS must be a character string");
+    endif
+  else
+    error ('substruct: expecting TYPE to be one of "()", "{}", or "."');
+  endif
+
+  retval = struct ("type", typ, "subs", sub);
 
 endfunction
 

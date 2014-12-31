@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007 Michael Goffioul
+Copyright (C) 2007, 2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -199,7 +199,7 @@ public class ClassHelper
           {
             sb.append (";");
           }
-        sb.append (theField[i].toString ());
+        sb.append (theField[i].getName ());
       }
 
     return (sb.toString ());
@@ -622,6 +622,10 @@ public class ClassHelper
         else if (expType.equals (Long.TYPE) || expType.equals (Long.class))
           {
             return new Long (((Number) obj).longValue ());
+          }
+        else if (expType.equals (Float.TYPE) || expType.equals (Float.class))
+          {
+            return new Float (((Number) obj).floatValue ());
           }
       }
     else if (isBooleanClass (expType))

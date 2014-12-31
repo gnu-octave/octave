@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -58,12 +58,12 @@ mark_upper_triangular (const Matrix& a)
 }
 
 DEFUN (schur, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{S} =} schur (@var{A})\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"real\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
 @deftypefnx {Built-in Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
-@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@var{A}, @dots{})\n\
+@deftypefnx {Built-in Function} {[@var{U}, @var{S}] =} schur (@dots{})\n\
 @cindex Schur decomposition\n\
 Compute the Schur@tie{}decomposition of @var{A}\n\
 @tex\n\
@@ -143,9 +143,9 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 
   if (nargin == 2)
     {
-      ord = args(1).string_value ();
-
-      if (error_state)
+      if (args(1).is_string ())
+        ord = args(1).string_value ();
+      else
         {
           error ("schur: second argument must be a string");
           return retval;
@@ -170,7 +170,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
       if (ord_char != 'U' && ord_char != 'A' && ord_char != 'D'
           && ord_char != 'u' && ord_char != 'a' && ord_char != 'd')
         {
-          warning ("schur: incorrect ordered schur argument '%c'",
+          warning ("schur: incorrect ordered schur argument '%s'",
                    ord.c_str ());
           return retval;
         }
@@ -286,15 +286,17 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 %! [u, s] = schur (a);
 %! assert (u' * a * u, s, sqrt (eps ("single")));
 
-%!test
-%! fail ("schur ([1, 2; 3, 4], 2)", "warning");
-
 %!error schur ()
+%!error schur (1,2,3)
+%!error [a,b,c] = schur (1)
 %!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
+%!error <wrong type argument 'cell'> schur ({1})
+%!warning <incorrect ordered schur argument> schur ([1, 2; 3, 4], "bad_opt");
+
 */
 
 DEFUN (rsf2csf, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {[@var{U}, @var{T}] =} rsf2csf (@var{UR}, @var{TR})\n\
 Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
 upper triangular Schur@tie{}form @var{T}.\n\

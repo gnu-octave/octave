@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ## populations.
 ##
 ## The optional argument string @var{alt} describes the alternative
-## hypothesis, and can be @qcode{"!="} or @qcode{"<>"} (non-zero),
+## hypothesis, and can be @qcode{"!="} or @qcode{"<>"} (nonzero),
 ## @qcode{">"} (greater than 0), or @qcode{"<"} (less than 0).  The
 ## default is the two-sided case.
 ##

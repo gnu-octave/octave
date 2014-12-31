@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -40,8 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-dock-widget.h"
 
 /**
-   \class files_dock_widget
-   \brief Dock widget to display files in the current directory.
+   @class files_dock_widget
+   @brief Dock widget to display files in the current directory.
 */
 class files_dock_widget : public octave_dock_widget
 {
@@ -83,6 +83,13 @@ private slots:
   /** context menu wanted */
   void contextmenu_requested (const QPoint& pos);
 
+  void toggle_headercontextitem_filesize ();
+  void toggle_headercontextitem_filetype ();
+  void toggle_headercontextitem_datemodified ();
+  void toggle_headercontextitem_showhidden ();
+
+  void headercontextmenu_requested (const QPoint& pos);
+
   /* context menu actions */
   void contextmenu_open (bool);
   void contextmenu_open_in_app (bool);
@@ -97,8 +104,8 @@ private slots:
   void contextmenu_findfiles (bool);
 
   /* popdown menu options */
-  void popdownmenu_newfile(bool);
-  void popdownmenu_newdir(bool);
+  void popdownmenu_newfile (bool);
+  void popdownmenu_newdir (bool);
   void popdownmenu_search_dir (bool);
   void popdownmenu_findfiles (bool);
   void popdownmenu_home (bool);
@@ -106,6 +113,7 @@ private slots:
   /* from octave_doc_widget */
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
 signals:
 
@@ -125,10 +133,10 @@ signals:
   void find_files_signal (const QString &startdir);
 
 private:
-  void process_new_file(const QString &parent_name);
-  void process_new_dir(const QString &parent_name);
-  void process_set_current_dir(const QString &parent_name);
-  void process_find_files(const QString &dir_name);
+  void process_new_file (const QString &parent_name);
+  void process_new_dir (const QString &parent_name);
+  void process_set_current_dir (const QString &parent_name);
+  void process_find_files (const QString &dir_name);
 
   /** set a new directory or open a file **/
   void display_directory (const QString& dir, bool set_octave_dir = true);

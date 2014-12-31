@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2012 A. S. Hodel
+Copyright (C) 1998-2013 A. S. Hodel
 
 This file is part of Octave.
 
@@ -58,9 +58,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-typedef octave_idx_type (*sort_function) (const octave_idx_type& LSIZE, const double& ALPHA,
-                              const double& BETA, const double& S,
-                              const double& P);
+typedef octave_idx_type (*sort_function) (const octave_idx_type& LSIZE,
+                                          const double& ALPHA,
+                                          const double& BETA, const double& S,
+                                          const double& P);
 
 extern "C"
 {
@@ -291,7 +292,7 @@ fout (const octave_idx_type& lsize, const double& alpha,
 //FIXME: Matlab does not produce lambda as the first output argument.
 //       Compatibility problem?
 DEFUN (qz, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{lambda} =} qz (@var{A}, @var{B})\n\
 @deftypefnx {Built-in Function} {@var{lambda} =} qz (@var{A}, @var{B}, @var{opt})\n\
 QZ@tie{}decomposition of the generalized eigenvalue problem\n\
@@ -376,7 +377,8 @@ compatibility with @sc{matlab}.\n\
   int nargin = args.length ();
 
 #ifdef DEBUG
-  std::cout << "qz: nargin = " << nargin << ", nargout = " << nargout << std::endl;
+  std::cout << "qz: nargin = " << nargin
+            << ", nargout = " << nargout << std::endl;
 #endif
 
   if (nargin < 2 || nargin > 3 || nargout > 7)
@@ -400,7 +402,7 @@ compatibility with @sc{matlab}.\n\
 
   if (nargin == 2)
     ord_job = 'N';
-  else if (!args(2).is_string ())
+  else if (! args(2).is_string ())
     {
       error ("qz: OPT must be a string");
       return retval;
@@ -427,8 +429,9 @@ compatibility with @sc{matlab}.\n\
                                    F77_CHAR_ARG_LEN (1));
 
 #ifdef DEBUG_EIG
-      std::cout << "qz: initial value of safmin=" << setiosflags (std::ios::scientific)
-           << safmin << std::endl;
+      std::cout << "qz: initial value of safmin="
+                << setiosflags (std::ios::scientific)
+                << safmin << std::endl;
 #endif
 
       // Some machines (e.g., DEC alpha) get safmin = 0;
@@ -444,8 +447,9 @@ compatibility with @sc{matlab}.\n\
                                        F77_CHAR_ARG_LEN (1));
 
 #ifdef DEBUG_EIG
-          std::cout << "qz: safmin set to " << setiosflags (std::ios::scientific)
-               << safmin << std::endl;
+          std::cout << "qz: safmin set to "
+                    << setiosflags (std::ios::scientific)
+                    << safmin << std::endl;
 #endif
         }
     }
@@ -458,8 +462,9 @@ compatibility with @sc{matlab}.\n\
   octave_idx_type nn = args(0).rows ();
 
 #ifdef DEBUG
-  std::cout << "argument 1 dimensions: (" << nn << "," << args(0).columns () << ")"
-       << std::endl;
+  std::cout << "argument 1 dimensions: ("
+            << nn << "," << args(0).columns () << ")"
+            << std::endl;
 #endif
 
   int arg_is_empty = empty_arg ("qz", nn, args(0).columns ());
@@ -553,7 +558,8 @@ compatibility with @sc{matlab}.\n\
     {
 #ifdef DEBUG
       if (compq == 'V')
-        std::cout << "qz: performing balancing; CQ=" << std::endl << CQ << std::endl;
+        std::cout << "qz: performing balancing; CQ=" << std::endl
+                  << CQ << std::endl;
 #endif
       if (args(0).is_real_type ())
         caa = ComplexMatrix (aa);
@@ -578,7 +584,8 @@ compatibility with @sc{matlab}.\n\
     {
 #ifdef DEBUG
       if (compq == 'V')
-        std::cout << "qz: performing balancing; QQ=" << std::endl << QQ << std::endl;
+        std::cout << "qz: performing balancing; QQ=" << std::endl
+                  << QQ << std::endl;
 #endif
 
       F77_XFCN (dggbal, DGGBAL,
@@ -703,7 +710,8 @@ compatibility with @sc{matlab}.\n\
       QR bqr (bb);
 
 #ifdef DEBUG
-      std::cout << "qz: qr (bb) done; now peforming qz decomposition" << std::endl;
+      std::cout << "qz: qr (bb) done; now peforming qz decomposition"
+                << std::endl;
 #endif
 
       bb = bqr.R ();
@@ -730,7 +738,8 @@ compatibility with @sc{matlab}.\n\
 #endif
 
 #ifdef DEBUG
-      std::cout << "qz: compq = " << compq << ", compz = " << compz << std::endl;
+      std::cout << "qz: compq = " << compq << ", compz = " << compz
+                << std::endl;
 #endif
 
       // Reduce  to generalized hessenberg form.
@@ -771,24 +780,26 @@ compatibility with @sc{matlab}.\n\
 
 #ifdef DEBUG
           if (compq == 'V')
-            std::cout << "qz: balancing done; QQ=" << std::endl << QQ << std::endl;
+            std::cout << "qz: balancing done; QQ=" << std::endl
+                      << QQ << std::endl;
 #endif
         }
 
-  // then right
+      // then right
       if (compz == 'V')
         {
-           F77_XFCN (dggbak, DGGBAK,
-                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                      F77_CONST_CHAR_ARG2 ("R", 1),
-                      nn, ilo, ihi, lscale.data (), rscale.data (),
-                      nn, ZZ.fortran_vec (), nn, info
-                      F77_CHAR_ARG_LEN (1)
-                      F77_CHAR_ARG_LEN (1)));
+          F77_XFCN (dggbak, DGGBAK,
+                    (F77_CONST_CHAR_ARG2 (&bal_job, 1),
+                     F77_CONST_CHAR_ARG2 ("R", 1),
+                     nn, ilo, ihi, lscale.data (), rscale.data (),
+                     nn, ZZ.fortran_vec (), nn, info
+                     F77_CHAR_ARG_LEN (1)
+                     F77_CHAR_ARG_LEN (1)));
 
 #ifdef DEBUG
-           if (compz == 'V')
-             std::cout << "qz: balancing done; ZZ=" << std::endl << ZZ << std::endl;
+          if (compz == 'V')
+            std::cout << "qz: balancing done; ZZ=" << std::endl
+                      << ZZ << std::endl;
 #endif
         }
 
@@ -915,8 +926,10 @@ compatibility with @sc{matlab}.\n\
                   // Real zero.
 #ifdef DEBUG_EIG
                   std::cout << "  single gen eig:" << std::endl;
-                  std::cout << "  alphar(" << jj << ") = " << aa(jj,jj) << std::endl;
-                  std::cout << "  betar( " << jj << ") = " << bb(jj,jj) << std::endl;
+                  std::cout << "  alphar(" << jj << ") = " << aa(jj,jj)
+                            << std::endl;
+                  std::cout << "  betar(" << jj << ") = " << bb(jj,jj)
+                            << std::endl;
                   std::cout << "  alphai(" << jj << ") = 0" << std::endl;
 #endif
 
@@ -930,21 +943,22 @@ compatibility with @sc{matlab}.\n\
 #ifdef DEBUG_EIG
                   std::cout << "qz: calling dlag2:" << std::endl;
                   std::cout << "safmin="
-                       << setiosflags (std::ios::scientific) << safmin << std::endl;
+                            << setiosflags (std::ios::scientific)
+                            << safmin << std::endl;
 
                   for (int idr = jj; idr <= jj+1; idr++)
                     {
                       for (int idc = jj; idc <= jj+1; idc++)
                         {
                           std::cout << "aa(" << idr << "," << idc << ")="
-                               << aa(idr,idc) << std::endl;
+                                    << aa(idr,idc) << std::endl;
                           std::cout << "bb(" << idr << "," << idc << ")="
-                               << bb(idr,idc) << std::endl;
+                                    << bb(idr,idc) << std::endl;
                         }
                     }
 #endif
 
-                  // FIXME -- probably should be using
+                  // FIXME: probably should be using
                   // fortran_vec instead of &aa(jj,jj) here.
 
                   double scale1, scale2, wr1, wr2, wi;
@@ -956,9 +970,9 @@ compatibility with @sc{matlab}.\n\
 
 #ifdef DEBUG_EIG
                   std::cout << "dlag2 returns: scale1=" << scale1
-                       << "\tscale2=" << scale2 << std::endl
-                       << "\twr1=" << wr1 << "\twr2=" << wr2
-                       << "\twi=" << wi << std::endl;
+                            << "\tscale2=" << scale2 << std::endl
+                            << "\twr1=" << wr1 << "\twr2=" << wr2
+                            << "\twi=" << wi << std::endl;
 #endif
 
                   // Just to be safe, check if it's a real pair.
@@ -995,7 +1009,7 @@ compatibility with @sc{matlab}.\n\
               octave_print_internal (std::cout, ZZ, 0);
             }
           std::cout << std::endl << "qz: ndim=" << ndim << std::endl
-               << "fail=" << fail << std::endl;
+                    << "fail=" << fail << std::endl;
           std::cout << "alphar = " << std::endl;
           octave_print_internal (std::cout, (Matrix) alphar, 0);
           std::cout << std::endl << "alphai = " << std::endl;
@@ -1210,18 +1224,18 @@ compatibility with @sc{matlab}.\n\
             retval(1) = cbb;
             retval(0) = caa;
           }
-      else
-        {
+        else
+          {
 #ifdef DEBUG
-          std::cout << "qz: retval(1) = bb = " << std::endl;
-          octave_print_internal (std::cout, bb, 0);
-          std::cout << std::endl << "qz: retval(0) = aa = " <<std::endl;
-          octave_print_internal (std::cout, aa, 0);
-          std::cout << std::endl;
+            std::cout << "qz: retval(1) = bb = " << std::endl;
+            octave_print_internal (std::cout, bb, 0);
+            std::cout << std::endl << "qz: retval(0) = aa = " <<std::endl;
+            octave_print_internal (std::cout, aa, 0);
+            std::cout << std::endl;
 #endif
-          retval(1) = bb;
-          retval(0) = aa;
-        }
+            retval(1) = bb;
+            retval(0) = aa;
+          }
       }
       break;
 
@@ -1263,9 +1277,9 @@ compatibility with @sc{matlab}.\n\
 %! [aa, bb, q, z, v, w, lambda] = qz (a, b);
 %! sz = length (lambda);
 %! observed = (b * v * diag ([lambda;0])) (:, 1:sz);
-%! assert ( (a*v) (:, 1:sz), observed, norm (observed) * 1e-14);
+%! assert ((a*v)(:, 1:sz), observed, norm (observed) * 1e-14);
 %! observed = (diag ([lambda;0]) * w' * b) (1:sz, :);
-%! assert ( (w'*a) (1:sz, :) , observed, norm (observed) * 1e-13);
+%! assert ((w'*a)(1:sz, :) , observed, norm (observed) * 1e-13);
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
 

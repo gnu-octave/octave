@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -150,14 +150,14 @@ extract_function (const octave_value& arg, const std::string& warn_for,
 
   if (! retval)
     {
-      std::string s = arg.string_value ();
-
-      std::string cmd = header;
-      cmd.append (s);
-      cmd.append (trailer);
-
-      if (! error_state)
+      if (arg.is_string ())
         {
+          std::string s = arg.string_value ();
+
+          std::string cmd = header;
+          cmd.append (s);
+          cmd.append (trailer);
+
           int parse_status;
 
           eval_string (cmd, true, parse_status, 0);
@@ -283,7 +283,8 @@ generate_struct_completions (const std::string& text,
 
           frame.run ();
 
-          if (tmp.is_defined () && (tmp.is_map () || tmp.is_java ()))
+          if (tmp.is_defined () &&
+              (tmp.is_map () || tmp.is_java () || tmp.is_classdef_object ()))
             names = tmp.map_keys ();
         }
     }
@@ -291,8 +292,7 @@ generate_struct_completions (const std::string& text,
   return names;
 }
 
-// FIXME -- this will have to be much smarter to work
-// "correctly".
+// FIXME: this will have to be much smarter to work "correctly".
 
 bool
 looks_like_struct (const std::string& text)
@@ -341,19 +341,19 @@ do_isglobal (const octave_value_list& args)
       return retval;
     }
 
-  std::string name = args(0).string_value ();
-
-  if (error_state)
+  if (! args(0).is_string ())
     {
       error ("isglobal: NAME must be a string");
       return retval;
     }
 
+  std::string name = args(0).string_value ();
+
   return symbol_table::is_global (name);
 }
 
 DEFUN (isglobal, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isglobal (@var{name})\n\
 Return true if @var{name} is a globally visible variable.\n\
 For example:\n\
@@ -389,108 +389,105 @@ safe_symbol_lookup (const std::string& symbol_name)
 int
 symbol_exist (const std::string& name, const std::string& type)
 {
-  int retval = 0;
+  if (is_keyword (name))
+    return 0;
 
-  std::string struct_elts;
-  std::string symbol_name = name;
+  bool search_any = type == "any";
+  bool search_var = type == "var";
+  bool search_dir = type == "dir";
+  bool search_file = type == "file";
+  bool search_builtin = type == "builtin";
 
-  size_t pos = name.find ('.');
-
-  if (pos != std::string::npos && pos > 0)
+  if (search_any || search_var)
     {
-      struct_elts = name.substr (pos+1);
-      symbol_name = name.substr (0, pos);
+      octave_value val = symbol_table::varval (name);
+
+      if (val.is_constant () || val.is_object ()
+          || val.is_function_handle ()
+          || val.is_anonymous_function ()
+          || val.is_inline_function ())
+        return 1;
+
+      if (search_var)
+        return 0;
     }
-  else if (is_keyword (symbol_name))
-    return retval;
 
-  // We shouldn't need to look in the global symbol table, since any
-  // name that is visible in the current scope will be in the local
-  // symbol table.
+  // We shouldn't need to look in the global symbol table, since any name
+  // that is visible in the current scope will be in the local symbol table.
 
-  octave_value val = safe_symbol_lookup (symbol_name);
+  octave_value val;
 
-  if (val.is_defined ())
+  if (search_any || search_builtin)
     {
-      bool not_a_struct = struct_elts.empty ();
-      bool var_ok = not_a_struct /* || val.is_map_element (struct_elts) */;
+      // FIXME: safe_symbol_lookup will attempt unsafe load of .oct/.mex file.
+      // This can cause a segfault.  To catch this would require temporarily
+      // diverting the SIGSEGV exception handler and then restoring it.
+      // See bug #36067.
+      val = safe_symbol_lookup (name);
 
-      if (! retval
-          && var_ok
-          && (type == "any" || type == "var")
-          && (val.is_constant () || val.is_object ()
-              || val.is_function_handle ()
-              || val.is_anonymous_function ()
-              || val.is_inline_function ()))
-        {
-          retval = 1;
-        }
+      if (val.is_defined () && val.is_builtin_function ())
+        return 5;
 
-      if (! retval
-          && (type == "any" || type == "builtin"))
+      if (search_builtin)
+        return 0;
+    }
+
+  if (search_any || search_file || search_dir)
+    {
+      std::string file_name = lookup_autoload (name);
+
+      if (file_name.empty ())
+        file_name = load_path::find_fcn (name);
+
+      size_t len = file_name.length ();
+
+      if (len > 0)
         {
-          if (not_a_struct && val.is_builtin_function ())
+          if (search_any || search_file)
             {
-              retval = 5;
+              if (len > 4 && (file_name.substr (len-4) == ".oct"
+                              || file_name.substr (len-4) == ".mex"))
+                return 3;
+              else
+                return 2;
             }
         }
 
-      if (! retval
-          && not_a_struct
-          && (type == "any" || type == "file")
-          && (val.is_user_function () || val.is_dld_function ()))
-        {
-          octave_function *f = val.function_value (true);
-          std::string s = f ? f->fcn_file_name () : std::string ();
+      file_name = file_in_path (name, "");
 
-          retval = s.empty () ? 103 : (val.is_user_function () ? 2 : 3);
+      if (file_name.empty ())
+        file_name = name;
+
+      file_stat fs (file_name);
+
+      if (fs)
+        {
+          if (search_any || search_file)
+          {
+            if (fs.is_dir ())
+              return 7;
+
+            len = file_name.length ();
+
+            if (len > 4 && (file_name.substr (len-4) == ".oct"
+                            || file_name.substr (len-4) == ".mex"))
+              return 3;
+            else
+              return 2;
+          }
+          else if (search_dir && fs.is_dir ())
+            return 7;
         }
+
+      if (search_file || search_dir)
+        return 0;
     }
 
-  if (! (type == "var" || type == "builtin"))
-    {
-      if (! retval)
-        {
-          std::string file_name = lookup_autoload (name);
+  // Command line function which Matlab does not support
+  if (search_any && val.is_defined () && val.is_user_function ())
+    return 103;
 
-          if (file_name.empty ())
-            file_name = load_path::find_fcn (name);
-
-          size_t len = file_name.length ();
-
-          if (len > 0)
-            {
-              if (type == "any" || type == "file")
-                {
-                  if (len > 4 && (file_name.substr (len-4) == ".oct"
-                                  || file_name.substr (len-4) == ".mex"))
-                    retval = 3;
-                  else
-                    retval = 2;
-                }
-            }
-        }
-
-      if (! retval)
-        {
-          std::string file_name = file_in_path (name, "");
-
-          if (file_name.empty ())
-            file_name = name;
-
-          file_stat fs (file_name);
-
-          if (fs)
-            {
-              if (type == "any" || type == "file")
-                retval = fs.is_dir () ? 7 : 2;
-              else if (type == "dir" && fs.is_dir ())
-                retval = 7;
-            }
-        }
-    }
-
-  return retval;
+  return 0;
 }
 
 #define GET_IDX(LEN) \
@@ -518,22 +515,39 @@ unique_symbol_name (const std::string& basename)
 }
 
 DEFUN (exist, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
-Return 1 if the name exists as a variable, 2 if the name is an\n\
-absolute file name, an ordinary file in Octave's @code{path}, or (after\n\
-appending @samp{.m}) a function file in Octave's @code{path}, 3 if the\n\
-name is a @samp{.oct} or @samp{.mex} file in Octave's @code{path},\n\
-5 if the name is a built-in function, 7 if the name is a directory, or 103\n\
-if the name is a function not associated with a file (entered on\n\
-the command line).\n\
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{c} =} exist (@var{name})\n\
+@deftypefnx {Built-in Function} {@var{c} =} exist (@var{name}, @var{type})\n\
+Check for the existence of @var{name} as a variable, function, file,\n\
+directory, or class.\n\
 \n\
-Otherwise, return 0.\n\
+The return code @var{c} is one of\n\
 \n\
-This function also returns 2 if a regular file called @var{name}\n\
-exists in Octave's search path.  If you want information about\n\
-other types of files, you should use some combination of the functions\n\
-@code{file_in_path} and @code{stat} instead.\n\
+@table @asis\n\
+@item 1\n\
+@var{name} is a variable.\n\
+\n\
+@item 2\n\
+@var{name} is an absolute file name, an ordinary file in Octave's\n\
+@code{path}, or (after appending @samp{.m}) a function file in Octave's\n\
+@code{path}.\n\
+\n\
+@item 3\n\
+@var{name} is a @samp{.oct} or @samp{.mex} file in Octave's @code{path}.\n\
+\n\
+@item 5\n\
+@var{name} is a built-in function.\n\
+\n\
+@item 7\n\
+@var{name} is a directory.\n\
+\n\
+@item 103\n\
+@var{name} is a function not associated with a file (entered on the command\n\
+line).\n\
+\n\
+@item 0\n\
+@var{name} does not exist.\n\
+@end table\n\
 \n\
 If the optional argument @var{type} is supplied, check only for\n\
 symbols of the specified type.  Valid types are\n\
@@ -545,14 +559,27 @@ Check only for variables.\n\
 @item @qcode{\"builtin\"}\n\
 Check only for built-in functions.\n\
 \n\
+@item @qcode{\"dir\"}\n\
+Check only for directories.\n\
+\n\
 @item @qcode{\"file\"}\n\
 Check only for files and directories.\n\
 \n\
-@item @qcode{\"dir\"}\n\
-Check only for directories.\n\
+@item @qcode{\"class\"}\n\
+Check only for classes.  (Note: This option is accepted, but not currently\n\
+implemented)\n\
 @end table\n\
 \n\
-@seealso{file_in_loadpath, file_in_path, stat}\n\
+If no type is given, and there are multiple possible matches for name,\n\
+@code{exist} will return a code according to the following priority list:\n\
+variable, built-in function, oct-file, directory, file, class. \n\
+\n\
+@code{exist} returns 2 if a regular file called @var{name} is present in\n\
+Octave's search path.  If you want information about other types of files\n\
+not on the search path you should use some combination of the functions\n\
+@code{file_in_path} and @code{stat} instead.\n\
+\n\
+@seealso{file_in_loadpath, file_in_path, dir_in_loadpath, stat}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -561,17 +588,26 @@ Check only for directories.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
-          std::string type
-            = (nargin == 2) ? args(1).string_value () : std::string ("any");
+          std::string name = args(0).string_value ();
 
-          if (! error_state)
-            retval = symbol_exist (name, type);
+          if (nargin == 2)
+            {
+              if (args(1).is_string ())
+                {
+                  std::string type = args(1).string_value ();
+
+                  if (type == "class")
+                    warning ("exist: \"class\" type argument is not implemented");
+
+                  retval = symbol_exist (name, type);
+                }
+              else
+                error ("exist: TYPE must be a string");
+            }
           else
-            error ("exist: TYPE must be a string");
+            retval = symbol_exist (name);
         }
       else
         error ("exist: NAME must be a string");
@@ -583,18 +619,62 @@ Check only for directories.\n\
 }
 
 /*
+%!shared dirtmp, __var1
+%! dirtmp = P_tmpdir ();
+%! __var1 = 1;
+
+%!assert (exist ("__%Highly_unlikely_name%__"), 0)
+%!assert (exist ("__var1"), 1)
+%!assert (exist ("__var1", "var"), 1)
+%!assert (exist ("__var1", "builtin"), 0)
+%!assert (exist ("__var1", "dir"), 0)
+%!assert (exist ("__var1", "file"), 0)
+
 %!test
 %! if (isunix ())
-%!   assert (exist ("/tmp") == 7);
-%!   assert (exist ("/tmp", "file") == 7);
-%!   assert (exist ("/tmp", "dir") == 7);
-%!   assert (exist ("/bin/sh") == 2);
-%!   assert (exist ("/bin/sh", "file") == 2);
-%!   assert (exist ("/bin/sh", "dir") == 0);
-%!   assert (exist ("/dev/null") == 2);
-%!   assert (exist ("/dev/null", "file") == 2);
-%!   assert (exist ("/dev/null", "dir") == 0);
+%!   assert (exist ("/bin/sh"), 2);
+%!   assert (exist ("/bin/sh", "file"), 2);
+%!   assert (exist ("/bin/sh", "dir"), 0);
+%!   assert (exist ("/dev/null"), 2);
+%!   assert (exist ("/dev/null", "file"), 2);
+%!   assert (exist ("/dev/null", "dir"), 0);
 %! endif
+
+%!assert (exist ("colon"), 2)
+%!assert (exist ("colon.m"), 2)
+%!assert (exist ("colon", "file"), 2)
+%!assert (exist ("colon", "dir"), 0)
+
+%!testif HAVE_CHOLMOD
+%! assert (exist ("chol"), 3);
+%! assert (exist ("chol.oct"), 3);
+%! assert (exist ("chol", "file"), 3);
+%! assert (exist ("chol", "builtin"), 0);
+
+%!assert (exist ("sin"), 5)
+%!assert (exist ("sin", "builtin"), 5)
+%!assert (exist ("sin", "file"), 0)
+
+%!assert (exist (dirtmp), 7)
+%!assert (exist (dirtmp, "dir"), 7)
+%!assert (exist (dirtmp, "file"), 7)
+
+%!error exist ()
+%!error exist (1,2,3)
+%!warning <"class" type argument is not implemented> exist ("a", "class");
+%!error <TYPE must be a string> exist ("a", 1)
+%!error <NAME must be a string> exist (1)
+
+%!test
+%! flist = dir ();
+%! fname = flist(3).name;  ## skip . and ..
+%! assert (exist (fullfile (pwd (), fname), "file"), 2)
+%! assert (exist (fullfile (pwd (), "nonexistentfile"), "file"), 0)
+
+%!assert (exist ("plot.m", "file"), 2);
+%!assert (exist ("./plot.m", "file"), 0);
+%!assert (exist ("./nonexistentfile", "file"), 0);
+%!assert (exist ("nonexistentfile", "file"), 0);
 */
 
 octave_value
@@ -856,17 +936,17 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ()) 
         {
+          std::string sval = args(0).string_value ();
+
           if (empty_ok || ! sval.empty ())
             var = sval;
           else
             error ("%s: value must not be empty", nm);
         }
       else
-        error ("%s: expecting arg to be a character string", nm);
+        error ("%s: first argument must be a string", nm);
     }
   else if (nargin > 1)
     print_usage ();
@@ -897,10 +977,10 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      std::string sval = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ()) 
         {
+          std::string sval = args(0).string_value ();
+
           int i = 0;
           for (; i < nchoices; i++)
             {
@@ -914,7 +994,7 @@ set_internal_variable (int& var, const octave_value_list& args,
             error ("%s: value not allowed (\"%s\")", nm, sval.c_str ());
         }
       else
-        error ("%s: expecting arg to be a character string", nm);
+        error ("%s: first argument must be a string", nm);
     }
   else if (nargin > 1)
     print_usage ();
@@ -941,6 +1021,8 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   std::list<whos_parameter>::iterator i = params.begin ();
   std::ostringstream param_buf;
 
+  octave_preserve_stream_state stream_state (os);
+
   while (i != params.end ())
     {
       whos_parameter param = *i;
@@ -951,13 +1033,17 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
           switch (param.modifier)
             {
             case 'l':
-              os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
+              os << std::setiosflags (std::ios::left)
+                 << std::setw (param.parameter_length);
+              param_buf << std::setiosflags (std::ios::left)
+                        << std::setw (param.parameter_length);
               break;
 
             case 'r':
-              os << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
+              os << std::setiosflags (std::ios::right)
+                 << std::setw (param.parameter_length);
+              param_buf << std::setiosflags (std::ios::right)
+                        << std::setw (param.parameter_length);
               break;
 
             case 'c':
@@ -971,8 +1057,10 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
               break;
 
             default:
-              os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-              param_buf << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
+              os << std::setiosflags (std::ios::left)
+                 << std::setw (param.parameter_length);
+              param_buf << std::setiosflags (std::ios::left)
+                        << std::setw (param.parameter_length);
             }
 
           if (param.command == 's' && param.modifier == 'c')
@@ -990,11 +1078,13 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
                      << std::setiosflags (std::ios::left)
                      << std::setw (b) << ""
                      << std::resetiosflags (std::ios::left);
-                  param_buf << std::setiosflags (std::ios::left) << std::setw (a)
-                     << "" << std::resetiosflags (std::ios::left) << param.line
-                     << std::setiosflags (std::ios::left)
-                     << std::setw (b) << ""
-                     << std::resetiosflags (std::ios::left);
+                  param_buf << std::setiosflags (std::ios::left)
+                            << std::setw (a)
+                            << "" << std::resetiosflags (std::ios::left)
+                            << param.line
+                            << std::setiosflags (std::ios::left)
+                            << std::setw (b) << ""
+                            << std::resetiosflags (std::ios::left);
                 }
             }
           else
@@ -1019,7 +1109,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   os << param_buf.str ();
 }
 
-// FIXME -- This is a bit of a kluge.  We'd like to just use val.dims()
+// FIXME: This is a bit of a kluge.  We'd like to just use val.dims()
 // and if val is an object, expect that dims will call size if it is
 // overloaded by a user-defined method.  But there are currently some
 // unresolved const issues that prevent that solution from working.
@@ -1064,6 +1154,8 @@ private:
 
       std::list<whos_parameter>::const_iterator i = params.begin ();
 
+      octave_preserve_stream_state stream_state (os);
+
       while (i != params.end ())
         {
           whos_parameter param = *i;
@@ -1088,10 +1180,10 @@ private:
                   if (param.command == 's')
                     {
                       int front = param.first_parameter_length
-                        - dims_str.find ('x');
+                                  - dims_str.find ('x');
                       int back = param.parameter_length
-                        - dims_str.length ()
-                        - front;
+                                 - dims_str.length ()
+                                 - front;
                       front = (front > 0) ? front : 0;
                       back = (back > 0) ? back : 0;
 
@@ -1393,7 +1485,9 @@ public:
             param.modifier = 'r';
             param.parameter_length = 0;
 
-            int a = 0, b = -1, balance = 1;
+            int a = 0;
+            int b = -1;
+            int balance = 1;
             unsigned int items;
             size_t pos;
             std::string cmd;
@@ -1408,7 +1502,7 @@ public:
 
             idx += cmd.length ();
 
-            // FIXME -- use iostream functions instead of sscanf!
+            // FIXME: use iostream functions instead of sscanf!
 
             if (cmd.find_first_of ("crl") != 1)
               items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d;",
@@ -1552,7 +1646,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
     {
       if (argv[i] == "-file")
         {
-          // FIXME. This is an inefficient manner to implement this as the
+          // FIXME: This is an inefficient manner to implement this as the
           // variables are loaded in to a temporary context and then treated.
           // It would be better to refecat symbol_info_list to not store the
           // symbol records and then use it in load-save.cc (do_load) to
@@ -1583,7 +1677,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
               if (! error_state)
                 {
                   std::string newmsg = std::string ("Variables in the file ") +
-                    nm + ":\n\n";
+                                       nm + ":\n\n";
 
                   retval =  do_who (i, argv, return_list, verbose, newmsg);
                 }
@@ -1629,8 +1723,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
             ? symbol_table::regexp_global_variables (pat)
             : symbol_table::regexp_variables (pat);
 
-          for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
-               p != tmp.end (); p++)
+          for (std::list<symbol_table::symbol_record>::const_iterator
+               p = tmp.begin (); p != tmp.end (); p++)
             {
               if (p->is_variable ())
                 {
@@ -1684,8 +1778,8 @@ do_who (int argc, const string_vector& argv, bool return_list,
                 ? symbol_table::glob_global_variables (pat)
                 : symbol_table::glob_variables (pat);
 
-              for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
-                   p != tmp.end (); p++)
+              for (std::list<symbol_table::symbol_record>::const_iterator
+                   p = tmp.begin (); p != tmp.end (); p++)
                 {
                   if (p->is_variable ())
                     {
@@ -1739,7 +1833,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
 }
 
 DEFUN (who, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} who\n\
 @deftypefnx {Command} {} who pattern @dots{}\n\
 @deftypefnx {Command} {} who option pattern @dots{}\n\
@@ -1789,7 +1883,7 @@ matching the given patterns.\n\
 }
 
 DEFUN (whos, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} whos\n\
 @deftypefnx {Command} {} whos pattern @dots{}\n\
 @deftypefnx {Command} {} whos option pattern @dots{}\n\
@@ -1946,7 +2040,7 @@ mislocked (const std::string& nm)
 }
 
 DEFUN (mlock, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mlock ()\n\
 Lock the current function into memory so that it can't be cleared.\n\
 @seealso{munlock, mislocked, persistent}\n\
@@ -1970,7 +2064,7 @@ Lock the current function into memory so that it can't be cleared.\n\
 }
 
 DEFUN (munlock, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} munlock ()\n\
 @deftypefnx {Built-in Function} {} munlock (@var{fcn})\n\
 Unlock the named function @var{fcn}.  If no function is named\n\
@@ -1982,10 +2076,11 @@ then unlock the current function.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        munlock (name);
+      if (args(0).is_string ())
+        {
+          std::string name = args(0).string_value ();
+          munlock (name);
+        }
       else
         error ("munlock: FCN must be a string");
     }
@@ -2006,7 +2101,7 @@ then unlock the current function.\n\
 
 
 DEFUN (mislocked, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mislocked ()\n\
 @deftypefnx {Built-in Function} {} mislocked (@var{fcn})\n\
 Return true if the named function @var{fcn} is locked.  If no function is\n\
@@ -2018,10 +2113,11 @@ named then return true if the current function is locked.\n\
 
   if (args.length () == 1)
     {
-      std::string name = args(0).string_value ();
-
-      if (! error_state)
-        retval = mislocked (name);
+      if (args(0).is_string ())
+        {
+          std::string name = args(0).string_value ();
+          retval = mislocked (name);
+        }
       else
         error ("mislocked: FCN must be a string");
     }
@@ -2195,7 +2291,7 @@ do_clear_symbols (const string_vector& argv, int argc, int idx,
     {
       if (exclusive)
         {
-          // FIXME -- is this really what we want, or do we
+          // FIXME: is this really what we want, or do we
           // somehow want to only clear the functions that are not
           // shadowed by local variables?  It seems that would be a
           // bit harder to do.
@@ -2243,6 +2339,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
         {
           symbol_table::clear_objects ();
           octave_class::clear_exemplar_map ();
+          symbol_table::clear_all ();
         }
       else
         {
@@ -2263,7 +2360,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
   while (0)
 
 DEFUN (clear, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Command} {} clear [options] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\
 pattern may contain the following special characters:\n\
@@ -2452,6 +2549,7 @@ without the dash as well.\n\
                     {
                       symbol_table::clear_objects ();
                       octave_class::clear_exemplar_map ();
+                      symbol_table::clear_all ();
                     }
                   else
                     {
@@ -2468,7 +2566,7 @@ without the dash as well.\n\
 }
 
 DEFUN (whos_line_format, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
@@ -2546,7 +2644,7 @@ The original variable value is restored when exiting the function.\n\
 static std::string Vmissing_function_hook = "__unimplemented__";
 
 DEFUN (missing_function_hook, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
@@ -2556,6 +2654,7 @@ an unknown identifier is requested.\n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
+@seealso{missing_component_hook}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);
@@ -2585,7 +2684,7 @@ void maybe_missing_function_hook (const std::string& name)
 }
 
 DEFUN (__varval__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __varval__ (@var{name})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2610,7 +2709,7 @@ Undocumented internal function.\n\
 static std::string Vmissing_component_hook;
 
 DEFUN (missing_component_hook, args, nargout,
-    "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_component_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_component_hook (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} missing_component_hook (@var{new_val}, \"local\")\n\
@@ -2632,6 +2731,7 @@ The hook function is expected to be of the form\n\
 Octave will call @var{fcn} with the name of the function that requires the\n\
 component and a string describing the missing component.  The hook function\n\
 should return an error message to be displayed.\n\
+@seealso{missing_function_hook}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_component_hook);

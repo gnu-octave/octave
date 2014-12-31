@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_identifier_h)
-#define octave_tree_identifier_h 1
+#if !defined (octave_pt_id_h)
+#define octave_pt_id_h 1
 
 #include <iosfwd>
 #include <string>
@@ -32,6 +32,7 @@ class octave_function;
 
 class tree_walker;
 
+#include "oct-lvalue.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "symtab.h"
@@ -156,12 +157,12 @@ public:
   bool is_black_hole (void) { return true; }
 
   tree_black_hole *dup (void) const
-    { return new tree_black_hole; }
+  { return new tree_black_hole; }
 
   octave_lvalue lvalue (void)
-    {
-      return octave_lvalue (); // black hole lvalue
-    }
+  {
+    return octave_lvalue (); // black hole lvalue
+  }
 };
 
 #endif

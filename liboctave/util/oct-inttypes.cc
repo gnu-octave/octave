@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 John W. Eaton
+Copyright (C) 2004-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <fpucw.h>
 
 #include "lo-error.h"
 
@@ -50,7 +52,140 @@ DECLARE_OCTAVE_INT_TYPENAME (uint16_t, "uint16")
 DECLARE_OCTAVE_INT_TYPENAME (uint32_t, "uint32")
 DECLARE_OCTAVE_INT_TYPENAME (uint64_t, "uint64")
 
-#ifndef OCTAVE_INT_USE_LONG_DOUBLE
+#ifdef OCTAVE_INT_USE_LONG_DOUBLE
+
+#ifdef OCTAVE_ENSURE_LONG_DOUBLE_OPERATIONS_ARE_NOT_TRUNCATED
+
+#define DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES(T) \
+  template <class xop> \
+  bool \
+  octave_int_cmp_op::external_mop (double x, T y) \
+  { \
+     DECL_LONG_DOUBLE_ROUNDING \
+   \
+     BEGIN_LONG_DOUBLE_ROUNDING (); \
+   \
+     bool retval = xop::op (static_cast<long double> (x), \
+                            static_cast<long double> (y)); \
+   \
+     END_LONG_DOUBLE_ROUNDING (); \
+   \
+     return retval; \
+  } \
+   \
+  template <class xop> \
+  bool \
+  octave_int_cmp_op::external_mop (T x, double y) \
+  { \
+     DECL_LONG_DOUBLE_ROUNDING \
+   \
+     BEGIN_LONG_DOUBLE_ROUNDING (); \
+   \
+     bool retval = xop::op (static_cast<long double> (x), \
+                            static_cast<long double> (y)); \
+   \
+     END_LONG_DOUBLE_ROUNDING (); \
+   \
+     return retval; \
+  }
+
+DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (int64_t)
+DEFINE_OCTAVE_LONG_DOUBLE_CMP_OP_TEMPLATES (uint64_t)
+
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP(OP, T) \
+  template OCTAVE_API bool \
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (double, T); \
+  template OCTAVE_API bool \
+  octave_int_cmp_op::external_mop<octave_int_cmp_op::OP> (T, double)
+
+#define INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS(T) \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (lt, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (le, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (gt, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ge, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (eq, T); \
+  INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OP (ne, T)
+
+INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (int64_t);
+INSTANTIATE_LONG_DOUBLE_LONG_DOUBLE_CMP_OPS (uint64_t);
+
+uint64_t
+octave_external_uint64_uint64_mul (uint64_t x, uint64_t y)
+{
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
+  uint64_t retval = octave_int_arith_base<uint64_t, false>::mul_internal (x, y);
+
+  END_LONG_DOUBLE_ROUNDING ();
+
+  return retval;
+}
+
+int64_t
+octave_external_int64_int64_mul (int64_t x, int64_t y)
+{
+  DECL_LONG_DOUBLE_ROUNDING
+
+  BEGIN_LONG_DOUBLE_ROUNDING ();
+
+  int64_t retval = octave_int_arith_base<int64_t, true>::mul_internal (x, y);
+
+  END_LONG_DOUBLE_ROUNDING ();
+
+  return retval;
+}
+
+// Note that if we return long double it is apparently possible for
+// truncation to happen at the point of storing the result in retval,
+// which can happen after we end long double rounding.  Attempt to avoid
+// that problem by storing the full precision temporary value in the
+// integer value before we end the long double rounding mode.
+// Similarly, the conversion from the 64-bit integer type to long double
+// must also occur in long double rounding mode.
+
+#define OCTAVE_LONG_DOUBLE_OP(T, OP, NAME) \
+  T \
+  external_double_ ## T ## _ ## NAME (double x, T y) \
+  { \
+    DECL_LONG_DOUBLE_ROUNDING \
+ \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+ \
+    T retval = T (x OP static_cast<long double> (y.value ())); \
+ \
+    END_LONG_DOUBLE_ROUNDING (); \
+ \
+    return retval; \
+  } \
+ \
+  T \
+  external_ ## T ## _double_ ## NAME (T x, double y) \
+  { \
+    DECL_LONG_DOUBLE_ROUNDING \
+ \
+    BEGIN_LONG_DOUBLE_ROUNDING (); \
+ \
+    T retval = T (static_cast<long double> (x.value ()) OP y); \
+ \
+    END_LONG_DOUBLE_ROUNDING (); \
+ \
+    return retval; \
+  }
+
+#define OCTAVE_LONG_DOUBLE_OPS(T) \
+  OCTAVE_LONG_DOUBLE_OP (T, +, add); \
+  OCTAVE_LONG_DOUBLE_OP (T, -, sub); \
+  OCTAVE_LONG_DOUBLE_OP (T, *, mul); \
+  OCTAVE_LONG_DOUBLE_OP (T, /, div)
+
+OCTAVE_LONG_DOUBLE_OPS(octave_int64);
+OCTAVE_LONG_DOUBLE_OPS(octave_uint64);
+
+#endif
+
+#else
 
 // Define comparison operators
 
@@ -142,10 +277,11 @@ octave_int_cmp_op::emulate_mop (double x, int64_t y)
 
 template <>
 uint64_t
-octave_int_arith_base<uint64_t, false>::mul (uint64_t x, uint64_t y)
+octave_int_arith_base<uint64_t, false>::mul_internal (uint64_t x, uint64_t y)
 {
   // Get upper words
-  uint64_t ux = x >> 32, uy = y >> 32;
+  uint64_t ux = x >> 32;
+  uint64_t uy = y >> 32;
   uint64_t res;
   if (ux)
     {
@@ -153,21 +289,25 @@ octave_int_arith_base<uint64_t, false>::mul (uint64_t x, uint64_t y)
         goto overflow;
       else
         {
-          uint64_t ly = static_cast<uint32_t> (y), uxly = ux*ly;
+          uint64_t ly = static_cast<uint32_t> (y);
+          uint64_t uxly = ux*ly;
           if (uxly >> 32)
             goto overflow;
           uxly <<= 32; // never overflows
-          uint64_t lx = static_cast<uint32_t> (x), lxly = lx*ly;
+          uint64_t lx = static_cast<uint32_t> (x);
+          uint64_t lxly = lx*ly;
           res = add (uxly, lxly);
         }
     }
   else if (uy)
     {
-      uint64_t lx = static_cast<uint32_t> (x), uylx = uy*lx;
+      uint64_t lx = static_cast<uint32_t> (x);
+      uint64_t uylx = uy*lx;
       if (uylx >> 32)
         goto overflow;
       uylx <<= 32; // never overflows
-      uint64_t ly = static_cast<uint32_t> (y), lylx = ly*lx;
+      uint64_t ly = static_cast<uint32_t> (y);
+      uint64_t lylx = ly*lx;
       res = add (uylx, lylx);
     }
   else
@@ -185,7 +325,7 @@ overflow:
 
 template <>
 int64_t
-octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
+octave_int_arith_base<int64_t, true>::mul_internal (int64_t x, int64_t y)
 {
   // The signed case is far worse. The problem is that
   // even if neither integer fits into signed 32-bit range, the result may
@@ -193,13 +333,15 @@ octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
 
   // Essentially, what we do is compute sign, multiply absolute values
   // (as above) and impose the sign.
-  // FIXME -- can we do something faster if we HAVE_FAST_INT_OPS?
+  // FIXME: can we do something faster if we HAVE_FAST_INT_OPS?
 
-  uint64_t usx = octave_int_abs (x), usy = octave_int_abs (y);
+  uint64_t usx = octave_int_abs (x);
+  uint64_t usy = octave_int_abs (y);
   bool positive = (x < 0) == (y < 0);
 
   // Get upper words
-  uint64_t ux = usx >> 32, uy = usy >> 32;
+  uint64_t ux = usx >> 32;
+  uint64_t uy = usy >> 32;
   uint64_t res;
   if (ux)
     {
@@ -207,11 +349,13 @@ octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
         goto overflow;
       else
         {
-          uint64_t ly = static_cast<uint32_t> (usy), uxly = ux*ly;
+          uint64_t ly = static_cast<uint32_t> (usy);
+          uint64_t uxly = ux*ly;
           if (uxly >> 32)
             goto overflow;
           uxly <<= 32; // never overflows
-          uint64_t lx = static_cast<uint32_t> (usx), lxly = lx*ly;
+          uint64_t lx = static_cast<uint32_t> (usx);
+          uint64_t lxly = lx*ly;
           res = uxly + lxly;
           if (res < uxly)
             goto overflow;
@@ -219,11 +363,13 @@ octave_int_arith_base<int64_t, true>::mul (int64_t x, int64_t y)
     }
   else if (uy)
     {
-      uint64_t lx = static_cast<uint32_t> (usx), uylx = uy*lx;
+      uint64_t lx = static_cast<uint32_t> (usx);
+      uint64_t uylx = uy*lx;
       if (uylx >> 32)
         goto overflow;
       uylx <<= 32; // never overflows
-      uint64_t ly = static_cast<uint32_t> (usy), lylx = ly*lx;
+      uint64_t ly = static_cast<uint32_t> (usy);
+      uint64_t lylx = ly*lx;
       res = uylx + lylx;
       if (res < uylx)
         goto overflow;
@@ -349,22 +495,26 @@ DOUBLE_INT_BINOP_DECL (-, int64)
 // NOTE:
 // Emulated mixed multiplications are tricky due to possible precision loss.
 // Here, after sorting out common cases for speed, we follow the strategy
-// of converting the double number into the form sign * 64-bit integer* 2**exponent,
-// multiply the 64-bit integers to get a 128-bit number, split that number into 32-bit words
-// and form 4 double-valued summands (none of which loases precision), then convert these
-// into integers and sum them. Though it is not immediately obvious, this should work
-// even w.r.t. rounding (none of the summands lose precision).
+// of converting the double number into the form sign * 64-bit integer *
+// 2**exponent, multiply the 64-bit integers to get a 128-bit number, split that
+// number into 32-bit words and form 4 double-valued summands (none of which
+// loses precision), then convert these into integers and sum them. Though it is
+// not immediately obvious, this should work even w.r.t. rounding (none of the
+// summands lose precision).
 
 // Multiplies two unsigned 64-bit ints to get a 128-bit number represented
 // as four 32-bit words.
 static void
 umul128 (uint64_t x, uint64_t y, uint32_t w[4])
 {
-  uint64_t lx = static_cast<uint32_t> (x), ux = x >> 32;
-  uint64_t ly = static_cast<uint32_t> (y), uy = y >> 32;
+  uint64_t lx = static_cast<uint32_t> (x);
+  uint64_t ux = x >> 32;
+  uint64_t ly = static_cast<uint32_t> (y);
+  uint64_t uy = y >> 32;
   uint64_t a = lx * ly;
   w[0] = a; a >>= 32;
-  uint64_t uxly = ux*ly, uylx = uy*lx;
+  uint64_t uxly = ux*ly;
+  uint64_t uylx = uy*lx;
   a += static_cast<uint32_t> (uxly); uxly >>= 32;
   a += static_cast<uint32_t> (uylx); uylx >>= 32;
   w[1] = a; a >>= 32;
@@ -379,19 +529,19 @@ static void
 dblesplit (double x, bool& sign, uint64_t& mtis, int& exp)
 {
   sign = x < 0; x = fabs (x);
-  x = frexp (x, &exp);
+  x = gnulib::frexp (x, &exp);
   exp -= 52;
   mtis = static_cast<uint64_t> (ldexp (x, 52));
 }
 
-// Gets a double number from a 32-bit unsigned integer mantissa, exponent and sign.
+// Gets a double number from a
+// 32-bit unsigned integer mantissa, exponent, and sign.
 static double
 dbleget (bool sign, uint32_t mtis, int exp)
 {
   double x = ldexp (static_cast<double> (mtis), exp);
   return sign ? -x : x;
 }
-
 
 INT_DOUBLE_BINOP_DECL (*, uint64)
 {
@@ -649,4 +799,23 @@ INSTANTIATE_INTTYPE (uint64_t);
 %!assert ((int64 (2**62)+1)**1, int64 (2**62)+1)
 %!assert ((int64 (2**30)+1)**2, int64 (2**60+2**31) + 1)
 
+%!assert (uint8 (char (128)), uint8 (128));
+%!assert (uint8 (char (255)), uint8 (255));
+%!assert (int8 (char (128)), int8 (128));
+%!assert (int8 (char (255)), int8 (255));
+
+%!assert (uint16 (char (128)), uint16 (128));
+%!assert (uint16 (char (255)), uint16 (255));
+%!assert (int16 (char (128)), int16 (128));
+%!assert (int16 (char (255)), int16 (255));
+
+%!assert (uint32 (char (128)), uint32 (128));
+%!assert (uint32 (char (255)), uint32 (255));
+%!assert (int32 (char (128)), int32 (128));
+%!assert (int32 (char (255)), int32 (255));
+
+%!assert (uint64 (char (128)), uint64 (128));
+%!assert (uint64 (char (255)), uint64 (255));
+%!assert (int64 (char (128)), int64 (128));
+%!assert (int64 (char (255)), int64 (255));
 */

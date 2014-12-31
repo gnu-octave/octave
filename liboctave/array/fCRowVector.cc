@@ -1,7 +1,7 @@
 // RowVector manipulations.
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -96,7 +96,8 @@ FloatComplexRowVector::insert (const FloatRowVector& a, octave_idx_type c)
 }
 
 FloatComplexRowVector&
-FloatComplexRowVector::insert (const FloatComplexRowVector& a, octave_idx_type c)
+FloatComplexRowVector::insert (const FloatComplexRowVector& a,
+                               octave_idx_type c)
 {
   octave_idx_type a_len = a.length ();
 
@@ -160,7 +161,7 @@ FloatComplexRowVector::fill (float val, octave_idx_type c1, octave_idx_type c2)
       return *this;
     }
 
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   if (c2 >= c1)
     {
@@ -174,7 +175,8 @@ FloatComplexRowVector::fill (float val, octave_idx_type c1, octave_idx_type c2)
 }
 
 FloatComplexRowVector&
-FloatComplexRowVector::fill (const FloatComplex& val, octave_idx_type c1, octave_idx_type c2)
+FloatComplexRowVector::fill (const FloatComplex& val,
+                             octave_idx_type c1, octave_idx_type c2)
 {
   octave_idx_type len = length ();
 
@@ -184,7 +186,7 @@ FloatComplexRowVector::fill (const FloatComplex& val, octave_idx_type c1, octave
       return *this;
     }
 
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   if (c2 >= c1)
     {
@@ -242,7 +244,7 @@ conj (const FloatComplexRowVector& a)
 FloatComplexRowVector
 FloatComplexRowVector::extract (octave_idx_type c1, octave_idx_type c2) const
 {
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   octave_idx_type new_c = c2 - c1 + 1;
 
@@ -283,7 +285,7 @@ FloatComplexRowVector::operator += (const FloatRowVector& a)
   if (len == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
+  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
   mx_inline_add2 (len, d, a.data ());
   return *this;
@@ -305,7 +307,7 @@ FloatComplexRowVector::operator -= (const FloatRowVector& a)
   if (len == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only one reference to my privates!
+  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
 
   mx_inline_sub2 (len, d, a.data ());
   return *this;

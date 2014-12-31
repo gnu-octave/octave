@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -109,14 +109,18 @@ DEFBINOP (el_and, float_scalar, float_complex)
 {
   CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
 
-  return octave_value (v1.float_scalar_value () && (v2.float_complex_value () != static_cast<float>(0.0)));
+  return octave_value (v1.float_scalar_value ()
+                       && (v2.float_complex_value ()
+                            != static_cast<float>(0.0)));
 }
 
 DEFBINOP (el_or, float_scalar, float_complex)
 {
   CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
 
-  return octave_value (v1.float_scalar_value () || (v2.float_complex_value () != static_cast<float>(0.0)));
+  return octave_value (v1.float_scalar_value ()
+                       || (v2.float_complex_value ()
+                            != static_cast<float>(0.0)));
 }
 
 DEFNDCATOP_FN (fs_fcs, float_scalar, float_complex, float_array,
@@ -146,7 +150,8 @@ install_fs_fcs_ops (void)
   INSTALL_BINOP (op_el_mul, octave_float_scalar, octave_float_complex, el_mul);
   INSTALL_BINOP (op_el_div, octave_float_scalar, octave_float_complex, el_div);
   INSTALL_BINOP (op_el_pow, octave_float_scalar, octave_float_complex, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_scalar, octave_float_complex, el_ldiv);
+  INSTALL_BINOP (op_el_ldiv, octave_float_scalar, octave_float_complex,
+                 el_ldiv);
   INSTALL_BINOP (op_el_and, octave_float_scalar, octave_float_complex, el_and);
   INSTALL_BINOP (op_el_or, octave_float_scalar, octave_float_complex, el_or);
 

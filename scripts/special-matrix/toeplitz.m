@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ## Copyright (C) 2009 VZLU Prague
 ##
 ## This file is part of Octave.
@@ -74,7 +74,7 @@ function retval = toeplitz (c, r)
     if (! (isvector (c) && isvector (r))) 
       error ("toeplitz: C and R must be vectors");
     elseif (r(1) != c(1))
-      warning ("toeplitz: column wins anti-diagonal conflict");
+      warning ("toeplitz: column wins diagonal conflict");
     endif
 
     nr = length (c);

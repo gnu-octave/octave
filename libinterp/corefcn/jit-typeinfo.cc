@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Max Brister
+Copyright (C) 2012-2013 Max Brister
 
 This file is part of Octave.
 
@@ -34,7 +34,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "jit-typeinfo.h"
 
+#ifdef HAVE_LLVM_IR_VERIFIER_H
+#include <llvm/IR/Verifier.h>
+#else
 #include <llvm/Analysis/Verifier.h>
+#endif
+
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
 #ifdef HAVE_LLVM_IR_FUNCTION_H
@@ -517,7 +522,7 @@ std::ostream&
 operator<< (std::ostream& os, const jit_range& rng)
 {
   return os << "Range[" << rng.base << ", " << rng.limit << ", " << rng.inc
-            << ", " << rng.nelem << "]";
+         << ", " << rng.nelem << "]";
 }
 
 // -------------------- jit_matrix --------------------
@@ -526,8 +531,8 @@ std::ostream&
 operator<< (std::ostream& os, const jit_matrix& mat)
 {
   return os << "Matrix[" << mat.ref_count << ", " << mat.slice_data << ", "
-            << mat.slice_len << ", " << mat.dimensions << ", "
-            << mat.array << "]";
+         << mat.slice_len << ", " << mat.dimensions << ", "
+         << mat.array << "]";
 }
 
 // -------------------- jit_type --------------------
@@ -718,7 +723,7 @@ jit_function::call (llvm::IRBuilderD& builder,
 #ifdef CALLINST_ADDATTRIBUTE_ARG_IS_ATTRIBUTES
       llvm::AttrBuilder attr_builder;
       attr_builder.addAttribute(llvm::Attributes::StructRet);
-      llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder); 
+      llvm::Attributes attrs = llvm::Attributes::get(context, attr_builder);
       callinst->addAttribute (1, attrs);
 #else
       callinst->addAttribute (1, llvm::Attribute::StructRet);
@@ -814,7 +819,7 @@ jit_operation::~jit_operation (void)
 
 void
 jit_operation::add_overload (const jit_function& func,
-                            const std::vector<jit_type*>& args)
+                             const std::vector<jit_type*>& args)
 {
   if (args.size () >= overloads.size ())
     overloads.resize (args.size () + 1);
@@ -872,7 +877,7 @@ Array<octave_idx_type>
 jit_operation::to_idx (const std::vector<jit_type*>& types) const
 {
   octave_idx_type numel = types.size ();
-  numel = std::max (2, numel);
+  numel = std::max (numel, static_cast<octave_idx_type>(2));
 
   Array<octave_idx_type> idx (dim_vector (1, numel));
   for (octave_idx_type i = 0; i < static_cast<octave_idx_type> (types.size ());
@@ -916,7 +921,7 @@ jit_operation::generate (const signature_vec&) const
 
 bool
 jit_operation::signature_cmp
-::operator() (const signature_vec *lhs, const signature_vec *rhs)
+::operator() (const signature_vec *lhs, const signature_vec *rhs) const
 {
   const signature_vec& l = *lhs;
   const signature_vec& r = *rhs;
@@ -1247,6 +1252,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   destroy_fn.add_overload (create_identity(index));
   destroy_fn.add_overload (create_identity(complex));
 
+  // -------------------- scalar related operations --------------------
+
   // now for binary scalar operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
   add_binary_op (scalar, octave_value::op_sub, llvm::Instruction::FSub);
@@ -1335,6 +1342,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     val = builder.CreateFMul (val, mone);
     fn.do_return (builder, val);
   }
+  unary_ops[octave_value::op_uminus].add_overload (fn);
 
   fn = create_identity (scalar);
   unary_ops[octave_value::op_uplus].add_overload (fn);
@@ -1609,12 +1617,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
-    llvm::Value *one = llvm::ConstantInt::get (index_t, 1);
-    llvm::Value *ione;
-    if (index_t == int_t)
-      ione = one;
-    else
-      ione = llvm::ConstantInt::get (int_t, 1);
+    llvm::Value *one_idx = llvm::ConstantInt::get (index_t, 1);
+    llvm::Value *one_int = llvm::ConstantInt::get (int_t, 1);
 
     llvm::Value *undef = llvm::UndefValue::get (scalar_t);
     llvm::Value *mat = fn.argument (builder, 0);
@@ -1624,7 +1628,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *int_idx = builder.CreateFPToSI (idx, index_t);
     llvm::Value *check_idx = builder.CreateSIToFP (int_idx, scalar_t);
     llvm::Value *cond0 = builder.CreateFCmpUNE (idx, check_idx);
-    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one);
+    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one_idx);
     llvm::Value *cond = builder.CreateOr (cond0, cond1);
 
     llvm::BasicBlock *done = fn.new_block ("done");
@@ -1637,8 +1641,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateBr (done);
 
     builder.SetInsertPoint (normal);
-    llvm::Value *len = builder.CreateExtractValue (mat,
-                                                   llvm::ArrayRef<unsigned> (2));
+    llvm::Value *len
+      = builder.CreateExtractValue (mat, llvm::ArrayRef<unsigned> (2));
     cond = builder.CreateICmpSGT (int_idx, len);
 
 
@@ -1647,7 +1651,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateCondBr (cond, bounds_error, success);
 
     builder.SetInsertPoint (bounds_error);
-    gindex_range.call (builder, ione, ione, int_idx, len);
+    gindex_range.call (builder, one_int, one_int, int_idx, len);
     builder.CreateBr (done);
 
     builder.SetInsertPoint (success);
@@ -1681,7 +1685,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
-    llvm::Value *one = llvm::ConstantInt::get (index_t, 1);
+    llvm::Value *one_idx = llvm::ConstantInt::get (index_t, 1);
+    llvm::Value *one_int = llvm::ConstantInt::get (int_t, 1);
 
     llvm::Value *mat = fn.argument (builder, 0);
     llvm::Value *idx = fn.argument (builder, 1);
@@ -1690,7 +1695,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *int_idx = builder.CreateFPToSI (idx, index_t);
     llvm::Value *check_idx = builder.CreateSIToFP (int_idx, scalar_t);
     llvm::Value *cond0 = builder.CreateFCmpUNE (idx, check_idx);
-    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one);
+    llvm::Value *cond1 = builder.CreateICmpSLT (int_idx, one_idx);
     llvm::Value *cond = builder.CreateOr (cond0, cond1);
 
     llvm::BasicBlock *done = fn.new_block ("done");
@@ -1708,7 +1713,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
     llvm::Value *rcount = builder.CreateExtractValue (mat, 0);
     rcount = builder.CreateLoad (rcount);
-    cond1 = builder.CreateICmpSGT (rcount, one);
+    cond1 = builder.CreateICmpSGT (rcount, one_int);
     cond = builder.CreateOr (cond0, cond1);
 
     llvm::BasicBlock *bounds_error = fn.new_block ("bounds_error", done);
@@ -1722,8 +1727,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateBr (done);
 
     builder.SetInsertPoint (success);
-    llvm::Value *data = builder.CreateExtractValue (mat,
-                                                    llvm::ArrayRef<unsigned> (1));
+    llvm::Value *data
+      = builder.CreateExtractValue (mat, llvm::ArrayRef<unsigned> (1));
     llvm::Value *gep = builder.CreateInBoundsGEP (data, int_idx);
     builder.CreateStore (value, gep);
     builder.CreateBr (done);
@@ -1845,7 +1850,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   register_generic ("cos", matrix, matrix);
 
   add_builtin ("exp");
-  register_intrinsic ("exp", llvm::Intrinsic::cos, scalar, scalar);
+  register_intrinsic ("exp", llvm::Intrinsic::exp, scalar, scalar);
   register_generic ("exp", matrix, matrix);
 
   add_builtin ("balance");
@@ -1923,7 +1928,8 @@ jit_typeinfo::add_print (jit_type *ty, void *fptr)
 {
   std::stringstream name;
   name << "octave_jit_print_" << ty->name ();
-  jit_function fn = create_external (engine, fptr, name.str (), 0, intN (8), ty);
+  jit_function fn = create_external (engine, fptr, name.str (),
+                                     0, intN (8), ty);
   print_fn.add_overload (fn);
 }
 
@@ -2245,7 +2251,7 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
       octave_builtin *builtin
         = dynamic_cast<octave_builtin *> (ov.internal_rep ());
       return builtin && builtin->to_jit () ? builtin->to_jit ()
-        : unknown_function;
+                                           : unknown_function;
     }
 
   if (ov.is_range ())

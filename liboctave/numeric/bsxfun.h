@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Jordi Gutiérrez Hermoso
+Copyright (C) 2012-2013 Jordi Gutiérrez Hermoso
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
-#if !defined (bsxfun_h)
-#define bsxfun_h 1
+#if !defined (octave_bsxfun_h)
+#define octave_bsxfun_h 1
 
 #include <algorithm>
 
@@ -38,14 +38,16 @@ is_valid_bsxfun (const std::string& name, const dim_vector& dx,
 {
   for (int i = 0; i < std::min (dx.length (), dy.length ()); i++)
     {
-      octave_idx_type xk = dx(i), yk = dy(i);
+      octave_idx_type xk = dx(i);
+      octave_idx_type yk = dy(i);
       // Check the three conditions for valid bsxfun dims
-      if (! ( (xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
+      if (! ((xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
         return false;
     }
 
   (*current_liboctave_warning_with_id_handler)
-    ("Octave:broadcast", "%s: automatic broadcasting operation applied", name.c_str ());
+    ("Octave:broadcast", "%s: automatic broadcasting operation applied",
+     name.c_str ());
 
   return true;
 }
@@ -58,21 +60,24 @@ bool
 is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
                          const dim_vector& dx)
 {
-  octave_idx_type drl = dr.length (), dxl = dx.length ();
+  octave_idx_type drl = dr.length ();
+  octave_idx_type dxl = dx.length ();
   if (drl < dxl)
     return false;
 
   for (int i = 0; i < drl; i++)
     {
-      octave_idx_type rk = dr(i), xk = dx(i);
+      octave_idx_type rk = dr(i);
+      octave_idx_type xk = dx(i);
 
       // Only two valid canditions to check; can't stretch rk
-      if (! ( (rk == xk) || (rk > 1 && xk == 1)))
+      if (! ((rk == xk) || (rk > 1 && xk == 1)))
         return false;
     }
 
   (*current_liboctave_warning_with_id_handler)
-    ("Octave:broadcast", "%s: automatic broadcasting operation applied", name.c_str ());
+    ("Octave:broadcast", "%s: automatic broadcasting operation applied",
+     name.c_str ());
 
   return true;
 }

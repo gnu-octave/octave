@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -29,7 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "oct-locbuf.h"
 
-// FIXME -- Maybe we should querying for available physical memory?
+// FIXME: Maybe we should querying for available physical memory?
 
 #ifndef OCTAVE_LOCBUF_CHUNKSIZE_MB
 #define OCTAVE_LOCBUF_CHUNKSIZE_MB 32
@@ -112,8 +112,8 @@ octave_chunk_buffer::~octave_chunk_buffer (void)
           chunk = cnk;
           top = dat;
 
-          // FIXME -- the following calcuation of remaining data will
-          // only work if each chunk has the same chunk_size.
+          // FIXME: the following calcuation of remaining data will
+          //        only work if each chunk has the same chunk_size.
 
           left = chunk_size - (dat - cnk);
         }
@@ -140,8 +140,12 @@ octave_chunk_buffer::clear (void)
     }
   else
     {
-      (*current_liboctave_warning_handler)
-        ("octave_chunk_buffer::clear: %d active allocations remain!",
+      // FIXME: Doesn't this situation represent a programming error of
+      // some kind?  If so, maybe this should be a fatal error?
+
+      (*current_liboctave_warning_with_id_handler)
+        ("Octave:local-buffer-inconsistency",
+         "octave_chunk_buffer::clear: %d active allocations remain!",
          active);
     }
 }

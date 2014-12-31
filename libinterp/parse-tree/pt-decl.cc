@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -133,10 +133,11 @@ tree_global_command::accept (tree_walker& tw)
 
 tree_command *
 tree_persistent_command::dup (symbol_table::scope_id scope,
-                          symbol_table::context_id context) const
+                              symbol_table::context_id context) const
 {
   return
-    new tree_persistent_command (init_list ? init_list->dup (scope, context) : 0,
+    new tree_persistent_command (init_list ? init_list->dup (scope, context)
+                                           : 0,
                                  line (), column ());
 }
 

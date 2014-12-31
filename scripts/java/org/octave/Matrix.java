@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007 Michael Goffioul
+Copyright (C) 2007, 2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -47,7 +47,7 @@ public class Matrix
     int n = (m > 0 ? data[0].length : 0);
     int idx = 0;
     double[] buf = new double[m*n];
-		
+
     for (int j = 0; j < n; j++)
       for (int i = 0; i < m; i++)
         buf[idx++] = data[i][j];
@@ -257,7 +257,7 @@ public class Matrix
 
     return null;
   }
-	
+
   public double[][][] asDoubleMatrix3 ()
   {
     if (cache != null)

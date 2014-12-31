@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -61,7 +61,7 @@ function stats = statistics (x, dim)
   emp_inv = quantile (x, [0.25; 0.5; 0.75], dim, 7);
 
   stats = cat (dim, min (x, [], dim), emp_inv, max (x, [], dim), mean (x, dim),
-               std (x, [], dim), skewness (x, dim), kurtosis (x, dim));
+               std (x, [], dim), skewness (x, [], dim), kurtosis (x, [], dim));
 
 endfunction
 
@@ -76,6 +76,16 @@ endfunction
 %! assert (std (x), s(7,:), eps);
 %! assert (skewness (x), s(8,:), eps);
 %! assert (kurtosis (x), s(9,:), eps);
+
+%! x = rand (7,5);
+%! s = statistics (x, 2);
+%! assert (min (x, [], 2), s(:,1), eps);
+%! assert (median (x, 2), s(:,3), eps);
+%! assert (max (x, [], 2), s(:,5), eps);
+%! assert (mean (x, 2), s(:,6), eps);
+%! assert (std (x, [], 2), s(:,7), eps);
+%! assert (skewness (x, [], 2), s(:,8), eps);
+%! assert (kurtosis (x, [], 2), s(:,9), eps);
 
 %% Test input validation
 %!error statistics ()

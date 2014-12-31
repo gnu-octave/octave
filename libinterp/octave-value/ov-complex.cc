@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -66,8 +66,9 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_complex::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_complex::static_type_id ());
+  return
+    octave_base_value::type_conv_info (default_numeric_demotion_function,
+                                       octave_float_complex::static_type_id ());
 }
 
 octave_base_value *
@@ -86,13 +87,13 @@ octave_complex::try_narrowing_conversion (void)
 octave_value
 octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  // FIXME -- this doesn't solve the problem of
+  // FIXME: this doesn't solve the problem of
   //
   //   a = i; a([1,1], [1,1], [1,1])
   //
   // and similar constructions.  Hmm...
 
-  // FIXME -- using this constructor avoids narrowing the
+  // FIXME: using this constructor avoids narrowing the
   // 1x1 matrix back to a scalar value.  Need a better solution
   // to this problem.
 
@@ -104,7 +105,7 @@ octave_complex::do_index_op (const octave_value_list& idx, bool resize_ok)
 double
 octave_complex::double_value (bool force_conversion) const
 {
-  double retval = lo_ieee_nan_value ();
+  double retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
@@ -118,7 +119,7 @@ octave_complex::double_value (bool force_conversion) const
 float
 octave_complex::float_value (bool force_conversion) const
 {
-  float retval = lo_ieee_float_nan_value ();
+  float retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
@@ -218,7 +219,8 @@ octave_complex::complex_array_value (bool /* force_conversion */) const
 FloatComplexNDArray
 octave_complex::float_complex_array_value (bool /* force_conversion */) const
 {
-  return FloatComplexNDArray (dim_vector (1, 1), static_cast<FloatComplex> (scalar));
+  return FloatComplexNDArray (dim_vector (1, 1),
+                              static_cast<FloatComplex> (scalar));
 }
 
 octave_value
@@ -313,7 +315,8 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
                            bool /* save_as_floats */)
 {
   hsize_t dimens[3];
-  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
+  hid_t space_hid, type_hid, data_hid;
+  space_hid = type_hid = data_hid = -1;
   bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);

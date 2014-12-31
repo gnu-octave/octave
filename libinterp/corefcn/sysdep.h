@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,6 +52,7 @@ extern void MINGW_signal_cleanup (void);
 #define MINGW_SIGNAL_CLEANUP() do { } while (0)
 #endif
 
-extern OCTINTERP_API bool same_file_internal (const std::string&, const std::string&);
+extern OCTINTERP_API bool same_file_internal (const std::string&,
+                                              const std::string&);
 
 #endif

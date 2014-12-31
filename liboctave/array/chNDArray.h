@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,15 +20,17 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_charNDArray_h)
-#define octave_charNDArray_h 1
+#if !defined (octave_chNDArray_h)
+#define octave_chNDArray_h 1
+
+#include <string>
 
 #include "Array.h"
-#include "chMatrix.h"
 
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 #include "bsxfun-decl.h"
+#include "str-vec.h"
 
 class
 OCTAVE_API
@@ -46,31 +48,30 @@ public:
 
   charNDArray (const charNDArray& a) : Array<char> (a) { }
 
-  charNDArray (const charMatrix& a) : Array<char> (a) { }
-
-  charNDArray (char c) : Array<char> (charMatrix (c)) { }
-
-  charNDArray (const char *s) : Array<char> (charMatrix (s)) { }
-
-  charNDArray (const std::string& s) : Array<char> (charMatrix (s)) { }
-
-  charNDArray (const string_vector& s) : Array<char> (charMatrix (s)) { }
-
   charNDArray (const Array<char>& a) : Array<char> (a) { }
 
+  charNDArray (char c);
+
+  charNDArray (const char *s);
+
+  charNDArray (const std::string& s);
+
+  charNDArray (const string_vector& s, char fill_value = '\0');
+
   charNDArray& operator = (const charNDArray& a)
-    {
-      Array<char>::operator = (a);
-      return *this;
-    }
+  {
+    Array<char>::operator = (a);
+    return *this;
+  }
 
   bool any_element_is_nan (void) const { return false; }
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  charNDArray concat (const charNDArray& rb, const Array<octave_idx_type>& ra_idx);
+  charNDArray concat (const charNDArray& rb,
+                      const Array<octave_idx_type>& ra_idx);
   charNDArray concat (const NDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   charNDArray max (int dim = -1) const;
@@ -78,10 +79,10 @@ public:
   charNDArray min (int dim = -1) const;
   charNDArray min (Array<octave_idx_type>& index, int dim = -1) const;
 
-  charNDArray& insert (const charNDArray& a, octave_idx_type r, octave_idx_type c);
-  charNDArray& insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
-
-  charMatrix matrix_value (void) const;
+  charNDArray& insert (const charNDArray& a,
+                       octave_idx_type r, octave_idx_type c);
+  charNDArray& insert (const charNDArray& a,
+                       const Array<octave_idx_type>& ra_idx);
 
   charNDArray squeeze (void) const { return Array<char>::squeeze (); }
 
@@ -90,7 +91,7 @@ public:
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 
   // i/o
 

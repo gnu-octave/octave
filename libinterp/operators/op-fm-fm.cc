@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -181,8 +181,10 @@ DEFNULLASSIGNOP_FN (null_assign, float_matrix, delete_elements)
 
 DEFNDASSIGNOP_OP (assign_add, float_matrix, float_matrix, float_array, +=)
 DEFNDASSIGNOP_OP (assign_sub, float_matrix, float_matrix, float_array, -=)
-DEFNDASSIGNOP_FNOP (assign_el_mul, float_matrix, float_matrix, float_array, product_eq)
-DEFNDASSIGNOP_FNOP (assign_el_div, float_matrix, float_matrix, float_array, quotient_eq)
+DEFNDASSIGNOP_FNOP (assign_el_mul, float_matrix, float_matrix, float_array,
+                    product_eq)
+DEFNDASSIGNOP_FNOP (assign_el_div, float_matrix, float_matrix, float_array,
+                    quotient_eq)
 
 CONVDECL (float_matrix_to_matrix)
 {
@@ -222,16 +224,26 @@ install_fm_fm_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_float_matrix, octave_float_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_float_matrix, octave_float_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_float_matrix, octave_float_matrix, el_or);
-  INSTALL_BINOP (op_el_and_not, octave_float_matrix, octave_float_matrix, el_and_not);
-  INSTALL_BINOP (op_el_or_not, octave_float_matrix, octave_float_matrix, el_or_not);
-  INSTALL_BINOP (op_el_not_and, octave_float_matrix, octave_float_matrix, el_not_and);
-  INSTALL_BINOP (op_el_not_or, octave_float_matrix, octave_float_matrix, el_not_or);
-  INSTALL_BINOP (op_trans_mul, octave_float_matrix, octave_float_matrix, trans_mul);
-  INSTALL_BINOP (op_mul_trans, octave_float_matrix, octave_float_matrix, mul_trans);
-  INSTALL_BINOP (op_herm_mul, octave_float_matrix, octave_float_matrix, trans_mul);
-  INSTALL_BINOP (op_mul_herm, octave_float_matrix, octave_float_matrix, mul_trans);
-  INSTALL_BINOP (op_trans_ldiv, octave_float_matrix, octave_float_matrix, trans_ldiv);
-  INSTALL_BINOP (op_herm_ldiv, octave_float_matrix, octave_float_matrix, trans_ldiv);
+  INSTALL_BINOP (op_el_and_not, octave_float_matrix, octave_float_matrix,
+                 el_and_not);
+  INSTALL_BINOP (op_el_or_not, octave_float_matrix, octave_float_matrix,
+                 el_or_not);
+  INSTALL_BINOP (op_el_not_and, octave_float_matrix, octave_float_matrix,
+                 el_not_and);
+  INSTALL_BINOP (op_el_not_or, octave_float_matrix, octave_float_matrix,
+                 el_not_or);
+  INSTALL_BINOP (op_trans_mul, octave_float_matrix, octave_float_matrix,
+                 trans_mul);
+  INSTALL_BINOP (op_mul_trans, octave_float_matrix, octave_float_matrix,
+                 mul_trans);
+  INSTALL_BINOP (op_herm_mul, octave_float_matrix, octave_float_matrix,
+                 trans_mul);
+  INSTALL_BINOP (op_mul_herm, octave_float_matrix, octave_float_matrix,
+                 mul_trans);
+  INSTALL_BINOP (op_trans_ldiv, octave_float_matrix, octave_float_matrix,
+                 trans_ldiv);
+  INSTALL_BINOP (op_herm_ldiv, octave_float_matrix, octave_float_matrix,
+                 trans_ldiv);
 
   INSTALL_CATOP (octave_float_matrix, octave_float_matrix, fm_fm);
   INSTALL_CATOP (octave_matrix, octave_float_matrix, m_fm);
@@ -242,14 +254,21 @@ install_fm_fm_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix,
                     octave_float_matrix, dbl_assign);
 
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_matrix, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_str, null_assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_sq_str, null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_null_sq_str,
+                    null_assign);
 
-  INSTALL_ASSIGNOP (op_add_eq, octave_float_matrix, octave_float_matrix, assign_add);
-  INSTALL_ASSIGNOP (op_sub_eq, octave_float_matrix, octave_float_matrix, assign_sub);
-  INSTALL_ASSIGNOP (op_el_mul_eq, octave_float_matrix, octave_float_matrix, assign_el_mul);
-  INSTALL_ASSIGNOP (op_el_div_eq, octave_float_matrix, octave_float_matrix, assign_el_div);
+  INSTALL_ASSIGNOP (op_add_eq, octave_float_matrix, octave_float_matrix,
+                    assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_float_matrix, octave_float_matrix,
+                    assign_sub);
+  INSTALL_ASSIGNOP (op_el_mul_eq, octave_float_matrix, octave_float_matrix,
+                    assign_el_mul);
+  INSTALL_ASSIGNOP (op_el_div_eq, octave_float_matrix, octave_float_matrix,
+                    assign_el_div);
 
   INSTALL_CONVOP (octave_float_matrix, octave_matrix, float_matrix_to_matrix);
 }

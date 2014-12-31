@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -34,10 +34,15 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p)
   terminal->setFocusPolicy (Qt::StrongFocus);
 
   setObjectName ("TerminalDockWidget");
-  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
   set_title (tr ("Command Window"));
 
   setWidget (terminal);
+  setFocusProxy (terminal);
+  setFocusPolicy (Qt::StrongFocus);
+
+  connect (terminal, SIGNAL (interrupt_signal (void)),
+           this, SLOT (terminal_interrupt ()));
 }
 
 bool
@@ -58,4 +63,10 @@ terminal_dock_widget::focus (void)
   w->setFocus ();
   w->activateWindow ();
   w->raise ();
+}
+
+void
+terminal_dock_widget::terminal_interrupt (void)
+{
+  emit interrupt_signal ();
 }

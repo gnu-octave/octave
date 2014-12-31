@@ -1,7 +1,7 @@
 /*
 
    This file is part of the KDE libraries
-   Copyright (C) 2002 Waldo Bastian <bastian@kde.org>
+   Copyright (C) 2002, 2013 Waldo Bastian <bastian@kde.org>
    Copyright (C) 2002-2003,2007 Oswald Buddenhagen <ossi@kde.org>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
@@ -116,24 +116,24 @@ extern "C" {
 # define _NEW_TTY_CTRL
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined(HAVE_TCGETATTR)
+# define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
+#elif defined(TIOCGETA)
 # define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
+#elif defined(TCGETS)
+# define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__)
-#  define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
-# else
-#  define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
-# endif
+# error No method available to get terminal attributes
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined(HAVE_TCSETATTR) && defined(TCSANOW)
+# define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
+#elif defined(TIOCSETA)
 # define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
+#elif defined(TCSETS)
+# define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__CYGWIN__)
-#  define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
-# else
-#  define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
-# endif
+# error No method available to set terminal attributes
 #endif
 
 #include <QtCore>
@@ -144,6 +144,14 @@ extern "C" {
 #endif
 
 #define TTY_GROUP "tty"
+
+#ifndef PATH_MAX
+# ifdef MAXPATHLEN
+#  define PATH_MAX MAXPATHLEN
+# else
+#  define PATH_MAX 1024
+# endif
+#endif
 
 ///////////////////////
 // private functions //

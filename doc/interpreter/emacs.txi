@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 Kurt Hornik
+@c Copyright (C) 1996-2013 Kurt Hornik
 @c
 @c This file is part of Octave.
 @c
@@ -351,8 +351,8 @@ and the function names in function declarations in
 @code{font-lock-function-name-face}.
 @end itemize
 
-There is also rudimentary support for Imenu (currently, function names
-can be indexed).
+There is also rudimentary support for @nospell{Imenu} (currently, function
+names can be indexed).
 
 @cindex TAGS
 @cindex Emacs TAGS files

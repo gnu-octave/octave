@@ -1,4 +1,4 @@
-@c Copyright (C) 2009-2012 Jaroslav Hajek
+@c Copyright (C) 2009-2013 Jaroslav Hajek
 @c
 @c This file is part of Octave.
 @c
@@ -18,6 +18,8 @@
 
 @node Diagonal and Permutation Matrices
 @chapter Diagonal and Permutation Matrices
+@cindex diagonal and permutation matrices
+@cindex matrices, diagonal and permutation
 
 @menu
 * Basic Usage::          Creation and Manipulation of Diagonal/Permutation Matrices
@@ -57,7 +59,26 @@ $P_{ij}=0$ otherwise.
 Octave provides special treatment of real and complex rectangular diagonal
 matrices, as well as permutation matrices.  They are stored as special objects,
 using efficient storage and algorithms, facilitating writing both readable and
-efficient matrix algebra expressions in the Octave language.
+efficient matrix algebra expressions in the Octave language.  The special
+treatment may be disabled by using the functions @dfn{disable_diagonal_matrix}
+and @dfn{disable_permutation_matrix}.
+
+@DOCSTRING(disable_diagonal_matrix)
+
+@DOCSTRING(disable_permutation_matrix)
+
+The space savings are significant as demonstrated by the following code.
+
+@example
+@group
+x = diag (rand (10, 1));
+xf = full (x);
+sizeof (x)
+@result{} 80
+sizeof (xf)
+@result{} 800
+@end group
+@end example
 
 @menu
 * Creating Diagonal Matrices::
@@ -224,6 +245,7 @@ are treated specially when performed on these special matrix objects.
 
 @node Expressions Involving Diagonal Matrices
 @subsection Expressions Involving Diagonal Matrices
+@cindex diagonal matrix expressions
 
 Assume @var{D} is a diagonal matrix.  If @var{M} is a full matrix,
 then @code{D*M} will scale the rows of @var{M}.  That means,
@@ -260,6 +282,7 @@ then @code{D*M} is equivalent to
 i.e., null rows are appended to the result.
 The situation for right-multiplication @code{M*D} is analogous.
 
+@cindex pseudoinverse
 The expressions @code{D \ M} and @code{M / D} perform inverse scaling.
 They are equivalent to solving a diagonal (or rectangular diagonal)
 in a least-squares minimum-norm sense.  In exact arithmetic, this is
@@ -270,12 +293,12 @@ by its reciprocal.
 The matrix division algorithms do, in fact, use division rather than 
 multiplication by reciprocals for better numerical accuracy; otherwise, they
 honor the above definition.  Note that a diagonal matrix is never truncated due
-to ill-conditioning; otherwise, it would not be much useful for scaling.  This
+to ill-conditioning; otherwise, it would not be of much use for scaling.  This
 is typically consistent with linear algebra needs.  A full matrix that only
-happens to be diagonal (an is thus not a special object) is of course treated
+happens to be diagonal (and is thus not a special object) is of course treated
 normally.
 
-Multiplication and division by diagonal matrices works efficiently also when
+Multiplication and division by diagonal matrices work efficiently also when
 combined with sparse matrices, i.e., @code{D*S}, where @var{D} is a diagonal
 matrix and @var{S} is a sparse matrix scales the rows of the sparse matrix and
 returns a sparse matrix.  The expressions @code{S*D}, @code{D\S}, @code{S/D}
@@ -399,6 +422,8 @@ sparse matrix.
 
 @node Permutation Matrix Functions
 @subsection Permutation Matrix Functions
+@cindex matrix, permutation functions
+@cindex permutation matrix functions
 
 @dfn{inv} and @dfn{pinv} will invert a permutation matrix, preserving its
 specialness.  @dfn{det} can be applied to a permutation matrix, efficiently
@@ -455,8 +480,9 @@ in earlier versions of Octave, but slowly.
 @end example
 
 @noindent
-Finally, here's how you solve a linear system @code{A*x = b}
-with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
+Finally, here's how to solve a linear system @code{A*x = b}
+with @nospell{Tikhonov} regularization (ridge regression) using SVD (a skeleton
+only):
 
 @example
 @group
@@ -477,26 +503,24 @@ with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 
 @node Zeros Treatment
 @section Differences in Treatment of Zero Elements
+@cindex matrix, zero elements
 
 Making diagonal and permutation matrices special matrix objects in their own
 right and the consequent usage of smarter algorithms for certain operations
 implies, as a side effect, small differences in treating zeros.
-The contents of this section applies also to sparse matrices, discussed in
-the following chapter.
+The contents of this section apply also to sparse matrices, discussed in
+the following chapter.  (@pxref{Sparse Matrices})
 
-The IEEE standard defines the result of the expressions @code{0*Inf} and 
-@code{0*NaN} as @code{NaN}, as it has been generally agreed that this is the
-best compromise.
-Numerical software dealing with structured and sparse matrices (including
-Octave) however, almost always makes a distinction between a "numerical zero"
-and an "assumed zero". 
-A "numerical zero" is a zero value occurring in a place where any floating-point
-value could occur.  It is normally stored somewhere in memory as an explicit
-value. 
-An "assumed zero", on the contrary, is a zero matrix element implied by the
-matrix structure (diagonal, triangular) or a sparsity pattern; its value is
-usually not stored explicitly anywhere, but is implied by the underlying
-data structure.
+The IEEE floating point standard defines the result of the expressions
+@code{0*Inf} and @code{0*NaN} as @code{NaN}.  This is widely agreed to be a
+good compromise.  Numerical software dealing with structured and sparse matrices
+(including Octave) however, almost always makes a distinction between a
+"numerical zero" and an "assumed zero".  A "numerical zero" is a zero value
+occurring in a place where any floating-point value could occur.  It is
+normally stored somewhere in memory as an explicit value.  An "assumed zero", on
+the contrary, is a zero matrix element implied by the matrix structure
+(diagonal, triangular) or a sparsity pattern; its value is usually not stored
+explicitly anywhere, but is implied by the underlying data structure.
 
 The primary distinction is that an assumed zero, when multiplied 
 by any number, or divided by any nonzero number,

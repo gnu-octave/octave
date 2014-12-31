@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexQRP_h)
-#define octave_ComplexQRP_h 1
+#if !defined (octave_CmplxQRP_h)
+#define octave_CmplxQRP_h 1
 
 #include <iosfwd>
 
@@ -42,14 +42,14 @@ public:
   ComplexQRP (const ComplexQRP& a) : ComplexQR (a), p (a.p) { }
 
   ComplexQRP& operator = (const ComplexQRP& a)
-    {
-      if (this != &a)
-        {
-          ComplexQR::operator = (a);
-          p = a.p;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        ComplexQR::operator = (a);
+        p = a.p;
+      }
+    return *this;
+  }
 
   ~ComplexQRP (void) { }
 

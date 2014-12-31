@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,4 +31,8 @@ function lst = dir (f)
     lst = __ftp_dir__ (f.curlhandle);
   endif
 endfunction
+
+
+## No test possible for interactive function.
+%!assert (1)
 

@@ -1,8 +1,8 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
-Copyright (C) 2011-2012 John P. Swensen
+Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2013 John P. Swensen
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_link_h)
-#define octave_link_h 1
+#if !defined (octave_octave_link_h)
+#define octave_octave_link_h 1
 
 #include <string>
 
@@ -110,14 +110,6 @@ public:
       instance->do_post_event (obj, method, arg);
   }
 
-  template <class T, class A, class B>
-  static void post_event (T *obj, void (T::*method) (const A&, const B&),
-                          const A& arg_a, const B& arg_b)
-  {
-    if (enabled ())
-      instance->do_post_event (obj, method, arg_a, arg_b);
-  }
-
   static void entered_readline_hook (void)
   {
     if (enabled ())
@@ -134,6 +126,12 @@ public:
   edit_file (const std::string& file)
   {
     return enabled () ? instance->do_edit_file (file) : false;
+  }
+
+  static bool
+  prompt_new_edit_file (const std::string& file)
+  {
+    return enabled () ? instance->do_prompt_new_edit_file (file) : false;
   }
 
   static int
@@ -163,10 +161,10 @@ public:
                const std::string& cancel_string)
   {
     return enabled ()
-      ? instance->do_list_dialog (list, mode, width, height,
-                                  initial_value, name, prompt,
-                                  ok_string, cancel_string)
-      : std::pair<std::list<int>, int> ();
+           ? instance->do_list_dialog (list, mode, width, height,
+                                       initial_value, name, prompt,
+                                       ok_string, cancel_string)
+           : std::pair<std::list<int>, int> ();
   }
 
   static std::list<std::string>
@@ -177,8 +175,8 @@ public:
                 const std::list<std::string>& defaults)
   {
     return enabled ()
-      ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
-      : std::list<std::string> ();
+           ? instance->do_input_dialog (prompt, title, nr, nc, defaults)
+           : std::list<std::string> ();
   }
 
   typedef std::list<std::pair<std::string, std::string> > filter_list;
@@ -189,8 +187,9 @@ public:
                const std::string& multimode)
   {
     return enabled ()
-      ? instance->do_file_dialog (filter, title, filename, dirname, multimode)
-      : std::list<std::string> ();
+           ? instance->do_file_dialog (filter, title, filename, dirname,
+                                       multimode)
+           : std::list<std::string> ();
   }
 
 
@@ -199,7 +198,8 @@ public:
                                         bool addpath_option)
   {
     return enabled ()
-      ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option) : 0;
+           ? instance->do_debug_cd_or_addpath_error (file, dir, addpath_option)
+           : 0;
   }
 
   static void change_directory (const std::string& dir)
@@ -311,7 +311,7 @@ public:
   show_preferences ()
   {
     if (enabled ())
-      { 
+      {
         instance->do_show_preferences ();
         return true;
       }
@@ -319,17 +319,17 @@ public:
       return false;
   }
 
-  static bool 
+  static bool
   show_doc (const std::string & file)
   {
     if (enabled ())
-      { 
+      {
         instance->do_show_doc (file);
         return true;
       }
     else
       return false;
- 
+
   }
 
 private:
@@ -383,6 +383,7 @@ protected:
   virtual bool do_exit (int status) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;
+  virtual bool do_prompt_new_edit_file (const std::string& file) = 0;
 
   virtual int
   do_message_dialog (const std::string& dlg, const std::string& msg,

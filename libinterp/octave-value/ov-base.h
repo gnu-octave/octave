@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_base_value_h)
-#define octave_base_value_h 1
+#if !defined (octave_ov_base_h)
+#define octave_ov_base_h 1
 
 #include <cstdlib>
 
@@ -97,7 +97,7 @@ inline bool btyp_isfloat (builtin_type_t btyp)
 inline bool btyp_isarray (builtin_type_t btyp)
 { return btyp <= btyp_char; }
 
-// Compute a numeric type for a possibly mixed-type operation, using these rules:
+// Compute numeric type for a possible mixed-type operation, using these rules:
 // bool -> double
 // single + double -> single
 // real + complex -> complex
@@ -188,12 +188,13 @@ public:
   class type_conv_info
   {
   public:
-    type_conv_info (type_conv_fcn f = 0, int t = -1) : _fcn (f), _type_id (t) { }
+    type_conv_info (type_conv_fcn f = 0, int t = -1)
+      : _fcn (f), _type_id (t) { }
 
     operator type_conv_fcn (void) const { return _fcn; }
 
     octave_base_value * operator () (const octave_base_value &v) const
-      { return (*_fcn) (v); }
+    { return (*_fcn) (v); }
 
     int type_id (void) const { return _type_id; }
 
@@ -226,11 +227,11 @@ public:
 
   virtual type_conv_info
   numeric_conversion_function (void) const
-    { return type_conv_info (); }
+  { return type_conv_info (); }
 
   virtual type_conv_info
   numeric_demotion_function (void) const
-    { return type_conv_info (); }
+  { return type_conv_info (); }
 
   virtual octave_value squeeze (void) const;
 
@@ -286,26 +287,26 @@ public:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  virtual idx_vector index_vector (void) const;
+  virtual idx_vector index_vector (bool require_integers = false) const;
 
   virtual dim_vector dims (void) const { return dim_vector (); }
 
   octave_idx_type rows (void) const
-    {
-      const dim_vector dv = dims ();
+  {
+    const dim_vector dv = dims ();
 
-      return dv(0);
-    }
+    return dv(0);
+  }
 
   octave_idx_type columns (void) const
-    {
-      const dim_vector dv = dims ();
+  {
+    const dim_vector dv = dims ();
 
-      return dv(1);
-    }
+    return dv(1);
+  }
 
   virtual int ndims (void) const
-    { return dims ().length (); }
+  { return dims ().length (); }
 
   virtual octave_idx_type numel (void) const { return dims ().numel (); }
 
@@ -364,6 +365,8 @@ public:
   virtual bool is_map (void) const { return false; }
 
   virtual bool is_object (void) const { return false; }
+
+  virtual bool is_classdef_object (void) const { return false; }
 
   virtual bool is_java (void) const { return false; }
 
@@ -470,10 +473,10 @@ public:
   virtual float float_value (bool = false) const;
 
   virtual double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   virtual float float_scalar_value (bool frc_str_conv = false) const
-    { return float_value (frc_str_conv); }
+  { return float_value (frc_str_conv); }
 
   virtual Cell cell_value (void) const;
 
@@ -519,7 +522,8 @@ public:
 
   virtual ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
 
-  virtual FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
+  virtual FloatComplexDiagMatrix
+  float_complex_diag_matrix_value (bool = false) const;
 
   virtual PermMatrix perm_matrix_value (void) const;
 
@@ -576,10 +580,13 @@ public:
   virtual string_vector parent_class_names (void) const;
 
   virtual octave_base_value *find_parent_class (const std::string&)
-    { return 0; }
+  { return 0; }
 
   virtual octave_base_value *unique_parent_class (const std::string&)
-    { return 0; }
+  { return 0; }
+
+  virtual bool is_instance_of (const std::string&) const
+  { return false; }
 
   virtual octave_function *function_value (bool silent = false);
 
@@ -604,7 +611,7 @@ public:
 
   virtual bool print_as_scalar (void) const { return false; }
 
-  virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  virtual void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   virtual void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -616,7 +623,7 @@ public:
   print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
 
-  virtual std::string short_disp (void) const { return "..."; }
+  virtual void short_disp (std::ostream& os) const { os << "..."; }
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
@@ -677,71 +684,71 @@ public:
 
   // Standard mappers. Register new ones here.
   enum unary_mapper_t
-    {
-      umap_abs,
-      umap_acos,
-      umap_acosh,
-      umap_angle,
-      umap_arg,
-      umap_asin,
-      umap_asinh,
-      umap_atan,
-      umap_atanh,
-      umap_cbrt,
-      umap_ceil,
-      umap_conj,
-      umap_cos,
-      umap_cosh,
-      umap_erf,
-      umap_erfinv,
-      umap_erfcinv,
-      umap_erfc,
-      umap_erfcx,
-      umap_erfi,
-      umap_dawson,
-      umap_exp,
-      umap_expm1,
-      umap_finite,
-      umap_fix,
-      umap_floor,
-      umap_gamma,
-      umap_imag,
-      umap_isinf,
-      umap_isna,
-      umap_isnan,
-      umap_lgamma,
-      umap_log,
-      umap_log2,
-      umap_log10,
-      umap_log1p,
-      umap_real,
-      umap_round,
-      umap_roundb,
-      umap_signum,
-      umap_sin,
-      umap_sinh,
-      umap_sqrt,
-      umap_tan,
-      umap_tanh,
-      umap_xisalnum,
-      umap_xisalpha,
-      umap_xisascii,
-      umap_xiscntrl,
-      umap_xisdigit,
-      umap_xisgraph,
-      umap_xislower,
-      umap_xisprint,
-      umap_xispunct,
-      umap_xisspace,
-      umap_xisupper,
-      umap_xisxdigit,
-      umap_xsignbit,
-      umap_xtoascii,
-      umap_xtolower,
-      umap_xtoupper,
-      umap_unknown,
-      num_unary_mappers = umap_unknown
-    };
+  {
+    umap_abs,
+    umap_acos,
+    umap_acosh,
+    umap_angle,
+    umap_arg,
+    umap_asin,
+    umap_asinh,
+    umap_atan,
+    umap_atanh,
+    umap_cbrt,
+    umap_ceil,
+    umap_conj,
+    umap_cos,
+    umap_cosh,
+    umap_erf,
+    umap_erfinv,
+    umap_erfcinv,
+    umap_erfc,
+    umap_erfcx,
+    umap_erfi,
+    umap_dawson,
+    umap_exp,
+    umap_expm1,
+    umap_finite,
+    umap_fix,
+    umap_floor,
+    umap_gamma,
+    umap_imag,
+    umap_isinf,
+    umap_isna,
+    umap_isnan,
+    umap_lgamma,
+    umap_log,
+    umap_log2,
+    umap_log10,
+    umap_log1p,
+    umap_real,
+    umap_round,
+    umap_roundb,
+    umap_signum,
+    umap_sin,
+    umap_sinh,
+    umap_sqrt,
+    umap_tan,
+    umap_tanh,
+    umap_xisalnum,
+    umap_xisalpha,
+    umap_xisascii,
+    umap_xiscntrl,
+    umap_xisdigit,
+    umap_xisgraph,
+    umap_xislower,
+    umap_xisprint,
+    umap_xispunct,
+    umap_xisspace,
+    umap_xisupper,
+    umap_xisxdigit,
+    umap_xsignbit,
+    umap_xtoascii,
+    umap_xtolower,
+    umap_xtoupper,
+    umap_unknown,
+    num_unary_mappers = umap_unknown
+  };
 
   virtual octave_value map (unary_mapper_t) const;
 
@@ -789,16 +796,16 @@ protected:
                                const octave_value& rhs);
 
   void reset_indent_level (void) const
-    { curr_print_indent_level = 0; }
+  { curr_print_indent_level = 0; }
 
   void increment_indent_level (void) const
-    { curr_print_indent_level += 2; }
+  { curr_print_indent_level += 2; }
 
   void decrement_indent_level (void) const
-    { curr_print_indent_level -= 2; }
+  { curr_print_indent_level -= 2; }
 
   int current_print_indent_level (void) const
-    { return curr_print_indent_level; }
+  { return curr_print_indent_level; }
 
   void indent (std::ostream& os) const;
 
@@ -825,5 +832,17 @@ private:
 // TRUE means to perform automatic sparse to real mutation if there
 // is memory to be saved
 extern OCTINTERP_API bool Vsparse_auto_mutate;
+
+// Utility function to convert C++ arguments used in subsref/subsasgn into an
+// octave_value_list object that can be used to call a function/method in the
+// interpreter.
+extern OCTINTERP_API octave_value
+make_idx_args (const std::string& type,
+               const std::list<octave_value_list>& idx,
+               const std::string& who);
+
+// Tells whether some regular octave_value_base methods are being called from
+// within the "builtin" function.
+extern OCTINTERP_API bool called_from_builtin (void);
 
 #endif

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,7 +52,7 @@ static oprocstream *external_pager = 0;
 static bool write_to_diary_file = false;
 
 // The name of the current diary file.
-static std::string diary_file;
+static std::string diary_file ("diary");
 
 // The diary file.
 static std::ofstream external_diary_file;
@@ -180,7 +180,7 @@ do_sync (const char *msg, int len, bool bypass_pager)
                 }
               else
                 {
-                  // FIXME -- omething is not right with the
+                  // FIXME: omething is not right with the
                   // pager.  If it died then we should receive a
                   // signal for that.  If there is some other problem,
                   // then what?
@@ -513,7 +513,7 @@ open_diary_file (void)
 }
 
 DEFUN (diary, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} diary\n\
 @deftypefnx {Command} {} diary on\n\
 @deftypefnx {Command} {} diary off\n\
@@ -589,8 +589,26 @@ With no arguments, @code{diary} toggles the current diary state.\n\
   return retval;
 }
 
+DEFUN (__diaryfile__, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{fname} =} __diaryfile__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (diary_file);
+}
+
+DEFUN (__diarystate__, , ,
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{state} =} __diarystate__ ()\n\
+Undocumented internal function\n\
+@end deftypefn")
+{
+  return ovl (write_to_diary_file);
+}
+
 DEFUN (more, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Command} {} more\n\
 @deftypefnx {Command} {} more on\n\
 @deftypefnx {Command} {} more off\n\
@@ -629,7 +647,7 @@ The current state can be determined via @code{page_screen_output}.\n\
 }
 
 DEFUN (terminal_size, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} terminal_size ()\n\
 Return a two-element row vector containing the current size of the\n\
 terminal window in characters (rows and columns).\n\
@@ -645,7 +663,7 @@ terminal window in characters (rows and columns).\n\
 }
 
 DEFUN (page_output_immediately, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} page_output_immediately ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} page_output_immediately (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} page_output_immediately (@var{new_val}, \"local\")\n\
@@ -664,7 +682,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (page_screen_output, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} page_screen_output ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} page_screen_output (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} page_screen_output (@var{new_val}, \"local\")\n\
@@ -684,7 +702,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (PAGER, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PAGER ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PAGER (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PAGER (@var{new_val}, \"local\")\n\
@@ -704,7 +722,7 @@ The original variable value is restored when exiting the function.\n\
 }
 
 DEFUN (PAGER_FLAGS, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PAGER_FLAGS ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PAGER_FLAGS (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} PAGER_FLAGS (@var{new_val}, \"local\")\n\

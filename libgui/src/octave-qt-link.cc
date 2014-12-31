@@ -1,8 +1,8 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
-Copyright (C) 2011-2012 John P. Swensen
+Copyright (C) 2011-2013 Jacob Dawid
+Copyright (C) 2011-2013 John P. Swensen
 
 This file is part of Octave.
 
@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <QStringList>
+#include <QDialog>
+#include <QDir>
 
 #include "str-vec.h"
 #include "dialog.h"
@@ -39,16 +41,29 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "octave-qt-link.h"
 
-octave_qt_link::octave_qt_link (octave_main_thread *mt)
-  : octave_link (), main_thread (mt)
-{ }
+#include "resource-manager.h"
+
+octave_qt_link::octave_qt_link (QWidget *p)
+  : octave_link (), main_thread (new QThread ()),
+    command_interpreter (new octave_interpreter ())
+{
+  connect (this, SIGNAL (execute_interpreter_signal (void)),
+           command_interpreter, SLOT (execute (void)));
+
+  connect (command_interpreter, SIGNAL (octave_ready_signal ()),
+           p, SLOT (handle_octave_ready ()));
+
+  command_interpreter->moveToThread (main_thread);
+
+  main_thread->start ();
+}
 
 octave_qt_link::~octave_qt_link (void) { }
 
 void
 octave_qt_link::execute_interpreter (void)
 {
-  main_thread->execute_interpreter ();
+  emit execute_interpreter_signal ();
 }
 
 bool
@@ -65,6 +80,34 @@ octave_qt_link::do_edit_file (const std::string& file)
   emit edit_file_signal (QString::fromStdString (file));
 
   return true;
+}
+
+bool
+octave_qt_link::do_prompt_new_edit_file (const std::string& file)
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings->value ("editor/create_new_file",false).toBool ())
+    return true;
+
+  QFileInfo file_info (QString::fromStdString (file));
+  QStringList btn;
+  QStringList role;
+  role << "YesRole" << "RejectRole";
+  btn << tr ("Create") << tr ("Cancel");
+
+  uiwidget_creator.signal_dialog (
+    tr ("File\n%1\ndoes not exist. Do you want to create it?").
+    arg (QDir::currentPath () + QDir::separator ()
+         + QString::fromStdString (file)),
+    tr ("Octave Editor"), "quest", btn, tr ("Create"), role );
+
+  // Wait while the user is responding to message box.
+  uiwidget_creator.wait ();
+  // The GUI has sent a signal and the process has been awakened.
+  QString answer = uiwidget_creator.get_dialog_button ();
+
+  return (answer == tr ("Create"));
 }
 
 int
@@ -114,7 +157,7 @@ octave_qt_link::do_question_dialog (const std::string& msg,
   uiwidget_creator.wait ();
 
   // The GUI has sent a signal and the process has been awakened.
-  return uiwidget_creator.get_dialog_button().toStdString ();
+  return uiwidget_creator.get_dialog_button ().toStdString ();
 }
 
 static QStringList
@@ -153,10 +196,10 @@ make_filter_list (const octave_link::filter_list& lst)
       name.replace (QRegExp ("\\(.*\\)"), "");
       ext.replace (";", " ");
 
-      if (name.length() == 0)
+      if (name.length () == 0)
         {
           // No name field.  Build one from the extensions.
-          name = ext.toUpper() + " Files";
+          name = ext.toUpper () + " Files";
         }
 
       retval.append (name + " (" + ext + ")");
@@ -250,7 +293,8 @@ octave_qt_link::do_file_dialog (const filter_list& filter,
     retval.push_back (it->toStdString ());
 
   retval.push_back (uiwidget_creator.get_dialog_path ()->toStdString ());
-  retval.push_back ((QString ("%1").arg (uiwidget_creator.get_dialog_result ())).toStdString ());
+  retval.push_back ((QString ("%1").arg (
+                       uiwidget_creator.get_dialog_result ())).toStdString ());
 
   return retval;
 }
@@ -267,8 +311,8 @@ octave_qt_link::do_debug_cd_or_addpath_error (const std::string& file,
 
   QString msg
     = (addpath_option
-       ? tr ("The file %1 does not exist in the load path.  To debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg(qfile).arg(qdir)
-       : tr ("The file %1 is shadowed by a file with the same name in the load path.  To debug the function you are editing, change to the directory %2.").arg(qfile).arg(qdir));
+       ? tr ("The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.").arg (qfile).arg (qdir)
+       : tr ("The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.").arg (qfile).arg (qdir));
 
   QString title = tr ("Change Directory or Add Directory to Load Path");
 
@@ -324,6 +368,7 @@ octave_qt_link::do_set_workspace (bool top_level,
   QStringList class_names;
   QStringList dimensions;
   QStringList values;
+  QIntList complex_flags;
 
   for (std::list<workspace_element>::const_iterator it = ws.begin ();
        it != ws.end (); it++)
@@ -333,10 +378,11 @@ octave_qt_link::do_set_workspace (bool top_level,
       class_names.append (QString::fromStdString (it->class_name ()));
       dimensions.append (QString::fromStdString (it->dimension ()));
       values.append (QString::fromStdString (it->value ()));
+      complex_flags.append (it->complex_flag ());
     }
 
   emit set_workspace_signal (top_level, scopes, symbols, class_names,
-                             dimensions, values);
+                             dimensions, values, complex_flags);
 }
 
 void
@@ -402,7 +448,8 @@ void
 octave_qt_link::do_update_breakpoint (bool insert,
                                       const std::string& file, int line)
 {
-  emit update_breakpoint_marker_signal (insert, QString::fromStdString (file), line);
+  emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
+                                        line);
 }
 
 void
@@ -504,4 +551,8 @@ octave_qt_link::do_show_doc (const std::string& file)
   emit show_doc_signal (QString::fromStdString (file));
 }
 
-
+void
+octave_qt_link::terminal_interrupt (void)
+{
+  command_interpreter->interrupt ();  
+}

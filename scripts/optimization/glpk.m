@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Nicolo' Giorgetti
+## Copyright (C) 2005-2013 Nicolo' Giorgetti
 ## Copyright (C) 2013 Sébastien Villemot <sebastien@debian.org>
 ##
 ## This file is part of Octave.
@@ -123,7 +123,7 @@
 ##
 ## @item @qcode{"D"}
 ## An inequality constraint with both upper and lower bounds
-## (@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
+## (@code{A(i,:)*x >= -b(i)}) @emph{and} (@code{A(i,:)*x <= b(i)}).
 ## @end table
 ##
 ## @item vartype
@@ -238,7 +238,7 @@
 ## Most fractional variable.
 ##
 ## @item 4 (@w{@code{GLP_BR_DTH}})
-## Heuristic by Driebeck and Tomlin.
+## Heuristic by @nospell{Driebeck and Tomlin}.
 ##
 ## @item 5 (@w{@code{GLP_BR_PCH}})
 ## Hybrid @nospell{pseudocost} heuristic.

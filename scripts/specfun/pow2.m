@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Mapping Function} {} pow2 (@var{x})
-## @deftypefnx {Mapping Function} {} pow2 (@var{f}, @var{e})
-## With one argument, computes
+## @deftypefn  {Function File} {} pow2 (@var{x})
+## @deftypefnx {Function File} {} pow2 (@var{f}, @var{e})
+## With one input argument, compute
 ## @tex
 ## $2^x$
 ## @end tex
@@ -28,14 +28,14 @@
 ## @end ifnottex
 ## for each element of @var{x}.
 ##
-## With two arguments, returns
+## With two input arguments, return
 ## @tex
 ## $f \cdot 2^e$.
 ## @end tex
 ## @ifnottex
 ## f .* (2 .^ e).
 ## @end ifnottex
-## @seealso{log2, nextpow2}
+## @seealso{log2, nextpow2, power}
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -67,4 +67,5 @@ endfunction
 %! assert (pow2 (x,y), z, sqrt (eps));
 
 %!error pow2 ()
+%!error pow2 (1,2,3)
 

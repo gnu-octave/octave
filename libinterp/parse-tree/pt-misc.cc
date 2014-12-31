@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -124,7 +124,8 @@ tree_parameter_list::validate (in_or_out type)
 
 void
 tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
-                                                    int nargout, const octave_value& val)
+                                                    int nargout,
+                                                    const octave_value& val)
 {
   bool warned = false;
 
@@ -236,7 +237,7 @@ tree_parameter_list::variable_names (void) const
   for (const_iterator p = begin (); p != end (); p++)
     {
       tree_decl_elt *elt = *p;
-      
+
       retval.push_back (elt->name ());
     }
 

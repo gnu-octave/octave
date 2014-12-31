@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -75,8 +75,8 @@ public:
   }
 
   // The minimum difference in file time stamp values.
-  // FIXME -- this value should come from the filesystem itself.  How
-  // can we get that info?
+  // FIXME: This value should come from the filesystem itself.
+  //        How can we get that info?
   octave_time time_resolution (void) const
   {
     static octave_time resolution (1.0);

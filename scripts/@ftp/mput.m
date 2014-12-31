@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 David Bateman
+## Copyright (C) 2009-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -33,4 +33,8 @@ function retval = mput (f, file)
     retval = __ftp_mput__ (f.curlhandle, file);
   endif
 endfunction
+
+
+## No test possible for interactive function.
+%!assert (1)
 

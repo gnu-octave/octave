@@ -1,7 +1,7 @@
 /*
     This source file was part of Konsole, a terminal emulator.
 
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
+    Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
@@ -35,9 +35,17 @@
 #include <QtCore>
 #include <QtGui>
 
+// FIXME: We should not have a special case for Mac here.  Instead, we
+// should be loading .keytab files at run time, and ideally, allowing
+// individual keys to be redefined from some preferences menu.
+
 //and this is default now translator - default.keytab from original Konsole
 const char* KeyboardTranslatorManager::defaultTranslatorText = 
+#if defined (Q_OS_MAC)
+#include "ExtendedDefaultTranslatorMac.h"
+#else
 #include "ExtendedDefaultTranslator.h"
+#endif
 ;
 
 KeyboardTranslatorManager::KeyboardTranslatorManager()

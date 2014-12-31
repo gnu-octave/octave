@@ -1,7 +1,7 @@
 // Matrix manipulations.
 /*
 
-Copyright (C) 1995-2012 John W. Eaton
+Copyright (C) 1995-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -38,55 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "mx-op-defs.h"
 
 // charMatrix class.
-
-charMatrix::charMatrix (char c)
-  : Array<char> ()
-{
-  octave_idx_type nc = 1;
-  octave_idx_type nr = 1;
-
-  resize (nr, nc);
-
-  elem (0, 0) = c;
-}
-
-charMatrix::charMatrix (const char *s)
-  : Array<char> ()
-{
-  octave_idx_type nc = s ? strlen (s) : 0;
-  octave_idx_type nr = s && nc > 0 ? 1 : 0;
-
-  resize (nr, nc);
-
-  for (octave_idx_type i = 0; i < nc; i++)
-    elem (0, i) = s[i];
-}
-
-charMatrix::charMatrix (const std::string& s)
-  : Array<char> ()
-{
-  octave_idx_type nc = s.length ();
-  octave_idx_type nr = nc > 0 ? 1 : 0;
-
-  resize (nr, nc);
-
-  for (octave_idx_type i = 0; i < nc; i++)
-    elem (0, i) = s[i];
-}
-
-charMatrix::charMatrix (const string_vector& s, char fill_value)
-  : Array<char> (dim_vector (s.length (), s.max_length ()), fill_value)
-{
-  octave_idx_type nr = rows ();
-
-  for (octave_idx_type i = 0; i < nr; i++)
-    {
-      const std::string si = s(i);
-      octave_idx_type nc = si.length ();
-      for (octave_idx_type j = 0; j < nc; j++)
-        elem (i, j) = si[j];
-    }
-}
 
 bool
 charMatrix::operator == (const charMatrix& a) const
@@ -167,10 +118,11 @@ charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const
 }
 
 charMatrix
-charMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+charMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2) const
 {
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   octave_idx_type new_r = r2 - r1 + 1;
   octave_idx_type new_c = c2 - c1 + 1;
@@ -182,27 +134,6 @@ charMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2,
       result.elem (i, j) = elem (r1+i, c1+j);
 
   return result;
-}
-
-charMatrix
-charMatrix::diag (octave_idx_type k) const
-{
-  return Array<char>::diag (k);
-}
-
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
-
-boolMatrix
-charMatrix::all (int dim) const
-{
-  return do_mx_red_op<bool, char> (*this, dim, mx_inline_all);
-}
-
-boolMatrix
-charMatrix::any (int dim) const
-{
-  return do_mx_red_op<bool, char> (*this, dim, mx_inline_any);
 }
 
 MS_CMP_OPS (charMatrix, char)

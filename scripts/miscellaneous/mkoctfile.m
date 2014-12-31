@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 Keith Goodman
+## Copyright (C) 2006-2013 Keith Goodman
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
-## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
+## @deftypefnx {Function File} {[@var{output}, @var{status}] =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the
@@ -78,30 +78,33 @@
 ## Print the configuration variable VAR@.  Recognized variables are:
 ##
 ## @example
-##    ALL_CFLAGS                FFTW3F_LIBS
-##    ALL_CXXFLAGS              FLIBS
-##    ALL_FFLAGS                FPICFLAG
-##    ALL_LDFLAGS               INCFLAGS
-##    BLAS_LIBS                 LAPACK_LIBS
-##    CC                        LDFLAGS
-##    CFLAGS                    LD_CXX
-##    CPICFLAG                  LD_STATIC_FLAG
-##    CPPFLAGS                  LFLAGS
-##    CXX                       LIBOCTAVE
-##    CXXFLAGS                  LIBOCTINTERP
-##    CXXPICFLAG                LIBS
-##    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
-##    DEPEND_FLAGS              OCTAVE_LINK_DEPS
-##    DL_LD                     OCT_LINK_DEPS
-##    DL_LDFLAGS                RDYNAMIC_FLAG
-##    EXEEXT                    READLINE_LIBS
-##    F77                       SED
-##    F77_INTEGER_8_FLAG        XTRA_CFLAGS
-##    FFLAGS                    XTRA_CXXFLAGS
-##    FFTW3_LDFLAGS
-##    FFTW3_LIBS
-##    FFTW3F_LDFLAGS
-##
+##    ALL_CFLAGS                  INCFLAGS
+##    ALL_CXXFLAGS                INCLUDEDIR
+##    ALL_FFLAGS                  LAPACK_LIBS
+##    ALL_LDFLAGS                 LD_CXX
+##    AR                          LDFLAGS
+##    BLAS_LIBS                   LD_STATIC_FLAG
+##    CC                          LFLAGS
+##    CFLAGS                      LIBDIR
+##    CPICFLAG                    LIBOCTAVE
+##    CPPFLAGS                    LIBOCTINTERP
+##    CXX                         LIBS
+##    CXXFLAGS                    OCTAVE_HOME
+##    CXXPICFLAG                  OCTAVE_LIBS
+##    DEPEND_EXTRA_SED_PATTERN    OCTAVE_LINK_DEPS
+##    DEPEND_FLAGS                OCTAVE_LINK_OPTS
+##    DL_LD                       OCTAVE_PREFIX
+##    DL_LDFLAGS                  OCTINCLUDEDIR
+##    F77                         OCTLIBDIR
+##    F77_INTEGER8_FLAG           OCT_LINK_DEPS
+##    FFLAGS                      OCT_LINK_OPTS
+##    FFTW3F_LDFLAGS              RANLIB
+##    FFTW3F_LIBS                 RDYNAMIC_FLAG
+##    FFTW3_LDFLAGS               READLINE_LIBS
+##    FFTW3_LIBS                  SED
+##    FFTW_LIBS                   SPECIAL_MATH_LIB
+##    FLIBS                       XTRA_CFLAGS
+##    FPICFLAG                    XTRA_CXXFLAGS
 ## @end example
 ##
 ## @item --link-stand-alone
@@ -143,8 +146,9 @@
 function [output, status] = mkoctfile (varargin)
 
   bindir = octave_config_info ("bindir");
+  ext = octave_config_info ("EXEEXT");
 
-  shell_script = fullfile (bindir, sprintf ("mkoctfile-%s", OCTAVE_VERSION));
+  shell_script = fullfile (bindir, sprintf ("mkoctfile-%s%s", OCTAVE_VERSION, ext));
 
   if (! exist (shell_script, "file"))
     __gripe_missing_component__ ("mkoctfile", "mkoctfile");

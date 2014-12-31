@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2012 Paul Kienzle
+## Copyright (C) 2000-2013 Paul Kienzle
 ## Copyright (C) 2008-2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -18,72 +18,81 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} setdiff (@var{a}, @var{b})
-## @deftypefnx {Function File} {} setdiff (@var{a}, @var{b}, "rows")
-## @deftypefnx {Function File} {[@var{c}, @var{i}] =} setdiff (@var{a}, @var{b})
-## Return the elements in @var{a} that are not in @var{b}, sorted in
-## ascending order.  If @var{a} and @var{b} are both column vectors
-## return a column vector, otherwise return a row vector.
-## @var{a}, @var{b} may be cell arrays of string(s).
+## @deftypefn  {Function File} {@var{c} =} setdiff (@var{a}, @var{b})
+## @deftypefnx {Function File} {@var{c} =} setdiff (@var{a}, @var{b}, "rows")
+## @deftypefnx {Function File} {[@var{c}, @var{ia}] =} setdiff (@dots{})
+## Return the elements in @var{a} that are not in @var{b} sorted in
+## ascending order.
 ##
-## Given the optional third argument @qcode{"rows"}, return the rows in
-## @var{a} that are not in @var{b}, sorted in ascending order by rows.
+## If @var{a} and @var{b} are both column vectors return a column vector;
+## Otherwise, return a row vector.  The inputs may also be cell arrays of
+## strings.
 ##
-## If requested, return @var{i} such that @code{c = a(i)}.
+## If the optional input @qcode{"rows"} is given then return the rows in 
+## @var{a} that are not in @var{b}.  The inputs must be 2-D matrices to use
+## this option.
+##
+## If requested, return the index vector @var{ia} such that
+## @code{@var{c} = @var{a}(@var{ia})}.
 ## @seealso{unique, union, intersect, setxor, ismember}
 ## @end deftypefn
 
 ## Author: Paul Kienzle
 ## Adapted-by: jwe
 
-function [c, i] = setdiff (a, b, varargin)
+function [c, ia] = setdiff (a, b, varargin)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  [a, b] = validargs ("setdiff", a, b, varargin{:});
+  [a, b] = validsetargs ("setdiff", a, b, varargin{:});
 
-  if (nargin > 2)
+  by_rows = nargin == 3;
+  iscol = isvector (a) && isvector (b) && iscolumn (a) && iscolumn (b);
+
+  if (by_rows)
     if (nargout > 1)
-      [c, i] = unique (a, "rows");
+      [c, ia] = unique (a, "rows");
     else
       c = unique (a, "rows");
     endif
     if (! isempty (c) && ! isempty (b))
-      ## Form a and b into combined set.
+      ## Form A and B into combined set.
       b = unique (b, "rows");
-      [dummy, idx] = sortrows ([c; b]);
-      ## Eliminate those elements of a that are the same as in b.
-      dups = find (all (dummy(1:end-1,:) == dummy(2:end,:), 2));
+      [tmp, idx] = sortrows ([c; b]);
+      ## Eliminate those elements of A that are the same as in B.
+      dups = find (all (tmp(1:end-1,:) == tmp(2:end,:), 2));
       c(idx(dups),:) = [];
       if (nargout > 1)
-        i(idx(dups),:) = [];
+        ia(idx(dups),:) = [];
       endif
     endif
   else
     if (nargout > 1)
-      [c, i] = unique (a);
+      [c, ia] = unique (a);
     else
       c = unique (a);
     endif
     if (! isempty (c) && ! isempty (b))
       ## Form a and b into combined set.
       b = unique (b);
-      [dummy, idx] = sort ([c(:); b(:)]);
+      [tmp, idx] = sort ([c(:); b(:)]);
       ## Eliminate those elements of a that are the same as in b.
-      if (iscellstr (dummy))
-        dups = find (strcmp (dummy(1:end-1), dummy(2:end)));
+      if (iscellstr (tmp))
+        dups = find (strcmp (tmp(1:end-1), tmp(2:end)));
       else
-        dups = find (dummy(1:end-1) == dummy(2:end));
+        dups = find (tmp(1:end-1) == tmp(2:end));
       endif
       c(idx(dups)) = [];
       if (nargout > 1)
-        i(idx(dups)) = [];
+        ia(idx(dups)) = [];
       endif
-      ## Reshape if necessary.
-      if (rows (c) != 1 && rows (b) == 1)
-        c = c.';
+      ## Reshape if necessary for Matlab compatibility.
+      if (iscol)
+        c = c(:);
+      else
+        c = c(:).';
       endif
     endif
   endif
@@ -100,8 +109,22 @@ endfunction
 %!assert (setdiff ({"one","two";"three","four"}, {"one","two";"three","six"}), {"four"})
 
 %!test
-%! a = [3, 1, 4, 1, 5];  b = [1, 2, 3, 4];
-%! [y, i] = setdiff (a, b.');
-%! assert (y, [5]);
-%! assert (y, a(i));
+%! a = [3, 1, 4, 1, 5];
+%! b = [1, 2, 3, 4];
+%! [c, ia] = setdiff (a, b');
+%! assert (c, [5]);
+%! assert (c, a(ia));
+
+%% Test output orientation compatibility (bug #42577)
+%!assert (setdiff ([1:5], 2), [1,3,4,5])
+%!assert (setdiff ([1:5]', 2), [1;3;4;5])
+%!assert (setdiff ([1:5], [2:3]), [1,4,5])
+%!assert (setdiff ([1:5], [2:3]'), [1,4,5])
+%!assert (setdiff ([1:5]', [2:3]), [1,4,5])
+%!assert (setdiff ([1:5]', [2:3]'), [1;4;5])
+
+%!test
+%! a = rand (3,3,3);
+%! b = a(1);
+%! assert (setdiff (a, b), sort (a(2:end)));
 

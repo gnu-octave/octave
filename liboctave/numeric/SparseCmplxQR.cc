@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 
 This file is part of Octave.
 
@@ -66,7 +66,7 @@ SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep
   A.p = const_cast<octave_idx_type *>(a.cidx ());
   A.i = const_cast<octave_idx_type *>(a.ridx ());
   A.x = const_cast<cs_complex_t *>(reinterpret_cast<const cs_complex_t *>
-                                      (a.data ()));
+                                   (a.data ()));
   A.nz = -1;
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 #if defined (CS_VER) && (CS_VER >= 2)
@@ -99,7 +99,7 @@ SparseComplexQR::SparseComplexQR_rep::V (void) const
 {
 #ifdef HAVE_CXSPARSE
   // Drop zeros from V and sort
-  // FIXME Is the double transpose to sort necessary?
+  // FIXME: Is the double transpose to sort necessary?
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_ZNAME (_dropzeros) (N->L);
   CXSPARSE_ZNAME () *D = CXSPARSE_ZNAME (_transpose) (N->L, 1);
@@ -163,7 +163,7 @@ SparseComplexQR::SparseComplexQR_rep::R (const bool econ) const
 {
 #ifdef HAVE_CXSPARSE
   // Drop zeros from R and sort
-  // FIXME Is the double transpose to sort necessary?
+  // FIXME: Is the double transpose to sort necessary?
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CXSPARSE_ZNAME (_dropzeros) (N->U);
   CXSPARSE_ZNAME () *D = CXSPARSE_ZNAME (_transpose) (N->U, 1);
@@ -311,8 +311,7 @@ qrsolve (const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
       if (! q.ok ())
         return ComplexMatrix ();
       x.resize (nc, b_nc);
-      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
-        (x.fortran_vec ());
+      cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
       OCTAVE_C99_COMPLEX (buf, q.S ()->m2);
       OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
       for (volatile octave_idx_type i = 0, idx = 0; i < b_nc; i++, idx+=nc)
@@ -356,8 +355,7 @@ qrsolve (const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
       if (! q.ok ())
         return ComplexMatrix ();
       x.resize (nc, b_nc);
-      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
-        (x.fortran_vec ());
+      cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
       volatile octave_idx_type nbuf = (nc > q.S ()->m2 ? nc : q.S ()->m2);
       OCTAVE_C99_COMPLEX (buf, nbuf);
       OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
@@ -418,7 +416,8 @@ qrsolve (const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
 }
 
 SparseComplexMatrix
-qrsolve (const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &info)
+qrsolve (const SparseComplexMatrix&a, const SparseMatrix &b,
+         octave_idx_type &info)
 {
   info = -1;
 #ifdef HAVE_CXSPARSE
@@ -592,7 +591,8 @@ qrsolve (const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &in
 }
 
 ComplexMatrix
-qrsolve (const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &info)
+qrsolve (const SparseComplexMatrix&a, const ComplexMatrix &b,
+         octave_idx_type &info)
 {
   info = -1;
 #ifdef HAVE_CXSPARSE
@@ -616,7 +616,7 @@ qrsolve (const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &i
         return ComplexMatrix ();
       x.resize (nc, b_nc);
       cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
-        (x.fortran_vec ());
+                          (x.fortran_vec ());
       OCTAVE_C99_COMPLEX (buf, q.S ()->m2);
       for (volatile octave_idx_type i = 0, idx = 0, bidx = 0; i < b_nc;
            i++, idx+=nc, bidx+=b_nr)
@@ -656,8 +656,7 @@ qrsolve (const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &i
       if (! q.ok ())
         return ComplexMatrix ();
       x.resize (nc, b_nc);
-      cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
-        (x.fortran_vec ());
+      cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
       volatile octave_idx_type nbuf = (nc > q.S ()->m2 ? nc : q.S ()->m2);
       OCTAVE_C99_COMPLEX (buf, nbuf);
 #if defined (CS_VER) && (((CS_VER == 2) && (CS_SUBVER >= 2)) || (CS_VER > 2))
@@ -713,7 +712,8 @@ qrsolve (const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &i
 }
 
 SparseComplexMatrix
-qrsolve (const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_type &info)
+qrsolve (const SparseComplexMatrix&a, const SparseComplexMatrix &b,
+         octave_idx_type &info)
 {
   info = -1;
 #ifdef HAVE_CXSPARSE

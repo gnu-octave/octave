@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2012 David Bateman
+Copyright (C) 1997-2013 David Bateman
 Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.
@@ -168,7 +168,7 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
 }
 
 DEFUN (fft2, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} fft2 (@var{A})\n\
 @deftypefnx {Built-in Function} {} fft2 (@var{A}, @var{m}, @var{n})\n\
 Compute the two-dimensional discrete Fourier transform of @var{A} using\n\
@@ -189,7 +189,7 @@ of @var{A} is treated separately.\n\
 
 
 DEFUN (ifft2, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} ifft2 (@var{A})\n\
 @deftypefnx {Built-in Function} {} ifft2 (@var{A}, @var{m}, @var{n})\n\
 Compute the inverse two-dimensional discrete Fourier transform of @var{A}\n\

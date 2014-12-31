@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -356,12 +356,33 @@ std::string
 file_ops::concat (const std::string& dir, const std::string& file)
 {
   return dir.empty ()
-    ? file
-    : (is_dir_sep (dir[dir.length ()-1])
-       ? dir + file
-       : dir + dir_sep_char () + file);
+         ? file
+         : (is_dir_sep (dir[dir.length ()-1])
+            ? dir + file
+            : dir + dir_sep_char () + file);
 }
 
+std::string
+file_ops::native_separator_path (const std::string& path)
+{
+  std::string retval;
+
+  if (dir_sep_char () == '/')
+    retval = path;
+  else
+    {
+      size_t n = path.length ();
+      for (size_t i = 0; i < n; i++)
+        {
+          if (path[i] == '/')
+            retval += dir_sep_char();
+          else
+            retval += path[i];
+        }
+    }
+
+  return retval;
+}
 
 int
 octave_mkdir (const std::string& nm, mode_t md)
@@ -420,7 +441,7 @@ octave_link (const std::string& old_name, const std::string& new_name)
 
 int
 octave_link (const std::string& old_name,
-                const std::string& new_name, std::string& msg)
+             const std::string& new_name, std::string& msg)
 {
   msg = std::string ();
 
@@ -443,7 +464,7 @@ octave_symlink (const std::string& old_name, const std::string& new_name)
 
 int
 octave_symlink (const std::string& old_name,
-                   const std::string& new_name, std::string& msg)
+                const std::string& new_name, std::string& msg)
 {
   msg = std::string ();
 
@@ -466,7 +487,7 @@ octave_readlink (const std::string& path, std::string& result)
 
 int
 octave_readlink (const std::string& path, std::string& result,
-                    std::string& msg)
+                 std::string& msg)
 {
   int status = -1;
 
@@ -497,7 +518,7 @@ octave_rename (const std::string& from, const std::string& to)
 
 int
 octave_rename (const std::string& from, const std::string& to,
-                  std::string& msg)
+               std::string& msg)
 {
   int status = -1;
 
@@ -666,8 +687,40 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
   if (tmp)
     {
       retval = tmp;
-
       free (tmp);
+
+      if (! dir.empty ())
+        {
+          // Check that environment variable hasn't overridden dir argument
+          size_t pos = retval.rfind (file_ops::dir_sep_char ());
+          std::string tmpdir = retval.substr (0, pos);  
+          std::string dirarg = dir;
+          if (*dirarg.rbegin () == file_ops::dir_sep_char ())
+            dirarg.erase (--dirarg.end ());
+
+          if (tmpdir != dirarg)
+          {
+            // A different TMPDIR was used.
+            // Replace TMPDIR with given dir if is valid
+            file_stat fs (dirarg, false);
+            if (fs && fs.is_dir ())
+              retval.replace (0, pos, dirarg);
+
+            // since we have changed the directory, it is possible that the name
+            // we are using is no longer unique, so check/modify
+            std::string tmppath = retval;
+            int attempt = 0;
+            while (++attempt < TMP_MAX && file_stat (tmppath, false).exists ())
+              {
+                char file_postfix[16];
+
+                sprintf(file_postfix, "t%d", attempt);
+
+                tmppath = retval + file_postfix;
+              }
+            retval = tmppath;
+          }
+        }
     }
   else
     msg = gnulib::strerror (errno);
@@ -689,8 +742,6 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
 
   std::string retval;
 
-#if defined (HAVE_CANONICALIZE_FILE_NAME)
-
   char *tmp = gnulib::canonicalize_file_name (name.c_str ());
 
   if (tmp)
@@ -698,98 +749,6 @@ octave_canonicalize_file_name (const std::string& name, std::string& msg)
       retval = tmp;
       free (tmp);
     }
-
-#elif defined (HAVE_RESOLVEPATH)
-
-#if !defined (errno)
-extern int errno;
-#endif
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  // All known hosts with resolvepath (e.g. Solaris 7) don't turn
-  // relative names into absolute ones, so prepend the working
-  // directory if the path is not absolute.
-
-  std::string absolute_name = octave_env::make_absolute (name);
-
-  size_t resolved_size = absolute_name.length ();
-
-  while (true)
-    {
-      resolved_size = 2 * resolved_size + 1;
-
-      OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
-
-      int resolved_len
-        = resolvepath (absolute_name.c_str (), resolved, resolved_size);
-
-      if (resolved_len < 0)
-        break;
-
-      if (resolved_len < resolved_size)
-        {
-          retval = resolved;
-          break;
-        }
-    }
-
-#elif defined (__WIN32__)
-
-  int n = 1024;
-
-  std::string win_path (n, '\0');
-
-  while (true)
-    {
-      int status = GetFullPathName (name.c_str (), n, &win_path[0], 0);
-
-      if (status == 0)
-        break;
-      else if (status < n)
-        {
-          win_path.resize (status);
-          retval = win_path;
-          break;
-        }
-      else
-        {
-          n *= 2;
-          win_path.resize (n);
-        }
-    }
-
-#elif defined (HAVE_REALPATH)
-
-#if !defined (__set_errno)
-# define __set_errno(Val) errno = (Val)
-#endif
-
-  if (name.empty ())
-    {
-      __set_errno (ENOENT);
-      return retval;
-    }
-
-  OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
-
-  if (::realpath (name.c_str (), buf))
-    retval = buf;
-
-#else
-
-  // FIXME -- provide replacement here...
-  retval = name;
-
-#endif
 
   if (retval.empty ())
     msg = gnulib::strerror (errno);

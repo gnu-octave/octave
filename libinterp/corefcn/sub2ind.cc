@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 VZLU Prague
+Copyright (C) 2009-2013 VZLU Prague
 
 This file is part of Octave.
 
@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "Array-util.h"
+#include "oct-locbuf.h"
 #include "quit.h"
 
 #include "defun.h"
@@ -62,7 +64,7 @@ get_dim_vector (const octave_value& val, const char *name)
 }
 
 DEFUN (sub2ind, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})\n\
 @deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})\n\
 Convert subscripts to a linear index.\n\
@@ -168,7 +170,7 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 */
 
 DEFUN (ind2sub, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Function File} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})\n\
 Convert a linear index to subscripts.\n\
 \n\

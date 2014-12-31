@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -45,7 +45,8 @@ extern OCTINTERP_API void
 gripe_nonconformant (void);
 
 extern OCTINTERP_API void
-gripe_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2);
+gripe_nonconformant (octave_idx_type r1, octave_idx_type c1,
+                     octave_idx_type r2, octave_idx_type c2);
 
 extern OCTINTERP_API void
 gripe_empty_arg (const char *name, bool is_error);
@@ -130,4 +131,8 @@ gripe_warn_complex_cmp (void);
 extern OCTINTERP_API void
 gripe_disabled_feature (const std::string& func, const std::string& feature,
                         const std::string& pkg="Octave");
+
+extern OCTINTERP_API void
+gripe_data_file_in_path (const std::string& fcn, const std::string& file);
+
 #endif

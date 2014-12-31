@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 John W. Eaton
+Copyright (C) 2006-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,7 +33,8 @@ extern OCTAVE_API double oct_randg (double a);
 extern OCTAVE_API void oct_fill_randg (double a, octave_idx_type n, double *p);
 
 extern OCTAVE_API float oct_float_randg (float a);
-extern OCTAVE_API void oct_fill_float_randg (float a, octave_idx_type n, float *p);
+extern OCTAVE_API void oct_fill_float_randg (float a, octave_idx_type n,
+                                             float *p);
 
 #ifdef  __cplusplus
 }

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -149,8 +149,10 @@ octave_user_script::do_multi_index_op (int nargout,
                   frame.protect_var (tree_evaluator::statement_context);
                   tree_evaluator::statement_context = tree_evaluator::script;
 
-                  BEGIN_PROFILER_BLOCK (profiler_name ())
+                  BEGIN_PROFILER_BLOCK (octave_user_script)
+
                   cmd_list->accept (*current_evaluator);
+
                   END_PROFILER_BLOCK
 
                   if (tree_return_command::returning)
@@ -158,9 +160,6 @@ octave_user_script::do_multi_index_op (int nargout,
 
                   if (tree_break_command::breaking)
                     tree_break_command::breaking--;
-
-                  if (error_state)
-                    octave_call_stack::backtrace_error_message ();
                 }
               else
                 ::error ("max_recursion_depth exceeded");
@@ -203,7 +202,7 @@ octave_user_function::octave_user_function
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
     anonymous_function (false), nested_function (false),
-    class_constructor (false), class_method (false),
+    class_constructor (none), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
 #ifdef HAVE_LLVM
@@ -232,7 +231,7 @@ octave_user_function::~octave_user_function (void)
   delete jit_info;
 #endif
 
-  // FIXME -- this is really playing with fire.
+  // FIXME: this is really playing with fire.
   symbol_table::erase_scope (local_scope);
 }
 
@@ -319,14 +318,18 @@ octave_user_function::profiler_name (void) const
 {
   std::ostringstream result;
 
-  if (is_inline_function ())
-    result << "inline@" << fcn_file_name ()
-           << ":" << location_line << ":" << location_column;
-  else if (is_anonymous_function ())
+  if (is_anonymous_function ())
     result << "anonymous@" << fcn_file_name ()
            << ":" << location_line << ":" << location_column;
   else if (is_subfunction ())
     result << parent_fcn_name () << ">" << name ();
+  else if (is_class_method ())
+    result << "@" << dispatch_class () << "/" << name ();
+  else if (is_class_constructor () || is_classdef_constructor ())
+    result << "@" << name ();
+  else if (is_inline_function ())
+    result << "inline@" << fcn_file_name ()
+           << ":" << location_line << ":" << location_column;
   else
     result << name ();
 
@@ -423,7 +426,8 @@ octave_user_function::subsref (const std::string& type,
 octave_value_list
 octave_user_function::subsref (const std::string& type,
                                const std::list<octave_value_list>& idx,
-                               int nargout, const std::list<octave_lvalue>* lvalue_list)
+                               int nargout,
+                               const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
 
@@ -450,7 +454,7 @@ octave_user_function::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
+  // FIXME: perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // octave_builtin::subsref.
 
@@ -469,7 +473,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
 octave_value_list
 octave_user_function::do_multi_index_op (int nargout,
-                                         const octave_value_list& args,
+                                         const octave_value_list& _args,
                                          const std::list<octave_lvalue>* lvalue_list)
 {
   octave_value_list retval;
@@ -479,6 +483,23 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (! cmd_list)
     return retval;
+
+  // If this function is a classdef constructor, extract the first input
+  // argument, which must be the partially constructed object instance.
+
+  octave_value_list args (_args);
+  octave_value_list ret_args;
+
+  if (is_classdef_constructor ())
+    {
+      if (args.length () > 0)
+        {
+          ret_args = args.slice (0, 1, true);
+          args = args.slice (1, args.length () - 1, true);
+        }
+      else
+        panic_impossible ();
+    }
 
 #ifdef HAVE_LLVM
   if (is_special_expr ()
@@ -521,6 +542,25 @@ octave_user_function::do_multi_index_op (int nargout,
       param_list->define_from_arg_vector (args);
       if (error_state)
         return retval;
+    }
+
+  // For classdef constructor, pre-populate the output arguments
+  // with the pre-initialized object instance, extracted above.
+
+  if (is_classdef_constructor ())
+    {
+      if (ret_list)
+        {
+          ret_list->define_from_arg_vector (ret_args);
+          if (error_state)
+            return retval;
+        }
+      else
+        {
+          ::error ("%s: invalid classdef constructor, no output argument defined",
+                   dispatch_class ().c_str ());
+          return retval;
+        }
     }
 
   // Force parameter list to be undefined when this function exits.
@@ -573,7 +613,7 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (tree_evaluator::statement_context);
   tree_evaluator::statement_context = tree_evaluator::function;
 
-  BEGIN_PROFILER_BLOCK (profiler_name ())
+  BEGIN_PROFILER_BLOCK (octave_user_function)
 
   if (is_special_expr ())
     {
@@ -599,10 +639,7 @@ octave_user_function::do_multi_index_op (int nargout,
     tree_break_command::breaking--;
 
   if (error_state)
-    {
-      octave_call_stack::backtrace_error_message ();
-      return retval;
-    }
+    return retval;
 
   // Copy return values out.
 
@@ -653,6 +690,7 @@ octave_user_function::subsasgn_optimization_ok (void)
 {
   bool retval = false;
   if (Voptimize_subsasgn_calls
+      && param_list && ret_list
       && param_list->length () > 0 && ! param_list->varargs_only ()
       && ret_list->length () == 1 && ! ret_list->takes_varargs ())
     {
@@ -691,7 +729,8 @@ octave_user_function::print_code_function_trailer (void)
 void
 octave_user_function::bind_automatic_vars
   (const string_vector& arg_names, int nargin, int nargout,
-   const octave_value_list& va_args, const std::list<octave_lvalue> *lvalue_list)
+   const octave_value_list& va_args,
+   const std::list<octave_lvalue> *lvalue_list)
 {
   if (! arg_names.empty ())
     {
@@ -700,7 +739,8 @@ octave_user_function::bind_automatic_vars
       // which might be redefined in a function.  Keep the old argn name
       // for backward compatibility of functions that use it directly.
 
-      symbol_table::force_assign ("argn", charMatrix (arg_names, Vstring_fill_char));
+      symbol_table::force_assign ("argn",
+                                  charMatrix (arg_names, Vstring_fill_char));
       symbol_table::force_assign (".argn.", Cell (arg_names));
 
       symbol_table::mark_hidden (".argn.");
@@ -740,9 +780,10 @@ octave_user_function::bind_automatic_vars
         {
           // Only assign the hidden variable if black holes actually present.
           Matrix bh (1, nbh);
-          octave_idx_type k = 0, l = 0;
-          for (std::list<octave_lvalue>::const_iterator p = lvalue_list->begin ();
-               p != lvalue_list->end (); p++)
+          octave_idx_type k = 0;
+          octave_idx_type l = 0;
+          for (std::list<octave_lvalue>::const_iterator
+               p = lvalue_list->begin (); p != lvalue_list->end (); p++)
             {
               if (p->is_black_hole ())
                 bh(l++) = k+1;
@@ -764,10 +805,16 @@ octave_user_function::restore_warning_states (void)
 
   if (val.is_defined ())
     {
-      octave_map m = val.map_value ();
+      // Don't use the usual approach of attempting to extract a value
+      // and then checking error_state since this code might be
+      // executing when error_state is already set.  But do fail
+      // spectacularly if .saved_warning_states. is not an octave_map
+      // (or octave_scalar_map) object.
 
-      if (error_state)
+      if (! val.is_map ())
         panic_impossible ();
+
+      octave_map m = val.map_value ();
 
       Cell ids = m.contents ("identifier");
       Cell states = m.contents ("state");
@@ -778,18 +825,34 @@ octave_user_function::restore_warning_states (void)
 }
 
 DEFUN (nargin, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargin ()\n\
 @deftypefnx {Built-in Function} {} nargin (@var{fcn})\n\
-Within a function, return the number of arguments passed to the function.\n\
-At the top level, return the number of command line arguments passed to\n\
-Octave.\n\
+Report the number of input arguments to a function.\n\
 \n\
-If called with the optional argument @var{fcn}, a function name or handle,\n\
+Called from within a function, return the number of arguments passed to the\n\
+function.  At the top level, return the number of command line arguments\n\
+passed to Octave.\n\
+\n\
+If called with the optional argument @var{fcn}---a function name or handle---\n\
 return the declared number of arguments that the function can accept.\n\
-If the last argument is @var{varargin} the returned value is negative.\n\
-This feature does not work on builtin functions.\n\
-@seealso{nargout, varargin, isargout, varargout, nthargout}\n\
+\n\
+If the last argument to @var{fcn} is @var{varargin} the returned value is\n\
+negative.  For example, the function @code{union} for sets is declared as\n\
+\n\
+@example\n\
+@group\n\
+function [y, ia, ib] = union (a, b, varargin)\n\
+\n\
+and\n\
+\n\
+nargin (\"union\")\n\
+@result{} -3\n\
+@end group\n\
+@end example\n\
+\n\
+Programming Note: @code{nargin} does not work on built-in functions.\n\
+@seealso{nargout, narginchk, varargin, inputname}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -823,8 +886,9 @@ This feature does not work on builtin functions.\n\
             }
           else
             {
-              // Matlab gives up for histc, so maybe it's ok we give up somtimes too.
-              error ("nargin: nargin information not available for builtin functions");
+              // Matlab gives up for histc,
+              // so maybe it's ok that that we give up somtimes too?
+              error ("nargin: nargin information not available for built-in functions");
             }
         }
       else
@@ -844,14 +908,21 @@ This feature does not work on builtin functions.\n\
 }
 
 DEFUN (nargout, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargout ()\n\
 @deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
-Within a function, return the number of values the caller expects to\n\
-receive.  If called with the optional argument @var{fcn}, a function\n\
-name or handle, return the number of declared output values that the\n\
-function can produce.  If the final output argument is @var{varargout}\n\
-the returned value is negative.\n\
+Report the number of output arguments from a function.\n\
+\n\
+Called from within a function, return the number of values the caller expects\n\
+to receive.  At the top level, @code{nargout} with no argument is undefined\n\
+and will produce an error.\n\
+\n\
+If called with the optional argument @var{fcn}---a function name or\n\
+handle---return the number of declared output values that the function can\n\
+produce.\n\
+\n\
+If the final output argument is @var{varargout} the returned value is\n\
+negative.\n\
 \n\
 For example,\n\
 \n\
@@ -867,29 +938,28 @@ will cause @code{nargout} to return 0 inside the function @code{f} and\n\
 @end example\n\
 \n\
 @noindent\n\
-will cause @code{nargout} to return 2 inside the function\n\
-@code{f}.\n\
+will cause @code{nargout} to return 2 inside the function @code{f}.\n\
 \n\
 In the second usage,\n\
 \n\
 @example\n\
-nargout (@@histc) \% or nargout ('histc')\n\
+nargout (@@histc) \% or nargout (\"histc\")\n\
 @end example\n\
 \n\
 @noindent\n\
 will return 2, because @code{histc} has two outputs, whereas\n\
 \n\
 @example\n\
-nargout (@@deal)\n\
+nargout (@@imread)\n\
 @end example\n\
 \n\
 @noindent\n\
-will return -1, because @code{deal} has a variable number of outputs.\n\
+will return -2, because @code{imread} has two outputs and the second is\n\
+@var{varargout}.\n\
 \n\
-At the top level, @code{nargout} with no argument is undefined.\n\
-@code{nargout} does not work on builtin functions.\n\
-@code{nargout} returns -1 for all anonymous functions.\n\
-@seealso{nargin, varargin, isargout, varargout, nthargout}\n\
+Programming Note.  @code{nargout} does not work for built-in functions and\n\
+returns -1 for all anonymous functions.\n\
+@seealso{nargin, varargout, isargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -934,7 +1004,7 @@ At the top level, @code{nargout} with no argument is undefined.\n\
           if (fcn)
             {
               tree_parameter_list *ret_list = fcn->return_list ();
-          
+
               retval = ret_list ? ret_list->length () : 0;
 
               if (fcn->takes_var_return ())
@@ -942,10 +1012,11 @@ At the top level, @code{nargout} with no argument is undefined.\n\
             }
           else
             {
-              // JWE said this information is not available (currently, 2011-03-10)
+              // JWE said this information is not available (2011-03-10)
               // without making intrusive changes to Octave.
-              // Matlab gives up for histc, so maybe it's ok we give up somtimes too.
-              error ("nargout: nargout information not available for builtin functions.");
+              // Matlab gives up for histc,
+              // so maybe it's ok that we give up somtimes too?
+              error ("nargout: nargout information not available for built-in functions.");
             }
         }
       else
@@ -970,13 +1041,14 @@ At the top level, @code{nargout} with no argument is undefined.\n\
 }
 
 DEFUN (optimize_subsasgn_calls, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
 Query or set the internal flag for subsasgn method call optimizations.\n\
+\n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
-subsasgn method of a user-defined class.\n\
+the subsasgn method of a user-defined class.\n\
 \n\
 When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
@@ -1007,19 +1079,21 @@ static bool isargout1 (int nargout, const Matrix& ignored, double k)
 }
 
 DEFUN (isargout, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isargout (@var{k})\n\
 Within a function, return a logical value indicating whether the argument\n\
-@var{k} will be assigned on output to a variable.  If the result is false,\n\
-the argument has been ignored during the function call through the use of\n\
-the tilde (~) special output argument.  Functions can use @code{isargout} to\n\
-avoid performing unnecessary calculations for outputs which are unwanted.\n\
+@var{k} will be assigned to a variable on output.\n\
+\n\
+If the result is false, the argument has been ignored during the function\n\
+call through the use of the tilde (~) special output argument.  Functions\n\
+can use @code{isargout} to avoid performing unnecessary calculations for\n\
+outputs which are unwanted.\n\
 \n\
 If @var{k} is outside the range @code{1:max (nargout)}, the function returns\n\
 false.  @var{k} can also be an array, in which case the function works\n\
 element-by-element and a logical array is returned.  At the top level,\n\
 @code{isargout} returns an error.\n\
-@seealso{nargout, nargin, varargin, varargout, nthargout}\n\
+@seealso{nargout, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1054,7 +1128,9 @@ element-by-element and a logical array is returned.  At the top level,\n\
               if (! error_state)
                 {
                   boolNDArray r (ka.dims ());
-                  for (octave_idx_type i = 0; i < ka.numel () && ! error_state; i++)
+                  for (octave_idx_type i = 0;
+                       i < ka.numel () && ! error_state;
+                       i++)
                     r(i) = isargout1 (nargout1, ignored, ka(i));
 
                   retval = r;

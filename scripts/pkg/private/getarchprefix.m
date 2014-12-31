@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -24,8 +24,7 @@
 
 function archprefix = getarchprefix (desc, global_install)
   if (global_install)
-    archprefix = fullfile (octave_config_info ("libdir"), "octave",
-                           "packages", [desc.name "-" desc.version]);
+    [~, archprefix] = default_prefix (global_install, desc);
   else
     archprefix = desc.dir;
   endif

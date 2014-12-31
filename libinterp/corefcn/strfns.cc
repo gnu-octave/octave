@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -41,7 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (char, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} char (@var{x})\n\
 @deftypefnx {Built-in Function} {} char (@var{x}, @dots{})\n\
 @deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
@@ -172,7 +172,7 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 */
 
 DEFUN (strvcat, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} strvcat (@var{x})\n\
 @deftypefnx {Built-in Function} {} strvcat (@var{x}, @dots{})\n\
 @deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
@@ -303,7 +303,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 
 
 DEFUN (ischar, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ischar (@var{x})\n\
 Return true if @var{x} is a character array.\n\
 @seealso{isfloat, isinteger, islogical, isnumeric, iscellstr, isa}\n\
@@ -341,8 +341,10 @@ Return true if @var{x} is a character array.\n\
 static octave_value
 do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
                octave_idx_type n, const char *fcn_name,
-               bool (*array_op) (const charNDArray&, const charNDArray&, octave_idx_type),
-               bool (*str_op) (const std::string&, const std::string&, octave_idx_type))
+               bool (*array_op) (const charNDArray&, const charNDArray&,
+                                 octave_idx_type),
+               bool (*str_op) (const std::string&, const std::string&,
+                               octave_idx_type))
 
 {
   octave_value retval;
@@ -428,7 +430,8 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
                 {
                   if (cell_val.is_cellstr ())
                     {
-                      const Array<std::string> cellstr = cell_val.cellstr_value ();
+                      const Array<std::string> cellstr
+                        = cell_val.cellstr_value ();
                       for (octave_idx_type i = 0; i < cellstr.length (); i++)
                         output(i) = str_op (str[i], cellstr(i), n);
                     }
@@ -438,7 +441,8 @@ do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
                       for (octave_idx_type i = 0; i < r; i++)
                         {
                           if (cell(i).is_string ())
-                            output(i) = str_op (str[i], cell(i).string_value (), n);
+                            output(i) = str_op (str[i],
+                                                cell(i).string_value (), n);
                         }
                     }
 
@@ -560,7 +564,7 @@ strcmp_str_op (const std::string& s1, const std::string& s2,
 }
 
 DEFUN (strcmp, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strcmp (@var{s1}, @var{s2})\n\
 Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 and 0 otherwise.\n\
@@ -581,7 +585,7 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      retval = do_strcmp_fun (args (0), args (1), 0,
+      retval = do_strcmp_fun (args(0), args(1), 0,
                               "strcmp", strcmp_array_op, strcmp_str_op);
     }
   else
@@ -640,9 +644,11 @@ This is just the opposite of the corresponding C library function.\n\
 
 // Apparently, Matlab ignores the dims with strncmp. It also
 static bool
-strncmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type n)
+strncmp_array_op (const charNDArray& s1, const charNDArray& s2,
+                  octave_idx_type n)
 {
-  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  octave_idx_type l1 = s1.numel ();
+  octave_idx_type l2 = s2.numel ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
@@ -653,13 +659,14 @@ strncmp_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type 
 static bool
 strncmp_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
 {
-  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  octave_idx_type l1 = s1.length ();
+  octave_idx_type l2 = s2.length ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data ()));
 }
 
 DEFUN (strncmp, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
 Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are\n\
 the same, and 0 otherwise.\n\
@@ -745,7 +752,7 @@ strcmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type)
 // Ditto for string.
 static bool
 strcmpi_str_op (const std::string& s1, const std::string& s2,
-               octave_idx_type)
+                octave_idx_type)
 {
   return (s1.size () == s2.size ()
           && std::equal (s1.data (), s1.data () + s1.size (), s2.data (),
@@ -753,7 +760,7 @@ strcmpi_str_op (const std::string& s1, const std::string& s2,
 }
 
 DEFUNX ("strcmpi", Fstrcmpi, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strcmpi (@var{s1}, @var{s2})\n\
 Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 disregarding case of alphabetic characters, and 0 otherwise.\n\
@@ -776,7 +783,7 @@ This is just the opposite of the corresponding C library function.\n\
 
   if (args.length () == 2)
     {
-      retval = do_strcmp_fun (args (0), args (1), 0,
+      retval = do_strcmp_fun (args(0), args(1), 0,
                               "strcmpi", strcmpi_array_op, strcmpi_str_op);
     }
   else
@@ -791,9 +798,11 @@ This is just the opposite of the corresponding C library function.\n\
 
 // Like strncmp.
 static bool
-strncmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type n)
+strncmpi_array_op (const charNDArray& s1, const charNDArray& s2,
+                   octave_idx_type n)
 {
-  octave_idx_type l1 = s1.numel (), l2 = s2.numel ();
+  octave_idx_type l1 = s1.numel ();
+  octave_idx_type l2 = s2.numel ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
@@ -801,16 +810,18 @@ strncmpi_array_op (const charNDArray& s1, const charNDArray& s2, octave_idx_type
 
 // Ditto.
 static bool
-strncmpi_str_op (const std::string& s1, const std::string& s2, octave_idx_type n)
+strncmpi_str_op (const std::string& s1, const std::string& s2,
+                 octave_idx_type n)
 {
-  octave_idx_type l1 = s1.length (), l2 = s2.length ();
+  octave_idx_type l1 = s1.length ();
+  octave_idx_type l2 = s2.length ();
   return (n > 0 && n <= l1 && n <= l2
           && std::equal (s1.data (), s1.data () + n, s2.data (),
                          icmp_char_eq ()));
 }
 
 DEFUNX ("strncmpi", Fstrncmpi, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} strncmpi (@var{s1}, @var{s2}, @var{n})\n\
 Return 1 if the first @var{n} character of @var{s1} and @var{s2} are the\n\
 same, disregarding case of alphabetic characters, and 0 otherwise.\n\
@@ -857,7 +868,7 @@ This is just the opposite of the corresponding C library function.\n\
 */
 
 DEFUN (list_in_columns, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
 Return a string containing the elements of @var{arg} listed in\n\
 columns with an overall maximum width of @var{width} and optional\n\
@@ -905,7 +916,7 @@ whos ans\n\
 
   if (error_state)
     {
-      error ("list_in_columns: expecting cellstr or char array");
+      error ("list_in_columns: ARG must be a cellstr or char array");
       return retval;
     }
 
@@ -921,24 +932,16 @@ whos ans\n\
           return retval;
         }
     }
-                
+
   std::string prefix;
 
   if (nargin > 2)
     {
       if (args(2).is_string ())
-        {
-          prefix = args(2).string_value ();
-
-          if (error_state)
-            {
-              error ("list_in_columns: PREFIX must be a character string");
-              return retval;
-            }
-        }
+        prefix = args(2).string_value ();
       else
         {
-          error ("list_in_columns: PREFIX must be a character string");
+          error ("list_in_columns: PREFIX must be a string");
           return retval;
         }
     }

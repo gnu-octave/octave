@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
+#include "ov-classdef.h"
 #include "ov-oncleanup.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
@@ -93,6 +94,18 @@ along with Octave; see the file COPYING.  If not, see
 // We are likely to have a lot of octave_value objects to allocate, so
 // make the grow_size large.
 DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
+
+// If TRUE, don't create special diagonal matrix objects.
+
+static bool Vdisable_diagonal_matrix = false;
+
+// If TRUE, don't create special permutation matrix objects.
+
+static bool Vdisable_permutation_matrix = false;
+
+// If TRUE, don't create special range objects.
+
+static bool Vdisable_range = false;
 
 // FIXME
 
@@ -673,37 +686,49 @@ octave_value::octave_value (const Array<float>& a)
 }
 
 octave_value::octave_value (const DiagArray2<double>& d)
-  : rep (new octave_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<float>& d)
-  : rep (new octave_float_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<Complex>& d)
-  : rep (new octave_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagArray2<FloatComplex>& d)
-  : rep (new octave_float_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const DiagMatrix& d)
-  : rep (new octave_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatDiagMatrix& d)
-  : rep (new octave_float_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_matrix (FloatMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_diag_matrix (d)))
 {
   maybe_mutate ();
 }
@@ -781,13 +806,17 @@ octave_value::octave_value (const Array<FloatComplex>& a)
 }
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
-  : rep (new octave_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_complex_matrix (ComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
 
 octave_value::octave_value (const FloatComplexDiagMatrix& d)
-  : rep (new octave_float_complex_diag_matrix (d))
+  : rep (Vdisable_diagonal_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_float_complex_matrix (FloatComplexMatrix (d)))
+         : dynamic_cast<octave_base_value *> (new octave_float_complex_diag_matrix (d)))
 {
   maybe_mutate ();
 }
@@ -817,7 +846,9 @@ octave_value::octave_value (const FloatComplexColumnVector& v)
 }
 
 octave_value::octave_value (const PermMatrix& p)
-  : rep (new octave_perm_matrix (p))
+  : rep (Vdisable_permutation_matrix
+         ? dynamic_cast<octave_base_value *> (new octave_matrix (Matrix (p)))
+         : dynamic_cast<octave_base_value *> (new octave_perm_matrix (p)))
 {
   maybe_mutate ();
 }
@@ -1176,8 +1207,10 @@ octave_value::octave_value (double base, double limit, double inc)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Range& r)
-  : rep (new octave_range (r))
+octave_value::octave_value (const Range& r, bool force_range)
+  : rep (force_range || ! Vdisable_range
+         ? dynamic_cast<octave_base_value *> (new octave_range (r))
+         : dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ())))
 {
   maybe_mutate ();
 }
@@ -1193,13 +1226,14 @@ octave_value::octave_value (const octave_scalar_map& m)
 {
 }
 
-octave_value::octave_value (const Octave_map& m)
-  : rep (new octave_struct (m))
+octave_value::octave_value (const octave_map& m, const std::string& id,
+                            const std::list<std::string>& plist)
+  : rep (new octave_class (m, id, plist))
 {
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Octave_map& m, const std::string& id,
+octave_value::octave_value (const octave_scalar_map& m, const std::string& id,
                             const std::list<std::string>& plist)
   : rep (new octave_class (m, id, plist))
 {
@@ -1460,7 +1494,8 @@ octave_value::assign (assign_op op, const octave_value& rhs)
           try
             {
               f (*rep, octave_value_list (), *rhs.rep);
-              maybe_mutate (); // Usually unnecessary, but may be needed (complex arrays).
+              // Usually unnecessary, but may be needed (complex arrays).
+              maybe_mutate ();
             }
           catch (octave_execution_exception)
             {
@@ -1843,8 +1878,9 @@ FloatComplexColumnVector
 octave_value::float_complex_column_vector_value (bool force_string_conv,
                                                  bool frc_vec_conv) const
 {
-  return FloatComplexColumnVector (float_complex_vector_value (force_string_conv,
-                                                               frc_vec_conv));
+  return
+    FloatComplexColumnVector (float_complex_vector_value (force_string_conv,
+                                                          frc_vec_conv));
 }
 
 FloatRowVector
@@ -1949,7 +1985,9 @@ do_binary_op (octave_value::binary_op op,
   int t2 = v2.type_id ();
 
   if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ())
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
@@ -1971,7 +2009,7 @@ do_binary_op (octave_value::binary_op op,
     }
   else
     {
-      // FIXME -- we need to handle overloading operators for built-in
+      // FIXME: we need to handle overloading operators for built-in
       // classes (double, char, int8, etc.)
 
       octave_value_typeinfo::binary_op_fcn f
@@ -1991,17 +2029,21 @@ do_binary_op (octave_value::binary_op op,
       else
         {
           octave_value tv1;
-          octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf1 =
+            v1.numeric_conversion_function ();
 
           octave_value tv2;
-          octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
+          octave_base_value::type_conv_info cf2 =
+            v2.numeric_conversion_function ();
 
           // Try biased (one-sided) conversions first.
           if (cf2.type_id () >= 0 &&
               octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
             cf1 = 0;
-          else if (cf1.type_id () >= 0 &&
-                   octave_value_typeinfo::lookup_binary_op (op, cf1.type_id (), t2))
+          else if (cf1.type_id () >= 0
+                   && octave_value_typeinfo::lookup_binary_op (op,
+                                                               cf1.type_id (),
+                                                               t2))
             cf2 = 0;
 
           if (cf1)
@@ -2053,10 +2095,13 @@ do_binary_op (octave_value::binary_op op,
 
               // Try biased (one-sided) conversions first.
               if (cf2.type_id () >= 0
-                  && octave_value_typeinfo::lookup_binary_op (op, t1, cf2.type_id ()))
+                  && octave_value_typeinfo::lookup_binary_op (op, t1,
+                                                              cf2.type_id ()))
                 cf1 = 0;
-              else if (cf1.type_id () >= 0
-                       && octave_value_typeinfo::lookup_binary_op (op, cf1.type_id (), t2))
+              else if (cf1.type_id () >= 0 &&
+                       octave_value_typeinfo::lookup_binary_op (op,
+                                                                cf1.type_id (),
+                                                                t2))
                 cf2 = 0;
 
               if (cf1)
@@ -2070,7 +2115,8 @@ do_binary_op (octave_value::binary_op op,
                     }
                   else
                     {
-                      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+                      gripe_binary_op_conv
+                        (octave_value::binary_op_as_string (op));
                       return retval;
                     }
                 }
@@ -2086,7 +2132,8 @@ do_binary_op (octave_value::binary_op op,
                     }
                   else
                     {
-                      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+                      gripe_binary_op_conv
+                        (octave_value::binary_op_as_string (op));
                       return retval;
                     }
                 }
@@ -2196,7 +2243,9 @@ do_binary_op (octave_value::compound_binary_op op,
   int t2 = v2.type_id ();
 
   if (t1 == octave_class::static_type_id ()
-      || t2 == octave_class::static_type_id ())
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::binary_class_op_fcn f
         = octave_value_typeinfo::lookup_binary_class_op (op);
@@ -2370,7 +2419,8 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 
   int t = v.type_id ();
 
-  if (t == octave_class::static_type_id ())
+  if (t == octave_class::static_type_id ()
+      || t == octave_classdef::static_type_id ())
     {
       octave_value_typeinfo::unary_class_op_fcn f
         = octave_value_typeinfo::lookup_unary_class_op (op);
@@ -2392,7 +2442,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
     }
   else
     {
-      // FIXME -- we need to handle overloading operators for built-in
+      // FIXME: we need to handle overloading operators for built-in
       // classes (double, char, int8, etc.)
 
       octave_value_typeinfo::unary_op_fcn f
@@ -2529,7 +2579,8 @@ octave_value::do_non_const_unary_op (unary_op op)
                   (octave_value::unary_op_as_string (op), type_name ());
             }
           else
-            gripe_unary_op (octave_value::unary_op_as_string (op), type_name ());
+            gripe_unary_op (octave_value::unary_op_as_string (op),
+                            type_name ());
         }
     }
   else
@@ -2569,7 +2620,7 @@ octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
     do_non_const_unary_op (op);
   else
     {
-      // FIXME -- only do the following stuff if we can't find a
+      // FIXME: only do the following stuff if we can't find a
       // specific function to call to handle the op= operation for the
       // types we have.
 
@@ -2778,7 +2829,7 @@ install_types (void)
 }
 
 DEFUN (sizeof, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizeof (@var{val})\n\
 Return the size of @var{val} in bytes.\n\
 @seealso{whos}\n\
@@ -2823,10 +2874,9 @@ decode_subscripts (const char* name, const octave_value& arg,
 
       for (int k = 0; k < nel; k++)
         {
-          std::string item = type(k).string_value ();
-
-          if (! error_state)
+          if (type(k).is_string ())
             {
+              std::string item = type(k).string_value ();
               if (item == "{}")
                 type_string[k] = '{';
               else if (item == "()")
@@ -2841,8 +2891,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             }
           else
             {
-              error ("%s: expecting type(%d) to be a character string",
-                     name, k+1);
+              error ("%s: type(%d) must be a string", name, k+1);
               return;
             }
 
@@ -2865,8 +2914,7 @@ decode_subscripts (const char* name, const octave_value& arg,
             }
           else
             {
-              error ("%s: expecting subs(%d) to be a character string or cell array",
-                     name, k+1);
+              error ("%s: subs(%d) must be a string or cell array", name, k+1);
               return;
             }
 
@@ -2874,11 +2922,12 @@ decode_subscripts (const char* name, const octave_value& arg,
         }
     }
   else
-    error ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
+    error ("%s: second argument must be a structure with fields 'type' and 'subs'",
+           name);
 }
 
 DEFUN (subsref, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} subsref (@var{val}, @var{idx})\n\
 Perform the subscripted element selection operation according to\n\
 the subscript specified by @var{idx}.\n\
@@ -2889,7 +2938,7 @@ are @samp{\"()\"}, @samp{\"@{@}\"}, and @samp{\".\"}.\n\
 The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
 of index values.\n\
 \n\
-The following example shows how to extract the two first columns of\n\
+The following example shows how to extract the first two columns of\n\
 a matrix\n\
 \n\
 @example\n\
@@ -2941,7 +2990,7 @@ and @samp{subs}, return @var{val}.\n\
 }
 
 DEFUN (subsasgn, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
 Perform the subscripted assignment operation according to\n\
 the subscript specified by @var{idx}.\n\
@@ -3076,7 +3125,7 @@ and @samp{subs}, return @var{rhs}.\n\
 */
 
 DEFUN (is_sq_string, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_sq_string (@var{x})\n\
 Return true if @var{x} is a single-quoted character string.\n\
 @seealso{is_dq_string, ischar}\n\
@@ -3103,7 +3152,7 @@ Return true if @var{x} is a single-quoted character string.\n\
 */
 
 DEFUN (is_dq_string, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_dq_string (@var{x})\n\
 Return true if @var{x} is a double-quoted character string.\n\
 @seealso{is_sq_string, ischar}\n\
@@ -3128,3 +3177,107 @@ Return true if @var{x} is a double-quoted character string.\n\
 %!error is_dq_string ()
 %!error is_dq_string ("foo", 2)
 */
+
+DEFUN (disable_permutation_matrix, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_permutation_matrix ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_permutation_matrix (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_permutation_matrix (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether permutation\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store permutation\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@seealso{disable_range, disable_diagonal_matrix}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_permutation_matrix);
+}
+
+/*
+%!function p = __test_dpm__ (dpm)
+%!  disable_permutation_matrix (dpm, "local");
+%!  [~, ~, p] = lu ([1,2;3,4]);
+%!endfunction
+
+%!assert (typeinfo (__test_dpm__ (false)), "permutation matrix");
+%!assert (typeinfo (__test_dpm__ (true)), "matrix");
+*/
+
+DEFUN (disable_diagonal_matrix, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_diagonal_matrix ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_diagonal_matrix (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_diagonal_matrix (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether diagonal\n\
+matrices are stored in a special space-efficient format.  The default\n\
+value is true.  If this option is disabled Octave will store diagonal\n\
+matrices as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@seealso{disable_range, disable_permutation_matrix}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_diagonal_matrix);
+}
+
+/*
+%!function [x, xi, fx, fxi] = __test_ddm__ (ddm)
+%!  disable_diagonal_matrix (ddm, "local");
+%!  x = eye (2);
+%!  xi = x*i;
+%!  fx = single (x);
+%!  fxi = single (xi);
+%!endfunction
+
+%!shared x, xi, fx, fxi
+%!  [x, xi, fx, fxi] = __test_ddm__ (false);
+%!assert (typeinfo (x), "diagonal matrix");
+%!assert (typeinfo (xi), "complex diagonal matrix");
+%!assert (typeinfo (fx), "float diagonal matrix");
+%!assert (typeinfo (fxi), "float complex diagonal matrix");
+
+%!shared x, xi, fx, fxi
+%!  [x, xi, fx, fxi] = __test_ddm__ (true);
+%!assert (typeinfo (x), "matrix");
+%!assert (typeinfo (xi), "complex matrix");
+%!assert (typeinfo (fx), "float matrix");
+%!assert (typeinfo (fxi), "float complex matrix");
+*/
+
+DEFUN (disable_range, args, nargout,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} disable_range ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} disable_range (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} disable_range (@var{new_val}, \"local\")\n\
+Query or set the internal variable that controls whether ranges are stored\n\
+in a special space-efficient format.  The default value is true.  If this\n\
+option is disabled Octave will store ranges as full matrices.\n\
+\n\
+When called from inside a function with the @qcode{\"local\"} option, the\n\
+variable is changed locally for the function and any subroutines it calls.\n\
+The original variable value is restored when exiting the function.\n\
+@seealso{disable_diagonal_matrix, disable_permutation_matrix}\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (disable_range);
+}
+
+/*
+%!function r = __test_dr__ (dr)
+%!  disable_range (dr, "local");
+%!  ## Constant folding will produce range for 1:13.
+%!  base = 1;
+%!  limit = 13;
+%!  r = base:limit;
+%!endfunction
+
+%!assert (typeinfo (__test_dr__ (false)), "range");
+%!assert (typeinfo (__test_dr__ (true)), "matrix");
+*/
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -187,7 +187,7 @@ octave_shlib
 octave_shlib_list::find_file (const std::string& file_name)
 {
   return (instance_ok ())
-    ? instance->do_find_file (file_name) : octave_shlib ();
+         ? instance->do_find_file (file_name) : octave_shlib ();
 }
 
 void
@@ -281,7 +281,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
           if (! function)
             {
-              // FIXME -- can we determine this C mangling scheme
+              // FIXME: can we determine this C mangling scheme
               // automatically at run time or configure time?
 
               function = oct_file.search (fcn_name, name_uscore_mangler);
@@ -345,7 +345,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
           if (! function)
             {
-              // FIXME -- can we determine this C mangling scheme
+              // FIXME: can we determine this C mangling scheme
               // automatically at run time or configure time?
 
               function = mex_file.search (fcn_name, mex_uscore_mangler);
@@ -416,20 +416,20 @@ octave_dynamic_loader::do_remove_mex (const std::string& fcn_name,
 
 octave_function *
 octave_dynamic_loader::load_oct (const std::string& fcn_name,
-                                  const std::string& file_name,
-                                  bool relative)
+                                 const std::string& file_name,
+                                 bool relative)
 {
   return (instance_ok ())
-    ? instance->do_load_oct (fcn_name, file_name, relative) : 0;
+         ? instance->do_load_oct (fcn_name, file_name, relative) : 0;
 }
 
 octave_function *
 octave_dynamic_loader::load_mex (const std::string& fcn_name,
-                                  const std::string& file_name,
-                                  bool relative)
+                                 const std::string& file_name,
+                                 bool relative)
 {
   return (instance_ok ())
-    ? instance->do_load_mex (fcn_name, file_name, relative) : 0;
+         ? instance->do_load_mex (fcn_name, file_name, relative) : 0;
 }
 
 bool

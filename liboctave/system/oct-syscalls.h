@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_syscalls_h)
-#define octave_syscalls_h 1
+#if !defined (octave_oct_syscalls_h)
+#define octave_oct_syscalls_h 1
 
 #include <string>
 
@@ -63,8 +63,10 @@ octave_syscalls
   static int kill (pid_t, int, std::string&);
 
   static pid_t popen2 (const std::string&, const string_vector&, bool, int *);
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *, std::string&);
-  static pid_t popen2 (const std::string&, const string_vector&, bool, int *, std::string&, bool &interactive);
+  static pid_t popen2 (const std::string&, const string_vector&, bool, int *,
+                       std::string&);
+  static pid_t popen2 (const std::string&, const string_vector&, bool, int *,
+                       std::string&, bool &interactive);
 };
 
 #endif

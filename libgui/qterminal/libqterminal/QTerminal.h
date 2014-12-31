@@ -1,22 +1,23 @@
 /*
 
-Copyright (C) 2012 Michael Goffioul.
-Copyright (C) 2012 Jacob Dawid.
+Copyright (C) 2012-2013 Michael Goffioul.
+Copyright (C) 2012-2013 Jacob Dawid.
 
 This file is part of QTerminal.
 
-Foobar is free software: you can redistribute it and/or modify
+This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-QTerminal is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -56,11 +57,11 @@ public:
   virtual QString selectedText () = 0;
 
   enum CursorType
-    {
-      UnderlineCursor,
-      BlockCursor,
-      IBeamCursor
-    };
+  {
+    UnderlineCursor,
+    BlockCursor,
+    IBeamCursor
+  };
 
   virtual void setCursorType (CursorType type, bool blinking)
   {
@@ -80,9 +81,13 @@ public:
   virtual void setCursorColor (bool useForegroundColor,
                                const QColor& color) = 0;
 
+  virtual void setScrollBufferSize(int value=1000) = 0;
+
 signals:
 
   void report_status_message (const QString&);
+
+  void interrupt_signal (void);
 
 public slots:
 
@@ -90,18 +95,24 @@ public slots:
 
   virtual void pasteClipboard (void) = 0;
 
+  virtual void selectAll (void) = 0;
+
   virtual void handleCustomContextMenuRequested (const QPoint& at)
   {
     QClipboard * cb = QApplication::clipboard ();
 
     _paste_action->setEnabled (cb->text().length() > 0);
     _copy_action->setEnabled (selectedText().length() > 0);
-    
+
     _contextMenu->move (mapToGlobal (at));
     _contextMenu->show ();
   }
 
   void notice_settings (const QSettings *settings);
+
+  virtual void init_terminal_size (void) { }
+
+  void terminal_interrupt (void) { emit interrupt_signal (); }
 
 protected:
 
@@ -112,12 +123,18 @@ protected:
     _contextMenu = new QMenu (this);
 
     _copy_action = _contextMenu->addAction (
-                             QIcon (":/actions/icons/editcopy.png"),
-                             tr ("Copy"), this, SLOT (copyClipboard ()));
+                     QIcon (":/actions/icons/editcopy.png"),
+                     tr ("Copy"), this, SLOT (copyClipboard ()));
 
     _paste_action = _contextMenu->addAction (
-                            QIcon (":/actions/icons/editpaste.png"),
-                            tr ("Paste"), this, SLOT (pasteClipboard ()));
+                      QIcon (":/actions/icons/editpaste.png"),
+                      tr ("Paste"), this, SLOT (pasteClipboard ()));
+
+    _contextMenu->addSeparator ();
+
+    _selectall_action = _contextMenu->addAction (
+                      tr ("Select All"), this, SLOT (selectAll ()));
+
 
     _contextMenu->addSeparator ();
 
@@ -133,18 +150,25 @@ protected:
     connect (xparent, SIGNAL (settings_changed (const QSettings *)),
              this, SLOT (notice_settings (const QSettings *)));
 
+    connect (xparent, SIGNAL (init_terminal_size_signal ()),
+             this, SLOT (init_terminal_size ()));
+
     connect (xparent, SIGNAL (copyClipboard_signal ()),
              this, SLOT (copyClipboard ()));
 
     connect (xparent, SIGNAL (pasteClipboard_signal ()),
              this, SLOT (pasteClipboard ()));
+
+    connect (xparent, SIGNAL (selectAll_signal ()),
+             this, SLOT (selectAll ()));
   }
 
 private:
 
-    QMenu *_contextMenu;
-    QAction * _copy_action;
-    QAction * _paste_action;
+  QMenu *_contextMenu;
+  QAction * _copy_action;
+  QAction * _paste_action;
+  QAction * _selectall_action;
 };
 
 #endif // QTERMINAL_H

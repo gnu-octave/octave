@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2012 John W. Eaton
+Copyright (C) 1995-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "lex.h"
+#include "load-save.h"
 #include "octave-link.h"
 #include "oct-conf.h"
 #include "oct-conf-features.h"
@@ -103,6 +104,32 @@ bool octave_initialized = false;
 
 octave_call_stack *octave_call_stack::instance = 0;
 
+std::string
+octave_call_stack::stack_frame::fcn_file_name (void) const
+{
+  return m_fcn ? m_fcn->fcn_file_name () : std::string ();
+}
+
+std::string
+octave_call_stack::stack_frame::fcn_name (bool print_subfn) const
+{
+  std::string retval;
+
+  if (m_fcn)
+    {
+      std::string parent_fcn_name = m_fcn->parent_fcn_name ();
+
+      if (print_subfn && ! parent_fcn_name.empty ())
+        retval = parent_fcn_name + Vfilemarker;
+
+      retval += m_fcn->name ();
+    }
+  else
+    retval = "<unknown>";
+  
+  return retval;
+}
+
 void
 octave_call_stack::create_instance (void)
 {
@@ -123,8 +150,8 @@ octave_call_stack::do_current_line (void) const
 
   if (! cs.empty ())
     {
-      const call_stack_elt& elt = cs[curr_frame];
-      retval = elt.line;
+      const stack_frame& elt = cs[curr_frame];
+      retval = elt.m_line;
     }
 
   return retval;
@@ -137,8 +164,8 @@ octave_call_stack::do_current_column (void) const
 
   if (! cs.empty ())
     {
-      const call_stack_elt& elt = cs[curr_frame];
-      retval = elt.column;
+      const stack_frame& elt = cs[curr_frame];
+      retval = elt.m_column;
     }
 
   return retval;
@@ -153,15 +180,15 @@ octave_call_stack::do_caller_user_code_line (void) const
 
   while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *(--p);
+      const stack_frame& elt = *(--p);
 
-      octave_function *f = elt.fcn;
+      octave_function *f = elt.m_fcn;
 
       if (f && f->is_user_code ())
         {
-          if (elt.line > 0)
+          if (elt.m_line > 0)
             {
-              retval = elt.line;
+              retval = elt.m_line;
               break;
             }
         }
@@ -179,15 +206,15 @@ octave_call_stack::do_caller_user_code_column (void) const
 
   while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *(--p);
+      const stack_frame& elt = *(--p);
 
-      octave_function *f = elt.fcn;
+      octave_function *f = elt.m_fcn;
 
       if (f && f->is_user_code ())
         {
-          if (elt.column)
+          if (elt.m_column)
             {
-              retval = elt.column;
+              retval = elt.m_column;
               break;
             }
         }
@@ -197,14 +224,15 @@ octave_call_stack::do_caller_user_code_column (void) const
 }
 
 size_t
-octave_call_stack::do_num_user_code_frames (octave_idx_type& curr_user_frame) const
+octave_call_stack::do_num_user_code_frames
+  (octave_idx_type& curr_user_frame) const
 {
   size_t retval = 0;
 
   curr_user_frame = 0;
 
   // Look for the caller of dbstack.
-  size_t frame = cs[curr_frame].prev;
+  size_t xframe = cs[curr_frame].m_prev;
 
   bool found = false;
 
@@ -212,9 +240,9 @@ octave_call_stack::do_num_user_code_frames (octave_idx_type& curr_user_frame) co
 
   for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
     {
-      octave_function *f = (*p).fcn;
+      octave_function *f = (*p).m_fcn;
 
-      if (--k == frame)
+      if (--k == xframe)
         found = true;
 
       if (f && f->is_user_code ())
@@ -242,9 +270,9 @@ octave_call_stack::do_caller_user_code (size_t nskip) const
 
   while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *(--p);
+      const stack_frame& elt = *(--p);
 
-      octave_function *f = elt.fcn;
+      octave_function *f = elt.m_fcn;
 
       if (f && f->is_user_code ())
         {
@@ -261,10 +289,34 @@ octave_call_stack::do_caller_user_code (size_t nskip) const
   return retval;
 }
 
+bool
+octave_call_stack::do_all_scripts (void) const
+{
+  bool retval = true;
+
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
+    {
+      const stack_frame& elt = *(--p);
+
+      octave_function *f = elt.m_fcn;
+
+      if (f && ! f->is_user_script ())
+        {
+          retval = false;
+          break;
+        }
+    }
+
+  return retval;
+}
+
 // Use static fields for the best efficiency.
 // NOTE: C++0x will allow these two to be merged into one.
 static const char *bt_fieldnames[] = { "file", "name", "line",
-    "column", "scope", "context", 0 };
+                                       "column", "scope", "context", 0
+                                     };
 static const octave_fields bt_fields (bt_fieldnames);
 
 octave_map
@@ -273,10 +325,12 @@ octave_call_stack::empty_backtrace (void)
   return octave_map (dim_vector (0, 1), bt_fields);
 }
 
-octave_map
-octave_call_stack::do_backtrace (size_t nskip,
-                                 octave_idx_type& curr_user_frame) const
+std::list<octave_call_stack::stack_frame>
+octave_call_stack::do_backtrace_frames (size_t nskip,
+                                        octave_idx_type& curr_user_frame) const
 {
+  std::list<octave_call_stack::stack_frame> retval;
+
   size_t user_code_frames = do_num_user_code_frames (curr_user_frame);
 
   size_t nframes = nskip <= user_code_frames ? user_code_frames - nskip : 0;
@@ -284,6 +338,37 @@ octave_call_stack::do_backtrace (size_t nskip,
   // Our list is reversed.
   curr_user_frame = nframes - curr_user_frame - 1;
 
+  if (nframes > 0)
+    {
+      for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
+        {
+          const stack_frame& elt = *p;
+
+          octave_function *f = elt.m_fcn;
+
+          if (f && f->is_user_code ())
+            {
+              if (nskip > 0)
+                nskip--;
+              else
+                retval.push_back (elt);
+            }
+        }
+    }
+
+  return retval;
+}
+
+octave_map
+octave_call_stack::do_backtrace (size_t nskip,
+                                 octave_idx_type& curr_user_frame,
+                                 bool print_subfn) const
+{
+  std::list<octave_call_stack::stack_frame> frames
+    = do_backtrace_frames (nskip, curr_user_frame);
+
+  size_t nframes = frames.size ();
+  
   octave_map retval (dim_vector (nframes, 1), bt_fields);
 
   Cell& file = retval.contents (0);
@@ -293,39 +378,21 @@ octave_call_stack::do_backtrace (size_t nskip,
   Cell& scope = retval.contents (4);
   Cell& context = retval.contents (5);
 
-  if (nframes > 0)
+  octave_idx_type k = 0;
+
+  for (std::list<octave_call_stack::stack_frame>::const_iterator p = frames.begin ();
+       p != frames.end (); p++)
     {
-      int k = 0;
+      const stack_frame& elt = *p;
 
-      for (const_reverse_iterator p = cs.rbegin (); p != cs.rend (); p++)
-        {
-          const call_stack_elt& elt = *p;
+      scope(k) = elt.m_scope;
+      context(k) = elt.m_context;
+      file(k) = elt.fcn_file_name ();
+      name(k) = elt.fcn_name (print_subfn);
+      line(k) = elt.m_line;
+      column(k) = elt.m_column;
 
-          octave_function *f = elt.fcn;
-
-          if (f && f->is_user_code ())
-            {
-              if (nskip > 0)
-                nskip--;
-              else
-                {
-                  scope(k) = elt.scope;
-                  context(k) = elt.context;
-
-                  file(k) = f->fcn_file_name ();
-                  std::string parent_fcn_name = f->parent_fcn_name ();
-                  if (parent_fcn_name == std::string ())
-                    name(k) = f->name ();
-                  else
-                    name(k) = f->parent_fcn_name () + Vfilemarker + f->name ();
-
-                  line(k) = elt.line;
-                  column(k) = elt.column;
-
-                  k++;
-                }
-            }
-        }
+      k++;
     }
 
   return retval;
@@ -342,21 +409,16 @@ octave_call_stack::do_goto_frame (size_t n, bool verbose)
 
       curr_frame = n;
 
-      const call_stack_elt& elt = cs[n];
+      const stack_frame& elt = cs[n];
 
-      symbol_table::set_scope_and_context (elt.scope, elt.context);
+      symbol_table::set_scope_and_context (elt.m_scope, elt.m_context);
 
       if (verbose)
-        {
-          octave_function *f = elt.fcn;
-          std::string nm = f ? f->name () : std::string ("<unknown>");
-
-          octave_stdout << "stopped in " << nm
-                        << " at line " << elt.line
-                        << " column " << elt.column
-                        << " (" << elt.scope << "[" << elt.context << "])"
-                        << std::endl;
-        }
+        octave_stdout << "stopped in " << elt.fcn_name ()
+                      << " at line " << elt.m_line
+                      << " column " << elt.m_column
+                      << " (" << elt.m_scope << "[" << elt.m_context << "])"
+                      << std::endl;
     }
 
   return retval;
@@ -375,20 +437,20 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
     incr = 1;
 
   // Start looking with the caller of dbup/dbdown/keyboard.
-  size_t frame = cs[curr_frame].prev;
+  size_t xframe = cs[curr_frame].m_prev;
 
   while (true)
     {
-      if ((incr < 0 && frame == 0) || (incr > 0 && frame == cs.size () - 1))
+      if ((incr < 0 && xframe == 0) || (incr > 0 && xframe == cs.size () - 1))
         break;
 
-      frame += incr;
+      xframe += incr;
 
-      const call_stack_elt& elt = cs[frame];
+      const stack_frame& elt = cs[xframe];
 
-      octave_function *f = elt.fcn;
+      octave_function *f = elt.m_fcn;
 
-      if (frame == 0 || (f && f->is_user_code ()))
+      if (xframe == 0 || (f && f->is_user_code ()))
         {
           if (nskip > 0)
             nskip--;
@@ -397,10 +459,10 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
 
           if (nskip == 0)
             {
-              curr_frame = frame;
-              cs[cs.size () - 1].prev = curr_frame;
+              curr_frame = xframe;
+              cs[cs.size () - 1].m_prev = curr_frame;
 
-              symbol_table::set_scope_and_context (elt.scope, elt.context);
+              symbol_table::set_scope_and_context (elt.m_scope, elt.m_context);
 
               if (verbose)
                 {
@@ -408,7 +470,7 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
 
                   if (f)
                     buf << "stopped in " << f->name ()
-                        << " at line " << elt.line << std::endl;
+                        << " at line " << elt.m_line << std::endl;
                   else
                     buf << "at top level" << std::endl;
 
@@ -419,6 +481,8 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
               break;
             }
         }
+      else if (incr == 0)  // Break out of infinite loop by choosing an incr. 
+        incr = -1;
 
       // There is no need to set scope and context here.  That will
       // happen when the dbup/dbdown/keyboard frame is popped and we
@@ -431,19 +495,19 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
 void
 octave_call_stack::do_goto_caller_frame (void)
 {
-  size_t frame = curr_frame;
+  size_t xframe = curr_frame;
 
   bool skipped = false;
 
-  while (frame != 0)
+  while (xframe != 0)
     {
-      frame = cs[frame].prev;
+      xframe = cs[xframe].m_prev;
 
-      const call_stack_elt& elt = cs[frame];
+      const stack_frame& elt = cs[xframe];
 
-      octave_function *f = elt.fcn;
+      octave_function *f = elt.m_fcn;
 
-      if (frame == 0 || (f && f->is_user_code ()))
+      if (elt.m_scope == cs[0].m_scope || (f && f->is_user_code ()))
         {
           if (! skipped)
             // We found the current user code frame, so skip it.
@@ -451,14 +515,14 @@ octave_call_stack::do_goto_caller_frame (void)
           else
             {
               // We found the caller user code frame.
-              call_stack_elt tmp (elt);
-              tmp.prev = curr_frame;
+              stack_frame tmp (elt);
+              tmp.m_prev = curr_frame;
 
               curr_frame = cs.size ();
 
               cs.push_back (tmp);
 
-              symbol_table::set_scope_and_context (tmp.scope, tmp.context);
+              symbol_table::set_scope_and_context (tmp.m_scope, tmp.m_context);
 
               break;
             }
@@ -469,45 +533,14 @@ octave_call_stack::do_goto_caller_frame (void)
 void
 octave_call_stack::do_goto_base_frame (void)
 {
-  call_stack_elt tmp (cs[0]);
-  tmp.prev = curr_frame;
+  stack_frame tmp (cs[0]);
+  tmp.m_prev = curr_frame;
 
   curr_frame = cs.size ();
 
   cs.push_back (tmp);
 
-  symbol_table::set_scope_and_context (tmp.scope, tmp.context);
-}
-
-void
-octave_call_stack::do_backtrace_error_message (void) const
-{
-  if (error_state > 0)
-    {
-      error_state = -1;
-
-      error ("called from:");
-    }
-
-  if (! cs.empty ())
-    {
-      const call_stack_elt& elt = cs.back ();
-
-      octave_function *fcn = elt.fcn;
-
-      std::string fcn_name = "?unknown?";
-
-      if (fcn)
-        {
-          fcn_name = fcn->fcn_file_name ();
-
-          if (fcn_name.empty ())
-            fcn_name = fcn->name ();
-        }
-
-      error ("  %s at line %d, column %d",
-             fcn_name.c_str (), elt.line, elt.column);
-    }
+  symbol_table::set_scope_and_context (tmp.m_scope, tmp.m_context);
 }
 
 void
@@ -539,11 +572,6 @@ main_loop (void)
 
   // The big loop.
 
-  unwind_protect frame;
-
-  // octave_parser constructor sets this for us.
-  frame.protect_var (LEXER);
-
   octave_lexer *lxr = ((interactive || forced_interactive)
                        ? new octave_lexer ()
                        : new octave_lexer (stdin));
@@ -555,8 +583,6 @@ main_loop (void)
     {
       try
         {
-          unwind_protect inner_frame;
-
           reset_error_handler ();
 
           parser.reset ();
@@ -593,7 +619,7 @@ main_loop (void)
                     {
                       if (! (interactive || forced_interactive))
                         {
-                          // We should exit with a non-zero status.
+                          // We should exit with a nonzero status.
                           retval = 1;
                           break;
                         }
@@ -620,19 +646,19 @@ main_loop (void)
       catch (octave_execution_exception)
         {
           recover_from_exception ();
-          std::cerr
-            << "error: unhandled execution exception -- trying to return to prompt"
-            << std::endl;
+          std::cerr << "error: unhandled execution exception -- trying to return to prompt"
+                    << std::endl;
         }
       catch (std::bad_alloc)
         {
           recover_from_exception ();
-          std::cerr
-            << "error: out of memory -- trying to return to prompt"
-            << std::endl;
+          std::cerr << "error: out of memory -- trying to return to prompt"
+                    << std::endl;
         }
     }
   while (retval == 0);
+
+  octave_stdout << "\n";
 
   if (retval == EOF)
     retval = 0;
@@ -680,7 +706,7 @@ do_octave_atexit (void)
 
       OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
-      // FIXME -- is this needed?  Can it cause any trouble?
+      // FIXME: is this needed?  Can it cause any trouble?
       OCTAVE_SAFE_CALL (raw_mode, (0));
 
       OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
@@ -699,6 +725,8 @@ do_octave_atexit (void)
       OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
       OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+
+      OCTAVE_SAFE_CALL (octave_finalize_hdf5, ());
 
       OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 
@@ -759,12 +787,21 @@ clean_up_and_exit (int retval, bool safe_to_return)
 }
 
 DEFUN (quit, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} exit (@var{status})\n\
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} exit\n\
+@deftypefnx {Built-in Function} {} exit (@var{status})\n\
+@deftypefnx {Built-in Function} {} quit\n\
 @deftypefnx {Built-in Function} {} quit (@var{status})\n\
-Exit the current Octave session.  If the optional integer value\n\
-@var{status} is supplied, pass that value to the operating system as the\n\
-Octave's exit status.  The default value is zero.\n\
+Exit the current Octave session.\n\
+\n\
+If the optional integer value @var{status} is supplied, pass that value to\n\
+the operating system as Octave's exit status.  The default value is zero.\n\
+\n\
+When exiting, Octave will attempt to run the m-file @file{finish.m} if it\n\
+exists.  User commands to save the workspace or clean up temporary files\n\
+may be placed in that file.  Alternatively, another m-file may be scheduled\n\
+to run using @code{atexit}.\n\
+@seealso{atexit}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -803,7 +840,7 @@ Octave's exit status.  The default value is zero.\n\
 DEFALIAS (exit, quit);
 
 DEFUN (warranty, , ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warranty ()\n\
 Describe the conditions for copying and distributing Octave.\n\
 @end deftypefn")
@@ -909,7 +946,7 @@ run_command_and_return_output (const std::string& cmd_str)
 enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} system (\"@var{string}\")\n\
 @deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output})\n\
 @deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
@@ -973,10 +1010,10 @@ command shell that is started to run the command.\n\
 
       if (nargin == 3)
         {
-          std::string type_str = args(2).string_value ();
-
-          if (! error_state)
+          if (args(2).is_string ())
             {
+              std::string type_str = args(2).string_value ();
+
               if (type_str == "sync")
                 type = et_sync;
               else if (type_str == "async")
@@ -989,7 +1026,7 @@ command shell that is started to run the command.\n\
             }
           else
             {
-              error ("system: TYPE must be a character string");
+              error ("system: TYPE must be a string");
               return retval;
             }
         }
@@ -1023,7 +1060,7 @@ command shell that is started to run the command.\n\
 
           if (type == et_async)
             {
-              // FIXME -- maybe this should go in sysdep.cc?
+              // FIXME: maybe this should go in sysdep.cc?
 #ifdef HAVE_FORK
               pid_t pid = fork ();
 
@@ -1031,7 +1068,7 @@ command shell that is started to run the command.\n\
                 error ("system: fork failed -- can't create child process");
               else if (pid == 0)
                 {
-                  // FIXME -- should probably replace this
+                  // FIXME: should probably replace this
                   // call with something portable.
 
                   execl (SHELL_PATH, "sh", "-c", cmd_str.c_str (),
@@ -1126,10 +1163,12 @@ octave_remove_atexit_function (const std::string& fname)
 
 
 DEFUN (atexit, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} atexit (@var{fcn})\n\
 @deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
-Register a function to be called when Octave exits.  For example,\n\
+Register a function to be called when Octave exits.\n\
+\n\
+For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -1161,6 +1200,7 @@ Note that @code{atexit} only removes the first occurrence of a function\n\
 from the list, so if a function was placed in the list multiple\n\
 times with @code{atexit}, it must also be removed from the list\n\
 multiple times.\n\
+@seealso{quit}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1169,10 +1209,10 @@ multiple times.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      std::string arg = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string arg = args(0).string_value ();
+
           bool add_mode = true;
 
           if (nargin == 2)
@@ -1206,15 +1246,16 @@ multiple times.\n\
 }
 
 DEFUN (octave_config_info, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} octave_config_info ()\n\
 @deftypefnx {Built-in Function} {} octave_config_info (@var{option})\n\
-Return a structure containing configuration and installation\n\
-information for Octave.\n\
+Return a structure containing configuration and installation information for\n\
+Octave.\n\
 \n\
 If @var{option} is a string, return the configuration information for the\n\
 specified option.\n\
 \n\
+@seealso{computer}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1236,186 +1277,184 @@ specified option.\n\
   };
 
   static const conf_info_struct conf_info[] =
-    {
-      { false, "ALL_CFLAGS", OCTAVE_CONF_ALL_CFLAGS },
-      { false, "ALL_CXXFLAGS", OCTAVE_CONF_ALL_CXXFLAGS },
-      { false, "ALL_FFLAGS", OCTAVE_CONF_ALL_FFLAGS },
-      { false, "ALL_LDFLAGS", OCTAVE_CONF_ALL_LDFLAGS },
-      { false, "AMD_CPPFLAGS", OCTAVE_CONF_AMD_CPPFLAGS },
-      { false, "AMD_LDFLAGS", OCTAVE_CONF_AMD_LDFLAGS },
-      { false, "AMD_LIBS", OCTAVE_CONF_AMD_LIBS },
-      { false, "AR", OCTAVE_CONF_AR },
-      { false, "ARFLAGS", OCTAVE_CONF_ARFLAGS },
-      { false, "ARPACK_CPPFLAGS", OCTAVE_CONF_ARPACK_CPPFLAGS },
-      { false, "ARPACK_LDFLAGS", OCTAVE_CONF_ARPACK_LDFLAGS },
-      { false, "ARPACK_LIBS", OCTAVE_CONF_ARPACK_LIBS },
-      { false, "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS },
-      { false, "CAMD_CPPFLAGS", OCTAVE_CONF_CAMD_CPPFLAGS },
-      { false, "CAMD_LDFLAGS", OCTAVE_CONF_CAMD_LDFLAGS },
-      { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
-      { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
-      { false, "CC", OCTAVE_CONF_CC },
-      // FIXME: CC_VERSION is deprecated.  Remove in version 3.12
-      { false, "CC_VERSION", OCTAVE_CONF_CC_VERSION },
-      { false, "CCOLAMD_CPPFLAGS", OCTAVE_CONF_CCOLAMD_CPPFLAGS },
-      { false, "CCOLAMD_LDFLAGS", OCTAVE_CONF_CCOLAMD_LDFLAGS },
-      { false, "CCOLAMD_LIBS", OCTAVE_CONF_CCOLAMD_LIBS },
-      { false, "CFLAGS", OCTAVE_CONF_CFLAGS },
-      { false, "CHOLMOD_CPPFLAGS", OCTAVE_CONF_CHOLMOD_CPPFLAGS },
-      { false, "CHOLMOD_LDFLAGS", OCTAVE_CONF_CHOLMOD_LDFLAGS },
-      { false, "CHOLMOD_LIBS", OCTAVE_CONF_CHOLMOD_LIBS },
-      { false, "COLAMD_CPPFLAGS", OCTAVE_CONF_COLAMD_CPPFLAGS },
-      { false, "COLAMD_LDFLAGS", OCTAVE_CONF_COLAMD_LDFLAGS },
-      { false, "COLAMD_LIBS", OCTAVE_CONF_COLAMD_LIBS },
-      { false, "CPICFLAG", OCTAVE_CONF_CPICFLAG },
-      { false, "CPPFLAGS", OCTAVE_CONF_CPPFLAGS },
-      { false, "CURL_CPPFLAGS", OCTAVE_CONF_CURL_CPPFLAGS },
-      { false, "CURL_LDFLAGS", OCTAVE_CONF_CURL_LDFLAGS },
-      { false, "CURL_LIBS", OCTAVE_CONF_CURL_LIBS },
-      { false, "CXSPARSE_CPPFLAGS", OCTAVE_CONF_CXSPARSE_CPPFLAGS },
-      { false, "CXSPARSE_LDFLAGS", OCTAVE_CONF_CXSPARSE_LDFLAGS },
-      { false, "CXSPARSE_LIBS", OCTAVE_CONF_CXSPARSE_LIBS },
-      { false, "CXX", OCTAVE_CONF_CXX },
-      { false, "CXXCPP", OCTAVE_CONF_CXXCPP },
-      { false, "CXXFLAGS", OCTAVE_CONF_CXXFLAGS },
-      { false, "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG },
-      // FIXME: CXX_VERSION is deprecated.  Remove in version 3.12
-      { false, "CXX_VERSION", OCTAVE_CONF_CXX_VERSION },
-      { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
-      { false, "DEFS", OCTAVE_CONF_DEFS },
-      { false, "DL_LD", OCTAVE_CONF_DL_LD },
-      { false, "DL_LDFLAGS", OCTAVE_CONF_DL_LDFLAGS },
-      { false, "DL_LIBS", OCTAVE_CONF_DL_LIBS },
-      { false, "GCC_VERSION", OCTAVE_CONF_GCC_VERSION },
-      { false, "GXX_VERSION", OCTAVE_CONF_GXX_VERSION },
-      { false, "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING },
-      { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
-      { false, "F77", OCTAVE_CONF_F77 },
-      { false, "F77_FLOAT_STORE_FLAG", OCTAVE_CONF_F77_FLOAT_STORE_FLAG },
-      { false, "F77_INTEGER_8_FLAG", OCTAVE_CONF_F77_INTEGER_8_FLAG },
-      { false, "FC", OCTAVE_CONF_FC },
-      { false, "FFLAGS", OCTAVE_CONF_FFLAGS },
-      { false, "FFTW3_CPPFLAGS", OCTAVE_CONF_FFTW3_CPPFLAGS },
-      { false, "FFTW3_LDFLAGS", OCTAVE_CONF_FFTW3_LDFLAGS },
-      { false, "FFTW3_LIBS", OCTAVE_CONF_FFTW3_LIBS },
-      { false, "FFTW3F_CPPFLAGS", OCTAVE_CONF_FFTW3F_CPPFLAGS },
-      { false, "FFTW3F_LDFLAGS", OCTAVE_CONF_FFTW3F_LDFLAGS },
-      { false, "FFTW3F_LIBS", OCTAVE_CONF_FFTW3F_LIBS },
-      { false, "FLIBS", OCTAVE_CONF_FLIBS },
-      { false, "FPICFLAG", OCTAVE_CONF_FPICFLAG },
-      { false, "FT2_CFLAGS", OCTAVE_CONF_FT2_CFLAGS },
-      { false, "FT2_LIBS", OCTAVE_CONF_FT2_LIBS },
-      { false, "GLPK_CPPFLAGS", OCTAVE_CONF_GLPK_CPPFLAGS },
-      { false, "GLPK_LDFLAGS", OCTAVE_CONF_GLPK_LDFLAGS },
-      { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
-      { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
-      { false, "GRAPHICS_CFLAGS", OCTAVE_CONF_GRAPHICS_CFLAGS },
-      { false, "GRAPHICS_LIBS", OCTAVE_CONF_GRAPHICS_LIBS },
-      { false, "HDF5_CPPFLAGS", OCTAVE_CONF_HDF5_CPPFLAGS },
-      { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
-      { false, "HDF5_LIBS", OCTAVE_CONF_HDF5_LIBS },
-      { false, "LAPACK_LIBS", OCTAVE_CONF_LAPACK_LIBS },
-      { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },
-      { false, "LD_CXX", OCTAVE_CONF_LD_CXX },
-      { false, "LD_STATIC_FLAG", OCTAVE_CONF_LD_STATIC_FLAG },
-      { false, "LEX", OCTAVE_CONF_LEX },
-      { false, "LEXLIB", OCTAVE_CONF_LEXLIB },
-      { false, "LFLAGS", OCTAVE_CONF_LFLAGS },
-      { false, "LIBEXT", OCTAVE_CONF_LIBEXT },
-      { false, "LIBFLAGS", OCTAVE_CONF_LIBFLAGS },
-      { false, "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE },
-      { false, "LIBOCTINTERP", OCTAVE_CONF_LIBOCTINTERP },
-      { false, "LIBS", OCTAVE_CONF_LIBS },
-      { false, "LLVM_CPPFLAGS", OCTAVE_CONF_LLVM_CPPFLAGS },
-      { false, "LLVM_LDFLAGS", OCTAVE_CONF_LLVM_LDFLAGS },
-      { false, "LLVM_LIBS", OCTAVE_CONF_LLVM_LIBS },
-      { false, "LN_S", OCTAVE_CONF_LN_S },
-      { false, "MAGICK_CPPFLAGS", OCTAVE_CONF_MAGICK_CPPFLAGS },
-      { false, "MAGICK_LDFLAGS", OCTAVE_CONF_MAGICK_LDFLAGS },
-      { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
-      { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
-      { false, "OCTAVE_LINK_DEPS", OCTAVE_CONF_OCTAVE_LINK_DEPS },
-      { false, "OCTAVE_LINK_OPTS", OCTAVE_CONF_OCTAVE_LINK_OPTS },
-      { false, "OCT_LINK_DEPS", OCTAVE_CONF_OCT_LINK_DEPS },
-      { false, "OCT_LINK_OPTS", OCTAVE_CONF_OCT_LINK_OPTS },
-      { false, "OPENGL_LIBS", OCTAVE_CONF_OPENGL_LIBS },
-      { false, "PTHREAD_CFLAGS", OCTAVE_CONF_PTHREAD_CFLAGS },
-      { false, "PTHREAD_LIBS", OCTAVE_CONF_PTHREAD_LIBS },
-      { false, "QHULL_CPPFLAGS", OCTAVE_CONF_QHULL_CPPFLAGS },
-      { false, "QHULL_LDFLAGS", OCTAVE_CONF_QHULL_LDFLAGS },
-      { false, "QHULL_LIBS", OCTAVE_CONF_QHULL_LIBS },
-      { false, "QRUPDATE_CPPFLAGS", OCTAVE_CONF_QRUPDATE_CPPFLAGS },
-      { false, "QRUPDATE_LDFLAGS", OCTAVE_CONF_QRUPDATE_LDFLAGS },
-      { false, "QRUPDATE_LIBS", OCTAVE_CONF_QRUPDATE_LIBS },
-      { false, "QT_CPPFLAGS", OCTAVE_CONF_QT_CPPFLAGS },
-      { false, "QT_LDFLAGS", OCTAVE_CONF_QT_LDFLAGS },
-      { false, "QT_LIBS", OCTAVE_CONF_QT_LIBS },
-      { false, "RANLIB", OCTAVE_CONF_RANLIB },
-      { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
-      { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },
-      { false, "REGEX_LIBS", OCTAVE_CONF_REGEX_LIBS },
-      { false, "SED", OCTAVE_CONF_SED },
-      { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
-      { false, "SHLEXT", OCTAVE_CONF_SHLEXT },
-      { false, "SHLEXT_VER", OCTAVE_CONF_SHLEXT_VER },
-      { false, "SH_LD", OCTAVE_CONF_SH_LD },
-      { false, "SH_LDFLAGS", OCTAVE_CONF_SH_LDFLAGS },
-      { false, "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS },
-      { false, "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS },
-      { false, "TERM_LIBS", OCTAVE_CONF_TERM_LIBS },
-      { false, "UMFPACK_CPPFLAGS", OCTAVE_CONF_UMFPACK_CPPFLAGS },
-      { false, "UMFPACK_LDFLAGS", OCTAVE_CONF_UMFPACK_LDFLAGS },
-      { false, "UMFPACK_LIBS", OCTAVE_CONF_UMFPACK_LIBS },
-      { false, "USE_64_BIT_IDX_T", OCTAVE_CONF_USE_64_BIT_IDX_T },
-      { false, "WARN_CFLAGS", OCTAVE_CONF_WARN_CFLAGS },
-      { false, "WARN_CXXFLAGS", OCTAVE_CONF_WARN_CXXFLAGS },
-      { false, "X11_INCFLAGS", OCTAVE_CONF_X11_INCFLAGS },
-      { false, "X11_LIBS", OCTAVE_CONF_X11_LIBS },
-      { false, "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS },
-      { false, "XTRA_CXXFLAGS", OCTAVE_CONF_XTRA_CXXFLAGS },
-      { false, "YACC", OCTAVE_CONF_YACC },
-      { false, "YFLAGS", OCTAVE_CONF_YFLAGS },
-      { false, "Z_CPPFLAGS", OCTAVE_CONF_Z_CPPFLAGS },
-      { false, "Z_LDFLAGS", OCTAVE_CONF_Z_LDFLAGS },
-      { false, "Z_LIBS", OCTAVE_CONF_Z_LIBS },
-      { false, "api_version", OCTAVE_API_VERSION },
-      { true, "archlibdir", OCTAVE_ARCHLIBDIR },
-      { true, "bindir", OCTAVE_BINDIR },
-      { false, "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
-      { false, "config_opts", OCTAVE_CONF_config_opts },
-      { true, "datadir", OCTAVE_DATADIR },
-      { true, "datarootdir", OCTAVE_DATAROOTDIR },
-      { true, "exec_prefix", OCTAVE_EXEC_PREFIX },
-      { true, "fcnfiledir", OCTAVE_FCNFILEDIR },
-      { true, "imagedir", OCTAVE_IMAGEDIR },
-      { true, "includedir", OCTAVE_INCLUDEDIR },
-      { true, "infodir", OCTAVE_INFODIR },
-      { true, "infofile", OCTAVE_INFOFILE },
-      { true, "libdir", OCTAVE_LIBDIR },
-      { true, "libexecdir", OCTAVE_LIBEXECDIR },
-      { true, "localapiarchlibdir", OCTAVE_LOCALAPIARCHLIBDIR },
-      { true, "localapifcnfiledir", OCTAVE_LOCALAPIFCNFILEDIR },
-      { true, "localapioctfiledir", OCTAVE_LOCALAPIOCTFILEDIR },
-      { true, "localarchlibdir", OCTAVE_LOCALARCHLIBDIR },
-      { true, "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR },
-      { true, "localoctfiledir", OCTAVE_LOCALOCTFILEDIR },
-      { true, "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR },
-      { true, "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR },
-      { true, "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR },
-      { true, "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR },
-      { true, "man1dir", OCTAVE_MAN1DIR },
-      { false, "man1ext", OCTAVE_MAN1EXT },
-      { true, "mandir", OCTAVE_MANDIR },
-      { true, "octfiledir", OCTAVE_OCTFILEDIR },
-      { true, "octetcdir", OCTAVE_OCTETCDIR },
-      { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
-      { true, "octlibdir", OCTAVE_OCTLIBDIR },
-      { true, "octtestsdir", OCTAVE_OCTTESTSDIR },
-      { true, "prefix", OCTAVE_PREFIX },
-      { true, "startupfiledir", OCTAVE_STARTUPFILEDIR },
-      { false, "version", OCTAVE_VERSION },
-      { false, 0, 0 }
-    };
+  {
+    { false, "ALL_CFLAGS", OCTAVE_CONF_ALL_CFLAGS },
+    { false, "ALL_CXXFLAGS", OCTAVE_CONF_ALL_CXXFLAGS },
+    { false, "ALL_FFLAGS", OCTAVE_CONF_ALL_FFLAGS },
+    { false, "ALL_LDFLAGS", OCTAVE_CONF_ALL_LDFLAGS },
+    { false, "AMD_CPPFLAGS", OCTAVE_CONF_AMD_CPPFLAGS },
+    { false, "AMD_LDFLAGS", OCTAVE_CONF_AMD_LDFLAGS },
+    { false, "AMD_LIBS", OCTAVE_CONF_AMD_LIBS },
+    { false, "AR", OCTAVE_CONF_AR },
+    { false, "ARFLAGS", OCTAVE_CONF_ARFLAGS },
+    { false, "ARPACK_CPPFLAGS", OCTAVE_CONF_ARPACK_CPPFLAGS },
+    { false, "ARPACK_LDFLAGS", OCTAVE_CONF_ARPACK_LDFLAGS },
+    { false, "ARPACK_LIBS", OCTAVE_CONF_ARPACK_LIBS },
+    { false, "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS },
+    { false, "CAMD_CPPFLAGS", OCTAVE_CONF_CAMD_CPPFLAGS },
+    { false, "CAMD_LDFLAGS", OCTAVE_CONF_CAMD_LDFLAGS },
+    { false, "CAMD_LIBS", OCTAVE_CONF_CAMD_LIBS },
+    { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
+    { false, "CC", OCTAVE_CONF_CC },
+    { false, "CCOLAMD_CPPFLAGS", OCTAVE_CONF_CCOLAMD_CPPFLAGS },
+    { false, "CCOLAMD_LDFLAGS", OCTAVE_CONF_CCOLAMD_LDFLAGS },
+    { false, "CCOLAMD_LIBS", OCTAVE_CONF_CCOLAMD_LIBS },
+    { false, "CFLAGS", OCTAVE_CONF_CFLAGS },
+    { false, "CHOLMOD_CPPFLAGS", OCTAVE_CONF_CHOLMOD_CPPFLAGS },
+    { false, "CHOLMOD_LDFLAGS", OCTAVE_CONF_CHOLMOD_LDFLAGS },
+    { false, "CHOLMOD_LIBS", OCTAVE_CONF_CHOLMOD_LIBS },
+    { false, "COLAMD_CPPFLAGS", OCTAVE_CONF_COLAMD_CPPFLAGS },
+    { false, "COLAMD_LDFLAGS", OCTAVE_CONF_COLAMD_LDFLAGS },
+    { false, "COLAMD_LIBS", OCTAVE_CONF_COLAMD_LIBS },
+    { false, "CPICFLAG", OCTAVE_CONF_CPICFLAG },
+    { false, "CPPFLAGS", OCTAVE_CONF_CPPFLAGS },
+    { false, "CURL_CPPFLAGS", OCTAVE_CONF_CURL_CPPFLAGS },
+    { false, "CURL_LDFLAGS", OCTAVE_CONF_CURL_LDFLAGS },
+    { false, "CURL_LIBS", OCTAVE_CONF_CURL_LIBS },
+    { false, "CXSPARSE_CPPFLAGS", OCTAVE_CONF_CXSPARSE_CPPFLAGS },
+    { false, "CXSPARSE_LDFLAGS", OCTAVE_CONF_CXSPARSE_LDFLAGS },
+    { false, "CXSPARSE_LIBS", OCTAVE_CONF_CXSPARSE_LIBS },
+    { false, "CXX", OCTAVE_CONF_CXX },
+    { false, "CXXCPP", OCTAVE_CONF_CXXCPP },
+    { false, "CXXFLAGS", OCTAVE_CONF_CXXFLAGS },
+    { false, "CXXPICFLAG", OCTAVE_CONF_CXXPICFLAG },
+    { false, "DEFAULT_PAGER", OCTAVE_DEFAULT_PAGER },
+    { false, "DEFS", OCTAVE_CONF_DEFS },
+    { false, "DL_LD", OCTAVE_CONF_DL_LD },
+    { false, "DL_LDFLAGS", OCTAVE_CONF_DL_LDFLAGS },
+    { false, "DL_LIBS", OCTAVE_CONF_DL_LIBS },
+    { false, "GCC_VERSION", OCTAVE_CONF_GCC_VERSION },
+    { false, "GXX_VERSION", OCTAVE_CONF_GXX_VERSION },
+    { false, "ENABLE_DYNAMIC_LINKING", OCTAVE_CONF_ENABLE_DYNAMIC_LINKING },
+    { false, "EXEEXT", OCTAVE_CONF_EXEEXT },
+    { false, "F77", OCTAVE_CONF_F77 },
+    { false, "F77_FLOAT_STORE_FLAG", OCTAVE_CONF_F77_FLOAT_STORE_FLAG },
+    { false, "F77_INTEGER_8_FLAG", OCTAVE_CONF_F77_INTEGER_8_FLAG },
+    { false, "FFLAGS", OCTAVE_CONF_FFLAGS },
+    { false, "FFTW3_CPPFLAGS", OCTAVE_CONF_FFTW3_CPPFLAGS },
+    { false, "FFTW3_LDFLAGS", OCTAVE_CONF_FFTW3_LDFLAGS },
+    { false, "FFTW3_LIBS", OCTAVE_CONF_FFTW3_LIBS },
+    { false, "FFTW3F_CPPFLAGS", OCTAVE_CONF_FFTW3F_CPPFLAGS },
+    { false, "FFTW3F_LDFLAGS", OCTAVE_CONF_FFTW3F_LDFLAGS },
+    { false, "FFTW3F_LIBS", OCTAVE_CONF_FFTW3F_LIBS },
+    { false, "FLIBS", OCTAVE_CONF_FLIBS },
+    { false, "FONTCONFIG_CFLAGS", OCTAVE_CONF_FONTCONFIG_CFLAGS },
+    { false, "FPICFLAG", OCTAVE_CONF_FPICFLAG },
+    { false, "FT2_CFLAGS", OCTAVE_CONF_FT2_CFLAGS },
+    { false, "FT2_LIBS", OCTAVE_CONF_FT2_LIBS },
+    { false, "GLPK_CPPFLAGS", OCTAVE_CONF_GLPK_CPPFLAGS },
+    { false, "GLPK_LDFLAGS", OCTAVE_CONF_GLPK_LDFLAGS },
+    { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
+    { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
+    { false, "GRAPHICS_CFLAGS", OCTAVE_CONF_GRAPHICS_CFLAGS },
+    { false, "GRAPHICS_LIBS", OCTAVE_CONF_GRAPHICS_LIBS },
+    { false, "HDF5_CPPFLAGS", OCTAVE_CONF_HDF5_CPPFLAGS },
+    { false, "HDF5_LDFLAGS", OCTAVE_CONF_HDF5_LDFLAGS },
+    { false, "HDF5_LIBS", OCTAVE_CONF_HDF5_LIBS },
+    { false, "LAPACK_LIBS", OCTAVE_CONF_LAPACK_LIBS },
+    { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },
+    { false, "LD_CXX", OCTAVE_CONF_LD_CXX },
+    { false, "LD_STATIC_FLAG", OCTAVE_CONF_LD_STATIC_FLAG },
+    { false, "LEX", OCTAVE_CONF_LEX },
+    { false, "LEXLIB", OCTAVE_CONF_LEXLIB },
+    { false, "LFLAGS", OCTAVE_CONF_LFLAGS },
+    { false, "LIBEXT", OCTAVE_CONF_LIBEXT },
+    { false, "LIBFLAGS", OCTAVE_CONF_LIBFLAGS },
+    { false, "LIBOCTAVE", OCTAVE_CONF_LIBOCTAVE },
+    { false, "LIBOCTINTERP", OCTAVE_CONF_LIBOCTINTERP },
+    { false, "LIBS", OCTAVE_CONF_LIBS },
+    { false, "LLVM_CPPFLAGS", OCTAVE_CONF_LLVM_CPPFLAGS },
+    { false, "LLVM_LDFLAGS", OCTAVE_CONF_LLVM_LDFLAGS },
+    { false, "LLVM_LIBS", OCTAVE_CONF_LLVM_LIBS },
+    { false, "LN_S", OCTAVE_CONF_LN_S },
+    { false, "MAGICK_CPPFLAGS", OCTAVE_CONF_MAGICK_CPPFLAGS },
+    { false, "MAGICK_LDFLAGS", OCTAVE_CONF_MAGICK_LDFLAGS },
+    { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
+    { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
+    { false, "OCTAVE_LINK_DEPS", OCTAVE_CONF_OCTAVE_LINK_DEPS },
+    { false, "OCTAVE_LINK_OPTS", OCTAVE_CONF_OCTAVE_LINK_OPTS },
+    { false, "OCT_LINK_DEPS", OCTAVE_CONF_OCT_LINK_DEPS },
+    { false, "OCT_LINK_OPTS", OCTAVE_CONF_OCT_LINK_OPTS },
+    { false, "OPENGL_LIBS", OCTAVE_CONF_OPENGL_LIBS },
+    { false, "PCRE_CPPFLAGS", OCTAVE_CONF_PCRE_CPPFLAGS },
+    { false, "PCRE_LIBS", OCTAVE_CONF_PCRE_LIBS },
+    { false, "PTHREAD_CFLAGS", OCTAVE_CONF_PTHREAD_CFLAGS },
+    { false, "PTHREAD_LIBS", OCTAVE_CONF_PTHREAD_LIBS },
+    { false, "QHULL_CPPFLAGS", OCTAVE_CONF_QHULL_CPPFLAGS },
+    { false, "QHULL_LDFLAGS", OCTAVE_CONF_QHULL_LDFLAGS },
+    { false, "QHULL_LIBS", OCTAVE_CONF_QHULL_LIBS },
+    { false, "QRUPDATE_CPPFLAGS", OCTAVE_CONF_QRUPDATE_CPPFLAGS },
+    { false, "QRUPDATE_LDFLAGS", OCTAVE_CONF_QRUPDATE_LDFLAGS },
+    { false, "QRUPDATE_LIBS", OCTAVE_CONF_QRUPDATE_LIBS },
+    { false, "QT_CPPFLAGS", OCTAVE_CONF_QT_CPPFLAGS },
+    { false, "QT_LDFLAGS", OCTAVE_CONF_QT_LDFLAGS },
+    { false, "QT_LIBS", OCTAVE_CONF_QT_LIBS },
+    { false, "RANLIB", OCTAVE_CONF_RANLIB },
+    { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
+    { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },
+    { false, "SED", OCTAVE_CONF_SED },
+    { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
+    { false, "SHLEXT", OCTAVE_CONF_SHLEXT },
+    { false, "SHLEXT_VER", OCTAVE_CONF_SHLEXT_VER },
+    { false, "SH_LD", OCTAVE_CONF_SH_LD },
+    { false, "SH_LDFLAGS", OCTAVE_CONF_SH_LDFLAGS },
+    { false, "SONAME_FLAGS", OCTAVE_CONF_SONAME_FLAGS },
+    { false, "STATIC_LIBS", OCTAVE_CONF_STATIC_LIBS },
+    { false, "TERM_LIBS", OCTAVE_CONF_TERM_LIBS },
+    { false, "UMFPACK_CPPFLAGS", OCTAVE_CONF_UMFPACK_CPPFLAGS },
+    { false, "UMFPACK_LDFLAGS", OCTAVE_CONF_UMFPACK_LDFLAGS },
+    { false, "UMFPACK_LIBS", OCTAVE_CONF_UMFPACK_LIBS },
+    { false, "USE_64_BIT_IDX_T", OCTAVE_CONF_USE_64_BIT_IDX_T },
+    { false, "WARN_CFLAGS", OCTAVE_CONF_WARN_CFLAGS },
+    { false, "WARN_CXXFLAGS", OCTAVE_CONF_WARN_CXXFLAGS },
+    { false, "X11_INCFLAGS", OCTAVE_CONF_X11_INCFLAGS },
+    { false, "X11_LIBS", OCTAVE_CONF_X11_LIBS },
+    { false, "XTRA_CFLAGS", OCTAVE_CONF_XTRA_CFLAGS },
+    { false, "XTRA_CXXFLAGS", OCTAVE_CONF_XTRA_CXXFLAGS },
+    { false, "YACC", OCTAVE_CONF_YACC },
+    { false, "YFLAGS", OCTAVE_CONF_YFLAGS },
+    { false, "Z_CPPFLAGS", OCTAVE_CONF_Z_CPPFLAGS },
+    { false, "Z_LDFLAGS", OCTAVE_CONF_Z_LDFLAGS },
+    { false, "Z_LIBS", OCTAVE_CONF_Z_LIBS },
+    { false, "api_version", OCTAVE_API_VERSION },
+    { true, "archlibdir", OCTAVE_ARCHLIBDIR },
+    { true, "bindir", OCTAVE_BINDIR },
+    { false, "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE },
+    { false, "config_opts", OCTAVE_CONF_config_opts },
+    { true, "datadir", OCTAVE_DATADIR },
+    { true, "datarootdir", OCTAVE_DATAROOTDIR },
+    { true, "exec_prefix", OCTAVE_EXEC_PREFIX },
+    { true, "fcnfiledir", OCTAVE_FCNFILEDIR },
+    { true, "imagedir", OCTAVE_IMAGEDIR },
+    { true, "includedir", OCTAVE_INCLUDEDIR },
+    { true, "infodir", OCTAVE_INFODIR },
+    { true, "infofile", OCTAVE_INFOFILE },
+    { true, "libdir", OCTAVE_LIBDIR },
+    { true, "libexecdir", OCTAVE_LIBEXECDIR },
+    { true, "localapiarchlibdir", OCTAVE_LOCALAPIARCHLIBDIR },
+    { true, "localapifcnfiledir", OCTAVE_LOCALAPIFCNFILEDIR },
+    { true, "localapioctfiledir", OCTAVE_LOCALAPIOCTFILEDIR },
+    { true, "localarchlibdir", OCTAVE_LOCALARCHLIBDIR },
+    { true, "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR },
+    { true, "localoctfiledir", OCTAVE_LOCALOCTFILEDIR },
+    { true, "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR },
+    { true, "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR },
+    { true, "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR },
+    { true, "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR },
+    { true, "man1dir", OCTAVE_MAN1DIR },
+    { false, "man1ext", OCTAVE_MAN1EXT },
+    { true, "mandir", OCTAVE_MANDIR },
+    { true, "octdatadir", OCTAVE_OCTDATADIR },
+    { true, "octfiledir", OCTAVE_OCTFILEDIR },
+    { true, "octetcdir", OCTAVE_OCTETCDIR },
+    { true, "octincludedir", OCTAVE_OCTINCLUDEDIR },
+    { true, "octlibdir", OCTAVE_OCTLIBDIR },
+    { true, "octtestsdir", OCTAVE_OCTTESTSDIR },
+    { true, "prefix", OCTAVE_PREFIX },
+    { true, "startupfiledir", OCTAVE_STARTUPFILEDIR },
+    { false, "version", OCTAVE_VERSION },
+    { false, 0, 0 }
+  };
 
   if (! initialized)
     {

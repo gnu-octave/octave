@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -23,8 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // updating/downdating by Jaroslav Hajek 2008
 
-#if !defined (octave_FloatComplexQR_h)
-#define octave_FloatComplexQR_h 1
+#if !defined (octave_fCmplxQR_h)
+#define octave_fCmplxQR_h 1
 
 #include <iosfwd>
 
@@ -50,13 +50,15 @@ public:
 
   void init (const FloatComplexMatrix&, qr_type_t = qr_type_std);
 
-  void update (const FloatComplexColumnVector& u, const FloatComplexColumnVector& v);
+  void update (const FloatComplexColumnVector& u,
+               const FloatComplexColumnVector& v);
 
   void update (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
 
   void insert_col (const FloatComplexColumnVector& u, octave_idx_type j);
 
-  void insert_col (const FloatComplexMatrix& u, const Array<octave_idx_type>& j);
+  void insert_col (const FloatComplexMatrix& u,
+                   const Array<octave_idx_type>& j);
 
   void delete_col (octave_idx_type j);
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 VZLU Prague
+## Copyright (C) 2010-2013 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -48,7 +48,7 @@ endfunction
 
 %!test
 %! cstr = {"Hello World", "The answer is 42", "Goodbye World"};
-%! fname = tmpnam ();
+%! fname = tempname ();
 %! fid = fopen (fname, "w");
 %! fprintf (fid, "%s\n", cstr{:});
 %! fclose (fid);

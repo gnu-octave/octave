@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,13 +20,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_procstream_h)
-#define octave_octave_procstream_h 1
+#if !defined (octave_oct_prcstrm_h)
+#define octave_oct_prcstrm_h 1
 
 #include "oct-stdstrm.h"
 
-// FIXME -- why don't these classes use iprocstream and
-// oprocstream, which in turn use the octave_procbuf class?
+// FIXME: why don't these classes use iprocstream and oprocstream,
+//        which in turn use the octave_procbuf class?
 
 class
 octave_iprocstream : public octave_stdiostream

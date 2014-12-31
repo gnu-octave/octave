@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -49,47 +49,37 @@ public:
   {
   public:
 
-    symbol_table_context (void)
-      : frame_stack (), init_scope (symbol_table::current_scope ())
-    {
-      push (init_scope);
-    }
+    symbol_table_context (void) : frame_stack () { }
 
     void clear (void)
     {
       while (! frame_stack.empty ())
         frame_stack.pop ();
-
-      push (init_scope);
     }
 
     bool empty (void) const { return frame_stack.empty (); }
 
     void pop (void)
     {
+      if (empty ())
+        panic_impossible ();
+
       frame_stack.pop ();
     }
 
-    void push (symbol_table::scope_id scope)
+    void push (symbol_table::scope_id scope = symbol_table::current_scope ())
     {
       frame_stack.push (scope);
     }
 
-    void push (void)
-    {
-      push (symbol_table::current_scope ());
-    }
-
     symbol_table::scope_id curr_scope (void) const
     {
-      return frame_stack.top ();
+      return empty () ? symbol_table::current_scope () : frame_stack.top ();
     }
 
   private:
 
     std::stack<symbol_table::scope_id> frame_stack;
-
-    symbol_table::scope_id init_scope;
   };
 
   // Track nesting of square brackets, curly braces, and parentheses.
@@ -99,12 +89,12 @@ public:
   private:
 
     enum bracket_type
-      {
-        BRACKET = 1,
-        BRACE = 2,
-        PAREN = 3,
-        ANON_FCN_BODY = 4
-      };
+    {
+      BRACKET = 1,
+      BRACE = 2,
+      PAREN = 3,
+      ANON_FCN_BODY = 4
+    };
 
   public:
 
@@ -262,25 +252,27 @@ public:
 
     token_cache& operator = (const token_cache&);
   };
-  
+
   lexical_feedback (void)
     : end_of_input (false), at_beginning_of_statement (true),
       looking_at_anon_fcn_args (false), looking_at_return_list (false),
       looking_at_parameter_list (false), looking_at_decl_list (false),
       looking_at_initializer_expression (false),
       looking_at_matrix_or_assign_lhs (false),
-      looking_for_object_index (false), 
+      looking_for_object_index (false),
       looking_at_indirect_ref (false), parsing_class_method (false),
-      maybe_classdef_get_set_method (false), parsing_classdef (false),
+      parsing_classdef (false), maybe_classdef_get_set_method (false),
+      parsing_classdef_get_method (false),
+      parsing_classdef_set_method (false), 
       quote_is_transpose (false), force_script (false),
       reading_fcn_file (false), reading_script_file (false),
       reading_classdef_file (false),
       input_line_number (1), current_input_column (1),
       bracketflag (0), braceflag (0),
       looping (0), defining_func (0), looking_at_function_handle (0),
-      block_comment_nesting_level (0), token_count (0),
-      current_input_line (), comment_text (), help_text (),
-      string_text (), string_line (0), string_column (0),
+      block_comment_nesting_level (0), command_arg_paren_count (0),
+      token_count (0), current_input_line (), comment_text (),
+      help_text (), string_text (), string_line (0), string_column (0),
       fcn_file_name (), fcn_file_full_name (), looking_at_object_index (),
       parsed_function_name (), pending_local_variables (),
       symtab_context (), nesting_level (), tokens ()
@@ -351,13 +343,19 @@ public:
   // true means we are parsing a class method in function or classdef file.
   bool parsing_class_method;
 
+  // true means we are parsing a classdef file
+  bool parsing_classdef;
+
   // true means we are parsing a class method declaration line in a
   // classdef file and can accept a property get or set method name.
   // for example, "get.propertyname" is recognized as a function name.
   bool maybe_classdef_get_set_method;
 
-  // true means we are parsing a classdef file
-  bool parsing_classdef;
+  // TRUE means we are parsing a classdef get.method.
+  bool parsing_classdef_get_method;
+
+  // TRUE means we are parsing a classdef set.method.
+  bool parsing_classdef_set_method;
 
   // return transpose or start a string?
   bool quote_is_transpose;
@@ -398,6 +396,9 @@ public:
 
   // nestng level for blcok comments.
   int block_comment_nesting_level;
+
+  // Parenthesis count for command argument parsing.
+  int command_arg_paren_count;
 
   // Count of tokens recognized by this lexer since initialized or
   // since the last reset.
@@ -493,8 +494,50 @@ public:
     bool eof;
   };
 
+  // Collect comment text.
+
+  class
+  comment_buffer
+  {
+  public:
+
+    comment_buffer (void) : comment_list (0) { }
+
+    ~comment_buffer (void) { delete comment_list; }
+
+    void append (const std::string& s, octave_comment_elt::comment_type t)
+    {
+      if (! comment_list)
+        comment_list = new octave_comment_list ();
+
+      comment_list->append (s, t);
+    }
+
+    // Caller is expected to delete the returned value.
+
+    octave_comment_list *get_comment (void)
+    {
+      octave_comment_list *retval = comment_list;
+
+      comment_list = 0;
+
+      return retval;
+    }
+
+    void reset (void)
+    {
+      delete comment_list;
+
+      comment_list = 0;
+    }
+
+  private:
+
+    octave_comment_list *comment_list;
+  };
+
   octave_base_lexer (void)
-    : lexical_feedback (), scanner (0), input_buf ()
+    : lexical_feedback (), scanner (0), input_buf (), comment_buf ()
   {
     init ();
   }
@@ -537,6 +580,8 @@ public:
 
   int is_keyword_token (const std::string& s);
 
+  bool fq_identifier_contains_keyword (const std::string& s);
+
   bool whitespace_is_significant (void);
 
   void handle_number (void);
@@ -545,6 +590,8 @@ public:
 
   void finish_comment (octave_comment_elt::comment_type typ);
 
+  octave_comment_list *get_comment (void) { return comment_buf.get_comment (); }
+
   int handle_close_bracket (int bracket_type);
 
   bool looks_like_command_arg (void);
@@ -552,6 +599,8 @@ public:
   int handle_superclass_identifier (void);
 
   int handle_meta_identifier (void);
+
+  int handle_fq_identifier (void);
 
   int handle_identifier (void);
 
@@ -582,6 +631,9 @@ public:
 
   // Object that reads and buffers input.
   input_buffer input_buf;
+
+  // Object that collects comment text.
+  comment_buffer comment_buf;
 
   virtual void increment_promptflag (void) = 0;
 
@@ -635,8 +687,7 @@ public:
 
   int show_token (int tok);
 
-  // For unwind protect.
-  static void cleanup (octave_base_lexer *lexer) { delete lexer; }
+  void enable_fq_identifier (void);
 
 protected:
 
@@ -655,15 +706,15 @@ octave_lexer : public octave_base_lexer
 public:
 
   octave_lexer (void)
-    : octave_base_lexer (), input_reader ()
+    : octave_base_lexer (), input_reader (this)
   { }
 
   octave_lexer (FILE *file)
-    : octave_base_lexer (), input_reader (file)
+    : octave_base_lexer (), input_reader (file, this)
   { }
 
   octave_lexer (const std::string& eval_string)
-    : octave_base_lexer (), input_reader (eval_string)
+    : octave_base_lexer (), input_reader (eval_string, this)
   { }
 
   void reset (void)
@@ -688,17 +739,17 @@ public:
 
   bool input_from_terminal (void) const
   {
-    return input_source () == "terminal";
+    return input_reader.input_from_terminal ();
   }
 
   bool input_from_file (void) const
   {
-    return input_source () == "file";
+    return input_reader.input_from_file ();
   }
 
   bool input_from_eval_string (void) const
   {
-    return input_source () == "eval_string";
+    return input_reader.input_from_eval_string ();
   }
 
   int fill_flex_buffer (char *buf, unsigned int max_size);

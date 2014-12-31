@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 Kai Habel
+Copyright (C) 2000-2013 Kai Habel
 
 This file is part of Octave.
 
@@ -38,6 +38,7 @@ qhull command
 
 #include <list>
 
+#include "oct-locbuf.h"
 #include "lo-ieee.h"
 
 #include "Cell.h"
@@ -59,8 +60,25 @@ close_fcn (FILE *f)
   gnulib::fclose (f);
 }
 
+static bool
+octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
+{
+  if (sizeof (octave_idx_type) > sizeof (int))
+    {
+      int maxval = std::numeric_limits<int>::max ();
+
+      if (dim > maxval || n > maxval)
+        {
+          error ("%s: dimension too large for Qhull", who);
+          return false;
+        }
+    }
+
+  return true;
+}
+
 DEFUN_DLD (__voronoi__, args, ,
-        "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
 @deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts}, @var{options})\n\
 @deftypefnx {Loadable Function} {@var{C}, @var{F}, @var{Inf_Pts} =} __voronoi__ (@dots{})\n\
@@ -85,6 +103,9 @@ Undocumented internal function.\n\
   Matrix points = args(1).matrix_value ();
   const octave_idx_type dim = points.columns ();
   const octave_idx_type num_points = points.rows ();
+
+  if (! octave_qhull_dims_ok (dim, num_points, "__voronoi__"))
+    return retval;
 
   points = points.transpose ();
 
@@ -150,7 +171,7 @@ Undocumented internal function.\n\
 
   int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
                                ismalloc, cmd_str, outfile, errfile);
-  if (! exitcode) 
+  if (! exitcode)
     {
       // Calling findgood_all provides the number of Voronoi vertices
       // (sets qh num_good).
@@ -218,7 +239,7 @@ Undocumented internal function.\n\
       // of the at_inf and C arrays so that they always contain at least
       // as many elements as the given points array.
 
-      // FIXME -- is it possible (or does it make sense) for
+      // FIXME: is it possible (or does it make sense) for
       // num_voronoi_regions to ever be larger than num_points?
 
       octave_idx_type nr = (num_points > num_voronoi_regions

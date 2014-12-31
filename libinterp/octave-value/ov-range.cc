@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,7 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 
 // If TRUE, allow ranges with non-integer elements as array indices.
-bool Vallow_noninteger_range_as_index = false;
+static bool Vallow_noninteger_range_as_index = true;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
@@ -148,13 +148,14 @@ octave_range::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 idx_vector
-octave_range::index_vector (void) const
+octave_range::index_vector (bool require_integers) const
 {
   if (idx_cache)
     return *idx_cache;
   else
     {
-      if (! Vallow_noninteger_range_as_index
+      if (require_integers
+          || ! Vallow_noninteger_range_as_index
           || range.all_elements_are_ints ())
         return set_idx_cache (idx_vector (range));
       else
@@ -224,7 +225,7 @@ octave_range::char_array_value (bool) const
 octave_value
 octave_range::all (int dim) const
 {
-  // FIXME -- this is a potential waste of memory.
+  // FIXME: this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
@@ -234,7 +235,7 @@ octave_range::all (int dim) const
 octave_value
 octave_range::any (int dim) const
 {
-  // FIXME -- this is a potential waste of memory.
+  // FIXME: this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
@@ -244,9 +245,10 @@ octave_range::any (int dim) const
 octave_value
 octave_range::diag (octave_idx_type k) const
 {
-  return (k == 0
-          ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
-          : octave_value (range.diag (k)));
+  return
+    (k == 0
+       ? octave_value (DiagMatrix (DiagArray2<double> (range.matrix_value ())))
+       : octave_value (range.diag (k)));
 }
 
 octave_value
@@ -264,7 +266,7 @@ octave_range::is_true (void) const
 
   if (range.nelem () != 0)
     {
-      // FIXME -- this is a potential waste of memory.
+      // FIXME: this is a potential waste of memory.
 
       Matrix m ((range.matrix_value () . all ()) . all ());
 
@@ -350,7 +352,7 @@ octave_range::convert_to_str_internal (bool pad, bool force, char type) const
 }
 
 void
-octave_range::print (std::ostream& os, bool pr_as_read_syntax) const
+octave_range::print (std::ostream& os, bool pr_as_read_syntax)
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -387,29 +389,25 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
   return retval;
 }
 
-std::string
-octave_range::short_disp (void) const
+void
+octave_range::short_disp (std::ostream& os) const
 {
-  std::ostringstream buf;
-  
   octave_idx_type len = range.nelem ();
 
   if (len == 0)
-    buf << "[]";
+    os << "[]";
   else
     {
-      buf << range.base () << ":";
+      os << range.base () << ":";
 
       if (len > 1)
         {
           if (range.inc () != 1)
-            buf << range.inc () << ":";
+            os << range.inc () << ":";
 
-          buf << range.limit ();
+          os << range.limit ();
         }
     }
-
-  return buf.str ();
 }
 
 // Skip white space and comments on stream IS.
@@ -551,7 +549,8 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
                          bool /* save_as_floats */)
 {
   hsize_t dimens[3];
-  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
+  hid_t space_hid, type_hid, data_hid;
+  space_hid = type_hid = data_hid = -1;
   bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);
@@ -678,8 +677,15 @@ octave_range::as_mxArray (void) const
   return retval;
 }
 
+octave_value
+octave_range::fast_elem_extract (octave_idx_type n) const
+{
+  return (n < range.nelem ())
+    ? octave_value (range.elem (n)) : octave_value ();
+}
+
 DEFUN (allow_noninteger_range_as_index, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\
@@ -693,6 +699,14 @@ variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
+  static bool warned = false;
+  if (! warned)
+    {
+      warned = true;
+      warning_with_id ("Octave:deprecated-function",
+                       "allow_noninteger_range_as_index is obsolete and will be removed from a future version of Octave");
+    }
+
   return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
 }
 

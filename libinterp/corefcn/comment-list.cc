@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,12 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "lo-utils.h"
-#include "singleton-cleanup.h"
 
 #include "comment-list.h"
 #include "error.h"
-
-octave_comment_buffer *octave_comment_buffer::instance = 0;
 
 octave_comment_list *
 octave_comment_list::dup (void) const
@@ -45,62 +42,4 @@ octave_comment_list::dup (void) const
     }
 
   return new_cl;
-}
-
-bool
-octave_comment_buffer::instance_ok (void)
-{
-  bool retval = true;
-
-  if (! instance)
-    {
-      instance = new octave_comment_buffer ();
-
-      if (instance)
-        singleton_cleanup_list::add (cleanup_instance);
-    }
-
-  if (! instance)
-    {
-      ::error ("unable to create comment buffer object");
-
-      retval = false;
-    }
-
-  return retval;
-}
-
-void
-octave_comment_buffer::append (const std::string& s,
-                               octave_comment_elt::comment_type t)
-{
-  if (instance_ok ())
-    instance->do_append (s, t);
-}
-
-octave_comment_list *
-octave_comment_buffer::get_comment (void)
-{
-  return (instance_ok ()) ? instance->do_get_comment () : 0;
-}
-
-void
-octave_comment_buffer::do_append (const std::string& s,
-                                  octave_comment_elt::comment_type t)
-{
-  comment_list->append (s, t);
-}
-
-octave_comment_list *
-octave_comment_buffer::do_get_comment (void)
-{
-  octave_comment_list *retval = 0;
-
-  if (comment_list && comment_list->length () > 0)
-    {
-      retval = comment_list;
-      comment_list = new octave_comment_list ();
-    }
-
-  return retval;
 }

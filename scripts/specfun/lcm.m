@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,10 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Mapping Function} {} lcm (@var{x}, @var{y})
 ## @deftypefnx {Mapping Function} {} lcm (@var{x}, @var{y}, @dots{})
-## Compute the least common multiple of @var{x} and @var{y},
-## or of the list of all arguments.  All elements must be the same size or
-## scalar.
-## @seealso{factor, gcd}
+## Compute the least common multiple of @var{x} and @var{y}, or of the list of
+## all arguments.
+##
+## All elements must be numeric and of the same size or scalar.
+## @seealso{factor, gcd, isprime}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -31,31 +32,31 @@
 
 function l = lcm (varargin)
 
-  if (nargin > 1)
-    if (common_size (varargin{:}) != 0)
-      error ("lcm: all args must be of the same size or scalar");
-    elseif (! all (cellfun ("isnumeric", varargin)))
-      error ("lcm: all arguments must be numeric");
-    endif
-
-    l = varargin{1};
-    for i = 2:nargin
-      x = varargin{i};
-      msk = l == 0 & x == 0;
-      l .*= x ./ gcd (l, x);
-      l(msk) = 0;
-    endfor
-  else
+  if (nargin < 2)
     print_usage ();
   endif
+
+  if (common_size (varargin{:}) != 0)
+    error ("lcm: all args must be the same size or scalar");
+  elseif (! all (cellfun ("isnumeric", varargin)))
+    error ("lcm: all arguments must be numeric");
+  endif
+
+  l = varargin{1};
+  for i = 2:nargin
+    x = varargin{i};
+    msk = (l == 0 & x == 0);
+    l .*= x ./ gcd (l, x);
+    l(msk) = 0;
+  endfor
 
 endfunction
 
 
 %!assert (lcm (3, 5, 7, 15), 105)
 
-%!error lcm ();
-%!test
-%! s.a = 1;
-%! fail ("lcm (s)");
+%!error lcm ()
+%!error lcm (1)
+%!error <same size or scalar> lcm ([1 2], [1 2 3])
+%!error <arguments must be numeric> lcm ([1 2], {1 2})
 

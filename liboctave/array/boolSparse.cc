@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -35,8 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "boolSparse.h"
 #include "dSparse.h"
-#include "oct-mem.h"
 #include "oct-locbuf.h"
+
+#include "Sparse-op-defs.h"
 
 // SparseBoolMatrix class.
 
@@ -55,7 +56,7 @@ SparseBoolMatrix::operator == (const SparseBoolMatrix& a) const
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
     if (cidx (i) != a.cidx (i))
-        return false;
+      return false;
 
   for (octave_idx_type i = 0; i < nz; i++)
     if (data (i) != a.data (i) || ridx (i) != a.ridx (i))
@@ -71,21 +72,24 @@ SparseBoolMatrix::operator != (const SparseBoolMatrix& a) const
 }
 
 SparseBoolMatrix&
-SparseBoolMatrix::insert (const SparseBoolMatrix& a, octave_idx_type r, octave_idx_type c)
+SparseBoolMatrix::insert (const SparseBoolMatrix& a,
+                          octave_idx_type r, octave_idx_type c)
 {
   Sparse<bool>::insert (a, r, c);
   return *this;
 }
 
 SparseBoolMatrix&
-SparseBoolMatrix::insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx)
+SparseBoolMatrix::insert (const SparseBoolMatrix& a,
+                          const Array<octave_idx_type>& indx)
 {
   Sparse<bool>::insert (a, indx);
   return *this;
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::concat (const SparseBoolMatrix& rb, const Array<octave_idx_type>& ra_idx)
+SparseBoolMatrix::concat (const SparseBoolMatrix& rb,
+                          const Array<octave_idx_type>& ra_idx)
 {
   // Don't use numel to avoid all possiblity of an overflow
   if (rb.rows () > 0 && rb.cols () > 0)
@@ -128,8 +132,7 @@ SparseBoolMatrix::operator ! (void) const
 
 // other operations
 
-// FIXME Do these really belong here?  Maybe they should be
-// in a base class?
+// FIXME: Do these really belong here?  Maybe they should be in a base class?
 
 SparseBoolMatrix
 SparseBoolMatrix::all (int dim) const
@@ -141,7 +144,9 @@ SparseBoolMatrix
 SparseBoolMatrix::any (int dim) const
 {
   Sparse<bool> retval;
-  octave_idx_type nr = rows (), nc = cols (), nz = nnz ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type nz = nnz ();
   if (dim == -1)
     dim = (nr == 1 && nc != 1) ? 1 : 0;
 
@@ -154,8 +159,8 @@ SparseBoolMatrix::any (int dim) const
         retval.xcidx (i+1) = retval.xcidx (i) + (cidx (i+1) > cidx (i));
       octave_idx_type new_nz = retval.xcidx (nc);
       retval.change_capacity (new_nz);
-      fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
-      fill_or_memset (new_nz, true, retval.data ());
+      std::fill_n (retval.ridx (), new_nz, static_cast<octave_idx_type> (0));
+      std::fill_n (retval.data (), new_nz, true);
     }
   else if (dim == 1)
     {
@@ -171,7 +176,7 @@ SparseBoolMatrix::any (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
+          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
           retval = Sparse<bool> (Array<bool> (dim_vector (1, 1), true),
                                  idx_vector (tmp),
                                  idx_vector (static_cast<octave_idx_type> (0)),
@@ -186,7 +191,9 @@ SparseMatrix
 SparseBoolMatrix::sum (int dim) const
 {
   Sparse<double> retval;
-  octave_idx_type nr = rows (), nc = cols (), nz = nnz ();
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+  octave_idx_type nz = nnz ();
   if (dim == -1)
     dim = (nr == 1 && nc != 1) ? 1 : 0;
 
@@ -198,7 +205,7 @@ SparseBoolMatrix::sum (int dim) const
         retval.xcidx (i+1) = retval.xcidx (i) + (cidx (i+1) > cidx (i));
       octave_idx_type new_nz = retval.xcidx (nc);
       retval.change_capacity (new_nz);
-      fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
+      std::fill_n (retval.ridx (), new_nz, static_cast<octave_idx_type> (0));
       for (octave_idx_type i = 0, k = 0; i < nc; i++)
         {
           octave_idx_type c = cidx (i+1) - cidx (i);
@@ -220,7 +227,7 @@ SparseBoolMatrix::sum (int dim) const
       else
         {
           Array<octave_idx_type> tmp (dim_vector (nz, 1));
-          copy_or_memcpy (nz, ridx (), tmp.fortran_vec ());
+          std::copy (ridx (), ridx () + nz, tmp.fortran_vec ());
           retval = Sparse<double> (Array<double> (dim_vector (1, 1), 1.0),
                                    idx_vector (tmp),
                                    idx_vector (static_cast<octave_idx_type> (0)),
@@ -256,14 +263,14 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
 {
   octave_idx_type nc = a.cols ();
 
-   // add one to the printed indices to go from
-   //  zero-based to one-based arrays
-   for (octave_idx_type j = 0; j < nc; j++)
-     {
-       octave_quit ();
-       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-         os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
-     }
+  // add one to the printed indices to go from
+  //  zero-based to one-based arrays
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_quit ();
+      for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+        os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
+    }
 
   return os;
 }
@@ -289,7 +296,8 @@ SparseBoolMatrix::index (const idx_vector& i, bool resize_ok) const
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j, bool resize_ok) const
+SparseBoolMatrix::index (const idx_vector& i, const idx_vector& j,
+                         bool resize_ok) const
 {
   return Sparse<bool>::index (i, j, resize_ok);
 }

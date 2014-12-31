@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -68,12 +68,18 @@ DEFBINOP (ldiv, complex_matrix, complex)
   return ret;
 }
 
-DEFNDCMPLXCMPOP_FN (lt, complex_matrix, complex, complex_array, complex, mx_el_lt)
-DEFNDCMPLXCMPOP_FN (le, complex_matrix, complex, complex_array, complex, mx_el_le)
-DEFNDCMPLXCMPOP_FN (eq, complex_matrix, complex, complex_array, complex, mx_el_eq)
-DEFNDCMPLXCMPOP_FN (ge, complex_matrix, complex, complex_array, complex, mx_el_ge)
-DEFNDCMPLXCMPOP_FN (gt, complex_matrix, complex, complex_array, complex, mx_el_gt)
-DEFNDCMPLXCMPOP_FN (ne, complex_matrix, complex, complex_array, complex, mx_el_ne)
+DEFNDCMPLXCMPOP_FN (lt, complex_matrix, complex, complex_array, complex,
+                    mx_el_lt)
+DEFNDCMPLXCMPOP_FN (le, complex_matrix, complex, complex_array, complex,
+                    mx_el_le)
+DEFNDCMPLXCMPOP_FN (eq, complex_matrix, complex, complex_array, complex,
+                    mx_el_eq)
+DEFNDCMPLXCMPOP_FN (ge, complex_matrix, complex, complex_array, complex,
+                    mx_el_ge)
+DEFNDCMPLXCMPOP_FN (gt, complex_matrix, complex, complex_array, complex,
+                    mx_el_gt)
+DEFNDCMPLXCMPOP_FN (ne, complex_matrix, complex, complex_array, complex,
+                    mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, complex_matrix, complex, complex_array, complex, *)
 
@@ -89,7 +95,8 @@ DEFBINOP (el_div, complex_matrix, complex)
   return octave_value (v1.complex_array_value () / d);
 }
 
-DEFNDBINOP_FN (el_pow, complex_matrix, complex, complex_array, complex, elem_xpow)
+DEFNDBINOP_FN (el_pow, complex_matrix, complex, complex_array, complex,
+               elem_xpow)
 
 DEFBINOP (el_ldiv, complex_matrix, complex)
 {
@@ -98,13 +105,17 @@ DEFBINOP (el_ldiv, complex_matrix, complex)
   return x_el_div (v2.complex_value (), v1.complex_array_value ());
 }
 
-DEFNDBINOP_FN (el_and, complex_matrix, complex, complex_array, complex, mx_el_and)
-DEFNDBINOP_FN (el_or,  complex_matrix, complex, complex_array, complex, mx_el_or)
+DEFNDBINOP_FN (el_and, complex_matrix, complex, complex_array, complex,
+               mx_el_and)
+DEFNDBINOP_FN (el_or,  complex_matrix, complex, complex_array, complex,
+               mx_el_or)
 
-DEFNDCATOP_FN (cm_cs, complex_matrix, complex, complex_array, complex_array, concat)
+DEFNDCATOP_FN (cm_cs, complex_matrix, complex, complex_array, complex_array,
+               concat)
 
 DEFNDASSIGNOP_FN (assign, complex_matrix, complex, complex, assign)
-DEFNDASSIGNOP_FN (sgl_assign, float_complex_matrix, complex, float_complex, assign)
+DEFNDASSIGNOP_FN (sgl_assign, float_complex_matrix, complex, float_complex,
+                  assign)
 
 DEFNDASSIGNOP_OP (assign_add, complex_matrix, complex_scalar, complex, +=)
 DEFNDASSIGNOP_OP (assign_sub, complex_matrix, complex_scalar, complex, -=)
@@ -136,10 +147,15 @@ install_cm_cs_ops (void)
   INSTALL_CATOP (octave_complex_matrix, octave_complex, cm_cs);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_complex, assign);
-  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_complex, sgl_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_complex,
+                    sgl_assign);
 
-  INSTALL_ASSIGNOP (op_add_eq, octave_complex_matrix, octave_complex_scalar, assign_add);
-  INSTALL_ASSIGNOP (op_sub_eq, octave_complex_matrix, octave_complex_scalar, assign_sub);
-  INSTALL_ASSIGNOP (op_mul_eq, octave_complex_matrix, octave_complex_scalar, assign_mul);
-  INSTALL_ASSIGNOP (op_div_eq, octave_complex_matrix, octave_complex_scalar, assign_div);
+  INSTALL_ASSIGNOP (op_add_eq, octave_complex_matrix, octave_complex_scalar,
+                    assign_add);
+  INSTALL_ASSIGNOP (op_sub_eq, octave_complex_matrix, octave_complex_scalar,
+                    assign_sub);
+  INSTALL_ASSIGNOP (op_mul_eq, octave_complex_matrix, octave_complex_scalar,
+                    assign_mul);
+  INSTALL_ASSIGNOP (op_div_eq, octave_complex_matrix, octave_complex_scalar,
+                    assign_div);
 }

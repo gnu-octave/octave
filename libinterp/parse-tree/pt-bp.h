@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2012 Ben Sapp
+Copyright (C) 2001-2013 Ben Sapp
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_bp_h)
-#define octave_tree_bp_h 1
+#if !defined (octave_pt_bp_h)
+#define octave_pt_bp_h 1
 
 #include "input.h"
 #include "ov-usr-fcn.h"
@@ -35,7 +35,7 @@ class tree_decl_command;
 class
 tree_breakpoint : public tree_walker
 {
- public:
+public:
 
   enum action { set = 1, clear = 2, list = 3 };
 
@@ -106,6 +106,8 @@ tree_breakpoint : public tree_walker
 
   void visit_fcn_handle (tree_fcn_handle&);
 
+  void visit_funcall (tree_funcall&);
+
   void visit_parameter_list (tree_parameter_list&);
 
   void visit_postfix_expression (tree_postfix_expression&);
@@ -136,7 +138,7 @@ tree_breakpoint : public tree_walker
 
   int get_line (void) { return found ? line : 0; }
 
- private:
+private:
 
   void do_decl_command (tree_decl_command&);
 

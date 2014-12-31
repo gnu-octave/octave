@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
-## @deftypefnx {Function File} {} image (@dots{}, "@var{property}", @var{value}, @dots{})
+## @deftypefnx {Function File} {} image (@dots{}, "@var{prop}", @var{val}, @dots{})
+## @deftypefnx {Function File} {} image ("@var{prop1}", @var{val1}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} image (@dots{})
 ## Display a matrix as an indexed color image.
 ##
@@ -33,6 +34,9 @@
 ## @strong{Warning:} @var{x} and @var{y} are ignored when using gnuplot 4.0
 ## or earlier.
 ##
+## Multiple property/value pairs may be specified for the image object, but
+## they must appear in pairs.
+##
 ## The optional return value @var{h} is a graphics handle to the image.
 ##
 ## Implementation Note: The origin (0, 0) for images is located in the
@@ -44,6 +48,12 @@
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata)}.
 ##
+## Calling Forms: The @code{image} function can be called in two forms:
+## High-Level and Low-Level.  When invoked with normal options, the High-Level
+## form is used which first calls @code{newplot} to prepare the graphic figure
+## and axes.  When the only inputs to @code{image} are property/value pairs
+## the Low-Level form is used which creates a new instance of an image object
+## and inserts it in the current axes.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
@@ -55,15 +65,31 @@ function h = image (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
   
-  if (isempty (hax))
-    hax = gca ();
-  endif
-
   chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
   
-  if (nargin == 0 || chararg == 1)
-    img = imread ("default.img");
+  do_new = true;
+  if (nargin == 0)
+    img = get (0, "defaultimagecdata");
     x = y = [];
+  elseif (chararg == 1) 
+    ## Low-Level syntax
+    do_new = false;
+    x = y = img = [];
+    idx = find (strcmpi (varargin, "cdata"), 1);
+    if (idx)
+      img = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+    idx = find (strcmpi (varargin, "xdata"), 1);
+    if (idx)
+      x = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
+    idx = find (strcmpi (varargin, "ydata"), 1);
+    if (idx)
+      y = varargin{idx+1};
+      varargin(idx:idx+1) = [];
+    endif
   elseif (nargin == 1 || chararg == 2)
     img = varargin{1};
     x = y = [];
@@ -75,9 +101,27 @@ function h = image (varargin)
     img = varargin{3};
     chararg = 4;
   endif
-  
-  htmp = __img__ (hax, x, y, img, varargin{chararg:end});
-  set (hax, "layer", "top");
+
+  oldfig = [];
+  if (! isempty (hax))
+    oldfig = get (0, "currentfigure");
+  endif
+  unwind_protect
+    if (do_new)
+      hax = newplot (hax);
+    elseif (isempty (hax))
+      hax = gca ();
+    else
+      hax = hax(1);
+    endif
+
+    htmp = __img__ (hax, do_new, x, y, img, varargin{chararg:end});
+
+  unwind_protect_cleanup
+    if (! isempty (oldfig))
+      set (0, "currentfigure", oldfig);
+    endif
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
@@ -95,88 +139,64 @@ endfunction
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function h = __img__ (hax, x, y, img, varargin)
+function h = __img__ (hax, do_new, x, y, img, varargin)
 
-  if (isempty (img))
-    error ("__img__: matrix is empty");
-  endif
+  if (! isempty (img))
 
-  ## FIXME: Hack for integer formats which use zero-based indexing
-  ##        Hack favors correctness of display over size of image in memory.
-  ##        True fix will be done in C++ code. 
-  if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
-    img = single (img) + 1;
-  endif
-
-  if (isempty (x))
-    x = [1, columns(img)];
-  endif
-
-  if (isempty (y))
-    y = [1, rows(img)];
-  endif
-
-  xdata = x([1, end]);
-  ydata = y([1, end]);
-
-  if (numel (x) > 2 && numel (y) > 2)
-    ## Test data for non-linear spacing which is unsupported
-    ## FIXME: Need a better check on linearity
-    tol = 100*eps;
-    dx = diff (x);
-    dy = diff (y);
-    dx = std (dx) / mean (abs (dx));
-    dy = std (dy) / mean (abs (dy));
-    if (any (dx > tol) || any (dy > tol))
-      warning ("image: non-linear X, Y data is ignored.  IMG will be shown with linear mapping");
+    if (isempty (x))
+      xdata = [];
+    else
+      xdata = x([1, end])(:).';  # (:).' is a hack to guarantee row vector
     endif
-  endif
 
-  htmp = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
-                       "cdatamapping", "direct", varargin {:});
-
-  px = __image_pixel_size__ (htmp);
-
-  if (xdata(2) < xdata(1))
-    xdata = fliplr (xdata);
-  elseif (xdata(2) == xdata(1))
-    xdata = xdata(1) + [0, columns(img)-1];
-  endif
-  if (ydata(2) < ydata(1))
-    ydata = fliplr (ydata);
-  elseif (ydata(2) == ydata(1))
-    ydata = ydata(1) + [0, rows(img)-1];
-  endif
-  xlim = xdata + [-px(1), px(1)];
-  ylim = ydata + [-px(2), px(2)];
-
-  ## FIXME -- how can we do this and also get the {x,y}limmode
-  ## properties to remain "auto"?  I suppose this adjustment should
-  ## happen automatically in axes::update_axis_limits instead of
-  ## explicitly setting the values here.  But then what information is
-  ## available to axes::update_axis_limits to determine that the
-  ## adjustment is necessary?
-  set (hax, "xlim", xlim, "ylim", ylim);
-
-  if (ndims (img) == 3)
-    if (isinteger (img))
-      cls = class (img);
-      mn = intmin (cls);
-      mx = intmax (cls);
-      set (hax, "clim", double ([mn, mx]));
+    if (isempty (y))
+      ydata = [];
+    else
+      ydata = y([1, end])(:).';
     endif
-  endif
 
-  set (hax, "view", [0, 90]);
+    if (numel (x) > 2 && numel (y) > 2)
+      ## Test data for non-linear spacing which is unsupported
+      tol = .01;  # 1% tolerance.  FIXME: this value was chosen without thought.
+      dx = diff (x);
+      dxmean = (max (x) - min (x)) / (numel (x) - 1);
+      dx = abs ((abs (dx) - dxmean) / dxmean);
+      dy = diff (y);
+      dymean = (max (y) - min (y)) / (numel (y) - 1);
+      dy = abs ((abs (dy) - dymean) / dymean);
+      if (any (dx > tol) || any (dy > tol))
+        warning (["image: non-linear X, Y data is ignored.  " ...
+                  "IMG will be shown with linear mapping"]);
+      endif
+    endif
 
-  if (strcmp (get (hax, "nextplot"), "replace"))
-    ## Always reverse y-axis for images, unless hold is on
-    set (hax, "ydir", "reverse");
-  endif
+  endif  # ! isempty (img)
 
-  if (nargout > 0)
-    h = htmp;
-  endif
+  h = __go_image__ (hax, "cdata", img, "xdata", xdata, "ydata", ydata,
+                         "cdatamapping", "direct", varargin{:});
+
+  if (do_new && ! ishold (hax))
+    ## Set axis properties for new images
+
+    if (! isempty (img))
+      if (isscalar (get (hax, "children")))
+        axis (hax, "tight");
+      endif
+
+      if (ndims (img) == 3)
+        if (isinteger (img))
+          cls = class (img);
+          mn = intmin (cls);
+          mx = intmax (cls);
+          set (hax, "clim", double ([mn, mx]));
+        endif
+      endif
+
+    endif  # ! isempty (img)
+
+    set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top");
+
+  endif  # do_new
 
 endfunction
 
@@ -201,3 +221,31 @@ endfunction
 %!  h = image (-x, -y, img);
 %!  title ("image (-x, -y, img)");
 
+%!test
+%! ## test hidden properties x/ydatamode (bug #42121)
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   nx = 64; ny = 64;
+%!   cdata = rand (ny, nx)*127;
+%!   hi = image (cdata);             # x/ydatamode is auto
+%!   assert (get (hi, "xdata"), [1 nx])
+%!   assert (get (hi, "ydata"), [1 ny])
+%!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
+%!   assert (get (hi, "xdata"), [1 nx/2])
+%!   assert (get (hi, "ydata"), [1 ny/2])
+%! 
+%!   set (hi, "xdata", [10 100])     # xdatamode is now manual
+%!   set (hi, "ydata", [10 1000])    # ydatamode is now manual
+%!   set (hi, "cdata", cdata)
+%!   assert (get (hi, "xdata"), [10 100])
+%!   assert (get (hi, "ydata"), [10 1000])
+%! 
+%!   set (hi, "ydata", [])           # ydatamode is now auto
+%!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
+%!   assert (get (hi, "xdata"), [10 100])
+%!   assert (get (hi, "ydata"), [1 ny/2])
+%! unwind_protect_cleanup
+%!   close (hf)
+%! end_unwind_protect
+
+## FIXME: Need %!tests for linear

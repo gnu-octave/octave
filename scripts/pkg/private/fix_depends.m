@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -29,7 +29,7 @@ function deps_cell = fix_depends (depends)
   deps = strtrim (ostrsplit (tolower (depends), ","));
   deps_cell = cell (1, length (deps));
   dep_pat = ...
-  '\s*(?<name>\w+)+\s*(\(\s*(?<op>[<>=]+)\s*(?<ver>\d+\.\d+(\.\d+)*)\s*\))*\s*';
+  '\s*(?<name>[-\w]+)\s*(\(\s*(?<op>[<>=]+)\s*(?<ver>\d+\.\d+(\.\d+)*)\s*\))*\s*';
 
   ## For each dependency.
   for i = 1:length (deps)

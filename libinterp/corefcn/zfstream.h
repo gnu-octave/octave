@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 Ludwig Schwardt, Kevin Ruland
+Copyright (C) 2005-2013 Ludwig Schwardt, Kevin Ruland
 
 This file is part of Octave.
 
@@ -44,10 +44,10 @@ along with Octave; see the file COPYING.  If not, see
 /**
  *  @brief  Gzipped file stream buffer class.
  *
- *  This class implements basic_filebuf for gzipped files. It doesn't yet support
- *  seeking (allowed by zlib but slow/limited), putback and read/write access
- *  (tricky). Otherwise, it attempts to be a drop-in replacement for the standard
- *  file streambuf.
+ *  This class implements basic_filebuf for gzipped files. It doesn't yet
+ *  support seeking (allowed by zlib but slow/limited), putback and read/write
+ *  access *  (tricky). Otherwise, it attempts to be a drop-in replacement for
+ *  the standard file streambuf.
 */
 class gzfilebuf : public std::streambuf
 {
@@ -457,28 +457,28 @@ private:
  *  as base for the setcompression(int,int) manipulator.
 */
 template<typename T1, typename T2>
-  class gzomanip2
-  {
-  public:
-    // Allows insertor to peek at internals
-    template <typename Ta, typename Tb>
-      friend gzofstream&
-      operator<<(gzofstream&,
-                 const gzomanip2<Ta,Tb>&);
+class gzomanip2
+{
+public:
+  // Allows insertor to peek at internals
+  template <typename Ta, typename Tb>
+  friend gzofstream&
+  operator<<(gzofstream&,
+             const gzomanip2<Ta,Tb>&);
 
-    // Constructor
-    gzomanip2 (gzofstream& (*f)(gzofstream&, T1, T2),
-               T1 v1,
-               T2 v2);
-  private:
-    // Underlying manipulator function
-    gzofstream&
-    (*func)(gzofstream&, T1, T2);
+  // Constructor
+  gzomanip2 (gzofstream& (*f)(gzofstream&, T1, T2),
+             T1 v1,
+             T2 v2);
+private:
+  // Underlying manipulator function
+  gzofstream&
+  (*func)(gzofstream&, T1, T2);
 
-    // Arguments for manipulator function
-    T1 val1;
-    T2 val2;
-  };
+  // Arguments for manipulator function
+  T1 val1;
+  T2 val2;
+};
 
 /*****************************************************************************/
 
@@ -492,18 +492,18 @@ setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 
 // Manipulator constructor stores arguments
 template<typename T1, typename T2>
-  inline
-  gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
-                               T1 v1,
-                               T2 v2)
+inline
+gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
+                             T1 v1,
+                             T2 v2)
   : func(f), val1(v1), val2(v2)
-  { }
+{ }
 
 // Insertor applies underlying manipulator function to stream
 template<typename T1, typename T2>
-  inline gzofstream&
-  operator<<(gzofstream& s, const gzomanip2<T1,T2>& m)
-  { return (*m.func)(s, m.val1, m.val2); }
+inline gzofstream&
+operator<<(gzofstream& s, const gzomanip2<T1,T2>& m)
+{ return (*m.func)(s, m.val1, m.val2); }
 
 // Insert this onto stream to simplify setting of compression level
 inline gzomanip2<int,int>

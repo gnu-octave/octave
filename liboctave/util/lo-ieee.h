@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,36 +20,33 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_ieee_h)
-#define octave_liboctave_ieee_h 1
+#if !defined (octave_lo_ieee_h)
+#define octave_lo_ieee_h 1
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
 /*  Octave's idea of infinity.  */
-extern OCTAVE_API double octave_Inf;
+#define octave_Inf (lo_ieee_inf_value ())
 
 /* Octave's idea of a missing value.  */
-extern OCTAVE_API double octave_NA;
+#define octave_NA (lo_ieee_na_value ())
 
 /* Octave's idea of not a number.  */
-extern OCTAVE_API double octave_NaN;
+#define octave_NaN (lo_ieee_nan_value ())
 
 /*  Octave's idea of infinity.  */
-extern OCTAVE_API float octave_Float_Inf;
+#define octave_Float_Inf (lo_ieee_float_inf_value ())
 
 /* Octave's idea of a missing value.  */
-extern OCTAVE_API float octave_Float_NA;
+#define octave_Float_NA (lo_ieee_float_na_value ())
 
 /* Octave's idea of not a number.  */
-extern OCTAVE_API float octave_Float_NaN;
+#define octave_Float_NaN (lo_ieee_float_nan_value ())
 
 /* FIXME -- this code assumes that a double has twice the
    number of bits as an int */
-
-extern OCTAVE_API int lo_ieee_hw;
-extern OCTAVE_API int lo_ieee_lw;
 
 typedef union
 {
@@ -77,7 +74,6 @@ extern OCTAVE_API int __lo_ieee_isinf (double x);
 
 extern OCTAVE_API int __lo_ieee_is_NA (double);
 extern OCTAVE_API int __lo_ieee_is_old_NA (double);
-extern OCTAVE_API int __lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
 extern OCTAVE_API double __lo_ieee_replace_old_NA (double);
 
 extern OCTAVE_API double lo_ieee_inf_value (void);
@@ -91,7 +87,6 @@ extern OCTAVE_API int __lo_ieee_float_finite (float x);
 extern OCTAVE_API int __lo_ieee_float_isinf (float x);
 
 extern OCTAVE_API int __lo_ieee_float_is_NA (float);
-extern OCTAVE_API int __lo_ieee_float_is_NaN_or_NA (float) GCC_ATTR_DEPRECATED;
 
 extern OCTAVE_API float lo_ieee_float_inf_value (void);
 extern OCTAVE_API float lo_ieee_float_na_value (void);

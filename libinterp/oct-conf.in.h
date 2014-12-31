@@ -1,7 +1,7 @@
 // %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -278,6 +278,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_FLIBS %OCTAVE_CONF_FLIBS%
 #endif
 
+#ifndef OCTAVE_CONF_FONTCONFIG_CFLAGS
+#define OCTAVE_CONF_FONTCONFIG_CFLAGS %OCTAVE_CONF_FONTCONFIG_CFLAGS%
+#endif
+
 #ifndef OCTAVE_CONF_FPICFLAG
 #define OCTAVE_CONF_FPICFLAG %OCTAVE_CONF_FPICFLAG%
 #endif
@@ -446,6 +450,14 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_OPENGL_LIBS %OCTAVE_CONF_OPENGL_LIBS%
 #endif
 
+#ifndef OCTAVE_CONF_PCRE_CPPFLAGS
+#define OCTAVE_CONF_PCRE_CPPFLAGS %OCTAVE_CONF_PCRE_CPPFLAGS%
+#endif
+
+#ifndef OCTAVE_CONF_PCRE_LIBS
+#define OCTAVE_CONF_PCRE_LIBS %OCTAVE_CONF_PCRE_LIBS%
+#endif
+
 #ifndef OCTAVE_CONF_PREFIX
 #define OCTAVE_CONF_PREFIX %OCTAVE_CONF_PREFIX%
 #endif
@@ -504,10 +516,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifndef OCTAVE_CONF_READLINE_LIBS
 #define OCTAVE_CONF_READLINE_LIBS %OCTAVE_CONF_READLINE_LIBS%
-#endif
-
-#ifndef OCTAVE_CONF_REGEX_LIBS
-#define OCTAVE_CONF_REGEX_LIBS %OCTAVE_CONF_REGEX_LIBS%
 #endif
 
 #ifndef OCTAVE_CONF_SED

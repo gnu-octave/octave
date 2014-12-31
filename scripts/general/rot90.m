@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,6 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} rot90 (@var{A})
 ## @deftypefnx {Function File} {} rot90 (@var{A}, @var{k})
+## Rotate array by 90 degree increments.
+##
 ## Return a copy of @var{A} with the elements rotated counterclockwise in
 ## 90-degree increments.  The second argument is optional, and specifies
 ## how many 90-degree rotations are to be applied (the default value is 1).
@@ -45,9 +47,11 @@
 ## @end group
 ## @end example
 ##
-## Note that @code{rot90} only works with 2-D arrays.  To rotate N-D arrays
-## use @code{rotdim} instead.
-## @seealso{rotdim, flipud, fliplr, flipdim}
+## The rotation is always performed on the plane of the first two dimensions,
+## i.e., rows and columns.  To perform a rotation on any other plane, use
+## @code{rotdim}.
+##
+## @seealso{rotdim, fliplr, flipud, flip}
 ## @end deftypefn
 
 ## Author: jwe
@@ -58,22 +62,24 @@ function B = rot90 (A, k = 1)
     print_usage ();
   endif
 
-  if (ndims (A) > 2)
-    error ("rot90: A must be a 2-D array");
-  elseif (! (isscalar (k) && isreal (k) && k == fix (k)))
+  if (! (isscalar (k) && isreal (k) && k == fix (k)))
     error ("rot90: K must be a single real integer");
   endif
 
   k = mod (k, 4);
+  nd = ndims (A);
 
   if (k == 0)
     B = A;
   elseif (k == 1)
-    B = flipud (A.');
+    B = flipud (permute (A, [2 1 3:1:nd]));
   elseif (k == 2)
-    B = flipud (fliplr (A));
+    idx(1:nd) = {':'};
+    idx{1} = rows (A):-1:1;
+    idx{2} = columns (A):-1:1;
+    B = A(idx{:});
   elseif (k == 3)
-    B = (flipud (A)).';
+    B = permute (flipud (A), [2 1 3:1:nd]);
   else
     error ("rot90: internal error!");
   endif
@@ -93,6 +99,38 @@ endfunction
 %! assert (rot90 (x1, 4), x1);
 %! assert (rot90 (x1, 5), x2);
 %! assert (rot90 (x1, -1), x4);
+
+## Test NDArrays
+%!test
+%! a(1:2,1:2,1) = [1 2; 3 4];
+%! a(1:2,1:2,2) = [5 6; 7 8];
+%! b(1:2,1:2,1) = [2 4; 1 3];
+%! b(1:2,1:2,2) = [6 8; 5 7];
+%! assert (rot90 (a, 1), b)
+%! assert (rot90 (a, 2), rot90 (b, 1))
+%! assert (rot90 (a, 3), rot90 (b, 2))
+
+%!test
+%! a = b = zeros (2, 2, 1, 2);
+%! a(1:2,1:2,:,1) = [1 2; 3 4];
+%! a(1:2,1:2,:,2) = [5 6; 7 8];
+%! b(1:2,1:2,:,1) = [2 4; 1 3];
+%! b(1:2,1:2,:,2) = [6 8; 5 7];
+%! assert (rot90 (a, 1), b)
+%! assert (rot90 (a, 2), rot90 (b, 1))
+%! assert (rot90 (a, 3), rot90 (b, 2))
+
+## With non-square matrices
+%!test
+%! a = zeros (3, 2, 1, 2);
+%! b = zeros (2, 3, 1, 2);
+%! a(1:2,1:3,:,1) = [ 1  2  3;  4  5  6];
+%! a(1:2,1:3,:,2) = [ 7  8  9; 10 11 12];
+%! b(1:3,1:2,:,1) = [ 3  6;  2  5;  1  4];
+%! b(1:3,1:2,:,2) = [ 9 12;  8 11;  7 10];
+%! assert (rot90 (a, 1), b)
+%! assert (rot90 (a, 2), rot90 (b, 1))
+%! assert (rot90 (a, 3), rot90 (b, 2))
 
 %% Test input validation
 %!error rot90 ()

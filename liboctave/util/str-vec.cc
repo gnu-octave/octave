@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -39,7 +39,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include "lo-utils.h"
 #include "str-vec.h"
 
-// FIXME -- isn't there some STL trick that could be used to make this
+// FIXME: isn't there some STL trick that could be used to make this
 // work for all STL containers of std::string objects?
 
 string_vector::string_vector (const std::list<std::string>& lst)
@@ -250,13 +250,9 @@ string_vector::list_in_columns (std::ostream& os, int width,
     nc = 1;
 
   // Calculate the number of rows that will be in each column except
-  // possibly  for a short column on the right.
+  // possibly for a short column on the right.
 
   octave_idx_type nr = total_names / nc + (total_names % nc != 0);
-
-  // Recalculate columns based on rows.
-
-  nc = total_names / nr + (total_names % nr != 0);
 
   octave_idx_type count;
   for (octave_idx_type row = 0; row < nr; row++)

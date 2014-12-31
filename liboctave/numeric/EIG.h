@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,8 +33,8 @@ class
 OCTAVE_API
 EIG
 {
-friend class Matrix;
-friend class ComplexMatrix;
+  friend class Matrix;
+  friend class ComplexMatrix;
 
 public:
 
@@ -96,14 +96,14 @@ public:
     : lambda (a.lambda), v (a.v) { }
 
   EIG& operator = (const EIG& a)
-    {
-      if (this != &a)
-        {
-          lambda = a.lambda;
-          v = a.v;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        lambda = a.lambda;
+        v = a.v;
+      }
+    return *this;
+  }
 
   ~EIG (void) { }
 

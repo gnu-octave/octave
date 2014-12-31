@@ -22,8 +22,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Author: Torsten <ttl@justmail.de>
 
-#if !defined (octave_qscintilla_h)
-#define octave_qscintilla_h 1
+#if !defined (octave_octave_qscintilla_h)
+#define octave_octave_qscintilla_h 1
 
 #include <Qsci/qsciscintilla.h>
 #include <QMenu>
@@ -41,14 +41,31 @@ public:
 #ifdef HAVE_QSCI_VERSION_2_6_0
   virtual void contextMenuEvent (QContextMenuEvent *e);
 #endif
+  void context_help_doc (bool);
+  void context_edit ();
+  void context_run ();
+  void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
+  bool get_actual_word ();
 
 signals:
 
   void execute_command_in_terminal_signal (const QString&);
+  void create_context_menu_signal (QMenu*);
+  void context_menu_edit_signal (const QString&);
+  void qsci_has_focus_signal (bool);
+  void status_update (bool,bool);
 
 private slots:
 
   void contextmenu_help (bool);
+  void contextmenu_doc (bool);
+  void contextmenu_help_doc (bool);
+  void contextmenu_edit (bool);
+  void contextmenu_run (bool);
+
+  void text_changed (void);
+
+protected:
 
 private:
 

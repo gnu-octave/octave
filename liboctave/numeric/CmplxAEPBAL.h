@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexAEPBALANCE_h)
-#define octave_ComplexAEPBALANCE_h 1
+#if !defined (octave_CmplxAEPBAL_h)
+#define octave_CmplxAEPBAL_h 1
 
 #include <iosfwd>
 #include <string>

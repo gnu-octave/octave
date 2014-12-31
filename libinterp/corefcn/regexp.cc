@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 Copyright (C) 2002-2005 Paul Kienzle
 
 This file is part of Octave.
@@ -78,10 +78,10 @@ do_regexp_ptn_string_escapes (const std::string& s)
               break;
 
 #if 0
-// FIXME : To be complete, we need to handle \oN, \o{N}.
-//         The PCRE library already handles \N where N
-//         is an octal number.  New code needs to merely
-//         replace \oN or \o{N} with \N.
+// FIXME: To be complete, we need to handle \oN, \o{N}.
+//        The PCRE library already handles \N where N
+//        is an octal number.  New code needs to merely
+//        replace \oN or \o{N} with \N.
             case 'o': // octal number
 #endif
 
@@ -151,14 +151,14 @@ do_regexp_rep_string_escapes (const std::string& s)
               break;
 
 #if 0
-// FIXME -- to be complete, we need to handle \oN, \o{N}, \xN, and
+// FIXME: to be complete, we need to handle \oN, \o{N}, \xN, and
 // \x{N}.  Hex digits may be upper or lower case.  Brackets are
 // optional, so \x5Bz is the same as \x{5B}z.
 
             case 'o': // octal number
             case 'x': // hex number
 #endif
- 
+
             default:  // pass escape sequence through
               retval[i] = '\\';
               retval[++i] = s[j];
@@ -189,12 +189,13 @@ parse_options (regexp::opts& options, const octave_value_list& args,
 
   for (int i = skip; i < nargin; i++)
     {
-      std::string str = args(i).string_value ();
+      std::string str;
 
-      if (error_state)
+      if (args(i).is_string ())
+        str = args(i).string_value ();
+      else
         {
-          error ("%s: optional arguments must be character strings",
-                 who.c_str ());
+          error ("%s: optional arguments must be strings", who.c_str ());
           break;
         }
 
@@ -585,7 +586,7 @@ octcellregexp (const octave_value_list &args, int nargout,
 }
 
 DEFUN (regexp, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 Regular expression string matching.  Search for @var{pat} in @var{str} and\n\
@@ -1066,7 +1067,7 @@ are zero or more @qcode{'b'} characters at positions 1 and end-of-string.\n\
 */
 
 DEFUN (regexpi, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Built-in Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 \n\
@@ -1278,7 +1279,7 @@ octregexprep (const octave_value_list &args, const std::string &who)
 }
 
 DEFUN (regexprep, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr})\n\
 @deftypefnx {Built-in Function} {@var{outstr} =} regexprep (@var{string}, @var{pat}, @var{repstr}, \"@var{opt1}\", @dots{})\n\
 Replace occurrences of pattern @var{pat} in @var{string} with @var{repstr}.\n\
@@ -1390,8 +1391,8 @@ quotes.  Use a second backslash to stop interpolation of the escape sequence\n\
             }
 
           if (!error_state)
-            retval = args(0).is_cell ()
-              ? octave_value (ret) : octave_value (ret(0));
+            retval = args(0).is_cell () ? octave_value (ret)
+                                        : octave_value (ret(0));
         }
     }
   else

@@ -19,8 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-#if !defined (find_files_dialog_h)
-#define find_files_dialog_h
+#if !defined (octave_find_files_dialog_h)
+#define octave_find_files_dialog_h
 
 #include <QDialog>
 #include <QModelIndex>
@@ -46,7 +46,7 @@ signals:
   void dir_selected (const QString &fileName);
 
 public slots:
-  void set_search_dir(const QString &dir);
+  void set_search_dir (const QString &dir);
 
 private slots:
   void start_find ();
@@ -54,9 +54,9 @@ private slots:
   void browse_folders ();
   void look_for_files ();
   void item_double_clicked (const QModelIndex&);
-  void handle_done(int);
+  void handle_done (int);
 private:
-  bool is_match(const QFileInfo &info);
+  bool is_match (const QFileInfo &info);
   QLineEdit * _start_dir_edit;
   QLineEdit * _file_name_edit;
   QPushButton * _stop_button;
@@ -75,5 +75,5 @@ private:
   QStatusBar * _status_bar;
 };
 
-#endif // find_files_dialog_h
+#endif // octave_find_files_dialog_h
 

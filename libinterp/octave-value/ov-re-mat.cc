@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -85,8 +85,9 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_matrix::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info (default_numeric_demotion_function,
-                                            octave_float_matrix::static_type_id ());
+  return octave_base_value::type_conv_info
+           (default_numeric_demotion_function,
+            octave_float_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -141,13 +142,13 @@ octave_matrix::float_value (bool) const
 Matrix
 octave_matrix::matrix_value (bool) const
 {
-  return matrix.matrix_value ();
+  return Matrix (matrix);
 }
 
 FloatMatrix
 octave_matrix::float_matrix_value (bool) const
 {
-  return FloatMatrix (matrix.matrix_value ());
+  return FloatMatrix (Matrix (matrix));
 }
 
 Complex
@@ -195,13 +196,13 @@ octave_matrix::float_complex_value (bool) const
 ComplexMatrix
 octave_matrix::complex_matrix_value (bool) const
 {
-  return ComplexMatrix (matrix.matrix_value ());
+  return ComplexMatrix (Matrix (matrix));
 }
 
 FloatComplexMatrix
 octave_matrix::float_complex_matrix_value (bool) const
 {
-  return FloatComplexMatrix (matrix.matrix_value ());
+  return FloatComplexMatrix (Matrix (matrix));
 }
 
 ComplexNDArray
@@ -243,14 +244,14 @@ octave_matrix::char_array_value (bool) const
 SparseMatrix
 octave_matrix::sparse_matrix_value (bool) const
 {
-  return SparseMatrix (matrix.matrix_value ());
+  return SparseMatrix (Matrix (matrix));
 }
 
 SparseComplexMatrix
 octave_matrix::sparse_complex_matrix_value (bool) const
 {
-  // FIXME Need a SparseComplexMatrix (Matrix) constructor to make
-  // this function more efficient. Then this should become
+  // FIXME: Need a SparseComplexMatrix (Matrix) constructor to make
+  // this function more efficient.  Then this should become
   // return SparseComplexMatrix (matrix.matrix_value ());
   return SparseComplexMatrix (sparse_matrix_value ());
 }
@@ -276,7 +277,7 @@ octave_matrix::diag (octave_idx_type m, octave_idx_type n) const
   if (matrix.ndims () == 2
       && (matrix.rows () == 1 || matrix.columns () == 1))
     {
-      Matrix mat = matrix.matrix_value ();
+      Matrix mat (matrix);
 
       retval = mat.diag (m, n);
     }
@@ -407,8 +408,7 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
 
           if (ival < 0 || ival > std::numeric_limits<unsigned char>::max ())
             {
-              // FIXME -- is there something
-              // better we could do?
+              // FIXME: is there something better we could do?
 
               ival = 0;
 
@@ -581,7 +581,7 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
       else
         st = LS_FLOAT;
     }
-  else if (d.numel () > 8192) // FIXME -- make this configurable.
+  else if (d.numel () > 8192) // FIXME: make this configurable.
     {
       double max_val, min_val;
       if (m.all_integers (max_val, min_val))
@@ -596,7 +596,7 @@ octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_matrix::load_binary (std::istream& is, bool swap,
-                                 oct_mach_info::float_format fmt)
+                            oct_mach_info::float_format fmt)
 {
   char tmp;
   int32_t mdims;
@@ -637,7 +637,8 @@ octave_matrix::load_binary (std::istream& is, bool swap,
 
       NDArray m(dv);
       double *re = m.fortran_vec ();
-      read_doubles (is, re, static_cast<save_type> (tmp), dv.numel (), swap, fmt);
+      read_doubles (is, re, static_cast<save_type> (tmp), dv.numel (),
+                    swap, fmt);
       if (error_state || ! is)
         return false;
       matrix = m;
@@ -674,7 +675,8 @@ octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   bool retval = true;
   NDArray m = array_value ();
 
@@ -745,7 +747,7 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
   if (empty > 0)
     matrix.resize (dv);
   if (empty)
-      return (empty > 0);
+    return (empty > 0);
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -933,19 +935,36 @@ octave_matrix::map (unary_mapper_t umap) const
       ARRAY_MAPPER (isna, bool, octave_is_NA);
       ARRAY_MAPPER (xsignbit, double, xsignbit);
 
+    // Special cases for Matlab compatibility.
+    case umap_xtolower:
+    case umap_xtoupper:
+      return matrix;
+
+    case umap_xisalnum:
+    case umap_xisalpha:
+    case umap_xisascii:
+    case umap_xiscntrl:
+    case umap_xisdigit:
+    case umap_xisgraph:
+    case umap_xislower:
+    case umap_xisprint:
+    case umap_xispunct:
+    case umap_xisspace:
+    case umap_xisupper:
+    case umap_xisxdigit:
+    case umap_xtoascii:
+      {
+        octave_value str_conv = convert_to_str (true, true);
+        return error_state ? octave_value () : str_conv.map (umap);
+      }
+
     default:
-      if (umap >= umap_xisalnum && umap <= umap_xtoupper)
-        {
-          octave_value str_conv = convert_to_str (true, true);
-          return error_state ? octave_value () : str_conv.map (umap);
-        }
-      else
         return octave_base_value::map (umap);
     }
 }
 
 DEFUN (double, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} double (@var{x})\n\
 Convert @var{x} to double precision type.\n\
 @seealso{single}\n\
@@ -965,27 +984,32 @@ Convert @var{x} to double precision type.\n\
         {
           if (args(0).is_complex_type ())
             {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix, octave_complex);
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_diag_matrix,
+                                      octave_complex);
             }
           else
             {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix, octave_scalar);
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_diag_matrix,
+                                      octave_scalar);
             }
         }
       else if (args(0).is_sparse_type ())
         {
           if (args(0).is_complex_type ())
             {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix, octave_complex);
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_complex_matrix,
+                                      octave_complex);
             }
           else
             {
-              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix, octave_scalar);
+              OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix,
+                                      octave_scalar);
             }
         }
       else if (args(0).is_complex_type ())
         {
-          OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix, octave_complex);
+          OCTAVE_TYPE_CONV_BODY3 (double, octave_complex_matrix,
+                                  octave_complex);
         }
       else
         {

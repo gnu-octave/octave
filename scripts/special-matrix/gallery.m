@@ -83,7 +83,7 @@
 ## @deftypefn  {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n})
 ## @deftypefnx {Function File} {[@var{c}, @var{d}, @var{e}] =} gallery ("dorr", @var{n}, @var{theta})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("dorr", @dots{})
-## Create a diagonally dominant, ill conditioned, tridiagonal matrix.
+## Create a diagonally dominant, ill-conditioned, tridiagonal matrix.
 ##
 ## @end deftypefn
 ##
@@ -94,20 +94,20 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("fiedler", @var{c})
-## Create a symmetric Fiedler matrix.
+## Create a symmetric @nospell{Fiedler} matrix.
 ##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("forsythe", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("forsythe", @var{n}, @var{alpha})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("forsythe", @var{n}, @var{alpha}, @var{lambda})
-## Create a Forsythe matrix (a perturbed Jordan block).
+## Create a @nospell{Forsythe} matrix (a perturbed Jordan block).
 ##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{f} =} gallery ("frank", @var{n})
 ## @deftypefnx {Function File} {@var{f} =} gallery ("frank", @var{n}, @var{k})
-## Create a Frank matrix (ill conditioned eigenvalues).
+## Create a Frank matrix (ill-conditioned eigenvalues).
 ##
 ## @end deftypefn
 ##
@@ -194,13 +194,13 @@
 ## @deftypefn  {Function File} {@var{u} =} gallery ("kahan", @var{n})
 ## @deftypefnx {Function File} {@var{u} =} gallery ("kahan", @var{n}, @var{theta})
 ## @deftypefnx {Function File} {@var{u} =} gallery ("kahan", @var{n}, @var{theta}, @var{pert})
-## Create a Kahan matrix (upper trapezoidal).
+## Create a @nospell{Kahan} matrix (upper trapezoidal).
 ##
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("kms", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("kms", @var{n}, @var{rho})
-## Create a Kac-Murdock-Szego Toeplitz matrix.
+## Create a @nospell{Kac-Murdock-Szego} Toeplitz matrix.
 ##
 ## @end deftypefn
 ##
@@ -213,12 +213,12 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("lauchli", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("lauchli", @var{n}, @var{mu})
-## Create a Lauchli matrix (rectangular).
+## Create a @nospell{Lauchli} matrix (rectangular).
 ##
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("lehmer", @var{n})
-## Create a Lehmer matrix (symmetric positive definite).
+## Create a @nospell{Lehmer} matrix (symmetric positive definite).
 ##
 ## @end deftypefn
 ##
@@ -228,7 +228,7 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("lotkin", @var{n})
-## Create a Lotkin matrix.
+## Create a @nospell{Lotkin} matrix.
 ##
 ## @end deftypefn
 ##
@@ -239,7 +239,7 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("moler", @var{n})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("moler", @var{n}, @var{alpha})
-## Create a Moler matrix (symmetric positive definite).
+## Create a @nospell{Moler} matrix (symmetric positive definite).
 ##
 ## @end deftypefn
 ##
@@ -274,7 +274,8 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("parter", @var{n})
-## Create a Parter matrix (a Toeplitz matrix with singular values near pi).
+## Create a @nospell{Parter} matrix (a Toeplitz matrix with singular values
+## near pi).
 ##
 ## @end deftypefn
 ##
@@ -316,8 +317,8 @@
 ## @end deftypefn
 ##
 ## @deftypefn {Function File} {@var{a} =} gallery ("redheff", @var{n})
-## Create a zero and ones matrix of Redheffer associated with the Riemann
-## hypothesis.
+## Create a zero and ones matrix of @nospell{Redheffer} associated with the
+## Riemann hypothesis.
 ##
 ## @end deftypefn
 ##
@@ -365,7 +366,8 @@
 ## @deftypefn  {Function File} {@var{t} =} gallery ("triw", @var{n})
 ## @deftypefnx {Function File} {@var{t} =} gallery ("triw", @var{n}, @var{alpha})
 ## @deftypefnx {Function File} {@var{t} =} gallery ("triw", @var{n}, @var{alpha}, @var{k})
-## Create an upper triangular matrix discussed by Kahan, Golub and Wilkinson.
+## Create an upper triangular matrix discussed by
+## @nospell{Kahan, Golub, and Wilkinson}.
 ##
 ## @end deftypefn
 ##
@@ -390,7 +392,7 @@
 ##
 ## @deftypefn  {Function File} {@var{a} =} gallery ("wathen", @var{nx}, @var{ny})
 ## @deftypefnx {Function File} {@var{a} =} gallery ("wathen", @var{nx}, @var{ny}, @var{k})
-## Create the Wathen matrix.
+## Create the @nospell{Wathen} matrix.
 ##
 ## @end deftypefn
 ##
@@ -1214,9 +1216,9 @@ function A = gearmat (n, i = n, j = -n)
   elseif (! isnumeric (n) || ! isscalar (n) || fix (n) != n)
     error ("gallery: N must be an integer for gearmat matrix.");
   elseif (! isnumeric (i) || ! isscalar (i) || i == 0 || abs (i) <= n)
-    error ("gallery: I must be a non-zero scalar, and abs (I) <= N for gearmat matrix.");
+    error ("gallery: I must be a nonzero scalar, and abs (I) <= N for gearmat matrix.");
   elseif (! isnumeric (j) || ! isscalar (j) || i == 0 || abs (j) <= n)
-    error ("gallery: J must be a non-zero scalar, and abs (J) <= N for gearmat matrix.");
+    error ("gallery: J must be a nonzero scalar, and abs (J) <= N for gearmat matrix.");
   endif
 
   A = diag (ones (n-1, 1), -1) + diag (ones (n-1, 1), 1);
@@ -2520,7 +2522,7 @@ function T = tridiag (n, x = -1, y = 2, z = -1)
   T = spdiags ([[x;0] y [0;z]], -1:1, n, n);
 endfunction
 
-function t = triw (n, alpha = -1, k = -1)
+function t = triw (n, alpha = -1, k = n(end) - 1)
   ## TRIW   Upper triangular matrix discussed by Wilkinson and others.
   ##        TRIW(N, ALPHA, K) is the upper triangular matrix with ones on
   ##        the diagonal and ALPHAs on the first K >= 0 superdiagonals.
@@ -2556,8 +2558,8 @@ function t = triw (n, alpha = -1, k = -1)
     error ("gallery: N must be a 1 or 2 elements vector for triw matrix.");
   elseif (! isscalar (alpha))
     error ("gallery: ALPHA must be a scalar for triw matrix.");
-  elseif (! isscalar (k) || ! isnumeric (k) || fix (k) != k)
-    error ("gallery: K must be a numeric integer for triw matrix.");
+  elseif (! isscalar (k) || ! isnumeric (k) || fix (k) != k || k < 0)
+    error ("gallery: K must be a numeric integer >= 0 for triw matrix.");
   endif
 
   m = n(1);              # Parameter n specifies dimension: m-by-n.
@@ -2852,4 +2854,16 @@ function A = bandred (A, kl, ku)
     A = A';
   endif
 endfunction
+
+
+## BIST testing for just a few functions to verify that the main gallery
+## dispatch function works.
+%assert (gallery ("clement", 3), [0 1 0; 2 0 2; 0 1 0])
+%assert (gallery ("invhess", 2), [1 -1; 1 2])
+
+## Test input validation of main dispatch function only
+%!error gallery ()
+%!error <NAME must be a string> gallery (123)
+%!error <matrix binomial not implemented> gallery ("binomial")
+%!error <unknown matrix with NAME foobar> gallery ("foobar")
 

@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2013 John W. Eaton
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -39,7 +39,7 @@ workspace_model::workspace_model (QObject *p)
   _columnNames.append (tr ("Class"));
   _columnNames.append (tr ("Dimension"));
   _columnNames.append (tr ("Value"));
-  _columnNames.append (tr ("Storage Class"));
+  _columnNames.append (tr ("Attribute"));
 
   for (int i = 0; i < resource_manager::storage_class_chars ().length (); i++)
     _storage_class_colors.append (QColor (Qt::white));
@@ -118,7 +118,7 @@ workspace_model::headerData (int section, Qt::Orientation orientation,
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     return _columnNames[section];
   else
-    return QVariant();
+    return QVariant ();
 }
 
 QVariant
@@ -131,7 +131,8 @@ workspace_model::data (const QModelIndex& idx, int role) const
       if (role == Qt::BackgroundColorRole)
         {
           QString class_chars = resource_manager::storage_class_chars ();
-          int actual_class = class_chars.indexOf (_scopes[idx.row()].toAscii ());
+          int actual_class
+            = class_chars.indexOf (_scopes[idx.row ()].toAscii ());
           if (actual_class >= 0)
             return QVariant (_storage_class_colors.at (actual_class));
           else
@@ -140,42 +141,60 @@ workspace_model::data (const QModelIndex& idx, int role) const
 
       if (role == Qt::DisplayRole
           || (idx.column () == 0 && role == Qt::EditRole)
-          || (idx.column () == 0 && role == Qt::ToolTipRole) )
+          || (idx.column () == 0 && role == Qt::ToolTipRole))
         {
           switch (idx.column ())
             {
             case 0:
               if (role == Qt::ToolTipRole)
-                retval = QVariant (tr ("Right click to copy, rename, or display"));
+                retval
+                  = QVariant (tr ("Right click to copy, rename, or display"));
               else
-                retval = QVariant (_symbols[idx.row()]);
+                retval = QVariant (_symbols[idx.row ()]);
               break;
 
             case 1:
-              retval = QVariant (_class_names[idx.row()]);
+              retval = QVariant (_class_names[idx.row ()]);
               break;
 
             case 2:
-              retval = QVariant (_dimensions[idx.row()]);
+              retval = QVariant (_dimensions[idx.row ()]);
               break;
 
             case 3:
-              retval = QVariant (_values[idx.row()]);
+              retval = QVariant (_values[idx.row ()]);
               break;
 
             case 4:
-              retval = QVariant ();
-              QString class_chars = resource_manager::storage_class_chars ();
-              int actual_class = class_chars.indexOf (_scopes[idx.row()].toAscii ());
-              if (actual_class >= 0)
-                {
-                  QStringList class_names = resource_manager::storage_class_names ();
-                  retval = QVariant (class_names.at (actual_class));
-                }
-              break;
+              {
+                QString sclass;
 
-          }
-      }
+                QString class_chars = resource_manager::storage_class_chars ();
+
+                int actual_class
+                  = class_chars.indexOf (_scopes[idx.row ()].toAscii ());
+
+                if (actual_class >= 0)
+                  {
+                    QStringList class_names
+                      = resource_manager::storage_class_names ();
+
+                    sclass = class_names.at (actual_class);
+                  }
+
+                if (_complex_flags[idx.row ()])
+                  {
+                    if (sclass.isEmpty ())
+                      sclass = tr ("complex");
+                    else
+                      sclass += ", " + tr ("complex");
+                  }
+
+                retval = QVariant (sclass);
+              }
+              break;
+            }
+        }
     }
 
   return retval;
@@ -189,7 +208,7 @@ workspace_model::setData (const QModelIndex& idx, const QVariant& value,
 
   if (idx.column () == 0 && role == Qt::EditRole)
     {
-      QString qold_name = _symbols[idx.row()];
+      QString qold_name = _symbols[idx.row ()];
 
       QString qnew_name = value.toString ();
 
@@ -213,7 +232,8 @@ workspace_model::set_workspace (bool top_level,
                                 const QStringList& symbols,
                                 const QStringList& class_names,
                                 const QStringList& dimensions,
-                                const QStringList& values)
+                                const QStringList& values,
+                                const QIntList& complex_flags)
 {
   _top_level = top_level;
   _scopes = scopes;
@@ -221,10 +241,9 @@ workspace_model::set_workspace (bool top_level,
   _class_names = class_names;
   _dimensions = dimensions;
   _values = values;
+  _complex_flags = complex_flags;
 
   update_table ();
-
-  emit model_changed ();
 }
 
 void
@@ -232,8 +251,6 @@ workspace_model::clear_workspace (void)
 {
   clear_data ();
   update_table ();
-
-  emit model_changed ();
 }
 
 void
@@ -245,12 +262,13 @@ workspace_model::clear_data (void)
   _class_names = QStringList ();
   _dimensions = QStringList ();
   _values = QStringList ();
+  _complex_flags = QIntList ();
 }
 
 void
 workspace_model::update_table (void)
 {
-  beginResetModel();
+  beginResetModel ();
 
   // Nothing to do except tell the world to recalc.
 
@@ -262,14 +280,16 @@ workspace_model::update_table (void)
 void
 workspace_model::notice_settings (const QSettings *settings)
 {
-  QList<QColor> default_colors = resource_manager::storage_class_default_colors ();
+  QList<QColor> default_colors =
+    resource_manager::storage_class_default_colors ();
   QString class_chars = resource_manager::storage_class_chars ();
 
   for (int i = 0; i < class_chars.length (); i++)
     {
       QVariant default_var = default_colors.at (i);
-      QColor setting_color = settings->value ("workspaceview/color_"+class_chars.mid (i,1),
-                                             default_var).value<QColor> ();
+      QColor setting_color = settings->value ("workspaceview/color_"
+                                              + class_chars.mid (i,1),
+                                              default_var).value<QColor> ();
       _storage_class_colors.replace (i,setting_color);
     }
 }

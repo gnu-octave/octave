@@ -19,8 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-#if !defined (find_files_model_h)
-#define find_files_model_h
+#if !defined (octave_find_files_model_h)
+#define octave_find_files_model_h
 
 #include <QAbstractListModel>
 #include <QStringList>
@@ -34,16 +34,16 @@ class find_files_model : public QAbstractListModel
   Q_OBJECT
 
 public:
-  find_files_model(QObject *p=0);
+  find_files_model (QObject *p=0);
   ~find_files_model ();
 
-  void clear();
+  void clear ();
 
-  void addFile(const QFileInfo &info);
+  void addFile (const QFileInfo &info);
 
-  int rowCount(const QModelIndex & p=QModelIndex()) const;
+  int rowCount (const QModelIndex & p=QModelIndex ()) const;
 
-  int columnCount(const QModelIndex & p=QModelIndex()) const;
+  int columnCount (const QModelIndex & p=QModelIndex ()) const;
 
   QVariant data (const QModelIndex& idx, int role) const;
 
@@ -60,5 +60,5 @@ private:
   int _sortorder;
 };
 
-#endif // find_files_model_h
+#endif // octave_find_files_model_h
 

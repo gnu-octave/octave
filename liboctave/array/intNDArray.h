@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 John W. Eaton
+Copyright (C) 2004-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -54,10 +54,10 @@ public:
   intNDArray (const intNDArray<U>& a) : MArray<T> (a) { }
 
   intNDArray& operator = (const intNDArray<T>& a)
-    {
-      MArray<T>::operator = (a);
-      return *this;
-    }
+  {
+    MArray<T>::operator = (a);
+    return *this;
+  }
 
   boolNDArray operator ! (void) const;
 
@@ -69,12 +69,12 @@ public:
   intNDArray diag (octave_idx_type m, octave_idx_type n) const;
 
   intNDArray& changesign (void)
-    {
-      MArray<T>::changesign ();
-      return *this;
-    }
+  {
+    MArray<T>::changesign ();
+    return *this;
+  }
 
-  // FIXME -- this is not quite the right thing.
+  // FIXME: this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
@@ -89,6 +89,7 @@ public:
   intNDArray cummin (int dim = -1) const;
   intNDArray cummin (Array<octave_idx_type>& index, int dim = -1) const;
 
+  intNDArray prod (int dim) const;
   intNDArray sum (int dim) const;
   NDArray dsum (int dim) const;
   intNDArray cumsum (int dim) const;
@@ -99,22 +100,25 @@ public:
   intNDArray signum (void) const;
 
   intNDArray squeeze (void) const
-    { return intNDArray<T> (MArray<T>::squeeze ()); }
+  { return intNDArray<T> (MArray<T>::squeeze ()); }
 
   intNDArray transpose (void) const
-    { return intNDArray<T> (MArray<T>::transpose ()); }
+  { return intNDArray<T> (MArray<T>::transpose ()); }
 
-  intNDArray concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx);
+  intNDArray concat (const intNDArray<T>& rb,
+                     const Array<octave_idx_type>& ra_idx);
 
-  intNDArray& insert (const intNDArray<T>& a, octave_idx_type r, octave_idx_type c);
-  intNDArray& insert (const intNDArray<T>& a, const Array<octave_idx_type>& ra_idx);
+  intNDArray& insert (const intNDArray<T>& a,
+                      octave_idx_type r, octave_idx_type c);
+  intNDArray& insert (const intNDArray<T>& a,
+                      const Array<octave_idx_type>& ra_idx);
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
                                const dim_vector& dimensions,
                                int start_dimension = 0);
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
-                            const dim_vector& dimensions);
+                                        const dim_vector& dimensions);
 };
 
 // i/o

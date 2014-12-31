@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2012 Walter Gautschi
+## Copyright (C) 1998-2013 Walter Gautschi
 ##
 ## This file is part of Octave.
 ##
@@ -45,7 +45,7 @@
 ## @var{f}.  To use default values for @var{tol} and @var{trace}, one may pass
 ## empty matrices ([]).
 ##
-## Reference: W. Gander and W. Gautschi, @cite{Adaptive Quadrature -
+## Reference: @nospell{W. Gander and W. Gautschi}, @cite{Adaptive Quadrature -
 ## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
 ## @url{http://www.inf.ethz.ch/personal/gander/}
 ## @seealso{quad, quadv, quadgk, quadcc, trapz, dblquad, triplequad}

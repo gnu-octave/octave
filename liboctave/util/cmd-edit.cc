@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -100,11 +100,15 @@ public:
 
   void do_resize_terminal (void);
 
+  void do_set_screen_size (int ht, int wd);
+
   std::string newline_chars (void);
 
   void do_restore_terminal_state (void);
 
   void do_blink_matching_paren (bool flag);
+
+  bool do_erase_empty_line (bool flag);
 
   void do_set_basic_word_break_characters (const std::string& s);
 
@@ -179,6 +183,8 @@ public:
 
   bool do_filename_quoting_desired (bool);
 
+  bool do_prefer_env_winsize (bool);
+
   void do_interrupt (bool);
 
   static int operate_and_get_next (int, int);
@@ -224,7 +230,7 @@ gnu_readline::gnu_readline ()
     quoting_function (0), dequoting_function (0),
     char_is_quoted_function (0), user_accept_line_function (0)
 {
-  // FIXME -- need interface to rl_add_defun, rl_initialize, and
+  // FIXME: need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
 
   std::string term = octave_env::getenv ("TERM");
@@ -351,6 +357,12 @@ gnu_readline::do_resize_terminal (void)
   ::octave_rl_resize_terminal ();
 }
 
+void
+gnu_readline::do_set_screen_size (int ht, int wd)
+{
+  ::octave_rl_set_screen_size (ht, wd);
+}
+
 std::string
 gnu_readline::newline_chars (void)
 {
@@ -367,6 +379,12 @@ void
 gnu_readline::do_blink_matching_paren (bool flag)
 {
   ::octave_rl_enable_paren_matching (flag ? 1 : 0);
+}
+
+bool
+gnu_readline::do_erase_empty_line (bool flag)
+{
+  return ::octave_rl_erase_empty_line (flag ? 1 : 0);
 }
 
 void
@@ -649,6 +667,12 @@ bool
 gnu_readline::do_filename_quoting_desired (bool arg)
 {
   return ::octave_rl_filename_quoting_desired (arg);
+}
+
+bool
+gnu_readline::do_prefer_env_winsize (bool arg)
+{
+  return ::octave_rl_prefer_env_winsize (arg);
 }
 
 void
@@ -1060,7 +1084,7 @@ FILE *
 command_editor::get_input_stream (void)
 {
   return (instance_ok ())
-    ? instance->do_get_input_stream () : 0;
+         ? instance->do_get_input_stream () : 0;
 }
 
 void
@@ -1074,7 +1098,7 @@ FILE *
 command_editor::get_output_stream (void)
 {
   return (instance_ok ())
-    ? instance->do_get_output_stream () : 0;
+         ? instance->do_get_output_stream () : 0;
 }
 
 void
@@ -1088,14 +1112,14 @@ int
 command_editor::terminal_rows (void)
 {
   return (instance_ok ())
-    ? instance->do_terminal_rows () : -1;
+         ? instance->do_terminal_rows () : -1;
 }
 
 int
 command_editor::terminal_cols (void)
 {
   return (instance_ok ())
-    ? instance->do_terminal_cols () : -1;
+         ? instance->do_terminal_cols () : -1;
 }
 
 void
@@ -1112,18 +1136,25 @@ command_editor::resize_terminal (void)
     instance->do_resize_terminal ();
 }
 
+void
+command_editor::set_screen_size (int ht, int wd)
+{
+  if (instance_ok ())
+    instance->do_set_screen_size (ht, wd);
+}
+
 std::string
 command_editor::decode_prompt_string (const std::string& s)
 {
   return (instance_ok ())
-    ? instance->do_decode_prompt_string (s) : std::string ();
+         ? instance->do_decode_prompt_string (s) : std::string ();
 }
 
 int
 command_editor::current_command_number (void)
 {
   return (instance_ok ())
-    ? instance->command_number : 0;
+         ? instance->command_number : 0;
 }
 
 void
@@ -1152,6 +1183,12 @@ command_editor::blink_matching_paren (bool flag)
 {
   if (instance_ok ())
     instance->do_blink_matching_paren (flag);
+}
+
+bool
+command_editor::erase_empty_line (bool flag)
+{
+  return instance_ok () ? instance->do_erase_empty_line (flag) : false;
 }
 
 void
@@ -1235,42 +1272,42 @@ command_editor::completion_fcn
 command_editor::get_completion_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_completion_function () : 0;
+         ? instance->do_get_completion_function () : 0;
 }
 
 command_editor::quoting_fcn
 command_editor::get_quoting_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_quoting_function () : 0;
+         ? instance->do_get_quoting_function () : 0;
 }
 
 command_editor::dequoting_fcn
 command_editor::get_dequoting_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_dequoting_function () : 0;
+         ? instance->do_get_dequoting_function () : 0;
 }
 
 command_editor::char_is_quoted_fcn
 command_editor::get_char_is_quoted_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_char_is_quoted_function () : 0;
+         ? instance->do_get_char_is_quoted_function () : 0;
 }
 
 command_editor::user_accept_line_fcn
 command_editor::get_user_accept_line_function (void)
 {
   return (instance_ok ())
-    ? instance->do_get_user_accept_line_function () : 0;
+         ? instance->do_get_user_accept_line_function () : 0;
 }
 
 string_vector
 command_editor::generate_filename_completions (const std::string& text)
 {
   return (instance_ok ())
-    ? instance->do_generate_filename_completions (text) : string_vector ();
+         ? instance->do_generate_filename_completions (text) : string_vector ();
 }
 
 std::string
@@ -1436,14 +1473,21 @@ bool
 command_editor::filename_completion_desired (bool arg)
 {
   return (instance_ok ())
-    ? instance->do_filename_completion_desired (arg) : false;
+         ? instance->do_filename_completion_desired (arg) : false;
 }
 
 bool
 command_editor::filename_quoting_desired (bool arg)
 {
   return (instance_ok ())
-    ? instance->do_filename_quoting_desired (arg) : false;
+         ? instance->do_filename_quoting_desired (arg) : false;
+}
+
+bool
+command_editor::prefer_env_winsize (bool arg)
+{
+  return (instance_ok ())
+         ? instance->do_prefer_env_winsize (arg) : false;
 }
 
 bool
@@ -1599,7 +1643,14 @@ command_editor::do_decode_prompt_string (const std::string& s)
             case 'w':
             case 'W':
               {
-                temp = octave_env::get_current_directory ();
+                try
+                  {
+                    temp = octave_env::get_current_directory ();
+                  }
+                catch (octave_execution_exception)
+                  {
+                    temp = "";
+                  }
 
                 std::string home_dir = octave_env::get_home_directory ();
 

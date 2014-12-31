@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1997-2012 David Bateman
+Copyright (C) 1997-2013 David Bateman
 Copyright (C) 1996-1997 John W. Eaton
 
 This file is part of Octave.
@@ -68,7 +68,8 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
             {
               n_points = NINTbig (dval);
               if (n_points < 0)
-                error ("%s: number of points (N) must be greater than zero", fcn);
+                error ("%s: number of points (N) must be greater than zero",
+                       fcn);
             }
         }
     }
@@ -82,7 +83,8 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       if (xisnan (dval))
         error ("%s: DIM cannot be NaN", fcn);
       else if (dval < 1 || dval > dims.length ())
-        error ("%s: DIM must be a valid dimension along which to perform FFT", fcn);
+        error ("%s: DIM must be a valid dimension along which to perform FFT",
+               fcn);
       else
         // to be safe, cast it back to int since dim is an int
         dim = NINT (dval) - 1;
@@ -198,7 +200,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
 
 DEFUN (fft, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} fft (@var{x})\n\
 @deftypefnx {Built-in Function} {} fft (@var{x}, @var{n})\n\
 @deftypefnx {Built-in Function} {} fft (@var{x}, @var{n}, @var{dim})\n\
@@ -227,7 +229,7 @@ dimension of the matrix along which the FFT is performed\n\
 
 
 DEFUN (ifft, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} ifft (@var{x})\n\
 @deftypefnx {Built-in Function} {} ifft (@var{x}, @var{n})\n\
 @deftypefnx {Built-in Function} {} ifft (@var{x}, @var{n}, @var{dim})\n\

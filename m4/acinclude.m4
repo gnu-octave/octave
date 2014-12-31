@@ -1,6 +1,6 @@
 dnl aclocal.m4 -- extra macros for configuring Octave
 dnl
-dnl Copyright (C) 1995-2012 John W. Eaton
+dnl Copyright (C) 1995-2013 John W. Eaton
 dnl
 dnl This file is part of Octave.
 dnl
@@ -70,7 +70,7 @@ dnl arguments are specified, execute the second arg as shell commands.
 dnl Otherwise, add FLAG to CFLAGS if the compiler accepts the flag.
 dnl
 AC_DEFUN([OCTAVE_CC_FLAG], [
-  ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
+  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
   AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
   AC_CACHE_VAL([octave_cv_cc_flag_$ac_safe],
     [AC_LANG_PUSH(C)
@@ -90,6 +90,93 @@ AC_DEFUN([OCTAVE_CC_FLAG], [
   else
     AC_MSG_RESULT([no])
     ifelse([$3], , , [$3])
+  fi
+])
+dnl
+dnl Check for broken stl_algo.h header file in gcc versions 4.8.0, 4.8.1, 4.8.2
+dnl which leads to failures in nth_element.
+dnl
+AC_DEFUN([OCTAVE_CHECK_BROKEN_STL_ALGO_H], [
+  AC_CACHE_CHECK([whether stl_algo.h is broken],
+    [octave_cv_broken_stl_algo_h],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+// Based on code from a GCC test program.
+
+// Copyright (C) 2013 Free Software Foundation, Inc.
+//
+// This file is part of the GNU ISO C++ Library. This library is free
+// software; you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 3, or (at your option)
+// any later version.
+
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License along
+// with this library; see the file COPYING3. If not see
+// <http://www.gnu.org/licenses/>.
+
+// 25.3.2 [lib.alg.nth.element]
+
+// { dg-options "-std=gnu++11" }
+
+#include <algorithm>
+#include <vector>
+      ]], [[
+std::vector<int> v (7);
+
+v[0] = 207089;
+v[1] = 202585;
+v[2] = 180067;
+v[3] = 157549;
+v[4] = 211592;
+v[5] = 216096;
+v[6] = 207089;
+
+std::nth_element (v.begin (), v.begin () + 3, v.end ());
+
+return v[3] == 207089 ? 0 : 1;
+    ]])],
+    octave_cv_broken_stl_algo_h=no,
+    octave_cv_broken_stl_algo_h=yes,
+    [case "$GXX_VERSION" in
+       *4.8.2*)
+         octave_cv_broken_stl_algo_h=yes
+       ;;
+       *)
+         octave_cv_broken_stl_algo_h=no
+       ;;
+     esac
+    ])
+    AC_LANG_POP(C++)
+  ])
+  if test "$GXX" = yes; then
+    if test $octave_cv_broken_stl_algo_h = yes; then
+      case "$GXX_VERSION" in
+        4.8.[[012]])
+        ;;
+        *)
+          octave_cv_broken_stl_algo_h=no
+          warn_stl_algo_h="UNEXPECTED: found nth_element broken in g++ $GXX_VERSION.  Refusing to fix except for g++ 4.8.0, 4.8.1, or 4.8.2.  You appear to have g++ $GXX_VERSION."
+          OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+        ;;
+      esac
+    else
+      case "$GXX_VERSION" in
+        4.8.2)
+          warn_stl_algo_h="UNEXPECTED: found nth_element working in g++ 4.8.2.  Has it been patched on your system?"
+          OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
+        ;;
+      esac
+    fi
+  else
+    octave_cv_broken_stl_algo_h=no
+    warn_stl_algo_h="UNEXPECTED: nth_element test failed.  Refusing to fix except for g++ 4.8.2."
+    OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
   fi
 ])
 dnl
@@ -151,7 +238,7 @@ dnl Currently capable of checking for functions with single
 dnl argument and returning bool/int/real.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_CMATH], [
-  ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
+  ac_safe=`echo "$1" | $SED 'y% ./+-:=%___p___%'`
 
   AC_CACHE_CHECK([for std::$1 in <cmath>],
     [octave_cv_func_cmath_$ac_safe],
@@ -228,8 +315,8 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
   AC_CACHE_CHECK([whether $F77 has the intrinsic function ISNAN],
     [octave_cv_func_fortran_isnan],
     [AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE(
-[[      program foo
+    AC_COMPILE_IFELSE([[
+      program foo
       implicit none
       real x
       double precision y
@@ -240,7 +327,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_FORTRAN_ISNAN], [
         print *, 'y is NaN'
       end if
       end program
-]],
+      ]],
       octave_cv_func_fortran_isnan=yes, octave_cv_func_fortran_isnan=no)
     AC_LANG_POP(Fortran 77)
   ])
@@ -269,6 +356,54 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_GLUTESSCALLBACK_THREEDOTS], [
   if test $octave_cv_func_glutesscallback_threedots = yes; then
     AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1,
       [Define to 1 if gluTessCallback is called with (...).])
+  fi
+])
+dnl
+dnl Check whether Qt provides QFont::Monospace
+dnl
+AC_DEFUN([OCTAVE_CHECK_QFONT_MONOSPACE], [
+  AC_CACHE_CHECK([whether Qt provides QFont::Monospace],
+    [octave_cv_decl_qfont_monospace],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleHint hint = QFont::Monospace;
+        ]])],
+      octave_cv_decl_qfont_monospace=yes,
+      octave_cv_decl_qfont_monospace=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_monospace = yes; then
+    AC_DEFINE(HAVE_QFONT_MONOSPACE, 1,
+      [Define to 1 if Qt provides QFont::Monospace.])
+  fi
+])
+dnl
+dnl Check whether Qt provides QFont::ForceIntegerMetrics
+dnl
+AC_DEFUN([OCTAVE_CHECK_QFONT_FORCE_INTEGER_METRICS], [
+  AC_CACHE_CHECK([whether Qt provides QFont::ForceIntegerMetrics],
+    [octave_cv_decl_qfont_force_integer_metrics],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QFont>
+        ]], [[
+        QFont::StyleStrategy strategy = QFont::ForceIntegerMetrics;
+        ]])],
+      octave_cv_decl_qfont_force_integer_metrics=yes,
+      octave_cv_decl_qfont_force_integer_metrics=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_decl_qfont_force_integer_metrics = yes; then
+    AC_DEFINE(HAVE_QFONT_FORCE_INTEGER_METRICS, 1,
+      [Define to 1 if Qt provides QFont::ForceIntegerMetrics.])
   fi
 ])
 dnl
@@ -343,6 +478,69 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QABSTRACTITEMMODEL_BEGINRESETMODEL], [
   fi
 ])
 dnl
+dnl Check whether the Qt QTabWidget::setMovable() function exists.
+dnl This function was added in Qt 4.5.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QTABWIDGET_SETMOVABLE], [
+  AC_CACHE_CHECK([whether Qt has the QTabWidget::setMovable() function],
+    [octave_cv_func_qtabwidget_setmovable],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QTabWidget>
+        class tab_widget : public QTabWidget
+        {
+        public:
+          tab_widget (QWidget *parent = 0) : QTabWidget (parent) { this->setMovable (true); }
+          ~tab_widget () {}
+        };
+        ]], [[
+        tab_widget tw;
+        ]])],
+      octave_cv_func_qtabwidget_setmovable=yes,
+      octave_cv_func_qtabwidget_setmovable=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qtabwidget_setmovable = yes; then
+    AC_DEFINE(HAVE_QTABWIDGET_SETMOVABLE, 1,
+      [Define to 1 if Qt has the QTabWidget::setMovable() function.])
+  fi
+])
+dnl
+dnl Check whether the QsciScintilla::findFirstInSelection () function exists.
+dnl This function was added in QScintilla 2.7.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QSCI_FINDSELECTION], [
+  AC_CACHE_CHECK([whether QSci has the QsciScintilla::findFirstInSelection () function],
+    [octave_cv_func_qsci_findfirstinselection],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CPPFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <Qsci/qsciscintilla.h>
+        class qsci : public QsciScintilla
+        {
+        public:
+          qsci (QWidget *parent = 0) : QsciScintilla (parent)
+          { this->findFirstInSelection (QString ("x"),true,true,true,true,true); }
+          ~qsci () {}
+        };
+        ]], [[
+        qsci edit;
+        ]])],
+      octave_cv_func_qsci_findfirstinselection=yes,
+      octave_cv_func_qsci_findfirstinselection=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qsci_findfirstinselection = yes; then
+    AC_DEFINE(HAVE_QSCI_FINDSELECTION, 1,
+      [Define to 1 if Qsci has the QsciScintilla::findFirstInSelection () function.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -400,7 +598,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
     ;;
   esac
 
-  [TEXINFO_]m4_toupper([$1])=
   warn_$1="$3"
   m4_set_add([summary_warning_list], [warn_$1])
 
@@ -425,8 +622,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
         m4_ifblank([$8], [
           warn_$1=
           AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
-            [Define to 1 if $2 is available.])
-          [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
+            [Define to 1 if $2 is available.])], [$8])
       fi
     fi
     m4_ifnblank([$6], [AC_LANG_POP($6)])
@@ -436,7 +632,6 @@ AC_DEFUN([OCTAVE_CHECK_LIB], [
   fi
 
   AC_SUBST(m4_toupper([$1])_LIBS)
-  AC_SUBST([TEXINFO_]m4_toupper([$1]))
   if test -n "$warn_$1"; then
     AC_MSG_WARN([$warn_$1])
     m4_toupper([$1])_LIBS=
@@ -450,35 +645,72 @@ dnl with the buggy ARPACK library but the C++ program does.  Maybe it
 dnl is the memory allocation that exposes the bug and using statically
 dnl allocated arrays in Fortran does not?
 dnl
+dnl FIXME: it would be nice to avoid the duplication of F77 macros
+dnl and typedefs here and in the f77-fcn.h header file.
+dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_ARPACK_OK], [
   AC_CACHE_CHECK([whether the arpack library works],
     [octave_cv_lib_arpack_ok],
     [AC_LANG_PUSH(C++)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
-// External functions from ARPACK library
-extern "C" int
-F77_FUNC (dnaupd, DNAUPD) (int&, const char *, const int&, const char *,
-                           int&, const double&, double*, const int&,
-                           double*, const int&, int*, int*, double*,
-                           double*, const int&, int&, long int, long int);
-
-extern "C" int
-F77_FUNC (dneupd, DNEUPD) (const int&, const char *, int*, double*,
-                           double*, double*, const int&,
-                           const double&, const double&, double*,
-                           const char*, const int&, const char *,
-                           int&, const double&, double*, const int&,
-                           double*, const int&, int*, int*, double*,
-                           double*, const int&, int&, long int,
-                           long int, long int);
-
-extern "C" int
-F77_FUNC (dgemv, DGEMV) (const char *, const int&, const int&,
-                         const double&, const double*, const int&,
-                         const double*, const int&, const double&,
-                         double*, const int&, long int);
 
 #include <cfloat>
+
+#include <stdint.h>
+
+typedef OCTAVE_IDX_TYPE octave_idx_type;
+typedef int F77_RET_T;
+
+#define F77_CHAR_ARG2(x, l) x
+#define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
+
+#define F77_CHAR_ARG_LEN(l) , l
+
+#define F77_CONST_CHAR_ARG_DECL const char *
+#define F77_CHAR_ARG_LEN_DECL , long
+
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (dnaupd, DNAUPD) (octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type&, const double&,
+                             double*, const octave_idx_type&, double*,
+                             const octave_idx_type&, octave_idx_type*,
+                             octave_idx_type*, double*, double*,
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dneupd, DNEUPD) (const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type*, double*, double*,
+                             double*, const octave_idx_type&, const double&,
+                             const double&, double*,
+                             F77_CONST_CHAR_ARG_DECL,
+                             const octave_idx_type&,
+                             F77_CONST_CHAR_ARG_DECL,
+                             octave_idx_type&, const double&, double*,
+                             const octave_idx_type&, double*,
+                             const octave_idx_type&, octave_idx_type*,
+                             octave_idx_type*, double*, double*,
+                             const octave_idx_type&, octave_idx_type&
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL
+                             F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, const octave_idx_type&,
+                           const double&, const double*,
+                           const octave_idx_type&, const double*,
+                           const octave_idx_type&, const double&, double*,
+                           const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
+}
 
 void
 doit (void)
@@ -486,7 +718,7 @@ doit (void)
   // Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
 
   // Problem matrix.  See bug #31479
-  int n = 4;
+  octave_idx_type n = 4;
   double *m = new double [n * n];
   m[0] = 1, m[4] = 0, m[8]  = 0, m[12] = -1;
   m[1] = 0, m[5] = 1, m[9]  = 0, m[13] = 0;
@@ -500,7 +732,7 @@ doit (void)
   resid[2] = 0.150143;
   resid[3] = 0.868067;
 
-  int *ip = new int [11];
+  octave_idx_type *ip = new octave_idx_type [11];
 
   ip[0] = 1;   // ishift
   ip[1] = 0;   // ip[1] not referenced
@@ -514,34 +746,38 @@ doit (void)
   ip[9] = 0;
   ip[10] = 0;
 
-  int *ipntr = new int [14];
+  octave_idx_type *ipntr = new octave_idx_type [14];
 
-  int k = 1;
-  int p = 3;
-  int lwork = 3 * p * (p + 2);
+  octave_idx_type k = 1;
+  octave_idx_type p = 3;
+  octave_idx_type lwork = 3 * p * (p + 2);
 
   double *v = new double [n * (p + 1)];
   double *workl = new double [lwork + 1];
   double *workd = new double [3 * n + 1];
 
-  int ido = 0;
-  int info = 0;
+  octave_idx_type ido = 0;
+  octave_idx_type info = 0;
 
   double tol = DBL_EPSILON;
 
   do
     {
-      F77_FUNC (dnaupd, DNAUPD) (ido, "I", n, "LM", k, tol, resid, p,
-                                 v, n, ip, ipntr, workd, workl, lwork,
-                                 info, 1L, 2L);
+      F77_FUNC (dnaupd, DNAUPD) (ido, F77_CONST_CHAR_ARG2 ("I", 1),
+                                 n, F77_CONST_CHAR_ARG2 ("LM", 2),
+                                 k, tol, resid, p, v, n, ip, ipntr,
+                                 workd, workl, lwork, info
+                                 F77_CHAR_ARG_LEN (1)
+                                 F77_CHAR_ARG_LEN (2));
 
       if (ido == -1 || ido == 1 || ido == 2)
         {
           double *x = workd + ipntr[0] - 1;
           double *y = workd + ipntr[1] - 1;
 
-          F77_FUNC (dgemv, DGEMV) ("N", n, n, 1.0, m, n, x, 1, 0.0,
-                                   y, 1, 1L);
+          F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG2 ("N", 1),
+                                   n, n, 1.0, m, n, x, 1, 0.0, y, 1
+                                   F77_CHAR_ARG_LEN (1));
         }
       else
         {
@@ -555,17 +791,17 @@ doit (void)
     }
   while (1);
 
-  int *sel = new int [p];
+  octave_idx_type *sel = new octave_idx_type [p];
 
   // In Octave, the dimensions of dr and di are k+1, but k+2 avoids segfault
   double *dr = new double [k + 1];
   double *di = new double [k + 1];
   double *workev = new double [3 * p];
 
-  for (int i = 0; i < k + 1; i++)
+  for (octave_idx_type i = 0; i < k + 1; i++)
     dr[i] = di[i] = 0.;
 
-  int rvec = 1;
+  octave_idx_type rvec = 1;
 
   double sigmar = 0.0;
   double sigmai = 0.0;
@@ -573,10 +809,15 @@ doit (void)
   // In Octave, this is n*(k+1), but n*(k+2) avoids segfault
   double *z = new double [n * (k + 1)];
 
-  F77_FUNC (dneupd, DNEUPD) (rvec, "A", sel, dr, di, z, n, sigmar,
-                             sigmai, workev, "I", n, "LM", k, tol,
+  F77_FUNC (dneupd, DNEUPD) (rvec, F77_CONST_CHAR_ARG2 ("A", 1),
+                             sel, dr, di, z, n, sigmar, sigmai, workev,
+                             F77_CONST_CHAR_ARG2 ("I", 1), n,
+                             F77_CONST_CHAR_ARG2 ("LM", 2), k, tol,
                              resid, p, v, n, ip, ipntr, workd,
-                             workl, lwork, info, 1L, 1L, 2L);
+                             workl, lwork, info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (2));
 }
 
 ]], [[
@@ -717,6 +958,16 @@ AC_DEFUN([OCTAVE_CHECK_LIB_OPENGL], [
     ])
 
     if test $have_opengl_incs = yes; then
+      AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+#if defined (HAVE_GL_GL_H)
+# include <GL/gl.h>
+#elif defined (HAVE_OPENGL_GL_H)
+# include <OpenGL/gl.h>
+#endif
+      ])
       case $canonical_host_type in
         *-*-mingw32* | *-*-msdosmsvc)
           save_LIBS="$LIBS"
@@ -924,8 +1175,8 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
     [ac_octave_save_FFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
     AC_LANG_PUSH(Fortran 77)
-    AC_COMPILE_IFELSE(
-[[      subroutine foo(n, in, out)
+    AC_COMPILE_IFELSE([[
+      subroutine foo(n, in, out)
       integer n, in(n), out(n)
       integer i
       do 10 i = 1, n
@@ -933,14 +1184,15 @@ AC_DEFUN([OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER], [
    10 continue
       return
       end
-]],
+      ]],
       [mv conftest.$ac_objext fintsize.$ac_objext
       ac_octave_save_LIBS="$LIBS"
       LIBS="fintsize.$ac_objext $[]_AC_LANG_PREFIX[]LIBS"
       AC_LANG_PUSH(C)
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
           #include <assert.h>
-          #include <stdint.h> ]], [[
+          #include <stdint.h>
+          ]], [[
           #ifdef USE_64_BIT_IDX_T
             typedef int64_t octave_idx_type;
           #else
@@ -1109,7 +1361,7 @@ dnl arguments are specified, execute the second arg as shell commands.
 dnl Otherwise, add FLAG to CXXFLAGS if the compiler accepts the flag.
 dnl
 AC_DEFUN([OCTAVE_CXX_FLAG], [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  ac_safe=`echo "$1" | $SED 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${CXX-g++} accepts $1])
   AC_CACHE_VAL([octave_cv_cxx_flag_$ac_safe],
     [AC_LANG_PUSH(C++)
@@ -1238,7 +1490,7 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
   READLINE_LIBS=
   AC_ARG_ENABLE([readline],
     [AS_HELP_STRING([--disable-readline],
-      [use readline library])],
+      [do not use readline library])],
     [if test "$enableval" = no; then
        USE_READLINE=no
        warn_readline="command editing and history features require GNU Readline"
@@ -1266,7 +1518,7 @@ dnl commands.  Otherwise, add FLAG to FFLAGS if the compiler accepts
 dnl the flag.
 dnl
 AC_DEFUN([OCTAVE_F77_FLAG], [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  ac_safe=`echo "$1" | $SED 'y%./+-:=%__p___%'`
   AC_MSG_CHECKING([whether ${F77-g77} accepts $1])
   AC_CACHE_VAL([octave_cv_f77_flag_$ac_safe], [
     AC_LANG_PUSH(Fortran 77)
@@ -1467,7 +1719,7 @@ AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
     [octave_cv_callinst_addattribute_arg_is_attributes],
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([
+        [AC_LANG_PROGRAM([[
 #ifdef HAVE_LLVM_IR_FUNCTION_H
           #include <llvm/IR/Instructions.h>
           #include <llvm/IR/Attributes.h>
@@ -1475,7 +1727,7 @@ AC_DEFUN([OCTAVE_LLVM_CALLINST_ADDATTRIBUTE_API], [
           #include <llvm/Instructions.h>
           #include <llvm/Attributes.h>
 #endif
-          ], [[
+          ]], [[
           llvm::CallInst *callinst;
           llvm::AttrBuilder attr_builder;
           attr_builder.addAttribute(llvm::Attributes::StructRet);
@@ -1534,9 +1786,9 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
     [AC_LANG_PUSH(C++)
       AC_COMPILE_IFELSE(
         [AC_LANG_PROGRAM([[
-#ifdef LLVM_HAVE_IR_FUNCTION_H
-          #include <llvm/Function.h>
-          #include <llvm/Attributes.h>
+#ifdef HAVE_LLVM_IR_FUNCTION_H
+          #include <llvm/IR/Function.h>
+          #include <llvm/IR/Attributes.h>
 #else
           #include <llvm/Function.h>
           #include <llvm/Attributes.h>
@@ -1552,6 +1804,58 @@ AC_DEFUN([OCTAVE_LLVM_FUNCTION_ADDFNATTR_API], [
   if test $octave_cv_function_addfnattr_arg_is_attributes = yes; then
     AC_DEFINE(FUNCTION_ADDFNATTR_ARG_IS_ATTRIBUTES, 1,
       [Define to 1 if llvm::Function:addFnAttr arg type is llvm::Attributes.])
+  fi
+])
+dnl
+dnl Check for raw_fd_ostream API
+dnl
+AC_DEFUN([OCTAVE_LLVM_RAW_FD_OSTREAM_API], [
+  AC_CACHE_CHECK([check LLVM::raw_fd_ostream arg type is llvm::sys:fs],
+    [octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs],
+    [AC_LANG_PUSH(C++)
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/Support/raw_os_ostream.h>
+          ]], [[
+          std::string str;
+          llvm::raw_fd_ostream fout ("", str, llvm::sys::fs::F_Binary);
+        ]])],
+        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=yes,
+        octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_raw_fd_ostream_arg_is_llvm_sys_fs = yes; then
+    AC_DEFINE(RAW_FD_OSTREAM_ARG_IS_LLVM_SYS_FS, 1,
+      [Define to 1 if LLVM::raw_fd_ostream arg type is llvm::sys:fs.])
+  fi
+])
+dnl
+dnl Check for legacy::PassManager API
+dnl
+AC_DEFUN([OCTAVE_LLVM_LEGACY_PASSMANAGER_API], [
+  AC_CACHE_CHECK([check for LLVM::legacy::PassManager],
+    [octave_cv_legacy_passmanager],
+    [AC_LANG_PUSH(C++)
+      save_LIBS="$LIBS"
+      LIBS="$LLVM_LIBS $LIBS"
+      AC_LINK_IFELSE(
+        [AC_LANG_PROGRAM([[
+          #include <llvm/IR/LegacyPassManager.h>
+          ]], [[
+          llvm::Module *module;
+          llvm::legacy::PassManager *module_pass_manager;
+          llvm::legacy::FunctionPassManager *pass_manager;      
+          module_pass_manager = new llvm::legacy::PassManager ();
+          pass_manager = new llvm::legacy::FunctionPassManager (module);
+        ]])],
+        octave_cv_legacy_passmanager=yes,
+        octave_cv_legacy_passmanager=no)
+      LIBS="$save_LIBS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_legacy_passmanager = yes; then
+    AC_DEFINE(LEGACY_PASSMANAGER, 1,
+      [Define to 1 if LLVM::legacy::PassManager exists.])
   fi
 ])
 dnl
@@ -1580,6 +1884,61 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
   esac
 
   if test $tmp_have_bison = yes; then
+    AC_CACHE_CHECK([syntax of bison api.prefix (or name-prefix) declaration],
+                   [octave_cv_bison_api_prefix_decl_style], [
+      style="api name"
+      quote="quote brace"
+      for s in $style; do
+        for q in $quote; do
+          if test $s = "api"; then
+            if test $q = "quote"; then
+              def='%define api.prefix "foo_"'
+            else
+              def='%define api.prefix {foo_}'
+            fi
+          else
+            if test $q = "quote"; then
+              def='%name-prefix="foo_"'
+            else
+              def='%name-prefix {foo_}'
+            fi
+          fi
+          cat << EOF > conftest.yy
+$def
+%start input
+%%
+input:;
+%%
+EOF
+          ## Older versions of bison only warn and exit with success.
+          octave_bison_output=`$YACC conftest.yy 2>&1`
+          ac_status=$?
+          if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
+            octave_cv_bison_api_prefix_decl_style="$s $q"
+            break
+          fi
+        done
+        if test -n "$octave_cv_bison_api_prefix_decl_style"; then
+          break
+        fi
+      done
+      rm -f conftest.yy y.tab.h y.tab.c
+      ])
+  fi
+
+  AC_SUBST(BISON_API_PREFIX_DECL_STYLE, $octave_cv_bison_api_prefix_decl_style)
+
+  if test -z "$octave_cv_bison_api_prefix_decl_style"; then
+    tmp_have_bison=no
+    warn_bison_api_prefix_decl_style="
+
+I wasn't able to find a suitable style for declaring the api prefix
+in a bison input file so I'm disabling bison.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_bison_api_prefix_decl_style])
+  fi
+
+  if test $tmp_have_bison = yes; then
     AC_CACHE_CHECK([syntax of bison push/pull declaration],
                    [octave_cv_bison_push_pull_decl_style], [
       style="dash underscore"
@@ -1603,9 +1962,9 @@ $def
 input:;
 %%
 EOF
-          $YACC conftest.yy > /dev/null 2>&1
+          octave_bison_output=`$YACC conftest.yy 2>&1`
           ac_status=$?
-          if test $ac_status -eq 0; then
+          if test $ac_status -eq 0 && test -z "$octave_bison_output"; then
             if test $q = noquote; then
               q=
             fi
@@ -1613,7 +1972,7 @@ EOF
             break
           fi
         done
-        if test $ac_status -eq 0; then
+        if test -n "$octave_cv_bison_push_pull_decl_style"; then
           break
         fi
       done
@@ -1624,7 +1983,7 @@ EOF
   AC_SUBST(BISON_PUSH_PULL_DECL_STYLE, $octave_cv_bison_push_pull_decl_style)
 
   if test -z "$octave_cv_bison_push_pull_decl_style"; then
-    YACC=
+    tmp_have_bison=no
     warn_bison_push_pull_decl_style="
 
 I wasn't able to find a suitable style for declaring a push-pull
@@ -1637,9 +1996,10 @@ parser in a bison input file so I'm disabling bison.
     YACC='$(top_srcdir)/build-aux/missing bison'
     warn_bison="
 
-I didn't find bison, but it's only a problem if you need to
-reconstruct parse.cc, which is the case if you're building from VCS
-sources.
+I didn't find bison, or the version of bison that I found does not
+support all the features that are required, but it's only a problem
+if you need to reconstruct parse.cc, which is the case if you're
+building from VCS sources.
 "
     OCTAVE_CONFIGURE_WARNING([warn_bison])
   fi
@@ -2061,4 +2421,3 @@ dnl         End of macros written by Octave developers
 dnl ------------------------------------------------------------
 dnl
 
-##############################################################################

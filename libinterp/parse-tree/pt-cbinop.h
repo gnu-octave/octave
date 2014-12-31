@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_cbinop_h)
-#define octave_tree_cbinop_h 1
+#if !defined (octave_pt_cbinop_h)
+#define octave_pt_cbinop_h 1
 
 #include <string>
 

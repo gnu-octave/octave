@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (inv, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} inv (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inv (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.  Return an estimate\n\
@@ -213,11 +213,21 @@ of a sparse matrix if possible.\n\
 
       retval(0) = result;
 
-      volatile double xrcond = rcond;
-      xrcond += 1.0;
-      if (nargout < 2 && (info == -1 || xrcond == 1.0))
-        warning ("inverse: matrix singular to machine precision, rcond = %g",
-                 rcond);
+      bool rcond_plus_one_eq_one = false;
+
+      if (isfloat)
+        {
+          volatile float xrcond = frcond;
+          rcond_plus_one_eq_one = xrcond + 1.0F == 1.0F;
+        }
+      else
+        {
+          volatile double xrcond = rcond;
+          rcond_plus_one_eq_one = xrcond + 1.0 == 1.0;
+        }
+
+      if (nargout < 2 && (info == -1 || rcond_plus_one_eq_one))
+        gripe_singular_matrix (isfloat ? frcond : rcond);
     }
 
   return retval;
@@ -230,14 +240,24 @@ of a sparse matrix if possible.\n\
 %!error inv ()
 %!error inv ([1, 2; 3, 4], 2)
 %!error <argument must be a square matrix> inv ([1, 2; 3, 4; 5, 6])
+
+%!test
+%! [xinv, rcond] = inv (single ([1,2;3,4]));
+%! assert (isa (xinv, 'single'));
+%! assert (isa (rcond, 'single'));
+
+%!test
+%! [xinv, rcond] = inv ([1,2;3,4]);
+%! assert (isa (xinv, 'double'));
+%! assert (isa (rcond, 'double'));
 */
 
-// FIXME -- this should really be done with an alias, but
+// FIXME: this should really be done with an alias, but
 // alias_builtin() won't do the right thing if we are actually using
 // dynamic linking.
 
 DEFUN (inverse, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{x} =} inverse (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{x}, @var{rcond}] =} inverse (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.\n\

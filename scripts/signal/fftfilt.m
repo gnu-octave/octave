@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
+## @deftypefn  {Function File} {} fftfilt (@var{b}, @var{x})
+## @deftypefnx {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
 ##
 ## With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
 ## @var{b} using the FFT.
 ##
 ## Given the optional third argument, @var{n}, @code{fftfilt} uses the
-## overlap-add method to filter @var{x} with @var{b} using an @var{n}-point
+## overlap-add method to filter @var{x} with @var{b} using an N-point
 ## FFT@.  The FFT size must be an even power of 2 and must be greater than
 ## or equal to the length of @var{b}.  If the specified @var{n} does not
 ## meet these criteria, it is automatically adjusted to the nearest value

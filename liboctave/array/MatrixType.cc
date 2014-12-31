@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 David Bateman
+Copyright (C) 2006-2013 David Bateman
 Copyright (C) 2006 Andy Adler
 Copyright (C) 2009 VZLU Prague
 
@@ -30,13 +30,36 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "MatrixType.h"
 #include "dMatrix.h"
+#include "fMatrix.h"
 #include "CMatrix.h"
+#include "fCMatrix.h"
 #include "dSparse.h"
 #include "CSparse.h"
 #include "oct-spparms.h"
 #include "oct-locbuf.h"
 
-// FIXME There is a large code duplication here
+static void
+warn_cached (void)
+{
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:matrix-type-info", "using cached matrix type");
+}
+
+static void
+warn_invalid (void)
+{
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:matrix-type-info", "invalid matrix type");
+}
+
+static void
+warn_calculating_sparse_type (void)
+{
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:matrix-type-info", "calculating sparse matrix type");
+}
+
+// FIXME: There is a large code duplication here
 
 MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
@@ -91,7 +114,8 @@ matrix_real_probe (const MArray<T>& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              double aij = a.elem (i,j), aji = a.elem (j,i);
+              double aij = a.elem (i,j);
+              double aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == aji
@@ -118,7 +142,7 @@ template<class T>
 MatrixType::matrix_type
 matrix_complex_probe (const MArray<std::complex<T> >& a)
 {
-  MatrixType::matrix_type typ;
+  MatrixType::matrix_type typ = MatrixType::Unknown;
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
 
@@ -149,7 +173,8 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
         {
           for (octave_idx_type i = 0; i < j; i++)
             {
-              std::complex<T> aij = a.elem (i,j), aji = a.elem (j,i);
+              std::complex<T> aij = a.elem (i,j);
+              std::complex<T> aji = a.elem (j,i);
               lower = lower && (aij == zero);
               upper = upper && (aji == zero);
               hermitian = hermitian && (aij == std::conj (aji)
@@ -217,8 +242,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
   octave_idx_type nnz = a.nnz ();
 
   if (octave_sparse_params::get_key ("spumoni") != 0.)
-    (*current_liboctave_warning_handler)
-      ("Calculating Sparse Matrix Type");
+    warn_calculating_sparse_type ();
 
   sp_bandden = octave_sparse_params::get_bandden ();
   bool maybe_hermitian = false;
@@ -308,10 +332,10 @@ MatrixType::MatrixType (const SparseMatrix &a)
       if (!singular)
         {
           bandden = double (nnz) /
-            (double (ncols) * (double (lower_band) +
-                               double (upper_band)) -
-             0.5 * double (upper_band + 1) * double (upper_band) -
-             0.5 * double (lower_band + 1) * double (lower_band));
+                    (double (ncols) * (double (lower_band) +
+                                       double (upper_band)) -
+                     0.5 * double (upper_band + 1) * double (upper_band) -
+                     0.5 * double (lower_band + 1) * double (lower_band));
 
           if (nrows == ncols && sp_bandden != 1. && bandden > sp_bandden)
             {
@@ -343,8 +367,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
           // Search for a permuted triangular matrix, and test if
           // permutation is singular
 
-          // FIXME
-          // Perhaps this should be based on a dmperm algorithm
+          // FIXME: Perhaps this should be based on a dmperm algorithm?
           bool found = false;
 
           nperm = ncols;
@@ -398,7 +421,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
 
               for (octave_idx_type j = 0; j < ncols; j++)
                 for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-                    perm[a.ridx (i)] = j;
+                  perm[a.ridx (i)] = j;
 
               found = true;
               for (octave_idx_type i = 0; i < nm; i++)
@@ -447,10 +470,9 @@ MatrixType::MatrixType (const SparseMatrix &a)
             }
         }
 
-      // FIXME
-      // Disable lower under-determined and upper over-determined problems
-      // as being detected, and force to treat as singular. As this seems
-      // to cause issues
+      // FIXME: Disable lower under-determined and upper over-determined
+      //        problems as being detected, and force to treat as singular
+      //        as this seems to cause issues.
       if (((typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
            && nrows > ncols) ||
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
@@ -538,8 +560,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
   octave_idx_type nnz = a.nnz ();
 
   if (octave_sparse_params::get_key ("spumoni") != 0.)
-    (*current_liboctave_warning_handler)
-      ("Calculating Sparse Matrix Type");
+    warn_calculating_sparse_type ();
 
   sp_bandden = octave_sparse_params::get_bandden ();
   bool maybe_hermitian = false;
@@ -629,10 +650,10 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
       if (!singular)
         {
           bandden = double (nnz) /
-            (double (ncols) * (double (lower_band) +
-                               double (upper_band)) -
-             0.5 * double (upper_band + 1) * double (upper_band) -
-             0.5 * double (lower_band + 1) * double (lower_band));
+                    (double (ncols) * (double (lower_band) +
+                                       double (upper_band)) -
+                     0.5 * double (upper_band + 1) * double (upper_band) -
+                     0.5 * double (lower_band + 1) * double (lower_band));
 
           if (nrows == ncols && sp_bandden != 1. && bandden > sp_bandden)
             {
@@ -664,8 +685,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
           // Search for a permuted triangular matrix, and test if
           // permutation is singular
 
-          // FIXME
-          // Perhaps this should be based on a dmperm algorithm
+          // FIXME: Perhaps this should be based on a dmperm algorithm?
           bool found = false;
 
           nperm = ncols;
@@ -719,7 +739,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 
               for (octave_idx_type j = 0; j < ncols; j++)
                 for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-                    perm[a.ridx (i)] = j;
+                  perm[a.ridx (i)] = j;
 
               found = true;
               for (octave_idx_type i = 0; i < nm; i++)
@@ -768,10 +788,9 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
             }
         }
 
-      // FIXME
-      // Disable lower under-determined and upper over-determined problems
-      // as being detected, and force to treat as singular. As this seems
-      // to cause issues
+      // FIXME: Disable lower under-determined and upper over-determined
+      //        problems as being detected, and force to treat as singular
+      //        as this seems to cause issues.
       if (((typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
            && nrows > ncols) ||
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
@@ -861,7 +880,7 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
       || t == MatrixType::Rectangular)
     typ = t;
   else
-    (*current_liboctave_warning_handler) ("Invalid matrix type");
+    warn_invalid ();
 }
 
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
@@ -881,7 +900,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
         perm[i] = p[i];
     }
   else
-    (*current_liboctave_warning_handler) ("Invalid matrix type");
+    warn_invalid ();
 }
 
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
@@ -898,7 +917,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
       lower_band = kl;
     }
   else
-    (*current_liboctave_warning_handler) ("Invalid sparse matrix type");
+    warn_invalid ();
 }
 
 MatrixType::~MatrixType (void)
@@ -943,21 +962,20 @@ MatrixType::operator = (const MatrixType& a)
 int
 MatrixType::type (bool quiet)
 {
-  if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden ()))
+  if (typ != MatrixType::Unknown
+      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (!quiet &&
           octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
 
   if (typ != MatrixType::Unknown &&
       octave_sparse_params::get_key ("spumoni") != 0.)
-    (*current_liboctave_warning_handler)
-      ("Invalidating Matrix Type");
+    (*current_liboctave_warning_with_id_handler)
+      ("Octave:matrix-type-info", "invalidating matrix type");
 
   typ = MatrixType::Unknown;
 
@@ -967,12 +985,11 @@ MatrixType::type (bool quiet)
 int
 MatrixType::type (const SparseMatrix &a)
 {
-  if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden ()))
+  if (typ != MatrixType::Unknown
+      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
@@ -1000,12 +1017,11 @@ MatrixType::type (const SparseMatrix &a)
 int
 MatrixType::type (const SparseComplexMatrix &a)
 {
-  if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden ()))
+  if (typ != MatrixType::Unknown
+      && (full || sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
@@ -1036,8 +1052,7 @@ MatrixType::type (const Matrix &a)
   if (typ != MatrixType::Unknown)
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
@@ -1063,8 +1078,7 @@ MatrixType::type (const ComplexMatrix &a)
   if (typ != MatrixType::Unknown)
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
@@ -1090,8 +1104,7 @@ MatrixType::type (const FloatMatrix &a)
   if (typ != MatrixType::Unknown)
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
@@ -1117,8 +1130,7 @@ MatrixType::type (const FloatComplexMatrix &a)
   if (typ != MatrixType::Unknown)
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
-        (*current_liboctave_warning_handler)
-          ("Using Cached Matrix Type");
+        warn_cached ();
 
       return typ;
     }
@@ -1144,49 +1156,52 @@ MatrixType::info () const
   if (octave_sparse_params::get_key ("spumoni") != 0.)
     {
       if (typ == MatrixType::Unknown)
-        (*current_liboctave_warning_handler)
-          ("Unknown Matrix Type");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "unknown matrix type");
       else if (typ == MatrixType::Diagonal)
-        (*current_liboctave_warning_handler)
-          ("Diagonal Sparse Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "diagonal sparse matrix");
       else if (typ == MatrixType::Permuted_Diagonal)
-        (*current_liboctave_warning_handler)
-          ("Permuted Diagonal Sparse Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "permuted diagonal sparse matrix");
       else if (typ == MatrixType::Upper)
-        (*current_liboctave_warning_handler)
-          ("Upper Triangular Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "upper triangular matrix");
       else if (typ == MatrixType::Lower)
-        (*current_liboctave_warning_handler)
-          ("Lower Triangular Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "lower triangular matrix");
       else if (typ == MatrixType::Permuted_Upper)
-        (*current_liboctave_warning_handler)
-          ("Permuted Upper Triangular Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "permuted upper triangular matrix");
       else if (typ == MatrixType::Permuted_Lower)
-        (*current_liboctave_warning_handler)
-          ("Permuted Lower Triangular Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "permuted lower triangular Matrix");
       else if (typ == MatrixType::Banded)
-        (*current_liboctave_warning_handler)
-          ("Banded Sparse Matrix %d-1-%d (Density %f)", lower_band,
-           upper_band, bandden);
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info",
+           "banded sparse matrix %d-1-%d (density %f)",
+           lower_band, upper_band, bandden);
       else if (typ == MatrixType::Banded_Hermitian)
-        (*current_liboctave_warning_handler)
-          ("Banded Hermitian/Symmetric Sparse Matrix %d-1-%d (Density %f)",
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info",
+           "banded hermitian/symmetric sparse matrix %d-1-%d (density %f)",
            lower_band, upper_band, bandden);
       else if (typ == MatrixType::Hermitian)
-        (*current_liboctave_warning_handler)
-          ("Hermitian/Symmetric Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "hermitian/symmetric matrix");
       else if (typ == MatrixType::Tridiagonal)
-        (*current_liboctave_warning_handler)
-          ("Tridiagonal Sparse Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "tridiagonal sparse matrix");
       else if (typ == MatrixType::Tridiagonal_Hermitian)
-        (*current_liboctave_warning_handler)
-          ("Hermitian/Symmetric Tridiagonal Sparse Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info",
+           "hermitian/symmetric tridiagonal sparse matrix");
       else if (typ == MatrixType::Rectangular)
-        (*current_liboctave_warning_handler)
-          ("Rectangular/Singular Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "rectangular/singular matrix");
       else if (typ == MatrixType::Full)
-        (*current_liboctave_warning_handler)
-          ("Full Matrix");
+        (*current_liboctave_warning_with_id_handler)
+          ("Octave:matrix-type-info", "full matrix");
     }
 }
 
@@ -1222,7 +1237,8 @@ MatrixType::mark_as_unsymmetric (void)
 }
 
 void
-MatrixType::mark_as_permuted (const octave_idx_type np, const octave_idx_type *p)
+MatrixType::mark_as_permuted (const octave_idx_type np,
+                              const octave_idx_type *p)
 {
   nperm = np;
   perm = new octave_idx_type [nperm];

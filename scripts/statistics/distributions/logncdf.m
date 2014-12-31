@@ -1,5 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
-## Copyright (C) 1995-2012 Kurt Hornik
+## Copyright (C) 1995-2013 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -20,13 +20,13 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} logncdf (@var{x})
 ## @deftypefnx {Function File} {} logncdf (@var{x}, @var{mu}, @var{sigma})
-## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of the lognormal distribution with
-## parameters @var{mu} and @var{sigma}.  If a random variable follows this
-## distribution, its logarithm is normally distributed with mean
-## @var{mu} and standard deviation @var{sigma}.
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the lognormal distribution with parameters
+## @var{mu} and @var{sigma}.  If a random variable follows this distribution,
+## its logarithm is normally distributed with mean @var{mu} and standard
+## deviation @var{sigma}.
 ##
-## Default values are @var{mu} = 1, @var{sigma} = 1.
+## Default values are @var{mu} = 0, @var{sigma} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

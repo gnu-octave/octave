@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 Kai Habel
+Copyright (C) 2000-2013 Kai Habel
 
 This file is part of Octave.
 
@@ -45,6 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <string>
 
+#include "oct-locbuf.h"
+
 #include "Cell.h"
 #include "defun-dld.h"
 #include "error.h"
@@ -62,6 +64,23 @@ static void
 close_fcn (FILE *f)
 {
   gnulib::fclose (f);
+}
+
+static bool
+octave_qhull_dims_ok (octave_idx_type dim, octave_idx_type n, const char *who)
+{
+  if (sizeof (octave_idx_type) > sizeof (int))
+    {
+      int maxval = std::numeric_limits<int>::max ();
+
+      if (dim > maxval || n > maxval)
+        {
+          error ("%s: dimension too large for Qhull", who);
+          return false;
+        }
+    }
+
+  return true;
 }
 
 DEFUN_DLD (__delaunayn__, args, ,
@@ -88,6 +107,9 @@ Undocumented internal function.\n\
   Matrix p (args(0).matrix_value ());
   const octave_idx_type dim = p.columns ();
   const octave_idx_type n = p.rows ();
+
+  if (! octave_qhull_dims_ok (dim, n, "__delaynayn__"))
+    return retval;
 
   // Default options
   std::string options;
@@ -146,7 +168,7 @@ Undocumented internal function.\n\
           return retval;
         }
 
-      int exitcode = qh_new_qhull (dim, n, pt_array, 
+      int exitcode = qh_new_qhull (dim, n, pt_array,
                                    ismalloc, flags, outfile, errfile);
       if (! exitcode)
         {
@@ -155,7 +177,8 @@ Undocumented internal function.\n\
 
           facetT *facet;
           vertexT *vertex, **vertexp;
-          octave_idx_type nf = 0, i = 0;
+          octave_idx_type nf = 0;
+          octave_idx_type i = 0;
 
           FORALLfacets
             {

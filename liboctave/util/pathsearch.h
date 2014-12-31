@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,10 +36,10 @@ public:
   dir_path (const std::string& s = std::string (),
             const std::string& d = std::string ())
     : p_orig (s), p_default (d), initialized (false), p (), pv ()
-    {
-      if (! p_orig.empty ())
-        init ();
-    }
+  {
+    if (! p_orig.empty ())
+      init ();
+  }
 
   dir_path (const dir_path& dp)
     : p_orig (dp.p_orig), p_default (dp.p_default),
@@ -47,23 +47,23 @@ public:
   { }
 
   dir_path& operator = (const dir_path& dp)
-    {
-      p_orig = dp.p_orig;
-      p_default = dp.p_default;
-      initialized = dp.initialized;
-      p = dp.p;
-      pv = dp.pv;
-      return *this;
-    }
+  {
+    p_orig = dp.p_orig;
+    p_default = dp.p_default;
+    initialized = dp.initialized;
+    p = dp.p;
+    pv = dp.pv;
+    return *this;
+  }
 
   ~dir_path (void) { }
 
   void set (const std::string& s)
-    {
-      initialized = false;
-      p_orig = s;
-      init ();
-    }
+  {
+    initialized = false;
+    p_orig = s;
+    init ();
+  }
 
   string_vector elements (void);
   string_vector all_directories (void);
@@ -77,10 +77,10 @@ public:
   string_vector find_all_first_of (const string_vector& names);
 
   void rehash (void)
-    {
-      initialized = false;
-      init ();
-    }
+  {
+    initialized = false;
+    init ();
+  }
 
   static char path_sep_char (void)
   {

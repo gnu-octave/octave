@@ -1,7 +1,6 @@
 EXTRA_DIST += \
   corefcn/module.mk \
   corefcn/defaults.in.h \
-  corefcn/gl2ps.c \
   corefcn/graphics.in.h \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.in.cc \
@@ -44,8 +43,8 @@ TEX_PARSER_INC = \
 
 COREFCN_INC = \
   corefcn/Cell.h \
-  corefcn/action-container.h \
   corefcn/c-file-ptr-stream.h \
+  corefcn/cdisplay.h \
   corefcn/comment-list.h \
   corefcn/cutils.h \
   corefcn/data.h \
@@ -61,7 +60,6 @@ COREFCN_INC = \
   corefcn/file-io.h \
   corefcn/gl-render.h \
   corefcn/gl2ps-renderer.h \
-  corefcn/gl2ps.h \
   corefcn/gripes.h \
   corefcn/help.h \
   corefcn/hook-fcn.h \
@@ -78,9 +76,9 @@ COREFCN_INC = \
   corefcn/ls-utils.h \
   corefcn/mex.h \
   corefcn/mexproto.h \
-  corefcn/mxarray.in.h \
   corefcn/oct-errno.h \
   corefcn/oct-fstrm.h \
+  corefcn/oct-handle.h \
   corefcn/oct-hdf5.h \
   corefcn/oct-hist.h \
   corefcn/oct-iostrm.h \
@@ -93,6 +91,7 @@ COREFCN_INC = \
   corefcn/oct-stream.h \
   corefcn/oct-strstrm.h \
   corefcn/oct.h \
+  corefcn/octave-default-image.h \
   corefcn/octave-link.h \
   corefcn/pager.h \
   corefcn/pr-output.h \
@@ -107,7 +106,6 @@ COREFCN_INC = \
   corefcn/toplev.h \
   corefcn/txt-eng-ft.h \
   corefcn/txt-eng.h \
-  corefcn/unwind-prot.h \
   corefcn/utils.h \
   corefcn/variables.h \
   corefcn/workspace-element.h \
@@ -131,8 +129,7 @@ TEX_PARSER_SRC = \
 C_COREFCN_SRC = \
   corefcn/cutils.c \
   corefcn/matherr.c \
-  corefcn/siglist.c \
-  corefcn/xgl2ps.c
+  corefcn/siglist.c
 
 COREFCN_SRC = \
   corefcn/Cell.cc \
@@ -147,6 +144,7 @@ COREFCN_SRC = \
   corefcn/bitfcns.cc \
   corefcn/bsxfun.cc \
   corefcn/c-file-ptr-stream.cc \
+  corefcn/cdisplay.c \
   corefcn/cellfun.cc \
   corefcn/colloc.cc \
   corefcn/comment-list.cc \
@@ -245,7 +243,7 @@ COREFCN_SRC = \
   corefcn/strfns.cc \
   corefcn/sub2ind.cc \
   corefcn/svd.cc \
-  corefcn/syl.cc \
+  corefcn/sylvester.cc \
   corefcn/symtab.cc \
   corefcn/syscalls.cc \
   corefcn/sysdep.cc \
@@ -255,7 +253,7 @@ COREFCN_SRC = \
   corefcn/txt-eng.cc \
   corefcn/txt-eng-ft.cc \
   corefcn/typecast.cc \
-  corefcn/unwind-prot.cc \
+  corefcn/urlwrite.cc \
   corefcn/utils.cc \
   corefcn/variables.cc \
   corefcn/xdiv.cc \
@@ -265,11 +263,27 @@ COREFCN_SRC = \
   $(JIT_SRC) \
   $(C_COREFCN_SRC)
 
+COREFCN_FT2_DF = \
+  corefcn/graphics.df \
+  corefcn/gl-render.df \
+  corefcn/toplev.df \
+  corefcn/txt-eng-ft.df
+
 ## FIXME: Automake does not support per-object rules.
 ##        These rules could be emulated by creating a new convenience
 ##        library and using per-library rules.  Or we can just live
 ##        without the rule since there haven't been any problems. (09/18/2012)
 #display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+
+## Special rules for FreeType .df files so that not all .df files are built
+## with FT2_CPPFLAGS, FONTCONFIG_CPPFLAGS
+$(COREFCN_FT2_DF) : corefcn/%.df : corefcn/%.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(FONTCONFIG_CPPFLAGS) $(FT2_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
 
 ## Special rules for sources which must be built before rest of compilation.
 
@@ -308,7 +322,7 @@ corefcn/oct-tex-lexer.ll: corefcn/oct-tex-lexer.in.ll corefcn/oct-tex-symbols.in
 	mv $@-t $@
 
 corefcn/oct-tex-symbols.cc: corefcn/oct-tex-symbols.in Makefile.am
-	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } /^#/ { } { if (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; } }' $< > $@-t
+	$(AWK) 'BEGIN { print "// DO NOT EDIT. AUTOMATICALLY GENERATED FROM oct-tex-symbols.in."; print "static uint32_t symbol_codes[][2] = {"; count = 0; } END { print "};"; printf("static int num_symbol_codes = %d;\n", count); } !/^#/ && (NF == 3) { printf("  { %s, %s },\n", $$2, $$3); count++; }' $< > $@-t
 	mv $@-t $@
 
 corefcn/txt-eng.cc: corefcn/oct-tex-symbols.cc
@@ -321,7 +335,15 @@ noinst_LTLIBRARIES += \
   corefcn/libtex_parser.la
 
 corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
-corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) $(FFTW_XCPPFLAGS)
+corefcn_libcorefcn_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS) \
+                                 $(FFTW_XCPPFLAGS) \
+                                 $(FONTCONFIG_CPPFLAGS) \
+                                 $(FT2_CPPFLAGS) \
+                                 $(HDF5_CPPFLAGS) \
+                                 $(LLVM_CPPFLAGS) \
+                                 $(Z_CPPFLAGS)
+
+corefcn_libcorefcn_la_CXXFLAGS = $(AM_CXXFLAGS) $(LLVM_CXXFLAGS)
 
 corefcn_libtex_parser_la_SOURCES = $(TEX_PARSER_SRC)
 corefcn_libtex_parser_la_CPPFLAGS = $(liboctinterp_la_CPPFLAGS)

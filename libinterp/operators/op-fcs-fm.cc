@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,10 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "mx-cs-nda.h"
-#include "mx-nda-cs.h"
-#include "mx-cs-nda.h"
-#include "mx-nda-cs.h"
+#include "mx-fcs-fnda.h"
+#include "mx-fnda-fcs.h"
 
 #include "gripes.h"
 #include "oct-obj.h"
@@ -78,17 +76,17 @@ DEFBINOP (ldiv, float_complex, float_matrix)
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_complex, float_matrix, float_complex,
-               float_array, mx_el_lt)
+                    float_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_complex, float_matrix, float_complex,
-               float_array, mx_el_le)
+                    float_array, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, float_complex, float_matrix, float_complex,
-               float_array, mx_el_eq)
+                    float_array, mx_el_eq)
 DEFNDCMPLXCMPOP_FN (ge, float_complex, float_matrix, float_complex,
-               float_array, mx_el_ge)
+                    float_array, mx_el_ge)
 DEFNDCMPLXCMPOP_FN (gt, float_complex, float_matrix, float_complex,
-               float_array, mx_el_gt)
+                    float_array, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, float_complex, float_matrix, float_complex,
-               float_array, mx_el_ne)
+                    float_array, mx_el_ne)
 
 DEFNDBINOP_OP (el_mul, float_complex, float_matrix, float_complex,
                float_array, *)
@@ -141,7 +139,8 @@ install_fcs_fm_ops (void)
   INSTALL_BINOP (op_el_mul, octave_float_complex, octave_float_matrix, el_mul);
   INSTALL_BINOP (op_el_div, octave_float_complex, octave_float_matrix, el_div);
   INSTALL_BINOP (op_el_pow, octave_float_complex, octave_float_matrix, el_pow);
-  INSTALL_BINOP (op_el_ldiv, octave_float_complex, octave_float_matrix, el_ldiv);
+  INSTALL_BINOP (op_el_ldiv, octave_float_complex, octave_float_matrix,
+                 el_ldiv);
   INSTALL_BINOP (op_el_and, octave_float_complex, octave_float_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_float_complex, octave_float_matrix, el_or);
 

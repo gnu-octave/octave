@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -38,6 +38,7 @@ public:
 protected slots:
   void copyClipboard ();
   void pasteClipboard ();
+  void selectAll ();
 
   void showDoc (const QString & name);
 private:

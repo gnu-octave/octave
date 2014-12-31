@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_octave_stdiostream_h)
-#define octave_octave_stdiostream_h 1
+#if !defined (octave_oct_stdstrm_h)
+#define octave_oct_stdstrm_h 1
 
 #include "oct-stream.h"
 #include "c-file-ptr-stream.h"
@@ -44,13 +44,13 @@ public:
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (off_t offset, int origin)
-    { return s ? s->seek (offset, origin) : -1; }
+  { return s ? s->seek (offset, origin) : -1; }
 
   // Return current stream position.
 
   off_t tell (void) { return s ? s->tell () : -1; }
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return nonzero if EOF has been reached on this stream.
 
   bool eof (void) const { return s ? s->eof () : true; }
 
@@ -62,9 +62,9 @@ public:
 
   std::ostream *output_stream (void) { return (md & std::ios::out) ? s : 0; }
 
-  // FIXME -- should not have to cast away const here.
+  // FIXME: should not have to cast away const here.
   BUF_T *rdbuf (void) const
-    { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
+  { return s ? (const_cast<STREAM_T *> (s))->rdbuf () : 0; }
 
   int file_number (void) const { return fnum; }
 
@@ -107,7 +107,8 @@ public:
                       oct_mach_info::float_format ff
                         = oct_mach_info::native_float_format (),
                       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::file_close)
-    : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *> (n, f, f ? fileno (f) : -1, m, ff, cf) { }
+    : octave_tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
+       (n, f, f ? fileno (f) : -1, m, ff, cf) { }
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
@@ -144,8 +145,10 @@ public:
                        std::ios::openmode m = std::ios::in|std::ios::out,
                        oct_mach_info::float_format ff
                          = oct_mach_info::native_float_format (),
-                       c_zfile_ptr_buf::close_fcn cf = c_zfile_ptr_buf::file_close)
-    : octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile> (n, f, fid, m, ff, cf) { }
+                       c_zfile_ptr_buf::close_fcn cf
+                         = c_zfile_ptr_buf::file_close)
+    : octave_tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
+       (n, f, fid, m, ff, cf) { }
 
   static octave_stream
   create (const std::string& n, gzFile f = 0, int fid = 0,

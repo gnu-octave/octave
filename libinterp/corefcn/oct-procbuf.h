@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,8 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
 
-#if !defined (octave_octave_procbuf_h)
-#define octave_octave_procbuf_h 1
+#if !defined (octave_oct_procbuf_h)
+#define octave_oct_procbuf_h 1
 
 #include <sys/types.h>
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 VZLU Prague
+Copyright (C) 2010-2013 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_binmap_h)
-#define octave_binmap_h 1
+#if !defined (octave_oct_binmap_h)
+#define octave_oct_binmap_h 1
 
 #include "Array.h"
 #include "Sparse.h"
@@ -167,7 +167,8 @@ template <class U, class T, class R, class F>
 Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 {
-  dim_vector xad = xa.dims (), yad = ya.dims ();
+  dim_vector xad = xa.dims ();
+  dim_vector yad = ya.dims ();
   if (xa.numel () == 1)
     return binmap<U, T, R, F> (xa(0), ya, fcn);
   else if (ya.numel () == 1)
@@ -218,17 +219,30 @@ template <class U, class T, class R, class F>
 Sparse<U>
 binmap (const T& x, const Sparse<R>& ys, F fcn)
 {
-  octave_idx_type nz = ys.nnz ();
-  Sparse<U> retval (ys.rows (), ys.cols (), nz);
-  for (octave_idx_type i = 0; i < nz; i++)
-    {
-      octave_quit ();
-      retval.xdata (i) = fcn (x, ys.data (i));
-    }
+  R yzero = R ();
+  U fz = fcn (x, yzero);
 
-  octave_quit ();
-  retval.maybe_compress ();
-  return retval;
+  if (fz == U ())  // Sparsity preserving fcn
+    {
+      octave_idx_type nz = ys.nnz ();
+      Sparse<U> retval (ys.rows (), ys.cols (), nz);
+      std::copy (ys.ridx (), ys.ridx () + nz, retval.ridx ());
+      std::copy (ys.cidx (), ys.cidx () + ys.cols () + 1, retval.cidx ());
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          octave_quit ();
+          // FIXME: Could keep track of whether fcn call results in a 0.
+          //        If no zeroes are created could skip maybe_compress()
+          retval.xdata (i) = fcn (x, ys.data (i));
+        }
+
+      octave_quit ();
+      retval.maybe_compress (true);
+      return retval;
+    }
+  else
+    return Sparse<U> (binmap<U, T, R, F> (x, ys.array_value (), fcn));
 }
 
 // Sparse-scalar
@@ -236,17 +250,30 @@ template <class U, class T, class R, class F>
 Sparse<U>
 binmap (const Sparse<T>& xs, const R& y, F fcn)
 {
-  octave_idx_type nz = xs.nnz ();
-  Sparse<U> retval (xs.rows (), xs.cols (), nz);
-  for (octave_idx_type i = 0; i < nz; i++)
-    {
-      octave_quit ();
-      retval.xdata (i) = fcn (xs.data (i), y);
-    }
+  T xzero = T ();
+  U fz = fcn (xzero, y);
 
-  octave_quit ();
-  retval.maybe_compress ();
-  return retval;
+  if (fz == U ())  // Sparsity preserving fcn
+    {
+      octave_idx_type nz = xs.nnz ();
+      Sparse<U> retval (xs.rows (), xs.cols (), nz);
+      std::copy (xs.ridx (), xs.ridx () + nz, retval.ridx ());
+      std::copy (xs.cidx (), xs.cidx () + xs.cols () + 1, retval.cidx ());
+
+      for (octave_idx_type i = 0; i < nz; i++)
+        {
+          octave_quit ();
+          // FIXME: Could keep track of whether fcn call results in a 0.
+          //        If no zeroes are created could skip maybe_compress()
+          retval.xdata (i) = fcn (xs.data (i), y);
+        }
+
+      octave_quit ();
+      retval.maybe_compress (true);
+      return retval;
+    }
+  else
+    return Sparse<U> (binmap<U, T, R, F> (xs.array_value (), y, fcn));
 }
 
 // Sparse-Sparse (treats singletons as scalars)
@@ -263,70 +290,61 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
 
   T xzero = T ();
   R yzero = R ();
-
   U fz = fcn (xzero, yzero);
+
   if (fz == U ())
     {
-      // Sparsity-preserving function. Do it efficiently.
-      octave_idx_type nr = xs.rows (), nc = xs.cols ();
-      Sparse<T> retval (nr, nc);
+      // Sparsity-preserving function.  Do it efficiently.
+      octave_idx_type nr = xs.rows ();
+      octave_idx_type nc = xs.cols ();
+      Sparse<T> retval (nr, nc, xs.nnz () + ys.nnz ());
 
       octave_idx_type nz = 0;
-      // Count nonzeros.
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
-          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
-          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
-          while (ix != ux || iy != uy)
+
+          octave_idx_type jx = xs.cidx (j);
+          octave_idx_type jx_max = xs.cidx (j+1);
+          bool jx_lt_max = jx < jx_max;
+
+          octave_idx_type jy = ys.cidx (j);
+          octave_idx_type jy_max = ys.cidx (j+1);
+          bool jy_lt_max = jy < jy_max;
+
+          while (jx_lt_max || jy_lt_max)
             {
-              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
-              ix += rx <= ry;
-              iy += ry <= rx;
+              if (! jy_lt_max
+                  || (jx_lt_max && (xs.ridx (jx) < ys.ridx (jy))))
+                {
+                  retval.xridx (nz) = xs.ridx (jx);
+                  retval.xdata (nz) = fcn (xs.data (jx), yzero);
+                  jx++;
+                  jx_lt_max = jx < jx_max;
+                }
+              else if (! jx_lt_max
+                       || (jy_lt_max && (ys.ridx (jy) < xs.ridx (jx))))
+                {
+                  retval.xridx (nz) = ys.ridx (jy);
+                  retval.xdata (nz) = fcn (xzero, ys.data (jy));
+                  jy++;
+                  jy_lt_max = jy < jy_max;
+                }
+              else
+                {
+                  retval.xridx (nz) = xs.ridx (jx);
+                  retval.xdata (nz) = fcn (xs.data (jx), ys.data (jy));
+                  jx++;
+                  jx_lt_max = jx < jx_max;
+                  jy++;
+                  jy_lt_max = jy < jy_max;
+                }
               nz++;
             }
-
           retval.xcidx (j+1) = nz;
         }
 
-      // Allocate space.
-      retval.change_capacity (retval.xcidx (nc));
-
-      // Fill.
-      nz = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-        {
-          octave_quit ();
-          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
-          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
-          while (ix != ux || iy != uy)
-            {
-              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
-              if (rx == ry)
-                {
-                  retval.xridx (nz) = rx;
-                  retval.xdata (nz) = fcn (xs.data (ix), ys.data (iy));
-                  ix++;
-                  iy++;
-                }
-              else if (rx < ry)
-                {
-                  retval.xridx (nz) = rx;
-                  retval.xdata (nz) = fcn (xs.data (ix), yzero);
-                  ix++;
-                }
-              else if (ry < rx)
-                {
-                  retval.xridx (nz) = ry;
-                  retval.xdata (nz) = fcn (xzero, ys.data (iy));
-                  iy++;
-                }
-
-              nz++;
-            }
-        }
-
-      retval.maybe_compress ();
+      retval.maybe_compress (true);
       return retval;
     }
   else
@@ -340,7 +358,8 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, R), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -355,7 +374,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (T, R))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, R), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -372,7 +392,8 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, R))
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, const R&), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -387,7 +408,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, const R&))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, const R&), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -404,7 +426,8 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, const R&))
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, R), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -419,7 +442,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, R))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, R), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, R),
+        const char *name)
 { return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -436,7 +460,8 @@ binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, R))
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, const R&), const char *name)
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
@@ -451,7 +476,8 @@ binmap (const Array<T>& xa, const R& y, U (*fcn) (T, const R&))
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, const R&), const char *name)
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, const R&),
+        const char *name)
 { return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>

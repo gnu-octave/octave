@@ -1,6 +1,6 @@
 /*
     This file is part of Konsole, an X terminal.
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
+    Copyright (C) 1997-1998, 2013 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
@@ -40,7 +40,7 @@
 
 // Qt
 #include <QtCore/QEvent>
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include <QtCore/QByteRef>
 
 // Konsole
@@ -964,7 +964,9 @@ void Vt102Emulation::sendKeyEvent( QKeyEvent* event )
         if ( modifiers & Qt::AltModifier && !(wantsAltModifier || wantsAnyModifier)
              && !event->text().isEmpty() )
         {
-            textToSend.prepend("\033");
+#if !defined(Q_OS_MAC)
+          textToSend.prepend("\033");
+#endif
         }
 
         if ( entry.command() != KeyboardTranslator::NoCommand )
@@ -1219,10 +1221,10 @@ char Vt102Emulation::getErase() const
 
 /*! shows the contents of the scan buffer.
 
-    This functions is used for diagnostics. It is called by \e ReportErrorToken
+    This functions is used for diagnostics. It is called by @e ReportErrorToken
     to inform about strings that cannot be decoded or handled by the emulation.
 
-    \sa ReportErrorToken
+    @sa ReportErrorToken
 */
 
 static void hexdump(int* s, int len)

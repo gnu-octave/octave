@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2012 Jacob Dawid
+Copyright (C) 2011-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -29,13 +29,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <QSettings>
 #include <QTranslator>
 
-class resource_manager
+class resource_manager : public QObject
 {
+  Q_OBJECT
+
 protected:
 
-  resource_manager (void);
-
 public:
+
+  resource_manager (void);
 
   ~resource_manager ();
 
@@ -47,11 +49,6 @@ public:
   static QSettings *get_default_settings (void)
   {
     return instance_ok () ? instance->do_get_default_settings () : 0;
-  }
-
-  static QString get_home_path (void)
-  {
-    return instance_ok () ? instance->do_get_home_path () : QString ();
   }
 
   static QString get_settings_file (void)
@@ -108,23 +105,21 @@ private:
 
   static bool instance_ok (void);
 
+  QString settings_directory;
+
+  QString settings_file;
+
   QSettings *settings;
 
   QSettings *default_settings;
-
-  QString home_path;
-
-  bool first_run;
 
   QSettings *do_get_settings (void) const;
 
   QSettings *do_get_default_settings (void) const;
 
-  QString do_get_home_path (void) const;
-
   QString do_get_settings_file (void);
 
-  QString do_get_settings_path (void);
+  QString do_get_settings_directory (void);
 
   void do_reload_settings (void);
 

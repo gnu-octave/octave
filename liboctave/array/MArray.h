@@ -1,7 +1,7 @@
 // Template array classes with like-type math ops
 /*
 
-Copyright (C) 1993-2012 John W. Eaton
+Copyright (C) 1993-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -47,13 +47,7 @@ protected:
 
 public:
 
-  MArray (void) : Array<T> () {}
-
-  explicit MArray (octave_idx_type n) GCC_ATTR_DEPRECATED
-    : Array<T> (dim_vector (n, 1)) { }
-
-  MArray (octave_idx_type n, const T& val) GCC_ATTR_DEPRECATED
-    : Array<T> (dim_vector (n, 1), val) { }
+  MArray (void) : Array<T> () { }
 
   explicit MArray (const dim_vector& dv)
     : Array<T> (dv) { }
@@ -69,28 +63,28 @@ public:
   ~MArray (void) { }
 
   MArray<T>& operator = (const MArray<T>& a)
-    {
-      Array<T>::operator = (a);
-      return *this;
-    }
+  {
+    Array<T>::operator = (a);
+    return *this;
+  }
 
   MArray<T> reshape (const dim_vector& new_dims) const
-    { return Array<T>::reshape (new_dims); }
+  { return Array<T>::reshape (new_dims); }
 
   MArray<T> permute (const Array<octave_idx_type>& vec,
-                      bool inv = false) const
-    { return Array<T>::permute (vec, inv); }
+                     bool inv = false) const
+  { return Array<T>::permute (vec, inv); }
 
   MArray<T> ipermute (const Array<octave_idx_type>& vec) const
-    { return Array<T>::ipermute (vec); }
+  { return Array<T>::ipermute (vec); }
 
   MArray squeeze (void) const { return Array<T>::squeeze (); }
 
   MArray<T> transpose (void) const
-    { return Array<T>::transpose (); }
+  { return Array<T>::transpose (); }
 
   MArray<T> hermitian (T (*fcn) (const T&) = 0) const
-    { return Array<T>::hermitian (fcn); }
+  { return Array<T>::hermitian (fcn); }
 
   // Performs indexed accumulative addition.
 

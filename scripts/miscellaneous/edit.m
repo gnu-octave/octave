@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2012 Paul Kienzle
+## Copyright (C) 2001-2013 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as
-## its argument it will be opened in a text editor.
+## its argument it will be opened in the text editor defined by @env{EDITOR}.
 ##
 ## @itemize @bullet
 ## @item
@@ -44,15 +44,15 @@
 ## @item
 ## If @code{@var{name}.cc} is specified, then it will search for
 ## @code{@var{name}.cc} in the path and try to modify it, otherwise it will
-## create a new @file{.cc} file in @env{HOME}.  If @var{name} happens to be an
-## m-file or interpreter defined function, then the text of that
+## create a new @file{.cc} file in the current directory.  If @var{name} happens
+## to be an m-file or interpreter defined function, then the text of that
 ## function will be inserted into the .cc file as a comment.
 ##
 ## @item
 ## If @file{@var{name}.ext} is on your path then it will be edited, otherwise
-## the editor will be started with @file{@env{HOME}/@var{name}.ext} as the
-## filename.  If @file{@var{name}.ext} is not modifiable, it will be copied to
-## @env{HOME} before editing.
+## the editor will be started with @file{@var{name}.ext} in the current
+## directory as the filename.  If @file{@var{name}.ext} is not modifiable,
+## it will be copied to @env{HOME} before editing.
 ##
 ## @strong{Warning:} You may need to clear @var{name} before the new definition
 ## is available.  If you are editing a .cc file, you will need
@@ -70,34 +70,6 @@
 ## The following control fields are used:
 ##
 ## @table @samp
-## @item editor
-## This is the editor to use to modify the functions.  By default it uses
-## Octave's @env{EDITOR} built-in function, which comes from
-## @code{getenv ("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
-## In place of the function name.  For example,
-##
-## @table @asis
-## @item @code{[EDITOR, " %s"]}
-## Use the editor which Octave uses for @code{edit_history}.
-##
-## @item @nospell{"xedit %s &"}
-## pop up simple X11 editor in a separate window
-##
-## @item @nospell{"gnudoit -q \"(find-file \\\"%s\\\")\""}
-## Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
-## @end table
-##
-## See also field @qcode{"mode"}, which controls how the editor is run by
-## Octave.
-##
-## On Cygwin, you will need to convert the Cygwin path to a Windows
-## path if you are using a native Windows editor.  For example:
-## @c Set example in small font to prevent overfull line in TeX
-##
-## @smallexample
-## @exdent '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
-## @end smallexample
-##
 ## @item home
 ## This is the location of user local m-files.  Be sure it is in your
 ## path.  The default is @file{~/octave}.
@@ -153,8 +125,7 @@ function ret = edit (varargin)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("EDITOR", [EDITOR() " %s"],
-                                "HOME", fullfile (default_home, "octave"),
+  persistent FUNCTION = struct ("HOME", fullfile (default_home, "octave"),
                                 "AUTHOR", default_user(1),
                                 "EMAIL", [],
                                 "LICENSE", "GPL",
@@ -162,6 +133,9 @@ function ret = edit (varargin)
                                 "EDITINPLACE", false);
   ## Make sure the stateval variables survive "clear functions".
   mlock;
+
+  ## Get default editor every time in case the user has changed it
+  FUNCTION.EDITOR = [EDITOR() " %s"];
 
   if (nargin == 1)
     ## User has supplied one arg, this can be a single file name
@@ -185,7 +159,8 @@ function ret = edit (varargin)
     stateval = varargin{2};
     switch (toupper (statevar))
       case "EDITOR"
-        FUNCTION.EDITOR = stateval;
+        error ("Octave:deprecated-function",
+               "The EDITOR option of edit has been removed.  Use EDITOR() directly.")
         return;
       case "HOME"
         if (! isempty (stateval) && stateval(1) == "~")
@@ -229,8 +204,8 @@ function ret = edit (varargin)
         endif
         return;
       otherwise
-        ## If none of the states match, assume both inputs are
-        ## actually both file names to be opened
+        ## If none of the states match, assume both inputs are actually
+        ## file names to be opened.
         editfilelist = varargin;
     endswitch
   elseif (nargin > 2)
@@ -246,10 +221,10 @@ function ret = edit (varargin)
     if (exist (FUNCTION.HOME, "dir") == 7)
       curr_dir = pwd ();
       unwind_protect
-        chdir (FUNCTION.HOME);
+        cd (FUNCTION.HOME);
         do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
       unwind_protect_cleanup
-        chdir (curr_dir);
+        cd (curr_dir);
       end_unwind_protect
     else
       do_edit (FUNCTION.EDITOR, "", FUNCTION.MODE);
@@ -267,7 +242,7 @@ function ret = edit (varargin)
   else
   
     ## Only one file name was supplied, get it from the cell array
-    file = editfilelist{1};
+    file = tilde_expand (editfilelist{1});
 
     ## Check whether the user is trying to edit a builtin or compiled function.
     switch (exist (file))
@@ -300,20 +275,20 @@ function ret = edit (varargin)
     if (idx == 0)
       if (isempty (regexp (file, '\.m$')))
         ## No ".m" at the end of the file, add to the list.
-        filelist{end+1} = [file ".m"];
+        filelist(end+1) = [file ".m"];
       endif
       if (isempty (regexp (file, '\.cc$')))
         ## No ".cc" at the end of the file, add to the list.
-        filelist{end+1} = [file ".cc"];
+        filelist(end+1) = [file ".cc"];
       endif
     endif
 
     ## If the file includes a path, it may be an overloaded function.
-    if (! strcmp (file, "@") && index (file, filesep))
+    if (! index (file, "@") && strchr (file, '/\'))
       ## No "@" at the beginning of the file, add to the list.
       numfiles = numel (filelist);
       for n = 1:numfiles
-        filelist{n+numfiles} = ["@" filelist{n}];
+        filelist(n+numfiles) = ["@" filelist{n}];
       endfor
     endif
 
@@ -353,14 +328,40 @@ function ret = edit (varargin)
       endif
     endif
 
-    ## If editing a new file that is neither a m-file or an oct-file,
+    ## If editing a new file, prompt for creation if gui is running
+    if (isguirunning ())
+      if (! __octave_link_edit_file__ (file, "prompt"));
+        return;
+      endif
+    endif
+
+    ## If editing a new file that is neither an m-file nor an oct-file,
     ## just edit it.
+    ## If in gui-mode, create it before or editor would prompt again.
     fileandpath = file;
     idx = rindex (file, ".");
-    name = file(1:idx-1);
-    ext = file(idx+1:end);
+    if (idx)
+      name = file(1:idx-1);
+      ext = file(idx+1:end);
+    else
+      name = file;
+      ext = "";
+    endif
     if (! any (strcmp (ext, {"cc", "m"})))
-      ## Some unknown file.  Just open it up.
+      ## Some unknown file.  Create and open it or just open it.
+      if (isempty (ext))
+        fileandpath = [fileandpath ".m"];  # Add .m extension per default
+      endif
+      if (isguirunning ())
+        ## Write the initial file (if there is anything to write)
+        ## Give user the opportunity to change the file extension
+        fileandpath = uiputfile (fileandpath);
+        fid = fopen (fileandpath, "wt");
+        if (fid < 0)
+          error ("edit: could not create %s", fileandpath);
+        endif
+        fclose (fid);
+      endif
       do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
       return;
     endif
@@ -403,8 +404,8 @@ function ret = edit (varargin)
     switch (uclicense)
       case "GPL"
         head = cstrcat (copyright, "\n\n", "\
-This program is free software; you can redistribute it and/or modify\n\
-it under the terms of the GNU General Public License as published by\n\
+This program is free software; you can redistribute it and/or modify it\n\
+under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 3 of the License, or\n\
 (at your option) any later version.\n\
 \n\
@@ -414,8 +415,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with Octave; see the file COPYING.  If not, see\n\
-<http://www.gnu.org/licenses/>.\
+along with this program.  If not, see <http://www.gnu.org/licenses/>.\
 ");
         tail = [author, "\n", revs];
 
@@ -483,17 +483,20 @@ SUCH DAMAGE.\
         if (any (exists == [2, 103]))
           body = type (name){1};
         else
-          body = ["function [retval] = " name " ()\n\nendfunction\n"];
+          body = ["function [retval] = " name " (input1, input2)\n\n" ...
+                  "endfunction\n"];
         endif
         if (isempty (head))
           comment = ["## -*- texinfo -*- \n## @deftypefn {Function File} " ...
-                     "{@var{retval} =} " name " (@var{x}, @var{y})\n##\n"  ...
+                     "{@var{retval} =} " name                              ...
+                     " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         else
           comment = ["## " strrep(head,"\n","\n## ") "\n\n"                ...
                      "## -*- texinfo -*- \n## @deftypefn {Function File} " ...
-                     "{@var{retval} =} " name " (@var{x} @var{y})\n##\n"   ...
+                     "{@var{retval} =} " name                              ...
+                     " (@var{input1}, @var{input2})\n##\n"                 ...
                      "## @seealso{}\n## @end deftypefn\n\n"                ...
                      "## " strrep(tail, "\n", "\n## ") "\n\n"];
         endif
@@ -569,14 +572,12 @@ endfunction
 
 
 %!test
-%! s.editor = edit ("get", "editor");
 %! s.home = edit ("get", "home");
 %! s.author = edit ("get", "author");
 %! s.email = edit ("get", "email");
 %! s.license = edit ("get", "license");
 %! s.editinplace = edit ("get", "editinplace");
 %! s.mode = edit ("get", "mode");
-%! edit editor none
 %! edit home none
 %! edit author none
 %! edit email none
@@ -587,14 +588,12 @@ endfunction
 %! else
 %!   edit mode async
 %! endif
-%! edit ("editor", s.editor);
 %! edit ("home", s.home);
 %! edit ("author", s.author);
 %! edit ("email", s.email);
 %! edit ("license", s.license);
 %! edit ("editinplace", s.editinplace);
 %! edit ("mode", s.mode);
-%! assert (edit ("get", "editor"), s.editor);
 %! assert (edit ("get", "home"), s.home);
 %! assert (edit ("get", "author"), s.author);
 %! assert (edit ("get", "email"), s.email);

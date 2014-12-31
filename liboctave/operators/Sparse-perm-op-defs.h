@@ -1,6 +1,6 @@
 /* -*- C++ -*-
 
-Copyright (C) 2009-2012 Jason Riedy
+Copyright (C) 2009-2013 Jason Riedy
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_sparse_perm_op_defs_h)
-#define octave_sparse_perm_op_defs_h 1
+#if !defined (octave_Sparse_perm_op_defs_h)
+#define octave_Sparse_perm_op_defs_h 1
 
 // Matrix multiplication
 
@@ -67,17 +67,7 @@ SM octinternal_do_mul_pm_sm (const PermMatrix& p, const SM& a)
       return SM ();
     }
 
-  if (p.is_row_perm ())
-    {
-      // Form the column permutation and then call the colpm_sm routine.
-      const octave_idx_type *prow = p.pvec ().data ();
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, pcol, nr);
-      for (octave_idx_type i = 0; i < nr; ++i)
-        pcol[prow[i]] = i;
-      return octinternal_do_mul_colpm_sm (pcol, a);
-    }
-  else
-    return octinternal_do_mul_colpm_sm (p.pvec ().data (), a);
+  return octinternal_do_mul_colpm_sm (p.col_perm_vec ().data (), a);
 }
 
 template <typename SM>
@@ -163,10 +153,7 @@ SM octinternal_do_mul_sm_pm (const SM& a, const PermMatrix& p)
       return SM ();
     }
 
-  if (p.is_row_perm ())
-    return octinternal_do_mul_sm_rowpm (a, p.pvec ().data ());
-  else
-    return octinternal_do_mul_sm_colpm (a, p.pvec ().data ());
+  return octinternal_do_mul_sm_colpm (a, p.col_perm_vec ().data ());
 }
 
-#endif // octave_sparse_perm_op_defs_h
+#endif // octave_Sparse_perm_op_defs_h

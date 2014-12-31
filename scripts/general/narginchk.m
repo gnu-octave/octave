@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Carnë Draug
+## Copyright (C) 2012-2013 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -28,7 +28,7 @@
 ##
 ## Note that this function evaluates @code{nargin} on the caller.
 ##
-## @seealso{nargchk, nargoutchk, error, nargout, nargin}
+## @seealso{nargoutchk, error, nargout, nargin}
 ## @end deftypefn
 
 ## Author: Carnë Draug <carandraug+dev@gmail.com>

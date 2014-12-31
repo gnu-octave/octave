@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2012 John W. Eaton
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_regexp_match_h)
-#define octave_liboctave_regexp_match_h 1
+#if !defined (octave_lo_regexp_h)
+#define octave_lo_regexp_h 1
 
 #include <list>
 #include <sstream>

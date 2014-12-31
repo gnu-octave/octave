@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 John W. Eaton
+Copyright (C) 2004-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -129,7 +129,8 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
   octave_base_value *retval = 0;
 
   if (this->matrix.nelem () == 1)
-    retval = new typename octave_value_int_traits<T>::scalar_type (this->matrix (0));
+    retval = new typename octave_value_int_traits<T>::scalar_type
+               (this->matrix (0));
 
   return retval;
 }
@@ -163,7 +164,7 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
       if (octave_base_int_helper<val_type, is_signed,
           can_be_larger_than_uchar_max>::char_value_out_of_range (ival))
         {
-          // FIXME -- is there something better we could do?
+          // FIXME: is there something better we could do?
 
           ival = 0;
 
@@ -256,7 +257,8 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
-  os.write (reinterpret_cast<const char *> (this->matrix.data ()), this->byte_size ());
+  os.write (reinterpret_cast<const char *> (this->matrix.data ()),
+            this->byte_size ());
 
   return true;
 }
@@ -264,7 +266,7 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 template <class T>
 bool
 octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
-                                        oct_mach_info::float_format )
+                                        oct_mach_info::float_format)
 {
   int32_t mdims;
   if (! is.read (reinterpret_cast<char *> (&mdims), 4))
@@ -345,7 +347,8 @@ octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
     return (empty > 0);
 
   int rank = dv.length ();
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
@@ -388,7 +391,7 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
   if (empty > 0)
     this->matrix.resize (dv);
   if (empty)
-      return (empty > 0);
+    return (empty > 0);
 
 #if HAVE_HDF5_18
   hid_t data_hid = H5Dopen (loc_id, name, H5P_DEFAULT);
@@ -469,7 +472,7 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
   if (octave_base_int_helper<val_type, is_signed,
       can_be_larger_than_uchar_max>::char_value_out_of_range (ival))
     {
-      // FIXME -- is there something better we could do?
+      // FIXME: is there something better we could do?
 
       ival = 0;
 
@@ -548,7 +551,8 @@ octave_base_int_scalar<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
   hid_t save_type_hid = HDF5_SAVE_TYPE;
   bool retval = true;
   hsize_t dimens[3];
-  hid_t space_hid = -1, data_hid = -1;
+  hid_t space_hid, data_hid;
+  space_hid = data_hid = -1;
 
   space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;

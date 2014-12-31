@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Bill Denney
+## Copyright (C) 2005-2013 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -22,8 +22,20 @@
 ## @deftypefnx {Function File} {@var{status} =} savepath (@dots{})
 ## Save the unique portion of the current function search path that is
 ## not set during Octave's initialization process to @var{file}.
-## If @var{file} is omitted, @file{~/.octaverc} is used.  If successful,
-## @code{savepath} returns 0.
+##
+## If @var{file} is omitted, Octave looks in the current directory for a
+## project-specific @file{.octaverc} file in which to save the path
+## information.  If no such file is present then the user's configuration file
+## @file{~/.octaverc} is used.
+##
+## If successful, @code{savepath} returns 0.
+##
+## The @code{savepath} function makes it simple to customize a user's
+## configuration file to restore the working paths necessary for a particular
+## instance of Octave.  Assuming no filename is specified, Octave will
+## automatically restore the saved directory paths from the appropriate
+## @file{.octaverc} file when starting up.  If a filename has been specified
+## then the paths may be restored manually by calling @code{source @var{file}}.
 ## @seealso{path, addpath, rmpath, genpath, pathdef}
 ## @end deftypefn
 
@@ -31,54 +43,27 @@
 
 function retval = savepath (file)
 
-  ret = 1;
-
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
 
+  ## Use project-specific or user's .octaverc when no file specified 
   if (nargin == 0)
-    file = fullfile ("~", ".octaverc");
-  endif
-
-  ## parse the file if it exists to see if we should replace an
-  ## existing section or create a new section
-  startline = endline = 0;
-  filelines = {};
-  if (exist (file) == 2)
-    [fid, msg] = fopen (file, "rt");
-    if (fid < 0)
-      error ("savepath: could not open file, %s: %s", file, msg);
+    file = fullfile (pwd, ".octaverc");
+    if (! exist (file, "file"))
+      file = fullfile ("~", ".octaverc");
     endif
-    unwind_protect
-      linenum = 0;
-      while (ischar (line = fgetl (fid)))
-        filelines{++linenum} = line;
-        ## find the first and last lines if they exist in the file
-        if (strcmp (line, beginstring))
-          startline = linenum;
-        elseif (strcmp (line, endstring))
-          endline = linenum;
-        endif
-      endwhile
-    unwind_protect_cleanup
-      closeread = fclose (fid);
-      if (closeread < 0)
-        error ("savepath: could not close file after reading, %s", file);
-      endif
-    end_unwind_protect
   endif
 
-  if (startline > endline || (startline > 0 && endline == 0))
-    error ("savepath: unable to parse file, %s", file);
-  endif
+  ## Read in the file
+  [filelines, startline, endline] = getsavepath (file);
 
-  ## put the current savepath lines into the file
+  ## Determine where the savepath lines are placed in the file.
   if (isempty (filelines)
       || (startline == 1 && endline == length (filelines)))
-    ## savepath is the entire file
+    ## savepath is the entire file.
     pre = post = {};
   elseif (endline == 0)
-    ## drop the savepath statements at the end of the file
+    ## Drop the savepath statements at the end of the file.
     pre = filelines;
     post = {};
   elseif (startline == 1)
@@ -88,50 +73,51 @@ function retval = savepath (file)
     pre = filelines(1:startline-1);
     post = {};
   else
-    ## insert in the middle
+    ## Insert in the middle.
     pre = filelines(1:startline-1);
     post = filelines(endline+1:end);
   endif
 
-  ## write the results
+  ## Write the results.
   [fid, msg] = fopen (file, "wt");
   if (fid < 0)
     error ("savepath: unable to open file for writing, %s, %s", file, msg);
   endif
   unwind_protect
-    for i = 1:length (pre)
-      fprintf (fid, "%s\n", pre{i});
-    endfor
+    fprintf (fid, "%s\n", pre{:});
 
     ## Remove the portion of the path defined via the command line
     ## and/or the environment.
     workingpath = parsepath (path);
-    command_line_path = parsepath (command_line_path ());
+    cmd_line_path = parsepath (command_line_path ());
     octave_path = parsepath (getenv ("OCTAVE_PATH"));
-    pathdef = pathdef ();
-    if (isempty (pathdef))
-      ## This occurs when running octave via run-octave. In this instance
+    default_path = pathdef ();
+    if (isempty (default_path))
+      ## This occurs when running octave via run-octave.  In this instance
       ## the entire path is specified via the command line and pathdef()
       ## is empty.
       [~, n] = setdiff (workingpath, octave_path);
-      default_path = command_line_path;
+      default_path = cmd_line_path;
     else
-      [~, n] = setdiff (workingpath, union (command_line_path, octave_path));
-      default_path = parsepath (pathdef);
+      [~, n] = setdiff (workingpath, union (cmd_line_path, octave_path));
+      default_path = parsepath (default_path);
     endif
     ## This is the path we'd like to preserve when octave is run.
-    path_to_preserve = workingpath (sort (n));
+    path_to_preserve = workingpath(sort (n));
 
-    ## Determine the path to Octave's user and sytem wide pkgs.
+    ## Determine the path to Octave's user and system wide packages.
     [pkg_user, pkg_system] = pkg ("list");
-    pkg_user_path = cell (1, numel (pkg_user));
-    pkg_system_path = cell (1, numel (pkg_system));
-    for n = 1:numel (pkg_user)
-      pkg_user_path{n} = pkg_user{n}.archprefix;
-    endfor
-    for n = 1:numel (pkg_system)
-      pkg_system_path{n} = pkg_system{n}.archprefix;
-    endfor
+    ## Conversion from cell array of structs to cellstr of archprefixes 
+    if (isempty (pkg_user))
+      pkg_user_path = {};
+    else
+      pkg_user_path = {[pkg_user{:}].archprefix};
+    endif
+    if (isempty (pkg_system))
+      pkg_system_path = {};
+    else
+      pkg_system_path = {[pkg_system{:}].archprefix};
+    endif
     pkg_path = union (pkg_user_path, pkg_system_path);
 
     ## Rely on Octave's initialization to include the pkg path elements.
@@ -140,22 +126,27 @@ function retval = savepath (file)
       path_to_preserve = path_to_preserve(sort (n));
     endif
 
-    ## Split the path to be saved into two groups. Those path elements that
+    ## Split the path to be saved into two groups.  Those path elements that
     ## belong at the beginning and those at the end.
     if (! isempty (default_path))
       n1 = find (strcmp (default_path{1}, path_to_preserve));
       n2 = find (strcmp (default_path{end}, path_to_preserve));
-      n_middle = round (0.5*(n1+n2));
+      n_middle = round ((n1+n2)/2);
       [~, n] = setdiff (path_to_preserve, default_path);
       path_to_save = path_to_preserve(sort (n));
       ## Remove pwd
-      path_to_save = path_to_save(! strcmp (path_to_save, ["." pathsep]));
-      n = ones (size (path_to_save));
-      for m = 1:numel (path_to_save)
-        n(m) = find (strcmp (path_to_save{m}, path_to_preserve));
-      endfor
-      path_to_save_begin = path_to_save(n <= n_middle);
-      path_to_save_end   = path_to_save(n > n_middle);
+      path_to_save(strcmp (path_to_save, ["." pathsep])) = [];
+      if (! isempty (path_to_save))
+        n = ones (numel (path_to_save), 1);
+        for m = 1:numel (path_to_save)
+          n(m) = find (strcmp (path_to_save{m}, path_to_preserve));
+        endfor
+        path_to_save_begin = path_to_save(n <= n_middle);
+        path_to_save_end   = path_to_save(n > n_middle);
+      else
+        path_to_save_begin = {};
+        path_to_save_end   = {};
+      endif
     else
       path_to_save_begin = path_to_preserve;
       path_to_save_end   = {};
@@ -179,28 +170,57 @@ function retval = savepath (file)
     endif
     fprintf (fid, "%s\n", endstring);
 
-    for i = 1:length (post)
-      fprintf (fid, "%s\n", post{i});
-    endfor
+    fprintf (fid, "%s\n", post{:});
   unwind_protect_cleanup
-    closeread = fclose (fid);
-    if (closeread < 0)
+    status = fclose (fid);
+    if (status < 0)
       error ("savepath: could not close savefile after writing, %s", file);
     elseif (nargin == 0)
+      warning ("off", "backtrace", "local");
       warning ("savepath: current path saved to %s", file);
     endif
   end_unwind_protect
 
-  ret = 0;
-
   if (nargout > 0)
-    retval = ret;
+    retval = 0;
   endif
 
 endfunction
 
+## Convert single string of paths to cell array of paths
 function path_elements = parsepath (p)
-  pat = sprintf ('([^%s]+[%s$])', pathsep, pathsep);
-  path_elements = regexpi (strcat (p, pathsep), pat, "match");
+  path_elements = strcat (ostrsplit (p, pathsep), pathsep);
 endfunction
+
+
+%!test
+%! fname = tempname ();
+%! status = savepath (fname);
+%! assert (status == 0);
+%! old_dir = pwd;
+%! unwind_protect
+%!   cd (P_tmpdir);
+%!   if (exist (fullfile (pwd, ".octaverc")))
+%!     unlink (".octaverc");
+%!   endif
+%!   ## Create blank .octaverc file
+%!   fid = fopen (".octaverc", "wt"); 
+%!   assert (fid >= 0);
+%!   fclose (fid);
+%!   ## Save path into local .octaverc file
+%!   status = savepath ();
+%!   assert (status == 0);
+%!   ## Compare old and new versions
+%!   fid = fopen (fname, "rb");
+%!   assert (fid >= 0);
+%!   orig_data = fread (fid);
+%!   fclose (fid);
+%!   fid = fopen (".octaverc", "rb");
+%!   assert (fid >= 0);
+%!   new_data = fread (fid);
+%!   fclose (fid);
+%!   assert (orig_data, new_data);
+%! unwind_protect_cleanup
+%!   cd (old_dir);
+%! end_unwind_protect 
 

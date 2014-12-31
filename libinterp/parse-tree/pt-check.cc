@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -357,6 +357,11 @@ tree_checker::visit_fcn_handle (tree_fcn_handle& /* fh */)
 }
 
 void
+tree_checker::visit_funcall (tree_funcall& /* fc */)
+{
+}
+
+void
 tree_checker::visit_parameter_list (tree_parameter_list& lst)
 {
   tree_parameter_list::iterator p = lst.begin ();
@@ -518,8 +523,7 @@ tree_checker::visit_try_catch_command (tree_try_catch_command& cmd)
 }
 
 void
-tree_checker::visit_unwind_protect_command
-  (tree_unwind_protect_command& cmd)
+tree_checker::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   tree_statement_list *unwind_protect_code = cmd.body ();
 

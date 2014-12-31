@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 VZLU Prague
+Copyright (C) 2010-2013 VZLU Prague
 
 This file is part of Octave.
 
@@ -82,13 +82,17 @@ void convolve_nd (const T *a, const dim_vector& ad, const dim_vector& acd,
     convolve_2d<T, R> (a, ad(0), ad(1), b, bd(0), bd(1), c, inner);
   else
     {
-      octave_idx_type ma = acd(nd-2), na = ad(nd-1), mb = bcd(nd-2), nb = bd(nd-1);
+      octave_idx_type ma = acd(nd-2);
+      octave_idx_type na = ad(nd-1);
+      octave_idx_type mb = bcd(nd-2);
+      octave_idx_type nb = bd(nd-1);
       octave_idx_type ldc = ccd(nd-2);
       if (inner)
         {
           for (octave_idx_type ja = 0; ja < na - nb + 1; ja++)
             for (octave_idx_type jb = 0; jb < nb; jb++)
-              convolve_nd<T, R> (a + ma*(ja + jb), ad, acd, b + mb*jb, bd, bcd,
+              convolve_nd<T, R> (a + ma*(ja+jb), ad, acd,
+                                 b + mb*(nb-jb-1), bd, bcd,
                                  c + ldc*ja, ccd, nd-1, inner);
         }
       else
@@ -112,7 +116,8 @@ convolve (const MArray<T>& a, const MArray<R>& b,
     return MArray<T> ();
 
   int nd = std::max (a.ndims (), b.ndims ());
-  const dim_vector adims = a.dims ().redim (nd), bdims = b.dims ().redim (nd);
+  const dim_vector adims = a.dims ().redim (nd);
+  const dim_vector bdims = b.dims ().redim (nd);
   dim_vector cdims = dim_vector::alloc (nd);
 
   for (int i = 0; i < nd; i++)
@@ -129,7 +134,8 @@ convolve (const MArray<T>& a, const MArray<R>& b,
 
   convolve_nd<T, R> (a.fortran_vec (), adims, adims.cumulative (),
                      b.fortran_vec (), bdims, bdims.cumulative (),
-                     c.fortran_vec (), cdims.cumulative (), nd, ct == convn_valid);
+                     c.fortran_vec (), cdims.cumulative (),
+                     nd, ct == convn_valid);
 
   if (ct == convn_same)
     {

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 David Bateman
+## Copyright (C) 2005-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -183,9 +183,9 @@
 ## of the convergence.  If @var{flag} is 0 then all eigenvalues have converged.
 ## Any other value indicates a failure to converge.
 ## 
-## This function is based on the @sc{arpack} package, written by R. Lehoucq,
-## K. Maschhoff, D. Sorensen, and C. Yang.  For more information see
-## @url{http://www.caam.rice.edu/software/ARPACK/}.
+## This function is based on the @sc{arpack} package, written by
+## @nospell{R. Lehoucq, K. Maschhoff, D. Sorensen, and C. Yang}.  For more
+## information see @url{http://www.caam.rice.edu/software/ARPACK/}.
 ## 
 ## @seealso{eig, svds}
 ## @end deftypefn
@@ -282,54 +282,57 @@ function out = select (args, k, sigma, real_valued, symmetric)
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "descend");
         else
-          error ("sigma = \"la\" requires real symmetric problem");
+          error ('sigma = "la" requires real symmetric problem');
         endif
 
       case "sa"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ("sigma = \"sa\" requires real symmetric problem");
+          error ('sigma = "sa" requires real symmetric problem');
         endif
 
       case "be"
         if (real_valued && symmetric)
           [~, idx] = sort (real (d), "ascend");
         else
-          error ("sigma = \"be\" requires real symmetric problem");
+          error ('sigma = "be" requires real symmetric problem');
         endif
 
       case "lr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "descend");
         else
-          error ("sigma = \"lr\" requires complex or unsymmetric problem");
+          error ('sigma = "lr" requires complex or unsymmetric problem');
         endif
 
       case "sr"
         if (! (real_valued || symmetric))
           [~, idx] = sort (real (d), "ascend");
         else
-          error ("sigma = \"sr\" requires complex or unsymmetric problem");
+          error ('sigma = "sr" requires complex or unsymmetric problem');
         endif
 
       case "li"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "descend");
         else
-          error ("sigma = \"li\" requires complex or unsymmetric problem");
+          error ('sigma = "li" requires complex or unsymmetric problem');
         endif
 
       case "si"
         if (! (real_valued || symmetric))
           [~, idx] = sort (imag (d), "ascend");
         else
-          error ("sigma = \"si\" requires complex or unsymmetric problem");
+          error ('sigma = "si" requires complex or unsymmetric problem');
         endif
 
       otherwise
         error ("unrecognized value for sigma: %s", sigma);
     endswitch
+  else
+    ## numeric sigma, find k closest values
+    [~, idx] = sort (abs (d - sigma));
   endif
 
   d = d(idx);
@@ -338,7 +341,7 @@ function out = select (args, k, sigma, real_valued, symmetric)
 
   k = min (k, n);
 
-  if (strcmp (sigma, 'be'))
+  if (strcmp (sigma, "be"))
     tmp = k / 2;
     n1 = floor (tmp);
     n2 = n - ceil (tmp) + 1;
@@ -356,7 +359,7 @@ function out = select (args, k, sigma, real_valued, symmetric)
 
     v = args{1};
     v = v(:,idx);
-    out{1} = v(selection,:);
+    out{1} = v(:,selection);
   endif
 
 endfunction
@@ -1104,7 +1107,32 @@ endfunction
 %!   assert (max (abs ((A - d1(i)*eye (n))*v1(:,i))), 0, 1e-11);
 %! endfor
 
+%!test
+%! A = 2 * diag (ones (10, 1)) - diag (ones (9, 1), 1) - diag (ones (9, 1), -1);
+%! B = diag (ones (10, 1));
+%! reseig = eig (A, B);
+%! [~, idx] = sort (abs (reseig), "ascend");
+%! assert (eigs (A, B, 10, 0), reseig (idx))
+
+%!test
+%! X = [70 47 42 39 50 73 79 23;
+%!      19 52 61 80 36 76 63 68;
+%!      14 34 66 65 29  4 72  9;
+%!      24  8 78 49 58 54 43 33;
+%!      62 69 32 31 40 46 22 28;
+%!      48 12 45 59 10 17 15 25;
+%!      64 67 77 56 13 55 41 74;
+%!      37 38 18 21 11  3 71  7;
+%!       5 35 16  1 51 27 26 44;
+%!      30 57 60 75  2 53 20  6];
+%! Z = X * X';
+%! r = rank (Z);
+%! assert (r, 8);
+%! [V, D] = eigs (Z, r, "lm");
+%! ZZ = V * D * V';
+%! tmp = abs (Z - ZZ);
+%! assert (max (tmp(:)) < 5e-11);
+
 %!assert (eigs (diag (1:5), 5, "sa"), [1;2;3;4;5]);
 %!assert (eigs (diag (1:5), 5, "la"), [5;4;3;2;1]);
 %!assert (eigs (diag (1:5), 3, "be"), [1;4;5]);
-

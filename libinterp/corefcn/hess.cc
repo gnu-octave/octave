@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 DEFUN (hess, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{H} =} hess (@var{A})\n\
 @deftypefnx {Built-in Function} {[@var{P}, @var{H}] =} hess (@var{A})\n\
 @cindex Hessenberg decomposition\n\
@@ -58,8 +58,9 @@ transposition) and @var{H} is upper Hessenberg\n\
 @end ifnottex\n\
 \n\
 The Hessenberg decomposition is usually used as the first step in an\n\
-eigenvalue computation, but has other applications as well (see Golub,\n\
-Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
+eigenvalue computation, but has other applications as well\n\
+(see @nospell{Golub, Nash, and Van Loan},\n\
+IEEE Transactions on Automatic Control, 1979).\n\
 @seealso{eig, chol, lu, qr, qz, schur, svd}\n\
 @end deftypefn")
 {
@@ -95,7 +96,7 @@ Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
     {
       if (arg.is_real_type ())
         {
-         FloatMatrix tmp = arg.float_matrix_value ();
+          FloatMatrix tmp = arg.float_matrix_value ();
 
           if (! error_state)
             {

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 David Bateman
+## Copyright (C) 2006-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -252,7 +252,7 @@ function femimages (nm, typ)
     velems = reshape (V(elemx), 4, E);
 
     plot3 (xelems, yelems, velems);
-    view (10, 10);
+    view (80, 10);
     print ([nm "." typ], d_typ);
     hide_output ();
   endif

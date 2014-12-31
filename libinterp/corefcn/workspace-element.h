@@ -33,16 +33,17 @@ public:
                      const std::string& symbol_arg = "<name>",
                      const std::string& class_name_arg = "<class>",
                      const std::string& value_arg = "<value>",
-                     const std::string& dimension_arg = "<dimension>")
+                     const std::string& dimension_arg = "<dimension>",
+                     bool complex_flag_arg = false)
     : xscope (scope_arg), xsymbol (symbol_arg),
       xclass_name (class_name_arg), xvalue (value_arg),
-      xdimension (dimension_arg)
+      xdimension (dimension_arg), xcomplex_flag (complex_flag_arg)
   { }
 
   workspace_element (const workspace_element& ws_elt)
     : xscope (ws_elt.xscope), xsymbol (ws_elt.xsymbol),
       xclass_name (ws_elt.xclass_name), xvalue (ws_elt.xvalue),
-      xdimension (ws_elt.xdimension)
+      xdimension (ws_elt.xdimension), xcomplex_flag (ws_elt.xcomplex_flag)
   { }
 
   workspace_element operator = (const workspace_element& ws_elt)
@@ -54,6 +55,7 @@ public:
         xclass_name = ws_elt.xclass_name;
         xvalue = ws_elt.xvalue;
         xdimension = ws_elt.xdimension;
+        xcomplex_flag = ws_elt.xcomplex_flag;
       }
 
     return *this;
@@ -71,6 +73,8 @@ public:
 
   std::string dimension (void) const { return xdimension; }
 
+  bool complex_flag (void) const { return xcomplex_flag; }
+
 private:
 
   // [g]lobal, [p]ersistent, [l]ocal
@@ -79,6 +83,7 @@ private:
   std::string xclass_name;
   std::string xvalue;
   std::string xdimension;
+  bool xcomplex_flag;
 };
 
 #endif

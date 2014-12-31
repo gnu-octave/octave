@@ -1,6 +1,7 @@
+// %NO_EDIT_WARNING%
 /*
 
-Copyright (C) 2008-2012 Michael Goffioul
+Copyright (C) 2008-2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -34,51 +35,46 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 #include <cstdlib>
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-#include <windows.h>
-#ifdef _MSC_VER
-#define popen _popen
-#define pclose _pclose
-#endif
-#endif
+#include <unistd.h>
 
-using namespace std;
+// This mess suggested by the autoconf manual.
 
-static bool initialized = false;
-static map<string,string> vars;
+#include <sys/types.h>
 
-static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
-
-static string
-substitute_prefix (const string& s, const string& prefix,
-                   const string& new_prefix)
-{
-  string retval = s;
-
-  if (!prefix.empty () && new_prefix != prefix)
-    {
-      int len = prefix.length ();
-      if (retval.find (prefix) == 0)
-        retval.replace (0, len, new_prefix);
-    }
-
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  replace (retval.begin (), retval.end (), '/', '\\');
+#if defined HAVE_SYS_WAIT_H
+#include <sys/wait.h>
 #endif
 
-  return retval;
-}
+#ifndef WIFEXITED
+#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
 
-static string
+#ifndef WEXITSTATUS
+#define WEXITSTATUS(stat_val) (static_cast<unsigned> (stat_val) >> 8)
+#endif
+
+static std::map<std::string, std::string> vars;
+
+#ifndef OCTAVE_VERSION
+#define OCTAVE_VERSION %OCTAVE_CONF_VERSION%
+#endif
+
+#ifndef OCTAVE_PREFIX
+#define OCTAVE_PREFIX %OCTAVE_CONF_PREFIX%
+#endif
+
+#include "shared-fcns.h"
+
+static std::string
 get_line (FILE *fp)
 {
-  static vector<char> buf (100);
+  static std::vector<char> buf (100);
   unsigned int idx = 0;
-  char c;
+  int c;
 
   while (true)
     {
-      c = static_cast<char> (fgetc (fp));
+      c = gnulib::fgetc (fp);
       if (c == '\n' || c == EOF)
         break;
       if (buf.size () <= idx)
@@ -86,26 +82,26 @@ get_line (FILE *fp)
       buf[idx++] = c;
     }
   if (idx == 0)
-    return string ("");
+    return std::string ("");
   else
-    return string (&buf[0], idx);
+    return std::string (&buf[0], idx);
 }
 
 
-static string
-get_variable (const char *name, const string& defval)
+static std::string
+get_variable (const char *name, const std::string& defval)
 {
   const char *val = getenv (name);
-  if (val == NULL || val[0] == '\0')
-    return defval;
+  if (val && *val)
+    return std::string (val);
   else
-    return string (val);
+    return defval;
 }
 
-static string
-quote_path (const string& s)
+static std::string
+quote_path (const std::string& s)
 {
-  if (s.find (' ') != string::npos && s[0] != '"')
+  if (s.find (' ') != std::string::npos && s[0] != '"')
     return "\"" + s + "\"";
   else
     return s;
@@ -114,70 +110,20 @@ quote_path (const string& s)
 static void
 initialize (void)
 {
-  if (initialized)
-    return;
-
-  initialized = true;
-
-  vars["OCTAVE_HOME"] = get_variable ("OCTAVE_HOME", "");
-
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  int n = 1024;
-
-  string bin_dir (n, '\0');
-
-  while (true)
-    {
-      int status = GetModuleFileName (0, &bin_dir[0], n);
-
-      if (status < n)
-        {
-          bin_dir.resize (status);
-          break;
-        }
-      else
-        {
-          n *= 2;
-          bin_dir.resize (n);
-        }
-    }
-
-  if (! bin_dir.empty ())
-    {
-      size_t pos = bin_dir.rfind ("\\bin\\");
-
-      if (pos != string::npos)
-        vars["OCTAVE_HOME"] = bin_dir.substr (0, pos);
-    }
-#endif
+  vars["OCTAVE_HOME"] = get_octave_home ();
+  vars["OCTAVE_PREFIX"] = OCTAVE_PREFIX;
 
   vars["SED"] = get_variable ("SED", %OCTAVE_CONF_SED%);
 
-  vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
+  std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
+  std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
+  std::string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
+  std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
 
-  string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
-  string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
-  string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
-  string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
-
-  if (! vars["OCTAVE_HOME"].empty ())
-    {
-      DEFAULT_OCTINCLUDEDIR
-        = substitute_prefix (DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-
-      DEFAULT_INCLUDEDIR
-        = substitute_prefix (DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-
-      DEFAULT_LIBDIR
-        = substitute_prefix (DEFAULT_LIBDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-
-      DEFAULT_OCTLIBDIR
-        = substitute_prefix (DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"],
-                             vars["OCTAVE_HOME"]);
-    }
+  DEFAULT_OCTINCLUDEDIR = subst_octave_home (DEFAULT_OCTINCLUDEDIR);
+  DEFAULT_INCLUDEDIR = subst_octave_home (DEFAULT_INCLUDEDIR);
+  DEFAULT_LIBDIR = subst_octave_home (DEFAULT_LIBDIR);
+  DEFAULT_OCTLIBDIR = subst_octave_home (DEFAULT_OCTLIBDIR);
 
   vars["OCTINCLUDEDIR"] = get_variable ("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
   vars["INCLUDEDIR"] = get_variable ("INCLUDEDIR", DEFAULT_INCLUDEDIR);
@@ -185,18 +131,18 @@ initialize (void)
   vars["OCTLIBDIR"] = get_variable ("OCTLIBDIR", DEFAULT_OCTLIBDIR);
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-  string DEFAULT_INCFLAGS
+  std::string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "\\..")
-    + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #else
-  string DEFAULT_INCFLAGS
+  std::string DEFAULT_INCFLAGS
     = "-I" + quote_path (vars["OCTINCLUDEDIR"] + "/..")
-    + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
+      + " -I" + quote_path (vars["OCTINCLUDEDIR"]);
 #endif
   if (vars["INCLUDEDIR"] != "/usr/include")
     DEFAULT_INCFLAGS += " -I" + quote_path (vars["INCLUDEDIR"]);
 
-  string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
+  std::string DEFAULT_LFLAGS = "-L" + quote_path (vars["OCTLIBDIR"]);
   if (vars["LIBDIR"] != "/usr/lib")
     DEFAULT_LFLAGS += " -L" + quote_path (vars["LIBDIR"]);
 
@@ -212,61 +158,74 @@ initialize (void)
   vars["CXXFLAGS"] = get_variable ("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
   vars["CXXPICFLAG"] = get_variable ("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
   vars["XTRA_CFLAGS"] = get_variable ("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
-  vars["XTRA_CXXFLAGS"] = get_variable ("XTRA_CXXFLAGS", %OCTAVE_CONF_XTRA_CXXFLAGS%);
+  vars["XTRA_CXXFLAGS"] = get_variable ("XTRA_CXXFLAGS",
+                                        %OCTAVE_CONF_XTRA_CXXFLAGS%);
 
   vars["AR"] = get_variable ("AR", %OCTAVE_CONF_MKOCTFILE_AR%);
   vars["RANLIB"] = get_variable ("RANLIB", %OCTAVE_CONF_MKOCTFILE_RANLIB%);
 
-  vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS", %OCTAVE_CONF_DEPEND_FLAGS%);
-  vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN", %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
+  vars["DEPEND_FLAGS"] = get_variable ("DEPEND_FLAGS",
+                                       %OCTAVE_CONF_DEPEND_FLAGS%);
+  vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable ("DEPEND_EXTRA_SED_PATTERN",
+                                       %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
 
   vars["DL_LD"] = get_variable ("DL_LD", %OCTAVE_CONF_MKOCTFILE_DL_LD%);
-  vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS", %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
+  vars["DL_LDFLAGS"] = get_variable ("DL_LDFLAGS",
+                                     %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
 
-  vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
+  vars["RDYNAMIC_FLAG"] = get_variable ("RDYNAMIC_FLAG",
+                                        %OCTAVE_CONF_RDYNAMIC_FLAG%);
   vars["LIBOCTAVE"] = "-loctave";
   vars["LIBOCTINTERP"] = "-loctinterp";
   vars["READLINE_LIBS"] = "-lreadline";
   vars["LAPACK_LIBS"] = get_variable ("LAPACK_LIBS", %OCTAVE_CONF_LAPACK_LIBS%);
   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
-  vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS", %OCTAVE_CONF_FFTW3_LDFLAGS%);
+  vars["FFTW3_LDFLAGS"] = get_variable ("FFTW3_LDFLAGS",
+                                        %OCTAVE_CONF_FFTW3_LDFLAGS%);
   vars["FFTW3_LIBS"] = get_variable ("FFTW3_LIBS", %OCTAVE_CONF_FFTW3_LIBS%);
-  vars["FFTW3F_LDFLAGS"] = get_variable ("FFTW3F_LDFLAGS", %OCTAVE_CONF_FFTW3F_LDFLAGS%);
+  vars["FFTW3F_LDFLAGS"] = get_variable ("FFTW3F_LDFLAGS",
+                                         %OCTAVE_CONF_FFTW3F_LDFLAGS%);
   vars["FFTW3F_LIBS"] = get_variable ("FFTW3F_LIBS", %OCTAVE_CONF_FFTW3F_LIBS%);
   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
-  vars["OCTAVE_LINK_DEPS"] = get_variable ("FLIBS", %OCTAVE_CONF_OCTAVE_LINK_DEPS%);
-  vars["OCT_LINK_DEPS"] = get_variable ("FLIBS", %OCTAVE_CONF_OCT_LINK_DEPS%);
-  vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
-
+  vars["OCTAVE_LINK_DEPS"] = get_variable ("OCTAVE_LINK_DEPS",
+                                           %OCTAVE_CONF_OCTAVE_LINK_DEPS%);
+  vars["OCTAVE_LINK_OPTS"] = get_variable ("OCTAVE_LINK_OPTS",
+                                           %OCTAVE_CONF_OCTAVE_LINK_OPTS%);
+  vars["OCT_LINK_DEPS"] = get_variable ("OCT_LINK_DEPS",
+                                        %OCTAVE_CONF_OCT_LINK_DEPS%);
+  vars["OCT_LINK_OPTS"] = get_variable ("OCT_LINK_OPTS",
+                                        %OCTAVE_CONF_OCT_LINK_OPTS%);
   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_MKOCTFILE_LD_CXX%);
   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
-  vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
+  vars["LD_STATIC_FLAG"] = get_variable ("LD_STATIC_FLAG",
+                                         %OCTAVE_CONF_LD_STATIC_FLAG%);
   vars["LFLAGS"] = get_variable ("LFLAGS", DEFAULT_LFLAGS);
-  vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG", %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
+  vars["F77_INTEGER8_FLAG"] = get_variable ("F77_INTEGER8_FLAG",
+                                            %OCTAVE_CONF_F77_INTEGER_8_FLAG%);
 
   vars["ALL_FFLAGS"] = vars["FFLAGS"] + " " + vars["F77_INTEGER8_FLAG"];
 
-  vars["ALL_CFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CFLAGS"]
-    + " " + vars["CFLAGS"];
+  vars["ALL_CFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CFLAGS"] + " "
+                       + vars["CFLAGS"];
 
-  vars["ALL_CXXFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CXXFLAGS"]
-    + " " + vars["CXXFLAGS"];
+  vars["ALL_CXXFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CXXFLAGS"] + " "
+                         + vars["CXXFLAGS"];
 
-  vars["ALL_LDFLAGS"] = vars["LD_STATIC_FLAG"] + " " + vars["CPICFLAG"]
-    + " " + vars["LDFLAGS"];
+  vars["ALL_LDFLAGS"] = vars["LD_STATIC_FLAG"] + " " + vars["CPICFLAG"] + " "
+                        + vars["LDFLAGS"];
 
-  vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"]
-    + " " + vars["SPECIAL_MATH_LIB"];
+  vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"] + " "
+                        + vars["SPECIAL_MATH_LIB"];
 
-  vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"]
-    + " " + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
+  vars["FFTW_LIBS"] = vars["FFTW3_LDFLAGS"] + " " + vars["FFTW3_LIBS"] + " "
+                      + vars["FFTW3F_LDFLAGS"] + " " + vars["FFTW3F_LIBS"];
 }
 
-static string usage_msg = "usage: mkoctfile [options] file ...";
-static string version_msg = "mkoctfile, version " + OCTAVE_VERSION;
+static std::string usage_msg = "usage: mkoctfile [options] file ...";
+static std::string version_msg = "mkoctfile, version " OCTAVE_VERSION;
 static bool debug = false;
-static string help_msg =
+static std::string help_msg =
 "\n"
 "Options:\n"
 "\n"
@@ -284,6 +243,10 @@ static string help_msg =
 "\n"
 "  -M, --depend            Generate dependency files (.d) for C and C++\n"
 "                          source files.\n"
+#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+"\n"
+"  -pthread                Add -pthread to link command.\n"
+#endif
 "\n"
 "  -RDIR                   Add -RDIR to link command.\n"
 "\n"
@@ -302,29 +265,33 @@ static string help_msg =
 "  -p VAR, --print VAR     Print configuration variable VAR.  Recognized\n"
 "                          variables are:\n"
 "\n"
-"                            ALL_CFLAGS                FFTW3F_LDFLAGS\n"
-"                            ALL_CXXFLAGS              FFTW3F_LIBS\n"
-"                            ALL_FFLAGS                FLIBS\n"
-"                            ALL_LDFLAGS               FPICFLAG\n"
-"                            AR                        INCFLAGS\n"
-"                            BLAS_LIBS                 LAPACK_LIBS\n"
-"                            CC                        LDFLAGS\n"
-"                            CFLAGS                    LD_CXX\n"
-"                            CPICFLAG                  LD_STATIC_FLAG\n"
-"                            CPPFLAGS                  LFLAGS\n"
-"                            CXX                       LIBOCTAVE\n"
-"                            CXXFLAGS                  LIBOCTINTERP\n"
-"                            CXXPICFLAG                LIBS\n"
-"                            DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
-"                            DEPEND_FLAGS              OCTAVE_LINK_DEPS\n"
-"                            DL_LD                     OCT_LINK_DEPS\n"
-"                            DL_LDFLAGS                RANLIB\n"
-"                            EXEEXT                    RDYNAMIC_FLAG\n"
-"                            F77                       READLINE_LIBS\n"
-"                            F77_INTEGER_8_FLAG        SED\n"
-"                            FFLAGS                    XTRA_CFLAGS\n"
-"                            FFTW3_LDFLAGS             XTRA_CXXFLAGS\n"
-"                            FFTW3_LIBS\n"
+"                            ALL_CFLAGS                  INCFLAGS\n"
+"                            ALL_CXXFLAGS                INCLUDEDIR\n"
+"                            ALL_FFLAGS                  LAPACK_LIBS\n"
+"                            ALL_LDFLAGS                 LD_CXX\n"
+"                            AR                          LDFLAGS\n"
+"                            BLAS_LIBS                   LD_STATIC_FLAG\n"
+"                            CC                          LFLAGS\n"
+"                            CFLAGS                      LIBDIR\n"
+"                            CPICFLAG                    LIBOCTAVE\n"
+"                            CPPFLAGS                    LIBOCTINTERP\n"
+"                            CXX                         LIBS\n"
+"                            CXXFLAGS                    OCTAVE_HOME\n"
+"                            CXXPICFLAG                  OCTAVE_LIBS\n"
+"                            DEPEND_EXTRA_SED_PATTERN    OCTAVE_LINK_DEPS\n"
+"                            DEPEND_FLAGS                OCTAVE_LINK_OPTS\n"
+"                            DL_LD                       OCTAVE_PREFIX\n"
+"                            DL_LDFLAGS                  OCTINCLUDEDIR\n"
+"                            F77                         OCTLIBDIR\n"
+"                            F77_INTEGER8_FLAG           OCT_LINK_DEPS\n"
+"                            FFLAGS                      OCT_LINK_OPTS\n"
+"                            FFTW3F_LDFLAGS              RANLIB\n"
+"                            FFTW3F_LIBS                 RDYNAMIC_FLAG\n"
+"                            FFTW3_LDFLAGS               READLINE_LIBS\n"
+"                            FFTW3_LIBS                  SED\n"
+"                            FFTW_LIBS                   SPECIAL_MATH_LIB\n"
+"                            FLIBS                       XTRA_CFLAGS\n"
+"                            FPICFLAG                    XTRA_CXXFLAGS\n"
 "\n"
 "  --link-stand-alone      Link a stand-alone executable file.\n"
 "\n"
@@ -352,13 +319,13 @@ static string help_msg =
 #endif
 "\n";
 
-static string
-basename (const string& s, bool strip_path = false)
+static std::string
+basename (const std::string& s, bool strip_path = false)
 {
-  string retval;
+  std::string retval;
   size_t pos = s.rfind ('.');
 
-  if (pos == string::npos)
+  if (pos == std::string::npos)
     retval = s;
   else
     retval = s.substr (0, pos);
@@ -366,41 +333,46 @@ basename (const string& s, bool strip_path = false)
   if (strip_path)
     {
       size_t p1 = retval.rfind ('/'), p2 = retval.rfind ('\\');
-      pos = (p1 != string::npos && p2 != string::npos
-             ? max (p1, p2) : (p2 != string::npos ? p2 : p1));
-      if (pos != string::npos)
-        retval = retval.substr (++pos, string::npos);
+      pos = (p1 != std::string::npos && p2 != std::string::npos
+             ? std::max (p1, p2) : (p2 != std::string::npos ? p2 : p1));
+      if (pos != std::string::npos)
+        retval = retval.substr (++pos, std::string::npos);
     }
 
   return retval;
 }
 
 inline bool
-starts_with (const string& s, const string& prefix)
+starts_with (const std::string& s, const std::string& prefix)
 {
   return (s.length () >= prefix.length () && s.find (prefix) == 0);
 }
 
 inline bool
-ends_with (const string& s, const string& suffix)
+ends_with (const std::string& s, const std::string& suffix)
 {
   return (s.length () >= suffix.length ()
           && s.rfind (suffix) == s.length () - suffix.length ());
 }
 
 static int
-run_command (const string& cmd)
+run_command (const std::string& cmd)
 {
   if (debug)
-    cout << cmd << endl;
-  return system (cmd.c_str ());
+    std::cout << cmd << std::endl;
+
+  int result = system (cmd.c_str ());
+
+  if (WIFEXITED (result))
+    result = WEXITSTATUS (result);
+
+  return result;
 }
 
 bool
 is_true (const std::string& s)
 {
-  return (s == "yes"
-          || s == "true");
+  return (s == "yes" || s == "true");
 }
 
 int
@@ -408,29 +380,28 @@ main (int argc, char **argv)
 {
   initialize ();
 
-  string file, output_option;
-  list<string> cfiles, ccfiles, f77files;
+  std::string file, output_option;
+  std::list<std::string> cfiles, ccfiles, f77files;
   int result = 0;
 
-  string objfiles = "";
-  string libfiles = "";
-  string octfile = "";
-  string outputfile = "";
-  string incflags = "";
-  string defs = "";
-  string ldflags = "";
-  string pass_on_options = "";
+  std::string objfiles = "";
+  std::string libfiles = "";
+  std::string octfile = "";
+  std::string outputfile = "";
+  std::string incflags = "";
+  std::string defs = "";
+  std::string ldflags = "";
+  std::string pass_on_options = "";
   bool strip = false;
   bool no_oct_file_strip_on_this_platform = is_true ("%NO_OCT_FILE_STRIP%");
   bool link = true;
   bool link_stand_alone = false;
-  string output_ext = ".oct";
+  std::string output_ext = ".oct";
   bool depend = false;
-  bool compile = true;
 
   if (argc == 1)
     {
-      cout << usage_msg << endl;
+      std::cout << usage_msg << std::endl;
       return 1;
     }
 
@@ -438,13 +409,13 @@ main (int argc, char **argv)
                     || !strcmp (argv[1], "-version")
                     || !strcmp (argv[1], "--version")))
     {
-      cout << version_msg << endl;
+      std::cout << version_msg << std::endl;
       return 0;
     }
 
   for (int i = 1; i < argc; i++)
     {
-      string arg = argv[i];
+      std::string arg = argv[i];
 
       if (ends_with (arg, ".c"))
         {
@@ -486,8 +457,8 @@ main (int argc, char **argv)
         }
       else if (arg == "-h" || arg == "-?" || arg == "-help" || arg == "--help")
         {
-          cout << usage_msg << endl;
-          cout << help_msg << endl;
+          std::cout << usage_msg << std::endl;
+          std::cout << help_msg << std::endl;
           return 0;
         }
       else if (starts_with (arg, "-I"))
@@ -502,7 +473,8 @@ main (int argc, char **argv)
               incflags += (" -idirafter " + arg);
             }
           else
-            cerr << "mkoctfile: include directory name missing" << endl;
+            std::cerr << "mkoctfile: include directory name missing"
+                      << std::endl;
         }
       else if (starts_with (arg, "-D"))
         {
@@ -513,10 +485,15 @@ main (int argc, char **argv)
         {
           ldflags += (" " + arg);
         }
+#if ! defined (__WIN32__) || defined (_POSIX_VERSION)
+      else if (arg == "-pthread")
+        {
+          ldflags += (" " + arg);
+        }
+#endif
       else if (arg == "-M" || arg == "-depend" || arg == "--depend")
         {
           depend = true;
-          compile = false;
         }
       else if (arg == "-o" || arg == "-output" || arg == "--output")
         {
@@ -526,23 +503,24 @@ main (int argc, char **argv)
               outputfile = arg;
             }
           else
-            cerr << "mkoctfile: output file name missing" << endl;
+            std::cerr << "mkoctfile: output file name missing" << std::endl;
         }
       else if (arg == "-p" || arg == "-print" || arg == "--print")
         {
           if (i < argc-1)
             {
               arg = argv[++i];
-              cout << vars[arg] << endl;
+              std::cout << vars[arg] << std::endl;
               return 0;
             }
           else
-            cerr << "mkoctfile: --print requires argument" << endl;
+            std::cerr << "mkoctfile: --print requires argument" << std::endl;
         }
       else if (arg == "-s" || arg == "-strip" || arg == "--strip")
         {
           if (no_oct_file_strip_on_this_platform)
-            cerr << "mkoctfile: stripping disabled on this platform" << endl;
+            std::cerr << "mkoctfile: stripping disabled on this platform"
+                      << std::endl;
           else
             strip = true;
         }
@@ -574,7 +552,7 @@ main (int argc, char **argv)
         }
       else
         {
-          cerr << "mkoctfile: unrecognized argument " << arg;
+          std::cerr << "mkoctfile: unrecognized argument " << arg << std::endl;
           return 1;
         }
 
@@ -601,33 +579,36 @@ main (int argc, char **argv)
         octfile = basename (octfile, true) + output_ext;
     }
 
-  list<string>::const_iterator it;
+  std::list<std::string>::const_iterator it;
 
   if (depend)
     {
       for (it = cfiles.begin (); it != cfiles.end (); ++it)
         {
-          string f = *it, dfile = basename (f, true) + ".d", line;
+          std::string f = *it, dfile = basename (f, true) + ".d", line;
 
-          unlink (dfile.c_str ());
-          string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
+          gnulib::unlink (dfile.c_str ());
+          std::string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
             + vars["CPPFLAGS"] + " " + vars["ALL_CFLAGS"] + " "
             + incflags  + " " + defs + " " + quote_path (f);
 
           FILE *fd = popen (cmd.c_str (), "r");
-          ofstream fo (dfile.c_str ());
+          std::ofstream fo (dfile.c_str ());
           size_t pos;
           while (!feof (fd))
             {
               line = get_line (fd);
-              if ((pos = line.rfind (".o:")) != string::npos)
+              if ((pos = line.rfind (".o:")) != std::string::npos)
                 {
                   size_t spos = line.rfind ('/', pos);
-                  string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
-                  fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos) << endl;
+                  std::string ofile =
+                    (spos == std::string::npos ? line.substr (0, pos+2)
+                                          : line.substr (spos+1, pos-spos+1));
+                  fo << "pic/" << ofile << " " << ofile << " "
+                     << dfile << line.substr (pos) << std::endl;
                 }
               else
-                fo << line << endl;
+                fo << line << std::endl;
             }
           pclose (fd);
           fo.close ();
@@ -635,27 +616,30 @@ main (int argc, char **argv)
 
       for (it = ccfiles.begin (); it != ccfiles.end (); ++it)
         {
-          string f = *it, dfile = basename (f, true) + ".d", line;
+          std::string f = *it, dfile = basename (f, true) + ".d", line;
 
-          unlink (dfile.c_str ());
-          string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
+          gnulib::unlink (dfile.c_str ());
+          std::string cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " "
             + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " "
             + incflags  + " " + defs + " " + quote_path (f);
 
           FILE *fd = popen (cmd.c_str (), "r");
-          ofstream fo (dfile.c_str ());
+          std::ofstream fo (dfile.c_str ());
           size_t pos;
           while (!feof (fd))
             {
               line = get_line (fd);
-              if ((pos = line.rfind (".o:")) != string::npos)
+              if ((pos = line.rfind (".o:")) != std::string::npos)
                 {
                   size_t spos = line.rfind ('/', pos);
-                  string ofile = (spos == string::npos ? line.substr (0, pos+2) : line.substr (spos+1, pos-spos+1));
-                  fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr (pos+2) << endl;
+                  std::string ofile =
+                    (spos == std::string::npos ? line.substr (0, pos+2)
+                                          : line.substr (spos+1, pos-spos+1));
+                  fo << "pic/" << ofile << " " << ofile << " "
+                     << dfile << line.substr (pos+2) << std::endl;
                 }
               else
-                fo << line << endl;
+                fo << line << std::endl;
             }
           pclose (fd);
           fo.close ();
@@ -664,12 +648,12 @@ main (int argc, char **argv)
       return 0;
     }
 
-  for (it = f77files.begin (); it != f77files.end (); ++it)
+  for (it = f77files.begin (); it != f77files.end () && !result; ++it)
     {
-      string f = *it, b = basename (f, true);
+      std::string f = *it, b = basename (f, true);
       if (!vars["F77"].empty ())
         {
-          string o;
+          std::string o;
           if (!outputfile.empty ())
             {
               if (link)
@@ -680,24 +664,25 @@ main (int argc, char **argv)
           else
             o = b + ".o";
           objfiles += (" " + o);
-          string cmd = vars["F77"] + " -c " + vars["FPICFLAG"] + " "
+          std::string cmd = vars["F77"] + " -c " + vars["FPICFLAG"] + " "
             + vars["ALL_FFLAGS"] + " " + incflags + " " + defs + " "
             + pass_on_options + " " + f + " -o " + o;
           result = run_command (cmd);
         }
       else
         {
-          cerr << "mkoctfile: no way to compile Fortran file " << f << endl;
+          std::cerr << "mkoctfile: no way to compile Fortran file " << f
+                    << std::endl;
           return 1;
         }
     }
 
-  for (it = cfiles.begin (); it != cfiles.end (); ++it)
+  for (it = cfiles.begin (); it != cfiles.end () && !result; ++it)
     {
-      string f = *it;
+      std::string f = *it;
       if (!vars["CC"].empty ())
         {
-          string b = basename (f, true), o;
+          std::string b = basename (f, true), o;
           if (!outputfile.empty ())
             {
               if (link)
@@ -708,7 +693,7 @@ main (int argc, char **argv)
           else
             o = b + ".o";
           objfiles += (" " + o);
-          string cmd = vars["CC"] + " -c " + vars["CPPFLAGS"] + " "
+          std::string cmd = vars["CC"] + " -c " + vars["CPPFLAGS"] + " "
             + vars["CPICFLAG"] + " " + vars["ALL_CFLAGS"] + " "
             + pass_on_options + " " + incflags + " " + defs + " "
             + quote_path (f) + " -o " + quote_path (o);
@@ -716,17 +701,18 @@ main (int argc, char **argv)
         }
       else
         {
-          cerr << "mkoctfile: no way to compile C file " << f << endl;
+          std::cerr << "mkoctfile: no way to compile C file " << f
+                    << std::endl;
           return 1;
         }
     }
 
-  for (it = ccfiles.begin (); it != ccfiles.end (); ++it)
+  for (it = ccfiles.begin (); it != ccfiles.end () && !result; ++it)
     {
-      string f = *it;
+      std::string f = *it;
       if (!vars["CXX"].empty ())
         {
-          string b = basename (f, true), o;
+          std::string b = basename (f, true), o;
           if (!outputfile.empty ())
             {
               if (link)
@@ -737,7 +723,7 @@ main (int argc, char **argv)
           else
             o = b + ".o";
           objfiles += (" " + o);
-          string cmd = vars["CXX"] + " -c " + vars["CPPFLAGS"] + " "
+          std::string cmd = vars["CXX"] + " -c " + vars["CPPFLAGS"] + " "
             + vars["CXXPICFLAG"] + " " + vars["ALL_CXXFLAGS"] + " "
             + pass_on_options + " " + incflags + " " + defs + " "
             + quote_path (f) + " -o " + quote_path (o);
@@ -745,47 +731,50 @@ main (int argc, char **argv)
         }
       else
         {
-          cerr << "mkoctfile: no way to compile C++ file " << f << endl;
+          std::cerr << "mkoctfile: no way to compile C++ file " << f
+                    << std::endl;
           return 1;
         }
     }
 
-  if (link && !objfiles.empty ())
+  if (link && !objfiles.empty () && !result)
     {
       if (link_stand_alone)
         {
           if (!vars["LD_CXX"].empty ())
             {
-              string cmd = vars["LD_CXX"] + " " + vars["CPPFLAGS"] + " "
+              std::string cmd = vars["LD_CXX"] + " " + vars["CPPFLAGS"] + " "
                 + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"]
-                + " " + vars["ALL_LDFLAGS"] + " " +  pass_on_options
-                + " " + output_option + " " + objfiles + " " + libfiles
-                + " " + ldflags + " " + vars["LFLAGS"]
+                + " " + vars["ALL_LDFLAGS"] + " "
+                + pass_on_options + " " + output_option + " "
+                + objfiles + " " + libfiles + " "
+                + ldflags + " " + vars["LFLAGS"]
                 + " -loctinterp -loctave "
-                + " " + vars["OCT_LINK_OPTS"]
+                + " " + vars["OCTAVE_LINK_OPTS"]
                 + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
             }
           else
             {
-              cerr << "mkoctfile: no way to link stand-alone executable file"
-                   << endl;
+              std::cerr
+                << "mkoctfile: no way to link stand-alone executable file"
+                << std::endl;
               return 1;
             }
         }
       else
         {
-          string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
-            + pass_on_options + " -o " + octfile + " " + objfiles + " "
-            + libfiles + " " + ldflags + " " + vars["LFLAGS"]
-            + " -loctinterp -loctave "
+          std::string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
+            + pass_on_options + " -o " + octfile + " "
+            + objfiles + " " + libfiles + " " + ldflags + " "
+            + vars["LFLAGS"] + " -loctinterp -loctave "
             + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
           result = run_command (cmd);
         }
 
       if (strip)
         {
-          string cmd = "strip " + octfile;
+          std::string cmd = "strip " + octfile;
           result = run_command (cmd);
         }
     }

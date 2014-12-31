@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_ComplexCHOL_h)
-#define octave_ComplexCHOL_h 1
+#if !defined (octave_CmplxCHOL_h)
+#define octave_CmplxCHOL_h 1
 
 #include <iosfwd>
 
@@ -39,30 +39,30 @@ public:
 
   ComplexCHOL (const ComplexMatrix& a, bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      init (a, calc_cond);
-    }
+  {
+    init (a, calc_cond);
+  }
 
   ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info,
                bool calc_cond = false)
     : chol_mat (), xrcond (0)
-    {
-      info = init (a, calc_cond);
-    }
+  {
+    info = init (a, calc_cond);
+  }
 
   ComplexCHOL (const ComplexCHOL& a)
     : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   ComplexCHOL& operator = (const ComplexCHOL& a)
-    {
-      if (this != &a)
-        {
-          chol_mat = a.chol_mat;
-          xrcond = a.xrcond;
-        }
+  {
+    if (this != &a)
+      {
+        chol_mat = a.chol_mat;
+        xrcond = a.xrcond;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ComplexMatrix chol_matrix (void) const { return chol_mat; }
 
@@ -82,7 +82,8 @@ public:
 
   void shift_sym (octave_idx_type i, octave_idx_type j);
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const ComplexCHOL& a);
 
 private:
 

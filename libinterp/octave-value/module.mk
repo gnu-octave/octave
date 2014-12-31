@@ -36,6 +36,7 @@ OCTAVE_VALUE_INC = \
   octave-value/ov-cell.h \
   octave-value/ov-ch-mat.h \
   octave-value/ov-class.h \
+  octave-value/ov-classdef.h \
   octave-value/ov-colon.h \
   octave-value/ov-complex.h \
   octave-value/ov-cs-list.h \
@@ -94,6 +95,7 @@ OCTAVE_VALUE_SRC = \
   octave-value/ov-cell.cc \
   octave-value/ov-ch-mat.cc \
   octave-value/ov-class.cc \
+  octave-value/ov-classdef.cc \
   octave-value/ov-colon.cc \
   octave-value/ov-complex.cc \
   octave-value/ov-cs-list.cc \
@@ -127,6 +129,22 @@ OCTAVE_VALUE_SRC = \
   $(OV_INTTYPE_SRC) \
   $(OV_SPARSE_SRC)
 
+OV_JAVA_DF = \
+  octave-value/ov.df \
+  octave-value/ov-class.df \
+  octave-value/ov-java.df \
+  octave-value/ov-typeinfo.df
+
+## Special rules for Java .df files so that not all .df files are built with
+## JAVA_CPPFLAGS
+$(OV_JAVA_DF) : octave-value/%.df : octave-value/%.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
+	  $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< > $@-t
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
+	rm $@-t
+
 noinst_LTLIBRARIES += octave-value/liboctave-value.la
 
 octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
@@ -138,6 +156,7 @@ octave_value_liboctave_value_la_SOURCES = $(OCTAVE_VALUE_SRC)
 
 octave_value_liboctave_value_la_CPPFLAGS = \
   $(liboctinterp_la_CPPFLAGS) \
+  $(HDF5_CPPFLAGS) \
   $(JAVA_CPPFLAGS)
 
 octave_value_liboctave_value_la_LIBADD = $(JAVA_LIBS)

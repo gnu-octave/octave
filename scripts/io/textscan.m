@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2013 Ben Abbott
+## Copyright (C) 2010-2014 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -98,7 +98,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
 
   ## Determine the number of data fields & initialize output array
-  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
+  num_fields = numel (regexp (format, '(%(\d*|\d*\.\d*)?[nfduscq]|%\[)', "match"));
+  if (! num_fields)
+    error ("textscan.m: no valid format conversion specifiers found\n");
+  endif
   C = cell (1, num_fields);
 
   if (! (isa (fid, "double") && fid > 0) && ! ischar (fid))
@@ -135,6 +138,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     if (! (isempty (args{ipos+1}) && has_str_fmt))
       args{ipos+1} = unique ([" ", args{ipos+1}]);
     endif
+    whitespace = args{ipos+1};
   endif
 
   if (! any (strcmpi (args, "delimiter")))
@@ -315,18 +319,20 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       ## See if lowermost data row must be completed
       pad = mod (numel (C{1}), ncols);
       if (pad)
-        ## Textscan returns NaNs for empty fields
-        C(1) = [C{1}; NaN(ncols - pad, 1)]; 
-      endif
-      ## Replace NaNs with EmptyValue, if any
-      ipos = find (strcmpi (args, "emptyvalue"));
-      if (ipos)
-        C{1}(find (isnan (C{1}))) = args{ipos+1};
+        ## Pad output with emptyvalues (rest has been done by stread.m)
+        emptv = find (strcmpi (args, "emptyvalue"));
+        if (isempty (emptv))
+          ## By default textscan returns NaNs for empty fields
+          C(1) = [C{1}; NaN(ncols - pad, 1)];
+        else
+          ## Otherwise return supplied emptyvalue. Pick last occurrence
+          C(1) = [C{1}; repmat(args{emptv(end)+1}, ncols - pad, 1)];
+        endif
       endif
       ## Compute nr. of rows
       nrows = floor (numel (C{1}) / ncols);
       ## Reshape C; watch out, transpose needed
-      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols)';
+      C(1) = reshape (C{1}, ncols, numel (C{1}) / ncols).';
       ## Distribute columns over C and wipe cols 2:end of C{1}
       for ii=2:ncols
         C(ii) = C{1}(:, ii);
@@ -575,7 +581,7 @@ endfunction
 
 %% Test reading from a real file
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! d = rand (1, 4);
 %! fprintf (fid, "  %f %f   %f  %f ", d);
@@ -588,7 +594,7 @@ endfunction
 
 %% Tests reading with empty format, should return proper nr of columns
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid, " 1 2 3 4\n5 6 7 8");
 %! fseek (fid, 0, "bof");
@@ -602,7 +608,7 @@ endfunction
 
 %% Tests reading with empty format; empty fields & incomplete lower row
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid, " ,2,,4\n5,6");
 %! fseek (fid, 0, "bof");
@@ -614,7 +620,7 @@ endfunction
 %% Error message tests
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! msg1 = "Missing or illegal value for 'headerlines'";
 %! try
@@ -625,7 +631,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! msg1 = "Missing or illegal value for 'headerlines'";
 %! try
@@ -636,7 +642,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid,"some_string");
 %! fseek (fid, 0, "bof");
@@ -649,7 +655,7 @@ endfunction
 %! assert (msg1, lasterr);
 
 %!test
-%! f = tmpnam ();
+%! f = tempname ();
 %! fid = fopen (f, "w+");
 %! fprintf (fid,"some_string");
 %! fseek (fid, 0, "bof");
@@ -661,3 +667,24 @@ endfunction
 %! unlink (f);
 %! assert (msg1, lasterr);
 
+%% Bug #41824
+%!test
+%! assert (textscan ("123", "", "whitespace", " "){:}, 123);
+
+%% Bug #42343-1, just test supplied emptyvalue (actually done by strread.m)
+%!test
+%! assert (textscan (",NaN", "", "delimiter", "," ,"emptyValue" ,Inf), {Inf, NaN});
+
+%% Bug #42343-2, test padding with supplied emptyvalue (done by textscan.m)
+%!test
+%! a = textscan (",1,,4\nInf,  ,NaN", "", "delimiter", ",", "emptyvalue", -10);
+%! assert (cell2mat (a), [-10, 1, -10, 4; Inf, -10, NaN, -10]);
+
+%% Bug #42528
+%!test
+%! assert (textscan ("1i", ""){1},  0+1i);
+%! assert (cell2mat (textscan ("3, 2-4i, NaN\n -i, 1, 23.4+2.2i", "")), [3+0i, 2-4i, NaN+0i; 0-i,  1+0i, 23.4+2.2i]);
+
+%% Illegal format specifiers
+%!test
+%!error <no valid format conversion specifiers> textscan ("1.0", "%z");

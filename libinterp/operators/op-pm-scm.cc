@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Jason Riedy
+Copyright (C) 2009-2013 Jason Riedy
 
 This file is part of Octave.
 
@@ -37,7 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFBINOP (mul_pm_scm, perm_matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_sparse_complex_matrix&);
+  CAST_BINOP_ARGS (const octave_perm_matrix&,
+                   const octave_sparse_complex_matrix&);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     {
@@ -53,7 +54,8 @@ DEFBINOP (mul_pm_scm, perm_matrix, sparse_complex_matrix)
 
 DEFBINOP (ldiv_pm_scm, perm_matrix, sparse_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_sparse_complex_matrix&);
+  CAST_BINOP_ARGS (const octave_perm_matrix&,
+                   const octave_sparse_complex_matrix&);
 
   return v1.perm_matrix_value ().inverse () * v2.sparse_complex_matrix_value ();
 }
@@ -62,7 +64,8 @@ DEFBINOP (ldiv_pm_scm, perm_matrix, sparse_complex_matrix)
 
 DEFBINOP (mul_scm_pm, sparse_complex_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_perm_matrix&);
+  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
+                   const octave_perm_matrix&);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     {
@@ -78,7 +81,8 @@ DEFBINOP (mul_scm_pm, sparse_complex_matrix, perm_matrix)
 
 DEFBINOP (div_scm_pm, sparse_complex_matrix, perm_matrix)
 {
-  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_perm_matrix&);
+  CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
+                   const octave_perm_matrix&);
 
   return v1.sparse_complex_matrix_value () * v2.perm_matrix_value ().inverse ();
 }

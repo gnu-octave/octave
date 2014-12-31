@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_range_h)
-#define octave_range_h 1
+#if !defined (octave_ov_range_h)
+#define octave_ov_range_h 1
 
 #include <cstdlib>
 
@@ -58,28 +58,28 @@ public:
 
   octave_range (double base, double limit, double inc)
     : octave_base_value (), range (base, limit, inc), idx_cache ()
-      {
-        if (range.nelem () < 0)
-          ::error ("invalid range");
-      }
+  {
+    if (range.nelem () < 0)
+      ::error ("invalid range");
+  }
 
   octave_range (const Range& r)
     : octave_base_value (), range (r), idx_cache ()
-      {
-        if (range.nelem () < 0 && range.nelem () != -2)
-          ::error ("invalid range");
-      }
+  {
+    if (range.nelem () < 0 && range.nelem () != -2)
+      ::error ("invalid range");
+  }
 
   octave_range (const octave_range& r)
     : octave_base_value (), range (r.range),
       idx_cache (r.idx_cache ? new idx_vector (*r.idx_cache) : 0)
-    { }
+  { }
 
   octave_range (const Range& r, const idx_vector& cache)
     : octave_base_value (), range (r), idx_cache ()
-      {
-        set_idx_cache (cache);
-      }
+  {
+    set_idx_cache (cache);
+  }
 
   ~octave_range (void) { clear_cached_info (); }
 
@@ -99,18 +99,18 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
-    { return subsref (type, idx); }
+  { return subsref (type, idx); }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  idx_vector index_vector (void) const;
+  idx_vector index_vector (bool require_integers = false) const;
 
   dim_vector dims (void) const
-    {
-      octave_idx_type n = range.nelem ();
-      return dim_vector (n > 0, n);
-    }
+  {
+    octave_idx_type n = range.nelem ();
+    return dim_vector (n > 0, n);
+  }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
@@ -118,10 +118,10 @@ public:
   size_t byte_size (void) const { return 3 * sizeof (double); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return NDArray (array_value ().reshape (new_dims)); }
+  { return NDArray (array_value ().reshape (new_dims)); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return NDArray (array_value ().permute (vec, inv)); }
+  { return NDArray (array_value ().permute (vec, inv)); }
 
   octave_value squeeze (void) const { return range; }
 
@@ -142,20 +142,20 @@ public:
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-    { return range.sort (dim, mode); }
+  { return range.sort (dim, mode); }
 
   octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
                      sortmode mode = ASCENDING) const
-    { return range.sort (sidx, dim, mode); }
+  { return range.sort (sidx, dim, mode); }
 
   sortmode is_sorted (sortmode mode = UNSORTED) const
-    { return range.is_sorted (mode); }
+  { return range.is_sorted (mode); }
 
   Array<octave_idx_type> sort_rows_idx (sortmode) const
-    { return Array<octave_idx_type> (dim_vector (1, 0)); }
+  { return Array<octave_idx_type> (dim_vector (1, 0)); }
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
-    { return mode ? mode : ASCENDING; }
+  { return mode ? mode : ASCENDING; }
 
   builtin_type_t builtin_type (void) const { return btyp_double; }
 
@@ -174,26 +174,26 @@ public:
   float float_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const
-    { return double_value (frc_str_conv); }
+  { return double_value (frc_str_conv); }
 
   float float_scalar_value (bool frc_str_conv = false) const
-    { return float_value (frc_str_conv); }
+  { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
-    { return range.matrix_value (); }
+  { return range.matrix_value (); }
 
   FloatMatrix float_matrix_value (bool = false) const
-    { return range.matrix_value (); }
+  { return range.matrix_value (); }
 
   NDArray array_value (bool = false) const
-    { return range.matrix_value (); }
+  { return range.matrix_value (); }
 
   FloatNDArray float_array_value (bool = false) const
-    { return FloatMatrix (range.matrix_value ()); }
+  { return FloatMatrix (range.matrix_value ()); }
 
   charNDArray char_array_value (bool = false) const;
 
-  // FIXME -- it would be better to have Range::intXNDArray_value
+  // FIXME: it would be better to have Range::intXNDArray_value
   // functions to avoid the intermediate conversion to a matrix
   // object.
 
@@ -222,10 +222,10 @@ public:
   uint64_array_value (void) const { return uint64NDArray (array_value ()); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
-    { return SparseMatrix (range.matrix_value ()); }
+  { return SparseMatrix (range.matrix_value ()); }
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
-    { return SparseComplexMatrix (sparse_matrix_value ()); }
+  { return SparseComplexMatrix (sparse_matrix_value ()); }
 
   Complex complex_value (bool = false) const;
 
@@ -234,28 +234,28 @@ public:
   boolNDArray bool_array_value (bool warn = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return ComplexMatrix (range.matrix_value ()); }
+  { return ComplexMatrix (range.matrix_value ()); }
 
   FloatComplexMatrix float_complex_matrix_value (bool = false) const
-    { return FloatComplexMatrix (range.matrix_value ()); }
+  { return FloatComplexMatrix (range.matrix_value ()); }
 
   ComplexNDArray complex_array_value (bool = false) const
-    { return ComplexMatrix (range.matrix_value ()); }
+  { return ComplexMatrix (range.matrix_value ()); }
 
   FloatComplexNDArray float_complex_array_value (bool = false) const
-    { return FloatComplexMatrix (range.matrix_value ()); }
+  { return FloatComplexMatrix (range.matrix_value ()); }
 
   Range range_value (void) const { return range; }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
-  std::string short_disp (void) const;
+  void short_disp (std::ostream& os) const;
 
   bool save_ascii (std::ostream& os);
 
@@ -275,37 +275,38 @@ public:
   int write (octave_stream& os, int block_size,
              oct_data_conv::data_type output_type, int skip,
              oct_mach_info::float_format flt_fmt) const
-    {
-      // FIXME -- could be more memory efficient by having a
-      // special case of the octave_stream::write method for ranges.
+  {
+    // FIXME: could be more memory efficient by having a
+    // special case of the octave_stream::write method for ranges.
 
-      return os.write (matrix_value (), block_size, output_type, skip,
-                       flt_fmt);
-    }
+    return os.write (matrix_value (), block_size, output_type, skip, flt_fmt);
+  }
 
   mxArray *as_mxArray (void) const;
 
   octave_value map (unary_mapper_t umap) const
-    {
-      octave_matrix m (matrix_value ());
-      return m.map (umap);
-    }
+  {
+    octave_matrix m (matrix_value ());
+    return m.map (umap);
+  }
+
+  octave_value fast_elem_extract (octave_idx_type n) const;
 
 private:
 
   Range range;
 
   idx_vector set_idx_cache (const idx_vector& idx) const
-    {
-      delete idx_cache;
-      idx_cache = idx ? new idx_vector (idx) : 0;
-      return idx;
-    }
+  {
+    delete idx_cache;
+    idx_cache = idx ? new idx_vector (idx) : 0;
+    return idx;
+  }
 
   void clear_cached_info (void) const
-    {
-      delete idx_cache; idx_cache = 0;
-    }
+  {
+    delete idx_cache; idx_cache = 0;
+  }
 
   mutable idx_vector *idx_cache;
 
@@ -317,8 +318,5 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
-
-// If TRUE, allow ranges with non-integer elements as array indices.
-extern bool Vallow_noninteger_range_as_index;
 
 #endif

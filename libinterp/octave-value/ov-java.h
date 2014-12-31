@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007 Michael Goffioul
+Copyright (C) 2007, 2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_java_h)
-#define octave_java_h 1
+#if !defined (octave_ov_java_h)
+#define octave_ov_java_h 1
 
 #include <jni.h>
 
@@ -149,7 +149,7 @@ public:
 
   dim_vector dims (void) const;
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

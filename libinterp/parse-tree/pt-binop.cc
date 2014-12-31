@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // TRUE means we mark | and & expressions for braindead short-circuit
 // behavior.
-static bool Vdo_braindead_shortcircuit_evaluation;
+static bool Vdo_braindead_shortcircuit_evaluation = true;
 
 // Binary expressions.
 
@@ -52,6 +52,16 @@ tree_binary_expression::rvalue (int nargout)
     retval = rvalue1 (nargout);
 
   return retval;
+}
+
+void
+tree_binary_expression::matlab_style_short_circuit_warning (const char *op)
+{
+  warning_with_id ("Octave:possible-matlab-short-circuit-operator",
+                   "Matlab-style short-circuit operation performed for operator %s",
+                   op);
+
+  braindead_shortcircuit_warning_issued = true;
 }
 
 octave_value
@@ -83,6 +93,7 @@ tree_binary_expression::rvalue1 (int)
                         {
                           if (etype == octave_value::op_el_or)
                             {
+                              matlab_style_short_circuit_warning ("|");
                               result = true;
                               goto done;
                             }
@@ -90,7 +101,10 @@ tree_binary_expression::rvalue1 (int)
                       else
                         {
                           if (etype == octave_value::op_el_and)
-                            goto done;
+                            {
+                              matlab_style_short_circuit_warning ("&");
+                              goto done;
+                            }
                         }
 
                       if (op_rhs)
@@ -121,7 +135,7 @@ tree_binary_expression::rvalue1 (int)
 
           if (! error_state && b.is_defined ())
             {
-              BEGIN_PROFILER_BLOCK ("binary " + oper ())
+              BEGIN_PROFILER_BLOCK (tree_binary_expression)
 
               // Note: The profiler does not catch the braindead
               // short-circuit evaluation code above, but that should be
@@ -279,7 +293,7 @@ tree_boolean_expression::dup (symbol_table::scope_id scope,
 }
 
 DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
@@ -298,6 +312,14 @@ variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
+  static bool warned = false;
+  if (! warned)
+    {
+      warned = true;
+      warning_with_id ("Octave:deprecated-function",
+                       "do_braindead_shortcircuit_evaluation is obsolete and will be removed from a future version of Octave");
+    }
+
   return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);
 }
 

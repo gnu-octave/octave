@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 David Bateman
+Copyright (C) 2010-2013 David Bateman
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_openmp_h)
-#define octave_openmp_h 1
+#if !defined (octave_oct_openmp_h)
+#define octave_oct_openmp_h 1
 
 /* A macro to make using OpenMP easier, and easier to disable */
 #ifdef HAVE_OPENMP

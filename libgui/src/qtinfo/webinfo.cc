@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2009 P. L. Lucas
-Copyright (C) 2012 Jacob Dawid
+Copyright (C) 2012-2013 Jacob Dawid
 
 This file is part of Octave.
 
@@ -22,7 +22,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 // Author: P. L. Lucas
-// Author: Jacob Dawid <jacob.dawid@gmail.com>
+// Author: Jacob Dawid <jacob.dawid@cybercatalyst.com>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -49,23 +49,24 @@ webinfo::webinfo (QWidget *p)
   setLayout (vbox_layout);
 
   QHBoxLayout *hbox_layout = new QHBoxLayout ();
-  hbox_layout->setMargin (2);
+  hbox_layout->setMargin (0);
+  hbox_layout->setSpacing (0);
   vbox_layout->addLayout (hbox_layout);
 
   _tab_bar = new QTabBar (this);
   _tab_bar->setSizePolicy (QSizePolicy::Preferred,QSizePolicy::Preferred);
   _tab_bar->setExpanding (false);
   _tab_bar->setTabsClosable (true);
+#ifdef HAVE_QTABWIDGET_SETMOVABLE
   _tab_bar->setMovable (true);
+#endif
   hbox_layout->addWidget (_tab_bar);
 
   _zoom_in_button = new QToolButton (this);
-  _zoom_in_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _zoom_in_button->setIcon (QIcon (":/actions/icons/zoom-in.png"));
   hbox_layout->addWidget (_zoom_in_button);
 
   _zoom_out_button = new QToolButton (this);
-  _zoom_out_button->setSizePolicy (QSizePolicy::Fixed,QSizePolicy::Preferred);
   _zoom_out_button->setIcon (QIcon (":/actions/icons/zoom-out.png"));
   hbox_layout->addWidget (_zoom_out_button);
 
@@ -77,23 +78,40 @@ webinfo::webinfo (QWidget *p)
 
   _search_line_edit = new QLineEdit(this);
 #ifdef HAVE_SETPLACEHOLDERTEXT
-  _search_line_edit->setPlaceholderText (tr ("Type here and press \'Return\' to search"));
+  _search_line_edit->setPlaceholderText (
+    tr ("Type here and press \'Return\' to search"));
 #endif
   hbox_layout->addWidget (_search_line_edit);
 
   _search_check_box = new QCheckBox (tr ("Global search"));
   hbox_layout->addWidget (_search_check_box);
 
-  connect (_tab_bar, SIGNAL (tabCloseRequested (int)), this, SLOT (close_tab (int)));
-  connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
+  connect (_tab_bar, SIGNAL (tabCloseRequested (int)), this,
+           SLOT (close_tab (int)));
+  connect (_tab_bar, SIGNAL (currentChanged (int)), this,
+           SLOT (current_tab_changed (int)));
   connect (_zoom_in_button, SIGNAL (clicked ()), this, SLOT (zoom_in ()));
   connect (_zoom_out_button, SIGNAL (clicked ()), this, SLOT (zoom_out ()));
   connect (_search_line_edit, SIGNAL (returnPressed ()), this, SLOT (search ()));
 
   resize (500, 300);
 
-  set_info_path (QString::fromStdString (Vinfo_file));
+  QFileInfo info_file = QFileInfo (QString::fromStdString (Vinfo_file));
 
+  if (info_file.exists ())
+    set_info_path (QString::fromStdString (Vinfo_file));
+  else
+    { // Info file does not exist
+      _search_check_box->setEnabled (false);
+      _search_line_edit->setEnabled (false);
+
+      QTextBrowser *msg = addNewTab (tr ("Error"));
+      QString msg_text = QString ("<html><body><br><br><center><b>%1"
+                                      "</b></center></body></html>").
+                         arg (tr ("The info file %1 does not exist").
+                              arg(info_file.absoluteFilePath ()));
+      msg->setHtml (msg_text);
+    }
 }
 
 void
@@ -106,10 +124,14 @@ webinfo::set_info_path (const QString& info_path)
 void
 webinfo::load_node (const QString& node_name)
 {
+  // no XREF in the tabs
+  QString tab_text = node_name;
+  tab_text.replace("XREF","");
+
   //Check if node has been already opened.
-  for (int i = 0;i < _tab_bar->count (); i++)
+  for (int i = 0; i < _tab_bar->count (); i++)
     {
-      if (node_name == _tab_bar->tabText (i))
+      if (tab_text == _tab_bar->tabText (i))
         {
           _tab_bar->setCurrentIndex (i);
           return;
@@ -118,7 +140,7 @@ webinfo::load_node (const QString& node_name)
 
   QString text = _parser.search_node (node_name);
   int i = _parser.is_ref (node_name);
-  _text_browser = addNewTab (node_name);
+  _text_browser = addNewTab (tab_text);
   _text_browser->setHtml (_parser.node_text_to_html (text, i - 1, "anchor"));
 
   if (i != -1)
@@ -131,7 +153,10 @@ void
 webinfo::link_clicked (const QUrl & link)
 {
   QString node = link.toString ();
-  load_node (node);
+  if (node.at (0) != '#')
+    load_node (node);
+  else
+    _text_browser->scrollToAnchor (node);
 }
 
 void
@@ -155,8 +180,10 @@ webinfo::addNewTab (const QString& name)
   _text_browser->setOpenLinks (false);
   _text_browser->show ();
 
-  connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this, SLOT (link_clicked (const QUrl &)) );
-  disconnect(_tab_bar, SIGNAL (currentChanged(int)), this, SLOT (current_tab_changed (int)));
+  connect (_text_browser, SIGNAL (anchorClicked (const QUrl &)), this,
+           SLOT (link_clicked (const QUrl &)));
+  disconnect(_tab_bar, SIGNAL (currentChanged(int)), this,
+             SLOT (current_tab_changed (int)));
 
   int ns = _stacked_widget->addWidget (_text_browser);
   _stacked_widget->setCurrentIndex (ns);
@@ -167,7 +194,8 @@ webinfo::addNewTab (const QString& name)
   tab_data.setValue (static_cast<void*> (_text_browser));
   _tab_bar->setTabData (nt, tab_data);
 
-  connect (_tab_bar, SIGNAL (currentChanged (int)), this, SLOT (current_tab_changed (int)));
+  connect (_tab_bar, SIGNAL (currentChanged (int)), this,
+           SLOT (current_tab_changed (int)));
 
   if (_text_browser->font () != _font_web)
     {
@@ -201,11 +229,11 @@ webinfo::load_ref (const QString &ref_name)
   else
     {
       // not found
-     load_node("Top");
+      load_node("Top");
     }
 
-   if (_text_browser)
-     _text_browser->setFocus(); 
+  if (_text_browser)
+    _text_browser->setFocus();
 }
 
 void
@@ -255,13 +283,27 @@ webinfo::copyClipboard ()
 }
 
 void
+webinfo::selectAll ()
+{
+  if (_search_line_edit->hasFocus ())
+    {
+      _search_line_edit->selectAll ();
+    }
+  if (_text_browser->hasFocus ())
+    {
+      _text_browser->selectAll ();
+    }
+}
+
+
+void
 webinfo::pasteClipboard ()
 {
   if (_search_line_edit->hasFocus ())
     {
       QClipboard *clipboard = QApplication::clipboard ();
       QString str =  clipboard->text ();
-      if (str.length () > 0) 
+      if (str.length () > 0)
         _search_line_edit->insert (str);
     }
 }

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2012 John W. Eaton
+@c Copyright (C) 1996-2013 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -126,8 +126,6 @@ f ()
 
 @DOCSTRING(print_usage)
 
-@DOCSTRING(usage)
-
 @DOCSTRING(beep)
 
 @DOCSTRING(beep_on_error)
@@ -173,6 +171,22 @@ for n = 1:100
     endif
   end_try_catch
 endfor
+@end group
+@end example
+
+@noindent
+Alternatively, the output of the @code{lasterror} function can be found
+in a variable indicated immediately after the @code{catch} keyword, as
+in the example below showing how to redirect an error as a warning:
+
+@example
+@group
+try
+  @dots{}
+catch err
+  warning(err.identifier, err.message);
+  @dots{}
+end_try_catch
 @end group
 @end example
 
@@ -268,9 +282,9 @@ For example:
 @example
 @group
 function rand42
-  old_state = rand ('state');
-  restore_state = onCleanup (@@() rand ('state', old_state);
-  rand ('state', 42);
+  old_state = rand ("state");
+  restore_state = onCleanup (@@() rand ("state", old_state));
+  rand ("state", 42);
   @dots{}
 endfunction  # rand generator state restored by onCleanup
 @end group

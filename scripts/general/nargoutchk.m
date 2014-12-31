@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 Bill Denney
+## Copyright (C) 2008-2013 Bill Denney
 ## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
@@ -38,7 +38,7 @@
 ##
 ## This is useful for checking to see that the number of output
 ## arguments supplied to a function is within an acceptable range.
-## @seealso{nargchk, narginchk, error, nargout, nargin}
+## @seealso{narginchk, error, nargout, nargin}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>
@@ -76,7 +76,7 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
     if (strcmpi (outtype, "string"))
       msg = msg.message;
     elseif (isempty (msg.message))
-      ## Compatability: Matlab returns a 0x1 empty struct when nargchk passes
+      ## Compatibility: Matlab returns a 0x1 empty struct when nargoutchk passes
       msg = resize (msg, 0, 1);
     endif
 

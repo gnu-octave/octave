@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2012 John W. Eaton
+Copyright (C) 1995-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 
 This file is part of Octave.
@@ -29,21 +29,23 @@ along with Octave; see the file COPYING.  If not, see
 typedef std::complex<double> Complex;
 typedef std::complex<float> FloatComplex;
 
-// For complex-complex and complex-real comparisons, we use the following ordering:
-// compare absolute values first; if they match, compare phase angles.
+// For complex-complex and complex-real comparisons, we use the following
+// ordering: compare absolute values first; if they match, compare phase angles.
 // This is partially inconsistent with M*b, which compares complex numbers only
 // by their real parts; OTOH, it uses the same definition for max/min and sort.
-// The abs/arg comparison is definitely more useful (the other one is emulated rather
-// trivially), so let's be consistent and use that all over.
+// The abs/arg comparison is definitely more useful (the other one is emulated
+// rather trivially), so let's be consistent and use that all over.
 
 #define DEF_COMPLEXR_COMP(OP, OPS) \
 template <class T> \
 inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a), bx = std::abs (b); \
+  FLOAT_TRUNCATE const T ax = std::abs (a); \
+  FLOAT_TRUNCATE const T bx = std::abs (b); \
   if (ax == bx) \
     { \
-      FLOAT_TRUNCATE const T ay = std::arg (a), by = std::arg (b); \
+      FLOAT_TRUNCATE const T ay = std::arg (a); \
+      FLOAT_TRUNCATE const T by = std::arg (b); \
       return ay OP by; \
     } \
   else \
@@ -52,7 +54,8 @@ inline bool operator OP (const std::complex<T>& a, const std::complex<T>& b) \
 template <class T> \
 inline bool operator OP (const std::complex<T>& a, T b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a), bx = std::abs (b); \
+  FLOAT_TRUNCATE const T ax = std::abs (a); \
+  FLOAT_TRUNCATE const T bx = std::abs (b); \
   if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T ay = std::arg (a); \
@@ -64,7 +67,8 @@ inline bool operator OP (const std::complex<T>& a, T b) \
 template <class T> \
 inline bool operator OP (T a, const std::complex<T>& b) \
 { \
-  FLOAT_TRUNCATE const T ax = std::abs (a), bx = std::abs (b); \
+  FLOAT_TRUNCATE const T ax = std::abs (a); \
+  FLOAT_TRUNCATE const T bx = std::abs (b); \
   if (ax == bx) \
     { \
       FLOAT_TRUNCATE const T by = std::arg (b); \

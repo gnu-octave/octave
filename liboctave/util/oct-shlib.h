@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2012 John W. Eaton
+Copyright (C) 1999-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_shlib_h)
-#define octave_shlib_h 1
+#if !defined (octave_oct_shlib_h)
+#define octave_oct_shlib_h 1
 
 #include <string>
 #include <map>
@@ -53,15 +53,15 @@ public: // FIXME: make this class private?
   public:
 
     virtual ~shlib_rep (void)
-      {
-        instances.erase (file);
-      }
+    {
+      instances.erase (file);
+    }
 
     virtual bool is_open (void) const
-      { return false; }
+    { return false; }
 
     virtual void *search (const std::string&, name_mangler = 0)
-      { return 0; }
+    { return 0; }
 
     bool is_out_of_date (void) const;
 
@@ -71,10 +71,10 @@ public: // FIXME: make this class private?
     static shlib_rep *get_instance (const std::string& f, bool fake);
 
     octave_time time_loaded (void) const
-      { return tm_loaded; }
+    { return tm_loaded; }
 
     std::string file_name (void) const
-      { return file; }
+    { return file; }
 
     size_t num_fcn_names (void) const { return fcn_names.size (); }
 
@@ -116,73 +116,73 @@ public:
     : rep (shlib_rep::get_instance (f, fake)) { }
 
   ~octave_shlib (void)
-    {
-      if (--rep->count == 0)
-        delete rep;
-    }
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   octave_shlib (const octave_shlib& sl)
     : rep (sl.rep)
-    {
-      rep->count++;
-    }
+  {
+    rep->count++;
+  }
 
   octave_shlib& operator = (const octave_shlib& sl)
-    {
-      if (rep != sl.rep)
-        {
-          if (--rep->count == 0)
-            delete rep;
+  {
+    if (rep != sl.rep)
+      {
+        if (--rep->count == 0)
+          delete rep;
 
-          rep = sl.rep;
-          rep->count++;
-        }
+        rep = sl.rep;
+        rep->count++;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   bool operator == (const octave_shlib& sl) const
-    { return (rep == sl.rep); }
+  { return (rep == sl.rep); }
 
   operator bool () const { return rep->is_open (); }
 
   void open (const std::string& f)
-    { *this = octave_shlib (f); }
+  { *this = octave_shlib (f); }
 
   void close (close_hook cl_hook = 0)
-    {
-      if (cl_hook)
-        rep->do_close_hook (cl_hook);
+  {
+    if (cl_hook)
+      rep->do_close_hook (cl_hook);
 
-      *this = octave_shlib ();
-    }
+    *this = octave_shlib ();
+  }
 
   void *search (const std::string& nm, name_mangler mangler = 0) const
-    {
-      void *f = rep->search (nm, mangler);
-      if (f)
-        rep->add_fcn_name (nm);
+  {
+    void *f = rep->search (nm, mangler);
+    if (f)
+      rep->add_fcn_name (nm);
 
-      return f;
-    }
+    return f;
+  }
 
   void add (const std::string& name)
-    { rep->add_fcn_name (name); }
+  { rep->add_fcn_name (name); }
 
   bool remove (const std::string& name)
-    { return rep->remove_fcn_name (name); }
+  { return rep->remove_fcn_name (name); }
 
   size_t number_of_functions_loaded (void) const
-    { return rep->num_fcn_names (); }
+  { return rep->num_fcn_names (); }
 
   bool is_out_of_date (void) const
-    { return rep->is_out_of_date (); }
+  { return rep->is_out_of_date (); }
 
   std::string file_name (void) const
-    { return rep->file_name (); }
+  { return rep->file_name (); }
 
   octave_time time_loaded (void) const
-    { return rep->time_loaded (); }
+  { return rep->time_loaded (); }
 
 private:
 

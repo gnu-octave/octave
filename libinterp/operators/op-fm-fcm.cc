@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,7 +52,8 @@ DEFBINOP_OP (mul, float_matrix, float_complex_matrix, *)
 
 DEFBINOP (trans_mul, float_matrix, float_complex_matrix)
 {
-  CAST_BINOP_ARGS (const octave_float_matrix&, const octave_float_complex_matrix&);
+  CAST_BINOP_ARGS (const octave_float_matrix&,
+                   const octave_float_complex_matrix&);
 
   FloatMatrix m1 = v1.float_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -87,7 +88,7 @@ DEFBINOP (ldiv, float_matrix, float_complex_matrix)
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_matrix_value (),
-                                v2.float_complex_matrix_value (), typ);
+                                     v2.float_complex_matrix_value (), typ);
 
   v1.matrix_type (typ);
   return ret;
@@ -100,24 +101,25 @@ DEFBINOP (trans_ldiv, float_matrix, float_complex_matrix)
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_matrix_value (),
-                         v2.float_complex_matrix_value (), typ, blas_trans);
+                                     v2.float_complex_matrix_value (),
+                                     typ, blas_trans);
 
   v1.matrix_type (typ);
   return ret;
 }
 
 DEFNDCMPLXCMPOP_FN (lt, float_matrix, float_complex_matrix, float_array,
-               float_complex_array, mx_el_lt)
+                    float_complex_array, mx_el_lt)
 DEFNDCMPLXCMPOP_FN (le, float_matrix, float_complex_matrix, float_array,
-               float_complex_array, mx_el_le)
+                    float_complex_array, mx_el_le)
 DEFNDCMPLXCMPOP_FN (eq, float_matrix, float_complex_matrix, float_array,
-               float_complex_array, mx_el_eq)
+                    float_complex_array, mx_el_eq)
 DEFNDCMPLXCMPOP_FN (ge, float_matrix, float_complex_matrix, float_array,
-               float_complex_array, mx_el_ge)
+                    float_complex_array, mx_el_ge)
 DEFNDCMPLXCMPOP_FN (gt, float_matrix, float_complex_matrix, float_array,
-               float_complex_array, mx_el_gt)
+                    float_complex_array, mx_el_gt)
 DEFNDCMPLXCMPOP_FN (ne, float_matrix, float_complex_matrix, float_array,
-               float_complex_array, mx_el_ne)
+                    float_complex_array, mx_el_ne)
 
 DEFNDBINOP_FN (el_mul, float_matrix, float_complex_matrix, float_array,
                float_complex_array, product)
@@ -152,7 +154,8 @@ DEFCONV (float_complex_matrix_conv, float_matrix, float_complex_matrix)
 {
   CAST_CONV_ARG (const octave_float_matrix&);
 
-  return new octave_float_complex_matrix (FloatComplexNDArray (v.float_array_value ()));
+  return new octave_float_complex_matrix (FloatComplexNDArray
+                                           (v.float_array_value ()));
 }
 
 void

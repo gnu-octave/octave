@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -45,7 +45,7 @@ octave_allocator::alloc (size_t size)
   return tmp;
 }
 
-// FIXME -- if we free the last item on the list, shouldn't we
+// FIXME: if we free the last item on the list, shouldn't we
 // also free the underlying character array used for storage?
 
 void

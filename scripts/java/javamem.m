@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Philip Nienhuis
+## Copyright (C) 2010, 2013 Philip Nienhuis
 ## 
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@
 ## determined by the environment variable @w{@env{OCTAVE_JAVA_DIR}}.
 ## If unset, the directory where @file{javaaddpath.m} resides is used instead
 ## (typically
-## @file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}
+## @file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}).
 ##
 ## @file{java.opts} is a plain text file with one option per line.  The
 ## default initial memory size and default maximum memory size (which

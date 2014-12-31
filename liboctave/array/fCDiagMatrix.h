@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexDiagMatrix_h)
-#define octave_FloatComplexDiagMatrix_h 1
+#if !defined (octave_fCDiagMatrix_h)
+#define octave_fCDiagMatrix_h 1
 
 #include "MDiagArray2.h"
 
@@ -41,15 +41,19 @@ public:
 
   FloatComplexDiagMatrix (void) : MDiagArray2<FloatComplex> () { }
 
-  FloatComplexDiagMatrix (octave_idx_type r, octave_idx_type c) : MDiagArray2<FloatComplex> (r, c) { }
+  FloatComplexDiagMatrix (octave_idx_type r,
+                          octave_idx_type c)
+    : MDiagArray2<FloatComplex> (r, c) { }
 
-  FloatComplexDiagMatrix (octave_idx_type r, octave_idx_type c, const FloatComplex& val)
+  FloatComplexDiagMatrix (octave_idx_type r, octave_idx_type c,
+                          const FloatComplex& val)
     : MDiagArray2<FloatComplex> (r, c, val) { }
 
   explicit FloatComplexDiagMatrix (const Array<FloatComplex>& a)
     : MDiagArray2<FloatComplex> (a) { }
 
-  FloatComplexDiagMatrix (const Array<FloatComplex>& a, octave_idx_type r, octave_idx_type c)
+  FloatComplexDiagMatrix (const Array<FloatComplex>& a, octave_idx_type r,
+                          octave_idx_type c)
     : MDiagArray2<FloatComplex> (a, r, c) { }
 
   explicit FloatComplexDiagMatrix (const Array<float>& a)
@@ -68,36 +72,45 @@ public:
     : MDiagArray2<FloatComplex> (a) { }
 
   FloatComplexDiagMatrix& operator = (const FloatComplexDiagMatrix& a)
-    {
-      MDiagArray2<FloatComplex>::operator = (a);
-      return *this;
-    }
+  {
+    MDiagArray2<FloatComplex>::operator = (a);
+    return *this;
+  }
 
   bool operator == (const FloatComplexDiagMatrix& a) const;
   bool operator != (const FloatComplexDiagMatrix& a) const;
 
   FloatComplexDiagMatrix& fill (float val);
   FloatComplexDiagMatrix& fill (const FloatComplex& val);
-  FloatComplexDiagMatrix& fill (float val, octave_idx_type beg, octave_idx_type end);
-  FloatComplexDiagMatrix& fill (const FloatComplex& val, octave_idx_type beg, octave_idx_type end);
+  FloatComplexDiagMatrix& fill (float val,
+                                octave_idx_type beg, octave_idx_type end);
+  FloatComplexDiagMatrix& fill (const FloatComplex& val,
+                                octave_idx_type beg, octave_idx_type end);
   FloatComplexDiagMatrix& fill (const FloatColumnVector& a);
   FloatComplexDiagMatrix& fill (const FloatComplexColumnVector& a);
   FloatComplexDiagMatrix& fill (const FloatRowVector& a);
   FloatComplexDiagMatrix& fill (const FloatComplexRowVector& a);
-  FloatComplexDiagMatrix& fill (const FloatColumnVector& a, octave_idx_type beg);
-  FloatComplexDiagMatrix& fill (const FloatComplexColumnVector& a, octave_idx_type beg);
+  FloatComplexDiagMatrix& fill (const FloatColumnVector& a,
+                                octave_idx_type beg);
+  FloatComplexDiagMatrix& fill (const FloatComplexColumnVector& a,
+                                octave_idx_type beg);
   FloatComplexDiagMatrix& fill (const FloatRowVector& a, octave_idx_type beg);
-  FloatComplexDiagMatrix& fill (const FloatComplexRowVector& a, octave_idx_type beg);
+  FloatComplexDiagMatrix& fill (const FloatComplexRowVector& a,
+                                octave_idx_type beg);
 
-  FloatComplexDiagMatrix hermitian (void) const { return MDiagArray2<FloatComplex>::hermitian (std::conj); }
-  FloatComplexDiagMatrix transpose (void) const { return MDiagArray2<FloatComplex>::transpose (); }
+  FloatComplexDiagMatrix hermitian (void) const
+  { return MDiagArray2<FloatComplex>::hermitian (std::conj); }
+  FloatComplexDiagMatrix transpose (void) const
+  { return MDiagArray2<FloatComplex>::transpose (); }
   FloatDiagMatrix abs (void) const;
 
-  friend OCTAVE_API FloatComplexDiagMatrix conj (const FloatComplexDiagMatrix& a);
+  friend OCTAVE_API FloatComplexDiagMatrix
+  conj (const FloatComplexDiagMatrix& a);
 
   // resize is the destructive analog for this one
 
-  FloatComplexMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+  FloatComplexMatrix extract (octave_idx_type r1, octave_idx_type c1,
+                              octave_idx_type r2, octave_idx_type c2) const;
 
   // extract row or column i
 
@@ -109,7 +122,7 @@ public:
 
   FloatComplexDiagMatrix inverse (octave_idx_type& info) const;
   FloatComplexDiagMatrix inverse (void) const;
-  FloatComplexDiagMatrix pseudo_inverse (void) const;
+  FloatComplexDiagMatrix pseudo_inverse (float tol = 0.0f) const;
 
   bool all_elements_are_real (void) const;
 
@@ -121,14 +134,15 @@ public:
   // other operations
 
   FloatComplexColumnVector extract_diag (octave_idx_type k = 0) const
-    { return MDiagArray2<FloatComplex>::extract_diag (k); }
+  { return MDiagArray2<FloatComplex>::extract_diag (k); }
 
   FloatComplexDET determinant (void) const;
   float rcond (void) const;
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const FloatComplexDiagMatrix& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FloatComplexDiagMatrix& a);
 
 };
 

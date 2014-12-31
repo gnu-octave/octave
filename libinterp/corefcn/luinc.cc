@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 
 This file is part of Octave.
 
@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-DEFUN (luinc, args, nargout,
-  "-*- texinfo -*-\n\
+DEFUN (__luinc__, args, nargout,
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, '0')\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})\n\
 @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})\n\
@@ -49,7 +49,7 @@ is determined by the second argument to @code{luinc}.\n\
 \n\
 Called with a second argument of @qcode{'0'}, the zero-level incomplete\n\
 LU@tie{}factorization is produced.  This creates a factorization of @var{A}\n\
-where the position of the non-zero arguments correspond to the same\n\
+where the position of the nonzero arguments correspond to the same\n\
 positions as in the matrix @var{A}.\n\
 \n\
 Alternatively, the fill-in of the incomplete LU@tie{}factorization can\n\
@@ -93,7 +93,7 @@ are the same as for @code{lu}.\n\
 \n\
 Given the string argument @qcode{\"vector\"}, @code{luinc} returns the\n\
 values of @var{p} @var{q} as vector values.\n\
-@seealso{sparse, lu}\n\
+@seealso{sparse, lu, ilu, ichol}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -177,7 +177,7 @@ values of @var{p} @var{q} as vector values.\n\
         {
           std::string tmp = args(2).string_value ();
 
-          if (! error_state )
+          if (! error_state)
             {
               if (tmp.compare ("vector") == 0)
                 vecout = true;
@@ -186,7 +186,7 @@ values of @var{p} @var{q} as vector values.\n\
             }
         }
 
-      // FIXME Add code for zero-level factorization
+      // FIXME: Add code for zero-level factorization
       if (zero_level)
         error ("luinc: zero-level factorization not implemented");
 
@@ -217,11 +217,13 @@ values of @var{p} @var{q} as vector values.\n\
                           {
                             SparseMatrix P = fact.Pr ();
                             SparseMatrix L = P.transpose () * fact.L ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (L, MatrixType
-                                                      (MatrixType::Permuted_Lower,
-                                                       sm_nr, fact.row_perm ()));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (L, MatrixType
+                                                   (MatrixType::Permuted_Lower,
+                                                    sm_nr, fact.row_perm ()));
                           }
                       }
                       break;
@@ -237,10 +239,12 @@ values of @var{p} @var{q} as vector values.\n\
                               retval(2) = fact.Pr_vec ();
                             else
                               retval(2) = fact.Pr_mat ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;
@@ -263,10 +267,12 @@ values of @var{p} @var{q} as vector values.\n\
                                 retval(3) = fact.Pc_mat ();
                                 retval(2) = fact.Pr_mat ();
                               }
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;
@@ -300,11 +306,13 @@ values of @var{p} @var{q} as vector values.\n\
                           {
                             SparseMatrix P = fact.Pr ();
                             SparseComplexMatrix L = P.transpose () * fact.L ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (L, MatrixType
-                                                      (MatrixType::Permuted_Lower,
-                                                       sm_nr, fact.row_perm ()));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (L, MatrixType
+                                                  (MatrixType::Permuted_Lower,
+                                                   sm_nr, fact.row_perm ()));
                           }
                       }
                       break;
@@ -320,10 +328,12 @@ values of @var{p} @var{q} as vector values.\n\
                               retval(2) = fact.Pr_vec ();
                             else
                               retval(2) = fact.Pr_mat ();
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;
@@ -346,10 +356,12 @@ values of @var{p} @var{q} as vector values.\n\
                                 retval(3) = fact.Pc_mat ();
                                 retval(2) = fact.Pr_mat ();
                               }
-                            retval(1) = octave_value (fact.U (),
-                                                      MatrixType (MatrixType::Upper));
-                            retval(0) = octave_value (fact.L (),
-                                                      MatrixType (MatrixType::Lower));
+                            retval(1)
+                              = octave_value (fact.U (),
+                                              MatrixType (MatrixType::Upper));
+                            retval(0)
+                              = octave_value (fact.L (),
+                                              MatrixType (MatrixType::Lower));
                           }
                       }
                       break;

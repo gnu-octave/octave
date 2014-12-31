@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2012 David Bateman and Andy Adler
+## Copyright (C) 2004-2013 David Bateman and Andy Adler
 ## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
@@ -20,15 +20,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} sprandsym (@var{n}, @var{d})
 ## @deftypefnx {Function File} {} sprandsym (@var{s})
-## Generate a symmetric random sparse matrix.  The size of the matrix will be
-## @var{n} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1.  Values will be normally
-## distributed with mean of zero and variance 1.
+## Generate a symmetric random sparse matrix.
 ##
-## If called with a single matrix argument, a random sparse matrix is
-## generated wherever the matrix @var{S} is non-zero in its lower
-## triangular part.
-## @seealso{sprand, sprandn}
+## The size of the matrix will be @var{n}x@var{n}, with a density of values
+## given by @var{d}.  @var{d} must be between 0 and 1 inclusive.  Values will
+## be normally distributed with a mean of zero and a variance of 1.
+##
+## If called with a single matrix argument, a random sparse matrix is generated
+## wherever the matrix @var{S} is nonzero in its lower triangular part.
+## @seealso{sprand, sprandn, spones, sparse}
 ## @end deftypefn
 
 function S = sprandsym (n, d)

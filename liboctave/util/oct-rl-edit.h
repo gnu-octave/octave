@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_rl_edit_h)
-#define octave_rl_edit_h 1
+#if !defined (octave_oct_rl_edit_h)
+#define octave_oct_rl_edit_h 1
 
 typedef int (*rl_startup_hook_fcn_ptr) (void);
 
@@ -56,11 +56,17 @@ extern int octave_rl_screen_width (void);
 
 extern void octave_rl_enable_paren_matching (int);
 
+extern int octave_rl_erase_empty_line (int);
+
 extern void octave_rl_init (void);
 
 extern void octave_rl_clear_screen (int skip_redisplay);
 
 extern void octave_rl_resize_terminal (void);
+
+extern void octave_rl_resize_terminal (void);
+
+extern void octave_rl_set_screen_size (int ht, int wd);
 
 extern void octave_rl_restore_terminal_state (void);
 
@@ -97,6 +103,8 @@ extern void octave_rl_re_read_init_file (void);
 extern int octave_rl_filename_completion_desired (int);
 
 extern int octave_rl_filename_quoting_desired (int);
+
+extern int octave_rl_prefer_env_winsize (int);
 
 extern void octave_rl_done (int);
 

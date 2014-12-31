@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -17,28 +17,40 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unzip (@var{zipfile})
-## @deftypefnx {Function File} {} unzip (@var{zipfile}, @var{dir})
-## Unpack the ZIP archive @var{zipfile} to the directory @var{dir}.
-## If @var{dir} is not specified, it defaults to the current directory.
+## @deftypefn  {Function File} {@var{filelist} =} unzip (@var{zipfile})
+## @deftypefnx {Function File} {@var{filelist} =} unzip (@var{zipfile}, @var{dir})
+## Unpack the ZIP archive @var{zipfile}.
+##
+## If @var{dir} is specified the files are unpacked in this directory rather
+## than the one where @var{zipfile} is located.
+##
+## The optional output @var{filelist} is a list of the uncompressed files.
 ## @seealso{zip, unpack, bunzip2, gunzip, untar}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
 ## Adapted-By: jwe, Bill Denney
 
-function varargout = unzip (zipfile, dir = ".")
+function filelist = unzip (zipfile, dir = [])
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (isempty (dir))
+    dir = fileparts (zipfile);
+  endif
+
   if (nargout > 0)
-    varargout = cell (1, nargout);
-    [varargout{:}] = unpack (zipfile, dir, mfilename ());
+    filelist = unpack (zipfile, dir, "unzip");
   else
-    unpack (zipfile, dir, mfilename ());
+    unpack (zipfile, dir, "unzip");
   endif
 
 endfunction
+
+
+## Tests for this m-file are located in zip.m
+## Remove from test statistics
+%!assert (1)
 

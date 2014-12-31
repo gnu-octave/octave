@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -75,15 +75,17 @@ ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
 
       // workspace query.
       Complex clwork;
-      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, &clwork, -1, rwork, info));
+      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 &clwork, -1, rwork, info));
 
       // allocate buffer and do the job.
       octave_idx_type lwork = clwork.real ();
       lwork = std::max (lwork, static_cast<octave_idx_type> (1));
       OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
-      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (), m, jpvt.fortran_vec (),
-                                 tau, work, lwork, rwork, info));
+      F77_XFCN (zgeqp3, ZGEQP3, (m, n, afact.fortran_vec (),
+                                 m, jpvt.fortran_vec (), tau,
+                                 work, lwork, rwork, info));
     }
   else
     for (octave_idx_type i = 0; i < n; i++) jpvt(i) = i+1;
@@ -101,7 +103,7 @@ ComplexQRP::init (const ComplexMatrix& a, qr_type_t qr_type)
 RowVector
 ComplexQRP::Pvec (void) const
 {
-  Array<double> pa (p.pvec ());
+  Array<double> pa (p.col_perm_vec ());
   RowVector pv (MArray<double> (pa) + 1.0);
   return pv;
 }

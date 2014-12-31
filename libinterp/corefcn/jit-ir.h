@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 Max Brister
+Copyright (C) 2012-2013 Max Brister
 
 This file is part of Octave.
 
@@ -289,7 +289,7 @@ public:
   // paremeters
   typedef jit_internal_node<jit_value, jit_use> PARENT_T;
 
-  jit_use (void) : muser (0), mindex (0) {}
+  jit_use (void) : muser (0), mindex (0) { }
 
   // we should really have a move operator, but not until c++11 :(
   jit_use (const jit_use& use) : muser (0), mindex (0)
@@ -329,7 +329,7 @@ jit_instruction : public jit_value
 public:
   // FIXME: this code could be so much pretier with varadic templates...
   jit_instruction (void) : mid (next_id ()), mparent (0)
-  {}
+  { }
 
   jit_instruction (size_t nargs) : mid (next_id ()), mparent (0)
   {
@@ -354,8 +354,8 @@ public:
 #undef JIT_INSTRUCTION_CTOR
 
   jit_instruction (const std::vector<jit_value *>& aarguments)
-  : already_infered (aarguments.size ()), marguments (aarguments.size ()),
-    mid (next_id ()), mparent (0)
+    : already_infered (aarguments.size ()), marguments (aarguments.size ()),
+      mid (next_id ()), mparent (0)
   {
     for (size_t i = 0; i < aarguments.size (); ++i)
       stash_argument (i, aarguments[i]);
@@ -430,9 +430,9 @@ public:
   const std::vector<jit_type *>& argument_types (void) const
   { return already_infered; }
 
-  virtual void push_variable (void) {}
+  virtual void push_variable (void) { }
 
-  virtual void pop_variable (void) {}
+  virtual void pop_variable (void) { }
 
   virtual void construct_ssa (void)
   {
@@ -509,8 +509,7 @@ public:
   JIT_VALUE_ACCEPT;
 };
 
-template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T,
-          bool QUOTE>
+template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T, bool QUOTE>
 class
 jit_const : public jit_value
 {
@@ -561,7 +560,7 @@ public:
   jit_block (const std::string& aname, size_t avisit_count = 0)
     : mvisit_count (avisit_count), mid (NO_ID), idom (0), mname (aname),
       malive (false)
-  {}
+  { }
 
   virtual void replace_with (jit_value *value);
 
@@ -776,9 +775,9 @@ class
 jit_phi_incomming : public jit_internal_node<jit_block, jit_phi_incomming>
 {
 public:
-  jit_phi_incomming (void) : muser (0) {}
+  jit_phi_incomming (void) : muser (0) { }
 
-  jit_phi_incomming (jit_phi *auser) : muser (auser) {}
+  jit_phi_incomming (jit_phi *auser) : muser (auser) { }
 
   jit_phi_incomming (const jit_phi_incomming& use)
   {
@@ -804,12 +803,12 @@ class
 jit_variable : public jit_value
 {
 public:
-  jit_variable (const std::string& aname) : mname (aname), mlast_use (0) {}
+  jit_variable (const std::string& aname) : mname (aname), mlast_use (0) { }
 
   const std::string &name (void) const { return mname; }
 
-  // manipulate the value_stack, for use during SSA construction. The top of the
-  // value stack represents the current value for this variable
+  // manipulate the value_stack, for use during SSA construction. The top of
+  // the  value stack represents the current value for this variable
   bool has_top (void) const
   {
     return ! value_stack.empty ();
@@ -868,13 +867,13 @@ class
 jit_assign_base : public jit_instruction
 {
 public:
-  jit_assign_base (jit_variable *adest) : jit_instruction (), mdest (adest) {}
+  jit_assign_base (jit_variable *adest) : jit_instruction (), mdest (adest) { }
 
   jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
                                                         mdest (adest) {}
 
   jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
-    : jit_instruction (arg0, arg1), mdest (adest) {}
+    : jit_instruction (arg0, arg1), mdest (adest) { }
 
   jit_variable *dest (void) const { return mdest; }
 
@@ -905,7 +904,7 @@ jit_assign : public jit_assign_base
 {
 public:
   jit_assign (jit_variable *adest, jit_value *asrc)
-    : jit_assign_base (adest, adest, asrc), martificial (false) {}
+    : jit_assign_base (adest, adest, asrc), martificial (false) { }
 
   jit_value *overwrite (void) const
   {
@@ -981,7 +980,7 @@ public:
     return incomming (i)->to_llvm ();
   }
 
-  virtual void construct_ssa (void) {}
+  virtual void construct_ssa (void) { }
 
   virtual bool infer (void);
 
@@ -1025,7 +1024,7 @@ public:
   jit_terminator (size_t asuccessor_count,                              \
                   OCT_MAKE_DECL_LIST (jit_value *, arg, N))             \
     : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),                     \
-      malive (asuccessor_count, false) {}
+      malive (asuccessor_count, false) { }
 
   JIT_TERMINATOR_CONST (1)
   JIT_TERMINATOR_CONST (2)
@@ -1080,7 +1079,7 @@ class
 jit_branch : public jit_terminator
 {
 public:
-  jit_branch (jit_block *succ) : jit_terminator (1, succ) {}
+  jit_branch (jit_block *succ) : jit_terminator (1, succ) { }
 
   virtual size_t successor_count (void) const { return 1; }
 
@@ -1098,7 +1097,7 @@ jit_cond_branch : public jit_terminator
 {
 public:
   jit_cond_branch (jit_value *c, jit_block *ctrue, jit_block *cfalse)
-    : jit_terminator (2, ctrue, cfalse, c) {}
+    : jit_terminator (2, ctrue, cfalse, c) { }
 
   jit_value *cond (void) const { return argument (2); }
 
@@ -1147,12 +1146,12 @@ public:
 #define JIT_CALL_CONST(N)                                               \
   jit_call (const jit_operation& aoperation,                            \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation) {} \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation) { } \
                                                                         \
   jit_call (const jit_operation& (*aoperation) (void),                  \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
     : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation ()) \
-  {}
+  { }
 
   JIT_CALL_CONST (1)
   JIT_CALL_CONST (2)
@@ -1163,8 +1162,8 @@ public:
 
   jit_call (const jit_operation& aoperation,
             const std::vector<jit_value *>& args)
-  : jit_instruction (args), moperation (aoperation)
-  {}
+    : jit_instruction (args), moperation (aoperation)
+  { }
 
   const jit_operation& operation (void) const { return moperation; }
 
@@ -1213,19 +1212,19 @@ jit_error_check : public jit_terminator
 public:
   // Which variable is the error check for?
   enum variable
-    {
-      var_error_state,
-      var_interrupt
-    };
+  {
+    var_error_state,
+    var_interrupt
+  };
 
   static std::string variable_to_string (variable v);
 
   jit_error_check (variable var, jit_call *acheck_for, jit_block *normal,
                    jit_block *error)
-    : jit_terminator (2, error, normal, acheck_for), mvariable (var) {}
+    : jit_terminator (2, error, normal, acheck_for), mvariable (var) { }
 
   jit_error_check (variable var, jit_block *normal, jit_block *error)
-    : jit_terminator (2, error, normal), mvariable (var) {}
+    : jit_terminator (2, error, normal), mvariable (var) { }
 
   variable check_variable (void) const { return mvariable; }
 
@@ -1264,7 +1263,7 @@ public:
   {
   public:
     context (void) : value (0), index (0), count (0)
-    {}
+    { }
 
     context (jit_factory& factory, jit_value *avalue, size_t aindex,
              size_t acount);
@@ -1329,8 +1328,8 @@ jit_store_argument : public jit_instruction
 {
 public:
   jit_store_argument (jit_variable *var)
-  : jit_instruction (var), dest (var)
-  {}
+    : jit_instruction (var), dest (var)
+  { }
 
   const std::string& name (void) const
   {
@@ -1381,9 +1380,9 @@ class
 jit_return : public jit_instruction
 {
 public:
-  jit_return (void) {}
+  jit_return (void) { }
 
-  jit_return (jit_value *retval) : jit_instruction (retval) {}
+  jit_return (jit_value *retval) : jit_instruction (retval) { }
 
   jit_value *result (void) const
   {
@@ -1413,7 +1412,7 @@ class
 jit_ir_walker
 {
 public:
-  virtual ~jit_ir_walker () {}
+  virtual ~jit_ir_walker () { }
 
 #define JIT_METH(clname) \
   virtual void visit (jit_ ## clname&) = 0;

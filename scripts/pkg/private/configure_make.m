@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2012 Søren Hauberg
+## Copyright (C) 2005-2013 Søren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -28,14 +28,10 @@ function configure_make (desc, packdir, verbose)
     src = fullfile (packdir, "src");
     octave_bindir = octave_config_info ("bindir");
     ver = version ();
-    mkoctfile_program = fullfile (octave_bindir, sprintf ("mkoctfile-%s", ver));
-    octave_config_program = fullfile (octave_bindir, sprintf ("octave-config-%s", ver));
-    octave_binary = fullfile (octave_bindir, sprintf ("octave-%s", ver));
-    cenv = {"MKOCTFILE"; mkoctfile_program;
-            "OCTAVE_CONFIG"; octave_config_program;
-            "OCTAVE"; octave_binary;
-            "INSTALLDIR"; desc.dir};
-    scenv = sprintf ("%s=\"%s\" ", cenv{:});
+    ext = octave_config_info ("EXEEXT");
+    mkoctfile_program = fullfile (octave_bindir, sprintf ("mkoctfile-%s%s", ver, ext));
+    octave_config_program = fullfile (octave_bindir, sprintf ("octave-config-%s%s", ver, ext));
+    octave_binary = fullfile (octave_bindir, sprintf ("octave-%s%s", ver, ext));
 
     if (! exist (mkoctfile_program, "file"))
       __gripe_missing_component__ ("pkg", "mkoctfile");
@@ -46,6 +42,16 @@ function configure_make (desc, packdir, verbose)
     if (! exist (octave_binary, "file"))
       __gripe_missing_component__ ("pkg", "octave");
     endif
+
+    if (verbose)
+      mkoctfile_program = [mkoctfile_program " --verbose"];
+    endif
+
+    cenv = {"MKOCTFILE"; mkoctfile_program;
+            "OCTAVE_CONFIG"; octave_config_program;
+            "OCTAVE"; octave_binary;
+            "INSTALLDIR"; desc.dir};
+    scenv = sprintf ("%s=\"%s\" ", cenv{:});
 
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))
@@ -74,7 +80,9 @@ function configure_make (desc, packdir, verbose)
 
     ## Make.
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell ([scenv "make -C '" src "'"], verbose);
+      [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
+                                         scenv, nproc ("overridable"), src),
+                                verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);

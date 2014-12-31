@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2012 David Bateman
+Copyright (C) 2007-2013 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -89,7 +89,8 @@ bsxfun_builtin_lookup (const std::string& name)
   return bsxfun_builtin_unknown;
 }
 
-typedef octave_value (*bsxfun_handler) (const octave_value&, const octave_value&);
+typedef octave_value (*bsxfun_handler) (const octave_value&,
+                                        const octave_value&);
 
 // Static table of handlers.
 bsxfun_handler bsxfun_handler_table[bsxfun_num_builtin_ops][btyp_num_types];
@@ -112,7 +113,8 @@ bsxfun_forward_rel (const octave_value& x, const octave_value& y)
   return octave_value (bsxfun_rel (xa, ya));
 }
 
-// Pow needs a special handler for reals because of the potentially complex result.
+// pow() needs a special handler for reals
+// because of the potentially complex result.
 template <class NDA, class CNDA>
 static octave_value
 do_bsxfun_real_pow (const octave_value& x, const octave_value& y)
@@ -172,8 +174,10 @@ static void maybe_fill_table (void)
   bsxfun_handler_table[bsxfun_builtin_power][btyp_float] =
     do_bsxfun_real_pow<FloatNDArray, FloatComplexNDArray>;
 
-  REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_complex, ComplexNDArray, bsxfun_pow);
-  REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_float_complex, FloatComplexNDArray, bsxfun_pow);
+  REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_complex, ComplexNDArray,
+                       bsxfun_pow);
+  REGISTER_OP_HANDLER (bsxfun_builtin_power, btyp_float_complex,
+                       FloatComplexNDArray, bsxfun_pow);
 
   // For chars, we want just relational handlers.
   REGISTER_REL_HANDLER (bsxfun_builtin_eq, btyp_char, charNDArray, bsxfun_eq);
@@ -197,7 +201,8 @@ maybe_optimized_builtin (const std::string& name,
   bsxfun_builtin_op op = bsxfun_builtin_lookup (name);
   if (op != bsxfun_builtin_unknown)
     {
-      builtin_type_t btyp_a = a.builtin_type (), btyp_b = b.builtin_type ();
+      builtin_type_t btyp_a = a.builtin_type ();
+      builtin_type_t btyp_b = b.builtin_type ();
 
       // Simplify single/double combinations.
       if (btyp_a == btyp_float && btyp_b == btyp_double)
@@ -273,7 +278,7 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
 }
 
 #if 0
-// FIXME -- this function is not used; is it OK to delete it?
+// FIXME: this function is not used; is it OK to delete it?
 static void
 update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 {
@@ -310,7 +315,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 }
 
 DEFUN (bsxfun, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
 The binary singleton expansion function applier performs broadcasting,\n\
 that is, applies a binary function @var{f} element-by-element to two\n\
@@ -343,23 +348,26 @@ dimensionality as the other array.\n\
           if (func.is_undefined ())
             error ("bsxfun: invalid function name: %s", name.c_str ());
         }
-      else if (! (args(0).is_function_handle () || args(0).is_inline_function ()))
+      else if (! (args(0).is_function_handle ()
+               || args(0).is_inline_function ()))
         error ("bsxfun: F must be a string or function handle");
 
-      const octave_value A = args (1);
-      const octave_value B = args (2);
+      const octave_value A = args(1);
+      const octave_value B = args(2);
 
       if (func.is_builtin_function ()
-          || (func.is_function_handle () && ! A.is_object () && ! B.is_object ()))
+          || (func.is_function_handle ()
+              && ! A.is_object () && ! B.is_object ()))
         {
-          // This may break if the default behavior is overriden. But if you override
-          // arithmetic operators for builtin classes, you should expect mayhem
-          // anyway (constant folding etc). Querying is_overloaded may not be
-          // exactly what we need here.
+          // This may break if the default behavior is overriden.  But if you
+          // override arithmetic operators for builtin classes, you should
+          // expect mayhem anyway (constant folding etc).  Querying
+          // is_overloaded() may not be exactly what we need here.
           octave_function *fcn_val = func.function_value ();
           if (fcn_val)
             {
-              octave_value tmp = maybe_optimized_builtin (fcn_val->name (), A, B);
+              octave_value tmp = maybe_optimized_builtin (fcn_val->name (),
+                                                          A, B);
               if (tmp.is_defined ())
                 retval(0) = tmp;
             }
@@ -374,7 +382,7 @@ dimensionality as the other array.\n\
           octave_idx_type nd = nda;
 
           if (nda > ndb)
-              dvb.resize (nda, 1);
+            dvb.resize (nda, 1);
           else if (nda < ndb)
             {
               dva.resize (ndb, 1);
@@ -395,8 +403,10 @@ dimensionality as the other array.\n\
               dvc.resize (nd);
 
               for (octave_idx_type i = 0; i < nd; i++)
-                dvc (i) = (dva (i) < 1  ? dva (i) : (dvb (i) < 1 ? dvb (i) :
-                      (dva (i) > dvb (i) ? dva (i) : dvb (i))));
+                dvc (i) = (dva (i) < 1 ? dva (i)
+                                       : (dvb (i) < 1 ? dvb (i)
+                                                      : (dva (i) > dvb (i)
+                                                        ? dva (i) : dvb (i))));
 
               if (dva == dvb || dva.numel () == 1 || dvb.numel () == 1)
                 {
@@ -453,7 +463,8 @@ dimensionality as the other array.\n\
                       if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                         inputs (1) = Bc;
 
-                      octave_value_list tmp = func.do_multi_index_op (1, inputs);
+                      octave_value_list tmp = func.do_multi_index_op (1,
+                                                                      inputs);
 
                       if (error_state)
                         break;
@@ -493,7 +504,8 @@ dimensionality as the other array.\n\
                                   if (tmp(0).is_real_type ())
                                     {
                                       have_FloatNDArray = true;
-                                      result_FloatNDArray = tmp(0).float_array_value ();
+                                      result_FloatNDArray
+                                        = tmp(0).float_array_value ();
                                       result_FloatNDArray.resize (dvc);
                                     }
                                   else
@@ -571,7 +583,8 @@ dimensionality as the other array.\n\
                                   result_FloatComplexNDArray =
                                     FloatComplexNDArray (result_FloatNDArray);
                                   result_FloatComplexNDArray.insert
-                                    (tmp(0).float_complex_array_value (), ra_idx);
+                                    (tmp(0).float_complex_array_value (),
+                                     ra_idx);
                                   have_FloatNDArray = false;
                                   have_FloatComplexNDArray = true;
                                 }

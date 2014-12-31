@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_fcn_handle_h)
-#define octave_fcn_handle_h 1
+#if !defined (octave_ov_fcn_handle_h)
+#define octave_ov_fcn_handle_h 1
 
 #include <iosfwd>
 #include <string>
@@ -59,25 +59,27 @@ public:
 
   octave_fcn_handle (const octave_fcn_handle& fh)
     : octave_base_value (fh), fcn (fh.fcn), nm (fh.nm),
-    has_overloads (fh.has_overloads), overloads ()
-   {
-     for (int i = 0; i < btyp_num_types; i++)
-       builtin_overloads[i] = fh.builtin_overloads[i];
+      has_overloads (fh.has_overloads), overloads ()
+  {
+    for (int i = 0; i < btyp_num_types; i++)
+      builtin_overloads[i] = fh.builtin_overloads[i];
 
-     overloads = fh.overloads;
-   }
+    overloads = fh.overloads;
+  }
 
   ~octave_fcn_handle (void) { }
 
-  octave_base_value *clone (void) const { return new octave_fcn_handle (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_fcn_handle (); }
+  octave_base_value *clone (void) const
+  { return new octave_fcn_handle (*this); }
+  octave_base_value *empty_clone (void) const
+  { return new octave_fcn_handle (); }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
-    {
-      octave_value_list tmp = subsref (type, idx, 1);
-      return tmp.length () > 0 ? tmp(0) : octave_value ();
-    }
+  {
+    octave_value_list tmp = subsref (type, idx, 1);
+    return tmp.length () > 0 ? tmp(0) : octave_value ();
+  }
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
@@ -85,7 +87,8 @@ public:
 
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
-                             int nargout, const std::list<octave_lvalue>* lvalue_list);
+                             int nargout,
+                             const std::list<octave_lvalue>* lvalue_list);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
@@ -105,10 +108,10 @@ public:
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
   octave_function *function_value (bool = false)
-    { return fcn.function_value (); }
+  { return fcn.function_value (); }
 
   octave_user_function *user_function_value (bool = false)
-    { return fcn.user_function_value (); }
+  { return fcn.user_function_value (); }
 
   octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
 
@@ -117,20 +120,21 @@ public:
   std::string fcn_name (void) const { return nm; }
 
   void set_overload (builtin_type_t btyp, const octave_value& ov_fcn)
-    {
-      if (btyp != btyp_unknown)
-        {
-          has_overloads = true;
-          builtin_overloads[btyp] = ov_fcn;
-        }
+  {
+    if (btyp != btyp_unknown)
+      {
+        has_overloads = true;
+        builtin_overloads[btyp] = ov_fcn;
+      }
 
-    }
+  }
 
-  void set_overload (const std::string& dispatch_type, const octave_value& ov_fcn)
-    {
-      has_overloads = true;
-      overloads[dispatch_type] = ov_fcn;
-    }
+  void set_overload (const std::string& dispatch_type,
+                     const octave_value& ov_fcn)
+  {
+    has_overloads = true;
+    overloads[dispatch_type] = ov_fcn;
+  }
 
   bool is_equal_to (const octave_fcn_handle&) const;
 
@@ -149,7 +153,7 @@ public:
   bool load_hdf5 (hid_t loc_id, const char *name);
 #endif
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false);
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

@@ -1,6 +1,6 @@
 # Makefile for Octave's doc/interpreter directory
 #
-# Copyright (C) 1993-2012 John W. Eaton
+# Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
 # 
@@ -32,6 +32,7 @@ export TEXMFCNF
 
 dist_man_MANS = \
   mkoctfile.1 \
+  octave-cli.1 \
   octave-config.1 \
   octave.1
 
@@ -39,43 +40,43 @@ dist_man_MANS = \
 ## They are dependencies for the documentation.
 ## They must not be distributed from this directory.
 EXAMPLE_FILES = \
-  $(top_srcdir)/examples/@FIRfilter/FIRfilter.m \
-  $(top_srcdir)/examples/@FIRfilter/FIRfilter_aggregation.m \
-  $(top_srcdir)/examples/@FIRfilter/display.m \
-  $(top_srcdir)/examples/@FIRfilter/subsasgn.m \
-  $(top_srcdir)/examples/@FIRfilter/subsref.m \
-  $(top_srcdir)/examples/@polynomial/display.m \
-  $(top_srcdir)/examples/@polynomial/double.m \
-  $(top_srcdir)/examples/@polynomial/end.m \
-  $(top_srcdir)/examples/@polynomial/get.m \
-  $(top_srcdir)/examples/@polynomial/mtimes.m \
-  $(top_srcdir)/examples/@polynomial/plot.m \
-  $(top_srcdir)/examples/@polynomial/polynomial.m \
-  $(top_srcdir)/examples/@polynomial/polynomial_superiorto.m \
-  $(top_srcdir)/examples/@polynomial/polyval.m \
-  $(top_srcdir)/examples/@polynomial/set.m \
-  $(top_srcdir)/examples/@polynomial/subsref.m \
-  $(top_srcdir)/examples/addtwomatrices.cc \
-  $(top_srcdir)/examples/celldemo.cc \
-  $(top_srcdir)/examples/embedded.cc \
-  $(top_srcdir)/examples/fortdemo.cc \
-  $(top_srcdir)/examples/fortsub.f \
-  $(top_srcdir)/examples/funcdemo.cc \
-  $(top_srcdir)/examples/globaldemo.cc \
-  $(top_srcdir)/examples/helloworld.cc \
-  $(top_srcdir)/examples/mycell.c \
-  $(top_srcdir)/examples/myfeval.c \
-  $(top_srcdir)/examples/myfunc.c \
-  $(top_srcdir)/examples/myhello.c \
-  $(top_srcdir)/examples/mypow2.c \
-  $(top_srcdir)/examples/mysparse.c \
-  $(top_srcdir)/examples/mystring.c \
-  $(top_srcdir)/examples/mystruct.c \
-  $(top_srcdir)/examples/paramdemo.cc \
-  $(top_srcdir)/examples/standalone.cc \
-  $(top_srcdir)/examples/stringdemo.cc \
-  $(top_srcdir)/examples/structdemo.cc \
-  $(top_srcdir)/examples/unwinddemo.cc
+  $(top_srcdir)/examples/code/@FIRfilter/FIRfilter.m \
+  $(top_srcdir)/examples/code/@FIRfilter/FIRfilter_aggregation.m \
+  $(top_srcdir)/examples/code/@FIRfilter/display.m \
+  $(top_srcdir)/examples/code/@FIRfilter/subsasgn.m \
+  $(top_srcdir)/examples/code/@FIRfilter/subsref.m \
+  $(top_srcdir)/examples/code/@polynomial/display.m \
+  $(top_srcdir)/examples/code/@polynomial/double.m \
+  $(top_srcdir)/examples/code/@polynomial/end.m \
+  $(top_srcdir)/examples/code/@polynomial/get.m \
+  $(top_srcdir)/examples/code/@polynomial/mtimes.m \
+  $(top_srcdir)/examples/code/@polynomial/plot.m \
+  $(top_srcdir)/examples/code/@polynomial/polynomial.m \
+  $(top_srcdir)/examples/code/@polynomial/polynomial_superiorto.m \
+  $(top_srcdir)/examples/code/@polynomial/polyval.m \
+  $(top_srcdir)/examples/code/@polynomial/set.m \
+  $(top_srcdir)/examples/code/@polynomial/subsref.m \
+  $(top_srcdir)/examples/code/addtwomatrices.cc \
+  $(top_srcdir)/examples/code/celldemo.cc \
+  $(top_srcdir)/examples/code/embedded.cc \
+  $(top_srcdir)/examples/code/fortrandemo.cc \
+  $(top_srcdir)/examples/code/fortransub.f \
+  $(top_srcdir)/examples/code/funcdemo.cc \
+  $(top_srcdir)/examples/code/globaldemo.cc \
+  $(top_srcdir)/examples/code/helloworld.cc \
+  $(top_srcdir)/examples/code/mycell.c \
+  $(top_srcdir)/examples/code/myfeval.c \
+  $(top_srcdir)/examples/code/myfunc.c \
+  $(top_srcdir)/examples/code/myhello.c \
+  $(top_srcdir)/examples/code/mypow2.c \
+  $(top_srcdir)/examples/code/mysparse.c \
+  $(top_srcdir)/examples/code/mystring.c \
+  $(top_srcdir)/examples/code/mystruct.c \
+  $(top_srcdir)/examples/code/paramdemo.cc \
+  $(top_srcdir)/examples/code/standalone.cc \
+  $(top_srcdir)/examples/code/stringdemo.cc \
+  $(top_srcdir)/examples/code/structdemo.cc \
+  $(top_srcdir)/examples/code/unwinddemo.cc
 
 
 include images.mk
@@ -169,8 +170,11 @@ MUNGED_TEXI_SRC = \
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
+include graphics_properties.mk
+
 BUILT_TEXINFOS = \
   contributors.texi \
+  $(GRAPH_PROP_TEXI_SRC) \
   $(MUNGED_TEXI_SRC)
 
 info_TEXINFOS = octave.texi
@@ -270,6 +274,8 @@ EXTRA_DIST = \
   contributors.in \
   doc-cache \
   find-docstring-files.sh \
+  genpropdoc.m \
+  graphics_properties.mk \
   images \
   images.awk \
   images.mk \

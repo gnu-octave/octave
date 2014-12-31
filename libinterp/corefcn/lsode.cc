@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -157,7 +157,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   while (0)
 
 DEFUN (lsode, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t})\n\
 @deftypefnx {Built-in Function} {[@var{x}, @var{istate}, @var{msg}] =} lsode (@var{fcn}, @var{x_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential equations\n\
@@ -310,8 +310,8 @@ parameters for @code{lsode}.\n\
                   fname = "function y = ";
                   fname.append (fcn_name);
                   fname.append (" (x, t) y = ");
-                  lsode_fcn = extract_function
-                    (c(0), "lsode", fcn_name, fname, "; endfunction");
+                  lsode_fcn = extract_function (c(0), "lsode", fcn_name, fname,
+                                                "; endfunction");
                 }
 
               if (lsode_fcn)
@@ -320,12 +320,12 @@ parameters for @code{lsode}.\n\
                     lsode_jac = c(1).function_value ();
                   else
                     {
-                        jac_name = unique_symbol_name ("__lsode_jac__");
-                        jname = "function jac = ";
-                        jname.append (jac_name);
-                        jname.append (" (x, t) jac = ");
-                        lsode_jac = extract_function
-                          (c(1), "lsode", jac_name, jname, "; endfunction");
+                      jac_name = unique_symbol_name ("__lsode_jac__");
+                      jname = "function jac = ";
+                      jname.append (jac_name);
+                      jname.append (" (x, t) jac = ");
+                      lsode_jac = extract_function (c(1), "lsode", jac_name,
+                                                    jname, "; endfunction");
 
                       if (!lsode_jac)
                         {
@@ -355,8 +355,8 @@ parameters for @code{lsode}.\n\
                       fname = "function y = ";
                       fname.append (fcn_name);
                       fname.append (" (x, t) y = ");
-                      lsode_fcn = extract_function
-                        (f_arg, "lsode", fcn_name, fname, "; endfunction");
+                      lsode_fcn = extract_function (f_arg, "lsode", fcn_name,
+                                                    fname, "; endfunction");
                     }
                   while (0);
                   break;
@@ -371,8 +371,8 @@ parameters for @code{lsode}.\n\
                         fname = "function y = ";
                         fname.append (fcn_name);
                         fname.append (" (x, t) y = ");
-                        lsode_fcn = extract_function
-                          (tmp(0), "lsode", fcn_name, fname, "; endfunction");
+                        lsode_fcn = extract_function (tmp(0), "lsode", fcn_name,
+                                                      fname, "; endfunction");
 
                         if (lsode_fcn)
                           {
@@ -380,9 +380,9 @@ parameters for @code{lsode}.\n\
                             jname = "function jac = ";
                             jname.append (jac_name);
                             jname.append (" (x, t) jac = ");
-                            lsode_jac = extract_function
-                              (tmp(1), "lsode", jac_name, jname,
-                              "; endfunction");
+                            lsode_jac = extract_function (tmp(1), "lsode",
+                                                          jac_name, jname,
+                                                          "; endfunction");
 
                             if (!lsode_jac)
                               {
@@ -397,7 +397,7 @@ parameters for @code{lsode}.\n\
 
                 default:
                   LSODE_ABORT1
-                    ("first arg should be a string or 2-element string array");
+                  ("first arg should be a string or 2-element string array");
                 }
             }
         }

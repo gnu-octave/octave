@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2008-2009 VZLU Prague
 
@@ -73,7 +73,7 @@ get_qr_r (const base_qr<MT>& fact)
 // that R = triu (qr (X))
 
 DEFUN_DLD (qr, args, nargout,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')\n\
 @deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})\n\
@@ -129,7 +129,7 @@ $A$\n\
 $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 @end tex\n\
 @ifnottex\n\
-@code{@var{Q} * @var{Q} = @var{A}} where @var{Q} is an orthogonal matrix and\n\
+@code{@var{Q} * @var{R} = @var{A}} where @var{Q} is an orthogonal matrix and\n\
 @var{R} is upper triangular.\n\
 @end ifnottex\n\
 \n\
@@ -289,7 +289,8 @@ x = @var{R} \\ @var{C}\n\
   else
     {
       QR::type type = (nargout == 0 || nargout == 1) ? QR::raw
-        : (nargin == 2 ? QR::economy : QR::std);
+                                                     : nargin == 2
+                                                       ? QR::economy : QR::std;
 
       if (arg.is_single_type ())
         {
@@ -469,7 +470,7 @@ x = @var{R} \\ @var{C}\n\
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
-%! [q, r, p] = qr (a);  # FIXME: not giving right dimensions. 
+%! [q, r, p] = qr (a);  # FIXME: not giving right dimensions.
 %! [qe, re, pe] = qr (a, 0);
 %!
 %! assert (q * r, a * p, sqrt (eps));
@@ -743,9 +744,11 @@ static
 bool check_qr_dims (const octave_value& q, const octave_value& r,
                     bool allow_ecf = false)
 {
-  octave_idx_type m = q.rows (), k = r.rows (), n = r.columns ();
+  octave_idx_type m = q.rows ();
+  octave_idx_type k = r.rows ();
+  octave_idx_type n = r.columns ();
   return ((q.ndims () == 2 && r.ndims () == 2 && k == q.columns ())
-            && (m == k || (allow_ecf && k == n && k < m)));
+          && (m == k || (allow_ecf && k == n && k < m)));
 }
 
 static
@@ -756,7 +759,7 @@ bool check_index (const octave_value& i, bool vector_allowed = false)
 }
 
 DEFUN_DLD (qrupdate, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
@@ -936,7 +939,7 @@ The QR@tie{}factorization supplied may be either full\n\
 */
 
 DEFUN_DLD (qrinsert, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
@@ -1046,9 +1049,12 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                         || argr.is_single_type ()
                         || argx.is_single_type ())
                       {
-                        FloatComplexMatrix Q = argq.float_complex_matrix_value ();
-                        FloatComplexMatrix R = argr.float_complex_matrix_value ();
-                        FloatComplexMatrix x = argx.float_complex_matrix_value ();
+                        FloatComplexMatrix Q =
+                          argq.float_complex_matrix_value ();
+                        FloatComplexMatrix R =
+                          argr.float_complex_matrix_value ();
+                        FloatComplexMatrix x =
+                          argx.float_complex_matrix_value ();
 
                         FloatComplexQR fact (Q, R);
 
@@ -1155,7 +1161,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 */
 
 DEFUN_DLD (qrdelete, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
@@ -1255,8 +1261,10 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
                     if (argq.is_single_type ()
                         || argr.is_single_type ())
                       {
-                        FloatComplexMatrix Q = argq.float_complex_matrix_value ();
-                        FloatComplexMatrix R = argr.float_complex_matrix_value ();
+                        FloatComplexMatrix Q =
+                          argq.float_complex_matrix_value ();
+                        FloatComplexMatrix R =
+                          argr.float_complex_matrix_value ();
 
                         FloatComplexQR fact (Q, R);
 
@@ -1420,7 +1428,7 @@ If @var{orient} is @qcode{\"row\"}, full factorization is needed.\n\
 */
 
 DEFUN_DLD (qrshift, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\

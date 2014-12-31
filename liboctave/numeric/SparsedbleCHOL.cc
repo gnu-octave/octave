@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2012 David Bateman
+Copyright (C) 2005-2013 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -61,10 +61,10 @@ chol2inv (const SparseMatrix& r)
         }
       else
         (*current_liboctave_error_handler)
-          ("spchol2inv requires triangular matrix");
+          ("U must be a triangular matrix");
     }
   else
-    (*current_liboctave_error_handler) ("spchol2inv requires square matrix");
+    (*current_liboctave_error_handler) ("U must be a square matrix");
 
   return retval;
 }

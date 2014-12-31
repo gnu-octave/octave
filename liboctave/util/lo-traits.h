@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 John W. Eaton
+Copyright (C) 2009-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_traits_h)
-#define octave_liboctave_traits_h 1
+#if !defined (octave_lo_traits_h)
+#define octave_lo_traits_h 1
 
 // Ideas for these classes taken from C++ Templates, The Complete
 // Guide by David Vandevoorde and Nicolai M. Josuttis, Addison-Wesley

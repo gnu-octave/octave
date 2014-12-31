@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2012 David Bateman
+Copyright (C) 2006-2013 David Bateman
 Copyright (C) 2006 Andy Adler
 
 This file is part of Octave.
@@ -36,7 +36,8 @@ OCTAVE_API
 MatrixType
 {
 public:
-  enum matrix_type {
+  enum matrix_type
+  {
     Unknown = 0,
     Full,
     Diagonal,
@@ -104,23 +105,25 @@ public:
   bool is_dense (void) const { return dense; }
 
   bool is_diagonal (void) const
-    { return (typ == Diagonal || typ == Permuted_Diagonal); }
+  { return (typ == Diagonal || typ == Permuted_Diagonal); }
 
   bool is_upper_triangular (void) const
-    { return (typ == Upper || typ == Permuted_Upper); }
+  { return (typ == Upper || typ == Permuted_Upper); }
 
   bool is_lower_triangular (void) const
-    { return (typ == Lower || typ == Permuted_Lower); }
+  { return (typ == Lower || typ == Permuted_Lower); }
 
-   bool is_banded (void)
-    { return (typ == Banded || typ == Banded_Hermitian); }
+  bool is_banded (void)
+  { return (typ == Banded || typ == Banded_Hermitian); }
 
   bool is_tridiagonal (void) const
-    { return (typ == Tridiagonal || typ == Tridiagonal_Hermitian); }
+  { return (typ == Tridiagonal || typ == Tridiagonal_Hermitian); }
 
   bool is_hermitian (void) const
-    { return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian ||
-              typ == Hermitian); }
+  {
+    return (typ == Banded_Hermitian || typ == Tridiagonal_Hermitian ||
+            typ == Hermitian);
+  }
 
   bool is_rectangular (void) const { return (typ == Rectangular); }
 
@@ -145,7 +148,7 @@ public:
   void mark_as_tridiagonal (void) {typ = Tridiagonal; }
 
   void mark_as_banded (const octave_idx_type ku, const octave_idx_type kl)
-    { typ = Banded; upper_band = ku; lower_band = kl; }
+  { typ = Banded; upper_band = ku; lower_band = kl; }
 
   void mark_as_full (void) { typ = Full; }
 

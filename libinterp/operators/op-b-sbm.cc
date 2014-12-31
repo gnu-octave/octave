@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -91,5 +91,6 @@ install_b_sbm_ops (void)
   INSTALL_ASSIGNCONV (octave_bool, octave_sparse_bool_matrix,
                       octave_bool_matrix);
 
-  INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix, sparse_bool_matrix_conv);
+  INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix,
+                   sparse_bool_matrix_conv);
 }

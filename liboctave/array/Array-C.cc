@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -88,11 +88,12 @@ safe_comparator (sortmode mode, const Array<Complex>& a , bool allow_chk)
   return result;
 }
 
-INSTANTIATE_ARRAY_SORT (Complex);
+template class OCTAVE_API octave_sort<Complex>;
 
 INSTANTIATE_ARRAY (Complex, OCTAVE_API);
 
-template OCTAVE_API std::ostream& operator << (std::ostream&, const Array<Complex>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&,
+                                               const Array<Complex>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

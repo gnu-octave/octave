@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 David Bateman
+Copyright (C) 2004-2013 David Bateman
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -42,7 +42,8 @@ template <class T>
 static Array<T>
 do_tril (const Array<T>& a, octave_idx_type k, bool pack)
 {
-  octave_idx_type nr = a.rows (), nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
   const T *avec = a.fortran_vec ();
   octave_idx_type zero = 0;
 
@@ -83,7 +84,8 @@ template <class T>
 static Array<T>
 do_triu (const Array<T>& a, octave_idx_type k, bool pack)
 {
-  octave_idx_type nr = a.rows (), nc = a.columns ();
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
   const T *avec = a.fortran_vec ();
   octave_idx_type zero = 0;
 
@@ -91,7 +93,8 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
     {
       octave_idx_type j1 = std::min (std::max (zero, k), nc);
       octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
-      octave_idx_type n = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
+      octave_idx_type n
+        = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
       Array<T> r (dim_vector (n, 1));
       T *rvec = r.fortran_vec ();
       for (octave_idx_type j = 0; j < nc; j++)
@@ -210,7 +213,7 @@ do_trilu (const std::string& name,
     print_usage ();
   else
     {
-      octave_value arg = args (0);
+      octave_value arg = args(0);
 
       dim_vector dims = arg.dims ();
       if (dims.length () != 2)
@@ -229,13 +232,15 @@ do_trilu (const std::string& name,
               break;
             case btyp_complex:
               if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower, pack);
+                retval = do_trilu (arg.sparse_complex_matrix_value (), k, lower,
+                                   pack);
               else
                 retval = do_trilu (arg.complex_array_value (), k, lower, pack);
               break;
             case btyp_bool:
               if (arg.is_sparse_type ())
-                retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower, pack);
+                retval = do_trilu (arg.sparse_bool_matrix_value (), k, lower,
+                                   pack);
               else
                 retval = do_trilu (arg.bool_array_value (), k, lower, pack);
               break;
@@ -271,7 +276,8 @@ do_trilu (const std::string& name,
                 if (arg.numel () == 0)
                   return arg;
 
-                octave_idx_type nr = dims(0), nc = dims (1);
+                octave_idx_type nr = dims(0);
+                octave_idx_type nc = dims(1);
 
                 // The sole purpose of the below is to force the correct
                 // matrix size. This would not be necessary if the
@@ -340,7 +346,7 @@ do_trilu (const std::string& name,
 }
 
 DEFUN (tril, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {} tril (@var{A})\n\
 @deftypefnx {Function File} {} tril (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} tril (@var{A}, @var{k}, @var{pack})\n\
@@ -361,7 +367,7 @@ starts at an offset of @var{k} diagonals above or below the main\n\
 diagonal; above for positive @var{k} and below for negative @var{k}.\n\
 \n\
 The absolute value of @var{k} must not be greater than the number of\n\
-sub-diagonals or super-diagonals.\n\
+subdiagonals or superdiagonals.\n\
 \n\
 For example:\n\
 \n\
@@ -396,7 +402,7 @@ above other.\n\
 }
 
 DEFUN (triu, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {} triu (@var{A})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
@@ -418,7 +424,7 @@ See the documentation for the @code{tril} function (@pxref{tril}).\n\
 %! lm3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 10, 0, 0];
 %! lm4 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
 %!
-%! assert (tril (a, -4), lm4); 
+%! assert (tril (a, -4), lm4);
 %! assert (tril (a, -3), lm3);
 %! assert (tril (a, -2), lm2);
 %! assert (tril (a, -1), lm1);

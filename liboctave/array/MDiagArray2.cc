@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -38,8 +38,9 @@ MDiagArray2<T>::is_multiple_of_identity (T val) const
   bool retval = this->rows () == this->cols ();
   if (retval)
     {
-      octave_idx_type len = this->length (), i = 0;
-      for (;i < len; i++)
+      octave_idx_type len = this->length ();
+      octave_idx_type i = 0;
+      for (; i < len; i++)
         if (DiagArray2<T>::elem (i, i) != val) break;
       retval = i == len;
     }
@@ -70,7 +71,8 @@ template <class T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
-  return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul), a.d1, a.d2);
+  return MDiagArray2<T> (do_sm_binary_op<T, T, T> (s, a, mx_inline_mul),
+                                                   a.d1, a.d2);
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -102,5 +104,6 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus), a.d1, a.d2);
+  return MDiagArray2<T> (do_mx_unary_op<T, T> (a, mx_inline_uminus),
+                         a.d1, a.d2);
 }

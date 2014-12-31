@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Michael Goffioul
+Copyright (C) 2009-2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -77,40 +77,42 @@ ft_manager
 {
 public:
   static bool instance_ok (void)
-    {
-      bool retval = true;
+  {
+    bool retval = true;
 
-      if (! instance)
-        {
-          instance = new ft_manager ();
+    if (! instance)
+      {
+        instance = new ft_manager ();
 
-          if (instance)
-            singleton_cleanup_list::add (cleanup_instance);
-        }
+        if (instance)
+          singleton_cleanup_list::add (cleanup_instance);
+      }
 
-      if (! instance)
-        {
-          ::error ("unable to create ft_manager!");
+    if (! instance)
+      {
+        ::error ("unable to create ft_manager!");
 
-          retval = false;
-        }
+        retval = false;
+      }
 
-      return retval;
-    }
+    return retval;
+  }
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static FT_Face get_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size)
-    { return (instance_ok ()
-              ? instance->do_get_font (name, weight, angle, size)
-              : 0); }
+  {
+    return (instance_ok ()
+            ? instance->do_get_font (name, weight, angle, size)
+            : 0);
+  }
 
   static void font_destroyed (FT_Face face)
-    {
-      if (instance_ok ())
-        instance->do_font_destroyed (face);
-    }
+  {
+    if (instance_ok ())
+      instance->do_font_destroyed (face);
+  }
 
 private:
 
@@ -119,7 +121,7 @@ private:
   typedef std::pair<std::string, double> ft_key;
   typedef std::map<ft_key, FT_Face> ft_cache;
 
-  // Cache the fonts loaded by freetype. This cache only contains
+  // Cache the fonts loaded by FreeType. This cache only contains
   // weak references to the fonts, strong references are only present
   // in class ft_render.
   ft_cache cache;
@@ -134,162 +136,162 @@ private:
 
   ft_manager (void)
     : library (), freetype_initialized (false), fontconfig_initialized (false)
-    {
-      if (FT_Init_FreeType (&library))
-        ::error ("unable to initialize freetype library");
-      else
-        freetype_initialized = true;
+  {
+    if (FT_Init_FreeType (&library))
+      ::error ("unable to initialize FreeType library");
+    else
+      freetype_initialized = true;
 
 #if defined (HAVE_FONTCONFIG)
-      if (! FcInit ())
-        ::error ("unable to initialize fontconfig library");
-      else
-        fontconfig_initialized = true;
+    if (! FcInit ())
+      ::error ("unable to initialize fontconfig library");
+    else
+      fontconfig_initialized = true;
 #endif
-    }
+  }
 
   ~ft_manager (void)
-    {
-      if (freetype_initialized)
-        FT_Done_FreeType (library);
+  {
+    if (freetype_initialized)
+      FT_Done_FreeType (library);
 
 #if defined (HAVE_FONTCONFIG)
-      // FIXME: Skip the call to FcFini because it can trigger the assertion
-      //
-      //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
-      //
-      // if (fontconfig_initialized)
-      //   FcFini ();
+    // FIXME: Skip the call to FcFini because it can trigger the assertion
+    //
+    //   octave: fccache.c:507: FcCacheFini: Assertion 'fcCacheChains[i] == ((void *)0)' failed.
+    //
+    // if (fontconfig_initialized)
+    //   FcFini ();
 #endif
-    }
+  }
 
 
   FT_Face do_get_font (const std::string& name, const std::string& weight,
                        const std::string& angle, double size)
-    {
-      FT_Face retval = 0;
+  {
+    FT_Face retval = 0;
 
 #if HAVE_FT_REFERENCE_FACE
-      // Look first into the font cache, then use fontconfig. If the font
-      // is present in the cache, simply add a reference and return it.
+    // Look first into the font cache, then use fontconfig. If the font
+    // is present in the cache, simply add a reference and return it.
 
-      ft_key key (name + ":" + weight + ":" + angle, size);
-      ft_cache::const_iterator it = cache.find (key);
+    ft_key key (name + ":" + weight + ":" + angle, size);
+    ft_cache::const_iterator it = cache.find (key);
 
-      if (it != cache.end ())
-        {
-          FT_Reference_Face (it->second);
-          return it->second;
-        }
+    if (it != cache.end ())
+      {
+        FT_Reference_Face (it->second);
+        return it->second;
+      }
 #endif
 
-      std::string file;
+    std::string file;
 
 #if defined (HAVE_FONTCONFIG)
-      if (fontconfig_initialized)
-        {
-          int fc_weight, fc_angle;
+    if (fontconfig_initialized)
+      {
+        int fc_weight, fc_angle;
 
-          if (weight == "bold")
-            fc_weight = FC_WEIGHT_BOLD;
-          else if (weight == "light")
-            fc_weight = FC_WEIGHT_LIGHT;
-          else if (weight == "demi")
-            fc_weight = FC_WEIGHT_DEMIBOLD;
-          else
-            fc_weight = FC_WEIGHT_NORMAL;
+        if (weight == "bold")
+          fc_weight = FC_WEIGHT_BOLD;
+        else if (weight == "light")
+          fc_weight = FC_WEIGHT_LIGHT;
+        else if (weight == "demi")
+          fc_weight = FC_WEIGHT_DEMIBOLD;
+        else
+          fc_weight = FC_WEIGHT_NORMAL;
 
-          if (angle == "italic")
-            fc_angle = FC_SLANT_ITALIC;
-          else if (angle == "oblique")
-            fc_angle = FC_SLANT_OBLIQUE;
-          else
-            fc_angle = FC_SLANT_ROMAN;
+        if (angle == "italic")
+          fc_angle = FC_SLANT_ITALIC;
+        else if (angle == "oblique")
+          fc_angle = FC_SLANT_OBLIQUE;
+        else
+          fc_angle = FC_SLANT_ROMAN;
 
-          FcPattern *pat = FcPatternCreate ();
+        FcPattern *pat = FcPatternCreate ();
 
-          FcPatternAddString (pat, FC_FAMILY,
-                              (reinterpret_cast<const FcChar8*>
-                               (name == "*" ? "sans" : name.c_str ())));
+        FcPatternAddString (pat, FC_FAMILY,
+                            (reinterpret_cast<const FcChar8*>
+                             (name == "*" ? "sans" : name.c_str ())));
 
-          FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
-          FcPatternAddInteger (pat, FC_SLANT, fc_angle);
-          FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
+        FcPatternAddInteger (pat, FC_WEIGHT, fc_weight);
+        FcPatternAddInteger (pat, FC_SLANT, fc_angle);
+        FcPatternAddDouble (pat, FC_PIXEL_SIZE, size);
 
-          if (FcConfigSubstitute (0, pat, FcMatchPattern))
-            {
-              FcResult res;
-              FcPattern *match;
+        if (FcConfigSubstitute (0, pat, FcMatchPattern))
+          {
+            FcResult res;
+            FcPattern *match;
 
-              FcDefaultSubstitute (pat);
-              match = FcFontMatch (0, pat, &res);
+            FcDefaultSubstitute (pat);
+            match = FcFontMatch (0, pat, &res);
 
-              // FIXME: originally, this test also required that
-              // res != FcResultNoMatch.  Is that really needed?
-              if (match)
-                {
-                  unsigned char *tmp;
+            // FIXME: originally, this test also required that
+            // res != FcResultNoMatch.  Is that really needed?
+            if (match)
+              {
+                unsigned char *tmp;
 
-                  FcPatternGetString (match, FC_FILE, 0, &tmp);
-                  file = reinterpret_cast<char*> (tmp);
-                }
-              else
-                ::warning ("could not match any font: %s-%s-%s-%g",
+                FcPatternGetString (match, FC_FILE, 0, &tmp);
+                file = reinterpret_cast<char*> (tmp);
+              }
+            else
+              ::warning ("could not match any font: %s-%s-%s-%g",
                          name.c_str (), weight.c_str (), angle.c_str (),
                          size);
 
-              if (match)
-                FcPatternDestroy (match);
-            }
+            if (match)
+              FcPatternDestroy (match);
+          }
 
-          FcPatternDestroy (pat);
-        }
+        FcPatternDestroy (pat);
+      }
 #endif
 
-      if (file.empty ())
-        {
+    if (file.empty ())
+      {
 #ifdef __WIN32__
-          file = "C:/WINDOWS/Fonts/verdana.ttf";
+        file = "C:/WINDOWS/Fonts/verdana.ttf";
 #else
-          // FIXME: find a "standard" font for UNIX platforms
+        // FIXME: find a "standard" font for UNIX platforms
 #endif
-        }
+      }
 
-      if (! file.empty ())
-        {
-          if (FT_New_Face (library, file.c_str (), 0, &retval))
-            ::warning ("ft_manager: unable to load font: %s", file.c_str ());
+    if (! file.empty ())
+      {
+        if (FT_New_Face (library, file.c_str (), 0, &retval))
+          ::warning ("ft_manager: unable to load font: %s", file.c_str ());
 #if HAVE_FT_REFERENCE_FACE
-          else
-            {
-              // Install a finalizer to notify ft_manager that the font is
-              // being destroyed. The class ft_manager only keeps weak
-              // references to font objects.
+        else
+          {
+            // Install a finalizer to notify ft_manager that the font is
+            // being destroyed. The class ft_manager only keeps weak
+            // references to font objects.
 
-              retval->generic.data = new ft_key (key);
-              retval->generic.finalizer = ft_face_destroyed;
+            retval->generic.data = new ft_key (key);
+            retval->generic.finalizer = ft_face_destroyed;
 
-              // Insert loaded font into the cache.
+            // Insert loaded font into the cache.
 
-              cache[key] = retval;
-            }
+            cache[key] = retval;
+          }
 #endif
-        }
+      }
 
-      return retval;
-    }
+    return retval;
+  }
 
   void do_font_destroyed (FT_Face face)
-    {
-      if (face->generic.data)
-        {
-          ft_key* pkey = reinterpret_cast<ft_key*> (face->generic.data);
+  {
+    if (face->generic.data)
+      {
+        ft_key* pkey = reinterpret_cast<ft_key*> (face->generic.data);
 
-          cache.erase (*pkey);
-          delete pkey;
-          face->generic.data = 0;
-        }
-    }
+        cache.erase (*pkey);
+        delete pkey;
+        face->generic.data = 0;
+      }
+  }
 
 private:
   FT_Library library;
@@ -306,9 +308,9 @@ ft_face_destroyed (void* object)
 // ---------------------------------------------------------------------------
 
 ft_render::ft_render (void)
-    : text_processor (), font (), bbox (1, 4, 0.0), halign (0), xoffset (0),
-      line_yoffset (0), yoffset (0), mode (MODE_BBOX),
-      color (dim_vector (1, 3), 0)
+  : text_processor (), font (), bbox (1, 4, 0.0), halign (0), xoffset (0),
+    line_yoffset (0), yoffset (0), mode (MODE_BBOX),
+    color (dim_vector (1, 3), 0)
 {
 }
 
@@ -331,43 +333,43 @@ ft_render::push_new_line (void)
   switch (mode)
     {
     case MODE_BBOX:
-        {
-          // Create a new bbox entry based on the current font.
+      {
+        // Create a new bbox entry based on the current font.
 
-          FT_Face face = font.get_face ();
+        FT_Face face = font.get_face ();
 
-          if (face)
-            {
-              int asc = face->size->metrics.ascender >> 6;
-              int desc = face->size->metrics.descender >> 6;
-              int h = face->size->metrics.height >> 6;
+        if (face)
+          {
+            int asc = face->size->metrics.ascender >> 6;
+            int desc = face->size->metrics.descender >> 6;
+            int h = face->size->metrics.height >> 6;
 
-              Matrix bb (1, 5, 0.0);
+            Matrix bb (1, 5, 0.0);
 
-              bb(1) = desc;
-              bb(3) = asc - desc;
-              bb(4) = h;
+            bb(1) = desc;
+            bb(3) = asc - desc;
+            bb(4) = h;
 
-              line_bbox.push_back (bb);
+            line_bbox.push_back (bb);
 
-              xoffset = yoffset = 0;
-            }
-        }
+            xoffset = yoffset = 0;
+          }
+      }
       break;
 
     case MODE_RENDER:
-        {
-          // Move to the next line bbox, adjust xoffset based on alignment
-          // and yoffset based on the old and new line bbox.
+      {
+        // Move to the next line bbox, adjust xoffset based on alignment
+        // and yoffset based on the old and new line bbox.
 
-          Matrix old_bbox = line_bbox.front ();
-          line_bbox.pop_front ();
-          Matrix new_bbox = line_bbox.front ();
+        Matrix old_bbox = line_bbox.front ();
+        line_bbox.pop_front ();
+        Matrix new_bbox = line_bbox.front ();
 
-          xoffset = compute_line_xoffset (new_bbox);
-          line_yoffset += (old_bbox(1) - (new_bbox(1) + new_bbox(3)));
-          yoffset = 0;
-        }
+        xoffset = compute_line_xoffset (new_bbox);
+        line_yoffset += (old_bbox(1) - (new_bbox(1) + new_bbox(3)));
+        yoffset = 0;
+      }
       break;
     }
 }
@@ -520,7 +522,8 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
               if (code == '\n')
                 {
                   glyph_index = FT_Get_Char_Index (face, ' ');
-                  if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                  if (! glyph_index
+                      || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                     {
                       glyph_index = 0;
                       gripe_missing_glyph (' ');
@@ -542,7 +545,8 @@ ft_render::process_character (FT_ULong code, FT_UInt previous)
                     {
                       FT_Vector delta;
 
-                      FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
+                      FT_Get_Kerning (face, previous, glyph_index,
+                                      FT_KERNING_DEFAULT, &delta);
                       xoffset += (delta.x >> 6);
                     }
 
@@ -631,7 +635,8 @@ ft_render::visit (text_element_string& e)
       FT_UInt glyph_index, previous = 0;
 
       std::string str = e.string_value ();
-      size_t n = str.length (), curr = 0;
+      size_t n = str.length ();
+      size_t curr = 0;
       mbstate_t ps;
       memset (&ps, 0, sizeof (ps));  // Initialize state to 0.
       wchar_t wc;
@@ -659,7 +664,7 @@ ft_render::visit (text_element_string& e)
               if (r != 0)
                 ::warning ("ft_render: failed to decode string `%s' with "
                            "locale `%s'", str.c_str (),
-                           std::setlocale (LC_CTYPE, NULL));
+                           std::setlocale (LC_CTYPE, 0));
               break;
             }
         }
@@ -861,43 +866,43 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
         case ROTATION_0:
           break;
         case ROTATION_90:
-            {
-              Array<octave_idx_type> perm (dim_vector (3, 1));
-              perm(0) = 0;
-              perm(1) = 2;
-              perm(2) = 1;
-              pixels = pixels.permute (perm);
+          {
+            Array<octave_idx_type> perm (dim_vector (3, 1));
+            perm(0) = 0;
+            perm(1) = 2;
+            perm(2) = 1;
+            pixels = pixels.permute (perm);
 
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
-              idx(2) = idx_vector (':');
-              pixels = uint8NDArray (pixels.index (idx));
-            }
+            Array<idx_vector> idx (dim_vector (3, 1));
+            idx(0) = idx_vector (':');
+            idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
+            idx(2) = idx_vector (':');
+            pixels = uint8NDArray (pixels.index (idx));
+          }
           break;
         case ROTATION_180:
-            {
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
-              idx(2)=  idx_vector (pixels.dim3 ()-1, -1, -1);
-              pixels = uint8NDArray (pixels.index (idx));
-            }
+          {
+            Array<idx_vector> idx (dim_vector (3, 1));
+            idx(0) = idx_vector (':');
+            idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
+            idx(2)=  idx_vector (pixels.dim3 ()-1, -1, -1);
+            pixels = uint8NDArray (pixels.index (idx));
+          }
           break;
         case ROTATION_270:
-            {
-              Array<octave_idx_type> perm (dim_vector (3, 1));
-              perm(0) = 0;
-              perm(1) = 2;
-              perm(2) = 1;
-              pixels = pixels.permute (perm);
+          {
+            Array<octave_idx_type> perm (dim_vector (3, 1));
+            perm(0) = 0;
+            perm(1) = 2;
+            perm(2) = 1;
+            pixels = pixels.permute (perm);
 
-              Array<idx_vector> idx (dim_vector (3, 1));
-              idx(0) = idx_vector (':');
-              idx(1) = idx_vector (':');
-              idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
-              pixels = uint8NDArray (pixels.index (idx));
-            }
+            Array<idx_vector> idx (dim_vector (3, 1));
+            idx(0) = idx_vector (':');
+            idx(1) = idx_vector (':');
+            idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
+            pixels = uint8NDArray (pixels.index (idx));
+          }
           break;
         }
     }
@@ -1022,8 +1027,8 @@ ft_render::text_to_pixels (const std::string& txt,
 }
 
 ft_render::ft_font::ft_font (const ft_font& ft)
-     : name (ft.name), weight (ft.weight), angle (ft.angle), size (ft.size),
-       face (0)
+  : name (ft.name), weight (ft.weight), angle (ft.angle), size (ft.size),
+    face (0)
 {
 #if HAVE_FT_REFERENCE_FACE
   FT_Face ft_face = ft.get_face ();

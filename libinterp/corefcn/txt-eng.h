@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Michael Goffioul
+Copyright (C) 2009-2013 Michael Goffioul
 
 This file is part of Octave.
 
@@ -105,9 +105,8 @@ private:
 
 class
 OCTINTERP_API
-text_element_list :
-    public text_element,
-    public octave_base_list<text_element *>
+text_element_list
+  : public text_element, public octave_base_list<text_element *>
 {
 public:
   text_element_list (void)
@@ -115,17 +114,17 @@ public:
 
   text_element_list (text_element* e)
     : text_element (), octave_base_list<text_element*> ()
-    { push_back (e); }
+  { push_back (e); }
 
   ~text_element_list (void)
-    {
-      while (! empty ())
-        {
-          iterator it = begin ();
-          delete (*it);
-          erase (it);
-        }
-    }
+  {
+    while (! empty ())
+      {
+        iterator it = begin ();
+        delete (*it);
+        erase (it);
+      }
+  }
 
   void accept (text_processor& p);
 };
@@ -140,10 +139,10 @@ public:
 
   text_element_subscript (char c)
     : text_element ()
-    { elem = new text_element_string (std::string (1, c)); }
+  { elem = new text_element_string (std::string (1, c)); }
 
   ~text_element_subscript (void)
-    { delete elem; }
+  { delete elem; }
 
   void accept (text_processor& p);
 
@@ -166,10 +165,10 @@ public:
 
   text_element_superscript (char c)
     : text_element ()
-    { elem = new text_element_string (std::string (1, c)); }
+  { elem = new text_element_string (std::string (1, c)); }
 
   ~text_element_superscript (void)
-    { delete elem; }
+  { delete elem; }
 
   void accept (text_processor& p);
 
@@ -192,7 +191,7 @@ public:
 
   text_element_combined (text_element* e1, text_element* e2)
     : text_element_list(e1)
-    { push_back (e2); }
+  { push_back (e2); }
 
   void accept (text_processor& p);
 };
@@ -203,12 +202,12 @@ text_element_fontstyle : public text_element
 {
 public:
   enum fontstyle
-    {
-      normal,
-      bold,
-      italic,
-      oblique
-    };
+  {
+    normal,
+    bold,
+    italic,
+    oblique
+  };
 
   text_element_fontstyle (fontstyle st)
     : text_element (), style (st) { }
@@ -275,29 +274,29 @@ text_element_color : public text_element
 public:
   text_element_color (double r, double g, double b)
     : text_element (), rgb (1, 3, 0.0)
-    {
-      rgb(0) = r;
-      rgb(1) = g;
-      rgb(2) = b;
-    }
+  {
+    rgb(0) = r;
+    rgb(1) = g;
+    rgb(2) = b;
+  }
 
   text_element_color (const std::string& cname)
     : text_element (), rgb (1, 3, 0.0)
-    {
+  {
 #define ASSIGN_COLOR(r,g,b) { rgb(0) = r; rgb(1) = g; rgb(2) = b; }
-      if (cname == "red") ASSIGN_COLOR(1, 0, 0)
+    if (cname == "red") ASSIGN_COLOR(1, 0, 0)
       else if (cname == "green") ASSIGN_COLOR(0, 1, 0)
-      else if (cname == "yellow") ASSIGN_COLOR(1, 1, 0)
-      else if (cname == "magenta") ASSIGN_COLOR(1, 0, 1)
-      else if (cname == "blue") ASSIGN_COLOR(0, 0, 1)
-      else if (cname == "black") ASSIGN_COLOR(0, 0, 0)
-      else if (cname == "white") ASSIGN_COLOR(1, 1, 1)
-      else if (cname == "gray") ASSIGN_COLOR(.5, .5, .5)
-      else if (cname == "darkGreen") ASSIGN_COLOR(0, .5, 0)
-      else if (cname == "orange") ASSIGN_COLOR(1, .65, 0)
-      else if (cname == "lightBlue") ASSIGN_COLOR(0.68, .85, .9)
+        else if (cname == "yellow") ASSIGN_COLOR(1, 1, 0)
+          else if (cname == "magenta") ASSIGN_COLOR(1, 0, 1)
+            else if (cname == "blue") ASSIGN_COLOR(0, 0, 1)
+              else if (cname == "black") ASSIGN_COLOR(0, 0, 0)
+                else if (cname == "white") ASSIGN_COLOR(1, 1, 1)
+                  else if (cname == "gray") ASSIGN_COLOR(.5, .5, .5)
+                    else if (cname == "darkGreen") ASSIGN_COLOR(0, .5, 0)
+                      else if (cname == "orange") ASSIGN_COLOR(1, .65, 0)
+                        else if (cname == "lightBlue") ASSIGN_COLOR(0.68, .85, .9)
 #undef ASSIGN_COLOR
-    }
+  }
 
   ~text_element_color (void) { }
 
@@ -319,19 +318,19 @@ public:
   virtual void visit (text_element_symbol&) { }
 
   virtual void visit (text_element_list& e)
-    {
-      for (text_element_list::iterator it = e.begin ();
-           it != e.end (); ++it)
-        {
-          (*it)->accept (*this);
-        }
-    }
+  {
+    for (text_element_list::iterator it = e.begin ();
+         it != e.end (); ++it)
+      {
+        (*it)->accept (*this);
+      }
+  }
 
   virtual void visit (text_element_subscript& e)
-    { e.get_element ()->accept (*this); }
+  { e.get_element ()->accept (*this); }
 
   virtual void visit (text_element_superscript& e)
-    { e.get_element ()->accept (*this); }
+  { e.get_element ()->accept (*this); }
 
   virtual void visit (text_element_combined&) { }
 
@@ -398,9 +397,9 @@ public:
   // creates...
 
   text_element* parse (const std::string& s)
-    {
-      return new text_element_string (s);
-    }
+  {
+    return new text_element_string (s);
+  }
 };
 
 class
@@ -410,10 +409,10 @@ text_parser_tex : public text_parser
 public:
   text_parser_tex (void)
     : text_parser (), scanner (0), buffer_state (0), result (0)
-    { }
+  { }
 
   ~text_parser_tex (void)
-    { destroy_lexer (); }
+  { destroy_lexer (); }
 
   text_element* parse (const std::string& s);
 

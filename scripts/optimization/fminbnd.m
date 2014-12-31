@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2012 VZLU Prague, a.s.
+## Copyright (C) 2008-2013 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
 ##
@@ -69,6 +69,11 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
+  endif
+  
+  if (xmin > xmax)
+    error ("Octave:invalid-input-arg",
+           "fminbnd: the lower bound cannot be greater than the upper one");
   endif
 
   if (ischar (fun))
@@ -170,7 +175,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
 
     ## update  a, b, v, w, and x
 
-    if (fu <= fval)
+    if (fu < fval)
       if (u < x)
         b = x;
       else
@@ -283,4 +288,8 @@ endfunction
 %!assert (fminbnd (@(x) (x - 1e-3)^4, -1, 1, opt0), 1e-3, 10e-3*sqrt (eps))
 %!assert (fminbnd (@(x) abs (x-1e7), 0, 1e10, opt0), 1e7, 10e7*sqrt (eps))
 %!assert (fminbnd (@(x) x^2 + sin (2*pi*x), 0.4, 1, opt0), fzero (@(x) 2*x + 2*pi*cos (2*pi*x), [0.4, 1], opt0), sqrt (eps))
+%!assert (fminbnd (@(x) x > 0.3, 0, 1) < 0.3) 
+%!assert (fminbnd (@(x) sin (x), 0, 0), 0, eps) 
+
+%!error <lower bound cannot be greater> fminbnd (@(x) sin (x), 0, -pi)
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 John W. Eaton
+Copyright (C) 2002-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -39,30 +39,30 @@ public:
     : base_diff_alg_eqn (xx, tt), DAERTFunc (f) { }
 
   DAERT (const ColumnVector& xx, const ColumnVector& xxdot, double tt,
-        DAERTFunc& f)
+         DAERTFunc& f)
     : base_diff_alg_eqn (xx, xxdot, tt), DAERTFunc (f) { }
 
   DAERT (const DAERT& a)
     : base_diff_alg_eqn (a), DAERTFunc (a) { }
 
   DAERT& operator = (const DAERT& a)
-    {
-      if (this != &a)
-        {
-          base_diff_alg_eqn::operator = (a);
-          DAERTFunc::operator = (a);
+  {
+    if (this != &a)
+      {
+        base_diff_alg_eqn::operator = (a);
+        DAERTFunc::operator = (a);
 
-        }
-      return *this;
-    }
+      }
+    return *this;
+  }
 
   virtual ~DAERT (void) { }
 
   void initialize (const ColumnVector& xx, const ColumnVector& xxdot,
                    double tt)
-    {
-      base_diff_alg_eqn::initialize (xx, xxdot, tt);
-    }
+  {
+    base_diff_alg_eqn::initialize (xx, xxdot, tt);
+  }
 };
 
 #endif

@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2012 John W. Eaton
+## Copyright (C) 2010-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,13 +19,14 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} runtests ()
 ## @deftypefnx {Function File} {} runtests (@var{directory})
-## Execute built-in tests for all function files in the specified directory.
-## Also executes tests in any C++ source files found in the directory, for
-## use with dynamically linked functions.
+## Execute built-in tests for all m-files in the specified @var{directory}.
+##
+## Test blocks in any C++ source files (@file{*.cc}) will also be executed
+## for use with dynamically linked oct-file functions.
 ##
 ## If no directory is specified, operate on all directories in Octave's
 ## search path for functions.
-## @seealso{rundemos, path}
+## @seealso{rundemos, test, path}
 ## @end deftypefn
 
 ## Author: jwe
@@ -36,20 +37,17 @@ function runtests (directory)
     dirs = ostrsplit (path (), pathsep ());
     do_class_dirs = true;
   elseif (nargin == 1)
-    if (is_absolute_filename (directory))
-      dirs = {directory};
-    elseif (is_rooted_relative_filename (directory))
-      dirs = {canonicalize_file_name(directory)};
-    else
-      if (directory(end) == filesep ())
-        directory = directory(1:end-1);
+    dirs = {canonicalize_file_name(directory)};
+    if (isempty (dirs{1}))
+      ## Search for directory name in path
+      if (directory(end) == '/' || directory(end) == '\')
+        directory(end) = [];
       endif
-      fullname = find_dir_in_path (directory);
-      if (! isempty (fullname))
-        dirs = {fullname};
-      else
+      fullname = dir_in_loadpath (directory);
+      if (isempty (fullname))
         error ("runtests: DIRECTORY argument must be a valid pathname");
       endif
+      dirs = {fullname};
     endif
     do_class_dirs = false;
   else
@@ -127,7 +125,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char").';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(?:test|assert|error|warning)',
+    retval = ! isempty (regexp (str, '^%!(?:test|xtest|assert|error|warning)',
                                      'lineanchors', 'once'));
   else
     error ("runtests: fopen failed: %s", f);

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2012 John W. Eaton
+## Copyright (C) 2006-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -47,7 +47,6 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!error <Invalid call to sleep> sleep ()
-
 %!error <Invalid call to sleep> sleep (1, 2)
 
 %!test
@@ -56,12 +55,11 @@
 %! assert (__prog_output_assert__ ("ok"));
 
 %!error <Invalid call to usleep> usleep ()
-
 %!error <Invalid call to usleep> usleep (1, 2)
 
 %!test
-%! from = tmpnam ();
-%! to = tmpnam ();
+%! from = tempname ();
+%! to = tempname ();
 %! id = fopen (from, "wb");
 %! if (id > 0 && fclose (id) == 0)
 %!   [s, e] = stat (from);
@@ -78,11 +76,10 @@
 %! endif
 
 %!error <Invalid call to rename> rename ()
-
 %!error <Invalid call to rename> rename ("foo", "bar", 1)
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! if ((id = fopen (nm, "wb")) > 0)
 %!   [s, err] = stat (nm);
 %!   if (! err && fclose (id) == 0 && unlink (nm) == 0)
@@ -92,19 +89,18 @@
 %! endif
 
 %!error <Invalid call to unlink> unlink ()
-
 %!error <Invalid call to unlink> unlink ("foo", 1)
+%!error <FILE must be a string> unlink ({})
 
 %!test
 %! [files, status, msg] = readdir (filesep);
 %! assert (iscell (files) && status == 0 && strcmp (msg, ""));
 
 %!error <Invalid call to readdir> readdir ()
-
 %!error <Invalid call to readdir> readdir ("foo", 1)
 
 %!test
-%! nm = tmpnam ();
+%! nm = tempname ();
 %! e1 = mkdir (nm);
 %! [s2, e2] = stat (nm);
 %! e3 = rmdir (nm);
@@ -112,9 +108,7 @@
 %! assert ((e1 && strcmp (s2.modestr(1), "d") && e3 && e4 < 0));
 
 %!error <Invalid call to mkdir> mkdir ()
-
 %!error <Invalid call to mkdir> mkdir ("foo", 1, 2)
-
 %!error <Invalid call to rmdir> rmdir ()
 
 %!test
@@ -124,27 +118,29 @@
 %! confirm_recursive_rmdir (crr);
 
 %!test
-%! orig_umask = umask (0);
-%! nm = tmpnam ();
-%! id = fopen (nm, "wb");
-%! s1 = stat (nm);
-%! fclose (id);
-%! unlink (nm);
+%! ## Test makes no sense on Windows systems
+%! if (isunix () || ismac ())
+%!   orig_umask = umask (0);
+%!   nm = tempname ();
+%!   id = fopen (nm, "wb");
+%!   s1 = stat (nm);
+%!   fclose (id);
+%!   unlink (nm);
 %!
-%! umask (777);
-%! nm = tmpnam ();
-%! id = fopen (nm, "wb");
-%! s2 = stat (nm);
-%! fclose (id);
-%! unlink (nm);
+%!   umask (777);
+%!   nm = tempname ();
+%!   id = fopen (nm, "wb");
+%!   s2 = stat (nm);
+%!   fclose (id);
+%!   unlink (nm);
 %!
-%! assert (deblank (s1.modestr), "-rw-rw-rw-");
-%! assert (deblank (s2.modestr), "----------");
-%! ## Restore original umask value
-%! umask (orig_umask);
+%!   assert (deblank (s1.modestr), "-rw-rw-rw-");
+%!   assert (deblank (s2.modestr), "----------");
+%!   ## Restore original umask value
+%!   umask (orig_umask);
+%! endif
 
 %!error <Invalid call to umask> umask ()
-
 %!error <Invalid call to umask> umask (1, 2)
 
 %!test
@@ -164,7 +160,6 @@
 %! && ischar (msg)));
 
 %!error <Invalid call to stat> stat ()
-
 %!error <Invalid call to stat> stat ("foo", 1)
 
 %!test
@@ -184,43 +179,63 @@
 %! && ischar (msg)));
 
 %!error <Invalid call to lstat> lstat ()
-
 %!error <Invalid call to lstat> lstat ("foo", 1)
+
+%!test
+%! if (isunix ())
+%!   assert (S_ISCHR (stat ("/dev/null").mode));
+%!   if (exist ("/dev/initctl"))
+%!     assert (S_ISFIFO (stat ("/dev/initctl").mode));
+%!   endif
+%!   assert (S_ISLNK (lstat ("/dev/core").mode));
+%! endif
+%! nm = tempname ();
+%! fid = fopen (nm, "wb");
+%! fclose (fid);
+%! r = [ S_ISREG(stat(nm).mode)
+%!       S_ISDIR(stat(nm).mode)
+%!       S_ISCHR(stat(nm).mode)
+%!       S_ISBLK(stat(nm).mode)
+%!       S_ISFIFO(stat(nm).mode)
+%!       S_ISLNK(lstat(nm).mode)
+%!       S_ISSOCK(stat(nm).mode) ];
+%! unlink (nm);
+%! assert (r(:), [true; false; false; false; false; false; false]);
+
+%!error <octave_base_value::double_value> S_ISREG ({})
+%!error <octave_base_value::double_value> S_ISDIR ({})
+%!error <octave_base_value::double_value> S_ISCHR ({})
+%!error <octave_base_value::double_value> S_ISBLK ({})
+%!error <octave_base_value::double_value> S_ISFIFO ({})
+%!error <octave_base_value::double_value> S_ISLNK ({})
+%!error <octave_base_value::double_value> S_ISSOCK ({})
+
+%!error <Invalid call to S_ISREG> S_ISREG ()
+%!error <Invalid call to S_ISDIR> S_ISDIR ()
+%!error <Invalid call to S_ISCHR> S_ISCHR ()
+%!error <Invalid call to S_ISBLK> S_ISBLK ()
+%!error <Invalid call to S_ISFIFO> S_ISFIFO ()
+%!error <Invalid call to S_ISLNK> S_ISLNK ()
+%!error <Invalid call to S_ISSOCK> S_ISSOCK ()
 
 %!assert (iscell (glob ([filesep "*"])))
 
 %!error <Invalid call to glob> glob ()
-
 %!error <Invalid call to glob> glob ("foo", 1)
-
-%!test
-%! string_fill_char = char (0);
-%! assert ((fnmatch ("a*a", {"aba"; "xxxba"; "aa"}) == [1; 0; 1]
-%! && fnmatch ({"a*a"; "b*b"}, "bob")
-%! && fnmatch ("x[0-5]*", {"x1"; "x6"}) == [1; 0]
-%! && fnmatch ("x[0-5]*", {"x1"; "x6"; "x001"}) == [1; 0; 1]
-%! && fnmatch ("x???y", {"xabcy"; "xy"}) == [1; 0]));
-
-%!error <Invalid call to fnmatch> fnmatch ()
-
-%!error <Invalid call to fnmatch> fnmatch ("foo", "bar", 3)
 
 %!assert (ischar (file_in_path (path (), "date.m")))
 
 %!error <invalid option> file_in_path ("foo", "bar", 1)
-
 %!error <Invalid call to file_in_path> file_in_path ()
-
 %!error <Invalid call to file_in_path> file_in_path ("foo", "bar", "baz", "ooka")
 
 %!testif HAVE_GETPWUID
 %! x = getpwuid (getuid ());
-%! assert ((strcmp (x.dir, tilde_expand ("~"))
-%! && strcmp (x.dir, tilde_expand (sprintf ("~%s", x.name)))
-%! && strcmp ("foobar", tilde_expand ("foobar"))));
+%! assert (x.dir, tilde_expand ("~"));
+%! assert (x.dir, tilde_expand (sprintf ("~%s", x.name)));
+%! assert ("foobar", tilde_expand ("foobar"));
 
 %!error <Invalid call to tilde_expand> tilde_expand ()
-
 %!error <Invalid call to tilde_expand> tilde_expand ("str", 2)
 
 %!testif HAVE_GETPGRP
@@ -256,7 +271,6 @@
 %!assert (getenv ("HOME"), tilde_expand ("~"))
 
 %!error <Invalid call to getenv> getenv ()
-
 %!error <Invalid call to getenv> getenv ("foo", 1)
 
 %!test
@@ -266,18 +280,13 @@
 %! warning (wns.state, "Octave:num-to-str");
 
 %!test
-%! putenv ("foobar", "baz");
+%! setenv ("foobar", "baz");
 %! assert (getenv ("foobar"), "baz");
 
-%!error <Invalid call to putenv> putenv ()
+%!error <Invalid call to setenv> setenv ()
+%!error <Invalid call to setenv> setenv ("foo", "bar", 1)
 
-%!error <Invalid call to putenv> putenv ("foo", "bar", 1)
-
-%!test
-%! wns = warning ("query", "Octave:num-to-str");
-%! warning ("on", "Octave:num-to-str");
-%! fail ("putenv (1, 2)","warning");
-%! warning (wns.state, "Octave:num-to-str");
+%!error <VAR must be a string> setenv (1, 2)
 
 %!test
 %! xdir = pwd ();
@@ -319,7 +328,6 @@
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %!error <Invalid call to getpwuid> getpwuid ()
-
 %!error <Invalid call to getpwuid> getpwuid (1, 2)
 
 %!testif HAVE_GETPWNAM
@@ -329,7 +337,6 @@
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %!error <Invalid call to getpwnam> getpwnam ()
-
 %!error <Invalid call to getpwnam> getpwnam ("foo", 1)
 
 %!testif HAVE_SETPWENT
@@ -340,7 +347,6 @@
 %! assert (strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %!error <Invalid call to setpwent> setpwent (1)
-
 %!error <Invalid call to endpwent> endpwent (1)
 
 %!testif HAVE_GETGRENT
@@ -361,7 +367,6 @@
 %! assert (strcmp (x.name, y.name) && x.gid == y.gid);
 
 %!error <Invalid call to getgrgid> getgrgid ()
-
 %!error <Invalid call to getgrgid> getgrgid (1, 2)
 
 %!testif HAVE_GETGRNAM
@@ -371,7 +376,6 @@
 %! assert (strcmp (x.name, y.name) && x.gid == y.gid);
 
 %!error <Invalid call to getgrnam> getgrnam ()
-
 %!error <Invalid call to getgrnam> getgrnam ("foo", 1)
 
 %!testif HAVE_SETGRENT
@@ -382,7 +386,6 @@
 %! assert (strcmp (x.name, y.name) && x.gid == y.gid);
 
 %!error <Invalid call to setgrent> setgrent (1)
-
 %!error <Invalid call to endgrent> endgrent (1)
 
 %!assert (isieee () == 1 || isieee () == 0)
@@ -390,4 +393,3 @@
 %!assert (isstruct (octave_config_info ()))
 
 %!assert (isstruct (getrusage ()))
-

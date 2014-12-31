@@ -1,7 +1,7 @@
 // Template array classes
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -66,9 +66,8 @@ DiagArray2<T>::extract_diag (octave_idx_type k) const
     d = Array<T> (dim_vector (std::min (cols () - k, rows ()), 1), T ());
   else if (k < 0 && -k < rows ())
     d = Array<T> (dim_vector (std::min (rows () + k, cols ()), 1), T ());
-  else
-    (*current_liboctave_error_handler)
-      ("diag: requested diagonal out of range");
+  else  // Matlab returns [] 0x1 for out-of-range diagonal
+    d.resize (dim_vector (0, 1));
 
   return d;
 }

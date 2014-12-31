@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2012 John W. Eaton
+Copyright (C) 2000-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_array_gripes_h)
-#define octave_liboctave_array_gripes_h 1
+#if !defined (octave_lo_array_gripes_h)
+#define octave_lo_array_gripes_h 1
 
 #include "dim-vector.h"
 
@@ -30,6 +30,10 @@ extern OCTAVE_API const char *error_id_nonconformant_args;
 extern OCTAVE_API const char *error_id_index_out_of_bounds;
 
 extern OCTAVE_API const char *error_id_invalid_index;
+
+extern OCTAVE_API const char *warning_id_nearly_singular_matrix;
+
+extern OCTAVE_API const char *warning_id_singular_matrix;
 
 extern void OCTAVE_API
 gripe_nan_to_logical_conversion (void);
@@ -70,5 +74,8 @@ gripe_invalid_assignment_size (void);
 
 extern void OCTAVE_API
 gripe_assignment_dimension_mismatch (void);
+
+extern void OCTAVE_API
+gripe_singular_matrix (double rcond = 0.0);
 
 #endif

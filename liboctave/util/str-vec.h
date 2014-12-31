@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -93,9 +93,11 @@ public:
     Array<std::string>::resize (dim_vector (n, 1), rfv);
   }
 
-  std::string& operator[] (octave_idx_type i) { return Array<std::string>::elem (i); }
+  std::string& operator[] (octave_idx_type i)
+  { return Array<std::string>::elem (i); }
 
-  std::string operator[] (octave_idx_type i) const { return Array<std::string>::elem (i); }
+  std::string operator[] (octave_idx_type i) const
+  { return Array<std::string>::elem (i); }
 
   string_vector& sort (bool make_uniq = false);
 

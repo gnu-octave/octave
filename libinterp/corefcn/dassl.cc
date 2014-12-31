@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -171,7 +171,7 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
   while (0)
 
 DEFUN (dassl, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential-algebraic equations\n\
 @tex\n\
@@ -310,8 +310,8 @@ parameters for @code{dassl}.\n\
                   fname = "function y = ";
                   fname.append (fcn_name);
                   fname.append (" (x, xdot, t) y = ");
-                  dassl_fcn = extract_function
-                    (c(0), "dassl", fcn_name, fname, "; endfunction");
+                  dassl_fcn = extract_function (c(0), "dassl", fcn_name, fname,
+                                                "; endfunction");
                 }
 
               if (dassl_fcn)
@@ -320,19 +320,19 @@ parameters for @code{dassl}.\n\
                     dassl_jac = c(1).function_value ();
                   else
                     {
-                        jac_name = unique_symbol_name ("__dassl_jac__");
-                        jname = "function jac = ";
-                        jname.append (jac_name);
-                        jname.append (" (x, xdot, t, cj) jac = ");
-                        dassl_jac = extract_function
-                          (c(1), "dassl", jac_name, jname, "; endfunction");
+                      jac_name = unique_symbol_name ("__dassl_jac__");
+                      jname = "function jac = ";
+                      jname.append (jac_name);
+                      jname.append (" (x, xdot, t, cj) jac = ");
+                      dassl_jac = extract_function (c(1), "dassl", jac_name,
+                                                    jname, "; endfunction");
 
-                        if (!dassl_jac)
-                          {
-                            if (fcn_name.length ())
-                              clear_function (fcn_name);
-                            dassl_fcn = 0;
-                          }
+                      if (!dassl_jac)
+                        {
+                          if (fcn_name.length ())
+                            clear_function (fcn_name);
+                          dassl_fcn = 0;
+                        }
                     }
                 }
             }
@@ -355,8 +355,8 @@ parameters for @code{dassl}.\n\
                       fname = "function y = ";
                       fname.append (fcn_name);
                       fname.append (" (x, xdot, t) y = ");
-                      dassl_fcn = extract_function
-                        (f_arg, "dassl", fcn_name, fname, "; endfunction");
+                      dassl_fcn = extract_function (f_arg, "dassl", fcn_name,
+                                                    fname, "; endfunction");
                     }
                   while (0);
                   break;
@@ -371,8 +371,8 @@ parameters for @code{dassl}.\n\
                         fname = "function y = ";
                         fname.append (fcn_name);
                         fname.append (" (x, xdot, t) y = ");
-                        dassl_fcn = extract_function
-                          (tmp(0), "dassl", fcn_name, fname, "; endfunction");
+                        dassl_fcn = extract_function (tmp(0), "dassl", fcn_name,
+                                                      fname, "; endfunction");
 
                         if (dassl_fcn)
                           {
@@ -380,9 +380,9 @@ parameters for @code{dassl}.\n\
                             jname = "function jac = ";
                             jname.append (jac_name);
                             jname.append (" (x, xdot, t, cj) jac = ");
-                            dassl_jac = extract_function
-                              (tmp(1), "dassl", jac_name, jname,
-                               "; endfunction");
+                            dassl_jac = extract_function (tmp(1), "dassl",
+                                                          jac_name, jname,
+                                                          "; endfunction");
 
                             if (!dassl_jac)
                               {

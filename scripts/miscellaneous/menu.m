@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2012 John W. Eaton
+## Copyright (C) 1993-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,82 +17,83 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} menu (@var{title}, @var{opt1}, @dots{})
-## Print a title string followed by a series of options.  Each option will
-## be printed along with a number.  The return value is the number of the
-## option selected by the user.  This function is useful for interactive
-## programs.  There is no limit to the number of options that may be passed
-## in, but it may be confusing to present more than will fit easily on one
-## screen.
-## @seealso{disp, printf, input}
+## @deftypefn  {Function File} {@var{choice} =} menu (@var{title}, @var{opt1}, @dots{})
+## @deftypefnx {Function File} {@var{choice} =} menu (@var{title}, @{@var{opt1}, @dots{}@})
+## Display a menu with heading @var{title} and options @var{opt1}, @dots{},
+## and wait for user input.
+##
+## If the GUI is running, or Java is available, the menu is displayed
+## graphically using @code{listdlg}.  Otherwise, the title and menu options
+## are printed on the console.
+##
+## @var{title} is a string and the options may be input as individual strings
+## or as a cell array of strings.
+##
+## The return value @var{choice} is the number of the option selected by the
+## user counting from 1.
+##
+## This function is useful for interactive programs.  There is no limit to the
+## number of options that may be passed in, but it may be confusing to present
+## more than will fit easily on one screen.
+## @seealso{input, listdlg}
 ## @end deftypefn
 
 ## Author: jwe
 
-function num = menu (title, varargin)
+function choice = menu (title, varargin)
 
   if (nargin < 2)
     print_usage ();
   endif
 
-  ## Force pending output to appear before the menu.
+  if (! ischar (title))
+    error ("menu: TITLE must be a string");
+  elseif (nargin > 2 && ! iscellstr (varargin))
+    error ("menu: All OPTIONS must be strings");
+  elseif (! ischar (varargin{1}) && ! iscellstr (varargin{1}))
+    error ("menu: OPTIONS must be string or cell array of strings");
+  endif
 
-  fflush (stdout);
+  if (isguirunning () || usejava ("awt"))
+    [choice, ok] = listdlg ("Name", "menu", "PromptString", title,
+                            "ListString", varargin, "SelectionMode", "Single");
+    if (! ok)
+      choice = 1;
+    endif
+  else  # console menu
+    ## Force pending output to appear before the menu.
+    fflush (stdout);
 
-  ## Don't send the menu through the pager since doing that can cause
-  ## major confusion.
+    ## Don't send the menu through the pager since doing that can cause
+    ## major confusion.
+    page_screen_output (0, "local");
 
-  page_screen_output (0, "local");
+    if (! isempty (title))
+      printf ("%s\n", title);
+    endif
 
-  ## Process Supplied Options
-  if (nargin == 2)
-    ## List in a cell array
-    if (iscell (varargin{1}))
-      varargin = varargin{1};
-      nopt = length (varargin);
+    nopt = numel (varargin);
+    while (1)
       for i = 1:nopt
-        while (iscell (varargin{i}))
-          varargin{i} = varargin{i}{1};
-        endwhile
+        printf ("  [%2d] %s\n", i, varargin{i});
       endfor
-    else
-      nopt = nargin - 1;
-    endif
-  else
-    ## List with random elements in it - pick the first always
-    for i = 1:nargin - 1
-      if (iscell (varargin{i}))
-        while (iscell (varargin{i}))
-          varargin{i} = varargin{i}{1};
-        endwhile
+      printf ("\n");
+      s = input ("Select a number: ", "s");
+      choice = sscanf (s, "%d");
+      if (! isscalar (choice) || choice < 1 || choice > nopt)
+        printf ("\nerror: input invalid or out of range\n\n");
       else
-        if (! ischar (varargin{i}))
-          varargin{i} = varargin{i}(1);
-        endif
+        break;
       endif
-    endfor
-    nopt = length (varargin);
+    endwhile
   endif
-
-  if (! isempty (title))
-    disp (title);
-    printf ("\n");
-  endif
-
-  while (1)
-    for i = 1:nopt
-      printf ("  [%2d] ", i);
-      disp (varargin{i});
-    endfor
-    printf ("\n");
-    s = input ("pick a number, any number: ", "s");
-    num = sscanf (s, "%d");
-    if (! isscalar (num) || num < 1 || num > nopt)
-      printf ("\nerror: input invalid or out of range\n\n");
-    else
-      break;
-    endif
-  endwhile
 
 endfunction
+
+
+%!error menu ()
+%!error menu ("title")
+%!error <TITLE must be a string> menu (1, "opt1")
+%!error <All OPTIONS must be strings> menu ("title", "opt1", 1)
+%!error <OPTIONS must be string or cell array of strings> menu ("title", 1)
 

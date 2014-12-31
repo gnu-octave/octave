@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_tree_all_h)
-#define octave_tree_all_h 1
+#if !defined (octave_pt_all_h)
+#define octave_pt_all_h 1
 
 #include "pt.h"
 #include "pt-arg-list.h"
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-binop.h"
 #include "pt-cbinop.h"
 #include "pt-check.h"
+#include "pt-classdef.h"
 #include "pt-cmd.h"
 #include "pt-colon.h"
 #include "pt-const.h"
@@ -37,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-except.h"
 #include "pt-exp.h"
 #include "pt-fcn-handle.h"
+#include "pt-funcall.h"
 #include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-jump.h"

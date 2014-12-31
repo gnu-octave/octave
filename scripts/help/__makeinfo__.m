@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Søren Hauberg
+## Copyright (C) 2009-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -123,16 +123,16 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     if (fid < 0)
       error ("__makeinfo__: could not create temporary file");
     endif
-    fwrite (fid, text);
+    fprintf (fid, "%s", text);
     fclose (fid);
 
     ## Take action depending on output type
     switch (lower (output_type))
       case "plain text"
-        cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
+        cmd = sprintf ("%s --no-headers --no-warn --force --no-validate --output=- %s",
                        makeinfo_program (), name);
       case "html"
-        cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force %s",
+        cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force --output=- %s",
                        makeinfo_program (), name);
       otherwise
         error ("__makeinfo__: unsupported output type: '%s'", output_type);

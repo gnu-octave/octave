@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -30,6 +30,9 @@
 ##
 ## If the optional argument @var{dim} is given, operate along this
 ## dimension.
+##
+## If @var{dim} is larger than the dimensions of @var{x}, the result will
+## have @var{dim} dimensions.
 ## @seealso{prepad, cat, resize}
 ## @end deftypefn
 
@@ -56,8 +59,7 @@ function y = postpad (x, l, c, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == fix (dim))
-        || !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == fix (dim) && dim >= 1))
       error ("postpad: DIM must be an integer and a valid dimension");
     endif
   endif
@@ -89,9 +91,10 @@ endfunction
 %!assert (postpad ([1,2], 4, 2), [1,2,2,2])
 %!assert (postpad ([1;2], 4, 2), [1;2;2;2])
 %!assert (postpad ([1,2], 2, 2, 1), [1,2;2,2])
+%!assert (postpad ([1;2], 2, 2, 3), reshape ([1;2;2;2], 2, 1, 2))
+%!assert (postpad ([1,2], 2, 2, 3), reshape ([1,2,2,2], 1, 2, 2))
 
 %!error postpad ()
 %!error postpad (1)
 %!error postpad (1,2,3,4,5)
-%!error postpad ([1,2], 2, 2,3)
 

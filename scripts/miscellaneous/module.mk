@@ -6,11 +6,11 @@ miscellaneous_PRIVATE_FCN_FILES = \
 
 miscellaneous_FCN_FILES = \
   miscellaneous/ans.m \
-  miscellaneous/bincoeff.m \
   miscellaneous/bug_report.m \
   miscellaneous/bunzip2.m \
   miscellaneous/bzip2.m \
   miscellaneous/cast.m \
+  miscellaneous/colon.m \
   miscellaneous/citation.m \
   miscellaneous/comma.m \
   miscellaneous/compare_versions.m \
@@ -21,13 +21,13 @@ miscellaneous_FCN_FILES = \
   miscellaneous/desktop.m \
   miscellaneous/dir.m \
   miscellaneous/dos.m \
-  miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
   miscellaneous/error_ids.m \
-	miscellaneous/fact.m \
+  miscellaneous/fact.m \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
   miscellaneous/fullfile.m \
+  miscellaneous/genvarname.m \
   miscellaneous/getappdata.m \
   miscellaneous/getfield.m \
   miscellaneous/gunzip.m \
@@ -50,6 +50,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/movefile.m \
   miscellaneous/namelengthmax.m \
   miscellaneous/news.m \
+  miscellaneous/open.m \
   miscellaneous/orderfields.m \
   miscellaneous/pack.m \
   miscellaneous/paren.m \
@@ -67,7 +68,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/symvar.m \
   miscellaneous/tar.m \
   miscellaneous/tempdir.m \
-  miscellaneous/tempname.m \
+  miscellaneous/tmpnam.m \
   miscellaneous/unix.m \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \

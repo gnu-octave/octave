@@ -54,6 +54,10 @@ the maintainer tools we depend upon, including:
   - Rsync <http://samba.anu.edu.au/rsync/>
   - Tar <http://www.gnu.org/software/tar/>
 
+In addition to these maintainer tools, Octave makes use of many external
+libraries and packages.  See the file doc/interpreter/install.txi for the
+complete list of required and optional dependencies.
+
 Only building the initial full source tree will be a bit painful.
 Later, after synchronizing from the repository, a plain `make' should
 be sufficient.
@@ -131,10 +135,17 @@ and preparing patches.
 
 An overview of the directory layout of Octave's source files:
 
+  build-aux     -- scripts which support the build process
+
+
   doc           -- Texinfo documentation for Octave
 
 
-  examples      -- some example files
+  etc           -- miscellaneous files, such as this HACKING howto
+
+
+  examples      -- some example files (mkoctfile and mex samples, old class
+                   programming interface)
 
 
   gnulib-hg     -- gnulib subrepo.  This is a clone of the gnulib source
@@ -192,72 +203,68 @@ An overview of the directory layout of Octave's source files:
     numeric     C++ numerical algorithms and interfaces to the Fortran
                 algorithms
 
-    operators   code for operators that act on base classes such as Array
+    operators   code for operators that act on base classes (such as Array)
 
     system      OS-related functions
  
     util        utility and miscellaneous functions
 
-  libinterp     -- The interpreter itself plus lots of infrastructure
+  libinterp     -- the interpreter itself plus lots of infrastructure
                    around it.  Octave's extensive octave_value class
                    hierarchy for polymorphically handling all Octave
                    types is defined here.  The built-in functions are
                    also defined here.
 
-    octave-value     The octave_value class hierarchy.  These are the
+    octave-value     the octave_value class hierarchy.  These are the
                      container classes that hold various Octave data
                      types like struct numerical arrays, structure
                      arrays, and cell arrays.
 
     parse-tree       Classes that define the parse tree for the
-                     interpreter.
+                     interpreter
 
-    interp-core      Core utilities for the interpreter.  There are no
-                     DEFUN functions (callable from the scripting
-                     language) defined here.
+    corefcn          statically linked DEFUN functions (callable from
+                     the scripting langauge) as well as internal C++
+                     functions used by the interpreter.
 
-    interpfcn        Functions closely related to the interpreter.
-                     Includes DEFUN functions (callable from the
-                     scripting language).  Also may export C++ functions
-                     that are used in other parts of the interpreter.
-
-    corefcn          Statically linked DEFUN functions (callable from
-                     the scripting langauge).  No C++ functions exported
-                     for use in other parts of the interpreter.
-
-    dldfcn           Dynamically linked DEFUN functions (callable
+    dldfcn           dynamically linked DEFUN functions (callable
                      from the scripting language).  If you see "help
                      foo" telling you that foo is defined in foo.oct,
                      then foo.cc will be found here and contain the
                      source code.
 
-    operators        Definitions and template instantiations for
+    operators        definitions and template instantiations for
                      operators for all possible Octave type
-                     combinations.
+                     combinations
 
-    template-inst    Some C++ template instantiations.
+    template-inst    some C++ template instantiations
 
 
   libgui        -- the graphical user interface of GNU Octave
 
-    src              source files.
+    kb-layouts       various files need by the qterminal widget that has
+                     been derived from Konsole
 
-      m-editor       source files for the m-file editor.
-
-      qtinfo         source files for the Qt texinfo browser.
-
-      icons          icon files that will be compiled into the
-                     executable via a resource file.
+    languages        translation files and list of translators
 
     qterminal        Qt terminal widget
 
-    languages        translation files and list of translators.
+    src              source files
 
-    kb-layouts       various files need by the qterminal widget that has
-                     been derived from Konsole.
-      
+      icons          icon files that will be compiled into the
+                     executable via a resource file
+
+      m-editor       source files for the m-file editor
+
+      qtinfo         source files for the Qt texinfo browser
+
+
+  m4            -- m4 scripts used by configure during the build process
+
 
   scripts       -- functions written in the Octave language
+
+    @ftp             ftp object class
 
     audio            play and record sound files (system dependent)
 
@@ -265,11 +272,11 @@ An overview of the directory layout of Octave's source files:
 
     elfun            elementary mathematical functions
 
-    @ftp             ftp object class
-
     general          utility functions
 
     geometry         geometry algorithms
+
+    gui              User-Interface (UI) functions
 
     help             help subsystem functions
 
@@ -314,24 +321,29 @@ An overview of the directory layout of Octave's source files:
     time             time and date functions
 
 
+  src           -- code for the actual executables that are created.  This
+                   includes octave, octave-cli, octave-gui, as well as
+                   mkoctfile.
+
+
   test          -- tests for the interpreter
 
-    test_ .m         fixed tests for the interpreter
+    *.tst            fixed tests for the interpreter
 
-    fntests.m        script to run function tests embedded in C++ and .m
-                     files
+    fntests.m        script to run function tests embedded in C++ and
+                     .m files
 
 ----
 John W. Eaton
 jwe@octave.org
 
+Last updated: Tue, 29 Oct 2013 11:42:47 PDT 
 
-Last updated: Wed, 15 May 2013 03:02:45 EDT
 
 
 ################################################################################
 
-Copyright (C) 2009-2012 John W. Eaton
+Copyright (C) 2009-2013 John W. Eaton
 
 This file is part of Octave.
 

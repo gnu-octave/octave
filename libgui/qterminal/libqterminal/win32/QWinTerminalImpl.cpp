@@ -1,21 +1,23 @@
+
 /*
 
-Copyright (C) 2011 Michael Goffioul.
+Copyright (C) 2011, 2013 Michael Goffioul.
 
 This file is part of QConsole.
 
-Foobar is free software: you can redistribute it and/or modify
+This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-QConsole is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -23,7 +25,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <QClipboard>
 #include <QColor>
 #include <QFont>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QResizeEvent>
@@ -34,6 +36,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <QToolTip>
 #include <QCursor>
 #include <QMessageBox>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QUrl>
 
 #include <fcntl.h>
 #include <io.h>
@@ -172,16 +177,21 @@ public:
   QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd = QString ());
   ~QConsolePrivate (void);
 
-  void updateConsoleSize (bool sync = false);
+  void updateConsoleSize (bool sync = false, bool allow_smaller_width = false);
   void syncConsoleParameters (void);
   void grabConsoleBuffer (CHAR_INFO* buf = 0);
-  void updateScrollBar (void);
-  void setScrollValue (int value);
+  void updateHorizontalScrollBar (void);
+  void updateVerticalScrollBar (void);
+  void setHorizontalScrollValue (int value);
+  void setVerticalScrollValue (int value);
   void updateConsoleView (bool grab = true);
   void monitorConsole (void);
   void startCommand (void);
   void sendConsoleText (const QString& s);
   QRect cursorRect (void);
+  void selectAll();
+  void selectWord(const QPoint& cellPos);
+  void selectLine(const QPoint& cellPos);
 
   void log (const char* fmt, ...);
 
@@ -203,6 +213,7 @@ public:
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
   void setCursorColor (bool useForegroundColor, const QColor& color);
+  void setScrollBufferSize (int value);
 
   void drawTextBackground (QPainter& p, int cx1, int cy1, int cx2, int cy2,
                            int cw, int ch);
@@ -248,7 +259,8 @@ private:
   HANDLE m_process;
 
   QConsoleView* m_consoleView;
-  QScrollBar* m_scrollBar;
+  QScrollBar* m_horizontalScrollBar;
+  QScrollBar* m_verticalScrollBar;
   QTimer* m_consoleWatcher;
   QConsoleThread *m_consoleThread;
 
@@ -266,9 +278,9 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 //////////////////////////////////////////////////////////////////////////////
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
-  : q (parent), m_command (cmd), m_hasBlinkingCursor (true),
-    m_cursorType (BlockCursor), m_beginSelection (0, 0),
-    m_endSelection (0, 0), m_settingSelection (false),
+  : q (parent), m_command (cmd), m_cursorBlinking (false),
+    m_hasBlinkingCursor (true), m_cursorType (BlockCursor), 
+    m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
     m_process (NULL), m_inWheelEvent (false)
 {
   log (NULL);
@@ -329,7 +341,9 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   m_consoleWindow = GetConsoleWindow ();
 
   // In case the console window hasn't been created hidden...
+#ifdef HIDDEN_CONSOLE
   ShowWindow (m_consoleWindow, SW_HIDE);
+#endif
 
   CONSOLE_SCREEN_BUFFER_INFO sbi;
 
@@ -359,13 +373,15 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   m_buffer = m_tmpBuffer = 0;
 
   m_consoleView = new QConsoleView (parent);
-  m_scrollBar = new QScrollBar (Qt::Vertical, parent);
+  m_horizontalScrollBar = new QScrollBar (Qt::Horizontal, parent);
+  m_verticalScrollBar = new QScrollBar (Qt::Vertical, parent);
 
-  QHBoxLayout* l = new QHBoxLayout (parent);
+  QGridLayout* l = new QGridLayout (parent);
   l->setContentsMargins (0, 0, 0, 0);
   l->setSpacing (0);
-  l->addWidget (m_consoleView, 1);
-  l->addWidget (m_scrollBar, 0);
+  l->addWidget (m_consoleView, 0, 0);
+  l->addWidget (m_horizontalScrollBar, 1, 0);
+  l->addWidget (m_verticalScrollBar, 0, 1);
 
   // Choose 15 (0xF) as index into the Windows console color map for the
   // background and 0 (0x0) as the index for the foreground.  This
@@ -391,7 +407,8 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   parent->setFocusPolicy (Qt::StrongFocus);
   parent->winId ();
 
-  updateScrollBar ();
+  updateHorizontalScrollBar ();
+  updateVerticalScrollBar ();
 
   m_consoleWatcher = new QTimer (parent);
   m_consoleWatcher->setInterval (10);
@@ -401,8 +418,12 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   QObject::connect (m_blinkCursorTimer, SIGNAL (timeout()),
                     q, SLOT (blinkCursorEvent ()));  
 
-  QObject::connect (m_scrollBar, SIGNAL (valueChanged (int)),
-                    q, SLOT (scrollValueChanged (int)));
+  QObject::connect (m_horizontalScrollBar, SIGNAL (valueChanged (int)),
+                    q, SLOT (horizontalScrollValueChanged (int)));
+
+  QObject::connect (m_verticalScrollBar, SIGNAL (valueChanged (int)),
+                    q, SLOT (verticalScrollValueChanged (int)));
+
   QObject::connect (m_consoleWatcher, SIGNAL (timeout (void)),
                     q, SLOT (monitorConsole (void)));
 
@@ -572,6 +593,9 @@ QColor QConsolePrivate::cursorColor (void) const
 void QConsolePrivate::setBackgroundColor (const QColor& color)
 {
   m_colors[15] = color;
+
+  QPalette palette (color);
+  m_consoleView->setPalette (palette);
 }
 
 void QConsolePrivate::setForegroundColor (const QColor& color)
@@ -588,6 +612,16 @@ void QConsolePrivate::setCursorColor (bool useForegroundColor,
                                       const QColor& color)
 {
   m_cursorColor = useForegroundColor ? QColor () : color;
+}
+
+void QConsolePrivate::setScrollBufferSize (int value)
+{
+  CONSOLE_SCREEN_BUFFER_INFO sbi;
+  GetConsoleScreenBufferInfo (m_stdOut, &sbi);
+
+  m_bufferSize = QSize (sbi.dwSize.X, (SHORT)value);
+
+  updateConsoleSize (true);
 }
 
 void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
@@ -651,6 +685,83 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
   p.restore ();
 }
 
+void QConsolePrivate::selectAll()
+{
+  m_beginSelection = QPoint (0,0);
+  m_endSelection = QPoint(m_bufferSize.width (), 
+                          m_cursorPos.y());
+  updateSelection();
+}
+
+void QConsolePrivate::selectWord (const QPoint & cellpos)
+{
+  QPoint begin = cellpos;
+  QPoint end = cellpos;
+
+  int stride = m_consoleRect.width ();
+
+  int verticalScrollOffset = m_consoleRect.top ();
+  int horizontalScrollOffset = m_consoleRect.left ();
+
+  // get begin, end in buffer offsets
+  begin.ry () -= verticalScrollOffset;
+  end.ry () -= verticalScrollOffset;
+
+  begin.rx () -= horizontalScrollOffset;
+  end.rx () -= horizontalScrollOffset;
+
+  // loog at current clicked on char to determinate ig getting space chunk or nonspace chunk
+  if (QChar(m_buffer[begin.y ()*stride + begin.x ()].Char.UnicodeChar).isSpace () == false)
+  {
+    // from current char, go back and fwd to find start and end of block
+    while(begin.x () > 0 && 
+          QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace() == false)
+    {
+        begin.rx () --;
+    }
+
+    while(end.x () < m_consoleRect.width () && 
+          QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace() == false)
+    {
+      end.rx () ++;
+    }
+  }
+  else
+  {
+    while(begin.x () > 0 && 
+          QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace())
+    {
+      begin.rx () --;
+    }
+
+    while(end.x () < m_consoleRect.width () && 
+          QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace ())
+    {
+      end.rx () ++;
+    }
+  }
+
+  // convert console  offsets to absolute cell positions
+  begin.ry () += verticalScrollOffset;
+  end.ry () += verticalScrollOffset;
+
+  begin.rx () += horizontalScrollOffset;
+  end.rx () += horizontalScrollOffset;
+
+  m_beginSelection = begin;
+  m_endSelection = end;
+
+  updateSelection ();
+}
+
+void QConsolePrivate::selectLine (const QPoint & cellpos)
+{
+  m_beginSelection = QPoint (0, cellpos.y ());
+  m_endSelection = QPoint (m_bufferSize.width ()-1, cellpos.y ());
+  updateSelection ();
+}
+
+
 void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
                                      int cx2, int cy2, int cw, int ch)
 {
@@ -664,10 +775,14 @@ void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
   if (haveSelection)
     maybeSwapPoints (begin, end);
 
-  int scrollOffset = m_consoleRect.top ();
+  int verticalScrollOffset = m_consoleRect.top ();
+  int horizontalScrollOffset = m_consoleRect.left ();
 
-  begin.ry () -= scrollOffset;
-  end.ry () -= scrollOffset;
+  begin.ry () -= verticalScrollOffset;
+  end.ry () -= verticalScrollOffset;
+
+  begin.rx () -= horizontalScrollOffset;
+  end.rx () -= horizontalScrollOffset;
 
   int ascent = p.fontMetrics ().ascent ();
   int stride = m_consoleRect.width ();
@@ -868,7 +983,7 @@ void QConsolePrivate::log (const char* fmt, ...)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::updateConsoleSize (bool sync)
+void QConsolePrivate::updateConsoleSize (bool sync, bool allow_smaller_width)
 {
   QFontMetrics fm (m_font);
   QSize winSize = m_consoleView->size ();
@@ -879,9 +994,30 @@ void QConsolePrivate::updateConsoleSize (bool sync)
   m_consoleRect.setWidth (winSize.width () / fm.averageCharWidth ());
   m_consoleRect.setHeight (winSize.height () / fm.lineSpacing ());
 
-  m_bufferSize.rwidth () = m_consoleRect.width ();
-  m_bufferSize.rheight () = qMax (m_bufferSize.height (),
-                                  m_consoleRect.height ());
+  // Don't shrink the size of the buffer.  That way wide lines won't be
+  // truncated and will reappear if the window is enlarged again later.
+
+  if (allow_smaller_width || m_consoleRect.width () > m_bufferSize.width ())
+    m_bufferSize.rwidth () = m_consoleRect.width ();
+
+  if (qMax (m_bufferSize.height (), m_consoleRect.height ())
+      > m_bufferSize.height ())
+    m_bufferSize.rheight () = qMax (m_bufferSize.height (),
+                                    m_consoleRect.height ());
+
+  // Store the terminal size in the environment.  When Octave is
+  // initialized, we ask the command editor (usually readline) to prefer
+  // using these values rather than querying the terminal so that the
+  // buffer size can be larger than the size of the window that the
+  // command editor will actually use.
+
+  qputenv ("LINES", QByteArray::number (m_consoleRect.height ()));
+  qputenv ("COLUMNS", QByteArray::number (m_consoleRect.width ())); 
+
+  // Force the command line editor (usually readline) to notice the
+  // change in screen size as soon as possible.
+
+  q->setSize (m_consoleRect.height (), m_consoleRect.width ());
 
   m_consoleRect.moveLeft (0);
   if (m_consoleRect.bottom () >= m_bufferSize.height ())
@@ -899,7 +1035,8 @@ void QConsolePrivate::updateConsoleSize (bool sync)
   if (sync)
     syncConsoleParameters ();
 
-  updateScrollBar ();
+  updateHorizontalScrollBar ();
+  updateVerticalScrollBar ();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -986,25 +1123,70 @@ void QConsolePrivate::grabConsoleBuffer (CHAR_INFO* buf)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::updateScrollBar (void)
+void QConsolePrivate::updateHorizontalScrollBar (void)
 {
-  m_scrollBar->setMinimum (0);
-  if (m_bufferSize.height () > m_consoleRect.height ())
-    m_scrollBar->setMaximum (m_bufferSize.height () - m_consoleRect.height ());
+  m_horizontalScrollBar->setMinimum (0);
+  if (m_bufferSize.width () > m_consoleRect.width ())
+    m_horizontalScrollBar->setMaximum (m_bufferSize.width () - m_consoleRect.width ());
   else
-    m_scrollBar->setMaximum (0);
-  m_scrollBar->setSingleStep (1);
-  m_scrollBar->setPageStep (m_consoleRect.height ());
-  m_scrollBar->setValue (m_consoleRect.top ());
+    m_horizontalScrollBar->setMaximum (0);
+  m_horizontalScrollBar->setSingleStep (1);
+  m_horizontalScrollBar->setPageStep (m_consoleRect.width ());
+  m_horizontalScrollBar->setValue (m_consoleRect.left ());
 
-  log ("Scrollbar parameters updated: %d/%d/%d/%d\n",
-       m_scrollBar->minimum (), m_scrollBar->maximum (),
-       m_scrollBar->singleStep (), m_scrollBar->pageStep ());
+  log ("Horizontal scrollbar parameters updated: %d/%d/%d/%d\n",
+       m_horizontalScrollBar->minimum (),
+       m_horizontalScrollBar->maximum (),
+       m_horizontalScrollBar->singleStep (),
+       m_horizontalScrollBar->pageStep ());
+}
+
+void QConsolePrivate::updateVerticalScrollBar (void)
+{
+  m_verticalScrollBar->setMinimum (0);
+  if (m_bufferSize.height () > m_consoleRect.height ())
+    m_verticalScrollBar->setMaximum (m_bufferSize.height () - m_consoleRect.height ());
+  else
+    m_verticalScrollBar->setMaximum (0);
+  m_verticalScrollBar->setSingleStep (1);
+  m_verticalScrollBar->setPageStep (m_consoleRect.height ());
+  m_verticalScrollBar->setValue (m_consoleRect.top ());
+
+  log ("Vertical scrollbar parameters updated: %d/%d/%d/%d\n",
+       m_verticalScrollBar->minimum (), m_verticalScrollBar->maximum (),
+       m_verticalScrollBar->singleStep (), m_verticalScrollBar->pageStep ());
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::setScrollValue (int value)
+void QConsolePrivate::setHorizontalScrollValue (int value)
+{
+  if (value == m_consoleRect.left ())
+    return;
+
+  SMALL_RECT r;
+  HANDLE hStdOut = m_stdOut;
+
+  if (value + m_consoleRect.width () > m_bufferSize.width ())
+    value = m_bufferSize.width () - m_consoleRect.width ();
+
+  r.Left = value;
+  r.Top = m_consoleRect.top ();
+  r.Right = value + m_consoleRect.width () - 1;
+  r.Bottom = m_consoleRect.bottom ();
+
+  log ("Scrolling window horizontally: (%d, %d) -> (%d, %d) [%d x %d]\n",
+       r.Left, r.Top, r.Right, r.Bottom, 
+       r.Right - r.Left + 1, r.Bottom - r.Top + 1);
+
+  if (SetConsoleWindowInfo (hStdOut, TRUE, &r))
+    {
+      m_consoleRect.moveLeft (value);
+      updateConsoleView ();
+    }
+}
+
+void QConsolePrivate::setVerticalScrollValue (int value)
 {
   if (value == m_consoleRect.top ())
     return;
@@ -1020,7 +1202,7 @@ void QConsolePrivate::setScrollValue (int value)
   r.Right = m_consoleRect.right ();
   r.Bottom = value + m_consoleRect.height () - 1;
 
-  log ("Scrolling window: (%d, %d) -> (%d, %d) [%d x %d]\n",
+  log ("Scrolling window vertically: (%d, %d) -> (%d, %d) [%d x %d]\n",
        r.Left, r.Top, r.Right, r.Bottom, 
        r.Right - r.Left + 1, r.Bottom - r.Top + 1);
 
@@ -1067,7 +1249,8 @@ void QConsolePrivate::monitorConsole (void)
           // Buffer size changed
           m_bufferSize.rwidth () = sbi.dwSize.X;
           m_bufferSize.rheight () = sbi.dwSize.Y;
-          updateScrollBar ();
+          updateHorizontalScrollBar ();
+          updateVerticalScrollBar ();
         }
 
       if (m_cursorPos.x () != sbi.dwCursorPosition.X
@@ -1095,7 +1278,8 @@ void QConsolePrivate::monitorConsole (void)
           m_consoleRect = QRect (sbi.srWindow.Left, sbi.srWindow.Top,
                                  sbi.srWindow.Right - sbi.srWindow.Left + 1,
                                  sbi.srWindow.Bottom - sbi.srWindow.Top + 1);
-          updateScrollBar ();
+          updateHorizontalScrollBar ();
+          updateVerticalScrollBar ();
           updateConsoleView ();
           return;
         }
@@ -1181,14 +1365,22 @@ void QConsolePrivate::sendConsoleText (const QString& s)
         {
           if (c == L'\r' && i < (len - 1) && s.at (i+1) == L'\n')
             i++;
-          if (nEvents)
-            {
-              WriteConsoleInput (hStdIn, events, nEvents, &written);
-              nEvents = 0;
-              ZeroMemory (events, sizeof (events));
-            }
-          PostMessage (m_consoleWindow, WM_KEYDOWN, VK_RETURN, 0x001C0001);
-          PostMessage (m_consoleWindow, WM_KEYDOWN, VK_RETURN, 0xC01C0001);
+
+          // add new line
+          events[nEvents].EventType                        = KEY_EVENT;
+          events[nEvents].Event.KeyEvent.bKeyDown          = TRUE;
+          events[nEvents].Event.KeyEvent.wRepeatCount      = 1;
+          events[nEvents].Event.KeyEvent.wVirtualKeyCode   =
+            VK_RETURN;
+          events[nEvents].Event.KeyEvent.wVirtualScanCode  = 0;
+          events[nEvents].Event.KeyEvent.uChar.UnicodeChar = c.unicode ();
+          events[nEvents].Event.KeyEvent.dwControlKeyState = 0;
+          nEvents++;
+ 
+          WriteConsoleInput (hStdIn, events, nEvents, &written);
+          nEvents = 0;
+          ZeroMemory (events, sizeof (events));
+ 
         }
       else
         {
@@ -1227,12 +1419,18 @@ QConsolePrivate::cursorRect (void)
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
-    : QTerminal (parent), d (new QConsolePrivate (this))
+    : QTerminal (parent), d (new QConsolePrivate (this)),
+      allowTripleClick (false)
 {
     installEventFilter (this);
 
     connect (this, SIGNAL (set_global_shortcuts_signal (bool)),
            parent, SLOT (set_global_shortcuts (bool)));
+
+    connect (this, SIGNAL (set_screen_size_signal (int, int)),
+             parent, SLOT (set_screen_size (int, int)));
+
+    setAcceptDrops (true);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1261,7 +1459,11 @@ void QWinTerminalImpl::mouseMoveEvent (QMouseEvent *event)
 
 void QWinTerminalImpl::mousePressEvent (QMouseEvent *event)
 {
-  if (event->button () == Qt::LeftButton)
+  if (allowTripleClick)
+    {
+      mouseTripleClickEvent (event);
+    }
+  else if (event->button () == Qt::LeftButton)
     {
       d->m_settingSelection = true;
 
@@ -1271,7 +1473,7 @@ void QWinTerminalImpl::mousePressEvent (QMouseEvent *event)
 
 void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
 {
-  if (event->button () == Qt::LeftButton)
+  if (event->button () == Qt::LeftButton && d->m_settingSelection)
     {
       d->m_endSelection = d->posToCell (event->pos ());
 
@@ -1279,6 +1481,36 @@ void QWinTerminalImpl::mouseReleaseEvent (QMouseEvent *event)
 
       d->m_settingSelection = false;
     }
+}
+
+void QWinTerminalImpl::mouseDoubleClickEvent (QMouseEvent *event)
+{
+  if (event->button () == Qt::LeftButton)
+    {
+      // doubleclick - select word
+      d->m_settingSelection = false;
+
+      d->selectWord (d->posToCell (event->pos ()));
+
+      allowTripleClick = true;
+
+      QTimer::singleShot (QApplication::doubleClickInterval (),this,
+                     SLOT (tripleClickTimeout ()));
+
+    }
+}
+
+void QWinTerminalImpl::mouseTripleClickEvent (QMouseEvent *event)
+{
+  if (event->button () == Qt::LeftButton)
+    {
+      d->selectLine (d->posToCell (event->pos ()));
+    }
+}
+
+void QWinTerminalImpl::tripleClickTimeout ()
+{
+  allowTripleClick = false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1346,6 +1578,13 @@ void QWinTerminalImpl::setBlinkingCursorState (bool blink)
     }
 }
 
+// Reset width of console buffer and terminal window to be the same.
+
+void QWinTerminalImpl::init_terminal_size (void)
+{
+  d->updateConsoleSize (true, true);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 void QWinTerminalImpl::wheelEvent (QWheelEvent* event)
@@ -1354,16 +1593,21 @@ void QWinTerminalImpl::wheelEvent (QWheelEvent* event)
     {
       // Forward to the scrollbar (avoid recursion)
       d->m_inWheelEvent = true;
-      QApplication::sendEvent (d->m_scrollBar, event);
+      QApplication::sendEvent (d->m_verticalScrollBar, event);
       d->m_inWheelEvent = false;
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::scrollValueChanged (int value)
+void QWinTerminalImpl::horizontalScrollValueChanged (int value)
 {
-  d->setScrollValue (value);
+  d->setHorizontalScrollValue (value);
+}
+
+void QWinTerminalImpl::verticalScrollValueChanged (int value)
+{
+  d->setVerticalScrollValue (value);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1489,6 +1733,12 @@ void QWinTerminalImpl::setCursorColor (bool useForegroundColor,
   d->setCursorColor (useForegroundColor, color);
 }
 
+void QWinTerminalImpl::setScrollBufferSize(int value)
+{
+  d->setScrollBufferSize (value);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////
 
 void QWinTerminalImpl::setTerminalFont (const QFont& f)
@@ -1502,8 +1752,9 @@ void QWinTerminalImpl::setTerminalFont (const QFont& f)
 
 void QWinTerminalImpl::setSize (int columns, int lines)
 {
-  Q_UNUSED (columns);
-  Q_UNUSED (lines);
+  d->log ("emit set_screen_size_signal (%d, %d)\n", columns, lines);
+
+  emit set_screen_size_signal (columns, lines);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1517,9 +1768,7 @@ void QWinTerminalImpl::copyClipboard (void)
   QString selection = d->getSelection ();
 
   if (selection.isEmpty ())
-    {
-      ::raise (SIGINT);
-    }
+    terminal_interrupt ();
   else
     {
       clipboard->setText (selection);
@@ -1540,6 +1789,16 @@ void QWinTerminalImpl::pasteClipboard (void)
     sendText (text);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::selectAll (void)
+{
+  if(!hasFocus()) return;
+
+  d->selectAll();
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -1547,4 +1806,32 @@ QString QWinTerminalImpl::selectedText ()
 {
   QString selection = d->getSelection ();
   return selection;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::dragEnterEvent (QDragEnterEvent *event)
+{
+   if (event->mimeData ()->hasUrls ())
+     {
+       event->acceptProposedAction();
+     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::dropEvent (QDropEvent *event)
+{
+  QString dropText;
+
+  if (event->mimeData ()->hasUrls ())
+    {
+      foreach (QUrl url, event->mimeData ()->urls ())
+        {
+          if(dropText.length () > 0) 
+            dropText += "\n";
+          dropText  += url.toLocalFile ();
+        }
+      sendText (dropText);
+    }
 }

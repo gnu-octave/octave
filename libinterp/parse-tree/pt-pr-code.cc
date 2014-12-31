@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -749,6 +749,18 @@ tree_print_code::visit_fcn_handle (tree_fcn_handle& fh)
 }
 
 void
+tree_print_code::visit_funcall (tree_funcall& fc)
+{
+  indent ();
+
+  print_parens (fc, "(");
+
+  fc.print_raw (os, true, print_original_text);
+
+  print_parens (fc, ")");
+}
+
+void
 tree_print_code::visit_parameter_list (tree_parameter_list& lst)
 {
   tree_parameter_list::iterator p = lst.begin ();
@@ -1037,8 +1049,7 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
 }
 
 void
-tree_print_code::visit_unwind_protect_command
-  (tree_unwind_protect_command& cmd)
+tree_print_code::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   print_comment_list (cmd.leading_comment ());
 
@@ -1145,7 +1156,7 @@ tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
 
   indent ();
 
-  os << "until";
+  os << "until ";
 
   tree_expression *expr = cmd.condition ();
 
@@ -1189,10 +1200,7 @@ tree_print_code::print_fcn_handle_body (tree_statement_list *b)
     }
 }
 
-// Each print_code() function should call this before printing
-// anything.
-//
-// This doesn't need to be fast, but isn't there a better way?
+// Each print_code() function should call this before printing anything.
 
 void
 tree_print_code::indent (void)
@@ -1203,8 +1211,7 @@ tree_print_code::indent (void)
     {
       os << prefix;
 
-      for (int i = 0; i < curr_print_indent_level; i++)
-        os << " ";
+      os << std::string (curr_print_indent_level, ' ');
 
       beginning_of_line = false;
     }
@@ -1219,6 +1226,9 @@ tree_print_code::newline (const char *alt_txt)
     os << alt_txt;
   else
     {
+      // Print prefix for blank lines.
+      indent ();
+
       os << "\n";
 
       beginning_of_line = true;
@@ -1269,7 +1279,13 @@ tree_print_code::print_comment_elt (const octave_comment_elt& elt)
       if (c == '\n')
         {
           if (prev_char_was_newline)
-            os << "##";
+            {
+              printed_something = true;
+
+              indent ();
+
+              os << "##";
+            }
 
           newline ();
 

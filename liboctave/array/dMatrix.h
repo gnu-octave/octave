@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,9 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_Matrix_int_h)
-#define octave_Matrix_int_h 1
+#if !defined (octave_dMatrix_h)
+#define octave_dMatrix_h 1
 
+#include "dNDArray.h"
 #include "MArray.h"
 #include "MDiagArray2.h"
 #include "MatrixType.h"
@@ -33,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class
 OCTAVE_API
-Matrix : public MArray<double>
+Matrix : public NDArray
 {
 public:
 
@@ -42,26 +43,26 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  Matrix (void) : MArray<double> () { }
+  Matrix (void) : NDArray () { }
 
   Matrix (octave_idx_type r, octave_idx_type c)
-    : MArray<double> (dim_vector (r, c)) { }
+    : NDArray (dim_vector (r, c)) { }
 
   Matrix (octave_idx_type r, octave_idx_type c, double val)
-    : MArray<double> (dim_vector (r, c), val) { }
+    : NDArray (dim_vector (r, c), val) { }
 
-  Matrix (const dim_vector& dv) : MArray<double> (dv.redim (2)) { }
+  Matrix (const dim_vector& dv) : NDArray (dv.redim (2)) { }
 
   Matrix (const dim_vector& dv, double val)
-    : MArray<double> (dv.redim (2), val) { }
+    : NDArray (dv.redim (2), val) { }
 
-  Matrix (const Matrix& a) : MArray<double> (a) { }
-
-  template <class U>
-  Matrix (const MArray<U>& a) : MArray<double> (a.as_matrix ()) { }
+  Matrix (const Matrix& a) : NDArray (a) { }
 
   template <class U>
-  Matrix (const Array<U>& a) : MArray<double> (a.as_matrix ()) { }
+  Matrix (const MArray<U>& a) : NDArray (a.as_matrix ()) { }
+
+  template <class U>
+  Matrix (const Array<U>& a) : NDArray (a.as_matrix ()) { }
 
   explicit Matrix (const RowVector& rv);
 
@@ -69,17 +70,15 @@ public:
 
   explicit Matrix (const DiagMatrix& a);
 
+  explicit Matrix (const MDiagArray2<double>& a);
+
+  explicit Matrix (const DiagArray2<double>& a);
+
   explicit Matrix (const PermMatrix& a);
 
   explicit Matrix (const boolMatrix& a);
 
   explicit Matrix (const charMatrix& a);
-
-  Matrix& operator = (const Matrix& a)
-    {
-      MArray<double>::operator = (a);
-      return *this;
-    }
 
   bool operator == (const Matrix& a) const;
   bool operator != (const Matrix& a) const;
@@ -94,7 +93,8 @@ public:
   Matrix& insert (const DiagMatrix& a, octave_idx_type r, octave_idx_type c);
 
   Matrix& fill (double val);
-  Matrix& fill (double val, octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2);
+  Matrix& fill (double val, octave_idx_type r1, octave_idx_type c1,
+                octave_idx_type r2, octave_idx_type c2);
 
   Matrix append (const Matrix& a) const;
   Matrix append (const RowVector& a) const;
@@ -115,9 +115,11 @@ public:
 
   // resize is the destructive equivalent for this one
 
-  Matrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+  Matrix extract (octave_idx_type r1, octave_idx_type c1,
+                  octave_idx_type r2, octave_idx_type c2) const;
 
-  Matrix extract_n (octave_idx_type r1, octave_idx_type c1, octave_idx_type nr, octave_idx_type nc) const;
+  Matrix extract_n (octave_idx_type r1, octave_idx_type c1,
+                    octave_idx_type nr, octave_idx_type nc) const;
 
   // extract row or column i.
 
@@ -158,7 +160,8 @@ public:
 
   DET determinant (void) const;
   DET determinant (octave_idx_type& info) const;
-  DET determinant (octave_idx_type& info, double& rcon, int calc_cond = 1) const;
+  DET determinant (octave_idx_type& info, double& rcon,
+                   int calc_cond = 1) const;
   DET determinant (MatrixType &mattype, octave_idx_type& info,
                    double& rcon, int calc_cond = 1) const;
 
@@ -169,12 +172,14 @@ private:
   // Upper triangular matrix solvers
   Matrix utsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
                   double& rcon, solve_singularity_handler sing_handler,
-                  bool calc_cond = false, blas_trans_type transt = blas_no_trans) const;
+                  bool calc_cond = false,
+                  blas_trans_type transt = blas_no_trans) const;
 
   // Lower triangular matrix solvers
   Matrix ltsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
                   double& rcon, solve_singularity_handler sing_handler,
-                  bool calc_cond = false, blas_trans_type transt = blas_no_trans) const;
+                  bool calc_cond = false,
+                  blas_trans_type transt = blas_no_trans) const;
 
   // Full matrix solvers (lu/cholesky)
   Matrix fsolve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
@@ -189,7 +194,8 @@ public:
                 double& rcon) const;
   Matrix solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
                 double& rcon, solve_singularity_handler sing_handler,
-                bool singular_fallback = true, blas_trans_type transt = blas_no_trans) const;
+                bool singular_fallback = true,
+                blas_trans_type transt = blas_no_trans) const;
 
   ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b) const;
   ComplexMatrix solve (MatrixType &typ, const ComplexMatrix& b,
@@ -233,24 +239,30 @@ public:
 
   ComplexMatrix solve (const ComplexMatrix& b) const;
   ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info) const;
-  ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon) const;
-  ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon,
+  ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info,
+                       double& rcon) const;
+  ComplexMatrix solve (const ComplexMatrix& b, octave_idx_type& info,
+                       double& rcon,
                        solve_singularity_handler sing_handler,
                        blas_trans_type transt = blas_no_trans) const;
 
   ColumnVector solve (const ColumnVector& b) const;
   ColumnVector solve (const ColumnVector& b, octave_idx_type& info) const;
-  ColumnVector solve (const ColumnVector& b, octave_idx_type& info, double& rcon) const;
-  ColumnVector solve (const ColumnVector& b, octave_idx_type& info, double& rcon,
+  ColumnVector solve (const ColumnVector& b, octave_idx_type& info,
+                      double& rcon) const;
+  ColumnVector solve (const ColumnVector& b, octave_idx_type& info,
+                      double& rcon,
                       solve_singularity_handler sing_handler,
                       blas_trans_type transt = blas_no_trans) const;
 
   ComplexColumnVector solve (const ComplexColumnVector& b) const;
-  ComplexColumnVector solve (const ComplexColumnVector& b, octave_idx_type& info) const;
-  ComplexColumnVector solve (const ComplexColumnVector& b, octave_idx_type& info,
-                             double& rcon) const;
-  ComplexColumnVector solve (const ComplexColumnVector& b, octave_idx_type& info,
-                             double& rcon, solve_singularity_handler sing_handler,
+  ComplexColumnVector solve (const ComplexColumnVector& b,
+                             octave_idx_type& info) const;
+  ComplexColumnVector solve (const ComplexColumnVector& b,
+                             octave_idx_type& info, double& rcon) const;
+  ComplexColumnVector solve (const ComplexColumnVector& b,
+                             octave_idx_type& info, double& rcon,
+                             solve_singularity_handler sing_handler,
                              blas_trans_type transt = blas_no_trans) const;
 
   // Singular solvers
@@ -290,18 +302,7 @@ public:
 
   // unary operations
 
-  boolMatrix operator ! (void) const;
-
   // other operations
-
-  bool any_element_is_negative (bool = false) const;
-  bool any_element_is_positive (bool = false) const;
-  bool any_element_is_nan (void) const;
-  bool any_element_is_inf_or_nan (void) const;
-  bool any_element_not_one_or_zero (void) const;
-  bool all_elements_are_int_or_inf_or_nan (void) const;
-  bool all_integers (double& max_val, double& min_val) const;
-  bool too_large_for_float (void) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;
@@ -331,7 +332,8 @@ public:
 
   // i/o
 
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const Matrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
+                                               const Matrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, Matrix& a);
 };
 
@@ -342,13 +344,15 @@ extern OCTAVE_API Matrix imag (const ComplexMatrix& a);
 
 // column vector by row vector -> matrix operations
 
-extern OCTAVE_API Matrix operator * (const ColumnVector& a, const RowVector& b);
+extern OCTAVE_API Matrix operator * (const ColumnVector& a,
+                                     const RowVector& b);
 
 // Other functions.
 
 extern OCTAVE_API Matrix Givens (double, double);
 
-extern OCTAVE_API Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
+extern OCTAVE_API Matrix Sylvester (const Matrix&, const Matrix&,
+                                    const Matrix&);
 
 extern OCTAVE_API Matrix xgemm (const Matrix& a, const Matrix& b,
                                 blas_trans_type transa = blas_no_trans,

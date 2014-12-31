@@ -1,4 +1,4 @@
-## Copyright (C) 2003-2012 Gabriele Pannocchia
+## Copyright (C) 2003-2013 Gabriele Pannocchia
 ##
 ## This file is part of Octave.
 ##
@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} isdefinite (@var{x})
-## @deftypefnx {Function File} {} isdefinite (@var{x}, @var{tol})
-## Return 1 if @var{x} is symmetric positive definite within the
-## tolerance specified by @var{tol} or 0 if @var{x} is symmetric
+## @deftypefn  {Function File} {} isdefinite (@var{A})
+## @deftypefnx {Function File} {} isdefinite (@var{A}, @var{tol})
+## Return 1 if @var{A} is symmetric positive definite within the
+## tolerance specified by @var{tol} or 0 if @var{A} is symmetric
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
 ## is omitted, use a tolerance of
-## @code{100 * eps * norm (@var{x}, "fro")}
+## @code{100 * eps * norm (@var{A}, "fro")}
 ## @seealso{issymmetric, ishermitian}
 ## @end deftypefn
 
@@ -31,30 +31,30 @@
 ## Created: November 2003
 ## Adapted-By: jwe
 
-function retval = isdefinite (x, tol)
+function retval = isdefinite (A, tol)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if (! isfloat (x))
-    x = double (x);
+  if (! isfloat (A))
+    A = double (A);
   endif
 
   if (nargin == 1)
-    tol = 100 * eps (class (x)) * norm (x, "fro");
+    tol = 100 * eps (class (A)) * norm (A, "fro");
   endif
 
-  if (! ishermitian (x, tol))
-    error ("isdefinite: X must be a Hermitian matrix");
+  if (! ishermitian (A, tol))
+    error ("isdefinite: A must be a Hermitian matrix");
   endif
 
-  e = tol * eye (rows (x));
-  [r, p] = chol (x - e);
+  e = tol * eye (rows (A));
+  [r, p] = chol (A - e);
   if (p == 0)
     retval = 1;
   else
-    [r, p] = chol (x + e);
+    [r, p] = chol (A + e);
     if (p == 0)
       retval = 0;
     else
@@ -83,5 +83,5 @@ endfunction
 
 %!error isdefinite ()
 %!error isdefinite (1,2,3)
-%!error <X must be a Hermitian matrix> isdefinite ([1 2; 3 4])
+%!error <A must be a Hermitian matrix> isdefinite ([1 2; 3 4])
 

@@ -33,6 +33,7 @@ OPERATORS_INC = \
   operators/mx-op-decl.h \
   operators/mx-op-defs.h \
   operators/Sparse-diag-op-defs.h \
+  operators/Sparse-op-decls.h \
   operators/Sparse-op-defs.h \
   operators/Sparse-perm-op-defs.h
 
@@ -67,3 +68,4 @@ operators_liboperators_la_CPPFLAGS = $(liboctave_la_CPPFLAGS)
 
 DISTCLEANFILES += $(BUILT_LIBOPERATORS_SOURCES)
 
+liboctave_la_LIBADD += operators/liboperators.la

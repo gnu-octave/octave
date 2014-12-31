@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_FloatComplexSCHUR_h)
-#define octave_FloatComplexSCHUR_h 1
+#if !defined (octave_fCmplxSCHUR_h)
+#define octave_fCmplxSCHUR_h 1
 
 #include <iosfwd>
 #include <string>
@@ -38,36 +38,36 @@ public:
   FloatComplexSCHUR (void) : schur_mat (), unitary_mat (), selector (0) { }
 
   FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord,
-                bool calc_unitary = true)
+                     bool calc_unitary = true)
     : schur_mat (), unitary_mat (), selector (0)
-    {
-      init (a, ord, calc_unitary);
-    }
+  {
+    init (a, ord, calc_unitary);
+  }
 
   FloatComplexSCHUR (const FloatComplexMatrix& a, const std::string& ord,
                      octave_idx_type& info, bool calc_unitary = true)
     : schur_mat (), unitary_mat (), selector (0)
-    {
-      info = init (a, ord, calc_unitary);
-    }
+  {
+    info = init (a, ord, calc_unitary);
+  }
 
   FloatComplexSCHUR (const FloatComplexSCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat), selector (0)
-    { }
+  { }
 
   FloatComplexSCHUR (const FloatComplexMatrix& s, const FloatComplexMatrix& u);
 
   FloatComplexSCHUR (const FloatSCHUR& s);
 
   FloatComplexSCHUR& operator = (const FloatComplexSCHUR& a)
-    {
-      if (this != &a)
-        {
-          schur_mat = a.schur_mat;
-          unitary_mat = a.unitary_mat;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        schur_mat = a.schur_mat;
+        unitary_mat = a.unitary_mat;
+      }
+    return *this;
+  }
 
   ~FloatComplexSCHUR (void) { }
 
@@ -75,7 +75,8 @@ public:
 
   FloatComplexMatrix unitary_matrix (void) const { return unitary_mat; }
 
-  friend std::ostream& operator << (std::ostream& os, const FloatComplexSCHUR& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FloatComplexSCHUR& a);
 
   typedef octave_idx_type (*select_function) (const FloatComplex&);
 
@@ -86,7 +87,8 @@ private:
 
   select_function selector;
 
-  octave_idx_type init (const FloatComplexMatrix& a, const std::string& ord, bool calc_unitary);
+  octave_idx_type init (const FloatComplexMatrix& a, const std::string& ord,
+                        bool calc_unitary);
 };
 
 #endif

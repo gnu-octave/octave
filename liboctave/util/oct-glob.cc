@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 John W. Eaton
+Copyright (C) 2010-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -81,9 +81,9 @@ octave_glob (const string_vector& pat)
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
           && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-              std::replace_if (xpat.begin (), xpat.end (),
-                               std::bind2nd (std::equal_to<char> (), '\\'),
-                               '/');
+          std::replace_if (xpat.begin (), xpat.end (),
+                           std::bind2nd (std::equal_to<char> (), '\\'),
+                           '/');
 #endif
 
           int err = gnulib::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
@@ -94,7 +94,7 @@ octave_glob (const string_vector& pat)
 
               const char * const *matches = glob_info.gl_pathv;
 
-              // FIXME -- we shouldn't have to check to see if
+              // FIXME: we shouldn't have to check to see if
               // a single match exists, but it seems that glob() won't
               // check for us unless the pattern contains globbing
               // characters.  Hmm.
@@ -111,10 +111,10 @@ octave_glob (const string_vector& pat)
 
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
                       && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
-                          std::replace_if (tmp.begin (), tmp.end (),
-                                           std::bind2nd (std::equal_to<char> (),
-                                                         '/'),
-                                           '\\');
+                      std::replace_if (tmp.begin (), tmp.end (),
+                                       std::bind2nd (std::equal_to<char> (),
+                                                     '/'),
+                                       '\\');
 #endif
 
                       retval[k++] = tmp;

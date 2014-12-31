@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2012 John W. Eaton
+Copyright (C) 2012-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_cutils_h)
-#define octave_liboctave_cutils_h 1
+#if !defined (octave_lo_cutils_h)
+#define octave_lo_cutils_h 1
 
 #include <sys/types.h>
 

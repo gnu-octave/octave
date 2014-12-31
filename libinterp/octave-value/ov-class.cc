@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2012 John W. Eaton
+Copyright (C) 2007-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -67,7 +67,8 @@ void
 octave_class::register_type (void)
 {
   t_id = octave_value_typeinfo::register_type
-    (octave_class::t_name, "<unknown>", octave_value (new octave_class ()));
+         (octave_class::t_name, "<unknown>",
+          octave_value (new octave_class ()));
 }
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
@@ -173,7 +174,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 
                   else if (nel == p_nel)
                     {
-                      // FIXME -- is there a better way to do this?
+                      // FIXME: is there a better way to do this?
 
                       // The parent class object has the same number of
                       // elements as the map we are using to create the
@@ -267,97 +268,6 @@ gripe_failed_assignment (void)
   error ("assignment to class element failed");
 }
 
-static inline octave_value_list
-sanitize (const octave_value_list& ovl)
-{
-  octave_value_list retval = ovl;
-
-  for (octave_idx_type i = 0; i < ovl.length (); i++)
-    {
-      if (retval(i).is_magic_colon ())
-        retval(i) = ":";
-    }
-
-  return retval;
-}
-
-static inline octave_value
-make_idx_args (const std::string& type,
-               const std::list<octave_value_list>& idx,
-               const std::string& who)
-{
-  octave_value retval;
-
-  size_t len = type.length ();
-
-  if (len == idx.size ())
-    {
-      Cell type_field (1, len);
-      Cell subs_field (1, len);
-
-      std::list<octave_value_list>::const_iterator p = idx.begin ();
-
-      for (size_t i = 0; i < len; i++)
-        {
-          char t = type[i];
-
-          switch (t)
-            {
-            case '(':
-              type_field(i) = "()";
-              subs_field(i) = Cell (sanitize (*p++));
-              break;
-
-            case '{':
-              type_field(i) = "{}";
-              subs_field(i) = Cell (sanitize (*p++));
-              break;
-
-            case '.':
-              {
-                type_field(i) = ".";
-
-                octave_value_list vlist = *p++;
-
-                if (vlist.length () == 1)
-                  {
-                    octave_value val = vlist(0);
-
-                    if (val.is_string ())
-                      subs_field(i) = val;
-                    else
-                      {
-                        error ("expecting character string argument for '.' index");
-                        return retval;
-                      }
-                  }
-                else
-                  {
-                    error ("expecting single argument for '.' index");
-                    return retval;
-                  }
-              }
-              break;
-
-            default:
-              panic_impossible ();
-              break;
-            }
-        }
-
-      octave_map m;
-
-      m.assign ("type", type_field);
-      m.assign ("subs", subs_field);
-
-      retval = m;
-    }
-  else
-    error ("invalid index for %s", who.c_str ());
-
-  return retval;
-}
-
 Cell
 octave_class::dotref (const octave_value_list& idx)
 {
@@ -397,20 +307,6 @@ octave_class::dotref (const octave_value_list& idx)
   return retval;
 }
 
-static bool
-called_from_builtin (void)
-{
-  octave_function *fcn = octave_call_stack::caller ();
-
-  // FIXME -- we probably need a better check here, or some other
-  // mechanism to avoid overloaded functions when builtin is used.
-  // For example, what if someone overloads the builtin function?
-  // Also, are there other places where using builtin is not properly
-  // avoiding dispatch?
-
-  return (fcn && fcn->name () == "builtin");
-}
-
 Matrix
 octave_class::size (void)
 {
@@ -426,7 +322,8 @@ octave_class::size (void)
       octave_value_list args (1, octave_value (this));
 
       octave_value_list lv = feval (meth.function_value (), args, 1);
-      if (lv.length () > 0 && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
+      if (lv.length () > 0
+          && lv(0).is_matrix_type () && lv(0).dims ().is_vector ())
         retval = lv(0).matrix_value ();
       else
         error ("@%s/size: invalid return value", class_name ().c_str ());
@@ -488,7 +385,7 @@ octave_class::subsref (const std::string& type,
 
   if (in_class_method () || called_from_builtin ())
     {
-      // FIXME -- this block of code is the same as the body of
+      // FIXME: this block of code is the same as the body of
       // octave_struct::subsref.  Maybe it could be shared instead of
       // duplicated.
 
@@ -509,7 +406,8 @@ octave_class::subsref (const std::string& type,
                   {
                     Cell t = tmp.index (idx.front ());
 
-                    retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+                    retval(0) = (t.length () == 1) ? t(0)
+                                                   : octave_value (t, true);
 
                     // We handled two index elements, so tell
                     // next_subsref to skip both of them.
@@ -542,7 +440,7 @@ octave_class::subsref (const std::string& type,
           panic_impossible ();
         }
 
-      // FIXME -- perhaps there should be an
+      // FIXME: perhaps there should be an
       // octave_value_list::next_subsref member function?  See also
       // octave_user_function::subsref.
 
@@ -704,7 +602,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           else
             tmp = feval (meth.function_value (), args);
 
-          // FIXME -- should the subsasgn method be able to return
+          // FIXME: should the subsasgn method be able to return
           // more than one value?
 
           if (tmp.length () > 1)
@@ -744,7 +642,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       return retval;
     }
 
-  // FIXME -- this block of code is the same as the body of
+  // FIXME: this block of code is the same as the body of
   // octave_struct::subsasgn.  Maybe it could be shared instead of
   // duplicated.
 
@@ -842,7 +740,7 @@ octave_class::subsasgn_common (const octave_value& obj,
                         tmp.make_unique (); // probably a no-op.
                       }
                     else
-                      // optimization: ignore the copy still stored inside our map.
+                      // optimization: ignore copy still stored inside our map.
                       tmp.make_unique (1);
 
                     if (! error_state)
@@ -988,7 +886,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 }
 
 idx_vector
-octave_class::index_vector (void) const
+octave_class::index_vector (bool require_integers) const
 {
   idx_vector retval;
 
@@ -1011,7 +909,7 @@ octave_class::index_vector (void) const
             // add one to the value returned as the index_vector method
             // expects it to be one based.
             retval = do_binary_op (octave_value::op_add, tmp (0),
-                                   octave_value (1.0)).index_vector ();
+                                   octave_value (1.0)).index_vector (require_integers);
         }
     }
   else
@@ -1117,6 +1015,35 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
   return retval;
 }
 
+bool
+octave_class::is_instance_of (const std::string& cls_name) const
+{
+  bool retval = false;
+
+  if (cls_name == class_name ())
+    retval = true;
+  else
+    {
+      for (std::list<std::string>::const_iterator pit = parent_list.begin ();
+           pit != parent_list.end ();
+           pit++)
+        {
+          octave_map::const_iterator smap = map.seek (*pit);
+
+          const Cell& tmp = map.contents (smap);
+
+          const octave_value& vtmp = tmp(0);
+
+          retval = vtmp.is_instance_of (cls_name);
+
+          if (retval)
+            break;
+        }
+    }
+
+  return retval;
+}
+
 string_vector
 octave_class::all_strings (bool pad) const
 {
@@ -1136,7 +1063,7 @@ octave_class::all_strings (bool pad) const
           if (tmp(0).is_string ())
             retval = tmp(0).all_strings (pad);
           else
-            error ("cname/char method did not return a character string");
+            error ("cname/char method did not return a string");
         }
     }
   else
@@ -1147,7 +1074,7 @@ octave_class::all_strings (bool pad) const
 
 
 void
-octave_class::print (std::ostream& os, bool) const
+octave_class::print (std::ostream& os, bool)
 {
   print_raw (os);
 }
@@ -1276,7 +1203,8 @@ octave_class::clear_exemplar_map (void)
 bool
 octave_class::reconstruct_parents (void)
 {
-  bool retval = true, might_have_inheritance = false;
+  bool retval = true;
+  bool might_have_inheritance = false;
   std::string dbgstr = "dork";
 
   // First, check to see if there might be an issue with inheritance.
@@ -1284,10 +1212,10 @@ octave_class::reconstruct_parents (void)
     {
       std::string  key = map.key (p);
       Cell         val = map.contents (p);
-      if ( val(0).is_object () )
+      if (val(0).is_object ())
         {
           dbgstr = "blork";
-          if ( key == val(0).class_name () )
+          if (key == val(0).class_name ())
             {
               might_have_inheritance = true;
               dbgstr = "cork";
@@ -1352,7 +1280,7 @@ octave_class::save_ascii (std::ostream& os)
       bool b = save_ascii_data (os, val, m.key (i), false, 0);
 
       if (! b)
-        return os;
+        return ! os.fail ();
 
       i++;
     }
@@ -1426,7 +1354,7 @@ octave_class::load_ascii (std::istream& is)
                   success = false;
                 }
             }
-          else if (len == 0 )
+          else if (len == 0)
             {
               map = octave_map (dim_vector (1, 1));
               c_name = classname;
@@ -1481,7 +1409,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
       bool b = save_binary_data (os, val, m.key (i), "", 0, save_as_floats);
 
       if (! b)
-        return os;
+        return ! os.fail ();
 
       i++;
     }
@@ -1491,7 +1419,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 
 bool
 octave_class::load_binary (std::istream& is, bool swap,
-                            oct_mach_info::float_format fmt)
+                           oct_mach_info::float_format fmt)
 {
   bool success = true;
 
@@ -1570,7 +1498,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           success = false;
         }
     }
-  else if (len == 0 )
+  else if (len == 0)
     map = octave_map (dim_vector (1, 1));
   else
     panic_impossible ();
@@ -1617,11 +1545,12 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
                          H5P_DEFAULT);
 #endif
   if (class_hid < 0 || H5Dwrite (class_hid, type_hid, H5S_ALL, H5S_ALL,
-                                    H5P_DEFAULT, c_name.c_str ()) < 0)
+                                 H5P_DEFAULT, c_name.c_str ()) < 0)
     goto error_cleanup;
 
 #if HAVE_HDF5_18
-  data_hid = H5Gcreate (group_hid, "value", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  data_hid = H5Gcreate (group_hid, "value", H5P_DEFAULT, H5P_DEFAULT,
+                        H5P_DEFAULT);
 #else
   data_hid = H5Gcreate (group_hid, "value", 0);
 #endif
@@ -1655,7 +1584,7 @@ octave_class::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       i++;
     }
 
- error_cleanup:
+error_cleanup:
 
   if (data_hid > 0)
     H5Gclose (data_hid);
@@ -1806,7 +1735,7 @@ octave_class::load_hdf5 (hid_t loc_id, const char *name)
         }
     }
 
- error_cleanup:
+error_cleanup:
   if (data_hid > 0)
     H5Dclose (data_hid);
 
@@ -1921,7 +1850,7 @@ octave_class::exemplar_info::compare (const octave_value& obj) const
 }
 
 DEFUN (class, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Function File} {@var{classname} =} class (@var{obj})\n\
 @deftypefnx {Function File} {} class (@var{s}, @var{id})\n\
 @deftypefnx {Function File} {} class (@var{s}, @var{id}, @var{p}, @dots{})\n\
@@ -1946,10 +1875,10 @@ derived.\n\
       // Called as class constructor
       octave_function *fcn = octave_call_stack::caller ();
 
-      std::string id = args(1).string_value ();
-
-      if (! error_state)
+      if (args(1).is_string ())
         {
+          std::string id = args(1).string_value ();
+
           if (fcn)
             {
               if (fcn->is_class_constructor (id) || fcn->is_class_method (id))
@@ -1994,7 +1923,7 @@ derived.\n\
             error ("class: invalid call from outside class constructor or method");
         }
       else
-        error ("class: ID (class name) must be a character string");
+        error ("class: ID (class name) must be a string");
     }
 
   return retval;
@@ -2012,35 +1941,115 @@ derived.\n\
 %!error class ()
 */
 
-DEFUN (__isa_parent__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __isa_parent__ (@var{class}, @var{name})\n\
-Undocumented internal function.\n\
+DEFUN (isa, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn {Function File} {} isa (@var{obj}, @var{classname})\n\
+Return true if @var{obj} is an object from the class @var{classname}.\n\
+\n\
+@var{classname} may also be one of the following class categories:\n\
+\n\
+@table @asis\n\
+@item @qcode{\"float\"}\n\
+Floating point value comprising classes @qcode{\"double\"} and\n\
+@qcode{\"single\"}.\n\
+\n\
+@item @qcode{\"integer\"}\n\
+Integer value comprising classes (u)int8, (u)int16, (u)int32, (u)int64.\n\
+\n\
+@item @qcode{\"numeric\"}\n\
+Numeric value comprising either a floating point or integer value.\n\
+@end table\n\
+\n\
+If @var{classname} is a cell array of string, a logical array of the same\n\
+size is returned, containing true for each class to which @var{obj}\n\
+belongs to.\n\
+\n\
+@seealso{class, typeinfo}\n\
 @end deftypefn")
 {
-  octave_value retval = false;
+  octave_value retval;
 
-  if (args.length () == 2)
+  if (args.length () != 2)
     {
-      octave_value cls = args(0);
-      octave_value nm = args(1);
-
-      if (! error_state)
-        {
-          if (cls.find_parent_class (nm.string_value ()))
-            retval = true;
-        }
-      else
-        error ("__isa_parent__: expecting arguments to be character strings");
+      print_usage ();
+      return retval;
     }
-  else
-    print_usage ();
 
-  return retval;
+  octave_value obj = args(0); // not const because of find_parent_class ()
+  const Array<std::string> cls = args(1).cellstr_value ();
+  if (error_state)
+    {
+      error ("isa: CLASSNAME must be a string or cell array of strings");
+      return retval;
+    }
+
+  boolNDArray matches (cls.dims (), false);
+  const octave_idx_type n = cls.numel ();
+  for (octave_idx_type idx = 0; idx < n; idx++)
+    {
+      const std::string cl = cls(idx);
+      if ((cl == "float"   && obj.is_float_type   ()) ||
+          (cl == "integer" && obj.is_integer_type ()) ||
+          (cl == "numeric" && obj.is_numeric_type ()) ||
+          obj.class_name () == cl || obj.is_instance_of (cl))
+        matches(idx) = true;
+    }
+  return octave_value (matches);
 }
 
+/*
+%!assert (isa ("char", "float"), false)
+%!assert (isa (logical (1), "float"), false)
+%!assert (isa (double (13), "float"), true)
+%!assert (isa (single (13), "float"), true)
+%!assert (isa (int8 (13), "float"), false)
+%!assert (isa (int16 (13), "float"), false)
+%!assert (isa (int32 (13), "float"), false)
+%!assert (isa (int64 (13), "float"), false)
+%!assert (isa (uint8 (13), "float"), false)
+%!assert (isa (uint16 (13), "float"), false)
+%!assert (isa (uint32 (13), "float"), false)
+%!assert (isa (uint64 (13), "float"), false)
+%!assert (isa ("char", "numeric"), false)
+%!assert (isa (logical (1), "numeric"), false)
+%!assert (isa (double (13), "numeric"), true)
+%!assert (isa (single (13), "numeric"), true)
+%!assert (isa (int8 (13), "numeric"), true)
+%!assert (isa (int16 (13), "numeric"), true)
+%!assert (isa (int32 (13), "numeric"), true)
+%!assert (isa (int64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "numeric"), true)
+%!assert (isa (uint16 (13), "numeric"), true)
+%!assert (isa (uint32 (13), "numeric"), true)
+%!assert (isa (uint64 (13), "numeric"), true)
+%!assert (isa (uint8 (13), "integer"), true)
+%!assert (isa (double (13), "integer"), false)
+%!assert (isa (single (13), "integer"), false)
+%!assert (isa (single (13), {"integer", "float", "single"}), [false true true])
+
+%!assert (isa (double (13), "double"))
+%!assert (isa (single (13), "single"))
+%!assert (isa (int8 (13), "int8"))
+%!assert (isa (int16 (13), "int16"))
+%!assert (isa (int32 (13), "int32"))
+%!assert (isa (int64 (13), "int64"))
+%!assert (isa (uint8 (13), "uint8"))
+%!assert (isa (uint16 (13), "uint16"))
+%!assert (isa (uint32 (13), "uint32"))
+%!assert (isa (uint64 (13), "uint64"))
+%!assert (isa ("string", "char"))
+%!assert (isa (true, "logical"))
+%!assert (isa (false, "logical"))
+%!assert (isa ({1, 2}, "cell"))
+%!assert (isa ({1, 2}, {"numeric", "integer", "cell"}), [false false true])
+
+%!test
+%! a.b = 1;
+%! assert (isa (a, "struct"));
+*/
+
 DEFUN (__parent_classes__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __parent_classes__ (@var{x})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -2061,10 +2070,10 @@ Undocumented internal function.\n\
 }
 
 DEFUN (isobject, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isobject (@var{x})\n\
 Return true if @var{x} is a class object.\n\
-@seealso{class, typeinfo, isa, ismethod}\n\
+@seealso{class, typeinfo, isa, ismethod, isprop}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2078,11 +2087,11 @@ Return true if @var{x} is a class object.\n\
 }
 
 DEFUN (ismethod, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ismethod (@var{x}, @var{method})\n\
-Return true if @var{x} is a class object and the string @var{method}\n\
+       "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ismethod (@var{obj}, @var{method})\n\
+Return true if @var{obj} is a class object and the string @var{method}\n\
 is a method of this class.\n\
-@seealso{isobject}\n\
+@seealso{isprop, isobject}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2120,7 +2129,7 @@ is a method of this class.\n\
 }
 
 DEFUN (__methods__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __methods__ (@var{x})\n\
 @deftypefnx {Built-in Function} {} __methods__ (\"classname\")\n\
 Internal function.\n\
@@ -2178,12 +2187,13 @@ is_built_in_class (const std::string& cn)
 }
 
 DEFUN (superiorto, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} superiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a higher precedence than @var{class_name}.\n\
 More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
+@seealso{inferiorto}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2200,8 +2210,8 @@ This function may only be called from a class constructor.\n\
       std::string inf_class = args(i).string_value ();
       if (error_state)
         {
-              error ("superiorto: expecting argument to be class name");
-              break;
+          error ("superiorto: expecting argument to be class name");
+          break;
         }
 
       // User defined classes always have higher precedence
@@ -2222,12 +2232,13 @@ This function may only be called from a class constructor.\n\
 }
 
 DEFUN (inferiorto, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} inferiorto (@var{class_name}, @dots{})\n\
 When called from a class constructor, mark the object currently\n\
 constructed as having a lower precedence than @var{class_name}.\n\
 More that one such class can be specified in a single call.\n\
 This function may only be called from a class constructor.\n\
+@seealso{superiorto}\n\
 @end deftypefn")
 {
   octave_value retval;

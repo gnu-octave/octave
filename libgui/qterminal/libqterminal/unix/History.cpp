@@ -1,6 +1,6 @@
 /*
     This file is part of Konsole, an X terminal.
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
+    Copyright (C) 1997-1998, 2013 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 

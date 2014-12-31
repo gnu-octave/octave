@@ -1,4 +1,4 @@
-## Copyright (C) 2012 Daniel Kraft
+## Copyright (C) 2012-2014 Daniel Kraft
 ##
 ## This file is part of Octave.
 ##
@@ -19,17 +19,20 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} profshow (@var{data})
 ## @deftypefnx {Function File} {} profshow (@var{data}, @var{n})
-## Show flat profiler results.
+## @deftypefnx {Function File} {} profshow ()
+## @deftypefnx {Function File} {} profshow (@var{n})
+## Display flat per-function profiler results.
 ##
-## This command prints out profiler data as a flat profile.  @var{data} is the
-## structure returned by @code{profile ("info")}.  If @var{n} is given, it
-## specifies the number of functions to show in the profile; functions are
-## sorted in descending order by total time spent in them.  If there are more
-## than @var{n} included in the profile, those will not be shown.  @var{n}
+## Print out profiler data (execution time, number of calls) for the most
+## critical @var{n} functions.  The results are sorted in descending order by
+## the total time spent in each function.  If @var{n} is unspecified it
 ## defaults to 20.
 ##
-## The attribute column shows @samp{R} for recursive functions and nothing
-## otherwise.
+## The input @var{data} is the structure returned by @code{profile ("info")}.
+## If unspecified, @code{profshow} will use the current profile dataset.
+##
+## The attribute column displays @samp{R} for recursive functions, and is blank
+## for all other function types.
 ## @seealso{profexplore, profile}
 ## @end deftypefn
 
@@ -38,8 +41,15 @@
 
 function profshow (data, n = 20)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin > 2)
     print_usage ();
+  endif
+
+  if (nargin == 0)
+    data = profile ("info");
+  elseif (nargin == 1 && ! isstruct (data))
+    n = data;
+    data = profile ("info");
   endif
 
   n = fix (n);
@@ -53,30 +63,32 @@ function profshow (data, n = 20)
   ## We want to sort by times in descending order.  For this, extract the
   ## times to an array, then sort this, and use the resulting index permutation
   ## to print out our table.
-  times = -[ data.FunctionTable.TotalTime ];
+  times = [ data.FunctionTable.TotalTime ];
+  totalTime = sum (times);
 
-  [~, p] = sort (times);
+  [~, p] = sort (times, "descend");
 
   ## For printing the table, find out the maximum length of a function name
   ## so that we can proportion the table accordingly.  Based on this,
   ## we can build the format used for printing table rows.
-  nameLen = length ("Function");
-  for i = 1 : n
-    nameLen = max (nameLen, length (data.FunctionTable(p(i)).FunctionName));
-  endfor
-  headerFormat = sprintf ("%%4s %%%ds %%4s %%12s %%12s\n", nameLen);
-  rowFormat = sprintf ("%%4d %%%ds %%4s %%12.3f %%12d\n", nameLen);
+  nameLen = max (length ("Function"),
+                 columns (char (data.FunctionTable(p(1:n)).FunctionName)));
+  headerFormat = sprintf ("%%4s %%%ds %%4s %%12s %%10s %%12s\n", nameLen);
+  rowFormat = sprintf ("%%4d %%%ds %%4s %%12.3f %%10.2f %%12d\n", nameLen);
 
-  printf (headerFormat, "#", "Function", "Attr", "Time (s)", "Calls");
-  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 2 * 13));
+  printf (headerFormat, ...
+          "#", "Function", "Attr", "Time (s)", "Time (%)", "Calls");
+  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 11 + 2 * 13));
+
   for i = 1 : n
     row = data.FunctionTable(p(i));
+    timePercent = 100 * row.TotalTime / totalTime;
     attr = "";
     if (row.IsRecursive)
       attr = "R";
     endif
-    printf (rowFormat, p(i), row.FunctionName, attr, ...
-            row.TotalTime, row.NumCalls);
+    printf (rowFormat, p(i), row.FunctionName, attr,
+            row.TotalTime, timePercent, row.NumCalls);
   endfor
 
 endfunction
@@ -96,7 +108,6 @@ endfunction
 %! profile off;
 %! profshow (profile ("info"), 5);
 
-%!error profshow ()
 %!error profshow (1, 2, 3)
 %!error <N must be a positive integer> profshow (struct (), ones (2))
 %!error <N must be a positive integer> profshow (struct (), 1+i)

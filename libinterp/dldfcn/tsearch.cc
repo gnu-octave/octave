@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 Andreas Stahel
+Copyright (C) 2002-2013 Andreas Stahel
 
 This file is part of Octave.
 
@@ -65,7 +65,7 @@ inline double min (double a, double b, double c)
 // method to traverse it
 
 DEFUN_DLD (tsearch, args, ,
-        "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{idx} =} tsearch (@var{x}, @var{y}, @var{t}, @var{xi}, @var{yi})\n\
 Search for the enclosing Delaunay convex hull.  For @code{@var{t} =\n\
 delaunay (@var{x}, @var{y})}, finds the index in @var{t} containing the\n\
@@ -110,8 +110,10 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
   const octave_idx_type np = xi.length ();
   ColumnVector values (np);
 
-  double x0 = 0.0, y0 = 0.0;
-  double a11 = 0.0, a12 = 0.0, a21 = 0.0, a22 = 0.0, det = 0.0;
+  double x0, y0, a11, a12, a21, a22, det;
+  x0 = y0 = 0.0;
+  a11 = a12 = a21 = a22 = 0.0;
+  det = 0.0;
 
   octave_idx_type k = nelem; // k is a counter of elements
   for (octave_idx_type kp = 0; kp < np; kp++)

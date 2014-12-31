@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -127,7 +127,26 @@ static int index_position = 0;
 static int num_indices = 0;
 
 DEFCONSTFUN (end, , ,
-  "internal function")
+             "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} end\n\
+The magic index @qcode{\"end\"} refers to the last valid entry in an indexing\n\
+operation.\n\
+\n\
+Example:\n\
+\n\
+@example\n\
+@group\n\
+@var{x} = [ 1 2 3 \n\
+      4 5 6 ];\n\
+@var{x}(1,end)\n\
+    @result{} 3\n\
+@var{x}(end,1)\n\
+    @result{} 4\n\
+@var{x}(end,end)\n\
+    @result{} 6\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -295,7 +314,7 @@ tree_argument_list::variable_names (void) const
       if (elt->is_identifier ())
         {
           tree_identifier *id = dynamic_cast<tree_identifier *> (elt);
-      
+
           retval.push_back (id->name ());
         }
       else if (elt->is_index_expression ())

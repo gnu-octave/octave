@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Jaroslav Hajek
+Copyright (C) 2009-2013 Jaroslav Hajek
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -21,8 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_convn_h)
-#define octave_convn_h 1
+#if !defined (octave_oct_convn_h)
+#define octave_oct_convn_h 1
 
 #include "dMatrix.h"
 #include "fMatrix.h"

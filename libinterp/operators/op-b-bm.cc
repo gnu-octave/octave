@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2012 John W. Eaton
+Copyright (C) 2003-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -51,7 +51,8 @@ DEFNDCATOP_FN (b_m, bool, matrix, array, array, concat)
 DEFNDCATOP_FN (s_bm, scalar, bool_matrix, array, array, concat)
 
 DEFNDCATOP_FN (b_fm, bool, float_matrix, float_array, float_array, concat)
-DEFNDCATOP_FN (f_bm, float_scalar, bool_matrix, float_array, float_array, concat)
+DEFNDCATOP_FN (f_bm, float_scalar, bool_matrix, float_array, float_array,
+               concat)
 
 DEFCONV (bool_matrix_conv, bool, bool_matrix)
 {

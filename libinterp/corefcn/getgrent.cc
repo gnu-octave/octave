@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -63,7 +63,7 @@ mk_gr_map (const octave_group& gr)
 }
 
 DEFUN (getgrent, args, ,
- "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{grp_struct} =} getgrent ()\n\
 Return an entry from the group database, opening it if necessary.\n\
 Once the end of data has been reached, @code{getgrent} returns 0.\n\
@@ -90,7 +90,7 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
 }
 
 DEFUN (getgrgid, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{grp_struct} =} getgrgid (@var{gid}).\n\
 Return the first entry from the group database with the group ID\n\
 @var{gid}.  If the group ID does not exist in the database,\n\
@@ -130,7 +130,7 @@ Return the first entry from the group database with the group ID\n\
 }
 
 DEFUN (getgrnam, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{grp_struct} =} getgrnam (@var{name})\n\
 Return the first entry from the group database with the group name\n\
 @var{name}.  If the group name does not exist in the database,\n\
@@ -163,7 +163,7 @@ Return the first entry from the group database with the group name\n\
 }
 
 DEFUN (setgrent, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} setgrent ()\n\
 Return the internal pointer to the beginning of the group database.\n\
 @end deftypefn")
@@ -189,7 +189,7 @@ Return the internal pointer to the beginning of the group database.\n\
 }
 
 DEFUN (endgrent, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} endgrent ()\n\
 Close the group database.\n\
 @end deftypefn")

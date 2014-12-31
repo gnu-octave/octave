@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2012 John W. Eaton
+Copyright (C) 2002-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -31,10 +31,10 @@ ODESFunc
 public:
 
   struct DAEJac
-    {
-      Matrix *dfdxdot;
-      Matrix *dfdx;
-    };
+  {
+    Matrix *dfdxdot;
+    Matrix *dfdx;
+  };
 
   typedef ColumnVector (*ODES_fsub) (const ColumnVector& x, double,
                                      const ColumnVector& theta);
@@ -61,41 +61,41 @@ public:
     : fsub (a.fsub), bsub (a.bsub), jsub (a.jsub) { }
 
   ODESFunc& operator = (const ODESFunc& a)
-    {
-      if (this != &a)
-        {
-          fsub = a.fsub;
-          bsub = a.bsub;
-          jsub = a.jsub;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        fsub = a.fsub;
+        bsub = a.bsub;
+        jsub = a.jsub;
+      }
+    return *this;
+  }
 
   virtual ~ODESFunc (void) { }
 
   ODES_fsub fsub_function (void) const { return fsub; }
 
   ODESFunc& set_fsub_function (ODES_fsub f)
-    {
-      fsub = f;
-      return *this;
-    }
+  {
+    fsub = f;
+    return *this;
+  }
 
   ODES_bsub bsub_function (void) const { return bsub; }
 
   ODESFunc& set_bsub_function (ODES_bsub b)
-    {
-      bsub = b;
-      return *this;
-    }
+  {
+    bsub = b;
+    return *this;
+  }
 
   ODES_jsub jsub_function (void) const { return jsub; }
 
   ODESFunc& set_jsub_function (ODES_jsub j)
-    {
-      jsub = j;
-      return *this;
-    }
+  {
+    jsub = j;
+    return *this;
+  }
 
 protected:
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 1994-2013 John W. Eaton
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -56,7 +56,7 @@
 ## s = [ "ab"; "cde" ];
 ## strcat (s, s, s)
 ##     @result{}
-##         "ab ab ab "
+##         "ababab   "
 ##         "cdecdecde"
 ## @end group
 ## @end example

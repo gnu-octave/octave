@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_dld_function_h)
-#define octave_dld_function_h 1
+#if !defined (octave_ov_dld_fcn_h)
+#define octave_ov_dld_fcn_h 1
 
 #include <string>
 
@@ -69,12 +69,12 @@ public:
   bool is_dld_function (void) const { return true; }
 
   static octave_dld_function* create (octave_builtin::fcn ff,
-      const octave_shlib& shl,
-      const std::string& nm = std::string (),
-      const std::string& ds = std::string ());
+                                      const octave_shlib& shl,
+                                      const std::string& nm = std::string (),
+                                      const std::string& ds = std::string ());
 
   octave_shlib get_shlib (void) const
-    { return sh_lib; }
+  { return sh_lib; }
 
 private:
 

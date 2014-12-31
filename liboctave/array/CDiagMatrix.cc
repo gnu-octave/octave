@@ -1,7 +1,7 @@
 // DiagMatrix manipulations.
 /*
 
-Copyright (C) 1994-2012 John W. Eaton
+Copyright (C) 1994-2013 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -91,7 +91,8 @@ ComplexDiagMatrix::fill (double val, octave_idx_type beg, octave_idx_type end)
 }
 
 ComplexDiagMatrix&
-ComplexDiagMatrix::fill (const Complex& val, octave_idx_type beg, octave_idx_type end)
+ComplexDiagMatrix::fill (const Complex& val,
+                         octave_idx_type beg, octave_idx_type end)
 {
   if (beg < 0 || end >= length () || end < beg)
     {
@@ -248,10 +249,11 @@ conj (const ComplexDiagMatrix& a)
 // resize is the destructive analog for this one
 
 ComplexMatrix
-ComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const
+ComplexDiagMatrix::extract (octave_idx_type r1, octave_idx_type c1,
+                            octave_idx_type r2, octave_idx_type c2) const
 {
-  if (r1 > r2) { octave_idx_type tmp = r1; r1 = r2; r2 = tmp; }
-  if (c1 > c2) { octave_idx_type tmp = c1; c1 = c2; c2 = tmp; }
+  if (r1 > r2) { std::swap (r1, r2); }
+  if (c1 > c2) { std::swap (c1, c2); }
 
   octave_idx_type new_r = r2 - r1 + 1;
   octave_idx_type new_c = c2 - c1 + 1;
@@ -381,7 +383,7 @@ ComplexDiagMatrix::inverse (octave_idx_type& info) const
 }
 
 ComplexDiagMatrix
-ComplexDiagMatrix::pseudo_inverse (void) const
+ComplexDiagMatrix::pseudo_inverse (double tol) const
 {
   octave_idx_type r = rows ();
   octave_idx_type c = cols ();
@@ -391,10 +393,11 @@ ComplexDiagMatrix::pseudo_inverse (void) const
 
   for (octave_idx_type i = 0; i < len; i++)
     {
-      if (elem (i, i) != 0.0)
-        retval.elem (i, i) = 1.0 / elem (i, i);
-      else
+      double val = std::abs (elem (i, i));
+      if (val < tol || val == 0.0)
         retval.elem (i, i) = 0.0;
+      else
+        retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
   return retval;
@@ -446,7 +449,8 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 
   ComplexDiagMatrix c (a_nr, b_nc);
 
-  octave_idx_type len = c.length (), lenm = len < a_nc ? len : a_nc;
+  octave_idx_type len = c.length ();
+  octave_idx_type lenm = len < a_nc ? len : a_nc;
 
   for (octave_idx_type i = 0; i < lenm; i++)
     c.dgxelem (i) = a.dgelem (i) * b.dgelem (i);
@@ -547,7 +551,8 @@ double
 ComplexDiagMatrix::rcond (void) const
 {
   ColumnVector av = extract_diag (0).map<double> (std::abs);
-  double amx = av.max (), amn = av.min ();
+  double amx = av.max ();
+  double amn = av.min ();
   return amx == 0 ? 0.0 : amn / amx;
 }
 

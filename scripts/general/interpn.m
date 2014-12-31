@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2012 David Bateman
+## Copyright (C) 2007-2013 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -84,6 +84,11 @@ function vi = interpn (varargin)
     method = varargin{end - 1};
     extrapval = varargin{end};
     nargs -= 2;
+  endif
+
+  if (method(1) == "*")
+    warning ("interpn: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
   endif
 
   if (nargs < 3)
@@ -317,4 +322,7 @@ endfunction
 %! assert (interpn (z), zout, tol);
 %! assert (interpn (z, "linear"), zout, tol);
 %! assert (interpn (z, "spline"), zout, tol);
+
+%% Test input validation
+%!warning <ignoring unsupported '\*' flag> interpn (rand (3,3), 1, "*linear");
 

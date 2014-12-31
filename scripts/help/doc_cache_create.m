@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2012 Søren Hauberg
+## Copyright (C) 2009-2013 Søren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -25,7 +25,7 @@
 ## resulting cache is saved in the file @var{out_file}.
 ## The cache is used to speed up @code{lookfor}.
 ##
-## If no directory is given (or it is the empty matrix), a cache for builtin
+## If no directory is given (or it is the empty matrix), a cache for built-in
 ## operators, etc. is generated.
 ##
 ## @seealso{doc_cache_file, lookfor, path}
@@ -55,6 +55,7 @@ function doc_cache_create (out_file = "doc-cache", directory = [])
 
   ## Save cache
   if (! isempty (cache))
+     save_header_format_string (["# doc-cache created by Octave " OCTAVE_VERSION], "local");
      save ("-text", out_file, "cache");
   endif
 

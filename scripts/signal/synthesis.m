@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2012 Andreas Weingessel
+## Copyright (C) 1995-2013 Andreas Weingessel
 ##
 ## This file is part of Octave.
 ##
@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} synthesis (@var{y}, @var{c})
+## @deftypefn {Function File} {@var{x} =} synthesis (@var{y}, @var{c})
 ## Compute a signal from its short-time Fourier transform @var{y} and a
 ## 3-element vector @var{c} specifying window size, increment, and
 ## window type.
@@ -27,6 +27,7 @@
 ## @example
 ## [@var{y}, @var{c}] = stft (@var{x} , @dots{})
 ## @end example
+## @seealso{stft}
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -38,8 +39,7 @@ function x = synthesis (y, c)
     print_usage ();
   endif
 
-  [nr, nc] = size (c);
-  if (nr * nc != 3)
+  if (numel (c) != 3)
     error ("synthesis: C must contain exactly 3 elements");
   endif
 
@@ -59,12 +59,12 @@ function x = synthesis (y, c)
 
   z = real (ifft (y));
   st = fix ((w_size-inc) / 2);
-  z = z(st:st+inc-1, :);
-  w_coeff = w_coeff(st:st+inc-1);
+  z = z(st+1:st+inc, :);
+  w_coeff = w_coeff(st+1:st+inc);
 
   nc = columns (z);
   for i = 1:nc
-    z(:, i) = z(:, i) ./ w_coeff;
+    z(:, i) ./= w_coeff;
   endfor
 
   x = reshape (z, inc * nc, 1);

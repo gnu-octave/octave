@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2012 John W. Eaton
+Copyright (C) 2004-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -74,9 +74,10 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int64_scalar,
                                      "int64 scalar", "int64");
 
 DEFUN (int64, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} int64 (@var{x})\n\
 Convert @var{x} to 64-bit integer type.\n\
+@seealso{int8, uint8, int16, uint16, int32, uint32, uint64}\n\
 @end deftypefn")
 {
   OCTAVE_TYPE_CONV_BODY (int64);

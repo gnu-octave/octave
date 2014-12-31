@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 VZLU Prague a.s., Czech Republic
+Copyright (C) 2008-2013 VZLU Prague a.s., Czech Republic
 
 This file is part of Octave.
 
@@ -61,8 +61,8 @@ struct icmp_char_gt : public std::binary_function<char, char, bool>
     { return std::toupper (x) > std::toupper (y); }
 };
 
-// FIXME -- maybe these should go elsewhere?
-// FIXME -- are they even needed now?
+// FIXME: maybe these should go elsewhere?
+// FIXME: are they even needed now?
 // case-insensitive ascending comparator
 #if 0
 static bool
@@ -115,7 +115,8 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
   octave_value retval;
 
   Array<octave_idx_type> idx = array.lookup (values);
-  octave_idx_type n = array.numel (), nval = values.numel ();
+  octave_idx_type n = array.numel ();
+  octave_idx_type nval = values.numel ();
 
   // Post-process.
   if (match_bool)
@@ -187,7 +188,7 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 }
 
 DEFUN (lookup, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y})\n\
 @deftypefnx {Built-in Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
 Lookup values in a sorted table.  Usually used as a prelude to\n\
@@ -246,7 +247,8 @@ at most n-1).\n\
       return retval;
     }
 
-  octave_value table = args(0), y = args(1);
+  octave_value table = args(0);
+  octave_value y = args(1);
   if (table.ndims () > 2 || (table.columns () > 1 && table.rows () > 1))
     warning ("lookup: table is not a vector");
 
@@ -286,8 +288,8 @@ at most n-1).\n\
   if (num_case)
     {
 
-      // In the case of a complex array, absolute values will be used for compatibility
-      // (though it's not too meaningful).
+      // In the case of a complex array, absolute values will be used for
+      // compatibility (though it's not too meaningful).
 
       if (table.is_complex_type ())
         table = table.abs ();
@@ -356,7 +358,8 @@ at most n-1).\n\
               for (octave_idx_type i = 0; i < nval; i++)
                 {
                   octave_idx_type j = idx.xelem (i);
-                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1)) ? j : 0;
+                  ridx.xelem (i) = (j != 0 && str_y(i) == str_table(j-1)) ? j
+                                                                          : 0;
                 }
             }
 

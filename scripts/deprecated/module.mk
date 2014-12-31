@@ -1,31 +1,20 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
-  deprecated/__error_text__.m \
-  deprecated/cor.m \
-  deprecated/corrcoef.m \
-  deprecated/cut.m \
-  deprecated/default_save_options.m \
-  deprecated/java_debug.m \
-  deprecated/error_text.m \
-  deprecated/gen_doc_cache.m \
-  deprecated/isequalwithequalnans.m \
+  deprecated/bicubic.m \
+  deprecated/delaunay3.m \
+  deprecated/dump_prefs.m \
+  deprecated/find_dir_in_path.m \
+  deprecated/finite.m \
+  deprecated/fmod.m \
+  deprecated/fnmatch.m \
   deprecated/isstr.m \
-  deprecated/java_convert_matrix.m \
-  deprecated/java_get.m \
-  deprecated/java_invoke.m \
-  deprecated/java_new.m \
-  deprecated/java_unsigned_conversion.m \
-  deprecated/java_set.m \
-  deprecated/javafields.m \
-  deprecated/javamethods.m \
-  deprecated/polyderiv.m \
-  deprecated/re_read_readline_init_file.m \
-  deprecated/read_readline_init_file.m \
-  deprecated/saving_history.m \
-  deprecated/shell_cmd.m \
-  deprecated/studentize.m \
-  deprecated/sylvester_matrix.m
+  deprecated/luinc.m \
+  deprecated/octave_tmp_file_name.m \
+  deprecated/nfields.m \
+  deprecated/strmatch.m \
+  deprecated/syl.m \
+  deprecated/usage.m
 
 FCN_FILES += $(deprecated_FCN_FILES)
 

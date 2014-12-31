@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2012 VZLU Prague
+Copyright (C) 2010-2013 VZLU Prague
 
 This file is part of Octave.
 
@@ -20,8 +20,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#if !defined (octave_liboctave_macros_h)
-#define octave_liboctave_macros_h 1
+#if !defined (octave_lo_macros_h)
+#define octave_lo_macros_h 1
 
 // Core macros. Iteration is supported up to count 10.
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -95,7 +95,7 @@ DEFBINOP (trans_ldiv, matrix, complex_matrix)
   MatrixType typ = v1.matrix_type ();
 
   ComplexMatrix ret = xleftdiv (v1.matrix_value (),
-                         v2.complex_matrix_value (), typ, blas_trans);
+                                v2.complex_matrix_value (), typ, blas_trans);
 
   v1.matrix_type (typ);
   return ret;
@@ -154,13 +154,17 @@ install_m_cm_ops (void)
   INSTALL_BINOP (op_el_or, octave_matrix, octave_complex_matrix, el_or);
   INSTALL_BINOP (op_trans_mul, octave_matrix, octave_complex_matrix, trans_mul);
   INSTALL_BINOP (op_herm_mul, octave_matrix, octave_complex_matrix, trans_mul);
-  INSTALL_BINOP (op_trans_ldiv, octave_matrix, octave_complex_matrix, trans_ldiv);
-  INSTALL_BINOP (op_herm_ldiv, octave_matrix, octave_complex_matrix, trans_ldiv);
+  INSTALL_BINOP (op_trans_ldiv, octave_matrix, octave_complex_matrix,
+                 trans_ldiv);
+  INSTALL_BINOP (op_herm_ldiv, octave_matrix, octave_complex_matrix,
+                 trans_ldiv);
 
   INSTALL_CATOP (octave_matrix, octave_complex_matrix, m_cm);
 
-  INSTALL_ASSIGNCONV (octave_matrix, octave_complex_matrix, octave_complex_matrix);
-  INSTALL_ASSIGNCONV (octave_float_matrix, octave_complex_matrix, octave_float_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_matrix, octave_complex_matrix,
+                      octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_matrix, octave_complex_matrix,
+                      octave_float_complex_matrix);
 
   INSTALL_WIDENOP (octave_matrix, octave_complex_matrix, complex_matrix_conv);
 }

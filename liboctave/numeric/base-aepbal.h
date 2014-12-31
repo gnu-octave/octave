@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2012 Jaroslav Hajek
+Copyright (C) 2008-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -43,52 +43,52 @@ public:
   }
 
   base_aepbal& operator = (const base_aepbal& a)
-    {
-      balanced_mat = a.balanced_mat;
-      scale = a.scale;
-      ilo = a.ilo;
-      ihi = a.ihi;
-      job = a.job;
-      return *this;
-    }
+  {
+    balanced_mat = a.balanced_mat;
+    scale = a.scale;
+    ilo = a.ilo;
+    ihi = a.ihi;
+    job = a.job;
+    return *this;
+  }
 
   virtual ~base_aepbal (void) { }
 
   MatrixT balanced_matrix (void) const { return balanced_mat; }
 
   VectorT permuting_vector (void) const
-    {
-      octave_idx_type n = balanced_mat.rows ();
-      VectorT pv (n);
-      for (octave_idx_type i = 0; i < n; i++)
-        pv(i) = i+1;
-      for (octave_idx_type i = n-1; i >= ihi; i--)
-        {
-          octave_idx_type j = scale(i) - 1;
-          std::swap (pv(i), pv(j));
-        }
-      for (octave_idx_type i = 0; i < ilo-1; i++)
-        {
-          octave_idx_type j = scale(i) - 1;
-          std::swap (pv(i), pv(j));
-        }
+  {
+    octave_idx_type n = balanced_mat.rows ();
+    VectorT pv (n);
+    for (octave_idx_type i = 0; i < n; i++)
+      pv(i) = i+1;
+    for (octave_idx_type i = n-1; i >= ihi; i--)
+      {
+        octave_idx_type j = scale(i) - 1;
+        std::swap (pv(i), pv(j));
+      }
+    for (octave_idx_type i = 0; i < ilo-1; i++)
+      {
+        octave_idx_type j = scale(i) - 1;
+        std::swap (pv(i), pv(j));
+      }
 
-      return pv;
-    }
+    return pv;
+  }
 
   VectorT scaling_vector (void) const
-    {
-      octave_idx_type n = balanced_mat.rows ();
-      VectorT scv (n);
-      for (octave_idx_type i = 0; i < ilo-1; i++)
-        scv(i) = 1;
-      for (octave_idx_type i = ilo-1; i < ihi; i++)
-        scv(i) = scale(i);
-      for (octave_idx_type i = ihi; i < n; i++)
-        scv(i) = 1;
+  {
+    octave_idx_type n = balanced_mat.rows ();
+    VectorT scv (n);
+    for (octave_idx_type i = 0; i < ilo-1; i++)
+      scv(i) = 1;
+    for (octave_idx_type i = ilo-1; i < ihi; i++)
+      scv(i) = scale(i);
+    for (octave_idx_type i = ihi; i < n; i++)
+      scv(i) = 1;
 
-      return scv;
-    }
+    return scv;
+  }
 };
 
 #endif

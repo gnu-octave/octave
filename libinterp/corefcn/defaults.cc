@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2012 John W. Eaton
+Copyright (C) 1996-2013 John W. Eaton
 
 This file is part of Octave.
 
@@ -74,6 +74,7 @@ std::string Vlocal_ver_fcn_file_dir;
 std::string Vlocal_api_fcn_file_dir;
 std::string Vlocal_fcn_file_dir;
 
+std::string Voct_data_dir;
 std::string Voct_etc_dir;
 std::string Voct_locale_dir;
 
@@ -219,6 +220,12 @@ set_default_image_dir (void)
 }
 
 static void
+set_default_oct_data_dir (void)
+{
+  Voct_data_dir = subst_octave_home (OCTAVE_OCTDATADIR);
+}
+
+static void
 set_default_oct_etc_dir (void)
 {
   Voct_etc_dir = subst_octave_home (OCTAVE_OCTETCDIR);
@@ -252,14 +259,14 @@ set_exec_path (const std::string& path_arg)
 
   if (tpath.empty ())
     tpath = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str ()
-      + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
-      + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
-      + Varch_lib_dir + dir_path::path_sep_str ()
-      + Vbin_dir;
+            + Vlocal_api_arch_lib_dir + dir_path::path_sep_str ()
+            + Vlocal_arch_lib_dir + dir_path::path_sep_str ()
+            + Varch_lib_dir + dir_path::path_sep_str ()
+            + Vbin_dir;
 
   VEXEC_PATH = tpath;
 
-  // FIXME -- should we really be modifying PATH in the environment?
+  // FIXME: should we really be modifying PATH in the environment?
   // The way things are now, Octave will ignore directories set in the
   // PATH with calls like
   //
@@ -371,7 +378,8 @@ set_local_site_defaults_file (void)
 
   if (lsf.empty ())
     {
-      Vlocal_site_defaults_file = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+      Vlocal_site_defaults_file
+        = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
       Vlocal_site_defaults_file.append ("/octaverc");
     }
   else
@@ -434,6 +442,7 @@ install_defaults (void)
   set_default_local_api_fcn_file_dir ();
   set_default_local_fcn_file_dir ();
 
+  set_default_oct_data_dir ();
   set_default_oct_etc_dir ();
   set_default_oct_locale_dir ();
 
@@ -466,13 +475,14 @@ install_defaults (void)
 }
 
 DEFUN (EDITOR, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
-Query or set the internal variable that specifies the editor to\n\
-use with the @code{edit_history} command.  The default value is taken from\n\
-the environment variable @w{@env{EDITOR}} when Octave starts.  If the\n\
+Query or set the internal variable that specifies the default text editor.\n\
+\n\
+The default value is taken from the environment variable @w{@env{EDITOR}}\n\
+when Octave starts.  If the\n\
 environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
 @qcode{\"emacs\"}.\n\
 \n\
@@ -480,7 +490,7 @@ When called from inside a function with the @qcode{\"local\"} option, the\n\
 variable is changed locally for the function and any subroutines it calls.  \n\
 The original variable value is restored when exiting the function.\n\
 \n\
-@seealso{edit_history}\n\
+@seealso{edit, edit_history}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
@@ -499,7 +509,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (EXEC_PATH, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
@@ -537,7 +547,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (IMAGE_PATH, args, nargout,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
@@ -567,7 +577,7 @@ The original variable value is restored when exiting the function.\n\
 */
 
 DEFUN (OCTAVE_HOME, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_HOME ()\n\
 Return the name of the top-level Octave installation directory.\n\
 \n\
@@ -590,9 +600,10 @@ Return the name of the top-level Octave installation directory.\n\
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
-  "-*- texinfo -*-\n\
+        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} OCTAVE_VERSION ()\n\
-Return the version number of Octave, as a string.\n\
+Return the version number of Octave as a string.\n\
+@seealso{ver, version}\n\
 @end deftypefn")
 {
   octave_value retval;

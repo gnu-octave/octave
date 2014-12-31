@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2012 Alexander Barth
+Copyright (C) 2007-2013 Alexander Barth
 
 This file is part of Octave.
 
@@ -268,7 +268,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
 //This function only performs linear interpolation.
 
 DEFUN (__lin_interpn__, args, ,
-  "-*- texinfo -*-\n\
+       "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{vi} =} __lin_interpn__ (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})\n\
 Undocumented internal function.\n\
 @end deftypefn")

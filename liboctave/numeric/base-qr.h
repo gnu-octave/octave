@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 Jaroslav Hajek
+Copyright (C) 2009-2013 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -49,14 +49,14 @@ public:
   base_qr (const base_qr& a) : q (a.q), r (a.r) { }
 
   base_qr& operator = (const base_qr& a)
-    {
-      if (this != &a)
-        {
-          q = a.q;
-          r = a.r;
-        }
-      return *this;
-    }
+  {
+    if (this != &a)
+      {
+        q = a.q;
+        r = a.r;
+      }
+    return *this;
+  }
 
   virtual ~base_qr (void) { }
 

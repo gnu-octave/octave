@@ -1624,8 +1624,8 @@ FloatMatrix::utsolve (MatrixType &mattype, const FloatMatrix& b,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'U';
-                  char dia = 'N';
+                  uplo = 'U';
+                  dia = 'N';
 
                   Array<float> z (dim_vector (3 * nc, 1));
                   float *pz = z.fortran_vec ();
@@ -1721,8 +1721,8 @@ FloatMatrix::ltsolve (MatrixType &mattype, const FloatMatrix& b,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'L';
-                  char dia = 'N';
+                  uplo = 'L';
+                  dia = 'N';
 
                   Array<float> z (dim_vector (3 * nc, 1));
                   float *pz = z.fortran_vec ();

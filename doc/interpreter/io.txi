@@ -621,12 +621,15 @@ a bare percentage sign @samp{%} with no subsequent conversion character.
 Octave will emit an error and stop if it sees such code.  When the string
 variable to be processed cannot be guaranteed to be free of potential format
 codes it is better to use the two argument form of any of the @code{printf}
-functions and set the format string to @code{%s}.
+functions and set the format string to @code{%s}.  Alternatively, for code
+which is not required to be backwards-compatible with @sc{matlab} the
+Octave function @code{puts} or @code{disp} can be used.
 
 @example
 @group
 printf (strvar);        # Unsafe if strvar contains format codes
 printf ("%s", strvar);  # Safe
+puts (strvar);          # Safe
 @end group
 @end example
 

@@ -44,7 +44,7 @@ tree_cell::rvalue1 (int)
 
   Cell val;
 
-  int i = 0;
+  octave_idx_type i = 0;
 
   for (iterator p = begin (); p != end (); p++)
     {
@@ -65,10 +65,15 @@ tree_cell::rvalue1 (int)
         {
           octave_idx_type this_nc = row.length ();
 
-          if (nc != this_nc)
+          if (this_nc != nc)
             {
-              ::error ("number of columns must match");
-              return retval;
+              if (this_nc == 0)
+                continue;  // blank line
+              else
+                {
+                  ::error ("number of columns must match");
+                  return retval;
+                }
             }
         }
 
@@ -78,6 +83,8 @@ tree_cell::rvalue1 (int)
       i++;
     }
 
+  if (i < nr)
+    val.resize (dim_vector (i, nc));  // there were blank rows
   retval = val;
 
   return retval;

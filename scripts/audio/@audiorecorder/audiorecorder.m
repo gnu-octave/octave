@@ -33,7 +33,7 @@ function recorder = audiorecorder (varargin)
   if (nargin > 5)
     print_usage ();
   endif
-  if nargin > 0 && ischar (varargin{1})
+  if (nargin > 0 && ischar (varargin{1}))
     varargin{1} = str2func (varargin{1});
   endif
   recorder.recorder = __recorder_audiorecorder__ (varargin{:});

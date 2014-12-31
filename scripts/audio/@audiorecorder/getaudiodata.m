@@ -45,7 +45,7 @@ function data = getaudiodata (varargin)
         data = uint8 ((data + 1.0) * 0.5 * (2.0 ^ 8 - 1));
     endswitch
   endif
-  if get (recorder, "NumberOfChannels") == 2
+  if (get (recorder, "NumberOfChannels") == 2)
     data = data';
   else
     data = data(1,:)';

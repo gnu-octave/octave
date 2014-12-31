@@ -30,10 +30,10 @@
 function result = get (varargin)
   player = varargin{1};
   properties = __get_properties__ (player);
-  if nargin == 1
+  if (nargin == 1)
     result = properties;
-  elseif nargin == 2
-    if ischar (varargin{2})
+  elseif (nargin == 2)
+    if (ischar (varargin{2}))
       result = getfield (properties, varargin{2});
     else
       result = {};

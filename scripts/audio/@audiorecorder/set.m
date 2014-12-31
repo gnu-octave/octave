@@ -30,20 +30,20 @@
 ## @end deftypefn
 
 function settable = set (varargin)
-  if nargin < 1 || nargin > 3
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
   recorder = struct (varargin{1}).recorder;
-  if nargin == 1
+  if (nargin == 1)
     settable.SampleRate = {};
     settable.Tag = {};
     settable.UserData = {};
-  elseif nargin == 2
+  elseif (nargin == 2)
     for [value, property] = varargin{2}
       setproperty (recorder, property, value);
     endfor
-  elseif nargin == 3
-    if iscell (varargin{2})
+  elseif (nargin == 3)
+    if (iscell (varargin{2}))
       index = 1;
       for property = varargin{2}
         setproperty (recorder, char (property), varargin{3}{index});

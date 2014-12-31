@@ -22,20 +22,41 @@
 ## object @var{player}.
 ## @end deftypefn
 
-function properties = __get_properties__ (player)
-  properties.BitsPerSample = __player_get_nbits__ (struct (player).player);
-  properties.CurrentSample = __player_get_sample_number__ (struct (player).player);
-  properties.DeviceID = __player_get_id__ (struct (player).player);
-  properties.NumberOfChannels = __player_get_channels__ (struct (player).player);
-  if __player_isplaying__ (struct (player).player)
+function props = __get_properties__ (player)
+  if (__player_isplaying__ (struct (player).player))
     running = "on";
   else
     running = "off";
   endif
-  properties.Running = running;
-  properties.SampleRate = __player_get_fs__ (struct (player).player);
-  properties.TotalSamples = __player_get_total_samples__ (struct (player).player);
-  properties.Tag = __player_get_tag__ (struct (player).player);
-  properties.Type = "audioplayer";
-  properties.UserData = __player_get_userdata__ (struct (player).player);
+
+  props = struct ("BitsPerSample",
+                  __player_get_nbits__ (struct (player).player),
+
+                  "CurrentSample",
+                  __player_get_sample_number__ (struct (player).player),
+
+                  "DeviceID",
+                  __player_get_id__ (struct (player).player),
+
+                  "NumberOfChannels",
+                  __player_get_channels__ (struct (player).player),
+
+                  "Running",
+                  running,
+
+                  "SampleRate",
+                  __player_get_fs__ (struct (player).player),
+
+                  "TotalSamples",
+                  __player_get_total_samples__ (struct (player).player),
+
+                  "Tag",
+                  __player_get_tag__ (struct (player).player),
+
+                  "Type",
+                  "audioplayer",
+
+                  "UserData",
+                  __player_get_userdata__ (struct (player).player));
+
 endfunction

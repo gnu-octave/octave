@@ -33,7 +33,8 @@ function player = play (varargin)
   endif
   recorder = varargin{1};
   data = getaudiodata (recorder);
-  player = audioplayer (data, get (recorder, "SampleRate"), get (recorder, "BitsPerSample"));
+  player = audioplayer (data, get (recorder, "SampleRate"),
+                        get (recorder, "BitsPerSample"));
   if (nargin == 1)
     play (player);
   else

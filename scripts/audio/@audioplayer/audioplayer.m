@@ -101,95 +101,95 @@ function player = audioplayer (varargin)
 endfunction
 
 %!test
-%!  mono = randn (1, 44100) - 0.5;
-%!  stereo = randn (2, 44100) - 0.5;
-%!  fs = 44100;
-%!  player1 = audioplayer (mono, fs);
-%!  player2 = audioplayer (stereo, fs);
-%!  assert (player1.NumberOfChannels, 1);
-%!  assert (player2.NumberOfChannels, 2);
-%!  assert (player1.SampleRate, 44100);
-%!  assert (player2.SampleRate, 44100);
-%!  assert (player1.TotalSamples, 44100);
-%!  assert (player2.TotalSamples, 44100);
-%!  playblocking (player1);
-%!  playblocking (player2);
+%! mono = randn (1, 44100) - 0.5;
+%! stereo = randn (2, 44100) - 0.5;
+%! fs = 44100;
+%! player1 = audioplayer (mono, fs);
+%! player2 = audioplayer (stereo, fs);
+%! assert (player1.NumberOfChannels, 1);
+%! assert (player2.NumberOfChannels, 2);
+%! assert (player1.SampleRate, 44100);
+%! assert (player2.SampleRate, 44100);
+%! assert (player1.TotalSamples, 44100);
+%! assert (player2.TotalSamples, 44100);
+%! playblocking (player1);
+%! playblocking (player2);
 
 %!test
-%!  audio = randn (2, 88200) - 0.5;
-%!  fs = 44100;
-%!  player = audioplayer (audio, fs);
-%!  assert (!isplaying (player));
-%!  play (player);
-%!  assert (isplaying (player));
-%!  sleep (1);
-%!  pause (player);
-%!  assert (!isplaying (player));
-%!  sleep (1);
-%!  resume (player);
-%!  assert (isplaying (player));
-%!  sleep (1);
+%! audio = randn (2, 88200) - 0.5;
+%! fs = 44100;
+%! player = audioplayer (audio, fs);
+%! assert (!isplaying (player));
+%! play (player);
+%! assert (isplaying (player));
+%! sleep (1);
+%! pause (player);
+%! assert (!isplaying (player));
+%! sleep (1);
+%! resume (player);
+%! assert (isplaying (player));
+%! sleep (1);
 
 %!test
-%!  audio = randn (2, 88200) - 0.5;
-%!  fs = 44100;
-%!  player = audioplayer (audio, fs);
-%!  assert (!isplaying (player));
-%!  play (player);
-%!  assert (isplaying (player));
-%!  sleep (1);
-%!  stop (player);
-%!  sleep (1);
-%!  assert (!isplaying (player));
-%!  assert (player.CurrentSample, 0);
+%! audio = randn (2, 88200) - 0.5;
+%! fs = 44100;
+%! player = audioplayer (audio, fs);
+%! assert (!isplaying (player));
+%! play (player);
+%! assert (isplaying (player));
+%! sleep (1);
+%! stop (player);
+%! sleep (1);
+%! assert (!isplaying (player));
+%! assert (player.CurrentSample, 0);
 
 %!test
-%!  audio = randn (2, 44100) - 0.5;
-%!  fs = 44100;
-%!  player = audioplayer (audio, fs);
-%!  set (player, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
-%!  assert (player.SampleRate, 8000);
-%!  assert (player.Tag, "tag");
-%!  assert (player.UserData, [1, 2; 3, 4]);
+%! audio = randn (2, 44100) - 0.5;
+%! fs = 44100;
+%! player = audioplayer (audio, fs);
+%! set (player, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
+%! assert (player.SampleRate, 8000);
+%! assert (player.Tag, "tag");
+%! assert (player.UserData, [1, 2; 3, 4]);
 
 %!test
-%!  audio = randn (2, 44100) - 0.5;
-%!  fs = 44100;
-%!  player = audioplayer (audio, fs);
-%!  settable = set (player);
-%!  settable.SampleRate = 8000;
-%!  settable.Tag = "tag";
-%!  settable.UserData = [1, 2; 3, 4];
-%!  set (player, settable);
-%!  assert (player.SampleRate, 8000);
-%!  assert (player.Tag, "tag");
-%!  assert (player.UserData, [1, 2; 3, 4]);
+%! audio = randn (2, 44100) - 0.5;
+%! fs = 44100;
+%! player = audioplayer (audio, fs);
+%! settable = set (player);
+%! settable.SampleRate = 8000;
+%! settable.Tag = "tag";
+%! settable.UserData = [1, 2; 3, 4];
+%! set (player, settable);
+%! assert (player.SampleRate, 8000);
+%! assert (player.Tag, "tag");
+%! assert (player.UserData, [1, 2; 3, 4]);
 
 %!test
-%!  audio = randn (2, 44100) - 0.5;
-%!  fs = 44100;
-%!  player = audioplayer (audio, fs);
-%!  player.SampleRate = 8000;
-%!  player.Tag = "tag";
-%!  player.UserData = [1, 2; 3, 4];
-%!  properties = get (player, {"SampleRate", "Tag", "UserData"});
-%!  assert (properties, {8000, "tag", [1, 2; 3, 4]});
+%! audio = randn (2, 44100) - 0.5;
+%! fs = 44100;
+%! player = audioplayer (audio, fs);
+%! player.SampleRate = 8000;
+%! player.Tag = "tag";
+%! player.UserData = [1, 2; 3, 4];
+%! properties = get (player, {"SampleRate", "Tag", "UserData"});
+%! assert (properties, {8000, "tag", [1, 2; 3, 4]});
 
-%!function [ sound, status ] = callback (samples)
+%!function [sound, status] = callback (samples)
 %!  sound = rand (samples, 2) - 0.5;
 %!  status = 0;
 %!endfunction
 
 %!test
-%!  player = audioplayer (@callback, 44100);
-%!  play (player);
-%!  sleep (2);
-%!  stop (player);
-%!  assert (1);
+%! player = audioplayer (@callback, 44100);
+%! play (player);
+%! sleep (2);
+%! stop (player);
+%! assert (1);
 
 %!test
-%!  player = audioplayer ("callback", 44100, 16);
-%!  play (player);
-%!  sleep (2);
-%!  stop (player);
-%!  assert (1);
+%! player = audioplayer ("callback", 44100, 16);
+%! play (player);
+%! sleep (2);
+%! stop (player);
+%! assert (1);

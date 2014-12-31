@@ -379,35 +379,35 @@ devices.\n\
 /*
 %!test
 %! devinfo = audiodevinfo;
-%! assert(rows(devinfo.('input')) == 1);
-%! assert(rows(devinfo.('output')) == 1);
+%! assert (rows (devinfo.input), 1);
+%! assert (rows (devinfo.output), 1);
 
 %!test
 %! devinfo = audiodevinfo;
-%! nout = audiodevinfo(0);
-%! nin = audiodevinfo(1);
-%! assert(columns(devinfo.('output')) == nout);
-%! assert(columns(devinfo.('input')) == nin);
+%! nout = audiodevinfo (0);
+%! nin = audiodevinfo (1);
+%! assert (columns (devinfo.output), nout);
+%! assert (columns (devinfo.input), nin);
 
 %!test
 %! devinfo = audiodevinfo;
-%! nout = audiodevinfo(0);
-%! nin = audiodevinfo(1);
-%! for i=1:nout,
-%!   assert(devinfo.('output')(i).('Name') == audiodevinfo(0, devinfo.('output')(i).('ID')))
-%! end
+%! nout = audiodevinfo (0);
+%! nin = audiodevinfo (1);
+%! for i = 1:nout,
+%!   assert (devinfo.output(i).Name, audiodevinfo (0, devinfo.output(i).ID))
+%! endfor
 %! for i=1:nin,
-%!   assert(devinfo.('input')(i).('Name') == audiodevinfo(0, devinfo.('input')(i).('ID')))
-%! end
+%!   assert (devinfo.input(i).Name, audiodevinfo (1, devinfo.input(i).ID))
+%! endfor
 
 %!test
 %! devinfo = audiodevinfo;
-%! nout = audiodevinfo(0);
-%! nin = audiodevinfo(1);
-%! for i=1:nout,
-%!   assert(devinfo.('output')(i).('ID') == audiodevinfo(0, devinfo.('output')(i).('Name')))
-%! end
-%! for i=1:nin,
-%!   assert(devinfo.('input')(i).('ID') == audiodevinfo(0, devinfo.('input')(i).('Name')))
-%! end
+%! nout = audiodevinfo (0);
+%! nin = audiodevinfo (1);
+%! for i = 1:nout,
+%!   assert (devinfo.output(i).ID, audiodevinfo (0, devinfo.output(i).Name))
+%! endfor
+%! for i = 1:nin,
+%!   assert (devinfo.input(i).ID, audiodevinfo (1, devinfo.input(i).Name))
+%! endfor
 */

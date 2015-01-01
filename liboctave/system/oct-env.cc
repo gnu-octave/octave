@@ -150,6 +150,13 @@ octave_env::get_home_directory ()
 }
 
 std::string
+octave_env::get_temp_directory ()
+{
+  return (instance_ok ())
+         ? instance->do_get_temp_directory () : std::string ();
+}
+
+std::string
 octave_env::get_program_name (void)
 {
   return (instance_ok ())
@@ -182,6 +189,45 @@ octave_env::get_host_name (void)
 {
   return (instance_ok ())
          ? instance->do_get_host_name () : std::string ();
+}
+
+std::string
+octave_env::do_get_temp_directory (void) const
+{
+  std::string tempd;
+
+#if defined (__MINGW32__) || defined (_MSC_VER)
+  
+  tempd = do_getenv ("TEMP");
+
+  if (tempd.empty ())
+    tempd = do_getenv ("TMP");
+
+  #if defined (P_tmpdir)
+  if (tempd.empty ())
+    tempd = P_tmpdir;
+  #endif
+
+  // Some versions of MinGW and MSVC either don't define P_tmpdir, or
+  // define it to a single backslash.  In such cases just use C:\temp.
+  if (tempd.empty () || tempd == "\\")
+    tempd = "c:\\temp";
+
+#else    ## Unix-like OS
+
+  tempd = do_getenv ("TMP");
+
+  #if defined (P_tmpdir)
+  if (tempd.empty ())
+    tempd = P_tmpdir;
+  #else
+  if (tempd.empty ())
+    tempd = "/tmp";
+  #endif
+
+#endif
+
+  return tempd;
 }
 
 // FIXME: this leaves no way to distinguish between a

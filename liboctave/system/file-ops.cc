@@ -39,6 +39,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "pathmax.h"
 #include "canonicalize.h"
 
+extern "C" {
+#include <tempname.h>
+}
+
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -678,53 +682,37 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
 
   std::string retval;
 
-  const char *pdir = dir.empty () ? 0 : dir.c_str ();
-
-  const char *ppfx = pfx.empty () ? 0 : pfx.c_str ();
-
-  char *tmp = tempnam (pdir, ppfx);
-
-  if (tmp)
-    {
-      retval = tmp;
-      free (tmp);
-
-      if (! dir.empty ())
-        {
-          // Check that environment variable hasn't overridden dir argument
-          size_t pos = retval.rfind (file_ops::dir_sep_char ());
-          std::string tmpdir = retval.substr (0, pos);  
-          std::string dirarg = dir;
-          if (*dirarg.rbegin () == file_ops::dir_sep_char ())
-            dirarg.erase (--dirarg.end ());
-
-          if (tmpdir != dirarg)
-          {
-            // A different TMPDIR was used.
-            // Replace TMPDIR with given dir if is valid
-            file_stat fs (dirarg, false);
-            if (fs && fs.is_dir ())
-              retval.replace (0, pos, dirarg);
-
-            // since we have changed the directory, it is possible that the name
-            // we are using is no longer unique, so check/modify
-            std::string tmppath = retval;
-            int attempt = 0;
-            while (++attempt < TMP_MAX && file_stat (tmppath, false).exists ())
-              {
-                char file_postfix[16];
-
-                sprintf(file_postfix, "t%d", attempt);
-
-                tmppath = retval + file_postfix;
-              }
-            retval = tmppath;
-          }
-        }
-    }
+  // get dir path to use for template
+  std::string templatename;
+  if (dir.empty ())
+    templatename = octave_env::get_temp_directory ();
+  else if (! file_stat (dir, false).is_dir ())
+    templatename = octave_env::get_temp_directory ();
   else
-    msg = gnulib::strerror (errno);
+    templatename = dir;
 
+  // add dir sep char if it is not there
+  if (*templatename.rbegin () != file_ops::dir_sep_char ())
+    templatename += file_ops::dir_sep_char ();
+
+  if (pfx.empty ())
+    templatename += "file";
+  else
+    templatename += pfx;
+
+  // add the required XXXXXX for the template
+  templatename += "XXXXXX";
+
+  // create and copy template to char array for call to gen_tempname
+  char tname [templatename.length () + 1];
+
+  strcpy (tname, templatename.c_str ());
+
+  if (gen_tempname (tname, 0, 0, GT_NOCREATE) == -1)
+    msg = gnulib::strerror (errno);
+  else
+    retval = tname;
+  
   return retval;
 }
 

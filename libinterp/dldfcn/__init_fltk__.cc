@@ -1867,11 +1867,13 @@ private:
     if (win != windows.end ())
       {
         if (is_visible)
-          win->second->show ();
+          {
+            win->second->show ();
+            win->second->show_canvas ();
+          }
         else
           win->second->hide ();
 
-        win->second->redraw ();
       }
   }
 

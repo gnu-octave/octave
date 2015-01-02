@@ -28,9 +28,11 @@
 ## @end deftypefn
 
 function player = play (varargin)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
   recorder = varargin{1};
   data = getaudiodata (recorder);
   player = audioplayer (data, get (recorder, "SampleRate"),
@@ -40,4 +42,5 @@ function player = play (varargin)
   else
     play (player, varargin{2});
   endif
+
 endfunction

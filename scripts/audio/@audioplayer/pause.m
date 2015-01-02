@@ -22,5 +22,11 @@
 ## @end deftypefn
 
 function pause (player)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   __player_pause__ (struct (player).player);
+
 endfunction

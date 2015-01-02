@@ -27,23 +27,28 @@
 ## correspond to property names.
 ## @end deftypefn
 
-function result = get (varargin)
-  player = varargin{1};
-  properties = __get_properties__ (player);
-  if (nargin == 1)
-    result = properties;
-  elseif (nargin == 2)
-    if (ischar (varargin{2}))
-      result = getfield (properties, varargin{2});
-    else
-      result = {};
-      index = 1;
-      for property = varargin{2}
-        result{index} = getfield (properties, char (property));
-        index = index + 1;
-      endfor
-    endif
-  else
-    error ("audioplayer: wrong number of arguments to the get method");
+function retval = get (varargin)
+
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
   endif
+
+  properties = __get_properties__ (varargin{1});
+
+  if (nargin == 1)
+    retval = properties;
+  elseif (nargin == 2)
+    pnames = varargin{2};
+    if (ischar (pnames))
+      retval = getfield (properties, pnames);
+    elseif (iscellstr (pnames))
+      retval = cell (size (pnames));
+      for i = 1:numel (pnames)
+        retval{i} = getfield (properties, pnames{i});
+      endfor
+    else
+      error ("@audioplayer/get: invalid name argument");
+    endif
+  endif
+
 endfunction

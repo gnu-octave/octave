@@ -23,14 +23,20 @@
 ## @end deftypefn
 
 function value = subsasgn (recorder, idx, rhs)
-  if (isempty (idx))
-    error ("audiorecorder: missing index");
+  if (nargin != 3)
+    print_usage ();
   endif
+
+  if (isempty (idx))
+    error ("@audiorecorder/subsasgn: missing index");
+  endif
+
   if (strcmp (idx(1).type, "."))
     field = idx.subs;
     set (recorder, field, rhs);
     value = recorder;
   else
-    error ("audiorecorder: invalid subscript type");
+    error ("@audiorecorder/subsasgn: invalid subscript type");
   endif
+
 endfunction

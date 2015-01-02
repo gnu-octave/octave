@@ -73,17 +73,17 @@
 ## @end example
 
 function player = audioplayer (varargin)
-  if (nargin < 1 || nargin > 4)
+
+  if (nargin < 1 || nargin > 4
+      || (nargin < 2 && (isa (varargin{1}, "function_handle")
+                         || ischar (varargin{1}))))
     print_usage ();
   endif
-  if ((isa (varargin{1}, "function_handle")
-       || ischar (varargin{1})) && nargin < 2)
-    print_usage ();
-  endif
-  if isa (varargin{1}, "audiorecorder")
-    if nargin == 1
+
+  if (isa (varargin{1}, "audiorecorder"))
+    if (nargin == 1)
       player = getplayer (varargin{1});
-    elseif nargin == 2
+    elseif (nargin == 2)
       recorder = varargin{1};
       data = getaudiodata (recorder);
       player = audioplayer (data, get (recorder, "SampleRate"),
@@ -98,6 +98,7 @@ function player = audioplayer (varargin)
     player.player = __player_audioplayer__ (varargin{:});
     player = class (player, "audioplayer");
   endif
+
 endfunction
 
 %!test

@@ -23,6 +23,11 @@
 ## @end deftypefn
 
 function props = __get_properties__ (recorder)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (__recorder_isrecording__ (struct (recorder).recorder))
     running = "on";
   else

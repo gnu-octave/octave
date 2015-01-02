@@ -22,5 +22,11 @@
 ## @end deftypefn
 
 function resume (recorder)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   __recorder_resume__ (struct (recorder).recorder);
+
 endfunction

@@ -23,6 +23,11 @@
 ## @end deftypefn
 
 function props = __get_properties__ (player)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (__player_isplaying__ (struct (player).player))
     running = "on";
   else

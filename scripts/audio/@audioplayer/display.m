@@ -22,5 +22,11 @@
 ## @end deftypefn
 
 function display (player)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   disp (__get_properties__ (player));
+
 endfunction

@@ -23,5 +23,11 @@
 ## @end deftypefn
 
 function result = isrecording (recorder)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   result = __recorder_isrecording__ (struct (recorder).recorder);
+
 endfunction

@@ -29,10 +29,13 @@
 ## @end deftypefn
 
 function settable = set (varargin)
+
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
+
   player = struct (varargin{1}).player;
+
   if (nargin == 1)
     settable.SampleRate = {};
     settable.Tag = {};
@@ -52,8 +55,9 @@ function settable = set (varargin)
       setproperty (player, varargin{2}, varargin{3});
     endif
   else
-    error ("audioplayer: wrong number of arguments to the set method");
+    error ("@audioplayer/set: wrong number of arguments to the set method");
   endif
+
 endfunction
 
 function setproperty (player, property, value)

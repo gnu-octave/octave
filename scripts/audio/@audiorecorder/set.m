@@ -30,10 +30,13 @@
 ## @end deftypefn
 
 function settable = set (varargin)
+
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
+
   recorder = struct (varargin{1}).recorder;
+
   if (nargin == 1)
     settable.SampleRate = {};
     settable.Tag = {};
@@ -52,12 +55,12 @@ function settable = set (varargin)
     else
       setproperty (recorder, varargin{2}, varargin{3});
     endif
-  else
-    error ("audiorecorder: wrong number of arguments to the set method");
   endif
+
 endfunction
 
 function setproperty (recorder, property, value)
+
   switch (property)
     case "SampleRate"
       __recorder_set_fs__ (recorder, value);
@@ -66,6 +69,7 @@ function setproperty (recorder, property, value)
     case "UserData"
       __recorder_set_userdata__ (recorder, value);
     otherwise
-      error ("audiorecorder: no such property or the property specified is read-only");
+      error ("@audiorecorder/set: no such property or the property specified is read-only");
   endswitch
+
 endfunction

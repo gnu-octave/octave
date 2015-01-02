@@ -22,5 +22,11 @@
 ## @end deftypefn
 
 function pause (recorder)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   __recorder_pause__ (struct (recorder).recorder);
+
 endfunction

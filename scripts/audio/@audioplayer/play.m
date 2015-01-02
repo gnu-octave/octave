@@ -28,8 +28,11 @@
 ## @end deftypefn
 
 function play (varargin)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
   __player_play__ (struct (varargin{1}).player, varargin{2:end});
+
 endfunction

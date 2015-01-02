@@ -23,5 +23,11 @@
 ## @end deftypefn
 
 function result = isplaying (player)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   result = __player_isplaying__ (struct (player).player);
+
 endfunction

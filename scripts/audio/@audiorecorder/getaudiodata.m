@@ -27,10 +27,13 @@
 ## @end deftypefn
 
 function data = getaudiodata (varargin)
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
   recorder = varargin{1};
+
   if (nargin == 1)
     data = __recorder_getaudiodata__ (struct (recorder).recorder);
   else
@@ -45,9 +48,11 @@ function data = getaudiodata (varargin)
         data = uint8 ((data + 1.0) * 0.5 * (2.0 ^ 8 - 1));
     endswitch
   endif
+
   if (get (recorder, "NumberOfChannels") == 2)
     data = data';
   else
     data = data(1,:)';
   endif
+
 endfunction

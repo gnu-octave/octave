@@ -22,5 +22,11 @@
 ## @end deftypefn
 
 function resume (player)
+
+  if (nargin == 1)
+    print_usage ();
+  endif
+
   __player_resume__ (struct (player).player);
+
 endfunction

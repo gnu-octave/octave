@@ -23,8 +23,11 @@
 ## @end deftypefn
 
 function recordblocking (varargin)
+
   if (nargin != 2)
     print_usage ();
   endif
+
   __recorder_recordblocking__ (struct (varargin{1}).recorder, varargin{2});
+
 endfunction

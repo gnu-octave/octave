@@ -23,13 +23,19 @@
 ## @end deftypefn
 
 function value = subsref (player, idx)
-  if (isempty (idx))
-    error ("audioplayer: missing index");
+  if (nargin != 2)
+    print_usage ();
   endif
+
+  if (isempty (idx))
+    error ("@audioplayer/subsref: missing index");
+  endif
+
   if (strcmp (idx(1).type, "."))
     field = idx.subs;
     value = get (player, field);
   else
-    error ("audioplayer: invalid subscript file")
+    error ("@audioplayer/subsref: invalid subscript type")
   endif
+
 endfunction

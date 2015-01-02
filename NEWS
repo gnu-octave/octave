@@ -13,9 +13,16 @@ Summary of important user-visible changes for version 4.2:
       methods       endmethods
       properties    endproperties
 
- ** New classes in Octave 4.2:
+ ** New audio functions and classes:
 
-      inputParser
+      audiodevinfo  audioread
+      audioinfo     audiorecorder
+      audioplayer   audiowrite
+
+ ** Other new classes in Octave 4.2:
+
+      audioplayer    inputParser
+      audiorecorder  
 
  ** Optional stricter Matlab compatibility for ranges, diagonal matrices,
     and permutation matrices.

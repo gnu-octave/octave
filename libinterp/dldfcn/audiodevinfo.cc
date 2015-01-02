@@ -283,13 +283,13 @@ or recording using those parameters.\n\
             }
           stream_parameters.suggestedLatency =
               Pa_GetDeviceInfo (i)->defaultLowInputLatency;
-          stream_parameters.hostApiSpecificStreamInfo = NULL;
+          stream_parameters.hostApiSpecificStreamInfo = 0;
           if (io == 0)
             {
               if (Pa_GetDeviceInfo (i)->maxOutputChannels < chans)
                 continue;
 
-              err = Pa_IsFormatSupported (NULL, &stream_parameters, rate);
+              err = Pa_IsFormatSupported (0, &stream_parameters, rate);
               if (err == paFormatIsSupported)
                 {
                   retval = i;
@@ -301,7 +301,7 @@ or recording using those parameters.\n\
               if (Pa_GetDeviceInfo (i)->maxInputChannels < chans)
                 continue;
 
-              err = Pa_IsFormatSupported (&stream_parameters, NULL, rate);
+              err = Pa_IsFormatSupported (&stream_parameters, 0, rate);
               if (err == paFormatIsSupported)
                 {
                   retval = i;
@@ -332,7 +332,7 @@ or recording using those parameters.\n\
         }
       stream_parameters.suggestedLatency =
         Pa_GetDeviceInfo (id)->defaultLowInputLatency;
-      stream_parameters.hostApiSpecificStreamInfo = NULL;
+      stream_parameters.hostApiSpecificStreamInfo = 0;
       if (io == 0)
         {
           if (Pa_GetDeviceInfo (id)->maxOutputChannels < chans)
@@ -340,7 +340,7 @@ or recording using those parameters.\n\
               retval = 0;
               return retval;
             }
-          err = Pa_IsFormatSupported (NULL, &stream_parameters, rate);
+          err = Pa_IsFormatSupported (0, &stream_parameters, rate);
           if (err == paFormatIsSupported)
             {
               retval = 1;
@@ -354,7 +354,7 @@ or recording using those parameters.\n\
               retval = 0;
               return retval;
             }
-          err = Pa_IsFormatSupported (&stream_parameters, NULL, rate);
+          err = Pa_IsFormatSupported (&stream_parameters, 0, rate);
           if (err == paFormatIsSupported)
             {
               retval = 1;
@@ -703,7 +703,7 @@ audioplayer::init_fn (void)
   output_parameters.channelCount = 2;
   output_parameters.sampleFormat = bits_to_format (get_nbits ());
   output_parameters.suggestedLatency = Pa_GetDeviceInfo (device)->defaultHighOutputLatency;
-  output_parameters.hostApiSpecificStreamInfo = NULL;
+  output_parameters.hostApiSpecificStreamInfo = 0;
 }
 
 void
@@ -751,7 +751,7 @@ audioplayer::init (void)
     output_parameters.sampleFormat = paInt16;
 
   output_parameters.suggestedLatency = Pa_GetDeviceInfo (device)->defaultHighOutputLatency;
-  output_parameters.hostApiSpecificStreamInfo = NULL;
+  output_parameters.hostApiSpecificStreamInfo = 0;
 }
 
 void
@@ -922,7 +922,8 @@ audioplayer::playblocking (void)
 
   PaError err;
   uint32_t buffer[BUFFER_SIZE * 2];
-  err = Pa_OpenStream (&stream, NULL, &(output_parameters), get_fs (), BUFFER_SIZE, paClipOff, NULL, NULL);
+  err = Pa_OpenStream (&stream, 0, &(output_parameters), get_fs (),
+                       BUFFER_SIZE, paClipOff, 0, 0);
   if (err != paNoError)
     {
       error ("audioplayer: Error opening audio playback stream");
@@ -976,11 +977,11 @@ audioplayer::play (void)
 
   PaError err;
   if (octave_callback_function != 0)
-    err = Pa_OpenStream (&stream, NULL, &(output_parameters),
+    err = Pa_OpenStream (&stream, 0, &(output_parameters),
                          get_fs (), BUFFER_SIZE, paClipOff,
                          octave_play_callback, this);
   else
-    err = Pa_OpenStream (&stream, NULL, &(output_parameters),
+    err = Pa_OpenStream (&stream, 0, &(output_parameters),
                          get_fs (), BUFFER_SIZE, paClipOff,
                          portaudio_play_callback, this);
 
@@ -1321,7 +1322,7 @@ audiorecorder::init (void)
   input_parameters.channelCount = get_channels ();
   input_parameters.sampleFormat = bits_to_format (get_nbits ());
   input_parameters.suggestedLatency = Pa_GetDeviceInfo (device)->defaultHighInputLatency;
-  input_parameters.hostApiSpecificStreamInfo = NULL;
+  input_parameters.hostApiSpecificStreamInfo = 0;
 }
 
 void
@@ -1490,13 +1491,13 @@ audiorecorder::record (void)
   PaError err;
   if (octave_callback_function != 0)
     {
-      err = Pa_OpenStream (&stream, &(input_parameters), NULL,
+      err = Pa_OpenStream (&stream, &(input_parameters), 0,
                            get_fs (), BUFFER_SIZE, paClipOff,
                            octave_record_callback, this);
     }
   else
     {
-      err = Pa_OpenStream (&stream, &(input_parameters), NULL,
+      err = Pa_OpenStream (&stream, &(input_parameters), 0,
                            get_fs (), BUFFER_SIZE, paClipOff,
                            portaudio_record_callback, this);
     }
@@ -1523,8 +1524,8 @@ audiorecorder::recordblocking (float seconds)
   right.clear ();
 
   PaError err;
-  err = Pa_OpenStream (&stream, &(input_parameters), NULL,
-                       get_fs (), BUFFER_SIZE, paClipOff, NULL, this);
+  err = Pa_OpenStream (&stream, &(input_parameters), 0,
+                       get_fs (), BUFFER_SIZE, paClipOff, 0, this);
   if (err != paNoError)
     {
       error ("audiorecorder: Error opening audio recording stream");
@@ -1544,9 +1545,9 @@ audiorecorder::recordblocking (float seconds)
     {
       Pa_ReadStream (get_stream (), buffer, BUFFER_SIZE);
       if (octave_callback_function != 0)
-        octave_record_callback (buffer, NULL, BUFFER_SIZE, 0, 0, this);
+        octave_record_callback (buffer, 0, BUFFER_SIZE, 0, 0, this);
       else
-        portaudio_record_callback (buffer, NULL, BUFFER_SIZE, 0, 0, this);
+        portaudio_record_callback (buffer, 0, BUFFER_SIZE, 0, 0, this);
     }
 }
 

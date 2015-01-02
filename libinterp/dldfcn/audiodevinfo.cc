@@ -64,45 +64,33 @@ DEFUN_DLD (audiodevinfo, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{devinfo} =} audiodevinfo ()\n\
 \n\
-Returns a structure with two fields called \"input\" and \"output\".\n\
-Each structure contains an array of structures with three fields called\n\
-\"Name\", \"DriverVersion\" and \"ID\". Each structure contains information\n\
-about a PortAudio device.\n\
+@deftypefnx {Loadable Function} {@var{devs} =} audiodevinfo (@var{io})\n\
+@deftypefnx {Loadable Function} {@var{name} =} audiodevinfo (@var{io}, @var{id})\n\
+@deftypefnx {Loadable Function} {@var{id} =} audiodevinfo (@var{io}, @var{name})\n\
+@deftypefnx {Loadable Function} {@var{id} =} audiodevinfo (@var{io}, @var{rate}, @var{bits}, @var{chans})\n\
 \n\
-@end deftypefn\n\
+@deftypefnx {Loadable Function} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})\n\
 \n\
-@deftypefn {Loadable Function} {@var{devs} =} audiodevinfo (@var{io})\n\
+Return a structure with fields \"input\" and \"output\".\n\
+The value of each field is a structure array with fields\n\
+\"Name\", \"DriverVersion\" and \"ID\" describing an audio device.\n\
 \n\
-Returns the number of input or output devices available. Set @var{io} to 1\n\
-for input devices and to 0 for output devices.\n\
-@end deftypefn\n\
 \n\
-@deftypefn {Loadable Function} {@var{name} =} audiodevinfo (@var{io}, @var{id})\n\
+If the optional argument @var{io} is 1, return information about input\n\
+devices only.  If it is 0, return information about output devices only.\n\
 \n\
-Returns the name of a device specified by numerical @var{id}. Set @var{io}\n\
-to 1 for input devices and to 0 for output devices.\n\
-@end deftypefn\n\
+If the optional argument @var{id} is provided, return information about\n\
+corresponding device.\n\
 \n\
-@deftypefn {Loadable Function} {@var{id} =} audiodevinfo (@var{io}, @var{name})\n\
+If the optional argument @var{name} is provided, return the id of the\n\
+named device.\n\
 \n\
-Returns the id of a device specified by name. Set @var{io}\n\
-to 1 for input devices and to 0 for output devices.\n\
-@end deftypefn\n\
+Given a sampling rate, bits per sample, and number of channels for\n\
+an input or output device, return the ID of the first device that\n\
+supports playback or recording using the specified parameters.\n\
 \n\
-@deftypefn {Loadable Function} {@var{id} =} audiodevinfo (@var{io}, @var{rate}, @var{bits}, @var{chans})\n\
-\n\
-Returns the id of the first device that supports playback or recording\n\
-using the specified sampling rate (@var{rate}), bits per sample (@var{bits})\n\
-and number of channels (@var{chans}). Set @var{io} to 1 for input devices\n\
-and to 0 for output devices.\n\
-@end deftypefn\n\
-\n\
-@deftypefn {Loadable Function} {@var{supports} =} audiodevinfo (@var{io}, @var{id}, @var{rate}, @var{bits}, @var{chans})\n\
-\n\
-Returns 1 if the device bearing @var{id} supports specified sampling rate\n\
-(@var{rate}), bits per sample (@var{bits}) and number of channels (@var{chans}).\n\
-Returns 0 otherwise. Set @var{io} to 1 for input devices and to 0 for output\n\
-devices.\n\
+If also given a device ID, return true if the device supports playback\n\
+or recording using those parameters.\n\
 @end deftypefn")
 {
   octave_value retval;

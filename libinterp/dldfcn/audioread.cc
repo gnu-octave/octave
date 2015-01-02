@@ -43,34 +43,24 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (audioread, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
 \n\
-Load an audio file that is specified by @var{filename}.  It will be loaded\n\
-in to a column matrix with as many rows as there are audio frames and as many\n\
-columns as there are channels in the file.  Sampling rate will be stored in\n\
-@var{fs}.\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
+Read the audio file @var{filename} and return the audio data and sampling\n\
+rate.  The audio data is stored as matrix with rows corresponding\n\
+to audio frames and columns corresponding to channels.\n\
 \n\
-@end deftypefn\n\
-@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
+The optional two-element vector argument @var{samples} specifies starting\n\
+and ending frames.\n\
 \n\
-Read a specified range of samples from a file specified by @var{filename}.\n\
-Argument @var{samples} is a vector with two values specifying starting frame\n\
-and ending frame.\n\
-\n\
-@end deftypefn\n\
-@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
-\n\
-Read a file and return an array of specified type.  If @var{datatype} is\n\
-@qcode{\"native\"} then an array of fixed width integer type will be returned\n\
-depending on how data is stored in the audio file.  If @var{datatype} is\n\
-@qcode{\"double\"} a double matrix will be returned.\n\
-\n\
-@end deftypefn\n\
-@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples}, @var{datatype})\n\
+The optional argument @var{datatype} specifies the datatype to return.\n\
+If it is @qcode{\"native\"}, then the type of data depends on how the\n\
+data is stored in the audio file.\n\
 \n\
 Read a file and return a specified range of frames in an array of specified type.\n\
 \n\
-@end deftypefn"
-)
+@end deftypefn")
 {
   octave_value_list retval;
 #ifdef HAVE_SNDFILE
@@ -172,21 +162,19 @@ fill_extension_table (std::map<std::string, int> &table)
 DEFUN_DLD (audiowrite, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
+@deftypefnx {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
 \n\
-Write audio data from the matrix @var{y} to a file specified by @var{filename},\n\
-file format will be determined by the file extension.\n\
+Write audio data from the matrix @var{y} to @var{filename} with the file\n\
+format determined by the file extension.\n\
 \n\
-@end deftypefn\n\
-@deftypefn {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value})\n\
-\n\
-Lets you specify additional parameters when writing the file. Those parameters\n\
-are given in the table below:\n\
+Additional name and value argument pairs may be used to specify the\n\
+following options:\n\
 \n\
 @table @samp\n\
 @item BitsPerSample\n\
 Number of bits per sample, valid values are 8, 16, 24 and 32. Default is 16.\n\
 @item BitRate\n\
-Valid argument name, but ignored. Left for compatibility with MATLAB.\n\
+Valid argument name, but ignored. Left for compatibility with @sc{matlab}.\n\
 @item Quality\n\
 Quality setting for the Ogg Vorbis compressor. Values can range between 0 and 100 with 100 being the highest quality setting. Default is 75.\n\
 @item Title\n\

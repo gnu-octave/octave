@@ -53,7 +53,7 @@ class parser
 
 public:
   parser (QObject *parent = 0);
-  void set_info_path (const QString& _info_path);
+  bool set_info_path (const QString& _info_path);
   QString get_info_path ();
   QString search_node (const QString& node);
   QString global_search (const QString& text, int maxFounds);

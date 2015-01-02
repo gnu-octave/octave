@@ -38,7 +38,7 @@ class webinfo : public QWidget
   Q_OBJECT
 public:
   webinfo (QWidget *parent = 0);
-  void set_info_path (const QString& info_path);
+  bool set_info_path (const QString& info_path);
   void load_node (const QString& node_name);
 
   void load_ref (const QString &ref_name);

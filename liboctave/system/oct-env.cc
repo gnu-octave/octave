@@ -213,7 +213,7 @@ octave_env::do_get_temp_directory (void) const
   if (tempd.empty () || tempd == "\\")
     tempd = "c:\\temp";
 
-#else    ## Unix-like OS
+#else    // Unix-like OS
 
   tempd = do_getenv ("TMP");
 

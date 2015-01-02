@@ -63,68 +63,93 @@ Read a file and return a specified range of frames in an array of specified type
 @end deftypefn")
 {
   octave_value_list retval;
+
 #ifdef HAVE_SNDFILE
-  Matrix audio;
-  octave_value ret_audio;
-  SNDFILE *file;
+
+  int nargin = args.length ();
+
+  if (nargin < 1 || nargin > 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  std::string filename = args(0).string_value ();
+
+  if (error_state)
+    return retval;
+  
   SF_INFO info;
   info.format = 0;
-  int start, end;
-  file = sf_open (args(0).string_value ().c_str (), SFM_READ, &info);
-  start = 0;
-  end = info.frames;
+  SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
+  int start = 0;
+  int end = info.frames;
   OCTAVE_LOCAL_BUFFER (float, data, info.frames * info.channels);
   sf_read_float (file, data, info.frames * info.channels);
-  if (args.length () == 2 && !args(1).is_string () || args.length () == 3)
+
+  if ((nargin == 2 && ! args(1).is_string ()) || nargin == 3)
     {
       RowVector range = args(1).row_vector_value ();
+
+      if (error_state)
+        return retval;
+
       start = range(0);
       end = range(1);
     }
-  audio.resize (end - start, info.channels);
+
+  Matrix audio (end - start, info.channels);
+
   for (int i = start; i < end; i++)
     {
       for (int channel = 0; channel < info.channels; channel++)
-        {
-          audio(i - start, channel) = data[i * info.channels + channel];
-        }
+        audio(i - start, channel) = data[i * info.channels + channel];
     }
 
-  if (args.length () == 2 && args(1).is_string () || args.length () == 3)
+  octave_value ret_audio;
+
+  if ((nargin == 2 && args(1).is_string ()) || nargin == 3)
     {
       std::string type;
-      if (args.length () == 3)
+      if (nargin == 3)
         type = args(2).string_value ();
       else
         type = args(1).string_value ();
 
+      if (error_state)
+        return retval;
+
       if (type == "native")
         {
           if (info.format & SF_FORMAT_PCM_S8)
-            ret_audio = octave_value ((audio * 127)).int8_array_value ();
+            ret_audio = int8NDArray (audio * 127);
           else if (info.format & SF_FORMAT_PCM_U8)
-            ret_audio = octave_value ((audio * 127 + 127)).uint8_array_value ();
+            ret_audio = uint8NDArray (audio * 127 + 127);
           else if (info.format & SF_FORMAT_PCM_16)
-            ret_audio = octave_value ((audio * 32767)).int16_array_value ();
+            ret_audio = int16NDArray (audio * 32767);
           else if (info.format & SF_FORMAT_PCM_24)
-            ret_audio = octave_value ((audio * 8388608)).int32_array_value ();
+            ret_audio = int32NDArray (audio * 8388608);
           else if (info.format & SF_FORMAT_PCM_32)
-            ret_audio = octave_value ((audio * 2147483648)).int32_array_value ();
+            ret_audio = int32NDArray (audio * 2147483648);
           else
-            ret_audio = octave_value (audio);
+            ret_audio = audio;
         }
       else
-        ret_audio = octave_value (audio);
+        ret_audio = audio;
     }
   else
-    ret_audio = octave_value (audio);
+    ret_audio = audio;
 
-  retval(0) = ret_audio;
   retval(1) = info.samplerate;
+  retval(0) = ret_audio;
+
 #else
+
   error ("sndfile not found on your system and thus audioread is not functional");
+
 #endif
-  return octave_value (retval);
+
+  return retval;
 }
 
 #ifdef HAVE_SNDFILE
@@ -186,24 +211,46 @@ Comment.\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_scalar_map retval;
+  // FIXME: shouldn't we return something to indicate whether the file
+  // was written successfully?
+
+  octave_value retval;
+
 #ifdef HAVE_SNDFILE
+
+  int nargin = args.length ();
+
+  if (nargin < 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  std::string filename = args(0).string_value ();
+
+  if (error_state)
+    return retval;
+
   std::map<std::string, int> extension_to_format;
   fill_extension_table (extension_to_format);
-  std::string filename = args(0).string_value ();
+
   std::string extension = filename.substr (filename.find_last_of (".") + 1);
   std::transform (extension.begin (), extension.end (), extension.begin (), ::tolower);
+
   Matrix audio = args(1).matrix_value ();
+
+  if (error_state)
+    return retval;
+
   SNDFILE *file;
   SF_INFO info;
+
   OCTAVE_LOCAL_BUFFER (float, data, audio.rows () * audio.cols ());
 
   for (int i = 0; i < audio.cols (); i++)
     {
       for (int j = 0; j < audio.rows (); j++)
-        {
-          data[j * audio.cols () + i] = audio(j, i);
-        }
+        data[j * audio.cols () + i] = audio(j, i);
     }
 
   if (extension == "ogg")
@@ -217,7 +264,7 @@ Comment.\n\
   // Quality is currently unused?
   //
   // float quality = 0.75;
-  for (int i = 3; i < args.length (); i += 2)
+  for (int i = 3; i < nargin; i += 2)
     {
       if (args(i).string_value () == "BitsPerSample")
         {
@@ -231,7 +278,10 @@ Comment.\n\
           else if (bits == 32)
             info.format |= SF_FORMAT_PCM_32;
           else
-            error ("audiowrite: wrong number of bits specified");
+            {
+              error ("audiowrite: wrong number of bits specified");
+              return retval;
+            }
         }
       else if (args(i).string_value () == "BitRate")
         ;
@@ -246,25 +296,37 @@ Comment.\n\
       else if (args(i).string_value () == "Comment")
         comment = args(i + 1).string_value ();
       else
-        error ("audiowrite: wrong argument name");
+        {
+          error ("audiowrite: wrong argument name");
+          return retval;
+        }
     }
+
   info.samplerate = args(2).int_value ();
   info.channels = audio.cols ();
   info.format |= extension_to_format[extension];
+
   file = sf_open (filename.c_str (), SFM_WRITE, &info);
+
   if (title != "")
     sf_set_string (file, SF_STR_TITLE, title.c_str ());
+
   if (artist != "")
     sf_set_string (file, SF_STR_ARTIST, artist.c_str ());
+
   if (comment != "")
     sf_set_string (file, SF_STR_COMMENT, comment.c_str ());
+
   sf_write_float (file, data, audio.rows () * audio.cols ());
   sf_close (file);
-  free (data);
+
 #else
+
   error ("sndfile not found on your system and thus audiowrite is not functional");
+
 #endif
-  return octave_value (retval);
+
+  return retval;
 }
 
 DEFUN_DLD (audioinfo, args, ,
@@ -273,26 +335,31 @@ DEFUN_DLD (audioinfo, args, ,
 Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")
 {
-  octave_scalar_map retval;
-  if (args.length () != 1 || not args(0).is_string ())
+  octave_value retval;
+
+  if (args.length () != 1)
     {
       print_usage ();
-      return octave_value (retval);
+      return retval;
     }
+
 #ifdef HAVE_SNDFILE
-  Matrix audio;
-  SNDFILE *file;
+
   SF_INFO info;
   info.format = 0;
-  file = sf_open (args(0).string_value ().c_str (), SFM_READ, &info);
-  retval.assign ("Filename", args(0).string_value ());
-  retval.assign ("CompressionMethod", "");
-  retval.assign ("NumChannels", info.channels);
-  retval.assign ("SampleRate", info.samplerate);
-  retval.assign ("TotalSamples", info.frames);
+  SNDFILE *file = sf_open (args(0).string_value ().c_str (), SFM_READ, &info);
+
+  octave_scalar_map result;
+
+  result.assign ("Filename", args(0).string_value ());
+  result.assign ("CompressionMethod", "");
+  result.assign ("NumChannels", info.channels);
+  result.assign ("SampleRate", info.samplerate);
+  result.assign ("TotalSamples", info.frames);
+
   double dframes = info.frames;
   double drate = info.samplerate;
-  retval.assign ("Duration", dframes / drate);
+  result.assign ("Duration", dframes / drate);
 
   int bits;
   if (info.format & SF_FORMAT_PCM_S8)
@@ -308,13 +375,19 @@ Return information about an audio file specified by @var{filename}.\n\
   else
     bits = -1;
 
-  retval.assign ("BitsPerSample", bits);
-  retval.assign ("BitRate", -1);
-  retval.assign ("Title", sf_get_string (file, SF_STR_TITLE));
-  retval.assign ("Artist", sf_get_string (file, SF_STR_ARTIST));
-  retval.assign ("Comment", sf_get_string (file, SF_STR_COMMENT));
+  result.assign ("BitsPerSample", bits);
+  result.assign ("BitRate", -1);
+  result.assign ("Title", sf_get_string (file, SF_STR_TITLE));
+  result.assign ("Artist", sf_get_string (file, SF_STR_ARTIST));
+  result.assign ("Comment", sf_get_string (file, SF_STR_COMMENT));
+
+  retval = result;
+
 #else
+
   error ("sndfile not found on your system and thus audioinfo is not functional");
+
 #endif
-  return octave_value (retval);
+
+  return retval;
 }

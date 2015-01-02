@@ -94,21 +94,25 @@ or recording using those parameters.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   int nargin = args.length ();
-  PaError err;
+
   octave_scalar_map devinfo;
   octave_value_list input;
   octave_value_list output;
 
-  err = Pa_Initialize ();
+  PaError err = Pa_Initialize ();
+
   if (err != paNoError)
     {
-      error ("audiodevinfo: cannot initialize PortAudio");
+      error ("audiodevinfo: PortAudio initialization failed");
       return retval;
     }
 
   int num_devices = Pa_GetDeviceCount ();
+
   if (num_devices < 0)
     {
       error ("audiodevinfo: no audio device found");
@@ -119,8 +123,10 @@ or recording using those parameters.\n\
   for (int i = 0; i < num_devices; i++)
     {
       const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
+
       if (device_info->maxInputChannels != 0)
         numinput++;
+
       if (device_info->maxOutputChannels != 0)
         numoutput++;
     }
@@ -176,9 +182,9 @@ or recording using those parameters.\n\
   else if (nargin == 1)
     {
       if (args(0).int_value () == 0)
-        retval = octave_value (numoutput);
+        retval = numoutput;
       else if (args(0).int_value () == 1)
-        retval = octave_value (numinput);
+        retval = numinput;
       else
         {
           error ("audiodevinfo: please specify 0 for output and 1 for input devices");
@@ -259,7 +265,7 @@ or recording using those parameters.\n\
     }
   else if (nargin == 3)
     {
-      //
+      // FIXME: what was supposed to happen here?
     }
   // Return the id of the first device meeting specified criteria.
   else if (nargin == 4)
@@ -268,12 +274,14 @@ or recording using those parameters.\n\
       int rate = args(1).int_value ();
       int bits = args(2).int_value ();
       int chans = args(3).int_value ();
+
       for (int i = 0; i < num_devices; i++)
         {
           PaStreamParameters stream_parameters;
           stream_parameters.device = i;
           stream_parameters.channelCount = chans;
           PaSampleFormat format = bits_to_format (bits);
+
           if (format != 0)
             stream_parameters.sampleFormat = format;
           else
@@ -281,15 +289,18 @@ or recording using those parameters.\n\
               error ("audiodevinfo: no such bits per sample format");
               return retval;
             }
-          stream_parameters.suggestedLatency =
-              Pa_GetDeviceInfo (i)->defaultLowInputLatency;
+
+          stream_parameters.suggestedLatency
+            = Pa_GetDeviceInfo (i)->defaultLowInputLatency;
           stream_parameters.hostApiSpecificStreamInfo = 0;
+
           if (io == 0)
             {
               if (Pa_GetDeviceInfo (i)->maxOutputChannels < chans)
                 continue;
 
               err = Pa_IsFormatSupported (0, &stream_parameters, rate);
+
               if (err == paFormatIsSupported)
                 {
                   retval = i;
@@ -374,8 +385,11 @@ or recording using those parameters.\n\
       return retval;
     }
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -677,27 +691,22 @@ audioplayer::print_raw (std::ostream& os, bool) const
 void
 audioplayer::init_fn (void)
 {
-  PaError err;
-  int device;
-
-  err = Pa_Initialize ();
-  if (err != paNoError)
+  if (Pa_Initialize () != paNoError)
     {
-      error ("audioplayer: Initialization error!");
+      error ("audioplayer: initialization error!");
       return;
     }
 
-  int numDevices = Pa_GetDeviceCount ();
-  if (numDevices < 0)
+  if (Pa_GetDeviceCount () < 0)
     {
-      error ("audioplayer: No audio devices found!");
+      error ("audioplayer: no audio devices found!");
       return;
     }
 
-  if (get_id () == -1)
+  int device = get_id ();
+
+  if (device == -1)
     device = Pa_GetDefaultOutputDevice ();
-  else
-    device = get_id ();
 
   output_parameters.device = device;
   output_parameters.channelCount = 2;
@@ -709,34 +718,28 @@ audioplayer::init_fn (void)
 void
 audioplayer::init (void)
 {
-  PaError err;
-
   // Both of these variables are unused.  Should they be
   // eliminated or is something not yet implemented?
   //
   // int channels = y.rows ();
   // RowVector *sound_l = get_left ();
 
-  int device;
-
-  err = Pa_Initialize ();
-  if (err != paNoError)
+  if (Pa_Initialize () != paNoError)
     {
-      error ("audioplayer: Initialization error!");
+      error ("audioplayer: initialization error!");
       return;
     }
 
-  int numDevices = Pa_GetDeviceCount ();
-  if (numDevices < 0)
+  if (Pa_GetDeviceCount () < 0)
     {
-      error ("audioplayer: No audio devices found!");
+      error ("audioplayer: no audio devices found!");
       return;
     }
 
-  if (get_id () == -1)
+  int device = get_id ();
+
+  if (device == -1)
     device = Pa_GetDefaultOutputDevice ();
-  else
-    device = get_id ();
 
   output_parameters.device = device;
   output_parameters.channelCount = 2;
@@ -923,17 +926,17 @@ audioplayer::playblocking (void)
   PaError err;
   uint32_t buffer[BUFFER_SIZE * 2];
   err = Pa_OpenStream (&stream, 0, &(output_parameters), get_fs (),
-                       BUFFER_SIZE, paClipOff, 0, 0);
+                               BUFFER_SIZE, paClipOff, 0, 0);
   if (err != paNoError)
     {
-      error ("audioplayer: Error opening audio playback stream");
+      error ("audioplayer: unable to open audio playback stream");
       return;
     }
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
     {
-      error ("audioplayer: Error starting audio playback stream");
+      error ("audioplayer: unable to start start audio playback stream");
       return;
     }
 
@@ -1193,20 +1196,25 @@ octave_record_callback (const void *input, void *, unsigned long frames,
     {
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
-      int32_t sample_l32, sample_r32;
+
+      int32_t sample_l32 = 0, sample_r32 = 0;
       uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
       uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
+
       for (unsigned long i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
             {
               _sample_l[j] = input24[i * channels * 3 + j];
-               _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
+              _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
             }
+
           if (sample_l32 & 0x00800000)
             sample_l32 |= 0xff000000;
+
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
+
           sound(i, 0) = sample_l32 / pow (2.0, 23);
           sound(i, 1) = sample_r32 / pow (2.0, 23);
         }
@@ -1215,6 +1223,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
   octave_value_list args, retval;
   args(0) = sound;
   retval = feval (recorder->octave_callback_function, args, 1);
+
   return retval(0).int_value ();
 }
 
@@ -1250,9 +1259,11 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
     {
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
-      int32_t sample_l32, sample_r32;
+
+      int32_t sample_l32 = 0, sample_r32 = 0;
       uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
       uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
+
       for (unsigned long i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
@@ -1260,10 +1271,13 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
               _sample_l[j] = input24[i * channels * 3 + j];
               _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
             }
+
           if (sample_l32 & 0x00800000)
             sample_l32 |= 0xff000000;
+
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
+
           recorder->append (sample_l32 / pow (2.0, 23), sample_r32 / pow (2.0, 23));
         }
     }
@@ -1297,26 +1311,22 @@ audiorecorder::print_raw (std::ostream& os, bool) const
 void
 audiorecorder::init (void)
 {
-  PaError err;
-  int device;
-  err = Pa_Initialize ();
-  if (err != paNoError)
+  if (Pa_Initialize () != paNoError)
     {
-      error ("audiorecorder: Initialization error!");
+      error ("audiorecorder: initialization error!");
       return;
     }
 
-  int numDevices = Pa_GetDeviceCount ();
-  if (numDevices < 0)
+  if (Pa_GetDeviceCount () < 0)
     {
-      error ("audiorecorder: No audio devices found!");
+      error ("audiorecorder: no audio devices found!");
       return;
     }
 
-  if (get_id () == -1)
+  int device = get_id ();
+
+  if (device == -1)
     device = Pa_GetDefaultInputDevice ();
-  else
-    device = get_id ();
 
   input_parameters.device = device;
   input_parameters.channelCount = get_channels ();
@@ -1444,22 +1454,26 @@ octave_value
 audiorecorder::getaudiodata (void)
 {
   Matrix audio (2, left.size ());
+
   for (unsigned int i = 0; i < left.size (); i++)
     {
       audio(0, i) = left[i];
       audio(1, i) = right[i];
     }
-  return octave_value (audio);
+
+  return audio;
 }
 
 audioplayer *
 audiorecorder::getplayer (void)
 {
   audioplayer *player = new audioplayer ();
+
   player->set_y (getaudiodata ());
   player->set_fs (get_fs ());
   player->set_nbits (get_nbits ());
   player->init ();
+
   return player;
 }
 
@@ -1473,7 +1487,7 @@ audiorecorder::isrecording (void)
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
     {
-      error ("audiorecorder: Error checking stream activity status");
+      error ("audiorecorder: unable to check stream activity status");
       return false;
     }
 
@@ -1503,13 +1517,13 @@ audiorecorder::record (void)
     }
   if (err != paNoError)
     {
-      error ("audiorecorder: Error opening audio recording stream");
+      error ("audiorecorder: unable to open audio recording stream");
       return;
     }
   err = Pa_StartStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error starting audio recording stream");
+      error ("audiorecorder: unable to start audio recording stream");
       return;
     }
 }
@@ -1528,14 +1542,14 @@ audiorecorder::recordblocking (float seconds)
                        get_fs (), BUFFER_SIZE, paClipOff, 0, this);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error opening audio recording stream");
+      error ("audiorecorder: unable to open audio recording stream");
       return;
     }
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error starting audio recording stream");
+      error ("audiorecorder: unable to start audio recording stream");
       return;
     }
 
@@ -1561,7 +1575,7 @@ audiorecorder::pause (void)
   err = Pa_StopStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error stoping audio recording stream");
+      error ("audiorecorder: unable to stop audio recording stream");
       return;
     }
 }
@@ -1576,7 +1590,7 @@ audiorecorder::resume (void)
   err = Pa_StartStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error starting audio recording stream");
+      error ("audiorecorder: unable to start audio recording stream");
       return;
     }
 }
@@ -1593,7 +1607,7 @@ audiorecorder::stop (void)
       err = Pa_AbortStream (get_stream ());
       if (err != paNoError)
         {
-          error ("audioplayer: Error stopping audio playback stream");
+          error ("audioplayer: unable to stop audio playback stream");
           return;
         }
     }
@@ -1601,7 +1615,7 @@ audiorecorder::stop (void)
   err = Pa_CloseStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error closing audio recording stream");
+      error ("audiorecorder: unable to close audio recording stream");
       return;
     }
 
@@ -1632,40 +1646,54 @@ DEFUN_DLD (__recorder_audiorecorder__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   int nargin = args.length ();
-  audiorecorder* retval = new audiorecorder ();
+
+  audiorecorder* recorder = new audiorecorder ();
+
   int offset = 0;
+
   if (nargin > 0)
     {
       bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();
+
       if (is_function)
         {
-          retval->octave_callback_function = args(0).function_value ();
+          recorder->octave_callback_function = args(0).function_value ();
           offset = 1;
         }
     }
+
   switch (nargin - offset)
-     {
-      case 3:
-        retval->set_fs (args(0 + offset).int_value ());
-        retval->set_nbits (args(1 + offset).int_value ());
-        retval->set_channels (args(2 + offset).int_value ());
-        break;
-      case 4:
-        retval->set_fs (args(0 + offset).int_value ());
-        retval->set_nbits (args(1 + offset).int_value ());
-        retval->set_channels (args(2 + offset).int_value ());
-        retval->set_id (args(3 + offset).int_value ());
-        break;
+    {
+    case 3:
+      recorder->set_fs (args(0 + offset).int_value ());
+      recorder->set_nbits (args(1 + offset).int_value ());
+      recorder->set_channels (args(2 + offset).int_value ());
+      break;
+
+    case 4:
+      recorder->set_fs (args(0 + offset).int_value ());
+      recorder->set_nbits (args(1 + offset).int_value ());
+      recorder->set_channels (args(2 + offset).int_value ());
+      recorder->set_id (args(3 + offset).int_value ());
+      break;
     }
-  retval->init ();
-  return octave_value (retval);
+
+  recorder->init ();
+
+  retval = recorder;
+
 #else
-  octave_value retval;
+
   error ("portaudio not found on your system and thus audio functionality is not present");
-  return retval;
+
 #endif
+
+  return retval;
 }
 
 static audiorecorder *
@@ -1685,12 +1713,18 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   audiorecorder *recorder = get_recorder (args(0));
-  retval = octave_value (recorder->getaudiodata ());
+  retval = recorder->getaudiodata ();
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1701,16 +1735,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_channels ());
+      retval = recorder->get_channels ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1721,16 +1760,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_fs ());
+      retval = recorder->get_fs ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1741,16 +1785,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_id ());
+      retval = recorder->get_id ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1761,16 +1810,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_nbits ());
+      retval = recorder->get_nbits ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1781,16 +1835,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_sample_number ());
+      retval = recorder->get_sample_number ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1801,16 +1860,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_tag ());
+      retval = recorder->get_tag ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1821,16 +1885,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      retval = octave_value (recorder->get_total_samples ());
+      retval = recorder->get_total_samples ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1841,16 +1910,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
       retval = recorder->get_userdata ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1861,19 +1935,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
-      if (recorder->isrecording ())
-        return octave_value (1);
-      else
-        return octave_value (0);
+      retval = recorder->isrecording () ? true : false;
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1884,16 +1960,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
       recorder->pause ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1904,12 +1985,18 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   audiorecorder *recorder = get_recorder (args(0));
   recorder->recordblocking (args(1).float_value ());
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1921,24 +2008,27 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   audiorecorder *recorder = get_recorder (args(0));
+
   if (args.length () == 1)
-    {
-      recorder->record ();
-    }
+    recorder->record ();
   else if (args.length () == 2)
     {
       recorder->set_end_sample (args(1).int_value () * recorder->get_fs ());
       recorder->record ();
     }
   else
-    {
-      error ("audiorecorder: wrong number of arguments passed to record");
-    }
+    error ("audiorecorder: wrong number of arguments passed to record");
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1949,16 +2039,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
       recorder->resume ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1969,16 +2064,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 2)
+
+  if (args.length () == 2)
     {
       audiorecorder *recorder = get_recorder (args(0));
       recorder->set_fs (args(1).int_value ());
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -1989,16 +2089,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 2)
+
+  if (args.length () == 2)
     {
       audiorecorder *recorder = get_recorder (args(0));
       recorder->set_tag (args(1).char_matrix_value ());
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2009,16 +2114,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 2)
+
+  if (args.length () == 2)
     {
       audiorecorder *recorder = get_recorder (args(0));
       recorder->set_userdata (args(1));
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2029,12 +2139,18 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   audiorecorder *recorder = get_recorder (args(0));
   recorder->stop ();
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2046,35 +2162,48 @@ DEFUN_DLD (__player_audioplayer__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
+  octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
+
   int nargin = args.length ();
-  audioplayer* retval = new audioplayer ();
+
+  audioplayer* recorder = new audioplayer ();
+
   bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();
+
   if (is_function)
-    retval->set_y (args(0).function_value ());
+    recorder->set_y (args(0).function_value ());
   else
-    retval->set_y (args(0));
-  retval->set_fs (args(1).int_value ());
+    recorder->set_y (args(0));
+
+  recorder->set_fs (args(1).int_value ());
+
   switch (nargin)
     {
-      case 3:
-        retval->set_nbits (args(2).int_value ());
-        break;
-      case 4:
-        retval->set_nbits (args(2).int_value ());
-        retval->set_id (args(3).int_value ());
-        break;
+    case 3:
+      recorder->set_nbits (args(2).int_value ());
+      break;
+    case 4:
+      recorder->set_nbits (args(2).int_value ());
+      recorder->set_id (args(3).int_value ());
+      break;
     }
+
   if (is_function)
-    retval->init_fn ();
+    recorder->init_fn ();
   else
-    retval->init ();
-  return octave_value (retval);
+    recorder->init ();
+
+  retval = recorder;
+
 #else
-  octave_value retval;
+
   error ("portaudio not found on your system and thus audio functionality is not present");
-  return retval;
+
 #endif
+
+  return retval;
 }
 
 static audioplayer *
@@ -2094,16 +2223,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_channels ());
+      retval = player->get_channels ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2114,16 +2248,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_fs ());
+      retval = player->get_fs ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2134,16 +2273,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_id ());
+      retval = player->get_id ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2154,16 +2298,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_nbits ());
+      retval = player->get_nbits ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2174,16 +2323,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_sample_number ());
+      retval = player->get_sample_number ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2194,16 +2348,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_tag ());
+      retval = player->get_tag ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2214,16 +2373,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      retval = octave_value (player->get_total_samples ());
+      retval = player->get_total_samples ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2234,16 +2398,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
       retval = player->get_userdata ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2254,19 +2423,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
-      if (player->isplaying ())
-        return octave_value (1);
-      else
-        return octave_value (0);
+      retval = player->isplaying () ? true : false;
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2277,16 +2448,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
       player->pause ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2299,9 +2475,10 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
       player->playblocking ();
@@ -2311,29 +2488,43 @@ Undocumented internal function.\n\
       audioplayer *player = get_player (args(0));
       if (args(1).is_matrix_type ())
         {
-          unsigned int start, end;
           RowVector range = args(1).row_vector_value ();
-          start = range.elem (0) - 1;
-          end = range.elem (1) - 1;
+
+          unsigned int start = range.elem (0) - 1;
+          unsigned int end = range.elem (1) - 1;
+
           if (start > player->get_total_samples ()
               || start > end || end > player->get_total_samples ())
-            error ("audioplayer: invalid range specified for playback");
+            {
+              error ("audioplayer: invalid range specified for playback");
+              return retval;
+            }
+
           player->set_sample_number (start);
           player->set_end_sample (end);
         }
       else
         {
-          unsigned int start;
-          start = args(1).int_value () - 1;
+          unsigned int start = args(1).int_value () - 1;
+
           if (start > player->get_total_samples ())
-            error ("audioplayer: invalid range specified for playback");
+            {
+              error ("audioplayer: invalid range specified for playback");
+              return retval;
+            }
+
           player->set_sample_number (start);
         }
+
       player->playblocking ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2346,9 +2537,10 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
       player->play ();
@@ -2356,31 +2548,46 @@ Undocumented internal function.\n\
   else
     {
       audioplayer *player = get_player (args(0));
+
       if (args(1).is_matrix_type ())
         {
-          unsigned int start, end;
           RowVector range = args(1).row_vector_value ();
-          start = range.elem (0) - 1;
-          end = range.elem (1) - 1;
+
+          unsigned int start = range.elem (0) - 1;
+          unsigned int end = range.elem (1) - 1;
+
           if (start > player->get_total_samples ()
               || start > end || end > player->get_total_samples ())
-            error ("audioplayer: invalid range specified for playback");
+            {
+              error ("audioplayer: invalid range specified for playback");
+              return retval;
+            }
+
           player->set_sample_number (start);
           player->set_end_sample (end);
         }
       else
         {
-          unsigned int start;
-          start = args(1).int_value () - 1;
+          unsigned int start = args(1).int_value () - 1;
+
           if (start > player->get_total_samples ())
-            error ("audioplayer: invalid range specified for playback");
+            {
+              error ("audioplayer: invalid range specified for playback");
+              return retval;
+            }
+
           player->set_sample_number (start);
         }
+
       player->play ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2391,16 +2598,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
       player->resume ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2411,16 +2623,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 2)
+
+  if (args.length () == 2)
     {
       audioplayer *player = get_player (args(0));
       player->set_fs (args(1).int_value ());
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2431,16 +2648,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 2)
+
+  if (args.length () == 2)
     {
       audioplayer *player = get_player (args(0));
       player->set_tag (args(1).char_matrix_value ());
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2451,16 +2673,21 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 2)
+
+  if (args.length () == 2)
     {
       audioplayer *player = get_player (args(0));
       player->set_userdata (args(1));
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }
 
@@ -2471,15 +2698,20 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
+
 #ifdef HAVE_PORTAUDIO
-  int nargin = args.length ();
-  if (nargin == 1)
+
+  if (args.length () == 1)
     {
       audioplayer *player = get_player (args (0));
       player->stop ();
     }
+
 #else
+
   error ("portaudio not found on your system and thus audio functionality is not present");
+
 #endif
+
   return retval;
 }

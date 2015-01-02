@@ -857,7 +857,9 @@ public:
 
   void show_canvas (void)
   {
-    if (fp.is_visible ())
+    if (! canvas->can_do ())
+      error ("unable to plot due to insufficient OpenGL support");
+    else if (fp.is_visible ())
       {
         canvas->show ();
         canvas->make_current ();

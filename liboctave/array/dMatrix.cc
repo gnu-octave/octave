@@ -1612,8 +1612,8 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'U';
-                  char dia = 'N';
+                  uplo = 'U';
+                  dia = 'N';
 
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();
@@ -1707,8 +1707,8 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'L';
-                  char dia = 'N';
+                  uplo = 'L';
+                  dia = 'N';
 
                   Array<double> z (dim_vector (3 * nc, 1));
                   double *pz = z.fortran_vec ();

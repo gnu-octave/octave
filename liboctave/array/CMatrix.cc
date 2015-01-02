@@ -1973,8 +1973,8 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'U';
-                  char dia = 'N';
+                  uplo = 'U';
+                  dia = 'N';
 
                   Array<Complex> z (dim_vector (2 * nc, 1));
                   Complex *pz = z.fortran_vec ();
@@ -2069,8 +2069,8 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'L';
-                  char dia = 'N';
+                  uplo = 'L';
+                  dia = 'N';
 
                   Array<Complex> z (dim_vector (2 * nc, 1));
                   Complex *pz = z.fortran_vec ();

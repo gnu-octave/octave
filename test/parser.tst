@@ -19,6 +19,7 @@
 ## Tests for parser problems belong in this file.
 ## We need many more tests here!
 
+## Test cell construction operator {}
 %!assert ({1 2 {3 4}}, {1,2,{3,4}})
 %!assert ({1, 2 {3 4}}, {1,2,{3,4}})
 %!assert ({1 2, {3 4}}, {1,2,{3,4}})
@@ -27,6 +28,14 @@
 %!assert ({1 2,{3 4}}, {1,2,{3,4}})
 %!assert ({1 2,{3,4}}, {1,2,{3,4}})
 %!assert ({1,2,{3 4}}, {1,2,{3,4}})
+
+## bug #43113 using null comma-separated list in constructor
+%!test
+%! z = cell (1,2,3,0,5);
+%! assert ({1, z{:}, 2}, {1, 2});
+%! assert ({1; z{:}; 2}, {1; 2});
+%! assert ({1 2; z{:}; 3 4}, {1, 2; 3 4});
+%! assert ({1 2; 5 z{:} 6; 3 4}, {1, 2; 5 6; 3 4});
 
 ## Tests for operator precedence as documented in section 8.8 of manual
 ## There are 13 levels of precedence from "parentheses and indexing" (highest)

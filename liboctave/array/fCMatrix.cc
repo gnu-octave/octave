@@ -1977,8 +1977,8 @@ FloatComplexMatrix::utsolve (MatrixType &mattype, const FloatComplexMatrix& b,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'U';
-                  char dia = 'N';
+                  uplo = 'U';
+                  dia = 'N';
 
                   Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();
@@ -2073,8 +2073,8 @@ FloatComplexMatrix::ltsolve (MatrixType &mattype, const FloatComplexMatrix& b,
               if (calc_cond)
                 {
                   char norm = '1';
-                  char uplo = 'L';
-                  char dia = 'N';
+                  uplo = 'L';
+                  dia = 'N';
 
                   Array<FloatComplex> z (dim_vector (2 * nc, 1));
                   FloatComplex *pz = z.fortran_vec ();

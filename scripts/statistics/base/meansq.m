@@ -31,7 +31,7 @@
 ##
 ## @example
 ## @group
-## std (x) = 1/N SUM_i x(i)^2
+## meansq (x) = 1/N SUM_i x(i)^2
 ## @end group
 ## @end example
 ##

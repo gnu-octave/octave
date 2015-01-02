@@ -233,6 +233,8 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(area)
 
+@DOCSTRING(fill)
+
 @DOCSTRING(comet)
 
 @DOCSTRING(comet3)
@@ -1022,45 +1024,46 @@ at the Octave prompt should display a three-dimensional plot.
 @anchor{XREFgraphics structures}
 
 The graphics functions use pointers, which are of class graphics_handle, in
-order to address the data structures which control graphical displays.  A
-graphics handle may point any one of a number of different object types.  The
-objects are the graphics data structures.  The types of objects are:
-@code{figure}, @code{axes}, @code{line}, @code{text}, @code{patch},
-@code{surface}, @code{text} and @code{image}.
+order to address the data structures which control visual display.  A
+graphics handle may point to any one of a number of different base object
+types and these objects are the graphics data structures themselves.  The
+primitive graphic object types are: @code{figure}, @code{axes}, @code{line},
+@code{text}, @code{patch}, @code{surface}, @code{text}, and @code{image}.
 
-Each of these objects has a function by the same name. and, each of these
-functions returns a graphics handle pointing to an object of corresponding
+Each of these objects has a function by the same name, and, each of these
+functions returns a graphics handle pointing to an object of the corresponding
 type.  In addition there are several functions which operate on properties of
-the graphics objects and which return handles: the functions @code{ plot} and
-@code{plot3} return a handle pointing to an object of type line, the function
-@code{subplot} returns a handle pointing to an object of type axes, the
-function @code{fill} returns a handle pointing to an object of type patch, the
-functions @code{area}, @code{bar}, @code{barh}, @code{contour},
+the graphics objects and which also return handles: the functions @code{plot}
+and @code{plot3} return a handle pointing to an object of type line, the
+function @code{subplot} returns a handle pointing to an object of type axes,
+the function @code{fill} returns a handle pointing to an object of type patch,
+the functions @code{area}, @code{bar}, @code{barh}, @code{contour},
 @code{contourf}, @code{contour3}, @code{surf}, @code{mesh}, @code{surfc},
 @code{meshc}, @code{errorbar}, @code{quiver}, @code{quiver3}, @code{scatter},
 @code{scatter3}, @code{stair}, @code{stem}, @code{stem3} each return a handle
-as documented in @ref{XREFdatasources,,Data Sources}.
-
+to a complex data structure as documented in
+@ref{XREFdatasources,,Data Sources}.
 
 The graphics objects are arranged in a hierarchy:
 
-1. The root is at 0.  i.e., @code{get (0)} returns the properties of the root
-   object.
+1. The root is at 0.  In other words, @code{get (0)} returns the properties of
+the root object.
 
 2. Below the root are @code{figure} objects.
 
-3. Below the @code{figure} objects are @code{axes}.
+3. Below the @code{figure} objects are @code{axes} objects.
 
-4. Below the @code{axes} objects are
-@code{line}, @code{text}, @code{patch},
+4. Below the @code{axes} objects are @code{line}, @code{text}, @code{patch},
 @code{surface}, and @code{image} objects.
 
 Graphics handles may be distinguished from function handles
 (@pxref{Function Handles}) by means of the function @code{ishandle}.
 @code{ishandle} returns true if its argument is a handle of a graphics object.
-In addition, the figure object may be tested using @code{isfigure}.
-@code{isfigure} returns true only if its argument is a handle of a figure.  The
-@code{whos} function can be used to show the object type of each currently
+In addition, a figure or axes object may be tested using @code{isfigure} or
+@code{isaxes} respectively.  The test functions return true only if the
+argument is both a handle and of the correct type (figure or axes).
+
+The @code{whos} function can be used to show the object type of each currently
 defined graphics handle.  (Note: this is not true today, but it is, I hope,
 considered an error in whos.  It may be better to have whos just show
 graphics_handle as the class, and provide a new function which, given a
@@ -1187,17 +1190,26 @@ A three-dimensional surface.
 @subsubsection Creating Graphics Objects
 @cindex creating graphics objects
 
-You can create axes, line, patch, and surface objects directly using the
-@code{axes}, @code{line}, @code{patch}, @code{fill}, and @code{surface}
-functions.  These objects become children of the current axes object.
+You can create any graphics object primitive by calling the function of the
+same name as the object; In other words, @code{figure}, @code{axes},
+@code{line}, @code{text}, @code{image}, @code{patch}, and @code{surface}
+functions.  These fundamental graphic objects automatically become children
+of the current axes object as if @code{hold on} was in place.  Seperately, axes
+will automatically become children of the current figure object and figures
+will become children of the root object 0.
+
+If this auto-joining feature is not desired then it is important to call
+@code{newplot} first to prepare a new figure and axes for plotting.
+Alternatively, the easier way is to call a high-level graphics routine which
+will both create the plot and then populate it with low-level graphics objects.
+Instead of calling @code{line}, use @code{plot}.  Or use @code{surf} instead of
+@code{surface}.  Or use @code{fill} instead of @code{patch}.
 
 @DOCSTRING(axes)
 
 @DOCSTRING(line)
 
 @DOCSTRING(patch)
-
-@DOCSTRING(fill)
 
 @DOCSTRING(surface)
 

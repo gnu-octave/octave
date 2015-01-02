@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <map>
 
+#include "oct-locbuf.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
@@ -81,7 +83,7 @@ Read a file and return a specified range of frames in an array of specified type
   file = sf_open (args(0).string_value ().c_str (), SFM_READ, &info);
   start = 0;
   end = info.frames;
-  float *data = (float *)malloc (sizeof (float) * info.frames * info.channels);
+  OCTAVE_LOCAL_BUFFER (float, data, info.frames * info.channels);
   sf_read_float (file, data, info.frames * info.channels);
   if (args.length () == 2 && !args(1).is_string () || args.length () == 3)
     {
@@ -97,7 +99,7 @@ Read a file and return a specified range of frames in an array of specified type
           audio(i - start, channel) = data[i * info.channels + channel];
         }
     }
-  free (data);
+
   if (args.length () == 2 && args(1).is_string () || args.length () == 3)
     {
       std::string type;
@@ -206,7 +208,8 @@ Comment.\n\
   Matrix audio = args(1).matrix_value ();
   SNDFILE *file;
   SF_INFO info;
-  float *data = (float *)malloc (audio.rows () * audio.cols () * sizeof (float));
+  OCTAVE_LOCAL_BUFFER (float, data, audio.rows () * audio.cols ());
+
   for (int i = 0; i < audio.cols (); i++)
     {
       for (int j = 0; j < audio.rows (); j++)
@@ -299,7 +302,9 @@ Return information about an audio file specified by @var{filename}.\n\
   retval.assign ("NumChannels", info.channels);
   retval.assign ("SampleRate", info.samplerate);
   retval.assign ("TotalSamples", info.frames);
-  retval.assign ("Duration", (float)info.frames / (float)info.samplerate);
+  double dframes = info.frames;
+  double drate = info.samplerate;
+  retval.assign ("Duration", dframes / drate);
 
   int bits;
   if (info.format & SF_FORMAT_PCM_S8)

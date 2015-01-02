@@ -523,7 +523,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
                       const PaStreamCallbackTimeInfo *,
                       PaStreamCallbackFlags, void *data)
 {
-  audioplayer *player = (audioplayer *)data;
+  audioplayer *player = static_cast<audioplayer *> (data);
   int big_endian = is_big_endian ();
   octave_value_list args, retval;
   args(0) = frames;
@@ -556,25 +556,26 @@ octave_play_callback (const void *, void *output, unsigned long frames,
     {
       if (player->get_nbits () == 8)
         {
-          int8_t *buffer = (int8_t *)output;
+          int8_t *buffer = static_cast<int8_t *> (output);
           buffer[2 * i] = sound_l.elem (i) * (pow (2.0, 7) - 1);
           buffer[2 * i + 1] = sound_r.elem (i) * (pow (2.0, 7) - 1);
         }
       else if (player->get_nbits () == 16)
         {
-          int16_t *buffer = (int16_t *)output;
+          int16_t *buffer = static_cast<int16_t *> (output);
           buffer[2 * i] = sound_l.elem (i) * (pow (2.0, 15) - 1);
           buffer[2 * i + 1] = sound_r.elem (i) * (pow (2.0, 15) - 1);
         }
       else if (player->get_nbits () == 24)
         {
-          uint8_t *buffer = (uint8_t *)output;
+          uint8_t *buffer = static_cast<uint8_t *> (output);
           int32_t sample_l = sound_l.elem (i) * (pow (2.0, 23) - 1);
           int32_t sample_r = sound_r.elem (i) * (pow (2.0, 23) - 1);
           sample_l &= 0x00ffffff;
           sample_r &= 0x00ffffff;
-          uint8_t *_sample_l = (uint8_t *)&sample_l;
-          uint8_t *_sample_r = (uint8_t *)&sample_r;
+          // FIXME: Would a mask work better?
+          uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
+          uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
           buffer[i * 6 + 0] = _sample_l[0 + big_endian];
           buffer[i * 6 + 1] = _sample_l[1 + big_endian];
           buffer[i * 6 + 2] = _sample_l[2 + big_endian];
@@ -591,7 +592,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
                          const PaStreamCallbackTimeInfo*,
                          PaStreamCallbackFlags, void *data)
 {
-  audioplayer *player = (audioplayer *)data;
+  audioplayer *player = static_cast<audioplayer *> (data);
   int big_endian = is_big_endian ();
   int channels = player->get_channels ();
   RowVector *sound_l = player->get_left ();
@@ -612,25 +613,26 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
         {
           if (player->get_nbits () == 8)
             {
-              int8_t *buffer = (int8_t *)output;
+              int8_t *buffer = static_cast<int8_t *> (output);
               buffer[k] = sound_l->elem (sample_number) * (pow (2.0, 7) - 1);
               buffer[k + 1] = sound_r->elem (sample_number) * (pow (2.0, 7) - 1);
             }
           else if (player->get_nbits () == 16)
             {
-              int16_t *buffer = (int16_t *)output;
+              int16_t *buffer = static_cast<int16_t *> (output);
               buffer[k] = sound_l->elem (sample_number) * (pow (2.0, 15) - 1);
               buffer[k + 1] = sound_r->elem (sample_number) * (pow (2.0, 15) - 1);
             }
           else if (player->get_nbits () == 24)
             {
-              uint8_t *buffer = (uint8_t *)output;
+              uint8_t *buffer = static_cast<uint8_t *> (output);
               int32_t sample_l = sound_l->elem (sample_number) * (pow (2.0, 23) - 1);
               int32_t sample_r = sound_r->elem (sample_number) * (pow (2.0, 23) - 1);
               sample_l &= 0x00ffffff;
               sample_r &= 0x00ffffff;
-              uint8_t *_sample_l = (uint8_t *)&sample_l;
-              uint8_t *_sample_r = (uint8_t *)&sample_r;
+              // FIXME: Would a mask work better?
+              uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
+              uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
               buffer[j * 6 + 0] = _sample_l[0 + big_endian];
               buffer[j * 6 + 1] = _sample_l[1 + big_endian];
               buffer[j * 6 + 2] = _sample_l[2 + big_endian];
@@ -641,19 +643,19 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
         }
       else if (player->get_type () == INT8)
         {
-          int8_t *buffer = (int8_t *)output;
+          int8_t *buffer = static_cast<int8_t *> (output);
           buffer[k] = sound_l->elem (sample_number);
           buffer[k + 1] = sound_r->elem (sample_number);
         }
       else if (player->get_type () == UINT8)
         {
-          uint8_t *buffer = (uint8_t *)output;
+          uint8_t *buffer = static_cast<uint8_t *> (output);
           buffer[k] = sound_l->elem (sample_number);
           buffer[k + 1] = sound_r->elem (sample_number);
         }
       else if (player->get_type () == INT16)
         {
-          int16_t *buffer = (int16_t *)output;
+          int16_t *buffer = static_cast<int16_t *> (output);
           buffer[k] = sound_l->elem (sample_number);
           buffer[k + 1] = sound_r->elem (sample_number);
         }
@@ -953,9 +955,10 @@ audioplayer::playblocking (void)
   for (int i = start; i < end; i += BUFFER_SIZE)
     {
       if (this->octave_callback_function != 0)
-        octave_play_callback (0, (void *)buffer, BUFFER_SIZE, 0, 0, (void *)this);
+        octave_play_callback (0, buffer, BUFFER_SIZE, 0, 0, this);
       else
-        portaudio_play_callback (0, (void *)buffer, BUFFER_SIZE, 0, 0, (void *)this);
+        portaudio_play_callback (0, buffer, BUFFER_SIZE, 0, 0, this);
+
       err = Pa_WriteStream (stream, buffer, BUFFER_SIZE);
     }
 
@@ -986,9 +989,13 @@ audioplayer::play (void)
 
   PaError err;
   if (this->octave_callback_function != 0)
-    err = Pa_OpenStream (&stream, NULL, &(this->output_parameters), this->get_fs (), BUFFER_SIZE, paClipOff, octave_play_callback, (void *)this);
+    err = Pa_OpenStream (&stream, NULL, &(this->output_parameters),
+                         this->get_fs (), BUFFER_SIZE, paClipOff,
+                         octave_play_callback, this);
   else
-    err = Pa_OpenStream (&stream, NULL, &(this->output_parameters), this->get_fs (), BUFFER_SIZE, paClipOff, portaudio_play_callback, (void *)this);
+    err = Pa_OpenStream (&stream, NULL, &(this->output_parameters),
+                         this->get_fs (), BUFFER_SIZE, paClipOff,
+                         portaudio_play_callback, this);
 
   if (err != paNoError)
     {
@@ -1165,14 +1172,14 @@ octave_record_callback (const void *input, void *, unsigned long frames,
                         const PaStreamCallbackTimeInfo *,
                         PaStreamCallbackFlags, void *data)
 {
-  audiorecorder *recorder = (audiorecorder *)data;
+  audiorecorder *recorder = static_cast<audiorecorder *> (data);
   int channels = recorder->get_channels ();
   float sample_l, sample_r;
   Matrix sound;
   sound.resize (frames, 2);
   if (recorder->get_nbits () == 8)
     {
-      int8_t *input8 = (int8_t *)input;
+      const int8_t *input8 = static_cast<const int8_t *> (input);
       for (int i = 0; i < frames; i++)
         {
           sample_l = input8[i * channels] / (pow (2.0, 7) - 1.0);
@@ -1183,7 +1190,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       }
   else if (recorder->get_nbits () == 16)
     {
-      int16_t *input16 = (int16_t *)input;
+      const int16_t *input16 = static_cast<const int16_t *> (input);
       for (int i = 0; i < frames; i++)
         {
           sample_l = input16[i * channels] / (pow (2.0, 15) - 1.0);
@@ -1194,16 +1201,17 @@ octave_record_callback (const void *input, void *, unsigned long frames,
     }
   else if (recorder->get_nbits () == 24)
     {
-      uint8_t *input24 = (uint8_t *)input;
+      // FIXME: Is there a better way?
+      const uint8_t *input24 = static_cast<const uint8_t *> (input);
       int32_t sample_l32, sample_r32;
-      uint8_t *_sample_l = (uint8_t *)&sample_l;
-      uint8_t *_sample_r = (uint8_t *)&sample_r;
+      uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
+      uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
       for (int i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
             {
               _sample_l[j] = input24[i * channels * 3 + j];
-              _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
+               _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
             }
           if (sample_l32 & 0x00800000)
             sample_l32 |= 0xff000000;
@@ -1225,12 +1233,12 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
                            const PaStreamCallbackTimeInfo *,
                            PaStreamCallbackFlags, void *data)
 {
-  audiorecorder *recorder = (audiorecorder *)data;
+  audiorecorder *recorder = static_cast<audiorecorder *> (data);
   int channels = recorder->get_channels ();
   float sample_l, sample_r;
   if (recorder->get_nbits () == 8)
     {
-      int8_t *input8 = (int8_t *)input;
+      const int8_t *input8 = static_cast<const int8_t *> (input);
       for (int i = 0; i < frames; i++)
         {
           sample_l = input8[i * channels] / (pow (2.0, 7) - 1.0);
@@ -1240,7 +1248,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
     }
   else if (recorder->get_nbits () == 16)
     {
-      int16_t *input16 = (int16_t *)input;
+      const int16_t *input16 = static_cast<const int16_t *> (input);
       for (int i = 0; i < frames; i++)
         {
           sample_l = input16[i * channels] / (pow (2.0, 15) - 1.0);
@@ -1250,10 +1258,11 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
     }
   else if (recorder->get_nbits () == 24)
     {
-      uint8_t *input24 = (uint8_t *)input;
+      // FIXME: Is there a better way?
+      const uint8_t *input24 = static_cast<const uint8_t *> (input);
       int32_t sample_l32, sample_r32;
-      uint8_t *_sample_l = (uint8_t *)&sample_l;
-      uint8_t *_sample_r = (uint8_t *)&sample_r;
+      uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
+      uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
       for (int i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
@@ -1501,11 +1510,15 @@ audiorecorder::record (void)
   PaError err;
   if (this->octave_callback_function != 0)
     {
-      err = Pa_OpenStream (&stream, &(this->input_parameters), NULL, this->get_fs (), BUFFER_SIZE, paClipOff, octave_record_callback, (void *)this);
+      err = Pa_OpenStream (&stream, &(this->input_parameters), NULL,
+                           this->get_fs (), BUFFER_SIZE, paClipOff,
+                           octave_record_callback, this);
     }
   else
     {
-      err = Pa_OpenStream (&stream, &(this->input_parameters), NULL, this->get_fs (), BUFFER_SIZE, paClipOff, portaudio_record_callback, (void *)this);
+      err = Pa_OpenStream (&stream, &(this->input_parameters), NULL,
+                           this->get_fs (), BUFFER_SIZE, paClipOff,
+                           portaudio_record_callback, this);
     }
   if (err != paNoError)
     {
@@ -1530,7 +1543,8 @@ audiorecorder::recordblocking (float seconds)
   this->right.clear ();
 
   PaError err;
-  err = Pa_OpenStream (&stream, &(this->input_parameters), NULL, this->get_fs (), BUFFER_SIZE, paClipOff, NULL, (void *)this);
+  err = Pa_OpenStream (&stream, &(this->input_parameters), NULL,
+                       this->get_fs (), BUFFER_SIZE, paClipOff, NULL, this);
   if (err != paNoError)
     {
       error ("audiorecorder: Error opening audio recording stream");
@@ -1548,11 +1562,11 @@ audiorecorder::recordblocking (float seconds)
   uint8_t buffer[BUFFER_SIZE * 2 * 3];
   for (int i = 0; i < frames / BUFFER_SIZE; i++)
     {
-      Pa_ReadStream (this->get_stream (), (void *)buffer, BUFFER_SIZE);
+      Pa_ReadStream (this->get_stream (), buffer, BUFFER_SIZE);
       if (this->octave_callback_function != 0)
-        octave_record_callback ((void *)buffer, NULL, BUFFER_SIZE, 0, 0, (void *)this);
+        octave_record_callback (buffer, NULL, BUFFER_SIZE, 0, 0, this);
       else
-        portaudio_record_callback ((void *)buffer, NULL, BUFFER_SIZE, 0, 0, (void *)this);
+        portaudio_record_callback (buffer, NULL, BUFFER_SIZE, 0, 0, this);
     }
 }
 
@@ -1673,6 +1687,16 @@ Undocumented internal function.\n\
 #endif
 }
 
+static audiorecorder *
+get_recorder (const octave_value& ov)
+{
+  const octave_base_value& rep = ov.get_rep ();
+
+  octave_base_value *ncrep = const_cast<octave_base_value *> (&rep);
+
+  return dynamic_cast<audiorecorder *> (ncrep);
+}
+
 DEFUN_DLD (__recorder_getaudiodata__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{data}} __recorder_getaudiodata__ (@var{recorder})\n\
@@ -1681,8 +1705,7 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  const octave_base_value& rep = args(0).get_rep ();
-  audiorecorder *recorder = &((audiorecorder &)rep);
+  audiorecorder *recorder = get_recorder (args(0));
   retval = octave_value (recorder->getaudiodata ());
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -1701,8 +1724,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_channels ());
     }
 #else
@@ -1722,8 +1744,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_fs ());
     }
 #else
@@ -1743,8 +1764,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_id ());
     }
 #else
@@ -1764,8 +1784,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_nbits ());
     }
 #else
@@ -1785,8 +1804,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_sample_number ());
     }
 #else
@@ -1806,8 +1824,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_tag ());
     }
 #else
@@ -1827,8 +1844,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = octave_value (recorder->get_total_samples ());
     }
 #else
@@ -1848,8 +1864,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       retval = recorder->get_userdata ();
     }
 #else
@@ -1869,8 +1884,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       if (recorder->isrecording ())
         return octave_value (1);
       else
@@ -1893,8 +1907,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       recorder->pause ();
     }
 #else
@@ -1911,8 +1924,7 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  const octave_base_value& rep = args(0).get_rep ();
-  audiorecorder *recorder = &((audiorecorder &)rep);
+  audiorecorder *recorder = get_recorder (args(0));
   recorder->recordblocking (args(1).float_value ());
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -1929,8 +1941,7 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  const octave_base_value& rep = args(0).get_rep ();
-  audiorecorder *recorder = &((audiorecorder &)rep);
+  audiorecorder *recorder = get_recorder (args(0));
   if (args.length () == 1)
     {
       recorder->record ();
@@ -1961,8 +1972,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       recorder->resume ();
     }
 #else
@@ -1982,8 +1992,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 2)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       recorder->set_fs (args(1).int_value ());
     }
 #else
@@ -2003,8 +2012,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 2)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       recorder->set_tag (args(1).char_matrix_value ());
     }
 #else
@@ -2024,8 +2032,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 2)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audiorecorder *recorder = &((audiorecorder &)rep);
+      audiorecorder *recorder = get_recorder (args(0));
       recorder->set_userdata (args(1));
     }
 #else
@@ -2042,8 +2049,7 @@ Undocumented internal function.\n\
 {
   octave_value retval;
 #ifdef HAVE_PORTAUDIO
-  const octave_base_value& rep = args(0).get_rep ();
-  audiorecorder *recorder = &((audiorecorder &)rep);
+  audiorecorder *recorder = get_recorder (args(0));
   recorder->stop ();
 #else
   error ("portaudio not found on your system and thus audio functionality is not present");
@@ -2090,6 +2096,16 @@ Undocumented internal function.\n\
 #endif
 }
 
+static audioplayer *
+get_player (const octave_value& ov)
+{
+  const octave_base_value& rep = ov.get_rep ();
+
+  octave_base_value *ncrep = const_cast<octave_base_value *> (&rep);
+
+  return dynamic_cast<audioplayer *> (ncrep);
+}
+
 DEFUN_DLD (__player_get_channels__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{n} =} __player_get_channels__ (@var{player})\n\
@@ -2101,8 +2117,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_channels ());
     }
 #else
@@ -2122,8 +2137,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_fs ());
     }
 #else
@@ -2143,8 +2157,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_id ());
     }
 #else
@@ -2164,8 +2177,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_nbits ());
     }
 #else
@@ -2185,8 +2197,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_sample_number ());
     }
 #else
@@ -2206,8 +2217,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_tag ());
     }
 #else
@@ -2227,8 +2237,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = octave_value (player->get_total_samples ());
     }
 #else
@@ -2248,8 +2257,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       retval = player->get_userdata ();
     }
 #else
@@ -2269,8 +2277,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       if (player->isplaying ())
         return octave_value (1);
       else
@@ -2293,8 +2300,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->pause ();
     }
 #else
@@ -2316,14 +2322,12 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->playblocking ();
     }
   else
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       if (args(1).is_matrix_type ())
         {
           unsigned int start, end;
@@ -2365,14 +2369,12 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->play ();
     }
   else
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       if (args(1).is_matrix_type ())
         {
           unsigned int start, end;
@@ -2412,8 +2414,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->resume ();
     }
 #else
@@ -2433,8 +2434,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 2)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->set_fs (args(1).int_value ());
     }
 #else
@@ -2454,8 +2454,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 2)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->set_tag (args(1).char_matrix_value ());
     }
 #else
@@ -2475,8 +2474,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 2)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args(0));
       player->set_userdata (args(1));
     }
 #else
@@ -2496,8 +2494,7 @@ Undocumented internal function.\n\
   int nargin = args.length ();
   if (nargin == 1)
     {
-      const octave_base_value& rep = args(0).get_rep ();
-      audioplayer *player = &((audioplayer &)rep);
+      audioplayer *player = get_player (args (0));
       player->stop ();
     }
 #else

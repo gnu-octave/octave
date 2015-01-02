@@ -30,10 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
-#include "oct.h"
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "oct-obj.h"
 #include "ov.h"
-#include "ov-struct.h"
 #include "ov-int32.h"
+#include "ov-struct.h"
 #include "parse.h"
 
 #if defined (HAVE_PORTAUDIO)

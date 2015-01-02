@@ -223,7 +223,9 @@ Comment.\n\
   std::string title = "";
   std::string artist = "";
   std::string comment = "";
-  float quality = 0.75;
+  // Quality is currently unused?
+  //
+  // float quality = 0.75;
   for (int i = 3; i < args.length (); i += 2)
     {
       if (args(i).string_value () == "BitsPerSample")
@@ -242,8 +244,10 @@ Comment.\n\
         }
       else if (args(i).string_value () == "BitRate")
         ;
-      else if (args(i).string_value () == "Quality")
-        quality = args(i + 1).int_value () * 0.01;
+      // Quality is currently unused?
+      //
+      // else if (args(i).string_value () == "Quality")
+      //   quality = args(i + 1).int_value () * 0.01;
       else if (args(i).string_value () == "Title")
         title = args(i + 1).string_value ();
       else if (args(i).string_value () == "Artist")
@@ -289,7 +293,6 @@ Return information about an audio file specified by @var{filename}.\n\
   SNDFILE *file;
   SF_INFO info;
   info.format = 0;
-  int start, end;
   file = sf_open (args(0).string_value ().c_str (), SFM_READ, &info);
   retval.assign ("Filename", args(0).string_value ());
   retval.assign ("CompressionMethod", "");

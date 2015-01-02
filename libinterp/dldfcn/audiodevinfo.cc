@@ -437,7 +437,7 @@ public:
 
   // Overloaded base functions
   double player_value (void) const { return 0; }
-  virtual double scalar_value (bool frc_str_conv = false) const { return 0; }
+  virtual double scalar_value (bool = false) const { return 0; }
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
   void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
@@ -519,11 +519,9 @@ is_big_endian (void)
 }
 
 static int
-octave_play_callback (const void *input, void *output,
-                      unsigned long frames,
-                      const PaStreamCallbackTimeInfo *time,
-                      PaStreamCallbackFlags status,
-                      void *data)
+octave_play_callback (const void *, void *output, unsigned long frames,
+                      const PaStreamCallbackTimeInfo *,
+                      PaStreamCallbackFlags, void *data)
 {
   audioplayer *player = (audioplayer *)data;
   int big_endian = is_big_endian ();
@@ -589,11 +587,9 @@ octave_play_callback (const void *input, void *output,
 }
 
 static int
-portaudio_play_callback (const void *input, void *output,
-                         unsigned long frames,
-                         const PaStreamCallbackTimeInfo* time,
-                         PaStreamCallbackFlags status,
-                         void *data)
+portaudio_play_callback (const void *, void *output, unsigned long frames,
+                         const PaStreamCallbackTimeInfo*,
+                         PaStreamCallbackFlags, void *data)
 {
   audioplayer *player = (audioplayer *)data;
   int big_endian = is_big_endian ();
@@ -686,7 +682,7 @@ audioplayer::print (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 void
-audioplayer::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+audioplayer::print_raw (std::ostream& os, bool) const
 {
   os << 0;
 }
@@ -727,8 +723,13 @@ void
 audioplayer::init (void)
 {
   PaError err;
-  int channels = this->y.rows ();
-  RowVector *sound_l = this->get_left ();
+
+  // Both of these variables are unused.  Should they be
+  // eliminated or is something not yet implemented?
+  //
+  // int channels = this->y.rows ();
+  // RowVector *sound_l = this->get_left ();
+
   int device;
 
   err = Pa_Initialize ();
@@ -1093,7 +1094,7 @@ public:
 
   // Overloaded base functions
   double player_value (void) const { return 0; }
-  virtual double scalar_value (bool frc_str_conv = false) const { return 0; }
+  virtual double scalar_value (bool = false) const { return 0; }
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
   void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
@@ -1160,11 +1161,9 @@ DEFINE_OCTAVE_ALLOCATOR (audiorecorder);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audiorecorder, "audiorecorder", "audiorecorder");
 
 static int
-octave_record_callback (const void *input, void *output,
-                        unsigned long frames,
-                        const PaStreamCallbackTimeInfo* time,
-                        PaStreamCallbackFlags status,
-                        void *data)
+octave_record_callback (const void *input, void *, unsigned long frames,
+                        const PaStreamCallbackTimeInfo *,
+                        PaStreamCallbackFlags, void *data)
 {
   audiorecorder *recorder = (audiorecorder *)data;
   int channels = recorder->get_channels ();
@@ -1222,11 +1221,9 @@ octave_record_callback (const void *input, void *output,
 }
 
 static int
-portaudio_record_callback (const void *input, void *output,
-                           unsigned long frames,
-                           const PaStreamCallbackTimeInfo* time,
-                           PaStreamCallbackFlags status,
-                           void *data)
+portaudio_record_callback (const void *input, void *, unsigned long frames,
+                           const PaStreamCallbackTimeInfo *,
+                           PaStreamCallbackFlags, void *data)
 {
   audiorecorder *recorder = (audiorecorder *)data;
   int channels = recorder->get_channels ();
@@ -1302,7 +1299,7 @@ audiorecorder::print (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 void
-audiorecorder::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+audiorecorder::print_raw (std::ostream& os, bool) const
 {
   os << 0;
 }

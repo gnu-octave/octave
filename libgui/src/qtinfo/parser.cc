@@ -47,7 +47,7 @@ parser::parser(QObject *p)
   _compressors_map.insert ("Z",    "gunzip -c \"%1\"");
 }
 
-void
+bool
 parser::set_info_path (const QString& infoPath)
 {
   this->_info_path = infoPath;
@@ -56,15 +56,32 @@ parser::set_info_path (const QString& infoPath)
 
   QFileInfo info (infoPath);
 
-  QString path = info.absolutePath ();
-  QString fileName = info.fileName ();
+  bool info_file_exists = info.exists ();
+  QHash<QString, QString>::iterator it;
+  for (it = _compressors_map.begin (); it != _compressors_map.end (); it++)
+    {
+      if (info_file_exists)
+        break;
+      info_file_exists = QFileInfo (info.absoluteFilePath () + "." + it.key ()).exists ();
+    }
 
-  QDir infoDir (path);
-  QStringList filter;
-  filter.append (fileName + "*");
+  if (info_file_exists)
+    {
+      QString path = info.absolutePath ();
+      QString fileName = info.fileName ();
 
-  _info_files = infoDir.entryInfoList (filter, QDir::Files);
-  parse_info_map ();
+      QDir infoDir (path);
+      QStringList filter;
+      filter.append (fileName + "*");
+
+      _info_files = infoDir.entryInfoList (filter, QDir::Files);
+
+      parse_info_map ();
+
+      return true;
+    }
+  else
+    return false;
 }
 
 QString

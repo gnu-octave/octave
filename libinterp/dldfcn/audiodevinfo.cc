@@ -1084,7 +1084,7 @@ audioplayer::isplaying (void)
 
   PaError err;
   err = Pa_IsStreamActive (stream);
-  if (err != 0 and err != 1)
+  if (err != 0 && err != 1)
     {
       error ("audiorecorder: Error checking stream activity status");
       return false;
@@ -1383,7 +1383,7 @@ audiorecorder::get_id (void)
 void
 audiorecorder::set_channels (int channels)
 {
-  assert (channels == 1 or channels == 2);
+  assert (channels == 1 || channels == 2);
   this->channels = channels;
 }
 
@@ -1490,7 +1490,7 @@ audiorecorder::isrecording (void)
 
   PaError err;
   err = Pa_IsStreamActive (stream);
-  if (err != 0 and err != 1)
+  if (err != 0 && err != 1)
     {
       error ("audiorecorder: Error checking stream activity status");
       return false;
@@ -2334,8 +2334,8 @@ Undocumented internal function.\n\
           RowVector range = args(1).row_vector_value ();
           start = range.elem (0) - 1;
           end = range.elem (1) - 1;
-          if (start > player->get_total_samples () or
-              start > end or end > player->get_total_samples ())
+          if (start > player->get_total_samples ()
+              || start > end || end > player->get_total_samples ())
             error ("audioplayer: invalid range specified for playback");
           player->set_sample_number (start);
           player->set_end_sample (end);
@@ -2381,8 +2381,8 @@ Undocumented internal function.\n\
           RowVector range = args(1).row_vector_value ();
           start = range.elem (0) - 1;
           end = range.elem (1) - 1;
-          if (start > player->get_total_samples () or
-              start > end or end > player->get_total_samples ())
+          if (start > player->get_total_samples ()
+              || start > end || end > player->get_total_samples ())
             error ("audioplayer: invalid range specified for playback");
           player->set_sample_number (start);
           player->set_end_sample (end);

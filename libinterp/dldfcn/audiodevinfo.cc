@@ -535,7 +535,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   sound_r.resize (frames);
   if (sound.cols () == 1)
     {
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           sound_l(i) = sound(i, 0);
           sound_r(i) = sound(i, 0);
@@ -543,7 +543,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
     }
   else if (sound.cols () == 2)
     {
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           sound_l(i) = sound(i, 0);
           sound_r(i) = sound(i, 1);
@@ -552,7 +552,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   else
     return paAbort;
 
-  for (int i = 0; i < frames; i++)
+  for (unsigned long i = 0; i < frames; i++)
     {
       if (player->get_nbits () == 8)
         {
@@ -603,7 +603,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   else
     sound_r = sound_l;
 
-  for (int j = 0, k = 0; j < frames; j++, k += 2)
+  for (unsigned long j = 0, k = 0; j < frames; j++, k += 2)
     {
       unsigned int sample_number = player->get_sample_number ();
       if (sample_number > player->get_end_sample ())
@@ -952,7 +952,7 @@ audioplayer::playblocking (void)
   unsigned int start, end;
   start = this->get_sample_number ();
   end = this->get_end_sample ();
-  for (int i = start; i < end; i += BUFFER_SIZE)
+  for (unsigned int i = start; i < end; i += BUFFER_SIZE)
     {
       if (this->octave_callback_function != 0)
         octave_play_callback (0, buffer, BUFFER_SIZE, 0, 0, this);
@@ -1180,7 +1180,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
   if (recorder->get_nbits () == 8)
     {
       const int8_t *input8 = static_cast<const int8_t *> (input);
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           sample_l = input8[i * channels] / (pow (2.0, 7) - 1.0);
           sample_r = input8[i * channels + (channels - 1)] / (pow (2.0, 7) - 1.0);
@@ -1191,7 +1191,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
   else if (recorder->get_nbits () == 16)
     {
       const int16_t *input16 = static_cast<const int16_t *> (input);
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           sample_l = input16[i * channels] / (pow (2.0, 15) - 1.0);
           sample_r = input16[i * channels + (channels - 1)] / (pow (2.0, 15) - 1.0);
@@ -1206,7 +1206,7 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       int32_t sample_l32, sample_r32;
       uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
       uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
             {
@@ -1239,7 +1239,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   if (recorder->get_nbits () == 8)
     {
       const int8_t *input8 = static_cast<const int8_t *> (input);
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           sample_l = input8[i * channels] / (pow (2.0, 7) - 1.0);
           sample_r = input8[i * channels + (channels - 1)] / (pow (2.0, 7) - 1.0);
@@ -1249,7 +1249,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   else if (recorder->get_nbits () == 16)
     {
       const int16_t *input16 = static_cast<const int16_t *> (input);
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           sample_l = input16[i * channels] / (pow (2.0, 15) - 1.0);
           sample_r = input16[i * channels + (channels - 1)] / (pow (2.0, 15) - 1.0);
@@ -1263,7 +1263,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       int32_t sample_l32, sample_r32;
       uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
       uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
-      for (int i = 0; i < frames; i++)
+      for (unsigned long i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
             {
@@ -1463,7 +1463,7 @@ octave_value
 audiorecorder::getaudiodata (void)
 {
   Matrix audio (2, this->left.size ());
-  for (int i = 0; i < this->left.size (); i++)
+  for (unsigned int i = 0; i < this->left.size (); i++)
     {
       audio(0, i) = this->left[i];
       audio(1, i) = this->right[i];
@@ -1560,7 +1560,7 @@ audiorecorder::recordblocking (float seconds)
 
   unsigned int frames = seconds * this->get_fs ();
   uint8_t buffer[BUFFER_SIZE * 2 * 3];
-  for (int i = 0; i < frames / BUFFER_SIZE; i++)
+  for (unsigned long i = 0; i < frames / BUFFER_SIZE; i++)
     {
       Pa_ReadStream (this->get_stream (), buffer, BUFFER_SIZE);
       if (this->octave_callback_function != 0)
@@ -2334,8 +2334,8 @@ Undocumented internal function.\n\
           RowVector range = args(1).row_vector_value ();
           start = range.elem (0) - 1;
           end = range.elem (1) - 1;
-          if (start < 0 or start > player->get_total_samples () or
-              start > end or end < 0 or end > player->get_total_samples ())
+          if (start > player->get_total_samples () or
+              start > end or end > player->get_total_samples ())
             error ("audioplayer: invalid range specified for playback");
           player->set_sample_number (start);
           player->set_end_sample (end);
@@ -2344,7 +2344,7 @@ Undocumented internal function.\n\
         {
           unsigned int start;
           start = args(1).int_value () - 1;
-          if (start < 0 or start > player->get_total_samples ())
+          if (start > player->get_total_samples ())
             error ("audioplayer: invalid range specified for playback");
           player->set_sample_number (start);
         }
@@ -2381,8 +2381,8 @@ Undocumented internal function.\n\
           RowVector range = args(1).row_vector_value ();
           start = range.elem (0) - 1;
           end = range.elem (1) - 1;
-          if (start < 0 or start > player->get_total_samples () or
-              start > end or end < 0 or end > player->get_total_samples ())
+          if (start > player->get_total_samples () or
+              start > end or end > player->get_total_samples ())
             error ("audioplayer: invalid range specified for playback");
           player->set_sample_number (start);
           player->set_end_sample (end);
@@ -2391,7 +2391,7 @@ Undocumented internal function.\n\
         {
           unsigned int start;
           start = args(1).int_value () - 1;
-          if (start < 0 or start > player->get_total_samples ())
+          if (start > player->get_total_samples ())
             error ("audioplayer: invalid range specified for playback");
           player->set_sample_number (start);
         }

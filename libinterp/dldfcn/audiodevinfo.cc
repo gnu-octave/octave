@@ -40,8 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 
 #if defined (HAVE_PORTAUDIO)
+
 #include <portaudio.h>
-#endif
 
 PaSampleFormat
 bits_to_format (int bits)
@@ -59,6 +59,8 @@ bits_to_format (int bits)
   else
     return 0;
 }
+
+#endif
 
 DEFUN_DLD (audiodevinfo, args, ,
   "-*- texinfo -*-\n\
@@ -428,6 +430,8 @@ or recording using those parameters.\n\
 %!   assert (devinfo.input(i).ID, audiodevinfo (1, devinfo.input(i).Name))
 %! endfor
 */
+
+#ifdef HAVE_PORTAUDIO
 
 enum audio_type { INT8, UINT8, INT16, DOUBLE };
 
@@ -1638,6 +1642,8 @@ audiorecorder::get_stream (void)
   return stream;
 }
 
+#endif
+
 DEFUN_DLD (__recorder_audiorecorder__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels})\n\
@@ -1696,6 +1702,8 @@ Undocumented internal function.\n\
   return retval;
 }
 
+#ifdef HAVE_PORTAUDIO
+
 static audiorecorder *
 get_recorder (const octave_value& ov)
 {
@@ -1705,6 +1713,8 @@ get_recorder (const octave_value& ov)
 
   return dynamic_cast<audiorecorder *> (ncrep);
 }
+
+#endif
 
 DEFUN_DLD (__recorder_getaudiodata__, args, ,
   "-*- texinfo -*-\n\
@@ -2206,6 +2216,8 @@ Undocumented internal function.\n\
   return retval;
 }
 
+#ifdef HAVE_PORTAUDIO
+
 static audioplayer *
 get_player (const octave_value& ov)
 {
@@ -2215,6 +2227,8 @@ get_player (const octave_value& ov)
 
   return dynamic_cast<audioplayer *> (ncrep);
 }
+
+#endif
 
 DEFUN_DLD (__player_get_channels__, args, ,
   "-*- texinfo -*-\n\

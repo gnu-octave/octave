@@ -153,6 +153,7 @@ Read a file and return a specified range of frames in an array of specified type
 }
 
 #ifdef HAVE_SNDFILE
+
 static void
 fill_extension_table (std::map<std::string, int> &table)
 {
@@ -182,6 +183,7 @@ fill_extension_table (std::map<std::string, int> &table)
   table["mpc2k"] = SF_FORMAT_MPC2K;
   table["rf64"] = SF_FORMAT_RF64;
 }
+
 #endif
 
 DEFUN_DLD (audiowrite, args, ,
@@ -337,13 +339,13 @@ Return information about an audio file specified by @var{filename}.\n\
 {
   octave_value retval;
 
+#ifdef HAVE_SNDFILE
+
   if (args.length () != 1)
     {
       print_usage ();
       return retval;
     }
-
-#ifdef HAVE_SNDFILE
 
   SF_INFO info;
   info.format = 0;

@@ -711,22 +711,6 @@ octave_process_command_line (int argc, char **argv)
       octave_print_terse_usage_and_exit ();
     }
 
-  bool redir_input = ! gnulib::isatty (fileno (stdin));
-
-  if (! code_to_eval.empty () && redir_input)
-    {
-      error ("--eval \"CODE\" and '< script' are mutually exclusive options");
-
-      octave_print_terse_usage_and_exit ();
-    }
- 
-  if (script_file && redir_input)
-    {
-      error ("script file and '< script' are mutually exclusive options");
-
-      octave_print_terse_usage_and_exit ();
-    }
-
 }
 
 // EMBEDDED is declared int instead of bool because this function is

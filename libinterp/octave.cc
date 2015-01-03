@@ -96,8 +96,7 @@ int octave_embedded;
 static string_vector octave_argv;
 
 // The name used to invoke Octave.
-static std::string
-octave_program_invocation_name;
+static std::string octave_program_invocation_name;
 
 // The last component of octave_program_invocation_name.
 static std::string octave_program_name;
@@ -158,16 +157,19 @@ static std::string image_path;
 // (--no-window-system, -W)
 static bool no_window_system = false;
 
-// The code to evaluate at startup (--eval CODE)
+// The code to evaluate at startup
+// (--eval CODE)
 static std::string code_to_eval;
 
 // If TRUE, don't exit after evaluating code given by --eval option.
+// (--persist)
 static bool persist = false;
 
 // If TRUE, the GUI should be started.
 static bool start_gui = false;
 
-// If TRUE use traditional settings (--traditional)
+// If TRUE use traditional (maximally MATLAB compatible) settings
+// (--traditional)
 static bool traditional = false;
 
 // Store the command-line options for later use.
@@ -257,10 +259,10 @@ gripe_safe_source_exception (const std::string& file, const std::string& msg)
             << std::endl;
 }
 
-// Execute commands from a file and catch potential exceptions in a
-// consistent way.  This function should be called anywhere we might
-// parse and execute commands from a file before before we have entered
-// the main loop in toplev.cc.
+// Execute commands from a file and catch potential exceptions in a consistent
+// way.  This function should be called anywhere we might parse and execute
+// commands from a file before before we have entered the main loop in
+// toplev.cc.
 
 static void
 safe_source_file (const std::string& file_name,
@@ -315,8 +317,8 @@ execute_startup_files (void)
   if (read_init_files)
     {
       // Try to execute commands from $HOME/$OCTAVE_INITFILE and
-      // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set, .octaverc
-      // is assumed.
+      // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set, 
+      // .octaverc is assumed.
 
       bool home_rc_already_executed = false;
 
@@ -473,7 +475,7 @@ initialize_error_handlers ()
   set_liboctave_warning_with_id_handler (warning_with_id);
 }
 
-// What happens on --traditional.
+// What internal options get configured by --traditional.
 
 static void
 maximum_braindamage (void)
@@ -537,9 +539,8 @@ octave_process_command_line (int argc, char **argv)
       switch (optc)
         {
         case '?':
-          // Unrecognized option.  getopt_long already printed a
-          // message about that, so we will just print the usage string
-          // and exit.
+          // Unrecognized option.  getopt_long already printed a message about
+          // it, so we will just print the usage string and exit.
           octave_print_terse_usage_and_exit ();
           break;
 
@@ -684,21 +685,48 @@ octave_process_command_line (int argc, char **argv)
           break;
 
         default:
-          // getopt_long should print a message about unrecognized
-          // options and return '?', which is handled above.  So if we
-          // end up here, it is because there was an option but we
-          // forgot to handle it.  That should be fatal.
+          // getopt_long should print a message about unrecognized options and
+          // return '?', which is handled above.  If we end up here, it is
+          // because there was an option but we forgot to handle it.
+          // That should be fatal.
           panic_impossible ();
           break;
         }
     }
 
+  // Check for various incompatible argument pairs
   if (force_gui_option && no_gui_option)
     {
-      error ("error: only one of --force-gui and --no-gui may be used");
+      error ("only one of --force-gui and --no-gui may be used");
 
       octave_print_terse_usage_and_exit ();
     }
+
+  bool script_file = (argc - optind) > 0;
+
+  if (! code_to_eval.empty () && script_file)
+    {
+      error ("--eval \"CODE\" and script file are mutually exclusive options");
+
+      octave_print_terse_usage_and_exit ();
+    }
+
+  bool redir_input = ! gnulib::isatty (fileno (stdin));
+
+  if (! code_to_eval.empty () && redir_input)
+    {
+      error ("--eval \"CODE\" and '< script' are mutually exclusive options");
+
+      octave_print_terse_usage_and_exit ();
+    }
+ 
+  if (script_file && redir_input)
+    {
+      error ("script file and '< script' are mutually exclusive options");
+
+      octave_print_terse_usage_and_exit ();
+    }
+
 }
 
 // EMBEDDED is declared int instead of bool because this function is
@@ -722,8 +750,8 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   set_default_prompts ();
 
-  // Initialize default warning state before --traditional option may
-  // reset them.
+  // Initialize default warning state before --traditional option
+  // that may reset them.
 
   initialize_default_warning_state ();
 
@@ -734,10 +762,9 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   octave_ieee_init ();
 
-  // The idea here is to force xerbla to be referenced so that we will
-  // link to our own version instead of the one provided by the BLAS
-  // library.  But octave_NaN should never be -1, so we should never
-  // actually call xerbla.
+  // The idea here is to force xerbla to be referenced so that we will link to
+  // our own version instead of the one provided by the BLAS library.  But
+  // octave_NaN should never be -1, so we should never actually call xerbla.
 
   if (octave_NaN == -1)
     F77_FUNC (xerbla, XERBLA) ("octave", 13 F77_CHAR_ARG_LEN (6));
@@ -772,8 +799,7 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
   if (no_window_system)
     display_info::no_window_system ();
 
-  // Is input coming from a terminal?  If so, we are probably
-  // interactive.
+  // Is input coming from a terminal?  If so, we are probably interactive.
 
   // If stdin is not a tty, then we are reading commands from a pipe or
   // a redirected file.
@@ -822,25 +848,24 @@ octave_execute_interpreter (void)
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;
 
-  // If there is an extra argument, see if it names a file to read.
-  // Additional arguments are taken as command line options for the
-  // script.
-
-  int last_arg_idx = optind;
-
-  int remaining_args = octave_cmdline_argc - last_arg_idx;
-
+  // Execute any code specified with --eval 'CODE'
   if (! code_to_eval.empty ())
     {
       int parse_status = execute_eval_option_code (code_to_eval);
 
-      if (! (persist || remaining_args > 0))
+      if (! persist)
         {
           quitting_gracefully = true;
 
           clean_up_and_exit (parse_status || error_state ? 1 : 0);
         }
     }
+
+  // If there is an extra argument, see if it names a file to read.
+  // Additional arguments are taken as command line options for the script.
+
+  int last_arg_idx = optind;
+  int remaining_args = octave_cmdline_argc - last_arg_idx;
 
   if (remaining_args > 0)
     {
@@ -866,23 +891,22 @@ octave_execute_interpreter (void)
   // Now argv should have the full set of args.
   intern_argv (octave_cmdline_argc, octave_cmdline_argv);
 
-  // Force input to be echoed if not really interactive, but the user
-  // has forced interactive behavior.
+  // Force input to be echoed if not really interactive,
+  // but the user has forced interactive behavior.
 
   if (! interactive && forced_interactive)
     {
       command_editor::blink_matching_paren (false);
 
       // FIXME: is this the right thing to do?
-
       Fecho_executing_commands (octave_value (ECHO_CMD_LINE));
     }
 
   if (octave_embedded)
     {
-      // FIXME: do we need to do any cleanup here before
-      // returning?  If we don't, what will happen to Octave functions
-      // that have been registered to execute with atexit, for example?
+      // FIXME: Do we need to do any cleanup here before returning?
+      // If we don't, what will happen to Octave functions that have been
+      // registered to execute with atexit, for example?
 
       return 1;
     }
@@ -920,17 +944,16 @@ check_starting_gui (void)
   if (persist)
     return true;
 
-  // If stdin is not a tty, then assume we are reading commands from a
-  // pipe or a redirected file and the GUI should not start.  If this is
-  // not the case (for example, starting from a desktop "launcher" with
-  // no terminal) and you want to start the GUI, you may use the
-  // --force-gui option to start the GUI.
+  // If stdin is not a tty, then assume we are reading commands from a pipe or
+  // a redirected file and the GUI should not start.  If this is not the case
+  // (for example, starting from a desktop "launcher" with no terminal) and you
+  // want to start the GUI, you may use the --force-gui option to start the GUI.
 
   if (! gnulib::isatty (fileno (stdin)))
     return false;
 
-  // If we have code to eval or execute from a file, and we are going to
-  // exit immediately after executing it, don't start the gui.
+  // If we have code to eval or execute from a file, and we are going to exit
+  // immediately after executing it, don't start the gui.
 
   int last_arg_idx = optind;
   int remaining_args = octave_cmdline_argc - last_arg_idx;
@@ -941,8 +964,7 @@ check_starting_gui (void)
   return true;
 }
 
-// Return int instead of bool because this function is declared
-// extern "C".
+// Return int instead of bool because this function is declared extern "C".
 
 int
 octave_starting_gui (void)
@@ -975,8 +997,9 @@ Return true if Octave is running in GUI mode and false otherwise.\n\
 DEFUN (argv, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} argv ()\n\
-Return the command line arguments passed to Octave.  For example,\n\
-if you invoked Octave using the command\n\
+Return the command line arguments passed to Octave.\n\
+\n\
+For example, if you invoked Octave using the command\n\
 \n\
 @example\n\
 octave --no-line-editing --silent\n\
@@ -986,9 +1009,9 @@ octave --no-line-editing --silent\n\
 @code{argv} would return a cell array of strings with the elements\n\
 @option{--no-line-editing} and @option{--silent}.\n\
 \n\
-If you write an executable Octave script, @code{argv} will return the\n\
-list of arguments passed to the script.  @xref{Executable Octave Programs},\n\
-for an example of how to create an executable Octave script.\n\
+If you write an executable Octave script, @code{argv} will return the list\n\
+of arguments passed to the script.  @xref{Executable Octave Programs}, for\n\
+an example of how to create an executable Octave script.\n\
 @end deftypefn")
 {
   octave_value retval;

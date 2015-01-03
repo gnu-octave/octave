@@ -101,7 +101,7 @@ function player = audioplayer (varargin)
 
 endfunction
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! mono = randn (1, 44100) - 0.5;
 %! stereo = randn (2, 44100) - 0.5;
 %! fs = 44100;
@@ -116,7 +116,7 @@ endfunction
 %! playblocking (player1);
 %! playblocking (player2);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! audio = randn (2, 88200) - 0.5;
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -131,7 +131,7 @@ endfunction
 %! assert (isplaying (player));
 %! sleep (1);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! audio = randn (2, 88200) - 0.5;
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -144,7 +144,7 @@ endfunction
 %! assert (!isplaying (player));
 %! assert (player.CurrentSample, 0);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! audio = randn (2, 44100) - 0.5;
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -153,7 +153,7 @@ endfunction
 %! assert (player.Tag, "tag");
 %! assert (player.UserData, [1, 2; 3, 4]);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! audio = randn (2, 44100) - 0.5;
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -166,7 +166,7 @@ endfunction
 %! assert (player.Tag, "tag");
 %! assert (player.UserData, [1, 2; 3, 4]);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! audio = randn (2, 44100) - 0.5;
 %! fs = 44100;
 %! player = audioplayer (audio, fs);
@@ -181,14 +181,14 @@ endfunction
 %!  status = 0;
 %!endfunction
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! player = audioplayer (@callback, 44100);
 %! play (player);
 %! sleep (2);
 %! stop (player);
 %! assert (1);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! player = audioplayer ("callback", 44100, 16);
 %! play (player);
 %! sleep (2);

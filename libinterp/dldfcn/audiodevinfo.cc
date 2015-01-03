@@ -396,19 +396,19 @@ or recording using those parameters.\n\
 }
 
 /*
-%!test
+%!testif HAVE_PORTAUDIO
 %! devinfo = audiodevinfo;
 %! assert (rows (devinfo.input), 1);
 %! assert (rows (devinfo.output), 1);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
 %! assert (columns (devinfo.output), nout);
 %! assert (columns (devinfo.input), nin);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);
@@ -419,7 +419,7 @@ or recording using those parameters.\n\
 %!   assert (devinfo.input(i).Name, audiodevinfo (1, devinfo.input(i).ID))
 %! endfor
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! devinfo = audiodevinfo;
 %! nout = audiodevinfo (0);
 %! nin = audiodevinfo (1);

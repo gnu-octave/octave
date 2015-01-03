@@ -44,7 +44,7 @@ function recorder = audiorecorder (varargin)
 
 endfunction
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder (44100, 16, 2);
 %! recordblocking (recorder, 1);
 %! data = getaudiodata (recorder, "int16");
@@ -57,7 +57,7 @@ endfunction
 %! assert (size (data)(2), 2);
 %! assert (size (data)(1) != 0);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1)
 %! sleep (2);
@@ -66,7 +66,7 @@ endfunction
 %! data = getaudiodata (recorder);
 %! assert (size (data)(1) < 44100 * 2);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1);
 %! sleep (2);
@@ -79,14 +79,14 @@ endfunction
 %! assert (player1.TotalSamples, recorder.TotalSamples);
 %! assert (player2.TotalSamples, recorder.TotalSamples);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder;
 %! set (recorder, {"SampleRate", "Tag", "UserData"}, {8000, "tag", [1, 2; 3, 4]});
 %! assert (recorder.SampleRate, 8000);
 %! assert (recorder.Tag, "tag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder;
 %! settable = set (recorder);
 %! settable.SampleRate = 8000;
@@ -97,7 +97,7 @@ endfunction
 %! assert (recorder.Tag, "tag");
 %! assert (recorder.UserData, [1, 2; 3, 4]);
 
-%!test
+%!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder;
 %! recorder.SampleRate = 8000;
 %! recorder.Tag = "tag";
@@ -114,7 +114,7 @@ endfunction
 #%!  status = 0;
 #%!endfunction
 
-#%!test
+#%!testif HAVE_PORTAUDIO
 #%! recorder = audiorecorder (@callback_record, 44100);
 #%! unlink ("record.txt")
 #%! record (recorder);
@@ -123,7 +123,7 @@ endfunction
 #%! s = stat ("record.txt");
 #%! assert (s.size > 0);
 
-#%!test
+#%!testif HAVE_PORTAUDIO
 #%! recorder = audiorecorder (@callback_record, 44100);
 #%! unlink ("record.txt")
 #%! record (recorder);

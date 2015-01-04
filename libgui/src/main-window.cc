@@ -174,6 +174,12 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       if (dock)
         break; // it is a QDockWidget ==> exit loop
 
+      if (qobject_cast <octave_qscintilla *> (w_new))
+        {
+          dock = static_cast <octave_dock_widget *> (editor_window);
+          break; // it is the editor window ==> exit loop
+        }
+
       w_new = qobject_cast <QWidget *> (w_new->previousInFocusChain ());
       if (w_new == start)
         break; // we have arrived where we began ==> exit loop
@@ -181,15 +187,16 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       count++;
     }
 
+  // editor needs extra handling
+  octave_dock_widget *edit_dock_widget =
+                        static_cast <octave_dock_widget *> (editor_window);
   // if new dock has focus, emit signal and store active focus
-  if (dock != _active_dock)
+  // except editor changes to a dialog (dock=0)
+  if ((dock || _active_dock != edit_dock_widget) && (dock != _active_dock))
     {
       // signal to all dock widgets for updating the style
       emit active_dock_changed (_active_dock, dock);
 
-      // if editor gets/loses focus, shortcuts and menus have to be updated
-      octave_dock_widget *edit_dock_widget =
-                        static_cast <octave_dock_widget *> (editor_window);
       if (edit_dock_widget == dock)
         emit editor_focus_changed (true);
       else if (edit_dock_widget == _active_dock)

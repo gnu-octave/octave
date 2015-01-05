@@ -77,12 +77,14 @@ endfunction
 
 %!xtest
 %! ## test gzip together with gunzip
+%! orig_dir = pwd ();
 %! unwind_protect
 %!   dirname = tempname;
 %!   assert (mkdir (dirname));
-%!   dirname2 = fullfile (dirname, "dir2");
+%!   chdir (dirname);
+%!   dirname2 = "dir2";
 %!   assert (mkdir (dirname2));
-%!   fname1 = fullfile (dirname, "f1");
+%!   fname1 = "f1";
 %!   fname2 = fullfile (dirname2, "f2");
 %!   fid = fopen (fname1, "wt");
 %!   assert (fid >= 0);
@@ -117,6 +119,7 @@ endfunction
 %!   confirm_recursive_rmdir (false, "local");
 %!   rmdir (dirname, "s");
 %!   rmdir (outdir, "s");
+%!   chdir (orig_dir);
 %! end_unwind_protect
 
 ## Test input validation

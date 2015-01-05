@@ -107,18 +107,11 @@ function retval = savepath (file)
 
     ## Determine the path to Octave's user and system wide packages.
     [pkg_user, pkg_system] = pkg ("list");
-    ## Conversion from cell array of structs to cellstr of archprefixes 
-    if (isempty (pkg_user))
-      pkg_user_path = {};
-    else
-      pkg_user_path = {[pkg_user{:}].archprefix};
-    endif
-    if (isempty (pkg_system))
-      pkg_system_path = {};
-    else
-      pkg_system_path = {[pkg_system{:}].archprefix};
-    endif
-    pkg_path = union (pkg_user_path, pkg_system_path);
+
+    ## Conversion from cell array of structs to cellstr of archprefixes.
+    pkg_path = unique (cellfun (@(elt) elt.archprefix,
+                                [pkg_user, pkg_system],
+                                "uniformoutput", false));
 
     ## Rely on Octave's initialization to include the pkg path elements.
     if (! isempty (pkg_path))
@@ -177,7 +170,8 @@ function retval = savepath (file)
       error ("savepath: could not close savefile after writing, %s", file);
     elseif (nargin == 0)
       warning ("off", "backtrace", "local");
-      warning ("savepath: current path saved to %s", file);
+      warning ("Octave:savepath-local",
+               "savepath: current path saved to %s", file);
     endif
   end_unwind_protect
 
@@ -191,7 +185,6 @@ endfunction
 function path_elements = parsepath (p)
   path_elements = strcat (ostrsplit (p, pathsep), pathsep);
 endfunction
-
 
 %!test
 %! fname = tempname ();
@@ -208,6 +201,7 @@ endfunction
 %!   assert (fid >= 0);
 %!   fclose (fid);
 %!   ## Save path into local .octaverc file
+%!   warning ("off", "Octave:savepath-local");
 %!   status = savepath ();
 %!   assert (status == 0);
 %!   ## Compare old and new versions

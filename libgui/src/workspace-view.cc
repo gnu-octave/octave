@@ -159,8 +159,7 @@ workspace_view::closeEvent (QCloseEvent *e)
 void
 workspace_view::filter_update (const QString& expression)
 {
-  _filter_model->setFilterRegExp (QRegExp (expression,
-                                  Qt::CaseSensitive, QRegExp::FixedString));
+  _filter_model->setFilterRegExp (QRegExp (expression, Qt::CaseSensitive));
   handle_model_changed ();
 }
 

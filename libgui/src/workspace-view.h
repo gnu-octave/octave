@@ -27,6 +27,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <QItemDelegate>
 #include <QTableView>
 #include <QSemaphore>
+#include <QComboBox>
+#include <QSortFilterProxyModel>
+#include <QCheckBox>
 
 #include "octave-dock-widget.h"
 #include "workspace-model.h"
@@ -73,6 +76,10 @@ protected slots:
   void copyClipboard ();
   void selectAll ();
 
+  void filter_update (const QString& expression);
+  void filter_activate (bool enable);
+  void update_filter_history ();
+
 private:
 
   void relay_contextmenu_command (const QString& cmdname);
@@ -81,6 +88,11 @@ private:
   QTableView *view;
   int view_previous_row_count;
   workspace_model *_model;
+
+  QSortFilterProxyModel *_filter_model;
+  QCheckBox *_filter_checkbox;
+  QComboBox *_filter;
+  enum { MaxFilterHistory = 10 };
 };
 
 #endif

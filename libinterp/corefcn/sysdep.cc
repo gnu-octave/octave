@@ -683,11 +683,11 @@ occurred.\n\
 
   if (nargin == 1)
     {
-      const char *var = args(0).string_value ().c_str ();
+      std::string tmp = args(0).string_value ();
 
       if (! error_state)
         {
-          int status = gnulib::unsetenv (var);
+          int status = gnulib::unsetenv (tmp.c_str ());
           retval = status;
         }
     }

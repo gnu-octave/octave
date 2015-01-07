@@ -1430,7 +1430,7 @@ load_path::do_find_matching_dirs (const std::string& dir) const
 
           size_t dir_len = dir.length ();
 
-          if (dname_len >= dir_len
+          if (dname_len > dir_len
               && file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
               && dir.compare (dname.substr (dname_len - dir_len)) == 0)
             {

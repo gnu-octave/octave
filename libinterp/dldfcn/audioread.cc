@@ -24,8 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#define BOUNDS_CHECKING 1
-
 #include <string>
 #include <map>
 
@@ -249,18 +247,13 @@ Comment.\n\
   SNDFILE *file;
   SF_INFO info;
 
-  memset (&info, 0, sizeof (info));
-
   OCTAVE_LOCAL_BUFFER (float, data, audio.rows () * audio.cols ());
 
-  size_t idx = 0;
-  for (octave_idx_type j = 0; j < audio.rows (); j++)
+  for (int i = 0; i < audio.cols (); i++)
     {
-      for (octave_idx_type i = 0; i < audio.cols (); i++)
-        data[idx++] = audio(j, i);
+      for (int j = 0; j < audio.rows (); j++)
+        data[j * audio.cols () + i] = audio(j, i);
     }
-
-  std::cerr << "idx: " << idx << std::endl;
 
   if (extension == "ogg")
     info.format = SF_FORMAT_VORBIS;
@@ -315,14 +308,6 @@ Comment.\n\
   info.channels = audio.cols ();
   info.format |= extension_to_format[extension];
 
-  std::cerr << extension << std::endl;
-  std::cerr << extension_to_format[extension] << std::endl;
-  std::cerr << info.format << std::endl;
-  std::cerr << SF_FORMAT_OGG << std::endl;
-  std::cerr << SF_FORMAT_VORBIS << std::endl;
-
-  //  info.format = SF_FORMAT_OGG;
-
   file = sf_open (filename.c_str (), SFM_WRITE, &info);
 
   if (title != "")
@@ -334,24 +319,9 @@ Comment.\n\
   if (comment != "")
     sf_set_string (file, SF_STR_COMMENT, comment.c_str ());
 
-  sf_count_t items_to_write = audio.rows () * audio.cols ();
-
-  memset (&info, 0, sizeof (info)) ;
-  info.format = SF_FORMAT_OGG | SF_FORMAT_VORBIS ;
-  info.channels = 2 ;
-  info.samplerate = 44100 ;
-
-  sf_count_t items_written = sf_write_float (file, data, items_to_write);
-
+  sf_write_float (file, data, audio.rows () * audio.cols ());
   sf_close (file);
 
-  if (items_written != items_to_write)
-    {
-      error ("expected to write %ld items, wrote %ld items",
-             items_to_write, items_written);
-      return retval;
-    }
-  
 #else
 
   error ("sndfile not found on your system and thus audiowrite is not functional");
@@ -388,7 +358,6 @@ Return information about an audio file specified by @var{filename}.\n\
   result.assign ("NumChannels", info.channels);
   result.assign ("SampleRate", info.samplerate);
   result.assign ("TotalSamples", info.frames);
-  result.assign ("Format", info.format);
 
   double dframes = info.frames;
   double drate = info.samplerate;

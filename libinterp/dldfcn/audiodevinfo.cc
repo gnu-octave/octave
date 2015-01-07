@@ -458,8 +458,8 @@ public:
   void set_y (octave_function *fn);
   void set_y (std::string fn);
   Matrix& get_y (void);
-  RowVector get_left (void) const;
-  RowVector get_right (void) const;
+  RowVector *get_left (void);
+  RowVector *get_right (void);
   void set_fs (int fs);
   int get_fs (void);
   void set_nbits (int nbits);
@@ -510,7 +510,7 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 512
 
 DEFINE_OCTAVE_ALLOCATOR (audioplayer);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audioplayer, "audioplayer", "audioplayer");
@@ -532,125 +532,66 @@ octave_play_callback (const void *, void *output, unsigned long frames,
                       PaStreamCallbackFlags, void *data)
 {
   audioplayer *player = static_cast<audioplayer *> (data);
-
-  if (! player)
-    {
-      error ("audio player callback function called without player");
-      return paAbort;
-    }
-  
-  octave_value_list retval = feval (player->octave_callback_function,
-                                    ovl (static_cast<double> (frames)), 1);
-
-  if (error_state || retval.length () < 2)
-    {
-      error ("audio player callback function failed");
-      return paAbort;
-    }
-  
+  int big_endian = is_big_endian ();
+  octave_value_list args, retval;
+  args(0) = frames;
+  retval = feval (player->octave_callback_function, args, 1);
+  RowVector sound_l, sound_r;
   Matrix sound = retval(0).matrix_value ();
   int return_status = retval(1).int_value ();
-
-  if (error_state || frames != sound.rows ()
-      || sound.columns () < 1 || sound.columns () > 2)
+  sound_l.resize (frames);
+  sound_r.resize (frames);
+  if (sound.cols () == 1)
     {
-      error ("audio player callback function failed");
-      return paAbort;
+      for (unsigned long i = 0; i < frames; i++)
+        {
+          sound_l(i) = sound(i, 0);
+          sound_r(i) = sound(i, 0);
+        }
     }
-
-  double scale_factor = 1.0;
-
-  switch (player->get_nbits ())
+  else if (sound.cols () == 2)
     {
-    case 8:
-      scale_factor = pow (2.0, 7) - 1.0;
-      break;
-
-    case 16:
-      scale_factor = pow (2.0, 15) - 1.0;
-      break;
-
-    case 24:
-      scale_factor = pow (2.0, 23) - 1.0;
-      break;
-
-    default:
-      error ("invalid player bit depth in callback function");
-      break;
+      for (unsigned long i = 0; i < frames; i++)
+        {
+          sound_l(i) = sound(i, 0);
+          sound_r(i) = sound(i, 1);
+        }
     }
+  else
+    return paAbort;
 
-  sound = sound * scale_factor;
-
-  const RowVector sound_l = (sound.column (0)).transpose ();
-
-  const RowVector sound_r = (sound.columns () == 1)
-    ? sound_l : (sound.column (1)).transpose ();
-
-  const double *p_l = sound_l.data ();
-  const double *p_r = sound_r.data ();
-
-  switch (player->get_nbits ())
+  for (unsigned long i = 0; i < frames; i++)
     {
-    case 8:
-      {
-        int8_t *buffer = static_cast<int8_t *> (output);
-
-        for (unsigned long i = 0; i < frames; i++)
-          {
-            buffer[2*i] = p_l[i];
-            buffer[2*i+1] = p_r[i];
-          }
-      }
-      break;
-
-    case 16:
-      {
-        int16_t *buffer = static_cast<int16_t *> (output);
-
-        for (unsigned long i = 0; i < frames; i++)
-          {
-            buffer[2*i] = p_l[i];
-            buffer[2*i+1] = p_r[i];
-          }
-      }
-      break;
-
-    case 24:
-      {
-        int big_endian = is_big_endian ();
-
-        uint8_t *buffer = static_cast<uint8_t *> (output);
-
-        for (unsigned long i = 0; i < frames; i++)
-          {
-            int32_t sample_l = p_l[i];
-            int32_t sample_r = p_r[i];
-
-            sample_l &= 0x00ffffff;
-            sample_r &= 0x00ffffff;
-
-            // FIXME: Would a mask work better?
-            uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
-            uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
-
-            unsigned long offset = i * 6;
-
-            buffer[offset+0] = _sample_l[0+big_endian];
-            buffer[offset+1] = _sample_l[1+big_endian];
-            buffer[offset+2] = _sample_l[2+big_endian];
-
-            buffer[offset+3] = _sample_r[0+big_endian];
-            buffer[offset+4] = _sample_r[1+big_endian];
-            buffer[offset+5] = _sample_r[2+big_endian];
-          }
-      }
-      break;
-
-    default:
-      error ("invalid player bit depth in callback function");
-      break;
+      if (player->get_nbits () == 8)
+        {
+          int8_t *buffer = static_cast<int8_t *> (output);
+          buffer[2 * i] = sound_l.elem (i) * (pow (2.0, 7) - 1);
+          buffer[2 * i + 1] = sound_r.elem (i) * (pow (2.0, 7) - 1);
+        }
+      else if (player->get_nbits () == 16)
+        {
+          int16_t *buffer = static_cast<int16_t *> (output);
+          buffer[2 * i] = sound_l.elem (i) * (pow (2.0, 15) - 1);
+          buffer[2 * i + 1] = sound_r.elem (i) * (pow (2.0, 15) - 1);
+        }
+      else if (player->get_nbits () == 24)
+        {
+          uint8_t *buffer = static_cast<uint8_t *> (output);
+          int32_t sample_l = sound_l.elem (i) * (pow (2.0, 23) - 1);
+          int32_t sample_r = sound_r.elem (i) * (pow (2.0, 23) - 1);
+          sample_l &= 0x00ffffff;
+          sample_r &= 0x00ffffff;
+          // FIXME: Would a mask work better?
+          uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
+          uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
+          buffer[i * 6 + 0] = _sample_l[0 + big_endian];
+          buffer[i * 6 + 1] = _sample_l[1 + big_endian];
+          buffer[i * 6 + 2] = _sample_l[2 + big_endian];
+          buffer[i * 6 + 3] = _sample_r[0 + big_endian];
+          buffer[i * 6 + 4] = _sample_r[1 + big_endian];
+          buffer[i * 6 + 5] = _sample_r[2 + big_endian];
+        }
     }
-
   return return_status;
 }
 
@@ -660,187 +601,74 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
                          PaStreamCallbackFlags, void *data)
 {
   audioplayer *player = static_cast<audioplayer *> (data);
+  int big_endian = is_big_endian ();
+  int channels = player->get_channels ();
+  RowVector *sound_l = player->get_left ();
+  RowVector *sound_r;
 
-  if (! player)
+  if (channels > 1)
+    sound_r = player->get_right ();
+  else
+    sound_r = sound_l;
+
+  for (unsigned long j = 0, k = 0; j < frames; j++, k += 2)
     {
-      error ("audio player callback function called without player");
-      return paAbort;
-    }
-  
-  double scale_factor = 1.0;
+      unsigned int sample_number = player->get_sample_number ();
+      if (sample_number > player->get_end_sample ())
+        return paAbort;
 
-  switch (player->get_nbits ())
-    {
-    case 8:
-      scale_factor = pow (2.0, 7) - 1.0;
-      break;
-
-    case 16:
-      scale_factor = pow (2.0, 15) - 1.0;
-      break;
-
-    case 24:
-      scale_factor = pow (2.0, 23) - 1.0;
-      break;
-
-    default:
-      error ("invalid player bit depth in callback function");
-      break;
-    }
-
-  const RowVector sound_l = player->get_left () * scale_factor;
-  const RowVector sound_r = player->get_right () * scale_factor;
-
-  const double *pl = sound_l.data ();
-  const double *pr = sound_l.data ();
-
-  if (player->get_type () == DOUBLE)
-    {
-      switch (player->get_nbits ())
+      if (player->get_type () == DOUBLE)
         {
-        case 8:
-          {
-            int8_t *buffer = static_cast<int8_t *> (output);
-
-            for (unsigned long j = 0; j < frames; j++)
-              {
-                unsigned int sample_number = player->get_sample_number ();
-
-                if (sample_number >= player->get_end_sample ())
-                  return paComplete;
-
-                unsigned long offset = j * 2;
-
-                buffer[offset+0] = pl[sample_number];
-                buffer[offset+1] = pr[sample_number];
-
-                player->set_sample_number (sample_number + 1);
-              }
-          }
-          break;
-
-        case 16:
-          {
-            int16_t *buffer = static_cast<int16_t *> (output);
-
-            for (unsigned long j = 0; j < frames; j++)
-              {
-                unsigned int sample_number = player->get_sample_number ();
-
-                if (sample_number >= player->get_end_sample ())
-                  return paComplete;
-
-                unsigned long offset = j * 2;
-
-                buffer[offset+0] = pl[sample_number];
-                buffer[offset+1] = pr[sample_number];
-
-                player->set_sample_number (sample_number + 1);
-              }
-          }
-          break;
-
-        case 24:
-          {
-            uint8_t *buffer = static_cast<uint8_t *> (output);
-
-            for (unsigned long j = 0; j < frames; j++)
-              {
-                unsigned int sample_number = player->get_sample_number ();
-
-                if (sample_number >= player->get_end_sample ())
-                  return paComplete;
-
-                int32_t sample_l = pl[sample_number];
-                int32_t sample_r = pr[sample_number];
-
-                sample_l &= 0x00ffffff;
-                sample_r &= 0x00ffffff;
-
-                int big_endian = is_big_endian ();
-
-                // FIXME: Would a mask work better?
-                uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
-                uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
-
-                unsigned long offset = j * 6;
-
-                buffer[offset+0] = _sample_l[0+big_endian];
-                buffer[offset+1] = _sample_l[1+big_endian];
-                buffer[offset+2] = _sample_l[2+big_endian];
-
-                buffer[offset+3] = _sample_r[0+big_endian];
-                buffer[offset+4] = _sample_r[1+big_endian];
-                buffer[offset+5] = _sample_r[2+big_endian];
-
-                player->set_sample_number (sample_number + 1);
-              }
-          }
-          break;
-
-        default:
-          error ("invalid player bit depth in callback function");
-          break;
+          if (player->get_nbits () == 8)
+            {
+              int8_t *buffer = static_cast<int8_t *> (output);
+              buffer[k] = sound_l->elem (sample_number) * (pow (2.0, 7) - 1);
+              buffer[k + 1] = sound_r->elem (sample_number) * (pow (2.0, 7) - 1);
+            }
+          else if (player->get_nbits () == 16)
+            {
+              int16_t *buffer = static_cast<int16_t *> (output);
+              buffer[k] = sound_l->elem (sample_number) * (pow (2.0, 15) - 1);
+              buffer[k + 1] = sound_r->elem (sample_number) * (pow (2.0, 15) - 1);
+            }
+          else if (player->get_nbits () == 24)
+            {
+              uint8_t *buffer = static_cast<uint8_t *> (output);
+              int32_t sample_l = sound_l->elem (sample_number) * (pow (2.0, 23) - 1);
+              int32_t sample_r = sound_r->elem (sample_number) * (pow (2.0, 23) - 1);
+              sample_l &= 0x00ffffff;
+              sample_r &= 0x00ffffff;
+              // FIXME: Would a mask work better?
+              uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
+              uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
+              buffer[j * 6 + 0] = _sample_l[0 + big_endian];
+              buffer[j * 6 + 1] = _sample_l[1 + big_endian];
+              buffer[j * 6 + 2] = _sample_l[2 + big_endian];
+              buffer[j * 6 + 3] = _sample_r[0 + big_endian];
+              buffer[j * 6 + 4] = _sample_r[1 + big_endian];
+              buffer[j * 6 + 5] = _sample_r[2 + big_endian];
+            }
         }
-    }
-  else if (player->get_type () == INT8)
-    {
-      int8_t *buffer = static_cast<int8_t *> (output);
-
-      for (unsigned long j = 0; j < frames; j++)
+      else if (player->get_type () == INT8)
         {
-          unsigned int sample_number = player->get_sample_number ();
-
-          if (sample_number >= player->get_end_sample ())
-            return paComplete;
-
-          unsigned long offset = j * 2;
-
-          buffer[offset+0] = pl[sample_number];
-          buffer[offset+1] = pr[sample_number];
-
-          player->set_sample_number (sample_number + 1);
+          int8_t *buffer = static_cast<int8_t *> (output);
+          buffer[k] = sound_l->elem (sample_number);
+          buffer[k + 1] = sound_r->elem (sample_number);
         }
-    }
-  else if (player->get_type () == UINT8)
-    {
-      uint8_t *buffer = static_cast<uint8_t *> (output);
-
-      for (unsigned long j = 0; j < frames; j++)
+      else if (player->get_type () == UINT8)
         {
-          unsigned int sample_number = player->get_sample_number ();
-
-          if (sample_number >= player->get_end_sample ())
-            return paComplete;
-
-          unsigned long offset = j * 2;
-
-          buffer[offset+0] = pl[sample_number];
-          buffer[offset+1] = pr[sample_number];
-
-          player->set_sample_number (sample_number + 1);
+          uint8_t *buffer = static_cast<uint8_t *> (output);
+          buffer[k] = sound_l->elem (sample_number);
+          buffer[k + 1] = sound_r->elem (sample_number);
         }
-    }
-  else if (player->get_type () == INT16)
-    {
-      int16_t *buffer = static_cast<int16_t *> (output);
-
-      for (unsigned long j = 0; j < frames; j++)
+      else if (player->get_type () == INT16)
         {
-          unsigned int sample_number = player->get_sample_number ();
-
-          if (sample_number >= player->get_end_sample ())
-            return paComplete;
-
-          unsigned long offset = j * 2;
-
-          buffer[offset+0] = pl[sample_number];
-          buffer[offset+1] = pr[sample_number];
-
-          player->set_sample_number (sample_number + 1);
+          int16_t *buffer = static_cast<int16_t *> (output);
+          buffer[k] = sound_l->elem (sample_number);
+          buffer[k + 1] = sound_r->elem (sample_number);
         }
+      player->set_sample_number (sample_number + 1);
     }
-
   return paContinue;
 }
 
@@ -973,16 +801,16 @@ audioplayer::get_y (void)
   return y;
 }
 
-RowVector
-audioplayer::get_left (void) const
+RowVector *
+audioplayer::get_left (void)
 {
-  return left;
+  return &(left);
 }
 
-RowVector
-audioplayer::get_right (void) const
+RowVector *
+audioplayer::get_right (void)
 {
-  return channels == 1 ? left : right;
+  return &(right);
 }
 
 void
@@ -2350,12 +2178,6 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
-  if (nargin < 2)
-    {
-      print_usage ();
-      return retval;
-    }
-
   audioplayer* recorder = new audioplayer ();
 
   bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();
@@ -2372,7 +2194,6 @@ Undocumented internal function.\n\
     case 3:
       recorder->set_nbits (args(2).int_value ());
       break;
-
     case 4:
       recorder->set_nbits (args(2).int_value ());
       recorder->set_id (args(3).int_value ());

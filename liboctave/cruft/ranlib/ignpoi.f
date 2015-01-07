@@ -99,7 +99,7 @@ C     ..
 C     JJV added this for case: mu unchanged
 C     .. Save statement ..
       SAVE s, d, l, ll, omega, c3, c2, c1, c0, c, m, p, q, p0,
-     +     a0, a1, a2, a3, a4, a5, a6, a7, fact, muprev, muold
+     +     a0, a1, a2, a3, a4, a5, a6, a7, fact, pp, muprev, muold
 C     ..
 C     JJV end addition - I am including vars in Data statements
 C     .. Data statements ..
@@ -110,6 +110,7 @@ C     JJV the code shouldn't break
       DATA a0,a1,a2,a3,a4,a5,a6,a7/-.5,.3333333,-.2500068,.2000118,
      +     -.1661269,.1421878,-.1384794,.1250060/
       DATA fact/1.,1.,2.,6.,24.,120.,720.,5040.,40320.,362880./
+      DATA pp/35*0.0/
 C     ..
 C     .. Executable Statements ..
 

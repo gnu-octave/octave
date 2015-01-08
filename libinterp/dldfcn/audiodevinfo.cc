@@ -2285,6 +2285,12 @@ Undocumented internal function.\n\
 
   int nargin = args.length ();
 
+  if (nargin < 2 || nargin > 4)
+    {
+      print_usage ();
+      return retval;
+    }
+
   audioplayer* recorder = new audioplayer ();
 
   bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();

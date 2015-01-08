@@ -458,8 +458,8 @@ public:
   void set_y (octave_function *fn);
   void set_y (std::string fn);
   Matrix& get_y (void);
-  RowVector *get_left (void);
-  RowVector *get_right (void);
+  RowVector get_left (void) const;
+  RowVector get_right (void) const;
   void set_fs (int fs);
   int get_fs (void);
   void set_nbits (int nbits);
@@ -603,13 +603,9 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   audioplayer *player = static_cast<audioplayer *> (data);
   int big_endian = is_big_endian ();
   int channels = player->get_channels ();
-  RowVector *sound_l = player->get_left ();
-  RowVector *sound_r;
 
-  if (channels > 1)
-    sound_r = player->get_right ();
-  else
-    sound_r = sound_l;
+  const RowVector sound_l = player->get_left ();
+  const RowVector sound_r = player->get_right ();
 
   for (unsigned long j = 0, k = 0; j < frames; j++, k += 2)
     {
@@ -622,20 +618,20 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           if (player->get_nbits () == 8)
             {
               int8_t *buffer = static_cast<int8_t *> (output);
-              buffer[k] = sound_l->elem (sample_number) * (pow (2.0, 7) - 1);
-              buffer[k + 1] = sound_r->elem (sample_number) * (pow (2.0, 7) - 1);
+              buffer[k] = sound_l.elem (sample_number) * (pow (2.0, 7) - 1);
+              buffer[k + 1] = sound_r.elem (sample_number) * (pow (2.0, 7) - 1);
             }
           else if (player->get_nbits () == 16)
             {
               int16_t *buffer = static_cast<int16_t *> (output);
-              buffer[k] = sound_l->elem (sample_number) * (pow (2.0, 15) - 1);
-              buffer[k + 1] = sound_r->elem (sample_number) * (pow (2.0, 15) - 1);
+              buffer[k] = sound_l.elem (sample_number) * (pow (2.0, 15) - 1);
+              buffer[k + 1] = sound_r.elem (sample_number) * (pow (2.0, 15) - 1);
             }
           else if (player->get_nbits () == 24)
             {
               uint8_t *buffer = static_cast<uint8_t *> (output);
-              int32_t sample_l = sound_l->elem (sample_number) * (pow (2.0, 23) - 1);
-              int32_t sample_r = sound_r->elem (sample_number) * (pow (2.0, 23) - 1);
+              int32_t sample_l = sound_l.elem (sample_number) * (pow (2.0, 23) - 1);
+              int32_t sample_r = sound_r.elem (sample_number) * (pow (2.0, 23) - 1);
               sample_l &= 0x00ffffff;
               sample_r &= 0x00ffffff;
               // FIXME: Would a mask work better?
@@ -652,20 +648,20 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
       else if (player->get_type () == INT8)
         {
           int8_t *buffer = static_cast<int8_t *> (output);
-          buffer[k] = sound_l->elem (sample_number);
-          buffer[k + 1] = sound_r->elem (sample_number);
+          buffer[k] = sound_l.elem (sample_number);
+          buffer[k + 1] = sound_r.elem (sample_number);
         }
       else if (player->get_type () == UINT8)
         {
           uint8_t *buffer = static_cast<uint8_t *> (output);
-          buffer[k] = sound_l->elem (sample_number);
-          buffer[k + 1] = sound_r->elem (sample_number);
+          buffer[k] = sound_l.elem (sample_number);
+          buffer[k + 1] = sound_r.elem (sample_number);
         }
       else if (player->get_type () == INT16)
         {
           int16_t *buffer = static_cast<int16_t *> (output);
-          buffer[k] = sound_l->elem (sample_number);
-          buffer[k + 1] = sound_r->elem (sample_number);
+          buffer[k] = sound_l.elem (sample_number);
+          buffer[k + 1] = sound_r.elem (sample_number);
         }
       player->set_sample_number (sample_number + 1);
     }
@@ -801,16 +797,16 @@ audioplayer::get_y (void)
   return y;
 }
 
-RowVector *
-audioplayer::get_left (void)
+RowVector
+audioplayer::get_left (void) const
 {
-  return &(left);
+  return left;
 }
 
-RowVector *
-audioplayer::get_right (void)
+RowVector
+audioplayer::get_right (void) const
 {
-  return &(right);
+  return channels == 1 ? left : right;
 }
 
 void

@@ -510,7 +510,7 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-#define BUFFER_SIZE 512
+static const unsigned int BUFFER_SIZE = 8192;
 
 DEFINE_OCTAVE_ALLOCATOR (audioplayer);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audioplayer, "audioplayer", "audioplayer");

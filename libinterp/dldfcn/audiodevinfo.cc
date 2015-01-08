@@ -735,46 +735,46 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           buffer[offset+1] = pr[sample_number];
 
           player->set_sample_number (sample_number + 1);
-        }  
+        }
     }
- else if (player->get_type () == UINT8)
-   {
-     uint8_t *buffer = static_cast<uint8_t *> (output);
+  else if (player->get_type () == UINT8)
+    {
+      uint8_t *buffer = static_cast<uint8_t *> (output);
 
-     for (unsigned long j = 0; j < frames; j++)
-       {
-         unsigned int sample_number = player->get_sample_number ();
+      for (unsigned long j = 0; j < frames; j++)
+        {
+          unsigned int sample_number = player->get_sample_number ();
 
-         if (sample_number >= player->get_end_sample ())
-           return paComplete;
+          if (sample_number >= player->get_end_sample ())
+            return paComplete;
 
-         unsigned long offset = j * 2;
+          unsigned long offset = j * 2;
 
-         buffer[offset+0] = pl[sample_number];
-         buffer[offset+1] = pr[sample_number];
+          buffer[offset+0] = pl[sample_number];
+          buffer[offset+1] = pr[sample_number];
 
-         player->set_sample_number (sample_number + 1);
-       }
-   }
- else if (player->get_type () == INT16)
-   {
-     int16_t *buffer = static_cast<int16_t *> (output);
+          player->set_sample_number (sample_number + 1);
+        }
+    }
+  else if (player->get_type () == INT16)
+    {
+      int16_t *buffer = static_cast<int16_t *> (output);
 
-     for (unsigned long j = 0; j < frames; j++)
-       {
-         unsigned int sample_number = player->get_sample_number ();
+      for (unsigned long j = 0; j < frames; j++)
+        {
+          unsigned int sample_number = player->get_sample_number ();
 
-         if (sample_number >= player->get_end_sample ())
-           return paComplete;
+          if (sample_number >= player->get_end_sample ())
+            return paComplete;
 
-         unsigned long offset = j * 2;
+          unsigned long offset = j * 2;
 
-         buffer[offset+0] = pl[sample_number];
-         buffer[offset+1] = pr[sample_number];
+          buffer[offset+0] = pl[sample_number];
+          buffer[offset+1] = pr[sample_number];
 
-         player->set_sample_number (sample_number + 1);
-       }
-     }
+          player->set_sample_number (sample_number + 1);
+        }
+    }
 
   return paContinue;
 }
@@ -2307,6 +2307,7 @@ Undocumented internal function.\n\
     case 3:
       recorder->set_nbits (args(2).int_value ());
       break;
+
     case 4:
       recorder->set_nbits (args(2).int_value ());
       recorder->set_id (args(3).int_value ());

@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QMenu>
+#include <QLabel>
+#include <QCompleter>
 
 #include "workspace-view.h"
 #include "resource-manager.h"
@@ -48,9 +50,25 @@ workspace_view::workspace_view (QWidget *p)
   set_title (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
 
+  _filter = new QComboBox (this);
+  _filter->setToolTip (tr ("Enter the path or filename"));
+  _filter->setEditable (true);
+  _filter->setMaxCount (MaxFilterHistory);
+  _filter->setInsertPolicy (QComboBox::NoInsert);
+  _filter->setSizeAdjustPolicy (
+            QComboBox::AdjustToMinimumContentsLengthWithIcon);
+  QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Maximum);
+  _filter->setSizePolicy (sizePol);
+  _filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
+
+  QLabel *filter_label = new QLabel (tr ("Filter"));
+
+  _filter_checkbox = new QCheckBox ();
+
   view->setWordWrap (false);
   view->setContextMenuPolicy (Qt::CustomContextMenu);
   view->setShowGrid (false);
+  (view->verticalHeader) ()->hide ();
   view->setAlternatingRowColors (true);
   view_previous_row_count = 0;
 
@@ -59,22 +77,45 @@ workspace_view::workspace_view (QWidget *p)
 
   // Create a new layout and add widgets to it.
   QVBoxLayout *vbox_layout = new QVBoxLayout ();
+  QHBoxLayout *hbox_layout = new QHBoxLayout ();
+  hbox_layout->addWidget (filter_label);
+  hbox_layout->addWidget (_filter_checkbox);
+  hbox_layout->addWidget (_filter);
+  vbox_layout->addLayout (hbox_layout);
   vbox_layout->addWidget (view);
   vbox_layout->setMargin (2);
 
   // Set the empty widget to have our layout.
   widget ()->setLayout (vbox_layout);
 
+  // Filter model
+  _filter_model = new QSortFilterProxyModel ();
+  _filter_model->setFilterKeyColumn(0);
+
   // Initialize collapse/expand state of the workspace subcategories.
 
   QSettings *settings = resource_manager::get_settings ();
 
   // Initialize column order and width of the workspace
-
   view->horizontalHeader ()->restoreState (
     settings->value ("workspaceview/column_state").toByteArray ());
 
+  // Init state of the filter
+  _filter->addItems (settings->value ("workspaceview/mru_list").toStringList ());
+
+  bool filter_state =
+            settings->value ("workspaceview/filter_active", false).toBool ();
+  _filter_checkbox->setChecked (filter_state);
+  filter_activate (filter_state);
+
   // Connect signals and slots.
+
+  connect (_filter, SIGNAL (editTextChanged (const QString&)),
+           this, SLOT (filter_update (const QString&)));
+  connect (_filter_checkbox, SIGNAL (toggled (bool)),
+           this, SLOT (filter_activate (bool)));
+  connect (_filter->lineEdit (), SIGNAL (editingFinished ()),
+           this, SLOT (update_filter_history ()));
 
   connect (view, SIGNAL (customContextMenuRequested (const QPoint&)),
            this, SLOT (contextmenu_requested (const QPoint&)));
@@ -90,13 +131,21 @@ workspace_view::~workspace_view (void)
 
   settings->setValue ("workspaceview/column_state",
                       view->horizontalHeader ()->saveState ());
+  settings->setValue ("workspaceview/filter_active",
+                      _filter_checkbox->isChecked ());
+
+  QStringList mru;
+  for (int i = 0; i < _filter->count (); i++)
+    mru.append (_filter->itemText (i));
+  settings->setValue ("workspaceview/mru_list", mru);
 
   settings->sync ();
 }
 
 void workspace_view::setModel (workspace_model *model)
 {
-  view->setModel (model);
+  _filter_model->setSourceModel (model);
+  view->setModel (_filter_model);
   _model = model;
 }
 
@@ -105,6 +154,33 @@ workspace_view::closeEvent (QCloseEvent *e)
 {
   emit active_changed (false);
   QDockWidget::closeEvent (e);
+}
+
+void
+workspace_view::filter_update (const QString& expression)
+{
+  _filter_model->setFilterRegExp (QRegExp (expression, Qt::CaseSensitive));
+  handle_model_changed ();
+}
+
+void
+workspace_view::filter_activate (bool state)
+{
+  _filter->setEnabled (state);
+  _filter_model->setDynamicSortFilter (state);
+
+  if (state)
+    filter_update (_filter->currentText ());
+  else
+    filter_update (QString ());
+}
+
+void
+workspace_view::update_filter_history ()
+{
+  QString text = _filter->currentText ();
+  if (! text.isEmpty () && _filter->findText (text) == -1)
+    _filter->insertItem (0, _filter->currentText ());
 }
 
 QString
@@ -256,11 +332,12 @@ workspace_view::relay_contextmenu_command (const QString& cmdname)
 void
 workspace_view::handle_model_changed (void)
 {
+//  view->resizeRowsToContents ();
   // Just modify those rows that have been added rather than go through
   // the whole list.  For-loop test will handle when number of rows reduced.
   QFontMetrics fm = view->fontMetrics ();
   int row_height =  fm.height ();
-  int new_row_count = view->model ()->rowCount ();
+  int new_row_count = _filter_model->rowCount ();
   for (int i = view_previous_row_count; i < new_row_count; i++)
     view->setRowHeight (i, row_height);
   view_previous_row_count = new_row_count;

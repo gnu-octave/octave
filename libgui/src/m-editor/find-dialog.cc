@@ -288,6 +288,13 @@ find_dialog::find (bool forward)
                 col = 0;
             }
         }
+      else if (! do_forward)
+        {
+           // search from previous character if search backward
+           int currpos = _edit_area->positionFromLineIndex(line,col);
+           if(currpos > 0) currpos --;
+           _edit_area->lineIndexFromPosition(currpos, &line,&col);
+        }
     }
 
   if (_edit_area)

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 
 #include "oct-locbuf.h"
+#include "unwind-prot.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -38,6 +39,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifdef HAVE_SNDFILE
 #include <sndfile.h>
+#endif
+
+#ifdef HAVE_SNDFILE
+static void
+safe_close (SNDFILE *file)
+{
+  sf_close (file);
+}
 #endif
 
 DEFUN_DLD (audioread, args, ,
@@ -82,6 +91,16 @@ Read a file and return a specified range of frames in an array of specified type
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
+
+  if (! file)
+    {
+      error ("audioread: failed to open input file %s", filename.c_str ());
+      return retval;
+    }
+
+  unwind_protect frame;
+
+  frame.add_fcn (safe_close, file);
 
   OCTAVE_LOCAL_BUFFER (float, data, info.frames * info.channels);
 
@@ -363,15 +382,17 @@ Comment.\n\
         }
     }
 
-  const char *out = filename.c_str ();
-
-  SNDFILE *file = sf_open (out, SFM_WRITE, &info);
+  SNDFILE *file = sf_open (filename.c_str (), SFM_WRITE, &info);
 
   if (! file)
     {
-      error ("audiowrite: failed to open output file %s", out);
+      error ("audiowrite: failed to open output file %s", filename.c_str ());
       return retval;
     }
+
+  unwind_protect frame;
+
+  frame.add_fcn (safe_close, file);
 
   if (title != "")
     sf_set_string (file, SF_STR_TITLE, title.c_str ());
@@ -439,6 +460,16 @@ Return information about an audio file specified by @var{filename}.\n\
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
+
+  if (! file)
+    {
+      error ("audioinfo: failed to open file %s", filename.c_str ());
+      return retval;
+    }
+
+  unwind_protect frame;
+
+  frame.add_fcn (safe_close, file);
 
   octave_scalar_map result;
 

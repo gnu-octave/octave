@@ -1832,8 +1832,11 @@ Undocumented internal function.\n\
 
       if (is_function)
         {
-          recorder->octave_callback_function = args(0).function_value ();
-          offset = 1;
+          error ("audioplayer: callbacks not yet implemented");
+          return retval;
+
+          // recorder->octave_callback_function = args(0).function_value ();
+          // offset = 1;
         }
     }
 
@@ -2353,7 +2356,12 @@ Undocumented internal function.\n\
   bool is_function = args(0).is_string () || args(0).is_function_handle () || args(0).is_inline_function ();
 
   if (is_function)
-    recorder->set_y (args(0).function_value ());
+    {
+      error ("audioplayer: callbacks not yet implemented");
+      return retval;
+
+      // recorder->set_y (args(0).function_value ());
+    }
   else
     recorder->set_y (args(0));
 

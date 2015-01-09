@@ -20,14 +20,21 @@
 ## @deftypefn {Function File} {@var{recorder} =} audiorecorder ()
 ## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
 ## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
-## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz
 ## sample rate.  The optional arguments @var{fs}, @var{nbits},
 ## @var{channels}, and @var{id} specify the sample rate, bit depth,
 ## number of channels and recording device id, respectively.  Device IDs
 ## may be found using the audiodevinfo function.
-## Given a function handle, use that function to process the audio.
 ## @end deftypefn
+
+## FIXME: callbacks don't work properly, apparently because portaudio
+## will execute the callbacks in a separate thread, and calling Octave
+## functions in a separate thread which is likely to cause trouble with
+## all of Octave's global data...
+##
+## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
+##
+## Given a function handle, use that function to process the audio.
 
 function recorder = audiorecorder (varargin)
 

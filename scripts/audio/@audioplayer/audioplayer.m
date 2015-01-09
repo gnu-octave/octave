@@ -20,14 +20,12 @@
 ## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
-## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{function}, @dots{})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder}, @var{id})
 ## Create an audioplayer object that will play back data @var{y} at sample
 ## rate @var{fs}.  The optional arguments @var{nbits}, and @var{id}
 ## specify the bit depth and player device id, respectively.  Device IDs
 ## may be found using the audiodevinfo function.
-## Given a function handle, use that function to process the audio.
 ## Given an audioplayer object, use the data from the object to
 ## initialize the player.
 ## @end deftypefn
@@ -45,7 +43,16 @@
 ## play (player);
 ## @end group
 ## @end example
+
+## FIXME: callbacks don't work properly, apparently because portaudio
+## will execute the callbacks in a separate thread, and calling Octave
+## functions in a separate thread which is likely to cause trouble with
+## all of Octave's global data...
 ##
+## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{function}, @dots{})
+##
+## Given a function handle, use that function to process the audio.
+#
 ## The following example will create and register a callback that generates
 ## a sine wave on both channels.
 ##
@@ -70,7 +77,6 @@
 ## # play for as long as you want
 ## stop (player);
 ## @end group
-## @end example
 
 function player = audioplayer (varargin)
 
@@ -176,21 +182,21 @@ endfunction
 %! properties = get (player, {"SampleRate", "Tag", "UserData"});
 %! assert (properties, {8000, "tag", [1, 2; 3, 4]});
 
-%!function [sound, status] = callback (samples)
-%!  sound = rand (samples, 2) - 0.5;
-%!  status = 0;
-%!endfunction
+#%!function [sound, status] = callback (samples)
+#%!  sound = rand (samples, 2) - 0.5;
+#%!  status = 0;
+#%!endfunction
 
-%!testif HAVE_PORTAUDIO
-%! player = audioplayer (@callback, 44100);
-%! play (player);
-%! sleep (2);
-%! stop (player);
-%! assert (1);
+#%!testif HAVE_PORTAUDIO
+#%! player = audioplayer (@callback, 44100);
+#%! play (player);
+#%! sleep (2);
+#%! stop (player);
+#%! assert (1);
 
-%!testif HAVE_PORTAUDIO
-%! player = audioplayer ("callback", 44100, 16);
-%! play (player);
-%! sleep (2);
-%! stop (player);
-%! assert (1);
+#%!testif HAVE_PORTAUDIO
+#%! player = audioplayer ("callback", 44100, 16);
+#%! play (player);
+#%! sleep (2);
+#%! stop (player);
+#%! assert (1);

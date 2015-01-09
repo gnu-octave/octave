@@ -154,34 +154,47 @@ Read a file and return a specified range of frames in an array of specified type
 
 #ifdef HAVE_SNDFILE
 
-static void
-fill_extension_table (std::map<std::string, int> &table)
+static int
+extension_to_format (const std::string& ext)
 {
-  table["wav"] = SF_FORMAT_WAV;
-  table["aiff"] = SF_FORMAT_AIFF;
-  table["au"] = SF_FORMAT_AU;
-  table["raw"] = SF_FORMAT_RAW;
-  table["paf"] = SF_FORMAT_PAF;
-  table["svx"] = SF_FORMAT_SVX;
-  table["nist"] = SF_FORMAT_NIST;
-  table["voc"] = SF_FORMAT_VOC;
-  table["ircam"] = SF_FORMAT_IRCAM;
-  table["w64"] = SF_FORMAT_W64;
-  table["mat4"] = SF_FORMAT_MAT4;
-  table["mat5"] = SF_FORMAT_MAT5;
-  table["pvf"] = SF_FORMAT_PVF;
-  table["xi"] = SF_FORMAT_XI;
-  table["htk"] = SF_FORMAT_HTK;
-  table["sds"] = SF_FORMAT_SDS;
-  table["avr"] = SF_FORMAT_AVR;
-  table["wavex"] = SF_FORMAT_WAVEX;
-  table["sd2"] = SF_FORMAT_SD2;
-  table["flac"] = SF_FORMAT_FLAC;
-  table["caf"] = SF_FORMAT_CAF;
-  table["wve"] = SF_FORMAT_WVE;
-  table["ogg"] = SF_FORMAT_OGG;
-  table["mpc2k"] = SF_FORMAT_MPC2K;
-  table["rf64"] = SF_FORMAT_RF64;
+  static bool initialized = false;
+
+  static std::map<std::string, int> table;
+
+  if (! initialized)
+    {
+      table["wav"] = SF_FORMAT_WAV;
+      table["aiff"] = SF_FORMAT_AIFF;
+      table["au"] = SF_FORMAT_AU;
+      table["raw"] = SF_FORMAT_RAW;
+      table["paf"] = SF_FORMAT_PAF;
+      table["svx"] = SF_FORMAT_SVX;
+      table["nist"] = SF_FORMAT_NIST;
+      table["voc"] = SF_FORMAT_VOC;
+      table["ircam"] = SF_FORMAT_IRCAM;
+      table["w64"] = SF_FORMAT_W64;
+      table["mat4"] = SF_FORMAT_MAT4;
+      table["mat5"] = SF_FORMAT_MAT5;
+      table["pvf"] = SF_FORMAT_PVF;
+      table["xi"] = SF_FORMAT_XI;
+      table["htk"] = SF_FORMAT_HTK;
+      table["sds"] = SF_FORMAT_SDS;
+      table["avr"] = SF_FORMAT_AVR;
+      table["wavex"] = SF_FORMAT_WAVEX;
+      table["sd2"] = SF_FORMAT_SD2;
+      table["flac"] = SF_FORMAT_FLAC;
+      table["caf"] = SF_FORMAT_CAF;
+      table["wve"] = SF_FORMAT_WVE;
+      table["ogg"] = SF_FORMAT_OGG;
+      table["mpc2k"] = SF_FORMAT_MPC2K;
+      table["rf64"] = SF_FORMAT_RF64;
+
+      initialized = true;
+    }
+
+  std::map<std::string, int>::const_iterator it = table.find (ext);
+
+  return (it != table.end ()) ? it->second : 0;
 }
 
 #endif
@@ -233,32 +246,53 @@ Comment.\n\
   if (error_state)
     return retval;
 
-  std::map<std::string, int> extension_to_format;
-  fill_extension_table (extension_to_format);
-
-  std::string extension = filename.substr (filename.find_last_of (".") + 1);
-  std::transform (extension.begin (), extension.end (), extension.begin (), ::tolower);
-
-  Matrix audio = args(1).matrix_value ();
+  const Matrix audio = args(1).matrix_value ();
 
   if (error_state)
     return retval;
 
-  SNDFILE *file;
-  SF_INFO info;
+  int samplerate = args(2).int_value ();
 
-  OCTAVE_LOCAL_BUFFER (float, data, audio.rows () * audio.cols ());
+  if (error_state)
+    return retval;
 
-  for (int i = 0; i < audio.cols (); i++)
+  std::string ext = filename.substr (filename.find_last_of (".") + 1);
+  std::transform (ext.begin (), ext.end (), ext.begin (), ::tolower);
+
+  sf_count_t items_to_write = audio.rows () * audio.columns ();
+
+  OCTAVE_LOCAL_BUFFER (float, data, items_to_write);
+
+  sf_count_t idx = 0;
+  for (int i = 0; i < audio.rows (); i++)
     {
-      for (int j = 0; j < audio.rows (); j++)
-        data[j * audio.cols () + i] = audio(j, i);
+      for (int j = 0; j < audio.columns (); j++)
+        data[idx++] = audio.xelem (i, j);
     }
 
-  if (extension == "ogg")
-    info.format = SF_FORMAT_VORBIS;
+  SF_INFO info;
+
+  memset (&info, 0, sizeof (info)) ;
+
+  sf_count_t chunk_size = 0;
+
+  if (ext == "ogg")
+    {
+      info.format = SF_FORMAT_VORBIS;
+
+      // FIXME: there seems to be a bug writing ogg files in one shot
+      // that causes a segfault.  Breaking it up into a series of
+      // smaller chunks seems to avoid the problem and produce valid
+      // files.
+      chunk_size = 0x1FFFFE;
+    }
   else
     info.format = SF_FORMAT_PCM_16;
+
+  info.channels = audio.columns ();
+  info.samplerate = samplerate;
+  info.channels = audio.cols ();
+  info.format |= extension_to_format (ext);
 
   std::string title = "";
   std::string artist = "";
@@ -304,11 +338,15 @@ Comment.\n\
         }
     }
 
-  info.samplerate = args(2).int_value ();
-  info.channels = audio.cols ();
-  info.format |= extension_to_format[extension];
+  const char *out = filename.c_str ();
 
-  file = sf_open (filename.c_str (), SFM_WRITE, &info);
+  SNDFILE *file = sf_open (out, SFM_WRITE, &info);
+
+  if (! file)
+    {
+      error ("audiowrite: failed to open output file %s", out);
+      return retval;
+    }
 
   if (title != "")
     sf_set_string (file, SF_STR_TITLE, title.c_str ());
@@ -319,8 +357,29 @@ Comment.\n\
   if (comment != "")
     sf_set_string (file, SF_STR_COMMENT, comment.c_str ());
 
-  sf_write_float (file, data, audio.rows () * audio.cols ());
-  sf_close (file);
+  sf_count_t total_items_written = 0;
+  sf_count_t offset = 0;
+
+  if (chunk_size == 0)
+    chunk_size = items_to_write;
+
+  while (total_items_written < items_to_write)
+    {
+      if (items_to_write - offset < chunk_size)
+        chunk_size = items_to_write - offset;
+
+      sf_count_t items_written = sf_write_float (file, data+offset, chunk_size);
+
+      if (items_written != chunk_size)
+        {
+          error ("audiowrite: write failed, wrote %ld of %ld items\n",
+                 items_written, chunk_size);
+          return retval;
+        }
+
+      total_items_written += items_written;
+      offset += chunk_size;
+    }
 
 #else
 

@@ -435,7 +435,7 @@ or recording using those parameters.\n\
 
 #ifdef HAVE_PORTAUDIO
 
-enum audio_type { INT8, UINT8, INT16, DOUBLE };
+enum audio_type { TYPE_INT8, TYPE_UINT8, TYPE_UINT16, TYPE_DOUBLE };
 
 class audioplayer : public octave_base_value
 {
@@ -656,7 +656,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   const double *pl = sound_l.data ();
   const double *pr = sound_l.data ();
 
-  if (player->get_type () == DOUBLE)
+  if (player->get_type () == TYPE_DOUBLE)
     {
       switch (player->get_nbits ())
         {
@@ -751,7 +751,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           break;
         }
     }
-  else if (player->get_type () == INT8)
+  else if (player->get_type () == TYPE_INT8)
     {
       int8_t *buffer = static_cast<int8_t *> (output);
 
@@ -770,7 +770,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           player->set_sample_number (sample_number + 1);
         }
     }
-  else if (player->get_type () == UINT8)
+  else if (player->get_type () == TYPE_UINT8)
     {
       uint8_t *buffer = static_cast<uint8_t *> (output);
 
@@ -789,7 +789,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           player->set_sample_number (sample_number + 1);
         }
     }
-  else if (player->get_type () == INT16)
+  else if (player->get_type () == TYPE_UINT16)
     {
       int16_t *buffer = static_cast<int16_t *> (output);
 
@@ -888,13 +888,13 @@ audioplayer::init (void)
   output_parameters.device = device;
   output_parameters.channelCount = 2;
 
-  if (type == DOUBLE)
+  if (type == TYPE_DOUBLE)
     output_parameters.sampleFormat = bits_to_format (get_nbits ());
-  else if (type == INT8)
+  else if (type == TYPE_INT8)
     output_parameters.sampleFormat = paInt8;
-  else if (type == UINT8)
+  else if (type == TYPE_UINT8)
     output_parameters.sampleFormat = paUInt8;
-  else if (type == INT16)
+  else if (type == TYPE_UINT16)
     output_parameters.sampleFormat = paInt16;
 
   output_parameters.suggestedLatency = Pa_GetDeviceInfo (device)->defaultHighOutputLatency;
@@ -905,13 +905,13 @@ void
 audioplayer::set_y (const octave_value& y_arg)
 {
   if (y_arg.is_int8_type ())
-    type = INT8;
+    type = TYPE_INT8;
   else if (y_arg.is_uint8_type ())
-    type = UINT8;
+    type = TYPE_UINT8;
   else if (y_arg.is_int16_type ())
-    type = INT16;
+    type = TYPE_UINT16;
   else
-    type = DOUBLE;
+    type = TYPE_DOUBLE;
 
   y = y_arg.matrix_value ();
 

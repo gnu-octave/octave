@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
+#include "mach-info.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
@@ -515,17 +517,6 @@ static const unsigned int BUFFER_SIZE = 8192;
 DEFINE_OCTAVE_ALLOCATOR (audioplayer);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audioplayer, "audioplayer", "audioplayer");
 
-int
-is_big_endian (void)
-{
-  union
-    {
-      uint32_t i;
-      char c[4];
-    } bint = { 0x01020304 };
-  return bint.c[0] == 1;
-}
-
 static int
 octave_play_callback (const void *, void *output, unsigned long frames,
                       const PaStreamCallbackTimeInfo *,
@@ -603,7 +594,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
       {
         static double scale_factor = pow (2.0, 23) - 1.0;
 
-        static int big_endian = is_big_endian ();
+        static int big_endian = oct_mach_info::words_big_endian ();
 
         uint8_t *buffer = static_cast<uint8_t *> (output);
 
@@ -719,7 +710,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
           {
             static double scale_factor = pow (2.0, 23) - 1.0;
 
-            static int big_endian = is_big_endian ();
+            static int big_endian = oct_mach_info::words_big_endian ();
 
             uint8_t *buffer = static_cast<uint8_t *> (output);
 

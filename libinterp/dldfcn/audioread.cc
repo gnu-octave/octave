@@ -82,10 +82,13 @@ Read a file and return a specified range of frames in an array of specified type
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
-  int start = 0;
-  int end = info.frames;
+
   OCTAVE_LOCAL_BUFFER (float, data, info.frames * info.channels);
+
   sf_read_float (file, data, info.frames * info.channels);
+
+  sf_count_t start = 0;
+  sf_count_t end = info.frames;
 
   if ((nargin == 2 && ! args(1).is_string ()) || nargin == 3)
     {
@@ -94,16 +97,38 @@ Read a file and return a specified range of frames in an array of specified type
       if (error_state)
         return retval;
 
-      start = range(0);
-      end = range(1);
+      if (range.nelem () != 2)
+        {
+          error ("audioread: invalid specification for range of frames");
+          return retval;
+        }
+
+      double dstart = range(0);
+      double dend = range(1);
+
+      if (dstart < 0 || dstart > dend || D_NINT (dstart) != dstart
+          || D_NINT (dend) != dend)
+        {
+          error ("audioread: invalid specification for range of frames");
+          return retval;
+        }
+
+      start = dstart;
+      end = dend;
     }
 
-  Matrix audio (end - start, info.channels);
+  sf_count_t items = end - start;
 
-  for (int i = start; i < end; i++)
+  Matrix audio (items, info.channels);
+
+  double *paudio = audio.fortran_vec ();
+
+  data += start * info.channels;
+
+  for (int i = 0; i < items; i++)
     {
       for (int channel = 0; channel < info.channels; channel++)
-        audio(i - start, channel) = data[i * info.channels + channel];
+        paudio[items*channel+i] = *data++;
     }
 
   octave_value ret_audio;
@@ -406,13 +431,18 @@ Return information about an audio file specified by @var{filename}.\n\
       return retval;
     }
 
+  std::string filename = args(0).string_value ();
+
+  if (error_state)
+    return retval;
+
   SF_INFO info;
   info.format = 0;
-  SNDFILE *file = sf_open (args(0).string_value ().c_str (), SFM_READ, &info);
+  SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
 
   octave_scalar_map result;
 
-  result.assign ("Filename", args(0).string_value ());
+  result.assign ("Filename", filename);
   result.assign ("CompressionMethod", "");
   result.assign ("NumChannels", info.channels);
   result.assign ("SampleRate", info.samplerate);

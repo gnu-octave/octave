@@ -564,7 +564,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
     {
     case 8:
       {
-        static double scale_factor = pow (2.0, 7) - 1.0;
+        static double scale_factor = std::pow (2.0, 7) - 1.0;
 
         int8_t *buffer = static_cast<int8_t *> (output);
 
@@ -578,7 +578,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
 
     case 16:
       {
-        static double scale_factor = pow (2.0, 15) - 1.0;
+        static double scale_factor = std::pow (2.0, 15) - 1.0;
 
         int16_t *buffer = static_cast<int16_t *> (output);
 
@@ -592,7 +592,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
 
     case 24:
       {
-        static double scale_factor = pow (2.0, 23) - 1.0;
+        static double scale_factor = std::pow (2.0, 23) - 1.0;
 
         static int big_endian = oct_mach_info::words_big_endian ();
 
@@ -662,7 +662,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
         {
         case 8:
           {
-            static double scale_factor = pow (2.0, 7) - 1.0;
+            static double scale_factor = std::pow (2.0, 7) - 1.0;
 
             int8_t *buffer = static_cast<int8_t *> (output);
 
@@ -685,7 +685,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
         case 16:
           {
-            static double scale_factor = pow (2.0, 15) - 1.0;
+            static double scale_factor = std::pow (2.0, 15) - 1.0;
 
             int16_t *buffer = static_cast<int16_t *> (output);
 
@@ -708,7 +708,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
         case 24:
           {
-            static double scale_factor = pow (2.0, 23) - 1.0;
+            static double scale_factor = std::pow (2.0, 23) - 1.0;
 
             static int big_endian = oct_mach_info::words_big_endian ();
 
@@ -1319,8 +1319,10 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       const int8_t *input8 = static_cast<const int8_t *> (input);
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input8[i * channels] / (pow (2.0, 7) - 1.0);
-          sample_r = input8[i * channels + (channels - 1)] / (pow (2.0, 7) - 1.0);
+          sample_l = input8[i * channels] / (std::pow (2.0, 7) - 1.0);
+          sample_r = input8[i * channels + (channels - 1)]
+            / (std::pow (2.0, 7) - 1.0);
+
           sound(i, 0) = sample_l;
           sound(i, 1) = sample_r;
         }
@@ -1330,8 +1332,10 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       const int16_t *input16 = static_cast<const int16_t *> (input);
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input16[i * channels] / (pow (2.0, 15) - 1.0);
-          sample_r = input16[i * channels + (channels - 1)] / (pow (2.0, 15) - 1.0);
+          sample_l = input16[i * channels] / (std::pow (2.0, 15) - 1.0);
+          sample_r = input16[i * channels + (channels - 1)]
+            / (std::pow (2.0, 15) - 1.0);
+
           sound(i, 0) = sample_l;
           sound(i, 1) = sample_r;
         }
@@ -1359,8 +1363,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
 
-          sound(i, 0) = sample_l32 / pow (2.0, 23);
-          sound(i, 1) = sample_r32 / pow (2.0, 23);
+          sound(i, 0) = sample_l32 / std::pow (2.0, 23);
+          sound(i, 1) = sample_r32 / std::pow (2.0, 23);
         }
     }
 
@@ -1384,8 +1388,10 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       const int8_t *input8 = static_cast<const int8_t *> (input);
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input8[i * channels] / (pow (2.0, 7) - 1.0);
-          sample_r = input8[i * channels + (channels - 1)] / (pow (2.0, 7) - 1.0);
+          sample_l = input8[i * channels] / (std::pow (2.0, 7) - 1.0);
+          sample_r = input8[i * channels + (channels - 1)]
+            / (std::pow (2.0, 7) - 1.0);
+
           recorder->append (sample_l, sample_r);
         }
     }
@@ -1394,8 +1400,10 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
       const int16_t *input16 = static_cast<const int16_t *> (input);
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input16[i * channels] / (pow (2.0, 15) - 1.0);
-          sample_r = input16[i * channels + (channels - 1)] / (pow (2.0, 15) - 1.0);
+          sample_l = input16[i * channels] / (std::pow (2.0, 15) - 1.0);
+          sample_r = input16[i * channels + (channels - 1)]
+            / (std::pow (2.0, 15) - 1.0);
+
           recorder->append (sample_l, sample_r);
         }
     }
@@ -1422,7 +1430,8 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
 
-          recorder->append (sample_l32 / pow (2.0, 23), sample_r32 / pow (2.0, 23));
+          recorder->append (sample_l32 / std::pow (2.0, 23),
+                            sample_r32 / std::pow (2.0, 23));
         }
     }
 

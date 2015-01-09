@@ -1311,17 +1311,20 @@ octave_record_callback (const void *input, void *, unsigned long frames,
 {
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
   int channels = recorder->get_channels ();
-  float sample_l, sample_r;
-  Matrix sound;
+
+  Matrix sound (frames, 2);
   sound.resize (frames, 2);
+
   if (recorder->get_nbits () == 8)
     {
+      static double scale_factor = std::pow (2.0, 7) - 1.0;
+
       const int8_t *input8 = static_cast<const int8_t *> (input);
+
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input8[i * channels] / (std::pow (2.0, 7) - 1.0);
-          sample_r = input8[i * channels + (channels - 1)]
-            / (std::pow (2.0, 7) - 1.0);
+          float sample_l = input8[i*channels] / scale_factor;
+          float sample_r = input8[i*channels + (channels - 1)] / scale_factor;
 
           sound(i, 0) = sample_l;
           sound(i, 1) = sample_r;
@@ -1329,12 +1332,14 @@ octave_record_callback (const void *input, void *, unsigned long frames,
       }
   else if (recorder->get_nbits () == 16)
     {
+      static double scale_factor = std::pow (2.0, 15) - 1.0;
+
       const int16_t *input16 = static_cast<const int16_t *> (input);
+
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input16[i * channels] / (std::pow (2.0, 15) - 1.0);
-          sample_r = input16[i * channels + (channels - 1)]
-            / (std::pow (2.0, 15) - 1.0);
+          float sample_l = input16[i*channels] / scale_factor;
+          float sample_r = input16[i*channels + (channels - 1)] / scale_factor;
 
           sound(i, 0) = sample_l;
           sound(i, 1) = sample_r;
@@ -1342,19 +1347,22 @@ octave_record_callback (const void *input, void *, unsigned long frames,
     }
   else if (recorder->get_nbits () == 24)
     {
+      static double scale_factor = std::pow (2.0, 23);
+
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
       int32_t sample_l32 = 0, sample_r32 = 0;
-      uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
-      uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
+
+      uint8_t *sample_l = reinterpret_cast<uint8_t *> (&sample_l32);
+      uint8_t *sample_r = reinterpret_cast<uint8_t *> (&sample_r32);
 
       for (unsigned long i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
             {
-              _sample_l[j] = input24[i * channels * 3 + j];
-              _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
+              sample_l[j] = input24[i*channels*3 + j];
+              sample_r[j] = input24[i*channels*3 + (channels - 1)*3 + j];
             }
 
           if (sample_l32 & 0x00800000)
@@ -1363,14 +1371,13 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
 
-          sound(i, 0) = sample_l32 / std::pow (2.0, 23);
-          sound(i, 1) = sample_r32 / std::pow (2.0, 23);
+          sound(i, 0) = sample_l32 / scale_factor;
+          sound(i, 1) = sample_r32 / scale_factor;
         }
     }
 
-  octave_value_list args, retval;
-  args(0) = sound;
-  retval = feval (recorder->octave_callback_function, args, 1);
+  octave_value_list retval
+    = feval (recorder->octave_callback_function, ovl (sound), 1);
 
   return retval(0).int_value ();
 }
@@ -1381,47 +1388,55 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
                            PaStreamCallbackFlags, void *data)
 {
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
+
   int channels = recorder->get_channels ();
-  float sample_l, sample_r;
+
   if (recorder->get_nbits () == 8)
     {
+      static float scale_factor = std::pow (2.0f, 7) - 1.0f;
+
       const int8_t *input8 = static_cast<const int8_t *> (input);
+
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input8[i * channels] / (std::pow (2.0, 7) - 1.0);
-          sample_r = input8[i * channels + (channels - 1)]
-            / (std::pow (2.0, 7) - 1.0);
+          float sample_l = input8[i*channels] / scale_factor;
+          float sample_r = input8[i*channels + (channels - 1)] / scale_factor;
 
           recorder->append (sample_l, sample_r);
         }
     }
   else if (recorder->get_nbits () == 16)
     {
+      static float scale_factor = std::pow (2.0f, 15) - 1.0f;
+
       const int16_t *input16 = static_cast<const int16_t *> (input);
+
       for (unsigned long i = 0; i < frames; i++)
         {
-          sample_l = input16[i * channels] / (std::pow (2.0, 15) - 1.0);
-          sample_r = input16[i * channels + (channels - 1)]
-            / (std::pow (2.0, 15) - 1.0);
+          float sample_l = input16[i*channels] / scale_factor;
+          float sample_r = input16[i*channels + (channels - 1)] / scale_factor;
 
           recorder->append (sample_l, sample_r);
         }
     }
   else if (recorder->get_nbits () == 24)
     {
+      static float scale_factor = std::pow (2.0f, 23);
+
       // FIXME: Is there a better way?
       const uint8_t *input24 = static_cast<const uint8_t *> (input);
 
       int32_t sample_l32 = 0, sample_r32 = 0;
-      uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);
-      uint8_t *_sample_r = reinterpret_cast<uint8_t *> (&sample_r);
+
+      uint8_t *sample_l = reinterpret_cast<uint8_t *> (&sample_l32);
+      uint8_t *sample_r = reinterpret_cast<uint8_t *> (&sample_r32);
 
       for (unsigned long i = 0; i < frames; i++)
         {
           for (int j = 0; j < 3; j++)
             {
-              _sample_l[j] = input24[i * channels * 3 + j];
-              _sample_r[j] = input24[i * channels * 3 + (channels - 1) * 3 + j];
+              sample_l[j] = input24[i*channels*3 + j];
+              sample_r[j] = input24[i*channels*3 + (channels - 1)*3 + j];
             }
 
           if (sample_l32 & 0x00800000)
@@ -1430,8 +1445,8 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
 
-          recorder->append (sample_l32 / std::pow (2.0, 23),
-                            sample_r32 / std::pow (2.0, 23));
+          recorder->append (sample_l32 / scale_factor,
+                            sample_r32 / scale_factor);
         }
     }
 

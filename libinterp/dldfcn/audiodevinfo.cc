@@ -548,7 +548,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
       return paAbort;
     }
 
-  Matrix sound = retval(0).matrix_value ();
+  const Matrix sound = retval(0).matrix_value ();
   int return_status = retval(1).int_value ();
 
   if (error_state || frames != sound.rows ()
@@ -558,32 +558,13 @@ octave_play_callback (const void *, void *output, unsigned long frames,
       return paAbort;
     }
 
-  double scale_factor = 1.0;
+  // Don't multiply the audio data by scale_factor here.  Although it
+  // does move the operation outside of the loops below, it also causes
+  // a second copy of the data array to be made.
 
-  switch (player->get_nbits ())
-    {
-    case 8:
-      scale_factor = pow (2.0, 7) - 1.0;
-      break;
-
-    case 16:
-      scale_factor = pow (2.0, 15) - 1.0;
-      break;
-
-    case 24:
-      scale_factor = pow (2.0, 23) - 1.0;
-      break;
-
-    default:
-      error ("invalid player bit depth in callback function");
-      break;
-    }
-
-  sound = sound * scale_factor;
-
-  const RowVector sound_l = (sound.column (0)).transpose ();
-  const RowVector sound_r = (sound.columns () == 1)
-    ? sound_l : (sound.column (1)).transpose ();
+  const ColumnVector sound_l = sound.column (0);
+  const ColumnVector sound_r = (sound.columns () == 1)
+    ? sound_l : sound.column (1);
 
   const double *p_l = sound_l.data ();
   const double *p_r = sound_r.data ();
@@ -592,31 +573,37 @@ octave_play_callback (const void *, void *output, unsigned long frames,
     {
     case 8:
       {
+        static double scale_factor = pow (2.0, 7) - 1.0;
+
         int8_t *buffer = static_cast<int8_t *> (output);
 
         for (unsigned long i = 0; i < frames; i++)
           {
-            buffer[2*i] = p_l[i];
-            buffer[2*i+1] = p_r[i];
+            buffer[2*i] = p_l[i] * scale_factor;
+            buffer[2*i+1] = p_r[i] * scale_factor;
           }
       }
       break;
 
     case 16:
       {
+        static double scale_factor = pow (2.0, 15) - 1.0;
+
         int16_t *buffer = static_cast<int16_t *> (output);
 
         for (unsigned long i = 0; i < frames; i++)
           {
-            buffer[2*i] = p_l[i];
-            buffer[2*i+1] = p_r[i];
+            buffer[2*i] = p_l[i] * scale_factor;
+            buffer[2*i+1] = p_r[i] * scale_factor;
           }
       }
       break;
 
     case 24:
       {
-        int big_endian = is_big_endian ();
+        static double scale_factor = pow (2.0, 23) - 1.0;
+
+        static int big_endian = is_big_endian ();
 
         uint8_t *buffer = static_cast<uint8_t *> (output);
 
@@ -634,13 +621,13 @@ octave_play_callback (const void *, void *output, unsigned long frames,
 
             unsigned long offset = i * 6;
 
-            buffer[offset+0] = _sample_l[0+big_endian];
-            buffer[offset+1] = _sample_l[1+big_endian];
-            buffer[offset+2] = _sample_l[2+big_endian];
+            buffer[offset+0] = _sample_l[0+big_endian] * scale_factor;
+            buffer[offset+1] = _sample_l[1+big_endian] * scale_factor;
+            buffer[offset+2] = _sample_l[2+big_endian] * scale_factor;
 
-            buffer[offset+3] = _sample_r[0+big_endian];
-            buffer[offset+4] = _sample_r[1+big_endian];
-            buffer[offset+5] = _sample_r[2+big_endian];
+            buffer[offset+3] = _sample_r[0+big_endian] * scale_factor;
+            buffer[offset+4] = _sample_r[1+big_endian] * scale_factor;
+            buffer[offset+5] = _sample_r[2+big_endian] * scale_factor;
           }
       }
       break;
@@ -666,29 +653,14 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
       return paAbort;
     }
 
-  double scale_factor = 1.0;
+  // Don't multiply the audio data by scale_factor here.  Although it
+  // would move the operation outside of the loops below, it also causes
+  // a second copy of the *entire* data array to be made when only a
+  // small portion (BUFFER_SIZE elements) is usually needed for this
+  // callback.
 
-  switch (player->get_nbits ())
-    {
-    case 8:
-      scale_factor = pow (2.0, 7) - 1.0;
-      break;
-
-    case 16:
-      scale_factor = pow (2.0, 15) - 1.0;
-      break;
-
-    case 24:
-      scale_factor = pow (2.0, 23) - 1.0;
-      break;
-
-    default:
-      error ("invalid player bit depth in callback function");
-      break;
-    }
-
-  const RowVector sound_l = player->get_left () * scale_factor;
-  const RowVector sound_r = player->get_right () * scale_factor;
+  const RowVector sound_l = player->get_left ();
+  const RowVector sound_r = player->get_right ();
 
   const double *pl = sound_l.data ();
   const double *pr = sound_l.data ();
@@ -699,6 +671,8 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
         {
         case 8:
           {
+            static double scale_factor = pow (2.0, 7) - 1.0;
+
             int8_t *buffer = static_cast<int8_t *> (output);
 
             for (unsigned long j = 0; j < frames; j++)
@@ -710,8 +684,8 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
                 unsigned long offset = j * 2;
 
-                buffer[offset+0] = pl[sample_number];
-                buffer[offset+1] = pr[sample_number];
+                buffer[offset+0] = pl[sample_number] * scale_factor;
+                buffer[offset+1] = pr[sample_number] * scale_factor;
 
                 player->set_sample_number (sample_number + 1);
               }
@@ -720,6 +694,8 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
         case 16:
           {
+            static double scale_factor = pow (2.0, 15) - 1.0;
+
             int16_t *buffer = static_cast<int16_t *> (output);
 
             for (unsigned long j = 0; j < frames; j++)
@@ -731,8 +707,8 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
                 unsigned long offset = j * 2;
 
-                buffer[offset+0] = pl[sample_number];
-                buffer[offset+1] = pr[sample_number];
+                buffer[offset+0] = pl[sample_number] * scale_factor;
+                buffer[offset+1] = pr[sample_number] * scale_factor;
 
                 player->set_sample_number (sample_number + 1);
               }
@@ -741,6 +717,10 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
 
         case 24:
           {
+            static double scale_factor = pow (2.0, 23) - 1.0;
+
+            static int big_endian = is_big_endian ();
+
             uint8_t *buffer = static_cast<uint8_t *> (output);
 
             for (unsigned long j = 0; j < frames; j++)
@@ -750,13 +730,11 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
                 if (sample_number >= player->get_end_sample ())
                   return paComplete;
 
-                int32_t sample_l = pl[sample_number];
-                int32_t sample_r = pr[sample_number];
+                int32_t sample_l = pl[sample_number] * scale_factor;
+                int32_t sample_r = pr[sample_number] * scale_factor;
 
                 sample_l &= 0x00ffffff;
                 sample_r &= 0x00ffffff;
-
-                int big_endian = is_big_endian ();
 
                 // FIXME: Would a mask work better?
                 uint8_t *_sample_l = reinterpret_cast<uint8_t *> (&sample_l);

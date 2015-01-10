@@ -51,7 +51,7 @@ workspace_view::workspace_view (QWidget *p)
   setStatusTip (tr ("View the variables in the active workspace."));
 
   _filter = new QComboBox (this);
-  _filter->setToolTip (tr ("Enter the path or filename"));
+  _filter->setToolTip (tr ("Enter text to filter the workspace"));
   _filter->setEditable (true);
   _filter->setMaxCount (MaxFilterHistory);
   _filter->setInsertPolicy (QComboBox::NoInsert);
@@ -87,10 +87,6 @@ workspace_view::workspace_view (QWidget *p)
 
   // Set the empty widget to have our layout.
   widget ()->setLayout (vbox_layout);
-
-  // Filter model
-  _filter_model = new QSortFilterProxyModel ();
-  _filter_model->setFilterKeyColumn(0);
 
   // Initialize collapse/expand state of the workspace subcategories.
 
@@ -144,8 +140,10 @@ workspace_view::~workspace_view (void)
 
 void workspace_view::setModel (workspace_model *model)
 {
-  _filter_model->setSourceModel (model);
-  view->setModel (_filter_model);
+  _filter_model.setSourceModel (model);
+  _filter_model.setFilterKeyColumn(0);
+
+  view->setModel (&_filter_model);
   _model = model;
 }
 
@@ -159,7 +157,7 @@ workspace_view::closeEvent (QCloseEvent *e)
 void
 workspace_view::filter_update (const QString& expression)
 {
-  _filter_model->setFilterRegExp (QRegExp (expression, Qt::CaseSensitive));
+  _filter_model.setFilterWildcard (expression);
   handle_model_changed ();
 }
 
@@ -167,7 +165,7 @@ void
 workspace_view::filter_activate (bool state)
 {
   _filter->setEnabled (state);
-  _filter_model->setDynamicSortFilter (state);
+  _filter_model.setDynamicSortFilter (state);
 
   if (state)
     filter_update (_filter->currentText ());
@@ -178,9 +176,14 @@ workspace_view::filter_activate (bool state)
 void
 workspace_view::update_filter_history ()
 {
-  QString text = _filter->currentText ();
-  if (! text.isEmpty () && _filter->findText (text) == -1)
-    _filter->insertItem (0, _filter->currentText ());
+  QString text = _filter->currentText ();   // get current text
+  int index = _filter->findText (text);     // and its actual index
+
+  if (index > -1)
+    _filter->removeItem (index);    // remove if already existing
+
+  _filter->insertItem (0, text);    // (re)insert at beginning
+  _filter->setCurrentIndex (0);
 }
 
 QString
@@ -337,7 +340,7 @@ workspace_view::handle_model_changed (void)
   // the whole list.  For-loop test will handle when number of rows reduced.
   QFontMetrics fm = view->fontMetrics ();
   int row_height =  fm.height ();
-  int new_row_count = _filter_model->rowCount ();
+  int new_row_count = _filter_model.rowCount ();
   for (int i = view_previous_row_count; i < new_row_count; i++)
     view->setRowHeight (i, row_height);
   view_previous_row_count = new_row_count;

@@ -89,7 +89,7 @@ private:
   int view_previous_row_count;
   workspace_model *_model;
 
-  QSortFilterProxyModel *_filter_model;
+  QSortFilterProxyModel _filter_model;
   QCheckBox *_filter_checkbox;
   QComboBox *_filter;
   enum { MaxFilterHistory = 10 };

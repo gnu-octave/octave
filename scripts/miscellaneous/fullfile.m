@@ -23,7 +23,8 @@
 ##
 ## Joins any number of path components intelligently.  The return value
 ## is the concatenation of each component with exactly one file separator
-## between each non empty part.
+## between each non empty part and at most one leading and/or trailing file
+## separator.
 ##
 ## If the last component part is a cell array, returns a cell array of
 ## filepaths, one for each element in the last component, e.g.:
@@ -37,6 +38,10 @@
 ## @end group
 ## @end example
 ##
+## On Windows systems, while forward slash file separators do work, they
+## are replaced by backslashes; in addition drive letters are stripped of
+## leading file separators to obtain a valid file path.
+##
 ## @seealso{fileparts, filesep}
 ## @end deftypefn
 
@@ -49,6 +54,10 @@ function filename = fullfile (varargin)
                                        "UniformOutput", false);
   else
     non_empty = cellfun ("isempty", varargin);
+    if (ispc && ! isempty (varargin))
+      varargin = strrep (varargin, "/", filesep);
+      varargin(1) = regexprep (varargin{1}, '[\\/]*([a-zA-Z]:[\\/]*)', "$1");
+    endif
     filename = strjoin (varargin(! non_empty), filesep);
     filename(strfind (filename, [filesep filesep])) = "";
   endif
@@ -56,12 +65,14 @@ function filename = fullfile (varargin)
 endfunction
 
 
-%!shared fs, fsx, xfs, fsxfs, xfsy
+%!shared fs, fsx, xfs, fsxfs, xfsy, xfsyfs
 %! fs = filesep ();
 %! fsx = [fs "x"];
 %! xfs = ["x" fs];
 %! fsxfs = [fs "x" fs];
 %! xfsy = ["x" fs "y"];
+%! xfsyfs = ["x" fs "y" fs];
+
 %!assert (fullfile (""), "")
 %!assert (fullfile (fs), fs)
 %!assert (fullfile ("", fs), fs)
@@ -82,12 +93,27 @@ endfunction
 %!assert (fullfile (fsx, fs), fsxfs)
 %!assert (fullfile (fs, "x", fs), fsxfs)
 
-%!assert (fullfile ("a/", "/", "/", "b", "/", "/"), "a/b/")
-%!assert (fullfile ("/", "a/", "/", "/", "b", "/", "/"), "/a/b/")
-%!assert (fullfile ("/a/", "/", "/", "b", "/", "/"), "/a/b/")
+%!assert (fullfile ("x/", "/", "/", "y", "/", "/"), xfsyfs)
+%!assert (fullfile ("/", "x/", "/", "/", "y", "/", "/"), [fs xfsyfs])
+%!assert (fullfile ("/x/", "/", "/", "y", "/", "/"), [fs xfsyfs])
 
 ## different on purpose so that "fullfile (c{:})" works for empty c
 %!assert (fullfile (), "")
 
-%!assert (fullfile ("a", "b", {"c", "d"}), {"a/b/c", "a/b/d"})
+%!assert (fullfile ("x", "y", {"c", "d"}), {[xfsyfs "c"], [xfsyfs "d"]})
 
+%% Windows specific - drive letters and file sep type
+%!test
+%! if (ispc)
+%!   assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
+%!           ['A:\' xfsyfs]);
+%! endif
+
+%% Windows specific - drive letters and file sep type, cell array
+%!test
+%! if (ispc) 
+%!  tmp = fullfile ({"\\\/B:\//", "A://c", "\\\C:/g/h/i/j\/"});
+%!  assert (tmp{1}, 'B:\');
+%!  assert (tmp{2}, 'A:\c');
+%!  assert (tmp{3}, 'C:\g\h\i\j\');
+%! endif

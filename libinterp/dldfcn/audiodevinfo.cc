@@ -841,9 +841,9 @@ audioplayer::init_fn (void)
       return;
     }
 
-  if (Pa_GetDeviceCount () < 0)
+  if (Pa_GetDeviceCount () < 1)
     {
-      error ("audioplayer: no audio devices found!");
+      error ("audioplayer: no audio devices found or available!");
       return;
     }
 
@@ -874,9 +874,9 @@ audioplayer::init (void)
       return;
     }
 
-  if (Pa_GetDeviceCount () < 0)
+  if (Pa_GetDeviceCount () < 1)
     {
-      error ("audioplayer: no audio devices found!");
+      error ("audioplayer: no audio devices found or available!");
       return;
     }
 
@@ -1485,9 +1485,9 @@ audiorecorder::init (void)
       return;
     }
 
-  if (Pa_GetDeviceCount () < 0)
+  if (Pa_GetDeviceCount () < 1)
     {
-      error ("audiorecorder: no audio devices found!");
+      error ("audiorecorder: no audio devices found or available!");
       return;
     }
 

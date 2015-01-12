@@ -76,7 +76,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
                        gs_opts, opts.antialiasing_textalphabits,
                        opts.antialiasing_graphicsalphabits);
     gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
-  elseif (any (strcmp (opts.device, {"ps2write", "pdfwrite"})))
+  elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
     gs_opts = sprintf ("%s -dEmbedAllFonts=true", gs_opts);
     if (strcmp (opts.device, "pdfwrite"))
       ## Optimize for loading
@@ -142,7 +142,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     cmd = sprintf ("%s %s -sOutputFile=\"%s\"", opts.binary, gs_opts, opts.output);
   endif
   if (! isempty (opts.prepend)
-      && any (strcmpi (opts.device, {"ps2write", "pdfwrite"})))
+      && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
     ## FIXME - Fonts get may be mangled when appending ps/ps2.
     ##         See "How to concatenate several PS files" at the link,
     ##         http://en.wikibooks.org/wiki/PostScript_FAQ

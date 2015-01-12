@@ -654,7 +654,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   const RowVector sound_r = player->get_right ();
 
   const double *pl = sound_l.data ();
-  const double *pr = sound_l.data ();
+  const double *pr = sound_r.data ();
 
   if (player->get_type () == TYPE_DOUBLE)
     {

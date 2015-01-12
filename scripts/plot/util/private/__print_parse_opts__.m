@@ -43,7 +43,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.debug = false;
   arg_st.ghostscript.device = "";
   arg_st.ghostscript.epscrop = true;
-  arg_st.ghostscript.level = [];
+  arg_st.ghostscript.level = 2;
   arg_st.ghostscript.output = "";
   arg_st.ghostscript.papersize = "";
   arg_st.ghostscript.pageoffset = [];
@@ -225,7 +225,7 @@ function arg_st = __print_parse_opts__ (varargin)
               "pcx24b", "pcx256", "pcx16", "pgm", "pgmraw", ...
               "ppm", "ppmraw", "pdflatex", "texdraw", ...
               "pdfcairo", "pngcairo", "pstricks", ...
-              "epswrite", "pswrite", "ps2write", "pdfwrite"};
+              "epswrite", "ps2write", "pdfwrite"};
 
   suffixes = {"ai", "cdr", "fig", "png", "jpg", ...
               "gif", "pbm", "pbm", "dxf", "mf", ...
@@ -299,15 +299,10 @@ function arg_st = __print_parse_opts__ (varargin)
   endif
 
   ## FIXME - eps2 & epsc2 needs to be handled
-  if (strcmp (arg_st.devopt, "pswrite"))
-    arg_st.ghostscript.level = 1;
-  elseif (strcmp (arg_st.devopt, "ps2write"))
-    arg_st.ghostscript.level = 2;
-  endif
 
   if ((any (strcmp (arg_st.devopt, gs_device_list))
        && ! arg_st.formatted_for_printing)
-      || any (strcmp (arg_st.devopt, {"pswrite", "ps2write", "pdfwrite"})))
+      || any (strcmp (arg_st.devopt, {"ps2write", "pdfwrite"})))
     ## Use ghostscript for graphic formats
     arg_st.ghostscript.device = arg_st.devopt;
     arg_st.ghostscript.output = arg_st.name;
@@ -630,7 +625,7 @@ function device_list = gs_device_list ();
                  "pgmraw"; "pgnm"; "pgnmraw"; "png16"; "png16m"; ...
                  "png256"; "png48"; "pngalpha"; "pnggray"; "pngmono"; ...
                  "pnm"; "pnmraw"; "ppm"; "ppmraw"; "ps2write"; ...
-                 "pswrite"; "tiff12nc"; "tiff24nc"; "tiff32nc"; ...
+                 "ps2write"; "tiff12nc"; "tiff24nc"; "tiff32nc"; ...
                  "tiffcrle"; "tiffg3"; "tiffg32d"; "tiffg4"; ...
                  "tiffgray"; "tifflzw"; "tiffpack"; "tiffsep"};
 endfunction
@@ -644,9 +639,9 @@ function aliases = gs_aliases ();
   aliases.bmp = "bmp32b";
   aliases.pdf = "pdfwrite";
   aliases.png = "png16m";
-  aliases.ps = "pswrite";
+  aliases.ps = "ps2write";
   aliases.ps2 = "ps2write";
-  aliases.psc = "pswrite";
+  aliases.psc = "ps2write";
   aliases.psc2 = "ps2write";
   aliases.tiff = "tiff24nc";
   aliases.tiffn = "tiff24nc";

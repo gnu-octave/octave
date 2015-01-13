@@ -441,7 +441,7 @@ class audioplayer : public octave_base_value
 {
 public:
   audioplayer (void);
-  ~audioplayer (void) {};
+  ~audioplayer (void);
 
   // Overloaded base functions
   double player_value (void) const { return 0; }
@@ -818,6 +818,15 @@ audioplayer::audioplayer (void)
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
     left (), right (), stream (0), output_parameters (), type ()
 { }
+
+audioplayer::~audioplayer (void)
+{
+  if (isplaying())
+    {
+      warning ("audioplayer::~audioplayer: Interrupting playing audioplayer");
+      stop ();
+    }
+}
 
 void
 audioplayer::print (std::ostream& os, bool pr_as_read_syntax) const

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} record (@var{recorder})
+## @deftypefn  {Function File} {} record (@var{recorder})
 ## @deftypefnx {Function File} {} record (@var{recorder}, @var{length})
 ## Record audio without blocking using the audiorecorder object
 ## @var{recorder} until stopped or paused by the @var{stop} or

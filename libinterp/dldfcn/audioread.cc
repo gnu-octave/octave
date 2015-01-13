@@ -50,8 +50,8 @@ safe_close (SNDFILE *file)
 #endif
 
 DEFUN_DLD (audioread, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
+           "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{samples})\n\
 \n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{fs}] =} audioread (@var{filename}, @var{datatype})\n\
@@ -67,7 +67,8 @@ The optional argument @var{datatype} specifies the datatype to return.\n\
 If it is @qcode{\"native\"}, then the type of data depends on how the\n\
 data is stored in the audio file.\n\
 \n\
-Read a file and return a specified range of frames in an array of specified type.\n\
+Read a file and return a specified range of frames in an array of specified\n\
+type.\n\
 \n\
 @end deftypefn")
 {
@@ -87,7 +88,7 @@ Read a file and return a specified range of frames in an array of specified type
 
   if (error_state)
     return retval;
-  
+
   SF_INFO info;
   info.format = 0;
   SNDFILE *file = sf_open (filename.c_str (), SFM_READ, &info);
@@ -244,8 +245,8 @@ extension_to_format (const std::string& ext)
 #endif
 
 DEFUN_DLD (audiowrite, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
+           "-*- texinfo -*-\n\
+@deftypefn  {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs})\n\
 @deftypefnx {Loadable Function} {} audiowrite (@var{filename}, @var{y}, @var{fs}, @var{name}, @var{value}, @dots{})\n\
 \n\
 Write audio data from the matrix @var{y} to @var{filename} with the file\n\
@@ -256,15 +257,21 @@ following options:\n\
 \n\
 @table @samp\n\
 @item BitsPerSample\n\
-Number of bits per sample, valid values are 8, 16, 24 and 32. Default is 16.\n\
+Number of bits per sample, valid values are 8, 16, 24 and 32.  Default is 16.\n\
+\n\
 @item BitRate\n\
-Valid argument name, but ignored. Left for compatibility with @sc{matlab}.\n\
+Valid argument name, but ignored.  Left for compatibility with @sc{matlab}.\n\
+\n\
 @item Quality\n\
-Quality setting for the Ogg Vorbis compressor. Values can range between 0 and 100 with 100 being the highest quality setting. Default is 75.\n\
+Quality setting for the Ogg Vorbis compressor.  Values can range between 0\n\
+and 100 with 100 being the highest quality setting.  Default is 75.\n\
+\n\
 @item Title\n\
 Title for the audio file.\n\
+\n\
 @item Artist\n\
 Artist name.\n\
+\n\
 @item Comment\n\
 Comment.\n\
 @end table\n\
@@ -437,7 +444,7 @@ Comment.\n\
 }
 
 DEFUN_DLD (audioinfo, args, ,
-  "-*- texinfo -*-\n\
+           "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{info} =} audioinfo (@var{filename})\n\
 Return information about an audio file specified by @var{filename}.\n\
 @end deftypefn")

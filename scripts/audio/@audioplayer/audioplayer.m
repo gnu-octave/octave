@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
+## @deftypefn  {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{y}, @var{fs}, @var{nbits}, @var{id})
 ## @deftypefnx {Function File} {@var{player} =} audioplayer (@var{recorder})
@@ -28,9 +28,8 @@
 ## may be found using the audiodevinfo function.
 ## Given an audioplayer object, use the data from the object to
 ## initialize the player.
-## @end deftypefn
 ##
-## The signal @var{y} can be a vector or a two dimensional array.
+## The signal @var{y} can be a vector or a two-dimensional array.
 ##
 ## The following example will create an audioplayer object that will play
 ## back one second of white noise at 44100 sample rate using 8 bits per
@@ -43,6 +42,7 @@
 ## play (player);
 ## @end group
 ## @end example
+## @end deftypefn
 
 ## FIXME: callbacks don't work properly, apparently because portaudio
 ## will execute the callbacks in a separate thread, and calling Octave

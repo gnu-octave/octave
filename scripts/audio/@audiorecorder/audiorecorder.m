@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{recorder} =} audiorecorder ()
+## @deftypefn  {Function File} {@var{recorder} =} audiorecorder ()
 ## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels})
 ## @deftypefnx {Function File} {@var{recorder} =} audiorecorder (@var{fs}, @var{nbits}, @var{channels}, @var{id})
 ## Create an audiorecorder object recording 8 bit mono audio at 8000 Hz

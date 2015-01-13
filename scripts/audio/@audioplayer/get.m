@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} get (@var{player}, @var{name})
+## @deftypefn  {Function File} {@var{value} =} get (@var{player}, @var{name})
 ## @deftypefnx {Function File} {@var{values} =} get (@var{player})
 ## Return the @var{value} of the property identified by @var{name}.
-## If @var{name} is a cell array return the values of of the properties
+## If @var{name} is a cell array return the values of the properties
 ## identified by the elements of the cell array.  Given only the
 ## player object, return a scalar structure with values of all
 ## properties of @var{player}.  The field names of the structure

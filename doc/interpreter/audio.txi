@@ -33,7 +33,7 @@
 @section Audio File Utilities
 
 The following functions allow you to read, write and retrieve
-information about audio files. Various formats are supported including
+information about audio files.  Various formats are supported including
 wav, flac and ogg vorbis.
 
 @DOCSTRING(audioinfo)
@@ -51,8 +51,8 @@ wav, flac and ogg vorbis.
 @section Audio Player
 
 The following methods are used to create and use audioplayer
-objects. These objects can be used to play back audio data stored in
-Octave matrices and arrays. The audioplayer object supports playback
+objects.  These objects can be used to play back audio data stored in
+Octave matrices and arrays.  The audioplayer object supports playback
 from various devices available to the system, blocking and non-blocking
 playback, convenient pausing and resuming and much more.
 
@@ -94,10 +94,10 @@ properties of the audioplayer object.
 @section Audio Recorder
 
 The following methods are used to create and use audiorecorder
-objects. These objects can be used to record audio data from various
-devices available to the system. You can use convenient methods to
+objects.  These objects can be used to record audio data from various
+devices available to the system.  You can use convenient methods to
 retrieve that data or audioplayer objects created from that
-data. Methods for blocking and non-blocking recording, pausing and
+data.  Methods for blocking and non-blocking recording, pausing and
 resuming recording and much more is available.
 
 @DOCSTRING(@audiorecorder/audiorecorder)

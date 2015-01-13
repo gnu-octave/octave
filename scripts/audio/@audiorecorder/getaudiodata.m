@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{data} =} getaudiodata (@var{recorder})
+## @deftypefn  {Function File} {@var{data} =} getaudiodata (@var{recorder})
 ## @deftypefnx {Function File} {@var{data} =} getaudiodata (@var{recorder}, @var{datatype})
 ## Return recorder audio data as a matrix with values between -1.0 and 1.0
 ## and with as many columns as there are channels in the recorder.

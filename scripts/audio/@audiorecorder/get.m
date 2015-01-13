@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{value} =} get (@var{recorder}, @var{name})
+## @deftypefn  {Function File} {@var{value} =} get (@var{recorder}, @var{name})
 ## @deftypefnx {Function File} {@var{values} =} get (@var{recorder})
 ## Return the @var{value} of the property identified by @var{name}.
 ## If @var{name} is a cell array, return the values of the properties

@@ -133,9 +133,6 @@ public slots:
   void exit (int status);
   void reset_windows (void);
 
-  void hide_warning_bar (void);
-  void show_gui_info (void);
-
   void change_directory (const QString& dir);
   void browse_for_directory (void);
   void set_current_working_directory (const QString& dir);
@@ -245,9 +242,6 @@ private:
 
   void construct_news_menu (QMenuBar *p);
 
-  void construct_warning_bar (void);
-  void construct_gui_info_button (void);
-
   void construct_tool_bar (void);
 
   void establish_octave_link (void);
@@ -323,9 +317,6 @@ private:
   QString _release_notes_icon;
 
   QToolBar *_main_tool_bar;
-
-  QDockWidget *_warning_bar;
-  QPushButton *_gui_info_button;
 
   QMenu *_debug_menu;
 

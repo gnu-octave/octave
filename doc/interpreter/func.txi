@@ -1398,6 +1398,7 @@ is written as
 quad (@@sin, 0, pi)
 @end example
 
+@noindent
 rather than using the anonymous function @code{@@(x) sin (x)}.  There are many
 operators which have functional equivalents that may be better choices than an
 anonymous function.  Instead of writing
@@ -1406,6 +1407,7 @@ anonymous function.  Instead of writing
 f = @@(x, y) x + y 
 @end example
 
+@noindent
 this should be coded as
 
 @example

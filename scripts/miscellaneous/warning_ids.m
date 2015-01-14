@@ -299,7 +299,7 @@
 ## string constant.
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
-## @item Octave:nearly-singular-matrix
+## @item  Octave:nearly-singular-matrix
 ## @itemx Octave:singular-matrix
 ## By default, the @code{Octave:nearly-singular-matrix} and
 ## @code{Octave:singular-matrix} warnings are enabled.

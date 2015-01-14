@@ -128,6 +128,13 @@ or recording using those parameters.\n\
     {
       const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
 
+      if (! device_info)
+        {
+          warning ("Octave:invalid-audio-device",
+                   "invalid audio device ID = %d", i);
+          continue;
+        }
+
       if (device_info->maxInputChannels != 0)
         numinput++;
 
@@ -146,9 +153,19 @@ or recording using those parameters.\n\
   for (int i = 0; i < num_devices; i++)
     {
       const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
-      const char *driver;
+
+      if (! device_info)
+        {
+          warning ("Octave:invalid-audio-device",
+                   "invalid audio device ID = %d", i);
+          continue;
+        }
+
+      const PaHostApiInfo *api_info = Pa_GetHostApiInfo (device_info->hostApi);
+
+      const char *driver = api_info ? api_info->name : "";
+
       char name[128];
-      driver = Pa_GetHostApiInfo (device_info->hostApi)->name;
       sprintf (name, "%s (%s)", device_info->name, driver);
 
       if (device_info->maxInputChannels != 0)
@@ -294,13 +311,23 @@ or recording using those parameters.\n\
               return retval;
             }
 
+          const PaDeviceInfo *device_info = Pa_GetDeviceInfo (i);
+
+          if (! device_info)
+            {
+              warning ("Octave:invalid-audio-device",
+                       "invalid audio device ID = %d", i);
+              continue;
+            }
+
           stream_parameters.suggestedLatency
-            = Pa_GetDeviceInfo (i)->defaultLowInputLatency;
+            = device_info->defaultLowInputLatency;
+
           stream_parameters.hostApiSpecificStreamInfo = 0;
 
           if (io == 0)
             {
-              if (Pa_GetDeviceInfo (i)->maxOutputChannels < chans)
+              if (device_info->maxOutputChannels < chans)
                 continue;
 
               err = Pa_IsFormatSupported (0, &stream_parameters, rate);
@@ -313,7 +340,7 @@ or recording using those parameters.\n\
             }
           else if (io == 1)
             {
-              if (Pa_GetDeviceInfo (i)->maxInputChannels < chans)
+              if (device_info->maxInputChannels < chans)
                 continue;
 
               err = Pa_IsFormatSupported (&stream_parameters, 0, rate);
@@ -345,12 +372,22 @@ or recording using those parameters.\n\
           error ("audiodevinfo: no such bits per sample format");
           return retval;
         }
-      stream_parameters.suggestedLatency =
-        Pa_GetDeviceInfo (id)->defaultLowInputLatency;
+
+      const PaDeviceInfo *device_info = Pa_GetDeviceInfo (id);
+
+      if (! device_info)
+        {
+          error ("invalid audio device ID = %d", id);
+          return retval;
+        }
+
+      stream_parameters.suggestedLatency
+        = device_info->defaultLowInputLatency;
+
       stream_parameters.hostApiSpecificStreamInfo = 0;
       if (io == 0)
         {
-          if (Pa_GetDeviceInfo (id)->maxOutputChannels < chans)
+          if (device_info->maxOutputChannels < chans)
             {
               retval = 0;
               return retval;
@@ -364,7 +401,7 @@ or recording using those parameters.\n\
         }
       else if (io == 1)
         {
-          if (Pa_GetDeviceInfo (id)->maxInputChannels < chans)
+          if (device_info->maxInputChannels < chans)
             {
               retval = 0;
               return retval;
@@ -864,8 +901,16 @@ audioplayer::init_fn (void)
   output_parameters.device = device;
   output_parameters.channelCount = 2;
   output_parameters.sampleFormat = bits_to_format (get_nbits ());
-  output_parameters.suggestedLatency = 
-    Pa_GetDeviceInfo (device)->defaultHighOutputLatency;
+
+  const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
+
+  if (! device_info)
+    warning ("Octave:invalid-default-audio-device",
+             "invalid default audio device ID = %d", device);
+
+  output_parameters.suggestedLatency
+    = device_info ? device_info->defaultHighOutputLatency : -1;
+
   output_parameters.hostApiSpecificStreamInfo = 0;
 }
 
@@ -907,8 +952,15 @@ audioplayer::init (void)
   else if (type == TYPE_UINT16)
     output_parameters.sampleFormat = paInt16;
 
-  output_parameters.suggestedLatency =
-    Pa_GetDeviceInfo (device)->defaultHighOutputLatency;
+  const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
+
+  if (! device_info)
+    warning ("Octave:invalid-default-audio-device",
+             "invalid default audio device ID = %d", device);
+
+  output_parameters.suggestedLatency
+    = device_info ? device_info->defaultHighOutputLatency : -1;
+
   output_parameters.hostApiSpecificStreamInfo = 0;
 }
 
@@ -1321,6 +1373,13 @@ octave_record_callback (const void *input, void *, unsigned long frames,
                         PaStreamCallbackFlags, void *data)
 {
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
+
+  if (! recorder)
+    {
+      error ("audio recorder callback function called without player");
+      return paAbort;
+    }
+
   int channels = recorder->get_channels ();
 
   Matrix sound (frames, 2);
@@ -1399,6 +1458,12 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
                            PaStreamCallbackFlags, void *data)
 {
   audiorecorder *recorder = static_cast<audiorecorder *> (data);
+
+  if (! recorder)
+    {
+      error ("audio recorder callback function called without player");
+      return paAbort;
+    }
 
   int channels = recorder->get_channels ();
 
@@ -1510,8 +1575,16 @@ audiorecorder::init (void)
   input_parameters.device = device;
   input_parameters.channelCount = get_channels ();
   input_parameters.sampleFormat = bits_to_format (get_nbits ());
-  input_parameters.suggestedLatency =
-    Pa_GetDeviceInfo (device)->defaultHighInputLatency;
+
+  const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
+
+  if (! device_info)
+    warning ("Octave:invalid-default-audio-device",
+             "invalid default audio device ID = %d", device);
+
+  input_parameters.suggestedLatency
+    = device_info ? device_info->defaultHighInputLatency : -1;
+
   input_parameters.hostApiSpecificStreamInfo = 0;
 }
 
@@ -1907,6 +1980,13 @@ Undocumented internal function.\n\
 #ifdef HAVE_PORTAUDIO
 
   audiorecorder *recorder = get_recorder (args(0));
+
+  if (! recorder)
+    {
+      print_usage ();
+      return retval;
+    }
+
   retval = recorder->getaudiodata ();
 
 #else
@@ -1931,6 +2011,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_channels ();
     }
 
@@ -1956,6 +2043,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_fs ();
     }
 
@@ -1981,6 +2075,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_id ();
     }
 
@@ -2006,6 +2107,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_nbits ();
     }
 
@@ -2031,6 +2139,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_sample_number ();
     }
 
@@ -2056,6 +2171,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_tag ();
     }
 
@@ -2081,6 +2203,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_total_samples ();
     }
 
@@ -2106,6 +2235,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->get_userdata ();
     }
 
@@ -2131,6 +2267,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = recorder->isrecording () ? true : false;
     }
 
@@ -2156,6 +2299,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       recorder->pause ();
     }
 
@@ -2179,6 +2329,13 @@ Undocumented internal function.\n\
 #ifdef HAVE_PORTAUDIO
 
   audiorecorder *recorder = get_recorder (args(0));
+
+  if (! recorder)
+    {
+      print_usage ();
+      return retval;
+    }
+
   recorder->recordblocking (args(1).float_value ());
 
 #else
@@ -2202,6 +2359,12 @@ Undocumented internal function.\n\
 #ifdef HAVE_PORTAUDIO
 
   audiorecorder *recorder = get_recorder (args(0));
+
+  if (! recorder)
+    {
+      print_usage ();
+      return retval;
+    }
 
   if (args.length () == 1)
     recorder->record ();
@@ -2235,6 +2398,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       recorder->resume ();
     }
 
@@ -2260,6 +2430,13 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       recorder->set_fs (args(1).int_value ());
     }
 
@@ -2285,6 +2462,13 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       recorder->set_tag (args(1).char_matrix_value ());
     }
 
@@ -2310,6 +2494,13 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
       recorder->set_userdata (args(1));
     }
 
@@ -2333,6 +2524,13 @@ Undocumented internal function.\n\
 #ifdef HAVE_PORTAUDIO
 
   audiorecorder *recorder = get_recorder (args(0));
+
+      if (! recorder)
+        {
+          print_usage ();
+          return retval;
+        }
+
   recorder->stop ();
 
 #else
@@ -2365,6 +2563,12 @@ Undocumented internal function.\n\
     }
 
   audioplayer* recorder = new audioplayer ();
+
+  if (! recorder)
+    {
+      print_usage ();
+      return retval;
+    }
 
   bool is_function = args(0).is_string () || args(0).is_function_handle ()
                      || args(0).is_inline_function ();
@@ -2436,6 +2640,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_channels ();
     }
 
@@ -2461,6 +2672,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_fs ();
     }
 
@@ -2486,6 +2704,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_id ();
     }
 
@@ -2511,6 +2736,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_nbits ();
     }
 
@@ -2536,6 +2768,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_sample_number ();
     }
 
@@ -2561,6 +2800,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_tag ();
     }
 
@@ -2586,6 +2832,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_total_samples ();
     }
 
@@ -2611,6 +2864,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->get_userdata ();
     }
 
@@ -2636,6 +2896,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       retval = player->isplaying () ? true : false;
     }
 
@@ -2661,6 +2928,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->pause ();
     }
 
@@ -2685,14 +2959,18 @@ Undocumented internal function.\n\
 
 #ifdef HAVE_PORTAUDIO
 
-  if (args.length () == 1)
+  audioplayer *player = get_player (args(0));
+
+  if (! player)
     {
-      audioplayer *player = get_player (args(0));
-      player->playblocking ();
+      print_usage ();
+      return retval;
     }
+
+  if (args.length () == 1)
+    player->playblocking ();
   else
     {
-      audioplayer *player = get_player (args(0));
       if (args(1).is_matrix_type ())
         {
           RowVector range = args(1).row_vector_value ();
@@ -2750,6 +3028,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->play ();
     }
   else
@@ -2811,6 +3096,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->resume ();
     }
 
@@ -2836,6 +3128,13 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->set_fs (args(1).int_value ());
     }
 
@@ -2861,6 +3160,13 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->set_tag (args(1).char_matrix_value ());
     }
 
@@ -2886,6 +3192,13 @@ Undocumented internal function.\n\
   if (args.length () == 2)
     {
       audioplayer *player = get_player (args(0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->set_userdata (args(1));
     }
 
@@ -2911,6 +3224,13 @@ Undocumented internal function.\n\
   if (args.length () == 1)
     {
       audioplayer *player = get_player (args (0));
+
+      if (! player)
+        {
+          print_usage ();
+          return retval;
+        }
+
       player->stop ();
     }
 

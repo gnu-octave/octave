@@ -591,8 +591,8 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   // a second copy of the data array to be made.
 
   const ColumnVector sound_l = sound.column (0);
-  const ColumnVector sound_r = (sound.columns () == 1)
-                               ? sound_l : sound.column (1);
+  const ColumnVector sound_r = (sound.columns () == 1
+                                ? sound_l : sound.column (1));
 
   const double *p_l = sound_l.data ();
   const double *p_r = sound_r.data ();
@@ -1913,8 +1913,8 @@ Undocumented internal function.\n\
 
   if (nargin > 0)
     {
-      bool is_function = args(0).is_string () || args(0).is_function_handle ()
-                         || args(0).is_inline_function ();
+      bool is_function = (args(0).is_string () || args(0).is_function_handle ()
+                          || args(0).is_inline_function ());
 
       if (is_function)
         {
@@ -2570,8 +2570,8 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  bool is_function = args(0).is_string () || args(0).is_function_handle ()
-                     || args(0).is_inline_function ();
+  bool is_function = (args(0).is_string () || args(0).is_function_handle ()
+                      || args(0).is_inline_function ());
 
   if (is_function)
     {

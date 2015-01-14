@@ -144,7 +144,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
 
   endif
 
-  file = canonicalize_file_name (file);
+  file = make_absolute_filename (file);
 
   ## Instructions on what to do for any extension.
   ##

@@ -126,7 +126,7 @@ endfunction
 #%! unlink ("record.txt")
 #%! record (recorder);
 #%! sleep (2);
-#%! stop (player);
+#%! stop (recorder);
 #%! s = stat ("record.txt");
 #%! assert (s.size > 0);
 

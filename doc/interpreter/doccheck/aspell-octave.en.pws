@@ -29,6 +29,9 @@ ast
 async
 atan
 Attr
+audiodevinfo
+audioplayer
+audiorecorder
 AutoCAD
 Autoconf
 autocorrelations
@@ -313,6 +316,7 @@ FinDiffType
 finv
 FIRfilter
 FIXME
+flac
 FlashPix
 FLTK
 fltk
@@ -688,6 +692,8 @@ nzmax
 oct
 octaverc
 ODEPACK
+Ogg
+ogg
 OKString
 OLS
 onCleanup
@@ -1082,12 +1088,15 @@ vee
 versa
 vertcat
 vertices
+Vorbis
+vorbis
 voronoi
 Voronoi
 waitbar
 waitbars
 wallis
 warndlg
+wav
 WAV
 WayPoints
 wblcdf

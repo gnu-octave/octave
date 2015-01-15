@@ -1295,7 +1295,7 @@ class audiorecorder : public octave_base_value
 {
 public:
   audiorecorder (void);
-  ~audiorecorder (void) {};
+  ~audiorecorder (void);
 
   // Overloaded base functions
   double player_value (void) const { return 0; }
@@ -1538,6 +1538,15 @@ audiorecorder::audiorecorder (void)
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
     left (), right (), stream (0), input_parameters (), type ()
 { }
+
+audiorecorder::~audiorecorder (void)
+{
+  if (isrecording ())
+    {
+      warning ("audiorecorder::~audiorecorder: Interrupting recording audiorecorder");
+      stop ();
+    }
+}
 
 void
 audiorecorder::print (std::ostream& os, bool pr_as_read_syntax) const

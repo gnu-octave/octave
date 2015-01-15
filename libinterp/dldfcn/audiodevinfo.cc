@@ -858,9 +858,10 @@ audioplayer::audioplayer (void)
 
 audioplayer::~audioplayer (void)
 {
-  if (isplaying())
+  if (isplaying ())
     {
-      warning ("audioplayer::~audioplayer: Interrupting playing audioplayer");
+      warning ("Octave:audio-interrupt",
+               "interrupting playing audioplayer");
       stop ();
     }
 }
@@ -1163,14 +1164,14 @@ audioplayer::playblocking (void)
   err = Pa_StopStream (stream);
   if (err != paNoError)
     {
-      error ("audioplayer: Error stoping audio playback stream");
+      error ("audioplayer: failed to stop audio playback stream");
       return;
     }
 
   err = Pa_CloseStream (stream);
   if (err != paNoError)
     {
-      error ("audioplayer: Error closing audio playback stream");
+      error ("audioplayer: failed to close audio playback stream");
       return;
     }
 
@@ -1197,14 +1198,14 @@ audioplayer::play (void)
 
   if (err != paNoError)
     {
-      error ("audioplayer: Error opening audio playback stream");
+      error ("audioplayer: failed to open audio playback stream");
       return;
     }
 
   err = Pa_StartStream (stream);
   if (err != paNoError)
     {
-      error ("audioplayer: Error starting audio playback stream");
+      error ("audioplayer: failed to start audio playback stream");
       return;
     }
 }
@@ -1219,7 +1220,7 @@ audioplayer::pause (void)
   err = Pa_StopStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error stoping audio recording stream");
+      error ("audiorecorder: failed to stop audio recording stream");
       return;
     }
 }
@@ -1234,7 +1235,7 @@ audioplayer::resume (void)
   err = Pa_StartStream (stream);
   if (err != paNoError)
     {
-      error ("audiorecorder: Error starting audio recording stream");
+      error ("audiorecorder: failed to start audio recording stream");
       return;
     }
 }
@@ -1259,7 +1260,7 @@ audioplayer::stop (void)
       err = Pa_AbortStream (get_stream ());
       if (err != paNoError)
         {
-          error ("audioplayer: Error stopping audio playback stream");
+          error ("audioplayer: failed to stop audio playback stream");
           return;
         }
     }
@@ -1267,7 +1268,7 @@ audioplayer::stop (void)
   err = Pa_CloseStream (get_stream ());
   if (err != paNoError)
     {
-      error ("audioplayer: Error closing audio playback stream");
+      error ("audioplayer: failed to close audio playback stream");
       return;
     }
 
@@ -1284,7 +1285,7 @@ audioplayer::isplaying (void)
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
     {
-      error ("audiorecorder: Error checking stream activity status");
+      error ("audiorecorder: checking stream activity status failed");
       return false;
     }
 
@@ -1396,8 +1397,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           float sample_l = input8[i*channels] / scale_factor;
           float sample_r = input8[i*channels + (channels - 1)] / scale_factor;
 
-          sound(i, 0) = sample_l;
-          sound(i, 1) = sample_r;
+          sound(i,0) = sample_l;
+          sound(i,1) = sample_r;
         }
     }
   else if (recorder->get_nbits () == 16)
@@ -1411,8 +1412,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           float sample_l = input16[i*channels] / scale_factor;
           float sample_r = input16[i*channels + (channels - 1)] / scale_factor;
 
-          sound(i, 0) = sample_l;
-          sound(i, 1) = sample_r;
+          sound(i,0) = sample_l;
+          sound(i,1) = sample_r;
         }
     }
   else if (recorder->get_nbits () == 24)
@@ -1441,8 +1442,8 @@ octave_record_callback (const void *input, void *, unsigned long frames,
           if (sample_r32 & 0x00800000)
             sample_r32 |= 0xff000000;
 
-          sound(i, 0) = sample_l32 / scale_factor;
-          sound(i, 1) = sample_r32 / scale_factor;
+          sound(i,0) = sample_l32 / scale_factor;
+          sound(i,1) = sample_r32 / scale_factor;
         }
     }
 
@@ -1543,7 +1544,8 @@ audiorecorder::~audiorecorder (void)
 {
   if (isrecording ())
     {
-      warning ("audiorecorder::~audiorecorder: Interrupting recording audiorecorder");
+      warning ("Octave:audio-interrupt",
+               "interrupting recording audiorecorder");
       stop ();
     }
 }
@@ -1719,8 +1721,8 @@ audiorecorder::getaudiodata (void)
 
   for (unsigned int i = 0; i < left.size (); i++)
     {
-      audio(0, i) = left[i];
-      audio(1, i) = right[i];
+      audio(0,i) = left[i];
+      audio(1,i) = right[i];
     }
 
   return audio;
@@ -1749,7 +1751,7 @@ audiorecorder::isrecording (void)
   err = Pa_IsStreamActive (stream);
   if (err != 0 && err != 1)
     {
-      error ("audiorecorder: unable to check stream activity status");
+      error ("audiorecorder: checking stream activity status failed");
       return false;
     }
 

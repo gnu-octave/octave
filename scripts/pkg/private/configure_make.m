@@ -51,7 +51,7 @@ function configure_make (desc, packdir, verbose)
             "OCTAVE_CONFIG"; octave_config_program;
             "OCTAVE"; octave_binary;
             "INSTALLDIR"; desc.dir};
-    scenv = sprintf ("%s=\"%s\" ", cenv{:});
+    scenv = sprintf ("%s='%s' ", cenv{:});
 
     ## Configure.
     if (exist (fullfile (src, "configure"), "file"))

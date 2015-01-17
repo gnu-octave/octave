@@ -404,6 +404,7 @@ private:
   QMutex       _dbg_queue_mutex;
 
   bool _prevent_readline_conflicts;
+  bool _suppress_dbg_location;
 };
 
 class news_reader : public QObject

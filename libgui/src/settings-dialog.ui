@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <property name="enabled">
@@ -1528,6 +1528,24 @@
               </layout>
              </item>
              <item>
+              <layout class="QGridLayout" name="gridLayout_15">
+               <item row="0" column="0">
+                <widget class="QCheckBox" name="terminal_focus_command">
+                 <property name="text">
+                  <string>Set focus to terminal when running a command from within another widget</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="terminal_print_dbg_location">
+                 <property name="text">
+                  <string>Print debug location in terminal window in addition to the marker in the editor</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
               <widget class="Line" name="line_7">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -1557,13 +1575,6 @@
                </property>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="terminal_focus_command">
-               <property name="text">
-                <string>Set focus to terminal when running a command from within another widget</string>
                </property>
               </widget>
              </item>

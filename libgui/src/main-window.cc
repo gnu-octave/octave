@@ -750,6 +750,9 @@ main_window::notice_settings (const QSettings *settings)
   configure_shortcuts ();
   set_global_shortcuts (command_window_has_focus ());
 
+  _suppress_dbg_location =
+        ! settings->value ("terminal/print_debug_location", false).toBool ();
+
   resource_manager::update_network_settings ();
 }
 
@@ -2030,6 +2033,7 @@ main_window::execute_command_callback ()
       command_editor::redisplay ();
       // We are executing inside the command editor event loop.  Force
       // the current line to be returned for processing.
+      Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
       command_editor::accept_line ();
     }
 
@@ -2086,19 +2090,19 @@ main_window::execute_debug_callback ()
 
       if (debug == "step")
         {
-          Fdb_next_breakpoint_quiet ();
+          Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
           Fdbstep ();
         }
       else if (debug == "cont")
         {
-          Fdb_next_breakpoint_quiet ();
+          Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
           Fdbcont ();
         }
       else if (debug == "quit")
         Fdbquit ();
       else
         {
-          Fdb_next_breakpoint_quiet ();
+          Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
           Fdbstep (ovl (debug.toStdString ()));
         }
 

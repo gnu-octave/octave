@@ -290,8 +290,9 @@ find_dialog::find (bool forward)
       else if (! do_forward)
         {
            // search from previous character if search backward
+           _edit_area->getCursorPosition (&line,&col);
            int currpos = _edit_area->positionFromLineIndex(line,col);
-           if(currpos > 0) currpos --;
+           if (currpos > 0) currpos --;
            _edit_area->lineIndexFromPosition(currpos, &line,&col);
         }
     }

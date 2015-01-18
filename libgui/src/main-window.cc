@@ -174,11 +174,13 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       if (dock)
         break; // it is a QDockWidget ==> exit loop
 
+#ifdef HAVE_QSCINTILLA
       if (qobject_cast <octave_qscintilla *> (w_new))
         {
           dock = static_cast <octave_dock_widget *> (editor_window);
           break; // it is the editor window ==> exit loop
         }
+#endif
 
       w_new = qobject_cast <QWidget *> (w_new->previousInFocusChain ());
       if (w_new == start)
@@ -1082,7 +1084,9 @@ main_window::connect_visibility_changed (void)
   foreach (octave_dock_widget *widget, dock_widget_list ())
     widget->connect_visibility_changed ();
 
+#ifdef HAVE_QSCINTILLA
   editor_window->enable_menu_shortcuts (false);
+#endif
 }
 
 void
@@ -2353,7 +2357,9 @@ main_window::confirm_exit_octave ()
 
     }
 
+#ifdef HAVE_QSCINTILLA
   closenow = editor_window->check_closing (1);  // 1: exit request from gui
+#endif
 
   return closenow;
 }

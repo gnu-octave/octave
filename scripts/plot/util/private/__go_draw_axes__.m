@@ -1631,7 +1631,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
   cmap = [cmap; addedcmap];
   cmap_sz = cmap_sz + rows (addedcmap);
-  if (length (cmap) > 0)
+  if (mono == false && length (cmap) > 0)
     fprintf (plot_stream,
              "set palette positive color model RGB maxcolors %i;\n",
              cmap_sz);

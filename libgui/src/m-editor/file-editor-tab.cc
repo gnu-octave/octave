@@ -1908,6 +1908,7 @@ file_editor_tab::notice_settings (const QSettings *settings)
   _edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
         settings->value ("editor/show_hscroll_bar",true).toBool ());
   _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
+  _edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
   _long_title = settings->value ("editor/longWindowTitle", false).toBool ();
   update_window_title (_edit_area->isModified ());

@@ -93,7 +93,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // We are likely to have a lot of octave_value objects to allocate, so
 // make the grow_size large.
-DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
 
 // If TRUE, don't create special diagonal matrix objects.
 

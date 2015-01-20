@@ -59,7 +59,6 @@ template class octave_base_matrix<int16NDArray>;
 
 template class octave_base_int_matrix<int16NDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_int16_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int16_matrix,
                                      "int16 matrix", "int16");
@@ -68,7 +67,6 @@ template class octave_base_scalar<octave_int16>;
 
 template class octave_base_int_scalar<octave_int16>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_int16_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_int16_scalar,
                                      "int16 scalar", "int16");

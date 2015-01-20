@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <memory>
 
-#include "oct-alloc.h"
 
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -164,7 +163,6 @@ private:
 
   bool set_fcn (const std::string &octaveroot, const std::string& fpath);
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

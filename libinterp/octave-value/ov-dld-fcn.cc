@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-dld-fcn.h"
 #include "ov.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_dld_function);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,
                                      "dynamically-linked function",

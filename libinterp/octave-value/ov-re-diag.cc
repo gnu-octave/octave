@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_diag<DiagMatrix, Matrix>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_diag_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_diag_matrix, "diagonal matrix",
                                      "double");

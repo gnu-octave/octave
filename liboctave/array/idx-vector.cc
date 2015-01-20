@@ -63,7 +63,6 @@ idx_vector::idx_base_rep::as_array (void)
   return Array<octave_idx_type> ();
 }
 
-DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_colon_rep);
 
 idx_vector::idx_colon_rep::idx_colon_rep (char c)
 {
@@ -103,7 +102,6 @@ idx_vector::idx_colon_rep::print (std::ostream& os) const
   return os << ":";
 }
 
-DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_range_rep);
 
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
                                           octave_idx_type _limit,
@@ -258,7 +256,6 @@ convert_index (octave_int<T> x, bool& conv_error,
   return convert_index (i, conv_error, ext);
 }
 
-DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_scalar_rep);
 
 template <class T>
 idx_vector::idx_scalar_rep::idx_scalar_rep (T x)
@@ -317,7 +314,6 @@ idx_vector::idx_scalar_rep::as_array (void)
   return Array<octave_idx_type> (dim_vector (1, 1), data);
 }
 
-DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_vector_rep);
 
 template <class T>
 idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
@@ -645,7 +641,6 @@ idx_vector::idx_vector_rep::as_array (void)
     }
 }
 
-DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_mask_rep);
 
 idx_vector::idx_mask_rep::idx_mask_rep (bool b)
   : data (0), len (b ? 1 : 0), ext (0), lsti (-1), lste (-1),

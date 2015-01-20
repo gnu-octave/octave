@@ -62,7 +62,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<FloatComplexNDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_float_complex_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_matrix,
                                      "float complex matrix", "single");

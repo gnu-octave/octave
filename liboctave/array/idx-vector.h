@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 #include "oct-inttypes.h"
-#include "oct-alloc.h"
 #include "oct-refcount.h"
 
 template<class T> class Array;
@@ -146,7 +145,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_colon_rep (const idx_colon_rep& idx);
@@ -208,7 +206,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_range_rep (const idx_range_rep& idx);
@@ -265,7 +262,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_scalar_rep (const idx_scalar_rep& idx);
@@ -332,7 +328,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_vector_rep (const idx_vector_rep& idx);
@@ -406,7 +401,6 @@ private:
 
   private:
 
-    DECLARE_OCTAVE_ALLOCATOR
 
     // No copying!
     idx_mask_rep (const idx_mask_rep& idx);

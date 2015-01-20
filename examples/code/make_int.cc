@@ -108,7 +108,6 @@ private:
 
   int scalar;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -311,6 +310,5 @@ DEFUN_DLD (doit, args, ,
   return retval;
 }
 
-DEFINE_OCTAVE_ALLOCATOR (octave_integer);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_integer, "integer", "integer");

@@ -875,7 +875,6 @@ make_package (const std::string& nm,
 
 //----------------------------------------------------------------------------
 
-DEFINE_OCTAVE_ALLOCATOR (octave_classdef);
 
 int octave_classdef::t_id (-1);
 

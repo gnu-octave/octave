@@ -124,7 +124,6 @@ octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
 
 template class octave_base_matrix<Cell>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 

@@ -545,13 +545,11 @@ private:
   PaStreamParameters output_parameters;
   audio_type type;
 
-  DECLARE_OCTAVE_ALLOCATOR
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 static const unsigned int BUFFER_SIZE = 8192;
 
-DEFINE_OCTAVE_ALLOCATOR (audioplayer);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audioplayer, "audioplayer", "audioplayer");
 
 static int
@@ -1361,11 +1359,9 @@ private:
   PaStreamParameters input_parameters;
   audio_type type;
 
-  DECLARE_OCTAVE_ALLOCATOR
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-DEFINE_OCTAVE_ALLOCATOR (audiorecorder);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audiorecorder, "audiorecorder", "audiorecorder");
 
 static int

@@ -70,7 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<NDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix", "double");
 

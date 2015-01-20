@@ -47,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "pr-output.h"
 
-DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
 
@@ -1132,7 +1131,6 @@ octave_struct::fast_elem_insert (octave_idx_type n,
 
   return retval;
 }
-DEFINE_OCTAVE_ALLOCATOR(octave_scalar_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",
                                     "struct");

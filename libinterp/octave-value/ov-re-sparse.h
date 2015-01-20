@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -158,7 +157,6 @@ public:
 private:
   octave_value map (double (*fcn) (double)) const;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

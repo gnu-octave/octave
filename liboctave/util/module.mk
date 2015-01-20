@@ -58,7 +58,6 @@ UTIL_SRC = \
   util/lo-array-gripes.cc \
   util/lo-ieee.cc \
   util/lo-utils.cc \
-  util/oct-alloc.cc \
   util/oct-base64.cc \
   util/oct-glob.cc \
   util/oct-inttypes.cc \

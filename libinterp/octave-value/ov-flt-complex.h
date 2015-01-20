@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-ieee.h"
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "gripes.h"
@@ -189,7 +188,6 @@ public:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "str-vec.h"
 
-#include "oct-alloc.h"
 #include "oct-obj.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -223,7 +222,6 @@ private:
 
   octave_function& operator = (const octave_function& f);
 
-  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #endif

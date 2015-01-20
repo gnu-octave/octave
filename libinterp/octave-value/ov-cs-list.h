@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Cell.h"
 #include "error.h"
-#include "oct-alloc.h"
 #include "oct-obj.h"
 #include "ov-typeinfo.h"
 
@@ -83,7 +82,6 @@ private:
   // The list of Octave values.
   octave_value_list lst;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

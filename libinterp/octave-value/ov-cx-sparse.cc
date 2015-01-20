@@ -49,7 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class OCTINTERP_API octave_base_sparse<SparseComplexMatrix>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_sparse_complex_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
                                      "sparse complex matrix", "double");

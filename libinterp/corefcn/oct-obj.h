@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
-#include "oct-alloc.h"
 #include "str-vec.h"
 #include "Array.h"
 
@@ -170,7 +169,6 @@ private:
   const octave_value& elem (octave_idx_type n) const
   { return data(n); }
 
-  DECLARE_OCTAVE_ALLOCATOR
 };
 
 // Make it easy to build argument lists for built-in functions or for

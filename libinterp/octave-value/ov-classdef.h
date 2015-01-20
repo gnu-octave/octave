@@ -1477,7 +1477,6 @@ private:
   cdef_object object;
 
 private:
-  DECLARE_OCTAVE_ALLOCATOR
 
 public:
   int type_id (void) const { return t_id; }

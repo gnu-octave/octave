@@ -53,8 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-mat.h"
 #include "utils.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
-DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_sq_str);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_sq_str, "sq_string",

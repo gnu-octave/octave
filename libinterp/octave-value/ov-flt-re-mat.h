@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -210,7 +209,6 @@ public:
   octave_value map (unary_mapper_t umap) const;
 
 private:
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

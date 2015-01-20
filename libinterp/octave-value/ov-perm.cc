@@ -418,7 +418,6 @@ octave_perm_matrix::to_dense (void) const
   return dense_cache;
 }
 
-DEFINE_OCTAVE_ALLOCATOR (octave_perm_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_perm_matrix,
                                      "permutation matrix", "double");

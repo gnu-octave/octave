@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_diag<ComplexDiagMatrix, ComplexMatrix>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_complex_diag_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_diag_matrix,
                                      "complex diagonal matrix", "double");

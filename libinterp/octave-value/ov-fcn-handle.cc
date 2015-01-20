@@ -64,7 +64,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
                                      "function handle",

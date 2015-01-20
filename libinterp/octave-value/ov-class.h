@@ -33,7 +33,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-alloc.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -207,7 +206,6 @@ private:
 
   octave_map map;
 
-  DECLARE_OCTAVE_ALLOCATOR
 
 public:
   int type_id (void) const { return t_id; }

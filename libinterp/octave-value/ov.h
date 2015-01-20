@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "idx-vector.h"
 #include "mach-info.h"
 #include "mx-base.h"
-#include "oct-alloc.h"
 #include "oct-time.h"
 #include "str-vec.h"
 
@@ -1241,7 +1240,6 @@ private:
   // const octave_base_value* which actually silently calls octave_value (bool).
   octave_value (const octave_base_value *);
 
-  DECLARE_OCTAVE_ALLOCATOR
 };
 
 // Publish externally used friend functions.

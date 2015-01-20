@@ -57,7 +57,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "variables.h"
 
-DEFINE_OCTAVE_ALLOCATOR(octave_class);
 
 int octave_class::t_id (-1);
 

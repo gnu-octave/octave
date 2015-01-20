@@ -53,7 +53,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_scalar<double>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar", "double");
 

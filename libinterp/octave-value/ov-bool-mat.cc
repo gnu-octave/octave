@@ -52,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 
 template class octave_base_matrix<boolNDArray>;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_bool_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix,
                                      "bool matrix", "logical");

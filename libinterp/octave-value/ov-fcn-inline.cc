@@ -53,7 +53,6 @@ Open Source Initiative (www.opensource.org)
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_fcn_inline);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_inline,
                                      "inline function",

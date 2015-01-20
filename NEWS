@@ -205,6 +205,13 @@ Summary of important user-visible changes for version 4.2:
  ** The warning ID Octave:singular-matrix-div has been replaced by
     Octave:nearly-singular-matrix and Octave:singular-matrix.
 
+ ** The configure option --enable-octave-allocator has been removed.
+    The internal class <octave_allocator> declared in oct-alloc.h has
+    been removed.  The header remains, but is deprecated.  The macros to
+    access the class (DECLARE_OCTAVE_ALLOCATOR, DEFINE_OCTAVE_ALLOCATOR,
+    and DEFINE_OCTAVE_ALLOCATOR2) are now unconditionally defined to be
+    empty.
+
 Summary of important user-visible changes for version 4.0:
 ---------------------------------------------------------
 

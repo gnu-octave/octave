@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <iosfwd>
 #include <string>
 
-#include "oct-alloc.h"
 
 #include "ov-base.h"
 #include "ov-base-mat.h"
@@ -92,7 +91,6 @@ public:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

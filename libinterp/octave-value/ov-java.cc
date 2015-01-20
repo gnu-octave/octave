@@ -1569,7 +1569,6 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 
 // octave_java class definition
 
-DEFINE_OCTAVE_ALLOCATOR (octave_java);
 
 int octave_java::t_id (-1);
 

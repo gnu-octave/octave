@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov-fcn.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_function);
 
 octave_base_value *
 octave_function::clone (void) const

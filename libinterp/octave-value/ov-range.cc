@@ -48,7 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 // If TRUE, allow ranges with non-integer elements as array indices.
 static bool Vallow_noninteger_range_as_index = true;
 
-DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
 

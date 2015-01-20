@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 // We are likely to have a lot of octave_value_list objects to allocate,
 // so make the grow_size large.
-DEFINE_OCTAVE_ALLOCATOR2(octave_value_list, 1024);
 
 octave_value_list::octave_value_list (const std::list<octave_value_list>& lst)
 {

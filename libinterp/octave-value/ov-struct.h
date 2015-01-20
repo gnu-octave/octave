@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "str-vec.h"
 
 #include "error.h"
-#include "oct-alloc.h"
 #include "oct-map.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -162,7 +161,6 @@ protected:
 
 private:
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
@@ -283,7 +281,6 @@ private:
 
   octave_value to_array (void);
 
-  DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

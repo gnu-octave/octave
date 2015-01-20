@@ -232,19 +232,6 @@ if test $BOUNDS_CHECKING = yes; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to 1 to use internal bounds checking.])
 fi
 
-### Use Octave's built-in memory allocator rather than straightforward malloc.
-### Disabled by default.
-
-USE_OCTAVE_ALLOCATOR=no
-AC_ARG_ENABLE([octave-allocator],
-  [AS_HELP_STRING([--enable-octave-allocator],
-    [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.])],
-  [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=yes; fi], [])
-if test $USE_OCTAVE_ALLOCATOR = yes; then
-  AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1,
-    [Define to 1 to use octave_allocator class.])
-fi
-
 ### Use atomic operations for internal reference counting.  This is required
 ### for thread-safe behavior (Qt Handles) but incurs a significant slowdown.
 ### Enabled by default until a higher performing solution can be found.
@@ -3093,7 +3080,6 @@ Octave is now configured for $canonical_host_type
   JIT compiler for loops:             $build_jit
   Build Java interface:               $build_java
   Do internal array bounds checking:  $BOUNDS_CHECKING
-  Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG
@@ -3186,15 +3172,6 @@ if test $USE_ATOMIC_REFCOUNT = no; then
   AC_MSG_WARN([another thread, and is required when using the GUI's Qt toolkit])
   AC_MSG_WARN([for plotting.])
   AC_MSG_WARN([])
-fi
-if test $USE_ATOMIC_REFCOUNT = yes; then
-  if test $USE_OCTAVE_ALLOCATOR = yes; then
-    AC_MSG_WARN([Using atomic reference counting.])
-    AC_MSG_WARN([Thread-safe behavior is not guaranteed unless the])
-    AC_MSG_WARN([octave_allocator class is also disabled.])
-    AC_MSG_WARN([])
-  fi
-  warn_msg_printed=true
 fi
 
 if $warn_msg_printed; then

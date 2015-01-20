@@ -123,7 +123,7 @@ function h = meshz (varargin)
   c = [cref .* ones(2, columns(c) + 4);
        cref .* ones(rows(c), 2), c, cref .* ones(rows(c), 2);
        cref .* ones(2, columns(c) + 4)];
-    
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -168,7 +168,7 @@ endfunction
 %! clf;
 %! colormap ('default');
 %! [X,Y,Z] = peaks ();
-%! [fx, fy] = gradient (Z); 
+%! [fx, fy] = gradient (Z);
 %! C = sqrt (fx.^2 + fy.^2);
 %! meshz (X,Y,Z,C);
 %! title ('meshz() plot with color determined by gradient');

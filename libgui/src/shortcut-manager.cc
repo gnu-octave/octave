@@ -47,7 +47,7 @@ shortcut_manager *shortcut_manager::instance = 0;
 shortcut_manager::shortcut_manager ()
 {
   setObjectName ("Shortcut_Manager");
-  
+
   // Mac: don't let Qt interpret CMD key ("Meta" in Qt terminology) as Ctrl
 #if defined (Q_OS_MAC)
   QCoreApplication::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta, true);
@@ -87,12 +87,12 @@ void
 shortcut_manager::do_init_data ()
 {
   QKeySequence ctrl;
-  int prefix; 
+  int prefix;
 #if defined (Q_OS_MAC)
   // Use CMD key as an equivalent of Ctrl key on other platforms
   ctrl =  Qt::MetaModifier;
-  // Some of octave default shortcuts on windows/linux are already defined 
-  // as system wide shortcuts on Mac Os X (almost all Function keys). 
+  // Some of octave default shortcuts on windows/linux are already defined
+  // as system wide shortcuts on Mac Os X (almost all Function keys).
   // Prefix those with Option (Alt) modifier to avoid conflicts.
   prefix = Qt::AltModifier;
 #else
@@ -102,7 +102,7 @@ shortcut_manager::do_init_data ()
 
   QKeySequence ctrl_shift = ctrl + Qt::ShiftModifier;
   QKeySequence ctrl_alt = ctrl + Qt::AltModifier;
-  
+
   // actions of the main window
 
   // file
@@ -130,42 +130,42 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
   init (tr ("Clear Workspace"), "main_edit:clear_workspace", QKeySequence ());
 
-  // debug 
-  init (tr ("Step Over"), "main_debug:step_over", 
+  // debug
+  init (tr ("Step Over"), "main_debug:step_over",
         QKeySequence (prefix + Qt::Key_F10));
-  init (tr ("Step Into"), "main_debug:step_into", 
+  init (tr ("Step Into"), "main_debug:step_into",
         QKeySequence (prefix + Qt::Key_F11));
-  init (tr ("Step Out"), "main_debug:step_out", 
+  init (tr ("Step Out"), "main_debug:step_out",
         QKeySequence (prefix + Qt::ShiftModifier + Qt::Key_F11));
-  init (tr ("Continue"), "main_debug:continue", 
+  init (tr ("Continue"), "main_debug:continue",
         QKeySequence (prefix + Qt::Key_F5));
-  init (tr ("Quit Debug Mode"), "main_debug:quit", 
+  init (tr ("Quit Debug Mode"), "main_debug:quit",
         QKeySequence (prefix + Qt::ShiftModifier + Qt::Key_F5));
 
   // window
-  init (tr ("Show Command Window"), "main_window:show_command", 
+  init (tr ("Show Command Window"), "main_window:show_command",
         prefix + ctrl_shift + Qt::Key_0);
-  init (tr ("Show Command History"), "main_window:show_history", 
+  init (tr ("Show Command History"), "main_window:show_history",
         prefix + ctrl_shift + Qt::Key_1);
-  init (tr ("Show File Browser"), "main_window:show_file_browser", 
+  init (tr ("Show File Browser"), "main_window:show_file_browser",
         prefix + ctrl_shift + Qt::Key_2);
-  init (tr ("Show Workspace"), "main_window:show_workspace", 
+  init (tr ("Show Workspace"), "main_window:show_workspace",
         prefix + ctrl_shift + Qt::Key_3);
-  init (tr ("Show Editor"), "main_window:show_editor", 
+  init (tr ("Show Editor"), "main_window:show_editor",
         prefix + ctrl_shift + Qt::Key_4);
-  init (tr ("Show Documentation"), "main_window:show_doc", 
+  init (tr ("Show Documentation"), "main_window:show_doc",
         prefix + ctrl_shift + Qt::Key_5);
-  init (tr ("Command Window"), "main_window:command", 
+  init (tr ("Command Window"), "main_window:command",
         prefix + ctrl + Qt::Key_0);
-  init (tr ("Command History"), "main_window:history", 
+  init (tr ("Command History"), "main_window:history",
         prefix + ctrl + Qt::Key_1);
-  init (tr ("File Browser"), "main_window:file_browser", 
+  init (tr ("File Browser"), "main_window:file_browser",
         prefix + ctrl + Qt::Key_2);
-  init (tr ("Workspace"), "main_window:workspace", 
+  init (tr ("Workspace"), "main_window:workspace",
         prefix + ctrl + Qt::Key_3);
-  init (tr ("Editor"), "main_window:editor", 
+  init (tr ("Editor"), "main_window:editor",
         prefix + ctrl + Qt::Key_4);
-  init (tr ("Documentation"), "main_window:doc", 
+  init (tr ("Documentation"), "main_window:doc",
         prefix + ctrl + Qt::Key_5);
   init (tr ("Reset Window Layout"), "main_window:reset", QKeySequence ());
 
@@ -204,45 +204,45 @@ shortcut_manager::do_init_data ()
   init (tr ("Select All"), "editor_edit:select_all", QKeySequence::SelectAll);
   init (tr ("Find and Replace"), "editor_edit:find_replace",
         QKeySequence::Find);
-  init (tr ("Delete to Start of Word"), "editor_edit:delete_start_word", 
+  init (tr ("Delete to Start of Word"), "editor_edit:delete_start_word",
         QKeySequence::DeleteStartOfWord);
-  init (tr ("Delete to End of Word"), "editor_edit:delete_end_word", 
+  init (tr ("Delete to End of Word"), "editor_edit:delete_end_word",
         QKeySequence::DeleteEndOfWord);
-  init (tr ("Delete to Start of Line"), "editor_edit:delete_start_line",  
+  init (tr ("Delete to Start of Line"), "editor_edit:delete_start_line",
         QKeySequence (ctrl_shift + Qt::Key_Backspace));
-  init (tr ("Delete to End of Line"), "editor_edit:delete_end_line",  
+  init (tr ("Delete to End of Line"), "editor_edit:delete_end_line",
         QKeySequence (ctrl_shift + Qt::Key_Delete));
-  init (tr ("Delete Line"), "editor_edit:delete_line",  
+  init (tr ("Delete Line"), "editor_edit:delete_line",
         QKeySequence (ctrl_shift + Qt::Key_L));
-  init (tr ("Copy Line"), "editor_edit:copy_line",  
+  init (tr ("Copy Line"), "editor_edit:copy_line",
         QKeySequence (ctrl_shift + Qt::Key_C));
-  init (tr ("Cut Line"), "editor_edit:cut_line",  
+  init (tr ("Cut Line"), "editor_edit:cut_line",
         QKeySequence (ctrl_shift + Qt::Key_X));
-  init (tr ("Duplicate Selection/Line"), "editor_edit:duplicate_selection",  
+  init (tr ("Duplicate Selection/Line"), "editor_edit:duplicate_selection",
         QKeySequence (ctrl + Qt::Key_D));
-  init (tr ("Transpose Line"), "editor_edit:transpose_line",  
+  init (tr ("Transpose Line"), "editor_edit:transpose_line",
         QKeySequence (ctrl + Qt::Key_T));
-  init (tr ("Completion List"), "editor_edit:completion_list",  
+  init (tr ("Completion List"), "editor_edit:completion_list",
         QKeySequence (ctrl + Qt::Key_Space));
 
-  init (tr ("Comment Selection"), "editor_edit:comment_selection",  
+  init (tr ("Comment Selection"), "editor_edit:comment_selection",
         QKeySequence (ctrl + Qt::Key_R));
-  init (tr ("Uncomment Selection"), "editor_edit:uncomment_selection",  
+  init (tr ("Uncomment Selection"), "editor_edit:uncomment_selection",
         QKeySequence (ctrl_shift + Qt::Key_R));
-  init (tr ("Uppercase Selection"), "editor_edit:upper_case",  
+  init (tr ("Uppercase Selection"), "editor_edit:upper_case",
         QKeySequence (ctrl + Qt::Key_U));
-  init (tr ("Lowercase Selection"), "editor_edit:lower_case",  
+  init (tr ("Lowercase Selection"), "editor_edit:lower_case",
         QKeySequence (ctrl_alt + Qt::Key_U));
 
 #if defined (Q_OS_MAC)
-  init (tr ("Indent Selection"), "editor_edit:indent_selection",  
+  init (tr ("Indent Selection"), "editor_edit:indent_selection",
         QKeySequence (prefix + Qt::Key_Tab));
-  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",  
+  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",
         QKeySequence (prefix + Qt::ShiftModifier + Qt::Key_Tab));
 #else
-  init (tr ("Indent Selection"), "editor_edit:indent_selection",  
+  init (tr ("Indent Selection"), "editor_edit:indent_selection",
         QKeySequence (ctrl + Qt::Key_Tab));
-  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",  
+  init (tr ("Unindent Selection"), "editor_edit:unindent_selection",
         QKeySequence (ctrl_shift + Qt::Key_Tab));
 #endif
 
@@ -253,7 +253,7 @@ shortcut_manager::do_init_data ()
   init (tr ("Convert Line Ednings to Mac"), "editor_edit:conv_eol_mac",
         QKeySequence ());
 
-  init (tr ("Goto Line"), "editor_edit:goto_line",  
+  init (tr ("Goto Line"), "editor_edit:goto_line",
         QKeySequence (ctrl + Qt::Key_G));
   init (tr ("Toggle Bookmark"), "editor_edit:toggle_bookmark",
         QKeySequence (prefix + Qt::Key_F7));
@@ -295,9 +295,9 @@ shortcut_manager::do_init_data ()
         QKeySequence ());
 
   // run
-  init (tr ("Run File"), "editor_run:run_file", 
+  init (tr ("Run File"), "editor_run:run_file",
         QKeySequence (prefix + Qt::Key_F5) );
-  init (tr ("Run Selection"), "editor_run:run_selection", 
+  init (tr ("Run Selection"), "editor_run:run_selection",
         QKeySequence (prefix + Qt::Key_F9) );
 
   // help

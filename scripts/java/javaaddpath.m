@@ -53,7 +53,7 @@ function javaaddpath (varargin)
     if (! success)
       warning ("javaaddpath: failed to add '%s' to Java classpath", new_path);
     endif
-  endfor 
-   
+  endfor
+
 endfunction
 

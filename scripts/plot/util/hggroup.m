@@ -36,7 +36,7 @@
 ## appropriately.  For example, the individual lines of a contour plot are
 ## collected into a single hggroup so that they can be made visible/invisible
 ## with a single command, @code{set (hg_handle, "visible", "off")}.
-## 
+##
 ## @seealso{addproperty, addlistener}
 ## @end deftypefn
 
@@ -45,11 +45,11 @@
 function h = hggroup (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("hggroup", varargin{:});
-  
+
   if (isempty (hax))
     hax = gca ();
   endif
-  
+
   htmp = __go_hggroup__ (hax, varargin{:});
 
   if (nargout > 0)

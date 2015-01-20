@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, [@var{n1} @var{n2}])
 ## @deftypefnx {Function File} {[@var{samples}, @var{channels}] =} wavread (@var{filename}, "size")
-## 
+##
 ## Load the RIFF/WAVE sound file @var{filename}, and return the samples
 ## in vector @var{y}.  If the file contains multichannel data, then
 ## @var{y} is a matrix with the channels represented as columns.

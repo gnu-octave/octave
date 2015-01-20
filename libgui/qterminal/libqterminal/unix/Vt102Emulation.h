@@ -1,6 +1,6 @@
 /*
     This file is part of Konsole, an X terminal.
-    
+
     Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
@@ -28,7 +28,7 @@
 // Standard Library
 #include <stdio.h>
 
-// Qt 
+// Qt
 #include <QKeyEvent>
 #include <QtCore/QHash>
 #include <QtCore/QTimer>
@@ -66,15 +66,15 @@ struct CharCodes
 /**
  * Provides an xterm compatible terminal emulation based on the DEC VT102 terminal.
  * A full description of this terminal can be found at http://vt100.net/docs/vt102-ug/
- * 
- * In addition, various additional xterm escape sequences are supported to provide 
+ *
+ * In addition, various additional xterm escape sequences are supported to provide
  * features such as mouse input handling.
  * See http://rtfm.etla.org/xterm/ctlseq.html for a description of xterm's escape
- * sequences. 
+ * sequences.
  *
  */
 class Vt102Emulation : public Emulation
-{ 
+{
 Q_OBJECT
 
 public:
@@ -82,30 +82,30 @@ public:
   /** Constructs a new emulation */
   Vt102Emulation();
   ~Vt102Emulation();
-  
+
   // reimplemented
   virtual void clearEntireScreen();
   virtual void reset();
-  
+
   // reimplemented
   virtual char getErase() const;
-  
-public slots: 
 
-  // reimplemented 
+public slots:
+
+  // reimplemented
   virtual void sendString(const char*,int length = -1);
   virtual void sendText(const QString& text);
   virtual void sendKeyEvent(QKeyEvent*);
   virtual void sendMouseEvent( int buttons, int column, int line , int eventType );
-  
+
 protected:
   // reimplemented
   virtual void setMode    (int mode);
   virtual void resetMode  (int mode);
 
-  // reimplemented 
+  // reimplemented
   virtual void receiveChar(int cc);
-  
+
 
 private slots:
 		
@@ -131,7 +131,7 @@ private:
   bool getMode    (int mode);
   // saves the current boolean value of 'mode'
   void saveMode   (int mode);
-  // restores the boolean value of 'mode' 
+  // restores the boolean value of 'mode'
   void restoreMode(int mode);
   // resets all modes
   void resetModes();
@@ -174,14 +174,14 @@ private:
   DECpar _currParm;
   DECpar _saveParm;
 
-  //hash table and timer for buffering calls to the session instance 
+  //hash table and timer for buffering calls to the session instance
   //to update the name of the session
   //or window title.
-  //these calls occur when certain escape sequences are seen in the 
+  //these calls occur when certain escape sequences are seen in the
   //output from the terminal
   QHash<int,QString> _pendingTitleUpdates;
   QTimer* _titleUpdateTimer;
-  
+
 };
 
 #endif // VT102EMULATION_H

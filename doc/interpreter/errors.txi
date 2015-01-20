@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -110,14 +110,14 @@ error.
 f ()
 
 @print{}  error: Invalid call to f.  Correct usage is:
-@print{}  
+@print{}
 @print{}   -- Function File: f (ARG1)
-@print{}  
-@print{}  
+@print{}
+@print{}
 @print{}  Additional help for built-in functions and operators is
 @print{}  available in the online version of the manual.  Use the command
 @print{}  `doc <topic>' to search the manual index.
-@print{}  
+@print{}
 @print{}  Help and information about Octave is also available on the WWW
 @print{}  at http://www.octave.org and via the help@@octave.org
 @print{}  mailing list.
@@ -264,8 +264,8 @@ endfor
 @subsection Recovering From Errors
 
 Octave provides several ways of recovering from errors.  There are
-@code{try}/@code{catch} blocks, 
-@code{unwind_protect}/@code{unwind_protect_cleanup} blocks, 
+@code{try}/@code{catch} blocks,
+@code{unwind_protect}/@code{unwind_protect_cleanup} blocks,
 and finally the @code{onCleanup} command.
 
 The @code{onCleanup} command associates an ordinary Octave variable (the
@@ -370,7 +370,7 @@ their string identifications.  The following code will issue a warning
 
 @example
 @group
-warning ("example:non-negative-variable", 
+warning ("example:non-negative-variable",
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example
@@ -381,7 +381,7 @@ while the following won't issue a warning
 @example
 @group
 warning ("off", "example:non-negative-variable");
-warning ("example:non-negative-variable", 
+warning ("example:non-negative-variable",
          "'a' must be non-negative.  Setting 'a' to zero.");
 @end group
 @end example

@@ -129,7 +129,7 @@ function h = surfl (varargin)
       varargin(end) = [];
       have_lv = true;
     elseif (len == 2)
-      [lv(1), lv(2), lv(3)] = sph2cart ((lastarg(1) - 90) * pi/180, 
+      [lv(1), lv(2), lv(3)] = sph2cart ((lastarg(1) - 90) * pi/180,
                                          lastarg(2) * pi/180,
                                          1.0);
       varargin(end) = [];

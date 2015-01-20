@@ -8,8 +8,8 @@ CLLL. OPTIMIZE
      2   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
       INTEGER I, I1, I2, IER, II, J, J1, JJ, LENP,
      1   MBA, MBAND, MEB1, MEBAND, ML, ML3, MU, NP1
-      DOUBLE PRECISION Y, YH, EWT, FTEM, SAVF, WM 
-      DOUBLE PRECISION ROWNS, 
+      DOUBLE PRECISION Y, YH, EWT, FTEM, SAVF, WM
+      DOUBLE PRECISION ROWNS,
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND
       DOUBLE PRECISION CON, DI, FAC, HL0, R, R0, SRUR, YI, YJ, YJJ,
      1   VNORM
@@ -17,7 +17,7 @@ CLLL. OPTIMIZE
      1   WM(*), IWM(*)
       COMMON /LS0001/ ROWNS(209),
      2   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND,
-     3   IOWND(14), IOWNS(6), 
+     3   IOWND(14), IOWNS(6),
      4   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L, METH, MITER,
      5   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
 C-----------------------------------------------------------------------
@@ -34,7 +34,7 @@ C
 C IN ADDITION TO VARIABLES DESCRIBED PREVIOUSLY, COMMUNICATION
 C WITH PREPJ USES THE FOLLOWING..
 C Y     = ARRAY CONTAINING PREDICTED VALUES ON ENTRY.
-C FTEM  = WORK ARRAY OF LENGTH N (ACOR IN STODE). 
+C FTEM  = WORK ARRAY OF LENGTH N (ACOR IN STODE).
 C SAVF  = ARRAY CONTAINING F EVALUATED AT PREDICTED Y.
 C WM    = REAL WORK SPACE FOR MATRICES.  ON OUTPUT IT CONTAINS THE
 C         INVERSE DIAGONAL MATRIX IF MITER = 3 AND THE LU DECOMPOSITION
@@ -44,7 +44,7 @@ C         WM ALSO CONTAINS THE FOLLOWING MATRIX-RELATED DATA..
 C         WM(1) = SQRT(UROUND), USED IN NUMERICAL JACOBIAN INCREMENTS.
 C         WM(2) = H*EL0, SAVED FOR LATER USE IF MITER = 3.
 C IWM   = INTEGER WORK SPACE CONTAINING PIVOT INFORMATION, STARTING AT
-C         IWM(21), IF MITER IS 1, 2, 4, OR 5.  IWM ALSO CONTAINS BAND 
+C         IWM(21), IF MITER IS 1, 2, 4, OR 5.  IWM ALSO CONTAINS BAND
 C         PARAMETERS ML = IWM(1) AND MU = IWM(2) IF MITER IS 4 OR 5.
 C EL0   = EL(1) (INPUT).
 C IERPJ = OUTPUT ERROR FLAG,  = 0 IF NO TROUBLE, .GT. 0 IF
@@ -54,7 +54,7 @@ C         (OR APPROXIMATION) IS NOW CURRENT.
 C THIS ROUTINE ALSO USES THE COMMON VARIABLES EL0, H, TN, UROUND,
 C MITER, N, NFE, AND NJE.
 C-----------------------------------------------------------------------
-      NJE = NJE + 1 
+      NJE = NJE + 1
       IERPJ = 0
       JCUR = 1
       HL0 = H*EL0
@@ -66,11 +66,11 @@ C IF MITER = 1, CALL JAC AND MULTIPLY BY SCALAR. -----------------------
       CALL JAC (NEQ, TN, Y, 0, 0, WM(3), N)
       CON = -HL0
       DO 120 I = 1,LENP
- 120    WM(I+2) = WM(I+2)*CON 
+ 120    WM(I+2) = WM(I+2)*CON
       GO TO 240
 C IF MITER = 2, MAKE N CALLS TO F TO APPROXIMATE J. --------------------
  200  FAC = VNORM (N, SAVF, EWT)
-      R0 = 1000.0D0*DABS(H)*UROUND*DBLE(N)*FAC  
+      R0 = 1000.0D0*DABS(H)*UROUND*DBLE(N)*FAC
       IF (R0 .EQ. 0.0D0) R0 = 1.0D0
       SRUR = WM(1)
       J1 = 2
@@ -85,35 +85,35 @@ C IF MITER = 2, MAKE N CALLS TO F TO APPROXIMATE J. --------------------
         DO 220 I = 1,N
  220      WM(I+J1) = (FTEM(I) - SAVF(I))*FAC
         Y(J) = YJ
-        J1 = J1 + N 
+        J1 = J1 + N
  230    CONTINUE
-      NFE = NFE + N 
+      NFE = NFE + N
 C ADD IDENTITY MATRIX. -------------------------------------------------
  240  J = 3
       NP1 = N + 1
       DO 250 I = 1,N
-        WM(J) = WM(J) + 1.0D0 
- 250    J = J + NP1 
+        WM(J) = WM(J) + 1.0D0
+ 250    J = J + NP1
 C DO LU DECOMPOSITION ON P. --------------------------------------------
       CALL DGETRF ( N, N, WM(3), N, IWM(21), IER)
       IF (IER .NE. 0) IERPJ = 1
       RETURN
 C IF MITER = 3, CONSTRUCT A DIAGONAL APPROXIMATION TO J AND P. ---------
  300  WM(2) = HL0
-      R = EL0*0.1D0 
+      R = EL0*0.1D0
       DO 310 I = 1,N
  310    Y(I) = Y(I) + R*(H*SAVF(I) - YH(I,2))
       IERR = 0
       CALL F (NEQ, TN, Y, WM(3), IERR)
       IF (IERR .LT. 0) RETURN
-      NFE = NFE + 1 
+      NFE = NFE + 1
       DO 320 I = 1,N
         R0 = H*SAVF(I) - YH(I,2)
         DI = 0.1D0*R0 - H*(WM(I+2) - SAVF(I))
         WM(I+2) = 1.0D0
         IF (DABS(R0) .LT. UROUND/EWT(I)) GO TO 320
         IF (DABS(DI) .EQ. 0.0D0) GO TO 330
-        WM(I+2) = 0.1D0*R0/DI 
+        WM(I+2) = 0.1D0*R0/DI
  320    CONTINUE
       RETURN
  330  IERPJ = 1
@@ -130,7 +130,7 @@ C IF MITER = 4, CALL JAC AND MULTIPLY BY SCALAR. -----------------------
       CALL JAC (NEQ, TN, Y, ML, MU, WM(ML3), MEBAND)
       CON = -HL0
       DO 420 I = 1,LENP
- 420    WM(I+2) = WM(I+2)*CON 
+ 420    WM(I+2) = WM(I+2)*CON
       GO TO 570
 C IF MITER = 5, MAKE MBAND CALLS TO F TO APPROXIMATE J. ----------------
  500  ML = IWM(1)
@@ -141,17 +141,17 @@ C IF MITER = 5, MAKE MBAND CALLS TO F TO APPROXIMATE J. ----------------
       MEB1 = MEBAND - 1
       SRUR = WM(1)
       FAC = VNORM (N, SAVF, EWT)
-      R0 = 1000.0D0*DABS(H)*UROUND*DBLE(N)*FAC  
+      R0 = 1000.0D0*DABS(H)*UROUND*DBLE(N)*FAC
       IF (R0 .EQ. 0.0D0) R0 = 1.0D0
       DO 560 J = 1,MBA
         DO 530 I = J,N,MBAND
-          YI = Y(I) 
+          YI = Y(I)
           R = DMAX1(SRUR*DABS(YI),R0/EWT(I))
  530      Y(I) = Y(I) + R
         IERR = 0
         CALL F (NEQ, TN, Y, FTEM, IERR)
         IF (IERR .LT. 0) RETURN
-        DO 550 JJ = J,N,MBAND 
+        DO 550 JJ = J,N,MBAND
           Y(JJ) = YH(JJ,1)
           YJJ = Y(JJ)
           R = DMAX1(SRUR*DABS(YJJ),R0/EWT(JJ))
@@ -174,4 +174,4 @@ C DO LU DECOMPOSITION OF P. --------------------------------------------
       IF (IER .NE. 0) IERPJ = 1
       RETURN
 C----------------------- END OF SUBROUTINE PREPJ -----------------------
-      END 
+      END

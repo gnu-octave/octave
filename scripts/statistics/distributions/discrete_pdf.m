@@ -44,7 +44,7 @@ function pdf = discrete_pdf (x, v, p)
   endif
 
   ## Reshape and normalize probability vector.  Values not in table get 0 prob.
-  p = [0 ; p(:)/sum(p)];   
+  p = [0 ; p(:)/sum(p)];
 
   if (isa (x, "single") || isa (v, "single") || isa (p, "single"))
     pdf = NaN (size (x), "single");

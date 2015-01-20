@@ -39,7 +39,7 @@
 ##
 ## Called without a return argument, @code{peaks} plots the surface of the
 ## above function using @code{surf}.
-## 
+##
 ## If @var{n} is a scalar, @code{peaks} plots the value of the above
 ## function on an @var{n}-by-@var{n} mesh over the range [-3,3].  The
 ## default value for @var{n} is 49.
@@ -51,7 +51,7 @@
 ## When called with output arguments, return the data for the function
 ## evaluated over the meshgrid.  This can subsequently be plotted with
 ## @code{surf (@var{x}, @var{y}, @var{z})}.
-## 
+##
 ## @seealso{sombrero, meshgrid, mesh, surf}
 ## @end deftypefn
 

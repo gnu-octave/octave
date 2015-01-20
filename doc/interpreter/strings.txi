@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -43,8 +43,8 @@ Since the single-quote mark is also used for the transpose operator
 it is best to use double-quote marks to denote strings.
 
 Strings can be concatenated using the notation for defining matrices.  For
-example, the expression 
- 
+example, the expression
+
 @example
 [ "foo" , "bar" , "baz" ]
 @end example
@@ -82,7 +82,7 @@ toascii ('\n')
 @end example
 
 Here is a table of all the escape sequences used in Octave (within
-double quoted strings).  They are the same as those used in the C 
+double quoted strings).  They are the same as those used in the C
 programming language.
 
 @table @code
@@ -287,7 +287,7 @@ eliminates empty strings.
 @group
 char ("orange", "green", "", "red")
     @result{} orange
-       green 
+       green
 
        red
 @end group
@@ -295,8 +295,8 @@ char ("orange", "green", "", "red")
 @group
 strvcat ("orange", "green", "", "red")
     @result{} orange
-       green 
-       red  
+       green
+       red
 @end group
 @end example
 
@@ -308,10 +308,10 @@ concatenates within the cells of the cell arrays:
 @example
 @group
 char (@{"red", "green", "", "blue"@})
-     @result{} red  
+     @result{} red
         green
 
-        blue 
+        blue
 @end group
 
 @group
@@ -414,7 +414,7 @@ all blank characters with underscores.
 quote = ...
   "First things first, but not necessarily in that order";
 quote( quote == " " ) = "_"
-@result{} quote = 
+@result{} quote =
     First_things_first,_but_not_necessarily_in_that_order
 @end group
 @end example

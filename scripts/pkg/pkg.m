@@ -153,7 +153,7 @@
 ## @end example
 ##
 ## The @qcode{"-forge"} option lists packages available at the Octave-Forge
-## repository.  This requires an internet connection and the cURL library. 
+## repository.  This requires an internet connection and the cURL library.
 ## For example:
 ##
 ## @example
@@ -456,7 +456,7 @@ function [local_packages, global_packages] = pkg (varargin)
       else
         error ("you must specify a prefix directory, or request an output argument");
       endif
-      
+
     case "local_list"
       if (isempty (files) && nargout == 0)
         disp (local_list);
@@ -464,7 +464,7 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = local_list;
       elseif (numel (files) == 1 && nargout == 0 && ischar (files{1}))
         local_list = files{1};
-        if (! exist (local_list, "file"))          
+        if (! exist (local_list, "file"))
           try
             ## Force file to be created
             fclose (fopen (local_list, "wt"));
@@ -484,7 +484,7 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = global_list;
       elseif (numel (files) == 1 && nargout == 0 && ischar (files{1}))
         global_list = files{1};
-        if (! exist (global_list, "file"))  
+        if (! exist (global_list, "file"))
           try
             ## Force file to be created
             fclose (fopen (files{1}, "wt"));
@@ -546,7 +546,7 @@ function [local_packages, global_packages] = pkg (varargin)
       if (nargout == 0)
         installed_pkgs_lst = installed_packages (local_list, global_list);
         if (numel (files) > 0)
-           update_lst = {}; 
+           update_lst = {};
            installed_names = {installed_pkgs_list.name}';
            for i = 1:numel (files)
              idx = find (strcmp (files{i}, installed_names), 1);

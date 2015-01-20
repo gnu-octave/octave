@@ -49,7 +49,7 @@ C     .. External Functions ..
       EXTERNAL snorm
 C     ..
 C     .. Executable Statements ..
-C     JJV added check to ensure SD >= 0.0 
+C     JJV added check to ensure SD >= 0.0
       IF (sd.GE.0.0) GO TO 10
       WRITE (*,*) 'SD < 0.0 in GENNOR - ABORT'
       WRITE (*,*) 'Value of SD: ',sd

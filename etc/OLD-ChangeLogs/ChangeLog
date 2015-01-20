@@ -411,7 +411,7 @@
 
 2010-11-10  John W. Eaton  <jwe@octave.org>
 
-	* configure.ac (AH_BOTTOM): Eliminate special case for __DECCXX: 
+	* configure.ac (AH_BOTTOM): Eliminate special case for __DECCXX:
 
 2010-11-10  John W. Eaton  <jwe@octave.org>
 

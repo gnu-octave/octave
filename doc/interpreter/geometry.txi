@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -19,12 +19,12 @@
 @node Geometry
 @chapter Geometry
 
-Much of the geometry code in Octave is based on the Qhull 
-library@footnote{@nospell{Barber, C.B., Dobkin, D.P., and Huhdanpaa, H.T.}, 
-@cite{The Quickhull Algorithm for Convex Hulls}, ACM Trans. on Mathematical 
-Software, 22(4):469--483, Dec 1996, @url{http://www.qhull.org}}.  
-Some of the documentation for Qhull, particularly for the options that 
-can be passed to @code{delaunay}, @code{voronoi} and @code{convhull}, 
+Much of the geometry code in Octave is based on the Qhull
+library@footnote{@nospell{Barber, C.B., Dobkin, D.P., and Huhdanpaa, H.T.},
+@cite{The Quickhull Algorithm for Convex Hulls}, ACM Trans. on Mathematical
+Software, 22(4):469--483, Dec 1996, @url{http://www.qhull.org}}.
+Some of the documentation for Qhull, particularly for the options that
+can be passed to @code{delaunay}, @code{voronoi} and @code{convhull},
 etc., is relevant to Octave users.
 
 @menu
@@ -46,13 +46,13 @@ points falls within any of the circum-circles.
 In general there are only three points on the circumference of any
 circum-circle.  However, in some cases, and in particular for the
 case of a regular grid, 4 or more points can be on a single
-circum-circle.  In this case the Delaunay triangulation is not unique. 
+circum-circle.  In this case the Delaunay triangulation is not unique.
 
 @DOCSTRING(delaunay)
 
 For 3-D inputs @code{delaunay} returns a set of tetrahedra that satisfy the
 Delaunay circum-circle criteria.  Similarly, @code{delaunayn} returns the
-N-dimensional simplex satisfying the Delaunay circum-circle criteria.  
+N-dimensional simplex satisfying the Delaunay circum-circle criteria.
 The N-dimensional extension of a triangulation is called a tessellation.
 
 @DOCSTRING(delaunayn)
@@ -284,7 +284,7 @@ tessellation where @var{p} is a member of @var{s}, are closer to @var{p}
 than any other point in @var{s}.  The Voronoi diagram is related to the
 Delaunay triangulation of a set of points, in that the vertexes of the
 Voronoi tessellation are the centers of the circum-circles of the
-simplices of the Delaunay tessellation. 
+simplices of the Delaunay tessellation.
 
 @DOCSTRING(voronoi)
 
@@ -324,7 +324,7 @@ with the @code{polyarea} and @code{inpolygon} functions respectively.
 
 @DOCSTRING(polyarea)
 
-An example of the use of @code{polyarea} might be 
+An example of the use of @code{polyarea} might be
 
 @example
 @group
@@ -438,7 +438,7 @@ griddata (x,y,z,xx,yy);
 @end example
 
 @noindent
-that interpolates from a random scattering of points, to a uniform grid. 
+that interpolates from a random scattering of points, to a uniform grid.
 @ifnotinfo
 The output of the above can be seen in @ref{fig:griddata}.
 

@@ -184,7 +184,7 @@ gnu_readline (const std::string& s, bool& eof)
   eof = false;
 
   std::string retval = command_editor::readline (s, eof);
-  
+
   if (! eof && retval.empty ())
     retval = "\n";
 
@@ -513,7 +513,7 @@ get_debug_input (const std::string& prompt)
 
   bool silent = tree_evaluator::quiet_breakpoint_flag;
   tree_evaluator::quiet_breakpoint_flag = false;
-          
+
   octave_user_code *caller = octave_call_stack::caller_user_code ();
   std::string nm;
   int curr_debug_line;
@@ -581,7 +581,7 @@ get_debug_input (const std::string& prompt)
 
   if (silent)
     command_editor::erase_empty_line (true);
-  
+
   std::string msg = buf.str ();
 
   if (! msg.empty ())

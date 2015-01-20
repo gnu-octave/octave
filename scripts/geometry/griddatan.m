@@ -27,7 +27,7 @@
 ##
 ## The interpolation method can be @qcode{"nearest"} or @qcode{"linear"}.
 ## If method is omitted it defaults to @qcode{"linear"}.
-## 
+##
 ## The optional argument @var{options} is passed directly to Qhull when
 ## computing the Delaunay triangulation used for interpolation.  See
 ## @code{delaunayn} for information on the defaults and how to pass different

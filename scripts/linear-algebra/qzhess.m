@@ -39,7 +39,7 @@
 ##
 ## Algorithm taken from @nospell{Golub and Van Loan},
 ## @cite{Matrix Computations, 2nd edition}.
-## 
+##
 ## @seealso{lu, chol, hess, qr, qz, schur, svd}
 ## @end deftypefn
 

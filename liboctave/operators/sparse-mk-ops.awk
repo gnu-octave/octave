@@ -1,17 +1,17 @@
 # Copyright (C) 2004-2013 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
@@ -55,7 +55,7 @@ BEGIN {
           rev_tag[$1] = ntypes;
         }
       else
-        printf ("skipping line %d: %s\n", NR, $0); 
+        printf ("skipping line %d: %s\n", NR, $0);
     }
   else if (generate_ops)
     {
@@ -178,7 +178,7 @@ BEGIN {
 
           if (bin_ops)
             printf ("SPARSE_%s%s_BIN_OP_DECLS (%s, %s, %s, %s, OCTAVE_API)\n", lhs_class,
-                    rhs_class, result_type_1, result_type_2, lhs_type, 
+                    rhs_class, result_type_1, result_type_2, lhs_type,
                     rhs_type) >> h_file
 
           if (cmp_ops)
@@ -229,22 +229,22 @@ BEGIN {
             printf ("#include \"%s\"\n", rhs_header) >> cc_file;
 
           if (bin_ops)
-            printf ("SPARSE_%s%s_BIN_OPS (%s, %s, %s, %s)\n", lhs_class, 
-                    rhs_class, result_type_1, result_type_2, lhs_type, 
+            printf ("SPARSE_%s%s_BIN_OPS (%s, %s, %s, %s)\n", lhs_class,
+                    rhs_class, result_type_1, result_type_2, lhs_type,
                     rhs_type) >> cc_file
 
           if (cmp_ops)
-            printf ("SPARSE_%s%s_CMP_OPS (%s, %s, %s, %s, %s, %s)\n", 
+            printf ("SPARSE_%s%s_CMP_OPS (%s, %s, %s, %s, %s, %s)\n",
                     lhs_class, rhs_class, lhs_type, lhs_scalar_zero_val,
                     lhs_conv, rhs_type, rhs_scalar_zero_val, rhs_conv) >> cc_file
 
           if (eqne_ops)
-            printf ("SPARSE_%s%s_EQNE_OPS (%s, %s, %s, %s, %s, %s)\n", 
+            printf ("SPARSE_%s%s_EQNE_OPS (%s, %s, %s, %s, %s, %s)\n",
                     lhs_class, rhs_class, lhs_type, lhs_scalar_zero_val,
                     lhs_conv, rhs_type, rhs_scalar_zero_val, rhs_conv) >> cc_file
 
           if (bool_ops)
-            printf ("SPARSE_%s%s_BOOL_OPS2 (%s, %s, %s, %s)\n", lhs_class, 
+            printf ("SPARSE_%s%s_BOOL_OPS2 (%s, %s, %s, %s)\n", lhs_class,
                     rhs_class, lhs_type, rhs_type, lhs_scalar_zero_val,
                     rhs_scalar_zero_val) >> cc_file
 
@@ -252,7 +252,7 @@ BEGIN {
           close (cc_file);
         }
       else
-        printf ("skipping line %d: %s\n", NR, $0); 
+        printf ("skipping line %d: %s\n", NR, $0);
     }
 }
 END {

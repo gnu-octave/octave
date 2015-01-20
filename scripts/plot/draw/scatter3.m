@@ -79,7 +79,7 @@ function retval = scatter3 (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    
+
     htmp = __scatter__ (hax, 3, "scatter3", varargin{:});
 
     if (! ishold (hax))

@@ -92,7 +92,7 @@ function [qout, sout] = qqplot (x, dist, varargin)
     else
       q_label = sprintf ("%s with parameters %g", func2str (f), varargin{1});
       param_str = sprintf (", %g", varargin{2:end});
-      q_label = [q_label param_str]; 
+      q_label = [q_label param_str];
     endif
   endif
 

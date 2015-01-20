@@ -69,7 +69,7 @@ C***FIRST EXECUTABLE STATEMENT  DATANH
 C
       Y = ABS(X)
       IF (Y .GE. 1.D0) THEN
-         IF (Y .GT. 1.D0) THEN 
+         IF (Y .GT. 1.D0) THEN
             DATANH = (X - X) / (X - X)
          ELSE
             DATANH = X / 0.D0

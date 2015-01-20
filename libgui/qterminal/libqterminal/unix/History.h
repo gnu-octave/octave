@@ -58,7 +58,7 @@ private:
 
   //pointer to start of mmap'ed file data, or 0 if the file is not mmap'ed
   char* fileMap;
- 
+
   //incremented whenver 'add' is called and decremented whenever
   //'get' is called.
   //this is used to detect when a large number of lines are being read and processed from the history
@@ -167,7 +167,7 @@ public:
 
   void setMaxNbLines(unsigned int nbLines);
   unsigned int maxNbLines() { return _maxLineCount; }
-  
+
 
 private:
   int bufferIndex(int lineNumber);
@@ -175,9 +175,9 @@ private:
   HistoryLine* _historyBuffer;
   QBitArray _wrappedLine;
   int _maxLineCount;
-  int _usedLines;  
+  int _usedLines;
   int _head;
-  
+
   //QVector<histline*> m_histBuffer;
   //QBitArray m_wrappedLine;
   //unsigned int m_maxNbLines;
@@ -255,7 +255,7 @@ public:
 
   /**
    * Returns true if the history is enabled ( can store lines of output )
-   * or false otherwise. 
+   * or false otherwise.
    */
   virtual bool isEnabled()           const = 0;
   /**
@@ -286,7 +286,7 @@ class HistoryTypeBlockArray : public HistoryType
 {
 public:
   HistoryTypeBlockArray(size_t size);
-  
+
   virtual bool isEnabled() const;
   virtual int maximumLineCount() const;
 
@@ -317,7 +317,7 @@ class HistoryTypeBuffer : public HistoryType
 {
 public:
   HistoryTypeBuffer(unsigned int nbLines);
-  
+
   virtual bool isEnabled() const;
   virtual int maximumLineCount() const;
 

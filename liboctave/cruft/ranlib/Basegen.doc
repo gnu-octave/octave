@@ -33,7 +33,7 @@
 
                                  Barry W. Brown
                                   James Lovato
-                                   
+
 
 
 
@@ -177,49 +177,49 @@ V. CALLING SEQUENCES
 
       A. SETTING THE SEED OF ALL GENERATORS
 
-C**********************************************************************  
-C                                                                        
-C      SUBROUTINE SETALL(ISEED1,ISEED2)                                  
-C               SET ALL random number generators                         
-C                                                                        
-C     Sets the initial seed of generator 1 to ISEED1 and ISEED2. The     
-C     initial seeds of the other generators are set accordingly, and     
-C     all generators states are set to these seeds.                      
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C                                                                        
-C     ISEED1 -> First of two integer seeds                               
-C                                   INTEGER ISEED1                       
-C                                                                        
-C     ISEED2 -> Second of two integer seeds                              
-C                                   INTEGER ISEED1                       
-C                                                                        
-C**********************************************************************  
+C**********************************************************************
+C
+C      SUBROUTINE SETALL(ISEED1,ISEED2)
+C               SET ALL random number generators
+C
+C     Sets the initial seed of generator 1 to ISEED1 and ISEED2. The
+C     initial seeds of the other generators are set accordingly, and
+C     all generators states are set to these seeds.
+C
+C                              Arguments
+C
+C
+C     ISEED1 -> First of two integer seeds
+C                                   INTEGER ISEED1
+C
+C     ISEED2 -> Second of two integer seeds
+C                                   INTEGER ISEED1
+C
+C**********************************************************************
 
 
       B. OBTAINING RANDOM NUMBERS
 
-C**********************************************************************  
-C                                                                        
-C     INTEGER FUNCTION IGNLGI()                                          
-C               GeNerate LarGe Integer                                   
-C                                                                        
-C     Returns a random integer following a uniform distribution over     
-C     (1, 2147483562) using the current generator.                       
-C                                                                        
-C**********************************************************************  
+C**********************************************************************
+C
+C     INTEGER FUNCTION IGNLGI()
+C               GeNerate LarGe Integer
+C
+C     Returns a random integer following a uniform distribution over
+C     (1, 2147483562) using the current generator.
+C
+C**********************************************************************
 
-C**********************************************************************  
-C                                                                        
-C     REAL FUNCTION RANF()                                               
-C                RANDom number generator as a Function                   
-C                                                                        
-C     Returns a random floating point number from a uniform distribution 
-C     over 0 - 1 (endpoints of this interval are not returned) using the 
-C     current generator                                                  
-C                                                                        
-C**********************************************************************  
+C**********************************************************************
+C
+C     REAL FUNCTION RANF()
+C                RANDom number generator as a Function
+C
+C     Returns a random floating point number from a uniform distribution
+C     over 0 - 1 (endpoints of this interval are not returned) using the
+C     current generator
+C
+C**********************************************************************
 
 
 
@@ -228,116 +228,116 @@ Base Random Number Generator                                    Page 4
 
       C. SETTING AND OBTAINING THE NUMBER OF THE CURRENT GENERATOR
 
-C**********************************************************************  
-C                                                                        
-C     SUBROUTINE SETCGN( G )                                             
-C                      Set GeNerator                                     
-C                                                                        
+C**********************************************************************
+C
+C     SUBROUTINE SETCGN( G )
+C                      Set GeNerator
+C
 C     Sets  the  current  generator to G. All references to a generator
-C     are to the current generator.                                      
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C     G --> Number of the current random number generator (1..32)        
-C                    INTEGER G                                           
-C                                                                        
+C     are to the current generator.
+C
+C                              Arguments
+C
+C     G --> Number of the current random number generator (1..32)
+C                    INTEGER G
+C
 C**********************************************************************
 
-C**********************************************************************  
-C                                                                        
-C      SUBROUTINE GETCGN(G)                                              
-C                         Get GeNerator                                  
-C                                                                        
-C     Returns in G the number of the current random number generator     
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C     G <-- Number of the current random number generator (1..32)        
-C                    INTEGER G                                           
-C                                                                        
-C**********************************************************************  
-  
+C**********************************************************************
+C
+C      SUBROUTINE GETCGN(G)
+C                         Get GeNerator
+C
+C     Returns in G the number of the current random number generator
+C
+C                              Arguments
+C
+C     G <-- Number of the current random number generator (1..32)
+C                    INTEGER G
+C
+C**********************************************************************
+
       D. OBTAINING OR CHANGING SEEDS IN CURRENT GENERATOR
 
-C**********************************************************************  
-C                                                                        
-C     SUBROUTINE ADVNST(K)                                               
-C               ADV-a-N-ce ST-ate                                        
-C                                                                        
-C     Advances the state  of  the current  generator  by 2^K values  and 
-C     resets the initial seed to that value.                             
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C                                                                        
-C     K -> The generator is advanced by 2^K values                        
-C                                   INTEGER K                            
-C                                                                        
-C**********************************************************************  
+C**********************************************************************
+C
+C     SUBROUTINE ADVNST(K)
+C               ADV-a-N-ce ST-ate
+C
+C     Advances the state  of  the current  generator  by 2^K values  and
+C     resets the initial seed to that value.
+C
+C                              Arguments
+C
+C
+C     K -> The generator is advanced by 2^K values
+C                                   INTEGER K
+C
+C**********************************************************************
 
 
 
 Base Random Number Generator                                    Page 5
 
 
-C**********************************************************************  
-C                                                                        
-C     SUBROUTINE GETSD(ISEED1,ISEED2)                                  
-C               GET SeeD                                                 
-C                                                                        
-C     Returns the value of two integer seeds of the current generator    
+C**********************************************************************
 C
-C                              Arguments                                 
-C                                                                        
-C                                                                        
-C                                                                        
-C     ISEED1 <- First integer seed of generator G                        
-C                                   INTEGER ISEED1                       
-C                                                                        
-C     ISEED2 <- Second integer seed of generator G                       
-C                                   INTEGER ISEED1                       
-C                                                                        
-C**********************************************************************  
+C     SUBROUTINE GETSD(ISEED1,ISEED2)
+C               GET SeeD
+C
+C     Returns the value of two integer seeds of the current generator
+C
+C                              Arguments
+C
+C
+C
+C     ISEED1 <- First integer seed of generator G
+C                                   INTEGER ISEED1
+C
+C     ISEED2 <- Second integer seed of generator G
+C                                   INTEGER ISEED1
+C
+C**********************************************************************
 
-C**********************************************************************  
-C                                                                        
-C     SUBROUTINE INITGN(ISDTYP)                                          
-C          INIT-ialize current G-e-N-erator                              
-C                                                                        
-C     Reinitializes the state of the current generator                   
+C**********************************************************************
 C
-C                              Arguments                                 
-C                                                                        
-C                                                                        
-C     ISDTYP -> The state to which the generator is to be set            
+C     SUBROUTINE INITGN(ISDTYP)
+C          INIT-ialize current G-e-N-erator
+C
+C     Reinitializes the state of the current generator
+C
+C                              Arguments
+C
+C
+C     ISDTYP -> The state to which the generator is to be set
 C          ISDTYP = -1  => sets the seeds to their initial value
 C          ISDTYP =  0  => sets the seeds to the first value of
 C                          the current block
 C          ISDTYP =  1  => sets the seeds to the first value of
 C                          the next block
-C                                                                        
-C                                   INTEGER ISDTYP                       
-C                                                                        
-C**********************************************************************  
+C
+C                                   INTEGER ISDTYP
+C
+C**********************************************************************
 
-C**********************************************************************  
-C                                                                        
-C     SUBROUTINE SETSD(ISEED1,ISEED2)                                    
-C               SET S-ee-D of current generator                          
-C                                                                        
+C**********************************************************************
+C
+C     SUBROUTINE SETSD(ISEED1,ISEED2)
+C               SET S-ee-D of current generator
+C
 C     Resets the initial  seed of  the current  generator to  ISEED1 and
 C     ISEED2. The seeds of the other generators remain unchanged.
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C                                                                        
-C     ISEED1 -> First integer seed                                       
-C                                   INTEGER ISEED1                       
-C                                                                        
-C     ISEED2 -> Second integer seed                                      
-C                                   INTEGER ISEED1                       
-C                                                                        
-C**********************************************************************  
+C
+C                              Arguments
+C
+C
+C     ISEED1 -> First integer seed
+C                                   INTEGER ISEED1
+C
+C     ISEED2 -> Second integer seed
+C                                   INTEGER ISEED1
+C
+C**********************************************************************
 
 
 
@@ -346,37 +346,37 @@ Base Random Number Generator                                    Page 6
 
       E. MISCELLANY
 
-C**********************************************************************  
-C                                                                        
-C     INTEGER FUNCTION MLTMOD(A,S,M)                                     
-C                                                                        
-C                    Returns (A*S) MOD M                                 
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C                                                                        
-C     A, S, M  -->                                                       
-C                         INTEGER A,S,M                                  
-C                                                                        
-C**********************************************************************  
+C**********************************************************************
+C
+C     INTEGER FUNCTION MLTMOD(A,S,M)
+C
+C                    Returns (A*S) MOD M
+C
+C                              Arguments
+C
+C
+C     A, S, M  -->
+C                         INTEGER A,S,M
+C
+C**********************************************************************
 
-C**********************************************************************  
-C                                                                        
-C      SUBROUTINE SETANT(QVALUE)                                         
-C               SET ANTithetic                                           
-C                                                                        
-C     Sets whether the current generator produces antithetic values.  If 
-C     X   is  the value  normally returned  from  a uniform [0,1] random 
-C     number generator then 1  - X is the antithetic  value. If X is the 
-C     value  normally  returned  from a   uniform  [0,N]  random  number 
-C     generator then N - 1 - X is the antithetic value.                  
-C                                                                        
-C     All generators are initialized to NOT generate antithetic values.  
-C                                                                        
-C                              Arguments                                 
-C                                                                        
-C     QVALUE -> .TRUE. if generator G is to generating antithetic        
-C                    values, otherwise .FALSE.                           
-C                                   LOGICAL QVALUE                       
-C                                                                        
-C**********************************************************************  
+C**********************************************************************
+C
+C      SUBROUTINE SETANT(QVALUE)
+C               SET ANTithetic
+C
+C     Sets whether the current generator produces antithetic values.  If
+C     X   is  the value  normally returned  from  a uniform [0,1] random
+C     number generator then 1  - X is the antithetic  value. If X is the
+C     value  normally  returned  from a   uniform  [0,N]  random  number
+C     generator then N - 1 - X is the antithetic value.
+C
+C     All generators are initialized to NOT generate antithetic values.
+C
+C                              Arguments
+C
+C     QVALUE -> .TRUE. if generator G is to generating antithetic
+C                    values, otherwise .FALSE.
+C                                   LOGICAL QVALUE
+C
+C**********************************************************************

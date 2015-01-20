@@ -12,7 +12,7 @@ main (void)
     for (octave_idx_type j = 0; j < n; j++)
       a_matrix(i,j) = (i + 1) * 10 + (j + 1);
 
-  std::cout << "This is a matrix:" << std::endl 
+  std::cout << "This is a matrix:" << std::endl
             << a_matrix            << std::endl;
 
   octave_value_list in;
@@ -21,8 +21,8 @@ main (void)
   octave_value_list out = Fnorm (in, 1);
   double norm_of_the_matrix = out(0).double_value ();
 
-  std::cout << "This is the norm of the matrix:" << std::endl 
+  std::cout << "This is the norm of the matrix:" << std::endl
             << norm_of_the_matrix                << std::endl;
-  
+
   return 0;
 }

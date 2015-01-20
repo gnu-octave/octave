@@ -12,7 +12,7 @@ C
 C-----------------------------------------------------------------------
 C***DESCRIPTION
 C
-C This subroutine checks for constraint violations in the initial 
+C This subroutine checks for constraint violations in the initial
 C approximate solution u.
 C
 C On entry
@@ -57,17 +57,17 @@ C-----------------------------------------------------------------------
             IF (Y(I) .LT. ZERO) THEN
                IRET = I
                RETURN
-            ENDIF 
+            ENDIF
          ELSEIF (ICNSTR(I) .EQ. -1) THEN
             IF (Y(I) .GT. ZERO) THEN
                IRET = I
                RETURN
-            ENDIF 
+            ENDIF
          ELSEIF (ICNSTR(I) .EQ. -2) THEN
             IF (Y(I) .GE. ZERO) THEN
                IRET = I
                RETURN
-            ENDIF 
+            ENDIF
         ENDIF
  100  CONTINUE
       RETURN

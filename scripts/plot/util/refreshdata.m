@@ -98,7 +98,7 @@ function refreshdata (h, workspace)
       expr = obj.(m{j});       # datasource field
       val = evalin (workspace, expr);
       pdname = m{j}(1:end-6);  # property data name without "source"
-      set (h(i), pdname, val); 
+      set (h(i), pdname, val);
     endfor
   endfor
 endfunction

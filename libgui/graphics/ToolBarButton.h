@@ -31,7 +31,7 @@ namespace QtHandles
 {
 
 class Container;
-  
+
 template <class T>
 class ToolBarButton : public Object
 {

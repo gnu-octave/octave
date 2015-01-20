@@ -71,7 +71,7 @@ function [nf, nv] = shrinkfaces (varargin)
   if (nargin < 1 || nargin > 3 || nargout > 2)
     print_usage ();
   endif
-  
+
   sf = 0.3;
   colors = [];
   p = varargin{1};
@@ -102,7 +102,7 @@ function [nf, nv] = shrinkfaces (varargin)
   else
     print_usage ();
   endif
-  
+
   if (! isscalar (sf) || sf <= 0)
     error ("shrinkfaces: scale factor must be a positive scalar");
   endif
@@ -131,7 +131,7 @@ function [nf, nv] = shrinkfaces (varargin)
   midpoints = full (kron (speye (sv / m), ones (m, m) / m) * sparse (v));
   v = sqrt (sf) * (v - midpoints) + midpoints;
   f = reshape (1:sv, m, sv / m)';
-  
+
   switch (nargout)
     case 0
       if (ishandle (p))

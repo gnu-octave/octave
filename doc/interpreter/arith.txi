@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -21,7 +21,7 @@
 
 Unless otherwise noted, all of the functions described in this chapter
 will work for real and complex scalar, vector, or matrix arguments.  Functions
-described as @dfn{mapping functions} apply the given operation individually to 
+described as @dfn{mapping functions} apply the given operation individually to
 each element when given a matrix argument.  For example:
 
 @example

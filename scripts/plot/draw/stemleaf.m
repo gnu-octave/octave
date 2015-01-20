@@ -49,7 +49,7 @@
 ## #% nx|___________________     nx = numel (x)
 ## M% mi|       md         |     mi median index, md median
 ## H% hi|hl              hu| hs  hi lower hinge index, hl,hu hinges,
-## 1    |x(1)         x(nx)|     hs h_spreadx(1), x(nx) first 
+## 1    |x(1)         x(nx)|     hs h_spreadx(1), x(nx) first
 ##            _______            and last data value.
 ##      ______|step |_______     step 1.5*h_spread
 ##     f|ifl            ifh|     inner fence, lower and higher
@@ -65,12 +65,12 @@
 ## successive leaf values are separated by ",".
 ##
 ## With no return argument, the plot is immediately displayed.  If an output
-## argument is provided, the plot is returned as an array of strings. 
+## argument is provided, the plot is returned as an array of strings.
 ##
 ## The leaf digits are not sorted.  If sorted leaf values are desired, use
 ## @code{@var{xs} = sort (@var{x})} before calling @code{stemleaf (@var{xs})}.
 ##
-## The stem and leaf plot and associated displays are described in: 
+## The stem and leaf plot and associated displays are described in:
 ## Ch. 3, @cite{Exploratory Data Analysis} by J. W. Tukey, Addison-Wesley, 1977.
 ## @seealso{hist, printd}
 ## @end deftypefn
@@ -204,7 +204,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   plot_out = [plot_out; sprintf("     M%3d|       %5d      |", mdidx, md)];
   plot_out = [plot_out; sprintf("     H%3d|%5d        %5d|   %d", hlidx, hl, hu, h_spread)];
   plot_out = [plot_out; sprintf("     1   |%5d        %5d|", xs(1), xs(nx))];
-  plot_out = [plot_out; sprintf("               _______")];   
+  plot_out = [plot_out; sprintf("               _______")];
   plot_out = [plot_out; sprintf("         ______|%5d|_______",step)];
   plot_out = [plot_out; sprintf("        f|%5d        %5d|", i_fence_l, i_fence_h)];
   plot_out = [plot_out; sprintf("         |%5d        %5d|  out", n_out_l, n_out_h)];
@@ -288,7 +288,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
       plot_out = [plot_out; line];
       new_line = 1;
     else
-      if (new_line == 1) 
+      if (new_line == 1)
         plot_out = [plot_out; "     :"];  # just print one : if no leaves
         new_line = 0;
       endif

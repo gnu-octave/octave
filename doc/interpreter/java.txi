@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -236,9 +236,9 @@ Example:
 
 @example
 @group
-%% 
+%%
 %% Return: true if the environment is Octave.
-%% 
+%%
 function retval = isOctave
   persistent cacheval;  % speeds up repeated calls
 
@@ -302,7 +302,7 @@ classpath (if any).  Thus, it is possible to build an initial static classpath
 on a 'per user' basis.
 
 @item Finally, Octave looks for a next occurrence of file
-@file{javaclasspath.txt} in the m-files directory where Octave Java functions 
+@file{javaclasspath.txt} in the m-files directory where Octave Java functions
 live.  This is where @file{javaclasspath.m} resides, usually something like
 @file{@w{@env{OCTAVE_HOME}}/share/octave/@w{@env{OCTAVE_VERSION}}/m/java/}.  You can
 find this directory by executing the command

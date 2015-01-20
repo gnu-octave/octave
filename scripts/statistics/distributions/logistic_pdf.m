@@ -43,7 +43,7 @@ endfunction
 
 %!shared x,y
 %! x = [-Inf -log(4) 0 log(4) Inf];
-%! y = [0, 0.16, 1/4, 0.16, 0]; 
+%! y = [0, 0.16, 1/4, 0.16, 0];
 %!assert (logistic_pdf ([x, NaN]), [y, NaN], eps)
 
 %% Test class of input preserved

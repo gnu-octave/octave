@@ -72,7 +72,7 @@
 ## unspecified, @var{extrap} defaults to @code{NA}.
 ##
 ## If the string argument @qcode{"pp"} is specified, then @var{xi} should not
-## be supplied and @code{interp1} returns a piecewise polynomial object.  This 
+## be supplied and @code{interp1} returns a piecewise polynomial object.  This
 ## object can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
 ## @var{y}, @var{method}, @qcode{"pp"}), @var{xi}) == interp1 (@var{x}, @var{y},

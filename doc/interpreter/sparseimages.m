@@ -192,8 +192,8 @@ function femimages (nm, typ)
     elems = [];
     for idx = 1 : w-1
       widx = (idx-1)*h;
-      elems = [elems; widx+[(1:h-1);(2:h);h+(1:h-1)]']; 
-      elems = [elems; widx+[(2:h);h+(2:h);h+(1:h-1)]']; 
+      elems = [elems; widx+[(1:h-1);(2:h);h+(1:h-1)]'];
+      elems = [elems; widx+[(2:h);h+(2:h);h+(1:h-1)]'];
     endfor
 
     E = size (elems,1);  # No. of elements
@@ -209,9 +209,9 @@ function femimages (nm, typ)
     conductivity = [1*ones(1,16), 2*ones(1,48), 1*ones(1,16)];
 
     ## Dirichlet boundary conditions
-    D_nodes = [1:5, 51:55]; 
-    D_value = [10*ones(1,5), 20*ones(1,5)]; 
-  
+    D_nodes = [1:5, 51:55];
+    D_value = [10*ones(1,5), 20*ones(1,5)];
+
     ## Neumann boundary conditions
     ## Note that N_value must be normalized by the boundary
     ##   length and element conductivity

@@ -78,7 +78,7 @@ C     JJV case dfn > 1.0
 
 C     xden = genchi(dfd)/dfd
  30   xden = 2.0*sgamma(dfd/2.0)/dfd
-      
+
 C     JJV changed constant so that it will not underflow at compile time
 C     JJV while not slowing generator by using double precision or logs.
 C      IF (.NOT. (xden.LE. (1.0E-38*xnum))) GO TO 40

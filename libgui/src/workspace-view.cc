@@ -382,5 +382,5 @@ workspace_view::selectAll ()
 {
   if (view->hasFocus ())
     view->selectAll ();
-}  
+}
 

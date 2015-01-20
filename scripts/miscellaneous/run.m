@@ -53,11 +53,11 @@ function run (script)
       script = [script ".m"];
     endif
   endif
-  
+
   if (! exist (script, "file"))
     error ("run: file SCRIPT must exist and be a valid Octave scriptfile");
   endif
-  
+
   if (! isempty (d))
     if (exist (d, "dir"))
       startdir = pwd ();

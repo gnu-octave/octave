@@ -77,13 +77,13 @@
 function h = patch (varargin)
 
   [hax, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
-  
+
   if (isempty (hax))
     hax = gca ();
   else
     hax = hax(1);
   endif
-  
+
   [htmp, failed] = __patch__ (hax, varargin{:});
 
   if (failed)

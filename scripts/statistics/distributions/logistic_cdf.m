@@ -43,7 +43,7 @@ endfunction
 
 %!shared x,y
 %! x = [-Inf -log(3) 0 log(3) Inf];
-%! y = [0, 1/4, 1/2, 3/4, 1]; 
+%! y = [0, 1/4, 1/2, 3/4, 1];
 %!assert (logistic_cdf ([x, NaN]), [y, NaN], eps)
 
 %% Test class of input preserved

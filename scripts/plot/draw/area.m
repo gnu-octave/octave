@@ -70,14 +70,14 @@ function h = area (varargin)
 
   num_numeric = find (cellfun ("isclass", varargin, "char"), 1) - 1;
   if (isempty (num_numeric))
-    num_numeric = nargin;     
+    num_numeric = nargin;
   endif
 
   switch (num_numeric)
     case 1
       y = varargin{1};
     case 2
-      if (isscalar (varargin{2})) 
+      if (isscalar (varargin{2}))
         y = varargin{1};
         bv = varargin{2};
       else
@@ -247,7 +247,7 @@ endfunction
 %! y = [sin(t).^2, cos(t).^2];
 %! area (t, y);
 %! axis tight
-%! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');  
+%! legend ('sin^2', 'cos^2', 'location', 'NorthEastOutside');
 %! title ('area() plot');
 
 %!demo

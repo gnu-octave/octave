@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} ver Octave
 ## @deftypefnx {Function File} {} ver @var{package}
 ## @deftypefnx {Function File} {v =} ver (@dots{})
-## 
+##
 ## Display a header containing the current Octave version number, license
 ## string, and operating system.  The header is followed by a list of installed
 ## packages, versions, and installation directories.

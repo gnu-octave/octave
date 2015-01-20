@@ -3,7 +3,7 @@
 ################################################################################
 # File   : spellcheck
 # Purpose: Spellcheck a single Texinfo file
-#          written in Perl, rather than the shell, to be more portable to OS 
+#          written in Perl, rather than the shell, to be more portable to OS
 #          without good command lines such as Windows.
 # Usage  : spellcheck FILENAME.texi
 ################################################################################

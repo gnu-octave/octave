@@ -89,8 +89,8 @@ function hax = newplot (hsave = [])
   ca = [];
 
   if (! isempty (hsave))
-    ## Find the first valid axes 
-    ca = ancestor (hsave, "axes", "toplevel"); 
+    ## Find the first valid axes
+    ca = ancestor (hsave, "axes", "toplevel");
     if (iscell (ca))
       ca = [ca{:}];
     endif
@@ -100,7 +100,7 @@ function hax = newplot (hsave = [])
     if (! isempty (ca))
       cf = ancestor (ca, "figure", "toplevel");
     else
-      cf = ancestor (hsave, "figure", "toplevel"); 
+      cf = ancestor (hsave, "figure", "toplevel");
       if (iscell (cf))
         cf = [cf{:}];
       endif
@@ -237,18 +237,18 @@ endfunction
 %!   newplot (hg2);
 %!   assert (ishandle (li0), false);
 %!   assert (get (hax, "children"), hg1);
-%! 
+%!
 %!   ## kids are preserved for hggroups
 %!   kids = get (hg1, "children");
-%!   newplot (hg1); 
+%!   newplot (hg1);
 %!   assert (get (hg1, "children"), kids);
-%! 
+%!
 %!   ## preserve objects
 %!   newplot (li1);
 %!   assert (ishandle (li1));
-%! 
+%!
 %!   ## kids are deleted for axes
-%!   newplot (hax);  
+%!   newplot (hax);
 %!   assert (isempty (get (hax, "children")));
 %! unwind_protect_cleanup
 %!   close (hf);

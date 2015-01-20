@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DATV (NEQ, Y, TN, YPRIME, SAVR, V, WGHT, YPTEM, RES,
@@ -52,7 +52,7 @@ C         WP = Real work array used by preconditioner PSOL.
 C
 C         IWP = Integer work array used by preconditioner PSOL.
 C
-C           CJ = Scalar proportional to current value of 
+C           CJ = Scalar proportional to current value of
 C                1/(step size H).
 C
 C

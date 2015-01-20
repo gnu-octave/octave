@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DDSTP(X,Y,YPRIME,NEQ,RES,JAC,PSOL,H,WT,VT,
@@ -18,11 +18,11 @@ C
 C-----------------------------------------------------------------------
 C***DESCRIPTION
 C
-C     DDSTP solves a system of differential/algebraic equations of 
+C     DDSTP solves a system of differential/algebraic equations of
 C     the form G(X,Y,YPRIME) = 0, for one step (normally from X to X+H).
 C
-C     The methods used are modified divided difference, fixed leading 
-C     coefficient forms of backward differentiation formulas.  
+C     The methods used are modified divided difference, fixed leading
+C     coefficient forms of backward differentiation formulas.
 C     The code adjusts the stepsize and order to control the local error
 C     per step.
 C
@@ -41,7 +41,7 @@ C                  Jacobian or preconditioner information in the
 C                  nonlinear solver.  See JAC description in DDASPK
 C                  prologue.
 C     PSOL --      External user-supplied routine to solve
-C                  a linear system using preconditioning. 
+C                  a linear system using preconditioning.
 C                  (This is optional).  See PSOL in DDASPK prologue.
 C     H --         Appropriate step size for next step.
 C                  Normally determined by the code.
@@ -451,7 +451,7 @@ C
       RETURN
 C
 C
-C     Go back and try this step again.  
+C     Go back and try this step again.
 C     If this is the first step, reset PSI(1) and rescale PHI(*,2).
 C
 690   IF (KOLD .EQ. 0) THEN

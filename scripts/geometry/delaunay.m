@@ -51,8 +51,8 @@
 ## The default options are @code{@{"Qt", "Qbb", "Qc", "Qz"@}}.
 ##
 ## If @var{options} is not present or @code{[]} then the default arguments are
-## used.  Otherwise, @var{options} replaces the default argument list. 
-## To append user options to the defaults it is necessary to repeat the 
+## used.  Otherwise, @var{options} replaces the default argument list.
+## To append user options to the defaults it is necessary to repeat the
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
 ## @example
@@ -93,7 +93,7 @@ function tri = delaunay (varargin)
           z = varargin{1}(:,3);
         endif
       endif
-    
+
     case 2
       if (isnumeric (varargin{2}))
         x = varargin{1};

@@ -573,7 +573,7 @@ Undocumented internal function.\n\
                   if (a_is_sparse)
                     nconv = EigsRealNonSymmetricMatrixShift
                             (asmm, sigmar, k, p, info, eig_vec, eig_val, bsmm,
-                             permB, resid, octave_stdout, tol, (nargout > 1), 
+                             permB, resid, octave_stdout, tol, (nargout > 1),
                              cholB, disp, maxit);
                   else
                     nconv = EigsRealNonSymmetricMatrixShift

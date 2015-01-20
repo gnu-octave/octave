@@ -96,7 +96,7 @@ function out = base2dec (s, base)
     R(2, 2:2:2*nr) = num_nonbl;
     idx = repelems ([false, true], R);
     idx = reshape (idx, nc, nr);
-    
+
     ## Create a blank matrix and position the nonblank characters.
     s2 = repmat (" ", nc, nr);
     s2(idx) = s(nonbl);

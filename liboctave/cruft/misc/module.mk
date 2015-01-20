@@ -1,6 +1,6 @@
 EXTRA_DIST += \
   cruft/misc/module.mk \
-  cruft/misc/d1mach-tst.for 
+  cruft/misc/d1mach-tst.for
 
 CRUFT_SOURCES += \
   cruft/misc/blaswrap.c \

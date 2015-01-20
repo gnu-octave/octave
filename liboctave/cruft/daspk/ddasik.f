@@ -1,5 +1,5 @@
 C Work perfored under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DDASIK(X,Y,YPRIME,NEQ,ICOPT,ID,RES,JACK,PSOL,H,WT,
@@ -74,7 +74,7 @@ C                  is considered converging.
 C     JFLG      -- Flag showing whether a Jacobian routine is supplied.
 C     ICNFLG    -- Integer scalar.  If nonzero, then constraint
 C                  violations in the proposed new approximate solution
-C                  will be checked for, and the maximum step length 
+C                  will be checked for, and the maximum step length
 C                  will be adjusted accordingly.
 C     ICNSTR    -- Integer array of length NEQ containing flags for
 C                  checking constraints.
@@ -151,7 +151,7 @@ C
 C
 C       Up to MXNIT iterations were done, the convergence rate is < 1,
 C       a Jacobian routine is supplied, and the number of JACK calls
-C       is less than MXNJ.  
+C       is less than MXNJ.
 C       Copy the residual SAVR to DELTA, call JACK, and try again.
 C
         CALL DCOPY (NEQ,  SAVR, 1, DELTA, 1)

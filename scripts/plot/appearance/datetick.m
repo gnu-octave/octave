@@ -41,7 +41,7 @@ function datetick (varargin)
   endif
   if (isempty (hax))
     hax = gca ();
-  endif 
+  endif
 
   unwind_protect
     ## FIXME: This will bring the axes to the top of the stack.
@@ -99,7 +99,7 @@ function __datetick__ (varargin)
     varargin = varargin(! idx);
   endif
 
-  nargin = numel (varargin); 
+  nargin = numel (varargin);
   form = [];
   ax = "x";
 

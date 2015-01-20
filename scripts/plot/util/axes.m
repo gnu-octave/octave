@@ -33,7 +33,7 @@
 ## corresponding figure so that @var{hax} is the first entry in the list
 ## of children.  This causes @var{hax} to be displayed on top of any other
 ## axes objects (Z-order stacking).
-## 
+##
 ## @seealso {gca, set, get}
 ## @end deftypefn
 

@@ -6,12 +6,12 @@
 % under the terms of the GNU General Public License as published by the
 % Free Software Foundation; either version 3 of the License, or (at
 % your option) any later version.
-% 
+%
 % Octave is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 % for more details.
-% 
+%
 % You should have received a copy of the GNU General Public License
 % along with Octave; see the file COPYING.  If not, see
 % <http://www.gnu.org/licenses/>.
@@ -118,24 +118,24 @@ library, and how to report bugs.  It corresponds to Octave version
 @c ------------------------------------------------------------------------
 
 @menu
-* Acknowledgements::            
-* Copying::                     
-* Introduction::                
-* Arrays::                      
-* Matrix and Vector Operations::  
-* Matrix Factorizations::       
-* Ranges::                      
-* Nonlinear Functions::         
-* Nonlinear Equations::         
-* Optimization::                
-* Quadrature::                  
-* Ordinary Differential Equations::  
-* Differential Algebraic Equations::  
-* Error Handling::              
-* Installation::                
-* Bugs::                        
-* Concept Index::               
-* Function Index::              
+* Acknowledgements::
+* Copying::
+* Introduction::
+* Arrays::
+* Matrix and Vector Operations::
+* Matrix Factorizations::
+* Ranges::
+* Nonlinear Functions::
+* Nonlinear Equations::
+* Optimization::
+* Quadrature::
+* Ordinary Differential Equations::
+* Differential Algebraic Equations::
+* Error Handling::
+* Installation::
+* Bugs::
+* Concept Index::
+* Function Index::
 
  --- The Detailed Node Listing ---
 
@@ -145,20 +145,20 @@ Acknowledgements
 
 Arrays
 
-* Constructors and Assignment::  
+* Constructors and Assignment::
 
 Optimization
 
-* Objective Functions::         
-* Bounds::                      
-* Linear Constraints::          
-* Nonlinear Constraints::       
-* Quadratic Programming::       
-* Nonlinear Programming::       
+* Objective Functions::
+* Bounds::
+* Linear Constraints::
+* Nonlinear Constraints::
+* Quadratic Programming::
+* Nonlinear Programming::
 
 Quadrature
 
-* Collocation Weights::         
+* Collocation Weights::
 @end menu
 
 @c ------------------------------------------------------------------------

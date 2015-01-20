@@ -30,7 +30,7 @@ C      covar = covar + (x(i)-avx)* (y(i)-avy)
 C      covar = covar/real(n-1)
       onecov = onecov/real(n-1)
       RETURN
-      
+
       END
 
 C     JJV Added argument LDXCOV (leading dimension of XCOVAR) to be

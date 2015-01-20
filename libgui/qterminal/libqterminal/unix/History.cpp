@@ -87,7 +87,7 @@ HistoryFile::HistoryFile()
 	fileMap(0)
 {
   if (tmpFile.open())
-  { 
+  {
     tmpFile.setAutoRemove(true);
     ion = tmpFile.handle();
   }
@@ -111,7 +111,7 @@ void HistoryFile::map()
     //if mmap'ing fails, fall back to the read-lseek combination
     if ( fileMap == MAP_FAILED )
     {
-            readWriteBalance = 0; 
+            readWriteBalance = 0;
             fileMap = 0;
             qDebug() << ": mmap'ing history failed.  errno = " << errno;
     }
@@ -146,8 +146,8 @@ void HistoryFile::add(const unsigned char* bytes, int len)
 
 void HistoryFile::get(unsigned char* bytes, int len, int loc)
 {
-  //count number of get() calls vs. number of add() calls.  
-  //If there are many more get() calls compared with add() 
+  //count number of get() calls vs. number of add() calls.
+  //If there are many more get() calls compared with add()
   //calls (decided by using MAP_THRESHOLD) then mmap the log
   //file to improve performance.
   readWriteBalance--;
@@ -196,7 +196,7 @@ bool HistoryScroll::hasScroll()
 
 // History Scroll File //////////////////////////////////////
 
-/* 
+/*
    The history scroll makes a Row(Row(Cell)) from
    two history buffers. The index buffer contains
    start of line positions which refere to the cells
@@ -216,7 +216,7 @@ HistoryScrollFile::HistoryScrollFile(const QString &logFileName)
 HistoryScrollFile::~HistoryScrollFile()
 {
 }
- 
+
 int HistoryScrollFile::getLines()
 {
   return index.len() / sizeof(int);
@@ -241,7 +241,7 @@ int HistoryScrollFile::startOfLine(int lineno)
 {
   if (lineno <= 0) return 0;
   if (lineno <= getLines())
-    { 
+    {
 	
 	if (!index.isMapped())
 			index.map();
@@ -340,7 +340,7 @@ int HistoryScrollBuffer::getLineLen(int lineNumber)
 bool HistoryScrollBuffer::isWrappedLine(int lineNumber)
 {
   Q_ASSERT( lineNumber >= 0 && lineNumber < _maxLineCount );
-    
+
   if (lineNumber < _usedLines)
   {
     //kDebug() << "Line" << lineNumber << "wrapped is" << _wrappedLine[bufferIndex(lineNumber)];
@@ -356,12 +356,12 @@ void HistoryScrollBuffer::getCells(int lineNumber, int startColumn, int count, C
 
   Q_ASSERT( lineNumber < _maxLineCount );
 
-  if (lineNumber >= _usedLines) 
+  if (lineNumber >= _usedLines)
   {
     memset(buffer, 0, count * sizeof(Character));
     return;
   }
-  
+
   const HistoryLine& line = _historyBuffer[bufferIndex(lineNumber)];
 
   //kDebug() << "startCol " << startColumn;
@@ -369,7 +369,7 @@ void HistoryScrollBuffer::getCells(int lineNumber, int startColumn, int count, C
   //kDebug() << "count " << count;
 
   Q_ASSERT( startColumn <= line.size() - count );
-    
+
   memcpy(buffer, line.constData() + startColumn , count * sizeof(Character));
 }
 
@@ -377,12 +377,12 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
 {
     HistoryLine* oldBuffer = _historyBuffer;
     HistoryLine* newBuffer = new HistoryLine[lineCount];
-    
+
     for ( int i = 0 ; i < qMin(_usedLines,(int)lineCount) ; i++ )
     {
         newBuffer[i] = oldBuffer[bufferIndex(i)];
     }
-    
+
     _usedLines = qMin(_usedLines,(int)lineCount);
     _maxLineCount = lineCount;
     _head = ( _usedLines == _maxLineCount ) ? 0 : _usedLines-1;
@@ -404,7 +404,7 @@ int HistoryScrollBuffer::bufferIndex(int lineNumber)
         return (_head+lineNumber+1) % _maxLineCount;
     }
     else
-    {   
+    {
         return lineNumber;
     }
 }
@@ -502,7 +502,7 @@ void HistoryScrollBlockArray::getCells(int lineno, int colno,
 void HistoryScrollBlockArray::addCells(const Character a[], int count)
 {
   Block *b = m_blockArray.lastBlock();
-  
+
   if (!b) return;
 
   // put cells in block's data
@@ -660,7 +660,7 @@ const QString& HistoryTypeFile::getFileName() const
 
 HistoryScroll* HistoryTypeFile::scroll(HistoryScroll *old) const
 {
-  if (dynamic_cast<HistoryFile *>(old)) 
+  if (dynamic_cast<HistoryFile *>(old))
      return old; // Unchanged.
 
   HistoryScroll *newScroll = new HistoryScrollFile(m_fileName);
@@ -687,7 +687,7 @@ HistoryScroll* HistoryTypeFile::scroll(HistoryScroll *old) const
   }
 
   delete old;
-  return newScroll; 
+  return newScroll;
 }
 
 int HistoryTypeFile::maximumLineCount() const

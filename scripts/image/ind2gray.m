@@ -47,7 +47,7 @@ function I = ind2gray (x, map)
   endif
   [x, map] = ind2x ("ind2gray", x, map);
 
-  ## Convert colormap to luminance intensity values 
+  ## Convert colormap to luminance intensity values
   map *= [0.29894; 0.58704; 0.11402];
 
   ## Convert colormap to same class as that of input so that reshape

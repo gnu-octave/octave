@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} trisurf (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} trisurf (@dots{})
 ## Plot a 3-D triangular surface.
-## 
+##
 ## In contrast to @code{surf}, which plots a surface mesh using rectangles,
 ## @code{trisurf} plots the mesh using triangles.
 ##
@@ -31,7 +31,7 @@
 ## and contains three indices into [@var{x}, @var{y}] which are the
 ## vertices of the triangles in the x-y plane.  @var{z} determines the
 ## height above the plane of each vertex.
-## 
+##
 ## The color of the trimesh is computed by linearly scaling the @var{z} values
 ## to fit the range of the current colormap.  Use @code{caxis} and/or
 ## change the colormap to control the appearance.

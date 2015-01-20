@@ -24,7 +24,7 @@
 ## the integer values 1--@var{n} with equal probability.
 ##
 ## Warning: The underlying implementation uses the double class and
-## will only be accurate for @var{n} @leq{} @code{bitmax} 
+## will only be accurate for @var{n} @leq{} @code{bitmax}
 ## (@w{@math{2^{53} - 1}} on IEEE-754 compatible systems).
 ## @end deftypefn
 

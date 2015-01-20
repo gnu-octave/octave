@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
 ## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
 ## @deftypefnx {Function File} {} freqz (@dots{})
-## 
+##
 ## Return the complex frequency response @var{h} of the rational IIR filter
 ## whose numerator and denominator coefficients are @var{b} and @var{a},
 ## respectively.  The response is evaluated at @var{n} angular frequencies

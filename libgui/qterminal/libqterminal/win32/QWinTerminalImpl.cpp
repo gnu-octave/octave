@@ -279,7 +279,7 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   : q (parent), m_command (cmd), m_cursorBlinking (false),
-    m_hasBlinkingCursor (true), m_cursorType (BlockCursor), 
+    m_hasBlinkingCursor (true), m_cursorType (BlockCursor),
     m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
     m_process (NULL), m_inWheelEvent (false)
 {
@@ -416,7 +416,7 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
 
   m_blinkCursorTimer = new QTimer (parent);
   QObject::connect (m_blinkCursorTimer, SIGNAL (timeout()),
-                    q, SLOT (blinkCursorEvent ()));  
+                    q, SLOT (blinkCursorEvent ()));
 
   QObject::connect (m_horizontalScrollBar, SIGNAL (valueChanged (int)),
                     q, SLOT (horizontalScrollValueChanged (int)));
@@ -688,7 +688,7 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
 void QConsolePrivate::selectAll()
 {
   m_beginSelection = QPoint (0,0);
-  m_endSelection = QPoint(m_bufferSize.width (), 
+  m_endSelection = QPoint(m_bufferSize.width (),
                           m_cursorPos.y());
   updateSelection();
 }
@@ -714,13 +714,13 @@ void QConsolePrivate::selectWord (const QPoint & cellpos)
   if (QChar(m_buffer[begin.y ()*stride + begin.x ()].Char.UnicodeChar).isSpace () == false)
   {
     // from current char, go back and fwd to find start and end of block
-    while(begin.x () > 0 && 
+    while(begin.x () > 0 &&
           QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace() == false)
     {
         begin.rx () --;
     }
 
-    while(end.x () < m_consoleRect.width () && 
+    while(end.x () < m_consoleRect.width () &&
           QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace() == false)
     {
       end.rx () ++;
@@ -728,13 +728,13 @@ void QConsolePrivate::selectWord (const QPoint & cellpos)
   }
   else
   {
-    while(begin.x () > 0 && 
+    while(begin.x () > 0 &&
           QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace())
     {
       begin.rx () --;
     }
 
-    while(end.x () < m_consoleRect.width () && 
+    while(end.x () < m_consoleRect.width () &&
           QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace ())
     {
       end.rx () ++;
@@ -857,9 +857,9 @@ void QConsolePrivate::drawCursor (QPainter& p)
             {
               // draw the cursor outline, adjusting the area so that
               // it is draw entirely inside 'rect'
- 
+
               int penWidth = qMax (1, p.pen().width());
- 
+
               p.drawRect (rect.adjusted (penWidth/2, penWidth/2,
                                          - penWidth/2 - penWidth%2,
                                          - penWidth/2 - penWidth%2));
@@ -1012,7 +1012,7 @@ void QConsolePrivate::updateConsoleSize (bool sync, bool allow_smaller_width)
   // command editor will actually use.
 
   qputenv ("LINES", QByteArray::number (m_consoleRect.height ()));
-  qputenv ("COLUMNS", QByteArray::number (m_consoleRect.width ())); 
+  qputenv ("COLUMNS", QByteArray::number (m_consoleRect.width ()));
 
   // Force the command line editor (usually readline) to notice the
   // change in screen size as soon as possible.
@@ -1176,7 +1176,7 @@ void QConsolePrivate::setHorizontalScrollValue (int value)
   r.Bottom = m_consoleRect.bottom ();
 
   log ("Scrolling window horizontally: (%d, %d) -> (%d, %d) [%d x %d]\n",
-       r.Left, r.Top, r.Right, r.Bottom, 
+       r.Left, r.Top, r.Right, r.Bottom,
        r.Right - r.Left + 1, r.Bottom - r.Top + 1);
 
   if (SetConsoleWindowInfo (hStdOut, TRUE, &r))
@@ -1203,7 +1203,7 @@ void QConsolePrivate::setVerticalScrollValue (int value)
   r.Bottom = value + m_consoleRect.height () - 1;
 
   log ("Scrolling window vertically: (%d, %d) -> (%d, %d) [%d x %d]\n",
-       r.Left, r.Top, r.Right, r.Bottom, 
+       r.Left, r.Top, r.Right, r.Bottom,
        r.Right - r.Left + 1, r.Bottom - r.Top + 1);
 
   if (SetConsoleWindowInfo (hStdOut, TRUE, &r))
@@ -1376,11 +1376,11 @@ void QConsolePrivate::sendConsoleText (const QString& s)
           events[nEvents].Event.KeyEvent.uChar.UnicodeChar = c.unicode ();
           events[nEvents].Event.KeyEvent.dwControlKeyState = 0;
           nEvents++;
- 
+
           WriteConsoleInput (hStdIn, events, nEvents, &written);
           nEvents = 0;
           ZeroMemory (events, sizeof (events));
- 
+
         }
       else
         {
@@ -1828,7 +1828,7 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
     {
       foreach (QUrl url, event->mimeData ()->urls ())
         {
-          if(dropText.length () > 0) 
+          if(dropText.length () > 0)
             dropText += "\n";
           dropText  += url.toLocalFile ();
         }

@@ -217,7 +217,7 @@ endfunction
 
 ## Series expansion (-2 < x < 0)
 ## Expected values from Mathematica
-%!test  
+%!test
 %! x = [-0.1; -0.5; -1; -1.5; -2];
 %! y_exp = [ 1.6228128139692767  - i*pi;
 %!          -0.45421990486317358 - i*pi;
@@ -228,7 +228,7 @@ endfunction
 %! assert (y, y_exp, eps (real (y_exp)));
 
 ## (x < -2, x real)
-%!test  
+%!test
 %! x = [-2.5; -3; -10;-15; -25];
 %! y_exp = [-7.0737658945786007   - i*pi;
 %!          -9.9338325706254165   - i*pi;
@@ -249,7 +249,7 @@ endfunction
 %! assert (y, y_exp, 1e-12);
 
 ## Exceptional values (-Inf, Inf, NaN, 0, 0.37250741078)
-%!test  
+%!test
 %! x = [-Inf; Inf; NaN; 0; -0.3725074107813668];
 %! y_exp = [-Inf - i*pi;
 %!          -Inf;  # should be 0;

@@ -85,7 +85,7 @@ elseif, ELSEIF, elseif_kw
 end, END, end_kw
 end_try_catch, END, end_try_catch_kw
 end_unwind_protect, END, end_unwind_protect_kw
-endclassdef, END, endclassdef_kw 
+endclassdef, END, endclassdef_kw
 endenumeration, END, endenumeration_kw
 endevents, END, endevents_kw
 endfor, END, endfor_kw

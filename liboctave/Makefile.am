@@ -83,7 +83,7 @@ include util/module.mk
 
 ## liboctave merely collects a bunch of compiled convenience libraries.
 ## It has no source code itself.
-liboctave_la_SOURCES = 
+liboctave_la_SOURCES =
 
 liboctave_la_CPPFLAGS = @OCTAVE_DLL_DEFS@ @CRUFT_DLL_DEFS@ $(AM_CPPFLAGS)
 

@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DLINSK (NEQ, Y, T, YPRIME, SAVR, CJ, P, PNRM, WT,
@@ -18,13 +18,13 @@ C-----------------------------------------------------------------------
 C***DESCRIPTION
 C
 C     DLINSK uses a linesearch algorithm to calculate a new (Y,YPRIME)
-C     pair (YNEW,YPNEW) such that 
+C     pair (YNEW,YPNEW) such that
 C
-C     f(YNEW,YPNEW) .le. (1 - 2*ALPHA*RL)*f(Y,YPRIME) + 
+C     f(YNEW,YPNEW) .le. (1 - 2*ALPHA*RL)*f(Y,YPRIME) +
 C                          ALPHA*RL*RHOK*RHOK ,
 C
 C     where 0 < RL <= 1, and RHOK is the scaled preconditioned norm of
-C     the final residual vector in the Krylov iteration.  
+C     the final residual vector in the Krylov iteration.
 C     Here, f(y,y') is defined as
 C
 C      f(y,y') = (1/2)*norm( (P-inverse)*G(t,y,y') )**2 ,
@@ -40,7 +40,7 @@ C                vector G(t,y,y') on return.
 C     P       -- Approximate Newton step used in backtracking.
 C     PNRM    -- Weighted RMS norm of P.
 C     LSOFF   -- Flag showing whether the linesearch algorithm is
-C                to be invoked.  0 means do the linesearch, 
+C                to be invoked.  0 means do the linesearch,
 C                1 means turn off linesearch.
 C     STPTOL  -- Tolerance used in calculating the minimum lambda
 C                value allowed.
@@ -58,7 +58,7 @@ C     YPNEW   -- Array of length NEQ used to hold the new YPRIME in
 C                performing the linesearch.
 C     PWK     -- Work vector of length NEQ for use in PSOL.
 C     Y       -- Array of length NEQ containing the new Y (i.e.,=YNEW).
-C     YPRIME  -- Array of length NEQ containing the new YPRIME 
+C     YPRIME  -- Array of length NEQ containing the new YPRIME
 C                (i.e.,=YPNEW).
 C     FNRM    -- Real scalar containing SQRT(2*f(Y,YPRIME)) for the
 C                current (Y,YPRIME) on input and output.
@@ -101,7 +101,7 @@ C
       RL = ONE
 C-----------------------------------------------------------------------
 C Check for violations of the constraints, if any are imposed.
-C If any violations are found, the step vector P is rescaled, and the 
+C If any violations are found, the step vector P is rescaled, and the
 C constraint check is repeated, until no violations are found.
 C-----------------------------------------------------------------------
       IF (ICNFLG .NE. 0) THEN

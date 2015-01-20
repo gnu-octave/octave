@@ -3,7 +3,7 @@
 ## for input-line editing.
 
 ## history-search-backward:
-## 
+##
 ##   Search backward through the history for the string of characters
 ##   between the start of the current line and the point.  This is a
 ##   non-incremental search.  Bound to "\e[A", the ANSI escape
@@ -12,7 +12,7 @@
 "\e[A": history-search-backward
 
 ## history-search-forward:
-## 
+##
 ##   Search forward through the history for the string of characters
 ##   between the start of the current line and the point.  This is a
 ##   non-incremental search.  Bound to "\e[B", the ANSI escape

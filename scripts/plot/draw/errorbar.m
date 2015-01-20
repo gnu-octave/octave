@@ -57,7 +57,7 @@
 ## When the error is a scalar all points share the same error value.
 ## The errorbars are symmetric and are drawn from @var{data}-@var{err} to
 ## @var{data}+@var{err}.
-## The @var{fmt} argument determines whether @var{err} is in the x-direction, 
+## The @var{fmt} argument determines whether @var{err} is in the x-direction,
 ## y-direction (default), or both.
 ##
 ## @item @var{err} (vector or matrix)

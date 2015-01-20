@@ -1,5 +1,5 @@
 ## Copyright (C) 2004 Josep Mones i Teixidor
-## Copyright (C) 2012-2013 Rik Wehbring 
+## Copyright (C) 2012-2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -69,11 +69,11 @@ function [Y, newmap] = cmpermute (X, map, index)
   ## build reverse index
   rindex = zeros (size (index));
   rindex(index) = 1:length (index);
- 
+
   ## preserve class of input image in output
-  if (strcmp (cls, "double")) 
+  if (strcmp (cls, "double"))
     Y = rindex(X);
-  elseif (strcmp (cls, "single")) 
+  elseif (strcmp (cls, "single"))
     rindex = single (rindex);
     Y = rindex(X);
   else
@@ -97,7 +97,7 @@ endfunction
 %!test # random permutation, 0-based index
 %! [Y, newmap] = cmpermute (X, map);
 %! ## test we didn't lose colors
-%! assert (sort (map), sortrows (newmap)); 
+%! assert (sort (map), sortrows (newmap));
 %! ## test if images are equal
 %! assert (map(double (X)+1), newmap(double (Y)+1));
 
@@ -115,7 +115,7 @@ endfunction
 %!test # random permutation, 1-based index
 %! [Y, newmap] = cmpermute (X, map);
 %! ## test we didn't lose colors
-%! assert (sort (map), sortrows (newmap)); 
+%! assert (sort (map), sortrows (newmap));
 %! ## test if images are equal
 %! assert (map(X), newmap(Y));
 

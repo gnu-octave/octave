@@ -130,7 +130,7 @@ function retval = help (name)
 endfunction
 
 function retval = do_list_operators ()
-  
+
   retval = sprintf ("*** operators:\n\n%s\n\n",
                     list_in_columns (__operators__ ()));
 endfunction

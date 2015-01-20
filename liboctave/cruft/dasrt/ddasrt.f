@@ -854,7 +854,7 @@ C
 C  ---------------------------------------------------------------------
 C
 C***REFERENCE
-C      K. E. Brenan, S. L. Campbell, and L. R. Petzold, Numerical 
+C      K. E. Brenan, S. L. Campbell, and L. R. Petzold, Numerical
 C      Solution of Initial-Value Problems in Differential-Algebraic
 C      Equations, Elsevier, New York, 1989.
 C
@@ -1284,7 +1284,7 @@ C     TEST H VS. HMAX
       IF (INFO(7) .EQ. 0) GO TO 526
          RH = ABS(H)/RWORK(LHMAX)
          IF (RH .GT. 1.0D0) H = H/RH
-526   CONTINUE     
+526   CONTINUE
 C
       CALL DDASTP(TN,Y,YPRIME,NEQ,
      *   RES,JAC,H,RWORK(LWT),INFO(1),IDID,RPAR,IPAR,

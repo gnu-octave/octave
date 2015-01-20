@@ -73,7 +73,7 @@
 ## @item
 ## @code{squeeze()} is applied to arguments with more than two dimensions,
 ## but no more than two singleton dimensions.
-## 
+##
 ## @item
 ## If both arguments are vectors, the elements of @var{y} are plotted versus
 ## the elements of @var{x}.
@@ -102,7 +102,7 @@
 ## @qcode{"markersize"}, @qcode{"markeredgecolor"}, @qcode{"markerfacecolor"}.
 ##
 ## The @var{fmt} format argument can also be used to control the plot style.
-## The format is composed of three parts: linestyle, markerstyle, color. 
+## The format is composed of three parts: linestyle, markerstyle, color.
 ## When a markerstyle is specified, but no linestyle, only the markers are
 ## plotted.  Similarly, if a linestyle is specified, but no markerstyle, then
 ## only lines are drawn.  If both are specified then lines and markers will
@@ -247,7 +247,7 @@ endfunction
 %! plot (x1,y1,'bo-', x2,y2,'rs-');
 %! axis ('tight');
 %! title ({'plot() of blue circles ascending and red squares descending';
-%!         'connecting lines drawn'}); 
+%!         'connecting lines drawn'});
 
 %!demo
 %! x = 0:10;

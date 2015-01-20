@@ -6,7 +6,7 @@ statistics_models_PRIVATE_FCN_FILES = \
 
 statistics_models_FCN_FILES = \
   statistics/models/logistic_regression.m \
-  $(statistics_models_PRIVATE_FCN_FILES) 
+  $(statistics_models_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(statistics_models_FCN_FILES)
 

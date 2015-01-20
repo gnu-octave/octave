@@ -199,7 +199,7 @@ Undocumented internal function.\n\
         {
           facet->seen = false;
         }
-      
+
       OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, num_voronoi_regions);
       for (octave_idx_type i = 0; i < num_voronoi_regions; i++)
         ni[i] = 0;
@@ -210,7 +210,7 @@ Undocumented internal function.\n\
         {
           if (qh hull_dim == 3)
             qh_order_vertexneighbors (vertex);
-          
+
           bool infinity_seen = false;
 
           facetT *neighbor, **neighborp;

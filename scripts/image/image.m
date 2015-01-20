@@ -64,14 +64,14 @@
 function h = image (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
-  
+
   chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
-  
+
   do_new = true;
   if (nargin == 0)
     img = get (0, "defaultimagecdata");
     x = y = [];
-  elseif (chararg == 1) 
+  elseif (chararg == 1)
     ## Low-Level syntax
     do_new = false;
     x = y = img = [];

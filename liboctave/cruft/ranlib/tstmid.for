@@ -344,7 +344,7 @@ C
 
  310  IF ((13).NE. (iwhich)) GO TO 360
 
-C      
+C
 C     Multinomial outcomes
 C
       WRITE (*,*) ' Enter (int) number of observations: '

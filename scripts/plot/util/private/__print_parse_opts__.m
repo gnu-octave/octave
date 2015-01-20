@@ -322,7 +322,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.send_to_printer)
     if (isempty (arg_st.name))
-      ## Pipe the ghostscript output 
+      ## Pipe the ghostscript output
       arg_st.name = "-";
     else
       error ("print: a file name may not specified when spooling to a printer")

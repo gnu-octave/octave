@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -126,10 +126,10 @@ Print short help message and exit.
 
 @item --image-path @var{path}
 @cindex @code{--image-path @var{path}}
-Add path to the head of the search path for images.  The value of 
-@var{path} specified on the command line will override any value of 
-@w{@env{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands 
-in the system or user startup files that set the built-in variable 
+Add path to the head of the search path for images.  The value of
+@var{path} specified on the command line will override any value of
+@w{@env{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands
+in the system or user startup files that set the built-in variable
 @w{@env{IMAGE_PATH}}.
 
 @item --info-file @var{filename}
@@ -181,7 +181,7 @@ Don't read the initialization files @file{~/.octaverc} and @file{.octaverc}.
 
 @item --no-init-path
 @cindex @code{--no-init-path}
-Don't initialize the search path for function files to include default 
+Don't initialize the search path for function files to include default
 locations.
 
 @item --no-line-editing
@@ -210,7 +210,7 @@ and @option{--no-site-file}.
 @itemx -p @var{path}
 @cindex @code{--path @var{path}}
 @cindex @code{-p @var{path}}
-Add path to the head of the search path for function files.  The 
+Add path to the head of the search path for function files.  The
 value of @var{path} specified on the command line will override any value
 of @w{@env{OCTAVE_PATH}} found in the environment, but not any commands in the
 system or user startup files that set the internal load path through one
@@ -295,7 +295,7 @@ Execute commands from @var{file}.  Exit when done unless
 @option{--persist} is also specified.
 @end table
 
-Octave also includes several functions which return information 
+Octave also includes several functions which return information
 about the command line, including the number of arguments and all of the
 options.
 
@@ -305,7 +305,7 @@ options.
 
 @DOCSTRING(program_invocation_name)
 
-Here is an example of using these functions to reproduce the command 
+Here is an example of using these functions to reproduce the command
 line which invoked Octave.
 
 @example
@@ -321,7 +321,7 @@ printf ("\n");
 
 @noindent
 @xref{Indexing Cell Arrays}, for an explanation of how to retrieve objects
-from cell arrays, and @ref{Defining Functions}, for information about the 
+from cell arrays, and @ref{Defining Functions}, for information about the
 variable @code{nargin}.
 
 @node Startup Files
@@ -340,10 +340,10 @@ including function definitions.
 @cindex site startup file
 where @var{octave-home} is the directory in which Octave is installed
 (the default is @file{/usr/local}).
-This file is provided so that changes to the default Octave environment 
+This file is provided so that changes to the default Octave environment
 can be made globally for all users at your site for all versions of Octave
-you have installed.  Care should be taken when making changes to this file 
-since all users of Octave at your site will be affected.  The default file 
+you have installed.  Care should be taken when making changes to this file
+since all users of Octave at your site will be affected.  The default file
 may be overridden by the environment variable @w{@env{OCTAVE_SITE_INITFILE}}.
 
 @item @var{octave-home}/share/octave/@var{version}/m/startup/octaverc
@@ -360,7 +360,7 @@ affected.  The default file may be overridden by the environment variable
 @item ~/.octaverc
 @cindex personal startup file
 @cindex @code{~/.octaverc}
-This file is used to make personal changes to the default 
+This file is used to make personal changes to the default
 Octave environment.
 
 @item .octaverc
@@ -464,9 +464,9 @@ and because they may occasionally be useful for users.
 Octave uses the GNU Readline library to provide an extensive set of
 command-line editing and history features.  Only the most common
 features are described in this manual.  In addition, all of the editing
-functions can be bound to different key strokes at the user's discretion.  
-This manual assumes no changes from the default Emacs bindings.  See the GNU 
-Readline Library manual for more information on customizing Readline and 
+functions can be bound to different key strokes at the user's discretion.
+This manual assumes no changes from the default Emacs bindings.  See the GNU
+Readline Library manual for more information on customizing Readline and
 for a complete feature list.
 
 To insert printing characters (letters, digits, symbols, etc.), simply
@@ -479,7 +479,7 @@ to the beginning of the line.  To type @kbd{C-a}, hold down @key{CTRL}
 and then press @key{a}.  In the following sections, control characters
 such as @kbd{Control-a} are written as @kbd{C-a}.
 
-Another set of command-line editing functions use Meta characters.  To 
+Another set of command-line editing functions use Meta characters.  To
 type @kbd{M-u}, hold down the @key{META} key and press @key{u}.  Depending
 on the keyboard, the @key{META} key may be labeled @key{ALT} or
 even @key{WINDOWS}.  If your terminal does not have a @key{META} key, you
@@ -583,7 +583,7 @@ words, to the end of the next word.
 
 @item M-@key{DEL}
 Kill from the cursor to the start of the previous word, or if between
-words, to the start of the previous word. 
+words, to the start of the previous word.
 
 @item C-w
 Kill from the cursor to the previous whitespace.  This is different than
@@ -712,7 +712,7 @@ Search forward starting at the current line and moving `down' through
 the history as necessary.
 @end table
 
-On most terminals, you can also use the up and down arrow keys in place 
+On most terminals, you can also use the up and down arrow keys in place
 of @kbd{C-p} and @kbd{C-n} to move through the history list.
 
 In addition to the keyboard commands for moving through the history
@@ -911,13 +911,13 @@ In the example above, the first line indicates that a variable named
 @samp{x} was found to be undefined near line 1 and column 24 of some
 function or expression.  For errors occurring within functions, lines
 are counted from the beginning of the file containing the function
-definition.  For errors occurring outside of an enclosing function, 
-the line number indicates the input line number, which is usually displayed 
+definition.  For errors occurring outside of an enclosing function,
+the line number indicates the input line number, which is usually displayed
 in the primary prompt string.
 
-The second and third lines of the error message indicate that the error 
-occurred within the function @code{f}.  If the function @code{f} had been 
-called from within another function, for example, @code{g}, the list of 
+The second and third lines of the error message indicate that the error
+occurred within the function @code{f}.  If the function @code{f} had been
+called from within another function, for example, @code{g}, the list of
 errors would have ended with one more line:
 
 @example
@@ -993,9 +993,9 @@ differently depending on the contents of a particular user's
 @file{~/.octaverc} file.  @xref{Invoking Octave from the Command Line}.
 
 Note that some operating systems may place a limit on the number of
-characters that are recognized after @samp{#!}.  Also, the arguments 
-appearing in a @samp{#!} line are parsed differently by various 
-shells/systems.  The majority of them group all the arguments together in one 
+characters that are recognized after @samp{#!}.  Also, the arguments
+appearing in a @samp{#!} line are parsed differently by various
+shells/systems.  The majority of them group all the arguments together in one
 string and pass it to the interpreter as a single argument.  In this case, the
 following script:
 
@@ -1016,7 +1016,7 @@ octave "-q -f # comment"
 
 @noindent
 which will produce an error message.  Unfortunately, it is
-not possible for Octave to determine whether it has been called from the 
+not possible for Octave to determine whether it has been called from the
 command line or from a @samp{#!} script, so some care is needed when using the
 @samp{#!} mechanism.
 
@@ -1046,7 +1046,7 @@ printf ("\n");
 @cindex documenting Octave programs
 
 A @dfn{comment} is some text that is included in a program for the sake
-of human readers, and which is NOT an executable part of the program.  
+of human readers, and which is NOT an executable part of the program.
 Comments can explain what the program does, and how it works.  Nearly all
 programming languages have provisions for comments, because programs are
 typically hard to understand without them.
@@ -1071,7 +1071,7 @@ shows whole line and partial line comments.
 @example
 @group
 function countdown
-  # Count down for main rocket engines 
+  # Count down for main rocket engines
   disp (3);
   disp (2);
   disp (1);
@@ -1087,14 +1087,14 @@ endfunction
 @cindex @samp{#@{}
 @cindex @samp{%@{}
 
-Entire blocks of code can be commented by enclosing the code between 
-matching @samp{#@{} and @samp{#@}} or @samp{%@{} and @samp{%@}} markers.  
+Entire blocks of code can be commented by enclosing the code between
+matching @samp{#@{} and @samp{#@}} or @samp{%@{} and @samp{%@}} markers.
 For example,
 
 @example
 @group
 function quick_countdown
-  # Count down for main rocket engines 
+  # Count down for main rocket engines
   disp (3);
  #@{
   disp (2);
@@ -1159,5 +1159,5 @@ purpose of a comment is to help you or another person understand the
 program at a later time.
 
 The @code{help} parser currently only recognizes single line comments
-(@pxref{Single Line Comments}) and not block comments for the initial 
-help text. 
+(@pxref{Single Line Comments}) and not block comments for the initial
+help text.

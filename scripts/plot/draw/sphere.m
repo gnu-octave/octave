@@ -77,7 +77,7 @@ function [xx, yy, zz] = sphere (varargin)
     endif
     unwind_protect
       hax = newplot (hax);
-    
+
       surf (x, y, z);
     unwind_protect_cleanup
       if (! isempty (oldfig))

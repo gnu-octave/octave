@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -169,7 +169,7 @@ read into memory using the @code{load} command.
 load myfile.mat
 A
      @print{} A =
-     @print{} 
+     @print{}
      @print{}    1   2   3
      @print{}    4   5   6
      @print{}    7   8   9
@@ -517,12 +517,12 @@ In more detail, output conversion specifications consist of an
 initial @samp{%} character followed in sequence by:
 
 @itemize @bullet
-@item 
+@item
 Zero or more @dfn{flag characters} that modify the normal behavior of
 the conversion specification.
 @cindex flag character (@code{printf})
 
-@item 
+@item
 An optional decimal integer specifying the @dfn{minimum field width}.
 If the normal conversion produces fewer characters than this, the field
 is padded with spaces to the specified width.  This is a @emph{minimum}
@@ -538,7 +538,7 @@ nearest integer.  If the value is negative, this means to set the
 @samp{-} flag (see below) and to use the absolute value as the field
 width.
 
-@item 
+@item
 An optional @dfn{precision} to specify the number of digits to be
 written for the numeric conversions.  If the precision is specified, it
 consists of a period (@samp{.}) followed optionally by a decimal integer
@@ -559,7 +559,7 @@ compatibility with the C language @code{printf}.
 A character that specifies the conversion to be applied.
 @end itemize
 
-The exact options that are permitted and how they are interpreted vary 
+The exact options that are permitted and how they are interpreted vary
 between the different conversion specifiers.  See the descriptions of the
 individual conversions for information about the particular options that
 they use.
@@ -762,7 +762,7 @@ the value is rounded to the nearest number that fits.
 
 This section describes miscellaneous conversions for @code{printf}.
 
-The @samp{%c} conversion prints a single character.  The @samp{-} 
+The @samp{%c} conversion prints a single character.  The @samp{-}
 flag can be used to specify left-justification in the field, but no
 other flags are defined, and no precision or type modifier can be given.
 For example:
@@ -885,7 +885,7 @@ compatibility with the C language @code{scanf}.
 A character that specifies the conversion to be applied.
 @end itemize
 
-The exact options that are permitted and how they are interpreted vary 
+The exact options that are permitted and how they are interpreted vary
 between the different conversion specifiers.  See the descriptions of the
 individual conversions for information about the particular options that
 they allow.
@@ -973,7 +973,7 @@ Unlike the C language @code{scanf}, Octave ignores the @samp{h},
 @subsection String Input Conversions
 
 This section describes the @code{scanf} input conversions for reading
-string and character values: @samp{%s} and @samp{%c}.  
+string and character values: @samp{%s} and @samp{%c}.
 
 The @samp{%c} conversion is the simplest: it matches a fixed number of
 characters, always.  The maximum field with says how many characters to

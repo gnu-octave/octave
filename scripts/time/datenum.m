@@ -35,7 +35,7 @@
 ## The fractional part, @code{rem (@var{days}, 1)} corresponds to the time
 ## on the given day.
 ##
-## The input may be a date vector (see @code{datevec}), 
+## The input may be a date vector (see @code{datevec}),
 ## datestr (see @code{datestr}), or directly specified as input.
 ##
 ## When processing input datestrings, @var{f} is the format string used to
@@ -96,7 +96,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
   persistent monthlength = [31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31];
 
-  if (nargin == 0 || nargin > 6 || 
+  if (nargin == 0 || nargin > 6 ||
      (nargin > 2 && (ischar (year) || iscellstr (year))))
     print_usage ();
   endif
@@ -129,7 +129,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   if (floor (month) != month)
     fracmonth = month - floor (month);
     month = floor (month);
-    if ((mod (month-1,12) + 1) == 2 && 
+    if ((mod (month-1,12) + 1) == 2 &&
         (floor (year/4) - floor (year/100) + floor (year/400)) != 0)
       ## leap year
       day += fracmonth * 29;

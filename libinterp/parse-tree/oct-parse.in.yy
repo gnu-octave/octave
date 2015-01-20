@@ -328,33 +328,33 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %destructor { } <dummy_type>
 %destructor { } <>
 
-%destructor { delete $$; } <tree_type> 
-%destructor { delete $$; } <tree_matrix_type> 
-%destructor { delete $$; } <tree_cell_type> 
-%destructor { delete $$; } <tree_expression_type> 
-%destructor { delete $$; } <tree_constant_type> 
-%destructor { delete $$; } <tree_fcn_handle_type> 
+%destructor { delete $$; } <tree_type>
+%destructor { delete $$; } <tree_matrix_type>
+%destructor { delete $$; } <tree_cell_type>
+%destructor { delete $$; } <tree_expression_type>
+%destructor { delete $$; } <tree_constant_type>
+%destructor { delete $$; } <tree_fcn_handle_type>
 %destructor { delete $$; } <tree_funcall>
 %destructor { delete $$; } <tree_function_def>
-%destructor { delete $$; } <tree_anon_fcn_handle_type> 
-%destructor { delete $$; } <tree_identifier_type> 
-%destructor { delete $$; } <tree_index_expression_type> 
-%destructor { delete $$; } <tree_colon_expression_type> 
-%destructor { delete $$; } <tree_argument_list_type> 
-%destructor { delete $$; } <tree_parameter_list_type> 
-%destructor { delete $$; } <tree_command_type> 
-%destructor { delete $$; } <tree_if_command_type> 
-%destructor { delete $$; } <tree_if_clause_type> 
-%destructor { delete $$; } <tree_if_command_list_type> 
-%destructor { delete $$; } <tree_switch_command_type> 
-%destructor { delete $$; } <tree_switch_case_type> 
-%destructor { delete $$; } <tree_switch_case_list_type> 
-%destructor { delete $$; } <tree_decl_elt_type> 
-%destructor { delete $$; } <tree_decl_init_list_type> 
-%destructor { delete $$; } <tree_decl_command_type> 
-%destructor { delete $$; } <tree_statement_type> 
-%destructor { delete $$; } <tree_statement_list_type> 
-%destructor { delete $$; } <octave_user_function_type> 
+%destructor { delete $$; } <tree_anon_fcn_handle_type>
+%destructor { delete $$; } <tree_identifier_type>
+%destructor { delete $$; } <tree_index_expression_type>
+%destructor { delete $$; } <tree_colon_expression_type>
+%destructor { delete $$; } <tree_argument_list_type>
+%destructor { delete $$; } <tree_parameter_list_type>
+%destructor { delete $$; } <tree_command_type>
+%destructor { delete $$; } <tree_if_command_type>
+%destructor { delete $$; } <tree_if_clause_type>
+%destructor { delete $$; } <tree_if_command_list_type>
+%destructor { delete $$; } <tree_switch_command_type>
+%destructor { delete $$; } <tree_switch_case_type>
+%destructor { delete $$; } <tree_switch_case_list_type>
+%destructor { delete $$; } <tree_decl_elt_type>
+%destructor { delete $$; } <tree_decl_init_list_type>
+%destructor { delete $$; } <tree_decl_command_type>
+%destructor { delete $$; } <tree_statement_type>
+%destructor { delete $$; } <tree_statement_list_type>
+%destructor { delete $$; } <octave_user_function_type>
 
 %destructor { delete $$; } <tree_classdef_type>
 %destructor { delete $$; } <tree_classdef_attribute_type>
@@ -3812,7 +3812,7 @@ octave_push_parser::run (const std::string& input, bool eof)
   dynamic_cast<octave_push_lexer&> (lexer).append_input (input, eof);
 
   do
-    {   
+    {
       YYSTYPE lval;
 
       int token = octave_lex (&lval, scanner);
@@ -3846,7 +3846,7 @@ static octave_function *
 parse_fcn_file (const std::string& full_file, const std::string& file,
                 const std::string& dispatch_type,
                 const std::string& package_name,
-                bool require_file, bool force_script, bool autoload,    
+                bool require_file, bool force_script, bool autoload,
                 bool relative_lookup, const std::string& warn_for)
 {
   unwind_protect frame;
@@ -5017,7 +5017,7 @@ Undocumented internal function.\n\
   if (nargin == 1 || nargin == 2)
     {
       std::string file = args(0).string_value ();
-      
+
       std::string full_file = octave_env::make_absolute (file);
 
       size_t file_len = file.length ();

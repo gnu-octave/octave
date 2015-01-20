@@ -69,7 +69,7 @@ function [c, h] = contour (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    
+
     [ctmp, htmp] = __contour__ (hax, "none", varargin{:});
   unwind_protect_cleanup
     if (! isempty (oldfig))

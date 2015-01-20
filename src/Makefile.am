@@ -136,7 +136,7 @@ mkoctfile.cc: mkoctfile.in.cc Makefile
 	@$(do_subst_config_vals)
 
 ## main.cc must depend on Makefile.  Calling configure may change
-## default/config values.  However, calling configure will also 
+## default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 main.cc: main.in.cc Makefile
 	@$(do_subst_default_vals)

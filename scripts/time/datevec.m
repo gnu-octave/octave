@@ -248,20 +248,20 @@ endfunction
 function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs)
 
   idx = strfind (f, "FFF");
-  if (! isempty (idx)) 
+  if (! isempty (idx))
     ## Kludge to handle FFF millisecond format since strptime does not
-    f(idx:idx+2) = []; 
+    f(idx:idx+2) = [];
     [~, nc] = strptime (ds, f);
     if (nc > 0)
-      msec = ds(nc:min(nc+2, end)); 
-      f = [f(1:idx-1) msec f(idx:end)]; 
+      msec = ds(nc:min(nc+2, end));
+      f = [f(1:idx-1) msec f(idx:end)];
       [tm, nc] = strptime (ds, f);
       tm.usec = 1000 * str2double (msec);
     endif
   else
     [tm, nc] = strptime (ds, f);
   endif
-  
+
   if (nc == columns (ds) + 1)
     found = true;
     y = tm.year + 1900; m = tm.mon + 1; d = tm.mday;

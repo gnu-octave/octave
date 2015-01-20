@@ -68,7 +68,7 @@
 ##     @result{}
 ##         @{
 ##           [1,1] = ababab
-##           [2,1] = cd cd cd 
+##           [2,1] = cd cd cd
 ##         @}
 ## @end group
 ## @end example

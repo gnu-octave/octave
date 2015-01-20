@@ -1,5 +1,5 @@
 ## Copyright (C) 2010, 2013 Philip Nienhuis
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2010-03-25
-## Updates: 
+## Updates:
 ## 2010-03-26 Changed name to javamem & indentation to double spaces
 ## 2010-08-25 Corrected text on java memory assignments
 ## 2010-09-05 Further overhauled help text

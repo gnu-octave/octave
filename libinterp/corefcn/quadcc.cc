@@ -1643,7 +1643,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       nivals = 1 + args(4).numel ();
     }
 
-  int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1 
+  int cquad_heapsize = (nivals >= min_cquad_heapsize ? nivals + 1
                                                      : min_cquad_heapsize);
   /* The interval heap. */
   OCTAVE_LOCAL_BUFFER (cquad_ival, ivals, cquad_heapsize);

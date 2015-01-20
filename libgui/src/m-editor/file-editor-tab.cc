@@ -1921,7 +1921,7 @@ file_editor_tab::notice_settings (const QSettings *settings)
     _edit_area->setEdgeMode (QsciScintilla::EdgeNone);
 
   // reload changed files
-  _always_reload_changed_files = 
+  _always_reload_changed_files =
         settings->value ("editor/always_reload_changed_files",false).toBool ();
 }
 
@@ -2077,7 +2077,7 @@ file_editor_tab::center_current_line ()
     }
 }
 
-void 
+void
 file_editor_tab::handle_cursor_moved (int line, int col)
 {
   if (_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))

@@ -7119,7 +7119,7 @@ Undocumented internal function.\n\
           if (vals.is_single_type ())
             {
               if (vals.is_complex_type ())
-                retval = do_accumarray_sum (idx, 
+                retval = do_accumarray_sum (idx,
                                             vals.float_complex_array_value (),
                                             n);
               else

@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -123,7 +123,7 @@ Here is an example:
 ## Octave is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public
 ## License as published by the Free Software Foundation;
-## either version 3 of the License, or (at your option) any 
+## either version 3 of the License, or (at your option) any
 ## later version.
 ##
 ## Octave is distributed in the hope that it will be useful,
@@ -284,7 +284,7 @@ It is a good idea for most lines to be no wider than 60 characters.
 However, rather than simply filling the entire documentation string, you
 can make it much more readable by choosing line breaks with care.
 Use blank lines between topics if the documentation string is long.
- 
+
 @item
 @strong{Do not} indent subsequent lines of a documentation string so
 that the text is lined up in the source code with the text of the first
@@ -349,7 +349,7 @@ therefore looks like this
 -*- texinfo -*-
 @@deftypefn @{Function File@} @{@@var@{ret@} =@} fn (@dots{})
 @@cindex index term
-Help text in Texinfo format.  Code samples should be marked 
+Help text in Texinfo format.  Code samples should be marked
 like @@code@{sample of code@} and variables should be marked
 as @@var@{variable@}.
 @@seealso@{fn2, fn3@}
@@ -374,7 +374,7 @@ deftypefn.
 This generates an index entry, and can be useful when the function is
 included as part of a larger piece of documentation.  It is ignored
 within Octave's help viewer.  Only one index term may appear per line
-but multiple @@cindex lines are valid if the function should be 
+but multiple @@cindex lines are valid if the function should be
 filed under different terms.
 
 @item @@var@{variable@}
@@ -568,7 +568,7 @@ coefficients at once with vector inputs for @@var@{n@} or @@var@{k@}.
 which demonstrates most of the concepts discussed above.
 @iftex
 This documentation string renders in Info format as
-@c Note: use the actual output of info below, rather than try and 
+@c Note: use the actual output of info below, rather than try and
 @c reproduce it here to prevent it looking different from how it would
 @c appear with info.
 

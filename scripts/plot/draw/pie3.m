@@ -28,7 +28,7 @@
 ## Called with a single vector argument, produces a 3-D pie chart of the
 ## elements in @var{x}.  The size of the ith slice is the percentage that the
 ## element @var{x}i represents of the total sum of @var{x}:
-## @code{pct = @var{x}(i) / sum (@var{x})}. 
+## @code{pct = @var{x}(i) / sum (@var{x})}.
 ##
 ## The optional input @var{explode} is a vector of the same length as @var{x}
 ## that, if nonzero, "explodes" the slice from the pie chart.

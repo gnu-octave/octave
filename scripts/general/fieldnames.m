@@ -37,11 +37,11 @@
 ## @end deftypefn
 
 function names = fieldnames (obj)
-  
+
   if (nargin != 1)
     print_usage ();
   endif
-  
+
   if (isstruct (obj) || isobject (obj))
     ## Call internal C++ function for structs or Octave objects
     names = __fieldnames__ (obj);
@@ -54,7 +54,7 @@ function names = fieldnames (obj)
     names_str = javaMethod ("getFields", "org.octave.ClassHelper", obj);
     names = ostrsplit (names_str, ';');
   else
-    error ("fieldnames: Invalid input argument"); 
+    error ("fieldnames: Invalid input argument");
   endif
 
 endfunction

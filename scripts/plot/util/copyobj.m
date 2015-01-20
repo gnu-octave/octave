@@ -68,7 +68,7 @@ function hnew = copyobj (horig, hparent = 0)
   if (get (hnew, "parent") == cf && ! isempty (ca))
     set (cf, "currentaxes", ca)
   endif
-  
+
 endfunction
 
 

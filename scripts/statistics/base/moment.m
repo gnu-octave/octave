@@ -38,7 +38,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## 
+##
 ## If @var{x} is a matrix, return the row vector containing the @var{p}-th
 ## central moment of each column.
 ##
@@ -47,7 +47,7 @@
 ##
 ## @table @asis
 ## @item @qcode{"c"}
-##   Central Moment (default). 
+##   Central Moment (default).
 ##
 ## @item  @qcode{"a"}
 ## @itemx @qcode{"ac"}
@@ -69,8 +69,8 @@
 ## @end ifnottex
 ##
 ## @item @qcode{"r"}
-##   Raw Moment.  The moment about zero defined as 
-## 
+##   Raw Moment.  The moment about zero defined as
+##
 ## @tex
 ## $$
 ## {\rm moment} (x) = { \sum_{i=1}^N {x_i}^p \over N }

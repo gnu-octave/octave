@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DDASID(X,Y,YPRIME,NEQ,ICOPT,ID,RES,JACD,PDUM,H,WT,
@@ -67,7 +67,7 @@ C     STPTOL    -- Tolerance used in calculating the minimum lambda
 C                  value allowed.
 C     ICNFLG    -- Integer scalar.  If nonzero, then constraint
 C                  violations in the proposed new approximate solution
-C                  will be checked for, and the maximum step length 
+C                  will be checked for, and the maximum step length
 C                  will be adjusted accordingly.
 C     ICNSTR    -- Integer array of length NEQ containing flags for
 C                  checking constraints.

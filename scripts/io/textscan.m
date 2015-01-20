@@ -207,7 +207,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       elseif (args{headerlines + 1} < 0)
         warning ("textscan.m: negative headerline value ignored");
       endif
-    endif    
+    endif
     ## Read a first file chunk. Rest follows after endofline processing
     [str, count] = fscanf (fid, "%c", BUFLENGTH);
 
@@ -338,7 +338,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
         C(ii) = C{1}(:, ii);
       endfor
       C{1} = C{1}(:, 1);
-    endif 
+    endif
   endif
 
   ## If requested, collect output columns of same class

@@ -40,7 +40,7 @@
 ## The optional return value @var{h} is a vector of graphics handles to the
 ## line objects representing each histogram.
 ##
-## If two output arguments are requested then no plot is made and 
+## If two output arguments are requested then no plot is made and
 ## the polar vectors necessary to plot the histogram are returned instead.
 ##
 ## @example

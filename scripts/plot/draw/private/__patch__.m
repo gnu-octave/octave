@@ -81,7 +81,7 @@ function [h, failed] = __patch__ (p, varargin)
         iarg = 3;
         if (rem (nargin - iarg, 2) == 1)
           c = varargin{iarg};
-          iarg++; 
+          iarg++;
         else
           c = [];
         endif

@@ -67,7 +67,7 @@ function y = conv (a, b, shape = "full")
 
   ## Use shortest vector as the coefficent vector to filter.
   if (la > lb)
-    [a, b] = deal (b, a);  # Swap vectors 
+    [a, b] = deal (b, a);  # Swap vectors
     lb = la;
   endif
   x = b;

@@ -1,17 +1,17 @@
 ## Copyright (C) 2007-2013 John W. Eaton
 ##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 3 of the License, or (at
 ## your option) any later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
@@ -73,7 +73,7 @@
 ################################################################################
 ##   'o','O','a' are currently not processed.  They are commented out in code.
 ################################################################################
-##    
+##
 ##   o:  There is a custom inline definition for the octave_value version
 ##       of the set function, so we don't emit one.
 ##
@@ -144,7 +144,7 @@
 function emit_get_accessor (i, rtype, faccess)
 {
   printf ("  %s get_%s (void) const", rtype, name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return %s.%s (); }\n", name[i], faccess);
   else
@@ -156,7 +156,7 @@ function emit_get_accessor (i, rtype, faccess)
 function emit_get_bool (i)
 {
   printf ("  bool is_%s (void) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return %s.is_on (); }\n", name[i]);
   else
@@ -170,7 +170,7 @@ function emit_get_bool (i)
 function emit_get_radio (i)
 {
   printf ("  bool %s_is (const std::string& v) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return %s.is (v); }\n", name[i]);
   else
@@ -186,14 +186,14 @@ function emit_get_color (i)
   printf ("  bool %s_is_rgb (void) const { return %s.is_rgb (); }\n", name[i], name[i]);
 
   printf ("  bool %s_is (const std::string& v) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return %s.is (v); }\n", name[i]);
   else
     printf (";\n");
-  
+
   printf ("  Matrix get_%s_rgb (void) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return (%s.is_rgb () ? %s.rgb () : Matrix ()); }\n", name[i], name[i]);
   else
@@ -209,14 +209,14 @@ function emit_get_double_radio (i)
   printf ("  bool %s_is_double (void) const { return %s.is_double (); }\n", name[i], name[i]);
 
   printf ("  bool %s_is (const std::string& v) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return %s.is (v); }\n", name[i]);
   else
     printf (";\n");
-  
+
   printf ("  double get_%s_double (void) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { return (%s.is_double () ? %s.double_value () : 0); }\n", name[i], name[i]);
   else
@@ -230,7 +230,7 @@ function emit_get_double_radio (i)
 function emit_get_callback (i)
 {
   printf ("  void execute_%s (const octave_value& data = octave_value ()) const", name[i]);
-  
+
   if (emit_get[i] == "definition")
     printf (" { %s.execute (data); }\n", name[i]);
   else
@@ -303,7 +303,7 @@ function emit_declarations ()
 
   if (idx > 0)
     print "\npublic:\n";
-  
+
   if (idx > 0)
   {
     printf ("  enum\n  {");
@@ -788,7 +788,7 @@ BEGIN {
         ## but we still emit the declaration.
         if (index (quals, "S"))
           emit_set[idx] = "declaration";
-        
+
         ## The property is hidden
         if (index (quals, "h"))
           hidden[idx] = 1;
@@ -801,7 +801,7 @@ BEGIN {
         ## from the set method
         if (index (quals, "u"))
           updater[idx] = "inline";
-        
+
         ## There is an extern updater method that should be called
         ## from the set method
         if (index (quals, "U"))

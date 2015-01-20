@@ -71,7 +71,7 @@ function retval = toeplitz (c, r)
     nr = length (c);
     nc = nr;
   else
-    if (! (isvector (c) && isvector (r))) 
+    if (! (isvector (c) && isvector (r)))
       error ("toeplitz: C and R must be vectors");
     elseif (r(1) != c(1))
       warning ("toeplitz: column wins diagonal conflict");

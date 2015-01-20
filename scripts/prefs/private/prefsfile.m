@@ -26,7 +26,7 @@
 function retval = prefsfile ()
 
   retval = [prefdir() filesep() ".octave_prefs"];
-  
+
 endfunction
 
 

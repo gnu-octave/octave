@@ -99,7 +99,7 @@
 ## The edge color of the marker.  (Default: @qcode{"color"} property)
 ##
 ## @item markerfacecolor
-## The color to use for @nospell{"filling"} the marker.  
+## The color to use for @nospell{"filling"} the marker.
 ## (Default: @qcode{"none"} [unfilled])
 ##
 ## @item markersize

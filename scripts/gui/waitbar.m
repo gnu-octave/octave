@@ -29,7 +29,7 @@
 ## [0, 1].  The optional message @var{msg} is centered and displayed above the
 ## waitbar.  The appearance of the waitbar figure window can be configured by
 ## passing property/value pairs to the function.
-## 
+##
 ## When called with a single input the current waitbar, if it exists, is
 ## updated to the new value @var{frac}.  If there are multiple outstanding
 ## waitbars they can be updated individually by passing the handle @var{hwbar}
@@ -95,7 +95,7 @@ function h = waitbar (varargin)
       curr_msg = get (th, "string");
       ## graphics handles always store data as column vectors
       if (iscellstr (msg))
-        msg = msg(:);  
+        msg = msg(:);
       endif
       cmp = strcmp (msg, curr_msg);
       if (! all (cmp(:)))

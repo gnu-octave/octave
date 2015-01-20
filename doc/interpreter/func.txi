@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -480,7 +480,7 @@ endfunction
 This implementation handles any number of input arguments, but it's also
 a very simple solution to the problem.
 
-A slightly more complex example of @code{varargin} is a function 
+A slightly more complex example of @code{varargin} is a function
 @code{print_arguments} that prints all input arguments.  Such a function
 can be defined like this
 
@@ -789,7 +789,7 @@ addpath ("~/Octave")
 
 @noindent
 After this the directory @samp{~/Octave} will be searched for functions.
- 
+
 @DOCSTRING(addpath)
 
 @DOCSTRING(genpath)
@@ -868,8 +868,8 @@ endfunction
 
 @noindent
 Then if the path to @code{func1} is @code{<directory>/func1.m}, and if
-@code{func2} is found in the directory @code{<directory>/private/func2.m}, 
-then @code{func2} is only available for use of the functions, like 
+@code{func2} is found in the directory @code{<directory>/private/func2.m},
+then @code{func2} is only available for use of the functions, like
 @code{func1}, that are found in @code{<directory>}.
 
 @node Nested Functions
@@ -1029,7 +1029,7 @@ endfunction
 Functions can be overloaded to work with different input arguments.  For
 example, the operator '+' has been overloaded in Octave to work with single,
 double, uint8, int32, and many other arguments.  The preferred way to overload
-functions is through classes and object oriented programming 
+functions is through classes and object oriented programming
 (@pxref{Function Overloading}).  Occasionally, however, one needs to undo
 user overloading and call the default function associated with a specific
 type.  The @code{builtin} function exists for this purpose.
@@ -1132,7 +1132,7 @@ used within a particular scope is given by
 A subfunction with the required function name in the given scope.
 
 @item Private function
-A function defined within a private directory of the directory 
+A function defined within a private directory of the directory
 which contains the current function.
 
 @item Class constructor
@@ -1178,7 +1178,7 @@ scope as the other variables that are visible on the command line.
 
 Even though a script file may not begin with the @code{function}
 keyword, it is possible to define more than one function in a single
-script file and load (but not execute) all of them at once.  To do 
+script file and load (but not execute) all of them at once.  To do
 this, the first token in the file (ignoring comments and other white
 space) must be something other than @code{function}.  If you have no
 other statements to evaluate, you can use a statement that has no
@@ -1271,7 +1271,7 @@ execute commands from any file.
 
 It can be very convenient store a function in a variable so that it
 can be passed to a different function.  For example, a function that
-performs numerical minimization needs access to the function that 
+performs numerical minimization needs access to the function that
 should be minimized.
 
 @menu
@@ -1457,7 +1457,7 @@ my_command hello world
 @end example
 
 @noindent
-is equivalent to 
+is equivalent to
 
 @example
 my_command ("hello", "world")

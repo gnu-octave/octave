@@ -18,8 +18,8 @@ The process for building Octave from source is as follows.
 We strongly encourage experienced users to build Octave from the
 testing and development snapshots to try the latest features of Octave.
 
-A good tutorial on building Octave for version 3.2 is available from 
-http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/admin/Windows/mingw32/HOWTO.txt 
+A good tutorial on building Octave for version 3.2 is available from
+http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/admin/Windows/mingw32/HOWTO.txt
 
 Additional information beyond the tutorial is summarized below.
 
@@ -36,8 +36,8 @@ Additional information beyond the tutorial is summarized below.
  The latest GCC (GNU Complier Collection) for MinGW is gcc-4.5.0.  Earlier
  versions are not recommended for building Octave 3.4.xx.
 
- The latest Msys, MinGW, and GCC tools can be downloaded from 
- http://sourceforge.net/projects/mingw/files/ 
+ The latest Msys, MinGW, and GCC tools can be downloaded from
+ http://sourceforge.net/projects/mingw/files/
 
  (Compiling for 64-bit binaries requires mingw-64 toolkits.  This has not been
   tested.)
@@ -46,7 +46,7 @@ Additional information beyond the tutorial is summarized below.
  ----------------------
 
  External program dependencies
- 
+
   * gnuplot (you can build this with the shell script mentioned in Howto.txt)
   * MikTeX
   * ghostscript
@@ -73,7 +73,7 @@ Additional information beyond the tutorial is summarized below.
  ----------------------
 
   The source for testing snapshots can be downloaded from the official Octave
-  web site.  http://www.octave.org/download.html 
+  web site.  http://www.octave.org/download.html
 
   The very latest development code is also available via anonymous access to a
   read-only Mercurial archive.  The method of download is described on the web
@@ -84,13 +84,13 @@ Additional information beyond the tutorial is summarized below.
  ----------------------
 
   Building from source can be carried out using the script described in
-  Howto.txt.  
-  
+  Howto.txt.
+
   When using GCC-4.5.0, remove flags for shared libstdc++ because a shared
   build is already the default.
 
-  When running './configure', you must add '--enable-float-truncate' option. 
-  Please see the following thread for more information: 
+  When running './configure', you must add '--enable-float-truncate' option.
+  Please see the following thread for more information:
   http://thread.gmane.org/gmane.comp.gnu.octave.bugs/12361/focus=12404
 
   To build development sources from the Mercurial repository you must run
@@ -102,7 +102,7 @@ Tatsuro MATSUOKA
 tmacchant@yahoo.co.jp
 
 Benjamin Lindner
-bjmldn@gmail.com 
+bjmldn@gmail.com
 
 
 Last updated: Sat Jan 22 17:29:12 PST 2011

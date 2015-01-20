@@ -27,7 +27,7 @@
 ## The inputs @var{x} and @var{y} are the coordinates of the polygon vertices.
 ## If the inputs are matrices then the rows represent different vertices and
 ## each column produces a different polygon.  @code{fill} will close any open
-## polygons before plotting. 
+## polygons before plotting.
 ##
 ## The input @var{c} determines the color of the polygon.  The simplest form
 ## is a single color specification such as a @code{plot} format or an
@@ -76,7 +76,7 @@ function h = fill (varargin)
   if (numel (varargin) > iargs(end) + 2)
     opts = varargin(iargs(end)+3 : end);
   endif
-  
+
   if (! all (cellfun (@(x) iscolorspec (x), varargin(iargs + 2))))
     print_usage ();
   endif
@@ -117,7 +117,7 @@ function h = fill (varargin)
         if (fail)
           print_usage ();
         endif
-        
+
         hlist(end+1, 1) = htmp;
       endfor
 

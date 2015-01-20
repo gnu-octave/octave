@@ -28,7 +28,7 @@
 ## @code{(@var{C0} + @var{C1} + @dots{} + @var{Cl})v = 0}.
 ##
 ## Note that the eigenvalues @var{z} are the zeros of the matrix polynomial.
-## @var{z} is a row vector with @var{n*l} elements.  @var{v} is a matrix 
+## @var{z} is a row vector with @var{n*l} elements.  @var{v} is a matrix
 ## (@var{n} x @var{n}*@var{l}) with columns that correspond to the
 ## eigenvectors.
 ##
@@ -38,7 +38,7 @@
 ## Author: Fotios Kasolis
 
 function [z, v] = polyeig (varargin)
-  
+
   if (nargin < 1 || nargout > 2)
     print_usage ();
   endif

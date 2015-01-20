@@ -70,7 +70,7 @@ function h = surfc (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    
+
     surfc_props = {"facecolor", "flat"};
     chararg = find (cellfun ("isclass", varargin, "char"), 1);
     if (isempty (chararg))

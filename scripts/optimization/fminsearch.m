@@ -28,7 +28,7 @@
 ## algorithm is better-suited to functions which have discontinuities or for
 ## which a gradient-based search such as @code{fminunc} fails.
 ##
-## Options for the search are provided in the parameter @var{options} using 
+## Options for the search are provided in the parameter @var{options} using
 ## the function @code{optimset}.  Currently, @code{fminsearch} accepts the
 ## options: @qcode{"TolX"}, @qcode{"MaxFunEvals"}, @qcode{"MaxIter"},
 ## @qcode{"Display"}.  For a description of these options, see

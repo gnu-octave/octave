@@ -32,7 +32,7 @@
 ##
 ## The fundamental idea (Pareto principle) behind the use of Pareto
 ## diagrams is that the majority of an effect is due to a small subset of the
-## causes.  For quality improvement, the first few contributing causes 
+## causes.  For quality improvement, the first few contributing causes
 ## (leftmost bars as presented on the diagram) to a problem usually account for
 ## the majority of the result.  Thus, targeting these "major causes" for
 ## elimination results in the most cost-effective improvement scheme.

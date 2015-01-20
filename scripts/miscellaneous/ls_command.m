@@ -60,9 +60,9 @@ endfunction
 %! cmd = ls_command ();
 %! assert (ischar (cmd));
 %! if (ispc () && ! isunix ())
-%!   assert (cmd(1:3), "dir"); 
+%!   assert (cmd(1:3), "dir");
 %! else
-%!   assert (cmd(1:2), "ls"); 
+%!   assert (cmd(1:2), "ls");
 %! endif
 
 %!error <argument must be a character string> ls_command (123)

@@ -1933,7 +1933,7 @@ file_editor::handle_visibility (bool visible)
       focus ();
   }
 
-void 
+void
 file_editor::dragEnterEvent (QDragEnterEvent *e)
   {
     if (e->mimeData ()->hasUrls ())

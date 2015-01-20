@@ -106,7 +106,7 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
   QList< QsciCommand * > cmd_list_mac = cmd_set->commands ();
   for (int i = 0; i < cmd_list_mac.length (); i++)
     {
-      // Primary key 
+      // Primary key
       int key = cmd_list_mac.at (i)->key ();
 
       if (static_cast<int> (key | Qt::META) == key &&

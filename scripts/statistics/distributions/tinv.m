@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} tinv (@var{x}, @var{n})
 ## For each element of @var{x}, compute the quantile (the inverse of
-## the CDF) at @var{x} of the t (Student) distribution with @var{n} 
+## the CDF) at @var{x} of the t (Student) distribution with @var{n}
 ## degrees of freedom.  This function is analogous to looking in a table
 ## for the t-value of a single-tailed distribution.
 ## @end deftypefn

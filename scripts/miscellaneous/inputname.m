@@ -56,7 +56,7 @@ endfunction
 ## To test inputname, I need a function context invoked
 ## with known parameter names.  So define a couple of
 ## shared parameters, et voila!, the test is trivial.
-  
+
 %!shared hello, worldly
 %!assert (inputname (1), "hello")
 %!assert (inputname (2), "worldly")

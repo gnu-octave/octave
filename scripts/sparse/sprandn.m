@@ -99,7 +99,7 @@ endfunction
 %!error <RC must be between 0 and 1> sprandn (2, 2, 0.2, -1)
 %!error <RC must be between 0 and 1> sprandn (2, 2, 0.2, 2)
 
-%% Test very large, very low density matrix doesn't fail 
+%% Test very large, very low density matrix doesn't fail
 %!test
 %! s = sprandn (1e6,1e6,1e-7);
 

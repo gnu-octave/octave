@@ -105,7 +105,7 @@ function [r, c] = tri2circ (tri, xx, yy)
   y = yy(tri);
   m = (y(1:end-1) - y(2:end)) ./ (x(1:end-1) - x(2:end));
   xc = (prod(m) .* (y(1) - y(end)) + m(end)*(x(1)+x(2)) - m(1)*(x(2)+x(3))) ...
-        ./ (2 * (m(end) - m(1))); 
+        ./ (2 * (m(end) - m(1)));
   yc = - (xc - (x(2) + x(3))./2) ./ m(end) + (y(2) + y(3)) / 2;
   c = [xc, yc];
   r = sqrt ((xc - x(1)).^2 + (yc - y(1)).^2);

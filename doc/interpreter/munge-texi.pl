@@ -23,8 +23,8 @@ foreach $DOCSTRING_file (@ARGV)
 
   # Validate DOCSTRING file format
   die "invalid doc file format\n" if (! /$doc_delim/o);
-  
-  do 
+
+  do
   {
     s/\s*$//;   # strip EOL character(s)
     $symbol = substr ($_,1);
@@ -71,8 +71,8 @@ TXI_LINE: while (<STDIN>)
     $fname = "$top_srcdir/examples/code/$1";
     print '@verbatim',"\n";
     open (EXAMPFH, $fname) or die "unable to open example file $fname\n";
-    while (<EXAMPFH>) 
-    { 
+    while (<EXAMPFH>)
+    {
       print $_;
       print "\n" if (eof and substr ($_, -1) ne "\n");
     }
@@ -88,12 +88,12 @@ TXI_LINE: while (<STDIN>)
 
 
 ################################################################################
-# Subroutines 
+# Subroutines
 ################################################################################
 sub extract_docstring
 {
   my ($docstring, $arg_list, $func_list, $repl, $rest_of_line);
-  
+
   while (defined ($_ = <DOCFH>) and ! /$doc_delim/o)
   {
     # expand any @seealso references
@@ -103,7 +103,7 @@ sub extract_docstring
       while (! /}/m) { $_ .= <DOCFH>; }
 
       ($arg_list, $rest_of_line) = m'^@seealso{(.*)}(.*)?'s;
-     
+
       $func_list = $arg_list;
       $func_list =~ s/\s+//gs;
       $repl = "";
@@ -112,7 +112,7 @@ sub extract_docstring
         $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
         $repl .= "\@ref{XREF$func,,$func}, ";
       }
-      substr($repl,-2) = "";   # Remove last ', ' 
+      substr($repl,-2) = "";   # Remove last ', '
       $_ = "\@seealso{$repl}$rest_of_line";
     }
 

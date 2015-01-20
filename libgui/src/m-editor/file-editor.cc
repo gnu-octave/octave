@@ -1567,7 +1567,11 @@ file_editor::construct (void)
                            QStringList ()).toStringList ();
 
       for (int n = 0; n < sessionFileNames.count (); ++n)
-        request_open_file (sessionFileNames.at (n));
+        {
+          QFileInfo file = QFileInfo (sessionFileNames.at (n));
+          if (file.exists ())
+            request_open_file (sessionFileNames.at (n));
+        }
     }
 
   check_actions ();

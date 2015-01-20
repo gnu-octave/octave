@@ -35,7 +35,7 @@
 ## vectors to the surface is plotted.
 ##
 ## Any property/value input pairs are assigned to the surface object.
-## 
+##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
@@ -143,8 +143,8 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
         ##daspect ("manual");
         ##len = norm (daratio);
         ## This assumes an even meshgrid which isn't a great assumption
-        ##dx = x(1,2) - x(1,1);  
-        ##dy = y(2,1) - y(1,1);  
+        ##dx = x(1,2) - x(1,1);
+        ##dy = y(2,1) - y(1,1);
         ##nx *= daratio(1);
         ##ny *= daratio(2);
         ##nz *= daratio(3);

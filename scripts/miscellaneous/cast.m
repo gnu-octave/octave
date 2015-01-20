@@ -21,7 +21,7 @@
 ## Convert @var{val} to data type @var{type}.
 ##
 ## @var{val} must be one of the numeric classes:
-## 
+##
 ## @example
 ## @group
 ## "double"
@@ -70,7 +70,7 @@ function retval = cast (val, type)
                                 "double"; "single"; "logical"; "char"})))
     error ("cast: TYPE '%s' is not a built-in type", type);
   endif
-    
+
   retval = feval (type, val);
 
 endfunction

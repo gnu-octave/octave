@@ -540,7 +540,7 @@ public:
   virtual bool is_method (void) const { return false; }
 
   virtual bool is_package (void) const { return false; }
-  
+
   virtual octave_value_list
   meta_subsref (const std::string& /* type */,
                 const std::list<octave_value_list>& /* idx */,
@@ -605,7 +605,7 @@ public:
 private:
   cdef_meta_object_rep* get_rep (void)
     { return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ()); }
-  
+
   const cdef_meta_object_rep* get_rep (void) const
     { return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ()); }
 };
@@ -710,7 +710,7 @@ private:
     void load_all_methods (void);
 
     void find_names (std::set<std::string>& names, bool all);
-    
+
     void find_properties (std::map<std::string,cdef_property>& props,
                           int mode = 0);
 
@@ -804,7 +804,7 @@ public:
   Cell get_methods (void) { return get_rep ()->get_methods (); }
 
   cdef_property find_property (const std::string& nm);
-  
+
   void install_property (const cdef_property& prop)
     { get_rep ()->install_property (prop); }
 
@@ -886,7 +886,7 @@ public:
 private:
   cdef_class_rep* get_rep (void)
     { return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ()); }
-  
+
   const cdef_class_rep* get_rep (void) const
     { return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ()); }
 
@@ -961,7 +961,7 @@ private:
       : cdef_meta_object_rep (p) { }
 
     bool is_recursive_set (const cdef_object& obj) const;
-    
+
     cdef_property wrap (void)
       {
         refcount++;
@@ -1010,7 +1010,7 @@ public:
 
   bool check_get_access (void) const
     { return get_rep ()->check_get_access (); }
-  
+
   bool check_set_access (void) const
     { return get_rep ()->check_set_access (); }
 
@@ -1021,7 +1021,7 @@ public:
 private:
   cdef_property_rep* get_rep (void)
     { return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ()); }
-  
+
   const cdef_property_rep* get_rep (void) const
     { return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ()); }
 };
@@ -1142,7 +1142,7 @@ public:
     { return get_rep ()->execute (obj, args, nargout, do_check_access, who); }
 
   bool check_access (void) const { return get_rep ()->check_access (); }
-  
+
   std::string get_name (void) const { return get_rep ()->get_name (); }
 
   bool is_static (void) const { return get_rep ()->is_static (); }
@@ -1164,7 +1164,7 @@ public:
 private:
   cdef_method_rep* get_rep (void)
     { return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ()); }
-  
+
   const cdef_method_rep* get_rep (void) const
     { return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ()); }
 };
@@ -1391,7 +1391,7 @@ public:
 private:
   cdef_package_rep* get_rep (void)
     { return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ()); }
-  
+
   const cdef_package_rep* get_rep (void) const
     { return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ()); }
 

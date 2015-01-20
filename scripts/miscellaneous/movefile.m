@@ -147,8 +147,8 @@ endfunction
 %!   fclose (fid);
 %!   f2 = tempname;
 %!   assert (movefile (f1, f2));
-%!   assert (! exist (f1, "file")); 
-%!   assert (exist (f2, "file")); 
+%!   assert (! exist (f1, "file"));
+%!   assert (exist (f2, "file"));
 %!   fid = fopen (f2, "rb");
 %!   assert (fid >= 0);
 %!   new_data = fread (fid);
@@ -165,5 +165,5 @@ endfunction
 %!error movefile (1,2,3,4)
 %!error <F1 must be a string> movefile (1, "foobar")
 %!error <F2 must be a string> movefile ("foobar", 1)
-%!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%") 
+%!error <F2 must be a directory> movefile ({"a", "b"}, "%_NOT_A_DIR_%")
 

@@ -126,7 +126,7 @@ octave_call_stack::stack_frame::fcn_name (bool print_subfn) const
     }
   else
     retval = "<unknown>";
-  
+
   return retval;
 }
 
@@ -368,7 +368,7 @@ octave_call_stack::do_backtrace (size_t nskip,
     = do_backtrace_frames (nskip, curr_user_frame);
 
   size_t nframes = frames.size ();
-  
+
   octave_map retval (dim_vector (nframes, 1), bt_fields);
 
   Cell& file = retval.contents (0);
@@ -481,7 +481,7 @@ octave_call_stack::do_goto_frame_relative (int nskip, bool verbose)
               break;
             }
         }
-      else if (incr == 0)  // Break out of infinite loop by choosing an incr. 
+      else if (incr == 0)  // Break out of infinite loop by choosing an incr.
         incr = -1;
 
       // There is no need to set scope and context here.  That will

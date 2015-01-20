@@ -1257,7 +1257,7 @@ display_warning_options (std::ostream& os)
     os << "By default, warnings are treated as errors.";
   else
     panic_impossible ();
-  
+
   if (nel > 1)
     os << "\n\n";
 

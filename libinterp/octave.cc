@@ -317,7 +317,7 @@ execute_startup_files (void)
   if (read_init_files)
     {
       // Try to execute commands from $HOME/$OCTAVE_INITFILE and
-      // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set, 
+      // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set,
       // .octaverc is assumed.
 
       bool home_rc_already_executed = false;

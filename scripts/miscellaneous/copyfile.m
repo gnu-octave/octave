@@ -137,7 +137,7 @@ endfunction
 %!   save (f1, "tmp_var");
 %!   f2 = tempname;
 %!   assert (copyfile (f1, f2));
-%!   assert (exist (f2, "file")); 
+%!   assert (exist (f2, "file"));
 %!   fid = fopen (f1, "rb");
 %!   assert (fid >= 0);
 %!   orig_data = fread (fid);
@@ -160,5 +160,5 @@ endfunction
 %!error copyfile (1,2,3,4)
 %!error <F1 must be a string> copyfile (1, "foobar")
 %!error <F2 must be a string> copyfile ("foobar", 1)
-%!error <F2 must be a directory> copyfile ({"a", "b"}, "%_NOT_A_DIR_%") 
+%!error <F2 must be a directory> copyfile ({"a", "b"}, "%_NOT_A_DIR_%")
 

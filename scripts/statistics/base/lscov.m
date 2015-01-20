@@ -20,8 +20,8 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{stdx}, @var{mse}, @var{S}] =} lscov (@dots{})
 ##
 ## Compute a generalized linear least squares fit.
-## Estimate @var{x} under the model @var{b} = @var{A}@var{x} + @var{w}, 
-## where the noise @var{w} is assumed to follow a normal distribution 
+## Estimate @var{x} under the model @var{b} = @var{A}@var{x} + @var{w},
+## where the noise @var{w} is assumed to follow a normal distribution
 ## with covariance matrix @math{{\sigma^2} V}.
 ##
 ## If the size of the coefficient matrix @var{A} is n-by-p, the
@@ -55,16 +55,16 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
   if (nargin < 2 || (rows (A) != rows (b)))
     print_usage ();
   endif
-  
+
   n = rows (A);
   p = columns (A);
   k = columns (b);
-  
+
   if (! isempty (V))
     if (rows (V) != n || ! any (columns (V) == [1 n]))
       error ("lscov: V should be a square matrix or a vector with the same number of rows as A");
     endif
-    
+
     if (isvector (V))
       ## n-by-1 vector of inverse variances
       v = diag (sqrt (V));
@@ -81,26 +81,26 @@ function [x, stdx, mse, S] = lscov (A, b, V = [], alg)
         [B, lambda] = eig (V);
         image_dims = (diag (lambda) > 0);
         B = B(:, image_dims) * sqrt (lambda(image_dims, image_dims));
-      end_try_catch     
+      end_try_catch
       A = B \ A;
       b = B \ b;
     endif
   endif
-  
+
   pinv_A = pinv (A); #pseudoinverse
 
   x = pinv_A * b;
-  
+
   if (isargout (3))
     dof = n - p; #degrees of freedom remaining after fit
     SSE = sumsq (b - A * x);
     mse = SSE / dof;
   endif
-  
+
   s = pinv_A * pinv_A';
 
   stdx = sqrt (diag (s) * mse);
-  
+
   if (isargout (4))
     if (k == 1)
       S = mse * s;
@@ -150,16 +150,16 @@ endfunction
 
 %!test
 %! ## Adapted from example in Matlab documentation
-%! x1 = [.2 .5 .6 .8 1.0 1.1]'; 
-%! x2 = [.1 .3 .4 .9 1.1 1.4]'; 
-%! X = [ones(size(x1)) x1 x2]; 
+%! x1 = [.2 .5 .6 .8 1.0 1.1]';
+%! x2 = [.1 .3 .4 .9 1.1 1.4]';
+%! X = [ones(size(x1)) x1 x2];
 %! y = [.17 .26 .28 .23 .27 .34]';
 %! [b, se_b, mse, S] = lscov(X, y);
 %! assert(b, [0.1203 0.3284 -0.1312]', 1E-4);
 %! assert(se_b, [0.0643 0.2267 0.1488]', 1E-4);
 %! assert(mse, 0.0015, 1E-4);
 %! assert(S, [0.0041 -0.0130 0.0075; -0.0130 0.0514 -0.0328; 0.0075 -0.0328 0.0221], 1E-4);
-%! w = [1 1 1 1 1 .1]'; 
+%! w = [1 1 1 1 1 .1]';
 %! [bw, sew_b, msew] = lscov (X, y, w);
 %! assert(bw, [0.1046 0.4614 -0.2621]', 1E-4);
 %! assert(sew_b, [0.0309 0.1152 0.0814]', 1E-4);

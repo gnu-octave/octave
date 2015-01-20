@@ -85,9 +85,9 @@ function hg = __scatter__ (varargin)
   endif
 
   ## Validate inputs
-  if (nd == 2 && ! size_equal (x, y)) 
+  if (nd == 2 && ! size_equal (x, y))
     error ([fcn ": X and Y must have the same size"]);
-  elseif (nd == 3 && ! size_equal (x, y, z)) 
+  elseif (nd == 3 && ! size_equal (x, y, z))
     error ([fcn ": X, Y, and Z must have the same size"]);
   endif
 

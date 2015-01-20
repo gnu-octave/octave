@@ -32,7 +32,7 @@
 ## If the optional input @qcode{"rows"} is given then return rows that are in
 ## either @var{a} or @var{b}.  The inputs must be 2-D matrices to use this
 ## option.
-## 
+##
 ## The optional outputs @var{ia} and @var{ib} are index vectors such that
 ## @code{@var{a}(@var{ia})} and @code{@var{b}(@var{ib})} are disjoint sets
 ## whose union is @var{c}.
@@ -88,7 +88,7 @@ endfunction
 %! assert (union (a, b), sort ([a(1:end), 2]));
 
 %!test
-%! a = [3, 1, 4, 1, 5]; 
+%! a = [3, 1, 4, 1, 5];
 %! b = [1, 2, 3, 4];
 %! [y, ia, ib] = union (a, b.');
 %! assert (y, [1, 2, 3, 4, 5]);

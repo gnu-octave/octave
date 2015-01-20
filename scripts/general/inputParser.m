@@ -145,7 +145,7 @@
 ## @deftypefn  {Function File} {} addOptional (@var{argname}, @var{default})
 ## @deftypefnx {Function File} {} addOptional (@var{argname}, @var{default}, @var{validator})
 ## Add new optional argument to the object @var{parser} of the class inputParser
-## to implement an ordered arguments type of API 
+## to implement an ordered arguments type of API
 ##
 ## @var{argname} must be a string with the name of the new argument.  The order
 ## in which new arguments are added with @command{addOptional}, represents the
@@ -515,7 +515,7 @@ endclassdef
 %! p = create_p ();
 %! p.parse ("file", "line", "circle");
 %! r = p.Results;
-%! assert ({r.req1, r.op1, r.op2, r.verbose, r.line}, 
+%! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "val", 78,    false,     "circle"});
 
 ## check case insensitivity

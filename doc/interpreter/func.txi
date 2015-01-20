@@ -1404,7 +1404,7 @@ operators which have functional equivalents that may be better choices than an
 anonymous function.  Instead of writing
 
 @example
-f = @@(x, y) x + y 
+f = @@(x, y) x + y
 @end example
 
 @noindent

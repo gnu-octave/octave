@@ -100,7 +100,7 @@ function [k, e] = ellipke (m, tol = [])
   elseif (any (m > 1))
     error ("ellipke: M must be <= 1");
   endif
- 
+
   if (isempty (tol))
     tol = eps (class (m));
   elseif (! (isreal (tol) && isscalar (tol) && tol > 0))

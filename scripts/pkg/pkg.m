@@ -129,7 +129,7 @@
 ##
 ## @noindent
 ## will produce a short report with the package name, version, and installation
-## directory for each installed package.  Supply a package name to limit 
+## directory for each installed package.  Supply a package name to limit
 ## reporting to a particular package.  For example:
 ##
 ## @example

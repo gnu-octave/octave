@@ -1355,12 +1355,12 @@ struct2hdl (fig_struct);
 
 In this Section the graphics object properties are discussed in detail, starting
 with the root figure properties and continuing through the objects
-hierarchy.  The documentation about a specific graphics object can be displayed 
-using @code{doc} function, e.g., @code{doc ("axes properties")} will show 
-@ref{Axes Properties}. 
+hierarchy.  The documentation about a specific graphics object can be displayed
+using @code{doc} function, e.g., @code{doc ("axes properties")} will show
+@ref{Axes Properties}.
 
-The allowed values for radio (string) properties can be retrieved 
-programmatically or displayed using the one or 
+The allowed values for radio (string) properties can be retrieved
+programmatically or displayed using the one or
 two arguments call to @code{set} function.  @xref{XREFset, , set}.
 
 In the following documentation, default values are enclosed in @{ @}.

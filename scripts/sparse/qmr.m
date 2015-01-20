@@ -158,7 +158,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     endif
 
     r = b - Ax (x);
-    
+
     bnorm = norm (b);
     res0 = norm (r);
     if (nargout > 4)
@@ -226,7 +226,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
       if (nargout > 4)
         resvec(iter + 1, 1) = norm (r);
       end
-      
+
       if (res1 < tol)
         ## Convergence achieved.
         flag = 0;

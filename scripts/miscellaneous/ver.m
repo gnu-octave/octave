@@ -98,7 +98,7 @@ function retval = ver (package = "")
     elseif (strcmpi (package, "Octave"))
       retval = struct ("Name", "Octave", "Version", version,
                        "Release", [], "Date", []);
-    else 
+    else
       lst = pkg ("list", package);
       if (isempty (lst))
         retval = struct ("Name", "", "Version", [],

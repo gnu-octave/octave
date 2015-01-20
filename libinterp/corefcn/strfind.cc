@@ -332,7 +332,7 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
 
           if (retsiz == 0)
             ret.clear (dim_vector (0, 0));
-          else 
+          else
             {
               ret.clear (dim_vector (1, retsiz));
               const char *src = str.data ();

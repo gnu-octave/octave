@@ -263,7 +263,7 @@ public:
       looking_at_indirect_ref (false), parsing_class_method (false),
       parsing_classdef (false), maybe_classdef_get_set_method (false),
       parsing_classdef_get_method (false),
-      parsing_classdef_set_method (false), 
+      parsing_classdef_set_method (false),
       quote_is_transpose (false), force_script (false),
       reading_fcn_file (false), reading_script_file (false),
       reading_classdef_file (false),

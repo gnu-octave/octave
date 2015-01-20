@@ -30,7 +30,7 @@
 ## If a second struct argument is given, arrange field names in @var{s1} as they
 ## appear in @var{s2}.  The second argument may also specify the order in a
 ## cell array of strings @var{cellstr}.  The second argument may also be a
-## permutation vector. 
+## permutation vector.
 ##
 ## The optional second output argument @var{p} is the permutation vector which
 ## converts the original name order to the new name order.

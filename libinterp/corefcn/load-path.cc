@@ -520,7 +520,7 @@ load_path::loader::move (const dir_info& di, bool at_end)
 {
   std::string dir_name = di.dir_name;
 
-  std::list<std::string>::iterator s = 
+  std::list<std::string>::iterator s =
     std::find (dir_list.begin (), dir_list.end (), dir_name);
 
   if (s != dir_list.end ())

@@ -130,7 +130,7 @@ function print_pass_fail (p, n, xf, sk)
     nfail = n - p - xf;
     if (nfail > 0)
       printf ("\n%71s %3d", "FAIL ", nfail);
-    endif    
+    endif
     if (sk > 0)
       printf ("\n%71s %3d", "SKIP ", sk);
     endif

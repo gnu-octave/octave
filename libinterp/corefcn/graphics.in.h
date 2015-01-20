@@ -1997,25 +1997,25 @@ class pval_vector : public std::vector <pval_pair>
   const_iterator find (const std::string pname) const
   {
     const_iterator it;
- 
+
     for (it = (*this).begin (); it != (*this).end (); it++)
       if (pname.compare ((*it).first) == 0)
         return it;
-    
+
     return (*this).end ();
   }
 
   iterator find (const std::string pname)
   {
     iterator it;
- 
+
     for (it = (*this).begin (); it != (*this).end (); it++)
       if (pname.compare ((*it).first) == 0)
         return it;
-    
+
     return (*this).end ();
   }
-  
+
   octave_value lookup (const std::string pname) const
   {
     octave_value retval;
@@ -2028,16 +2028,16 @@ class pval_vector : public std::vector <pval_pair>
     return retval;
   }
 
-  octave_value& operator [] (const std::string pname)   
+  octave_value& operator [] (const std::string pname)
   {
     iterator it = find (pname);
-    
+
     if (it == (*this).end ())
       {
         push_back (pval_pair (pname, octave_value ()));
         return (*this).back ().second;
       }
-    
+
     return (*it).second;
   }
 
@@ -2047,7 +2047,7 @@ class pval_vector : public std::vector <pval_pair>
     if (it != (*this).end ())
       erase (it);
   }
-  
+
   void erase (iterator it)
   {
     std::vector <pval_pair>::erase (it);
@@ -3051,9 +3051,9 @@ public:
 
   std::string values_as_string (void) { return rep->values_as_string (); }
 
-  std::string value_as_string (const std::string& prop) 
-  { 
-    return rep->value_as_string (prop); 
+  std::string value_as_string (const std::string& prop)
+  {
+    return rep->value_as_string (prop);
   }
 
   octave_map values_as_struct (void) { return rep->values_as_struct (); }
@@ -3305,7 +3305,7 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
-  
+
   bool has_readonly_property (const caseless_str& pname) const
   {
     bool retval = xproperties.has_readonly_property (pname);
@@ -3472,7 +3472,7 @@ public:
       position.add_constraint (dim_vector (1, 4));
     }
 
-  private:    
+  private:
     Matrix get_auto_paperposition (void);
 
     void update_paperpositionmode (void)
@@ -3547,7 +3547,7 @@ public:
   bool valid_object (void) const { return true; }
 
   void reset_default_properties (void);
-  
+
   bool has_readonly_property (const caseless_str& pname) const
   {
     bool retval = xproperties.has_readonly_property (pname);
@@ -4648,7 +4648,7 @@ public:
 
       if (xdatamode.is ("auto"))
         update_xdata ();
-      
+
       if (ydatamode.is ("auto"))
         update_ydata ();
     }
@@ -4657,13 +4657,13 @@ public:
     {
       if (xdata.get ().is_empty ())
         set_xdatamode ("auto");
-        
+
       if (xdatamode.is ("auto"))
         {
           set_xdata (get_auto_xdata ());
           set_xdatamode ("auto");
         }
-      
+
       Matrix limits = xdata.get_limits ();
       float dp = pixel_xsize ();
 
@@ -4676,13 +4676,13 @@ public:
     {
       if (ydata.get ().is_empty ())
         set_ydatamode ("auto");
-        
+
       if (ydatamode.is ("auto"))
         {
-          set_ydata (get_auto_ydata ()); 
+          set_ydata (get_auto_ydata ());
           set_ydatamode ("auto");
         }
-      
+
       Matrix limits = ydata.get_limits ();
       float dp = pixel_ysize ();
 
@@ -4783,9 +4783,9 @@ public:
     octave_value get_color_data (void) const;
 
     // Matlab allows incoherent data to be stored into patch properties.
-    // The patch should then be ignored by the renderer. 
-    bool has_bad_data (std::string &msg) const 
-      { 
+    // The patch should then be ignored by the renderer.
+    bool has_bad_data (std::string &msg) const
+      {
         msg = bad_data_msg;
         return ! msg.empty ();
       }
@@ -4882,13 +4882,13 @@ public:
 
     void update_fvc (void);
 
-    void update_xdata (void) 
-    { 
+    void update_xdata (void)
+    {
       if (get_xdata ().is_empty ())
         {
-          // For compatibility with matlab behavior, 
-          // if x/ydata are set empty, silently empty other *data and 
-          // faces properties while vertices remain unchanged. 
+          // For compatibility with matlab behavior,
+          // if x/ydata are set empty, silently empty other *data and
+          // faces properties while vertices remain unchanged.
           set_ydata (Matrix ());
           set_zdata (Matrix ());
           set_cdata (Matrix ());
@@ -4900,8 +4900,8 @@ public:
       set_xlim (xdata.get_limits ());
     }
 
-    void update_ydata (void) 
-    { 
+    void update_ydata (void)
+    {
       if (get_ydata ().is_empty ())
         {
           set_xdata (Matrix ());
@@ -4915,8 +4915,8 @@ public:
       set_ylim (ydata.get_limits ());
     }
 
-    void update_zdata (void) 
-    { 
+    void update_zdata (void)
+    {
       update_fvc ();
       set_zlim (zdata.get_limits ());
     }

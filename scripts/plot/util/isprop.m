@@ -22,7 +22,7 @@
 ##
 ## @var{obj} may also be an array of objects in which case @var{res} will be a
 ## logical array indicating whether each handle has the property @var{prop}.
-## 
+##
 ## For plotting, @var{obj} is a handle to a graphics object.  Otherwise,
 ## @var{obj} should be an instance of a class.
 ## @seealso{get, set, ismethod, isobject}

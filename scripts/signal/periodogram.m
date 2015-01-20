@@ -44,7 +44,7 @@
 ## data must be a vector of the same length as @var{x}.
 ##
 ## @item nfft
-## number of frequency bins.  The default is 256 or the next higher power of 
+## number of frequency bins.  The default is 256 or the next higher power of
 ## 2 greater than the length of @var{x}
 ## (@code{max (256, 2.^nextpow2 (length (x)))}).  If @var{nfft} is greater
 ## than the length of the input then @var{x} will be zero-padded to the length
@@ -69,7 +69,7 @@
 ## @var{f} will be in the range [0, @var{Fs}/2] or [0, @var{Fs}/2) for
 ## one-sided calculations.  For two-sided calculations the range will be
 ## [0, @var{Fs}).
-## 
+##
 ## When called with no outputs the periodogram is immediately plotted in the
 ## current figure window.
 ## @seealso{fft}
@@ -107,7 +107,7 @@ function [pxx, f] = periodogram (x, varargin)
     error ("periodogram: X must be a real or complex vector");
   endif
   x = x(:);  # Use column vectors from now on
-  
+
   n = rows (x);
 
   if (! isempty (window))

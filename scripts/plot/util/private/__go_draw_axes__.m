@@ -775,7 +775,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                  ccdat = (rows (cmap) + rows (addedcmap) + 1) * ones(3, 1);
                  addedcmap = [addedcmap; reshape(color, 1, 3)];
                elseif (numel (ccdat) <= 1)
-                 ccdat = zcol;  
+                 ccdat = zcol;
                endif
                data{data_3d_idx} = [data{data_3d_idx}, ...
                                     [[xcol; xcol(end)], [ycol; ycol(end)], ...

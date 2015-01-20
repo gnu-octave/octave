@@ -3397,7 +3397,7 @@ octave_base_parser::make_index_expression (tree_expression *expr,
   int l = expr->line ();
   int c = expr->column ();
 
-  if (! expr->is_postfix_indexed ()) 
+  if (! expr->is_postfix_indexed ())
     expr->set_postfix_index (type);
 
   if (expr->is_index_expression ())
@@ -3425,7 +3425,7 @@ octave_base_parser::make_indirect_ref (tree_expression *expr,
   int l = expr->line ();
   int c = expr->column ();
 
-  if (! expr->is_postfix_indexed ()) 
+  if (! expr->is_postfix_indexed ())
     expr->set_postfix_index ('.');
 
   if (expr->is_index_expression ())
@@ -3455,7 +3455,7 @@ octave_base_parser::make_indirect_ref (tree_expression *expr,
   int l = expr->line ();
   int c = expr->column ();
 
-  if (! expr->is_postfix_indexed ()) 
+  if (! expr->is_postfix_indexed ())
     expr->set_postfix_index ('.');
 
   if (expr->is_index_expression ())

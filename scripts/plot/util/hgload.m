@@ -47,7 +47,7 @@ function h = hgload (filename)
       error ("hgload: unable to locate file %s", filename);
     endif
   endif
-    
+
   ## Load the handle
   try
     stmp = load (filename, "s_oct40");
@@ -56,7 +56,7 @@ function h = hgload (filename)
   end_try_catch
 
   h = struct2hdl (stmp.s_oct40);
-  
+
 endfunction
 
 

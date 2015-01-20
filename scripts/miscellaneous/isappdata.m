@@ -38,7 +38,7 @@ function valid = isappdata (h, name)
     error ("isappdata: H must be a scalar or vector of graphic handles");
   elseif (! ischar (name))
     error ("isappdata: NAME must be a string");
-  endif 
+  endif
 
   valid = false (size (h));
   for i = 1:numel (h)

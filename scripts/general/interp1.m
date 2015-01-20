@@ -102,7 +102,7 @@
 ## near = interp1 (xp, yp, xf, "nearest");
 ## pch = interp1 (xp, yp, xf, "pchip");
 ## spl = interp1 (xp, yp, xf, "spline");
-## plot (xf,yf,"r", xf,near,"g", xf,lin,"b", xf,pch,"c", xf,spl,"m", 
+## plot (xf,yf,"r", xf,near,"g", xf,lin,"b", xf,pch,"c", xf,spl,"m",
 ##       xp,yp,"r*");
 ## legend ("original", "nearest", "linear", "pchip", "spline");
 ## @end group
@@ -197,7 +197,7 @@ function yi = interp1 (x, y, varargin)
 
   if (any (strcmp (method, {"previous", "*previous", "next", "*next"})))
     rightcontinuous = NaN; # needed for these methods to work
-  endif 
+  endif
 
   if (isnan (rightcontinuous))
     ## If not specified, set the continuity condition
@@ -222,7 +222,7 @@ function yi = interp1 (x, y, varargin)
   elseif (strcmp (method, "*next"))
     x = flipud (x);
     y = flipud (y);
-    method = "*previous";  
+    method = "*previous";
   endif
 
   starmethod = method(1) == "*";
@@ -543,7 +543,7 @@ endfunction
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
 ## This test is expected to fail, so commented out.
 ## "previous" and "next" options are not symmetric w.r.t to flipping xp,yp
-#%!assert (interp1 (xp,yp,xi,style),... 
+#%!assert (interp1 (xp,yp,xi,style),...
 #%!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
@@ -560,7 +560,7 @@ endfunction
 %!assert (isempty (interp1 (xp,yp,[],style)))
 %!assert (interp1 (xp,[yp',yp'],xi(:),style),...
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
-# %!assert (interp1 (xp,yp,xi,style),... 
+# %!assert (interp1 (xp,yp,xi,style),...
 # %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
@@ -578,7 +578,7 @@ endfunction
 %!assert (isempty (interp1 (xp,yp,[],style)))
 %!assert (interp1 (xp,[yp',yp'],xi(:),style),...
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
-# %!assert (interp1 (xp,yp,xi,style),... 
+# %!assert (interp1 (xp,yp,xi,style),...
 # %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)
@@ -595,7 +595,7 @@ endfunction
 %!assert (isempty (interp1 (xp,yp,[],style)))
 %!assert (interp1 (xp,[yp',yp'],xi(:),style),...
 %!        [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)])
-# %!assert (interp1 (xp,yp,xi,style),... 
+# %!assert (interp1 (xp,yp,xi,style),...
 # %!        interp1 (fliplr (xp),fliplr (yp),xi,style),100*eps)
 %!assert (ppval (interp1 (xp,yp,style,"pp"),xi),
 %!        interp1 (xp,yp,xi,style,"extrap"),10*eps)

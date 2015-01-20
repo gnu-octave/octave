@@ -50,11 +50,11 @@ function filelist = zip (zipfile, files, rootdir = ".")
   elseif (! iscellstr (files))
     error ("zip: FILES must be a character array or cellstr");
   endif
-  
+
   rootdir = tilde_expand (rootdir);
 
   zipfile = make_absolute_filename (zipfile);
-       
+
   cmd = sprintf ("cd %s; zip -r %s %s",
                      rootdir,   zipfile, sprintf (" %s", files{:}));
 

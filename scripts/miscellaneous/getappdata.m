@@ -40,13 +40,13 @@ function value = getappdata (h, name)
 
   if (! all (ishandle (h(:))))
     error ("getappdata: H must be a scalar or vector of graphic handles");
-  endif 
+  endif
 
   if (nargin == 2)
     if (! ischar (name))
       error ("getappdata: NAME must be a string");
     endif
-    
+
     ## FIXME: Is there a better way to handle non-existent appdata
     ##        and missing fields?
     value = cell (numel (h), 1);

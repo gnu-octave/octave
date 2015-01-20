@@ -194,7 +194,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
     [commandv, commandq, parsefcn, move] = deal (commandlist.(nodotext){:});
     origdir = pwd ();
     if (move)
-      startdir = fileparts (file); 
+      startdir = fileparts (file);
     else
       startdir = origdir;
     endif
@@ -306,7 +306,7 @@ endfunction
 %!   gzip (filename, dirname);
 %!   [~, f] = fileparts (filename);
 %!   filelist = unpack (fullfile (dirname, [f ".gz"]), P_tmpdir);
-%!   assert (filelist{1}, filename); 
+%!   assert (filelist{1}, filename);
 %!   fid = fopen ([filename ".orig"], "rb");
 %!   assert (fid >= 0);
 %!   orig_data = fread (fid);

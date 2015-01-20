@@ -60,7 +60,7 @@ public:
   void accept (tree_walker&);
 
 private:
-  
+
   tree_identifier *id;
   tree_expression *expr;
   bool neg;
@@ -182,7 +182,7 @@ private:
 
   // The list of objects contained in this block.
   octave_base_list<T> *elt_list;
-  
+
   // Comment preceding the token marking the beginning of the block.
   octave_comment_list *lead_comm;
 

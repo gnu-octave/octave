@@ -54,7 +54,7 @@ function filelist = tar (tarfile, files, rootdir = ".")
   rootdir = tilde_expand (rootdir);
 
   tarfile = make_absolute_filename (tarfile);
-       
+
   cmd = sprintf ("tar cvf %s -C %s %s",
                           tarfile, rootdir, sprintf (" %s", files{:}));
 
@@ -89,11 +89,11 @@ endfunction
 %!   fid = fopen (fname1, "wt");
 %!   assert (fid >= 0);
 %!   fdisp (fid, "Hello World");
-%!   fclose (fid); 
+%!   fclose (fid);
 %!   fid = fopen (fname2, "wt");
 %!   assert (fid >= 0);
 %!   fdisp (fid, "Goodbye World");
-%!   fclose (fid); 
+%!   fclose (fid);
 %!   tarname = [tempname ".tar"];
 %!   filelist = tar (tarname, {dirname2, fname1});
 %!   if (! strcmp (filelist{3}, fname1))

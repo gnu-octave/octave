@@ -27,7 +27,7 @@
 ## extends this definition to include both negative integers and complex
 ## values.  A negative integer is prime if its positive counterpart is prime.
 ## This is equivalent to @code{isprime (abs (x))}.
-## 
+##
 ## If @code{class (@var{x})} is complex, then primality is tested in the domain
 ## of Gaussian integers (@url{http://en.wikipedia.org/wiki/Gaussian_integer}).
 ## Some non-complex integers are prime in the ordinary sense, but not in the

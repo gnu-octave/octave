@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{fname} =} tmpnam (@var{dir})
 ## @deftypefnx {Function File} {@var{fname} =} tmpnam (@var{dir}, @var{prefix})
 ## Return a unique temporary file name as a string.
-## 
+##
 ## If @var{prefix} is omitted, a value of @qcode{"oct-"} is used.
 ## If @var{dir} is also omitted, the default directory for temporary files
 ## (@code{P_tmpdir} is used.  If @var{dir} is provided, it must exist,

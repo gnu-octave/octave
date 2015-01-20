@@ -26,7 +26,7 @@
 ## wildcards in the filename such as @samp{*} or @samp{?} are accepted and
 ## expanded.  Each file is compressed separately and a new file with a
 ## @file{".bz2"} extension is created.  The original files are not modified,
-## but existing compressed files will be silently overwritten. 
+## but existing compressed files will be silently overwritten.
 ##
 ## If @var{dir} is defined the compressed files are placed in this directory,
 ## rather than the original directory where the uncompressed file resides.

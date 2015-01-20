@@ -3077,7 +3077,7 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
             MAKE_INT_BRANCH (uint32);
             MAKE_INT_BRANCH (uint64);
 #undef MAKE_INT_BRANCH
-            
+
             // GAGME: Accursed Matlab compatibility...
             case btyp_char:
               if (isextra)

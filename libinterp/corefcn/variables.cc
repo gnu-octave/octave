@@ -936,7 +936,7 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      if (args(0).is_string ()) 
+      if (args(0).is_string ())
         {
           std::string sval = args(0).string_value ();
 
@@ -977,7 +977,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      if (args(0).is_string ()) 
+      if (args(0).is_string ())
         {
           std::string sval = args(0).string_value ();
 

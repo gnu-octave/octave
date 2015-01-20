@@ -50,7 +50,7 @@ function retval = recycle (state)
     if (! ischar (state))
       error ("recycle: STATE must be a character string");
     endif
-    
+
     if (strcmpi (state, "on"))
       error ("recycle: recycling files is not implemented");
     elseif (strcmpi (state, "off"))

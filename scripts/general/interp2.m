@@ -193,14 +193,14 @@ function ZI = interp2 (varargin)
   dx = diff (X);
   if (all (dx < 0))
     X = flipud (X);
-    Z = fliplr (Z); 
+    Z = fliplr (Z);
   elseif (any (dx <= 0))
     error ("interp2: X must be strictly monotonic");
   endif
   dy = diff (Y);
   if (all (dy < 0))
     Y = flipud (Y);
-    Z = flipud (Z); 
+    Z = flipud (Z);
   elseif (any (dy <= 0))
     error ("interp2: Y must be strictly monotonic");
   endif

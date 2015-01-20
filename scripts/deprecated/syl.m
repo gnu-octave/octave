@@ -29,14 +29,14 @@
 ## $$
 ## @end tex
 ## @ifnottex
-## 
+##
 ## @example
 ## A X + X B + C = 0
 ## @end example
-## 
+##
 ## @end ifnottex
 ## using standard @sc{lapack} subroutines.  For example:
-## 
+##
 ## @example
 ## @group
 ## syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])

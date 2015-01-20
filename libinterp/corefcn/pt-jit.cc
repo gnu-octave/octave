@@ -2066,7 +2066,7 @@ tree_jit::initialize (void)
 
 #ifdef LEGACY_PASSMANAGER
   module_pass_manager = new llvm::legacy::PassManager ();
-  pass_manager = new llvm::legacy::FunctionPassManager (module); 
+  pass_manager = new llvm::legacy::FunctionPassManager (module);
 #else
   module_pass_manager = new llvm::PassManager ();
   pass_manager = new llvm::FunctionPassManager (module);

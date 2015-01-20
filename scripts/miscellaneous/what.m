@@ -106,7 +106,7 @@ function retval = what (dir)
     if (strcmp (n, ".") || strcmp (n, ".."))
       continue;
     else
-      ## Ignore mdl, slx, p, and packages since they are not  
+      ## Ignore mdl, slx, p, and packages since they are not
       [~, f, e] = fileparts (n);
       if (strcmp (e, ".m"))
         w.m{end+1} = n;

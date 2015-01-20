@@ -266,12 +266,12 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   fail ("imshow ([1,1], [2 0 0])", "invalid colormap MAP");
-%!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid"); 
-%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap"); 
-%!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector"); 
-%!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector"); 
+%!   fail ("imshow ([1,1], [1 0 0 0])", "argument number 2 is invalid");
+%!   fail ('imshow ([1,1], "colormap", [2 0 0])', "invalid colormap");
+%!   fail ('imshow ([1,1], "xdata", ones (2,2))', "xdata must be a vector");
+%!   fail ('imshow ([1,1], "ydata", ones (2,2))', "ydata must be a vector");
 %!   fail ('imshow ([1,1], "foobar")', "warning", "unrecognized property foobar")
-%!   fail ("imshow ([1,1], {1})", "argument number 2 is invalid"); 
+%!   fail ("imshow ([1,1], {1})", "argument number 2 is invalid");
 %!   fail ("imshow ([1+i,1-i])", "warning", "only showing real part of complex image");
 %! unwind_protect_cleanup
 %!   close (hf);

@@ -36,7 +36,7 @@
 ## with reciprocal condition number @var{rc} is generated.  If @var{rc} is
 ## a vector, then it specifies the first singular values of the generated
 ## matrix (@code{length (@var{rc}) <= min (@var{m}, @var{n})}).
-## 
+##
 ## @seealso{sprand, sprandsym, randn}
 ## @end deftypefn
 
@@ -70,10 +70,10 @@ endfunction
 %! rc = [5, 4, 3, 2, 1, 0.1];
 %! s2 = sprandn (100, 100, d, rc);
 %! s3 = sprandn (6, 4, d, rc);
-%! assert (svd (s2)'(1:length (rc)), rc, sqrt (eps)); 
+%! assert (svd (s2)'(1:length (rc)), rc, sqrt (eps));
 %! assert (1/cond (s1), 0.4, sqrt (eps));
-%! assert (nnz (s1) / (100*100), d, 0.02); 
-%! assert (nnz (s2) / (100*100), d, 0.02); 
+%! assert (nnz (s1) / (100*100), d, 0.02);
+%! assert (nnz (s2) / (100*100), d, 0.02);
 %! assert (svd (s3)', [5 4 3 2], sqrt (eps));
 
 %% Test 1-input calling form

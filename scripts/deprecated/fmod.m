@@ -24,11 +24,11 @@
 ##
 ## Return the remainder of the division @code{@var{x} / @var{y}}, computed
 ## using the expression
-## 
+##
 ## @example
 ## x - y .* fix (x ./ y)
 ## @end example
-## 
+##
 ## An error message is printed if the dimensions of the arguments do not
 ## agree, or if either of the arguments is complex.
 ## @seealso{rem, mod}

@@ -1844,7 +1844,7 @@ AC_DEFUN([OCTAVE_LLVM_LEGACY_PASSMANAGER_API], [
           ]], [[
           llvm::Module *module;
           llvm::legacy::PassManager *module_pass_manager;
-          llvm::legacy::FunctionPassManager *pass_manager;      
+          llvm::legacy::FunctionPassManager *pass_manager;
           module_pass_manager = new llvm::legacy::PassManager ();
           pass_manager = new llvm::legacy::FunctionPassManager (module);
         ]])],

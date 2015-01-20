@@ -40,7 +40,7 @@ function retval = isbanded (A, lower, upper)
 
   if (isempty (A))
     retval = [];
-  else 
+  else
     retval = (isnumeric (A) || islogical (A)) && ndims (A) == 2;
     if (retval)
       [i, j] = find (A);

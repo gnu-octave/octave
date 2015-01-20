@@ -25,7 +25,7 @@
 ## Return true or false for each element of @var{string} that matches any of
 ## the elements of the string array @var{pattern}, using the rules of
 ## filename pattern matching.  For example:
-## 
+##
 ## @example
 ## @group
 ## fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})

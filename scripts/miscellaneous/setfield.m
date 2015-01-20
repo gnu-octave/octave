@@ -73,7 +73,7 @@
 ## @end group
 ## @end example
 ##
-## The example begins with an ordinary scalar structure to which a nested 
+## The example begins with an ordinary scalar structure to which a nested
 ## scalar structure is added.  In all cases, if the structure index @var{sidx}
 ## is not specified it defaults to 1 (scalar structure).  Thus, the example
 ## above could be written more concisely as

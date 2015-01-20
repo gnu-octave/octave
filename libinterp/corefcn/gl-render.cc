@@ -1453,7 +1453,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
 
   setup_opengl_transformation (props);
 
-  // Disable line smoothing for axes 
+  // Disable line smoothing for axes
   GLboolean antialias;
   glGetBooleanv (GL_LINE_SMOOTH, &antialias);
   if (antialias == GL_TRUE)
@@ -2477,7 +2477,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
           // filled portion of the patch above.  The tesselator uses
           // GLU_TESS_BOUNDARY_ONLY to get the outline of the patch and OpenGL
           // automatically sets the glType to GL_LINE_LOOP.  This primitive is
-          // not supported by glPolygonOffset which is used to do Z offsets. 
+          // not supported by glPolygonOffset which is used to do Z offsets.
           patch_tesselator tess (this, ec_mode, el_mode);
 
           for (int i = 0; i < nf; i++)

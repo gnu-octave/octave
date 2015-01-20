@@ -465,7 +465,7 @@ body of the loop is always executed at least once.  As with the
 condition in an @code{if} statement, the condition in a @code{do-until}
 statement is considered true if its value is nonzero, and false if its
 value is zero.  If the value of the conditional expression in a
-@code{do-until} statement is a vector or a matrix, it is considered 
+@code{do-until} statement is a vector or a matrix, it is considered
 true only if it is non-empty and @emph{all} of the elements are nonzero.
 
 Octave's @code{do-until} statement looks like this:

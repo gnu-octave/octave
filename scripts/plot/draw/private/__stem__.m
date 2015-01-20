@@ -49,7 +49,7 @@ function h = __stem__ (have_z, varargin)
     h = [];
     nx = rows (x);
     h_baseline = [];
-    
+
     for i = 1 : columns (x)
       if (have_z)
         xt = x(:)';
@@ -96,7 +96,7 @@ function h = __stem__ (have_z, varargin)
         __line__ (hax, xt, yt, "color", lc, "linestyle", ls, "parent", hg);
         __line__ (hax, x(:,i), y(:, i), "color", mc, "linestyle", "none",
                        "marker", ms, "markerfacecolor", fc, "parent", hg);
-        
+
         x_axis_range = get (hax, "xlim");
         if (isempty (h_baseline))
           h_baseline = line (hax, x_axis_range, [0, 0], "color", [0, 0, 0]);
@@ -159,7 +159,7 @@ function h = __stem__ (have_z, varargin)
         addlistener (hg, "visible", {@show_baseline, h});
         addlistener (hg, "basevalue", @move_baseline);
       endfor
-      
+
       addlistener (h_baseline, "basevalue", {@update_baseline, 0});
       addlistener (h_baseline, "ydata", {@update_baseline, 1});
       addlistener (h_baseline, "visible", {@update_baseline, 2});

@@ -2773,7 +2773,7 @@ xreset_default_properties (graphics_handle gh,
           pname.find ("__") != 0 && pname.find ("current") != 0 &&
           pname != "uicontextmenu" && pname != "parent")
         {
-          // Store *mode prop/val in order to set them last 
+          // Store *mode prop/val in order to set them last
           if (pname.find ("mode") == (pname.length () - 4))
             pval[pname] = it->second;
           else
@@ -2936,8 +2936,8 @@ base_properties::set_parent (const octave_value& val)
               graphics_object old_parent_obj;
               old_parent_obj = gh_manager::get_object (get_parent ());
 
-               
-              if (old_parent_obj.get_handle () != hnp) 
+
+              if (old_parent_obj.get_handle () != hnp)
                 old_parent_obj.remove_child (__myhandle__);
               else
                 // Do nothing more
@@ -3134,15 +3134,15 @@ base_graphics_object::remove_all_listeners (void)
     }
 }
 
-void 
+void
 base_graphics_object::reset_default_properties (void)
   {
     if (valid_object ())
       {
-        property_list::pval_map_type factory_pval = 
+        property_list::pval_map_type factory_pval =
           gh_manager::get_object (0).get_factory_defaults_list ()
           .find (type ())->second;
-        
+
         xreset_default_properties (get_handle (), factory_pval);
 
         override_defaults (*this);
@@ -3352,7 +3352,7 @@ root_figure::properties::set_diary (const octave_value& val)
     {
       // Input checking and abrev. matching
       diary.set (val, false);
-      
+
       if (! error_state)
         {
           Fdiary (ovl (diary.current_value ()));
@@ -3375,7 +3375,7 @@ root_figure::properties::set_diaryfile (const octave_value& val)
     {
       // Input checking and abrev. matching
       diaryfile.set (val, false);
-      
+
       if (! error_state)
         {
           Fdiary (ovl (diaryfile.string_value ()));
@@ -3402,7 +3402,7 @@ root_figure::properties::set_echo (const octave_value& val)
     {
       // Input checking and abrev. matching
       echo.set (val, false);
-      
+
       if (! error_state)
         {
           Fecho (ovl (echo.current_value ()));
@@ -3431,10 +3431,10 @@ root_figure::properties::set_format (const octave_value& val)
     {
       // Input checking and abrev. matching
       format.set (val, false);
-      
+
       if (! error_state)
         {
-          Fformat (ovl (format.current_value ()));     
+          Fformat (ovl (format.current_value ()));
 
           format.run_listeners ();
         }
@@ -3458,7 +3458,7 @@ root_figure::properties::set_formatspacing (const octave_value& val)
     {
       // Input checking and abrev. matching
       formatspacing.set (val, false);
-      
+
       if (! error_state)
         {
           std::string strval = formatspacing.current_value ();
@@ -3487,7 +3487,7 @@ root_figure::properties::set_recursionlimit (const octave_value& val)
     {
       // Input checking and abrev. matching
       recursionlimit.set (val, false);
-      
+
       if (! error_state)
         {
           double dval = recursionlimit.double_value ();
@@ -3639,7 +3639,7 @@ root_figure::reset_default_properties (void)
   // empty list of local defaults
   default_properties = property_list ();
 
-  xreset_default_properties (get_handle (), 
+  xreset_default_properties (get_handle (),
                              xproperties.factory_defaults ());
 }
 
@@ -3687,7 +3687,7 @@ figure::properties::remove_child (const graphics_handle& gh)
     }
 }
 
-void 
+void
 figure::properties::adopt (const graphics_handle& h)
 {
   base_properties::adopt (h);
@@ -3829,7 +3829,7 @@ figure::properties::set_position (const octave_value& v,
           position.run_listeners (POSTSET);
           mark_modified ();
         }
-      
+
       if (paperpositionmode.is ("auto"))
         paperposition.set (get_auto_paperposition ());
     }
@@ -4057,11 +4057,11 @@ figure::properties::get_auto_paperposition (void)
 {
   Matrix pos = get_position ().matrix_value ();
   Matrix sz;
-  
+
   caseless_str funits = get_units ();
   caseless_str punits = get_paperunits ();
 
-  // Convert position from figure units to paperunits 
+  // Convert position from figure units to paperunits
   if (funits == "normalized" || punits == "normalized")
     {
       sz = screen_size_pixels ();
@@ -4090,13 +4090,13 @@ figure::properties::get_auto_paperposition (void)
 %! in_pos = [0 0 4 5];
 %! tol = 20 * eps ();
 %! unwind_protect
-%!   ## paperpositionmode "auto" converts figure size to paper units 
+%!   ## paperpositionmode "auto" converts figure size to paper units
 %!   set (hf, "units", "inches");
 %!   set (hf, "position", in_pos);
 %!   set (hf, "paperunits", "centimeters");
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4) * 2.54;
-%!   pos = [(psz/2 .- fsz/2) fsz];  
+%!   pos = [(psz/2 .- fsz/2) fsz];
 %!   set (hf, "paperpositionmode", "auto");
 %!   assert (get (hf, "paperposition"), pos, tol)
 %! unwind_protect_cleanup
@@ -4108,13 +4108,13 @@ figure::properties::get_auto_paperposition (void)
 %! in_pos = [0 0 4 5];
 %! tol = 20 * eps ();
 %! unwind_protect
-%!   ## likewise with normalized units 
+%!   ## likewise with normalized units
 %!   set (hf, "units", "inches");
 %!   set (hf, "position", in_pos);
 %!   psz = get (hf, "papersize");
 %!   set (hf, "paperunits", "normalized");
 %!   fsz = in_pos(3:4) ./ psz;
-%!   pos = [([0.5 0.5] .- fsz/2) fsz];  
+%!   pos = [([0.5 0.5] .- fsz/2) fsz];
 %!   assert (get (hf, "paperposition"), pos, tol)
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -4125,13 +4125,13 @@ figure::properties::get_auto_paperposition (void)
 %! in_pos = [0 0 4 5];
 %! tol = 20 * eps ();
 %! unwind_protect
-%!   ## changing papertype updates paperposition 
+%!   ## changing papertype updates paperposition
 %!   set (hf, "units", "inches");
 %!   set (hf, "position", in_pos);
 %!   set  (hf, "papertype", "a4");
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4);
-%!   pos = [(psz/2 .- fsz/2) fsz];  
+%!   pos = [(psz/2 .- fsz/2) fsz];
 %!   assert (get (hf, "paperposition"), pos, tol)
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -4148,7 +4148,7 @@ figure::properties::get_auto_paperposition (void)
 %!   set (hf, "paperorientation", "landscape");
 %!   psz = get (hf, "papersize");
 %!   fsz = in_pos(3:4);
-%!   pos = [(psz/2 .- fsz/2) fsz];  
+%!   pos = [(psz/2 .- fsz/2) fsz];
 %!   assert (get (hf, "paperposition"), pos, tol)
 %! unwind_protect_cleanup
 %!   close (hf);
@@ -4971,7 +4971,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
       position = default_axes_position ();
       activepositionproperty = "outerposition";
     }
-  
+
   if (mode != "reset")
     {
       delete_children (true);
@@ -6879,7 +6879,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     }
 
   double tick_sep;
-  
+
   if (is_logscale)
     {
       if (! (xisinf (hi) || xisinf (lo)))
@@ -7132,7 +7132,7 @@ void
 axes::update_axis_limits (const std::string& axis_type,
                           const graphics_handle& h)
 {
-  if (updating_axis_limits.find (get_handle ().value ()) != 
+  if (updating_axis_limits.find (get_handle ().value ()) !=
       updating_axis_limits.end ())
     return;
 
@@ -7335,7 +7335,7 @@ axes::update_axis_limits (const std::string& axis_type,
 void
 axes::update_axis_limits (const std::string& axis_type)
 {
-  if ((updating_axis_limits.find (get_handle ().value ()) != 
+  if ((updating_axis_limits.find (get_handle ().value ()) !=
        updating_axis_limits.end ()) ||
       (updating_aspectratios.find (get_handle ().value ()) !=
        updating_aspectratios.end ()))
@@ -8009,7 +8009,7 @@ patch::properties::update_fvc (void)
   NDArray cd = get_cdata ().array_value ();
 
   bad_data_msg = std::string ();
-  if (xd.dims () != yd.dims () || 
+  if (xd.dims () != yd.dims () ||
       (xd.dims () != zd.dims () && ! zd.is_empty ()))
     {
       bad_data_msg = "x/y/zdata should have the same dimensions";
@@ -8121,7 +8121,7 @@ patch::properties::update_data (void)
             }
         }
     }
-  
+
   // Build cdata
   dim_vector dv = dim_vector::alloc (3);
   NDArray cd;
@@ -8134,7 +8134,7 @@ patch::properties::update_data (void)
       dv(2) = fvc.columns ();
       cd = fvc.reshape (dv);
     }
-  else 
+  else
     {
       if (! fvc.is_empty ())
         {
@@ -8146,8 +8146,8 @@ patch::properties::update_data (void)
         }
     }
 
-  // Build x,y,zdata and eventually per vertex cdata 
-  Matrix xd (idx.dims ()); 
+  // Build x,y,zdata and eventually per vertex cdata
+  Matrix xd (idx.dims ());
   Matrix yd (idx.dims ());
   Matrix zd;
   bool has_zd = false;
@@ -8157,7 +8157,7 @@ patch::properties::update_data (void)
       has_zd = true;
     }
 
-  
+
   for (octave_idx_type jj = 0; jj < nfaces; jj++)
     {
       for (octave_idx_type ii = 0; ii < idx.rows (); ii++)
@@ -8168,7 +8168,7 @@ patch::properties::update_data (void)
 
           if (has_zd)
             zd(ii,jj) = vert(row,2);
-          
+
           if (pervertex)
             for (int kk = 0; kk < fvc.columns (); kk++)
               cd(ii,jj,kk) = fvc(row,kk);
@@ -8829,7 +8829,7 @@ uitoolbar::reset_default_properties (void)
   // empty list of local defaults
   default_properties = property_list ();
 
-  xreset_default_properties (get_handle (), 
+  xreset_default_properties (get_handle (),
                              xproperties.factory_defaults ());
 
   // override with parents' defaults
@@ -9502,18 +9502,18 @@ each individual object will be reset.\n\
 %! unwind_protect
 %!   tol = 20 * eps;
 %!   hax = axes ("defaultlinelinewidth", 3);
-%!   
+%!
 %!   hli = line (1:10, 1:10, 1:10, "marker", "o",
 %!               "markerfacecolor", "b", "linestyle", ":");
-%!   
+%!
 %!   reset (hli);
 %!   assert (get (hli, "marker"), get (0, "defaultlinemarker"));
-%!   assert (get (hli, "markerfacecolor"), 
+%!   assert (get (hli, "markerfacecolor"),
 %!           get (0, "defaultlinemarkerfacecolor"));
-%!   assert (get (hli, "linestyle"), 
+%!   assert (get (hli, "linestyle"),
 %!           get (0, "defaultlinelinestyle"));
-%!   assert (get (hli, "linewidth"), 3, tol);  # parent axes defaults  
-%!   
+%!   assert (get (hli, "linewidth"), 3, tol);  # parent axes defaults
+%!
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -9560,7 +9560,7 @@ each individual object will be reset.\n\
 %!test  # image object
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   tol = 20 * eps;   
+%!   tol = 20 * eps;
 %!   him = image (rand (10,10), "cdatamapping", "scaled");
 %!
 %!   reset (him);
@@ -9574,7 +9574,7 @@ each individual object will be reset.\n\
 %!test  # text object
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   tol = 20 * eps;   
+%!   tol = 20 * eps;
 %!   hte = text (5, 5, "Hi!", "fontsize", 20 ,"color", "r");
 %!
 %!   reset (hte);
@@ -9585,14 +9585,14 @@ each individual object will be reset.\n\
 %!   close (hf);
 %! end_unwind_protect
 
-%!test  # axes object  
+%!test  # axes object
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   tol = 20 * eps;
 %!   pos = get (0, "defaultaxesposition") * .5;
 %!   hax = axes ("linewidth", 2, "position", pos);
 %!   title ("Reset me, please!");
-%! 
+%!
 %!   reset (hax);
 %!   assert (get (hax, "linewidth"), get (0, "defaultaxeslinewidth"), tol);
 %!   assert (get (hax, "position"), pos, tol); # axes position is unchanged
@@ -9604,7 +9604,7 @@ each individual object will be reset.\n\
 
 %!test  # root figure object
 %! set (0, "defaultfigurevisible", "off");
-%! hf = figure ("visible", "off", "paperunits", "centimeters", 
+%! hf = figure ("visible", "off", "paperunits", "centimeters",
 %!              "papertype", "a4");
 %! unwind_protect
 %!   reset (hf);
@@ -9732,7 +9732,7 @@ being @qcode{\"portrait\"}.\n\
                   else if (nargin == 2 && args(1).is_string ())
                     {
                       std::string property = args(1).string_value ();
-                      
+
                       octave_map pmap = obj.values_as_struct ();
 
                       if (obj.has_readonly_property (property))

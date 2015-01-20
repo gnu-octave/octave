@@ -129,7 +129,7 @@
 ##
 ## @table @asis
 ## @item 101
-## The algorithm terminated normally. 
+## The algorithm terminated normally.
 ## All constraints meet the specified tolerance.
 ##
 ## @item 102
@@ -139,7 +139,7 @@
 ## The maximum number of iterations was reached.
 ##
 ## @item 104
-## The stepsize has become too small, i.e., 
+## The stepsize has become too small, i.e.,
 ## @tex
 ## $\Delta x,$
 ## @end tex

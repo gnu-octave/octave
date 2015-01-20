@@ -67,9 +67,9 @@ endfunction
 %!                 double (0), single (0),
 %!                 double (complex (0,0)), single (complex (0,0))),
 %!        true)
-%!assert (isequal (true, logical (1), char (1), 
-%!                 int8 (1), int16 (1), int32 (1), int64 (1), 
-%!                 uint8 (1), uint16 (1), uint32 (1), uint64 (1), 
+%!assert (isequal (true, logical (1), char (1),
+%!                 int8 (1), int16 (1), int32 (1), int64 (1),
+%!                 uint8 (1), uint16 (1), uint32 (1), uint64 (1),
 %!                 double (1), single (1),
 %!                 double (complex (1,0)), single (complex (1,0))),
 %!        true)
@@ -101,7 +101,7 @@ endfunction
 %!assert (isequal (struct ("a","abc","b",2), struct ("a","abc","b",2)), true)
 
 ## recursive structure
-%!test  
+%!test
 %! x.a = "a1";
 %! x.b.a = "ba1";
 %! x.b.b = "bb1";
@@ -155,7 +155,7 @@ endfunction
 %!assert (isequal (NaN, Inf), false)
 %!assert (isequal (NaN, 1.0), false)
 %!assert (isequal ([1,2,NaN,4], [1,2,NaN,4]), false)
-%!assert (isequal (struct ("a",NaN,"b",2), struct ("a",NaN,"b",2), 
+%!assert (isequal (struct ("a",NaN,"b",2), struct ("a",NaN,"b",2),
 %!                 struct ("a",NaN,"b",2)), false)
 
 ## test input validation

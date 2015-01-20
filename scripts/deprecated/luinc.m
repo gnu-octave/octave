@@ -26,51 +26,51 @@
 ## Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.
 ## Two types of incomplete factorization are possible, and the type
 ## is determined by the second argument to @code{luinc}.
-## 
+##
 ## Called with a second argument of @qcode{'0'}, the zero-level incomplete
 ## LU@tie{}factorization is produced.  This creates a factorization of @var{A}
 ## where the position of the nonzero arguments correspond to the same
 ## positions as in the matrix @var{A}.
-## 
+##
 ## Alternatively, the fill-in of the incomplete LU@tie{}factorization can
 ## be controlled through the variable @var{droptol} or the structure
 ## @var{opts}.  The @sc{umfpack} multifrontal factorization code by Tim A.
 ## Davis is used for the incomplete LU@tie{}factorization, (availability
 ## @url{http://www.cise.ufl.edu/research/sparse/umfpack/})
-## 
+##
 ## @var{droptol} determines the values below which the values in the
 ## LU@tie{} factorization are dropped and replaced by zero.  It must be a
 ## positive scalar, and any values in the factorization whose absolute value
 ## are less than this value are dropped, expect if leaving them increase the
 ## sparsity of the matrix.  Setting @var{droptol} to zero results in a complete
 ## LU@tie{}factorization which is the default.
-## 
+##
 ## @var{opts} is a structure containing one or more of the fields
-## 
+##
 ## @table @code
 ## @item droptol
 ## The drop tolerance as above.  If @var{opts} only contains @code{droptol}
 ## then this is equivalent to using the variable @var{droptol}.
-## 
+##
 ## @item milu
 ## A logical variable flagging whether to use the modified incomplete
 ## LU@tie{} factorization.  In the case that @code{milu} is true, the dropped
 ## values are subtracted from the diagonal of the matrix @var{U} of the
 ## factorization.  The default is @code{false}.
-## 
+##
 ## @item udiag
 ## A logical variable that flags whether zero elements on the diagonal of
 ## @var{U} should be replaced with @var{droptol} to attempt to avoid singular
 ## factors.  The default is @code{false}.
-## 
+##
 ## @item thresh
 ## Defines the pivot threshold in the interval [0,1].  Values outside that
 ## range are ignored.
 ## @end table
-## 
+##
 ## All other fields in @var{opts} are ignored.  The outputs from @code{luinc}
 ## are the same as for @code{lu}.
-## 
+##
 ## Given the string argument @qcode{\"vector\"}, @code{luinc} returns the
 ## values of @var{p} @var{q} as vector values.
 ## @seealso{ilu, ichol, lu, sparse}

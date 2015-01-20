@@ -28,7 +28,7 @@
 ## Otherwise, return a row vector.  The inputs may also be cell arrays of
 ## strings.
 ##
-## If the optional input @qcode{"rows"} is given then return the rows in 
+## If the optional input @qcode{"rows"} is given then return the rows in
 ## @var{a} that are not in @var{b}.  The inputs must be 2-D matrices to use
 ## this option.
 ##

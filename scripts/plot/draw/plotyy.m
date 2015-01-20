@@ -85,7 +85,7 @@ function [ax, h1, h2] = plotyy (varargin)
     [axtmp, h1tmp, h2tmp] = __plotyy__ (hax, varargin{:});
 
     set (gcf, "currentaxes", hax(1));
-     
+
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);

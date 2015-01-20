@@ -175,7 +175,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     otherwise
       bad_usage = true;
       return;
-  
+
   endswitch
 
   if (firststring < nargin)

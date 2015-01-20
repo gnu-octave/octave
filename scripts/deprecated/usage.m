@@ -26,16 +26,16 @@
 ## set Octave's internal error state such that control will return to the
 ## top level without evaluating any more commands.  This is useful for
 ## aborting from functions.
-## 
+##
 ## After @code{usage} is evaluated, Octave will print a traceback of all
 ## the function calls leading to the usage message.
-## 
+##
 ## You should use this function for reporting problems errors that result
 ## from an improper call to a function, such as calling a function with an
 ## incorrect number of arguments, or with arguments of the wrong type.  For
 ## example, most functions distributed with Octave begin with code like
 ## this
-## 
+##
 ## @example
 ## @group
 ## if (nargin != 2)
@@ -43,7 +43,7 @@
 ## endif
 ## @end group
 ## @end example
-## 
+##
 ## @noindent
 ## to check for the proper number of arguments.
 ## @seealso{print_usage}

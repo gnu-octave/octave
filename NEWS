@@ -22,7 +22,7 @@ Summary of important user-visible changes for version 4.2:
  ** Other new classes in Octave 4.2:
 
       audioplayer    inputParser
-      audiorecorder  
+      audiorecorder
 
  ** Optional stricter Matlab compatibility for ranges, diagonal matrices,
     and permutation matrices.
@@ -153,7 +153,7 @@ Summary of important user-visible changes for version 4.2:
     Functions created through the use of inline are scheduled for deprecation
     by Matlab.  When this occurs Octave will continue to support inline
     functions for an indeterminate amount of time before also removing support.
-    All new code should use anonymous functions in place of inline functions. 
+    All new code should use anonymous functions in place of inline functions.
 
  ** Deprecated functions.
 

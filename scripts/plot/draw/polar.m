@@ -291,9 +291,9 @@ function __update_layer__ (hax,  ~, hg)
   set (hg, "handlevisibility", "on");
   kids = get (hax, "children");
   if (strcmp (get (hax, "layer"), "bottom"))
-    set (hax, "children", [kids(kids != hg); hg]); 
+    set (hax, "children", [kids(kids != hg); hg]);
   else
-    set (hax, "children", [hg; kids(kids != hg)]); 
+    set (hax, "children", [hg; kids(kids != hg)]);
   endif
   set (hg, "handlevisibility", "off");
 

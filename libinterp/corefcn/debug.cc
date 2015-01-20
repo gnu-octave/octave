@@ -722,7 +722,7 @@ files.\n\
   std::string symbol_name = "";
   bp_table::intmap lines;
 
-  int nargin = args.length (); 
+  int nargin = args.length ();
 
   parse_dbfunction_params ("dbclear", args, symbol_name, lines);
 
@@ -921,13 +921,13 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
       if (fs)
         {
           int line = 1;
-          std::string text;  
+          std::string text;
 
           while (std::getline (fs, text) && line <= end)
           {
             if (line >= start)
               os << line << "\t" << text << "\n";
-            
+
             line++;
           }
         }

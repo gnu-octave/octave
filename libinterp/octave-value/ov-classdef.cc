@@ -411,7 +411,7 @@ check_access (const cdef_class& cls, const octave_value& acc,
   else
     error ("invalid property/method access in class `%s'",
            cls.get_name ().c_str ());
-  
+
   return false;
 }
 
@@ -1394,7 +1394,7 @@ cdef_object_rep::map_keys (void) const
 
   if (cls.ok ())
     return cls.get_names ();
-  
+
   return string_vector ();
 }
 
@@ -1534,7 +1534,7 @@ cdef_object_scalar::subsasgn (const std::string& type,
                         }
                       else
                         {
-                          octave_value val = 
+                          octave_value val =
                             prop.get_value (obj, true, "subsasgn");
 
                           if (! error_state)
@@ -1900,7 +1900,7 @@ cdef_object_array::fill_empty_values (Array<cdef_object>& arr)
         }
     }
 }
-  
+
 bool cdef_object_scalar::is_constructed_for (const cdef_class& cls) const
 {
   return (is_constructed ()
@@ -3117,7 +3117,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
           return retval;
         }
     }
- 
+
   octave_value get_fcn = get ("GetMethod");
 
   // FIXME: should check whether we're already in get accessor method
@@ -3129,7 +3129,7 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
       octave_value_list args;
 
       args(0) = to_ov (obj);
-      
+
       args = execute_ov (get_fcn, args, 1);
 
       if (! error_state)
@@ -3184,7 +3184,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
           return;
         }
     }
- 
+
   octave_value set_fcn = get ("SetMethod");
 
   if (set_fcn.is_empty () || is_method_executing (set_fcn, obj))

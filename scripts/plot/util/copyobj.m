@@ -47,7 +47,7 @@ function hnew = copyobj (horig, hparent = 0)
   ## current figure and axes
   cf = gcf ();
   ca = get (cf, "currentaxes");
-  
+
   ## compatibility of input handles
   kididx = find (strcmp (alltypes, get (horig).type));
   paridx = find (strcmp (alltypes, get (hparent).type));
@@ -168,7 +168,7 @@ endfunction
 %!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!test 
+%!test
 %! unwind_protect
 %!   tag = "foo";
 %!   hf = figure ("visible", "off");

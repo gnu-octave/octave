@@ -122,7 +122,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       while (t && idx < l_x)
         idx++;
         args = cell (1, 2+l_v);
-        args(1:2) = {nans_compare_equal, x{idx}}; 
+        args(1:2) = {nans_compare_equal, x{idx}};
         args(3:end) = [cellindexmat(varargin, idx){:}];
 
         t = __isequal__ (args{:});

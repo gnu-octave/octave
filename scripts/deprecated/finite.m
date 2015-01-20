@@ -25,7 +25,7 @@
 ## Return a logical array which is true where the elements of @var{x} are
 ## finite values and false where they are not.
 ## For example:
-## 
+##
 ## @example
 ## @group
 ## finite ([13, Inf, NA, NaN])

@@ -153,7 +153,7 @@ function [vx, vy] = voronoi (varargin)
     edges(:, edgeoutside) = [];
   else
     ## look for the edge between the two given points
-    for edge = edges(1:2,:) 
+    for edge = edges(1:2,:)
       if (det ([[[1;1],p(edge,1:2)];1,x(1),y(1)])
           * det ([[[1;1],p(edge,1:2)];1,x(2),y(2)]) < 0)
         edges = edge;

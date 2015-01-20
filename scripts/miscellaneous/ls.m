@@ -70,7 +70,7 @@ function retval = ls (varargin)
     if (ispc () && ! isunix ())
       idx = ! strncmp (args, '/', 1);
       ## Enclose paths, potentially having spaces, in double quotes:
-      args(idx) = strcat ('"', args(idx), '"');    
+      args(idx) = strcat ('"', args(idx), '"');
       ## shell (cmd.exe) on MinGW uses '^' as escape character
       args = regexprep (args, '([^\w.*?])', '^$1');
     else
@@ -122,7 +122,7 @@ endfunction
 %!   list2 = (list2')(:)';   # transform to a single row vector
 %!   assert (! isempty (strfind (list2, "sbin")));
 %!   assert (rows (list) == rows (list2));
-%! endif 
+%! endif
 
 %!error <all arguments must be character strings> ls (1)
 ## Test below is valid, but produces confusing output on screen

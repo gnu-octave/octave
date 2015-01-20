@@ -193,7 +193,7 @@ endfunction
 %!test  # meshgridded xi, yi, zi
 %! x = z = 1:2;  y = 1:3;
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
-%! xi = zi = .6:1.6;  yi = 1; 
+%! xi = zi = .6:1.6;  yi = 1;
 %! [xxi3, yyi3, zzi3] = meshgrid (xi, yi, zi);
 %! [xxi, yyi, zzi] = ndgrid (yi, xi, zi);
 %! vi = interp3 (x, y, z, v, xxi3, yyi3, zzi3, "nearest");
@@ -203,7 +203,7 @@ endfunction
 %!test  # vector xi, yi, zi
 %! x = z = 1:2;  y = 1:3;
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
-%! xi = zi = .6:1.6;  yi = 1; 
+%! xi = zi = .6:1.6;  yi = 1;
 %! vi = interp3 (x, y, z, v, xi, yi, zi, "nearest");
 %! vi2 = interpn (y, x, z, v, yi, xi, zi,"nearest");
 %! assert (vi, vi2);
@@ -211,7 +211,7 @@ endfunction
 %!test  # vector xi+1 with extrap value
 %! x = z = 1:2;  y = 1:3;
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
-%! xi = zi = .6:1.6;  yi = 1; 
+%! xi = zi = .6:1.6;  yi = 1;
 %! vi = interp3 (x, y, z, v, xi+1, yi, zi, "nearest", 3);
 %! vi2 = interpn (y, x, z, v, yi, xi+1, zi, "nearest", 3);
 %! assert (vi, vi2);
@@ -219,7 +219,7 @@ endfunction
 %!test  # input value matrix--no x,y,z
 %! x = z = 1:2;  y = 1:3;
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
-%! xi = zi = .6:1.6;  yi = 1; 
+%! xi = zi = .6:1.6;  yi = 1;
 %! vi = interp3 (v, xi, yi, zi, "nearest");
 %! vi2 = interpn (v, yi, xi, zi,"nearest");
 %! assert (vi, vi2);
@@ -227,7 +227,7 @@ endfunction
 %!test  # input value matrix--no x,y,z, with extrap value
 %! x = z = 1:2;  y = 1:3;
 %! v = ones ([3,2,2]);  v(:,2,1) = [7;5;4];  v(:,1,2) = [2;3;5];
-%! xi = zi = .6:1.6;  yi = 1; 
+%! xi = zi = .6:1.6;  yi = 1;
 %! vi = interp3 (v, xi, yi, zi, "nearest", 3);
 %! vi2 = interpn (v, yi, xi, zi, "nearest", 3);
 %! assert (vi, vi2);

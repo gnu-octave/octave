@@ -52,7 +52,7 @@ function rmappdata (h, varargin)
         ## FIXME: Should we bother to error out?  Or just silently continue?
         missing = varargin{find (! vld, 1)};
         error ("rmappdata: appdata '%s' is not present", missing);
-      endif 
+      endif
       appdata = rmfield (appdata, varargin);
       set (hg, "__appdata__", appdata);
     endif

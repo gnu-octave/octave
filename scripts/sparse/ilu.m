@@ -1,6 +1,6 @@
 ## Copyright (C) 2014 Eduardo Ramos Fernández <eduradical951@gmail.com>
 ## Copyright (C) 2013 Kai T. Ohlhus <k.ohlhus@gmail.com>
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 ##
 ## @code{ilu} returns a unit lower triangular matrix @var{L}, an upper
 ## triangular matrix @var{U}, and optionally a permutation matrix @var{P}, such
-## that @code{@var{L}*@var{U}} approximates @code{@var{P}*@var{A}}. 
+## that @code{@var{L}*@var{U}} approximates @code{@var{P}*@var{A}}.
 ##
 ## The factors given by this routine may be useful as preconditioners for a
 ## system of linear equations being solved by iterative methods such as BICG
@@ -76,12 +76,12 @@
 ##
 ## @table @asis
 ## @item @qcode{"row"}
-## Row-sum modified incomplete LU factorization. 
+## Row-sum modified incomplete LU factorization.
 ## The factorization preserves row sums:
 ## @code{@var{A} * e = @var{L} * @var{U} * e}, where e is a vector of ones.
 ##
 ## @item @qcode{"col"}
-## Column-sum modified incomplete LU factorization. 
+## Column-sum modified incomplete LU factorization.
 ## The factorization preserves column sums:
 ## @code{e' * @var{A} = e' * @var{L} * @var{U}}.
 ##
@@ -100,7 +100,7 @@
 ## is chosen to be the pivot.
 ## @end table
 ##
-## If @code{ilu} is called with just one output, the returned matrix is 
+## If @code{ilu} is called with just one output, the returned matrix is
 ## @code{@var{L} + @var{U} - speye (size (@var{A}))}, where @var{L} is unit
 ## lower triangular and @var{U} is upper triangular.
 ##
@@ -142,8 +142,8 @@
 ## @example
 ## @group
 ## A = gallery ("wathen", 10, 10);
-## b = sum (A, 2); 
-## tol = 1e-8; 
+## b = sum (A, 2);
+## tol = 1e-8;
 ## maxit = 50;
 ## opts.type = "crout";
 ## opts.droptol = 1e-4;
@@ -174,7 +174,7 @@ function [L, U, P] = ilu (A, opts = struct ())
   endif
 
   ## If A is empty then return empty L, U and P for Matlab compatibility
-  if (isempty (A)) 
+  if (isempty (A))
     L = U = P = A;
     return;
   endif
@@ -323,59 +323,59 @@ endfunction
 %! A_medium = sprand (n_medium, n_medium, 1/n_medium) + speye (n_medium);
 %! A_large = sprand (n_large, n_large, 1/n_large/10) + speye (n_large);
 %!
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_tiny);
 %! assert (norm (A_tiny - L*U, "fro") / norm (A_tiny, "fro"), 0, n_tiny * eps);
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_small);
 %! assert (norm (A_small - L*U, "fro") / norm (A_small, "fro"), 0, 1);
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_medium);
 %! assert (norm (A_medium - L*U, "fro") / norm (A_medium, "fro"), 0, 1);
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_large);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), 0, 1);
 %!
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_tiny, opts);
 %! assert (norm (A_tiny - L*U, "fro") / norm (A_tiny, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_small, opts);
 %! assert (norm (A_small - L*U, "fro") / norm (A_small, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_medium, opts);
 %! assert (norm (A_medium - L*U, "fro") / norm (A_medium, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_large, opts);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), eps, eps);
 %!
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! [L, U] = ilu (A_tiny, opts);
 %! assert (norm (A_tiny - L*U, "fro") / norm (A_tiny, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! [L, U] = ilu (A_small, opts);
 %! assert (norm (A_small - L*U, "fro") / norm (A_small, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! [L, U] = ilu (A_medium, opts);
 %! assert (norm (A_medium - L*U, "fro") / norm (A_medium, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
@@ -397,59 +397,59 @@ endfunction
 %! A_large = sprand (n_large, n_large, 1/n_large/10) + ...
 %!   i * sprand (n_large, n_large, 1/n_large/10) + speye (n_large);
 %!
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_tiny);
 %! assert (norm (A_tiny - L*U, "fro") / norm (A_tiny, "fro"), 0, n_tiny * eps);
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_small);
 %! assert (norm (A_small - L*U, "fro") / norm (A_small, "fro"), 0, 1);
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_medium);
 %! assert (norm (A_medium - L*U, "fro") / norm (A_medium, "fro"), 0, 1);
-%!test 
+%!test
 %! opts.type = "nofill";
 %! [L, U] = ilu (A_large);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), 0, 1);
 %!
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_tiny, opts);
 %! assert (norm (A_tiny - L*U, "fro") / norm (A_tiny, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_small, opts);
 %! assert (norm (A_small - L*U, "fro") / norm (A_small, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_medium, opts);
 %! assert (norm (A_medium - L*U, "fro") / norm (A_medium, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "crout";
 %! [L, U] = ilu (A_large, opts);
 %! assert (norm (A_large - L*U, "fro") / norm (A_large, "fro"), eps, eps);
 %!
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! [L, U] = ilu (A_tiny, opts);
 %! assert (norm (A_tiny - L*U, "fro") / norm (A_tiny, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! [L, U] = ilu (A_small, opts);
 %! assert (norm (A_small - L*U, "fro") / norm (A_small, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;
 %! [L, U] = ilu (A_medium, opts);
 %! assert (norm (A_medium - L*U, "fro") / norm (A_medium, "fro"), eps, eps);
-%!test 
+%!test
 %! opts.type = "ilutp";
 %! opts.droptol = 0;
 %! opts.thresh = 0;

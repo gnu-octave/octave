@@ -197,7 +197,7 @@ octave_env::do_get_temp_directory (void) const
   std::string tempd;
 
 #if defined (__MINGW32__) || defined (_MSC_VER)
-  
+
   tempd = do_getenv ("TEMP");
 
   if (tempd.empty ())

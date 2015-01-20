@@ -346,7 +346,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       return retval;
     }
 
-  if (! args(0).is_string ()) 
+  if (! args(0).is_string ())
     {
       error ("urlwrite: URL must be a string");
       return retval;
@@ -354,7 +354,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   std::string url = args(0).string_value ();
 
-  if (! args(1).is_string ()) 
+  if (! args(1).is_string ())
     {
       error ("urlwrite: LOCALFILE must be a string");
       return retval;
@@ -368,7 +368,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   if (nargin == 4)
     {
-      if (! args(2).is_string ()) 
+      if (! args(2).is_string ())
         {
           error ("urlwrite: METHOD must be a string");
           return retval;
@@ -503,7 +503,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
       return retval;
     }
 
-  if (! args(0).is_string ()) 
+  if (! args(0).is_string ())
     {
       error ("urlread: URL must be a string");
       return retval;
@@ -516,7 +516,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   if (nargin == 3)
     {
-      if (! args(1).is_string ()) 
+      if (! args(1).is_string ())
         {
           error ("urlread: METHOD must be a string");
           return retval;

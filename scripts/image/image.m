@@ -233,13 +233,13 @@ endfunction
 %!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
 %!   assert (get (hi, "xdata"), [1 nx/2])
 %!   assert (get (hi, "ydata"), [1 ny/2])
-%! 
+%!
 %!   set (hi, "xdata", [10 100])     # xdatamode is now manual
 %!   set (hi, "ydata", [10 1000])    # ydatamode is now manual
 %!   set (hi, "cdata", cdata)
 %!   assert (get (hi, "xdata"), [10 100])
 %!   assert (get (hi, "ydata"), [10 1000])
-%! 
+%!
 %!   set (hi, "ydata", [])           # ydatamode is now auto
 %!   set (hi, "cdata", cdata(1:2:end, 1:2:end))
 %!   assert (get (hi, "xdata"), [10 100])

@@ -712,7 +712,7 @@ octave_tempnam (const std::string& dir, const std::string& pfx,
     msg = gnulib::strerror (errno);
   else
     retval = tname;
-  
+
   return retval;
 }
 

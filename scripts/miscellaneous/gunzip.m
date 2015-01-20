@@ -22,7 +22,7 @@
 ## Unpack the gzip archive @var{gzfile}.
 ##
 ## If @var{gzfile} is a directory, all gzfiles in the directory will be
-## recursively unpacked.  
+## recursively unpacked.
 ##
 ## If @var{dir} is specified the files are unpacked in this directory rather
 ## than the one where @var{gzfile} is located.

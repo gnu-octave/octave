@@ -73,9 +73,9 @@ function hlink = linkprop (h, prop)
   endif
 
   h = h(:)';  # set() prefers column vectors
-  ## Match all objects to the first one in the list before linking 
+  ## Match all objects to the first one in the list before linking
   for j = 1 : numel (prop)
-    set (h(2:end), prop{j}, get (h(1), prop{j})); 
+    set (h(2:end), prop{j}, get (h(1), prop{j}));
   endfor
 
   ## Add listeners to all objects

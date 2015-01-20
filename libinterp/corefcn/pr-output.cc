@@ -3872,7 +3872,7 @@ set_format_style (int argc, const string_vector& argv)
         {
           error ("format: unrecognized format state '%s'", arg.c_str ());
           return;
-        }  
+        }
     }
   else
     {

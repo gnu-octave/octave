@@ -111,7 +111,7 @@ endfunction
 
 %% Windows specific - drive letters and file sep type, cell array
 %!test
-%! if (ispc) 
+%! if (ispc)
 %!  tmp = fullfile ({"\\\/B:\//", "A://c", "\\\C:/g/h/i/j\/"});
 %!  assert (tmp{1}, 'B:\');
 %!  assert (tmp{2}, 'A:\c');

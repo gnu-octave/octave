@@ -119,7 +119,7 @@ function hg = __quiver__ (varargin)
     ww = w;
     len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
   else
-    len = max (sqrt (u(:).^2 + v(:).^2));      
+    len = max (sqrt (u(:).^2 + v(:).^2));
   endif
   if (len > 0 && autoscale && numel (u) > 1)
     if (isvector (x))

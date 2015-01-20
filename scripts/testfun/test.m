@@ -48,7 +48,7 @@
 ## such as @var{success}, @var{n}, etc.
 ##
 ## The optional second argument determines the amount of output to generate and
-## which types of tests to run.  The default value is @qcode{"normal"}. 
+## which types of tests to run.  The default value is @qcode{"normal"}.
 ## Requesting an output argument will suppress printing the final summary
 ## message and any intermediate warnings, unless verbose reporting is
 ## enabled.
@@ -98,7 +98,7 @@
 ## nmax =  5
 ## @end group
 ## @end example
-## 
+##
 ## Additional Calling Syntaxes
 ##
 ## If the second argument is the string @qcode{"grabdemo"}, the contents of
@@ -529,7 +529,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
       elseif (strcmp (__type, "testif"))
         __e = regexp (__code, '.$', 'lineanchors', 'once');
         ## Strip any comment from testif line before looking for features
-        __feat_line = strtok (__code(1:__e), '#%'); 
+        __feat_line = strtok (__code(1:__e), '#%');
         __feat = regexp (__feat_line, '\w+', 'match');
         __feat = strrep (__feat, "HAVE_", "");
         __have_feat = __have_feature__ (__feat);
@@ -644,7 +644,7 @@ function [__n, __nmax, __nxfail, __nskip] = test (__name, __flag = "normal", __f
     end_unwind_protect
   endfor
 
-  ## Clear any functions created during test run 
+  ## Clear any functions created during test run
   eval (__clearfcn, "");
 
   if (nargout == 0)
@@ -804,14 +804,14 @@ endfunction
 %!fail ('test ("test", "bogus")', "unknown flag")  # incorrect args
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 
-## Test 'error' keyword 
+## Test 'error' keyword
 %!error test              # no args, generates usage()
 %!error test (1,2,3,4)    # too many args, generates usage()
 %!error <unknown flag> test ("test", "bogus"); # incorrect args
 %!error test ("test", "bogus");  # test without pattern
 %!error <'garbage' undefined> garbage; # usage on nonexistent function is error
 
-## Test 'warning' keyword 
+## Test 'warning' keyword
 %!warning warning ("warning message");   # no pattern
 %!warning <warning message> warning ("warning message");   # with pattern
 
@@ -834,7 +834,7 @@ endfunction
 %! a=1; b=2; c=4;
 %!shared                  # clear all shared variables for remainder of tests
 
-## Test 'function' keyword 
+## Test 'function' keyword
 %!function x = __test_a (y)
 %! x = 2*y;
 %!endfunction
@@ -850,16 +850,16 @@ endfunction
 %! x = 2*y;
 %! z = 3*y;
 %!endfunction
-%!test                      
+%!test
 %! [x,z] = __test_a (3);    # Test a test function with multiple returns
 %! assert (x,6);
 %! assert (z,9);
 
-## Test 'assert' keyword 
+## Test 'assert' keyword
 %!assert (isempty ([]))     # support for test assert shorthand
 %!assert (size (ones (1,2,3)), [1 2 3])
 
-## Test 'demo' keyword 
+## Test 'demo' keyword
 %!demo                      # multiline demo block
 %! t = [0:0.01:2*pi]; x = sin (t);
 %! plot (t,x);
@@ -873,11 +873,11 @@ endfunction
 %! assert (code(idx(3):end),
 %!         " a=3                  # single line demo blocks work too");
 
-## Test 'testif' keyword 
+## Test 'testif' keyword
 %!testif HAVE_BOGUS_FEATURE
 %! error ("testif executed code despite not having feature");
 
-## Test 'xtest' keyword 
+## Test 'xtest' keyword
 %!xtest
 %! assert (1, 1);      # Test passes
 %!xtest

@@ -300,7 +300,7 @@ public:
            ? instance->do_backtrace (nskip, curr_user_frame, true)
            : octave_map ();
   }
-  
+
   static octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame,
                                bool print_subfn = true)
   {
@@ -318,7 +318,7 @@ public:
            ? instance->do_backtrace_frames (nskip, curr_user_frame)
            : std::list<octave_call_stack::stack_frame> ();
   }
-  
+
   static std::list<octave_call_stack::stack_frame>
   backtrace_frames (size_t nskip, octave_idx_type& curr_user_frame)
   {

@@ -44,7 +44,7 @@ function [filelines, startline, endline] = getsavepath (file)
     endif
   endif
 
-  ## Verify the file was correctly formatted. 
+  ## Verify the file was correctly formatted.
   if (startline > endline || (startline > 0 && endline == 0))
     error ("getsavepath: unable to parse file, %s", file);
   endif

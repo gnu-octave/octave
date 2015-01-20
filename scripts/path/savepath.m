@@ -46,7 +46,7 @@ function retval = savepath (file)
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
 
-  ## Use project-specific or user's .octaverc when no file specified 
+  ## Use project-specific or user's .octaverc when no file specified
   if (nargin == 0)
     file = fullfile (pwd, ".octaverc");
     if (! exist (file, "file"))
@@ -197,7 +197,7 @@ endfunction
 %!     unlink (".octaverc");
 %!   endif
 %!   ## Create blank .octaverc file
-%!   fid = fopen (".octaverc", "wt"); 
+%!   fid = fopen (".octaverc", "wt");
 %!   assert (fid >= 0);
 %!   fclose (fid);
 %!   ## Save path into local .octaverc file
@@ -216,5 +216,5 @@ endfunction
 %!   assert (orig_data, new_data);
 %! unwind_protect_cleanup
 %!   cd (old_dir);
-%! end_unwind_protect 
+%! end_unwind_protect
 

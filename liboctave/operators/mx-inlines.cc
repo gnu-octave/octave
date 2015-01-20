@@ -939,6 +939,8 @@ F (const T *v, T *r, octave_idx_type m, octave_idx_type n) \
             { r[i] = r0[i]; nan = true; } \
           else if (xisnan (r0[i]) || v[i] OP r0[i]) \
             r[i] = v[i]; \
+          else \
+            r[i] = r0[i]; \
         } \
       j++; v += m; r0 = r; r += m; \
     } \
@@ -976,6 +978,8 @@ F (const T *v, T *r, octave_idx_type *ri, \
             { r[i] = r0[i]; ri[i] = r0i[i]; nan = true; } \
           else if (xisnan (r0[i]) || v[i] OP r0[i]) \
             { r[i] = v[i]; ri[i] = j; }\
+          else \
+            { r[i] = r0[i]; ri[i] = r0i[i]; }\
         } \
       j++; v += m; r0 = r; r += m; r0i = ri; ri += m;  \
     } \

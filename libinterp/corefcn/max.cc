@@ -1016,6 +1016,7 @@ iw = 1  2  2  4  4  6\n\
 %!assert (cummin ([1, 4, 2, 3]), [1 1 1 1])
 %!assert (cummin ([1; -10; 5; -2]), [1; -10; -10; -10])
 %!assert (cummin ([4, i; -2, 2]), [4, i; -2, i])
+%!assert (cummin ([1 2; NaN 1], 2), [1 1; NaN 1])
 
 %!test
 %! x = reshape (1:8, [2,2,2]);
@@ -1026,6 +1027,7 @@ iw = 1  2  2  4  4  6\n\
 %! assert (w, repmat ([1 3; 2 4], [1 1 2]));
 %! assert (ndims (iw), 3);
 %! assert (iw, ones (2,2,2));
+
 
 %!error cummin ()
 %!error cummin (1, 2, 3)
@@ -1070,6 +1072,7 @@ iw = 1  2  2  4  4  4\n\
 %!assert (cummax ([1, 4, 2, 3]), [1 4 4 4])
 %!assert (cummax ([1; -10; 5; -2]), [1; 1; 5; 5])
 %!assert (cummax ([4, i 4.9, -2, 2, 3+4i]), [4, 4, 4.9, 4.9, 4.9, 3+4i])
+%!assert (cummax ([1 NaN 0; NaN NaN 1], 2), [1 1 1; NaN NaN 1])
 
 %!test
 %! x = reshape (8:-1:1, [2,2,2]);

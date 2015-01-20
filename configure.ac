@@ -2786,6 +2786,16 @@ AC_ARG_ENABLE([gui],
   [AS_HELP_STRING([--disable-gui], [don't build the GUI])],
   [if test "$enableval" = no; then build_gui=no; fi], [])
 
+if test -z "$OPENGL_LIBS"; then
+  build_gui=no
+  if test $check_opengl = yes; then
+    warn_gui="OpenGL libs (GL and GLU) not found -- disabling GUI"
+  else
+    warn_gui="--without-opengl was specified -- disabling GUI"
+  fi
+  OCTAVE_CONFIGURE_WARNING([warn_gui])
+fi
+
 if test $build_gui = yes; then
 
   warn_gui=""

@@ -256,6 +256,31 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
     settings->value ("terminal/fontSize", 10).toInt ());
   ui->terminal_history_buffer->setValue (
      settings->value ("terminal/history_buffer",1000).toInt ());
+  ui->terminal_cursorBlinking->setChecked (
+    settings->value ("terminal/cursorBlinking",true).toBool ());
+  ui->terminal_cursorUseForegroundColor->setChecked (
+    settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
+  ui->terminal_focus_command->setChecked (
+    settings->value ("terminal/focus_after_command",false).toBool ());
+  ui->terminal_print_dbg_location->setChecked (
+    settings->value ("terminal/print_debug_location",false).toBool ());
+
+  QString cursorType
+    = settings->value ("terminal/cursorType", "ibeam").toString ();
+
+  QStringList items;
+  items << QString ("0") << QString ("1") << QString ("2");
+  ui->terminal_cursorType->addItems (items);
+  ui->terminal_cursorType->setItemText (0, tr ("IBeam Cursor"));
+  ui->terminal_cursorType->setItemText (1, tr ("Block Cursor"));
+  ui->terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
+
+  if (cursorType == "ibeam")
+    ui->terminal_cursorType->setCurrentIndex (0);
+  else if (cursorType == "block")
+    ui->terminal_cursorType->setCurrentIndex (1);
+  else if (cursorType == "underline")
+    ui->terminal_cursorType->setCurrentIndex (2);
 
   // file browser
   ui->showFileSize->setChecked (
@@ -284,29 +309,6 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
   ui->useProxyServer->setChecked (
     settings->value ("useProxyServer", false).toBool ());
   ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
-  ui->terminal_cursorBlinking->setChecked (
-    settings->value ("terminal/cursorBlinking",true).toBool ());
-  ui->terminal_cursorUseForegroundColor->setChecked (
-    settings->value ("terminal/cursorUseForegroundColor",true).toBool ());
-  ui->terminal_focus_command->setChecked (
-    settings->value ("terminal/focus_after_command",false).toBool ());
-
-  QString cursorType
-    = settings->value ("terminal/cursorType", "ibeam").toString ();
-
-  QStringList items;
-  items << QString ("0") << QString ("1") << QString ("2");
-  ui->terminal_cursorType->addItems (items);
-  ui->terminal_cursorType->setItemText (0, tr ("IBeam Cursor"));
-  ui->terminal_cursorType->setItemText (1, tr ("Block Cursor"));
-  ui->terminal_cursorType->setItemText (2, tr ("Underline Cursor"));
-
-  if (cursorType == "ibeam")
-    ui->terminal_cursorType->setCurrentIndex (0);
-  else if (cursorType == "block")
-    ui->terminal_cursorType->setCurrentIndex (1);
-  else if (cursorType == "underline")
-    ui->terminal_cursorType->setCurrentIndex (2);
 
   int currentIndex = 0;
   QString proxyTypeString = settings->value ("proxyType").toString ();
@@ -748,6 +750,8 @@ settings_dialog::write_changed_settings ()
                       ui->terminal_cursorUseForegroundColor->isChecked ());
   settings->setValue ("terminal/focus_after_command",
                       ui->terminal_focus_command->isChecked ());
+  settings->setValue ("terminal/print_debug_location",
+                      ui->terminal_print_dbg_location->isChecked ());
   settings->setValue ("terminal/history_buffer",
                       ui->terminal_history_buffer->value ());
 

@@ -732,7 +732,7 @@ settings_dialog::write_changed_settings ()
                       ui->sync_octave_directory->isChecked ());
   settings->setValue ("filesdockwidget/restore_last_dir",
                       ui->cb_restore_file_browser_dir->isChecked ());
-  settings->setValue ("filesdockwidget/startup_dir", 
+  settings->setValue ("filesdockwidget/startup_dir",
                       ui->le_file_browser_dir->text ());
 
 

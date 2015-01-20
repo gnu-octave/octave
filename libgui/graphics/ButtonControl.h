@@ -39,7 +39,7 @@ public:
   ~ButtonControl (void);
 
 protected:
-  void update (int pId); 
+  void update (int pId);
 
 private slots:
   void clicked (void);

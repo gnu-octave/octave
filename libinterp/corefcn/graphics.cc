@@ -9629,7 +9629,7 @@ gtk_manager::do_get_toolkit (void) const
   return retval;
 }
 
-void 
+void
 gtk_manager::do_register_toolkit (const std::string& name)
 {
   if (dtk.empty () || name == "qt"
@@ -9640,7 +9640,7 @@ gtk_manager::do_register_toolkit (const std::string& name)
   available_toolkits.insert (name);
 }
 
-void 
+void
 gtk_manager::do_unregister_toolkit (const std::string& name)
 {
   available_toolkits.erase (name);

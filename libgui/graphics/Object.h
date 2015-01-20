@@ -47,7 +47,7 @@ public:
 
   base_properties& properties (void)
     { return object ().get_properties (); }
-  
+
   const base_properties& properties (void) const
     { return object ().get_properties (); }
 
@@ -57,7 +57,7 @@ public:
       return dynamic_cast<typename T::properties&>
 	(object ().get_properties ());
     }
-  
+
   template <class T>
   const typename T::properties& properties (void) const
     {

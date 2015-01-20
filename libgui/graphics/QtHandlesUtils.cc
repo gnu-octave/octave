@@ -118,7 +118,7 @@ QColor fromRgb (const Matrix& rgb)
 
   if (rgb.numel () == 3)
     c.setRgbF (rgb(0), rgb(1), rgb(2));
-  
+
   return c;
 }
 

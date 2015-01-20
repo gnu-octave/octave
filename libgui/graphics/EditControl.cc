@@ -101,7 +101,7 @@ void EditControl::init (TextEdit* edit, bool callBase)
   edit->setAcceptRichText (false);
   // FIXME: support string_vector
   edit->setPlainText (Utils::fromStdString (up.get_string_string ()));
-  
+
   connect (edit, SIGNAL (textChanged (void)),
 	   SLOT (textChanged (void)));
   connect (edit, SIGNAL (editingFinished (void)),

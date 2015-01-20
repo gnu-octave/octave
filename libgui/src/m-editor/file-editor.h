@@ -234,7 +234,7 @@ protected:
 
   void dragEnterEvent(QDragEnterEvent *event);
   void dropEvent(QDropEvent *event);
-  
+
 private:
 
   bool is_editor_console_tabbed ();

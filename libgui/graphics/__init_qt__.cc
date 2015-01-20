@@ -205,7 +205,7 @@ DEFUN (__uigetfile_qt__, args, , "")
     defaultFileName = defaultDirectory;
   else
     defaultFileName = defaultDirectory + "/" + defaultFileName;
-  
+
   QStringList filterSpecs = makeFilterSpecs (args(0).cell_value ());
 
   if (isMultiSelect)
@@ -283,7 +283,7 @@ DEFUN (__uiputfile_qt__, args, , "")
     defaultFileName = defaultDirectory;
   else
     defaultFileName = defaultDirectory + "/" + defaultFileName;
-  
+
   QStringList filterSpecs = makeFilterSpecs (args(0).cell_value ());
 
   QString filter;

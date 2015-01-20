@@ -417,7 +417,7 @@ public slots:
     void pasteSelection();
 
     /**
-     * selects all content 
+     * selects all content
      */
     void selectAll();
 

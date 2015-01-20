@@ -64,4 +64,4 @@ signals:
 
 }; // namespace QtHandles
 
-#endif 
+#endif

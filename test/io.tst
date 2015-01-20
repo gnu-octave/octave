@@ -74,8 +74,8 @@
 %!
 %!  ret = 0;
 %!
-%!  files = cellfun (@fullfile, {P_tmpdir}, 
-%!                   {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"}, 
+%!  files = cellfun (@fullfile, {P_tmpdir},
+%!                   {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"},
 %!                   "UniformOutput", false);
 %!  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
 %!  tols = {2*eps, 0, 0, 0};
@@ -198,7 +198,7 @@
 %! STR.string_fld = "Octave";
 %! STR.struct_fld.x = 0;
 %! STR.struct_fld.y = 1;
-%! 
+%!
 %! struct_dat = fullfile (P_tmpdir, "struct.dat");
 %! save (struct_dat, "-struct", "STR");
 %! STR = load (struct_dat);
@@ -209,8 +209,8 @@
 %!         STR.struct_fld.x == 0 && ...
 %!         STR.struct_fld.y == 1 );
 %!
-%! 
-%! save ("-binary", struct_dat, 
+%!
+%! save ("-binary", struct_dat,
 %!       "-struct", "STR", "matrix_fld", "str*_fld");
 %! STR =  load (struct_dat);
 %!

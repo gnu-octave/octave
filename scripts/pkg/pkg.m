@@ -541,7 +541,7 @@ function [local_packages, global_packages] = pkg (varargin)
       if (nargout == 0)
         installed_pkgs_lst = installed_packages (local_list, global_list);
         if (length (files) > 0)
-           update_lst = {}; 
+           update_lst = {};
            for i = 1:length (files)
              is_installed = false;
              for j = 1:length (installed_pkgs_lst)

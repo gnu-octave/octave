@@ -123,7 +123,7 @@ public:
   friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y)
                                         GCC_ATTR_DEPRECATED ;
   friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y)
-                                        GCC_ATTR_DEPRECATED ; 
+                                        GCC_ATTR_DEPRECATED ;
   friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x,
                                         const SparseMatrix& y)
                                         GCC_ATTR_DEPRECATED ;

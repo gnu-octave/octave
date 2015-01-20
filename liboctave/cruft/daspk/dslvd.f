@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DSLVD(NEQ,DELTA,WM,IWM)
@@ -49,7 +49,7 @@ C
 C     Banded matrix.
 C
 400   MEBAND=2*IWM(LML)+IWM(LMU)+1
-      CALL DGBTRS('N', NEQ, IWM(LML), IWM(LMU), 1, WM, MEBAND, 
+      CALL DGBTRS('N', NEQ, IWM(LML), IWM(LMU), 1, WM, MEBAND,
      *     IWM(LIPVT), DELTA, NEQ, INLPCK)
       RETURN
 C

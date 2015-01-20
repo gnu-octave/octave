@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} triplot (@var{tri}, @var{x}, @var{y}, @var{linespec})
 ## @deftypefnx {Function File} {@var{h} =} triplot (@dots{})
 ## Plot a 2-D triangular mesh.
-## 
+##
 ## @var{tri} is typically the output of a Delaunay triangulation over the
 ## grid of @var{x}, @var{y}.  Every row of @var{tri} represents one triangle
 ## and contains three indices into [@var{x}, @var{y}] which are the

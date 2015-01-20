@@ -21,7 +21,7 @@
 ## @deftypefn  {Function File} {@var{s} =} setfield (@var{s}, @var{field}, @var{val})
 ## @deftypefnx {Function File} {@var{s} =} setfield (@var{s}, @var{idx1}, @var{field1}, @var{idx2}, @var{field2}, @dots{}, @var{val})
 ##
-## Set a field member @var{field} in a structure @var{s} equal to @var{val}. 
+## Set a field member @var{field} in a structure @var{s} equal to @var{val}.
 ## For example:
 ##
 ## @example

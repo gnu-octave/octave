@@ -62,7 +62,7 @@ C     Abort unless random number generator initialized
       IF (qrgnin()) GO TO 10
       WRITE (*,*) ' GETSD called before random number generator ',
      +  ' initialized -- abort!'
-      CALL XSTOPX 
+      CALL XSTOPX
      + (' GETSD called before random number generator initialized')
 
    10 CALL getcgn(g)

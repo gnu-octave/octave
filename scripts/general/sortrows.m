@@ -38,7 +38,7 @@ function [s, i] = sortrows (A, c)
   endif
 
   if (nargin == 2)
-    if (! (isnumeric (c) && isvector (c))) 
+    if (! (isnumeric (c) && isvector (c)))
       error ("sortrows: C must be a numeric vector");
     elseif (any (c == 0) || any (abs (c) > columns (A)))
       error ("sortrows: all elements of C must be in the range [1, columns (A)]");

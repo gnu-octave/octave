@@ -28,7 +28,7 @@ below.
   ftp://alpha.gnu.org/gnu/octave
 
 Links to the stable releases, snap shots, and instructions for obtaining
-the current development sources using mercurial can be found on Octave's 
+the current development sources using mercurial can be found on Octave's
 web-site below.
 
   http://www.octave.org/download.html
@@ -63,7 +63,7 @@ as well.  However, care must be taken.
 
   * As of MacOS 10.6.6, the 64-bit BLAS routines that are part of Apple's vecLib
     (framework accelerate) are not functioning correctly.  As a work around, an
-    alternative BLAS/LAPACK library, such as ATLAS, must be used.  A bug report 
+    alternative BLAS/LAPACK library, such as ATLAS, must be used.  A bug report
     has been filed with Apple.
 
       http://bugreport.apple.com
@@ -203,7 +203,7 @@ Currently, Fink does not have a package available for Octave versions above
 3.0.x.  These instructions will allow the developers sources to be build and
 run, but will not permit Octave to be installed in the usual Fink way.
 
-TODO - When a Fink package is developed for Octave 3.4.x, modify these 
+TODO - When a Fink package is developed for Octave 3.4.x, modify these
        instructions to model the MacPorts section.
 
 
@@ -219,7 +219,7 @@ To build Octave's sources the list of Fink packages below need to be installed.
   fftw3 (>= 3.1.1)
   fftw3-shlibs (>= 3.1.1)
   flex >= 2.5.30
-  fltk-aqua-shlibs 
+  fltk-aqua-shlibs
   glpk-dev
   glpk-shlibs
   gnuplot (>= 4.2.6)
@@ -231,14 +231,14 @@ To build Octave's sources the list of Fink packages below need to be installed.
   libcurl4-shlibs
   libncurses5
   libncurses5-shlibs
-  libtool >= 2.2.2 
+  libtool >= 2.2.2
   ncurses
   pcre
   pcre-shlibs
   qhull
   qrupdate [1]
   readline5
-  readline5-shlibs 
+  readline5-shlibs
   sed
   suitesparse (= 3.1.0-1 )
 
@@ -406,7 +406,7 @@ Octave's integrated tests may be run.
 
   make check
 
-"make install" should not be run as it will bypass the macports package 
+"make install" should not be run as it will bypass the macports package
 management.  To run Octave, type the command below from the root of the
 mercurial archive.
 

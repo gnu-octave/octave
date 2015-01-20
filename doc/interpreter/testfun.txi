@@ -7,12 +7,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -45,7 +45,7 @@ block evaluated separately.  Blocks are introduced by valid keywords like
 @code{test}, @code{function}, or @code{assert} immediately following @samp{%!}.
 A block is defined by indentation as in Python.  Lines beginning with
 @samp{%!<whitespace>} are part of the preceeding block.
- 
+
 For example:
 
 @example
@@ -198,10 +198,10 @@ You can also share test functions:
 @end group
 @end example
 
-Note that all previous variables and values are lost when a new 
+Note that all previous variables and values are lost when a new
 shared block is declared.
 
-Remember that @code{%!function} begins a new block and that 
+Remember that @code{%!function} begins a new block and that
 @code{%!endfunction} ends this block.  Be aware that until a new block
 is started, lines starting with @samp{%!<space>} will be discarded as comments.
 The following is nearly identical to the example above, but does nothing.
@@ -219,9 +219,9 @@ The following is nearly identical to the example above, but does nothing.
 Because there is a space after @samp{%!} the @code{assert} statement does
 not begin a new block and this line is treated as a comment.
 
-Error and warning blocks are like test blocks, but they only succeed 
+Error and warning blocks are like test blocks, but they only succeed
 if the code generates an error.  You can check the text of the error
-is correct using an optional regular expression @code{<pattern>}.  
+is correct using an optional regular expression @code{<pattern>}.
 For example:
 
 @example
@@ -246,7 +246,7 @@ produces
 
 It is important to automate the tests as much as possible, however
 some tests require user interaction.  These can be isolated into
-demo blocks, which if you are in batch mode, are only run when 
+demo blocks, which if you are in batch mode, are only run when
 called with @code{demo} or the @code{verbose} option to @code{test}.
 The code is displayed before it is executed.  For example,
 
@@ -269,7 +269,7 @@ funcname example 1:
  plot (@var{t}, @var{x});
  # you should now see a sine wave in your figure window
 
-Press <enter> to continue: 
+Press <enter> to continue:
 @end group
 @end example
 

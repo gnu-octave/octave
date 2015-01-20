@@ -81,7 +81,7 @@ function h = text (varargin)
       elseif (nx > 1 && nt == nx)
         ## Mutiple text objects with different strings
         string = cellstr (string);
-      else 
+      else
         ## Mutiple text objects with same string
         string = repmat ({string}, [nx, 1]);
         nt = nx;
@@ -95,7 +95,7 @@ function h = text (varargin)
     elseif (iscell (string))
 
       nt = numel (string);
-      if (nx == 1)      
+      if (nx == 1)
         ## Single text object with one or more lines
         string = {string};
         nt = 1;

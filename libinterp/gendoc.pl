@@ -43,7 +43,7 @@ DFFILE: foreach $df_fname (@ARGV)
       $src_fname = $1;
       next LINE;
     }
-    if (/XDEF/ and ! /XDEFALIAS/) 
+    if (/XDEF/ and ! /XDEFALIAS/)
     {
       ## Decode 4 or 5 part macro definition.
       ($func, $str) = /\("?(\w+)"?,[^,]+,[^,]+,(?:[^,]+,)?\s*"(.*)"\)\s*$/ ;

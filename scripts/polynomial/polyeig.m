@@ -38,7 +38,7 @@
 ## Author: Fotios Kasolis
 
 function [z, v] = polyeig (varargin)
-  
+
   if (nargin < 1 || nargout > 2)
     print_usage ();
   endif

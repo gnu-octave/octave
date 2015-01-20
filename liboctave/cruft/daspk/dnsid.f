@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DNSID(X,Y,YPRIME,NEQ,ICOPT,ID,RES,WT,RPAR,IPAR,
@@ -42,7 +42,7 @@ C     WM,IWM    -- Real and integer arrays storing matrix information
 C                  such as the matrix of partial derivatives,
 C                  permutation vector, and various other information.
 C     CJ        -- Matrix parameter = 1/H (ICOPT = 1) or 0 (ICOPT = 2).
-C     R         -- Array of length NEQ used as workspace by the 
+C     R         -- Array of length NEQ used as workspace by the
 C                  linesearch routine DLINSD.
 C     YIC,YPIC  -- Work vectors for DLINSD, each of length NEQ.
 C     EPCON     -- Tolerance to test for convergence of the Newton
@@ -54,7 +54,7 @@ C     STPTOL    -- Tolerance used in calculating the minimum lambda
 C                  value allowed.
 C     ICNFLG    -- Integer scalar.  If nonzero, then constraint
 C                  violations in the proposed new approximate solution
-C                  will be checked for, and the maximum step length 
+C                  will be checked for, and the maximum step length
 C                  will be adjusted accordingly.
 C     ICNSTR    -- Integer array of length NEQ containing flags for
 C                  checking constraints.
@@ -133,7 +133,7 @@ C     Copy the residual to DELTA and its norm to DELNRM, and loop for
 C     another iteration.
 C
       CALL DCOPY (NEQ, R, 1, DELTA, 1)
-      DELNRM = FNRM      
+      DELNRM = FNRM
       GO TO 300
 C
 C     The maximum number of iterations was done.  Set IERNEW and return.

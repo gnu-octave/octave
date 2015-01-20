@@ -118,7 +118,7 @@ function y = kurtosis (x, flag, dim)
   y(idx) = y(idx) ./ (n * v(idx) .^ 2);
   y(! idx) = NaN;
 
-  ## Apply bias correction to the second and fourth central sample moment  
+  ## Apply bias correction to the second and fourth central sample moment
   if (flag == 0)
     if (n > 3)
       C = (n - 1) / ((n - 2) * (n - 3));

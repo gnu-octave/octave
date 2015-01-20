@@ -3,7 +3,7 @@
                              doccheck directory
 ################################################################################
 This directory contains scripts and data for validating Octave's Texinfo
-documentation.  These scripts are internal developer tools for ensuring 
+documentation.  These scripts are internal developer tools for ensuring
 consistent documentation formats and avoiding misspellings.
 
 The scripts provide 3 services:
@@ -12,7 +12,7 @@ The scripts provide 3 services:
    specific to Octave.
 
 2) A grammarchecker designed from scratch in Perl to ensure a common format
-   for Octave documentation and to make use of as many features of Texinfo as 
+   for Octave documentation and to make use of as many features of Texinfo as
    possible.
 
 3) A list of undocumented functions, i.e, those missing an @DOCSTRING reference
@@ -48,7 +48,7 @@ vi arith.texi
 vi misspellings
 ....
   Review misspellings and identify where to correct the source (.m, .cc, .txi)
-  The original source file is marked with a comment: 
+  The original source file is marked with a comment:
 
   @c FUNCTION_NAME SRC_DIR/SRC_FILE
 
@@ -85,7 +85,7 @@ To be added
 UNDOCUMENTED FUNCTIONS:
 
 From the doc/interpreter/ directory, type 'make undocumented_list'.
-This will produce the undocumented_list file with the undocumented functions.  
+This will produce the undocumented_list file with the undocumented functions.
 
 Functions which don't require an @DOCSTRING reference can be added to the list
 of exceptions at the bottom of the mk_undocumented_list script.  This is often

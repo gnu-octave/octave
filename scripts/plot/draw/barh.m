@@ -39,9 +39,9 @@
 ## argument which can take the following values:
 ##
 ## @table @asis
-## @item @qcode{"grouped"} (default) 
+## @item @qcode{"grouped"} (default)
 ## Side-by-side bars with a gap between bars and centered over the Y-coordinate.
-## 
+##
 ## @item  @qcode{"stacked"}
 ## Bars are stacked so that each Y value has a single bar composed of
 ## multiple segments.
@@ -60,7 +60,7 @@
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
-## 
+##
 ## The optional return value @var{h} is a graphics handle to the created
 ## bar series hggroup.  For a description of the use of the
 ## bar series, @pxref{XREFbar,,bar}.

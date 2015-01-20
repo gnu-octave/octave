@@ -48,7 +48,7 @@ C     .. External Functions ..
       EXTERNAL sexpo
 C     ..
 C     .. Executable Statements ..
-C     JJV added check to ensure AV >= 0.0 
+C     JJV added check to ensure AV >= 0.0
       IF (av.GE.0.0) GO TO 10
       WRITE (*,*) 'AV < 0.0 in GENEXP - ABORT'
       WRITE (*,*) 'Value of AV: ',av

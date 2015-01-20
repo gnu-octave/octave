@@ -142,7 +142,7 @@
 ## computed relatively, as @code{abs ((@var{x} - @var{y}) ./ @var{y})} rather
 ## than absolutely as @code{abs (@var{x} - @var{y})}.
 ##
-## Type @kbd{example ("speed")} to see some real examples or 
+## Type @kbd{example ("speed")} to see some real examples or
 ## @kbd{demo ("speed")} to run them.
 ## @end deftypefn
 
@@ -268,10 +268,10 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
   if (do_display)
     figure;
     ## Strip semicolon added to code fragments before displaying
-    __init(end) = ""; 
-    __f1(end) = ""; 
+    __init(end) = "";
+    __f1(end) = "";
     if (! isempty (__f2))
-      __f2(end) = ""; 
+      __f2(end) = "";
     endif
   endif
 

@@ -227,7 +227,7 @@ information.\n\
 
                   retval(1)
                     = octave_value (
-                        fact.U () * fact.Pc_mat ().transpose (),                    
+                        fact.U () * fact.Pc_mat ().transpose (),
                         MatrixType (MatrixType::Permuted_Upper,
                                     nc, fact.col_perm ()));
 
@@ -297,7 +297,7 @@ information.\n\
 
                   retval(1)
                     = octave_value (
-                        fact.U () * fact.Pc_mat ().transpose (),                    
+                        fact.U () * fact.Pc_mat ().transpose (),
                         MatrixType (MatrixType::Permuted_Upper,
                                     nc, fact.col_perm ()));
 

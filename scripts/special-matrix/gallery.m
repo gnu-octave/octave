@@ -1294,7 +1294,7 @@ function [v, beta] = house (x)
   ##         So take s = sign(x(1))*norm(x) (which avoids cancellation).
   ##         v'v = (x(1)+s)^2 + x(2)^2 + ... + x(n)^2
   ##             = 2*norm(x)*(norm(x) + |x(1)|).
-  ## 
+  ##
   ##         References:
   ##         G.H. Golub and C.F. Van Loan, Matrix Computations, second edition,
   ##            Johns Hopkins University Press, Baltimore, Maryland, 1989.
@@ -1343,7 +1343,7 @@ function A = integerdata (varargin)
     jidx = varargin{end-1};
     svec = [varargin{1:end-1}];
     varargin(end-1) = [];
-  else 
+  else
     error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
             "for integerdata matrix"]);
   endif
@@ -1357,7 +1357,7 @@ function A = integerdata (varargin)
 
   ## Save and restore random state.  Initialization done so that reproducible
   ## data is available from gallery depending on the jidx and size vector.
-  randstate = rand ("state"); 
+  randstate = rand ("state");
   unwind_protect
     rand ("state", svec);
     A = randi (varargin{:});
@@ -1461,7 +1461,7 @@ function [A, detA] = ipjfact (n, k = 0)
   ##           [A, d] = IPJFACT(N, K);
   ##
   ##           Suggested by P. R. Graves-Morris.
-  ## 
+  ##
   ##           Reference:
   ##           M.J.C. Gover, The explicit inverse of factorial Hankel matrices,
   ##           Dept. of Mathematics, University of Bradford, 1993.
@@ -1862,7 +1862,7 @@ function A = normaldata (varargin)
     jidx = varargin{end-1};
     svec = [varargin{1:end-1}];
     varargin(end-1) = [];
-  else 
+  else
     error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
             "for normaldata matrix"]);
   endif
@@ -1876,7 +1876,7 @@ function A = normaldata (varargin)
 
   ## Save and restore random state.  Initialization done so that reproducible
   ## data is available from gallery depending on the jidx and size vector.
-  randstate = randn ("state"); 
+  randstate = randn ("state");
   unwind_protect
     randn ("state", svec);
     A = randn (varargin{:});
@@ -1981,7 +1981,7 @@ function A = parter (n)
   ##           1985, Cleve Moler noted that most of the singular values of
   ##           PARTER(N) are very close to PI.  An explanation of the phenomenon
   ##           was given by Parter; see also the paper by Tyrtyshnikov.
-  ## 
+  ##
   ##           References:
   ##           The MathWorks Newsletter, Volume 1, Issue 1, March 1986, page 2.
   ##           S.V. Parter, On the distribution of the singular values of Toeplitz
@@ -2087,7 +2087,7 @@ function H = randhess (x)
   ##        This M-file handles the real case only and is intended simply as a
   ##        convenient way to generate random or non-random orthogonal Hessenberg
   ##        matrices.
-  ## 
+  ##
   ##        Reference:
   ##        W.B. Gragg, The QR algorithm for unitary Hessenberg matrices,
   ##        J. Comp. Appl. Math., 16 (1986), pp. 1-8.
@@ -2583,7 +2583,7 @@ function A = uniformdata (varargin)
     jidx = varargin{end-1};
     svec = [varargin{1:end-1}];
     varargin(end-1) = [];
-  else 
+  else
     error (["gallery: J must be an integer in the range [0, 2^32-1] " ...
             "for uniformdata matrix"]);
   endif
@@ -2597,7 +2597,7 @@ function A = uniformdata (varargin)
 
   ## Save and restore random state.  Initialization done so that reproducible
   ## data is available from gallery depending on the jidx and size vector.
-  randstate = rand ("state"); 
+  randstate = rand ("state");
   unwind_protect
     rand ("state", svec);
     A = rand (varargin{:});
@@ -2713,9 +2713,9 @@ function A = wathen (nx, ny, k = 0)
 
   for j = 1:ny
     for i = 1:nx
-      ## 
+      ##
       ##   For the element (I,J), determine the indices of the 8 nodes.
-      ## 
+      ##
       nn(1) = 3*j*nx + 2*i + 2*j + 1;
       nn(2) = nn(1) - 1;
       nn(3) = nn(2) - 1;
@@ -2815,7 +2815,7 @@ function A = bandred (A, kl, ku)
   ##          This is a `standard' reduction.  Cf. reduction to bidiagonal form
   ##          prior to computing the SVD.  This code is a little wasteful in that
   ##          it computes certain elements which are immediately set to zero!
-  ## 
+  ##
   ##          Reference:
   ##          G.H. Golub and C.F. Van Loan, Matrix Computations, second edition,
   ##          Johns Hopkins University Press, Baltimore, Maryland, 1989.

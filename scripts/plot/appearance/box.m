@@ -40,7 +40,7 @@ function box (varargin)
   if (isempty (hax))
     hax = gca ();
   endif
-  
+
   if (nargs == 0)
     box_state = get (hax, "box");
     if (strcmp (box_state, "on"))

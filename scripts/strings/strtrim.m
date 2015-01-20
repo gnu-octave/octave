@@ -58,7 +58,7 @@ function s = strtrim (s)
 
     char_idx = cellfun ("isclass", s, "char");
     cell_idx = cellfun ("isclass", s, "cell");
-    if (! all (char_idx | cell_idx))  
+    if (! all (char_idx | cell_idx))
       error ("strtrim: S argument must be a string or cellstring");
     endif
 

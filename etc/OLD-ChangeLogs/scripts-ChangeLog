@@ -50,7 +50,7 @@
 2011-04-12  Marco Caliari  <marco.caliari@univr.it>
 
 	* general/quadgk.m: Fix problem with -Inf bound on integral (bug
-	#33055). 
+	#33055).
 
 2011-04-11  Ben Abbott  <bpabbott@mac.com>
 
@@ -126,7 +126,7 @@
 
 2011-04-02  Rik  <octave@nomad.inbox5.com>
 
-	* statistics/base/prctile.m, statistics/base/quantile.m: Improve 
+	* statistics/base/prctile.m, statistics/base/quantile.m: Improve
 	docstrings.
 
 2011-03-31  Rik  <octave@nomad.inbox5.com>
@@ -336,7 +336,7 @@
 
 	* plot/subplot.m: Document using INDEX as a vector.
 
-2011-02-24  Robert T. Short  <rtshort@ieee.org> 
+2011-02-24  Robert T. Short  <rtshort@ieee.org>
 
 	* polynomial/polyval.m: Properly evaluate constant polynomials.
 

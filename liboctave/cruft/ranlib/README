@@ -142,13 +142,13 @@ Exponential and Normal  Distributions.  Comm. ACM,  15,10 (Oct. 1972),
 
                                 Gamma
 
-(Case R >= 1.0)                                          
+(Case R >= 1.0)
 
 Ahrens, J.H. and Dieter, U.  Generating Gamma  Variates by  a Modified
 Rejection Technique.  Comm. ACM, 25,1 (Jan. 1982), 47 - 54.
-Algorithm GD                                                       
+Algorithm GD
 
-(Case 0.0 <= R <= 1.0)                                   
+(Case 0.0 <= R <= 1.0)
 
 Ahrens, J.H. and Dieter, U.  Computer Methods for Sampling from Gamma,
 Beta,  Poisson  and Binomial   Distributions.    Computing, 12 (1974),
@@ -221,17 +221,17 @@ algorithms policy:
      Krogh, F.  Algorithms  Policy.  ACM  Tran.   Math.  Softw.   13(1987),
      183-186.
 
-We place the Randlib code that we have written in the public domain.  
+We place the Randlib code that we have written in the public domain.
 
                                  NO WARRANTY
-     
+
      WE PROVIDE ABSOLUTELY  NO WARRANTY  OF ANY  KIND  EITHER  EXPRESSED OR
      IMPLIED,  INCLUDING BUT   NOT LIMITED TO,  THE  IMPLIED  WARRANTIES OF
      MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK
      AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS  WITH YOU.  SHOULD
      THIS PROGRAM PROVE  DEFECTIVE, YOU ASSUME  THE COST  OF  ALL NECESSARY
      SERVICING, REPAIR OR CORRECTION.
-     
+
      IN NO  EVENT  SHALL THE UNIVERSITY  OF TEXAS OR  ANY  OF ITS COMPONENT
      INSTITUTIONS INCLUDING M. D.   ANDERSON HOSPITAL BE LIABLE  TO YOU FOR
      DAMAGES, INCLUDING ANY  LOST PROFITS, LOST MONIES,   OR OTHER SPECIAL,
@@ -239,14 +239,14 @@ We place the Randlib code that we have written in the public domain.
      INABILITY TO USE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA OR
      ITS ANALYSIS BEING  RENDERED INACCURATE OR  LOSSES SUSTAINED  BY THIRD
      PARTIES) THE PROGRAM.
-     
+
      (Above NO WARRANTY modified from the GNU NO WARRANTY statement.)
 
 
 
                          WHAT'S NEW IN VERSION 1.1?
 
-  
+
 Random number generation  for  the Negative Binomial  and  Multinomial
 distributions has been included.
 

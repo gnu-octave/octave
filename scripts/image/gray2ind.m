@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {@var{img} =} gray2ind (@var{BW}, @var{n})
 ## @deftypefnx {Function File} {[@var{img}, @var{map}] =} gray2ind (@dots{})
 ## Convert a grayscale or binary intensity image to an indexed image.
-## 
+##
 ## The indexed image will consist of @var{n} different intensity values.
 ## If not given @var{n} defaults to 64 for grayscale images or 2 for
 ## binary black and white images.

@@ -1,5 +1,5 @@
 ## Copyright (C) 2004 Josep Mones i Teixidor
-## Copyright (C) 2012-2013 Rik Wehbring 
+## Copyright (C) 2012-2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## Convert an input image @var{X} to an ouput indexed image @var{Y} which uses
 ## the smallest colormap possible @var{newmap}.
 ##
-## When the input is an indexed image (@var{X} with colormap @var{map}) the 
+## When the input is an indexed image (@var{X} with colormap @var{map}) the
 ## output is a colormap @var{newmap} from which any repeated rows have been
 ## eliminated.  The output image, @var{Y}, is the original input image with
 ## the indices adjusted to match the new, possibly smaller, colormap.
@@ -92,7 +92,7 @@ function [Y, newmap] = cmunique (X, map)
       otherwise
         error ("cmunique: X is not a valid image");
     endswitch
-    
+
     ## if image was uint8 or uint16 we have to convert newmap to [0,1] range
     if (isinteger (X))
       newmap = double (newmap) / double (intmax (cls));

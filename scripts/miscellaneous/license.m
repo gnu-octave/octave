@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
 ## @deftypefnx {Function File} {} license ("test", @var{feature}, @var{toggle})
 ## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
-## 
+##
 ## Display the license of Octave.
 ##
 ## @code{license ("inuse")}
@@ -89,7 +89,7 @@ function retval = license (varargin)
     print_usage ();
   endif
 
-  if (nin == 0)  
+  if (nin == 0)
 
     found = find (strcmp (__octave_licenses__(:,1), "Octave"), 1);
 

@@ -155,7 +155,7 @@ function splineimages (nm, typ)
     ylim ([-2 2]);
     print ([nm "." typ], d_typ);
   endif
-  hide_output ();  
+  hide_output ();
 endfunction
 
 function set_print_size ()

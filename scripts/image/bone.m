@@ -70,7 +70,7 @@ function map = bone (n)
     g(1:idx,1) = 7/8 * x(1:idx);
     g(idx:2*idx,1) = linspace (7/8 * x(idx), 7/8 * x(2*idx) + 1/8, nel);
     g(2*idx+1:n,1) = 7/8 * x(2*idx+1:n) + 1/8;
-    
+
     base = 1 / (8*idx);
     nel = idx;
     b(1:idx,1) = linspace (base, 7/8 * x(idx) + 1/8, nel);

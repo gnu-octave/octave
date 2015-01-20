@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} ezpolar (@dots{})
 ##
 ## Plot a 2-D function in polar coordinates.
-## 
+##
 ## The function @var{f} is a string, inline function, or function handle with
 ## a single argument.  The expected form of the function is
 ## @code{@var{rho} = @var{f}(@var{theta})}.

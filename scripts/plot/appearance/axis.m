@@ -200,7 +200,7 @@ function limits = __axis__ (ca, ax, varargin)
         set (ca, "dataaspectratiomode", "auto");
       endif
       set (ca, "dataaspectratio", [1, 1, 1], "plotboxaspectratio", [5 4 4]);
-      
+
     elseif (strcmpi (ax, "normal"))
       ## Set plotboxaspectratio to something obtuse so that switching
       ## back to "auto" will force a re-calculation.
@@ -333,12 +333,12 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     types = get (kids, "type");
-    
+
     scale = get (ca, strcat (ax, "scale"));
     if (! iscell (data))
       data = {data};
     endif
-    
+
     ## Extend image data one pixel
     idx = strcmp (types, "image");
     if (any (idx) && (ax == "x" || ax == "y"))
@@ -349,7 +349,7 @@ function lims = __get_tight_lims__ (ca, ax)
                         imdata, px, "uniformoutput", false);
       data(idx) = imdata;
     endif
-    
+
     if (strcmp (scale, "log"))
       tmp = data;
       data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);

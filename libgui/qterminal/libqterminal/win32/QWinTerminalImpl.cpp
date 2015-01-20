@@ -279,7 +279,7 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 
 QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   : q (parent), m_command (cmd), m_cursorBlinking (false),
-    m_hasBlinkingCursor (true), m_cursorType (BlockCursor), 
+    m_hasBlinkingCursor (true), m_cursorType (BlockCursor),
     m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
     m_process (NULL), m_inWheelEvent (false)
 {
@@ -416,7 +416,7 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
 
   m_blinkCursorTimer = new QTimer (parent);
   QObject::connect (m_blinkCursorTimer, SIGNAL (timeout()),
-                    q, SLOT (blinkCursorEvent ()));  
+                    q, SLOT (blinkCursorEvent ()));
 
   QObject::connect (m_horizontalScrollBar, SIGNAL (valueChanged (int)),
                     q, SLOT (horizontalScrollValueChanged (int)));
@@ -857,9 +857,9 @@ void QConsolePrivate::drawCursor (QPainter& p)
             {
               // draw the cursor outline, adjusting the area so that
               // it is draw entirely inside 'rect'
- 
+
               int penWidth = qMax (1, p.pen().width());
- 
+
               p.drawRect (rect.adjusted (penWidth/2, penWidth/2,
                                          - penWidth/2 - penWidth%2,
                                          - penWidth/2 - penWidth%2));
@@ -1376,11 +1376,11 @@ void QConsolePrivate::sendConsoleText (const QString& s)
           events[nEvents].Event.KeyEvent.uChar.UnicodeChar = c.unicode ();
           events[nEvents].Event.KeyEvent.dwControlKeyState = 0;
           nEvents++;
- 
+
           WriteConsoleInput (hStdIn, events, nEvents, &written);
           nEvents = 0;
           ZeroMemory (events, sizeof (events));
- 
+
         }
       else
         {

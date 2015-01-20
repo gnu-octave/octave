@@ -1,7 +1,7 @@
 /*
     This file is part of Konsole, an X terminal.
 
-    Copyright (C) 2007, 2013 Robert Knight <robertknight@gmail.com> 
+    Copyright (C) 2007, 2013 Robert Knight <robertknight@gmail.com>
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
     Copyright (C) 1996, 2013 by Matthias Ettrich <ettrich@kde.org>
 
@@ -64,9 +64,9 @@ Emulation::Emulation() :
 
   QObject::connect(&_bulkTimer1, SIGNAL(timeout()), this, SLOT(showBulk()) );
   QObject::connect(&_bulkTimer2, SIGNAL(timeout()), this, SLOT(showBulk()) );
-   
+
   // listen for mouse status changes
-  connect( this , SIGNAL(programUsesMouseChanged(bool)) , 
+  connect( this , SIGNAL(programUsesMouseChanged(bool)) ,
            SLOT(usesMouseChanged(bool)) );
 }
 
@@ -118,7 +118,7 @@ void Emulation::setScreen(int n)
 {
   Screen *old = _currentScreen;
   _currentScreen = _screen[n&1];
-  if (_currentScreen != old) 
+  if (_currentScreen != old)
   {
      old->setBusySelecting(false);
 
@@ -218,7 +218,7 @@ void Emulation::receiveChar(int c)
 void Emulation::sendKeyEvent( QKeyEvent* ev )
 {
   emit stateSet(NOTIFYNORMAL);
-  
+
   if (!ev->text().isEmpty())
   { // A block of text
     // Note that the text is proper unicode.
@@ -263,9 +263,9 @@ void Emulation::receiveData(const char* text, int length)
 
 // Selection --------------------------------------------------------------- --
 
-void Emulation::writeToStream( TerminalCharacterDecoder* _decoder , 
+void Emulation::writeToStream( TerminalCharacterDecoder* _decoder ,
                                int startLine ,
-                               int endLine) 
+                               int endLine)
 {
   _currentScreen->writeToStream(_decoder,startLine,endLine);
 }
@@ -342,17 +342,17 @@ bool ExtendedCharTable::extendedCharMatch(ushort hash , ushort* unicodePoints , 
 {
     ushort* entry = extendedCharTable[hash];
 
-    // compare given length with stored sequence length ( given as the first ushort in the 
-    // stored buffer ) 
-    if ( entry == 0 || entry[0] != length ) 
+    // compare given length with stored sequence length ( given as the first ushort in the
+    // stored buffer )
+    if ( entry == 0 || entry[0] != length )
        return false;
     // if the lengths match, each character must be checked.  the stored buffer starts at
     // entry[1]
     for ( int i = 0 ; i < length ; i++ )
     {
         if ( entry[i+1] != unicodePoints[i] )
-           return false; 
-    } 
+           return false;
+    }
     return true;
 }
 ushort ExtendedCharTable::createExtendedChar(ushort* unicodePoints , ushort length)
@@ -365,7 +365,7 @@ ushort ExtendedCharTable::createExtendedChar(ushort* unicodePoints , ushort leng
     {
         if ( extendedCharMatch(hash,unicodePoints,length) )
         {
-            // this sequence already has an entry in the table, 
+            // this sequence already has an entry in the table,
             // return its hash
             return hash;
         }
@@ -375,16 +375,16 @@ ushort ExtendedCharTable::createExtendedChar(ushort* unicodePoints , ushort leng
             // points then try next hash
             hash++;
         }
-    }    
+    }
 
-    
+
      // add the new sequence to the table and
      // return that index
     ushort* buffer = new ushort[length+1];
     buffer[0] = length;
     for ( int i = 0 ; i < length ; i++ )
-       buffer[i+1] = unicodePoints[i]; 
-    
+       buffer[i+1] = unicodePoints[i];
+
     extendedCharTable.insert(hash,buffer);
 
     return hash;

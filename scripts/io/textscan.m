@@ -204,7 +204,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       elseif (args{headerlines + 1} < 0)
         warning ("textscan.m: negative headerline value ignored");
       endif
-    endif    
+    endif
     ## Read a first file chunk. Rest follows after endofline processing
     [str, count] = fscanf (fid, "%c", BUFLENGTH);
 
@@ -317,7 +317,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       pad = mod (numel (C{1}), ncols);
       if (pad)
         ## Textscan returns NaNs for empty fields
-        C(1) = [C{1}; NaN(ncols - pad, 1)]; 
+        C(1) = [C{1}; NaN(ncols - pad, 1)];
       endif
       ## Replace NaNs with EmptyValue, if any
       ipos = find (strcmpi (args, "emptyvalue"));
@@ -333,7 +333,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
         C(ii) = C{1}(:, ii);
       endfor
       C{1} = C{1}(:, 1);
-    endif 
+    endif
   endif
 
   ## If requested, collect output columns of same class

@@ -141,7 +141,7 @@ function ret = edit (varargin)
     ## User has supplied one arg, this can be a single file name
     ## or a cell array of strings containing multiple files to be opened
     if (iscellstr (varargin{1}))
-      ## If first arg is a cell array of strings, 
+      ## If first arg is a cell array of strings,
       ## it becomes the list of files to be edited
       editfilelist = varargin{1};
     elseif (ischar (varargin{1}))
@@ -240,7 +240,7 @@ function ret = edit (varargin)
     endfor
 
   else
-  
+
     ## Only one file name was supplied, get it from the cell array
     file = tilde_expand (editfilelist{1});
 
@@ -502,7 +502,7 @@ SUCH DAMAGE.\
     fclose (fid);
 
     do_edit (FUNCTION.EDITOR, fileandpath, FUNCTION.MODE);
-            
+
   endif
 
 endfunction

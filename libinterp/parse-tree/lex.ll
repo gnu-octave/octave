@@ -179,7 +179,7 @@ object) relevant global values before and after the nested call.
         } \
     } \
   while (0)
-    
+
 #define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT) \
  \
   do \
@@ -729,7 +729,7 @@ ANY_INCLUDING_NL (.|{NL})
                     looks_like_block_comment = false;
                     break;
                   }
-              }      
+              }
 
             if (looks_like_block_comment)
               {
@@ -764,7 +764,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->xunput (yytext[0]);
 
-    curr_lexer->finish_comment (octave_comment_elt::full_line);  
+    curr_lexer->finish_comment (octave_comment_elt::full_line);
 
     curr_lexer->pop_start_state ();
   }
@@ -1964,7 +1964,7 @@ lexical_feedback::reset (void)
   looking_at_decl_list = false;
   looking_at_initializer_expression = false;
   looking_at_matrix_or_assign_lhs = false;
-  looking_for_object_index = false; 
+  looking_for_object_index = false;
   looking_at_indirect_ref = false;
   parsing_class_method = false;
   maybe_classdef_get_set_method = false;
@@ -3377,7 +3377,7 @@ octave_base_lexer::show_token (int tok)
     {
       std::cerr << "R: ";
       display_token (tok);
-      std::cerr << std::endl; 
+      std::cerr << std::endl;
     }
 
   return tok;
@@ -3410,7 +3410,7 @@ octave_push_lexer::fill_flex_buffer (char *buf, unsigned max_size)
 
   if (input_buf.empty () && ! input_buf.at_eof ())
     input_buf.fill (std::string (1, static_cast<char> (1)), false);
- 
+
   if (! input_buf.empty ())
     status = input_buf.copy_chunk (buf, max_size);
   else

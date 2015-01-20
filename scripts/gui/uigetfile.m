@@ -80,7 +80,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       endif
     endif
   endif
-  
+
   if (nargin > 7)
     error ("uigetfile: number of input arguments must be less than eight");
   endif

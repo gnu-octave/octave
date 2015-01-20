@@ -47,7 +47,7 @@ C     ..
 C     .. Intrinsic Functions ..
       INTRINSIC sqrt
 C     ..
-C     JJV changed abort to df < 1, and added case: df = 1 
+C     JJV changed abort to df < 1, and added case: df = 1
 C     .. Executable Statements ..
       IF (.NOT. (df.LT.1.0.OR.xnonc.LT.0.0)) GO TO 10
       WRITE (*,*) 'DF < 1 or XNONC < 0 in GENNCH - ABORT'
@@ -65,5 +65,5 @@ C     JJV case DF = 1.0
 C     JJV case DF > 1.0
  20   gennch = 2.0*sgamma((df-1.0)/2.0) + (snorm() + sqrt(xnonc))**2
  30   RETURN
-      
+
       END

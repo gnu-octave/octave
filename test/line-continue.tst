@@ -28,7 +28,7 @@
 
 ## FIXME: Next 3 tests use '\' continuation outside of a double-quoted string
 ##        This behavior is deprecated and will be removed at some point.
-##        When it does these 
+##        When it does these
 %!test
 %! x = [1;2];
 %! y = [a... # comments here ok

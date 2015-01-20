@@ -62,7 +62,7 @@ function inv = poissinv (x, lambda)
   else
     cdf = exp (-lambda(k));
   endif
-  
+
   while (1)
     m = find (cdf < x(k));
     if (any (m))

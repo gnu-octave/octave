@@ -66,9 +66,9 @@ function h = meshz (varargin)
 
   have_c = false;
   if (isempty (charidx))
-    if (nargin == 2 || nargin == 4) 
+    if (nargin == 2 || nargin == 4)
       have_c = true;
-      charidx = nargin;   # bundle C matrix back into varargin 
+      charidx = nargin;   # bundle C matrix back into varargin
     else
       charidx = nargin + 1;
     endif
@@ -110,7 +110,7 @@ function h = meshz (varargin)
          cref .* ones(1, columns(c) + 2)];
     varargin(charidx) = c;
   endif
-    
+
   oldfig = [];
   if (! isempty (hax))
     oldfig = get (0, "currentfigure");
@@ -155,7 +155,7 @@ endfunction
 %! clf;
 %! colormap ('default');
 %! [X,Y,Z] = peaks ();
-%! [fx, fy] = gradient (Z); 
+%! [fx, fy] = gradient (Z);
 %! C = sqrt (fx.^2 + fy.^2);
 %! meshz (X,Y,Z,C);
 %! title ('meshz() plot with color determined by gradient');

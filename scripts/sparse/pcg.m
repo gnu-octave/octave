@@ -109,7 +109,7 @@
 ## @var{A} are returned.  @code{@var{eigest}(1)} is an overestimate and
 ## @code{@var{eigest}(2)} is an underestimate, so that
 ## @code{@var{eigest}(2) / @var{eigest}(1)} is a lower bound for
-## @code{cond (@var{P}, 2)}, which nevertheless in the limit should 
+## @code{cond (@var{P}, 2)}, which nevertheless in the limit should
 ## theoretically be equal to the actual value of the condition number.
 ## The method which computes @var{eigest} works only for symmetric positive
 ## definite @var{A} and @var{m}, and the user is responsible for verifying this
@@ -203,7 +203,7 @@
 ## SIAM, 1995. (the base PCG algorithm)
 ##
 ## @item
-## Y. Saad, @cite{Iterative Methods for Sparse Linear Systems}, 
+## Y. Saad, @cite{Iterative Methods for Sparse Linear Systems},
 ## @nospell{PWS} 1996. (condition number estimate from PCG)
 ## Revised version of this book is available online at
 ## @url{http://www-users.cs.umn.edu/~saad/books.html}

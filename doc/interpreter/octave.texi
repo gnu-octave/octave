@@ -6,12 +6,12 @@
 % under the terms of the GNU General Public License as published by the
 % Free Software Foundation; either version 3 of the License, or (at
 % your option) any later version.
-% 
+%
 % Octave is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 % for more details.
-% 
+%
 % You should have received a copy of the GNU General Public License
 % along with Octave; see the file COPYING.  If not, see
 % <http://www.gnu.org/licenses/>.
@@ -100,8 +100,8 @@ modified versions.
 @c this is a spacer column
 @tab
 @sp 8
-@titlefont{Free Your Numbers} 
-@end multitable 
+@titlefont{Free Your Numbers}
+@end multitable
 @author John W. Eaton
 @author David Bateman
 @author S@o{}ren Hauberg
@@ -183,8 +183,8 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Object Oriented Programming::
 * GUI Development::
 * System Utilities::
-* Java Interface:: 
-* Packages:: 
+* Java Interface::
+* Packages::
 * External Code Interface::
 * Test and Demo Functions::
 * Tips and Standards::
@@ -946,7 +946,7 @@ Grammar and Parser
 @c @include amuse.texi
 
 @c ------------------------------------------------------------------------
-@c Appendices start here. 
+@c Appendices start here.
 
 @include external.texi
 @include testfun.texi
@@ -960,7 +960,7 @@ Grammar and Parser
 @include gpl.texi
 
 @c ------------------------------------------------------------------------
-@c Indices start here. 
+@c Indices start here.
 
 @include cp-idx.texi
 @c @include vr-idx.texi

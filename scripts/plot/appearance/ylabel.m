@@ -45,7 +45,7 @@ function h = ylabel (varargin)
   if (isempty (hax))
     hax = gca ();
   endif
-  
+
   if (rem (nargin, 2) != 1)
     print_usage ();
   endif

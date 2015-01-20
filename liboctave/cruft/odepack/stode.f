@@ -51,9 +51,9 @@ C          CORRECTIONS.  ON A SUCCESSFUL RETURN, ACOR(I) CONTAINS
 C          THE ESTIMATED ONE-STEP LOCAL ERROR IN Y(I).
 C WM,IWM = REAL AND INTEGER WORK ARRAYS ASSOCIATED WITH MATRIX
 C          OPERATIONS IN CHORD ITERATION (MITER .NE. 0).
-C PJAC   = NAME OF ROUTINE TO EVALUATE AND PREPROCESS JACOBIAN MATRIX 
+C PJAC   = NAME OF ROUTINE TO EVALUATE AND PREPROCESS JACOBIAN MATRIX
 C          AND P = I - H*EL0*JAC, IF A CHORD METHOD IS BEING USED.
-C SLVS   = NAME OF ROUTINE TO SOLVE LINEAR SYSTEM IN CHORD ITERATION. 
+C SLVS   = NAME OF ROUTINE TO SOLVE LINEAR SYSTEM IN CHORD ITERATION.
 C CCMAX  = MAXIMUM RELATIVE CHANGE IN H*EL0 BEFORE PJAC IS CALLED.
 C H      = THE STEP SIZE TO BE ATTEMPTED ON THE NEXT STEP.
 C          H IS ALTERED BY THE ERROR CONTROL ALGORITHM DURING THE
@@ -61,7 +61,7 @@ C          PROBLEM.  H CAN BE EITHER POSITIVE OR NEGATIVE, BUT ITS
 C          SIGN MUST REMAIN CONSTANT THROUGHOUT THE PROBLEM.
 C HMIN   = THE MINIMUM ABSOLUTE VALUE OF THE STEP SIZE H TO BE USED.
 C HMXI   = INVERSE OF THE MAXIMUM ABSOLUTE VALUE OF H TO BE USED.
-C          HMXI = 0.0 IS ALLOWED AND CORRESPONDS TO AN INFINITE HMAX. 
+C          HMXI = 0.0 IS ALLOWED AND CORRESPONDS TO AN INFINITE HMAX.
 C          HMIN AND HMXI MAY BE CHANGED AT ANY TIME, BUT WILL NOT
 C          TAKE EFFECT UNTIL THE NEXT CHANGE OF H IS CONSIDERED.
 C TN     = THE INDEPENDENT VARIABLE. TN IS UPDATED ON EACH STEP TAKEN.
@@ -82,11 +82,11 @@ C              -3  FATAL ERROR IN PJAC OR SLVS.
 C          A RETURN WITH KFLAG = -1 OR -2 MEANS EITHER
 C          ABS(H) = HMIN OR 10 CONSECUTIVE FAILURES OCCURRED.
 C          ON A RETURN WITH KFLAG NEGATIVE, THE VALUES OF TN AND
-C          THE YH ARRAY ARE AS OF THE BEGINNING OF THE LAST 
+C          THE YH ARRAY ARE AS OF THE BEGINNING OF THE LAST
 C          STEP, AND H IS THE LAST STEP SIZE ATTEMPTED.
 C MAXORD = THE MAXIMUM ORDER OF INTEGRATION METHOD TO BE ALLOWED.
 C MAXCOR = THE MAXIMUM NUMBER OF CORRECTOR ITERATIONS ALLOWED.
-C MSBP   = MAXIMUM NUMBER OF STEPS BETWEEN PJAC CALLS (MITER .GT. 0). 
+C MSBP   = MAXIMUM NUMBER OF STEPS BETWEEN PJAC CALLS (MITER .GT. 0).
 C MXNCF  = MAXIMUM NUMBER OF CONVERGENCE FAILURES ALLOWED.
 C METH/MITER = THE METHOD FLAGS.  SEE DESCRIPTION IN DRIVER.
 C N      = THE NUMBER OF FIRST-ORDER DIFFERENTIAL EQUATIONS.
@@ -105,8 +105,8 @@ C-----------------------------------------------------------------------
       IF (JSTART .EQ. -2) GO TO 160
 C-----------------------------------------------------------------------
 C ON THE FIRST CALL, THE ORDER IS SET TO 1, AND OTHER VARIABLES ARE
-C INITIALIZED.  RMAX IS THE MAXIMUM RATIO BY WHICH H CAN BE INCREASED 
-C IN A SINGLE STEP.  IT IS INITIALLY 1.E4 TO COMPENSATE FOR THE SMALL 
+C INITIALIZED.  RMAX IS THE MAXIMUM RATIO BY WHICH H CAN BE INCREASED
+C IN A SINGLE STEP.  IT IS INITIALLY 1.E4 TO COMPENSATE FOR THE SMALL
 C INITIAL H, BUT THEN IS NORMALLY EQUAL TO 10.  IF A FAILURE
 C OCCURS (IN CORRECTOR CONVERGENCE OR ERROR TEST), RMAX IS SET AT 2
 C FOR THE NEXT INCREASE.
@@ -118,7 +118,7 @@ C-----------------------------------------------------------------------
       RMAX = 10000.0D0
       RC = 0.0D0
       EL0 = 1.0D0
-      CRATE = 0.7D0 
+      CRATE = 0.7D0
       HOLD = H
       MEO = METH
       NSLP = 0
@@ -158,7 +158,7 @@ C-----------------------------------------------------------------------
       EL0 = EL(1)
       CONIT = 0.5D0/DBLE(NQ+2)
       DDN = VNORM (N, SAVF, EWT)/TESCO(1,L)
-      EXDN = 1.0D0/DBLE(L)  
+      EXDN = 1.0D0/DBLE(L)
       RHDN = 1.0D0/(1.3D0*DDN**EXDN + 0.0000013D0)
       RH = DMIN1(RHDN,1.0D0)
       IREDO = 3
@@ -197,20 +197,20 @@ C-----------------------------------------------------------------------
       DO 180 J = 2,L
         R = R*RH
         DO 180 I = 1,N
- 180      YH(I,J) = YH(I,J)*R 
+ 180      YH(I,J) = YH(I,J)*R
       H = H*RH
       RC = RC*RH
       IALTH = L
       IF (IREDO .EQ. 0) GO TO 690
 C-----------------------------------------------------------------------
-C THIS SECTION COMPUTES THE PREDICTED VALUES BY EFFECTIVELY 
+C THIS SECTION COMPUTES THE PREDICTED VALUES BY EFFECTIVELY
 C MULTIPLYING THE YH ARRAY BY THE PASCAL TRIANGLE MATRIX.
 C RC IS THE RATIO OF NEW TO OLD VALUES OF THE COEFFICIENT  H*EL(1).
 C WHEN RC DIFFERS FROM 1 BY MORE THAN CCMAX, IPUP IS SET TO MITER
 C TO FORCE PJAC TO BE CALLED, IF A JACOBIAN IS INVOLVED.
 C IN ANY CASE, PJAC IS CALLED AT LEAST EVERY MSBP STEPS.
 C-----------------------------------------------------------------------
- 200  IF (DABS(RC-1.0D0) .GT. CCMAX) IPUP = MITER 
+ 200  IF (DABS(RC-1.0D0) .GT. CCMAX) IPUP = MITER
       IF (NST .GE. NSLP+MSBP) IPUP = MITER
       TN = TN + H
       I1 = NQNYH + 1
@@ -221,10 +221,10 @@ CDIR$ IVDEP
  210      YH1(I) = YH1(I) + YH1(I+NYH)
  215    CONTINUE
 C-----------------------------------------------------------------------
-C UP TO MAXCOR CORRECTOR ITERATIONS ARE TAKEN.  A CONVERGENCE TEST IS 
+C UP TO MAXCOR CORRECTOR ITERATIONS ARE TAKEN.  A CONVERGENCE TEST IS
 C MADE ON THE R.M.S. NORM OF EACH CORRECTION, WEIGHTED BY THE ERROR
 C WEIGHT VECTOR EWT.  THE SUM OF THE CORRECTIONS IS ACCUMULATED IN THE
-C VECTOR ACOR(I).  THE YH ARRAY IS NOT ALTERED IN THE CORRECTOR LOOP. 
+C VECTOR ACOR(I).  THE YH ARRAY IS NOT ALTERED IN THE CORRECTOR LOOP.
 C-----------------------------------------------------------------------
  220  M = 0
       DO 230 I = 1,N
@@ -232,7 +232,7 @@ C-----------------------------------------------------------------------
       IERR = 0
       CALL F (NEQ, TN, Y, SAVF, IERR)
       IF (IERR .LT. 0) RETURN
-      NFE = NFE + 1 
+      NFE = NFE + 1
       IF (IPUP .LE. 0) GO TO 250
 C-----------------------------------------------------------------------
 C IF INDICATED, THE MATRIX P = I - H*EL(1)*J IS REEVALUATED AND
@@ -246,7 +246,7 @@ C-----------------------------------------------------------------------
       IPUP = 0
       RC = 1.0D0
       NSLP = NST
-      CRATE = 0.7D0 
+      CRATE = 0.7D0
       IF (IERPJ .NE. 0) GO TO 430
  250  DO 260 I = 1,N
  260    ACOR(I) = 0.0D0
@@ -258,7 +258,7 @@ C-----------------------------------------------------------------------
       DO 290 I = 1,N
         SAVF(I) = H*SAVF(I) - YH(I,2)
  290    Y(I) = SAVF(I) - ACOR(I)
-      DEL = VNORM (N, Y, EWT) 
+      DEL = VNORM (N, Y, EWT)
       DO 300 I = 1,N
         Y(I) = YH(I,1) + EL(1)*SAVF(I)
  300    ACOR(I) = SAVF(I)
@@ -273,7 +273,7 @@ C-----------------------------------------------------------------------
       CALL SLVS (WM, IWM, Y, SAVF)
       IF (IERSL .LT. 0) GO TO 430
       IF (IERSL .GT. 0) GO TO 410
-      DEL = VNORM (N, Y, EWT) 
+      DEL = VNORM (N, Y, EWT)
       DO 380 I = 1,N
         ACOR(I) = ACOR(I) + Y(I)
  380    Y(I) = YH(I,1) + EL(1)*ACOR(I)
@@ -291,11 +291,11 @@ C-----------------------------------------------------------------------
       IERR = 0
       CALL F (NEQ, TN, Y, SAVF, IERR)
       IF (IERR .LT. 0) RETURN
-      NFE = NFE + 1 
+      NFE = NFE + 1
       GO TO 270
 C-----------------------------------------------------------------------
 C THE CORRECTOR ITERATION FAILED TO CONVERGE.
-C IF MITER .NE. 0 AND THE JACOBIAN IS OUT OF DATE, PJAC IS CALLED FOR 
+C IF MITER .NE. 0 AND THE JACOBIAN IS OUT OF DATE, PJAC IS CALLED FOR
 C THE NEXT TRY.  OTHERWISE THE YH ARRAY IS RETRACTED TO ITS VALUES
 C BEFORE PREDICTION, AND H IS REDUCED, IF POSSIBLE.  IF H CANNOT BE
 C REDUCED OR MXNCF FAILURES HAVE OCCURRED, EXIT WITH KFLAG = -2.
@@ -305,7 +305,7 @@ C-----------------------------------------------------------------------
       IPUP = MITER
       GO TO 220
  430  ICF = 2
-      NCF = NCF + 1 
+      NCF = NCF + 1
       RMAX = 2.0D0
       TN = TOLD
       I1 = NQNYH + 1
@@ -344,7 +344,7 @@ C TESTING FOR THAT MANY STEPS.
 C-----------------------------------------------------------------------
       KFLAG = 0
       IREDO = 0
-      NST = NST + 1 
+      NST = NST + 1
       HU = H
       NQU = NQ
       DO 470 J = 1,L
@@ -361,8 +361,8 @@ C-----------------------------------------------------------------------
 C THE ERROR TEST FAILED.  KFLAG KEEPS TRACK OF MULTIPLE FAILURES.
 C RESTORE TN AND THE YH ARRAY TO THEIR PREVIOUS VALUES, AND PREPARE
 C TO TRY THE STEP AGAIN.  COMPUTE THE OPTIMUM STEP SIZE FOR THIS OR
-C ONE LOWER ORDER.  AFTER 2 OR MORE FAILURES, H IS FORCED TO DECREASE 
-C BY A FACTOR OF 0.2 OR LESS. 
+C ONE LOWER ORDER.  AFTER 2 OR MORE FAILURES, H IS FORCED TO DECREASE
+C BY A FACTOR OF 0.2 OR LESS.
 C-----------------------------------------------------------------------
  500  KFLAG = KFLAG - 1
       TN = TOLD
@@ -380,9 +380,9 @@ CDIR$ IVDEP
       RHUP = 0.0D0
       GO TO 540
 C-----------------------------------------------------------------------
-C REGARDLESS OF THE SUCCESS OR FAILURE OF THE STEP, FACTORS 
+C REGARDLESS OF THE SUCCESS OR FAILURE OF THE STEP, FACTORS
 C RHDN, RHSM, AND RHUP ARE COMPUTED, BY WHICH H COULD BE MULTIPLIED
-C AT ORDER NQ - 1, ORDER NQ, OR ORDER NQ + 1, RESPECTIVELY. 
+C AT ORDER NQ - 1, ORDER NQ, OR ORDER NQ + 1, RESPECTIVELY.
 C IN THE CASE OF FAILURE, RHUP = 0.0 TO AVOID AN ORDER INCREASE.
 C THE LARGEST OF THESE IS DETERMINED AND THE NEW ORDER CHOSEN
 C ACCORDINGLY.  IF THE ORDER IS TO BE INCREASED, WE COMPUTE ONE
@@ -395,12 +395,12 @@ C-----------------------------------------------------------------------
       DUP = VNORM (N, SAVF, EWT)/TESCO(3,NQ)
       EXUP = 1.0D0/DBLE(L+1)
       RHUP = 1.0D0/(1.4D0*DUP**EXUP + 0.0000014D0)
- 540  EXSM = 1.0D0/DBLE(L)  
+ 540  EXSM = 1.0D0/DBLE(L)
       RHSM = 1.0D0/(1.2D0*DSM**EXSM + 0.0000012D0)
       RHDN = 0.0D0
       IF (NQ .EQ. 1) GO TO 560
       DDN = VNORM (N, YH(1,L), EWT)/TESCO(1,NQ)
-      EXDN = 1.0D0/DBLE(NQ) 
+      EXDN = 1.0D0/DBLE(NQ)
       RHDN = 1.0D0/(1.3D0*DDN**EXDN + 0.0000013D0)
  560  IF (RHSM .GE. RHUP) GO TO 570
       IF (RHUP .GT. RHDN) GO TO 590
@@ -409,14 +409,14 @@ C-----------------------------------------------------------------------
       NEWQ = NQ
       RH = RHSM
       GO TO 620
- 580  NEWQ = NQ - 1 
+ 580  NEWQ = NQ - 1
       RH = RHDN
       IF (KFLAG .LT. 0 .AND. RH .GT. 1.0D0) RH = 1.0D0
       GO TO 620
  590  NEWQ = L
       RH = RHUP
       IF (RH .LT. 1.1D0) GO TO 610
-      R = EL(L)/DBLE(L)     
+      R = EL(L)/DBLE(L)
       DO 600 I = 1,N
  600    YH(I,NEWQ+1) = ACOR(I)*R
       GO TO 630
@@ -438,7 +438,7 @@ C-----------------------------------------------------------------------
 C CONTROL REACHES THIS SECTION IF 3 OR MORE FAILURES HAVE OCCURED.
 C IF 10 FAILURES HAVE OCCURRED, EXIT WITH KFLAG = -1.
 C IT IS ASSUMED THAT THE DERIVATIVES THAT HAVE ACCUMULATED IN THE
-C YH ARRAY HAVE ERRORS OF THE WRONG ORDER.  HENCE THE FIRST 
+C YH ARRAY HAVE ERRORS OF THE WRONG ORDER.  HENCE THE FIRST
 C DERIVATIVE IS RECOMPUTED, AND THE ORDER IS SET TO 1.  THEN
 C H IS REDUCED BY A FACTOR OF 10, AND THE STEP IS RETRIED,
 C UNTIL IT SUCCEEDS OR H REACHES HMIN.
@@ -452,7 +452,7 @@ C-----------------------------------------------------------------------
       IERR = 0
       CALL F (NEQ, TN, Y, SAVF, IERR)
       IF (IERR .LT. 0) RETURN
-      NFE = NFE + 1 
+      NFE = NFE + 1
       DO 650 I = 1,N
  650    YH(I,2) = H*SAVF(I)
       IPUP = MITER
@@ -472,7 +472,7 @@ C-----------------------------------------------------------------------
       GO TO 720
  680  KFLAG = -3
       GO TO 720
- 690  RMAX = 10.0D0 
+ 690  RMAX = 10.0D0
  700  R = 1.0D0/TESCO(2,NQU)
       DO 710 I = 1,N
  710    ACOR(I) = ACOR(I)*R
@@ -480,4 +480,4 @@ C-----------------------------------------------------------------------
       JSTART = 1
       RETURN
 C----------------------- END OF SUBROUTINE STODE -----------------------
-      END 
+      END

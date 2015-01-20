@@ -234,7 +234,7 @@ For that, use any of the condition number functions: @code{cond},\n\
               if (! error_state)
                 {
                   MAYBE_CAST (rep, octave_complex_matrix);
-                  MatrixType mtype = rep ? rep -> matrix_type () 
+                  MatrixType mtype = rep ? rep -> matrix_type ()
                                          : MatrixType ();
                   ComplexDET det = m.determinant (mtype, info, rcond);
                   retval(1) = rcond;

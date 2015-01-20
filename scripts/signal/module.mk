@@ -4,7 +4,7 @@ signal_PRIVATE_FCN_FILES = \
   signal/private/rectangle_lw.m  \
   signal/private/rectangle_sw.m  \
   signal/private/triangle_lw.m  \
-  signal/private/triangle_sw.m 
+  signal/private/triangle_sw.m
 
 signal_FCN_FILES = \
   signal/arch_fit.m \

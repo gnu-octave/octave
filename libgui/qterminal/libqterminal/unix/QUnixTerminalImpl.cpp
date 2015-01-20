@@ -151,8 +151,8 @@ void QUnixTerminalImpl::setCursorType(CursorType type, bool blinking)
 
 // FIXME -- not sure how to make these work properly given the way the
 // Unix terminal handles colors.
-void QUnixTerminalImpl::setBackgroundColor (const QColor& color) 
-  { 
+void QUnixTerminalImpl::setBackgroundColor (const QColor& color)
+  {
     ColorEntry cols[TABLE_COLORS];
 
     const ColorEntry * curr_cols = m_terminalView->colorTable();

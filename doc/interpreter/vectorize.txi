@@ -557,7 +557,7 @@ internal computation results are cached for variables.  For instance, if
 a matrix variable is used multiple times as an index, checking the
 indices (and internal conversion to integers) is only done once.
 
-@item Be aware of lazy copies (copy-on-write).  
+@item Be aware of lazy copies (copy-on-write).
 @cindex copy-on-write
 @cindex COW
 @cindex memory management

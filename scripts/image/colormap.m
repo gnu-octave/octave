@@ -158,16 +158,16 @@ endfunction
 %!test
 %! cmaplst = colormap ("list");
 %! assert (iscell (cmaplst));
-%! colormap ("register", "__mycmap__"); 
+%! colormap ("register", "__mycmap__");
 %! cmaplst2 = colormap ("list");
 %! assert (numel (cmaplst2), numel (cmaplst) + 1);
 %! assert (any (strcmp (cmaplst2, "__mycmap__")));
-%! colormap ("unregister", "__mycmap__"); 
+%! colormap ("unregister", "__mycmap__");
 %! cmaplst2 = colormap ("list");
 %! assert (numel (cmaplst2), numel (cmaplst));
 %! assert (! any (strcmp (cmaplst2, "__mycmap__")));
 %! ## Unregister again and verify that nothing has happened
-%! colormap ("unregister", "__mycmap__"); 
+%! colormap ("unregister", "__mycmap__");
 %! cmaplst3 = colormap ("list");
 %! assert (isequal (cmaplst2, cmaplst3));
 

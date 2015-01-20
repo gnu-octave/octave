@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} debug ()
 ## Summary of debugging commands.  For more information on each command
 ## and available options use @code{help CMD}.
-## 
+##
 ## The debugging commands available in Octave are
 ##
 ## @table @code

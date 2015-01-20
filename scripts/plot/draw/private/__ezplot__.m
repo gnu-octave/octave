@@ -25,7 +25,7 @@
 ##           As such, most of the function is actually dedicated to sorting
 ##           out the inputs and verifying that the particular ez* function
 ##           called was called correctly.  The actual plotting occurs near
-##           the end in an unwind_protect block. 
+##           the end in an unwind_protect block.
 
 function [h, needusage] = __ezplot__ (pltfunc, varargin)
 
@@ -55,11 +55,11 @@ function [h, needusage] = __ezplot__ (pltfunc, varargin)
     case "plot3"
       isplot  = false;
       isplot3 = true;
-  
+
     case "polar"
       isplot  = false;
       ispolar = true;
-    
+
     otherwise
       ## contour, mesh, surf plots
       isplot  = false;
@@ -497,7 +497,7 @@ function domain = find_valid_domain (X, Y, Z);
     ## 2-D data for isplot
     domain = [X(1) X(end)];
 
-    ## Guess a range which includes the "mass" of the data by using a 
+    ## Guess a range which includes the "mass" of the data by using a
     ## median-based approach.  The center 3/4 of the data is used to
     ## determine the range of the data.
     ## This seems to be vaguely what Matlab does, but can't be sure.
@@ -523,15 +523,15 @@ function domain = find_valid_domain (X, Y, Z);
 
   else
     ## 3-D data such as mesh, surf
-    Zfinite = ! isnan (Z); 
-    Zrows = any (Zfinite, 2); 
-    rmin = find (Zrows, 1, "first"); 
-    rmax = find (Zrows, 1, "last"); 
-    Zcols = any (Zfinite, 1); 
-    cmin = find (Zcols, 1, "first"); 
-    cmax = find (Zcols, 1, "last"); 
+    Zfinite = ! isnan (Z);
+    Zrows = any (Zfinite, 2);
+    rmin = find (Zrows, 1, "first");
+    rmax = find (Zrows, 1, "last");
+    Zcols = any (Zfinite, 1);
+    cmin = find (Zcols, 1, "first");
+    cmax = find (Zcols, 1, "last");
 
-    ## Handle nasty case of all NaNs 
+    ## Handle nasty case of all NaNs
     if (isempty (rmin))
       rmin = 1, rmax = rows (Z);
     endif
@@ -550,16 +550,16 @@ function domain = find_valid_domain (X, Y, Z);
       slope = ((max (Z(:)) - min (Z(:)))
                 / sqrt ((rmax - rmin)^2 + (cmax - cmin)^2));
       slope /= 125;  # threshold for discarding points.
-      Zrows = any (Zgrad > slope, 2); 
-      rmin += find (Zrows, 1, "first") - 1; 
-      rmax += find (Zrows, 1, "last") - rows (Zrows); 
-      Zcols = any (Zgrad > slope, 1); 
-      cmin += find (Zcols, 1, "first") - 1; 
-      cmax += find (Zcols, 1, "last") - columns (Zcols); 
+      Zrows = any (Zgrad > slope, 2);
+      rmin += find (Zrows, 1, "first") - 1;
+      rmax += find (Zrows, 1, "last") - rows (Zrows);
+      Zcols = any (Zgrad > slope, 1);
+      cmin += find (Zcols, 1, "first") - 1;
+      cmax += find (Zcols, 1, "last") - columns (Zcols);
     endif
 
     domain = [X(1,cmin) X(1,cmax) Y(rmin,1) Y(rmax,1)];
   endif
-  
+
 endfunction
 

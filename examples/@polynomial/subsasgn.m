@@ -10,7 +10,7 @@ function p = subsasgn (p, s, val)
       else
         if (length (s) == 1)
           if (isnumeric (ind{1}))
-            p.poly(ind{1}+1) = val; 
+            p.poly(ind{1}+1) = val;
           else
             p.poly(ind{1}) = val;
           endif

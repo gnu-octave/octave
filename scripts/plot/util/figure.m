@@ -30,7 +30,7 @@
 ## If called with an integer @var{n}, and no such numbered figure exists, then
 ## a new figure with the specified number is created.  If the figure already
 ## exists then it is made visible and becomes the current figure for plotting.
-## 
+##
 ## Multiple property-value pairs may be specified for the figure object, but
 ## they must appear in pairs.
 ##

@@ -1,8 +1,8 @@
 /*
     This file is part of Konsole, an X terminal.
-    
+
     Copyright (C) 2006, 2013 by Robert Knight <robertknight@gmail.com>
-    
+
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
     This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ bool PlainTextDecoder::trailingWhitespace() const
 }
 void PlainTextDecoder::begin(QTextStream* output)
 {
-   _output = output; 
+   _output = output;
 }
 void PlainTextDecoder::end()
 {
@@ -61,7 +61,7 @@ void PlainTextDecoder::decodeLine(const Character* const characters, int count, 
 	//(since QTextStream always deals with QStrings internally anyway)
 	QString plainText;
 	plainText.reserve(count);
-   
+
     int outputCount = count;
 
     // if inclusion of trailing whitespace is disabled then find the end of the

@@ -554,5 +554,5 @@ octave_qt_link::do_show_doc (const std::string& file)
 void
 octave_qt_link::terminal_interrupt (void)
 {
-  command_interpreter->interrupt ();  
+  command_interpreter->interrupt ();
 }

@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DNSD(X,Y,YPRIME,NEQ,RES,PDUM,WT,RPAR,IPAR,
@@ -90,7 +90,7 @@ C
 C
       PARAMETER (LNRE=12, LNNI=19)
 C
-C     Initialize Newton counter M and accumulation vector E. 
+C     Initialize Newton counter M and accumulation vector E.
 C
       M = 0
       DO 100 I=1,NEQ

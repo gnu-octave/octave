@@ -184,7 +184,7 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       QApplication application (argc, argv);
 
       octave_cli_thread main_thread (argc, argv);
-      
+
       application.setQuitOnLastWindowClosed (false);
 
       main_thread.start ();

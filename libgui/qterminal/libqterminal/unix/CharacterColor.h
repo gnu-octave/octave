@@ -1,6 +1,6 @@
 /*
     This file is part of Konsole, KDE's terminal.
-    
+
     Copyright (C) 2007, 2013 by Robert Knight <robertknight@gmail.com>
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
@@ -28,14 +28,14 @@
 // Qt
 #include <QColor>
 
-/** 
- * An entry in a terminal display's color palette. 
+/**
+ * An entry in a terminal display's color palette.
  *
  * A color palette is an array of 16 ColorEntry instances which map
  * system color indexes (from 0 to 15) into actual colors.
  *
  * Each entry can be set as bold, in which case any text
- * drawn using the color should be drawn in bold.  
+ * drawn using the color should be drawn in bold.
  *
  * Each entry can also be transparent, in which case the terminal
  * display should avoid drawing the background for any characters
@@ -44,7 +44,7 @@
 class ColorEntry
 {
 public:
-  /** 
+  /**
    * Constructs a new color palette entry.
    *
    * @param c The color value for this entry.
@@ -56,24 +56,24 @@ public:
   /**
    * Constructs a new color palette entry with an undefined color, and
    * with the transparent and bold flags set to false.
-   */ 
-  ColorEntry() : transparent(false), bold(false) {} 
- 
+   */
+  ColorEntry() : transparent(false), bold(false) {}
+
   /**
    * Sets the color, transparency and boldness of this color to those of @p rhs.
-   */ 
-  void operator=(const ColorEntry& rhs) 
-  { 
-       color = rhs.color; 
-       transparent = rhs.transparent; 
-       bold = rhs.bold; 
+   */
+  void operator=(const ColorEntry& rhs)
+  {
+       color = rhs.color;
+       transparent = rhs.transparent;
+       bold = rhs.bold;
   }
 
   /** The color value of this entry for display. */
   QColor color;
 
-  /** 
-   * If true character backgrounds using this color should be transparent. 
+  /**
+   * If true character backgrounds using this color should be transparent.
    * This is not applicable when the color is used to render text.
    */
   bool   transparent;
@@ -81,7 +81,7 @@ public:
    * If true characters drawn using this color should be bold.
    * This is not applicable when the color is used to draw a character's background.
    */
-  bool   bold;        
+  bool   bold;
 };
 
 
@@ -146,15 +146,15 @@ class CharacterColor
 
 public:
   /** Constructs a new CharacterColor whoose color and color space are undefined. */
-  CharacterColor() 
-      : _colorSpace(COLOR_SPACE_UNDEFINED), 
-        _u(0), 
-        _v(0), 
-        _w(0) 
+  CharacterColor()
+      : _colorSpace(COLOR_SPACE_UNDEFINED),
+        _u(0),
+        _v(0),
+        _w(0)
   {}
 
-  /** 
-   * Constructs a new CharacterColor using the specified @p colorSpace and with 
+  /**
+   * Constructs a new CharacterColor using the specified @p colorSpace and with
    * color value @p co
    *
    * The meaning of @p co depends on the @p colorSpace used.
@@ -163,10 +163,10 @@ public:
    *
    * TODO : Add documentation about available color spaces.
    */
-  CharacterColor(quint8 colorSpace, int co) 
-      : _colorSpace(colorSpace), 
-        _u(0), 
-        _v(0), 
+  CharacterColor(quint8 colorSpace, int co)
+      : _colorSpace(colorSpace),
+        _u(0),
+        _v(0),
         _w(0)
   {
     switch (colorSpace)
@@ -178,7 +178,7 @@ public:
             _u = co & 7;
             _v = (co >> 3) & 1;
             break;
-        case COLOR_SPACE_256:  
+        case COLOR_SPACE_256:
             _u = co & 255;
             break;
         case COLOR_SPACE_RGB:
@@ -191,32 +191,32 @@ public:
     }
   }
 
-  /** 
+  /**
    * Returns true if this character color entry is valid.
    */
-  bool isValid() 
+  bool isValid()
   {
         return _colorSpace != COLOR_SPACE_UNDEFINED;
   }
-    
-  /** 
+
+  /**
    * Toggles the value of this color between a normal system color and the corresponding intensive
    * system color.
-   * 
+   *
    * This is only applicable if the color is using the COLOR_SPACE_DEFAULT or COLOR_SPACE_SYSTEM
    * color spaces.
    */
   void toggleIntensive();
 
-  /** 
+  /**
    * Returns the color within the specified color @palette
    *
    * The @p palette is only used if this color is one of the 16 system colors, otherwise
    * it is ignored.
    */
   QColor color(const ColorEntry* palette) const;
- 
-  /** 
+
+  /**
    * Compares two colors and returns true if they represent the same color value and
    * use the same color space.
    */
@@ -230,14 +230,14 @@ public:
 private:
   quint8 _colorSpace;
 
-  // bytes storing the character color 
-  quint8 _u; 
-  quint8 _v; 
-  quint8 _w; 
+  // bytes storing the character color
+  quint8 _u;
+  quint8 _v;
+  quint8 _w;
 };
 
 inline bool operator == (const CharacterColor& a, const CharacterColor& b)
-{ 
+{
     return a._colorSpace == b._colorSpace &&
 	       a._u == b._u &&
 	       a._v == b._v &&
@@ -259,7 +259,7 @@ inline const QColor color256(quint8 u, const ColorEntry* base)
   if (u < 216) return QColor(255*((u/36)%6)/5,
                              255*((u/ 6)%6)/5,
                              255*((u/ 1)%6)/5); u -= 216;
-  
+
   // 232..255: gray, leaving out black and white
   int gray = u*10+8; return QColor(gray,gray,gray);
 }

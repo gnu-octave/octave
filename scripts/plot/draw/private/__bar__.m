@@ -75,7 +75,7 @@ function varargout = __bar__ (vertical, func, varargin)
       idx++;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "histc"))
       group = true;
-      histc = true; 
+      histc = true;
       idx++;
     elseif (ischar (varargin{idx}) && strcmpi (varargin{idx}, "hist"))
       group = true;
@@ -147,7 +147,7 @@ function varargout = __bar__ (vertical, func, varargin)
     cutoff = 1;
   endif
   if (group)
-    gdelta = cutoff * gwidth / nbars; 
+    gdelta = cutoff * gwidth / nbars;
     cdelta = repmat ((1 - ((1 - cwidth) / 2)) * gdelta, size (x));
   else
     cdelta = repmat (cutoff * gwidth, size (x));
@@ -373,7 +373,7 @@ endfunction
 
 function show_baseline (h, ~, prop = "")
   persistent recursion = false;
-  
+
   ## Don't allow recursion
   if (! recursion)
     unwind_protect

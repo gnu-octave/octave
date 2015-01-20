@@ -82,12 +82,12 @@ be updated from the gnulib sources as necessary.
 
 If you have a copy of gnulib in some directory apart from the Octave
 source tree, then pass the name of the directory containing gnulib-tool
-to the bootstrap script using the option: 
+to the bootstrap script using the option:
 
   --gnulib-srcdir=DIRNAME
 
 If you have downloaded gnulib directly, DIRNAME will be the directory where
-gnulib was unpacked.  If you have installed gnulib using a package 
+gnulib was unpacked.  If you have installed gnulib using a package
 manager, DIRNAME is likely to be /usr/bin or /usr/local/bin(where the
 gnulib-tool script resides).
 
@@ -206,7 +206,7 @@ An overview of the directory layout of Octave's source files:
     operators   code for operators that act on base classes (such as Array)
 
     system      OS-related functions
- 
+
     util        utility and miscellaneous functions
 
   libinterp     -- the interpreter itself plus lots of infrastructure
@@ -337,7 +337,7 @@ An overview of the directory layout of Octave's source files:
 John W. Eaton
 jwe@octave.org
 
-Last updated: Tue, 29 Oct 2013 11:42:47 PDT 
+Last updated: Tue, 29 Oct 2013 11:42:47 PDT
 
 
 

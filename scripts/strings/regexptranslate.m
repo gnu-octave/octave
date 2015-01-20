@@ -63,8 +63,8 @@ function y = regexptranslate (op, s)
 
   op = tolower (op);
   if (strcmp ("wildcard", op))
-    y = regexprep (regexprep (regexprep (s, '\.', '\.'), 
-                                            '\*', '.*'), 
+    y = regexprep (regexprep (regexprep (s, '\.', '\.'),
+                                            '\*', '.*'),
                                             '\?', '.');
   elseif (strcmp ("escape", op))
     y = regexprep (s, '([^\w])', '\\$1');

@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DDASIC (X, Y, YPRIME, NEQ, ICOPT, ID, RES, JAC, PSOL,
@@ -17,7 +17,7 @@ C-----------------------------------------------------------------------
 C***DESCRIPTION
 C
 C     DDASIC is a driver routine to compute consistent initial values
-C     for Y and YPRIME.  There are two different options:  
+C     for Y and YPRIME.  There are two different options:
 C     Denoting the differential variables in Y by Y_d, and
 C     the algebraic variables by Y_a, the problem solved is either:
 C     1.  Given Y_d, calculate Y_a and Y_d', or
@@ -40,19 +40,19 @@ C                    ICOPT = 2 for option 2.
 C     ID        -- Array of dimension NEQ, which must be initialized
 C                  if option 1 is chosen.
 C                    ID(i) = +1 if Y_i is a differential variable,
-C                    ID(i) = -1 if Y_i is an algebraic variable. 
+C                    ID(i) = -1 if Y_i is an algebraic variable.
 C     RES --       External user-supplied subroutine to evaluate the
 C                  residual.  See RES description in DDASPK prologue.
 C     JAC --       External user-supplied routine to update Jacobian
 C                  or preconditioner information in the nonlinear solver
 C                  (optional).  See JAC description in DDASPK prologue.
 C     PSOL --      External user-supplied routine to solve
-C                  a linear system using preconditioning. 
+C                  a linear system using preconditioning.
 C                  See PSOL in DDASPK prologue.
-C     H --         Scaling factor in iteration matrix.  DDASIC may 
+C     H --         Scaling factor in iteration matrix.  DDASIC may
 C                  reduce H to achieve convergence.
 C     WT --        Vector of weights for error criterion.
-C     NIC --       Input number of initial condition calculation call 
+C     NIC --       Input number of initial condition calculation call
 C                  (= 1 or 2).
 C     IDID --      Completion code.  See IDID in DDASPK prologue.
 C     RPAR,IPAR -- Real and integer parameter arrays that
@@ -115,7 +115,7 @@ C
       CALL DCOPY (NEQ, YPRIME, 1, PHI(1,2), 1)
 C
       IF (ICOPT .EQ. 2) THEN
-        CJ = 0.0D0 
+        CJ = 0.0D0
       ELSE
         CJ = 1.0D0/H
       ENDIF

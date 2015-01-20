@@ -10,9 +10,9 @@ C-----------------------------------------------------------------------
       DOUBLE PRECISION V, W,   SUM
       DIMENSION V(N), W(N)
       SUM = 0.0D0
-      DO 10 I = 1,N 
+      DO 10 I = 1,N
  10     SUM = SUM + (V(I)*W(I))**2
-      VNORM = DSQRT(SUM/DBLE(N))      
+      VNORM = DSQRT(SUM/DBLE(N))
       RETURN
 C----------------------- END OF FUNCTION VNORM -------------------------
-      END 
+      END

@@ -70,7 +70,7 @@ MFILE: foreach $m_fname (@ARGV)
 ################################################################################
 sub gethelp
 {
-  ($fcn, $fname) = @_[0..1]; 
+  ($fcn, $fname) = @_[0..1];
   open (FH, $fname) or return "";
 
   do
@@ -95,7 +95,7 @@ sub gethelp
       push (@help_txt, $_);
     } until (! defined ($_ = <FH>) or ! /^\s*(?:#|%)/);
 
-  } until ($help_txt[0] !~ /^(?:Copyright|Author)/); 
+  } until ($help_txt[0] !~ /^(?:Copyright|Author)/);
 
   close (FH);
 

@@ -410,7 +410,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     ## FIXME -- check QP solution and attempt to recover if it has
     ## failed.  For now, just warn about possible problems.
-    
+
     id = "Octave:SQP-QP-subproblem";
     switch (info)
       case 2

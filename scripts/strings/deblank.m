@@ -59,7 +59,7 @@ function s = deblank (s)
 
     char_idx = cellfun ("isclass", s, "char");
     cell_idx = cellfun ("isclass", s, "cell");
-    if (! all (char_idx | cell_idx))  
+    if (! all (char_idx | cell_idx))
       error ("deblank: S argument must be a string or cellstring");
     endif
 

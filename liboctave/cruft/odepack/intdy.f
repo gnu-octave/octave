@@ -6,13 +6,13 @@ CLLL. OPTIMIZE
      2   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
       INTEGER I, IC, J, JB, JB2, JJ, JJ1, JP1
       DOUBLE PRECISION T, YH, DKY
-      DOUBLE PRECISION ROWNS, 
+      DOUBLE PRECISION ROWNS,
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND
       DOUBLE PRECISION C, R, S, TP
       DIMENSION YH(NYH,*), DKY(*)
       COMMON /LS0001/ ROWNS(209),
      2   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND,
-     3   IOWND(14), IOWNS(6), 
+     3   IOWND(14), IOWNS(6),
      4   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L, METH, MITER,
      5   MAXORD, MAXCOR, MSBP, MXNCF, N, NQ, NST, NFE, NJE, NQU
 C-----------------------------------------------------------------------
@@ -25,7 +25,7 @@ C-----------------------------------------------------------------------
 C THE COMPUTED VALUES IN DKY ARE GOTTEN BY INTERPOLATION USING THE
 C NORDSIECK HISTORY ARRAY YH.  THIS ARRAY CORRESPONDS UNIQUELY TO A
 C VECTOR-VALUED POLYNOMIAL OF DEGREE NQCUR OR LESS, AND DKY IS SET
-C TO THE K-TH DERIVATIVE OF THIS POLYNOMIAL AT T. 
+C TO THE K-TH DERIVATIVE OF THIS POLYNOMIAL AT T.
 C THE FORMULA FOR DKY IS..
 C              Q
 C  DKY(I)  =  SUM  C(J,K) * (T - TN)**(J-K) * H**(-J) * YH(I,J+1)
@@ -47,13 +47,13 @@ C
       DO 10 JJ = JJ1,NQ
  10     IC = IC*JJ
  15   C = DBLE(IC)
-      DO 20 I = 1,N 
+      DO 20 I = 1,N
  20     DKY(I) = C*YH(I,L)
-      IF (K .EQ. NQ) GO TO 55 
+      IF (K .EQ. NQ) GO TO 55
       JB2 = NQ - K
       DO 50 JB = 1,JB2
-        J = NQ - JB 
-        JP1 = J + 1 
+        J = NQ - JB
+        JP1 = J + 1
         IC = 1
         IF (K .EQ. 0) GO TO 35
         JJ1 = JP1 - K
@@ -65,7 +65,7 @@ C
  50     CONTINUE
       IF (K .EQ. 0) RETURN
  55   R = H**(-K)
-      DO 60 I = 1,N 
+      DO 60 I = 1,N
  60     DKY(I) = R*DKY(I)
       RETURN
 C
@@ -77,8 +77,8 @@ C
      1   30, 52, 0, 0, 0, 0, 1, T, 0.0D0)
       CALL XERRWD(
      1  '      T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)      ',
-     1   60, 52, 0, 0, 0, 0, 2, TP, TN) 
+     1   60, 52, 0, 0, 0, 0, 2, TP, TN)
       IFLAG = -2
       RETURN
 C----------------------- END OF SUBROUTINE INTDY -----------------------
-      END 
+      END

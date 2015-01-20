@@ -33,7 +33,7 @@
 ## Implementation Note: If @var{script} includes a path component, then
 ## @code{run} first changes the directory to the directory where @var{script}
 ## is found.  @code{run} then executes the script, and returns to the original
-## directory. 
+## directory.
 ## @seealso{path, addpath, source}
 ## @end deftypefn
 
@@ -52,11 +52,11 @@ function run (script)
       script = [script ".m"];
     endif
   endif
-  
+
   if (! exist (script, "file"))
     error ("run: file SCRIPT must exist and be a valid Octave scriptfile");
   endif
-  
+
   if (! isempty (d))
     if (exist (d, "dir"))
       wd = pwd ();

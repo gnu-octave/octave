@@ -62,7 +62,7 @@
 ##
 ## To remove a colorbar from a plot use any one of the following keywords for
 ## the @var{delete_option}: @qcode{"delete"}, @qcode{"hide"}, @qcode{"off"}.
-## 
+##
 ## If the argument @qcode{"peer"} is given, then the following argument is
 ## treated as the axes handle in which to add the colorbar.  Alternatively,
 ## If the first argument @var{hax} is an axes handle, then the colorbar is
@@ -78,7 +78,7 @@
 ## colorbar object.
 ##
 ## Implementation Note: A colorbar is created as an additional axes to the
-## current figure with the @qcode{"tag"} property set to @qcode{"colorbar"}. 
+## current figure with the @qcode{"tag"} property set to @qcode{"colorbar"}.
 ## The created axes object has the extra property @qcode{"location"} which
 ## controls the positioning of the colorbar.
 ## @seealso{colormap}
@@ -149,10 +149,10 @@ function h = colorbar (varargin)
       # if (! isempty (args))
       #   set (hcb, args{:});
       # endif
-      ax = get (get (hcb, "parent"), "currrentaxes");      
+      ax = get (get (hcb, "parent"), "currrentaxes");
     endif
   endif
-    
+
   if (isempty (loc))
     loc = "eastoutside";
   endif
@@ -180,7 +180,7 @@ function h = colorbar (varargin)
     obj.__cbar_hax__ = ax;
     position = obj.position;
     ## FIXME: Should this be ancestor to accommodate hggroups?
-    hpar = get (ax, "parent");  
+    hpar = get (ax, "parent");
     clen = rows (get (hpar, "colormap"));
     cext = get (ax, "clim");
     cdiff = (cext(2) - cext(1)) / clen / 2;
@@ -322,7 +322,7 @@ function update_colorbar_clim (hax, d, hi, vert)
     ## Now run the the following code.
     ##   clf; colorbar (); contour (peaks ())
     ## Once the keyboard command has been hit in the debugger try
-    ##   set (hiax, "ylim", [0 0.5]) 
+    ##   set (hiax, "ylim", [0 0.5])
     pos = get (hiax, "position");
     pos(1) += eps;
     set (hiax, "position", pos);

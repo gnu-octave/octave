@@ -12,7 +12,7 @@ C
 C-----------------------------------------------------------------------
 C***DESCRIPTION
 C
-C This subroutine checks for constraint violations in the proposed 
+C This subroutine checks for constraint violations in the proposed
 C new approximate solution YNEW.
 C If a constraint violation occurs, then a new step length, TAU,
 C is calculated, and this value is to be given to the linesearch routine

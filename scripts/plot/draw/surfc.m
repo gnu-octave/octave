@@ -70,7 +70,7 @@ function h = surfc (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    
+
     htmp = surface (varargin{:});
 
     set (htmp, "facecolor", "flat");

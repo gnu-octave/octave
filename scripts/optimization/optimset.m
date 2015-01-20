@@ -56,7 +56,7 @@
 ## value (a complex number, NaN, or Inf).  Must be set to @qcode{"on"} or
 ## @qcode{"off"} [default].  Note: the functions @code{fzero} and
 ## @code{fminbnd} correctly handle Inf values and only complex values or NaN
-## will cause an error in this case. 
+## will cause an error in this case.
 ##
 ## @item GradObj
 ## When set to @qcode{"on"}, the function to be minimized must return a

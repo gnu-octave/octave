@@ -142,7 +142,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     lensubs = cellfun (@length, subs);
 
-    if (any (lensubs != lensubs(1)) || 
+    if (any (lensubs != lensubs(1)) ||
         (lenvals > 1 && lenvals != lensubs(1)))
       error ("accumarray: dimension mismatch");
     endif

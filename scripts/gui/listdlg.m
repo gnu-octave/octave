@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{sel}, @var{ok}] =} listdlg (@var{key}, @var{value}, @dots{})
-## Return user inputs from a list dialog box in a vector of 
+## Return user inputs from a list dialog box in a vector of
 ## selection indices @var{sel} and a flag @var{ok} indicating how the
 ## user closed the dialog box.  The value of @var{ok} is 1 if the user
 ## closed the box with the OK button, otherwise it is 0 and @var{sel} is
@@ -26,7 +26,7 @@
 ##
 ## The indices in @var{sel} are 1-based.
 ##
-## The arguments are specified in form of @var{key}, @var{value} pairs. 
+## The arguments are specified in form of @var{key}, @var{value} pairs.
 ## The @qcode{"ListString"} argument pair must be specified.
 ##
 ## Valid @var{key} and @var{value} pairs are:

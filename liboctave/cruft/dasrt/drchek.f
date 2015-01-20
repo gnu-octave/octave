@@ -60,7 +60,7 @@ C          IRFND = 1 IF IT DID, = 0 IF NOT.
 C          STORED IN THE GLOBAL ARRAY IWORK.
 C INFO3  = COPY OF INFO(3) (INPUT ONLY).
 C-----------------------------------------------------------------------
-C     
+C
       H = PSI(1)
       IRT = 0
       DO 10 I = 1,NG

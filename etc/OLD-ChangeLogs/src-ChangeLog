@@ -286,7 +286,7 @@
 	axes::properties::update_dataaspectratiomode,
 	axes::properties::update_plotboxaspectratio,
 	axes::properties::update_plotboxaspectratiomode):
-	Replace update_transform hooks with sync_positions. 
+	Replace update_transform hooks with sync_positions.
 
 2011-02-13  Konstantinos Poulios  <logari81@googlemail.com>
 
@@ -611,7 +611,7 @@
 2011-01-27  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/__init_fltk__.cc (__fltk_uigetfile__): Remove here.
-	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: New file. 
+	* DLD-FUNCTIONS/__fltk_uigetfile__.cc: New file.
 	* DLD-FUNCTIONS/module-files: Add __fltk_uigetfile__.cc.
 	Bug #32190.
 
@@ -679,7 +679,7 @@
 
 2011-01-25  Rik  <octave@nomad.inbox5.com>
 
-	* DLD-FUNCTIONS/config-module.awk: Use automake variable for 
+	* DLD-FUNCTIONS/config-module.awk: Use automake variable for
 	portability.
 	* Makefile.am (uninstall-oct): Use GNU Make features for portability
 
@@ -1393,7 +1393,7 @@
 2010-12-25  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/str2double.cc: Fix bug in converting "numberi" strings
-	such as "2i".  Add ability to process special value "NA".  Rewrite 
+	such as "2i".  Add ability to process special value "NA".  Rewrite
 	docstring.
 
 2010-12-25  Rik  <octave@nomad.inbox5.com>
@@ -1426,7 +1426,7 @@
 
 2010-12-17  Rik  <octave@nomad.inbox5.com>
 
-	* oct-parse.yy (builtin): Remove seealso reference to deprecated 
+	* oct-parse.yy (builtin): Remove seealso reference to deprecated
 	function dispatch.
 
 2010-12-17  Konstantinos Poulios  <logari81@googlemail.com>

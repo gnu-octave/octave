@@ -84,7 +84,7 @@ C
  400  ML = IWM(1)
       MU = IWM(2)
       MEBAND = 2*ML + MU + 1
-      CALL SGBTRS ( 'N', N, ML, MU, 1, WM(3), MEBAND, IWM(21), X, N, 
+      CALL SGBTRS ( 'N', N, ML, MU, 1, WM(3), MEBAND, IWM(21), X, N,
      * INLPCK)
       RETURN
 C----------------------- END OF SUBROUTINE SSOLSY ----------------------

@@ -49,7 +49,7 @@
 ## #% nx|___________________     nx = numel (x)
 ## M% mi|       md         |     mi median index, md median
 ## H% hi|hl              hu| hs  hi lower hinge index, hl,hu hinges,
-## 1    |x(1)         x(nx)|     hs h_spreadx(1), x(nx) first 
+## 1    |x(1)         x(nx)|     hs h_spreadx(1), x(nx) first
 ##            _______            and last data value.
 ##      ______|step |_______     step 1.5*h_spread
 ##     f|ifl            ifh|     inner fence, lower and higher
@@ -65,12 +65,12 @@
 ## successive leaf values are separated by ",".
 ##
 ## With no return argument, the plot is immediately displayed.  If an output
-## argument is provided, the plot is returned as an array of strings. 
+## argument is provided, the plot is returned as an array of strings.
 ##
 ## The leaf digits are not sorted.  If sorted leaf values are desired, use
 ## @code{@var{xs} = sort (@var{x})} before calling @code{stemleaf (@var{xs})}.
 ##
-## The stem and leaf plot and associated displays are described in: 
+## The stem and leaf plot and associated displays are described in:
 ## Ch. 3, @cite{Exploratory Data Analysis} by J. W. Tukey, Addison-Wesley, 1977.
 ## @seealso{hist, printd}
 ## @end deftypefn
@@ -204,7 +204,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
   plot_out = [plot_out; sprintf("     M%3d|       %5d      |", mdidx, md)];
   plot_out = [plot_out; sprintf("     H%3d|%5d        %5d|   %d", hlidx, hl, hu, h_spread)];
   plot_out = [plot_out; sprintf("     1   |%5d        %5d|", xs(1), xs(nx))];
-  plot_out = [plot_out; sprintf("               _______")];   
+  plot_out = [plot_out; sprintf("               _______")];
   plot_out = [plot_out; sprintf("         ______|%5d|_______",step)];
   plot_out = [plot_out; sprintf("        f|%5d        %5d|", i_fence_l, i_fence_h)];
   plot_out = [plot_out; sprintf("         |%5d        %5d|  out", n_out_l, n_out_h)];
@@ -288,7 +288,7 @@ function plotstr = stemleaf (x, caption, stem_sz)
       plot_out = [plot_out; line];
       new_line = 1;
     else
-      if (new_line == 1) 
+      if (new_line == 1)
         plot_out = [plot_out; "     :"];  # just print one : if no leaves
         new_line = 0;
       endif
@@ -349,13 +349,13 @@ endfunction
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
-%! "     #138|___________________"      ,     
-%! "     M 69|          52      |"      ,     
+%! "     #138|___________________"      ,
+%! "     M 69|          52      |"      ,
 %! "     H 35|   30          116|   86" ,
 %! "     1   |  -28          146|"      ,
 %! "               _______"             ,
 %! "         ______|  129|_______"      ,
-%! "        f|  -99          245|"      ,     
+%! "        f|  -99          245|"      ,
 %! "         |    0            0|  out" ,
 %! "        F| -228          374|"      ,
 %! "         |    0            0|  far" ,
@@ -389,13 +389,13 @@ endfunction
 %! " "                                   ,
 %! "         Fenced Letter Display"      ,
 %! " "                                   ,
-%! "     # 14|___________________"       ,     
-%! "     M  7|          22      |"       ,     
+%! "     # 14|___________________"       ,
+%! "     M  7|          22      |"       ,
 %! "     H  4|   12           42|   30"  ,
 %! "     1   |    5           52|"       ,
 %! "               _______"              ,
 %! "         ______|   45|_______"       ,
-%! "        f|  -33           87|"       ,     
+%! "        f|  -33           87|"       ,
 %! "         |    0            0|  out"  ,
 %! "        F|  -78          132|"       ,
 %! "         |    0            0|  far"  ,
@@ -418,13 +418,13 @@ endfunction
 %! " "                                   ,
 %! "         Fenced Letter Display"      ,
 %! " "                                   ,
-%! "     # 14|___________________"       ,     
-%! "     M  7|         -28      |"       ,     
+%! "     # 14|___________________"       ,
+%! "     M  7|         -28      |"       ,
 %! "     H  4|  -42          -12|   30"  ,
 %! "     1   |  -52           -5|"       ,
 %! "               _______"              ,
 %! "         ______|   45|_______"       ,
-%! "        f|  -87           33|"       ,     
+%! "        f|  -87           33|"       ,
 %! "         |    0            0|  out"  ,
 %! "        F| -132           78|"       ,
 %! "         |    0            0|  far"  ,
@@ -446,13 +446,13 @@ endfunction
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
-%! "     # 15|___________________"      ,     
-%! "     M  8|          22      |"      ,     
+%! "     # 15|___________________"      ,
+%! "     M  8|          22      |"      ,
 %! "     H  4|   11           42|   31" ,
 %! "     1   |    0           52|"      ,
 %! "               _______"             ,
 %! "         ______|   46|_______"      ,
-%! "        f|  -35           88|"      ,     
+%! "        f|  -35           88|"      ,
 %! "         |    0            0|  out" ,
 %! "        F|  -82          135|"      ,
 %! "         |    0            0|  far" ,
@@ -475,13 +475,13 @@ endfunction
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
-%! "     # 15|___________________"      ,     
-%! "     M  8|         -22      |"      ,     
+%! "     # 15|___________________"      ,
+%! "     M  8|         -22      |"      ,
 %! "     H  4|  -42          -11|   31" ,
 %! "     1   |  -52            0|"      ,
 %! "               _______"             ,
 %! "         ______|   46|_______"      ,
-%! "        f|  -88           35|"      ,     
+%! "        f|  -88           35|"      ,
 %! "         |    0            0|  out" ,
 %! "        F| -135           82|"      ,
 %! "         |    0            0|  far" ,
@@ -503,13 +503,13 @@ endfunction
 %! " "                                  ,
 %! "         Fenced Letter Display"     ,
 %! " "                                  ,
-%! "     #  5|___________________"      ,     
-%! "     M  3|           0      |"      ,     
+%! "     #  5|___________________"      ,
+%! "     M  3|           0      |"      ,
 %! "     H  2|   -7            0|   7"  ,
 %! "     1   |   -9            0|"      ,
 %! "               _______"             ,
 %! "         ______|   10|_______"      ,
-%! "        f|  -17           10|"      ,     
+%! "        f|  -17           10|"      ,
 %! "         |    0            0|  out" ,
 %! "        F|  -28           21|"      ,
 %! "         |    0            0|  far" ,
@@ -527,13 +527,13 @@ endfunction
 %! " "                                    ,
 %! "         Fenced Letter Display"       ,
 %! " "                                    ,
-%! "     #  4|___________________"        ,     
-%! "     M  2|          -7      |"        ,     
+%! "     #  4|___________________"        ,
+%! "     M  2|          -7      |"        ,
 %! "     H  1|   -9            0|   9"    ,
 %! "     1   |   -9            0|"        ,
 %! "               _______"               ,
 %! "         ______|   13|_______"        ,
-%! "        f|  -22           13|"        ,     
+%! "        f|  -22           13|"        ,
 %! "         |    0            0|  out"   ,
 %! "        F|  -36           27|"        ,
 %! "         |    0            0|  far"   ,
@@ -552,7 +552,7 @@ endfunction
 %! " "                                      ,
 %! "         Fenced Letter Display"         ,
 %! " "                                      ,
-%! "     # 17|___________________"          ,          
+%! "     # 17|___________________"          ,
 %! "     M  9|         895      |"          ,
 %! "     H  5|  795         1499|   704"    ,
 %! "     1   |  150         1995|"          ,

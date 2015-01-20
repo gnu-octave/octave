@@ -53,7 +53,7 @@ endfunction
 %! unwind_protect
 %!   [status, output] = unix (cmd);
 %! unwind_protect_cleanup
-%!   warning (old_wstate); 
+%!   warning (old_wstate);
 %! end_unwind_protect
 %!
 %! if (isunix ())

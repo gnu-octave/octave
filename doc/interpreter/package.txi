@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -113,8 +113,8 @@ to disable dependency checking.
 @section Using Packages
 
 By default installed packages are not available from the Octave prompt,
-but it is possible to control this using the @code{pkg load} and 
-@code{pkg unload} commands.  The functions from a package can be 
+but it is possible to control this using the @code{pkg load} and
+@code{pkg unload} commands.  The functions from a package can be
 added to the Octave path by typing
 
 @example
@@ -138,8 +138,8 @@ pkg unload package_name
 On UNIX-like systems it is possible to make both per-user and
 system-wide installations of a package.  If the user performing the
 installation is @code{root} the packages will be installed in a
-system-wide directory that defaults to 
-@file{OCTAVE_HOME/share/octave/packages/}.  If the user is not 
+system-wide directory that defaults to
+@file{OCTAVE_HOME/share/octave/packages/}.  If the user is not
 @code{root} the default installation directory is
 @file{~/octave/}.  Packages will be installed in a subdirectory of the
 installation directory that will be named after the package.  It is
@@ -247,7 +247,7 @@ directives.
 An optional file that includes commands that are run when the package
 is removed from the users path.  Note that @w{@code{PKG_DEL}} directives in
 the source code of the package will also be added to this file by the
-Octave package manager. 
+Octave package manager.
 @xref{PKG_ADD and PKG_DEL Directives}, for details on @w{@code{PKG_DEL}}
 directives.
 
@@ -324,7 +324,7 @@ simple format
 Lines starting with @samp{#} are comments.
 
 @item
-Lines starting with a blank character are continuations from the 
+Lines starting with a blank character are continuations from the
 previous line.
 
 @item
@@ -421,7 +421,7 @@ distribution packager.  They follow the same conventions as the
 @item BuildRequires
 These are the external build dependencies of the package and are not
 checked by the package manager.  This is here as a hint to the
-distribution packager.  They follow the same conventions as the 
+distribution packager.  They follow the same conventions as the
 @code{Depends} keyword.  Note that in general, packaging systems such
 as @code{rpm} or @code{deb} and autoprobe the install dependencies
 from the build dependencies, and therefore the often a
@@ -431,7 +431,7 @@ from the build dependencies, and therefore the often a
 @end table
 
 @noindent
-The developer is free to add additional arguments to the 
+The developer is free to add additional arguments to the
 @file{DESCRIPTION} file for their own purposes.  One further detail to
 aid the packager is that the @code{SystemRequirements} and
 @code{BuildRequires} keywords can have a distribution dependent section,
@@ -445,7 +445,7 @@ BuildRequires: libtermcap-devel [Mandriva] libtermcap2-devel
 @noindent
 where the first package name will be used as a default and if the
 RPMs are built on a Mandriva distribution, then the second package
-name will be used instead. 
+name will be used instead.
 
 @node The INDEX File
 @subsection The INDEX File
@@ -485,7 +485,7 @@ Category Name 2
 @end example
 
 If you wish to refer to a function that users might expect
-to find in your package but is not there, providing a work around or 
+to find in your package but is not there, providing a work around or
 pointing out that the function is available elsewhere, you can use:
 
 @example
@@ -493,7 +493,7 @@ fn = workaround description
 @end example
 
 @noindent
-This workaround description will not appear when listing functions in the 
+This workaround description will not appear when listing functions in the
 package with @code{pkg describe} but they will be published
 in the HTML documentation online.
 Workaround descriptions can use any HTML markup, but

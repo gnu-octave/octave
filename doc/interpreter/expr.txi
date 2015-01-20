@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -119,8 +119,8 @@ For example:
 a = [1, 2, 3, 4];
 
 a(1:end/2)        # first half of a => [1, 2]
-a(end + 1) = 5;   # append element 
-a(end) = [];      # delete element 
+a(end + 1) = 5;   # append element
+a(end) = [];      # delete element
 a(1:2:end)        # odd elements of a => [1, 3]
 a(2:2:end)        # even elements of a => [2, 4]
 a(end:-1:1)       # reversal of a => [4, 3, 2 , 1]
@@ -772,7 +772,7 @@ if and only if
 
 @example
 @group
-  abs (@var{z1}) < abs (@var{z2}) 
+  abs (@var{z1}) < abs (@var{z2})
   || (abs (@var{z1}) == abs (@var{z2}) && arg (@var{z1}) < arg (@var{z2}))
 @end group
 @end example
@@ -1008,7 +1008,7 @@ arguments because Octave would be forced to try to evaluate both of the
 operands for the operator @samp{&}.
 
 @sc{matlab} has special behavior that allows the operators @samp{&} and
-@samp{|} to short-circuit when used in the truth expression for @code{if} and 
+@samp{|} to short-circuit when used in the truth expression for @code{if} and
 @code{while} statements.  The Octave parser may be instructed to behave in the
 same manner, but its use is strongly discouraged.
 
@@ -1164,7 +1164,7 @@ expression need not match.  For example, the expression
 @end example
 
 @noindent
-is equivalent to 
+is equivalent to
 
 @example
 @group

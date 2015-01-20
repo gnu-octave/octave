@@ -93,11 +93,11 @@ C
  60     DKY(I) = R*DKY(I)
       RETURN
 C
- 80   CALL XERRWD('SINTDY-  K (=I1) illegal      ', 
+ 80   CALL XERRWD('SINTDY-  K (=I1) illegal      ',
      1     30, 51, 0, 1, K, 0, 0, 0.0E0, 0.0E0)
       IFLAG = -1
       RETURN
- 90   CALL XERRWD('SINTDY-  T (=R1) illegal      ', 
+ 90   CALL XERRWD('SINTDY-  T (=R1) illegal      ',
      1     30, 52, 0, 0, 0, 0, 1, T, 0.0E0)
       CALL XERRWD(
      1   '      T not in interval TCUR - HU (= R1) to TCUR (=R2)      ',

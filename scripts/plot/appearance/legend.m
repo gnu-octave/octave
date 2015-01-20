@@ -585,7 +585,7 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
           ## of "fontsize" property
           proplist = {"fontunits", "fontangle", "fontname", "fontsize", ...
                       "fontweight"};
-          ca_props = get (ca(1), proplist); 
+          ca_props = get (ca(1), proplist);
           set (hlegend, proplist, ca_props);
         else
           addprops = false;

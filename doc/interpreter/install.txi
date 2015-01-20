@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -287,7 +287,7 @@ interpretation and rendering.
 
 @item Qhull
 Computational geometry library (@url{http://www.qhull.org}).  Qhull is
-required to provide the functions @code{convhull}, @code{convhulln}, 
+required to provide the functions @code{convhull}, @code{convhulln},
 @code{delaunay}, @code{delaunay3}, @code{delaunayn}, @code{voronoi}, and
 @code{voronoin}.
 
@@ -482,8 +482,8 @@ platform specific configure option for Mac systems.
 
 @end table
 
-See the file @file{INSTALL} for more general information about the 
-command line options used by configure.  That file also contains 
+See the file @file{INSTALL} for more general information about the
+command line options used by configure.  That file also contains
 instructions for compiling in a directory other than the one where
 the source is located.
 
@@ -605,7 +605,7 @@ array sizes when using the default 32-bit indexing mode:
 @example
 @group
 double:         16GB
-single:          8GB 
+single:          8GB
 uint64, int64:  16GB
 uint32, int32:   8GB
 uint16, int16:   4GB
@@ -766,7 +766,7 @@ Octave's 64-bit index support is activated with the configure option
 You must ensure that all Fortran sources except those in the
 @file{liboctave/cruft/ranlib} directory are compiled such that INTEGERS are
 8-bytes wide.  If you are using gfortran, the configure script should
-automatically set the Makefile variable @w{@env{F77_INTEGER_8_FLAG}} to 
+automatically set the Makefile variable @w{@env{F77_INTEGER_8_FLAG}} to
 @option{-fdefault-integer-8}.  If you are using another compiler, you
 must set this variable yourself.  You should NOT set this flag in
 @env{FFLAGS}, otherwise the files in @file{liboctave/cruft/ranlib} will be
@@ -848,10 +848,10 @@ options      GPL_MATH_EMULATE
 @end example
 
 @noindent
-rather than 
+rather than
 
 @example
-options      MATH_EMULATE 
+options      MATH_EMULATE
 @end example
 
 @noindent
@@ -874,7 +874,7 @@ or
 
 @example
 @group
-warning: ANSI C++ prohibits conversion from `(int)' 
+warning: ANSI C++ prohibits conversion from `(int)'
          to `(@dots{})'
 @end group
 @end example
@@ -953,7 +953,7 @@ On NeXT systems, if you get errors like this:
 
 @example
 @group
-/usr/tmp/cc007458.s:unknown:Undefined local 
+/usr/tmp/cc007458.s:unknown:Undefined local
       symbol LBB7656
 /usr/tmp/cc007458.s:unknown:Undefined local
       symbol LBE7656

@@ -47,7 +47,7 @@
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
-## The optional return value @var{h} is a graphics handle to the created 
+## The optional return value @var{h} is a graphics handle to the created
 ## surface object.
 ##
 ## Example 1: 2-argument function

@@ -49,7 +49,7 @@ UTIL_C_SRC = \
   util/f2c-main.c \
   util/lo-cutils.c \
   util/oct-rl-edit.c \
-  util/oct-rl-hist.c 
+  util/oct-rl-hist.c
 
 UTIL_SRC = \
   util/cmd-edit.cc \

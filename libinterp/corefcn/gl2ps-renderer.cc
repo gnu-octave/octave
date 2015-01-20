@@ -197,7 +197,7 @@ draw_pixels (GLsizei w, GLsizei h, GLenum format, const T *data, float maxval)
   // Convert to GL_FLOAT as it is the only type gl2ps accepts.
   for (unsigned int i = 0; i < 3*w*h; i++)
     a[i] = data[i] / maxval;
-  
+
   gl2psDrawPixels (w, h, 0, 0, format, GL_FLOAT, a);
 }
 

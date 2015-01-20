@@ -91,7 +91,7 @@ function [x, R] = linsolve (A, b, opts)
     endif
     if (isfield (opts, "POSDEF") && opts.POSDEF)
       A = matrix_type (A, "positive definite");
-    endif  
+    endif
     if (isfield (opts, "LT") && opts.LT)
       if (trans_A)
         A = matrix_type (A, "upper");
@@ -105,7 +105,7 @@ function [x, R] = linsolve (A, b, opts)
       else
         A = matrix_type (A, "upper");
       endif
-    endif        
+    endif
   endif
 
   x = A \ b;

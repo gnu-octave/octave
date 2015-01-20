@@ -52,7 +52,7 @@ BISON_PUSH_PULL_DECL_STYLE = @BISON_PUSH_PULL_DECL_STYLE@
 GPERF = @GPERF@
 
 AR = @AR@
-ARFLAGS = @ARFLAGS@ 
+ARFLAGS = @ARFLAGS@
 
 TEMPLATE_AR = @TEMPLATE_AR@
 TEMPLATE_ARFLAGS = @TEMPLATE_ARFLAGS@
@@ -437,7 +437,7 @@ localverarchlibdir = @localverarchlibdir@
 # Where to put object files that will by dynamically loaded.
 # This path usually includes the Octave version and configuration
 # name, so that multiple configurations for multiple versions of
-# Octave may be installed at once. 
+# Octave may be installed at once.
 octfiledir = @octfiledir@
 
 # Directories Octave should search for object files that will be

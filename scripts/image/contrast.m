@@ -55,7 +55,7 @@ endfunction
 %! title ("Image with default 64 gray levels");
 %! pos = get (gcf, "position");
 %! pos(1) += pos(3) + 25;
-%! figure ("position", pos); 
+%! figure ("position", pos);
 %! colormap (contrast (img, 10));
 %! imagesc (img);
 %! title ("Image with contrast enhanced");

@@ -2077,7 +2077,7 @@ file_editor_tab::center_current_line ()
     }
 }
 
-void 
+void
 file_editor_tab::handle_cursor_moved (int line, int col)
 {
   if (_edit_area->SendScintilla (QsciScintillaBase::SCI_AUTOCACTIVE))

@@ -5163,7 +5163,7 @@ public:
       {
         position.add_constraint (dim_vector (1, 4));
       }
-    
+
     void update_units (const caseless_str& old_units);
     void update_fontunits (const caseless_str& old_units);
 

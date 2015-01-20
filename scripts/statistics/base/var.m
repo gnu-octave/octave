@@ -51,7 +51,7 @@
 ##   normalizes with @math{N}, this provides the second moment around the mean
 ## @end table
 ##
-## If @math{N==1} the value of @var{opt} is ignored and normalization 
+## If @math{N==1} the value of @var{opt} is ignored and normalization
 ## by @math{N} is used.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.

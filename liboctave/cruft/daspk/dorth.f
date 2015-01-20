@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DORTH (VNEW, V, HES, N, LL, LDHES, KMP, SNORMW)
@@ -50,7 +50,7 @@ C       SNORMW = L-2 norm of VNEW.
 C
 C-----------------------------------------------------------------------
 C***ROUTINES CALLED
-C   DDOT, DNRM2, DAXPY 
+C   DDOT, DNRM2, DAXPY
 C
 C***END PROLOGUE  DORTH
 C

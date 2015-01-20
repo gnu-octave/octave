@@ -62,9 +62,9 @@
 ##       @result{}
 ##           @{
 ##             [1,1] = a
-##             [1,2] = 
+##             [1,2] =
 ##             [1,3] = b
-##             [1,4] = 
+##             [1,4] =
 ##             [1,5] = c
 ##           @}
 ##
@@ -80,7 +80,7 @@
 ## @code{regularexpression}.  The default is @var{delimitertype} is
 ## @code{simple}.
 ## @end itemize
-## 
+##
 ## Example:
 ##
 ## @example
@@ -91,17 +91,17 @@
 ##             [1,2] = b
 ##             [1,3] = c
 ##           @}
-## 
+##
 ## strsplit ("a,,b, c", "[, ]", false, "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
 ##             [1,1] = a
-##             [1,2] = 
+##             [1,2] =
 ##             [1,3] = b
-##             [1,4] = 
+##             [1,4] =
 ##             [1,5] = c
 ##           @}
-## 
+##
 ## strsplit ("a,\t,b, c", @{',', '\s'@}, "delimitertype", "regularexpression")
 ##       @result{}
 ##           @{
@@ -109,19 +109,19 @@
 ##             [1,2] = b
 ##             [1,3] = c
 ##           @}
-## 
+##
 ## strsplit ("a,\t,b, c", @{',', ' ', '\t'@}, "collapsedelimiters", false)
 ##       @result{}
 ##           @{
 ##             [1,1] = a
-##             [1,2] = 
-##             [1,3] = 
+##             [1,2] =
+##             [1,3] =
 ##             [1,4] = b
-##             [1,5] = 
+##             [1,5] =
 ##             [1,6] = c
 ##           @}
 ## @end example
-## 
+##
 ## @seealso{ostrsplit, strjoin, strtok, regexp}
 ## @end deftypefn
 

@@ -75,7 +75,7 @@ function opts = __gnuplot_print__ (opts)
         if (any (strcmpi (opts.name(dot:end), {["." suffix], ".tex", "."})))
           name = opts.name(1:dot-1);
         else
-          error ("print:invalid-suffix", 
+          error ("print:invalid-suffix",
                  "invalid suffix '%s' for device '%s'.",
                  opts.name(dot:end), lower (opts.devopt));
         endif

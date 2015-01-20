@@ -476,7 +476,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     elseif (strcmp (__type, "testif"))
       __e = regexp (__code, '.$', 'lineanchors', 'once');
       ## Strip comment any comment from testif line before looking for features
-      __feat_line = strtok (__code(1:__e), '#%'); 
+      __feat_line = strtok (__code(1:__e), '#%');
       __feat = regexp (__feat_line, '\w+', 'match');
       __feat = strrep (__feat, "HAVE_", "");
       __have_feat = __have_feature__ (__feat);

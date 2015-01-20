@@ -33,7 +33,7 @@ function retval = desktop (arg)
   elseif (nargin > 1)
     error ('desktop: only one argument, "-inuse", is allowed');
   endif
-  
+
   switch (tolower (arg))
     case "-inuse"
       retval = isguirunning ();

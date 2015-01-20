@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
 ## @deftypefnx {Function File} {@var{s} =} mat2str (@var{x}, @var{n}, "class")
-## Format real, complex, and logical matrices as strings.  The 
+## Format real, complex, and logical matrices as strings.  The
 ## returned string may be used to reconstruct the original matrix by using
 ## the @code{eval} function.
 ##

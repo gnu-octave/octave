@@ -64,14 +64,14 @@
 function h = image (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
-  
+
   chararg = find (cellfun ("isclass", varargin, "char"), 1, "first");
-  
+
   do_new = true;
   if (nargin == 0)
     img = imread ("default.img");
     x = y = [];
-  elseif (chararg == 1) 
+  elseif (chararg == 1)
     ## Low-Level syntax
     do_new = false;
     x = y = img = [];
@@ -141,7 +141,7 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
 
   ## FIXME: Hack for integer formats which use zero-based indexing
   ##        Hack favors correctness of display over size of image in memory.
-  ##        True fix must be done in C++ code for renderer. 
+  ##        True fix must be done in C++ code for renderer.
   if (ndims (img) == 2 && (isinteger (img) || islogical (img)))
     img = single (img) + 1;
   endif

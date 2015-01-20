@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -260,7 +260,7 @@ x(2).b = 2;
 which creates a 2-by-1 structure array with two fields.  Another way
 to create a structure array is with the @code{struct} function
 (@pxref{Creating Structures}).  As previously, to print the value of
-the structure array, you can type its name: 
+the structure array, you can type its name:
 
 @example
 @group
@@ -271,12 +271,12 @@ x
 
             a
             b
-        @}  
+        @}
 @end group
 @end example
 
 Individual elements of the structure array can be returned by indexing
-the variable like @code{@var{x}(1)}, which returns a structure with 
+the variable like @code{@var{x}(1)}, which returns a structure with
 two fields:
 
 @example
@@ -350,7 +350,7 @@ example
 
 @example
 @group
-in = struct ("call1", @{x, Inf, "last"@}, 
+in = struct ("call1", @{x, Inf, "last"@},
              "call2", @{x, Inf, "first"@})
      @result{} in =
         @{
@@ -450,7 +450,7 @@ struct ("field1", 1, "field2", 2)
 @end example
 
 If the values passed to @code{struct} are a mix of scalar and cell
-arrays, then the scalar arguments are expanded to create a 
+arrays, then the scalar arguments are expanded to create a
 structure array with a consistent dimension.  For example:
 
 @example
@@ -458,7 +458,7 @@ structure array with a consistent dimension.  For example:
 s = struct ("field1", @{1, "one"@}, "field2", @{2, "two"@},
         "field3", 3);
 s.field1
-     @result{} 
+     @result{}
         ans =  1
         ans = one
 
@@ -645,7 +645,7 @@ iscell (3)
 The introductory example (@pxref{Basic Usage of Cell Arrays}) showed
 how to create a cell array containing currently available variables.
 In many situations, however, it is useful to create a cell array and
-then fill it with data. 
+then fill it with data.
 
 The @code{cell} function returns a cell array of a given size, containing
 empty matrices.  This function is similar to the @code{zeros}
@@ -706,7 +706,7 @@ is possible to convert numerical arrays into cell arrays using the
 
 As shown in @pxref{Basic Usage of Cell Arrays} elements can be
 extracted from cell arrays using the @samp{@{} and @samp{@}}
-operators.  If you want to extract or access subarrays which are still 
+operators.  If you want to extract or access subarrays which are still
 cell arrays, you need to use the @samp{(} and @samp{)} operators.  The
 following example illustrates the difference:
 
@@ -717,7 +717,7 @@ c@{2,3@}
      @result{} ans = z
 
 c(2,3)
-     @result{} ans = 
+     @result{} ans =
         @{
           [1,1] = z
         @}
@@ -757,18 +757,18 @@ Note, that the above can also be achieved like this:
 c(:, [1, 3]) = 0;
 @end example
 
-@noindent Here, the scalar @samp{0} is automatically promoted to 
+@noindent Here, the scalar @samp{0} is automatically promoted to
 cell array @samp{@{0@}} and then assigned to the subarray of @code{c}.
 
 To give another example for indexing cell arrays with @samp{()}, you
 can exchange the first and the second row of a cell array as in the
-following command: 
+following command:
 
 @example
 @group
 c = @{1, 2, 3; 4, 5, 6@};
 c([1, 2], :) = c([2, 1], :)
-     @result{} = 
+     @result{} =
         @{
           [1,1] =  4
           [2,1] =  1
@@ -789,7 +789,7 @@ example can be swapped back like this:
 @example
 @group
 [c@{[1,2], :@}] = deal (c@{[2, 1], :@})
-     @result{} = 
+     @result{} =
         @{
           [1,1] =  1
           [2,1] =  4
@@ -852,7 +852,7 @@ for an operation, there are several functions that convert a cell
 array of strings to a character array and back.  @code{char} and
 @code{strvcat} convert cell arrays to a character array
 (@pxref{Concatenating Strings}), while the function @code{cellstr}
-converts a character array to a cell array of strings: 
+converts a character array to a cell array of strings:
 
 @example
 @group
@@ -891,7 +891,7 @@ The following string functions support cell arrays of strings:
 Strings}), @code{strcmp}, @code{strncmp}, @code{strcmpi},
 @code{strncmpi} (@pxref{Comparing Strings}), @code{str2double},
 @code{deblank}, @code{strtrim}, @code{strtrunc}, @code{strfind},
-@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating 
+@code{strmatch}, , @code{regexp}, @code{regexpi} (@pxref{Manipulating
 Strings}) and @code{str2double} (@pxref{String Conversions}).
 
 The function @code{iscellstr} can be used to test if an object is a
@@ -952,7 +952,7 @@ element to the comma separated list @samp{@var{i}, @var{j}}.
 Another example of where comma separated lists are used is in the
 creation of a new array with @code{[]} (@pxref{Matrices}) or the
 creation of a cell array with @code{@{@}} (@pxref{Basic Usage of Cell
-Arrays}).  In the expressions 
+Arrays}).  In the expressions
 
 @example
 @group
@@ -993,7 +993,7 @@ b = [a@{1:4@}]
 @end example
 
 Similarly, it is possible to create a new cell array containing cell
-elements selected with @code{@{@}}.  By surrounding the list with  
+elements selected with @code{@{@}}.  By surrounding the list with
 @samp{@{} and @samp{@}} a new cell array will be created, as the
 following example illustrates:
 
@@ -1020,14 +1020,14 @@ simpler and can handle cell arrays of an arbitrary size:
 @group
 c = @{"GNU", "Octave", "is", "Free", "Software"@};
 printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
-     @print{} GNU Octave is Free Software 
+     @print{} GNU Octave is Free Software
 printf ("%s ", c@{:@});
-     @print{} GNU Octave is Free Software 
+     @print{} GNU Octave is Free Software
 @end group
 @end example
 
 If used on the left-hand side of an assignment, a comma separated list
-generated with @code{@{@}} can be assigned to.  An example is 
+generated with @code{@{@}} can be assigned to.  An example is
 
 @example
 @group
@@ -1059,8 +1059,8 @@ array.  For example:
 
 @example
 @group
-x = ceil (randn (10, 1)); 
-in = struct ("call1", @{x, 3, "last"@}, 
+x = ceil (randn (10, 1));
+in = struct ("call1", @{x, 3, "last"@},
              "call2", @{x, inf, "first"@});
 out = struct ("call1", cell (2, 1), "call2", cell (2, 1));
 [out.call1] = find (in.call1);

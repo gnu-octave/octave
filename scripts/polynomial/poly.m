@@ -39,7 +39,7 @@
 ## eigenvalues.
 ##
 ## If @var{x} is a vector, @code{poly (@var{x})} is a vector of the
-## coefficients of the polynomial whose roots are the elements of @var{x}. 
+## coefficients of the polynomial whose roots are the elements of @var{x}.
 ## That is, if @var{c} is a polynomial, then the elements of @code{@var{d} =
 ## roots (poly (@var{c}))} are contained in @var{c}.  The vectors @var{c} and
 ## @var{d} are not identical, however, due to sorting and numerical errors.

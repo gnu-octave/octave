@@ -3779,7 +3779,7 @@ figure::properties::update_papersize (void)
       else if (std::abs (sz(0) - 182.0 * mm2in)
                + std::abs (sz(1) - 257.0 * mm2in) < tol)
         typ = "b5";
-      else if (std::abs (sz(0) - 9.0) 
+      else if (std::abs (sz(0) - 9.0)
                + std::abs (sz(1) - 12.0) < tol)
         typ = "arch-a";
       else if (std::abs (sz(0) - 12.0)
@@ -3794,7 +3794,7 @@ figure::properties::update_papersize (void)
       else if (std::abs (sz(0) - 36.0)
                + std::abs (sz(1) - 48.0) < tol)
         typ = "arch-e";
-      else if (std::abs (sz(0) - 8.5) 
+      else if (std::abs (sz(0) - 8.5)
                + std::abs (sz(1) - 11.0) < tol)
         typ = "a";
       else if (std::abs (sz(0) - 11.0)

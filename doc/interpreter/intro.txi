@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -21,7 +21,7 @@
 @cindex introduction
 
 GNU Octave is a high-level language, primarily intended for numerical
-computations.  It is typically used for such problems as solving 
+computations.  It is typically used for such problems as solving
 linear and nonlinear equations, numerical linear algebra, statistical
 analysis, and for performing other numerical experiments.  It may also
 be used as a batch-oriented language for automated data processing.
@@ -31,13 +31,13 @@ graphical results displayed in separate windows.  The current version
 (version 3.8, released in late 2013) also provides, by default, a
 graphical user interface.
 
-GNU Octave is freely redistributable software.  You may redistribute 
+GNU Octave is freely redistributable software.  You may redistribute
 it and/or modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation.  The GPL is included in 
+as published by the Free Software Foundation.  The GPL is included in
 this manual, @pxref{Copying}.
 
-This manual provides comprehensive documentation on how to install, 
-run, use, and extend GNU Octave.  Additional chapters describe how 
+This manual provides comprehensive documentation on how to install,
+run, use, and extend GNU Octave.  Additional chapters describe how
 to report bugs and help contribute code.
 
 This document corresponds to Octave version @value{VERSION}.
@@ -57,7 +57,7 @@ window in the GUI is the Octave command-line interface.  Octave displays
 an initial message and then a prompt indicating it is ready to accept
 input.  If you have chosen the traditional command-line interface only
 the command prompt appears.  In any case, you can immediately begin
-typing Octave commands. 
+typing Octave commands.
 
 If you get into trouble, you can usually interrupt Octave by typing
 @kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets
@@ -86,12 +86,12 @@ respond with an answer, or by displaying a graph.
 
 @subsection Elementary Calculations
 
-Octave can easily be used for basic numerical calculations.  Octave 
-knows about arithmetic operations (+,-,*,/), exponentiation (^), 
-natural logarithms/exponents (log, exp), and the trigonometric 
-functions (sin, cos, @dots{}).  Moreover, Octave calculations work 
-on real or imaginary numbers (i,j).  In addition, some mathematical 
-constants such as the base of the natural logarithm (e) and the ratio 
+Octave can easily be used for basic numerical calculations.  Octave
+knows about arithmetic operations (+,-,*,/), exponentiation (^),
+natural logarithms/exponents (log, exp), and the trigonometric
+functions (sin, cos, @dots{}).  Moreover, Octave calculations work
+on real or imaginary numbers (i,j).  In addition, some mathematical
+constants such as the base of the natural logarithm (e) and the ratio
 of a circle's circumference to its diameter (pi) are pre-defined.
 
 @noindent
@@ -109,7 +109,7 @@ e     = -1
 
 @noindent
 type the following which will evaluate to @code{-1} within the
-tolerance of the calculation. 
+tolerance of the calculation.
 
 @example
 octave:1> exp (i*pi)
@@ -117,7 +117,7 @@ octave:1> exp (i*pi)
 
 @subsection Creating a Matrix
 
-Vectors and matrices are the basic building blocks for numerical analysis.  
+Vectors and matrices are the basic building blocks for numerical analysis.
 To create a new matrix and store it in a variable so that you can
 refer to it later, type the command
 
@@ -126,9 +126,9 @@ octave:1> A = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
 @end example
 
 @noindent
-Octave will respond by printing the matrix in neatly aligned columns.  
-Octave uses a comma or space to separate entries in a row, and a 
-semicolon or carriage return to separate one row from the next.  
+Octave will respond by printing the matrix in neatly aligned columns.
+Octave uses a comma or space to separate entries in a row, and a
+semicolon or carriage return to separate one row from the next.
 Ending a command with a semicolon tells Octave not to print the result
 of the command.  For example,
 
@@ -141,7 +141,7 @@ will create a 3 row, 2 column matrix with each element set to a random
 value between zero and one.
 
 To display the value of a variable, simply type the name of the
-variable at the prompt.  For example, to display the value stored in the 
+variable at the prompt.  For example, to display the value stored in the
 matrix @code{B}, type the command
 
 @example
@@ -202,8 +202,8 @@ but avoids computing the inverse of a matrix directly.
 If the coefficient matrix is singular, Octave will print a warning
 message and compute a minimum norm solution.
 
-A simple example comes from chemistry and the need to obtain balanced 
-chemical equations.  Consider the burning of hydrogen and oxygen to 
+A simple example comes from chemistry and the need to obtain balanced
+chemical equations.  Consider the burning of hydrogen and oxygen to
 produce water.
 @tex
 $$ {\rm H_{2}} + {\rm O_{2}} \rightarrow {\rm H_{2}O} $$
@@ -216,9 +216,9 @@ H2 + O2 --> H2O
 
 @end ifnottex
 @noindent
-The equation above is not accurate.  The Law of Conservation of Mass requires 
-that the number of molecules of each type balance on the left- and right-hand 
-sides of the equation.  Writing the variable overall reaction with 
+The equation above is not accurate.  The Law of Conservation of Mass requires
+that the number of molecules of each type balance on the left- and right-hand
+sides of the equation.  Writing the variable overall reaction with
 individual equations for hydrogen and oxygen one finds:
 @tex
 \vbox{
@@ -294,7 +294,7 @@ is waiting for you to complete your input.
 
 @example
 @group
-octave:1> function xdot = f (x, t) 
+octave:1> function xdot = f (x, t)
 >
 >  r = 0.25;
 >  k = 1.4;
@@ -441,9 +441,9 @@ manual.  You may want to skip this section and refer back to it later.
 Examples of Octave code appear in this font or form: @code{svd (a)}.
 Names that represent variables or function arguments appear
 in this font or form: @var{first-number}.  Commands that you type at the
-shell prompt appear in this font or form: @samp{octave --no-init-file}.  
-Commands that you type at the Octave prompt sometimes appear in this font 
-or form: @kbd{foo --bar --baz}.  Specific keys on your keyboard appear 
+shell prompt appear in this font or form: @samp{octave --no-init-file}.
+Commands that you type at the Octave prompt sometimes appear in this font
+or form: @kbd{foo --bar --baz}.  Specific keys on your keyboard appear
 in this font or form: @key{ANY}.
 
 @node Evaluation Notation
@@ -508,9 +508,9 @@ rot90 ([1, 2; 3, 4], 7)
 @cindex printing notation
 
 Many of the examples in this manual print text when they are
-evaluated.  In this manual the printed text resulting from an example 
-is indicated by @samp{@print{}}.  The value that is returned by 
-evaluating the expression is displayed with @samp{@result{}} 
+evaluated.  In this manual the printed text resulting from an example
+is indicated by @samp{@print{}}.  The value that is returned by
+evaluating the expression is displayed with @samp{@result{}}
 (@code{1} in the next example) and follows on a separate line.
 
 @example
@@ -540,7 +540,7 @@ error: fieldnames: Invalid input argument
 @subsection Format of Descriptions
 @cindex description format
 
-Functions and commands are described in this manual in a 
+Functions and commands are described in this manual in a
 uniform format.  The first line of a description contains the name of
 the item followed by its arguments, if any.
 @ifnottex

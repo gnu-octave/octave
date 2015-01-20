@@ -120,7 +120,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
     endif
     unwind_protect
       hax = newplot (hax);
-      
+
       surf (x, y, z, varargin{ioff:end});
       old_hold_state = get (hax, "nextplot");
       unwind_protect
@@ -132,7 +132,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
       unwind_protect_cleanup
         set (hax, "nextplot", old_hold_state);
       end_unwind_protect
-      
+
     unwind_protect_cleanup
       if (! isempty (oldfig))
         set (0, "currentfigure", oldfig);

@@ -28,7 +28,7 @@
 ##
 ## @table @asis
 ## @item name
-## File or directory name. 
+## File or directory name.
 ##
 ## @item date
 ## Timestamp of file modification (string value).
@@ -37,7 +37,7 @@
 ## File size in bytes.
 ##
 ## @item isdir
-## True if name is a directory. 
+## True if name is a directory.
 ##
 ## @item datenum
 ## Timestamp of file modification as serial date number (double).

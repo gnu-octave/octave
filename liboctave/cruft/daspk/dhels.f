@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DHELS (A, LDA, N, Q, B)
@@ -51,7 +51,7 @@ C     Peter Brown, Lawrence Livermore Natl. Lab.
 C
 C-----------------------------------------------------------------------
 C***ROUTINES CALLED
-C   DAXPY 
+C   DAXPY
 C
 C***END PROLOGUE  DHELS
 C

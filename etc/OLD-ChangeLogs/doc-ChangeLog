@@ -133,7 +133,7 @@
 
 2011-03-19  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/oop.txi: Add optimize_subsasgn_calls function to 
+	* interpreter/oop.txi: Add optimize_subsasgn_calls function to
 	documentation.
 
 2011-03-19  Rik  <octave@nomad.inbox5.com>
@@ -182,7 +182,7 @@
 
 2011-03-18  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/basics.txi: Add gen_doc_cache, get_help_text, 
+	* interpreter/basics.txi: Add gen_doc_cache, get_help_text,
 	get_help_text_from_file, get_first_help_sentence to documentation.
 
 2011-03-17  Rik  <octave@nomad.inbox5.com>
@@ -215,8 +215,8 @@
 
 2011-03-02  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/stats.txi: Correctly refer to discrete uniform 
-	distribution in documentation. 
+	* interpreter/stats.txi: Correctly refer to discrete uniform
+	distribution in documentation.
 
 2011-03-01  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 

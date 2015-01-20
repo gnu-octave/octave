@@ -174,7 +174,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
     set (ax, "activepositionproperty", "position");
   endif
 
-  ## Kluge, until __plt_get_axis_arg__ and newplot are reworked. 
+  ## Kluge, until __plt_get_axis_arg__ and newplot are reworked.
   set (ax(2), "nextplot", "replacechildren");
   h2 = feval (fun2, ax(2), x2, y2);
   set (ax(2), "yaxislocation", "right");

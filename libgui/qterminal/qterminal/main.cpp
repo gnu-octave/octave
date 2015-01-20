@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
     mainWindow->setCentralWidget(terminal);
     mainWindow->resize(600, 400);
 
-    mainWindow->show();    
+    mainWindow->show();
     return app.exec();
-} 
+}
 
-  
+

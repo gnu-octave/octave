@@ -1,7 +1,7 @@
 /*
     This file is part of Konsole, an X terminal.
     Copyright (C) 2000, 2013 by Stephan Kulow <coolo@kde.org>
-   
+
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
     This program is free software; you can redistribute it and/or modify

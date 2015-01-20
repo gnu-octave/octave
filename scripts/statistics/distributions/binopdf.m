@@ -66,9 +66,9 @@ function pdf = binopdf (x, n, p)
 
   ## Special case inputs
   ksp = k & (p == 0) & (x == 0);
-  pdf(ksp) = 1; 
+  pdf(ksp) = 1;
   ksp = k & (p == 1) & (x == n);
-  pdf(ksp) = 1; 
+  pdf(ksp) = 1;
 
 endfunction
 

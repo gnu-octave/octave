@@ -58,7 +58,7 @@ C***FIRST EXECUTABLE STATEMENT  ATANH
 C
       Y = ABS(X)
       IF (Y .GE. 1.0) THEN
-         IF (Y .GT. 1.0) THEN 
+         IF (Y .GT. 1.0) THEN
             ATANH = (X - X) / (X - X)
          ELSE
             ATANH = X / 0.0

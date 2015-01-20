@@ -94,7 +94,7 @@ function retval = orient (varargin)
           ## FIXME: Should use "default" here, but Octave complains
           ##        that "paperposition" is not a default property.
           set (cf, "paperposition", "factory");
-        else 
+        else
           ## landscape also sets the plot to occupy the entire page
           papersize = get (cf, "papersize");
           set (cf, "paperposition", [0.25, 0.25, (papersize - 0.5)]);

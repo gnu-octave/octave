@@ -1,6 +1,6 @@
 2011-04-11  Rik  <octave@nomad.inbox5.com>
 
-	* fntests.m: Remove deprecated and private functions from list of 
+	* fntests.m: Remove deprecated and private functions from list of
 	functions requiring tests.  Count functions with %!demo blocks as
 	having tests.
 

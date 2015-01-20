@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DDASPK (RES, NEQ, T, Y, YPRIME, TOUT, INFO, RTOL, ATOL,
@@ -7,7 +7,7 @@ C
 C
 C***BEGIN PROLOGUE  DDASPK
 C***DATE WRITTEN   890101   (YYMMDD)
-C***REVISION DATE  910624   
+C***REVISION DATE  910624
 C***REVISION DATE  920929   (CJ in RES call, RES counter fix.)
 C***REVISION DATE  921215   (Warnings on poor iteration performance)
 C***REVISION DATE  921216   (NRMAX as optional input)
@@ -33,11 +33,11 @@ C             Center for Computational Sciences & Engineering, L-316
 C             Lawrence Livermore National Laboratory
 C             P.O. Box 808,
 C             Livermore, CA 94551
-C***PURPOSE  This code solves a system of differential/algebraic 
-C            equations of the form 
-C               G(t,y,y') = 0 , 
-C            using a combination of Backward Differentiation Formula 
-C            (BDF) methods and a choice of two linear system solution 
+C***PURPOSE  This code solves a system of differential/algebraic
+C            equations of the form
+C               G(t,y,y') = 0 ,
+C            using a combination of Backward Differentiation Formula
+C            (BDF) methods and a choice of two linear system solution
 C            methods: direct (dense or band) or Krylov (iterative).
 C            This version is in double precision.
 C-----------------------------------------------------------------------
@@ -66,7 +66,7 @@ C                   of the differential/algebraic system.
 C
 C  NEQ:IN           This is the number of equations in the system.
 C
-C  T:INOUT          This is the current value of the independent 
+C  T:INOUT          This is the current value of the independent
 C                   variable.
 C
 C  Y(*):INOUT       This array contains the solution components at T.
@@ -107,7 +107,7 @@ C                   you can use for communication between your calling
 C                   program and the RES, JAC, and PSOL subroutines.
 C
 C  JAC:EXT          This is the name of a subroutine which you may
-C                   provide (optionally) for calculating Jacobian 
+C                   provide (optionally) for calculating Jacobian
 C                   (partial derivative) data involved in solving linear
 C                   systems within DDASPK.
 C
@@ -120,9 +120,9 @@ C *Overview
 C
 C  The DDASPK solver uses the backward differentiation formulas of
 C  orders one through five to solve a system of the form G(t,y,y') = 0
-C  for y = Y and y' = YPRIME.  Values for Y and YPRIME at the initial 
-C  time must be given as input.  These values should be consistent, 
-C  that is, if T, Y, YPRIME are the given initial values, they should 
+C  for y = Y and y' = YPRIME.  Values for Y and YPRIME at the initial
+C  time must be given as input.  These values should be consistent,
+C  that is, if T, Y, YPRIME are the given initial values, they should
 C  satisfy G(T,Y,YPRIME) = 0.  However, if consistent values are not
 C  known, in many cases you can have DDASPK solve for them -- see INFO(11).
 C  (This and other options are described in more detail below.)
@@ -132,24 +132,24 @@ C  continue the solution to get results at additional TOUT.  This is
 C  the interval mode of operation.  Intermediate results can also be
 C  obtained easily by specifying INFO(3).
 C
-C  On each step taken by DDASPK, a sequence of nonlinear algebraic  
+C  On each step taken by DDASPK, a sequence of nonlinear algebraic
 C  systems arises.  These are solved by one of two types of
 C  methods:
 C    * a Newton iteration with a direct method for the linear
 C      systems involved (INFO(12) = 0), or
-C    * a Newton iteration with a preconditioned Krylov iterative 
+C    * a Newton iteration with a preconditioned Krylov iterative
 C      method for the linear systems involved (INFO(12) = 1).
 C
-C  The direct method choices are dense and band matrix solvers, 
-C  with either a user-supplied or an internal difference quotient 
+C  The direct method choices are dense and band matrix solvers,
+C  with either a user-supplied or an internal difference quotient
 C  Jacobian matrix, as specified by INFO(5) and INFO(6).
 C  In the band case, INFO(6) = 1, you must supply half-bandwidths
 C  in IWORK(1) and IWORK(2).
 C
-C  The Krylov method is the Generalized Minimum Residual (GMRES) 
-C  method, in either complete or incomplete form, and with 
+C  The Krylov method is the Generalized Minimum Residual (GMRES)
+C  method, in either complete or incomplete form, and with
 C  scaling and preconditioning.  The method is implemented
-C  in an algorithm called SPIGMR.  Certain options in the Krylov 
+C  in an algorithm called SPIGMR.  Certain options in the Krylov
 C  method case are specified by INFO(13) and INFO(15).
 C
 C  If the Krylov method is chosen, you may supply a pair of routines,
@@ -232,7 +232,7 @@ C
 C  YPRIME(*) -- Set this array to the initial values of the NEQ first
 C               derivatives of the solution components at the initial
 C               point.  You must dimension YPRIME at least NEQ in your
-C               calling program. 
+C               calling program.
 C
 C  TOUT - Set it to the first point at which a solution is desired.
 C         You cannot take TOUT = T.  Integration either forward in T
@@ -263,13 +263,13 @@ C         TSTOP.  In this case any tout beyond TSTOP is invalid input.
 C
 C  INFO(*) - Use the INFO array to give the code more details about
 C            how you want your problem solved.  This array should be
-C            dimensioned of length 20, though DDASPK uses only the 
+C            dimensioned of length 20, though DDASPK uses only the
 C            first 15 entries.  You must respond to all of the following
 C            items, which are arranged as questions.  The simplest use
 C            of DDASPK corresponds to setting all entries of INFO to 0.
 C
 C       INFO(1) - This parameter enables the code to initialize itself.
-C              You must set it to indicate the start of every new 
+C              You must set it to indicate the start of every new
 C              problem.
 C
 C          **** Is this the first call for this problem ...
@@ -346,8 +346,8 @@ C              a scalar determined by DDASPK), is banded and the code
 C              is told this.  In this case, the storage needed will be
 C              greatly reduced, numerical differencing will be performed
 C              much cheaper, and a number of important algorithms will
-C              execute much faster.  The differential equation is said 
-C              to have half-bandwidths ML (lower) and MU (upper) if 
+C              execute much faster.  The differential equation is said
+C              to have half-bandwidths ML (lower) and MU (upper) if
 C              equation i involves only unknowns Y(j) with
 C                             i-ML .le. j .le. i+MU .
 C              For all i=1,2,...,NEQ.  Thus, ML and MU are the widths
@@ -386,8 +386,8 @@ C                       RWORK(2) = HMAX ****
 C
 C       INFO(8) -  Differential/algebraic problems may occasionally
 C              suffer from severe scaling difficulties on the first
-C              step.  If you know a great deal about the scaling of 
-C              your problem, you can help to alleviate this problem 
+C              step.  If you know a great deal about the scaling of
+C              your problem, you can help to alleviate this problem
 C              by specifying an initial stepsize H0.
 C
 C          ****  Do you want the code to define its own initial
@@ -400,8 +400,8 @@ C
 C       INFO(9) -  If storage is a severe problem, you can save some
 C              storage by restricting the maximum method order MAXORD.
 C              The default value is 5.  For each order decrease below 5,
-C              the code requires NEQ fewer locations, but it is likely 
-C              to be slower.  In any case, you must have 
+C              the code requires NEQ fewer locations, but it is likely
+C              to be slower.  In any case, you must have
 C              1 .le. MAXORD .le. 5.
 C          ****  Do you want the maximum order to default to 5 ...
 C                 yes - set INFO(9) = 0
@@ -426,7 +426,7 @@ C
 C          ****  Do you want the code to solve the problem without
 C                invoking any special inequality constraints ...
 C                 yes - set INFO(10) = 0
-C                  no - set INFO(10) = 1 to have option 1 enforced 
+C                  no - set INFO(10) = 1 to have option 1 enforced
 C                  no - set INFO(10) = 2 to have option 2 enforced
 C                  no - set INFO(10) = 3 to have option 3 enforced ****
 C
@@ -474,7 +474,7 @@ C                  if INFO(10) = 1 or 3.
 C
 C       INFO(12) - Except for the addition of the RES argument CJ,
 C              DDASPK by default is downward-compatible with DDASSL,
-C              which uses only direct (dense or band) methods to solve 
+C              which uses only direct (dense or band) methods to solve
 C              the linear systems involved.  You must set INFO(12) to
 C              indicate whether you want the direct methods or the
 C              Krylov iterative method.
@@ -484,24 +484,24 @@ C                   direct methods - set INFO(12) = 0.
 C                   Krylov method  - set INFO(12) = 1,
 C                       and check the settings of INFO(13) and INFO(15).
 C
-C       INFO(13) - used when INFO(12) = 1 (Krylov methods).  
+C       INFO(13) - used when INFO(12) = 1 (Krylov methods).
 C              DDASPK uses scalars MAXL, KMP, NRMAX, and EPLI for the
-C              iterative solution of linear systems.  INFO(13) allows 
-C              you to override the default values of these parameters.  
+C              iterative solution of linear systems.  INFO(13) allows
+C              you to override the default values of these parameters.
 C              These parameters and their defaults are as follows:
-C              MAXL = maximum number of iterations in the SPIGMR 
-C                 algorithm (MAXL .le. NEQ).  The default is 
+C              MAXL = maximum number of iterations in the SPIGMR
+C                 algorithm (MAXL .le. NEQ).  The default is
 C                 MAXL = MIN(5,NEQ).
-C              KMP = number of vectors on which orthogonalization is 
-C                 done in the SPIGMR algorithm.  The default is 
-C                 KMP = MAXL, which corresponds to complete GMRES 
-C                 iteration, as opposed to the incomplete form.  
-C              NRMAX = maximum number of restarts of the SPIGMR 
+C              KMP = number of vectors on which orthogonalization is
+C                 done in the SPIGMR algorithm.  The default is
+C                 KMP = MAXL, which corresponds to complete GMRES
+C                 iteration, as opposed to the incomplete form.
+C              NRMAX = maximum number of restarts of the SPIGMR
 C                 algorithm per nonlinear iteration.  The default is
 C                 NRMAX = 5.
 C              EPLI = convergence test constant in SPIGMR algorithm.
 C                 The default is EPLI = 0.05.
-C              Note that the length of RWORK depends on both MAXL 
+C              Note that the length of RWORK depends on both MAXL
 C              and KMP.  See the definition of LRW below.
 C          ****   Are MAXL, KMP, and EPLI to be given their
 C                 default values ...
@@ -513,7 +513,7 @@ C                        IWORK(25) = KMP  (1 .le. KMP .le. MAXL)
 C                        IWORK(26) = NRMAX  (NRMAX .ge. 0)
 C                        RWORK(10) = EPLI (0 .lt. EPLI .lt. 1.0) ****
 C
-C        INFO(14) - used with INFO(11) > 0 (initial condition 
+C        INFO(14) - used with INFO(11) > 0 (initial condition
 C               calculation is requested).  In this case, you may
 C               request control to be returned to the calling program
 C               immediately after the initial condition calculation,
@@ -521,8 +521,8 @@ C               before proceeding to the integration of the system
 C               (e.g. to examine the computed Y and YPRIME).
 C               If this is done, and if the initialization succeeded
 C               (IDID = 4), you should reset INFO(11) to 0 for the
-C               next call, to prevent the solver from repeating the 
-C               initialization (and to avoid an infinite loop). 
+C               next call, to prevent the solver from repeating the
+C               initialization (and to avoid an infinite loop).
 C          ****   Do you want to proceed to the integration after
 C                 the initial condition calculation is done ...
 C                 yes - set INFO(14) = 0
@@ -551,7 +551,7 @@ C                       and supply a JAC routine to evaluate and
 C                       preprocess any required Jacobian data.  ****
 C
 C         INFO(16) - option to exclude algebraic variables from
-C               the error test.  
+C               the error test.
 C          ****   Do you wish to control errors locally on
 C                 all the variables...
 C                 yes - set INFO(16) = 0
@@ -562,14 +562,14 @@ C                       differential and which are the algebraic
 C                       components (algebraic components are components
 C                       whose derivatives do not appear explicitly
 C                       in the function G(T,Y,YPRIME)).  You must set:
-C                       IWORK(LID+I) = +1 if Y(I) is a differential 
+C                       IWORK(LID+I) = +1 if Y(I) is a differential
 C                                      variable, and
 C                       IWORK(LID+I) = -1 if Y(I) is an algebraic
 C                                      variable,
-C                       where LID = 40 if INFO(10) = 0 or 2 and 
+C                       where LID = 40 if INFO(10) = 0 or 2 and
 C                       LID = 40 + NEQ if INFO(10) = 1 or 3.
 C
-C       INFO(17) - used when INFO(11) > 0 (DDASPK is to do an 
+C       INFO(17) - used when INFO(11) > 0 (DDASPK is to do an
 C              initial condition calculation).
 C              DDASPK uses several heuristic control quantities in the
 C              initial condition calculation.  They have default values,
@@ -604,7 +604,7 @@ C                 this vector (scaled by the error weights) must be
 C                 less than EPINIT*EPCON, where EPCON = .33 is the
 C                 analogous test constant used in the time steps.
 C                 The default is EPINIT = .01.
-C          ****   Are the initial condition heuristic controls to be 
+C          ****   Are the initial condition heuristic controls to be
 C                 given their default values...
 C                  yes - set INFO(17) = 0
 C                   no - set INFO(17) = 1,
@@ -616,7 +616,7 @@ C                        IWORK(35) = LSOFF ( = 0 or 1)
 C                        RWORK(14) = STPTOL (.GT. 0.0)
 C                        RWORK(15) = EPINIT (.GT. 0.0)  ****
 C
-C         INFO(18) - option to get extra printing in initial condition 
+C         INFO(18) - option to get extra printing in initial condition
 C                calculation.
 C          ****   Do you wish to have extra printing...
 C                 no  - set INFO(18) = 0
@@ -639,7 +639,7 @@ C
 C               The tolerances are used by the code in a local error
 C               test at each step which requires roughly that
 C                        abs(local error in Y(i)) .le. EWT(i) ,
-C               where EWT(i) = RTOL*abs(Y(i)) + ATOL is an error weight 
+C               where EWT(i) = RTOL*abs(Y(i)) + ATOL is an error weight
 C               quantity, for each vector component.
 C               (More specifically, a root-mean-square norm is used to
 C               measure the size of vectors, and the error test uses the
@@ -656,7 +656,7 @@ C               Usually, but not always, the true accuracy of
 C               the computed Y is comparable to the error tolerances.
 C               This code will usually, but not always, deliver a more
 C               accurate solution if you reduce the tolerances and
-C               integrate again.  By comparing two such solutions you 
+C               integrate again.  By comparing two such solutions you
 C               can get a fairly reliable idea of the true error in the
 C               solution at the larger tolerances.
 C
@@ -700,7 +700,7 @@ C              If INFO(12) = 1 (Krylov method), the base value is
 C              base = 50 + (MAXORD+5)*NEQ + (MAXL+3+MIN0(1,MAXL-KMP))*NEQ +
 C                      + (MAXL+3)*MAXL + 1 + LENWP.
 C              See PSOL for description of LENWP.  The default values are:
-C              MAXORD = 5 (see INFO(9)), MAXL = min(5,NEQ) and KMP = MAXL 
+C              MAXORD = 5 (see INFO(9)), MAXL = min(5,NEQ) and KMP = MAXL
 C              (see INFO(13)).
 C              With the default values for MAXORD, MAXL and KMP,
 C              base = 91 + 18*NEQ + LENWP.
@@ -745,7 +745,7 @@ C  JAC -- This is the name of a routine that you may supply
 C         (optionally) that relates to the Jacobian matrix of the
 C         nonlinear system that the code must solve at each T step.
 C         The role of JAC (and its call sequence) depends on whether
-C         a direct (INFO(12) = 0) or Krylov (INFO(12) = 1) method 
+C         a direct (INFO(12) = 0) or Krylov (INFO(12) = 1) method
 C         is selected.
 C
 C         **** INFO(12) = 0 (direct methods):
@@ -761,8 +761,8 @@ C
 C           The JAC routine must dimension Y, YPRIME, and PD (and RPAR
 C           and IPAR if used).  CJ is a scalar which is input to JAC.
 C           For the given values of T, Y, and YPRIME, the JAC routine
-C           must evaluate the nonzero elements of the matrix A, and 
-C           store these values in the array PD.  The elements of PD are 
+C           must evaluate the nonzero elements of the matrix A, and
+C           store these values in the array PD.  The elements of PD are
 C           set to zero before each call to JAC, so that only nonzero
 C           elements need to be defined.
 C           The way you store the elements into the PD array depends
@@ -775,10 +775,10 @@ C               store the element in PD according to
 C                  PD(i,j) = dG(i)/dY(j) + CJ*dG(i)/dYPRIME(j).
 C           *** INFO(6) = 1 (banded matrix with half-bandwidths ML, MU
 C                            as described under INFO(6)) ***
-C               Give PD a first dimension of 2*ML+MU+1.  When you 
-C               evaluate the nonzero partial derivatives of equation i 
-C               (i.e. of G(i)) with respect to component j (of Y and 
-C               YPRIME), you must store the element in PD according to 
+C               Give PD a first dimension of 2*ML+MU+1.  When you
+C               evaluate the nonzero partial derivatives of equation i
+C               (i.e. of G(i)) with respect to component j (of Y and
+C               YPRIME), you must store the element in PD according to
 C                  IROW = i - j + ML + MU + 1
 C                  PD(IROW,j) = dG(i)/dY(j) + CJ*dG(i)/dYPRIME(j).
 C
@@ -797,10 +797,10 @@ C
 C           The JAC routine must dimension Y, YPRIME, REWT, SAVR, WK,
 C           and (if used) WP, IWP, RPAR, and IPAR.
 C           The Y, YPRIME, and SAVR arrays contain the current values
-C           of Y, YPRIME, and the residual G, respectively.  
-C           The array WK is work space of length NEQ.  
+C           of Y, YPRIME, and the residual G, respectively.
+C           The array WK is work space of length NEQ.
 C           H is the step size.  CJ is a scalar, input to JAC, that is
-C           normally proportional to 1/H.  REWT is an array of 
+C           normally proportional to 1/H.  REWT is an array of
 C           reciprocal error weights, 1/EWT(i), where EWT(i) is
 C           RTOL*abs(Y(i)) + ATOL (unless you supplied routine DDAWTS
 C           instead), for use in JAC if needed.  For example, if JAC
@@ -814,13 +814,13 @@ C           A = dG/dY + CJ*dG/dYPRIME.
 C
 C           WP and IWP are real and integer work arrays which you may
 C           use for communication between your JAC routine and your
-C           PSOL routine.  These may be used to store elements of the 
+C           PSOL routine.  These may be used to store elements of the
 C           preconditioner P, or related matrix data (such as factored
 C           forms).  They are not altered by DDASPK.
 C           If you do not need WP or IWP, ignore these parameters by
 C           treating them as dummy arguments.  If you do use them,
 C           dimension them appropriately in your JAC and PSOL routines.
-C           See the PSOL description for instructions on setting 
+C           See the PSOL description for instructions on setting
 C           the lengths of WP and IWP.
 C
 C           On return, JAC should set the error flag IER as follows..
@@ -839,23 +839,23 @@ C         your program that calls DDASPK.
 C
 C PSOL --  This is the name of a routine you must supply if you have
 C         selected a Krylov method (INFO(12) = 1) with preconditioning.
-C         In the direct case (INFO(12) = 0), PSOL can be absent 
-C         (a dummy routine may have to be supplied to satisfy the 
-C         loader).  Otherwise, you must provide a PSOL routine to 
+C         In the direct case (INFO(12) = 0), PSOL can be absent
+C         (a dummy routine may have to be supplied to satisfy the
+C         loader).  Otherwise, you must provide a PSOL routine to
 C         solve linear systems arising from preconditioning.
-C         When supplied with INFO(12) = 1, the PSOL routine is to 
+C         When supplied with INFO(12) = 1, the PSOL routine is to
 C         have the form
 C
 C         SUBROUTINE PSOL (NEQ, T, Y, YPRIME, SAVR, WK, CJ, WGHT,
 C                          WP, IWP, B, EPLIN, IER, RPAR, IPAR)
 C
-C         The PSOL routine must solve linear systems of the form 
+C         The PSOL routine must solve linear systems of the form
 C         P*x = b where P is the left preconditioner matrix.
 C
 C         The right-hand side vector b is in the B array on input, and
 C         PSOL must return the solution vector x in B.
 C         The Y, YPRIME, and SAVR arrays contain the current values
-C         of Y, YPRIME, and the residual G, respectively.  
+C         of Y, YPRIME, and the residual G, respectively.
 C
 C         Work space required by JAC and/or PSOL, and space for data to
 C         be communicated from JAC to PSOL is made available in the form
@@ -900,7 +900,7 @@ C
 C
 C  OPTIONALLY REPLACEABLE SUBROUTINE:
 C
-C  DDASPK uses a weighted root-mean-square norm to measure the 
+C  DDASPK uses a weighted root-mean-square norm to measure the
 C  size of various error vectors.  The weights used in this norm
 C  are set in the following subroutine:
 C
@@ -914,13 +914,13 @@ C  in the case of scalar tolerances (IWT = 0) or
 C    EWT(I) = RTOL(I)*ABS(Y(I)) + ATOL(I)
 C  in the case of array tolerances (IWT = 1).  (IWT is INFO(2).)
 C  In some special cases, it may be appropriate for you to define
-C  your own error weights by writing a subroutine DDAWTS to be 
-C  called instead of the version supplied.  However, this should 
-C  be attempted only after careful thought and consideration. 
-C  If you supply this routine, you may use the tolerances and Y 
+C  your own error weights by writing a subroutine DDAWTS to be
+C  called instead of the version supplied.  However, this should
+C  be attempted only after careful thought and consideration.
+C  If you supply this routine, you may use the tolerances and Y
 C  as appropriate, but do not overwrite these variables.  You
 C  may also use RPAR and IPAR to communicate data as appropriate.
-C  ***Note: Aside from the values of the weights, the choice of 
+C  ***Note: Aside from the values of the weights, the choice of
 C  norm used in DDASPK (weighted root-mean-square) is not subject
 C  to replacement by the user.  In this respect, DDASPK is not
 C  downward-compatible with the original DDASSL solver (in which
@@ -991,11 +991,11 @@ C           IDID = -8 -- the matrix of partial derivatives appears
 C                     to be singular (direct method).
 C
 C           IDID = -9 -- the nonlinear system solver in the time integration
-C                     failed to achieve convergence, and there were repeated 
+C                     failed to achieve convergence, and there were repeated
 C                     error test failures in this step.
 C
-C           IDID =-10 -- the nonlinear system solver in the time integration 
-C                     failed to achieve convergence because IRES was equal 
+C           IDID =-10 -- the nonlinear system solver in the time integration
+C                     failed to achieve convergence because IRES was equal
 C                     to -1.
 C
 C           IDID =-11 -- IRES = -2 was encountered and control is
@@ -1007,7 +1007,7 @@ C           IDID =-13 -- unrecoverable error encountered inside user's
 C                     PSOL routine, and control is being returned to
 C                     the calling program.
 C
-C           IDID =-14 -- the Krylov linear system solver could not 
+C           IDID =-14 -- the Krylov linear system solver could not
 C                     achieve convergence.
 C
 C           IDID =-15,..,-32 -- Not applicable for this code.
@@ -1029,9 +1029,9 @@ C               the reported solution at T was obtained using the input
 C               values of RTOL and ATOL.
 C
 C   RWORK, IWORK -- contain information which is usually of no interest
-C               to the user but necessary for subsequent calls. 
+C               to the user but necessary for subsequent calls.
 C               However, you may be interested in the performance data
-C               listed below.  These quantities are accessed in RWORK 
+C               listed below.  These quantities are accessed in RWORK
 C               and IWORK but have internal mnemonic names, as follows..
 C
 C               RWORK(3)--contains H, the step size h to be attempted
@@ -1039,8 +1039,8 @@ C                        on the next step.
 C
 C               RWORK(4)--contains TN, the current value of the
 C                        independent variable, i.e. the farthest point
-C                        integration has reached.  This will differ 
-C                        from T if interpolation has been performed 
+C                        integration has reached.  This will differ
+C                        from T if interpolation has been performed
 C                        (IDID = 3).
 C
 C               RWORK(7)--contains HOLD, the stepsize used on the last
@@ -1048,16 +1048,16 @@ C                        successful step.  If INFO(11) = INFO(14) = 1,
 C                        this contains the value of H used in the
 C                        initial condition calculation.
 C
-C               IWORK(7)--contains K, the order of the method to be 
+C               IWORK(7)--contains K, the order of the method to be
 C                        attempted on the next step.
 C
 C               IWORK(8)--contains KOLD, the order of the method used
 C                        on the last step.
 C
-C               IWORK(11)--contains NST, the number of steps (in T) 
+C               IWORK(11)--contains NST, the number of steps (in T)
 C                        taken so far.
 C
-C               IWORK(12)--contains NRE, the number of calls to RES 
+C               IWORK(12)--contains NRE, the number of calls to RES
 C                        so far.
 C
 C               IWORK(13)--contains NJE, the number of calls to JAC so
@@ -1075,12 +1075,12 @@ C               IWORK(16)--contains NCFL, the number of convergence
 C                        failures of the linear iteration so far.
 C
 C               IWORK(17)--contains LENIW, the length of IWORK actually
-C                        required.  This is defined on normal returns 
+C                        required.  This is defined on normal returns
 C                        and on an illegal input return for
 C                        insufficient storage.
 C
 C               IWORK(18)--contains LENRW, the length of RWORK actually
-C                        required.  This is defined on normal returns 
+C                        required.  This is defined on normal returns
 C                        and on an illegal input return for
 C                        insufficient storage.
 C
@@ -1095,7 +1095,7 @@ C               IWORK(21)--contains NPS, the number of PSOL calls so
 C                        far, for preconditioning solve operations or
 C                        for solutions with the user-supplied method.
 C
-C               Note: The various counters in IWORK do not include 
+C               Note: The various counters in IWORK do not include
 C               counts during a call made with INFO(11) > 0 and
 C               INFO(14) = 1.
 C
@@ -1113,9 +1113,9 @@ C     from T to TOUT (the interval mode), usually all you will need
 C     to do is specify a new TOUT upon reaching the current TOUT.
 C
 C     Do not alter any quantity not specifically permitted below.  In
-C     particular do not alter NEQ, T, Y(*), YPRIME(*), RWORK(*), 
-C     IWORK(*), or the differential equation in subroutine RES.  Any 
-C     such alteration constitutes a new problem and must be treated 
+C     particular do not alter NEQ, T, Y(*), YPRIME(*), RWORK(*),
+C     IWORK(*), or the differential equation in subroutine RES.  Any
+C     such alteration constitutes a new problem and must be treated
 C     as such, i.e. you must start afresh.
 C
 C     You cannot change from array to scalar error control or vice
@@ -1151,7 +1151,7 @@ C
 C     IDID = 4, reset INFO(11) = 0 and call the code again to begin
 C                  the integration.  (If you leave INFO(11) > 0 and
 C                  INFO(14) = 1, you may generate an infinite loop.)
-C                  In this situation, the next call to DASPK is 
+C                  In this situation, the next call to DASPK is
 C                  considered to be the first call for the problem,
 C                  in that all initializations are done.
 C
@@ -1177,7 +1177,7 @@ C
 C     IDID = -3, a solution component is zero and you set the
 C                  corresponding component of ATOL to zero.  If you
 C                  are sure you want to continue, you must first alter
-C                  the error criterion to use positive values of ATOL 
+C                  the error criterion to use positive values of ATOL
 C                  for those components corresponding to zero solution
 C                  components, then set INFO(1) = 1 and call the code
 C                  again.
@@ -1228,14 +1228,14 @@ C                  inside the nonlinear system solver.  Determine the
 C                  cause before trying again.
 C
 C     IDID = -12, DDASPK failed to compute the initial Y and YPRIME
-C                  vectors.  This could happen because the initial 
+C                  vectors.  This could happen because the initial
 C                  approximation to Y or YPRIME was not very good, or
 C                  because no consistent values of these vectors exist.
 C                  The problem could also be caused by an inaccurate or
 C                  singular iteration matrix, or a poor preconditioner.
 C
-C     IDID = -13, there was an unrecoverable error encountered inside 
-C                  your PSOL routine.  Determine the cause before 
+C     IDID = -13, there was an unrecoverable error encountered inside
+C                  your PSOL routine.  Determine the cause before
 C                  trying again.
 C
 C     IDID = -14, the Krylov linear system solver failed to achieve
@@ -1263,7 +1263,7 @@ C***REFERENCES
 C  1.  L. R. Petzold, A Description of DASSL: A Differential/Algebraic
 C      System Solver, in Scientific Computing, R. S. Stepleman et al.
 C      (Eds.), North-Holland, Amsterdam, 1983, pp. 65-68.
-C  2.  K. E. Brenan, S. L. Campbell, and L. R. Petzold, Numerical 
+C  2.  K. E. Brenan, S. L. Campbell, and L. R. Petzold, Numerical
 C      Solution of Initial-Value Problems in Differential-Algebraic
 C      Equations, Elsevier, New York, 1989.
 C  3.  P. N. Brown and A. C. Hindmarsh, Reduced Storage Matrix Methods
@@ -1291,7 +1291,7 @@ C   DINVWT tests and inverts the error weights.
 C   DDATRP performs interpolation to get an output solution.
 C   DDWNRM computes the weighted root-mean-square norm of a vector.
 C   D1MACH provides the unit roundoff of the computer.
-C   XERRWD/XSETF/XSETUN/IXSAV is a package to handle error messages. 
+C   XERRWD/XSETF/XSETUN/IXSAV is a package to handle error messages.
 C   DDASID nonlinear equation driver to initialize Y and YPRIME using
 C          direct linear system solver methods.  Interfaces to Newton
 C          solver (direct case).
@@ -1326,7 +1326,7 @@ C   DATV   computes matrix-vector product in Krylov algorithm.
 C   DORTH  performs orthogonalization of Krylov basis vectors.
 C   DHEQR  performs QR factorization of Hessenberg matrix.
 C   DHELS  finds least-squares solution of Hessenberg linear system.
-C   DGETRF, DGETRS, DGBTRF, DGBTRS are LAPACK routines for solving 
+C   DGETRF, DGETRS, DGBTRF, DGBTRS are LAPACK routines for solving
 C          linear systems (dense or band direct methods).
 C   DAXPY, DCOPY, DDOT, DNRM2, DSCAL are Basic Linear Algebra (BLAS)
 C          routines.
@@ -1350,7 +1350,7 @@ C
 C
 C     Set pointers into IWORK.
 C
-      PARAMETER (LML=1, LMU=2, LMTYPE=4, 
+      PARAMETER (LML=1, LMU=2, LMTYPE=4,
      *   LIWM=1, LMXORD=3, LJCALC=5, LPHASE=6, LK=7, LKOLD=8,
      *   LNS=9, LNSTL=10, LNST=11, LNRE=12, LNJE=13, LETF=14, LNCFN=15,
      *   LNCFL=16, LNIW=17, LNRW=18, LNNI=19, LNLI=20, LNPS=21,
@@ -1493,7 +1493,7 @@ C
 C        Compute MTYPE, etc.  Check ML and MU.
 C
          NCPHI = MAX(MXORD + 1, 4)
-         IF(INFO(6).EQ.0) THEN 
+         IF(INFO(6).EQ.0) THEN
             LENPD = NEQ**2
             LENRW = 50 + (NCPHI+3)*NEQ + LENPD
             IF(INFO(5).EQ.0) THEN
@@ -1692,7 +1692,7 @@ C
       HMIN = 4.0D0*UROUND*MAX(ABS(T),ABS(TOUT))
 C
 C     Set/check STPTOL control for initial condition calculation.
-C     
+C
       IF (INFO(11) .NE. 0) THEN
         IF( INFO(17) .EQ. 0) THEN
           RWORK(LSTOL) = UROUND**.6667D0
@@ -1749,7 +1749,7 @@ C
 C
 C     Compute unknown components of initial Y and YPRIME, depending
 C     on INFO(11) and INFO(12).  INFO(12) represents the nonlinear
-C     solver type (direct/Krylov).  Pass the name of the specific 
+C     solver type (direct/Krylov).  Pass the name of the specific
 C     nonlinear solver, depending on INFO(12).  The location of the work
 C     arrays SAVR, YIC, YPIC, PWK also differ in the two cases.
 C

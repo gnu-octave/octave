@@ -82,7 +82,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this,
            SLOT (execute_command_in_terminal (const QString&)));
 
-  connect (_edit_area, 
+  connect (_edit_area,
            SIGNAL (cursorPositionChanged (int, int)),
            this,
            SLOT (handle_cursor_moved (int,int)));
@@ -1560,7 +1560,7 @@ file_editor_tab::center_current_line ()
     }
 }
 
-void 
+void
 file_editor_tab::handle_cursor_moved (int line, int col)
 {
   _row_indicator->setNum (line+1);

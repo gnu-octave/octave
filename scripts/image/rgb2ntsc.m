@@ -28,9 +28,9 @@
 ##
 ## @example
 ## @group
-## /Y\     0.299  0.587  0.114  /R\ 
-## |I|  =  0.596 -0.274 -0.322  |G| 
-## \Q/     0.211 -0.523  0.312  \B/ 
+## /Y\     0.299  0.587  0.114  /R\
+## |I|  =  0.596 -0.274 -0.322  |G|
+## \Q/     0.211 -0.523  0.312  \B/
 ## @end group
 ## @end example
 ##
@@ -86,7 +86,7 @@ function yiq = rgb2ntsc (rgb)
             0.587, -0.274, -0.523;
             0.114, -0.322,  0.312 ];
 
-  ## Convert data. 
+  ## Convert data.
   yiq = rgb * trans;
 
   ## If input was an image, convert it back into one.

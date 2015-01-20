@@ -550,7 +550,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
           // FIXME: find a way to avoid casting away const here!
 
-          int err = uncompress (reinterpret_cast<Bytef *> 
+          int err = uncompress (reinterpret_cast<Bytef *>
                                  (const_cast<char *> (outbuf.c_str ())),
                                 &destLen, reinterpret_cast<Bytef *> (inbuf),
                                 element_length);

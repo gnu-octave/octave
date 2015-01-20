@@ -30,7 +30,7 @@ function h = __errplot__ (fstr, hax, varargin)
   fmt = __pltopt__ ("__errplot__", fstr);
 
   ## Set the plot type based on linestyle.
-  switch (fmt.errorstyle) 
+  switch (fmt.errorstyle)
     case "~"
       ifmt = "yerr";
     case ">"
@@ -199,7 +199,7 @@ function h = __errplot__ (fstr, hax, varargin)
   endfor
 
   ## Process legend key
-  if (! isempty (fmt.key))    
+  if (! isempty (fmt.key))
     hlegend = [];
     fkids = get (gcf (), "children");
     for i = 1 : numel (fkids)
@@ -219,7 +219,7 @@ function h = __errplot__ (fstr, hax, varargin)
     else
       [hlgnd, tlgnd] = __getlegenddata__ (hlegend);
     endif
- 
+
     hlgnd(end+1) = hg;
     tlgnd(end+1) = fmt.key;
 

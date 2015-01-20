@@ -41,11 +41,11 @@
 ## The default options are @code{@{"Qt", "Qbb", "Qc", "Qz"@}}.
 ##
 ## If @var{options} is not present or @code{[]} then the default arguments are
-## used.  Otherwise, @var{options} replaces the default argument list. 
-## To append user options to the defaults it is necessary to repeat the 
+## used.  Otherwise, @var{options} replaces the default argument list.
+## To append user options to the defaults it is necessary to repeat the
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
-## If no output argument is specified the resulting Delaunay triangulation 
+## If no output argument is specified the resulting Delaunay triangulation
 ## is plotted along with the original set of points.
 ##
 ## @example
@@ -81,7 +81,7 @@ function tri = delaunay (varargin)
         x = varargin{1}(:,1);
         y = varargin{1}(:,2);
       endif
-    
+
     case 2
       if (isnumeric (varargin{2}))
         x = varargin{1};

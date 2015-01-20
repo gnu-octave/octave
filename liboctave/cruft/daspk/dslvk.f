@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DSLVK (NEQ, Y, TN, YPRIME, SAVR, X, EWT, WM, IWM,
@@ -43,15 +43,15 @@ C
       INTEGER NEQ, IWM, IRES, IERSL, IPAR
       DOUBLE PRECISION Y, TN, YPRIME, SAVR, X, EWT, WM, CJ, EPLIN,
      1   SQRTN, RSQRTN, RHOK, RPAR
-      DIMENSION Y(*), YPRIME(*), SAVR(*), X(*), EWT(*), 
+      DIMENSION Y(*), YPRIME(*), SAVR(*), X(*), EWT(*),
      1  WM(*), IWM(*), RPAR(*), IPAR(*)
 C
       INTEGER IFLAG, IRST, NRSTS, NRMAX, LR, LDL, LHES, LGMR, LQ, LV,
      1        LWK, LZ, MAXLP1, NPSL
       INTEGER NLI, NPS, NCFL, NRE, MAXL, KMP, MITER
       EXTERNAL  RES, PSOL
-C    
-      PARAMETER (LNRE=12, LNCFL=16, LNLI=20, LNPS=21) 
+C
+      PARAMETER (LNRE=12, LNCFL=16, LNLI=20, LNPS=21)
       PARAMETER (LLOCWP=29, LLCIWP=30)
       PARAMETER (LMITER=23, LMAXL=24, LKMP=25, LNRMAX=26)
 C
@@ -67,9 +67,9 @@ C
       NCFL = IWM(LNCFL)
       NRE = IWM(LNRE)
       LWP = IWM(LLOCWP)
-      MAXL = IWM(LMAXL) 
+      MAXL = IWM(LMAXL)
       KMP = IWM(LKMP)
-      NRMAX = IWM(LNRMAX) 
+      NRMAX = IWM(LNRMAX)
       MITER = IWM(LMITER)
       IERSL = 0
       IRES = 0
@@ -113,7 +113,7 @@ C-----------------------------------------------------------------------
       NPS = NPS + NPSL
       NRE = NRE + NRES
       DO 120 I = 1,NEQ
- 120     X(I) = X(I) + WM(LZ+I-1) 
+ 120     X(I) = X(I) + WM(LZ+I-1)
       IF ((IFLAG .EQ. 1) .AND. (NRSTS .LT. NRMAX) .AND. (IRES .EQ. 0))
      1   GO TO 115
 C-----------------------------------------------------------------------
@@ -124,8 +124,8 @@ C-----------------------------------------------------------------------
          NCFL = NCFL + 1
       ELSE IF (IFLAG .NE. 0) THEN
          NCFL = NCFL + 1
-         IF (IFLAG .GT. 0) IERSL = 1 
-         IF (IFLAG .LT. 0) IERSL = -1 
+         IF (IFLAG .GT. 0) IERSL = 1
+         IF (IFLAG .LT. 0) IERSL = -1
       ENDIF
 C-----------------------------------------------------------------------
 C Update IWM with counters, rescale EWT, and return.

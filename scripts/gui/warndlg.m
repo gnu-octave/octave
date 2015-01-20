@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{h} =} warndlg (@var{msg})
 ## @deftypefnx {Function File} {@var{h} =} warndlg (@var{msg}, @var{title})
-## Display @var{msg} using a warning dialog box. 
+## Display @var{msg} using a warning dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
 ## ("\n"), or it may be a cellstr array with one element for each

@@ -860,7 +860,7 @@ width 0.6pt \tabskip=0pt\cr
 && $\backslash$leftrightarrow && $\leftrightarrow$
 && $\backslash$uparrow        && $\uparrow$         &\cr
 & $\backslash$downarrow       && $\downarrow$
-&&   && 
+&&   &&
 &&   &&       &\cr}
 \vskip12pt
 \symtable{Openings and Closings} {#}
@@ -873,7 +873,7 @@ width 0.6pt \tabskip=0pt\cr
 \vskip12pt
 \symtable{Alternate Names} {#}
 {& \hbox to \cola{$\backslash$neq}   && $\neq$
-&& \hbox to \colb{}   && 
+&& \hbox to \colb{}   &&
 && \hbox to \colc{}   &&   &\cr}
 \vskip12pt
 \symtable{Other (not in Appendix F Tables)} {#}
@@ -881,7 +881,7 @@ width 0.6pt \tabskip=0pt\cr
 && \hbox to \colb{$\backslash$0}         && $\oslash$
 && \hbox to \colc{$\backslash$copyright} && $\copyright$      &\cr
 & $\backslash$deg        && $^\circ$
-&&    &&  
+&&    &&
 &&    &&       &\cr}
 \vskip12pt
 \hskip36pt Table 15.1: Available special characters in \TeX\ mode (cont.)

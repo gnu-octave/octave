@@ -31,7 +31,7 @@ function pdf = laplace_pdf (x)
   if (nargin != 1)
     print_usage ();
   endif
-  
+
   if (iscomplex (x))
     error ("laplace_pdf: X must not be complex");
   endif
@@ -43,7 +43,7 @@ endfunction
 
 %!shared x,y
 %! x = [-Inf -log(2) 0 log(2) Inf];
-%! y = [0, 1/4, 1/2, 1/4, 0]; 
+%! y = [0, 1/4, 1/2, 1/4, 0];
 %!assert (laplace_pdf ([x, NaN]), [y, NaN])
 
 %% Test class of input preserved

@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str})
 ## @deftypefnx {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str}, @var{delim})
 ##
-## Find all characters in the string @var{str} up to, but not including, the 
+## Find all characters in the string @var{str} up to, but not including, the
 ## first character which is in the string @var{delim}.  If @var{rem} is
 ## requested, it contains the remainder of the string, starting at the first
 ## delimiter.  Leading delimiters are ignored.  If @var{delim} is not
@@ -68,7 +68,7 @@ function [tok, rem] = strtok (str, delim)
     elseif (length (delim) <= 7)
       ## Build index of delimiters incrementally for low N.
       idx = str == delim(1);
-      for i = 2:length (delim) 
+      for i = 2:length (delim)
         idx |= str == delim(i);
       endfor
     else
@@ -90,12 +90,12 @@ function [tok, rem] = strtok (str, delim)
       tok = str;
       rem = "";
     elseif (idx_dlim > idx_nodlim)
-      ## Normal case.  No leading delimiters and at least 1 delimiter in STR. 
+      ## Normal case.  No leading delimiters and at least 1 delimiter in STR.
       tok = str(1:idx_dlim-1);
       rem = str(idx_dlim:end);
     else
       ## Leading delimiter found.
-      idx_dlim = find (idx(idx_nodlim+1:end), 1); 
+      idx_dlim = find (idx(idx_nodlim+1:end), 1);
       if (isempty (idx_dlim))
         ## No further delimiters.  Return STR stripped of delimiter prefix.
         tok = str(idx_nodlim:end);

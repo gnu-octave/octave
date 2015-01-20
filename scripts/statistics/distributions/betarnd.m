@@ -30,7 +30,7 @@
 ## first two arguments are taken as the number of rows and columns and any
 ## further arguments specify additional matrix dimensions.  The size may also
 ## be specified with a vector of dimensions @var{sz}.
-## 
+##
 ## If no size arguments are given then the result matrix is the common size of
 ## @var{a} and @var{b}.
 ## @end deftypefn

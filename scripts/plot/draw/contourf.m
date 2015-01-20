@@ -70,7 +70,7 @@ function [c, h] = contourf (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    
+
     [ctmp, htmp] = __contour__ (hax, "none", "fill", "on",
                                      "linecolor", "black", varargin{:});
   unwind_protect_cleanup

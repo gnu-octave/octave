@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} javafields (@var{javaobj})
 ## @deftypefnx {Function File} {} javafields ("@var{classname}")
 ## @deftypefnx {Function File} {@var{fld_names} =} javafields (@dots{})
-## Return the fields of a Java object or Java class in the form of a cell 
+## Return the fields of a Java object or Java class in the form of a cell
 ## array of strings.  If no output is requested, print the result
 ## to the standard output.
 ## @seealso{fieldnames, methods, javaObject}
@@ -34,11 +34,11 @@ function fld_names = javafields (javaobj)
     warning ("Octave:deprecated-function",
              "javafields is obsolete and will be removed from a future version of Octave, please use fieldnames instead");
   endif
-  
+
   if (nargin != 1)
     print_usage ();
   endif
-  
+
   c_methods = javaMethod ("getFields", "org.octave.ClassHelper", javaobj);
   method_list = ostrsplit (c_methods, ';');
 

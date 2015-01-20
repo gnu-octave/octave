@@ -90,7 +90,7 @@ NUMERIC_INC = \
   numeric/SparseCmplxQR.h \
   numeric/SparsedbleCHOL.h \
   numeric/SparsedbleLU.h \
-  numeric/SparseQR.h 
+  numeric/SparseQR.h
 
 NUMERIC_C_SRC = \
   numeric/randgamma.c \

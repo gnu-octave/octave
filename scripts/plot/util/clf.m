@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
 ## @deftypefnx {Function File} {@var{h} =} clf (@dots{})
 ## Clear the current figure window.
-## 
+##
 ## @code{clf} operates by deleting child graphics objects with visible
 ## handles (HandleVisibility = @qcode{"on"}).
 ##
@@ -34,7 +34,7 @@
 ##
 ## If the first argument @var{hfig} is a figure handle, then operate on
 ## this figure rather than the current figure returned by @code{gcf}.
-## 
+##
 ## The optional return value @var{h} is the graphics handle of the figure
 ## window that was cleared.
 ## @seealso{cla, close, delete, reset}

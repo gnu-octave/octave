@@ -161,7 +161,7 @@
 ## @table @asis
 ## @item last character = @qcode{"\n"}
 ## Data columns are padded with empty fields or Nan so that all columns
-## have equal length 
+## have equal length
 ##
 ## @item last character is not @qcode{"\n"}
 ## Data columns are not padded; strread returns columns of unequal length
@@ -177,7 +177,7 @@ function varargout = strread (str, format = "%f", varargin)
   if (nargin < 1)
     print_usage ();
   endif
-  
+
   if (isempty (str))
     ## Return empty args (no match), rather than raising an error
     varargout = cell (1, nargout);
@@ -302,7 +302,7 @@ function varargout = strread (str, format = "%f", varargin)
     ## like %f<literal>) (w/o delimiter in between) are fixed further on
     format = strrep (format, "%", " %");
     fmt_words = regexp (format, '[^ ]+', "match");
-    
+
     ## Find position of conversion specifiers (they start with %)
     idy2 = find (! cellfun ("isempty", regexp (fmt_words, '^%')));
 

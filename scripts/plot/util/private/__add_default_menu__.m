@@ -56,7 +56,7 @@ function __add_default_menu__ (fig)
 
     ## FIXME: This drawnow () must occur after at least one menu item has
     ##        been defined to avoid sizing issues in new figures.
-    ##        This may lead to flicker.  The real fix must be in the C++ code. 
+    ##        This may lead to flicker.  The real fix must be in the C++ code.
     drawnow ();
 
     set (fig, "menubar", menubar_state);

@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -20,7 +20,7 @@
 @chapter Statistics
 
 Octave has support for various statistical methods.  This includes
-basic descriptive statistics, probability distributions, statistical tests, 
+basic descriptive statistics, probability distributions, statistical tests,
 random number generation, and much more.
 
 The functions that analyze data all assume that multi-dimensional data
@@ -42,8 +42,8 @@ different arrangements.
 
 It should be noted that the statistics functions don't test for data
 containing NaN, NA, or Inf.  These values need to be detected and dealt
-with explicitly.  See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna}, 
-@ref{XREFisinf,,isinf}, @ref{XREFisfinite,,isfinite}. 
+with explicitly.  See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna},
+@ref{XREFisinf,,isinf}, @ref{XREFisfinite,,isfinite}.
 
 @menu
 * Descriptive Statistics::
@@ -58,9 +58,9 @@ with explicitly.  See @ref{XREFisnan,,isnan}, @ref{XREFisna,,isna},
 @node Descriptive Statistics
 @section Descriptive Statistics
 
-One principal goal of descriptive statistics is to represent the essence of a 
+One principal goal of descriptive statistics is to represent the essence of a
 large data set concisely.  Octave provides the mean, median, and mode functions
-which all summarize a data set with just a single number corresponding to 
+which all summarize a data set with just a single number corresponding to
 the central tendency of the data.
 
 @DOCSTRING(mean)
@@ -109,7 +109,7 @@ A summary view of a data set can be generated quickly with the
 @section Basic Statistical Functions
 
 Octave supports various helpful statistical functions.  Many are useful as
-initial steps to prepare a data set for further analysis.  Others provide 
+initial steps to prepare a data set for further analysis.  Others provide
 different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(center)
@@ -184,12 +184,12 @@ Octave has functions for computing the Probability Density Function
 (PDF), the Cumulative Distribution function (CDF), and the quantile
 (the inverse of the CDF) for a large number of distributions.
 
-The following table summarizes the supported distributions (in 
+The following table summarizes the supported distributions (in
 alphabetical order).
 
 @tex
 \vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
 \halign{
 \vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
 # \hfil & \vrule # & # \hfil & \vrule # & # \hfil & \vrule # & # \hfil &
@@ -467,7 +467,7 @@ table summarizes the available tests.
 
 @tex
 \vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
 \halign{
 \vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
 # \hfil & \vrule # & # \hfil & # \vrule width 0.6pt \tabskip=0pt\cr
@@ -591,7 +591,7 @@ The following table summarizes the available random number generators
 
 @tex
 \vskip 6pt
-{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt
 \halign{
 \vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
 # \hfil & \vrule # & # \hfil & # \vrule width 0.6pt \tabskip=0pt\cr

@@ -41,7 +41,7 @@
 ## The unscaled covariance matrix, formally equal to the inverse of
 ## @var{x'}*@var{x}, but computed in a way minimizing roundoff error
 ## propagation.
-## 
+##
 ## @item df
 ## The degrees of freedom.
 ##
@@ -114,12 +114,12 @@ function [p, s, mu] = polyfit (x, y, n)
   [q, r, k] = qr (v(:, polymask), 0);
   p = r \ (q' * y);
   p(k) = p;
-  
+
   if (n != m)
-    q = p; p = zeros (n+1, 1); 
+    q = p; p = zeros (n+1, 1);
     p(polymask) = q;
   endif
-  
+
   if (nargout > 1)
     yf = v*p;
 
@@ -128,7 +128,7 @@ function [p, s, mu] = polyfit (x, y, n)
     else
       s.yf = yf;
     endif
-    s.X = v; 
+    s.X = v;
 
     ## r.'*r is positive definite if X(:, polymask) is of full rank.
     ## Invert it by cholinv to avoid taking the square root of squared
@@ -146,7 +146,7 @@ function [p, s, mu] = polyfit (x, y, n)
       s.R = zeros (n+1, n+1); s.R(polymask, polymask) = r;
       s.C = zeros (n+1, n+1); s.C(polymask, polymask) = C;
     else
-      s.R = r; 
+      s.R = r;
       s.C = C;
     endif
     s.df = l - m - 1;

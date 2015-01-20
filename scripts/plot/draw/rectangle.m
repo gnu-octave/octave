@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} rectangle (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
 ## Draw a rectangular patch defined by @var{pos} and @var{curv}.
-## 
+##
 ## The variable @code{@var{pos}(1:2)} defines the lower left-hand corner of
 ## the patch and @code{@var{pos}(3:4)} defines its width and height.  By
 ## default, the value of @var{pos} is @code{[0, 0, 1, 1]}.
@@ -45,8 +45,8 @@
 ## min (pos(1:2)) / max (pos(1:2)) * curv
 ## @end example
 ##
-## Additional property/value pairs are passed to the underlying patch command. 
-## 
+## Additional property/value pairs are passed to the underlying patch command.
+##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
@@ -227,7 +227,7 @@ function update_props (h, ~)
   kids = get (h, "children");
   set (kids, {"edgecolor", "linewidth", "linestyle", "facecolor"},
      get (h, {"edgecolor", "linewidth", "linestyle", "facecolor"}));
-  
+
 endfunction
 
 

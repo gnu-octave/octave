@@ -36,7 +36,7 @@
 ## @code{1:columns (@var{z})}.
 ##
 ## Any property/value input pairs are assigned to the surface object.
-## 
+##
 ## If the first argument @var{hax} is an axes handle, then plot into this axis,
 ## rather than the current axes returned by @code{gca}.
 ##
@@ -56,7 +56,7 @@ function h = surface (varargin)
   else
     hax = hax(1);
   endif
-  
+
   [htmp, bad_usage] = __surface__ (hax, varargin{:});
 
   if (bad_usage)

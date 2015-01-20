@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DNEDD(X,Y,YPRIME,NEQ,RES,JACD,PDUM,H,WT,
@@ -121,7 +121,7 @@ C
 C     IERTYP -- Flag which tells whether this subroutine is correct.
 C               0 ==> correct subroutine.
 C               1 ==> incorrect subroutine.
-C 
+C
 C-----------------------------------------------------------------------
 C***ROUTINES CALLED
 C   DDWNRM, RES, DMATD, DNSD
@@ -192,14 +192,14 @@ C
 330   CONTINUE
       PNORM = DDWNRM (NEQ,Y,WT,RPAR,IPAR)
       TOLNEW = 100.D0*UROUND*PNORM
-C     
+C
 C     Call RES to initialize DELTA.
 C
       IWM(LNRE)=IWM(LNRE)+1
       CALL RES(X,Y,YPRIME,CJ,DELTA,IRES,RPAR,IPAR)
       IF (IRES .LT. 0) GO TO 380
 C
-C     If indicated, reevaluate the iteration matrix 
+C     If indicated, reevaluate the iteration matrix
 C     J = dG/dY + CJ*dG/dYPRIME (where G(X,Y,YPRIME)=0).
 C     Set JCALC to 0 as an indicator that this has been done.
 C

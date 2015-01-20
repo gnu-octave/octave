@@ -27,7 +27,7 @@
 ##
 ## The contour levels are specified by the contour matrix @var{c} which is
 ## returned by @code{contour}, @code{contourc}, @code{contourf}, and
-## @code{contour3}.  Contour labels are rotated to match the local line 
+## @code{contour3}.  Contour labels are rotated to match the local line
 ## orientation and centered on the line.  The position of labels along the
 ## contour line is chosen randomly.
 ##
@@ -105,7 +105,7 @@ function h = clabel (c, varargin)
     have_labelspacing = true;
     label_spacing = varargin{2*idx};
     varargin(2*idx+(-1:0)) = [];
-  endif    
+  endif
 
   if (have_hg)
     if (! isempty (v))

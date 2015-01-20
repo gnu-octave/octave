@@ -60,7 +60,7 @@ Character* ScreenWindow::getImage()
 {
 	// reallocate internal buffer if the window size has changed
 	int size = windowLines() * windowColumns();
-	if (_windowBuffer == 0 || _windowBufferSize != size) 
+	if (_windowBuffer == 0 || _windowBufferSize != size)
 	{
 		delete[] _windowBuffer;
 		_windowBufferSize = size;
@@ -70,11 +70,11 @@ Character* ScreenWindow::getImage()
 
 	 if (!_bufferNeedsUpdate)
 		return _windowBuffer;
- 
+
 	_screen->getImage(_windowBuffer,size,
 					  currentLine(),endWindowLine());
 
-	// this window may look beyond the end of the screen, in which 
+	// this window may look beyond the end of the screen, in which
 	// case there will be an unused area which needs to be filled
 	// with blank characters
 	fillUnusedArea();
@@ -91,10 +91,10 @@ void ScreenWindow::fillUnusedArea()
 	int unusedLines = windowEndLine - screenEndLine;
 	int charsToFill = unusedLines * windowColumns();
 
-	Screen::fillWithDefaultChar(_windowBuffer + _windowBufferSize - charsToFill,charsToFill); 
+	Screen::fillWithDefaultChar(_windowBuffer + _windowBufferSize - charsToFill,charsToFill);
 }
 
-// return the index of the line at the end of this window, or if this window 
+// return the index of the line at the end of this window, or if this window
 // goes beyond the end of the screen, the index of the line at the end
 // of the screen.
 //
@@ -187,11 +187,11 @@ int ScreenWindow::columnCount() const
 QPoint ScreenWindow::cursorPosition() const
 {
     QPoint position;
-    
+
     position.setX( _screen->getCursorX() );
     position.setY( _screen->getCursorY() );
 
-    return position; 
+    return position;
 }
 
 int ScreenWindow::currentLine() const
@@ -207,7 +207,7 @@ void ScreenWindow::scrollBy( RelativeScrollMode mode , int amount )
     }
     else if ( mode == ScrollPages )
     {
-        scrollTo( currentLine() + amount * ( windowLines() / 2 ) ); 
+        scrollTo( currentLine() + amount * ( windowLines() / 2 ) );
     }
 }
 
@@ -248,7 +248,7 @@ int ScreenWindow::scrollCount() const
     return _scrollCount;
 }
 
-void ScreenWindow::resetScrollCount() 
+void ScreenWindow::resetScrollCount()
 {
     _scrollCount = 0;
 }
@@ -268,18 +268,18 @@ void ScreenWindow::notifyOutputChanged()
     // move window to the bottom of the screen and update scroll count
     // if this window is currently tracking the bottom of the screen
     if ( _trackOutput )
-    { 
+    {
         _scrollCount -= _screen->scrolledLines();
         _currentLine = qMax(0,_screen->getHistLines() - (windowLines()-_screen->getLines()));
     }
     else
     {
-        // if the history is not unlimited then it may 
+        // if the history is not unlimited then it may
         // have run out of space and dropped the oldest
         // lines of output - in this case the screen
-        // window's current line number will need to 
+        // window's current line number will need to
         // be adjusted - otherwise the output will scroll
-        _currentLine = qMax(0,_currentLine - 
+        _currentLine = qMax(0,_currentLine -
                               _screen->droppedLines());
 
         // ensure that the screen window's current position does
@@ -289,6 +289,6 @@ void ScreenWindow::notifyOutputChanged()
 
 	_bufferNeedsUpdate = true;
 
-    emit outputChanged(); 
+    emit outputChanged();
 }
 

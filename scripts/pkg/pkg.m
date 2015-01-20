@@ -138,7 +138,7 @@
 ## @end example
 ##
 ## The option @qcode{"-forge"} lists packages available at the Octave-Forge
-## repository.  This requires an internet connection and the cURL library. 
+## repository.  This requires an internet connection and the cURL library.
 ## For example:
 ##
 ## @example
@@ -449,7 +449,7 @@ function [local_packages, global_packages] = pkg (varargin)
       else
         error ("you must specify a prefix directory, or request an output argument");
       endif
-      
+
     case "local_list"
       if (length (files) == 0 && nargout == 0)
         disp (local_list);
@@ -457,7 +457,7 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = local_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
         local_list = files{1};
-        if (! exist (local_list, "file"))          
+        if (! exist (local_list, "file"))
           try
             ## Force file to be created
             fclose (fopen (local_list, "wt"));
@@ -477,7 +477,7 @@ function [local_packages, global_packages] = pkg (varargin)
         local_packages = global_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
         global_list = files{1};
-        if (! exist (global_list, "file"))  
+        if (! exist (global_list, "file"))
           try
             ## Force file to be created
             fclose (fopen (files{1}, "wt"));

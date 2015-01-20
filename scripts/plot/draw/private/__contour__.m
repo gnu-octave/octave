@@ -217,7 +217,7 @@ function add_patch_children (hg)
 
   ## Turn off automatic updating of clim while adding patches
   climmode = get (ca, "climmode");
-  set (ca, "climmode", "manual"); 
+  set (ca, "climmode", "manual");
 
   if (strcmp (lc, "auto"))
     lc = "flat";

@@ -48,7 +48,7 @@ function map = colorcube (n)
 
   ## Create colorcube of evenly spaced points with side length of n^1/3
   cubelen = fix (cbrt (n));
-  reserve = n - cubelen^3; 
+  reserve = n - cubelen^3;
 
   if (reserve == 0)
     ## Steal space from blue to put the gray gradient
@@ -81,7 +81,7 @@ function map = colorcube (n)
   map = [map
          cgrad, zeros(csteps, 1), zeros(csteps, 1)
          zeros(csteps, 1), cgrad, zeros(csteps, 1)
-         zeros(csteps, 1), zeros(csteps, 1), cgrad 
+         zeros(csteps, 1), zeros(csteps, 1), cgrad
          0, 0, 0
          ggrad, ggrad, ggrad];
 

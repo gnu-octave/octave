@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -57,8 +57,8 @@ possible for many people to do more ambitious computations just as
 easily.
 
 Everyone is encouraged to share this software with others under the
-terms of the GNU General Public License (@pxref{Copying}).  You are 
-also encouraged to help make Octave more useful by writing and 
+terms of the GNU General Public License (@pxref{Copying}).  You are
+also encouraged to help make Octave more useful by writing and
 contributing additional functions for it, and by reporting any problems
 you may have.
 
@@ -153,7 +153,7 @@ in and to produce Octave.
 @cindex Citations
 
 In view of the many contributions made by numerous developers over many years
-it is common courtesy to cite Octave in publications when it has been used 
+it is common courtesy to cite Octave in publications when it has been used
 during the course of research or the preparation of figures.  The
 @code{citation} function can automatically generate a recommended citation
 text for Octave or any of its packages.  See the help text below on how to
@@ -169,7 +169,7 @@ use @code{citation}.
 There are a number of ways that you can contribute to help make Octave a
 better system.  Perhaps the most important way to contribute is to write
 high-quality code for solving new problems, and to make your code freely
-available for others to use.  @xref{Contributing Guidelines}, for detailed 
+available for others to use.  @xref{Contributing Guidelines}, for detailed
 information on contributing new code.
 
 If you find Octave useful, consider providing additional funding to
@@ -205,12 +205,12 @@ tips on how to write useful bug reports.
 @cindex distribution of Octave
 
 Octave is @dfn{free} software.  This means that everyone is free to
-use it and free to redistribute it on certain conditions.  Octave 
+use it and free to redistribute it on certain conditions.  Octave
 is not, however, in the public domain.  It is copyrighted and there are
-restrictions on its distribution, but the restrictions are designed to 
-ensure that others will have the same freedom to use and redistribute 
-Octave that you have.  The precise conditions can be found in the 
-GNU General Public License that comes with Octave and that also appears 
+restrictions on its distribution, but the restrictions are designed to
+ensure that others will have the same freedom to use and redistribute
+Octave that you have.  The precise conditions can be found in the
+GNU General Public License that comes with Octave and that also appears
 in @ref{Copying}.
 
 To download a copy of Octave, please visit

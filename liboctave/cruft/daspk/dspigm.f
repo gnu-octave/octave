@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DSPIGM (NEQ, TN, Y, YPRIME, SAVR, R, WGHT, MAXL,
@@ -50,7 +50,7 @@ C                must be made orthogonal to.  (KMP .LE. MAXL.)
 C
 C        EPLIN = Tolerance on residuals R-A*Z in weighted rms norm.
 C
-C           CJ = Scalar proportional to current value of 
+C           CJ = Scalar proportional to current value of
 C                1/(step size H).
 C
 C           WK = Real work array used by routine DATV and PSOL.
@@ -100,7 +100,7 @@ C                of HES.  It is loaded in DHEQR and used in DHELS.
 C
 C         IRES = Error flag from RES.
 C
-C           DL = Scaled preconditioned residual, 
+C           DL = Scaled preconditioned residual,
 C                (D-inverse)*(P-inverse)*(R-A*Z). Only loaded when
 C                performing restarts of the Krylov iteration.
 C
@@ -255,7 +255,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C The tolerance was not met, but the residual norm was reduced.
 C If performing restarting (IRST .gt. 0) calculate the residual vector
-C RL and store it in the DL array.  If the incomplete version is 
+C RL and store it in the DL array.  If the incomplete version is
 C being used (KMP .lt. MAXL) then DL has already been calculated.
 C-----------------------------------------------------------------------
       IF (IRST .GT. 0) THEN

@@ -1012,7 +1012,7 @@ box (JNIEnv* jni_env, jobject jobj, jclass jcls)
         {
           jmethodID m = jni_env->GetMethodID (cls, "charValue", "()C");
           retval = jni_env->CallCharMethod (jobj, m);
-          retval = retval.convert_to_str (false, true); 
+          retval = retval.convert_to_str (false, true);
           break;
         }
 

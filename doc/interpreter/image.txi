@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -223,7 +223,7 @@ The following functions can be used to manipulate colormaps.
 
 If gnuplot is being used to display images it is possible to plot on
 top of images.  Since an image is a matrix it is indexed by row and
-column values.  The plotting system is, however, based on the 
+column values.  The plotting system is, however, based on the
 traditional @math{(x, y)} system.  To minimize the difference between
 the two systems Octave places the origin of the coordinate system in
 the point corresponding to the pixel at @math{(1, 1)}.  So, to plot
@@ -231,7 +231,7 @@ points given by row and column values on top of an image, one should
 simply call @code{plot} with the column values as the first argument
 and the row values as the second.  As an example the following code
 generates an image with random intensities between 0 and 1, and shows
-the image with red circles over pixels with an intensity above 
+the image with red circles over pixels with an intensity above
 @math{0.99}.
 
 @example
@@ -249,7 +249,7 @@ hold ("off");
 @section Color Conversion
 
 Octave supports conversion from the RGB color system to NTSC and HSV
-and vice versa. 
+and vice versa.
 
 @DOCSTRING(rgb2hsv)
 

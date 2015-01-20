@@ -256,7 +256,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         files_with_no_tests(end+1) = f;
       endif
     endif
-  endfor 
+  endfor
   ##  printf("%s%s -> passes %d of %d tests\n", ident, d, dp, dn);
 endfunction
 

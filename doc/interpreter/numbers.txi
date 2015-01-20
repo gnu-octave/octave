@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -468,7 +468,7 @@ for example:
 @example
 @group
 sngl = single (rand (2, 2))
-     @result{} sngl = 
+     @result{} sngl =
         0.37569   0.92982
         0.11962   0.50876
 class (sngl)
@@ -747,7 +747,7 @@ returns a single precision value.  The mixed operations that are valid
 and their returned data types are
 
 @multitable @columnfractions .2 .3 .3 .2
-@headitem @tab Mixed Operation @tab Result @tab 
+@headitem @tab Mixed Operation @tab Result @tab
 @item @tab double OP single @tab single @tab
 @item @tab double OP integer @tab integer @tab
 @item @tab double OP char @tab double @tab
@@ -782,7 +782,7 @@ x(1, 1) = single (2)
 @end example
 
 @noindent
-where @code{x} remains of the double precision type. 
+where @code{x} remains of the double precision type.
 
 @node Predicates for Numeric Objects
 @section Predicates for Numeric Objects

@@ -6,12 +6,12 @@
 @c under the terms of the GNU General Public License as published by the
 @c Free Software Foundation; either version 3 of the License, or (at
 @c your option) any later version.
-@c 
+@c
 @c Octave is distributed in the hope that it will be useful, but WITHOUT
 @c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 @c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 @c for more details.
-@c 
+@c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
@@ -40,7 +40,7 @@ been computed and stored in a string, which is exactly what the
 The @code{feval} function allows you to call a function from a string
 containing its name.  This is useful when writing a function that needs to
 call user-supplied functions.  The @code{feval} function takes the name
-of the function to call as its first argument, and the remaining 
+of the function to call as its first argument, and the remaining
 arguments are given to the function.
 
 The following example is a simple-minded function using @code{feval}

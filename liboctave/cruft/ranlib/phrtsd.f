@@ -61,11 +61,11 @@ C     ..
 C     .. Intrinsic Functions ..
       INTRINSIC index,mod
 C     ..
-C     JJV added Save statement for variable in Data statement 
+C     JJV added Save statement for variable in Data statement
 C     .. Save statements ..
       SAVE shift
-C     JJV end addition 
-C     .. 
+C     JJV end addition
+C     ..
 C     .. Data statements ..
       DATA shift/1,64,4096,262144,16777216/
 C     ..

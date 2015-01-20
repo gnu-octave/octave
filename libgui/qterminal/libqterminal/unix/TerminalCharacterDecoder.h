@@ -1,8 +1,8 @@
 /*
     This file is part of Konsole, an X terminal.
-    
+
     Copyright (C) 2006-2007, 2013 by Robert Knight <robertknight@gmail.com>
-    
+
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
 
     This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@ class QTextStream;
  * and background colours and other appearance-related properties into text strings.
  *
  * Derived classes may produce either plain text with no other colour or appearance information, or
- * they may produce text which incorporates these additional properties. 
+ * they may produce text which incorporates these additional properties.
  */
 class TerminalCharacterDecoder
 {
@@ -55,9 +55,9 @@ public:
 	 * @param properties Additional properties which affect all characters in the line
 	 * @param output The output stream which receives the decoded text
 	 */
-	virtual void decodeLine(const Character* const characters, 
+	virtual void decodeLine(const Character* const characters,
 							int count,
-							LineProperty properties) = 0; 
+							LineProperty properties) = 0;
 };
 
 /**
@@ -67,10 +67,10 @@ public:
 class PlainTextDecoder : public TerminalCharacterDecoder
 {
 public:
-	PlainTextDecoder(); 
+	PlainTextDecoder();
 
-    /** 
-     * Set whether trailing whitespace at the end of lines should be included 
+    /**
+     * Set whether trailing whitespace at the end of lines should be included
      * in the output.
      * Defaults to true.
      */
@@ -88,7 +88,7 @@ public:
 							int count,
 							LineProperty properties);	
 
-    
+
 private:
     QTextStream* _output;
     bool _includeTrailingWhitespace;
@@ -100,7 +100,7 @@ private:
 class HTMLDecoder : public TerminalCharacterDecoder
 {
 public:
-	/** 
+	/**
 	 * Constructs an HTML decoder using a default black-on-white color scheme.
 	 */
 	HTMLDecoder();
@@ -124,7 +124,7 @@ private:
 
     QTextStream* _output;
 	const ColorEntry* _colorTable;
-    bool _innerSpanOpen; 
+    bool _innerSpanOpen;
 	quint8 _lastRendition;
 	CharacterColor _lastForeColor;
 	CharacterColor _lastBackColor;

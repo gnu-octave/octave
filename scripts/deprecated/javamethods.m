@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} javamethods (@var{javaobj})
 ## @deftypefnx {Function File} {} javamethods ("@var{classname}")
 ## @deftypefnx {Function File} {@var{mtd_names} =} javamethods (@dots{})
-## Return the methods of a Java object or Java class in the form of a cell 
+## Return the methods of a Java object or Java class in the form of a cell
 ## array of strings.  If no output is requested, print the result to the
 ## standard output.
 ## @seealso{methods, fieldnames, javaMethod, javaObject}
@@ -34,7 +34,7 @@ function mtd_names = javamethods (classname)
     warning ("Octave:deprecated-function",
              "javamethods is obsolete and will be removed from a future version of Octave, please use methods instead");
   endif
-  
+
   if (nargin != 1)
     print_usage ();
   endif

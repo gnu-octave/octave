@@ -31,17 +31,17 @@
 ## @headitem Method @tab Description
 ## @item ascii @tab Set transfer type to ascii
 ## @item binary @tab Set transfer type to binary
-## @item cd @tab Change remote working directory 
+## @item cd @tab Change remote working directory
 ## @item close @tab Close FTP connection
-## @item delete @tab Delete remote file 
-## @item dir @tab List remote directory contents 
+## @item delete @tab Delete remote file
+## @item dir @tab List remote directory contents
 ## @item mget @tab Download remote files
 ## @item mkdir @tab Create remote directory
 ## @item mput @tab Upload local files
 ## @item rename @tab Rename remote file or directory
 ## @item rmdir @tab Remove remote directory
 ## @end multitable
-## 
+##
 ## @end deftypefn
 
 function obj = ftp (host = "", username = "anonymous", password = "")

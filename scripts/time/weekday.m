@@ -40,7 +40,7 @@
 ## @item 6 @tab Fri @tab Friday
 ## @item 7 @tab Sat @tab Saturday
 ## @end multitable
-## 
+##
 ## @seealso{eomday, is_leap_year, calendar, datenum, datevec}
 ## @end deftypefn
 

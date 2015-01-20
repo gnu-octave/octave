@@ -127,7 +127,7 @@ C
 C
 C     Step 4
 C
-C     JJV added checker to see if log(alpha/(b+w)) will 
+C     JJV added checker to see if log(alpha/(b+w)) will
 C     JJV overflow.  If so, we count the log as -INF, and
 C     JJV consequently evaluate conditional as true, i.e.
 C     JJV the algorithm rejects the trial and starts over

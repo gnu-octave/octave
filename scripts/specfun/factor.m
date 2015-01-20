@@ -27,7 +27,7 @@
 ## With two output arguments, return the unique primes @var{p} and
 ## their multiplicities.  That is, @code{prod (@var{p} .^ @var{n}) ==
 ## @var{q}}.
-## 
+##
 ## Implementation Note: The input @var{q} must not be greater than
 ## @code{bitmax} (9.0072e+15) in order to factor correctly.
 ## @seealso{gcd, lcm, isprime}

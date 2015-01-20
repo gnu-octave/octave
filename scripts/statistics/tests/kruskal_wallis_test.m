@@ -37,7 +37,7 @@
 ## of ties where @var{t} is the number of ties in the group and @var{n}
 ## is the total number of values in the input data.  For more info on
 ## this adjustment see William H. Kruskal and W. Allen Wallis,
-## @cite{Use of Ranks in One-Criterion Variance Analysis}, 
+## @cite{Use of Ranks in One-Criterion Variance Analysis},
 ## Journal of the American Statistical Association, Vol. 47,
 ## No. 260 (Dec 1952).
 ##

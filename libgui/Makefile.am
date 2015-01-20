@@ -57,7 +57,7 @@ include qterminal-module.mk
 
 ## liboctgui merely collects a bunch of compiled convenience libraries.
 ## It has no source code itself.
-liboctgui_la_SOURCES = 
+liboctgui_la_SOURCES =
 
 include link-deps.mk
 

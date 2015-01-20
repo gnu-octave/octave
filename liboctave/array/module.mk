@@ -123,7 +123,7 @@ ARRAY_SRC = \
   array/uint16NDArray.cc \
   array/uint32NDArray.cc \
   array/uint64NDArray.cc \
-  array/uint8NDArray.cc 
+  array/uint8NDArray.cc
 
 TEMPLATE_SRC += \
   array/Array.cc \

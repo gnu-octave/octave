@@ -386,7 +386,7 @@ function have_enhanced = gnuplot_is_enhanced_term (plot_stream, term)
 endfunction
 
 function ret = output_to_screen (term)
-  ret = any (strcmpi (term, 
+  ret = any (strcmpi (term,
                      {"aqua", "dumb", "pm", "qt", "windows", "wxt", "x11"}));
 endfunction
 

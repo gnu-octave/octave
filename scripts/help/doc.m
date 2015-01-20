@@ -57,7 +57,7 @@ function retval = doc (fname)
     if isguirunning ()
       __octave_link_show_doc__ (fname);
     else
-  
+
       if (ftype == 2 || ftype == 3)
         ffile = which (fname);
       else
@@ -98,7 +98,7 @@ function retval = doc (fname)
       if (have_fname)
         status = system (sprintf ("%s --index-search \"%s\"", cmd, fname));
       endif
-   
+
 
       if (! (have_fname && status == 0))
         status = system (cmd);

@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DLINSD (NEQ, Y, T, YPRIME, CJ, P, PNRM, WT, LSOFF,
@@ -18,7 +18,7 @@ C-----------------------------------------------------------------------
 C***DESCRIPTION
 C
 C     DLINSD uses a linesearch algorithm to calculate a new (Y,YPRIME)
-C     pair (YNEW,YPNEW) such that 
+C     pair (YNEW,YPNEW) such that
 C
 C     f(YNEW,YPNEW) .le. (1 - 2*ALPHA*RL)*f(Y,YPRIME) ,
 C
@@ -51,11 +51,11 @@ C                performing the linesearch.
 C     YPNEW   -- Array of length NEQ used to hold the new YPRIME in
 C                performing the linesearch.
 C     Y       -- Array of length NEQ containing the new Y (i.e.,=YNEW).
-C     YPRIME  -- Array of length NEQ containing the new YPRIME 
+C     YPRIME  -- Array of length NEQ containing the new YPRIME
 C                (i.e.,=YPNEW).
 C     FNRM    -- Real scalar containing SQRT(2*f(Y,YPRIME)) for the
 C                current (Y,YPRIME) on input and output.
-C     R       -- Work array of length NEQ, containing the scaled 
+C     R       -- Work array of length NEQ, containing the scaled
 C                residual (J-inverse)*G(t,y,y') on return.
 C     IRET    -- Return flag.
 C                IRET=0 means that a satisfactory (Y,YPRIME) was found.
@@ -96,7 +96,7 @@ C
       RL = ONE
 C-----------------------------------------------------------------------
 C Check for violations of the constraints, if any are imposed.
-C If any violations are found, the step vector P is rescaled, and the 
+C If any violations are found, the step vector P is rescaled, and the
 C constraint check is repeated, until no violations are found.
 C-----------------------------------------------------------------------
       IF (ICNFLG .NE. 0) THEN
@@ -166,7 +166,7 @@ C-----------------------------------------------------------------------
       RETURN
 C-----------------------------------------------------------------------
 C Alpha-condition not satisfied.  Perform backtrack to compute new RL
-C value.  If no satisfactory YNEW,YPNEW can be found sufficiently 
+C value.  If no satisfactory YNEW,YPNEW can be found sufficiently
 C distinct from Y,YPRIME, then return IRET = 1.
 C-----------------------------------------------------------------------
  200  CONTINUE

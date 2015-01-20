@@ -20,7 +20,7 @@ Summary of changes for version 2.1.x:
 	  ;; We have the old custom-library, hack around it!
 	  (defmacro defgroup (&rest args)
 	    nil)
-	  (defmacro defcustom (var value doc &rest args) 
+	  (defmacro defcustom (var value doc &rest args)
 	    (` (defvar (, var) (, value) (, doc))))))
 
   * When `format +' is in effect, Octave uses the following symbols to
@@ -49,7 +49,7 @@ Summary of changes for version 2.1.x:
     Instead it is left as specified.  Its default value is now ":",
     which tells Octave to search the default path, and the new
     built-in variable DEFAULT_LOADPATH contains the default list of
-    directories to search.  
+    directories to search.
 
   * The function file_in_path no longer does any special processing of
     its PATH argument.  To search LOADPATH for files, it is now
@@ -291,7 +291,7 @@ Summary of changes for version 2.1.x:
       prop_test_2                 -- compare two proportions
       run_test                    -- run test for independence
       sign_test                   -- sign test
-      t_test                      -- student's one-sample t test 
+      t_test                      -- student's one-sample t test
       t_test_2                    -- student's two-sample t test
       t_test_regression           -- test one linear hypothesis in linear
                                      regression model
@@ -313,7 +313,7 @@ Summary of changes for version 2.1.x:
   * The mkoctfile script now accepts -DDEF options and passes them on
     to the C and C++ compilers.
 
-  * Running `make check' should work now before you run `make install', 
+  * Running `make check' should work now before you run `make install',
     even if you build a copy of Octave that depends on shared versions
     of the Octave libraries.
 
@@ -346,7 +346,7 @@ Summary of changes for version 2.1.x:
   * tmpnam now takes two optional arguments, DIR, and PREFIX.  For
     example, tmpnam ("/foo", "bar-") returns a file name like
     "/foo/bar-10773baa".  If DIR is omitted or empty, the value of the
-    environment variable TMPDIR, or /tmp is used.  If PREFIX is 
+    environment variable TMPDIR, or /tmp is used.  If PREFIX is
     omitted, "oct-" is used.
 
   * The built-in variable `PWD' has been removed.  If you need to get
@@ -402,10 +402,10 @@ Summary of changes for version 2.1.x:
         stdout << x;
         (
          [1] =
-        
+
            1  2
            3  4
-        
+
           [2] = 1
           [3] = foo
         )
@@ -752,7 +752,7 @@ Summary of changes for version 2.0:
 
   * The svd() function no longer computes the left and right singular
     matrices unnecessarily.  This can significantly improve
-    performance for large matrices if you are just looking for the  
+    performance for large matrices if you are just looking for the
     singular values.
 
   * The filter() function is now a built-in function.
@@ -907,7 +907,7 @@ Summary of changes for version 2.0:
                                     element NAME; otherwise returns 0.
 
        struct_elements (S)       -- returns the names of all elements
-                                    of structure S in an array of strings. 
+                                    of structure S in an array of strings.
 
   * New io/subprocess functions:
 

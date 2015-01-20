@@ -25,7 +25,7 @@
 ##
 ## When @var{n} is integer this is the Pascal distribution.  When
 ## @var{n} is extended to real numbers this is the Polya distribution.
-## 
+##
 ## The number of failures in a Bernoulli experiment with success
 ## probability @var{p} before the @var{n}-th success follows this
 ## distribution.
@@ -57,7 +57,7 @@ function cdf = nbincdf (x, n, p)
     cdf = zeros (size (x));
   endif
 
-  k = (isnan (x) | isnan (n) | (n < 1) | (n == Inf) 
+  k = (isnan (x) | isnan (n) | (n < 1) | (n == Inf)
        | (p < 0) | (p > 1) | isnan (p));
   cdf(k) = NaN;
 

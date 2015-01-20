@@ -25,7 +25,7 @@
 ##
 ## Reduce the faces area for a given patch, structure or explicit faces
 ## and points matrices by a scale factor @var{sf}.  The structure
-## @var{fv} must contain the fields @qcode{"faces"} and @qcode{"vertices"}. 
+## @var{fv} must contain the fields @qcode{"faces"} and @qcode{"vertices"}.
 ## If the factor @var{sf} is omitted then a default of 0.3 is used.
 ##
 ## Given a patch handle as the first input argument and no output
@@ -69,7 +69,7 @@ function [nf, nv] = shrinkfaces (varargin)
   if (nargin < 1 || nargin > 3 || nargout > 2)
     print_usage ();
   endif
-  
+
   sf = 0.3;
   p = varargin{1};
   colors = [];
@@ -99,7 +99,7 @@ function [nf, nv] = shrinkfaces (varargin)
   else
     print_usage ();
   endif
-  
+
   if (! isscalar (sf) || sf <= 0)
     error ("shrinkfaces: scale factor must be a positive scalar");
   endif
@@ -130,7 +130,7 @@ function [nf, nv] = shrinkfaces (varargin)
   midpoints = full (kron ( speye (sv / m), ones (m, m) / m) * sparse (v));
   v = sqrt (sf) * (v - midpoints) + midpoints;
   f = reshape (1:sv, m, sv / m)';
-  
+
   switch (nargout)
     case 0
       if (ishandle (p))

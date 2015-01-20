@@ -280,7 +280,7 @@
 ## @group
 ## clf ();
 ## surf (peaks);
-## print -dpswrite -PPS_printer 
+## print -dpswrite -PPS_printer
 ## @end group
 ## @end example
 ##

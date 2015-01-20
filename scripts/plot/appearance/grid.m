@@ -53,7 +53,7 @@ function grid (varargin)
   if (isempty (hax))
     hax = gca ();
   endif
-  
+
   if (nargs > 2)
     print_usage ();
   endif

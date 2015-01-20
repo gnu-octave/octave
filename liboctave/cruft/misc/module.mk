@@ -1,6 +1,6 @@
 EXTRA_DIST += \
   misc/module.mk \
-  misc/d1mach-tst.for 
+  misc/d1mach-tst.for
 
 libcruft_la_SOURCES += \
   misc/blaswrap.c \

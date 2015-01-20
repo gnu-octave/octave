@@ -60,7 +60,7 @@ function opts = __fltk_print__ (opts)
           suffix = opts.name(dot+1:end);
         endif
       else
-        error ("print:invalid-suffix", 
+        error ("print:invalid-suffix",
                "invalid suffix '%s' for device '%s'.",
                opts.name(dot:end), lower (opts.devopt));
       endif

@@ -65,7 +65,7 @@ function S = __sprand_impl__ (varargin)
     ## reduce the probability that there are less than k distinct
     ## values; maybe a better strategy could be used but I don't think
     ## it's worth the price
-    
+
     ## actual number of entries in S
     k = min (length (idx), k);
     j = floor ((idx(1:k) - 1) / m);

@@ -29,7 +29,7 @@
 ## @itemize
 ## @item @var{fname}
 ## The name of the file containing data.
-## 
+##
 ## @item @var{delimiter}
 ## The character separating columns of data.  Use @code{\t} for tab.
 ## (Only valid for ASCII files)
@@ -100,7 +100,7 @@ function [output, delimiter, header_rows] = importdata (fname, delimiter = "", h
     case {".au", ".snd", ".flac", ".ogg"}
       error ("importdata: not implemented for file format %s", ext);
     case {".avi", ".mj2", ".mpg", ".asf", ".asx", ".wmv", ".mp4", ".m4v", ...
-          ".mov"} 
+          ".mov"}
       error ("importdata: not implemented for file format %s", ext);
     case {".bmp", ".cur", ".gif", ".hdf", ".ico", ".jpe", ".jpeg", ".jpg", ...
           ".jp2", ".jpf", ".jpx", ".j2c", ".j2k", ".pbm", ".pcx", ".pgm", ...
@@ -169,7 +169,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
 
   header_rows = 0;
   header_cols = 0;
-    
+
   ## Work through first few rows line by line until a delimiter is found.
   while (ischar (row = fgetl (fid)))
 
@@ -245,7 +245,7 @@ function [output, delimiter, header_rows] = importdata_ascii (fname, delimiter, 
       else
         fields = ostrsplit (row, delimiter);
       endif
-      
+
       text = fields(na_idx(ridx,:));
       text = text(! strcmpi (text, "NA"));  #  Remove valid "NA" entries
       if (! isempty (text))

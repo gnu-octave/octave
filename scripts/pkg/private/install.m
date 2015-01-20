@@ -262,7 +262,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     if (isfield (descriptions{i}, "autoload"))
       a = descriptions{i}.autoload;
       desc_autoload = ((isnumeric (a) && a > 0)
-                       || (ischar (a) 
+                       || (ischar (a)
                            && any (strcmpi (a, str_true))));
     endif
 

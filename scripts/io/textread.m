@@ -133,7 +133,7 @@ function varargout = textread (filename, format = "%f", varargin)
     ## Set up default endofline param value
     varargin(end+1:end+2) = {"endofline", eol_char};
   endif
- 
+
   ## Now that we know what EOL looks like, we can process format_repeat_count.
   ## FIXME The below isn't ML-compatible: counts lines, not format string uses
   if (isfinite (nlines) && (nlines > 0))
@@ -170,7 +170,7 @@ function varargout = textread (filename, format = "%f", varargin)
     str = fread (fid, "char=>char").';
   endif
   fclose (fid);
- 
+
   ## Set up default whitespace param value if needed
   if (isempty (find (strcmpi ("whitespace", varargin))))
     varargin(end+1:end+2) = {"whitespace", " \b\t"};
@@ -182,7 +182,7 @@ function varargout = textread (filename, format = "%f", varargin)
   ## Hack to concatenate/reshape numeric output into 2D array (undocumented ML)
   ## In ML this only works in case of an empty format string
   if (isempty (format))
-    ## Get number of fields per line. 
+    ## Get number of fields per line.
     ## 1. Get eol_char position
     iwhsp = find (strcmpi ("whitespace", varargin));
     whsp = varargin{iwhsp + 1};

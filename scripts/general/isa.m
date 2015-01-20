@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} isa (@var{obj}, @var{classname})
 ## Return true if @var{obj} is an object from the class @var{classname}.
 ##
-## @var{classname} may also be one of the following class categories: 
+## @var{classname} may also be one of the following class categories:
 ##
 ## @table @asis
 ## @item @qcode{"float"}

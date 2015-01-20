@@ -3,17 +3,17 @@
 # Copyright (C) 1993-2013 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
@@ -26,7 +26,7 @@ TEXINFO_TEX = ../texinfo.tex
 TEXINPUTS := "$(PATH_SEPARATOR)$(srcdir)$(PATH_SEPARATOR)$(TEXINPUTS)$(PATH_SEPARATOR)"
 export TEXINPUTS
 
-## Include custom texmf.cnf necessary to run @seealso macro 
+## Include custom texmf.cnf necessary to run @seealso macro
 TEXMFCNF := "..$(PATH_SEPARATOR)$(srcdir)/..$(PATH_SEPARATOR)$(TEXMFCNF)$(PATH_SEPARATOR)"
 export TEXMFCNF
 
@@ -106,7 +106,7 @@ IMAGES = \
   $(JAVA_IMAGES)
 
 ## FIXME: JAVA_IMAGES will eventually need to be added to the HTML build.
-##        It will require a different Makefile rule later because 
+##        It will require a different Makefile rule later because
 ##        JAVA_IMAGES live in a subdir rather than in the current directory.
 HTMLDIR_IMAGES = $(addprefix octave.html/, $(IMAGES_PNG))
 
@@ -195,7 +195,7 @@ $(HTMLDIR_IMAGES): $(IMAGES_PNG) | octave.html
 ## the DVI and PDF builds are forced to run serially through a Makefile rule.
 octave.pdf: octave.dvi
 
-# Prevent packaging of distribution unless all libraries 
+# Prevent packaging of distribution unless all libraries
 # necessary to create documentation are present
 dist-hook:
 	@$(GREP) '#define HAVE_COLAMD 1' $(top_builddir)/config.h > /dev/null || { echo "Documentation creation requires missing COLAMD library.  Cannot package distribution!" ; exit 1; }
@@ -255,7 +255,7 @@ SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@
 
-spellcheck: $(SPELLCHECK_FILES) 
+spellcheck: $(SPELLCHECK_FILES)
 	@if ls *.scheck >/dev/null 2>&1 ; then \
 		echo "Spellcheck failed"; \
 		echo "Review the following files:"; \

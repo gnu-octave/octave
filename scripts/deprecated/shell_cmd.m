@@ -28,7 +28,7 @@
 ## is returned immediately.  Otherwise, the process is started and
 ## Octave waits until it exits.  If the @var{type} argument is omitted, it
 ## defaults to a value of @qcode{"sync"}.
-## 
+##
 ## If the optional argument @var{return_output} is true and the subprocess
 ## is started synchronously, or if @var{shell_cmd} is called with one input
 ## argument and one or more output arguments, then the output from the command
@@ -38,15 +38,15 @@
 ## The @code{shell_cmd} function can return two values.  The first is the
 ## exit status of the command and the second is any output from the
 ## command that was written to the standard output stream.  For example,
-## 
+##
 ## @example
 ## [status, output] = shell_cmd ("echo foo; exit 2");
 ## @end example
-## 
+##
 ## @noindent
 ## will set the variable @code{output} to the string @samp{foo}, and the
 ## variable @code{status} to the integer @samp{2}.
-## 
+##
 ## For commands run asynchronously, @var{status} is the process id of the
 ## command shell that is started to run the command.
 ## @seealso{system, unix, dos}

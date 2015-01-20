@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} ezcontourf (@dots{})
 ##
 ## Plot the filled contour lines of a function.
-## 
+##
 ## @var{f} is a string, inline function, or function handle with two arguments
 ## defining the function.  By default the plot is over the meshed domain
 ## @code{-2*pi <= @var{x} | @var{y} <= 2*pi} with 60 points in each dimension.

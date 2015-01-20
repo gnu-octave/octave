@@ -53,7 +53,7 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method = "linear")
   if (isvector (x) && isvector (y) && all ([numel(y), numel(x)] == size (z)))
     [x, y] = meshgrid (x, y);
   endif
-    
+
   if (isvector (x) && isvector (y) && isvector (z))
     if (! isequal (length (x), length (y), length (z)))
       error ("griddata: X, Y, and Z must be vectors of the same length");

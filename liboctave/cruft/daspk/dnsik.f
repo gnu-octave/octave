@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DNSIK(X,Y,YPRIME,NEQ,ICOPT,ID,RES,PSOL,WT,RPAR,IPAR,
@@ -35,7 +35,7 @@ C     RES       -- External user-supplied subroutine
 C                  to evaluate the residual.  See RES description
 C                  in DDASPK prologue.
 C     PSOL      -- External user-supplied routine to solve
-C                  a linear system using preconditioning. 
+C                  a linear system using preconditioning.
 C                  See explanation inside DDASPK.
 C     WT        -- Vector of weights for error criterion.
 C     RPAR,IPAR -- Real and integer arrays used for communication
@@ -179,7 +179,7 @@ C
          IERNEW = -1
       ELSE
          IERNEW = 3
-         IF (IRES .EQ. 0 .AND. IERSL .EQ. 1 .AND. M .GE. 2 
+         IF (IRES .EQ. 0 .AND. IERSL .EQ. 1 .AND. M .GE. 2
      1       .AND. RATE .LT. 1.0D0) IERNEW = 1
       ENDIF
       RETURN

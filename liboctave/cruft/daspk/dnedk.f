@@ -1,5 +1,5 @@
 C Work performed under the auspices of the U.S. Department of Energy
-C by Lawrence Livermore National Laboratory under contract number 
+C by Lawrence Livermore National Laboratory under contract number
 C W-7405-Eng-48.
 C
       SUBROUTINE DNEDK(X,Y,YPRIME,NEQ,RES,JACK,PSOL,
@@ -37,7 +37,7 @@ C                  the preconditioner.  (This is optional).
 C                  See JAC description for the case
 C                  INFO(12) = 1 in the DDASPK prologue.
 C     PSOL      -- External user-supplied routine to solve
-C                  a linear system using preconditioning. 
+C                  a linear system using preconditioning.
 C                  (This is optional).  See explanation inside DDASPK.
 C     H         -- Appropriate step size for this step.
 C     WT        -- Vector of weights for error criterion.

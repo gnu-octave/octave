@@ -68,7 +68,7 @@ function retval = surf (varargin)
   endif
   unwind_protect
     hax = newplot (hax);
-    
+
     htmp = surface (varargin{:});
 
     if (! ishold (hax))

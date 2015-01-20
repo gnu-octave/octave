@@ -64,8 +64,8 @@ endfunction
 %!test
 %! cstr = {"line1"; ["line2"; "line3"]; "line4"};
 %! y = strtrunc (cstr, 4);
-%! assert (size (y), [3, 1]); 
-%! assert (size (y{2}), [2, 4]); 
+%! assert (size (y), [3, 1]);
+%! assert (size (y{2}), [2, 4]);
 %! assert (y{2}, repmat ("line", 2, 1));
 
 %% Test input validation

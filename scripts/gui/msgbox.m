@@ -20,14 +20,14 @@
 ## @deftypefn  {Function File} {@var{h} =} msgbox (@var{msg})
 ## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title})
 ## @deftypefnx {Function File} {@var{h} =} msgbox (@var{msg}, @var{title}, @var{icon})
-## Display @var{msg} using a message dialog box. 
+## Display @var{msg} using a message dialog box.
 ##
 ## The message may have multiple lines separated by newline characters
 ## (@qcode{"\n"}), or it may be a cellstr array with one element for each
 ## line.  The optional input @var{title} (character string) can be used to
 ## decorate the dialog caption.
 ##
-## The optional argument @var{icon} selects a dialog icon. 
+## The optional argument @var{icon} selects a dialog icon.
 ## It can be one of @qcode{"none"} (default), @qcode{"error"},
 ## @qcode{"help"}, or @qcode{"warn"}.
 ##

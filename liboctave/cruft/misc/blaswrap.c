@@ -149,7 +149,7 @@ typedef double (*F2C_CALL_8) (void *a1, void *a2, void *a3, void *a4, void *a5,
 #define F2C_LAPACK_CALL(name, args) F2C_LAPACK_CALL_ ## args (name)
 
 #define ENUM_ITEM(name, args)                   \
-  f2c_ ## name, 
+  f2c_ ## name,
 
 #define NAME_TO_STRING_CASE(name, args)         \
   case f2c_ ## name: return #name;

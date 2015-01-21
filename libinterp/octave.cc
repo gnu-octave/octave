@@ -711,6 +711,9 @@ octave_process_command_line (int argc, char **argv)
       octave_print_terse_usage_and_exit ();
     }
 
+  // Don't print start-up message when directly executing a script
+  if (! code_to_eval.empty () || script_file)
+    inhibit_startup_message = true;
 }
 
 // EMBEDDED is declared int instead of bool because this function is

@@ -710,10 +710,6 @@ octave_process_command_line (int argc, char **argv)
 
       octave_print_terse_usage_and_exit ();
     }
-
-  // Don't print start-up message when directly executing a script
-  if (! code_to_eval.empty () || script_file)
-    inhibit_startup_message = true;
 }
 
 // EMBEDDED is declared int instead of bool because this function is
@@ -797,6 +793,10 @@ octave_initialize_interpreter (int argc, char **argv, int embedded)
 
   if (! interactive && ! forced_line_editing)
     line_editing = false;
+
+  // Also skip start-up message unless session is interactive.
+  if (! (interactive || forced_interactive))
+    inhibit_startup_message = true;
 
   // Force default line editor if we don't want readline editing.
   if (! line_editing)

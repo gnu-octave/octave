@@ -79,10 +79,15 @@ function configure_make (desc, packdir, verbose)
     endif
 
     ## Make.
+    if (ispc ())
+      jobs = 1;
+    else
+      jobs =  nproc ("overridable");
+    endif
+
     if (exist (fullfile (src, "Makefile"), "file"))
       [status, output] = shell (sprintf ("%s make --jobs %i --directory '%s'",
-                                         scenv, nproc ("overridable"), src),
-                                verbose);
+                                         scenv, jobs, src), verbose);
       if (status != 0)
         rmdir (desc.dir, "s");
         disp (output);

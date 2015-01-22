@@ -54,6 +54,7 @@ signals:
   void context_menu_edit_signal (const QString&);
   void qsci_has_focus_signal (bool);
   void status_update (bool,bool);
+  void show_doc_signal (const QString&);
 
 private slots:
 

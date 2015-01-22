@@ -1586,6 +1586,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
            this, SLOT (edit_status_update (bool, bool)));
 
+  connect (f->qsci_edit_area (), SIGNAL (show_doc_signal (const QString&)),
+           main_win (), SLOT (handle_show_doc (const QString&)));
+
   // Signals from the file editor_tab
   connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
            this, SLOT (handle_file_name_changed (const QString&,

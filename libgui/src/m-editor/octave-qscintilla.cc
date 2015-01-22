@@ -255,12 +255,10 @@ octave_qscintilla::contextmenu_help (bool)
 void
 octave_qscintilla::contextmenu_help_doc (bool documentation)
 {
-  QString command;
   if (documentation)
-    command = "doc ";
+    emit show_doc_signal (_word_at_cursor);
   else
-    command = "help ";
-  emit execute_command_in_terminal_signal (command + _word_at_cursor);
+    emit execute_command_in_terminal_signal ("help " + _word_at_cursor);
 }
 
 void

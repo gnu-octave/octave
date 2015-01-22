@@ -311,8 +311,10 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
     filename = QString::fromStdString (
                            map.contents ("file").data ()[0].string_value ());
 
-  emit execute_command_in_terminal_signal (QString("edit ")
-                                           + "\""+filename+"\"");
+  if (! filename.endsWith (".m"))
+    filename.append (".m");
+
+  emit request_open_file (filename);
 }
 
 void

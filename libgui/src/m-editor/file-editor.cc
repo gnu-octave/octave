@@ -1615,6 +1615,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
            main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
+  connect (f, SIGNAL (request_open_file (const QString&)),
+           this, SLOT (request_open_file (const QString&)));
+
   connect (f, SIGNAL (set_global_edit_shortcuts_signal (bool)),
            main_win (), SLOT (set_global_edit_shortcuts (bool)));
 

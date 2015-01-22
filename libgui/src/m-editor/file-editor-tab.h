@@ -138,6 +138,7 @@ signals:
   void execute_command_in_terminal_signal (const QString&);
   void set_global_edit_shortcuts_signal (bool);
   void create_context_menu_tab_signal (QMenu *);
+  void request_open_file (const QString&);
 
 protected:
 

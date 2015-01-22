@@ -82,21 +82,10 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   _file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
   _edit_area = new octave_qscintilla (this);
-  // Connect signal for command execution to a slot of this tab which in turn
-  // emits a signal connected to the main window.
-  // Direct connection is not possible because tab's parent is null.
-  connect (_edit_area,
-           SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           this,
-           SLOT (execute_command_in_terminal (const QString&)));
 
-  connect (_edit_area,
-           SIGNAL (cursorPositionChanged (int, int)),
-           this,
-           SLOT (handle_cursor_moved (int,int)));
+  connect (_edit_area, SIGNAL (cursorPositionChanged (int, int)),
+           this, SLOT (handle_cursor_moved (int,int)));
 
-  connect (_edit_area, SIGNAL (create_context_menu_signal (QMenu*)),
-           this, SLOT (create_context_menu (QMenu*)));
   connect (_edit_area, SIGNAL (context_menu_edit_signal (const QString&)),
            this, SLOT (handle_context_menu_edit (const QString&)));
 
@@ -205,12 +194,6 @@ file_editor_tab::closeEvent (QCloseEvent *e)
     e->ignore ();
   else
     e->accept ();
-}
-
-void
-file_editor_tab::execute_command_in_terminal (const QString& command)
-{
-  emit execute_command_in_terminal_signal (command); // connected to main window
 }
 
 void
@@ -2087,12 +2070,6 @@ file_editor_tab::handle_cursor_moved (int line, int col)
 
   _row_indicator->setNum (line+1);
   _col_indicator->setNum (col+1);
-}
-
-void
-file_editor_tab::create_context_menu (QMenu *menu)
-{
-  emit create_context_menu_tab_signal (menu);
 }
 
 QString

@@ -120,8 +120,6 @@ public slots:
 
   void file_has_changed (const QString& fileName);
 
-  void execute_command_in_terminal (const QString& command);
-  void create_context_menu (QMenu *);
   void handle_context_menu_edit (const QString&);
 
 signals:
@@ -135,9 +133,7 @@ signals:
   void editor_check_conflict_save (const QString& saveFileName,
                                    bool remove_on_success);
   void run_file_signal (const QFileInfo& info);
-  void execute_command_in_terminal_signal (const QString&);
   void set_global_edit_shortcuts_signal (bool);
-  void create_context_menu_tab_signal (QMenu *);
   void request_open_file (const QString&);
 
 protected:

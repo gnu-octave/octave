@@ -30,16 +30,12 @@
 ## PKG_ADD: colormap ("register", "lines");
 ## PKG_DEL: colormap ("unregister", "lines");
 
-function map = lines (n)
+function map = lines (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("lines: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("lines: N must be a scalar");
   endif
 
   if (n == 1)
@@ -53,7 +49,6 @@ function map = lines (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'lines' colormap as an image

@@ -30,17 +30,14 @@
 ## PKG_ADD: colormap ("register", "cool");
 ## PKG_DEL: colormap ("unregister", "cool");
 
-function map = cool (n)
+function map = cool (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("cool: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("cool: N must be a scalar");
   endif
+  n = double (n);
 
   if (n == 1)
     map = [0, 1, 1];
@@ -54,7 +51,6 @@ function map = cool (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'cool' colormap as an image

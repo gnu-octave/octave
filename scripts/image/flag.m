@@ -31,16 +31,12 @@
 ## PKG_ADD: colormap ("register", "flag");
 ## PKG_DEL: colormap ("unregister", "flag");
 
-function map = flag (n)
+function map = flag (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("flag: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("flag: N must be a scalar");
   endif
 
   if (n == 1)
@@ -53,7 +49,6 @@ function map = flag (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'flag' colormap as an image

@@ -31,17 +31,14 @@
 ## PKG_ADD: colormap ("register", "bone");
 ## PKG_DEL: colormap ("unregister", "bone");
 
-function map = bone (n)
+function map = bone (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("bone: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("bone: N must be a scalar");
   endif
+  n = double (n);
 
   if (n == 1)
     map = [1/8 1/8 1/8];
@@ -82,7 +79,6 @@ function map = bone (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'bone' colormap as an image

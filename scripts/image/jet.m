@@ -31,16 +31,12 @@
 ## PKG_ADD: colormap ("register", "jet");
 ## PKG_DEL: colormap ("unregister", "jet");
 
-function map = jet (n)
+function map = jet (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("jet: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("jet: N must be a scalar");
   endif
 
   if (n == 1)
@@ -90,7 +86,6 @@ function map = jet (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'jet' colormap as an image

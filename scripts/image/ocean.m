@@ -33,17 +33,14 @@
 ## PKG_ADD: colormap ("register", "ocean");
 ## PKG_DEL: colormap ("unregister", "ocean");
 
-function map = ocean (n)
+function map = ocean (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("ocean: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("ocean: N must be a scalar");
   endif
+  n = double (n);
 
   if (n == 1)
     map = [0, 0, 0];
@@ -64,7 +61,6 @@ function map = ocean (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'ocean' colormap as an image

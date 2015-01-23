@@ -54,6 +54,7 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
   elseif (! isscalar (n))
     error ("cubehelix: N must be a scalar");
   endif
+  n = double (n);
 
   if (n > 1)
     coeff = [ -0.14861  -0.29227   1.97294

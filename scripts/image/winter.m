@@ -30,17 +30,14 @@
 ## PKG_ADD: colormap ("register", "winter");
 ## PKG_DEL: colormap ("unregister", "winter");
 
-function map = winter (n)
+function map = winter (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("winter: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("winter: N must be a scalar");
   endif
+  n = double (n);
 
   if (n == 1)
     map = [0, 0, 1];
@@ -54,7 +51,6 @@ function map = winter (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'winter' colormap as an image

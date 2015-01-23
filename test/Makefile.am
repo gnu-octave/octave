@@ -25,6 +25,7 @@ FCN_FILES = \
   args.tst \
   bug-31371.tst \
   bug-38576.tst \
+ colormaps.tst \
   diag-perm.tst \
   error.tst \
   eval-catch.tst \

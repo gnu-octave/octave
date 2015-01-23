@@ -31,17 +31,14 @@
 ## PKG_ADD: colormap ("register", "copper");
 ## PKG_DEL: colormap ("unregister", "copper");
 
-function map = copper (n)
+function map = copper (n = rows (colormap ()))
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (nargin == 1)
-    if (! isscalar (n))
-      error ("copper: N must be a scalar");
-    endif
-  else
+  if (nargin > 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("copper: N must be a scalar");
   endif
+  n = double (n);
 
   if (n == 1)
     map = [0, 0, 0];
@@ -57,7 +54,6 @@ function map = copper (n)
   endif
 
 endfunction
-
 
 %!demo
 %! ## Show the 'copper' colormap as an image

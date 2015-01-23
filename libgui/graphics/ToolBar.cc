@@ -71,7 +71,7 @@ ToolBar* ToolBar::create (const graphics_object& go)
       QWidget* parentWidget = parent->qWidget<QWidget> ();
 
       if (parentWidget)
-	return new ToolBar (go, new QToolBar (parentWidget));
+        return new ToolBar (go, new QToolBar (parentWidget));
     }
 
   return 0;
@@ -110,7 +110,7 @@ void ToolBar::update (int pId)
     {
     case base_properties::ID_VISIBLE:
       if (m_figure)
-	m_figure->showCustomToolBar (bar, tp.is_visible ());
+        m_figure->showCustomToolBar (bar, tp.is_visible ());
       break;
     default:
       Object::update (pId);
@@ -123,31 +123,31 @@ bool ToolBar::eventFilter (QObject* watched, QEvent* ev)
   if (watched == qObject ())
     {
       switch (ev->type ())
-	{
-	case QEvent::ActionAdded:
-	case QEvent::ActionRemoved:
-	    {
-	      QActionEvent* ae = dynamic_cast<QActionEvent*> (ev);
-	      QToolBar* bar = qWidget<QToolBar> ();
+        {
+        case QEvent::ActionAdded:
+        case QEvent::ActionRemoved:
+            {
+              QActionEvent* ae = dynamic_cast<QActionEvent*> (ev);
+              QToolBar* bar = qWidget<QToolBar> ();
 
-	      if (ae->action () != m_empty)
-		{
-		  if (ev->type () == QEvent::ActionAdded)
-		    {
-		      if (bar->actions ().size () == 2)
-			QTimer::singleShot (0, this, SLOT (hideEmpty (void)));
-		    }
-		  else
-		    {
-		      if (bar->actions ().size () == 1)
-			m_empty->setVisible (true);
-		    }
-		}
-	    }
-	  break;
-	default:
-	  break;
-	}
+              if (ae->action () != m_empty)
+                {
+                  if (ev->type () == QEvent::ActionAdded)
+                    {
+                      if (bar->actions ().size () == 2)
+                        QTimer::singleShot (0, this, SLOT (hideEmpty (void)));
+                    }
+                  else
+                    {
+                      if (bar->actions ().size () == 1)
+                        m_empty->setVisible (true);
+                    }
+                }
+            }
+          break;
+        default:
+          break;
+        }
     }
 
   return false;
@@ -165,7 +165,7 @@ void ToolBar::beingDeleted (void)
       QToolBar* bar = qWidget<QToolBar> ();
 
       if (bar)
-	m_figure->showCustomToolBar (bar, false);
+        m_figure->showCustomToolBar (bar, false);
     }
 }
 

@@ -40,7 +40,7 @@ ToggleTool* ToggleTool::create (const graphics_object& go)
       QWidget* parentWidget = parent->qWidget<QWidget> ();
 
       if (parentWidget)
-	return new ToggleTool (go, new QAction (parentWidget));
+        return new ToggleTool (go, new QAction (parentWidget));
     }
 
   return 0;
@@ -55,7 +55,7 @@ ToggleTool::ToggleTool (const graphics_object& go, QAction* action)
   action->setChecked (tp.is_state ());
 
   connect (action, SIGNAL (toggled (bool)),
-	   this, SLOT (triggered (bool)));
+           this, SLOT (triggered (bool)));
 }
 
 ToggleTool::~ToggleTool (void)
@@ -82,9 +82,9 @@ void ToggleTool::triggered (bool checked)
 {
   gh_manager::post_set (m_handle, "state", checked, false);
   gh_manager::post_callback (m_handle,
-			     checked
-			     ? "oncallback"
-			     : "offcallback");
+                             checked
+                             ? "oncallback"
+                             : "offcallback");
   gh_manager::post_callback (m_handle, "clickedcallback");
 }
 

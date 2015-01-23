@@ -39,7 +39,7 @@ public:
   void draw (const graphics_handle& handle);
   void drawZoomBox (const QPoint& p1, const QPoint& p2);
   void resize (int /* x */, int /* y */,
-	       int /* width */, int /* height */) { }
+               int /* width */, int /* height */) { }
   graphics_object selectFromAxes (const graphics_object& ax,
                                   const QPoint& pt);
   QWidget* qWidget (void) { return this; }

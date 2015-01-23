@@ -40,7 +40,7 @@ PushTool* PushTool::create (const graphics_object& go)
       QWidget* parentWidget = parent->qWidget<QWidget> ();
 
       if (parentWidget)
-	return new PushTool (go, new QAction (parentWidget));
+        return new PushTool (go, new QAction (parentWidget));
     }
 
   return 0;

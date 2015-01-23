@@ -44,14 +44,14 @@ SliderControl* SliderControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	return new SliderControl (go, new QScrollBar (container));
+        return new SliderControl (go, new QScrollBar (container));
     }
 
   return 0;
 }
 
 SliderControl::SliderControl (const graphics_object& go,
-			      QAbstractSlider* slider)
+                              QAbstractSlider* slider)
     : BaseControl (go, slider), m_blockUpdates (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
@@ -70,7 +70,7 @@ SliderControl::SliderControl (const graphics_object& go,
       double dmin = up.get_min (), dmax = up.get_max ();
 
       slider->setValue (xround (((value(0) - dmin) / (dmax - dmin))
-				* RANGE_INT_MAX));
+                                * RANGE_INT_MAX));
     }
 
   connect (slider, SIGNAL (valueChanged (int)), SLOT (valueChanged (int)));
@@ -88,28 +88,28 @@ void SliderControl::update (int pId)
   switch (pId)
     {
     case uicontrol::properties::ID_SLIDERSTEP:
-	{
-	  Matrix steps = up.get_sliderstep ().matrix_value ();
+        {
+          Matrix steps = up.get_sliderstep ().matrix_value ();
 
-	  slider->setSingleStep (xround (steps(0) * RANGE_INT_MAX));
-	  slider->setPageStep (xround (steps(1) * RANGE_INT_MAX));
-	}
+          slider->setSingleStep (xround (steps(0) * RANGE_INT_MAX));
+          slider->setPageStep (xround (steps(1) * RANGE_INT_MAX));
+        }
       break;
     case uicontrol::properties::ID_VALUE:
-	{
-	  Matrix value = up.get_value ().matrix_value ();
-	  double dmax = up.get_max (), dmin = up.get_min ();
+        {
+          Matrix value = up.get_value ().matrix_value ();
+          double dmax = up.get_max (), dmin = up.get_min ();
 
-	  if (value.numel () > 0)
-	    {
-	      int ival = xround (((value(0) - dmin) / (dmax - dmin))
-				 * RANGE_INT_MAX);
+          if (value.numel () > 0)
+            {
+              int ival = xround (((value(0) - dmin) / (dmax - dmin))
+                                 * RANGE_INT_MAX);
 
-	      m_blockUpdates = true;
-	      slider->setValue (ival);
-	      m_blockUpdates = false;
-	    }
-	}
+              m_blockUpdates = true;
+              slider->setValue (ival);
+              m_blockUpdates = false;
+            }
+        }
       break;
     default:
       BaseControl::update (pId);
@@ -125,25 +125,25 @@ void SliderControl::valueChanged (int ival)
       graphics_object go = object ();
 
       if (go.valid_object ())
-	{
-	  uicontrol::properties& up = Utils::properties<uicontrol> (go);
+        {
+          uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
-	  Matrix value = up.get_value ().matrix_value ();
-	  double dmin = up.get_min (), dmax = up.get_max ();
+          Matrix value = up.get_value ().matrix_value ();
+          double dmin = up.get_min (), dmax = up.get_max ();
 
-	  int ival_tmp = (value.numel () > 0 ?
-			  xround (((value(0) - dmin) / (dmax - dmin))
-				  * RANGE_INT_MAX) :
-			  0);
+          int ival_tmp = (value.numel () > 0 ?
+                          xround (((value(0) - dmin) / (dmax - dmin))
+                                  * RANGE_INT_MAX) :
+                          0);
 
-	  if (ival != ival_tmp || value.numel () > 0)
-	    {
-	      double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
+          if (ival != ival_tmp || value.numel () > 0)
+            {
+              double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
 
-	      gh_manager::post_set (m_handle, "value", octave_value (dval));
-	      gh_manager::post_callback (m_handle, "callback");
-	    }
-	}
+              gh_manager::post_set (m_handle, "value", octave_value (dval));
+              gh_manager::post_callback (m_handle, "callback");
+            }
+        }
     }
 }
 

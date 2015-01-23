@@ -43,26 +43,26 @@ void ObjectProxy::init (Object* obj)
   if (obj != m_object)
     {
       if (m_object)
-	{
-	  disconnect (this, SIGNAL (sendUpdate (int)),
-		      m_object, SLOT (slotUpdate (int)));
-	  disconnect (this, SIGNAL (sendFinalize (void)),
-		      m_object, SLOT (slotFinalize (void)));
-	  disconnect (this, SIGNAL (sendRedraw (void)),
-		      m_object, SLOT (slotRedraw (void)));
-	}
+        {
+          disconnect (this, SIGNAL (sendUpdate (int)),
+                      m_object, SLOT (slotUpdate (int)));
+          disconnect (this, SIGNAL (sendFinalize (void)),
+                      m_object, SLOT (slotFinalize (void)));
+          disconnect (this, SIGNAL (sendRedraw (void)),
+                      m_object, SLOT (slotRedraw (void)));
+        }
 
       m_object = obj;
 
       if (m_object)
-	{
-	  connect (this, SIGNAL (sendUpdate (int)),
-		   m_object, SLOT (slotUpdate (int)));
-	  connect (this, SIGNAL (sendFinalize (void)),
-		   m_object, SLOT (slotFinalize (void)));
-	  connect (this, SIGNAL (sendRedraw (void)),
-		   m_object, SLOT (slotRedraw (void)));
-	}
+        {
+          connect (this, SIGNAL (sendUpdate (int)),
+                   m_object, SLOT (slotUpdate (int)));
+          connect (this, SIGNAL (sendFinalize (void)),
+                   m_object, SLOT (slotFinalize (void)));
+          connect (this, SIGNAL (sendRedraw (void)),
+                   m_object, SLOT (slotRedraw (void)));
+        }
     }
 }
 

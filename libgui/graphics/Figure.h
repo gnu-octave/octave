@@ -37,11 +37,11 @@ namespace QtHandles
 
 enum MouseMode
 {
-  NoMode	= 0,
-  RotateMode	= 1,
-  ZoomMode	= 2,
-  PanMode	= 3,
-  SelectMode	= 4
+  NoMode        = 0,
+  RotateMode    = 1,
+  ZoomMode      = 2,
+  PanMode       = 3,
+  SelectMode    = 4
 };
 
 class Container;

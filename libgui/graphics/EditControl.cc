@@ -43,14 +43,14 @@ EditControl* EditControl::create (const graphics_object& go)
       Container* container = parent->innerContainer ();
 
       if (container)
-	{
-	  uicontrol::properties& up = Utils::properties<uicontrol> (go);
+        {
+          uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
-	  if ((up.get_max () - up.get_min ()) > 1)
-	    return new EditControl (go, new TextEdit (container));
-	  else
-	    return new EditControl (go, new QLineEdit (container));
-	}
+          if ((up.get_max () - up.get_min ()) > 1)
+            return new EditControl (go, new TextEdit (container));
+          else
+            return new EditControl (go, new QLineEdit (container));
+        }
     }
 
   return 0;
@@ -74,12 +74,12 @@ void EditControl::init (QLineEdit* edit, bool callBase)
 
   edit->setText (Utils::fromStdString (up.get_string_string ()));
   edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-					  up.get_verticalalignment ()));
+                                          up.get_verticalalignment ()));
 
   connect (edit, SIGNAL (textEdited (const QString&)),
-	   SLOT (textChanged (void)));
+           SLOT (textChanged (void)));
   connect (edit, SIGNAL (editingFinished (void)),
-	   SLOT (editingFinished (void)));
+           SLOT (editingFinished (void)));
 }
 
 EditControl::EditControl (const graphics_object& go, TextEdit* edit)
@@ -103,9 +103,9 @@ void EditControl::init (TextEdit* edit, bool callBase)
   edit->setPlainText (Utils::fromStdString (up.get_string_string ()));
 
   connect (edit, SIGNAL (textChanged (void)),
-	   SLOT (textChanged (void)));
+           SLOT (textChanged (void)));
   connect (edit, SIGNAL (editingFinished (void)),
-	   SLOT (editingFinished (void)));
+           SLOT (editingFinished (void)));
 }
 
 EditControl::~EditControl (void)
@@ -129,11 +129,11 @@ void EditControl::update (int pId)
   if (! handled)
     {
       switch (pId)
-	{
-	default:
-	  BaseControl::update (pId);
-	  break;
-	}
+        {
+        default:
+          BaseControl::update (pId);
+          break;
+        }
     }
 }
 
@@ -150,17 +150,17 @@ bool EditControl::updateSingleLine (int pId)
     case uicontrol::properties::ID_HORIZONTALALIGNMENT:
     case uicontrol::properties::ID_VERTICALALIGNMENT:
       edit->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-					      up.get_verticalalignment ()));
+                                              up.get_verticalalignment ()));
       return true;
     case uicontrol::properties::ID_MIN:
     case uicontrol::properties::ID_MAX:
       if ((up.get_max () - up.get_min ()) > 1)
-	{
-	  QWidget* container = edit->parentWidget ();
+        {
+          QWidget* container = edit->parentWidget ();
 
-	  delete edit;
-	  init (new TextEdit (container), true);
-	}
+          delete edit;
+          init (new TextEdit (container), true);
+        }
       return true;
     default:
       break;
@@ -182,12 +182,12 @@ bool EditControl::updateMultiLine (int pId)
     case uicontrol::properties::ID_MIN:
     case uicontrol::properties::ID_MAX:
       if ((up.get_max () - up.get_min ()) <= 1)
-	{
-	  QWidget* container = edit->parentWidget ();
+        {
+          QWidget* container = edit->parentWidget ();
 
-	  delete edit;
-	  init (new QLineEdit (container), true);
-	}
+          delete edit;
+          init (new QLineEdit (container), true);
+        }
       return true;
     default:
       break;
@@ -206,8 +206,8 @@ void EditControl::editingFinished (void)
   if (m_textChanged)
     {
       QString txt = (m_multiLine
-		     ? qWidget<TextEdit> ()->toPlainText ()
-		     : qWidget<QLineEdit> ()->text ());
+                     ? qWidget<TextEdit> ()->toPlainText ()
+                     : qWidget<QLineEdit> ()->text ());
 
       gh_manager::post_set (m_handle, "string", Utils::toStdString (txt), false);
       gh_manager::post_callback (m_handle, "callback");

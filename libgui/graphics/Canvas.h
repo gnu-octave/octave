@@ -58,7 +58,7 @@ public:
   virtual QWidget* qWidget (void) = 0;
 
   static Canvas* create (const std::string& name, QWidget* parent,
-			 const graphics_handle& handle);
+                         const graphics_handle& handle);
 
 protected:
   virtual void draw (const graphics_handle& handle) = 0;

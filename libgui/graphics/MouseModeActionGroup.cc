@@ -37,13 +37,13 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
   : QObject (xparent), m_current (0)
 {
   m_actions.append (new QAction (QIcon (":/images/rotate.png"),
-				 tr ("Rotate"), this));
+                                 tr ("Rotate"), this));
   m_actions.append (new QAction (QIcon (":/images/zoom.png"),
-				 tr ("Zoom"), this));
+                                 tr ("Zoom"), this));
   m_actions.append (new QAction (QIcon (":/images/pan.png"),
-				 tr ("Pan"), this));
+                                 tr ("Pan"), this));
   m_actions.append (new QAction (QIcon (":/images/select.png"),
-				 tr ("Select"), this));
+                                 tr ("Select"), this));
   m_actions[2]->setEnabled (false);
   m_actions[3]->setEnabled (false);
 
@@ -63,23 +63,23 @@ void MouseModeActionGroup::actionToggled (bool checked)
   if (! checked)
     {
       if (sender () == m_current)
-	{
-	  m_current = 0;
-	  emit modeChanged (NoMode);
-	}
+        {
+          m_current = 0;
+          emit modeChanged (NoMode);
+        }
     }
   else
     {
       int i = m_actions.indexOf (qobject_cast<QAction*> (sender ()));
 
       if (i >= 0)
-	{
-	  m_current = m_actions[i];
-	  for (int j = 0; j < m_actions.size (); j++)
-	    if (j != i)
-	      m_actions[j]->setChecked (false);
-	  emit modeChanged (static_cast<MouseMode> (i+1));
-	}
+        {
+          m_current = m_actions[i];
+          for (int j = 0; j < m_actions.size (); j++)
+            if (j != i)
+              m_actions[j]->setChecked (false);
+          emit modeChanged (static_cast<MouseMode> (i+1));
+        }
     }
 }
 

@@ -74,38 +74,38 @@ void ToolBarButton<T>::update (int pId)
     case base_properties::ID_VISIBLE:
       action->setVisible (tp.is_visible ());
       if (m_separator)
-	m_separator->setVisible (tp.is_visible ());
+        m_separator->setVisible (tp.is_visible ());
       break;
     case T::properties::ID_TOOLTIPSTRING:
       action->setToolTip (Utils::fromStdString (tp.get_tooltipstring ()));
       break;
     case T::properties::ID_CDATA:
-	{
-	  QImage img = Utils::makeImageFromCData (tp.get_cdata (), 16, 16);
+        {
+          QImage img = Utils::makeImageFromCData (tp.get_cdata (), 16, 16);
 
-	  action->setIcon (QIcon (QPixmap::fromImage (img)));
-	}
+          action->setIcon (QIcon (QPixmap::fromImage (img)));
+        }
       break;
     case T::properties::ID_SEPARATOR:
       if (tp.is_separator ())
-	{
-	  if (! m_separator)
-	    {
-	      m_separator = new QAction (action);
-	      m_separator->setSeparator (true);
-	      m_separator->setVisible (tp.is_visible ());
+        {
+          if (! m_separator)
+            {
+              m_separator = new QAction (action);
+              m_separator->setSeparator (true);
+              m_separator->setVisible (tp.is_visible ());
 
-	      QWidget* w = qobject_cast<QWidget*> (action->parent ());
+              QWidget* w = qobject_cast<QWidget*> (action->parent ());
 
-	      w->insertAction (action, m_separator);
-	    }
-	}
+              w->insertAction (action, m_separator);
+            }
+        }
       else
-	{
-	  if (m_separator)
-	    delete m_separator;
-	  m_separator = 0;
-	}
+        {
+          if (m_separator)
+            delete m_separator;
+          m_separator = 0;
+        }
       break;
     case T::properties::ID_ENABLE:
       action->setEnabled (tp.is_enable ());

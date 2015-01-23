@@ -54,18 +54,18 @@ Canvas* Container::canvas (const graphics_handle& gh, bool xcreate)
       graphics_object go = gh_manager::get_object (gh);
 
       if (go)
-	{
-	  graphics_object fig = go.get_ancestor ("figure");
+        {
+          graphics_object fig = go.get_ancestor ("figure");
 
-	  m_canvas = Canvas::create (fig.get("renderer").string_value (),
-				     this, gh);
+          m_canvas = Canvas::create (fig.get("renderer").string_value (),
+                                     this, gh);
 
-	  QWidget* canvasWidget = m_canvas->qWidget ();
+          QWidget* canvasWidget = m_canvas->qWidget ();
 
-	  canvasWidget->lower ();
-	  canvasWidget->show ();
-	  canvasWidget->setGeometry (0, 0, width (), height ());
-	}
+          canvasWidget->lower ();
+          canvasWidget->show ();
+          canvasWidget->setGeometry (0, 0, width (), height ());
+        }
     }
 
   return m_canvas;
@@ -81,18 +81,18 @@ void Container::resizeEvent (QResizeEvent* /* event */)
   foreach (QObject* qObj, children ())
     {
       if (qObj->isWidgetType ())
-	{
-	  Object* obj = Object::fromQObject (qObj);
+        {
+          Object* obj = Object::fromQObject (qObj);
 
-	  if (obj)
-	    {
-	      Matrix bb = obj->properties ().get_boundingbox (false);
+          if (obj)
+            {
+              Matrix bb = obj->properties ().get_boundingbox (false);
 
-	      obj->qWidget<QWidget> ()
-		->setGeometry (xround (bb(0)), xround (bb(1)),
-			       xround (bb(2)), xround (bb(3)));
-	    }
-	}
+              obj->qWidget<QWidget> ()
+                ->setGeometry (xround (bb(0)), xround (bb(1)),
+                               xround (bb(2)), xround (bb(3)));
+            }
+        }
     }
 }
 

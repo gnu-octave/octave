@@ -147,9 +147,9 @@ void BaseControl::update (int pId)
     }
 }
 
-bool BaseControl::eventFilter (QObject* watched, QEvent* ev)
+bool BaseControl::eventFilter (QObject* watched, QEvent* xevent)
 {
-  switch (ev->type ())
+  switch (xevent->type ())
     {
     case QEvent::Resize:
       if (m_normalizedFont)
@@ -164,7 +164,7 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* ev)
         {
           gh_manager::auto_lock lock;
 
-          QMouseEvent* m = dynamic_cast<QMouseEvent*> (ev);
+          QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
           graphics_object go = object ();
           uicontrol::properties& up = Utils::properties<uicontrol> (go);
           graphics_object fig = go.get_ancestor ("figure");
@@ -200,7 +200,7 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* ev)
         {
           gh_manager::auto_lock lock;
 
-          QMouseEvent* m = dynamic_cast<QMouseEvent*> (ev);
+          QMouseEvent* m = dynamic_cast<QMouseEvent*> (xevent);
           graphics_object go = object ();
           graphics_object fig = go.get_ancestor ("figure");
 
@@ -215,7 +215,7 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* ev)
           gh_manager::auto_lock lock;
 
           octave_scalar_map keyData =
-            Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent*> (ev));
+            Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent*> (xevent));
           graphics_object fig = object ().get_ancestor ("figure");
 
           gh_manager::post_set (fig.get_handle (), "currentcharacter",
@@ -226,7 +226,7 @@ bool BaseControl::eventFilter (QObject* watched, QEvent* ev)
     default: break;
     }
 
-  return Object::eventFilter (watched, ev);
+  return Object::eventFilter (watched, xevent);
 }
 
 }; // namespace QtHandles

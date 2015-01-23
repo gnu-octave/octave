@@ -493,7 +493,7 @@ void Figure::updateBoundingBox (bool internal, int flags)
   gh_manager::post_function (Figure::updateBoundingBoxHelper, d);
 }
 
-bool Figure::eventNotifyBefore (QObject* obj, QEvent* ev)
+bool Figure::eventNotifyBefore (QObject* obj, QEvent* xevent)
 {
   if (! m_blockUpdates)
     {
@@ -503,11 +503,11 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* ev)
         }
       else if (obj == m_menuBar)
         {
-          switch (ev->type ())
+          switch (xevent->type ())
             {
             case QEvent::ActionRemoved:
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (ev)->action ();
+                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu")
@@ -520,10 +520,10 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* ev)
         }
       else
         {
-          switch (ev->type ())
+          switch (xevent->type ())
             {
             case QEvent::Close:
-              ev->ignore ();
+              xevent->ignore ();
               gh_manager::post_callback (m_handle, "closerequestfcn");
               return true;
             default:
@@ -535,19 +535,19 @@ bool Figure::eventNotifyBefore (QObject* obj, QEvent* ev)
   return false;
 }
 
-void Figure::eventNotifyAfter (QObject* watched, QEvent* ev)
+void Figure::eventNotifyAfter (QObject* watched, QEvent* xevent)
 {
   if (! m_blockUpdates)
     {
       if (watched == m_container)
         {
-          switch (ev->type ())
+          switch (xevent->type ())
             {
             case QEvent::Resize:
               updateBoundingBox (true, UpdateBoundingBoxSize);
               break;
             case QEvent::ChildAdded:
-              if (dynamic_cast<QChildEvent*> (ev)->child
+              if (dynamic_cast<QChildEvent*> (xevent)->child
                   ()->isWidgetType())
                 {
                   gh_manager::auto_lock lock;
@@ -561,11 +561,11 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* ev)
         }
       else if (watched == m_menuBar)
         {
-          switch (ev->type ())
+          switch (xevent->type ())
             {
             case QEvent::ActionAdded:
                 {
-                  QAction* a = dynamic_cast<QActionEvent*> (ev)->action ();
+                  QAction* a = dynamic_cast<QActionEvent*> (xevent)->action ();
 
                   if (! a->isSeparator ()
                       && a->objectName () != "builtinMenu")
@@ -578,7 +578,7 @@ void Figure::eventNotifyAfter (QObject* watched, QEvent* ev)
         }
       else
         {
-          switch (ev->type ())
+          switch (xevent->type ())
             {
             case QEvent::Move:
               updateBoundingBox (false, UpdateBoundingBoxPosition);

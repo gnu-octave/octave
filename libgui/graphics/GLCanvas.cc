@@ -119,31 +119,31 @@ void GLCanvas::paintGL (void)
   canvasPaintEvent ();
 }
 
-void GLCanvas::mouseMoveEvent (QMouseEvent* ev)
+void GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
 {
-  canvasMouseMoveEvent (ev);
+  canvasMouseMoveEvent (xevent);
 }
 
-void GLCanvas::mousePressEvent (QMouseEvent* ev)
+void GLCanvas::mousePressEvent (QMouseEvent* xevent)
 {
-  canvasMousePressEvent (ev);
+  canvasMousePressEvent (xevent);
 }
 
-void GLCanvas::mouseReleaseEvent (QMouseEvent* ev)
+void GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
 {
-  canvasMouseReleaseEvent (ev);
+  canvasMouseReleaseEvent (xevent);
 }
 
-void GLCanvas::keyPressEvent (QKeyEvent* ev)
+void GLCanvas::keyPressEvent (QKeyEvent* xevent)
 {
-  if (! canvasKeyPressEvent (ev))
-    QGLWidget::keyPressEvent (ev);
+  if (! canvasKeyPressEvent (xevent))
+    QGLWidget::keyPressEvent (xevent);
 }
 
-void GLCanvas::keyReleaseEvent (QKeyEvent* ev)
+void GLCanvas::keyReleaseEvent (QKeyEvent* xevent)
 {
-  if (! canvasKeyReleaseEvent (ev))
-    QGLWidget::keyReleaseEvent (ev);
+  if (! canvasKeyReleaseEvent (xevent))
+    QGLWidget::keyReleaseEvent (xevent);
 }
 
 }; // namespace QtHandles

@@ -96,11 +96,11 @@ void Container::resizeEvent (QResizeEvent* /* event */)
     }
 }
 
-void Container::childEvent (QChildEvent* ev)
+void Container::childEvent (QChildEvent* xevent)
 {
-  if (ev->child ()->isWidgetType ())
+  if (xevent->child ()->isWidgetType ())
     {
-      qobject_cast<QWidget*> (ev->child ())->setMouseTracking (hasMouseTracking ());
+      qobject_cast<QWidget*> (xevent->child ())->setMouseTracking (hasMouseTracking ());
     }
 }
 

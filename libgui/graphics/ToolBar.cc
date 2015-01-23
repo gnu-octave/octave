@@ -118,21 +118,21 @@ void ToolBar::update (int pId)
     }
 }
 
-bool ToolBar::eventFilter (QObject* watched, QEvent* ev)
+bool ToolBar::eventFilter (QObject* watched, QEvent* xevent)
 {
   if (watched == qObject ())
     {
-      switch (ev->type ())
+      switch (xevent->type ())
         {
         case QEvent::ActionAdded:
         case QEvent::ActionRemoved:
             {
-              QActionEvent* ae = dynamic_cast<QActionEvent*> (ev);
+              QActionEvent* ae = dynamic_cast<QActionEvent*> (xevent);
               QToolBar* bar = qWidget<QToolBar> ();
 
               if (ae->action () != m_empty)
                 {
-                  if (ev->type () == QEvent::ActionAdded)
+                  if (xevent->type () == QEvent::ActionAdded)
                     {
                       if (bar->actions ().size () == 2)
                         QTimer::singleShot (0, this, SLOT (hideEmpty (void)));

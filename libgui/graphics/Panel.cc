@@ -144,13 +144,13 @@ Panel::~Panel (void)
 {
 }
 
-bool Panel::eventFilter (QObject* watched, QEvent* event)
+bool Panel::eventFilter (QObject* watched, QEvent* ev)
 {
   if (! m_blockUpdates)
     {
       if (watched == qObject ())
 	{
-	  switch (event->type ())
+	  switch (ev->type ())
 	    {
 	    case QEvent::Resize:
 		{
@@ -179,7 +179,7 @@ bool Panel::eventFilter (QObject* watched, QEvent* event)
 	      break;
 	    case QEvent::MouseButtonPress:
 		{
-		  QMouseEvent* m = dynamic_cast<QMouseEvent*> (event);
+		  QMouseEvent* m = dynamic_cast<QMouseEvent*> (ev);
 
 		  if (m->button () == Qt::RightButton)
 		    {
@@ -195,7 +195,7 @@ bool Panel::eventFilter (QObject* watched, QEvent* event)
 	}
       else if (watched == m_container)
 	{
-	  switch (event->type ())
+	  switch (ev->type ())
 	    {
 	    case QEvent::Resize:
 	      if (qWidget<QWidget> ()->isVisible ())

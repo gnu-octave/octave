@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-FigureWindow::FigureWindow (QWidget* parent)
-  : FigureWindowBase (parent)
+FigureWindow::FigureWindow (QWidget* xparent)
+  : FigureWindowBase (xparent)
 {
 }
 

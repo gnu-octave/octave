@@ -39,7 +39,7 @@ public:
 
   Container* innerContainer (void) { return 0; }
 
-  bool eventFilter (QObject* watched, QEvent* event);
+  bool eventFilter (QObject* watched, QEvent* e);
 
 protected:
   void init (QWidget* w, bool callBase = false);

@@ -58,20 +58,20 @@ static QKeySequence accelSequence (const uimenu::properties& up)
 
 Menu* Menu::create (const graphics_object& go)
 {
-  Object* parent = Object::parentObject (go);
+  Object* parent_obj = Object::parentObject (go);
 
-  if (parent)
+  if (parent_obj)
     {
-      QObject* qObj = parent->qObject ();
+      QObject* qObj = parent_obj->qObject ();
 
       if (qObj)
-	return new Menu (go, new QAction (qObj), parent);
+	return new Menu (go, new QAction (qObj), parent_obj);
     }
 
   return 0;
 }
 
-Menu::Menu (const graphics_object& go, QAction* action, Object* parent)
+Menu::Menu (const graphics_object& go, QAction* action, Object* xparent)
     : Object (go, action), m_parent (0), m_separator (0)
 {
   uimenu::properties& up = properties<uimenu> ();
@@ -92,7 +92,7 @@ Menu::Menu (const graphics_object& go, QAction* action, Object* parent)
       m_separator->setVisible (up.is_visible ());
     }
 
-  MenuContainer* menuContainer = dynamic_cast<MenuContainer*> (parent);
+  MenuContainer* menuContainer = dynamic_cast<MenuContainer*> (xparent);
 
   if (menuContainer)
     m_parent = menuContainer->menu ();

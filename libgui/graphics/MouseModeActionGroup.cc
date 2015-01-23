@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-MouseModeActionGroup::MouseModeActionGroup (QObject* parent)
-  : QObject (parent), m_current (0)
+MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
+  : QObject (xparent), m_current (0)
 {
   m_actions.append (new QAction (QIcon (":/images/rotate.png"),
 				 tr ("Rotate"), this));

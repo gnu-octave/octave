@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-Container::Container (QWidget* parent)
-  : ContainerBase (parent), m_canvas (0)
+Container::Container (QWidget* xparent)
+  : ContainerBase (xparent), m_canvas (0)
 {
   setFocusPolicy (Qt::ClickFocus);
 }
@@ -47,18 +47,18 @@ Container::~Container (void)
 {
 }
 
-Canvas* Container::canvas (const graphics_handle& handle, bool create)
+Canvas* Container::canvas (const graphics_handle& gh, bool xcreate)
 {
-  if (! m_canvas && create)
+  if (! m_canvas && xcreate)
     {
-      graphics_object go = gh_manager::get_object (handle);
+      graphics_object go = gh_manager::get_object (gh);
 
       if (go)
 	{
 	  graphics_object fig = go.get_ancestor ("figure");
 
 	  m_canvas = Canvas::create (fig.get("renderer").string_value (),
-				     this, handle);
+				     this, gh);
 
 	  QWidget* canvasWidget = m_canvas->qWidget ();
 
@@ -96,11 +96,11 @@ void Container::resizeEvent (QResizeEvent* /* event */)
     }
 }
 
-void Container::childEvent (QChildEvent* event)
+void Container::childEvent (QChildEvent* ev)
 {
-  if (event->child ()->isWidgetType ())
+  if (ev->child ()->isWidgetType ())
     {
-      qobject_cast<QWidget*> (event->child ())->setMouseTracking (hasMouseTracking ());
+      qobject_cast<QWidget*> (ev->child ())->setMouseTracking (hasMouseTracking ());
     }
 }
 

@@ -84,7 +84,7 @@ profile_data_accumulator::tree_node::enter (octave_idx_type fcn)
 }
 
 profile_data_accumulator::tree_node*
-profile_data_accumulator::tree_node::exit (octave_idx_type fcn)
+profile_data_accumulator::tree_node::exit (octave_idx_type /* fcn */)
 {
   // FIXME: These assert statements don't make sense if profile() is called
   //        from within a function hierarchy to begin with.  See bug #39587.

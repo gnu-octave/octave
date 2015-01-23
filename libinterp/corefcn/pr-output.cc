@@ -3402,8 +3402,7 @@ octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 }
 
 void
-octave_print_internal (std::ostream&, const octave_value&,
-                       bool pr_as_read_syntax)
+octave_print_internal (std::ostream&, const octave_value&, bool)
 {
   panic_impossible ();
 }

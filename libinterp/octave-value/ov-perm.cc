@@ -260,8 +260,6 @@ octave_perm_matrix::convert_to_str_internal (bool pad, bool force,
 bool
 octave_perm_matrix::save_ascii (std::ostream& os)
 {
-  typedef octave_int<octave_idx_type> idx_int_type;
-
   os << "# size: " << matrix.rows () << "\n";
   os << "# orient: " << (matrix.is_col_perm () ? 'c' : 'r') << '\n';
 
@@ -277,7 +275,6 @@ octave_perm_matrix::save_ascii (std::ostream& os)
 bool
 octave_perm_matrix::load_ascii (std::istream& is)
 {
-  typedef octave_int<octave_idx_type> idx_int_type;
   octave_idx_type n;
   bool success = true;
   char orient;

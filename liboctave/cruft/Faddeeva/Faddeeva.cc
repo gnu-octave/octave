@@ -211,6 +211,7 @@ static inline double my_copysign(double x, double y) { return y<0 ? -x : x; }
 // the Octave developers prefer that we silence the warning.
 #  ifdef GNULIB_NAMESPACE
 #    define floor GNULIB_NAMESPACE::floor
+#    define log GNULIB_NAMESPACE::log
 #  endif
 
 #else // !__cplusplus, i.e. pure C (requires C99 features)

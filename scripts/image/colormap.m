@@ -60,6 +60,7 @@
 ## Adapted-By: jwe
 
 function cmap = colormap (varargin)
+  mlock; # prevent map_list to be cleared by "clear all"
   persistent map_list = cell ();
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("colormap", varargin{:});

@@ -139,6 +139,7 @@
                        slight accuracy improvements to erf and dawson
                        functions near the origin.  Use gnulib functions
                        if GNULIB_NAMESPACE is defined.
+     18 December 2012: Slight tweaks (remove recomputation of x*x in Dawson)
 */
 
 /////////////////////////////////////////////////////////////////////////
@@ -584,7 +585,7 @@ cmplx FADDEEVA(Dawson)(cmplx z, double relerr)
     }
     else {
       double D = spi2 * FADDEEVA(w_im)(x);
-      double x2 = x*x, y2 = y*y;
+      double y2 = y*y;
       return C
         (D + y2 * (D + x - 2*D*x2)
          + y2*y2 * (D * (0.5 - x2 * (2 - 0.66666666666666666667*x2))

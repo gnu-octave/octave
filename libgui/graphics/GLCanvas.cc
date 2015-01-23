@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 namespace QtHandles
 {
 
-GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& xhandle)
-  : QGLWidget (xparent), Canvas (xhandle)
+GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& gh)
+  : QGLWidget (xparent), Canvas (gh)
 {
   setFocusPolicy (Qt::ClickFocus);
 }
@@ -47,9 +47,9 @@ GLCanvas::~GLCanvas (void)
 {
 }
 
-void GLCanvas::draw (const graphics_handle& xhandle)
+void GLCanvas::draw (const graphics_handle& gh)
 {
-  graphics_object go = gh_manager::get_object (xhandle);
+  graphics_object go = gh_manager::get_object (gh);
 
   if (go)
     {

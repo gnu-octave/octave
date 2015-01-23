@@ -47,18 +47,18 @@ Container::~Container (void)
 {
 }
 
-Canvas* Container::canvas (const graphics_handle& xhandle, bool xcreate)
+Canvas* Container::canvas (const graphics_handle& gh, bool xcreate)
 {
   if (! m_canvas && xcreate)
     {
-      graphics_object go = gh_manager::get_object (xhandle);
+      graphics_object go = gh_manager::get_object (gh);
 
       if (go)
         {
           graphics_object fig = go.get_ancestor ("figure");
 
           m_canvas = Canvas::create (fig.get("renderer").string_value (),
-                                     this, xhandle);
+                                     this, gh);
 
           QWidget* canvasWidget = m_canvas->qWidget ();
 

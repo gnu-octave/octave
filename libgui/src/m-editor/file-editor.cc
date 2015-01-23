@@ -1567,7 +1567,11 @@ file_editor::construct (void)
                            QStringList ()).toStringList ();
 
       for (int n = 0; n < sessionFileNames.count (); ++n)
-        request_open_file (sessionFileNames.at (n));
+        {
+          QFileInfo file = QFileInfo (sessionFileNames.at (n));
+          if (file.exists ())
+            request_open_file (sessionFileNames.at (n));
+        }
     }
 
   check_actions ();
@@ -1581,6 +1585,15 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   // signals from the qscintilla edit area
   connect (f->qsci_edit_area (), SIGNAL (status_update (bool, bool)),
            this, SLOT (edit_status_update (bool, bool)));
+
+  connect (f->qsci_edit_area (), SIGNAL (show_doc_signal (const QString&)),
+           main_win (), SLOT (handle_show_doc (const QString&)));
+
+  connect (f->qsci_edit_area (), SIGNAL (create_context_menu_signal (QMenu *)),
+           this, SLOT (create_context_menu (QMenu *)));
+
+  connect (f->qsci_edit_area (), SIGNAL (execute_command_in_terminal_signal (const QString&)),
+           main_win (), SLOT (execute_command_in_terminal (const QString&)));
 
   // Signals from the file editor_tab
   connect (f, SIGNAL (file_name_changed (const QString&, const QString&)),
@@ -1602,14 +1615,11 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (f, SIGNAL (mru_add_file (const QString&)),
            this, SLOT (handle_mru_add_file (const QString&)));
 
-  connect (f, SIGNAL (create_context_menu_tab_signal (QMenu *)),
-           this, SLOT (create_context_menu (QMenu *)));
-
   connect (f, SIGNAL (run_file_signal (const QFileInfo&)),
            main_win (), SLOT (run_file_in_terminal (const QFileInfo&)));
 
-  connect (f, SIGNAL (execute_command_in_terminal_signal (const QString&)),
-           main_win (), SLOT (execute_command_in_terminal (const QString&)));
+  connect (f, SIGNAL (request_open_file (const QString&)),
+           this, SLOT (request_open_file (const QString&)));
 
   connect (f, SIGNAL (set_global_edit_shortcuts_signal (bool)),
            main_win (), SLOT (set_global_edit_shortcuts (bool)));

@@ -139,6 +139,7 @@
                        slight accuracy improvements to erf and dawson
                        functions near the origin.  Use gnulib functions
                        if GNULIB_NAMESPACE is defined.
+     18 December 2012: Slight tweaks (remove recomputation of x*x in Dawson)
 */
 
 /////////////////////////////////////////////////////////////////////////
@@ -210,6 +211,7 @@ static inline double my_copysign(double x, double y) { return y<0 ? -x : x; }
 // the Octave developers prefer that we silence the warning.
 #  ifdef GNULIB_NAMESPACE
 #    define floor GNULIB_NAMESPACE::floor
+#    define log GNULIB_NAMESPACE::log
 #  endif
 
 #else // !__cplusplus, i.e. pure C (requires C99 features)
@@ -565,8 +567,8 @@ cmplx FADDEEVA(Dawson)(cmplx z, double relerr)
  taylor_realaxis:
   {
     double x2 = x*x;
-    double y2 = y*y;
     if (x2 > 1600) { // |x| > 40
+      double y2 = y*y;
       if (x2 > 25e14) {// |x| > 5e7
         double xy2 = (x*y)*(x*y);
         return C((0.5 + y2 * (0.5 + 0.25*y2
@@ -584,6 +586,7 @@ cmplx FADDEEVA(Dawson)(cmplx z, double relerr)
     }
     else {
       double D = spi2 * FADDEEVA(w_im)(x);
+      double y2 = y*y;
       return C
         (D + y2 * (D + x - 2*D*x2)
          + y2*y2 * (D * (0.5 - x2 * (2 - 0.66666666666666666667*x2))
@@ -693,7 +696,7 @@ cmplx FADDEEVA(w)(cmplx z, double relerr)
   else {
     const double pi = 3.14159265358979323846264338327950288419716939937510582;
     if (relerr > 0.1) relerr = 0.1; // not sensible to compute < 1 digit
-    a = pi / sqrt(-gnulib::log(relerr*0.5));
+    a = pi / sqrt(-log(relerr*0.5));
     c = (2/pi)*a;
     a2 = a*a;
   }
@@ -1009,7 +1012,7 @@ cmplx FADDEEVA(w)(cmplx z, double relerr)
    compared to fitting the whole [0,1] interval with a single polynomial. */
 static double erfcx_y100(double y100)
 {
-  switch (static_cast<int> (y100)) {
+  switch ((int) y100) {
 case 0: {
 double t = 2*y100 - 1;
 return 0.70878032454106438663e-3 + (0.71234091047026302958e-3 + (0.35779077297597742384e-5 + (0.17403143962587937815e-7 + (0.81710660047307788845e-10 + (0.36885022360434957634e-12 + 0.15917038551111111111e-14 * t) * t) * t) * t) * t) * t;
@@ -1453,7 +1456,7 @@ double FADDEEVA_RE(erfcx)(double x)
    the Chebyshev polynomials to be of significantly lower degree (about 1/30)
    compared to fitting the whole [0,1] interval with a single polynomial. */
 static double w_im_y100(double y100, double x) {
-  switch (static_cast<int> (y100)) {
+  switch ((int) y100) {
     case 0: {
       double t = 2*y100 - 1;
       return 0.28351593328822191546e-2 + (0.28494783221378400759e-2 + (0.14427470563276734183e-4 + (0.10939723080231588129e-6 + (0.92474307943275042045e-9 + (0.89128907666450075245e-11 + 0.92974121935111111110e-13 * t) * t) * t) * t) * t) * t;

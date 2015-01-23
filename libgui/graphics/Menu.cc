@@ -58,14 +58,14 @@ static QKeySequence accelSequence (const uimenu::properties& up)
 
 Menu* Menu::create (const graphics_object& go)
 {
-  Object* parent = Object::parentObject (go);
+  Object* parent_obj = Object::parentObject (go);
 
-  if (parent)
+  if (parent_obj)
     {
-      QObject* qObj = parent->qObject ();
+      QObject* qObj = parent_obj->qObject ();
 
       if (qObj)
-        return new Menu (go, new QAction (qObj), parent);
+        return new Menu (go, new QAction (qObj), parent_obj);
     }
 
   return 0;

@@ -33,7 +33,7 @@ class TextEdit : public QTextEdit
   Q_OBJECT
 
 public:
-  TextEdit (QWidget* xparent) : QTextEdit (xparent) { }
+  TextEdit (QWidget* xparent) : QTextEdit(xparent) { }
   ~TextEdit (void) { }
 
 signals:

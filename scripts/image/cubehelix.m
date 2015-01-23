@@ -51,25 +51,30 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
 
   if (nargin > 5)
     print_usage ()
+  elseif (! isscalar (n))
+    error ("cubehelix: N must be a scalar");
   endif
 
-  if (! isscalar (n) || n < 1)
-    error ("cubehelix: N must be a positive scalar");
+  if (n > 1)
+    coeff = [ -0.14861  -0.29227   1.97294
+               1.78277  -0.90649   0.00000];
+
+    fract = ((0:n-1) / (n-1))';
+    angle = 2 * pi * (start/3 + 1 + rots*fract);
+    fract = fract .^ gamma;
+    amp   = hue * fract .* (1-fract) /2;
+    warning ("off", "Octave:broadcast", "local");
+    map   = fract + amp .* ([cos(angle) sin(angle)] * coeff);
+
+    ## Clip values (only in case users have changed values of hue or gamma)
+    map(map < 0) = 0;
+    map(map > 1) = 1;
+
+  elseif (n > 0)
+    map = [0, 0, 0];
+  else
+    map = zeros (0, 3);
   endif
-
-  coeff = [ -0.14861  -0.29227   1.97294
-             1.78277  -0.90649   0.00000];
-
-  fract = ((0:n-1) / (n-1))';
-  angle = 2 * pi * (start/3 + 1 + rots*fract);
-  fract = fract .^ gamma;
-  amp   = hue * fract .* (1-fract) /2;
-  warning ("off", "Octave:broadcast", "local");
-  map   = fract + amp .* ([cos(angle) sin(angle)] * coeff);
-
-  ## Clip values (only in case users have changed values of hue or gamma)
-  map(map < 0) = 0;
-  map(map > 1) = 1;
 
 endfunction
 

@@ -240,6 +240,9 @@ octave_dock_widget::make_widget (bool dock)
 #else
 
   // non windows: just say we are a docked widget again
+
+  Q_UNUSED (dock);
+
   setWindowFlags (Qt::Widget);
 
   QString css = styleSheet ();

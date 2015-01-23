@@ -89,7 +89,7 @@ private:
 // Disable all Qt messages by default.
 
 static void
-message_handler (QtMsgType type, const char *msg)
+message_handler (QtMsgType, const char *)
 {
 }
 

@@ -19,6 +19,7 @@ image_FCN_FILES = \
   image/contrast.m \
   image/cool.m \
   image/copper.m \
+  image/cubehelix.m \
   image/flag.m \
   image/gmap40.m \
   image/gray.m \

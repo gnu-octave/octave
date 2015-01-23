@@ -43,7 +43,7 @@ function map = gmap40 (n)
     print_usage ();
   endif
 
-  if (n > 1)
+  if (n > 0)
     C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
     map = C(rem (0:(n-1), 6) + 1, :);
   else

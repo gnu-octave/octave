@@ -204,11 +204,7 @@ octave_dock_widget::make_window ()
 
 // dock the widget
 void
-#if defined (Q_OS_WIN32)
 octave_dock_widget::make_widget (bool dock)
-#else
-octave_dock_widget::make_widget (bool)
-#endif
 {
 #if defined (Q_OS_WIN32)
 

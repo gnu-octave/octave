@@ -860,6 +860,17 @@ file_editor::request_goto_line (bool)
   emit fetab_goto_line (_tab_widget->currentWidget ());
 }
 
+void
+file_editor::request_move_match_brace (bool)
+{
+  emit fetab_move_match_brace (_tab_widget->currentWidget (), false);
+}
+
+void
+file_editor::request_sel_match_brace (bool)
+{
+  emit fetab_move_match_brace (_tab_widget->currentWidget (), true);
+}
 
 void
 file_editor::request_completion (bool)
@@ -1402,6 +1413,13 @@ file_editor::construct (void)
   _goto_line_action = add_action (_edit_nav_menu, QIcon (),
           tr ("Go &to Line..."), SLOT (request_goto_line (bool)));
 
+  _edit_cmd_menu->addSeparator ();
+
+  _move_to_matching_brace  = add_action (_edit_nav_menu, QIcon (),
+          tr ("Move to Matching Brace"), SLOT (request_move_match_brace (bool)));
+  _sel_to_matching_brace  = add_action (_edit_nav_menu, QIcon (),
+          tr ("Select to Matching Brace"), SLOT (request_sel_match_brace (bool)));
+
   _edit_nav_menu->addSeparator ();
 
   _next_bookmark_action =  add_action (_edit_nav_menu, QIcon (),
@@ -1715,6 +1733,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_goto_line (const QWidget*, int)),
            f, SLOT (goto_line (const QWidget*, int)));
 
+  connect (this, SIGNAL (fetab_move_match_brace (const QWidget*, bool)),
+           f, SLOT (move_match_brace (const QWidget*, bool)));
+
   connect (this, SIGNAL (fetab_completion (const QWidget*)),
            f, SLOT (show_auto_completion (const QWidget*)));
 
@@ -1806,6 +1827,8 @@ file_editor::set_shortcuts ()
   shortcut_manager::set_shortcut (_unindent_selection_action, "editor_edit:unindent_selection");
   shortcut_manager::set_shortcut (_completion_action, "editor_edit:completion_list");
   shortcut_manager::set_shortcut (_goto_line_action, "editor_edit:goto_line");
+  shortcut_manager::set_shortcut (_move_to_matching_brace, "editor_edit:move_to_brace");
+  shortcut_manager::set_shortcut (_sel_to_matching_brace, "editor_edit:select_to_brace");
   shortcut_manager::set_shortcut (_toggle_bookmark_action, "editor_edit:toggle_bookmark");
   shortcut_manager::set_shortcut (_next_bookmark_action, "editor_edit:next_bookmark");
   shortcut_manager::set_shortcut (_previous_bookmark_action, "editor_edit:previous_bookmark");

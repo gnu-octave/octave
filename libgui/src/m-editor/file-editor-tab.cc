@@ -1048,6 +1048,18 @@ file_editor_tab::goto_line (const QWidget *ID, int line)
 }
 
 void
+file_editor_tab::move_match_brace (const QWidget *ID, bool select)
+{
+  if (ID != this)
+    return;
+
+  if (select)
+    _edit_area->selectToMatchingBrace ();
+  else
+    _edit_area->moveToMatchingBrace ();
+}
+
+void
 file_editor_tab::show_auto_completion (const QWidget *ID)
 {
   if (ID != this)

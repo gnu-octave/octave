@@ -255,6 +255,10 @@ shortcut_manager::do_init_data ()
 
   init (tr ("Goto Line"), "editor_edit:goto_line",
         QKeySequence (ctrl + Qt::Key_G));
+  init (tr ("Move to Matching Brace"), "editor_edit:move_to_brace",
+        QKeySequence (ctrl + Qt::Key_M));
+  init (tr ("Select to Matching Brace"), "editor_edit:select_to_brace",
+        QKeySequence (ctrl_shift + Qt::Key_M));
   init (tr ("Toggle Bookmark"), "editor_edit:toggle_bookmark",
         QKeySequence (prefix + Qt::Key_F7));
   init (tr ("Next Bookmark"), "editor_edit:next_bookmark",

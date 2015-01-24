@@ -96,6 +96,7 @@ signals:
   void fetab_convert_eol (const QWidget* ID, QsciScintilla::EolMode eol_mode);
   void fetab_find (const QWidget* ID);
   void fetab_goto_line (const QWidget* ID, int line = -1);
+  void fetab_move_match_brace (const QWidget* ID, bool select);
   void fetab_completion (const QWidget*);
   void fetab_insert_debugger_pointer (const QWidget* ID, int line = -1);
   void fetab_delete_debugger_pointer (const QWidget* ID, int line = -1);
@@ -146,6 +147,8 @@ public slots:
   void request_previous_bookmark (bool);
   void request_remove_bookmark (bool);
 
+  void request_move_match_brace (bool);
+  void request_sel_match_brace (bool);
   void request_toggle_breakpoint (bool);
   void request_next_breakpoint (bool);
   void request_previous_breakpoint (bool);
@@ -305,6 +308,8 @@ private:
   QAction *_goto_line_action;
   QAction *_completion_action;
 
+  QAction *_move_to_matching_brace;
+  QAction *_sel_to_matching_brace;
   QAction *_next_bookmark_action;
   QAction *_previous_bookmark_action;
   QAction *_toggle_bookmark_action;

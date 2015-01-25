@@ -2460,38 +2460,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>button_box</sender>
-   <signal>accepted()</signal>
-   <receiver>settings_dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>299</x>
-     <y>366</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>299</x>
-     <y>199</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>button_box</sender>
-   <signal>rejected()</signal>
-   <receiver>settings_dialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>299</x>
-     <y>366</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>299</x>
-     <y>199</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>useCustomFileEditor</sender>
    <signal>toggled(bool)</signal>
    <receiver>customEditorLabel</receiver>

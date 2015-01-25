@@ -44,7 +44,7 @@ class settings_dialog:public QDialog
   explicit settings_dialog (QWidget * parent,
                             const QString& desired_tab = QString ());
   ~settings_dialog ();
-  void write_changed_settings ();
+  void show_tab (const QString&);
 
 signals:
   void apply_new_settings ();
@@ -73,6 +73,8 @@ private:
   enum { MaxLexerStyles = 64,
          MaxStyleNumber = 128 };
 #endif
+
+  void write_changed_settings ();
 
   void read_workspace_colors (QSettings *settings);
   void write_workspace_colors (QSettings *settings);

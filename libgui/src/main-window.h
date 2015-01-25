@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <QToolButton>
 #include <QComboBox>
 #include <QSemaphore>
+#include <QPointer>
 
 // Editor includes
 #include "file-editor-interface.h"
@@ -56,6 +57,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "octave-dock-widget.h"
 #include "find-files-dialog.h"
+
+class settings_dialog;
 
 /**
  * \class MainWindow
@@ -104,7 +107,6 @@ public slots:
 
   void focus_changed (QWidget *w_old, QWidget *w_new);
   void request_reload_settings ();
-
 
   void report_status_message (const QString& statusMessage);
   void handle_save_workspace_request (void);
@@ -378,6 +380,9 @@ private:
   static const int current_directory_max_visible = 16;
   static const int current_directory_max_count = 16;
   QLineEdit *_current_directory_line_edit;
+
+  // settings dialog as guarded pointer (set to 0 when deleted)
+  QPointer<settings_dialog> _settings_dlg;
 
   // Find files dialog
   find_files_dialog * find_files_dlg;

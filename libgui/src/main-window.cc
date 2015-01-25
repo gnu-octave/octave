@@ -85,6 +85,7 @@ main_window::main_window (QWidget *p)
     doc_browser_window (new documentation_dock_widget (this)),
     editor_window (create_default_editor (this)),
     workspace_window (new workspace_view (this)),
+    _settings_dlg (0),
     find_files_dlg (0),
     release_notes_window (0),
     community_news_window (0),
@@ -149,6 +150,11 @@ main_window::~main_window (void)
     {
       delete release_notes_window;
       release_notes_window = 0;
+    }
+  if (_settings_dlg)
+    {
+      delete _settings_dlg;
+      _settings_dlg = 0;
     }
   if (community_news_window)
     {
@@ -668,14 +674,21 @@ main_window::open_developer_page (void)
 void
 main_window::process_settings_dialog_request (const QString& desired_tab)
 {
-  settings_dialog *settingsDialog = new settings_dialog (this, desired_tab);
+  if (_settings_dlg)  // _settings_dlg is a guarded pointer!
+    {                 // here the dialog is still open and called once again
+      if (! desired_tab.isEmpty ())
+        _settings_dlg->show_tab (desired_tab);
+      return;
+    }
 
-  connect (settingsDialog, SIGNAL (apply_new_settings ()),
+  _settings_dlg = new settings_dialog (this, desired_tab);
+
+  connect (_settings_dlg, SIGNAL (apply_new_settings ()),
            this, SLOT (request_reload_settings ()));
 
-  settingsDialog->setModal (false);
-  settingsDialog->setAttribute (Qt::WA_DeleteOnClose);
-  settingsDialog->show ();
+  _settings_dlg->setModal (false);
+  _settings_dlg->setAttribute (Qt::WA_DeleteOnClose);
+  _settings_dlg->show ();
 }
 
 void

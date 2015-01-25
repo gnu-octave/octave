@@ -400,7 +400,8 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
         ui->tabWidget->indexOf (tab_hash.value (desired_tab)));
     }
 
-
+  connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
+           this,           SLOT (button_clicked (QAbstractButton *)));
 }
 
 settings_dialog::~settings_dialog ()
@@ -944,6 +945,19 @@ settings_dialog::write_terminal_colors (QSettings *settings)
 
 
 // internal slots
+
+void
+settings_dialog::button_clicked (QAbstractButton *button)
+{
+  QDialogButtonBox::ButtonRole button_role = ui->button_box->buttonRole (button);
+
+  if (button_role == QDialogButtonBox::ApplyRole ||
+      button_role == QDialogButtonBox::AcceptRole)
+    {
+      write_changed_settings ();
+      emit apply_new_settings ();
+    }
+}
 
 void
 settings_dialog::get_dir (QLineEdit *line_edit, const QString& title)

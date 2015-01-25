@@ -46,11 +46,17 @@ class settings_dialog:public QDialog
   ~settings_dialog ();
   void write_changed_settings ();
 
+signals:
+  void apply_new_settings ();
+
 private slots:
   void get_octave_dir ();
   void get_file_browser_dir ();
   void get_dir (QLineEdit*, const QString&);
   void set_disabled_pref_file_browser_dir (bool disable);
+
+  // slots for dialog's buttons
+  void button_clicked (QAbstractButton *button);
 
   // slots for import/export-buttons of shortcut sets
   void import_shortcut_set1 ();

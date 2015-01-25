@@ -669,17 +669,23 @@ void
 main_window::process_settings_dialog_request (const QString& desired_tab)
 {
   settings_dialog *settingsDialog = new settings_dialog (this, desired_tab);
-  int change_settings = settingsDialog->exec ();
-  if (change_settings == QDialog::Accepted)
-    {
-      settingsDialog->write_changed_settings ();
-      QSettings *settings = resource_manager::get_settings ();
-      if (settings)
-        emit settings_changed (settings);
-    }
-  delete settingsDialog;
+
+  connect (settingsDialog, SIGNAL (apply_new_settings ()),
+           this, SLOT (request_reload_settings ()));
+
+  settingsDialog->setModal (false);
+  settingsDialog->setAttribute (Qt::WA_DeleteOnClose);
+  settingsDialog->show ();
 }
 
+void
+main_window::request_reload_settings ()
+{
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings)
+    emit settings_changed (settings);
+}
 
 void
 main_window::notice_settings (const QSettings *settings)

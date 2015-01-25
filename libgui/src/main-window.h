@@ -103,6 +103,7 @@ signals:
 public slots:
 
   void focus_changed (QWidget *w_old, QWidget *w_new);
+  void request_reload_settings ();
 
 
   void report_status_message (const QString& statusMessage);

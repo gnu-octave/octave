@@ -47,7 +47,7 @@ nan_ascending_compare (const FloatComplex& x, const FloatComplex& y)
   return (xisnan (y)
           ? ! xisnan (x)
           : ((std::abs (x) < std::abs (x))
-             || ((std::abs (x) == std::abs (x)) && (arg (x) < arg (x)))));
+             || ((std::abs (x) == std::abs (y)) && (arg (x) < arg (y)))));
 }
 
 static bool
@@ -56,7 +56,7 @@ nan_descending_compare (const FloatComplex& x, const FloatComplex& y)
   return (xisnan (x)
           ? ! xisnan (y)
           : ((std::abs (x) > std::abs (x))
-             || ((std::abs (x) == std::abs (x)) && (arg (x) > arg (x)))));
+             || ((std::abs (x) == std::abs (y)) && (arg (x) > arg (y)))));
 }
 
 Array<FloatComplex>::compare_fcn_type

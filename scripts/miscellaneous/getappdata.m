@@ -47,18 +47,14 @@ function value = getappdata (h, name)
       error ("getappdata: NAME must be a string");
     endif
 
-    ## FIXME: Is there a better way to handle non-existent appdata
-    ##        and missing fields?
     value = cell (numel (h), 1);
     appdata = struct ();
     for i = 1:numel (h)
-      try
-        appdata = get (h(i), "__appdata__");
-      end_try_catch
-      if (isfield (appdata, name))
-        value(i) = {appdata.(name)};
-      else
-        value(i) = {[]};
+      value{i} = [];
+      pval = get (h(i));
+      if (isfield (pval, "__appdata__") &&
+          isfield (pval.__appdata__, name))
+        value{i} = pval.__appdata__.(name);
       endif
     endfor
 

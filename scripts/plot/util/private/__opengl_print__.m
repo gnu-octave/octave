@@ -17,11 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __fltk_print__ (@var{@dots{}})
+## @deftypefn {Function File} {} __opengl_print__ (@var{@dots{}})
 ## Undocumented internal function.
 ## @end deftypefn
 
-function opts = __fltk_print__ (opts)
+function opts = __opengl_print__ (opts)
 
   dos_shell = (ispc () && ! isunix ());
 
@@ -160,7 +160,7 @@ function opts = __fltk_print__ (opts)
 
   for n = 1:numel (pipeline)
     if (opts.debug)
-      fprintf ("fltk-pipeline: '%s'\n", pipeline{n});
+      fprintf ("opengl-pipeline: '%s'\n", pipeline{n});
     endif
     drawnow (gl2ps_device{n}, strcat ('|',pipeline{n}));
   endfor

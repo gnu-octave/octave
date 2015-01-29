@@ -428,7 +428,7 @@ function print (varargin)
       case "gnuplot"
         opts = __gnuplot_print__ (opts);
       otherwise
-        opts = __fltk_print__ (opts);
+        opts = __opengl_print__ (opts);
     endswitch
 
   unwind_protect_cleanup

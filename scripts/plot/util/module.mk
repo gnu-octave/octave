@@ -8,7 +8,6 @@ GEN_FCN_FILES += $(plot_util_GEN_FCN_FILES)
 plot_util_PRIVATE_FCN_FILES = \
   plot/util/private/__add_default_menu__.m \
   plot/util/private/__fltk_ginput__.m \
-  plot/util/private/__fltk_print__.m \
   plot/util/private/__ghostscript__.m \
   plot/util/private/__gnuplot_get_var__.m \
   plot/util/private/__gnuplot_ginput__.m \
@@ -19,6 +18,7 @@ plot_util_PRIVATE_FCN_FILES = \
   plot/util/private/__gnuplot_version__.m \
   plot/util/private/__go_draw_axes__.m \
   plot/util/private/__go_draw_figure__.m \
+  plot/util/private/__opengl_print__.m \
   plot/util/private/__print_parse_opts__.m \
   plot/util/private/__tight_eps_bbox__.m
 

@@ -86,4 +86,8 @@ private:
 
 #endif  // HAVE_GL2PS_H
 
+extern OCTINTERP_API void
+gl2ps_print (const graphics_object& fig, const std::string& cmd,
+             const std::string& term);
+
 #endif

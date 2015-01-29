@@ -83,11 +83,9 @@ To initialize:
 
 #include "display.h"
 #include "file-ops.h"
-#include "gl-render.h"
 #include "gl2ps-renderer.h"
 #include "graphics.h"
 #include "parse.h"
-#include "sysdep.h"
 #include "toplev.h"
 #include "variables.h"
 
@@ -133,15 +131,8 @@ public:
   void print (const std::string& cmd, const std::string& term)
   {
     //std::cout << "OpenGL_fltk::print(cmd=" << cmd << ", term=" << term << ") canvas size = " << w () << "x" << h () << std::endl;
-#ifdef HAVE_GL2PS_H
-    FILE *fp;
-    fp = octave_popen (cmd.c_str (), "w");
-    glps_renderer rend (fp, term);
-    rend.draw (gh_manager::get_object (number), cmd);
-    octave_pclose (fp);
-#else
-    error ("fltk: printing not available without gl2ps library");
-#endif
+
+    gl2ps_print (gh_manager::get_object (number), cmd, term);
   }
 
   void resize (int xx, int yy, int ww, int hh)

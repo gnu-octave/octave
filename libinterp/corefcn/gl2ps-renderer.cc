@@ -30,9 +30,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
+#include "unwind-prot.h"
 
 #include "gl2ps-renderer.h"
 #include "gl2ps.h"
+#include "sysdep.h"
 
 void
 glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
@@ -266,4 +268,34 @@ glps_renderer::draw_text (const text::properties& props)
                 alignment_to_mode (halign, valign), props.get_rotation ());
 }
 
+static void
+safe_pclose (FILE *f)
+{
+  if (f)
+    octave_pclose (f);
+}
+
 #endif
+
+void
+gl2ps_print (const graphics_object& fig, const std::string& cmd,
+             const std::string& term)
+{
+#ifdef HAVE_GL2PS_H
+
+  unwind_protect frame;
+
+  FILE *fp = octave_popen (cmd.c_str (), "w");
+
+  frame.add_fcn (safe_pclose, fp);
+
+  glps_renderer rend (fp, term);
+
+  rend.draw (fig, cmd);
+
+#else
+
+  error ("print: printing not available without gl2ps library");
+
+#endif
+}

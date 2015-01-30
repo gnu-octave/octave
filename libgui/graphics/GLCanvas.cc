@@ -38,7 +38,7 @@ namespace QtHandles
 {
 
 GLCanvas::GLCanvas (QWidget* xparent, const graphics_handle& gh)
-  : QGLWidget (xparent), Canvas (gh)
+  : QGLWidget (QGLFormat(QGL::SampleBuffers), xparent), Canvas (gh)
 {
   setFocusPolicy (Qt::ClickFocus);
 }

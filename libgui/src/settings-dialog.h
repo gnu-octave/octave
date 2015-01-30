@@ -44,13 +44,19 @@ class settings_dialog:public QDialog
   explicit settings_dialog (QWidget * parent,
                             const QString& desired_tab = QString ());
   ~settings_dialog ();
-  void write_changed_settings ();
+  void show_tab (const QString&);
+
+signals:
+  void apply_new_settings ();
 
 private slots:
   void get_octave_dir ();
   void get_file_browser_dir ();
   void get_dir (QLineEdit*, const QString&);
   void set_disabled_pref_file_browser_dir (bool disable);
+
+  // slots for dialog's buttons
+  void button_clicked (QAbstractButton *button);
 
   // slots for import/export-buttons of shortcut sets
   void import_shortcut_set1 ();
@@ -67,6 +73,8 @@ private:
   enum { MaxLexerStyles = 64,
          MaxStyleNumber = 128 };
 #endif
+
+  void write_changed_settings ();
 
   void read_workspace_colors (QSettings *settings);
   void write_workspace_colors (QSettings *settings);

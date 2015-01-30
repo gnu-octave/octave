@@ -388,19 +388,11 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab):
 #endif
 
   // which tab is the desired one?
-  if (desired_tab.isEmpty ())
-    ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
-                                    0).toInt ());
-  else
-    {
-      QHash <QString, QWidget*> tab_hash;
-      tab_hash["editor"] = ui->tab_editor;
-      tab_hash["editor_styles"] = ui->tab_editor_styles;
-      ui->tabWidget->setCurrentIndex (
-        ui->tabWidget->indexOf (tab_hash.value (desired_tab)));
-    }
+  show_tab (desired_tab);
 
-
+  // connect button box signal
+  connect (ui->button_box, SIGNAL (clicked (QAbstractButton *)),
+           this,           SLOT (button_clicked (QAbstractButton *)));
 }
 
 settings_dialog::~settings_dialog ()
@@ -408,6 +400,24 @@ settings_dialog::~settings_dialog ()
   delete ui;
 }
 
+void
+settings_dialog::show_tab (const QString& tab)
+{
+  if (tab.isEmpty ())
+    {
+      QSettings *settings = resource_manager::get_settings ();
+      ui->tabWidget->setCurrentIndex (settings->value ("settings/last_tab",
+                                      0).toInt ());
+    }
+  else
+    {
+      QHash <QString, QWidget*> tab_hash;
+      tab_hash["editor"] = ui->tab_editor;
+      tab_hash["editor_styles"] = ui->tab_editor_styles;
+      ui->tabWidget->setCurrentIndex (
+        ui->tabWidget->indexOf (tab_hash.value (tab)));
+    }
+}
 
 #ifdef HAVE_QSCINTILLA
 int
@@ -944,6 +954,23 @@ settings_dialog::write_terminal_colors (QSettings *settings)
 
 
 // internal slots
+
+void
+settings_dialog::button_clicked (QAbstractButton *button)
+{
+  QDialogButtonBox::ButtonRole button_role = ui->button_box->buttonRole (button);
+
+  if (button_role == QDialogButtonBox::ApplyRole ||
+      button_role == QDialogButtonBox::AcceptRole)
+    {
+      write_changed_settings ();
+      emit apply_new_settings ();
+    }
+
+  if (button_role == QDialogButtonBox::RejectRole ||
+      button_role == QDialogButtonBox::AcceptRole)
+    close ();
+}
 
 void
 settings_dialog::get_dir (QLineEdit *line_edit, const QString& title)

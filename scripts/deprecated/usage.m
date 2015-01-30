@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {} usage (@var{msg})
 ##
-## @code{usage} is deprecated and will be removed in Octave version 4.6.
+## @code{usage} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{print_usage} in all new code.
 ##
 ## Print the message @var{msg}, prefixed by the string @samp{usage: }, and
@@ -49,7 +49,7 @@
 ## @seealso{print_usage}
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function retval = usage (varargin)
 

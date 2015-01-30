@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Rik Wehbring
+## Copyright (C) 2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,30 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nfields (@var{s})
-## Return the number of fields of the structure @var{s}.
-##
-## @strong{Warning:} @code{nfields} is scheduled for removal in version 4.4.
-## Use @code{numfields} instead.
-## @seealso{numfields, fieldnames}
+## @deftypefn {Built-in Function} {} read_readline_init_file (@var{file})
+## This function has been deprecated.  Use
+## @code{@file{readline_read_init_file}} instead.
+## @seealso{readline_read_init_file}
 ## @end deftypefn
 
-## Deprecated in 4.0
+## Deprecated in 3.8
 
-function retval = nfields (varargin)
+function read_readline_init_file (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "nfields is obsolete and will be removed from a future version of Octave; please use numfields instead");
+             "read_readline_init_file is obsolete and will be removed from a future version of Octave, please use readline_read_init_file instead");
   endif
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  retval = numfields (varargin{:});
+  readline_read_init_file (varargin{:});
 
 endfunction
 

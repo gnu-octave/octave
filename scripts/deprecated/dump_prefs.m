@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} dump_prefs ()
 ## @deftypefnx {Function File} {} dump_prefs (@var{fid})
 ##
-## @code{dump_prefs} is deprecated and will be removed in Octave version 4.6.
+## @code{dump_prefs} is deprecated and will be removed in Octave version 4.4.
 ## Please use individual preference get/set routines in all new code.
 ##
 ## Dump the current settings of all user preferences to stdout in a format that
@@ -32,6 +32,8 @@
 ## @end deftypefn
 
 ## Author: jwe
+
+## Deprecated in 4.0
 
 function dump_prefs (fid)
 

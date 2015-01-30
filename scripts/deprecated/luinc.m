@@ -20,7 +20,7 @@
 ## @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{droptol})
 ## @deftypefnx {Built-in Function} {[@var{L}, @var{U}, @var{P}, @var{Q}] =} luinc (@var{A}, @var{opts})
 ##
-## @code{luinc} is deprecated and will be removed in Octave version 4.6.
+## @code{luinc} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{ilu} or @code{ichol} in all new code.
 ##
 ## Produce the incomplete LU@tie{}factorization of the sparse matrix @var{A}.
@@ -76,7 +76,7 @@
 ## @seealso{ilu, ichol, lu, sparse}
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function [L, U, P, Q] = luinc (varargin)
 

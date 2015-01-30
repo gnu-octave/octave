@@ -23,7 +23,7 @@
 ## @seealso{dir_in_loadpath}
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function retval = find_dir_in_path (varargin)
 

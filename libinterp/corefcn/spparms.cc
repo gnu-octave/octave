@@ -131,7 +131,7 @@ longer running time.\n\
 
           if (str == "defaults" || str == "default")
             {
-              // FIXME: deprecated in 4.2, remove "defaults" for 4.6 release
+              // FIXME: deprecated in 4.0, remove "defaults" for 4.4 release
               static bool warned = false;
               if (! warned && str == "defaults")
                 {

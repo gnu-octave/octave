@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
 ##
-## @code{delaunay3} is deprecated and will be removed in Octave version 4.6.
+## @code{delaunay3} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{delaunay} in all new code.
 ##
 ## Compute the Delaunay triangulation for a 3-D set of points.
@@ -50,6 +50,8 @@
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
+
+## Deprecated in 4.0
 
 function tetr = delaunay3 (x, y, z, options)
 

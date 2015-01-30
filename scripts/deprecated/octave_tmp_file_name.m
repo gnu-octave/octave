@@ -22,7 +22,7 @@
 ## @deftypefnx {Built-in Function} {@var{fname} =} octave_tmp_file_name (@var{dir}, @var{prefix})
 ##
 ## @code{octave_tmp_file_name} is deprecated and will be removed in Octave
-## version 4.6.  Use @code{tempname} for equivalent functionality.
+## version 4.4.  Use @code{tempname} for equivalent functionality.
 ##
 ## Return a unique temporary file name as a string.
 ##
@@ -33,8 +33,7 @@
 ## @seealso{tempname, tmpnam, mkstemp, tempdir, P_tmpdir, tmpfile}
 ## @end deftypefn
 
-## Deprecated in version 4.2
-
+## Deprecated in version 4.0
 
 function filename = octave_tmp_file_name (varargin)
 

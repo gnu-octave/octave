@@ -22,7 +22,7 @@
 ## @deftypefn  {Function File} {} strmatch (@var{s}, @var{A})
 ## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
 ##
-## @code{strmatch} is deprecated and will be removed in Octave version 4.6.
+## @code{strmatch} is deprecated and will be removed in Octave version 4.4.
 ## Use @code{strncmp} (normal case), or @code{strcmp} (@qcode{"exact"} case),
 ## or @code{regexp} in all new code.
 ##
@@ -53,7 +53,7 @@
 ## Author: Paul Kienzle, Alois Schloegl
 ## Adapted-by: jwe
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function idx = strmatch (s, A, exact)
 

@@ -19,13 +19,13 @@ dnl Copyright (C) 1993-2014 John W. Eaton
 ### <http://www.gnu.org/licenses/>.
 
 AC_PREREQ([2.62])
-AC_INIT([GNU Octave], [4.1.0+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.9.0+], [http://octave.org/bugs.html], [octave])
 
 dnl Note that the version number is duplicated here and in AC_INIT
 dnl because AC_INIT requires it to be static, not computed from
 dnl shell variables.
-OCTAVE_MAJOR_VERSION=4
-OCTAVE_MINOR_VERSION=1
+OCTAVE_MAJOR_VERSION=3
+OCTAVE_MINOR_VERSION=9
 OCTAVE_PATCH_VERSION=0+
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg

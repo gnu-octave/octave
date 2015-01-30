@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})
 ##
-## @code{fnmatch} is deprecated and will be removed in Octave version 4.6.
+## @code{fnmatch} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{glob} or @code{regexp} in all new code.
 ##
 ## Return true or false for each element of @var{string} that matches any of
@@ -35,7 +35,7 @@
 ## @seealso{glob, regexp}
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function retval = fnmatch (varargin)
 

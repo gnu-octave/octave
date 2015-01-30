@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})
 ##
-## @code{fmod} is deprecated and will be removed in Octave version 4.6.
+## @code{fmod} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{rem} in all new code.
 ##
 ## Return the remainder of the division @code{@var{x} / @var{y}}, computed
@@ -34,7 +34,7 @@
 ## @seealso{rem, mod}
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function retval = fmod (varargin)
 

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} finite (@var{x})
 ##
-## @code{finite} is deprecated and will be removed in Octave version 4.6.
+## @code{finite} is deprecated and will be removed in Octave version 4.4.
 ## Please use @code{isfinite} in all new code.
 ##
 ## Return a logical array which is true where the elements of @var{x} are
@@ -35,7 +35,7 @@
 ## @seealso{isfinite, isinf, isnan, isna}
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function retval = finite (varargin)
 

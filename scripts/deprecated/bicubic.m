@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{zi} =} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 ##
-## @code{bicubic} is deprecated and will be removed in Octave version 4.6.
+## @code{bicubic} is deprecated and will be removed in Octave version 4.4.
 ## Use @code{interp2 (@dots{}, "spline")} for the equivalent functionality.
 ##
 ## Return a matrix @var{zi} corresponding to the bicubic
@@ -35,7 +35,7 @@
 ## Bicubic interpolation method.
 ## Author: Hoxide Ma <hoxide_dirac@yahoo.com.cn>
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 

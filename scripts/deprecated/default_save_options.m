@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Rik Wehbring
+## Copyright (C) 2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,30 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nfields (@var{s})
-## Return the number of fields of the structure @var{s}.
-##
-## @strong{Warning:} @code{nfields} is scheduled for removal in version 4.4.
-## Use @code{numfields} instead.
-## @seealso{numfields, fieldnames}
+## @deftypefn  {Built-in Function} {@var{val} =} default_save_options ()
+## @deftypefnx {Built-in Function} {@var{old_val} =} default_save_options (@var{new_val})
+## @deftypefnx {Built-in Function} {} default_save_options (@var{new_val}, "local")
+## This function has been deprecated.  Use @code{@file{save_default_options}}
+## instead.
+## @seealso{save_default_options}
 ## @end deftypefn
 
-## Deprecated in 4.0
+## Deprecated in 3.8
 
-function retval = nfields (varargin)
+function retval = default_save_options (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "nfields is obsolete and will be removed from a future version of Octave; please use numfields instead");
+             "default_save_options is obsolete and will be removed from a future version of Octave, please use save_default_options instead");
   endif
 
-  if (nargin < 1)
-    print_usage ();
-  endif
-
-  retval = numfields (varargin{:});
+  retval = save_default_options (varargin{:});
 
 endfunction
 

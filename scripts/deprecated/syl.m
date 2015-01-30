@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Built-in Function} {@var{x} =} syl (@var{A}, @var{B}, @var{C})
 ##
-## @code{syl} is deprecated and will be removed in Octave version 4.6.
+## @code{syl} is deprecated and will be removed in Octave version 4.4.
 ## Use @code{sylvester} for the equivalent functionality.
 ##
 ## Solve the Sylvester equation
@@ -45,7 +45,7 @@
 ## @end example
 ## @end deftypefn
 
-## Deprecated in version 4.2
+## Deprecated in version 4.0
 
 function x = syl (A, B, C)
 

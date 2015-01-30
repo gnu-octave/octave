@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Rik Wehbring
+## Copyright (C) 2012-2013 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -17,30 +17,35 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} nfields (@var{s})
-## Return the number of fields of the structure @var{s}.
-##
-## @strong{Warning:} @code{nfields} is scheduled for removal in version 4.4.
-## Use @code{numfields} instead.
-## @seealso{numfields, fieldnames}
+## @deftypefn  {Loadable Function} {@var{obj} =} java_new (@var{name})
+## @deftypefnx {Loadable Function} {@var{obj} =} java_new (@var{name}, @var{arg1}, @dots{})
+## Create a Java object of class @var{name}, by calling the class constructor
+## with the arguments @var{arg1}, @dots{}
+## 
+## @example
+## @group
+##   x = java_new ("java.lang.StringBuffer")
+##   x = java_new ("java.lang.StringBuffer", "Initial string")
+## @end group
+## @end example
+## 
+## @seealso{javaObject, javaMethod}
 ## @end deftypefn
 
-## Deprecated in 4.0
-
-function retval = nfields (varargin)
+function retval = java_new (varargin)
 
   persistent warned = false;
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-             "nfields is obsolete and will be removed from a future version of Octave; please use numfields instead");
+             "java_new is obsolete and will be removed from a future version of Octave; please use javaObject instead");
   endif
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  retval = numfields (varargin{:});
+  retval = javaObject (varargin{:});
 
 endfunction
 

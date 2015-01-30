@@ -373,6 +373,10 @@ function varargout = strread (str, format = "%f", varargin)
     endif
     len = length (str);
     c2len = length (comment_end);
+    if (cstop + c2len == len)
+      ## Ignore last char of to-the-end-of-line comments
+      c2len++;
+    end
     str = cellslices (str, [1, cstop + c2len], [cstart - 1, len]);
     str = [str{:}];
   endif
@@ -842,6 +846,17 @@ endfunction
 %! [a, b] = strread (str, "%n %s", "commentstyle", "shell", "endofline", "\n");
 %! assert (a, [1; 3]);
 %! assert (b, {"2"});
+
+%!test
+%! assert (strread ("Hello World! // this is comment", "%s",...
+%! "commentstyle", "c++"), ...
+%! {"Hello"; "World!"}); 
+%! assert (strread ("Hello World! % this is comment", "%s",...
+%! "commentstyle", "matlab"), ...
+%! {"Hello"; "World!"});
+%! assert (strread ("Hello World! # this is comment", "%s",...
+%! "commentstyle", "shell"), ...
+%! {"Hello"; "World!"});
 
 %!test
 %! str = sprintf ("Tom 100 miles/hr\nDick 90 miles/hr\nHarry 80 miles/hr");

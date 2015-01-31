@@ -24,6 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "error.h"
+#include "gl2ps-renderer.h"
+
 #ifdef HAVE_GL2PS_H
 
 #include <cstdio>
@@ -32,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-locbuf.h"
 #include "unwind-prot.h"
 
-#include "gl2ps-renderer.h"
 #include "gl2ps.h"
 #include "sysdep.h"
 

@@ -24,7 +24,7 @@
 ## is 0.
 ##
 ## If @var{n} is not specified it defaults to 0.
-## @seealso{lin2mu, loadaudio, saveaudio}
+## @seealso{lin2mu}
 ## @end deftypefn
 
 ## Author:  Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>

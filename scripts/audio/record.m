@@ -22,7 +22,7 @@
 ## default value for @var{sampling_rate} is 8000 samples per second, or
 ## 8kHz.  The program waits until the user types @key{RET} and then
 ## immediately starts to record.
-## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, playaudio, setaudio}
+## @seealso{lin2mu, mu2lin}
 ## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

@@ -20,6 +20,11 @@
 ## @deftypefn  {Function File} {} setaudio ()
 ## @deftypefnx {Function File} {} setaudio (@var{w_type})
 ## @deftypefnx {Function File} {} setaudio (@var{w_type}, @var{value})
+##
+## @code{setaudio} is deprecated and will be removed in Octave version 4.4.
+## Please scale the audio signal in all new code or use the operating system's
+## native tools to adjust audio input and output levels.
+##
 ## Execute the shell command @samp{mixer}, possibly with optional
 ## arguments @var{w_type} and @var{value}.
 ## @end deftypefn
@@ -29,6 +34,13 @@
 ## Adapted-By: jwe
 
 function setaudio (w_type, value)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "setaudio is obsolete and will be removed from a future version of Octave, please scale the audio signal instead");
+  endif
 
   if (nargin == 0)
     system ("mixer");

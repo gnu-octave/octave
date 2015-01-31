@@ -2,12 +2,8 @@ FCN_FILE_DIRS += audio
 
 audio_FCN_FILES = \
   audio/lin2mu.m \
-  audio/loadaudio.m \
   audio/mu2lin.m \
-  audio/playaudio.m \
   audio/record.m \
-  audio/saveaudio.m \
-  audio/setaudio.m \
   audio/wavread.m \
   audio/wavwrite.m \
   audio/@audioplayer/__get_properties__.m \

@@ -20,12 +20,16 @@ deprecated_FCN_FILES = \
   deprecated/java_unsigned_conversion.m \
   deprecated/javafields.m \
   deprecated/javamethods.m \
+  deprecated/loadaudio.m \
   deprecated/luinc.m \
   deprecated/nfields.m \
   deprecated/octave_tmp_file_name.m \
+  deprecated/playaudio.m \
   deprecated/re_read_readline_init_file.m \
   deprecated/read_readline_init_file.m \
+  deprecated/saveaudio.m \
   deprecated/saving_history.m \
+  deprecated/setaudio.m \
   deprecated/strmatch.m \
   deprecated/syl.m \
   deprecated/usage.m

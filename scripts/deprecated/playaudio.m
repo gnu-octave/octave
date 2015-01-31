@@ -19,6 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} playaudio (@var{name}, @var{ext})
 ## @deftypefnx {Function File} {} playaudio (@var{x})
+##
+## @code{playaudio} is deprecated and will be removed in Octave version 4.4.
+## Please use @code{audioplayer} in all new code.
+##
 ## Play the audio file @file{@var{name}.@var{ext}} or the audio data
 ## stored in the vector @var{x}.
 ## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, setaudio, record}
@@ -29,6 +33,13 @@
 ## Adapted-By: jwe
 
 function playaudio (name, ext)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "playaudio is obsolete and will be removed from a future version of Octave, please use audioplayer instead");
+  endif
 
   if (nargin < 1 || nargin > 2)
     print_usage ();

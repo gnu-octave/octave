@@ -18,6 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
+##
+## @code{loadaudio} is deprecated and will be removed in Octave version 4.4.
+## Please use @code{audioread} in all new code.
+##
 ## Load audio data from the file @file{@var{name}.@var{ext}} into the
 ## vector @var{x}.
 ##
@@ -37,6 +41,13 @@
 ## Adapted-By: jwe
 
 function X = loadaudio (name, ext, bps)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "loadaudio is obsolete and will be removed from a future version of Octave, please use audioread instead");
+  endif
 
   if (nargin == 0 || nargin > 3)
     print_usage ();

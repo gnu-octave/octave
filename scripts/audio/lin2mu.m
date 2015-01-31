@@ -25,7 +25,7 @@
 ##
 ## If @var{n} is not specified it defaults to 0, 8, or 16 depending on
 ## the range of values in @var{x}.
-## @seealso{mu2lin, loadaudio, saveaudio}
+## @seealso{mu2lin}
 ## @end deftypefn
 
 

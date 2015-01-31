@@ -195,14 +195,18 @@ Summary of important user-visible changes for version 4.0:
       finite               | isfinite
       fmod                 | rem
       fnmatch              | glob or regexp
+      loadaudio            | audioread
       luinc                | ilu or ichol
       nfields              | numfields
       octave_tmp_file_name | tempname
+      playaudio            | audioplayer
+      saveaudio            | audiowrite
       syl                  | sylvester
       usage                | print_usage
 
       allow_noninteger_range_as_index
       do_braindead_shortcircuit_evaluation
+      setaudio
 
  ** The following functions were deprecated in Octave 3.8 and will be
     removed from Octave 4.2 (or whatever version is the second major

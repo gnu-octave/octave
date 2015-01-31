@@ -176,23 +176,7 @@ files holding data in mu-law encoding end in @file{au}, @file{mu}, or
 
 @DOCSTRING(mu2lin)
 
-@DOCSTRING(loadaudio)
-
-@DOCSTRING(saveaudio)
-
-The following functions for audio I/O require special A/D hardware and
-operating system support.  It is assumed that audio data in linear
-encoding can be played and recorded by reading from and writing to
-@file{/dev/dsp}, and that similarly @file{/dev/audio} is used for mu-law
-encoding.  These file names are system-dependent.  Improvements so that
-these functions will work without modification on a wide variety of
-hardware are welcome.
-
-@DOCSTRING(playaudio)
-
 @DOCSTRING(record)
-
-@DOCSTRING(setaudio)
 
 @DOCSTRING(wavread)
 

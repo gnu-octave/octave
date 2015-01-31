@@ -18,6 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} saveaudio (@var{name}, @var{x}, @var{ext}, @var{bps})
+##
+## @code{saveaudio} is deprecated and will be removed in Octave version 4.4.
+## Please use @code{audiowrite} in all new code.
+##
 ## Save a vector @var{x} of audio data to the file
 ## @file{@var{name}.@var{ext}}.  The optional parameters @var{ext} and
 ## @var{bps} determine the encoding and the number of bits per sample used
@@ -31,6 +35,13 @@
 ## Adapted-By: jwe
 
 function saveaudio (name, x, ext, bps)
+
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "saveaudio is obsolete and will be removed from a future version of Octave, please use audiowrite instead");
+  endif
 
   if (nargin < 2 || nargin > 4)
     print_usage ();

@@ -10651,32 +10651,37 @@ gtk_manager::do_get_toolkit (void) const
 {
   graphics_toolkit retval;
 
-  const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
-
-  if (pl == loaded_toolkits.end ())
+  if (! dtk.empty ())
     {
-      const_available_toolkits_iterator pa = available_toolkits.find (dtk);
+      const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
 
-      if (pa != available_toolkits.end ())
+      if (pl == loaded_toolkits.end ())
         {
-          octave_value_list args;
-          args(0) = dtk;
-          feval ("graphics_toolkit", args);
+          const_available_toolkits_iterator pa = available_toolkits.find (dtk);
 
-          if (! error_state)
-            pl = loaded_toolkits.find (dtk);
+          if (pa != available_toolkits.end ())
+            {
+              octave_value_list args;
+              args(0) = dtk;
+              feval ("graphics_toolkit", args);
 
-          if (error_state || pl == loaded_toolkits.end ())
-            error ("failed to load %s graphics toolkit", dtk.c_str ());
+              if (! error_state)
+                pl = loaded_toolkits.find (dtk);
+
+              if (error_state || pl == loaded_toolkits.end ())
+                error ("failed to load %s graphics toolkit", dtk.c_str ());
+              else
+                retval = pl->second;
+            }
           else
-            retval = pl->second;
+            error ("default graphics toolkit '%s' is not available!",
+                   dtk.c_str ());
         }
       else
-        error ("default graphics toolkit '%s' is not available!",
-               dtk.c_str ());
+        retval = pl->second;
     }
   else
-    retval = pl->second;
+    error ("no graphics toolkits are available!");
 
   return retval;
 }

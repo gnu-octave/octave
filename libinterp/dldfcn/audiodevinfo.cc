@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
+#include "oct-locbuf.h"
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-int32.h"
@@ -548,8 +549,6 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-static const unsigned int BUFFER_SIZE = 8192;
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (audioplayer, "audioplayer", "audioplayer");
 
 static int
@@ -682,7 +681,7 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   // Don't multiply the audio data by scale_factor here.  Although it
   // would move the operation outside of the loops below, it also causes
   // a second copy of the *entire* data array to be made when only a
-  // small portion (BUFFER_SIZE elements) is usually needed for this
+  // small portion (buffer_size elements) is usually needed for this
   // callback.
 
   const RowVector sound_l = player->get_left ();
@@ -1129,10 +1128,12 @@ audioplayer::playblocking (void)
   if (get_stream ())
     stop ();
 
+  const unsigned int buffer_size = get_fs () / 20;
+  OCTAVE_LOCAL_BUFFER (uint32_t, buffer, buffer_size * 2);
+
   PaError err;
-  uint32_t buffer[BUFFER_SIZE * 2];
   err = Pa_OpenStream (&stream, 0, &(output_parameters), get_fs (),
-                       BUFFER_SIZE, paClipOff, 0, 0);
+                       buffer_size, paClipOff, 0, 0);
   if (err != paNoError)
     {
       error ("audioplayer: unable to open audio playback stream");
@@ -1149,14 +1150,15 @@ audioplayer::playblocking (void)
   unsigned int start, end;
   start = get_sample_number ();
   end = get_end_sample ();
-  for (unsigned int i = start; i < end; i += BUFFER_SIZE)
+
+  for (unsigned int i = start; i < end; i += buffer_size)
     {
       if (octave_callback_function != 0)
-        octave_play_callback (0, buffer, BUFFER_SIZE, 0, 0, this);
+        octave_play_callback (0, buffer, buffer_size, 0, 0, this);
       else
-        portaudio_play_callback (0, buffer, BUFFER_SIZE, 0, 0, this);
+        portaudio_play_callback (0, buffer, buffer_size, 0, 0, this);
 
-      err = Pa_WriteStream (stream, buffer, BUFFER_SIZE);
+      err = Pa_WriteStream (stream, buffer, buffer_size);
     }
 
   err = Pa_StopStream (stream);
@@ -1184,14 +1186,16 @@ audioplayer::play (void)
   if (get_stream ())
     stop ();
 
+  const unsigned int buffer_size = get_fs () / 20;
+
   PaError err;
   if (octave_callback_function != 0)
     err = Pa_OpenStream (&stream, 0, &(output_parameters),
-                         get_fs (), BUFFER_SIZE, paClipOff,
+                         get_fs (), buffer_size, paClipOff,
                          octave_play_callback, this);
   else
     err = Pa_OpenStream (&stream, 0, &(output_parameters),
-                         get_fs (), BUFFER_SIZE, paClipOff,
+                         get_fs (), buffer_size, paClipOff,
                          portaudio_play_callback, this);
 
   if (err != paNoError)
@@ -1762,17 +1766,20 @@ audiorecorder::record (void)
 
   left.clear ();
   right.clear ();
+
+  const unsigned int buffer_size = get_fs () / 20;
+
   PaError err;
   if (octave_callback_function != 0)
     {
       err = Pa_OpenStream (&stream, &(input_parameters), 0,
-                           get_fs (), BUFFER_SIZE, paClipOff,
+                           get_fs (), buffer_size, paClipOff,
                            octave_record_callback, this);
     }
   else
     {
       err = Pa_OpenStream (&stream, &(input_parameters), 0,
-                           get_fs (), BUFFER_SIZE, paClipOff,
+                           get_fs (), buffer_size, paClipOff,
                            portaudio_record_callback, this);
     }
   if (err != paNoError)
@@ -1797,9 +1804,12 @@ audiorecorder::recordblocking (float seconds)
   left.clear ();
   right.clear ();
 
+  const unsigned int buffer_size = get_fs () / 20;
+  OCTAVE_LOCAL_BUFFER (uint8_t, buffer, buffer_size * 2 * 3);
+
   PaError err;
   err = Pa_OpenStream (&stream, &(input_parameters), 0,
-                       get_fs (), BUFFER_SIZE, paClipOff, 0, this);
+                       get_fs (), buffer_size, paClipOff, 0, this);
   if (err != paNoError)
     {
       error ("audiorecorder: unable to open audio recording stream");
@@ -1814,14 +1824,15 @@ audiorecorder::recordblocking (float seconds)
     }
 
   unsigned int frames = seconds * get_fs ();
-  uint8_t buffer[BUFFER_SIZE * 2 * 3];
-  for (unsigned long i = 0; i < frames / BUFFER_SIZE; i++)
+
+  for (unsigned int i = 0; i < frames; i += buffer_size)
     {
-      Pa_ReadStream (get_stream (), buffer, BUFFER_SIZE);
+      Pa_ReadStream (get_stream (), buffer, buffer_size);
+
       if (octave_callback_function != 0)
-        octave_record_callback (buffer, 0, BUFFER_SIZE, 0, 0, this);
+        octave_record_callback (buffer, 0, buffer_size, 0, 0, this);
       else
-        portaudio_record_callback (buffer, 0, BUFFER_SIZE, 0, 0, this);
+        portaudio_record_callback (buffer, 0, buffer_size, 0, 0, this);
     }
 }
 

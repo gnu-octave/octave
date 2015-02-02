@@ -166,18 +166,27 @@ type.\n\
 
       if (type == "native")
         {
-          if (info.format & SF_FORMAT_PCM_S8)
-            ret_audio = int8NDArray (audio * 127);
-          else if (info.format & SF_FORMAT_PCM_U8)
-            ret_audio = uint8NDArray (audio * 127 + 127);
-          else if (info.format & SF_FORMAT_PCM_16)
-            ret_audio = int16NDArray (audio * 32767);
-          else if (info.format & SF_FORMAT_PCM_24)
-            ret_audio = int32NDArray (audio * 8388608);
-          else if (info.format & SF_FORMAT_PCM_32)
-            ret_audio = int32NDArray (audio * 2147483648);
-          else
-            ret_audio = audio;
+          switch (info.format & SF_FORMAT_SUBMASK)
+            {
+            case SF_FORMAT_PCM_S8:
+              ret_audio = int8NDArray (audio * 127);
+              break;
+            case SF_FORMAT_PCM_U8:
+              ret_audio = uint8NDArray (audio * 127 + 127);
+              break;
+            case SF_FORMAT_PCM_16:
+              ret_audio = int16NDArray (audio * 32767);
+              break;
+            case SF_FORMAT_PCM_24:
+              ret_audio = int32NDArray (audio * 8388608);
+              break;
+            case SF_FORMAT_PCM_32:
+              ret_audio = int32NDArray (audio * 2147483648);
+              break;
+            default:
+              ret_audio = audio;
+              break;
+            }
         }
       else
         ret_audio = audio;
@@ -355,9 +364,15 @@ Comment.\n\
     {
       if (args(i).string_value () == "BitsPerSample")
         {
+          info.format &= ~SF_FORMAT_SUBMASK;
           int bits = args(i + 1).int_value ();
           if (bits == 8)
-            info.format |= SF_FORMAT_PCM_S8;
+            {
+              if ((info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV)
+                info.format |= SF_FORMAT_PCM_U8;
+              else
+                info.format |= SF_FORMAT_PCM_S8;
+            }
           else if (bits == 16)
             info.format |= SF_FORMAT_PCM_16;
           else if (bits == 24)
@@ -491,18 +506,27 @@ Return information about an audio file specified by @var{filename}.\n\
   result.assign ("Duration", dframes / drate);
 
   int bits;
-  if (info.format & SF_FORMAT_PCM_S8)
-    bits = 8;
-  else if (info.format & SF_FORMAT_PCM_U8)
-    bits = 8;
-  else if (info.format & SF_FORMAT_PCM_16)
-    bits = 16;
-  else if (info.format & SF_FORMAT_PCM_24)
-    bits = 24;
-  else if (info.format & SF_FORMAT_PCM_32)
-    bits = 32;
-  else
-    bits = -1;
+  switch (info.format & SF_FORMAT_SUBMASK)
+    {
+    case SF_FORMAT_PCM_S8:
+      bits = 8;
+      break;
+    case SF_FORMAT_PCM_U8:
+      bits = 8;
+      break;
+    case SF_FORMAT_PCM_16:
+      bits = 16;
+      break;
+    case SF_FORMAT_PCM_24:
+      bits = 24;
+      break;
+    case SF_FORMAT_PCM_32:
+      bits = 32;
+      break;
+    default:
+      bits = -1;
+      break;
+    }
 
   result.assign ("BitsPerSample", bits);
   result.assign ("BitRate", -1);

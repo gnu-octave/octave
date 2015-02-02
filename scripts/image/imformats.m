@@ -75,6 +75,7 @@ function varargout = imformats (arg1, arg2, arg3)
     print_usage ();
   endif
 
+  mlock (); # prevent formats to be removed by "clear all"
   persistent formats = default_formats ();
 
   if (nargin == 0 && nargout == 0)

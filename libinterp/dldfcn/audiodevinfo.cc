@@ -1528,7 +1528,7 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
         }
     }
 
-  if (recorder->get_sample_number () > recorder->get_end_sample ())
+  if (recorder->get_sample_number () >= recorder->get_end_sample ())
     return paComplete;
 
   return paContinue;

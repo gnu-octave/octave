@@ -38,6 +38,7 @@ To initialize:
 #include "error.h"
 #include "file-stat.h"
 #include "graphics.h"
+#include "oct-conf.h"
 #include "oct-env.h"
 #include "parse.h"
 #include "utils.h"
@@ -172,15 +173,25 @@ private:
 static bool
 have_gnuplot_binary (void)
 {
+  const std::string exeext = std::string (OCTAVE_CONF_EXEEXT);
+  const std::string path = octave_env::getenv ("PATH");
+
   octave_value_list tmp = feval ("gnuplot_binary", octave_value_list ());
   std::string gnuplot_binary = tmp(0).string_value ();
-
-  std::string path = octave_env::getenv ("PATH");
 
   string_vector args (gnuplot_binary);
   std::string gnuplot_path = search_path_for_file (path, args);
 
   file_stat fs (gnuplot_path);
+
+  if (! fs.exists () && ! exeext.empty ())
+    {
+      args[0] += exeext;
+
+      gnuplot_path = search_path_for_file (path, args);
+
+      fs = file_stat (gnuplot_path);
+    }
 
   return fs.exists ();
 }

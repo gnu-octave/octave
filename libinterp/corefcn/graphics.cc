@@ -4538,6 +4538,7 @@ figure::reset_default_properties (void)
   property_list::pval_map_type plist = xproperties.factory_defaults ();
   plist.erase ("units");
   plist.erase ("position");
+  plist.erase ("outerposition");
   plist.erase ("paperunits");
   plist.erase ("paperposition");
   plist.erase ("windowstyle");

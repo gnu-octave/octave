@@ -3958,11 +3958,13 @@ public:
     void update_layer (void) { update_axes_layout (); }
     void update_yaxislocation (void)
     {
+      sync_positions ();
       update_axes_layout ();
       update_ylabel_position ();
     }
     void update_xaxislocation (void)
     {
+      sync_positions ();
       update_axes_layout ();
       update_xlabel_position ();
     }

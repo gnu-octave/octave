@@ -52,6 +52,12 @@ public:
 
   octave_value::compound_binary_op cop_type (void) const { return etype; }
 
+  bool rvalue_ok (void) const { return true; }
+
+  octave_value rvalue1 (int nargout = 1);
+
+  octave_value_list rvalue (int nargout);
+
 private:
 
   tree_expression *op_lhs;

@@ -32,6 +32,49 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-unop.h"
 #include "pt-walk.h"
 
+octave_value_list
+tree_compound_binary_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("binary operator '%s': invalid number of output arguments",
+           oper () . c_str ());
+  else
+    retval = rvalue1 (nargout);
+
+  return retval;
+}
+
+octave_value
+tree_compound_binary_expression::rvalue1 (int)
+{
+  octave_value retval;
+
+  if (error_state)
+    return retval;
+
+  if (op_lhs)
+    {
+      octave_value a = op_lhs->rvalue1 ();
+
+      if (! error_state && a.is_defined () && op_rhs)
+        {
+          octave_value b = op_rhs->rvalue1 ();
+
+          if (! error_state && b.is_defined ())
+            {
+              retval = ::do_binary_op (etype, a, b);
+
+              if (error_state)
+                retval = octave_value ();
+            }
+        }
+    }
+
+  return retval;
+}
+
 // If a tree expression is a transpose or hermitian transpose, return
 // the argument and corresponding operator.
 

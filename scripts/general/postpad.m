@@ -94,6 +94,10 @@ endfunction
 %!assert (postpad ([1;2], 2, 2, 3), reshape ([1;2;2;2], 2, 1, 2))
 %!assert (postpad ([1,2], 2, 2, 3), reshape ([1,2,2,2], 1, 2, 2))
 
+%! ## Test with string concatenation (bug #44162)
+%!assert (postpad ("Octave", 16, "x"), "Octavexxxxxxxxxx")
+%!assert (postpad ("Octave", 4), "Octa")
+
 %!error postpad ()
 %!error postpad (1)
 %!error postpad (1,2,3,4,5)

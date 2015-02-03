@@ -391,9 +391,8 @@ Si è certi di volerlo eliminare?</translation>
         <translation>cursore</translation>
     </message>
     <message>
-        <location filename="../src/main-window.cc" line="+1948"/>
         <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;strong&gt;Nota sulla nuova interfaccia grafica di Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Una delle maggiori novità di Octave 3.8 è l&apos;interfaccia grafica utente. Si tratta della caratteristica più richiesta dagli utenti negli ultimi anni, ed ora è quasi pronta. Tuttavia, poiché essa non è ancora rifinita come vorremmo, abbiamo deciso di attendere fino alle serie di rilascio 4.0.x prima di renderla l&apos;interfaccia predefinita.&lt;/p&gt;&lt;p&gt;D&apos;altro canto, considerato il lasso di tempo trascorso, i problemi risolti ed i miglioramenti dall&apos;ultima &apos;major release&apos;, abbiamo deciso di non ritardare ulteriormente un nuovo rilascio soltanto per perfezionare l&apos;interfaccia grafica ed è pertanto con piacere che presentiamo la versione 3.8 di Octave con un&apos;anteprima dell&apos;interfaccia grafica. Crediamo che funzioni sufficientemente bene, pur avendo ancora qualche problema ed aspetti che potrebbero essere migliorati.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Abbiamo bisogno del tuo aiuto&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Sono molti i modi in cui puoi aiutare a risolvere i problemi restanti, a completare l&apos;interfaccia grafica e a migliorare in generale l&apos;esperienza di utilizzo, tanto per i principianti quanto per gli utenti esperti:&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Se sei un programmatore esperto, puoi aiutare contribuendo allo &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;sviluppo di Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Se Octave non funziona correttamente, ti incoraggiamo inoltre a &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;segnalare i problemi&lt;/a&gt; che incontri.&lt;/li&gt;&lt;li&gt;Che tu sia un utente o uno sviluppatore, puoi aiutare a &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;finanziare il progetto&lt;/a&gt;. Lo sviluppo di questo software richiede molto tempo e molte competenze.  I tuoi contributi aiutano ad assicurare il continuo miglioramento del software.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Speriamo che troverai Octave utile. Perfavore, aiutaci a renderlo ancora migliore per il futuro!&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;&lt;strong&gt;Nota sulla nuova interfaccia grafica di Octave&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Una delle maggiori novità di Octave 3.8 è l&apos;interfaccia grafica utente. Si tratta della caratteristica più richiesta dagli utenti negli ultimi anni, ed ora è quasi pronta. Tuttavia, poiché essa non è ancora rifinita come vorremmo, abbiamo deciso di attendere fino alle serie di rilascio 4.0.x prima di renderla l&apos;interfaccia predefinita.&lt;/p&gt;&lt;p&gt;D&apos;altro canto, considerato il lasso di tempo trascorso, i problemi risolti ed i miglioramenti dall&apos;ultima &apos;major release&apos;, abbiamo deciso di non ritardare ulteriormente un nuovo rilascio soltanto per perfezionare l&apos;interfaccia grafica ed è pertanto con piacere che presentiamo la versione 3.8 di Octave con un&apos;anteprima dell&apos;interfaccia grafica. Crediamo che funzioni sufficientemente bene, pur avendo ancora qualche problema ed aspetti che potrebbero essere migliorati.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Abbiamo bisogno del tuo aiuto&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Sono molti i modi in cui puoi aiutare a risolvere i problemi restanti, a completare l&apos;interfaccia grafica e a migliorare in generale l&apos;esperienza di utilizzo, tanto per i principianti quanto per gli utenti esperti:&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Se sei un programmatore esperto, puoi aiutare contribuendo allo &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;sviluppo di Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Se Octave non funziona correttamente, ti incoraggiamo inoltre a &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;segnalare i problemi&lt;/a&gt; che incontri.&lt;/li&gt;&lt;li&gt;Che tu sia un utente o uno sviluppatore, puoi aiutare a &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;finanziare il progetto&lt;/a&gt;. Lo sviluppo di questo software richiede molto tempo e molte competenze.  I tuoi contributi aiutano ad assicurare il continuo miglioramento del software.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Speriamo che troverai Octave utile. Perfavore, aiutaci a renderlo ancora migliore per il futuro!&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -769,7 +768,7 @@ Si desidera sovrascriverlo?</translation>
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.h" line="+125"/>
+        <location filename="../qterminal/libqterminal/QTerminal.h" line="+127"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
@@ -792,7 +791,7 @@ Si desidera sovrascriverlo?</translation>
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1667"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1776"/>
         <source>copied selection to clipboard</source>
         <translation>selezione copiata negli appunti</translation>
     </message>
@@ -1440,9 +1439,10 @@ Si desidera sovrascriverlo?</translation>
     <message>
         <location filename="../../gnulib-hg/lib/quotearg.c" line="+291"/>
         <source></source>
-        <comment>Get translations for open and closing quotation marks. The message catalog should translate &quot;`&quot; to a left quotation mark suitable for the locale, and similarly for &quot;&apos;&quot;. For example, a French Unicode local should translate these to U+00AB (LEFT-POINTING DOUBLE ANGLE QUOTATION MARK), and U+00BB (RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK), respectively. If the catalog has no translation, we will try to use Unicode U+2018 (LEFT SINGLE QUOTATION MARK) and Unicode U+2019 (RIGHT SINGLE QUOTATION MARK). If the current locale is not Unicode, locale_quoting_style will quote &apos;like this&apos;, and clocale_quoting_style will quote &quot;like this&quot;. You should always include translations for &quot;`&quot; and &quot;&apos;&quot; even if U+2018 and U+2019 are appropriate for your locale. If you don&apos;t know what to put here, please see &lt;http://en.wikipedia.org/wiki/Quotation_marks_in_other_languages&gt; and use glyphs suitable for your language.</comment>
+        <comment>The placeholder indicates the bug-reporting address for this package. Please add _another line_ saying &quot;Report translation bugs to &lt;...&gt;
+&quot; with the address for translation bugs (typically your translation team&apos;s web or email address).</comment>
         <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1461,17 +1461,17 @@ Si desidera sovrascriverlo?</translation>
 <context>
     <name>file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+270"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+282"/>
         <location line="+125"/>
-        <location line="+22"/>
-        <location line="+18"/>
+        <location line="+19"/>
+        <location line="+25"/>
         <location line="+62"/>
         <location line="+28"/>
         <source>Octave Editor</source>
         <translation>Editor di Octave</translation>
     </message>
     <message>
-        <location line="-314"/>
+        <location line="-318"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>File di Octave (*.m);;Tutti i File (*)</translation>
     </message>
@@ -1487,7 +1487,7 @@ Si desidera sovrascriverlo?</translation>
         <translation>Nome della nuova funzione:</translation>
     </message>
     <message>
-        <location line="+326"/>
+        <location line="+330"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -1496,12 +1496,12 @@ is already open in the editor</source>
 è già aperto nell&apos;editor</translation>
     </message>
     <message>
-        <location line="+376"/>
+        <location line="+387"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location line="+380"/>
+        <location line="+390"/>
         <source>&amp;Save File</source>
         <translation>&amp;Salva File</translation>
     </message>
@@ -1645,6 +1645,16 @@ is already open in the editor</source>
     </message>
     <message>
         <location line="+8"/>
+        <source>Move to Matching Brace</source>
+        <translation>Vai alla Parentesi Corrispondente</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Select to Matching Brace</source>
+        <translation>Seleziona fino alla Parentesi Corrispondente</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>&amp;Next Bookmark</source>
         <translation>Segnalibro &amp;Successivo</translation>
     </message>
@@ -1734,7 +1744,7 @@ is already open in the editor</source>
         <translation>&amp;Rimuovi Tutti i Breakpoint</translation>
     </message>
     <message>
-        <location line="-99"/>
+        <location line="-106"/>
         <source>&amp;Comment</source>
         <translation>&amp;Commenta</translation>
     </message>
@@ -1759,24 +1769,34 @@ is already open in the editor</source>
         <translation>&amp;Trova e Sostituisci...</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+164"/>
         <source>Save File and Run</source>
         <translation>Salva ed Esegui</translation>
     </message>
     <message>
-        <location line="-85"/>
+        <location line="-92"/>
         <source>Go &amp;to Line...</source>
         <translation>Vai &amp;alla Riga...</translation>
     </message>
     <message>
-        <location line="-1106"/>
+        <location line="-1131"/>
         <source>Could not start custom file editor
 %1</source>
         <translation>Impossibile avviare l&apos;editor di file personalizzato
 %1</translation>
     </message>
     <message>
-        <location line="+970"/>
+        <location line="+148"/>
+        <source>Create</source>
+        <translation>Crea</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cancel</source>
+        <translation>Annulla</translation>
+    </message>
+    <message>
+        <location line="+846"/>
         <source>&amp;Recent Editor Files</source>
         <translation>&amp;Documenti Recenti</translation>
     </message>
@@ -1801,7 +1821,7 @@ is already open in the editor</source>
         <translation>Chiudi gli Altri File</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+133"/>
         <source>&amp;Preferences...</source>
         <translation>&amp;Preferenze...</translation>
     </message>
@@ -1831,7 +1851,7 @@ is already open in the editor</source>
         <translation>&amp;Documentazione sulla Parola Chiave</translation>
     </message>
     <message>
-        <location line="-1078"/>
+        <location line="-1110"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -1840,7 +1860,7 @@ for read: %2.</source>
 in lettura: %2.</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+19"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -1849,7 +1869,7 @@ does not exist. Do you want to create it?</source>
 non esiste. Si desidera crearlo?</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+25"/>
         <source>Could not open file
 %1
 for write: %2.</source>
@@ -1863,7 +1883,7 @@ in scrittura: %2.</translation>
         <translation>La scheda corrispondente nell&apos;editor è scomparsa.</translation>
     </message>
     <message>
-        <location line="+712"/>
+        <location line="+733"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
@@ -1877,7 +1897,7 @@ in scrittura: %2.</translation>
         <translation>&amp;Modifica</translation>
     </message>
     <message>
-        <location line="+161"/>
+        <location line="+168"/>
         <source>&amp;Debug</source>
         <translation>&amp;Debug</translation>
     </message>
@@ -1890,7 +1910,7 @@ in scrittura: %2.</translation>
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+106"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+96"/>
         <source>eol:</source>
         <translation>fine della riga:</translation>
     </message>
@@ -1905,7 +1925,7 @@ in scrittura: %2.</translation>
         <translation>riga:</translation>
     </message>
     <message>
-        <location line="+151"/>
+        <location line="+142"/>
         <source>%1 is a built-in function</source>
         <translation>%1 è una funzione built-in</translation>
     </message>
@@ -1916,16 +1936,16 @@ in scrittura: %2.</translation>
     </message>
     <message>
         <location line="+9"/>
-        <location line="+953"/>
+        <location line="+985"/>
         <location line="+228"/>
-        <location line="+117"/>
-        <location line="+75"/>
+        <location line="+185"/>
+        <location line="+85"/>
         <location line="+23"/>
         <source>Octave Editor</source>
         <translation>Editor di Octave</translation>
     </message>
     <message>
-        <location line="-651"/>
+        <location line="-752"/>
         <source>Goto line</source>
         <translation>Vai alla riga</translation>
     </message>
@@ -1935,23 +1955,28 @@ in scrittura: %2.</translation>
         <translation>Numero riga</translation>
     </message>
     <message>
-        <location line="+134"/>
-        <location line="+70"/>
+        <location line="+146"/>
+        <location line="+81"/>
         <source>&lt;unnamed&gt;</source>
         <translation>&lt;senza nome&gt;</translation>
     </message>
     <message>
-        <location line="-12"/>
+        <location line="-20"/>
         <source>Do you want to save or discard the changes?</source>
         <translation>Si desidera salvare o annullare le modifiche?</translation>
     </message>
     <message>
         <location line="+5"/>
+        <source>Do you want to cancel exiting octave, save or discard the changes?</source>
+        <translation>Si desidera annullare l&apos;operazione di chiusura, salvare o annullare le modifiche?</translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
         <translation>Si desidera annullare l&apos;operazione di chiusura, salvare o annullare le modifiche?</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+13"/>
         <source>The file
 %1
 is about to be closed but has been modified.
@@ -1962,12 +1987,26 @@ sta per essere chiuso ma è stato modificato.
 %2</translation>
     </message>
     <message>
-        <location line="+313"/>
-        <source>Octave Files (*.m);;All Files (*)</source>
-        <translation>File di Octave (*.m);;Tutti i File (*)</translation>
+        <location line="+303"/>
+        <source>Line Endings:</source>
+        <translation>Terminatori di Riga:</translation>
     </message>
     <message>
-        <location line="+123"/>
+        <location line="+23"/>
+        <source>Octave Files (*.m)</source>
+        <translation>File di Octave (*.m)</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>All Files (*)</source>
+        <translation>Tutti i File (*)</translation>
+    </message>
+    <message>
+        <source>Octave Files (*.m);;All Files (*)</source>
+        <translation type="obsolete">File di Octave (*.m);;Tutti i File (*)</translation>
+    </message>
+    <message>
+        <location line="+187"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -1985,7 +2024,7 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 sia stato rinominato o rimosso. Si desidera salvarlo ora?%2</translation>
     </message>
     <message>
-        <location line="-215"/>
+        <location line="-293"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Impossibile aprire  %1 in scrittura:
@@ -2000,7 +2039,7 @@ sia stato rinominato o rimosso. Si desidera salvarlo ora?%2</translation>
         <translation type="obsolete">Car:</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+185"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -2017,7 +2056,7 @@ lo script come comando Octave.
 Si desidera scegliere un altro nome?</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+85"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Sembra che &apos;%1&apos; sia stato modificato da un&apos;altra applicazione. Si desidera ricaricarlo?</translation>
     </message>
@@ -2398,7 +2437,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca nella sele&amp;zione</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+84"/>
         <source>Search from end</source>
         <translation>Cerca dalla fine</translation>
     </message>
@@ -2408,7 +2447,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Cerca dall&apos;inizio</translation>
     </message>
     <message>
-        <location line="+190"/>
+        <location line="+199"/>
         <source>Replace Result</source>
         <translation>Sostituisci Risultato</translation>
     </message>
@@ -2592,7 +2631,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+43"/>
+        <location filename="../src/history-dock-widget.cc" line="+47"/>
         <source>Browse and search the command history.</source>
         <translation>Naviga nello storico dei comandi.</translation>
     </message>
@@ -2602,17 +2641,26 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Fare doppio click su un comando per trasferirlo nel termianle.</translation>
     </message>
     <message>
-        <location line="+9"/>
         <source>Enter text to filter the command history.</source>
-        <translation>Inserire del testo per filtrare lo storico dei comandi.</translation>
+        <translation type="obsolete">Inserire del testo per filtrare lo storico dei comandi.</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+8"/>
+        <source>Enter text to filter the command history</source>
+        <translation>Inserire del testo per filtrare lo storico dei comandi</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Filter</source>
+        <translation>Filtra</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Command History</source>
         <translation>Storico dei comandi</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+88"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
@@ -2661,13 +2709,13 @@ Fare click su &apos;Successivo&apos; per creare un file di configurazione e lanc
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="-1739"/>
+        <location filename="../src/main-window.cc" line="+265"/>
         <source>Load Workspace</source>
         <translation>Carica lo Spazio di Lavoro</translation>
     </message>
     <message>
-        <location line="+699"/>
-        <location line="+895"/>
+        <location line="+715"/>
+        <location line="+910"/>
         <source>About Octave</source>
         <translation>A proposito di Octave</translation>
     </message>
@@ -2721,7 +2769,7 @@ Fare click su &apos;Successivo&apos; per creare un file di configurazione e lanc
         <translation>Incolla</translation>
     </message>
     <message>
-        <location line="-1413"/>
+        <location line="-1444"/>
         <source>Save Workspace As</source>
         <translation>Salva lo Spazio di Lavoro Come</translation>
     </message>
@@ -2763,7 +2811,7 @@ invece?</translation>
         <translation>Notizie dalla Comunità di Octave</translation>
     </message>
     <message>
-        <location line="+953"/>
+        <location line="+984"/>
         <source>Open an existing file in editor</source>
         <translation>Apri file esistente nell&apos;editor</translation>
     </message>
@@ -2823,7 +2871,7 @@ invece?</translation>
         <translation>Continua</translation>
     </message>
     <message>
-        <location line="+749"/>
+        <location line="+601"/>
         <source>Are you sure you want to exit Octave?</source>
         <translation>Si è sicuri di voler uscire da Octave?</translation>
     </message>
@@ -2832,7 +2880,7 @@ invece?</translation>
         <translation type="obsolete">Abbandona la Modalità di Debug</translation>
     </message>
     <message>
-        <location line="-693"/>
+        <location line="-545"/>
         <source>Show File Browser</source>
         <translation>Nostra l&apos;Esploratore di Risorse</translation>
     </message>
@@ -2842,23 +2890,22 @@ invece?</translation>
         <translation>Esploratore di Risorse</translation>
     </message>
     <message>
-        <location line="+99"/>
         <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;News&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation>&lt;strong&gt;Stai utilizzando un &apos;candidato al rilascio&apos; dell&apos;interfaccia grafica sperimentale.&lt;/strong&gt; Octave è in continuo miglioramento e l&apos;interfaccia grafica sarà l&apos;interfaccia di default per la versione 4.0. Per maggiori informazioni, seleziona la voce &quot;Note di Rilascio&quot; nel menu &quot;Notizie&quot; dell&apos;interfaccia grafica o visita &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
+        <translation type="obsolete">&lt;strong&gt;Stai utilizzando un &apos;candidato al rilascio&apos; dell&apos;interfaccia grafica sperimentale.&lt;/strong&gt; Octave è in continuo miglioramento e l&apos;interfaccia grafica sarà l&apos;interfaccia di default per la versione 4.0. Per maggiori informazioni, seleziona la voce &quot;Note di Rilascio&quot; nel menu &quot;Notizie&quot; dell&apos;interfaccia grafica o visita &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location line="-183"/>
+        <location line="-84"/>
         <source>Step In</source>
         <translation>Entra</translation>
     </message>
     <message>
-        <location line="-1397"/>
-        <location line="+2153"/>
+        <location line="-1428"/>
+        <location line="+2036"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location line="-904"/>
+        <location line="-756"/>
         <source>Load Workspace...</source>
         <translation>Apri Spazio di Lavoro...</translation>
     </message>
@@ -2937,23 +2984,19 @@ invece?</translation>
         <translation>Notizie dalla Comunità</translation>
     </message>
     <message>
-        <location line="+44"/>
         <source>More Info</source>
-        <translation>Maggiori Informazioni</translation>
+        <translation type="obsolete">Maggiori Informazioni</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Hide</source>
-        <translation>Nascondi</translation>
+        <translation type="obsolete">Nascondi</translation>
     </message>
     <message>
-        <location line="+47"/>
-        <location line="+66"/>
         <source>Experimental GUI Info</source>
-        <translation>Informazioni sull&apos;Interfaccia Grafica Sperimentale</translation>
+        <translation type="obsolete">Informazioni sull&apos;Interfaccia Grafica Sperimentale</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+24"/>
         <source>Enter directory name</source>
         <translation>Inserisci nome cartella</translation>
     </message>
@@ -2968,13 +3011,13 @@ invece?</translation>
         <translation>Livello precedente</translation>
     </message>
     <message>
-        <location line="-1280"/>
-        <location line="+1283"/>
+        <location line="-1127"/>
+        <location line="+1130"/>
         <source>Browse directories</source>
         <translation>Naviga cartelle</translation>
     </message>
     <message>
-        <location line="-305"/>
+        <location line="-137"/>
         <source>&amp;Window</source>
         <translation>&amp;Finestra</translation>
     </message>
@@ -3043,7 +3086,7 @@ invece?</translation>
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1319"/>
+        <location line="-1350"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -3102,18 +3145,18 @@ o di abilitare, nella finestra delle impostazioni di rete di Octave, la connessi
 <context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+60"/>
-        <location line="+172"/>
+        <location filename="../src/octave-dock-widget.cc" line="+63"/>
+        <location line="+175"/>
         <source>Undock widget</source>
         <translation>Rimuovi widget dal lanciatore</translation>
     </message>
     <message>
-        <location line="-162"/>
+        <location line="-165"/>
         <source>Hide widget</source>
         <translation>Nascondi widget</translation>
     </message>
     <message>
-        <location line="+109"/>
+        <location line="+112"/>
         <source>Dock widget</source>
         <translation>Ancora widget al lanciatore</translation>
     </message>
@@ -3143,19 +3186,22 @@ o di abilitare, nella finestra delle impostazioni di rete di Octave, la connessi
 <context>
     <name>octave_qt_link</name>
     <message>
+        <source>Yes</source>
+        <translation type="obsolete">Sì</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="obsolete">No</translation>
+    </message>
+    <message>
         <location filename="../src/octave-qt-link.cc" line="+97"/>
         <location line="+6"/>
         <location line="+7"/>
-        <source>Yes</source>
-        <translation>Sì</translation>
+        <source>Create</source>
+        <translation>Crea</translation>
     </message>
     <message>
-        <location line="-13"/>
-        <source>No</source>
-        <translation>No</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="-10"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -3194,9 +3240,18 @@ non esiste. Si desidera crearlo?</translation>
         <translation>Aggiungi Cartella alle Cartelle di esecuzione</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-223"/>
+        <location line="+224"/>
         <source>Cancel</source>
         <translation>Annulla</translation>
+    </message>
+</context>
+<context>
+    <name>octave_txt_lexer</name>
+    <message>
+        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+39"/>
+        <source>Default</source>
+        <translation>Default</translation>
     </message>
 </context>
 <context>
@@ -3228,19 +3283,19 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     <name>settings_dialog</name>
     <message>
         <location filename="../src/settings-dialog.ui" line="+23"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1591"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1685"/>
         <source>Settings</source>
         <translation>Impostazioni</translation>
     </message>
     <message>
         <location line="+19"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+19"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+21"/>
         <source>General</source>
         <translation>Genrale</translation>
     </message>
     <message>
-        <location line="+198"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-10"/>
+        <location line="+122"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-15"/>
         <source>Octave logo only</source>
         <translation>Logo di Octave solamente</translation>
     </message>
@@ -3257,58 +3312,74 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Icone grafiche</translation>
     </message>
     <message>
-        <location line="-186"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-9"/>
+        <location line="-110"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-6"/>
         <source>Dock widget title bar</source>
         <translation>Barra del titolo del lanciatore di widget</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+44"/>
         <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+2"/>
         <source>Confirm before exiting</source>
         <translation>Conferma prima di uscire</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
+        <location line="+135"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+9"/>
         <source>Custom style</source>
         <translation>Stile personalizzato</translation>
     </message>
     <message>
-        <location line="+26"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Background color</source>
-        <translation>Colore dello sfondo</translation>
+        <translation type="obsolete">Colore dello sfondo</translation>
     </message>
     <message>
-        <location line="+29"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Text color</source>
-        <translation>Colore del testo</translation>
+        <translation type="obsolete">Colore del testo</translation>
     </message>
     <message>
-        <location line="+113"/>
-        <location line="+388"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+6"/>
-        <location line="+21"/>
+        <location line="-40"/>
+        <location line="+512"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-3"/>
+        <location line="+26"/>
         <source>Show status bar</source>
         <translation>Mostra barra di stato</translation>
     </message>
     <message>
-        <location line="-279"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+29"/>
+        <location line="-495"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-25"/>
+        <source>Text inactive</source>
+        <translation>Testo inattivo</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <location line="+52"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
+        <location line="+2"/>
+        <source>Active</source>
+        <translation>Attiva</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
+        <source>Background inactive</source>
+        <translation>Sfondo inattivo</translation>
+    </message>
+    <message>
+        <location line="+132"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+60"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
         <location line="+30"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-31"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-53"/>
         <source>After Column</source>
         <translation>Numero di colonne</translation>
     </message>
     <message>
         <location line="+96"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-7"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+6"/>
         <source>Color</source>
         <translation>Colore</translation>
     </message>
@@ -3326,49 +3397,60 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     </message>
     <message>
         <location line="+10"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+2"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Enable Code Folding</source>
         <translation>Attiva espansione del codice</translation>
     </message>
     <message>
         <location line="+20"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+2"/>
         <source>Show eol characters</source>
         <translation>Mostra terminatore di riga</translation>
     </message>
     <message>
         <location line="+9"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Default eol mode</source>
         <translation>Terminatore predefinito</translation>
     </message>
     <message>
         <location line="+14"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+3"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CRLF)</translation>
     </message>
     <message>
         <location line="+5"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Mac (CR)</source>
         <translation>Mac (CR)</translation>
     </message>
     <message>
         <location line="+5"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Unix (LF)</source>
         <translation>Unix (LF)</translation>
     </message>
     <message>
-        <location line="+37"/>
+        <location line="+26"/>
         <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+2"/>
+        <source>Show horizontal scroll bar</source>
+        <translation>Mostra barra di scorrimento orizzontale</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Indent width</source>
         <translation>Ampiezza indentazione</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+23"/>
         <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Tab indents line</source>
         <translation>Tasto Tab per l&apos;indentazione</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+7"/>
         <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Auto indentation</source>
         <translation>Indentazione automatica</translation>
@@ -3392,7 +3474,13 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Tasto Backspace per rimuove l&apos;indentazione</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+49"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
+        <source>Indentation uses tabs</source>
+        <translation>Indenta con tabulazioni</translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
         <source>Auto completion</source>
         <translation>Completamento automatico</translation>
@@ -3452,20 +3540,20 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seleziona stile di carattere, dimensione carattere (come differenza dalla dimensione iniziale), stile del carattere (&lt;b&gt;g&lt;/b&gt;rassetto, &lt;b&gt;c&lt;/b&gt;orsivo, &lt;b&gt;s&lt;/b&gt;ottolinea), colore del testo e colore dello sfondo (per il quale il colore rosa (255, 0, 255) indica il colore di default).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+240"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+9"/>
+        <location line="+258"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+11"/>
         <source>Terminal Colors</source>
         <translation>Colori del Terminale</translation>
     </message>
     <message>
-        <location line="-143"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-4"/>
+        <location line="-161"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-6"/>
         <source>Font</source>
         <translation>Stile di carattere</translation>
     </message>
     <message>
-        <location line="-865"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-48"/>
+        <location line="-885"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-57"/>
         <source>Show line numbers</source>
         <translation>Mostra numero di riga</translation>
     </message>
@@ -3502,8 +3590,8 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation type="obsolete">Numero i caratteri da digitare prima che la lista di completamento appaia</translation>
     </message>
     <message>
-        <location line="+645"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+35"/>
+        <location line="+665"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+44"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Crea file inesistenti senza chiedere conferma</translation>
     </message>
@@ -3515,13 +3603,13 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     </message>
     <message>
         <location line="+94"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+14"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+15"/>
         <source>Terminal</source>
         <translation>Terminale</translation>
     </message>
     <message>
         <location line="+51"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-7"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-8"/>
         <source>Cursor type:</source>
         <translation>Tipo di cursore:</translation>
     </message>
@@ -3544,14 +3632,14 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Dimensione carattere</translation>
     </message>
     <message>
-        <location line="+142"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+4"/>
+        <location line="+111"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+3"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation>Rendi il terminale la finestra attiva quando un comando è eseguito da uno widget</translation>
     </message>
     <message>
-        <location line="+37"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+13"/>
+        <location line="+79"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+15"/>
         <source>File Browser</source>
         <translation>Gestore dei file</translation>
     </message>
@@ -3580,14 +3668,14 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Mostra i file nascosti</translation>
     </message>
     <message>
-        <location line="-1511"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-77"/>
+        <location line="-1590"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-90"/>
         <source>Interface</source>
         <translation>Interfaccia</translation>
     </message>
     <message>
-        <location line="+238"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+13"/>
+        <location line="+286"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+15"/>
         <source>Octave Startup</source>
         <translation>Avvio di Octave</translation>
     </message>
@@ -3599,29 +3687,29 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+1282"/>
+        <location line="+1313"/>
         <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+1"/>
-        <location line="+68"/>
+        <location line="+79"/>
         <source>Startup path</source>
         <translation>Percorso di avvio</translation>
     </message>
     <message>
-        <location line="-1269"/>
-        <location line="+1286"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-67"/>
-        <location line="+69"/>
+        <location line="-1300"/>
+        <location line="+1317"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-78"/>
+        <location line="+80"/>
         <source>Browse</source>
         <translation>Naviga</translation>
     </message>
     <message>
-        <location line="-1279"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-68"/>
+        <location line="-1310"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-79"/>
         <source>Restore last Octave directory of previous session</source>
         <translation>Ripristina la cartella Octave della sessione precedente</translation>
     </message>
     <message>
         <location line="+212"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+8"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+9"/>
         <source>Tab width min.</source>
         <translation>Ampiezza tabulazione min.</translation>
     </message>
@@ -3632,8 +3720,8 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>max.</translation>
     </message>
     <message>
-        <location line="+374"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+19"/>
+        <location line="+394"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+28"/>
         <source>With Octave builtins</source>
         <translation>Con built-in di Octave</translation>
     </message>
@@ -3674,8 +3762,14 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Dimensione storico comandi</translation>
     </message>
     <message>
-        <location line="+116"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+4"/>
+        <location line="+34"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+2"/>
+        <source>Print debug location in terminal window in addition to the marker in the editor</source>
+        <translation>Stampa la posizione di debug nella finestra del terminale oltre al marcatore nell&apos;editor</translation>
+    </message>
+    <message>
+        <location line="+93"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+3"/>
         <source>Display</source>
         <translation>Mostra</translation>
     </message>
@@ -3732,8 +3826,8 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>HttpProxy</translation>
     </message>
     <message>
-        <location line="-1804"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-103"/>
+        <location line="-1959"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-119"/>
         <source>Icon set for dock widgets</source>
         <translation>Icone per il lanciatore degli widget</translation>
     </message>
@@ -3744,14 +3838,14 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Lingua (richiede riavvio)</translation>
     </message>
     <message>
-        <location line="-129"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-5"/>
+        <location line="-50"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="-2"/>
         <source>Icon size</source>
         <translation>Dimensione icona</translation>
     </message>
     <message>
-        <location line="+1513"/>
-        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+80"/>
+        <location line="+1589"/>
+        <location filename="../../build/libgui/src/ui-settings-dialog.h" line="+93"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Sincronizza la cartella di lavoro di Octave con il gestore dei file</translation>
     </message>
@@ -3894,14 +3988,14 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Password:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+76"/>
+        <location filename="../src/settings-dialog.cc" line="+77"/>
         <location line="+4"/>
-        <location line="+508"/>
+        <location line="+546"/>
         <source>System setting</source>
         <translation>Parametri di sistema</translation>
     </message>
     <message>
-        <location line="-312"/>
+        <location line="-353"/>
         <source>IBeam Cursor</source>
         <translation>Cursore IBeam</translation>
     </message>
@@ -3916,7 +4010,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Cursore testo sottolineato</translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+211"/>
         <source>Difference to the default size</source>
         <translation>Differenza rispetto alla dimensione di default</translation>
     </message>
@@ -3944,7 +4038,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>s</translation>
     </message>
     <message>
-        <location line="+460"/>
+        <location line="+490"/>
         <source>Set Octave Startup Directory</source>
         <translation>Scegli la Cartella di Avvio di Octave</translation>
     </message>
@@ -4042,12 +4136,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+1"/>
-        <location line="+151"/>
+        <location line="+155"/>
         <source>Preferences</source>
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location line="-150"/>
+        <location line="-154"/>
         <source>Exit Octave</source>
         <translation>Esci da Octave</translation>
     </message>
@@ -4177,12 +4271,12 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
     <message>
         <location line="+2"/>
-        <location line="+199"/>
+        <location line="+203"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="-197"/>
+        <location line="-201"/>
         <source>Documentation</source>
         <translation>Documentazione</translation>
     </message>
@@ -4282,8 +4376,12 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Ripeti</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>Cuy</source>
+        <translation type="obsolete">Taglia</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cut</source>
         <translation>Taglia</translation>
     </message>
     <message>
@@ -4392,6 +4490,16 @@ a:link { text-decoration: underline; color: #0000ff; }
         <location line="+3"/>
         <source>Goto Line</source>
         <translation>Vai alla riga</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Move to Matching Brace</source>
+        <translation>Vai alla Parentesi Corrispondente</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Select to Matching Brace</source>
+        <translation>Seleziona fino alla Parentesi Corrispondente</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4639,14 +4747,18 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
         <translation>Ricerca globale</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+18"/>
         <source>Error</source>
         <translation>Errore</translation>
     </message>
     <message>
         <location line="+3"/>
+        <source>The info file&lt;p&gt;%1&lt;p&gt;or compressed versions do not exist</source>
+        <translation>Né file di informazione %1 né una sua versione compressa esistono</translation>
+    </message>
+    <message>
         <source>The info file %1 does not exist</source>
-        <translation>Il file di informazione %1 non esiste</translation>
+        <translation type="obsolete">Il file di informazione %1 non esiste</translation>
     </message>
 </context>
 <context>
@@ -4699,7 +4811,7 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
 <context>
     <name>workspace_view</name>
     <message>
-        <location filename="../src/workspace-view.cc" line="+47"/>
+        <location filename="../src/workspace-view.cc" line="+50"/>
         <source>Workspace</source>
         <translation>Spazio di lavoro</translation>
     </message>
@@ -4709,9 +4821,28 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
         <translation>Mostra le variabili nello spazio di lavoro attivo.</translation>
     </message>
     <message>
-        <location line="+78"/>
         <source>Copy</source>
-        <translation>Copia</translation>
+        <translation type="obsolete">Copia</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Enter text to filter the workspace</source>
+        <translation>Inserire del testo per filtrare l&apos;area di lavoro</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Filter</source>
+        <translation>Filtra</translation>
+    </message>
+    <message>
+        <location line="+147"/>
+        <source>Copy name</source>
+        <translation>Copia nome</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Copy value</source>
+        <translation>Copia valore</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4719,12 +4850,12 @@ Si desidera utilizzare comunque la scorciatoia rimuovendola dall&apos;azione cui
         <translation>Rinomina</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+9"/>
         <source>Only top-level symbols may be renamed.</source>
         <translation>Solamente i simboli di primo livello possono essere rinominati.</translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+132"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Mostra le variabili nello spazio di lavoro attivo.&lt;br&gt;</translation>
     </message>

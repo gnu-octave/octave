@@ -79,7 +79,7 @@ function varargout = imformats (arg1, arg2, arg3)
   persistent formats = default_formats ();
 
   if (nargin == 0 && nargout == 0)
-    error ("imformats: pretty print not yet implemented.");
+    pretty_print_formats(formats);
   elseif (nargin >= 1)
     if (isstruct (arg1))
       arrayfun (@is_valid_format, arg1);
@@ -279,6 +279,95 @@ function bool = isa_magick (coder, filename)
     info = __magick_ping__ (filename, 1);
     bool = strcmp (coder, info.Format);
   end_try_catch
+endfunction
+
+function pretty_print_formats(forms)
+
+  ## Compute the maximal length of the extensions column
+  h1 = "Extension";
+  ext_seperator = ", ";
+  max_ext_length = length (h1);
+  for m = 1:length (forms)
+    num_ext = length (forms(m).ext);
+    length_ext = sum (cellfun (@length, forms(m).ext));
+    ext_length = length_ext + (num_ext -1) * length(ext_seperator); 
+    if ext_length > max_ext_length
+      max_ext_length = ext_length;
+    endif
+  endfor
+  h1 = postpad(h1, max_ext_length, " ");
+  
+  ## define header names (none should be shorter than 3 characters)
+  h2 = "isa";
+  h3 = "Info";
+  h4 = "Read";
+  h5 = "Write";
+  h6 = "Alpha";
+  h7 = "Description";
+  
+  ## print a header
+  header = [h1, " | ", h2, " | ", h3, " | ", h4, " | ", h5, " | ", h6, " | ", h7, " "]; 
+  disp(header);
+  lineunder = [repmat("-", 1, length(h1)), "-+-", repmat("-", 1, length(h2)), "-+-", ...
+    repmat("-", 1, length(h3)), "-+-", repmat("-", 1, length(h4)), "-+-", ...
+    repmat("-", 1, length(h5)), "-+-", repmat("-", 1, length(h6)), "-+-", ...
+    repmat("-", 1, length(h7)), "-"];
+  disp(lineunder);
+  
+  ## print the formats
+  # ext (h1)
+  for m = 1:length(forms)
+    thisline = "";
+    num_exts = length(forms(m).ext);
+    ext_string = "";
+    for n = 1:num_exts
+      ext_string = [ext_string, forms(m).ext{n}];
+      if n < num_exts
+        ext_string = [ext_string, ext_seperator];
+      endif
+    endfor
+    ext_string = postpad(ext_string, length(h1), " ");
+    thisline = [thisline, ext_string, " | "];
+    # isa (h2)
+    if isempty(forms(m).isa)
+      thisline = [thisline, postpad(" no", length(h2), " ")];
+    else
+      thisline = [thisline, postpad("yes", length(h2), " ")];
+    endif
+    thisline = [thisline, " | "];
+    # info (h3)
+    if isempty(forms(m).info)
+    thisline = [thisline, postpad(" no", length(h3), " ")];
+    else
+      thisline = [thisline, postpad("yes", length(h3), " ")];
+    endif
+    thisline = [thisline, " | "];
+    # read (h4)
+    if isempty(forms(m).read)
+    thisline = [thisline, postpad(" no", length(h4), " ")];
+    else
+      thisline = [thisline, postpad("yes", length(h4), " ")];
+    endif
+    thisline = [thisline, " | "];
+    # write (h5)
+    if isempty(forms(m).write)
+    thisline = [thisline, postpad(" no", length(h5), " ")];
+    else
+      thisline = [thisline, postpad("yes", length(h5), " ")];
+    endif
+    thisline = [thisline, " | "];
+    # alpha (h6)
+    if isempty(forms(m).write)
+    thisline = [thisline, postpad(" no", length(h6), " ")];
+    else
+      thisline = [thisline, postpad("yes", length(h6), " ")];
+    endif
+    thisline = [thisline, " | "];
+    # description (h7)
+    thisline = [thisline, forms(m).description];
+    # print this format line
+    disp(thisline);
+  endfor
 endfunction
 
 ## When imread or imfinfo are called, the file must exist or the

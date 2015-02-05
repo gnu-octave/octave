@@ -1505,7 +1505,13 @@ symbol_table::do_workspace_info (void) const
 
           if (val.is_defined ())
             {
-              dim_vector dv = val.dims ();
+              // FIXME: fix size for objects, see kluge in variables.cc
+              //dim_vector dv = val.dims ();
+              octave_value tmp = val;
+              Matrix sz = tmp.size ();
+              dim_vector dv = dim_vector::alloc (sz.numel ());
+              for (octave_idx_type i = 0; i < dv.length (); i++)
+                dv(i) = sz(i);
 
               char storage = ' ';
               if (sr.is_global ())

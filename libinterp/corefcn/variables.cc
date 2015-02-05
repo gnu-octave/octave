@@ -1113,6 +1113,7 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
 // and if val is an object, expect that dims will call size if it is
 // overloaded by a user-defined method.  But there are currently some
 // unresolved const issues that prevent that solution from working.
+// This same kluge is done in symtab.cc (do_workspace_info), fix there too.
 
 std::string
 get_dims_str (const octave_value& val)

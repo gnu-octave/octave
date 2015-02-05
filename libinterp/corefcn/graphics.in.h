@@ -3981,16 +3981,19 @@ public:
     {
       if (xticklabelmode.is ("auto"))
         calc_ticklabels (xtick, xticklabel, xscale.is ("log"));
+      sync_positions ();
     }
     void update_ytick (void)
     {
       if (yticklabelmode.is ("auto"))
         calc_ticklabels (ytick, yticklabel, yscale.is ("log"));
+      sync_positions ();
     }
     void update_ztick (void)
     {
       if (zticklabelmode.is ("auto"))
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
+      sync_positions ();
     }
 
     void update_xtickmode (void)

@@ -6396,6 +6396,8 @@ axes::properties::set_xticklabel (const octave_value& v)
         }
       else
         set_xticklabelmode ("manual");
+
+      sync_positions ();
     }
 }
 
@@ -6412,6 +6414,8 @@ axes::properties::set_yticklabel (const octave_value& v)
         }
       else
         set_yticklabelmode ("manual");
+
+      sync_positions ();
     }
 }
 
@@ -6428,6 +6432,8 @@ axes::properties::set_zticklabel (const octave_value& v)
         }
       else
         set_zticklabelmode ("manual");
+
+      sync_positions ();
     }
 }
 

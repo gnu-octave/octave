@@ -70,95 +70,64 @@
 ## throughout the curve.
 ## @end table
 ##
-## If @var{extrap} is the string @qcode{"extrap"}, then extrapolate values
-## beyond the endpoints using the current @var{method}.  If @var{extrap} is a
-## number, then replace values beyond the endpoints with that number.  When
-## unspecified, @var{extrap} defaults to @code{NA}.  Note that if @var{extrap}
-## is used, @var{method} must be specified as well.
+## @var{extrap} is a scalar number. It replaces values beyond the endpoints
+## with @var{extrap}.  Note that if @var{extrapval} is used, @var{method} must
+## be specified as well.  If @var{extrap} is omitted and the @var{method} is
+## @qcode{"spline"}, then the extrapolated values of the @qcode{"spline"} are
+## used.  Otherwise the default @var{extrap} value for any other @var{method}
+## is @qcode{"NA"}.
 ## @seealso{interp1, interp3, interpn, meshgrid}
 ## @end deftypefn
 
-## Author:      Kai Habel <kai.habel@gmx.de>
-## 2005-03-02 Thomas Weber <weber@num.uni-sb.de>
-##     * Add test cases
-## 2005-03-02 Paul Kienzle <pkienzle@users.sf.net>
-##     * Simplify
-## 2005-04-23 Dmitri A. Sergatskov <dasergatskov@gmail.com>
-##     * Modified demo and test for new gnuplot interface
-## 2005-09-07 Hoxide <hoxide_dirac@yahoo.com.cn>
-##     * Add bicubic interpolation method
-##     * Fix the eat line bug when the last element of XI or YI is
-##       negative or zero.
-## 2005-11-26 Pierre Baldensperger <balden@libertysurf.fr>
-##     * Rather big modification (XI,YI no longer need to be
-##       "meshgridded") to be consistent with the help message
-##       above and for compatibility.
-
-## FIXME: Need better input validation.
-##        E.g, interp2 (1,1,1) => A(I): index out of bounds
-
 function ZI = interp2 (varargin)
+
+  narginchk (1, 7);
+  nargs = nargin;
 
   Z = X = Y = XI = YI = n = [];
   method = "linear";
-  extrap = NA;
+  extrap = [];
 
-  switch (nargin)
+  ## Check for method and extrap
+  if (nargs > 1 && ischar (varargin{end-1}))
+    if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
+      error ("interp2: EXTRAP must be a numeric scalar");
+    endif
+    extrap = varargin{end};
+    method = varargin{end-1};
+    nargs -= 2;
+  elseif (ischar (varargin{end}))
+    method = varargin{end};
+    nargs--;
+  endif
+  if (method(1) == "*")
+    warning ("interp2: ignoring unsupported '*' flag to METHOD");
+    method(1) = [];
+  endif
+  method = validatestring (method, ...
+    {"nearest", "linear", "pchip", "cubic", "spline"});
+
+  ## Read numeric input
+  switch (nargs)
     case 1
       Z = varargin{1};
       n = 1;
     case 2
-      if (ischar (varargin{2}))
-        [Z, method] = deal (varargin{:});
-        n = 1;
-      else
-        [Z, n] = deal (varargin{:});
-      endif
+      [Z, n] = deal (varargin{1:nargs});
     case 3
-      if (ischar (varargin{3}))
-        [Z, n, method] = deal (varargin{:});
-      else
-        [Z, XI, YI] = deal (varargin{:});
-      endif
-    case 4
-      if (ischar (varargin{4}))
-        [Z, XI, YI, method] = deal (varargin{:});
-      else
-        [Z, n, method, extrap] = deal (varargin{:});
-      endif
+      [Z, XI, YI] = deal (varargin{1:nargs});
     case 5
-      if (ischar (varargin{4}))
-        [Z, XI, YI, method, extrap] = deal (varargin{:});
-      else
-        [X, Y, Z, XI, YI] = deal (varargin{:});
-      endif
-    case 6
-        [X, Y, Z, XI, YI, method] = deal (varargin{:});
-    case 7
-        [X, Y, Z, XI, YI, method, extrap] = deal (varargin{:});
+      [X, Y, Z, XI, YI] = deal (varargin{1:nargs});
     otherwise
       print_usage ();
   endswitch
 
   ## Type checking
-  if (! (ismatrix (Z) && ndims (Z) == 2))
+  if (! isnumeric (Z) || isscalar (Z) || ! ismatrix (Z) || ndims (Z) != 2)
     error ("interp2: Z must be a 2-D matrix");
   endif
   if (! isempty (n) && ! (isscalar (n) && n >= 0 && n == fix (n)))
     error ("interp2: N must be an integer >= 0");
-  endif
-  if (! ischar (method))
-    error ("interp2: METHOD must be a string");
-  elseif (method(1) == "*")
-    warning ("interp2: ignoring unsupported '*' flag to METHOD");
-    method(1) = [];
-  endif
-  if (isnumeric (extrap) && isscalar (extrap))
-    ## Typical case
-  elseif (strcmp (extrap, "extrap"))
-    extrap = [];
-  else
-    error ('interp2: EXTRAP must be a numeric scalar or "extrap"');
   endif
 
   ## Define X, Y, XI, YI if needed
@@ -324,27 +293,6 @@ function ZI = interp2 (varargin)
 
     endif
 
-    if (! isempty (extrap))
-      ## set points outside the table to 'extrap'
-      if (X(1) < X(end))
-        if (Y(1) < Y(end))
-          ZI(XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = ...
-                  extrap;
-        else
-          ZI(XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = ...
-                  extrap;
-        endif
-      else
-        if (Y(1) < Y(end))
-          ZI(XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = ...
-                  extrap;
-        else
-          ZI(XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = ...
-                  extrap;
-        endif
-      endif
-    endif
-
   else
 
     ## Check dimensions of XI and YI
@@ -354,77 +302,35 @@ function ZI = interp2 (varargin)
       error ("interp2: XI and YI must be matrices of equal size");
     endif
 
-    ## FIXME: Previously used algorithm for cubic.
-    ##        This produced results within a few eps of "spline".
-    ##        Matlab compatibility requires "cubic" to be a C1 algorithm
-    ##        equivalent to "pchip" so this was commented out 2014/03/30.
-    ##        This can be removed completely in the future if no problems are
-    ##        encountered.
-    #{
-    if (strcmp (method, "cubic"))
-      if (isgriddata (XI) && isgriddata (YI'))
-        ZI = bicubic (X, Y, Z, XI (1, :), YI (:, 1), extrap);
-      elseif (isgriddata (X) && isgriddata (Y'))
-        ## Allocate output
-        ZI = zeros (size (X));
-
-        ## Find inliers
-        inside = !(XI < X(1) | XI > X(end) | YI < Y(1) | YI > Y(end));
-
-        ## Scale XI and YI to match indices of Z
-        XI = (columns (Z) - 1) * (XI - X(1)) / (X(end) - X(1)) + 1;
-        YI = (rows (Z) - 1) * (YI - Y(1)) / (Y(end) - Y(1)) + 1;
-
-        ## Start the real work
-        K = floor (XI);
-        L = floor (YI);
-
-        ## Coefficients
-        AY1  = bc (YI - L + 1);
-        AX1  = bc (XI - K + 1);
-        AY0  = bc (YI - L + 0);
-        AX0  = bc (XI - K + 0);
-        AY_1 = bc (YI - L - 1);
-        AX_1 = bc (XI - K - 1);
-        AY_2 = bc (YI - L - 2);
-        AX_2 = bc (XI - K - 2);
-
-        ## Perform interpolation
-        sz = size (Z);
-        ZI = AY_2 .* AX_2 .* Z(sym_sub2ind (sz, L+2, K+2)) ...
-           + AY_2 .* AX_1 .* Z(sym_sub2ind (sz, L+2, K+1)) ...
-           + AY_2 .* AX0  .* Z(sym_sub2ind (sz, L+2, K))   ...
-           + AY_2 .* AX1  .* Z(sym_sub2ind (sz, L+2, K-1)) ...
-           + AY_1 .* AX_2 .* Z(sym_sub2ind (sz, L+1, K+2)) ...
-           + AY_1 .* AX_1 .* Z(sym_sub2ind (sz, L+1, K+1)) ...
-           + AY_1 .* AX0  .* Z(sym_sub2ind (sz, L+1, K))   ...
-           + AY_1 .* AX1  .* Z(sym_sub2ind (sz, L+1, K-1)) ...
-           + AY0  .* AX_2 .* Z(sym_sub2ind (sz, L,   K+2)) ...
-           + AY0  .* AX_1 .* Z(sym_sub2ind (sz, L,   K+1)) ...
-           + AY0  .* AX0  .* Z(sym_sub2ind (sz, L,   K))   ...
-           + AY0  .* AX1  .* Z(sym_sub2ind (sz, L,   K-1)) ...
-           + AY1  .* AX_2 .* Z(sym_sub2ind (sz, L-1, K+2)) ...
-           + AY1  .* AX_1 .* Z(sym_sub2ind (sz, L-1, K+1)) ...
-           + AY1  .* AX0  .* Z(sym_sub2ind (sz, L-1, K))   ...
-           + AY1  .* AX1  .* Z(sym_sub2ind (sz, L-1, K-1));
-        ZI (!inside) = extrap;
-
-      else
-        error ("interp2: input data must have 'meshgrid' format");
-      endif
-    #}
-
     if (strcmp (method, "spline"))
       if (isgriddata (XI) && isgriddata (YI'))
-        ZI = __splinen__ ({Y, X}, Z, {YI(:,1), XI(1,:)}, extrap,
-                          "spline");
+        ZI = __splinen__ ({Y, X}, Z, {YI(:,1), XI(1,:)}, extrap, "spline");
       else
         error ("interp2: XI, YI must have uniform spacing ('meshgrid' format)");
       endif
-    else
-      error ("interp2: unrecognized interpolation method '%s'", method);
     endif
 
+    return; # spline doesn't need NA extrapolation value (MATLAB compatibility)
+
+  endif
+
+  ## extrapolation 'extrap' 
+  if (isempty (extrap))
+    extrap = NA;
+  endif
+  
+  if (X(1) < X(end))
+    if (Y(1) < Y(end))
+      ZI(XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = extrap;
+    else
+      ZI(XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = extrap;
+    endif
+  else
+    if (Y(1) < Y(end))
+      ZI(XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = extrap;
+    else
+      ZI(XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = extrap;
+    endif
   endif
 
 endfunction
@@ -616,8 +522,11 @@ endfunction
 %! yi = [3,8]';
 %! assert (interp2 (x,y,orig, xi, yi), [NA,NA;NA,NA]);
 %! assert (interp2 (x,y,orig, xi, yi,"linear", 0), [0,0;0,0]);
-%! assert (interp2 (x,y,orig, xi, yi,"linear", "extrap"), [1,17;468,484]);
-%! assert (interp2 (x,y,orig, xi, yi,"nearest", "extrap"), orig([1,end],[1,end]));
+%! assert (interp2 (x,y,orig, xi, yi,"linear", 2), [2,2;2,2]);
+%! assert (interp2 (x,y,orig, xi, yi,"spline", 2), [2,2;2,2]);
+%! assert (interp2 (x,y,orig, xi, yi,"linear", 0+1i), [0+1i,0+1i;0+1i,0+1i]);
+%! assert (interp2 (x,y,orig, xi, yi,"spline"), [27,43;512,528]);
+
 
 %!test  # for values at boundaries
 %! A = [1,2;3,4];
@@ -654,31 +563,32 @@ endfunction
 %!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol)
 
 %% Test input validation
+%!error interp2 (1, 1, 1, 1, 1, 2)    #only 5 numeric inputs
+%!error interp2 (1, 1, 1, 1, 1, 2, 2) #only 5 numeric inputs
 %!error <Z must be a 2-D matrix> interp2 ({1})
+%!error <Z must be a 2-D matrix> interp2 (1,1,1)
 %!error <Z must be a 2-D matrix> interp2 (ones (2,2,2))
-%!error <N must be an integer .= 0> interp2 (1, ones (2))
-%!error <N must be an integer .= 0> interp2 (1, -1)
-%!error <N must be an integer .= 0> interp2 (1, 1.5)
-%!error <METHOD must be a string> interp2 (1, 1, 1, 1, 1, 2)
+%!error <N must be an integer .= 0> interp2 (ones (2), ones (2))
+%!error <N must be an integer .= 0> interp2 (ones (2), -1)
+%!error <N must be an integer .= 0> interp2 (ones (2), 1.5)
 %!warning <ignoring unsupported '\*' flag> interp2 (rand (3,3), 1, "*linear");
-%!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', {1})
-%!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', ones (2,2))
-%!error <EXTRAP must be a numeric scalar or "extrap"> interp2 (1, 1, 1, 1, 1, 'linear', "abc")
-%!error <X, Y must be numeric matrices> interp2 ({1}, 1, 1, 1, 1)
-%!error <X, Y must be numeric matrices> interp2 (1, {1}, 1, 1, 1)
-%!error <XI, YI must be numeric> interp2 (1, 1, 1, {1}, 1)
-%!error <XI, YI must be numeric> interp2 (1, 1, 1, 1, {1})
-%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), 1, 1, 1, 1)
-%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), ones(2,3), 1, 1, 1)
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', {1})
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', ones (2,2))
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', "abc")
+%!error <EXTRAP must be a numeric scalar> interp2 (1, 1, 1, 1, 1, 'linear', "extrap")
+%!error <X, Y must be numeric matrices> interp2 ({1}, 1, ones (2), 1, 1)
+%!error <X, Y must be numeric matrices> interp2 (1, {1}, ones (2), 1, 1)
+%!error <XI, YI must be numeric> interp2 (1, 1, ones (2), {1}, 1)
+%!error <XI, YI must be numeric> interp2 (1, 1, ones (2), 1, {1})
+%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), 1, ones (2), 1, 1)
+%!error <X and Y must be matrices of equal size> interp2 (ones(2,2), ones(2,3), ones (2), 1, 1)
 %!error <X and Y size must match the dimensions of Z> interp2 (1:3, 1:3, ones (3,2), 1, 1)
 %!error <X and Y size must match the dimensions of Z> interp2 (1:2, 1:2, ones (3,2), 1, 1)
 %!error <X must be strictly monotonic> interp2 ([1 0 2], 1:3, ones (3,3), 1, 1)
 %!error <Y must be strictly monotonic> interp2 (1:3, [1 0 2], ones (3,3), 1, 1)
-%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, ones(2,2), 1)
-%!error <XI and YI must be matrices of equal size> interp2 (1, 1, 1, 1, ones(2,2))
-%!error <pchip requires at least 2 points> interp2 (1, 1, 1, 1, 1, "pchip")
-%!error <cubic requires at least 2 points> interp2 (1, 1, 1, 1, 1, "cubic")
-%!error <XI, YI must have uniform spacing> interp2 (1, 1, 1, [1 2 4], [1 2 3], "spline")
-%!error <XI, YI must have uniform spacing> interp2 (1, 1, 1, [1 2 3], [1 2 4], "spline")
-%!error <unrecognized interpolation method 'foobar'> interp2 (1, 1, 1, 1, 1, "foobar")
+%!error <XI and YI must be matrices of equal size> interp2 (1:2, 1:2, ones (2), ones(2,2), 1)
+%!error <XI and YI must be matrices of equal size> interp2 (1:2, 1:2, ones (2), 1, ones(2,2))
+%!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 4], [1 2 3], "spline")
+%!error <XI, YI must have uniform spacing> interp2 (1:2, 1:2, ones (2), [1 2 3], [1 2 4], "spline")
+%!error interp2 (1, 1, 1, 1, 1, "foobar")
 

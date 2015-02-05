@@ -61,55 +61,56 @@
 ## @item @qcode{"linear"} (default)
 ## Linear interpolation from nearest neighbors.
 ##
-## @item @qcode{"pchip"}
+## @item @qcode{"cubic"}
 ## Piecewise cubic Hermite interpolating polynomial---shape-preserving
 ## interpolation with smooth first derivative (not implemented yet).
-##
-## @item @qcode{"cubic"}
-## Cubic interpolation (same as @qcode{"pchip"} [not implemented yet]).
 ##
 ## @item @qcode{"spline"}
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
 ##
-## If @var{extrapval} is a number, then replace values beyond the endpoints
-## with that number.  When unspecified, @var{extrapval} defaults to @code{NA}.
-## Note that if @var{extrapval} is used, @var{method} must be specified as well.
+## @var{extrapval} is a scalar number. It replaces values beyond the endpoints
+## with @var{extrapval}.  Note that if @var{extrapval} is used, @var{method}
+## must be specified as well.  If @var{extrapval} is omitted and the
+## @var{method} is @qcode{"spline"}, then the extrapolated values of the
+## @qcode{"spline"} are used.  Otherwise the default @var{extrapval} value for
+## any other @var{method} is @qcode{"NA"}.
 ## @seealso{interp1, interp2, interpn, meshgrid}
 ## @end deftypefn
 
-## FIXME: Need to validate N argument (maybe change interpn).
-## FIXME: Need to add support for 'pchip' method (maybe change interpn).
-## FIXME: Need to add support for "extrap" string value (maybe change interpn).
+## FIXME: Need to add support for 'cubic' method (maybe change interpn).
 
 function vi = interp3 (varargin)
 
+  narginchk (1,9);
+
   method = "linear";
-  extrapval = NA;
+  extrapval = [];
   nargs = nargin;
 
   if (nargin < 1 || ! isnumeric (varargin{1}))
     print_usage ();
   endif
 
-  if (ischar (varargin{end}))
-    method = varargin{end};
-    nargs--;
-  elseif (nargs > 1 && ischar (varargin{end-1}))
-    ## FIXME: No support for "extrap" string
+  if (nargs > 1 && ischar (varargin{end-1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("interp3: EXTRAPVAL must be a numeric scalar");
     endif
     extrapval = varargin{end};
     method = varargin{end-1};
     nargs -= 2;
+  elseif (ischar (varargin{end}))
+    method = varargin{end};
+    nargs--;
   endif
 
   if (method(1) == "*")
     warning ("interp3: ignoring unsupported '*' flag to METHOD");
     method(1) = [];
   endif
+  method = validatestring (method, ...
+    {"nearest", "linear", "cubic", "spline"});
 
   if (nargs < 3)
     ## Calling form interp3 (v) OR interp3 (v, n)
@@ -119,7 +120,12 @@ function vi = interp3 (varargin)
     endif
     n = varargin(2:nargs);
     v = permute (v, [2, 1, 3]);
-    vi = ipermute (interpn (v, n{:}, method, extrapval), [2, 1, 3]);
+    if (isempty (extrapval))
+      vi = interpn (v, n{:}, method);
+    else
+      vi = interpn (v, n{:}, method, extrapval);
+    endif
+    vi = ipermute (vi, [2, 1, 3]);
 
   elseif (nargs == 4 && ! isvector (varargin{1}))
     ## Calling form interp3 (v, xi, yi, zi)
@@ -138,7 +144,12 @@ function vi = interp3 (varargin)
       endfor
     endif
     v = permute (v, [2, 1, 3]);
-    vi = ipermute (interpn (v, xi{:}, method, extrapval), [2, 1, 3]);
+    if (isempty (extrapval))
+      vi = interpn (v, xi{:}, method);
+    else
+      vi = interpn (v, xi{:}, method, extrapval);
+    endif
+    vi = ipermute (vi, [2, 1, 3]);
 
   elseif (nargs == 7)
     ## Calling form interp3 (x, y, z, v, xi, yi, zi)
@@ -167,7 +178,12 @@ function vi = interp3 (varargin)
       endfor
     endif
     v = permute (v, [2, 1, 3]);
-    vi = ipermute (interpn (x{:}, v, xi{:}, method, extrapval), [2, 1, 3]);
+    if (isempty (extrapval))
+      vi = interpn (x{:}, v, xi{:}, method);
+    else
+      vi = interpn (x{:}, v, xi{:}, method, extrapval);
+    endif
+    vi = ipermute (vi, [2, 1, 3]);
 
   else
     error ("interp3: wrong number or incorrectly formatted input arguments");
@@ -231,6 +247,19 @@ endfunction
 %! vi = interp3 (v, xi, yi, zi, "nearest", 3);
 %! vi2 = interpn (v, yi, xi, zi, "nearest", 3);
 %! assert (vi, vi2);
+
+%!test # extrapolation
+%! X=[0,0.5,1]; Y=X; Z=X;
+%! V = zeros (3,3,3);
+%! V(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
+%! V(:,:,2) = V(:,:,1) + 2;
+%! V(:,:,3) = V(:,:,2) + 2;
+%! tol = 10 * eps;
+%! x=[-0.1,0,0.1]; y=x; z=x; 
+%! assert(interp3(X,Y,Z,V,x,y,z,"spline"), [-0.2, 1.0, 2.2]',tol);
+%! assert(interp3(X,Y,Z,V,x,y,z,"linear"), [NA, 1.0, 2.2]',tol);
+%! assert(interp3(X,Y,Z,V,x,y,z,"spline", 0), [0, 1.0, 2.2]',tol);
+%! assert(interp3(X,Y,Z,V,x,y,z,"linear", 0), [0, 1.0, 2.2]',tol);
 
 %!shared z, zout, tol
 %! z = zeros (3, 3, 3);

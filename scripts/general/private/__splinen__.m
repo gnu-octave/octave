@@ -38,10 +38,12 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   endfor
 
   [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "uniformoutput", false){:});
-  idx = zeros (size (xi{1}));
-  for i = 1 : length (x)
-    idx |= xi{i} < min (x{i}(:)) | xi{i} > max (x{i}(:));
-  endfor
-  yi(idx) = extrapval;
+  if (!isempty (extrapval))
+    idx = zeros (size (xi{1}));
+    for i = 1 : length (x)
+      idx |= xi{i} < min (x{i}(:)) | xi{i} > max (x{i}(:));
+    endfor
+    yi(idx) = extrapval;
+  endif
 endfunction
 

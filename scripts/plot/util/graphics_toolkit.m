@@ -44,6 +44,17 @@ function retval = graphics_toolkit (name, hlist = [])
 
   if (nargout > 0 || nargin == 0)
     retval = get (0, "defaultfigure__graphics_toolkit__");
+    ## Handle case where graphics_toolkit has been called before any plotting
+    if (isempty (retval))
+      toolkits = available_graphics_toolkits ();
+      if (any (strcmp ("qt", toolkits)))
+        retval = "qt";
+      elseif (any (strcmp ("fltk", toolkits)))
+        retval = "fltk";
+      elseif (! isempty (toolkits))
+        retval = toolkits{1};
+      endif
+    endif
   endif
 
   if (nargin == 0)

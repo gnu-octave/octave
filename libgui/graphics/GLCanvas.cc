@@ -60,6 +60,16 @@ void GLCanvas::draw (const graphics_handle& gh)
     }
 }
 
+void GLCanvas::toggleAxes (const graphics_handle& gh)
+{
+  canvasToggleAxes (gh);
+}
+
+void GLCanvas::toggleGrid (const graphics_handle& gh)
+{
+  canvasToggleGrid (gh);
+}
+
 graphics_object GLCanvas::selectFromAxes (const graphics_object& ax,
                                           const QPoint& pt)
 {
@@ -119,6 +129,11 @@ void GLCanvas::paintGL (void)
   canvasPaintEvent ();
 }
 
+void GLCanvas::mouseDoubleClickEvent (QMouseEvent* xevent)
+{
+  canvasMouseDoubleClickEvent (xevent);
+}
+
 void GLCanvas::mouseMoveEvent (QMouseEvent* xevent)
 {
   canvasMouseMoveEvent (xevent);
@@ -132,6 +147,11 @@ void GLCanvas::mousePressEvent (QMouseEvent* xevent)
 void GLCanvas::mouseReleaseEvent (QMouseEvent* xevent)
 {
   canvasMouseReleaseEvent (xevent);
+}
+
+void GLCanvas::wheelEvent (QWheelEvent* xevent)
+{
+  canvasWheelEvent (xevent);
 }
 
 void GLCanvas::keyPressEvent (QKeyEvent* xevent)

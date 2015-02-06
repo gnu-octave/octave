@@ -3453,6 +3453,10 @@ public:
       string_property xvisual , ""
       radio_property xvisualmode , "{auto}|manual"
       // Octave-specific properties
+      radio_property __mouse_mode__ hS , "{none}|pan|rotate|select|text|zoom"
+      any_property __pan_mode__ h , Matrix ()
+      any_property __rotate_mode__ h , Matrix ()
+      any_property __zoom_mode__ h , Matrix ()
       bool_property __enhanced__ h , "on"
       string_property __graphics_toolkit__ s , gtk_manager::default_toolkit ()
       any_property __guidata__ h , Matrix ()
@@ -3752,14 +3756,29 @@ public:
     ColumnVector coord2pixel (double x, double y, double z) const
     { return get_transform ().transform (x, y, z); }
 
-    void zoom_about_point (double x, double y, double factor,
-                           bool push_to_zoom_stack = true);
-    void zoom (const Matrix& xl, const Matrix& yl,
+    void zoom_about_point (const std::string& mode, double x, double y,
+                           double factor, bool push_to_zoom_stack = true);
+    void zoom (const std::string& mode, double factor,
                bool push_to_zoom_stack = true);
-    void translate_view (double x0, double x1, double y0, double y1);
-    void rotate_view (double delta_az, double delta_el);
+    void zoom (const std::string& mode, const Matrix& xl, const Matrix& yl,
+               bool push_to_zoom_stack = true);
+
+    void translate_view (const std::string& mode,
+                         double x0, double x1, double y0, double y1,
+                         bool push_to_zoom_stack = true);
+
+    void pan (const std::string& mode, double factor,
+              bool push_to_zoom_stack = true);
+
+    void rotate3d (double x0, double x1, double y0, double y1,
+                   bool push_to_zoom_stack = true);
+
+    void rotate_view (double delta_az, double delta_el,
+                      bool push_to_zoom_stack = true);
+
     void unzoom (void);
-    void clear_zoom_stack (void);
+    void push_zoom_stack (void);
+    void clear_zoom_stack (bool do_unzoom = true);
 
     void update_units (const caseless_str& old_units);
 
@@ -3791,13 +3810,6 @@ public:
                          const octave_value& v);
 
     void delete_text_child (handle_property& h);
-
-    void set_pan (const octave_value& val)
-    {
-      pan.set (val, false, false);
-      if (pan_is ("on") || pan_is ("xon") || pan_is ("yon"))
-        rotate3d.set ("off", false, false);
-    }
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -3842,12 +3854,10 @@ public:
       double_property mouse_wheel_zoom , 0.05
       radio_property nextplot , "add|replacechildren|{replace}"
       array_property outerposition u , default_axes_outerposition ()
-      radio_property pan s , "{on}|xon|yon|off"
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode u , "{auto}|manual"
       array_property position u , default_axes_position ()
       radio_property projection , "{orthographic}|perspective"
-      radio_property rotate3d S , "{off}|on"
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
       array_property ticklength u , default_axes_ticklength ()
@@ -4163,7 +4173,7 @@ public:
                             double min_pos, double max_neg,
                             bool logscale);
 
-    void update_xlim (bool do_clr_zoom = true)
+    void update_xlim ()
     {
       if (xtickmode.is ("auto"))
         calc_ticks_and_lims (xlim, xtick, xmtick, xlimmode.is ("auto"),
@@ -4175,13 +4185,10 @@ public:
 
       update_xscale ();
 
-      if (do_clr_zoom)
-        zoom_stack.clear ();
-
       update_axes_layout ();
     }
 
-    void update_ylim (bool do_clr_zoom = true)
+    void update_ylim (void)
     {
       if (ytickmode.is ("auto"))
         calc_ticks_and_lims (ylim, ytick, ymtick, ylimmode.is ("auto"),
@@ -4192,9 +4199,6 @@ public:
       fix_limits (ylim);
 
       update_yscale ();
-
-      if (do_clr_zoom)
-        zoom_stack.clear ();
 
       update_axes_layout ();
     }
@@ -4210,8 +4214,6 @@ public:
       fix_limits (zlim);
 
       update_zscale ();
-
-      zoom_stack.clear ();
 
       update_axes_layout ();
     }

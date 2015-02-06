@@ -42,7 +42,8 @@ public:
   ~MouseModeActionGroup (void);
 
   QList<QAction*> actions (void) const { return m_actions; }
-  MouseMode mouseMode (void) const;
+
+  void setMode (MouseMode mode);
 
 signals:
   void modeChanged (MouseMode mode);

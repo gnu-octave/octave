@@ -85,6 +85,7 @@ function h = figure (varargin)
   if (init_new_figure)
     f = __go_figure__ (f, varargin{:});
     __add_default_menu__ (f);
+    __add_default_mouse_modes__ (f);
   elseif (nargs > 0)
     set (f, varargin{:});
   endif
@@ -103,6 +104,22 @@ function h = figure (varargin)
 
 endfunction
 
+function __add_default_mouse_modes__ (fig)
+
+  set (fig, "__pan_mode__", struct ("Enable", "off",
+                                    "Motion", "both",
+                                    "FigureHandle", fig));
+
+  set (fig, "__rotate_mode__", struct ("Enable", "off",
+                                       "RotateStyle", "box",
+                                       "FigureHandle", fig));
+
+  set (fig, "__zoom_mode__", struct ("Enable", "off",
+                                     "Motion", "both",
+                                     "Direction", "in",
+                                     "FigureHandle", fig));
+
+endfunction
 
 %!test
 %! hf = figure ("visible", "off");

@@ -1809,6 +1809,32 @@ figure::properties::set_toolkit (const graphics_toolkit& b)
   mark_modified ();
 }
 
+void
+figure::properties::set___mouse_mode__ (const octave_value& val)
+{
+  if (! error_state)
+    {
+      if (__mouse_mode__.set (val, true))
+        {
+          std::string mode = __mouse_mode__.current_value ();
+
+          octave_scalar_map pm = get___pan_mode__ ().scalar_map_value ();
+          pm.setfield ("Enable", mode == "pan" ? "on" : "off");
+          set___pan_mode__ (pm);
+
+          octave_scalar_map rm = get___rotate_mode__ ().scalar_map_value ();
+          rm.setfield ("Enable", mode == "rotate" ? "on" : "off");
+          set___rotate_mode__ (rm);
+
+          octave_scalar_map zm = get___zoom_mode__ ().scalar_map_value ();
+          zm.setfield ("Enable", mode == "zoom" ? "on" : "off");
+          set___zoom_mode__ (zm);
+
+          mark_modified ();
+        }
+    }
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -5041,8 +5067,6 @@ axes::properties::set_defaults (base_graphics_object& obj,
   update_transform ();
   sync_positions ();
   override_defaults (obj);
-  // Disable rotate3d and select pan for 2D axes
-  set_rotate3d (get_rotate3d ());
 }
 
 void
@@ -6488,27 +6512,6 @@ axes::properties::set_linestyleorder (const octave_value& v)
 }
 
 void
-axes::properties::set_rotate3d (const octave_value& v)
-{
-  graphics_object parent_obj =
-    gh_manager::get_object (get_parent ());
-
-  int ndim = calc_dimensions (parent_obj);
-  rotate3d.set (v, false, false);
-  if (rotate3d_is ("on"))
-    {
-      // Disable rotate3d for 2D plots
-      if (ndim == 2)
-        {
-          rotate3d.set ("off", false, false);
-          pan.set ("on", false, false);
-        }
-      else
-        pan.set ("off", false, false);
-    }
-}
-
-void
 axes::properties::set_units (const octave_value& v)
 {
   if (! error_state)
@@ -7564,7 +7567,8 @@ do_zoom (double val, double factor, const Matrix& lims, bool is_logscale)
 }
 
 void
-axes::properties::zoom_about_point (double x, double y, double factor,
+axes::properties::zoom_about_point (const std::string& mode,
+                                    double x, double y, double factor,
                                     bool push_to_zoom_stack)
 {
   // FIXME: Do we need error checking here?
@@ -7588,29 +7592,70 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
   ylims = do_zoom (y, factor, ylims, yscale_is ("log"));
 
-  zoom (xlims, ylims, push_to_zoom_stack);
+  zoom (mode, xlims, ylims, push_to_zoom_stack);
 }
 
 void
-axes::properties::zoom (const Matrix& xl, const Matrix& yl,
+axes::properties::zoom (const std::string& mode, double factor,
+                        bool push_to_zoom_stack)
+{
+  // FIXME: Do we need error checking here?
+  Matrix xlims = get_xlim ().matrix_value ();
+  Matrix ylims = get_ylim ().matrix_value ();
+
+  double x = (xlims(0) + xlims(1)) / 2;
+  double y = (ylims(0) + ylims(1)) / 2;
+
+  zoom_about_point (mode, x, y, factor, push_to_zoom_stack);
+}
+
+void
+axes::properties::push_zoom_stack (void)
+{
+  // FIXME: Maybe make the size of the undo stack configurable.  A limit
+  // of 500 elements means 100 pan, rotate, or zoom actions are stored
+  // and may be undone.
+
+  if (zoom_stack.size () >= 500)
+    {
+      for (int i = 0; i < 5; i++)
+        zoom_stack.pop_back ();
+    }
+
+  zoom_stack.push_front (xlimmode.get ());
+  zoom_stack.push_front (xlim.get ());
+  zoom_stack.push_front (ylimmode.get ());
+  zoom_stack.push_front (ylim.get ());
+  zoom_stack.push_front (view.get ());
+}
+
+void
+axes::properties::zoom (const std::string& mode,
+                        const Matrix& xl, const Matrix& yl,
                         bool push_to_zoom_stack)
 {
   if (push_to_zoom_stack)
+    push_zoom_stack ();
+
+  if (mode == "horizontal" || mode == "both")
     {
-      zoom_stack.push_front (xlimmode.get ());
-      zoom_stack.push_front (xlim.get ());
-      zoom_stack.push_front (ylimmode.get ());
-      zoom_stack.push_front (ylim.get ());
+      xlim = xl;
+      xlimmode = "manual";
     }
 
-  xlim = xl;
-  xlimmode = "manual";
-  ylim = yl;
-  ylimmode = "manual";
+  if (mode == "vertical" || mode == "both")
+    {
+      ylim = yl;
+      ylimmode = "manual";
+    }
 
   update_transform ();
-  update_xlim (false);
-  update_ylim (false);
+
+  if (mode == "horizontal" || mode == "both")
+    update_xlim ();
+
+  if (mode == "vertical" || mode == "both")
+    update_ylim ();
 }
 
 static Matrix
@@ -7674,7 +7719,9 @@ do_translate (double x0, double x1, const Matrix& lims, bool is_logscale)
 }
 
 void
-axes::properties::translate_view (double x0, double x1, double y0, double y1)
+axes::properties::translate_view (const std::string& mode,
+                                  double x0, double x1, double y0, double y1,
+                                  bool push_to_zoom_stack)
 {
   // FIXME: Do we need error checking here?
   Matrix xlims = get_xlim ().matrix_value ();
@@ -7697,12 +7744,82 @@ axes::properties::translate_view (double x0, double x1, double y0, double y1)
   xlims = do_translate (x0, x1, xlims, xscale_is ("log"));
   ylims = do_translate (y0, y1, ylims, yscale_is ("log"));
 
-  zoom (xlims, ylims, false);
+  zoom (mode, xlims, ylims, push_to_zoom_stack);
 }
 
 void
-axes::properties::rotate_view (double delta_el, double delta_az)
+axes::properties::pan (const std::string& mode, double factor,
+                       bool push_to_zoom_stack)
 {
+  // FIXME: Do we need error checking here?
+  Matrix xlims = get_xlim ().matrix_value ();
+  Matrix ylims = get_ylim ().matrix_value ();
+
+  double x0 = (xlims(0) + xlims(1)) / 2;
+  double y0 = (ylims(0) + ylims(1)) / 2;
+
+  double x1 = x0 + (xlims(1) - xlims(0)) * factor;
+  double y1 = y0 + (ylims(1) - ylims(0)) * factor;
+
+  translate_view (mode, x0, x1, y0, y1, push_to_zoom_stack);
+}
+
+void
+axes::properties::rotate3d (double x0, double x1, double y0, double y1,
+                            bool push_to_zoom_stack)
+{
+  if (push_to_zoom_stack)
+    push_zoom_stack ();
+
+  Matrix bb = get_boundingbox (true);
+  Matrix new_view = get_view ().matrix_value ();
+
+  // Compute new view angles
+  new_view(0) += ((x0 - x1) * (180.0 / bb(2)));
+  new_view(1) += ((y1 - y0) * (180.0 / bb(3)));
+
+  // Clipping
+  new_view(1) = std::min (new_view(1), 90.0);
+  new_view(1) = std::max (new_view(1), -90.0);
+  if (new_view(0) > 180.0)
+    new_view(0) -= 360.0;
+  else if (new_view(0) < -180.0)
+    new_view(0) += 360.0;
+
+  // Snapping
+  double snapMargin = 1.0;
+  for (int a = -90; a <= 90; a += 90)
+    {
+      if ((a - snapMargin) < new_view(1)
+          && new_view(1) < (a + snapMargin))
+        {
+          new_view(1) = a;
+          break;
+        }
+    }
+
+  for (int a = -180; a <= 180; a += 180)
+    if ((a - snapMargin) < new_view(0)
+        && new_view(0) < (a + snapMargin))
+      {
+        if (a == 180)
+          new_view(0) = -180;
+        else
+          new_view(0) = a;
+        break;
+      }
+
+  // Update axes properties
+  set_view (new_view);
+}
+
+void
+axes::properties::rotate_view (double delta_el, double delta_az,
+                               bool push_to_zoom_stack)
+{
+  if (push_to_zoom_stack)
+    push_zoom_stack ();
+
   Matrix v = get_view ().matrix_value ();
 
   v(1) += delta_el;
@@ -7715,36 +7832,49 @@ axes::properties::rotate_view (double delta_el, double delta_az)
   v(0) = fmod (v(0) - delta_az + 720,360);
 
   set_view (v);
+
   update_transform ();
 }
 
 void
 axes::properties::unzoom (void)
 {
-  if (zoom_stack.size () >= 4)
+  if (zoom_stack.size () >= 5)
     {
+      view = zoom_stack.front ();
+      zoom_stack.pop_front ();
+
       ylim = zoom_stack.front ();
       zoom_stack.pop_front ();
+
       ylimmode = zoom_stack.front ();
       zoom_stack.pop_front ();
+
       xlim = zoom_stack.front ();
       zoom_stack.pop_front ();
+
       xlimmode = zoom_stack.front ();
       zoom_stack.pop_front ();
 
       update_transform ();
-      update_xlim (false);
-      update_ylim (false);
+
+      update_xlim ();
+      update_ylim ();
+
+      update_view ();
     }
 }
 
 void
-axes::properties::clear_zoom_stack (void)
+axes::properties::clear_zoom_stack (bool do_unzoom)
 {
-  while (zoom_stack.size () > 4)
+  size_t items_to_leave_on_stack = do_unzoom ? 5 : 0;
+
+  while (zoom_stack.size () > items_to_leave_on_stack)
     zoom_stack.pop_front ();
 
-  unzoom ();
+  if (do_unzoom)
+    unzoom ();
 }
 
 void
@@ -11657,4 +11787,75 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
     print_usage ();
 
   return octave_value ();
+}
+
+DEFUN (__zoom__, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})\n\
+@deftypefnx  {Built-in Function} {} __zoom__ (@var{axes}, \"out\")\n\
+@deftypefnx  {Built-in Function} {} __zoom__ (@var{axes}, \"reset\")\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2 && nargin != 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  double h = args(0).double_value ();
+
+  if (error_state)
+    return retval;
+
+  gh_manager::auto_lock guard;
+
+  graphics_handle handle = gh_manager::lookup (h);
+
+  if (! handle.ok ())
+    {
+      error ("__zoom__: invalid handle");
+      return retval;
+    }
+
+  graphics_object ax = gh_manager::get_object (handle);
+
+  axes::properties& ax_props =
+    dynamic_cast<axes::properties&> (ax.get_properties ());
+
+  if (nargin == 2)
+    {
+      std::string opt = args(1).string_value ();
+
+      if (error_state)
+        return retval;
+
+      if (opt == "out" || opt == "reset")
+        {
+          if (opt == "out")
+            {
+              ax_props.clear_zoom_stack ();
+              Vdrawnow_requested = true;
+            }
+          else
+            ax_props.clear_zoom_stack (false);
+
+        }
+    }
+  else
+    {
+      std::string mode = args(1).string_value ();
+      double factor = args(2).scalar_value ();
+
+      if (error_state)
+        return retval;
+
+      ax_props.zoom (mode, factor);
+    }
+
+  return retval;
 }

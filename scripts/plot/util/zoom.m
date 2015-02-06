@@ -17,10 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} zoom (@var{factor})
+## @deftypefn {Command} {} zoom
+## @deftypefnx  {Command} {} zoom (@var{factor})
+## @deftypefnx {Command} {} zoom on
+## @deftypefnx {Command} {} zoom off
+## @deftypefnx {Command} {} zoom xon
+## @deftypefnx {Command} {} zoom yon
 ## @deftypefnx {Command} {} zoom out
 ## @deftypefnx {Command} {} zoom reset
-## Zoom the current axes object.
+## @deftypefnx {Command} {} zoom (@var{hfig}, @var{option})
+## Zoom the current axes object or control the interactive zoom mode of
+## a figure in the GUI.
 ##
 ## Given a numeric argument greater than zero, zoom by the given factor.
 ## If the zoom factor is greater than one, zoom in on the plot.  If the
@@ -28,21 +35,27 @@
 ## three-element vector, then the elements specify the zoom factors for
 ## the x, y, and z axes respectively.
 ##
+## Given the option @qcode{"on"} or @qcode{"off"}, set the interactive
+## zoom mode on or off.
+##
+## With no arguments, toggle the current zoom mode on or off.
+##
+## Given the option @qcode{"xon"} or @qcode{"yon"}, enable zoom mode
+## for the x or y axis only.
+##
 ## Given the option @qcode{"out"}, zoom to the initial zoom setting.
 ##
 ## Given the option @qcode{"reset"}, store the current zoom setting so
 ## that @code{zoom out} will return to this zoom level.
 ##
+## If the first argument @var{hfig} is a figure, then operate on
+## the given figure rather than the current figure as returned by
+## @code{gcf}.
+##
 ## @seealso{pan, rotate3d}
 ## @end deftypefn
 
 ## Eventually we need to also support these features:
-## @deftypefn {Command} {} zoom
-## @deftypefnx {Command} {} zoom on
-## @deftypefnx {Command} {} zoom off
-## @deftypefnx {Command} {} zoom xon
-## @deftypefnx {Command} {} zoom yon
-## @deftypefnx {Command} {} zoom (@var{hfig}, @var{option})
 ## @deftypefnx {Command} {zoom_object_handle =} zoom (@var{hfig})
 
 function zoom (varargin)
@@ -74,62 +87,83 @@ function zoom (varargin)
   endif
 
   if (nargs == 0)
-    error ("zoom: toggling zoom mode is not implemented");
+    zm = get (hfig, "__zoom_mode__");
+    if (strcmp (zm.Enable, "on"))
+      zm.Enable = "off";
+    else
+      zm.Enable = "on";
+    endif
+    set (hfig, "__zoom_mode__", zm);
   elseif (nargs == 1)
     arg = varargin{1};
     if (isnumeric (arg))
       factor = arg;
       switch (numel (factor))
-        case 3
-          xfactor = factor(1);
-          yfactor = factor(2);
-          zfactor = factor(3);
         case 2
           xfactor = factor(1);
           yfactor = factor(2);
-          zfactor = 1;
         case 1
-          xfactor = yfactor = zfactor = factor;
+          xfactor = yfactor = factor;
         otherwise
           error ("zoom: invalid factor");
       endswitch
-      if (xfactor < 0 || yfactor < 0 || zfactor < 0)
+      if (xfactor < 0 || yfactor < 0)
         error ("zoom: factor must be greater than 1");
-      elseif (xfactor == 1 && yfactor == 1 && zfactor == 1)
+      elseif (xfactor == 1 && yfactor == 1)
         return;
       endif
       cax = get (hfig, "currentaxes");
       if (! isempty (cax))
-        limits = axis ();
-        initial_zoom = getappdata (cax, "initial_zoom");
-        if (isempty (initial_zoom))
-          setappdata (cax, "__initial_zoom__", limits);
+        if (xfactor != 1)
+          if (yfactor != 1)
+            mode = "both";
+          else
+            mode = "horizontal";
+          endif
+        else
+          if (yfactor != 1)
+            mode = "vertical";
+          endif
         endif
-        limits(1:2) /= xfactor;
-        limits(3:4) /= yfactor;
-        if (numel (limits) > 4)
-          limits(5:6) /= zfactor;
-        endif
-        axis (cax, limits);
+        __zoom__ (cax, mode, factor);
       endif
     elseif (ischar (arg))
       switch (arg)
         case {"on", "off", "xon", "yon"}
-          error ("zoom %s: not implemented", arg);
+          zm = get (hfig, "__zoom_mode__");
+          switch (arg)
+            case {"on", "off"}
+              zm.Enable = arg;
+              zm.Motion = "both";
+            case "xon"
+              zm.Enable = "on";
+              zm.Motion = "horizontal";
+            case "yon"
+              zm.Enable = "on";
+              zm.Motion = "vertical";
+          endswitch
+          set (hfig, "__zoom_mode__", zm);
+          if (strcmp (arg, "off"))
+            set (hfig, "__mouse_mode__", "none");
+          else
+            ## FIXME: Is there a better way other than calling these
+            ## functions to set the other mouse mode Enable fields to
+            ## "off"?
+            pan ("off");
+            rotate3d ("off");
+            set (hfig, "__mouse_mode__", "zoom");
+          endif
 
         case "out"
           cax = get (hfig, "currentaxes");
           if (! isempty (cax))
-            initial_zoom = getappdata (cax, "__initial_zoom__");
-            if (! isempty (initial_zoom))
-              axis (cax, initial_zoom);
-            endif
+            __zoom__ (cax, "out");
           endif
 
         case "reset"
           cax = get (hfig, "currentaxes");
           if (! isempty (cax))
-            setappdata (cax, "__initial_zoom__", axis ());
+            __zoom__ (cax, "reset");
           endif
 
         otherwise

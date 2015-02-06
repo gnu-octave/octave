@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class QKeyEvent;
 class QMouseEvent;
+class QWheelEvent;
 class QWidget;
 
 namespace QtHandles
@@ -55,10 +56,15 @@ public:
   void clearEventMask (int m) { m_eventMask &= (~m); }
   void setEventMask (int m) { m_eventMask = m; }
 
+  void setCursor (MouseMode mode);
+
   virtual QWidget* qWidget (void) = 0;
 
   static Canvas* create (const std::string& name, QWidget* parent,
                          const graphics_handle& handle);
+
+  virtual void toggleAxes (const graphics_handle& handle) = 0;
+  virtual void toggleGrid (const graphics_handle& handle) = 0;
 
 protected:
   virtual void draw (const graphics_handle& handle) = 0;
@@ -75,10 +81,14 @@ protected:
       m_eventMask (0)
     { }
 
+  void canvasToggleAxes (const graphics_handle& handle);
+  void canvasToggleGrid (const graphics_handle& handle);
   void canvasPaintEvent (void);
+  void canvasMouseDoubleClickEvent (QMouseEvent* event);
   void canvasMouseMoveEvent (QMouseEvent* event);
   void canvasMousePressEvent (QMouseEvent* event);
   void canvasMouseReleaseEvent (QMouseEvent* event);
+  void canvasWheelEvent (QWheelEvent* event);
   bool canvasKeyPressEvent (QKeyEvent* event);
   bool canvasKeyReleaseEvent (QKeyEvent* event);
 

@@ -37,17 +37,23 @@ namespace QtHandles
 
 enum MouseMode
 {
+  // NOTE: These values must match the order of the buttons in the
+  // MouseModeActionGroup object.
+
   NoMode        = 0,
   RotateMode    = 1,
   ZoomMode      = 2,
   PanMode       = 3,
-  SelectMode    = 4
+  TextMode      = 4,
+  SelectMode    = 5
 };
 
 class Container;
 class FigureWindow;
 class MenuBar;
 class ToolBar;
+
+class MouseModeActionGroup;
 
 class Figure :
   public Object,
@@ -64,7 +70,7 @@ public:
 
   static Figure* create (const graphics_object& go);
 
-  MouseMode mouseMode (void) { return m_mouseMode; }
+  MouseMode mouseMode (void);
 
   Container* innerContainer (void);
   QWidget* menu (void);
@@ -93,10 +99,12 @@ private:
   void addCustomToolBar (QToolBar* bar, bool visible);
   void showCustomToolBar (QToolBar* bar, bool visible);
 
+  void updateFigureToolBarAndMenuBar (void);
+
   static void updateBoundingBoxHelper (void*);
 
 private slots:
-  void setMouseMode (MouseMode mode) { m_mouseMode = mode; }
+  void setMouseMode (MouseMode mode);
   void fileNewFigure (void);
   void fileCloseFigure (void);
   void editCopy (void);
@@ -105,6 +113,8 @@ private slots:
   void helpAboutQtHandles (void);
   void updateMenuBar (void);
   void updateContainer (void);
+  void toggleAxes (void);
+  void toggleGrid (void);
 
 signals:
   void asyncUpdate (void);
@@ -112,11 +122,11 @@ signals:
 private:
   Container* m_container;
   bool m_blockUpdates;
-  MouseMode m_mouseMode, m_lastMouseMode;
   QToolBar* m_figureToolBar;
   MenuBar* m_menuBar;
   QRect m_innerRect;
   QRect m_outerRect;
+  MouseModeActionGroup* m_mouseModeGroup;
 };
 
 }; // namespace QtHandles

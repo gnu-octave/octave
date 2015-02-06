@@ -37,6 +37,8 @@ public:
   ~GLCanvas (void);
 
   void draw (const graphics_handle& handle);
+  void toggleAxes (const graphics_handle& handle);
+  void toggleGrid (const graphics_handle& handle);
   void drawZoomBox (const QPoint& p1, const QPoint& p2);
   void resize (int /* x */, int /* y */,
                int /* width */, int /* height */) { }
@@ -46,9 +48,11 @@ public:
 
 protected:
   void paintGL (void);
+  void mouseDoubleClickEvent (QMouseEvent* event);
   void mouseMoveEvent (QMouseEvent* event);
   void mousePressEvent (QMouseEvent* event);
   void mouseReleaseEvent (QMouseEvent* event);
+  void wheelEvent (QWheelEvent* event);
   void keyPressEvent (QKeyEvent* event);
   void keyReleaseEvent (QKeyEvent* event);
 };

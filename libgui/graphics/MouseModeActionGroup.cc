@@ -42,10 +42,13 @@ MouseModeActionGroup::MouseModeActionGroup (QObject* xparent)
                                  tr ("Zoom"), this));
   m_actions.append (new QAction (QIcon (":/images/pan.png"),
                                  tr ("Pan"), this));
+  m_actions.append (new QAction (QIcon::fromTheme ("insert-text"),
+                                 tr ("Insert Text"), this));
   m_actions.append (new QAction (QIcon (":/images/select.png"),
                                  tr ("Select"), this));
-  m_actions[2]->setEnabled (false);
+
   m_actions[3]->setEnabled (false);
+  m_actions[4]->setEnabled (false);
 
   foreach (QAction* a, m_actions)
     {
@@ -83,11 +86,10 @@ void MouseModeActionGroup::actionToggled (bool checked)
     }
 }
 
-MouseMode MouseModeActionGroup::mouseMode (void) const
+void MouseModeActionGroup::setMode (MouseMode mode)
 {
-  int i = (m_current ? -1 : m_actions.indexOf (m_current));
-
-  return static_cast<MouseMode> (i+1);
+  for (int i = 0; i < m_actions.size (); i++)
+    m_actions[i]->setChecked (i == mode - 1);
 }
-
+  
 };

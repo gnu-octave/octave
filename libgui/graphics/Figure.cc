@@ -104,9 +104,9 @@ Figure* Figure::create (const graphics_object& go)
 }
 
 Figure::Figure (const graphics_object& go, FigureWindow* win)
-     : Object (go, win), m_blockUpdates (false), m_mouseMode (NoMode),
-       m_lastMouseMode (NoMode), m_figureToolBar (0), m_menuBar (0),
-       m_innerRect (), m_outerRect ()
+     : Object (go, win), m_blockUpdates (false), m_figureToolBar (0),
+       m_menuBar (0), m_innerRect (), m_outerRect (),
+       m_mouseModeGroup (0)
 {
   m_container = new Container (win);
   win->setCentralWidget (m_container);
@@ -163,6 +163,64 @@ Figure::~Figure (void)
 {
 }
 
+static std::string mouse_mode_to_string (MouseMode mode)
+{
+  switch (mode)
+    {
+    case NoMode:
+      return "none";
+
+    case RotateMode:
+      return "rotate";
+
+    case ZoomMode:
+      return "zoom";
+
+    case PanMode:
+      return "pan";
+
+    case TextMode:
+      return "text";
+
+    case SelectMode:
+      return "select";
+
+    default:
+      break;
+    }
+
+  return "none";
+}
+
+static MouseMode mouse_mode_from_string (const std::string& mode)
+{
+  if (mode == "none")
+    return NoMode;
+  else if (mode == "rotate")
+    return RotateMode;
+  else if (mode == "zoom")
+    return ZoomMode;
+  else if (mode == "pan")
+    return PanMode;
+  else if (mode == "text")
+    return TextMode;
+  else if (mode == "select")
+    return SelectMode;
+  else
+    return NoMode;
+}
+
+MouseMode Figure::mouseMode (void)
+{
+  gh_manager::auto_lock lock;
+
+  const figure::properties& fp = properties<figure> ();
+
+  std::string mode = fp.get___mouse_mode__ ();
+
+  return mouse_mode_from_string (mode);
+}
+
 void Figure::createFigureToolBarAndMenuBar (void)
 {
   QMainWindow* win = qWidget<QMainWindow> ();
@@ -171,10 +229,18 @@ void Figure::createFigureToolBarAndMenuBar (void)
   m_figureToolBar->setMovable (false);
   m_figureToolBar->setFloatable (false);
 
-  MouseModeActionGroup* mouseModeGroup = new MouseModeActionGroup (win);
-  connect (mouseModeGroup, SIGNAL (modeChanged (MouseMode)),
+  m_mouseModeGroup = new MouseModeActionGroup (win);
+  connect (m_mouseModeGroup, SIGNAL (modeChanged (MouseMode)),
            SLOT (setMouseMode (MouseMode)));
-  m_figureToolBar->addActions (mouseModeGroup->actions ());
+  m_figureToolBar->addActions (m_mouseModeGroup->actions ());
+
+  QAction *toggle_axes = m_figureToolBar->addAction ("Axes");
+  connect (toggle_axes, SIGNAL (triggered (void)),
+           this, SLOT (toggleAxes (void)));
+
+  QAction *toggle_grid = m_figureToolBar->addAction ("Grid");
+  connect (toggle_grid, SIGNAL (triggered (void)),
+           this, SLOT (toggleGrid (void)));
 
   m_menuBar = new MenuBar (win);
   win->setMenuBar (m_menuBar);
@@ -199,7 +265,7 @@ void Figure::createFigureToolBarAndMenuBar (void)
   editMenu->addAction (tr ("&Paste"), this, SLOT (editPaste(void)),
                        Qt::CTRL|Qt::Key_V)->setEnabled (false);
   editMenu->addSeparator ();
-  editMenu->addActions (mouseModeGroup->actions ());
+  editMenu->addActions (m_mouseModeGroup->actions ());
 
   QMenu* helpMenu = m_menuBar->addMenu (tr ("&Help"));
   helpMenu->menuAction ()->setObjectName ("builtinMenu");
@@ -208,6 +274,16 @@ void Figure::createFigureToolBarAndMenuBar (void)
   helpMenu->addAction (tr ("About &Qt"), qApp, SLOT (aboutQt (void)));
 
   m_menuBar->addReceiver (this);
+}
+
+void Figure::updateFigureToolBarAndMenuBar (void)
+{
+  if (m_mouseModeGroup)
+    {
+      m_blockUpdates = true;
+      m_mouseModeGroup->setMode (mouseMode ());
+      m_blockUpdates = false;
+    }
 }
 
 Container* Figure::innerContainer (void)
@@ -233,6 +309,8 @@ void Figure::redraw (void)
       if (obj)
         obj->slotRedraw ();
     }
+
+  updateFigureToolBarAndMenuBar ();
 }
 
 void Figure::beingDeleted (void)
@@ -342,14 +420,6 @@ void Figure::showFigureToolBar (bool visible)
       m_blockUpdates = false;
 
       updateBoundingBox (false);
-
-      if (visible)
-        m_mouseMode = m_lastMouseMode;
-      else
-        {
-          m_lastMouseMode = m_mouseMode;
-          m_mouseMode = NoMode;
-        }
     }
 }
 
@@ -600,6 +670,23 @@ void Figure::helpAboutQtHandles (void)
                       ABOUT_TEXT);
 }
 
+void Figure::setMouseMode (MouseMode mode)
+{
+  if (m_blockUpdates)
+    return;
+
+  gh_manager::auto_lock lock;
+
+  figure::properties& fp = properties<figure> ();
+
+  fp.set___mouse_mode__ (mouse_mode_to_string (mode));
+
+  Canvas* canvas = m_container->canvas (m_handle);
+
+  if (canvas)
+    canvas->setCursor (mode);
+}
+
 void Figure::fileNewFigure (void)
 {
 }
@@ -674,4 +761,20 @@ void Figure::updateContainer (void)
   redraw ();
 }
 
+void Figure::toggleAxes (void)
+{
+  Canvas* canvas = m_container->canvas (m_handle);
+
+  if (canvas)
+    canvas->toggleAxes (m_handle);
+}
+  
+void Figure::toggleGrid (void)
+{
+  Canvas* canvas = m_container->canvas (m_handle);
+
+  if (canvas)
+    canvas->toggleGrid (m_handle);
+}
+  
 }; // namespace QtHandles

@@ -970,9 +970,9 @@ private:
     else if (widg == togglegrid)
       toggle_grid ();
     else if (widg == panzoom)
-      set_on_ax_obj ("pan", "on");
+      fp.set___mouse_mode__ ("pan");
     else if (widg == rotate)
-      set_on_ax_obj ("rotate3d", "on");
+      fp.set___mouse_mode__ ("rotate");
     else if (widg == help)
       fl_message ("%s", help_text);
   }
@@ -1300,6 +1300,36 @@ private:
     fp.set_boundingbox (outerposition2position (bb), true, false);
   }
 
+  bool pan_enabled (void)
+  {
+    // Getting pan mode property:
+    octave_value ov_pm = fp.get___pan_mode__ ();
+
+    octave_scalar_map pm = ov_pm.scalar_map_value ();
+
+    return pm.contents ("Enable").string_value () == "on";
+  }
+
+  std::string pan_mode (void)
+  {
+    // Getting pan mode property:
+    octave_value ov_pm = fp.get___pan_mode__ ();
+
+    octave_scalar_map pm = ov_pm.scalar_map_value ();
+
+    return pm.contents ("Motion").string_value ();
+  }
+
+  bool rotate_enabled (void)
+  {
+    // Getting rotate mode property:
+    octave_value ov_rm = fp.get___rotate_mode__ ();
+
+    octave_scalar_map rm = ov_rm.scalar_map_value ();
+
+    return rm.contents ("Enable").string_value () == "on";
+  }
+
   int handle (int event)
   {
     if (event == FL_FOCUS)
@@ -1363,12 +1393,12 @@ private:
 
                 case 'p':
                 case 'P':
-                  set_on_ax_obj ("pan", "on");
+                  fp.set___mouse_mode__ ("pan");
                   return 1;
 
                 case 'r':
                 case 'R':
-                  set_on_ax_obj ("rotate3d", "on");
+                  fp.set___mouse_mode__ ("rotate");
                   return 1;
                 }
             }
@@ -1483,7 +1513,7 @@ private:
                     // Don't pan or rotate legend
                     if (ap.get_tag ().compare ("legend") < 0)
                       {
-                        if (ap.rotate3d_is ("on"))
+                        if (rotate_enabled ())
                           view2status (ax_obj);
                         else
                           pixel2status (ax_obj, pos_x, pos_y,
@@ -1497,13 +1527,9 @@ private:
                                            Fl::event_y () - menu_dy (),
                                            x1, y1);
 
-                        if (ap.pan_is ("on"))
-                          ap.translate_view (x0, x1, y0, y1);
-                        else if (ap.pan_is ("xon"))
-                          ap.translate_view (x0, x1, y1, y1);
-                        else if (ap.pan_is ("yon"))
-                          ap.translate_view (x1, x1, y0, y1);
-                        else if (ap.rotate3d_is ("on"))
+                        if (pan_enabled ())
+                          ap.translate_view ("both", x0, x1, y0, y1);
+                        else if (rotate_enabled ())
                           {
                             double daz, del;
                             daz = (Fl::event_x () - pos_x) / pos(2) * 360;
@@ -1569,7 +1595,7 @@ private:
                   pixel2pos (ax, Fl::event_x (), Fl::event_y () - menu_dy (),
                              x1, y1);
 
-                  ap.zoom_about_point (x1, y1, factor, false);
+                  ap.zoom_about_point ("both", x1, y1, factor, false);
                   mark_modified ();
                   return 1;
                 }
@@ -1632,7 +1658,7 @@ private:
                                 yl(0) = y1;
                                 yl(1) = y0;
                               }
-                            ap.zoom (xl, yl);
+                            ap.zoom ("both", xl, yl);
                           }
                         mark_modified ();
                         return 1;

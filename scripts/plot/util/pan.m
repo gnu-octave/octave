@@ -19,59 +19,98 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} pan
 ## @deftypefnx {Command} {} pan on
+## @deftypefnx {Command} {} pan off
 ## @deftypefnx {Command} {} pan xon
 ## @deftypefnx {Command} {} pan yon
-## @deftypefnx {Command} {} pan off
-## @deftypefnx {Function File} {} pan (@var{hax}, @dots{})
-## Control panning mode of interactive graph in GUI.
+## @deftypefnx {Function File} {} pan (@var{hfig}, @var{option})
+## Control the interactive panning mode of a figure in the GUI.
 ##
-## The function state input may be either @qcode{"on"}, @qcode{"xon"},
-## @qcode{"yon"} or @qcode{"off"}.
+## Given the option @qcode{"on"} or @qcode{"off"}, set the interactive
+## pan mode on or off.
 ##
-## If it is omitted the current state is toggled (@qcode{"xon"} and
-## @qcode{"yon"} are treated as @qcode{"on"}).
+## With no arguments, toggle the current pan mode on or off.
 ##
-## @qcode{"xon"} limits panning to the x-axis, @qcode{"yon"} to the
-## y-axis.
+## Given the option @qcode{"xon"} or @qcode{"yon"}, enable pan mode
+## for the x or y axis only.
 ##
-## If the first argument @var{hax} is an axes handle, then operate on
-## this axis rather than the current axes returned by @code{gca}.
+## If the first argument @var{hfig} is a figure, then operate on
+## the given figure rather than the current figure as returned by
+## @code{gcf}.
 ##
-## To query the current mode use the @code{get}
-## function.  For example:
-##
-## @example
-## mode = get (gca, "pan");
-## @end example
 ## @seealso{rotate3d, zoom}
 ## @end deftypefn
 
 function pan (varargin)
 
-  if (numel (varargin) > 0 && isaxes (varargin{1}))
-    hax = varargin{1};
-    varargin(1) = [];
-  else
-    hax = gca ();
-  endif
+  hfig = NaN;
 
-  toolkit = get (ancestor (hax, "figure"), "__graphics_toolkit__");
-  if (! strcmp (toolkit, "fltk"))
-    warning ("pan: Only implemented for graphics_toolkit FLTK");
-  endif
+  nargs = nargin;
 
-  if (numel (varargin) > 1)
+  if (nargs > 2)
     print_usage ();
-  elseif (numel (varargin) == 0)
-    # toggle
-    m = get (hax, "pan");
-    if (findstr (m, "on") > 0)
-      set (hax, "pan", "off");
+  endif
+
+  if (nargin == 1 && nargout > 0 && isfigure (varargin{1}))
+    error ("pan_object_handle = pan (hfig): not implemented");
+  endif
+
+  if (nargs == 2)
+    hfig = varargin{1};
+    if (isfigure (hfig))
+      varargin(1) = [];
+      nargs--;
     else
-      set (hax, "pan", "on");
+      error ("pan: expecting figure handle as first argument");
     endif
-  elseif (numel (varargin) == 1)
-    set (hax, "pan", varargin{1});
+  endif
+
+  if (isnan (hfig))
+    hfig = gcf ();
+  endif
+
+  if (nargs == 0)
+    pm = get (hfig, "__pan_mode__");
+    if (strcmp (pm.Enable, "on"))
+      pm.Enable = "off";
+    else
+      pm.Enable = "on";
+    endif
+    set (hfig, "__pan_mode__", pm);
+  elseif (nargs == 1)
+    arg = varargin{1};
+    if (ischar (arg))
+      switch (arg)
+        case {"on", "off", "xon", "yon"}
+          pm = get (hfig, "__pan_mode__");
+          switch (arg)
+            case {"on", "off"}
+              pm.Enable = arg;
+              pm.Motion = "both";
+            case "xon"
+              pm.Enable = "on";
+              pm.Motion = "horizontal";
+            case "yon"
+              pm.Enable = "on";
+              pm.Motion = "vertical";
+          endswitch
+          set (hfig, "__pan_mode__", pm);
+          if (strcmp (arg, "off"))
+            set (hfig, "__mouse_mode__", "none");
+          else
+            ## FIXME: Is there a better way other than calling these
+            ## functions to set the other mouse mode Enable fields to
+            ## "off"?
+            rotate3d ("off");
+            zoom ("off");
+            set (hfig, "__mouse_mode__", "pan");
+          endif
+
+        otherwise
+          error ("pan: unrecognized option '%s'", arg);
+      endswitch
+    else
+      error ("pan: wrong type argument '%s'", class (arg));
+    endif
   endif
 
 endfunction

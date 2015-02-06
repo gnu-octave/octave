@@ -231,8 +231,10 @@ function varargout = eigs (varargin)
 
       if (nargin > 2 + offset)
         tmp = varargin{3+offset};
-        if (ischar (tmp) || (isnumeric (tmp) && isscalar (tmp)))
+        if (ischar (tmp))
           sigma = tolower (tmp);
+        elseif (isnumeric (tmp) && isscalar (tmp))
+          sigma = tmp;
         else
           call_eig = false;
         endif

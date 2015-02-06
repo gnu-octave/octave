@@ -609,7 +609,7 @@ settings_dialog::read_terminal_colors (QSettings *settings)
 }
 
 void
-settings_dialog::write_changed_settings ()
+settings_dialog::write_changed_settings (bool closing)
 {
   QSettings *settings = resource_manager::get_settings ();
   // FIXME: what should happen if settings is 0?
@@ -823,7 +823,7 @@ settings_dialog::write_changed_settings ()
   if (ui->rb_sc_set2->isChecked ())
     set = 1;
   settings->setValue ("shortcuts/set",set);
-  shortcut_manager::write_shortcuts (0, settings);  // 0: write both sets
+  shortcut_manager::write_shortcuts (0, settings, closing); // 0: write both sets
 
   // settings dialog's geometry
   settings->setValue ("settings/last_tab",ui->tabWidget->currentIndex ());
@@ -963,7 +963,7 @@ settings_dialog::button_clicked (QAbstractButton *button)
   if (button_role == QDialogButtonBox::ApplyRole ||
       button_role == QDialogButtonBox::AcceptRole)
     {
-      write_changed_settings ();
+      write_changed_settings (button_role == QDialogButtonBox::AcceptRole);
       emit apply_new_settings ();
     }
 

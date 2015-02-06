@@ -74,7 +74,7 @@ private:
          MaxStyleNumber = 128 };
 #endif
 
-  void write_changed_settings ();
+  void write_changed_settings (bool closing);
 
   void read_workspace_colors (QSettings *settings);
   void write_workspace_colors (QSettings *settings);

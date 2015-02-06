@@ -419,7 +419,7 @@ shortcut_manager::do_fill_treewidget (QTreeWidget *tree_view)
 
 // write one or all actual shortcut set(s) into a settings file
 void
-shortcut_manager::do_write_shortcuts (int set, QSettings* settings)
+shortcut_manager::do_write_shortcuts (int set, QSettings* settings, bool closing)
 {
   if (set)
     {
@@ -442,7 +442,12 @@ shortcut_manager::do_write_shortcuts (int set, QSettings* settings)
           settings->setValue("shortcuts/"+_sc.at (i).settings_key+"_1",
                             _sc.at (i).actual_sc[1].toString ());
         }
-      delete _dialog;  // the dialog for key sequences can be removed now
+
+      if (closing)
+        {
+          delete _dialog;  // the dialog for key sequences can be removed now
+          _dialog = 0;     // make sure it is zero again
+        }
     }
 
   settings->sync ();    // sync the settings file
@@ -666,7 +671,7 @@ shortcut_manager::do_import_export (bool import, int set)
       if (import)
         import_shortcuts (set, osc_settings);   // import (special action)
       else
-        do_write_shortcuts (set, osc_settings); // export, like saving settings
+        do_write_shortcuts (set, osc_settings, false); // export, (saving settings)
     }
   else
     qWarning () << tr ("Failed to open %1 as octave shortcut file"). arg (file);

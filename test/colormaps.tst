@@ -17,21 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 %!test
-%! all_colormaps = colormap ("list");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   all_colormaps = colormap ("list");
 %!
-%! assert (numel (all_colormaps) > 0)
+%!   assert (numel (all_colormaps) > 0)
 %!
-%! for i = 1:numel (all_colormaps)
-%!   f = str2func (all_colormaps{i});
+%!   for i = 1:numel (all_colormaps)
+%!     f = str2func (all_colormaps{i});
 %!
-%!   assert (iscolormap (f (1)))
-%!   assert (iscolormap (f (12)))
-%!   assert (iscolormap (f (200)))
+%!     assert (iscolormap (f (1)))
+%!     assert (iscolormap (f (12)))
+%!     assert (iscolormap (f (200)))
 %!
-%!   ## bug #44070
-%!   assert (class (f (uint8 (12))), "double")
-%!   assert (iscolormap (f (uint8 (12))))
+%!     ## bug #44070
+%!     assert (class (f (uint8 (12))), "double")
+%!     assert (iscolormap (f (uint8 (12))))
 %!
-%!   assert (f (0), zeros (0, 3))
-%! endfor
+%!     assert (f (0), zeros (0, 3))
+%!   endfor
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

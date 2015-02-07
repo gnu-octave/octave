@@ -175,6 +175,8 @@ detect a non-Hermitian matrix.
 
 @DOCSTRING(rsf2csf)
 
+@DOCSTRING(ordschur)
+
 @DOCSTRING(subspace)
 
 @DOCSTRING(svd)

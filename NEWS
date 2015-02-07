@@ -175,6 +175,7 @@ Summary of important user-visible changes for version 4.0:
       linkaxes
       lscov
       numfields
+      ordschur
       qmr
       rotate
       sylvester

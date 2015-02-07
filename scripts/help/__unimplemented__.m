@@ -741,7 +741,6 @@ function list = missing_functions ()
   "openvar",
   "ordeig",
   "ordqz",
-  "ordschur",
   "outerjoin",
   "padecoef",
   "parseSoapResponse",

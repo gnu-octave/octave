@@ -220,6 +220,7 @@ COREFCN_SRC = \
   corefcn/oct-stream.cc \
   corefcn/oct-strstrm.cc \
   corefcn/octave-link.cc \
+  corefcn/ordschur.cc \
   corefcn/pager.cc \
   corefcn/pinv.cc \
   corefcn/pr-output.cc \

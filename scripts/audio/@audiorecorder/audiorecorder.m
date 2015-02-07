@@ -51,29 +51,7 @@ function recorder = audiorecorder (varargin)
 
 endfunction
 
-%!testif HAVE_PORTAUDIO
-%! recorder = audiorecorder (44100, 16, 2);
-%! recordblocking (recorder, 1);
-%! data = getaudiodata (recorder, "int16");
-%! assert (strcmp (class (data), "int16"));
-%! data = getaudiodata (recorder, "int8");
-%! assert (strcmp (class (data), "int8"));
-%! data = getaudiodata (recorder, "uint8");
-%! assert (strcmp (class (data), "uint8"));
-%! assert (size (data)(1), recorder.TotalSamples);
-%! assert (size (data)(2), 2);
-%! assert (size (data)(1) != 0);
-
-%!testif HAVE_PORTAUDIO
-%! recorder = audiorecorder (44100, 16, 2);
-%! record (recorder, 1)
-%! sleep (2);
-%! record (recorder, 1);
-%! sleep (2);
-%! data = getaudiodata (recorder);
-%! assert (size (data)(1) < 44100 * 2);
-
-%!testif HAVE_PORTAUDIO
+%!demo
 %! recorder = audiorecorder (44100, 16, 2);
 %! record (recorder, 1);
 %! sleep (2);
@@ -83,8 +61,21 @@ endfunction
 %! sleep (2);
 %! play (player2);
 %! sleep (2);
-%! assert (player1.TotalSamples, recorder.TotalSamples);
-%! assert (player2.TotalSamples, recorder.TotalSamples);
+%! stop (player1);
+%! stop (player2);
+
+## Tests of audiorecorder must not actually record anything.
+
+%!testif HAVE_PORTAUDIO
+%! recorder = audiorecorder (44100, 16, 2);
+%! data = getaudiodata (recorder, "int16");
+%! assert (strcmp (class (data), "int16"));
+%! data = getaudiodata (recorder, "int8");
+%! assert (strcmp (class (data), "int8"));
+%! data = getaudiodata (recorder, "uint8");
+%! assert (strcmp (class (data), "uint8"));
+%! assert (size (data)(1), recorder.TotalSamples);
+%! assert (size (data)(2), 2);
 
 %!testif HAVE_PORTAUDIO
 %! recorder = audiorecorder;

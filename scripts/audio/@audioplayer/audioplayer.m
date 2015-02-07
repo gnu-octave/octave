@@ -107,6 +107,20 @@ function player = audioplayer (varargin)
 
 endfunction
 
+%!demo
+%! fs = 44100;
+%! audio = randn (2, 2*fs) - 0.5;
+%! player = audioplayer (audio, fs);
+%! play (player);
+%! sleep (1);
+%! pause (player);
+%! sleep (1);
+%! resume (player);
+%! sleep (1);
+%! stop (player);
+
+## Tests of audioplayer must not actually play anything.
+
 %!testif HAVE_PORTAUDIO
 %! mono = randn (1, 44100) - 0.5;
 %! stereo = randn (2, 44100) - 0.5;
@@ -119,36 +133,6 @@ endfunction
 %! assert (player2.SampleRate, 44100);
 %! assert (player1.TotalSamples, 44100);
 %! assert (player2.TotalSamples, 44100);
-%! playblocking (player1);
-%! playblocking (player2);
-
-%!testif HAVE_PORTAUDIO
-%! audio = randn (2, 88200) - 0.5;
-%! fs = 44100;
-%! player = audioplayer (audio, fs);
-%! assert (!isplaying (player));
-%! play (player);
-%! assert (isplaying (player));
-%! sleep (1);
-%! pause (player);
-%! assert (!isplaying (player));
-%! sleep (1);
-%! resume (player);
-%! assert (isplaying (player));
-%! sleep (1);
-
-%!testif HAVE_PORTAUDIO
-%! audio = randn (2, 88200) - 0.5;
-%! fs = 44100;
-%! player = audioplayer (audio, fs);
-%! assert (!isplaying (player));
-%! play (player);
-%! assert (isplaying (player));
-%! sleep (1);
-%! stop (player);
-%! sleep (1);
-%! assert (!isplaying (player));
-%! assert (player.CurrentSample, 0);
 
 %!testif HAVE_PORTAUDIO
 %! audio = randn (2, 44100) - 0.5;

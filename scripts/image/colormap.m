@@ -143,34 +143,42 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! cmaptst = [0 1 0; 1 0 1; 1 1 1];
-%! cmap = colormap (cmaptst);
-%! assert (cmap, cmaptst);
-%! cmap = colormap ();
-%! assert (cmap, cmaptst);
-%! cmap = (get (gcf, "colormap"));
-%! assert (cmap, cmaptst);
-%! colormap ("default");
-%! assert (colormap (), jet (64));
-%! colormap ("ocean");
-%! assert (colormap, ocean (64));
-%! close (hf);  # done with temp. figure
+%! unwind_protect
+%!   cmaptst = [0 1 0; 1 0 1; 1 1 1];
+%!   cmap = colormap (cmaptst);
+%!   assert (cmap, cmaptst);
+%!   cmap = colormap ();
+%!   assert (cmap, cmaptst);
+%!   cmap = (get (gcf, "colormap"));
+%!   assert (cmap, cmaptst);
+%!   colormap ("default");
+%!   assert (colormap (), jet (64));
+%!   colormap ("ocean");
+%!   assert (colormap, ocean (64));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 %!test
-%! cmaplst = colormap ("list");
-%! assert (iscell (cmaplst));
-%! colormap ("register", "__mycmap__");
-%! cmaplst2 = colormap ("list");
-%! assert (numel (cmaplst2), numel (cmaplst) + 1);
-%! assert (any (strcmp (cmaplst2, "__mycmap__")));
-%! colormap ("unregister", "__mycmap__");
-%! cmaplst2 = colormap ("list");
-%! assert (numel (cmaplst2), numel (cmaplst));
-%! assert (! any (strcmp (cmaplst2, "__mycmap__")));
-%! ## Unregister again and verify that nothing has happened
-%! colormap ("unregister", "__mycmap__");
-%! cmaplst3 = colormap ("list");
-%! assert (isequal (cmaplst2, cmaplst3));
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   cmaplst = colormap ("list");
+%!   assert (iscell (cmaplst));
+%!   colormap ("register", "__mycmap__");
+%!   cmaplst2 = colormap ("list");
+%!   assert (numel (cmaplst2), numel (cmaplst) + 1);
+%!   assert (any (strcmp (cmaplst2, "__mycmap__")));
+%!   colormap ("unregister", "__mycmap__");
+%!   cmaplst2 = colormap ("list");
+%!   assert (numel (cmaplst2), numel (cmaplst));
+%!   assert (! any (strcmp (cmaplst2, "__mycmap__")));
+%!   ## Unregister again and verify that nothing has happened
+%!   colormap ("unregister", "__mycmap__");
+%!   cmaplst3 = colormap ("list");
+%!   assert (isequal (cmaplst2, cmaplst3));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 ## Test input validation
 %!error colormap (1,2,3)

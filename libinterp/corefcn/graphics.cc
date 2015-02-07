@@ -2787,8 +2787,19 @@ xreset_default_properties (graphics_handle gh,
 {
   graphics_object obj = gh_manager::get_object (gh);
 
+  // Replace factory defaults by user defined ones
+  std::string go_name = obj.get_properties ().graphics_object_name ();
   property_list::pval_map_type pval;
+  obj.build_user_defaults_map (pval, go_name);
 
+  for (property_list::pval_map_const_iterator p = pval.begin ();
+       p != pval.end (); p++)
+    {
+      factory_pval[p->first] = p->second;
+    }
+
+
+  // Reset defaults
   for (property_list::pval_map_const_iterator it = factory_pval.begin ();
        it != factory_pval.end (); it++)
     {
@@ -3160,6 +3171,32 @@ base_graphics_object::remove_all_listeners (void)
     }
 }
 
+void 
+base_graphics_object::build_user_defaults_map (property_list::pval_map_type &def, const std::string go_name) const
+{
+  property_list local_defaults = get_defaults_list ();
+  property_list::plist_map_const_iterator p = 
+    local_defaults.find (go_name);
+  
+  if (p != local_defaults.end ())
+    {
+      property_list::pval_map_type pval = p->second;
+      for (property_list::pval_map_const_iterator q = pval.begin ();
+           q != pval.end (); q++)
+        {
+          std::string pname = q->first;
+          if (def.find (pname) == def.end ())
+            def[pname] = q->second;
+        }
+    }
+
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
+
+  if (parent_obj)
+    parent_obj.build_user_defaults_map (def, go_name);
+
+}
+
 void
 base_graphics_object::reset_default_properties (void)
   {
@@ -3170,8 +3207,6 @@ base_graphics_object::reset_default_properties (void)
           .find (type ())->second;
 
         xreset_default_properties (get_handle (), factory_pval);
-
-        override_defaults (*this);
       }
   }
 
@@ -4568,14 +4603,8 @@ figure::reset_default_properties (void)
   plist.erase ("paperunits");
   plist.erase ("paperposition");
   plist.erase ("windowstyle");
+
   xreset_default_properties (get_handle (), plist);
-
-  // FIXME: the following short sleep is needed in order
-  //        to avoid a crash when using qt toolkit
-  Fsleep (octave_value (0.001));
-
-  // override with parents' defaults
-  override_defaults (*this);
 }
 
 // ---------------------------------------------------------------------
@@ -8968,9 +8997,6 @@ uitoolbar::reset_default_properties (void)
 
   xreset_default_properties (get_handle (),
                              xproperties.factory_defaults ());
-
-  // override with parents' defaults
-  override_defaults (*this);
 }
 
 // ---------------------------------------------------------------------

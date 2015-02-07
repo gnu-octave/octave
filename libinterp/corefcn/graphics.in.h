@@ -2704,6 +2704,9 @@ public:
     else
       error ("base_graphics_object::override_defaults: invalid graphics object");
   }
+  
+  void build_user_defaults_map (property_list::pval_map_type &def,
+                                const std::string go_name) const;
 
   virtual void set_from_list (property_list& plist)
   {
@@ -2756,6 +2759,13 @@ public:
   {
     error ("base_graphics_object::get_defaults: invalid graphics object");
     return octave_value ();
+  }
+  
+  virtual property_list get_defaults_list (void) const
+  {
+    if (! valid_object ())
+      error ("base_graphics_object::get_defaults_list: invalid graphics object");
+    return property_list ();
   }
 
   virtual octave_value get_factory_defaults (void) const
@@ -2983,6 +2993,12 @@ public:
     rep->override_defaults (obj);
   }
 
+  void build_user_defaults_map (property_list::pval_map_type &def,
+                                const std::string go_name) const
+  {
+    rep->build_user_defaults_map (def, go_name);
+  }
+
   void set_from_list (property_list& plist) { rep->set_from_list (plist); }
 
   void set (const caseless_str& name, const octave_value& val)
@@ -3033,6 +3049,11 @@ public:
   }
 
   octave_value get_defaults (void) const { return rep->get_defaults (); }
+
+  property_list get_defaults_list (void) const
+  {
+    return rep->get_defaults_list ();
+  }
 
   octave_value get_factory_defaults (void) const
   {
@@ -3286,6 +3307,11 @@ public:
   octave_value get_defaults (void) const
   {
     return default_properties.as_struct ("default");
+  }
+
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
   }
 
   octave_value get_factory_defaults (void) const
@@ -3542,6 +3568,11 @@ public:
   octave_value get_defaults (void) const
   {
     return default_properties.as_struct ("default");
+  }
+
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
   }
 
   base_properties& get_properties (void) { return xproperties; }
@@ -4281,6 +4312,11 @@ public:
   octave_value get_defaults (void) const
   {
     return default_properties.as_struct ("default");
+  }
+
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
   }
 
   base_properties& get_properties (void) { return xproperties; }
@@ -5593,6 +5629,11 @@ public:
   octave_value get_defaults (void) const
   {
     return default_properties.as_struct ("default");
+  }
+
+  property_list get_defaults_list (void) const
+  {
+    return default_properties;
   }
 
   base_properties& get_properties (void) { return xproperties; }

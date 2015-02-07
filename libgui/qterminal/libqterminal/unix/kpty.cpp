@@ -386,6 +386,7 @@ bool KPty::open()
 
   struct ::termios t;
   tcGetAttr(&t);
+  t.c_iflag &= ~IXON;
   t.c_lflag &= ~ECHOCTL;
   tcSetAttr(&t);
   return true;

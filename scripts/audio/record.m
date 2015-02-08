@@ -1,3 +1,4 @@
+## Copyright (C) 2015 Mike Miller
 ## Copyright (C) 1995-2013 John W. Eaton
 ##
 ## This file is part of Octave.
@@ -17,50 +18,33 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} record (@var{sec}, @var{sampling_rate})
-## Record @var{sec} seconds of audio input into the vector @var{x}.  The
-## default value for @var{sampling_rate} is 8000 samples per second, or
-## 8kHz.  The program waits until the user types @key{RET} and then
-## immediately starts to record.
-## @seealso{lin2mu, mu2lin}
+## @deftypefn  {Function File} {} record (@var{sec})
+## @deftypefnx {Function File} {} record (@var{sec}, @var{fs})
+## Record @var{sec} seconds of audio from the system's default audio input at
+## a sampling rate of 8000 samples per second.  If the optional argument
+## @var{fs} is given, it specifies the sampling rate for recording.
+##
+## For more control over audio recording, use the @code{audiorecorder} class.
+## @seealso{@audiorecorder/audiorecorder}
 ## @end deftypefn
 
-## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
-## Created: 19 September 1994
-## Adapted-By: jwe
-
-function X = record (sec, sampling_rate)
+function x = record (sec, fs)
 
   if (nargin == 1)
-    sampling_rate = 8000;
+    fs = 8000;
   elseif (nargin != 2)
     print_usage ();
   endif
 
-  unwind_protect
+  rec = audiorecorder (fs, 16, 1);
 
-    file = tempname ();
+  recordblocking (rec, sec);
 
-    input ("Please hit ENTER and speak afterwards!\n", 1);
-
-    cmd = sprintf ("dd if=/dev/dsp of=\"%s\" bs=%d count=%d",
-                   file, sampling_rate, sec);
-
-    system (cmd);
-
-    num = fopen (file, "rb");
-
-    [Y, c] = fread (num, sampling_rate * sec, "uchar");
-
-    fclose (num);
-
-  unwind_protect_cleanup
-
-    unlink (file);
-
-  end_unwind_protect
-
-  X = Y - 127;
+  x = getaudiodata (rec);
 
 endfunction
+
+
+## No test possible for recording audio.
+%!assert (1)
 

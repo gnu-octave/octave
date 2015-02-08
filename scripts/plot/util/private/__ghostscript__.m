@@ -26,6 +26,8 @@
 
 function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
 
+  dos_shell = (ispc () && ! isunix ());
+
   opts.binary = "";
   opts.source = "-";
   opts.output = "-";
@@ -113,7 +115,11 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
       cleanup_cmd = "";
     else
       offsetfile = [tempname() ".ps"];
-      cleanup_cmd = sprintf ("rm %s", offsetfile);
+      if (dos_shell)
+        cleanup_cmd = ["del " strrep(offsetfile, '/', '\')];
+      else
+        cleanup_cmd = ["rm " offsetfile];
+      endif
     endif
     unwind_protect
       fid = fopen (offsetfile, "w");
@@ -148,9 +154,18 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
     ##        http://en.wikibooks.org/wiki/PostScript_FAQ
     cmd = sprintf ("%s %s", cmd, opts.prepend);
     if (isempty (cleanup_cmd))
-      cleanup_cmd = sprintf ("rm %s", opts.prepend);
+      if (dos_shell)
+        cleanup_cmd = ["del " strrep(opts.prepend, '/', '\')];
+      else
+        cleanup_cmd = ["rm " opts.prepend];
+      endif
     else
-      cleanup_cmd = sprintf ("%s ; rm %s", cleanup_cmd, opts.prepend);
+      if (dos_shell)
+        cleanup_cmd = sprintf ("%s & del %s", cleanup_cmd,
+                               strrep (opts.prepend, '/', '\'));
+      else
+        cleanup_cmd = sprintf ("%s ; rm %s", cleanup_cmd, opts.prepend);
+      endif
     endif
   endif
   if (! isempty (offsetfile) && format_for_printer)

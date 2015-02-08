@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QString>
+
 #include "oct-mutex.h"
 
 #include "Object.h"
@@ -50,6 +52,8 @@ void ObjectProxy::init (Object* obj)
                       m_object, SLOT (slotFinalize (void)));
           disconnect (this, SIGNAL (sendRedraw (void)),
                       m_object, SLOT (slotRedraw (void)));
+          disconnect (this, SIGNAL (sendPrint (const QString&, const QString&)),
+                      m_object, SLOT (slotPrint (const QString&, const QString&)));
         }
 
       m_object = obj;
@@ -62,6 +66,8 @@ void ObjectProxy::init (Object* obj)
                    m_object, SLOT (slotFinalize (void)));
           connect (this, SIGNAL (sendRedraw (void)),
                    m_object, SLOT (slotRedraw (void)));
+          connect (this, SIGNAL (sendPrint (const QString&, const QString&)),
+                   m_object, SLOT (slotPrint (const QString&, const QString&)));
         }
     }
 }
@@ -89,6 +95,11 @@ void ObjectProxy::finalize (void)
 void ObjectProxy::redraw (void)
 {
   emit sendRedraw ();
+}
+
+  void ObjectProxy::print (const QString& file_cmd, const QString& term)
+{
+  emit sendPrint (file_cmd, term);
 }
 
 };

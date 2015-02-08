@@ -172,6 +172,21 @@ void Backend::redraw_figure (const graphics_object& go) const
     }
 }
 
+void Backend::print_figure (const graphics_object& go,
+                            const std::string& term,
+                            const std::string& file_cmd, bool /*mono*/,
+                            const std::string& /*debug_file*/) const
+{
+  if (go.get_properties ().is_visible ())
+    {
+      ObjectProxy* proxy = toolkitObjectProxy (go);
+
+      if (proxy)
+        proxy->print (QString::fromStdString (file_cmd),
+                      QString::fromStdString (term));
+    }
+}
+
 Object* Backend::toolkitObject (const graphics_object& go)
 {
   ObjectProxy* proxy = toolkitObjectProxy (go);

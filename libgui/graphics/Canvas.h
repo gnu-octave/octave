@@ -52,6 +52,8 @@ public:
   void redraw (bool sync = false);
   void blockRedraw (bool block = true);
 
+  void print (const QString& file_cmd, const QString& term);
+
   void addEventMask (int m) { m_eventMask |= m; }
   void clearEventMask (int m) { m_eventMask &= (~m); }
   void setEventMask (int m) { m_eventMask = m; }

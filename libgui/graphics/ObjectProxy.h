@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <QObject>
 
+class QString;
+
 namespace QtHandles
 {
 
@@ -40,6 +42,7 @@ public:
    void update (int pId);
    void finalize (void);
    void redraw (void);
+   void print (const QString& file_cmd, const QString& term);
 
    Object* object (void) { return m_object; }
    void setObject (Object* obj);
@@ -48,6 +51,7 @@ signals:
    void sendUpdate (int pId);
    void sendFinalize (void);
    void sendRedraw (void);
+   void sendPrint (const QString& file_cmd, const QString& term);
 
 private:
    void init (Object* obj);

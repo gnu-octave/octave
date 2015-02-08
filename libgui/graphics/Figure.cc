@@ -313,6 +313,14 @@ void Figure::redraw (void)
   updateFigureToolBarAndMenuBar ();
 }
 
+void Figure::print (const QString& file_cmd, const QString& term)
+{
+  Canvas* canvas = m_container->canvas (m_handle);
+
+  if (canvas)
+    canvas->print (file_cmd, term);
+}
+
 void Figure::beingDeleted (void)
 {
   Canvas* canvas = m_container->canvas (m_handle.value (), false);

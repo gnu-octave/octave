@@ -38,6 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "GLCanvas.h"
 #include "QtHandlesUtils.h"
 
+#include "gl2ps-renderer.h"
+
 namespace QtHandles
 {
 
@@ -78,6 +80,18 @@ void Canvas::setCursor (MouseMode mode)
           w->setCursor (origCursor);
           break;
         }
+    }
+}
+
+void Canvas::print (const QString& file_cmd, const QString& term)
+{
+  graphics_object obj = gh_manager::get_object (m_handle);
+
+  if (obj.valid_object ())
+    {
+      graphics_object figObj (obj.get_ancestor ("figure"));
+
+      gl2ps_print (figObj, file_cmd.toStdString (), term.toStdString ());
     }
 }
 

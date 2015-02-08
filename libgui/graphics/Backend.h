@@ -54,6 +54,11 @@ public:
 
   void finalize (const graphics_object& obj);
 
+  void print_figure (const graphics_object& go,
+                     const std::string& term,
+                     const std::string& file_cmd, bool /*mono*/,
+                     const std::string& /*debug_file*/) const;
+
   static Object* toolkitObject (const graphics_object& go);
 
   static ObjectProxy* toolkitObjectProxy (const graphics_object& go);

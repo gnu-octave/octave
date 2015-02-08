@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <QString>
 #include <QVariant>
 
 #include "Backend.h"
@@ -113,6 +114,14 @@ void Object::slotRedraw (void)
     redraw ();
 }
 
+void Object::slotPrint (const QString& file_cmd, const QString& term)
+{
+  gh_manager::auto_lock lock;
+
+  if (object ().valid_object ())
+    print (file_cmd, term);
+}
+
 void Object::update (int /* pId */)
 {
 }
@@ -128,6 +137,10 @@ void Object::finalize (void)
 }
 
 void Object::redraw (void)
+{
+}
+
+void Object::print (const QString& file_cmd, const QString& term)
 {
 }
 

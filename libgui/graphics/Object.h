@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 
 class QObject;
+class QString;
 class QWidget;
 
 namespace QtHandles
@@ -80,6 +81,7 @@ public slots:
   void slotUpdate (int pId);
   void slotFinalize (void);
   void slotRedraw (void);
+  void slotPrint (const QString& file_cmd, const QString& term);
 
   void objectDestroyed (QObject *obj = 0);
 
@@ -90,6 +92,7 @@ protected:
   virtual void update (int pId);
   virtual void finalize (void);
   virtual void redraw (void);
+  virtual void print (const QString& file_cmd, const QString& term);
 
   virtual void beingDeleted (void);
 

@@ -156,6 +156,7 @@ Summary of important user-visible changes for version 4.0:
 
  ** Other new functions added in 4.0:
 
+      annotation
       bandwidth
       cubehelix
       dir_in_loadpath

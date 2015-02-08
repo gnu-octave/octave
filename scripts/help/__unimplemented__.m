@@ -540,7 +540,6 @@ function list = missing_functions ()
   "alim",
   "alpha",
   "alphamap",
-  "annotation",
   "array2table",
   "bar3",
   "bar3h",

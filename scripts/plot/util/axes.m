@@ -59,20 +59,40 @@ function h = axes (varargin)
     htmp = varargin{1};
     if (isscalar (htmp) && isaxes (htmp))
       if (__is_handle_visible__ (htmp))
-        parent = ancestor (htmp, "figure");
-        set (0, "currentfigure", parent);
-        set (parent, "currentaxes", htmp);
+        cf = ancestor (htmp, "figure");
+        set (0, "currentfigure", cf);
+        set (cf, "currentaxes", htmp);
 
         ## restack
-        ch = get (parent, "children")(:);
+        ch = get (cf, "children")(:);
         idx = (ch == htmp);
         ch = [ch(idx); ch(!idx)];
-        set (parent, "children", ch);
+        set (cf, "children", ch);
       endif
     else
       error ("axes: H must be a scalar axes handle");
     endif
   endif
+  
+  ## FIXME: In order to have the overlay axes on top of all other axes
+  ##        we restack the figure children. Does Matlab use a similar
+  ##        hack?
+  show = get (0, "showhiddenhandles");
+  set (0, "showhiddenhandles", "on");
+  unwind_protect
+    ch = get (cf, "children");
+    idx = strcmp (get (ch, "tag"), "scribeoverlay");
+    hover = ch(idx);
+    if (! isempty (hover))
+      hax = ch(isaxes (ch));
+      if (numel (hax) > 1)
+        ch(isaxes (ch)) = [hover; hax(hax != hover)];
+        set (cf, "children", ch);
+      endif
+    endif
+  unwind_protect_cleanup
+    set (0, "showhiddenhandles", show);
+  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;

@@ -76,6 +76,10 @@ function h = clf (varargin)
   else
     ## Select only the chilren with visible handles.
     delete (get (hfig, "children"));
+    
+    ## Also delete the annotation axes
+    hover = findall (hfig, "-depth", 1, "tag", "scribeoverlay");
+    delete (hover);
   endif
 
   if (nargout > 0)
@@ -106,6 +110,7 @@ endfunction
 %! end_unwind_protect
 
 %!xtest
+%! set (0, "defaultfigurevisible", "off")
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot (1:10);
@@ -119,6 +124,7 @@ endfunction
 %!   assert (isempty (get (gcf, "children")));
 %!   assert (get (hf, "papertype"), "usletter");
 %! unwind_protect_cleanup
+%!   set (0, "defaultfigurevisible", "remove")
 %!   close (hf);
 %! end_unwind_protect
 

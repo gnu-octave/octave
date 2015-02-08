@@ -25,7 +25,6 @@
 ## @var{fs} is given, it specifies the sampling rate for recording.
 ##
 ## For more control over audio recording, use the @code{audiorecorder} class.
-## @seealso{@audiorecorder/audiorecorder}
 ## @end deftypefn
 
 function x = record (sec, fs)

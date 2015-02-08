@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-int32.h"
 #include "ov-struct.h"
 #include "parse.h"
+#include "unwind-prot.h"
 
 #if defined (HAVE_PORTAUDIO)
 
@@ -846,6 +847,12 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   return paContinue;
 }
 
+static void
+safe_audioplayer_stop (audioplayer *player)
+{
+  player->stop ();
+}
+
 audioplayer::audioplayer (void)
   : octave_callback_function (0),
     id (-1), fs (0), nbits (16), channels (0), sample_number (0),
@@ -1151,6 +1158,10 @@ audioplayer::playblocking (void)
   start = get_sample_number ();
   end = get_end_sample ();
 
+  unwind_protect frame;
+
+  frame.add_fcn (safe_audioplayer_stop, this);
+
   for (unsigned int i = start; i < end; i += buffer_size)
     {
       OCTAVE_QUIT;
@@ -1161,24 +1172,6 @@ audioplayer::playblocking (void)
 
       err = Pa_WriteStream (stream, buffer, buffer_size);
     }
-
-  err = Pa_StopStream (stream);
-  if (err != paNoError)
-    {
-      error ("audioplayer: failed to stop audio playback stream");
-      return;
-    }
-
-  err = Pa_CloseStream (stream);
-  if (err != paNoError)
-    {
-      error ("audioplayer: failed to close audio playback stream");
-      return;
-    }
-
-  stream = 0;
-  set_sample_number (0);
-  reset_end_sample ();
 }
 
 void
@@ -1534,6 +1527,12 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   return paContinue;
 }
 
+static void
+safe_audiorecorder_stop (audiorecorder *recorder)
+{
+  recorder->stop ();
+}
+
 audiorecorder::audiorecorder (void)
   : octave_callback_function (0),
     id (-1), fs (44100), nbits (16), channels (2), sample_number (0),
@@ -1825,6 +1824,10 @@ audiorecorder::recordblocking (float seconds)
     }
 
   unsigned int frames = seconds * get_fs ();
+
+  unwind_protect frame;
+
+  frame.add_fcn (safe_audiorecorder_stop, this);
 
   for (unsigned int i = 0; i < frames; i += buffer_size)
     {

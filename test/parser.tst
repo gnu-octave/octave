@@ -293,6 +293,7 @@
 %! assert (xyz, 1);
 
 %!test
+%! warning ("off", "Octave:num-to-str", "local");
 %! a = [97 ... % comment
 %!      'b'];
 %! assert (a, 'ab');

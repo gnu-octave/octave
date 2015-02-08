@@ -233,6 +233,7 @@ endfunction
 %! assert (cA, cA_test, -2^-6);
 
 %!test
+%! warning ("off", "Octave:nearly-singular-matrix", "local");
 %! N = 12;
 %! A = hilb (N);
 %! [rcondA, v] = condest (A);

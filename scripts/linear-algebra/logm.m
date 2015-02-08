@@ -161,7 +161,9 @@ endfunction
 
 
 %!assert (norm (logm ([1 -1;0 1]) - [0 -1; 0 0]) < 1e-5)
-%!assert (norm (expm (logm ([-1 2 ; 4 -1])) - [-1 2 ; 4 -1]) < 1e-5)
+%!test
+%! warning ("off", "Octave:logm:non-principal", "local");
+%! assert (norm (expm (logm ([-1 2 ; 4 -1])) - [-1 2 ; 4 -1]) < 1e-5);
 %!assert (logm ([1 -1 -1;0 1 -1; 0 0 1]), [0 -1 -1.5; 0 0 -1; 0 0 0], 1e-5)
 %!assert (logm (10), log (10))
 %!assert (full (logm (eye (3))), logm (full (eye (3))))

@@ -92,6 +92,7 @@ endfunction
 %! assert (ergb, rgb);
 %!test
 %! ## Check that values below lower bound are mapped to first color value
+%! warning ("off", "Octave:ind2rgb:invalid-idx-img", "local");
 %! rgb = ind2rgb ([-1 0 2], gray (64));
 %! assert (rgb(:,1:2,:), zeros (1,2,3));
 %! assert (rgb(:,3,:), 1/63 * ones (1,1,3));

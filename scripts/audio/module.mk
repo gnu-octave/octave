@@ -4,6 +4,8 @@ audio_FCN_FILES = \
   audio/lin2mu.m \
   audio/mu2lin.m \
   audio/record.m \
+  audio/sound.m \
+  audio/soundsc.m \
   audio/wavread.m \
   audio/wavwrite.m \
   audio/@audioplayer/__get_properties__.m \

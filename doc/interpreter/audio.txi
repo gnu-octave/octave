@@ -178,6 +178,10 @@ files holding data in mu-law encoding end in @file{au}, @file{mu}, or
 
 @DOCSTRING(record)
 
+@DOCSTRING(sound)
+
+@DOCSTRING(soundsc)
+
 @DOCSTRING(wavread)
 
 @DOCSTRING(wavwrite)

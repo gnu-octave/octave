@@ -782,8 +782,6 @@ function list = missing_functions ()
   "showplottool",
   "smooth3",
   "snapnow",
-  "sound",
-  "soundsc",
   "ss2tf",
   "stack",
   "standardizeMissing",

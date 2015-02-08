@@ -15,8 +15,8 @@ Summary of important user-visible changes for version 4.0:
 
  ** New audio functions and classes:
 
-      audiodevinfo  audioread
-      audioinfo     audiorecorder
+      audiodevinfo  audioread      sound
+      audioinfo     audiorecorder  soundsc
       audioplayer   audiowrite
 
  ** Other new classes in Octave 4.0:

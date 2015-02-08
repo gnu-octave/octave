@@ -1716,6 +1716,7 @@ protected:
     const Matrix new_kids_column = new_kids.reshape (dim_vector (nel, 1));
 
     bool is_ok = true;
+    bool add_hidden = true;
 
     if (! error_state)
       {
@@ -1725,9 +1726,13 @@ protected:
           {
             Matrix t1 = visible_kids.sort ();
             Matrix t2 = new_kids_column.sort ();
+            Matrix t3 = get_hidden ().sort ();
 
             if (t1 != t2)
               is_ok = false;
+            
+            if (t1 == t3)
+              add_hidden = false;
           }
         else
           is_ok = false;
@@ -1743,7 +1748,10 @@ protected:
 
     if (is_ok)
       {
-        Matrix tmp = new_kids_column.stack (get_hidden ());
+        Matrix tmp = new_kids_column;
+
+        if (add_hidden)
+          tmp.stack (get_hidden ());
 
         children_list.clear ();
 

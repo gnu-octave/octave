@@ -35,15 +35,36 @@ function x = record (sec, fs)
     print_usage ();
   endif
 
-  rec = audiorecorder (fs, 16, 1);
+  if (! (isscalar (sec) && (sec >= 0)))
+    error ("record: recording duration SEC must be a non-negative number");
+  endif
 
-  recordblocking (rec, sec);
+  if (! (isscalar (fs) && (fs > 0)))
+    error ("record: sample rate FS must be a positive number");
+  endif
 
-  x = getaudiodata (rec);
+  x = [];
+
+  if (sec > 0)
+
+    rec = audiorecorder (fs, 16, 1);
+
+    recordblocking (rec, sec);
+
+    x = getaudiodata (rec);
+
+  endif
 
 endfunction
 
 
-## No test possible for recording audio.
-%!assert (1)
+## Tests of record must not actually record anything.
+
+%!assert (isempty (record (0)))
+
+%% Test input validation
+%!error record ()
+%!error record (1,2,3)
+%!error record (-1)
+%!error record (1, -1)
 

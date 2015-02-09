@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a})
 ## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n})
 ## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
-## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
+## @deftypefnx {Function File} {[@var{h}, @var{w}] =} freqz (@dots{}, @var{Fs})
 ## @deftypefnx {Function File} {} freqz (@dots{})
 ##
 ## Return the complex frequency response @var{h} of the rational IIR filter
@@ -97,12 +97,18 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   if (isempty (b))
     b = 1;
+  elseif (! isvector (b))
+    error ("freqz: B must be a vector");
   endif
   if (isempty (a))
     a = 1;
+  elseif (! isvector (a))
+    error ("freqz: A must be a vector");
   endif
   if (isempty (n))
     n = 512;
+  elseif (isscalar (n) && n < 1)
+    error ("freqz: N must be a positive integer");
   endif
   if (isempty (region))
     if (isreal (b) && isreal (a))
@@ -121,6 +127,8 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
   else
     freq_norm = false;
   endif
+  plot_output = (nargout == 0);
+  whole_region = strcmp (region, "whole");
 
   a = a(:);
   b = b(:);
@@ -147,13 +155,20 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
       n = n * 2 .^ ceil (log2 (2*k/n));
     endif
 
-    if (strcmp (region, "whole"))
+    if (whole_region)
       N = n;
+      if (plot_output)
+        f = Fs * (0:n).' / N     # do 1 more for the plot
+      else
+        f = Fs * (0:n-1).' / N;
+      endif
     else
       N = 2*n;
+      if (plot_output)
+        n++;
+      endif
+      f = Fs * (0:n-1).' / N;
     endif
-
-    f = Fs * (0:n-1).' / N;
 
     pad_sz = N*ceil (k/N);
     b = postpad (b, pad_sz);
@@ -171,13 +186,16 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   h = hb ./ ha;
 
-  if (nargout != 0)
+  if (plot_output)
+    ## Plot and don't return values.
+    if (whole_region)
+      h(end+1) = h(1); # Solution is periodic.  Copy first value to end.
+    endif
+    freqz_plot (f, h, freq_norm);
+  else
     ## Return values and don't plot.
     h_r = h;
     f_r = f;
-  else
-    ## Plot and don't return values.
-    freqz_plot (f, h, freq_norm);
   endif
 
 endfunction
@@ -209,4 +227,7 @@ endfunction
 %! assert (h,h2.',20*eps);
 %! [h3,f3] = freqz (b,a,32,"whole",320);
 %! assert (f3,[0:31]'*10,10*eps);
+
+%% Test input validation
+## FIXME: Need to put tests here and simplify the input validation in the main code.
 

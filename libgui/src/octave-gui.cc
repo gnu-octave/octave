@@ -113,7 +113,9 @@ octave_start_gui (int argc, char *argv[], bool start_gui)
       QTranslator gui_tr, qt_tr, qsci_tr;
 
       // Set the codec for all strings (before wizard)
+#if not defined (Q_OS_WIN32)
       QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+#endif
 
       // show wizard if this is the first run
       if (resource_manager::is_first_run ())

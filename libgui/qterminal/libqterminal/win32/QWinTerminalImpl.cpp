@@ -1759,7 +1759,7 @@ void QWinTerminalImpl::setSize (int columns, int lines)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::copyClipboard (void)
+void QWinTerminalImpl::copyClipboard ()
 {
   if(!hasFocus()) return;
 
@@ -1767,7 +1767,7 @@ void QWinTerminalImpl::copyClipboard (void)
 
   QString selection = d->getSelection ();
 
-  if (selection.isEmpty ())
+  if (selection.isEmpty () && ! _extra_interrupt)
     terminal_interrupt ();
   else
     {
@@ -1834,4 +1834,11 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
         }
       sendText (dropText);
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::has_extra_interrupt (bool extra)
+{
+  _extra_interrupt = extra;
 }

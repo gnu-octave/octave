@@ -33,6 +33,7 @@ see <http://www.gnu.org/licenses/>.
 #include <QMenu>
 #include <QClipboard>
 #include <QApplication>
+#include <QAction>
 
 class QTerminal : public QWidget
 {
@@ -55,6 +56,8 @@ public:
   virtual void sendText (const QString& text) = 0;
 
   virtual QString selectedText () = 0;
+
+  virtual void has_extra_interrupt (bool extra) = 0;
 
   enum CursorType
   {
@@ -118,6 +121,7 @@ protected:
 
   QTerminal (QWidget *xparent = 0) : QWidget (xparent)
   {
+    // context menu
     setContextMenuPolicy (Qt::CustomContextMenu);
 
     _contextMenu = new QMenu (this);
@@ -161,6 +165,16 @@ protected:
 
     connect (xparent, SIGNAL (selectAll_signal ()),
              this, SLOT (selectAll ()));
+
+    // extra interrupt action
+    _interrupt_action = new QAction (this);
+    addAction (_interrupt_action);
+
+    _interrupt_action->setShortcut (
+            QKeySequence (Qt::ControlModifier + Qt::Key_C));
+
+    connect (_interrupt_action, SIGNAL (triggered (bool)),
+            this, SLOT (terminal_interrupt ()));
   }
 
 private:
@@ -169,6 +183,8 @@ private:
   QAction * _copy_action;
   QAction * _paste_action;
   QAction * _selectall_action;
+
+  QAction *_interrupt_action;
 };
 
 #endif // QTERMINAL_H

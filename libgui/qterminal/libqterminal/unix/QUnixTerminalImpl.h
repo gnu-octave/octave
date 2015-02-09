@@ -49,6 +49,7 @@ public:
     void setCursorColor (bool useForegroundColor, const QColor& color);
     void setScrollBufferSize(int value);
     QString selectedText();
+    void has_extra_interrupt (bool extra_interrupt);
 
 public slots:
     void copyClipboard();
@@ -66,6 +67,7 @@ private:
     TerminalView *m_terminalView;
     TerminalModel *m_terminalModel;
     KPty *m_kpty;
+    bool _extra_interrupt;
 };
 
 #endif // Q_UNIXTERMINALIMPL

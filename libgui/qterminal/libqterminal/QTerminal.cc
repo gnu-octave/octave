@@ -119,4 +119,21 @@ QTerminal::notice_settings (const QSettings *settings)
      settings->value ("terminal/color_c",
                       QVariant (colors.at (3))).value<QColor> ());
   setScrollBufferSize (settings->value ("terminal/history_buffer",1000).toInt () );
+
+  // check whether Copy shoretcut is Ctrl-C
+  int set = settings->value ("shortcuts/set",0).toInt ();
+  QKeySequence copy;
+  QString key = QString ("shortcuts/main_edit:copy");
+  if (set)
+    key.append ("_1");  // if second set is active
+  copy = QKeySequence (settings->value (key).toString ()); // the copy shortcut
+
+  //  dis- or enable extra interrupt action
+  QKeySequence ctrl;
+  ctrl = Qt::ControlModifier;
+
+  bool extra_ir_action = (copy != QKeySequence (ctrl + Qt::Key_C));
+
+  _interrupt_action->setEnabled (extra_ir_action);
+  has_extra_interrupt (extra_ir_action);
 }

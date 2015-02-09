@@ -207,7 +207,7 @@ void QUnixTerminalImpl::resizeEvent(QResizeEvent*)
 
 void QUnixTerminalImpl::copyClipboard()
 {
-    m_terminalView->copyClipboard();
+    m_terminalView->copyClipboard (_extra_interrupt);
 }
 
 void QUnixTerminalImpl::pasteClipboard()
@@ -224,4 +224,10 @@ void QUnixTerminalImpl::selectAll()
 QString QUnixTerminalImpl::selectedText ()
 {
   return m_terminalView->selectedText ();
+}
+
+void
+QUnixTerminalImpl::has_extra_interrupt (bool extra)
+{
+  _extra_interrupt = extra;
 }

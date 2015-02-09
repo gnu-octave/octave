@@ -66,6 +66,8 @@ public:
 
   QString selectedText ();
 
+  void has_extra_interrupt (bool);
+
 public slots:
   void copyClipboard (void);
   void pasteClipboard (void);
@@ -110,6 +112,7 @@ private slots:
 private:
   QConsolePrivate* d;
   bool allowTripleClick;
+  bool _extra_interrupt;
 };
 
 //////////////////////////////////////////////////////////////////////////////

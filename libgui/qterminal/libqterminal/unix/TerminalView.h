@@ -404,7 +404,7 @@ public slots:
     void updateLineProperties();
 
     /** Copies the selected text to the clipboard. */
-    void copyClipboard();
+    void copyClipboard (bool extra_interrupt);
     /**
      * Pastes the content of the clipboard into the
      * display.

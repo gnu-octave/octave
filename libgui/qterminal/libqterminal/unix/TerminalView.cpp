@@ -2272,14 +2272,14 @@ void TerminalView::setSelection(const QString& t)
   QApplication::clipboard()->setText(t, QClipboard::Selection);
 }
 
-void TerminalView::copyClipboard()
+void TerminalView::copyClipboard(bool extra_interrupt)
 {
   if ( !_screenWindow || !hasFocus())
     return;
 
   QString text = _screenWindow->selectedText(_preserveLineBreaks);
 
-  if (text.isEmpty ())
+  if (text.isEmpty () && ! extra_interrupt)
     emit interrupt_signal ();
   else
     QApplication::clipboard()->setText(text);
@@ -2311,6 +2311,7 @@ void TerminalView::pasteSelection()
 {
   emitSelection(true,false);
 }
+
 
 /* ------------------------------------------------------------------------- */
 /*                                                                           */

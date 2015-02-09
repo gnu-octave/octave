@@ -4090,10 +4090,26 @@ public:
     }
 
     void update_font (void);
-    void update_fontname (void) { update_font (); }
-    void update_fontsize (void) { update_font (); }
-    void update_fontangle (void) { update_font (); }
-    void update_fontweight (void) { update_font (); }
+    void update_fontname (void) 
+    { 
+      update_font (); 
+      sync_positions ();
+    }
+    void update_fontsize (void) 
+    { 
+      update_font (); 
+      sync_positions ();
+    }
+    void update_fontangle (void) 
+    { 
+      update_font (); 
+      sync_positions ();
+    }
+    void update_fontweight (void) 
+    { 
+      update_font (); 
+      sync_positions ();
+    }
 
     void update_outerposition (void)
     {

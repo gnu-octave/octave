@@ -70,6 +70,9 @@ public:
 
   static Figure* create (const graphics_object& go);
 
+  QString fileName (void);
+  void setFileName (const QString& name);
+
   MouseMode mouseMode (void);
 
   Container* innerContainer (void);
@@ -104,9 +107,13 @@ private:
 
   static void updateBoundingBoxHelper (void*);
 
+  void save_figure_callback (const std::string& file);
+
 private slots:
   void setMouseMode (MouseMode mode);
   void fileNewFigure (void);
+  void fileSaveFigure (bool prompt = false);
+  void fileSaveFigureAs (void);
   void fileCloseFigure (void);
   void editCopy (void);
   void editCut (void);

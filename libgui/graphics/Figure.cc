@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QActionGroup>
 #include <QApplication>
 #include <QEvent>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QFrame>
 #include <QMainWindow>
 #include <QMenu>
@@ -44,6 +46,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "FigureWindow.h"
 #include "MouseModeActionGroup.h"
 #include "QtHandlesUtils.h"
+
+#include "octave-qt-link.h"
+
+#include "builtin-defun-decls.h"
 
 namespace QtHandles
 {
@@ -210,6 +216,26 @@ static MouseMode mouse_mode_from_string (const std::string& mode)
     return NoMode;
 }
 
+QString Figure::fileName (void)
+{
+  gh_manager::auto_lock lock;
+
+  const figure::properties& fp = properties<figure> ();
+
+  std::string name = fp.get_filename ();
+
+  return QString::fromStdString (name);
+}
+
+void Figure::setFileName (const QString& name)
+{
+  gh_manager::auto_lock lock;
+
+  figure::properties& fp = properties<figure> ();
+
+  fp.set_filename (name.toStdString ());
+}
+
 MouseMode Figure::mouseMode (void)
 {
   gh_manager::auto_lock lock;
@@ -250,8 +276,8 @@ void Figure::createFigureToolBarAndMenuBar (void)
   fileMenu->addAction (tr ("&New Figure"), this, SLOT (fileNewFigure (void)));
   fileMenu->addAction (tr ("&Open..."))->setEnabled (false);
   fileMenu->addSeparator ();
-  fileMenu->addAction (tr ("&Save"))->setEnabled (false);
-  fileMenu->addAction (tr ("Save &As"))->setEnabled (false);
+  fileMenu->addAction (tr ("&Save"), this, SLOT (fileSaveFigure (bool)));
+  fileMenu->addAction (tr ("Save &As"), this, SLOT (fileSaveFigureAs (void)));
   fileMenu->addSeparator ();
   fileMenu->addAction (tr ("&Close Figure"), this,
                        SLOT (fileCloseFigure (void)), Qt::CTRL|Qt::Key_W);
@@ -697,6 +723,48 @@ void Figure::setMouseMode (MouseMode mode)
 
 void Figure::fileNewFigure (void)
 {
+}
+
+void Figure::fileSaveFigure (bool prompt)
+{
+  QString file = fileName ();
+
+  if (file.isEmpty ())
+    {
+      prompt = true;
+
+      file = "untitled.eps";
+    }
+
+  if (prompt || file.isEmpty ())
+    {
+      QFileInfo finfo (file);
+
+      file = QFileDialog::getSaveFileName (qWidget<FigureWindow> (),
+                                           tr ("Save Figure As"),
+                                           finfo.absoluteFilePath (), 0, 0,
+                                           QFileDialog::DontUseNativeDialog);
+    }
+
+  if (! file.isEmpty ())
+    {
+      QFileInfo finfo (file);
+
+      setFileName (finfo.absoluteFilePath ());
+
+      octave_link::post_event (this, &Figure::save_figure_callback,
+                               file.toStdString ());
+    }
+}
+
+void Figure::save_figure_callback (const std::string& file)
+{
+  Ffeval (ovl ("print", file));
+}
+  
+void Figure::fileSaveFigureAs (void)
+{
+  fileSaveFigure (true);
 }
 
 void Figure::fileCloseFigure (void)

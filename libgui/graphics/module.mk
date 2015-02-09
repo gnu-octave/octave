@@ -116,6 +116,7 @@ graphics_libgui_graphics_la_CPPFLAGS = \
   @OCTGUI_DLL_DEFS@ \
   @QT_CPPFLAGS@ \
   -Igraphics -I$(srcdir)/graphics \
+  -Isrc -I$(srcdir)/src \
   -I$(top_srcdir)/liboctave/cruft/misc \
   -I$(top_srcdir)/liboctave/array \
   -I$(top_builddir)/liboctave/numeric -I$(top_srcdir)/liboctave/numeric \

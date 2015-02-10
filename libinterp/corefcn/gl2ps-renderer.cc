@@ -50,10 +50,6 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
 
       GLint buffsize = 0;
       GLint state = GL2PS_OVERFLOW;
-      GLint viewport[4];
-
-      glGetIntegerv (GL_VIEWPORT, viewport);
-
       GLint gl2ps_term;
       if (term.find ("eps") != std::string::npos) gl2ps_term = GL2PS_EPS;
       else if (term.find ("pdf") != std::string::npos) gl2ps_term = GL2PS_PDF;
@@ -100,25 +96,44 @@ glps_renderer::draw (const graphics_object& go, const std::string print_cmd)
             include_graph = "foobar-inc";
           buffsize += 1024*1024;
           // GL2PS_SILENT was removed to allow gl2ps printing errors on stderr
-          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
+          GLint ret = gl2psBeginPage ("glps_renderer figure", "Octave", NULL,
                                       gl2ps_term, gl2ps_sort,
                                       (  GL2PS_NO_BLENDING
                                        | GL2PS_OCCLUSION_CULL
                                        | GL2PS_BEST_ROOT
                                        | gl2ps_text
-                                       | GL2PS_NO_PS3_SHADING),
+                                       | GL2PS_NO_PS3_SHADING
+                                       | GL2PS_USE_CURRENT_VIEWPORT),
                                       GL_RGBA, 0, NULL, 0, 0, 0,
                                       buffsize, fp, include_graph.c_str ());
           if (ret == GL2PS_ERROR)
-            error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
+            {
+              in_draw = 0;
+              old_print_cmd.clear ();
+              error ("gl2ps-renderer::draw: gl2psBeginPage returned GL2PS_ERROR");
+              return;
+            }
           old_print_cmd = print_cmd;
           opengl_renderer::draw (go);
 
-          // Force execution of GL commands in finite time.
-          // Without glFlush () there may primitives be missing in the gl2ps output.
-          glFlush ();
+          // Without glFinish () there may primitives be missing in the gl2ps output.
+          glFinish ();
 
           state = gl2psEndPage ();
+
+          if (state == GL2PS_NO_FEEDBACK)
+            {
+              warning ("gl2ps-renderer::draw: empty feedback buffer and/or nothing else to print");
+            }
+          else if (state == GL2PS_ERROR)
+            {
+              in_draw = 0;
+              old_print_cmd.clear ();
+              error ("gl2ps-renderer::draw: gl2psEndPage returned GL2PS_ERROR");
+              return;
+            }
+          // Don't check state for GL2PS_UNINITIALIZED (should never happen)
+          // GL2PS_OVERFLOW (see while loop) or GL2PS_SUCCESS
         }
 
       in_draw = 0;

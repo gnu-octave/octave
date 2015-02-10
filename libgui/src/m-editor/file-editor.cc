@@ -54,6 +54,8 @@ file_editor::file_editor (QWidget *p)
   // files will change ced accordingly.
   ced = QDir::currentPath ();
 
+  _check_closing_done = false;  // init flag for closing process
+
   construct ();
 
   setVisible (false);
@@ -64,9 +66,13 @@ file_editor::file_editor (QWidget *p)
 file_editor::~file_editor (void)
 {
   // Close open tabs, if existing. In this case app closing must be
-  // initiated by octave. All tabs will be definetly closed and the
+  // initiated by octave since check_closing was already done if the gui
+  // initiated the closing. All tabs will be definetly closed and the
   // user can not cancel exiting (close state -1)
-  if (_tab_widget->count ())
+  // We have to prevent that on case of gui-closing this check is done
+  // a second time resulting in an empty file list (tabs closed) for the
+  // the next start, that is what _check_closing_done is for
+  if (! _check_closing_done)
     check_closing (-1);
 
   if (_mru_file_menu)
@@ -109,6 +115,8 @@ file_editor::check_closing (int closing_state)
     }
 
   // Here, we really want to exit and all tabs are closed
+  _check_closing_done = true;  // check is already done, prevent a second check
+                               // which would store an empty file list
   return true;
 }
 

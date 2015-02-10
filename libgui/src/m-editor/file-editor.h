@@ -351,6 +351,8 @@ private:
   QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
+
+  bool _check_closing_done;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

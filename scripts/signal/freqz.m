@@ -158,7 +158,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     if (whole_region)
       N = n;
       if (plot_output)
-        f = Fs * (0:n).' / N     # do 1 more for the plot
+        f = Fs * (0:n).' / N;    # do 1 more for the plot
       else
         f = Fs * (0:n-1).' / N;
       endif

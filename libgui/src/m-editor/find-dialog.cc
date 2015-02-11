@@ -2,7 +2,7 @@
 
 Find dialog derived from an example from Qt Toolkit (license below (**))
 
-Copyright (C) 2012-2013 Torsten <ttl@justmail.de>
+Copyright (C) 2012-2015 Torsten <ttl@justmail.de>
 Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
  All rights reserved.
  Contact: Nokia Corporation (qt-info@nokia.com)

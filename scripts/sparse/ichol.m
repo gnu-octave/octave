@@ -1,5 +1,5 @@
-## Copyright (C) 2014 Eduardo Ramos Fernández <eduradical951@gmail.com>
-## Copyright (C) 2013 Kai T. Ohlhus <k.ohlhus@gmail.com>
+## Copyright (C) 2014-2015 Eduardo Ramos Fernández <eduradical951@gmail.com>
+## Copyright (C) 2013-2015 Kai T. Ohlhus <k.ohlhus@gmail.com>
 ##
 ## This file is part of Octave.
 ##

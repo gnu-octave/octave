@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2014 Pantxo Diribarne
+Copyright (C) 2014-2015 Pantxo Diribarne
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2013 Jaroslav Hajek, Marco Caliari
+## Copyright (C) 2008-2015 Jaroslav Hajek, Marco Caliari
 ##
 ## This file is part of Octave.
 ##

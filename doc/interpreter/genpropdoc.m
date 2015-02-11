@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Pantxo Diribarne
+## Copyright (C) 2014-2015 Pantxo Diribarne
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -1271,7 +1271,7 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014 Pantxo Diribarne\n\
+@c Copyright (C) 2014-2015 Pantxo Diribarne\n\
 @c\n\
 @c This file is part of Octave.\n\
 @c\n\

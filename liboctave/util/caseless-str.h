@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2013 Shai Ayal
+Copyright (C) 2007-2015 Shai Ayal
 
 This file is part of Octave.
 

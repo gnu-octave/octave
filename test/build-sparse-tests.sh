@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2006-2013 David Bateman
+# Copyright (C) 2006-2015 David Bateman
 #
 # This file is part of Octave.
 #

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2013 Bill Denney
+## Copyright (C) 2005-2015 Bill Denney
 ## Copyright (C) 2007-2009 Ben Abbott
 ##
 ## This file is part of Octave.

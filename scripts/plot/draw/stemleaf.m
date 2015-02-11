@@ -1,4 +1,4 @@
-## Copyright (C) 2013 Michael D. Godfrey
+## Copyright (C) 2013-2015 Michael D. Godfrey
 ##
 ## This file is part of Octave.
 ##

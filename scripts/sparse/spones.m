@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 David Bateman and Andy Adler
+## Copyright (C) 2004-2015 David Bateman and Andy Adler
 ##
 ## This file is part of Octave.
 ##

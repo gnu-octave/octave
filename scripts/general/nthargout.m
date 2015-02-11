@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Jordi Gutiérrez Hermoso
+## Copyright (C) 2012-2015 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##

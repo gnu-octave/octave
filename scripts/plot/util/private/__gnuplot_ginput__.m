@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2013 Petr Mikulik
+## Copyright (C) 2004-2015 Petr Mikulik
 ##
 ## This file is part of Octave.
 ##

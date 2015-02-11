@@ -1,4 +1,4 @@
-## Copyright (C) 2014 John W. Eaton
+## Copyright (C) 2014-2015 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

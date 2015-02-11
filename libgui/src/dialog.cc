@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2013 John W. Eaton
-Copyright (C) 2013 Daniel J. Sebald
+Copyright (C) 2013-2015 John W. Eaton
+Copyright (C) 2013-2015 Daniel J. Sebald
 
 This file is part of Octave.
 

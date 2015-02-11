@@ -1,5 +1,5 @@
-## Copyright (C) 2008-2013 John W. Eaton
-## Copyright (C) 2013 Carnë Draug
+## Copyright (C) 2008-2015 John W. Eaton
+## Copyright (C) 2013-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

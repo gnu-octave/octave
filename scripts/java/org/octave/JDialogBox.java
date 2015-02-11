@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2014 Colin Foster
+Copyright (C) 2014-2015 Colin Foster
 Copyright (C) 2010, 2013 Martin Hepperle
 
 This file is part of Octave.

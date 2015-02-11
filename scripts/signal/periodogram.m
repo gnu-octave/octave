@@ -1,6 +1,6 @@
-## Copyright (C) 1995-2013 Friedrich Leisch
+## Copyright (C) 1995-2015 Friedrich Leisch
 ## Copyright (C) 2010 Alois Schloegl
-## Copyright (C) 2014 Drew Abbot
+## Copyright (C) 2014-2015 Drew Abbot
 ##
 ## This file is part of Octave.
 ##

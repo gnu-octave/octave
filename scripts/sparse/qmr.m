@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Nathan Podlich
+## Copyright (C) 2014-2015 Nathan Podlich
 ##
 ## This file is part of Octave.
 ##

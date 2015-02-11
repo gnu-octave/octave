@@ -1,4 +1,4 @@
-## Copyright (C) 2014 Philip Nienhuis
+## Copyright (C) 2014-2015 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##

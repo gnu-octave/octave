@@ -1,6 +1,6 @@
 dnl aclocal.m4 -- extra macros for configuring Octave
 dnl
-dnl Copyright (C) 1995-2013 John W. Eaton
+dnl Copyright (C) 1995-2015 John W. Eaton
 dnl
 dnl This file is part of Octave.
 dnl

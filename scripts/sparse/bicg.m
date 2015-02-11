@@ -1,5 +1,5 @@
 ## Copyright (C) 2006 Sylvain Pelissier
-## Copyright (C) 2012-2013 Carlo de Falco
+## Copyright (C) 2012-2015 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##

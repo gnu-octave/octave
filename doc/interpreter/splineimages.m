@@ -1,4 +1,4 @@
-## Copyright (C) 2012-2013 Ben Abbott, Jonas Lundgren
+## Copyright (C) 2012-2015 Ben Abbott, Jonas Lundgren
 ##
 ## This file is part of Octave.
 ##

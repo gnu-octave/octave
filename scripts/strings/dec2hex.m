@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2013 Daniel Calvelo
+## Copyright (C) 1996-2015 Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##

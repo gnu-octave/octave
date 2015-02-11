@@ -1,5 +1,5 @@
 ## Copyright (C) 2008 Bill Denney
-## Copyright (C) 2012-2013 Carnë Draug
+## Copyright (C) 2012-2015 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
 /* Contour lines for function evaluated on a grid.
 
-Copyright (C) 2007-2013 Kai Habel
+Copyright (C) 2007-2015 Kai Habel
 Copyright (C) 2004, 2007 Shai Ayal
 
 Adapted to an oct file from the stand alone contourl by Victro Munoz

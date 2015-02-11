@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2013 Ben Abbott
+## Copyright (C) 2009-2015 Ben Abbott
 ##
 ## This file is part of Octave.
 ##

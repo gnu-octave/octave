@@ -1108,8 +1108,9 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
               {
                 for (octave_idx_type row = 0; row < nRows; row++)
                   {
-                    Magick::Color c;
-                    c.redQuantum (double (*img_fvec) / divisor);
+                    const double grey = double (*img_fvec) / divisor;
+                    Magick::Color c (grey, grey, grey);
+                    pix[GM_idx] = c;
                     pix[GM_idx] = c;
                     img_fvec++;
                     GM_idx += nCols;

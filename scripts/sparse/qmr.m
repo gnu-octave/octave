@@ -98,7 +98,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (A, "function_handle"))
       Ax  = @(x) feval (A, x, "notransp");
       Atx = @(x) feval (A, x, "transp");
-    elseif (ismatrix (A))
+    elseif (isnumeric (A) && ismatrix (A))
       Ax  = @(x) A  * x;
       Atx = @(x) A' * x;
     else
@@ -124,7 +124,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (M1, "function_handle"))
       M1m1x  = @(x) feval (M1, x, "notransp");
       M1tm1x = @(x) feval (M1, x, "transp");
-    elseif (ismatrix (M1))
+    elseif (isnumeric (M1) && ismatrix (M1))
       M1m1x  = @(x) M1  \ x;
       M1tm1x = @(x) M1' \ x;
     else
@@ -142,7 +142,7 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
     elseif (isa (M2, "function_handle"))
       M2m1x  = @(x) feval (M2, x, "notransp");
       M2tm1x = @(x) feval (M2, x, "transp");
-    elseif (ismatrix (M2))
+    elseif (isnumeric (M2) && ismatrix (M2))
       M2m1x  = @(x) M2  \ x;
       M2tm1x = @(x) M2' \ x;
     else

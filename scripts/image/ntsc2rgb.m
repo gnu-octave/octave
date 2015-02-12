@@ -50,7 +50,7 @@ function rgb = ntsc2rgb (yiq)
   endif
 
   ## If we have an image convert it into a color map.
-  if (ismatrix (yiq) && ndims (yiq) == 3)
+  if (isnumeric (yiq) && ndims (yiq) == 3)
     is_image = true;
     sz = size (yiq);
     yiq = [yiq(:,:,1)(:), yiq(:,:,2)(:), yiq(:,:,3)(:)];

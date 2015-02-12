@@ -98,7 +98,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     print_usage ();
   endif
 
-  if (!ismatrix (xx) || !ismatrix (yy) || !ismatrix (zz) || !ismatrix (c) || ...
+  if (!isnumeric (xx) || !isnumeric (yy) || !isnumeric (zz) || !isnumeric (c) || ...
     ndims (xx) != 3 || ndims (yy) != 3 || ndims (zz) != 3 || ndims (c) != 3)
     error ("__marching_cube__: XX, YY, ZZ, C must be matrices of dim 3");
   endif
@@ -116,7 +116,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   endif
 
   if (nargin == 6)
-    if ( !ismatrix (colors) || ndims (colors) != 3 || size (colors) != size (c) )
+    if ( !isnumeric (colors) || ndims (colors) != 3 || size (colors) != size (c) )
       error ( "COLORS must be a matrix of dim 3 and of same size as C" );
     endif
     calc_cols = true;

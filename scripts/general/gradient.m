@@ -71,7 +71,7 @@ function varargout = gradient (m, varargin)
   endif
 
   nargout_with_ans = max (1,nargout);
-  if (ismatrix (m))
+  if (isnumeric (m))
     [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
   elseif (isa (m, "function_handle"))
     [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});

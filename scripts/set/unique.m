@@ -46,8 +46,8 @@ function [y, i, j] = unique (x, varargin)
 
   if (nargin < 1)
     print_usage ();
-  elseif (! (ismatrix (x) || iscellstr (x)))
-    error ("unique: X must be a matrix or cell array of strings");
+  elseif (! (isnumeric (x) || islogical (x) || ischar (x) || iscellstr (x)))
+    error ("unique: X must be an array or cell array of strings");
   endif
 
   if (nargin > 1)
@@ -216,7 +216,7 @@ endfunction
 
 %% Test input validation
 %!error unique ()
-%!error <X must be a matrix or cell array of strings> unique ({1})
+%!error <X must be an array or cell array of strings> unique ({1})
 %!error <options must be strings> unique (1, 2)
 %!error <cannot specify both "first" and "last"> unique (1, "first", "last")
 %!error <invalid option> unique (1, "middle")

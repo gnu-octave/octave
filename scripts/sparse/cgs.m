@@ -76,7 +76,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 
     if (ischar (A))
       A = str2func (A);
-    elseif (ismatrix (A))
+    elseif (isnumeric (A) && ismatrix (A))
       Ax = @(x) A * x;
     elseif (isa (A, "function_handle"))
       Ax = @(x) feval (A, x);
@@ -97,7 +97,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       M1m1x = @(x) x;
     elseif (ischar (M1))
       M1m1x = str2func (M1);
-    elseif (ismatrix (M1))
+    elseif (isnumeric (M1) && ismatrix (M1))
       M1m1x = @(x) M1 \ x;
     elseif (isa (M1, "function_handle"))
       M1m1x = @(x) feval (M1, x);
@@ -109,7 +109,7 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
       M2m1x = @(x) x;
     elseif (ischar (M2))
       M2m1x = str2func (M2);
-    elseif (ismatrix (M2))
+    elseif (isnumeric (M2) && ismatrix (M2))
       M2m1x = @(x) M2 \ x;
     elseif (isa (M2, "function_handle"))
       M2m1x = @(x) feval (M2, x);

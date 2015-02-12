@@ -134,7 +134,7 @@ function varargout = isosurface (varargin)
     z = varargin{3};
     val = varargin{4};
     iso = varargin{5};
-    if (nargin >= 6 && ismatrix (varargin{6}))
+    if (nargin >= 6 && isnumeric (varargin{6}))
       colors = varargin{6};
       calc_colors = true;
     endif

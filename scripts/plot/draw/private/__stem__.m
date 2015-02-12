@@ -239,7 +239,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         y = repmat ([1:nr]', 1, nc);
       endif
     endif
-    if (! (ismatrix (x) && ismatrix (y) && ismatrix (z)))
+    if (! (isnumeric (x) && isnumeric (y) && isnumeric (z)))
       error ("stem3: X, Y, and Z must be numeric");
     endif
   else
@@ -250,7 +250,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, args] = check_stem_arg (have_z, varar
         x = 1:rows (y);
       endif
     endif
-    if (! (ismatrix (x) && ismatrix (y)))
+    if (! (isnumeric (x) && isnumeric (y)))
       error ("stem: X and Y must be numeric");
     endif
   endif

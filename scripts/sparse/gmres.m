@@ -80,7 +80,7 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
 
   if (ischar (A))
     Ax = str2func (A);
-  elseif (ismatrix (A))
+  elseif (isnumeric (A) && ismatrix (A))
     Ax = @(x) A*x;
   elseif (isa (A, "function_handle"))
     Ax = A;
@@ -104,7 +104,7 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
     M1m1x = @(x) x;
   elseif (ischar (M1))
     M1m1x = str2func (M1);
-  elseif (ismatrix (M1))
+  elseif (isnumeric (M1) && ismatrix (M1))
     M1m1x = @(x) M1 \ x;
   elseif (isa (M1, "function_handle"))
     M1m1x = M1;
@@ -116,7 +116,7 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
     M2m1x = @(x) x;
   elseif (ischar (M2))
     M2m1x = str2func (M2);
-  elseif (ismatrix (M2))
+  elseif (isnumeric (M2) && ismatrix (M2))
     M2m1x = @(x) M2 \ x;
   elseif (isa (M2, "function_handle"))
     M2m1x = M2;

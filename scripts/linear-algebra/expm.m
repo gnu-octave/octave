@@ -77,7 +77,7 @@ function r = expm (A)
     print_usage ();
   endif
 
-  if (! ismatrix (A) || ! issquare (A))
+  if (! isnumeric (A) || ! issquare (A))
     error ("expm: A must be a square matrix");
   endif
 

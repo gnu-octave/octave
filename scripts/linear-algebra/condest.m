@@ -124,7 +124,7 @@ function [est, v] = condest (varargin)
   have_t = false;
   have_solve = false;
 
-  if (ismatrix (varargin{1}))
+  if (isnumeric (varargin{1}))
     A = varargin{1};
     if (! issquare (A))
       error ("condest: matrix must be square");

@@ -3743,18 +3743,19 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 }
 
 /*
-%!assert (isvector (1))
-%!assert (isvector ([1; 2; 3]))
+%!assert (isvector (1), true)
+%!assert (isvector ([1; 2; 3]), true)
+%!assert (isvector ([1, 2, 3]), true)
 %!assert (isvector ([]), false)
 %!assert (isvector ([1, 2; 3, 4]), false)
 
-%!assert (isvector ("t"))
-%!assert (isvector ("test"))
+%!assert (isvector ("t"), true)
+%!assert (isvector ("test"), true)
 %!assert (isvector (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert (isvector (s));
+%! assert (isvector (s), true);
 
 %% Test input validation
 %!error isvector ()
@@ -3764,7 +3765,7 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 DEFUN (isrow, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} isrow (@var{x})\n\
-Return true if @var{x} is a row vector.\n\
+Return true if @var{x} is a row vector 1xN with nonnegative N.\n\
 @seealso{iscolumn, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
@@ -3788,13 +3789,23 @@ Return true if @var{x} is a row vector.\n\
 %!assert (isrow ([]), false)
 %!assert (isrow ([1, 2; 3, 4]), false)
 
-%!assert (isrow ("t"))
-%!assert (isrow ("test"))
+%!assert (isrow (ones (1, 0)), true)
+%!assert (isrow (ones (1, 1)), true)
+%!assert (isrow (ones (1, 2)), true)
+%!assert (isrow (ones (1, 1, 1)), true)
+%!assert (isrow (ones (1, 1, 1, 1)), true)
+
+%!assert (isrow (ones (0, 0)), false)
+%!assert (isrow (ones (1, 1, 0)), false)
+
+
+%!assert (isrow ("t"), true)
+%!assert (isrow ("test"), true)
 %!assert (isrow (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert (isrow (s));
+%! assert (isrow (s), true);
 
 %% Test input validation
 %!error isrow ()
@@ -3804,7 +3815,7 @@ Return true if @var{x} is a row vector.\n\
 DEFUN (iscolumn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} iscolumn (@var{x})\n\
-Return true if @var{x} is a column vector.\n\
+Return true if @var{x} is a column vector Nx1 with nonnegative N.\n\
 @seealso{isrow, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
@@ -3823,14 +3834,23 @@ Return true if @var{x} is a column vector.\n\
 
 /*
 %!assert (iscolumn ([1, 2, 3]), false)
-%!assert (iscolumn ([1; 2; 3]))
-%!assert (iscolumn (1))
+%!assert (iscolumn ([1; 2; 3]), true)
+%!assert (iscolumn (1), true)
 %!assert (iscolumn ([]), false)
 %!assert (iscolumn ([1, 2; 3, 4]), false)
 
-%!assert (iscolumn ("t"))
+%!assert (iscolumn ("t"), true)
 %!assert (iscolumn ("test"), false)
 %!assert (iscolumn (["test"; "ing"]), false)
+
+%!assert (iscolumn (ones (0, 1)), true)
+%!assert (iscolumn (ones (1, 1)), true)
+%!assert (iscolumn (ones (2, 1)), true)
+%!assert (iscolumn (ones (1, 1, 1)), true)
+%!assert (iscolumn (ones (1, 1, 1, 1)), true)
+
+%!assert (iscolumn (ones (0, 0)), false)
+%!assert (iscolumn (ones (0, 1, 0)), false)
 
 %!test
 %! s.a = 1;
@@ -3844,10 +3864,7 @@ Return true if @var{x} is a column vector.\n\
 DEFUN (ismatrix, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
-Return true if @var{a} is a numeric, logical, or character matrix.\n\
-Scalars (1x1 matrices) and vectors (@nospell{1xN} or @nospell{Nx1} matrices)\n\
-are subsets of the more general N-dimensional matrix and @code{ismatrix}\n\
-will return true for these objects as well.\n\
+Return true if @var{a} is has exactly two nonnegative dimensions.\n\
 @seealso{isscalar, isvector, iscell, isstruct, issparse, isa}\n\
 @end deftypefn")
 {
@@ -3855,11 +3872,8 @@ will return true for these objects as well.\n\
 
   if (args.length () == 1)
     {
-      octave_value arg = args(0);
-
-      retval = arg.is_matrix_type ()
-               || arg.is_scalar_type ()
-               || arg.is_range ();
+      dim_vector sz = args(0).dims ();
+      retval = (sz.length () == 2) && (sz(0) >= 0) && (sz(1) >= 0);
     }
   else
     print_usage ();
@@ -3868,24 +3882,28 @@ will return true for these objects as well.\n\
 }
 
 /*
-%!assert (ismatrix ([]))
-%!assert (ismatrix (1))
-%!assert (ismatrix ([1, 2, 3]))
-%!assert (ismatrix ([1, 2; 3, 4]))
-%!assert (ismatrix (zeros (3, 2, 4)))
+%!assert (ismatrix ([]), true)
+%!assert (ismatrix (1), true)
+%!assert (ismatrix ([1, 2, 3]), true)
+%!assert (ismatrix ([1, 2; 3, 4]), true)
 
-%!assert (ismatrix (single ([])))
-%!assert (ismatrix (single (1)))
-%!assert (ismatrix (single ([1, 2, 3])))
-%!assert (ismatrix (single ([1, 2; 3, 4])))
+%!assert (ismatrix (zeros (0)), true)
+%!assert (ismatrix (zeros (0, 0)), true)
+%!assert (ismatrix (zeros (0, 0, 0)), false)
+%!assert (ismatrix (zeros (3, 2, 4)), false)
 
-%!assert (ismatrix ("t"))
-%!assert (ismatrix ("test"))
-%!assert (ismatrix (["test"; "ing"]))
+%!assert (ismatrix (single ([])), true)
+%!assert (ismatrix (single (1)), true)
+%!assert (ismatrix (single ([1, 2, 3])), true)
+%!assert (ismatrix (single ([1, 2; 3, 4])), true)
+
+%!assert (ismatrix ("t"), true)
+%!assert (ismatrix ("test"), true)
+%!assert (ismatrix (["test"; "ing"]), true)
 
 %!test
 %! s.a = 1;
-%! assert (ismatrix (s), false);
+%! assert (ismatrix (s), true);
 
 %!error ismatrix ()
 %!error ismatrix ([1, 2; 3, 4], 2)

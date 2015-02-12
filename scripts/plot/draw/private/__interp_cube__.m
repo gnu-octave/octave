@@ -24,8 +24,8 @@
 ## @end deftypefn
 
 function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
-  if (ismatrix (x) && ndims (x) == 3 && ismatrix (y) && ndims (y) == 3
-       && ismatrix (z) && ndims (z) == 3 && size_equal (x, y, z, val))
+  if (isnumeric (x) && ndims (x) == 3 && isnumeric (y) && ndims (y) == 3
+       && isnumeric (z) && ndims (z) == 3 && size_equal (x, y, z, val))
     x = squeeze (x(1,:,1))(:);
     y = squeeze (y(:,1,1))(:);
     z = squeeze (z(1,1,:))(:);

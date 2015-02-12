@@ -81,7 +81,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       fun = str2func (A);
       Ax  = @(x) feval (fun, x, "notransp");
       Atx = @(x) feval (fun, x, "transp");
-    elseif (ismatrix (A))
+    elseif (isnumeric (A) && ismatrix (A))
       Ax  = @(x) A  * x;
       Atx = @(x) A' * x;
     elseif (isa (A, "function_handle"))
@@ -107,7 +107,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       fun = str2func (M1);
       M1m1x  = @(x) feval (fun, x, "notransp");
       M1tm1x = @(x) feval (fun, x, "transp");
-    elseif (ismatrix (M1))
+    elseif (isnumeric (M1) && ismatrix (M1))
       M1m1x  = @(x) M1  \ x;
       M1tm1x = @(x) M1' \ x;
     elseif (isa (M1, "function_handle"))
@@ -125,7 +125,7 @@ function [x, flag, res1, k, resvec] = bicg (A, b, tol, maxit, M1, M2, x0)
       fun = str2func (M2);
       M2m1x  = @(x) feval (fun, x, "notransp");
       M2tm1x = @(x) feval (fun, x, "transp");
-    elseif (ismatrix (M2))
+    elseif (isnumeric (M2) && ismatrix (M2))
       M2m1x  = @(x) M2  \ x;
       M2tm1x = @(x) M2' \ x;
     elseif (isa (M2, "function_handle"))

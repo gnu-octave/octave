@@ -122,7 +122,7 @@ function varargout = isonormals (varargin)
     otherwise
       print_usage ();
   endswitch
-  if (ismatrix (vp) && columns (vp) == 3)
+  if (isnumeric (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
   elseif (ishandle (vp))

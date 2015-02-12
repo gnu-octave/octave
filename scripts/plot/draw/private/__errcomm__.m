@@ -37,7 +37,7 @@ function retval = __errcomm__ (caller, hax, varargin)
   k = 1;
   while (k <= nargs)
     arg = varargin{k++};
-    if (! ismatrix (arg))
+    if (! isnumeric (arg))
       error ("%s: data argument %d must be numeric", caller, k-1);
     endif
     if (isvector (arg))
@@ -52,7 +52,7 @@ function retval = __errcomm__ (caller, hax, varargin)
         retval(end+1,1) = __errplot__(arg, hax, data{1:ndata});
         break;
       endif
-      if (! ismatrix (arg))
+      if (! isnumeric (arg))
         error ("%s: data argument %d must be numeric", caller, k-1);
       endif
       if (isvector (arg))

@@ -239,7 +239,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       endif
 
       ## Convert multidimensional subscripts.
-      if (ismatrix (subs))
+      if (isnumeric (subs))
         subs = num2cell (subs, 1);
       endif
       subs = sub2ind (sz, subs{:}); # creates index cache

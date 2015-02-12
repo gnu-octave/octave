@@ -103,7 +103,7 @@ function [est, v, w, iter] = onenormest (varargin)
   default_t = 5;
   itmax = 10;
 
-  if (ismatrix (varargin{1}))
+  if (isnumeric (varargin{1}))
     [n, nc] = size (varargin{1});
     if (n != nc)
       error ("onenormest: matrix must be square");

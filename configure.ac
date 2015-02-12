@@ -1345,6 +1345,12 @@ fi
 
 AC_SUBST(GL2PS_LIBS)
 
+## Check for OSMesa which is needed for offscreen rendering with OpenGL
+## FIXME: Check for version >= 9.0.0
+OCTAVE_CHECK_LIB(OSMesa, OSMesa,
+  [OSMesa library not found.  Offscreen rendering with OpenGL will be disabled.],
+  [GL/osmesa.h], [OSMesaCreateContext])
+
 ### Start determination of shared vs. static libraries
 
 ## Use -static if compiling on Alpha OSF/1 1.3 systems.
@@ -3043,6 +3049,9 @@ Octave is now configured for $canonical_host_type
   Magick++ LDFLAGS:            $MAGICK_LDFLAGS
   Magick++ libraries:          $MAGICK_LIBS
   OPENGL libraries:            $OPENGL_LIBS
+  OSMesa CPPFLAGS:             $OSMESA_CPPFLAGS
+  OSMesa LDFLAGS:              $OSMESA_LDFLAGS
+  OSMesa libraries:            $OSMESA_LIBS
   PCRE CPPFLAGS:               $PCRE_CPPFLAGS
   PCRE libraries:              $PCRE_LIBS
   PortAudio CPPFLAGS:          $PORTAUDIO_CPPFLAGS

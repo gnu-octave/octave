@@ -188,9 +188,6 @@ gnu_readline (const std::string& s, bool& eof)
   if (! eof && retval.empty ())
     retval = "\n";
 
-  if (command_editor::interrupt (false))
-    retval = "";
-
   return retval;
 }
 

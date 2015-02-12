@@ -2011,8 +2011,7 @@ main_window::command_window_undo_callback (void)
 void
 main_window::clear_command_window_callback (void)
 {
-  Fclc ();
-  command_editor::interrupt (true);
+  command_editor::clear_screen ();
 }
 
 void

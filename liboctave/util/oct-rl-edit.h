@@ -74,6 +74,8 @@ extern char *octave_rl_copy_line (void);
 
 extern void octave_rl_replace_line (const char *s, int clear_undo);
 
+extern void octave_rl_kill_full_line (void);
+
 extern void octave_rl_insert_text (const char *);
 
 extern int octave_rl_newline (int, int);

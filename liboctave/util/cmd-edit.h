@@ -133,6 +133,8 @@ public:
 
   static void replace_line (const std::string& text, bool clear_undo = true);
 
+  static void kill_full_line (void);
+
   static void insert_text (const std::string& text);
 
   static void newline (void);
@@ -308,6 +310,8 @@ protected:
   virtual std::string do_get_current_line (void) const = 0;
 
   virtual void do_replace_line (const std::string& text, bool clear_undo) = 0;
+
+  virtual void do_kill_full_line (void) = 0;
 
   virtual void do_insert_text (const std::string& text) = 0;
 

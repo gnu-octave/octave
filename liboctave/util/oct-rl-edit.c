@@ -150,6 +150,12 @@ octave_rl_replace_line (const char *s, int clear_undo)
 }
 
 void
+octave_rl_kill_full_line (void)
+{
+  rl_kill_full_line (0, 0);
+}
+
+void
 octave_rl_insert_text (const char *s)
 {
   rl_insert_text (s);

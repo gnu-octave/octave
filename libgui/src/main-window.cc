@@ -2011,6 +2011,7 @@ main_window::command_window_undo_callback (void)
 void
 main_window::clear_command_window_callback (void)
 {
+  command_editor::kill_full_line ();
   command_editor::clear_screen ();
 }
 

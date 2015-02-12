@@ -151,6 +151,8 @@ public:
 
   void do_replace_line (const std::string& text, bool clear_undo);
 
+  void do_kill_full_line (void);
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -572,6 +574,12 @@ gnu_readline::do_replace_line (const std::string& text, bool clear_undo)
 }
 
 void
+gnu_readline::do_kill_full_line (void)
+{
+  ::octave_rl_kill_full_line ();
+}
+
+void
 gnu_readline::do_insert_text (const std::string& text)
 {
   ::octave_rl_insert_text (text.c_str ());
@@ -841,6 +849,8 @@ public:
 
   void do_replace_line (const std::string& text, bool clear_undo);
 
+  void do_kill_full_line (void);
+
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
@@ -915,6 +925,12 @@ default_command_editor::do_get_current_line (void) const
 
 void
 default_command_editor::do_replace_line (const std::string&, bool)
+{
+  // FIXME
+}
+
+void
+default_command_editor::do_kill_full_line (void)
 {
   // FIXME
 }
@@ -1327,6 +1343,13 @@ command_editor::replace_line (const std::string& text, bool clear_undo)
 {
   if (instance_ok ())
     instance->do_replace_line (text, clear_undo);
+}
+
+void
+command_editor::kill_full_line (void)
+{
+  if (instance_ok ())
+    instance->do_kill_full_line ();
 }
 
 void

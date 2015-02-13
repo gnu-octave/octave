@@ -17,7 +17,6 @@
 ## <http://www.gnu.org/licenses/>.
 
 function sparseimages (nm, typ)
-  graphics_toolkit ("gnuplot");
   set_print_size ();
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");

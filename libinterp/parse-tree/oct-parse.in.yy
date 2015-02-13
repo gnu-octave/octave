@@ -3869,10 +3869,10 @@ parse_fcn_file (const std::string& full_file, const std::string& file,
   if (! full_file.empty ())
     ffile = gnulib::fopen (full_file.c_str (), "rb");
 
-  frame.add_fcn (safe_fclose, ffile);
-
   if (ffile)
     {
+      frame.add_fcn (safe_fclose, ffile);
+
       // octave_base_parser constructor sets this for us.
       frame.protect_var (LEXER);
 

@@ -27,15 +27,23 @@ from git://anongit.freedesktop.org/mesa/demos
 #include <config.h>
 #endif
 
+#include "oct-locbuf.h"
+#include "unwind-prot.h"
+
 #include "defun-dld.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
 #include "graphics.h"
-
 #include "gripes.h"
 
 #ifdef HAVE_OSMESA
 #include "GL/osmesa.h"
+
+static void
+close_fcn (FILE *f)
+{
+  gnulib::fclose (f);
+}
 #endif
 
 DEFUN_DLD(__osmesa_print__, args, ,
@@ -120,12 +128,7 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
     }
 
   // Allocate the image buffer
-  buffer = malloc (Width * Height * 4 * sizeof (GLubyte));
-  if (! buffer)
-    {
-      error ("__osmesa_print__: Alloc image buffer failed!\n");
-      return retval;
-    }
+  OCTAVE_LOCAL_BUFFER (GLubyte, 4 * Width * Height, buffer);
 
   // Bind the buffer to the context and make it current
   if (! OSMesaMakeCurrent (ctx, buffer, GL_UNSIGNED_BYTE, Width, Height))
@@ -168,16 +171,19 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
           else
             {
               // write gl2ps output directly to file
-              FILE *filep;
-              filep = fopen (file.c_str (), "w");
+              FILE *filep = fopen (file.c_str (), "w");
+
               if (filep)
                 {
+                  unwind_protect frame;
+
+                  frame.add_fcn (close_fcn, filep);
+
                   glps_renderer rend (filep, term);
                   rend.draw (fobj, "");
 
                   // Make sure buffered commands are finished!!!
                   glFinish ();
-                  fclose (filep);
                 }
               else
                 error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
@@ -222,7 +228,6 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
   if (v)
     fp.set_visible ("on");
 
-  free (buffer);
   OSMesaDestroyContext (ctx);
 
 #endif

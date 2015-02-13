@@ -226,7 +226,7 @@
 ##   @item -interchange
 ##     Provide an interchange preview.
 ##
-##   @item -metalfile
+##   @item -metafile
 ##     Provide a metafile preview.
 ##
 ##   @item -pict
@@ -430,7 +430,7 @@ function print (varargin)
       otherwise
         opts = __opengl_print__ (opts);
     endswitch
-
+keyboard
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))

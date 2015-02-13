@@ -263,6 +263,9 @@ Summary of important user-visible changes for version 4.0:
     and DEFINE_OCTAVE_ALLOCATOR2) are now unconditionally defined to be
     empty.
 
+ ** Qt and FLTK graphics toolkit now support offscreen rendering,
+    i.e., print will work when figure visibility is off.
+
 ---------------------------------------------------------
 
 See NEWS.3 for old news.

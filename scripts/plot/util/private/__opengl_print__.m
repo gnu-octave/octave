@@ -162,7 +162,14 @@ function opts = __opengl_print__ (opts)
     if (opts.debug)
       fprintf ("opengl-pipeline: '%s'\n", pipeline{n});
     endif
-    drawnow (gl2ps_device{n}, strcat ('|',pipeline{n}));
+
+    if (strcmp (get (opts.figure, "visible"), "on"))
+      ## Use toolkits "print_figure" method
+      drawnow (gl2ps_device{n}, strcat ('|', pipeline{n}));
+    else
+      ## Use OpenGL offscreen rendering with OSMesa
+      __osmesa_print__ (opts.figure, strcat ('|', pipeline{n}), gl2ps_device{n});
+    endif
   endfor
 
   if (! isempty (strfind (opts.devopt, "standalone")))

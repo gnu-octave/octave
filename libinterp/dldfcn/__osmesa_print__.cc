@@ -40,13 +40,14 @@ from git://anongit.freedesktop.org/mesa/demos
 
 DEFUN_DLD(__osmesa_print__, args, ,
           "-*- texinfo -*-\n\
-@deftypefn {Loadable Function}  __osmesa_print__ (@var{h}, @var{filename}, @var{term})\n\
+@deftypefn {Loadable Function}  __osmesa_print__ (@var{h}, @var{file}, @var{term})\n\
 @deftypefnx {Loadable Function} {@var{img}  =} __osmesa_print__ (@var{h})\n\
 Print figure @var{h} using OSMesa and gl2ps for vector formats.\n\
 \n\
 This is a private internal function.\n\
 The first method calls gl2ps with the appropriate @var{term} and writes\n\
-the output of gl2ps to @var{filename}.\n\
+the output of gl2ps to @var{file}. If the first character of @var{file}\n\
+is @qcode{|}, then a process is started and the output of gl2ps is piped to it.\n\
 \n\
 Valid options for @var{term}, which can be concatenated in one string, are:\n\
 @table @asis\n\
@@ -80,7 +81,7 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
     {
       if(! (args(1).is_string () && args(2).is_string ()))
         {
-          error ("__osmesa_print__: FILENAME and TERM has to be strings");
+          error ("__osmesa_print__: FILE and TERM has to be strings");
           return retval;
         }
 
@@ -151,25 +152,37 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
 
   if (nargin == 3)
     {
-      // write gl2ps output to file
-      std::string filename  = args(1).string_value ();
-      std::string term      = args(2).string_value ();
+      // use gl2ps
+      std::string file = args(1).string_value ();
+      std::string term = args(2).string_value ();
 
-      FILE *filep;
-      filep = fopen (filename.c_str (), "w");
-      if (filep)
+      if (! error_state)
         {
-          glps_renderer rend (filep, term);
-          rend.draw (fobj, "");
+          size_t pos = file.find_first_not_of ("|");
+          if (pos > 0)
+            {
+              // create process and pipe gl2ps output to it
+              std::string cmd = file.substr (pos);
+              gl2ps_print (fobj, cmd, term);
+            }
+          else
+            {
+              // write gl2ps output directly to file
+              FILE *filep;
+              filep = fopen (file.c_str (), "w");
+              if (filep)
+                {
+                  glps_renderer rend (filep, term);
+                  rend.draw (fobj, "");
 
-          // Make sure buffered commands are finished!!!
-          glFinish ();
-
-          fclose (filep);
+                  // Make sure buffered commands are finished!!!
+                  glFinish ();
+                  fclose (filep);
+                }
+              else
+                error ("__osmesa_print__: Couldn't create file \"%s\"", file.c_str ());
+            }
         }
-      else
-        error ("__osmesa_print__: Couldn't create file \"%s\"", filename.c_str ());
-
     }
   else
     {

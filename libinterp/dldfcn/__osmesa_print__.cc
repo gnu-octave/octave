@@ -116,11 +116,8 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
   int Width = bb(2);
   int Height = bb(3);
 
-  OSMesaContext ctx;
-  void *buffer;
-
   // Create an RGBA-mode context, specify Z=16, stencil=0, accum=0 sizes
-  ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);
+  OSMesaContext ctx = OSMesaCreateContextExt (OSMESA_RGBA, 16, 0, 0, NULL);
   if (! ctx)
     {
       error ("__osmesa_print__: OSMesaCreateContext failed!\n");
@@ -128,7 +125,7 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
     }
 
   // Allocate the image buffer
-  OCTAVE_LOCAL_BUFFER (GLubyte, 4 * Width * Height, buffer);
+  OCTAVE_LOCAL_BUFFER (GLubyte, buffer, 4 * Width * Height);
 
   // Bind the buffer to the context and make it current
   if (! OSMesaMakeCurrent (ctx, buffer, GL_UNSIGNED_BYTE, Width, Height))

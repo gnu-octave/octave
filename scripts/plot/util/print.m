@@ -430,7 +430,7 @@ function print (varargin)
       otherwise
         opts = __opengl_print__ (opts);
     endswitch
-keyboard
+
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))

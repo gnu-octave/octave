@@ -176,14 +176,16 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, fun1 = @plot, fun2)
 
   ## Store the axes handles for the sister axes.
   if (ishandle (ax(1)) && ! isprop (ax(1), "__plotyy_axes__"))
-    addproperty ("__plotyy_axes__", ax(1), "data", ax);
+    addproperty ("__plotyy_axes__", ax(1), "data");
+    set (ax(1), "__plotyy_axes__", ax);
   elseif (ishandle (ax(1)))
     set (ax(1), "__plotyy_axes__", ax);
   else
     error ("plotyy.m: This shouldn't happen. File a bug report.");
   endif
   if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
-    addproperty ("__plotyy_axes__", ax(2), "data", ax);
+    addproperty ("__plotyy_axes__", ax(2), "data");
+    set (ax(2), "__plotyy_axes__", ax);
   elseif (ishandle (ax(2)))
     set (ax(2), "__plotyy_axes__", ax);
   else

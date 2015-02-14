@@ -189,8 +189,15 @@ function hax = newplot (hsave = [])
         kids(kids == hkid) = [];
         delete (kids);
       else
-        __go_axes_init__ (ca, "replace");
-        __request_drawnow__ ();
+        if (isprop (ca, "__plotyy_axes__"))
+          ## Hack for bug #44246.  There is no way to reset or remove a
+          ## property created with addproperty short of deleting the object.
+          delete (ca);
+          ca = axes ();
+        else
+          __go_axes_init__ (ca, "replace");
+          __request_drawnow__ ();
+        endif
       endif
       ## FIXME: The code above should perform the following:
       ###########################

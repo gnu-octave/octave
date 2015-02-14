@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <QObject>
 #include <QString>
 #include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "octave-link.h"
 #include "octave-interpreter.h"
@@ -59,6 +61,7 @@ public:
 
   void execute_interpreter (void);
 
+  bool do_confirm_shutdown (void);
   bool do_exit (int status);
 
   bool do_edit_file (const std::string& file);
@@ -130,9 +133,13 @@ public:
 
   void do_show_doc (const std::string& file);
 
+  QMutex mutex;
+  QWaitCondition waitcondition;
+  void shutdown_confirmation (bool sd) {_shutdown_confirm_result = sd;}
+
 private:
 
-  // No copying!
+  bool _shutdown_confirm_result;
 
   octave_qt_link (const octave_qt_link&);
 
@@ -149,8 +156,6 @@ private:
 signals:
 
   void execute_interpreter_signal (void);
-
-  void exit_signal (int status);
 
   void edit_file_signal (const QString& file);
 
@@ -184,6 +189,9 @@ signals:
   void show_preferences_signal (void);
 
   void show_doc_signal (const QString &file);
+
+  void confirm_shutdown_signal (void);
+  void exit_app_signal (int status);
 
 public slots:
 

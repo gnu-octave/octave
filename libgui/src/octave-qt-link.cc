@@ -67,10 +67,24 @@ octave_qt_link::execute_interpreter (void)
 }
 
 bool
+octave_qt_link::do_confirm_shutdown (void)
+{
+  emit confirm_shutdown_signal ();
+
+  // Wait while the GUI shuts down.
+  waitcondition.wait (&mutex);
+
+  // The GUI has sent a signal and the process has been awakened.
+  return _shutdown_confirm_result;
+}
+
+bool
 octave_qt_link::do_exit (int status)
 {
-  emit exit_signal (status);
+  emit exit_app_signal (status);
 
+  // Could wait for a while and then timeout, but for now just
+  // assume the GUI application exit will be without problems.
   return true;
 }
 

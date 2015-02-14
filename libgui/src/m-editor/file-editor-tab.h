@@ -52,8 +52,10 @@ public:
   octave_qscintilla *qsci_edit_area () { return _edit_area; }
 
   // Will initiate close if associated with the identifier tag.
-  bool conditional_close (int app_closing = 0);  // default 0: close tab only
+  bool conditional_close (void);
 
+  static void reset_cancel (void) {_cancelled = false;}
+  static bool was_cancelled (void) {return _cancelled;}
 
 public slots:
 
@@ -74,6 +76,7 @@ public slots:
   void set_focus (const QWidget *ID);
   void context_help (const QWidget *ID, bool);
   void context_edit (const QWidget *ID);
+  void check_modified_file (void);
   void save_file (const QWidget *ID);
   void save_file (const QWidget *ID, const QString& fileName,
                   bool remove_on_success);
@@ -199,7 +202,7 @@ private:
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 
-  void show_dialog (QDialog *dlg);
+  void show_dialog (QDialog *dlg, bool modal);
   int check_file_modified ();
   void do_comment_selected_text (bool comment);
   QString comment_string (const QString&);
@@ -230,9 +233,7 @@ private:
 
   bool _long_title;
   bool _copy_available;
-  int _app_closing;     // -1: octave exits, 1: exit request in gui, 0: no exit
   bool _is_octave_file;
-  bool _modal_dialog;
   bool _always_reload_changed_files;
 
   QFileSystemWatcher _file_system_watcher;
@@ -243,6 +244,8 @@ private:
 
   QsciAPIs *_lexer_apis;
   QString _prep_apis_file;
+
+  static bool _cancelled;
 };
 
 #endif

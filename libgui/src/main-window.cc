@@ -777,6 +777,33 @@ main_window::notice_settings (const QSettings *settings)
   resource_manager::update_network_settings ();
 }
 
+void
+main_window::confirm_shutdown_octave (void)
+{
+  bool closenow = true;
+
+  QSettings *settings = resource_manager::get_settings ();
+
+  if (settings->value ("prompt_to_exit", false).toBool ())
+    {
+      int ans = QMessageBox::question (this, tr ("Octave"),
+         tr ("Are you sure you want to exit Octave?"),
+          QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+
+      if (ans !=  QMessageBox::Ok)
+        closenow = false;
+    }
+
+#ifdef HAVE_QSCINTILLA
+  if (closenow)
+    closenow = editor_window->check_closing ();
+#endif
+
+  _octave_qt_link->shutdown_confirmation (closenow);
+
+  // Awake the worker thread so that it continues shutting down (or not).
+  _octave_qt_link->waitcondition.wakeAll ();
+}
 
 void
 main_window::prepare_to_exit (void)
@@ -785,7 +812,7 @@ main_window::prepare_to_exit (void)
 }
 
 void
-main_window::exit (int status)
+main_window::exit_app (int status)
 {
   qApp->exit (status);
 }
@@ -985,8 +1012,7 @@ void
 main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
-  if (confirm_exit_octave())
-    octave_link::post_event (this, &main_window::exit_callback);
+  queue_command ("exit");
 }
 
 void
@@ -1435,8 +1461,11 @@ main_window::construct_octave_qt_link (void)
 {
   _octave_qt_link = new octave_qt_link (this);
 
-  connect (_octave_qt_link, SIGNAL (exit_signal (int)),
-           this, SLOT (exit (int)));
+  connect (_octave_qt_link, SIGNAL (confirm_shutdown_signal ()),
+           this, SLOT (confirm_shutdown_octave ()));
+
+  connect (_octave_qt_link, SIGNAL (exit_app_signal (int)),
+           this, SLOT (exit_app (int)));
 
   connect (_octave_qt_link,
            SIGNAL (set_workspace_signal
@@ -2138,12 +2167,6 @@ main_window::execute_debug_callback ()
 }
 
 void
-main_window::exit_callback (void)
-{
-  Fquit ();
-}
-
-void
 main_window::find_files (const QString &start_dir)
 {
 
@@ -2357,30 +2380,4 @@ main_window::clear_clipboard ()
 {
   _clipboard->clear (QClipboard::Clipboard);
 }
-
-bool
-main_window::confirm_exit_octave ()
-{
-  bool closenow = true;
-
-  QSettings *settings = resource_manager::get_settings ();
-
-  if (settings->value ("prompt_to_exit", false).toBool ())
-    {
-      int ans = QMessageBox::question (this, tr ("Octave"),
-         tr ("Are you sure you want to exit Octave?"),
-          QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
-
-      if (ans !=  QMessageBox::Ok)
-        return false;
-
-    }
-
-#ifdef HAVE_QSCINTILLA
-  closenow = editor_window->check_closing (1);  // 1: exit request from gui
-#endif
-
-  return closenow;
-}
-
 

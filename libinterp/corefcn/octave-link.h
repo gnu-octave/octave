@@ -79,6 +79,16 @@ public:
       instance->do_discard_events ();
   }
 
+  static bool confirm_shutdown (void)
+  {
+    bool retval = true;
+
+    if (instance_ok ())
+      retval = instance->do_confirm_shutdown ();
+
+    return retval;
+  }
+
   static bool exit (int status)
   {
     bool retval = false;
@@ -380,6 +390,7 @@ protected:
   void do_entered_readline_hook (void) { }
   void do_finished_readline_hook (void) { }
 
+  virtual bool do_confirm_shutdown (void) = 0;
   virtual bool do_exit (int status) = 0;
 
   virtual bool do_edit_file (const std::string& file) = 0;

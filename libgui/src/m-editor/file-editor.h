@@ -76,6 +76,7 @@ signals:
   // No fetab_new, functionality in editor
   void fetab_context_help (const QWidget* ID, bool);
   void fetab_context_edit (const QWidget* ID);
+  void fetab_check_modified_file (void);
   void fetab_save_file (const QWidget* ID);
   void fetab_save_file_as (const QWidget* ID);
   void fetab_print_file (const QWidget* ID);
@@ -117,7 +118,7 @@ public slots:
 
   void focus (void);
   void enable_menu_shortcuts (bool);
-  bool check_closing (int closing_state);
+  bool check_closing (void);
 
   void request_new_file (const QString& commands);
   void request_new_script (const QString& commands);
@@ -351,8 +352,6 @@ private:
   QMenu *_mru_file_menu;
   QAction *_mru_file_actions[MaxMRUFiles];
   QStringList _mru_files;
-
-  bool _check_closing_done;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

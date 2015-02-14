@@ -757,11 +757,11 @@ do_octave_atexit (void)
 }
 
 void
-clean_up_and_exit (int retval, bool safe_to_return)
+clean_up_and_exit (int status, bool safe_to_return)
 {
   do_octave_atexit ();
 
-  if (octave_link::exit (retval))
+  if (octave_link::exit (status))
     {
       if (safe_to_return)
         return;
@@ -782,7 +782,7 @@ clean_up_and_exit (int retval, bool safe_to_return)
   else
     {
       if (octave_exit)
-        (*octave_exit) (retval);
+        (*octave_exit) (status);
     }
 }
 
@@ -805,6 +805,12 @@ to run using @code{atexit}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  // Confirm OK to shutdown.  Note: A dynamic function installation similar
+  // to overriding polymorphism for which the GUI can install its own "quit"
+  // yet call this base "quit" could be nice.  No link would be needed here.
+  if (! octave_link::confirm_shutdown ())
+    return retval;
 
   if (! quit_allowed)
     error ("quit: not supported in embedded mode");

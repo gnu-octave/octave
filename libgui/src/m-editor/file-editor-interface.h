@@ -60,7 +60,7 @@ public:
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 
-  virtual bool check_closing (int closing_state) = 0;
+  virtual bool check_closing (void) = 0;
 
   virtual void empty_script (bool, bool) = 0;
 

@@ -132,8 +132,9 @@ public slots:
                                                          = QString ());
   void show_about_octave (void);
   void notice_settings (const QSettings *settings);
+  void confirm_shutdown_octave (void);
   void prepare_to_exit (void);
-  void exit (int status);
+  void exit_app (int status);
   void reset_windows (void);
 
   void change_directory (const QString& dir);
@@ -275,8 +276,6 @@ private:
 
   void change_directory_callback (const std::string& directory);
 
-  void exit_callback (void);
-
   void queue_command (QString command);
 
   void queue_debug (QString command);
@@ -284,8 +283,6 @@ private:
   void execute_debug_callback ();
 
   void configure_shortcuts ();
-
-  bool confirm_exit_octave ();
 
   workspace_model *_workspace_model;
 

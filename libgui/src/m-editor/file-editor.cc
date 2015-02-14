@@ -54,8 +54,6 @@ file_editor::file_editor (QWidget *p)
   // files will change ced accordingly.
   ced = QDir::currentPath ();
 
-  _check_closing_done = false;  // init flag for closing process
-
   construct ();
 
   setVisible (false);
@@ -65,22 +63,12 @@ file_editor::file_editor (QWidget *p)
 
 file_editor::~file_editor (void)
 {
-  // Close open tabs, if existing. In this case app closing must be
-  // initiated by octave since check_closing was already done if the gui
-  // initiated the closing. All tabs will be definetly closed and the
-  // user can not cancel exiting (close state -1)
-  // We have to prevent that on case of gui-closing this check is done
-  // a second time resulting in an empty file list (tabs closed) for the
-  // the next start, that is what _check_closing_done is for
-  if (! _check_closing_done)
-    check_closing (-1);
-
   if (_mru_file_menu)
     delete _mru_file_menu;
 }
 
 bool
-file_editor::check_closing (int closing_state)
+file_editor::check_closing (void)
 {
   // Save open files for restoring in next session; this only is possible
   QSettings *settings = resource_manager::get_settings ();
@@ -102,31 +90,29 @@ file_editor::check_closing (int closing_state)
   settings->setValue ("editor/savedSessionTabs", fetFileNames);
   settings->sync ();
 
-  // Close all tabs. If exit is requested by the gui (octave still running)
-  // check whether closing a tab is successful or whether user wnats to cancel
-  // exiting the program. Return false in the latter case.
-  file_editor_tab *editor_tab;
+  // Save all tabs with confirmation.
+  file_editor_tab::reset_cancel ();
+  emit fetab_check_modified_file ();
 
-  for (int index = _tab_widget->count ()-1; index >= 0; index--)
+  // Close all tabs if there was no cancellation.
+  if (file_editor_tab::was_cancelled ())
+    return false;
+
+  for (int i = 0; i < _tab_widget->count (); i++)
     {
-      editor_tab = static_cast <file_editor_tab *> (_tab_widget->widget (index));
-      if ((! editor_tab->conditional_close (closing_state)) && closing_state == 1)
-        return false;
+      delete _tab_widget->widget (i);
+      _tab_widget->removeTab (i);
     }
 
-  // Here, we really want to exit and all tabs are closed
-  _check_closing_done = true;  // check is already done, prevent a second check
-                               // which would store an empty file list
   return true;
 }
-
 
 void
 file_editor::focus (void)
 {
   octave_dock_widget::focus ();
 
-// set focus to current tab
+  // set focus to current tab
   QWidget *fileEditorTab = _tab_widget->currentWidget ();
   if (fileEditorTab)
     emit fetab_set_focus (fileEditorTab);
@@ -423,7 +409,7 @@ file_editor::request_open_file (const QString& openFileName, int line,
                     }
                   else
                     {
-                      // File does not exist, should it be crated?
+                      // File does not exist, should it be created?
                       bool create_file = true;
                       QMessageBox *msgBox;
                       QSettings *settings = resource_manager::get_settings ();
@@ -952,7 +938,7 @@ file_editor::request_close_file (bool)
 {
   file_editor_tab *editor_tab =
       static_cast <file_editor_tab *> (_tab_widget->currentWidget ());
-  editor_tab->conditional_close (0);  // 0: app is not closing, only tab
+  editor_tab->conditional_close ();
 }
 
 void
@@ -964,7 +950,7 @@ file_editor::request_close_all_files (bool)
   for (int index = _tab_widget->count ()-1; index >= 0; index--)
     {
       editor_tab = static_cast <file_editor_tab *> (_tab_widget->widget (index));
-      editor_tab->conditional_close (0);  // 0: app is not closing, only tab
+      editor_tab->conditional_close ();
     }
 }
 
@@ -981,7 +967,7 @@ file_editor::request_close_other_files (bool)
         {
           editor_tab =
               static_cast <file_editor_tab *> (_tab_widget->widget (index));
-          editor_tab->conditional_close (0);  // 0: app is not closing, only tab
+          editor_tab->conditional_close ();
         }
     }
 }
@@ -992,7 +978,7 @@ file_editor::handle_tab_close_request (int index)
 {
   file_editor_tab *editor_tab =
        static_cast <file_editor_tab *> (_tab_widget->widget (index));
-  editor_tab->conditional_close (0);  // 0: app is not closing, only tab
+  editor_tab->conditional_close ();
 }
 
 void
@@ -1006,6 +992,8 @@ file_editor::handle_tab_remove_request (void)
           if (_tab_widget->widget (i) == fileEditorTab)
             {
               _tab_widget->removeTab (i);
+              // Deleting sender is dodgy, but works because the signal
+              // is the last item in the sender's routines.
               delete fileEditorTab;
               break;
             }
@@ -1663,6 +1651,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
   connect (this, SIGNAL (fetab_save_file (const QWidget*, const QString&,
                                           bool)),
            f, SLOT (save_file (const QWidget*, const QString&, bool)));
+
+  connect (this, SIGNAL (fetab_check_modified_file (void)),
+           f, SLOT (check_modified_file (void)));
 
   // Signals from the file_editor trivial operations
   connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),

@@ -550,6 +550,11 @@ main (int argc, char **argv)
         {
           pass_on_options += (" " + arg);
         }
+      else if (starts_with (arg, "-"))
+        {
+          // Pass through any unrecognized options
+          pass_on_options += (" " + arg);
+        }
       else
         {
           std::cerr << "mkoctfile: unrecognized argument " << arg << std::endl;

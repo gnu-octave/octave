@@ -99,7 +99,7 @@ protected:
   virtual void setup_opengl_transformation (const axes::properties& props);
 
   virtual void set_color (const Matrix& c);
-  virtual void set_polygon_offset (bool on, float offset = 0.0);
+  virtual void set_polygon_offset (bool on, float offset = 0.0f);
   virtual void set_linewidth (float w);
   virtual void set_linestyle (const std::string& s, bool stipple = false);
   virtual void set_clipbox (double x1, double x2, double y1, double y2,

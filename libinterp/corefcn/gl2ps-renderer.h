@@ -64,14 +64,19 @@ protected:
       gl2psEnable (GL2PS_LINE_STIPPLE);
   }
 
-  void set_polygon_offset (bool on, double offset = 0.0)
+  void set_polygon_offset (bool on, float offset = 0.0f)
   {
-    opengl_renderer::set_polygon_offset (on, offset);
     if (on)
-      gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
+      {
+        opengl_renderer::set_polygon_offset (on, offset);
+        gl2psEnable (GL2PS_POLYGON_OFFSET_FILL);
+      }
     else
-      gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
-  }
+      {
+        gl2psDisable (GL2PS_POLYGON_OFFSET_FILL);
+        opengl_renderer::set_polygon_offset (on, offset);
+      }
+  } 
 
   void set_linewidth (float w)
   {

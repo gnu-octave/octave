@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 function plotimages (nm, typ)
+  graphics_toolkit ("gnuplot");
   set_print_size ();
   hide_output ();
   if (strcmp (typ, "png"))

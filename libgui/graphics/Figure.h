@@ -111,7 +111,6 @@ private:
 
 private slots:
   void setMouseMode (MouseMode mode);
-  void fileNewFigure (void);
   void fileSaveFigure (bool prompt = false);
   void fileSaveFigureAs (void);
   void fileCloseFigure (void);

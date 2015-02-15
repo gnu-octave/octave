@@ -273,9 +273,6 @@ void Figure::createFigureToolBarAndMenuBar (void)
 
   QMenu* fileMenu = m_menuBar->addMenu (tr ("&File"));
   fileMenu->menuAction ()->setObjectName ("builtinMenu");
-  fileMenu->addAction (tr ("&New Figure"), this, SLOT (fileNewFigure (void)));
-  fileMenu->addAction (tr ("&Open..."))->setEnabled (false);
-  fileMenu->addSeparator ();
   fileMenu->addAction (tr ("&Save"), this, SLOT (fileSaveFigure (bool)));
   fileMenu->addAction (tr ("Save &As"), this, SLOT (fileSaveFigureAs (void)));
   fileMenu->addSeparator ();
@@ -719,10 +716,6 @@ void Figure::setMouseMode (MouseMode mode)
 
   if (canvas)
     canvas->setCursor (mode);
-}
-
-void Figure::fileNewFigure (void)
-{
 }
 
 void Figure::fileSaveFigure (bool prompt)

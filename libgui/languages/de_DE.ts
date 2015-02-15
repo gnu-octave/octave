@@ -61,16 +61,11 @@
         <source>cursor</source>
         <translation>Cursor</translation>
     </message>
-    <message>
-        <location filename="../src/main-window.cc" line="+1963"/>
-        <source>&lt;p&gt;&lt;strong&gt;A Note about Octave&apos;s New GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;One of the biggest new features for Octave 3.8 is a graphical user interface.  It is the one thing that users have requested most often over the last few years and now it is almost ready.  But because it is not quite as polished as we would like, we have decided to wait until the 4.0.x release series before making the GUI the default interface.&lt;/p&gt;&lt;p&gt;Given the length of time and the number of bug fixes and improvements since the last major release, we also decided against delaying the release of all these new improvements any longer just to perfect the GUI.  So please enjoy the 3.8 release of Octave and the preview of the new GUI.  We believe it is working reasonably well, but we also know that there are some obvious rough spots and many things that could be improved.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;We Need Your Help&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;There are many ways that you can help us fix the remaining problems, complete the GUI, and improve the overall user experience for both novices and experts alike (links will open an external browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;If you are a skilled software developer, you can help by contributing your time to help &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;develop Octave&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;If Octave does not work properly, you are encouraged to &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;report problems &lt;/a&gt; that you find.&lt;/li&gt;&lt;li&gt;Whether you are a user or developer, you can &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;help to fund the project&lt;/a&gt;.  Octave development takes a lot of time and expertise.  Your contributions help to ensure that Octave will continue to improve.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;We hope you find Octave to be useful.  Please help us make it even better for the future!&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;strong&gt;Einige Hinweise zur neuen Octave GUI&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Eine der größten Neuerungen von Octave 3.8 ist die grafische Benutzerschnittstelle (GUI).  Sie ist das, worum die Nutzer in den letzten Jahren am häufigsten gebeten haben, und nun ist sie fast fertig.  Aber weil noch der Feinschliff fehlt, haben wir beschlossen, mit der GUI als Standard-Benutzerschnittstelle auf die 4.0.x Veröffentlichungen zu warten.&lt;/p&gt;&lt;p&gt;In Anbetracht der vergangenen Zeit, der Anzahl der behobenen Fehler und den Verbesserungen seit der letzten Veröffentlichung haben wir uns dazu entschieden, die nächste Veröffentlichung nicht weiter zu verzögern, nur um die GUI zu perfektionieren.  Daher wünschen wir viel Spaß mit der Version 3.8 von Octave und der Vorschau auf die neue GUI.  Wir sind der Meinung, dass sie schon ziemlich gut funktioniert, obwohl uns bewusst ist, dass es noch einige Ecken und Kanten sowie viele Dinge zu verbessern gibt.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Deshalb brauchen wir Deine Mithilfe!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Es gibt viele Möglichkeiten uns zu helfen die verbleibenden Probleme zu beheben, die GUI weiter zu entwickeln und die Benutzererfahrung für Neulinge und Experten gleichermaßen zu verbessern (Links öffnen im externen Browser):&lt;/p&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Falls Du ein geschickter Software-Entwickler bist, kannst du helfen, indem du dich an der &lt;a href=&quot;http://octave.org/get-involved.html&quot;&gt;Weiterentwicklung von Octave&lt;/a&gt; beteiligst.&lt;/li&gt;&lt;li&gt;Sollte Octave einmal nicht wie erwartet funktionieren, solltest Du das gefundene &lt;a href=&quot;http://octave.org/bugs.html&quot;&gt;Problem melden&lt;/a&gt;.&lt;/li&gt;&lt;li&gt;Egal, ob Du Anwender oder Entwickler bist, kannst du &lt;a href=&quot;http://octave.org/donate.html&quot;&gt;helfen, das Projekt zu finanzieren&lt;/a&gt;.  Die Weiterentwicklung von Octave braucht viel Zeit und Sachverstand.  Dein Beitrag hilft sicherzustellen, dass Octave weiter verbessert wird.&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Wir hoffen, dass du Octave nützlich findest.  Bitte hilf uns Octave zukünftig noch besser zu machen!&lt;/p&gt;</translation>
-    </message>
 </context>
 <context>
     <name>QTerminal</name>
     <message>
-        <location filename="../qterminal/libqterminal/QTerminal.h" line="+121"/>
+        <location filename="../qterminal/libqterminal/QTerminal.h" line="+131"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
@@ -80,7 +75,12 @@
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
+        <source>Select All</source>
+        <translation type="unfinished">Alles auswählen</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Clear All</source>
         <translation>Alles löschen</translation>
     </message>
@@ -88,9 +88,120 @@
 <context>
     <name>QWinTerminalImpl</name>
     <message>
-        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1539"/>
+        <location filename="../qterminal/libqterminal/win32/QWinTerminalImpl.cpp" line="+1776"/>
         <source>copied selection to clipboard</source>
         <translation>Auswahl in die Zwischenablage kopiert</translation>
+    </message>
+</context>
+<context>
+    <name>QtHandles::Figure</name>
+    <message>
+        <location filename="../graphics/Figure.cc" line="+254"/>
+        <source>Figure ToolBar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>&amp;File</source>
+        <translation type="unfinished">&amp;Datei</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;New Figure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Open...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save &amp;As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Close Figure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Bearbeiten</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cop&amp;y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished">&amp;Ausschneiden</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Hilfe</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;About QtHandles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>About &amp;Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+403"/>
+        <source>About QtHandles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Save Figure As</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QtHandles::MouseModeActionGroup</name>
+    <message>
+        <location filename="../graphics/MouseModeActionGroup.cc" line="+40"/>
+        <source>Rotate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Zoom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Pan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Insert Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -109,16 +220,17 @@
 <context>
     <name>file_editor</name>
     <message>
-        <location filename="../src/m-editor/file-editor.cc" line="+346"/>
-        <location line="+22"/>
-        <location line="+18"/>
-        <location line="+59"/>
+        <location filename="../src/m-editor/file-editor.cc" line="+276"/>
+        <location line="+125"/>
+        <location line="+19"/>
+        <location line="+25"/>
+        <location line="+62"/>
         <location line="+28"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-269"/>
+        <location line="-318"/>
         <source>Octave Files (*.m);;All Files (*)</source>
         <translation>Octave Dateien (*.m);;Alle Dateien (*)</translation>
     </message>
@@ -135,7 +247,7 @@
 </translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+330"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor</source>
@@ -144,37 +256,27 @@ is already open in the editor</source>
 ist im Editor bereits geöffnet</translation>
     </message>
     <message>
-        <location line="+268"/>
+        <location line="+387"/>
         <source>&amp;%1 %2</source>
         <translation>&amp;%1 %2</translation>
     </message>
     <message>
-        <location line="+207"/>
+        <location line="+392"/>
         <source>&amp;Save File</source>
         <translation>Datei &amp;speichern</translation>
     </message>
     <message>
-        <location line="-3"/>
-        <source>&amp;Open File...</source>
-        <translation>Datei &amp;Öffnen...</translation>
-    </message>
-    <message>
-        <location line="-3"/>
-        <source>&amp;New Script</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="+2"/>
         <source>Save File &amp;As...</source>
         <translation>Datei speichern &amp;als...</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+17"/>
         <source>Print...</source>
         <translation>Drucken...</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+7"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
@@ -184,22 +286,22 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Wiederholen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+6"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+3"/>
         <source>Paste</source>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+94"/>
         <source>&amp;Next Bookmark</source>
         <translation>&amp;Nächstes Lesezeichen</translation>
     </message>
@@ -209,17 +311,17 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Voriges Lesezeichen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>Toggle &amp;Bookmark</source>
         <translation>&amp;Lesezeichen setzen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>&amp;Remove All Bookmarks</source>
         <translation>Alle Lesezeichen &amp;entfernen</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+56"/>
         <source>&amp;Next Breakpoint</source>
         <translation>&amp;Nächster Haltepunkt</translation>
     </message>
@@ -229,17 +331,17 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Vorheriger Haltepunkt</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-6"/>
         <source>Toggle &amp;Breakpoint</source>
         <translation>Haltepunkt &amp;umschalten</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+9"/>
         <source>&amp;Remove All Breakpoints</source>
         <translation>Alle Haltepunkte entfe&amp;rnen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-106"/>
         <source>&amp;Comment</source>
         <translation>&amp;Kommentieren</translation>
     </message>
@@ -249,7 +351,7 @@ ist im Editor bereits geöffnet</translation>
         <translation>Kommentar &amp;entfernen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+5"/>
         <source>&amp;Indent</source>
         <translation type="unfinished"></translation>
     </message>
@@ -259,57 +361,228 @@ ist im Editor bereits geöffnet</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-55"/>
         <source>&amp;Find and Replace...</source>
         <translation>&amp;Suchen und Ersetzen...</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+164"/>
         <source>Save File and Run</source>
         <translation>Datei speichern und Ausführen</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-92"/>
         <source>Go &amp;to Line...</source>
         <translation>&amp;Gehe zu Zeile...</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="-1133"/>
+        <source>Could not start custom file editor
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+148"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Abbrechen</translation>
+    </message>
+    <message>
+        <location line="+848"/>
         <source>&amp;Recent Editor Files</source>
         <translation>&amp;Zuletzt bearbeitete Dateien</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+8"/>
         <source>&amp;Edit Function</source>
         <translation>Funktion b&amp;earbeiten</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>&amp;Close</source>
         <translation>S&amp;chließen</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Close All</source>
         <translation>Alle schließen</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+3"/>
         <source>Close Other Files</source>
         <translation>Andere Dokumente schließen</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+31"/>
+        <source>Select All</source>
+        <translation type="unfinished">Alles auswählen</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Delete Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cut Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Delete to Start of Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to End of Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to Start of Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to End of Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Duplicate Selection/Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Transpose Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Show Completion List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Uppercase Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Lowercase Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Convert Line Endings to &amp;Windows (CRLF)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Convert Line Endings to &amp;Unix (LF)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Convert Line Endings to &amp;Mac (CR)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Navi&amp;gation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Move to Matching Brace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Select to Matching Brace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
         <source>&amp;Preferences...</source>
         <translation>&amp;Einstellungen...</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>&amp;Styles Preferences...</source>
         <translation>&amp;Stil-Einstellungen...</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+4"/>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show &amp;Line Numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show &amp;White Spaces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show Line &amp;Endings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show &amp;Indentation Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show Long Line &amp;Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Zoom &amp;In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Zoom &amp;Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Normal Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
         <source>Run &amp;Selection</source>
         <translation>Markierten Quellcode au&amp;sführen</translation>
     </message>
@@ -319,17 +592,17 @@ ist im Editor bereits geöffnet</translation>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>&amp;Help on Keyword</source>
         <translation>&amp;Hilfe zum Schlüsselwort</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <source>&amp;Documentation on Keyword</source>
         <translation>&amp;Dokumentation zum Schlüsselwort</translation>
     </message>
     <message>
-        <location line="-790"/>
+        <location line="-1112"/>
         <source>Could not open file
 %1
 for read: %2.</source>
@@ -339,7 +612,7 @@ konnte nicht zum Lesen geöffnet werden:
 %2.</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+19"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -348,7 +621,7 @@ does not exist. Do you want to create it?</source>
 existiert nicht. Soll sie erzeugt werden?</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+25"/>
         <source>Could not open file
 %1
 for write: %2.</source>
@@ -358,32 +631,27 @@ konnte nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+90"/>
         <source>The associated file editor tab has disappeared.</source>
         <translation>Der zugehörige Editor-Reiter ist nicht mehr vorhanden.</translation>
     </message>
     <message>
-        <location line="+567"/>
+        <location line="+735"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>New &amp;Function...</source>
-        <translation>Neue &amp;Funktion...</translation>
-    </message>
-    <message>
-        <location line="+34"/>
+        <location line="+39"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+168"/>
         <source>&amp;Debug</source>
         <translation>&amp;Debuggen</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+21"/>
         <source>&amp;Run</source>
         <translation>&amp;Ausführen</translation>
     </message>
@@ -391,7 +659,32 @@ konnte nicht zum Schreiben geöffnet werden:
 <context>
     <name>file_editor_tab</name>
     <message>
-        <location filename="../src/m-editor/file-editor-tab.cc" line="+824"/>
+        <location filename="../src/m-editor/file-editor-tab.cc" line="+96"/>
+        <source>eol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>col:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+145"/>
+        <source>%1 is a built-in function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Can not find function %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+769"/>
         <source>Goto line</source>
         <translation>Gehe zu Zeile</translation>
     </message>
@@ -401,48 +694,52 @@ konnte nicht zum Schreiben geöffnet werden:
         <translation>Zeilennummer</translation>
     </message>
     <message>
-        <location line="+108"/>
-        <location line="+69"/>
+        <location line="+146"/>
+        <location line="+67"/>
         <source>&lt;unnamed&gt;</source>
         <translation>&lt;unbenannt&gt;</translation>
     </message>
     <message>
-        <location line="-12"/>
-        <source>Do you want to save or discard the changes?</source>
-        <translation>Änderungen speichern oder verwerfen?</translation>
+        <location line="+4"/>
+        <source>The file
+
+  %1
+
+is about to be closed but has been modified.  %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+306"/>
+        <source>Line Endings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Octave Files (*.m)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-340"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
         <translation>Änderungen speichern, verwerfen oder Schließen abbrechen?</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <location line="+123"/>
-        <location line="+112"/>
-        <location line="+69"/>
-        <location line="+22"/>
+        <location line="-968"/>
+        <location line="+977"/>
+        <location line="+231"/>
+        <location line="+185"/>
+        <location line="+85"/>
+        <location line="+23"/>
         <source>Octave Editor</source>
         <translation>Octave Editor</translation>
     </message>
     <message>
-        <location line="-325"/>
-        <source>The file
-%1
-is about to be closed but has been modified.
-%2</source>
-        <translation>Die Datei
-%1
-soll geschlossen werden, wurde aber verändert.
-%2</translation>
-    </message>
-    <message>
-        <location line="+203"/>
-        <source>Octave Files (*.m);;All Files (*)</source>
-        <translation>Octave Dateien (*.m);;All Files (*)</translation>
-    </message>
-    <message>
-        <location line="+116"/>
+        <location line="-6"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
@@ -458,24 +755,14 @@ has been deleted or renamed. Do you want to save it now?%2</source>
 wurde gelöscht oder umbenannt. Soll die Datei jetzt gespeichert werden?%2</translation>
     </message>
     <message>
-        <location line="-203"/>
+        <location line="-293"/>
         <source>Could not open file %1 for write:
 %2.</source>
         <translation>Die Datei %1  konnte nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
-        <location line="-1032"/>
-        <source>Line:</source>
-        <translation>Zeile:</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Col:</source>
-        <translation>Spalte:</translation>
-    </message>
-    <message>
-        <location line="+1141"/>
+        <location line="+185"/>
         <source>&quot;%1&quot;
 is not a valid identifier.
 
@@ -486,7 +773,7 @@ Do you want to choose another name?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+69"/>
+        <location line="+85"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
         <translation>Die Datei %1 wurde von einer anderen Anwendung verändert. Soll der neue Inhalt geladen werden?</translation>
     </message>
@@ -524,28 +811,18 @@ Do you want to choose another name?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+379"/>
+        <location line="+4"/>
+        <location line="+387"/>
         <source>Find Files...</source>
         <translation>Dateien suchen...</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>New File</source>
-        <translation>Neue Datei</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <location line="+333"/>
+        <location line="+357"/>
         <source>New Directory</source>
         <translation>Neues Verzeichnis</translation>
     </message>
     <message>
-        <location line="-656"/>
-        <source>Double-click a file to open it</source>
-        <translation>Doppelklick auf eine Datei um diese zu öffnen</translation>
-    </message>
-    <message>
-        <location line="-100"/>
+        <location line="-776"/>
         <source>Show Octave directory</source>
         <translation>Aktuelles Octave Verzeichnis anzeigen</translation>
     </message>
@@ -570,28 +847,24 @@ Do you want to choose another name?</source>
         <translation>Wechsle zum Heimatverzeichnis</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Search Directory...</source>
-        <translation>Verzeichnis suchen...</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Find Files...</source>
-        <translatorcomment>Dateien suchen...</translatorcomment>
-        <translation>Dateien suchen...</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+20"/>
+        <location line="+396"/>
         <source>New File...</source>
         <translation>Neue Datei...</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-393"/>
+        <location line="+396"/>
         <source>New Directory...</source>
         <translation>Neues Verzeichnis...</translation>
     </message>
     <message>
-        <location line="+297"/>
+        <location line="-335"/>
+        <source>Activate to open in editor, right click for alternatives</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+236"/>
         <source>File size</source>
         <translation>Dateigröße</translation>
     </message>
@@ -611,7 +884,7 @@ Do you want to choose another name?</source>
         <translation>Verborgene Dateien anzeigen</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+35"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
@@ -641,17 +914,17 @@ Do you want to choose another name?</source>
         <translation>Aktuelles Verzeichnis setzen</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>Rename</source>
-        <translation>Umbenennen</translation>
+        <location line="+9"/>
+        <source>Rename...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Delete</source>
-        <translation>Löschen</translation>
+        <location line="+2"/>
+        <source>Delete...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+115"/>
         <source>Rename file/directory</source>
         <translation>Datei/Verzeichnis umbenennen</translation>
     </message>
@@ -864,7 +1137,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>In Auswah&amp;l suchen</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+84"/>
         <source>Search from end</source>
         <translation>Vom Ende suchen</translation>
     </message>
@@ -874,7 +1147,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Suche vom Beginn</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+199"/>
         <source>Replace Result</source>
         <translation>Ergebins der Ersetzungen</translation>
     </message>
@@ -884,7 +1157,7 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>%1 Vorkommnisse ersetzt</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+15"/>
         <source>Find Result</source>
         <translation>Suchergebnis</translation>
     </message>
@@ -1058,7 +1331,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>history_dock_widget</name>
     <message>
-        <location filename="../src/history-dock-widget.cc" line="+43"/>
+        <location filename="../src/history-dock-widget.cc" line="+47"/>
         <source>Browse and search the command history.</source>
         <translation>Durchsuchen der Befehlshistorie.</translation>
     </message>
@@ -1068,17 +1341,22 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Doppelklick auf ein Kommando um dieses in das Terminal zu übertragen.</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>Enter text to filter the command history.</source>
-        <translation>Texteingabe zur Filterung der Befehlshistorie.</translation>
+        <location line="+8"/>
+        <source>Enter text to filter the command history</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+10"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>Command History</source>
         <translation>Befehlshistorie</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+88"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
@@ -1127,38 +1405,33 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main-window.cc" line="-1758"/>
+        <location filename="../src/main-window.cc" line="+265"/>
         <source>Load Workspace</source>
         <translation>Lade Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="+678"/>
-        <location line="+905"/>
+        <location line="+742"/>
+        <location line="+912"/>
         <source>About Octave</source>
         <translation>Über Octave</translation>
     </message>
     <message>
-        <location line="-371"/>
+        <location line="-297"/>
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+58"/>
         <source>New</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>Figure</source>
-        <translation>Abbildung</translation>
-    </message>
-    <message>
-        <location line="-59"/>
+        <location line="-52"/>
         <source>Open...</source>
         <translation>Öffnen...</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+24"/>
         <source>Preferences...</source>
         <translation>Einstellungen...</translation>
     </message>
@@ -1178,17 +1451,17 @@ Klicke auf &apos;Weiter&apos; um eine Konfigurationsdatei anzulegen und Octave z
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
         <source>Paste</source>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location line="-1327"/>
+        <location line="-1473"/>
         <source>Save Workspace As</source>
         <translation>Arbeitsumgebung speichern als</translation>
     </message>
@@ -1219,12 +1492,37 @@ instead?</source>
         <translation>Versionshinweise zu Octave</translation>
     </message>
     <message>
-        <location line="+189"/>
+        <location line="+192"/>
         <source>Octave Community News</source>
         <translation>Neuigkeiten aus der Octave Community</translation>
     </message>
     <message>
-        <location line="+968"/>
+        <location line="+173"/>
+        <source>Are you sure you want to exit Octave?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+840"/>
+        <source>Open an existing file in editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+57"/>
+        <source>New Function...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>New Figure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+36"/>
+        <source>Select All</source>
+        <translation type="unfinished">Alles auswählen</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Clear Clipboard</source>
         <translation>Zwischenablage leeren</translation>
     </message>
@@ -1249,7 +1547,7 @@ instead?</source>
         <translation>Arbeitsumgebung löschen</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+38"/>
         <source>De&amp;bug</source>
         <translation>De&amp;bug</translation>
     </message>
@@ -1264,37 +1562,28 @@ instead?</source>
         <translation>Fortfahren</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>Exit Debug Mode</source>
-        <translation>Debug Modus verlassen</translation>
-    </message>
-    <message>
-        <location line="+51"/>
+        <location line="+56"/>
         <source>Show File Browser</source>
         <translation>Dateibrowser anzeigen</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+20"/>
         <source>File Browser</source>
         <translation>Dateibrowser</translation>
     </message>
     <message>
-        <location line="+194"/>
-        <source>&lt;strong&gt;You are using a release candidate of Octave&apos;s experimental GUI.&lt;/strong&gt;  Octave is under continuous improvement and the GUI will be the default interface for the 4.0 release.  For more information, select the &quot;Release Notes&quot; item in the &quot;News&quot; menu of the GUI, or visit &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt;.</source>
-        <translation>&lt;strong&gt;Diese Version ist Anwärter auf eine Veröffentlichung der experimentellen Octave GUI.&lt;/strong&gt;  Octave wird ständig verbessert und diese GUI wird die Standard-Benutzerschnittstelle der 4.0 Veröffentlichung sein. Weitere Informationen sind unter &quot;Versionshinweise&quot; im Menü &quot;Neuigkeiten&quot; oder auf &lt;a href=&quot;http://octave.org&quot;&gt;http://octave.org&lt;/a&gt; zu finden.</translation>
-    </message>
-    <message>
-        <location line="-288"/>
+        <location line="-84"/>
         <source>Step In</source>
         <translation>Hineinspringen</translation>
     </message>
     <message>
-        <location line="-1311"/>
+        <location line="-1457"/>
+        <location line="+455"/>
         <source>Octave</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1160"/>
+        <location line="+854"/>
         <source>Load Workspace...</source>
         <translation>Lade Arbeitsumgebung...</translation>
     </message>
@@ -1309,22 +1598,17 @@ instead?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Function...</source>
-        <translation>Funktion...</translation>
-    </message>
-    <message>
         <location line="+111"/>
         <source>Step Out</source>
         <translation>Herausspringen</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+94"/>
         <source>Reset Default Window Layout</source>
         <translation>Fensterlayout auf Grundeinstellung zurücksetzen</translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+16"/>
         <source>Octave Packages</source>
         <translation>Octave Pakete</translation>
     </message>
@@ -1344,7 +1628,7 @@ instead?</source>
         <translation>Ressourcen für Octave Entwickler</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+14"/>
         <source>On Disk</source>
         <translation>Auf der Festplatte</translation>
     </message>
@@ -1354,7 +1638,7 @@ instead?</source>
         <translation>Im Internet</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+6"/>
         <source>&amp;News</source>
         <translation>&amp;Neuigkeiten</translation>
     </message>
@@ -1369,23 +1653,7 @@ instead?</source>
         <translation>Neuigkeiten der Community</translation>
     </message>
     <message>
-        <location line="+50"/>
-        <source>More Info</source>
-        <translation>Weitere Informationen</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Hide</source>
-        <translation>Verbergen</translation>
-    </message>
-    <message>
-        <location line="+47"/>
-        <location line="+66"/>
-        <source>Experimental GUI Info</source>
-        <translation>Informationen zur experimentellen GUI</translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+24"/>
         <source>Enter directory name</source>
         <translation>Neues Verzeichnis eingeben</translation>
     </message>
@@ -1400,69 +1668,74 @@ instead?</source>
         <translation>Ein Verzeichnis höher</translation>
     </message>
     <message>
-        <location line="-1312"/>
-        <location line="+1315"/>
+        <location line="-1129"/>
+        <location line="+1132"/>
         <source>Browse directories</source>
         <translation>Verzeichnis suchen</translation>
     </message>
     <message>
-        <location line="-405"/>
+        <location line="-175"/>
+        <source>Quit Debug Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+38"/>
         <source>&amp;Window</source>
         <translation>&amp;Fenster</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+3"/>
         <source>Show Command Window</source>
         <translation>Befehlsfenster anzeigen</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Command History</source>
         <translation>Befehlshistorie anzeigen</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+6"/>
         <source>Show Workspace</source>
         <translation>Arbeitsumgebung anzeigen</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Editor</source>
         <translation>Editor anzeigen</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Show Documentation</source>
         <translation>Dokumentation anzeigen</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+5"/>
         <source>Command Window</source>
         <translation>Befehlsfenster</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Command History</source>
         <translation>Befehlshistorie</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+6"/>
         <source>Workspace</source>
         <translation>Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+3"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <location line="+121"/>
+        <location line="+3"/>
+        <location line="+41"/>
         <source>Documentation</source>
         <translation>Dokumentation</translation>
     </message>
     <message>
-        <location line="-48"/>
+        <location line="-30"/>
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
@@ -1475,7 +1748,7 @@ instead?</source>
 <context>
     <name>news_reader</name>
     <message>
-        <location line="-1311"/>
+        <location line="-1379"/>
         <source>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
@@ -1534,18 +1807,18 @@ oder aktiviere die Internetverbindung in den Einstellungen unter Netzwerk.
 <context>
     <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+60"/>
-        <location line="+170"/>
+        <location filename="../src/octave-dock-widget.cc" line="+63"/>
+        <location line="+175"/>
         <source>Undock widget</source>
         <translation>Fenster lösen</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="-165"/>
         <source>Hide widget</source>
         <translation>Fenster verbergen</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+112"/>
         <source>Dock widget</source>
         <translation>Fenster andocken</translation>
     </message>
@@ -1553,7 +1826,7 @@ oder aktiviere die Internetverbindung in den Einstellungen unter Netzwerk.
 <context>
     <name>octave_qscintilla</name>
     <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+130"/>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+226"/>
         <source>Help on</source>
         <translation>Hilfe zu</translation>
     </message>
@@ -1567,28 +1840,18 @@ oder aktiviere die Internetverbindung in den Einstellungen unter Netzwerk.
         <source>Edit</source>
         <translation>Bearbeite</translation>
     </message>
-    <message>
-        <location line="+5"/>
-        <source>&amp;Run Selection</source>
-        <translation>Markierter Quellcode au&amp;sführen</translation>
-    </message>
 </context>
 <context>
     <name>octave_qt_link</name>
     <message>
-        <location filename="../src/octave-qt-link.cc" line="+97"/>
+        <location filename="../src/octave-qt-link.cc" line="+111"/>
         <location line="+6"/>
         <location line="+7"/>
-        <source>Yes</source>
-        <translation>Ja</translation>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-13"/>
-        <source>No</source>
-        <translation>Nein</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="-10"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
@@ -1627,9 +1890,18 @@ existiert nicht. Soll sie erzeugt werden?</translation>
         <translation>Verzeichnis zum Suchpfad hinzufügen</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-223"/>
+        <location line="+224"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>octave_txt_lexer</name>
+    <message>
+        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+39"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1670,7 +1942,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+122"/>
         <source>Octave logo only</source>
         <translation>Nur Octave Logo</translation>
     </message>
@@ -1680,47 +1952,82 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Icons mit Buchstaben</translation>
     </message>
     <message>
-        <location line="-172"/>
+        <location line="-103"/>
         <source>Dock widget title bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+179"/>
         <source>Custom style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+26"/>
-        <source>Background color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
-        <source>Text color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+212"/>
+        <location line="+193"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+126"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location line="+170"/>
+        <location line="+130"/>
+        <source>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Draw a long  line marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Enable Code Folding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Show eol characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Default eol mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Windows (CRLF)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Mac (CR)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Unix (LF)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Show horizontal scroll bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Indent width</source>
         <translation>Einrücken um</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+23"/>
         <source>Tab indents line</source>
         <translation>Tabulator rückt ein</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+7"/>
         <source>Auto indentation</source>
         <translation>Auto Einrückung</translation>
     </message>
@@ -1740,7 +2047,17 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Rücktaste entfernt Einrückung</translation>
     </message>
     <message>
-        <location line="+155"/>
+        <location line="+49"/>
+        <source>Indentation uses tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Auto completion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
         <source>Match keywords</source>
         <translation>Schlüsselwörter berücksichtigen</translation>
     </message>
@@ -1750,22 +2067,47 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Groß-/Kleinschreibung beachten</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+23"/>
         <source>Replace word by suggested one</source>
         <translation>Wort durch Vorschlag ersetzen</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-10"/>
         <source>Match words in document</source>
         <translation>Wörter im Dokument berücksichtigen</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+48"/>
+        <source>With Octave builtins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>With Octave functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Number of characters before list is shwon: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>Show completion list automatically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+51"/>
         <source>Restore editor tabs from previous session on startup</source>
         <translation>Editor Dateien der letzten Sitzung wiederherstellen</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+20"/>
+        <source>Reload externally changed files without prompt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
         <source>Use custom file editor</source>
         <translation>Externen Editor verwenden</translation>
     </message>
@@ -1785,47 +2127,84 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Auswahl von Schrift, Schriftgröße (als Differenz von der Standardgröße), Schriftstil (&lt;b&gt;f&lt;/b&gt;ett, &lt;b&gt;k&lt;/b&gt;ursiv, &lt;b&gt;u&lt;/b&gt;nterstrichen), Text- und Hintergrundfarbe (für den Hintergrund ist die Farbe Pink (255,0,255) ein Platzhalter für die Standardfarbe)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+174"/>
+        <source>(Changing buffer size clears history)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>History buffer Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Print debug location in terminal window in addition to the marker in the editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>Terminal Colors</source>
         <translation>Farben des Befehlsfensters</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="-161"/>
         <source>Font</source>
         <translation>Schriftart</translation>
     </message>
     <message>
-        <location line="-770"/>
+        <location line="-885"/>
         <source>Show line numbers</source>
         <translation>Zeilennummern anzeigen</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+33"/>
         <source>Highlight current line</source>
         <translation>Aktuelle Zeile hervorheben</translation>
     </message>
     <message>
-        <location line="+328"/>
-        <source>Code completion</source>
-        <translation>Vervollständigung</translation>
-    </message>
-    <message>
-        <location line="-361"/>
+        <location line="-20"/>
         <source>Show complete path in window title</source>
         <translation>Kompletten Pfad im Reiter anzeigen</translation>
     </message>
     <message>
-        <location line="-366"/>
+        <location line="-468"/>
         <source>Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+187"/>
+        <location line="+52"/>
+        <source>Confirm before exiting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+66"/>
         <source>Graphic icons</source>
         <translation>Grafische Icons</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+29"/>
+        <location line="+512"/>
+        <source>Show status bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-495"/>
+        <source>Text inactive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <location line="+52"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Background inactive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+38"/>
         <source>Octave Startup</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1836,23 +2215,28 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
     </message>
     <message>
         <location line="+35"/>
-        <location line="+1104"/>
+        <location line="+1313"/>
         <source>Startup path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1091"/>
-        <location line="+1108"/>
+        <location line="-1300"/>
+        <location line="+1317"/>
         <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1101"/>
+        <location line="-1310"/>
         <source>Restore last Octave directory of previous session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+63"/>
+        <source>After Column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+35"/>
         <source>Show whitespace</source>
         <translation>Leerzeichen anzeigen</translation>
     </message>
@@ -1862,7 +2246,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Leerzeichen der Einrückung nicht anzeigen</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+81"/>
         <source>Tab width min.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1872,17 +2256,12 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+197"/>
-        <source># of characters typed before completion list displayed</source>
-        <translation>Anzahl der eingegebenen Zeichen bis Vervollständigungsliste</translation>
-    </message>
-    <message>
-        <location line="+194"/>
+        <location line="+532"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Nicht existierende Dateien ohne Nachfrage anlegen</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+38"/>
         <source>command line (%f=file, %l=line):</source>
         <translation>Kommandozeile (%f=Datei, %l=Zeile):</translation>
     </message>
@@ -1892,7 +2271,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Befehlsfenster</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+51"/>
         <source>Cursor type:</source>
         <translation>Cursortyp:</translation>
     </message>
@@ -1912,12 +2291,12 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Schriftgröße</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+111"/>
         <source>Set focus to terminal when running a command from within another widget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+79"/>
         <source>File Browser</source>
         <translation>Dateibrowser</translation>
     </message>
@@ -1967,12 +2346,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Storage Class Colors</source>
-        <translation>Farben der Speicherklassen festlegen</translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="+338"/>
         <source>Network</source>
         <translation>Netzwerk</translation>
     </message>
@@ -1992,7 +2366,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>HTTP Proxy</translation>
     </message>
     <message>
-        <location line="-1356"/>
+        <location line="-1959"/>
         <source>Icon set for dock widgets</source>
         <translation>Icons der Unterfenster</translation>
     </message>
@@ -2002,17 +2376,100 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Sprache (Neustart erforderlich)</translation>
     </message>
     <message>
-        <location line="-122"/>
+        <location line="-50"/>
         <source>Icon size</source>
         <translation>Icongröße</translation>
     </message>
     <message>
-        <location line="+1318"/>
+        <location line="+1589"/>
         <source>Synchronize Octave working directory with file browser</source>
         <translation>Octave Arbeitsverzeichnis und Dateibrowser synchronisieren</translation>
     </message>
     <message>
-        <location line="+213"/>
+        <location line="+125"/>
+        <source>Colors for variable attributes </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Hide tool tip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <source>Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>Select this option to prevent conflicts with readline shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Disable global shortcuts when terminal window has focus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <location line="+28"/>
+        <source>Use this set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-21"/>
+        <source>Set 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+37"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-30"/>
+        <location line="+37"/>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Set 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Edit an actual shortcut by double clicking into the related cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+61"/>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Set 1 Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Set 1 Actual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Set 2 Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Set 2 Actual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
         <source>Socks5Proxy</source>
         <translation>Socks5Proxy</translation>
     </message>
@@ -2042,14 +2499,14 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="../src/settings-dialog.cc" line="+74"/>
+        <location filename="../src/settings-dialog.cc" line="+77"/>
         <location line="+4"/>
-        <location line="+437"/>
+        <location line="+546"/>
         <source>System setting</source>
         <translation>Systemeinstellung</translation>
     </message>
     <message>
-        <location line="-286"/>
+        <location line="-353"/>
         <source>IBeam Cursor</source>
         <translation>IBeam-Cursor</translation>
     </message>
@@ -2064,7 +2521,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Unterstrichener Cursor</translation>
     </message>
     <message>
-        <location line="+144"/>
+        <location line="+211"/>
         <source>Difference to the default size</source>
         <translation>Differenz zur Standardgröße</translation>
     </message>
@@ -2092,7 +2549,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>u</translation>
     </message>
     <message>
-        <location line="+419"/>
+        <location line="+490"/>
         <source>Set Octave Startup Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2158,6 +2615,622 @@ a:link { text-decoration: underline; color: #0000ff; }
     </message>
 </context>
 <context>
+    <name>shortcut_manager</name>
+    <message>
+        <location filename="../src/shortcut-manager.cc" line="+109"/>
+        <source>New File</source>
+        <translation type="unfinished">Neue Datei</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>New Function</source>
+        <translation type="unfinished">Neue Funktion</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>New Figure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Load Workspace</source>
+        <translation type="unfinished">Lade Arbeitsumgebung</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save Workspace As</source>
+        <translation type="unfinished">Arbeitsumgebung speichern als</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+155"/>
+        <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-154"/>
+        <source>Exit Octave</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location line="+81"/>
+        <source>Copy</source>
+        <translation type="unfinished">Kopieren</translation>
+    </message>
+    <message>
+        <location line="-80"/>
+        <location line="+82"/>
+        <source>Paste</source>
+        <translation type="unfinished">Einfügen</translation>
+    </message>
+    <message>
+        <location line="-81"/>
+        <location line="+77"/>
+        <source>Undo</source>
+        <translation type="unfinished">Rückgängig</translation>
+    </message>
+    <message>
+        <location line="-76"/>
+        <location line="+81"/>
+        <source>Select All</source>
+        <translation type="unfinished">Alles auswählen</translation>
+    </message>
+    <message>
+        <location line="-80"/>
+        <source>Clear Clipboard</source>
+        <translation type="unfinished">Zwischenablage leeren</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Find in Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Clear Command Window</source>
+        <translation type="unfinished">Befehlsfenster löschen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Clear Command History</source>
+        <translation type="unfinished">Befehlshistorie löschen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Clear Workspace</source>
+        <translation type="unfinished">Arbeitsumgebung löschen</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Step Over</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Step Into</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Step Out</source>
+        <translation type="unfinished">Herausspringen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Continue</source>
+        <translation type="unfinished">Fortfahren</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Quit Debug Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show Command Window</source>
+        <translation type="unfinished">Befehlsfenster anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show Command History</source>
+        <translation type="unfinished">Befehlshistorie anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show File Browser</source>
+        <translation type="unfinished">Dateibrowser anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show Workspace</source>
+        <translation type="unfinished">Arbeitsumgebung anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show Editor</source>
+        <translation type="unfinished">Editor anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show Documentation</source>
+        <translation type="unfinished">Dokumentation anzeigen</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Command Window</source>
+        <translation type="unfinished">Befehlsfenster</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Command History</source>
+        <translation type="unfinished">Befehlshistorie</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>File Browser</source>
+        <translation type="unfinished">Dateibrowser</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Workspace</source>
+        <translation type="unfinished">Arbeitsumgebung</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+203"/>
+        <source>Editor</source>
+        <translation type="unfinished">Editor</translation>
+    </message>
+    <message>
+        <location line="-201"/>
+        <source>Documentation</source>
+        <translation type="unfinished">Dokumentation</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Reset Window Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show Ondisk Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show Online Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Report a Bug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Octave Packages</source>
+        <translation type="unfinished">Octave Pakete</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Share Code</source>
+        <translation type="unfinished">Code teilen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Contribute to Octave</source>
+        <translation type="unfinished">Zu Octave beitragen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Octave Developer Resources</source>
+        <translation type="unfinished">Ressourcen für Octave Entwickler</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>About Octave</source>
+        <translation type="unfinished">Über Octave</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Release Notes</source>
+        <translation type="unfinished">Versionshinweise</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Community News</source>
+        <translation type="unfinished">Neuigkeiten der Community</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Edit Function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save File As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Close All</source>
+        <translation type="unfinished">Alle schließen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Close Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Find and Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to Start of Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to End of Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to Start of Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete to End of Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Delete Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cut Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Duplicate Selection/Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Transpose Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Completion List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Comment Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Uncomment Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Uppercase Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Lowercase Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+5"/>
+        <source>Indent Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-3"/>
+        <location line="+5"/>
+        <source>Unindent Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Convert Line Ednings to Windows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Convert Line Ednings to Unix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Convert Line Ednings to Mac</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Goto Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Move to Matching Brace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Select to Matching Brace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Toggle Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Next Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Previous Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Remove All Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Styles Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show Line Numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show White Spaces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show Line Endings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show Indentation Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show Long Line Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Zoom In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Zoom Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+3"/>
+        <source>Zoom Normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Toggle Breakpoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Next Breakpoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Previous Breakpoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Remove All Breakpoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Run File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Run Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Help on Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Document on Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+37"/>
+        <source>Main</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location line="+23"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-21"/>
+        <location line="+23"/>
+        <source>Edit</source>
+        <translation type="unfinished">Bearbeite</translation>
+    </message>
+    <message>
+        <location line="-21"/>
+        <location line="+25"/>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-23"/>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+25"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-23"/>
+        <source>News</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Run</source>
+        <translation type="unfinished">Ausführen</translation>
+    </message>
+    <message>
+        <location line="+123"/>
+        <source>Enter new Shortcut for Set %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Apply the desired shortcut or click on the right button to reset the shortcut to its default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Enter shortcut directly by performing it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Actual shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Default shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Set to default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+53"/>
+        <source>Double Shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The chosen shortcut
+  &quot;%1&quot;
+is already used for the action
+  &quot;%2&quot;.
+Do you want to use the shortcut anyhow removing it from the previous action?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+70"/>
+        <source>Import shortcut set %1 from file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+6"/>
+        <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1"/>
+        <source>Export shortcut set %1 into file ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Failed to open %1 as octave shortcut file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>terminal_dock_widget</name>
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+38"/>
@@ -2168,7 +3241,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>webinfo</name>
     <message>
-        <location filename="../src/qtinfo/webinfo.cc" line="+83"/>
+        <location filename="../src/qtinfo/webinfo.cc" line="+82"/>
         <source>Type here and press &apos;Return&apos; to search</source>
         <translation>Suchbegriff eingeben und mit &apos;Enter&apos; die Suche starten</translation>
     </message>
@@ -2178,13 +3251,13 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Globale Suche</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+18"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>The info file %1 does not exist</source>
+        <source>The info file&lt;p&gt;%1&lt;p&gt;or compressed versions do not exist</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2238,7 +3311,7 @@ a:link { text-decoration: underline; color: #0000ff; }
 <context>
     <name>workspace_view</name>
     <message>
-        <location filename="../src/workspace-view.cc" line="+47"/>
+        <location filename="../src/workspace-view.cc" line="+50"/>
         <source>Workspace</source>
         <translation>Arbeitsumgebung</translation>
     </message>
@@ -2248,9 +3321,24 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Variablen einsehen, die sich in der aktiven Arbeitsumgebung befinden.</translation>
     </message>
     <message>
-        <location line="+76"/>
-        <source>Copy</source>
-        <translation>Kopieren</translation>
+        <location line="+3"/>
+        <source>Enter text to filter the workspace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+147"/>
+        <source>Copy name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Copy value</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2258,12 +3346,12 @@ a:link { text-decoration: underline; color: #0000ff; }
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+9"/>
         <source>Only top-level symbols may be renamed.</source>
         <translation>Nur Variablen auf höchster Ebene können umbenannt werden.</translation>
     </message>
     <message>
-        <location line="+125"/>
+        <location line="+132"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
         <translation>Einsehen der Variablen der aktiven Arbeitsumgebung.&lt;br&gt;</translation>
     </message>

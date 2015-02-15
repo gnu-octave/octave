@@ -726,7 +726,7 @@ void Figure::fileSaveFigure (bool prompt)
     {
       prompt = true;
 
-      file = "untitled.eps";
+      file = "untitled.pdf";
     }
 
   if (prompt || file.isEmpty ())

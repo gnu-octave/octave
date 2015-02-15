@@ -490,8 +490,6 @@ signals:
 
 
 protected:
-    virtual bool event( QEvent * );
-
     virtual void paintEvent( QPaintEvent * );
 
     void focusInEvent(QFocusEvent *focusEvent);

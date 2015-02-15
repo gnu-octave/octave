@@ -2439,45 +2439,6 @@ QVariant TerminalView::inputMethodQuery( Qt::InputMethodQuery query ) const
   return QVariant();
 }
 
-bool TerminalView::event( QEvent *e )
-{
-  if ( e->type() == QEvent::ShortcutOverride )
-    {
-      QKeyEvent* keyEvent = static_cast<QKeyEvent *>( e );
-
-      // a check to see if keyEvent->text() is empty is used
-      // to avoid intercepting the press of the modifier key on its own.
-      //
-      // this is important as it allows a press and release of the Alt key
-      // on its own to focus the menu bar, making it possible to
-      // work with the menu without using the mouse
-      if ( (keyEvent->modifiers() == Qt::AltModifier) &&
-           !keyEvent->text().isEmpty() )
-        {
-          keyEvent->accept();
-          return true;
-        }
-
-      // Override any of the following shortcuts because
-      // they are needed by the terminal
-      int keyCode = keyEvent->key() | keyEvent->modifiers();
-      switch ( keyCode )
-        {
-        // list is taken from the QLineEdit::event() code
-        case Qt::Key_Tab:
-        case Qt::Key_Delete:
-        case Qt::Key_Home:
-        case Qt::Key_End:
-        case Qt::Key_Backspace:
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-          keyEvent->accept();
-          return true;
-        }
-    }
-  return QWidget::event( e );
-}
-
 void TerminalView::setBellMode(int mode)
 {
   _bellMode=mode;

@@ -352,7 +352,7 @@
               <item>
                <widget class="QLabel" name="label_18">
                 <property name="text">
-                 <string>These preferences are applied after the startup files like .octaverc.</string>
+                 <string>These preferences are applied after any .octaverc startup files.</string>
                 </property>
                </widget>
               </item>
@@ -407,7 +407,7 @@
                 <item row="0" column="1">
                  <widget class="QCheckBox" name="cb_restore_octave_dir">
                   <property name="text">
-                   <string>Restore last Octave directory of previous session</string>
+                   <string>Restore working directory of previous session</string>
                   </property>
                  </widget>
                 </item>
@@ -699,7 +699,7 @@
                   <string>This works well for monospaced fonts. The line is drawn at a position based on the width of a space character in the default font. It may not work very well if styles use proportional fonts or if varied font sizes or bold, italic and normal texts are used.</string>
                  </property>
                  <property name="text">
-                  <string>Draw a long  line marker</string>
+                  <string>Draw a long line marker</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -729,7 +729,7 @@
                <item row="4" column="0">
                 <widget class="QCheckBox" name="cb_show_eol">
                  <property name="text">
-                  <string>Show eol characters</string>
+                  <string>Show EOL characters</string>
                  </property>
                 </widget>
                </item>
@@ -738,7 +738,7 @@
                  <item>
                   <widget class="QLabel" name="label_22">
                    <property name="text">
-                    <string>Default eol mode</string>
+                    <string>Default EOL mode</string>
                    </property>
                   </widget>
                  </item>
@@ -1091,7 +1091,7 @@
                     <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string>Number of characters before list is shwon: </string>
+                    <string>Number of characters before list is shown: </string>
                    </property>
                   </widget>
                  </item>
@@ -1303,7 +1303,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="scaledContents">
             <bool>false</bool>
@@ -1823,7 +1823,7 @@
              <item row="1" column="0">
               <widget class="QCheckBox" name="cb_hide_tool_tips">
                <property name="text">
-                <string>Hide tool tip</string>
+                <string>Hide tool tips</string>
                </property>
               </widget>
              </item>
@@ -2005,7 +2005,7 @@
              <item>
               <widget class="QLabel" name="label_21">
                <property name="text">
-                <string>Edit an actual shortcut by double clicking into the related cell</string>
+                <string>Edit a shortcut by double-clicking in a cell</string>
                </property>
               </widget>
              </item>

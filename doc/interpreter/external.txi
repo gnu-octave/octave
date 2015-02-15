@@ -1093,7 +1093,7 @@ It is quite important that each and every function have a sufficient level
 of parameter checking to ensure that Octave behaves well.
 
 The minimum requirement, as previously discussed, is to check the number
-of input arguments before using them to avoid referencing a non-existent
+of input arguments before using them to avoid referencing a nonexistent
 argument.  However, in some cases this might not be sufficient as the
 underlying code imposes further constraints.  For example, an external
 function call might be undefined if the input arguments are not

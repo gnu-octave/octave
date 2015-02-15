@@ -34,7 +34,7 @@
 ##
 ## @item Octave:invalid-indexing
 ## Indicates that a data-type was indexed incorrectly, e.g., real-value index
-## for arrays, non-existent field of a structure.
+## for arrays, nonexistent field of a structure.
 ##
 ## @item Octave:bad-alloc
 ## Indicates that memory couldn't be allocated.

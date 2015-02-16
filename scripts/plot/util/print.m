@@ -473,6 +473,17 @@ function cmd = epstool (opts, filein, fileout)
   ## Unix Shell;
   ##   cat > <filein> ; epstool -bbox -preview-tiff <filein> <fileout> ; rm <filein>
 
+  ## HACK: Keep track of whether ghostscript supports epswrite or eps2write.
+  persistent epsdevice;
+  if (isempty (epsdevice))
+    [status, devlist] = system (sprintf ("%s -h", opts.ghostscript.binary));
+    if (isempty (strfind (devlist, "eps2write")))
+      epsdevice = "epswrite";
+    else
+      epsdevice = "eps2write";
+    endif
+  endif
+  
   dos_shell = (ispc () && ! isunix ());
 
   cleanup = "";
@@ -544,7 +555,7 @@ function cmd = epstool (opts, filein, fileout)
         if (dos_shell)
           filein(filein=="'") = "\"";
           gs_cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                                    "device", "epswrite",
+                                    "device", epsdevice,
                                     "source", "-",
                                     "output", filein);
           cmd = sprintf ("%s %s & %s", gs_cmd, filein, cmd);
@@ -576,7 +587,7 @@ function cmd = epstool (opts, filein, fileout)
     if (pipein && pipeout)
       if (dos_shell)
         cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                               "device", "epswrite",
+                               "device", epsdevice,
                                "source", "-",
                                "output", "-");
       else
@@ -587,7 +598,7 @@ function cmd = epstool (opts, filein, fileout)
         ## ghostscript expects double, not single, quotes
         fileout(fileout=="'") = "\"";
         cmd = __ghostscript__ ("binary", opts.ghostscript.binary,
-                               "device", "epswrite",
+                               "device", epsdevice,
                                "source", "-",
                                "output", fileout);
       else

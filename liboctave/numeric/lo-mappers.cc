@@ -197,7 +197,7 @@ acos (const Complex& x)
 Complex
 acosh (const Complex& x)
 {
-  return log (x + sqrt (x*x - 1.0));
+  return log (x + sqrt (x + 1.0) * sqrt (x - 1.0));
 }
 
 Complex
@@ -434,7 +434,7 @@ acos (const FloatComplex& x)
 FloatComplex
 acosh (const FloatComplex& x)
 {
-  return log (x + sqrt (x*x - static_cast<float>(1.0)));
+  return log (x + sqrt (x + 1.0f) * sqrt (x - 1.0f));
 }
 
 FloatComplex

@@ -155,9 +155,21 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 %! assert (acosh (x), v, sqrt (eps));
 
 %!test
+%! re = 2.99822295029797;
+%! im = pi/2;
+%! assert (acosh (10i), re + i*im);
+%! assert (acosh (-10i), re - i*im);
+
+%!test
 %! x = single ([1, 0, -1, 0]);
 %! v = single ([0, pi/2*i, pi*i, pi/2*i]);
 %! assert (acosh (x), v, sqrt (eps ("single")));
+
+%!test
+%! re = single (2.99822295029797);
+%! im = single (pi/2);
+%! assert (acosh (single (10i)), re + i*im, 5*eps ("single"));
+%! assert (acosh (single (-10i)), re - i*im, 5*eps ("single"));
 
 %!error acosh ()
 %!error acosh (1, 2)

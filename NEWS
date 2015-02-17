@@ -87,6 +87,10 @@ Summary of important user-visible changes for version 4.0:
     limit from above is taken.  This criteria is consistent with several other
     numerical analysis software packages.
 
+ ** The hyperbolic function acosh now returns values with a phase in the range
+    [-pi/2, +pi/2].  Previously Octave returned values in the range [0, pi].
+    This is consistent with several other numerical analysis software packages.
+
  ** strfind changes when using empty pattern ("") for Matlab compatibility
 
     strfind now returns an empty array when the pattern itself is empty.

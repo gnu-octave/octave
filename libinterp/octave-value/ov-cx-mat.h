@@ -110,6 +110,8 @@ public:
   float float_scalar_value (bool frc_str_conv = false) const
   { return float_value (frc_str_conv); }
 
+  NDArray array_value (bool = false) const;
+
   Matrix matrix_value (bool = false) const;
 
   FloatMatrix float_matrix_value (bool = false) const;

@@ -142,6 +142,20 @@ octave_complex_matrix::float_value (bool force_conversion) const
   return retval;
 }
 
+NDArray
+octave_complex_matrix::array_value (bool force_conversion) const
+{
+  NDArray retval;
+
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+                               "complex matrix", "real matrix");
+
+  retval = ::real (matrix);
+
+  return retval;
+}
+
 Matrix
 octave_complex_matrix::matrix_value (bool force_conversion) const
 {

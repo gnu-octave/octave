@@ -81,7 +81,7 @@
     </message>
     <message>
         <location line="+5"/>
-        <source>Clear All</source>
+        <source>Clear Window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -103,16 +103,6 @@
     <message>
         <location line="+20"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;New Figure</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -171,7 +161,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+37"/>
         <source>Save Figure As</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1909,27 +1899,12 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Draw a long  line marker</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Enable Code Folding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>Show eol characters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Default eol mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="+43"/>
         <source>Windows (CRLF)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2019,12 +1994,7 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Number of characters before list is shwon: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+48"/>
+        <location line="+64"/>
         <source>Show completion list automatically</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2054,12 +2024,7 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+174"/>
+        <location line="+191"/>
         <source>(Changing buffer size clears history)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2141,12 +2106,7 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
-        <source>These preferences are applied after the startup files like .octaverc.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+35"/>
+        <location line="+41"/>
         <location line="+1313"/>
         <source>Startup path</source>
         <translation type="unfinished"></translation>
@@ -2158,12 +2118,7 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1310"/>
-        <source>Restore last Octave directory of previous session</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+63"/>
+        <location line="-1247"/>
         <source>After Column</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2253,7 +2208,42 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location line="-1298"/>
+        <source>These preferences are applied after any .octaverc startup files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
+        <source>Restore working directory of previous session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+292"/>
+        <source>Draw a long line marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Show EOL characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Default EOL mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+353"/>
+        <source>Number of characters before list is shown: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+212"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+329"/>
         <source>Display</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2278,7 +2268,17 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+48"/>
+        <source>Hide tool tips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+182"/>
+        <source>Edit a shortcut by double-clicking in a cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>Network</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2323,12 +2323,7 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Hide tool tip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+34"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2371,12 +2366,7 @@ Octave GUI must be closed now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Edit an actual shortcut by double clicking into the related cell</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+61"/>
+        <location line="+86"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>

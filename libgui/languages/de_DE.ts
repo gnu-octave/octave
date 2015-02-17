@@ -81,7 +81,7 @@
     </message>
     <message>
         <location line="+5"/>
-        <source>Clear All</source>
+        <source>Clear Window</source>
         <translation>Alles löschen</translation>
     </message>
 </context>

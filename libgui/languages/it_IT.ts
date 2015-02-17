@@ -955,8 +955,8 @@ Si desidera sovrascriverlo?</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Clear All</source>
-        <translation>Pulisci tutto</translation>
+        <source>Clear Window</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1647,16 +1647,6 @@ Si desidera sovrascriverlo?</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>&amp;New Figure</source>
-        <translation>&amp;Nuova Figura</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Open...</source>
-        <translation>&amp;Apri...</translation>
-    </message>
-    <message>
-        <location line="+2"/>
         <source>&amp;Save</source>
         <translation>&amp;Salva</translation>
     </message>
@@ -1711,7 +1701,7 @@ Si desidera sovrascriverlo?</translation>
         <translation>A Proposito di QtHandles</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+37"/>
         <source>Save Figure As</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3558,7 +3548,17 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Sfondo inattivo</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+44"/>
+        <source>These preferences are applied after any .octaverc startup files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
+        <source>Restore working directory of previous session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+33"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
@@ -3578,27 +3578,12 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Questa impostazione è adatta a tipi di caratteri monospaced. La linea è posta in una posizione basata sulla larghezza di uno spazio bianco del tipo di carattere predefinito. Può non funzionare bene se gli stili usano stili di caratteri proporzionali o se diverse dimensioni di carattere, grassetto, corsivo sono utilizzati.</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Draw a long  line marker</source>
-        <translation>Disegna un marcatore di linea lungo</translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Enable Code Folding</source>
         <translation>Attiva espansione del codice</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>Show eol characters</source>
-        <translation>Mostra terminatore di riga</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Default eol mode</source>
-        <translation>Terminatore predefinito</translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="+43"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CRLF)</translation>
     </message>
@@ -3698,12 +3683,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Stili dell&apos;Editor</translation>
     </message>
     <message>
-        <location line="+17"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Seleziona stile di carattere, dimensione carattere (come differenza dalla dimensione iniziale), stile del carattere (&lt;b&gt;g&lt;/b&gt;rassetto, &lt;b&gt;c&lt;/b&gt;orsivo, &lt;b&gt;s&lt;/b&gt;ottolinea), colore del testo e colore dello sfondo (per il quale il colore rosa (255, 0, 255) indica il colore di default).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="+258"/>
+        <location line="+275"/>
         <source>Terminal Colors</source>
         <translation>Colori del Terminale</translation>
     </message>
@@ -3738,7 +3718,27 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Non mostrare gli spazi utilizzati per l&apos;indentazione</translation>
     </message>
     <message>
-        <location line="+665"/>
+        <location line="+161"/>
+        <source>Draw a long line marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Show EOL characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Default EOL mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+353"/>
+        <source>Number of characters before list is shown: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+112"/>
         <source>Create nonexistent files without prompting</source>
         <translation>Crea file inesistenti senza chiedere conferma</translation>
     </message>
@@ -3813,12 +3813,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Avvio di Octave</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <source>These preferences are applied after the startup files like .octaverc.</source>
-        <translation>Queste preferenze sono applicate dopo l&apos;esecuzione del file di avvio .octaverc.</translation>
-    </message>
-    <message>
-        <location line="+35"/>
+        <location line="+41"/>
         <location line="+1313"/>
         <source>Startup path</source>
         <translation>Percorso di avvio</translation>
@@ -3830,12 +3825,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Naviga</translation>
     </message>
     <message>
-        <location line="-1310"/>
-        <source>Restore last Octave directory of previous session</source>
-        <translation>Ripristina la cartella Octave della sessione precedente</translation>
-    </message>
-    <message>
-        <location line="+212"/>
+        <location line="-1098"/>
         <source>Tab width min.</source>
         <translation>Ampiezza tabulazione min.</translation>
     </message>
@@ -3855,12 +3845,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Con funzioni di Octave</translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Number of characters before list is shwon: </source>
-        <translation>Numero di caratteri da digitare prima che la lista appaia: </translation>
-    </message>
-    <message>
-        <location line="+48"/>
+        <location line="+64"/>
         <source>Show completion list automatically</source>
         <translation>Mostra lista di completamento automaticamente</translation>
     </message>
@@ -3870,7 +3855,12 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Ricarica file modificati esternamente senza chiedere</translation>
     </message>
     <message>
-        <location line="+267"/>
+        <location line="+93"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+174"/>
         <source>(Changing buffer size clears history)</source>
         <translation>(Il cambio della dimensione della lista svuota lo storico comandi)</translation>
     </message>
@@ -3910,7 +3900,17 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Spazio di lavoro</translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+48"/>
+        <source>Hide tool tips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+182"/>
+        <source>Edit a shortcut by double-clicking in a cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>Network</source>
         <translation>Rete</translation>
     </message>
@@ -3955,12 +3955,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Colori per attributi variabili </translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Hide tool tip</source>
-        <translation>Nascondi tooltip</translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+34"/>
         <source>Shortcuts</source>
         <translation>Scorciatoie</translation>
     </message>
@@ -4003,12 +3998,7 @@ L&apos;inerfaccia grafica verrà chiusa.</translation>
         <translation>Insieme 2:</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Edit an actual shortcut by double clicking into the related cell</source>
-        <translation>Modifica una scorciatoia facendo doppio click nella relativa cella</translation>
-    </message>
-    <message>
-        <location line="+61"/>
+        <location line="+86"/>
         <source>Action</source>
         <translation>Azione</translation>
     </message>

@@ -1172,8 +1172,9 @@ if test $check_opengl = yes; then
   OCTAVE_CHECK_LIB_OPENGL
 fi
 
+FLTK_CPPFLAGS=
+FLTK_LDFLAGS=
 FLTK_LIBS=
-FLTK_CFLAGS=
 
 if test -z "$OPENGL_LIBS"; then
   if test $check_opengl = yes; then
@@ -1208,6 +1209,8 @@ if test -n "$OPENGL_LIBS"; then
   if test -n "$warn_freetype"; then
     native_graphics=no
     OCTAVE_CONFIGURE_WARNING([warn_freetype])
+  else
+    FT2_CPPFLAGS="$FT2_CFLAGS"
   fi
 
   ## Check for fontconfig library
@@ -1225,6 +1228,8 @@ if test -n "$OPENGL_LIBS"; then
   if test -n "$warn_fontconfig"; then
     native_graphics=no
     OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
+  else
+    FONTCONFIG_CPPFLAGS="$FONTCONFIG_CFLAGS"
   fi
 
   ## Check for Xft library (when using X11)
@@ -1293,7 +1298,7 @@ if test -n "$OPENGL_LIBS"; then
       warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
       OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
     else
-      FLTK_CFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
+      FLTK_CPPFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`
       FLTK_LDFLAGS=`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`
 
       case $host_os in
@@ -1304,8 +1309,8 @@ if test -n "$OPENGL_LIBS"; then
 
       AC_CACHE_CHECK([for OpenGL support in FLTK],
         [octave_cv_fltk_opengl_support],
-        [save_CFLAGS="$CFLAGS"
-        CFLAGS="$CFLAGS $FLTK_CFLAGS"
+        [save_CPPFLAGS="$CPPFLAGS"
+        CPPFLAGS="$CFLAGS $FLTK_CPPFLAGS"
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
           #include <FL/gl.h>
           ]], [[
@@ -1313,7 +1318,7 @@ if test -n "$OPENGL_LIBS"; then
           ]])],
           octave_cv_fltk_opengl_support=no,
           octave_cv_fltk_opengl_support=yes)
-        CFLAGS="$save_CFLAGS"
+        CPPFLAGS="$save_CPPFLAGS"
         ])
       if test $octave_cv_fltk_opengl_support = no; then
         warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
@@ -1329,7 +1334,8 @@ if test -n "$OPENGL_LIBS"; then
   fi
 fi
 
-AC_SUBST(FLTK_CFLAGS)
+AC_SUBST(FLTK_CPPFLAGS)
+AC_SUBST(FLTK_LDFLAGS)
 AC_SUBST(FLTK_LIBS)
 
 ## Check for gl2ps which is required for printing with OpenGL graphics
@@ -3024,11 +3030,12 @@ Octave is now configured for $canonical_host_type
   FFTW3F CPPFLAGS:             $FFTW3F_CPPFLAGS
   FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
   FFTW3F libraries:            $FFTW3F_LIBS
-  FLTK CFLAGS:                 $FLTK_CFLAGS
+  FLTK CPPFLAGS:               $FLTK_CPPFLAGS
+  FLTK LDFLAGS:                $FLTK_LDFLAGS
   FLTK libraries:              $FLTK_LIBS
-  fontconfig CFLAGS:           $FONTCONFIG_CFLAGS
+  fontconfig CPPFLAGS:         $FONTCONFIG_CPPFLAGS
   fontconfig libraries:        $FONTCONFIG_LIBS
-  FreeType2 CFLAGS:            $FT2_CFLAGS
+  FreeType2 CPPFLAGS:          $FT2_CPPFLAGS
   FreeType2 libraries:         $FT2_LIBS
   GLPK CPPFLAGS:               $GLPK_CPPFLAGS
   GLPK LDFLAGS:                $GLPK_LDFLAGS

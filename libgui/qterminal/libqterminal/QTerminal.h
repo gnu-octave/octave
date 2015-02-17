@@ -142,7 +142,7 @@ protected:
 
     _contextMenu->addSeparator ();
 
-    _contextMenu->addAction (tr ("Clear All"), parent (),
+    _contextMenu->addAction (tr ("Clear Window"), parent (),
                              SLOT (handle_clear_command_window_request ()));
 
     connect (this, SIGNAL (customContextMenuRequested (QPoint)),

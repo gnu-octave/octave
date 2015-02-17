@@ -70,6 +70,10 @@ function s = mat2str (x, n = 15, cls = "")
     n = 15;
   elseif (isempty (n))
     n = 15;   # Default precision
+  elseif (numel (n) > 2)
+    error ("mat2str: N must have only 1 or 2 elements");
+  else
+    n = fix (n);
   endif
 
   x_islogical = islogical (x);
@@ -144,4 +148,5 @@ endfunction
 %!error mat2str (1,2,3,4)
 %!error mat2str (["Hello"])
 %!error <X must be two dimensional> mat2str (ones (3,3,2))
+%!error <N must have only 1 or 2 elements> mat2str (ones (3,3), [1 2 3])
 

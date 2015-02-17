@@ -617,7 +617,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                        style{2}, data_idx);
+                                          style{2}, data_idx);
         endif
         if (length (style) > 2)
           data_idx++;
@@ -629,7 +629,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           usingclause{data_idx} = usingclause{data_idx - 1};
           data{data_idx} = data{data_idx - 1};
           withclause{data_idx} = sprintf ("with %s linestyle %d",
-                                        style{3}, data_idx);
+                                          style{3}, data_idx);
         endif
 
      case "patch"
@@ -1782,6 +1782,8 @@ function spacing_spec = create_spacingspec (f, s, gp_term)
   #
   # This means that if an alternative size is used, gnuplot will use an
   # inappropriate spacing in the legend by default.
+  ## FIXME: Are fractional spacing specifications allowed?  Or should this
+  ##        number be rounded?
   spc = s / 10 * 1.25;
   spacing_spec = sprintf ("spacing %d", spc);
 

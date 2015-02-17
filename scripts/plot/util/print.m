@@ -542,7 +542,7 @@ function cmd = epstool (opts, filein, fileout)
                    opts.preview);
         endswitch
         if (! isempty (opts.ghostscript.resolution))
-          cmd = sprintf ("%s --dpi %d", cmd, opts.ghostscript.resolution);
+          cmd = sprintf ("%s --dpi %d", cmd, fix (opts.ghostscript.resolution));
         endif
       else
         cmd = "";
@@ -661,7 +661,7 @@ function latex_standalone (opts)
       graphicsfile = strcat (opts.name, "-inc.eps");
   endswitch
   papersize = sprintf ("\\usepackage[papersize={%.2fbp,%.2fbp},text={%.2fbp,%.2fbp}]{geometry}",
-                       opts.canvas_size, opts.canvas_size);
+                       fix (opts.canvas_size), fix (opts.canvas_size));
   prepend = {"\\documentclass{minimal}";
              packages;
              papersize;

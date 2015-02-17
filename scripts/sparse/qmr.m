@@ -112,6 +112,8 @@ function [x, flag, relres, iter, resvec] = qmr (A, b, tol, maxit, M1, M2, x0)
 
     if (nargin < 4 || isempty (maxit))
       maxit = min (rows (b), 20);
+    else
+      maxit = fix (maxit);
     endif
 
     if (nargin < 5 || isempty (M1))

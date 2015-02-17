@@ -220,6 +220,8 @@ function f = font_spec (opts, varargin)
         f = sprintf ("%d", 2 * opts.fontsize);
       endif
     case "svg"
+      ## FIXME: Why does svg format use round on the fontsize while
+      ##        other terminals don't?
       if (! isempty (opts.font) && ! isempty (opts.fontsize))
         fontsize = round (opts.fontsize * 0.75);
         f = sprintf ('fname "%s" fsize %d', opts.font, fontsize);

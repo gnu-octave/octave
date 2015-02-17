@@ -641,7 +641,7 @@ function cout = ind2tuple (matsize, erridx)
 
   cout = cell (numel (erridx), 1);
   tmp = cell (1, numel (matsize));
-  [tmp{:}] = ind2sub (matsize, erridx (:));
+  [tmp{:}] = ind2sub (matsize, erridx(:));
   subs = [tmp{:}];
   if (numel (matsize) == 2)
     subs = subs(:, matsize != 1);

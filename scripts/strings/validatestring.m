@@ -67,7 +67,7 @@ function str = validatestring (str, strarray, varargin)
   position = 0;
   ## Process input arguments
   if (! isempty (varargin) && isnumeric (varargin{end}))
-    position = varargin{end};
+    position = fix (varargin{end});
     varargin(end) = [];
   endif
 

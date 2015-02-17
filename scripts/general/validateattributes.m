@@ -327,7 +327,7 @@ function validateattributes (A, cls, attr, varargin)
 endfunction
 
 function retval = valid_arg_idx (arg)
-  retval = isnumeric (arg) && isscalar (arg) && arg > 0 && ceil (arg) == arg;
+  retval = isnumeric (arg) && isscalar (arg) && arg > 0 && arg == fix (arg);
 endfunction
 
 function cls = replace_cl_group (cls, name, group)

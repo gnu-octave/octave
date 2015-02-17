@@ -83,7 +83,7 @@ function retval = num2str (x, arg)
     if (nargin == 2)
       if (ischar (arg))
         fmt = arg;
-      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
+      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
         fmt = sprintf ("%%%d.%dg", arg+7, arg);
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");
@@ -122,7 +122,7 @@ function retval = num2str (x, arg)
     if (nargin == 2)
       if (ischar (arg))
         fmt = [arg "%-+" arg(2:end) "i"];
-      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0)
+      elseif (isnumeric (arg) && isscalar (arg) && arg >= 0 && arg == fix (arg))
         fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
       else
         error ("num2str: PRECISION must be a scalar integer >= 0");

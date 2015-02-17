@@ -35,7 +35,7 @@ function s = inputname (n)
     print_usage ();
   endif
 
-  s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", n));
+  s = evalin ("caller", sprintf ("__varval__ (\".argn.\"){%d};", fix (n)));
   ## For compatibility with Matlab,
   ## return empty string if argument name is not a valid identifier.
   if (! isvarname (s))

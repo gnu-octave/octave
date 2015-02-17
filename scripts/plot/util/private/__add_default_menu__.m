@@ -76,7 +76,7 @@ function __save_as__ (caller)
   [filename, filedir] = uiputfile ({"*.pdf;*.ps;*.gif;*.png;*.jpg",
                                     "Supported Graphic Formats"},
                                    "Save Figure",
-                                   pwd);
+                                   [pwd, filesep, "untitled.pdf"]);
   if (filename != 0)
     fname = [filedir filesep() filename];
     obj = findall (gcbf, "label", "&Save");

@@ -94,7 +94,12 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
   if (nargin > 2)
     if (ischar (varargin{3}))
-      [fdir, fname, fext] = fileparts (varargin{3});
+      if (isdir (varargin{3}))
+        fdir = varargin{3};
+        fname = fext = "";
+      else
+        [fdir, fname, fext] = fileparts (varargin{3});
+      endif
       if (! isempty (fdir))
         outargs{6} = fdir;
       endif

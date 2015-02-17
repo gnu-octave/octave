@@ -1096,8 +1096,13 @@ converted.\n\
 
               retval(2) = os.printf (fmt_arg, tmp_args, who);
               retval(1) = os.error ();
-              retval(0) = octave_value (ostr->str (),
-                                        fmt_arg.is_sq_string () ? '\'' : '"');
+
+              std::string result = ostr->str ();
+              char type = fmt_arg.is_sq_string () ? '\'' : '"';
+
+              retval(0) = (result.empty ()
+                           ? octave_value (charMatrix (1, 0), type)
+                           : octave_value (result, type));
             }
           else
             ::error ("%s: format TEMPLATE must be a string", who.c_str ());

@@ -190,8 +190,8 @@ printf_format_elt
 {
 public:
 
-  printf_format_elt (const char *txt = 0, int n = 0, int w = 0,
-                     int p = 0, const std::string& f = std::string (),
+  printf_format_elt (const char *txt = 0, int n = 0, int w = -1,
+                     int p = -1, const std::string& f = std::string (),
                      char typ = '\0', char mod = '\0')
     : text (strsave (txt)), args (n), fw (w), prec (p), flags (f),
       type (typ), modifier (mod) { }

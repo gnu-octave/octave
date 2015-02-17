@@ -586,8 +586,8 @@ printf_format_list::printf_format_list (const std::string& s)
 
   int args = 0;
   std::string flags;
-  int fw = 0;
-  int prec = 0;
+  int fw = -1;
+  int prec = -1;
   char modifier = '\0';
   char type = '\0';
 
@@ -636,8 +636,8 @@ printf_format_list::printf_format_list (const std::string& s)
               {
                 args = 0;
                 flags = "";
-                fw = 0;
-                prec = 0;
+                fw = -1;
+                prec = -1;
                 modifier = '\0';
                 type = '\0';
                 *buf << s[i++];
@@ -707,8 +707,8 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
 {
   args = 0;
   flags = "";
-  fw = 0;
-  prec = 0;
+  fw = -1;
+  prec = -1;
   modifier = '\0';
   type = '\0';
 
@@ -738,7 +738,7 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
     {
       if (s[i] == '*')
         {
-          fw = -1;
+          fw = -2;
           args++;
           *buf << s[i++];
         }
@@ -758,13 +758,20 @@ printf_format_list::process_conversion (const std::string& s, size_t& i,
 
   if (i < n && s[i] == '.')
     {
+      // nothing before the . means 0.
+      if (fw == -1)
+        fw = 0;
+
+      // . followed by nothing is 0.
+      prec = 0;
+
       *buf << s[i++];
 
       if (i < n)
         {
           if (s[i] == '*')
             {
-              prec = -1;
+              prec = -2;
               args++;
               *buf << s[i++];
             }
@@ -2181,13 +2188,10 @@ public:
   ~printf_value_cache (void) { }
 
   // Get the current value as a double and advance the internal pointer.
-  octave_value get_next_value (void);
+  octave_value get_next_value (char type = 0);
 
   // Get the current value as an int and advance the internal pointer.
   int int_value (void);
-
-  // Get the current value as a string and advance the internal pointer.
-  std::string string_value (void);
 
   operator bool () const { return (curr_state == ok); }
 
@@ -2216,7 +2220,7 @@ private:
 };
 
 octave_value
-printf_value_cache::get_next_value (void)
+printf_value_cache::get_next_value (char type)
 {
   octave_value retval;
 
@@ -2246,7 +2250,61 @@ printf_value_cache::get_next_value (void)
 
       if (elt_idx < n_elts)
         {
-          retval = curr_val.fast_elem_extract (elt_idx++);
+          if (type == 's')
+            {
+              if (curr_val.is_string ())
+                {
+                  std::string sval = curr_val.string_value ();
+
+                  retval = sval.substr (elt_idx);
+
+                  // We've consumed the rest of the value.
+                  elt_idx = n_elts;
+                }
+              else
+                {
+                  // Convert to character string while values are
+                  // integers in the range [0 : char max]
+
+                  const NDArray val = curr_val.array_value ();
+
+                  octave_idx_type idx = elt_idx;
+
+                  for (; idx < n_elts; idx++)
+                    {
+                      double dval = val(idx);
+
+                      if (D_NINT (dval) != dval || dval < 0 || dval > 255)
+                        break;
+                    }
+
+                  octave_idx_type n = idx - elt_idx;
+
+                  if (n > 0)
+                    {
+                      std::string sval (n, '\0');
+
+                      for (octave_idx_type i = 0; i < n; i++)
+                        sval[i] = val(elt_idx++);
+
+                      retval = sval;
+                    }
+                  else
+                    retval = curr_val.fast_elem_extract (elt_idx++);
+                }
+            }
+          else
+            {
+              retval = curr_val.fast_elem_extract (elt_idx++);
+
+              if (type == 'c' && ! retval.is_string ())
+                {
+                  double dval = retval.double_value ();
+
+                  if (D_NINT (dval) == dval && dval >= 0 && dval < 256)
+                    retval = static_cast<char> (dval);
+                }
+            }
 
           if (elt_idx >= n_elts)
             {
@@ -2262,10 +2320,17 @@ printf_value_cache::get_next_value (void)
           val_idx++;
           have_data = false;
 
-          if (n_elts == 0 && exhausted ())
-            curr_state = conversion_error;
+          if (n_elts == 0)
+            {
+              if (elt_idx == 0 && (type == 's' || type == 'c'))
+                {
+                  retval = "";
+                  break;
+                }
 
-          continue;
+              if (exhausted ())
+                curr_state = conversion_error;
+            }
         }
     }
 
@@ -2281,7 +2346,7 @@ printf_value_cache::int_value (void)
 
   if (! error_state)
     {
-      double dval = val.double_value ();
+      double dval = val.double_value (true);
 
       if (! error_state)
         {
@@ -2290,44 +2355,6 @@ printf_value_cache::int_value (void)
           else
             curr_state = conversion_error;
         }
-    }
-
-  return retval;
-}
-
-std::string
-printf_value_cache::string_value (void)
-{
-  std::string retval;
-
-  if (exhausted ())
-    curr_state = conversion_error;
-  else
-    {
-      octave_value tval = values (val_idx++);
-
-      if (tval.rows () == 1)
-        retval = tval.string_value ();
-      else
-        {
-          // In the name of Matlab compatibility.
-
-          charMatrix chm = tval.char_matrix_value ();
-
-          octave_idx_type nr = chm.rows ();
-          octave_idx_type nc = chm.columns ();
-
-          int k = 0;
-
-          retval.resize (nr * nc, '\0');
-
-          for (octave_idx_type j = 0; j < nc; j++)
-            for (octave_idx_type i = 0; i < nr; i++)
-              retval[k++] = chm(i,j);
-        }
-
-      if (error_state)
-        curr_state = conversion_error;
     }
 
   return retval;
@@ -2364,6 +2391,35 @@ do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
   return retval;
 }
 
+static size_t
+do_printf_string (std::ostream& os, const printf_format_elt *elt,
+                  int nsa, int sa_1, int sa_2, const std::string& arg,
+                  const std::string& who)
+{
+  size_t retval = 0;
+
+  if (nsa > 2)
+    {
+      ::error ("%s: internal error handling format", who.c_str ());
+      return retval;
+    }
+
+  std::string flags = elt->flags;
+
+  bool left = flags.find ('-') != std::string::npos;
+
+  size_t len = arg.length ();
+
+  size_t fw = nsa > 0 ? sa_1 : (elt->fw == -1 ? len : elt->fw);
+  size_t prec = nsa > 1 ? sa_2 : (elt->prec == -1 ? len : elt->prec);
+
+  os << std::setw (fw)
+     << (left ? std::left : std::right)
+     << (prec < len ? arg.substr (0, prec) : arg);
+
+  return len > fw ? len : fw;
+}
+
 static bool
 is_nan_or_inf (const octave_value& val)
 {
@@ -2378,7 +2434,9 @@ ok_for_signed_int_conv (const octave_value& val)
 {
   uint64_t limit = std::numeric_limits<int64_t>::max ();
 
-  if (val.is_integer_type ())
+  if (val.is_string ())
+    return false;
+  else if (val.is_integer_type ())
     {
       if (val.is_uint64_type ())
         {
@@ -2392,7 +2450,7 @@ ok_for_signed_int_conv (const octave_value& val)
     }
   else
     {
-      double dval = val.double_value ();
+      double dval = val.double_value (true);
 
       if (dval == xround (dval) && dval <= limit)
         return true;
@@ -2404,7 +2462,9 @@ ok_for_signed_int_conv (const octave_value& val)
 static bool
 ok_for_unsigned_int_conv (const octave_value& val)
 {
-  if (val.is_integer_type ())
+  if (val.is_string ())
+    return false;
+  else if (val.is_integer_type ())
     {
       // Easier than dispatching here...
 
@@ -2415,7 +2475,7 @@ ok_for_unsigned_int_conv (const octave_value& val)
     }
   else
     {
-      double dval = val.double_value ();
+      double dval = val.double_value (true);
 
       uint64_t limit = std::numeric_limits<uint64_t>::max ();
 
@@ -2461,7 +2521,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
           && i2 < i1)
         {
           tfmt.erase (i2, i1-i2);
-          if (elt->prec < 0)
+          if (elt->prec == -2)
             nsa--;
         }
 
@@ -2508,7 +2568,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
             {
               std::string tfmt = switch_to_g_format (elt);
 
-              double dval = val.double_value ();
+              double dval = val.double_value (true);
 
               if (! error_state)
                 retval += do_printf_conv (os, tfmt.c_str (), nsa,
@@ -2532,7 +2592,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
             {
               std::string tfmt = switch_to_g_format (elt);
 
-              double dval = val.double_value ();
+              double dval = val.double_value (true);
 
               if (! error_state)
                 retval += do_printf_conv (os, tfmt.c_str (), nsa,
@@ -2543,7 +2603,7 @@ octave_base_stream::do_numeric_printf_conv (std::ostream& os,
         case 'f': case 'e': case 'E':
         case 'g': case 'G':
           {
-            double dval = val.double_value ();
+            double dval = val.double_value (true);
 
             if (! error_state)
               retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, dval, who);
@@ -2591,7 +2651,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
             {
               // NSA is the number of 'star' args to convert.
 
-              int nsa = (elt->fw < 0) + (elt->prec < 0);
+              int nsa = (elt->fw == -2) + (elt->prec == -2);
 
               int sa_1 = 0;
               int sa_2 = 0;
@@ -2624,13 +2684,23 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
                   os << elt->text;
                   retval += strlen (elt->text);
                 }
-              else if (elt->type == 's')
+              else if (elt->type == 's' || elt->type == 'c')
                 {
-                  std::string val = val_cache.string_value ();
+                  octave_value val = val_cache.get_next_value (elt->type);
 
                   if (val_cache)
-                    retval += do_printf_conv (os, elt->text, nsa, sa_1,
-                                              sa_2, val.c_str (), who);
+                    {
+                      if (val.is_string ())
+                        {
+                          std::string sval = val.string_value ();
+
+                          retval += do_printf_string (os, elt, nsa, sa_1,
+                                                      sa_2, sval, who);
+                        }
+                      else
+                        retval += do_numeric_printf_conv (os, elt, nsa, sa_1,
+                                                          sa_2, val, who);
+                    }
                   else
                     break;
                 }

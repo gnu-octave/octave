@@ -52,7 +52,7 @@ DEFBINOP (div, float_complex_matrix, float_complex)
 
   FloatComplex d = v2.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v1.float_complex_array_value () / d);
@@ -97,7 +97,7 @@ DEFBINOP (el_div, float_complex_matrix, float_complex)
 
   FloatComplex d = v2.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v1.float_complex_array_value () / d);

@@ -461,7 +461,7 @@ asin (const FloatComplex& x)
 FloatComplex
 asinh (const FloatComplex& x)
 {
-  return log (x + sqrt (x*x + static_cast<float>(1.0)));
+  return log (x + sqrt (x*x + 1.0f));
 }
 
 FloatComplex
@@ -469,14 +469,13 @@ atan (const FloatComplex& x)
 {
   static FloatComplex i (0, 1);
 
-  return i * log ((i + x) / (i - x)) / static_cast<float>(2.0);
+  return i * log ((i + x) / (i - x)) / 2.0f;
 }
 
 FloatComplex
 atanh (const FloatComplex& x)
 {
-  return log ((static_cast<float>(1.0) + x) / (static_cast<float>
-              (1.0) - x)) / static_cast<float>(2.0);
+  return log ((1.0f + x) / (static_cast<float> (1.0) - x)) / 2.0f;
 }
 
 // complex -> bool mappers.

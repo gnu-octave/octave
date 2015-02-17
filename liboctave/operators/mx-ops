@@ -49,14 +49,14 @@ dm DiagMatrix DM dDiagMatrix.h YES 0.0
 m Matrix M dMatrix.h YES 0.0
 nda NDArray ND dNDArray.h YES 0.0
 s double S NONE NO 0.0
-fcdm FloatComplexDiagMatrix DM fCDiagMatrix.h YES static_cast<float>(0.0)
-fcm FloatComplexMatrix M fCMatrix.h YES static_cast<float>(0.0)
-fcnda FloatComplexNDArray ND fCNDArray.h YES static_cast<float>(0.0)
-fcs FloatComplex S oct-cmplx.h NO static_cast<float>(0.0)
-fdm FloatDiagMatrix DM fDiagMatrix.h YES static_cast<float>(0.0)
-fm FloatMatrix M fMatrix.h YES static_cast<float>(0.0)
-fnda FloatNDArray ND fNDArray.h YES static_cast<float>(0.0)
-fs float S NONE NO static_cast<float>(0.0)
+fcdm FloatComplexDiagMatrix DM fCDiagMatrix.h YES 0.0f
+fcm FloatComplexMatrix M fCMatrix.h YES 0.0f
+fcnda FloatComplexNDArray ND fCNDArray.h YES 0.0f
+fcs FloatComplex S oct-cmplx.h NO 0.0f
+fdm FloatDiagMatrix DM fDiagMatrix.h YES 0.0f
+fm FloatMatrix M fMatrix.h YES 0.0f
+fnda FloatNDArray ND fNDArray.h YES 0.0f
+fs float S NONE NO 0.0f
 i8 octave_int8 S oct-inttypes.h YES octave_int8::zero int8_t
 ui8 octave_uint8 S oct-inttypes.h YES octave_uint8::zero uint8_t
 i16 octave_int16 S oct-inttypes.h YES octave_int16::zero int16_t

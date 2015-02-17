@@ -374,13 +374,13 @@ FloatComplexDiagMatrix::inverse (octave_idx_type& info) const
   info = 0;
   for (octave_idx_type i = 0; i < length (); i++)
     {
-      if (elem (i, i) == static_cast<float> (0.0))
+      if (elem (i, i) == 0.0f)
         {
           info = -1;
           return *this;
         }
       else
-        retval.elem (i, i) = static_cast<float> (1.0) / elem (i, i);
+        retval.elem (i, i) = 1.0f / elem (i, i);
     }
 
   return retval;

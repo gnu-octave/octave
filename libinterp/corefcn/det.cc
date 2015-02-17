@@ -157,7 +157,7 @@ For that, use any of the condition number functions: @code{cond},\n\
               MatrixType mtype = rep ? rep -> matrix_type () : MatrixType ();
               FloatDET det = m.determinant (mtype, info, rcond);
               retval(1) = rcond;
-              retval(0) = info == -1 ? static_cast<float>(0.0) : det.value ();
+              retval(0) = info == -1 ? 0.0f : det.value ();
               if (rep) rep->matrix_type (mtype);
             }
         }

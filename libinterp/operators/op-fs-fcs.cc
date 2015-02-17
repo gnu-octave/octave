@@ -50,7 +50,7 @@ DEFBINOP (div, float_scalar, float_complex)
 
   FloatComplex d = v2.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v1.float_value () / d);
@@ -85,7 +85,7 @@ DEFBINOP (el_div, float_scalar, float_complex)
 
   FloatComplex d = v2.float_complex_value ();
 
-  if (d == static_cast<float>(0.0))
+  if (d == 0.0f)
     gripe_divide_by_zero ();
 
   return octave_value (v1.float_value () / d);
@@ -110,8 +110,7 @@ DEFBINOP (el_and, float_scalar, float_complex)
   CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
 
   return octave_value (v1.float_scalar_value ()
-                       && (v2.float_complex_value ()
-                            != static_cast<float>(0.0)));
+                       && (v2.float_complex_value () != 0.0f));
 }
 
 DEFBINOP (el_or, float_scalar, float_complex)
@@ -119,8 +118,7 @@ DEFBINOP (el_or, float_scalar, float_complex)
   CAST_BINOP_ARGS (const octave_float_scalar&, const octave_float_complex&);
 
   return octave_value (v1.float_scalar_value ()
-                       || (v2.float_complex_value ()
-                            != static_cast<float>(0.0)));
+                       || (v2.float_complex_value () != 0.0f));
 }
 
 DEFNDCATOP_FN (fs_fcs, float_scalar, float_complex, float_array,

@@ -4668,7 +4668,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                     {
                       int expon;
                       gnulib::frexpf (val, &expon);
-                      epsval(i) = std::pow (static_cast <float> (2.0),
+                      epsval(i) = std::pow (2.0f,
                                             static_cast <float> (expon - 24));
                     }
                 }

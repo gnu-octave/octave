@@ -36,9 +36,13 @@ from git://anongit.freedesktop.org/mesa/demos
 #include "graphics.h"
 #include "gripes.h"
 
-#ifdef HAVE_OSMESA
+#if defined (HAVE_OSMESA_H)
+#include "osmesa.h"
+#elif defined (HAVE_GL_OSMESA_H)
 #include "GL/osmesa.h"
+#endif
 
+#if defined (HAVE_OSMESA) && defined (HAVE_OPENGL)
 static void
 close_fcn (FILE *f)
 {
@@ -73,7 +77,7 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
 {
   octave_value_list retval;
 
-#ifndef HAVE_OSMESA
+#if ! defined (HAVE_OSMESA)
   gripe_disabled_feature ("__osmesa_print__", "Offscreen rendering");
 #else
 

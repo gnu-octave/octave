@@ -1172,8 +1172,8 @@ if test $check_opengl = yes; then
   OCTAVE_CHECK_LIB_OPENGL
 fi
 
-GRAPHICS_LIBS=
-GRAPHICS_CFLAGS=
+FLTK_LIBS=
+FLTK_CFLAGS=
 
 if test -z "$OPENGL_LIBS"; then
   if test $check_opengl = yes; then
@@ -1321,10 +1321,7 @@ if test -n "$OPENGL_LIBS"; then
         AC_DEFINE(HAVE_FLTK, 1, [Define to 1 if FLTK is available.])
       fi
 
-      if test -z "$warn_fltk_opengl"; then
-        GRAPHICS_CFLAGS="$FLTK_CFLAGS"
-        GRAPHICS_LIBS="$FLTK_LDFLAGS"
-      else
+      if test -n "$warn_fltk_opengl"; then
         native_graphics=no
         OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
       fi
@@ -1332,8 +1329,8 @@ if test -n "$OPENGL_LIBS"; then
   fi
 fi
 
-AC_SUBST(GRAPHICS_CFLAGS)
-AC_SUBST(GRAPHICS_LIBS)
+AC_SUBST(FLTK_CFLAGS)
+AC_SUBST(FLTK_LIBS)
 
 ## Check for gl2ps which is required for printing with OpenGL graphics
 if test $native_graphics = yes; then
@@ -1345,11 +1342,13 @@ fi
 
 AC_SUBST(GL2PS_LIBS)
 
-## Check for OSMesa which is needed for offscreen rendering with OpenGL
-## FIXME: Check for version >= 9.0.0
-OCTAVE_CHECK_LIB(OSMesa, OSMesa,
-  [OSMesa library not found.  Offscreen rendering with OpenGL will be disabled.],
-  [GL/osmesa.h], [OSMesaCreateContext])
+if test -n "$OPENGL_LIBS"; then
+  ## Check for OSMesa which is needed for offscreen rendering with OpenGL
+  ## FIXME: Check for version >= 9.0.0
+  OCTAVE_CHECK_LIB(OSMesa, OSMesa,
+    [OSMesa library not found.  Offscreen rendering with OpenGL will be disabled.],
+    [osmesa.h GL/osmesa.h], [OSMesaCreateContext])
+fi
 
 ### Start determination of shared vs. static libraries
 
@@ -3025,6 +3024,8 @@ Octave is now configured for $canonical_host_type
   FFTW3F CPPFLAGS:             $FFTW3F_CPPFLAGS
   FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
   FFTW3F libraries:            $FFTW3F_LIBS
+  FLTK CFLAGS:                 $FLTK_CFLAGS
+  FLTK libraries:              $FLTK_LIBS
   fontconfig CFLAGS:           $FONTCONFIG_CFLAGS
   fontconfig libraries:        $FONTCONFIG_LIBS
   FreeType2 CFLAGS:            $FT2_CFLAGS
@@ -3032,8 +3033,6 @@ Octave is now configured for $canonical_host_type
   GLPK CPPFLAGS:               $GLPK_CPPFLAGS
   GLPK LDFLAGS:                $GLPK_LDFLAGS
   GLPK libraries:              $GLPK_LIBS
-  graphics CFLAGS:             $GRAPHICS_CFLAGS
-  graphics libraries:          $GRAPHICS_LIBS
   HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
   HDF5 LDFLAGS:                $HDF5_LDFLAGS
   HDF5 libraries:              $HDF5_LIBS

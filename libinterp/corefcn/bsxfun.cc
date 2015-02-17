@@ -287,7 +287,7 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
   if (i == 0)
     {
       for (octave_idx_type j = nd - 1; j > 0; j--)
-        idx(j) = octave_value (static_cast<double>(1));
+        idx(j) = octave_value (1.0);
       idx(0) = octave_value (':');
     }
   else

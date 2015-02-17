@@ -117,8 +117,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                   else
                     {
@@ -126,8 +125,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                 }
             }
@@ -143,8 +141,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                   else
                     {
@@ -152,8 +149,7 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 
                       if (! error_state)
                         retval = lower ? gammainc (x, a)
-                                       : static_cast<float>(1)
-                                         - gammainc (x, a);
+                                       : 1.0f - gammainc (x, a);
                     }
                 }
             }

@@ -247,7 +247,7 @@ hdf5_make_complex_type (hid_t num_type)
 herr_t
 hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 {
-  hdf5_callback_data *d = static_cast <hdf5_callback_data *> (dv);
+  hdf5_callback_data *d = static_cast<hdf5_callback_data *> (dv);
   hid_t type_id = -1;
   hid_t type_class_id = -1;
   hid_t data_id = -1;

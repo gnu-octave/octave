@@ -475,7 +475,7 @@ atan (const FloatComplex& x)
 FloatComplex
 atanh (const FloatComplex& x)
 {
-  return log ((1.0f + x) / (static_cast<float> (1.0) - x)) / 2.0f;
+  return log ((1.0f + x) / (1.0f - x)) / 2.0f;
 }
 
 // complex -> bool mappers.

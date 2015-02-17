@@ -3590,7 +3590,7 @@ convert_ints (const T *data, void *conv_data, octave_idx_type n_elts,
 {
   typedef typename V::val_type val_type;
 
-  val_type *vt_data = static_cast <val_type *> (conv_data);
+  val_type *vt_data = static_cast<val_type *> (conv_data);
 
   for (octave_idx_type i = 0; i < n_elts; i++)
     {
@@ -3685,7 +3685,7 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
 
     case oct_data_conv::dt_single:
       {
-        float *vt_data = static_cast <float *> (conv_data);
+        float *vt_data = static_cast<float *> (conv_data);
 
         for (octave_idx_type i = 0; i < n_elts; i++)
           {
@@ -3699,7 +3699,7 @@ convert_data (const T *data, void *conv_data, octave_idx_type n_elts,
 
     case oct_data_conv::dt_double:
       {
-        double *vt_data = static_cast <double *> (conv_data);
+        double *vt_data = static_cast<double *> (conv_data);
 
         for (octave_idx_type i = 0; i < n_elts; i++)
           {

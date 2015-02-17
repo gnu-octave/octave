@@ -183,7 +183,7 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
 #ifdef HAVE_QSCINTILLA
       if (qobject_cast <octave_qscintilla *> (w_new))
         {
-          dock = static_cast <octave_dock_widget *> (editor_window);
+          dock = static_cast<octave_dock_widget *> (editor_window);
           break; // it is the editor window ==> exit loop
         }
 #endif
@@ -197,7 +197,7 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
 
   // editor needs extra handling
   octave_dock_widget *edit_dock_widget =
-                        static_cast <octave_dock_widget *> (editor_window);
+                        static_cast<octave_dock_widget *> (editor_window);
   // if new dock has focus, emit signal and store active focus
   // except editor changes to a dialog (dock=0)
   if ((dock || _active_dock != edit_dock_widget) && (dock != _active_dock))

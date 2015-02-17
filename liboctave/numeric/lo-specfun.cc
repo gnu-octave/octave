@@ -818,7 +818,7 @@ zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       Complex tmp = zbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha)) & 1)
+      if ((static_cast<long> (alpha)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -888,7 +888,7 @@ zbesy (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       Complex tmp = zbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha - 0.5)) & 1)
+      if ((static_cast<long> (alpha - 0.5)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -1450,7 +1450,7 @@ cbesj (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       FloatComplex tmp = cbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha)) & 1)
+      if ((static_cast<long> (alpha)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -1515,7 +1515,7 @@ cbesy (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
       // zbesy can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       FloatComplex tmp = cbesj (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha - 0.5)) & 1)
+      if ((static_cast<long> (alpha - 0.5)) & 1)
         tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
@@ -2130,7 +2130,7 @@ airy (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 
   if (! scaled)
     {
-      FloatComplex expz = exp (- static_cast<float> (2.0 / 3.0) * z * sqrt (z));
+      FloatComplex expz = exp (- 2.0f / 3.0f * z * sqrt (z));
 
       float rexpz = real (expz);
       float iexpz = imag (expz);
@@ -2162,8 +2162,7 @@ biry (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 
   if (! scaled)
     {
-      FloatComplex expz = exp (std::abs (real (static_cast<float> (2.0 / 3.0)
-                          * z * sqrt (z))));
+      FloatComplex expz = exp (std::abs (real (2.0f / 3.0f * z * sqrt (z))));
 
       float rexpz = real (expz);
       float iexpz = imag (expz);

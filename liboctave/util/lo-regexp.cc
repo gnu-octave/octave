@@ -252,7 +252,7 @@ regexp::match (const std::string& buffer)
   char *nametable;
   size_t idx = 0;
 
-  pcre *re = static_cast <pcre *> (data);
+  pcre *re = static_cast<pcre *> (data);
 
   pcre_fullinfo (re, 0, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
   pcre_fullinfo (re, 0, PCRE_INFO_NAMECOUNT, &namecount);
@@ -290,7 +290,7 @@ regexp::match (const std::string& buffer)
           pcre_extra pe;
 
           pcre_config (PCRE_CONFIG_MATCH_LIMIT,
-                       static_cast <void *> (&pe.match_limit));
+                       static_cast<void *> (&pe.match_limit));
 
           pe.flags = PCRE_EXTRA_MATCH_LIMIT;
 

@@ -4219,7 +4219,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
           switch (dt)
             {
             case oct_data_conv::dt_single:
-              retval = FloatNDArray (dims, static_cast <float> (val));
+              retval = FloatNDArray (dims, static_cast<float> (val));
               break;
 
             case oct_data_conv::dt_double:
@@ -4669,7 +4669,7 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                       int expon;
                       gnulib::frexpf (val, &expon);
                       epsval(i) = std::pow (2.0f,
-                                            static_cast <float> (expon - 24));
+                                            static_cast<float> (expon - 24));
                     }
                 }
               retval = epsval;
@@ -4694,8 +4694,8 @@ either @qcode{\"double\"} or @qcode{\"single\"}.\n\
                     {
                       int expon;
                       gnulib::frexp (val, &expon);
-                      epsval(i) = std::pow (static_cast <double> (2.0),
-                                            static_cast <double> (expon - 53));
+                      epsval(i) = std::pow (2.0,
+                                            static_cast<double> (expon - 53));
                     }
                   retval = epsval;
                 }

@@ -2896,7 +2896,7 @@ mxGetNzmax (const mxArray *ptr)
 void
 mxSetIr (mxArray *ptr, mwIndex *ir)
 {
-  ptr->set_ir (static_cast <mwIndex *> (maybe_unmark (ir)));
+  ptr->set_ir (static_cast<mwIndex *> (maybe_unmark (ir)));
 }
 
 void

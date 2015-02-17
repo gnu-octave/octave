@@ -75,7 +75,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   T norm = a (0);
 
-  if (norm == static_cast<T>(0.0))
+  if (norm == static_cast<T> (0.0))
     {
       error ("filter: the first element of A must be nonzero");
       return y;
@@ -125,7 +125,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   if (x_len == 0)
     return x;
 
-  if (norm != static_cast<T>(1.0))
+  if (norm != static_cast<T> (1.0))
     {
       a = a / norm;
       b = b / norm;

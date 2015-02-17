@@ -937,7 +937,7 @@ void
 file_editor::request_close_file (bool)
 {
   file_editor_tab *editor_tab =
-      static_cast <file_editor_tab *> (_tab_widget->currentWidget ());
+      static_cast<file_editor_tab *> (_tab_widget->currentWidget ());
   editor_tab->conditional_close ();
 }
 
@@ -949,7 +949,7 @@ file_editor::request_close_all_files (bool)
   // loop over all tabs starting from last one otherwise deletion changes index
   for (int index = _tab_widget->count ()-1; index >= 0; index--)
     {
-      editor_tab = static_cast <file_editor_tab *> (_tab_widget->widget (index));
+      editor_tab = static_cast<file_editor_tab *> (_tab_widget->widget (index));
       editor_tab->conditional_close ();
     }
 }
@@ -966,7 +966,7 @@ file_editor::request_close_other_files (bool)
       if (tabID != _tab_widget->widget (index))
         {
           editor_tab =
-              static_cast <file_editor_tab *> (_tab_widget->widget (index));
+              static_cast<file_editor_tab *> (_tab_widget->widget (index));
           editor_tab->conditional_close ();
         }
     }
@@ -977,7 +977,7 @@ void
 file_editor::handle_tab_close_request (int index)
 {
   file_editor_tab *editor_tab =
-       static_cast <file_editor_tab *> (_tab_widget->widget (index));
+       static_cast<file_editor_tab *> (_tab_widget->widget (index));
   editor_tab->conditional_close ();
 }
 

@@ -310,7 +310,7 @@ private:
     // If val is even, but orig_val is odd, we're one unit off.
     if (orig_val % 2 && val / 2 == xround (val / 2))
       // FIXME: is this always correct?
-      val *= (static_cast<S>(1) - (std::numeric_limits<S>::epsilon () / 2));
+      val *= (static_cast<S> (1) - (std::numeric_limits<S>::epsilon () / 2));
     return val;
   }
 

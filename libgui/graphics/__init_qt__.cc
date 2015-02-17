@@ -199,7 +199,7 @@ DEFUN (__uigetfile_qt__, args, , "")
   else
     retval(0) = "";
   retval(1) = "";
-  retval(2) = static_cast<double> (0);
+  retval(2) = 0.0;
 
   if (defaultFileName.isEmpty ())
     defaultFileName = defaultDirectory;
@@ -277,7 +277,7 @@ DEFUN (__uiputfile_qt__, args, , "")
 
   retval(0) = "";
   retval(1) = "";
-  retval(2) = static_cast<double> (0);
+  retval(2) = 0.0;
 
   if (defaultFileName.isEmpty ())
     defaultFileName = defaultDirectory;

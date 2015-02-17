@@ -2530,12 +2530,16 @@ public:
   virtual void remove_child (const graphics_handle& h)
   {
     if (children.remove_child (h.value ()))
-      mark_modified ();
+      {
+        children.run_listeners ();
+        mark_modified ();
+      }
   }
 
   virtual void adopt (const graphics_handle& h)
   {
     children.adopt (h.value ());
+    children.run_listeners ();
     mark_modified ();
   }
 

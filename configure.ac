@@ -159,6 +159,12 @@ OCTAVE_PROG_GNUPLOT
 OCTAVE_PROG_PAGER
 OCTAVE_PROG_PYTHON
 
+## Programs used to generate icons file formats.
+OCTAVE_PROG_ICOTOOL
+OCTAVE_PROG_RSVG_CONVERT
+AM_CONDITIONAL([AMCOND_HAVE_ICON_TOOLS],
+  [test -n "$ICOTOOL" && test -n "$RSVG_CONVERT"])
+
 ### Default terminal font for the GUI
 case $host_os in
   mingw* | msdosmsvc)

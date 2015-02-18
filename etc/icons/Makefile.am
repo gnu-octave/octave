@@ -21,14 +21,31 @@
 include $(top_srcdir)/build-aux/common.mk
 
 IMAGE_FILES = \
-  octave-logo.ico \
-  octave-logo.png \
   octave-logo.svg \
   octave-sombrero.png
 
+PNG_SIZES = \
+  512 \
+  256 \
+  128 \
+  64 \
+  48 \
+  32 \
+  24 \
+  22 \
+  16
+
+BUILT_PNG_ICONS = $(patsubst %,octave-logo-%.png,$(PNG_SIZES))
+
+WINDOWS_PNG_ICONS = $(filter %-16.png %-32.png %-48.png %-256.png,$(BUILT_PNG_ICONS))
+
+BUILT_ICONS = \
+  $(BUILT_PNG_ICONS) \
+  octave-logo.ico
+
 image_DATA = $(IMAGE_FILES)
 
-all-local: octave.desktop
+all-local: octave.desktop $(BUILT_ICONS)
 
 octave.desktop: octave.desktop.in Makefile
 	@echo "making $@ from $<"
@@ -37,20 +54,49 @@ octave.desktop: octave.desktop.in Makefile
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
 	mv $@-t $@
 
+$(BUILT_PNG_ICONS): octave-logo.svg
+	$(RSVG_CONVERT) -w $(lastword $(subst -, ,$(patsubst %.png,%,$@))) $< > $@-t
+	mv $@-t $@
+
+octave-logo.ico: $(WINDOWS_PNG_ICONS)
+	$(ICOTOOL) --create --raw $^ > $@-t
+	mv $@-t $@
+
 install-data-local:
 	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
 	    --vendor www.octave.org octave.desktop; \
 	fi
+	for f in $(BUILT_PNG_ICONS); do \
+	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
+	  $(MKDIR_P) $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps; \
+	  $(INSTALL_DATA) $$f $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps/octave.png; \
+	done
+	$(MKDIR_P) $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
+	$(INSTALL_DATA) $(srcdir)/octave-logo.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
 
 uninstall-local:
 	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  rm -f $(DESTDIR)$(datadir)/applications/www.octave.org-octave.desktop; \
 	fi
+	for f in $(BUILT_PNG_ICONS); do \
+	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
+	  rm -f $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps/octave.png; \
+	done
+	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
+
+if AMCOND_HAVE_ICON_TOOLS
+else
+dist-hook:
+	@echo "Packaging distribution requires icotool and rsvg-convert." ; exit 1;
+endif
 
 EXTRA_DIST = \
+  $(BUILT_ICONS) \
   $(IMAGE_FILES) \
   octave.desktop.in
 
 CLEANFILES = octave.desktop
+
+MAINTAINERCLEANFILES = $(BUILT_ICONS)
 

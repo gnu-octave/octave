@@ -2116,6 +2116,13 @@ reconstruct oct-gperf.h
   AC_SUBST(GPERF)
 ])
 dnl
+dnl Find icotool program.
+dnl
+AC_DEFUN([OCTAVE_PROG_ICOTOOL], [
+  AC_CHECK_PROG(ICOTOOL, icotool, icotool, [])
+  AC_SUBST(ICOTOOL)
+])
+dnl
 dnl Check for makeinfo.
 dnl
 AC_DEFUN([OCTAVE_PROG_MAKEINFO], [
@@ -2168,6 +2175,13 @@ dnl
 AC_DEFUN([OCTAVE_PROG_PYTHON], [
   AC_CHECK_PROG(PYTHON, python, python, [])
   AC_SUBST(PYTHON)
+])
+dnl
+dnl Find rsvg-convert program.
+dnl
+AC_DEFUN([OCTAVE_PROG_RSVG_CONVERT], [
+  AC_CHECK_PROG(RSVG_CONVERT, rsvg-convert, rsvg-convert, [])
+  AC_SUBST(RSVG_CONVERT)
 ])
 dnl
 dnl Find sed program.

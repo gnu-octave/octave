@@ -33,27 +33,108 @@
 ## @seealso{gtext, waitforbuttonpress}
 ## @end deftypefn
 
-function varargout = ginput (n)
+function varargout = ginput (n = -1)
 
   if (nargin > 1)
     print_usage ();
   endif
 
-  a = gca ();  # Create an axis, if necessary
+  ## Create an axis, if necessary.
+  fig = gcf ();
+  ax = gca ();
   drawnow ();
-  toolkit = get (gcf, "__graphics_toolkit__");
 
-  varargout = cell (1, nargout);
-  if (nargin == 0)
-    [varargout{:}] = feval (["__" toolkit "_ginput__"]);
-  else
-    [varargout{:}] = feval (["__" toolkit "_ginput__"], n);
+  if (isempty (ax))
+    error ("ginput: must have at least one axes");
   endif
+
+  toolkit = get (fig, "__graphics_toolkit__");
+  toolkit_fcn = sprintf ("__%s_ginput__", toolkit);
+
+  if (exist (toolkit_fcn))
+    varargout = cell (1, nargout);
+    if (nargin == 0)
+      [varargout{:}] = feval (toolkit_fcn, fig);
+    else
+      [varargout{:}] = feval (toolkit_fcn, fig, n);
+    endif
+    return
+  endif
+
+  x = y = button = [];
+  ginput_accumulator (0, 0, 0, 0);  # initialize accumulator
+
+  orig_buttondownfcn = get (fig, "buttondownfcn");
+  orig_ginput_keypressfcn = get (fig, "keypressfcn");
+
+  unwind_protect
+
+    set (ax, "buttondownfcn", @ginput_buttondownfcn);
+    set (fig, "keypressfcn", @ginput_keypressfcn);
+
+    do
+      if (strcmp (toolkit, "fltk"))
+        __fltk_check__ ();
+      endif
+
+      ## Release CPU.
+      sleep (0.01);
+
+      [x, y, n0, button] = ginput_accumulator (-1, 0, 0, 0);
+    until ((n > -1 && n0 >= n) || n0 < 0)
+
+    if (n0 > n)
+      ## More clicks than requested due to double-click or too fast clicking
+      x = x(1:n);
+      y = y(1:n);
+      button = button(1:n);
+    endif
+
+  unwind_protect_cleanup
+    set (ax, "buttondownfcn", orig_buttondownfcn);
+    set (fig, "keypressfcn", orig_ginput_keypressfcn);
+  end_unwind_protect
+
+  varargout = {x, y, button};
 
 endfunction
 
+function [x, y, n, button] = ginput_accumulator (mode, xn, yn, btn)
+  persistent x y n button;
+
+  if (mode == 0)
+    ## Initialize.
+    x = y = button = [];
+    n = 0;
+  elseif (mode == 1)
+    ## Append mouse button or key press.
+    x = [x; xn];
+    y = [y; yn];
+    button = [button; btn];
+    n += 1;
+  elseif (mode == 2)
+    ## The end due to Enter.
+    n = -1;
+ endif
+
+endfunction
+
+function ginput_buttondownfcn (src, button)
+  point = get (src, "currentpoint");
+  ginput_accumulator (1, point(1,1), point(1,2), button);
+endfunction
+
+function ginput_keypressfcn (src, evt)
+  point = get (ax, "currentpoint");
+  key = evt.Key;
+  if (key == "return")
+    ## Enter key stops ginput.
+    ginput_accumulator (2, NaN, NaN, NaN);
+  else
+    ginput_accumulator (1, point(1,1), point(1,2), uint8 (key(1)));
+  endif
+endfunction
 
 ## Remove from test statistics.  No real tests possible.
 %!test
 %! assert (1);
-

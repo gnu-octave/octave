@@ -34,6 +34,8 @@ namespace QtHandles
 FigureWindow::FigureWindow (QWidget* xparent)
   : FigureWindowBase (xparent)
 {
+  // set icon from application resources
+  setWindowIcon (QIcon (":/actions/icons/logo.png"));
 }
 
 FigureWindow::~FigureWindow (void)

@@ -59,16 +59,17 @@ function __add_default_menu__ (fig)
 endfunction
 
 function save_cb (h, e)
-  lbl = get (gcbo, "label");
+  [hcbo, hfig] = gcbo ();
+  lbl = get (hcbo, "label");
   if (strcmp (lbl, "&Save"))
-    fname = get (gcbo, "userdata");
+    fname = get (hfig, "filename");
     if (isempty (fname))
-      __save_as__ (gcbo);
+      __save_as__ (hcbo);
     else
-      saveas (gcbo, fname);
+      saveas (hcbo, fname);
     endif
   elseif (strcmp (lbl, "Save &As"))
-    __save_as__ (gcbo);
+    __save_as__ (hcbo);
   endif
 endfunction
 
@@ -79,10 +80,7 @@ function __save_as__ (caller)
                                    [pwd, filesep, "untitled.pdf"]);
   if (filename != 0)
     fname = [filedir filesep() filename];
-    obj = findall (gcbf, "label", "&Save");
-    if (! isempty (obj))
-      set (obj(1), "userdata", fname);
-    endif
+    set (gcbf, "filename", fname)
     saveas (caller, fname);
   endif
 endfunction

@@ -1064,6 +1064,18 @@ public:
                                                const octave_value& b,
                                                const Array<octave_idx_type>& ra_idx);
 
+  friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                                 const octave_value& limit,
+                                                 bool is_for_cmd_expr = false)
+  {
+    return do_colon_op (base, octave_value (), limit, is_for_cmd_expr);
+  }
+
+  friend OCTINTERP_API octave_value do_colon_op (const octave_value& base,
+                                                 const octave_value& increment,
+                                                 const octave_value& limit,
+                                                 bool is_for_cmd_expr = false);
+
   const octave_base_value& get_rep (void) const { return *rep; }
 
   bool is_copy_of (const octave_value &val) const { return rep == val.rep; }

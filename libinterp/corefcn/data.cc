@@ -6262,6 +6262,37 @@ At least one argument is required.\n\
                                      octave_value::op_el_or_eq, args);
 }
 
+DEFUN (colon, args, ,
+       "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{r} =} colon (@var{base}, @var{limit})\n\
+@deftypefnx  {Built-in Function} {@var{r} =} colon (@var{base}, @var{increment}, @var{limit})\n\
+Return the result of the colon expression corresponding to @var{base}, @var{limit}, and optionally, @var{increment}.\n\
+\n\
+This function is equivalent to the operator syntax @w{@code{base : limit}}\n\
+or @w{@code{base : increment : limit}}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  switch (nargin)
+    {
+    case 2:
+      retval = do_colon_op (args(0), args(1));
+      break;
+
+    case 3:
+      retval = do_colon_op (args(0), args(1), args (2));
+      break;
+
+    default:
+      print_usage ();
+      break;
+    }
+
+  return retval;
+}
+
 static double tic_toc_timestamp = -1.0;
 
 DEFUN (tic, args, nargout,

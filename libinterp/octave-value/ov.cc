@@ -2388,6 +2388,101 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
   return retval;
 }
 
+octave_value
+do_colon_op (const octave_value& base, const octave_value& increment,
+             const octave_value& limit, bool is_for_cmd_expr)
+{
+  octave_value retval;
+
+  if (base.is_object () || increment.is_object () || limit.is_object ())
+    {
+      std::string dispatch_type;
+
+      if (base.is_object ())
+        dispatch_type = base.class_name ();
+      else if (increment.is_defined () && increment.is_object ())
+        dispatch_type = increment.class_name ();
+      else
+        dispatch_type = limit.class_name ();
+
+    octave_value meth = symbol_table::find_method ("colon", dispatch_type);
+
+    if (meth.is_defined ())
+      {
+        octave_value_list args;
+
+        if (increment.is_defined ())
+          {
+            args(2) = limit;
+            args(1) = increment;
+          }
+        else
+          args(1) = limit;
+
+        args(0) = base;
+
+        octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+        if (tmp.length () > 0)
+          retval = tmp(0);
+      }
+    else
+      error ("colon method not defined for %s class", dispatch_type.c_str ());
+    }
+  else
+    {
+      bool result_is_str = (base.is_string () && limit.is_string ());
+      bool dq_str = (base.is_dq_string () || limit.is_dq_string ());
+
+      Matrix m_base = base.matrix_value (true);
+
+      if (error_state)
+        {
+          error ("invalid base value in colon expression");
+          return retval;
+        }
+
+      Matrix m_limit = limit.matrix_value (true);
+
+      if (error_state)
+        {
+          error ("invalid limit value in colon expression");
+          return retval;
+        }
+
+      Matrix m_increment = (increment.is_defined ()
+                            ? increment.matrix_value (true)
+                            : Matrix (1, 1, 1.0));
+
+      if (error_state)
+        {
+          error ("invalid increment value in colon expression");
+          return retval;
+        }
+
+      bool base_empty = m_base.is_empty ();
+      bool limit_empty = m_limit.is_empty ();
+      bool increment_empty = m_increment.is_empty ();
+
+      if (base_empty || limit_empty || increment_empty)
+        retval = Range ();
+      else
+        {
+          Range r (m_base(0), m_limit(0), m_increment(0));
+
+          // For compatibility with Matlab, don't allow the range used in
+          // a FOR loop expression to be converted to a Matrix.
+
+          retval = octave_value (r, is_for_cmd_expr);
+
+          if (result_is_str)
+            retval = retval.convert_to_str (false, true, dq_str ? '"' : '\'');
+        }
+    }
+
+  return retval;
+}
+
 void
 octave_value::print_info (std::ostream& os, const std::string& prefix) const
 {

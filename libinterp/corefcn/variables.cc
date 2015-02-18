@@ -637,10 +637,10 @@ not on the search path you should use some combination of the functions\n\
 %!   assert (exist ("/dev/null", "dir"), 0);
 %! endif
 
-%!assert (exist ("colon"), 2)
-%!assert (exist ("colon.m"), 2)
-%!assert (exist ("colon", "file"), 2)
-%!assert (exist ("colon", "dir"), 0)
+%!assert (exist ("print_usage"), 2)
+%!assert (exist ("print_usage.m"), 2)
+%!assert (exist ("print_usage", "file"), 2)
+%!assert (exist ("print_usage", "dir"), 0)
 
 %!testif HAVE_CHOLMOD
 %! assert (exist ("chol"), 3);

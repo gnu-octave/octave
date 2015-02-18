@@ -904,16 +904,13 @@ either of the arguments is complex.\n\
     { \
       std::string str = args(nargin - 1).string_value (); \
       \
-      if (! error_state) \
-        { \
-          if (str == "native") \
-            isnative = true; \
-          else if (str == "double") \
-            isdouble = true; \
-          else \
-            error ("sum: unrecognized string argument"); \
-          nargin --; \
-        } \
+      if (str == "native") \
+        isnative = true; \
+      else if (str == "double") \
+        isdouble = true; \
+      else \
+        error ("sum: unrecognized string argument"); \
+      nargin --; \
     } \
   \
   if (nargin == 1 || nargin == 2) \
@@ -1198,16 +1195,13 @@ See @code{sum} for an explanation of the optional parameters\n\
     {
       std::string str = args(nargin - 1).string_value ();
 
-      if (! error_state)
-        {
-          if (str == "native")
-            isnative = true;
-          else if (str == "double")
-            isdouble = true;
-          else
-            error ("cumsum: unrecognized string argument");
-          nargin --;
-        }
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else
+        error ("cumsum: unrecognized string argument");
+      nargin --;
     }
 
   if (error_state)
@@ -1499,16 +1493,13 @@ in double precision even for single precision inputs.\n\
     {
       std::string str = args(nargin - 1).string_value ();
 
-      if (! error_state)
-        {
-          if (str == "native")
-            isnative = true;
-          else if (str == "double")
-            isdouble = true;
-          else
-            error ("prod: unrecognized type argument '%s'", str.c_str ());
-          nargin --;
-        }
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else
+        error ("prod: unrecognized type argument '%s'", str.c_str ());
+      nargin --;
     }
 
   if (error_state)
@@ -2991,18 +2982,15 @@ inputs, @qcode{\"extra\"} is the same as @qcode{\"double\"}.  Otherwise,\n\
     {
       std::string str = args(nargin - 1).string_value ();
 
-      if (! error_state)
-        {
-          if (str == "native")
-            isnative = true;
-          else if (str == "double")
-            isdouble = true;
-          else if (str == "extra")
-            isextra = true;
-          else
-            error ("sum: unrecognized type argument '%s'", str.c_str ());
-          nargin --;
-        }
+      if (str == "native")
+        isnative = true;
+      else if (str == "double")
+        isdouble = true;
+      else if (str == "extra")
+        isextra = true;
+      else
+        error ("sum: unrecognized type argument '%s'", str.c_str ());
+      nargin --;
     }
 
   if (error_state)

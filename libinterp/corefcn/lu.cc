@@ -162,13 +162,10 @@ information.\n\
         {
           std::string tmp = args(n++).string_value ();
 
-          if (! error_state)
-            {
-              if (tmp.compare ("vector") == 0)
-                vecout = true;
-              else
-                error ("lu: unrecognized string argument");
-            }
+          if (tmp.compare ("vector") == 0)
+            vecout = true;
+          else
+            error ("lu: unrecognized string argument");
         }
       else
         {

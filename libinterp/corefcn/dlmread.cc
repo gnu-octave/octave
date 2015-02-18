@@ -214,8 +214,6 @@ fill empty fields.  The default is zero.\n\
     {
       // File name.
       std::string fname (args(0).string_value ());
-      if (error_state)
-        return retval;
 
       std::string tname = file_ops::tilde_expand (fname);
 

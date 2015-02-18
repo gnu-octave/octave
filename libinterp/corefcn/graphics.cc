@@ -11635,13 +11635,10 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                         {
                           caseless_str s = args(2).string_value ();
 
-                          if (! error_state)
-                            {
-                              if (s.compare ("timeout"))
-                                timeout_index = 2;
-                              else
-                                max_arg_index++;
-                            }
+                          if (s.compare ("timeout"))
+                            timeout_index = 2;
+                          else
+                            max_arg_index++;
                         }
                       else
                         max_arg_index++;

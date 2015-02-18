@@ -1432,33 +1432,30 @@ execution to continue until the current function returns.\n\
             {
               std::string arg = args(0).string_value ();
 
-              if (! error_state)
+              if (arg == "in")
                 {
-                  if (arg == "in")
+                  Vdebugging = false;
+
+                  tree_evaluator::dbstep_flag = -1;
+                }
+              else if (arg == "out")
+                {
+                  Vdebugging = false;
+
+                  tree_evaluator::dbstep_flag = -2;
+                }
+              else
+                {
+                  int n = atoi (arg.c_str ());
+
+                  if (n > 0)
                     {
                       Vdebugging = false;
 
-                      tree_evaluator::dbstep_flag = -1;
-                    }
-                  else if (arg == "out")
-                    {
-                      Vdebugging = false;
-
-                      tree_evaluator::dbstep_flag = -2;
+                      tree_evaluator::dbstep_flag = n;
                     }
                   else
-                    {
-                      int n = atoi (arg.c_str ());
-
-                      if (n > 0)
-                        {
-                          Vdebugging = false;
-
-                          tree_evaluator::dbstep_flag = n;
-                        }
-                      else
-                        error ("dbstep: invalid argument");
-                    }
+                    error ("dbstep: invalid argument");
                 }
             }
           else

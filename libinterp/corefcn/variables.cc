@@ -128,10 +128,7 @@ is_valid_function (const octave_value& arg,
     {
       fcn_name = arg.string_value ();
 
-      if (! error_state)
-        ans = is_valid_function (fcn_name, warn_for, warn);
-      else if (warn)
-        error ("%s: expecting function name as argument", warn_for.c_str ());
+      ans = is_valid_function (fcn_name, warn_for, warn);
     }
   else if (warn)
     error ("%s: expecting function name as argument", warn_for.c_str ());

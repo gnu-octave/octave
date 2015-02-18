@@ -1035,10 +1035,7 @@ if @var{name} is not found.\n\
         {
           std::string nm = args(0).string_value ();
 
-          if (! error_state)
-            retval = octave_errno::lookup (nm);
-          else
-            error ("errno: expecting string argument");
+          retval = octave_errno::lookup (nm);
         }
       else
         {
@@ -1047,7 +1044,7 @@ if @var{name} is not found.\n\
           if (! error_state)
             retval = octave_errno::set (val);
           else
-            error ("errno: expecting integer argument");
+            error ("errno: argument must be string or integer");
         }
     }
   else if (nargin == 0)

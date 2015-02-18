@@ -132,7 +132,12 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
 
   if (len > 2)
     if (ischar (args{3}))
-      [fdir, fname, fext] = fileparts (args{3});
+      if (isdir (args{3}))
+        fdir = args{3};
+        fname = fext = "";
+      else
+        [fdir, fname, fext] = fileparts (varargin{3});
+      endif
       if (length (fdir) > 0)
         outargs{6} = fdir;
       endif

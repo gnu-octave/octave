@@ -453,7 +453,7 @@ available_graphics_toolkits function}.";
       case "ambientlightcolor"
         s.doc = sprintf (doc_notimpl, "Light");
       case "box"
-        s.doc = "Control wether the axes has a surrounding box.";
+        s.doc = "Control whether the axes has a surrounding box.";
 
       case "cameraposition"
         s.valid = valid_3elvec;
@@ -528,6 +528,10 @@ the same as the length of 2 units on the x-axis.  __modemsg__.";
       case "linestyleorder"
       case "linewidth"
       case "minorgridlinestyle"
+      case "mouse_wheel_zoom"
+        s.doc = "Fraction of axes limits to zoom for each wheel movement."; 
+        s.valid = "scalar in the range (0, 1)";
+
       case "nextplot"
       case "outerposition"
         s.doc = "Specify the position of the plot, including titles, \
@@ -574,7 +578,7 @@ outerposition property}.";
 
       case "xdir"
       case "xgrid"
-        s.doc = "Control wether major x grid lines are displayed.";
+        s.doc = "Control whether major x grid lines are displayed.";
 
       case "xlabel"
         s.doc = "Graphics handle of the x label text object.";
@@ -587,7 +591,7 @@ outerposition property}.";
 
       case "xlimmode"
       case "xminorgrid"
-        s.doc = "Control wether minor x grid lines are displayed.";
+        s.doc = "Control whether minor x grid lines are displayed.";
 
       case "xminortick"
       case "xscale"
@@ -609,7 +613,7 @@ outerposition property}.";
 
       case "ydir"
       case "ygrid"
-        s.doc = "Control wether major y grid lines are displayed.";
+        s.doc = "Control whether major y grid lines are displayed.";
 
       case "ylabel"
         s.doc = "Graphics handle of the y label text object.";
@@ -622,7 +626,7 @@ outerposition property}.";
 
       case "ylimmode"
       case "yminorgrid"
-        s.doc = "Control wether minor y grid lines are displayed.";
+        s.doc = "Control whether minor y grid lines are displayed.";
 
       case "yminortick"
       case "yscale"
@@ -643,7 +647,7 @@ outerposition property}.";
 
       case "zdir"
       case "zgrid"
-        s.doc = "Control wether major z grid lines are displayed.";
+        s.doc = "Control whether major z grid lines are displayed.";
 
       case "zlabel"
         s.doc = "Graphics handle of the z label text object.";
@@ -656,7 +660,7 @@ outerposition property}.";
 
       case "zlimmode"
       case "zminorgrid"
-        s.doc = "Control wether minor z grid lines are displayed.";
+        s.doc = "Control whether minor z grid lines are displayed.";
 
       case "zminortick"
       case "zscale"

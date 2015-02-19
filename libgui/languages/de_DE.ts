@@ -107,16 +107,6 @@
     </message>
     <message>
         <location line="+2"/>
-        <source>&amp;New Figure</source>
-        <translation>&amp;Neue Abbildung</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Open...</source>
-        <translation>Ö&amp;ffnen...</translation>
-    </message>
-    <message>
-        <location line="+2"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
@@ -171,7 +161,7 @@
         <translation>Über QtHandles</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+37"/>
         <source>Save Figure As</source>
         <translation>Abbildung speichern unter</translation>
     </message>
@@ -713,7 +703,7 @@ is about to be closed but has been modified.  %2</source>
 soll geschlossen werden aber wurde modifiziert.  %2</translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+288"/>
         <source>Line Endings:</source>
         <translation>Zeilenenden:</translation>
     </message>
@@ -728,14 +718,14 @@ soll geschlossen werden aber wurde modifiziert.  %2</translation>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="-340"/>
+        <location line="-322"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
         <translation>Änderungen speichern, verwerfen oder Schließen abbrechen?</translation>
     </message>
     <message>
         <location line="-968"/>
         <location line="+977"/>
-        <location line="+231"/>
+        <location line="+213"/>
         <location line="+185"/>
         <location line="+85"/>
         <location line="+23"/>
@@ -1981,27 +1971,12 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Draw a long  line marker</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>Enable Code Folding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>Show eol characters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Default eol mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="+43"/>
         <source>Windows (CRLF)</source>
         <translation>Windows (CRLF)</translation>
     </message>
@@ -2091,12 +2066,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Number of characters before list is shwon: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+48"/>
+        <location line="+64"/>
         <source>Show completion list automatically</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2126,12 +2096,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Editor Stile</translation>
     </message>
     <message>
-        <location line="+17"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color and background color (for the latter, the color pink (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Auswahl von Schrift, Schriftgröße (als Differenz von der Standardgröße), Schriftstil (&lt;b&gt;f&lt;/b&gt;ett, &lt;b&gt;k&lt;/b&gt;ursiv, &lt;b&gt;u&lt;/b&gt;nterstrichen), Text- und Hintergrundfarbe (für den Hintergrund ist die Farbe Pink (255,0,255) ein Platzhalter für die Standardfarbe)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="+174"/>
+        <location line="+191"/>
         <source>(Changing buffer size clears history)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2213,12 +2178,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
-        <source>These preferences are applied after the startup files like .octaverc.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+35"/>
+        <location line="+41"/>
         <location line="+1313"/>
         <source>Startup path</source>
         <translation type="unfinished"></translation>
@@ -2230,12 +2190,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1310"/>
-        <source>Restore last Octave directory of previous session</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+63"/>
+        <location line="-1247"/>
         <source>After Column</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2325,7 +2280,42 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Versteckte Dateien anzeigen</translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location line="-1298"/>
+        <source>These preferences are applied after any .octaverc startup files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
+        <source>Restore working directory of previous session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+292"/>
+        <source>Draw a long line marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Show EOL characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Default EOL mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+353"/>
+        <source>Number of characters before list is shown: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+212"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select font, font size (as a difference from the default size), font style (&lt;b&gt;b&lt;/b&gt;old, &lt;b&gt;i&lt;/b&gt;talic, &lt;b&gt;u&lt;/b&gt;nderline), text color, and background color (for the latter, the color magenta (255,0,255) is a placeholder for the default background color).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+329"/>
         <source>Display</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2350,7 +2340,17 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation>Arbeitsumgebung</translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+48"/>
+        <source>Hide tool tips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+182"/>
+        <source>Edit a shortcut by double-clicking in a cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+108"/>
         <source>Network</source>
         <translation>Netzwerk</translation>
     </message>
@@ -2395,12 +2395,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Hide tool tip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+34"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2443,12 +2438,7 @@ Die Octave Benutzeroberfläche muss jetzt geschlossen werden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Edit an actual shortcut by double clicking into the related cell</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+61"/>
+        <location line="+86"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2633,7 +2623,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>New Figure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neue Abbildung</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2733,7 +2723,7 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+2"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Debug Modus beenden</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2899,52 +2889,52 @@ a:link { text-decoration: underline; color: #0000ff; }
     <message>
         <location line="+3"/>
         <source>Find and Replace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Suchen und Ersetzen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bis zum Anfang des Wortes löschen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bis zum Ende des Wortes löschen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bis zum Anfang der Zeile löschen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bis zum Ende der Zeile löschen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Delete Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeile löschen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeile kopieren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cut Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeile ausschneiden</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeile oder Auswahl duplizieren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Transpose Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeilen tauschen</translation>
     </message>
     <message>
         <location line="+2"/>

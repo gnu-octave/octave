@@ -107,16 +107,6 @@
     </message>
     <message>
         <location line="+2"/>
-        <source>&amp;New Figure</source>
-        <translation>&amp;Nova Figura</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Open...</source>
-        <translation>&amp;Abrir...</translation>
-    </message>
-    <message>
-        <location line="+2"/>
         <source>&amp;Save</source>
         <translation>&amp;Salvar</translation>
     </message>
@@ -171,7 +161,7 @@
         <translation>Sobre QtHandles</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+37"/>
         <source>Save Figure As</source>
         <translation>Salvar figura como</translation>
     </message>
@@ -708,7 +698,7 @@ is about to be closed but has been modified.  %2</source>
 está para ser fechado mas foi modificado.  %2</translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+288"/>
         <source>Line Endings:</source>
         <translation>Final de linha:</translation>
     </message>
@@ -723,14 +713,14 @@ está para ser fechado mas foi modificado.  %2</translation>
         <translation>Todos os arquivos (*)</translation>
     </message>
     <message>
-        <location line="-340"/>
+        <location line="-322"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
         <translation>Você deseja cancelar o fechamento, salvar as alterações, ou descartá-las?</translation>
     </message>
     <message>
         <location line="-968"/>
         <location line="+977"/>
-        <location line="+231"/>
+        <location line="+213"/>
         <location line="+185"/>
         <location line="+85"/>
         <location line="+23"/>

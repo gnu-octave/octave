@@ -696,7 +696,7 @@ is about to be closed but has been modified.  %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+288"/>
         <source>Line Endings:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -711,14 +711,14 @@ is about to be closed but has been modified.  %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-340"/>
+        <location line="-322"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
         <translation>Вы хотите отменить закрытие, сохранить или отменить изменения?</translation>
     </message>
     <message>
         <location line="-968"/>
         <location line="+977"/>
-        <location line="+231"/>
+        <location line="+213"/>
         <location line="+185"/>
         <location line="+85"/>
         <location line="+23"/>

@@ -83,10 +83,126 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
+        <location filename="../../../octave-qt/qdialogbuttonbox.cpp" line="+658"/>
         <location filename="../../../octave-qt/qmessagebox.cpp" line="+1937"/>
         <location line="+446"/>
         <source>OK</source>
         <translation>OK</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>&amp;OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Save</source>
+        <translation type="unfinished">&amp;Bewaar</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Open</source>
+        <translation type="unfinished">Open</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Afbreken</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished">Sluit bestand</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Help</source>
+        <translation type="unfinished">Hulp</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Don&apos;t Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Close without Saving</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Discard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Yes to &amp;All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>N&amp;o to All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Save All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Abort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Retry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ignore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Restore Defaults</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2236,7 +2352,7 @@ is about to be closed but has been modified.  %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+306"/>
+        <location line="+288"/>
         <source>Line Endings:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2251,14 +2367,14 @@ is about to be closed but has been modified.  %2</source>
         <translation type="unfinished">Alle bestanden (*)</translation>
     </message>
     <message>
-        <location line="-340"/>
+        <location line="-322"/>
         <source>Do you want to cancel closing, save or discard the changes?</source>
         <translation>Wil je niet meer afsluiten, danwel het gewijzigde of het originele bestand opslaan?</translation>
     </message>
     <message>
         <location line="-968"/>
         <location line="+977"/>
-        <location line="+231"/>
+        <location line="+213"/>
         <location line="+185"/>
         <location line="+85"/>
         <location line="+23"/>

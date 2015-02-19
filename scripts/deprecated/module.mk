@@ -22,6 +22,7 @@ deprecated_FCN_FILES = \
   deprecated/javamethods.m \
   deprecated/loadaudio.m \
   deprecated/luinc.m \
+  deprecated/mousewheelzoom.m \
   deprecated/nfields.m \
   deprecated/octave_tmp_file_name.m \
   deprecated/playaudio.m \

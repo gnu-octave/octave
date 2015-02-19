@@ -207,6 +207,7 @@ Summary of important user-visible changes for version 4.0:
       fnmatch              | glob or regexp
       loadaudio            | audioread
       luinc                | ilu or ichol
+      mouse_wheel_zoom     | mousewheelzoom axes property
       nfields              | numfields
       octave_tmp_file_name | tempname
       playaudio            | audioplayer

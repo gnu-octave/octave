@@ -519,20 +519,22 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
         case ZoomMode:
           if (axesObj)
             {
-              if (event->buttons () == Qt::LeftButton
-                  && event->modifiers () == Qt::NoModifier)
-                {
-                  m_mouseAnchor = m_mouseCurrent = event->pos ();
-                  m_mouseAxes = axesObj.get_handle ();
-                  m_mouseMode = newMouseMode;
-                }
-              else if (event->modifiers () == Qt::NoModifier)
+              bool redraw_figure = true;
+
+              if (event->modifiers () == Qt::NoModifier)
                 {
                   switch (event->buttons ())
                     {
+                    case Qt::LeftButton:
+                      m_mouseAnchor = m_mouseCurrent = event->pos ();
+                      m_mouseAxes = axesObj.get_handle ();
+                      m_mouseMode = newMouseMode;
+                      break;
+
                     case Qt::RightButton:
                       Utils::properties<axes> (axesObj).unzoom ();
                       break;
+
                     case Qt::MidButton:
                         {
                           axes::properties& ap =
@@ -544,11 +546,31 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
                           ap.set_zlimmode ("auto");
                         }
                       break;
+
+                    default:
+                      redraw_figure = false;
+                      break;
                     }
-                  redraw (false);
                 }
+              else if (event->modifiers () == Qt::ShiftModifier)
+                {
+                  switch (event->buttons ())
+                    {
+                    case Qt::LeftButton:
+                      Utils::properties<axes> (axesObj).unzoom ();
+                      break;
+
+                    default:
+                      redraw_figure = false;
+                      break;
+                    }
+                }
+
+              if (redraw_figure)
+                redraw (false);
             }
           break;
+
         default:
           break;
         }

@@ -3894,7 +3894,7 @@ public:
       any_property linestyleorder S , "-"
       double_property linewidth , 0.5
       radio_property minorgridlinestyle , "-|--|{:}|-.|none"
-      double_property mouse_wheel_zoom , 0.05
+      double_property mousewheelzoom , 0.5
       radio_property nextplot , "add|replacechildren|{replace}"
       array_property outerposition u , default_axes_outerposition ()
       array_property plotboxaspectratio mu , Matrix (1, 3, 1.0)

@@ -1583,12 +1583,12 @@ private:
                     dynamic_cast<axes::properties&> (ax.get_properties ());
 
                   // Control how fast to zoom when using scroll wheel.
-                  double Vwheel_zoom_speed = ap.get_mouse_wheel_zoom ();
+                  double wheel_zoom_speed = ap.get_mousewheelzoom ();
 
                   // Determine if we're zooming in or out.
                   const double factor =
-                    (Fl::event_dy () > 0) ? 1 / (1.0 - Vwheel_zoom_speed)
-                                          : 1.0 - Vwheel_zoom_speed;
+                    (Fl::event_dy () > 0) ? 1 / (1.0 - wheel_zoom_speed)
+                                          : 1.0 - wheel_zoom_speed;
 
                   // Get the point we're zooming about.
                   double x1, y1;

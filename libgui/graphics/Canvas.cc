@@ -408,6 +408,29 @@ void Canvas::canvasMouseDoubleClickEvent (QMouseEvent* event)
     }
 }
 
+static double
+button_number (QMouseEvent *event)
+{
+  double retval = 0;
+
+  switch (event->button ())
+    {
+    case Qt::LeftButton:
+      retval = 1;
+      break;
+
+    case Qt::MidButton:
+      retval = 2;
+      break;
+
+    case Qt::RightButton:
+      retval = 3;
+      break;
+    }
+
+  return retval;
+}
+
 void Canvas::canvasMousePressEvent (QMouseEvent* event)
 {
   gh_manager::auto_lock lock;
@@ -500,11 +523,15 @@ void Canvas::canvasMousePressEvent (QMouseEvent* event)
         case NoMode:
           gh_manager::post_set (figObj.get_handle (), "selectiontype",
                                 Utils::figureSelectionType (event), false);
+
           updateCurrentPoint (figObj, obj, event);
+
           gh_manager::post_callback (figObj.get_handle (),
                                      "windowbuttondownfcn");
+
           gh_manager::post_callback (currentObj.get_handle (),
-                                     "buttondownfcn");
+                                     "buttondownfcn", button_number (event));
+
           if (event->button () == Qt::RightButton)
             ContextMenu::executeAt (currentObj.get_properties (),
                                     event->globalPos ());

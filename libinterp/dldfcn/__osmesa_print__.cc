@@ -48,6 +48,12 @@ close_fcn (FILE *f)
 {
   gnulib::fclose (f);
 }
+
+static void
+reset_visibility (figure::properties *fp)
+{
+  fp->set_visible ("on");
+}
 #endif
 
 DEFUN_DLD(__osmesa_print__, args, ,
@@ -57,9 +63,11 @@ DEFUN_DLD(__osmesa_print__, args, ,
 Print figure @var{h} using OSMesa and gl2ps for vector formats.\n\
 \n\
 This is a private internal function.\n\
+\n\
 The first method calls gl2ps with the appropriate @var{term} and writes\n\
 the output of gl2ps to @var{file}. If the first character of @var{file}\n\
-is @qcode{|}, then a process is started and the output of gl2ps is piped to it.\n\
+is @qcode{|}, then a process is started and the output of gl2ps is piped\n\
+to it.\n\
 \n\
 Valid options for @var{term}, which can be concatenated in one string, are:\n\
 @table @asis\n\
@@ -71,14 +79,15 @@ Use GL2PS_SIMPLE_SORT instead of GL2PS_BSP_SORT as Z-depth sorting algorithm.\n\
 Don't render text.\n\
 @end table\n\
 \n\
-The second method doesn't use gl2ps and returns a RGB image in @var{img} instead.\n\
+The second method doesn't use gl2ps and returns a RGB image in @var{img}\n\
+instead.\n\
 \n\
 @end deftypefn")
 {
   octave_value_list retval;
 
 #if ! defined (HAVE_OSMESA)
-  gripe_disabled_feature ("__osmesa_print__", "Offscreen rendering");
+  gripe_disabled_feature ("__osmesa_print__", "offscreen rendering");
 #else
 
   int nargin = args.length ();
@@ -89,23 +98,23 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
       return retval;
     }
 
-  if ((nargin == 3))
+  if (nargin == 3)
     {
-      if(! (args(1).is_string () && args(2).is_string ()))
+      if (! (args(1).is_string () && args(2).is_string ()))
         {
           error ("__osmesa_print__: FILE and TERM has to be strings");
           return retval;
         }
 
-      #ifndef HAVE_GL2PS_H
+#ifndef HAVE_GL2PS_H
         error ("__osmesa_print__: Octave has been compiled without gl2ps");
         return retval;
-      #endif
+#endif
     }
 
   int h = args(0).double_value ();
   graphics_object fobj = gh_manager::get_object (h);
-  if (! (fobj &&  fobj.isa ("figure")))
+  if (! (fobj && fobj.isa ("figure")))
     {
       error ("__osmesa_print__: H has to be a valid figure handle");
       return retval;
@@ -139,20 +148,28 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
     }
 
   // Test for a bug in OSMesa with version < 9.0
-  // Unfortunately the macros OSMESA_MAJOR_VERSION and OSMESA_MINOR_VERSION weren't
-  // updated between many releases and can't be used for detection therefore.
-  // (Version 8.0 until 9.1.4 all return MAJOR 6, MINOR 5)
+  //
+  // Unfortunately the macros OSMESA_MAJOR_VERSION and
+  // OSMESA_MINOR_VERSION weren't updated between many releases and
+  // can't be used for detection.  (Version 8.0 until 9.1.4 all return
+  // MAJOR 6, MINOR 5)
   int z, s;
   glGetIntegerv (GL_DEPTH_BITS, &z);
   glGetIntegerv (GL_STENCIL_BITS, &s);
-  if ((z != 16) || (s != 0))
+  if (z != 16 || s != 0)
     error ("__osmesa_print__: Depth and stencil doesn't match,"
            " are you sure you are using OSMesa >= 9.0?");
 
-  // check if the figure is visible
+  unwind_protect outer_frame;
+
   bool v = fp.is_visible ();
+
   if (v)
-    fp.set_visible ("off");
+    {
+      outer_frame.add_fcn (reset_visibility, &fp);
+
+      fp.set_visible ("off");
+    }
 
   if (nargin == 3)
     {
@@ -172,7 +189,7 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
           else
             {
               // write gl2ps output directly to file
-              FILE *filep = fopen (file.c_str (), "w");
+              FILE *filep = gnulib::fopen (file.c_str (), "w");
 
               if (filep)
                 {
@@ -224,10 +241,6 @@ The second method doesn't use gl2ps and returns a RGB image in @var{img} instead
       idx(2) = idx_vector (0, 3);
       retval = octave_value (img.permute (perm). index(idx));
     }
-
-  // restore visibility if necessary
-  if (v)
-    fp.set_visible ("on");
 
   OSMesaDestroyContext (ctx);
 

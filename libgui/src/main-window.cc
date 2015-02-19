@@ -91,7 +91,7 @@ main_window::main_window (QWidget *p)
     community_news_window (0),
     _octave_qt_link (0),
     _clipboard (QApplication::clipboard ()),
-    _cmd_queue (new QStringList ()),  // no command pending
+    _cmd_queue (QList<octave_cmd *> ()),  // no command pending
     _cmd_processing (1),
     _cmd_queue_mutex (),
     _dbg_queue (new QStringList ()),  // no debug pending
@@ -162,7 +162,6 @@ main_window::~main_window (void)
       community_news_window = 0;
     }
   delete _octave_qt_link;
-  delete _cmd_queue;
 }
 
 // catch focus changes and determine the active dock widget
@@ -315,7 +314,8 @@ main_window::focus_console_after_command ()
 void
 main_window::execute_command_in_terminal (const QString& command)
 {
-  queue_command (command);
+  octave_cmd_exec *cmd = new octave_cmd_exec (command);
+  queue_command (cmd);
   if (focus_console_after_command ())
     focus_command_window ();
 }
@@ -323,29 +323,6 @@ main_window::execute_command_in_terminal (const QString& command)
 void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
-  QString file_name = info.canonicalFilePath ();
-  QString command = "run \"" + file_name + "\"";
-
-  QString function_name = info.fileName ();
-  function_name.chop (info.suffix ().length () + 1);
-
-  if (! valid_identifier (function_name.toStdString ()))
-    {
-      int ans = QMessageBox::question (0, tr ("Octave"),
-         tr ("The file %1\n"
-             "can not be executed because its name\n"
-             "is not a valid identifier.\n\n"
-             "Do you want to execute\n%2\n"
-             "instead?").
-          arg (file_name).arg (command),
-          QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-      if (ans == QMessageBox::Yes)
-        execute_command_in_terminal (command);
-
-      return;
-    }
-
   octave_link::post_event (this, &main_window::run_file_callback, info);
   if (focus_console_after_command ())
     focus_command_window ();
@@ -354,19 +331,15 @@ main_window::run_file_in_terminal (const QFileInfo& info)
 void
 main_window::run_file_callback (const QFileInfo& info)
 {
-  QString dir = info.absolutePath ();
-  QString function_name = info.fileName ();
-  function_name.chop (info.suffix ().length () + 1);
-  if (octave_qt_link::file_in_path (info.absoluteFilePath ().toStdString (),
-                                    dir.toStdString ()))
-    queue_command (function_name);
+  octave_cmd_eval *cmd = new octave_cmd_eval (info);
+  queue_command (cmd);
 }
 
 void
-main_window::queue_command (QString command)
+main_window::queue_command (octave_cmd* cmd)
 {
   _cmd_queue_mutex.lock ();
-  _cmd_queue->append (command);   // queue command
+  _cmd_queue.append (cmd);     // queue command and type
   _cmd_queue_mutex.unlock ();
 
   if (_cmd_processing.tryAcquire ())  // if callback not processing, post event
@@ -1012,7 +985,8 @@ void
 main_window::closeEvent (QCloseEvent *e)
 {
   e->ignore ();
-  queue_command ("exit");
+  octave_cmd_exec *cmd = new octave_cmd_exec ("exit");
+  queue_command (cmd);
 }
 
 void
@@ -2067,26 +2041,21 @@ main_window::execute_command_callback ()
 {
   bool repost = false;          // flag for reposting event for this callback
 
-  if (!_cmd_queue->isEmpty ())  // list can not be empty here, just to make sure
+  if (! _cmd_queue.isEmpty ())  // list can not be empty here, just to make sure
     {
-      std::string pending_input = command_editor::get_current_line ();
-      command_editor::set_initial_input (pending_input);
-
       _cmd_queue_mutex.lock (); // critical path
-      std::string command = _cmd_queue->takeFirst ().toStdString ();
-      if (_cmd_queue->isEmpty ())
-        _cmd_processing.release ();  // cmd queue empty, processing will stop
+
+      octave_cmd *cmd = _cmd_queue.takeFirst ();
+
+      if (_cmd_queue.isEmpty ())
+          _cmd_processing.release ();  // cmd queue empty, processing will stop
       else
         repost = true;          // not empty, repost at end
       _cmd_queue_mutex.unlock ();
 
-      command_editor::replace_line (command);
+      cmd->execute ();
 
-      command_editor::redisplay ();
-      // We are executing inside the command editor event loop.  Force
-      // the current line to be returned for processing.
-      Fdb_next_breakpoint_quiet (ovl (_suppress_dbg_location));
-      command_editor::accept_line ();
+      delete cmd;
     }
 
   if (repost)  // queue not empty, so repost event for further processing

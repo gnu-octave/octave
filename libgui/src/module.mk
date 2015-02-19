@@ -130,6 +130,7 @@ noinst_HEADERS += \
   src/m-editor/octave-txt-lexer.h \
   src/main-window.h \
   src/octave-gui.h \
+  src/octave-cmd.h \
   src/octave-interpreter.h \
   src/octave-qt-link.h \
   src/qtinfo/parser.h \
@@ -157,6 +158,7 @@ src_libgui_src_la_SOURCES = \
   src/m-editor/octave-qscintilla.cc \
   src/m-editor/octave-txt-lexer.cc \
   src/main-window.cc \
+  src/octave-cmd.cc \
   src/octave-dock-widget.cc \
   src/octave-gui.cc \
   src/octave-interpreter.cc \

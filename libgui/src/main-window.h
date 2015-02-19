@@ -57,6 +57,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave-qt-link.h"
 #include "octave-dock-widget.h"
 #include "find-files-dialog.h"
+#include "octave-cmd.h"
 
 class settings_dialog;
 
@@ -276,7 +277,7 @@ private:
 
   void change_directory_callback (const std::string& directory);
 
-  void queue_command (QString command);
+  void queue_command (octave_cmd *cmd);
 
   void queue_debug (QString command);
 
@@ -396,8 +397,12 @@ private:
   // Flag for closing whole application.
   bool _closing;
 
-  // semaphore to synchronize execution signals and related callback
-  QStringList *_cmd_queue;
+  // command queue and semaphore to synchronize execution signals
+  // and related callback
+
+  // the queue for the command structures
+  QList<octave_cmd *> _cmd_queue;
+  // semaphores used for handling the queue
   QSemaphore   _cmd_processing;
   QMutex       _cmd_queue_mutex;
 

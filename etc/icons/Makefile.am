@@ -43,7 +43,9 @@ BUILT_ICONS = \
   $(BUILT_PNG_ICONS) \
   octave-logo.ico
 
-image_DATA = $(IMAGE_FILES)
+image_DATA = \
+  $(IMAGE_FILES) \
+  octave-logo.ico
 
 all-local: octave.desktop $(BUILT_ICONS)
 

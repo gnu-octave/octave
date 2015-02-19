@@ -2120,6 +2120,16 @@ dnl Find icotool program.
 dnl
 AC_DEFUN([OCTAVE_PROG_ICOTOOL], [
   AC_CHECK_PROG(ICOTOOL, icotool, icotool, [])
+  if test -z "$ICOTOOL"; then
+    ICOTOOL='$(top_srcdir)/build-aux/missing icotool'
+    warn_icotool="
+
+I didn't find icotool, but it's only a problem if you need to
+reconstruct octave-logo.ico, which is the case if you're building from
+VCS sources.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_icotool])
+  fi
   AC_SUBST(ICOTOOL)
 ])
 dnl
@@ -2181,6 +2191,16 @@ dnl Find rsvg-convert program.
 dnl
 AC_DEFUN([OCTAVE_PROG_RSVG_CONVERT], [
   AC_CHECK_PROG(RSVG_CONVERT, rsvg-convert, rsvg-convert, [])
+  if test -z "$RSVG_CONVERT"; then
+    RSVG_CONVERT='$(top_srcdir)/build-aux/missing rsvg-convert'
+    warn_rsvg_convert="
+
+I didn't find rsvg-convert, but it's only a problem if you need to
+reconstruct octave-logo-*.png, which is the case if you're building
+from VCS sources.
+"
+    OCTAVE_CONFIGURE_WARNING([warn_rsvg_convert])
+  fi
   AC_SUBST(RSVG_CONVERT)
 ])
 dnl

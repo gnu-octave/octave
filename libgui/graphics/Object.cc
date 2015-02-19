@@ -140,7 +140,7 @@ void Object::redraw (void)
 {
 }
 
-void Object::print (const QString& file_cmd, const QString& term)
+void Object::print (const QString& /* file_cmd */, const QString& /* term */)
 {
 }
 

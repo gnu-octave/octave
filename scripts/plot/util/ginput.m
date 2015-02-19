@@ -125,7 +125,7 @@ function ginput_buttondownfcn (src, button)
 endfunction
 
 function ginput_keypressfcn (src, evt)
-  point = get (ax, "currentpoint");
+  point = get (gca (), "currentpoint");
   key = evt.Key;
   if (key == "return")
     ## Enter key stops ginput.

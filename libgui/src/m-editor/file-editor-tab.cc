@@ -1349,36 +1349,16 @@ file_editor_tab::load_file (const QString& fileName)
 QsciScintilla::EolMode
 file_editor_tab::detect_eol_mode ()
 {
-  char *text = _edit_area->text ().toAscii ().data ();
-  int text_size = _edit_area->text ().length ();
+  QByteArray text = _edit_area->text ().toAscii ();
 
-  char eol_lf = 0x0a;
-  char eol_cr = 0x0d;
+  QByteArray eol_lf = QByteArray (1,0x0a);
+  QByteArray eol_cr = QByteArray (1,0x0d);
+  QByteArray eol_crlf = eol_cr;
+  eol_crlf.append (eol_lf);
 
-  int count_lf = 0;
-  int count_cr = 0;
-  int count_crlf = 0;
-
-  for (int i = 0; i < text_size; i++)
-    {
-      if (text[i] == eol_lf)
-        {
-          count_lf++;
-        }
-      else
-        {
-          if (text[i] == eol_cr)
-            {
-              if ((i < text_size -1) && text[i+1] == eol_lf)
-                {
-                  count_crlf++;
-                  i++;
-                }
-              else
-                count_cr++;
-            }
-        }
-    }
+  int count_crlf = text.count (eol_crlf);
+  int count_lf = text.count (eol_lf) - count_crlf;  // isolated lf
+  int count_cr = text.count (eol_cr) - count_crlf;  // isolated cr;
 
   // get default from OS or from settings
 #if defined (Q_OS_WIN32)
@@ -1388,9 +1368,9 @@ file_editor_tab::detect_eol_mode ()
 #else
   int os_eol_mode = QsciScintilla::EolUnix;
 #endif
-QSettings *settings = resource_manager::get_settings ();
-QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
-      settings->value("editor/default_eol_mode",os_eol_mode).toInt ());
+  QSettings *settings = resource_manager::get_settings ();
+  QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
+        settings->value("editor/default_eol_mode",os_eol_mode).toInt ());
 
   int count_max = 0;
 
@@ -1399,15 +1379,15 @@ QsciScintilla::EolMode eol_mode = static_cast<QsciScintilla::EolMode> (
       eol_mode = QsciScintilla::EolWindows;
       count_max = count_crlf;
     }
-  if (count_cr > count_max)
-    {
-      eol_mode = QsciScintilla::EolMac;
-      count_max = count_cr;
-    }
   if (count_lf > count_max)
     {
       eol_mode = QsciScintilla::EolUnix;
       count_max = count_lf;
+    }
+  if (count_cr > count_max)
+    {
+      eol_mode = QsciScintilla::EolMac;
+      count_max = count_cr;
     }
 
   return eol_mode;

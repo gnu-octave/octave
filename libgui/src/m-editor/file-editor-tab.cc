@@ -163,7 +163,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 
   QSettings *settings = resource_manager::get_settings ();
   if (settings)
-    notice_settings (settings);
+    notice_settings (settings, true);
 }
 
 file_editor_tab::~file_editor_tab (void)
@@ -477,7 +477,7 @@ file_editor_tab::update_lexer ()
           update_apis_file = ! apis_file.exists ();  // flag whether apis file needs update
 
           // function list depends on installed packages: check mod. date
-          if (! update_apis_file & octave_functions)
+          if (! update_apis_file && octave_functions)
             {
               // check whether package file is newer than apis_file
               QDateTime apis_date = apis_file.lastModified ();
@@ -497,7 +497,7 @@ file_editor_tab::update_lexer ()
                                         QString::fromStdString (Voctave_home)
                                         + "/share/octave/octave_packages");
                if (global_pkg_list.exists ()
-                   & (apis_date < global_pkg_list.lastModified ()) )
+                   && (apis_date < global_pkg_list.lastModified ()) )
                 update_apis_file = true;
             }
           }
@@ -506,7 +506,7 @@ file_editor_tab::update_lexer ()
             _prep_apis_file = prep_apis_path + lexer->lexer () + ".pap";
           }
 
-      if (update_apis_file | !_lexer_apis->loadPrepared (_prep_apis_file))
+      if (update_apis_file || !_lexer_apis->loadPrepared (_prep_apis_file))
         {
           // no prepared info loaded, prepare and save if possible
 
@@ -1432,6 +1432,8 @@ file_editor_tab::new_file (const QString &commands)
 
   update_eol_indicator ();
 
+  update_lexer ();
+
   _edit_area->setText (commands);
   _edit_area->setModified (false); // new file is not modified yet
 }
@@ -1783,11 +1785,12 @@ file_editor_tab::file_has_changed (const QString&)
 }
 
 void
-file_editor_tab::notice_settings (const QSettings *settings)
+file_editor_tab::notice_settings (const QSettings *settings, bool init)
 {
   // QSettings pointer is checked before emitting.
 
-  update_lexer ();
+  if (! init)
+    update_lexer ();
 
   // code folding
   if (settings->value ("editor/code_folding",true).toBool ())

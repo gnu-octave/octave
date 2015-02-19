@@ -65,7 +65,7 @@ public slots:
                               Qt::KeyboardModifiers state);
 
   // Tells the editor tab to react on changed settings.
-  void notice_settings (const QSettings *settings);
+  void notice_settings (const QSettings *settings, bool init = false);
 
   // Change to a different editor tab by identifier tag.
   void change_editor_state (const QWidget *ID);

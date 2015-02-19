@@ -49,4 +49,11 @@ octave_txt_lexer::language () const
 }
 
 
+const char*
+octave_txt_lexer::lexer () const
+{
+  return "text";
+}
+
+
 #endif

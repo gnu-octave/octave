@@ -76,14 +76,3 @@ endfunction
 %!error open
 %!error open (1)
 %!error output = open (1)
-
-function open_with_system_app (file)
-
-  if (ispc ())
-    __w32_shell_execute__ (file);
-  else
-    ## FIXME: might not be xdg-open...
-    system (sprintf ("xdg-open %s 2> /dev/null", file), false, "async");
-  endif
-
-endfunction

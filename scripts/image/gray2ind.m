@@ -75,7 +75,7 @@ function [I, map] = gray2ind (I, n = 64)
 
   ## Note: no separate call to round () necessary because
   ##       type conversion does that automatically.
-  if (n < 256)
+  if (n <= 256)
     I = uint8 (I);
   else
     I = uint16 (I);
@@ -93,6 +93,15 @@ endfunction
 %! i2g = ind2gray (1:100, gray (100));
 %! g2i = gray2ind (i2g, 100);
 %! assert (g2i, uint8 (0:99));
+
+%!assert (gray2ind ([0 0.25 0.5 1], 256), uint8 ([0 64 128 255]))
+%!assert (gray2ind ([0 (1/511) (1/510) 1-(1/509) 1-(1/510) 1], 256),
+%!        uint8 ([0 0 1 254 255 255]))
+
+%!test
+%! assert (class (gray2ind ([0.0 0.5 1.0], 255)), "uint8")
+%! assert (class (gray2ind ([0.0 0.5 1.0], 256)), "uint8")
+%! assert (class (gray2ind ([0.0 0.5 1.0], 257)), "uint16")
 
 %% Test input validation
 %!error gray2ind ()

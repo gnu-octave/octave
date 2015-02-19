@@ -90,35 +90,7 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 	rm -f $@-t1
 
 parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
-	case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	  *api*) \
-	    case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	     *brace*) \
-	       api_prefix_decl='%define api.prefix {octave_}'; ;; \
-	     *) \
-	       api_prefix_decl='%define api.prefix "octave_"'; ;; \
-             esac; \
-            ;; \
-	  *name*) \
-	    case "$(BISON_API_PREFIX_DECL_STYLE)" in \
-	      *brace*) \
-	        api_prefix_decl='%name-prefix {octave_}'; ;; \
-	      *) \
-	        api_prefix_decl='%name-prefix="octave_"'; ;; \
-            esac; \
-          ;; \
-	esac; \
-	case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
-	  *quote*) quote='"' ;; \
-	  *) quote="" ;; \
-	esac; \
-	case "$(BISON_PUSH_PULL_DECL_STYLE)" in \
-	  *dash*) push_pull_decl="%define api.push-pull $${quote}both$${quote}"; ;; \
-	  *underscore*) push_pull_decl="%define api.push_pull $${quote}both$${quote}"; ;; \
-	esac; \
-	$(SED) -e "s/%PUSH_PULL_DECL%/$$push_pull_decl/" \
-	       -e "s/%API_PREFIX_DECL%/$$api_prefix_decl/" $< > $@-t
-	mv $@-t $@
+	$(call subst-bison-api-decls,octave_)
 
 noinst_LTLIBRARIES += \
   parse-tree/libparse-tree.la \

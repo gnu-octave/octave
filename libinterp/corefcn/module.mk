@@ -5,6 +5,7 @@ EXTRA_DIST += \
   corefcn/mxarray.in.h \
   corefcn/oct-errno.in.cc \
   corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-parser.in.yy \
   corefcn/oct-tex-symbols.in
 
 ## Options functions for Fortran packages like LSODE, DASPK.
@@ -330,6 +331,8 @@ corefcn/txt-eng.cc: corefcn/oct-tex-symbols.cc
 corefcn/oct-tex-lexer.cc: LEX_OUTPUT_ROOT := lex.octave_tex_
 corefcn/oct-tex-parser.h: corefcn/oct-tex-parser.yy
 
+corefcn/oct-tex-parser.yy: corefcn/oct-tex-parser.in.yy
+	$(call subst-bison-api-decls,octave_tex_)
 
 noinst_LTLIBRARIES += \
   corefcn/libcorefcn.la \

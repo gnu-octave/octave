@@ -45,7 +45,8 @@ static void yyerror (text_parser_tex& parser, const char *s);
 #define scanner parser.get_scanner ()
 %}
 
-%name-prefix="octave_tex_"
+%API_PREFIX_DECL%
+
 %define api.pure
 %parse-param { text_parser_tex& parser }
 %lex-param { void *scanner }

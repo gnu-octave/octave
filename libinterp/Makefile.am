@@ -63,13 +63,22 @@ BUILT_SOURCES = \
   builtin-defun-decls.h \
   builtins.cc
 
-BUILT_DISTFILES = \
+ULT_PARSER_SRC := \
+  corefcn/oct-tex-lexer.in.ll \
+  corefcn/oct-tex-parser.in.yy \
+  parse-tree/oct-parse.in.yy
+
+GENERATED_PARSER_FILES := \
   corefcn/oct-tex-lexer.ll \
+  corefcn/oct-tex-parser.yy \
+  parse-tree/oct-parse.yy
+
+BUILT_DISTFILES = \
+  $(GENERATED_PARSER_FILES) \
   corefcn/oct-tex-parser.h \
   corefcn/oct-tex-symbols.cc \
   parse-tree/oct-gperf.h \
-  parse-tree/oct-parse.h \
-  parse-tree/oct-parse.yy
+  parse-tree/oct-parse.h
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
@@ -203,7 +212,7 @@ liboctinterp_la_LDFLAGS = \
 ## Section for defining and creating DEF_FILES
 
 ULT_DIST_SRC := \
-  $(filter-out corefcn/oct-tex-lexer.ll parse-tree/oct-parse.yy, $(DIST_SRC)) corefcn/oct-tex-lexer.in.ll parse-tree/oct-parse.in.yy
+  $(filter-out $(GENERATED_PARSER_FILES), $(DIST_SRC)) $(ULT_PARSER_SRC)
 
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 

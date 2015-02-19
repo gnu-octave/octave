@@ -688,7 +688,13 @@ void Canvas::canvasWheelEvent (QWheelEvent* event)
               {
                 axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                double factor = event->delta () > 0 ? 2.0 : 0.5;
+                // Control how fast to zoom when using scroll wheel.
+                double wheel_zoom_speed = ap.get_mousewheelzoom ();
+
+                // Determine if we're zooming in or out.
+                double factor = (event->delta () > 0
+                                 ? 1 / (1.0 - wheel_zoom_speed)
+                                 : 1.0 - wheel_zoom_speed);
 
                 ap.zoom (mode, factor);
 

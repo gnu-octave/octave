@@ -85,21 +85,21 @@ Undocumented internal function.\n\
               return retval;
             }
 
-          const float *yvec = ymat.data ();
           FloatMatrix dmat (nyr, nyc);
-          float *dvec = dmat.fortran_vec ();
 
           octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
-          const octave_idx_type inc = rows ? 1 : nyr;
+          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          volatile octave_idx_type k = 0;
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
               F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
-                                       yvec, dvec, incfd, &ierr));
+                                       ymat.data () + k * inc,
+                                       dmat.fortran_vec () + k * inc,
+                                       incfd, &ierr));
 
-              yvec += inc;
-              dvec += inc;
+              k++;
 
               if (ierr < 0)
                 {
@@ -132,21 +132,20 @@ Undocumented internal function.\n\
               return retval;
             }
 
-          const double *yvec = ymat.data ();
           Matrix dmat (nyr, nyc);
-          double *dvec = dmat.fortran_vec ();
 
           octave_idx_type ierr;
           const octave_idx_type incfd = rows ? nyr : 1;
-          const octave_idx_type inc = rows ? 1 : nyr;
+          volatile const octave_idx_type inc = rows ? 1 : nyr;
+          volatile octave_idx_type k = 0;
 
           for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
             {
               F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
-                                         yvec, dvec, incfd, &ierr));
-
-              yvec += inc;
-              dvec += inc;
+                                         ymat.data () + k * inc,
+                                         dmat.fortran_vec () + k * inc,
+                                         incfd, &ierr));
+              k++;
 
               if (ierr < 0)
                 {

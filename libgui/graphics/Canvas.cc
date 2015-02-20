@@ -426,6 +426,9 @@ button_number (QMouseEvent *event)
     case Qt::RightButton:
       retval = 3;
       break;
+
+    default:
+      break;
     }
 
   return retval;

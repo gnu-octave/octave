@@ -589,7 +589,9 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   T* data_in = sm.data ();
   octave_idx_type jrow, i, j, k, jj, c, total_len_l, total_len_u, p_perm,
                   max_ind, max_len_l, max_len_u;
-  T tl, aux, maximum;
+  T zero = T(0);
+
+  T tl = zero, aux, maximum;
 
   max_len_u = nnz_u;
   max_len_u += (0.1 * max_len_u) > n ? 0.1 * max_len_u : n;
@@ -612,7 +614,7 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
   // Working arrays and permutation arrays
   octave_idx_type w_len_u, w_len_l;
-  T total_sum, partial_col_sum, partial_row_sum;
+  T total_sum, partial_col_sum = zero, partial_row_sum = zero;
   std::set <octave_idx_type> iw_l;
   std::set <octave_idx_type> iw_u;
   std::set <octave_idx_type>::iterator it, it2;
@@ -622,7 +624,6 @@ void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   OCTAVE_LOCAL_BUFFER (octave_idx_type, uptr, n);
 
 
-  T zero = T(0);
   cidx_l[0] = cidx_in[0];
   cidx_u[0] = cidx_in[0];
   for (i = 0; i < n; i++)

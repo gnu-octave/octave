@@ -68,6 +68,7 @@ OCTAVE_CORE_LIBS = \
 include ../libgui/link-deps.mk
 
 nodist_octave_SOURCES = main.cc
+octave_SOURCES = display-available.c
 
 octave_LDADD = \
   $(top_builddir)/libgnu/libgnu.la \

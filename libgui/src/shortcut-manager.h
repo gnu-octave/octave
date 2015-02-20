@@ -120,13 +120,65 @@ private:
   void shortcut_dialog (int);
   void import_shortcuts (int set, QSettings *settings);
 
-  struct shortcut_t
+  class shortcut_t
   {
+  public:
+
+    shortcut_t (void)
+      : tree_item (0), description (), settings_key (),
+        actual_sc (new QKeySequence[2]), default_sc (new QKeySequence[2])
+    {
+      actual_sc[0] = QKeySequence ();
+      actual_sc[1] = QKeySequence ();
+
+      default_sc[0] = QKeySequence ();
+      default_sc[1] = QKeySequence ();
+    }
+
+    shortcut_t (const shortcut_t& x)
+      : tree_item (x.tree_item), description (x.description),
+        settings_key (x.settings_key), 
+        actual_sc (new QKeySequence[2]), default_sc (new QKeySequence[2])
+    {
+      actual_sc[0] = x.actual_sc[0];
+      actual_sc[1] = x.actual_sc[1];
+
+      default_sc[0] = x.default_sc[0];
+      default_sc[1] = x.default_sc[1];
+    }
+
+    shortcut_t& operator = (const shortcut_t& x)
+    {
+      if (&x != this)
+        {
+          tree_item = x.tree_item;
+          description = x.description;
+          settings_key = x.settings_key;
+
+          actual_sc = new QKeySequence[2];
+          default_sc = new QKeySequence[2];
+
+          actual_sc[0] = x.actual_sc[0];
+          actual_sc[1] = x.actual_sc[1];
+
+          default_sc[0] = x.default_sc[0];
+          default_sc[1] = x.default_sc[1];
+        }
+
+      return *this;
+    }
+
+    ~shortcut_t (void)
+    {
+      delete [] actual_sc;
+      delete [] default_sc;
+    }
+
+    QTreeWidgetItem *tree_item;
     QString description;
     QString settings_key;
-    QKeySequence actual_sc[2];
-    QKeySequence default_sc[2];
-    QTreeWidgetItem *tree_item;
+    QKeySequence *actual_sc;
+    QKeySequence *default_sc;
   };
 
   QList<shortcut_t> _sc;

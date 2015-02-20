@@ -24,7 +24,7 @@
 ##
 ## The input image @var{rgb} can be specified as a single matrix of size
 ## @nospell{MxNx3}, or as three separate variables, @var{R}, @var{G}, and
-## @var{B}, its three colour channels, red, green, and blue.
+## @var{B}, its three color channels, red, green, and blue.
 ##
 ## It outputs an indexed image @var{x} and a colormap @var{map} to interpret
 ## an image exactly the same as the input.  No dithering or other form of color

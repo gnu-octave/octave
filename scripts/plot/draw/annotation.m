@@ -67,7 +67,7 @@
 ## @end itemize
 ##
 ## Valid annotation types and their specific properties are described
-## bellow: 
+## below: 
 ##
 ## @table @asis
 ## @item @qcode{"line"}

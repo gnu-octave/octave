@@ -51,6 +51,7 @@ awt
 backend
 Backends
 backends
+backgroundcolor
 backtrace
 bartlett
 BaseValue
@@ -183,6 +184,7 @@ ctranspose
 Ctrl
 CTRL
 CTS
+cubehelix
 cummax
 cummin
 cumprod
@@ -237,6 +239,7 @@ dOmega
 doNotSpecify
 dotall
 dotexceptnewline
+doublearrow
 Downarrow
 downarrow
 downdate
@@ -315,6 +318,7 @@ filetype
 FinDiffType
 finv
 FIRfilter
+fitboxtotext
 FIXME
 flac
 FlashPix
@@ -404,6 +408,9 @@ hardcoding
 HDF
 hdf
 headerlines
+headlength
+headstyle
+headwidth
 heartsuit
 helpdlg
 Helvetica
@@ -416,6 +423,7 @@ hh
 HH
 histc
 holomorphic
+horizontalalignment
 Horner's
 horzcat
 hostname
@@ -988,8 +996,16 @@ tex
 texinfo
 Texinfo
 TextAlphaBits
+textarrow
+textbackgroundcolor
+textbox
+textcolor
+textedgecolor
 textfield
+textlinewidth
+textmargin
 textread
+textrotation
 textscan
 th
 ths
@@ -1079,6 +1095,7 @@ varphi
 varpi
 varsigma
 vartheta
+vback
 vec
 vech
 Vectorize
@@ -1087,6 +1104,7 @@ vectorizing
 vee
 versa
 vertcat
+verticalalignment
 vertices
 Vorbis
 vorbis

@@ -139,6 +139,7 @@ OPERATORS_INC = \
 
 ## Special rules for sources which must be built before rest of compilation.
 operators/ops.cc: $(OPERATORS_SRC) mkops
-	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t && \
 	mv $@-t $@
 

@@ -45,13 +45,20 @@ function genpropdoc (objname, fname)
   ## Docstring
   str = printdoc (objname, obj);
 
-  fid = fopen (fname,  "w+");
-  if (fid < 0)
-    error ("genpropdoc: couldn't open %s.", fname);
+  if (nargin == 2)
+    fid = fopen (fname,  "w+");
+    if (fid < 0)
+      error ("genpropdoc: couldn't open %s.", fname);
+    endif
+  else
+    fid = stdout;
   endif
 
   fprintf (fid, str);
-  fclose (fid);
+
+  if (nargin == 2)
+    fclose (fid);
+  endif
 endfunction
 
 function s = getdoc (objname, field, base)

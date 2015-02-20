@@ -135,11 +135,11 @@ check-jit: all
 endif
 
 run-octave: run-octave.in Makefile
-	@$(do_subst_script_vals)
+	$(AM_V_GEN)$(do_subst_script_vals) && \
 	chmod a+rx "$@"
 
 bits/stl_algo.h: build-aux/stl_algo.h-fixed
-	$(MKDIR_P) bits
+	$(AM_V_GEN)$(MKDIR_P) bits && \
 	$(INSTALL_HEADER) $< $@
 
 ## If we aren't trying to fix stl_algo.h, then try to ensure that
@@ -154,13 +154,22 @@ nonexistent-file:
 
 if AMCOND_BUILD_DOCS
 AUTHORS BUGS INSTALL.OCTAVE:
-	$(MAKE) -C doc/interpreter ../../$@
+	$(AM_V_GEN)$(MAKE) -C doc/interpreter ../../$@
 endif
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
 
+define changelog-from-hg-log
+  rm -f $@-t $@ && \
+  { cd $(srcdir); \
+    hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; \
+    echo ""; \
+    echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19" \
+  } > $@-t && \
+  mv $@-t $@
+endef
+
 ChangeLog:
-	(cd $(srcdir); hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; echo ""; echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19") > $@.t
-	mv $@.t $@
+	$(AM_V_GEN)$(changelog-from-hg-log)
 .PHONY: ChangeLog
 
 octetc_DATA = \

@@ -79,7 +79,7 @@ check-jit: sparse.tst bc-overload-tests.stamp
 endif
 
 sparse.tst: build-sparse-tests.sh
-	$(srcdir)/build-sparse-tests.sh
+	$(AM_V_GEN)$(srcdir)/build-sparse-tests.sh
 
 GENERATED_BC_OVERLOADS_DIRS := \
   $(shell $(srcdir)/build-bc-overload-tests.sh --list-dirs)

@@ -50,18 +50,20 @@ image_DATA = \
 all-local: octave.desktop $(BUILT_ICONS)
 
 octave.desktop: octave.desktop.in Makefile
-	@echo "making $@ from $<"
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
-	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
+	  -e "s|%OCTAVE_PREFIX%|${prefix}|" && \
 	mv $@-t $@
 
 $(BUILT_PNG_ICONS): octave-logo.svg
-	$(RSVG_CONVERT) -w $(lastword $(subst -, ,$(patsubst %.png,%,$@))) $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(RSVG_CONVERT) -w $(lastword $(subst -, ,$(patsubst %.png,%,$@))) $< > $@-t && \
 	mv $@-t $@
 
 octave-logo.ico: $(WINDOWS_PNG_ICONS)
-	$(ICOTOOL) --create --raw $^ > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(ICOTOOL) --create --raw $^ > $@-t && \
 	mv $@-t $@
 
 install-data-local:

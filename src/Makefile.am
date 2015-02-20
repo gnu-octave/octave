@@ -132,16 +132,16 @@ octave_config_LDADD = \
 all-local: $(OCTAVE_VERSION_LINKS)
 
 octave-config.cc: octave-config.in.cc Makefile
-	@$(do_subst_default_vals)
+	$(AM_V_GEN)$(do_subst_default_vals)
 
 mkoctfile.cc: mkoctfile.in.cc Makefile
-	@$(do_subst_config_vals)
+	$(AM_V_GEN)$(do_subst_config_vals)
 
 ## main.cc must depend on Makefile.  Calling configure may change
 ## default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 main.cc: main.in.cc Makefile
-	@$(do_subst_default_vals)
+	$(AM_V_GEN)$(do_subst_default_vals)
 
 install-exec-hook: make-version-links
 

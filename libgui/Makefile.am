@@ -92,35 +92,37 @@ octetc_DATA = default-qt-settings
 octlocale_DATA = $(LOCALES)
 
 default-qt-settings: default-qt-settings.in
-	$(do_subst_qt_settings)
+	$(AM_V_GEN)$(do_subst_qt_settings)
 
 define moc-command
-( echo '#ifdef HAVE_CONFIG_H'; \
-  echo '#include <config.h>'; \
-  echo '#endif'; \
-  $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t
-mv $@-t $@
+  rm -f $@-t $@ && \
+  ( echo "#ifdef HAVE_CONFIG_H"; \
+    echo "#include <config.h>"; \
+    echo "#endif"; \
+    $(MOC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MOC_OCTAVE_CPPFLAGS) $(MOC_CPPFLAGS) $(liboctgui_la_CPPFLAGS) $< ) > $@-t && \
+  mv $@-t $@
 endef
 
 define rcc-command
-( echo '#ifdef HAVE_CONFIG_H'; \
-  echo '#include <config.h>'; \
-  echo '#endif'; \
-  $(RCC) -name $(@D) $< ) > $@-t
-mv $@-t $@
+  rm -f $@-t $@ && \
+  ( echo "#ifdef HAVE_CONFIG_H"; \
+    echo "#include <config.h>"; \
+    echo "#endif"; \
+    $(RCC) -name $(@D) $< ) > $@-t && \
+  mv $@-t $@
 endef
 
 moc-%.cc: %.h
-	$(moc-command)
+	$(AM_V_GEN)$(moc-command)
 
 ui-%.h: %.ui
-	$(UIC) -o $@ $<
+	$(AM_V_GEN)$(UIC) -o $@ $<
 
 qrc-%.cc: %.qrc
-	$(rcc-command)
+	$(AM_V_GEN)$(rcc-command)
 
 %.qm: %.ts
-	$(MKDIR_P) languages
+	$(AM_V_GEN)$(MKDIR_P) languages && \
 	$(LRELEASE) -qm $@ $<
 
 DISTCLEANFILES = \

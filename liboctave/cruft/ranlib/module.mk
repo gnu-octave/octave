@@ -52,14 +52,16 @@ cruft_ranlib_libranlib_la_SOURCES = $(RANLIB_SRC)
 
 cruft_ranlib_libranlib_la_DEPENDENCIES = cruft/ranlib/ranlib.def
 
+define gen-ranlib-def
+  rm -f $@-t $@ && \
+  $(MKDIR_P) cruft/ranlib && \
+  $(SHELL) cruft/mkf77def $(srcdir) $(RANLIB_SRC) > $@-t && \
+  mv $@-t $@
+endef
+
 ## Special rules for files which must be built before compilation
 ## ranlib directory may not exist in VPATH build; create it if necessary.
 cruft/ranlib/ranlib.def: $(RANLIB_SRC) cruft/mkf77def
-	@-if ! test -d cruft/ranlib; then \
-		mkdir cruft/ranlib ; \
-	fi
-	chmod a+rx cruft/mkf77def
-	./cruft/mkf77def $(srcdir) $(RANLIB_SRC) > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)$(gen-ranlib-def)
 
 liboctave_la_LIBADD += cruft/ranlib/libranlib.la

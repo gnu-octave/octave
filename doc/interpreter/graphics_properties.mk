@@ -8,27 +8,32 @@ GRAPH_PROP_TEXI_SRC= \
   plot-surfaceproperties.texi \
   plot-textproperties.texi
 
+define gen-propdoc-texi
+  rm -f $@-t $@ && \
+  $(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('$(1)');" > $@-t && \
+  mv $@-t $@
+endef
 
 plot-axesproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('axes', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,axes)
 
 plot-figureproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('figure', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,figure)
 
 plot-imageproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('image', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,image)
 
 plot-lineproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('line', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,line)
 
 plot-patchproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('patch', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,patch)
 
 plot-rootproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('root', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,root)
 
 plot-surfaceproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('surface', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,surface)
 
 plot-textproperties.texi: genpropdoc.m
-	$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval "genpropdoc ('text', '$@');" || { rm -f $@; exit 1; }
+	$(AM_V_GEN)$(call gen-propdoc-texi,text)

@@ -73,17 +73,16 @@ nodist_cruft_libcruft_la_SOURCES += \
 
 ## slatec-fn directory may not exist in VPATH build; create it if necessary.
 
+define do-subst-isnan-macro
+  rm -f $@-t $@ && \
+  $(MKDIR_P) cruft/slatec-fn && \
+  $(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t && \
+  mv $@-t $@
+endef
+
 cruft/slatec-fn/erfc.f: cruft/slatec-fn/erfc.in.f Makefile
-	@-if ! test -d cruft/slatec-fn; then \
-		mkdir cruft/slatec-fn ; \
-	fi
-	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)$(do-subst-isnan-macro)
 
 cruft/slatec-fn/derfc.f: cruft/slatec-fn/derfc.in.f Makefile
-	@-if ! test -d cruft/slatec-fn; then \
-		mkdir cruft/slatec-fn ; \
-	fi
-	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)$(do-subst-isnan-macro)
 

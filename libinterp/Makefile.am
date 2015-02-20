@@ -241,12 +241,14 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## See also module.mk files for overrides when speciall CPPFLAGS are needed.
 ## FIXME: Shouldn't the build stop if CPP fails here?  Yes (10/31/2013)
 %.df: %.cc
+	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(LLVM_CPPFLAGS) $(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t
-	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
-	rm $@-t
+	  -DMAKE_BUILTINS $< > $@-t1 && \
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t1 > $@-t && \
+	mv $@-t $@ && \
+	rm -f $@-t1
 
 ## Rules to build test files
 
@@ -272,13 +274,15 @@ nobase_libinterptests_DATA = $(TST_FILES)
 ## However, calling configure will also regenerate the Makefiles from
 ## Makefile.am and trigger the rules below.
 oct-conf.h: oct-conf.in.h Makefile
-	@$(do_subst_config_vals)
+	$(AM_V_GEN)$(do_subst_config_vals)
 
 oct-conf-features.h: $(top_builddir)/config.h config-features.sh
-	$(srcdir)/config-features.sh $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/config-features.sh $< > $@-t && \
 	mv $@-t $@
 
 version.h: version.in.h Makefile
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) < $< \
 	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
 	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
@@ -287,34 +291,38 @@ version.h: version.in.h Makefile
           -e "s|%OCTAVE_MINOR_VERSION%|${OCTAVE_MINOR_VERSION}|" \
           -e "s|%OCTAVE_PATCH_VERSION%|${OCTAVE_PATCH_VERSION}|" \
 	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
-	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
+	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t && \
 	mv $@-t $@
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mkbuiltins --source $(DEF_FILES) > $@-t && \
 	mv $@-t $@
 
 builtin-defun-decls.h: $(SRC_DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mkbuiltins --header $(SRC_DEF_FILES) > $@-t && \
 	mv $@-t $@
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD
 
 dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t && \
 	mv $@-t $@
 endif
 
 if AMCOND_BUILD_DOCS
 .DOCSTRINGS: $(ALL_DEF_FILES) gendoc.pl
+	$(AM_V_GEN)rm -f $@-t $@ && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-	fi
-	@echo "creating .DOCSTRINGS from .cc source files"
-	@$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@
-	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
+	fi && \
+	$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@-t && \
+	mv $@-t $@ && \
+	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS && \
 	touch $@
 
 all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS

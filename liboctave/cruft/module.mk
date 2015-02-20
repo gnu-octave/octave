@@ -26,11 +26,15 @@ include cruft/ranlib/module.mk
 include cruft/slatec-err/module.mk
 include cruft/slatec-fn/module.mk
 
+define gen-cruft-def
+  rm -f $@-t $@ && \
+  $(SHELL) cruft/mkf77def $(srcdir) $(cruft_libcruft_la_SOURCES) > $@-t && \
+  mv $@-t $@
+endef
+
 ## Special rules for files which must be built before compilation
 cruft/cruft.def: $(cruft_libcruft_la_SOURCES) cruft/mkf77def
-	chmod a+rx cruft/mkf77def
-	./cruft/mkf77def $(srcdir) $(cruft_libcruft_la_SOURCES) > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)$(gen-cruft-def)
 
 DISTCLEANFILES += \
   cruft/cruft.def \

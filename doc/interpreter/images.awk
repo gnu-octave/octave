@@ -1,4 +1,7 @@
 BEGIN {
+  print "## DO NOT EDIT -- generated from module-files by config-module.awk";
+  print "";
+
   exts[1] = "eps";
   exts[2] = "pdf";
   exts[3] = "png";
@@ -26,7 +29,7 @@ BEGIN {
 
     for (j = 2; j <= NF; j++) {
       printf ("%s.%s: %s\n", $j, ext, script);
-      printf ("\t$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval \"%s ('%s', '%s');\"\n",
+      printf ("\t$(AM_V_GEN)$(top_builddir)/run-octave -f -q -H -p $(srcdir) --eval \"%s ('%s', '%s');\"\n",
               basename, $j, ext);
     }
   }

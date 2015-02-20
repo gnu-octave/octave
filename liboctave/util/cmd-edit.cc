@@ -273,15 +273,11 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 
   eof = false;
 
-  char *line = 0;
-
   const char *p = prompt.c_str ();
 
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-  line = ::octave_rl_readline (p);
-
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+  char *line = ::octave_rl_readline (p);
 
   if (line)
     {
@@ -291,6 +287,8 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
     }
   else
     eof = true;
+
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   return retval;
 }

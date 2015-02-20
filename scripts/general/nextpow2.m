@@ -18,7 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nextpow2 (@var{x})
-## If @var{x} is a scalar, return the first integer @var{n} such that
+## Compute exponent for smallest power of two larger than input.
+##
+## For each element in the input array @var{x}, returns the first integer
+## @var{n} such that
 ## @tex
 ## $2^n \ge |x|$.
 ## @end tex
@@ -26,7 +29,6 @@
 ## 2^n @geq{} abs (x).
 ## @end ifnottex
 ##
-## If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
 ## @seealso{pow2, log2}
 ## @end deftypefn
 
@@ -40,19 +42,12 @@ function n = nextpow2 (x)
     print_usage ();
   endif
 
-  if (! (isscalar (x) || isvector (x)))
-    error ("nextpow2: X must be a scalar or a vector");
-  endif
-
-  t = length (x);
-  if (t > 1)
-    x = t;
+  if (! isnumeric (x))
+    error ("nextpow2: X must be numeric");
   endif
 
   [f, n] = log2 (abs (x));
-  if (f == 0.5)
-    n = n - 1;
-  endif
+  n(f == 0.5)--;
 
 endfunction
 
@@ -63,7 +58,7 @@ endfunction
 %!assert (nextpow2 (-16), 4)
 %!assert (nextpow2 (-17), 5)
 %!assert (nextpow2 (-31), 5)
-%!assert (nextpow2 (1:17), 5)
+%!assert (nextpow2 (1:17), [0 1 2 2 3 3 3 3 4 4 4 4 4 4 4 4 5])
 
 %!error nexpow2 ()
 %!error nexpow2 (1, 2)

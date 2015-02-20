@@ -44,6 +44,11 @@ Summary of important user-visible changes for version 4.0:
     the dimension of "x". The old behaviour of "ismatrix" is obtained by
     "isnumeric (x) || islogical (x) || ischar (x)".
 
+ ** The nextpow2 function behaviour has been changed for vector inputs.
+    Instead of computing `nextpow2 (length (x))', it will now compute
+    nextpow2() for each element of the input.  Not only is this change
+    Matlab compatible, it also prevents bugs for "vectors" of length 1.
+
  ** The preference
 
       do_braindead_shortcircuit_evaluation

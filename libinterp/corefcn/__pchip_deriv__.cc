@@ -103,7 +103,7 @@ Undocumented internal function.\n\
 
               if (ierr < 0)
                 {
-                  error ("PCHIM: error: %i\n", ierr);
+                  error ("__pchip_deriv__: PCHIM failed with ierr = %i", ierr);
                   return retval;
                 }
             }
@@ -150,7 +150,7 @@ Undocumented internal function.\n\
 
               if (ierr < 0)
                 {
-                  error ("DPCHIM: error: %i\n", ierr);
+                  error ("__pchip_deriv__: DPCHIM failed with ierr = %i", ierr);
                   return retval;
                 }
             }

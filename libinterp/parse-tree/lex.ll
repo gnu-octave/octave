@@ -36,6 +36,10 @@ object) relevant global values before and after the nested call.
 %option reentrant
 %option bison-bridge
 
+%option noyyalloc
+%option noyyrealloc
+%option noyyfree
+
 %top {
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -1712,6 +1716,24 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 %%
+
+void *
+octave_alloc (yy_size_t size, yyscan_t)
+{
+  return malloc (size);
+}
+
+void *
+octave_realloc (void *ptr, yy_size_t size, yyscan_t)
+{
+  return realloc (ptr, size);
+}
+
+void
+octave_free (void *ptr, yyscan_t)
+{
+  free (ptr);
+}
 
 static void
 display_character (char c)

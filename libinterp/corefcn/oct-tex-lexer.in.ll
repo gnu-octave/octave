@@ -25,6 +25,10 @@ along with Octave; see the file COPYING.  If not, see
 %option reentrant
 %option bison-bridge
 
+%option noyyalloc
+%option noyyrealloc
+%option noyyfree
+
 %top {
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -142,6 +146,24 @@ NUM	(({D}+\.?{D}*)|(\.{D}+))
 .	{ yylval->ch = yytext[0]; return CH; }
 
 %%
+
+void *
+octave_tex_alloc (yy_size_t size, yyscan_t)
+{
+  return malloc (size);
+}
+
+void *
+octave_tex_realloc (void *ptr, yy_size_t size, yyscan_t)
+{
+  return realloc (ptr, size);
+}
+
+void
+octave_tex_free (void *ptr, yyscan_t)
+{
+  free (ptr);
+}
 
 bool
 text_parser_tex::init_lexer (const std::string& s)

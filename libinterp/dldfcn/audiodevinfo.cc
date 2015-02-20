@@ -577,7 +577,7 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   const Matrix sound = retval(0).matrix_value ();
   int return_status = retval(1).int_value ();
 
-  if (error_state || frames != sound.rows ()
+  if (error_state || (frames - sound.rows () != 0)
       || sound.columns () < 1 || sound.columns () > 2)
     {
       error ("audio player callback function failed");

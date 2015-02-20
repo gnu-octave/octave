@@ -149,6 +149,8 @@ static void yyerror (octave_base_parser& parser, const char *s);
 
 %union
 {
+  int dummy_type;
+
   // The type of the basic tokens returned by the lexer.
   token *tok_val;
 
@@ -156,7 +158,7 @@ static void yyerror (octave_base_parser& parser, const char *s);
   octave_comment_list *comment_type;
 
   // Types for the nonterminals we generate.
-  char sep_type;
+  char punct_type;
   tree *tree_type;
   tree_matrix *tree_matrix_type;
   tree_cell *tree_cell_type;
@@ -237,14 +239,18 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %token <tok_val> FCN
 
 // Other tokens.
-%token END_OF_INPUT LEXICAL_ERROR
-%token INPUT_FILE
+%token<dummy_type> END_OF_INPUT LEXICAL_ERROR
+%token<dummy_type> INPUT_FILE
 // %token VARARGIN VARARGOUT
 
+%token<dummy_type> '(' ')' '[' ']' '{' '}' '.' ',' ';' '@' '\n'
+
 // Nonterminals we construct.
+%type <dummy_type> indirect_ref_op decl_param_init push_fcn_symtab
+%type <dummy_type> param_list_beg param_list_end stmt_begin parse_error
 %type <comment_type> stash_comment
 %type <tok_val> function_beg classdef_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
+%type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -322,10 +328,9 @@ static void yyerror (octave_base_parser& parser, const char *s);
 // cases (for example, a new semantic type is added but not handled
 // here).
 
-%destructor { } <sep_type>
 %destructor { } <tok_val>
+%destructor { } <punct_type>
 %destructor { } <comment_type>
-%destructor { } <dummy_type>
 %destructor { } <>
 
 %destructor { delete $$; } <tree_type>
@@ -334,8 +339,8 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_expression_type>
 %destructor { delete $$; } <tree_constant_type>
 %destructor { delete $$; } <tree_fcn_handle_type>
-%destructor { delete $$; } <tree_funcall>
-%destructor { delete $$; } <tree_function_def>
+%destructor { delete $$; } <tree_funcall_type>
+%destructor { delete $$; } <tree_function_def_type>
 %destructor { delete $$; } <tree_anon_fcn_handle_type>
 %destructor { delete $$; } <tree_identifier_type>
 %destructor { delete $$; } <tree_index_expression_type>
@@ -374,11 +379,14 @@ static void yyerror (octave_base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_classdef_enum_list_type>
 %destructor { delete $$; } <tree_classdef_enum_block_type>
 
-%destructor {
-    warning_with_id
-      ("Octave:parser-destructor",
-       "possible memory leak in cleanup following parse error");
- } <*>
+// Defining a generic destructor generates a warning if destructors are
+// already explicitly declared for all types.
+//
+// %destructor {
+//    warning_with_id
+//      ("Octave:parser-destructor",
+//       "possible memory leak in cleanup following parse error");
+// } <*>
 
 // Where to start.
 %start input
@@ -391,21 +399,30 @@ static void yyerror (octave_base_parser& parser, const char *s);
 
 input           : simple_list '\n'
                   {
+                    $$ = 0;
                     parser.stmt_list = $1;
                     YYACCEPT;
                   }
                 | simple_list END_OF_INPUT
                   {
+                    $$ = 0;
                     lexer.end_of_input = true;
                     parser.stmt_list = $1;
                     YYACCEPT;
                   }
                 | parse_error
-                  { ABORT_PARSE; }
+                  {
+                    $$ = 0;
+                    ABORT_PARSE;
+                  }
                 ;
 
 simple_list     : opt_sep_no_nl
-                  { $$ = 0; }
+                  {
+                    YYUSE ($1);
+
+                    $$ = 0;
+                  }
                 | simple_list1 opt_sep_no_nl
                   { $$ = parser.set_stmt_print_flag ($1, $2, false); }
                 ;
@@ -606,6 +623,8 @@ primary_expr    : identifier
 
 magic_colon     : ':'
                   {
+                    YYUSE ($1);
+
                     octave_value tmp (octave_value::magic_colon_t);
                     $$ = new tree_constant (tmp);
                   }
@@ -613,6 +632,8 @@ magic_colon     : ':'
 
 magic_tilde     : EXPR_NOT
                   {
+                    YYUSE ($1);
+
                     $$ = new tree_black_hole ();
                   }
                 ;
@@ -641,7 +662,10 @@ arg_list        : expression
                 ;
 
 indirect_ref_op : '.'
-                  { lexer.looking_at_indirect_ref = true; }
+                  {
+                    $$ = 0;
+                    lexer.looking_at_indirect_ref = true;
+                  }
                 ;
 
 oper_expr       : primary_expr
@@ -796,6 +820,8 @@ colon_expr1     : oper_expr
                   { $$ = new tree_colon_expression ($1); }
                 | colon_expr1 ':' oper_expr
                   {
+                    YYUSE ($2);
+
                     if (! ($$ = $1->append ($3)))
                       {
                         delete $1;
@@ -946,12 +972,17 @@ decl1           : decl2
                 ;
 
 decl_param_init : // empty
-                { lexer.looking_at_initializer_expression = true; }
+                  {
+                    $$ = 0;
+                    lexer.looking_at_initializer_expression = true;
+                  }
 
 decl2           : identifier
                   { $$ = new tree_decl_elt ($1); }
                 | identifier '=' decl_param_init expression
                   {
+                    YYUSE ($2);
+
                     lexer.looking_at_initializer_expression = false;
                     $$ = new tree_decl_elt ($1, $4);
                   }
@@ -992,6 +1023,8 @@ if_cmd_list     : if_cmd_list1
 
 if_cmd_list1    : expression stmt_begin opt_sep opt_list
                   {
+                    YYUSE ($3);
+
                     $1->mark_braindead_shortcircuit ();
 
                     $$ = parser.start_if_command ($1, $4);
@@ -1005,6 +1038,9 @@ if_cmd_list1    : expression stmt_begin opt_sep opt_list
 
 elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt_list
                   {
+                    YYUSE ($3);
+                    YYUSE ($6);
+
                     $4->mark_braindead_shortcircuit ();
 
                     $$ = parser.make_elseif_clause ($1, $4, $7, $2);
@@ -1012,7 +1048,12 @@ elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt
                 ;
 
 else_clause     : ELSE stash_comment opt_sep opt_list
-                  { $$ = new tree_if_clause ($4, $2); }
+                  {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
+                    $$ = new tree_if_clause ($4, $2);
+                  }
                 ;
 
 // ================
@@ -1021,6 +1062,8 @@ else_clause     : ELSE stash_comment opt_sep opt_list
 
 switch_command  : SWITCH stash_comment expression opt_sep case_list END
                   {
+                    YYUSE ($4);
+
                     if (! ($$ = parser.finish_switch_command ($1, $3, $5, $6, $2)))
                       {
                         // finish_switch_command deleted $3 adn $5.
@@ -1052,11 +1095,19 @@ case_list1      : switch_case
                 ;
 
 switch_case     : CASE stash_comment opt_sep expression stmt_begin opt_sep opt_list
-                  { $$ = parser.make_switch_case ($1, $4, $7, $2); }
+                  {
+                    YYUSE ($3);
+                    YYUSE ($6);
+
+                    $$ = parser.make_switch_case ($1, $4, $7, $2);
+                  }
                 ;
 
 default_case    : OTHERWISE stash_comment opt_sep opt_list
                   {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
                     $$ = new tree_switch_case ($4, $2);
                   }
                 ;
@@ -1067,6 +1118,8 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 
 loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   {
+                    YYUSE ($5);
+
                     $3->mark_braindead_shortcircuit ();
 
                     if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
@@ -1077,10 +1130,16 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   }
                 | DO stash_comment opt_sep opt_list UNTIL expression
                   {
+                    YYUSE ($1);
+                    YYUSE ($3);
+
                     $$ = parser.make_do_until_command ($5, $4, $6, $2);
                   }
                 | FOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
+                    YYUSE ($4);
+                    YYUSE ($7);
+
                     if (! ($$ = parser.make_for_command (FOR, $1, $3, $5, 0,
                                                          $8, $9, $2)))
                       {
@@ -1090,6 +1149,9 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
+                    YYUSE ($5);
+                    YYUSE ($8);
+
                     if (! ($$ = parser.make_for_command (FOR, $1, $4, $6, 0,
                                                          $9, $10, $2)))
                       {
@@ -1099,6 +1161,9 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   }
                 | PARFOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
+                    YYUSE ($4);
+                    YYUSE ($7);
+
                     if (! ($$ = parser.make_for_command (PARFOR, $1, $3, $5,
                                                          0, $8, $9, $2)))
                       {
@@ -1108,6 +1173,9 @@ loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
                   }
                 | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
+                    YYUSE ($5);
+                    YYUSE ($10);
+
                     if (! ($$ = parser.make_for_command (PARFOR, $1, $4, $6,
                                                          $8, $11, $12, $2)))
                       {
@@ -1136,6 +1204,10 @@ jump_command    : BREAK
 except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                   stash_comment opt_sep opt_list END
                   {
+                    YYUSE ($3);
+                    YYUSE ($5);
+                    YYUSE ($7);
+
                     if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
                       {
                         // make_unwind_command deleted $4 and $8.
@@ -1145,6 +1217,10 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                 | TRY stash_comment opt_sep opt_list CATCH stash_comment
                   opt_sep opt_list END
                   {
+                    YYUSE ($3);
+                    YYUSE ($5);
+                    YYUSE ($7);
+
                     if (! ($$ = parser.make_try_command ($1, $4, $7, $8, $9, $2, $6)))
                       {
                         // make_try_command deleted $4 and $8.
@@ -1153,6 +1229,8 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
                   }
                 | TRY stash_comment opt_sep opt_list END
                   {
+                    YYUSE ($3);
+
                     if (! ($$ = parser.make_try_command ($1, $4, 0, 0, $5, $2, 0)))
                       {
                         // make_try_command deleted $4.
@@ -1167,6 +1245,8 @@ except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
 
 push_fcn_symtab : // empty
                   {
+                    $$ = 0;
+
                     parser.curr_fcn_depth++;
 
                     if (parser.max_fcn_depth < parser.curr_fcn_depth)
@@ -1195,6 +1275,7 @@ push_fcn_symtab : // empty
 
 param_list_beg  : '('
                   {
+                    $$ = 0;
                     lexer.looking_at_parameter_list = true;
 
                     if (lexer.looking_at_function_handle)
@@ -1208,6 +1289,7 @@ param_list_beg  : '('
 
 param_list_end  : ')'
                   {
+                    $$ = 0;
                     lexer.looking_at_parameter_list = false;
                     lexer.looking_for_object_index = false;
                   }
@@ -1321,6 +1403,8 @@ return_list1    : identifier
 
 file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   {
+                    YYUSE ($2);
+
                     if (lexer.reading_fcn_file)
                       {
                         // Delete the dummy statement_list we created
@@ -1345,6 +1429,9 @@ file            : INPUT_FILE opt_nl opt_list END_OF_INPUT
                   }
                 | INPUT_FILE opt_nl classdef opt_sep END_OF_INPUT
                   {
+                    YYUSE ($2);
+                    YYUSE ($4);
+
                     if (lexer.reading_classdef_file)
                       parser.classdef_object = $3;
 
@@ -1373,6 +1460,8 @@ function        : function_beg stash_comment function1
                   }
                 | function_beg stash_comment return_list '=' function1
                   {
+                    YYUSE ($4);
+
                     $$ = parser.finish_function ($3, $5, $2, $1->line (),
                                                  $1->column ());
                     parser.recover_from_parsing_function ();
@@ -1390,6 +1479,8 @@ fcn_name        : identifier
                   }
                 | GET '.' identifier
                   {
+                    YYUSE ($1);
+
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
                     lexer.parsing_classdef_get_method = true;
@@ -1397,6 +1488,8 @@ fcn_name        : identifier
                   }
                 | SET '.' identifier
                   {
+                    YYUSE ($1);
+
                     lexer.parsed_function_name.top () = true;
                     lexer.maybe_classdef_get_set_method = false;
                     lexer.parsing_classdef_set_method = true;
@@ -1423,9 +1516,17 @@ function1       : fcn_name function2
                 ;
 
 function2       : param_list opt_sep opt_list function_end
-                  { $$ = parser.start_function ($1, $3, $4); }
+                  {
+                    YYUSE ($2);
+
+                    $$ = parser.start_function ($1, $3, $4);
+                  }
                 | opt_sep opt_list function_end
-                  { $$ = parser.start_function (0, $2, $3); }
+                  {
+                    YYUSE ($1);
+
+                    $$ = parser.start_function (0, $2, $3);
+                  }
                 ;
 
 function_end    : END
@@ -1492,6 +1593,9 @@ classdef_beg    : CLASSDEF
 
 classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep class_body opt_sep END
                   {
+                    YYUSE ($6);
+                    YYUSE ($8);
+
                     lexer.parsing_classdef = false;
 
                     if (! ($$ = parser.make_classdef ($1, $3, $4, $5, $7, $9, $2)))
@@ -1502,6 +1606,8 @@ classdef        : classdef_beg stash_comment opt_attr_list identifier opt_superc
                   }
                 | classdef_beg stash_comment opt_attr_list identifier opt_superclass_list opt_sep END
                   {
+                    YYUSE ($6);
+
                     lexer.parsing_classdef = false;
 
                     if (! ($$ = parser.make_classdef ($1, $3, $4, $5, 0, $7, $2)))
@@ -1531,11 +1637,17 @@ attr            : identifier
                   { $$ = new tree_classdef_attribute ($1); }
                 | identifier '=' decl_param_init expression
                   {
+                    YYUSE ($2);
+
                     lexer.looking_at_initializer_expression = false;
                     $$ = new tree_classdef_attribute ($1, $4);
                   }
                 | EXPR_NOT identifier
-                  { $$ = new tree_classdef_attribute ($2, false); }
+                  {
+                    YYUSE ($1);
+
+                    $$ = new tree_classdef_attribute ($2, false);
+                  }
                 ;
 
 opt_superclass_list
@@ -1546,11 +1658,19 @@ opt_superclass_list
                 ;
 
 superclass_list : EXPR_LT
-                  { lexer.enable_fq_identifier (); }
+                  {
+                    YYUSE ($1);
+
+                    lexer.enable_fq_identifier ();
+                  }
                   superclass
                   { $$ = new tree_classdef_superclass_list ($3); }
                 | superclass_list EXPR_AND
-                  { lexer.enable_fq_identifier (); }
+                  {
+                    YYUSE ($2);
+
+                    lexer.enable_fq_identifier ();
+                  }
                   superclass
                   {
                     $1->append ($4);
@@ -1572,21 +1692,29 @@ class_body      : properties_block
                   { $$ = new tree_classdef_body ($1); }
                 | class_body opt_sep properties_block
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
                 | class_body opt_sep methods_block
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
                 | class_body opt_sep events_block
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
                 | class_body opt_sep enum_block
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -1595,6 +1723,9 @@ class_body      : properties_block
 properties_block
                 : PROPERTIES stash_comment opt_attr_list opt_sep property_list opt_sep END
                   {
+                    YYUSE ($4);
+                    YYUSE ($6);
+
                     if (! ($$ = parser.make_classdef_properties_block
                            ($1, $3, $5, $7, $2)))
                       {
@@ -1604,6 +1735,8 @@ properties_block
                   }
                 | PROPERTIES stash_comment opt_attr_list opt_sep END
                   {
+                    YYUSE ($4);
+
                     if (! ($$ = parser.make_classdef_properties_block
                            ($1, $3, 0, $5, $2)))
                       {
@@ -1618,6 +1751,8 @@ property_list
                   { $$ = new tree_classdef_property_list ($1); }
                 | property_list opt_sep class_property
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -1627,6 +1762,8 @@ class_property  : identifier
                   { $$ = new tree_classdef_property ($1); }
                 | identifier '=' decl_param_init expression ';'
                   {
+                    YYUSE ($2);
+
                     lexer.looking_at_initializer_expression = false;
                     $$ = new tree_classdef_property ($1, $4);
                   }
@@ -1634,6 +1771,9 @@ class_property  : identifier
 
 methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_sep END
                   {
+                    YYUSE ($4);
+                    YYUSE ($6);
+
                     if (! ($$ = parser.make_classdef_methods_block
                            ($1, $3, $5, $7, $2)))
                       {
@@ -1643,6 +1783,8 @@ methods_block   : METHODS stash_comment opt_attr_list opt_sep methods_list opt_s
                   }
                 | METHODS stash_comment opt_attr_list opt_sep END
                   {
+                    YYUSE ($4);
+
                     if (! ($$ = parser.make_classdef_methods_block
                            ($1, $3, 0, $5, $2)))
                       {
@@ -1669,6 +1811,8 @@ method_decl     : stash_comment method_decl1
                   { $$ = parser.finish_classdef_external_method ($2, 0, $1); }
                 | stash_comment return_list '='
                   {
+                    YYUSE ($3);
+
                     lexer.defining_func++;
                     lexer.parsed_function_name.push (false);
                   }
@@ -1696,6 +1840,8 @@ methods_list    : method
                   }
                 | methods_list opt_sep method
                   {
+                    YYUSE ($2);
+
                     octave_value fcn;
                     if ($3)
                       fcn = $3->function ();
@@ -1708,6 +1854,9 @@ methods_list    : method
 
 events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep END
                   {
+                    YYUSE ($4);
+                    YYUSE ($6);
+
                     if (! ($$ = parser.make_classdef_events_block
                            ($1, $3, $5, $7, $2)))
                       {
@@ -1717,6 +1866,8 @@ events_block    : EVENTS stash_comment opt_attr_list opt_sep events_list opt_sep
                   }
                 | EVENTS stash_comment opt_attr_list opt_sep END
                   {
+                    YYUSE ($4);
+
                     if (! ($$ = parser.make_classdef_events_block
                            ($1, $3, 0, $5, $2)))
                       {
@@ -1730,6 +1881,8 @@ events_list     : class_event
                   { $$ = new tree_classdef_events_list ($1); }
                 | events_list opt_sep class_event
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -1741,6 +1894,9 @@ class_event     : identifier
 
 enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_sep END
                   {
+                    YYUSE ($4);
+                    YYUSE ($6);
+
                     if (! ($$ = parser.make_classdef_enum_block
                            ($1, $3, $5, $7, $2)))
                       {
@@ -1750,6 +1906,8 @@ enum_block      : ENUMERATION stash_comment opt_attr_list opt_sep enum_list opt_
                   }
                 | ENUMERATION stash_comment opt_attr_list opt_sep END
                   {
+                    YYUSE ($4);
+
                     if (! ($$ = parser.make_classdef_enum_block
                            ($1, $3, 0, $5, $2)))
                       {
@@ -1763,6 +1921,8 @@ enum_list       : class_enum
                   { $$ = new tree_classdef_enum_list ($1); }
                 | enum_list opt_sep class_enum
                   {
+                    YYUSE ($2);
+
                     $1->append ($3);
                     $$ = $1;
                   }
@@ -1777,7 +1937,10 @@ class_enum      : identifier '(' expression ')'
 // =============
 
 stmt_begin      : // empty
-                  { lexer.at_beginning_of_statement = true; }
+                  {
+                    $$ = 0;
+                    lexer.at_beginning_of_statement = true;
+                  }
                 ;
 
 stash_comment   : // empty
@@ -1785,8 +1948,12 @@ stash_comment   : // empty
                 ;
 
 parse_error     : LEXICAL_ERROR
-                  { parser.bison_error ("parse error"); }
+                  {
+                    $$ = 0;
+                    parser.bison_error ("parse error");
+                  }
                 | error
+                  { $$ = 0; }
                 ;
 
 sep_no_nl       : ','

@@ -84,13 +84,14 @@ PARSE_TREE_SRC = \
 ## will still be success and we will end up creating an empty
 ## oct-gperf.h file.
 parse-tree/oct-gperf.h: parse-tree/octave.gperf
-	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
-	mv $@-t $@
+	$(AM_V_GEN)rm -f $@-t $@t1 $@ && \
+	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1 && \
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t && \
+	mv $@-t $@ && \
 	rm -f $@-t1
 
 parse-tree/oct-parse.yy: parse-tree/oct-parse.in.yy
-	$(call subst-bison-api-decls,octave_)
+	$(AM_V_GEN)$(call subst-bison-api-decls,octave_)
 
 noinst_LTLIBRARIES += \
   parse-tree/libparse-tree.la \

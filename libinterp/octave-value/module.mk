@@ -138,12 +138,14 @@ OV_JAVA_DF = \
 ## Special rules for Java .df files so that not all .df files are built with
 ## JAVA_CPPFLAGS
 $(OV_JAVA_DF) : octave-value/%.df : octave-value/%.cc
+	$(AM_V_GEN)rm -f $@-t $@-t1 $@ && \
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(JAVA_CPPFLAGS) $(CPPFLAGS) \
 	  $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< > $@-t
-	$(srcdir)/mkdefs $(srcdir) $< < $@-t > $@
-	rm $@-t
+	  -DMAKE_BUILTINS $< > $@-t1 && \
+	$(srcdir)/mkdefs $(srcdir) $< < $@-t1 > $@-t && \
+	mv $@-t $@ && \
+	rm -f $@-t1
 
 noinst_LTLIBRARIES += octave-value/liboctave-value.la
 

@@ -169,8 +169,8 @@ TEMPLATE_SRC += \
 
 ## Special rules for sources which must be built before rest of compilation.
 $(OPT_INC) : %.h : %.in
-	@echo making $@ from $<
-	@$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t && \
 	mv $@-t $@
 
 $(OPT_INC) : $(top_srcdir)/build-aux/mk-opts.pl

@@ -211,38 +211,42 @@ octetc_DATA = doc-cache macros.texi
 DOCSTRING_FILES = $(shell $(srcdir)/find-docstring-files.sh "$(top_srcdir)")
 
 doc-cache: $(DOCSTRING_FILES) mk_doc_cache.m
-	$(top_builddir)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m doc-cache $(srcdir)/macros.texi $(DOCSTRING_FILES) || { rm -f doc-cache; exit 1; }
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(top_builddir)/run-octave -f -q -H $(srcdir)/mk_doc_cache.m - $(srcdir)/macros.texi $(DOCSTRING_FILES) >$@-t && \
+	mv $@-t $@
 
 $(MUNGED_TEXI_SRC): $(DOCSTRING_FILES) $(munge_texi_SOURCES)
 
 %.texi: %.txi munge-texi.pl
-	$(PERL) $(srcdir)/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(PERL) $(srcdir)/munge-texi.pl $(top_srcdir) $(DOCSTRING_FILES) < $< > $@-t && \
 	mv $@-t $@
 
 contributors.texi: contributors.in
-	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t && \
 	mv $@-t $@
 
 ../../AUTHORS: preface.texi contributors.texi
-	rm -f AUTHORS
+	$(AM_V_MAKEINFO)rm -f AUTHORS && \
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/contributors.texi ] && [ ! -f contributors.texi ]; then \
 		cp $(srcdir)/contributors.texi contributors.texi; \
 		touch -r $(srcdir)/contributors.texi contributors.texi; \
-	fi
-	-$(MAKEINFO) -D AUTHORSONLY -I $(srcdir) \
-	  --no-validate --no-headers --no-split --output AUTHORS $<
+	fi && \
+	$(MAKEINFO) -D AUTHORSONLY -I $(srcdir) \
+	  --no-validate --no-headers --no-split --output AUTHORS $< && \
 	mv AUTHORS ../../AUTHORS
 
 ../../BUGS: bugs.texi
-	rm -f BUGS
-	-$(MAKEINFO) -D BUGSONLY -I $(srcdir) \
-	  --no-validate --no-headers --no-split --output BUGS $<
+	$(AM_V_MAKEINFO)rm -f BUGS && \
+	$(MAKEINFO) -D BUGSONLY -I $(srcdir) \
+	  --no-validate --no-headers --no-split --output BUGS $< && \
 	mv BUGS ../../BUGS
 
 ../../INSTALL.OCTAVE: install.texi
-	rm -f INSTALL
-	-$(MAKEINFO) -D INSTALLONLY -I $(srcdir) \
-	  --no-validate --no-headers --no-split --output INSTALL $<
+	$(AM_V_MAKEINFO)rm -f INSTALL && \
+	$(MAKEINFO) -D INSTALLONLY -I $(srcdir) \
+	  --no-validate --no-headers --no-split --output INSTALL $< && \
 	mv INSTALL ../../INSTALL.OCTAVE
 
 

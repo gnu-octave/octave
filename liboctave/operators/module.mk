@@ -8,7 +8,7 @@ EXTRA_DIST += \
   operators/smx-op-inc.mk \
   operators/smx-op-src.mk \
   operators/sparse-mk-ops.awk \
-  operators/sparse-mx-ops \
+  operators/smx-ops \
   operators/vx-op-inc.mk \
   operators/vx-op-src.mk \
   operators/vx-ops
@@ -45,18 +45,25 @@ TEMPLATE_SRC += \
 
 OP_SRCDIR = $(abs_top_srcdir)/liboctave/operators
 
+define run-mx-ops
+  ( cd operators; \
+    $(AWK) -f $(OP_SRCDIR)/$(2)mk-ops.awk prefix=$(1) $(OP_SRCDIR)/$(1)-ops \
+  )
+endef
+
 ## Special rules for sources which must be built before rest of compilation.
 $(VX_OP_INC) $(VX_OP_SRC) : operators/mk-ops.awk operators/vx-ops
-	(cd operators; $(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=vx $(OP_SRCDIR)/vx-ops)
+	$(AM_V_GEN)$(call run-mx-ops,vx)
 
 $(MX_OP_INC) $(MX_OP_SRC) : operators/mk-ops.awk operators/mx-ops
-	(cd operators; $(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx $(OP_SRCDIR)/mx-ops)
+	$(AM_V_GEN)$(call run-mx-ops,mx)
 
-$(SMX_OP_INC) $(SMX_OP_SRC) : operators/sparse-mk-ops.awk operators/sparse-mx-ops
-	(cd operators; $(AWK) -f $(OP_SRCDIR)/sparse-mk-ops.awk prefix=smx $(OP_SRCDIR)/sparse-mx-ops)
+$(SMX_OP_INC) $(SMX_OP_SRC) : operators/sparse-mk-ops.awk operators/smx-ops
+	$(AM_V_GEN)$(call run-mx-ops,smx,sparse-)
 
 operators/mx-ops.h : operators/mk-ops.awk operators/mx-ops
-	$(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(OP_SRCDIR)/mx-ops > $@-t
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(AWK) -f $(OP_SRCDIR)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(OP_SRCDIR)/mx-ops > $@-t && \
 	mv $@-t $@
 
 noinst_LTLIBRARIES += operators/liboperators.la

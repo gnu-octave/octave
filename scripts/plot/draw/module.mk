@@ -18,7 +18,6 @@ plot_draw_PRIVATE_FCN_FILES = \
   plot/draw/private/__stem__.m
 
 plot_draw_FCN_FILES = \
-  plot/draw/annotation.m \
   plot/draw/area.m \
   plot/draw/barh.m \
   plot/draw/bar.m \

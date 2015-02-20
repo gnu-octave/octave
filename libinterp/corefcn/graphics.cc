@@ -11815,8 +11815,8 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
 DEFUN (__zoom__, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} __zoom__ (@var{axes}, @var{mode}, @var{factor})\n\
-@deftypefnx  {Built-in Function} {} __zoom__ (@var{axes}, \"out\")\n\
-@deftypefnx  {Built-in Function} {} __zoom__ (@var{axes}, \"reset\")\n\
+@deftypefnx {Built-in Function} {} __zoom__ (@var{axes}, \"out\")\n\
+@deftypefnx {Built-in Function} {} __zoom__ (@var{axes}, \"reset\")\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

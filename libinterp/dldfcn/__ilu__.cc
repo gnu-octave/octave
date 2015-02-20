@@ -126,9 +126,9 @@ void ilu_0 (octave_matrix_t& sm, const std::string milu = "off")
 }
 
 DEFUN_DLD (__ilu0__, args, nargout, "-*- texinfo -*-\n\
-@deftypefn   {Loadable Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
-@deftypefnx  {Loadable Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
-@deftypefnx  {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
+@deftypefn  {Loadable Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}] =} __ilu0__ (@var{A}, @var{milu})\n\
+@deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}] =} __ilu0__ (@var{A}, @dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {

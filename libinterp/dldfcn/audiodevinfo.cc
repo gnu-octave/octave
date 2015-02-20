@@ -81,7 +81,6 @@ Return a structure with fields \"input\" and \"output\".\n\
 The value of each field is a structure array with fields\n\
 \"Name\", @nospell{\"DriverVersion\"} and \"ID\" describing an audio device.\n\
 \n\
-\n\
 If the optional argument @var{io} is 1, return information about input\n\
 devices only.  If it is 0, return information about output devices only.\n\
 \n\

@@ -28,8 +28,8 @@
 ##
 ## By default, @var{y} is automatically normalized to the range [-1, 1].  If the
 ## range [@var{ymin}, @var{ymax}] is given, then elements of @var{y} that fall
-## within the range @var{ymin} @leq{} @var{y} @leq{} @var{ymax} are scaled to the
-## range [-1, 1] instead.
+## within the range @var{ymin} @leq{} @var{y} @leq{} @var{ymax} are scaled to
+## the range [-1, 1] instead.
 ##
 ## The audio signal @var{y} can be a vector or a two-column array, representing
 ## mono or stereo audio, respectively.

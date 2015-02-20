@@ -78,6 +78,7 @@ decomposition\n\
 [@var{U}, @var{S}] = schur (@var{A})\n\
 @end example\n\
 \n\
+@noindent\n\
 which returns\n\
 \n\
 @example\n\
@@ -95,8 +96,8 @@ which returns\n\
 @end group\n\
 @end example\n\
 \n\
-It is possible to reorder the decomposition so that the positive eigenvalue is\n\
-in the upper left corner, by doing:\n\
+It is possible to reorder the decomposition so that the positive eigenvalue\n\
+is in the upper left corner, by doing:\n\
 \n\
 @example\n\
 [@var{U}, @var{S}] = ordschur (@var{U}, @var{S}, [0,1])\n\

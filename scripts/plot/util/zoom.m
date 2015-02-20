@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} zoom
-## @deftypefnx  {Command} {} zoom (@var{factor})
+## @deftypefn  {Command} {} zoom
+## @deftypefnx {Command} {} zoom (@var{factor})
 ## @deftypefnx {Command} {} zoom on
 ## @deftypefnx {Command} {} zoom off
 ## @deftypefnx {Command} {} zoom xon

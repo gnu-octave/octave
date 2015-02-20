@@ -15,7 +15,7 @@
 ##   <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} annotation (@var{type})
+## @deftypefn  {Function File} {} annotation (@var{type})
 ## @deftypefnx {Function File} {} annotation ("line", @var{x}, @var{y})
 ## @deftypefnx {Function File} {} annotation ("arrow", @var{x}, @var{y})
 ## @deftypefnx {Function File} {} annotation ("doublearrow", @var{x}, @var{y})
@@ -29,7 +29,7 @@
 ## Draw annotations to emphasize parts of a figure.
 ##
 ## You may build a default annotation specifying only the type
-## @var{type} of the annotation. Otherwise you can set the position of
+## @var{type} of the annotation.  Otherwise you can set the position of
 ## the annotation using either @var{x} and @var{y} coordinates for
 ## line-based annotations or a position vector @var{pos} for others.
 ## In any case, coordinates are interpreted using the @qcode{"units"}
@@ -40,16 +40,17 @@
 ##
 ## The figure on which the annotations should be drawn may be 
 ## specified by providing its graphics handle @var{hf} before any
-## other argument. Otherwise annotations are drawn on the current
+## other argument.  Otherwise annotations are drawn on the current
 ## figure. 
 ## 
 ## Further arguments can be provided in the form of
-## @var{prop}/@var{val} pairs to customize the annotation  appearance
-## and the units in which coordinates are interpreted. The annotation
+## @var{prop}/@var{val} pairs to customize the annotation appearance
+## and the units in which coordinates are interpreted.  The annotation
 ## can also be customized afterward using its graphics handle 
 ## @var{h} and @code{set} function.
 ## 
 ## All annotation objects share two properties:
+##
 ## @itemize
 ## @item
 ##  @qcode{"units"}: the units in which coordinates are interpreted.
@@ -59,43 +60,44 @@
 ##
 ## @item
 ##  @qcode{"position"}: a four elements vector [x0 y0 width height]
-##  specifying  the coordinates (x0,y0) of the origin of the annotation
-##  object, its width and its height. The width and height may be
+##  specifying the coordinates (x0,y0) of the origin of the annotation
+##  object, its width and its height.  The width and height may be
 ##  negative, depending on the orientation of the object.
-##   
+##
 ## @end itemize
 ##
 ## Valid annotation types and their specific properties are described
 ## bellow: 
+##
 ## @table @asis
 ## @item @qcode{"line"}
-##  Constructs a line. @var{x} and @var{y} must be two
+##  Constructs a line.  @var{x} and @var{y} must be two
 ##  elements vectors specifying the x and y coordinates of the two
 ##  ends of the line.
 ##
 ##  The line can be customized using @qcode{"linewidth"},
 ##  @qcode{"linestyle"} and @qcode{"color"} properties the same way
-##  as with @code{line} objects.   
+##  as with @code{line} objects.
 ##
 ## @item  @qcode{"arrow"}
-##   Construct an arrow. The second point in vectors @var{x} and
+##   Construct an arrow.  The second point in vectors @var{x} and
 ##   @var{y} specifies the arrowhead coordinates.
 ##
 ##  Besides line properties, the arrowhead can be customized using
 ##  @qcode{"headlength"}, @qcode{"headwidth"} and @qcode{"headstyle"}
-##  properties. Supported values for @qcode{"headstyle"} property are:
+##  properties.  Supported values for @qcode{"headstyle"} property are:
 ##  [@qcode{"diamond"} | @qcode{"ellipse"} | @qcode{"plain"} |
 ##  @qcode{"rectangle"} | @qcode{"vback1"} | @qcode{"@{vback2@}"} | 
 ##  @qcode{"vback3"}] 
 ## 
 ## @item  @qcode{"doublearrow"}
-##   Construct a double arrow. Vectors @var{x} and @var{y} specify the
+##   Construct a double arrow.  Vectors @var{x} and @var{y} specify the
 ##   arrowheads coordinates.
 ##
 ##  The line and the arrowhead can be customized as for arrow
 ##  annotations but some property names are duplicated:
 ##  @qcode{"head1length"}/@qcode{"head2length"},
-##  @qcode{"head1width"}/@qcode{"head2width"}, etc. The index 1 marks
+##  @qcode{"head1width"}/@qcode{"head2width"}, etc.  The index 1 marks
 ##  the properties of the arrowhead at the first point in @var{x} and
 ##  @var{y} coordinates. 
 ##
@@ -105,31 +107,31 @@
 ##
 ##  The line and the arrowhead can be customized as for arrow
 ##  annotations, and the text can be customized using the same
-##  properties as @code{text} graphics objects. Note however
+##  properties as @code{text} graphics objects.  Note however
 ##  that some text property names are prefixed with "text" to
 ##  distinguish arrow and text properties:
 ##  @qcode{"textbackgroundcolor"}, @qcode{"textcolor"},
 ##  @qcode{"textedgecolor"}, @qcode{"textlinewidth"},
 ##  @qcode{"textmargin"}, @qcode{"textrotation"}.
-##   
+##
 ## @item  @qcode{"textbox"}
-##  Construct a box with a text inside. @var{pos} specifies the
+##  Construct a box with a text inside.  @var{pos} specifies the
 ##  @qcode{"position"} property of the annotation.
 ##
 ##  You may use @qcode{"backgroundcolor"}, @qcode{"edgecolor"},
 ##  @qcode{"linestyle"} , @qcode{"linewidth"} properties to customize
-##  the box background color and edges appearance. A limited set of
+##  the box background color and edges appearance.  A limited set of
 ##  @code{text} objects properties is also available: besides
-##  @qcode{"font..."} properties, you may also use
+##  @qcode{"font@dots{}"} properties, you may also use
 ##  @qcode{"horizontalalignment"} and @qcode{"verticalalignment"} to
 ##  move the text inside the box.
 ##
 ##  Finally the  @qcode{"fitboxtotext"} property controls the actual
-##  extent of the box. If @qcode{"on"} (the default) the
+##  extent of the box.  If @qcode{"on"} (the default) the
 ##  box limits are fitted to the text extent.
 ##
 ## @item  @qcode{"rectangle"}
-##  Construct a rectangle. @var{pos} specifies the
+##  Construct a rectangle.  @var{pos} specifies the
 ##  @qcode{"position"} property of the annotation. 
 ##
 ##  You may use @qcode{"facecolor"}, @qcode{"color"},
@@ -137,7 +139,7 @@
 ##  the rectangle background color and edges appearance.
 ##
 ## @item  @qcode{"ellipse"}
-##  Construct an ellipse. @var{pos} specifies the
+##  Construct an ellipse.  @var{pos} specifies the
 ##  @qcode{"position"} property of the annotation. 
 ##
 ##  See @qcode{"rectangle"} annotations for customization. 

@@ -468,7 +468,9 @@ The functions @code{grid} and @code{box} may also be used to add grid
 and border lines to the plot.  By default, the grid is off and the
 border lines are on.
 
-Finally, arrows, text and rectangular or elliptic boxes can be added to highlight parts of a plot using the @code{annotation} function. Those objects are drawn in an invisible axes, on top of every other axes.
+Finally, arrows, text and rectangular or elliptic boxes can be added to
+highlight parts of a plot using the @code{annotation} function.  Those objects
+are drawn in an invisible axes, on top of every other axes.
 
 @DOCSTRING(title)
 

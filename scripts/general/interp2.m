@@ -70,7 +70,7 @@
 ## throughout the curve.
 ## @end table
 ##
-## @var{extrap} is a scalar number. It replaces values beyond the endpoints
+## @var{extrap} is a scalar number.  It replaces values beyond the endpoints
 ## with @var{extrap}.  Note that if @var{extrapval} is used, @var{method} must
 ## be specified as well.  If @var{extrap} is omitted and the @var{method} is
 ## @qcode{"spline"}, then the extrapolated values of the @qcode{"spline"} are

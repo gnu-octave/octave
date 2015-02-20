@@ -3753,7 +3753,7 @@ consequence a 1x1 array, or scalar, is also a vector.\n\
 DEFUN (isrow, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} isrow (@var{x})\n\
-Return true if @var{x} is a row vector 1xN with nonnegative N.\n\
+Return true if @var{x} is a row vector 1xN with non-negative N.\n\
 @seealso{iscolumn, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
@@ -3803,7 +3803,7 @@ Return true if @var{x} is a row vector 1xN with nonnegative N.\n\
 DEFUN (iscolumn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} iscolumn (@var{x})\n\
-Return true if @var{x} is a column vector Nx1 with nonnegative N.\n\
+Return true if @var{x} is a column vector Nx1 with non-negative N.\n\
 @seealso{isrow, isscalar, isvector, ismatrix}\n\
 @end deftypefn")
 {
@@ -3852,7 +3852,7 @@ Return true if @var{x} is a column vector Nx1 with nonnegative N.\n\
 DEFUN (ismatrix, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
-Return true if @var{a} is has exactly two nonnegative dimensions.\n\
+Return true if @var{a} is a 2-D array.\n\
 @seealso{isscalar, isvector, iscell, isstruct, issparse, isa}\n\
 @end deftypefn")
 {
@@ -6265,8 +6265,9 @@ At least one argument is required.\n\
 DEFUN (colon, args, ,
        "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{r} =} colon (@var{base}, @var{limit})\n\
-@deftypefnx  {Built-in Function} {@var{r} =} colon (@var{base}, @var{increment}, @var{limit})\n\
-Return the result of the colon expression corresponding to @var{base}, @var{limit}, and optionally, @var{increment}.\n\
+@deftypefnx {Built-in Function} {@var{r} =} colon (@var{base}, @var{increment}, @var{limit})\n\
+Return the result of the colon expression corresponding to @var{base},\n\
+@var{limit}, and optionally, @var{increment}.\n\
 \n\
 This function is equivalent to the operator syntax @w{@code{base : limit}}\n\
 or @w{@code{base : increment : limit}}.\n\

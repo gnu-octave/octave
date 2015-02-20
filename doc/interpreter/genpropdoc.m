@@ -528,7 +528,7 @@ the same as the length of 2 units on the x-axis.  __modemsg__.";
       case "linestyleorder"
       case "linewidth"
       case "minorgridlinestyle"
-      case "mouse_wheel_zoom"
+      case "mousewheelzoom"
         s.doc = "Fraction of axes limits to zoom for each wheel movement."; 
         s.valid = "scalar in the range (0, 1)";
 

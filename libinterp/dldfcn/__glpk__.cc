@@ -716,7 +716,8 @@ Undocumented internal function.\n\
   ColumnVector lambda (mrowsA, octave_NA);
   ColumnVector redcosts (mrowsc, octave_NA);
   double time;
-  int status, errnum = 0;
+  int status;
+  volatile int errnum = 0;
 
   int jmpret = setjmp (mark);
 

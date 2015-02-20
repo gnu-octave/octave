@@ -52,6 +52,7 @@ bin_PROGRAMS = \
   octave-config
 
 noinst_HEADERS = \
+  display-available.h	\
   shared-fcns.h
 
 OCTAVE_VERSION_LINKS = octave-cli-$(version)$(EXEEXT)

@@ -2377,7 +2377,3 @@ following utility functions.  Note: Not all functions apply to every
 graphics toolkit.
 
 @DOCSTRING(gnuplot_binary)
-
-@DOCSTRING(gui_mode)
-
-@DOCSTRING(mouse_wheel_zoom)

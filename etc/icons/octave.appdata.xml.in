@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <application>
-  <id type="desktop">octave.desktop</id>
+  <id type="desktop">%OCTAVE_DESKTOP_FILE%</id>
   <licence>GPLv3+</licence>
   <name>GNU Octave</name>
   <summary>Interactive programming environment for numerical computations</summary>

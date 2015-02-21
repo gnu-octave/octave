@@ -63,7 +63,6 @@ EXTRA_DIST = \
   etc/README.gnuplot \
   etc/README.kpathsea \
   etc/gdbinit \
-  etc/octave.appdata.xml \
   run-octave.in
 
 include m4/module.mk

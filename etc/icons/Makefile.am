@@ -47,7 +47,17 @@ image_DATA = \
   $(IMAGE_FILES) \
   octave-logo.ico
 
-all-local: octave.desktop $(BUILT_ICONS)
+VENDOR = www.octave.org
+
+DESKTOP_FILE = $(VENDOR)-octave.desktop
+
+all-local: octave.appdata.xml octave.desktop $(BUILT_ICONS)
+
+octave.appdata.xml: octave.appdata.xml.in Makefile
+	$(AM_V_GEN)rm -f $@-t $@ && \
+	$(SED) < $< > $@-t \
+	  -e "s|%OCTAVE_DESKTOP_FILE%|${DESKTOP_FILE}|" && \
+	mv $@-t $@
 
 octave.desktop: octave.desktop.in Makefile
 	$(AM_V_GEN)rm -f $@-t $@ && \
@@ -69,7 +79,7 @@ octave-logo.ico: $(WINDOWS_PNG_ICONS)
 install-data-local:
 	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
-	    --vendor www.octave.org octave.desktop; \
+	    --vendor $(VENDOR) octave.desktop; \
 	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
@@ -79,16 +89,19 @@ install-data-local:
 	done
 	$(MKDIR_P) $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps
 	$(INSTALL_DATA) $(srcdir)/octave-logo.svg $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
+	$(MKDIR_P) $(DESTDIR)$(datadir)/appdata
+	$(INSTALL_DATA) octave.appdata.xml $(DESTDIR)$(datadir)/appdata/$(VENDOR)-octave.appdata.xml
 
 uninstall-local:
 	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  rm -f $(DESTDIR)$(datadir)/applications/www.octave.org-octave.desktop; \
+	  rm -f $(DESTDIR)$(datadir)/applications/$(DESKTOP_FILE); \
 	fi
 	for f in $(BUILT_PNG_ICONS); do \
 	  size=`echo $$f | $(SED) -n -e "s/.*-\([0-9]\+\)\.png/\1/p"`; \
 	  rm -f $(DESTDIR)$(datadir)/icons/hicolor/$${size}x$${size}/apps/octave.png; \
 	done
 	rm -f $(DESTDIR)$(datadir)/icons/hicolor/scalable/apps/octave.svg
+	rm -f $(DESTDIR)$(datadir)/appdata/$(VENDOR)-octave.appdata.xml
 
 if AMCOND_HAVE_ICON_TOOLS
 else
@@ -99,9 +112,10 @@ endif
 EXTRA_DIST = \
   $(BUILT_ICONS) \
   $(IMAGE_FILES) \
+  octave.appdata.xml.in \
   octave.desktop.in
 
-CLEANFILES = octave.desktop
+CLEANFILES = octave.appdata.xml octave.desktop
 
 MAINTAINERCLEANFILES = $(BUILT_ICONS)
 

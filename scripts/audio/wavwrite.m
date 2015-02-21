@@ -1,3 +1,4 @@
+## Copyright (C) 2015 Mike Miller
 ## Copyright (C) 2005-2015 Michael Zeising
 ##
 ## This file is part of Octave.
@@ -18,36 +19,34 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} wavwrite (@var{y}, @var{filename})
-## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{Fs}, @var{filename})
-## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{Fs}, @var{bps}, @var{filename})
-## Write @var{y} to the canonical RIFF/WAVE sound file @var{filename}
-## with sample rate @var{Fs} and bits per sample @var{bps}.  The
-## default sample rate is 8000 Hz with 16-bits per sample.  Each column
-## of the data represents a separate channel.  If @var{y} is either a
-## row vector or a column vector, it is written as a single channel.
-## @seealso{wavread}
+## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{filename})
+## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{nbits}, @var{filename})
+## Write the audio signal @var{y} to the RIFF/WAVE sound file @var{filename}.
+## If @var{y} is a matrix, the columns represent multiple audio channels.
+##
+## The optional argument @var{fs} specifies the sample rate of the audio signal
+## in Hz.  The optional argument @var{nbits} specifies the number of bits per
+## sample to write to @var{filename}.  The default sample rate is 8000 Hz and
+## the default bit depth is 16 bits per sample.
+##
+## @seealso{audioread, audiowrite, wavread}
 ## @end deftypefn
 
-## Author: Michael Zeising <michael@michaels-website.de>
-## Created: 06 December 2005
-
 function wavwrite (y, varargin)
-
-  BYTEORDER = "ieee-le";
 
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
   ## Defaults.
-  samples_per_sec = 8000;
-  bits_per_sample = 16;
+  fs = 8000;
+  nbits = 16;
 
   filename = varargin{end};
   if (nargin > 2)
-    samples_per_sec = varargin{1};
+    fs = varargin{1};
     if (nargin > 3)
-      bits_per_sample = varargin{2};
+      nbits = varargin{2};
     endif
   endif
 
@@ -56,6 +55,7 @@ function wavwrite (y, varargin)
 
   ## allow y to be a row vector
   if (n == 1)
+    y = y(:);
     n = channels;
     channels = 1;
   endif
@@ -64,155 +64,113 @@ function wavwrite (y, varargin)
   if (channels < 1)
     error ("wavwrite: Y must have at least one column");
   endif
+
   if (channels > 0x7FFF)
-    error ("wavwrite: Y has more than 32767 columns (too many for a WAV-file)");
+    error ("wavwrite: Y must have no more than 32767 columns");
   endif
 
-  ## determine sample format
-  switch (bits_per_sample)
-    case 8
-      format = "uint8";
-    case 16
-      format = "int16";
-    case 32
-      format = "int32";
-    otherwise
-      error ("wavwrite: sample resolution not supported");
-  endswitch
-
-  ## size of data chunk
-  ck_size = n*channels*(bits_per_sample/8);
-
-  if (! ischar (filename))
-    error ("wavwrite: expecting FILENAME to be a character string");
+  if (! (isscalar (fs) && (fs > 0)))
+    error ("wavwrite: sample rate FS must be a positive number");
   endif
 
-  ## open file for writing binary
-  [fid, msg] = fopen (filename, "wb");
-  if (fid < 0)
-    error ("wavwrite: %s", msg);
+  if (! isscalar (nbits) || isempty (find (nbits == [8, 16, 24, 32])))
+    error ("wavwrite: bit depth NBITS must be 8, 16, 24, or 32");
   endif
 
-  ## write RIFF/WAVE header
-  c = 0;
-  c += fwrite (fid, "RIFF", "uchar");
-
-  ## file size - 8
-  c += fwrite (fid, ck_size + 36, "uint32", 0, BYTEORDER);
-  c += fwrite (fid, "WAVEfmt ", "uchar");
-
-  ## size of fmt chunk
-  c += fwrite (fid, 16, "uint32", 0, BYTEORDER);
-
-  ## sample format code (PCM)
-  c += fwrite (fid, 1, "uint16", 0, BYTEORDER);
-
-  ## channels
-  c += fwrite (fid, channels, "uint16", 0, BYTEORDER);
-
-  ## sample rate
-  c += fwrite (fid, samples_per_sec, "uint32", 0, BYTEORDER);
-
-  ## bytes per second
-  byteps = samples_per_sec*channels*bits_per_sample/8;
-  c += fwrite (fid, byteps, "uint32", 0, BYTEORDER);
-
-  ## block align
-  c += fwrite (fid, channels*bits_per_sample/8, "uint16", 0, BYTEORDER);
-
-  c += fwrite (fid, bits_per_sample, "uint16", 0, BYTEORDER);
-  c += fwrite (fid, "data", "uchar");
-  c += fwrite (fid, ck_size, "uint32", 0, BYTEORDER);
-
-  if (c < 25)
-    fclose (fid);
-    error ("wavwrite: writing to file failed");
-  endif
-
-  ## interleave samples
-  yi = reshape (y', n*channels, 1);
-
-  ## scale samples
-  switch (bits_per_sample)
-    case 8
-      yi = round (yi*128 + 128);
-    case 16
-      yi = round (yi*32768);
-    case 32
-      yi = round (yi*2147483648);
-  endswitch
-
-  ## write to file
-  c = fwrite (fid, yi, format, 0, BYTEORDER);
-
-  fclose (fid);
+  audiowrite (filename, y, fs, "BitsPerSample", nbits);
 
 endfunction
 
 
 %!shared fname
-%! fname = tempname ();
+%! fname = [tempname() ".wav"];
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-1:0.1:1; -1:0.1:1]';
-%! wavwrite (A, fname);
-%! [B, samples_per_sec, bits_per_sample] = wavread (fname);
-%! unlink (fname);
-%! assert (A,B, 1/2^15);
-%! assert (samples_per_sec, 8000);
-%! assert (bits_per_sample, 16);
+%! unwind_protect
+%!   wavwrite (A, fname);
+%!   [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%!   assert (B, A, 2^-14);
+%!   assert (samples_per_sec, 8000);
+%!   assert (bits_per_sample, 16);
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-1:0.1:1; -1:0.1:1]';
-%! wavwrite (A, 4000, fname);
-%! [B, samples_per_sec, bits_per_sample] = wavread (fname);
-%! unlink (fname);
-%! assert (A,B, 1/2^15);
-%! assert (samples_per_sec, 4000);
-%! assert (bits_per_sample, 16);
+%! unwind_protect
+%!   wavwrite (A, 4000, fname);
+%!   [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%!   assert (B, A, 2^-14);
+%!   assert (samples_per_sec, 4000);
+%!   assert (bits_per_sample, 16);
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-1:0.1:1; -1:0.1:1]';
-%! wavwrite (A, 4000, 8, fname);
-%! [B, samples_per_sec, bits_per_sample] = wavread (fname);
-%! unlink (fname);
-%! assert (A,B, 1/128);
-%! assert (samples_per_sec, 4000);
-%! assert (bits_per_sample, 8);
+%! unwind_protect
+%!   wavwrite (A, 4000, 8, fname);
+%!   [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%!   assert (B, A, 2^-6);
+%!   assert (samples_per_sec, 4000);
+%!   assert (bits_per_sample, 8);
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-2:2]';
-%! wavwrite (A, fname);
-%! B = wavread (fname);
-%! unlink (fname);
-%! B *= 32768;
-%! assert (B, [-32768 -32768 0 32767 32767]');
+%! unwind_protect
+%!   wavwrite (A, fname);
+%!   B = wavread (fname);
+%!   B *= 32768;
+%!   assert (B, [-32767 -32767 0 32767 32767]');
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-1:0.1:1];
-%! wavwrite (A, fname);
-%! [B, samples_per_sec, bits_per_sample] = wavread (fname);
-%! unlink (fname);
-%! assert (A', B, 1/2^15);
-%! assert (samples_per_sec, 8000);
-%! assert (bits_per_sample, 16);
+%! unwind_protect
+%!   wavwrite (A, fname);
+%!   [B, samples_per_sec, bits_per_sample] = wavread (fname);
+%!   assert (B, A', 2^-14);
+%!   assert (samples_per_sec, 8000);
+%!   assert (bits_per_sample, 16);
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-1:0.1:1; -1:0.1:1]';
-%! wavwrite (A, fname);
-%! B = wavread (fname, 15);
-%! unlink (fname);
-%! assert (A(1:15,:) ,B, 1/2^15);
-%! wavwrite (A, fname);
-%! B = wavread (fname, [10, 20]);
-%! unlink (fname);
-%! assert (A(10:20,:) ,B, 1/2^15);
+%! unwind_protect
+%!   wavwrite (A, fname);
+%!   B = wavread (fname, 15);
+%!   assert (B, A(1:15,:), 2^-14);
+%!   wavwrite (A, fname);
+%!   B = wavread (fname, [10, 20]);
+%!   assert (B, A(10:20,:), 2^-14);
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
 
-%!test
+%!testif HAVE_SNDFILE
 %! A = [-1:0.1:1; -1:0.1:1]';
-%! wavwrite (A, fname);
-%! [nsamp, nchan] = wavread (fname, "size");
-%! unlink (fname);
-%! assert (nsamp, 21);
-%! assert (nchan, 2);
+%! unwind_protect
+%!   wavwrite (A, fname);
+%!   [nsamp, nchan] = wavread (fname, "size");
+%!   assert (nsamp, 21);
+%!   assert (nchan, 2);
+%! unwind_protect_cleanup
+%!   unlink (fname);
+%! end_unwind_protect
+
+%% Test input validation
+%!error wavwrite ()
+%!error wavwrite (1)
+%!error wavwrite (1,2,3,4,5)
+%!error wavwrite ([], "foo.wav");
 

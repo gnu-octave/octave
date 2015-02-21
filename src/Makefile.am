@@ -165,11 +165,11 @@ remove-version-links:
 ## program (main.cc) will try to invoke the versioned binaries.
 
 octave-cli-$(version)$(EXEEXT): octave-cli$(EXEEXT)
-	rm -f $@
+	$(AM_V_GEN)rm -f $@ && \
 	$(LN_S) $< $@
 
 octave-gui-$(version)$(EXEEXT): octave-gui$(EXEEXT)
-	rm -f $@
+	$(AM_V_GEN)rm -f $@ && \
 	$(LN_S) $< $@
 
 CLEANFILES = \

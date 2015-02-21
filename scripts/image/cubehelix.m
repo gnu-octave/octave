@@ -64,7 +64,6 @@ function map = cubehelix (n = rows (colormap ()), start = 0.5,
     angle = 2 * pi * (start/3 + 1 + rots*fract);
     fract = fract .^ gamma;
     amp   = hue * fract .* (1-fract) /2;
-    warning ("off", "Octave:broadcast", "local");
     map   = fract + amp .* ([cos(angle) sin(angle)] * coeff);
 
     ## Clip values (only in case users have changed values of hue or gamma)

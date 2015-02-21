@@ -669,7 +669,6 @@ function update_line (h, dummy, prop, hli)
 endfunction
 
 function [x, y] = arrowcoordinates (h, nar = [])
-  warning ("off", "Octave:broadcast", "local")
   pos = getnormpos (h);
   ppos = norm2pts (h, pos(3:4).');
   ang = angle (complex (ppos(1), ppos(2)));
@@ -830,8 +829,6 @@ function update_textbox (h, dummy, prop, htb)
 endfunction
 
 function XY = textcoordinates (hte, pos)
-  warning ("off", "Octave:broadcast", "local")
-
   ## Get the "tight" extent of the text object in points units
   textpos = get(hte, "position");
   rot = get (hte, "rotation");

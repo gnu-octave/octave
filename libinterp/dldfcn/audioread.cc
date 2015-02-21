@@ -306,7 +306,7 @@ Comment.\n\
   if (error_state)
     return retval;
 
-  const Matrix audio = args(1).matrix_value ();
+  Matrix audio = args(1).matrix_value ();
 
   if (error_state)
     return retval;
@@ -335,6 +335,9 @@ Comment.\n\
   std::transform (ext.begin (), ext.end (), ext.begin (), ::tolower);
 
   sf_count_t items_to_write = audio.rows () * audio.columns ();
+
+  if (audio.rows () == 1)
+    audio = audio.transpose ();
 
   OCTAVE_LOCAL_BUFFER (float, data, items_to_write);
 

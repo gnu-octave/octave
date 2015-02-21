@@ -1236,7 +1236,7 @@ file_editor_tab::show_dialog (QDialog *dlg, bool modal)
     dlg->exec ();
   else
     {
-      dlg->setWindowModality (Qt::WindowModal);
+      dlg->setWindowModality (Qt::NonModal);
       dlg->show ();
     }
 }
@@ -1247,9 +1247,6 @@ file_editor_tab::check_file_modified ()
   int decision = QMessageBox::Yes;
   if (_edit_area->isModified ())
     {
-      activateWindow ();
-      raise ();
-      setFocus ();
       // File is modified but not saved, ask user what to do.  The file
       // editor tab can't be made parent because it may be deleted depending
       // upon the response.  Instead, change the _edit_area to read only.
@@ -1628,7 +1625,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
                this, SLOT (handle_save_file_as_answer (const QString&)));
     }
 
-  show_dialog (fileDialog, false);
+  show_dialog (fileDialog, ! valid_file_name ());
 }
 
 void

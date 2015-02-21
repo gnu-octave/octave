@@ -83,7 +83,7 @@ file_editor::check_closing (void)
        p != editor_tab_map.end (); p++)
     {
       QString file_name = p->first;
-      if (!file_name.isEmpty () && file_name.at (file_name.size () - 1) != '/')
+      if (!file_name.isEmpty ())
         fetFileNames.append (p->first);  // do not append unnamed files
     }
 

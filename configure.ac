@@ -517,25 +517,23 @@ esac
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
 
-### Test whether the compiler supports OpenMP.  This is experimental so disable
-### it by default.  Enable it with the flag --enable-openmp.
+### Test whether the compiler supports OpenMP.  This is enabled by default
+### now to allow the option of using OpenMP in loadable modules.
 
-USE_OPENMP=no
+USE_OPENMP=yes
 AC_ARG_ENABLE([openmp],
-  [AS_HELP_STRING([--enable-openmp],
-    [(EXPERIMENTAL) use OpenMP SMP multi-threading])],
-  [if test "$enableval" = yes; then USE_OPENMP=yes; fi], [])
+  [AS_HELP_STRING([--disable-openmp],
+    [disable OpenMP SMP multi-threading])],
+  [if test "$enableval" = no; then USE_OPENMP=no; fi], [])
 if test $USE_OPENMP = yes; then
-  case $host_os in
-    mingw* | cygwin* | *-gnu*)
-      OCTAVE_CHECK_OPENMP(-fopenmp)
-    ;;
-    msdosmsvc)
-      ## FIXME: is this the right flag for MSVC?
-      OCTAVE_CHECK_OPENMP(-openmp)
-    ;;
-    ## Add other compilers supporting OpenMP here
-  esac
+  AC_LANG_PUSH(C)
+  AX_OPENMP
+  AC_LANG_POP(C)
+  AC_LANG_PUSH(C++)
+  AX_OPENMP
+  AC_LANG_POP(C++)
+  CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+  CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
 fi
 
 ### Defaults for cross compiling.  BUILD_CC and BUILD_CXX are
@@ -3107,7 +3105,7 @@ Octave is now configured for $canonical_host_type
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG
   Include support for GNU readline:   $USE_READLINE
   64-bit array dims and indexing:     $USE_64_BIT_IDX_T
-  Experimental SMP multithreading:    $USE_OPENMP
+  OpenMP SMP multithreading:          $USE_OPENMP
 ])
 
 warn_msg_printed=false
@@ -3135,19 +3133,6 @@ if test $USE_64_BIT_IDX_T = yes; then
   AC_MSG_WARN([variable on the configure command line.  You must also])
   AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
   AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
-  AC_MSG_WARN([])
-  warn_msg_printed=true
-fi
-
-if test $USE_OPENMP = yes; then
-  AC_MSG_WARN([])
-  AC_MSG_WARN([You used the EXPERIMENTAL --enable-openmp option.])
-  AC_MSG_WARN([Are you sure that is what you want to do?])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([This option enables experimental SMP multithreding])
-  AC_MSG_WARN([code that has had very little testing.  There is no])
-  AC_MSG_WARN([certainity that the results returned by Octave with])
-  AC_MSG_WARN([this option enabled will be correct.])
   AC_MSG_WARN([])
   warn_msg_printed=true
 fi

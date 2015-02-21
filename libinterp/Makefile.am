@@ -156,11 +156,9 @@ $(srcdir)/dldfcn/module.mk: $(srcdir)/dldfcn/config-module.sh $(srcdir)/dldfcn/c
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
-  OCT_STAMP_FILES = $(subst dldfcn/,dldfcn/$(am__leading_dot),$(DLDFCN_LIBS:.la=.oct-stamp))
   DLD_LIBOCTINTERP_LIBADD = liboctinterp.la
 else
   OCT_FILES =
-  OCT_STAMP_FILES =
   DLD_LIBOCTINTERP_LIBADD =
 endif
 
@@ -325,9 +323,9 @@ if AMCOND_BUILD_DOCS
 	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS && \
 	touch $@
 
-all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS
+all-local: $(OCT_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS
 else
-all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
+all-local: $(OCT_FILES) $(DLDFCN_PKG_ADD_FILE)
 endif
 
 if AMCOND_BUILD_DOCS
@@ -389,7 +387,6 @@ DISTCLEANFILES = \
   DOCSTRINGS \
   $(BUILT_NODISTFILES) \
   $(OCT_FILES) \
-  $(OCT_STAMP_FILES) \
   $(TST_FILES)
 
 MAINTAINERCLEANFILES = \

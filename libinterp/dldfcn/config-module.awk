@@ -38,23 +38,9 @@ BEGIN {
   print "## Use stamp files to avoid problems with checking timestamps";
   print "## of symbolic links";
   print "";
-  print "define gen-oct-stamp-file"
-  print "  rm -f $(<:.la=.oct)";
-  print "  la=$(<F) && \\";
-  print "    of=$(<F:.la=.oct) && \\";
-  print "    cd dldfcn && \\";
-  print "    $(LN_S) .libs/`$(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $$la` $$of && \\";
-  print "    touch $(@F)";
-  print "endef"
+  print "%.oct : %.la"
+  print "	$(AM_V_GEN)$(INSTALL_PROGRAM) dldfcn/.libs/$(shell $(SED) -n -e \"s/dlname='\\([^']*\\)'/\\1/p\" < $<) $@"
   print ""
-
-    for (i = 1; i <= nfiles; i++) {
-    basename = files[i];
-    sub (/\.cc$/, "", basename);
-    printf ("dldfcn/$(am__leading_dot)%s.oct-stamp: dldfcn/%s.la\n", basename, basename);
-    print "\t$(AM_GEN_V)$(gen-oct-stamp-file)"
-    print "";
-  }
   print "else";
   print "";
   print "noinst_LTLIBRARIES += $(DLDFCN_LIBS)";

@@ -160,11 +160,11 @@ endif
 
 define changelog-from-hg-log
   rm -f $@-t $@ && \
-  { cd $(srcdir); \
+  ( cd $(srcdir); \
     hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; \
     echo ""; \
     echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19"; \
-  } > $@-t && \
+  ) > $@-t && \
   mv $@-t $@
 endef
 

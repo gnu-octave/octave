@@ -29,12 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "parser.h"
+#include "procstream.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QFile>
 #include <QUrl>
 #include <QRegExp>
-#include <QProcess>
 #include <QBuffer>
 
 parser::parser(QObject *p)
@@ -96,13 +96,20 @@ parser::open_file (QFileInfo & file_info)
   QIODevice *iodevice = 0;
   if (_compressors_map.contains (file_info.suffix ()))
     {
-      QProcess gzip;
-      gzip.start (_compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ()));
+      QString command = _compressors_map.value (file_info.suffix ()).arg (file_info.absoluteFilePath ());
+      iprocstream ips (command.toStdString ());
 
-      if (!gzip.waitForFinished ())
+      if (ips.bad ())
         return 0;
 
-      QByteArray result = gzip.readAll ();
+      QByteArray result;
+      char buffer[1024];
+
+      while (! ips.eof ())
+        {
+          ips.read (buffer, sizeof (buffer));
+          result.append (buffer, ips.gcount ());
+        }
 
       QBuffer *io = new QBuffer (this);
       io->setData (result);

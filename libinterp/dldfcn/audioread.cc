@@ -123,17 +123,17 @@ type.\n\
           return retval;
         }
 
-      double dstart = range(0);
-      double dend = range(1);
+      double dstart = xisinf (range(0)) ? info.frames : range(0);
+      double dend = xisinf (range(1)) ? info.frames : range(1);
 
-      if (dstart < 0 || dstart > dend || D_NINT (dstart) != dstart
-          || D_NINT (dend) != dend)
+      if (dstart < 1 || dstart > dend || dend > info.frames
+          || D_NINT (dstart) != dstart || D_NINT (dend) != dend)
         {
           error ("audioread: invalid specification for range of frames");
           return retval;
         }
 
-      start = dstart;
+      start = dstart - 1;
       end = dend;
     }
 

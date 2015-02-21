@@ -34,26 +34,17 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 
-void
-octave_cmd::prepare_command_editor (const QString& cmd)
-{
-  std::string pending_input = command_editor::get_current_line ();
-
-  command_editor::set_initial_input (pending_input);
-  command_editor::replace_line (cmd.toStdString ());
-  command_editor::redisplay ();
-  // We are executing inside the command editor event loop.  Force
-  // the current line to be returned for processing.
-}
-
-
 // ---------------------------------------------------------------------
 //  class octave_cmd_exec: executing a command
 
 void
 octave_cmd_exec::execute ()
 {
-  prepare_command_editor (_cmd);
+  std::string pending_input = command_editor::get_current_line ();
+
+  command_editor::set_initial_input (pending_input);
+  command_editor::replace_line (_cmd.toStdString ());
+  command_editor::redisplay ();
   command_editor::accept_line ();
 }
 
@@ -68,7 +59,7 @@ octave_cmd_eval::execute ()
   function_name.chop (_info.suffix ().length () + 1);
   std::string file_path = _info.absoluteFilePath ().toStdString ();
 
-  prepare_command_editor ("");
+  std::string pending_input = command_editor::get_current_line ();
 
   if (valid_identifier (function_name.toStdString ()))
     { // valid identifier: call as function with possibility to debug
@@ -81,5 +72,9 @@ octave_cmd_eval::execute ()
       Fsource (ovl (file_path));
     }
 
-  command_editor::accept_line ();
+  command_editor::replace_line ("");
+  command_editor::set_initial_input (pending_input);
+  command_editor::redisplay ();
+
+  command_editor::interrupt ();
 }

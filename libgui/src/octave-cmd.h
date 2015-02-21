@@ -36,7 +36,6 @@ public:
   virtual ~octave_cmd () { };
 
   virtual void execute () { };
-  void prepare_command_editor (const QString& cmd);
 };
 
 

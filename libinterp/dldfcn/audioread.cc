@@ -311,6 +311,21 @@ Comment.\n\
   if (error_state)
     return retval;
 
+  double bias = 0.0;
+  double scale = 1.0;
+
+  if (args(1).is_uint8_type ())
+    bias = scale = std::pow (2.0, 7);
+  else if (args(1).is_int16_type ())
+    scale = std::pow (2.0, 15);
+  else if (args(1).is_int32_type ())
+    scale = std::pow (2.0, 31);
+  else if (args(1).is_integer_type ())
+    {
+      gripe_wrong_type_arg ("audiowrite", args(1));
+      return retval;
+    }
+
   int samplerate = args(2).int_value ();
 
   if (error_state)
@@ -327,7 +342,10 @@ Comment.\n\
   for (int i = 0; i < audio.rows (); i++)
     {
       for (int j = 0; j < audio.columns (); j++)
-        data[idx++] = audio.xelem (i, j);
+        {
+          double elem = (audio.xelem (i, j) - bias) / scale;
+          data[idx++] = std::min (std::max (elem, -1.0), 1.0);
+        }
     }
 
   SF_INFO info;

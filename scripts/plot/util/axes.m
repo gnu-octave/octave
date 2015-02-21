@@ -42,7 +42,7 @@
 function h = axes (varargin)
 
   if (nargin == 0 || nargin > 1)
-    ## Create an axes object.
+    ## Parent figure
     idx = find (strcmpi (varargin(1:2:end), "parent"), 1, "first");
     if (! isempty (idx) && length (varargin) >= 2*idx)
       cf = varargin{2*idx};
@@ -50,49 +50,44 @@ function h = axes (varargin)
     else
       cf = gcf ();
     endif
+
+    ## If there is an annotation axes currently on top of the figure
+    ## children stack, we will put it back on top
+    do_restack = false;
+    ch = allchild (cf);
+    hax = ch(isaxes (ch));
+    idx = find (strcmp (get (hax, "tag"), "scribeoverlay"));
+    if (idx == 1)
+      hover = hax(idx);
+      do_restack = true;
+    endif
+    
+    ## Create an axes object.
     htmp = __go_axes__ (cf, varargin{:});
     if (__is_handle_visible__ (htmp))
       set (ancestor (cf, "figure"), "currentaxes", htmp);
+    endif
+
+    ## Restack if necessary
+    if (do_restack)
+      restack_axes (hover, cf);
     endif
   else
     ## ARG is axes handle.
     htmp = varargin{1};
     if (isscalar (htmp) && isaxes (htmp))
+      cf = ancestor (htmp, "figure");
       if (__is_handle_visible__ (htmp))
-        cf = ancestor (htmp, "figure");
         set (0, "currentfigure", cf);
         set (cf, "currentaxes", htmp);
-
-        ## restack
-        ch = get (cf, "children")(:);
-        idx = (ch == htmp);
-        ch = [ch(idx); ch(!idx)];
-        set (cf, "children", ch);
       endif
+
+      ## restack
+      restack_axes (htmp, cf);
     else
       error ("axes: H must be a scalar axes handle");
     endif
   endif
-  
-  ## FIXME: In order to have the overlay axes on top of all other axes
-  ##        we restack the figure children. Does Matlab use a similar
-  ##        hack?
-  show = get (0, "showhiddenhandles");
-  set (0, "showhiddenhandles", "on");
-  unwind_protect
-    ch = get (cf, "children");
-    idx = strcmp (get (ch, "tag"), "scribeoverlay");
-    hover = ch(idx);
-    if (! isempty (hover))
-      hax = ch(isaxes (ch));
-      if (numel (hax) > 1)
-        ch(isaxes (ch)) = [hover; hax(hax != hover)];
-        set (cf, "children", ch);
-      endif
-    endif
-  unwind_protect_cleanup
-    set (0, "showhiddenhandles", show);
-  end_unwind_protect
 
   if (nargout > 0)
     h = htmp;
@@ -100,3 +95,15 @@ function h = axes (varargin)
 
 endfunction
 
+function restack_axes (h, cf)
+  show = get (0, "showhiddenhandles");
+  set (0, "showhiddenhandles", "on");
+  unwind_protect
+    ch = get (cf, "children");
+    hax = ch(isaxes (ch));
+    ch(isaxes (ch)) = [h; hax(hax != h)];
+    set (cf, "children", ch);
+  unwind_protect_cleanup
+    set (0, "showhiddenhandles", show);
+  end_unwind_protect
+endfunction

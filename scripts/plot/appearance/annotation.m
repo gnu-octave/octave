@@ -240,6 +240,9 @@ function varargout = annotation (varargin)
     hax = findall (hf, "-depth", 1, "tag", "scribeoverlay");
     if (isempty (hax))
       hax = buildoverlay (hf);
+    else
+      ## Make sure the annotations are on top of other axes
+      axes (hax);
     endif
 
     ## Build annotation

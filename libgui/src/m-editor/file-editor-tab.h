@@ -74,6 +74,7 @@ public slots:
   void file_name_query (const QWidget *ID);
 
   void set_focus (const QWidget *ID);
+  void set_current_directory (const QString& dir);
   void context_help (const QWidget *ID, bool);
   void context_edit (const QWidget *ID);
   void check_modified_file (void);
@@ -129,8 +130,7 @@ public slots:
 signals:
 
   void file_name_changed (const QString& fileName, const QString& toolTip);
-  void editor_state_changed (bool copy_available, const QString& fileName,
-                             bool is_octave_file);
+  void editor_state_changed (bool copy_available, bool is_octave_file);
   void tab_remove_request ();
   void add_filename_to_list (const QString&, QWidget *);
   void mru_add_file (const QString& file_name);
@@ -230,6 +230,7 @@ private:
 
   QString _file_name;
   QString _file_name_short;
+  QString _ced;
 
   bool _long_title;
   bool _copy_available;

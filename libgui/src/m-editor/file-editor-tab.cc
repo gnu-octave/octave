@@ -69,16 +69,12 @@ bool file_editor_tab::_cancelled = false;
 // WindowModal messages don't affect grandparents.
 file_editor_tab::file_editor_tab (const QString& directory_arg)
 {
-  QString directory = directory_arg;
   _lexer_apis = 0;
   _is_octave_file = true;
 
-  // Make sure there is a slash at the end of the directory name
-  // for identification when saved later.
-  if (directory.count () && directory.at (directory.count () - 1) != '/')
-    directory.append ("/");
+  _ced = directory_arg;
 
-  _file_name = directory;
+  _file_name = "";
   _file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
   _edit_area = new octave_qscintilla (this);
@@ -200,6 +196,12 @@ file_editor_tab::closeEvent (QCloseEvent *e)
 }
 
 void
+file_editor_tab::set_current_directory (const QString& dir)
+{
+  _ced = dir;
+}
+
+void
 file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
 {
   // search for a subfunction in actual file (this is done at first because
@@ -255,8 +257,15 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
   else if (type.isEmpty ())
     {
       // function not known to octave -> try directory of edited file
-      QFileInfo file = QFileInfo (_file_name);
-      file = QFileInfo (QDir (file.canonicalPath ()), word_at_cursor + ".m");
+      // get directory
+      QDir dir;
+      if (_file_name.isEmpty ())
+        dir = _ced;
+      else
+        dir = QDir (QFileInfo (_file_name).canonicalPath ());
+
+      // function not known to octave -> try directory of edited file
+      QFileInfo file = QFileInfo (dir, word_at_cursor + ".m");
 
       if (file.exists ())
         {
@@ -318,7 +327,7 @@ file_editor_tab::set_file_name (const QString& fileName)
   update_lexer ();
 
   // update the file editor with current editing directory
-  emit editor_state_changed (_copy_available, _file_name, _is_octave_file);
+  emit editor_state_changed (_copy_available, _is_octave_file);
 
   // add the new file to the mru list
   emit mru_add_file (_file_name);
@@ -329,13 +338,15 @@ file_editor_tab::set_file_name (const QString& fileName)
 bool
 file_editor_tab::valid_file_name (const QString& file)
 {
-  QString file_name;
   if (file.isEmpty ())
-    file_name = _file_name;
-  else
-    file_name = file;
-  return (! file_name.isEmpty ()
-          && file_name.at (file_name.count () - 1) != '/');
+    {
+      if (_file_name.isEmpty ())
+        return false;
+      else
+        return true;
+    }
+
+  return true;
 }
 
 void
@@ -1213,8 +1224,7 @@ void
 file_editor_tab::handle_copy_available (bool enableCopy)
 {
   _copy_available = enableCopy;
-  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name),
-                             _is_octave_file);
+  emit editor_state_changed (_copy_available, _is_octave_file);
 }
 
 // show_dialog: shows a modal or non modal dialog depending on input arg
@@ -1590,15 +1600,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
   else
     {
       fileDialog->selectFile ("");
-
-      if (_file_name.isEmpty ())
-        fileDialog->setDirectory (QDir::currentPath ());
-      else
-        {
-          // The file name is actually the directory name from the
-          // constructor argument.
-          fileDialog->setDirectory (_file_name);
-        }
+      fileDialog->setDirectory (_ced);
 
       // propose a name corresponding to the function name
       QString fname = get_function_name ();
@@ -1945,8 +1947,7 @@ file_editor_tab::change_editor_state (const QWidget *ID)
       _find_dialog->show ();
     }
 
-  emit editor_state_changed (_copy_available, QDir::cleanPath (_file_name),
-                             _is_octave_file);
+  emit editor_state_changed (_copy_available, _is_octave_file);
 }
 
 void

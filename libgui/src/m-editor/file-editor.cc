@@ -118,6 +118,13 @@ file_editor::focus (void)
     emit fetab_set_focus (fileEditorTab);
 }
 
+void
+file_editor::update_octave_directory (const QString& dir)
+{
+  ced = dir;
+  emit fetab_set_directory (ced);  // for save dialog
+}
+
 QMenu *
 file_editor::debug_menu (void)
 {
@@ -1101,7 +1108,6 @@ file_editor::edit_status_update (bool undo, bool redo)
 
 void
 file_editor::handle_editor_state_changed (bool copy_available,
-                                          const QString& file_name,
                                           bool is_octave_file)
 {
   // In case there is some scenario where traffic could be coming from
@@ -1112,17 +1118,6 @@ file_editor::handle_editor_state_changed (bool copy_available,
       _cut_action->setEnabled (copy_available);
       _run_selection_action->setEnabled (copy_available);
       _run_action->setEnabled (is_octave_file);
-
-      if (!file_name.isEmpty ())
-        {
-          ced = QDir::cleanPath (file_name);
-          int lastslash = ced.lastIndexOf ('/');
-
-          // Test against > 0 because if somehow the directory is "/" the
-          // slash should be retained.  Otherwise, last slash is removed.
-          if (lastslash > 0 && lastslash != ced.count ())
-            ced = ced.left (lastslash);
-        }
 
       setFocusProxy (_tab_widget->currentWidget ());
     }
@@ -1614,8 +1609,8 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            this, SLOT (handle_file_name_changed (const QString&,
                                                  const QString&)));
 
-  connect (f, SIGNAL (editor_state_changed (bool, const QString&, bool)),
-           this, SLOT (handle_editor_state_changed (bool, const QString&, bool)));
+  connect (f, SIGNAL (editor_state_changed (bool, bool)),
+           this, SLOT (handle_editor_state_changed (bool, bool)));
 
   connect (f, SIGNAL (tab_remove_request ()),
            this, SLOT (handle_tab_remove_request ()));
@@ -1656,6 +1651,9 @@ file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn)
            f, SLOT (check_modified_file (void)));
 
   // Signals from the file_editor trivial operations
+  connect (this, SIGNAL (fetab_set_directory (const QString&)),
+           f, SLOT (set_current_directory (const QString&)));
+
   connect (this, SIGNAL (fetab_zoom_in (const QWidget*)),
            f, SLOT (zoom_in (const QWidget*)));
   connect (this, SIGNAL (fetab_zoom_out (const QWidget*)),

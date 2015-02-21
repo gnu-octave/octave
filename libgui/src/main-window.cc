@@ -813,8 +813,6 @@ main_window::change_directory (const QString& dir)
 
   _current_directory_combo_box->insertItem (0, dir);
   _current_directory_combo_box->setCurrentIndex (0);
-
-  file_browser_window->update_octave_directory (dir);
 }
 
 void
@@ -1457,6 +1455,10 @@ main_window::construct_octave_qt_link (void)
 
   connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
            this, SLOT (change_directory (QString)));
+  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+           file_browser_window, SLOT (update_octave_directory (QString)));
+  connect (_octave_qt_link, SIGNAL (change_directory_signal (QString)),
+           editor_window, SLOT (update_octave_directory (QString)));
 
   connect (_octave_qt_link,
            SIGNAL (execute_command_in_terminal_signal (QString)),

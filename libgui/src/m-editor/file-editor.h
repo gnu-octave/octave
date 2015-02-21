@@ -110,6 +110,8 @@ signals:
   void fetab_zoom_out (const QWidget* ID);
   void fetab_zoom_normal (const QWidget* ID);
 
+  void fetab_set_directory (const QString& dir);
+
   void request_settings_dialog (const QString&);
   void execute_command_in_terminal_signal (const QString&);
   void file_loaded_signal ();
@@ -187,8 +189,7 @@ public slots:
   void handle_tab_remove_request (void);
   void handle_add_filename_to_list (const QString& fileName, QWidget *ID);
   void active_tab_changed (int index);
-  void handle_editor_state_changed (bool enableCopy, const QString& fileName,
-                                    bool is_octave_file);
+  void handle_editor_state_changed (bool enableCopy, bool is_octave_file);
   void handle_mru_add_file (const QString& file_name);
   void check_conflict_save (const QString& fileName, bool remove_on_success);
 
@@ -206,6 +207,7 @@ public slots:
 
   void handle_visibility (bool visible);
 
+  void update_octave_directory (const QString& dir);
 
 protected slots:
   void copyClipboard ();

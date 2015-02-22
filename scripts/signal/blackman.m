@@ -17,8 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} blackman (@var{m})
+## @deftypefn  {Function File} {} blackman (@var{m})
+## @deftypefnx {Function File} {} blackman (@var{m}, "periodic")
+## @deftypefnx {Function File} {} blackman (@var{m}, "symmetric")
 ## Return the filter coefficients of a Blackman window of length @var{m}.
+##
+## If the optional argument @qcode{"periodic"} is given, the periodic form
+## of the window is returned.  This is equivalent to the window of length
+## @var{m}+1 with the last coefficient removed.  The optional argument
+## @qcode{"symmetric"} is equivalent to not specifying a second argument.
 ##
 ## For a definition of the Blackman window, see e.g.,
 ## @nospell{A.V. Oppenheim & R. W. Schafer},
@@ -28,22 +35,40 @@
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description: Coefficients of the Blackman window
 
-function c = blackman (m)
+function c = blackman (m, opt)
 
-  if (nargin != 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
   if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
-    error ("blackman: M has to be an integer > 0");
+    error ("blackman: M must be a positive integer");
+  endif
+
+  periodic = false;
+  if (nargin == 2)
+    switch (opt)
+      case "periodic"
+        periodic = true;
+      case "symmetric"
+        ## Default option, same as no option specified.
+      otherwise
+        error ('blackman: window type must be either "periodic" or "symmetric"');
+    endswitch
   endif
 
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    if (! periodic)
+      m = m - 1;
+    endif
     k = (0 : m)' / m;
     c = 0.42 - 0.5 * cos (2 * pi * k) + 0.08 * cos (4 * pi * k);
+  endif
+
+  if (periodic)
+    c = c(1:end-1);
   endif
 
 endfunction
@@ -59,8 +84,16 @@ endfunction
 %! assert (A (ceil (N/2)), 1, 1e-6);
 %! assert ([A(1), A(length (A))], zeros (1, 2), 1e-6);
 
+%!assert (blackman (15), blackman (15, "symmetric"));
+%!assert (blackman (16)(1:15), blackman (15, "periodic"));
+%!test
+%! N = 16;
+%! A = blackman (N, "periodic");
+%! assert (A (N/2 + 1), 1, 1e-6);
+
 %!error blackman ()
 %!error blackman (0.5)
 %!error blackman (-1)
 %!error blackman (ones (1,4))
+%!error blackman (1, "invalid");
 

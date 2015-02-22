@@ -17,8 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hamming (@var{m})
+## @deftypefn  {Function File} {} hamming (@var{m})
+## @deftypefnx {Function File} {} hamming (@var{m}, "periodic")
+## @deftypefnx {Function File} {} hamming (@var{m}, "symmetric")
 ## Return the filter coefficients of a Hamming window of length @var{m}.
+##
+## If the optional argument @qcode{"periodic"} is given, the periodic form
+## of the window is returned.  This is equivalent to the window of length
+## @var{m}+1 with the last coefficient removed.  The optional argument
+## @qcode{"symmetric"} is equivalent to not specifying a second argument.
 ##
 ## For a definition of the Hamming window, see e.g.,
 ## @nospell{A.V. Oppenheim & R. W. Schafer},
@@ -28,21 +35,39 @@
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description: Coefficients of the Hamming window
 
-function c = hamming (m)
+function c = hamming (m, opt)
 
-  if (nargin != 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
   if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
-    error ("hamming: M has to be an integer > 0");
+    error ("hamming: M must be a positive integer");
+  endif
+
+  periodic = false;
+  if (nargin == 2)
+    switch (opt)
+      case "periodic"
+        periodic = true;
+      case "symmetric"
+        ## Default option, same as no option specified.
+      otherwise
+        error ('hamming: window type must be either "periodic" or "symmetric"');
+    endswitch
   endif
 
   if (m == 1)
     c = 1;
   else
-    m = m - 1;
+    if (! periodic)
+      m = m - 1;
+    endif
     c = 0.54 - 0.46 * cos (2 * pi * (0:m)' / m);
+  endif
+
+  if (periodic)
+    c = c(1:end-1);
   endif
 
 endfunction
@@ -57,8 +82,16 @@ endfunction
 %! A = hamming (N);
 %! assert (A (ceil (N/2)), 1);
 
+%!assert (hamming (15), hamming (15, "symmetric"));
+%!assert (hamming (16)(1:15), hamming (15, "periodic"));
+%!test
+%! N = 16;
+%! A = hamming (N, "periodic");
+%! assert (A (N/2 + 1), 1);
+
 %!error hamming ()
 %!error hamming (0.5)
 %!error hamming (-1)
 %!error hamming (ones (1,4))
+%!error hamming (1, "invalid");
 

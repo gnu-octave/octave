@@ -532,8 +532,12 @@ if test $USE_OPENMP = yes; then
   AC_LANG_PUSH(C++)
   AX_OPENMP
   AC_LANG_POP(C++)
-  CFLAGS="$CFLAGS $OPENMP_CFLAGS"
-  CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+  if test -n "$OPENMP_CFLAGS" && test -n "OPENMP_CXXFLAGS"; then
+    CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+    CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+  else
+    USE_OPENMP=no 
+  fi
 fi
 
 ### Defaults for cross compiling.  BUILD_CC and BUILD_CXX are

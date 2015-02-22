@@ -36,7 +36,7 @@ function c = bartlett (m)
   endif
 
   if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
-    error ("bartlett: M has to be an integer > 0");
+    error ("bartlett: M must be a positive integer");
   endif
 
   if (m == 1)

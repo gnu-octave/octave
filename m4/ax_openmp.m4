@@ -69,7 +69,7 @@
 #serial 11
 
 AC_DEFUN([AX_OPENMP], [
-AC_PREREQ([2.69]) dnl for _AC_LANG_PREFIX
+AC_PREREQ([2.59]) dnl for _AC_LANG_PREFIX
 
 AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
 ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown

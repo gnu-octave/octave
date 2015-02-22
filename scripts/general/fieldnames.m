@@ -48,7 +48,10 @@ function names = fieldnames (obj)
   elseif (isjava (obj) || ischar (obj))
     ## FIXME: Function prototype that excepts java obj exists, but doesn't
     ##        work if obj is java.lang.String.  Convert obj to classname.
-    if (! ischar (obj))
+    ## FIXME this is now working for objects whose class is in the dynamic
+    ##        classpath but will continue to fail if such classnames are used
+    ##        instead (see bug #42710)
+    if (isa (obj, "java.lang.String"))
       obj = class (obj);
     endif
     names_str = javaMethod ("getFields", "org.octave.ClassHelper", obj);
@@ -79,4 +82,12 @@ endfunction
 %!testif HAVE_JAVA
 %! names = fieldnames (javaObject ("java.lang.Double", 10));
 %! assert (any (strcmp (names, "MAX_VALUE")));
+%! assert (isempty (setxor (names(:),
+%!                          {"POSITIVE_INFINITY", "NEGATIVE_INFINITY", ...
+%!                           "NaN", "MAX_VALUE", "MIN_NORMAL", "MIN_VALUE", ...
+%!                           "MAX_EXPONENT", "MIN_EXPONENT", "SIZE", "TYPE"})));
+
+%!testif HAVE_JAVA
+%! names = fieldnames (javaObject ("java.lang.String", "Hello"));
+%! assert (any (strcmp (names, "CASE_INSENSITIVE_ORDER")));
 

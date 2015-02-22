@@ -1476,13 +1476,14 @@ dump_octave_core (void)
     }
 }
 
-DEFUN (save, args, ,
+DEFUN (save, args, nargout,
        "-*- texinfo -*-\n\
 @deftypefn  {Command} {} save file\n\
 @deftypefnx {Command} {} save options file\n\
 @deftypefnx {Command} {} save options file @var{v1} @var{v2} @dots{}\n\
 @deftypefnx {Command} {} save options file -struct @var{STRUCT} @var{f1} @var{f2} @dots{}\n\
-@deftypefnx {Command} {} {@var{s} =} save @samp{-} @var{v1} @var{v2} @dots{}\n\
+@deftypefnx {Command} {} save @code{\"-\"} @var{v1} @var{v2} @dots{}\n\
+@deftypefnx {Built-in Function} {@var{s} =} save (@code{\"-\"} @var{v1} @var{v2} @dots{})\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
 @var{file}.  The special filename @samp{-} may be used to return the\n\
 content of the variables as a string.  If no variable names are listed,\n\
@@ -1503,6 +1504,9 @@ save (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
 @noindent\n\
 then the @var{options}, @var{file}, and variable name arguments\n\
 (@var{v1}, @dots{}) must be specified as character strings.\n\
+\n\
+If called with a filename of @qcode{\"-\"}, write the output to stdout\n\
+if nargout is 0, otherwise return the output in a character string.\n\
 \n\
 @table @code\n\
 @item -append\n\
@@ -1659,10 +1663,14 @@ the file @file{data} in Octave's binary format.\n\
           if (append)
             warning ("save: ignoring -append option for output to stdout");
 
-          std::ostringstream output_buf;
-          save_vars (argv, i, argc, output_buf, format,
-                     save_as_floats, true);
-          retval = octave_value (output_buf.str());
+          if (nargout == 0)
+            save_vars (argv, i, argc, std::cout, format, save_as_floats, true);
+          else
+            {
+              std::ostringstream output_buf;
+              save_vars (argv, i, argc, output_buf, format, save_as_floats, true);
+              retval = octave_value (output_buf.str());
+            }
         }
     }
 

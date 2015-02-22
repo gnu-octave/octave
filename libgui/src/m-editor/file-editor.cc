@@ -141,12 +141,14 @@ void
 file_editor::handle_enter_debug_mode (void)
 {
   _run_action->setEnabled (false);
+  _run_action->setShortcut (QKeySequence ());
 }
 
 void
 file_editor::handle_exit_debug_mode (void)
 {
   _run_action->setEnabled (true);
+  shortcut_manager::set_shortcut (_run_action, "editor_run:run_file");
 }
 
 void

@@ -3317,7 +3317,7 @@ base_graphics_object::values_as_struct (void)
 %!   assert (isempty (ret));
 %!   ret = set (hax, "type");
 %!   assert (isempty (ret));
-%!   ret = set (hfig, "__graphics_toolkit__");
+%!   ret = set (hfig, "tag");
 %!   assert (isempty (ret));
 %!   ret = set (0, "commandwindowsize");
 %!   assert (isempty (ret));
@@ -3327,6 +3327,7 @@ base_graphics_object::values_as_struct (void)
 %!   close (hfig);
 %! end_unwind_protect
 */
+
 graphics_object
 graphics_object::get_ancestor (const std::string& obj_type) const
 {

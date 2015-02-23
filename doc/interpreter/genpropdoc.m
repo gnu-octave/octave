@@ -454,10 +454,6 @@ released respectively.  When these callback functions are executed, the \
       case "xvisual"
       case "xvisualmode"
 
-      case "__graphics_toolkit__"
-        s.doc = "The graphics toolkit used to render the figure.  \
-@xref{XREFavailable_graphics_toolkits, , \
-@w{available_graphics_toolkits function}}.";
     endswitch
 
   ## Axes properties

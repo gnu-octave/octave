@@ -3496,7 +3496,7 @@ public:
       any_property __rotate_mode__ h , Matrix ()
       any_property __zoom_mode__ h , Matrix ()
       bool_property __enhanced__ h , "on"
-      string_property __graphics_toolkit__ s , gtk_manager::default_toolkit ()
+      string_property __graphics_toolkit__ hs , gtk_manager::default_toolkit ()
       any_property __guidata__ h , Matrix ()
       any_property __plot_stream__ h , Matrix ()
     END_PROPERTIES
